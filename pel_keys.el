@@ -1,4 +1,4 @@
-;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t; -*-
+
 
 ;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 
@@ -545,6 +545,7 @@ Done in this function to allow advising libraries that remap these keys."
       (define-key dired-mode-map (kbd "M-u")   'dired-undo)
       (define-key dired-mode-map (kbd "C-x u") 'dired-undo)
       (define-key dired-mode-map (kbd "C-/")   'dired-undo))))
+
 
 ;; Activate extra Dired-x features when requested.
 (when pel-use-dired-x
@@ -1427,14 +1428,27 @@ interactively."
 can't bind negative-argument to C-_ and M-_"
                            :error))))
 
-  ;; When pel-use-undo-tree is not t, then use standard Emacs undo but
-  ;; map to similar keys (except the redo keys: ``<f11> u r`` and ``M-U``)
+  ;; When pel-use-undo-tree is not t, and pel-use-simple-undo is also not t,
+  ;; then use standard Emacs undo but map to similar keys (except the redo
+  ;; keys: ``<f11> u r`` and ``M-U``)
+  (unless pel-use-simple-undo
+    (when pel-emacs-is-graphic-p
+      (global-set-key (kbd  "s-z")    #'undo))
+    (global-set-key (kbd    "C-x u")  #'undo)
+    (global-set-key (kbd    "C-/")    #'undo)
+    (global-set-key (kbd    "M-u")    #'undo)
+    (define-key pel:undo    "u"       #'undo)))
+
+(when pel-use-simple-undo
   (when pel-emacs-is-graphic-p
-    (global-set-key (kbd  "s-z")    #'undo))
-  (global-set-key (kbd    "C-x u")  #'undo)
-  (global-set-key (kbd    "C-/")    #'undo)
-  (global-set-key (kbd    "M-u")    #'undo)
-  (define-key pel:undo    "u"       #'undo))
+    (global-set-key (kbd  "s-z")    #'undo-only)
+    (global-set-key (kbd  "s-Z")   'undo-redo))
+  (global-set-key (kbd    "C-x u")  #'undo-only)
+  (global-set-key (kbd    "C-/")    #'undo-only)
+  (global-set-key (kbd    "M-u")    #'undo-only)
+  (define-key pel:undo    "u"       #'undo-only)
+  (global-set-key (kbd    "M-U")   'undo-redo)
+  (define-key pel:undo    "r"      'undo-redo))
 
 ;; - Use goto-last-change
 ;; ----------------------
@@ -7333,6 +7347,7 @@ the ones defined from the buffer now."
   ;;       then pel-use-speedbar is also active, as imposed by
   ;;       the end of pel--options.el.
   (when pel-use-projectile-speedbar
+    (defvar projectile-command-map)     ; prevent compiler warning
     (pel-ensure-package projectile-speedbar from: melpa)
     (pel-autoload-file projectile-speedbar for:
                        projectile-speedbar-open-current-buffer-in-tree

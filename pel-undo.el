@@ -1,6 +1,6 @@
 ;;; pel-undo.el --- PEL undo/redo management  -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -23,15 +23,15 @@
 ;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This provides undo and refun functions that are aware of the undo-tree-mode
-;; and behave like their undo-tree-mode equival;ent when the undo-tree-mode is
+;; This provides undo and redo functions that are aware of the `undo-tree-mode'
+;; and behave like their undo-tree-mode equivalent when the `undo-tree-mode' is
 ;; active or behave like the standard Emacs undo when undo-tree-mode is not
 ;; used.
 ;;
 ;; Having these functions simplify the management of undo-tree-mode when we need
 ;; to change the undo and redo key bindings.
 ;;
-;; Note that we load undo-tree right away.  That's done because pel-undo is only
+;; Note that we load `undo-tree' right away.  That's done because pel-undo is only
 ;; loaded when pel-use-undo-tree is t so when the undo-tree package is required.
 ;; However since we don't want to cause error if it is not present, the require
 ;; statement is written to not cause error and the functions are used only if

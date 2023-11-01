@@ -10096,7 +10096,19 @@ turns it off."
                    ,(pel-pdf-file-url "undo-redo-repeat")))
 
 (defcustom pel-use-undo-tree nil
-  "Control whether PEL uses the undo-tree package."
+  "Control whether PEL uses the undo-tree package.
+
+On Emacs 28 and later, if pel-use-simple-undo is active,
+pel-use-undo-tree is automatically turned off."
+  :group 'pel-pkg-for-undo
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-simple-undo nil
+  "Control whether PEL uses the undo-only and undo-redo package.
+
+This requires Emacs 28.1 or later. On previous versions PEL automatically
+turn it off."
   :group 'pel-pkg-for-undo
   :type 'boolean
   :safe #'booleanp)
@@ -10776,7 +10788,13 @@ indexing system."
 (when (version< emacs-version "27.1")
   (setq pel-use-go-translate nil)
   (setq pel-use-tzc nil))
+(when (version< emacs-version "28.1")
+  (setq pel-use-simple-undo nil))
 
+;; Automatically disable undo-tree in Emacs >= 28 when pel-use-simple-undo
+;; because undo-tree is no robust and may corrupt a buffer.
+(when pel-use-simple-undo
+  (setq pel-use-undo-tree nil))
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)
 

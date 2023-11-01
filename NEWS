@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for *undo-redo* command available in Emacs 28 and later.  The new *pel-use-undo-redo* user option, available
+  on can be used on Emacs 28 and later to activate its use and key bindings.
 - Add ~<f6> ;~ binding to *comment_line* which starts the comment at the beginning of the line, for convenience in terminal mode.
 - Add *pel-kill-symbol-at-point-terminal-binding* user-option which provides ability to select an alternative
   key binding for *pel-kill-symbol-at-point* when Emacs is running in terminal mode.  This helps when using
