@@ -1455,7 +1455,9 @@ can't bind negative-argument to C-_ and M-_"
 (when pel-use-goto-last-change
   (pel-ensure-package goto-last-change from: melpa)
   (pel-autoload-file goto-last-change for: goto-last-change)
-  (define-key pel:undo "\\" 'goto-last-change))
+  (define-key pel:undo "\\"          'goto-last-change)
+  (define-key pel:f6   "\\"          'goto-last-change)
+  (global-set-key (kbd "C-x C-\\")   'goto-last-change))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <f10>`` : Menu commands

@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add ~<f6> \~ and ~C-x C-\~ key bindings to *goto-last-change*.
 - Add support for *undo-redo* command available in Emacs 28 and later.  The new *pel-use-undo-redo* user option, available
   on can be used on Emacs 28 and later to activate its use and key bindings.
 - Add ~<f6> ;~ binding to *comment_line* which starts the comment at the beginning of the line, for convenience in terminal mode.
