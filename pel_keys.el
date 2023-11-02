@@ -1450,6 +1450,10 @@ can't bind negative-argument to C-_ and M-_"
   (global-set-key (kbd    "M-U")   'undo-redo)
   (define-key pel:undo    "r"      'undo-redo))
 
+(when pel-use-undo-propose
+  (pel-ensure-package undo-propose from: melpa)
+  (global-set-key (kbd "C-c u")  'undo-propose))
+
 ;; - Use goto-last-change
 ;; ----------------------
 (when pel-use-goto-last-change

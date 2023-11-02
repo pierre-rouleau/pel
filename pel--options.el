@@ -10098,17 +10098,30 @@ turns it off."
 (defcustom pel-use-undo-tree nil
   "Control whether PEL uses the undo-tree package.
 
+Be aware that intensive of undo/redo with this package
+may lead to buffer CORRUPTION and LOST DATA! Use with care.
+
+You may want to use undo-propose with on Emacs 27 and earlier.
+
 On Emacs 28 and later, if pel-use-simple-undo is active,
 pel-use-undo-tree is automatically turned off."
   :group 'pel-pkg-for-undo
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-undo-propose nil
+  "Control whether PEL uses the undo-propose package."
+  :link '(url-link :tag "undo-propose @Github"
+                   "https://github.com/jackkamm/undo-propose-el")
+  :group 'pel-pkg-for-undo
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-simple-undo nil
-  "Control whether PEL uses the undo-only and undo-redo package.
+  "Control whether PEL uses the undo-only and undo-redo commands.
 
 This requires Emacs 28.1 or later. On previous versions PEL automatically
-turn it off."
+turn this off."
   :group 'pel-pkg-for-undo
   :type 'boolean
   :safe #'booleanp)
