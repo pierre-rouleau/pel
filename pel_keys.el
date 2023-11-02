@@ -1,4 +1,4 @@
-
+;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 
