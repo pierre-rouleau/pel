@@ -10110,7 +10110,11 @@ pel-use-undo-tree is automatically turned off."
   :safe #'booleanp)
 
 (defcustom pel-use-undo-propose nil
-  "Control whether PEL uses the undo-propose package."
+  "Control whether PEL uses the undo-propose package.
+
+Use it only when using Classic Emacs undo.  You can also use it with simple
+undo on Emacs >= 28 but it will not allow to redo anything in simple undo so
+there's limited added value in that case."
   :link '(url-link :tag "undo-propose @Github"
                    "https://github.com/jackkamm/undo-propose-el")
   :group 'pel-pkg-for-undo
