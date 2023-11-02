@@ -1375,7 +1375,7 @@ interactively."
 ;;  - s-Z                                       : undo-tree-redo
 ;;  - <f11> u u             : undo              : undo-tree-undo
 ;;  - <f11> u r                                 : undo-tree-redo
-;;  - <f11> u v                                 : undo-tree-visualize
+;;  - <f11> u v                                 : undo-tree-visualize / vundo
 ;;  - <f11> u /                                 : undo-tree-switch-branch
 ;;  - <f11> u \             : goto-last-change  : goto-last-change
 
@@ -1453,6 +1453,10 @@ can't bind negative-argument to C-_ and M-_"
 (when pel-use-undo-propose
   (pel-ensure-package undo-propose from: melpa)
   (global-set-key (kbd "C-c u")  'undo-propose))
+
+(when pel-use-vundo
+  (pel-ensure-package vundo from: gnu)
+  (define-key pel:undo  "v"    'vundo))
 
 ;; - Use goto-last-change
 ;; ----------------------

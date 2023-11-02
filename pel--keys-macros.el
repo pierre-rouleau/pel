@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-05-24 10:04:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-11-02 16:47:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -137,7 +137,7 @@
                                macrostep-geiser
                                quack
                                lispy))
-(defconst pel--spell-group (if (version< emacs-version "27.1")
+(defconst pel--spell-groups (if (version< emacs-version "27.1")
                                '(ispell
                                  flyspell)
                              '(ispell
@@ -147,6 +147,13 @@
                                        term
                                        terminals
                                        vter))
+
+(defconst pel--undo-groups (let ((items '(undo
+                                         undo-propose
+                                         undo-tree)))
+                             (if pel-emacs-28-or-later-p
+                                 (append items '(vundo)))))
+
 
 ;; TODO: add logic in the processing of that table to allow the first element
 ;;       of a row to be a list of key sequences.
@@ -183,7 +190,7 @@
                                                                  projectile-speedbar))
 
     ([f11 f5 ?k]     "key-chords"        pel-pkg-for-key-chord   key-chord)
-    ([f11 ?$]        "spell-checking"   pel-pkg-for-spelling    ,pel--spell-group)
+    ([f11 ?$]        "spell-checking"   pel-pkg-for-spelling    ,pel--spell-groups)
     ([f11 ?']        "bookmarks"        pel-pkg-for-bookmark    (bookmark
                                                                  bm))
     ([f11 ?,]        "auto-completion"  pel-pkg-for-expand   (auto-complete
@@ -475,8 +482,7 @@
                                                                 whitespace))
     ([f11 ?t ?t]     "transpose"        nil)
     ([f11 ?t ?w]     "whitespaces"      nil                     whitespace)
-    ([f11 ?u]        "undo-redo-repeat" pel-pkg-for-undo        (undo
-                                                                 undo-tree))
+    ([f11 ?u]        "undo-redo-repeat" pel-pkg-for-undo        ,pel--undo-groups)
     ([f11 ?v]        "vcs-mercurial"    pel-pkg-for-vcs         (vc
                                                                  vc-hg
                                                                  vc-git

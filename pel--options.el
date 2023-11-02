@@ -10103,8 +10103,9 @@ may lead to buffer CORRUPTION and LOST DATA! Use with care.
 
 You may want to use undo-propose with on Emacs 27 and earlier.
 
-On Emacs 28 and later, if pel-use-simple-undo is active,
-pel-use-undo-tree is automatically turned off."
+On Emacs 28 and later, if any of pel-use-simple-undo or
+pel-use-vundo is active, pel-use-undo-tree is automatically
+turned off."
   :group 'pel-pkg-for-undo
   :type 'boolean
   :safe #'booleanp)
@@ -10126,6 +10127,17 @@ there's limited added value in that case."
 
 This requires Emacs 28.1 or later. On previous versions PEL automatically
 turn this off."
+  :group 'pel-pkg-for-undo
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-vundo nil
+  "Control whether PEL uses the vundo external package.
+
+This requires Emacs 28.1 or later. On previous versions PEL automatically
+turn this off."
+  :link '(url-link :tag "vundo @ GNU Elpa"
+                   "https://elpa.gnu.org/packages/vundo.html")
   :group 'pel-pkg-for-undo
   :type 'boolean
   :safe #'booleanp)
@@ -10806,11 +10818,14 @@ indexing system."
   (setq pel-use-go-translate nil)
   (setq pel-use-tzc nil))
 (when (version< emacs-version "28.1")
-  (setq pel-use-simple-undo nil))
+  (setq pel-use-simple-undo nil)
+  (setq pel-use-vundo nil))
 
-;; Automatically disable undo-tree in Emacs >= 28 when pel-use-simple-undo
-;; because undo-tree is no robust and may corrupt a buffer.
-(when pel-use-simple-undo
+;; Automatically disable undo-tree in Emacs >= 28 when pel-use-simple-undo or
+;; pel-use-vundo because undo-tree is not robust and may corrupt a buffer and
+;; also because these other settings provide a better solution and share key
+;; bindings.
+(when (or pel-use-simple-undo pel-use-vundo)
   (setq pel-use-undo-tree nil))
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)
