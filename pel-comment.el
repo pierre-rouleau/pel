@@ -1,6 +1,6 @@
 ;;; pel-comment.el --- PEL Comments Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -150,20 +150,17 @@ variables."
                                     (string< n1
                                              (symbol-name s2))))))
     ;; Print a report inside a specialized buffer.
-    (let ((format-string (format "%%-%ds: %%S\n" max-length)))
-      (pel-print-in-buffer
-       "*comment-vars*"
-       "Comment controlling variables"
-       (lambda ()
-         "Print comment control data."
-         (insert (format "----- List of comment %s:\n"
-                         (if only-user-options
-                             "user options"
-                           "variables")))
-         (dolist (symbol comment-symbols)
-           (insert (format format-string
-                           (symbol-name symbol)
-                           (cdr (assoc symbol local-values-alist))))))))))
+    (pel-print-in-buffer
+     "*comment-vars*"
+     "Comment controlling variables"
+     (lambda ()
+       "Print comment control data."
+       (insert (format "----- List of comment %s:\n"
+                       (if only-user-options
+                           "user options"
+                         "variables")))
+       (dolist (symbol comment-symbols)
+         (pel-insert-symbol-content-line symbol))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-comment)

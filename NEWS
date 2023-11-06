@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improved *pel-comment-show-variables* (bound to ~<f11> ; ?~) : the name of each variable shown in the buffer is a button
+  that opens the help for the variable which itself has a link to customize the user-option variables.
 - Add ~<f6> \~ and ~C-x C-\~ key bindings to *goto-last-change*.
 - Add support for *undo-redo* command available in Emacs 28 and later.  The new *pel-use-undo-redo* user option, available
   on can be used on Emacs 28 and later to activate its use and key bindings.
