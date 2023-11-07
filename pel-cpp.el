@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, November  7 2023.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-11-07 12:10:38 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-11-07 13:23:34 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -40,21 +40,41 @@
   "\\(\\(public\\)\\|\\(protected\\)\\|\\(private\\)\\)[[:blank:]]*:"
   "Regexp to search for C++ class visibility attributes.")
 
+(defun pel--search-class-visibility (direction)
+  "Move point to C++ class visibility in specified DIRECTION.
+
+DIRECTION can be up or down."
+  (let ((found-pos nil)
+        (original-pos (point)))
+    (save-excursion
+      (while
+          (if
+              (if (eq direction 'up)
+                  (re-search-backward
+                   pel--c++-class-visibility-attribute-regexp nil :noerror)
+                (re-search-forward
+                 pel--c++-class-visibility-attribute-regexp nil :noerror))
+              (if (pel-point-in-comment-or-docstring)
+                  t
+                (setq found-pos (point))
+                nil))))
+    (if found-pos
+        (progn
+          (push-mark original-pos)
+          (goto-char found-pos))
+      (user-error "No C++ class visibility statement found!")))  )
+
 (defun pel-move-up-to-class-visibility ()
-  "Move point to previous class visibility keyword."
+  "Move point to previous class visibility keyword.
+
+Push original position if one is found."
   (interactive)
-  (while
-      (unless (and (re-search-backward
-                    pel--c++-class-visibility-attribute-regexp)
-                   (not (pel-point-in-comment-or-docstring))))))
+  (pel--search-class-visibility 'up))
 
 (defun pel-move-down-to-class-visibility ()
   "Move point to previous class visibility keyword."
   (interactive)
-  (while
-      (unless (and (re-search-forward
-                    pel--c++-class-visibility-attribute-regexp)
-                   (not (pel-point-in-comment-or-docstring))))))
+  (pel--search-class-visibility 'down))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-cpp)
