@@ -264,6 +264,10 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-completion" for:
     pel-set-completion-mode)
 
+  (pel-autoload "pel-cpp" for:
+    pel-move-up-to-class-visibility
+    pel-move-down-to-class-visibility)
+
   (pel-autoload "pel-cua" for:
     pel-cua-rectangle-mark
     pel-cua-move-rectangle-left

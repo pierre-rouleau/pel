@@ -390,6 +390,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: Add *pel-move-down-to-class-visibility* and  *pel-move-up-to-class-visibility*,
+  respectively bound to ~<f12> s v~ and ~<f12> s V~ in C++ buffers, to move point to
+  the next and previous C++ class visibility member declaration statement (public, protected, private).
+  These ignore comments.
 - New: Add support for *vundo* via the *pel-use-vundo* user option.  It can activate the use of *vundo* package for Emacs 28 or later.
   When active the ~<f11> u v~ key sequence is bound to *vundo* to show Emacs undo tree.
 - New: add support for *undo-propose*; activated by setting the *pel-use-undo-propose* to t.
