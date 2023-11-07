@@ -2585,8 +2585,8 @@ MODE must be a symbol."
                    pel:c++-search-replace)
 
   ;; Add C++ specific commands
-  (define-key pel:c++-search-replace (kbd "v") 'pel-move-up-to-class-visibility)
-  (define-key pel:c++-search-replace (kbd "V") 'pel-move-down-to-class-visibility)
+  (define-key pel:c++-search-replace (kbd "v") 'pel-move-down-to-class-visibility)
+  (define-key pel:c++-search-replace (kbd "V") 'pel-move-up-to-class-visibility)
 
   (pel-eval-after-load cc-mode
     (pel-config-major-mode c++ pel:for-c++
