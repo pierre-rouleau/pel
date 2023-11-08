@@ -2840,7 +2840,7 @@ ON-SAME-LINE is set."
                     (if on-same-line " " "\n")
                     value))))
 
-(defun pel-insert-symbol-content-line (symbol &optional buffer)
+(defun pel-insert-symbol-content-line (symbol &optional buffer extra-text)
   "Insert the name followed by the content of the specified SYMBOL.
 
 Insert the SYMBOL name as a clickable button inside current buffer.
@@ -2852,7 +2852,9 @@ need."
   (pel-insert-symbol-content
    symbol
    (or buffer pel-insert-symbol-content-context-buffer)
-   :on-same-line))
+   :on-same-line)
+  (when extra-text
+    (insert extra-text)))
 
 (defun pel-line-prefixed-with (text prefix)
   "Return TEXT with each line prefixed with PREFIX string."
@@ -2909,7 +2911,7 @@ ON-SAME-LINE is non-nil"
 ;; -------------------------
 
 (defun pel-print-in-buffer (bufname title text &optional clear-buffer use-help-mode)
-  "Print TITLE than TEXT inside specified buffer BUFNAME.
+  "Print TITLE and TEXT inside specified buffer BUFNAME.
 
 TEXT is either a string or a function that calls insert to insert
 the strings into the buffer.  Append the text in buffer unless
