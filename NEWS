@@ -2,6 +2,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improved PEL default key bindings for iedit-mode: by default PEL uses ~M-S-<f7>~, ~M-S-<f8>~ and ~M-S-<f9>~ to move to previous iedit occurrence,
+toggle the iedit state of the occurrence and move to the next iedit occurrence, respectively, instead of the default ~backtab~, ~M-;~ and ~backtab~ keys.
+This way, the standard behaviour of these often used keys can use used over an iedit occurrence.
+The description of the iedit mode in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀  Search/Replace PDF]]  shows if a key binding is available over the iedit occurrence or anywhere when the iedit-mode is active.
+- Add customization for iedit-mode: the new *pel-pkg-for-iedit* customization group holds the new
+  *pel-iedit-use-alternate-keys* user-option that can be used to restore the default iedit key bindings.
+  When text is highlighted by iedit-mode, the ~<f11><f2>~ and ~<f11><f3>~ open the  *pel-pkg-for-iedit* and *iedit*
+  customization group buffer respectively.
 - Improved *pel-comment-show-variables* (bound to ~<f11> ; ?~) : the name of each variable shown in the buffer is a button
   that opens the help for the variable which itself has a link to customize the user-option variables.
 - Add ~<f6> \~ and ~C-x C-\~ key bindings to *goto-last-change*.

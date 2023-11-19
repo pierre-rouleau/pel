@@ -42,6 +42,7 @@
 ;;     - pel-pkg-for-buffer
 ;;     - pel-pkg-for-completion
 ;;     - pel-pkg-for-cursor
+;;       - pel-pkg-for-iedit
 ;;     - pel-pkg-for-cut-and-paste
 ;;     - pel-pkg-for-diff-merge
 ;;     - pel-pkg-for-dired
@@ -60,6 +61,7 @@
 ;;     - pel-pkg-for-help
 ;;     - pel-pkg-for-hide-show
 ;;     - pel-pkg-for-highlight
+;;       - pel-pkg-for-iedit
 ;;       - pel-pkg-for-modeline
 ;;     - pel-pkg-for-imenu
 ;;     - pel-pkg-for-indentation
@@ -1347,26 +1349,7 @@ Activating the `pel-use-lispy' user-option indirectly activates
                    "https://github.com/magnars/multiple-cursors.el"))
 (pel-put 'pel-use-multiple-cursors :also-required-when 'pel-use-lispy)
 
-(defcustom pel-use-iedit nil
-  "Control whether PEL uses the iedit package.
 
-When set PEL activates the iedit mode when one of the following key
-sequences are typed:
-
-- C-;
-- <f11> e
-- <f11> m i
-
-Activating the `pel-use-lispy' user-option indirectly activates
-`pel-use-iedit'."
-  :group 'pel-pkg-for-cursor
-  :group 'pel-pkg-for-all-languages
-  :group 'pel-pkg-for-highlight
-  :type 'boolean
-  :safe #'booleanp
-  :link '(url-link :tag "iedit @ GitHub"
-                   "https://github.com/victorhge/iedit"))
-(pel-put 'pel-use-iedit :also-required-when 'pel-use-lispy)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-cut-and-paste
@@ -2281,6 +2264,38 @@ PEL binds command `rainbow-mode' to ``<f11> b h c``."
   "Default color used by `pel-highlight-line'."
   :group 'pel-pkg-for-highlight
   :type 'string)
+
+;; ---------------------------------------------------------------------------
+(defgroup pel-pkg-for-iedit nil
+  "PEL customization of the iedit-mode."
+  :group 'pel-pkg-for-all-languages
+  :group 'pel-pkg-for-cursor
+  :group 'pel-pkg-for-highlight)
+
+(defcustom pel-use-iedit nil
+  "Control whether PEL uses the iedit package.
+
+When set PEL activates the iedit mode when one of the following key
+sequences are typed:
+
+- C-;
+- <f11> e
+- <f11> m i
+
+Activating the `pel-use-lispy' user-option indirectly activates
+`pel-use-iedit'."
+  :group 'pel-pkg-for-iedit
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "iedit @ GitHub"
+                   "https://github.com/victorhge/iedit"))
+(pel-put 'pel-use-iedit :also-required-when 'pel-use-lispy)
+
+(defcustom pel-iedit-use-alternate-keys t
+  "Activate PEL alternate keys for navigation and selection toggle."
+  :group 'pel-pkg-for-iedit
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; iMenu extension support
