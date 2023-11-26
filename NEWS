@@ -398,6 +398,8 @@ The description of the iedit mode in the [[https://raw.githubusercontent.com/pie
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: Add features to *ibuffer-mode*: sort by path-name (~s p~), filter by directory name (~/ d/~),
+  group buffer by directory names (~/ D~) and remapped  decompose filter to  ~/ M-d/~.
 - New: Add *pel-move-down-to-class-visibility* and  *pel-move-up-to-class-visibility*,
   respectively bound to ~<f12> s v~ and ~<f12> s V~ in C++ buffers, to move point to
   the next and previous C++ class visibility member declaration statement (public, protected, private).

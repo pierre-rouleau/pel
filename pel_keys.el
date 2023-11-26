@@ -5994,8 +5994,16 @@ the ones defined from the buffer now."
   (pel-ensure-package iflipb from: melpa))
 
 ;; ibuffer-mode support
-;; Provide <f12> <f1> and <f12><f3> in ibuffer-mode
-;; TODO simplify this code
+;; --------------------
+;;
+;; - Add useful ibuffer filters
+(pel-eval-after-load ibuffer
+  (declare-function pel-map-ibuffer-mode-filters "pel-ibuffer")
+  (require 'pel-ibuffer)
+  (pel-map-ibuffer-mode-filters))
+
+;; - Provide <f12> <f1> and <f12><f3> in ibuffer-mode
+;;   TODO simplify the following code
 (define-pel-global-prefix pel:for-ibuffer (kbd "<f11> SPC SPC b"))
 (defun pel--setup-for-ibuffer ()
   "Activate ibuffer setup, take local variables into account."
@@ -6004,6 +6012,7 @@ the ones defined from the buffer now."
 (pel--mode-hook-maybe-call
  (function pel--setup-for-ibuffer)
  'ibuffer-mode 'ibuffer-mode-hook)
+
 
 ;; diff-mode support
 ;; Provide <f12> <f1>, <f12> <f2> and <f12><f3> keys for diff-mode
