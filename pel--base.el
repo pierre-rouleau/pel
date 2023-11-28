@@ -2961,8 +2961,9 @@ feature."
 
 (defun pel-point-in-comment-or-docstring (&optional move-fct)
   "Return position of start of comment or docstring surrounding point.
-Return nil when point is outside comment and docstring.
-If MOVE-FCT is specified, call it before checking the state of point."
+Return nil when point is outside comment and docstring.  If a
+MOVE-FCT function is specified, call it before checking the state
+of point."
   (save-excursion
     (when move-fct
       (funcall move-fct))
