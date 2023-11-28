@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, October 15 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-15 12:16:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-11-28 14:56:09 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022  Pierre Rouleau
+;; Copyright (C) 2022, 2023  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@
 ;; - `pel-inside-block-p'
 ;; - `pel-inside-comment-p'
 ;; - `pel-inside-string-p'
+;; - `pel-inside-code-p'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -93,6 +94,12 @@ otherwise return an integer indicating the current comment nesting."
 (defun pel-inside-string-p (&optional pos)
   "Return non-nil if POS, or point, is inside a string, nil otherwise."
   (pel--inside-string-p (syntax-ppss pos)))
+
+(defun pel-inside-code-p (&optional pos)
+  "Return t if POS, or point, is inside code; not in string nor comment."
+  (let ((syntax-sexp (syntax-ppss pos)))
+    (and (not (nth 3 syntax-sexp))
+         (not (nth 4 syntax-sexp)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--syntax-macros)
