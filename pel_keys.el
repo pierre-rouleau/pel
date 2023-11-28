@@ -2073,6 +2073,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-y     - YAML
 ;; M-s     - SQL
 ;; M-u     - PlantUML
+;; M-v     - CSV (comma-separated-value)
 ;; M-A     - Alpaca          -              BEAM Language, Functional/ML
 ;; M-D     - Dired
 ;; M-G     - Gleam           -              BEAM Language
@@ -4487,6 +4488,14 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
    (function pel--setup-for-term)
    'term-mode 'term-mode-hook))
 
+;; ---------------------------------------------------------------------------
+;; Data Files Support
+;; --================
+
+;; csv-mode
+(when pel-use-csv-mode
+  (pel-ensure-package csv-mode from: gnu)
+  )
 ;; ---------------------------------------------------------------------------
 ;; Markup Language Support
 ;; --=====================

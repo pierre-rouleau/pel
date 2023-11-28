@@ -44,6 +44,7 @@
 ;;     - pel-pkg-for-cursor
 ;;       - pel-pkg-for-iedit
 ;;     - pel-pkg-for-cut-and-paste
+;;     - pel-pkg-for-data-files
 ;;     - pel-pkg-for-diff-merge
 ;;     - pel-pkg-for-dired
 ;;     - pel-pkg-for-expand
@@ -1427,6 +1428,23 @@ to create the binding."
   :type '(choice
           (const  :tag "Default binding" nil)
           (string :tag "Use following kbd string argument")))
+
+;; ---------------------------------------------------------------------------
+;; pel-pkg-for-data-files
+;; ----------------------
+(defgroup pel-pkg-for-data-files nil
+  "List of packages supporting data file formats."
+  :group 'pel-package-use)
+
+(defcustom pel-use-csv-mode nil
+  "Whether PEL activates the csv-mode.
+
+Requires Emacs 27.1 or later."
+  :group 'pel-pkg-for-data-files
+  :link '(url-link :tag "csv-mode @GNU Elpa"
+                   "https://elpa.gnu.org/packages/csv-mode.html")
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-diff-merge
@@ -10831,7 +10849,8 @@ indexing system."
 ;; De-activate any requests that cannot be honoured based on Emacs version.
 (when (version< emacs-version "27.1")
   (setq pel-use-go-translate nil)
-  (setq pel-use-tzc nil))
+  (setq pel-use-tzc nil)
+  (setq pel-use-csv-mode nil))
 (when (version< emacs-version "28.1")
   (setq pel-use-simple-undo nil)
   (setq pel-use-vundo nil))
