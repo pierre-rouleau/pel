@@ -387,6 +387,12 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-hex" for:
     pel-bibyte)
 
+  (pel-autoload "pel-iedit" for:
+    pel-iedit-toggle-just-in-code
+    pel-customize-pel-iedit)
+  (pel-autoload-function "pel-iedit" for:
+    pel-add-keys-to-iedit-mode)
+
   (pel-autoload "pel-ido" for:
     pel-set-ido-use-fname-at-point)
 

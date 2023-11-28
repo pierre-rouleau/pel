@@ -1247,66 +1247,17 @@ interactively."
 ;; ------------------------------------------------
 
 (when pel-use-iedit
-
-  (defun pel-customize-iedit ()
-    "Customize the iedit group."
-    (interactive)
-    (customize-group "iedit"))
-
-  (defun pel-customize-pel-iedit ()
-    "Customize the iedit group."
-    (interactive)
-    (customize-group "pel-pkg-for-iedit"))
-
-  (defun pel--change-iedit-navkeys (map)
-
-    (define-key map (kbd "<backtab>")        nil)
-    (define-key map (kbd "<S-tab>")          nil)
-    (define-key map (kbd "<S-iso-lefttab>")  nil)
-    (define-key map (kbd "M-S-<f7>")     'iedit-prev-occurrence)
-
-    "Change the iedit-mode navigation keys."
-    (define-key map (kbd "M-;")       nil)
-    (define-key map (kbd "M-S-<f8>")    'iedit-toggle-selection)
-
-    (define-key map (kbd "TAB")       nil)
-    (define-key map (kbd "<tab>")     nil)
-    (define-key map (kbd "M-S-<f9>")    'iedit-next-occurrence))
-
-  (defun pel--add-keys-to-iedit-mode ()
-    "Add keys that work in terminal mode to iedit-mode key maps."
-    (when (boundp 'iedit-lib-keymap)
-      (define-key iedit-lib-keymap (kbd "C-c C-a") 'iedit-show/hide-context-lines)
-      (define-key iedit-lib-keymap (kbd "C-c C-o") 'iedit-show/hide-occurrence-lines))
-
-    (when (and pel-iedit-use-alternate-keys
-               (boundp 'iedit-mode-keymap))
-      (let ((map iedit-mode-keymap))
-        (pel--change-iedit-navkeys map)))
-
-    (when (boundp 'iedit-mode-occurrence-keymap)
-      (let ((map iedit-mode-occurrence-keymap))
-        (define-key map (kbd "<f11> <f2>") #'pel-customize-pel-iedit)
-        (define-key map (kbd "<f11> <f3>") #'pel-customize-iedit)
-        (when pel-iedit-use-alternate-keys
-          (pel--change-iedit-navkeys map))
-
-        (define-key map (kbd "<f1> <f2>") 'iedit-help-for-occurrences)
-        (define-key map (kbd "M-U")       'pel-redo)
-        (define-key map (kbd "<f1> M-c")  'iedit-toggle-case-sensitive)
-        (define-key map (kbd "M-c")       'iedit-downcase-occurrences)
-        (define-key map (kbd "M-C")       'iedit-upcase-occurrences))))
-  (declare-function pel--add-keys-to-iedit-mode "pel_keys")
-
   (pel-ensure-package iedit from: melpa)
   (pel-autoload-file iedit for: iedit-mode)
   (define-key pel: "e" 'iedit-mode)
   (define-key ctl-x-r-map "\r" 'iedit-rectangle-mode)
+
   ;; More iedit config - always required.
   (pel-eval-after-load iedit
     (declare-function pel-spell-iedit-check-conflict "pel-spell-iedit")
+    (declare-function pel-add-keys-to-iedit-mode     "pel-iedit")
     (pel-spell-iedit-check-conflict)
-    (pel--add-keys-to-iedit-mode))
+    (pel-add-keys-to-iedit-mode))
   (pel-eval-after-load sh-script
     (require 'pel-sh-iedit)
     (add-hook 'sh-mode-hook 'pel-sh-iedit-enhance))
