@@ -7324,7 +7324,7 @@ the ones defined from the buffer now."
 (when pel-use-speedbar
   ;; Install sr-speedbar from my GitHub depot instead of from Melpa,
   ;; because Melpa follows the older version in emacsmirror. I'm keeping
-  ;; min closer to what's available in the emacswiki.
+  ;; mine closer to what's available in the emacswiki.
   (pel-install-github-file "pierre-rouleau/sr-speedbar/master"
                            "sr-speedbar.el")
   (pel-autoload-file sr-speedbar for:
@@ -7850,6 +7850,17 @@ the ones defined from the buffer now."
   (pel-autoload-file windresize for: windresize)
   (define-key pel:window "r" 'windresize))
 
+(when pel-use-layout-restore
+  (pel-install-file
+   "https://www.emacswiki.org/emacs/download/layout-restore.el"
+   "layout-restore.el")
+  (pel-autoload-file layout-restore for:
+                     layout-save-current)
+  (define-pel-global-prefix pel:window-layout (kbd "<f11> w l"))
+  (define-key pel:window-layout  "s"  'layout-save-current)
+  (pel-eval-after-load layout-restore
+    (define-key pel:window-layout  "r"  'layout-restore)
+    (define-key pel:window-layout  "d"  'layout-delete-current)))
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> w d`` : Windows dedicated operations
 ;;

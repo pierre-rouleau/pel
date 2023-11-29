@@ -398,6 +398,12 @@ The description of the iedit mode in the [[https://raw.githubusercontent.com/pie
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: Add preliminary support for *layout-restore* package that helps manage window layout, associating them with a
+  buffer and providing 3 commands: *layout-save-current* (bound to ~<f11> w l s~),
+  *layout-restore* (bound to ~<f11> w l r~) and *layout-delete-current* (bound to ~<f11> w l d~).
+  The support is preliminary because it's implementation uses advice which clashes with several modes.
+  However the ideas of the package are nice and I'll look at the code once I have some time.
+  Hopefully I can improve the code of this package to make it work properly.
 - New: Add features to *ibuffer-mode*: sort by path-name (~s p~), filter by directory name (~/ d/~),
   group buffer by directory names (~/ D~) and remapped  decompose filter to  ~/ M-d/~.
 - New: Add *pel-move-down-to-class-visibility* and  *pel-move-up-to-class-visibility*,

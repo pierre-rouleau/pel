@@ -10405,6 +10405,19 @@ If it set to nil, no such assumptions are made."
   :type 'boolean
   :safe #'booleanp)
 
+
+(defcustom pel-use-layout-restore nil
+  "Control whether PEL uses layout-restore.
+
+This allows saving and restoring Emacs window layouts.
+
+USE WITH CAUTION! It's old code that clashes with many modes."
+  :link '(url-link :tag "layout-restore @ EmacsWiki"
+                   "https://www.emacswiki.org/emacs/LayoutRestore")
+  :group 'pel-pkg-for-window
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-xref
 ;; ----------------
