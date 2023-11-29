@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add key bindings to diff a buffer with the file it's visiting: ~<f11> b =~ is now bound to *diff-buffer-with-file* and
+  ~<f11> b M-=~ is bound to *ediff-current-file*.
 - Improved PEL default key bindings for iedit-mode: by default PEL uses ~M-S-<f7>~, ~M-S-<f8>~ and ~M-S-<f9>~ to move to previous iedit occurrence,
 toggle the iedit state of the occurrence and move to the next iedit occurrence, respectively, instead of the default ~backtab~, ~M-;~ and ~backtab~ keys.
 This way, the standard behaviour of these often used keys can use used over an iedit occurrence.

@@ -5913,6 +5913,8 @@ the ones defined from the buffer now."
 
 (define-pel-global-prefix pel:buffer (kbd "<f11> b"))
 (define-key pel:buffer "-"  #'ruler-mode)
+(define-key pel:buffer "="  #'diff-buffer-with-file)
+(define-key pel:buffer (kbd "M-=")  #'ediff-current-file)
 (define-key pel:buffer "a"   'pel-show-all-buffers)
 (define-key pel:buffer "c"  #'clone-buffer)
 (define-key pel:buffer "k"  #'kill-current-buffer)
