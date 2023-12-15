@@ -27,6 +27,9 @@
 ;; This file contains a collection of navigation commands that complement the
 ;; standard Emacs navigation commands.
 ;;
+;;  - `pel-to-forward-space' moves point forward to the first whitespace character
+;;     following non-whitespace characters, and `pel-to-backward-space' moves
+;;     point backward after the last white-space character before non-whitespace.
 ;;  - `pel-beginning-of-line' is meant to replace `beginning-of-line' as it
 ;;    does the same and extends it: if point is already at the beginning of
 ;;    the line then it moves it to the first non-whitespace character.
