@@ -906,6 +906,11 @@ Done in this function to allow advising libraries that remap these keys."
 ;; is trailing whitespace.
 (global-set-key (kbd "C-e") 'pel-end-of-line)
 
+;; Add commands that can move point to the *first* space character forward or
+;; the previous last space backward (ie just past or before non-whitespace)
+(global-set-key (kbd "<f11> M-SPC") 'pel-to-forward-space)
+(global-set-key (kbd "<f11> C-SPC") 'pel-to-backward-space)
+
 ;; Augment word movement by adding M-n to move to the beginning of a word,
 ;; something that is not provided by the standard Emacs keys; it only has
 ;; forward-word  (which moves at the end of word forward) and backward-word

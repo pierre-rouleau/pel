@@ -528,6 +528,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-exchange-point-and-mark-no-activate)
 
   (pel-autoload "pel-navigate" for:
+    pel-to-forward-space
+    pel-to-backward-space
     pel-beginning-of-line
     pel-end-of-line
     pel-find-thing-at-point

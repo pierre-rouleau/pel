@@ -1,6 +1,6 @@
 ;;; pel-navigate.el --- PEL Navigation Support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -63,6 +63,37 @@
 ;;                                      ;      pel-toggle-and-show
 (require 'pel-scroll)                   ; use: pel-in-scroll-sync
 (require 'subword)                      ; use: superword-mode
+
+;; ---------------------------------------------------------------------------
+;; Move to next space
+(defun pel-to-forward-space ()
+  "Move point to the next space character."
+  (interactive)
+  (let ((pos (point)))
+    (forward-whitespace 1)
+    (forward-whitespace -1)
+    ;; if point was already on whitespace on inside several spaces, it did not
+    ;; move forward, so move to the beginning of next non-whitespace and try again.
+    (when (>= pos (point))
+      (forward-word 1)
+      (backward-word 1)
+      (forward-whitespace 1)
+      (forward-whitespace -1))))
+
+(defun pel-to-backward-space ()
+  "Move point to the previous space character."
+  (interactive)
+  (let ((pos (point)))
+    (forward-whitespace -1)
+    (forward-whitespace 1)
+    ;; if point was already on whitespace on inside several spaces, it did not
+    ;; move backward, so move to the end of previous non-whitespace and try
+    ;; again.
+    (when (<= pos (point))
+      (backward-word 1)
+      (forward-word 1)
+      (forward-whitespace -1)
+      (forward-whitespace 1))))
 
 ;; ---------------------------------------------------------------------------
 ;; Smart Beginning of line
