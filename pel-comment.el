@@ -128,7 +128,8 @@ buffer.  Move last line of text to the last line of window.
 If the ONLY-USER-OPTIONS argument is non-nil, include only user option
 variables."
   (interactive "P")
-  (let ((comment-symbols '())
+  (let ((original-buffer (current-buffer))
+        (comment-symbols '())
         (max-length 0)
         (local-values-alist '()))     ; maps symbol to it's buffer local value
     ;; Accumulate names of `comment-' variables and their values.
@@ -160,7 +161,7 @@ variables."
                            "user options"
                          "variables")))
        (dolist (symbol comment-symbols)
-         (pel-insert-symbol-content-line symbol))))))
+         (pel-insert-symbol-content-line symbol original-buffer))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-comment)
