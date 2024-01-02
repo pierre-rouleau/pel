@@ -101,8 +101,8 @@ Retain them in the variable `kill-ring'.
 Each killed comment group is retained in the kill ring, as a separate kill
 ring entry."
   (interactive "*")
-  (let ((start-point (if (region-active-p) (region-beginning) (point-min)))
-        (end-point   (if (region-active-p) (region-end) (point-max))))
+  (let ((start-point (if (use-region-p) (region-beginning) (point-min)))
+        (end-point   (if (use-region-p) (region-end) (point-max))))
     (save-excursion
       (goto-char start-point)
       (comment-kill (count-lines start-point end-point)))))
@@ -114,8 +114,8 @@ ring entry."
   (let (kill-ring)
     (pel-kill-all-comments)
     (unless keep-empty-lines
-      (let ((start-point (if (region-active-p) (region-beginning) (point-min)))
-            (end-point   (if (region-active-p) (region-end) (point-max))))
+      (let ((start-point (if (use-region-p) (region-beginning) (point-min)))
+            (end-point   (if (use-region-p) (region-end) (point-max))))
         (pel-delete-all-empty-lines start-point end-point )))))
 
 ;;-pel-autoload

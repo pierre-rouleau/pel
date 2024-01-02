@@ -1,6 +1,6 @@
 ;;; pel-ccp.el --- PEL cut & paste, etc... -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -346,7 +346,7 @@ Copy removed characters to kill ring."
 ;;   "Kill the current marked area if any, otherwise kill whole current line.
 ;; Uses `kill-region' to perform the kill operation. "
 ;;   (interactive)
-;;   (if (region-active-p)
+;;   (if (use-region-p)
 ;;       (kill-region (region-beginning) (region-end))
 ;;     (kill-region (line-beginning-position) (1+ (line-end-position)))))
 
@@ -387,10 +387,10 @@ a negative N kills characters backwards."
 (defun pel-delete-all-empty-lines (&optional begin end)
   "Remove all empty lines from marked area or the entire buffer."
   (interactive "*")
-  (let ((start-point (if (region-active-p)
+  (let ((start-point (if (use-region-p)
                          (region-beginning)
                        (or begin (point-min))))
-        (end-point   (if (region-active-p)
+        (end-point   (if (use-region-p)
                          (region-end)
                        (or end (point-max)))))
     (flush-lines "^\\s-*$" start-point end-point)))

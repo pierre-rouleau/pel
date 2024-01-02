@@ -1,6 +1,6 @@
 ;;; pel-rst.el --- PEL reStructuredText support -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -104,7 +104,7 @@
 ;; Utility
 ;; -------
 (defun pel--rst-require-thingatpt ()
-  "Load thingatpt/."
+  "Load thingatpt when necessary."
   (message "pel--rst-require-thingatpt")
   (unless (and (require 'thingatpt nil :noerror)
                (fboundp 'bounds-of-thing-at-point))
@@ -723,7 +723,7 @@ Reference: see reStructuredText hyperlink format at URL
   (interactive "*P")
   (pel--rst-require-thingatpt)
   (let (p_begin p_end)
-    (if (region-active-p)
+    (if (use-region-p)
         (progn
           (setq p_begin (region-beginning))
           (setq p_end   (region-end)))
@@ -803,10 +803,10 @@ The function supports emphasis of text inside of a word, which
 must, in that case, be surrounded by an escaped space
 character. "
   (pel--rst-require-thingatpt)
-  (let* ((p-begin (if (region-active-p)
+  (let* ((p-begin (if (use-region-p)
                       (region-beginning)
                     (car (bounds-of-thing-at-point 'word))))
-         (p-end (if (region-active-p)
+         (p-end (if (use-region-p)
                     (region-end)
                   (cdr (bounds-of-thing-at-point 'word))))
          (prefix (when p-begin (pel--rst-emphasize-escape-for (1- p-begin)

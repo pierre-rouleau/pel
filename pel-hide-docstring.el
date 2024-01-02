@@ -1,6 +1,6 @@
 ;;; pel-hide-docstring.el --- Hide docstrings.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -206,8 +206,8 @@ Return (beg.end) on success.
 If no docstring detected issue a user-error by default.
 But if SILENT is non-nil, instead of issuing an error return nil instead."
   (interactive "P")
-  ;; (let ((start-point (if (region-active-p) (region-beginning) (point-min)))
-  ;;       (end-point   (if (region-active-p) (region-end) (point-max))))
+  ;; (let ((start-point (if (use-region-p) (region-beginning) (point-min)))
+  ;;       (end-point   (if (use-region-p) (region-end) (point-max))))
   ;; Hiding/showing docstrings is not a buffer modification.
   (with-silent-modifications
     (condition-case nil
