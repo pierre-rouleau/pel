@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, January  2 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-03 13:10:39 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-03 18:23:34 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,21 +25,47 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; Very preliminary code.  For test of potentially future specialized
-;; navigation commands.
+;; This file hold logic for commands that navigate out of C and C++ switch
+;; statements.
+;;
+;; With the point inside a switch statement the `pel-cc-to-switch-begin'
+;; command moves the point to the '{' character of the current switch
+;; statement block and the `pel-cc-to-switch-end' moves point just after the
+;; '}' character at the end of the switch block.
+;;
+;; If point is outside a switch statement these commands issue an appropriate
+;; user error.
+;;
+;; The logic uses a set of helper functions.
+;; - `pel-cc-list-switch-in-fct' builds and returns a list of position
+;;   2-elements list, each identifying the location of the beginning and end
+;;   of a switch statement inside the current function. This is then used to
+;;   determine the position where point must be moved if any.
+;;   - It uses the `pel-cc-inside-function-p' predicate function that returns
+;;   t when point is inside a C/C++ function.
+;; - The `pel-cc-inside-switch-pos' calls `pel-cc-list-switch-in-fct' and
+;;   returns the 2-element list that corresponds to the text-area of the
+;;   enclosing switch statement if the point is inside one.
+;;   - The two interactive commands call `pel-cc-inside-switch-pos' and
+;;   retrieve the appropriate position to jump to, if any is reported.
+
+
+;;
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--syntax-macros)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
-(defconst pel-cc--switch-regexp "switch\\s-*("   "Regex to find start brace of switch statement")
+(defconst pel-cc--switch-regexp "switch\\s-*("
+  "Regex to find start brace of switch statement")
 
-(defun pel-cc-inside-function ()
+(defun pel-cc-inside-function-p ()
   "Return t if point is inside a C/C++ function, nil otherwise."
   (save-excursion
     (condition-case nil
@@ -48,8 +74,6 @@
           t)
       (error nil))))
 
-
-;; TODO - protect against commented-out or string switch statements.
 
 (defun pel-cc-list-switch-in-fct ()
   "Return list of all switch statements in current function.
@@ -61,7 +85,7 @@ switch statements inside the function.
 Return nil if the function has no switch statement or point is
 outside of a function."
   (let ((switch-pos-list nil))
-    (when (pel-cc-inside-function)
+    (when (pel-cc-inside-function-p)
       (save-excursion
         (beginning-of-defun)
         (when (search-forward "{" nil :noerror)
@@ -73,22 +97,26 @@ outside of a function."
             (setq end-pos (point))
             (goto-char begin-pos)
             (while (re-search-forward pel-cc--switch-regexp end-pos :noerror)
-              (when (search-forward "{" nil :noerror)
-                (let ((sw-begin-pos (point))
-                      (sw-end-pos nil))
-                  (left-char)
-                  (forward-sexp)
-                  (left-char)
-                  (setq sw-end-pos (point))
-                  (goto-char sw-begin-pos)
-                  (setq switch-pos-list
-                        (cons (list sw-begin-pos sw-end-pos) switch-pos-list)))))))))
+              (when (pel-inside-code-p)
+                (when (search-forward "{" nil :noerror)
+                  (let ((sw-begin-pos (point))
+                        (sw-end-pos nil))
+                    (left-char)
+                    (forward-sexp)
+                    (left-char)
+                    (setq sw-end-pos (point))
+                    (goto-char sw-begin-pos)
+                    (setq switch-pos-list
+                          (cons (list sw-begin-pos sw-end-pos)
+                                switch-pos-list))))))))))
     (reverse switch-pos-list)))
 
 
 
 (defun pel-cc-inside-switch-pos ()
-  "Return switch boundary positions if point is inside a switch statement, nil otherwise."
+  "Return switch boundary positions if point is inside a switch statement.
+
+Return nil otherwise."
   (let ((current-pos (point))
         (switch-pos-list (pel-cc-list-switch-in-fct))
         (found-pos nil))
@@ -102,7 +130,11 @@ outside of a function."
     found-pos))
 
 (defun pel-cc-to-switch-begin ()
-  "Move point to the beginning of current switch statement."
+  "Move point to the beginning of current switch statement.
+
+If one found, mark position before moving point, allowing moving the point
+back by using \\[pel-jump-to-mark].
+If no switch statement is found, issue a user error."
   (interactive)
   (let ((enclosing-pos (pel-cc-inside-switch-pos)))
     (if enclosing-pos
@@ -112,7 +144,11 @@ outside of a function."
       (user-error "Point is not inside a switch statement!"))))
 
 (defun pel-cc-to-switch-end ()
-  "Move point to the end of current switch statement."
+  "Move point to the end of current switch statement.
+
+If one found, mark position before moving point, allowing moving the point
+back by using \\[pel-jump-to-mark].
+If no switch statement is found, issue a user error."
   (interactive)
   (let ((enclosing-pos (pel-cc-inside-switch-pos)))
     (if enclosing-pos
