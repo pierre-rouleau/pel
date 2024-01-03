@@ -1,6 +1,6 @@
 ;;; pel-autoload.el --- Autoloads PEL -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -148,6 +148,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-cc-find-activate-finder-method)
   (pel-autoload "pel-cc-find" for:
     pel-cc-set-file-finder-ini-tool-name)
+
+  (pel-autoload "pel-cc-navigate" for:
+    pel-cc-to-switch-begin
+    pel-cc-to-switch-end)
 
   (pel-autoload "pel-cc" for
     pel-cc-newline

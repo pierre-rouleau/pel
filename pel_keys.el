@@ -1,6 +1,6 @@
 ;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2414,7 +2414,9 @@ bind it again after this call."
         (define-key map (kbd "<f6> <down>")  'pel-c-preproc-outward-forward-conditional)
         (define-key map (kbd "<f6> <up>")    'pel-c-preproc-outward-backward-conditional)
         (define-key map (kbd "<f6> o")       'pel-c-preproc-conditionals-occur)
-        (define-key map (kbd "<f6> <f8> o")  'pel-c-preproc-conditionals-multi-occur)))
+        (define-key map (kbd "<f6> <f8> o")  'pel-c-preproc-conditionals-multi-occur)
+        (define-key map (kbd "<f6> s s")  'pel-cc-to-switch-begin)
+        (define-key map (kbd "<f6> s e")  'pel-cc-to-switch-end)))
     ;; Set tab-width for the buffer as specified by the PEL user option for
     ;; the major mode.
     (setq-local tab-width (pel-major-mode-symbol-value "pel-%s-tab-width")))

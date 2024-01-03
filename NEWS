@@ -400,6 +400,9 @@ The description of the iedit mode in the [[https://raw.githubusercontent.com/pie
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: In C and C++ buffers the new command *pel-cc-to-switch-begin* (bound to ~<f6> s s~) move point to the beginning
+  of the current switch statement. The new *pel-cc-to-switch-end* (bound to ~<f6> s e~) move point to the end of the
+  current switch statement.
 - New: commands to move point to the next or previous non-whitespace character:
   *pel-to-forward-space* moves point to next whitespace, bound to ~<f11> M-SPC~.
   *pel-to-backward-space* moves point to the previous whitespace character, bound to ~<f11> C-SPC~.
