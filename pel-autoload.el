@@ -151,7 +151,13 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-cc-navigate" for:
     pel-cc-to-switch-begin
-    pel-cc-to-switch-end)
+    pel-cc-to-switch-end
+    pel-cc-to-enum-begin
+    pel-cc-to-enum-end
+    pel-cc-to-union-begin
+    pel-cc-to-union-end
+    pel-cc-to-struct-begin
+    pel-cc-to-struct-end)
 
   (pel-autoload "pel-cc" for
     pel-cc-newline

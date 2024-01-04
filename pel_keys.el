@@ -2415,8 +2415,20 @@ bind it again after this call."
         (define-key map (kbd "<f6> <up>")    'pel-c-preproc-outward-backward-conditional)
         (define-key map (kbd "<f6> o")       'pel-c-preproc-conditionals-occur)
         (define-key map (kbd "<f6> <f8> o")  'pel-c-preproc-conditionals-multi-occur)
-        (define-key map (kbd "<f6> s s")  'pel-cc-to-switch-begin)
-        (define-key map (kbd "<f6> s e")  'pel-cc-to-switch-end)))
+        ;; [:todo 2024-01-04, by Pierre Rouleau: find a way to set a prefix
+        ;;                    inside the map to provide better info when the
+        ;;                    which-key-mode is used to display command names]
+        (define-key map (kbd "<f6> t w s")  'pel-cc-to-switch-begin)
+        (define-key map (kbd "<f6> t w e")  'pel-cc-to-switch-end)
+        (define-key map (kbd "<f6> t e s")  'pel-cc-to-enum-begin)
+        (define-key map (kbd "<f6> t e e")  'pel-cc-to-enum-end)
+        (define-key map (kbd "<f6> t u s")  'pel-cc-to-union-begin)
+        (define-key map (kbd "<f6> t u e")  'pel-cc-to-union-end)
+        (define-key map (kbd "<f6> t s s")  'pel-cc-to-struct-begin)
+        (define-key map (kbd "<f6> t s e")  'pel-cc-to-struct-end)
+        (when (eq major-mode 'c++-mode)
+          (define-key map (kbd "<f6> t c e")  'pel-cc-to-class-begin)
+          (define-key map (kbd "<f6> t c e")  'pel-cc-to-class-end))))
     ;; Set tab-width for the buffer as specified by the PEL user option for
     ;; the major mode.
     (setq-local tab-width (pel-major-mode-symbol-value "pel-%s-tab-width")))

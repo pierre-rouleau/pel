@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, January  2 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-03 18:23:34 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-04 17:53:19 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -26,7 +26,8 @@
 ;;; Commentary:
 ;;
 ;; This file hold logic for commands that navigate out of C and C++ switch
-;; statements.
+;; statements as well as to the boundaries of enum, union struct and class
+;; definition blocks.
 ;;
 ;; With the point inside a switch statement the `pel-cc-to-switch-begin'
 ;; command moves the point to the '{' character of the current switch
@@ -48,8 +49,20 @@
 ;;   enclosing switch statement if the point is inside one.
 ;;   - The two interactive commands call `pel-cc-inside-switch-pos' and
 ;;   retrieve the appropriate position to jump to, if any is reported.
-
-
+;;
+;; To navigate to the beginning or end of the enum, union, struct or class
+;; definition blocks the code provides the following commands:
+;;
+;; - `pel-cc-to-enum-begin'
+;; - `pel-cc-to-enum-end'
+;; - `pel-cc-to-union-begin'
+;; - `pel-cc-to-union-end'
+;; - `pel-cc-to-struct-begin', also named `pel-cc-to-class-begin'
+;; - `pel-cc-to-struct-end', also named `pel-cc-to-class-end'
+;;
+;; These commands all use the `pel-cc-elem-boundaries' and `pel--cc-move-to'
+;; utility functions to find the correct target position and move point to it
+;; if one is found.
 ;;
 
 ;;; --------------------------------------------------------------------------
@@ -62,11 +75,17 @@
 ;;; Code:
 ;;
 
+;; Navigating to switch statement boundaries
+;; -----------------------------------------
+
 (defconst pel-cc--switch-regexp "switch\\s-*("
-  "Regex to find start brace of switch statement")
+  "Regex to find start paren of switch statement")
 
 (defun pel-cc-inside-function-p ()
-  "Return t if point is inside a C/C++ function, nil otherwise."
+  "Return t if point is inside a C/C++ function, nil otherwise.
+
+Limitation: will report valid when inside a structure or class
+block (or any block).  Use only when appropriate."
   (save-excursion
     (condition-case nil
         (progn
@@ -111,8 +130,6 @@ outside of a function."
                                 switch-pos-list))))))))))
     (reverse switch-pos-list)))
 
-
-
 (defun pel-cc-inside-switch-pos ()
   "Return switch boundary positions if point is inside a switch statement.
 
@@ -156,6 +173,159 @@ If no switch statement is found, issue a user error."
           (push-mark)
           (goto-char (+ (nth 1 enclosing-pos) 1)))
       (user-error "Point is not inside a switch statement!"))))
+
+
+;; Navigating to class, enum, struct, union definitions boundaries
+;; ---------------------------------------------------------------
+
+;; [:todo 2024-01-04: add ability to select the regexp via user-options ]
+;; [:todo 2024-01-04: add support for C++11 attribute specifier]
+(defconst pel-cc--class-regexp "^\\s-*\\(\\(class\\)\\|\\(struct\\)\\)\\s-"
+  "Regex to find start of C++ class or struct statement")
+
+(defconst pel-cc--struct-regexp "^\\(\\s-*typedef\\s-*\\)*\\s-*struct\\s-"
+  "Regex to find start of C/C++ class or struct statement")
+
+(defconst pel-cc--union-regexp "^\\(\\s-*typedef\\s-*\\)*\\s-*union\\s-"
+  "Regex to find start of C/C++ union statement")
+
+(defconst pel-cc--enum-regexp
+  "^\\(\\s-*typedef\\s-*\\)*\\s-*enum\\(\\(\\s-+\\(class\\s-*\\)?\\)\\|$\\)"
+  "Regex to find start of C/C++ enum or C++ enum class statement")
+
+
+(defun pel-cc-elem-boundaries (elem-regexp)
+  "Return the position boundaries for element surrounding point.
+
+ELEM-REGEXP is the regexp to search for the element block.
+Return a list of (begin, end) position surrounding point if there
+is one, nil otherwise."
+  (let ((current-position (point))
+        (found-boundary nil)
+        (begin-pos nil)
+        (end-pos nil))
+    (save-excursion
+      (goto-char (point-min))
+      (while (and (not found-boundary)
+                  (re-search-forward elem-regexp nil :noerror))
+        (when (pel-inside-code-p)
+          (when (search-forward "{" nil :noerror)
+            (left-char)
+            (setq begin-pos (point))
+            (forward-sexp)
+            (setq end-pos (point))
+            (when (and (< begin-pos current-position)
+                       (> end-pos   current-position))
+              (setq found-boundary (list begin-pos end-pos))))))
+      found-boundary)))
+
+
+(defun pel--cc-move-to (positions n elem-str)
+  "Utility: move to begin position or report user error.
+
+- POSITIONS is a list of (begin end) positions or nil if none found
+  by the caller.
+- N must be 0 to move to the beginning of the block, 1 to move to the end.
+- The ELEM-STR must be the name of the syntactic
+  element (such as 'string' or 'enum')."
+  (if positions
+      (progn
+        (push-mark)
+        (goto-char (nth n positions)))
+    (user-error "Point is not inside a %s block!" elem-str)))
+
+(defun pel-cc-to-enum-begin ()
+  "Move point to beginning of current enum definition.
+
+If point is inside one, mark position before moving point,
+allowing moving the point back by using \\[pel-jump-to-mark].
+If point is not inside an enum definition block, issue a user
+error."
+  (interactive)
+  (pel--cc-move-to
+   (pel-cc-elem-boundaries pel-cc--enum-regexp)
+   0
+   "enum"))
+
+(defun pel-cc-to-enum-end ()
+  "Move point to end of current enum definition.
+
+If point is inside one, mark position before moving point,
+allowing moving the point back by using \\[pel-jump-to-mark].
+If point is not inside an enum definition block, issue a user
+error."
+  (interactive)
+  (pel--cc-move-to
+   (pel-cc-elem-boundaries pel-cc--enum-regexp)
+   1
+   "enum"))
+
+
+(defun pel-cc-to-union-begin ()
+  "Move point to beginning of current union definition.
+
+If point is inside one, mark position before moving point,
+allowing moving the point back by using \\[pel-jump-to-mark].
+If point is not inside an union definition block, issue a user
+error."
+  (interactive)
+  (pel--cc-move-to
+   (pel-cc-elem-boundaries pel-cc--union-regexp)
+   0
+   "union"))
+
+(defun pel-cc-to-union-end ()
+  "Move point to end of current union definition.
+
+If point is inside one, mark position before moving point,
+allowing moving the point back by using \\[pel-jump-to-mark].
+If point is not inside an union definition block, issue a user
+error."
+  (interactive)
+  (pel--cc-move-to
+   (pel-cc-elem-boundaries pel-cc--union-regexp)
+   1
+   "union"))
+
+(defun pel-cc-to-struct-begin ()
+  "Move point to beginning of current struct (or class) definition.
+
+If point is inside one, mark position before moving point,
+allowing moving the point back by using \\[pel-jump-to-mark].
+If point is not inside an struct (or class) definition block,
+issue a user error."
+  (interactive)
+  (pel--cc-move-to
+   (pel-cc-elem-boundaries (if (eq major-mode 'c++-mode)
+                               pel-cc--class-regexp
+                             pel-cc--struct-regexp))
+   0
+   (if (eq major-mode 'c++-mode)
+       "struct or class"
+     "struct")))
+
+(defalias 'pel-cc-to-class-begin #'pel-cc-to-struct-begin)
+
+
+(defun pel-cc-to-struct-end ()
+  "Move point to end of current struct (or class) definition.
+
+If point is inside one, mark position before moving point,
+allowing moving the point back by using \\[pel-jump-to-mark].
+If point is not inside an struct (or class) definition block,
+issue a user error."
+  (interactive)
+  (pel--cc-move-to
+   (pel-cc-elem-boundaries (if (eq major-mode 'c++-mode)
+                               pel-cc--class-regexp
+                             pel-cc--struct-regexp))
+   1
+   (if (eq major-mode 'c++-mode)
+       "struct or class"
+     "struct")))
+
+(defalias 'pel-cc-to-class-end #'pel-cc-to-struct-end)
+
 ;;; --------------------------------------------------------------------------
 (provide 'pel-cc-navigate)
 
