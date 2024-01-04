@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, January  2 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-04 18:21:16 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-04 18:48:20 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -206,18 +206,23 @@ is one, nil otherwise."
         (end-pos nil))
     (save-excursion
       (goto-char (point-min))
-      (while (and (not found-boundary)
-                  (re-search-forward elem-regexp nil :noerror))
+      (while (re-search-forward elem-regexp nil :noerror)
         (when (pel-inside-code-p)
           (when (search-forward "{" nil :noerror)
             (left-char)
             (setq begin-pos (point))
             (forward-sexp)
             (setq end-pos (point))
+            ;; move right after current block start brace, to detect nested
+            ;; ones.
+            (goto-char (+ begin-pos 1))
             (when (and (< begin-pos current-position)
                        (> end-pos   current-position))
-              (setq found-boundary (list begin-pos end-pos))))))
-      found-boundary)))
+              (setq found-boundary
+                    (cons (list begin-pos end-pos) found-boundary))))))
+      ;; If the point is inside nested blocks, we want to return info about
+      ;; the most nested one: the first one in the list (which might be empty)
+      (car-safe found-boundary))))
 
 
 (defun pel--cc-move-to (positions n elem-str)
