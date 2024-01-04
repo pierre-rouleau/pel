@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, January  2 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-04 17:53:19 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-04 18:21:16 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -304,7 +304,12 @@ issue a user error."
        "struct or class"
      "struct")))
 
-(defalias 'pel-cc-to-class-begin #'pel-cc-to-struct-begin)
+(defun pel-cc-to-class-begin ()
+  "Move point to beginning of current struct (or class) definition.
+
+Same as `pel-cc-to-struct-begin'"
+  (interactive)
+  (pel-cc-to-struct-begin))
 
 
 (defun pel-cc-to-struct-end ()
@@ -324,7 +329,12 @@ issue a user error."
        "struct or class"
      "struct")))
 
-(defalias 'pel-cc-to-class-end #'pel-cc-to-struct-end)
+(defun pel-cc-to-class-end ()
+  "Move point to end of current struct (or class) definition.
+
+Same as `pel-cc-to-struct-end'"
+  (interactive)
+  (pel-cc-to-struct-end))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-cc-navigate)
