@@ -2427,7 +2427,7 @@ bind it again after this call."
         (define-key map (kbd "<f6> t s s")  'pel-cc-to-struct-begin)
         (define-key map (kbd "<f6> t s e")  'pel-cc-to-struct-end)
         (when (eq major-mode 'c++-mode)
-          (define-key map (kbd "<f6> t c e")  'pel-cc-to-class-begin)
+          (define-key map (kbd "<f6> t c s")  'pel-cc-to-class-begin)
           (define-key map (kbd "<f6> t c e")  'pel-cc-to-class-end))))
     ;; Set tab-width for the buffer as specified by the PEL user option for
     ;; the major mode.
