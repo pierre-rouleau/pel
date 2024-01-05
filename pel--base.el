@@ -1,6 +1,6 @@
 ;;; pel--base.el --- PEL base utilities. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -472,7 +472,7 @@ file."
   "Association list of buffer-file-coding-system value to its symbolic name.")
 
 (defun pel-current-buffer-eol-type ()
-  "Return line ending of current buffer content: 'unix, 'dos, 'mac or nil.
+  "Return line ending of current buffer content: \\='unix, \\='dos, \\='mac or nil.
 
 The nil value means that the type is unknown."
   (let ((eol-type (coding-system-eol-type buffer-file-coding-system)))
@@ -589,7 +589,7 @@ or the one specified by BUFFER-OR-NAME."
 This is an alias for `funcall'.
 
 Note: this, so far, is the *only* PEL symbol whose name does not start with
-      the 'pel' prefix.  If this clashes with something you use, please
+      the \\='pel\\=' prefix.  If this clashes with something you use, please
       accept my apologies and please let me know.  Hopefully the use of
       a Unicode symbol in the name will reduce this possibility."
   `(funcall ,fct ,@args))
@@ -626,7 +626,7 @@ Return non-nil if it was added, nil otherwise."
 (defun pel-expression-p (val)
   "Return non-nil if VAL is an expression, nil if it is a value.
 Return nil for t and nil.
-Return t for 'some-symbols or '(some expressions), nothing else.
+Return t for \\='some-symbols or \\='(some expressions), nothing else.
 Meant to be used to identify code that is quoted (for delayed
 code execution)."
   (and (not (eq val t))
@@ -653,9 +653,9 @@ If VALUE is nil do nothing."
 ;; ---------------------------------------------------------------------------
 ;; Check for Zero
 ;; --------------
-;; In Lisp, nil is the only 'false' value.  Even 0 is an equivalent to 'true'.
+;; In Lisp, nil is the only \\='false\\=' value.  Even 0 is an equivalent to \\='true\\='.
 ;; The following inline help checking for a zero-value result.
-;; If I find something similar native in Emacs I'll use and remove this one.
+;; If I find something similar native in Emacs I\\='ll use and remove this one.
 (defsubst pel-!0 (v)
   "Return nil if V is 0, t otherwise."
   (not (zerop v)))
@@ -917,7 +917,7 @@ This is typically a symbol like:
 - 'pel-modes-activating-ggtags         : controls ggtags-mode
 
 Ideally all minor-mode controlling PEL user-options would have a name that
-ends with '-mode' but it's unfortunately not the case.
+ends with \\='-mode\\=' but it\\='s unfortunately not the case.
 Use this function to return the appropriate symbol if one exists, otherwise
 raise an error because the caller is trying to retrieve information that does
 not exists."
@@ -1282,7 +1282,7 @@ Return new value of ALIST.
 
 Usage Example:
 
- ELISP> (setq al '((one (\"..\" \"[..]\"))))
+ ELISP> (setq al \\='((one (\"..\" \"[..]\"))))
  ((one
    (\"..\" \"[..]\")))
 
@@ -1290,7 +1290,7 @@ Usage Example:
  ((one
    (\"..\" \"[..]\")))
 
- ELISP> (pel-cons-alist-at al 'two '(\"aa\" \"[aa]\"))
+ ELISP> (pel-cons-alist-at al \\='two \\='(\"aa\" \"[aa]\"))
  ((one
    (\"..\" \"[..]\"))
   (two
@@ -1302,7 +1302,7 @@ Usage Example:
   (two
    (\"aa\" \"[aa]\")))
 
- ELISP> (pel-cons-alist-at al 'tree '(\"AA\" \"[AA]\"))
+ ELISP> (pel-cons-alist-at al \\='tree \\='(\"AA\" \"[AA]\"))
  ((one
    (\"..\" \"[..]\"))
   (two
@@ -1310,7 +1310,7 @@ Usage Example:
   (tree
    (\"AA\" \"[AA]\")))
 
- ELISP> (pel-cons-alist-at al 'one '(\",,\" \"[,,]\"))
+ ELISP> (pel-cons-alist-at al \\='one \\='(\",,\" \"[,,]\"))
  ((one
    (\",,\" \"[,,]\")
    (\"..\" \"[..]\"))
@@ -1319,7 +1319,7 @@ Usage Example:
   (tree
    (\"AA\" \"[AA]\")))
 
- ELISP> (pel-cons-alist-at al 'tree '(\"BB\" \"[BB]\" and-something-else))
+ ELISP> (pel-cons-alist-at al \\='tree \\='(\"BB\" \"[BB]\" and-something-else))
  ((one
    (\",,\" \"[,,]\")
    (\"..\" \"[..]\"))
@@ -1648,9 +1648,9 @@ Returns t if all is OK."
     (error "url-handlers file is not loaded!")))
 
 (defun pel-install-file (url fname &optional refresh)
-  "Download and install a file FNAME from URL into the PEL's utility directory.
+  "Download and install a file FNAME from URL into the PEL\\='s utility directory.
 Also byte compile that file.
-This is the 'utils' sub-directory of the directory identified by
+This is the \\='utils\\=' sub-directory of the directory identified by
 the Emacs variable `user-emacs-directory'.
 If this directory does not exist, the function creates it.
 
@@ -1683,7 +1683,7 @@ The URL-BASE is the common URL for the location of all files.
 
 The FNAMES is a file name string or list of file name strings
 identifying the name of the file located at that URL-BASE and
-also the name of the file save locally into the PEL Emacs 'utils'
+also the name of the file save locally into the PEL Emacs \\='utils\\='
 directory.  See `pel-install-file' for more info.
 
 If a file already exists in the destination, no download
@@ -2067,7 +2067,7 @@ However, when PEL operates in fast startup, the macro creates no code."
 ;; ----------------------------
 
 (defun pel-action-for (action current-state)
-  "Return 'activate, 'deactivate or nil for requested ACTION on CURRENT-STATE.
+  "Return \\='activate, \\='deactivate or nil for requested ACTION on CURRENT-STATE.
 
 Interpret requested ACTION according to its value:
  - nil or 0        : toggle,
@@ -2084,8 +2084,8 @@ The CURRENT-STATE is either:
 
 The returned value is:
 - nil         : nothing to do: the current-state is what is requested,
-- 'activate   : need to activate it
-- 'deactivate : need to deactivate it."
+- \\='activate   : need to activate it
+- \\='deactivate : need to deactivate it."
   (cond
    ;; action requested: toggle
    ((or (not action)
@@ -2130,7 +2130,7 @@ is loaded and the mode activated."
                                       1))))
 
 (defun pel-toggle-mode-and-show (mode &optional on-string off-string)
-  "Toggle specified MODE (a symbol), and show it's new value.
+  "Toggle specified MODE (a symbol), and show it\\='s new value.
 If ON-STRING and OFF-STRING arguments are specified use them as the
 on/off value, otherwise use \"on\" and \"off\".
 The function issue an error if the argument is not a symbol."
@@ -2144,13 +2144,13 @@ SELECTOR must be the symbol of a (often defcustom) variable.
 That variable must have one of the following values:
 
 - nil
-- 'with-flymake
-- 'with-flycheck
+- \\='with-flymake
+- \\='with-flycheck
 
 These values identify the syntax checker to control.
 When the value of the SELECTOR symbol is nil nothing is done.
-If the value is 'with-flymake, then flymake is toggled.
-If the value is 'with-flycheck then flycheck is toggled."
+If the value is \\='with-flymake, then flymake is toggled.
+If the value is \\='with-flycheck then flycheck is toggled."
   (let ((syntax-checker (symbol-value selector)))
     (cond
      ((eq syntax-checker 'with-flycheck)
@@ -2194,7 +2194,7 @@ If another mode is included in MODES-LIST-SYMBOL a warning is issued."
 The mode %s identified in the list %s is not allowed,
 according to the list of allowed-modes (%s) identified.
 Please update the content of the %s user-option.
-You can do it with 'M-x customize %s'."
+You can do it with \\='M-x customize %s\\='."
                mode
                modes-list-symbol
                allowed-modes
@@ -2258,7 +2258,7 @@ local minor mode is specified instead of a local minor mode."
     (funcall minor-mode 1)))
 
 (defun pel-turn-on-local-minor-modes-in (minor-modes)
-  "Turn all *local* MINOR-MODES on for the buffer's major mode.
+  "Turn all *local* MINOR-MODES on for the buffer\\='s major mode.
 
 MINOR-MODES must be a symbol. In PEL that should be one of the
 `pel-<mode>-activates-minor-modes' symbols.
@@ -2297,7 +2297,7 @@ global minor mode is specified instead of a local minor mode."
 ;; Notice the required quoting.
 
 (defun pel-toggle (symbol)
-  "Toggle value of SYMBOL from nil to/from t. Return SYMBOL's new value.
+  "Toggle value of SYMBOL from nil to/from t. Return SYMBOL\\='s new value.
 For example, to toggle the value of a variable  named isok,
 the caller must pass it quoted.
 Return the new SYMBOL value.
@@ -2307,7 +2307,7 @@ The function issue an error if the argument is not a symbol."
     (error "Nothing done: pel-toggle expects a symbol as argument")))
 
 (defun pel-toggle-and-show (symbol &optional on-string off-string locally name)
-  "Toggle value of SYMBOL from nil to/from t, and show it's new value.
+  "Toggle value of SYMBOL from nil to/from t, and show it\\='s new value.
 If ON-STRING and OFF-STRING arguments are specified use them as the
 on/off value, otherwise use \"on\" and \"off\".
 By default the setting is considered global unless LOCALLY is set,
@@ -2378,8 +2378,8 @@ Use NAME instead symbol name in the message if specified."
 
 (defun pel-dec (n &optional step floor)
   "Decrement symbol N by STEP (defaults to 1) down to FLOOR if specified.
-N can be a symbol.  In that case it's value is updated.
-If FLOOR is specified that's the smallest allowed value for N.
+N can be a symbol.  In that case it\\='s value is updated.
+If FLOOR is specified that\\='s the smallest allowed value for N.
 If N is a symbol, return nil if it cannot be decremented, otherwise
 return the new value.
 If N is a value, always return the new N value, even if it cannot be
@@ -2400,7 +2400,7 @@ decremented and then returns the same value N."
 
 (defun pel-inc (n &optional ceiling)
   "Increment symbol N up to CEILING.
-Return N when it's smaller than CEILING.
+Return N when it\\='s smaller than CEILING.
 Return nil if symbol N value is CEILING or larger."
   (let ((oldvalue (eval n)))
     (if (< oldvalue (or ceiling most-positive-fixnum))
@@ -3013,7 +3013,7 @@ speedbar file."
   (file-attribute-modification-time (file-attributes filename)))
 
 (defun pel-byte-compile-if-needed (el-filename &rest other-dependencies)
-  "Byte-compile Emacs Lisp source EL-FILENAME if it's needed.
+  "Byte-compile Emacs Lisp source EL-FILENAME if it\\='s needed.
 The EL-FILENAME string must be the name of a Emacs Lisp file and must
 include the .el extension.  The name of the file may be relative
 or absolute.
