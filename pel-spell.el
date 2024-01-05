@@ -1,6 +1,6 @@
 ;;; pel-spell.el --- PEL Spelling Utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -162,8 +162,8 @@
 
 ;;-pel-autoload
 (defun pel-spell-toggle-prevent-flyspell ()
-  (interactive)
   "Toggle lock preventing flyspell-mode and flyspell-prog-mode activation."
+  (interactive)
   (pel-toggle-and-show 'pel-spell-prevent-flyspell))
 
 ;; ---------------------------------------------------------------------------
