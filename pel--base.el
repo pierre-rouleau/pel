@@ -912,9 +912,9 @@ followed by the elements of ACTIVATED-IN separated by commas."
 
 This is typically a symbol like:
 
-- 'pel-modes-activating-subword-mode   : controls subword-mode
-- 'pel-modes-activating-dumb-jump      : controls dumb-jump-mode
-- 'pel-modes-activating-ggtags         : controls ggtags-mode
+- \\='pel-modes-activating-subword-mode   : controls subword-mode
+- \\='pel-modes-activating-dumb-jump      : controls dumb-jump-mode
+- \\='pel-modes-activating-ggtags         : controls ggtags-mode
 
 Ideally all minor-mode controlling PEL user-options would have a name that
 ends with \\='-mode\\=' but it\\='s unfortunately not the case.
@@ -2632,7 +2632,7 @@ current major mode."
     (= (progn
          (skip-syntax-forward " ")
          (point))
-       (point-at-eol))))
+       (line-end-position))))
 
 ;; ---------------------------------------------------------------------------
 ;; File Path processing
