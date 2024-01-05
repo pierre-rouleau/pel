@@ -1192,7 +1192,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; -- update time stamp
 
 (defun pel-toggle-update-time-stamp-on-save (&optional globally)
-  "Toggle 'time-stamp' update on file save and display current state.
+  "Toggle time-stamp update on file save and display current state.
 By default change behaviour for local buffer only.
 When GLOBALLY argument is non-nil, change it for all buffers for the current
 Emacs editing session (the change does not persist across Emacs sessions).
