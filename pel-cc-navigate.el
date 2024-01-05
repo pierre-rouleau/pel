@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, January  2 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-04 18:48:20 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-04 23:17:43 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -29,30 +29,18 @@
 ;; statements as well as to the boundaries of enum, union struct and class
 ;; definition blocks.
 ;;
-;; With the point inside a switch statement the `pel-cc-to-switch-begin'
-;; command moves the point to the '{' character of the current switch
-;; statement block and the `pel-cc-to-switch-end' moves point just after the
-;; '}' character at the end of the switch block.
+;; With the point inside a switch statement or definition block, 'move to
+;; begin' command moves the point to the '{' character of the current switch
+;; statement block and the 'move to end' command moves point just after the
+;; '}' character at the end of the block.
 ;;
 ;; If point is outside a switch statement these commands issue an appropriate
 ;; user error.
 ;;
-;; The logic uses a set of helper functions.
-;; - `pel-cc-list-switch-in-fct' builds and returns a list of position
-;;   2-elements list, each identifying the location of the beginning and end
-;;   of a switch statement inside the current function. This is then used to
-;;   determine the position where point must be moved if any.
-;;   - It uses the `pel-cc-inside-function-p' predicate function that returns
-;;   t when point is inside a C/C++ function.
-;; - The `pel-cc-inside-switch-pos' calls `pel-cc-list-switch-in-fct' and
-;;   returns the 2-element list that corresponds to the text-area of the
-;;   enclosing switch statement if the point is inside one.
-;;   - The two interactive commands call `pel-cc-inside-switch-pos' and
-;;   retrieve the appropriate position to jump to, if any is reported.
+;; The commands are:
 ;;
-;; To navigate to the beginning or end of the enum, union, struct or class
-;; definition blocks the code provides the following commands:
-;;
+;; - `pel-cc-to-switch-begin'
+;; - `pel-cc-to-switch-end'
 ;; - `pel-cc-to-enum-begin'
 ;; - `pel-cc-to-enum-end'
 ;; - `pel-cc-to-union-begin'
@@ -78,10 +66,30 @@
 ;; Navigating to switch statement boundaries
 ;; -----------------------------------------
 
-(defconst pel-cc--switch-regexp "switch\\s-*("
+(defconst pel-cc--switch-regexp
+  "\\(^\\|;\\)\\s-*switch\\s-*("
   "Regex to find start paren of switch statement")
 
-(defun pel-cc-inside-function-p ()
+;; [:todo 2024-01-04: add ability to select the regexp via user-options ]
+;; [:todo 2024-01-04: add support for C++11 attribute specifier]
+(defconst pel-cc--class-regexp
+  "\\(^\\|;\\)\\s-*\\(\\(class\\)\\|\\(struct\\)\\)\\s-"
+  "Regex to find start of C++ class or struct statement")
+
+(defconst pel-cc--struct-regexp
+  "\\(^\\|;\\)\\(\\s-*typedef\\s-*\\)*\\s-*struct\\s-"
+  "Regex to find start of C/C++ class or struct statement")
+
+(defconst pel-cc--union-regexp
+  "\\(^\\|;\\)\\(\\s-*typedef\\s-*\\)*\\s-*union\\s-"
+  "Regex to find start of C/C++ union statement")
+
+(defconst pel-cc--enum-regexp
+  "\\(^\\|;\\)\\(\\s-*typedef\\s-*\\)*\\s-*enum\\(\\(\\s-+\\(class\\s-*\\)?\\)\\|$\\)"
+  "Regex to find start of C/C++ enum or C++ enum class statement")
+
+
+(defun pel-cc--inside-function-p ()
   "Return t if point is inside a C/C++ function, nil otherwise.
 
 Limitation: will report valid when inside a structure or class
@@ -92,106 +100,6 @@ block (or any block).  Use only when appropriate."
           (backward-up-list)
           t)
       (error nil))))
-
-
-(defun pel-cc-list-switch-in-fct ()
-  "Return list of all switch statements in current function.
-
-Each element of the list is a tuple of 2 points identifying the beginning
-and the end of the switch statement.  The list elements are in order of the
-switch statements inside the function.
-
-Return nil if the function has no switch statement or point is
-outside of a function."
-  (let ((switch-pos-list nil))
-    (when (pel-cc-inside-function-p)
-      (save-excursion
-        (beginning-of-defun)
-        (when (search-forward "{" nil :noerror)
-          (let ((begin-pos (point))
-                (end-pos nil))
-            (left-char)
-            (forward-sexp)
-            (left-char)
-            (setq end-pos (point))
-            (goto-char begin-pos)
-            (while (re-search-forward pel-cc--switch-regexp end-pos :noerror)
-              (when (pel-inside-code-p)
-                (when (search-forward "{" nil :noerror)
-                  (let ((sw-begin-pos (point))
-                        (sw-end-pos nil))
-                    (left-char)
-                    (forward-sexp)
-                    (left-char)
-                    (setq sw-end-pos (point))
-                    (goto-char sw-begin-pos)
-                    (setq switch-pos-list
-                          (cons (list sw-begin-pos sw-end-pos)
-                                switch-pos-list))))))))))
-    (reverse switch-pos-list)))
-
-(defun pel-cc-inside-switch-pos ()
-  "Return switch boundary positions if point is inside a switch statement.
-
-Return nil otherwise."
-  (let ((current-pos (point))
-        (switch-pos-list (pel-cc-list-switch-in-fct))
-        (found-pos nil))
-    (when switch-pos-list
-      (dolist (positions switch-pos-list)
-        (let ((sw-beg-pos (nth 0 positions))
-              (sw-end-pos (nth 1 positions)))
-          (when (and (< sw-beg-pos current-pos)
-                     (> sw-end-pos current-pos))
-            (setq found-pos positions)))))
-    found-pos))
-
-(defun pel-cc-to-switch-begin ()
-  "Move point to the beginning of current switch statement.
-
-If one found, mark position before moving point, allowing moving the point
-back by using \\[pel-jump-to-mark].
-If no switch statement is found, issue a user error."
-  (interactive)
-  (let ((enclosing-pos (pel-cc-inside-switch-pos)))
-    (if enclosing-pos
-        (progn
-          (push-mark)
-          (goto-char (- (nth 0 enclosing-pos) 1)))
-      (user-error "Point is not inside a switch statement!"))))
-
-(defun pel-cc-to-switch-end ()
-  "Move point to the end of current switch statement.
-
-If one found, mark position before moving point, allowing moving the point
-back by using \\[pel-jump-to-mark].
-If no switch statement is found, issue a user error."
-  (interactive)
-  (let ((enclosing-pos (pel-cc-inside-switch-pos)))
-    (if enclosing-pos
-        (progn
-          (push-mark)
-          (goto-char (+ (nth 1 enclosing-pos) 1)))
-      (user-error "Point is not inside a switch statement!"))))
-
-
-;; Navigating to class, enum, struct, union definitions boundaries
-;; ---------------------------------------------------------------
-
-;; [:todo 2024-01-04: add ability to select the regexp via user-options ]
-;; [:todo 2024-01-04: add support for C++11 attribute specifier]
-(defconst pel-cc--class-regexp "^\\s-*\\(\\(class\\)\\|\\(struct\\)\\)\\s-"
-  "Regex to find start of C++ class or struct statement")
-
-(defconst pel-cc--struct-regexp "^\\(\\s-*typedef\\s-*\\)*\\s-*struct\\s-"
-  "Regex to find start of C/C++ class or struct statement")
-
-(defconst pel-cc--union-regexp "^\\(\\s-*typedef\\s-*\\)*\\s-*union\\s-"
-  "Regex to find start of C/C++ union statement")
-
-(defconst pel-cc--enum-regexp
-  "^\\(\\s-*typedef\\s-*\\)*\\s-*enum\\(\\(\\s-+\\(class\\s-*\\)?\\)\\|$\\)"
-  "Regex to find start of C/C++ enum or C++ enum class statement")
 
 
 (defun pel-cc-elem-boundaries (elem-regexp)
@@ -238,6 +146,36 @@ is one, nil otherwise."
         (push-mark)
         (goto-char (nth n positions)))
     (user-error "Point is not inside a %s block!" elem-str)))
+
+
+(defun pel-cc-to-switch-begin ()
+  "Move point to the beginning of current switch statement.
+
+If one found, mark position before moving point, allowing moving the point
+back by using \\[pel-jump-to-mark].
+If no switch statement is found, issue a user error."
+  (interactive)
+  (if (pel-cc--inside-function-p)
+      (pel--cc-move-to
+       (pel-cc-elem-boundaries pel-cc--switch-regexp)
+       0
+       "switch statement")
+    (user-error "Point is outside a function block!")))
+
+(defun pel-cc-to-switch-end ()
+  "Move point to the end of current switch statement.
+
+If one found, mark position before moving point, allowing moving the point
+back by using \\[pel-jump-to-mark].
+If no switch statement is found, issue a user error."
+  (interactive)
+  (if (pel-cc--inside-function-p)
+      (pel--cc-move-to
+       (pel-cc-elem-boundaries pel-cc--switch-regexp)
+       1
+       "switch statement")
+    (user-error "Point is outside a function block!")))
+
 
 (defun pel-cc-to-enum-begin ()
   "Move point to beginning of current enum definition.
