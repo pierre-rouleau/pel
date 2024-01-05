@@ -1,6 +1,6 @@
 ;;; pel-speedbar.el --- PEL (Sr-)Speedbar support -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -122,12 +122,12 @@
   "Identifies the type of Speedbar component used.
 The values are:
 - nil:          nothing used so far, prompt first time used.
-- 'speedbar:    Speedbar opened in another frame.
+- \\='speedbar:    Speedbar opened in another frame.
                 Available in graphics mode only.
-- 'sr-speedbar: Sr-Speedbar, a speedbar in the same frame.
+- \\='sr-speedbar: Sr-Speedbar, a speedbar in the same frame.
 
-'sr-speedbar is only allowed if available.
-When available, 'sr-speedbar is preferred in terminal mode,
+\\='sr-speedbar is only allowed if available.
+When available, \\='sr-speedbar is preferred in terminal mode,
 unless `pel-prefer-sr-speedbar-in-terminal' is nil.")
 
 (defvar pel--speedbar-active
