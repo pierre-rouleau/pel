@@ -1,6 +1,6 @@
 ;;; pel-open.el --- Open file dispatcher  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2022, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -47,7 +47,7 @@ Can be one of the following:
 - nil     : use parent directory of currently visited file, the default.
             If buffer is not visiting a file, then use the buffer's current
             working directory.
-- 'cwd    : use buffer's current working directory
+- \\='cwd    : use buffer's current working directory
 - a string: the name of a specific directory.")
 
 (defun pel--open-file-at-point-dir-string-for (value)

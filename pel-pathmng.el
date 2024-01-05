@@ -1,6 +1,6 @@
 ;;; pel-pathmng.el --- Path management utilities. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -60,9 +60,9 @@ Use the N argument to specify a different window.
 - If N in [2,8] range:       : open buffer in window identified by the direction
                                corresponding to the cursor in a numeric
                                keypad:
-                               -             8 := 'up
-                               - 4 := 'left  5 := 'current  6 := 'right
-                               -             2 := 'down
+                               -             8 := \\='up
+                               - 4 := \\='left  5 := \\='current  6 := \\='right
+                               -             2 := \\='down
 - If N is 9 or larger        : open buffer in window below."
   (interactive "P")
   (let ((direction (pel-window-direction-for (prefix-numeric-value n) 'current))

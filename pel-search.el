@@ -2,12 +2,12 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-10-13 13:47:06 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 18:14:48 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau with some code derived
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau with some code derived
 ;;                                 from Mickey Petersen's work
 ;;                                 (see CREDITS below).
 ;;
@@ -201,9 +201,9 @@ If 3 or more non-dedicated windows:
  - If N in remaining [2,8] range  : search in the buffer of window identified
                                     by the direction corresponding to the
                                     cursor in a numeric keypad:
-                                    -             8 := 'up
-                                    - 4 := 'left  5 := 'current  6 := 'right
-                                    -             2 := 'down
+                                    -             8 := \\='up
+                                    - 4 := \\='left  5 := \\='current  6 := \\='right
+                                    -             2 := \\='down
 - If N in [10..18] range         : toggle subword mode in the current buffer
                                    to grab the word to search for this search,
                                    and use (N - 10) to identify the window
@@ -420,7 +420,7 @@ A nil value corresponds to Emacs default."
 
 (defun pel--activated-search-tool()
   "Return search tool currently used.
-Return one of: nil | 'anzu | 'swiper
+Return one of: nil | \\='anzu | \\='swiper
 The nil value means that Emacs default is used."
   pel--active-search-tool)
 
