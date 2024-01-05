@@ -1,6 +1,6 @@
 ;;; pel-key-chord.el --- PEL Key-Chord Support. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -158,7 +158,7 @@ code snippet:
          key:      string
          action:   string|function)
 The list element are:
-1. A symbol: either 'global or the name of a mode where the key-chord
+1. A symbol: either \\='global or the name of a mode where the key-chord
    or key-seq will be active.
 2. A file name which is loaded to activate the mode and which will be
    used as the trigger to activate the corresponding key-chord or key-seq
@@ -207,17 +207,17 @@ Return one of:
 KEY-CHORDS-SPEC is a list of the following 5 elements:
 
  - 1: A mode symbol.  Either:
-      - 'global : meaning that the key chord must be defined globally, or
+      - \\='global : meaning that the key chord must be defined globally, or
       -  a major/minor mode symbol: meaning that the key chord must only be
          activated when that mode is activated.
  - 2: string: the base name of an Emacs Lisp file or an empty string.
       If the string identifies a file, like \"flyspell\" the definition of
       the corresponding key chord is deferred up until that file is loaded.
       This allows delayed loading of key chords.
- - 3: type symbol: either 'key-chord or 'key-seq.  This identifies whether
+ - 3: type symbol: either \\='key-chord or \\='key-seq.  This identifies whether
       the key chord is defined with the key-chord functions or the key-seq
       function and therefore identifies whether the key chord will be
-      accepted in any typing order (for 'key-chord) or just for the order
+      accepted in any typing order (for \\='key-chord) or just for the order
       identified by the chord string.
  - 4: string.  The 2-character chord string.
  - 5: The action.  One of the following:

@@ -70,8 +70,8 @@ Python string literals
 
 Match with optional string prefix
 and when 3 single or double quotes are used.
-stringprefix::=  'r' | 'u' | 'R' | 'U' | 'f' | 'F'
-                     | 'fr' | 'Fr' | 'fR' | 'FR' | 'rf' | 'rF' | 'Rf' | 'RF'
+
+stringprefix::=  r | u | R | U | f | F | fr | Fr | fR | FR | rf | rF | Rf | RF
 
 Note that regexp match group 0 ends with the 3 quote characters
 that must end the Python docstring.")
@@ -224,7 +224,7 @@ But if SILENT is non-nil, instead of issuing an error return nil instead."
   "Return t if character at POS is an invisible docstring, nil otherwise.
 Therefore nil might be because the character does not have the invisible
 attribute or because it has the invisible attribute but its value is not
-'hide-docstring."
+\\='hide-docstring."
   (eq (get-text-property pos 'invisible) 'hide-docstring))
 
 (defun pel--docstring-visible-p (&optional next)

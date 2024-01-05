@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-10-27 13:16:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 18:30:17 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2023, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ Return nil if there are no hard tab in the indentation."
   "Replace all hard tabs by spaces in the MARKED-LINES-SPEC region of lines.
 FIRST-LINE := line number of the first line in the region
 END-LINE   := line number of the last line in the region
-ORDER      := symbol.  One of 'point-before-mark or 'mark-before-point.
+ORDER      := symbol.  One of \\='point-before-mark or \\='mark-before-point.
 The ORDER argument identifies the relative position of the point and mark
 in the region created by the function."
   (let ((first-line (nth 0 marked-lines-spec))
@@ -127,7 +127,7 @@ in the region created by the function."
   "Use hard tabs and spaces in the MARKED-LINES-SPEC region of lines.
 FIRST-LINE := line number of the first line in the region
 END-LINE   := line number of the last line in the region
-ORDER      := symbol.  One of 'point-before-mark or 'mark-before-point.
+ORDER      := symbol.  One of \\='point-before-mark or \\='mark-before-point.
 The ORDER argument identifies the relative position of the point and mark
 in the region created by the function."
   (let ((first-line (nth 0 marked-lines-spec))
@@ -150,7 +150,7 @@ The indentation level depends on the type of buffer."
 The returned value is a list of 3 elements:
 - line number of the first line in the region
 - line number of the last line in the region
-- symbol 'point-before-mark or 'mark-before-point."
+- symbol \\='point-before-mark or \\='mark-before-point."
   (list
    (line-number-at-pos (region-beginning))
    (line-number-at-pos (region-end))
@@ -172,7 +172,7 @@ The returned value is a list of 3 elements:
   "Mark a region of lines identified by the arguments.
 FIRST-LINE := line number of the first line in the region
 END-LINE   := line number of the last line in the region
-ORDER      := symbol.  One of 'point-before-mark or 'mark-before-point.
+ORDER      := symbol.  One of \\='point-before-mark or \\='mark-before-point.
 The ORDER argument identifies the relative position of the point and mark
 in the region created by the function."
   (cond ((eq order 'point-before-mark)
@@ -190,7 +190,7 @@ in the region created by the function."
 The MARKED-LINES-SPEC argument is a list with the following 3 elements:
 - line number of the first line in the region
 - line number of the last line in the region
-- symbol 'point-before-mark or 'mark-before-point."
+- symbol \\='point-before-mark or \\='mark-before-point."
   (pel-indent-mark-lines (nth 0 marked-lines-spec)
                          (nth 1 marked-lines-spec)
                          (nth 2 marked-lines-spec)))
