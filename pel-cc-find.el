@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 19:57:56 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 20:38:53 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -229,7 +229,7 @@ cannot find location of %s using include path spec identified in:
 
 Set the search method to FILE-FINDER-METHOD if specified,
 otherwise set it to the value held by the user-option that has a
-name 'pel-MODE-file-finder-method' where MODE is replaced by the
+name \\='pel-MODE-file-finder-method\\=' where MODE is replaced by the
 major mode name (c, c++, d, etc...).
 
 If EXTRA-SEACHED-DIRECTORY-TREES is non-nil the finder is set to also search

@@ -369,7 +369,7 @@ Optional arguments:
     -             8 := \\='up
     - 4 := \\='left  5 := \\='current  6 := \\='right
     -             2 := \\='down
-  - For N=9  := open the file in the system's browser.
+  - For N=9  := open the file in the system\\='s browser.
   - For N>= 20 or N<=-20, open the directory identified by the path
     inside the window or browser identified by the (abs N) - 20.
 - Explicitly selecting the minibuffer window, a dedicated window
@@ -386,7 +386,7 @@ Otherwise the string is used as a file name.
   where:
   - {filename} is the filename with or without path and
     extension.  The filename can, but does not need to,
-    use a 'file:///' RFC-3986 file URI prefix.
+    use a \"file:///\" RFC-3986 file URI prefix.
   - {sep} is a separator, one of the \\=':\\=' or \\='@\\=' character
   - {line} is an integer identifying a line inside the file.
     If none is specified, point is moved at the first line.

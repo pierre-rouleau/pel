@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 20:15:43 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 20:33:22 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -162,6 +162,8 @@
 ;;; Code:
 ;;
 
+;; [:todo 2024-01-05, by Pierre Rouleau: better handle unbound
+;;                    pel-package-user-dir-original value.]
 (defun pel-locate-elpa ()
   "Return the absolute path of the local Elpa directory.
 
@@ -178,11 +180,12 @@ stored in the custom file, into `pel-package-user-dir-original'.
 
 PEL will be able to use this value to transform the original elpa
 directory into a symlink that points to a directory named
-'elpa-complete'.
+\"elpa-complete\".
 
-It\\='s possible that PEL is used with a init.el file that has not
+It's possible that PEL is used with a init.el file that has not
 yet been populated with the proper code. In that case the
-`pel-package-user-dir-original' variable may not exist, so
+`pel-package-user-dir-original' variable may not exist; in that
+case the function returns nil.
 
 In the remote possibility that `package-user-dir' is not bound
 then the \"elpa\" sub-directory of the directory identified by

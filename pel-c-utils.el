@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 20:05:27 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 20:36:08 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -103,11 +103,11 @@
 ;; ---------------------------------------------------------------------------
 
 (defun pel--c-reformat-cond ()
-  "Reformat if statement on current line for 'if(...)' to if '(...)'.
+  "Reformat if statement on current line for \\='if(...)\\=' to if \\='(...)\\='.
 
 Also reformat:
- 'for(...)'   to 'for (...)'
- 'while(...)' to 'while (...)'."
+ \\='for(...)\\='   to \\='for (...)\\='
+ \\='while(...)\\=' to \\='while (...)\\='."
   (save-excursion
     (let ((end-pos (progn (end-of-line) (point)))
           (start-pos (progn (beginning-of-line) (point))))
@@ -188,7 +188,7 @@ code to ensure everything is fine!
 The best way to feel safe about the modified code is to compile
 before and after the change, comparing the generated assembler
 code.  There should be NO difference in the generated assembler
-code.  With GCC use 'objdump --disassemble' on the generate
+code.  With GCC use \\='objdump --disassemble\\=' on the generate
 object code file to generate the assembler file."
   (interactive "*")
   ;; First implementation: naive/repetitive implementation.
