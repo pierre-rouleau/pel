@@ -2069,6 +2069,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; C-u     - Raku
 ;; M-a     - AsciiDoc
 ;; M-c     - Common Workspace Language (CWL)
+;; M-f     - Factor
 ;; M-g     - GraphViz Dot
 ;; M-k     - Kconfig
 ;; M-l     - Outline
@@ -2688,6 +2689,31 @@ d-mode not added to ac-modes!"
       ;; TODO
       )))
 
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-f`` : Factor programming
+;; [:todo 2024-01-05, by Pierre Rouleau: complete/clean support]
+(when pel-use-factor
+  (pel-ensure-package fuel from: melpa)
+  (pel-autoload-file factor-mode for:
+                     factor-mode)
+  ;; the <f12> key provides access to help and customization
+  (define-pel-global-prefix pel:for-factor (kbd "<f11> SPC M-f"))
+  (define-key pel:for-factor  "z"  'run-factor)
+
+  ;; associate .factor file with factor-mode
+  (add-to-list 'auto-mode-alist '("\\.factor\\'" . factor-mode))
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".factor"))
+  ;; Activate Factor setup.
+  (pel-eval-after-load factor-mode
+    (message "FACTOR factor-mode is loaded!")
+    (pel-config-major-mode factor pel:for-factor
+      ;; 5) Set tab-width for the buffer as specified by the PEL user option
+      ;; for the major mode.
+      ;; [:todo 2024-01-06, by Pierre Rouleau: take factor-mode customization
+      ;; into account]
+      (setq-local tab-width pel-factor-tab-width)
+      )))
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : Forth programming
 (when pel-use-forth

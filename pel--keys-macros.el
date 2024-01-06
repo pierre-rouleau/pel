@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 20:22:29 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-06 10:58:31 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -268,6 +268,8 @@
     ([f11 32 ?e ?L]  "pl-erlang"        pel-pkg-for-lsp-mode    ,(cons 'lsp-erlang pel--lsp-groups))
     ([f11 32 ?e ?w]  "pl-erlang"        pel-pkg-for-lsp-mode    (treemacs
                                                                  lsp-treemacs))
+    (,(kbd "<f11> SPC M-f") "pl-factor" pel-pkg-for-factor      factor)
+    ([f11 32 27 ?f]         "pl-factor" pel-pkg-for-factor      factor)
     ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth)
     ([f11 32 ?g]     "pl-go"            pel-pkg-for-go          (go
                                                                  go-cover
@@ -617,6 +619,7 @@ stored inside the doc/pdf directory.")
     ("suggest"         [f11 32 ?l])     ; suggest -> emacs-lisp help
     ("emacs-lisp"      [f11 32 ?l])
     ("erlang"          [f11 32 ?e])
+    ("factor"          [f11 32 27 ?f])
     ("forth"           [f11 32 ?f])
     ("go"              [f11 32 ?g])
     ("janet"           [f11 32 ?T])
@@ -820,6 +823,7 @@ There should be no key binding!" keyseq))
     ("elixir"           . "pl-elixir")
     ("emacs-lisp"       . "pl-emacs-lisp")
     ("erlang"           . "pl-erlang")
+    ("factor"           . "pl-factor")
     ("forth"            . "pl-forth")
     ("go"               . "pl-go")
     ("haskell"          . "pl-haskell")
@@ -1040,6 +1044,7 @@ Return nil if nothing found."
     ("edts"        . "edts-mode")
     ("electricity" . "electric")
     ("erlstack"    . "erlstack-mode")
+    ("factor"      . "factor-mode")
     ("grip"        . "grip-mode")
     ("janet"       . "janet-mode")
     ("lfe"         . ("lfe-indent"

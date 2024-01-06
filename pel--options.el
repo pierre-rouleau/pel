@@ -8506,6 +8506,52 @@ characters."
                                               pel-use-gleam))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Factor Support
+;; --------------
+
+(defgroup pel-pkg-for-factor nil
+  "PEL customization for Factor."
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Factor PDF" ,(pel-pdf-file-url "pl-factor")))
+
+(defcustom pel-use-factor nil
+  "Control whether PEL supports Factor development."
+  :group 'pel-pkg-for-factor
+  :link '(url-link :tag "FUEL, Factor's Ultimate Emacs Library"
+                   "https://github.com/mcandre/fuel#readme-ov-file")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-factor :package-is 'fuel)
+
+(defcustom pel-factor-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Factor buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-factor
+  :type '(repeat function))
+
+(defcustom pel-factor-tab-width 4
+  "Distance between tab stop for factor buffers.
+
+PEL stores this in `tab-width' when opening factor buffers.
+
+This does *NOT* control the indentation in factor
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-factor
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-factor-use-tabs nil
+  "Value of `indent-tabs-mode' for editing factor files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-factor
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Forth support
 ;; -------------
 (defgroup pel-pkg-for-forth nil
@@ -9229,6 +9275,7 @@ hard tab when one `pel-sh-use-tabs' is set to t."
   :group 'pel-pkg-for-tcl
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-tcl :package-is :builtin-emacs)
 
 (defcustom pel-tcl-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Tcl buffers.
@@ -10417,6 +10464,7 @@ USE WITH CAUTION! It's old code that clashes with many modes."
   :group 'pel-pkg-for-window
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-layout-restore :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-xref
