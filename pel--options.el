@@ -4620,15 +4620,15 @@ The 4 methods are:
 
 2: Use the [file-finder] section of pel.ini file:
 
-  Use a file named pel.ini inside the project's directory tree.
+  Use a file named pel.ini inside the project\\='s directory tree.
   The function `pel-open-at-point' searches for that file in the parent
   directory tree identified by the same method as above.
   The pel.ini file is a .INI file using the format described
   in https://en.wikipedia.org/wiki/INI_file.  It must have the following
   elements:
 
-  - section: '[file-finder]'
-  - key:     'project-path' : a list of directories where files are searched
+  - section: \\='[file-finder]\\='
+  - key:     \\='project-path\\=' : a list of directories where files are searched
                               for the current project.
 
   - extra tool-specific path key(s):
@@ -4689,7 +4689,7 @@ The 4 methods are:
   path-name and MUST use the $VARNAME syntax.  That can be quite useful
   when the location of the project of the tools may vary from user to user
   or computers.  For example \"$HOME/foo\" will be expanded to the foo
-  sub-directory under the user's home directory.
+  sub-directory under the user\\='s home directory.
 
 You may want to store this value inside a .dir-local.el directory
 local-variable file with your C source code to control the behaviour
