@@ -1,6 +1,6 @@
 ;;; pel--options.el --- PEL Customization Options -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -487,7 +487,7 @@ Use the INS and DEL buttons to add associations:
      (symbol :tag "major mode        "))))
 
 (defcustom pel-prompt-accept-y-n nil
-  "Accept 'y' or 'n' instead of 'yes' or 'no' as answers to prompts."
+  "Accept \"y\" or \"n\" instead of \"yes\" or \"no\" as answers to prompts."
   :group 'pel-base-emacs
   :type 'boolean
   :safe #'booleanp)
@@ -1280,7 +1280,7 @@ Further customization is available for several selections:
 - For Emacs default - imenu:
   - default is to use the tab-based completion buffer,
   - a pop-up imenu is available if you activate the following:
-    - set `imenu-use-popup-menu' to 'always'
+    - set `imenu-use-popup-menu' to \\='always
     - activate `pel-use-popup-imenu'.
 - For Ido:
   - you can add Ido flx fuzzy matching by activating: `pel-use-flx'.
@@ -1624,12 +1624,12 @@ The Hippie Expand can be used together with any."
 (defcustom pel-open-file-at-point-dir  nil
   "Root directory from where `pel-open-file-at-point' opens file.
 This user-option acts as the default for a buffer.  You can change
-the buffer's local value with `pel-set-open-file-at-point-dir'
+the buffer\\='s local value with `pel-set-open-file-at-point-dir'
 Can be one of the following:
 - nil     : use parent directory of currently visited file, the default.
-            If buffer is not visiting a file, then use the buffer's current
+            If buffer is not visiting a file, then use the buffer\\='s current
             working directory.
-- 'cwd    : use buffer's current working directory
+- \\='cwd    : use buffer\\='s current working directory
 - a string: the name of a specific directory."
   :group 'pel-pkg-for-filemng
   :type '(choice
@@ -2829,7 +2829,7 @@ This can be set to:
 
 (defcustom pel-use-key-seq nil
   "Control whether PEL key-chord is also using key-seq.
-If t, the boolean field 'key-seq' key-chords definitions in
+If t, the boolean field `key-seq' key-chords definitions in
 `pel-key-chords' is honoured: instead of declaring them a
 key-chord PEL declares them key-seq, making the order of the keys
 relevant.
@@ -3026,7 +3026,7 @@ The `pel-key-chords' value is a list of objects.
     For key-seq you can only use printable ASCII characters
     in the decimal range 32 to 126 inclusive (ie, you cannot
     identify control characters for key-seq).
-    - It's not possible to identify the function keys or
+    - It\\='s not possible to identify the function keys or
       the cursor keys in a portable way here.
   - The fifth item describes the action for the key-chord
     or key-seq.  The action can be expressed using one of 3 ways,
@@ -3035,14 +3035,14 @@ The `pel-key-chords' value is a list of objects.
          Type the keys you want as replacement. You can
          place several keys on a line, or spread them on several
          lines.  You can identify control keys by entering the
-         kbd-style like C-b (by typing 'C', '-', then 'b')
+         kbd-style like C-b (by typing \\='C\\=', \\='-\\=', then \\='b\\=')
          or by placing the control code by typing C-q C-b.
          Unfortunately it is currently not possible to identify
          a keystroke involving other modifiers or combination of
          modifiers; the PEL code is not able to properly recognize it
          to pass it to the key-chord function.
          Use the lambda form instead.
-         BTW, if you know how to fix that please don't hesitate
+         BTW, if you know how to fix that please don\\='t hesitate
          to either let me know or submit a pull-request.
     - 1: command name:
          Type the name of the Emacs interactive function you want
@@ -3175,7 +3175,7 @@ To activate it you must also activate `pel-use-log-support'"
 (defcustom pel-use-helm_descbinds nil
   "Control whether PEL uses the help-descbinds package.
 
-When selecting 'dont-bind-to-F1-b, activate
+When selecting \\='dont-bind-to-F1-b, activate
 help-descbind-mode to invoke it via C-h b or <f1> b"
   :link '(url-link :tag "helm-descbinds @ GitHub"
                    "https://github.com/emacs-helm/helm-descbinds")
@@ -3665,7 +3665,7 @@ major mode of that programming language."
   "Control whether PEL activates grip-mode external package.
 This package provides HTML rendering of markdown and org-mode buffers.
 It requires Python and the grip python package that you can install
-using the command 'pip install grip'."
+using the command \\='pip install grip\\='."
   :link '(url-link "grip-mode @ GitHub"
                    "https://github.com/seagle0128/grip-mode")
   :link '(url-link "grip @ GitHub"
@@ -3941,7 +3941,7 @@ characters."
 The available choices are:
 
 - 0: No copyright, no license.                 nil
-- 1: Copyright only, no license.               'only-copyright
+- 1: Copyright only, no license.               \\='only-copyright
 - 2: Copyright, with selected license name.    a string
 
 For choice 3, you specify the name of the license in the string
@@ -4313,7 +4313,7 @@ This may get activated indirectly by other user-options."
   "Specifies the style of the code file module header block.
 You can use one of the following:
 
-- The default, controlled by PEL's code.
+- The default, controlled by PEL\\='s code.
 - A user-specified one.  For this you have to write Emacs Lisp code.
   You have to write a function `pel-skels-generic-header-module-block/custom'
   inside a file and store the name of that file inside the box that
@@ -4333,9 +4333,9 @@ You can use one of the following:
   header-module block skeleton.
 
   You can start by using the example that is stored inside the file
-  'custom/skeleton/custom-c-skel.el'.
+  \\='custom/skeleton/custom-c-skel.el\\='.
   The file name can be an absolute file name but it can also be a relative
-  file name.  On Unix systems you can use '~' to identify your home directory."
+  file name.  On Unix systems you can use \\='~\\=' to identify your home directory."
   :group 'pel-pkg-generic-code-style
   :type '(choice
           (const  :tag "Default, controlled by PEL." nil)
@@ -4366,7 +4366,7 @@ comments of length controlled by variable `fill-column' are inserted."
 The available choices are:
 
 - 0: No copyright, no license.                 nil
-- 1: Copyright only, no license.               'only-copyright
+- 1: Copyright only, no license.               \\='only-copyright
 - 2: Copyright, with selected license name.    a string
 - 3: Copyright, with complete license text.    t
 
@@ -4379,7 +4379,7 @@ the function `lice' taken from the external library with the same name.
 
 The text of the inserted license is selected by the
 `lice:default-license' user option, normally configured inside
-the directory's '.dir-locals.el' file written inside the global
+the directory\\='s .dir-locals.el file written inside the global
 setting like this:
 
    ((nil . ((fill-column . 80)
@@ -4620,10 +4620,10 @@ The 4 methods are:
 
 2: Use the [file-finder] section of pel.ini file:
 
-  Use a file named 'pel.ini' inside the project's directory tree.
+  Use a file named pel.ini inside the project's directory tree.
   The function `pel-open-at-point' searches for that file in the parent
   directory tree identified by the same method as above.
-  The 'pel.ini' file is a .INI file using the format described
+  The pel.ini file is a .INI file using the format described
   in https://en.wikipedia.org/wiki/INI_file.  It must have the following
   elements:
 
@@ -4924,7 +4924,7 @@ comments of length controlled by variable `fill-column' are inserted."
 The available choices are:
 
 - 0: No copyright, no license.                 nil
-- 1: Copyright only, no license.               'only-copyright
+- 1: Copyright only, no license.               \\='only-copyright
 - 2: Copyright, with selected license name.    a string
 - 3: Copyright, with complete license text.    t
 
@@ -4937,7 +4937,7 @@ the function `lice' taken from the external library with the same name.
 
 The text of the inserted license is selected by the
 `lice:default-license' user option, normally configured inside
-the directory's '.dir-locals.el' file written inside the global
+the directory\\='s .dir-locals.el file written inside the global
 setting like this:
 
    ((nil . ((fill-column . 80)
@@ -5018,18 +5018,18 @@ The choices are:
 - a list of sections.
 
 When section titles are identified, the first character of the string
-may be '.' or ',' to identify special cases:
+may be \\='.\\=' or \\=',\\=' to identify special cases:
 
 - A special section string \".\" identifies where the include guard
   code must be inserted.
-- A string that starts with '.' is inserted verbatim, skipping the
+- A string that starts with \\='.\\=' is inserted verbatim, skipping the
   first character and preceded by a separator line.
-- A string that starts with ',' is inserted verbatim, skipping
+- A string that starts with \\=',\\=' is inserted verbatim, skipping
   the first character (and not preceded by a separator).
 
 The default includes fives sections and the position of the
 include guard is located between the first and the second
-section.  It also insert support for C++ 'extern \"C\"' code.
+section.  It also insert support for C++ \\='extern \"C\"\\=' code.
 
 You can customize the sections to generate what you prefer.
 You can change, add, replace and remove the pre-defined sections.
@@ -5100,9 +5100,9 @@ Also identifies what type of include guard are used.
 The choices are:
 
 - insert no include guard:         nil
-- insert pragma-once:             'pragma-once
+- insert pragma-once:             \\='pragma-once
 - insert classic include-guard:    t
-- insert include-guard with UUID: 'with-uuid
+- insert include-guard with UUID: \\='with-uuid
 
 An include guard with-uuid is the most portable and it is safe since
 it prevents re-use of the same C pre-processor symbol."
@@ -5121,7 +5121,7 @@ it prevents re-use of the same C pre-processor symbol."
   "Specifies the style of the C file module header block.
 You can use one of the following:
 
-- The default (nil) controlled by PEL's code.
+- The default (nil) controlled by PEL\\='s code.
 - A user-specified one.  For this you have to write Emacs Lisp code.
   You have to write a function `pel-skels-c-header-module-block/custom'
   inside a file and store the name of that file inside the box that
@@ -5136,14 +5136,14 @@ You can use one of the following:
             - ce : comment end string.
 
   The function can use or ignore these arguments.
-  See PEL's function `pel-skels-c-header-module-block' source code
+  See PEL\\='s function `pel-skels-c-header-module-block' source code
   for an example of how these arguments are used to create the standard
   header-module block skeleton.
 
   You can start by using the example that is stored inside the file
-  'custom/skeleton/custom-c-skel.el'.
+  \\='custom/skeleton/custom-c-skel.el\\='.
   The file name can be an absolute file name but it can also be a relative
-  file name.  On Unix systems you can use '~' to identify your home directory."
+  file name.  On Unix systems you can use \\='~\\=' to identify your home directory."
   :group 'pel-c-module-header-skeleton-control
   :type '(choice
           (const  :tag "Default, controlled by PEL." nil)
@@ -5194,9 +5194,9 @@ The choices are:
   You have to write a function `pel-skels-c-function-def/custom'
   inside a file and store the name of that file inside the box that
   appear when you select this option.  You can start by using the
-  example that is stored inside the file 'custom/skeleton/custom-c-skel.el'.
+  example that is stored inside the file \\='custom/skeleton/custom-c-skel.el\\='.
   The file name can be an absolute file name but it can also be a relative
-  file name.  On Unix systems you can use '~' to identify your home directory."
+  file name.  On Unix systems you can use \\='~\\=' to identify your home directory."
   :group 'pel-c-function-header-skeleton-control
   :type '(choice
           (const :tag "Just code, no comment block." nil)
@@ -5482,7 +5482,7 @@ comments of length controlled by variable `fill-column' are inserted."
 The available choices are:
 
 - 0: No copyright, no license.                 nil
-- 1: Copyright only, no license.               'only-copyright
+- 1: Copyright only, no license.               \\='only-copyright
 - 2: Copyright, with selected license name.    a string
 - 3: Copyright, with complete license text.    t
 
@@ -5495,7 +5495,7 @@ the function `lice' taken from the external library with the same name.
 
 The text of the inserted license is selected by the
 `lice:default-license' user option, normally configured inside
-the directory's '.dir-locals.el' file written inside the global
+the directory\\='s .dir-locals.el file written inside the global
 setting like this:
 
    ((nil . ((fill-column . 80)
@@ -5618,9 +5618,9 @@ Also identifies what type of include guard are used.
 The choices are:
 
 - insert no include guard:         nil
-- insert pragma-once:             'pragma-once
+- insert pragma-once:             \\='pragma-once
 - insert classic include-guard:    t
-- insert include-guard with UUID: 'with-uuid
+- insert include-guard with UUID: \\='with-uuid
 
 An include guard with-uuid is the most portable and it is safe since
 it prevents re-use of the same C pre-processor symbol."
@@ -5639,7 +5639,7 @@ it prevents re-use of the same C pre-processor symbol."
   "Specifies the style of the C++ file module header block.
 You can use one of the following:
 
-- The default (nil) controlled by PEL's code.
+- The default (nil) controlled by PEL\\='s code.
 - A user-specified one.  For this you have to write Emacs Lisp code.
   You have to write a function `pel-skels-c++-header-module-block/custom'
   inside a file and store the name of that file inside the box that
@@ -5650,14 +5650,14 @@ You can use one of the following:
                     and nil when it is a code file.
 
   The function can use or ignore these arguments.
-  See PEL's function `pel-skels-c++-header-module-block' source code
+  See PEL\\='s function `pel-skels-c++-header-module-block' source code
   for an example of how these arguments are used to create the standard
   header-module block skeleton.
 
   You can start by using the example that is stored inside the file
-  'custom/skeleton/custom-c++-skel.el'.
+  \\='custom/skeleton/custom-c++-skel.el\\='.
   The file name can be an absolute file name but it can also be a relative
-  file name.  On Unix systems you can use '~' to identify your home directory."
+  file name.  On Unix systems you can use \\='~\\=' to identify your home directory."
   :group 'pel-c++-module-header-skeleton-control
   :type '(choice
           (const  :tag "Default, controlled by PEL." nil)
@@ -5708,9 +5708,9 @@ The choices are:
   You have to write a function `pel-skels-c++-function-def/custom'
   inside a file and store the name of that file inside the box that
   appear when you select this option.  You can start by using the
-  example that is stored inside the file 'custom/skeleton/custom-c++-skel.el'.
+  example that is stored inside the file \\='custom/skeleton/custom-c++-skel.el\\='.
   The file name can be an absolute file name but it can also be a relative
-  file name.  On Unix systems you can use '~' to identify your home directory."
+  file name.  On Unix systems you can use \\='~\\=' to identify your home directory."
   :group 'pel-c++-function-header-skeleton-control
   :type '(choice
           (const :tag "Just code, no comment block." nil)
@@ -6446,7 +6446,7 @@ inside Emacs. For that you can identify the executable inside
 PEL will copy this inside the variable `inferior-lisp-program',
 which defaults to \"lisp\".
 
-Another way would be to create an executable shell script called 'lisp'
+Another way would be to create an executable shell script called \\='lisp\\='
 that executes the a Common Lisp REPL selected by some external criteria or use
 a symlink to the one you want and ensure that is on your path.
 In any case, you can override it by setting the name here."
@@ -6542,7 +6542,7 @@ The value can be:
 - 2: Use with extra contrib.
 
 Select 2 to specify extra slime features to activate, as symbols
-that have a name that starts with 'slime-' and corresponds to
+that have a name that starts with \\='slime-\\=' and corresponds to
 slime extra contributions, like: slime-fancy, slime-quicklisp and
 slime-asdf.  By default, slime activates only slime-fancy
 contribution.
@@ -6621,7 +6621,7 @@ comments of length controlled by variable `fill-column' are inserted."
 The available choices are:
 
 - 0: No copyright, no license.                 nil
-- 1: Copyright only, no license.               'only-copyright
+- 1: Copyright only, no license.               \\='only-copyright
 - 2: Copyright, with selected license name.    a string
 - 3: Copyright, with complete license text.    t
 
@@ -6634,7 +6634,7 @@ the function `lice' taken from the external library with the same name.
 
 The text of the inserted license is selected by the
 `lice:default-license' user option, normally configured inside
-the directory's '.dir-locals.el' file written inside the global
+the directory\\='s .dir-locals.el file written inside the global
 setting like this:
 
    ((nil . ((fill-column . 80)
@@ -7513,7 +7513,7 @@ You can also insert others.
 These, along with the symbols identified by
 `pel-elisp-user-specified-targets2',  are used as the target
 by the following commands when `pel-elisp-target-forms' is set to
-'user-specified:
+\\='user-specified:
 - `pel-elisp-beginning-of-next-form'
 - `pel-elisp-beginning-of-previous-form'"
   :group 'pel-sexp-form-navigation
@@ -7553,7 +7553,7 @@ by the following commands when `pel-elisp-target-forms' is set to
 These, along with the symbols identified by
 `pel-elisp-user-specified-targets', are used as the target by the
 following commands when `pel-elisp-target-forms' is set to
-'user-specified:
+\\='user-specified:
 - `pel-elisp-beginning-of-next-form'
 - `pel-elisp-beginning-of-previous-form'
 
@@ -7604,7 +7604,7 @@ comments of length controlled by variable `fill-column' are inserted."
 The available choices are:
 
 - 0: No copyright, no license.                 nil
-- 1: Copyright only, no license.               'only-copyright
+- 1: Copyright only, no license.               \\='only-copyright
 - 2: Copyright, with selected license name.    a string
 - 3: Copyright, with complete license text.    t
 
@@ -7617,7 +7617,7 @@ the function `lice' taken from the external library with the same name.
 
 The text of the inserted license is selected by the
 `lice:default-license' user option, normally configured inside
-the directory's '.dir-locals.el' file written inside the global
+the directory\\='s .dir-locals.el file written inside the global
 setting like this:
 
    ((nil . ((fill-column . 80)
@@ -7805,9 +7805,9 @@ regardless of the value of this user-option."
 (defcustom pel-erlang-xref-engine 'etag
   "Cross Reference Back-End Engine to use for M-. command.
 
-Except for 'etags, all other choices require activation of a PEL
+Except for \\='etags, all other choices require activation of a PEL
 user option.  If you select one of those PEL will automatically activate the
-corresponding user option to activate that package. If you select 'edts, then
+corresponding user option to activate that package. If you select \\='edts, then
 EDTS will be activated automatically when an Erlang buffer is opened."
   :group 'pel-pkg-for-erlang
   :type '(choice
@@ -8312,7 +8312,7 @@ included, reducing the comments overhead in files."
 The available choices are:
 
 - 0: No copyright, no license.                 nil
-- 1: Copyright only, no license.               'only-copyright
+- 1: Copyright only, no license.               \\='only-copyright
 - 2: Copyright, with selected license name.    a string
 - 3: Copyright, with complete license text.    t
 
@@ -8325,7 +8325,7 @@ the function `lice' taken from the external library with the same name.
 
 The text of the inserted license is selected by the
 `lice:default-license' user option, normally configured inside
-the directory's '.dir-locals.el' file written inside the global
+the directory\\='s .dir-locals.el file written inside the global
 setting like this:
 
    ((nil . ((fill-column . 80)
@@ -9389,13 +9389,13 @@ It binds:
   "Select the search/replace regexp engine used when Emacs starts.
 Select one that is available according to the package installed.
 The possible choices are:
-- 'emacs             : plain emacs
-- 'pel-vr            : visual-regexp
-- 'pel-vr/emacs      : visual-regexp-steroids emacs
-- 'pel-vr/emacs-plain: visual-regexp-steroids emacs-plain
-- 'pel-vr/pcre2el    : visual-regexp-steroids pcre2el
-- 'pel-vr/python     : visual-regexp-steroids python
-- 'pel-vr/custom     : visual-regexp-steroids custom
+- \\='emacs             : plain emacs
+- \\='pel-vr            : visual-regexp
+- \\='pel-vr/emacs      : visual-regexp-steroids emacs
+- \\='pel-vr/emacs-plain: visual-regexp-steroids emacs-plain
+- \\='pel-vr/pcre2el    : visual-regexp-steroids pcre2el
+- \\='pel-vr/python     : visual-regexp-steroids python
+- \\='pel-vr/custom     : visual-regexp-steroids custom
 
 The first choice is the default.  The other choices
 can be made only if `pel-use-visual-regexp' is t (for the second)
