@@ -1,6 +1,6 @@
 ;;; pel-navigate.el --- PEL Navigation Support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -601,13 +601,13 @@ Return point location; if found it is larger than START-POS."
 ;;-pel-autoload
 (defun pel-beginning-of-next-defun (&optional silent dont-push-mark)
   "Move forward to the beginning of the next function/method/class definition.
-If not found, don't move point and beep unless SILENT is non-nil.
+If not found, don\\='t move point and beep unless SILENT is non-nil.
 Return non-nil if found, nil if not found.
 The actual value returned when location is found provides information about
 the context; when the location was found the function returns one of:
-- 'was-outside          : when point was outside any function before the call,
-- 'was-inside           : when point was inside a function before the call,
-- 'was-outside-class/m  : when point was outside but moved to new class or
+- \\='was-outside          : when point was outside any function before the call,
+- \\='was-inside           : when point was inside a function before the call,
+- \\='was-outside-class/m  : when point was outside but moved to new class or
                           to its first method.
 When the location is found, `pel-beginning-of-next-defun' pushes the start
 position on the mark ring unless DONT-PUSH-MARK argument is non-nil.

@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-11-02 16:47:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 20:22:29 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -783,7 +783,7 @@ specific browser.
 If your system default browser can not render PDF files directly
 and downloads them, then you can force the use of the Firefox
 browser (which renders PDF) by setting `pel-browser-used' to
-'firefox.
+\\='firefox.
 
 Using a browser that is capable of direct rendering of PDF
 produces a much better user experience: you will be able to

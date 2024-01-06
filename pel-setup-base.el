@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-05 17:52:26, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 20:12:41 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -257,7 +257,7 @@ startup if all tests pass."
 
 (defun pel--startup-mode ()
   "Return whether PEL/Emacs operates in fast startup mode.
-Returns: 'normal, 'fast or 'inconsistent."
+Returns: \\='normal, \\='fast or \\='inconsistent."
   (let* ((tc.met-criteria.issues (pel--fast-setup-met-criteria))
          (test-count   (nth 0 tc.met-criteria.issues))
          (met-criteria (length (nth 1 tc.met-criteria.issues)))
@@ -272,7 +272,7 @@ Returns: 'normal, 'fast or 'inconsistent."
 (defun pel-setup-info (&optional with-now pq-just-modified)
   "Display current state of PEL setup: whether normal or in fast startup.
 Optional arguments:
-- WITH-NOW: set to t to put the word 'now' in the text.
+- WITH-NOW: set to t to put the word \\='now\\=' in the text.
 - PQ-JUST_MODIFIED: set to t if package quickstart activation has been
                     modified in the Emacs session."
   (interactive)

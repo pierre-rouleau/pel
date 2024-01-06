@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-02-07 13:47:24 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 20:15:43 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2023, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -180,7 +180,7 @@ PEL will be able to use this value to transform the original elpa
 directory into a symlink that points to a directory named
 'elpa-complete'.
 
-It's possible that PEL is used with a init.el file that has not
+It\\='s possible that PEL is used with a init.el file that has not
 yet been populated with the proper code. In that case the
 `pel-package-user-dir-original' variable may not exist, so
 
@@ -372,7 +372,7 @@ terminal mode, such a package is identified as active to prevent the
   "Extract the spec list for the PROPERTY of specified `pel-use-' SYMBOL.
 Returns a list of (`type' . `package-name') cons cells.
 Where:
-- `type'         := 'elpa or 'utils
+- `type'         := \\='elpa or \\='utils
 - `package-name' := a Emacs package name."
   (let ((attribute-value (get symbol property)))
     (cond
@@ -424,7 +424,7 @@ Raise issue if SYMBOL is not a pel-use- symbol or when the value of the
 SYMBOL must be a `pel-use-' user-option symbol.
 Returns a list of (type . package) cons cells for the external
 package(s) that are installed when this user-option is turned on, if any.
-The type is either 'elpa or 'utils.
+The type is either \\='elpa or \\='utils.
 
 The lists include all external packages that cannot be removed
 because of imposed restriction unless IGNORE-RESTRICTION is

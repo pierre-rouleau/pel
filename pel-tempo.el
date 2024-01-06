@@ -1,6 +1,6 @@
 ;;; pel-tempo.el --- Specialized tempo mode  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -114,7 +114,7 @@ Key1 bindings:
 
 (defun pel-tempo-include (&rest args)
   "Return a tempo include list of the elements in ARGS.
-The first element of the returned list is the 'l symbol and then
+The first element of the returned list is the \\='l symbol and then
 each other elements are the elements of each ARG, where ARG is one of the ARGS
 and is itself a list.
 
@@ -128,12 +128,12 @@ This is used to inserts several elements inside a tempo template."
 (defun pel-tempo-include-when (option &rest forms)
   "Include a tempo template inside another one.
 Used like this:
-  (defvar fct-skel '(\"%%% Important function:\"
+  (defvar fct-skel \\='(\"%%% Important function:\"
                      (pel-tempo-include-when option
                                              pel-skel-erlang-func)))
 
 This returns what tempo expects: a list form with the symbol
-'l as the first element and the FORMS specified expanded.
+\\='l as the first element and the FORMS specified expanded.
 if OPTION is non-nil otherwise it return nil."
   (when option
     (let (result)
@@ -148,7 +148,7 @@ if OPTION is non-nil otherwise it return nil."
   "Create commands that insert MODE code templates using provided SKELETONS.
 - MODE: string: the name of a programming language or markup language
         for which the SKELETONS are provided.
-        The name of created interactive function is 'tempo-template-MODE-NAME'
+        The name of created interactive function is \\='tempo-template-MODE-NAME\\='
         where MODE is taken from the argument and NAME is taken from the second
         element of the SKELETONS list entry.
 - SKELETONS: a list of skel-elem: (menu-tag: string, name: string, code: list)
@@ -207,7 +207,7 @@ Return the created skeleton menu list (or nil if no MENU-ITEM-CREATOR-FUNCTION).
   - The `key' is the keyboard key that must be typed to insert the
     corresponding template text.
 
-The commands created have names similar to 'pel-ABBREV-NAME' where:
+The commands created have names similar to \\='pel-ABBREV-NAME\\=' where:
 
  - ABBREV is MODE-ABBREV if specified (or MODE otherwise),
  - NAME corresponds to the second element of the SKELETONS entry.

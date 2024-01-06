@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-01 21:43:46 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 20:11:01 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -76,9 +76,9 @@ close as possible to the top of the file:
   ;;            comment this code after your investigation and want to start
   ;;            a little faster.
   ;;
-  (require 'benchmark-init
+  (require \\='benchmark-init
            (expand-file-name \"~/.emacs.d/utils/benchmark-init\"))
-  (add-hook 'after-init-hook 'benchmark-init/deactivate)
+  (add-hook \\='after-init-hook \\='benchmark-init/deactivate)
 
 Update the path if necessary.
 

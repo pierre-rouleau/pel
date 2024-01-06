@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, November 27 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-30 11:42:01, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 18:39:47 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -220,14 +220,14 @@ FORMS is a list of strings, each string is a form to search for."
   "Return the regxp to search for the definition forms.
 As identified by the `pel-elisp-target-forms' variable or TARGET if specified.
 TARGET, like `pel-elisp-target-forms' can be one of the following values:
-- 'all-top-level-forms
-- 'top-level-defun-forms
-- 'defun-forms
-- 'all-defun-defmacro-defsubst-forms
-- 'all-defmacro-forms'
-- 'all-functions-macros-eieio-def-forms
-- 'all-functions-variables-def-forms
-- 'all-variables-def-forms
+- \\='all-top-level-forms
+- \\='top-level-defun-forms
+- \\='defun-forms
+- \\='all-defun-defmacro-defsubst-forms
+- \\='all-defmacro-forms
+- \\='all-functions-macros-eieio-def-forms
+- \\='all-functions-variables-def-forms
+- \\='all-variables-def-forms
 - a list of strings."
   (let* (;; Protect against pel-elisp-target-forms being nil
          (pel-elisp-target-forms (or pel-elisp-target-forms

@@ -1,6 +1,6 @@
 ;;; pel-window.el --- PEL Window Management Utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -215,9 +215,9 @@ Exclude the minibuffer."
 ;;-pel-autoload
 (defun pel-move-to-window (direction &optional direction-for-new)
   "Move point to the window identified by DIRECTION.
-DIRECTION may be: 'other, 'up, 'down, 'left or 'right.
+DIRECTION may be: \\='other, \\='up, \\='down, \\='left or \\='right.
 Raise an error if the DIRECTION is invalid.
-If direction is 'new, create a new window in the DIRECTION-FOR_NEW,
+If direction is \\='new, create a new window in the DIRECTION-FOR_NEW,
 or down by default.
 See `pel-window-direction-for' to convert a prefix number to a direction."
   (cond ((eq direction 'down)  (windmove-down))
@@ -238,7 +238,7 @@ See `pel-window-direction-for' to convert a prefix number to a direction."
 ;; -------------------------
 
 (defun pel--close-window (direction)
-  "Close the window identified by DIRECTION ('up, 'down, 'right or 'left).
+  "Close the window identified by DIRECTION (\\='up, \\='down, \\='right or \\='left).
 Ensure that point remains in the window from where the function was called."
   (let ((original_window (selected-window)))
     (when (pel-move-to-window direction)
@@ -392,8 +392,10 @@ Flip the orientation of the current window and its next one."
 ;;-pel-autoload
 (defun pel-find-window (direction)
   "Return the window for the specified DIRECTION.
-The DIRECTION can be 'up, 'down, 'right, 'left, 'current, or 'other.
-The value 'new is not accepted and raises an error.
+The DIRECTION can be:
+ \\='up, \\='down, \\='right, \\='left, \\='current, or \\='other.
+
+The value \\='new is not accepted and raises an error.
 See `pel-find-file-at-point' for a description of these values."
   (cond ((eq direction 'current) (selected-window))
         ((eq direction 'other)   (next-window nil 'no-minibuf))
@@ -406,12 +408,14 @@ See `pel-find-file-at-point' for a description of these values."
   "Return t if window in DIRECTION is valid for editing.
 .
 DIRECTION identifies the direction from the current window.
-It must be one of:  'up, 'down, 'right, 'left, 'current, 'other or 'new.
+It must be one of:
+\\='up, \\='down, \\='right, \\='left, \\='current, \\='other or \\='new.
+
 See `pel-find-file-at-point' for a description of these values.
-When 'current is used, point remains in the currently edited window.
+When \\='current is used, point remains in the currently edited window.
 Return t if the identified window is valid for editing a file or buffer.
 Return nil otherwise:
-- if there is no window there, for example: 'up of the window positioned
+- if there is no window there, for example: \\='up of the window positioned
   at the top of the current frame,
 - if the window is improper for editing, such as:
   - it's the minibuffer window,
@@ -429,10 +433,12 @@ Return nil otherwise:
   "Move point to window identified by DIRECTION.
 .
 DIRECTION identifies the direction from the current window.
-It must be one of:  'up, 'down, 'right, 'left, 'current, 'other or 'new.
-When 'new is specified, the current window is split and point is moved
+It must be one of:
+\\='up, \\='down, \\='right, \\='left, \\='current, \\='other or \\='new.
+
+When \\='new is specified, the current window is split and point is moved
 to that new window.
-When 'current is used, point remains in the currently edited window.
+When \\='current is used, point remains in the currently edited window.
 If the point is moved to the window specified by direction, the point
 can optionally be moved to a specified position identified by LINE and COLUMN.
 Any or none of LINE and COLUMN may be set to integers or to nil.
@@ -457,26 +463,26 @@ Return the selected window, or nil if nothing is valid."
 .
 If FOR-EDITING is non-nil, only return direction of editable window:
 if N identifies a non-editable window, return what is identified
-by PREFER (if this is also OK) otherwise return 'new.
+by PREFER (if this is also OK) otherwise return \\='new.
 .
 Window selection:
-- If N is negative:    : return 'new
-- If N is 0:           : return 'other
+- If N is negative:    : return \\='new
+- If N is 0:           : return \\='other
 - If N is nil or 1     : the selection depends on PREFER:
   - If PREFER is non-nil then it should be set to one of the possible valid
     returned values because it is returned unchanged.
   - If PREFER is nil, then select the window according to the number
     of non-dedicated and non-minibuffer windows in the current frame:
-    - 1 window  in frame: return 'new
-    - 2 windows in frame: return 'other
-    - 3 or more windows : return 'current
+    - 1 window  in frame: return \\='new
+    - 2 windows in frame: return \\='other
+    - 3 or more windows : return \\='current
 - If N is 3, 7, 9 or larger, with PREFER not nil, return: PREFER value.
   If PREFER is nil return as described above.
 - If N in remaining [2,8] range, return the direction corresponding to the
   cursor in a numeric keypad:
-  -             8 := 'up
-  - 4 := 'left  5 := 'current  6 := 'right
-  -             2 := 'down"
+  -             8 := \\='up
+  - 4 := \\='left  5 := \\='current  6 := \\='right
+  -             2 := \\='down"
   (let ((direction (cond
                     ((eq n 2) 'down)
                     ((eq n 8) 'up)

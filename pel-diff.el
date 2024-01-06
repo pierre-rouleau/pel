@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, March 12 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-05-08 21:47:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 18:40:23 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2023, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -63,9 +63,9 @@
 
 If argument N is specified and in the [2,8] range it identifies
 the window in the direction corresponding to the cursor numeric keypad:
-  -             8 := 'up
-  - 4 := 'left  5 := 'current  6 := 'right
-  -             2 := 'down "
+  -             8 := \\='up
+  - 4 := \\='left  5 := \\='current  6 := \\='right
+  -             2 := \\='down "
   ;; Note: ediff-files is available in Emacs -Q
   (interactive "P")
   (let ((fname-a (pel-current-buffer-filename))

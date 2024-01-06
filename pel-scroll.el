@@ -1,6 +1,6 @@
 ;;; pel-scroll.el --- PEL Window Scrolling Utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -90,9 +90,9 @@ optional N argument.
 
 N can be:
 
-    -             8 := 'up
-    - 4 := 'left                 6 := 'right
-    -             2 := 'down
+    -             8 := \\='up
+    - 4 := \\='left                 6 := \\='right
+    -             2 := \\='down
 
 "
   (interactive "P")

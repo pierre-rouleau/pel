@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-06-03 10:29:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 20:23:02 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -109,10 +109,10 @@ This keymap is used by `pel-y-n-e-or-l-p'")
 (defun pel-y-n-e-or-l-p (prompt)
   "Ask user a \"y, n or e\" question.
 Return:
-- 'yes     if the answer is \"y\",
-- 'no      if it is \"n\",
-- 'edit    if it is \"e\", or
-- 'findlib if it is \"!\".
+- \\='yes     if the answer is \"y\",
+- \\='no      if it is \"n\",
+- \\='edit    if it is \"e\", or
+- \\='findlib if it is \"!\".
 PROMPT is the string to display to ask the question.
 It should end in a space;
 `pel-y-n-e-or-l-p' adds \"(y, n, e or l) \" to it.

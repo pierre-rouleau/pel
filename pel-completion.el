@@ -2,12 +2,12 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-01 17:56:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 18:43:29 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -208,11 +208,11 @@ Note that ido-grid is a different package than ido-grid-mode."
 (defun pel--set-ido-geometry (geometry)
   "Set the Ido GEOMETRY.
 State can be one of:
-- 'off or 'emacs-default : ido mode is used, but grid is off
-- 'grid-collapsed
-- 'grid-expanded
-- 'ido-grid
-- 'vertical"
+- \\='off or \\='emacs-default : ido mode is used, but grid is off
+- \\='grid-collapsed
+- \\='grid-expanded
+- \\='ido-grid
+- \\='vertical"
   (if (require 'ido nil :no-error)
       (progn
         ;; 1- turn off any ido extension geometry and re-establish basic
@@ -567,7 +567,10 @@ The bit layout corresponds to the values of pel-USE-{IDO|IVY|COUNSEL|HELM}."
 
 (defun pel--completion-mode-symbol-for-mask (mask)
   "Return the symbol corresponding to the bit MASK.
-It can return nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm"
+
+It can return:
+
+  nil | \\='ido | \\='ido/helm | \\='ivy | \\='ivy/counsel | \\='helm"
   (cond ((pel-all-bitset-p mask pel-USE-IDO) 'ido)
         ((pel-all-bitset-p mask pel-USE-IDO pel-USE-HELM) 'ido/helm)
         ((pel-all-bitset-p mask pel-USE-IVY pel-USE-COUNSEL) 'ivy/counsel)
@@ -579,7 +582,10 @@ It can return nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm"
 
 (defun pel-activated-completion-mode ()
   "Return input completion engine currently used.
-Return one of:  nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm
+
+Return one of:
+ nil | \\='ido | \\='ido/helm | \\='ivy | \\='ivy/counsel | \\='helm
+
 The nil value means that Emacs default is used."
   (if (bound-and-true-p counsel-mode)
       'ivy/counsel
@@ -611,8 +617,9 @@ When stopping, use the reverse order."
 
 (defun pel--activate-completion-mode (mode start)
   "START or stop specified completion MODE to a NEWSTATE.
-- MODE must be one of: nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm
-  If nil, nothing is done.
+- MODE must be one of: nil | \\='ido | \\='ido/helm | \\='ivy |
+  \\='ivy/counsel | \\='helm
+  If MODE is nil, nothing is done.
 - START is non-nil to activate, nil to de-activate."
   (let (chg-helm)
     (cond ((eq mode 'ido)
@@ -679,7 +686,10 @@ When stopping, use the reverse order."
 ;;-pel-autoload
 (defun pel-set-completion-mode (requested &optional silent)
   "Activate the requested completion mode (if allowed by configuration).
-The REQUESTED is nil or one of: 'emacs-default, 'ido, 'ivy or 'ivy/counsel.
+
+The REQUESTED is nil or one of: \\='emacs-default, \\='ido, \\='ivy or
+\\='ivy/counsel.
+
 A nil value for REQUESTED corresponds to Emacs default.
 If the REQUESTED mode is currently not supported by the pel-use-..
 option variable then the request is ignored.

@@ -1,6 +1,6 @@
 ;;; pel-regexp.el --- Regexp utilities  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -47,7 +47,8 @@
 (defun pel-insert-regexp (&optional insert-both)
   "Prompt for a regexp literal, insert corresponding quoted regexp at point.
 
-This converts what Emacs calls the 'string syntax' into the Emacs 'read syntax'.
+This converts what Emacs calls the \\='string syntax\\=' into the
+Emacs \\='read syntax\\='.
 
 When INSERT-BOTH argument is non-nil, insert both strings.
 If INSERT-BOTH is a string, it is inserted between both strings,

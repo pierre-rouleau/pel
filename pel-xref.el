@@ -1,6 +1,6 @@
 ;;; pel-xref.el --- xref cross referencing utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -329,11 +329,11 @@ where: nil := Emacs xref default (not initialized).")
 (defun pel-xref-set-front-end (front-end)
   "Activate the xref FRONT-END specified.
 FRONT-END must be one of:
-- 'select-from-customization : activate what is selected when available else
+- \\='select-from-customization : activate what is selected when available else
   select default.
-- nil | 'xref : Emacs default xref front end
-- 'ivy-xref   : use ivy-xref front end
-- 'helm-xref  : use helm-xref front end."
+- nil | \\='xref : Emacs default xref front end
+- \\='ivy-xref   : use ivy-xref front end
+- \\='helm-xref  : use helm-xref front end."
   (when (eq front-end 'select-from-customization)
     (if (or (and (eq pel-startup-xref-front-end 'ivy-xref)
 		 (not pel-use-ivy-xref))

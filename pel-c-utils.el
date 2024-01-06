@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-02 17:59:56 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 20:05:27 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -103,7 +103,7 @@
 ;; ---------------------------------------------------------------------------
 
 (defun pel--c-reformat-cond ()
-  "Reformat if statement on current line for 'if(...)' to if (...)'.
+  "Reformat if statement on current line for 'if(...)' to if '(...)'.
 
 Also reformat:
  'for(...)'   to 'for (...)'

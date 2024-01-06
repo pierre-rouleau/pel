@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-12-21 13:58:35 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 19:57:56 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -90,7 +90,7 @@
   "Prompt/select a new key name for `pel-CC-file-finder-ini-tool-name'.
 
 This is major-mode specific.  The CC in the variable name is selected by
-the current major mode: is 'c' for C files, 'c++' for C++ files.
+the current major mode: is \\='c\\=' for C files, \\='c++\\=' for C++ files.
 
 If PEL_CC_FIND_TOOLCHAIN environment variable exists, its value is used
 automatically on startup, overriding the value of the user-option."
@@ -230,7 +230,7 @@ cannot find location of %s using include path spec identified in:
 Set the search method to FILE-FINDER-METHOD if specified,
 otherwise set it to the value held by the user-option that has a
 name 'pel-MODE-file-finder-method' where MODE is replaced by the
-major mode name ('c', 'c++', 'd', etc...).
+major mode name (c, c++, d, etc...).
 
 If EXTRA-SEACHED-DIRECTORY-TREES is non-nil the finder is set to also search
 in the list of directory trees identified by the list."

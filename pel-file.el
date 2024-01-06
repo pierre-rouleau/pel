@@ -1,6 +1,6 @@
 ;;; pel-file.el --- File Management utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -98,12 +98,12 @@ complete file name.
 .
 Return:
 - nil if no valid file name found at point.
-- a ('http . url-string) cons where url-string is the URL.
+- a (\\='http . url-string) cons where url-string is the URL.
 - a list of (name-type filename line column) if a file name  is present.
   where:
   - name-type := symbol : fname | fname-w-ddrv | http
-                 : 'fname := normal file name, with/without Unix-style path
-                 : 'fname-w-ddrv := filename with disk drive letter
+                 : \\='fname := normal file name, with/without Unix-style path
+                 : \\='fname-w-ddrv := filename with disk drive letter
   - filename : filename string (or its directory if DIRECTORY-ONLY is non-nil).
   - line     : integer, or nil for missing number.  Starts at 1.
   - column   : integer, or nil for missing number.  Starts at 0.
@@ -230,7 +230,7 @@ Returns the filename string."
   "Infer or prompt for library filename using incomplete FILENAME.
 Return (filename . action), where:
 - filename is the file to create or open, or nil if no file to handle.
-- action is: 'create | 'edit | reason-for-nil-filename
+- action is: \\='create | \\='edit | reason-for-nil-filename
 
 nil if user gave up, otherwise return the file name to open."
   (if (and (require 'pel-prompt nil :no-error)
@@ -304,7 +304,7 @@ Prompt the user if necessary.  In some case the user may want to create a
 new file with a specified filename.
 Return: (filename . action)
 where: - filename:= string or nil: the  filename to act upon if not nil.
-       - action  := 'edit | 'create | message-string
+       - action  := \\='edit | \\='create | message-string
          where the message string is returned with nil to describe why
          we do not edit or create the file."
   (if (file-exists-p filename)
@@ -356,8 +356,8 @@ Optional arguments:
    - otherwise, open in current window.
 - If a prefix numeric argument N is supplied, it identifies the location
   of the target window:
-  - N < 0 := 'new
-  - N = 0 := 'other
+  - N < 0 := \\='new
+  - N = 0 := \\='other
   - N = 1,3 or 7:= select the window according to the number number of windows
              in the current frame:
              - 2 windows in frame: open in *other* window
@@ -366,9 +366,9 @@ Optional arguments:
              - otherwise, open in current window.
   - For N= 2, 4, 5, 6 or 8, select window pointed by what is pointed
     by cursor positionned at the layout of numeric keypad:
-    -             8 := 'up
-    - 4 := 'left  5 := 'current  6 := 'right
-    -             2 := 'down
+    -             8 := \\='up
+    - 4 := \\='left  5 := \\='current  6 := \\='right
+    -             2 := \\='down
   - For N=9  := open the file in the system's browser.
   - For N>= 20 or N<=-20, open the directory identified by the path
     inside the window or browser identified by the (abs N) - 20.
@@ -387,7 +387,7 @@ Otherwise the string is used as a file name.
   - {filename} is the filename with or without path and
     extension.  The filename can, but does not need to,
     use a 'file:///' RFC-3986 file URI prefix.
-  - {sep} is a separator, one of the ':' or '@' character
+  - {sep} is a separator, one of the \\=':\\=' or \\='@\\=' character
   - {line} is an integer identifying a line inside the file.
     If none is specified, point is moved at the first line.
     If the line number is too large, point is moved at the last

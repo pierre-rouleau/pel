@@ -184,17 +184,17 @@ to the default: symbol."
 
 (defun pel-rst-set-adornment (style)
   "Set the reStructuredText adornment STYLE.
-Set it to one of: 'CRiSPeR, 'Sphinx-Python, or 'default.
+Set it to one of: \\='CRiSPeR, \\='Sphinx-Python, or \\='default.
 STYLE identifies the number of levels supported and their adornment.
-- `default' is Emacs `rst-mode' default.  A title and 7 levels.
-- `Sphinx-Python' is what Sphinx uses: 6 levels:
+- \\='default is Emacs `rst-mode' default.  A title and 7 levels.
+- \\='Sphinx-Python is what Sphinx uses: 6 levels:
   - parts,
   - chapters,
   - sections,
   - subsections,
   - subsubsections,
   - paragraphs.
-- `CRiSPer', a title and 12-level mode previously developed for CRiSP."
+- \\='CRiSPer, a title and 12-level mode previously developed for CRiSP."
   (when
       (or
        (not pel--rst-used-adornment-style)
@@ -892,7 +892,7 @@ If there is no reference issue a `user-error' unless NOERROR is non-nil,
 in that case return nil instead.
 
 Return a cons of 2 elements: ref-type and string.
-- ref-type is either 'target or 'path.  It describes what the string
+- ref-type is either \\='target or \\='path.  It describes what the string
 represents."
   (setq pos (or pos (point)))
   (if (pel-at-rst-reference-p pos)

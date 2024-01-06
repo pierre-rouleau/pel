@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, January  2 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-04 23:17:43 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-05 18:47:06 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -140,7 +140,7 @@ is one, nil otherwise."
   by the caller.
 - N must be 0 to move to the beginning of the block, 1 to move to the end.
 - The ELEM-STR must be the name of the syntactic
-  element (such as 'string' or 'enum')."
+  element (such as \\='string\\=' or \\='enum\\=')."
   (if positions
       (progn
         (push-mark)
