@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-06 22:42:37 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-07 10:44:02 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -124,17 +124,11 @@ prints the Emacs init time on the echo area."
       ;; with 1000 and stops with a warning
       ;; "Variable binding depth exceeds max-specpdl-size".
       ;; Change the value for the duration of the benchmark dump.
-      (if pel-emacs-29-or-later-p
-          (let ((max-lisp-eval-depth 2000))
-            (ignore-errors
-            (benchmark-init/show-durations-tree)
-            (other-window 1)
-            (benchmark-init/show-durations-tabulated)))
-        (let ((max-specpdl-size 2000))
-          (ignore-errors
-            (benchmark-init/show-durations-tree)
-            (other-window 1)
-            (benchmark-init/show-durations-tabulated))))))
+      (let ((max-lisp-eval-depth 2000))
+        (ignore-errors
+          (benchmark-init/show-durations-tree)
+          (other-window 1)
+          (benchmark-init/show-durations-tabulated)))))
   (message "Emacs startup time: %s" (emacs-init-time)))
 
 
