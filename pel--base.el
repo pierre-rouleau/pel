@@ -313,6 +313,9 @@
 (defconst pel-emacs-28-or-later-p (>= emacs-major-version 28)
   "Predicate: t when Emacs version 28 or later is running, nil otherwise.")
 
+(defconst pel-emacs-29-or-later-p (>= emacs-major-version 29)
+  "Predicate: t when Emacs version 29 or later is running, nil otherwise.")
+
 ;; ---------------------------------------------------------------------------
 ;; Code Style Buffer Local Variables
 ;; ---------------------------------
