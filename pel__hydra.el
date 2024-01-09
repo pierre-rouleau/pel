@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-10-20 16:32:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-01-09 13:36:52 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -122,7 +122,7 @@
 
 (when pel-activate-hydra-for-greek
 
-  ;; Define Greek letter commands used by the pel-∑greek Hydra defined inside
+  ;; Define Greek letter commands used by the pel-∑gr Hydra defined inside
   ;; pel__hydra.el.  Code should really be located in there, but placing it
   ;; here prevents byte compiler warnings.
   ;; Note: pel--options.el ensures that `pel-use-hydra' is t when
@@ -179,9 +179,12 @@
   (pel--define-greek-command "Ψ") (declare-function Ψ "pel_keys")
   (pel--define-greek-command "Ζ") (declare-function Ζ "pel_keys")
 
-  (defhydra pel-∑greek (global-map "<f7> <f6> <f6>"
-                                   :base-map (make-sparse-keymap)
-                                   :foreign-keys run)
+  ;; Note: Hydra docstrings are generated to include the base hydra name and
+  ;; the key map.  I would like to use pel-∑greek as the hydra name but that
+  ;; would generate a docstring first line that is longer than 80 characters.
+  (defhydra pel-∑gr (global-map "<f7> <f6> <f6>"
+                                :base-map (make-sparse-keymap)
+                                :foreign-keys run)
     ""
     ("M-a"  α "α")
     ("M-b"  β "β")
