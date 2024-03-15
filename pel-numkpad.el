@@ -1,6 +1,6 @@
 ;;; pel-numkpad.el --- PEL Numeric Keypad Key Control -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -44,9 +44,18 @@
 
 (defvar pel-mac-keypad-numlocked nil
   "Identify whether macOS numeric keypad is used as numlocked or not.
+
 If t, macOS keypad is used as the original numlocked keypad,
 otherwise, it's a cursor centric keypad.  By default, the value
 is t to identify the native behaviour: NumLocked.
+
+This is valid for:
+ - macOS when Emacs is running in graphics mode,
+ - Other OS that support a NumLock key.
+When using terminal Emacs under macOS, or Linux under a macOS hosted VM,
+the NumLock key does not exists.  Terminal.app can be configured to
+map the <clear> key to NumLock but Emacs only sees the impact to the
+keypad keys; it does not see the <clear> key events.
 
 The following keys are used in each mode:
 
@@ -66,28 +75,45 @@ mode.
 
 Use `pel-toggle-mac-numlock' to activate/deactivate numlock on
 environments that can't bind the clear key such as macOS
-terminal.
-
-Limitations: In not Numlocked mode the cursor keys cannot
-             be repeated the way the regular cursor keys can.
-             Cause: Emacs will still read these keys as digit
-             when typed as a prefix.")
+terminal.")
 
 
 ;;-pel-autoload
 (defun pel-show-mac-numlock ()
-  "Display state of PEL Keypad num-lock mode."
+  "Display state of PEL Keypad num-lock mode.
+
+In macOS TTY mode, the function shows an error as Emacs does not
+receive NumLock keys events for the <clear> key used as NumLock.
+
+BUG: If running Linux in a VM hosted on macOS, the code does not
+     detect macOS and thinks it receives NumLock notification, allowing
+     the function to display potentially invalid information."
   (interactive)
-  (if pel-mac-keypad-numlocked
-      (message "Num-Lock ON")
-    (message "Num-Lock off; cursor mode available")))
+  (if (and pel-system-is-macos-p
+           pel-emacs-is-a-tty-p)
+      (user-error
+       "NumLock state unknown: can't detect <clear> key events in macOS TTY")
+    (if pel-mac-keypad-numlocked
+        (message "Num-Lock ON")
+      (message "Num-Lock off; cursor mode available"))))
 
 ;;-pel-autoload
 (defun pel-toggle-mac-numlock ()
-  "Toggle PEL numlock mode."
+  "Toggle PEL numlock mode.
+
+Nothing done in macOS TTY.
+
+BUG: If running Linux in a VM hosted on macOS, the code does not
+     detect macOS and thinks it receives NumLock notification, allowing
+     the function to proceed which may cause out-of-sync status and
+     prevent proper handling of the NumPad keys."
   (interactive)
-  (pel-toggle 'pel-mac-keypad-numlocked)
-  (pel-show-mac-numlock))
+  (if (and pel-system-is-macos-p
+           pel-emacs-is-a-tty-p)
+      (user-error
+       "Can't toggle NumLock on macOS TTY: use <clear> & switch blindly.")
+      (pel-toggle 'pel-mac-keypad-numlocked)
+    (pel-show-mac-numlock)) )
 
 ;;-pel-autoload
 (defun pel-0 (&optional n)

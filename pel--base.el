@@ -288,6 +288,10 @@
   (eq system-type 'darwin)
   "Predicate: t if running under a macOS Operating System, nil otherwise.")
 
+(defconst pel-terminal-is-macos-terminal-p
+  (string-equal (getenv "TERM_PROGRAM") "Apple_Terminal")
+  "Predicate: t if Emacs is running under the macOS Terminal.app, else nil.")
+
 (defconst pel-system-is-linux-p
   (eq system-type 'gnu/linux)
   "Predicate: t if running under a Linux Operating System, nil otherwise.")
