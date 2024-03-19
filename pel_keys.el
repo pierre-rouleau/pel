@@ -1492,9 +1492,11 @@ can't bind negative-argument to C-_ and M-_"
   (defun pel--setup-imenu+ ()
     "Activate imenu+ support, protecting against error."
     ;; imenu+ will signal an error if a mode that derives from prog-mode
-    ;; does not support imenu.  Prevent this error.
+    ;; does not support imenu.  Prevent this error because imenu is used
+    ;; inside a lot of operations.
     (ignore-errors
-      (imenup-add-defs-to-menubar)))
+      (call-interactively (function imenup-add-defs-to-menubar)))
+    )
   (declare-function pel--setup-imenu+ "pel_keys")
 
   (when (fboundp 'imenup-add-defs-to-menubar)
