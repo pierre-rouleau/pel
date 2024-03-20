@@ -1277,7 +1277,7 @@ And with transformation functions:
   `(push (format ,fmt ,@args) ,lst))
 
 (defmacro pel-prepend-to (lst elems)
-  "Prepend the  to the beginning of THE-LIST."
+  "Prepend ELEMS to the beginning of LST."
   `(setq ,lst (append ,elems ,lst)))
 
 (defun pel-cons-alist-at (alist key val)
@@ -1345,7 +1345,7 @@ Usage Example:
   (tree
    (\"BB\" \"[BB]\" and-something-else)
    (\"AA\" \"[AA]\")))"
-  (if (length alist)
+  (if (> (length alist) 0)
       (let* ((value (assq key alist))
              (new-value (cons val (cdr value))))
         (if value
