@@ -10906,6 +10906,8 @@ indexing system."
           pel-use-ivy)
   (setq pel-use-wgrep t))
 
+(when pel-use-helpful
+  (setq pel-use-elisp-refs t)) ; helpful uses elisp-refs
 
 ;; De-activate any requests that cannot be honoured based on Emacs version.
 (when (version< emacs-version "27.1")
