@@ -2011,7 +2011,6 @@ can't bind negative-argument to C-_ and M-_"
 ;; E       - Elm
 ;; F       - FORTRAN
 ;; G       - Groovy
-;; H       - shell script modes
 ;; J       - Java            -              JVM
 ;; L       - Common Lisp     - Lisp Family
 ;; M       - Makefile
@@ -2023,6 +2022,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; T       - Janet           - Lisp Family
 ;; U       - Ruby
 ;; W       - awk
+;; Z       - shell script modes
 ;; a       - AppleScript
 ;; c       - C
 ;; d       - Dart
@@ -2096,9 +2096,10 @@ can't bind negative-argument to C-_ and M-_"
 ;; SPC d e - ediff-mode
 ;; SPC d s - smerge-mode
 ;; SPC v   - vc-dir-mode
-;; SPC s   - shell-mode
 ;; SPC t   - term-mode
-;; SPC z   - shell and terminals
+;; SPC z s - shell-mode
+;; SPC z t - term-mode
+;; SPC z v - vterm-mode
 
 ;;          - SNMP MIP
 ;;          - ANS.1
@@ -4437,17 +4438,18 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
         )
 )
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC H`` : Sh, Unix shell programming
-;;  This is for shell programming support: editing shell script files.
-;;  For shell/terminal commend line support, see below.
+;; - Function Keys - <f11> - Prefix ``<f11> SPC Z`` : Sh, Unix shell programming
+;;   This is for shell programming support: editing shell script files.
+;;   For shell/terminal commend line support, see below.
 (when pel-use-sh
-  (define-pel-global-prefix pel:for-sh (kbd "<f11> SPC H"))
+  (define-pel-global-prefix pel:for-sh (kbd "<f11> SPC Z"))
   ;; Shell support, the sh-mode is part of Emacs
   (pel-config-major-mode sh pel:for-sh
     (superword-mode 1)
     (define-key pel:for-sh "\"" 'pel-sh-double-quote-word)
     (define-key pel:for-sh "'"  'pel-sh-single-quote-word)
-    (define-key pel:for-sh "`"  'pel-sh-backtick-quote-word))
+    (define-key pel:for-sh "`"  'pel-sh-backtick-quote-word)
+    (pel-local-set-f12-M-f12 'pel:for-sh))
   (cond
    ;; using flymake
    ((memq pel-use-shellcheck '(flymake-manual
@@ -4497,13 +4499,12 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-autoload-file vlang-mode for: vlang-mode))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC SPC z`` : shells and terminals
-(define-pel-global-prefix pel:for-shell-terminals (kbd "<f11> SPC SPC z"))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC SPC s`` : shell-mode
+;; - Function Keys - <f11> - Prefix ``<f11> SPC z s`` : shell-mode
 ;;   This is for shell/terminal support.  For editing shell script file see above.
-(define-pel-global-prefix pel:for-shell (kbd "<f11> SPC SPC s"))
+(define-pel-global-prefix pel:for-shell     (kbd "<f11> SPC z s"))
+(define-pel-global-prefix pel:for-shell-cfg (kbd "<f11> SPC z s <f4>"))
 
 (pel-eval-after-load shell
   ;; TODO: pel-config-major-mode does not work properly with shell-mode
@@ -4512,6 +4513,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (defun pel--setup-for-shell ()
     "Activate PEL setup for shell-mode."
     (pel-local-set-f12-M-f12 'pel:for-shell)
+    (define-key pel:for-shell-cfg "e" 'pel-comint-toggle-shell-echoes)
+    (define-key pel:for-shell-cfg "?" 'pel-shell-show-cfg)
+
     (local-set-key (kbd "C-c M-o") 'pel-comint-clear-buffer-and-get-prompt)
     (define-key pel:for-shell "c" 'pel-comint-clear-buffer-and-get-prompt)
     (define-key pel:for-shell "r" 'shell-resync-dirs)
@@ -4533,8 +4537,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key telnet-mode-map "\t" 'completion-at-point)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC SPC t`` : term-mode
-(define-pel-global-prefix pel:for-term (kbd "<f11> SPC SPC t"))
+;; - Function Keys - <f11> - Prefix ``<f11> SPC z t`` : term-mode
+(define-pel-global-prefix pel:for-term (kbd "<f11> SPC z t"))
+;; (define-pel-global-prefix pel:for-term-cfg (kbd "<f11> SPC z t <f4>"))
 
 (pel-eval-after-load term
   ;; TODO: pel-config-major-mode does not work properly with term-mode
@@ -4543,6 +4548,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (defun pel--setup-for-term ()
     "Activate PEL setup for term-mode."
     (pel-local-set-f12-M-f12 'pel:for-term)
+    ;; (define-key pel:for-term-cfg "?" 'pel-term-show-cfg)
+    (define-key pel:for-term (kbd "<up>")   'pel-shell-previous-prompt)
+    (define-key pel:for-term (kbd "<down>") 'pel-shell-next-prompt)
+
     (pel-turn-on-local-minor-modes-in 'pel-term-activates-minor-modes))
   (declare-function pel--setup-for-term "pel_keys")
 
@@ -4550,6 +4559,27 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel--mode-hook-maybe-call
    (function pel--setup-for-term)
    'term-mode 'term-mode-hook))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC z v`` : vterm-mode
+(when pel-use-vterm
+  (define-pel-global-prefix pel:for-vterm (kbd "<f11> SPC z v"))
+
+  (when pel-vterm-supports-f12-keys
+    (pel-eval-after-load vterm
+      (defun pel--setup-for-vterm ()
+        "Activate PEL setup for vterm-mode."
+        (pel-local-set-f12-M-f12 'pel:for-vterm)
+
+        (when pel-vterm-supports-f12-navkeys
+          (define-key pel:for-vterm (kbd "<up>")   'pel-shell-previous-prompt)
+          (define-key pel:for-vterm (kbd "<down>") 'pel-shell-next-prompt)))
+      (declare-function pel--setup-for-vterm "pel_keys")
+
+      (pel-check-minor-modes-in pel-term-activates-minor-modes)
+      (pel--mode-hook-maybe-call
+       (function pel--setup-for-vterm)
+       'vterm-mode 'vterm-mode-hook))))
 
 ;; ---------------------------------------------------------------------------
 ;; Data Files Support
@@ -8046,6 +8076,7 @@ the ones defined from the buffer now."
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> z`` : Process & shells execution
+;;   - These commands manage and launch REPL and shells.
 ;;
 (define-pel-global-prefix pel:execute (kbd "<f11> z"))
 (define-pel-global-prefix pel:repl    (kbd "<f11> z r"))

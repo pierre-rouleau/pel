@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, March 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-04-26 22:16:43, updated by Pierre Rouleau>
+;; Time-stamp: <2024-03-21 16:54:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022  Pierre Rouleau
+;; Copyright (C) 2022, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -95,6 +95,24 @@ the search."
     (left-char 1)
     (user-error "No prompt found below point. Searching for %s" pel-shell-prompt-line-regexp)))
 
+;;-pel-autoload
+(defun pel-shell-show-cfg (&optional append)
+  "Print shell configuration information in specialized buffer.
+
+Clear previous buffer content unless optional APPEND argument is non-nil,
+in which case it appends to the previous report.
+Variables names are also links to customization."
+  (interactive "P")
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     (pel-string-with-major-mode "*pel-%s-info*")
+     (pel-string-with-major-mode "*%s Control")
+     (lambda ()
+       (pel-insert-symbol-content-line 'comint-process-echoes)
+       (pel-insert-symbol-content-line 'pel-shell-prompt-line-regexp)
+       (pel-insert-symbol-content-line 'pel-shell-activates-minor-modes))
+     (unless append :clear-buffer)
+     :use-help-mode)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-shell)

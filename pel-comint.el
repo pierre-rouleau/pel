@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, June 26 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-03-10 14:20:31, updated by Pierre Rouleau>
+;; Time-stamp: <2024-03-20 12:08:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--base)
 (require 'comint)
 
 ;;; --------------------------------------------------------------------------
@@ -60,6 +61,17 @@ If BUFFER-OR-NAME is not provided (or nil) the current buffer is
 used.  Send input to force getting a prompt ready for input."
   (interactive "P")
   (pel-comint-clear-buffer buffer-or-name :get-prompt))
+
+
+;;-pel-autoload
+(defun pel-comint-toggle-shell-echoes ()
+  "Toggle the comint-process-echoes for the current buffer.
+
+Use this when you want to prevent shell from echoing the command
+in the current buffer and you do not want to modify the `comint-process-echoes'
+customized value."
+  (interactive)
+  (pel-toggle-and-show 'comint-process-echoes nil nil :locally))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-comint)

@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, August 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-01-10 17:11:21, updated by Pierre Rouleau>
+;; Time-stamp: <2024-03-21 16:35:22 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -104,6 +104,22 @@ The VAR-LIST is a list of 3-element lists.  Each list holds:
 Invalid action in PEL environment control list for variable %s"
                                    var-name)
                            :error))))))
+
+;; [:todo 2024-03-21, by Pierre Rouleau: Add ability to parse string stored in
+;; temporary buffer and return a list of list with relevant information.  The
+;; last entry of that list would be the currently running process info.
+;; Currently pel-process-tree only prints the output of pasture.]
+
+;; pel-autoload
+(defun pel-process-tree ()
+  "Print string showing process tree in current buffer."
+  (interactive)
+  (unless (executable-find "pstree")
+    (user-error "pstree, used by pel-process-tree, is not available!"))
+  (let ((process (get-buffer-process (current-buffer))))
+    (if process
+        (shell-command (format "pstree -p %d" (process-id process)))
+      (user-error "No process"))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-process)

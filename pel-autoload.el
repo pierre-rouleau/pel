@@ -254,7 +254,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-comint" for:
     pel-comint-clear-buffer
-    pel-comint-clear-buffer-and-get-prompt)
+    pel-comint-clear-buffer-and-get-prompt
+    pel-comint-toggle-shell-echoes)
 
   ;; pel-comment-adorn
   ;; Nothing specified here: the control is inside pel_keys.el
@@ -603,6 +604,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-pp-prev-directive
     pel-pp-show-state)
 
+  (pel-autoload-function "pel-process" for:
+    pel-process-tree)
+
   (pel-autoload-function "pel-prompt" for:
     pel-y-n-e-or-l-p
     pel-select-from)
@@ -709,7 +713,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-shell" for:
     pel-shell
     pel-shell-previous-prompt
-    pel-shell-next-prompt)
+    pel-shell-next-prompt
+    pel-shell-show-cfg)
 
   (pel-autoload-function "pel-skels" for:
     pel-date

@@ -153,7 +153,7 @@
 ;;       - pel-pkg-for-rexx
 ;;       - pel-pkg-for-ruby
 ;;       - pel-pkg-for-rust
-;;       - pel-pkg-for-sh
+;;       - pel-pkg-for-sh-scripting
 ;;         - pel-sh-script-skeleton-control
 ;;       - pel-pkg-for-tcl
 ;;       - pel-pkg-for-v
@@ -163,6 +163,7 @@
 ;;     - pel-pkg-for-search
 ;;     - pel-pkg-for-session
 ;;     - pel-pkg-for-shells
+;;       - pel-pkg-for-vterm-mode
 ;;     - pel-pkg-for-skeletons
 ;;       - pel-pkg-generic-code-style
 ;;         - pel-sh-script-skeleton-control
@@ -434,18 +435,33 @@ Last character is a forward slash."
    (format "%s/doc/pdf/"
            (file-name-directory (locate-library "pel")))))
 
-(defun pel-pdf-file-url (topic &optional web-url)
-  "Return the full path of a pdf table for TOPIC.
+(defun pel-pdf-file-url (topic &optional on-web category)
+  "Return the full path of a PEL pdf table for TOPIC in CATEGORY.
+
 TOPIC is the file name body (no path, no extension).
+CATEGORY identifies the PDF category directory name:
+- if nil (the default), return main PEL mode PDF file name.
+- otherwise, the CATEGORY identifies the name of a sub-directory
+  where other PDF files are stored and the function returns the
+  name of that file. This allows managing a set of PDF files for
+  a given topic.  For instance, CATEGORY set to \"lang\",
+  identifies PDF files that contain programming language specific
+  syntax and reference information.
+
 By default return the local file url.
-If WEB-URL is non-nil return the web URL for the file hosted in GitHub."
-  (if web-url
-      (format "https://raw.githubusercontent.com/pierre-rouleau/pel/\
-master/doc/pdf/%s.pdf" topic)
-    (format "file:%s"
-            (expand-file-name
-             (format "%s.pdf" topic)
-             (pel-pdf-directory)))))
+If ON-WEB is non-nil return the web URL for the file hosted in GitHub."
+  (let ((subdir (if category
+                    (format "%s/" category)
+                  "")))
+    (if on-web
+        ;; Return GitHub directory location.
+        (format "https://raw.githubusercontent.com/pierre-rouleau/pel/\
+master/doc/pdf/%s%s.pdf" subdir topic)
+      ;; Return URL for local PDF file
+      (format "file:%s"
+              (expand-file-name
+               (format "%s%s.pdf" subdir topic)
+               (pel-pdf-directory))))))
 
 ;; ---------------------------------------------------------------------------
 ;; User Option Data Definition
@@ -1678,7 +1694,7 @@ Update copyright notice automatically when non-nil, don't otherwise."
   "Controls whether script files are automatically made executable when saved.
 make script files executable on save when non-nil, don't otherwise."
   :group 'pel-pkg-for-filemng
-  :group 'pel-pkg-for-sh
+  :group 'pel-pkg-for-sh-scripting
   :type 'boolean
   :safe #'booleanp)
 
@@ -2514,7 +2530,7 @@ See the author site at URL http://malsyned.net/smart-dash.html"
   :group 'pel-pkg-for-elixir
   :group 'pel-pkg-for-python
   :group 'pel-pkg-for-rust
-  :group 'pel-pkg-for-sh
+  :group 'pel-pkg-for-sh-scripting
   :type 'boolean
   :safe #'booleanp)
 
@@ -4438,7 +4454,7 @@ with no text."
 (defgroup pel-sh-script-skeleton-control nil
   "PEL generic shell-script skeleton style control.
 Controls what the ``<f6> h`` command does."
-  :group 'pel-pkg-for-sh
+  :group 'pel-pkg-for-sh-scripting
   :group 'pel-pkg-generic-code-style)
 
 (defcustom pel-shell-script-shebang-line "!/bin/sh"
@@ -4470,7 +4486,7 @@ But you can force some files to have that prefix and still be regular shell
 script files by using a file extension that is one of the extensions given
 here."
   :group 'pel-sh-script-skeleton-control
-  :group 'pel-pkg-for-sh
+  :group 'pel-pkg-for-sh-scripting
   :type '(repeat string))
 
 (defcustom pel-shell-sourced-script-file-name-prefix nil
@@ -4485,7 +4501,7 @@ quotes).
 
 See also: `pel-shell-script-extensions'."
   :group 'pel-sh-script-skeleton-control
-  :group 'pel-pkg-for-sh
+  :group 'pel-pkg-for-sh-scripting
   :type '(choice
           (const :tag  "Not specified" nil)
           (regexp :tag "File name regexp" :var "\\`_")))
@@ -9195,7 +9211,7 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Unix Shell Scripting Support
 ;; ----------------------------
-(defgroup pel-pkg-for-sh nil
+(defgroup pel-pkg-for-sh-scripting nil
   "PEL support for Unix shell scripting."
   :group 'pel-pkg-for-programming)
 
@@ -9203,7 +9219,7 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
   "Control whether PEL supports the Shell programming language.
 
 When turned on the shell-mode is associated with the PEL ``<f12>`` key."
-  :group 'pel-pkg-for-sh
+  :group 'pel-pkg-for-sh-scripting
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-sh :package-is :a-gate)
@@ -9215,7 +9231,7 @@ code using the flymake backend.
 
 NOTE: THIS IS OBSOLETE and will be removed eventually.
       Please use `pel-use-shellcheck'."
-  :group 'pel-pkg-for-sh
+  :group 'pel-pkg-for-sh-scripting
   :link '(url-link :tag "flymake-shellcheck @Github"
                    https://github.com/federicotdn/flymake-shellcheck)
   :type 'boolean
@@ -9226,7 +9242,7 @@ NOTE: THIS IS OBSOLETE and will be removed eventually.
   "Control whether PEL use shellcheck for shell script syntax checking.
 
 This can be set to one of the following values:"
-  :group 'pel-pkg-for-sh
+  :group 'pel-pkg-for-sh-scripting
   :link '(url-link :tag "flymake-shellcheck @Github"
                    https://github.com/federicotdn/flymake-shellcheck)
   :type
@@ -9241,7 +9257,7 @@ This can be set to one of the following values:"
   "List of *local* minor-modes automatically activated for Shell buffers.
 Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
-  :group 'pel-pkg-for-sh
+  :group 'pel-pkg-for-sh-scripting
   :type '(repeat function))
 
 (defcustom pel-sh-tab-width 2
@@ -9253,7 +9269,7 @@ This controls the number of space characters used in for
 indentation level in sh files when the `pel-sh-use-tabs' is set
 to nil. It also controls the number of columns shown to render a
 hard tab when one `pel-sh-use-tabs' is set to t."
-  :group 'pel-pkg-for-sh
+  :group 'pel-pkg-for-sh-scripting
   :type 'integer
   :safe 'pel-indent-valid-p)
 
@@ -9261,7 +9277,7 @@ hard tab when one `pel-sh-use-tabs' is set to t."
   "Value of `indent-tabs-mode' for editing sh files.
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-sh
+  :group 'pel-pkg-for-sh-scripting
   :type 'boolean
   :safe #'booleanp)
 
@@ -9693,7 +9709,8 @@ and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
 (defcustom pel-use-vterm nil
   "Control whether the vterm shell is available.
 The vterm package used the libvterm library to provide a very fast
-and usable shell for Emacs."
+and usable shell for Emacs.
+It requires Emacs 25.1 or later built with module support!"
   :group 'pel-pkg-for-shells
   :type 'boolean
   :safe #'booleanp)
@@ -9719,6 +9736,29 @@ Do not enter lambda expressions."
   "A regexp used to search for the shell prompt."
   :group 'pel-pkg-for-shells
   :type 'string)
+
+
+;; ---------------------------------------------------------------------------
+;; PEL-specific vterm-mode support
+;; -------------------------------
+(defgroup pel-pkg-for-vterm-mode nil
+  "PEL-specific customization for the `vterm-mode'."
+  :group 'pel-pkg-for-shells
+  :link `(url-link :tag "vterm-mode PDF" ,(pel-pdf-file-url "vterm-mode")))
+
+(defcustom pel-vterm-supports-f12-keys t
+  "Whether the F12 key prefix for PEL commands is available in vterm-mode."
+  :group 'pel-pkg-for-vterm-mode
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-vterm-supports-f12-navkeys t
+  "Whether F12 keys for PEL navigation commands are available in vterm-mode.
+
+To activate it the `pel-vterm-supports-f12-keys' must also be activated."
+  :group 'pel-pkg-for-vterm-mode
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-skeletons
@@ -10910,6 +10950,8 @@ indexing system."
   (setq pel-use-elisp-refs t)) ; helpful uses elisp-refs
 
 ;; De-activate any requests that cannot be honoured based on Emacs version.
+(when (version< emacs-version "25.1")
+  (setq pel-use-vterm nil))
 (when (version< emacs-version "27.1")
   (setq pel-use-go-translate nil)
   (setq pel-use-tzc nil)

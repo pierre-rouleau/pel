@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, May 11 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-16 11:36:08, updated by Pierre Rouleau>
+;; Time-stamp: <2024-03-18 17:42:41 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -62,11 +62,19 @@ to open location \"%s\"'" browser url)))
 ;;-pel-autoload
 (defun pel-browse-url (url &rest args)
   "Open the URL using the PEL selected web browser.
-Optionally pass extra arguments ARGS, but only when the
-user-option `pel-browser-used' is nil.
+
+Optionally pass extra arguments ARGS to the browser function, but
+only when the user-option `pel-browser-used' is nil.
+
 Use the browser identified by the user-option variable
 `pel-browser-used'."
   (interactive (browse-url-interactive-arg "URL: "))
+  (when (pel-string-starts-with-p url "file:")
+    ;; If the URL is a 'file:' URL first check if the file is present.
+    (let ((fname (substring url 5)))
+      (unless (file-exists-p fname)
+        (user-error "No such file: %s" fname))))
+
   ;; On macOS, the normal browser-url- functions do not work.
   ;; So use the macOS scripting osascript to launch the browser
   ;; when firefox or chrome is selected by the user-option.

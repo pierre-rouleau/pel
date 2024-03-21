@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-06 10:58:31 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-03-21 17:08:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -143,14 +143,20 @@
                              '(ispell
                                flyspell
                                go-translate)))
-(defconst pel--shell-terminal-groups '(shell
-                                       term
-                                       terminals
-                                       vter))
+;; Shells
+(defconst pel--shell-launch-groups '(shell
+                                     term
+                                     terminals
+                                     vterm))
+(defconst pel--sh-scripting-groups '(sh
+                                     sh-script
+                                     sh-indentation
+                                     electricity))
+
 
 (defconst pel--undo-groups (let ((items '(undo
-                                         undo-propose
-                                         undo-tree)))
+                                          undo-propose
+                                          undo-tree)))
                              (if pel-emacs-28-or-later-p
                                  (append items '(vundo)))))
 
@@ -314,16 +320,13 @@
                                                               electricity))
     ([f11 32 ?U]     "pl-ruby"      pel-pkg-for-ruby         (ruby
                                                               electricity))
-    ([f11 32 ?H]     "pl-sh"        pel-pkg-for-sh           (sh
-                                                              sh-script
-                                                              sh-indentation
-                                                              electricity))
     ([f11 32 ?t]     "pl-tcl"       pel-pkg-for-tcl           tcl)
-    ([f11 32 ?v]     "pl-v"          pel-pkg-for-v              (v-mode
-                                                                 electricity))
+    ([f11 32 ?v]     "pl-v"         pel-pkg-for-v            (v-mode
+                                                              electricity))
 
-    ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      (elixir
-                                                                 electricity))
+    ([f11 32 ?x]     "pl-elixir"    pel-pkg-for-elixir        (elixir
+                                                               electricity))
+    ([f11 32 ?Z]     "pl-sh"        pel-pkg-for-sh-scripting ,pel--sh-scripting-groups)
     (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         (arc
                                                                  lispy))
     (,(kbd "<f11> SPC C-h") "pl-hy"     pel-pkg-for-hy)
@@ -505,12 +508,10 @@
                                                            yasnippet-snippets
                                                            yas-minor))
 
-    (,(kbd "<f11> SPC SPC z") "shells"  pel-pkg-for-shells ,pel--shell-terminal-groups)
-    ([f11 32 32 ?z]           "shells"  pel-pkg-for-shells ,pel--shell-terminal-groups)
-    (,(kbd "<f11> SPC SPC s") "shells"  pel-pkg-for-shells      shell)
-    ([f11 32 32 ?s]           "shells"  pel-pkg-for-shells      shell)
-    (,(kbd "<f11> SPC SPC t") "shells"  pel-pkg-for-shells      term)
-    ([f11 32 32 ?t]           "shells"  pel-pkg-for-shells      term)
+    ([f11 ?z]                 "shells"  pel-pkg-for-shells  ,pel--shell-launch-groups)
+    ([f11 32 ?z ?s]           "shell-mode"  nil             (shell comint))
+    ([f11 32 ?z ?t]           "term-mode"   nil             term)
+    ([f11 32 ?z ?v]           "vterm-mode"  pel-pkg-for-vterm-mode  vterm)
 
     ([f11 ?|]        "scrolling"  pel-pkg-for-scrolling   (follow
                                                            smooth-scrolling))
@@ -659,7 +660,7 @@ stored inside the doc/pdf directory.")
     ("racket"          [f11 32 19 18])
     ("scsh"            [f11 32 19 8])
     ;;
-    ("sh"              [f11 32 ?H])
+    ("sh"              [f11 32 ?Z])
     ("tcl"             [f11 32 ?t])
     ("v"               [f11 32 ?v])
     ("adoc"            [f11 32 27 ?a])
@@ -675,8 +676,9 @@ stored inside the doc/pdf directory.")
     ("yaml"            [f11 32 27 ?y])
     ("yang"            [f11 32 27 ?Y])
     ;; shells and terminals
-    ("shell"           [f11 32 32 ?s])
-    ("term"            [f11 32 32 ?t])
+    ("shell"           [f11 32 ?z ?s])
+    ("term"            [f11 32 ?z ?t])
+    ("vterm"           [f11 32 ?z ?v])
     ;; diff modes
     ("diff"            [f11 32 32 ?d ?d])
     ("ediff"           [f11 32 32 ?d ?e])
@@ -688,17 +690,19 @@ to a symbol or key sequence array to use as map key inside
 
 (defun pel--major-mode-keyseq (keyseq)
   "Return global mode index for major mode KEYSEQ.
-The KEYSEQ is a sequence that starts with f12, used as a
-short cut in a major mode.
-It may have only one or several keys.
-Its meaning depend on the currently active major mode.
-Return the corresponding global key sequence that means the same
-thing so it can be used as an index inside variable
+The KEYSEQ is a sequence prefix that starts with f12, used as a
+short cut in a major mode.  It may have only one or several keys.
+Its meaning depend on the currently active major mode.  Return
+the corresponding global key sequence that means the same thing
+so it can be used as an index inside variable
 `pel--prefix-to-topic-alist'."
   (unless (eq (elt keyseq 0) 'f12)
     (error "Logic error!! keyseq should start with f12.  It is %s" keyseq))
+  ;; (message "pel--major-mode-keyseq keyseq=%s" keyseq)
   (let* ((mode-str (substring (symbol-name major-mode) 0 -5))
          (keyidx (cadr (assoc mode-str pel--mode-letter-alist))))
+    ;; (message "pel--major-mode-keyseq --> mode-str = %s" mode-str)
+    ;; (message "pel--major-mode-keyseq --> keyidx   = %s" keyidx)
     (if keyidx
         (seq-concatenate 'vector keyidx (seq-drop keyseq 1))
       (error "Missing entry for %s in pel--mode-letter-alist" mode-str))))
@@ -714,6 +718,7 @@ current major mode.
 Check the key sequences.  Expand the f12 key sequence into
 the full f11 key sequence.  Report invalid key sequence."
   (let ((prefix-key (elt keyseq 0)))
+    ;; (message "pel--kte-for: prefix-key : %s" prefix-key)
     (unless (or (memq prefix-key '(f6 f7 f8 f11 f12 M-f12))
                 ;; special case command (for now)
                 (equal keyseq [27 103 f4])
@@ -769,14 +774,26 @@ allowed the command to be invoked."
       (error "Cannot load pel-prompt!"))))
 
 ;;-pel-autoload
-(defun pel-help-pdf (&optional open-github-page)
+(defun pel-help-pdf (&optional n)
   "Open the PEL PDF file(s) for the current context.
 
-By default the function opens the local PDF file unless the
-OPEN-GITHUB-PAGE is specified, in which case it opens the GitHub
-hosted raw PDF file.  However, if the user-option variable
-`pel-flip-help-pdf-arg' is set, it's the other way around: the
-GitHub remote file is opened by default.
+The argument N controls the selection of the PDF file and way it is opened.
+
+======= ======================== ============================================
+N value Content                  Method
+======= ======================== ============================================
+none    Mode-specific PDF        Open local PDF with PDF reader
+ 1      Mode-specific PDF        Open local PDF with PDF reader
+-1      Mode-specific PDF        Open GitHub raw PDF with default web browser
+>= 2    Language/Syntax/Ref PDF  Open local PDF with PDF reader
+<= -2   Language/Syntax/Ref PDF  Open GitHub raw PDF with default web browser
+======= ======================== ============================================
+
+The sign of the numeric value identifies whether the local PDF file
+or the corresponding GitHub hosted raw PDF file is opened.
+However, if the user-option variable `pel-flip-help-pdf-arg' is
+set, it's the other way around: the GitHub remote file is opened
+by default.
 
 The function uses Emacs default browse mechanism specified by the
 user-option variable `browse-url-browser-function' unless the
@@ -786,7 +803,7 @@ specific browser.
 If your system default browser can not render PDF files directly
 and downloads them, then you can force the use of the Firefox
 browser (which renders PDF) by setting `pel-browser-used' to
-\\='firefox.
+`firefox'.
 
 Using a browser that is capable of direct rendering of PDF
 produces a much better user experience: you will be able to
@@ -795,19 +812,29 @@ quickly navigate through PEL documentation inside the browser.
 The `pel-help-pdf' function determines the requested PDF topic by the key
 sequence that led to the execution of the command.  These key sequences
 normally end with the F1 key."
-  (interactive "P")
-  (let* ((keyseq (pel--keyseq))
+  (interactive "p")
+  ;; (message "N is %s" n)
+  (let* ((open-github-page-p (< n 0))
+         (category  (when (>= (abs n) 2) "lang"))
+         (keyseq (pel--keyseq))         ; identify the first key(s)
          (kte    (pel--kte-for keyseq)) ; pel--prefix-to-topic-alist entry
-         (pdfs   (pel--kte-pdfs kte)))
+         (pdfs   (if (and category (eq major-mode 'sh-mode))
+                     (list (pel-shell-scripting-language))
+                   (pel--kte-pdfs kte))))
+    ;; (message "pel--keyseq   :--> %s" keyseq)
+    ;; (message "pel--kte-for  :--> %s" kte)
+    ;; (message "pel--kte-pdfs :--> %s" pdfs)
     (unless pdfs
       (error "No PDF entry in pel--prefix-to-topic-alist for %s.\n\
 There should be no key binding!" keyseq))
-    (let* ((open-github-file (if pel-flip-help-pdf-arg
-                                 (not open-github-page)
-                               open-github-page))
-           (url (pel-pdf-file-url (pel--kte-select-topic "Open the PDF file: "
-                                                         pdfs)
-                                  open-github-file)))
+    (let* ((open-github-file-p (if pel-flip-help-pdf-arg
+                                   (not open-github-page-p)
+                                 open-github-page-p))
+           (url (pel-pdf-file-url
+                 (pel--kte-select-topic "Open the PDF file: " pdfs)
+                 open-github-file-p
+                 category)))
+      ;; (message "url: %s" url)
       (pel--help-browse url))))
 
 (defconst pel--topic-alias
@@ -940,12 +967,12 @@ There should be no key binding!" keyseq))
       (browse-url url)
       (user-error "Failed loading pel-browse, used Emacs browse-url instead!"))))
 
-(defun pel-help-open-pdf (topic &optional open-github-page)
+(defun pel-help-open-pdf (topic &optional open-github-page-p)
   "Open PDF help for TOPIC string potentially OPEN-WEB-PAGE."
-  (pel--help-browse (pel-pdf-file-url topic open-github-page)))
+  (pel--help-browse (pel-pdf-file-url topic open-github-page-p)))
 
 ;;-pel-autoload
-(defun pel-help-on-completion-input (&optional open-github-page)
+(defun pel-help-on-completion-input (&optional open-github-page-p)
   "Open the input completion help PDF, in a browser if arg OPEN-WEB-PAGE set.
 
 By default the function opens the local PDF file unless the
@@ -955,11 +982,11 @@ hosted raw PDF file.  However, if the user-option variable
 GitHub remote file is opened by default."
   (interactive "P")
   (pel-help-open-pdf "completion-input" (if pel-flip-help-pdf-arg
-                                            (not open-github-page)
-                                          open-github-page)))
+                                            (not open-github-page-p)
+                                          open-github-page-p)))
 
 ;;-pel-autoload
-(defun pel-help-on-outline (&optional open-github-page)
+(defun pel-help-on-outline (&optional open-github-page-p)
   "Open the outline help PDF, in a browser if arg OPEN-WEB-PAGE set.
 
 By default the function opens the local PDF file unless the
@@ -969,11 +996,11 @@ hosted raw PDF file.  However, if the user-option variable
 GitHub remote file is opened by default."
   (interactive "P")
   (pel-help-open-pdf "outline" (if pel-flip-help-pdf-arg
-                                   (not open-github-page)
-                                 open-github-page)))
+                                   (not open-github-page-p)
+                                 open-github-page-p)))
 
 ;;-pel-autoload
-(defun pel-help-pdf-select (&optional open-github-page)
+(defun pel-help-pdf-select (&optional open-github-page-p)
   "Prompt for a PEL PDF and open it.
 By default it opens the local PDF file, but if the OPEN-WEB-PAGE argument
 is non-nil it opens the web-based PDF copy hosted on Github.
@@ -1003,7 +1030,7 @@ won't be able to see anyway"
          ;; since aliases are included in the list presented to user,
          ;; translate a selected alias back to its real file name
          (topic (alist-get topic pel--topic-alias topic nil (function equal))))
-    (pel-help-open-pdf topic open-github-page)))
+    (pel-help-open-pdf topic open-github-page-p)))
 
 ;; --
 

@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-10-27 12:14:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-03-20 17:12:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2022, 2023, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -66,7 +66,10 @@ the statements on the current line with the above contiguous lines."
 
 ;; pel-autoload
 (defun pel-align-info (&optional append)
-  "Display current buffer's vertical alignment behaviour."
+  "Display current buffer's vertical alignment behaviour.
+
+Clear previous buffer content unless optional APPEND argument is non-nil,
+in which case it appends to the previous report."
   (interactive "P")
   (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
     (pel-print-in-buffer

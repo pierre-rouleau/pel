@@ -2,6 +2,21 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Overhaul of PDF help access.  The infrastructure now support the ability to request a language-specific
+  PDF in addition to the existing mode-specific PDF.  The ~<f12> <f1>~ continues to provide access to the
+  major-mode or the command topic.  But now, for topics that are major-mode specific it's possible to
+  request access to the language-specific PDF.  The language specific PDF files are stored inside the doc/pdf/lang
+  directory. At the moment there is only one 'language'-specific pdf, and it's for *zsh*. When editing a shell script,
+  if this happens to be a zsh script, typing ~C-u <f12> <f1>~ opens that.  Typing ~<f12> <f1>~ opens the PDF describing
+  Emacs support for shell scripting.
+- Clarified information for the shell.  There is now 3 sets of PDF files related to Unix-type shells:
+  - ~<f11> z <f1>~ opens the PDF that describes how to launch shells, processes and applications.
+  - When editing a shells script, in *sh-mode*, the ~<f12> <f1>~ opens the PDF describing Emacs support for editing Unix shell scripts.
+  - When editing a shells script, in *sh-mode*, the ~C-u <f12> <f1>~ (or ~M-2 <f12> <f1>~) opens the PDF describing the
+    scripting language, such as the doc/pdf/lang/zsh.pdf (which at the moment is the only language-specific PDF published).
+  - Inside a buffer in *shell-mode*, *term-mode* or *vterm-mode* the ~<f12> <f1>~ opens the PDF that describes the shell-mode,
+    term-mode or vterm-mode, respectively.
+- Also added some commands bound to the ~<f12>~ key of the various shell/terminal modes.
 - Add key bindings to diff a buffer with the file it's visiting: ~<f11> b =~ is now bound to *diff-buffer-with-file* and
   ~<f11> b M-=~ is bound to *ediff-current-file*.
 - Improved PEL default key bindings for iedit-mode: by default PEL uses ~M-S-<f7>~, ~M-S-<f8>~ and ~M-S-<f9>~ to move to previous iedit occurrence,
