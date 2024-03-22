@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Moved the GNU Make specific information from the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make PDF]] file to the new GNU Make PDF stored in the doc/pdf/lang
+  directory.  To access it, type ~C-u <f12> <f1>~ from a buffer that edits a make file in Gnu Make mode.
+  This is a new method to access language specific PDF files.  I previously added a zsh PDF that is accessible using the same
+  key sequence in a buffer editing a zsh file.  I will be adding more language specific PDF files in time.
+  The *pel-help-pdf* interactive function now calls the new *pel-lang-pdf* which itself calls *pel-shell-scripting-language* for the shell modes.
 - Overhaul of PDF help access.  The infrastructure now support the ability to request a language-specific
   PDF in addition to the existing mode-specific PDF.  The ~<f12> <f1>~ continues to provide access to the
   major-mode or the command topic.  But now, for topics that are major-mode specific it's possible to

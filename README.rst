@@ -26,7 +26,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#commands
 
-.. image:: https://img.shields.io/badge/PDF_Files-150-blue
+.. image:: https://img.shields.io/badge/PDF_Files-151-blue
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
@@ -224,6 +224,12 @@ various packages, etc...
     Inside Emacs use ``<f11> <f1>`` to open the `PEL Index PDF`_ and then
     navigate from it, or use ``<f12> <f1>`` to open the PDF describing the
     major mode of the current buffer and its key bindings.
+
+    - Some major modes also support the opening of a language-specific PDF.
+      This is done by using a key prefix: ``C-u <f12> <f1>``.  For example
+      this now opens a PDF on zsh when the command is issued from a buffer
+      editing a zsh script, or a GNU Make PDF from a buffer editing a make file
+      in GNU Make mode.
 
 - `PEL's Manual`_ describes PEL features in more details. See:
 

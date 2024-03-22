@@ -265,9 +265,6 @@
 ;; Tags support
 ;; - `pel-visit-tags'
 ;;
-;; Identification of the Shell Scripting Language
-;; - `pel-shell-scripting-language'
-
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;; subr (always loaded) ; use: called-interactively-p
@@ -3103,19 +3100,6 @@ Return the new value of LIST-VAR."
   (dolist (fname tags-files)
     (when (file-exists-p fname)
       (visit-tags-table fname))))
-
-;; ---------------------------------------------------------------------------
-;; Identification of the Shell Scripting Language
-;; ----------------------------------------------
-(defun pel-shell-scripting-language ()
-  "Return string identifying the shell scripting language for current buffer.
-
-Something like \"sh\", \"bash\", or \"zsh\".
-If the current buffer "
-  (unless (fboundp 'sh-shell)
-    (require 'sh-script))
-  (defvar sh-shell)
-  (symbol-name sh-shell))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)

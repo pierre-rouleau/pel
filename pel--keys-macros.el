@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-03-21 17:08:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-03-22 12:05:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -773,6 +773,33 @@ allowed the command to be invoked."
         (pel-select-string-from prompt strings)
       (error "Cannot load pel-prompt!"))))
 
+
+(defun pel-shell-scripting-language ()
+  "Return string identifying the shell scripting language for current buffer.
+
+Something like \"sh\", \"bash\", or \"zsh\".
+If the current buffer "
+  (unless (fboundp 'sh-shell)
+    (require 'sh-script))
+  (defvar sh-shell)
+  (symbol-name sh-shell))
+
+(defun pel-lang-pdf ()
+  "Return base name of the language specific PDF file for current buffer.
+
+Do no include file extension."
+  (let ((major-mode-str (symbol-name major-mode)))
+    (cond
+     ((eq major-mode 'sh-mode)
+      ;; return "sh", "bash", zsh", depending of the shell scripting language used.
+      (pel-shell-scripting-language))
+
+     ((pel-string-starts-with-p major-mode-str "makefile-")
+      ;; Return MMMM for the makefile-MMMM-mode modes.
+      ;; Example: for makefile-gmake-mode: return "gmake".
+      (substring major-mode-str 9 -5))
+     (t  (user-error "No language specific for this major mode.")))))
+
 ;;-pel-autoload
 (defun pel-help-pdf (&optional n)
   "Open the PEL PDF file(s) for the current context.
@@ -818,8 +845,7 @@ normally end with the F1 key."
          (category  (when (>= (abs n) 2) "lang"))
          (keyseq (pel--keyseq))         ; identify the first key(s)
          (kte    (pel--kte-for keyseq)) ; pel--prefix-to-topic-alist entry
-         (pdfs   (if (and category (eq major-mode 'sh-mode))
-                     (list (pel-shell-scripting-language))
+         (pdfs   (if category (list (pel-lang-pdf))
                    (pel--kte-pdfs kte))))
     ;; (message "pel--keyseq   :--> %s" keyseq)
     ;; (message "pel--kte-for  :--> %s" kte)
