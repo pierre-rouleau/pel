@@ -26,7 +26,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#commands
 
-.. image:: https://img.shields.io/badge/PDF_Files-141-blue
+.. image:: https://img.shields.io/badge/PDF_Files-150-blue
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
