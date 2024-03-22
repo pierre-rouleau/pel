@@ -22,7 +22,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-574-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-593-teal
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#commands
 
@@ -213,7 +213,7 @@ various packages, etc...
 ➣ Extends Emacs Documentation
 -----------------------------
 
-- PEL provides **over 140** `PDF topic-oriented reference sheets`_ [#doc]_ packed
+- PEL provides **over 150** `PDF topic-oriented reference sheets`_ [#doc]_ packed
   with symbol annotated, colour coded key bindings and command descriptions,
   with hyperlinks to Emacs manuals, external packages, articles and other
   useful references.
@@ -237,7 +237,10 @@ various packages, etc...
   - `PEL convenience features`_ with PEL commands that extend several aspects
     of Emacs.
 
+  .. warning:: GitHub presently fails to render several reStructuredText files
+               to HTML.  They are currently working to resolve `this issue`_.
 
+.. _this issue: https://github.com/orgs/community/discussions/86715
 
 ➣ PEL Convenience Commands
 --------------------------
