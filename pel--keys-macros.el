@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-03-22 15:57:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-03-22 16:31:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -791,10 +791,15 @@ Each entry of the list is file base name without file extension."
   (let ((major-mode-str (symbol-name major-mode)))
     (cond
      ((eq major-mode 'sh-mode)
-      ;; return "sh", "bash", zsh", depending of the shell scripting language used.
+      ;; return "sh", "bash", zsh", based on shell scripting language used.
       (list (pel-shell-scripting-language)))
 
-     ((eq major-mode 'emacs-lisp-mode)
+     ((memq major-mode '(emacs-lisp-mode lisp-interaction-mode))
+      ;; Special case: these old files are located in the doc/pdf directory.
+      ;; Because the files are located right in the doc/pdf and not inside the
+      ;; doc/pdf/lang directory, and because the files returned by this
+      ;; function are supposed to be in the lang subdir, return a file name
+      ;; that force looking into the above dir.
       (list "../plm-lispy" "../emacs-lisp-types"))
 
      ((pel-string-starts-with-p major-mode-str "makefile-")
