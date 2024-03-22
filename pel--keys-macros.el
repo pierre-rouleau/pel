@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-03-22 12:05:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-03-22 15:57:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -785,19 +785,23 @@ If the current buffer "
   (symbol-name sh-shell))
 
 (defun pel-lang-pdf ()
-  "Return base name of the language specific PDF file for current buffer.
+  "Return list of language specific PDF file for current buffer.
 
-Do no include file extension."
+Each entry of the list is file base name without file extension."
   (let ((major-mode-str (symbol-name major-mode)))
     (cond
      ((eq major-mode 'sh-mode)
       ;; return "sh", "bash", zsh", depending of the shell scripting language used.
-      (pel-shell-scripting-language))
+      (list (pel-shell-scripting-language)))
+
+     ((eq major-mode 'emacs-lisp-mode)
+      (list "../plm-lispy" "../emacs-lisp-types"))
 
      ((pel-string-starts-with-p major-mode-str "makefile-")
       ;; Return MMMM for the makefile-MMMM-mode modes.
       ;; Example: for makefile-gmake-mode: return "gmake".
-      (substring major-mode-str 9 -5))
+      (list (substring major-mode-str 9 -5)))
+
      (t  (user-error "No language specific for this major mode.")))))
 
 ;;-pel-autoload
@@ -845,7 +849,8 @@ normally end with the F1 key."
          (category  (when (>= (abs n) 2) "lang"))
          (keyseq (pel--keyseq))         ; identify the first key(s)
          (kte    (pel--kte-for keyseq)) ; pel--prefix-to-topic-alist entry
-         (pdfs   (if category (list (pel-lang-pdf))
+         (pdfs   (if category
+                     (pel-lang-pdf)
                    (pel--kte-pdfs kte))))
     ;; (message "pel--keyseq   :--> %s" keyseq)
     ;; (message "pel--kte-for  :--> %s" kte)
