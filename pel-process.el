@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, August 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-03-21 16:35:22 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-03-22 09:42:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -112,14 +112,18 @@ Invalid action in PEL environment control list for variable %s"
 
 ;; pel-autoload
 (defun pel-process-tree ()
-  "Print string showing process tree in current buffer."
+  "Print process tree.
+
+When issued from a buffer that has no inferior process, print
+Emacs process tree.  If the buffer runs an inferior process, such as a REPL or
+a shell buffer, print the process tree of that process."
   (interactive)
   (unless (executable-find "pstree")
     (user-error "pstree, used by pel-process-tree, is not available!"))
-  (let ((process (get-buffer-process (current-buffer))))
-    (if process
-        (shell-command (format "pstree -p %d" (process-id process)))
-      (user-error "No process"))))
+  (let* ((process (get-buffer-process (current-buffer)))
+         (pid (if process (process-id process)
+                (emacs-pid))))
+    (shell-command (format "pstree -p %d" pid))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-process)

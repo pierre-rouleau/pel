@@ -5569,14 +5569,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
 (global-set-key (kbd "<M-S-f9>")  'pel-show-init-time)
 
-(pel-autoload-file pel-emacs for:
-                   pel-emacs-load-stats
-                   pel-emacs-mem-stats)
 (define-key pel:emacs "l"  'pel-emacs-load-stats)
 (define-key pel:emacs "m"  'pel-emacs-mem-stats)
-
-(pel-autoload-file pel-pathmng for: pel-show-load-path)
 (define-key pel:emacs "p" 'pel-emacs-load-path)
+(define-key pel:emacs (kbd "M-p") 'pel-process-tree)
 
 ;; Profiling support: esup
 (when (and pel-use-esup

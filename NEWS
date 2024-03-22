@@ -415,6 +415,9 @@ The description of the iedit mode in the [[https://raw.githubusercontent.com/pie
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: Add *pel-process-tree* command, bound to ~<f11> ? e M-p>~ that prints the process tree
+  of the inferior process used in a buffer, or, if none, prints the process tree of Emacs itself.
+  This uses the *pstree* OS executable.  If it is not available the Emacs command issues a user-error.
 - New: Add preliminary support for Factor, a powerful concatenative
   (stack-based) programming language. Activate it with *pel-use-factor* which
   activates the eternal *fuel* package implementing the *factor-mode*.
