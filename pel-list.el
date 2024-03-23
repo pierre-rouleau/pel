@@ -68,7 +68,7 @@ Allow up to MAX-PER-LINE elements per line.
 For second and following lines, put leading PREFIX string.
 Note that SEP does not need to be a newline to place each element
 on a separate line; for that set MAX-PER-LINE to 1."
-  (when (<= max-per-line 0)
+  (when (and max-per-line (<= max-per-line 0))
     (error "max-per-line must either be nil or >= 1"))
   (let ((text  "")
         (rem-count (length elems))
