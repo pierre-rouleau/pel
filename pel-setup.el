@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-03 10:38:21 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-03-23 10:50:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2023, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -234,6 +234,7 @@
 ;;                             ;      `pel-emacs-is-graphic-p'
 (require 'pel--options)        ; use: `pel-compile-pel-bundle-autoload'
 (require 'pel-custom)          ; use: `pel-customize-save'
+(require 'pel-list)            ; use: `pel-join'
 (require 'pel-package)         ; use: `pel-elpa-dirpath'
 (require 'pel-elpa)            ; use: `pel-elpa-create-copies'
 ;;                             ;      `pel-elpa-disable-pkg-deps-in'
@@ -626,29 +627,39 @@ This function is meant to be called by `pel-init' to check if the user-option
 correspond to what is identified inside the init.el and early-init.el files.
 
 Returns t if all is ok, nil otherwise."
+  ;; There are 2 or 3 variables to check:
+  ;; - pel-support-dual-environment        : from main PEL code
+  ;; - pel-init-support-dual-environment-p : in init.el  - all Emacs  versions
+  ;; - pel-early-init-support-dual-environment-p : in early-init.el on Emacs >= 27
+  ;; They should all have the same value (unless Emacs < 27)
   (let ((symbols '(pel-init-support-dual-environment-p))
         (is-ok t))
     (when pel-emacs-27-or-later-p
       (push 'pel-early-init-support-dual-environment-p symbols))
     (dolist (symbol symbols)
-      (unless (eq pel-support-dual-environment (symbol-value symbol))
-        (setq is-ok nil)))
+      (when (boundp symbol)
+          (unless (eq pel-support-dual-environment (symbol-value symbol))
+            (setq is-ok nil))))
     (unless is-ok
       (if pel-support-dual-environment
           (pel--setup-dual-environment
            "Dual environment is requested by user-option, but not active!\n")
         (display-warning
          'pel-setup-check-dual-environment
-         (format "\
+         (format "
 There are inconsistencies in the PEL dual environment setup.
- It is not requested by the `pel-setup-check-dual-environment' user-option
- BUT the initialization %s %S identify a different request.
- Please fix that.
+ The dual environment is not requested by the `pel-support-dual-environment' user-option
+ BUT an inconsistent request is identified by the initialization via:
+  - %s.
+ Please fix that: ensure consistency across values by editing the files.
  Refer to PEL user Manual installation notes and read information about
- 'Support for Independent Customization of Graphics and Terminal based\
- Emacs'."
-                 (pel-pluralize (length symbols) "symbol")
-                 symbols)
+ 'Independent Customization for Terminal and Graphics Modes'."
+                 (pel-join (mapcar
+                            (function pel-symbol-text)
+                            (cons 'pel-support-dual-environment symbols))
+                           ", "
+                           1
+                           "  - "))
          :error)))
     is-ok))
 
