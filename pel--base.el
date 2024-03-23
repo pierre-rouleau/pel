@@ -89,6 +89,7 @@
 ;;
 ;; Symbol value extraction
 ;; - `pel-symbol-value'
+;; - `pel-as-symbol'
 ;;
 ;; String generation utilities:
 ;;  - `pel-option-mode-state'
