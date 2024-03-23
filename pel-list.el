@@ -1,6 +1,6 @@
 ;;; pel-list.el --- List utilities  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -65,7 +65,11 @@ Performance: O(n) - of LIST size."
   "Return a string joining each string in ELEMS.
 Use SEP, a string,  as separator.
 Allow up to MAX-PER-LINE elements per line.
-For second and following lines, put leading PREFIX string."
+For second and following lines, put leading PREFIX string.
+Note that SEP does not need to be a newline to place each element
+on a separate line; for that set MAX-PER-LINE to 1."
+  (when (<= max-per-line 0)
+    (error "max-per-line must either be nil or >= 1"))
   (let ((text  "")
         (rem-count (length elems))
         (done-count 0))
