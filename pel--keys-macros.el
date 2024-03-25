@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-03-22 16:31:38 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-03-23 19:41:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -818,23 +818,27 @@ The argument N controls the selection of the PDF file and way it is opened.
 ======= ======================== ============================================
 N value Content                  Method
 ======= ======================== ============================================
-none    Mode-specific PDF        Open local PDF with PDF reader
+none    Mode-specific PDF        Open local PDF
  1      Mode-specific PDF        Open local PDF with PDF reader
 -1      Mode-specific PDF        Open GitHub raw PDF with default web browser
->= 2    Language/Syntax/Ref PDF  Open local PDF with PDF reader
+>= 2    Language/Syntax/Ref PDF  Open local PDF
 <= -2   Language/Syntax/Ref PDF  Open GitHub raw PDF with default web browser
 ======= ======================== ============================================
 
-The sign of the numeric value identifies whether the local PDF file
-or the corresponding GitHub hosted raw PDF file is opened.
+The local PDF is opened according to the value selected by the
+`pel-open-pdf-method' user-option; which defaults to the local
+PDF viewer.
+
+The sign of the numeric value identifies whether the local PDF
+file or the corresponding GitHub hosted raw PDF file is opened.
 However, if the user-option variable `pel-flip-help-pdf-arg' is
 set, it's the other way around: the GitHub remote file is opened
 by default.
 
-The function uses Emacs default browse mechanism specified by the
-user-option variable `browse-url-browser-function' unless the
-user-option variable `pel-browser-used' forces the use of a
-specific browser.
+To open the web file, the function uses Emacs default browse
+mechanism specified by the user-option variable
+`browse-url-browser-function' unless the user-option variable
+`pel-browser-used' forces the use of a specific browser.
 
 If your system default browser can not render PDF files directly
 and downloads them, then you can force the use of the Firefox
