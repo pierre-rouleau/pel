@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-03-21 16:54:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-03-25 16:54:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -72,28 +72,37 @@ commands like term, ansi-term and ielm."
     (shell shell-buffer)))
 
 ;;-pel-autoload
-(defun pel-shell-previous-prompt ()
-  "Move point to the previous prompt line.
+(defun pel-shell-previous-prompt (n)
+  "Move point to the previous prompt line at command.
 
 It uses the `pel-shell-prompt-line-regexp' user-option to perform
 the search."
-  (interactive)
-  (if (re-search-backward pel-shell-prompt-line-regexp nil :noerror)
-      (move-beginning-of-line 1)
-    (user-error "No prompt found above point. Searching for %s" pel-shell-prompt-line-regexp)))
+  (interactive "p")
+  (if (< n 0)
+      (pel-shell-next-prompt (abs n))
+    (dotimes (_ n)
+      (forward-line -1)
+      (if (re-search-backward pel-shell-prompt-line-regexp nil :noerror)
+          (if  (re-search-forward pel-shell-prompt-line-regexp nil :noerror)
+              (right-char 1)
+            (user-error "No prompt found above point. Searching for %s" pel-shell-prompt-line-regexp))
+        (user-error "No prompt found above point. Searching for %s" pel-shell-prompt-line-regexp)))))
 
 ;;-pel-autoload
-(defun pel-shell-next-prompt ()
-  "Move point to the previous prompt line.
+(defun pel-shell-next-prompt (n)
+  "Move point to the previous prompt line at command.
 
 It uses the `pel-shell-prompt-line-regexp' user-option to perform
 the search."
-  (interactive)
-  (right-char 1)
-  (if (re-search-forward pel-shell-prompt-line-regexp nil :noerror)
-      (move-beginning-of-line 1)
-    (left-char 1)
-    (user-error "No prompt found below point. Searching for %s" pel-shell-prompt-line-regexp)))
+  (interactive "p")
+  (if (< n 0)
+      (pel-shell-previous-prompt (abs n))
+    (dotimes (_ n)
+      (right-char 1)
+      (if (re-search-forward pel-shell-prompt-line-regexp nil :noerror)
+          (right-char 1)
+        (left-char 1)
+        (user-error "No prompt found below point. Searching for %s" pel-shell-prompt-line-regexp)))))
 
 ;;-pel-autoload
 (defun pel-shell-show-cfg (&optional append)

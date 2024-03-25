@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- *pel-shell-previous-prompt* and *pel-shell-next-prompt* commands now accept a numeric argument.  By default it's 1.
+  Using a different number allows repetition and direction change.
+  These commands now also leaves point after the prompt on the first character of the command.
+- Added *pel-term-use-shell-prompt-line-regexp* user option: when set to t (the default), PEL sets *term-prompt-regexp* to the value of
+  *pel-shell-prompt-line-regexp* allowing all prompt navigation search to use the same regular expression.
+  This user-option is part of the new customization group: *pel-pkg-for-term-mode*.
 - Moved the GNU Make specific information from the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make PDF]] file to the new GNU Make PDF stored in the doc/pdf/lang
   directory.  To access it, type ~C-u <f12> <f1>~ from a buffer that edits a make file in Gnu Make mode.
   This is a new method to access language specific PDF files.  I previously added a zsh PDF that is accessible using the same

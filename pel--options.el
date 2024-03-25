@@ -9733,10 +9733,26 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-shell-prompt-line-regexp "^>"
-  "A regexp used to search for the shell prompt."
+  "A regexp used to search for the shell prompt.
+
+The regexp must identify (at the very least) the *end* of the prompt,
+to allow placing the point at the very first character where a command was or
+will be typed. "
   :group 'pel-pkg-for-shells
   :type 'string)
 
+;; ---------------------------------------------------------------------------
+;; PEL-specific vterm-mode support
+;; -------------------------------
+(defgroup pel-pkg-for-term-mode nil
+  "PEL-specific customization for the `term-mode'."
+  :group 'pel-pkg-for-shells
+  :link `(url-link :tag "term-mode PDF" ,(pel-pdf-file-url "term-mode")))
+
+(defcustom pel-term-use-shell-prompt-line-regexp t
+  "When t, term-prompt-regexp set to pel-shell-prompt-line-regexp value."
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; PEL-specific vterm-mode support

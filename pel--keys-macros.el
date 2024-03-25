@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-03-23 19:41:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-03-25 16:34:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -510,7 +510,7 @@
 
     ([f11 ?z]                 "shells"  pel-pkg-for-shells  ,pel--shell-launch-groups)
     ([f11 32 ?z ?s]           "shell-mode"  nil             (shell comint))
-    ([f11 32 ?z ?t]           "term-mode"   nil             term)
+    ([f11 32 ?z ?t]           "term-mode"   pel-pkg-for-term-mode   term)
     ([f11 32 ?z ?v]           "vterm-mode"  pel-pkg-for-vterm-mode  vterm)
 
     ([f11 ?|]        "scrolling"  pel-pkg-for-scrolling   (follow

@@ -8090,6 +8090,8 @@ the ones defined from the buffer now."
 (define-key pel:execute    "s" 'pel-shell)
 (define-key pel:execute    "t" #'term)
 (define-key pel:execute    "l" #'ielm)
+(when pel-term-use-shell-prompt-line-regexp
+  (setq term-prompt-regexp pel-shell-prompt-line-regexp))
 ;; support for the extremely fast/nice libvterm-based vterm shell.
 (when pel-use-vterm
   (pel-ensure-package vterm from: melpa)
