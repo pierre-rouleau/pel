@@ -4495,8 +4495,9 @@ If non-nil, PEL treats the files with no extensions that match the specified
 requirements as shell script meant to be sourced and adjusts the skeleton
 used by the ``<f6> h`` command accordingly.
 
-For example, if the shell files that are sourced all have a name that begin
-with an underscore, then enter \"\\`_\" as the regexp (without the double
+For example, if the shell files that are sourced all have a name
+that begin with an underscore, then enter \"\\=`_\" as the
+regexp (backslash followed by back-quote without the double
 quotes).
 
 See also: `pel-shell-script-extensions'."
