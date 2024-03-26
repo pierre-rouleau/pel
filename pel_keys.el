@@ -1495,8 +1495,7 @@ can't bind negative-argument to C-_ and M-_"
     ;; does not support imenu.  Prevent this error because imenu is used
     ;; inside a lot of operations.
     (ignore-errors
-      (call-interactively (function imenup-add-defs-to-menubar)))
-    )
+      (call-interactively (function imenup-add-defs-to-menubar))))
   (declare-function pel--setup-imenu+ "pel_keys")
 
   (when (fboundp 'imenup-add-defs-to-menubar)
