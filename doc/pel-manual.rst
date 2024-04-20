@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2024-04-20 17:50:59 EDT, updated by Pierre Rouleau.
+:Modified: 2024-04-20 17:55:48 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -482,7 +482,7 @@ Emacs cannot find the pel file.  If you did not clone the pel repo into
 your ``~/project`` directory you now have to edit the ``~/.emacs.d/init.el`` file.
 
 Look for the following text and change the path of the pel directory inside
-the string::
+the string:
 
 .. code:: elisp
 
