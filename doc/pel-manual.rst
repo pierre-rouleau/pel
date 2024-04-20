@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2024-04-20 16:47:44 EDT, updated by Pierre Rouleau.
+:Modified: 2024-04-20 17:47:56 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -473,6 +473,26 @@ This time PEL initialization file should have taken over.
 
 .. figure:: res/pel-install-02.png
    :scale: 50 %
+
+If you still see errors, and if that error contains something like::
+
+  File is missing: Cannot open load file, No such file or directory, pel
+
+Emacs cannot find the pel file.  If you did not clone the pel repo into
+your ``~/project`` directory you now have to edit the ``~/.emacs.d/init.el`` file.
+
+Look for the following text and change the path of the pel directory inside
+the string::
+
+.. code:: elisp
+
+    ;; OPTION B:  if PEL is stored somewhere else change the following value.
+    (defconst pel-home-dirpath-name (expand-file-name "~/projects/pel")
+      "Directory where PEL Emacs Lisp source files are stored.")
+
+Update the ``~/.emacs.d/init.el`` file, and save it (with ``C-x C-s``) and
+exit Emacs (with ``C-x C-c``).   Start Emacs again, now all should be fine.
+
 
 To activate PEL you must byte-compile all PEL Emacs Lisp source code.
 This is described in the next section.
