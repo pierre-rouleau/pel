@@ -4,9 +4,9 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2023-10-15 13:05:11 EDT, updated by Pierre Rouleau.
+:Modified: 2024-04-20 16:47:44 EDT, updated by Pierre Rouleau.
 :License:
-    Copyright (c) 2020, 2021, 2022, 2023 Pierre Rouleau <prouleau001@gmail.com>
+    Copyright (c) 2020, 2021, 2022, 2023, 2024 Pierre Rouleau <prouleau001@gmail.com>
 
 
     You can redistribute this document and/or modify it under the terms of the GNU
@@ -259,7 +259,7 @@ Before you can install PEL, you need to ensure that you have the
 required tools.  They are described in the following sections:
 
 #. `Install Emacs 26.1 or later`_. If you are new to Emacs, the easiest is to use
-   one of the the latest stable releases: Emacs 26.3, or 27.2.
+   one of the latest stable releases.
 #. `Install other required command line tools`_
 
 
@@ -418,10 +418,11 @@ be stored.
 **Do this:**
 
 - Open a terminal shell or command line window and execute the following
-  command:
+  commands:
 
 .. code:: shell
 
+          cd
           emacs
 
 This should open a graphical version of Emacs.  If that does not work check
@@ -430,6 +431,7 @@ terminal mode:
 
 .. code:: shell
 
+          cd
           emacs -nw
 
 - Close Emacs:  type ``C-x C-c``.  That is hold the ``control`` key and type ``x``
