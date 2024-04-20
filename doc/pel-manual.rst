@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2024-04-20 17:47:56 EDT, updated by Pierre Rouleau.
+:Modified: 2024-04-20 17:50:59 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -486,9 +486,9 @@ the string::
 
 .. code:: elisp
 
-    ;; OPTION B:  if PEL is stored somewhere else change the following value.
-    (defconst pel-home-dirpath-name (expand-file-name "~/projects/pel")
-      "Directory where PEL Emacs Lisp source files are stored.")
+          ;; OPTION B:  if PEL is stored somewhere else change the following value.
+          (defconst pel-home-dirpath-name (expand-file-name "~/projects/pel")
+            "Directory where PEL Emacs Lisp source files are stored.")
 
 Update the ``~/.emacs.d/init.el`` file, and save it (with ``C-x C-s``) and
 exit Emacs (with ``C-x C-c``).   Start Emacs again, now all should be fine.
