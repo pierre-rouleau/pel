@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2024-04-20 17:55:48 EDT, updated by Pierre Rouleau.
+:Modified: 2024-04-20 17:58:27 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -490,9 +490,11 @@ the string:
           (defconst pel-home-dirpath-name (expand-file-name "~/projects/pel")
             "Directory where PEL Emacs Lisp source files are stored.")
 
-Update the ``~/.emacs.d/init.el`` file, and save it (with ``C-x C-s``) and
-exit Emacs (with ``C-x C-c``).   Start Emacs again, now all should be fine.
+Update the string inside the defconst call; identify where you stored pel.
+Then save the updated ``~/.emacs.d/init.el`` file (with ``C-x C-s``) and
+exit Emacs (with ``C-x C-c``).
 
+Start Emacs again, now all should be fine.
 
 To activate PEL you must byte-compile all PEL Emacs Lisp source code.
 This is described in the next section.
