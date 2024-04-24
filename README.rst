@@ -6,9 +6,9 @@ PEL -- Pragmatic Emacs Library
    :alt: License
    :target: https://www.gnu.org/licenses/gpl-3.0.html
 
-.. image:: https://img.shields.io/badge/Version-V0.4.1-teal
+.. image:: https://img.shields.io/badge/Version-Version_0.4.1-teal
    :alt: Version
-   :target: https://github.com/pierre-rouleau/pel/blob/master/NEWS#changes-since-version-041
+   :target: https://github.com/pierre-rouleau/pel/blob/master/NEWS
 
 .. image:: https://img.shields.io/badge/Fast-startup-green
    :alt: Version
