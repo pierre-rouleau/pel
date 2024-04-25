@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 20:12:41 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-04-25 16:04:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -63,7 +63,7 @@ In the current code this is only done by `pel--setup-dual-environment'")
 ;; ------------------------------------
 
 (defconst pel--expected-init-file-version "0.2"
-  "Must match what is in the example/init/init-5.el")
+  "Must match what is in the example/init/init.el")
 
 (defconst pel--expected-early-init-file-version "0.2"
   "Must match what is in the example/init/early-init.el")
@@ -82,11 +82,13 @@ Return nil if all is OK."
           (pel-push-fmt problems
               "Invalid pel-init-file-version: %s instead of expected %s
    Please update your init.el file.
-   Use the pel/example/init/init-5.el as template."
+   Use the pel/example/init/init.el as template."
             pel-init-file-version pel--expected-init-file-version))
       (pel-push-fmt problems
-          "Invalid init.el file: not ready for PEL startup management.
-   Use the pel/example/init/init-5.el as template."))
+          "Invalid init.el file (%s): not ready for PEL startup management.
+   Use the pel/example/init/init.el as template." user-init-file))
+
+
     (when pel-emacs-27-or-later-p
       (if (file-exists-p (locate-user-emacs-file "early-init.el"))
           (if (boundp 'pel-early-init-file-version)
@@ -99,12 +101,16 @@ Return nil if all is OK."
                   pel-early-init-file-version
                   pel--expected-early-init-file-version))
             (pel-push-fmt problems
-                "Invalid early-init.el file: not ready for PEL startup management.
-   Use the pel/example/init/init-5.el as template."))
+                "Invalid early-init.el file (%searly-init.el): not ready for PEL startup management.
+   Use the pel/example/init/early-init.el as template."
+              (file-name-parent-directory user-init-file)))
+
         (when early-init-must-exist
           (pel-push-fmt problems
-              "This feature requires a PEL compatible early-init.el file.
-   Use pel/example/init/early-init.el as template."))))
+              "This feature requires a PEL compatible early-init.el file
+   inside %s and that is missing.  Create one, using
+   pel/example/init/early-init.el as template."
+            (file-name-parent-directory user-init-file)))))
     ;;
     ;; The next check cannot be performed when quickstart is used because in
     ;; that case I cannot find a way to get the original value of
