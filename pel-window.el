@@ -558,6 +558,39 @@ Display in minibuffer."
            (window-size)
            (window-size nil t)))
 
+;; ---------------------------------------------------------------------------
+;; Side Windows
+;; ------------
+
+(defun pel-buffer-in-side-window (&optional n)
+  "Place current buffer in dedicated side window.
+
+By default the side window is at the bottom of the current frame.
+Use a numeric argument to specify a different side:
+
+  - For N= 2, 4, 6 or 8, select window pointed by what is pointed
+    by cursor positioned at the layout of numeric keypad:
+    -               8 := \\='up
+    - 4 := \\='left               6 := \\='right
+    -               2 := \\='down
+"
+  (interactive "P")
+  (let* ((display-buffer-mark-dedicated t)
+         (n (or n 2))
+         (selected-side (cond
+                         ((eq n 2) 'bottom)
+                         ((eq n 4) 'left)
+                         ((eq n 6) 'right)
+                         ((eq n 8) 'top)
+                         (t (user-error "Invalid argument %s.  Use none, 2,4,6 or 8")))))
+    (display-buffer-in-side-window (current-buffer)
+                                   (list
+                                    (cons 'side selected-side)
+                                    '(window-parameters
+                                      (no-delete-other-windows . t))))))
+
+
+
 ;;; --------------------------------------------------------------------------
 (provide 'pel-window)
 

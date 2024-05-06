@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-09 13:36:52 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-06 15:33:50 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -336,6 +336,29 @@ CAUTION: the hydra is still active!"
   (customize-option 'hydra-is-helpful)
   (message "Turn hydra off to use standard keys!"))
 
+;; Define 'canned aliases' for the 4 possible pel-buffer-in-side-window
+;; to use in the window hydra
+(defun pel--bisw-bottom ()
+  "Place current buffer in dedicated side window."
+  (interactive)
+  (pel-buffer-in-side-window 2))
+
+(defun pel--bisw-left ()
+  "Place current buffer in dedicated side window."
+  (interactive)
+  (pel-buffer-in-side-window 4))
+
+(defun pel--bisw-right ()
+  "Place current buffer in dedicated side window."
+  (interactive)
+  (pel-buffer-in-side-window 6))
+
+(defun pel--bisw-top ()
+  "Place current buffer in dedicated side window."
+  (interactive)
+  (pel-buffer-in-side-window 8))
+
+
 (defhydra pel-∑wnd (global-map "<f7>"
                                :pre  (pel--cache-hydra-is-helpful)
                                :post (pel--restore-hydra-is-helpful)
@@ -352,17 +375,22 @@ CAUTION: the hydra is still active!"
   ("v"           shrink-window               "shorter"     :column "Resize")
   ("H"           enlarge-window-horizontally "wider"       :column "Resize")
   ("h"           shrink-window-horizontally  "narrower"    :column "Resize")
-  ("|"           split-window-right          "vertically"   :column "Split")
-  ("3"           split-window-right          "vertically"   :column "Split")
-  ("_"           split-window-below          "horizontally" :column "Split")
-  ("2"           split-window-below          "horizontally" :column "Split")
-  ("C-<up>"      pel-create-window-up        "above"     :column "Split.")
-  ("C-<down>"    pel-create-window-down      "below"     :column "Split.")
-  ("C-<left>"    pel-create-window-left      "left"      :column "Split.")
-  ("C-<right>"   pel-create-window-right     "right"     :column "Split.")
+  ("."           fit-window-to-buffer        "fit2buf"     :column "Resize")
+  ("M-2"         pel--bisw-bottom            "sidew⬇️"      :column "Create")
+  ("M-4"         pel--bisw-left              "sidew⬅️"      :column "Create")
+  ("M-6"         pel--bisw-right             "sidew➡️"      :column "Create")
+  ("M-8"         pel--bisw-top               "sidew⬆️"      :column "Create")
+  ("r"           split-root-window-below     "root ⬇️"      :column "Create")
+  ("R"           split-root-window-right     "root ➡️"      :column "Create")
+  ("2"           split-window-below          "horiz"       :column "Split")
+  ("3"           split-window-right          "vert."       :column "Split")
+  ("C-<up>"      pel-create-window-up        "above"     :column "Split/Mv")
+  ("C-<down>"    pel-create-window-down      "below"     :column "Split/Mv")
+  ("C-<left>"    pel-create-window-left      "left"      :column "Split/Mv")
+  ("C-<right>"   pel-create-window-right     "right"     :column "Split/Mv")
   ("n"           winner-redo                 "next layout" :column "Layout")
   ("p"           winner-undo                 "last layout" :column "Layout")
-  ("x"           ace-swap-window             "swap with.." :column "Layout")
+  ("x"           ace-swap-window             "swap with.#" :column "Layout")
   ("M-v"         pel-2-vertical-windows      "flip vert."  :column "Layout")
   ("M-h"         pel-2-horizontal-windows    "flip horiz." :column "Layout")
   ("0"           delete-window               "this window"  :column "Close/Buffer")
