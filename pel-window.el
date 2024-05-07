@@ -183,30 +183,30 @@ Exclude the minibuffer."
 ;; -----------------
 
 ;;-pel-autoload
-(defun pel-create-window-down ()
+(defun pel-create-window-down (&optional size)
   "Create a window below the current one and move point to it."
-  (interactive)
+  (interactive "P")
   (select-window
-   (split-window-below)))
+   (split-window-below size)))
 
 ;;-pel-autoload
-(defun pel-create-window-right ()
+(defun pel-create-window-right (&optional size)
   "Create a window right of the current one and move point to it."
-  (interactive)
+  (interactive "P")
   (select-window
-   (split-window-right)))
+   (split-window-right size)))
 
 ;;-pel-autoload
-(defun pel-create-window-up ()
+(defun pel-create-window-up (&optional size)
   "Create a window above the current one and move point to it."
-  (interactive)
-  (split-window-below))
+  (interactive "P")
+  (split-window-below (- size)))
 
 ;;-pel-autoload
-(defun pel-create-window-left ()
+(defun pel-create-window-left (&optional size)
   "Create a window left of the current one and move point to it."
-  (interactive)
-  (split-window-right))
+  (interactive "P")
+  (split-window-right (- size)))
 
 ;; ---------------------------------------------------------------------------
 ;; Move to specified window
@@ -568,11 +568,11 @@ Display in minibuffer."
 By default the side window is at the bottom of the current frame.
 Use a numeric argument to specify a different side:
 
-  - For N= 2, 4, 6 or 8, select window pointed by what is pointed
-    by cursor positioned at the layout of numeric keypad:
-    -               8 := \\='up
-    - 4 := \\='left               6 := \\='right
-    -               2 := \\='down
+  For N= 2, 4, 6 or 8, select window pointed by what is pointed
+  by cursor positioned at the layout of numeric keypad:
+                  8 := \\='top
+    4 := \\='left               6 := \\='right
+                  2 := \\='bottom
 "
   (interactive "P")
   (let* ((display-buffer-mark-dedicated t)
@@ -582,7 +582,9 @@ Use a numeric argument to specify a different side:
                          ((eq n 4) 'left)
                          ((eq n 6) 'right)
                          ((eq n 8) 'top)
-                         (t (user-error "Invalid argument %s.  Use none, 2,4,6 or 8")))))
+                         (t (user-error "pel-buffer-in-side-window: \
+Invalid argument value (%s). \
+If specified use 2,4,6 or 8" n)))))
     (display-buffer-in-side-window (current-buffer)
                                    (list
                                     (cons 'side selected-side)
@@ -590,6 +592,18 @@ Use a numeric argument to specify a different side:
                                       (no-delete-other-windows . t))))))
 
 
+
+;; ---------------------------------------------------------------------------
+;; Window Split behaviour control
+
+(defun pel-toggle-split-window-keep-point ()
+  "Toggle the value of `split-window-keep-point'"
+  (interactive)
+  (pel-toggle-and-show 'split-window-keep-point
+                       "Preserve point in new window"
+                       "Adjust point in both windows to minimize redisplay"))
+;; ---------------------------------------------------------------------------
+;; Window status information
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-window)

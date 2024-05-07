@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-06 15:33:50 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-07 11:55:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -358,6 +358,19 @@ CAUTION: the hydra is still active!"
   (interactive)
   (pel-buffer-in-side-window 8))
 
+(defun pel--srw-below (&optional size)
+  "Split root window right (if available)."
+  (interactive "P")
+  (if pel-emacs-29-or-later-p
+      (split-root-window-below size)
+    (split-window-below size)))
+
+(defun pel--srw-right (&optional size)
+  "Split root window right (if available)."
+  (interactive "P")
+  (if pel-emacs-29-or-later-p
+      (split-root-window-right size)
+    (split-window-right size)))
 
 (defhydra pel-∑wnd (global-map "<f7>"
                                :pre  (pel--cache-hydra-is-helpful)
@@ -365,51 +378,52 @@ CAUTION: the hydra is still active!"
                                :foreign-keys run)
   ""
 
-  ("<up>"        windmove-up                 "up"           :column "Move")
-  ("<down>"      windmove-down               "down"         :column "Move")
-  ("<left>"      windmove-left               "left"         :column "Move")
-  ("<right>"     windmove-right              "right"        :column "Move")
-  ("#"           ace-window                  "to #"         :column "Move")
+  ("M-8"         pel--bisw-top               "side⬆️"       :column "Create")
+  ("M-2"         pel--bisw-bottom            "side⬇️"       :column "Create")
+  ("M-4"         pel--bisw-left              "side⬅️"       :column "Create")
+  ("M-6"         pel--bisw-right             "side➡️"       :column "Create")
+  ("r"           pel--srw-below              "root⬇️"       :column "Create")
+  ("R"           pel--srw-right              "root➡️"       :column "Create")
+  ("2"           split-window-below          "-"           :column "Split")
+  ("3"           split-window-right          "|"           :column "Split")
+  ("C-<up>"      pel-create-window-up        "⬆️"           :column "Split")
+  ("C-<down>"    pel-create-window-down      "⬇️"           :column "Split")
+  ("C-<left>"    pel-create-window-left      "⬅️"           :column "Split")
+  ("C-<right>"   pel-create-window-right     "➡️"           :column "Split")
+  ("n"           winner-redo                 "next layout" :column "Layout")
+  ("p"           winner-undo                 "last layout" :column "Layout")
+  ("x"           ace-swap-window             "swap with.#" :column "Layout")
+  ("M-v"         pel-2-vertical-windows      "flip vert."  :column "Layout")
+  ("M-h"         pel-2-horizontal-windows    "flip horiz." :column "Layout")
+  ("<up>"        windmove-up                 "⬆️"           :column "Move")
+  ("<down>"      windmove-down               "⬇️"           :column "Move")
+  ("<left>"      windmove-left               "⬅️"           :column "Move")
+  ("<right>"     windmove-right              "➡️"           :column "Move")
+  ("#"           ace-window                  "to #"        :column "Move")
   ("="           balance-windows             "balance"     :column "Resize")
   ("V"           enlarge-window              "taller"      :column "Resize")
   ("v"           shrink-window               "shorter"     :column "Resize")
   ("H"           enlarge-window-horizontally "wider"       :column "Resize")
   ("h"           shrink-window-horizontally  "narrower"    :column "Resize")
   ("."           fit-window-to-buffer        "fit2buf"     :column "Resize")
-  ("M-2"         pel--bisw-bottom            "sidew⬇️"      :column "Create")
-  ("M-4"         pel--bisw-left              "sidew⬅️"      :column "Create")
-  ("M-6"         pel--bisw-right             "sidew➡️"      :column "Create")
-  ("M-8"         pel--bisw-top               "sidew⬆️"      :column "Create")
-  ("r"           split-root-window-below     "root ⬇️"      :column "Create")
-  ("R"           split-root-window-right     "root ➡️"      :column "Create")
-  ("2"           split-window-below          "horiz"       :column "Split")
-  ("3"           split-window-right          "vert."       :column "Split")
-  ("C-<up>"      pel-create-window-up        "above"     :column "Split/Mv")
-  ("C-<down>"    pel-create-window-down      "below"     :column "Split/Mv")
-  ("C-<left>"    pel-create-window-left      "left"      :column "Split/Mv")
-  ("C-<right>"   pel-create-window-right     "right"     :column "Split/Mv")
-  ("n"           winner-redo                 "next layout" :column "Layout")
-  ("p"           winner-undo                 "last layout" :column "Layout")
-  ("x"           ace-swap-window             "swap with.#" :column "Layout")
-  ("M-v"         pel-2-vertical-windows      "flip vert."  :column "Layout")
-  ("M-h"         pel-2-horizontal-windows    "flip horiz." :column "Layout")
-  ("0"           delete-window               "this window"  :column "Close/Buffer")
-  ("1"           delete-other-windows        "all others"   :column "Close/Buffer")
-  ("K"           kill-buffer-and-window      "kill buf/win" :column "Close/Buffer")
-  ("k"           pel-kill-current-buffer     "kill buffer" :column "Close/Buffer")
-  ("b"           next-buffer                 "next buffer"  :column "Close/Buffer")
-  ("B"           previous-buffer             "prev buffer"  :column "Close/Buffer")
+  ("0"           delete-window               "this"         :column "Close")
   ("o"           pel-close-other-window      "other"        :column "Close")
+  ("1"           delete-other-windows        "others"       :column "Close")
   ("C-S-<up>"    pel-close-window-up         "above"      :column "Close")
   ("C-S-<down>"  pel-close-window-down       "below"      :column "Close")
   ("C-S-<left>"  pel-close-window-left       "left"       :column "Close")
   ("C-S-<right>" pel-close-window-right      "right"      :column "Close")
-  ("q"           quit-window                 "quit"       :column "Close")
+  ("K"           kill-buffer-and-window      "kill buf/win" :column "Buffer")
+  ("k"           pel-kill-current-buffer     "kill buffer"  :column "Buffer")
+  ("b"           next-buffer                 "next buffer"  :column "Buffer")
+  ("B"           previous-buffer             "prev buffer"  :column "Buffer")
+  ("5"           recenter-top-bottom         "recenter"     :column "Buffer")
   ("<M-up>"      pel-scroll-down             "scroll down"  :column "Other")
   ("<M-down>"    pel-scroll-up               "scroll up"    :column "Other")
   ("d"           pel-toggle-window-dedicated "un/dedicate"  :column "Other")
-  ("M-?"         pel-∑-customize-hint      "hint cfg"  :column "Other")
+  ("M-?"         pel-∑-customize-hint        "hint cfg"  :column "Other")
   ("?"           pel-toggle-hydra-hint       "hint"         :column "Other")
+  ("q"           quit-window                 "quit"       :column "Other")
   ("<f7>"        nil                         "cancel"       :column "Other"))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

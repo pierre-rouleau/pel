@@ -7831,16 +7831,25 @@ the ones defined from the buffer now."
 ;; Use the global local winner-mode, but don't use its key bindings;
 ;; use some in the '<f11> w' group:
 
-;; Used: # B O S b d f h k m n o p r s v x
+(define-pel-global-prefix pel:window-setup (kbd "<f11> w <f4>"))
+(define-key pel:window-setup    "s"   'pel-toggle-split-window-keep-point)
+
+
 ;;
-(define-pel-global-prefix pel:window (kbd "<f11> w"))
+(define-pel-global-prefix pel:window       (kbd "<f11> w"))
+;; Used: #
+;;         B               O     S
+;;         b d f h k l m n o p r s v   x
+;; M-                                w
+
+(define-key pel:window (kbd "M-w") 'pel-buffer-in-side-window)
 (define-key pel:window    "w"   'pel-close-other-window)
 (define-key pel:window    "B"  #'switch-to-buffer-other-window)
 (define-key pel:window    "O"   'pel-other-window-backward)
 (define-key pel:window    "b"  #'display-buffer)
 (define-key pel:window    "f"  #'follow-mode)
-(define-key pel:window    "v"   'pel-2-vertical-windows)
 (define-key pel:window    "h"   'pel-2-horizontal-windows)
+(define-key pel:window    "v"   'pel-2-vertical-windows)
 (define-key pel:window    "="  #'balance-windows)
 ;; reserved:
 ;; - S: session
