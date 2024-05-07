@@ -13,6 +13,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - The *pel-create-window-DIRECTION* commands now accept an optional SIZE argument allowing these commands to be used to split windows
     into 2 windows of different sizes.
   - Enhanced the Window Hydra key bindings, add more keys and re-organizing the Hydra help to reduce its width.
+  - Add key binding ~<f11> w M-s~ for *window-toggle-side-windows* and ~<f11> w 0~ to *delete-windows-on*.
   - Updated the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf][⅀ Windows PDF]] , adding some missing information and fixing some.
 - *pel-shell-previous-prompt* and *pel-shell-next-prompt* commands now accept a numeric argument.  By default it's 1.
   Using a different number allows repetition and direction change.

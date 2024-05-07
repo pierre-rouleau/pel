@@ -7837,14 +7837,17 @@ the ones defined from the buffer now."
 
 ;;
 (define-pel-global-prefix pel:window       (kbd "<f11> w"))
-;; Used: #
-;;         B               O     S
-;;         b d f h k l m n o p r s v   x
-;; M-                                w
+;; Used: # 0
+;;         B                 O     S
+;;         b   d f h k l m n o p r s v   x
+;; M-                              s   w
 
-(define-key pel:window (kbd "M-w") 'pel-buffer-in-side-window)
+(define-key pel:window (kbd "M-s") #'window-toggle-side-windows)
+(define-key pel:window (kbd "M-w")  'pel-buffer-in-side-window)
+
 (define-key pel:window    "w"   'pel-close-other-window)
 (define-key pel:window    "B"  #'switch-to-buffer-other-window)
+(define-key pel:window    "0"  #'delete-windows-on)
 (define-key pel:window    "O"   'pel-other-window-backward)
 (define-key pel:window    "b"  #'display-buffer)
 (define-key pel:window    "f"  #'follow-mode)
