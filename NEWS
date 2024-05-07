@@ -6,7 +6,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Add *pel-toggle-split-window-keep-point*, mapped to ~<f11> w <f4> s~ to toggle current value of the *split-value-keep-point* allowing
     the various split commands to behave differently in the way they place the cursor inside the split windows.
   - Add *pel-buffer-in-side-window*, mapped to ~<f11> w M-w~ and into four easy-to-use window Hydra keys: ~<f7>~ followed by one of: ~M-2~, ~M-4~, ~M-6~ or ~M-8~.
-  - Add PEL Window Hydra keys to create root windows at the bottom and right side of the current Emacs frame (~<f7> r~ and ~<f7> R~)
+  - Add PEL Window Hydra keys to create root windows at the bottom and right side of the current Emacs frame (~<f7> M-r~ and ~<f7> M-R~)
     This command is available in Emacs 29.1 or later; the Hydra keys are always available but will default to
     splitting to normal windows in older versions of Emacs.
     Create IDE-like side windows on one of the 4 sides of the current Emacs frame with that command.
