@@ -320,11 +320,11 @@ Returns the new window."
 ;; Functions:
 ;; - `pel-2-vertical-windows'
 ;; - `pel-2-horizontal-windows'
-;;   - `pel-flip-2-windows-to'
-;;     - `pel-other-flippable-window'
-;;       - `pel-window-unflippable'
+;;   - `pel--flip-2-windows-to'
+;;     - `pel--other-flippable-window'
+;;       - `pel--window-unflippable'
 
-(defun pel-window-unflippable ()
+(defun pel--window-unflippable ()
   "Return string describing why window is unflippable.
 Return nil if it can be flipped."
   (cond ((window-dedicated-p)
@@ -333,37 +333,37 @@ Return nil if it can be flipped."
          "minibuffer")
         (t nil)))
 
-(defun pel-other-flippable-window ()
+(defun pel--other-flippable-window ()
   "Select another flippable window in cyclic ordering of windows.
 The new window must be in the same frame.
 If the skipped to window is dedicated skip one more."
-  (let  ((reason  (pel-window-unflippable)))
+  (let  ((reason  (pel--window-unflippable)))
     (when reason
       (user-error "Cannot flip %s window!" reason)))
   (let ((original-window (selected-window)))
     (select-window (next-window nil :skip-minibuffer :current-frame-only))
-    (when (pel-window-unflippable)
+    (when (pel--window-unflippable)
       (select-window (next-window nil :skip-minibuffer :current-frame-only))
-      (if (pel-window-unflippable)
+      (if (pel--window-unflippable)
           (user-error "Cannot flip dedicated window!")
         (when (eq (selected-window) original-window)
           (user-error "Cannot flip window: need another one!"))))))
 
 
-(defun pel-flip-2-windows-to (orientation)
+(defun pel--flip-2-windows-to (orientation)
   "Flip the ORIENTATION of 2 windows: current and next window.
 ORIENTATION must be one of: `horizontal or `vertical."
   (unless (> (pel-count-non-dedicated-windows) 1)
     (user-error "Need 2 flippable windows in current frame!"))
   (let ((original-window (selected-window)))
-    (pel-other-flippable-window)
+    (pel--other-flippable-window)
     (let ((otherwin-buf (buffer-name)))
       (delete-window)
       (cond ((eq orientation 'horizontal) (split-window-below))
             ((eq orientation 'vertical)   (split-window-right))
             (t (error "Invalid orientation: %S" orientation)))
-      (pel-other-flippable-window)
-      (switch-to-buffer otherwin-buf))
+      (pel--other-flippable-window)
+      (switch-to-buffer otherwin-buf))  ; user interactive request. OK to call.
     (select-window original-window)))
 
 ;;-pel-autoload
@@ -371,14 +371,14 @@ ORIENTATION must be one of: `horizontal or `vertical."
   "Convert 2 horizontal windows into 2 vertical windows.
 Flip the orientation of the current window and its next one."
   (interactive)
-  (pel-flip-2-windows-to 'vertical))
+  (pel--flip-2-windows-to 'vertical))
 
 ;;-pel-autoload
 (defun pel-2-horizontal-windows ()
   "Convert 2 vertical windows into 2 horizontal windows.
 Flip the orientation of the current window and its next one."
   (interactive)
-  (pel-flip-2-windows-to 'horizontal))
+  (pel--flip-2-windows-to 'horizontal))
 
 ;; ---------------------------------------------------------------------------
 ;; Select window by direction and context
