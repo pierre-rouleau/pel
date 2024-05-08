@@ -123,7 +123,8 @@
 ;;; Dependencies:
 
 (require 'pel--base)      ; use: pel-current-buffer-filename,
-                          ; pel-buffers-in-mode, pel-nth-elt,
+                          ;      pel-buffers-in-mode, pel-nth-elt,
+(require 'pel-prompt)     ; use: pel-select-string-from
 
 ;; The windmove package is required for the following functions.
 ;; Instead of requiring windmove, and force its loading when pel-window is
@@ -162,15 +163,34 @@ Used twice returns to the same buffer."
 (defun pel-show-window-info ()
   ""
   (interactive)
-  (message "\
-%S:
-- is: %sdedicated.
+  (let ((win (selected-window)))
+    (message "\
+%S:%s
+- is %spart of an atom (an atomic group of windows)
+- is %sa window slot
+- is %sa root window
+- is %sa side window
+- is %sa size-preserving window
+- is %sdedicated.
 - height=%d, width=%d"
-           (selected-window)
-           (pel-on-off-string  (window-dedicated-p) "" "not ")
-           (window-size)
-           (window-size nil t)
-           ))
+             win
+             (if pel-emacs-27-or-later-p
+                 (format "
+- manual buffer switch operation (eg. with C-x b) %s display actions"
+                         (pel-symbol-on-off-string
+                          'switch-to-buffer-obey-display-actions "respects"
+                          "does not respect"))
+               "")
+             (pel-on-off-string (window-parameter win 'window-atom) "" "not ")
+             (pel-on-off-string (window-parameter win 'window-slot) "" "not ")
+             (pel-on-off-string (window-parameter win 'root) "" "not ")
+             (pel-on-off-string (window-parameter win 'window-side) "" "not ")
+             (pel-on-off-string (window-parameter win 'window-preserved-size) "" "not ")
+             (pel-on-off-string  (window-dedicated-p) "" "not ")
+             (window-size)
+             (window-size nil t)
+             )))
+
 
 ;; [:todo 2024-05-08, by Pierre Rouleau: remove the following now-unrequired command]
 (defun pel-show-window-dedicated-status ()
