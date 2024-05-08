@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-toggle-switch-to-buffer-obey-display-actions*, bound to ~<f11> w <f4> b~ to toggle behaviour of switch buffer commands:
+  either respecting or not respecting display actions.  Available for Emacs 29.1 or later only.
+  Use it to learn the impact of the new *switch-to-buffer-obey-display-actions* user-option.
 - Simplified bindings for *pel-toggle-window-dedicated*, changed from ~<f11> w d d~ to ~<f11> w d~.
 - Removed ~<f11> w d ?~ binding to *pel-show-dedicated-status*.  Added ~<f11> w ?~ status to *pel-show-window-info* instead.
   The new function displays the window number, buffer, size and whether the window is dedicated.

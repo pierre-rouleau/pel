@@ -7832,10 +7832,6 @@ the ones defined from the buffer now."
 ;; Use the global local winner-mode, but don't use its key bindings;
 ;; use some in the '<f11> w' group:
 
-(define-pel-global-prefix pel:window-setup (kbd "<f11> w <f4>"))
-(define-key pel:window-setup    "s"   'pel-toggle-split-window-keep-point)
-
-
 ;;
 (define-pel-global-prefix pel:window       (kbd "<f11> w"))
 ;; Used: ? # 0
@@ -7869,6 +7865,11 @@ the ones defined from the buffer now."
 ;; - p: winner
 ;; - r: windresize
 ;; - s: window size operations
+
+(define-pel-global-prefix pel:window-setup (kbd "<f11> w <f4>"))
+(define-key pel:window-setup    "s"   'pel-toggle-split-window-keep-point)
+(when pel-emacs-29-or-later-p
+  (define-key pel:window-setup    "b"   'pel-toggle-switch-to-buffer-obey-display-actions))
 
 ;; --
 (when pel-use-ace-window

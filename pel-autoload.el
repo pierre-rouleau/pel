@@ -881,7 +881,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-show-window-filename-or-buffer-name
     pel-show-window-sizes
     pel-buffer-in-side-window
-    pel-toggle-split-window-keep-point)
+    pel-toggle-split-window-keep-point
+    pel-toggle-switch-to-buffer-obey-display-actions)
   (pel-autoload-function "pel-window" for:
     pel-count-non-dedicated-windows
     pel-move-to-window

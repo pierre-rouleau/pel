@@ -176,7 +176,8 @@ Used twice returns to the same buffer."
              win
              (if pel-emacs-27-or-later-p
                  (format "
-- manual buffer switch operation (eg. with C-x b) %s display actions"
+- manual buffer switch operation (eg. with C-x b) %s display actions.
+  - Toggle it with <f11> w <f4> b"
                          (pel-symbol-on-off-string
                           'switch-to-buffer-obey-display-actions "respects"
                           "does not respect"))
@@ -191,6 +192,13 @@ Used twice returns to the same buffer."
              (window-size nil t)
              )))
 
+;;-pel-autoload
+(defun pel-toggle-switch-to-buffer-obey-display-actions ()
+  "Toggle behaviour of impact of switch to buffer commands."
+  (interactive)
+  (pel-toggle-and-show 'switch-to-buffer-obey-display-actions
+                       "Respect display actions"
+                       "Do not respect display actions"))
 
 ;; [:todo 2024-05-08, by Pierre Rouleau: remove the following now-unrequired command]
 (defun pel-show-window-dedicated-status ()
