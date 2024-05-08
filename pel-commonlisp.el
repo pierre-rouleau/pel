@@ -71,7 +71,7 @@
 (require 'pel--base)                    ; use: pel-symbol-at-point
 ;;                                      ;      pel-add-imenu-sections-to
 (require 'pel--options)
-(require 'pel-prompt)
+(require 'pel-prompt)                   ; use: pel-prompt
 (require 'pel-window)                   ; use: pel-switch-to-window
 ;;;---------------------------------------------------------------------------
 ;;; Code:
