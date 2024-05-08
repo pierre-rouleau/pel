@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-03-29 18:34:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-08 11:22:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -502,7 +502,6 @@
                                                            winner
                                                            windmove
                                                            windresize))
-    ([f11 ?w ?d]     "windows"          pel-pkg-for-window)
     ([f11 ?w ?s]     "windows"          pel-pkg-for-window)
     ([f11 ?y]  "inserting-text"   pel-pkg-for-insertions  (yasnippet
                                                            yasnippet-snippets
