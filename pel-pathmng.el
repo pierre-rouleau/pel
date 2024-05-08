@@ -73,7 +73,7 @@ Use the N argument to specify a different window.
           (with-current-buffer bufname
             (dolist (pathname load-path)
               (insert (format "%s\n" pathname))))
-          (switch-to-buffer bufname)
+          (switch-to-buffer bufname)    ; user interactive request. OK to call.
           (goto-char (point-min))
           (display-line-numbers-mode 1))
       (user-error "Invalid window!"))))

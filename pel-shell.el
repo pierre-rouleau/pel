@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-03-25 16:54:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-07 23:22:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -68,7 +68,7 @@ commands like term, ansi-term and ielm."
   (let ((shell-buffer (get-buffer "*shell*")))
     (unless shell-buffer
       (setq shell-buffer (generate-new-buffer "*shell*"))
-      (switch-to-buffer shell-buffer))
+      (switch-to-buffer shell-buffer))  ; user interactive request. OK to call.
     (shell shell-buffer)))
 
 ;;-pel-autoload
