@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, May 27 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-10-17 22:19:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-07 20:06:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2023  Pierre Rouleau
+;; Copyright (C) 2021, 2023, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -211,6 +211,19 @@ major mode."
 (defvar pel--smb-list-idx nil
   "0-based index of the current buffer shown in the list, nil if none shown.")
 
+;; Call hierarchies
+;; ----------------
+;;
+;; pel-smb-next()
+;; - pel--refresh-when-needed ()
+;; - pel--to-next-idx
+;; - pel--show-buffer()
+;;
+;; pel-smb-previous()
+;; - pel--refresh-when-needed ()
+;; - pel--to-previous-idx()
+;; - pel--show-buffer()
+
 (defun pel--smb-capture ()
   "Build a list of the buffers using the same major mode as the current one.
 The other 2 commands will use that list."
@@ -224,7 +237,7 @@ The other 2 commands will use that list."
 Return the displayed buffer, nil if the buffer no longer exists."
   (let ((buf-obj (nth idx pel--smb-list)))
     (when (buffer-live-p buf-obj)
-      (switch-to-buffer buf-obj))))
+      (switch-to-buffer buf-obj))))     ; user interactive request.  OK to call.
 
 (defun pel--refresh-when-needed (refresh)
   "Refresh buffer list when needed.
@@ -261,6 +274,7 @@ If the optional prefix argument is passed, REFRESH the list of buffers."
           (setq attempt-down-count (1- attempt-down-count))
           (and (null (pel--show-buffer (pel--to-next-idx)))
                (> attempt-down-count 0))))))
+
 
 (defun pel--to-previous-idx ()
   "Decrement list index and wrap at end.
