@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2024-04-20 17:58:27 EDT, updated by Pierre Rouleau.
+:Modified: 2024-05-08 09:12:22 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -7464,7 +7464,7 @@ The file provides the following features:
 
 - Dedicated window management utilities:
 
-  - ``pel-show-window-dedicated-status`` displays the dedicated status of the
+  - ``pel-show-window-info`` displays the dedicated status of the
     current window: ie. whether the current window is dedicated or not.
   - ``pel-toggle-window-dedicated`` toggles the dedicated status of the
     current window.  Use it to dedicate the current window or turn

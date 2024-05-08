@@ -7838,7 +7838,7 @@ the ones defined from the buffer now."
 
 ;;
 (define-pel-global-prefix pel:window       (kbd "<f11> w"))
-;; Used: # 0
+;; Used: ? # 0
 ;;         B                 O     S
 ;;         b   d f h k l m n o p r s v   x
 ;; M-                              s   w
@@ -7846,15 +7846,18 @@ the ones defined from the buffer now."
 (define-key pel:window (kbd "M-s") #'window-toggle-side-windows)
 (define-key pel:window (kbd "M-w")  'pel-buffer-in-side-window)
 
+(define-key pel:window    "?"   'pel-show-window-info)
 (define-key pel:window    "w"   'pel-close-other-window)
 (define-key pel:window    "B"  #'switch-to-buffer-other-window)
 (define-key pel:window    "0"  #'delete-windows-on)
 (define-key pel:window    "O"   'pel-other-window-backward)
 (define-key pel:window    "b"  #'display-buffer)
+(define-key pel:window    "d" 'pel-toggle-window-dedicated)
 (define-key pel:window    "f"  #'follow-mode)
 (define-key pel:window    "h"   'pel-2-horizontal-windows)
 (define-key pel:window    "v"   'pel-2-vertical-windows)
 (define-key pel:window    "="  #'balance-windows)
+
 ;; reserved:
 ;; - S: session
 ;; - d: dedicated windows
@@ -7947,12 +7950,7 @@ the ones defined from the buffer now."
   (pel-eval-after-load layout-restore
     (define-key pel:window-layout  "r"  'layout-restore)
     (define-key pel:window-layout  "d"  'layout-delete-current)))
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> w d`` : Windows dedicated operations
-;;
-(define-pel-global-prefix pel:window-dedicated (kbd "<f11> w d"))
-(define-key pel:window-dedicated "d" 'pel-toggle-window-dedicated)
-(define-key pel:window-dedicated "?" 'pel-show-window-dedicated-status)
+
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> w s`` : Window size operations

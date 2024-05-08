@@ -37,9 +37,6 @@
 ;;
 ;;  - Dedicated window management utilities:
 ;;
-;;    - `pel-show-window-dedicated-status' displays the dedicated status of
-;;      the current window: ie. whether the current window is dedicated or
-;;      not.
 ;;    - `pel-toggle-window-dedicated' toggles the dedicated status of the
 ;;      current window.  Use it to dedicate the current window or turn
 ;;      dedication off.
@@ -113,6 +110,9 @@
 ;;
 ;; - Showing information about current window:
 ;;
+;;    - `pel-show-window-dedicated-status' displays the dedicated status of
+;;      the current window: ie. whether the current window is dedicated or
+;;      not.
 ;;   - `pel-show-window-filename-or-buffer-name' displays the name of the
 ;;     file or buffer used in the current window.
 ;;   - `pel-show-window-sizes' displays the height and width of the current
@@ -157,7 +157,22 @@ Used twice returns to the same buffer."
 ;; Dedicated Windows
 ;; -----------------
 
+
 ;;-pel-autoload
+(defun pel-show-window-info ()
+  ""
+  (interactive)
+  (message "\
+%S:
+- is: %sdedicated.
+- height=%d, width=%d"
+           (selected-window)
+           (pel-on-off-string  (window-dedicated-p) "" "not ")
+           (window-size)
+           (window-size nil t)
+           ))
+
+;; [:todo 2024-05-08, by Pierre Rouleau: remove the following now-unrequired command]
 (defun pel-show-window-dedicated-status ()
   "Display the dedicated status of the current window in the echo area."
   (interactive)
@@ -169,7 +184,7 @@ Used twice returns to the same buffer."
 (defun pel-toggle-window-dedicated ()
   "Toggle the dedicated status of the current window.  Use with care."
   (interactive)
-  (set-window-dedicated-p (selected-window) (not (window-dedicated-p)))
+  (set-window-dedicated-p (selected-window) (not (window-dedicated-p) ))
   (pel-show-window-dedicated-status))
 
 ;;-pel-autoload

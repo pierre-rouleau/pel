@@ -863,9 +863,7 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-window" for:
     pel-show-window-previous-buffer
     pel-switch-to-last-used-buffer
-    pel-show-window-dedicated-status
     pel-toggle-window-dedicated
-    pel-count-non-dedicated-windows
     pel-create-window-down
     pel-create-window-right
     pel-create-window-up
@@ -879,11 +877,13 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-2-horizontal-windows
     pel-other-window
     pel-other-window-backward
+    pel-show-window-info
     pel-show-window-filename-or-buffer-name
     pel-show-window-sizes
     pel-buffer-in-side-window
     pel-toggle-split-window-keep-point)
   (pel-autoload-function "pel-window" for:
+    pel-count-non-dedicated-windows
     pel-move-to-window
     pel-split-window-sensibly
     pel-find-window
