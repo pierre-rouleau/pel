@@ -1,6 +1,6 @@
 ;;; pel-commonlisp.el --- PEL Common Lisp Support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -37,8 +37,6 @@
 ;;
 ;; * `pel-cl-repl'
 ;;   - `pel-switch-to-window'
-;;     - `pel-select-buffer'
-;;       - `pel-nth-elt'
 ;; * `pel-cl-hyperspec-lookup'
 ;;   - `pel-symbol-at-point'
 ;;
@@ -70,11 +68,11 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-(require 'pel--base)                    ; use: pel-buffers-in-mode,
-                                        ;      pel-nth-elt, pel-symbol-at-point
+(require 'pel--base)                    ; use: pel-symbol-at-point
 ;;                                      ;      pel-add-imenu-sections-to
 (require 'pel--options)
 (require 'pel-prompt)
+(require 'pel-window)                   ; use: pel-switch-to-window
 ;;;---------------------------------------------------------------------------
 ;;; Code:
 
@@ -83,65 +81,6 @@
 ;; pel-cl-repl
 ;; -----------
 
-(defun pel-select-buffer (mode)
-  "Select a buffer in specified MODE.
-MODE is a major mode symbol.
-Return buffer selected or nil if nothing selected."
-  (let ((buffer-candidates (pel-buffers-in-mode mode)))
-    (when buffer-candidates
-      (if (> (length buffer-candidates) 1)
-          ;; many buffers in list - prompt user
-          (let* ((choices (mapcar (function buffer-name)
-                                  buffer-candidates))
-                 (choice (pel-select-string-from "" choices ?1)))
-            (when choice
-              (nth (pel-nth-elt choice choices) buffer-candidates)))
-        ;; 1 buffer in list
-        (car buffer-candidates)))))
-
-(defun pel-switch-to-window (mode &optional in-other-window)
-  "Switch to window that has a buffer using specified MODE if any.
-MODE is a symbol.
-
-- If no buffer uses MODE return nil.
-- If one buffer uses MODE, use that buffer.
-- If several buffers use MODE, prompt user to identify which one
-  to select.
-
-If the buffer is currently displayed in a frame window, select
-that window.  Otherwise open the buffer in the current window
-unless IN-OTHER-WINDOW is non-nil: then select another window to
-open the buffer using the MODE.
-
-Return the selected buffer using the MODE."
-(let* ((selected-buffer (pel-select-buffer mode)))
-  (when selected-buffer
-    (let ((window-to-use (get-buffer-window selected-buffer)))
-      (if window-to-use
-          (progn
-            (select-window window-to-use)
-            (switch-to-buffer selected-buffer))
-        (if in-other-window
-            (switch-to-buffer-other-window selected-buffer)
-          (switch-to-buffer selected-buffer)))))))
-
-;; TODO: move the following out into a more generic place
-;;       where the concept of creating REPL will be more general
-;;       and can be applied to more programming languages.
-(defun pel-switch-to-buffer (mode &optional in-other-window)
-  "Switch to buffer in specified MODE if any.
-MODE is a symbol.
-
-Prompt user with a list with buffer names if there are several
-buffer using MODE.
-
-Return buffer selected, return nil if there are none or none selected.
-Use the other window if an IN-OTHER-WINDOW argument is specified."
-  (let ((selected-buffer (pel-select-buffer mode)))
-    (when selected-buffer
-      (if in-other-window
-          (switch-to-buffer-other-window selected-buffer)
-        (switch-to-buffer selected-buffer)))))
 
 ;;-pel-autoload
 (defun pel-cl-repl (&optional n)
