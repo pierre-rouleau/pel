@@ -2,12 +2,21 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-toggle-size-fixed*, bound to ~<f11> w s .~ and inside the PEL
+  Window Hydra as *s*.  By default the command imposes a soft size restriction
+  (allowing Emacs to change a window's height to display the min-buffer, for
+  example).  With a prefix argument the command imposes a strict size
+  constraint (which prevents Emacs from modifying the window size under all
+  cases).
 - Add *pel-toggle-switch-to-buffer-obey-display-actions*, bound to ~<f11> w <f4> b~ to toggle behaviour of switch buffer commands:
   either respecting or not respecting display actions.  Available for Emacs 29.1 or later only.
   Use it to learn the impact of the new *switch-to-buffer-obey-display-actions* user-option.
 - Simplified bindings for *pel-toggle-window-dedicated*, changed from ~<f11> w d d~ to ~<f11> w d~.
-- Removed ~<f11> w d ?~ binding to *pel-show-dedicated-status*.  Added ~<f11> w ?~ status to *pel-show-window-info* instead.
-  The new function displays the window number, buffer, size and whether the window is dedicated.
+- Removed ~<f11> w d ?~ binding to *pel-show-dedicated-status*.
+  Added ~<f11> w ?~ status to *pel-show-window-info* instead.
+  The new function displays the window number, buffer, size and whether the
+  window is dedicated.
+  Inside the PEL Window Hydra, the *i* key executes *pel-show-window-info*.
 - Add ~<f11> | h~ binding for the *horizontal-scroll-bar-mode* command when Emacs is running in graphics mode.
 - Improvements to window management:
   - Add *pel-toggle-split-window-keep-point*, mapped to ~<f11> w <f4> s~ to toggle current value of the *split-value-keep-point* allowing

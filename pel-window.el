@@ -163,21 +163,23 @@ Used twice returns to the same buffer."
 (defun pel-show-window-info ()
   ""
   (interactive)
-  (let ((win (selected-window)))
+  (let* ((win (selected-window))
+        (preserving-size (window-parameter win 'window-preserved-size)))
     (message "\
 %S:%s
 - is %spart of an atom (an atomic group of windows)
 - is %sa window slot
 - is %sa root window
-- is %sa side window
-- is %sa size-preserving window
+- is %sa side window (frame window-sides-slots (ltrb) = %s)
+- is %sa size-preserving window (window-size-fixed: %s)
+  - Toggle this with %s.
 - is %sdedicated.
 - height=%d, width=%d"
              win
              (if pel-emacs-27-or-later-p
                  (format "
 - manual buffer switch operation (eg. with C-x b) %s display actions.
-  - Toggle it with <f11> w <f4> b"
+  - Toggle it with '<f11> w <f4> b'"
                          (pel-symbol-on-off-string
                           'switch-to-buffer-obey-display-actions "respects"
                           "does not respect"))
@@ -186,11 +188,40 @@ Used twice returns to the same buffer."
              (pel-on-off-string (window-parameter win 'window-slot) "" "not ")
              (pel-on-off-string (window-parameter win 'root) "" "not ")
              (pel-on-off-string (window-parameter win 'window-side) "" "not ")
-             (pel-on-off-string (window-parameter win 'window-preserved-size) "" "not ")
+             window-sides-slots
+             (pel-on-off-string preserving-size "" "not ")
+             (pel-symbol-on-off-string 'window-size-fixed)
+             (if preserving-size
+                 (if window-size-fixed  "'C-u <f11> w s .'" "'<f11> w s .'")
+               "'<f11> w s .' or 'C-u <f11> w s .'")
              (pel-on-off-string  (window-dedicated-p) "" "not ")
              (window-size)
              (window-size nil t)
              )))
+
+
+;;-pel-autoload
+(defun pel-toggle-window-size-fixed (&optional strict)
+  "Toggle the `window-size-fixed' variable.
+
+With optional argument STRICT, this sets the window-size-fixed
+variable which impose a strict size constraint, preventing Emacs
+from changing the size of the window even if it would be necessary to, for
+example, display the mini buffer.
+
+With no argument, the size restriction is not strict; it prevents most
+operations to change the window size but Emacs can still change the size if it
+must, for example, make place for the mini buffer."
+  (interactive "P")
+  (if strict
+      (pel-toggle-and-show 'window-size-fixed)
+    (let* ((win (selected-window))
+           (preserve-it (not (window-parameter win
+                                               'window-preserved-size))))
+      (window-preserve-size (selected-window) preserve-it preserve-it)
+      (message "Window size now: %spreserved%s"
+               (if preserve-it "" "not ")
+               (if window-size-fixed " strictly" "")))))
 
 ;;-pel-autoload
 (defun pel-toggle-switch-to-buffer-obey-display-actions ()

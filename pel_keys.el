@@ -7977,6 +7977,7 @@ the ones defined from the buffer now."
 (define-key pel:window-size "v" #'shrink-window)
 (define-key pel:window-size "H" #'enlarge-window-horizontally)
 (define-key pel:window-size "h" #'shrink-window-horizontally)
+(define-key pel:window-size "." 'pel-toggle-window-size-fixed)
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> S`` : Session operations

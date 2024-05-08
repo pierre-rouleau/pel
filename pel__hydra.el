@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-07 17:19:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-08 12:19:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -391,6 +391,8 @@ CAUTION: the hydra is still active!"
   ("C-<down>"    pel-create-window-down      "⬇️"            :column "Split")
   ("C-<left>"    pel-create-window-left      "⬅️"            :column "Split")
   ("C-<right>"   pel-create-window-right     "➡️"            :column "Split")
+  ("i"           pel-show-window-info        "info"         :column "Layout")
+  ("s"           pel-toggle-window-size-fixed "fix size"    :column "Layout")
   ("n"           winner-redo                 "next layout"  :column "Layout")
   ("p"           winner-undo                 "last layout"  :column "Layout")
   ("x"           ace-swap-window             "swap with.#"  :column "Layout")
