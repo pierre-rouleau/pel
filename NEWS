@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add ~<f11> | h~ binding for the *horizontal-scroll-bar-mode* command when Emacs is running in graphics mode.
 - Improvements to window management:
   - Add *pel-toggle-split-window-keep-point*, mapped to ~<f11> w <f4> s~ to toggle current value of the *split-value-keep-point* allowing
     the various split commands to behave differently in the way they place the cursor inside the split windows.

@@ -5864,7 +5864,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
   (add-hook 'smart-shift-mode-hook (function pel--setup-smart-shift)))
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> |`` : Windows scroll lock commands
+;; - Function Keys - <f11> - Prefix ``<f11> |`` : Windows scroll commands
 ;;
 ;; - Scrolling up & down without moving point
 ;; ------------------------------------------
@@ -5905,7 +5905,8 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:scroll "f" #'follow-mode)
 (define-key pel:scroll "l" #'scroll-lock-mode)
 (define-key pel:scroll "t"  'auto-revert-tail-mode)
-
+(when pel-emacs-is-graphic-p
+  (define-key pel:scroll "h"  'horizontal-scroll-bar-mode))
 
 (when pel-use-smooth-scrolling
   (pel-ensure-package smooth-scrolling from: melpa)
