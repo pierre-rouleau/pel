@@ -38,7 +38,7 @@
 ;; * `pel-cl-repl'
 ;;   - `pel-switch-to-window'
 ;;     - `pel-select-buffer'
-;;       - `pel-nth-elt'       (credit to Drew Adams for this one)
+;;       - `pel-nth-elt'
 ;; * `pel-cl-hyperspec-lookup'
 ;;   - `pel-symbol-at-point'
 ;;
@@ -70,33 +70,14 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-(require 'pel--base)                    ; use: pel-buffers-in-mode
+(require 'pel--base)                    ; use: pel-buffers-in-mode,
+                                        ;      pel-nth-elt, pel-symbol-at-point
 ;;                                      ;      pel-add-imenu-sections-to
 (require 'pel--options)
 (require 'pel-prompt)
 ;;;---------------------------------------------------------------------------
 ;;; Code:
 
-
-;; Low level utilities
-;; -------------------
-
-(defun pel-nth-elt (element elements)
-  "Return zero-indexed position of ELEMENT in ELEMENTS list, or nil if absent."
-  (let ((idx  0))
-    (catch 'nth-elt
-      (dolist (x elements)
-        (when (equal element x) (throw 'nth-elt idx))
-        (setq idx (1+ idx)))
-      nil)))
-
-
-(defun pel-symbol-at-point ()
-  "Return symbol at point. Return nil if there are none."
-  (if (and (require 'thingatpt nil :noerror)
-           (fboundp 'thing-at-point))
-      (thing-at-point 'symbol :no-properties)
-    (error "Function thing-at-point not loaded!")))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-cl-repl

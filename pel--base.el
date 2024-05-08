@@ -91,6 +91,9 @@
 ;; - `pel-symbol-value'
 ;; - `pel-as-symbol'
 ;;
+;; Symbol at point
+;; - `pel-symbol-at-point'
+;;
 ;; String generation utilities:
 ;;  - `pel-option-mode-state'
 ;;    - `pel-activated-in-str'
@@ -127,6 +130,7 @@
 ;; - `pel-push-fmt'
 ;; - `pel-prepend'
 ;; - `pel-cons-alist-at'
+;; - `pel-nth-elt'
 ;;
 ;; Operation on auto-mode-alist
 ;;  - `pel-delete-from-auto-mode-alist'
@@ -833,6 +837,16 @@ non-nil, just return nil when SYMBOL is not bound."
     (intern s)))
 
 ;; ---------------------------------------------------------------------------
+;; Symbol at point
+
+(defun pel-symbol-at-point ()
+  "Return symbol at point. Return nil if there are none."
+  (if (and (require 'thingatpt nil :noerror)
+           (fboundp 'thing-at-point))
+      (thing-at-point 'symbol :no-properties)
+    (error "Function thing-at-point not loaded!")))
+
+;; ---------------------------------------------------------------------------
 ;; String generation utilities
 ;; ---------------------------
 ;;
@@ -1355,6 +1369,17 @@ Usage Example:
               alist)
           (nconc alist (list (list key val)))))
     (error "Call to pel-cons-alist-at given an empty ALIST argument!")))
+
+
+;; (credit to Drew Adams for this one)
+(defun pel-nth-elt (element elements)
+  "Return zero-indexed position of ELEMENT in ELEMENTS list, or nil if absent."
+  (let ((idx  0))
+    (catch 'nth-elt
+      (dolist (x elements)
+        (when (equal element x) (throw 'nth-elt idx))
+        (setq idx (1+ idx)))
+      nil)))
 
 ;; ---------------------------------------------------------------------------
 ;; Operation on auto-mode-alist
