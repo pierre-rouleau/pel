@@ -2,119 +2,150 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
-- Add binding ~<f11> w s .~  *fit-window-to-buffer* matching its ~.~ binding in
-  PEL Hydra.
-- Add binding ~<f11> w s -~  *shrink-window-if-larger-than-buffer* matching its ~-~ binding in
-  PEL Hydra.
-- Add *pel-toggle-size-fixed*, bound to ~<f11> w s s~ and inside the PEL
-  Window Hydra as *s*.  By default the command imposes a soft size restriction
-  (allowing Emacs to change a window's height to display the min-buffer, for
-  example).  With a prefix argument the command imposes a strict size
-  constraint (which prevents Emacs from modifying the window size under all
-  cases).
-- Add *pel-toggle-switch-to-buffer-obey-display-actions*, bound to ~<f11> w <f4> b~ to toggle behaviour of switch buffer commands:
-  either respecting or not respecting display actions.  Available for Emacs 29.1 or later only.
-  Use it to learn the impact of the new *switch-to-buffer-obey-display-actions* user-option.
-- Simplified bindings for *pel-toggle-window-dedicated*, changed from ~<f11> w d d~ to ~<f11> w d~.
-- Removed ~<f11> w d ?~ binding to *pel-show-dedicated-status*.
-  Added ~<f11> w ?~ status to *pel-show-window-info* instead.
-  The new function displays the window number, buffer, size and whether the
-  window is dedicated.
-  Inside the PEL Window Hydra, the *i* key executes *pel-show-window-info*.
-- Add ~<f11> | h~ binding for the *horizontal-scroll-bar-mode* command when Emacs is running in graphics mode.
+- Add binding ~<f11> w s .~ *fit-window-to-buffer* matching its ~.~ binding in PEL Hydra.
+- Add binding ~<f11> w s -~ *shrink-window-if-larger-than-buffer* matching its ~-~ binding
+  in PEL Hydra.
+- Add *pel-toggle-size-fixed*, bound to ~<f11> w s s~ and inside the PEL Window Hydra as
+  *s*.  By default the command imposes a soft size restriction (allowing Emacs to change a
+  window's height to display the min-buffer, for example).  With a prefix argument the
+  command imposes a strict size constraint (which prevents Emacs from modifying the window
+  size under all cases).
+- Add *pel-toggle-switch-to-buffer-obey-display-actions*, bound to ~<f11> w <f4> b~ to
+  toggle behaviour of switch buffer commands: either respecting or not respecting display
+  actions.  Available for Emacs 29.1 or later only.  Use it to learn the impact of the new
+  *switch-to-buffer-obey-display-actions* user-option.
+- Simplified bindings for *pel-toggle-window-dedicated*, changed from ~<f11> w d d~ to
+  ~<f11> w d~.
+- Removed ~<f11> w d ?~ binding to *pel-show-dedicated-status*.  Added ~<f11> w ?~ status
+  to *pel-show-window-info* instead.  The new function displays the window number, buffer,
+  size and whether the window is dedicated.  Inside the PEL Window Hydra, the *i* key
+  executes *pel-show-window-info*.
+- Add ~<f11> | h~ binding for the *horizontal-scroll-bar-mode* command when Emacs is
+  running in graphics mode.
 - Improvements to window management:
-  - Add *pel-toggle-split-window-keep-point*, mapped to ~<f11> w <f4> s~ to toggle current value of the *split-value-keep-point* allowing
-    the various split commands to behave differently in the way they place the cursor inside the split windows.
-  - Add *pel-buffer-in-side-window*, mapped to ~<f11> w M-w~ and into four easy-to-use window Hydra keys: ~<f7>~ followed by one of: ~M-2~, ~M-4~, ~M-6~ or ~M-8~.
-  - Add PEL Window Hydra keys to create root windows at the bottom and right side of the current Emacs frame (~<f7> M-r~ and ~<f7> M-R~)
-    This command is available in Emacs 29.1 or later; the Hydra keys are always available but will default to
-    splitting to normal windows in older versions of Emacs.
-    Create IDE-like side windows on one of the 4 sides of the current Emacs frame with that command.
-  - The *pel-create-window-DIRECTION* commands now accept an optional SIZE argument allowing these commands to be used to split windows
-    into 2 windows of different sizes.
-  - Enhanced the Window Hydra key bindings, add more keys and re-organizing the Hydra help to reduce its width.
-  - Add key binding ~<f11> w M-s~ for *window-toggle-side-windows* and ~<f11> w 0~ to *delete-windows-on*.
+  - Add *pel-toggle-split-window-keep-point*, mapped to ~<f11> w <f4> s~ to toggle current
+    value of the *split-value-keep-point* allowing the various split commands to behave
+    differently in the way they place the cursor inside the split windows.
+  - Add *pel-buffer-in-side-window*, mapped to ~<f11> w M-w~ and into four easy-to-use
+    window Hydra keys: ~<f7>~ followed by one of: ~M-2~, ~M-4~, ~M-6~ or ~M-8~.
+  - Add PEL Window Hydra keys to create root windows at the bottom and right side of the
+    current Emacs frame (~<f7> M-r~ and ~<f7> M-R~) This command is available in Emacs
+    29.1 or later; the Hydra keys are always available but will default to splitting to
+    normal windows in older versions of Emacs.  Create IDE-like side windows on one of the
+    4 sides of the current Emacs frame with that command.
+  - The *pel-create-window-DIRECTION* commands now accept an optional SIZE argument
+    allowing these commands to be used to split windows into 2 windows of different sizes.
+  - Enhanced the Window Hydra key bindings, add more keys and re-organizing the Hydra help
+    to reduce its width.
+  - Add key binding ~<f11> w M-s~ for *window-toggle-side-windows* and ~<f11> w 0~ to
+    *delete-windows-on*.
   - Updated the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf][⅀ Windows PDF]] , adding some missing information and fixing some.
-- *pel-shell-previous-prompt* and *pel-shell-next-prompt* commands now accept a numeric argument.  By default it's 1.
-  Using a different number allows repetition and direction change.
-  These commands now also leaves point after the prompt on the first character of the command.
-- Added *pel-term-use-shell-prompt-line-regexp* user option: when set to t (the default), PEL sets *term-prompt-regexp* to the value of
-  *pel-shell-prompt-line-regexp* allowing all prompt navigation search to use the same regular expression.
-  This user-option is part of the new customization group: *pel-pkg-for-term-mode*.
-- Moved the GNU Make specific information from the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make PDF]] file to the new GNU Make PDF stored in the doc/pdf/lang
-  directory.  To access it, type ~C-u <f12> <f1>~ from a buffer that edits a make file in Gnu Make mode.
-  This is a new method to access language specific PDF files.  I previously added a zsh PDF that is accessible using the same
-  key sequence in a buffer editing a zsh file.  I will be adding more language specific PDF files in time.
-  The *pel-help-pdf* interactive function now calls the new *pel-lang-pdf* which itself calls *pel-shell-scripting-language* for the shell modes.
-- Overhaul of PDF help access.  The infrastructure now support the ability to request a language-specific
-  PDF in addition to the existing mode-specific PDF.  The ~<f12> <f1>~ continues to provide access to the
-  major-mode or the command topic.  But now, for topics that are major-mode specific it's possible to
-  request access to the language-specific PDF.  The language specific PDF files are stored inside the doc/pdf/lang
-  directory. At the moment there is only one 'language'-specific pdf, and it's for *zsh*. When editing a shell script,
-  if this happens to be a zsh script, typing ~C-u <f12> <f1>~ opens that.  Typing ~<f12> <f1>~ opens the PDF describing
-  Emacs support for shell scripting.
-- Clarified information for the shell.  There is now 3 sets of PDF files related to Unix-type shells:
-  - ~<f11> z <f1>~ opens the PDF that describes how to launch shells, processes and applications.
-  - When editing a shells script, in *sh-mode*, the ~<f12> <f1>~ opens the PDF describing Emacs support for editing Unix shell scripts.
-  - When editing a shells script, in *sh-mode*, the ~C-u <f12> <f1>~ (or ~M-2 <f12> <f1>~) opens the PDF describing the
-    scripting language, such as the doc/pdf/lang/zsh.pdf (which at the moment is the only language-specific PDF published).
-  - Inside a buffer in *shell-mode*, *term-mode* or *vterm-mode* the ~<f12> <f1>~ opens the PDF that describes the shell-mode,
-    term-mode or vterm-mode, respectively.
+- *pel-shell-previous-prompt* and *pel-shell-next-prompt* commands now accept a numeric
+  argument.  By default it's 1.  Using a different number allows repetition and direction
+  change.  These commands now also leaves point after the prompt on the first character of
+  the command.
+- Added *pel-term-use-shell-prompt-line-regexp* user option: when set to t (the default),
+  PEL sets *term-prompt-regexp* to the value of *pel-shell-prompt-line-regexp* allowing
+  all prompt navigation search to use the same regular expression.  This user-option is
+  part of the new customization group: *pel-pkg-for-term-mode*.
+- Moved the GNU Make specific information from the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make PDF]] file to the new GNU Make
+  PDF stored in the doc/pdf/lang directory.  To access it, type ~C-u <f12> <f1>~ from a
+  buffer that edits a make file in Gnu Make mode.  This is a new method to access language
+  specific PDF files.  I previously added a zsh PDF that is accessible using the same key
+  sequence in a buffer editing a zsh file.  I will be adding more language specific PDF
+  files in time.  The *pel-help-pdf* interactive function now calls the new *pel-lang-pdf*
+  which itself calls *pel-shell-scripting-language* for the shell modes.
+- Overhaul of PDF help access.  The infrastructure now support the ability to request a
+  language-specific PDF in addition to the existing mode-specific PDF.  The ~<f12> <f1>~
+  continues to provide access to the major-mode or the command topic.  But now, for topics
+  that are major-mode specific it's possible to request access to the language-specific
+  PDF.  The language specific PDF files are stored inside the doc/pdf/lang directory. At
+  the moment there is only one 'language'-specific pdf, and it's for *zsh*. When editing a
+  shell script, if this happens to be a zsh script, typing ~C-u <f12> <f1>~ opens that.
+  Typing ~<f12> <f1>~ opens the PDF describing Emacs support for shell scripting.
+- Clarified information for the shell.  There is now 3 sets of PDF files related to
+  Unix-type shells:
+  - ~<f11> z <f1>~ opens the PDF that describes how to launch shells, processes and
+    applications.
+  - When editing a shells script, in *sh-mode*, the ~<f12> <f1>~ opens the PDF describing
+    Emacs support for editing Unix shell scripts.
+  - When editing a shells script, in *sh-mode*, the ~C-u <f12> <f1>~ (or ~M-2 <f12> <f1>~)
+    opens the PDF describing the scripting language, such as the doc/pdf/lang/zsh.pdf
+    (which at the moment is the only language-specific PDF published).
+  - Inside a buffer in *shell-mode*, *term-mode* or *vterm-mode* the ~<f12> <f1>~ opens
+    the PDF that describes the shell-mode, term-mode or vterm-mode, respectively.
 - Also added some commands bound to the ~<f12>~ key of the various shell/terminal modes.
-- Add key bindings to diff a buffer with the file it's visiting: ~<f11> b =~ is now bound to *diff-buffer-with-file* and
-  ~<f11> b M-=~ is bound to *ediff-current-file*.
-- Improved PEL default key bindings for iedit-mode: by default PEL uses ~M-S-<f7>~, ~M-S-<f8>~ and ~M-S-<f9>~ to move to previous iedit occurrence,
-toggle the iedit state of the occurrence and move to the next iedit occurrence, respectively, instead of the default ~backtab~, ~M-;~ and ~backtab~ keys.
-This way, the standard behaviour of these often used keys can use used over an iedit occurrence.
-The description of the iedit mode in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀  Search/Replace PDF]]  shows if a key binding is available over the iedit occurrence or anywhere when the iedit-mode is active.
-- Add customization for iedit-mode: the new *pel-pkg-for-iedit* customization group holds the new
-  *pel-iedit-use-alternate-keys* user-option that can be used to restore the default iedit key bindings.
-  When text is highlighted by iedit-mode, the ~<f11><f2>~ and ~<f11><f3>~ open the  *pel-pkg-for-iedit* and *iedit*
-  customization group buffer respectively.
-- Improved *pel-comment-show-variables* (bound to ~<f11> ; ?~) : the name of each variable shown in the buffer is a button
-  that opens the help for the variable which itself has a link to customize the user-option variables.
+- Add key bindings to diff a buffer with the file it's visiting: ~<f11> b =~ is now bound
+  to *diff-buffer-with-file* and ~<f11> b M-=~ is bound to *ediff-current-file*.
+- Improved PEL default key bindings for iedit-mode: by default PEL uses ~M-S-<f7>~,
+  ~M-S-<f8>~ and ~M-S-<f9>~ to move to previous iedit occurrence, toggle the iedit state
+  of the occurrence and move to the next iedit occurrence, respectively, instead of the
+  default ~backtab~, ~M-;~ and ~backtab~ keys.  This way, the standard behaviour of these
+  often used keys can use used over an iedit occurrence.  The description of the iedit
+  mode in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]] shows if a key binding is available over the iedit
+  occurrence or anywhere when the iedit-mode is active.
+- Add customization for iedit-mode: the new *pel-pkg-for-iedit* customization group holds
+  the new *pel-iedit-use-alternate-keys* user-option that can be used to restore the
+  default iedit key bindings.  When text is highlighted by iedit-mode, the ~<f11><f2>~ and
+  ~<f11><f3>~ open the *pel-pkg-for-iedit* and *iedit* customization group buffer
+  respectively.
+- Improved *pel-comment-show-variables* (bound to ~<f11> ; ?~) : the name of each variable
+  shown in the buffer is a button that opens the help for the variable which itself has a
+  link to customize the user-option variables.
 - Add ~<f6> \~ and ~C-x C-\~ key bindings to *goto-last-change*.
-- Add support for *undo-redo* command available in Emacs 28 and later.  The new *pel-use-undo-redo* user option, available
-  on can be used on Emacs 28 and later to activate its use and key bindings.
-- Add ~<f6> ;~ binding to *comment_line* which starts the comment at the beginning of the line, for convenience in terminal mode.
-- Add *pel-kill-symbol-at-point-terminal-binding* user-option which provides ability to select an alternative
-  key binding for *pel-kill-symbol-at-point* when Emacs is running in terminal mode.  This helps when using
-  a terminal  like Ubuntu terminal, which can access the ~M-<kp-subtract>~ key with another key sequence.
-- Add *pel-show-indent* command, bound to ~<f11> <tab> ?~ that opens a buffer showing the values and meaning
-  of the user-options controlling indentation and tab rendering.  The buffer shows the user option and
-  commands names as clickable buttons that opens help and provide ability to gain access to the customization
-  buffer used to change their values.   IT shows major-mode specific customization variable uses when the
- major mode of the current buffer uses them.
+- Add support for *undo-redo* command available in Emacs 28 and later.  The new
+  *pel-use-undo-redo* user option, available on can be used on Emacs 28 and later to
+  activate its use and key bindings.
+- Add ~<f6> ;~ binding to *comment_line* which starts the comment at the beginning of the
+  line, for convenience in terminal mode.
+- Add *pel-kill-symbol-at-point-terminal-binding* user-option which provides ability to
+  select an alternative key binding for *pel-kill-symbol-at-point* when Emacs is running
+  in terminal mode.  This helps when using a terminal like Ubuntu terminal, which can
+  access the ~M-<kp-subtract>~ key with another key sequence.
+- Add *pel-show-indent* command, bound to ~<f11> <tab> ?~ that opens a buffer showing the
+  values and meaning of the user-options controlling indentation and tab rendering.  The
+  buffer shows the user option and commands names as clickable buttons that opens help and
+  provide ability to gain access to the customization buffer used to change their values.
+  IT shows major-mode specific customization variable uses when the major mode of the
+  current buffer uses them.
 - Improve the description and the content shown by the *pel-align-info*.
-- Change PEL-specific binding to *indent-tools-hydra/body* from ~<f11> <tab> >~ to ~<f11> <tab> <f7>~ .
+- Change PEL-specific binding to *indent-tools-hydra/body* from ~<f11> <tab> >~ to ~<f11>
+  <tab> <f7>~ .
 - Fix: *pel-align-info* no longer shows 2 instances of the *pel-new-line-does-align*
-- Fix following commands that now insert markup prefix and suffix around point when nothing is marked or
-  point is now over or after a word instead of failing: *pel-rst-bold*, *pel-rst-italic*, *pel-rst-literal*, and
- *pel-rst-interpreted*.
+- Fix following commands that now insert markup prefix and suffix around point when
+  nothing is marked or point is now over or after a word instead of failing:
+  *pel-rst-bold*, *pel-rst-italic*, *pel-rst-literal*, and *pel-rst-interpreted*.
 - Add new ~<f6>~ key binding to join lines:
-  - ~<f6> 6~ and ~<f11> ⌫  7~ are now bound to *delete-indentation* which join current line with previous one,
-    and is close to the ~M-^~ key.
-  - The ~<f6> 7~  and ~<f11> ⌫  7~ are  now bound to the new pel command *pel-join-next-line*.
-- Changed ~<f6>~ key binding of *complete-symbol*: instead of ~<f6> 6~ it is now bound to ~<f6> ,~.
-  Also changed key binding of *info-complete-symbol*: instead of ~<f6> 7~ it is now bound to ~<f6> .~.
-  The new bindings are more consistent with their intent.
-- Add *pel-show-function* command, bound to ~<f11> ? F~, that prints the name of the current function at point
-  in the mini-buffer.  Even though you can use the which-func mode to display the current function at point in
-  the mode line of a buffer, the buffer window is sometimes too narrow.  Using the new command is therefore quite
-  useful in those situations when you don't want to use the mouse (like me).
+  - ~<f6> 6~ and ~<f11> ⌫ 7~ are now bound to *delete-indentation* which join current line
+    with previous one, and is close to the ~M-^~ key.
+  - The ~<f6> 7~ and ~<f11> ⌫ 7~ are now bound to the new pel command
+    *pel-join-next-line*.
+- Changed ~<f6>~ key binding of *complete-symbol*: instead of ~<f6> 6~ it is now bound to
+  ~<f6> ,~.  Also changed key binding of *info-complete-symbol*: instead of ~<f6> 7~ it is
+  now bound to ~<f6> .~.  The new bindings are more consistent with their intent.
+- Add *pel-show-function* command, bound to ~<f11> ? F~, that prints the name of the
+  current function at point in the mini-buffer.  Even though you can use the *which-func*
+  mode to display the current function at point in the mode line of a buffer, the buffer
+  window is sometimes too narrow.  Using the new command is therefore quite useful in
+  those situations when you don't want to use the mouse (like me).
   - With a prefix argument it insert the function name at point.
-- Add *pel-kill-current-buffer* command which is only bound to the ~k~ key inside the window hydra pel-∑wnd.
+- Add *pel-kill-current-buffer* command which is only bound to the ~k~ key inside the
+  window hydra pel-∑wnd.
 - The *kill-buffer-and-window* is now bound to ~K~ in the window hydra.
-- The format of the to-do note inserted by the *pel-insert-todo-note* command is now controlled by two user option variables:
-  *pel-todo-note-text* and *pel-todo-note-date-format*. It supports the automatic replacement of "(DATE)" and "(USER)" strings
-  with the current date and user name respectively. Use the new *pel-customize-todo-note* command (bound to ~<f11> i <f4> n~)
-  to access the relevant customization buffer quickly.
-- Modified the key bound to *iedit-toggle-selection* in the *iedit-mode*: replaced ~M-;~ by ~M-<f6>~ to allow
-  the use of comment-dwim when iedit-mode is being used. The ~M-<f6>~ is globally bound to pel-open-at-point
-  but that's not its only binding and the probability to use that command while using the iedit-mode is low.
-- Modified the date & time insertion commands and key sequence bindings to provide the ability to insert
-  various date and time formats that are now all controlled by customizable format strings.  There are now
-  eight commands that insert the local date/time by default and the UTC is an argument is used:
+- The format of the to-do note inserted by the *pel-insert-todo-note* command is now
+  controlled by two user option variables: *pel-todo-note-text* and
+  *pel-todo-note-date-format*. It supports the automatic replacement of "(DATE)" and
+  "(USER)" strings with the current date and user name respectively. Use the new
+  *pel-customize-todo-note* command (bound to ~<f11> i <f4> n~) to access the relevant
+  customization buffer quickly.
+- Modified the key bound to *iedit-toggle-selection* in the *iedit-mode*: replaced ~M-;~
+  by ~M-<f6>~ to allow the use of comment-dwim when iedit-mode is being used. The ~M-<f6>~
+  is globally bound to pel-open-at-point but that's not its only binding and the
+  probability to use that command while using the iedit-mode is low.
+- Modified the date & time insertion commands and key sequence bindings to provide the
+  ability to insert various date and time formats that are now all controlled by
+  customizable format strings.  There are now eight commands that insert the local
+  date/time by default and the UTC is an argument is used:
   - *pel-insert-date*, bound to ~<f11> i d~: inserts the current date at point.
   - *pel-insert-date-wkd*, bound to ~<f11> i D~: inserts the current date and week-day at point.
   - *pel-insert-date-time*, bound to ~<f11> i t~: inserts the current date and time at point.
@@ -123,37 +154,45 @@ The description of the iedit mode in the [[https://raw.githubusercontent.com/pie
   - *pel-insert-iso-date-wkd*, bound to ~<f11> i M-D~: inserts the current date and week-day at point.
   - *pel-insert-iso-date-time*, bound to ~<f11> i M-t~: inserts the current date and time at point.
   - *pel-insert-iso-date-wkd-time*, bound to ~<f11> i M-T~: inserts the current date, week day and time at point.
-  - The new *pel-customize-insert-date-time* command (bound to ~<f11> i <f4> d~) opens the customize buffer that holds
-    the relevant custom variables.
-  - The ~<f6> d~ and ~<f6> D~ bindings to insert dates and ~<f6> t~ to insert date/time were removed.
-  - The *pel-insert-todo-note* command was rebound to ~<f6> n~ (instead of the old ~<f6> T~) for consistency and ease of access.
-- In C and C++ buffers, the *pel-cc-mode-info* command (bound to ~<f12> <f4> ?~) now prints the list
-  of customization variables controlling the code generation skeletons and their values, in the opened
-  info buffer.  The variable names are links that can be used to change their values.
-- Enhanced the code template skeleton ability to create section titles.  A title string that begins
-  with the period character ( . ) is inserted verbatim following a separator line.  A title that starts with the comma character ( , )
-  is inserted verbatim.
-  - The default value of the *pel-c-skel-hfile-section-titles* customized variable uses this new feature to insert the
-    C++ support extern "C" pre-processor code in C header files templates.
-- Add ability to convert the case of one or several letters to standard key bindings which now behave as before when an
-  area is marked but can also operate with no marked area, converting N letters from point (with N defaulting to 1):
+  - The new *pel-customize-insert-date-time* command (bound to ~<f11> i <f4> d~) opens the
+    customize buffer that holds the relevant custom variables.
+  - The ~<f6> d~ and ~<f6> D~ bindings to insert dates and ~<f6> t~ to insert date/time
+    were removed.
+  - The *pel-insert-todo-note* command was rebound to ~<f6> n~ (instead of the old ~<f6>
+    T~) for consistency and ease of access.
+- In C and C++ buffers, the *pel-cc-mode-info* command (bound to ~<f12> <f4> ?~) now
+  prints the list of customization variables controlling the code generation skeletons and
+  their values, in the opened info buffer.  The variable names are links that can be used
+  to change their values.
+- Enhanced the code template skeleton ability to create section titles.  A title string
+  that begins with the period character ( . ) is inserted verbatim following a separator
+  line.  A title that starts with the comma character ( , ) is inserted verbatim.
+  - The default value of the *pel-c-skel-hfile-section-titles* customized variable uses
+    this new feature to insert the C++ support extern "C" pre-processor code in C header
+    files templates.
+- Add ability to convert the case of one or several letters to standard key bindings which
+  now behave as before when an area is marked but can also operate with no marked area,
+  converting N letters from point (with N defaulting to 1):
   - The ~C-x C-l~ key sequence is not bound to the new *pel-downcase-letter* command.
   - The ~C-x C-u~ key sequence is not bound to the new *pel-upcase-letter* command.
-- The *pel-next-frame* (bound to ~<f11> F n~) and *pel-previous-frame* (bound to ~<f11> F p~) now honour the frame numbers:
-  the *pel-next-frame* changes to the frame that has a larger number than the current frame and the *pel-previous-frame* changes
-  the frame to the one that has a lower frame number.  The used Emacs functions behave in the reverse direction; the PEL commands
-  now use the more conventional order.
-- The *pel-duplicate-line* command (bound to ~<f6> d~) now supports value 0 for the argument: with numeric argument value 0
-  the command creates a single duplicate but does not move point: it keeps the point on the original line.
-- Add key binding ~M-<f5>~ to *pel-search-word-from-top*, it's easier to type with a numeric prefix
-  than the ~M-<f11> s .~ key sequence (which is retained) and is a very useful command to be able to
-  quickly access it.
+- The *pel-next-frame* (bound to ~<f11> F n~) and *pel-previous-frame* (bound to ~<f11> F
+  p~) now honour the frame numbers: the *pel-next-frame* changes to the frame that has a
+  larger number than the current frame and the *pel-previous-frame* changes the frame to
+  the one that has a lower frame number.  The used Emacs functions behave in the reverse
+  direction; the PEL commands now use the more conventional order.
+- The *pel-duplicate-line* command (bound to ~<f6> d~) now supports value 0 for the
+  argument: with numeric argument value 0 the command creates a single duplicate but does
+  not move point: it keeps the point on the original line.
+- Add key binding ~M-<f5>~ to *pel-search-word-from-top*, it's easier to type with a
+  numeric prefix than the ~M-<f11> s .~ key sequence (which is retained) and is a very
+  useful command to be able to quickly access it.
 - Add key binding ~<f11> b L~ to *emacs-lock-mode*.
-- Add key bindings to *deadgrep-mode*: activate *deadgred-edit-mode* with ~C-c C-p~ and get out of it with ~C-x C-s~
+- Add key bindings to *deadgrep-mode*: activate *deadgred-edit-mode* with ~C-c C-p~ and
+  get out of it with ~C-x C-s~
 - Add ~<f11> w =~ binding to balance-windows, while keeping the original ~<f11> w s =~
 - Better iedit support for tcl $variable notation.
-- Add *pel-bookmark-info* bound to ~<f11> ' M-?~.  It prints information about
-  bookmark control in a specialized help buffer.
+- Add *pel-bookmark-info* bound to ~<f11> ' M-?~.  It prints information about bookmark
+  control in a specialized help buffer.
 - Improved auto-completion introspection report done by ~<f11> , ?~.
   Renamed the *pel-completion-help* to *pel-completion-info* for name
   consistency with other similar functions.  The function now prints more
