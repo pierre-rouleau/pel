@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, May 27 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-07 20:06:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-09 10:23:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -237,7 +237,12 @@ The other 2 commands will use that list."
 Return the displayed buffer, nil if the buffer no longer exists."
   (let ((buf-obj (nth idx pel--smb-list)))
     (when (buffer-live-p buf-obj)
-      (switch-to-buffer buf-obj))))     ; user interactive request.  OK to call.
+      (switch-to-buffer buf-obj))))     ; OK to use switch-to-buffer: it replaces
+                                        ; buffer in the current window, even
+                                        ; if the same buffer is already
+                                        ; showing inside another window (which
+                                        ; would not be the case with a call to display-buffer)
+
 
 (defun pel--refresh-when-needed (refresh)
   "Refresh buffer list when needed.
