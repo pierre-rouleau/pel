@@ -16,11 +16,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   *switch-to-buffer-obey-display-actions* user-option.
 - Simplified bindings for *pel-toggle-window-dedicated*, changed from ~<f11> w d d~ to
   ~<f11> w d~.
-- Removed ~<f11> w d ?~ binding to *pel-show-dedicated-status*.  Added ~<f11> w ?~ status
-  to *pel-show-window-info* instead.  The new function displays the window number, buffer,
-  size and whether the window is dedicated.  Inside the PEL Window Hydra, the *i* key
-  executes *pel-show-window-info*.  Also removed the *pel-show-window-sizes*; the
-  information is part of what shows the new *pel-show-window-info*.
+- Removed ~<f11> w d ?~ binding to *pel-show-dedicated-status*.
+- Added ~<f11> w ?~ status to *pel-show-window-info* instead.  The new function displays
+  the window number, buffer, size and whether the window is dedicated.
+  Inside the PEL Window Hydra, the *i* key executes *pel-show-window-info*.
+- Also removed the *pel-show-window-sizes*; the information is part of what shows the
+  new *pel-show-window-info*.
 - Add ~<f11> | h~ binding for the *horizontal-scroll-bar-mode* command when Emacs is
   running in graphics mode.
 - Improvements to window management:
