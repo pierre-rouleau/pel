@@ -202,16 +202,17 @@ Used twice returns to the same buffer."
 
 ;;-pel-autoload
 (defun pel-toggle-window-size-fixed (&optional strict)
-  "Toggle the `window-size-fixed' variable.
+  "Toggle the fix size window constraint.
 
-With optional argument STRICT, this sets the window-size-fixed
-variable which impose a strict size constraint, preventing Emacs
-from changing the size of the window even if it would be necessary to, for
-example, display the mini buffer.
+With optional argument STRICT, this sets the `window-size-fixed'
+variable which imposes a strict size constraint, preventing Emacs
+from changing the size of the window even if it would be
+necessary to, for example, display the mini buffer.
 
-With no argument, the size restriction is not strict; it prevents most
-operations to change the window size but Emacs can still change the size if it
-must, for example, make place for the mini buffer."
+By default, with no argument, the size restriction is not strict;
+it prevents most operations to change the window size but Emacs
+can still change the size if it must, for example, make place for
+the mini buffer."
   (interactive "P")
   (if strict
       (pel-toggle-and-show 'window-size-fixed)

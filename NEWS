@@ -2,7 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
-- Add *pel-toggle-size-fixed*, bound to ~<f11> w s .~ and inside the PEL
+- Add binding ~<f11> w s .~  *fit-window-to-buffer* matching its ~.~ binding in
+  PEL Hydra.
+- Add binding ~<f11> w s -~  *shrink-window-if-larger-than-buffer* matching its ~-~ binding in
+  PEL Hydra.
+- Add *pel-toggle-size-fixed*, bound to ~<f11> w s s~ and inside the PEL
   Window Hydra as *s*.  By default the command imposes a soft size restriction
   (allowing Emacs to change a window's height to display the min-buffer, for
   example).  With a prefix argument the command imposes a strict size
