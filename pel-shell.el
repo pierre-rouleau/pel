@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-07 23:22:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-09 14:25:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -56,20 +56,37 @@
 (defun pel-shell ()
   "Open a shell in the current window.
 
-If a *shell* buffer is already showing in one of the windows move
-point to it.
+If a *shell* buffer is already showing in one of the current
+frame windows, move point to it.  If one is inside another frame
+open a window in the current frame showing that buffer.
 
-This command uses the built-in shell command, making it open inside
-the current window and not the other window like the built-in shell does.
+If no *shell* buffer exist, create one in the current window if
+allowed by the window management constraints, otherwise open it
+inside another window.
 
-The behaviour of pel-shell is the same as other inferior process
-commands like term, ansi-term and ielm."
+This command uses the built-in shell command, making it open
+inside the current window and not the other window like the
+built-in shell does in all version of Emacs (including Emacs
+prior to 29.1).  As far as window selection is concerned, the
+behaviour of `pel-shell' is the same as other inferior process
+commands like `term', `ansi-term' and `ielm'."
   (interactive)
   (let ((shell-buffer (get-buffer "*shell*")))
-    (unless shell-buffer
+    (if shell-buffer
+        ;; *shell* buffer already exists
+        (if pel-emacs-29-or-later-p
+            ;; in Emacs 29.1, trust its window manager to select
+            ;; the window for that buffer and explicitly select it
+            (select-window (display-buffer shell-buffer))
+          (shell shell-buffer))
+      ;; *shell* buffer does not exist; create one.
       (setq shell-buffer (generate-new-buffer "*shell*"))
-      (switch-to-buffer shell-buffer))  ; user interactive request. OK to call.
-    (shell shell-buffer)))
+      (unless pel-emacs-29-or-later-p
+        ;; in older versions of emacs explicitly switch buffer
+        ;; in current window, otherwise emacs picks the 'other'
+        ;; window, not the current one.
+        (switch-to-buffer shell-buffer))
+      (shell shell-buffer))))
 
 ;;-pel-autoload
 (defun pel-shell-previous-prompt (n)
