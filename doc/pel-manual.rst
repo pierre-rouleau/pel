@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2024-05-08 09:12:22 EDT, updated by Pierre Rouleau.
+:Modified: 2024-05-09 00:00:42 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -7528,8 +7528,8 @@ The file provides the following features:
 
   - ``pel-show-window-filename-or-buffer-name`` displays the name of the
     file or buffer used in the current window.
-  - ``pel-show-window-sizes`` displays the height and width of the current
-    window.
+  - ``pel-show-window-info`` displays the height and width of the current
+    window, whether the window is dedicated, fixed in size, etc...
 
 
 .. ---------------------------------------------------------------------------

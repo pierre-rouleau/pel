@@ -110,13 +110,13 @@
 ;;
 ;; - Showing information about current window:
 ;;
+;;    - `pel-show-window-info' displays information about the current winow:
+;;       its size, whether it is dedicated, fixed in size, etc...
 ;;    - `pel-show-window-dedicated-status' displays the dedicated status of
 ;;      the current window: ie. whether the current window is dedicated or
 ;;      not.
 ;;   - `pel-show-window-filename-or-buffer-name' displays the name of the
 ;;     file or buffer used in the current window.
-;;   - `pel-show-window-sizes' displays the height and width of the current
-;;     window.
 
 
 ;;; --------------------------------------------------------------------------
@@ -157,48 +157,6 @@ Used twice returns to the same buffer."
 ;; ---------------------------------------------------------------------------
 ;; Dedicated Windows
 ;; -----------------
-
-
-;;-pel-autoload
-(defun pel-show-window-info ()
-  ""
-  (interactive)
-  (let* ((win (selected-window))
-        (preserving-size (window-parameter win 'window-preserved-size)))
-    (message "\
-%S:%s
-- is %spart of an atom (an atomic group of windows)
-- is %sa window slot
-- is %sa root window
-- is %sa side window (frame window-sides-slots (ltrb) = %s)
-- is %sa size-preserving window (window-size-fixed: %s)
-  - Toggle this with %s.
-- is %sdedicated.
-- height=%d, width=%d"
-             win
-             (if pel-emacs-27-or-later-p
-                 (format "
-- manual buffer switch operation (eg. with C-x b) %s display actions.
-  - Toggle it with '<f11> w <f4> b'"
-                         (pel-symbol-on-off-string
-                          'switch-to-buffer-obey-display-actions "respects"
-                          "does not respect"))
-               "")
-             (pel-on-off-string (window-parameter win 'window-atom) "" "not ")
-             (pel-on-off-string (window-parameter win 'window-slot) "" "not ")
-             (pel-on-off-string (window-parameter win 'root) "" "not ")
-             (pel-on-off-string (window-parameter win 'window-side) "" "not ")
-             window-sides-slots
-             (pel-on-off-string preserving-size "" "not ")
-             (pel-symbol-on-off-string 'window-size-fixed)
-             (if preserving-size
-                 (if window-size-fixed  "'C-u <f11> w s .'" "'<f11> w s .'")
-               "'<f11> w s .' or 'C-u <f11> w s .'")
-             (pel-on-off-string  (window-dedicated-p) "" "not ")
-             (window-size)
-             (window-size nil t)
-             )))
-
 
 ;;-pel-autoload
 (defun pel-toggle-window-size-fixed (&optional strict)
@@ -615,6 +573,46 @@ and want to see where the next window is."
 ;; -----------------------------
 
 ;;-pel-autoload
+(defun pel-show-window-info ()
+  ""
+  (interactive)
+  (let* ((win (selected-window))
+        (preserving-size (window-parameter win 'window-preserved-size)))
+    (message "\
+%S:%s
+- is %spart of an atom (an atomic group of windows)
+- is %sa window slot
+- is %sa root window
+- is %sa side window (frame window-sides-slots (ltrb) = %s)
+- is %sa size-preserving window (window-size-fixed: %s)
+  - Toggle this with %s.
+- is %sdedicated.
+- height=%d, width=%d"
+             win
+             (if pel-emacs-27-or-later-p
+                 (format "
+- manual buffer switch operation (eg. with C-x b) %s display actions.
+  - Toggle it with '<f11> w <f4> b'"
+                         (pel-symbol-on-off-string
+                          'switch-to-buffer-obey-display-actions "respects"
+                          "does not respect"))
+               "")
+             (pel-on-off-string (window-parameter win 'window-atom) "" "not ")
+             (pel-on-off-string (window-parameter win 'window-slot) "" "not ")
+             (pel-on-off-string (window-parameter win 'root) "" "not ")
+             (pel-on-off-string (window-parameter win 'window-side) "" "not ")
+             window-sides-slots
+             (pel-on-off-string preserving-size "" "not ")
+             (pel-symbol-on-off-string 'window-size-fixed)
+             (if preserving-size
+                 (if window-size-fixed  "'C-u <f11> w s .'" "'<f11> w s .'")
+               "'<f11> w s .' or 'C-u <f11> w s .'")
+             (pel-on-off-string  (window-dedicated-p) "" "not ")
+             (window-size)
+             (window-size nil t)
+             )))
+
+;;-pel-autoload
 (defun pel-show-window-filename-or-buffer-name ()
   "Show the name of the file or buffer of current window.
 For file; display full file path.
@@ -624,15 +622,6 @@ Display in minibuffer."
     (if fn
         (message "File:= %s --> %s" (current-buffer) fn )
       (message "Buffer:= %s" (buffer-name)))))
-
-;;-pel-autoload
-(defun pel-show-window-sizes ()
-  "Show the height & width of the current window."
-  (interactive)
-  (message "Window %s: Height=%d, Width=%d"
-           (selected-window)
-           (window-size)
-           (window-size nil t)))
 
 ;; ---------------------------------------------------------------------------
 ;; Side Windows
