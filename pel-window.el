@@ -572,12 +572,10 @@ and want to see where the next window is."
 ;; Show information about window
 ;; -----------------------------
 
-;;-pel-autoload
-(defun pel-show-window-info ()
-  ""
-  (interactive)
-  (let* ((win (selected-window))
-        (preserving-size (window-parameter win 'window-preserved-size)))
+(defun pel--show-window-attribute-info ()
+  "Print window attribute information in minibuffer."
+(let* ((win (selected-window))
+         (preserving-size (window-parameter win 'window-preserved-size)))
     (message "\
 %S:%s
 - is %spart of an atom (an atomic group of windows)
@@ -611,6 +609,42 @@ and want to see where the next window is."
              (window-size)
              (window-size nil t)
              )))
+
+(defun pel--show-display-options (append)
+  "Show `display-option' control variables in buffer *pel-window-info*.
+
+If APPEND is non-nil, append the information to the buffer."
+  (let* ((win (selected-window))
+         (info (format "display-buffer info for %s:\n\n" win)))
+    (pel-print-in-buffer
+     "*pel-window-info*"
+     "display-buffer Control"
+     (lambda ()
+       "Print display-buffer control variables."
+       (insert info)
+       (pel-insert-list-content 'display-buffer-overriding-action)
+       (pel-insert-list-content 'display-buffer-alist)
+       (pel-insert-list-content 'display-buffer-base-action)
+       (pel-insert-list-content 'display-buffer-fallback-action))
+     (unless append :clear-buffer)
+     :use-help-mode)))
+
+;;-pel-autoload
+(defun pel-show-window-info (&optional arg)
+  "Print information about current window.
+
+Optional argument ARG identifies what type of information is requested.
+- With no argument: print window attribute info (window #, buffer, size,
+  whether it's dedicated, fixed in size, etc..)
+- M-0: print `display-buffer' control variables in *pel-window-info* buffer.
+- M-1: same as M-0, but append to the buffer.
+"
+  (interactive "P")
+  (cond
+   ((not arg)  (pel--show-window-attribute-info))
+   ((eq arg 0) (pel--show-display-options nil))
+   ((eq arg 1) (pel--show-display-options t))
+   (t         (user-error "Argument %s not supported" arg))))
 
 ;;-pel-autoload
 (defun pel-show-window-filename-or-buffer-name ()

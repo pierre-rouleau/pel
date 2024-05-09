@@ -18,9 +18,18 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   ~<f11> w d~.
 - Removed ~<f11> w d ?~ binding to *pel-show-dedicated-status*.
 - Added ~<f11> w ?~ status to *pel-show-window-info* instead.
-  The new function displays
-  the window number, buffer, size and whether the window is dedicated.
-  Inside the PEL Window Hydra, the *i* key executes *pel-show-window-info*.
+  - The *pel-show-window-info* supports optional command argument:
+    - without any argument it displays the window number, buffer name, window size,
+      whether the window is dedicated, fixed in size, is a side window, and other
+      window attributes.
+    - With the ~M-0~ numerical argument, it opens a =*pel-window-info*= buffer that
+      shows the value of several variables used by the *display-buffer* function to
+      control window management.  The name of the variables are links to their help, which
+      also links to their customization.
+    - The ~M-1~ numerical argument does the same as ~M-0~ but it appends to the buffer.
+      You can use this to collect information over time or from several frames or windows.
+  - Inside the PEL Window Hydra, the *i* key executes *pel-show-window-info*.  Command
+    arguments can also be used in the Hydra.
 - Also removed the *pel-show-window-sizes*; the information is part of what shows the
   new *pel-show-window-info*.
 - Add ~<f11> | h~ binding for the *horizontal-scroll-bar-mode* command when Emacs is
