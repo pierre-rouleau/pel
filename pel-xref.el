@@ -540,7 +540,7 @@ Always use Elisp backend, regardless of currently active xref-backend."
       (progn
         (xref-push-marker-stack)
         (let ((buffer.point (find-variable-noselect symbol)))
-          (switch-to-buffer (car buffer.point))
+          (switch-to-buffer (car buffer.point)) ; switch buffer in current window.
           (goto-char (cdr buffer.point))))
     (user-error "Cannot load required xref-push-marker-stack")))
 
