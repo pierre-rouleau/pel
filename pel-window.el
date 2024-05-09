@@ -71,11 +71,14 @@
 ;;  - Window splitting:
 ;;
 ;;    - The function `pel-split-window-sensibly' attempts to improve window
-;;      splitting logic by selecting an orienation that takes the frame size
+;;      splitting logic by selecting an orientation that takes the frame size
 ;;      into account with a different heuristic than what is normally used by
 ;;      Emacs.  The function is used by other PEL commands when windows are
 ;;      created.  The logic gives priority to splitting vertically if the
 ;;      available area is wide *enough*.
+;;    - The `pel-split-root-window-below' and `pel-split-window-right'
+;;      commands implement the equivalent commands available in Emacs 29.1 and
+;;      later or use them when available.
 ;;
 ;;  - Changing orientation of 2 windows:
 ;;
@@ -313,8 +316,11 @@ Hide its buffer, does not kill it."
     (select-window original_window)))
 
 ;; ---------------------------------------------------------------------------
-;; Split Current Window More Sensibly
-;; ----------------------------------
+;; Split Current Window
+;; --------------------
+
+;; More Sensibly
+;; -------------
 
 ;;-pel-autoload
 (defun pel-split-window-sensibly ()
@@ -341,6 +347,45 @@ Returns the new window."
           (let ((split-window-keep-point t))
             (split-window-below))
         (user-error "%S too small for splitting" (selected-window))))))
+
+;; Note: the next 2 commands are available as native i=under Emacs 29.1
+;;       but not before.  For simplicity leave them all and use the PEL ones
+;;       in the menu and hydra.
+(defun pel-split-root-window-below (&optional size)
+  "Split root window of current frame in 2, horizontally.
+
+Then new window is below all other current windows.
+If specified, SIZE numerical argument sets line count of top
+window (if positive) or bottom window (if negative)."
+  (interactive "P")
+  (split-window (frame-root-window) size 'below))
+
+(defun pel-split-root-window-right (&optional size)
+  "Split root window of current frame in 2, vertically.
+
+Then new window is at the right of all other current windows.
+If specified, SIZE numerical argument sets line count of left-hand side
+window (if positive) or right-hand-side window (if negative)."
+  (interactive "P")
+  (split-window (frame-root-window) size 'right))
+
+(defun pel-split-root-window-above (&optional size)
+  "Split root window of current frame in 2, horizontally.
+
+Then new window is above all other current windows.
+If specified, SIZE numerical argument sets line count of bottom
+window (if positive) or top window (if negative)."
+  (interactive "P")
+  (split-window (frame-root-window) size 'above))
+
+(defun pel-split-root-window-left (&optional size)
+  "Split root window of current frame in 2, vertically.
+
+Then new window is at the left of all other current windows.
+If specified, SIZE numerical argument sets line count of right-hand side
+window (if positive) or left-hand side window (if negative)."
+  (interactive "P")
+  (split-window (frame-root-window) size 'left))
 
 ;; ---------------------------------------------------------------------------
 ;; Re-orient 2 windows

@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-08 19:43:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-09 16:46:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -358,20 +358,6 @@ CAUTION: the hydra is still active!"
   (interactive)
   (pel-buffer-in-side-window 8))
 
-(defun pel--srw-below (&optional size)
-  "Split root window right (if available)."
-  (interactive "P")
-  (if pel-emacs-29-or-later-p
-      (split-root-window-below size)
-    (split-window-below size)))
-
-(defun pel--srw-right (&optional size)
-  "Split root window right (if available)."
-  (interactive "P")
-  (if pel-emacs-29-or-later-p
-      (split-root-window-right size)
-    (split-window-right size)))
-
 
 (defhydra pel-∑wnd (global-map "<f7>"
                                :pre  (pel--cache-hydra-is-helpful)
@@ -379,18 +365,20 @@ CAUTION: the hydra is still active!"
                                :foreign-keys run)
   ""
 
-  ("M-8"         pel--bisw-top               "side⬆️"        :column "Create")
-  ("M-2"         pel--bisw-bottom            "side⬇️"        :column "Create")
-  ("M-4"         pel--bisw-left              "side⬅️"        :column "Create")
-  ("M-6"         pel--bisw-right             "side➡️"        :column "Create")
-  ("M-r"         pel--srw-below              "root⬇️"        :column "Create")
-  ("M-R"         pel--srw-right              "root➡️"        :column "Create")
-  ("2"           split-window-below          "-"            :column "Split")
-  ("3"           split-window-right          "|"            :column "Split")
-  ("C-<up>"      pel-create-window-up        "⬆️"            :column "Split")
-  ("C-<down>"    pel-create-window-down      "⬇️"            :column "Split")
-  ("C-<left>"    pel-create-window-left      "⬅️"            :column "Split")
-  ("C-<right>"   pel-create-window-right     "➡️"            :column "Split")
+  ("C-M-8"       pel-split-root-window-above "root⬆️"        :column "SplitF")
+  ("C-M-2"       pel-split-root-window-below "root⬇️"        :column "SplitF")
+  ("C-M-4"       pel-split-root-window-left  "root⬅️"        :column "SplitF")
+  ("C-M-6"       pel-split-root-window-right "root➡️"        :column "SplitF")
+  ("M-8"         pel--bisw-top               "side⬆️"        :column "SplitF")
+  ("M-2"         pel--bisw-bottom            "side⬇️"        :column "SplitF")
+  ("M-4"         pel--bisw-left              "side⬅️"        :column "SplitF")
+  ("M-6"         pel--bisw-right             "side➡️"        :column "SplitF")
+  ("2"           split-window-below          "-"            :column "SplitW")
+  ("3"           split-window-right          "|"            :column "SplitW")
+  ("C-<up>"      pel-create-window-up        "⬆️"            :column "SplitW")
+  ("C-<down>"    pel-create-window-down      "⬇️"            :column "SplitW")
+  ("C-<left>"    pel-create-window-left      "⬅️"            :column "SplitW")
+  ("C-<right>"   pel-create-window-right     "➡️"            :column "SplitW")
   ("i"           pel-show-window-info        "info"         :column "Layout")
   ("s"           pel-toggle-window-size-fixed "fix size"    :column "Layout")
   ("n"           winner-redo                 "next layout"  :column "Layout")

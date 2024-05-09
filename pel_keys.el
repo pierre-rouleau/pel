@@ -7866,6 +7866,12 @@ the ones defined from the buffer now."
 ;; - r: windresize
 ;; - s: window size operations
 
+(define-pel-global-prefix pel:window-root (kbd "<f11> w /"))
+(define-key pel:window-root    "8"   'pel-split-root-window-above)
+(define-key pel:window-root    "2"   'pel-split-root-window-below)
+(define-key pel:window-root    "4"   'pel-split-root-window-left)
+(define-key pel:window-root    "6"   'pel-split-root-window-right)
+
 (define-pel-global-prefix pel:window-setup (kbd "<f11> w <f4>"))
 (define-key pel:window-setup    "s"   'pel-toggle-split-window-keep-point)
 (when pel-emacs-29-or-later-p

@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add commands to split the root window in all 4 directions, available in all versions of
+  Emacs supported by PEL, not only 29.1:
+  - *pel-split-root-window-above*, bound to ~<f11> w r 8~ and to Hydra ~C-M-8~
+  - *pel-split-root-window-below*, bound to ~<f11> w r 2~ and to Hydra ~C-M-2~
+  - *pel-split-root-window-right*, bound to ~<f11> w r 6~ and to Hydra ~C-M-6~
+  - *pel-split-root-window-left*,  bound to ~<f11> w r 4~ and to Hydra ~C-M-4~
 - Add binding ~<f11> w s .~ *fit-window-to-buffer* matching its ~.~ binding in PEL Hydra.
 - Add binding ~<f11> w s -~ *shrink-window-if-larger-than-buffer* matching its ~-~ binding
   in PEL Hydra.

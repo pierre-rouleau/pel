@@ -880,6 +880,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-show-window-info
     pel-show-window-filename-or-buffer-name
     pel-buffer-in-side-window
+    pel-split-root-window-below
+    pel-split-root-window-right
+    pel-split-root-window-above
+    pel-split-root-window-left
     pel-toggle-split-window-keep-point
     pel-toggle-switch-to-buffer-obey-display-actions)
   (pel-autoload-function "pel-window" for:
