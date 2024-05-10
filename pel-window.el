@@ -670,7 +670,9 @@ If APPEND is non-nil, append the information to the buffer."
        (pel-insert-list-content 'display-buffer-overriding-action)
        (pel-insert-list-content 'display-buffer-alist)
        (pel-insert-list-content 'display-buffer-base-action)
-       (pel-insert-list-content 'display-buffer-fallback-action))
+       (pel-insert-list-content 'display-buffer-fallback-action)
+       (pel-insert-symbol-content 'switch-to-buffer-obey-display-actions nil :on-same-line)
+       (pel-insert-symbol-content 'switch-to-buffer-in-dedicated-window  nil :on-same-line))
      (unless append :clear-buffer)
      :use-help-mode)))
 
