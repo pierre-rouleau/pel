@@ -237,13 +237,17 @@ Exclude the minibuffer."
 (defun pel-create-window-up (&optional size)
   "Create a window above the current one and move point to it."
   (interactive "P")
-  (split-window-below (- size)))
+  (if size
+      (split-window-below (- size))
+    (split-window-below)))
 
 ;;-pel-autoload
 (defun pel-create-window-left (&optional size)
   "Create a window left of the current one and move point to it."
   (interactive "P")
-  (split-window-right (- size)))
+  (if size
+      (split-window-right (- size))
+    (split-window-right)))
 
 ;; ---------------------------------------------------------------------------
 ;; Move to specified window
