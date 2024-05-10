@@ -4,13 +4,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 ** Modifications, Fixes and Improvements:
 - Add commands to split the root window in all 4 directions, available in all versions of
   Emacs supported by PEL, not only 29.1:
-  - *pel-split-root-window-above*, bound to ~<f11> w r 8~ and to Hydra ~C-M-8~
-  - *pel-split-root-window-below*, bound to ~<f11> w r 2~ and to Hydra ~C-M-2~
-  - *pel-split-root-window-right*, bound to ~<f11> w r 6~ and to Hydra ~C-M-6~
-  - *pel-split-root-window-left*,  bound to ~<f11> w r 4~ and to Hydra ~C-M-4~
-- Add binding ~<f11> w s .~ *fit-window-to-buffer* matching its ~.~ binding in PEL Hydra.
+  - *pel-split-root-window-above*, bound to ~<f11> w r 8~ and to PEL Window Hydra ~C-M-8~
+  - *pel-split-root-window-below*, bound to ~<f11> w r 2~ and to PEL Window Hydra ~C-M-2~
+  - *pel-split-root-window-right*, bound to ~<f11> w r 6~ and to PEL Window Hydra ~C-M-6~
+  - *pel-split-root-window-left*,  bound to ~<f11> w r 4~ and to PEL Window Hydra ~C-M-4~
+- Add binding ~f~ to *follow-mode* in the PEL Window Hydra.
+- Add binding ~<f11> w s .~ *fit-window-to-buffer* matching its ~.~ binding in PEL Window Hydra.
 - Add binding ~<f11> w s -~ *shrink-window-if-larger-than-buffer* matching its ~-~ binding
-  in PEL Hydra.
+  in PEL Window Hydra.
 - Add *pel-toggle-size-fixed*, bound to ~<f11> w s s~ and inside the PEL Window Hydra as
   *s*.  By default the command imposes a soft size restriction (allowing Emacs to change a
   window's height to display the min-buffer, for example).  With a prefix argument the
