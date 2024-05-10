@@ -50,11 +50,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     value of the *split-value-keep-point* allowing the various split commands to behave
     differently in the way they place the cursor inside the split windows.
   - Add *pel-buffer-in-side-window* function, called by four convenient commands mapped
-    to bindings inside the ~<f11> w \\~ prefix key:
-    - *pel-buf-in-side-win-top*,    bound to ~<f11> w \\ 8~ and to PEL Window Hydra ~\\ 8~,
-    - *pel-buf-in-side-win-bottom*, bound to ~<f11> w \\ 2~ and to PEL Window Hydra ~\\ 2~,
-    - *pel-buf-in-side-win-right*,  bound to ~<f11> w \\ 6~ and to PEL Window Hydra ~\\ 6~,
-    - *pel-buf-in-side-win-left*,   bound to ~<f11> w \\ 4~ and to PEL Window Hydra ~\\ 4~,
+    to bindings inside the ~<f11> w \~ prefix key:
+    - *pel-buf-in-side-win-top*,    bound to ~<f11> w \ 8~ and to PEL Window Hydra ~\ 8~,
+    - *pel-buf-in-side-win-bottom*, bound to ~<f11> w \ 2~ and to PEL Window Hydra ~\ 2~,
+    - *pel-buf-in-side-win-right*,  bound to ~<f11> w \ 6~ and to PEL Window Hydra ~\ 6~,
+    - *pel-buf-in-side-win-left*,   bound to ~<f11> w \ 4~ and to PEL Window Hydra ~\ 4~.
   - Add PEL Window Hydra keys to create root windows at the bottom and right side of the
     current Emacs frame (~<f7> M-r~ and ~<f7> M-R~) This command is available in Emacs
     29.1 or later; the Hydra keys are always available but will default to splitting to
