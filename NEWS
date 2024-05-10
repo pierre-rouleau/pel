@@ -44,7 +44,6 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - ~<f11> | B h~ to *toggle-horizontal-scroll-bar*
   - ~<f11> | B V~ to *scroll-bar-mode*
   - ~<f11> | B v~ to *toggle-scroll-bar*
-  running in graphics mode.
 - Improvements to window management:
   - Add *pel-toggle-split-window-keep-point*, mapped to ~<f11> w <f4> s~ to toggle current
     value of the *split-value-keep-point* allowing the various split commands to behave
