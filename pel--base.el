@@ -2904,6 +2904,19 @@ need."
                stream))
     (princ object stream)))
 
+(defun pel-insert-list-value
+    (list-name list-value
+                &optional without-index on-same-line)
+  "Insert a description of a list variable with a name and value"
+  (insert (format "\n- %s: " list-name))
+  (let ((idx 0))
+    (dolist (elem list-value)
+      (setq idx (1+ idx))
+      (unless without-index
+        (insert (format "\n%3d -%s" idx (if on-same-line "" "\n"))))
+      (pel--pp elem (current-buffer) "   ")))
+  )
+
 (defun pel-insert-list-content
     (symbol
      &optional buffer without-index no-button on-same-line)
