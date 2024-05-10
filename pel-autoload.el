@@ -879,10 +879,13 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-other-window-backward
     pel-show-window-info
     pel-show-window-filename-or-buffer-name
-    pel-buffer-in-side-window
-    pel-split-root-window-below
+    pel-buf-in-side-win-bottom
+    pel-buf-in-side-win-right
+    pel-buf-in-side-win-top
+    pel-buf-in-side-win-left
+    pel-buf-in-side-win-bottom
     pel-split-root-window-right
-    pel-split-root-window-above
+    pel-split-root-window-top
     pel-split-root-window-left
     pel-toggle-split-window-keep-point
     pel-toggle-switch-to-buffer-obey-display-actions)
@@ -893,6 +896,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-find-window
     pel-window-valid-for-editing-p
     pel-window-select
+    pel-buffer-in-side-window
     pel-window-direction-for)
 
   (pel-autoload "pel-whitespace" for:

@@ -348,10 +348,7 @@ Returns the new window."
             (split-window-below))
         (user-error "%S too small for splitting" (selected-window))))))
 
-;; Note: the next 2 commands are available as native i=under Emacs 29.1
-;;       but not before.  For simplicity leave them all and use the PEL ones
-;;       in the menu and hydra.
-(defun pel-split-root-window-below (&optional size)
+(defun pel-split-root-window-bottom (&optional size)
   "Split root window of current frame in 2, horizontally.
 
 Then new window is below all other current windows.
@@ -369,13 +366,14 @@ window (if positive) or right-hand-side window (if negative)."
   (interactive "P")
   (split-window (frame-root-window) size 'right))
 
-(defun pel-split-root-window-above (&optional size)
+(defun pel-split-root-window-top (&optional size)
   "Split root window of current frame in 2, horizontally.
 
 Then new window is above all other current windows.
 If specified, SIZE numerical argument sets line count of bottom
 window (if positive) or top window (if negative)."
   (interactive "P")
+  (message "pel-split-root-window-above")
   (split-window (frame-root-window) size 'above))
 
 (defun pel-split-root-window-left (&optional size)
@@ -727,7 +725,6 @@ Use a numeric argument to specify a different side:
     4 := \\='left               6 := \\='right
                   2 := \\='bottom
 "
-  (interactive "P")
   (let* ((display-buffer-mark-dedicated t)
          (n (or n 2))
          (selected-side (cond
@@ -745,6 +742,27 @@ If specified use 2,4,6 or 8" n)))))
                                       (no-delete-other-windows . t))))))
 
 
+;; Define 'canned aliases' for the 4 possible pel-buffer-in-side-window
+;; to use in the window hydra
+(defun pel-buf-in-side-win-bottom ()
+  "Place current buffer in dedicated side window."
+  (interactive)
+  (pel-buffer-in-side-window 2))
+
+(defun pel-buf-in-side-win-left ()
+  "Place current buffer in dedicated side window."
+  (interactive)
+  (pel-buffer-in-side-window 4))
+
+(defun pel-buf-in-side-win-right ()
+  "Place current buffer in dedicated side window."
+  (interactive)
+  (pel-buffer-in-side-window 6))
+
+(defun pel-buf-in-side-win-top ()
+  "Place current buffer in dedicated side window."
+  (interactive)
+  (pel-buffer-in-side-window 8))
 
 ;; ---------------------------------------------------------------------------
 ;; Window Split behaviour control

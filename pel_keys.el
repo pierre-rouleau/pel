@@ -7844,7 +7844,6 @@ the ones defined from the buffer now."
 ;; M-                              s   w
 
 (define-key pel:window (kbd "M-s") #'window-toggle-side-windows)
-(define-key pel:window (kbd "M-w")  'pel-buffer-in-side-window)
 
 (define-key pel:window    "?"   'pel-show-window-info)
 (define-key pel:window    "w"   'pel-close-other-window)
@@ -7870,9 +7869,15 @@ the ones defined from the buffer now."
 ;; - r: windresize
 ;; - s: window size operations
 
+(define-pel-global-prefix pel:window-side (kbd "<f11> w \\"))
+(define-key pel:window-side    "8"   'pel-buf-in-side-win-top)
+(define-key pel:window-side    "2"   'pel-buf-in-side-win-bottom)
+(define-key pel:window-side    "4"   'pel-buf-in-side-win-left)
+(define-key pel:window-side    "6"   'pel-buf-in-side-win-right)
+
 (define-pel-global-prefix pel:window-root (kbd "<f11> w /"))
-(define-key pel:window-root    "8"   'pel-split-root-window-above)
-(define-key pel:window-root    "2"   'pel-split-root-window-below)
+(define-key pel:window-root    "8"   'pel-split-root-window-top)
+(define-key pel:window-root    "2"   'pel-split-root-window-bottom)
 (define-key pel:window-root    "4"   'pel-split-root-window-left)
 (define-key pel:window-root    "6"   'pel-split-root-window-right)
 
