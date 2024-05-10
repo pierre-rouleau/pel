@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-09 00:19:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-10 14:09:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -511,7 +511,8 @@
     ([f11 32 ?z ?t]           "term-mode"   pel-pkg-for-term-mode   term)
     ([f11 32 ?z ?v]           "vterm-mode"  pel-pkg-for-vterm-mode  vterm)
 
-    ([f11 ?|]        "scrolling"  pel-pkg-for-scrolling   (follow
+    ([f11 ?|]        "scrolling"  pel-pkg-for-scrolling   (frame
+                                                           follow
                                                            smooth-scrolling))
 
     ;; For keys with Meta, make sure the Esc equivalent is also entered

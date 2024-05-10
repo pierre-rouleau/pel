@@ -5906,7 +5906,11 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:scroll "l" #'scroll-lock-mode)
 (define-key pel:scroll "t"  'auto-revert-tail-mode)
 (when pel-emacs-is-graphic-p
-  (define-key pel:scroll "h"  'horizontal-scroll-bar-mode))
+  (define-pel-global-prefix pel:scroll-bar (kbd "<f11> | B"))
+  (define-key pel:scroll-bar "H"  'horizontal-scroll-bar-mode)
+  (define-key pel:scroll-bar "h"  'toggle-horizontal-scroll-bar)
+  (define-key pel:scroll-bar "V"  'scroll-bar-mode)
+  (define-key pel:scroll-bar "v"  'toggle-scroll-bar))
 
 (when pel-use-smooth-scrolling
   (pel-ensure-package smooth-scrolling from: melpa)

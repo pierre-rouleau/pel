@@ -38,7 +38,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     arguments can also be used in the Hydra.
 - Also removed the *pel-show-window-sizes*; the information is part of what shows the
   new *pel-show-window-info*.
-- Add ~<f11> | h~ binding for the *horizontal-scroll-bar-mode* command when Emacs is
+- When Emacs is running in graphics mode, add the following bindings to control the scroll bars:
+  - ~<f11> | B H~ to *horizontal-scroll-bar-mode*
+  - ~<f11> | B h~ to *toggle-horizontal-scroll-bar*
+  - ~<f11> | B V~ to *scroll-bar-mode*
+  - ~<f11> | B v~ to *toggle-scroll-bar*
   running in graphics mode.
 - Improvements to window management:
   - Add *pel-toggle-split-window-keep-point*, mapped to ~<f11> w <f4> s~ to toggle current
