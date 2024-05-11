@@ -631,7 +631,7 @@ and want to see where the next window is."
 - is %sa side window (frame window-sides-slots (ltrb) = %s)
 - is %sa size-preserving window (window-size-fixed: %s)
   - Toggle this with %s.
-- is %sdedicated.
+- is %sdedicated to its buffer%s.
 - height=%d, width=%d"
              win
              (if pel-emacs-27-or-later-p
@@ -642,17 +642,25 @@ and want to see where the next window is."
                           'switch-to-buffer-obey-display-actions "respects"
                           "does not respect"))
                "")
-             (pel-on-off-string (window-parameter win 'window-atom) "" "not ")
-             (pel-on-off-string (window-parameter win 'window-slot) "" "not ")
-             (pel-on-off-string (window-parameter win 'root) "" "not ")
-             (pel-on-off-string (window-parameter win 'window-side) "" "not ")
+             (if (window-parameter win 'window-atom) "" "not ")
+             (if (window-parameter win 'window-slot) "" "not ")
+             (if (window-parameter win 'root) "" "not ")
+             (if (window-parameter win 'window-side) "" "not ")
              window-sides-slots
-             (pel-on-off-string preserving-size "" "not ")
+             (if preserving-size "" "not ")
              (pel-symbol-on-off-string 'window-size-fixed)
              (if preserving-size
                  (if window-size-fixed  "'C-u <f11> w s .'" "'<f11> w s .'")
                "'<f11> w s .' or 'C-u <f11> w s .'")
-             (pel-on-off-string  (window-dedicated-p) "" "not ")
+             (if (window-dedicated-p) "" "not ")
+             (if (and pel-use-window-purpose
+                      (fboundp 'purpose-window-purpose)
+                      (fboundp 'purpose-window-purpose-dedicated-p))
+                 (format " and %spurpose-dedicated to %s"
+                         (if (purpose-window-purpose-dedicated-p win) "" "not ")
+                         (purpose-window-purpose win)
+                         )
+                 "")
              (window-size)
              (window-size nil t)
              )))
