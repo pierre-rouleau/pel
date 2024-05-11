@@ -7927,13 +7927,25 @@ the ones defined from the buffer now."
 ;; --
 (when pel-use-window-purpose
   (pel-ensure-package window-purpose from: melpa)
+
   (define-pel-global-prefix pel:window-purpose (kbd "<f11> w P"))
+  (define-key pel:window-purpose "?"   'pel-show-window-purpose-info)
   (define-key pel:window-purpose "P"   'purpose-mode)
+  (define-key pel:window-purpose "C"   'pel-compile-window-purpose-user-options)
+  (define-key pel:window-purpose "W"   'purpose-toggle-window-purpose-dedicated)
+  (define-key pel:window-purpose "B"   'purpose-toggle-buffer-purpose-dedicated)
+  (define-key pel:window-purpose "1"   'purpose-delete-non-dedicated-windows)
 
+  (define-pel-global-prefix pel:window-purpose-switch (kbd "<f11> w P S"))
+  (define-key pel:window-purpose-switch "B" 'purpose-switch-buffer-with-purpose)
+  (define-key pel:window-purpose-switch "b" 'switch-buffer-without-purpose)
 
-  ;; (require 'window-purpose)
-  ;; (purpose-mode)
-  )
+  (define-pel-global-prefix pel:window-purpose-layout (kbd "<f11> w P L"))
+  (define-key pel:window-purpose-layout "L"   'purpose-load-window-layout)
+  (define-key pel:window-purpose-layout "S"   'purpose-save-window-layout)
+  (define-key pel:window-purpose-layout "l"   'purpose-load-window-layout-file)
+  (define-key pel:window-purpose-layout "s"   'purpose-save-window-layout-file)
+  (define-key pel:window-purpose-layout "r"   'purpose-reset-window-layout))
 
 ;; --
 ;; TODO: change to use a hook before the function split-window is called and

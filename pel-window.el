@@ -125,10 +125,10 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--base)      ; use: pel-current-buffer-filename,
-                          ;      pel-buffers-in-mode, pel-nth-elt,
-(require 'pel-prompt)     ; use: pel-select-string-from
-
+(require 'pel--base)      ; use: `pel-current-buffer-filename',
+                          ;      `pel-buffers-in-mode', `pel-nth-elt'
+(require 'pel--options)   ; use: `pel-use-window-purpose'
+(require 'pel-prompt)     ; use: `pel-select-string-from'
 ;; The windmove package is required for the following functions.
 ;; Instead of requiring windmove, and force its loading when pel-window is
 ;; loaded, just autoload its used functions.
@@ -846,6 +846,42 @@ Use the other window if an IN-OTHER-WINDOW argument is specified."
       (if in-other-window
           (switch-to-buffer-other-window selected-buffer)
         (switch-to-buffer selected-buffer)))))
+
+;; ---------------------------------------------------------------------------
+;; window-purpose extra support
+;; ----------------------------
+
+;;-pel-autoload
+(defun pel-show-window-purpose-info (&optional append)
+  "Show `purpose-mode' control user-options in *pel-window-info* buffer."
+  (interactive "P")
+  (if pel-use-window-purpose
+      (pel-print-in-buffer
+       "*pel-window-info*"
+       "window-purpose control"
+       (lambda ()
+         "Print values."
+         (insert "\
+window-purpose user-options
+===========================
+Variable controlling the window purpose associations.
+Update them, then compile the list with <f1> w P C:")
+         (pel-insert-list-content 'purpose-user-mode-purposes     nil nil nil :on-same-line)
+         (pel-insert-list-content 'purpose-user-name-purposes     nil nil nil :on-same-line)
+         (pel-insert-list-content 'purpose-user-regexp-purposes   nil nil nil :on-same-line)
+         (insert "\n"))
+       (unless append :clear-buffer)
+       :use-help-mode)
+    (user-error "window-purpose is not installed. Set pel-use-window-purpose first.")))
+
+;;-pel-autoload
+(defun pel-compile-window-purpose-user-options ()
+  "Activate the latest window-purpose user-options."
+  (interactive)
+  (if (and pel-use-window-purpose
+           (fboundp 'purpose-compile-user-configuration))
+      (purpose-compile-user-configuration)
+    (user-error "window-purpose not loaded. Has it been activated once?")))
 
 ;; ---------------------------------------------------------------------------
 ;; Window status information

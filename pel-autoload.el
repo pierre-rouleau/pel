@@ -889,7 +889,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-split-root-window-top
     pel-split-root-window-left
     pel-toggle-split-window-keep-point
-    pel-toggle-switch-to-buffer-obey-display-actions)
+    pel-toggle-switch-to-buffer-obey-display-actions
+    pel-show-window-purpose-info
+    pel-compile-window-purpose-user-options)
   (pel-autoload-function "pel-window" for:
     pel-count-non-dedicated-windows
     pel-move-to-window
