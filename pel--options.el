@@ -10434,6 +10434,14 @@ See the key bindings in the Windows PDF."
   :safe #'booleanp
   :link `(url-link :tag "Windows PDF" ,(pel-pdf-file-url "windows")))
 
+(defcustom pel-use-window-purpose nil
+  "Control whether PEL uses the `window-purpose' package."
+  :group 'pel-pkg-for-windows
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "window-purpose @ Github"
+                   "https://github.com/bmag/emacs-purpose"))
+
 (defcustom pel-use-winner nil
   "Control whether PEL uses the `winner' package.
 When set PEL activates key bindings you can use to restore

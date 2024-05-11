@@ -7922,6 +7922,17 @@ the ones defined from the buffer now."
          ((t (:inherit ace-jump-face-forward :height 3.0))))))))
 
 ;; --
+(when pel-use-window-purpose
+  (pel-ensure-package window-purpose from: melpa)
+  (define-pel-global-prefix pel:window-purpose (kbd "<f11> w P"))
+  (define-key pel:window-purpose "P"   'purpose-mode)
+
+
+  ;; (require 'window-purpose)
+  ;; (purpose-mode)
+  )
+
+;; --
 ;; TODO: change to use a hook before the function split-window is called and
 ;;       remove the hook once it is executed if that's possible.
 ;; The winner package should ideally be loaded just before the first

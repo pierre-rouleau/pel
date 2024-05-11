@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-10 14:09:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-10 20:17:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -502,6 +502,7 @@
                                                            winner
                                                            windmove
                                                            windresize))
+    ([f11 ?w ?P] "windows"  pel-pkg-for-windows purpose)
     ([f11 ?y]  "inserting-text"   pel-pkg-for-insertions  (yasnippet
                                                            yasnippet-snippets
                                                            yas-minor))
@@ -1117,6 +1118,12 @@ Return nil if nothing found."
                       "lfe-mode"))   ; several files - defgroup is in lfe-mode
     ("markdown"    . "markdown-mode")
     ("netrexx"     . "netrexx-mode")
+    ("purpose"     . ("window-purpose-configuration"
+                      "window-purpose-layout"
+                      "window-purpose-switch"
+                      "window-purpose-utils"
+                      "window-purpose-x"
+                      "window-purpose-core")) ; several files - defgroup in -core
     ("racket"      . "racket-custom")
     ("rainbow"     . "rainbow-mode")
     ("rfc-mode-group" . "rfc-mode")
