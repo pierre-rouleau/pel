@@ -1,4 +1,4 @@
-;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t; -*-
+ ;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
 
@@ -6777,6 +6777,9 @@ the ones defined from the buffer now."
 (define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
 (define-key pel:highlight      "h" 'pel-highlight-line)
 (define-key pel:highlight (kbd "M-H") 'pel-remove-line-highlight)
+
+(define-pel-global-prefix pel:highlight-info (kbd "<f11> h ?"))
+(define-key pel:highlight-info "(" 'pel-show-paren-info)
 
 ;;
 (when (and pel-emacs-27-or-later-p pel-use-beacon-mode)

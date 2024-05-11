@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add the *pel-show-paren-info* command, bound to ~<f11> h ? (~.  It prints
+  the value of all user-option variables that control the *paren-mode*
+  behaviour inside the =*pel-highlight-info*= buffer.  The name of each
+  variable is also a button that leads to its help.
 - Add commands to split the root window in all 4 directions, available in all versions of
   Emacs supported by PEL, not only 29.1:
   - *pel-split-root-window-above*, bound to ~<f11> w r 8~ and to PEL Window Hydra ~C-M-8~

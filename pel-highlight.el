@@ -1,6 +1,6 @@
 ;;; pel-highlight.el --- PEL highlight support. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2022, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -31,6 +31,28 @@
 ;; -----------------------------------------------------------------------------
 ;; highlight control
 ;; -----------------
+
+;;-pel-autoload
+(defun pel-show-paren-info (&optional append)
+  "Show `paren-mode' control user-options in *pel-highlight-info* buffer.
+
+With non-nil optional APPEND argument, append the information to
+the buffer."
+  (interactive "P")
+  (pel-print-in-buffer
+   "*pel-highlight-info*"
+   "paren highlighting"
+   (lambda ()
+     "Print values."
+     (insert "show-paren mode:")
+     (pel-insert-symbol-content 'show-paren-highlight-openparen     nil :on-same-line)
+     (pel-insert-symbol-content 'show-paren-style                   nil :on-same-line)
+     (pel-insert-symbol-content 'show-paren-when-point-inside-paren nil :on-same-line)
+     (pel-insert-symbol-content 'show-paren-when-point-in-periphery nil :on-same-line)
+     (pel-insert-symbol-content 'show-paren-context-when-offscreen  nil :on-same-line)
+     (insert "\n"))
+   (unless append :clear-buffer)
+   :use-help-mode))
 
 ;;-pel-autoload
 (defun pel-set-highlight-color (colorname)
