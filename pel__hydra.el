@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-10 16:25:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-12 09:51:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -336,6 +336,20 @@ CAUTION: the hydra is still active!"
   (customize-option 'hydra-is-helpful)
   (message "Turn hydra off to use standard keys!"))
 
+(defun pel--ptwpd ()
+  "Toggle window purpose."
+  (interactive)
+  (if (fboundp 'purpose-toggle-window-purpose-dedicated)
+      (purpose-toggle-window-purpose-dedicated)
+    (user-error "window-purpose not available.")))
+
+(defun pel--ptbpd ()
+  "Toggle window purpose."
+  (interactive)
+  (if (fboundp 'purpose-toggle-buffer-purpose-dedicated)
+      (purpose-toggle-buffer-purpose-dedicated)
+    (user-error "window-purpose not available.")))
+
 (defhydra pel-∑wnd (global-map "<f7>"
                                :pre  (pel--cache-hydra-is-helpful)
                                :post (pel--restore-hydra-is-helpful)
@@ -363,6 +377,7 @@ CAUTION: the hydra is still active!"
   ("x"           ace-swap-window              "swap with.#"  :column "Layout")
   ("M-v"         pel-2-vertical-windows       "flip vert."   :column "Layout")
   ("M-h"         pel-2-horizontal-windows     "flip horiz."  :column "Layout")
+  ("P W"         pel--ptwpd                   "Purp-dedic W" :column "Layout")
   ("<up>"        windmove-up                  "⬆️"            :column "Move")
   ("<down>"      windmove-down                "⬇️"            :column "Move")
   ("<left>"      windmove-left                "⬅️"            :column "Move")
@@ -387,6 +402,7 @@ CAUTION: the hydra is still active!"
   ("b"           next-buffer                  "next buffer"  :column "Buffer")
   ("B"           previous-buffer              "prev buffer"  :column "Buffer")
   ("5"           recenter-top-bottom          "recenter"     :column "Buffer")
+  ("P B"         pel--ptbpd                   "Purp-dedic B" :column "Buffer")
   ("<M-up>"      pel-scroll-down              "scroll down"  :column "Other")
   ("<M-down>"    pel-scroll-up                "scroll up"    :column "Other")
   ("d"           pel-toggle-window-dedicated  "un/dedicate"  :column "Other")
