@@ -7927,13 +7927,28 @@ the ones defined from the buffer now."
 ;; --
 (when pel-use-window-purpose
   (pel-ensure-package window-purpose from: melpa)
+  (pel-autoload-file window-purpose for:
+                     purpose-mode
+                     switch-buffer-without-purpose)
+  (pel-autoload-file window-purpose-core for:
+                     purpose-toggle-window-purpose-dedicated
+                     purpose-toggle-window-buffer-dedicated)
+  (pel-autoload-file window-purpose-layout for:
+                     purpose-delete-non-dedicated-windows
+                     purpose-load-window-layout
+                     purpose-save-window-layout
+                     purpose-load-window-layout-file
+                     purpose-save-window-layout-file
+                     purpose-reset-window-layout)
+  (pel-autoload-file window-purpose-switch for:
+                     purpose-switch-buffer-with-purpose)
 
   (define-pel-global-prefix pel:window-purpose (kbd "<f11> w P"))
   (define-key pel:window-purpose "?"   'pel-show-window-purpose-info)
   (define-key pel:window-purpose "P"   'purpose-mode)
   (define-key pel:window-purpose "C"   'pel-compile-window-purpose-user-options)
   (define-key pel:window-purpose "W"   'purpose-toggle-window-purpose-dedicated)
-  (define-key pel:window-purpose "B"   'purpose-toggle-buffer-purpose-dedicated)
+  (define-key pel:window-purpose "B"   'purpose-toggle-window-buffer-dedicated)
   (define-key pel:window-purpose "1"   'purpose-delete-non-dedicated-windows)
 
   (define-pel-global-prefix pel:window-purpose-switch (kbd "<f11> w P S"))

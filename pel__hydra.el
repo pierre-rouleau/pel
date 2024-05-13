@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-12 09:51:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-12 15:36:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -336,19 +336,6 @@ CAUTION: the hydra is still active!"
   (customize-option 'hydra-is-helpful)
   (message "Turn hydra off to use standard keys!"))
 
-(defun pel--ptwpd ()
-  "Toggle window purpose."
-  (interactive)
-  (if (fboundp 'purpose-toggle-window-purpose-dedicated)
-      (purpose-toggle-window-purpose-dedicated)
-    (user-error "window-purpose not available.")))
-
-(defun pel--ptbpd ()
-  "Toggle window purpose."
-  (interactive)
-  (if (fboundp 'purpose-toggle-buffer-purpose-dedicated)
-      (purpose-toggle-buffer-purpose-dedicated)
-    (user-error "window-purpose not available.")))
 
 (defhydra pel-∑wnd (global-map "<f7>"
                                :pre  (pel--cache-hydra-is-helpful)
@@ -370,14 +357,12 @@ CAUTION: the hydra is still active!"
   ("C-<down>"    pel-create-window-down       "⬇️"            :column "SplitW")
   ("C-<left>"    pel-create-window-left       "⬅️"            :column "SplitW")
   ("C-<right>"   pel-create-window-right      "➡️"            :column "SplitW")
-  ("i"           pel-show-window-info         "info"         :column "Layout")
-  ("s"           pel-toggle-window-size-fixed "fix size"    :column "Layout")
+  ("s"           pel-toggle-window-size-fixed "fix size"     :column "Layout")
   ("n"           winner-redo                  "next layout"  :column "Layout")
   ("p"           winner-undo                  "last layout"  :column "Layout")
   ("x"           ace-swap-window              "swap with.#"  :column "Layout")
   ("M-v"         pel-2-vertical-windows       "flip vert."   :column "Layout")
   ("M-h"         pel-2-horizontal-windows     "flip horiz."  :column "Layout")
-  ("P W"         pel--ptwpd                   "Purp-dedic W" :column "Layout")
   ("<up>"        windmove-up                  "⬆️"            :column "Move")
   ("<down>"      windmove-down                "⬇️"            :column "Move")
   ("<left>"      windmove-left                "⬅️"            :column "Move")
@@ -402,16 +387,92 @@ CAUTION: the hydra is still active!"
   ("b"           next-buffer                  "next buffer"  :column "Buffer")
   ("B"           previous-buffer              "prev buffer"  :column "Buffer")
   ("5"           recenter-top-bottom          "recenter"     :column "Buffer")
-  ("P B"         pel--ptbpd                   "Purp-dedic B" :column "Buffer")
   ("<M-up>"      pel-scroll-down              "scroll down"  :column "Other")
   ("<M-down>"    pel-scroll-up                "scroll up"    :column "Other")
-  ("d"           pel-toggle-window-dedicated  "un/dedicate"  :column "Other")
   ("f"           follow-mode                  "follow-mode"  :column "Other")
+  ("I"           pel-show-window-info         "info"         :column "Other")
   ("M-?"         pel-∑-customize-hint         "hint cfg"     :column "Other")
   ("?"           pel-toggle-hydra-hint        "hint"         :column "Other")
   ("q"           quit-window                  "quit"         :column "Other")
   ("<f7>"        nil                          "cancel"       :column "Other"))
 
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; PEL HYDRA: Window Info, Dedicate, Purpose
+
+(defun pel--wininfo-up ()
+  "Move to window up, show it's info."
+  (interactive)
+  (windmove-up)
+  (pel-show-window-info))
+
+(defun pel--wininfo-down ()
+  "Move to window down, show it's info."
+  (interactive)
+  (windmove-down)
+  (pel-show-window-info))
+
+(defun pel--wininfo-left ()
+  "Move to window left, show it's info."
+  (interactive)
+  (windmove-left)
+  (pel-show-window-info))
+
+(defun pel--wininfo-right ()
+  "Move to window right, show it's info."
+  (interactive)
+  (windmove-right)
+  (pel-show-window-info))
+
+(defun pel--ptwpd ()
+  "Toggle window purpose and print window info."
+  (interactive)
+  (if pel-use-window-purpose
+      (if (fboundp 'purpose-toggle-window-purpose-dedicated)
+          (progn
+            (unless purpose-mode
+              (purpose-mode 1))
+            (purpose-toggle-window-purpose-dedicated)
+            (pel-show-window-info))
+        (user-error "window-purpose not available."))
+    (user-error "Please activate pel-use-window-purpose first!")))
+
+(defun pel--ptbpd ()
+  "Toggle window purpose and print window info."
+  (interactive)
+  (if pel-use-window-purpose
+      (if (fboundp 'purpose-toggle-window-buffer-dedicated)
+          (progn
+            (unless purpose-mode
+              (purpose-mode 1))
+            (purpose-toggle-window-buffer-dedicated)
+            (pel-show-window-info))
+        (user-error "window-purpose not available."))
+    (user-error "Please activate pel-use-window-purpose first!")))
+
+(defun pel--twd ()
+  "Toggle window dedicated and print window info"
+  (interactive)
+  (pel-toggle-window-dedicated)
+  (pel-show-window-info))
+
+(defhydra pel-∑winInfo (global-map "<f7> M-i"
+                                   :pre (pel--cache-hydra-is-helpful)
+                                   :post (pel--restore-hydra-is-helpful)
+                                   :foreign-keys nil)
+  ""
+  ("M-d"         pel--twd                  "window"               :column "Dedicate")
+  ("M-b"         pel--ptbpd                "buffer purpose"       :column "Dedicate")
+  ("M-w"         pel--ptwpd                "window purpose"       :column "Dedicate")
+  ("M-i"         pel-show-window-info      "current"              :column "Window info")
+  ("<up>"        pel--wininfo-up           "⬆️"                    :column "Window info")
+  ("<down>"      pel--wininfo-down         "⬇️"                    :column "Window info")
+  ("<left>"      pel--wininfo-left         "⬅️"                    :column "Window info")
+  ("<right>"     pel--wininfo-right        "➡️"                    :column "Window info")
+  ("M-p"         purpose-mode              "toggle purpose mode"  :column "Other")
+  ("?"           pel-toggle-hydra-hint     "hint"                 :column "Other")
+  ("<f7>"        nil                       "cancel"               :column "Other")
+  )
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL HYDRA: Scroll
 (defhydra pel-∑scroll (global-map "C-<f7>"

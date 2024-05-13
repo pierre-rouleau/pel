@@ -861,7 +861,9 @@ Use the other window if an IN-OTHER-WINDOW argument is specified."
 
 ;;-pel-autoload
 (defun pel-show-window-purpose-info (&optional append)
-  "Show `purpose-mode' control user-options in *pel-window-info* buffer."
+  "Show `purpose-mode' control user-options in *pel-window-info* buffer.
+
+With non-nil optional APPEND argument; append text to the buffer."
   (interactive "P")
   (if pel-use-window-purpose
       (pel-print-in-buffer
@@ -877,7 +879,12 @@ Update them, then compile the list with <f1> w P C:")
          (pel-insert-list-content 'purpose-user-mode-purposes     nil nil nil :on-same-line)
          (pel-insert-list-content 'purpose-user-name-purposes     nil nil nil :on-same-line)
          (pel-insert-list-content 'purpose-user-regexp-purposes   nil nil nil :on-same-line)
-         (insert "\n"))
+         (insert "\n\nwindow-purpose layout storage control:")
+         (pel-insert-symbol-content 'purpose-default-layout-file  nil :on-same-line)
+         (pel-insert-list-content 'purpose-layout-dirs            nil nil nil :on-same-line)
+         (pel-insert-symbol-content 'purpose-use-built-in-layouts nil :on-same-line)
+         (pel-insert-symbol-content 'purpose--built-in-layouts-dir nil :on-same-line)
+         )
        (unless append :clear-buffer)
        :use-help-mode)
     (user-error "window-purpose is not installed. Set pel-use-window-purpose first.")))
