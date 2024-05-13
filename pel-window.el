@@ -670,7 +670,7 @@ and want to see where the next window is."
 
 If APPEND is non-nil, append the information to the buffer."
   (let* ((win (selected-window))
-         (info (format "display-buffer info for %s:\n\n" win)))
+         (info (format "display-buffer info for %s:\n" win)))
     (pel-print-in-buffer
      "*pel-window-info*"
      "display-buffer Control"
@@ -703,12 +703,13 @@ Optional argument ARG identifies what type of information is requested.
 - M-0: print `display-buffer' control variables in *pel-window-info* buffer.
 - C-u: same as above.
 - M-1: same as M-0, but append to the buffer.
+- C-u C-u : same as above.
 "
   (interactive "P")
   (cond
    ((not arg)  (pel--show-window-attribute-info))
-   ((or (eq arg 0) (eq arg 4)) (pel--show-display-options nil))
-   ((eq arg 1) (pel--show-display-options t))
+   ((or (eq arg 0) (equal arg '(4)))  (pel--show-display-options nil))
+   ((or (eq arg 1) (equal arg '(16))) (pel--show-display-options t))
    (t         (user-error "Argument %s not supported" arg))))
 
 ;;-pel-autoload
