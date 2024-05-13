@@ -759,22 +759,22 @@ If specified use 2,4,6 or 8" n)))))
 ;; Define 'canned aliases' for the 4 possible pel-buffer-in-side-window
 ;; to use in the window hydra
 (defun pel-buf-in-side-win-bottom ()
-  "Place current buffer in dedicated side window."
+  "Place current buffer in dedicated side window on bottom of frame."
   (interactive)
   (pel-buffer-in-side-window 2))
 
 (defun pel-buf-in-side-win-left ()
-  "Place current buffer in dedicated side window."
+  "Place current buffer in dedicated side window on frame left-hand side."
   (interactive)
   (pel-buffer-in-side-window 4))
 
 (defun pel-buf-in-side-win-right ()
-  "Place current buffer in dedicated side window."
+  "Place current buffer in dedicated side window on frame right-hand side."
   (interactive)
   (pel-buffer-in-side-window 6))
 
 (defun pel-buf-in-side-win-top ()
-  "Place current buffer in dedicated side window."
+  "Place current buffer in dedicated side window on top of frame."
   (interactive)
   (pel-buffer-in-side-window 8))
 

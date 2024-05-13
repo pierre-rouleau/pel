@@ -7846,8 +7846,6 @@ the ones defined from the buffer now."
 ;;         b   d f h k l m n o p r s v   x
 ;; M-                              s   w
 
-(define-key pel:window (kbd "M-s") #'window-toggle-side-windows)
-
 (define-key pel:window    "?"   'pel-show-window-info)
 (define-key pel:window    "w"   'pel-close-other-window)
 (define-key pel:window    "B"  #'switch-to-buffer-other-window)
@@ -7873,16 +7871,25 @@ the ones defined from the buffer now."
 ;; - s: window size operations
 
 (define-pel-global-prefix pel:window-side (kbd "<f11> w \\"))
-(define-key pel:window-side    "8"   'pel-buf-in-side-win-top)
-(define-key pel:window-side    "2"   'pel-buf-in-side-win-bottom)
-(define-key pel:window-side    "4"   'pel-buf-in-side-win-left)
-(define-key pel:window-side    "6"   'pel-buf-in-side-win-right)
+(define-key pel:window-side "8"            'pel-buf-in-side-win-top)
+(define-key pel:window-side (kbd "<kp-8>") 'pel-buf-in-side-win-top)
+(define-key pel:window-side "2"            'pel-buf-in-side-win-bottom)
+(define-key pel:window-side (kbd "<kp-2>") 'pel-buf-in-side-win-bottom)
+(define-key pel:window-side "4"            'pel-buf-in-side-win-left)
+(define-key pel:window-side (kbd "<kp-4>") 'pel-buf-in-side-win-left)
+(define-key pel:window-side "6"            'pel-buf-in-side-win-right)
+(define-key pel:window-side (kbd "<kp-6>") 'pel-buf-in-side-win-right)
+(define-key pel:window-side    "\\" #'window-toggle-side-windows)
 
 (define-pel-global-prefix pel:window-root (kbd "<f11> w /"))
-(define-key pel:window-root    "8"   'pel-split-root-window-top)
-(define-key pel:window-root    "2"   'pel-split-root-window-bottom)
-(define-key pel:window-root    "4"   'pel-split-root-window-left)
-(define-key pel:window-root    "6"   'pel-split-root-window-right)
+(define-key pel:window-root "8"            'pel-split-root-window-top)
+(define-key pel:window-root (kbd "<kp-8>") 'pel-split-root-window-top)
+(define-key pel:window-root "2"            'pel-split-root-window-bottom)
+(define-key pel:window-root (kbd "<kp-2>") 'pel-split-root-window-bottom)
+(define-key pel:window-root "4"            'pel-split-root-window-left)
+(define-key pel:window-root (kbd "<kp-4>") 'pel-split-root-window-left)
+(define-key pel:window-root "6"            'pel-split-root-window-right)
+(define-key pel:window-root (kbd "<kp-6>") 'pel-split-root-window-right)
 
 (define-pel-global-prefix pel:window-setup (kbd "<f11> w <f4>"))
 (define-key pel:window-setup    "s"   'pel-toggle-split-window-keep-point)
