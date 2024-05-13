@@ -701,12 +701,13 @@ Optional argument ARG identifies what type of information is requested.
 - With no argument: print window attribute info (window #, buffer, size,
   whether it's dedicated, fixed in size, etc..)
 - M-0: print `display-buffer' control variables in *pel-window-info* buffer.
+- C-u: same as above.
 - M-1: same as M-0, but append to the buffer.
 "
   (interactive "P")
   (cond
    ((not arg)  (pel--show-window-attribute-info))
-   ((eq arg 0) (pel--show-display-options nil))
+   ((or (eq arg 0) (eq arg 4)) (pel--show-display-options nil))
    ((eq arg 1) (pel--show-display-options t))
    (t         (user-error "Argument %s not supported" arg))))
 
@@ -884,7 +885,7 @@ Update them, then compile the list with <f1> w P C:")
          (pel-insert-list-content 'purpose-layout-dirs            nil nil nil :on-same-line)
          (pel-insert-symbol-content 'purpose-use-built-in-layouts nil :on-same-line)
          (pel-insert-symbol-content 'purpose--built-in-layouts-dir nil :on-same-line)
-         )
+         (insert "\n?"))
        (unless append :clear-buffer)
        :use-help-mode)
     (user-error "window-purpose is not installed. Set pel-use-window-purpose first.")))
