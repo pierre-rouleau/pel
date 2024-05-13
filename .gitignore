@@ -67,6 +67,9 @@ HTML/*
 # Emacs emacro directory
 .emacros
 
+# usrhome cbr control files
+.cbr
+
 # asdf-vm files
 \.tool-versions
 
