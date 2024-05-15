@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-15 15:06:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-15 15:13:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -452,6 +452,13 @@ CAUTION: the hydra is still active!"
         (user-error "window-purpose not available."))
     (user-error "Please activate pel-use-window-purpose first!")))
 
+(defun pel--purpose-mode (&optional arg)
+  "Provide access to purpose mode if present."
+  (interactive "P")
+  (if (fboundp 'purpose-mode)
+      (purpose-mode arg)
+    (user-error "Please activate pel-use-window-purpose first!")))
+
 (defun pel--twd ()
   "Toggle window dedicated and print window info"
   (interactive)
@@ -471,7 +478,7 @@ CAUTION: the hydra is still active!"
   ("<down>"      pel--wininfo-down         "⬇️"                    :column "Window info")
   ("<left>"      pel--wininfo-left         "⬅️"                    :column "Window info")
   ("<right>"     pel--wininfo-right        "➡️"                    :column "Window info")
-  ("M-p"         purpose-mode              "toggle purpose mode"  :column "Other")
+  ("M-p"         pel--purpose-mode         "toggle purpose mode"  :column "Other")
   ("?"           pel-toggle-hydra-hint     "hint"                 :column "Other")
   ("<f7>"        nil                       "cancel"               :column "Other")
   )
