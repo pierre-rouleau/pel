@@ -486,6 +486,19 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   "PEL Emacs basic configuration."
   :group 'pel)
 
+(defcustom pel-emacs-source-directory nil
+  "Absolute path of Emacs repository to directory.
+
+- Identify the Emacs repo root directory.
+  That should hold a 'src' sub-directory.
+- The name can start with '~'.
+
+PEL sets the `source-directory' variable to the value of
+`pel-emacs-source-directory' when it starts, allowing Emacs help
+to open Emacs C source code files."
+  :group 'pel-base-emacs
+  :type 'directory)
+
 (defcustom pel-auto-mode-alist nil
   "Alist of filename patterns vs corresponding major mode functions to set.
 These associations are added to Emacs variable `auto-mode-alist' at

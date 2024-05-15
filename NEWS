@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-emacs-source-directory* user-option to identify the Emacs repo root
+  directory, allowing setting Emacs's *source-directory*. This helps
+  permanently setting *source-directory* and not having to set it on each new
+  Emacs session when trying to access Emacs C source code via some *describe-*
+  commands.
 - Add the *pel-show-paren-info* command, bound to ~<f11> h ? (~.  It prints
   the value of all user-option variables that control the *paren-mode*
   behaviour inside the =*pel-highlight-info*= buffer.  The name of each

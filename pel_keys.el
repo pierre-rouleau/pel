@@ -187,6 +187,22 @@
   (run-at-time "3 sec" nil (function pel-setup-check-dual-environment)))
 
 ;; ---------------------------------------------------------------------------
+;; Initialize Emacs source-directory if possible
+;; ---------------------------------------------
+(when pel-emacs-source-directory
+  (if (file-directory-p pel-emacs-source-directory)
+      (let ((src-subdir-name (expand-file-name "src" pel-emacs-source-directory)))
+        (if (file-directory-p src-subdir-name)
+            (setq source-directory pel-emacs-source-directory)
+          (message "\
+Can't set Emacs source directory using %s : %s is not a directory!"
+                   pel-emacs-source-directory
+                   src-subdir-name)))
+    (message "\
+Can't set Emacs source directory using %s : it's not a directory!"
+             pel-emacs-source-directory)))
+
+;; ---------------------------------------------------------------------------
 ;; - PEL Modifier keys on different OS
 ;; -----------------------------------
 ;;
