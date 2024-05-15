@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-15 15:13:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-15 15:15:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -429,6 +429,7 @@ CAUTION: the hydra is still active!"
   (interactive)
   (if pel-use-window-purpose
       (if (and (fboundp 'purpose-toggle-window-purpose-dedicated)
+               (boundp 'purpose-mode)
                (fboundp 'purpose-mode))
           (progn
             (unless purpose-mode
@@ -443,6 +444,7 @@ CAUTION: the hydra is still active!"
   (interactive)
   (if pel-use-window-purpose
       (if (and (fboundp 'purpose-toggle-window-buffer-dedicated)
+               (boundp 'purpose-mode)
                (fboundp 'purpose-mode))
           (progn
             (unless purpose-mode
