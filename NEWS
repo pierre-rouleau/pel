@@ -3,7 +3,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
 - Add *pel-emacs-source-directory* user-option to identify the Emacs repo root
-  directory, allowing setting Emacs's *source-directory*. This helps
+  directory, allowing setting Emacs's *source-directory*.
+  This user-option is under 2 groups: *pel-base-emacs* and *pel-pkg-for-help*.
+  This user-option helps
   permanently setting *source-directory* and not having to set it on each new
   Emacs session when trying to access Emacs C source code via some *describe-*
   commands.
