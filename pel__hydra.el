@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-12 15:36:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-15 15:06:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -428,7 +428,8 @@ CAUTION: the hydra is still active!"
   "Toggle window purpose and print window info."
   (interactive)
   (if pel-use-window-purpose
-      (if (fboundp 'purpose-toggle-window-purpose-dedicated)
+      (if (and (fboundp 'purpose-toggle-window-purpose-dedicated)
+               (fboundp 'purpose-mode))
           (progn
             (unless purpose-mode
               (purpose-mode 1))
@@ -441,7 +442,8 @@ CAUTION: the hydra is still active!"
   "Toggle window purpose and print window info."
   (interactive)
   (if pel-use-window-purpose
-      (if (fboundp 'purpose-toggle-window-buffer-dedicated)
+      (if (and (fboundp 'purpose-toggle-window-buffer-dedicated)
+               (fboundp 'purpose-mode))
           (progn
             (unless purpose-mode
               (purpose-mode 1))
