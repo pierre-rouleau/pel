@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-10 20:17:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-16 14:31:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -89,6 +89,10 @@
 (defconst pel--dired-groups '(dired
                               dired-git-info
                               dired-hide-dotfiles
+                              dired-narrow
+                              dired-sidebar
+                              dired-x
+                              files
                               ls-lisp
                               wdired)
   "List of groups used related to dired.")
@@ -608,6 +612,7 @@ stored inside the doc/pdf directory.")
 (defconst pel--mode-letter-alist
   '(("Custom"          [f11 f2])
     ("dired"           [dired])
+    ("dired-sidebar"   [dired])
     ("apples"          [f11 32 ?a])
     ("c++"             [f11 32 ?C])
     ("c"               [f11 32 ?c])

@@ -563,6 +563,19 @@ Done in this function to allow advising libraries that remap these keys."
       (define-key dired-mode-map (kbd "C-/")   'dired-undo))))
 
 
+(when pel-use-dired-sidebar
+  (pel-ensure-package dired-sidebar from: melpa)
+  (pel-autoload "dired-sidebar" for:
+    dired-sidebar-toggle-sidebar)
+  (add-hook 'dired-sidebar-mode-hook
+            (lambda ()
+              "Auto-refresh dired-sidebar for local directory."
+              (unless (file-remote-p default-directory)
+                (auto-revert-mode 1))))
+
+  (define-key pel: (kbd "C-d") 'dired-sidebar-toggle-sidebar)
+  (define-key pel:for-dired (kbd "C-d") 'dired-sidebar-toggle-sidebar))
+
 ;; Activate extra Dired-x features when requested.
 (when pel-use-dired-x
   (add-hook 'dired-load-hook

@@ -1517,6 +1517,14 @@ standard diff annotated files."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-dired-sidebar nil
+  "Control whether PEL activates the dired-sidebar."
+  :link '(url-link :tag "dired-sidebar @ GitHub"
+                   "https://github.com/jojojames/dired-sidebar")
+  :group 'pel-pkg-for-dired
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-dired-x nil
   "Control whether PEL activates the Dired-X features in `dired-mode'."
   :group 'pel-pkg-for-dired

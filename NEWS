@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for [[https://github.com/jojojames/dired-sidebar][dired-sidebar]]; ~<f11> C-d~ is globally bound to
+  *dired-sidebar-toggle-sidebar* when the *pel-use-dired-sidebar* is set to t.
+  The window is also placed in *auto-revert-mode* to update when the content
+  of visited directory changes.  Inside the window the binding ~<f12> C-d~ is
+  also available along with the other ~<f12>~ keys for dired.
 - Add *pel-emacs-source-directory* user-option to identify the Emacs repo root
   directory, allowing setting Emacs's *source-directory*.
   This user-option is under 2 groups: *pel-base-emacs* and *pel-pkg-for-help*.
