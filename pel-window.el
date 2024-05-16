@@ -352,6 +352,7 @@ Returns the new window."
             (split-window-below))
         (user-error "%S too small for splitting" (selected-window))))))
 
+;;-pel-autoload
 (defun pel-split-root-window-bottom (&optional size)
   "Split root window of current frame in 2, horizontally.
 
@@ -361,6 +362,7 @@ window (if positive) or bottom window (if negative)."
   (interactive "P")
   (split-window (frame-root-window) size 'below))
 
+;;-pel-autoload
 (defun pel-split-root-window-right (&optional size)
   "Split root window of current frame in 2, vertically.
 
@@ -370,6 +372,7 @@ window (if positive) or right-hand-side window (if negative)."
   (interactive "P")
   (split-window (frame-root-window) size 'right))
 
+;;-pel-autoload
 (defun pel-split-root-window-top (&optional size)
   "Split root window of current frame in 2, horizontally.
 
@@ -380,6 +383,7 @@ window (if positive) or top window (if negative)."
   (message "pel-split-root-window-above")
   (split-window (frame-root-window) size 'above))
 
+;;-pel-autoload
 (defun pel-split-root-window-left (&optional size)
   "Split root window of current frame in 2, vertically.
 

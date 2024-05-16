@@ -885,9 +885,11 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-buf-in-side-win-top
     pel-buf-in-side-win-left
     pel-buf-in-side-win-bottom
+    pel-split-root-window-bottom
     pel-split-root-window-right
     pel-split-root-window-top
     pel-split-root-window-left
+    pel-toggle-window-size-fixed
     pel-toggle-split-window-keep-point
     pel-toggle-switch-to-buffer-obey-display-actions
     pel-show-window-purpose-info
