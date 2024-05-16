@@ -7926,6 +7926,14 @@ the ones defined from the buffer now."
   (define-key pel:window-setup    "b"   'pel-toggle-switch-to-buffer-obey-display-actions))
 
 ;; --
+(when pel-use-golden-ratio
+  (pel-ensure-package golden-ratio from: melpa)
+  (pel-autoload-file golden-ratio for:
+                     golden-ratio-mode)
+  (define-key pel:window  "g"  'golden-ratio-mode)
+  (when (eq pel-use-golden-ratio 'use-from-start)
+    (golden-ratio-mode 1)))
+;; --
 (when pel-use-ace-window
   (pel-ensure-package ace-window from: melpa)
   (pel-autoload-file ace-window for:

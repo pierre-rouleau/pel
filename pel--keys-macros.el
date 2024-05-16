@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-16 17:54:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-16 18:11:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -503,6 +503,7 @@
     ([f11 ?w]        "windows"        pel-pkg-for-window  (windows
                                                            ace-window
                                                            ace-window-display
+                                                           golden-ratio
                                                            winner
                                                            windmove
                                                            windresize

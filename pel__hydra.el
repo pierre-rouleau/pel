@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-16 11:34:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-16 18:44:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -339,6 +339,13 @@
     (user-error "Unavailable - set pel-ace-window to t to activate!"))
   (declare-function ace-swap-window "pel__hydra"))
 
+(defun pel--goldratio ()
+  "Toggle `golden-ratio-mode' when available"
+  (interactive)
+  (if (and (fboundp 'golden-ratio-mode))
+      (golden-ratio-mode 'toggle)
+    (user-error "Unavailable - activate it via pel-use-golden-ratio")))
+
 (defun pel-∑-customize-hint ()
   "Customize hydra from the window hydra.
 
@@ -374,6 +381,7 @@ CAUTION: the hydra is still active!"
   ("x"           ace-swap-window              "swap with.#"  :column "Layout")
   ("M-v"         pel-2-vertical-windows       "flip vert."   :column "Layout")
   ("M-h"         pel-2-horizontal-windows     "flip horiz."  :column "Layout")
+  ("g"           pel--goldratio               "gold ratio"   :column "Layout")
   ("<up>"        windmove-up                  "⬆️"            :column "Move")
   ("<down>"      windmove-down                "⬇️"            :column "Move")
   ("<left>"      windmove-left                "⬅️"            :column "Move")

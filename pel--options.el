@@ -10444,6 +10444,17 @@ not modify other commands."
 ;;       - windmove
 ;;       - winner
 
+(defcustom pel-use-golden-ratio nil
+  "Controls whether PEL uses the `golden-ratio' package."
+  :link '(url-link :tag "golden-ratio @ Github"
+                   "https://github.com/roman/golden-ratio.el")
+  :group 'pel-pkg-for-window
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate globally when Emacs starts"
+                 use-from-start)))
+
 (defcustom pel-use-ace-window  nil
   "Control whether PEL uses the `ace-window' package.
 When set PEL activates key bindings to move point (the cursor)
