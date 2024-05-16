@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-15 15:15:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-16 10:38:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -248,22 +248,33 @@
                     pel-say-region
                     pel-say)
   (pel-declare-file pel-navigate defines: pel-forward-word-start)
-  (defhydra pel-∑narrate (global-map "<f7> <f8>" :foreign-keys run)
+
+  (defun pel-say-last-word ()
+    "Narrate last word."
+    (interactive)
+    (backward-word)
+    (pel-say-word))
+  (declare-function pel-say-last-word "pel__hydra")
+
+  (defun pel-nxt-sentence ()
+    "Move to next sentence."
+    (interactive)
+    (forward-sentence)
+    (pel-forward-word-start))
+  (declare-function pel-nxt-sentence "pel__hydra")
+
+  (defhydra pel-∑say (global-map "<f7> <f8>" :foreign-keys run)
     ""
     ("w"     pel-say-word             "word"              :column "Read")
     ("s"     pel-say-sentence         "sentence"          :column "Read")
     ("p"     pel-say-paragraph        "paragraph"         :column "Read")
     ("R"     pel-say-region           "region"            :column "Read")
-    ("r" (progn
-           (backward-word)
-           (pel-say-word))            "last word"         :column "Repeat")
+    ("r"     pel-say-last-word        "last word"         :column "Repeat")
     ("t"     pel-say                  "at prompt"         :column "Type")
     ("b"     backward-word            "previous word"     :column "Move to")
     ("n"     pel-forward-word-start   "next word"         :column "Move to")
     ("B"     backward-sentence        "previous sentence" :column "Move to")
-    ("N" (progn
-           (forward-sentence)
-           (pel-forward-word-start))  "next sentence"     :column "Move to")
+    ("N"     pel-nxt-sentence         "next sentence"     :column "Move to")
     ("<f7>" nil                       "cancel"            :column "End")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -518,7 +529,7 @@ CAUTION: the hydra is still active!"
                    pel-hs-hide-block-below-inc
                    pel-hs-hide-block-below-dec)
 
-(defhydra pel-⅀hideshow (global-map "<f7> /"
+(defhydra pel-∑hideshow (global-map "<f7> /"
                                     :foreign-keys run)
   "Hide/Show:"
   ("/" hs-minor-mode               "Toggle hs mode" :column "State")
@@ -565,7 +576,7 @@ CAUTION: the hydra is still active!"
                      c-forward-conditional
                      c-up-conditional)
   (defvar pel:for-c)
-  (defhydra pel-⅀c (pel:for-c "<f7>"  :foreign-keys run)
+  (defhydra pel-∑c (pel:for-c "<f7>"  :foreign-keys run)
     "C preprocessor"
     ("n"    pel-pp-next-directive       "next"           :column "Move to")
     ("p"    pel-pp-prev-directive       "prev"           :column "Move to")
@@ -596,7 +607,7 @@ CAUTION: the hydra is still active!"
   ;;
   ;; PEL HYDRA: C preprocessor for C++
   (defvar pel:for-c++)
-  (defhydra pel-⅀c++ (pel:for-c++ "<f7>"  :foreign-keys run)
+  (defhydra pel-∑c++ (pel:for-c++ "<f7>"  :foreign-keys run)
     "C preprocessor"
     ("n"    pel-pp-next-directive       "next"           :column "Move to")
     ("p"    pel-pp-prev-directive       "prev"           :column "Move to")
@@ -638,18 +649,29 @@ CAUTION: the hydra is still active!"
     (user-error "Command vline-mode is not available.  \
 Customize pel-use-vline to t!")))
 
+;; -------
+;; Define functions (instead of placing lambdas inside the hydra)
+;; to prevent warnings about excessive docstring width.
 
-(defhydra pel-⅀hide-indent (global-map "<f7> C-x $" :foreign-keys run)
+(defun pel--sd-uc ()
+  "Selective display un-hide column."
+  (interactive)
+  (set-selective-display nil))
+
+(defun pel--sd-h1 ()
+  "Selective display hide at column 1."
+  (interactive)
+  (set-selective-display 1))
+
+
+
+;; pel Hydra hide-indent : renamed to reduce size
+(defhydra pel-∑hi (global-map "<f7> C-x $" :foreign-keys run)
   "Selective Display"
-  ("<right>"   pel-selective-display-column-inc  "+1"   :column "By Column")
-  ("<left>"    pel-selective-display-column-dec  "-1"   :column "By Column")
-  ("0"         (lambda ()
-                 (interactive)
-                 (set-selective-display nil))  "unhide" :column "By Column")
-  ("1"         (lambda ()
-                 (interactive)
-                 (set-selective-display 1)) "hide at 1" :column "By Column")
-
+  ("<right>" pel-selective-display-column-inc "+1"        :column "By Column")
+  ("<left>"  pel-selective-display-column-dec "-1"        :column "By Column")
+  ("0"       pel--sd-uc                       "unhide"    :column "By Column")
+  ("1"       pel--sd-h1                       "hide at 1" :column "By Column")
   ("S-<right>"
    pel-selective-display-indent-inc        "+indent" :column "By Indent")
   ("S-<left>"
