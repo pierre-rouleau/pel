@@ -10479,6 +10479,17 @@ Emacs window layout previously used:
   :safe #'booleanp)
 (pel-put 'pel-use-winner :package-is :builtin-emacs)
 
+(defcustom pel-use-winum nil
+  "Control whether PEL uses the `winum' package."
+  :link '(url-link :tag "winum @ GitHub"
+                   "https://github.com/deb0ch/emacs-winum")
+
+  :group 'pel-pkg-for-window
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate globally when Emacs starts"
+                 use-from-start)))
 
 (defcustom pel-windmove-on-esc-cursor (not (eq system-type 'gnu/linux))
   "Control whether the Esc-cursor keys are bound to windmove commands.

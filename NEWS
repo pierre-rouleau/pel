@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for [[https://github.com/deb0ch/emacs-winum][winum]] ; ~M-<f11> M-w~ is globally bound to *winum-mode* and once
+  active you can use the *winum-mode* key map and also the easier to use PEL
+  key bindings like ~M-<f11> M-0~, up to ~M-<f11> M-9~ to move to the window by number.
+  To move to a window with a larger number use the ~M-<f11> M-`~ with the prefix
+  identifying the window number.
 - Add support for [[https://github.com/jojojames/dired-sidebar][dired-sidebar]]; ~<f11> C-d~ is globally bound to
   *dired-sidebar-toggle-sidebar* when the *pel-use-dired-sidebar* is set to t.
   The window is also placed in *auto-revert-mode* to update when the content

@@ -7961,6 +7961,37 @@ the ones defined from the buffer now."
          ((t (:inherit ace-jump-face-forward :height 3.0))))))))
 
 ;; --
+(when pel-use-winum
+  (pel-ensure-package winum from: melpa)
+  (pel-autoload-file winum for:
+                     winum-mode
+                     winum-select-window-by-number
+                     winum-select-window-0-or-10
+                     winum-select-window-1
+                     winum-select-window-2
+                     winum-select-window-3
+                     winum-select-window-4
+                     winum-select-window-5
+                     winum-select-window-6
+                     winum-select-window-7
+                     winum-select-window-8
+                     winum-select-window-9)
+  (define-key pel2:  (kbd "M-w")   'winum-mode)
+  (define-key pel2:  (kbd "M-`")   'winum-select-window-by-number)
+  (define-key pel2:  (kbd "M-0")   'winum-select-window-0-or-10)
+  (define-key pel2:  (kbd "M-1")   'winum-select-window-1)
+  (define-key pel2:  (kbd "M-2")   'winum-select-window-2)
+  (define-key pel2:  (kbd "M-3")   'winum-select-window-3)
+  (define-key pel2:  (kbd "M-4")   'winum-select-window-4)
+  (define-key pel2:  (kbd "M-5")   'winum-select-window-5)
+  (define-key pel2:  (kbd "M-6")   'winum-select-window-6)
+  (define-key pel2:  (kbd "M-7")   'winum-select-window-7)
+  (define-key pel2:  (kbd "M-8")   'winum-select-window-8)
+  (define-key pel2:  (kbd "M-9")   'winum-select-window-9)
+
+  (when (eq pel-use-winum 'use-from-start)
+    (winum-mode 1)))
+;; --
 (when pel-use-window-purpose
   (pel-ensure-package window-purpose from: melpa)
   (pel-autoload-file window-purpose for:
