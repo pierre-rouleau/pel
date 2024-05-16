@@ -1618,7 +1618,7 @@ can't bind negative-argument to C-_ and M-_"
 (add-hook 'Custom-mode-hook 'pel--setup-for-custom)
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> M-I`` : Startup Operation Mode
+;; - Function Keys - <f11> - Prefix ``<f11> M-S`` : Startup Operation Mode
 
 (define-pel-global-prefix pel:startup     (kbd "<f11> M-S"))
 (define-key pel:startup "?" 'pel-setup-info)
