@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-16 10:38:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-16 11:34:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -378,6 +378,7 @@ CAUTION: the hydra is still active!"
   ("<down>"      windmove-down                "⬇️"            :column "Move")
   ("<left>"      windmove-left                "⬅️"            :column "Move")
   ("<right>"     windmove-right               "➡️"            :column "Move")
+  ("o"           other-window                 "other"        :column "Move")
   ("#"           ace-window                   "to #"         :column "Move")
   ("="           balance-windows              "balance"      :column "Resize")
   ("V"           enlarge-window               "taller"       :column "Resize")
@@ -387,7 +388,7 @@ CAUTION: the hydra is still active!"
   ("."           fit-window-to-buffer         "fit2buf"      :column "Resize")
   ("-"           shrink-window-if-larger-than-buffer "shrink" :column "Resize")
   ("0"           delete-window                "this"         :column "Close")
-  ("o"           pel-close-other-window       "other"        :column "Close")
+  ("O"           pel-close-other-window       "other"        :column "Close")
   ("1"           delete-other-windows         "others"       :column "Close")
   ("C-S-<up>"    pel-close-window-up          "above"        :column "Close")
   ("C-S-<down>"  pel-close-window-down        "below"        :column "Close")
