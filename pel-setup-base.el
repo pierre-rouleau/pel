@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-04-25 16:04:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-16 10:03:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -67,6 +67,10 @@ In the current code this is only done by `pel--setup-dual-environment'")
 
 (defconst pel--expected-early-init-file-version "0.2"
   "Must match what is in the example/init/early-init.el")
+
+;; --
+
+(declare-function file-name-parent-directory "files")
 
 (defun pel--setup-init-file-problems (&optional early-init-must-exist)
   "Return a list of problems in the initialization files if any.
