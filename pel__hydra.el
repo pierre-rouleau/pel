@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-16 18:44:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-17 16:08:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -346,6 +346,62 @@
       (golden-ratio-mode 'toggle)
     (user-error "Unavailable - activate it via pel-use-golden-ratio")))
 
+(defun pel--tear-off-tab ()
+  "Tear window off to a tab in tab-bar if possible."
+  (interactive)
+  (if pel-emacs-27-or-later-p
+      (tab-window-detach)
+    (user-error "Unavailable - requires Emacs 27.1 or later.")))
+
+(defun pel--next-tab ()
+  "Select next tab on tab bar if possible."
+  (interactive)
+  (if pel-emacs-27-or-later-p
+      (tab-next)
+    (user-error "Unavailable - requires Emacs 27.1 or later.")))
+
+(defun pel--previous-tab ()
+  "Select next tab on tab bar if possible."
+  (interactive)
+  (if pel-emacs-27-or-later-p
+      (tab-previous)
+    (user-error "Unavailable - requires Emacs 27.1 or later.")))
+
+(defun pel--show-tab-line ()
+  "Toggle tab-line-mode if possible."
+  (interactive)
+  (if pel-emacs-27-or-later-p
+      (global-tab-line-mode 'toggle)
+    (user-error "Unavailable - requires Emacs 27.1 or later.")))
+
+(defun pel--wtfh ()
+  "Window transpose flip horizontal if possible."
+  (interactive)
+  (if (fboundp 'flop-frame)
+      (flop-frame)
+    (user-error "Unavailable - activate with pel-use-transpose-frame.")))
+
+(defun pel--wtfv ()
+  "Window transpose flip vertically if possible."
+  (interactive)
+  (if (fboundp 'flip-frame)
+      (flip-frame)
+    (user-error "Unavailable - activate with pel-use-transpose-frame.")))
+
+(defun pel--wtfr ()
+  "Window transpose rotate if possible."
+  (interactive)
+  (if (fboundp 'rotate-frame)
+      (rotate-frame)
+    (user-error "Unavailable - activate with pel-use-transpose-frame.")))
+
+(defun pel--wtft ()
+  "Window transpose if possible."
+  (interactive)
+  (if (fboundp 'transpose-frame)
+      (transpose-frame)
+    (user-error "Unavailable - activate with pel-use-transpose-frame.")))
+
 (defun pel-∑-customize-hint ()
   "Customize hydra from the window hydra.
 
@@ -375,19 +431,30 @@ CAUTION: the hydra is still active!"
   ("C-<down>"    pel-create-window-down       "⬇️"            :column "SplitW")
   ("C-<left>"    pel-create-window-left       "⬅️"            :column "SplitW")
   ("C-<right>"   pel-create-window-right      "➡️"            :column "SplitW")
+  ("F"           tear-off-window              "->frame"      :column "SplitW")
+  ("T"           pel--tear-off-tab            "->tab"        :column "SplitW")
   ("s"           pel-toggle-window-size-fixed "fix size"     :column "Layout")
   ("n"           winner-redo                  "next layout"  :column "Layout")
   ("p"           winner-undo                  "last layout"  :column "Layout")
   ("x"           ace-swap-window              "swap with.#"  :column "Layout")
-  ("M-v"         pel-2-vertical-windows       "flip vert."   :column "Layout")
-  ("M-h"         pel-2-horizontal-windows     "flip horiz."  :column "Layout")
-  ("g"           pel--goldratio               "gold ratio"   :column "Layout")
+  ("M-v"         pel-2-vertical-windows       "flip2 vert"   :column "Layout")
+  ("M-h"         pel-2-horizontal-windows     "flip2 horiz"  :column "Layout")
+  ("M-f"         make-frame-command           "new frame"   :column "Frame")
+  ("M-F"         delete-frame                 "Del. frame"   :column "Frame")
+  ("}"           pel-next-frame               "next frame"   :column "Frame")
+  ("{"           pel-previous-frame           "prev frame"   :column "Frame")
+  ("M-o"         pel--wtfh                    "flip horiz"   :column "Frame")
+  ("M-i"         pel--wtfv                    "flip vert"    :column "Frame")
+  ("M-r"         pel--wtfr                    "rotate"       :column "Frame")
+  ("M-t"         pel--wtft                    "transpose"    :column "Frame")
   ("<up>"        windmove-up                  "⬆️"            :column "Move")
   ("<down>"      windmove-down                "⬇️"            :column "Move")
   ("<left>"      windmove-left                "⬅️"            :column "Move")
   ("<right>"     windmove-right               "➡️"            :column "Move")
   ("o"           other-window                 "other"        :column "Move")
   ("#"           ace-window                   "to #"         :column "Move")
+  ("]"           pel--next-tab                "next tab"     :column "Move")
+  ("["           pel--previous-tab            "prev tab"     :column "Move")
   ("="           balance-windows              "balance"      :column "Resize")
   ("V"           enlarge-window               "taller"       :column "Resize")
   ("v"           shrink-window                "shorter"      :column "Resize")
@@ -395,6 +462,7 @@ CAUTION: the hydra is still active!"
   ("h"           shrink-window-horizontally   "narrower"     :column "Resize")
   ("."           fit-window-to-buffer         "fit2buf"      :column "Resize")
   ("-"           shrink-window-if-larger-than-buffer "shrink" :column "Resize")
+  ("g"           pel--goldratio               "gold ratio"   :column "Resize")
   ("0"           delete-window                "this"         :column "Close")
   ("O"           pel-close-other-window       "other"        :column "Close")
   ("1"           delete-other-windows         "others"       :column "Close")
@@ -411,6 +479,7 @@ CAUTION: the hydra is still active!"
   ("<M-down>"    pel-scroll-up                "scroll up"    :column "Other")
   ("f"           follow-mode                  "follow-mode"  :column "Other")
   ("I"           pel-show-window-info         "info"         :column "Other")
+  ("L"           pel--show-tab-line           "tab line"     :column "Other")
   ("M-?"         pel-∑-customize-hint         "hint cfg"     :column "Other")
   ("?"           pel-toggle-hydra-hint        "hint"         :column "Other")
   ("q"           quit-window                  "quit"         :column "Other")

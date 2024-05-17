@@ -2,8 +2,25 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for the Windows Tab Line mode for Emacs 27.1 and later:
+  add ~<f11> w L~ binding to *global-tab-line-mode*.
+  The pel-∑wnd hydra now has the ~L~ key bound to *global-tab-line-mode*.
+- Add binding for frame tear-off command: *tear-off-window* is now bound to
+  ~<f11> w i f~  (mnemonic being: "window in frame"). It is also bound to the ~F~
+  key of the pel-∑wnd hydra.
+- Add support for Emacs Tab Bar for Emacs 27.1 and later:
+  - Add binding to window tear off inside tab: the *tab-window-detach* command
+    is now bound to ~<f11> w i t~ (mnemonic being "window in tab") and inside the
+    pel-∑wnd hydra ~T~ key. Also add key bindings to navigate to next (~]~) and
+    previous (~[~) tab.
+  - Add a new  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/tab-bar.pdf][⅀ Tab-Bar PDF]] linked inside the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf][➢Index]] PDF.
+  - add ~<f11> TAB~ prefix key for all tab-bar commands:
 - Add support for [[https://melpa.org/#/transpose-frame][transpose-frame]] , activated by *pel-use-transpose-frame*.
   The key bindings are under the ~<f11> w t~ key sequence prefix.
+  Also provide key bindings in the pel-∑wnd hydra from *flip-frame*,
+  *flop-frame*, *rotate-frame* and *transpose-frame*.
+- Also add bindings to navigate frames (useful in terminal mode): ~}~ for next frame,
+  and ~{~ for previous frame.
 - Add support for [[https://github.com/roman/golden-ratio.el][golden-ratio]] , activated by *pel-use-golden-ratio*.
   The *golden-ratio-mode* is bound to the ~<f11> g~ key sequence.
   This is also available via the pel-∑wnd hydra with the ~g~ key.

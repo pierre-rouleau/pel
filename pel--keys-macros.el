@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-16 18:11:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-17 12:21:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -508,6 +508,7 @@
                                                            windmove
                                                            windresize
                                                            winum))
+    (,(kbd "<f11> w TAB") "tab-bar" nil tab-bar)
     ([f11 ?w ?P] "windows"  pel-pkg-for-windows purpose)
     ([f11 ?y]  "inserting-text"   pel-pkg-for-insertions  (yasnippet
                                                            yasnippet-snippets

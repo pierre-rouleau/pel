@@ -10520,6 +10520,14 @@ When using Org-mode often it's probably best to set this off (nil)."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-transpose-frame nil
+  "Control whether PEL uses the `transpose-frame' package."
+  :group 'pel-pkg-for-windows
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "transpose-frame @ MELPA"
+                   "https://melpa.org/#/transpose-frame"))
+
 (defcustom pel-windmove-on-f1-cursor t
   "Control whether the F1-cursor keys are bound to windmove commands.
 
@@ -10536,14 +10544,6 @@ If it set to nil, these keys are not bound."
   :group 'pel-pkg-for-keys
   :type 'boolean
   :safe #'booleanp)
-
-(defcustom pel-use-transpose-frame nil
-  "Control whether PEL uses the `transpose-frame' package."
-  :group 'pel-pkg-for-windows
-  :type 'boolean
-  :safe #'booleanp
-  :link '(url-link :tag "transpose-frame @ MELPA"
-                   "https://melpa.org/#/transpose-frame"))
 
 (defcustom pel-map-meta-left-right-to-Y-Z t
   "If set <M-left> and <M-right> are mapped to M-Y and M-Z in terminal mode.

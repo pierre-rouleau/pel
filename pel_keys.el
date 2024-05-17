@@ -1,4 +1,4 @@
- ;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t; -*-
+;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
 
@@ -1084,7 +1084,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; pel:f6 keys:
 ;;  d f l L
 ;;  SPC
-;;  C-f C-i <backtab> C-n C-p
+;;  C-f C-i <C-M-i> C-n C-p
 ;;  M-f
 ;;  C-M-f
 ;;  <down> <up> <left> <right>
@@ -1119,7 +1119,7 @@ Done in this function to allow advising libraries that remap these keys."
 
 ;; (kbd "<tab>") does not work in terminal mode, it works only in graphics mode
 (define-key pel:f6 (kbd "C-i")       'pel-indent-lines)
-(define-key pel:f6 (kbd "<backtab>") 'pel-unindent-lines)
+(define-key pel:f6 (kbd "<C-M-i>") 'pel-unindent-lines)
 ;;
 ;; Install the generic skeletons, 1 second after Emacs starts to reduce
 ;; Emacs init time.
@@ -2852,7 +2852,7 @@ d-mode not added to ac-modes!"
     (define-key pel:for-javascript (kbd "<right>") 'js2-forward-sws)
     (define-key pel:for-javascript (kbd "<left>") 'js2-backward-sws)
     (define-key pel:for-javascript (kbd "TAB") 'js2-indent-bounce)
-    (define-key pel:for-javascript (kbd "<backtab>") 'js2-indent-bounce-backward)
+    (define-key pel:for-javascript (kbd "<C-M-i>") 'js2-indent-bounce-backward)
     ;; js2-display-error-list
     ;; js2-error-buffer-mode
     ;; js2-error-buffer-next
@@ -5851,7 +5851,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:indent (kbd "TAB")     'pel-indent-rigidly)
 (define-key pel:indent (kbd "<RET>")   'pel-newline-and-indent-below)
 
-(global-set-key (kbd "<backtab>") 'pel-unindent-lines)
+(global-set-key (kbd "<C-M-i>") 'pel-unindent-lines)
 
 (when pel-use-indent-tools
   (define-key pel:indent (kbd "<f7>") 'indent-tools-hydra/body)
@@ -7036,7 +7036,7 @@ the ones defined from the buffer now."
     (define-key smartparens-mode-map (kbd "<M-f7> . P")   'sp-select-previous-thing-exchange)
     (define-key smartparens-mode-map (kbd "<M-f7> . .")   'sp-mark-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> TAB")   'sp-indent-adjust-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> <backtab>") 'sp-dedent-adjust-sexp)))
+    (define-key smartparens-mode-map (kbd "<M-f7> <C-M-i>") 'sp-dedent-adjust-sexp)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> k`` : Keyboard macro operations
@@ -7869,10 +7869,10 @@ the ones defined from the buffer now."
 
 ;;
 (define-pel-global-prefix pel:window       (kbd "<f11> w"))
-;; Used: ? # 0
-;;         B                 O     S
-;;         b   d f h k l m n o p r s v   x
-;; M-                              s   w
+;; Used:  #/ 0 = ?
+;;         B           L     O
+;;         b   d f h k l m n o p r s t v w   x
+;; M-                              s     w
 
 (define-key pel:window    "?"   'pel-show-window-info)
 (define-key pel:window    "w"   'pel-close-other-window)
@@ -7887,7 +7887,6 @@ the ones defined from the buffer now."
 (define-key pel:window    "="  #'balance-windows)
 
 ;; reserved:
-;; - S: session
 ;; - d: dedicated windows
 ;; - k: ace-window
 ;; - o: ace-window
@@ -7897,6 +7896,42 @@ the ones defined from the buffer now."
 ;; - p: winner
 ;; - r: windresize
 ;; - s: window size operations
+
+(when pel-emacs-27-or-later-p
+  ;; Emacs 27.1 introduced the Emacs Tab Line.  It was not available before.
+  ;; Emacs 27.1 introduced the Emacs Tab Bar.  It was not available before.
+  (define-key pel:window    "L"  'global-tab-line-mode)
+
+  (define-pel-global-prefix pel:tab (kbd "<f11> w TAB"))
+  ;; (define-key pel:tab    "?"   'pel-show-tab-info)  ; future?
+  (define-key pel:tab (kbd "TAB") 'tab-bar-mode)
+  (define-key pel:tab    "\\"  'tab-new)
+  (define-key pel:tab    "]"   'tab-next)
+  (define-key pel:tab    "["   'tab-previous)
+  (define-key pel:tab    "r"   'tab-recent)
+  (define-key pel:tab    "l"   'tab-last)
+
+  ;; Select a tab by number
+  (define-key pel:tab (kbd "M-s") 'tab-select) ; use a numeric prefix with this
+  ;; On macOS graphics Emacs:
+  ;;  - Fn is mapped to Hyper (H): use H-1 ... H-0 to select tab
+  (when (and pel-system-is-macos-p
+             pel-emacs-is-graphic-p)
+    (setq tab-bar-select-tab-modifiers '(hyper)))
+
+  (define-key pel:tab    "b"   'switch-to-buffer-other-tab)
+  (define-key pel:tab    "f"   'find-file-other-tab)
+  (define-key pel:tab    "d"   'dired-other-tab)
+
+  (define-key pel:tab    "c"   'tab-close)
+  (define-key pel:tab    "C"   'tab-bar-close-tab-select)
+  (define-key pel:tab    "s"   'tab-switch)
+  (define-key pel:tab    "r"   'tab-rename)
+  (define-key pel:tab    "m"   'tab-move)
+  (define-key pel:tab    "n"   'tab-bar-history-forward)
+  (define-key pel:tab    "p"   'tab-bar-history-back))
+
+
 
 (when pel-use-transpose-frame
   (pel-ensure-package transpose-frame from: melpa)
