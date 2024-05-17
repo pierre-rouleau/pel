@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-17 16:08:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-17 18:07:06 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -439,7 +439,7 @@ CAUTION: the hydra is still active!"
   ("x"           ace-swap-window              "swap with.#"  :column "Layout")
   ("M-v"         pel-2-vertical-windows       "flip2 vert"   :column "Layout")
   ("M-h"         pel-2-horizontal-windows     "flip2 horiz"  :column "Layout")
-  ("M-f"         make-frame-command           "new frame"   :column "Frame")
+  ("M-f"         make-frame-command           "new frame"    :column "Frame")
   ("M-F"         delete-frame                 "Del. frame"   :column "Frame")
   ("}"           pel-next-frame               "next frame"   :column "Frame")
   ("{"           pel-previous-frame           "prev frame"   :column "Frame")

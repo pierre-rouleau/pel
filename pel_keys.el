@@ -7912,7 +7912,7 @@ the ones defined from the buffer now."
   (define-key pel:tab    "l"   'tab-last)
 
   ;; Select a tab by number
-  (define-key pel:tab (kbd "M-s") 'tab-select) ; use a numeric prefix with this
+  (define-key pel2: (kbd "M-t") 'tab-select) ; use a numeric prefix with this
   ;; On macOS graphics Emacs:
   ;;  - Fn is mapped to Hyper (H): use H-1 ... H-0 to select tab
   (when (and pel-system-is-macos-p
@@ -7924,14 +7924,12 @@ the ones defined from the buffer now."
   (define-key pel:tab    "d"   'dired-other-tab)
 
   (define-key pel:tab    "c"   'tab-close)
-  (define-key pel:tab    "C"   'tab-bar-close-tab-select)
+  (define-key pel:tab    "C"   'tab-bar-close-tab-by-name)
   (define-key pel:tab    "s"   'tab-switch)
-  (define-key pel:tab    "r"   'tab-rename)
+  (define-key pel:tab    "R"   'tab-rename)
   (define-key pel:tab    "m"   'tab-move)
   (define-key pel:tab    "n"   'tab-bar-history-forward)
   (define-key pel:tab    "p"   'tab-bar-history-back))
-
-
 
 (when pel-use-transpose-frame
   (pel-ensure-package transpose-frame from: melpa)
