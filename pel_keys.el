@@ -578,9 +578,8 @@ Done in this function to allow advising libraries that remap these keys."
 
 ;; Activate extra Dired-x features when requested.
 (when pel-use-dired-x
-  (add-hook 'dired-load-hook
-            (lambda ()
-              (load "dired-x" :noerror :nomessage))))
+  (pel-eval-after-load dired
+    (load "dired-x" :noerror :nomessage)))
 
 ;; Open files with OS-registered applications from Dired
 ;; -----------------------------------------------------
