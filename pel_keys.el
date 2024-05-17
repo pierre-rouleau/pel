@@ -7898,6 +7898,23 @@ the ones defined from the buffer now."
 ;; - r: windresize
 ;; - s: window size operations
 
+(when pel-use-transpose-frame
+  (pel-ensure-package transpose-frame from: melpa)
+  (pel-autoload-file transpose-frame for:
+                     transpose-frame
+                     flip-frame
+                     flop-frame
+                     rotate-frame
+                     rotate-frame-clockwise
+                     rotate-frame-anticlockwise)
+  (define-pel-global-prefix pel:transpose-frame (kbd "<f11> w t"))
+  (define-key pel:transpose-frame "t" 'transpose-frame)
+  (define-key pel:transpose-frame "i" 'flip-frame)
+  (define-key pel:transpose-frame "o" 'flop-frame)
+  (define-key pel:transpose-frame "r" 'rotate-frame)
+  (define-key pel:transpose-frame "c" 'rotate-frame-clockwise)
+  (define-key pel:transpose-frame "a" 'rotate-frame-anticlockwise))
+
 (define-pel-global-prefix pel:window-side (kbd "<f11> w \\"))
 (define-key pel:window-side "8"            'pel-buf-in-side-win-top)
 (define-key pel:window-side (kbd "<kp-8>") 'pel-buf-in-side-win-top)

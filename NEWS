@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for [[https://melpa.org/#/transpose-frame][transpose-frame]] , activated by *pel-use-transpose-frame*.
+  The key bindings are under the ~<f11> w t~ key sequence prefix.
 - Add support for [[https://github.com/roman/golden-ratio.el][golden-ratio]] , activated by *pel-use-golden-ratio*.
   The *golden-ratio-mode* is bound to the ~<f11> g~ key sequence.
   This is also available via the pel-∑wnd hydra with the ~g~ key.
