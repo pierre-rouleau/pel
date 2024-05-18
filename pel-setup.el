@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-03-23 10:50:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-18 18:23:06 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -699,7 +699,7 @@ Return the complete name of the generated autoload file."
               (progn
                 (if (and pel-emacs-28-or-later-p
                          (fboundp 'make-directory-autoloads))
-                    (make-directory-autoloads dir)
+                    (make-directory-autoloads dir generated-autoload-file)
                   (if (fboundp 'update-directory-autoloads)
                       (update-directory-autoloads dir)
                     (error "update-directory-autoloads not bounded!")))
