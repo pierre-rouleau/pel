@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-17 12:21:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-17 20:06:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -508,7 +508,8 @@
                                                            windmove
                                                            windresize
                                                            winum))
-    (,(kbd "<f11> w TAB") "tab-bar" nil tab-bar)
+    (,(kbd "<M-f11> M-=") "tab-bar" nil tab-bar)
+    ([M-f11 27 61] "tab-bar" nil tab-bar)
     ([f11 ?w ?P] "windows"  pel-pkg-for-windows purpose)
     ([f11 ?y]  "inserting-text"   pel-pkg-for-insertions  (yasnippet
                                                            yasnippet-snippets
@@ -727,7 +728,7 @@ Check the key sequences.  Expand the f12 key sequence into
 the full f11 key sequence.  Report invalid key sequence."
   (let ((prefix-key (elt keyseq 0)))
     ;; (message "pel--kte-for: prefix-key : %s" prefix-key)
-    (unless (or (memq prefix-key '(f6 f7 f8 f11 f12 M-f12))
+    (unless (or (memq prefix-key '(f6 f7 f8 f11 f12 M-f11 M-f12))
                 ;; special case command (for now)
                 (equal keyseq [27 103 f4])
                 (equal keyseq (kbd "M-g <f4>")))

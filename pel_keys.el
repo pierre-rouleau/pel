@@ -7902,14 +7902,14 @@ the ones defined from the buffer now."
   ;; Emacs 27.1 introduced the Emacs Tab Bar.  It was not available before.
   (define-key pel:window    "L"  'global-tab-line-mode)
 
-  (define-pel-global-prefix pel:tab (kbd "<f11> w TAB"))
+  (define-pel-global-prefix pel:tab (kbd "<M-f11> M-="))
   ;; (define-key pel:tab    "?"   'pel-show-tab-info)  ; future?
-  (define-key pel:tab (kbd "TAB") 'tab-bar-mode)
-  (define-key pel:tab    "\\"  'tab-new)
-  (define-key pel:tab    "]"   'tab-next)
-  (define-key pel:tab    "["   'tab-previous)
-  (define-key pel:tab    "r"   'tab-recent)
-  (define-key pel:tab    "l"   'tab-last)
+  (define-key pel:tab (kbd "M-=") 'tab-bar-mode)
+  (define-key pel:tab (kbd "M-\\")  'tab-new)
+  (define-key pel:tab (kbd "M-]")   'tab-next)
+  (define-key pel:tab (kbd "M-[")   'tab-previous)
+  (define-key pel:tab (kbd "M-r")   'tab-recent)
+  (define-key pel:tab (kbd "M-l")   'tab-last)
 
   ;; Select a tab by number
   (define-key pel2: (kbd "M-t") 'tab-select) ; use a numeric prefix with this
@@ -7919,17 +7919,17 @@ the ones defined from the buffer now."
              pel-emacs-is-graphic-p)
     (setq tab-bar-select-tab-modifiers '(hyper)))
 
-  (define-key pel:tab    "b"   'switch-to-buffer-other-tab)
-  (define-key pel:tab    "f"   'find-file-other-tab)
-  (define-key pel:tab    "d"   'dired-other-tab)
+  (define-key pel:tab (kbd "M-b")   'switch-to-buffer-other-tab)
+  (define-key pel:tab (kbd "M-f")   'find-file-other-tab)
+  (define-key pel:tab (kbd "M-d")   'dired-other-tab)
 
-  (define-key pel:tab    "c"   'tab-close)
-  (define-key pel:tab    "C"   'tab-bar-close-tab-by-name)
-  (define-key pel:tab    "s"   'tab-switch)
-  (define-key pel:tab    "R"   'tab-rename)
-  (define-key pel:tab    "m"   'tab-move)
-  (define-key pel:tab    "n"   'tab-bar-history-forward)
-  (define-key pel:tab    "p"   'tab-bar-history-back))
+  (define-key pel:tab (kbd "M-c")   'tab-close)
+  (define-key pel:tab (kbd "M-k")   'tab-bar-close-tab-by-name)
+  (define-key pel:tab (kbd "M-s")   'tab-switch)
+  (define-key pel:tab (kbd "M-a")   'tab-rename)
+  (define-key pel:tab (kbd "M-m")   'tab-move)
+  (define-key pel:tab (kbd "M-n")   'tab-bar-history-forward)
+  (define-key pel:tab (kbd "M-p")   'tab-bar-history-back))
 
 (when pel-use-transpose-frame
   (pel-ensure-package transpose-frame from: melpa)
