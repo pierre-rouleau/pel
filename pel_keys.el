@@ -7921,6 +7921,7 @@ the ones defined from the buffer now."
   ;;  - Fn is mapped to Hyper (H): use H-1 ... H-0 to select tab
   (when (and pel-system-is-macos-p
              pel-emacs-is-graphic-p)
+    (defvar tab-bar-select-tab-modifiers) ; prevent free variable warning
     (setq tab-bar-select-tab-modifiers '(hyper)))
 
   (define-key pel:tab (kbd "M-b")   'switch-to-buffer-other-tab)
