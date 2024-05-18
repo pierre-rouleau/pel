@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-17 18:07:06 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-18 07:52:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -289,7 +289,11 @@
   (defun iflipb-previous-buffer ()
     "Warning stub."
     (user-error "Unavailable - set pel-use-iflipb to activate!"))
-  (declare-function iflipb-previous-buffer "pel__hydra"))
+
+  (defun iflipb-kill-buffer ()
+    "Warning stub."
+    (user-error "Unavailable - set pel-use-iflipb to activate!"))
+  (declare-function iflipb-kill-buffer "pel__hydra"))
 
 (defhydra pel-∑buffer (global-map "<f7> <f9>"
                                   :foreign-keys run)
@@ -417,20 +421,20 @@ CAUTION: the hydra is still active!"
                                :foreign-keys run)
   ""
 
-  ("/ 8"         pel-split-root-window-top    "root⬆️"        :column "SplitF")
-  ("/ 2"         pel-split-root-window-bottom "root⬇️"        :column "SplitF")
-  ("/ 4"         pel-split-root-window-left   "root⬅️"        :column "SplitF")
-  ("/ 6"         pel-split-root-window-right  "root➡️"        :column "SplitF")
-  ("\\ 8"        pel-buf-in-side-win-top      "side⬆️"        :column "SplitF")
-  ("\\ 2"        pel-buf-in-side-win-bottom   "side⬇️"        :column "SplitF")
-  ("\\ 4"        pel-buf-in-side-win-left     "side⬅️"        :column "SplitF")
-  ("\\ 6"        pel-buf-in-side-win-right    "side➡️"        :column "SplitF")
+  ("/ 8"         pel-split-root-window-top    "root⬆"        :column "SplitF")
+  ("/ 2"         pel-split-root-window-bottom "root⬇"        :column "SplitF")
+  ("/ 4"         pel-split-root-window-left   "root⬅"        :column "SplitF")
+  ("/ 6"         pel-split-root-window-right  "root➡︎"        :column "SplitF")
+  ("\\ 8"        pel-buf-in-side-win-top      "side⬆"        :column "SplitF")
+  ("\\ 2"        pel-buf-in-side-win-bottom   "side⬇"        :column "SplitF")
+  ("\\ 4"        pel-buf-in-side-win-left     "side⬅"        :column "SplitF")
+  ("\\ 6"        pel-buf-in-side-win-right    "side➡"        :column "SplitF")
   ("2"           split-window-below           "-"            :column "SplitW")
   ("3"           split-window-right           "|"            :column "SplitW")
-  ("C-<up>"      pel-create-window-up         "⬆️"            :column "SplitW")
-  ("C-<down>"    pel-create-window-down       "⬇️"            :column "SplitW")
-  ("C-<left>"    pel-create-window-left       "⬅️"            :column "SplitW")
-  ("C-<right>"   pel-create-window-right      "➡️"            :column "SplitW")
+  ("C-<up>"      pel-create-window-up         "⬆"            :column "SplitW")
+  ("C-<down>"    pel-create-window-down       "⬇"            :column "SplitW")
+  ("C-<left>"    pel-create-window-left       "⬅"            :column "SplitW")
+  ("C-<right>"   pel-create-window-right      "➡"            :column "SplitW")
   ("F"           tear-off-window              "->frame"      :column "SplitW")
   ("T"           pel--tear-off-tab            "->tab"        :column "SplitW")
   ("s"           pel-toggle-window-size-fixed "fix size"     :column "Layout")
@@ -447,10 +451,10 @@ CAUTION: the hydra is still active!"
   ("M-i"         pel--wtfv                    "flip vert"    :column "Frame")
   ("M-r"         pel--wtfr                    "rotate"       :column "Frame")
   ("M-t"         pel--wtft                    "transpose"    :column "Frame")
-  ("<up>"        windmove-up                  "⬆️"            :column "Move")
-  ("<down>"      windmove-down                "⬇️"            :column "Move")
-  ("<left>"      windmove-left                "⬅️"            :column "Move")
-  ("<right>"     windmove-right               "➡️"            :column "Move")
+  ("<up>"        windmove-up                  "⬆"            :column "Move")
+  ("<down>"      windmove-down                "⬇"            :column "Move")
+  ("<left>"      windmove-left                "⬅"            :column "Move")
+  ("<right>"     windmove-right               "➡"            :column "Move")
   ("o"           other-window                 "other"        :column "Move")
   ("#"           ace-window                   "to #"         :column "Move")
   ("]"           pel--next-tab                "next tab"     :column "Move")
