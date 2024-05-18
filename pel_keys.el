@@ -7904,7 +7904,11 @@ the ones defined from the buffer now."
 
   (define-pel-global-prefix pel:tab (kbd "<M-f11> M-="))
   ;; (define-key pel:tab    "?"   'pel-show-tab-info)  ; future?
-  (define-key pel:tab (kbd "M-=") 'tab-bar-mode)
+
+  (when pel-emacs-28-or-later-p
+    (define-key pel:tab (kbd "M-,") 'other-tab-prefix))
+
+  (define-key pel:tab (kbd "M-=")   'tab-bar-mode)
   (define-key pel:tab (kbd "M-\\")  'tab-new)
   (define-key pel:tab (kbd "M-]")   'tab-next)
   (define-key pel:tab (kbd "M-[")   'tab-previous)
@@ -7924,6 +7928,8 @@ the ones defined from the buffer now."
   (define-key pel:tab (kbd "M-d")   'dired-other-tab)
 
   (define-key pel:tab (kbd "M-c")   'tab-close)
+  (define-key pel:tab (kbd "M-C")   'tab-close-other)
+  (define-key pel:tab (kbd "M-u")   'tab-undo)
   (define-key pel:tab (kbd "M-k")   'tab-bar-close-tab-by-name)
   (define-key pel:tab (kbd "M-s")   'tab-switch)
   (define-key pel:tab (kbd "M-a")   'tab-rename)
