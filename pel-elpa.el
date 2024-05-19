@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 20:42:08 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-19 15:19:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -66,9 +66,13 @@
 Otherwise return NAME without a \"-graphics\" suffix, even if
 one is present.
 
-NAME may be a directory name (with trailing directory separator
-character) or a file name with or without an extension.  The
-\"-graphics\" suffix is located before the extension."
+NAME may be:
+- a directory name (with trailing directory separator character),
+- a file name with or without an extension.
+
+The \"-graphics\" suffix is placed before the extension.
+
+See examples in: test/pel-elpa-test.el"
   (let ((isa-dirpath (directory-name-p name))
         (file-ext    (file-name-extension name))
         (path-name   (file-name-sans-extension (directory-file-name name))))
