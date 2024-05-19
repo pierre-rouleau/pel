@@ -1,6 +1,6 @@
 ;;; pel-hideshow.el --- PEL Hide/Show -*- lexical-binding: t -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -254,6 +254,18 @@ This hides text indented a the new value of variable `selective-display'."
       (setq sd-value (pel-dec sd-value (* (or n 1) indent-columns) 0))
       (set-selective-display sd-value)
       (pel--set-vline sd-value))))
+
+;;-pel-autoload
+(defun pel-selective-display-unhide ()
+  "Selective display un-hide column."
+  (interactive)
+  (set-selective-display nil))
+
+;;-pel-autoload
+(defun pel-selective-display-at-1 ()
+  "Selective display hide at column 1."
+  (interactive)
+  (set-selective-display 1))
 
 ;; ---------------------------------------------------------------------------
 ;; Hide indented lines only

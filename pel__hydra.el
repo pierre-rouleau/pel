@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-18 07:52:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-19 18:08:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -716,8 +716,8 @@ CAUTION: the hydra is still active!"
 ;; PEL HYDRA: Selective Display
 ;; Hide text based on indentation by column or indentation level.
 
-(defun pel--maybe-vline-mode ()
-  "Use the vertical line mode when available."
+(defun pel--sd-maybe-vline-mode ()
+  "Show selective-display limit with vline if available."
   (interactive)
   (if (and pel-use-vline
            (require 'vline nil :noerror)
@@ -725,9 +725,10 @@ CAUTION: the hydra is still active!"
            (fboundp 'vline-mode))
       (progn
         (vline-mode (if vline-mode -1 +1))
-        (move-to-column (if selective-display
-                            (max 0 (- selective-display 1))
-                          0)))
+        (let ((col (if selective-display
+                       (max 0 (- selective-display 1))
+                     0)))
+          (move-to-column col)))
     (user-error "Command vline-mode is not available.  \
 Customize pel-use-vline to t!")))
 
@@ -735,30 +736,19 @@ Customize pel-use-vline to t!")))
 ;; Define functions (instead of placing lambdas inside the hydra)
 ;; to prevent warnings about excessive docstring width.
 
-(defun pel--sd-uc ()
-  "Selective display un-hide column."
-  (interactive)
-  (set-selective-display nil))
-
-(defun pel--sd-h1 ()
-  "Selective display hide at column 1."
-  (interactive)
-  (set-selective-display 1))
-
-
 
 ;; pel Hydra hide-indent : renamed to reduce size
 (defhydra pel-∑hi (global-map "<f7> C-x $" :foreign-keys run)
   "Selective Display"
   ("<right>" pel-selective-display-column-inc "+1"        :column "By Column")
   ("<left>"  pel-selective-display-column-dec "-1"        :column "By Column")
-  ("0"       pel--sd-uc                       "unhide"    :column "By Column")
-  ("1"       pel--sd-h1                       "hide at 1" :column "By Column")
+  ("0"       pel-selective-display-unhide     "unhide"    :column "By Column")
+  ("1"       pel-selective-display-at-1       "hide at 1" :column "By Column")
   ("S-<right>"
    pel-selective-display-indent-inc        "+indent" :column "By Indent")
   ("S-<left>"
    pel-selective-display-indent-dec        "-indent" :column "By Indent")
-  ("|"      pel--maybe-vline-mode "rightmost visible limit" :column "Show")
+  ("|"      pel--sd-maybe-vline-mode "rightmost visible limit" :column "Show")
   ("<f7>"      nil                           "cancel"      :column "End"))
 
 ;;; --------------------------------------------------------------------------

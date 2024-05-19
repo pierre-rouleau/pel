@@ -5412,6 +5412,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-hide-lines
   (pel-ensure-package hide-lines from: melpa)
   (global-set-key (kbd "C-c /") 'hide-lines)
+  (define-key pel:hide-show "0"         'pel-selective-display-unhide)
+  (define-key pel:hide-show "1"         'pel-selective-display-at-1)
   (define-key pel:hide-show "h"         'hide-lines)
   (define-key pel:hide-show (kbd "M-h") 'hide-lines-matching)
   (define-key pel:hide-show (kbd "M-o") 'hide-lines-not-matching)
@@ -7897,10 +7899,14 @@ the ones defined from the buffer now."
 ;; - r: windresize
 ;; - s: window size operations
 
+(define-pel-global-prefix pel:window-in (kbd "<f11> w i"))
+(define-key pel:window-in "f" 'tear-off-window)
+
 (when pel-emacs-27-or-later-p
   ;; Emacs 27.1 introduced the Emacs Tab Line.  It was not available before.
   ;; Emacs 27.1 introduced the Emacs Tab Bar.  It was not available before.
   (define-key pel:window    "L"  'global-tab-line-mode)
+  (define-key pel:window-in "t" 'tab-window-detach)
 
   (define-pel-global-prefix pel:tab (kbd "<M-f11> M-="))
   ;; (define-key pel:tab    "?"   'pel-show-tab-info)  ; future?
@@ -7918,11 +7924,11 @@ the ones defined from the buffer now."
   ;; Select a tab by number
   (define-key pel2: (kbd "M-t") 'tab-select) ; use a numeric prefix with this
   ;; On macOS graphics Emacs:
-  ;;  - Fn is mapped to Hyper (H): use H-1 ... H-0 to select tab
+  ;;  - Fn is mapped to Super (⌘): use s-1 ... s-9 to select tab
   (when (and pel-system-is-macos-p
              pel-emacs-is-graphic-p)
     (defvar tab-bar-select-tab-modifiers) ; prevent free variable warning
-    (setq tab-bar-select-tab-modifiers '(hyper)))
+    (setq tab-bar-select-tab-modifiers '(super)))
 
   (define-key pel:tab (kbd "M-b")   'switch-to-buffer-other-tab)
   (define-key pel:tab (kbd "M-f")   'find-file-other-tab)
