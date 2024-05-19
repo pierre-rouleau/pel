@@ -7928,7 +7928,12 @@ the ones defined from the buffer now."
   (when (and pel-system-is-macos-p
              pel-emacs-is-graphic-p)
     (defvar tab-bar-select-tab-modifiers) ; prevent free variable warning
-    (setq tab-bar-select-tab-modifiers '(super)))
+    (setq tab-bar-select-tab-modifiers '(super))
+    ;; Create bindings similar to what macOS uses for tabs.
+    (global-set-key (kbd "s-{") 'tab-bar-switch-to-prev-tab) ; on macOS, that's also C-<tab>
+    (global-set-key (kbd "s-}") 'tab-bar-switch-to-next-tab) ; on macOS, that's also C-S-<tab>
+    (global-set-key (kbd "s-t") 'tab-bar-new-tab)
+    (global-set-key (kbd "s-w") 'tab-bar-close-tab))
 
   (define-key pel:tab (kbd "M-b")   'switch-to-buffer-other-tab)
   (define-key pel:tab (kbd "M-f")   'find-file-other-tab)
