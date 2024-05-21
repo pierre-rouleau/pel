@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-18 18:23:06 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-21 18:09:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -160,7 +160,7 @@
 ;; The PEL installation instructions require you to install init.el and
 ;; early-init.el files that contain the code of these files.
 ;;
-;; To provide ability quickly switch from a normal setup to a fast-startup
+;; To provide ability to quickly switch from a normal setup to a fast-startup
 ;; setup and back, PEL uses a symlink to point to one of two Elpa directories
 ;; inside the `user-emacs-directory'. Assuming that `user-emacs-directory' is
 ;; "~/.emacs.d", these directories are:
@@ -688,7 +688,9 @@ graphic mode."
 (defun pel-generate-autoload-file-for (dir)
   "Prepare (compile + autoload) all files in directory DIR.
 Return the complete name of the generated autoload file."
-  (require 'autoload)
+  (if pel-emacs-29-or-later-p
+      (require 'loaddefs-gen)
+    (require 'autoload))
   (let ((generated-fname nil))
     (if (boundp 'generated-autoload-file)
         (let ((original-generated-autoload-file  generated-autoload-file))
@@ -1045,7 +1047,7 @@ Emacs running in graphics mode and has a custom file that is independent from
 the file used by Emacs running in terminal (TTY) mode.  It is nil when there
 is only one or when its for the terminal (TTY) mode."
   (let (;; define closures used to reduce visual clutter
-        (adj (lambda (fn) (pel-elpa-name fn for-graphics)))
+        (adj          (lambda (fn) (pel-elpa-name fn for-graphics)))
         (elpa-sibling (lambda (dp) (pel-sibling-dirpath pel-elpa-dirpath dp)))
         (step-count 0)
         (cd-original default-directory))
@@ -1214,6 +1216,12 @@ Failed fast startup setup for %s after %d of %d steps: %s
     (cd cd-original)))
 
 
+(defun pel--setup-fast-message ()
+  "Print delayed message after switching Emacs to fast start."
+  (message "Restart Emacs to complete switching to fast startup mode!%s"
+               (pel-string-when
+                pel--detected-dual-environment-in-init-p
+                "\n Affects Emacs running in terminal and graphics mode!")))
 
 ;;-pel-autoload
 (defun pel-setup-fast ()
@@ -1243,11 +1251,8 @@ Failed fast startup setup for %s after %d of %d steps: %s
       ;; mode.
       (when pel--detected-dual-environment-in-init-p
         (pel--setup-fast t))
-      ;; inform user
-      (message "Restart Emacs to complete switching to fast startup mode!%s"
-               (pel-string-when
-                pel--detected-dual-environment-in-init-p
-                "\n Affects Emacs running in terminal and graphics mode!"))
+      ;; inform user, possibly after a deprecated warning
+      (run-with-idle-timer 1 nil (function pel--setup-fast-message))
       (setq pel--fast-startup-setup-changed t)))))
 
 ;; --
