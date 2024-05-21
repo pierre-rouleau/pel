@@ -1298,12 +1298,6 @@ interactively."
     (require 'pel-sh-iedit)
     (add-hook 'tcl-mode-hook 'pel-tcl-iedit-enhance)))
 
-;; - indent-tools
-;; --------------
-(when pel-use-indent-tools
-  (pel-ensure-package indent-tools from: melpa)
-  (pel-autoload-file indent-tools for: indent-tools-hydra/body))
-
 ;; - popup-kill-ring
 ;; -----------------
 ;; View all kill-ring deletions in a pop-up menu, when M-y is typed.
@@ -5855,8 +5849,12 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (global-set-key (kbd "<C-M-i>") 'pel-unindent-lines)
 
+;; - indent-tools
+;; --------------
+
 (when pel-use-indent-tools
-  (define-key pel:indent (kbd "<f7>") 'indent-tools-hydra/body)
+  (pel-ensure-package indent-tools from: melpa)
+  (pel-autoload-file indent-tools for: indent-tools-hydra/body)
 
   (when (eq pel-indent-tools-key-bound 'globally)
     ;; load indent-tools to map its key globally.  Delay it because we need
@@ -5867,7 +5865,9 @@ See `flyspell-auto-correct-previous-word' for more info."
        (when (and
               (require 'indent-tools nil :noerror)
               (boundp 'indent-tools-keymap-prefix))
-         (global-set-key indent-tools-keymap-prefix 'indent-tools-hydra/body))))))
+         (global-set-key indent-tools-keymap-prefix 'indent-tools-hydra/body)
+         (define-key pel:indent (kbd "<f7>") 'indent-tools-hydra/body)
+         (global-set-key (kbd "<f7> TAB") 'indent-tools-hydra/body))))))
 
 (when pel-use-smart-shift
   (pel-ensure-package smart-shift from: melpa)
