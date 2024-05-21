@@ -5841,6 +5841,8 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (define-pel-global-prefix pel:indent (kbd "<f11> TAB"))
 (define-key pel:indent "?"             'pel-show-indent)
+(define-key pel:indent "e"            #'edit-tab-stops)
+(define-key pel:indent "m"            'pel-toggle-indent-tabs-mode)
 (define-key pel:indent "r"            #'indent-relative)
 (define-key pel:indent "c"             'pel-indent-lines)
 (define-key pel:indent "C"             'pel-unindent-lines)

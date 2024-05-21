@@ -1,6 +1,6 @@
 ;;; pel-text-transform.el --- PEL Text Transformation -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -29,9 +29,10 @@
 ;; command replacement.
 
 ;;; Code:
-(require 'pel--base)     ; use: pel-at-lowercase-p, pel-at-uppercase-p
-;;(require 'paragraphs)  ; use: sentence-end-double-space, paragraph-start
-;;                       ;      and paragraph-separate.
+(require 'pel--base)     ; use: `pel-at-lowercase-p', `pel-at-uppercase-p'
+(require 'pel--options)  ; use: `pel-modes-activating-align-on-return'
+;;(require 'paragraphs)  ; use: `sentence-end-double-space', `paragraph-start'
+;;                       ;      and `paragraph-separate'.
 ;;                       ; However, paragraphs.el has no provide form,
 ;;                       ; probably because it's always part of emacs.
 ;; *declare* its variables to prevent lint warnings.
@@ -260,13 +261,13 @@ With negative N: convert that many letters before point."
 ;; -----------------------------------------------------------------------------
 ;; Display information about active text modes
 ;; -------------------------------------------
-
 ;;-pel-autoload
 (defun pel-show-text-modes ()
   "Show the status of the various text modes in the mini buffer."
   (interactive)
   (message "Text Modes Status:
 - Local indent-tabs-mode   : %-10s, Tab width = %d
+- Local newline does align : %-10s. Automatically activated by modes (<f11> t a <f2>): %s
 - Local electric-quote-mode: %-10s, electric-quote-local-mode: %s.
 - whitespace-mode          : %-10s, show-trailing-whitespace : %-10s, indicate-empty-lines: %s.
 - enriched-mode            : %-10s.
@@ -282,6 +283,8 @@ With negative N: convert that many letters before point."
                                      "off: use spaces"
                                      "void: use spaces")
            tab-width
+           (pel-symbol-on-off-string 'pel-newline-does-align)
+           (or  pel-modes-activating-align-on-return "none.")
            (pel-symbol-on-off-string 'electric-quote-mode)
            (pel-symbol-on-off-string 'electric-quote-local-mode nil nil "not loaded")
            (pel-symbol-on-off-string 'whitespace-mode nil nil "not loaded")
