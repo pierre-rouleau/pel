@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-03-20 17:12:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-21 12:39:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -96,8 +96,7 @@ in which case it appends to the previous report."
 This toggles the way function `pel-newline-and-indent-below'
 operates."
   (interactive "*")
-  (pel-toggle 'pel-newline-does-align)
-  (pel-align-info))
+  (pel-toggle-and-show 'pel-newline-does-align))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-autoload
