@@ -220,8 +220,17 @@ ways.
 =============================== ================================================
 Command                         Description
 =============================== ================================================
-e_\ ``[OPTIONS..] [FILE..]``    Start Emacs in text mode
-ge_\ ``[OPTIONS..] [FILE..]``   Start Emacs in graphics mode
+e_\ ``[OPTIONS..] [FILE..]``    Start Emacs in text mode.
+
+                                - Supports emacs options and file arguments.
+                                  See emacs man page.
+
+ge_\ ``[OPTIONS..] [FILE..]``   Start Emacs in graphics mode.
+
+                                - Supports emacs options and file arguments.
+                                  See emacs man page.
+
+
 ec_\ `` [-g|gui]``              Start an Emacs client of the Emacs daemon.
 
                                 - It also starts the Emacs daemon if it is not
