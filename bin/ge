@@ -1,73 +1,116 @@
 #!/bin/sh
 # SH FILE: ge
 #
-# Purpose   : Start macOS Cocoa-based GUI Emacs in the background from the shell keeping context.
+# Purpose   : Launch an independent, detached, GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2021-08-03 16:17:00, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-23 17:32:02 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
 #
-# This launches the macOS graphics-based Emacs from a shell with all specified
-# command line arguments.
-#
-# It also:
-# - set the current working directory,
-# - set a PEL environment variable to identify the graphics mode:
-#   this is only required for Emacs 27+ using the early-init.el and
-#   independent customization files for terminal and graphics mode,
-#   but does not hurt when older versions of Emacs are used.
+# Launch an independent GUI Emacs that is detached from the terminal shell
+# executing the command.  The current directory of the GUI Emacs process is
+# set to the current directory of the terminal shell from which the 'ge'
+# command was issued.
 
-# - Launching Emacs from a shell also provides Emacs access to the shell's environment.
 #
-#
-# Pass to emacs:
-#   - --chdir to the current working directory so we open the same files
-#     as what is specified on the command line. If we don't do that the GUI
-#     based Emacs might use a different directory (I saw that it uses the home
-#     directory) and if you specify files that are not in that directory they
-#     will not be opened, another file file open which will most likely be
-#     in an empty buffer (if the file does not exists in the home directory).
-#   - All script command line arguments
-#
-# Note: The current Emacs for macOS graphical dumps an error when it starts.
-#       This is annoying; it's noise on the shell.
-#       Just mask it by dumping it in the bit bucket.
-#
-# Emacs 27+ support:
-#    - To allow Emacs early-init.el code to distinguish whether Emacs is
-#      running in terminal mode or in graphics mode.  When running
-#           early-init.el Emacs does not know and the function
-#           display-graphic-p does not work at that moment.  The only way I
-#           have found is to use an environment variable.  So the following
-#           code sets one up: PEL_EMACS_IN_GRAPHICS
-# See: https://emacs.stackexchange.com/questions/66268/how-to-set-package-user-dir-with-emacs-27-with-package-quickstart-and-distinguis
-#
-#
-
-# To activate this script
-# -----------------------
-#
-# Copy it into a directory that is on the PATH of your shell.
-# This is often the ~/bin directory.
-
-
-# ----------------------------------------------------------------------------
-# Dependencies
-# ------------
-#
-# - Cocoa-based graphics Emacs:
-#   Something like what's available at https://emacsformacosx.com/
-
-
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
-#
-export PEL_EMACS_IN_GRAPHICS=1
-/Applications/Emacs.app/Contents/MacOS/Emacs --chdir=$(pwd) "$@" 2>/dev/null &
+print_usage()
+{
+    printf -- "\
+ge : Open an independent, detached, graphical-mode instance of Emacs.
 
+ Usage: ge [-h|--help]
+        ge [FILE..]
+
+ Note: All command line arguments are passed to the Emacs application
+       unchanged.  See Emacs man page for more options.
+
+       Emacs is launched in an independent macOS window.
+       The current directory is used.
+       Control is returned right away to the terminal shell.
+"
+}
+
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    exit 0
+fi
+
+
+# Pass to emacs:
+#   - --chdir to the current working directory so we open the same files
+#     as what is specified on the command line. If we don't do that the GUI
+#     based Emacs might use a different directory (most often the home directory)
+#     and if you specify files that are not in that directory they
+#     will not be opened, another file file open which will most likely be
+#     in an empty buffer (if the file does not exists in the home directory).
+#
+# Emacs 27+ support for PEL:
+#    - To allow Emacs early-init.el code to distinguish whether Emacs is
+#      running in terminal mode or in graphics mode.  When running
+#      early-init.el Emacs does not know and the function
+#      display-graphic-p does not work at that moment.  The only way I
+#      have found is to use an environment variable.  So the following
+#      code sets one up: PEL_EMACS_IN_GRAPHICS
+# See: https://emacs.stackexchange.com/questions/66268/how-to-set-package-user-dir-with-emacs-27-with-package-quickstart-and-distinguis
+#
+
+case $(uname) in
+    Darwin)
+        if [ -d /Applications/Emacs.app/Contents ]; then
+            # Under macOS use the open application to launch the GUI Emacs application.
+            # -n : open a new instance on each invocation
+            # -a application: identify the path of the application
+            # --env : allows passing environment variable definitions to the launched application
+            #
+            # The macOS GUI build packs multiple binaries.
+            # The umbrella/dispatcher binary is:  /Applications/Emacs.app/Contents/MacOS/Emacs
+            # There are other architecture specific binaries.
+            # Invoke them if they can be identified.  The value of the arch variable is not set,
+            # so the `arch' command must be used.
+            case "$(arch)" in
+                arm64)
+                    # Running on Apple Silicon: use the arm64 specific binary if present
+                    if [ -x /Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11 ]; then
+                        open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11 --env PEL_EMACS_IN_GRAPHICS=1 --args --chdir="$(pwd)" "$@"
+                    else
+                        open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs --env PEL_EMACS_IN_GRAPHICS=1 --args --chdir="$(pwd)" "$@"
+                    fi
+                    ;;
+                *)
+                    # Use the general dispatcher for all others
+                    # It will check what version of macOS and use the appropriate one.
+                    open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs --env PEL_EMACS_IN_GRAPHICS=1 --args --chdir="$(pwd)" "$@"
+                    ;;
+            esac
+        else
+            echo "*** ge: ERROR ***"
+            echo "The required /Applications/Emacs.app is missing."
+            echo "Please install Emacs from https://emacsformacosx.com/ "
+            echo "*****************"
+            exit 1
+        fi
+        ;;
+
+    Linux)
+        # Under Linux, invoke emacs passing the current working directory
+        # setting the PEL_EMACS_IN_GRAPHICS environment variable to inform
+        # PEL about the graphics mode and ensure it runs detached.
+        export PEL_EMACS_IN_GRAPHICS=1
+        emacs --chdir="$(pwd)" "$@" &
+        ;;
+
+    *)
+        echo "Sorry, the $(uname) Operating System is not supported yet."
+        echo "Please create a bug report in the PEL project to request it."
+        exit 1
+        ;;
+esac
 
 # ----------------------------------------------------------------------------

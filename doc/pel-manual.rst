@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2024-05-09 00:00:42 EDT, updated by Pierre Rouleau.
+:Modified: 2024-05-23 17:34:43 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1041,10 +1041,8 @@ There are several advantages to that method:
   differently for Graphics mode during the execution of early-init.
 
 
-I provide two different example scripts located inside the `pel/bin directory`_:
-
-- `linux/ge`_
-- `macOS/ge`_
+I provide the fully working `ge`_ shell inside  the `pel/bin directory`_
+that can be used under macOS and Linux.
 
 Copy the appropriate one inside your ``~/bin`` directory.
 
@@ -1066,8 +1064,7 @@ line, doing something like this:
 
 
 .. _pel/bin directory: ../bin
-.. _linux/ge:          ../bin/linux/ge
-.. _macOS/ge:          ../bin/macOS/ge
+.. _ge:                ../bin/ge
 
 .. _Steve Purcell in the readme file of his exec-path-from-shell: https://github.com/purcell/exec-path-from-shell#readme
 .. _Steve Purcell's exec-path-from-shell:                        https://github.com/purcell/exec-path-from-shell
