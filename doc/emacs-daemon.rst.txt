@@ -1,0 +1,245 @@
+======================
+Using the Emacs daemon
+======================
+
+:Home URL: https://github.com/pierre-rouleau/pel
+:Project: `PEL -- Pragmatic Emacs Library`_
+:Created:  Thursday, May 23 2024.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2024-05-23 11:39:31, by Pierre Rouleau.
+:Copyright: © 2024, Pierre Rouleau
+
+
+.. contents::  **Table of Contents**
+.. sectnum::
+
+.. ---------------------------------------------------------------------------
+
+
+Using Emacs daemon on macOS
+===========================
+
+**Goal**:  Provide ability to launch a graphical (GUI) or text-based (TTY)
+Emacs client from a macOS terminal.
+
+**Challenge**: Several people, including myself, had problems launching the
+graphical based Emacs client from the terminal, regardless of the
+``emacsclient`` command line used.  All instances of Emacs client programs
+ended up being terminal based only.
+
+**Solution** The key is to use an emacs binary that supports emacs in graphics
+mode to launch the Emacs daemon.  Once this done, it becomes possible to
+launch graphical Emacs clients and text-based emacs clients:
+
+- To launch a graphical based Emacs client use a graphics-capable
+  ``emacsclient`` binary.
+- To launch a text based Emacs client, you can use two methods:
+
+  - Use a graphical based Emacs and issue the command ``emacsclient -nw``
+  - Use a text-based Emacs and issue one of the following 2 commands:
+
+    - ``emacsclient -c`` or
+    - ``emacsclient -nw``
+
+**Other Considerations**
+
+Under macOS (as of macOS Sonoma in 2024), if you want to launch an independent
+terminal-based Emacs process from the terminal shell, it is best to use an
+Emacs binary that was built *without* graphical capabilities because it starts
+faster than an Emacs that was built with graphical capabilities.
+
+Because of that you may want to install *two* instances of Emacs on macOS:
+
+- one with graphical capabilities and
+- one that does not have them built-in.
+
+Fortunately it's possible to do both without having to build Emacs locally:
+Homebrew supports installing both as long as you follow some steps to trick
+it.
+
+Installing Emacs on macOS
+=========================
+
+First install the graphics capable version of macOS. This can be done in two
+different ways:
+
+- Download and install the Emacs the `Emacs for Mac OS X`_, or
+- Use the `Homebrew package manager`_ and issue the following command from your
+  terminal::
+
+    brew install --cask emacs
+
+Both install the same macOS universal DMG from `Emacs for Mac OS X`_.
+
+At this point, Homebrew won't let you install another version of emacs.
+You need to trick it.
+
+- First **copy** the Emacs DMG ( ``/Applications/Emacs.app`` ) somewhere else.
+- Next, uninstall Homebrew's installed Emacs with:  ``brew uninstall emacs``.
+- Then install the terminal-only version of Emacs with Homebrew by issuing the
+  following command: ``brew install emacs``
+- Finally, put your ``Emacs.app`` copy back into ``/Applications`` so you will
+  now also have ``/Applications/Emacs.app``
+
+At this point, if you type ``which emacs`` you should see that it is installed
+inside a Homebrew controlled directory.  For macOS running on Apple Silicon
+processors, that's ``/opt/homebrew/bin/emacs``.
+
+The graphical version of Emacs is located inside the following directory::
+
+    >0@14:53:40 L3 roup@macStudio1:/Applications/Emacs.app/Contents/MacOS
+    zsh% ls -lFGO
+    total 156416
+    -rwxr-xr-x@  1 roup  admin  -  4085936 24 Mar 10:18 Emacs*
+    -rwxr-xr-x@  1 roup  admin  -  8236224 24 Mar 10:18 Emacs-arm64-11*
+    -rw-r--r--@  1 roup  admin  - 16995328 24 Mar 10:18 Emacs-arm64-11.pdmp
+    -rwxr-xr-x@  1 roup  admin  -  8469888 24 Mar 10:18 Emacs-x86_64-10_11*
+    -rw-r--r--@  1 roup  admin  - 16922656 24 Mar 10:18 Emacs-x86_64-10_11.pdmp
+    -rwxr-xr-x@  1 roup  admin  -  8349024 24 Mar 10:18 Emacs-x86_64-10_14*
+    -rw-r--r--@  1 roup  admin  - 16995160 24 Mar 10:18 Emacs-x86_64-10_14.pdmp
+    lrwxr-xr-x   1 roup  admin  -       16 22 May 08:31 bin@ -> bin-x86_64-10_11
+    drwxr-xr-x@  6 roup  admin  -      192 24 Mar 10:18 bin-arm64-11/
+    drwxr-xr-x@  6 roup  admin  -      192 24 Mar 10:18 bin-x86_64-10_11/
+    drwxr-xr-x@  6 roup  admin  -      192 24 Mar 10:18 bin-x86_64-10_14/
+    -rwxr-xr-x@  1 roup  admin  -      281 24 Mar 10:18 emacs-nw*
+    -rwxr-xr-x@  1 roup  admin  -    11272 24 Mar 10:18 launch.rs*
+    drwxr-xr-x@ 50 roup  admin  -     1600 24 Mar 10:18 lib-arm64-11/
+    drwxr-xr-x@  8 roup  admin  -      256 24 Mar 10:18 lib-x86_64-10_11/
+    drwxr-xr-x@ 51 roup  admin  -     1632 24 Mar 10:18 lib-x86_64-10_14/
+    lrwxr-xr-x   1 roup  admin  -       20 22 May 08:31 libexec@ -> libexec-x86_64-10_11
+    drwxr-xr-x@  5 roup  admin  -      160 24 Mar 10:18 libexec-arm64-11/
+    drwxr-xr-x@  5 roup  admin  -      160 24 Mar 10:18 libexec-x86_64-10_11/
+    drwxr-xr-x@  5 roup  admin  -      160 24 Mar 10:18 libexec-x86_64-10_14/
+    >0@14:53:51 L3 roup@macStudio1:/Applications/Emacs.app/Contents/MacOS
+    zsh%
+
+And the Apple Silicon ARM64 binaries are see here::
+
+    >0@14:55:57 L3 roup@macStudio1:/Applications/Emacs.app/Contents/MacOS/bin-arm64-11
+    zsh% ls -lFGO
+    total 1168
+    -rwxr-xr-x@ 1 roup  admin  - 204752 24 Mar 10:18 ctags*
+    -rwxr-xr-x@ 1 roup  admin  -  91744 24 Mar 10:18 ebrowse*
+    -rwxr-xr-x@ 1 roup  admin  -  92912 24 Mar 10:18 emacsclient*
+    -rwxr-xr-x@ 1 roup  admin  - 204480 24 Mar 10:18 etags*
+    >0@14:56:03 L3 roup@macStudio1:/Applications/Emacs.app/Contents/MacOS/bin-arm64-11
+    zsh%
+
+
+Launching Independent Emacs Processes
+=====================================
+
+The next sections list the explicit commands to launch Emacs in a specific
+way.  These assume Emacs was installed in macOS as described in the previous
+section.
+
+Launching an independent terminal Emacs process from a terminal shell
+---------------------------------------------------------------------
+
+Explicit command line::
+
+  emacs
+
+Launching an independent graphical Emacs process from a terminal shell
+----------------------------------------------------------------------
+
+Explicit command line::
+
+  open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs
+
+This uses the macOS open command with the following command line options:
+
+- ``-n``: open a new instance on each invocation
+- ``-a application``: identify the path of the application
+
+
+Launching an independent graphical Emacs process from macOS Finder
+------------------------------------------------------------------
+
+Assuming no Emacs daemon is running, you can use Spotlight to open Emacs from
+the keyboard:
+
+- Type ``⌘-SPACE`` then Emacs and ``RET``
+
+
+Launching a graphics-capable Emacs Daemon
+=========================================
+
+Explicit command line for an Emacs daemon with the default socket name::
+
+   /Applications/Emacs.app/Contents/MacOS/Emacs --daemon
+
+If you want to create multiple Emacs daemon, each one must identify a socket
+by name.  The command is::
+
+   /Applications/Emacs.app/Contents/MacOS/Emacs --daemon --socket-name=FILENAME
+
+
+where, according the emacsclient man page:
+
+  *Use socket named FILENAME for communication.  Relative filenames
+  are relative to "$XDG_RUNTIME_DIR/emacs/" or "$TMPDIR/".
+
+  See also the EMACS_SOCKET_NAME environment variable, over which
+  this option takes precedence.*
+
+
+Opening Emacs Clients to the running Emacs Daemon
+=================================================
+
+
+Opening a graphics-based Emacs client
+-------------------------------------
+
+Explicit command for macOS running on Apple Silicon::
+
+  /Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient -c -n
+
+Opening a text-based Emacs client
+---------------------------------
+
+Explicit command using the mac OS X Emacs, for macOS on Apple Silicon::
+
+  /Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient   -nw
+
+
+Explicit command using the text-based Emacs installed with Homebrew ``brew
+install emacs`` command::
+
+   emacsclient -nw
+
+
+.. ---------------------------------------------------------------------------
+
+Simple Commands with shell Scripts
+==================================
+
+
+Instead of using the long explicit commands listed in the previous sections,
+I wrote a set of shell scripts that simplify starting Emacs in the various
+ways.
+
+
+*This is coming soon...*]
+
+
+
+
+
+.. ---------------------------------------------------------------------------
+.. links
+
+
+.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _Emacs for Mac OS X:  https://emacsformacosx.com/
+.. _Homebrew package manager: https://en.wikipedia.org/wiki/Homebrew_(package_manager)
+
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
