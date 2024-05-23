@@ -217,20 +217,20 @@ I wrote a set of shell scripts that simplify starting Emacs in the various
 ways.
 
 
-=========================== =======================================================
-Command                     Description
-=========================== =======================================================
-e_                          Start Emacs in text mode
-ge_                         Start Emacs in graphics mode
-ec_\ `` [-g|gui]``          Start an Emacs client of the Emacs daemon.
+=============================== ================================================
+Command                         Description
+=============================== ================================================
+e_\ ``[OPTIONS..] [FILE..]``    Start Emacs in text mode
+ge_\ ``[OPTIONS..] [FILE..]``   Start Emacs in graphics mode
+ec_\ `` [-g|gui]``              Start an Emacs client of the Emacs daemon.
 
-                            - It also starts the Emacs daemon if it is not
-                              already running.
-                            - By default it launches a text-based Emacs client
-                              inside the current terminal shell.
-                              With the ``--gui`` or ``-g`` command line option
-                              it launches a GUI Emacs client instead.
-=========================== =======================================================
+                                - It also starts the Emacs daemon if it is not
+                                  already running.
+                                - By default it launches a text-based Emacs
+                                  client inside the current terminal shell.
+                                  With the ``--gui`` or ``-g`` command line
+                                  option it launches a GUI Emacs client instead.
+=============================== ================================================
 
 .. ---------------------------------------------------------------------------
 .. links
