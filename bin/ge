@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent, detached, GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-23 17:32:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-23 17:58:15 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -30,8 +30,8 @@ ge : Open an independent, detached, graphical-mode instance of Emacs.
  Note: All command line arguments are passed to the Emacs application
        unchanged.  See Emacs man page for more options.
 
-       Emacs is launched in an independent macOS window.
-       The current directory is used.
+       Emacs is launched inside an independent OS window, but
+       that process inherit the current directory.
        Control is returned right away to the terminal shell.
 "
 }
