@@ -1,6 +1,6 @@
-======================
-Using the Emacs daemon
-======================
+==================================
+Using the Emacs daemon and clients
+==================================
 
 :Home URL: https://github.com/pierre-rouleau/pel
 :Project: `PEL -- Pragmatic Emacs Library`_
@@ -9,9 +9,6 @@ Using the Emacs daemon
 :Modified: 2024-05-23 11:39:31, by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
-
-.. contents::  **Table of Contents**
-.. sectnum::
 
 .. ---------------------------------------------------------------------------
 
@@ -27,9 +24,9 @@ graphical based Emacs client from the terminal, regardless of the
 ``emacsclient`` command line used.  All instances of Emacs client programs
 ended up being terminal based only.
 
-**Solution** The key is to use an emacs binary that supports emacs in graphics
+**Solution**: The key is to use an Emacs binary that supports Emacs in graphics
 mode to launch the Emacs daemon.  Once this done, it becomes possible to
-launch graphical Emacs clients and text-based emacs clients:
+launch graphical Emacs clients and text-based Emacs clients:
 
 - To launch a graphical based Emacs client use a graphics-capable
   ``emacsclient`` binary.
