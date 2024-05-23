@@ -1,0 +1,141 @@
+#!/bin/sh
+# SH FILE: ec
+#
+# Purpose   : Launch an Emacs client to an Emacs Daemon - start the deamon if necessary.
+# Created   : Wednesday, May 22 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-05-23 18:41:14 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+# Launch an Emacs client, text by default, graphical if the --graphic or -g
+# option is specified. Also starts the Emacs daemon if it is not already
+# running.
+#
+# Usage:
+#   ec [-h|--help]
+#   ec [-g|--gui]
+#
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#  On macOS: Emacs for mac OS/X must be installed : https://emacsformacosx.com/
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+os_name="$(uname)"
+print_usage()
+{
+    printf -- "\
+ec : Open specified files in emacsclient. Start Emacs daemon if necessary.
+
+ Usage:  ec [-h|--help]
+         ec [-g|--gui]
+
+ -h, --help: print this help.
+ -g, --gui:  start a graphical emacsclient, otherwise
+             start a terminal-based emacsclient (the default).
+
+ If the Emacs daemon is not already running this command starts it.
+
+ See emacsclient man page for more command line options.
+"
+    if [ "${os_name}" = "Darwin" ]; then
+        printf -- "\
+
+ Note: under macOS, to be able to launch an Emacs client that is a GUI Emacs
+       the GUI supporting Emacs from https://emacsformacosx.com/
+       must be installed.
+"
+    fi
+}
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    exit 0
+fi
+
+# ----------------------------------------------------------------------------
+if [ "${os_name}" = "Darwin" ]; then
+
+    # On macOS, check for the presence of required programs
+    if [ ! -d /Applications/Emacs.app/Contents ]; then
+        echo "*** ec: ERROR ***"
+        echo "The required /Applications/Emacs.app is missing."
+        echo "Please install Emacs from https://emacsformacosx.com/ "
+        echo "*****************"
+        exit 1
+    fi
+
+    # On macOS, start the graphical Emacs daemon if it is not already running.
+    emacs_daemon_running=false
+    if ps -ax | grep Emacs.app | grep daemon > /dev/null; then
+        emacs_daemon_running=true
+    else
+        echo "Starting the Emacs daemon..."
+        if /Applications/Emacs.app/Contents/MacOS/Emacs --daemon; then
+            emacs_daemon_running=true
+        fi
+    fi
+fi
+
+# ----------------------------------------------------------------------------
+# Identify which flavor (GUI or text) of Emacs Client to run
+
+use_gui=false
+if [ "$1" = "-g" ] || [ "$1" = "--gui" ]; then
+    use_gui=true
+    shift
+fi
+
+# ----------------------------------------------------------------------------
+# Start the client
+
+case "${os_name}" in
+    Darwin)
+    # on macOS use the GUI built Emacs as client.
+
+    if [ "${use_gui}" = "true" ]; then
+        # echo "GUI emacsclient"
+        /Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient -c -n "$@"
+
+    else
+        # echo "text emacsclient"
+        /Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient -nw "$@"
+    fi
+    ;;
+
+    Linux)
+        # on Linux use emacsclient command in all cases.
+        # Also start the Emacs daemon if it is not already running.
+        # Use the '-a ""' for that.
+
+        # emacsclient options for reference
+        # -a "" starts emacs daemon and reattaches
+        # -c creates a new frame
+        # -n returns control back to the terminal
+
+        if [ "${use_gui}" = "true" ]; then
+            # echo "GUI emacsclient"
+            # exec /usr/bin/env emacsclient -c -n -a "" "$@"
+            emacsclient -c -n -a "" "$@"
+        else
+            # echo "text emacsclient"
+            # exec /usr/bin/env emacsclient -nw -a "" "$@"
+            emacsclient -nw -a "" "$@"
+        fi
+        ;;
+
+    *)
+        echo "Sorry, the $(uname) Operating System is not supported yet."
+        echo "Please create a bug report in the PEL project to request it."
+        exit 1
+        ;;
+esac
+
+# ----------------------------------------------------------------------------
