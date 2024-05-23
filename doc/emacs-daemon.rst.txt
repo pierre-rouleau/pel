@@ -217,11 +217,20 @@ I wrote a set of shell scripts that simplify starting Emacs in the various
 ways.
 
 
-*This is coming soon...*]
+=========================== =======================================================
+Command                     Description
+=========================== =======================================================
+e_                          Start Emacs in text mode
+ge_                         Start Emacs in graphics mode
+ec_\ `` [-g|gui]``          Start an Emacs client of the Emacs daemon.
 
-
-
-
+                            - It also starts the Emacs daemon if it is not
+                              already running.
+                            - By default it launches a text-based Emacs client
+                              inside the current terminal shell.
+                              With the ``--gui`` or ``-g`` command line option
+                              it launches a GUI Emacs client instead.
+=========================== =======================================================
 
 .. ---------------------------------------------------------------------------
 .. links
@@ -230,7 +239,9 @@ ways.
 .. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
 .. _Emacs for Mac OS X:  https://emacsformacosx.com/
 .. _Homebrew package manager: https://en.wikipedia.org/wiki/Homebrew_(package_manager)
-
+.. _e:  ../bin/e
+.. _ge: ../bin/ge
+.. _ec: ../bin/ec
 
 .. ---------------------------------------------------------------------------
 
