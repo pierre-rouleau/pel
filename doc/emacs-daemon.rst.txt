@@ -13,6 +13,37 @@ Using the Emacs daemon and clients
 .. ---------------------------------------------------------------------------
 
 
+Short Commands to start Emacs from the terminal shell
+=====================================================
+
+Instead of using the long explicit commands listed in the sections below, you
+can use the following short commands.  These support both macOS and Linux.
+
+=============================== ================================================
+Command                         Description
+=============================== ================================================
+e_\ ``[OPTIONS..] [FILE..]``    Start Emacs in text mode.
+
+                                - Supports emacs options and file arguments.
+                                  See emacs man page.
+
+ge_\ ``[OPTIONS..] [FILE..]``   Start Emacs in graphics mode.
+
+                                - Supports emacs options and file arguments.
+                                  See emacs man page.
+
+
+ec_\ `` [-g|gui]``              Start an Emacs client of the Emacs daemon.
+
+                                - It also starts the Emacs daemon if it is not
+                                  already running.
+                                - By default it launches a text-based Emacs
+                                  client inside the current terminal shell.
+                                  With the ``--gui`` or ``-g`` command line
+                                  option it launches a GUI Emacs client instead.
+=============================== ================================================
+
+
 Using Emacs daemon on macOS
 ===========================
 
@@ -207,39 +238,6 @@ install emacs`` command::
 
 
 .. ---------------------------------------------------------------------------
-
-Simple Commands with shell Scripts
-==================================
-
-
-Instead of using the long explicit commands listed in the previous sections,
-I wrote a set of shell scripts that simplify starting Emacs in the various
-ways.
-
-
-=============================== ================================================
-Command                         Description
-=============================== ================================================
-e_\ ``[OPTIONS..] [FILE..]``    Start Emacs in text mode.
-
-                                - Supports emacs options and file arguments.
-                                  See emacs man page.
-
-ge_\ ``[OPTIONS..] [FILE..]``   Start Emacs in graphics mode.
-
-                                - Supports emacs options and file arguments.
-                                  See emacs man page.
-
-
-ec_\ `` [-g|gui]``              Start an Emacs client of the Emacs daemon.
-
-                                - It also starts the Emacs daemon if it is not
-                                  already running.
-                                - By default it launches a text-based Emacs
-                                  client inside the current terminal shell.
-                                  With the ``--gui`` or ``-g`` command line
-                                  option it launches a GUI Emacs client instead.
-=============================== ================================================
 
 .. ---------------------------------------------------------------------------
 .. links
