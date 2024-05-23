@@ -1,0 +1,33 @@
+#!/bin/sh
+# SH FILE: e
+#
+# Purpose   : Start Emacs in terminal mode.  Support multiple environments
+# Created   : Wednesday, May 22 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-05-23 17:53:25 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Launch emacs inside the current terminal shell in terminal mode.
+#
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# emacs must be installed.  That version of Emacs must support the terminal
+# mode with the `-nw` command line option. Additionally, under macOS, no NOT
+# use the cocoa/GUI built version of Emacs; it will work but it takes much
+# more time to start, probably loading GUI library files not needed by the
+# terminal mode version of Emacs.
+#
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+emacs -nw "$@"
+
+# ----------------------------------------------------------------------------
