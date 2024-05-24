@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the deamon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-24 15:17:17 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-24 15:45:38 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -150,8 +150,12 @@ case "${os_name}" in
             # shellcheck disable=SC2009
             if ps -ax | grep Emacs.app | grep -v grep | grep -- "--bg-daemon=\\\0123,4\\\012$" > /dev/null; then
                 if [ "${start_client}" = "false" ]; then
-                    echo "ec: Emacs daemon (for default socket name) is already running!"
-                    exit 1
+                    if [ "${start_daemon}" = "true" ]; then
+                      echo "ec: Emacs daemon (for default socket name) is already running!"
+                      exit 1
+                    else
+                      echo "ec: Emacs daemon (for default socket name) is running."
+                    fi
                 fi
             elif [ "${start_daemon}" = "true" ]; then
                 echo "ec: starting the Emacs daemon for default socket name..."
@@ -166,8 +170,13 @@ case "${os_name}" in
             # shellcheck disable=SC2009
             if ps -ax | grep Emacs.app | grep -v grep | grep -- "--bg-daemon=" | grep "${daemon_name}" > /dev/null; then
                 if [ "${start_client}" = "false" ]; then
-                    echo "ec: Emacs daemon (for socket ${daemon_name}) is already running!"
-                    exit 1
+                     if [ "${start_daemon}" = "true" ]; then
+                         echo "ec: Emacs daemon (for socket ${daemon_name}) is already running!"
+                         exit 1
+                     else
+                         echo "ec: Emacs daemon (for socket ${daemon_name}) is running."
+                     fi
+
                 fi
             elif [ "${start_daemon}" = "true" ]; then
                 echo "ec : starting the Emacs daemon for socket=${daemon_name}..."
@@ -187,8 +196,12 @@ case "${os_name}" in
             # shellcheck disable=SC2009
             if ps -ax | grep 'emacs --daemon' | grep -v 'emacs --daemon=' | grep -v grep > /dev/null; then
                 if [ "${start_client}" = "false" ]; then
-                    echo "ec: Emacs daemon (for default socket name) is already running!"
-                    exit 1
+                    if [ "${start_daemon}" = "true" ]; then
+                        echo "ec: Emacs daemon (for default socket name) is already running!"
+                        exit 1
+                    else
+                        echo "ec: Emacs daemon (for default socket name) is running."
+                    fi
                 fi
             elif [ "${start_daemon}" = "true" ]; then
                 echo "ec: starting the Emacs daemon for default socket name..."
@@ -201,8 +214,13 @@ case "${os_name}" in
             # shellcheck disable=SC2009
             if ps -ax | grep 'emacs --daemon' | grep -v grep | grep "${daemon_name}" > /dev/null; then
                 if [ "${start_client}" = "false" ]; then
-                    echo "ec: Emacs daemon (for socket ${daemon_name}) is already running!"
-                    exit 1
+                    if [ "${start_daemon}" = "true" ]; then
+                        echo "ec: Emacs daemon (for socket ${daemon_name}) is already running!"
+                        exit 1
+                    else
+                        echo "ec: Emacs daemon (for socket ${daemon_name}) is running."
+                    fi
+
                 fi
             elif [ "${start_daemon}" = "true" ]; then
                 echo "ec : starting the Emacs daemon for socket=${daemon_name}..."
