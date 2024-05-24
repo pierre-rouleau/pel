@@ -6,7 +6,7 @@ Using the Emacs daemon and clients
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-05-24 17:45:32 EDT, updated by Pierre Rouleau.
+:Modified: 2024-05-24 17:46:32 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -255,7 +255,7 @@ where, according the emacsclient man page:
   are relative to "$XDG_RUNTIME_DIR/emacs/" or "$TMPDIR/".
 
   See also the EMACS_SOCKET_NAME environment variable, over which
-  this option takes preecdenec.*
+  this option takes precedence.*
 
 
 Opening Emacs Clients to the running Emacs Daemon
