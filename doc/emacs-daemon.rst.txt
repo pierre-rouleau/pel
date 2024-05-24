@@ -30,12 +30,12 @@ can use the following short commands.  These support both macOS and Linux.
 . ge_ :                                       Start Emacs in graphics mode.
 
   - ``ge [-h | --help]``                      - Supports emacs options and file arguments.
-  - ``ge`[OPTIONS..] [FILE..]``                 See emacs man page.
+  - ``ge [OPTIONS..] [FILE..]``                 See emacs man page.
 
 
 . ec_ :                                       Start an Emacs client of the Emacs daemon.
 
-  - ``ec`[-h|--help]``                        - It also starts the Emacs daemon if it is not
+  - ``ec [-h|--help]``                        - It also starts the Emacs daemon if it is not
   - ``ec [-g|gui] [--name=NAME] [FILE...]``     already running.
                                               - By default it launches a text-based Emacs
                                                 client inside the current terminal shell.
