@@ -6,7 +6,7 @@ Using the Emacs daemon and clients
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-05-24 10:03:08 EDT, updated by Pierre Rouleau.
+:Modified: 2024-05-24 15:28:37 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -38,7 +38,7 @@ can use the following short commands.  These support both macOS and Linux.
   - ``ec [-h|--help]``                        - Use ``ec`` to start an Emacs client to the
   - ``ec [-g|gui] [--name=NAME] [FILE...]``     default Emacs daemon, starting the daemon
   - ``ec --start-daemon [--name=NAME]``         if it is not already running.  The client
-                                                is a terminal based client by default.
+  - ``ec --check-daemon [--name=NAME]``         is a terminal based client by default.
                                               - To start a graphical (GUI) Emacs client
                                                 instead, use ``ec -g`` or ``ec --gui``.
                                                 This also starts the Emacs daemon if it is not
@@ -62,8 +62,12 @@ can use the following short commands.  These support both macOS and Linux.
                                                 the command prints a message and exits with
                                                 the exit code 1.
 
-                                                - You can use this to check if the Emacs
-                                                  daemon is currently running.
+                                               - To explicitly check if the Emacs daemon for
+                                                 the default socket is running use the
+                                                 ``ec --check-daemon`` command.
+                                                 To check for the Emacs daemon that uses a
+                                                 named socket use the same command and specify
+                                                 the ``--name=NAME`` option.
 = =========================================== ================================================
 
 For instructions on how to close/terminate the Emacs daemon and its clients, see

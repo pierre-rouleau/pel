@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the deamon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-24 14:16:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-24 15:17:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -32,6 +32,7 @@ ec : Open specified files in emacsclient. Start Emacs daemon if necessary.
 
  Usage:  ec [-h|--help]
          ec [-g|--gui] [--name=FILENAME]
+         ec --check-daemon [--name=FILENAME]
          ec --start-daemon [--name=FILENAME]
 
  -h, --help: print this help.
@@ -95,6 +96,26 @@ case "$1" in
 esac
 
 # ----------------------------------------------------------------------------
+# Check if this a request to check if the daemon is running
+
+start_daemon=true
+if [ "$1" = "--check-daemon" ] ; then
+    start_daemon=false
+    start_client=false
+    shift
+fi
+# Ensure that that --check-daemon option does not have extra text to it.
+# ie: reject something like --check-daemon=NAME
+case "$1" in
+    --check-daemon=*)
+        echo "*** ec: ERROR ***"
+        echo "    Invalid option: $1"
+        echo "*****************"
+        print_usage
+        exit 1
+esac
+
+# ----------------------------------------------------------------------------
 # Check if the deamon/client use the default or specified socket filename
 
 daemon_name=
@@ -132,12 +153,14 @@ case "${os_name}" in
                     echo "ec: Emacs daemon (for default socket name) is already running!"
                     exit 1
                 fi
-            else
+            elif [ "${start_daemon}" = "true" ]; then
                 echo "ec: starting the Emacs daemon for default socket name..."
                 if ! /Applications/Emacs.app/Contents/MacOS/Emacs "${daemon_opt}"; then
                     echo "*** ec: ERROR: failed starting Emacs daemon"
                     exit 1
                 fi
+            else
+                echo "ec: the Emacs daemon for default socket is NOT running yet."
             fi
         else
             # shellcheck disable=SC2009
@@ -146,12 +169,14 @@ case "${os_name}" in
                     echo "ec: Emacs daemon (for socket ${daemon_name}) is already running!"
                     exit 1
                 fi
-            else
+            elif [ "${start_daemon}" = "true" ]; then
                 echo "ec : starting the Emacs daemon for socket=${daemon_name}..."
                 if ! /Applications/Emacs.app/Contents/MacOS/Emacs "${daemon_opt}"; then
                     echo "*** ec: ERROR: failed starting Emacs daemon ${daemon_name}"
                     exit 1
                 fi
+            else
+                echo "ec: the Emacs daemon for socket ${daemon_name} is NOT running yet."
             fi
         fi
         ;;
@@ -165,7 +190,7 @@ case "${os_name}" in
                     echo "ec: Emacs daemon (for default socket name) is already running!"
                     exit 1
                 fi
-            else
+            elif [ "${start_daemon}" = "true" ]; then
                 echo "ec: starting the Emacs daemon for default socket name..."
                 if ! emacs "${daemon_opt}"; then
                     echo "*** ec: ERROR: failed starting Emacs daemon"
@@ -179,7 +204,7 @@ case "${os_name}" in
                     echo "ec: Emacs daemon (for socket ${daemon_name}) is already running!"
                     exit 1
                 fi
-            else
+            elif [ "${start_daemon}" = "true" ]; then
                 echo "ec : starting the Emacs daemon for socket=${daemon_name}..."
                 if ! emacs "${daemon_opt}"; then
                     echo "*** ec: ERROR: failed starting Emacs daemon ${daemon_name}"
