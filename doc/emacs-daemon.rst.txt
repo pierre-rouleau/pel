@@ -59,15 +59,21 @@ ended up being terminal based only.
 mode to launch the Emacs daemon.  Once this done, it becomes possible to
 launch graphical Emacs clients and text-based Emacs clients:
 
-- To launch a graphical based Emacs client use a graphics-capable
+- To launch a graphical based Emacs client use a *graphics-capable*
   ``emacsclient`` binary.
 - To launch a text based Emacs client, you can use two methods:
 
-  - Use a graphical based Emacs and issue the command ``emacsclient -nw``
+  - Use a *graphics-capable* Emacs and issue the command ``emacsclient -nw``
   - Use a text-based Emacs and issue one of the following 2 commands:
 
     - ``emacsclient -c`` or
     - ``emacsclient -nw``
+
+On macOS, the *graphics-capable* Emacs is one of the Emacs binary files inside
+the ``/Applications/Emacs.app`` universal DMG directory tree from `Emacs for
+Mac OS X`_ installed manually or from the Homebrew ``brew install --cask
+emacs`` command.
+
 
 **Other Considerations**
 
@@ -190,7 +196,7 @@ the keyboard:
 - Type ``⌘-SPACE`` then Emacs and ``RET``
 
 
-Launching a graphics-capable Emacs Daemon
+Launching a *graphics-capable* Emacs Daemon
 =========================================
 
 Explicit command line for an Emacs daemon with the default socket name::
