@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the deamon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-23 18:41:14 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-23 23:31:12 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -35,13 +35,18 @@ print_usage()
 ec : Open specified files in emacsclient. Start Emacs daemon if necessary.
 
  Usage:  ec [-h|--help]
-         ec [-g|--gui]
+         ec [-g|--gui] [--name=FILENAME]
 
  -h, --help: print this help.
  -g, --gui:  start a graphical emacsclient, otherwise
              start a terminal-based emacsclient (the default).
 
- If the Emacs daemon is not already running this command starts it.
+ If the Emacs daemon is not already running, start it.
+
+ If the --name option is specified, FILENAME identifies the
+ socket name the daemon and the client must use.
+ It's possible to create several daemons and client(s)
+ attaching to that daemon by using that option.
 
  See emacsclient man page for more command line options.
 "
@@ -52,6 +57,11 @@ ec : Open specified files in emacsclient. Start Emacs daemon if necessary.
        the GUI supporting Emacs from https://emacsformacosx.com/
        must be installed.
 "
+    else
+        printf -- "\
+
+BUGS:  The --name option is not yet properly supported under Linux.
+"
     fi
 }
 
@@ -59,6 +69,30 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     exit 0
 fi
+
+# ----------------------------------------------------------------------------
+# Identify which flavor (GUI or text) of Emacs Client to run
+
+use_gui=false
+if [ "$1" = "-g" ] || [ "$1" = "--gui" ]; then
+    use_gui=true
+    shift
+fi
+
+# ----------------------------------------------------------------------------
+# Check if the deamon/client use the default or specified socket filename
+
+daemon_name=
+daemon_opt="--daemon"
+socket_opt=''
+case "$1" in
+    --name=*)
+        daemon_name=$(echo "$1" | sed 's/--name=//g')
+        daemon_opt="--daemon=${daemon_name}"
+        socket_opt="--socket-name=${daemon_name}"
+        shift
+        ;;
+esac
 
 # ----------------------------------------------------------------------------
 if [ "${os_name}" = "Darwin" ]; then
@@ -74,23 +108,25 @@ if [ "${os_name}" = "Darwin" ]; then
 
     # On macOS, start the graphical Emacs daemon if it is not already running.
     emacs_daemon_running=false
-    if ps -ax | grep Emacs.app | grep daemon > /dev/null; then
-        emacs_daemon_running=true
-    else
-        echo "Starting the Emacs daemon..."
-        if /Applications/Emacs.app/Contents/MacOS/Emacs --daemon; then
+    if [ -z ${daemon_name} ]; then
+        if ps -ax | grep Emacs.app | grep -- "--bg-daemon=" > /dev/null; then
             emacs_daemon_running=true
+        else
+            echo "ec: starting the Emacs daemon for default socket name..."
+            if /Applications/Emacs.app/Contents/MacOS/Emacs ${daemon_opt}; then
+                emacs_daemon_running=true
+            fi
+        fi
+    else
+        if ps -ax | grep Emacs.app | grep -- "--bg-daemon=" | grep ${daemon_name} > /dev/null; then
+            emacs_daemon_running=true
+        else
+            echo "ec : starting the Emacs daemon for socket=${daemon_name}..."
+            if /Applications/Emacs.app/Contents/MacOS/Emacs ${daemon_opt}; then
+                emacs_daemon_running=true
+            fi
         fi
     fi
-fi
-
-# ----------------------------------------------------------------------------
-# Identify which flavor (GUI or text) of Emacs Client to run
-
-use_gui=false
-if [ "$1" = "-g" ] || [ "$1" = "--gui" ]; then
-    use_gui=true
-    shift
 fi
 
 # ----------------------------------------------------------------------------
@@ -102,11 +138,11 @@ case "${os_name}" in
 
     if [ "${use_gui}" = "true" ]; then
         # echo "GUI emacsclient"
-        /Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient -c -n "$@"
+        /Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient -c -n ${socket_opt} "$@"
 
     else
         # echo "text emacsclient"
-        /Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient -nw "$@"
+        /Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient -nw ${socket_opt} "$@"
     fi
     ;;
 
@@ -120,14 +156,19 @@ case "${os_name}" in
         # -c creates a new frame
         # -n returns control back to the terminal
 
+        # [:todo 2024-05-23, by Pierre Rouleau: Add proper support for the --name option under Linux
+        #                                       Currently the named socket daemon is not searched
+        #                                       explicitly.  More investigation and tests required.
+        # ]
+        #
         if [ "${use_gui}" = "true" ]; then
             # echo "GUI emacsclient"
             # exec /usr/bin/env emacsclient -c -n -a "" "$@"
-            emacsclient -c -n -a "" "$@"
+            emacsclient -c -n -a "" ${socket_opt} "$@"
         else
             # echo "text emacsclient"
             # exec /usr/bin/env emacsclient -nw -a "" "$@"
-            emacsclient -nw -a "" "$@"
+            emacsclient -nw -a "" ${socket_opt} "$@"
         fi
         ;;
 

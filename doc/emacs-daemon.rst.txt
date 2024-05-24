@@ -19,29 +19,39 @@ Short Commands to start Emacs from the terminal shell
 Instead of using the long explicit commands listed in the sections below, you
 can use the following short commands.  These support both macOS and Linux.
 
-=============================== ================================================
-Command                         Description
-=============================== ================================================
-e_\ ``[OPTIONS..] [FILE..]``    Start Emacs in text mode.
+=========================================== ================================================
+Command                                     Description
+=========================================== ================================================
+e_\ ``[OPTIONS..] [FILE..]``                Start Emacs in text mode.
 
-                                - Supports emacs options and file arguments.
-                                  See emacs man page.
+                                            - Supports emacs options and file arguments.
+                                              See emacs man page.
 
-ge_\ ``[OPTIONS..] [FILE..]``   Start Emacs in graphics mode.
+ge_\ ``[OPTIONS..] [FILE..]``               Start Emacs in graphics mode.
 
-                                - Supports emacs options and file arguments.
-                                  See emacs man page.
+                                            - Supports emacs options and file arguments.
+                                              See emacs man page.
 
 
-ec_\ `` [-g|gui]``              Start an Emacs client of the Emacs daemon.
+ec_\ `` [-g|gui] [--name=NAME] [FILE...]``  Start an Emacs client of the Emacs daemon.
 
-                                - It also starts the Emacs daemon if it is not
-                                  already running.
-                                - By default it launches a text-based Emacs
-                                  client inside the current terminal shell.
-                                  With the ``--gui`` or ``-g`` command line
-                                  option it launches a GUI Emacs client instead.
-=============================== ================================================
+                                            - It also starts the Emacs daemon if it is not
+                                              already running.
+                                            - By default it launches a text-based Emacs
+                                              client inside the current terminal shell.
+                                              With the ``--gui`` or ``-g`` command line
+                                              option it launches a GUI Emacs
+                                              client instead.
+                                            - By default it launches or connects to the
+                                              Emacs daemon using the default socket name
+                                              unless the ``--name=NAME`` option is
+                                              specified. If it is the Emacs daemon socket
+                                              file name used is NAME and the client
+                                              connects to that name.  With this option it
+                                              is possible to create several independent
+                                              *groups* of Emacs daemon/clients.
+
+=========================================== ================================================
 
 
 Using Emacs daemon on macOS
