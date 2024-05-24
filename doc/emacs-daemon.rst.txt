@@ -6,7 +6,7 @@ Using the Emacs daemon and clients
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-05-23 11:39:31, by Pierre Rouleau.
+:Modified: 2024-05-24 09:31:06 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -33,24 +33,37 @@ can use the following short commands.  These support both macOS and Linux.
   - ``ge [OPTIONS..] [FILE..]``                 See emacs man page.
 
 
-. ec_ :                                       Start an Emacs client of the Emacs daemon.
+. ec_ :                                       Start an Emacs client for an Emacs daemon.
 
-  - ``ec [-h|--help]``                        - It also starts the Emacs daemon if it is not
-  - ``ec [-g|gui] [--name=NAME] [FILE...]``     already running.
-                                              - By default it launches a text-based Emacs
-                                                client inside the current terminal shell.
-                                                With the ``--gui`` or ``-g`` command line
-                                                option it launches a GUI Emacs
-                                                client instead.
-                                              - By default it launches or connects to the
-                                                Emacs daemon using the default socket name
-                                                unless the ``--name=NAME`` option is
-                                                specified. If it is the Emacs daemon socket
-                                                file name used is NAME and the client
-                                                connects to that name.  With this option it
-                                                is possible to create several independent
-                                                *groups* of Emacs daemon/clients.
+  - ``ec [-h|--help]``                        - Use ``ec`` to start an Emacs client to the
+  - ``ec [-g|gui] [--name=NAME] [FILE...]``     default Emacs daemon, starting the daemon
+  - ``ec --start-daemon [--name=NAME]``         if it is not already running.  The client
+                                                is a terminal based client by default.
+                                              - To start a graphical (GUI) Emacs client
+                                                instead, use ``ec -g`` or ``ec --gui``.
+                                                This also starts the Emacs daemon if it is not
+                                                already running.
+                                              - By default the ``ec`` command launches and
+                                                connects to the default socket name.
+                                                Use the ``--name`` option to specify another
+                                                name (for both the daemon and its clients).
+                                                For example, use ``ec --name=PEL`` to start
+                                                and connect to a Emacs daemon that uses the
+                                                socket named ``PEL``.
 
+                                                - With this option it is possible to create
+                                                  several independent *groups* of Emacs
+                                                  daemon/clients.
+
+                                              - Use ``ec --start-daemon`` (optionally
+                                                specifying the daemon name with ``--name``) to
+                                                start the Emacs daemon *without* starting the
+                                                client. If the Emacs daemon is already running
+                                                the command prints a message and exits with
+                                                the exit code 1.
+
+                                                - You can use this to check if the Emacs
+                                                  daemon is currently running.
 = =========================================== ================================================
 
 
@@ -62,11 +75,11 @@ Emacs client from a macOS terminal.
 
 **Challenge**: Several people, including myself, had problems launching the
 graphical based Emacs client from the terminal, regardless of the
-``emacsclient`` command line used.  All instances of Emacs client programs
+``emacsclient`` command line used.  All instanecs of Emacs client programs
 ended up being terminal based only.
 
 **Solution**: The key is to use an Emacs binary that supports Emacs in graphics
-mode to launch the Emacs daemon.  Once this done, it becomes possible to
+mode to launch the Emacs daemon.  Onec this done, it becomes possible to
 launch graphical Emacs clients and text-based Emacs clients:
 
 - To launch a graphical based Emacs client use a *graphics-capable*
@@ -88,11 +101,11 @@ emacs`` command.
 **Other Considerations**
 
 Under macOS (as of macOS Sonoma in 2024), if you want to launch an independent
-terminal-based Emacs process from the terminal shell, it is best to use an
+terminal-based Emacs proecss from the terminal shell, it is best to use an
 Emacs binary that was built *without* graphical capabilities because it starts
 faster than an Emacs that was built with graphical capabilities.
 
-Because of that you may want to install *two* instances of Emacs on macOS:
+Because of that you may want to install *two* instanecs of Emacs on macOS:
 
 - one with graphical capabilities and
 - one that does not have them built-in.
@@ -127,7 +140,7 @@ You need to trick it.
 
 At this point, if you type ``which emacs`` you should see that it is installed
 inside a Homebrew controlled directory.  For macOS running on Apple Silicon
-processors, that's ``/opt/homebrew/bin/emacs``.
+proecssors, that's ``/opt/homebrew/bin/emacs``.
 
 The graphical version of Emacs is located inside the following directory::
 
@@ -170,21 +183,21 @@ And the Apple Silicon ARM64 binaries are see here::
     zsh%
 
 
-Launching Independent Emacs Processes
+Launching Independent Emacs Proecsses
 =====================================
 
 The next sections list the explicit commands to launch Emacs in a specific
 way.  These assume Emacs was installed in macOS as described in the previous
 section.
 
-Launching an independent terminal Emacs process from a terminal shell
+Launching an independent terminal Emacs proecss from a terminal shell
 ---------------------------------------------------------------------
 
 Explicit command line::
 
   emacs
 
-Launching an independent graphical Emacs process from a terminal shell
+Launching an independent graphical Emacs proecss from a terminal shell
 ----------------------------------------------------------------------
 
 Explicit command line::
@@ -193,11 +206,11 @@ Explicit command line::
 
 This uses the macOS open command with the following command line options:
 
-- ``-n``: open a new instance on each invocation
+- ``-n``: open a new instanec on each invocation
 - ``-a application``: identify the path of the application
 
 
-Launching an independent graphical Emacs process from macOS Finder
+Launching an independent graphical Emacs proecss from macOS Finder
 ------------------------------------------------------------------
 
 Assuming no Emacs daemon is running, you can use Spotlight to open Emacs from
@@ -225,7 +238,7 @@ where, according the emacsclient man page:
   are relative to "$XDG_RUNTIME_DIR/emacs/" or "$TMPDIR/".
 
   See also the EMACS_SOCKET_NAME environment variable, over which
-  this option takes precedence.*
+  this option takes preecdenec.*
 
 
 Opening Emacs Clients to the running Emacs Daemon
