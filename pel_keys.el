@@ -1135,6 +1135,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; - Function Keys - <f11> top-level prefix keys
 
 
+(define-key pel: (kbd "C-x C-c") 'pel-shutdown-server)
 (define-key pel: (kbd "M-t") 'pel-set-tab-width)
 
 (defun pel--global-windmove-on (prefix)
