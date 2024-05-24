@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the deamon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-24 15:45:38 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-24 16:28:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -245,14 +245,40 @@ if [ "${start_client}" = "true" ]; then
     case "${os_name}" in
         Darwin)
             # on macOS use the GUI built Emacs as client.
+            # [:todo 2024-05-24, by Pierre Rouleau: should we depend on the internal symlink instead of checking the os version?]
+            case "$(arch)" in
+                arm64)
+                    app=/Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient
+                ;;
+
+                i386)
+                    case "$(sw_vers -productVersion)" in
+                        10\.14\.*)
+                            app=/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14/emacsclient
+                            ;;
+
+                        10\.13\.* | 10\.12\.* | 10\.11\.* | 10\.10\.*)
+                            app=/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14/emacsclient
+                            ;;
+
+                        10\.9\.*)
+                            app=/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_9/emacsclient
+                            ;;
+
+                        *)
+                            app=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
+                            ;;
+                    esac
+                ;;
+            esac
 
             if [ "${use_gui}" = "true" ]; then
                 # shellcheck disable=SC2086
-                /Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient -c -n ${socket_opt} "$@"
+                "$app" -c -n ${socket_opt} "$@"
 
             else
                 # shellcheck disable=SC2086
-                /Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient -nw ${socket_opt} "$@"
+                "$app" -nw ${socket_opt} "$@"
             fi
             ;;
 
