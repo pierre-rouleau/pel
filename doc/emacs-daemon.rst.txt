@@ -119,7 +119,7 @@ At this point, Homebrew won't let you install another version of emacs.
 You need to trick it.
 
 - First **copy** the Emacs DMG ( ``/Applications/Emacs.app`` ) somewhere else.
-- Next, uninstall Homebrew's installed Emacs with:  ``brew uninstall emacs``.
+- Next, uninstall Homebrew's installed (cask) Emacs with:  ``brew uninstall --cask emacs``.
 - Then install the terminal-only version of Emacs with Homebrew by issuing the
   following command: ``brew install emacs``
 - Finally, put your ``Emacs.app`` copy back into ``/Applications`` so you will
