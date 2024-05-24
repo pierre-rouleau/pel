@@ -6,7 +6,7 @@ Using the Emacs daemon and clients
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-05-24 17:04:31 EDT, updated by Pierre Rouleau.
+:Modified: 2024-05-24 17:07:02 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -63,12 +63,12 @@ can use the following short commands.  These support both macOS and Linux.
                                                 the command prints a message and exits with
                                                 the exit code 1.
 
-                                               - To explicitly check if the Emacs daemon for
-                                                 the default socket is running use the
-                                                 ``ec --check-daemon`` command.
-                                                 To check for the Emacs daemon that uses a
-                                                 named socket use the same command and specify
-                                                 the ``--name=NAME`` option.
+                                              - To explicitly check if the Emacs daemon for
+                                                the default socket is running use the
+                                                ``ec --check-daemon`` command.
+                                                To check for the Emacs daemon that uses a
+                                                named socket use the same command and specify
+                                                the ``--name=NAME`` option.
 = =========================================== ================================================
 
 For instructions on how to close/terminate the Emacs daemon and its clients, see
