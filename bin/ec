@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the deamon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-24 16:28:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-24 16:36:42 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -269,8 +269,16 @@ if [ "${start_client}" = "true" ]; then
                             app=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
                             ;;
                     esac
-                ;;
+                    ;;
+                *)
+                    app=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
+                    ;;
             esac
+            # Fail safety: use dispatcher if the selected executable does not exists
+            # in case older Emacs.app DMG is installed on the computer.
+            if [ ! -x "$app" ]; then
+                app=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
+            fi
 
             if [ "${use_gui}" = "true" ]; then
                 # shellcheck disable=SC2086
