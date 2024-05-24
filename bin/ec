@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the deamon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-24 09:19:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-24 11:31:36 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -58,11 +58,6 @@ ec : Open specified files in emacsclient. Start Emacs daemon if necessary.
        the GUI supporting Emacs from https://emacsformacosx.com/
        must be installed.
 "
-    else
-        printf -- "\
-
-BUGS:  The --name option is not yet properly supported under Linux.
-"
     fi
 }
 
@@ -105,47 +100,90 @@ case "$1" in
 esac
 
 # ----------------------------------------------------------------------------
-if [ "${os_name}" = "Darwin" ]; then
+# Start the daemon if necessary
 
-    # On macOS, check for the presence of required programs
-    if [ ! -d /Applications/Emacs.app/Contents ]; then
-        echo "*** ec: ERROR ***"
-        echo "The required /Applications/Emacs.app is missing."
-        echo "Please install Emacs from https://emacsformacosx.com/ "
-        echo "*****************"
+case "${os_name}" in
+    Darwin)
+
+        # On macOS, check for the presence of required programs
+        if [ ! -d /Applications/Emacs.app/Contents ]; then
+            echo "*** ec: ERROR ***"
+            echo "The required /Applications/Emacs.app is missing."
+            echo "Please install Emacs from https://emacsformacosx.com/ "
+            echo "*****************"
+            exit 1
+        fi
+
+        # On macOS, start the graphical Emacs daemon if it is not already running.
+        if [ -z "${daemon_name}" ]; then
+            # shellcheck disable=SC2009
+            if ps -ax | grep Emacs.app | grep -- "--bg-daemon=" > /dev/null; then
+                if [ "${start_client}" = "false" ]; then
+                    echo "ec: Emacs daemon (for default socket name) is already running!"
+                    exit 1
+                fi
+            else
+                echo "ec: starting the Emacs daemon for default socket name..."
+                if ! /Applications/Emacs.app/Contents/MacOS/Emacs "${daemon_opt}"; then
+                    echo "*** ec: ERROR: failed starting Emacs daemon"
+                    exit 1
+                fi
+            fi
+        else
+            # shellcheck disable=SC2009
+            if ps -ax | grep Emacs.app | grep -- "--bg-daemon=" | grep "${daemon_name}" > /dev/null; then
+                if [ "${start_client}" = "false" ]; then
+                    echo "ec: Emacs daemon (for socket ${daemon_name}) is already running!"
+                    exit 1
+                fi
+            else
+                echo "ec : starting the Emacs daemon for socket=${daemon_name}..."
+                if ! /Applications/Emacs.app/Contents/MacOS/Emacs "${daemon_opt}"; then
+                    echo "*** ec: ERROR: failed starting Emacs daemon ${daemon_name}"
+                    exit 1
+                fi
+            fi
+        fi
+        ;;
+
+    Linux)
+        # On Linux macOS, use the standard Emacs process for daemon.
+        if [ -z "${daemon_name}" ]; then
+            # shellcheck disable=SC2009
+            if ps -ax | grep 'emacs --daemon' | grep -v 'emacs --daemon=' | grep -v grep > /dev/null; then
+                if [ "${start_client}" = "false" ]; then
+                    echo "ec: Emacs daemon (for default socket name) is already running!"
+                    exit 1
+                fi
+            else
+                echo "ec: starting the Emacs daemon for default socket name..."
+                if ! emacs "${daemon_opt}"; then
+                    echo "*** ec: ERROR: failed starting Emacs daemon"
+                    exit 1
+                fi
+            fi
+        else
+            # shellcheck disable=SC2009
+            if ps -ax | grep 'emacs --daemon' | grep -v grep | grep "${daemon_name}" > /dev/null; then
+                if [ "${start_client}" = "false" ]; then
+                    echo "ec: Emacs daemon (for socket ${daemon_name}) is already running!"
+                    exit 1
+                fi
+            else
+                echo "ec : starting the Emacs daemon for socket=${daemon_name}..."
+                if ! emacs "${daemon_opt}"; then
+                    echo "*** ec: ERROR: failed starting Emacs daemon ${daemon_name}"
+                    exit 1
+                fi
+            fi
+        fi
+        ;;
+    *)
+        echo "Sorry, the $(uname) Operating System is not supported yet."
+        echo "Please create a bug report in the PEL project to request it."
         exit 1
-    fi
-
-    # On macOS, start the graphical Emacs daemon if it is not already running.
-    emacs_daemon_running=false
-    if [ -z ${daemon_name} ]; then
-        if ps -ax | grep Emacs.app | grep -- "--bg-daemon=" > /dev/null; then
-            emacs_daemon_running=true
-            if [ "${start_client}" = "false" ]; then
-                echo "ec: Emacs daemon (for default socket name) is already running!"
-                exit 1
-            fi
-        else
-            echo "ec: starting the Emacs daemon for default socket name..."
-            if /Applications/Emacs.app/Contents/MacOS/Emacs ${daemon_opt}; then
-                emacs_daemon_running=true
-            fi
-        fi
-    else
-        if ps -ax | grep Emacs.app | grep -- "--bg-daemon=" | grep ${daemon_name} > /dev/null; then
-            emacs_daemon_running=true
-            if [ "${start_client}" = "false" ]; then
-                echo "ec: Emacs daemon (for socket ${daemon_name}) is already running!"
-                exit 1
-            fi
-        else
-            echo "ec : starting the Emacs daemon for socket=${daemon_name}..."
-            if /Applications/Emacs.app/Contents/MacOS/Emacs ${daemon_opt}; then
-                emacs_daemon_running=true
-            fi
-        fi
-    fi
-fi
+        ;;
+esac
 
 # ----------------------------------------------------------------------------
 # Start the client if requested
@@ -156,11 +194,11 @@ if [ "${start_client}" = "true" ]; then
             # on macOS use the GUI built Emacs as client.
 
             if [ "${use_gui}" = "true" ]; then
-                # echo "GUI emacsclient"
+                # shellcheck disable=SC2086
                 /Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient -c -n ${socket_opt} "$@"
 
             else
-                # echo "text emacsclient"
+                # shellcheck disable=SC2086
                 /Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient -nw ${socket_opt} "$@"
             fi
             ;;
@@ -175,18 +213,15 @@ if [ "${start_client}" = "true" ]; then
             # -c creates a new frame
             # -n returns control back to the terminal
 
-            # [:todo 2024-05-23, by Pierre Rouleau: Add proper support for the --name option under Linux
-            #                                       Currently the named socket daemon is not searched
-            #                                       explicitly.  More investigation and tests required.
-            # ]
-            #
             if [ "${use_gui}" = "true" ]; then
                 # echo "GUI emacsclient"
                 # exec /usr/bin/env emacsclient -c -n -a "" "$@"
+                # shellcheck disable=SC2086
                 emacsclient -c -n -a "" ${socket_opt} "$@"
             else
                 # echo "text emacsclient"
                 # exec /usr/bin/env emacsclient -nw -a "" "$@"
+                # shellcheck disable=SC2086
                 emacsclient -nw -a "" ${socket_opt} "$@"
             fi
             ;;
