@@ -6,7 +6,7 @@ Using the Emacs daemon and clients
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-05-24 15:28:37 EDT, updated by Pierre Rouleau.
+:Modified: 2024-05-24 17:04:31 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -18,6 +18,7 @@ Short Commands to start Emacs from the terminal shell
 
 Instead of using the long explicit commands listed in the sections below, you
 can use the following short commands.  These support both macOS and Linux.
+
 
 = =========================================== ================================================
   Command                                     Description
@@ -72,6 +73,15 @@ can use the following short commands.  These support both macOS and Linux.
 
 For instructions on how to close/terminate the Emacs daemon and its clients, see
 the `Closing Suspending PEL PDF`_
+
+**Test environments**:
+
+The commands were tested in the following environments:
+
+- macOS Sonoma 14.5, Apple Silicon
+- macOS Mojave 10.14.6, i386 architecture
+- Linux Ubuntu 16.04, i386 architecture
+- Linux Ubuntu 22.04, arm64 architecture
 
 
 Using Emacs daemon on macOS
