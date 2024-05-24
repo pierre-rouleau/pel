@@ -6,7 +6,7 @@ Using the Emacs daemon and clients
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-05-24 17:44:45 EDT, updated by Pierre Rouleau.
+:Modified: 2024-05-24 17:45:32 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -237,7 +237,7 @@ the keyboard:
 
 
 Launching a *graphics-capable* Emacs Daemon
-=========================================
+===========================================
 
 Explicit command line for an Emacs daemon with the default socket name::
 
