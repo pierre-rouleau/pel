@@ -27,16 +27,16 @@ e_\ ``[OPTIONS..] [FILE..]``                Start Emacs in text mode.
                                             - Supports emacs options and file arguments.
                                               See emacs man page.
 
-ge_\ ``[OPTIONS..] [FILE..]``               Start Emacs in graphics mode.
+ge_ :                                       Start Emacs in graphics mode.
 
-                                            - Supports emacs options and file arguments.
-                                              See emacs man page.
+- ``ge [-h | --help]``                      - Supports emacs options and file arguments.
+- ``ge`[OPTIONS..] [FILE..]``                 See emacs man page.
 
 
-ec_\ `` [-g|gui] [--name=NAME] [FILE...]``  Start an Emacs client of the Emacs daemon.
+ec_ :                                       Start an Emacs client of the Emacs daemon.
 
-                                            - It also starts the Emacs daemon if it is not
-                                              already running.
+- ``ec`[-h|--help]``                        - It also starts the Emacs daemon if it is not
+- ``ec [-g|gui] [--name=NAME] [FILE...]``     already running.
                                             - By default it launches a text-based Emacs
                                               client inside the current terminal shell.
                                               With the ``--gui`` or ``-g`` command line
