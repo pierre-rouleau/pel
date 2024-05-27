@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, June  7 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-08-26 11:18:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-27 18:17:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022  Pierre Rouleau
+;; Copyright (C) 2022, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,12 +25,27 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; Early state module with naive implementation of quoting functions.
+;; This file provides extra logic to use inside the `sh-mode' major mode.
+;;
+;; Available functions:
+;;
+;; - Naïve Quoting functions:
+;;   - `pel-sh-double-quote-word'
+;;   - `pel-sh-single-quote-word'
+;;   - `pel-sh-backtick-quote-word'
+;;      - `pel--quote-word'
+;;
+;; - Shell script source code Enhancement tools:
+;;   - `pel-sh-fix-sc2006'
+;;
+;; - iMenu sh-mode enhancement
+;;   - `pel-toggle-accept-hyphen'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--base)                    ; use: `pel-toggle-and-show'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -67,9 +82,8 @@
   (pel--quote-word ?`))
 
 ;; ---------------------------------------------------------------------------
-;; Source Code Translation functions
-;; ---------------------------------
-
+;; Source Code Enhancement Tools
+;; -----------------------------
 
 ;;-pel-autoload
 (defun pel-sh-fix-sc2006 ()
@@ -78,6 +92,137 @@
   (let ((found-pos (re-search-forward "`\\(.+\\)`" )))
     (when found-pos
       (replace-match "$(\\1)" :fixedcase))))
+
+;; ---------------------------------------------------------------------------
+;; Improve iMenu for sh-mode
+;; -------------------------
+;;
+;; POSIX-compliant function names cannot use the dash (also know as hyphen)
+;; ('-', 0x2d) ASCII character.
+;;
+;; According to Stéphane Chazelas, a known expert of shell scripting:
+;;
+;; "... The following shells are known to support hyphens in function names:
+;;
+;;     - pdksh and derivatives, bash, zsh
+;;     - some ash derivatives such as the sh of FreeBSD (since 2010) or NetBSD (since
+;;     - 2016).
+;;     - busybox sh when the selected shell at compile time is hush instead of ash.
+;;     - csh and tcsh (in their aliases, those shells have no function support).
+;;     - rc and derivatives (again with a radically different syntax)
+;;     - fish
+;;
+;;     The following shells are known to explictly not support hyphens
+;;     in function names:
+;;
+;;     - the Bourne shell and derivatives such as ksh88 and bosh
+;;     - ksh93, yash, the original ash and some of its derivatives
+;;       (busybox ash (the default choice for sh), dash)
+;; "
+;;
+;; Because of that, the Emacs sh-mode code sets the `imenu-generic-expression'
+;; variable to no accept the hyphen characters inside the function names and
+;; the value of that variable is set to:
+;;
+;; ((nil "^\\s-*function\\s-+\\([[:alpha:]_][[:alnum:]_]*\\)\\s-*\\(?:()\\)?" 1)
+;;  (nil "^\\s-*\\([[:alpha:]_][[:alnum:]_]*\\)\\s-*()" 1))
+;;
+;; The command `pel-toggle-accept-hyphen' toggle acceptance of hyphen inside
+;; function names, but not inside variable names. It is often useful to
+;; implement user-facing shell commands that use hyphens, as they are easier
+;; to type than underscores.  Use this command when writing scripts meant to
+;; be executed by shells that accept them.
+
+(defvar-local pel--accept-hyphen nil
+  "Accept hyphen and period in function names when non-nil.")
+
+;;-pel-autoload
+(defun pel-toggle-accept-hyphen ()
+  "Toggle acceptance of hyphen and period in shell function names."
+  (interactive)
+  ;; Backup the original value of imenu-generic-expression inside pel--accept-hyphen
+  ;; when pel--accept-hyphen is not nil and imenu-generic-expression is
+  ;; modified.
+  (require 'imenu)
+  (let ((original-imenu-generic-expression pel--accept-hyphen))
+    (pel-toggle-and-show 'pel--accept-hyphen
+                         "Accepts hyphens and periods in function names."
+                         "Does NOT accept hyphen nor period in function names.")
+    (if pel--accept-hyphen
+        (progn
+          ;; When the variable has just been toggle to t, store the original
+          ;; imenu-generic-expression into it, it remains 'true'
+          (setq pel--accept-hyphen imenu-generic-expression)
+          ;; The modify it
+          (setq-local imenu-generic-expression
+                '((nil "^\\s-*function\\s-+\\([[:alpha:]_][[:alnum:]._-]*\\)\\s-*\\(?:()\\)?" 1)
+                  (nil "^\\s-*\\([[:alpha:]_][[:alnum:]._-]*\\)\\s-*()" 1))))
+      ;; When the variable has just been toggle to nil restore the value of
+      ;; `imenu-generic-expression', restore it from what was previously backed-up
+      (setq-local imenu-generic-expression
+                  original-imenu-generic-expression))))
+
+;; ---------------------------------------------------------------------------
+;; Navigate to next/previous function definition
+;; ---------------------------------------------
+;;
+;; The POSIX standard does not accept hyphen nor period inside function
+;; names, but those may be used in bash and zsh shells, the shells this
+;; code supports, so the regexp supports these characters inside the function
+;; names.
+
+
+(defconst pel--sh-function-regexp-strict
+  "^\\s-*\\(function\\s-*\\)?\\([[:alpha:]_][[:alnum:]_]*\\)\\s-*()"
+  "Regexp for shell script function name that accepts . and -")
+
+(defconst pel--sh-function-regexp
+  "^\\s-*\\(function\\s-*\\)?\\([[:alpha:]_][[:alnum:]_.-]*\\)\\s-*()"
+  "Regexp for shell script function name that accepts . and -")
+
+;;-pel-autoload
+(defun pel-sh-next-function ()
+  "Move point to the beginning of next function definition.
+
+By default does not accept hyphen and period in function names.
+Execute `pel-toggle-accept-hyphen' to change that."
+  (interactive)
+  (require 'simple)                     ; use: `back-to-indentation'
+  (let ((new-pos))
+    (save-excursion
+      (move-end-of-line 1)
+      (when (re-search-forward (if pel--accept-hyphen
+                                   pel--sh-function-regexp
+                                 pel--sh-function-regexp-strict)
+                               nil :noerror)
+        (setq new-pos (point))))
+    (if new-pos
+        (progn
+          (goto-char new-pos)
+          (back-to-indentation))
+      (user-error "Not finding any function below!"))))
+
+;;-pel-autoload
+(defun pel-sh-prev-function ()
+  "Move point to the beginning of previous function definition.
+
+By default does not accept hyphen and period in function names.
+Execute `pel-toggle-accept-hyphen' to change that."
+  (interactive)
+  (require 'simple)                     ; use: `back-to-indentation'
+  (let ((new-pos))
+    (save-excursion
+      (beginning-of-line 1)
+      (when (re-search-backward (if pel--accept-hyphen
+                                    pel--sh-function-regexp
+                                  pel--sh-function-regexp-strict)
+                                nil :noerror)
+        (setq new-pos (point))))
+    (if new-pos
+        (progn
+          (goto-char new-pos)
+          (back-to-indentation))
+      (user-error "Not finding any function above!"))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-sh)

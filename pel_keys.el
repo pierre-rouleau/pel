@@ -4471,6 +4471,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-sh "\"" 'pel-sh-double-quote-word)
     (define-key pel:for-sh "'"  'pel-sh-single-quote-word)
     (define-key pel:for-sh "`"  'pel-sh-backtick-quote-word)
+    (define-key pel:for-sh "-"  'pel-toggle-accept-hyphen)
+    (define-key pel:for-sh (kbd "<down>")  'pel-sh-next-function)
+    (define-key pel:for-sh (kbd "<up>")    'pel-sh-prev-function)
     (pel-local-set-f12-M-f12 'pel:for-sh))
   (cond
    ;; using flymake

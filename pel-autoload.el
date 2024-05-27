@@ -711,7 +711,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-sh-double-quote-word
     pel-sh-single-quote-word
     pel-sh-backtick-quote-word
-    pel-sh-fix-sc2006)
+    pel-sh-fix-sc2006
+    pel-toggle-accept-hyphen
+    pel-sh-next-function
+    pel-sh-prev-function)
 
   (pel-autoload "pel-shell" for:
     pel-shell

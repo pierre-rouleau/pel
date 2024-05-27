@@ -2,6 +2,18 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add following functions to improve sh-mode editing:
+  - *pel-toggle-accept-hyphen*, bound to ~<f12> -~, to toggle acceptance of
+    hyphen and period as valid characters of shell functions by the imenu
+    commands.
+  - *pel-sh-next-function*, bound to ~<f12> <down>~ which moves point to the
+    beginning of the next shell function definition.
+    Always accepts function names that use hyphen and period in their names
+    when *pel-toggle-accept-hyphen* has activated them.
+  - *pel-sh-prev-function*, bound to ~<f12> <up>~ which moves point to the
+    beginning of the previous shell function definition.
+    Always accepts function names that use hyphen and period in their names
+    when *pel-toggle-accept-hyphen* has activated them.
 - Add support for the Windows Tab Line mode for Emacs 27.1 and later:
   add ~<f11> w L~ binding to *global-tab-line-mode*.
   The pel-∑wnd hydra now has the ~L~ key bound to *global-tab-line-mode*.
