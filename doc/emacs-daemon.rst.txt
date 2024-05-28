@@ -6,7 +6,7 @@ Using the Emacs daemon and clients
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-05-24 17:46:32 EDT, updated by Pierre Rouleau.
+:Modified: 2024-05-28 09:32:55 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -92,11 +92,11 @@ Emacs client from a macOS terminal.
 
 **Challenge**: Several people, including myself, had problems launching the
 graphical based Emacs client from the terminal, regardless of the
-``emacsclient`` command line used.  All instanecs of Emacs client programs
+``emacsclient`` command line used.  All instances of Emacs client programs
 ended up being terminal based only.
 
 **Solution**: The key is to use an Emacs binary that supports Emacs in graphics
-mode to launch the Emacs daemon.  Onec this done, it becomes possible to
+mode to launch the Emacs daemon.  Once this done, it becomes possible to
 launch graphical Emacs clients and text-based Emacs clients:
 
 - To launch a graphical based Emacs client use a *graphics-capable*
@@ -118,11 +118,11 @@ emacs`` command.
 **Other Considerations**
 
 Under macOS (as of macOS Sonoma in 2024), if you want to launch an independent
-terminal-based Emacs proecss from the terminal shell, it is best to use an
+terminal-based Emacs process from the terminal shell, it is best to use an
 Emacs binary that was built *without* graphical capabilities because it starts
 faster than an Emacs that was built with graphical capabilities.
 
-Because of that you may want to install *two* instanecs of Emacs on macOS:
+Because of that you may want to install *two* instances of Emacs on macOS:
 
 - one with graphical capabilities and
 - one that does not have them built-in.
@@ -157,7 +157,7 @@ You need to trick it.
 
 At this point, if you type ``which emacs`` you should see that it is installed
 inside a Homebrew controlled directory.  For macOS running on Apple Silicon
-proecssors, that's ``/opt/homebrew/bin/emacs``.
+processors, that's ``/opt/homebrew/bin/emacs``.
 
 The graphical version of Emacs is located inside the following directory::
 
@@ -207,14 +207,14 @@ The next sections list the explicit commands to launch Emacs in a specific
 way.  These assume Emacs was installed in macOS as described in the previous
 section.
 
-Launching an independent terminal Emacs proecss from a terminal shell
+Launching an independent terminal Emacs process from a terminal shell
 ---------------------------------------------------------------------
 
 Explicit command line::
 
   emacs
 
-Launching an independent graphical Emacs proecss from a terminal shell
+Launching an independent graphical Emacs process from a terminal shell
 ----------------------------------------------------------------------
 
 Explicit command line::
@@ -223,11 +223,11 @@ Explicit command line::
 
 This uses the macOS open command with the following command line options:
 
-- ``-n``: open a new instanec on each invocation
+- ``-n``: open a new instance on each invocation
 - ``-a application``: identify the path of the application
 
 
-Launching an independent graphical Emacs proecss from macOS Finder
+Launching an independent graphical Emacs process from macOS Finder
 ------------------------------------------------------------------
 
 Assuming no Emacs daemon is running, you can use Spotlight to open Emacs from
