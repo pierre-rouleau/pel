@@ -10,9 +10,6 @@ Install the Emacs launcher shortcut scripts
 :Copyright: © 2024, Pierre Rouleau
 
 
-.. contents::  **Table of Contents**
-.. sectnum::
-
 .. ---------------------------------------------------------------------------
 
 Use this method to quickly install the e_, ge_ and ce_ scripts described in
