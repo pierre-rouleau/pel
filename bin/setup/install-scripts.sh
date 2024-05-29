@@ -4,7 +4,7 @@
 # Purpose   : Install the e, ge and ce scripts in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-29 07:59:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-05-29 10:22:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -18,7 +18,7 @@
 # ----
 #
 #
-script="$_"
+script="$(realpath $0)"
 script_dirpath="$(dirname "$script")"
 bin_dirpath="$(dirname "$script_dirpath")"
 
