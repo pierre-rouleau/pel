@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2024-05-23 17:34:43 EDT, updated by Pierre Rouleau.
+:Modified: 2024-05-29 08:55:19 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -884,13 +884,72 @@ Create command line shortcuts for Emacs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 New Emacs users may be interested by command line commands to start Emacs in
-terminal (TTY) mode or graphics mode from a shell.  If so, read on.
+various ways:
 
-The following sections describe the creation of two shell-based commands
-to launch Emacs:
+- starting an independent emacs process in terminal (TTY) mode from a shell,
+- starting an independent emacs process in graphics mode from a shell,
+- starting an emacs client to an emacs daemon (the Emacs server).
 
-- ``e`` which launches a Termcap (TTY) character-only version of Emacs, and
-- ``ge`` which launches the GUI version of Emacs.
+PEL provides 3 short-named scripts to do this on macOS and Linux:
+
+= =========================================== ================================================
+  Command                                     Description
+= =========================================== ================================================
+. e_\ ``[OPTIONS..] [FILE..]``                Start Emacs in text mode.
+
+                                              - Supports emacs options and file arguments.
+                                                See emacs man page.
+
+. ge_ :                                       Start Emacs in graphics mode.
+
+  - ``ge [-h | --help]``                      - Supports emacs options and file arguments.
+  - ``ge [OPTIONS..] [FILE..]``                 See emacs man page.
+
+
+. ec_ :                                       Start an Emacs client for an Emacs daemon.
+
+  - ``ec [-h|--help]``                        - Use ``ec`` to start an Emacs client to the
+  - ``ec [-g|gui] [--name=NAME] [FILE...]``     default Emacs daemon, starting the daemon
+  - ``ec --start-daemon [--name=NAME]``         if it is not already running.  The client
+  - ``ec --check-daemon [--name=NAME]``         is a terminal based client by default.
+                                              - To start a graphical (GUI) Emacs client
+                                                instead, use ``ec -g`` or ``ec --gui``.
+                                                This also starts the Emacs daemon if it is not
+                                                already running.
+                                              - By default the ``ec`` command launches and
+                                                connects to the default socket name.
+                                                Use the ``--name`` option to specify another
+                                                name (for both the daemon and its clients).
+                                                For example, use ``ec --name=PEL`` to start
+                                                and connect to a Emacs daemon that uses the
+                                                socket named ``PEL``.
+
+                                                - With this option it is possible to create
+                                                  several independent *groups* of Emacs
+                                                  daemon/clients.
+
+                                              - Use ``ec --start-daemon`` (optionally
+                                                specifying the daemon name with ``--name``) to
+                                                start the Emacs daemon *without* starting the
+                                                client. If the Emacs daemon is already running
+                                                the command prints a message and exits with
+                                                the exit code 1.
+
+                                              - To explicitly check if the Emacs daemon for
+                                                the default socket is running use the
+                                                ``ec --check-daemon`` command.
+                                                To check for the Emacs daemon that uses a
+                                                named socket use the same command and specify
+                                                the ``--name=NAME`` option.
+= =========================================== ================================================
+
+PEL also provides a `quick installation script`_ to do it.
+
+.. _e:  ../bin/e
+.. _ge: ../bin/ge
+.. _ec: ../bin/ec
+.. _quick installation script: ./install_e_ge_ec.rst.txt
+
 
 Using short command names to use from the shell goes hand in hand with the
 desire to make Emacs start faster. And you probably don't have to
@@ -958,45 +1017,11 @@ such as the Debian 10 Terminal Preference dialog shown below:
 Scripts to Launch Emacs in Terminal mode
 ++++++++++++++++++++++++++++++++++++++++
 
-Use the Emacs ``-nw`` command line option to start Emacs in terminal/TTY mode.
+Use the Emacs ``-nw`` command line option to start Emacs in terminal/TTY mode,
+or the PEL supplied ``e`` script.
 
-On Unix-like OS I often create create a single letter command ``e`` to start
-Emacs in terminal mode.  This is what I do:
-
-- Create a ``~/bin`` directory and ensure it's on the shell's PATH.
-
-  - On many Linux distributions (like Debian) all you have to do is to create
-    the directory, on others you have to explicitly pre-pend ``$(HOME)/bin``
-    to the PATH environment variable and export it.  That' often done inside
-    the ``~/.bash_profile`` file.
-
-- Create the symlink ``~/bin/e`` to point to the location of the emacs
-  executable.
-
-  - It might be /usr/bin/emacs on several Linux distributions.  In this case
-    the command would be:
-
-    .. code:: shell
-
-              ln -s ~/bin/e /usr/bin/emacs
-
-  - On macOS, /usr/bin/emacs may exist but it will most likely be an ancient
-    version of Emacs.  It is best to install Emacs with a good application
-    manager by Homebrew.  So you'd end up with the terminal-based Emacs
-    installed somewhere like ``/usr/local/Cellar/emacs/26.3/bin/emacs``. For
-    that, the command would be:
-
-    .. code:: shell
-
-              ln -s ~/bin/e /usr/local/Cellar/emacs/26.3/bin/emacs
-
-- Finally Create an alias inside the ``~/.bashrc`` file that has the same name,
-  ``e`` to use the symlink.  The alias written inside the ``~/.bashrc`` file
-  is:
-
-    .. code:: shell
-
-              alias e='~/bin/e -nw'
+If you have not already done so, use PEL `quick installation script`_
+to create the ``e`` command.
 
 With these you will be able to open any file(s) with Emacs from the command
 line, doing something like this:
@@ -1040,16 +1065,11 @@ There are several advantages to that method:
   or later is used with an early-init.el file and you need to set up something
   differently for Graphics mode during the execution of early-init.
 
-
-I provide the fully working `ge`_ shell inside  the `pel/bin directory`_
+PEL provides a fully working `ge`_ shell inside  the `pel/bin directory`_
 that can be used under macOS and Linux.
 
-Copy the appropriate one inside your ``~/bin`` directory.
-
-Then you can start the graphical version of Emacs from a shell by issuing the
-``ge`` command, optionally identifying the name of files to edit on the
-command line.
-
+If you have not already done so, use PEL `quick installation script`_
+to create the ``ge`` command.
 
 With these you will be able to open any file(s) with Emacs from the command
 line, doing something like this:
@@ -1068,141 +1088,6 @@ line, doing something like this:
 
 .. _Steve Purcell in the readme file of his exec-path-from-shell: https://github.com/purcell/exec-path-from-shell#readme
 .. _Steve Purcell's exec-path-from-shell:                        https://github.com/purcell/exec-path-from-shell
-
-
-On macOS
-++++++++
-
-Here's the provided code. Only 2 lines are required, the other lines are comments.
-
-.. code:: shell
-
-      #!/bin/sh
-      # SH FILE: ge
-      #
-      # Purpose   : Start macOS Cocoa-based GUI Emacs in the background from the shell keeping context.
-      # Created   : Tuesday, August  3 2021.
-      # Author    : Pierre Rouleau <prouleau001@gmail.com>
-      # Time-stamp: <2021-08-03 16:17:00, updated by Pierre Rouleau>
-      # ----------------------------------------------------------------------------
-      # Description
-      # -----------
-      #
-      # This launches the macOS graphics-based Emacs from a shell with all specified
-      # command line arguments.
-      #
-      # It also:
-      # - set the current working directory,
-      # - set a PEL environment variable to identify the graphics mode:
-      #   this is only required for Emacs 27+ using the early-init.el and
-      #   independent customization files for terminal and graphics mode,
-      #   but does not hurt when older versions of Emacs are used.
-      #
-      # - Launching Emacs from a shell also provides Emacs access to the shell's environment.
-      #
-      #
-      # Pass to emacs:
-      #   - --chdir to the current working directory so we open the same files
-      #     as what is specified on the command line. If we don't do that the GUI
-      #     based Emacs might use a different directory (I saw that it uses the home
-      #     directory) and if you specify files that are not in that directory they
-      #     will not be opened, another file file open which will most likely be
-      #     in an empty buffer (if the file does not exists in the home directory).
-      #   - All script command line arguments
-      #
-      # Note: The current Emacs for macOS graphical dumps an error when it starts.
-      #       This is annoying; it's noise on the shell.
-      #       Just mask it by dumping it in the bit bucket.
-      #
-      # Emacs 27+ support:
-      #    - To allow Emacs early-init.el code to distinguish whether Emacs is
-      #      running in terminal mode or in graphics mode.  When running
-      #           early-init.el Emacs does not know and the function
-      #           display-graphic-p does not work at that moment.  The only way I
-      #           have found is to use an environment variable.  So the following
-      #           code sets one up: PEL_EMACS_IN_GRAPHICS
-      # See: https://emacs.stackexchange.com/questions/66268/how-to-set-package-user-dir-with-emacs-27-with-package-quickstart-and-distinguis
-      #
-      #
-      # To activate this script
-      # -----------------------
-      #
-      # Copy it into a directory that is on the PATH of your shell.
-      # This is often the ~/bin directory.
-      # ----------------------------------------------------------------------------
-      # Dependencies
-      # ------------
-      #
-      # - Cocoa-based graphics Emacs:
-      #   Something like what's available at https://emacsformacosx.com/
-      # ----------------------------------------------------------------------------
-      # Code
-      # ----
-      #
-      #
-      export PEL_EMACS_IN_GRAPHICS=1
-      /Applications/Emacs.app/Contents/MacOS/Emacs --chdir=$(pwd) "$@" 2>/dev/null &
-      # ----------------------------------------------------------------------------
-
-On Linux
-++++++++
-
-The code is similar on Linux, except that it uses ``emacs`` as the executable
-name.  Change it if your system uses something else or if you want to place
-the absolute path.
-
-
-.. code:: shell
-
-      #!/bin/sh
-      # SH FILE: ge
-      #
-      # Purpose   : Start Linux GUI Emacs in the background from the shell keeping context.
-      # Created   : Tuesday, August  3 2021.
-      # Author    : Pierre Rouleau <prouleau001@gmail.com>
-      # Time-stamp: <2021-08-03 16:20:08, updated by Pierre Rouleau>
-      # ----------------------------------------------------------------------------
-      # Description
-      # -----------
-      #
-      # Launches emacs graphics mode in a detached process from the shell.
-      # Pass all specified command line options to the process.
-      # Identify the current working directory.
-      # Sets a PEL environment variable to identify the graphics mode:
-      #   this is only required for Emacs 27+ using the early-init.el and
-      #   independent customization files for terminal and graphics mode,
-      #   but does not hurt when older versions of Emacs are used.
-
-      # To activate this script
-      # -----------------------
-      #
-      # Copy it into a directory that is on the PATH of your shell.
-      # This is often the ~/bin directory.
-      #
-      # You may have to restart you session.  On some Linux distributions, Debian
-      # for example, if the ~/bin directory exists, the ~/.profile adds that
-      # directory to your shell PATH as long as the ~/.bash_profile does not exists.
-      # If the ~/.bash_profile exists make sure that the $(HOME)/bin directory is
-      # put at the beginning of your PATH.
-
-
-      # ----------------------------------------------------------------------------
-      # Dependencies
-      # ------------
-      #
-      # The emacs command line program.  Under Linux this launches the graphics
-      # based mode of Emacs.
-
-      # ----------------------------------------------------------------------------
-      # Code
-      # ----
-      #
-      #
-      export PEL_EMACS_IN_GRAPHICS=1
-      emacs --chdir=$(pwd) "$@" 2>/dev/null &
-
-      # ----------------------------------------------------------------------------
-
 
 .. ---------------------------------------------------------------------------
 
