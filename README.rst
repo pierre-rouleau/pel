@@ -54,6 +54,17 @@ or `update it`_ [#update]_ !
   launched from a shell or a GUI program like Windows Explorer, macOS Finder,
   Linux file managers, etc...
 
+➣ Short Emacs and Emacs Client Launcher Scripts
+------------------------------------------------
+
+- Want to start Emacs as an independent process or a text or GUI client to the
+  Emacs daemon?  PEL provides simple shell scripts for all of that (for macOS
+  and Linux).
+  See `Using the Emacs daemon and clients`_ for more info.
+
+.. _Using the Emacs daemon and clients: doc/emacs-daemon.rst.txt
+
+
 ➣ Emacs Fast Startup
 --------------------
 
