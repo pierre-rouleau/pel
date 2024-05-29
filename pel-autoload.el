@@ -714,7 +714,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-sh-fix-sc2006
     pel-toggle-accept-hyphen
     pel-sh-next-function
-    pel-sh-prev-function)
+    pel-sh-prev-function
+    pel-sh-add-sh-local)
 
   (pel-autoload "pel-shell" for:
     pel-shell

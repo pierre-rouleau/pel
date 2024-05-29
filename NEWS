@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-sh-add-sh-local* , bound to ~<f12> t~ inside sh-mode buffers;
+  it inserts a sh-shell file-local variable definition at the end of the buffer
+  to help identify the type of shell script language syntax to use.  The command
+  prompts for the shell name, providing a default and tab-completion.
 - Add following functions to improve sh-mode editing:
   - *pel-toggle-accept-hyphen*, bound to ~<f12> -~, to toggle acceptance of
     hyphen and period as valid characters of shell functions by the imenu

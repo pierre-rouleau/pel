@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June  7 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-27 18:17:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-29 17:31:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -40,12 +40,20 @@
 ;;
 ;; - iMenu sh-mode enhancement
 ;;   - `pel-toggle-accept-hyphen'
+;;
+;; - Navigate to next/previous function definition
+;;   - `pel-sh-next-function'
+;;   - `pel-sh-prev-function'
+;;
+;; Specialized text insertion
+;;   - `pel-sh-add-sh-local'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
 (require 'pel--base)                    ; use: `pel-toggle-and-show'
+(require 'sh-script)                    ; use `sh-ancestor-alist'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -223,6 +231,35 @@ Execute `pel-toggle-accept-hyphen' to change that."
           (goto-char new-pos)
           (back-to-indentation))
       (user-error "Not finding any function above!"))))
+
+;; ---------------------------------------------------------------------------
+;; Specialized text insertion
+
+;;-pel-autoload
+(defun pel-sh-add-sh-local (shell-name)
+  "Insert a sh-shell file-local variable to end of buffer.
+
+Prompts for a shell name, with tab-completion of supported shell
+names.  Defaults to the current major mode shell name."
+  (interactive (list (completing-read
+                      ;; Extract the list of shell names from
+                      ;; `sh-ancestor-alist' and use it as the provided
+                      ;; choices.
+                      ;; Set default to the major mode name of the current
+                      ;; buffer by using `pel-string-with-major-mode'.
+                      (format-prompt "Shell" (pel-string-with-major-mode "%s"))
+                      (append (mapcar (lambda (e) (symbol-name (car e)))
+                                      sh-ancestor-alist)
+                              '("csh" "rc" "sh"))
+                      nil nil nil nil (pel-string-with-major-mode "%s"))))
+  (save-excursion
+    (goto-char (point-max))
+    (insert (format "
+# Local Variables:
+# sh-shell: %s
+# End:
+" shell-name))))
+
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-sh)
