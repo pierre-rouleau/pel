@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June  7 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-29 17:31:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-05-29 18:01:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -52,7 +52,9 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)                    ; use: `pel-toggle-and-show'
+(require 'pel--base)                    ; use: `pel-toggle-and-show',
+                                        ; `pel-current-buffer-file-extension'
+
 (require 'sh-script)                    ; use `sh-ancestor-alist'
 
 ;;; --------------------------------------------------------------------------
@@ -235,6 +237,17 @@ Execute `pel-toggle-accept-hyphen' to change that."
 ;; ---------------------------------------------------------------------------
 ;; Specialized text insertion
 
+(defun pel--shell-name ()
+  "Return most expected shell name."
+  ;; Some shell script files have an extension that identifies
+  ;; the shell scripting language; use that if there's one.
+  ;; Otherwise use the major mode unless it is fundamental.
+  (or (pel-current-buffer-file-extension)
+      (let ((name (pel-string-with-major-mode "%s")))
+        (if (string-equal name "fundamental")
+            "sh"
+          name))))
+
 ;;-pel-autoload
 (defun pel-sh-add-sh-local (shell-name)
   "Insert a sh-shell file-local variable to end of buffer.
@@ -245,13 +258,11 @@ names.  Defaults to the current major mode shell name."
                       ;; Extract the list of shell names from
                       ;; `sh-ancestor-alist' and use it as the provided
                       ;; choices.
-                      ;; Set default to the major mode name of the current
-                      ;; buffer by using `pel-string-with-major-mode'.
-                      (format-prompt "Shell" (pel-string-with-major-mode "%s"))
+                      (format-prompt "Shell" (pel--shell-name))
                       (append (mapcar (lambda (e) (symbol-name (car e)))
                                       sh-ancestor-alist)
                               '("csh" "rc" "sh"))
-                      nil nil nil nil (pel-string-with-major-mode "%s"))))
+                      nil nil nil nil (pel--shell-name))))
   (save-excursion
     (goto-char (point-max))
     (insert (format "
