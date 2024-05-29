@@ -60,9 +60,11 @@ or `update it`_ [#update]_ !
 - Want to start Emacs as an independent process or a text or GUI client to the
   Emacs daemon?  PEL provides simple shell scripts for all of that (for macOS
   and Linux).
-  See `Using the Emacs daemon and clients`_ for more info.
+  See `Using the Emacs daemon and clients`_ for more info and the related
+  `quick shortcut installation script`_.
 
 .. _Using the Emacs daemon and clients: doc/emacs-daemon.rst.txt
+.. _quick shortcut installation script: doc/install_e_ge_ec.rst.txt
 
 
 ➣ Emacs Fast Startup
@@ -390,7 +392,6 @@ Notes
               The **pel-setup-with-quickstart** command creates the package
               quickstart files and the early-init.el file if it's not already
               present.
-
 
               Emacs ``package-quickstart-file`` user-option identifies the
               name of your package quickstart file.
