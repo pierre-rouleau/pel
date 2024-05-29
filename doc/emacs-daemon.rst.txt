@@ -6,7 +6,7 @@ Using the Emacs daemon and clients
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-05-29 08:02:27 EDT, updated by Pierre Rouleau.
+:Modified: 2024-05-29 08:23:53 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -295,7 +295,7 @@ install emacs`` command::
 .. _ge: ../bin/ge
 .. _ec: ../bin/ec
 .. _Closing Suspending PEL PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/closing-suspending.pdf
-.. _quick installation script: ../install_e_ge_ec.rst.txt
+.. _quick installation script: ./install_e_ge_ec.rst.txt
 
 .. ---------------------------------------------------------------------------
 
