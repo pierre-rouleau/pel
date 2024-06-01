@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June  7 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-06-01 00:16:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-06-01 00:29:41 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -57,6 +57,58 @@
 
 (require 'sh-script)                    ; use: `sh-ancestor-alist'
 (require 'minibuffer)                   ; use: `format-prompt'
+
+;; ---------------------------------------------------------------------------
+(unless pel-emacs-28-or-later-p
+  ;; format_prompt was incorporated into minibuffer.el in Emacs 28.1,
+  ;; written by Stephan Monnier as part of Emacs.
+  ;; PEL supports Emacs versions prior to this, so the following is
+  ;; a copy of the code part of minibuffer 28.1
+
+  (defcustom minibuffer-default-prompt-format " (default %s)"
+    "Format string used to output \"default\" values.
+When prompting for input, there will often be a default value,
+leading to prompts like \"Number of articles (default 50): \".
+The \"default\" part of that prompt is controlled by this
+variable, and can be set to, for instance, \" [%s]\" if you want
+a shorter displayed prompt, or \"\", if you don't want to display
+the default at all.
+
+This variable is used by the `format-prompt' function."
+    :group 'minibuffer                  ; added
+    :version "28.1"
+    :type 'string)
+
+  (defun format-prompt (prompt default &rest format-args)
+    "Format PROMPT with DEFAULT according to `minibuffer-default-prompt-format'.
+If FORMAT-ARGS is nil, PROMPT is used as a plain string.  If
+FORMAT-ARGS is non-nil, PROMPT is used as a format control
+string, and FORMAT-ARGS are the arguments to be substituted into
+it.  See `format' for details.
+
+Both PROMPT and `minibuffer-default-prompt-format' are run
+through `substitute-command-keys' (which see).  In particular,
+this means that single quotes may be displayed by equivalent
+characters, according to the capabilities of the terminal.
+
+If DEFAULT is a list, the first element is used as the default.
+If not, the element is used as is.
+
+If DEFAULT is nil or an empty string, no \"default value\" string
+is included in the return value."
+    (concat
+     (if (null format-args)
+         (substitute-command-keys prompt)
+       (apply #'format (substitute-command-keys prompt) format-args))
+     (and default
+          (or (not (stringp default))
+              (length> default 0))
+          (format (substitute-command-keys minibuffer-default-prompt-format)
+                  (if (consp default)
+                      (car default)
+                    default)))
+     ": ")))
+
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
