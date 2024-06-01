@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June  7 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-29 18:01:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-06-01 00:16:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -55,7 +55,8 @@
 (require 'pel--base)                    ; use: `pel-toggle-and-show',
                                         ; `pel-current-buffer-file-extension'
 
-(require 'sh-script)                    ; use `sh-ancestor-alist'
+(require 'sh-script)                    ; use: `sh-ancestor-alist'
+(require 'minibuffer)                   ; use: `format-prompt'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
