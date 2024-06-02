@@ -309,6 +309,9 @@ Also expands to the file true name, replacing symlinks by what they point to."
       (add-to-list 'package-archives
                    (cons "melpa-stable" "https://stable.melpa.org/packages/")
                    t)
+      (add-to-list 'package-archives
+                   (cons "nongnu" "https://elpa.nongnu.org/nongnu/")
+                   t)
       (if (and pel-emacs-is-graphic-p
                pel-init-support-dual-environment-p)
           ;; In forced graphics mode: use a graphics mode-specific Elpa
