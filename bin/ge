@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent, detached, GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-23 17:58:15 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-02 13:22:02 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -80,13 +80,17 @@ case $(uname) in
                     if [ -x /Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11 ]; then
                         open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11 --env PEL_EMACS_IN_GRAPHICS=1 --args --chdir="$(pwd)" "$@"
                     else
-                        open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs --env PEL_EMACS_IN_GRAPHICS=1 --args --chdir="$(pwd)" "$@"
+                        # since it's likely an older macOS system where open did not have the --env option, don't use it.
+                        export PEL_EMACS_IN_GRAPHICS=1
+                        open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs --args --chdir="$(pwd)" "$@"
                     fi
                     ;;
                 *)
                     # Use the general dispatcher for all others
                     # It will check what version of macOS and use the appropriate one.
-                    open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs --env PEL_EMACS_IN_GRAPHICS=1 --args --chdir="$(pwd)" "$@"
+                    # since it's likely an older macOS system where open did not have the --env option, don't use it.
+                    export PEL_EMACS_IN_GRAPHICS=1
+                    open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs --args --chdir="$(pwd)" "$@"
                     ;;
             esac
         else
