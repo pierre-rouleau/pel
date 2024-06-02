@@ -8347,6 +8347,9 @@ the ones defined from the buffer now."
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC z f`` : emacs-eat (f:= food ;-)
 (when pel-use-emacs-eat
+  (unless pel-emacs-29-or-later-p
+    ;; eat requires compat for Emacs < 29
+    (pel-ensure-package compat from: gnu))
   (pel-ensure-package eat from: nongnu)
   (pel-autoload-file eat for: eat)
   (define-pel-global-prefix pel:for-eat   (kbd "<f11> SPC z f"))
