@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-17 20:06:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-06-01 22:56:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -518,6 +518,7 @@
     ([f11 ?z]                 "shells"  pel-pkg-for-shells  ,pel--shell-launch-groups)
     ([f11 32 ?z ?s]           "shell-mode"  pel-pkg-for-shells      (shell comint))
     ([f11 32 ?z ?t]           "term-mode"   pel-pkg-for-term-mode   term)
+    ([f11 32 ?z ?f]           "eat-mode"    pel-pkg-for-eat-mode    eat)
     ([f11 32 ?z ?v]           "vterm-mode"  pel-pkg-for-vterm-mode  vterm)
 
     ([f11 ?|]        "scrolling"  pel-pkg-for-scrolling   (frame
@@ -688,6 +689,7 @@ stored inside the doc/pdf directory.")
     ("shell"           [f11 32 ?z ?s])
     ("term"            [f11 32 ?z ?t])
     ("vterm"           [f11 32 ?z ?v])
+    ("eat"             [f11 32 ?z ?f])
     ;; diff modes
     ("diff"            [f11 32 32 ?d ?d])
     ("ediff"           [f11 32 32 ?d ?e])

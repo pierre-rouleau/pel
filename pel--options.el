@@ -9729,15 +9729,6 @@ and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
   :group 'pel-package-use
   :link `(url-link :tag "Shells PDF" ,(pel-pdf-file-url "shells")))
 
-(defcustom pel-use-vterm nil
-  "Control whether the vterm shell is available.
-The vterm package used the libvterm library to provide a very fast
-and usable shell for Emacs.
-It requires Emacs 25.1 or later built with module support!"
-  :group 'pel-pkg-for-shells
-  :type 'boolean
-  :safe #'booleanp)
-
 (defcustom pel-shell-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for *shell* buffers.
 
@@ -9746,14 +9737,6 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-shells
   :type '(repeat function))
 
-(defcustom pel-term-activates-minor-modes nil
-  "List of *local* minor-modes automatically activated for *term* buffers.
-
-Also used for *ansi-term* buffers.
-Enter *local* minor-mode activating function symbols.
-Do not enter lambda expressions."
-  :group 'pel-pkg-for-shells
-  :type '(repeat function))
 
 (defcustom pel-shell-prompt-line-regexp "^>"
   "A regexp used to search for the shell prompt.
@@ -9764,22 +9747,41 @@ will be typed. "
   :group 'pel-pkg-for-shells
   :type 'string)
 
-;; ---------------------------------------------------------------------------
-;; PEL-specific vterm-mode support
-;; -------------------------------
+;; ------------------------------
+;; PEL-specific term-mode support
+;; ------------------------------
 (defgroup pel-pkg-for-term-mode nil
   "PEL-specific customization for the `term-mode'."
   :group 'pel-pkg-for-shells
   :link `(url-link :tag "term-mode PDF" ,(pel-pdf-file-url "term-mode")))
+
+(defcustom pel-term-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for *term* buffers.
+
+Also used for *ansi-term* buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-shells
+  :type '(repeat function))
 
 (defcustom pel-term-use-shell-prompt-line-regexp t
   "When t, term-prompt-regexp set to pel-shell-prompt-line-regexp value."
   :type 'boolean
   :safe #'booleanp)
 
-;; ---------------------------------------------------------------------------
+;; -------------------------------
 ;; PEL-specific vterm-mode support
 ;; -------------------------------
+
+(defcustom pel-use-vterm nil
+  "Control whether the vterm shell is available.
+The vterm package used the libvterm library to provide a very fast
+and usable shell for Emacs.
+It requires Emacs 25.1 or later built with module support!"
+  :group 'pel-pkg-for-shells
+  :type 'boolean
+  :safe #'booleanp)
+
 (defgroup pel-pkg-for-vterm-mode nil
   "PEL-specific customization for the `vterm-mode'."
   :group 'pel-pkg-for-shells
@@ -9798,6 +9800,34 @@ To activate it the `pel-vterm-supports-f12-keys' must also be activated."
   :group 'pel-pkg-for-vterm-mode
   :type 'boolean
   :safe #'booleanp)
+
+;; -------------------------------
+;; PEL-specific emacs-eat  support
+;; -------------------------------
+
+(defcustom pel-use-emacs-eat nil
+  "Control whether the emacs-eat is available.
+The emacs-eat (Emulate A Terminal) is a flexible terminal
+with 4 input modes.
+It requires Emacs 26.1 or later."
+  :link '(url-link :tag "emacs-eat @ codedeberg"
+                   "https://codeberg.org/akib/emacs-eat")
+  :group 'pel-pkg-for-shells
+  :type 'boolean
+  :safe #'booleanp)
+
+(defgroup pel-pkg-for-eat-mode nil
+  "PEL-specific customization for the `eat-mode'."
+  :group 'pel-pkg-for-shells
+  :link `(url-link :tag "eat-mode PDF" ,(pel-pdf-file-url "eat-mode")))
+
+(defcustom pel-emacs-eat-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for *eat* buffers.
+
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-eat-mode
+  :type '(repeat function))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-skeletons

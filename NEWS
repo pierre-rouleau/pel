@@ -2,6 +2,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for [[https://codeberg.org/akib/emacs-eat][emacs-eat]] terminal emulator for Emacs, a quite flexible one
+  totally implemented in Emacs Lisp.  Use the ~<f11> z f~ to launch *eat-mode*
+  terminal in the current window.  The mode support the ~<f12> <up>~ and
+  ~<f12> <down>~  navigation across prompts.
+  - Add a (very early draft) [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/eat-mode.pdf][⅀ eat-mode PDF]]
+  - Updated the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/shells-comparison.pdf][🚦Shells/Terminals Comparisons PDF]] to include information
+    about eat.
 - Add *pel-sh-add-sh-local* , bound to ~<f12> t~ inside sh-mode buffers;
   it inserts a sh-shell file-local variable definition at the end of the buffer
   to help identify the type of shell script language syntax to use.  The command

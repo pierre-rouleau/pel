@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June  7 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-06-01 00:36:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-06-01 17:15:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -78,7 +78,6 @@ This variable is used by the `format-prompt' function."
     :group 'minibuffer                  ; added
     :version "28.1"
     :type 'string)
-  (declare )
 
   (defun format-prompt (prompt default &rest format-args)
     "Format PROMPT with DEFAULT according to `minibuffer-default-prompt-format'.

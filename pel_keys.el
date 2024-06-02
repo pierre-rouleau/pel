@@ -4525,8 +4525,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-autoload-file vlang-mode for: vlang-mode))))
 
 ;; ---------------------------------------------------------------------------
-
-;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC z s`` : shell-mode
 ;;   This is for shell/terminal support.  For editing shell script file see above.
 (define-pel-global-prefix pel:for-shell     (kbd "<f11> SPC z s"))
@@ -4613,8 +4611,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
 ;; csv-mode
 (when pel-use-csv-mode
-  (pel-ensure-package csv-mode from: gnu)
-  )
+  (pel-ensure-package csv-mode from: gnu))
 ;; ---------------------------------------------------------------------------
 ;; Markup Language Support
 ;; --=====================
@@ -8346,6 +8343,29 @@ the ones defined from the buffer now."
 (when pel-use-mit-scheme   (define-key pel:repl (kbd "C-m") #'pel-mit-scheme-repl))
 (when pel-use-racket       (define-key pel:repl (kbd "C-r") #'pel-racket-repl))
 (when pel-use-scsh         (define-key pel:repl (kbd "C-h") #'pel-scsh-repl))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC z f`` : emacs-eat (f:= food ;-)
+(when pel-use-emacs-eat
+  (pel-ensure-package eat from: nongnu)
+  (pel-autoload-file eat for: eat)
+  (define-pel-global-prefix pel:for-eat   (kbd "<f11> SPC z f"))
+  (define-key pel:execute "f" 'eat)
+
+  (pel-eval-after-load eat
+    (defun pel--setup-for-eat ()
+      "Activate PEL setup for eat-mode."
+      (pel-local-set-f12-M-f12 'pel:for-eat)
+      (define-key pel:for-eat (kbd "<up>")   'pel-shell-previous-prompt)
+      (define-key pel:for-eat (kbd "<down>") 'pel-shell-next-prompt)
+      (pel-turn-on-local-minor-modes-in 'pel-emacs-eat-activates-minor-modes)
+      )
+    (declare-function pel--setup-for-eat "pel_keys")
+
+    (pel-check-minor-modes-in pel-emacs-eat-activates-minor-modes)
+    (pel--mode-hook-maybe-call
+     (function pel--setup-for-eat)
+     'eat-mode 'eat-mode-hook)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> X`` : Xref utilities
