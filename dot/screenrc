@@ -1,0 +1,110 @@
+# CONF FILE: .screenrc
+#
+# Purpose   : GNU Screen - Configuration File.  Compatible with PEL Emacs.
+# Created   : Friday, December  9 2022.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-06-02 23:33:11 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# File Description
+# -----------------
+#
+# GNU Screen configuration file.
+# To install, create a symlink from ~/.screenrc to this file.
+#
+# REF: GNU Screen manual: https://www.gnu.org/software/screen/
+#
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - GNU Screen version 4.03 or later.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Prevent startup splash message
+startup_message off
+
+# Change Control Key from C-a to prevent clash with Emacs.
+#
+# There are several choices: C-^ and C-z are the most obvious.
+#
+# - C-^ is not used by Emacs as global key or prefix.  PEL reserves it.
+# - C-z is normally used by Emacs to suspend Emacs, but PEL remaps C-z as
+#   one of several keys for tree-undo, along with M-u and binds C-x C-z to
+#   suspend.  Therefore C-z could be used for screen as it won't hurt
+#   plain-vanilla Emacs or Emacs enhanced by PEL.
+# - C-b if loosing the ability to move Emacs point backward with it is OK.
+#
+# The commands for changing the GNU Screen control key to the various
+# Control keys are listed here:
+#
+#  =============== =========================
+#  New Control Key Use the following command
+#  =============== =========================
+#  C-^             escape ^^^
+#  C-b             escape ^Bb
+#  C-z             escape ^zz
+#  =============== =========================
+#
+# Note: If C-a is left as the Screen Control command, the 'C-a a' sequence
+#       implements the original C-a code sequence.  This works on the shell
+#       and also works inside Emacs  (plain-vanilla and PEL-enhanced).
+#
+#       The last character in the sequence identifies the secondary key
+#       to generate the original keystroke.  So, if you use C-z as the GNU
+#       Screen control key with the command described in the above table,
+#       type an extra 'z' to acheive the original C-z meaning.
+#
+escape ^zz
+
+
+# ----------------------------------------------------------------------------
+# Remainder code is an evolved version of an example published by Christian Wills
+# available at: https://gist.github.com/ChrisWills/1337178
+#
+# This creates a status line at the bottom of the window that provides screen
+# 'hard' status information.  This is an indication that GNU screen is active,
+# which in itself is quite useful.  It can be dynamically hidden with C-z f
+# and restored with C-z F
+
+# Allow bold colors - necessary for some reason
+attrcolor b ".I"
+
+# Tell screen how to set colors. AB = background, AF=foreground
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+
+# Enables use of shift-PgUp and shift-PgDn
+termcapinfo xterm|xterms|xs|rxvt ti@:te@
+
+# Erase background with current bg color
+defbce "on"
+
+# Enable 256 color term
+term xterm-256color
+
+# Cache 30000 lines for scroll back
+defscrollback 30000
+
+hardstatus alwayslastline
+# Very nice tabbed colored hardstatus line
+hardstatus string '%{= Kd} %{= Kd}%-w%{= Kr}[%{= KW}%n %t%{= Kr}]%{= Kd}%+w %-= %{KG} %H%{KW}|%{KY}%101`%{KW}|%D %M %d %Y%{= Kc} %C%A%{-}'
+
+# Hide hardstatus: ctrl-^ f
+bind f eval "hardstatus ignore"
+# Show hardstatus: ctrl-^ F
+bind F eval "hardstatus alwayslastline"
+
+# ----------------------------------------------------------------------------
+# Disable lockscreen
+# ------------------
+#
+# Disable the annoying password protection that is associated with x and Ctrl-x
+
+bind ^x
+bind x
+# ----------------------------------------------------------------------------
