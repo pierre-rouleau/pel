@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add ~<f11> ? e P~ binding to *list-packages*
 - Add support for [[https://codeberg.org/akib/emacs-eat][emacs-eat]] terminal emulator for Emacs, a quite flexible one
   totally implemented in Emacs Lisp.  Use the ~<f11> z f~ to launch *eat-mode*
   terminal in the current window.  The mode support the ~<f12> <up>~ and
@@ -9,6 +10,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Add a (very early draft) [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/eat-mode.pdf][⅀ eat-mode PDF]]
   - Updated the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/shells-comparison.pdf][🚦Shells/Terminals Comparisons PDF]] to include information
     about eat.
+- Modified the *pel-package-info* command.  It now checks and prints how many
+  elpa-compliant installed packages have a newer version and could be
+  upgraded. Interactively , the command now always prints inside a buffer, it
+  no longer prints on the echo area (it prints too many lines).  The function
+  has the TO-STDOUT argument though: that is used by the make file to print
+  a report when building.
 - Add *pel-sh-add-sh-local* , bound to ~<f12> t~ inside sh-mode buffers;
   it inserts a sh-shell file-local variable definition at the end of the buffer
   to help identify the type of shell script language syntax to use.  The command

@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2024-05-27 15:42:01 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2024-06-03 16:50:07 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -734,7 +734,7 @@ pel-ran-tests.tag:
 timeit:
 	@printf "***** Running Emacs startup time measurement tests\n"
 	@printf "** Report Configuration settings.\n"
-	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info
+	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info-message
 	@printf "\n"
 	@printf "** Time measurement:\n"
 	time -p $(EMACS) -nw -Q -e kill-emacs

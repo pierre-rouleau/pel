@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 20:33:22 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-06-03 16:50:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -57,7 +57,7 @@
 ;;
 ;;  The file provides two commands:
 ;;
-;;  - Use `pel-package-info' to get a quick overview of the packages requested
+;;  - Use `pel-package-info' to get a quick                          overview of the packages requested
 ;;    by PEL user-options, their dependencies and the packages that must
 ;;    remain because they are use by Emacs running in another mode
 ;;    (graphic/TTY).  Produce a more detailed report in a *pel-user-options*
@@ -619,6 +619,17 @@ their names."
 
 ;; --
 
+(defun pel--insert-pkgs-list (title pkgs)
+  "Insert a numbered list of packages in current buffer.
+
+PKGS is the list of packages to print.
+TITLE is the text that must be printed before the list."
+  (let ((n 0))
+    (insert title)
+    (dolist (pkg pkgs)
+      (setq n (1+ n))
+      (insert (format "- %3d: %s\n" n pkg)))))
+
 (defun pel--show-pkgs-for (group-name all-pkgs pkgs+lock pkgs+deps to-keep)
   "Utility: insert description of used packages.
 - GROUP-NAME: String: either \"Elpa\" or \"Utils\".
@@ -646,21 +657,18 @@ TO-KEEP:      List of package symbols or file name strings that are installed
                         (if isa-lck "  (requested by restriction)"
                           "")))))
     (when to-keep
-      (setq n 0)
-      (insert (format "%s manually installed:\n" group-name))
-      (dolist (pkg to-keep)
-        (setq n (1+ n))
-        (insert (format "- %3d: %-40s\n" n pkg))))))
+      (pel--insert-pkgs-list
+       (format "%s manually installed:\n" group-name)
+       to-keep))))
 
 (defun pel--show-pkgs-in-excess-for (group pkgs)
   "Utility: list GROUP package PKGS in excess.
 Return the number of packages in excess."
   (let ((n 0))
     (when pkgs
-      (insert (format "\n%s packages in excess:\n" group))
-      (dolist (pkg pkgs)
-        (setq n (1+ n))
-        (insert (format "- %3d: %s\n" n pkg))))
+      (pel--insert-pkgs-list
+       (format "\n%s packages in excess:\n" group)
+       pkgs))
     n))
 
 ;; declare package.el variables  to prevent byte-compiler warnings
@@ -677,15 +685,43 @@ a string that says so."
     (format "%3d (%3d dependants, %d imposed by restrictions)"
             base deps locked)))
 
+;; Identify packages that can be upgraded
+;; --------------------------------------
+
+(defun pel-package-upgradable ()
+  "Return a list of upgradable elpa-compliant packages."
+  (require 'package)
+  ;; create a temporary special buffer to use package-menu-mode
+  (let ((upgradables nil)
+        (buf  (get-buffer-create "*pel-package*")))
+    (with-current-buffer buf
+      ;; Since some packages have their descriptions include non-ASCII
+      ;; characters...
+      (setq buffer-file-coding-system 'utf-8)
+      (package-menu-mode)
+      (package--ensure-package-menu-mode)
+      ;; Fetch the remote list of packages.
+      (package-menu--refresh-contents)
+      (package-menu--generate nil t)
+      (setq upgradables (package-menu--find-upgrades)))
+    ;; return a list of all keys; the names of packages that could be upgraded.
+    (mapcar 'car upgradables)))
+
 ;; pel-autoload
-(defun pel-package-info (&optional full-report)
+(defun pel-package-info (&optional full-report on-stdout)
   "Display information about packages required by PEL.
-Prints the information on the echo area unless a FULL-REPORT
-argument is specified.  In that case, prints a complete report inside a special
-*pel-user-options* buffer, listing all packages, indicating whether the
-package is in elpa or utils and whether it is a dependency or included because
-of a restriction lock."
+
+Print the information in *pel-user-options* buffer, unless
+ON-STDOUT is non-nil, in which case it prints it in the echo
+area.  By default prints a short report with the main
+information, but if FULL-REPORT is non-nil (interactively with
+any prefix argument), then it prints a longer report listing all
+packages, indicating whether the package is in elpa or utils and
+whether it is a dependency or included because of a restriction
+lock.
+The function does not support printing a full report on stdout."
   (interactive "P")
+  (message "Gathering information...")
   (let* ((all-activated   (unless (pel-in-fast-startup-p)
                             (pel-activated-packages))) ; all (with dependencies & locks)
          (activated+lock  (unless (pel-in-fast-startup-p)
@@ -710,7 +746,8 @@ of a restriction lock."
          (n-utils-locked    (- n-utils-all n-utils-bdeps))
          (user-options      (pel-user-options))
          (installable-pkgs  (pel-installable-packages))
-         (overview  (format "\
+         (upgradable-pkgs   (pel-package-upgradable))
+         (                         overview  (format "\
 - custom-file                 : %s
 - package-user-dir            : %s
 - %3d Elpa packages stored in : %s
@@ -726,77 +763,78 @@ of a restriction lock."
 - # packages activated        : %d
 - # packages selected         : %d
 - # PEL loaded commands       : %d
+- # upgradable elpa packages  : %d
 - Emacs init-time             : %s"
-                            custom-file
-                            package-user-dir
-                            (length
-                             (pel-elpa-package-directories package-user-dir))
-                            package-user-dir
-                            (length (pel-el-files-in pel-utils-dirpath))
-                            pel-utils-dirpath
-                            (length load-path)
-                            (length user-options)
-                            (length (seq-filter
-                                     (lambda (x) (symbol-value x))
-                                     user-options))
-                            (length (car installable-pkgs))
-                            (length (cadr installable-pkgs))
-                            (pel--elpa-stats n-elpa-base n-elpa-deps
-                                             n-elpa-locked)
-                            (pel--elpa-stats n-utils-base n-utils-deps
-                                             n-utils-locked)
-                            (length load-history)
-                            (length features)
-                            (length package-alist)
-                            (length package-activated-list)
-                            (length package-selected-packages)
-                            (length (pel-commands))
-                            (if (and (require 'time nil :no-error)
-                                     (fboundp 'emacs-init-time))
-                                (emacs-init-time)
-                              "?"))))
-    (if full-report
-        (progn
-          (when (pel-in-fast-startup-p)
-            (user-error "PEL is running in fast-startup. \
+                                                     custom-file
+                                                     package-user-dir
+                                                     (length
+                                                      (pel-elpa-package-directories package-user-dir))
+                                                     package-user-dir
+                                                     (length (pel-el-files-in pel-utils-dirpath))
+                                                     pel-utils-dirpath
+                                                     (length load-path)
+                                                     (length user-options)
+                                                     (length (seq-filter
+                                                              (lambda (x) (symbol-value x))
+                                                              user-options))
+                                                     (length (car installable-pkgs))
+                                                     (length (cadr installable-pkgs))
+                                                     (pel--elpa-stats n-elpa-base n-elpa-deps
+                                                                      n-elpa-locked)
+                                                     (pel--elpa-stats n-utils-base n-utils-deps
+                                                                      n-utils-locked)
+                                                     (length load-history)
+                                                     (length features)
+                                                     (length package-alist)
+                                                     (length package-activated-list)
+                                                     (length package-selected-packages)
+                                                     (length (pel-commands))
+                                                     (length upgradable-pkgs)
+                                                     (if (and (require 'time nil :no-error)
+                                                              (fboundp 'emacs-init-time))
+                                                         (emacs-init-time)
+                                                       "?"))))
+    (when (pel-in-fast-startup-p)
+      (user-error "PEL is running in fast-startup. \
  This is only available in normal mode!"))
-          (let ((count 0))
-            (pel-print-in-buffer
-             "*pel-user-options*"
-             "PEL User Option activated packages"
-             (lambda ()
-               "Print full report."
-               (insert (format "\n\n%s\n
+    (if on-stdout
+        (message overview)
+      (pel-print-in-buffer
+       "*pel-user-options*"
+       "PEL User Option activated packages"
+       (lambda ()
+         "Print full report."
+         (insert (format "\n\n%s\n
 Elpa packages and Utils files are shown below.
 The dependencies and lock restrictions are identified.
 Note that a package required by PEL may also be a dependency
 of another package; the ones identified as dependencies may
 also be requested by PEL user-options.\n"
-                               overview))
-               (pel--show-pkgs-for "Elpa" elpa-all elpa+lock elpa-bdeps
-                                   pel-elpa-packages-to-keep)
-               (pel--show-pkgs-for "Utils" utils-all utils+lock utils-bdeps
-                                   pel-utils-packages-to-keep)
-               (let ((elpa-in-excess (pel-elpa-unrequired))
-                     (utils-in-excess (pel-utils-unrequired)))
-                 (if (or elpa-in-excess
-                         utils-in-excess)
-                     (progn
-                       (insert "
+                         overview))
+         (when full-report
+           (pel--show-pkgs-for "Elpa" elpa-all elpa+lock elpa-bdeps
+                               pel-elpa-packages-to-keep)
+           (pel--show-pkgs-for "Utils" utils-all utils+lock utils-bdeps
+                               pel-utils-packages-to-keep)
+           (let ((elpa-in-excess (pel-elpa-unrequired))
+                 (utils-in-excess (pel-utils-unrequired)))
+             (if (or elpa-in-excess
+                     utils-in-excess)
+                 (progn
+                   (insert "
 \npel-cleanup would remove the following packages:\n")
-                       (pel--show-pkgs-in-excess-for "Elpa" elpa-in-excess)
-                       (pel--show-pkgs-in-excess-for "Utils" utils-in-excess))
-                   (insert "\n\nNo package is in excess.")))
-               (insert "\n\nList of Elpa-compliant packages PEL can install:\n")
-               (dolist (pkg (car installable-pkgs))
-                 (pel+= count 1)
-                 (insert (format "- %3d: %s\n" count pkg)))
-               (insert "\n\nList of other packages PEL can install:\n")
-               (setq count 0)
-               (dolist (pkg (cadr installable-pkgs))
-                 (pel+= count 1)
-                 (insert (format "- %3d: %s\n" count pkg)))))))
-      (message overview))))
+                   (pel--show-pkgs-in-excess-for "Elpa" elpa-in-excess)
+                   (pel--show-pkgs-in-excess-for "Utils" utils-in-excess))
+               (insert "\n\nNo package is in excess.")))
+           (pel--insert-pkgs-list
+            "\n\nList of Elpa-compliant packages PEL can install:\n"
+            (car installable-pkgs))
+           (pel--insert-pkgs-list
+            "\n\nList of other packages PEL can install:\n"
+            (cadr installable-pkgs))
+           (pel--insert-pkgs-list
+            "\nList of elpa-compliant packages that could be updated:\n"
+            upgradable-pkgs)))))))
 
 (defvar loaded-file-name load-file-name)
 
@@ -937,8 +975,11 @@ Use this to compute statistics."
 Use only for computing statistics!! It loads all of PEL."
   (interactive)
   (pel-load-all)
-  (pel-package-info))
+  (pel-package-info-message))
 
+(defun pel-package-info-message ()
+  "Print PEL package information on stdout."
+  (pel-package-info nil t))
 ;; ---------------------------------------------------------------------------
 
 (defun pel-inactive-user-options ()
