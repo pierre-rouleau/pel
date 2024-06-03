@@ -138,6 +138,21 @@
 ;;                      ; the options: pel-auto-complete-help
 
 ;; ---------------------------------------------------------------------------
+;; Install Future-Proof Packages
+;; -----------------------------
+;;
+;; Once you have PEL running and are comfortable with it, you should
+;; activate the `pel-future-proof' user option.
+(when pel-future-proof
+  ;; - To ensure that the elpa signatures expiry becomes a problem
+  ;;   install gnu-elpa-keyring-update.
+  (pel-ensure-package gnu-elpa-keyring-update from: gnu)
+
+  ;; Install Emacs backward compatibility package if required
+  (unless pel-emacs-29-or-later-p
+    (pel-ensure-package compat from: gnu)))
+
+;; ---------------------------------------------------------------------------
 ;; Setup GUI launched Emacs environment
 ;; ------------------------------------
 (defvar pel--init-called-once nil

@@ -486,6 +486,16 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   "PEL Emacs basic configuration."
   :group 'pel)
 
+(defcustom pel-future-proof nil
+  "Activate future-proofing package download when set to t.
+
+This activates the automatic download and installation of packages that
+protect your Emacs installation against time changes to Emacs and to its
+ecosystem.  See the logic inside pel_keys.el "
+  :group 'pel-base-emacs
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-emacs-source-directory nil
   "Absolute path of Emacs repository root directory.
 
