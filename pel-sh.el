@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June  7 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-06-01 17:15:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-06-03 10:40:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -59,6 +59,8 @@
 (require 'minibuffer)                   ; use: `format-prompt'
 
 ;; ---------------------------------------------------------------------------
+(defvar minibuffer-default-prompt-format) ;; prevent byte-compile warnings
+                                          ;; caused by conditional defcustom
 (unless pel-emacs-28-or-later-p
   ;; format_prompt was incorporated into minibuffer.el in Emacs 28.1,
   ;; written by Stephan Monnier as part of Emacs.
@@ -108,7 +110,6 @@ is included in the return value."
                       (car default)
                     default)))
      ": ")))
-
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -289,6 +290,9 @@ Execute `pel-toggle-accept-hyphen' to change that."
 
 ;; ---------------------------------------------------------------------------
 ;; Specialized text insertion
+
+(declare-function format-prompt "pel-sh") ;; prevent by-compiler warning
+                                          ;; cased by conditional defun
 
 (defun pel--shell-name ()
   "Return most expected shell name."
