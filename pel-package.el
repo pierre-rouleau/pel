@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-06-03 16:50:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-06-04 10:29:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -109,6 +109,7 @@
 ;;      - `pel-elpa-unrequired'            (see its call tree below)
 ;;      - `pel-utils-unrequired'           (see its call tree below)
 ;;      - `pel--show-pkgs-in-excess-for'
+;;      - `pel-package-upgradable'
 ;;
 ;;
 ;; * `pel-cleanup'
@@ -699,9 +700,11 @@ a string that says so."
       ;; characters...
       (setq buffer-file-coding-system 'utf-8)
       (package-menu-mode)
-      (package--ensure-package-menu-mode)
+      (when (fboundp 'package--ensure-package-menu-mode)
+        (package--ensure-package-menu-mode))
       ;; Fetch the remote list of packages.
-      (package-menu--refresh-contents)
+      ;; (package-menu--refresh-contents)
+      (package-refresh-contents)
       (package-menu--generate nil t)
       (setq upgradables (package-menu--find-upgrades)))
     ;; return a list of all keys; the names of packages that could be upgraded.
