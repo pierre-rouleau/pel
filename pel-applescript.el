@@ -1,6 +1,6 @@
 ;;; pel-applescript.el --- PEL AppleScript support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -39,15 +39,15 @@
 ;; interface and read text out-load, as this is a very early version of the
 ;; code.
 ;;
-;; * pel-say-word
-;; * pel-say-sentence
-;; * pel-say-paragraph
-;; * pel-say-region
-;;   * pel-say
-;;     - do-applescript
-;; - pel-say-words
-;;   - pel--convert-to-strings
-;; - pel-run-applescript
+;; * `pel-say-word'
+;; * `pel-say-sentence'
+;; * `pel-say-paragraph'
+;; * `pel-say-region'
+;;   * `pel-say'
+;;     - `do-applescript'
+;; - `pel-say-words'
+;;   - `pel--convert-to-strings'
+;; - `pel-run-applescript'
 ;;
 
 ;;; Code:
