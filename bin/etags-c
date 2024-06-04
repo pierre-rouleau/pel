@@ -1,16 +1,23 @@
 #!/bin/sh
 #  SH FILE: etags-c
 #
-#  Purpose   : Build Emacs Tags file for C source code files.
+#  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-11 16:31:32, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-04 17:45:50 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
 #
-# Build an Emacs Tags file for all C source code files in the sub-directory
-# tree.  This includes the .c, and .h files.
+# Build an Emacs Tags file for all C and C++ source code files in the
+# sub-directory tree.  This includes all files with  the following extensions:
+#
+# - C files  : .c, .h, .c.in, .h.in,
+# - C++ files: .c++, .h++, .c++.in, .h++.in
+#              .cpp, .hpp, .cpp.in, .hpp.in
+#              .C, .H, .C.in, .H.in
+#              .hh, .hh.in
+#              .inl, .M, .pdb
 #
 # Usage:
 #  - cd where you want to store the TAGS file
@@ -35,97 +42,260 @@
 #   is set to 1, in which case the ctags utility is found, assuming that it
 #   is the Universal Ctags utility, not any other ctag command.
 
+# ----------------------------------------------------------------------------
+# BUGS:
+#
 # TODO: eliminate code duplication while keeping capability to stay
 #       compatible with various shells (sh, bash, etc...)
-# TODO: detect invalid directory names as find does not flag them.
+# TODO: enhance duplication detection: a parent followed by a child directory
+#       is currently not detected as duplicate directories.
 
 # ----------------------------------------------------------------------------
 #  Code
 #  ----
 
-show_usage() {
-    printf "Usage: etags-c\n"
-    printf "       etags-c -h\n"
-    printf "       etags-c --help\n"
-    printf "• Print this help information, exit with 1.\n\n"
-    printf "Usage: etags-c path [path ...] \n"
-    printf "• [Re]build an etags-compliant TAGS file in current directory\n"
-    printf "  for the C code & header files in the directory trees\n"
-    printf "  identified on the command line.\n"
-    printf "• Stores the TAGS file in the current directory, over-writing\n"
-    printf "  previous one!\n"
-    printf "• Inspects content of .c, and .h files.\n"
-    printf "• Stores the names of inspected files in the file named\n"
-    printf "  .etags-c-files.txt stored in the same directory as TAGS."
-    printf "• Uses etags to build the TAGS file by default.\n"
-    printf "  Set ETAGS_USE_UCTAGS to 1 to force using Universal Ctags instead.\n"
-    printf "• Uses fast fdfind or fd if available, uses find otherwise.\n"
-    printf "  - The fd utility is from: https://github.com/sharkdp/fd\n"
-    printf "  - In some Linux distros, fd is renamed fdfind.\n"
-    printf "• To force the use of find, set ETAGS_USE_FIND environment\n"
-    printf "  variable to 1.\n"
-    printf "• ☝️  When fdfind or fd is used, the content of files identified\n"
-    printf "  by the .gitignore, .ignore or .fdignore files are ignored.\n"
-    printf "  Also invalid directory names specified are rejected.\n"
-    printf "  These 2 features alone make using fd/fdfind worthwhile!\n"
-    printf "  ⚠️  When using find, invalid directory names are just ignored!\n"
-    printf "• Echoes the path of the find program used and echoes when\n"
-    printf "  repository ignore files are used.\n"
-    if [[ "$ETAGS_USE_FIND" == "1" ]]; then
-        printf "⚠️  Currently: ETAGS_USE_FIND forces the use of find!\n"
-        printf "   To prevent this, set it to 0 or remove that\n"
-        printf "   environment variable.\n"
-        printf "  ⚠️  Ensure validity of directory names manually!\n"
-        printf "  When using find, invalid directory names are just ignored!\n"
+print_usage()
+{
+    printf -- "
+etags-c: build a TAGS file for all C and C++ source code files
+         in current directory tree.
+
+ Usage: etags-c
+        etags-c -h
+        etags-c --help
+
+  • Print this help information.
+
+ Usage: etags-c path [path ...]
+
+  • [Re]build an etags-compliant TAGS file in current directory
+    for the C/C++ code & header files in the directory trees
+    identified on the command line.
+  • Stores the TAGS file in the current directory, overwriting
+    previous one!
+  • Inspects content of C and C++ code and header files.
+  • It identifies the C/C++ files using one of the following methods:
+    • If ETAGS_FILE_LIST environment variable exists, it uses it as
+      the name of a file that holds a list of C/C++ files to parse.
+      The name of this file can be anything except .etags-c-files.txt
+      and it must exists. It it does not etags-c exists with an error.
+      Each line of the file must identify a C/C++ file to parse.
+    • It searches the list of C/C++ source code files.
+      • It uses 'fdfind' or 'fd' if available, 'find' otherwise.
+        - The fd utility is from: https://github.com/sharkdp/fd
+        - In some Linux distros, 'fd' is renamed 'fdfind'.
+      • To force the use of 'find', set ETAGS_USE_FIND environment
+        variable to 1.
+      • ☝️  When using 'fdfind' or 'fd', the files identified
+        by the .gitignore, .ignore or .fdignore files are ignored.
+        Also invalid directory names specified are rejected.
+        These 2 features alone make using 'fd'/'fdfind' worthwhile!
+        ⚠️  When using find, invalid directory names are just ignored!
+  • Stores the names of inspected files in the file named
+    .etags-c-files.txt stored in the same directory as TAGS.
+  • Uses etags to build the TAGS file by default.
+    • Set ETAGS_USE_UCTAGS to 1 to force using Universal Ctags instead.
+  • Echoes the path of the \"find\" program used and echoes when
+    repository ignore files are used.\n"
+
+    if [ "$ETAGS_USE_FIND" = "1" ]; then
+        printf -- "
+⚠️   ETAGS_USE_FIND is set to 1, forcing the use of find!
+   To prevent this, set it to 0 or remove that
+   environment variable.
+  • With USRHOME, you can use setenv and clrenv.
+    See: https://github.com/pierre-rouleau/usrhome
+"
     fi
-    return 1
 }
 
-# --
+print_error()
+{
+    echo
+}
 
-run__etags_c () {
-    if [[ "$ETAGS_USE_UCTAGS" == "1" ]]; then
+
+# --
+# run__etags_c -- run etags or ctags on a set of files
+# ------------
+#
+# Use etags to parse the source code files unless ETAGS_USE_UCTAGS
+# environment variable is set to 1.  In which case it uses ctags.
+# Ideally that would be the latest version of Universal ctags
+# from https://github.com/universal-ctags/ctags#readme as opposed to the
+# old and currently un-maintained Exeburant ctags.
+# When using Emacs, Emacs provides its own ctags that is essentially etags.
+# Etags generates a tag file format a little different and better suited for Emacs.
+
+run__etags_c()
+{
+    # Expects no argument, but expects a list of files to parse on stdin.
+
+    if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
         xargs ctags --output-format=etags
-        printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" `which ctags`
+        printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)"
     else
-        etags -
+        # Qualify tag names with their class name in C++.
+        etags --class-qualify -
     fi
-    printf "%s files found and processed. List stored in: %s\n" `wc -l .etags-c-files.txt`
+    file_count="$(wc -l .etags-c-files.txt | awk '{print $1}')"
+    printf -- "%s files found and processed. List stored in: .etags-c-files.txt\n" "${file_count=}"
+    unset file_count
 }
 
-# --
 
-if [[ "$#" = 1 && "$1" = "-h" || "$1" = "--help" ]]; then
-    show_usage
-elif [[ "$#" = 0 ]]; then
-    show_usage
+# --
+# Check validity of arguments
+
+if [ -z "$1" ]; then
+    print_usage
+    exit 1
+elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    if [ "$#" = "1" ]; then
+        exit 0
+    else
+        exit  1
+    fi
+fi
+
+if [ -n "$ETAGS_FILE_LIST" ]; then
+    if [ "$ETAGS_FILE_LIST" = ".etags-c-files.txt" ]; then
+        echo "Error! Do NOT set ETAGS_FILE_LIST to .etags-c-files.txt"
+        exit 1
+    fi
+    echo "Using the file list identified by ETAGS_FILE_LIST: $ETAGS_FILE_LIST"
+    cp "$ETAGS_FILE_LIST" .etags-c-files.txt
+    run__etags_c < "$ETAGS_FILE_LIST"
 else
+    # Use the directory names provided on command line.
+    # Ensure that each directory specified on the command line
+    # exists.  Also ensure that a directory name is not specified more
+    # than once.  Use the realpath of that directory name when comparing.
+
+    # [:todo 2024-06-04, by Pierre Rouleau: enhance duplication detection:
+    #     Note that the method used also catch a request where a parent
+    #     directory is specified after one of its children, but it does not
+    #     detect it the other way around. ]
+
+    dpaths=""
+    for dname in "$@"; do
+        if [ ! -d "${dname}" ]; then
+            printf -- "Specified directory does not exists: %s\n" "${dname}"
+            exit 2
+        fi
+        dpath="$(realpath "${dname}")"
+        case "${dpaths}" in
+            *"${dpath}"*)
+                printf -- "Multiple entry of directory: %s\n" "${dname}"
+                exit 3
+                ;;
+        esac
+        dpaths="${dpaths} ${dpath}"
+        echo "dpaths: ${dpaths}"
+    done
+
+    echo "No list of files identified by ETAGS_FILE_LIST."
+    echo "- Building the list of source files."
     # Find the files, pass their names to etags which creates the TAGS file.
-    # To find the files, try to use fd or fdfind if they exist,
-    # otherwise use find.  Echo the actual program used to find files.
-    if [[ "$ETAGS_USE_FIND" == "1" ]]; then
-        echo "ETAGS_USE_FIND forces the use of find!"
-        echo "Using " `which find`
-        find -f $* \
-             \(  -name "*.[ch]" \
+    # To find the files, try to use 'fd' or 'fdfind' if they exist,
+    # otherwise use 'find'.  Echo the actual program used to find the files.
+    # Search for all possible C and C++ file extensions in the directory tree.
+    if [ "$ETAGS_USE_FIND" = "1" ]; then
+        echo "- ETAGS_USE_FIND forces the use of find!"
+        echo "-> Using " "$(which find)"
+        find -f "$@" \
+             \(  -name "*.[ch]"      \
+             -or -name "*.[ch].in"   \
+             -or -name "*.[ch]++"    \
+             -or -name "*.[ch]++.in" \
+             -or -name "*.[ch]pp"    \
+             -or -name "*.[ch]pp.in" \
+             -or -name "*.[ch]xx"    \
+             -or -name "*.[ch]xx.in" \
+             -or -name "*.[CH]"      \
+             -or -name "*.[CH].in"   \
+             -or -name "*.cc"        \
+             -or -name "*.cc.in"     \
+             -or -name "*.hh"        \
+             -or -name "*.hh.in"     \
+             -or -name "*.inl"       \
+             -or -name "*.M"         \
+             -or -name "*.pdb"       \
              \)  -print | tee .etags-c-files.txt | run__etags_c
     else
-        if [[ -x "$(command -v fdfind)" ]]; then
-            echo "Using " `which fdfind`
-            echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
-            fdfind --type f -e .c -e .h  \
-                   . $* | tee .etags-c-files.txt | run__etags_c
-        elif [[ -x "$(command -v fd)" ]]; then
-            echo "Using " `which fd`
-            echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
-            fd --type f -e .c -e .h \
-               . $* | tee .etags-c-files.txt | run__etags_c
+        if [ -x "$(command -v fdfind)" ]; then
+            echo "-> Using " "$(which fdfind)"
+            echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
+            fdfind --type f -e .c      \
+                            -e .c.in   \
+                            -e .h      \
+                            -e .h.in   \
+                            -e .c++    \
+                            -e .c++.in \
+                            -e .h++    \
+                            -e .h++.in \
+                            -e .cpp    \
+                            -e .cpp.in \
+                            -e .hpp    \
+                            -e .hpp.in \
+                            -e .cxx    \
+                            -e .cxx.in \
+                            -e .hxx    \
+                            -e .hxx.in \
+                            -e .C      \
+                            -e .C.in   \
+                            -e .H      \
+                            -e .H.in   \
+                            -e .cc     \
+                            -e .cc.in  \
+                            -e .hh     \
+                            -e .hh.in  \
+                            -e .inl    \
+                            -e .M      \
+                            -e .pdb    \
+                            . "$@" | tee .etags-c-files.txt | run__etags_c
+        elif [ -x "$(command -v fd)" ]; then
+            echo "-> Using " "$(which fd)"
+            echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
+            fd --type f -e .c      \
+                        -e .c.in   \
+                        -e .h      \
+                        -e .h.in   \
+                        -e .c++    \
+                        -e .c++.in \
+                        -e .h++    \
+                        -e .h++.in \
+                        -e .cpp    \
+                        -e .cpp.in \
+                        -e .hpp    \
+                        -e .hpp.in \
+                        -e .cxx    \
+                        -e .cxx.in \
+                        -e .hxx    \
+                        -e .hxx.in \
+                        -e .C      \
+                        -e .C.in   \
+                        -e .H      \
+                        -e .H.in   \
+                        -e .cc     \
+                        -e .cc.in  \
+                        -e .hh     \
+                        -e .hh.in  \
+                        -e .inl    \
+                        -e .M      \
+                        -e .pdb    \
+                        . "$@" | tee .etags-c-files.txt | run__etags_c
         else
-            echo "Using " `which find`
-            find -type f $* \
+            echo "-> Using " "$(which find)"
+            find . -type f "$@" \
                  \(  -name "*.[ch]" \
                  \)  -print | tee .etags-c-files.txt | run__etags_c
         fi
     fi
 fi
+
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
