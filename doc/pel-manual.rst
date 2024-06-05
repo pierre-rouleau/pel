@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2024-06-05 18:35:56 EDT, updated by Pierre Rouleau.
+:Modified: 2024-06-05 18:43:25 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2923,9 +2923,11 @@ PEL provides a set of POSIX-compliant shell scripts that can be
 used to find the source code files inside specified directory trees and build
 TAGS for a given set of programming languages.
 
-.. include:: cross-reference-with-ctags.rst.txt
-   :start-after: TEXT-START
-   :end-before:  TEXT-END
+More information on it is available in the page titled
+`Using ctags and etags for cross referencing with TAGS`_.
+
+
+.. _Using ctags and etags for cross referencing with TAGS:  ./cross-reference-with-ctags.rst.txt#the-ctags-programs
 
 
 
