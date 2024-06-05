@@ -43,6 +43,8 @@ Emacs has its own program, etags which generates a format that Emacs
 understand.  Emacs also provides a version of ctags that generates the
 vi-style format used elsewhere.
 
+Also see the 🚦`Xref-Support PDF`_.
+
 The PEL project provides a set of file finding and TAGS creation tools
 that use etags.  Some of them will also use the Universal Ctags program
 when the ETAGS_USE_UCTAGS environment variable is set to 1 or the absolute path of
@@ -83,6 +85,7 @@ options and print more information.
 .. _etags-erl:                   https://github.com/pierre-rouleau/pel/blob/master/bin/etags-erl
 .. _etags-lisp:                  https://github.com/pierre-rouleau/pel/blob/master/bin/etags-lisp
 .. _etags-py:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py
+.. _Xref-Support PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref-support.pdf
 
 
 
