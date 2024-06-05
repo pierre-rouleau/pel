@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-04 23:04:45 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-05 08:04:51 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -157,6 +157,7 @@ if [ -n "$ETAGS_FILE_LIST" ]; then
     run__etags_c < "$ETAGS_FILE_LIST"
 else
     # Use the directory names provided on command line.
+    # Check their validity.
     # Ensure that each directory specified on the command line
     # exists.  Also ensure that a directory name is not specified more
     # than once.  Use the realpath of that directory name when comparing.
@@ -200,7 +201,7 @@ else
     # Search for all possible C and C++ file extensions in the directory tree.
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         echo "- ETAGS_USE_FIND forces the use of find!"
-        echo "-> Using " "$(which find)"
+        echo "-> Using" "$(which find)"
         find -f "$@" \
              \(  -name "*.[ch]"      \
              -or -name "*.[ch].in"   \
@@ -222,7 +223,7 @@ else
              \)  -print | tee .etags-c-files.txt | run__etags_c
     else
         if [ -x "$(command -v fdfind)" ]; then
-            echo "-> Using " "$(which fdfind)"
+            echo "-> Using" "$(which fdfind)"
             echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
             fdfind --type f -e .c      \
                             -e .c.in   \
@@ -253,7 +254,7 @@ else
                             -e .pdb    \
                             . "$@" | tee .etags-c-files.txt | run__etags_c
         elif [ -x "$(command -v fd)" ]; then
-            echo "-> Using " "$(which fd)"
+            echo "-> Using" "$(which fd)"
             echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
             fd --type f -e .c      \
                         -e .c.in   \
