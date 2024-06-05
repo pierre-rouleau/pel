@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Lisp source code files.
 #  Created   : Tuesday, November 10 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-05 11:04:41 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-05 16:51:59 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -32,10 +32,6 @@
 # faster than find in several scenarios.
 #
 # - To force use of find, set the ETAGS_USE_FIND environment variable to 1.
-
-# - Uses etags to process files unless ETAGS_USE_UCTAGS environment variable
-#   is set to 1, in which case the ctags utility is found, assuming that it
-#   is the Universal Ctags utility, not any other ctag command.
 
 # TODO: eliminate code duplication while keeping capability to stay
 #       compatible with various shells (sh, bash, etc...)

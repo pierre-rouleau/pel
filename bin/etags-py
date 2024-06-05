@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-05 11:35:42 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-05 17:04:07 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -35,6 +35,8 @@
 # - Uses etags to process files unless ETAGS_USE_UCTAGS environment variable
 #   is set to 1, in which case the ctags utility is found, assuming that it
 #   is the Universal Ctags utility, not any other ctag command.
+#   You can also set ETAGS_USE_UCTAGS to the absolute path of the
+#   Universal Ctags executable file.
 
 # TODO: eliminate code duplication while keeping capability to stay
 #       compatible with various shells (sh, bash, etc...)
@@ -60,8 +62,11 @@ etags-py: build an etags-compliant TAGS in the current directory
      for the Python source code files in the directory
      tree(s) identified on the command line.
    • Uses etags to build the TAGS file by default, but
-     -u : force use Universal CTags (ctags) instead of etags.
-   • Set ETAGS_USE_UCTAGS to 1 to force using Universal Ctags.
+     -u : force use Universal Ctags (ctags) instead of etags.
+   • Set ETAGS_USE_UCTAGS to 1 or the absolute path of
+     Universal Ctags executable file to force using Universal Ctags.
+     When setting it to 1, the ctags found in PATH is expected
+     to be Universal Ctags.
      ☝️  For Python, Universal Ctags generates more information
         than etags.
    • Overwrites any TAGS file in the current directory.
@@ -95,9 +100,19 @@ run__etags__py()
 {
     # Expects no argument, but expects a list of files to parse on stdin.
 
-    if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
-        xargs ctags --output-format=etags
-        printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$(which ctags)"
+    if [ -n "$ETAGS_USE_UCTAGS" ]; then
+        if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
+            xargs ctags --output-format=etags
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$(which ctags)"
+        elif [ -x "$ETAGS_USE_UCTAGS" ]; then
+            xargs "$ETAGS_USE_UCTAGS" --output-format=etags
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS"
+        else
+            printf -- "*** etags-py ERROR: invalid ETAGS_USE_UCTAGS value\n"
+            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS"
+            printf -- "***  This is not 1 nor a valid executable file name.\n"
+            exit 4
+        fi
     else
         etags --language=python -
     fi
@@ -124,7 +139,7 @@ fi
 # --
 
 if [ "$1" = "-u" ]; then
-    echo "etags-py: -u option requests use of Universal CTags."
+    echo "etags-py: -u option requests use of Universal Ctags."
     ETAGS_USE_UCTAGS=1
     shift
 fi

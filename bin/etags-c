@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-05 11:03:21 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-05 17:04:28 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -41,6 +41,8 @@
 # - Uses etags to process files unless ETAGS_USE_UCTAGS environment variable
 #   is set to 1, in which case the ctags utility is found, assuming that it
 #   is the Universal Ctags utility, not any other ctag command.
+#   You can also set ETAGS_USE_UCTAGS to the absolute path of the
+#   Universal Ctags executable file.
 
 # ----------------------------------------------------------------------------
 # TODO: eliminate code duplication while keeping capability to stay
@@ -86,7 +88,10 @@ etags-c: build a etags-compliant TAGS file in the current directory
   • Stores the names of inspected files in the file named
     .etags-c-files.txt stored in the same directory as TAGS.
   • Uses etags to build the TAGS file by default.
-    • Set ETAGS_USE_UCTAGS to 1 to force using Universal Ctags instead.
+    • Set ETAGS_USE_UCTAGS to 1 or to the absolute path of Universal
+      Ctags executable file to force using Universal Ctags instead.
+      When setting it to 1, the ctags found in PATH is expected
+      to be Universal Ctags.
   • Prints the path of the \"find\" program used and when
     repository ignore files are scanned.\n"
 
@@ -117,9 +122,19 @@ run__etags_c()
 {
     # Expects no argument, but expects a list of files to parse on stdin.
 
-    if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
-        xargs ctags --output-format=etags
-        printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)"
+    if [ -n "$ETAGS_USE_UCTAGS" ]; then
+        if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
+            xargs ctags --output-format=etags
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)"
+        elif [ -x "$ETAGS_USE_UCTAGS" ]; then
+            xargs "$ETAGS_USE_UCTAGS" --output-format=etags
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS"
+        else
+            printf -- "*** etags-c ERROR: invalid ETAGS_USE_UCTAGS value\n"
+            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS"
+            printf -- "***  This is not 1 nor a valid executable file name.\n"
+            exit 4
+        fi
     else
         # Qualify tag names with their class name in C++.
         etags --class-qualify -
