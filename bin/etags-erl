@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Erlang and C source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-05 11:04:11 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-05 11:27:38 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -116,7 +116,9 @@ run__append_etags_erl()
     else
         etags --append --language=erlang -
     fi
-    printf -- "%s files found and processed. List stored in: etags-erl-files.txt\n" "$(wc -l .etags-erl-files.txt)"
+    file_count="$(wc -l .etags-erl-files.txt | awk '{print $1}')"
+    printf -- "%s files found and processed. List stored in: etags-erl-files.txt\n" "${file_count}"
+    unset file_count
 }
 
 # --
