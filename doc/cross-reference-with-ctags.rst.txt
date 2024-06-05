@@ -1,0 +1,96 @@
+=====================================================
+Using ctags and etags for cross referencing with TAGS
+=====================================================
+
+:Home URL: https://github.com/pierre-rouleau/pel
+:Project: `PEL -- Pragmatic Emacs Library`_
+:Created:  Wednesday, June  5 2024.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2024-06-05 13:04:01, by Pierre Rouleau.
+:Copyright: © 2024, Pierre Rouleau
+
+
+
+.. ---------------------------------------------------------------------------
+
+
+The Ctags programs
+==================
+
+:Ref: `Ctags @ Wikipedia`_
+
+The first version of the ctags program appeared in the early 90's.
+Other implementation appeared over time as shown here:
+
+- BSD Unix 3.0 Ctags (1992)
+
+  - `FreeBSD CTags`_
+
+  - `Exuberant Ctags`_, created and maintained by Darren Hiebert until 2009 for
+    version 5.8.  Has support for 41 programming languages.
+
+    - `Universal Ctags`_, a fork of Exuberant CTags, is still maintained on the
+      `GitHub universal-ctags repo`_.  See `Universal Ctags Manual`_ .
+      This supports a large set of file types.  Version 6.1.0 built at the end
+      of May 2024 reports supporting 156 of them.
+
+- Emacs etags and ctags
+
+  - etags generates a Emacs-style TAGS file.
+  - ctags generates a vi-style TAGS file.
+
+Emacs has its own program, etags which generates a format that Emacs
+understand.  Emacs also provides a version of ctags that generates the
+vi-style format used elsewhere.
+
+The PEL project provides a set of file finding and TAGS creation tools
+that use etags.  Some of them will also use the Universal Ctags program
+when the ETAGS_USE_UCTAGS environment variable is set to 1 or the absolute path of
+Universal Ctags executable file to force using Universal Ctags.
+When setting it to 1, the ctags found in PATH is expected
+to be Universal Ctags.
+
+This includes the following utilities that
+Build a Emacs-compliant TAGS for specific programming
+language sets for the source code files in specified directory tree(s).
+
+============= ========================
+Utility       Programming Languages
+============= ========================
+`etags-c`_    C and C++
+`etags-el`_   Emacs Lisp and C
+`etags-erl`_  Erlang and C
+`etags-lisp`_ Common Lisp
+`etags-py`_   Python
+============= ========================
+
+Each of these utilities support a command line with the ``[-h|--help]``
+options and print more information.
+
+
+.. ---------------------------------------------------------------------------
+.. links
+
+
+.. _Ctags @ Wikipedia:           https://en.wikipedia.org/wiki/Ctags
+.. _FreeBSD CTags:               https://github.com/freebsd/freebsd-src/tree/main/usr.bin/ctags
+.. _Exuberant Ctags:             https://ctags.sourceforge.net/
+.. _Universal Ctags:             https://ctags.io/
+.. _GitHub universal-ctags repo: https://github.com/universal-ctags/ctags
+.. _Universal Ctags Manual:      https://docs.ctags.io/en/latest/
+.. _etags-c:                     https://github.com/pierre-rouleau/pel/blob/master/bin/etags-c
+.. _etags-el:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-el
+.. _etags-erl:                   https://github.com/pierre-rouleau/pel/blob/master/bin/etags-erl
+.. _etags-lisp:                  https://github.com/pierre-rouleau/pel/blob/master/bin/etags-lisp
+.. _etags-py:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py
+
+
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
