@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Erlang and C source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-10 12:00:16, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-05 10:07:30 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -38,7 +38,6 @@
 
 # TODO: eliminate code duplication while keeping capability to stay
 #       compatible with various shells (sh, bash, etc...)
-# TODO: detect invalid directory names as find does not flag them.
 
 # Potential other files that might need to be inspected that are not inspected
 # by this script:
@@ -53,114 +52,169 @@
 #  Code
 #  ----
 
-show_usage() {
-    printf "Usage: etags-erl\n"
-    printf "       etags-erl -h\n"
-    printf "       etags-erl --help\n"
-    printf "• Print this help information, exit with 1.\n\n"
-    printf "Usage: etags-erl path [path ...] \n"
-    printf "• [Re]build an etags-compliant TAGS file in current directory\n"
-    printf "  for the Erlang and C code & header files in the directory trees\n"
-    printf "  identified on the command line.\n"
-    printf "• Stores the TAGS file in the current directory, over-writing\n"
-    printf "  previous one!\n"
-    printf "• Inspects content of .erl, .hrl, .c, .h, app and rebar files.\n"
-    printf "• Stores the names of inspected files in the file named\n"
-    printf "  .etags-erl-files.txt stored in the same directory as TAGS."
-    printf "• Uses etags to build the TAGS file by default.\n"
-    printf "  Set ETAGS_USE_UCTAGS to 1 to force using Universal Ctags instead.\n"
-    printf "• Uses fast fdfind or fd if available, uses find otherwise.\n"
-    printf "  - The fd utility is from: https://github.com/sharkdp/fd\n"
-    printf "  - In some Linux distros, fd is renamed fdfind.\n"
-    printf "• To force the use of find, set ETAGS_USE_FIND environment\n"
-    printf "  variable to 1.\n"
-    printf "• ☝️  When fdfind or fd is used, the content of files identified\n"
-    printf "  by the .gitignore, .ignore or .fdignore files are ignored.\n"
-    printf "  Also invalid directory names specified are rejected.\n"
-    printf "  These 2 features alone make using fd/fdfind worthwhile!\n"
-    printf "  ⚠️  When using find, invalid directory names are just ignored!\n"
-    printf "• Echoes the path of the find program used and echoes when\n"
-    printf "  repository ignore files are used.\n"
-    if [[ "$ETAGS_USE_FIND" == "1" ]]; then
-        printf "⚠️  Currently: ETAGS_USE_FIND forces the use of find!\n"
-        printf "   To prevent this, set it to 0 or remove that\n"
-        printf "   environment variable.\n"
-        printf "  ⚠️  Ensure validity of directory names manually!\n"
-        printf "  When using find, invalid directory names are just ignored!\n"
+print_usage()
+{
+    printf -- "
+etags-erl: build an etags-compliant TAGS in the current directory
+            for all Erlang and C source code files in the specified
+            directory trees(s).
+
+  Usage: etags-erl [-h|--help]
+
+   • Print this help information.
+
+  Usage: etags-erl DIR [DIR ...]
+
+   • [Re]build an etags-compliant TAGS file in current directory
+     for the Erlang and C files in the directory tree(s) identified
+     on the command line.
+   • Overwrites any TAGS file in the current directory.
+   • Inspects content of .erl, .hrl, .c, .h, app and rebar files.
+   • Stores the names of inspected files in the file named
+    .etags-erl-files.txt stored in the same directory as TAGS.
+   • Uses etags to build the TAGS file by default.
+     Set ETAGS_USE_UCTAGS to 1 to force using Universal Ctags instead.
+   • Uses fast 'fdfind' or 'fd' if available, 'find' otherwise.
+     - The 'fd' utility is from: https://github.com/sharkdp/fd
+     - In some Linux distros, 'fd' is renamed 'fdfind'.
+   • To force the use of 'find', set ETAGS_USE_FIND environment
+     variable to 1.
+   • ☝️  When 'fdfind' or 'fd' is used, the content of files identified
+     by the .gitignore, .ignore or .fdignore files are ignored.
+   • Prints the path of the find program used and when
+     repository ignore files are scanned.
+"
+    if [ "$ETAGS_USE_FIND" = "1" ]; then
+        printf -- "
+⚠️   ETAGS_USE_FIND is set to 1, forcing the use of 'find'!
+    • To prevent this, set it to 0 or remove that
+      environment variable.
+    • With USRHOME, you can use setenv and clrenv.
+      See: https://github.com/pierre-rouleau/usrhome
+"
     fi
-    return 1
 }
 
 # --
 
-run__etags_erl_c() {
-    if [[ "$ETAGS_USE_UCTAGS" == "1" ]]; then
+run__etags_erl_c()
+{
+    # Expects no argument, but expects a list of files to parse on stdin.
+
+    if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
         xargs ctags --output-format=etags
-        printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" `which ctags`
+        printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)"
     else
         etags -
     fi
 }
 
-run__append_etags_erl() {
-    if [[ "$ETAGS_USE_UCTAGS" == "1" ]]; then
+run__append_etags_erl()
+{
+    if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
         xargs ctags --append --output-format=etags
     else
         etags --append --language=erlang -
     fi
-    printf "%s files found and processed. List stored in: %s\n" `wc -l .etags-erl-files.txt`
+    printf -- "%s files found and processed. List stored in: etags-erl-files.txt\n" "$(wc -l .etags-erl-files.txt)"
 }
 
 # --
+# Check validity of arguments
 
-if [[ "$#" = 1 && "$1" = "-h" || "$1" = "--help" ]]; then
-    show_usage
-elif [[ "$#" = 0 ]]; then
-    show_usage
+if [ -z "$1" ]; then
+    print_usage
+    exit 1
+elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    if [ "$#" = "1" ]; then
+        exit 0
+    else
+        exit  1
+    fi
+fi
+
+# --
+# Check the validity of directory names specified as arguments.
+# Ensure that each directory specified on the command line
+# exists.  Also ensure that a directory name is not specified more
+# than once.  Use the realpath of that directory name when comparing.
+
+dpaths=
+for dname in "$@"; do
+    if [ ! -d "${dname}" ]; then
+        printf -- "Specified directory does not exists: %s\n" "${dname}"
+        exit 2
+    fi
+    dpath="$(realpath "${dname}")"
+    for dp in ${dpaths}; do
+        if [ "$dp" = "$dpath" ]; then
+            printf -- "Multiple entry of directory: %s\n" "${dname}"
+            exit 3
+        fi
+        # check if new entry is a sub-directory of an exiting entry
+        case "${dpath}" in
+            "${dp}"*)
+                printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}"
+                exit 3
+                ;;
+        esac
+        # check if new entry is a parent directory of an existing entry
+        case "${dp}" in
+            "${dpath}"*)
+                printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}"
+                exit 3
+                ;;
+        esac
+
+    done
+    dpaths="${dpaths} ${dpath}"
+done
+
+# --
+# Find the files, pass their names to etags which creates the TAGS file.
+# To find the files, try to use fd or fdfind if they exist,
+# otherwise use find.  Echo the actual program used to find files.
+
+if [ "$ETAGS_USE_FIND" = "1" ]; then
+    echo "- ETAGS_USE_FIND forces the use of find!"
+    echo "-> Using" "$(which find)"
+    find -f "$@" -name "*.[ch]" \
+         -print | tee .etags-erl-files.txt | run__etags_erl_c
+    find -f "$@" \
+         \(  -name "*\.[he]rl" \
+         -or -name "*\.app" \
+         -or -name "*\.app.src" \) \
+         -print | tee -a .etags-erl-files.txt | run__append_etags_erl
 else
-    # Find the files, pass their names to etags which creates the TAGS file.
-    # To find the files, try to use fd or fdfind if they exist,
-    # otherwise use find.  Echo the actual program used to find files.
-    if [[ "$ETAGS_USE_FIND" == "1" ]]; then
-        echo "ETAGS_USE_FIND forces the use of find!"
-        echo "Using " `which find`
-        find -f $* -name "*.[ch]" \
+    if [ -x "$(command -v fdfind)" ]; then
+        echo "-> Using" "$(which fdfind)"
+        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
+        fdfind --type f -e .c  -e .h \
+               . "$@" | tee .etags-erl-files.txt | run__etags_erl_c
+        fdfind --type f \
+               -e .erl  -e .hrl \
+               -e .app \
+               -e .app.src \
+               . "$@" | tee -a .etags-erl-files.txt | run__append_etags_erl
+    elif [ -x "$(command -v fd)" ]; then
+        echo "-> Using" "$(which fd)"
+        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
+        fd --type f -e .c  -e .h \
+           . "$@" | tee .etags-erl-files.txt | run__etags_erl_c
+        fd --type f -e .erl  -e .hrl \
+           -e .app \
+           -e .app.src \
+           . "$@" | tee -a .etags-erl-files.txt | etags --append --language=erlang -
+    else
+        echo "-> Using" "$(which find)"
+        find -f "$@" -name "*.[ch]" \
              -print | tee .etags-erl-files.txt | run__etags_erl_c
-        find -f $* \
+        find -f "$@" \
              \(  -name "*\.[he]rl" \
              -or -name "*\.app" \
              -or -name "*\.app.src" \) \
              -print | tee -a .etags-erl-files.txt | run__append_etags_erl
-    else
-        if [[ -x "$(command -v fdfind)" ]]; then
-            echo "Using " `which fdfind`
-            echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
-            fdfind --type f -e .c  -e .h \
-                   . $* | tee .etags-erl-files.txt | run__etags_erl_c
-            fdfind --type f \
-                   -e .erl  -e .hrl \
-                   -e .app \
-                   -e .app.src \
-                   . $* | tee -a .etags-erl-files.txt | run__append_etags_erl
-        elif [[ -x "$(command -v fd)" ]]; then
-            echo "Using " `which fd`
-            echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
-            fd --type f -e .c  -e .h \
-               . $* | tee .etags-erl-files.txt | run__etags_erl_c
-            fd --type f -e .erl  -e .hrl \
-               -e .app \
-               -e .app.src \
-               . $* | tee -a .etags-erl-files.txt | etags --append --language=erlang -
-        else
-            echo "Using " `which find`
-            find -f $* -name "*.[ch]" \
-                 -print | tee .etags-erl-files.txt | run__etags_erl_c
-            find -f $* \
-                 \(  -name "*\.[he]rl" \
-                 -or -name "*\.app" \
-                 -or -name "*\.app.src" \) \
-                 -print | tee -a .etags-erl-files.txt | run__append_etags_erl
-        fi
     fi
 fi
 # ----------------------------------------------------------------------------
