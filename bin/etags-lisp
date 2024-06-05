@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Lisp source code files.
 #  Created   : Tuesday, November 10 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-05 10:54:13 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-05 11:04:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -16,7 +16,7 @@
 #
 # Usage:
 #  - cd where you want to store the TAGS file
-#  - etags-lisp path [path ...]
+#  - etags-lisp DIRPATH [DIRPATH ...]
 #
 
 # ----------------------------------------------------------------------------
@@ -56,7 +56,7 @@ etags-lisp: build an etags-compliant TAGS in the current directory
 
    • Print this help information.
 
-  Usage: etags-lisp DIR [DIR ...]
+  Usage: etags-lisp DIRPATH [DIRPATH ...]
 
    • [Re]build an etags-compliant TAGS file in current directory
      for the Common Lisp files in the directory tree(s) identified
