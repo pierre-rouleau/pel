@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-04 17:45:50 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-04 23:04:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -43,12 +43,8 @@
 #   is the Universal Ctags utility, not any other ctag command.
 
 # ----------------------------------------------------------------------------
-# BUGS:
-#
 # TODO: eliminate code duplication while keeping capability to stay
 #       compatible with various shells (sh, bash, etc...)
-# TODO: enhance duplication detection: a parent followed by a child directory
-#       is currently not detected as duplicate directories.
 
 # ----------------------------------------------------------------------------
 #  Code
@@ -57,12 +53,11 @@
 print_usage()
 {
     printf -- "
-etags-c: build a TAGS file for all C and C++ source code files
-         in current directory tree.
+etags-c: build a etags-compliant TAGS file in the current directory
+         for all C and C++ source code files in the directory trees
+         specified on the command line.
 
- Usage: etags-c
-        etags-c -h
-        etags-c --help
+ Usage: etags-c [-h|--help]
 
   • Print this help information.
 
@@ -71,9 +66,9 @@ etags-c: build a TAGS file for all C and C++ source code files
   • [Re]build an etags-compliant TAGS file in current directory
     for the C/C++ code & header files in the directory trees
     identified on the command line.
-  • Stores the TAGS file in the current directory, overwriting
-    previous one!
-  • Inspects content of C and C++ code and header files.
+  • It overwrites any TAGS file in the current directory.
+  • It stores the names of inspected files in the file named
+     .etags-c-files.txt in the current directory.
   • It identifies the C/C++ files using one of the following methods:
     • If ETAGS_FILE_LIST environment variable exists, it uses it as
       the name of a file that holds a list of C/C++ files to parse.
@@ -90,7 +85,6 @@ etags-c: build a TAGS file for all C and C++ source code files
         by the .gitignore, .ignore or .fdignore files are ignored.
         Also invalid directory names specified are rejected.
         These 2 features alone make using 'fd'/'fdfind' worthwhile!
-        ⚠️  When using find, invalid directory names are just ignored!
   • Stores the names of inspected files in the file named
     .etags-c-files.txt stored in the same directory as TAGS.
   • Uses etags to build the TAGS file by default.
@@ -100,20 +94,14 @@ etags-c: build a TAGS file for all C and C++ source code files
 
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         printf -- "
-⚠️   ETAGS_USE_FIND is set to 1, forcing the use of find!
-   To prevent this, set it to 0 or remove that
-   environment variable.
-  • With USRHOME, you can use setenv and clrenv.
-    See: https://github.com/pierre-rouleau/usrhome
+⚠️   ETAGS_USE_FIND is set to 1, forcing the use of 'find'!
+    • To prevent this, set it to 0 or remove that
+      environment variable.
+    • With USRHOME, you can use setenv and clrenv.
+      See: https://github.com/pierre-rouleau/usrhome
 "
     fi
 }
-
-print_error()
-{
-    echo
-}
-
 
 # --
 # run__etags_c -- run etags or ctags on a set of files
@@ -172,25 +160,34 @@ else
     # Ensure that each directory specified on the command line
     # exists.  Also ensure that a directory name is not specified more
     # than once.  Use the realpath of that directory name when comparing.
-
-    # [:todo 2024-06-04, by Pierre Rouleau: enhance duplication detection:
-    #     Note that the method used also catch a request where a parent
-    #     directory is specified after one of its children, but it does not
-    #     detect it the other way around. ]
-
-    dpaths=""
+    dpaths=
     for dname in "$@"; do
         if [ ! -d "${dname}" ]; then
             printf -- "Specified directory does not exists: %s\n" "${dname}"
             exit 2
         fi
         dpath="$(realpath "${dname}")"
-        case "${dpaths}" in
-            *"${dpath}"*)
+        for dp in ${dpaths}; do
+            if [ "$dp" = "$dpath" ]; then
                 printf -- "Multiple entry of directory: %s\n" "${dname}"
                 exit 3
-                ;;
-        esac
+            fi
+            # check if new entry is a sub-directory of an exiting entry
+            case "${dpath}" in
+                "${dp}"*)
+                    printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}"
+                    exit 3
+                    ;;
+            esac
+            # check if new entry is a parent directory of an existing entry
+            case "${dp}" in
+                "${dpath}"*)
+                    printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}"
+                    exit 3
+                    ;;
+            esac
+
+        done
         dpaths="${dpaths} ${dpath}"
         echo "dpaths: ${dpaths}"
     done
