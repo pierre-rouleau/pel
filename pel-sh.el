@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June  7 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-06-03 10:40:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-06-05 10:41:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -322,7 +322,9 @@ names.  Defaults to the current major mode shell name."
                       nil nil nil nil (pel--shell-name))))
   (save-excursion
     (goto-char (point-max))
-    (insert (format "
+    (unless (bolp)
+      (insert "\n"))
+    (insert (format "\
 # Local Variables:
 # sh-shell: %s
 # End:
