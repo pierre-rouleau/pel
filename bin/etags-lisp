@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Lisp source code files.
 #  Created   : Tuesday, November 10 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-05 09:49:01 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-05 10:54:13 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -211,3 +211,6 @@ else
 fi
 
 # -----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

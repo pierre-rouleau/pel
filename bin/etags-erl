@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Erlang and C source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-05 10:07:30 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-05 10:24:30 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -218,3 +218,6 @@ else
     fi
 fi
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
