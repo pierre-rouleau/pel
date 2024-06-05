@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-05 08:04:51 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-05 09:31:22 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -61,21 +61,21 @@ etags-c: build a etags-compliant TAGS file in the current directory
 
   • Print this help information.
 
- Usage: etags-c path [path ...]
+ Usage: etags-c DIR [DIR ...]
 
   • [Re]build an etags-compliant TAGS file in current directory
     for the C/C++ code & header files in the directory trees
     identified on the command line.
-  • It overwrites any TAGS file in the current directory.
-  • It stores the names of inspected files in the file named
+  • Overwrites any TAGS file in the current directory.
+  • Stores the names of inspected files in the file named
      .etags-c-files.txt in the current directory.
-  • It identifies the C/C++ files using one of the following methods:
+  • Identifies the C/C++ files using one of the following methods:
     • If ETAGS_FILE_LIST environment variable exists, it uses it as
       the name of a file that holds a list of C/C++ files to parse.
       The name of this file can be anything except .etags-c-files.txt
       and it must exists. It it does not etags-c exists with an error.
       Each line of the file must identify a C/C++ file to parse.
-    • It searches the list of C/C++ source code files.
+    • Searches the list of C/C++ source code files.
       • It uses 'fdfind' or 'fd' if available, 'find' otherwise.
         - The fd utility is from: https://github.com/sharkdp/fd
         - In some Linux distros, 'fd' is renamed 'fdfind'.
@@ -83,14 +83,12 @@ etags-c: build a etags-compliant TAGS file in the current directory
         variable to 1.
       • ☝️  When using 'fdfind' or 'fd', the files identified
         by the .gitignore, .ignore or .fdignore files are ignored.
-        Also invalid directory names specified are rejected.
-        These 2 features alone make using 'fd'/'fdfind' worthwhile!
   • Stores the names of inspected files in the file named
     .etags-c-files.txt stored in the same directory as TAGS.
   • Uses etags to build the TAGS file by default.
     • Set ETAGS_USE_UCTAGS to 1 to force using Universal Ctags instead.
-  • Echoes the path of the \"find\" program used and echoes when
-    repository ignore files are used.\n"
+  • Prints the path of the \"find\" program used and when
+    repository ignore files are scanned.\n"
 
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         printf -- "
@@ -190,7 +188,6 @@ else
 
         done
         dpaths="${dpaths} ${dpath}"
-        echo "dpaths: ${dpaths}"
     done
 
     echo "No list of files identified by ETAGS_FILE_LIST."
