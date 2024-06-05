@@ -17,7 +17,9 @@ Using ctags and etags for cross referencing with TAGS
 The Ctags programs
 ==================
 
-:Ref: `Ctags @ Wikipedia`_
+.. TEXT-START
+
+**Reference**: `Ctags @ Wikipedia`_
 
 The first version of the ctags program appeared in the early 90's.
 Other implementation appeared over time as shown here:
@@ -87,7 +89,7 @@ options and print more information.
 .. _etags-py:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py
 .. _Xref-Support PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref-support.pdf
 
-
+.. TEXT-END
 
 .. ---------------------------------------------------------------------------
 

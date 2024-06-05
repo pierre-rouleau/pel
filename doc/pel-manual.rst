@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2024-05-29 08:55:19 EDT, updated by Pierre Rouleau.
+:Modified: 2024-06-05 18:35:56 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2833,11 +2833,8 @@ PEL Cross Reference Support
 :PEL Customization: *none*
 :PEL Key Prefix: **pel:xref**
 
-**Note:**
-   🚧  This file is under early development.
-
-The file `pel-xref.el`_ holds utilities related to Etags based cross-reference support.
-
+The file `pel-xref.el`_ holds utilities related to Etags based cross-reference
+support and other methods.
 
 Tag-based systems
 ~~~~~~~~~~~~~~~~~
@@ -2918,6 +2915,18 @@ command in your startup script (e.g. ``~/.bash_profile`` for Bash).
 .. _Installing Python on macOS instructions: https://github.com/pierre-rouleau/about-python/blob/master/doc/installing-python.rst
 .. _about-python: https://github.com/pierre-rouleau/about-python
 .. _envfor-gtags: ../bin/envfor-gtags
+
+PEL Utilities that build TAGS File
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+PEL provides a set of POSIX-compliant shell scripts that can be
+used to find the source code files inside specified directory trees and build
+TAGS for a given set of programming languages.
+
+.. include:: cross-reference-with-ctags.rst.txt
+   :start-after: TEXT-START
+   :end-before:  TEXT-END
+
 
 
 PEL CUA Mode Extension Utilities
