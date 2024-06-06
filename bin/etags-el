@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 08:56:01 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 09:38:05 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -170,14 +170,14 @@ else
         fdfind --type f -e .el -e .el.gz \
                -e .c -e .c.gz \
                -e .h -e .h.gz \
-               . "$@" | tee .etags-el-files.txt | run__etags__el
+               "$@" | tee .etags-el-files.txt | run__etags__el
     elif [ -x "$(command -v fd)" ]; then
         echo "-> Using" "$(which fd)"
         echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
         fd --type f -e .el -e .el.gz \
            -e .c  -e .c.gz \
            -e .h  -e .h.gz \
-           . "$@" | tee .etags-el-files.txt | run__etags__el
+           "$@" | tee .etags-el-files.txt | run__etags__el
     else
         echo "-> Using" "$(which find)"
         find -f "$@" \(   -name "*.el" \

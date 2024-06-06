@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Erlang and C source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-05 17:10:33 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 09:38:34 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -205,21 +205,21 @@ else
         echo "-> Using" "$(which fdfind)"
         echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
         fdfind --type f -e .c  -e .h \
-               . "$@" | tee .etags-erl-files.txt | run__etags_erl_c
+               $@" | tee .etags-erl-files.txt | run__etags_erl_c
         fdfind --type f \
                -e .erl  -e .hrl \
                -e .app \
                -e .app.src \
-               . "$@" | tee -a .etags-erl-files.txt | run__append_etags_erl
+               "$@" | tee -a .etags-erl-files.txt | run__append_etags_erl
     elif [ -x "$(command -v fd)" ]; then
         echo "-> Using" "$(which fd)"
         echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
         fd --type f -e .c  -e .h \
-           . "$@" | tee .etags-erl-files.txt | run__etags_erl_c
+           "$@" | tee .etags-erl-files.txt | run__etags_erl_c
         fd --type f -e .erl  -e .hrl \
            -e .app \
            -e .app.src \
-           . "$@" | tee -a .etags-erl-files.txt | etags --append --language=erlang -
+           "$@" | tee -a .etags-erl-files.txt | etags --append --language=erlang -
     else
         echo "-> Using" "$(which find)"
         find -f "$@" -name "*.[ch]" \

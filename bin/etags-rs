@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Rust source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 09:12:11 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 09:40:08 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -196,12 +196,12 @@ else
         echo "-> Using" "$(which fdfind)"
         echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
         fdfind --type f -e .rs \
-               . "$@" | tee .etags-rs-files.txt | run__etags__rs
+               "$@" | tee .etags-rs-files.txt | run__etags__rs
     elif [ -x "$(command -v fd)" ]; then
         echo "-> Using" "$(which fd)"
         echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
         fd --type f -e .rs  \
-           . "$@" | tee .etags-rs-files.txt | run__etags__rs
+           "$@" | tee .etags-rs-files.txt | run__etags__rs
     else
         echo "-> Using" "$(which find)"
         find -f "$@" \( \

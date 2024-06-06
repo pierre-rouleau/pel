@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 08:57:33 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 09:37:25 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -261,7 +261,7 @@ else
                             -e .inl    \
                             -e .M      \
                             -e .pdb    \
-                            . "$@" | tee .etags-c-files.txt | run__etags_c
+                            "$@" | tee .etags-c-files.txt | run__etags_c
         elif [ -x "$(command -v fd)" ]; then
             echo "-> Using" "$(which fd)"
             echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
@@ -292,7 +292,7 @@ else
                         -e .inl    \
                         -e .M      \
                         -e .pdb    \
-                        . "$@" | tee .etags-c-files.txt | run__etags_c
+                        "$@" | tee .etags-c-files.txt | run__etags_c
         else
             echo "-> Using " "$(which find)"
             find . -type f "$@" \

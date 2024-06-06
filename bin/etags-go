@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Go source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 09:11:33 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 09:39:12 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -198,12 +198,12 @@ else
         echo "-> Using" "$(which fdfind)"
         echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
         fdfind --type f -e .go \
-               . "$@" | tee .etags-go-files.txt | run__etags__go
+               "$@" | tee .etags-go-files.txt | run__etags__go
     elif [ -x "$(command -v fd)" ]; then
         echo "-> Using" "$(which fd)"
         echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
         fd --type f -e .go \
-           . "$@" | tee .etags-go-files.txt | run__etags__go
+           "$@" | tee .etags-go-files.txt | run__etags__go
     else
         echo "-> Using" "$(which find)"
         find -f "$@" \( \
