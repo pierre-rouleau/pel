@@ -4,7 +4,7 @@
 # Purpose   : Install the e, ge and ce scripts in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-29 10:22:17 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-06 13:34:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -17,7 +17,11 @@
 # Code
 # ----
 #
+# Extract name of executing script:
+#  - With Bash: script=${BASH_SOURCE[0]}
+#  - With zsh:  script=${(%):-%x}
 #
+# Use POSIX compliant code here:
 script="$(realpath $0)"
 script_dirpath="$(dirname "$script")"
 bin_dirpath="$(dirname "$script_dirpath")"
@@ -81,3 +85,5 @@ printf -- "\n\n"
 #  Local Variables:
 #  sh-shell: sh
 #  End:
+
+#  LocalWords:  zsh
