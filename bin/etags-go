@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Go source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 08:27:14 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 09:11:33 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -70,7 +70,7 @@ etags-go: build an etags-compliant TAGS in the current directory
      ☝️  For Go, Universal Ctags generates more information
         than etags.
    • Overwrites any TAGS file in the current directory.
-   • Inspects content of .go and .gow files.
+   • Inspects content of .go files.
    • Stores the names of inspected files in the file named
      .etags-go-files.txt in the current directory.
    • Uses fast 'fdfind' or 'fd' if available, 'find' otherwise.
