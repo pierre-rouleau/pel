@@ -62,13 +62,14 @@ Build a Emacs-compliant TAGS for specific programming
 language sets for the source code files in specified directory tree(s).
 
 ============= ========================
-Utility       Programming Languages
+Utility       Programming Language
 ============= ========================
 `etags-c`_    C and C++
 `etags-el`_   Emacs Lisp and C
 `etags-erl`_  Erlang and C
 `etags-go`_   Go
 `etags-lisp`_ Common Lisp
+`etags-make`_ GNU Makefiles
 `etags-py`_   Python
 `etags-rs`_   Rust
 ============= ========================
@@ -92,6 +93,7 @@ options and print more information.
 .. _etags-erl:                   https://github.com/pierre-rouleau/pel/blob/master/bin/etags-erl
 .. _etags-go:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-go
 .. _etags-lisp:                  https://github.com/pierre-rouleau/pel/blob/master/bin/etags-lisp
+.. _etags-make:                  https://github.com/pierre-rouleau/pel/blob/master/bin/etags-make
 .. _etags-py:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py
 .. _etags-rs:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-rs
 .. _Xref-Support PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref-support.pdf
