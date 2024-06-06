@@ -2,9 +2,9 @@
 #  SH FILE: etags-go
 #
 #  Purpose   : Build Emacs Tags file for Go source code files.
-#  Created   : Monday, November  9 2020.
+#  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 09:39:12 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 09:57:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------

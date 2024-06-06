@@ -2,9 +2,9 @@
 #  SH FILE: etags-rs
 #
 #  Purpose   : Build Emacs Tags file for Rust source code files.
-#  Created   : Monday, November  9 2020.
+#  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 09:40:08 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 09:57:58 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------

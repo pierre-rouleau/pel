@@ -2,9 +2,9 @@
 #  SH FILE: etags-make
 #
 #  Purpose   : Build Emacs Tags file for Make source code files.
-#  Created   : Monday, November  9 2020.
+#  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 09:32:03 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 09:58:59 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
