@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-05 17:04:28 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 08:57:33 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -139,9 +139,6 @@ run__etags_c()
         # Qualify tag names with their class name in C++.
         etags --class-qualify -
     fi
-    file_count="$(wc -l .etags-c-files.txt | awk '{print $1}')"
-    printf -- "%s files found and processed. List stored in: .etags-c-files.txt\n" "${file_count=}"
-    unset file_count
 }
 
 
@@ -304,6 +301,9 @@ else
         fi
     fi
 fi
+
+file_count="$(wc -l .etags-c-files.txt | awk '{print $1}')"
+printf -- "%s files found and processed. List stored in: .etags-c-files.txt\n" "${file_count=}"
 
 # ----------------------------------------------------------------------------
 # Local Variables:

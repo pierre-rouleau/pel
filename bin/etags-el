@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-05 11:01:40 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 08:56:01 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -96,9 +96,6 @@ run__etags__el()
     if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
         printf "Using etags despite ETAGS_USE_CTAGS since ctags can't handle compressed file\n"
     fi
-    file_count="$(wc -l .etags-el-files.txt | awk '{print $1}')"
-    printf "%s files found and processed. List stored in: .etags-el-files.txt\n" "${file_count}"
-    unset file_count
 }
 
 # --
@@ -189,6 +186,8 @@ else
              -print | tee .etags-el-files.txt | run__etags__el
     fi
 fi
+file_count="$(wc -l .etags-el-files.txt | awk '{print $1}')"
+printf "%s files found and processed. List stored in: .etags-el-files.txt\n" "${file_count}"
 
 # -----------------------------------------------------------------------------
 # Local Variables:
