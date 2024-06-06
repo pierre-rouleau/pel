@@ -54,6 +54,9 @@ Universal Ctags executable file to force using Universal Ctags.
 When setting it to 1, the ctags found in PATH is expected
 to be Universal Ctags.
 
+PEL etags tools
+---------------
+
 This includes the following utilities that
 Build a Emacs-compliant TAGS for specific programming
 language sets for the source code files in specified directory tree(s).
