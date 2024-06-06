@@ -6,7 +6,7 @@ Using ctags and etags for cross referencing with TAGS
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Wednesday, June  5 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-06-05 13:04:01, by Pierre Rouleau.
+:Modified: 2024-06-06 15:37:05 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -83,10 +83,12 @@ Utility             Build Tool Language
 `etags-make`_       GNU Makefiles only.
 =================== ======================================================
 
-
 Each of these utilities support a command line with the ``[-h|--help]``
 options and print more information.
 
+You can install symbolic links to the files inside the PEL bin directory
+by executing the `pel/bin/setup/install-etags-builders.sh`_ script from any
+POSIX compliant shell.
 
 .. ---------------------------------------------------------------------------
 .. links
@@ -109,6 +111,7 @@ options and print more information.
 .. _etags-rs:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-rs
 .. _Xref-Support PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref-support.pdf
 .. _GNU Autotools:               https://en.wikipedia.org/wiki/GNU_Autotools
+.. _pel/bin/setup/install-etags-builders.sh: https://github.com/pierre-rouleau/pel/blob/master/bin/setup/install-etags-builders.sh
 
 .. TEXT-END
 
