@@ -4,14 +4,14 @@
 #  Purpose   : Build Emacs Tags file for Make source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 10:10:23 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 11:15:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
 #
 # Build an Emacs Tags file for all Make source code files in the
 # sub-directory tree.  This includes the Makefile, makefile, GNUMakefile,
-# Makefile.in and makefile.am files
+# Makefile.in and makefile.am files and all .mk and .mak files.
 #
 #
 # Usage:
@@ -71,7 +71,7 @@ etags-make: build an etags-compliant TAGS in the current directory
      to be Universal Ctags.
    • Overwrites any TAGS file in the current directory.
    • Inspects content of the Makefile, makefile, GNUMakefile,
-      Makefile.in and makefile.am files.
+      Makefile.in, makefile.am and all .mk and .mak files.
    • Stores the names of inspected files in the file named
      .etags-make-files.txt in the current directory.
    • Uses fast 'fdfind' or 'fd' if available, 'find' otherwise.
@@ -115,9 +115,32 @@ run__etags__make()
             exit 4
         fi
     else
-        etags --language=make -
+        etags -
     fi
 }
+
+run__append_etags()
+{
+    # Expects no argument, but expects a list of files to parse on stdin.
+
+    if [ -n "$ETAGS_USE_UCTAGS" ]; then
+        if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
+            xargs ctags --append --output-format=etags
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$(which ctags)"
+        elif [ -x "$ETAGS_USE_UCTAGS" ]; then
+            xargs "$ETAGS_USE_UCTAGS" --output-format=etags
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS"
+        else
+            printf -- "*** etags-make ERROR: invalid ETAGS_USE_UCTAGS value\n"
+            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS"
+            printf -- "***  This is not 1 nor a valid executable file name.\n"
+            exit 4
+        fi
+    else
+        etags --append -
+    fi
+}
+
 
 # --
 # Check validity of arguments
@@ -197,6 +220,8 @@ if [ "$ETAGS_USE_FIND" = "1" ]; then
          -or -name "GNUMakefile" \
          -or -name "Makefile.in" \
          -or -name "Makefile.am" \
+         -or -name "*\.mk" \
+         -or -name "*\.mak" \
          \)  -print | tee .etags-make-files.txt | run__etags__make
 else
     if [ -x "$(command -v fdfind)" ]; then
@@ -204,11 +229,17 @@ else
         echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
         fdfind --type f '((makefile)|((GNU)?Makefile(.((in)|(am)))?))$' \
                "$@" | tee .etags-make-files.txt | run__etags__make
+        # Then the .mk and .mak make files
+        fdfind --type f -e .mk -e .mak\
+               "$@" | tee -a .etags-make-files.txt | run__append_etags
     elif [ -x "$(command -v fd)" ]; then
         echo "-> Using" "$(which fd)"
         echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
         fd --type f '((makefile)|((GNU)?Makefile(.((in)|(am)))?))$' \
            "$@" | tee .etags-make-files.txt | run__etags__make
+        # Then the .mk and .mak make files
+        fd --type f -e .mk -e .mak\
+           "$@" | tee -a .etags-make-files.txt | run__append_etags
     else
         echo "-> Using" "$(which find)"
         find -f "$@" \( \
@@ -217,6 +248,8 @@ else
              -or -name "GNUMakefile" \
              -or -name "Makefile.in" \
              -or -name "Makefile.am" \
+             -or -name "*\.mk" \
+             -or -name "*\.mak" \
              \) -print | tee .etags-make-files.txt | run__etags__make
     fi
 fi
