@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-05 17:04:07 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 08:26:36 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -116,9 +116,6 @@ run__etags__py()
     else
         etags --language=python -
     fi
-    file_count="$(wc -l .etags-py-files.txt | awk '{print $1}')"
-    printf "%s files found and processed. List stored in: .etags-py-files.txt\n" "${file_count}"
-    unset file_count
 }
 
 # --
@@ -139,8 +136,13 @@ fi
 # --
 
 if [ "$1" = "-u" ]; then
-    echo "etags-py: -u option requests use of Universal Ctags."
-    ETAGS_USE_UCTAGS=1
+    if [ -z "$ETAGS_USE_UCTAGS" ]; then
+        echo "etags-py: -u option requests use of Universal Ctags."
+        ETAGS_USE_UCTAGS=1
+    else
+        echo "etags-py: -u option not necessary (but does no harm)."
+        echo " ETAGS_USE_UCTAGS is already set to: $ETAGS_USE_UCTAGS"
+    fi
     shift
 fi
 
@@ -211,6 +213,8 @@ else
              \) -print | tee .etags-py-files.txt | run__etags__py
     fi
 fi
+file_count="$(wc -l .etags-py-files.txt | awk '{print $1}')"
+printf "%s files found and processed. List stored in: .etags-py-files.txt\n" "${file_count}"
 
 # -----------------------------------------------------------------------------
 # Local Variables:
