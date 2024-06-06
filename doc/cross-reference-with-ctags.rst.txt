@@ -67,10 +67,10 @@ Utility       Programming Languages
 `etags-c`_    C and C++
 `etags-el`_   Emacs Lisp and C
 `etags-erl`_  Erlang and C
-`etags_go`_   Go
+`etags-go`_   Go
 `etags-lisp`_ Common Lisp
 `etags-py`_   Python
-`etags_rs`_   Rust
+`etags-rs`_   Rust
 ============= ========================
 
 Each of these utilities support a command line with the ``[-h|--help]``
