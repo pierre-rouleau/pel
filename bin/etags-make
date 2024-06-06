@@ -4,13 +4,15 @@
 #  Purpose   : Build Emacs Tags file for Make source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 09:58:59 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 10:10:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
 #
 # Build an Emacs Tags file for all Make source code files in the
-# sub-directory tree.  This includes the .make and .makew files.
+# sub-directory tree.  This includes the Makefile, makefile, GNUMakefile,
+# Makefile.in and makefile.am files
+#
 #
 # Usage:
 #  - cd where you want to store the TAGS file
@@ -67,8 +69,6 @@ etags-make: build an etags-compliant TAGS in the current directory
      Universal Ctags executable file to force using Universal Ctags.
      When setting it to 1, the ctags found in PATH is expected
      to be Universal Ctags.
-     ☝️  For Make, Universal Ctags generates more information
-        than etags.
    • Overwrites any TAGS file in the current directory.
    • Inspects content of the Makefile, makefile, GNUMakefile,
       Makefile.in and makefile.am files.
