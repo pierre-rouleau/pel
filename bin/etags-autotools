@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for GNU Autotools source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 11:01:40 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 12:06:33 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -36,11 +36,8 @@
 #
 # - To force use of find, set the ETAGS_USE_FIND environment variable to 1.
 
-# - Uses etags to process files unless ETAGS_USE_UCTAGS environment variable
-#   is set to 1, in which case the ctags utility is found, assuming that it
-#   is the Universal Ctags utility, not any other ctags command.
-#   You can also set ETAGS_USE_UCTAGS to the absolute path of the
-#   Universal Ctags executable file.
+# - Uses (and requires) the Universal Ctags utility, not any
+#   other ctags command.
 
 # TODO: eliminate code duplication while keeping capability to stay
 #       compatible with various shells (sh, bash, etc...)
@@ -142,19 +139,6 @@ elif ! ctags --version | grep -q "Universal Ctags"; then
 ***        The ctags in PATH is not Universal Ctags.
 "
     exit 1
-fi
-
-# --
-
-if [ "$1" = "-u" ]; then
-    if [ -z "$ETAGS_USE_UCTAGS" ]; then
-        echo "etags-autotools: -u option requests use of Universal Ctags."
-        ETAGS_USE_UCTAGS=1
-    else
-        echo "etags-autotools: -u option not necessary (but does no harm)."
-        echo " ETAGS_USE_UCTAGS is already set to: $ETAGS_USE_UCTAGS"
-    fi
-    shift
 fi
 
 # --
