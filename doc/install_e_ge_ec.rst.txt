@@ -6,7 +6,7 @@ Install the Emacs launcher shortcut scripts
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Wednesday, May 29 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-05-29 08:03:19, by Pierre Rouleau.
+:Modified: 2024-06-06 13:37:58 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -18,7 +18,7 @@ into your Unix compliant system.
 
 
 - Open a sh-compliant shell (Bash or zsh for example).
-- Execute the `pel/bin/setup/install-scripts.sh`_ script specifying its relative
+- Execute the `pel/bin/setup/install-emacs-launcher-scripts.sh`_ script specifying its relative
   or absolute path.
 
   - This will create symbolic links inside your ``~/bin`` directory
@@ -35,7 +35,7 @@ Here's a sample of a successful execution, where pel is installed in ``~/my/dv/e
 .. code:: sh
 
         > 0,et:14ms,L2,roup@newcray@07:59:07[~]
-        bash$ ~/my/dv/elisp/pel/bin/setup/install-scripts.sh
+        bash$ ~/my/dv/elisp/pel/bin/setup/install-emacs-launcher-scripts.sh
         SUCCESS!!
         Installation of e, ge and ec scripts completed!
         They are:
@@ -101,7 +101,7 @@ Here's a sample of a successful execution, where pel is installed in ``~/my/dv/e
 .. _ge: ../bin/ge
 .. _ec: ../bin/ec
 .. _Using the Emacs daemon and clients:  ./emacs-daemon.rst.txt
-.. _pel/bin/setup/install-scripts.sh:    ../bin/setup/install-scripts.sh
+.. _pel/bin/setup/install-emacs-launcher-scripts.sh:    ../bin/setup/install-emacs-launcher-scripts.sh
 
 .. ---------------------------------------------------------------------------
 
