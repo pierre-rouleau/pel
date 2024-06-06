@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 11:48:14 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 12:07:25 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -21,7 +21,7 @@
 #
 # Usage:
 #  - cd where you want to store the TAGS file
-#  - etags-c DIRPATH [DIRPATH ...]
+#  - etags-c [--list=FILENAME] | [DIRPATH [DIRPATH ...]]
 #
 
 # ----------------------------------------------------------------------------
@@ -63,14 +63,14 @@ etags-c: build a etags-compliant TAGS file in the current directory
 
   • Print this help information.
 
- Usage: etags-c [--list=FILE] | [DIRPATH [DIRPATH ...]]
+ Usage: etags-c [--list=FILENAME] | [DIRPATH [DIRPATH ...]]
 
   • [Re]build an etags-compliant TAGS file in current directory
     for the C/C++ code & header files found:
-    - in the directory trees identified on the command line
-    - in the list provided in the FILE specified by the
-      --list option, OR specified by the ETAGS_FILE_LIST
-      environment variable.
+    - in the directory tree(s) identified on the command line, or
+    - in the list provided in the FILENAME specified by the
+      --list option, or
+    - specified by the ETAGS_FILE_LIST environment variable.
   • Overwrites any TAGS file in the current directory.
   • Stores the names of inspected files in the file named
      .etags-c-files.txt in the current directory.
@@ -175,6 +175,8 @@ case "$1" in
         fi
         ;;
 esac
+
+# --
 
 if [ -n "$ETAGS_FILE_LIST" ]; then
     if [ "$ETAGS_FILE_LIST" = ".etags-c-files.txt" ]; then
