@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 09:37:25 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-06 11:48:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -63,11 +63,14 @@ etags-c: build a etags-compliant TAGS file in the current directory
 
   • Print this help information.
 
- Usage: etags-c DIRPATH [DIRPATH ...]
+ Usage: etags-c [--list=FILE] | [DIRPATH [DIRPATH ...]]
 
   • [Re]build an etags-compliant TAGS file in current directory
-    for the C/C++ code & header files in the directory trees
-    identified on the command line.
+    for the C/C++ code & header files found:
+    - in the directory trees identified on the command line
+    - in the list provided in the FILE specified by the
+      --list option, OR specified by the ETAGS_FILE_LIST
+      environment variable.
   • Overwrites any TAGS file in the current directory.
   • Stores the names of inspected files in the file named
      .etags-c-files.txt in the current directory.
@@ -156,6 +159,22 @@ elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
         exit  1
     fi
 fi
+
+case "$1" in
+    --list=*)
+    # extract the file name from the --list= option
+        fname="$(echo "$1" | sed 's/--list=//g')"
+        if [ ! -f "${fname}" ]; then
+            printf -- "\
+*** etags-c ERROR: specified list file does not exist: %s
+" "${fname}"
+            exit 1
+        else
+            ETAGS_FILE_LIST="${fname}"
+            shift
+        fi
+        ;;
+esac
 
 if [ -n "$ETAGS_FILE_LIST" ]; then
     if [ "$ETAGS_FILE_LIST" = ".etags-c-files.txt" ]; then
