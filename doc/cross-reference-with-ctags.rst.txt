@@ -104,6 +104,7 @@ options and print more information.
 .. _etags-go:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-go
 .. _etags-lisp:                  https://github.com/pierre-rouleau/pel/blob/master/bin/etags-lisp
 .. _etags-make:                  https://github.com/pierre-rouleau/pel/blob/master/bin/etags-make
+.. _etags-autotools:             https://github.com/pierre-rouleau/pel/blob/master/bin/etags-autotools
 .. _etags-py:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py
 .. _etags-rs:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-rs
 .. _Xref-Support PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref-support.pdf
