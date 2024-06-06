@@ -4,7 +4,7 @@
 # Purpose   : Install the e, ge and ce scripts in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-06 13:34:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-06-06 13:51:29 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -22,7 +22,7 @@
 #  - With zsh:  script=${(%):-%x}
 #
 # Use POSIX compliant code here:
-script="$(realpath $0)"
+script="$(realpath "$0")"
 script_dirpath="$(dirname "$script")"
 bin_dirpath="$(dirname "$script_dirpath")"
 
@@ -39,7 +39,7 @@ fi
 check_file()
 {
     if [ -e "$1" ]; then
-        printf -- "***ERROR: File $1 already exists.\n"
+        printf -- "***ERROR: File %s already exists.\n" "$1"
         printf -- "   Was this already installed?\n"
         printf -- "   If not, remove that file or rename it and try again.\n\n"
         exit 1
