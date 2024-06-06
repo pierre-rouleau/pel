@@ -69,10 +69,20 @@ Utility       Programming Language
 `etags-erl`_  Erlang and C
 `etags-go`_   Go
 `etags-lisp`_ Common Lisp
-`etags-make`_ GNU Makefiles
 `etags-py`_   Python
 `etags-rs`_   Rust
 ============= ========================
+
+There's also a set of etags builder for build tool
+files:
+
+=================== ======================================================
+Utility             Build Tool Language
+=================== ======================================================
+`etags-autotools`_  `GNU Autotools`_ files (which includes GNU Makefiles).
+`etags-make`_       GNU Makefiles only.
+=================== ======================================================
+
 
 Each of these utilities support a command line with the ``[-h|--help]``
 options and print more information.
@@ -97,6 +107,7 @@ options and print more information.
 .. _etags-py:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py
 .. _etags-rs:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-rs
 .. _Xref-Support PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref-support.pdf
+.. _GNU Autotools:               https://en.wikipedia.org/wiki/GNU_Autotools
 
 .. TEXT-END
 

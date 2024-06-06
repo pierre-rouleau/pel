@@ -1,0 +1,274 @@
+#!/bin/sh
+#  SH FILE: etags-autotools
+#
+#  Purpose   : Build Emacs Tags file for GNU Autotools source code files.
+#  Created   : Thursday, June 6, 2024
+#  Author    : Pierre Rouleau <prouleau001@gmail.com>
+#  Time-stamp: <2024-06-06 11:01:40 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+#  Module Description
+#  ------------------
+#
+# Build an Emacs Tags file for all GNU autotools source code files in the
+# sub-directory tree.  This includes:
+# - the GNU makefiles: Makefile, makefile, GNUMakefile, Makefile.in
+#                      and makefile.am and all .mk and .mak files.
+# - the M4 files, including aclocal.m4, but also all other .m4 files.
+# - configure.ac, config.h.in, config.h
+#
+# Usage:
+#  - cd where you want to store the TAGS file
+#  - etags-autotools DIRPATH [DIRPATH ...]
+#
+
+# ----------------------------------------------------------------------------
+#  Dependencies
+#  ------------
+
+#
+# - Uses fd (also named fdfind in some Linux distros like Mint) if it is
+#   available.  See URL:  https://github.com/sharkdp/fd .
+# - if fd/fdfind is not available, use find instead.
+#
+# Using fd/fdfind is preferred because it supports ignoring files identified
+# by .gitignore, .ignore, .fdignore files. The fd utility can also execute
+# faster than find in several scenarios.
+#
+# - To force use of find, set the ETAGS_USE_FIND environment variable to 1.
+
+# - Uses etags to process files unless ETAGS_USE_UCTAGS environment variable
+#   is set to 1, in which case the ctags utility is found, assuming that it
+#   is the Universal Ctags utility, not any other ctags command.
+#   You can also set ETAGS_USE_UCTAGS to the absolute path of the
+#   Universal Ctags executable file.
+
+# TODO: eliminate code duplication while keeping capability to stay
+#       compatible with various shells (sh, bash, etc...)
+
+# ----------------------------------------------------------------------------
+#  Code
+#  ----
+
+print_usage()
+{
+    printf -- "
+etags-autotools: build an etags-compliant TAGS in the current directory
+                 for all GNU Autotool and GNU Make source code files in
+                 the specified directory tree(s).
+
+ Usage: etags-autotools [-h|--help]
+
+   • Print this help information.
+
+  Usage: etags-autotools DIRPATH [DIRPATH ...]
+
+   • [Re]build an etags-compliant TAGS file in current directory
+     for the GNU Autotool and GNU Make source code files in the directory
+     tree(s) identified on the command line.
+   • Uses Universal Ctags to build the TAGS file by default.
+     Emacs etags does not support M4, autoconf and automake.
+     • ctags is expected to be Universal Ctags executable file.
+   • Overwrites any TAGS file in the current directory.
+   • Inspects content of the Makefile, makefile, GNUMakefile,
+      Makefile.in, makefile.am and .mk and .mak files.
+      It also inspects the .m4, the configure.ac, config.h.in
+      and config.h files.
+   • Stores the names of inspected files in the file named
+     .etags-autotools-files.txt in the current directory.
+   • Uses fast 'fdfind' or 'fd' if available, 'find' otherwise.
+     - The 'fd' utility is from: https://github.com/sharkdp/fd
+     - In some Linux distros, 'fd' is renamed 'fdfind'.
+   • To force the use of 'find', set ETAGS_USE_FIND environment
+     variable to 1.
+   • ☝️  When 'fdfind' or 'fd' is used, the content of files identified
+     by the .gitignore, .ignore or .fdignore files are ignored.
+   • Prints the path of the find program used and when
+     repository ignore files are scanned.
+"
+    if [ "$ETAGS_USE_FIND" = "1" ]; then
+        printf -- "
+⚠️   ETAGS_USE_FIND is set to 1, forcing the use of 'find'!
+    • To prevent this, set it to 0 or remove that
+      environment variable.
+    • With USRHOME, you can use setenv and clrenv.
+      See: https://github.com/pierre-rouleau/usrhome
+"
+    fi
+}
+
+# --
+
+run__etags__make()
+{
+    # Expects no argument, but expects a list of files to parse on stdin.
+    xargs ctags --output-format=etags
+}
+
+run__append_etags()
+{
+    # Expects no argument, but expects a list of files to parse on stdin.
+    xargs ctags --append --output-format=etags
+}
+
+
+# --
+# Check validity of arguments
+
+if [ -z "$1" ]; then
+    print_usage
+    exit 1
+elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    if [ "$#" = "1" ]; then
+        exit 0
+    else
+        exit  1
+    fi
+fi
+
+# --
+# Check if ctags is the Universal Ctags program: that's the only one
+# that support the parsing of M4 and automake and autoconf files.
+
+if ! which ctags > /dev/null; then
+    printf -- "\
+*** ERROR: etags-autotools requires Universal Ctags.
+***        There's no ctags accessible in PATH.
+"
+    exit 1
+elif ! ctags --version | grep -q "Universal Ctags"; then
+    printf -- "\
+*** ERROR: etags-autotools requires Universal Ctags.
+***        The ctags in PATH is not Universal Ctags.
+"
+    exit 1
+fi
+
+# --
+
+if [ "$1" = "-u" ]; then
+    if [ -z "$ETAGS_USE_UCTAGS" ]; then
+        echo "etags-autotools: -u option requests use of Universal Ctags."
+        ETAGS_USE_UCTAGS=1
+    else
+        echo "etags-autotools: -u option not necessary (but does no harm)."
+        echo " ETAGS_USE_UCTAGS is already set to: $ETAGS_USE_UCTAGS"
+    fi
+    shift
+fi
+
+# --
+# Check the validity of directory names specified as arguments.
+# Ensure that each directory specified on the command line
+# exists.  Also ensure that a directory name is not specified more
+# than once.  Use the realpath of that directory name when comparing.
+
+dpaths=
+for dname in "$@"; do
+    if [ ! -d "${dname}" ]; then
+        printf -- "Specified directory does not exists: %s\n" "${dname}"
+        exit 2
+    fi
+    dpath="$(realpath "${dname}")"
+    for dp in ${dpaths}; do
+        if [ "$dp" = "$dpath" ]; then
+            printf -- "Multiple entry of directory: %s\n" "${dname}"
+            exit 3
+        fi
+        # check if new entry is a sub-directory of an exiting entry
+        case "${dpath}" in
+            "${dp}"*)
+                printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}"
+                exit 3
+                ;;
+        esac
+        # check if new entry is a parent directory of an existing entry
+        case "${dp}" in
+            "${dpath}"*)
+                printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}"
+                exit 3
+                ;;
+        esac
+
+    done
+    dpaths="${dpaths} ${dpath}"
+done
+
+
+# Find the files, pass their names to etags which creates the TAGS file.
+# To find the files, try to use fd or fdfind if they exist,
+# otherwise use find.  Echo the actual program used to find files.
+if [ "$ETAGS_USE_FIND" = "1" ]; then
+    echo "- ETAGS_USE_FIND forces the use of find!"
+    echo "-> Using" "$(which find)"
+    # first find and create tags for GNU Makefile
+    find -f "$@" \( \
+         -name     "Makefile" \
+         -or -name "makefile" \
+         -or -name "GNUMakefile" \
+         -or -name "Makefile.in" \
+         -or -name "Makefile.am" \
+         -or -name "*\.mk" \
+         -or -name "*\.mak" \
+         \)  -print | tee .etags-autotools-files.txt | run__etags__make
+    # Then for the M4, autoconf and automake files
+    find -f "$@" \
+         \(  -name "*\.m4" \
+         -or -name "configure.ac" \
+         -or -name "config.h.in" \
+         -or -name "config.h" \
+        \) -print | tee -a .etags-autotools-files.txt | run__append_etags
+
+else
+    if [ -x "$(command -v fdfind)" ]; then
+        echo "-> Using" "$(which fdfind)"
+        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
+        # first find and create tags for GNU Makefile
+        fdfind --type f '((makefile)|((GNU)?Makefile(.((in)|(am)))?))$' \
+               "$@" | tee .etags-autotools-files.txt | run__etags__make
+        # Then for the M4 files and .mk and .mak make files
+        fdfind --type f -e .m4 -e .mk -e .mak\
+               "$@" | tee -a .etags-autotools-files.txt | run__append_etags
+        # Then for the autoconf and automake files
+        fdfind --type f '((configure.ac)|(config.h.in)|(config.h))$' \
+               "$@" | tee -a .etags-autotools-files.txt | run__append_etags
+    elif [ -x "$(command -v fd)" ]; then
+        echo "-> Using" "$(which fd)"
+        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
+        # first find and create tags for GNU Makefile
+        fd --type f '((makefile)|((GNU)?Makefile(.((in)|(am)))?))$' \
+           "$@" | tee .etags-autotools-files.txt | run__etags__make
+        # Then for the M4 files and .mk and .mak make files
+        fd --type f -e .m4 -e .mk -e .mak \
+           "$@" | tee -a .etags-autotools-files.txt | run__append_etags
+        # Then for the autoconf and automake files
+        fdfind --type f '((configure.ac)|(config.h.in)|(config.h))$' \
+               "$@" | tee -a .etags-autotools-files.txt | run__append_etags
+    else
+        echo "-> Using" "$(which find)"
+        # first find and create tags for GNU Makefile
+        find -f "$@" \( \
+             -name     "Makefile" \
+             -or -name "makefile" \
+             -or -name "GNUMakefile" \
+             -or -name "Makefile.in" \
+             -or -name "Makefile.am" \
+             -or -name "*\.mk" \
+             -or -name "*\.mak" \
+             \) -print | tee .etags-autotools-files.txt | run__etags__make
+        # Then for the M4, autoconf and automake files
+        find -f "$@" \
+             \(  -name "*\.m4" \
+             -or -name "configure.ac" \
+             -or -name "config.h.in" \
+             -or -name "config.h" \
+             \) -print | tee -a .etags-autotools-files.txt | run__append_etags
+    fi
+fi
+file_count="$(wc -l .etags-autotools-files.txt | awk '{print $1}')"
+printf "%s files found and processed. List stored in: .etags-autotools-files.txt\n" "${file_count}"
+
+# -----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
