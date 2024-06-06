@@ -67,8 +67,10 @@ Utility       Programming Languages
 `etags-c`_    C and C++
 `etags-el`_   Emacs Lisp and C
 `etags-erl`_  Erlang and C
+`etags_go`_   Go
 `etags-lisp`_ Common Lisp
 `etags-py`_   Python
+`etags_rs`_   Rust
 ============= ========================
 
 Each of these utilities support a command line with the ``[-h|--help]``
@@ -88,8 +90,10 @@ options and print more information.
 .. _etags-c:                     https://github.com/pierre-rouleau/pel/blob/master/bin/etags-c
 .. _etags-el:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-el
 .. _etags-erl:                   https://github.com/pierre-rouleau/pel/blob/master/bin/etags-erl
+.. _etags-go:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-go
 .. _etags-lisp:                  https://github.com/pierre-rouleau/pel/blob/master/bin/etags-lisp
 .. _etags-py:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py
+.. _etags-rs:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-rs
 .. _Xref-Support PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref-support.pdf
 
 .. TEXT-END
