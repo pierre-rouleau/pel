@@ -479,21 +479,23 @@ specific backend automatically.
 With PRINT-IN-BUFFER argument, print the information in a
 dedicated buffer."
   (interactive "P")
-  (let ((msg (format "Xref Front-end: %s. Xref Back-ends:
-- dumb-jump-mode           : %s %s
-- ggtags-mode              : %s %s
-- xref-backend-functions   : %s
- - xref-etags mode         : %s
-  - tags-file-name         : %s
-  - tags-table-list        : %S
- - gxref                   : %s %s
- - rtags-xref (for C/C++)  : %s
-- xref-show-xrefs-function : %s
-  - ivy-xref               : %s
-  - helm-xref              : %s
-- cscope-minor-mode        : %s %s
-  - helm-cscope-mode       : %s
-  - helm-scope key bindings: %s"
+  (let ((msg (format "- Xref Front-end: %s
+- Xref Back-ends:
+  - dumb-jump-mode           : %s %s
+  - ggtags-mode              : %s %s
+  - xref-backend-functions   : %s
+   - xref-etags mode         : %s
+    - tags-file-name         : %s
+      - modify it with       : M-x visit-tags-table
+    * tags-table-list        : %S
+   - gxref                   : %s %s
+   - rtags-xref (for C/C++)  : %s
+  * xref-show-xrefs-function : %s
+    - ivy-xref               : %s
+    - helm-xref              : %s
+  - cscope-minor-mode        : %s %s
+    - helm-cscope-mode       : %s
+    - helm-scope key bindings: %s"
                      pel--xref-front-end-used-tool
                      (pel-xref-dumb-jump-mode-state-str)
                      (pel-minor-mode-auto-activated-by 'dumb-jump-mode nil "" :show-all)
@@ -515,6 +517,7 @@ dedicated buffer."
                      (pel-minor-mode-auto-activated-by 'cscope-minor-mode  nil "" :show-all)
                      (pel-symbol-on-off-string 'helm-cscope-mode nil nil "not loaded")
                      (pel-on-off-string pel--helm-cscope-keys-active))))
+
     (if print-in-buffer
         (pel-print-in-buffer "*xref-status*" "Xref Status" msg)
       (message msg))))
