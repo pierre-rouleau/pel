@@ -647,15 +647,15 @@ Done in this function to allow advising libraries that remap these keys."
 ;; The operations are:
 ;;
 ;; - CRiSP-like operations (implemented using windmove and PEL code):
-;;   - navigation: F11 cursor     (point where to move point to)
-;;   - creation  : F11 C-cursor   (point to where to create window)
-;;   - kill      : F11 C-S-cursor (point to window to kill)
+;;   - navigation: <f11> cursor     (point where to move point to)
+;;   - creation  : <f11> C-cursor   (point to where to create window)
+;;   - kill      : <f11> C-S-cursor (point to window to kill)
 ;;
 ;;  - ace-window assigned to 'C-x o', replacing other-window, which
 ;;    provides a single digit window number in the top left corner of each
 ;;    window when moving windows.
 ;;
-;; - Use winner-mode (assigned to 'F11 w p' and 'F11 w n') to restore previous
+;; - Use winner-mode (assigned to '<f11> w p' and '<f11> w n') to restore previous
 ;;   or next window layout.
 ;;
 ;; - '<f11> w s' based keys to resize windows with following keys:
@@ -1062,7 +1062,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; with Control, Meta and Shift in macOS terminal:  I have not found a
 ;; way to get terminal escape sequences for the first 4 functions keys to work
 ;; with Emacs running in macOS Terminal.
-;; For F5 through F12, the combinations do work and aside from F8 (used by
+;; For F5 through <f12>, the combinations do work and aside from F8 (used by
 ;; spell and flyspell), these keys are not used by the Emacs packages I use so
 ;; far.  I use F6 as an extra prefix and assign the other keys to various
 ;; operations as described below.
@@ -2111,7 +2111,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-f     - Factor
 ;; M-g     - GraphViz Dot
 ;; M-k     - Kconfig
-;; M-l     - Outline
+;; M-l     - Outline mode
 ;; M-m     - Markdown
 ;; M-o     - OrgMode
 ;; M-r     - reStructuredText
@@ -4737,7 +4737,13 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (define-pel-global-prefix pel:for-outline-mode (kbd "<f11> SPC M-l"))
 (define-key pel: (kbd      "M-l")          'outline-minor-mode)
 (define-key pel: (kbd      "M-L")          'outline-mode)
-;; The following provides the F12 key in Outline mode.
+
+;; Activate the <f12> key binding for outline-mode
+  (pel--mode-hook-maybe-call
+   (lambda ()
+     (pel-local-set-f12 'pel:for-outline-mode))
+   'outline-mode 'outline-mode-hook)
+
 (pel-eval-after-load outline
 
   (defvar outline-minor-mode-map)
@@ -5446,7 +5452,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (when pel-use-lsp-origami
     (pel-ensure-package lsp-origami from:  melpa))
 
-  ;; TODO: find why using M-o for origami-mode prevents the F11 M-/ F1, F2 and F3
+  ;; TODO: find why using M-o for origami-mode prevents the <f11> M-/ F1, F2 and F3
   ;;       keys from working work properly.
   (define-key pel:hide-show "o" 'origami-mode)
   (define-key pel:hide-show "O" 'global-origami-mode)
@@ -7808,7 +7814,7 @@ the ones defined from the buffer now."
 ;; ----------------
 ;; Perforce Support
 ;; [:todo 2022-03-22, by Pierre Rouleau: Complete Perforce support, delay
-;; load, add F11 and F12 key support, ensure that both work together, document.]
+;; load, add <f11> and <f12> key support, ensure that both work together, document.]
 (when pel-use-perforce
   (when (memq pel-use-perforce '(both vc-p4))
     (pel-install-file
