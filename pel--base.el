@@ -2845,7 +2845,7 @@ Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
 
 
 (defun pel-insert-symbol-content (symbol
-                                  &optional buffer on-same-line no-button)
+                                  &optional buffer on-same-line no-button description)
   "Insert the name followed by the content of the specified SYMBOL.
 
 Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil.
@@ -2854,20 +2854,25 @@ By default SYMBOL must be a global symbol as its value is read in
 the scope of the output buffer.  If the SYMBOL is a buffer local
 symbol, specify the buffer in the optional BUFFER argument or
 let-bind the variable `pel-insert-symbol-content-context-buffer'
-to the value of the buffer you need. The BUFFER argument value
+to the value of the buffer you need. A non-nil BUFFER argument value
 takes precedence to the value of the variable
 `pel-insert-symbol-content-context-buffer'. If both are nil, then
 the value is read from the context of the current buffer, which
 may be a local or global.
 
-By default, the value is printed on the line after the variable name, unless
-ON-SAME-LINE is set."
+By default:
+- the value is printed on the line after the variable name, unless
+  ON-SAME-LINE is set,
+- the variable name is a clickable button, unless NO-BUTTON is set,
+- the symbol name is printed as the title unless a DESCRIPTION is
+  specified (in that case the NO-BUTTON is also set: the description
+  is never made clickable)."
   (let ((value (pel-symbol-value
                 symbol
                 (or buffer pel-insert-symbol-content-context-buffer)))
-        (name  (symbol-name symbol)))
+        (name  (or description (symbol-name symbol))))
     (insert "\n- ")
-    (pel-insert-symbol symbol no-button)
+    (pel-insert-symbol symbol (or no-button description))
     (insert (format "%s:%s%S"
                     (make-string (max 0 (- 40 (length name))) ?\s)
                     (if on-same-line " " "\n")
