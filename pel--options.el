@@ -3220,8 +3220,8 @@ To activate it you must also activate `pel-use-log-support'"
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-use-helm_descbinds nil
-  "Control whether PEL uses the help-descbinds package.
+(defcustom pel-use-helm-descbinds nil
+  "Control whether PEL uses the helm-descbinds package.
 
 When selecting \\='dont-bind-to-F1-b, activate
 help-descbind-mode to invoke it via C-h b or <f1> b"
@@ -10969,7 +10969,7 @@ indexing system."
 (when pel-use-visual-regexp-steroids
   (setq pel-use-visual-regexp t))
 
-(when pel-use-helm_descbinds
+(when pel-use-helm-descbinds
   (setq pel-use-helm t))
 
 (when pel-use-helm-cscope
