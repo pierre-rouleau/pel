@@ -6,7 +6,7 @@ Using ctags and etags for cross referencing with TAGS
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Wednesday, June  5 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-06-06 15:37:05 EDT, updated by Pierre Rouleau.
+:Modified: 2024-06-09 14:30:38 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, Pierre Rouleau
 
 
@@ -45,7 +45,7 @@ Emacs has its own program, etags which generates a format that Emacs
 understand.  Emacs also provides a version of ctags that generates the
 vi-style format used elsewhere.
 
-Also see the 🚦`Xref-Support PDF`_.
+Also see the 🚦 `Xref-Support PDF`_.
 
 The PEL project provides a set of file finding and TAGS creation tools
 that use etags.  Some of them will also use the Universal Ctags program
