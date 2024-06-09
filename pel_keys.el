@@ -5576,6 +5576,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (define-key pel:describe "$"  'pel-spell-show-use)
 (define-key pel:describe "a"  'pel-show-face-at-point)
 (define-key pel:describe "c" #'list-colors-display)
+(when pel-emacs-28-or-later-p
+  (define-key pel:describe "d" #'shortdoc))
 (define-key pel:describe "e" #'pel-show-buffer-file-encoding)
 (define-key pel:describe "C" #'describe-coding-system)
 (define-key pel:describe "F" #'list-faces-display)

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-06-01 22:56:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-06-09 08:54:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -222,8 +222,10 @@
       helpful
       hydra
       keycast
+      info
       interaction-log
       man
+      minibuffer
       which-func
       which-key))
     ([f11 ?? ?k]     "help"             pel-pkg-for-keys        (command-log

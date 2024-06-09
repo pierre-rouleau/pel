@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- On Emacs 28 and later, add a ~<f11> ? d d~ key binding to the *shortdoc* command.
 - Fix customization user option name: *pel-use-helm_descbinds* is now *pel-use-helm-descbinds*
 - Add ~<f11> ? e P~ binding to *list-packages*
 - Modified the *pel-package-info* command.  It now checks and prints how many
