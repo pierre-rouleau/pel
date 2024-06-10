@@ -42,8 +42,8 @@ PEL -- Pragmatic Emacs Library
 - Want to learn Emacs and try several built-in and external packages? `😇`_
 - Want a fast single process startup even with a large number of external packages installed?
   `😃`_
-- And *also*  want to run an Emacs daemon with text and graphics clients on
-  linux and macOS? `🥳_
+- And *also* want to run an Emacs daemon with text and graphics clients on
+  linux and macOS? `🥳`_
 
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ !
