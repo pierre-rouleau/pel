@@ -113,10 +113,14 @@ or `update it`_ [#update]_ !
 ➣ Customization Driven Package Management & Configuration
 ---------------------------------------------------------
 
-- PEL uses Emacs customization facility to control everything: the selection,
-  installation and configuration of packages, the activation of various major
-  and minor modes, the improvement of behaviour of various major and minor
-  modes, the use of various features provided by PEL.
+- PEL uses Emacs customization facility to control everything:
+
+  - the selection,
+  - installation and
+  - configuration of packages,
+  - the activation of various major and minor modes,
+  - the improvement of behaviour of various major and minor modes,
+  - the use of various features provided by PEL.
 
 - PEL saves your customization data inside a file separate from your
   ``init.el`` file, providing an extra degree of freedom and control. This
@@ -129,9 +133,12 @@ or `update it`_ [#update]_ !
   prefix key.  For instance in a C buffer, use ``<f12> <f1>`` to access the
   C-specific PEL PDF, ``<f12> <f2>`` to access the PEL customization buffer to
   activate C features, and ``f12> <f3>`` to the customization buffers
-  controlling the major mode and related features.  If they are not loaded PEL
-  will load them for you after prompting.  Even if the code was not written to
-  support auto-loading of customization variables.
+  controlling the major mode and related features.
+
+  - Unlike default Emacs behaviour, PEL can open customization buffer for a
+    group even if it is not yet loaded. If they are not loaded PEL will load
+    them for you after prompting.  Even if the package's code was not written to
+    support auto-loading of customization variables.
 
 - The classical way to control Emacs behaviour has been to write Emacs Lisp
   code to set variables.  Although you can still do it with PEL you will
