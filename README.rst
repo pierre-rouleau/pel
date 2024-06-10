@@ -40,8 +40,10 @@ PEL -- Pragmatic Emacs Library
 - Don't want to spend your time writing Emacs Lisp code? 😳 [#elispfun]_
 - Need to quickly access help now and later on specific topic? `🤔`_
 - Want to learn Emacs and try several built-in and external packages? `😇`_
-- Want a fast startup even with a large number of external packages installed?
+- Want a fast single process startup even with a large number of external packages installed?
   `😃`_
+- And *also*  want to run an Emacs daemon with text and graphics clients on
+  linux and macOS? 🥳_
 
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ !
@@ -431,6 +433,7 @@ Notes
 .. _😃: `➣ Emacs Fast Startup`_
 .. _PEL Key Maps PDF:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
 .. _🤔: `➣ Extends Emacs Documentation`_
+.. _🥳: doc/emacs-daemon.rst.txt
 .. _PEL Index PDF:      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
