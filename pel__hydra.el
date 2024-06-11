@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-19 18:08:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-06-11 11:55:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -357,6 +357,20 @@
       (tab-window-detach)
     (user-error "Unavailable - requires Emacs 27.1 or later.")))
 
+(defun pel-tab-bar-mode ()
+  "Toggle tab-bar-mode if possible."
+  (interactive)
+  (if pel-emacs-27-or-later-p
+      (tab-bar-mode 'toggle)
+    (user-error "Unavailable - requires Emacs 27.1 or later.")))
+
+(defun pel-tab-close ()
+  "Toggle tab-bar-mode if possible."
+  (interactive)
+  (if pel-emacs-27-or-later-p
+      (tab-close)
+    (user-error "Unavailable - requires Emacs 27.1 or later.")))
+
 (defun pel--next-tab ()
   "Select next tab on tab bar if possible."
   (interactive)
@@ -415,6 +429,7 @@ CAUTION: the hydra is still active!"
   (message "Turn hydra off to use standard keys!"))
 
 
+
 (defhydra pel-∑wnd (global-map "<f7>"
                                :pre  (pel--cache-hydra-is-helpful)
                                :post (pel--restore-hydra-is-helpful)
@@ -443,6 +458,7 @@ CAUTION: the hydra is still active!"
   ("x"           ace-swap-window              "swap with.#"  :column "Layout")
   ("M-v"         pel-2-vertical-windows       "flip2 vert"   :column "Layout")
   ("M-h"         pel-2-horizontal-windows     "flip2 horiz"  :column "Layout")
+  ("M-T"         pel-tab-bar-mode             "tab-bar-mod"  :column "Layout")
   ("M-f"         make-frame-command           "new frame"    :column "Frame")
   ("M-F"         delete-frame                 "Del. frame"   :column "Frame")
   ("}"           pel-next-frame               "next frame"   :column "Frame")
@@ -474,6 +490,7 @@ CAUTION: the hydra is still active!"
   ("C-S-<down>"  pel-close-window-down        "below"        :column "Close")
   ("C-S-<left>"  pel-close-window-left        "left"         :column "Close")
   ("C-S-<right>" pel-close-window-right       "right"        :column "Close")
+  ("C-t"         pel-tab-close                "tab"          :column "Close")
   ("K"           kill-buffer-and-window       "kill buf/win" :column "Buffer")
   ("k"           pel-kill-current-buffer      "kill buffer"  :column "Buffer")
   ("b"           next-buffer                  "next buffer"  :column "Buffer")
