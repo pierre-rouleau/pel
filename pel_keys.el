@@ -2140,6 +2140,19 @@ can't bind negative-argument to C-_ and M-_"
 
 ;;          - SNMP MIP
 ;;          - ANS.1
+
+;; ---------------------------------------------------------------------------
+;; Mode Setting Helper Functions
+;; -----------------------------
+(defun pel--extend-flymake ()
+  "Extend the flymake mode."
+  ;; The keys are similar to what is used by flycheck
+  ;; See pel--extend-flycheck code.
+
+  (when (boundp 'flymake-mode-map)
+    (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
+    (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
+
 ;; ---------------------------------------------------------------------------
 ;; Syntax Check with Flycheck (if requested)
 ;; -----------------------------------------
@@ -2148,6 +2161,23 @@ can't bind negative-argument to C-_ and M-_"
   (pel-autoload-file flycheck for:
                      flycheck-mode
                      flycheck-select-checker)
+
+  (defun pel--extend-flycheck ()
+    "Extend the flycheck mode."
+    ;; The keys are similar to what flymake uses.
+    ;; See pel--extend-flymake
+    (when (boundp 'flycheck-mode-map)
+      (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
+      (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error)
+      (if (eq major-mode 'emacs-lisp-mode)
+          (progn
+            (define-key pel:elisp-compile "l" 'flycheck-list-errors)
+            (define-key pel:elisp-compile "." 'flycheck-display-error-at-point)
+            (define-key pel:elisp-compile "/" 'flycheck-explain-error-at-point))
+        (define-key flycheck-mode-map (kbd "<f12> e") 'flycheck-list-errors)
+                                        ; '/' is same key as '?' without having to hit Shift
+        (define-key flycheck-mode-map (kbd "<f12> /") 'flycheck-explain-error-at-point))))
+  (declare-function pel--extend-flycheck "pel_keys") ; prevent byte-compiler warning
 
   (define-pel-global-prefix pel:flycheck (kbd "<f11> !"))
   (define-key pel:flycheck "!"         'flycheck-mode)
@@ -5178,28 +5208,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-config-major-mode yang pel:for-yang
       (pel-yang-setup-support))))
 
-;; ---------------------------------------------------------------------------
-;; Mode Setting Helper Functions
-;; -----------------------------
-(defun pel--extend-flymake ()
-  "Extend the flymake mode."
-  (when (boundp 'flymake-mode-map)
-    (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
-    (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
-
-(defun pel--extend-flycheck ()
-  "Extend the flycheck mode."
-  (when (boundp 'flycheck-mode-map)
-    (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
-    (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error)
-    (if (eq major-mode 'emacs-lisp-mode)
-        (progn
-          (define-key pel:elisp-compile "l" 'flycheck-list-errors)
-          (define-key pel:elisp-compile "." 'flycheck-display-error-at-point)
-          (define-key pel:elisp-compile "/" 'flycheck-explain-error-at-point))
-      (define-key flycheck-mode-map (kbd "<f12> e") 'flycheck-list-errors)
-                                        ; '/' is same key as '?' without having to hit Shift
-      (define-key flycheck-mode-map (kbd "<f12> /") 'flycheck-explain-error-at-point))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> =`` : Copy commands
