@@ -1680,7 +1680,9 @@ can't bind negative-argument to C-_ and M-_"
 
 ;; Helm
 ;; ----
-(when pel-use-helm (pel-ensure-package helm from: melpa)
+(when pel-use-helm
+  (pel-ensure-package helm from: melpa)
+  (pel-ensure-package helm-core from: melpa)
   (pel-autoload-file helm for: helm-mode)
   (pel-eval-after-load helm
     (require 'helm-config)
