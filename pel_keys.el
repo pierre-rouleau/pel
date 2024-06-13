@@ -1685,7 +1685,6 @@ can't bind negative-argument to C-_ and M-_"
   (pel-ensure-package helm-core from: melpa)
   (pel-autoload-file helm for: helm-mode)
   (pel-eval-after-load helm
-    (require 'helm-config)
     (defvar helm-map)                   ; prevent byte-compiler warning
     ;; <tab> or C-i are mapped to helm-select-action.  Use M-C-i to run
     ;; persistent action.
