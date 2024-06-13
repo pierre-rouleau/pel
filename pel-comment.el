@@ -1,6 +1,6 @@
 ;;; pel-comment.el --- PEL Comments Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -150,6 +150,13 @@ variables."
                                       (setq max-length (length n1)))
                                     (string< n1
                                              (symbol-name s2))))))
+    ;; prepend several other symbols that are related to
+    ;; commenting to the comment-symbols list
+    (push 'auto-fill-function comment-symbols)
+    (push 'normal-auto-fill-function comment-symbols)
+    (push 'fill-column comment-symbols)
+    (push 'major-mode comment-symbols)
+
     ;; Print a report inside a specialized buffer.
     (pel-print-in-buffer
      "*comment-vars*"
