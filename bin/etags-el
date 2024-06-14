@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 09:38:05 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-14 17:07:26 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -57,8 +57,9 @@ etags-el: build an etags-compliant TAGS in the current directory
   Usage: etags-el DIRPATH [DIRPATH ...]
 
    • [Re]build an etags-compliant TAGS file in current directory
-     for the Emacs Lisp & C code & header files in the directory
+     for the Emacs Lisp, C code & header files in the directory
      tree(s) identified on the command line.
+   • Processes the Emacs Lisp and C files inside gz files.
    • Overwrites any TAGS file in the current directory.
    • Inspects content of .el, .c, .h and their gz compressed files.
    • Stores the names of inspected files in the file named
