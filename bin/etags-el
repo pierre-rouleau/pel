@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-14 17:07:26 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-15 19:03:09 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -54,11 +54,17 @@ etags-el: build an etags-compliant TAGS in the current directory
 
    • Print this help information.
 
-  Usage: etags-el DIRPATH [DIRPATH ...]
+  Usage: etags-el [--in=TARGET-DIRPATH] DIRPATH [DIRPATH ...]
 
-   • [Re]build an etags-compliant TAGS file in current directory
-     for the Emacs Lisp, C code & header files in the directory
-     tree(s) identified on the command line.
+   • [Re]build an etags-compliant TAGS file in specified
+     TARGET-DIRPATH or current directory for the Emacs Lisp,
+     C code & header files in the directory tree(s)
+     identified by DIRPATH on the command line.
+     All operations are done with  the current directory being
+     the TARGET-DIRPATH if specified, otherwise it's the current one.
+     This means that when specifying TARGET-DIRPATH, all other
+     DIRPATH are relative to that directory (if relative).
+     You can also use absolute directories.
    • Processes the Emacs Lisp and C files inside gz files.
    • Overwrites any TAGS file in the current directory.
    • Inspects content of .el, .c, .h and their gz compressed files.
@@ -108,11 +114,28 @@ if [ -z "$1" ]; then
 elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     if [ "$#" = "1" ]; then
+        # help requested explicitly with right amount of args: no error.
         exit 0
     else
         exit  1
     fi
 fi
+
+case "$1" in
+    --in=*)
+        targetdir="$(echo "$1" | sed 's/--in=//g' | sed "s:~:$HOME:g")"
+        targetdir=$(realpath "${targetdir}")
+        if [ -d "${targetdir}" ]; then
+            cd "${targetdir}" || exit 1
+            shift
+        else
+            printf -- "\
+*** etags-el ERROR: invalid TARGET-DIRPATH: %s
+" "${targetdir}"
+            exit 1
+        fi
+        ;;
+esac
 
 # --
 # Check the validity of directory names specified as arguments.
