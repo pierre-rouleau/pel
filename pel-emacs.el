@@ -1,6 +1,6 @@
 ;;; pel-emacs.el --- Emacs stats utilities -*- lexical-binding: t -*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -36,6 +36,17 @@
 ;; - `pel-emacs-load-stats' print Emacs Lisp load statistics in the echo area.
 ;; - `pel-emacs-mem-stats' print Emacs Lisp memory statistics in a buffer.
 ;;   Those might be useful when developing Emacs Lisp code.
+;;
+;; The function call hierarchy:
+;;
+;; * `pel-emacs-executable'
+;; * `pel-open-emacs-refcard'
+;;   - `pel-emacs-refcard-dirpath'
+;; * `pel-emacs-load-stats'
+;; * `pel-emacs-mem-stats'
+;; * `pel-emacs-command-stats'
+;;   - `pel--emacs-command-count'
+;;   - `pel--emacs-command-binding'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -55,7 +66,8 @@
            (file-truename
             (expand-file-name invocation-name invocation-directory))))
 
-;; --
+;; ---------------------------------------------------------------------------
+;; pel-open-emacs-refcard
 
 (defvar pel--prompt-history-for-emacs-refcard nil
   "History list for function `pel-open-emacs-refcard'.")
@@ -105,6 +117,9 @@ the variable `pel-emacs-refcard-dirpath' user option."
                   'pel--prompt-history-for-emacs-refcard)))
     (browse-url (format "file:%s" (pel-emacs-refcard-dirpath topic)))))
 
+;; ---------------------------------------------------------------------------
+;; pel-emacs-load-stats
+
 ;;-pel-autoload
 (defun pel-emacs-load-stats (&optional with-details)
   "Display number of loaded files & features.
@@ -146,6 +161,8 @@ With \\[universal-argument] \\[universal-argument] prefix, also print content of
           ))
     (user-error "The package file is not loaded!")))
 
+;; ---------------------------------------------------------------------------
+;; pel-emacs-mem-stats
 
 ;; Prevent byte-compiler warning by declaring variables that are
 ;; always available.
@@ -185,7 +202,8 @@ On %s:
  - misc-objects-consed: %19d" misc-objects-consed)
                                  ""))))
 
-
+;; ---------------------------------------------------------------------------
+;; pel-emacs-command-stats
 
 (defun pel--emacs-command-binding (command)
   "Return the first key bound to the COMMAND.
