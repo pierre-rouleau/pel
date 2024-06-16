@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-15 19:03:09 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-06-16 14:03:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -65,6 +65,8 @@ etags-el: build an etags-compliant TAGS in the current directory
      This means that when specifying TARGET-DIRPATH, all other
      DIRPATH are relative to that directory (if relative).
      You can also use absolute directories.
+   • If a DIRPATH has a name that starts with a '-', put '--'
+     after the options before the first DIRPATH.
    • Processes the Emacs Lisp and C files inside gz files.
    • Overwrites any TAGS file in the current directory.
    • Inspects content of .el, .c, .h and their gz compressed files.
@@ -109,8 +111,12 @@ run__etags__el()
 # Check validity of arguments
 
 if [ -z "$1" ]; then
-    print_usage
-    exit 1
+        printf -- "\
+*** etags-el ERROR: Please identify at least one DIRPATH to scan.
+                    Use '.' for current directory.
+"
+        print_usage
+        exit 1
 elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     if [ "$#" = "1" ]; then
@@ -123,7 +129,7 @@ fi
 
 case "$1" in
     --in=*)
-        targetdir="$(echo "$1" | sed 's/--in=//g' | sed "s:~:$HOME:g")"
+        targetdir="$(echo "$1" | cut -c 6- | sed "s:~:$HOME:g")"
         targetdir=$(realpath "${targetdir}")
         if [ -d "${targetdir}" ]; then
             cd "${targetdir}" || exit 1
@@ -135,8 +141,26 @@ case "$1" in
             exit 1
         fi
         ;;
+    --)
+        shift
+        ;;
+
+    -*)
+        printf -- "\
+*** etags-el ERROR: invalid options: %s
+" "$1"
+        exit 1
+        ;;
 esac
 
+# --
+if [ -z "$1" ]; then
+        printf -- "\
+*** etags-el ERROR: Please identify at least one DIRPATH to scan.
+                    Use '.' for current directory.
+"
+        exit 1
+fi
 # --
 # Check the validity of directory names specified as arguments.
 # Ensure that each directory specified on the command line
@@ -175,6 +199,8 @@ for dname in "$@"; do
 done
 
 # --
+
+printf -- "etags-el - Processing %s/ ...\n" "$(pwd)"
 
 # Find the files, pass their names to etags which creates the TAGS file.
 # To find the files, try to use fd or fdfind if they exist,
