@@ -207,13 +207,14 @@ Use the N argument to specify a different window.
           (setq bufname (generate-new-buffer "*load-path*"))
           (with-current-buffer bufname
             (insert "----------------\n")
-            (insert "load-path:\n")
+            (insert (format  "load-path: %d directories:\n" (length load-path)))
             (dolist (pathname load-path)
               (insert (format "%s\n" pathname)))
             (insert "----------------\n")
-            (insert "load-path roots:\n")
-            (dolist (pathname (pel-emacs-roots-in-loadpath))
-              (insert (format "%s\n" pathname))))
+            (let ((load-path-roots (pel-emacs-roots-in-loadpath)))
+              (insert (format "load-path has the following %d roots:\n" (length load-path-roots)))
+              (dolist (pathname load-path-roots)
+                (insert (format "%s\n" pathname)))))
           (switch-to-buffer bufname)    ; OK to call switch-to-buffer: the
                                         ; command is interactive and
                                         ; specifically requests to open a NEW
