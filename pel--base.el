@@ -325,6 +325,9 @@
 (defconst pel-emacs-29-or-later-p (>= emacs-major-version 29)
   "Predicate: t when Emacs version 29 or later is running, nil otherwise.")
 
+
+(defconst pel-filesep (if pel-system-is-windows-p "\\" "/")
+  "String directory/file separator character for this OS.")
 ;; ---------------------------------------------------------------------------
 ;; Code Style Buffer Local Variables
 ;; ---------------------------------
