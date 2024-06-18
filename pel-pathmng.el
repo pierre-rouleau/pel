@@ -39,11 +39,11 @@
 ;; Call hierarchy
 ;;
 ;; * `pel-emacs-load-path'
-;; - `pel-emacs-roots-in-loadpath'
-;;   - `pel-emacs-roots-in'
-;;     - `pel-paths-path-in-common'
-;;     - `pel-paths-set-common-parent'
-;;       - `pel-paths-common-parent'
+;;   - `pel-emacs-roots-in-loadpath'
+;;     - `pel-emacs-roots-in'
+;;       - `pel-paths-path-in-common'
+;;       - `pel-paths-set-common-parent'
+;;         - `pel-paths-common-parent'
 
 
 ;; ---------------------------------------------------------------------------
@@ -60,44 +60,6 @@
 
 ;; ---------------------------------------------------------------------------
 ;;; Code:
-
-;;-pel-autoload
-(defun pel-emacs-load-path (&optional n)
-  "Show the current `load-path' inside a new *load-path* buffer.
-Open the buffer in the current window or the one identified by N,
-with the display-line-number-mode on.
-The buffer is NOT committed to a file.
-If a buffer with the name *load-path* already exists, creates a new
-buffer name that contains the string *load-path*.
-
-By default `pel-emacs-load-path' opens the buffer in the current window.
-Use the N argument to specify a different window.
-- If N is negative : create a new window
-- If N is 0:                 : open buffer in other window
-- If N in [2,8] range:       : open buffer in window identified by the direction
-                               corresponding to the cursor in a numeric
-                               keypad:
-                               -             8 := \\='up
-                               - 4 := \\='left  5 := \\='current  6 := \\='right
-                               -             2 := \\='down
-- If N is 9 or larger        : open buffer in window below."
-  (interactive "P")
-  (let ((direction (pel-window-direction-for (prefix-numeric-value n) 'current))
-        bufname)
-    (if (pel-window-select direction)
-        (progn
-          (setq bufname (generate-new-buffer "*load-path*"))
-          (with-current-buffer bufname
-            (dolist (pathname load-path)
-              (insert (format "%s\n" pathname))))
-          (switch-to-buffer bufname)    ; OK to call switch-to-buffer: the
-                                        ; command is interactive and
-                                        ; specifically requests to open a NEW
-                                        ; buffer in a *specified* window.
-          (goto-char (point-min))
-          (display-line-numbers-mode 1))
-      (user-error "Invalid window!"))))
-
 
 ;; ---------------------------------------------------------------------------
 
@@ -215,6 +177,52 @@ Return nil if no parent in common."
 (defun pel-emacs-roots-in-loadpath ()
   "Return a list of root directories in load-path."
   (pel-emacs-roots-in load-path pel-paths-excluded-loadpath))
+
+
+;;-pel-autoload
+(defun pel-emacs-load-path (&optional n)
+  "Show the current `load-path' inside a new *load-path* buffer.
+Open the buffer in the current window or the one identified by N,
+with the display-line-number-mode on.
+The buffer is NOT committed to a file.
+If a buffer with the name *load-path* already exists, creates a new
+buffer name that contains the string *load-path*.
+
+By default `pel-emacs-load-path' opens the buffer in the current window.
+Use the N argument to specify a different window.
+- If N is negative : create a new window
+- If N is 0:                 : open buffer in other window
+- If N in [2,8] range:       : open buffer in window identified by the direction
+                               corresponding to the cursor in a numeric
+                               keypad:
+                               -             8 := \\='up
+                               - 4 := \\='left  5 := \\='current  6 := \\='right
+                               -             2 := \\='down
+- If N is 9 or larger        : open buffer in window below."
+  (interactive "P")
+  (let ((direction (pel-window-direction-for (prefix-numeric-value n) 'current))
+        bufname)
+    (if (pel-window-select direction)
+        (progn
+          (setq bufname (generate-new-buffer "*load-path*"))
+          (with-current-buffer bufname
+            (insert "----------------\n")
+            (insert "load-path:\n")
+            (dolist (pathname load-path)
+              (insert (format "%s\n" pathname)))
+            (insert "----------------\n")
+            (insert "load-path roots:\n")
+            (dolist (pathname (pel-emacs-roots-in-loadpath))
+              (insert (format "%s\n" pathname))))
+          (switch-to-buffer bufname)    ; OK to call switch-to-buffer: the
+                                        ; command is interactive and
+                                        ; specifically requests to open a NEW
+                                        ; buffer in a *specified* window.
+          (goto-char (point-min))
+          (display-line-numbers-mode 1))
+      (user-error "Invalid window!"))))
+
+
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-pathmng)
