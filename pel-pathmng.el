@@ -53,6 +53,9 @@
 (require 'pel--base)                    ; use: `pel-filesep'
 (require 'pel-window)                   ; use: `pel-window-direction-for',
 ;;                                      ;      `pel-window-select'
+(eval-when-compile
+  (require 'subr-x)                     ;use `string-join'
+  )
 
 
 ;; ---------------------------------------------------------------------------
@@ -80,7 +83,7 @@ Use the N argument to specify a different window.
 - If N is 9 or larger        : open buffer in window below."
   (interactive "P")
   (let ((direction (pel-window-direction-for (prefix-numeric-value n) 'current))
-         bufname)
+        bufname)
     (if (pel-window-select direction)
         (progn
           (setq bufname (generate-new-buffer "*load-path*"))
@@ -129,6 +132,7 @@ Return nil if no parent in common."
          (dirs-b (split-string dir-b pel-filesep))
          (common '())
          (skip    nil)
+         (dirb    nil)
          (common-paths (dolist (dira dirs-a (reverse common))
                          (unless skip
                            (setq dirb (car dirs-b))
