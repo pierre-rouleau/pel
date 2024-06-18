@@ -36,12 +36,26 @@
 ;; in new buffer which can be diffed with the old one to quickly confirm the
 ;; additions.
 
-(require 'display-line-numbers)         ; use: display-line-numbers-mode
-(require 'simple)                       ; use: count-words
-(require 'pel-window)                   ; use: pel-window-direction-for,
-;;                                      ;      pel-window-select
+;; Call hierarchy
+;;
+;; * `pel-emacs-load-path'
+;; - `pel-emacs-roots-in-loadpath'
+;;   - `pel-emacs-roots-in'
+;;     - `pel-paths-path-in-common'
+;;     - `pel-paths-set-common-parent'
+;;       - `pel-paths-common-parent'
 
 
+;; ---------------------------------------------------------------------------
+;;
+(require 'display-line-numbers)         ; use: `display-line-numbers-mode'
+(require 'simple)                       ; use: `count-words'
+(require 'pel--base)                    ; use: `pel-filesep'
+(require 'pel-window)                   ; use: `pel-window-direction-for',
+;;                                      ;      `pel-window-select'
+
+
+;; ---------------------------------------------------------------------------
 ;;; Code:
 
 ;;-pel-autoload
@@ -80,6 +94,121 @@ Use the N argument to specify a different window.
           (goto-char (point-min))
           (display-line-numbers-mode 1))
       (user-error "Invalid window!"))))
+
+
+;; ---------------------------------------------------------------------------
+
+(defun pel--paths-excluded-loadpath-here ()
+  "Return a list of directory file names that are common on this system."
+  (let* ((paths  (list (directory-file-name
+                        (expand-file-name user-emacs-directory))
+                       (getenv "HOME"))))
+    (cond (pel-system-is-macos-p (if (file-exists-p "/opt/homebrew")
+                                     (progn
+                                       (push "/opt/homebrew" paths)
+                                       (push "/opt/homebrew/share" paths)
+                                       (push "/opt/homebrew/Cellar" paths)
+                                       )
+                                   (when (file-exists-p "/usr/local/Cellar")
+                                     (push "/usr/local" paths)
+                                     (push "/usr/local/share" paths)
+                                     (push "/usr/local/Cellar" paths))))
+          (pel-system-is-linux-p (push "/usr/local/share" paths)))
+    (reverse paths)))
+
+(defconst pel-paths-excluded-loadpath (pel--paths-excluded-loadpath-here)
+  "List of directories that are parent of important Emacs directories.")
+
+(defun pel-paths-common-parent (dir-a dir-b)
+  "Return the common parent directory, if any, of DIR-A and DIR-B.
+
+Return a string that is the file name format of the common
+directory path (does not end with path separator).
+Return nil if no parent in common."
+  (let* ((dirs-a (split-string dir-a pel-filesep))
+         (dirs-b (split-string dir-b pel-filesep))
+         (common '())
+         (skip    nil)
+         (common-paths (dolist (dira dirs-a (reverse common))
+                         (unless skip
+                           (setq dirb (car dirs-b))
+                           (setq dirs-b (cdr dirs-b))
+                           (if (string-equal dira dirb)
+                               (push dira common)
+                             (setq skip t))))))
+    ;; ignore / being common (since it's always the case
+    (when (cdr common-paths)
+      (string-join common-paths pel-filesep))))
+
+(defun pel-paths-set-common-parent (dir-a dirs &optional excluded)
+  "Return the common parent directory, if any, of DIR-A and any of DIRS.
+
+DIRS is a list of directories.
+
+If EXCLUDED is specified, it's a list of directories
+that should not be considered common.  The HOME directory
+is often placed in that list.
+
+Return a string that is the file name format of the common
+directory path (does not end with path separator).
+Return nil if no parent in common."
+  (let ((the-common-dirpath nil)
+        (common-dirpath nil))
+    (dolist (dir dirs)
+      (setq common-dirpath (pel-paths-common-parent dir dir-a))
+      (when (and common-dirpath
+                 (not (member common-dirpath excluded)))
+        (if the-common-dirpath
+            (when (> (length the-common-dirpath)
+                     (length common-dirpath))
+              (setq the-common-dirpath common-dirpath)))
+        (setq the-common-dirpath common-dirpath))
+      )
+    the-common-dirpath))
+
+(defun pel-paths-path-in-common (dir-a dirs &optional excluded)
+  "Return DIRS element that has a common path with DIR-A.
+
+If EXCLUDED is specified, it's a list of directories
+that should not be considered common.  The HOME directory
+is often placed in that list.
+
+Return a string that is the file name format of the common
+directory path (does not end with path separator).
+Return nil if no parent in common."
+  (let ((the-common-dirname nil)
+        (dir nil))
+    (while (and (not the-common-dirname)
+                dirs)
+      (setq dir (car dirs))
+      (setq dirs (cdr dirs))
+      (when (pel-paths-common-parent dir dir-a)
+        (unless (member (pel-paths-common-parent dir dir-a) excluded)
+          (setq the-common-dirname dir))))
+    the-common-dirname))
+
+
+(defun pel-emacs-roots-in (directories &optional excluded)
+  "Return a list of the directory roots listed in load-path"
+  (let ((roots (list (car directories))))
+    (dolist (dir (cdr directories) (reverse roots))
+      ;; dir has common-path in common with something inside roots
+      ;; It's possible that we placed something in roots that is a
+      ;; child of what is common-path.  If this is the case it must be
+      ;; removed from roots and common-path must be put instead.
+      ;; If there's no child common-path must be also placed in roots.
+      (let ((common-path (pel-paths-set-common-parent dir roots excluded)))
+        (if common-path
+            (let ((item-in-common (pel-paths-path-in-common dir roots excluded )))
+              (when item-in-common
+                (setq roots  (remove item-in-common roots)))
+              (push common-path roots))
+          (push dir roots))))))
+
+
+(defun pel-emacs-roots-in-loadpath ()
+  "Return a list of root directories in load-path."
+  (pel-emacs-roots-in load-path pel-paths-excluded-loadpath))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-pathmng)
