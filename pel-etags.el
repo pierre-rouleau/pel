@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, November  6 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-11-07 18:43:16, updated by Pierre Rouleau>
+;; Time-stamp: <2024-06-18 19:45:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@
 ;;
 (require 'xref)
 (require 'etags)
+(require 'pel-pathmng)                  ; use: `pel-emacs-roots-in-loadpath'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -84,6 +85,22 @@ Return the file that exists or nil if nothing found."
         (save-excursion
           (etags-goto-tag-location tag-info)
           (point-marker))))))
+
+
+(defun pel-etags-emacs-load-path ()
+  "Create a TAGS file for all Emacs-Lisp files in load-path.
+
+Uses the etags-el script "
+  (interactive)
+  (message "Please wait while etags-el is running...")
+  (apply 'call-process
+         "etags-el"
+         nil
+         "*scratch*"
+         nil
+         (append '("--in=~/my/dv/elisp/pel")
+                 (pel-emacs-roots-in-loadpath)))
+  (message "Done. See info is in *scratch*"))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-etags)

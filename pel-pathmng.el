@@ -31,10 +31,12 @@
 ;; long list (potentially wrapped around).
 ;;
 ;; The `pel-emacs-load-path' command opens up a buffer that lists each directory
-;; in the `load-path' and display an overall word count message.  If one
-;; installs a new package then running the command will create an updated list
-;; in new buffer which can be diffed with the old one to quickly confirm the
-;; additions.
+;; in the `load-path', the number of entries and the list of directory roots
+;; it has.
+;;
+;; If one installs a new package then running the command will create an
+;; updated list in new buffer which can be diffed with the old one to quickly
+;; confirm the additions.
 
 ;; Call hierarchy
 ;;
@@ -44,7 +46,7 @@
 ;;       - `pel-paths-path-in-common'
 ;;       - `pel-paths-set-common-parent'
 ;;         - `pel-paths-common-parent'
-
+;;
 
 ;; ---------------------------------------------------------------------------
 ;;
@@ -222,8 +224,6 @@ Use the N argument to specify a different window.
           (goto-char (point-min))
           (display-line-numbers-mode 1))
       (user-error "Invalid window!"))))
-
-
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-pathmng)
