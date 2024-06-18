@@ -116,7 +116,9 @@ Use the N argument to specify a different window.
                                      (push "/usr/local" paths)
                                      (push "/usr/local/share" paths)
                                      (push "/usr/local/Cellar" paths))))
-          (pel-system-is-linux-p (push "/usr/local/share" paths)))
+          (pel-system-is-linux-p (progn
+                                   (push "/usr/local/share" paths)
+                                   (push "/usr/local/share/emacs" paths))))
     (reverse paths)))
 
 (defconst pel-paths-excluded-loadpath (pel--paths-excluded-loadpath-here)
