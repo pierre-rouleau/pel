@@ -74,6 +74,18 @@
 ;;    - `pel-xref-rtags-activate'
 ;;
 ;;    - `pel-xref-function-hook-local-p'
+;;
+;; xref support to find source from customize buffer
+;; * `pel-xref-find-custom-definition-at-line'
+;;   - `pel-elisp-find-variable'
+;;
+;; CScope support:
+;; * `pel-toggle-helm-cscope'
+;;   - `pel-activate-helm-cscope'
+;;     - `pel-activate-helm-cscope-keys'
+;;   - `pel-deactivate-helm-cscope-keys'
+;;
+;; etags support:
 
 
 ;;; --------------------------------------------------------------------------
@@ -84,6 +96,7 @@
 (require 'pel-prompt)                   ; use `pel-select-from'
 (require 'pel-read)                     ; use `pel-customize-symbol-at-line'
 (require 'pel-text-transform)           ; use `pel-capitalize-first-letter'
+(require 'pel-pathmng)                  ; use: `pel-emacs-roots-in-loadpath'
 
 ;; ---------------------------------------------------------------------------
 ;; Utilities
@@ -461,6 +474,26 @@ The keys are:
            (pel-symbol-on-off-string 'helm-cscope-mode)
            (pel-on-off-string pel--helm-cscope-keys-active)))
 
+;; ---------------------------------------------------------------------------
+;; etags support
+
+(defun pel-etags-emacs-load-path ()
+  "Builds the TAGS file for all ELisp files used by Emacs.
+
+Store the TAGS file in the PEL directory."
+
+  (interactive)
+  (message "Please wait while etags-el is running...")
+  (apply 'call-process
+         "etags-el"
+         nil
+         "*scratch*"
+         nil
+         (append (list (format "--in=%s" (if (boundp 'pel-home-dirpath-name)
+                                             pel-home-dirpath-name
+                                           (car load-path))))
+                 (pel-emacs-roots-in-loadpath)))
+  (message "Done. See info is in *scratch*"))
 ;; ---------------------------------------------------------------------------
 
 (defun pel-xref-functions-hook-str (function-hook)

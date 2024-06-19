@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2024-06-18 19:45:35 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2024-06-19 06:59:10 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -597,7 +597,6 @@ pel-elisp.elc:          pel--base.elc pel--options.elc pel-prompt.elc pel-naviga
 pel-elpa.elc:           pel-filedir.elc
 pel-emacs.elc:          pel--base.elc pel--options.elc
 pel-erlang.elc:         pel--base.elc pel--options.elc pel-ffind.elc pel-fs.elc pel-syntax.elc pel-xref.elc
-pel-etags.elc:          pel-pathmng.elc
 pel-ffind.elc:          pel--options.elc
 pel-file-recent.elc:    pel--options.elc pel-prompt.elc
 pel-file.elc:           pel--base.elc pel-prompt.elc pel-read.elc pel-window.elc pel-prompt.elc pel-filex.elc
@@ -670,7 +669,7 @@ pel-vcs.elc:		pel--base.elc pel-filedir.elc pel-prompt.elc
 pel-whitespace.elc:     pel--base.elc pel--options.elc
 pel-window.elc:         pel--base.elc pel--options.elc  pel-prompt.elc
 pel-xr.elc:             pel--base.elc pel-read.elc
-pel-xref.elc:           pel--base.elc pel--options.elc pel-prompt.elc pel-read.elc pel-text-transform.elc
+pel-xref.elc:           pel--base.elc pel--options.elc pel-prompt.elc pel-read.elc pel-text-transform.elc pel-pathmng.elc
 pel-yang.elc:           pel--base.elc
 pel__hydra.elc:         pel--base.elc pel--options.elc
 # Note that pel__hydra.el is byte-compiled by the code of pel_keys.el
