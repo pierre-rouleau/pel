@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-06-09 08:54:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-07-11 14:54:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1003,6 +1003,12 @@ There should be no key binding!" keyseq))
     ("macOS"            . "macOS-keys")
     ("mint"             . "linux-mint-20-desktop-keys")
     ("ubuntu"           . "ubuntu-16-04-desktop-keys" )
+    ;; lang sub-directory PDF
+    ("GNU make"         . "lang/gmake")
+    ("GNU readline"     . "lang/gnu-readline")
+    ("bash-info"        . "lang/bash")
+    ("sh-info"          . "lang/sh")
+    ("zsh-info"         . "lang/zsh")
     )
   "List of alias for PEL PDF file names.")
 
