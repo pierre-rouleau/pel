@@ -1188,7 +1188,7 @@ Done in this function to allow advising libraries that remap these keys."
 
 (define-key pel:           "#"             'pel-toggle-mac-numlock)
 (define-key pel:           "`"            #'overwrite-mode)
-(if (or pel-system-is-macos-p pel-keypad-esc-0-is-overwite-mode)
+(if (or pel-system-is-macos-p pel-keypad-esc-0-is-overwrite-mode)
     (global-set-key  (kbd "ESC <kp-0>")       #'overwrite-mode)
   (global-set-key  (kbd "ESC <insertchar>")   #'overwrite-mode))
 (define-key pel: (kbd      "RET")         #'auto-fill-mode)

@@ -3307,7 +3307,7 @@ ssh."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-keypad-esc-0-is-overwite-mode nil
+(defcustom pel-keypad-esc-0-is-overwrite-mode nil
   "Whether PEL enforce ESC keypad 0 as overwrite-mode if not in numlock mode.
 
 This setting is normally not required. It is, however, required in
