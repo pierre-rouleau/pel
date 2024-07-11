@@ -3297,6 +3297,17 @@ For those system, set `pel-select-key-is-end' to t and PEL will bind the
   :group 'pel-base-emacs
   :group 'pel-pkg-for-keys)
 
+(defcustom pel-keypad-0-is-kp-yank nil
+  "Whether PEL enforce using keypad 0 as yank when not in numlock mode.
+
+This setting is normally not required. It is, however, required in
+some situations like when running Emacs on a Linux system accessed through
+ssh."
+  :group 'pel-keypad-keys
+  :type 'boolean
+  :safe #'booleanp)
+
+
 (defcustom pel-keypad-+-is-kp-add nil
   "Whether Keypad + is seen as <kp-add> or not.
 

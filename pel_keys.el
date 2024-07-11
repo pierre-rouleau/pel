@@ -822,7 +822,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; -- The numeric keys: 0 to 9
 ;;
 ;; The numeric keys are mapped to pel-0 to pel-9 commands.  These commands
-;; check the satet of num-locking managed by the pel-numkpad.el to determine
+;; check the state of num-locking managed by the pel-numkpad.el to determine
 ;; how they should behave: in num-lock they just self insert the corresponding
 ;; digit. When not num-locked, the keys implement other operations: cursor
 ;; movement, etc...
@@ -832,7 +832,7 @@ Done in this function to allow advising libraries that remap these keys."
 
 ;; On macOS the keypad 0 key registers as kp-0, but on Linux and Windows it
 ;; registers as <insertchar> when numlock is off.
-(if pel-system-is-macos-p
+(if (or pel-system-is-macos-p pel-keypad-0-is-kp-yank)
     (global-set-key [kp-0] 'pel-0)
   (global-set-key (kbd "<insertchar>") 'pel-0))
 (global-set-key [kp-1] 'pel-1)
