@@ -3314,6 +3314,8 @@ This setting is normally not required. It is, however, required in
 some situations like when running Emacs on a Linux system accessed through
 ssh."
   :group 'pel-keypad-keys
+  :group 'pel-pkg-for-cut-and-paste
+  :group 'pel-pkg-for-text-mode
   :type 'boolean
   :safe #'booleanp)
 
@@ -3325,6 +3327,7 @@ This is not the case on macOS but is the case on some Linux
 distributions.  It allows using the keypad + key to execute the
 `pel-copy-marked-or-whole-line' command."
   :group 'pel-keypad-keys
+  :group 'pel-pkg-for-cut-and-paste
   :type 'boolean
   :safe #'booleanp)
 
