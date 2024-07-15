@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-07-11 14:54:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-07-15 13:14:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1009,6 +1009,8 @@ There should be no key binding!" keyseq))
     ("bash-info"        . "lang/bash")
     ("sh-info"          . "lang/sh")
     ("zsh-info"         . "lang/zsh")
+    ;; cmd sub-directory PDF
+    ("ls"               . "cmd/ls")
     )
   "List of alias for PEL PDF file names.")
 
