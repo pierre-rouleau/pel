@@ -8095,7 +8095,7 @@ The choices are:
           (string :tag "Set Erlang version to")))
 
 (defcustom pel-erlang-path-detection-method 'auto-detect
-  "Identifies the method PEL uses to determine Erlang's version available.
+  "Identifies the method PEL uses to determine Erlang's root path.
 
 This value is used by the function `pel-erlang-root-path' which attempts to
 identify the available version of Erlang to set the user-options of various
@@ -8107,8 +8107,8 @@ The choices are:
 
 - auto-detect : PEL extracts Erlang root directory by running the
                 bin/erlang-root-dir Erlang script.  This is the default.
-- by-envvar   : A string that is the name of en OS environment variable that
-                holds the version of Erlang.  The default environment
+- by-envvar   : A string that is the name of the OS environment variable that
+                holds Erlang's root path.  The default environment
                 variable is PEL_ERLANG_ROOT_DIR, you can select another one.
 - Fixed string  that represents the Erlang root path.
                 Use this to impose a specific version.
