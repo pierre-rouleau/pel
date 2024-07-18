@@ -797,6 +797,7 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-text-insert" for:
     pel-insert-line
+    pel-set-insert-filename-root
     pel-insert-filename
     pel-insert-filename-and-line
     pel-insert-filename-wtilde
@@ -810,6 +811,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-insert-iso-date-wkd
     pel-insert-iso-date-time
     pel-insert-iso-date-wkd-time
+    pel-customize-insert-filename
     pel-customize-insert-date-time
     pel-insert-todo-note
     pel-customize-todo-note)

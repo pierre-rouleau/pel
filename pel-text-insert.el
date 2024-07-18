@@ -53,6 +53,7 @@
 
 (require 'pel--base)       ; use: pel-require
 ;;                         ;      pel-current-buffer-filename
+;;                         ;      pel-string-starts-with-p
 ;;                         ;      pel-ends-with-space-p
 ;;                         ;      pel-comment-prefix
 (require 'pel--macros)     ; use: pel-concat-to
@@ -173,6 +174,35 @@ The character used is identified by CHAR, otherwise '-' is used."
       (replace-regexp-in-string (format "^%s/" tilde-expanded) "~/"
                                 filename))))
 
+
+
+(defvar-local pel--insert-filename-root (or
+                                         (getenv "PEL_INSERT_FILENAME_ROOT")
+                                         pel-insert-filename-root)
+  "Optional path used as the basis for `pel-insert-filename'.
+
+If nil, `pel-insert-filename' inserts an absolute path.
+Otherwise, `pel-insert-filename' strips the value from
+the inserted path if the path of the filename starts with this
+path.
+
+At initialization, this value is initialized with the value of
+the PEL_INSERT_FILENAME_ROOT environment variable if it exists or
+with the value of the `pel-insert-filename-root' user option.")
+
+
+;;-pel-autoload
+(defun pel-set-insert-filename-root ()
+  "Change `pel--insert-filename-root'.
+
+Controls the root prefixed stripped off file path inserted by the
+`pel-insert-filename' when a full path insertion is requested."
+  (interactive)
+  (setq pel--insert-filename-root
+        (pel-prompt (format "Root path (%s)" pel--insert-filename-root)
+                    'pel-insert-filename)))
+
+
 ;;-pel-autoload
 (defun pel-insert-filename (&optional n use-tilde dir-only with-line-number)
   "Insert at point the name of a the file of the window identified by N.
@@ -189,15 +219,25 @@ That is:
  - 4: left
  - 6: right
  - 2: down
+
 Every other value, or no argument identifies the current window.
 If the argument is positive, `pel-insert-filename' inserts a
-filename with full absolute path, if negative it omits the path.
+filename with full absolute or relative path, if negative it
+omits the path.
 
-If USE-TILDE, the user home address is replaced by the single character ~.
-If DIR-ONLY, only insert the directory (negative argument has no impact when
-DIR-ONLY is non nil).
-If WITH_LINE_NUMBER is non-nil, the line number is inserted after the file
-name, prefixed with a separating colon."
+The selection of full absolute or relative path depends on the
+value of `pel--insert-filename-root' for the current buffer,
+initialized with the `pel-insert-filename-root' user option.  If
+this is nil, the absolute path of the file is inserted, otherwise
+a path relative to `pel--insert-filename-root' is inserted.
+
+
+If USE-TILDE, the user home address is replaced by the single
+character ~.  If DIR-ONLY, only insert the directory (negative
+argument has no impact when DIR-ONLY is non nil).
+
+If WITH_LINE_NUMBER is non-nil, the line number is inserted after
+the file name, prefixed with a separating colon."
   (interactive "*p")
   (let ((no-path (and (< n 0) (not dir-only)))
         (direction (if (eq (abs n) 1)
@@ -218,8 +258,11 @@ name, prefixed with a separating colon."
           (select-window original-window))))
     (when use-tilde
       (setq fname (pel-tilde-file-name fname)))
-    (when dir-only
-      (setq fname (file-name-directory fname)))
+    (if dir-only
+        (setq fname (file-name-directory fname))
+      (when (and pel--insert-filename-root
+                 (pel-string-starts-with-p fname pel--insert-filename-root))
+        (setq fname (substring fname (length pel--insert-filename-root)))))
     (insert fname)
     (when with-line-number
       (insert (format ":%d\n" with-line-number)))))
@@ -389,6 +432,13 @@ Point is placed one character *before* the end of the inserted text."
   "Open the customize buffer to change the todo-note insertion."
   (interactive)
   (customize-group 'pel-text-insertions))
+
+;;-pel-autoload
+(defun pel-customize-insert-filename ()
+  "Open the customize buffer to change the `pel-insert-filename-root'."
+  (interactive)
+  (customize-group 'pel-text-insertions))
+
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-text-insert)

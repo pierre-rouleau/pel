@@ -2606,6 +2606,17 @@ PEL activates it only if variable `pel-use-yasnippet' is non-nil."
 
   :group 'pel-pkg-for-insertions)
 
+(defcustom pel-insert-filename-root nil
+  "Absolute path to strip from path inserted by `pel-insert-filename'.
+
+This is a default used as the initialization value of a buffer local
+variable used by the `pel-insert-filename' command unless the
+PEL_INSERT_FILENAME_ROOT environment variable exists.  In that case the
+initial value is taken from environment variable."
+
+  :group 'pel-text-insertions
+  :type 'string)
+
 (defcustom pel-todo-note-text "[:todo (DATE), by (USER): ]"
   "Format string for to-do notes.
 

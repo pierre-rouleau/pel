@@ -1120,6 +1120,7 @@ Done in this function to allow advising libraries that remap these keys."
 (define-key pel:f6 "f" 'pel-insert-filename)
 (define-key pel:f6 "l" 'pel-insert-line)
 (define-key pel:f6 "n" 'pel-insert-todo-note)
+(define-key pel:f6 (kbd "<f4> f") 'pel-set-insert-filename-root)
 
 ;; Move to the beginning of next function definition (while moving forward)
 ;;  complements C-M-e and C-M-a
@@ -6930,6 +6931,7 @@ the ones defined from the buffer now."
 (define-key pel:insert        "n"    'pel-insert-todo-note)
 (define-key pel:insert (kbd "<f4> d")  'pel-customize-insert-date-time)
 (define-key pel:insert (kbd "<f4> n")  'pel-customize-todo-note)
+(define-key pel:insert (kbd "<f4> f")  'pel-customize-insert-filename)
 
 (when (or pel-use-lice
           (eq pel-c-skel-with-license t)
