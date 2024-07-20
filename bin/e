@@ -4,7 +4,7 @@
 # Purpose   : Start Emacs in terminal mode.  Support multiple environments
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-23 17:53:25 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-20 07:31:47 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -28,6 +28,40 @@
 # ----
 #
 #
-emacs -nw "$@"
+
+# Check if already inside Emacs and prompt whether to continue
+
+prompt_yn_return=
+prompt_yn()
+{
+    # Arg 1: string prompt
+    while true; do
+        printf "%s [yn]? " "$1"
+        read -r yn
+        case $yn in
+            [Yy]* )
+                prompt_yn_return=y
+                break
+                ;;
+            [Nn]* )
+                prompt_yn_return=n
+                break
+                ;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+}
+
+if [ -z "$INSIDE_EMACS" ]; then
+    emacs -nw "$@"
+else
+    printf -- "ALREADY inside Emacs!\n"
+    prompt_yn "Invoke another terminal-based Emacs inside this Emacs shell anyway"
+    if [ "$prompt_yn_return" = "y" ]; then
+        emacs -nw "$@"
+    else
+        exit 1
+    fi
+fi
 
 # ----------------------------------------------------------------------------
