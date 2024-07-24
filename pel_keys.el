@@ -2396,6 +2396,14 @@ If C-PREPROC-PREFIX also bind the keys for C preprocessor related
 commands and sub-keys inside that prefix.  If a key must be
 assigned to something different for the programming language just
 bind it again after this call."
+    ;; sexp navigation commands
+    (define-key prefix (kbd "<right>")  'forward-sexp)
+    (define-key prefix (kbd "<left>")   'backward-sexp)
+    (define-key prefix (kbd "<up>")     'beginning-of-defun)
+    (define-key prefix (kbd "<down>")   'end-of-defun)
+    (define-key prefix (kbd "<M-up>")   'pel-end-of-previous-defun)
+    (define-key prefix (kbd "<M-down>") 'pel-beginning-of-next-defun)
+
     ;; guess style
     (define-key guess-prefix "g" 'c-guess-buffer-no-install)
     (define-key guess-prefix "B" 'c-guess-buffer)
@@ -2421,11 +2429,6 @@ bind it again after this call."
     (define-key prefix (kbd "C-o")   'open-line)
     (define-key prefix      "F"      'c-fill-paragraph)
     (define-key prefix      "f"      'c-display-defun-name)
-    ;;
-    (define-key prefix (kbd "<down>")  'pel-beginning-of-next-defun)
-    (define-key prefix (kbd "<up>")    'beginning-of-defun)
-    (define-key prefix (kbd "<left>")  'pel-end-of-previous-defun)
-    (define-key prefix (kbd "<right>") 'end-of-defun)
     ;;
     (define-key prefix (kbd "M-9")  #'show-paren-mode)
     ;; reserve "." for a command that find the thing at point in C (via CTags?)
