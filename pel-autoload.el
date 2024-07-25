@@ -74,7 +74,7 @@ Argument FOR: just a required separator keyword to make code look better."
 ;; ---------------------------------------------------------------------------
 
 (defun pel--autoload-init ()
-  "Intialize the PEL system -- prepare automatic loading of all function."
+  "Initialize the PEL system -- prepare automatic loading of all function."
 
   (require 'pel--options)
 
