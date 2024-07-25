@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-12-20 09:59:52 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-07-25 14:49:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--base)                    ; use: `pel-system-is-macos-p'
 (require 'pel--options)                 ; use: `pel-ffind-executable'
 (eval-when-compile (require 'subr-x))   ; use: `string-join', `string-trim'
 
@@ -71,31 +72,53 @@ order.
 
 The VCS ignore capability of fd is not used, so all files are found
 whether the VCS is told to ignore them or not."
-  (cond
-   ((eq pel-ffind-executable 'fd)
-    (unless (or pel--ffind-fd-path
-                (setq pel--ffind-fd-path (executable-find "fd")))
-      (user-error "pel-ffind-executable is fd, but can't find it!"))
-    ;; fd sorts by default.
-    (format "%s --type f --color never --no-ignore-vcs -g '%s' %s"
-            pel--ffind-fd-path
-            (file-name-nondirectory filename)
-            (if (>  (length directories) 1)
-                (string-join (mapcar (function pel--ffind-dirname-quoted)
-                                     directories)
-                             " ")
-                (car directories))))
-   ((eq pel-ffind-executable 'find)
-    (unless (or pel--ffind-find-path
-                (setq pel--ffind-find-path (executable-find "find")))
-      (user-error "pel-ffind-executable is find, but can't find it!"))
-    ;; find requires the -s option to sort.
-    (format "%s -s %s -name '%s' -type f"
-            pel--ffind-find-path
-            (string-join (mapcar (function pel--ffind-dirname-quoted)
-                                 directories)
-                         " ")
-            (file-name-nondirectory filename)))))
+  (let ((file-basename (file-name-nondirectory filename))
+        (dirnames (if (> (length directories) 1)
+                      (string-join (mapcar #'pel--ffind-dirname-quoted
+                                           directories)
+                                   " ")
+                    (car directories))))
+    (cond
+     ;; -- fd is specified
+     ((eq pel-ffind-executable 'fd)
+      (unless (or pel--ffind-fd-path
+                  (setq pel--ffind-fd-path (executable-find "fd")))
+        (user-error "pel-ffind-executable is fd, but can't find it!"))
+      ;; fd sorts by default.
+      (format "%s --type f --color never --no-ignore-vcs -g '%s' %s"
+              pel--ffind-fd-path
+              file-basename
+              dirnames))
+     ;; -- 'find is specified
+     ((eq pel-ffind-executable 'find)
+      (unless (or pel--ffind-find-path
+                  (setq pel--ffind-find-path (executable-find "find")))
+        (user-error "pel-ffind-executable is find, but can't find it!"))
+      ;; on macOS find requires the -s option to sort.
+      ;; That option is not supported ;; on Linux
+      (let ((sort-option (if pel-system-is-macos-p "-s" "")))
+        (format "%s %s %s -name '%s' -type f"
+                pel--ffind-find-path
+                sort-option
+                dirnames
+                file-basename)))
+     ;; -- explicit command line
+     ;; A string with the following keywords replaced:
+     ;; {FNAME}    : the base name of the file
+     ;; {DIRNAMES} : a space separated list of directory names to search
+     ((stringp pel-ffind-executable)
+      (let ((cmd pel-ffind-executable))
+        (setq cmd (replace-regexp-in-string "{FNAME}"
+                                            file-basename
+                                            cmd
+                                            'fixed-case
+                                            'literal))
+        (setq cmd (replace-regexp-in-string "{DIRNAMES}"
+                                            dirnames
+                                            cmd
+                                            'fixed-case
+                                            'literal))
+        cmd)))))
 
 ;;-pel-autoload
 (defun pel-ffind (filename &optional directories)

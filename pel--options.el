@@ -1784,14 +1784,22 @@ Note that:
   "Name of the file finding executable that pel-ffind uses.
 
 Select one of:
-- find : the Unix ubiquitous find utility.
-- fd   : the faster fd utility from https://github.com/sharkdp/fd."
+- find    : the Unix ubiquitous find utility.
+- fd      : the faster fd utility from https://github.com/sharkdp/fd.
+- command : Any command line that has the following keywords that will
+            be replaced by their corresponding string:
+  -  {FNAME}    : the base name of the file.
+  -  {DIRNAMES} : a space separated list of directory names to search.
+
+  When this is selected an example sis placed in the input field.
+"
   :group 'pel-pkg-for-filemng
   :group 'pel-pkg-for-c++
   :group 'pel-pkg-for-c
   :type '(choice
           (const :tag "Use Unix find" find)
-          (const :tag "Use fd" fd)))
+          (const :tag "Use fd" fd)
+          (string :tag "command line" :value "find -L {DIRNAMES} -name {FNAME} -type f")))
 
 
 (defcustom pel-use-fzf nil
