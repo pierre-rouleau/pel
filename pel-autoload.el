@@ -147,7 +147,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-cc-find-via-pel-ini
     pel-cc-find-activate-finder-method)
   (pel-autoload "pel-cc-find" for:
-    pel-cc-set-file-finder-ini-tool-name)
+    pel-cc-set-file-finder-ini-tool-name
+    pel-cc-find-show-status)
 
   (pel-autoload "pel-cc-navigate" for:
     pel-cc-to-switch-begin

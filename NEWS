@@ -2,6 +2,16 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-cc-find-show-status*, bound to the ~<f12> <f4> f~ key sequences of
+  cc-mode derived major modes that PEL supports (C, C++, D). It prints information
+  related to the user-options and variables used to control the specialized file finding
+  for these modes.
+- Fix *pel-open-at-point* ability to print the error reason identified by called
+  functions that detect why the file cannot be found.
+  The error message is trying to describe what should be done to fix the problem.
+- Temporary work-around for a problem related to auto loading by some portion of PEL
+  that may affect operations.  More investigation is required on that, and the issue is
+  probably related to changes in the auto loading introduced in Emacs 28 or 29. 🚧
 - Enhance ~<f12>~ prefixed key bindings for navigation across scopes//functions/structures in C, C++ and D.
 - On Emacs 28 and later, add a ~<f11> ? d d~ key binding to the *shortdoc* command.
 - Fix customization user option name: *pel-use-helm_descbinds* is now *pel-use-helm-descbinds*

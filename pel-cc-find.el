@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 20:38:53 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-07-25 12:20:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -166,7 +166,9 @@ Return a list of found file path names."
         (project-path nil))
     (unless pel-ini-filename
       (user-error "No pel.ini file found in directory tree.
- Check the `pel-project-root-identifiers' user-option."))
+ PEL file finder method is set to `pel-ini-file'.
+ Did you create a pel.ini file in the directories identified
+ by the `pel-project-root-identifiers' user-option?"))
 
     (setq pel-ini-alist (pel-ini-load pel-ini-filename))
     (unless pel-ini-alist
@@ -278,6 +280,73 @@ in the list of directory trees identified by the list."
            (cons (lambda (fn)
                    (pel-generic-find-file fn extra-seached-directory-trees))
                  (reverse pel-filename-at-point-finders))))))
+
+(defun pel--cc-find_info-msg (varname-suffix)
+  "Build and return a string describing information for VARNAME-SUFFIX.
+
+The string has 2 lines;
+- Line 1: user option name and value
+- Line 2: buffer local variable name and value.
+
+The user option has the \"pel-X-Y\" format
+where X is the major mode name and Y is the varname-suffix.
+
+The buffer local variable option has the \"pel---X-Y\" format
+where X is the major mode name and Y is the varname-suffix."
+  (let ((uopt-varname-format      (format "pel-%%s-%s" varname-suffix))
+        (bufl-varname-format (format "pel--%%s-%s" varname-suffix)))
+
+    (format "\
+- User option:   %-32s : %s
+-  buffer local: %-32s : %s"
+            (pel-major-mode-symbol-for uopt-varname-format)
+            (pel-major-mode-symbol-value-or uopt-varname-format "NOT defined!")
+            (pel-major-mode-symbol-for      bufl-varname-format)
+            (pel-major-mode-symbol-value-or bufl-varname-format "NOT defined!"))))
+
+;;-pel-autoload
+(defun pel-cc-find-show-status (&optional append)
+  "Show user-options used to control the file finding of current major mode."
+  (interactive "P")
+
+  (let ((user-buffer (current-buffer))
+        (user-buffer-major-mode major-mode)
+        (pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-cc-ffind-status*"
+     "PEL FFIND Status"
+     (lambda ()
+       "Print user options & buffer local variables of file finding."
+
+       (insert "\nUSER OPTIONS.\n  Global to all major modes:\n")
+       (pel-insert-symbol-content-line 'pel-project-root-identifiers)
+
+
+       (insert
+        (format "\n\n\nUSER OPTIONS.\n  Default values for all %s buffers:\n"
+                user-buffer-major-mode))
+
+       (pel-insert-symbol-content-line
+        (pel-major-mode-symbol-for "pel-%s-file-finder-method"))
+       (pel-insert-symbol-content-line
+        (pel-major-mode-symbol-for "pel-%s-file-searched-extra-dir-trees"))
+       (pel-insert-symbol-content-line
+        (pel-major-mode-symbol-for "pel-%s-file-finder-ini-tool-name"))
+
+       (insert
+        (format "\n\n\nACTUAL USED VALUE.
+  As described in the docstrings of user options listed above that have
+  a name very similar to the variable below (one extra '-' in the varname),
+  you can override the default value specified by some user options
+  with an environment variable.
+
+  Value used inside all %s and all %s buffers:\n"
+                user-buffer user-buffer-major-mode))
+
+       (pel-insert-symbol-content-line
+        (pel-major-mode-symbol-for "pel--%s-file-finder-ini-tool-name")))
+     (unless append :clear-buffer)
+     :use-help-mode)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-cc-find)

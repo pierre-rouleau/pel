@@ -170,11 +170,11 @@
 ;; Configure PEL-level autoloading
 ;; -------------------------------
 
-(unless (fboundp 'pel-build)
-  ;; autoload all PEL functions
-  (require 'pel-autoload)
-  (if (fboundp 'pel--autoload-init)
-      (pel--autoload-init)))
+;; autoload all PEL functions
+(require 'pel-autoload)
+(if (fboundp 'pel--autoload-init)
+    (pel--autoload-init)
+  (message "ERROR! pel--autoload-init is not bound!"))
 
 ;; ---------------------------------------------------------------------------
 ;; Control Emacs prompting
@@ -2414,6 +2414,7 @@ bind it again after this call."
 
     ;; setup - electric mode control
     (define-key setup-prefix "?"         'pel-cc-mode-info)
+    (define-key setup-prefix "f"         'pel-cc-find-show-status)
     (define-key setup-prefix (kbd "C-i") 'pel-cc-set-indent-width)
     (define-key setup-prefix "e"         'c-toggle-electric-state)
     (define-key setup-prefix "s"         'c-set-style) ; interactively select style

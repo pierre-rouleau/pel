@@ -37,6 +37,8 @@
 (require 'pel--options)     ; use: `pel-open-file-at-point-dir'
 (require 'pel-prompt)       ; use: `pel-select-from'
 (require 'pel-ido)          ; use: `pel-ido-use-fname-at-point-string-for'
+(require 'pel-ffind)        ; indirectly use: `pel-generic-find-file'
+
 ;; ---------------------------------------------------------------------------
 ;;; Code:
 
@@ -111,7 +113,7 @@ See `pel-find-file-at-point-in-window' for more information."
   ;; original working directory (like in reST mode); in that case restore it.
   ;;
   (let ((original-cwd default-directory))
-    (condition-case nil
+    (condition-case the-error
         (progn
           (cond
            ;; If requested to use file's parent directory and visiting a
@@ -137,7 +139,10 @@ See `pel-find-file-at-point-in-window' for more information."
                 (pel-find-file-at-point-in-window n)
               (unless noerror
                 (user-error "Cannot load pel-file!")))))
-      (error (cd original-cwd)))))
+      (error
+       ;; On error  go back to original directory and inform the user.
+       (cd original-cwd)
+       (user-error "ERROR: %s" (cadr the-error))))))
 
 ;;-pel-autoload
 (defun pel-browse-filename-at-point ()
