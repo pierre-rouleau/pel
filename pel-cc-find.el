@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-07-25 12:20:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-07-25 12:42:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -319,6 +319,7 @@ where X is the major mode name and Y is the varname-suffix."
        "Print user options & buffer local variables of file finding."
 
        (insert "\nUSER OPTIONS.\n  Global to all major modes:\n")
+       (pel-insert-symbol-content-line 'pel-ffind-executable)
        (pel-insert-symbol-content-line 'pel-project-root-identifiers)
 
 
