@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2024-06-05 18:43:25 EDT, updated by Pierre Rouleau.
+:Modified: 2024-07-26 22:48:43 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -410,6 +410,14 @@ You will have to store several Emacs-related files in your system:
 
 It is best to use the "``~/.emacs.d``" directory where all of these files will
 be stored.
+
+**Note**:
+
+If you currently store all your emacs configuration inside the ``~/.emacs``
+file, rename that file and keep it.  The information it contains will have to
+be moved somewhere else, most probably inside the ~/.emacs.d/init.el if PEL
+does not already handle your logic.
+
 
 **Windows users**:
   Under Windows, your ".emacs.d" directory should be stored inside your HOME
