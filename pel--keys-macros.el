@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-07-15 13:14:33 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-07-31 14:57:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1002,6 +1002,7 @@ There should be no key binding!" keyseq))
     ;; OS keys
     ("macOS"            . "macOS-keys")
     ("mint"             . "linux-mint-20-desktop-keys")
+    ("rocky"            . "rockylinux8-desktop-keys" )
     ("ubuntu"           . "ubuntu-16-04-desktop-keys" )
     ;; lang sub-directory PDF
     ("GNU make"         . "lang/gmake")
