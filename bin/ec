@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the deamon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-05-24 17:00:25 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-31 17:57:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -194,7 +194,7 @@ case "${os_name}" in
         # On Linux macOS, use the standard Emacs process for daemon.
         if [ -z "${daemon_name}" ]; then
             # shellcheck disable=SC2009
-            if ps -ax | grep 'emacs --daemon' | grep -v 'emacs --daemon=' | grep -v grep > /dev/null; then
+            if ps -ax | grep emacs | grep -- '--daemon' | grep -v 'emacs --daemon=' | grep -v grep > /dev/null; then
                 if [ "${start_client}" = "false" ]; then
                     if [ "${start_daemon}" = "true" ]; then
                         echo "ec: Emacs daemon (for default socket name) is already running!"
@@ -214,7 +214,7 @@ case "${os_name}" in
             fi
         else
             # shellcheck disable=SC2009
-            if ps -ax | grep 'emacs --daemon' | grep -v grep | grep "${daemon_name}" > /dev/null; then
+            if ps -ax | grep emacs | grep -- '--daemon' | grep -v grep | grep "${daemon_name}" > /dev/null; then
                 if [ "${start_client}" = "false" ]; then
                     if [ "${start_daemon}" = "true" ]; then
                         echo "ec: Emacs daemon (for socket ${daemon_name}) is already running!"
