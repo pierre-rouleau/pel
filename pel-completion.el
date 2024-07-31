@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 18:43:29 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-07-31 17:04:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -193,7 +193,7 @@ Note that ido-grid is a different package than ido-grid-mode."
            (featurep 'ido-grid)
            (fboundp 'ido-grid-enable))
       (ido-grid-enable)
-    (user-error "ido-grip is not available!")))
+    (user-error "ido-grid is not available!")))
 
 (defun pel--activate-ido-vertical ()
   "Activate the ido-vertical mode."
