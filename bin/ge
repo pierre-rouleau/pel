@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent, detached, GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-02 13:22:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-07-31 17:41:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -107,7 +107,17 @@ case $(uname) in
         # setting the PEL_EMACS_IN_GRAPHICS environment variable to inform
         # PEL about the graphics mode and ensure it runs detached.
         export PEL_EMACS_IN_GRAPHICS=1
-        emacs --chdir="$(pwd)" "$@" &
+
+        # On some Linux distros, emacs-lucid is the X-Windows capable
+        # GUI version of Emacs. If available use it.
+        #   At this point I don't see a reason to provide an overriding
+        #   mechanism using an environment variable.
+        #   If someone sees one please let me know.
+        if which emacs-lucid ; then
+            emacs-lucid --chdir="$(pwd)" "$@" &
+        else
+            emacs --chdir="$(pwd)" "$@" &
+        fi
         ;;
 
     *)
