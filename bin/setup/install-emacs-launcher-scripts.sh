@@ -4,7 +4,7 @@
 # Purpose   : Install the e, ge and ce scripts in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-06 13:51:29 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-01 11:50:38 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -49,6 +49,7 @@ check_file()
 check_file "$HOME/bin/e"
 check_file "$HOME/bin/ge"
 check_file "$HOME/bin/ec"
+check_file "$HOME/bin/is-emacs-daemon-running"
 
 install_symlink_for()
 {
@@ -58,12 +59,14 @@ install_symlink_for()
 install_symlink_for e
 install_symlink_for ge
 install_symlink_for ec
+install_symlink_for is-emacs-daemon-running
 
 
 printf -- "SUCCESS!!\nInstallation of e, ge and ec scripts completed!\nThey are:\n\n"
 ls -l "$HOME/bin/e"
 ls -l "$HOME/bin/ge"
 ls -l "$HOME/bin/ec"
+ls -l "$HOME/bin/is-emacs-daemon-running"
 
 if [ "$(which e)" != "$HOME/bin/e" ]; then
     printf -- "***NEXT STEP:\n"
