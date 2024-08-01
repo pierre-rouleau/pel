@@ -4,7 +4,7 @@
 # Purpose   : Report if Emacs daemon is currently running or not.
 # Created   : Thursday, August  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-01 09:05:54 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-01 11:42:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -55,17 +55,18 @@ if [ -n "$1" ]; then
     daemon_name="$1"
     daemon_name_description="$1"
 fi
-
+daemon_type_description=
 
 report_state()
 {
     # arg 1 : true: daemon is running, false it is not.
     # arg 2 : daemon name description
+    # arg 3 : daemon capability descriptoin
     if [ "$1" = "true" ]; then
-        printf -- "Emacs %s daemon is running\n" "$2"
+        printf -- "Emacs %s%s daemon is running.\n" "$2" "$3"
 
     else
-        printf -- "Emacs %s daemon is NOT running\n" "$2"
+        printf -- "Emacs %s%s daemon is NOT running.\n" "$2" "$3"
     fi
 }
 
@@ -90,6 +91,9 @@ case "${os_name}" in
                 is_running=false
             fi
         fi
+        if [ "$is_running" = "true" ]; then
+            daemon_type_description=", GUI-capable,"
+        fi
         ;;
 
     Linux)
@@ -106,10 +110,17 @@ case "${os_name}" in
                 is_running=false
             fi
         fi
+        if [ "$is_running" = "true" ]; then
+            if which emacs-lucid > /dev/null ; then
+                if ps -ax | grep -- 'emacs-lucid --daemon' | grep -v grep > /dev/null; then
+                    daemon_type_description=", GUI-capable,"
+                fi
+            fi
+        fi
         ;;
 esac
 
-report_state "${is_running}" "${daemon_name_description}"
+report_state "${is_running}" "${daemon_name_description}" "${daemon_type_description}"
 if [ "$is_running" = "false" ]; then
     exit 1
 fi
