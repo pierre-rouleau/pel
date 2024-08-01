@@ -1,0 +1,118 @@
+#!/bin/sh
+# SH FILE: is-emacs-daemon-running
+#
+# Purpose   : Report if Emacs daemon is currently running or not.
+# Created   : Thursday, August  1 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-08-01 09:05:54 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+os_name="$(uname)"
+
+print_usage()
+{
+    printf -- "\
+is-emacs-daemon-running: report if Emacs daemon is running or not.
+
+ Usage:  is-emacs-daemon-running [-h|--help]
+         is-emacs-daemon-running [DAEMON-NAME]
+
+ -h, --help: print this help.
+
+ DAEMON-NAME is an optional socket name identifying the
+ Emacs daemon by name that can be used.  If not specified
+ check the default Emacs daemon socket, otherwise check
+ for the specified name.
+ an exit code of 1.  It can be used to check if the daemon is running.
+"
+}
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    exit 0
+fi
+
+daemon_name=
+daemon_name_description="default"
+if [ -n "$1" ]; then
+    daemon_name="$1"
+    daemon_name_description="$1"
+fi
+
+
+report_state()
+{
+    # arg 1 : true: daemon is running, false it is not.
+    # arg 2 : daemon name description
+    if [ "$1" = "true" ]; then
+        printf -- "Emacs %s daemon is running\n" "$2"
+
+    else
+        printf -- "Emacs %s daemon is NOT running\n" "$2"
+    fi
+}
+
+
+# Proceed
+
+case "${os_name}" in
+    Darwin)
+        if [ -z "${daemon_name}" ]; then
+            # Note: when Emacs.app default daemon is running, 'ps -ax' prints something like:
+            # 80058 ??         0:03.55 /Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11 --bg-daemon=\0123,4\012
+
+            if ps -ax | grep Emacs.app | grep -v grep | grep -- "--bg-daemon=\\\0123,4\\\012$" > /dev/null; then
+                is_running=true
+            else
+                is_running=false
+            fi
+        else
+            if ps -ax | grep Emacs.app | grep -v grep | grep -- "--bg-daemon=" | grep "${daemon_name}" > /dev/null; then
+                is_running=true
+            else
+                is_running=false
+            fi
+        fi
+        ;;
+
+    Linux)
+        if [ -z "${daemon_name}" ]; then
+            if ps -ax | grep emacs | grep -- '--daemon' | grep -v grep > /dev/null; then
+                is_running=true
+            else
+                is_running=false
+            fi
+        else
+            if ps -ax | grep emacs | grep -- '--daemon' | grep -v grep | grep "${daemon_name}" > /dev/null; then
+                is_running=true
+            else
+                is_running=false
+            fi
+        fi
+        ;;
+esac
+
+report_state "${is_running}" "${daemon_name_description}"
+if [ "$is_running" = "false" ]; then
+    exit 1
+fi
+
+
+# ----------------------------------------------------------------------------
