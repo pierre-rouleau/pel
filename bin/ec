@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the deamon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-01 07:34:27 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-01 08:39:01 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -31,9 +31,9 @@ print_usage()
 ec : Open specified files in emacsclient. Start Emacs daemon if necessary.
 
  Usage:  ec [-h|--help]
-         ec [-g|--gui] [--name=FILENAME]
-         ec --check-daemon [--name=FILENAME]
-         ec --start-daemon [--name=FILENAME]
+         ec [-g|--gui] [--name=DAEMON-NAME]
+         ec --check-daemon [--name=DAEMON-NAME]
+         ec --start-daemon [--name=DAEMON-NAME]
 
  -h, --help: print this help.
  -g, --gui:  start a graphical emacsclient, otherwise
@@ -41,7 +41,7 @@ ec : Open specified files in emacsclient. Start Emacs daemon if necessary.
 
  If the Emacs daemon is not already running, start it.
 
- If the --name option is specified, FILENAME identifies the
+ If the --name option is specified, DAEMON-NAME identifies the
  socket name the daemon and the client must use.
  It's possible to create several daemons and client(s)
  attaching to that daemon by using that option.
