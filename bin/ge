@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent, detached, GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-31 17:41:45 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-01 11:21:03 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -113,7 +113,7 @@ case $(uname) in
         #   At this point I don't see a reason to provide an overriding
         #   mechanism using an environment variable.
         #   If someone sees one please let me know.
-        if which emacs-lucid ; then
+        if which emacs-lucid > /dev/null ; then
             emacs-lucid --chdir="$(pwd)" "$@" &
         else
             emacs --chdir="$(pwd)" "$@" &

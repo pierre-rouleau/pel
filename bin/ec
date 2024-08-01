@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the deamon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-01 08:39:01 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-01 11:20:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -52,14 +52,25 @@ ec : Open specified files in emacsclient. Start Emacs daemon if necessary.
 
  See emacsclient man page for more command line options.
 "
-    if [ "${os_name}" = "Darwin" ]; then
+    case "${os_name}" in
+        Darwin)
         printf -- "\
 
  Note: under macOS, to be able to launch an Emacs client that is a GUI Emacs
        the GUI supporting Emacs from https://emacsformacosx.com/
        must be installed.
 "
-    fi
+        ;;
+    Linux)
+        printf -- "\
+
+ Note: under Linux, emacs-lucid is used to start the daemon
+       if the --gui option is specified and the emacs-lucid
+       executable file is found on the current PATH.
+       Otherwise, ec defaults to emacs.
+"
+        ;;
+    esac
 }
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
@@ -191,10 +202,20 @@ case "${os_name}" in
         ;;
 
     Linux)
-        # On Linux macOS, use the standard Emacs process for daemon,
+        # On Linux, use the standard Emacs program name, emacs, to start the
+        # Emacs daemon.  However if emacs-lucid is present and the user
+        # requested using the graphics mode then use emacs-lucid to launch the
+        # Emacs daemon.
+        emacs_pgm=emacs
+        if [ "$use_gui" = "true" ]; then
+            if which emacs-lucid > /dev/null ; then
+                emacs_pgm=emacs-lucid
+            fi
+        fi
         if [ -z "${daemon_name}" ]; then
             # shellcheck disable=SC2009
             if ps -ax | grep emacs | grep -- '--daemon' | grep -v grep > /dev/null; then
+                # emacs daemon is already running
                 if [ "${start_client}" = "false" ]; then
                     if [ "${start_daemon}" = "true" ]; then
                         echo "ec: Emacs daemon (for default socket name) is already running!"
@@ -204,8 +225,9 @@ case "${os_name}" in
                     fi
                 fi
             elif [ "${start_daemon}" = "true" ]; then
+                # Emacs daemon is not running
                 echo "ec: starting the Emacs daemon for default socket name..."
-                if ! emacs "${daemon_opt}"; then
+                if ! ${emacs_pgm} "${daemon_opt}"; then
                     echo "*** ec: ERROR: failed starting Emacs daemon"
                     exit 1
                 fi
@@ -226,7 +248,7 @@ case "${os_name}" in
                 fi
             elif [ "${start_daemon}" = "true" ]; then
                 echo "ec : starting the Emacs daemon for socket=${daemon_name}..."
-                if ! emacs "${daemon_opt}"; then
+                if ! ${emacs_pgm} "${daemon_opt}"; then
                     echo "*** ec: ERROR: failed starting Emacs daemon ${daemon_name}"
                     exit 1
                 fi
