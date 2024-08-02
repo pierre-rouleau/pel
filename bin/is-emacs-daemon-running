@@ -4,7 +4,7 @@
 # Purpose   : Report if Emacs daemon is currently running or not.
 # Created   : Thursday, August  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-01 11:42:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-08-01 22:59:52 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -40,7 +40,9 @@ is-emacs-daemon-running: report if Emacs daemon is running or not.
  Emacs daemon by name that can be used.  If not specified
  check the default Emacs daemon socket, otherwise check
  for the specified name.
- an exit code of 1.  It can be used to check if the daemon is running.
+
+ EXIT CODE:   0 : the emacs daemon is running
+              1 : the emacs daemon is not running.
 "
 }
 
@@ -73,6 +75,7 @@ report_state()
 
 # Proceed
 
+is_running=
 case "${os_name}" in
     Darwin)
         if [ -z "${daemon_name}" ]; then
@@ -121,7 +124,9 @@ case "${os_name}" in
 esac
 
 report_state "${is_running}" "${daemon_name_description}" "${daemon_type_description}"
-if [ "$is_running" = "false" ]; then
+if [ "$is_running" = "true" ]; then
+    exit 0
+else
     exit 1
 fi
 
