@@ -4,11 +4,9 @@ GNU Make Command Line
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/gmake/gmake.rst
 :Project:  `PEL Project home page`_
-:Project:
 :Created:  Wednesday, August  7 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2024-08-07 14:50:21, by Pierre Rouleau.
-:Copyright: © 2024, Pierre Rouleau
 
 
 .. contents::  **Table of Contents**
