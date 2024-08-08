@@ -8480,21 +8480,25 @@ the ones defined from the buffer now."
      (ggtags-mode 1))))
 
 ;; cscope
-(when pel-use-xcscope
+(when (or  pel-use-xcscope
+           pel-use-helm-cscope)
   (define-pel-global-prefix pel:cscope (kbd "<f11> X C"))
-  (pel-ensure-package xcscope from: melpa)
-  (pel-autoload-file xcscope for: cscope-minor-mode)
-  (define-key pel:cscope "C" 'cscope-minor-mode)
-  ;; schedule activation of cscope minor mode for selected ones
-  (pel-add-hook-for 'pel-modes-activating-cscope
-                    'cscope-minor-mode))
-(when pel-use-helm-cscope
-  (pel-ensure-package helm-cscope from: melpa)
-  (pel-autoload-file helm-cscope for: helm-cscope-mode)
-  (define-key pel:cscope "H" 'pel-toggle-helm-cscope)
-  (add-hook 'helm-cscope-mode-hook 'pel-activate-helm-cscope)
-  (pel-add-hook-for 'pel-modes-activating-helm-cscope
-                    'pel-activate-helm-cscope))
+
+  (when pel-use-xcscope
+    (pel-ensure-package xcscope from: melpa)
+    (pel-autoload-file xcscope for: cscope-minor-mode)
+    (define-key pel:cscope "C" 'cscope-minor-mode)
+    ;; schedule activation of cscope minor mode for selected ones
+    (pel-add-hook-for 'pel-modes-activating-cscope
+                      'cscope-minor-mode))
+  (when pel-use-helm-cscope
+    (pel-ensure-package helm-cscope from: melpa)
+    (pel-autoload-file helm-cscope for: helm-cscope-mode)
+    (define-key pel:cscope "H" 'pel-toggle-helm-cscope)
+    (add-hook 'helm-cscope-mode-hook 'pel-activate-helm-cscope)
+    (pel-add-hook-for 'pel-modes-activating-helm-cscope
+                      'pel-activate-helm-cscope)))
+
 
 ;; dumb-jump
 (when pel-use-dumb-jump
