@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for [[https://github.com/legoscia/archive-rpm?tab=readme-ov-file#readme][archive-rpm]] when *pel-use-archive-rpm* user-option is activated.
+  With this, it becomes possible to open RPM and CPIO files and see their content
+  the way Emacs supports tarball and zip files.
 - Add *pel-cc-find-show-status*, bound to the ~<f12> <f4> f~ key sequences of
   cc-mode derived major modes that PEL supports (C, C++, D). It prints information
   related to the user-options and variables used to control the specialized file finding

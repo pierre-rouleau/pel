@@ -6571,6 +6571,12 @@ the ones defined from the buffer now."
 (pel--mode-hook-maybe-call  (function pel--augment-goto-addr-map)
                             'goto-address-mode 'goto-address-mode-hook)
 
+;; RPM and CPIO archive file support
+(when pel-use-archive-rpm
+  ;; As soon as the archive-rpm package is installed it becomes possible to open
+  ;; RPM or CPIO archive files and see their content, just as tarball or zip files.
+  (pel-ensure-package archive-rpm from: melpa))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Find File At Point (ffap)
 

@@ -1816,6 +1816,19 @@ Select one of:
 (pel-put 'pel-use-fzf :package-is :in-utils)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-pkg-for-archive nil
+  "PEL Archive File Browsing and Management."
+  :group 'pel-pkg-for-filemng)
+
+(defcustom pel-use-archive-rpm nil
+  "Control if PEL supports the archive-rpm package."
+  :group 'pel-pkg-for-archive
+  :link '(url-link :tag "archive-rpm @ Github"
+                   https://github.com/legoscia/archive-rpm)
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Directory Tree Browsing and Management
 ;; --------------------------------------
 
