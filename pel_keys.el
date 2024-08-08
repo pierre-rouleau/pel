@@ -6552,6 +6552,8 @@ the ones defined from the buffer now."
   (when pel-use-projectile
     (define-key pel:file (kbd "<f8>") 'fzf-projectile))
   (when pel-use-recentf
+    (defvar pel:recent-file)  ; prevent reference to free variable warning:
+                              ; it's defined when pel-use-recentf is non-nil
     (define-key pel:recent-file (kbd "M-z") 'fzf-recentf))
   ;;
   (define-key pel:buffer   "z"         'fzf-switch-buffer))
