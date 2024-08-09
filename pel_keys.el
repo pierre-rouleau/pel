@@ -4605,9 +4605,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-check-minor-modes-in pel-shell-activates-minor-modes)
   (pel--mode-hook-maybe-call
    (function pel--setup-for-shell)
-   'shell-mode 'shell-mode-hook)
-  (when (memq 'shell-mode pel-shell-mode-activating-compilation-minor-mode)
-    (add-hook 'shell-mode-hook 'pel-shell-activate-compilation-awareness)))
+   'shell-mode 'shell-mode-hook))
 
 ;; ------------------------------
 ;; Telnet support
@@ -4637,9 +4635,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-check-minor-modes-in pel-term-activates-minor-modes)
   (pel--mode-hook-maybe-call
    (function pel--setup-for-term)
-   'term-mode 'term-mode-hook)
-  (when (memq 'term-mode pel-shell-mode-activating-compilation-minor-mode)
-    (add-hook 'term-mode-hook 'pel-shell-activate-compilation-awareness)))
+   'term-mode 'term-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC z v`` : vterm-mode
@@ -4660,9 +4656,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (pel-check-minor-modes-in pel-term-activates-minor-modes)
       (pel--mode-hook-maybe-call
        (function pel--setup-for-vterm)
-       'vterm-mode 'vterm-mode-hook)
-      (when (memq 'vterm-mode pel-shell-mode-activating-compilation-minor-mode)
-        (add-hook 'vterm-mode-hook 'pel-shell-activate-compilation-awareness)))))
+       'vterm-mode 'vterm-mode-hook))))
 
 ;; ---------------------------------------------------------------------------
 ;; Data Files Support
@@ -8428,9 +8422,7 @@ the ones defined from the buffer now."
     (pel-check-minor-modes-in pel-emacs-eat-activates-minor-modes)
     (pel--mode-hook-maybe-call
      (function pel--setup-for-eat)
-     'eat-mode 'eat-mode-hook)
-    (when (memq 'eat-mode pel-shell-mode-activating-compilation-minor-mode)
-      (add-hook 'eat-mode-hook 'pel-shell-activate-compilation-awareness))))
+     'eat-mode 'eat-mode-hook)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> X`` : Xref utilities
