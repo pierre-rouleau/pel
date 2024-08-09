@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-09 14:25:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-08-09 07:07:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -139,6 +139,21 @@ Variables names are also links to customization."
        (pel-insert-symbol-content-line 'pel-shell-activates-minor-modes))
      (unless append :clear-buffer)
      :use-help-mode)))
+
+;; ---------------------------------------------------------------------------
+(require 'compile)
+
+;;-pel-autoload
+(defun pel-shell-activate-compilation-awareness ()
+  "Activate compilation-minor-mode in the shell.
+
+Jump to error with '<f12> RET'.
+Deactivate it with 'M-x compilation-minor-mode'."
+  (interactive)
+
+  (compilation-minor-mode 1)
+  (define-key compilation-minor-mode-map (kbd "RET") 'comint-send-input)
+  (define-key compilation-minor-mode-map (kbd "<f12> RET") 'compile-goto-error))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-shell)

@@ -4581,14 +4581,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (define-pel-global-prefix pel:for-shell     (kbd "<f11> SPC z s"))
 (define-pel-global-prefix pel:for-shell-cfg (kbd "<f11> SPC z s <f4>"))
 
-(defun pel-goto-error ()
-  "Move to the error identified by the line using compilation-minor-mode.
 
-If compilation minor mode is not active activate it."
-  (interactive)
-  (unless compilation-minor-mode
-    (compilation-minor-mode 1))
-  (compile-goto-error))
 
 (pel-eval-after-load shell
   ;; TODO: pel-config-major-mode does not work properly with shell-mode
@@ -4605,7 +4598,6 @@ If compilation minor mode is not active activate it."
     (define-key pel:for-shell "r" 'shell-resync-dirs)
     (define-key pel:for-shell (kbd "<up>")   'pel-shell-previous-prompt)
     (define-key pel:for-shell (kbd "<down>") 'pel-shell-next-prompt)
-    (define-key pel:for-shell (kbd "RET")    'pel-goto-error)
 
     (pel-turn-on-local-minor-modes-in 'pel-shell-activates-minor-modes))
   (declare-function pel--setup-for-shell "pel_keys")
@@ -4613,7 +4605,9 @@ If compilation minor mode is not active activate it."
   (pel-check-minor-modes-in pel-shell-activates-minor-modes)
   (pel--mode-hook-maybe-call
    (function pel--setup-for-shell)
-   'shell-mode 'shell-mode-hook))
+   'shell-mode 'shell-mode-hook)
+  (when (memq 'shell-mode pel-shell-mode-activating-compilation-minor-mode)
+    (add-hook 'shell-mode-hook 'pel-shell-activate-compilation-awareness)))
 
 ;; ------------------------------
 ;; Telnet support
@@ -4643,7 +4637,9 @@ If compilation minor mode is not active activate it."
   (pel-check-minor-modes-in pel-term-activates-minor-modes)
   (pel--mode-hook-maybe-call
    (function pel--setup-for-term)
-   'term-mode 'term-mode-hook))
+   'term-mode 'term-mode-hook)
+  (when (memq 'term-mode pel-shell-mode-activating-compilation-minor-mode)
+    (add-hook 'term-mode-hook 'pel-shell-activate-compilation-awareness)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC z v`` : vterm-mode
@@ -4664,7 +4660,9 @@ If compilation minor mode is not active activate it."
       (pel-check-minor-modes-in pel-term-activates-minor-modes)
       (pel--mode-hook-maybe-call
        (function pel--setup-for-vterm)
-       'vterm-mode 'vterm-mode-hook))))
+       'vterm-mode 'vterm-mode-hook)
+      (when (memq 'vterm-mode pel-shell-mode-activating-compilation-minor-mode)
+        (add-hook 'vterm-mode-hook 'pel-shell-activate-compilation-awareness)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Data Files Support
@@ -8423,7 +8421,6 @@ the ones defined from the buffer now."
       (pel-local-set-f12-M-f12 'pel:for-eat)
       (define-key pel:for-eat (kbd "<up>")   'pel-shell-previous-prompt)
       (define-key pel:for-eat (kbd "<down>") 'pel-shell-next-prompt)
-      (define-key pel:for-eat (kbd "RET")    'pel-goto-error)
       (pel-turn-on-local-minor-modes-in 'pel-emacs-eat-activates-minor-modes)
       )
     (declare-function pel--setup-for-eat "pel_keys")
@@ -8431,7 +8428,9 @@ the ones defined from the buffer now."
     (pel-check-minor-modes-in pel-emacs-eat-activates-minor-modes)
     (pel--mode-hook-maybe-call
      (function pel--setup-for-eat)
-     'eat-mode 'eat-mode-hook)))
+     'eat-mode 'eat-mode-hook)
+    (when (memq 'eat-mode pel-shell-mode-activating-compilation-minor-mode)
+      (add-hook 'eat-mode-hook 'pel-shell-activate-compilation-awareness))))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> X`` : Xref utilities

@@ -722,7 +722,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-shell
     pel-shell-previous-prompt
     pel-shell-next-prompt
-    pel-shell-show-cfg)
+    pel-shell-show-cfg
+    pel-shell-activate-compilation-awareness)
 
   (pel-autoload-function "pel-skels" for:
     pel-date

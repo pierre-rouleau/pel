@@ -164,6 +164,7 @@
 ;;     - pel-pkg-for-session
 ;;     - pel-pkg-for-shells
 ;;       - pel-pkg-for-vterm-mode
+;;       - pel-pkg-for-eat-mode
 ;;     - pel-pkg-for-skeletons
 ;;       - pel-pkg-generic-code-style
 ;;         - pel-sh-script-skeleton-control
@@ -9811,6 +9812,36 @@ to allow placing the point at the very first character where a command was or
 will be typed. "
   :group 'pel-pkg-for-shells
   :type 'string)
+
+(defcustom pel-shell-mode-activating-compilation-minor-mode nil
+  "List of shell modes that must activate `compilation-minor-mode'.
+
+Add the symbol of one or several of the shell support mode
+where you want to automatically activate the
+`compilation-minor-mode'.  This allows you to jump to the file
+name/line number identified by a compilation error by placing
+point over the error report and pressing the '<f12> RET' key
+sequence.
+
+This can be used in any shell or REPL mode that does not already activates
+the `compilation-minor-mode' and allows moving the point.  It does not impede
+ability to use the shell or the REPL.
+
+Currently supported shell modes are:
+
+- eat-mode, effective only when pel-use-emacs-eat is t.
+- eshell-mode
+- shell-mode
+- term-mode
+- vterm-mode, effective only when pel-use-vterm is t.
+
+You may also want to identify the hook of some REPL modes.
+"
+  :group 'pel-pkg-for-shells
+  :group 'pel-pkg-for-eat-mode
+  :group 'pel-pkg-for-term-mode
+  :group 'pel-pkg-for-vterm-mode
+  :type '(repeat symbol))
 
 ;; ------------------------------
 ;; PEL-specific term-mode support
