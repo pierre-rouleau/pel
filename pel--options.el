@@ -4863,6 +4863,16 @@ about the expected file format of the pel.ini file."
   :group 'pel-pkg-for-c
   :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
+(defcustom pel-use-linux-kernel-code-style-support t
+  "Activates the Linux Kernel Code Style on appropriate C files when active."
+  :group 'pel-c-code-style
+  :link '(custom-group-link "C")
+  :link '(custom-manual "(ccmode)Built-in Styles")
+  :link '(url-link :tag "Linux kernel coding style @ Github"
+                   "https://github.com/torvalds/linux/blob/master/Documentation/process/coding-style.rst")
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-c-bracket-style "linux"
   "Set the bracket style for the C programming language.
 PEL stores this value associated with the `c-mode' into the

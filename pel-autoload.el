@@ -167,6 +167,11 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-cc-mode-info
     pel-cc-set-indent-width)
 
+  (pel-autoload-function "pel-cc-linux-kernel" for:
+    pel-linux-kernel-code-style-setup)
+  (pel-autoload "pel-cc-linux-kernel" for:
+    pel-linux-kernel-code-style)
+
   (pel-autoload-function "pel-ccp" for:
     pel-show-copied
     pel-show-killed)

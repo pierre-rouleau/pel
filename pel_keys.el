@@ -2619,7 +2619,12 @@ MODE must be a symbol."
       ;; 7) Install language-specific skeletons
       (pel--install-c-skel pel:c-skel)
       ;; 8) extra setup
-      (pel--setup-for-cc))))
+      (pel--setup-for-cc)))
+
+  ;; Activate extra C styles
+  (when pel-use-linux-kernel-code-style-support
+    (pel-linux-kernel-code-style-setup)
+    (define-key pel:for-c (kbd "M-k") 'pel-linux-kernel-code-style)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C`` : C++ programming utilities
