@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 13 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-08-13 18:51:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-08-13 21:54:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -76,6 +76,9 @@
 (defun pel--lkcs ()
   "Activate the Linux Kernel Code Style in buffer."
 
+  ;; Give the style a name and inform user.
+  (c-set-style "linux-kernel")
+
   ;; impose that hard tabs are used for indentation (as opposed to spaces)
   (setq indent-tabs-mode t)
   (setq pel-c-use-tabs t)
@@ -89,14 +92,13 @@
   ;;       the way the buffer renders the hard tabs.  This way you can
   ;;       make the code look the way you want while still complying with
   ;;       the Linux Kernel Code Style guideline.
+  ;;        Use one tab-width of indentation
   (setq tab-width pel-c-tab-width)
+  (setq c-basic-offset pel-c-tab-width)
 
-  ;; Impose start of indentation and maximum line width
-  (setq c-basic-offset 8)
+  ;; Impose maximum line width
   (setq fill-column 80)
 
-  ;; Give the style a name and inform user.
-  (c-set-style "linux-kernel")
   (message "Using Linux kernel style.\
  Use `pel-set-tab-width' to alter tab rendering."))
 
