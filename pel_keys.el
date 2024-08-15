@@ -4388,8 +4388,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   ;; plug in tree-sitter for Python :todo: simplify via macros
   (when (pel-major-mode-use-tree-sitter 'python-mode 'python-ts-mode)
-
-    (pel-eval-after-load python-ts
+    (pel-eval-after-load python
       (defvar pel-python-ts-tab-width)
       (defvar pel-python-ts-use-tabs)
       (defvar pel-python-ts-activates-minor-modes)

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-07-31 14:57:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-08-15 19:14:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -646,6 +646,7 @@ stored inside the doc/pdf directory.")
     ("makefile-imake"  [f11 32 ?M])
     ("makefile-nmake"  [f11 32 ?M])
     ("python"          [f11 32 ?p])
+    ("python-ts"       [f11 32 ?p])
     ("arc"             [f11 32 1])
     ("haskell"         [f11 32 ?h])
     ("hy"              [f11 32 8])
