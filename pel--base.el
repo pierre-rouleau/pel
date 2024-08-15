@@ -171,6 +171,7 @@
 ;;
 ;; Tree-sitter major mode support
 ;; - `pel-major-mode-use-tree-sitter'
+;; - `pel-major-ts-mode-supported-p'
 ;;
 ;; Mode argument interpretation
 ;; -  `pel-action-for'
@@ -2136,6 +2137,10 @@ otherwise it returns nil."
       (push (cons mode ts-mode) major-mode-remap-alist))
     ;; Always return the resulting alist when a mode was added or is in.
     major-mode-remap-alist))
+
+(defun pel-major-ts-mode-supported-p (mode)
+  "Return t when the specified tree-sitter major MODE is supported."
+  (assoc mode major-mode-remap-alist))
 
 ;; ---------------------------------------------------------------------------
 ;; Mode argument interpretation

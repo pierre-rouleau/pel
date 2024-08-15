@@ -4375,27 +4375,20 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-python "1"         'lispy-describe-inline)
     (define-key pel:for-python "2"         'lispy-arglist-inline))
 
-  ;; Activate python mode
+  ;; Activate python mode (with or without tree-sitter support)
+  (pel-major-mode-use-tree-sitter 'python-mode 'python-ts-mode)
   (pel-eval-after-load python
-    (pel-config-major-mode python pel:for-python
-      (when (and pel-use-indent-tools
-                 (eq pel-indent-tools-key-bound 'python)
-                 (require 'indent-tools nil :noerror)
-                 (boundp 'indent-tools-keymap-prefix)
-                 (boundp 'python-mode-map))
-        (define-key python-mode-map indent-tools-keymap-prefix
-                    'indent-tools-hydra/body))))
-
-  ;; plug in tree-sitter for Python :todo: simplify via macros
-  (when (pel-major-mode-use-tree-sitter 'python-mode 'python-ts-mode)
-    (pel-eval-after-load python
+    (when (pel-major-ts-mode-supported-p 'python-mode)
+      ;; Using tree-sitter with Python - set mirroring variables
       (defvar pel-python-ts-tab-width)
       (defvar pel-python-ts-use-tabs)
       (defvar pel-python-ts-activates-minor-modes)
       (setq pel-python-ts-tab-width pel-python-tab-width)
       (setq pel-python-ts-use-tabs  pel-python-use-tabs)
-      (setq pel-python-ts-activates-minor-modes pel-python-activates-minor-modes)
+      (setq pel-python-ts-activates-minor-modes
+            pel-python-activates-minor-modes)
 
+      ;; activate
       (pel-config-major-mode python-ts pel:for-python
         (when (and pel-use-indent-tools
                    (eq pel-indent-tools-key-bound 'python)
@@ -4403,7 +4396,17 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                    (boundp 'indent-tools-keymap-prefix)
                    (boundp 'python-mode-map))
           (define-key python-mode-map indent-tools-keymap-prefix
-                      'indent-tools-hydra/body))))))
+                      'indent-tools-hydra/body))))
+
+    ;; Do it also when Not using tree-sitter
+    (pel-config-major-mode python pel:for-python
+      (when (and pel-use-indent-tools
+                 (eq pel-indent-tools-key-bound 'python)
+                 (require 'indent-tools nil :noerror)
+                 (boundp 'indent-tools-keymap-prefix)
+                 (boundp 'python-mode-map))
+        (define-key python-mode-map indent-tools-keymap-prefix
+                    'indent-tools-hydra/body)))))
 
 ;; (use-package jedi
 ;;   :ensure t
