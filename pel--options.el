@@ -10395,7 +10395,11 @@ turns it off."
   :group 'pel-pkg-for-parser)
 
 (defcustom pel-use-tree-sitter nil
-  "Activate the tree-sitter support."
+  "Activate the tree-sitter support.
+
+NOTE:  Emacs must be build --with-tree-sitter to be able to use
+       tree-sitter.  PEL will warn on startup if that's not the case
+       and you activate this."
   :link '(url-link :tag "Emacs tree-sitter @ GitHub.io"
                    "https://emacs-tree-sitter.github.io/")
   :type 'boolean
