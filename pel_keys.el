@@ -1401,8 +1401,7 @@ interactively."
         (when (and (boundp 'treesit-extra-load-path)
                    pel-treesit-load-path)
           (setq treesit-extra-load-path
-                (append treesit-extra-load-path pel-treesit-load-path)))
-        (message "treesit-extra-load-path is now: %S" treesit-extra-load-path))
+                (append treesit-extra-load-path pel-treesit-load-path))))
     (display-warning 'pel-package-install
                      "Can't install tree-sitter:
 Tree-sitter requires Emacs built with dynamic module support.
