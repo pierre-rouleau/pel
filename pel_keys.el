@@ -1386,6 +1386,29 @@ interactively."
      (easy-escape-minor-mode 1))))
 
 ;; ---------------------------------------------------------------------------
+;; tree-sitter support
+;; -------------------
+(when pel-use-tree-sitter
+  (if pel-emacs-has-dynamic-module-support-p
+      (progn
+        (pel-ensure-package tree-sitter from: melpa)
+        (pel-ensure-package tree-sitter-langs from: melpa)
+
+        ;; For some reason the treesit-extra-load-path variable is not always
+        ;; set to the list of directories where tree sitter language dynamic
+        ;; libraries are located.  If pel-treesit-load-path is non-nil then
+        ;; append it to the treesit-extra-load-path variable
+        (when (and (boundp 'treesit-extra-load-path)
+                   pel-treesit-load-path)
+          (setq treesit-extra-load-path
+                (append treesit-extra-load-path pel-treesit-load-path)))
+        (message "treesit-extra-load-path is now: %S" treesit-extra-load-path))
+    (display-warning 'pel-package-install
+                     "Can't install tree-sitter:
+Tree-sitter requires Emacs built with dynamic module support.
+Your version of Emacs does not support dynamic module.")))
+
+;; ---------------------------------------------------------------------------
 ;; - Use undo-tree
 ;; ---------------
 ;; Use undo-tree which provides undo/redo ability with complete storage and
@@ -2195,8 +2218,14 @@ can't bind negative-argument to C-_ and M-_"
 ;; ---------------
 (when pel-use-cmake-mode
   (pel-ensure-package cmake-mode from: melpa)
-  (add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
-  (add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode)))
+  (if (and pel-use-tree-sitter
+           pel-emacs-has-dynamic-module-support-p
+           (pel-package-installed-p 'cmake-ts-mode))
+      (progn
+        (add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-ts-mode))
+        (add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-ts-mode))        )
+    (add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
+    (add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode))))
 
 ;; - Makefile editing support
 ;; --------------------------

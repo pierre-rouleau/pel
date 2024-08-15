@@ -94,6 +94,7 @@
 ;;     - pel-pkg-for-modeline
 ;;     - pel-pkg-for-navigation
 ;;       - pel-pkg-for-xref
+;;     - pel-pkg-for-parser
 ;;     - pel-pkg-for-programming
 ;;       - pel-pkg-for-all-languages
 ;;         - pel-pkg-for-parens
@@ -181,6 +182,7 @@
 ;;     - pel-pkg-for-text-mode
 ;;     - pel-pkg-for-time-tracking
 ;;     - pel-pkg-for-text-translation
+;;     - pel-pkg-for-tree-sitter
 ;;     - pel-pkg-for-undo
 ;;     - pel-pkg-for-vcs
 ;;       - pel-pkg-for-git
@@ -4248,6 +4250,15 @@ That mode prints the current point value on the mode line."
                                      '((elpa . ivy-avy))))
 
 ;; ---------------------------------------------------------------------------
+(defgroup pel-pkg-for-parser nil
+  "PEL customization for parser generator support packages.
+
+Note: currently nothing is placed under this group, BUT several other
+      defgroup are children of this one; it acts as a group to get access
+      to the various parser support packages."
+  :group 'pel-package-use)
+
+;; ---------------------------------------------------------------------------
 ;; Programming Language Support
 ;; ============================
 (defgroup pel-pkg-for-programming nil
@@ -5364,6 +5375,7 @@ defined ones, which could use that variable too."
   :group 'pel-pkg-for-cc
   :group 'c
   :group 'pel-pkg-for-c
+  :group 'pel-pkg-for-parser
   :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
 (defcustom pel-use-bison-mode nil
@@ -10370,6 +10382,61 @@ turns it off."
   :type 'boolean
   :safe #'booleanp)
 
+;; ---------------------------------------------------------------------------
+;; Tree Sitter
+;; -----------
+(defgroup pel-pkg-for-tree-sitter nil
+  "Tree Sitter support under PEL."
+  :link '(url-link :tag "Tree-Sitter @ GitHub"
+                   "https://github.com/tree-sitter/tree-sitter?tab=readme-ov-file#readme")
+  :link '(url-link :tag "Tree Sitter Presentation at Strange Loop"
+                   "https://www.thestrangeloop.com/2018/tree-sitter---a-new-parsing-system-for-programming-tools.html")
+  :group 'pel-package-use
+  :group 'pel-pkg-for-parser)
+
+(defcustom pel-use-tree-sitter nil
+  "Activate the tree-sitter support."
+  :link '(url-link :tag "Emacs tree-sitter @ GitHub.io"
+                   "https://emacs-tree-sitter.github.io/")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-treesit-load-path nil
+  "List of directories to look for tree-sitter language definition.
+
+The directories should hold tree-sitter definition dynamic library files.
+The list of directory will be appended to Emacs `treesit-extra-load-path',
+allowing Emacs tree-sitter support to find the required language dynamic
+libraries when it is required by tree-sitter support for a specific major
+mode.
+
+IMPORTANT NOTE:
+
+I noticed the following:
+
+- The tree-sitter-langs package installs the language dynamic
+  libraries inside the '~/.emacs.d/elpa/tree-sitter-langs-YYYYMMDD.vvv.bin'
+  directory, where YYYMMMDD.vvv depends on the moment the installation
+  was done.
+- The files stored inside that directory have a name like cmake.dylib or
+  cmake.so (depending on your OS extension for the dynamic libraries).
+- Some packages look for language dynamic library files that have a name
+  that starts with 'libtree-sitter-', like 'libree-sitter-cmake.dylib'.
+
+So it seems that some work is needed to properly support tree-sitter.
+Here's what I do in my environments:
+
+- Create a symbolic link named 'tree-sitter-langs-bin' that points to the
+  appropriate '~/.emacs.d/elpa/tree-sitter-langs-YYYYMMDD.vvv.bin' directory.
+- Create a '~/.emacs.d/libtree-sitter' directory.
+- Inside that directory I create symbolic links named 'libree-sitter-MODE.EXT' for
+   each MODE.EXT file located inside the
+   '~/.emacs.d/elpa/tree-sitter-langs-YYYYMMDD.vvv.bin' directory via the
+   '~/.emacs.d/tree-sitter-langs-bin' symbolic link.
+- Add the following 2 directories to the list here:
+  - '~/.emacs.d/tree-sitter-langs-bin'
+  - '~/.emacs.d/libtree-sitter'"
+  :type '(repeat string))
 ;; ---------------------------------------------------------------------------
 ;; Undo Mechanism Management
 ;; -------------------------
