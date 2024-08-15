@@ -176,6 +176,7 @@
 ;;     - pel-pkg-for-speedbar
 ;;     - pel-pkg-for-spelling
 ;;     - pel-pkg-for-sw-build
+;;       - pel-pkg-for-cmake
 ;;       - pel-pkg-for-make
 ;;     - pel-pkg-for-text-mode
 ;;     - pel-pkg-for-time-tracking
@@ -10196,10 +10197,28 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 ;; ---------------------------------------------------------------------------
+;; CMake file support
+;; ------------------
+(defgroup pel-pkg-for-cmake nil
+  "PEL support for CMake software build system."
+  :group 'pel-pkg-for-sw-build)
+
+(defcustom pel-use-cmake-mode nil
+  "Control whether PEL provides extra support for CMake."
+  :group 'pel-pkg-for-cmake
+  :group 'cmake
+  :link '(url-link :tag "cmake-mode @ GitHub"
+                   "https://github.com/Kitware/CMake/blob/master/Auxiliary/cmake-mode.el")
+  :link '(url-link :tag "cmake-mode @ MELPA"
+                   "https://melpa.org/#/cmake-mode")
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
 ;; Make file Modes
 ;; ---------------
 (defgroup pel-pkg-for-make nil
-  "PEL support for software build systems."
+  "PEL support for make software build systems."
   :group 'pel-pkg-for-sw-build)
 
 (defcustom pel-use-makefile t

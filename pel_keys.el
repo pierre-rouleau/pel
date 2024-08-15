@@ -2193,7 +2193,10 @@ can't bind negative-argument to C-_ and M-_"
 
 ;; - CMake support
 ;; ---------------
-;; (use-package cmake-mode)
+(when pel-use-cmake-mode
+  (pel-ensure-package cmake-mode from: melpa)
+  (add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
+  (add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode)))
 
 ;; - Makefile editing support
 ;; --------------------------
