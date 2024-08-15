@@ -1390,18 +1390,24 @@ interactively."
 ;; -------------------
 (when pel-use-tree-sitter
   (if pel-emacs-has-dynamic-module-support-p
-      (progn
-        (pel-ensure-package tree-sitter from: melpa)
-        (pel-ensure-package tree-sitter-langs from: melpa)
+      (if (and
+           (fboundp 'treesit-available-p)
+           (treesit-available-p))
+          (progn
+            (pel-ensure-package tree-sitter from: melpa)
+            (pel-ensure-package tree-sitter-langs from: melpa)
 
-        ;; For some reason the treesit-extra-load-path variable is not always
-        ;; set to the list of directories where tree sitter language dynamic
-        ;; libraries are located.  If pel-treesit-load-path is non-nil then
-        ;; append it to the treesit-extra-load-path variable
-        (when (and (boundp 'treesit-extra-load-path)
-                   pel-treesit-load-path)
-          (setq treesit-extra-load-path
-                (append treesit-extra-load-path pel-treesit-load-path))))
+            ;; For some reason the treesit-extra-load-path variable is not always
+            ;; set to the list of directories where tree sitter language dynamic
+            ;; libraries are located.  If pel-treesit-load-path is non-nil then
+            ;; append it to the treesit-extra-load-path variable
+            (when (and (boundp 'treesit-extra-load-path)
+                       pel-treesit-load-path)
+              (setq treesit-extra-load-path
+                    (append treesit-extra-load-path pel-treesit-load-path))))
+        (display-warning 'emacs-build
+                         "Can't use tree-sitter:
+Emacs must be compiled with --with-tree-sitter but it's not."))
     (display-warning 'pel-package-install
                      "Can't install tree-sitter:
 Tree-sitter requires Emacs built with dynamic module support.
