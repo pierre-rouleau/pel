@@ -305,6 +305,13 @@
   (memq system-type '(windows-nt ms-dos))
   "Predicate: t if running under a Windows Operating System, nil otherwise.")
 
+(defconst pel-emacs-has-dynamic-module-support-p
+  (and (functionp 'module-load)
+       module-file-suffix)
+  "Predicate: non-nil when Emacs has dynamic module support enabled.
+
+The non-nil value of the predicate is the `module-file-suffix'.")
+
 (defconst pel-emacs-is-graphic-p (display-graphic-p)
   "Predicate: t when Emacs is running in graphics mode, nil otherwise.")
 
