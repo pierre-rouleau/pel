@@ -371,12 +371,44 @@ Done in this function to allow advising libraries that remap these keys."
   (pel-bind-greek-to "<f9>"))
 
 ;; ---------------------------------------------------------------------------
+;; tree-sitter support
+;; -------------------
+
+(when pel-use-tree-sitter
+  (if pel-emacs-has-dynamic-module-support-p
+      (if (and
+           (fboundp 'treesit-available-p)
+           (treesit-available-p))
+          (progn
+            (pel-ensure-package tree-sitter from: melpa)
+            (pel-ensure-package tree-sitter-langs from: melpa)
+
+            ;; For some reason the treesit-extra-load-path variable is not always
+            ;; set to the list of directories where tree sitter language dynamic
+            ;; libraries are located.  If pel-treesit-load-path is non-nil then
+            ;; append it to the treesit-extra-load-path variable
+            (when (and (boundp 'treesit-extra-load-path)
+                       pel-treesit-load-path)
+              (setq treesit-extra-load-path
+                    (append treesit-extra-load-path pel-treesit-load-path)))
+            ;; remember that PEL can now use tree-sitter modes.
+            (setq pel-uses-tree-sitter t))
+        (display-warning 'emacs-build
+                         "Can't use tree-sitter:
+Emacs must be compiled with --with-tree-sitter but it's not."))
+    (display-warning 'pel-package-install
+                     "Can't install tree-sitter:
+Tree-sitter requires Emacs built with dynamic module support.
+Your version of Emacs does not support dynamic module.")))
+
+;; ---------------------------------------------------------------------------
 ;; File format parsing support
 ;; ---------------------------
 (when pel-use-ini
   (pel-install-github-file "pierre-rouleau/ini.el/master" "ini.el"))
 (when pel-use-emacs-toml
-  (pel-ensure-package toml from: melpa))
+  (pel-ensure-package toml from: melpa)
+  (pel-major-mode-use-tree-sitter 'toml-mode 'toml-ts-mode))
 (when pel-use-kconfig-mode
   (pel-install-github-file "delaanthonio/kconfig-mode/master" "kconfig-mode.el")
   (add-to-list 'auto-mode-alist '("\\Kconfig\\'" . kconfig-mode))
@@ -1384,34 +1416,6 @@ interactively."
    'pel-modes-activating-easy-escape
    (lambda ()
      (easy-escape-minor-mode 1))))
-
-;; ---------------------------------------------------------------------------
-;; tree-sitter support
-;; -------------------
-(when pel-use-tree-sitter
-  (if pel-emacs-has-dynamic-module-support-p
-      (if (and
-           (fboundp 'treesit-available-p)
-           (treesit-available-p))
-          (progn
-            (pel-ensure-package tree-sitter from: melpa)
-            (pel-ensure-package tree-sitter-langs from: melpa)
-
-            ;; For some reason the treesit-extra-load-path variable is not always
-            ;; set to the list of directories where tree sitter language dynamic
-            ;; libraries are located.  If pel-treesit-load-path is non-nil then
-            ;; append it to the treesit-extra-load-path variable
-            (when (and (boundp 'treesit-extra-load-path)
-                       pel-treesit-load-path)
-              (setq treesit-extra-load-path
-                    (append treesit-extra-load-path pel-treesit-load-path))))
-        (display-warning 'emacs-build
-                         "Can't use tree-sitter:
-Emacs must be compiled with --with-tree-sitter but it's not."))
-    (display-warning 'pel-package-install
-                     "Can't install tree-sitter:
-Tree-sitter requires Emacs built with dynamic module support.
-Your version of Emacs does not support dynamic module.")))
 
 ;; ---------------------------------------------------------------------------
 ;; - Use undo-tree
@@ -4380,7 +4384,27 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                  (boundp 'indent-tools-keymap-prefix)
                  (boundp 'python-mode-map))
         (define-key python-mode-map indent-tools-keymap-prefix
-          'indent-tools-hydra/body)))))
+                    'indent-tools-hydra/body))))
+
+  ;; plug in tree-sitter for Python :todo: simplify via macros
+  (when (pel-major-mode-use-tree-sitter 'python-mode 'python-ts-mode)
+
+    (pel-eval-after-load python-ts
+      (defvar pel-python-ts-tab-width)
+      (defvar pel-python-ts-use-tabs)
+      (defvar pel-python-ts-activates-minor-modes)
+      (setq pel-python-ts-tab-width pel-python-tab-width)
+      (setq pel-python-ts-use-tabs  pel-python-use-tabs)
+      (setq pel-python-ts-activates-minor-modes pel-python-activates-minor-modes)
+
+      (pel-config-major-mode python-ts pel:for-python
+        (when (and pel-use-indent-tools
+                   (eq pel-indent-tools-key-bound 'python)
+                   (require 'indent-tools nil :noerror)
+                   (boundp 'indent-tools-keymap-prefix)
+                   (boundp 'python-mode-map))
+          (define-key python-mode-map indent-tools-keymap-prefix
+                      'indent-tools-hydra/body))))))
 
 ;; (use-package jedi
 ;;   :ensure t

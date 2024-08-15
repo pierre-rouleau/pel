@@ -169,6 +169,9 @@
 ;;    - `pel--package-ensure-elpa'
 ;;      - `pel--package-install'
 ;;
+;; Tree-sitter major mode support
+;; - `pel-major-mode-use-tree-sitter'
+;;
 ;; Mode argument interpretation
 ;; -  `pel-action-for'
 ;;
@@ -332,9 +335,17 @@ The non-nil value of the predicate is the `module-file-suffix'.")
 (defconst pel-emacs-29-or-later-p (>= emacs-major-version 29)
   "Predicate: t when Emacs version 29 or later is running, nil otherwise.")
 
-
 (defconst pel-filesep (if pel-system-is-windows-p "\\" "/")
   "String directory/file separator character for this OS.")
+
+;; Variables
+;; ---------
+(defvar pel-uses-tree-sitter nil
+  "Set to t when PEL currently uses tree-sitter, nil otherwise.
+
+It is set to t only by the logic of pel_keys.el which is
+executed by `pel-init' on startup.")
+
 ;; ---------------------------------------------------------------------------
 ;; Code Style Buffer Local Variables
 ;; ---------------------------------
@@ -2104,6 +2115,27 @@ However, when PEL operates in fast startup, the macro creates no code."
                (lambda ()
                  ,@body)
                :append)))
+
+;; ---------------------------------------------------------------------------
+;; Tree-sitter major mode support
+;; ------------------------------
+
+(defun pel-major-mode-use-tree-sitter (mode ts-mode)
+  "Activate replacement of a MODE by a TS-MODE when tree-sitter is used.
+
+MODE is the symbol of the standard, default mode.
+TS-MODE is the symbol of the corresponding mode that uses tree-sitter.
+
+Normally the difference between the 2 is the ts- prefix before
+the word mode in the symbol name. The function adds the pair to the
+`major-mode-remap-alist' when it is available and returns the new value,
+otherwise it returns nil."
+  (when (and (boundp 'major-mode-remap-alist)
+             pel-uses-tree-sitter)
+    (when (not (assoc mode major-mode-remap-alist))
+      (push (cons mode ts-mode) major-mode-remap-alist))
+    ;; Always return the resulting alist when a mode was added or is in.
+    major-mode-remap-alist))
 
 ;; ---------------------------------------------------------------------------
 ;; Mode argument interpretation
