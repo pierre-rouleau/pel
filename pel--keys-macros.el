@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-08-16 08:50:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-08-16 09:58:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -622,7 +622,9 @@ stored inside the doc/pdf directory.")
     ("dired-sidebar"   [dired])
     ("apples"          [f11 32 ?a])
     ("c++"             [f11 32 ?C])
+    ("c++-ts"          [f11 32 ?C])
     ("c"               [f11 32 ?c])
+    ("c-ts"            [f11 32 ?c])
     ("lisp"            [f11 32 ?L])
     ("common-lisp"     [f11 32 ?L])     ; an alias for lisp.
     ("clojure"         [f11 32 10])
