@@ -2139,8 +2139,11 @@ otherwise it returns nil."
     major-mode-remap-alist))
 
 (defun pel-major-ts-mode-supported-p (mode)
-  "Return t when the specified tree-sitter major MODE is supported."
-  (assoc mode major-mode-remap-alist))
+  "Return t when the specified tree-sitter major MODE is supported.
+
+MODE must be a symbol that does NOT end with -mode"
+  (let ((mode-symbol (intern  (format "%s-mode" (symbol-name mode)))))
+    (assoc mode-symbol major-mode-remap-alist)))
 
 ;; ---------------------------------------------------------------------------
 ;; Mode argument interpretation

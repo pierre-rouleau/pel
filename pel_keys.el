@@ -4378,7 +4378,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; Activate python mode (with or without tree-sitter support)
   (pel-major-mode-use-tree-sitter 'python-mode 'python-ts-mode)
   (pel-eval-after-load python
-    (when (pel-major-ts-mode-supported-p 'python-mode)
+    (when (pel-major-ts-mode-supported-p 'python)
       ;; Using tree-sitter with Python - set mirroring variables
       (defvar pel-python-ts-tab-width)
       (defvar pel-python-ts-use-tabs)
