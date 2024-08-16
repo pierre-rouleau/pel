@@ -4376,49 +4376,28 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-python "2"         'lispy-arglist-inline))
 
   ;; Activate python mode (with or without tree-sitter support)
-  (pel-major-mode-use-tree-sitter 'python-mode 'python-ts-mode)
-  (pel-eval-after-load python
-    (when (pel-major-ts-mode-supported-p 'python)
-      ;; Using tree-sitter with Python - set mirroring variables
-      (defvar pel-python-ts-tab-width)
-      (defvar pel-python-ts-use-tabs)
-      (defvar pel-python-ts-activates-minor-modes)
-      (setq pel-python-ts-tab-width pel-python-tab-width)
-      (setq pel-python-ts-use-tabs  pel-python-use-tabs)
-      (setq pel-python-ts-activates-minor-modes
-            pel-python-activates-minor-modes)
+  (pel-config-major-mode-with-ts
+      python
+      pel:for-python
+    (when (and pel-use-indent-tools
+               (eq pel-indent-tools-key-bound 'python)
+               (require 'indent-tools nil :noerror)
+               (boundp 'indent-tools-keymap-prefix)
+               (boundp 'python-mode-map))
+      (define-key python-mode-map indent-tools-keymap-prefix
+                  'indent-tools-hydra/body))))
 
-      ;; activate
-      (pel-config-major-mode python-ts pel:for-python
-        (when (and pel-use-indent-tools
-                   (eq pel-indent-tools-key-bound 'python)
-                   (require 'indent-tools nil :noerror)
-                   (boundp 'indent-tools-keymap-prefix)
-                   (boundp 'python-mode-map))
-          (define-key python-mode-map indent-tools-keymap-prefix
-                      'indent-tools-hydra/body))))
+  ;; (use-package jedi
+  ;;   :ensure t
+  ;;   :init
+  ;;   (add-hook 'python-mode-hook 'jedi:setup)
+  ;;   (add-hook 'python-mode-hook 'jedi:ac-setup))
 
-    ;; Do it also when Not using tree-sitter
-    (pel-config-major-mode python pel:for-python
-      (when (and pel-use-indent-tools
-                 (eq pel-indent-tools-key-bound 'python)
-                 (require 'indent-tools nil :noerror)
-                 (boundp 'indent-tools-keymap-prefix)
-                 (boundp 'python-mode-map))
-        (define-key python-mode-map indent-tools-keymap-prefix
-                    'indent-tools-hydra/body)))))
-
-;; (use-package jedi
-;;   :ensure t
-;;   :init
-;;   (add-hook 'python-mode-hook 'jedi:setup)
-;;   (add-hook 'python-mode-hook 'jedi:ac-setup))
-
-;; NOTE: Jedi requires the installation of the backend server with
-;; M-x jedi:install-server
-;;
-;; For this to work, virtualenv must be present!!
-;; inside /usr/local/bin/virtualenv
+  ;; NOTE: Jedi requires the installation of the backend server with
+  ;; M-x jedi:install-server
+  ;;
+  ;; For this to work, virtualenv must be present!!
+  ;; inside /usr/local/bin/virtualenv
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC R`` : REXX programming

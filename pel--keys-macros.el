@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-08-15 19:14:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-08-16 08:50:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1570,6 +1570,43 @@ and after the local variables have been loaded."
        (pel--mode-hook-maybe-call (function ,gn-fct1)
                                   (quote ,gn-mode-name)
                                   (quote ,gn-mode-hook)))))
+
+(defmacro pel-config-major-mode-with-ts (target-mode
+                                         &optional key-prefix
+                                         &rest body)
+  "Setup the major-mode and tree-sitter major mode for TARGET_MODE.
+
+See `pel-config-major-mode' for the description of the arguments;
+this uses the exact same arguments.
+"
+  (declare (indent 2))
+  (let ((gn-mode    (intern (format "%s-mode"    target-mode)))
+        (gn-ts-mode (intern (format "%s-ts-mode" target-mode)))
+        (gn-ts-target-mode (intern (format "%s-ts" target-mode)))
+        (gn-tab-width    (intern (format "pel-%s-tab-width" target-mode)))
+        (gn-ts-tab-width (intern (format "pel-%s-ts-tab-width" target-mode)))
+        (gn-use-tabs     (intern (format "pel-%s-use-tabs" target-mode)))
+        (gn-ts-use-tabs  (intern (format "pel-%s-ts-use-tabs" target-mode)))
+        (gn-activates-mm (intern (format "pel-%s-activates-minor-modes" target-mode)))
+        (gn-ts-activates-mm (intern (format "pel-%s-ts-activates-minor-modes" target-mode))))
+    ;; return the following generated code:
+    `(progn
+       (pel-major-mode-use-tree-sitter (quote ,gn-mode) (quote ,gn-ts-mode))
+       (pel-eval-after-load ,target-mode
+         ;; 1- setup for the ts-mode when it is available
+         (when (pel-major-ts-mode-supported-p (quote ,target-mode))
+           ;; create and set ts-mode mirroring variables
+           (progn
+             (defvar ,gn-ts-tab-width)
+             (defvar ,gn-ts-use-tabs)
+             (defvar ,gn-ts-activates-mm)
+             (setq ,gn-ts-tab-width ,gn-tab-width)
+             (setq ,gn-ts-use-tabs  ,gn-use-tabs)
+             (setq ,gn-ts-activates-mm ,gn-activates-mm))
+           ;; activate
+           (pel-config-major-mode ,gn-ts-target-mode ,key-prefix ,@body))
+         ;; 2- setup for the standard mode
+         (pel-config-major-mode ,target-mode ,key-prefix ,@body)))))
 
 ;; --
 
