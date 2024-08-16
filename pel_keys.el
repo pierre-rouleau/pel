@@ -2523,9 +2523,20 @@ bind it again after this call."
     (when (and pel-use-hydra
                (fboundp 'pel--load-hydra))
       (pel--load-hydra :no-request))
-    (let ((map (if (eq major-mode 'c-mode)
-                   (when (boundp 'c-mode-map) c-mode-map)
-                 (when (boundp 'c++-mode-map) c++-mode-map))))
+    (let ((map (cond
+                ((and (eq major-mode 'c-mode)
+                      (boundp 'c-mode-map))
+                 c-mode-map)
+                ((and (eq major-mode 'c-ts-mode)
+                      (boundp 'c-ts-mode-map))
+                 c-ts-mode-map)
+                ((and (eq major-mode 'c++-mode)
+                      (boundp 'c++-mode-map))
+                 c++-mode-map)
+                ((and (eq major-mode 'c++-ts-mode)
+                      (boundp 'c++-ts-mode-map))
+                 c++-ts-mode-map)
+                (t nil))))
       (when map
         (define-key map (kbd "<f6> <right>") 'pel-c-preproc-forward-conditional)
         (define-key map (kbd "<f6> <left>")  'pel-c-preproc-backward-conditional)
