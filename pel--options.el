@@ -10402,6 +10402,10 @@ NOTE:  Emacs must be build --with-tree-sitter to be able to use
        and you activate this."
   :link '(url-link :tag "Emacs tree-sitter @ GitHub.io"
                    "https://emacs-tree-sitter.github.io/")
+  :link '(url-link :tag "elisp-tree-sitter @ GitHub"
+                   "https://github.com/emacs-tree-sitter/elisp-tree-sitter")
+  :link '(url-link :tag "tree-sitter-langs @ GitHub"
+                   "https://github.com/emacs-tree-sitter/tree-sitter-langs")
   :type 'boolean
   :safe #'booleanp)
 
