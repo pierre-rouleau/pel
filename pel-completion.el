@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-07-31 17:04:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-08-16 17:16:11 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -793,9 +793,8 @@ otherwise it starts with \"Currently\"."
   (let ((current-mode      (pel-activated-completion-mode))
         (current-mode-name (pel-activated-completion-mode-name)))
     (message "\
-Completion %s using:
+Completion %s using (change it with: <f11> M-c <f4>):
   - %s completion mode%s.
-Change it by typing: <f11> M-c <f4>
 - ido-use-filename-at-point: %s"
              (if now "now" "currently")
              current-mode-name
