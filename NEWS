@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-etags-toggle-case-sensitivity*, bound to ~<f11> X X~, to toggle the case sensitivity of etags-based xref
+  search.  This changes the global value of the *tags-case-fold-search* user-option for the current Emacs session.
+  Use a command argument to only modify the value for the local buffer.
+  - The *pel-xref-show-status* now displays the value of the user-option and the PEL key binding
+    that can be used to change it.
 - Add support for [[https://github.com/legoscia/archive-rpm?tab=readme-ov-file#readme][archive-rpm]] when *pel-use-archive-rpm* user-option is activated.
   With this, it becomes possible to open RPM and CPIO files and see their content
   the way Emacs supports tarball and zip files.

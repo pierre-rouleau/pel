@@ -494,6 +494,32 @@ Store the TAGS file in the PEL directory."
                                            (car load-path))))
                  (pel-emacs-roots-in-loadpath)))
   (message "Done. See info is in *scratch*"))
+
+(defun pel--tags-case-fold-search-string (value)
+  "Return description of `tags-case-fold-search' VALUE"
+  (cond
+   ((eq value t) "case-insensitive")
+   ((eq value nil) "case sensitive")
+   (t "searching with default behaviour")))
+
+(defun pel-etags-toggle-case-sensitivity (locally)
+  "Changes case sensitivity of TAGS search.
+
+Dynamically changes the value of `tags-case-fold-search'
+globally unless the optional LOCALLY argument is set.
+The modification holds only for the current Emacs session."
+  (interactive "P")
+  (let ((new-value (cond
+                    ((eq tags-case-fold-search t) nil)
+                    ((eq tags-case-fold-search nil) t)
+                    (t t))))
+    (if locally
+        (setq-local tags-case-fold-search new-value)
+      (setq tags-case-fold-search new-value))
+    (message "Tags search is now %s in %s"
+             (pel--tags-case-fold-search-string new-value)
+             (if locally "this buffer" "all buffers"))))
+
 ;; ---------------------------------------------------------------------------
 
 (defun pel-xref-functions-hook-str (function-hook)
@@ -512,7 +538,7 @@ specific backend automatically.
 With PRINT-IN-BUFFER argument, print the information in a
 dedicated buffer."
   (interactive "P")
-  (let ((msg (format "- Xref Front-end: %s
+  (let ((msg (format "- Xref Front-end: %s (*tags-case-fold-search -> <f11> X X -> search tag is: %s)
 - Xref Back-ends:
   - dumb-jump-mode           : %s %s
   - ggtags-mode              : %s %s
@@ -530,6 +556,7 @@ dedicated buffer."
     - helm-cscope-mode       : %s
     - helm-scope key bindings: %s"
                      pel--xref-front-end-used-tool
+                     (pel--tags-case-fold-search-string tags-case-fold-search)
                      (pel-xref-dumb-jump-mode-state-str)
                      (pel-minor-mode-auto-activated-by 'dumb-jump-mode nil "" :show-all)
                      (pel-option-mode-state 'ggtags-mode 'pel-use-ggtags)

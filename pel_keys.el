@@ -8581,6 +8581,7 @@ the ones defined from the buffer now."
 (define-key pel:xref "?" #'pel-xref-show-status)
 (define-key pel:help "X" #'pel-xref-show-status) ; pel:help key
 
+(define-key pel:xref "X"  'pel-etags-toggle-case-sensitivity)
 (define-key pel:xref "a" #'xref-find-apropos)
 (define-key pel:xref "c"  'pel-xref-find-custom-definition-at-line)
 (define-key pel:xref "t"  'visit-tags-table)

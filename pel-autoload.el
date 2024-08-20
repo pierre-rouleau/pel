@@ -794,7 +794,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-xref-select-front-end
     pel-toggle-helm-cscope
     pel-xref-show-status
-    pel-xref-find-custom-definition-at-line)
+    pel-xref-find-custom-definition-at-line
+    pel-etags-toggle-case-sensitivity)
   (pel-autoload-function "pel-xref" for:
     pel-xref-dumb-jump-activate-locally
     pel-xref-gxref-activate
