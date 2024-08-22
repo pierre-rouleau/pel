@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-10-14 07:52:33 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-08-22 11:44:02 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -250,12 +250,12 @@ in which case it appends to the previous report."
                     (boundp 'c-block-comment-prefix))
                (if c-block-comment-flag
                    (format
-                    "Block comments: %s %s , continued line start with %s"
+                    "Block (C-style) comments: %s %s , continued line start with %s"
                     c-block-comment-starter
                     c-block-comment-ender
                     c-block-comment-prefix)
-                 (format "Line comments: %s" (pel-symbol-value-or
-                                              'c-line-comment-starter)))
+                 (format "Line (C++-style) comments: %s" (pel-symbol-value-or
+                                                          'c-line-comment-starter)))
              not-avail-msg)
            (pel-symbol-on-off-string 'c-hungry-delete-key ; 26
                                      nil
@@ -323,7 +323,13 @@ F11-⌦  and F11-⌫  keys are available."
        (pel-insert-symbol-content-line 'c-electric-flag)
        (pel-insert-symbol-content-line 'auto-fill-function)
        (pel-insert-symbol-content-line 'c-line-comment-starter)
-       (pel-insert-symbol-content-line 'c-block-comment-flag)
+       (pel-insert-symbol-content-line 'c-block-comment-flag
+                                       pel-insert-symbol-content-context-buffer
+                                       (if (pel-symbol-value
+                                            'c-block-comment-flag
+                                            pel-insert-symbol-content-context-buffer)
+                                           " : C-style /* comment */"
+                                         " : C++-style // comment"))
        (pel-insert-symbol-content-line 'c-block-comment-starter)
        (pel-insert-symbol-content-line 'c-block-comment-ender)
        (pel-insert-symbol-content-line 'c-block-comment-prefix)
