@@ -249,8 +249,14 @@
 ;; - `pel-symlink-points-to-p'
 ;;
 ;; Insertion of text in current buffer
-;; - `pel-insert-symbol-content'
+;; - `pel-insert-url-link'
+;; - `pel-insert-symbol-content-line'
+;;   - `pel-insert-symbol-content'
+;;     - `pel-insert-symbol'
+;; - `pel-insert-list-value'
 ;; - `pel-insert-list-content'
+;;   - `pel--pp'
+;;     - `pel-line-prefixed-with'
 ;;
 ;; Print in dedicated buffer
 ;; - `pel-print-in-buffer'
