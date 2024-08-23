@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-08-22 11:44:02 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-08-23 14:49:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -333,6 +333,11 @@ F11-⌦  and F11-⌫  keys are available."
        (pel-insert-symbol-content-line 'c-block-comment-starter)
        (pel-insert-symbol-content-line 'c-block-comment-ender)
        (pel-insert-symbol-content-line 'c-block-comment-prefix)
+
+       (insert "\n\n*Style control:")
+       (pel-insert-list-content  'c-syntactic-context)
+       (pel-insert-list-content  'c-offsets-alist nil nil nil :on-same-line)
+
        (insert "\n\n*File extension association:")
        (pel-insert-symbol-content-line 'pel-auto-mode-alist)
        (insert "\n\n*File skeleton control:")
@@ -357,7 +362,6 @@ F11-⌦  and F11-⌫  keys are available."
          (pel-insert-symbol-content-line 'pel-c++-class-has-doc-block)
          (pel-insert-symbol-content-line 'pel-c++-class-doc-section-titles)
          (pel-insert-symbol-content-line 'pel-c++-class-members-sections))
-       ;; (pel-insert-symbol-content-line 'auto-mode-alist)
        (insert "\n\n See Also:\n- ")
        (pel-insert-symbol 'auto-mode-alist)
        )
