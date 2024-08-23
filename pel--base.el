@@ -2968,7 +2968,7 @@ need."
 (defun pel-insert-list-value
     (list-name list-value
                 &optional without-index on-same-line)
-  "Insert a description of a list variable with a name and value"
+  "Insert a description of a list variable with a name and value."
   (insert (format "\n- %s: " list-name))
   (let ((idx 0))
     (dolist (elem list-value)
