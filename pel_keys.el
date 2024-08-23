@@ -2606,6 +2606,7 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:c-search-replace (kbd "<f11> SPC c s"))
 
   ;; Add extra key bindings specific to the C mode
+  (define-key pel:c-setup "#" 'c-toggle-cpp-indent-to-body)
   (when pel-use-ini
     (define-key pel:c-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name)
     (define-key pel:c-setup (kbd "<f54>") 'pel-cc-set-file-finder-ini-tool-name))

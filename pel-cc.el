@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-08-23 14:57:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-08-23 16:20:50 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -333,6 +333,11 @@ F11-⌦  and F11-⌫  keys are available."
        (pel-insert-symbol-content-line 'c-block-comment-starter)
        (pel-insert-symbol-content-line 'c-block-comment-ender)
        (pel-insert-symbol-content-line 'c-block-comment-prefix)
+
+       (insert "\n\n*Pre-processor indentation control. (use c-toggle-cpp-indent-to-body, <f12> <f4> #, to toggle) ")
+       (pel-insert-symbol-content-line 'c-cpp-indent-to-body-flag)
+       (pel-insert-list-content 'c-cpp-indent-to-body-directives nil nil nil :on-same-line)
+       (pel-insert-symbol-content-line 'c-electric-pound-behavior)
 
        (insert "\n\n*Style control: (use c-set-offset, C-c C-o, to modify)")
        (pel-insert-list-content  'c-syntactic-context)
