@@ -53,7 +53,7 @@ HTML/*
 # Packaging
 .cask
 
-# Backup files
+# Emacs Backup files
 *~
 
 # Emacs temporary files
