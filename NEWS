@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for *dockerfile-mode* when *pel-use-dockerfile-mode* is t.
 - Add *pel-etags-toggle-case-sensitivity*, bound to ~<f11> X X~, to toggle the case sensitivity of etags-based xref
   search.  This changes the global value of the *tags-case-fold-search* user-option for the current Emacs session.
   Use a command argument to only modify the value for the local buffer.
