@@ -1664,6 +1664,17 @@ The Hippie Expand can be used together with any."
   :safe #'booleanp)
 (pel-put 'pel-use-kconfig-mode :package-is :in-utils)
 
+;; Docker Support
+;; --------------
+
+(defcustom pel-use-dockerfile-mode nil
+  "Whether PEL supports the dockerfile-mode."
+  :group 'pel-pkg-for-conf-file
+  :link '(url-link :tag "dockerfile-mode @ Github"
+                   "https://github.com/spotify/dockerfile-mode")
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-filemng
 ;; -------------------

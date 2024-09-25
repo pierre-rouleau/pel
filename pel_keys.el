@@ -413,6 +413,8 @@ Your version of Emacs does not support dynamic module.")))
   (pel-install-github-file "delaanthonio/kconfig-mode/master" "kconfig-mode.el")
   (add-to-list 'auto-mode-alist '("\\Kconfig\\'" . kconfig-mode))
   (pel-autoload-file kconfig-mode for: kconfig-mode))
+(when pel-use-dockerfile-mode
+  (pel-ensure-package dockerfile-mode from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;; - Font Control
@@ -6728,7 +6730,8 @@ the ones defined from the buffer now."
 (when pel-use-archive-rpm
   ;; As soon as the archive-rpm package is installed it becomes possible to open
   ;; RPM or CPIO archive files and see their content, just as tarball or zip files.
-  (pel-ensure-package archive-rpm from: melpa))
+  (pel-ensure-package archive-rpm from: melpa)
+  (pel-ensure-package rpm-spec-mode from: melpa))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Find File At Point (ffap)
