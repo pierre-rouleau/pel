@@ -6324,6 +6324,7 @@ the ones defined from the buffer now."
 (when (or pel-use-neotree
           pel-use-ztree
           pel-use-treemacs
+          pel-use-dir-treeview
           pel-use-rfc-mode)
   (define-pel-global-prefix pel:browse (kbd "<f11> B"))
 
@@ -6335,7 +6336,7 @@ the ones defined from the buffer now."
     (defun pel--setup-treemacs ()
       "Setup treemacs."
       (define-key treemacs-mode-map (kbd "M-?")
-        'treemacs-advanced-helpful-hydra)
+                  'treemacs-advanced-helpful-hydra)
       (when pel-use-lsp-treemacs
         (lsp-treemacs-sync-mode 1)))
     (declare-function pel--setup-treemacs "pel_keys")
@@ -6352,6 +6353,13 @@ the ones defined from the buffer now."
     ;;   (when (boundp 'winum-keymap)
     ;;     (define-key winum-keymap (kbd "<f9>") 'treemacs-select-window)))
     )
+
+  (when pel-use-dir-treeview
+    (pel-ensure-package treeview from: melpa)
+    (pel-ensure-package dir-treeview from: melpa)
+
+    (define-key pel:browse  "D" 'dir-treeview)
+    (define-key pel:browse  "d" 'dir-treeview-open))
 
   (when pel-use-neotree
     (define-pel-global-prefix pel:neotree (kbd "<f11> B N"))

@@ -1864,6 +1864,14 @@ Select one of:
   :link '(url-link :tag "rfc-mode @ Github"
                    "https://github.com/galdor/rfc-mode"))
 
+(defcustom pel-use-dir-treeview nil
+  "Control whether PEL supports the dir-treeview package."
+  :group 'pel-pkg-for-file-browse
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "emacs-dir-treeview @ Github"
+                   "https://github.com/tilmanrassy/emacs-dir-treeview"))
+
 (defcustom pel-use-treemacs nil
   "Control whether PEL uses the treemacs package."
   :group 'pel-pkg-for-file-browse
