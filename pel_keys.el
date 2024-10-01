@@ -404,6 +404,7 @@ Your version of Emacs does not support dynamic module.")))
 ;; ---------------------------------------------------------------------------
 ;; File format parsing support
 ;; ---------------------------
+(add-to-list 'auto-mode-alist  '("\\.repo\\'" . conf-unix-mode))
 (when pel-use-ini
   (pel-install-github-file "pierre-rouleau/ini.el/master" "ini.el"))
 (when pel-use-emacs-toml
