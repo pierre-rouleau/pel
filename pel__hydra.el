@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-06-11 11:55:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-10-02 16:53:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -482,7 +482,7 @@ CAUTION: the hydra is still active!"
   ("h"           shrink-window-horizontally   "narrower"     :column "Resize")
   ("."           fit-window-to-buffer         "fit2buf"      :column "Resize")
   ("-"           shrink-window-if-larger-than-buffer "shrink" :column "Resize")
-  ("g"           pel--goldratio               "gold ratio"   :column "Resize")
+  ("G"           pel--goldratio               "gold ratio"   :column "Resize")
   ("0"           delete-window                "this"         :column "Close")
   ("O"           pel-close-other-window       "other"        :column "Close")
   ("1"           delete-other-windows         "others"       :column "Close")

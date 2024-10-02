@@ -8218,7 +8218,7 @@ the ones defined from the buffer now."
   (pel-ensure-package golden-ratio from: melpa)
   (pel-autoload-file golden-ratio for:
                      golden-ratio-mode)
-  (define-key pel:window  "g"  'golden-ratio-mode)
+  (define-key pel:window  "G"  'golden-ratio-mode)
   (when (eq pel-use-golden-ratio 'use-from-start)
     (golden-ratio-mode 1)))
 ;; --

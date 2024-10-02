@@ -75,8 +75,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Also add bindings to navigate frames (useful in terminal mode): ~}~ for next frame,
   and ~{~ for previous frame.
 - Add support for [[https://github.com/roman/golden-ratio.el][golden-ratio]] , activated by *pel-use-golden-ratio*.
-  The *golden-ratio-mode* is bound to the ~<f11> g~ key sequence.
-  This is also available via the pel-∑wnd hydra with the ~g~ key.
+  The *golden-ratio-mode* is bound to the ~<f11> G~ key sequence.
+  This is also available via the pel-∑wnd hydra with the ~G~ key.
 - Add support for [[https://github.com/deb0ch/emacs-winum][winum]] ; activated by *pel-use-winum*.
    ~M-<f11> M-w~ is globally bound to *winum-mode* and once
   active you can use the *winum-mode* key map and also the easier to use PEL
