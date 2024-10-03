@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-10-02 16:53:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-10-02 21:12:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -289,6 +289,7 @@
   (defun iflipb-previous-buffer ()
     "Warning stub."
     (user-error "Unavailable - set pel-use-iflipb to activate!"))
+  (declare-function iflipb-previous-buffer "pel__hydra")
 
   (defun iflipb-kill-buffer ()
     "Warning stub."
