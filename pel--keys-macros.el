@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-09-27 09:09:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-10-04 09:12:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -663,6 +663,7 @@ stored inside the doc/pdf directory.")
     ("ocaml"           [f11 32 ?o])
     ("tuareg"          [f11 32 ?o])
     ("perl"            [f11 32 ?P])
+    ("cperl"           [f11 32 ?P])
     ("rexx"            [f11 32 ?R])
     ("ruby"            [f11 32 ?U])
     ("rust"            [f11 32 ?r])
@@ -922,6 +923,7 @@ There should be no key binding!" keyseq))
     ("nim"              . "pl-nim")
     ("ocaml"            . "pl-ocaml")
     ("perl"             . "pl-perl")
+    ("cperl"            . "pl-perl")
     ("python"           . "pl-python")
     ("rexx"             . "pl-rexx")
     ("ruby"             . "pl-ruby")

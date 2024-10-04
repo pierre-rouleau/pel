@@ -8995,6 +8995,12 @@ Do not enter lambda expressions."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-perl-tab-width 4
+  "Number of columns rendered in a buffer for a hard tab in Perl."
+  :group 'pel-pkg-for-perl
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
 (defcustom pel-perl-mode 'HaraldJoerg/cperl-mode
   "Selects the major-mode used for Perl files.
 
@@ -9024,6 +9030,28 @@ PEL utils directory."
           (const :tag "Use perl-mode" nil)
           (const :tag "Use cperl-mode" cperl-mode)
           (const :tag "Use HaraldJoerg/cperl-mode" HaraldJoerg/cperl-mode)))
+
+;; activation for cperl-mode to mimic the perl-mode
+(defcustom pel-cperl-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for cperl buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-perl
+  :type '(repeat function))
+
+(defcustom pel-cperl-use-tabs nil
+  "Value of `indent-tabs-mode' for editing perl files in cperl-mode.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-perl
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-cperl-tab-width 4
+  "Number of columns rendered in a buffer for a hard tab cperl-mode buffers"
+  :group 'pel-pkg-for-perl
+  :type 'integer
+  :safe 'pel-indent-valid-p)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Python Support

@@ -4582,6 +4582,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-config-major-mode perl pel:for-perl
     (when (boundp 'perl-indent-level)
       (setq-local tab-width perl-indent-level))
+    (setq-local indent-tabs-mode pel-perl-use-tabs))
+  (pel-config-major-mode cperl pel:for-perl
+    (when (boundp 'perl-indent-level)
+      (setq-local tab-width perl-indent-level))
     (setq-local indent-tabs-mode pel-perl-use-tabs)))
 
 ;; ---------------------------------------------------------------------------
