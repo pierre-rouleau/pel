@@ -9059,7 +9059,7 @@ Do not enter lambda expressions."
                    "https://github.com/pierre-rouleau/perl-repl-el/blob/master/perl-repl.el")
   :group 'pel-pkg-for-perl
   :type 'boolean
-  :safe #'boolean)
+  :safe #'booleanp)
 (pel-put 'pel-use-perl-repl :package-is :in-utils)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
