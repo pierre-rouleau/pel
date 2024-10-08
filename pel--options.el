@@ -9053,6 +9053,15 @@ Do not enter lambda expressions."
   :type 'integer
   :safe 'pel-indent-valid-p)
 
+(defcustom pel-use-perl-repl nil
+  "Control whether PEL supports the perl-repl package"
+  :link '(url-link :tag "perl-repl @Github"
+                   "https://github.com/pierre-rouleau/perl-repl-el/blob/master/perl-repl.el")
+  :group 'pel-pkg-for-perl
+  :type 'boolean
+  :safe #'boolean)
+(pel-put 'pel-use-perl-repl :package-is :in-utils)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Python Support
 ;; --------------

@@ -4586,7 +4586,13 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-config-major-mode cperl pel:for-perl
     (when (boundp 'perl-indent-level)
       (setq-local tab-width perl-indent-level))
-    (setq-local indent-tabs-mode pel-perl-use-tabs)))
+    (setq-local indent-tabs-mode pel-perl-use-tabs))
+
+  (when pel-use-perl-repl
+    (pel-install-github-file "pierre-rouleau/perl-repl-el/master"
+                             "perl-repl.el")
+    (pel-autoload "perl-repl" for: perl-repl)
+    (define-key pel:for-perl    "z" 'perl-repl)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC U`` : Ruby programming
@@ -8551,6 +8557,10 @@ the ones defined from the buffer now."
            pel-use-tuareg)
   (declare-function run-ocaml "tuareg")
   (define-key pel:repl  "o"  #'run-ocaml))
+
+(when (and pel-use-perl
+           pel-use-perl-repl)
+  (define-key pel:repl    "P" #'perl-repl))
 
 (when pel-use-arc          (define-key pel:repl (kbd "C-a") #'run-arc))
 (when pel-use-lfe          (define-key pel:repl (kbd "C-l")  'run-lfe))

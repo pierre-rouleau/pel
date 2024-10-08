@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-10-04 09:12:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-10-07 21:53:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -323,7 +323,8 @@
                                                              electricity))
     ([f11 32 ?P]     "pl-perl"      pel-pkg-for-perl         (perl
                                                               cperl
-                                                              electricity))
+                                                              electricity
+                                                              perl-repl))
     ([f11 32 ?U]     "pl-ruby"      pel-pkg-for-ruby         (ruby
                                                               electricity))
     ([f11 32 ?t]     "pl-tcl"       pel-pkg-for-tcl           tcl)
