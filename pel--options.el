@@ -3467,7 +3467,7 @@ TO-STRING argument:
 
 This package allows easy editing of Intel HEX object files."
   :group 'pel-pkg-for-object-file
-  :link '(usr-link :tag "intel-hex-mode @ Github"
+  :link '(url-link :tag "intel-hex-mode @ Github"
                    "https://github.com/mschuldt/intel-hex-mode")
   :type 'boolean
   :safe #'booleanp)
@@ -3500,7 +3500,7 @@ Do not enter lambda expressions."
 (defcustom pel-use-x509-mode nil
   "Control whether PEL uses the x509-mode package."
   :group 'pel-pkg-for-x509-file
-  :link '(usr-link :tag "509-mode @ Github"
+  :link '(url-link :tag "509-mode @ Github"
                    "https://github.com/jobbflykt/x509-mode")
   :type 'boolean
   :safe #'booleanp)
