@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for GNU Autotools source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 12:06:33 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-10-08 10:28:30 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -53,7 +53,7 @@ etags-autotools: build an etags-compliant TAGS in the current directory
                  for all GNU Autotool and GNU Make source code files in
                  the specified directory tree(s).
 
- Usage: etags-autotools [-h|--help]
+ Usage: etags-autotools -h|--help
 
    • Print this help information.
 

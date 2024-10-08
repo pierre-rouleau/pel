@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags file for Perl source code files.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-08 08:49:07 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-10-08 10:29:59 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -63,8 +63,7 @@ etags-c: build a etags-compliant TAGS file in the current directory
                   .pl or .pm for the purpose of building the TAGS file.
                   Use the generated .etags-perl-files.txt for that.
 
- Usage: etags-perl [-h|--help]
-
+ Usage: etags-perl h|--help
   • Print this help information.
 
  Usage: etags-perl [--list=FILENAME] | [DIRPATH [DIRPATH ...]]

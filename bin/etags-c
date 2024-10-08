@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-07-22 15:07:35 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-10-08 10:28:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -59,7 +59,7 @@ etags-c: build a etags-compliant TAGS file in the current directory
          for all C and C++ source code files in the directory trees
          specified on the command line.
 
- Usage: etags-c [-h|--help]
+ Usage: etags-c -h|--help
 
   • Print this help information.
 

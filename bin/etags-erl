@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Erlang and C source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 09:38:34 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-10-08 10:29:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -61,7 +61,7 @@ etags-erl: build an etags-compliant TAGS in the current directory
             for all Erlang and C source code files in the specified
             directory trees(s).
 
-  Usage: etags-erl [-h|--help]
+  Usage: etags-erl -h|--help
 
    • Print this help information.
 

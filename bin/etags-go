@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Go source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 09:57:45 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-10-08 10:29:15 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -52,7 +52,7 @@ etags-go: build an etags-compliant TAGS in the current directory
           for all Go source code files in the specified
           directory tree(s).
 
- Usage: etags-go [-h|--help]
+ Usage: etags-go -h|--help
 
    • Print this help information.
 

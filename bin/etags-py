@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-06-06 09:39:47 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2024-10-08 10:29:39 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -52,7 +52,7 @@ etags-py: build an etags-compliant TAGS in the current directory
           for all Python source code files in the specified
           directory tree(s).
 
- Usage: etags-py [-h|--help]
+ Usage: etags-py -h|--help
 
    • Print this help information.
 
