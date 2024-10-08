@@ -8560,7 +8560,7 @@ the ones defined from the buffer now."
 
 (when (and pel-use-perl
            pel-use-perl-repl)
-  (define-key pel:repl    "P" #'perl-repl))
+  (define-key pel:repl    "P" 'perl-repl))
 
 (when pel-use-arc          (define-key pel:repl (kbd "C-a") #'run-arc))
 (when pel-use-lfe          (define-key pel:repl (kbd "C-l")  'run-lfe))
