@@ -11250,6 +11250,9 @@ indexing system."
 (when pel-use-gerbil
   (setq pel-use-gambit t))
 
+(when pel-use-perl-repl
+  (setq pel-use-perl t))
+
 (when (or pel-use-chez
           pel-use-chibi
           pel-use-chicken
