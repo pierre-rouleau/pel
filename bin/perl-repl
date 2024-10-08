@@ -1,0 +1,28 @@
+#!/bin/sh
+# SH FILE: perl-repl
+#
+# Purpose   :
+# Created   : Monday, October  7 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-10-07 22:12:19 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Execute a Perl REPL using the perl debugger command.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - perl: Perl must be installed.
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+perl -de 0
+
+# ----------------------------------------------------------------------------
