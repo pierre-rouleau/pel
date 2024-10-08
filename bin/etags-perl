@@ -1,0 +1,318 @@
+#!/bin/sh
+# SH FILE: etags-perl
+#
+# Purpose   : Build Emacs Tags file for Perl source code files.
+# Created   : Tuesday, October  8 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-10-08 08:49:07 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Build an Emacs Tags file for all Perl source code files in the
+# sub-directory tree.
+# This includes all files with  the following extensions:
+#
+# - Perl files: .plx, .pls, .pl, .pm, .xs, .t, .pod, .cgi, .psg, .psgi
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+# - Uses fd (also named fdfind in some Linux distros like Mint) if it is
+#   available.  See URL:  https://github.com/sharkdp/fd .
+# - if fd/fdfind is not available, use find instead.
+#
+# Using fd/fdfind is preferred because it supports ignoring files identified
+# by .gitignore, .ignore, .fdignore files. The fd utility can also execute
+# faster than find in several scenarios.
+#
+# - To force use of find, set the ETAGS_USE_FIND environment variable to 1.
+
+# - Uses etags to process files unless ETAGS_USE_UCTAGS environment variable
+#   is set to 1, in which case the ctags utility is found, assuming that it
+#   is the Universal Ctags utility, not any other ctag command.
+#   You can also set ETAGS_USE_UCTAGS to the absolute path of the
+#   Universal Ctags executable file.
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+print_usage()
+{
+    printf -- "
+etags-c: build a etags-compliant TAGS file in the current directory
+         for all Perl source code files in the directory trees
+         specified on the command line.  Search for the files with
+         the following extensions:
+          - .pl, .pm, : searched and parsed (both by etags an uctags)
+          - Also searched, listed, but not processed:
+              .plx, .pls, .xs, .t, .pod, .cgi, .psg, .psgi
+
+         CAUTION: notice the list of file extensions that neither
+                  etags not uctags process.
+                  One way to handle those is to create symlinks
+                  to the files with an extension that ends with
+                  .pl or .pm for the purpose of building the TAGS file.
+                  Use the generated .etags-perl-files.txt for that.
+
+ Usage: etags-perl [-h|--help]
+
+  • Print this help information.
+
+ Usage: etags-perl [--list=FILENAME] | [DIRPATH [DIRPATH ...]]
+
+  • [Re]build an etags-compliant TAGS file in current directory
+    for the Perl source code  files found:
+    - in the directory tree(s) identified on the command line, or
+    - in the list provided in the FILENAME specified by the
+      --list option, or
+    - specified by the ETAGS_PERL_FILE_LIST environment variable.
+  • Overwrites any TAGS file in the current directory.
+  • Stores the names of inspected files in the file named
+     .etags-perl-files.txt in the current directory.
+  • Identifies the Perl files using one of the following methods:
+    • If ETAGS_PERL_FILE_LIST environment variable exists, it uses it as
+      the name of a file that holds a list of Perl files to parse.
+      The name of this file can be anything except .etags-perl-files.txt
+      and it must exists. It it does not etags-perl exists with an error.
+      Each line of the file must identify a Perl file to parse.
+    • Searches the list of Perl source code files.
+      • It uses 'fdfind' or 'fd' if available, 'find' otherwise.
+        - The fd utility is from: https://github.com/sharkdp/fd
+        - In some Linux distros, 'fd' is renamed 'fdfind'.
+      • To force the use of 'find', set ETAGS_USE_FIND environment
+        variable to 1.
+      • ☝️  When using 'fdfind' or 'fd', the files identified
+        by the .gitignore, .ignore or .fdignore files are ignored.
+  • Stores the names of inspected files in the file named
+    .etags-perl-files.txt stored in the same directory as TAGS.
+  • Uses etags to build the TAGS file by default.
+    • Set ETAGS_USE_UCTAGS to 1 or to the absolute path of Universal
+      Ctags executable file to force using Universal Ctags instead.
+      When setting it to 1, the ctags found in PATH is expected
+      to be Universal Ctags.
+  • Prints the path of the \"find\" program used and when
+    repository ignore files are scanned.\n"
+
+    if [ "$ETAGS_USE_FIND" = "1" ]; then
+        printf -- "
+⚠️   ETAGS_USE_FIND is set to 1, forcing the use of 'find'!
+    • To prevent this, set it to 0 or remove that
+      environment variable.
+    • With USRHOME, you can use setenv and clrenv.
+      See: https://github.com/pierre-rouleau/usrhome
+"
+    fi
+}
+
+# --
+# run__etags_perl -- run etags or ctags on a set of files
+# ---------------
+#
+# Use etags to parse the source code files unless ETAGS_USE_UCTAGS
+# environment variable is set to 1.  In which case it uses ctags.
+# Ideally that would be the latest version of Universal ctags
+# from https://github.com/universal-ctags/ctags#readme as opposed to the
+# old and currently un-maintained Exeburant ctags.
+# When using Emacs, Emacs provides its own ctags that is essentially etags.
+# Etags generates a tag file format a little different and better suited for Emacs.
+
+run__etags_perl()
+{
+    # Expects no argument, but expects a list of files to parse on stdin.
+
+    if [ -n "$ETAGS_USE_UCTAGS" ]; then
+        if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
+            xargs ctags --output-format=etags
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)"
+        elif [ -x "$ETAGS_USE_UCTAGS" ]; then
+            xargs "$ETAGS_USE_UCTAGS" --output-format=etags
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS"
+        else
+            printf -- "*** etags-perl ERROR: invalid ETAGS_USE_UCTAGS value\n"
+            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS"
+            printf -- "***  This is not 1 nor a valid executable file name.\n"
+            exit 4
+        fi
+    else
+        # use etags
+        etags -
+    fi
+}
+
+
+# --
+# Check validity of arguments
+
+if [ -z "$1" ]; then
+    print_usage
+    exit 1
+elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    if [ "$#" = "1" ]; then
+        exit 0
+    else
+        exit  1
+    fi
+fi
+
+case "$1" in
+    --list=*)
+    # extract the file name from the --list= option
+        fname="$(echo "$1" | sed 's/--list=//g')"
+        if [ ! -f "${fname}" ]; then
+            printf -- "\
+*** etags-perl ERROR: specified list file does not exist: %s
+" "${fname}"
+            exit 1
+        else
+            ETAGS_PERL_FILE_LIST="${fname}"
+            shift
+        fi
+        ;;
+esac
+
+# --
+
+if [ -n "$ETAGS_PERL_FILE_LIST" ]; then
+    if [ "$ETAGS_PERL_FILE_LIST" = ".etags-perl-files.txt" ]; then
+        echo "Error! Do NOT set ETAGS_PERL_FILE_LIST to .etags-perl-files.txt"
+        exit 1
+    fi
+    echo "Using the file list identified by ETAGS_PERL_FILE_LIST: $ETAGS_PERL_FILE_LIST"
+    cp "$ETAGS_PERL_FILE_LIST" .etags-perl-files.txt
+    run__etags_perl < "$ETAGS_PERL_FILE_LIST"
+else
+    # Use the directory names provided on command line.
+    # Check their validity.
+    # Ensure that each directory specified on the command line
+    # exists.  Also ensure that a directory name is not specified more
+    # than once.  Use the realpath of that directory name when comparing.
+    dpaths=
+    for dname in "$@"; do
+        if [ ! -d "${dname}" ]; then
+            printf -- "Specified directory does not exists: %s\n" "${dname}"
+            exit 2
+        fi
+        dpath="$(realpath "${dname}")"
+        for dp in ${dpaths}; do
+            if [ "$dp" = "$dpath" ]; then
+                printf -- "Multiple entry of directory: %s\n" "${dname}"
+                exit 3
+            fi
+            # check if new entry is a sub-directory of an exiting entry
+            case "${dpath}" in
+                "${dp}"*)
+                    printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}"
+                    exit 3
+                    ;;
+            esac
+            # check if new entry is a parent directory of an existing entry
+            case "${dp}" in
+                "${dpath}"*)
+                    printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}"
+                    exit 3
+                    ;;
+            esac
+
+        done
+        dpaths="${dpaths} ${dpath}"
+    done
+
+    echo "No list of files identified by ETAGS_PERL_FILE_LIST."
+    echo "- Building the list of source files."
+
+    # Find the files, pass their names to etags which creates the TAGS file.
+    # To find the files, try to use 'fd' or 'fdfind' if they exist,
+    # otherwise use 'find'.  Echo the actual program used to find the files.
+    # Search for all possible Perl file extensions in the directory tree.
+
+    # - Identify how to search files
+    if [ "$ETAGS_USE_FIND" = "1" ]; then
+        search_with='find'
+    else
+        if [ -x "$(command -v fdfind)" ]; then
+            search_with='fd'
+            fd_pgm=fdfind
+        elif [ -x "$(command -v fd)" ]; then
+            search_with='fd'
+            fd_pgm=fd
+        else
+            search_with='find'
+        fi
+    fi
+
+    case $(uname) in
+        Darwin)
+            find_path_option='-f'
+            ;;
+        Linux)
+            find_path_option=
+            ;;
+        *)
+            printf -- "etags-perl ** Error Operating System, %s, is not supported!\n" "$(uname)"
+            exit 1
+            ;;
+    esac
+
+    case "$search_with" in
+        find)
+            printf -- "etags-perl -- ETAGS_USE_FIND set to 1: forces the use of find!\n"
+            printf --  "       -> Using %s\n" "$(which find)"
+            find -L                        \
+                 ${find_path_option} "$@"  \
+                 \(  -name "*.p[lm]"       \
+                 -or -name "*.pl[sx]"      \
+                 -or -name "*.xs"          \
+                 -or -name "*.t"           \
+                 -or -name "*.pod"         \
+                 -or -name "*.cgi"         \
+                 -or -name "*.psg"         \
+                 -or -name "*.psgi"        \
+                 \)  -print | tee .etags-perl-files.txt | run__etags_perl
+            ;;
+
+        fd)
+            printf -- "etags-perl -- Using sharkdp/fd fast find.\n"
+            printf -- "        -> Using %s\n" "$(which "${fd_pgm}")"
+            printf -- " -> ☝️  Ignoring files identified in .gitignore, .ignore or .fdignore\n"
+            printf -- " -> ☝️  You may want to run a search with find once to detect broken symlinks\n"
+            ${fd_pgm} --absolute-path \
+                   --follow           \
+                   --type f           \
+                   --type l           \
+                   -e .pl             \
+                   -e .pm             \
+                   -e .pls            \
+                   -e .plx            \
+                   -e .xs             \
+                   -e .t              \
+                   -e .pod            \
+                   -e .cgi            \
+                   -e .psg            \
+                   -e .psgi           \
+                   . "$@" | tee .etags-perl-files.txt | run__etags_perl
+            ;;
+
+        *)
+            printf -- "etags-perl ** Error: cannot identify find program!\n"
+            exit 1
+            ;;
+    esac
+fi
+
+file_count="$(wc -l .etags-perl-files.txt | awk '{print $1}')"
+printf -- "%s files found and processed. List stored in: .etags-perl-files.txt\n" "${file_count=}"
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
