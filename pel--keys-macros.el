@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-10-07 21:53:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-10-08 15:22:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -424,7 +424,8 @@
      pel-pkg-for-filemng     (files
                               fzf
                               recentf
-                              popup-switcher))
+                              popup-switcher
+                              x509))
 
     ;; no PDF for browse yet, the info is  in file-mngt.
     ([f11 ?B]        "file-mngt"        (pel-pkg-for-file-browse
@@ -1158,7 +1159,8 @@ Return nil if nothing found."
     ("racket"      . "racket-custom")
     ("rainbow"     . "rainbow-mode")
     ("rfc-mode-group" . "rfc-mode")
-    ("ffip"        . "find-file-in-project"))
+    ("ffip"        . "find-file-in-project")
+    ("x509"        . "x509-mode"))
   "Maps a group name for the library that defines it.
 This is only required for the libraries that cannot be found
 with the existing code, such as when the group name is different

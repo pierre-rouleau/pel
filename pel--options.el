@@ -76,6 +76,7 @@
 ;;     - pel-keypad-keys
 ;;     - pel-pkg-for-log-file
 ;;     - pel-pkg-for-object-file
+;;     - pel-pkg-for-x509-file
 ;;     - pel-pkg-for-marking
 ;;     - pel-pkg-for-markup
 ;;       - pel-pkg-for-asciidoc
@@ -3459,7 +3460,7 @@ TO-STRING argument:
 ;; --------------------------
 (defgroup pel-pkg-for-object-file nil
   "Packages that support object file formats."
-  :group 'pel-package-use)
+  :group 'pel-pkg-for-filemng)
 
 (defcustom pel-use-intel-hex-mode nil
   "Control whether PEL uses the external intel-hex-mode package.
@@ -3486,6 +3487,21 @@ Do not enter lambda expressions."
   :link '(url-link :tag "elf-mode @ MELPA"
                    "https://melpa.org/#/elf-mode")
   :group 'pel-pkg-for-object-file
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
+;; X.509 File format Support
+;; -------------------------
+(defgroup pel-pkg-for-x509-file nil
+  "Packages that support X.509 file viewing."
+  :group 'pel-pkg-for-filemng)
+
+(defcustom pel-use-x509-mode nil
+  "Control whether PEL uses the x509-mode package."
+  :group 'pel-pkg-for-x509-file
+  :link '(usr-link :tag "509-mode @ Github"
+                   "https://github.com/jobbflykt/x509-mode")
   :type 'boolean
   :safe #'booleanp)
 

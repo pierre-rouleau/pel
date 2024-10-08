@@ -6754,6 +6754,12 @@ the ones defined from the buffer now."
   (pel-ensure-package archive-rpm from: melpa)
   (pel-ensure-package rpm-spec-mode from: melpa))
 
+;; X.509 support: Major mode for viewing  certificates, CRLs, keys,
+;; DH-parameters and ASN.1 using OpenSSL
+(when pel-use-x509-mode
+  (pel-ensure-package x509-mode from: melpa)
+  (pel-autoload "x509-mode" for: x509-dwim))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Find File At Point (ffap)
 

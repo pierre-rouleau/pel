@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add early support for the *x509-mode* that decodes various X.509 file format with openSSL.
+  PEL support is minimal: activated by the *pel-use-x509-mode* user-option, auto-loading of *x509-dwim*
+  and a new PDF page: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/x509.pdf][Ɱ X.509 Certificates]].
 - Add support for a Perl REPL via the perl-repl package.
 - Improved cperl-mode support: it now supports the ~<f12>~ key binding.
 - Add support for dir-treevew: ~<f11> B D~ is now bound to *dir-treview* and ~<f11> B d~ is bound to *dir_treeview-open*.
@@ -38,7 +41,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   totally implemented in Emacs Lisp.  Use the ~<f11> z f~ to launch *eat-mode*
   terminal in the current window.  The mode support the ~<f12> <up>~ and
   ~<f12> <down>~  navigation across prompts.
-  - Add a (very early draft) [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/eat-mode.pdf][⅀ eat-mode PDF]]
+  - Add a (very early draft) [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/eat-mode.pdf][⅀ eat-mode PD]]
   - Updated the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/shells-comparison.pdf][🚦Shells/Terminals Comparisons PDF]] to include information
     about eat.
 - Add *pel-sh-add-sh-local* , bound to ~<f12> t~ inside sh-mode buffers;
