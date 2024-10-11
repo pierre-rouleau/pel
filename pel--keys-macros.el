@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-10-08 15:22:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-10-11 15:19:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1009,6 +1009,7 @@ There should be no key binding!" keyseq))
     ("desktop"          . "sessions")
     ("diff"             . "diff-merge")
     ("execute"          . "pl-emacs-lisp")
+    ("x.509"            . "x509")
     ;; OS keys
     ("macOS"            . "macOS-keys")
     ("mint"             . "linux-mint-20-desktop-keys")
@@ -1020,6 +1021,7 @@ There should be no key binding!" keyseq))
     ("bash-info"        . "lang/bash")
     ("sh-info"          . "lang/sh")
     ("zsh-info"         . "lang/zsh")
+    ("perl-info"        . "lang/perl5")
     ;; cmd sub-directory PDF
     ("ls"               . "cmd/ls")
     )
