@@ -18,11 +18,11 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/Direct_Installable_Packages-258-teal
+.. image:: https://img.shields.io/badge/Direct_Installable_Packages-262-teal
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-613-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-628-teal
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#commands
 
@@ -207,7 +207,7 @@ various packages, etc...
 -----------------------------------------------------------------
 
 - In normal mode, PEL controls the download, installation, configuration and
-  activation of **258** *top-level* [#externp]_ external packages through the
+  activation of **262** *top-level* [#externp]_ external packages through the
   use of easy-to-setup customization user-options that have a name that start
   with the "``pel-use-``" prefix.
 
@@ -274,10 +274,11 @@ various packages, etc...
 --------------------------
 
 
-- PEL provides over 465 extra commands.  PEL commands extend the packages
-  it supports and provides some of its own features.
-- PEL provides 7 Hydra key bindings when the ``pel-use-hydra`` and the topic
-  specific user-options are activated.
+- PEL provides over 628 extra commands.  PEL commands extend the packages
+  it supports and provides some of its own features.  Some commands are only
+  available for a given OS, most are accessible in every OS.
+- PEL provides 10 specialized Hydra_ key bindings when the ``pel-use-hydra``
+  and the topic specific user-options are activated.
 
 
 ➣ Credits
@@ -336,7 +337,7 @@ Notes
 
 
 .. [#externp] An external package may have dependencies.  The dependencies are also
-              installed. PEL currently provides access to 258 top-level external packages.
+              installed. PEL currently provides access to 262 top-level external packages.
               The actual number of packages is larger when counting their
               dependencies (currently 48 extra packages installed as dependencies).
               From within PEL execute the **pel-package-info**
@@ -492,7 +493,8 @@ Notes
 .. _pel-cleanup command:        doc/pel-manual.rst#pel-cleanup-command
 .. _fast startup mode:          doc/pel-manual.rst#normal-startup-and-fast-startup-modes
 .. _samples of Emacs custom files: sample/emacs-customization
-.. _Instructions are inside:   doc/pel-manual.rst#further-configure-the-init-el-file
+.. _Instructions are inside:    doc/pel-manual.rst#further-configure-the-init-el-file
+.. _Hydra:                      https://github.com/abo-abo/hydra?tab=readme-ov-file#readme
 
 ..
    -----------------------------------------------------------------------------
