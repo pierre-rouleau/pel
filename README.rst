@@ -18,7 +18,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/Direct_Installable_Packages-262-teal
+.. image:: https://img.shields.io/badge/PEL_Managed_Packages-262-teal
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
@@ -211,9 +211,11 @@ various packages, etc...
   use of easy-to-setup customization user-options that have a name that start
   with the "``pel-use-``" prefix.
 
-  - PEL can install packages from `GNU Elpa`_, MELPA_, and simple GitHub or
-    Gitlab repositories even when the files have not been setup as an
-    elpa-compliant package.
+  - Once activated by a PEL user option, PEL installs the newly activated
+    packages on initialization (or when Emacs starts) from `GNU Elpa`_,
+    MELPA_, and simple GitHub or Gitlab repositories even when the files
+    have not been setup as an elpa-compliant package.  PEL provides
+    configuration logic and hooks where needed.
 
   - Use the **pel-cleanup** command to **remove** deactivated packages not
     requested by PEL user-options, moving those packages from the ``elpa``
