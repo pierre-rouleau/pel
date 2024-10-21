@@ -6760,6 +6760,12 @@ the ones defined from the buffer now."
   (pel-ensure-package x509-mode from: melpa)
   (pel-autoload "x509-mode" for: x509-dwim))
 
+(when pel-use-selinux-policy
+  (pel-install-github-file   "pierre-rouleau/selinux-policy/master"
+                             "selinux-policy.el")
+  (add-to-list 'auto-mode-alist '("\\.\\(if\\|te\\)" . selinuxpolicy-mode))
+  (pel-autoload-file selinux-policy for: selinuxpolicy-mode))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Find File At Point (ffap)
 

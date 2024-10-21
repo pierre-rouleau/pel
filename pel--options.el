@@ -3505,6 +3505,22 @@ Do not enter lambda expressions."
   :type 'boolean
   :safe #'booleanp)
 
+
+;; ---------------------------------------------------------------------------
+;; SELinux Policy Definition Files Support
+;; ---------------------------------------
+(defgroup pel-pkg_for-selinux nil
+  "Packages supporting SELinux policy development."
+  :group 'pel-pkg-for-filemng)
+
+(defcustom pel-use-selinux-policy nil
+  "Control whether PEL uses the selinux-policy package."
+  :group 'pel-pkg_for-selinux
+  :link '(url-link :tag "selinux-policy @ Github"
+                   "https://github.com/pierre-rouleau/selinux-policy")
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; Marking Management
 ;; ------------------
