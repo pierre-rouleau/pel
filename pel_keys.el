@@ -6763,7 +6763,7 @@ the ones defined from the buffer now."
 (when pel-use-selinux-policy
   (pel-install-github-file   "pierre-rouleau/selinux-policy/master"
                              "selinux-policy.el")
-  (add-to-list 'auto-mode-alist '("\\.\\(if\\|te\\)" . selinuxpolicy-mode))
+  (add-to-list 'auto-mode-alist '("\\.\\(if\\|te\\|spt\\)" . selinuxpolicy-mode))
   (pel-autoload-file selinux-policy for: selinuxpolicy-mode))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
