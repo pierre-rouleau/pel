@@ -2443,7 +2443,7 @@ Use NAME instead symbol name in the message if specified."
 ;; ------------------
 
 (defun pel-multiplier (positive)
-  "Return a positive value 1 if POSITIVE is non-nill, -1 otherwise."
+  "Return a positive value 1 if POSITIVE is non-nil, -1 otherwise."
   (if positive 1 -1))
 
 (defalias 'pel-mode-toggle-arg 'pel-multiplier
