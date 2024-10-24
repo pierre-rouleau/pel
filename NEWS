@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add new binding to display the complete information about current point: ~<f11> ? d P~ is now bound to the
+  new *pel-what-cursor-position* command which simply invokes *what-cursor-position* with  a non-nil argument.
+- Add preliminary PEL AWK support, activated by the *pel-use-awk* user-option.
 - Add early support for the *x509-mode* that decodes various X.509 file format with openSSL.
   PEL support is minimal: activated by the *pel-use-x509-mode* user-option, auto-loading of *x509-dwim*
   and a new PDF page: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/x509.pdf][Ɱ X.509 Certificates]].

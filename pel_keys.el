@@ -5784,6 +5784,11 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (interactive)
   (describe-symbol 'buffer-file-coding-system))
 
+(defun pel-what-cursor-position ()
+  "Show full details about current point - (what-cursor-position t)."
+  (interactive)
+  (what-cursor-position t))
+
 (define-pel-global-prefix pel:describe (kbd "<f11> ? d"))
 (define-key pel:describe "$"  'pel-spell-show-use)
 (define-key pel:describe "a"  'pel-show-face-at-point)
@@ -5799,6 +5804,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (define-key pel:describe "k"  'pel-show-kill-ring)
 (define-key pel:describe "l" #'what-line)
 (define-key pel:describe "p" #'what-cursor-position)
+(define-key pel:describe "P" #'pel-what-cursor-position)
 (define-key pel:describe "s"  'pel-show-char-syntax)
 (define-key pel:describe "w"  'pel-show-window-info)
 
