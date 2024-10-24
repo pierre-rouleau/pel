@@ -2387,6 +2387,37 @@ can't bind negative-argument to C-_ and M-_"
       (define-key pel:narrate "p" 'pel-say-paragraph))))
 
 ;; ---------------------------------------------------------------------------
+;; Awk programming language
+;; ------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC W`` : Awk
+(when pel-use-awk
+  (define-pel-global-prefix pel:for-awk (kbd "<f11> SPC W"))
+
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".awk"))
+
+  ;; Activate PEL Awk setup.  awk-mode is from cc-mode
+  ;; Load this when the cc-mode is loaded.
+  (pel-eval-after-load cc-mode
+    (pel-config-major-mode awk pel:for-awk
+      (progn
+       ;; 1) set the style: it identifies everything
+        (pel--set-cc-style 'awk-mode pel-awk-bracket-style pel-awk-newline-mode)
+        ;; 2) apply modifications requested by PEL user options.
+        ;;    set variables only available in a CC mode - prevent warnings
+        (pel-setq-local c-basic-offset pel-awk-indent-width)
+        ;; 3) set fill-column to PEL specified C's default if specified
+        (when pel-awk-fill-column
+          (setq-local fill-column pel-awk-fill-column))
+        ;; 4) Set default auto-newline mode as identified by PEL user option
+        (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+        ;; 5) Configure M-( to put parentheses after a function name.
+        (set (make-local-variable 'parens-require-spaces) nil)
+        ;; 6) Set tab-width for the buffer as specified by the PEL user option
+        ;; for the major mode.
+        (setq-local tab-width pel-awk-tab-width)))))
+
+;; ---------------------------------------------------------------------------
 ;; C-like programming languages: C, C++
 ;; ------------------------------------
 (when (and pel-use-c-eldoc
@@ -2418,7 +2449,8 @@ can't bind negative-argument to C-_ and M-_"
 
 ;; ---------------------------------------------------------------------------
 ;; Utility function for mapping CC Mode keys : used by C, C++ and D
-(when (or pel-use-c
+(when (or pel-use-awk
+          pel-use-c
           pel-use-c++
           pel-use-d)
 
@@ -2935,7 +2967,7 @@ d-mode not added to ac-modes!"
     (pel-add-speedbar-extension ".factor"))
   ;; Activate Factor setup.
   (pel-eval-after-load factor-mode
-    (message "FACTOR factor-mode is loaded!")
+
     (pel-config-major-mode factor pel:for-factor
       ;; 5) Set tab-width for the buffer as specified by the PEL user option
       ;; for the major mode.

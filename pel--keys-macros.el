@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-10-11 15:19:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-10-24 15:21:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -246,6 +246,7 @@
     ([f11 27 ?s]     "speedbar"         pel-pkg-for-speedbar    (speedbar
                                                                  sr-speedbar
                                                                  projectile-speedbar))
+    ([f11 32 ?W]     "pl-awk"           pel-pkg-for-awk)
     ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         ,pel--c++-groups)
     ([f11 32 ?C f12] "pl-c++"           pel-c++-skeleton-control)
     ([f11 32 ?C ?#]  "pl-c++"           pel-pkg-for-c++         hide-ifdef)
@@ -626,6 +627,7 @@ stored inside the doc/pdf directory.")
     ("dired"           [dired])
     ("dired-sidebar"   [dired])
     ("apples"          [f11 32 ?a])
+    ("awk"             [f11 32 ?W])
     ("c++"             [f11 32 ?C])
     ("c++-ts"          [f11 32 ?C])
     ("c"               [f11 32 ?c])
@@ -904,6 +906,7 @@ There should be no key binding!" keyseq))
     ;; programming languages alias: all of their PDF files start with 'pl-'
     ("applescript"      . "pl-applescript")
     ("arc"              . "pl-arc")
+    ("awk"              . "pl-awk")
     ("c++"              . "pl-c++")
     ("c"                . "pl-c")
     ("common-lisp"      . "pl-common-lisp")

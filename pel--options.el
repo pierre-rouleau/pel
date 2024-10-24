@@ -105,6 +105,7 @@
 ;;           - pel-sh-script-skeleton-control
 ;;       - pel-pkg-for-applescript
 ;;       - pel-pkg-for-cc
+;;         - pel-pkg-for-awk
 ;;         - pel-pkg-for-c
 ;;           - pel-c-code-style
 ;;             - pel-c-skeleton-control
@@ -4693,7 +4694,7 @@ See also: `pel-shell-script-extensions'."
 
 (defcustom pel-cc-auto-newline t
   "Set the default state of CC Mode electric auto-newline for all CC Modes.
-This includes modes for C, C++, D.
+This includes modes for AWK, C, C++, D.
 If set to nil: disables auto-newline
 If set to t:   activates auto-newline
 PEL calls `c-toggle-auto-newline' to set to requested default state
@@ -4708,6 +4709,122 @@ of auto-newline while editing."
   :link '(url-link :tag "call-graph @ GitHub"
                    "https://github.com/beacoder/call-graph")
   :group 'pel-pkg-for-cc
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Awk Language support
+;; --------------------
+
+(defgroup pel-pkg-for-awk nil
+  "PEL customization for Awk."
+  :group 'pel-pkg-for-cc
+  :link `(url-link :tag "Awk PDF" ,(pel-pdf-file-url "pl-awk")))
+
+(defcustom pel-use-awk nil
+  "Controls whether PEL implements extra functionality for Awk support."
+  :group 'pel-pkg-for-awk
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-awk-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Awk buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-awk
+  :type '(repeat function))
+
+(defcustom pel-awk-bracket-style "awk"
+  "Set the bracket style for the AWK programming language.
+PEL stores this value associated with the `awk-mode' into the
+`c-default-style' user option variable.
+If you want to use something else, please select one of the
+CC Mode Built-in Styles, which include the following:
+- gnu
+- k&r
+- bsd
+- whitesmith
+- stroustrup
+- ellemtel
+- linux
+- python
+- java
+- awk
+- user"
+  :link '(url-link
+          :tag "Bracket styles @ Emacs Manual"
+          "https://www.gnu.org/software/emacs/manual/html_node/\
+ccmode/Built_002din-Styles.html#Built_002din-Styles")
+  :link '(url-link :tag "Indentation styles @ wikipedia"
+                   "https://en.wikipedia.org/wiki/Indentation_style")
+  :group 'pel-pkg-for-awk
+  :type 'string
+  :safe 'pel-c-style-valid-p)
+
+(defcustom pel-awk-fill-column 80
+  "Column beyond which automatic line-wrapping should happen in AWK code.
+Can either be nil or an integer value.
+When set to nil, Emacs user option variable `fill-column' value
+is used for `c-mode' buffers, otherwise the integer value specified by
+`pel-c-fill-column' is stored in the variable `fill-column' for
+`c-mode' buffers.  The default is 80."
+  :group 'pel-pkg-for-awk
+  :type '(choice
+          (const   :tag "Use the default fill-column value." nil)
+          (integer :tag "Use a value specific for awk-mode buffers:")))
+
+(defcustom  pel-awk-newline-mode 'context-newline
+  "Set default newline mode for c-mode buffers.
+
+This may be one of the following values:
+
+- context-newline : the default : the RET key is bound to
+  the function `c-context-line-break' with the extra ability to
+  repeat its execution with an argument.
+- newline-and-indent: RET uses the function `newline' passing ARG
+  and t for its arguments to insert newline and indent.
+- just-newline-no-indent: RET uses the function
+  `electric-indent-just-newline` with the specified argument (if
+  any).  This only insert a newline; it does not indent."
+  :group 'pel-pkg-for-awk
+  :type '(choice
+          (const :tag "context-newline: use c-context-line-break.\n\
+Does all what newline does plus more."
+                 context-newline)
+          (const :tag "newline-and-indent: use newline. This inserts\n\
+a newline and then indent the new line."
+                 newline-and-indent)
+          (const :tag "just-newline-no-indent: use\
+ electric-indent-just-newline.\n\
+Does not indent."
+                 just-newline-no-indent)))
+
+(defcustom pel-awk-indent-width 4
+  "Number of columns for AWK source code indentation.
+PEL stores this in `c-basic-offset' when editing buffers with C code.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-awk
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-awk-tab-width 4
+  "Distance between tab stop for awk-mode buffers.
+
+PEL stores this in `tab-width' when opening awk buffers.
+
+This does *NOT* control the indentation in AWK
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-awk
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-awk-use-tabs nil
+  "Value of `indent-tabs-mode' for editing AWK files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-awk
   :type 'boolean
   :safe #'booleanp)
 
