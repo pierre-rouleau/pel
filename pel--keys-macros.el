@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-10-24 23:34:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-10-25 07:26:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -592,8 +592,8 @@
     (,(kbd "<f11> SPC M-M") "mscgen" pel-pkg-for-mscgen    mscgen)
     ([f11 32 27 ?M]         "mscgen" pel-pkg-for-mscgen    mscgen)
 
-    (,(kbd "<f11> SPC M-R") "rpm"       pel-pkg-for-rpm)
-    ([f11 32 27 ?R]         "rpm"       pel-pkg-for-rpm)
+    (,(kbd "<f11> SPC M-R") "rpm"       pel-pkg-for-rpm    rpm-spec)
+    ([f11 32 27 ?R]         "rpm"       pel-pkg-for-rpm    rpm-spec)
 
     (,(kbd "<f11> SPC M-c") "cwl"              pel-pkg-for-cwl     ,pel--yaml-groups)
     ([f11 32 27 ?c]         "cwl"              pel-pkg-for-cwl     ,pel--yaml-groups)
