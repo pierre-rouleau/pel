@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-10-24 15:21:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-10-24 23:34:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -346,6 +346,7 @@
                                                                  lispy))
     (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        (lfe
                                                                  lispy))
+
     ;; Scheme Dialect Languages
     (,(kbd "<f11> SPC C-s C-s") "pl-scheme"        pel-pkg-for-scheme  ,pel--scheme-groups)
     (,(kbd "<f11> SPC C-s C-z") "pl-chez-scheme"   pel-pkg-for-chez    ,pel--scheme-groups)
@@ -591,6 +592,9 @@
     (,(kbd "<f11> SPC M-M") "mscgen" pel-pkg-for-mscgen    mscgen)
     ([f11 32 27 ?M]         "mscgen" pel-pkg-for-mscgen    mscgen)
 
+    (,(kbd "<f11> SPC M-R") "rpm"       pel-pkg-for-rpm)
+    ([f11 32 27 ?R]         "rpm"       pel-pkg-for-rpm)
+
     (,(kbd "<f11> SPC M-c") "cwl"              pel-pkg-for-cwl     ,pel--yaml-groups)
     ([f11 32 27 ?c]         "cwl"              pel-pkg-for-cwl     ,pel--yaml-groups)
     (,(kbd "<f11> SPC M-y") "yaml"             pel-pkg-for-yaml    ,pel--yaml-groups)
@@ -669,6 +673,7 @@ stored inside the doc/pdf directory.")
     ("perl"            [f11 32 ?P])
     ("cperl"           [f11 32 ?P])
     ("rexx"            [f11 32 ?R])
+    ("rpm"             [f11 32 27 ?R])
     ("ruby"            [f11 32 ?U])
     ("rust"            [f11 32 ?r])
     ;;
@@ -1013,6 +1018,7 @@ There should be no key binding!" keyseq))
     ("diff"             . "diff-merge")
     ("execute"          . "pl-emacs-lisp")
     ("x.509"            . "x509")
+    ("rpm"              . "rpm")
     ;; OS keys
     ("macOS"            . "macOS-keys")
     ("mint"             . "linux-mint-20-desktop-keys")

@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add a new PDF for rpm-archive  mode. Did not implement the <f12> key bindings for this yet.  The package needs some update first.
 - Add new binding to display the complete information about current point: ~<f11> ? d P~ is now bound to the
   new *pel-what-cursor-position* command which simply invokes *what-cursor-position* with  a non-nil argument.
 - Add preliminary PEL AWK support, activated by the *pel-use-awk* user-option.

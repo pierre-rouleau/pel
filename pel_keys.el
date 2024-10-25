@@ -2097,7 +2097,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; S       - Scala           -              JVM
 ;; T       - Janet           - Lisp Family
 ;; U       - Ruby
-;; W       - awk
+;; W       - AWK
 ;; Z       - shell script modes
 ;; a       - AppleScript
 ;; c       - C
@@ -2164,6 +2164,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-H     - Hamler          -              BEAM Language, Functional/ML/Haskell
 ;; M-M     - MscGen
 ;; M-P     - Prolog
+;; M-R     - RPM
 ;; M-Y     - YANG            - Specification definition language
 ;;
 ;; SPC C-l - inferior-lfe-mode
@@ -2973,8 +2974,8 @@ d-mode not added to ac-modes!"
       ;; for the major mode.
       ;; [:todo 2024-01-06, by Pierre Rouleau: take factor-mode customization
       ;; into account]
-      (setq-local tab-width pel-factor-tab-width)
-      )))
+      (setq-local tab-width pel-factor-tab-width))))
+
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : Forth programming
 (when pel-use-forth
@@ -6788,8 +6789,22 @@ the ones defined from the buffer now."
 ;; RPM and CPIO archive file support
 (when pel-use-archive-rpm
   ;; As soon as the archive-rpm package is installed it becomes possible to open
-  ;; RPM or CPIO archive files and see their content, just as tarball or zip files.
+  ;; RPM or CPIO archive files and see their content, just as tarball or zip
+  ;; files.
   (pel-ensure-package archive-rpm from: melpa)
+
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-R`` : RPM archive-mode commands
+  (define-pel-global-prefix pel:for-rpm  (kbd "<f11> SPC M-R"))
+
+  ;; [:todo 2024-10-24, by Pierre Rouleau: Implement support for its F12 key.
+  ;;    Currently there is no  'archive-mode-hook' defined in the
+  ;;    implementation of archive-rpm. This prevents using
+  ;;    the standard mechanism provided by pel-eval-after-load and
+  ;;    pel-config-major-mode.
+  ;; ]
+  )
+
+(when pel-use-rpm-spec-mode
   (pel-ensure-package rpm-spec-mode from: melpa))
 
 ;; X.509 support: Major mode for viewing  certificates, CRLs, keys,

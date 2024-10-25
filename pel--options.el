@@ -199,6 +199,9 @@
 
 ;; Naming conventions:
 ;;
+;; For the following, replace <mode> by the name of the major mode.
+;; for example, for python-mode, replace <mode> by python.
+;;
 ;; - pel-pkg-for-<package-name or topic>
 ;; - pel-use-<package name>
 ;; - pel-startup-<thing to activate at startup>
@@ -1833,15 +1836,23 @@ Select one of:
 (pel-put 'pel-use-fzf :package-is :in-utils)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-(defgroup pel-pkg-for-archive nil
+(defgroup pel-pkg-for-rpm nil
   "PEL Archive File Browsing and Management."
   :group 'pel-pkg-for-filemng)
 
 (defcustom pel-use-archive-rpm nil
   "Control if PEL supports the archive-rpm package."
-  :group 'pel-pkg-for-archive
+  :group 'pel-pkg-for-rpm
   :link '(url-link :tag "archive-rpm @ Github"
-                   https://github.com/legoscia/archive-rpm)
+                   "https://github.com/legoscia/archive-rpm")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-rpm-spec-mode nil
+  "Control if PEL supports the rpm-spec-mode package."
+  :group 'pel-pkg-for-rpm
+  :link '(url-link :tag "rpm-spec-mode @ Github"
+                   "https://github.com/stigbjorlykke/rpm-spec-mode")
   :type 'boolean
   :safe #'booleanp)
 
@@ -11445,6 +11456,10 @@ indexing system."
 (when (version< emacs-version "28.1")
   (setq pel-use-simple-undo nil)
   (setq pel-use-vundo nil))
+
+(when pel-use-archive-rpm
+  (setq pel-use-rpm-spec-mode t))
+
 
 ;; Automatically disable undo-tree in Emacs >= 28 when pel-use-simple-undo or
 ;; pel-use-vundo because undo-tree is not robust and may corrupt a buffer and
