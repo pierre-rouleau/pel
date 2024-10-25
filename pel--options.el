@@ -1852,9 +1852,10 @@ Select one of:
   "Control if PEL supports the rpm-spec-mode package."
   :group 'pel-pkg-for-rpm
   :link '(url-link :tag "rpm-spec-mode @ Github"
-                   "https://github.com/stigbjorlykke/rpm-spec-mode")
+                   "https://github.com/pierre-rouleau/rpm-spec-mode")
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-rpm-spec-mode :package-is :in-utils)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Directory Tree Browsing and Management

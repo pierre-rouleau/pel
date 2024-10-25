@@ -6805,7 +6805,10 @@ the ones defined from the buffer now."
   )
 
 (when pel-use-rpm-spec-mode
-  (pel-ensure-package rpm-spec-mode from: melpa))
+  (pel-install-github-file "pierre-rouleau/rpm-spec-mode/master"
+                           "rpm-spec-mode.el")
+  (pel-autoload "rpm-spec-mode" for: rpm-spec-mode)
+  (add-to-list 'auto-mode-alist '("\\.spec\\'" . rpm-spec-mode)))
 
 ;; X.509 support: Major mode for viewing  certificates, CRLs, keys,
 ;; DH-parameters and ASN.1 using OpenSSL
