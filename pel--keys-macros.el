@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-10-25 07:26:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-10-26 16:44:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -85,6 +85,9 @@
                                          electricity)))
                             (when pel-use-call-graph
                               (append items '(call-graph)))))
+
+(defconst pel--awk-groups '(c
+                            electricity))
 
 (defconst pel--dired-groups '(dired
                               dired-git-info
@@ -246,7 +249,7 @@
     ([f11 27 ?s]     "speedbar"         pel-pkg-for-speedbar    (speedbar
                                                                  sr-speedbar
                                                                  projectile-speedbar))
-    ([f11 32 ?W]     "pl-awk"           pel-pkg-for-awk)
+    ([f11 32 ?W]     "pl-awk"           pel-pkg-for-awk         ,pel--awk-groups)
     ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         ,pel--c++-groups)
     ([f11 32 ?C f12] "pl-c++"           pel-c++-skeleton-control)
     ([f11 32 ?C ?#]  "pl-c++"           pel-pkg-for-c++         hide-ifdef)

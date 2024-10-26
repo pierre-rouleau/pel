@@ -2601,17 +2601,23 @@ MODE must be a symbol."
 ;; ------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC W`` : Awk
 (when pel-use-awk
-  (define-pel-global-prefix pel:for-awk (kbd "<f11> SPC W"))
+  (define-pel-global-prefix pel:for-awk   (kbd "<f11> SPC W"))
+  (define-pel-global-prefix pel:awk-setup (kbd "<f11> SPC W <f4>"))
+  (define-pel-global-prefix pel:awk-guess (kbd "<f11> SPC W <f4> g"))
 
   (when pel-use-speedbar
     (pel-add-speedbar-extension ".awk"))
+
+  (pel--map-cc-for pel:for-awk
+                   pel:awk-setup
+                   pel:awk-guess)
 
   ;; Activate PEL Awk setup.  awk-mode is from cc-mode
   ;; Load this when the cc-mode is loaded.
   (pel-eval-after-load cc-mode
     (pel-config-major-mode awk pel:for-awk
       (progn
-       ;; 1) set the style: it identifies everything
+        ;; 1) set the style: it identifies everything
         (pel--set-cc-style 'awk-mode pel-awk-bracket-style pel-awk-newline-mode)
         ;; 2) apply modifications requested by PEL user options.
         ;;    set variables only available in a CC mode - prevent warnings

@@ -4719,10 +4719,173 @@ of auto-newline while editing."
 (defcustom pel-use-call-graph nil
   "Control whether PEL activates the call-graph package."
   :link '(url-link :tag "call-graph @ GitHub"
-                   "https://github.com/beacoder/call-graph")
+                   "https://github.com/emacsattic/call-graph")
   :group 'pel-pkg-for-cc
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-c-file-searched-extra-dir-trees nil
+  "List of directory trees also searched by the C header file search.
+
+This complements the header search method identified by the
+`pel-c-file-finder-method' user-option."
+  :group 'pel-pkg-for-c
+  :type '(repeat string))
+
+(defcustom pel-c-file-finder-method 'generic
+  "Specify method used by `pel-open-at-point' to search C header files.
+
+The following 4 methods listed below are supported, with the ability to
+also identify an extra list of directory trees to search in the
+`pel-c-file-searched-extra-dir-trees' user-option (which are searched by
+the tool identified by the `pel-ffind-executable' user-option.)
+
+The 4 methods are:
+
+1: generic (the default):
+
+   The parent directory tree of the current file is searched.
+   The parent directory root is first identified and the file is searched
+   in all its sub-directories.  The root is identified by the presence
+   of one of the files identified by the `pel-project-root-identifiers'
+   user option.
+
+   The entire directory tree under the root is searched with the file finder
+   tool identified by the `pel-ffind-executable' user-option.
+
+2: Use the [file-finder] section of pel.ini file:
+
+  Use a file named pel.ini inside the project\\='s directory tree.
+  The function `pel-open-at-point' searches for that file in the parent
+  directory tree identified by the same method as above.
+  The pel.ini file is a .INI file using the format described
+  in https://en.wikipedia.org/wiki/INI_file.  It must have the following
+  elements:
+
+  - section: \\='[file-finder]\\='
+  - key:     \\='project-path\\=' : a list of directories where files are searched
+                              for the current project.
+
+  - extra tool-specific path key(s):
+
+    There can be several other keys with a name made of
+    - the tool chain name
+    - the file type
+    - the suffix string \"-path\"
+
+    Something like \"IAR-c-path\", \"gcc-c-path\", \"vs-c++-path\", etc...
+
+    These keys identify a set of directories that contain header files that
+    are specific to the specified tool chain for the specific programming
+    language.
+
+    The function `pel-open-at-point' will search these extra
+    directories when one of the following condition is met:
+
+    - The PEL_CC_FIND_TOOLCHAIN environment variable is set and holds the name
+      of the tool chain of one of these keys (like \"IAR\", \"gcc\", \"vs\" in
+      the example above).
+    - The user-option corresponding to the name of the programming language of
+      the file in the current buffer identifies a tool name.  Currently PEL
+      has support for C and C++ and has the following user-options:
+
+      - `pel-c-file-finder-ini-tool-name' for searching headers from C files
+      - `pel-c++-file-finder-ini-tool-name' for searching headers from C++
+         files
+
+     It searches each of the directory trees with the file finder
+     tool identified by the `pel-ffind-executable' user-option.
+
+    The command `pel-cc-set-file-finder-ini-tool-name' can be used to
+    modify the value of `pel-c-file-finder-ini-tool-name' and
+    `pel-c++-file-finder-ini-tool-name' dynamic value of the variable
+    (but not the persistent value of the user-option which must be modified by
+    the customization mechanism).
+
+3: Environment variable string:
+
+  The name of an environment variable (such as \"INCLUDE\") that identifies
+  the directories to search.  Use this when your OS environment set up
+  environment variables that inform the C compiler where header files are
+  located.  The directories identified this way are searched locally, not
+  recursively into their sub-directories.
+
+4: Two lists of directories: one for the project and one for the compiler tool:
+
+  This specifies two lists of directories. The first list identifies the
+  project directories and the second list identifies the directories where the
+  compiler and libraries headers are stored.
+
+  Note that for this option, the files are searched inside the directories,
+  but are *not* searched in their sub-directories.  Each directory searched
+  must be identified explicitly in the list.
+
+  Each string in the lists can use environment variables as part of the
+  path-name and MUST use the $VARNAME syntax.  That can be quite useful
+  when the location of the project of the tools may vary from user to user
+  or computers.  For example \"$HOME/foo\" will be expanded to the foo
+  sub-directory under the user\\='s home directory.
+
+You may want to store this value inside a .dir-local.el directory
+local-variable file with your C source code to control the behaviour
+of the file search based on your project.
+
+CAUTION: when changing this user-option, you may have to restart Emacs to
+         activate the new behaviour in various commands like when opening
+         file at point in various major modes. Executing pel-init may not
+         be sufficient."
+  :group 'pel-pkg-for-c
+  :safe 't
+  :type '(choice
+          (const :tag "Generic tree search" generic)
+          (const :tag "Use [file-finder] section in pel.ini" pel-ini-file)
+          (string :tag "Name of environment variable that identify directories"
+                  :value "INCLUDE")
+          (list :tag "Explicit lists of directories for project and tool"
+                (repeat :tag "Project directories" (string :tag "Project directory"))
+                (repeat :tag "Tool directories"    (string :tag "Tool directory")))))
+
+(defcustom pel-c-file-finder-ini-tool-name nil
+  "Default file-finder tool name used by C projects.
+
+This name, if specified, is the name of a key inside the
+[file-finder] section of an INI configuration file for PEL,
+called pel.ini and located in the project directory tree and
+located automatically by PEL.
+
+The key identifies the C language tool-chain (a compiler, an IDE,
+etc...) and the value associated with that key is a of
+compiler/IDE tool-chain specific directories that contain headers
+and are searched when the `pel-open-at-point' command is issued
+to search for a header file.
+
+This value overrides the name of the tool-chain identified by the
+PEL_CC_FIND_TOOLCHAIN environment variable, when the environment
+variable is either not defined or when you want to dynamically
+override the tool chain during an Emacs editing session.
+
+When the tool chain name is identified this way, PEL looks for a
+list of directories that are compiler-specific and that are
+identified in the value of a [file-finder] key named after the
+tool chain name and the file type.
+
+  For example, for a C file, if the tool chain name identified by
+  the PEL_CC_FIND_TOOLCHAIN environment variable or the
+  `pel-c-file-finder-ini-tool-name' user-option is \"IAR\", PEL
+  looks for the key named `IAR-c-path' for a list of extra
+  directory names to search into.
+
+The search inside these directories is performed recursively by
+the file searching tool identified by the `pel-ffind-executable'
+user-option.
+
+See `pel-c-file-finder-method' option 2 for more information
+about the expected file format of the pel.ini file."
+  :group 'pel-pkg-for-c
+  :type '(choice
+          (const  :tag "Unused; no specific compiler identified." nil)
+          (string :tag "pel.ini [file-finder] tool-chain name key"))
+  :safe 't)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Awk Language support
@@ -4886,20 +5049,20 @@ via the ``<f12> ? e`` sequence."
 (pel-put 'pel-use-c-eldoc :requires '(pel-use-c pel-use-c++))
 
 
-(defcustom pel-c-file-searched-extra-dir-trees nil
-  "List of directory trees also searched by the C header file search.
+(defcustom pel-awk-file-searched-extra-dir-trees nil
+  "List of directory trees also searched by the AWK file search.
 
 This complements the header search method identified by the
-`pel-c-file-finder-method' user-option."
-  :group 'pel-pkg-for-c
+`pel-awk-file-finder-method' user-option."
+  :group 'pel-pkg-for-awk
   :type '(repeat string))
 
-(defcustom pel-c-file-finder-method 'generic
-  "Specify method used by `pel-open-at-point' to search C header files.
+(defcustom pel-awk-file-finder-method 'generic
+  "Specify method used by `pel-open-at-point' to search AWK files.
 
 The following 4 methods listed below are supported, with the ability to
 also identify an extra list of directory trees to search in the
-`pel-c-file-searched-extra-dir-trees' user-option (which are searched by
+`pel-awk-file-searched-extra-dir-trees' user-option (which are searched by
 the tool identified by the `pel-ffind-executable' user-option.)
 
 The 4 methods are:
@@ -4935,7 +5098,7 @@ The 4 methods are:
     - the file type
     - the suffix string \"-path\"
 
-    Something like \"IAR-c-path\", \"gcc-c-path\", \"vs-c++-path\", etc...
+    Something like \"IAR-awk-path\", \"gawk-awk-path\", etc...
 
     These keys identify a set of directories that contain header files that
     are specific to the specified tool chain for the specific programming
@@ -4945,24 +5108,26 @@ The 4 methods are:
     directories when one of the following condition is met:
 
     - The PEL_CC_FIND_TOOLCHAIN environment variable is set and holds the name
-      of the tool chain of one of these keys (like \"IAR\", \"gcc\", \"vs\" in
+      of the tool chain of one of these keys (like \"IAR\", \"gawk\" in
       the example above).
     - The user-option corresponding to the name of the programming language of
       the file in the current buffer identifies a tool name.  Currently PEL
-      has support for C and C++ and has the following user-options:
+      has support for C, C++ and AWK and has the following user-options:
 
       - `pel-c-file-finder-ini-tool-name' for searching headers from C files
       - `pel-c++-file-finder-ini-tool-name' for searching headers from C++
          files
+      - `pel-awk-file-finder-ini-tool-name' for searching included AWK files.
 
      It searches each of the directory trees with the file finder
      tool identified by the `pel-ffind-executable' user-option.
 
     The command `pel-cc-set-file-finder-ini-tool-name' can be used to
-    modify the value of `pel-c-file-finder-ini-tool-name' and
-    `pel-c++-file-finder-ini-tool-name' dynamic value of the variable
-    (but not the persistent value of the user-option which must be modified by
-    the customization mechanism).
+    modify the value of `pel--file-finder-ini-tool-name',
+    `pel-c++-file-finder-ini-tool-name' and
+    `pel-awk-file-finder-ini-tool-name'
+     dynamic value of the variable (but not the persistent value of
+     the user-option which must be modified by the customization mechanism).
 
 3: Environment variable string:
 
@@ -4996,26 +5161,26 @@ CAUTION: when changing this user-option, you may have to restart Emacs to
          activate the new behaviour in various commands like when opening
          file at point in various major modes. Executing pel-init may not
          be sufficient."
-  :group 'pel-pkg-for-c
+  :group 'pel-pkg-for-awk
   :safe 't
   :type '(choice
           (const :tag "Generic tree search" generic)
           (const :tag "Use [file-finder] section in pel.ini" pel-ini-file)
           (string :tag "Name of environment variable that identify directories"
-                  :value "INCLUDE")
+                  :value "AWKPATH")
           (list :tag "Explicit lists of directories for project and tool"
                 (repeat :tag "Project directories" (string :tag "Project directory"))
                 (repeat :tag "Tool directories"    (string :tag "Tool directory")))))
 
-(defcustom pel-c-file-finder-ini-tool-name nil
-  "Default file-finder tool name used by C projects.
+(defcustom pel-awk-file-finder-ini-tool-name nil
+  "Default file-finder tool name used by AWK projects.
 
 This name, if specified, is the name of a key inside the
 [file-finder] section of an INI configuration file for PEL,
 called pel.ini and located in the project directory tree and
 located automatically by PEL.
 
-The key identifies the C language tool-chain (a compiler, an IDE,
+The key identifies the AWK language tool-chain (a compiler, an IDE,
 etc...) and the value associated with that key is a of
 compiler/IDE tool-chain specific directories that contain headers
 and are searched when the `pel-open-at-point' command is issued
@@ -5033,7 +5198,7 @@ tool chain name and the file type.
 
   For example, for a C file, if the tool chain name identified by
   the PEL_CC_FIND_TOOLCHAIN environment variable or the
-  `pel-c-file-finder-ini-tool-name' user-option is \"IAR\", PEL
+  `pel-awk-file-finder-ini-tool-name' user-option is \"IAR\", PEL
   looks for the key named `IAR-c-path' for a list of extra
   directory names to search into.
 
@@ -5041,9 +5206,9 @@ The search inside these directories is performed recursively by
 the file searching tool identified by the `pel-ffind-executable'
 user-option.
 
-See `pel-c-file-finder-method' option 2 for more information
+See `pel-awk-file-finder-method' option 2 for more information
 about the expected file format of the pel.ini file."
-  :group 'pel-pkg-for-c
+  :group 'pel-pkg-for-awk
   :type '(choice
           (const  :tag "Unused; no specific compiler identified." nil)
           (string :tag "pel.ini [file-finder] tool-chain name key"))
