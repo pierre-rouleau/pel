@@ -2531,6 +2531,9 @@ bind it again after this call."
                (fboundp 'pel--load-hydra))
       (pel--load-hydra :no-request))
     (let ((map (cond
+                ((and (eq major-mode 'awk-mode)
+                      (boundp 'awk-mode-map))
+                 awk-mode-map)
                 ((and (eq major-mode 'c-mode)
                       (boundp 'c-mode-map))
                  c-mode-map)
@@ -2545,26 +2548,29 @@ bind it again after this call."
                  c++-ts-mode-map)
                 (t nil))))
       (when map
-        (define-key map (kbd "<f6> <right>") 'pel-c-preproc-forward-conditional)
-        (define-key map (kbd "<f6> <left>")  'pel-c-preproc-backward-conditional)
-        (define-key map (kbd "<f6> <down>")  'pel-c-preproc-outward-forward-conditional)
-        (define-key map (kbd "<f6> <up>")    'pel-c-preproc-outward-backward-conditional)
-        (define-key map (kbd "<f6> o")       'pel-c-preproc-conditionals-occur)
-        (define-key map (kbd "<f6> <f8> o")  'pel-c-preproc-conditionals-multi-occur)
-        ;; [:todo 2024-01-04, by Pierre Rouleau: find a way to set a prefix
-        ;;                    inside the map to provide better info when the
-        ;;                    which-key-mode is used to display command names]
+        ;; AWK supports the switch statement, but nothing else.
         (define-key map (kbd "<f6> t w s")  'pel-cc-to-switch-begin)
         (define-key map (kbd "<f6> t w e")  'pel-cc-to-switch-end)
-        (define-key map (kbd "<f6> t e s")  'pel-cc-to-enum-begin)
-        (define-key map (kbd "<f6> t e e")  'pel-cc-to-enum-end)
-        (define-key map (kbd "<f6> t u s")  'pel-cc-to-union-begin)
-        (define-key map (kbd "<f6> t u e")  'pel-cc-to-union-end)
-        (define-key map (kbd "<f6> t s s")  'pel-cc-to-struct-begin)
-        (define-key map (kbd "<f6> t s e")  'pel-cc-to-struct-end)
-        (when (eq major-mode 'c++-mode)
-          (define-key map (kbd "<f6> t c s")  'pel-cc-to-class-begin)
-          (define-key map (kbd "<f6> t c e")  'pel-cc-to-class-end))))
+
+        (unless (eq major-mode 'awk-mode)
+          (define-key map (kbd "<f6> <right>") 'pel-c-preproc-forward-conditional)
+          (define-key map (kbd "<f6> <left>")  'pel-c-preproc-backward-conditional)
+          (define-key map (kbd "<f6> <down>")  'pel-c-preproc-outward-forward-conditional)
+          (define-key map (kbd "<f6> <up>")    'pel-c-preproc-outward-backward-conditional)
+          (define-key map (kbd "<f6> o")       'pel-c-preproc-conditionals-occur)
+          (define-key map (kbd "<f6> <f8> o")  'pel-c-preproc-conditionals-multi-occur)
+          ;; [:todo 2024-01-04, by Pierre Rouleau: find a way to set a prefix
+          ;;                    inside the map to provide better info when the
+          ;;                    which-key-mode is used to display command names]
+          (define-key map (kbd "<f6> t e s")  'pel-cc-to-enum-begin)
+          (define-key map (kbd "<f6> t e e")  'pel-cc-to-enum-end)
+          (define-key map (kbd "<f6> t u s")  'pel-cc-to-union-begin)
+          (define-key map (kbd "<f6> t u e")  'pel-cc-to-union-end)
+          (define-key map (kbd "<f6> t s s")  'pel-cc-to-struct-begin)
+          (define-key map (kbd "<f6> t s e")  'pel-cc-to-struct-end)
+          (when (eq major-mode 'c++-mode)
+            (define-key map (kbd "<f6> t c s")  'pel-cc-to-class-begin)
+            (define-key map (kbd "<f6> t c e")  'pel-cc-to-class-end)))))
     ;; Set tab-width for the buffer as specified by the PEL user option for
     ;; the major mode.
     (setq-local tab-width (pel-major-mode-symbol-value "pel-%s-tab-width")))
@@ -2631,7 +2637,10 @@ MODE must be a symbol."
         (set (make-local-variable 'parens-require-spaces) nil)
         ;; 6) Set tab-width for the buffer as specified by the PEL user option
         ;; for the major mode.
-        (setq-local tab-width pel-awk-tab-width)))))
+        (setq-local tab-width pel-awk-tab-width)
+        ;; 7) no skeleton for AWK at the moment.
+        ;; 8) extra setup
+        (pel--setup-for-cc)))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
