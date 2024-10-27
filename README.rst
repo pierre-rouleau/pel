@@ -26,7 +26,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#commands
 
-.. image:: https://img.shields.io/badge/PDF_Files-165-blue
+.. image:: https://img.shields.io/badge/PDF_Files-167-blue
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
@@ -237,7 +237,7 @@ various packages, etc...
 ➣ Extends Emacs Documentation
 -----------------------------
 
-- PEL provides **over 165** `PDF topic-oriented reference sheets`_ [#doc]_ packed
+- PEL provides **167** `PDF topic-oriented reference sheets`_ [#doc]_ packed
   with symbol annotated, colour coded key bindings and command descriptions,
   with hyperlinks to Emacs manuals, external packages, articles and other
   useful references.
