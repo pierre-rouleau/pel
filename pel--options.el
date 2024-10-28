@@ -3534,6 +3534,35 @@ Do not enter lambda expressions."
   :type 'boolean
   :safe #'booleanp)
 
+
+(defcustom pel-selinuxpolicy-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for selinuxpolicy buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-selinux
+  :type '(repeat function))
+
+(defcustom pel-selinuxpolicy-tab-width 2
+  "Distance between tab stop for asciidoc buffers.
+
+PEL stores this in `tab-width' when opening selinuxpolicy buffers.
+
+This does *NOT* control the indentation in selinuxpolicy
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-selinux
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-selinuxpolicy-use-tabs nil
+  "Value of `indent-tabs-mode' for editing selinuxpolicy files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-selinux
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; Marking Management
 ;; ------------------
