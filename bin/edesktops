@@ -1,15 +1,16 @@
 #!/bin/sh
-# SH FILE: edesktops-used
+# SH FILE: edesktops
 #
-# Purpose   : List currently used Emacs Desktops.
+# Purpose   : Print the list of Emacs desktops.
 # Created   : Friday, November  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-01 10:26:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-01 10:26:46 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Prints the list of Emacs session desktops currently used by Emacs processes.
+# Prints the list of Emacs session desktops that exist.
+#
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -22,13 +23,7 @@
 # ----
 #
 #
-
-if find ~/.emacs.d/desktops -name .emacs.desktop.lock -print | grep 'desktop.lock' > /dev/null ; then
-    find ~/.emacs.d/desktops -name .emacs.desktop.lock -print
-else
-    printf -- "Currently, no Emacs session use a desktop.\n"
-    exit 1
-fi
+ls  ~/.emacs.d/desktops
 
 # ----------------------------------------------------------------------------
 # Local Variables:
