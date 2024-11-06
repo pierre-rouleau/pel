@@ -6,6 +6,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   Added a ~<f12> <f2>~ key binding in the *ibuffer-mode* to access the PEL configuration to activate these.
   Also added access to the *ibuffer-vc* configuration via the ~<f12> <f3>~ key binding.
   And added the ~<f12> v~ binding to activate the VC based group and ~<f12> t~ for the tramp grouping.
+  Inside ibuffers, added ~<f12> c~ binding to *ibuffer-filter-chosen-by-completion* and
+  ~<f12> d~ binding to *ibuffer-filter-by-directory* .
 - Add PEL extensions support for AWK when the *pel-use-awk* user-option is set to *t*.
   - The ~<f12>~ key is supported.  The [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-awk.pdf][𝕻𝔩 - AWK]] PDF describes the key bindings.
 - Add a new PDF for *rpm-archive* and *rpm-spec-mode* mode.
