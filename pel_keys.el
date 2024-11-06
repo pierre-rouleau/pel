@@ -633,6 +633,23 @@ Your version of Emacs does not support dynamic module.")))
   (pel-eval-after-load dired
     (load "dired-x" :noerror :nomessage)))
 
+;; Activate dired-toggle-sudo when requested
+;;
+;; Future, if I have time to fork and fix its code.
+;;
+;; (when pel-use-dired-toggle-sudo
+;;   (pel-ensure-package dired-toggle-sudo from: melpa)
+;;   (with-eval-after-load 'dired
+;;     (when (boundp 'dired-mode-map)
+;;       (require 'dired-toggle-sudo)
+;;       (define-key dired-mode-map (kbd "C-c C-s") 'dired-toggle-sudo)
+;;       (with-eval-after-load 'tramp
+;;         (when (boundp 'tramp-default-proxies-alist)
+;;           ;; Allow to use: /sudo:user@host:/path/to/file
+;;           (add-to-list 'tramp-default-proxies-alist
+;; 	                   '(".*" "\\`.+\\'" "/ssh:%h:")))))))
+
+
 ;; Open files with OS-registered applications from Dired
 ;; -----------------------------------------------------
 (defvar dired-mode-map) ; forward declare - dired is loaded early in Emacs
@@ -6337,8 +6354,7 @@ the ones defined from the buffer now."
   (require 'pel-ibuffer)
   (pel-map-ibuffer-mode-filters))
 
-;; - Provide <f12> <f1> and <f12><f3> in ibuffer-mode
-;;   TODO simplify the following code
+;; - Provide <f12> <f1>, <f12><f2> and <f12><f3> in ibuffer-mode
 (define-pel-global-prefix pel:for-ibuffer (kbd "<f11> SPC SPC b"))
 (defun pel--setup-for-ibuffer ()
   "Activate ibuffer setup, take local variables into account."
@@ -6348,6 +6364,15 @@ the ones defined from the buffer now."
  (function pel--setup-for-ibuffer)
  'ibuffer-mode 'ibuffer-mode-hook)
 
+(when pel-use-ibuffer-vc
+  (pel-ensure-package ibuffer-vc from: melpa)
+  (define-key pel:for-ibuffer "v" 'ibuffer-vc-set-filter-groups-by-vc-root))
+(when pel-use-ibuffer-tramp
+  (pel-install-github-file "pierre-rouleau/ibuffer-tramp/master"
+                           "ibuffer-tramp.el")
+  (pel-autoload-file  "ibuffer-tramp.el" for:
+                      ibuffer-tramp-set-filter-groups-by-tramp-connection)
+  (define-key pel:for-ibuffer "t" 'ibuffer-tramp-set-filter-groups-by-tramp-connection))
 
 ;; diff-mode support
 ;; Provide <f12> <f1>, <f12> <f2> and <f12><f3> keys for diff-mode

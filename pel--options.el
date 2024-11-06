@@ -40,6 +40,7 @@
 ;;     - pel-pkg-for-align
 ;;     - pel-pkg-for-bookmark
 ;;     - pel-pkg-for-buffer
+;;       - pel-pkg-for-ibuffer
 ;;     - pel-pkg-for-completion
 ;;     - pel-pkg-for-cursor
 ;;       - pel-pkg-for-iedit
@@ -942,6 +943,30 @@ When set, PEL activates the following key sequences:
   :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
+(defgroup pel-pkg-for-ibuffer nil
+  "List of external packages that PEL can use to extend ibuffer-mode."
+  :group 'pel-pkg-for-buffer
+  :link `(url-link :tag "ibuffer-mode PDF" ,(pel-pdf-file-url
+                                             "ibuffer-mode")))
+
+(defcustom pel-use-ibuffer-vc nil
+  "Control whether PEL uses & activates the ibuffer-vc package."
+  :group 'pel-pkg-for-ibuffer
+  :link '(url-link :tag "ibuffer-vc @ Github"
+                   "https://github.com/purcell/ibuffer-vc")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-ibuffer-tramp nil
+  "Control whether PEL uses & activates the ibuffer-tramp package."
+  :group 'pel-pkg-for-ibuffer
+  :link '(url-link :tag "ibuffer-tramp @ GitHub"
+                   "https://github.com/pierre-rouleau/ibuffer-tramp")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-ibuffer-tramp :package-is :in-utils)
+
+;; ---------------------------------------------------------------------------
 ;; Completion Support
 ;; ------------------
 (defgroup pel-pkg-for-completion nil
@@ -1585,6 +1610,13 @@ The choices are:
           (const :tag "Use, activate later" t)
           (const :tag "Use, activate automatically for Git directory"
                  on-for-git-directories)))
+
+;; Possibly for the future.  If I have time to fix the code.
+;; (defcustom pel-use-dired-toggle-sudo nil
+;;   "Control whether PEL activates dired-toggle-sudo."
+;;   :group 'pel-pkg-for-dired
+;;   :type 'boolean
+;;   :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; Text Abbreviation, Code Completion and Expansion
