@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add ~<f11> ? d M-c~ binding to *list-coding-systems*
 - Add support for *ibuffer-vc* and *ibuffer-tramp* external packages via the *pel-use-ibuffer-vc* and *pel-use-ibuffer-tramp* respectively.
   Added a ~<f12> <f2>~ key binding in the *ibuffer-mode* to access the PEL configuration to activate these.
   Also added access to the *ibuffer-vc* configuration via the ~<f12> <f3>~ key binding.
