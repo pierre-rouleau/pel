@@ -3955,6 +3955,8 @@ activate this package."
   "Control whether PEL activates the markdown-toc package.
 The `pel-use-markdown' user-option must also be turned on to
 activate this package."
+  :link '(url-link :tag "markdown-toc/pierre-rouleau @ GitHub"
+                   "https://github.com/pierre-rouleau/markdown-toc")
   :link '(url-link :tag "markdown-toc @ GitHub"
                    "https://github.com/ardumont/markdown-toc")
   :group 'pel-pkg-for-markdown
@@ -3963,6 +3965,7 @@ activate this package."
           (const :tag "Use markdown-toc and update TOC on save"
                  update-toc-on-save)))
 (pel-put 'pel-use-markdown-toc :requires 'pel-use-markdown)
+(pel-put 'pel-use-markdown-toc :package-is :in-utils)
 
 (defcustom pel-use-vmd-mode nil
   "Control whether PEL activates the vmd-mode package.

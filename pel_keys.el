@@ -5180,10 +5180,20 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-ensure-package markdown-preview-mode from: melpa)
     (define-key pel:for-markdown-preview "p" 'markdown-preview-mode))
   (when pel-use-markdown-toc
-    (pel-ensure-package markdown-toc from: melpa)
+    (pel-install-github-file "pierre-rouleau/markdown-toc/master" "markdown-toc.el")
+    (pel-autoload-file markdown-toc for:
+                       markdown-toc-version
+                       markdown-toc-generate-toc
+                       markdown-toc-generate-or-refresh-toc
+                       markdown-toc-refresh-toc
+                       markdown-toc-delete-toc
+                       markdown-toc-follow-link-at-point
+                       markdown-toc-mode)
     (define-pel-global-prefix pel:for-markdown-toc (kbd "<f11> SPC M-m M-t"))
+    (define-key pel:for-markdown-toc (kbd "M-v") 'markdown-toc-version)
     (define-key pel:for-markdown-toc (kbd "M-t") 'markdown-toc-generate-toc)
     (define-key pel:for-markdown-toc (kbd "M-r") 'markdown-toc-generate-or-refresh-toc)
+    (define-key pel:for-markdown-toc (kbd "M-R") 'markdown-toc-refresh-toc)
     (define-key pel:for-markdown-toc (kbd "M-d") 'markdown-toc-delete-toc)
     (define-key pel:for-markdown-toc (kbd "M-f") 'markdown-toc-follow-link-at-point))
   (when pel-use-vmd-mode
