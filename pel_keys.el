@@ -6336,6 +6336,8 @@ the ones defined from the buffer now."
 ;;   a b c f h i k l n p r s v x
 
 (define-pel-global-prefix pel:buffer (kbd "<f11> b"))
+(define-pel-global-prefix pel:text-to (kbd "<f11> b t"))
+
 (define-key pel:buffer "-"  #'ruler-mode)
 (define-key pel:buffer "="  #'diff-buffer-with-file)
 (define-key pel:buffer (kbd "M-=")  #'ediff-current-file)
@@ -6353,17 +6355,19 @@ the ones defined from the buffer now."
 (define-key pel:buffer "V"  #'view-buffer)
 (define-key pel:buffer "R"  #'rename-buffer)
 (define-key pel:buffer "U"  #'rename-uniquely)
-(define-key pel:buffer (kbd "M-a")  #'append-to-buffer)
-(define-key pel:buffer (kbd "M-p")  #'prepend-to-buffer)
-(define-key pel:buffer (kbd "C-c")  #'copy-to-buffer)
-(define-key pel:buffer "i"  #'insert-buffer)
-(define-key pel:buffer "f"  #'append-to-file)
 (define-key pel:buffer (kbd "M-x") 'hexl-mode)
 (define-key pel:buffer "."  'pel-bs-next)
 (define-key pel:buffer ","  'pel-bs-previous)
 (define-key pel:buffer "]"  'pel-smb-next)
 (define-key pel:buffer "["  'pel-smb-previous)
 (define-key pel:buffer "L"  'emacs-lock-mode)
+
+
+(define-key pel:text-to "a"  #'append-to-buffer)
+(define-key pel:text-to "p"  #'prepend-to-buffer)
+(define-key pel:text-to "c"  #'copy-to-buffer)
+(define-key pel:text-to "i"  #'insert-buffer)
+(define-key pel:text-to "f"  #'append-to-file)
 
 ;; Add key bindings inside the Buffer Selection Mode.
 (add-hook 'bs-mode-hook 'pel-bs-init)
@@ -6377,7 +6381,10 @@ the ones defined from the buffer now."
 
 (when pel-use-iflipb
   ;; All key bindings are inside the pel-∑buffer Hydra
-  (pel-ensure-package iflipb from: melpa))
+  (pel-ensure-package iflipb from: melpa)
+  (define-key pel:buffer (kbd "C-n")  'iflipb-next-buffer)
+  (define-key pel:buffer (kbd "C-p")  'iflipb-previous-buffer)
+  (define-key pel:buffer (kbd "C-k")  'iflipb-kill-buffer))
 
 ;; ibuffer-mode support
 ;; --------------------

@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Modified key bindings for the buffer text accumulation commands. They are now all under the ~<f11> b t~ prefix
+  and use an extra single letter: ~a~ for *append-to-buffer*, ~p~ for *prepend-to-buffer*, ~c~ for *copy-to-buffer*,
+  ~i~ for *insert-buffer* and ~f~ for *append-to-file*.  This is easier to remember and frees key bindings for other operations.
+- Add key bindings for the iflipb commands: ~<f11> b C-n~ to *iflipb-next-buffer*, ~<f11> b C-p~ to *iflipb-previous-buffer* and ~<f11> b C-k~ to *iflipb-kill-buffer.*.
+  Also modified their keys into the Hydra to use the Control keys.
 - *emacros-execute-named-macro* is no longer bound to ~<f11> <f4>~ to make space for a new PEL key prefix that will be used for
   dynamic behaviour change: *pel:change* key prefix.
 - The first command used in the *pel:change* key prefix is *pel-toggle-overwrite-yank*, bound to ~<f11> <f4> C-y~.

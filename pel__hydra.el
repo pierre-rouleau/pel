@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-10-02 21:19:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-11-17 09:00:53 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -308,9 +308,9 @@
   ("M-."     pel-bs-next             "next"      :column "Buffer Selection")
   ("M-,"     pel-bs-previous         "prev"      :column "Buffer Selection")
 
-  ("<f9>"    iflipb-next-buffer      "next"      :column "Flip")
-  ("S-<f9>"  iflipb-previous-buffer  "prev"      :column "Flip")
-  ("M-k"     iflipb-kill-buffer      "kill"      :column "Flip")
+  ("C-n"     iflipb-next-buffer      "next"      :column "Flip")
+  ("C-p"     iflipb-previous-buffer  "prev"      :column "Flip")
+  ("C-k"     iflipb-kill-buffer      "kill"      :column "Flip")
 
   ("]"       pel-smb-next            "next"      :column "Same Mode")
   ("["       pel-smb-previous        "previous"  :column "Same Mode")
