@@ -38,7 +38,7 @@
 ;; are used.  Avoid loading pel-scroll until those commands are used.
 (eval-when-compile
   (require 'pel-scroll))  ; use: pel-scroll-up, pel-scroll-down
-
+(require 'pel-ccp)        ; use pel-overwrite-yank
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
@@ -121,7 +121,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
   (interactive "*P")
   (if pel-mac-keypad-numlocked
       (insert-char ?0 (abs (prefix-numeric-value n)) t)
-    (yank)))
+    (pel-overwrite-yank)))
 
 ;;-pel-autoload
 (defun pel-1 (&optional n)

@@ -929,7 +929,7 @@ Your version of Emacs does not support dynamic module.")))
 ;; and of [kp-5] to pel-5 to handle it.
 
 (when pel-system-is-windows-p
-  (global-set-key [kp-insert] 'yank)
+  (global-set-key [kp-insert] 'pel-overwrite-yank)
   (global-set-key [kp-space] 'recenter-top-bottom))
 
 ;; -- The . ([kp-decimal]) key
@@ -5665,7 +5665,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (global-set-key (kbd "<f11> [")  'pel-cua-move-rectangle-left)
 (global-set-key (kbd "<f11> ]")  'pel-cua-move-rectangle-right)
 (when pel-with-cua-paste
-  (global-set-key (kbd "C-v")  #'yank))
+  (global-set-key (kbd "C-v")  'pel-overwrite-yank))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ;`` : comment commands
