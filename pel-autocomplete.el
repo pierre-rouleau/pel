@@ -1,6 +1,6 @@
 ;;; pel-autocomplete.el --- PEL auto-completion support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -58,6 +58,7 @@
 (require 'pel--macros)     ; use: pel-when-bound, pel-when-fbound
 (require 'pel--options)
 
+
 (eval-when-compile
   ;; need macros from pel--base
   ;; The following 2 packages are loaded lazily when required:
@@ -70,6 +71,32 @@
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
+
+
+;; ---------------------------------------------------------------------------
+;; Utilities
+
+(defun pel--action-for (arg current-state)
+  "Return the new state of a mode from ARG and CURRENT-STATE.
+Where:
+- ARG:           nil: toggle, >=0: enable, <0 : disable.
+- CURRENT-STATE: nil: disabled, otherwise enabled.
+
+Return: enable or disable"
+  (cond ((null arg) (if current-state 'disable 'enable))
+        ((>= arg 0) 'enable)
+        (t          'disable)))
+
+
+;; For both auto-complete-mode and company-mode:
+;; ARG : nil | positive --> enable
+;;       negative       --> disable
+(defun pel--arg-for-action (action)
+  "Return integer corresponding to ACTION.
+1 for enable, -1 for disable."
+  (if (eq action 'enable)
+      1
+    -1))
 
 ;; -----------------------------------------------------------------------------
 ;; Auto-Complete Support
@@ -96,14 +123,12 @@
 
 (defun pel--auto-complete-mode-p ()
   "Return t if variable `auto-complete-mode' is loaded and on, nil otherwise."
-  (and (boundp 'auto-complete-mode)
-       auto-complete-mode))
+  (bound-and-true-p auto-complete-mode))
 
 (defun pel--global-auto-complete-mode-p ()
   "Return t if variable `global-auto-complete-mode' is loaded and on.
 Return nil otherwise."
-  (and (boundp 'global-auto-complete-mode)
-       global-auto-complete-mode))
+  (bound-and-true-p global-auto-complete-mode))
 
 ;; --
 ;; Utilities: turn auto-complete modes on
@@ -162,13 +187,11 @@ On first call, also configure it according to its customization."
 
 (defun pel--company-mode-p ()
   "Return t if variable `company-mode' is loaded and on, nil otherwise."
-  (and (boundp 'company-mode)
-       company-mode))
+  (bound-and-true-p company-mode))
 
 (defun pel--global-company-mode-p ()
   "Return t if variable `global-company-mode' is loaded and on, nil otherwise."
-  (and (boundp 'global-company-mode)
-       global-company-mode))
+  (bound-and-true-p global-company-mode))
 
 ;; --
 ;; Utilities: turn Company Modes on
@@ -210,45 +233,29 @@ On first call, also configure it according to its customization."
 If ARG is positive: activate it, otherwise de-activate it.
 Does not allow activation if Company Mode is active."
   (interactive "P")
-  (pel-when-fbound 'global-auto-complete-mode
-    (if (null arg)
-        ;; toggle mode
-        (if (pel--global-auto-complete-mode-p)
-            (global-auto-complete-mode 0)
-          (if (pel--company-mode-p)
-              (user-error "First turn company-mode off!")
-            (pel--global-auto-complete-mode-on)))
-      ;; activate/deactivate according to arg value.
-      (if (< (prefix-numeric-value arg) 0)
-          (global-auto-complete-mode 0)
-        (if (pel--company-mode-p)
-            (user-error "First turn company-mode off!")
-          (pel--global-auto-complete-mode-on))))
-    (message (pel-symbol-text 'global-auto-complete-mode))))
+  (let ((action (pel--action-for arg (pel--global-auto-complete-mode-p))))
+    (if (and (eq action 'enable)
+             (pel--company-mode-p))
+        (user-error "First turn company-mode off!")
+      ;; Prevent byte-compiler warning.  PEL won't invoke this command  if
+      ;; it's not already loaded and bound, as controlled by pel_keys.el
+      (pel-when-fbound 'global-auto-complete-mode
+        (global-auto-complete-mode (pel--arg-for-action action))))))
 
 ;;-pel-autoload
 (defun pel-auto-complete-mode (&optional arg)
   "Toggle buffer's Auto Complete mode when ARG is nil.
-If ARG is positive: activate it, otherwise de-activate it.
+If ARG >= 0: activate it, otherwise de-activate it.
 Does not allow activation if Company Mode is active."
   (interactive "P")
-  (pel-when-fbound 'auto-complete-mode
-   (if (null arg)
-       ;; toggle mode
-       (if (pel--auto-complete-mode-p)
-           (progn
-             (auto-complete-mode 0))
-         (if (pel--company-mode-p)
-             (user-error "First turn company-mode off!")
-           (pel--auto-complete-mode-on)))
-     ;; activate/deactivate according to arg value.
-     (if (< (prefix-numeric-value arg) 0)
-         (auto-complete-mode 0)
-       (if (pel--company-mode-p)
-           (user-error "First turn company-mode off!")
-         (pel--auto-complete-mode-on))))
-   (message (pel-symbol-text 'auto-complete-mode))))
-
+  (let ((action (pel--action-for arg (pel--auto-complete-mode-p))))
+    (if (and (eq action 'enable)
+             (pel--company-mode-p))
+        (user-error "First turn company-mode off!")
+      ;; Prevent byte-compiler warning.  PEL won't invoke this command  if
+      ;; it's not already loaded and bound, as controlled by pel_keys.el
+      (pel-when-fbound 'auto-complete-mode
+        (auto-complete-mode (pel--arg-for-action action))))))
 
 ;; --
 ;; PEL Company Mode Commands
@@ -259,42 +266,29 @@ Does not allow activation if Company Mode is active."
 If ARG is positive: activate it, otherwise de-activate it.
 Does not allow activation if Auto Complete Mode is active."
   (interactive "P")
-  (pel-when-fbound 'global-company-mode
-    (if (null arg)
-        ;; toggle mode
-        (if (pel--global-company-mode-p)
-            (global-company-mode 0)
-          (if (pel--auto-complete-mode-p)
-              (user-error "First turn auto-complete-mode off!")
-            (pel--global-company-mode-on)))
-      ;; activate/deactivate according to arg value.
-      (if (< (prefix-numeric-value arg) 0)
-          (global-company-mode 0)
-        (if (pel--auto-complete-mode-p)
-            (user-error "First turn auto-complete-mode off!")
-          (pel--global-company-mode-on))))
-    (message (pel-symbol-text 'global-company-mode))))
+  (let ((action (pel--action-for arg (pel--global-company-mode-p))))
+    (if (and (eq action 'enable)
+             (pel--auto-complete-mode-p))
+        (user-error "First turn auto-complete-mode off!")
+      ;; Prevent byte-compiler warning.  PEL won't invoke this command  if
+      ;; it's not already loaded and bound, as controlled by pel_keys.el
+      (pel-when-fbound 'global-company-mode
+        (global-company-mode (pel--arg-for-action action))))))
 
 ;;-pel-autoload
 (defun pel-company-mode (&optional arg)
   "Toggle buffer's Company Mode when ARG is nil.
-If ARG is positive: activate it, otherwise de-activate it."
+If ARG >= 0: activate it, otherwise de-activate it.
+Does not allow activation if Auto Complete Mode is active."
   (interactive "P")
-  (pel-when-fbound 'company-mode
-    (if (null arg)
-        ;; toggle mode
-        (if (pel--company-mode-p)
-            (company-mode 0)
-          (if (pel--auto-complete-mode-p)
-              (user-error "First turn auto-complete-mode off!")
-            (company-mode 1)))
-      ;; activate/deactivate according to arg value.
-      (if (< (prefix-numeric-value arg) 0)
-          (company-mode 0)
-        (if (pel--auto-complete-mode-p)
-            (user-error "First turn auto-complete-mode off!")
-          (company-mode 1))))
-    (message (pel-symbol-text 'company-mode))))
+  (let ((action (pel--action-for arg (pel--company-mode-p))))
+    (if (and (eq action 'enable)
+             (pel--auto-complete-mode-p))
+        (user-error "First turn auto-complete-mode off!")
+      ;; Prevent byte-compiler warning.  PEL won't invoke this command  if
+      ;; it's not already loaded and bound, as controlled by pel_keys.el
+      (pel-when-fbound 'company-mode
+        (company-mode (pel--arg-for-action action))))))
 
 ;; --
 ;; PEL Generic Automatic Completion Commands
@@ -325,7 +319,7 @@ Auto-completion package state:
                 (pel-symbol-on-off-string 'global-auto-complete-mode)
                 (pel-option-mode-state 'company-mode 'pel-use-company)
                 (pel-symbol-on-off-string 'global-company-mode)))
-       (insert "\n")
+       (insert "\n\nCustomization:\n")
        (pel-insert-symbol-content-line 'pel-use-auto-complete)
        (pel-insert-symbol-content-line 'pel-use-company)
        (insert "\n")
@@ -352,8 +346,8 @@ Use the currently active auto-completion system."
                                        (auto-complete)))
         ((pel--company-mode-p)       (pel-when-fbound 'company-complete
                                        (company-complete)))
-        (t (user-error "No auto completion system active!\
-  Please activate one first!"))))
+        (t (user-error "First activate a completion system \
+with: <f11> , [aAcC]"))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-autocomplete)
