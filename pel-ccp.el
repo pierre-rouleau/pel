@@ -844,14 +844,14 @@ Nothing is copied to the kill ring."
                            :locally "When in overwrite-mode, yank")
     (user-error "C-y is not bound to pel-overwrite-yank in this buffer")))
 
-(defun pel-overwrite-yank ()
+(defun pel-overwrite-yank (&optional arg)
   "Yank over existing text when overwrite-mode is active.
 Otherwise yank/insert as usual."
   (interactive)
   (when (and pel--activate-overwrite-yank
              (bound-and-true-p overwrite-mode))
     (delete-char (length (current-kill 0))))
-  (yank))
+  (yank arg))
 
 ;;; --------------------------------------------------------------------------
 
