@@ -6384,7 +6384,7 @@ the ones defined from the buffer now."
   (pel-ensure-package iflipb from: melpa)
   (define-key pel:buffer (kbd "C-n")  'iflipb-next-buffer)
   (define-key pel:buffer (kbd "C-p")  'iflipb-previous-buffer)
-  (define-key pel:buffer (kbd "C-k")  'iflipb-kill-buffer))
+  (global-set-key (kbd "C-x k")       'iflipb-kill-buffer))
 
 ;; ibuffer-mode support
 ;; --------------------

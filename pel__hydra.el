@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-11-17 09:00:53 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-11-17 09:38:52 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -291,11 +291,7 @@
     (user-error "Unavailable - set pel-use-iflipb to activate!"))
   (declare-function iflipb-previous-buffer "pel__hydra")
 
-  (defun iflipb-kill-buffer ()
-    "Warning stub."
-    (user-error "Unavailable - set pel-use-iflipb to activate!"))
-  (declare-function iflipb-kill-buffer "pel__hydra"))
-
+  )
 (defhydra pel-∑buffer (global-map "<f7> <f9>"
                                   :foreign-keys run)
   ""
@@ -310,7 +306,6 @@
 
   ("C-n"     iflipb-next-buffer      "next"      :column "Flip")
   ("C-p"     iflipb-previous-buffer  "prev"      :column "Flip")
-  ("C-k"     iflipb-kill-buffer      "kill"      :column "Flip")
 
   ("]"       pel-smb-next            "next"      :column "Same Mode")
   ("["       pel-smb-previous        "previous"  :column "Same Mode")
