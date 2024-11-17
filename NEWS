@@ -2,6 +2,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- *emacros-execute-named-macro* is no longer bound to ~<f11> <f4>~ to make space for a new PEL key prefix that will be used for
+  dynamic behaviour change: *pel:change* key prefix.
+- The first command used in the *pel:change* key prefix is *pel-toggle-overwrite-yank*, bound to ~<f11> <f4> C-y~.
+  That command changes the buffer local behaviour, initially set to the value of the *pel-activate-overwrite-yank* user-option,
+  which controls whether *pel-overwrite-yank* overwrites or inserts text at point when the overwrite-mode is active in the buffer.
+  Being able to overwrite text when yanking is useful when writing whitespace-filled tables such as the table
+  in reStructuredText markup files, for example.
 - Add ~<f11> ? d M-c~ binding to *list-coding-systems*
 - Add support for *ibuffer-vc* and *ibuffer-tramp* external packages via the *pel-use-ibuffer-vc* and *pel-use-ibuffer-tramp* respectively.
   Added a ~<f12> <f2>~ key binding in the *ibuffer-mode* to access the PEL configuration to activate these.

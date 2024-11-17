@@ -30,6 +30,7 @@
 ;; also provides other interactive functions to copy, kill or delete
 ;; specific entities.
 ;;
+;; Also includes specialized yank function.
 
 ;;; Dependencies:
 (require 'pel--base)
@@ -817,6 +818,40 @@ Nothing is copied to the kill ring."
   "Join this line to the following line."
   (interactive)
   (delete-indentation 1))
+
+
+;; ---------------------------------------------------------------------------
+;; Specialized yank
+;; ----------------
+;;
+;; PEL provides a basic yank command, `pel-overwrite-yank' that behaves as
+;; Emacs standard yank or as text replacement when the buffer is in overwrite
+;; mode.  The insertion/overwrite behaviour is controlled by the
+;; `pel-activate-overwrite-yank' user option, which initializes the buffer
+;; local `pel--activate-overwrite-yank'.  That can be further modified
+;; dynamically in each buffer by execution of the `pel-toggle-overwrite-yank'
+;; command.
+
+(defvar-local pel--activate-overwrite-yank pel-activate-overwrite-yank
+  "Activate overwrite yank when overwrite-mode is on.")
+
+(defun pel-toggle-overwrite-yank ()
+  "Toggle overwrite yank."
+  (interactive)
+  (if (eq (key-binding (kbd "C-y")) 'pel-overwrite-yank)
+      (pel-toggle-and-show 'pel--activate-overwrite-yank
+                           "overwriting" "inserting"
+                           :locally "When in overwrite-mode, yank")
+    (user-error "C-y is not bound to pel-overwrite-yank in this buffer")))
+
+(defun pel-overwrite-yank ()
+  "Yank over existing text when overwrite-mode is active.
+Otherwise yank/insert as usual."
+  (interactive)
+  (when (and pel--activate-overwrite-yank
+             (bound-and-true-p overwrite-mode))
+    (delete-char (length (current-kill 0))))
+  (yank))
 
 ;;; --------------------------------------------------------------------------
 

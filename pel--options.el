@@ -1435,6 +1435,18 @@ Activating the `pel-use-lispy' user-option indirectly activates
   :link `(url-link :tag "Cut & Paste -- Copy/Delete/Kill/Yank PDF"
                    ,(pel-pdf-file-url "cut-paste")))
 
+(defcustom pel-activate-overwrite-yank nil
+  "Activate pel-overwrite-yank in place of yank.
+
+When overwrite-yank is active a yank while overwrite-mode
+is active overwrites text instead of inserting it.
+
+Toggle this behaviour dynamically with `pel-toggle-overwrite-yank'."
+
+  :group 'pel-pkg-for-cut-and-paste
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-with-cua-paste nil
   "Activate CUA-compliant C-v: bind C-v to yank.
 

@@ -236,7 +236,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-kill-word-and-whitespace
     pel-delete-to-eol
     pel-duplicate-line
-    pel-join-next-line)
+    pel-join-next-line
+    pel-toggle-overwrite-yank
+    pel-overwrite-yank)
 
   (pel-autoload "pel-comment" for:
     pel-comment-start

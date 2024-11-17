@@ -587,6 +587,28 @@ Your version of Emacs does not support dynamic module.")))
 (define-pel-global-prefix pel:mode (kbd "<f11> <f5>"))
 
 ;; ---------------------------------------------------------------------------
+;; Dynamic configurations
+;; ----------------------
+;; <f11> <f4> will be used for commands that change the behaviour of
+;; some basic operations, such as yank.
+
+(define-pel-global-prefix pel:change (kbd "<f11> <f4>"))
+
+(define-key pel:change (kbd "C-y") 'pel-toggle-overwrite-yank)
+
+;; ---------------------------------------------------------------------------
+;; Yank Operation
+;; --------------
+;;
+;; PEL provides a basic yank command that behaves as Emacs standard yank
+;; or as text replacement when the buffer is in overwrite mode.
+;; This behaviour is controlled by the `pel-activate-overwrite-yank' user
+;; option, which initializes the buffer local `pel--activate-overwrite-yank'.
+;; That can be further modified dynamically in each buffer by execution of the
+;; `pel-toggle-overwrite-yank' command.
+
+(global-set-key (kbd "C-y") 'pel-overwrite-yank)
+;; ---------------------------------------------------------------------------
 ;; Dired Extensions
 ;; ----------------
 (define-pel-global-prefix pel:for-dired (kbd "<f11> SPC M-D"))
@@ -7449,7 +7471,6 @@ the ones defined from the buffer now."
     (global-set-key "\C-ce" 'emacros-execute-named-macro)
     (global-set-key "\C-cx" 'emacros-auto-execute-named-macro)
     (define-key pel:emacros "e" 'emacros-execute-named-macro)
-    (define-key pel: (kbd "<f4>") 'emacros-execute-named-macro)
     (define-key pel:emacros "R" 'emacros-refresh-macros)
     (define-key pel:emacros "r" 'emacros-rename-macro)
     (define-key pel:emacros "m" 'emacros-move-macro)
