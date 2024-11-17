@@ -131,6 +131,9 @@
 ;; - `pel-prepend'
 ;; - `pel-cons-alist-at'
 ;; - `pel-nth-elt'
+;; - `pel-list-insert-before'
+;; - `pel-list-prepend-nth'
+;; - `pel-list-insert-car-at'
 ;;
 ;; Operation on auto-mode-alist
 ;;  - `pel-delete-from-auto-mode-alist'
@@ -181,6 +184,12 @@
 ;;    - `pel-toggle-mode'
 ;;      - `pel-autoload-p'
 ;;
+;; Basic functions working with values and variables:
+;;  - `pel-toggle-and-show-user-option'
+;;    - `pel-toggle-and-show'
+;;      - `pel-toggle'
+;;  - `pel-val-or-default'
+;;
 ;; Symbol processing
 ;;  - `pel-hook-symbol-for'
 ;;  - `pel-map-symbol-for'
@@ -188,12 +197,11 @@
 ;; Hook control
 ;;  - `pel-add-hook-for'
 ;;
-;; Basic functions working with values and variables:
-;;  - `pel-toggle-and-show-user-option'
-;;    - `pel-toggle-and-show'
-;;      - `pel-toggle'
-;;  - `pel-val-or-default'
-;;
+;; Minor mode activation
+;;  - `pel-check-minor-modes-in'
+;;    - `pel--check-minor-modes-in'
+;;  - `pel-turn-on-global-minor-modes-in'
+;;  - `pel-turn-on-local-minor-modes-in'
 ;; Argument converter:
 ;;  - `pel-multiplier'
 ;;
@@ -1409,6 +1417,31 @@ Usage Example:
         (setq idx (1+ idx)))
       nil)))
 
+;; (credit to Metamorphic to the following 3 functions)
+(defun pel-list-insert-before (lst idx item)
+  "Return new list with ITEM before 0-base position index IDX of list LST."
+  (if (>= idx (length lst))
+      (error "Out-of-range index: idx:%d >= length(lst):%s" idx (length lst))
+    (if (<= idx 0)
+        (cons item lst)
+      (cons (car lst)
+            (pel-list-insert-before (cdr lst) (- idx 1) item)))))
+
+(defun pel-list-prepend-nth (lst idx)
+  "Return list LST with ITEM at 0-base position IDX as first element."
+  (if (>= idx (length lst))
+      (error "Out-of-range index: idx:%d >= length(lst):%s" idx (length lst))
+    (if (<= idx 0)
+        lst
+      (let ((lx (pel-list-prepend-nth (cdr lst) (- idx 1))))
+        (cons (car lx)
+              (cons (car lst)
+                    (cdr lx)))))))
+
+(defun pel-list-insert-car-at (lst idx)
+  "Return list LST with first element moved to the 0-base position IDX."
+  (pel-list-insert-before (cdr lst) idx (car lst)))
+
 ;; ---------------------------------------------------------------------------
 ;; Operation on auto-mode-alist
 ;; ----------------------------
@@ -2250,6 +2283,69 @@ If the value is \\='with-flycheck then flycheck is toggled."
       (pel-toggle-mode 'flymake-mode)))))
 
 ;; ---------------------------------------------------------------------------
+;; Basic functions working with values and variables
+;; -------------------------------------------------
+;;
+;; To toggle the value of variable that would have
+;; the hypothetical name is-acceptable we can use
+;; the following calls:
+;;                     (pel-toggle 'is-acceptable)
+;;                     (pel-toggle-and-show 'is-acceptable)
+;;
+;; Notice the required quoting.
+
+(defun pel-toggle (symbol)
+  "Toggle value of SYMBOL from nil to/from t. Return SYMBOL\\='s new value.
+For example, to toggle the value of a variable  named isok,
+the caller must pass it quoted.
+Return the new SYMBOL value.
+The function issue an error if the argument is not a symbol."
+  (if (symbolp symbol)
+      (set symbol (not (eval symbol)))
+    (error "Nothing done: pel-toggle expects a symbol as argument")))
+
+(defun pel-toggle-and-show (symbol &optional on-string off-string locally name)
+  "Toggle value of SYMBOL from nil to/from t, and show it\\='s new value.
+If ON-STRING and OFF-STRING arguments are specified use them as the
+on/off value, otherwise use \"on\" and \"off\".
+By default the setting is considered global unless LOCALLY is set,
+which indicates that the setting is for the current buffer only.
+For example, to toggle the value of a variable named isok,
+the caller must pass it quoted.
+Use NAME instead symbol name in the message if specified.
+The function issue an error if the argument is not a symbol."
+  (pel-toggle symbol)
+  (message "%s%s"
+           (if name
+               (format "%s is now: %s" name
+                       (pel-symbol-on-off-string symbol
+                                                 on-string off-string))
+
+               (pel-symbol-text symbol on-string off-string))
+           (if locally " (in current buffer)" "")))
+
+(defun pel-toggle-and-show-user-option (user-option
+                                        &optional globally
+                                        on-string off-string name)
+  "Toggle the behaviour of USER-OPTION for current buffer or GLOBALLY.
+
+Display the new state.
+If ON-STRING and OFF-STRING arguments are specified use them as the
+on/off value, otherwise use \"on\" and \"off\".
+USER-OPTION must be a variable symbol.
+Note that USER-OPTION is misnamed.  It can be the symbol of any variable.
+Use NAME instead symbol name in the message if specified."
+  (unless globally
+    (with-current-buffer (current-buffer)
+      (unless (local-variable-p user-option)
+        (make-local-variable user-option))))
+  (pel-toggle-and-show user-option on-string off-string (not globally) name))
+
+(defun pel-val-or-default (val default)
+  "Return VAL if not nil otherwise return DEFAULT."
+  (or val default))
+
+;; ---------------------------------------------------------------------------
 ;; Symbol processing
 ;; -----------------
 
@@ -2294,6 +2390,8 @@ You can do it with \\='M-x customize %s\\='."
        :error))))
 
 ;; ---------------------------------------------------------------------------
+;; Minor mode activation
+;; ---------------------
 
 (defun pel--check-minor-modes-in (list-var minor-modes)
   "Check validity of all MINOR-MODES specified in the LIST-VAR.
@@ -2374,69 +2472,6 @@ global minor mode is specified instead of a local minor mode."
         minor-mode (symbol-name minor-modes))
        :warning))
     (funcall minor-mode 1)))
-
-;; ---------------------------------------------------------------------------
-;; Basic functions working with values and variables
-;; -------------------------------------------------
-;;
-;; To toggle the value of variable that would have
-;; the hypothetical name is-acceptable we can use
-;; the following calls:
-;;                     (pel-toggle 'is-acceptable)
-;;                     (pel-toggle-and-show 'is-acceptable)
-;;
-;; Notice the required quoting.
-
-(defun pel-toggle (symbol)
-  "Toggle value of SYMBOL from nil to/from t. Return SYMBOL\\='s new value.
-For example, to toggle the value of a variable  named isok,
-the caller must pass it quoted.
-Return the new SYMBOL value.
-The function issue an error if the argument is not a symbol."
-  (if (symbolp symbol)
-      (set symbol (not (eval symbol)))
-    (error "Nothing done: pel-toggle expects a symbol as argument")))
-
-(defun pel-toggle-and-show (symbol &optional on-string off-string locally name)
-  "Toggle value of SYMBOL from nil to/from t, and show it\\='s new value.
-If ON-STRING and OFF-STRING arguments are specified use them as the
-on/off value, otherwise use \"on\" and \"off\".
-By default the setting is considered global unless LOCALLY is set,
-which indicates that the setting is for the current buffer only.
-For example, to toggle the value of a variable named isok,
-the caller must pass it quoted.
-Use NAME instead symbol name in the message if specified.
-The function issue an error if the argument is not a symbol."
-  (pel-toggle symbol)
-  (message "%s%s"
-           (if name
-               (format "%s is now: %s" name
-                       (pel-symbol-on-off-string symbol
-                                                 on-string off-string))
-
-               (pel-symbol-text symbol on-string off-string))
-           (if locally " (in current buffer)" "")))
-
-(defun pel-toggle-and-show-user-option (user-option
-                                        &optional globally
-                                        on-string off-string name)
-  "Toggle the behaviour of USER-OPTION for current buffer or GLOBALLY.
-
-Display the new state.
-If ON-STRING and OFF-STRING arguments are specified use them as the
-on/off value, otherwise use \"on\" and \"off\".
-USER-OPTION must be a variable symbol.
-Note that USER-OPTION is misnamed.  It can be the symbol of any variable.
-Use NAME instead symbol name in the message if specified."
-  (unless globally
-    (with-current-buffer (current-buffer)
-      (unless (local-variable-p user-option)
-        (make-local-variable user-option))))
-  (pel-toggle-and-show user-option on-string off-string (not globally) name))
-
-(defun pel-val-or-default (val default)
-  "Return VAL if not nil otherwise return DEFAULT."
-  (or val default))
 
 ;; ---------------------------------------------------------------------------
 ;; Argument converter
