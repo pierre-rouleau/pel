@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-08-16 17:16:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-11-20 08:59:28 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -795,7 +795,7 @@ otherwise it starts with \"Currently\"."
     (message "\
 Completion %s using (change it with: <f11> M-c <f4>):
   - %s completion mode%s.
-- ido-use-filename-at-point: %s"
+- ido-use-filename-at-point: %s, ido-use-url-at-point: %s"
              (if now "now" "currently")
              current-mode-name
              (if (memq current-mode '(ido ido/helm))
@@ -804,6 +804,10 @@ Completion %s using (change it with: <f11> M-c <f4>):
              (if (boundp 'ido-use-filename-at-point)
                  (pel-ido-use-fname-at-point-string-for
                   ido-use-filename-at-point)
+               "Not loaded")
+             (if (boundp 'ido-use-url-at-point)
+                 (pel-ido-use-url-at-point-string-for
+                  ido-use-url-at-point)
                "Not loaded"))))
 
 ;;; --------------------------------------------------------------------------

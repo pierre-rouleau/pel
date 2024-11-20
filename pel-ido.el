@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, February  9 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-01 17:54:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-11-20 08:55:08 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2024  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -56,6 +56,23 @@
    ((eq value 'guess) "guess file name")
    ((eq value t) "use literal file name")
    (t "Invalid")))
+
+
+;;-pel-autoload
+(defun pel-set-ido-use-url-at-point (&optional globally)
+  "Set Ido's ability to use the filename at point as a starting point."
+  (interactive "P")
+  (pel-set-user-option "Find file at point"
+                       'ido-use-url-at-point
+                       '((?g "Enable"        t)
+                         (?d "Disabled"      nil))
+                       (not globally)))
+
+(defun pel-ido-use-url-at-point-string-for (value)
+  "Return description of `ido-use-url-at-point' VALUE."
+  (cond
+   ((not value) "disabled")
+   (t "Enabled")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-ido)

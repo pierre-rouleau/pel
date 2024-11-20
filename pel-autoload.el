@@ -415,7 +415,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-add-keys-to-iedit-mode)
 
   (pel-autoload "pel-ido" for:
-    pel-set-ido-use-fname-at-point)
+    pel-set-ido-use-fname-at-point
+    pel-set-ido-use-url-at-point)
 
   (pel-autoload "pel-imenu" for:
     pel-imenu-toggle-follows-order

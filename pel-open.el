@@ -177,14 +177,18 @@ Copy the content of the URL into a temporary file, then open that file."
   (message "\
 - File encoding                             : %s
 - pel-open-at-point relative path resolution: %s
-- ido-use-filename-at-point                 : %s"
+- ido-use-filename-at-point                 : %s, ido-use-url-at-point : %s"
            buffer-file-coding-system
            (pel--open-file-at-point-dir-string-for
             pel--open-file-at-point-dir)
            (if (boundp 'ido-use-filename-at-point)
                (pel-ido-use-fname-at-point-string-for
                 ido-use-filename-at-point)
-             "Not loaded")))
+             "Not loaded")
+           (if (boundp 'ido-use-url-at-point)
+                 (pel-ido-use-url-at-point-string-for
+                  ido-use-url-at-point)
+               "Not loaded")))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel-open)

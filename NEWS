@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-set-ido-use-url-at-point*, bound to ~<f11> f M-,~ .  It's value is shown by *pel-show-filemng-status* and  *pel-ido-completion-settings-string*.
 - Modified key bindings for the buffer text accumulation commands. They are now all under the ~<f11> b t~ prefix
   and use an extra single letter: ~a~ for *append-to-buffer*, ~p~ for *prepend-to-buffer*, ~c~ for *copy-to-buffer*,
   ~i~ for *insert-buffer* and ~f~ for *append-to-file*.  This is easier to remember and frees key bindings for other operations.
