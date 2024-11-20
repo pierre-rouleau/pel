@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 20:23:02 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-11-20 10:40:09 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -338,7 +338,7 @@ The prompt mechanism is using the back-end selected by
 (defun pel-set-user-option (prompt user-option selection &optional locally nil-value)
   "PROMPT to set the value of USER-OPTION to one of the SELECTION.
 
-- USER-OPTION is a user-option symbol
+- USER-OPTION is a user-option symbol.  It must be bound.
 - SELECTION argument is a list of choices.
 Each choice is a list of 3 elements:
   - A character, presented to the user to select the corresponding choice.

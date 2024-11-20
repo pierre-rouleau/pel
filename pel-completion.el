@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-11-20 08:59:28 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-11-20 10:48:58 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -418,7 +418,11 @@ Argument:
  - > 0             : activate IDO Ubiquitous mode.
  - < 0             : deactivate IDO Ubiquitous mode.
 
-Display new state unless SILENT."
+Display new state unless SILENT.
+Note: If `pel-use-ido-ubiquitous' is nil and ido-ubiquitous
+      has not been installed explicitly, this will error
+      on trying to load ido-completing-read+.
+      In that case activate `pel-use-ido-ubiquitous'."
   (interactive "P")
   (let* ((current-state (and (boundp 'ido-ubiquitous-mode)
                              ido-ubiquitous-mode))

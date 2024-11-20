@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, February  9 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-11-20 08:55:08 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-11-20 10:51:37 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,7 +64,7 @@
   (interactive "P")
   (pel-set-user-option "Find file at point"
                        'ido-use-url-at-point
-                       '((?g "Enable"        t)
+                       '((?e "Enable"        t)
                          (?d "Disabled"      nil))
                        (not globally)))
 
