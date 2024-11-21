@@ -3,7 +3,7 @@
 # Purpose   : Reformat rpmlint output to allow use in emacs compile-mode buffers.
 # Created   : Wednesday, November 20 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-20 21:01:05 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-11-21 16:52:53 rouleaup>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -85,9 +85,12 @@ $2 ~ / E/ {
     $3=" Error"
 }
 
-$2 ~ " W" {
-    $2="1"
-    $3=" Warning"
+$2 ~ / W/ {
+    replacement= $1 ":1"
+    restofline=gensub($1, replacement, 1, $0);
+    sub(" W:", " Warning:",restofline);
+    print restofline
+    line_printed=1
 }
 
 $3 ~ " E" {
