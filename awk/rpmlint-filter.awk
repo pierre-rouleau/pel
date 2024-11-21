@@ -3,7 +3,7 @@
 # Purpose   : Reformat rpmlint output to allow use in emacs compile-mode buffers.
 # Created   : Wednesday, November 20 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-21 16:52:53 rouleaup>
+# Time-stamp: <2024-11-21 17:10:58 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -14,17 +14,17 @@
 #
 # First convert the rpmlint error/warning lines from:
 #
-# mitel-msl-selinux-policy.spec: E: specfile-error error: line 4: Unknown tag: %de fine version 0.0.2
-# mitel-msl-selinux-policy.spec: E: specfile-error error: query of specfile mitel-msl-selinux-policy.spec failed, can't parse
-# mitel-msl-selinux-policy.spec:8: W: hardcoded-packager-tag Mitel Corporation
-# mitel-msl-selinux-policy.spec: W: invalid-url Source0: mitel-msl-selinux-policy-0.0.2.tar.gz
+# msl-selinux-policy.spec: E: specfile-error error: line 4: Unknown tag: %de fine version 0.0.2
+# msl-selinux-policy.spec: E: specfile-error error: query of specfile msl-selinux-policy.spec failed, can't parse
+# msl-selinux-policy.spec:8: W: hardcoded-packager-tag MajorSystemLtd Corp.
+# msl-selinux-policy.spec: W: invalid-url Source0: msl-selinux-policy-0.0.2.tar.gz
 #
 # To:
 #
-# mitel-msl-selinux-policy.spec:4: Error: Unknown tag: %de fine version 0.0.2
-# mitel-msl-selinux-policy.spec:1: Error: query of specfile mitel-msl-selinux-policy.spec failed, can't parse
-# mitel-msl-selinux-policy.spec:8: Warning: hardcoded-packager-tag Mitel Corporation
-# mitel-msl-selinux-policy.spec:1: Warning: invalid-url Source0: mitel-msl-selinux-policy-0.0.2.tar.gz
+# msl-selinux-policy.spec:4: Error: Unknown tag: %de fine version 0.0.2
+# msl-selinux-policy.spec:1: Error: query of specfile msl-selinux-policy.spec failed, can't parse
+# msl-selinux-policy.spec:8: Warning: hardcoded-packager-tag MajorSystemLtd Corp.
+# msl-selinux-policy.spec:1: Warning: invalid-url Source0: msl-selinux-policy-0.0.2.tar.gz
 
 # Required translations:
 #
