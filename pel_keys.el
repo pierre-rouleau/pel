@@ -2204,6 +2204,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-M     - MscGen
 ;; M-P     - Prolog
 ;; M-R     - RPM
+;; M-S     - RPM Specfile
 ;; M-Y     - YANG            - Specification definition language
 ;;
 ;; SPC C-l - inferior-lfe-mode
@@ -6892,7 +6893,19 @@ the ones defined from the buffer now."
   (pel-install-github-file "pierre-rouleau/rpm-spec-mode/master"
                            "rpm-spec-mode.el")
   (pel-autoload "rpm-spec-mode" for: rpm-spec-mode)
-  (add-to-list 'auto-mode-alist '("\\.spec\\'" . rpm-spec-mode)))
+  (add-to-list 'auto-mode-alist '("\\.spec\\'" . rpm-spec-mode))
+
+  ;; TODO: Future: if we want to support all PEL features for rpm-spec mode
+  ;;       including the ability to configure automatic minor mode activations
+  ;;       then add the necessary user-options and un-comment the following
+  ;;       and comment what follows it.
+  ;; (define-pel-global-prefix pel:for-rpm-spec  (kbd "<f11> SPC M-S"))
+  ;; (pel-config-major-mode rpm-spec pel:for-rpm-spec
+  ;;   (define-key pel:for-rpm-spec "l" 'pel-rpm-spec-lint))
+
+  (pel-eval-after-load rpm-spec-mode
+    (when (boundp 'rpm-spec-mode-map)
+      (define-key rpm-spec-mode-map (kbd "<f12> l") 'pel-rpm-spec-lint))))
 
 ;; X.509 support: Major mode for viewing  certificates, CRLs, keys,
 ;; DH-parameters and ASN.1 using OpenSSL

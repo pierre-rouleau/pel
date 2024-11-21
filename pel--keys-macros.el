@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-11-06 08:40:44 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-11-20 20:56:49 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -598,6 +598,9 @@
     (,(kbd "<f11> SPC M-R") "rpm"       pel-pkg-for-rpm    rpm-spec)
     ([f11 32 27 ?R]         "rpm"       pel-pkg-for-rpm    rpm-spec)
 
+    ;; (,(kbd "<f11> SPC M-S") "rpm"       pel-pkg-for-rpm    rpm-spec)
+    ;; ([f11 32 27 ?S]         "rpm"       pel-pkg-for-rpm    rpm-spec)
+
     (,(kbd "<f11> SPC M-c") "cwl"              pel-pkg-for-cwl     ,pel--yaml-groups)
     ([f11 32 27 ?c]         "cwl"              pel-pkg-for-cwl     ,pel--yaml-groups)
     (,(kbd "<f11> SPC M-y") "yaml"             pel-pkg-for-yaml    ,pel--yaml-groups)
@@ -677,6 +680,7 @@ stored inside the doc/pdf directory.")
     ("cperl"           [f11 32 ?P])
     ("rexx"            [f11 32 ?R])
     ("rpm"             [f11 32 27 ?R])
+    ;; ("rpmspec"         [f11 32 27 ?S])
     ("ruby"            [f11 32 ?U])
     ("rust"            [f11 32 ?r])
     ;;

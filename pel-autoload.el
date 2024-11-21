@@ -673,6 +673,9 @@ Argument FOR: just a required separator keyword to make code look better."
       pel-rst-literal
       pel-rst-interpreted))
 
+  (pel-autoload "pel-rpm-spec" for:
+    pel-rpm-spec-lint)
+
   (pel-autoload "pel-scheme" for:
     pel-clear-scheme-repl-buffer
     pel-chez-repl

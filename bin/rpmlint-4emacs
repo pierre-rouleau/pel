@@ -1,0 +1,36 @@
+#!/bin/sh
+# SH FILE: rpmlin-4emacs
+#
+# Purpose   : Run rpmlint on specified file, format output.
+# Created   : Wednesday, November 20 2024.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2024-11-20 21:01:29 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Run rpmlint and adjust output to comply with Emacs error line format.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - GNU awk
+# - rpmlint
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+
+script_dirname="$(dirname "$0")"
+
+printf -- "Executing with %s\n"  "${script_dirname}/rpmlint-filter.awk"
+rpmlint "$@" | awk -f "${script_dirname}/../awk/rpmlint-filter.awk"
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: /bin/sh
+# End:
