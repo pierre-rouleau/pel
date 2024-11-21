@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2024-11-20 19:27:54 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2024-11-21 10:21:58 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -617,14 +617,14 @@ pel-iedit.elc:          pel--options.elc pel--syntax-macros.elc
 pel-imenu-dbg.elc:      pel--base.elc
 pel-imenu-ido.elc:      pel--base.elc pel--options.elc pel-prompt.elc pel-completion.elc
 pel-imenu.elc:          pel--base.elc pel--options.elc
-pel-ini.elc:		pel--base.elc
+pel-ini.elc:			pel--base.elc
 pel-indent.elc:         pel--base.elc pel-ccp.elc pel-mark.elc
 pel-kbmacros.elc:       pel--options.elc pel-list.elc
 pel-key-chord.elc:      pel--base.elc pel--options.elc
 pel-lisp.elc:           pel--base.elc
 pel-lispy.elc:          pel--base.elc pel--options.elc
 pel-list.elc:           pel--base.elc
-pel-lsp.elc:		pel--base.elc
+pel-lsp.elc:			pel--base.elc
 pel-make.elc:           pel--base.elc pel-syntax.elc
 pel-man.elc:            pel--base.elc
 pel-mark.elc:           pel--base.elc
@@ -668,7 +668,7 @@ pel-text-transform.elc: pel--base.elc pel--options.elc
 pel-time.elc:           pel--base.elc
 pel-undo.elc:           pel--options.elc
 pel-vc.elc:             pel--options.elc
-pel-vcs.elc:		pel--base.elc pel-filedir.elc pel-prompt.elc
+pel-vcs.elc:			pel--base.elc pel-filedir.elc pel-prompt.elc
 pel-whitespace.elc:     pel--base.elc pel--options.elc
 pel-window.elc:         pel--base.elc pel--options.elc  pel-prompt.elc
 pel-xr.elc:             pel--base.elc pel-read.elc
