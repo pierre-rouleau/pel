@@ -2,8 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
-- Add *pel-rpm-spec-lint*, bound to ~<f12> l~ in rpm-spec-mode buffers.  It executes the rpmlint shell command and filter
+- In rpm-spec-mode buffers: add *pel-rpm-build* bound to ~<f12> b~ and *pel-rpm-spec-lint* bound to ~<f12> l~ .
+  The first one executes the rpmbuild command with arguments provided at prompt (with -ba as defaults)
+  and executes the RPM build.  Then second executes the rpmlint shell command and filter
   the output with an awk script to allow the compilation-mode to parse error/warning lines properly.
+  The output of both commands are show inside a compilation-mode buffer.
 - Add *pel-set-ido-use-url-at-point*, bound to ~<f11> f M-,~ .  It's value is shown by *pel-show-filemng-status* and  *pel-ido-completion-settings-string*.
 - Modified key bindings for the buffer text accumulation commands. They are now all under the ~<f11> b t~ prefix
   and use an extra single letter: ~a~ for *append-to-buffer*, ~p~ for *prepend-to-buffer*, ~c~ for *copy-to-buffer*,

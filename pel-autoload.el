@@ -674,6 +674,7 @@ Argument FOR: just a required separator keyword to make code look better."
       pel-rst-interpreted))
 
   (pel-autoload "pel-rpm-spec" for:
+    pel-rpm-build
     pel-rpm-spec-lint)
 
   (pel-autoload "pel-scheme" for:

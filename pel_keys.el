@@ -6905,6 +6905,7 @@ the ones defined from the buffer now."
 
   (pel-eval-after-load rpm-spec-mode
     (when (boundp 'rpm-spec-mode-map)
+      (define-key rpm-spec-mode-map (kbd "<f12> b") 'pel-rpm-build)
       (define-key rpm-spec-mode-map (kbd "<f12> l") 'pel-rpm-spec-lint))))
 
 ;; X.509 support: Major mode for viewing  certificates, CRLs, keys,
