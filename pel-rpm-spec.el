@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, November 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-11-23 10:26:31 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-11-23 10:36:04 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -41,7 +41,7 @@
 
 (defun pel-rpm-spec-lint ()
   "Lint the current RPM spec file, show errors in compilation-mode buffer."
-  (interactive "P")
+  (interactive)
   (compile
    ;; use the shell script that executes rpmlint and transforms its output
    ;; to comply with compile-mode supported error/warning lines.
