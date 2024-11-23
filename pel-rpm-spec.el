@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, November 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-11-23 10:36:04 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-11-23 13:45:54 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -50,11 +50,28 @@
            (shell-quote-argument (buffer-file-name)))
    nil))
 
+(defconst pel--rpmbuild-subdirs '(""
+                                  "BUILD"
+                                  "BUILDROOT"
+                                  "RPMS"
+                                  "SOURCES"
+                                  "SPECS"
+                                  "SRPMS"))
+
+(defun pel-rpm-setuptree ()
+  "Check for presence of the ~/rpmbuild tree and create it if needed."
+  (dolist (subdir pel--rpmbuild-subdirs)
+    (let ((dir-path (expand-file-name (concat "~/rpmbuild/" subdir "/"))))
+      (unless (file-directory-p dir-path)
+        (make-directory dir-path)))))
+
+
 (defun pel-rpm-build ()
   "Build the RPM corresponding to current RPM spec file.
 
 Prompt for the command line with rpmbuild -ba as default,
-supporting history.
+supporting history.  Create the ~/rpmbuild directory tree
+if it does not exist and then perform the rpmbuild command.
 Write report in a compile-mode buffer.
 "
   (interactive)
@@ -62,6 +79,9 @@ Write report in a compile-mode buffer.
               "Build RPM with: "
               "rpmbuild -ba "
               'pel-rpm-build-hist)))
+    ;; Create the rpmbuild directory tree if it does not exist
+    (pel-rpm-setuptree)
+    ;; then perform the rpmbuild
     (compile
      (format "%s %s"
              cmd
