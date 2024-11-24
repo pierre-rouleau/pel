@@ -6872,6 +6872,16 @@ the ones defined from the buffer now."
                             'goto-address-mode 'goto-address-mode-hook)
 
 ;; RPM and CPIO archive file support
+
+(when (or pel-use-archive-rpm pel-use-rpm-spec-mode)
+  (defun pel-rpm-help (&optional open-github-page-p)
+    (interactive "P")
+    (pel-help-open-pdf "rpm" open-github-page-p))
+  (defun pel-rpm-customize-pel (&optional other-window)
+    "Open PEL customization for RPM"
+    (interactive "P")
+    (customize-group "pel-pkg-for-rpm" other-window)))
+
 (when pel-use-archive-rpm
   ;; As soon as the archive-rpm package is installed it becomes possible to open
   ;; RPM or CPIO archive files and see their content, just as tarball or zip
@@ -6880,6 +6890,10 @@ the ones defined from the buffer now."
 
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-R`` : RPM archive-mode commands
   (define-pel-global-prefix pel:for-rpm  (kbd "<f11> SPC M-R"))
+  (pel-eval-after-load archive-mode
+    (when (boundp 'archive-mode-map)
+      (define-key archive-mode-map (kbd "<f12> <f1>") 'pel-rpm-help)
+      (define-key archive-mode-map (kbd "<f12> <f2>") 'pel-rpm-customize-pel)))
 
   ;; [:todo 2024-10-24, by Pierre Rouleau: Implement support for its F12 key.
   ;;    Currently there is no  'archive-mode-hook' defined in the
@@ -6890,6 +6904,11 @@ the ones defined from the buffer now."
   )
 
 (when pel-use-rpm-spec-mode
+  (defun pel-rpm-spec-customize (&optional other-window)
+    "Open rpm customization group."
+    (interactive "P")
+    (pel--customize-group "rpm-spec" other-window))
+
   (pel-install-github-file "pierre-rouleau/rpm-spec-mode/master"
                            "rpm-spec-mode.el")
   (pel-autoload "rpm-spec-mode" for: rpm-spec-mode)
@@ -6905,11 +6924,9 @@ the ones defined from the buffer now."
 
   (pel-eval-after-load rpm-spec-mode
     (when (boundp 'rpm-spec-mode-map)
-      (defun pel-rpm-help (&optional open-github-page-p)
-        (interactive "P")
-        (pel-help-open-pdf "rpm" open-github-page-p))
-
       (define-key rpm-spec-mode-map (kbd "<f12> <f1>") 'pel-rpm-help)
+      (define-key rpm-spec-mode-map (kbd "<f12> <f2>") 'pel-rpm-customize-pel)
+      (define-key rpm-spec-mode-map (kbd "<f12> <f3>") 'pel-rpm-spec-customize)
       (define-key rpm-spec-mode-map (kbd "<f12> b") 'pel-rpm-build)
       (define-key rpm-spec-mode-map (kbd "<f12> l") 'pel-rpm-spec-lint))))
 
