@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add Emacs-style command line key bindings description in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/bash.pdf][𝕻𝔩 - Bash]] PDF.
 - In rpm-spec-mode buffers: add *pel-rpm-build* bound to ~<f12> b~ and *pel-rpm-spec-lint* bound to ~<f12> l~ .
   The first one executes the rpmbuild command with arguments provided at prompt (with -ba as defaults)
   and executes the RPM build.  Then second executes the rpmlint shell command and filter
