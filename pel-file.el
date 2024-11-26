@@ -563,9 +563,15 @@ probably have to be modified to be a user option in a future version. "
         (when (eq major-mode 'sh-mode)
           (setq delimiters (concat "=:" delimiters)))
         (unless (memq major-mode '(rst-mode markdown-mode))
-          (setq delimiters (concat "()[]{}" delimiters)))
+          (setq delimiters (concat "()[]" delimiters)))
+        (unless (memq major-mode '(sh-mode tcl-mode rst-mode markdown-mode))
+          (setq delimiters (concat "{}" delimiters)))
         (let ((fname (string-trim (pel-string-at-point delimiters))))
-          (when (memq major-mode '(sh-mode tcl-mode))
+          (when (string-match "\\(\\${\\([A-Z_]+\\)}\\)" fname)
+            ;; replace "${VARNAME}" by "$VARNAME"
+            (replace-match (concat "$" (match-string 2 fname)) :fixedcase :literal fname))
+          (when (memq major-mode '(rst-mode sh-mode tcl-mode))
+            ;; perform $VARNAME environment variable name expansion
             (require 'env nil :noerror)
             (setq fname (substitute-env-vars fname)))
           (if (string= (substring fname -1) ":")
