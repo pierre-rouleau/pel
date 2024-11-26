@@ -567,11 +567,8 @@ probably have to be modified to be a user option in a future version. "
         (unless (memq major-mode '(sh-mode tcl-mode rst-mode markdown-mode))
           (setq delimiters (concat "{}" delimiters)))
         (let ((fname (string-trim (pel-string-at-point delimiters))))
-          (while (string-match "\\(\\${\\([A-Z_]+\\)}\\)" fname)
-            ;; replace "${VARNAME}" by "$VARNAME"
-            (setq fname (replace-match (concat "$" (match-string 2 fname)) :fixedcase :literal fname)))
           (when (memq major-mode '(rst-mode sh-mode tcl-mode))
-            ;; perform $VARNAME environment variable name expansion
+            ;; perform $VARNAME and ${VARNAME} environment variable name expansion
             (require 'env nil :noerror)
             (setq fname (substitute-env-vars fname)))
           (if (string= (substring fname -1) ":")
