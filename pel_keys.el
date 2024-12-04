@@ -6934,7 +6934,20 @@ the ones defined from the buffer now."
 ;; DH-parameters and ASN.1 using OpenSSL
 (when pel-use-x509-mode
   (pel-ensure-package x509-mode from: melpa)
-  (pel-autoload "x509-mode" for: x509-dwim))
+  (pel-autoload "x509-mode" for: x509-dwim x509-mode)
+  ;; The following works only for direct files, not files inside a archive
+  ;; container.  That's a limitation of the x509 mode code that should be
+  ;; looked into. (TODO).
+  (add-to-list 'auto-mode-alist '("\\.crt\\'" . x509-dwim)))
+
+(when pel-use-emacs-ssh-file-modes
+  (pel-install-github-file "petere/emacs-ssh-file-modes/master" "ssh-file-modes.el")
+  (pel-autoload "ssh-file-modes" for:
+    ssh-authorized-keys-mode
+    ssh-known-hosts-mode)
+  (add-to-list 'auto-mode-alist '(".ssh/authorized_keys2?\\'" . ssh-authorized-keys-mode))
+  (add-to-list 'auto-mode-alist '(".ssh/known_hosts\\'"       . ssh-known-hosts-mode))
+  (add-to-list 'auto-mode-alist '("ssh_known_hosts\\'"        . ssh-known-hosts-mode)))
 
 (when pel-use-selinux-policy
   (pel-install-github-file   "pierre-rouleau/selinux-policy/master"
