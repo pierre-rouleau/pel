@@ -4674,7 +4674,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-config-major-mode cperl pel:for-perl
     (when (boundp 'perl-indent-level)
       (setq-local tab-width perl-indent-level))
-    (setq-local indent-tabs-mode pel-perl-use-tabs))
+    (setq-local indent-tabs-mode pel-perl-use-tabs)
+    (when pel-cperl-show-trailing-whitespace-normally
+      (setq-local show-trailing-whitespace t)))
+;; ---------------------------------------------------------------------------
 
   (when pel-use-perl-repl
     (pel-install-github-file "pierre-rouleau/perl-repl-el/master"

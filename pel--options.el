@@ -9465,6 +9465,21 @@ Do not enter lambda expressions."
   :type 'integer
   :safe 'pel-indent-valid-p)
 
+(defcustom pel-cperl-show-trailing-whitespace-normally nil
+  "If set, shows trailing space using standard face instead of underscore.
+
+By default `cperl-mode' shows trailing spaces with underscore face,
+but the character is still a space.  This is surprising, since it
+differs from the standard way of representing it with the
+`trailing-whitespace' face.
+
+By setting this user-option to t, PEL activates the `show-trailing-whitespace'
+minor mode to show the trailing spaces as usual."
+  :group 'pel-pkg-for-perl
+  :type 'boolean
+  :safe #'booleanp)
+
+
 (defcustom pel-use-perl-repl nil
   "Control whether PEL supports the perl-repl package"
   :link '(url-link :tag "perl-repl @Github"

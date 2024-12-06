@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-cperl-show-trailing-whitespace-normally* user-option to control the way trailing whitespace characters are shown in *cpel-mode* buffers.
+  By default they are shown as underscores, by setting pel-cperl-show-trailing-whitespace-normally to t they
+  are shown, like other modes, with the trailing-whitespace face (which is red by default).
 - Add support for the emacs-ssh-file-modes making Emacs aware of the format of the SSH /known_hosts/ and /authorized_keys/ files.
   This is activated by the *pel-use-emacs-ssh-file-modes* user-option.
 - Add Emacs-style command line key bindings description in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/bash.pdf][𝕻𝔩 - Bash]] PDF.
