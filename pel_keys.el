@@ -7666,11 +7666,13 @@ the ones defined from the buffer now."
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> s`` : Search/Replace  commands
+;; "S" reserved
 
 (global-set-key (kbd "M-<f5>") 'pel-search-word-from-top)
 
 (define-pel-global-prefix pel:search-replace (kbd "<f11> s"))
-(define-key pel:search-replace "."  'pel-search-word-from-top)
+(define-key pel:search-replace "."  'isearch-forward-symbol-at-point)
+(define-key pel:search-replace "_"  'isearch-forward-symbol)
 (define-key pel:search-replace "b" #'search-backward)
 (define-key pel:search-replace "f" #'search-forward)
 (define-key pel:search-replace "o" #'multi-occur)
@@ -7680,13 +7682,15 @@ the ones defined from the buffer now."
 (define-key pel:search-replace "?"  'pel-show-search-status)
 (define-key pel:search-replace " "  'pel-search-two-spaces)
 (define-key pel:search-replace (kbd "RET") 'pel-search-empty-line)
-(global-set-key (kbd "M-s m") 'pel-multi-occur-in-this-mode)
-(global-set-key (kbd "M-s /") 'pel-multi-occur-in-all)
 (when pel-use-fzf
   (define-key pel:search-replace "z" 'fzf-find-in-buffer))
-;; "S" reserved
+
+(global-set-key (kbd "M-s m") 'pel-multi-occur-in-this-mode)
+(global-set-key (kbd "M-s /") 'pel-multi-occur-in-all)
+
 
 (define-pel-global-prefix pel:search-word (kbd "<f11> s w"))
+(define-key pel:search-word "."   'pel-search-word-from-top)
 (define-key pel:search-word "f"  #'word-search-forward)
 (define-key pel:search-word "F"  #'word-search-forward-lax)
 (define-key pel:search-word "b"  #'word-search-backward)

@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Modified some key bindings for search:
+  - changed *pel-search-word-from-top* from ~<f11> s .~ to ~<f11> s w .~
+  - bound *isearch-forward-symbol-at-point* to ~<f11> s .~
+  - bound *isearch-forward-symbol* to ~<f11> s __~
 - Add *pel-multi-occur-in-all*, bound to ~M-s //~ which searches all buffers visiting file or all buffers.
   Also added ~M-s m~ binding to *pel-multi-occur-in-this-mode*.
 - Add support for the *crontab-mode* a major mode for editing crontab files.  Activated by *pel-use-crontab-mode* user-option.
