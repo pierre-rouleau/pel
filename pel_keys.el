@@ -6961,6 +6961,13 @@ the ones defined from the buffer now."
   (add-to-list 'auto-mode-alist '("\\.\\(if\\|te\\|spt\\)" . selinuxpolicy-mode))
   (pel-autoload-file selinux-policy for: selinuxpolicy-mode))
 
+(when pel-use-crontab-mode
+  (pel-install-github-file "emacs-pe/crontab-mode/master"
+                           "crontab-mode.el")
+  (add-to-list 'auto-mode-alist '("/crontab\\(\\.X*[[:alnum:]]+\\)?\\'"
+                                  . crontab-mode))
+  (pel-autoload-file crontab-mode for: crontab-mode))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Find File At Point (ffap)
 

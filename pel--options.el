@@ -3469,6 +3469,20 @@ terminal mode for your environment, change the value."
           (string :tag "Special key sequence string to use in TTY mode.")))
 
 ;; ---------------------------------------------------------------------------
+(defgroup pel-pkg-for-unix-cfg-files nil
+  "Unix/Linux configuration file supporting modes."
+  :group 'pel-package-use)
+
+(defcustom pel-use-crontab-mode nil
+  "Whether PEL activates the crontab-mode to edit crontab files."
+  :group 'pel-pkg-for-unix-cfg-files
+  :link '(url-link :tag "crontab-mode @ GitHub"
+                   "https://github.com/emacs-pe/crontab-mode")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-crontab-mode :package-is :in-utils)
+
+;; ---------------------------------------------------------------------------
 (defgroup pel-pkg-for-log-file nil
   "Log File control options."
   :group 'pel-package-use)
@@ -3587,6 +3601,7 @@ It provides support for the authorized_keys and know_hosts files."
                    "https://github.com/pierre-rouleau/selinux-policy")
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-selinux-policy :package-is :in-utils)
 
 
 (defcustom pel-selinuxpolicy-activates-minor-modes nil
