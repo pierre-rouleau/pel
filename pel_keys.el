@@ -4666,6 +4666,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-add-speedbar-extension pel-perl-fext-regex))
 
   (define-pel-global-prefix pel:for-perl (kbd "<f11> SPC P"))
+  (define-key pel:for-perl (kbd "<up>")     'beginning-of-defun)
+  (define-key pel:for-perl (kbd "<down>")   'end-of-defun)
+
   ;; the perl-mode is part of Emacs
   (pel-config-major-mode perl pel:for-perl
     (when (boundp 'perl-indent-level)
@@ -4677,7 +4680,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (setq-local indent-tabs-mode pel-perl-use-tabs)
     (when pel-cperl-show-trailing-whitespace-normally
       (setq-local show-trailing-whitespace t)))
-;; ---------------------------------------------------------------------------
+  ;; ---------------------------------------------------------------------------
 
   (when pel-use-perl-repl
     (pel-install-github-file "pierre-rouleau/perl-repl-el/master"
