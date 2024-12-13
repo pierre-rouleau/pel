@@ -7680,6 +7680,8 @@ the ones defined from the buffer now."
 (define-key pel:search-replace "?"  'pel-show-search-status)
 (define-key pel:search-replace " "  'pel-search-two-spaces)
 (define-key pel:search-replace (kbd "RET") 'pel-search-empty-line)
+(global-set-key (kbd "M-s m") 'pel-multi-occur-in-this-mode)
+(global-set-key (kbd "M-s /") 'pel-multi-occur-in-all)
 (when pel-use-fzf
   (define-key pel:search-replace "z" 'fzf-find-in-buffer))
 ;; "S" reserved

@@ -2,7 +2,7 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 18:14:48 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-12-12 23:34:45 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -45,6 +45,8 @@
 ;;
 ;; - `pel-search-word-from-top-noerr'
 ;;   * `pel-search-word-from-top'
+;; * `pel-search-two-spaces'
+;; * `pel-search-empty-line'
 ;;
 ;; Search Tool Management:
 ;;
@@ -57,6 +59,9 @@
 ;;     - `pel--disable-search-tool'
 ;;     - `pel--activate-search-tool'
 ;;
+;; Search in buffers:
+;; * `pel-multi-occur-in-this-mode'
+;; * `pel-multi-occur-in-all'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -496,6 +501,14 @@ more information about available choices."
   (multi-occur
    (pel-buffers-matching-mode major-mode)
    (car (occur-read-primary-args))))
+
+;;-pel-autoload
+(defun pel-multi-occur-in-all (regexp &optional all)
+  "Show all lines matching REGEXP in all buffers visiting files.
+
+With prefix argument, search in *all* buffers."
+  (interactive (occur-read-primary-args))
+  (multi-occur-in-matching-buffers "." regexp all))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-search)

@@ -710,6 +710,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-select-search-tool
     pel-show-search-status
     pel-multi-occur-in-this-mode
+    pel-multi-occur-in-all
     pel-search-two-spaces
     pel-search-empty-line)
   (pel-autoload-function "pel-search" for:

@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-multi-occur-in-all*, bound to ~M-s //~ which searches all buffers visiting file or all buffers.
+  Also added ~M-s m~ binding to *pel-multi-occur-in-this-mode*.
 - Add support for the *crontab-mode* a major mode for editing crontab files.  Activated by *pel-use-crontab-mode* user-option.
 - Add *pel-cperl-show-trailing-whitespace-normally* user-option to control the way trailing whitespace characters are shown in *cpel-mode* buffers.
   By default they are shown as underscores, by setting pel-cperl-show-trailing-whitespace-normally to t they
