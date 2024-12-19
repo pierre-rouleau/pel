@@ -4,23 +4,27 @@
 # Purpose   : Start Emacs in terminal mode.  Support multiple environments
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-07-20 07:31:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2024-12-18 22:57:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Launch emacs inside the current terminal shell in terminal mode.
+# Prompt if being launched from inside an Emacs shell/terminal buffer.
 #
+# Note: if you want to execute the script under sudo, you will most likely
+# need to provide the exact path to the script.
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-# emacs must be installed.  That version of Emacs must support the terminal
-# mode with the `-nw` command line option. Additionally, under macOS, no NOT
-# use the cocoa/GUI built version of Emacs; it will work but it takes much
-# more time to start, probably loading GUI library files not needed by the
-# terminal mode version of Emacs.
+# - Emacs must be installed, accessible as 'emacs'.
+# - That version of Emacs must support the terminal mode with the `-nw`
+#   command line option.
+# - Additionally, under macOS, no NOT use the cocoa/GUI built version of Emacs;
+#   it will work but it takes much more time to start, probably loading GUI library
+#   files not needed by the terminal mode version of Emacs.
 #
 
 # ----------------------------------------------------------------------------
