@@ -1,9 +1,9 @@
-# AWK FILE: rpmlint-fileter.awk
+# AWK FILE: rpmlint-filter.awk
 #
 # Purpose   : Reformat rpmlint output to allow use in emacs compile-mode buffers.
 # Created   : Wednesday, November 20 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-21 17:10:58 EST, updated by Pierre Rouleau>
+# Time-stamp: <2024-12-20 16:09:27 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
