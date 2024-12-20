@@ -4668,6 +4668,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-pel-global-prefix pel:for-perl (kbd "<f11> SPC P"))
   (define-key pel:for-perl (kbd "<up>")     'beginning-of-defun)
   (define-key pel:for-perl (kbd "<down>")   'end-of-defun)
+  (define-key pel:for-perl "c"              'pel-perl-critic)
 
   ;; the perl-mode is part of Emacs
   (pel-config-major-mode perl pel:for-perl

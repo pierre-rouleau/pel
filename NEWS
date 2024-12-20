@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-perl-critic*, bound to ~<f12> c~, which analyzes the Perl file visited in the current buffer
+  with the perlcritic application.
 - Modified some key bindings for search:
   - changed *pel-search-word-from-top* from ~<f11> s .~ to ~<f11> s w .~
   - bound *isearch-forward-symbol-at-point* to ~<f11> s .~
