@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-12-23 19:40:24 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2024-12-23 19:45:23 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -192,7 +192,6 @@ text."
                                 0)
                                column-widths))))))
       (setq column-widths (reverse column-widths))
-      (message "column-widths: %S" column-widths)
       ;; delete current text (it's in the words-per-line) from buffer
       (delete-region (point-min) (point-max))
       ;; Insert back words in aligned columns
