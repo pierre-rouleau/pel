@@ -86,7 +86,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-newline-and-indent-below
     pel-align-info
     pel-toggle-newline-indent-align
-    pel-multi-align-regexp)
+    pel-multi-align-regexp
+    pel-align-words-vertically)
 
   (when (eq system-type 'darwin)
     (pel-autoload "pel-applescript" for:

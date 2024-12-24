@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-21 12:39:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2024-12-23 19:40:24 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,13 +34,22 @@
 ;;    and indent. Use the function `pel-toggle-newline-indent-align' to toggle
 ;;    the value of the variable and `pel-align-info' to show its
 ;;    current state.
+;;
+;;  The `pel-align-words-vertically' aligns words in columns.  It can be used
+;;  to align code in table format, a useful code formatting technique that
+;;  helps in creating easy-to-read and understand code.  This technique is
+;;  very unfortunately badly regarded by various development groups even if
+;;  it helps reduce the mental effort to understand code and reduce bugs. The
+;;  main reason for the reluctance of using this technique is the lack of
+;;  editing support.  So here it is.  Code is meant to be easy to *read*,
+;;  use good editors to help create it.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)
-
+(require 'pel-hash)
+(require 'pel--base)                     ; used in pel-align-words-vertically
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -130,6 +139,85 @@ text."
                       (point-max)
                       (concat "\\(\\s-*\\)" regexp)
                       1 1 nil)))))
+
+;; ---------------------------------------------------------------------------
+;; pel-autoload
+(defun pel-align-words-vertically ()
+  "Align the words of multiple lines in area in vertically aligned columns."
+  (interactive "*")
+  (unless (use-region-p)
+    (user-error "No marked area"))
+  (let ((pos-beg (region-beginning))
+        (pos-end (region-end))
+        (words-per-line   (pel-make-hash-of-lists))
+        (words-per-column (pel-make-hash-of-lists))
+        (column-widths nil)
+        (original-indentation 0))
+    (save-restriction
+      ;; Build a list of words per columns for all region lines
+      (narrow-to-region pos-beg pos-end)
+      (untabify (point-min) (point-max))
+      (goto-char (point-min))
+      (back-to-indentation)
+      (setq original-indentation (current-column))
+      (let ((line 0))
+        (while (progn
+                 (let ((words
+                        (split-string (buffer-substring-no-properties
+                                       (line-beginning-position)
+                                       (line-end-position))))
+                       (column 0))
+                   (dolist (word words)
+                     (pel-addto-hash-of-lists words-per-line line word))
+                   (dolist (word words)
+                     (pel-addto-hash-of-lists words-per-column column word)
+                     (setq column (1+ column)))
+                   (forward-line 1)
+                   (setq line (1+ line)))
+                 (not (eobp)))))
+      ;; Compute the maximum word length for each column
+      (let ((column -1)
+            (words-in-column nil))
+        (while (progn
+                 (setq column (1+ column))
+                 (setq words-in-column
+                       (pel-get-list-from-hash-of-lists-for
+                        words-per-column
+                        column))
+                 (when words-in-column
+                   (setq column-widths
+                         (cons (seq-reduce
+                                (function max)
+                                (mapcar (function length) words-in-column)
+                                0)
+                               column-widths))))))
+      (setq column-widths (reverse column-widths))
+      (message "column-widths: %S" column-widths)
+      ;; delete current text (it's in the words-per-line) from buffer
+      (delete-region (point-min) (point-max))
+      ;; Insert back words in aligned columns
+      (goto-char 0)
+      (let ((words nil)
+            (line -1)
+            (line-indentation (make-string original-indentation ?\s)))
+        (while (progn
+                 (setq line (1+ line))
+                 (setq words (pel-get-list-from-hash-of-lists-for
+                              words-per-line
+                              line))
+                 (when words
+                   (let ((column -1))
+                     (insert line-indentation)
+                     (dolist (word words)
+                       (setq column (1+ column))
+                       (insert (format
+                                (format "%%-%ds " (nth column column-widths))
+                                word)))
+                     ;; remove line trailing space just inserted
+                     (delete-char -1)
+                     (insert "\n")
+                     t))))))))
+
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-align)

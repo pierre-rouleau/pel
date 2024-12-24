@@ -8029,6 +8029,7 @@ the ones defined from the buffer now."
 (define-key pel:align "r" #'align-regexp)
 (define-key pel:align "h" #'align-highlight-rule)
 (define-key pel:align "H" #'align-unhighlight-rule)
+(define-key pel:align "w"  'pel-align-words-vertically)
 (define-key pel:align "?"  'pel-align-info)
 
 

@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2024-12-20 16:43:27 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2024-12-23 19:19:00 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -176,6 +176,7 @@ EL_FILES := pel--base.el \
 		pel-go.el \
 		pel-goto-addr.el \
 		pel-graphviz-dot.el \
+		pel-hash.el \
 		pel-help.el \
 		pel-hex.el \
 		pel-hideshow.el \
@@ -571,7 +572,7 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 pel--keys-macros.elc:   pel--base.elc pel--options.elc pel-browse.elc pel-prompt.elc
 pel--options.elc:       pel--base.elc
 pel-abbrev.elc:         pel--base.elc
-pel-align.elc:          pel--base.elc
+pel-align.elc:          pel--base.elc pel-hash.elc
 pel-applescript.elc:    pel--base.elc pel--options.elc pel-read.elc
 pel-autocomplete.elc:   pel--base.elc pel--options.elc pel--macros.elc
 pel-autoload.elc:       pel--options.elc
