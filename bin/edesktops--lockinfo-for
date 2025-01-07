@@ -1,0 +1,39 @@
+#!/bin/sh
+# SH FILE: edesktop--lockinfo-for
+#
+# Purpose   : Print process and process info for Emacs desktop lok file.
+# Created   : Tuesday, January  7 2025.
+# Author    : Pierre Rouleau <pierre.rouleau@mitel.com>
+# Time-stamp: <2025-01-07 16:59:10 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Print process information related to a locked Emacs desktop+.
+# This is a secondary utility, used by edesktopds-used.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - printf, ps, grep
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+if [ -z "$1" ]; then
+    echo "ERROR: edesktops--lockinfo-for: missing lock file name."
+    exit 1
+fi
+
+# Arg: file name
+fname="$1"
+pid="$(cat "$fname")"
+printf -- "%s
+ Process:  %s
+" "$fname" "$(ps aux | grep -v grep | grep "$pid")"
+
+# ----------------------------------------------------------------------------
+#!/bin/sh

@@ -4,7 +4,7 @@
 # Purpose   : List currently used Emacs Desktops.
 # Created   : Friday, November  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-01 10:26:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-07 17:05:54 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,7 +24,7 @@
 #
 
 if find ~/.emacs.d/desktops -name .emacs.desktop.lock -print | grep 'desktop.lock' > /dev/null ; then
-    find ~/.emacs.d/desktops -name .emacs.desktop.lock -print
+    find ~/.emacs.d/desktops -name .emacs.desktop.lock -print | xargs -I $ edesktops--lockinfo-for $
 else
     printf -- "Currently, no Emacs session use a desktop.\n"
     exit 1
