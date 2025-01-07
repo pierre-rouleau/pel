@@ -1,6 +1,6 @@
 ;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -8645,9 +8645,9 @@ the ones defined from the buffer now."
   (defun pel-desktop-show ()
     "Display name of currently used desktop if any."
     (interactive)
-    (if (boundp 'desktop-dirname)
+    (if (bound-and-true-p desktop-dirname)
         (message "Last loaded desktop: %s" desktop-dirname)
-      (user-error "No desktop is currently loaded!")))
+      (user-error "No desktop currently loaded!")))
 
   (pel-autoload-file desktop for:
                      desktop-save
