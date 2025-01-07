@@ -5716,7 +5716,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
 (when pel-use-hide-lines
   (pel-ensure-package hide-lines from: melpa)
-  (global-set-key (kbd "C-c /") 'hide-lines)
   (define-key pel:hide-show "0"         'pel-selective-display-unhide)
   (define-key pel:hide-show "1"         'pel-selective-display-at-1)
   (define-key pel:hide-show "h"         'hide-lines)

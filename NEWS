@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Remove the ~C-c /~ global binding to *hide-lines* because it conflicts with the pcre2el command prefix.
 - Add *pel-align-words-vertically*, bound to ~<f11> t a w~. It aligns all words of lines in the marked are
   in columns.  It uses the new pel-hash functions that provide hash of lists.
 - Add *pel-perl-critic*, bound to ~<f12> c~, which analyzes the Perl file visited in the current buffer
