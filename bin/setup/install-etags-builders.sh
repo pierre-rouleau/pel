@@ -4,7 +4,7 @@
 # Purpose   : Install PEL etags builder scripts.
 # Created   : Thursday, June  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-06-06 15:28:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-07 17:04:13 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -63,7 +63,7 @@ install_symlink_for etags-make
 install_symlink_for etags-py
 install_symlink_for etags-rs
 
-printf -- "SUCCESS!!\nInstallation of the script sompleted!\They are:\n\n"
+printf -- "SUCCESS!!\nInstallation of the script completed!\They are:\n\n"
 
 ls -l "$HOME/bin/etags-autotools"
 ls -l "$HOME/bin/etags-c"
