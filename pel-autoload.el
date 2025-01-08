@@ -1,6 +1,6 @@
 ;;; pel-autoload.el --- Autoloads PEL -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -320,6 +320,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-elisp-to-name-of-previous-form
     pel-elisp-to-name-of-next-defun
     pel-elisp-to-name-of-previous-defun)
+
+  (pel-autoload-function "pel-elisp" for: pel-elisp-find-file)
 
   (pel-autoload "pel-elisp-analyze" for:
     pel-run-ert)

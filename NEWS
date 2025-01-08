@@ -2,7 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
-- Refactored Perl customization group, splitting it in 34 parts; the
+- The *pel-open-at-point* command, bound to ~M-<f6>~ and ~<f11> f .~ can now be used inside emacs-lisp-mode buffers.
+  It uses the Emacs Lisp library searching mechanism as the search function: the
+  *pel-filename-at-point-finders* is set to the new function *pel-elisp-find-file*.
+- Refactored Perl customization group, splitting it in 3 parts; the
   activation, the general settings that applies to both perl-mode and
   cperl-mode and the perl-mode and cperl-mode specific. This helps clarify the
   control for indentation and other things. The indentation is now controlled

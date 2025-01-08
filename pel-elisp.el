@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, November 27 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 18:39:47 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-01-08 18:17:43 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -491,6 +491,27 @@ Skip over forms located inside docstrings."
   (move-beginning-of-line 1)
   (pel-elisp-beginning-of-previous-form n 'defun-forms nil :dont-push-mark)
   (pel-forward-token-start 2))
+
+;;-pel-autoload
+(defun pel-elisp-find-file (filename &optional _directories)
+  "Open a Emacs Lisp library file.
+
+Preliminary version.  Expects library name only, does not support directory.
+
+Return a list of found file names with complete absolute path.
+Return nil if nothing found.
+"
+  (let ((fname (locate-library filename)))
+    (when fname
+      (when (string-match "\\.elc" fname)
+        (setq fname (replace-match ".el" nil :lit fname)))
+      (if (file-exists-p fname)
+          (list fname)
+        ;; file does not exist but .elc was found.
+        ;; This is probably a library file whose source may be inside a
+        ;; compressed file.
+        (when (file-exists-p (concat fname ".gz"))
+          (list (concat fname ".gz")))))))
 
 ;;; --------------------------------------------------------------------------
 

@@ -3376,7 +3376,7 @@ d-mode not added to ac-modes!"
   (pel-autoload-file suggest for: suggest)
   (define-key pel:for-elisp "S" 'suggest))
 
-;; activate the <f12> key binding for elisp-mode
+;; activate the <f12> key binding for elisp-mode and other features.
 (pel-check-minor-modes-in pel-elisp-activates-minor-modes)
 (pel--mode-hook-maybe-call
  (lambda ()
@@ -3387,8 +3387,12 @@ d-mode not added to ac-modes!"
    (pel-local-set-f12-M-f12 'pel:elisp-eval     "e")
    (pel-local-set-f12-M-f12 'pel:elisp-function "f")
    (pel-local-set-f12-M-f12 'pel:elisp-lib      "l")
+   ;; activate skeletons
    (pel--install-elisp-skel pel:elisp-skel)
-   (pel-turn-on-local-minor-modes-in 'pel-elisp-activates-minor-modes))
+   ;; activate PEL customized minor modes
+   (pel-turn-on-local-minor-modes-in 'pel-elisp-activates-minor-modes)
+   ;; Activate open-at-point for elisp files
+   (setq-local pel-filename-at-point-finders '(pel-elisp-find-file)))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
 
 (when pel-use-helpful
@@ -4007,9 +4011,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (when pel-erlang-fill-column
         (setq-local fill-column pel-erlang-fill-column))
       ;;
-      (when (and (require 'pel-file nil :noerror)
-                 (boundp 'pel-filename-at-point-finders))
-        (setq pel-filename-at-point-finders '(pel-erlang-find-file)))
+      (when (require 'pel-file nil :noerror)
+        (setq-local pel-filename-at-point-finders '(pel-erlang-find-file)))
       ;;
       ;; setup the Erlang-specific key bindings
       (pel--install-erlang-skel pel:erlang-skel)
