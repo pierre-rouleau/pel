@@ -4650,7 +4650,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC P`` : Perl programming
 (when pel-use-perl
   ;; Perl file extension - associations for buffer and speedbar
-  (defconst pel-perl-fext-regex "\\.\\([pP]\\([Llm]\\|erl\\|od\\)\\|al\\)\\'")
+  (defconst pel-perl-fext-regex
+    "\\.\\([pP]\\([Llm]\\|erl\\|od\\)\\|al\\|ph\\)\\'")
+
   (when pel-perl-mode
     ;; pel-per-mode is nil when perl-mode is requested, non-nil for cperl-mode
     (setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
