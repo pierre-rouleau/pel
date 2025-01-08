@@ -1,6 +1,6 @@
 ;;; pel-open.el --- Open file dispatcher  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2022, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2022, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -140,7 +140,7 @@ See `pel-find-file-at-point-in-window' for more information."
               (unless noerror
                 (user-error "Cannot load pel-file!")))))
       (error
-       ;; On error  go back to original directory and inform the user.
+       ;; On error: go back to original directory and inform the user.
        (cd original-cwd)
        (user-error "ERROR: %s" (cadr the-error))))))
 
