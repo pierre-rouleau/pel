@@ -4670,6 +4670,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-key pel:for-perl (kbd "<down>")   'end-of-defun)
   (define-key pel:for-perl "c"              'pel-perl-critic)
   (when pel-perl-mode
+    (define-key pel:for-perl "?"            'cperl-perldoc-at-point)
     (define-key pel:for-perl "|"            'cperl-lineup))
 
   ;; the perl-mode is part of Emacs

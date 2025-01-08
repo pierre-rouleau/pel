@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add ~<f12> ?~ key binding to *cperl-perldoc-at-point*
 - Add utilities to list edesktops+ desktops currently available, used and by what process.
   These shell utilities are located in the PEL bin directory.
   The PEL setup/install-emacs-edesktops.sh script can be used to create symlinks into
