@@ -1,6 +1,6 @@
 ;;; pel-file.el --- File Management utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -47,20 +47,23 @@
 ;; Implementation call hierarchy
 ;; -----------------------------
 ;;
-;; * pel-show-filename-at-point  (A)
+;; * pel-show-filename-at-point
 ;;     - pel-filename-at-point
 ;;       - pel-string-at-point
 ;;
-;;
-;; * pel-show-filename-parts-at-point    (A)
-;; * pel-find-file-at-point-in-window    (A)
+;; * pel-find-file-at-point-in-window
 ;;   - pel-filename-parts-at-point
+;;   - pel--file-window-info-for
+;;   - pel--find-open-file-in-window
+;;     - pel--show-edit-action
 ;;   - pel--complete-filename-for
 ;;     - pel--lib-filename
 ;;       - pel-prompt-for-filename
-;;  - pel--show-edit-action
+;;   - pel--show-edit-action
 ;;
-
+;; * pel-show-filename-parts-at-point
+;;   - pel-filename-parts-at-point
+;;
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
 
@@ -337,6 +340,95 @@ TARGET   := string  | nil"
                      (format "line:%d" (or line 1))
                      (if column (format "col:%d" column) "")))))
 
+;; --
+
+(defun pel--file-window-info-for (raw-n)
+  "Return list of values extracted from the interactive \"P\" argument.
+
+- RAW-N   : original raw prefix argument: may be nil
+
+Return a list with the following elements, in order:
+- n             : raw window number; may be nil, negative, large.
+- n-value       : integer window number in the range [0..8]
+- directory-only: boolean: non-nil to open directory
+- use-browser   : boolean: non-nil to use OS browser.
+
+See `pel-find-file-at-point-in-window' for the interpretation of RAW-N,
+which encodes the window position and other booleans."
+  (let* ((n-value (prefix-numeric-value raw-n))
+         (directory-only (cond
+                          ((>= n-value 20)
+                           (setq n-value (- n-value 20))
+                           t)
+                          ((<= n-value -20)
+                           (setq n-value (+ n-value 20))
+                           t)
+                          (t nil)))
+         (use-browser (eq 9 n-value)))
+    (list raw-n n-value directory-only use-browser)))
+
+(defun pel--find-open-file-in-window  (fileparts action n
+                                                &optional target-regxp)
+  "Open a file specified by arguments into the specified window.
+- FILEPARTS := (filename line column)
+- ACTION    := \\='edit | \\='create | message-string
+         where the message string is returned with nil to describe why
+         we do not edit or create the file.
+- N       := identifies target window. See `pel-find-file-at-point-in-window'.
+- TARGET-REGEXP: optional search regexp to search location.
+"
+  (let* ((nspec (pel--file-window-info-for n))
+         (n-value  (nth 1 nspec))
+         (filename (nth 0 fileparts))
+         (line     (nth 1 fileparts))
+         (column   (nth 2 fileparts))
+         (buffer (or (find-buffer-visiting filename)
+                     (when (fboundp 'dired-buffers-for-dir)
+                       (car (dired-buffers-for-dir filename)))))
+         (window (when buffer (get-buffer-window buffer))))
+    (if (and window (null n))
+        ;; file is already in a buffer and window and position
+        ;; is not imposed by argument n: use that existing
+        ;; window and move point to where specified if any.
+        (progn
+          (select-window window)
+          (if target-regxp
+              (progn
+                (goto-char (point-min))
+                (re-search-forward target-regxp))
+            (pel-goto-position line column))
+          (pel--show-edit-action "show" filename
+                                 line column target-regxp))
+      ;; the file is not inside a existing window,
+      ;; but a buffer may hold the file.
+      ;; Since find-file will open that buffer then
+      ;; what is needed now is to determine what window to use
+      ;; and open the file inside that window.
+      ;; The filename might be absolute, relative, incomplete.
+      (let ((direction (pel-window-direction-for
+                        n-value nil :for-editing)))
+        (cond
+         ((eq action 'edit)
+          (progn
+            (pel-window-select direction)
+            (find-file filename)
+            (if target-regxp
+                (progn
+                  (goto-char (point-min))
+                  (re-search-forward target-regxp))
+              (pel-goto-position line column))
+            (pel--show-edit-action action filename
+                                   line column
+                                   target-regxp)))
+         ((eq action 'create)
+          (progn
+            (pel-window-select direction)
+            (find-file filename)
+            (pel--show-edit-action action filename)))
+         ((stringp action) (message "%s" action))
+         (t
+          (error "Internal error condition detected!")))))))
+
 ;;-pel-autoload
 (defun pel-find-file-at-point-in-window (&optional n filename-filter)
   "Open file/URL of name located at/around point in specified window.
@@ -432,16 +524,10 @@ were specified."
   ;;   - if N is nil and a buffer holds the file, check if a window is
   ;;     currently displaying the buffer that holds the file.  If so, use that
   ;;     window.  Otherwise, search for a window the normal way.
-  (let* ((n-value (prefix-numeric-value n))
-         (directory-only (cond
-                          ((>= n-value 20)
-                           (setq n-value (- n-value 20))
-                           t)
-                          ((<= n-value -20)
-                           (setq n-value (+ n-value 20))
-                           t)
-                          (t nil)))
-         (use-browser (eq 9 n-value))
+  (let* ((nspec (pel--file-window-info-for n))
+         (n              (nth 0 nspec))
+         (directory-only (nth 2 nspec))
+         (use-browser    (nth 3 nspec))
          (fileparts (pel-filename-parts-at-point use-browser directory-only))
          (file-kind (car fileparts)))
     (cond
@@ -471,55 +557,10 @@ were specified."
             ;; inside the the default browser or the OS default application
             ;; for this type of file: use pel-open-in-os-app for that.
             (pel-open-in-os-app filename)
-          (let* ((action (cdr fn-action))
-                 (buffer (or (find-buffer-visiting filename)
-                             (when (fboundp 'dired-buffers-for-dir)
-                               (car (dired-buffers-for-dir filename)))))
-                 (window (when buffer (get-buffer-window buffer)))
-                 (line (caddr fileparts))
-                 (column (cadddr fileparts)))
-            (if (and window (null n))
-                ;; file is already in a buffer and window and position
-                ;; is not imposed by argument n: use that existing
-                ;; window and move point to where specified if any.
-                (progn
-                  (select-window window)
-                  (if target-regxp
-                      (progn
-                        (goto-char (point-min))
-                        (re-search-forward target-regxp))
-                    (pel-goto-position line column))
-                  (pel--show-edit-action "show" filename
-                                         line column target-regxp))
-              ;; the file is not inside a existing window,
-              ;; but a buffer may hold the file.
-              ;; Since find-file will open that buffer then
-              ;; what is needed now is to determine what window to use
-              ;; and open the file inside that window.
-              ;; The filename might be absolute, relative, incomplete.
-              (let ((direction (pel-window-direction-for
-                                n-value nil :for-editing)))
-                (cond
-                 ((eq action 'edit)
-                  (progn
-                    (pel-window-select direction)
-                    (find-file filename)
-                    (if target-regxp
-                        (progn
-                          (goto-char (point-min))
-                          (re-search-forward target-regxp))
-                      (pel-goto-position line column))
-                    (pel--show-edit-action action filename
-                                           line column
-                                           target-regxp)))
-                 ((eq action 'create)
-                  (progn
-                    (pel-window-select direction)
-                    (find-file filename)
-                    (pel--show-edit-action action filename)))
-                 ((stringp action) (message "%s" action))
-                 (t
-                  (error "Internal error condition detected!"))))))))))))
+          (pel--find-open-file-in-window (list filename
+                                               (nth 2 fileparts)
+                                               (nth 3 fileparts))
+                                         (cdr fn-action) n target-regxp)))))))
 
 ;; --
 
