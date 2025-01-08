@@ -4675,16 +4675,20 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   ;; the perl-mode is part of Emacs
   (pel-config-major-mode perl pel:for-perl
-    (when (boundp 'perl-indent-level)
-      (setq-local tab-width perl-indent-level))
-    (setq-local indent-tabs-mode pel-perl-use-tabs))
-  (pel-config-major-mode cperl pel:for-perl
-    (when (boundp 'perl-indent-level)
-      (setq-local tab-width perl-indent-level))
+    (setq-local tab-width        pel-general-perl-indent-level)
     (setq-local indent-tabs-mode pel-perl-use-tabs)
+    (when (boundp 'perl-indent-level)
+      (setq-local perl-indent-level pel-general-perl-indent-level)))
+
+  (pel-config-major-mode cperl pel:for-perl
+    (setq-local tab-width        pel-general-perl-indent-level)
+    (setq-local indent-tabs-mode pel-cperl-use-tabs)
+    (when (boundp 'cperl-indent-level)
+      (setq-local cperl-indent-level pel-general-perl-indent-level))
     (when pel-cperl-show-trailing-whitespace-normally
+      (when (boundp 'cperl-invalid-face)
+        (setq-local cperl-invalid-face nil))
       (setq-local show-trailing-whitespace t)))
-  ;; ---------------------------------------------------------------------------
 
   (when pel-use-perl-repl
     (pel-install-github-file "pierre-rouleau/perl-repl-el/master"
