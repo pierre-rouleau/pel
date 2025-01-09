@@ -98,6 +98,8 @@ In that case return the directory part of PATH-NAME."
 A file URL is stripped from the string unless KEEP-FILE-URL is non-nil.
 If DIRECTORY-ONLY is non-nil the directory name is extracted instead of the
 complete file name.
+
+For Perl, allow colon and single quote in file paths.
 .
 Return:
 - nil if no valid file name found at point.
@@ -154,9 +156,13 @@ but *only* when the complete string is enclosed in double quotes
              ;;
              ;;
              (concat
-              ;;     G1         g1    G2     g2   G3 G4 G5        g5
-              ;;     (-----------)   (--------)   (  (  (----------)
-              "^\\`\\([a-zA-Z]:\\)?\\([^@]+?\\)\\(\\(\\( *[:@] *\\)"
+              ;;             G1         g1    G2      g2  G3 G4 G5        g5
+              ;;             (-----------)   (---------)  (  (  (----------)
+              (format "^\\`\\([a-zA-Z]:\\)?\\([^%s]+?\\)\\(\\(\\( *[:@] *\\)"
+                      (if (memq major-mode '(perl-mode cperl-mode))
+                          "@"           ; in Perl, allow ':' in paths
+                        "@:"))
+
               ;; G6       g6 g4  G7 G8
               ;; (---------)  )  (  (----------)
               "\\([0-9]+?\\)\\)\\(\\( *[:@] *\\)"
