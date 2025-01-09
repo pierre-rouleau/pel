@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-01-08 17:55:45 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-01-09 14:11:20 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,7 +64,8 @@ Show errors in compilation-mode buffer in a format that allows navigation."
 
 If DIRECTORIES argument is specified it may be a single directory
 path string or a list of directory path strings.  The list of
-specified directories is pre-pended to the Perl's @INC path.
+specified directories is pre-pended to the Perl's @INC path and the list
+identified by the `pel-perl-extra-project-root-directories'.
 
 The list returned is that list as long as each identified
 directory exists.  Any directory identified that does not exists
@@ -80,10 +81,13 @@ is removed from the returned list."
                           (list directories)
                         directories)))
         (existing-dirs nil))
-    (dolist (dirname (append extra-dirs perl-dirs) (reverse existing-dirs))
+    (dolist (dirname pel-perl-extra-project-root-directories)
+      (push (expand-file-name dirname) extra-dirs))
+    (dolist (dirname (append extra-dirs perl-dirs))
       (when (file-directory-p dirname)
-        (push dirname existing-dirs)))))
-
+        (push dirname existing-dirs)))
+    ;; return sorted directory list with all duplicates removed
+    (sort (delete-dups existing-dirs) (function string<))))
 
 (defun pel-perl-filepath-for (filepath)
   "Return OS compliant file path for FILEPATH.

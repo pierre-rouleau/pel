@@ -153,6 +153,9 @@
 ;;       - pel-pkg-for-nim
 ;;       - pel-pkg-for-ocaml
 ;;       - pel-pkg-for-perl
+;;         - pel-pkg-for-perl-general
+;;         - pel-pkg-for-perl-perl-mode
+;;         - pel-pkg-for-perl-cperl-mode
 ;;       - pel-pkg-for-python
 ;;       - pel-pkg-for-rexx
 ;;       - pel-pkg-for-ruby
@@ -9396,7 +9399,7 @@ characters."
 (defgroup pel-pkg-for-perl nil
   "PEL customization for Perl.
 
-PEL has 3 groups of Perl customization user options:
+PEL has 3 sub-groups of Perl customization user options:
 
 - PEL General Perl settings, which apply to perl and cperl.
 - perl-mode settings,
@@ -9448,6 +9451,16 @@ PEL utils directory."
           (const :tag "Use cperl-mode" cperl-mode)
           (const :tag "Use HaraldJoerg/cperl-mode" HaraldJoerg/cperl-mode)))
 
+(defcustom pel-use-perl-repl nil
+  "Control whether PEL supports the perl-repl package"
+  :link '(url-link
+          :tag "perl-repl @Github"
+          "https://github.com/pierre-rouleau/perl-repl-el/blob/master/perl-repl.el")
+  :group 'pel-pkg-for-perl
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-perl-repl :package-is :in-utils)
+
 ;; - - - - - - - - - - - - - - - -
 (defgroup pel-pkg-for-perl-general nil
   "The PEL General PEL settings, used to set both perl and cperl ones."
@@ -9464,54 +9477,63 @@ This is applied to `perl-indent-level' and `cperl-indent-level'."
   "Value of `indent-tabs-mode' for editing perl files.
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-perl-perl-general
+  :group 'pel-pkg-for-perl-general
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-perl-extra-project-root-directories nil
+  "List of directories searched by `pel-open-point-at' in Perl buffers.
+
+PEl appends this list to the directory list specified by Perl @INC array
+variable.  Each string should represent an absolute path.
+Path expansion is done for ~ . "
+  :group 'pel-pkg-for-perl-general
+  :type '(repeat string))
+
 ;; - - - - - - - - - - - - - - - -
-(defgroup pel-pkg-for-perl-perl nil
+(defgroup pel-pkg-for-perl-perl-mode nil
   "The PEL perl-mode settings."
-  :group 'pel-pkg-for-perl-general)
+  :group 'pel-pkg-for-perl)
 
 (defcustom pel-perl-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Perl buffers.
 Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
-  :group 'pel-pkg-for-perl-perl
+  :group 'pel-pkg-for-perl-perl-mode
   :type '(repeat function))
 
 (defcustom pel-perl-use-tabs pel-general-perl-use-tabs
   "Value of `indent-tabs-mode' for editing perl files.
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-perl-perl
+  :group 'pel-pkg-for-perl-perl-mode
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-perl-tab-width pel-general-perl-indent-level
   "Number of columns rendered in a buffer for a hard tab in Perl."
-  :group 'pel-pkg-for-perl-perl
+  :group 'pel-pkg-for-perl-perl-mode
   :type 'integer
   :safe 'pel-indent-valid-p)
 
 ;; - - - - - - - - - - - - - - - -
-(defgroup pel-pkg-for-perl-cperl nil
+(defgroup pel-pkg-for-perl-cperl-mode nil
   "The PEL cperl-mode settings."
-  :group 'pel-pkg-for-perl-general)
+  :group 'pel-pkg-for-perl)
 
 ;; activation for cperl-mode to mimic the perl-mode
 (defcustom pel-cperl-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for cperl buffers.
 Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
-  :group 'pel-pkg-for-perl
+  :group 'pel-pkg-for-perl-cperl-mode
   :type '(repeat function))
 
 (defcustom pel-cperl-use-tabs pel-general-perl-use-tabs
   "Value of `indent-tabs-mode' for editing perl files in cperl-mode.
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-perl
+  :group 'pel-pkg-for-perl-cperl-mode
   :type 'boolean
   :safe #'booleanp)
 
@@ -9520,7 +9542,7 @@ Do not enter lambda expressions."
 
 This is currently unused, adjusted to the value of
 `pel-general-perl-indent-level' for consistency."
-  :group 'pel-pkg-for-perl
+  :group 'pel-pkg-for-perl-cperl-mode
   :type 'integer
   :safe 'pel-indent-valid-p)
 
@@ -9535,19 +9557,9 @@ differs from the standard way of representing it with the
 By setting this user-option to t, PEL sets `cperl-invalid-face' to
 nil and activates the `show-trailing-whitespace' minor mode to
 show the trailing spaces as usual."
-  :group 'pel-pkg-for-perl
+  :group 'pel-pkg-for-perl-cperl-mode
   :type 'boolean
   :safe #'booleanp)
-
-(defcustom pel-use-perl-repl nil
-  "Control whether PEL supports the perl-repl package"
-  :link '(url-link
-          :tag "perl-repl @Github"
-          "https://github.com/pierre-rouleau/perl-repl-el/blob/master/perl-repl.el")
-  :group 'pel-pkg-for-perl
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-perl-repl :package-is :in-utils)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Python Support
