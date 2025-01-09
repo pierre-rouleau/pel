@@ -323,8 +323,12 @@ where: - filename:= string or nil: the  filename to act upon if not nil.
     (let ((found-filenames (pel--find-by-finders filename)))
       (if found-filenames
           (if (> (length found-filenames) 1)
-              (cons (pel-prompt-select-read "Select file" found-filenames)
-                    'edit)
+              (progn
+                ;; remove potential duplicates from list and prompt when
+                ;; several file found
+                (delete-dups found-filenames)
+                (cons (pel-prompt-select-read "Select file" found-filenames)
+                      'edit))
             (cons (car found-filenames) 'edit))
         (let* ((filename.action    (pel--lib-filename filename))
                (selected-filename  (car filename.action))
