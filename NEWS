@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- The *pel-open-at-point* command can now handle Perl code and find the location of Perl package
+  using Perl syntax with the ~::~ or single quote path separator.
 - The *pel-open-at-point* command, bound to ~M-<f6>~ and ~<f11> f .~ can now be used inside emacs-lisp-mode buffers.
   It uses the Emacs Lisp library searching mechanism as the search function: the
   *pel-filename-at-point-finders* is set to the new function *pel-elisp-find-file*.

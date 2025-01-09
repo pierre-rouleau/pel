@@ -4653,6 +4653,12 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (defconst pel-perl-fext-regex
     "\\.\\([pP]\\([Llm]\\|erl\\|od\\)\\|al\\|ph\\)\\'")
 
+  (defun pel--perl-activate-file-search ()
+    "Utility setup: activate file search in Perl."
+    (when (require 'pel-file nil :noerror)
+      (setq-local pel-filename-at-point-finders '(pel-perl-find-file))))
+  (declare-function pel--perl-activate-file-search  "pel_keys")
+
   (when pel-perl-mode
     ;; pel-per-mode is nil when perl-mode is requested, non-nil for cperl-mode
     (setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
@@ -4680,12 +4686,14 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   ;; the perl-mode is part of Emacs
   (pel-config-major-mode perl pel:for-perl
+    (pel--perl-activate-file-search)
     (setq-local tab-width        pel-general-perl-indent-level)
     (setq-local indent-tabs-mode pel-perl-use-tabs)
     (when (boundp 'perl-indent-level)
       (setq-local perl-indent-level pel-general-perl-indent-level)))
 
   (pel-config-major-mode cperl pel:for-perl
+    (pel--perl-activate-file-search)
     (setq-local tab-width        pel-general-perl-indent-level)
     (setq-local indent-tabs-mode pel-cperl-use-tabs)
     (when (boundp 'cperl-indent-level)

@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-07-25 14:49:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-01-08 13:55:08 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2024  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -124,7 +124,7 @@ whether the VCS is told to ignore them or not."
 (defun pel-ffind (filename &optional directories)
   "Search for FILENAME in current or specified DIRECTORIES trees.
 
-The function searches in the director trees identified by:
+The function searches in the directory trees identified by:
 
 - in the DIRECTORIES argument if specified, otherwise
 - in the pel-ffind-directories if non nil, otherwise
@@ -211,7 +211,9 @@ by `pel--find-by-finders'.
 
 However, that may not be sufficient for some programming
 languages.  In that case you should be using a language specific function.
-There is one implemented for Erlang: `pel-erlang-find-file'."
+The languages specific file finders implemented by PEL are:
+- For Erlang: `pel-erlang-find-file'.
+- For Perl:   `pel-perl-find-file'"
   (let ((candidate-dir (pel-ffind-project-directory)))
     (condition-case nil
         (let* ((searched-directories (if candidate-dir
