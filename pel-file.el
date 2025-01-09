@@ -118,7 +118,10 @@ It accepts ':' and '@' as separators between the elements.
 Spaces are accepted within the file name and between the separators
 but *only* when the complete string is enclosed in double quotes
 *and* when point is located at the first quote."
-  (let ((str (pel-filename-at-point)))
+  ;; In Perl, file path, or package path  may end with semicolon:
+  ;; specify it as an extra separator
+  (let* ((isin-perl (memq major-mode '(perl-mode cperl-mode)))
+         (str (pel-filename-at-point (when isin-perl ";"))))
     (unless keep-file-url
       (setq str (replace-regexp-in-string "^file:////?/?" "/" str)))
     ;; first check for web URIs and return them.
@@ -159,9 +162,8 @@ but *only* when the complete string is enclosed in double quotes
               ;;             G1         g1    G2      g2  G3 G4 G5        g5
               ;;             (-----------)   (---------)  (  (  (----------)
               (format "^\\`\\([a-zA-Z]:\\)?\\([^%s]+?\\)\\(\\(\\( *[:@] *\\)"
-                      (if (memq major-mode '(perl-mode cperl-mode))
-                          "@"           ; in Perl, allow ':' in paths
-                        "@:"))
+                      ;; in Perl, allow ':' in paths; it's used in package paths.
+                      (if isin-perl "@" "@:"))
 
               ;; G6       g6 g4  G7 G8
               ;; (---------)  )  (  (----------)
@@ -580,7 +582,7 @@ were specified."
 ;; Show filename at point
 ;; ----------------------
 
-(defun pel-filename-at-point ()
+(defun pel-filename-at-point (&optional extra-delimiters)
   "Return the file name at point (or marked region).
 
 Spaces inside the filename are accepted *only* when point is
@@ -597,6 +599,9 @@ Variable name expansion:
   variable substitution in the file name.
   That's useful for environment variables in file names.
 
+The optional EXTRA_DELIMITERS string allows adding extra
+delimiter characters to the existing list.
+
 Limitation: the file name delimiters currently used are
 relatively safe but not sufficient for all cases. These will
 probably have to be modified to be a user option in a future version. "
@@ -605,6 +610,8 @@ probably have to be modified to be a user option in a future version. "
     (save-excursion
       (let ((delimiters
              "\t\n\"`'‘’“”|「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。"))
+        (when extra-delimiters
+          (setq delimiters (concat extra-delimiters ";")))
         ;; In shell modes, allow delimiting the filenames by path separators
         ;; and equal sign used in various statements.
         (when (eq major-mode 'sh-mode)
