@@ -4671,7 +4671,13 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;; code from the pel-package that I don't want to load here just yet.
     (when (eq pel-perl-mode 'HaraldJoerg/cperl-mode)
       (pel-install-github-file "HaraldJoerg/cperl-mode/master"
-                               "cperl-mode.el")))
+                               "cperl-mode.el"))
+
+    ;; Enhance iedit-mode for cperl-mode
+    (when pel-use-iedit
+      (pel-eval-after-load cperl-mode
+        (require 'pel-sh-iedit)
+        (add-hook 'cperl-mode-hook 'pel-cperl-iedit-enhance))))
   (add-to-list 'auto-mode-alist  '("\\.?perltidyrc\\'" . conf-unix-mode))
   ;; Associate file to major-mode for Perl
   (let ((selected-perl-mode (if pel-perl-mode 'cperl-mode 'perl-mode)))
