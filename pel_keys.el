@@ -4651,7 +4651,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-perl
   ;; Perl file extension - associations for buffer and speedbar
   (defconst pel-perl-fext-regex
-    "\\.\\([pP]\\([Llm]\\|erl\\|od\\)\\|al\\|ph\\)\\'")
+    "\\.\\([pP]\\([Llm]\\|erl\\|od\\)\\|al\\|pH\\)\\(\\.tdy\\)?\\'")
 
   (defun pel--perl-activate-file-search ()
     "Utility setup: activate file search in Perl."
@@ -4662,7 +4662,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (when pel-perl-mode
     ;; pel-per-mode is nil when perl-mode is requested, non-nil for cperl-mode
     (setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
-    (add-to-list 'auto-mode-alist (cons pel-perl-fext-regex  'cperl-mode))
     (setq interpreter-mode-alist
           (rassq-delete-all 'perl-mode interpreter-mode-alist))
     (add-to-list 'interpreter-mode-alist '("\\(mini\\)?perl5?" . cperl-mode))
@@ -4673,6 +4672,12 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (when (eq pel-perl-mode 'HaraldJoerg/cperl-mode)
       (pel-install-github-file "HaraldJoerg/cperl-mode/master"
                                "cperl-mode.el")))
+  (add-to-list 'auto-mode-alist  '("\\.?perltidyrc\\'" . conf-unix-mode))
+  ;; Associate file to major-mode for Perl
+  (let ((selected-perl-mode (if pel-perl-mode 'cperl-mode 'perl-mode)))
+    (add-to-list 'auto-mode-alist (cons "\\.tdy\\'" selected-perl-mode))
+    (add-to-list 'auto-mode-alist (cons pel-perl-fext-regex  selected-perl-mode)))
+
   (when pel-use-speedbar
     (pel-add-speedbar-extension pel-perl-fext-regex))
 
