@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-11-20 20:56:49 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-01-10 10:50:47 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -1550,7 +1550,9 @@ and after the local variables have been loaded."
   (let ((gn-fct1 (intern (format "pel--setup-for-%s-with-local-vars"
                                  target-mode)))
         (gn-docstring1
-         (format "Activate %s setup, take local variables into account."
+         (format "\
+Activate %s setup, take local variables into account.
+Function created by the `pel-config-major-mode' macro."
                  target-mode))
         (gn-fct2 (intern (format "pel--setup-for-%s" target-mode)))
         (gn-docstring2 (format "Set the environment for %s buffers."
