@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-01-09 14:11:20 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-01-09 23:49:54 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -89,6 +89,12 @@ is removed from the returned list."
     ;; return sorted directory list with all duplicates removed
     (sort (delete-dups existing-dirs) (function string<))))
 
+;;-pel-autoload
+(defun pel-perl-show-source-directories ()
+  "Display the Perl Source directories."
+  (interactive)
+  (message "%s" (string-join (pel-perl-source-directories) "\n")))
+
 (defun pel-perl-filepath-for (filepath)
   "Return OS compliant file path for FILEPATH.
 
@@ -155,11 +161,6 @@ Return nil if nothing found.
                             file-pathnames)))
     file-pathnames))
 
-;;-pel-autoload
-(defun pel-perl-open-file-at-point-in-window (n)
-  "Open Perl file at point in window identified by N."
-  (message "TODO: n: %S" n)
-  )
 ;;; --------------------------------------------------------------------------
 (provide 'pel-perl)
 

@@ -613,7 +613,7 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-perl" for: pel-perl-critic)
   (pel-autoload-function "pel-perl" for:
     pel-perl-find-file
-    pel-perl-open-file-at-point-in-window)
+    pel-perl-show-source-directories)
 
   (pel-autoload "pel-pathmng" for: pel-emacs-load-path)
 
