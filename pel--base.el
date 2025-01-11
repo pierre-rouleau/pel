@@ -3061,14 +3061,22 @@ ON-SAME-LINE is non-nil"
 (defun pel-print-in-buffer (bufname title text &optional clear-buffer use-help-mode)
   "Print TITLE and TEXT inside specified buffer BUFNAME.
 
-TEXT is either a string or a function that calls insert to insert
-the strings into the buffer.  Append the text in buffer unless
-CLEAR-BUFFER is non-nil, in which case, previous buffer content
-is first erased.  When USE-HELP-MODE is non-nil, activate the
-`help-mode' in the buffer, otherwise use the
-`fundamental-mode'. Activating the `help-mode' in the buffer
-allows quick navigation to the variable buttons, a very useful
-feature."
+TEXT can be:
+- A *string* that is printed verbatim inside the buffer.
+- A *function* that calls insert to insert the strings into the buffer.
+  Such a function can take use the `pel-insert-symbol-content-line'
+  function to insert clickable buttons for the name of user-options.
+  This way the user can see the value and click on these buttons to
+  change the values of the user options.
+
+By default, `pel-print-in-buffer' appends the text in buffer
+unless CLEAR-BUFFER is non-nil, in which case, previous buffer
+content is first erased.
+
+When USE-HELP-MODE is non-nil, activate the `help-mode' in the
+buffer, otherwise use the `fundamental-mode'. Activating the
+`help-mode' in the buffer allows quick navigation to the variable
+buttons, a very useful feature."
   (let ((current-buffer-name (buffer-name))
         (outbuf (get-buffer-create bufname)))
     (with-current-buffer outbuf
