@@ -4659,6 +4659,11 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (setq-local pel-filename-at-point-finders '(pel-perl-find-file))))
   (declare-function pel--perl-activate-file-search  "pel_keys")
 
+  (define-pel-global-prefix pel:for-perl (kbd "<f11> SPC P"))
+  (define-key pel:for-perl (kbd "<up>")     'beginning-of-defun)
+  (define-key pel:for-perl (kbd "<down>")   'end-of-defun)
+  (define-key pel:for-perl "c"              'pel-perl-critic)
+
   (when pel-perl-mode
     ;; pel-per-mode is nil when perl-mode is requested, non-nil for cperl-mode
     (setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
@@ -4667,12 +4672,18 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (add-to-list 'interpreter-mode-alist '("\\(mini\\)?perl5?" . cperl-mode))
     ;; Limitation: once HaraldJoerg/cperl-mode is installed in utils, the only
     ;; way to use the built-in cperl-mode is to delete HaraldJoerg/cperl-mode
-    ;; from the utils directory. That could be automated but it would need
+    ;; files from the utils directory. That could be automated but it would need
     ;; code from the pel-package that I don't want to load here just yet.
     (when (eq pel-perl-mode 'HaraldJoerg/cperl-mode)
-      (pel-install-github-file "HaraldJoerg/cperl-mode/master"
-                               "cperl-mode.el"))
-
+      (pel-install-github-files "HaraldJoerg/cperl-mode/master"
+                                '("cperl-mode.el"
+                                  "perl-tidy-ediff.el"))
+      (pel-autoload-file perl-tidy-ediff for:
+                         perl-tidy-ediff
+                         perl-tidy-ediff-region
+                         perl-tidy-ediff-sub)
+      (define-key pel:for-perl "T"  'pel-perl-tidy-ediff)
+      (define-key pel:for-perl "t"  'perl-tidy-ediff-sub))
     ;; Enhance iedit-mode for cperl-mode
     (when pel-use-iedit
       (pel-eval-after-load cperl-mode
@@ -4687,10 +4698,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (when pel-use-speedbar
     (pel-add-speedbar-extension pel-perl-fext-regex))
 
-  (define-pel-global-prefix pel:for-perl (kbd "<f11> SPC P"))
-  (define-key pel:for-perl (kbd "<up>")     'beginning-of-defun)
-  (define-key pel:for-perl (kbd "<down>")   'end-of-defun)
-  (define-key pel:for-perl "c"              'pel-perl-critic)
   (when pel-perl-mode
     (define-key pel:for-perl "?"            'cperl-perldoc-at-point)
     (define-key pel:for-perl (kbd "M-?")    'pel-perl-show-source-directories)

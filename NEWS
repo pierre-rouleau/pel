@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Integrated perltidy execution in a Perl buffer, using the perl-tidy-ediff.el module
+  available from HaraldJoerg/cperl-mode.  Two commands are made available when *pel-perl-mode* is set to
+  HaraldJoerg/cperl-mode:
+  - *perl-tidy-ediff-sub*, bound to ~<f12> t~ , which produces a tidied version of the code in the current
+    subroutine and runs an ediff session on the original code,
+  - *pel-perl-tidy-ediff*, bound to ~<f12> T~, which does the same to the entire buffer or the marked area.
 - Improved iedit term extraction in cperl-mode.
 - The *pel-open-at-point* command can now handle Perl code and find the location of Perl package
   using Perl syntax with the ~::~ or single quote path separator.

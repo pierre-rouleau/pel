@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-01-09 23:49:54 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-01-11 12:07:00 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -160,6 +160,21 @@ Return nil if nothing found.
                              (pel-perl-source-directories directories))
                             file-pathnames)))
     file-pathnames))
+
+;; --
+;;-pel-autoload
+(defun pel-perl-tidy-ediff ()
+  "Run perltidy on the current buffer, start ediff session.
+
+Run perltidy on the current buffer if no area is marked. If an area is marked
+run perltidy on the marked area only."
+  (interactive)
+  (if (and (fboundp 'perl-tidy-ediff-region)
+           (fboundp 'perl-tidy-ediff))
+      (if (use-region-p)
+          (perl-tidy-ediff-region)
+        (perl-tidy-ediff))
+    (user-error "First et perl-user-perl to HaraldJoerg/cperl-mode!")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-perl)

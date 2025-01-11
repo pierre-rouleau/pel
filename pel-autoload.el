@@ -610,7 +610,9 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-package" for:
     pel-install-from-elpa-attic)
 
-  (pel-autoload "pel-perl" for: pel-perl-critic)
+  (pel-autoload "pel-perl" for:
+    pel-perl-critic
+    pel-perl-tidy-ediff)
   (pel-autoload-function "pel-perl" for:
     pel-perl-find-file
     pel-perl-show-source-directories)
