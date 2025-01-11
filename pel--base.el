@@ -1,6 +1,6 @@
 ;;; pel--base.el --- PEL base utilities. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -160,6 +160,7 @@
 ;;   - `pel--install-github-files'
 ;;     - `pel-install-files'
 ;;       - `pel-install-file'
+;;         - `pel-url-copy-file'
 ;;
 ;; - `pel-require'
 ;;   - `pel-package-installed-p'
@@ -1826,7 +1827,10 @@ confirmation.
 
 The macro generates code that runs only at load time.  However,
 when PEL runs in fast startup the macro creates no code and
-expands to nil which will be optimized out by the byte compiler."
+expands to nil which will be optimized out by the byte compiler.
+This is done because PEL fast-startup mode does NOT install new
+code; to install new packages make sure PEL is running in normal
+startup mode."
   (unless (pel-in-fast-startup-p)
     `(cl-eval-when 'load
        (pel--install-github-files ,user-project-branch
@@ -1838,14 +1842,14 @@ expands to nil which will be optimized out by the byte compiler."
                                  &optional url-fname refresh)
   "Download & install FNAME from GitHub USER-PROJECT-BRANCH/URL-FNAME.
 REFRESH if required.
-The function returns t if the file was
-downloaded, nil otherwise.  Permission errors are raised.
+The function returns t if the file was downloaded, nil otherwise.
+Permission errors are raised.
 This is normally called by the `pel-install-github-file' macro."
   (pel-install-file (pel-url-join "https://raw.githubusercontent.com"
-                                   user-project-branch
-                                   (or url-fname fname))
-                     fname
-                     refresh))
+                                  user-project-branch
+                                  (or url-fname fname))
+                    fname
+                    refresh))
 
 (defmacro pel-install-github-file (user-project-branch
                                    fname
