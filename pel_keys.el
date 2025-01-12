@@ -4660,6 +4660,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (declare-function pel--perl-activate-file-search  "pel_keys")
 
   (define-pel-global-prefix pel:for-perl (kbd "<f11> SPC P"))
+  (define-pel-global-prefix pel:perl-setup (kbd "<f11> SPC P <f4>"))
+
   (define-key pel:for-perl (kbd "<up>")     'beginning-of-defun)
   (define-key pel:for-perl (kbd "<down>")   'end-of-defun)
   (define-key pel:for-perl "c"              'pel-perl-critic)
@@ -4675,7 +4677,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;; files from the utils directory. That could be automated but it would need
     ;; code from the pel-package that I don't want to load here just yet.
     (when (eq pel-perl-mode 'HaraldJoerg/cperl-mode)
-      (pel-install-github-files "HaraldJoerg/cperl-mode/master"
+      (pel-install-github-files "pierre-rouleau/cperl-mode/master"
                                 '("cperl-mode.el"
                                   "perl-tidy-ediff.el"))
       (pel-autoload-file perl-tidy-ediff for:
@@ -4699,9 +4701,13 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-add-speedbar-extension pel-perl-fext-regex))
 
   (when pel-perl-mode
-    (define-key pel:for-perl "?"            'cperl-perldoc-at-point)
-    (define-key pel:for-perl (kbd "M-?")    'pel-perl-show-source-directories)
-    (define-key pel:for-perl "|"            'cperl-lineup))
+    (define-key pel:perl-setup "." 'pel-perl-show-source-directories)
+    (define-key pel:perl-setup "?" 'pel-perl-show-status)
+    (define-key pel:perl-setup "s" 'pel-perl-show-style)
+    (define-key pel:perl-setup (kbd "C-i") 'pel-perl-set-style)
+
+    (define-key pel:for-perl "?"       'cperl-perldoc-at-point)
+    (define-key pel:for-perl "|"       'cperl-lineup))
 
   ;; the perl-mode is part of Emacs
   (pel-config-major-mode perl pel:for-perl

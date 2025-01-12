@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-perl-show-status*, bound to ~<f12><f4> ?~, to show cperl-mode sindentation style control variables and eventually others.
+- Add *pel-perl-set-style*, bound to ~<f12><f4> <tab>~, to set new or restore previously used indentation style.
+- Add *pel-perl-show-style*, bound to ~<f12><f4> s~ to show currently used indentation style.
 - Integrated perltidy execution in a Perl buffer, using the perl-tidy-ediff.el module
   available from HaraldJoerg/cperl-mode.  Two commands are made available when *pel-perl-mode* is set to
   HaraldJoerg/cperl-mode:
