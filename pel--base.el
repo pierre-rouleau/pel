@@ -3006,9 +3006,8 @@ need."
                stream))
     (princ object stream)))
 
-(defun pel-insert-list-value
-    (list-name list-value
-                &optional without-index on-same-line)
+(defun pel-insert-list-value (list-name list-value
+                                        &optional without-index on-same-line)
   "Insert a description of a list variable with a name and value."
   (insert (format "\n- %s: " list-name))
   (let ((idx 0))
@@ -3019,9 +3018,9 @@ need."
       (pel--pp elem (current-buffer) "   ")))
   )
 
-(defun pel-insert-list-content
-    (symbol
-     &optional buffer without-index no-button on-same-line)
+(defun pel-insert-list-content (symbol &optional
+                                       buffer without-index
+                                       no-button on-same-line)
   "Insert a description of the content of the list identified by its SYMBOL.
 
 Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil.
