@@ -4,13 +4,13 @@
 # Purpose   : Print the list of Emacs desktops.
 # Created   : Friday, November  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-01 10:26:46 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-12 12:00:04 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Prints the list of Emacs session desktops that exist.
-#
+# If an argument is specified it should be ls options.
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -23,7 +23,7 @@
 # ----
 #
 #
-ls  ~/.emacs.d/desktops
+ls "$@" ~/.emacs.d/desktops
 
 # ----------------------------------------------------------------------------
 # Local Variables:
