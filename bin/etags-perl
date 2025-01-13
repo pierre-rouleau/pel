@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags file for Perl source code files.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-10-08 10:29:59 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-13 08:42:33 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -38,6 +38,7 @@
 #   You can also set ETAGS_USE_UCTAGS to the absolute path of the
 #   Universal Ctags executable file.
 
+#  - Uses rg to search for string files that use a Perl shebang line.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -48,13 +49,15 @@
 print_usage()
 {
     printf -- "
-etags-c: build a etags-compliant TAGS file in the current directory
-         for all Perl source code files in the directory trees
-         specified on the command line.  Search for the files with
-         the following extensions:
-          - .pl, .pm, : searched and parsed (both by etags an uctags)
-          - Also searched, listed, but not processed:
-              .plx, .pls, .xs, .t, .pod, .cgi, .psg, .psgi
+etags-perl: build a etags-compliant TAGS file in the current directory
+            for all Perl source code files in the directory trees
+            specified on the command line.  Search for the files with
+            the following extensions:
+            - .pl, .pm, : searched and parsed (both by etags an uctags)
+            - All shell script files that use a Perl shebang line (but
+              only if ripgrep is available).
+            - Also searched, listed, but not processed:
+                .plx, .pls, .xs, .t, .pod, .cgi, .psg, .psgi
 
          CAUTION: notice the list of file extensions that neither
                   etags not uctags process.
@@ -66,12 +69,12 @@ etags-c: build a etags-compliant TAGS file in the current directory
  Usage: etags-perl h|--help
   • Print this help information.
 
- Usage: etags-perl [--list=FILENAME] | [DIRPATH [DIRPATH ...]]
+ Usage: etags-perl [--list=FILENAME] | DIRPATH [DIRPATH ...]
 
   • [Re]build an etags-compliant TAGS file in current directory
-    for the Perl source code  files found:
-    - in the directory tree(s) identified on the command line, or
-    - in the list provided in the FILENAME specified by the
+    for the Perl source code files found:
+    - in the directory tree(s) identified as DIRPATH on the command line,
+      or in the list provided in the FILENAME specified by the
       --list option, or
     - specified by the ETAGS_PERL_FILE_LIST environment variable.
   • Overwrites any TAGS file in the current directory.
@@ -276,7 +279,13 @@ else
                  -or -name "*.cgi"         \
                  -or -name "*.psg"         \
                  -or -name "*.psgi"        \
-                 \)  -print | tee .etags-perl-files.txt | run__etags_perl
+                 \)  -print > .etags-perl-files.txt
+            if [ -x "$(command -v rg)" ]; then
+                # add shell scripts that use Perl. Exclude perltidy files, Emacs backup and buffers files
+                rg -g !'*.tdy' -g !'*.~*' -g !'*.#*' -Nl "^#! /usr/bin/perl" >> .etags-perl-files.txt
+            fi
+            # now process all found files
+            cat .etags-perl-files.txt | run__etags_perl
             ;;
 
         fd)
@@ -298,7 +307,13 @@ else
                    -e .cgi            \
                    -e .psg            \
                    -e .psgi           \
-                   . "$@" | tee .etags-perl-files.txt | run__etags_perl
+                   . "$@" > .etags-perl-files.txt
+            # add shell scripts that use Perl. Exclude perltidy files, Emacs backup and buffers files
+            if [ -x "$(command -v rg)" ]; then
+                rg -g !'*.tdy' -g !'*.~*' -g !'*.#*' -Nl "^#! /usr/bin/perl" >> .etags-perl-files.txt
+                # now process all found files
+            fi
+            cat .etags-perl-files.txt | run__etags_perl
             ;;
 
         *)
@@ -310,6 +325,11 @@ fi
 
 file_count="$(wc -l .etags-perl-files.txt | awk '{print $1}')"
 printf -- "%s files found and processed. List stored in: .etags-perl-files.txt\n" "${file_count=}"
+if [ ! -x "$(command -v rg)" ]; then
+    printf -- "\
+CAUTION: shell script files using Perl are not included in the list.
+         Install ripgrep to search and include them.\n"
+fi
 
 # ----------------------------------------------------------------------------
 # Local Variables:
