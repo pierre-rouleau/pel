@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-01-12 16:46:30 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-01-12 19:19:24 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -177,15 +177,6 @@ run perltidy on the marked area only."
     (user-error "First set perl-user-perl to HaraldJoerg/cperl-mode!")))
 
 ;; --
-(defconst pel--cperl-styles-vars
-  '(cperl-brace-offset
-    cperl-continued-brace-offset
-    cperl-continued-statement-offset
-    cperl-extra-newline-before-brace
-    cperl-extra-newline-before-brace-multiline
-    cperl-indent-level
-    cperl-label-offset
-    cperl-merge-trailing-else))
 
 ;;-pel-autoload
 (defun pel-perl-show-status (&optional append)
@@ -200,13 +191,14 @@ in which case it appends to the previous report."
      "CPerl Mode Setup"
      (lambda ()
        "Print cperl-mode control variables."
-       (insert "User options used to control style:")
-       (dolist (symbol pel--cperl-styles-vars)
-         (pel-insert-symbol-content-line symbol))
-       (insert "\nName of used indentation style (current one is first in list):" )
-       (pel-insert-list-content 'cperl-current-style-name)
-       (insert "\nIndentation styles previously selected by cperl-set-style:")
-       (pel-insert-list-content 'cperl-old-style)
+       (when (boundp 'cperl-styles-entries)
+         (insert "User options used to control style:")
+         (dolist (symbol cperl-styles-entries)
+           (pel-insert-symbol-content-line symbol)))
+       (pel-insert-symbol-content-line 'cperl-indent-parens-as-block)
+       (pel-insert-symbol-content-line 'cperl-tab-always-indent)
+       (insert "\nName of used indentation style:" )
+       (pel-insert-symbol-content-line 'cperl-file-style)
        (insert "\nDefinitions of the Perl indentation styles:")
        (pel-insert-list-content 'cperl-style-alist ))
      (unless append :clear-buffer)
@@ -217,24 +209,18 @@ in which case it appends to the previous report."
 (defun pel-perl-show-style ()
   "Show currently used indentation style in minibuffer."
   (interactive)
-  (if (boundp 'cperl-current-style-name)
-      (let ((style (car cperl-current-style-name)))
-        (message "Indentation style is: %s" (if style style "default")))
-    (user-error "First set perl-user-perl to HaraldJoerg/cperl-mode!")))
+  (if (boundp 'cperl-file-style)
+      (message "Indentation style is: %s" (or cperl-file-style "default"))
+    (user-error "First set perl-user-perl to a HaraldJoerg/cperl-mode!")))
 
 ;;-pel-autoload
-(defun pel-perl-set-style (&optional previous)
+(defun pel-perl-set-style ()
   "Set Perl indentation style to named style.
 
-Prompt for indentation style name and apply it.
-If optional PREVIOUS argument specified, restore the previously used
-indentation style."
-  (interactive "P")
-  (if (and (fboundp 'cperl-set-style-back)
-           (fboundp 'cperl-set-style))
-      (if previous
-          (cperl-set-style-back)
-        (call-interactively 'cperl-set-style))
+Prompt for indentation style name and apply it."
+  (interactive)
+  (if (fboundp 'cperl-file-style)
+      (call-interactively 'cperl-file-style)
     (user-error "First set perl-user-perl to HaraldJoerg/cperl-mode!")))
 
 ;;; --------------------------------------------------------------------------

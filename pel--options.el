@@ -9430,19 +9430,22 @@ When turned on the perl-mode is associated with the PEL ``<f12>`` key."
   mode. Emacs (but not PEL's) default.
 - The `cperl-mode' distributed with Emacs. More powerful, with
   more features than `perl-mode'.
-- A newer `cperl-mode' implementation from Harald Jörg which
-  supports new Perl features, and is better than Emacs own
-  `cperl-mode'.  This one is PEL's default because it provides
-  better Perl support.
+- A newer `cperl-mode' implementation from Harald Jörg, the
+  maintainer of Emacs official `cperl-mode'.  This uses the
+  upstream branch `cperl-mode', which corresponds to the latest features
+  available and what is available on the next Emacs version to be released.
+  It also installs the `perl-tidy-ediff' module that provides a useful buffer
+  only perltidy support with ediff session.
+  This is the PEL default because it provides the best available Perl support.
 
-When using HaraldJoerg/cperl mode, PEL stores it cperl.el file
-inside PEL utils directory, and since PEL places that directory
-at the beginning of Emacs `load-path' it is used instead of Emacs
-own cperl.el file.
+When using HaraldJoerg/cperl mode, PEL stores it cperl-mode.el
+and perl-tidy-ediff.el files inside PEL utils directory, and
+since PEL places that directory at the beginning of Emacs
+`load-path' it is used instead of Emacs own cperl.el file.
 
 If later you change your mind and want to use Emacs own cperl.el,
-then you must first delete cperl.el and cperl.elc files from the
-PEL utils directory."
+then you must first delete the cperl-mode and perl-tidy-ediff
+files from the PEL utils directory."
   :group 'pel-pkg-for-perl
   :link '(url-link :tag "Harald Jörg cperl-mode"
                    "https://github.com/HaraldJoerg/cperl-mode")

@@ -4672,14 +4672,17 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (setq interpreter-mode-alist
           (rassq-delete-all 'perl-mode interpreter-mode-alist))
     (add-to-list 'interpreter-mode-alist '("\\(mini\\)?perl5?" . cperl-mode))
-    ;; Limitation: once HaraldJoerg/cperl-mode is installed in utils, the only
-    ;; way to use the built-in cperl-mode is to delete HaraldJoerg/cperl-mode
-    ;; files from the utils directory. That could be automated but it would need
-    ;; code from the pel-package that I don't want to load here just yet.
+    ;; Limitation: once HaraldJoerg files are installed in utils, the only
+    ;; way to use the built-in cperl-mode is to delete them manually from
+    ;; utils.
+    ;; Take cperl-mode.el from the upstream branch: it's upstream of Emacs
+    ;; distributed cperl-mode and holds the latest features and fixes that
+    ;; might only be available in later versions of Emacs.
+    ;; Take the perl-tidy-ediff from the master branch; that is not released
+    ;; into the official Emacs distribution yet.
     (when (eq pel-perl-mode 'HaraldJoerg/cperl-mode)
-      (pel-install-github-files "pierre-rouleau/cperl-mode/master"
-                                '("cperl-mode.el"
-                                  "perl-tidy-ediff.el"))
+      (pel-install-github-file "HaraldJoerg/cperl-mode/upstream" "cperl-mode.el")
+      (pel-install-github-file "HaraldJoerg/cperl-mode/master" "perl-tidy-ediff.el")
       (pel-autoload-file perl-tidy-ediff for:
                          perl-tidy-ediff
                          perl-tidy-ediff-region
