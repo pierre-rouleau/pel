@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags file for Perl source code files.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-13 08:42:33 EST, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-13 09:01:34 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -69,13 +69,13 @@ etags-perl: build a etags-compliant TAGS file in the current directory
  Usage: etags-perl h|--help
   • Print this help information.
 
- Usage: etags-perl [--list=FILENAME] | DIRPATH [DIRPATH ...]
+ Usage: etags-perl [-u] DIRPATH [DIRPATH ...]
+        etags-perl [-u] [--list=FILENAME]
 
-  • [Re]build an etags-compliant TAGS file in current directory
+  • [Re]build an etags-compliant TAGS file in the current directory
     for the Perl source code files found:
-    - in the directory tree(s) identified as DIRPATH on the command line,
-      or in the list provided in the FILENAME specified by the
-      --list option, or
+    - in the DIRPATH directory tree(s) identified on the command line, or
+    - in the list provided in the FILENAME specified by the --list option, or
     - specified by the ETAGS_PERL_FILE_LIST environment variable.
   • Overwrites any TAGS file in the current directory.
   • Stores the names of inspected files in the file named
@@ -96,7 +96,8 @@ etags-perl: build a etags-compliant TAGS file in the current directory
         by the .gitignore, .ignore or .fdignore files are ignored.
   • Stores the names of inspected files in the file named
     .etags-perl-files.txt stored in the same directory as TAGS.
-  • Uses etags to build the TAGS file by default.
+  • Uses etags to build the TAGS file by default, but
+    • -u : force use Universal Ctags (ctags) instead of etags.
     • Set ETAGS_USE_UCTAGS to 1 or to the absolute path of Universal
       Ctags executable file to force using Universal Ctags instead.
       When setting it to 1, the ctags found in PATH is expected
@@ -166,6 +167,23 @@ elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     fi
 fi
 
+# --
+# Check -u option to force use of universal ctags
+
+if [ "$1" = "-u" ]; then
+    if [ -z "$ETAGS_USE_UCTAGS" ]; then
+        echo "etags-perl: -u option requests use of Universal Ctags."
+        ETAGS_USE_UCTAGS=1
+    else
+        echo "etags-perl: -u option not necessary (but does no harm)."
+        echo " ETAGS_USE_UCTAGS is already set to: $ETAGS_USE_UCTAGS"
+    fi
+    shift
+fi
+
+# --
+#  Check --list option to extract list of Perl files.
+
 case "$1" in
     --list=*)
     # extract the file name from the --list= option
@@ -183,6 +201,7 @@ case "$1" in
 esac
 
 # --
+# Proceed
 
 if [ -n "$ETAGS_PERL_FILE_LIST" ]; then
     if [ "$ETAGS_PERL_FILE_LIST" = ".etags-perl-files.txt" ]; then
