@@ -24,7 +24,7 @@ PEL -- Pragmatic Emacs Library
 
 .. image:: https://img.shields.io/badge/PEL_Commands-636-teal
    :alt: Version
-   :target: https://github.com/pierre-rouleau/pel#commands
+   :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
 .. image:: https://img.shields.io/badge/PDF_Files-171-blue
    :alt: Version
@@ -281,6 +281,12 @@ various packages, etc...
   available for a given OS, most are accessible in every OS.
 - PEL provides 10 specialized Hydra_ key bindings when the ``pel-use-hydra``
   and the topic specific user-options are activated.
+- The key bindings of several commands are the same in several major-modes but
+  they perform actions that are specialized to the major mode of the current
+  buffer.  This helps simplify using Emacs.
+- All commands, PEL commands, standard Emacs commands and the commands
+  provided by external packages are described in the various PDF quicksheets
+  that you can access through the `PEL Topic Index PDF.`_
 
 
 ➣ Credits
@@ -444,6 +450,7 @@ Notes
 .. _PEL Key Maps PDF:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
 .. _🤔: `➣ Extends Emacs Documentation`_
 .. _🥳: doc/emacs-daemon.rst.txt
+.. _PEL Topic Index PDF:
 .. _PEL Index PDF:      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
