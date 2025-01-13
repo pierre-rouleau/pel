@@ -121,7 +121,7 @@ but *only* when the complete string is enclosed in double quotes
   ;; In Perl, file path, or package path  may end with semicolon:
   ;; specify it as an extra separator
   (let* ((isin-perl (memq major-mode '(perl-mode cperl-mode)))
-         (str (pel-filename-at-point (when isin-perl ";"))))
+         (str (pel-filename-at-point)))
     (unless keep-file-url
       (setq str (replace-regexp-in-string "^file:////?/?" "/" str)))
     ;; first check for web URIs and return them.
@@ -593,11 +593,15 @@ were specified."
 Spaces inside the filename are accepted *only* when point is
 located before a double quote to the left of the filename.
 Spaces between the quote and the first character and last
-character or the filename are accepted but removed.  When
-executed from with a buffer in sh-mode, the shell variables found
-in the string are expanded and the delimiters include the '=' and
-':' characters.  This helps extracting file names in shell
-scripts.
+character or the filename are accepted but removed.
+
+The comma, semi-comma, parenthesis and square brackets are used
+as delimiters except for `rst-mode' and `markdown-mode'.
+
+When executed from with a buffer in sh-mode, the shell variables
+found in the string are expanded and the delimiters include the
+'=' and ':' characters.  This helps extracting file names in
+shell scripts.
 
 Variable name expansion:
 - In shell and TCL mode buffers, perform $VAR
@@ -616,13 +620,13 @@ probably have to be modified to be a user option in a future version. "
       (let ((delimiters
              "\t\n\"`'‘’“”|「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。"))
         (when extra-delimiters
-          (setq delimiters (concat extra-delimiters ";")))
+          (setq delimiters (concat extra-delimiters delimiters)))
         ;; In shell modes, allow delimiting the filenames by path separators
         ;; and equal sign used in various statements.
         (when (eq major-mode 'sh-mode)
           (setq delimiters (concat "=:" delimiters)))
         (unless (memq major-mode '(rst-mode markdown-mode))
-          (setq delimiters (concat "()[]" delimiters)))
+          (setq delimiters (concat ",;()[]" delimiters)))
         (unless (memq major-mode '(sh-mode tcl-mode rst-mode markdown-mode))
           (setq delimiters (concat "{}" delimiters)))
         (let ((fname (string-trim (pel-string-at-point delimiters))))
