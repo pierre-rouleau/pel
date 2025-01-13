@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-01-12 19:19:24 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-01-12 23:10:10 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,6 +33,9 @@
 ;;
 (require 'pel--base)              ; use: `pel-filesep', `pel-print-in-buffer'
 (require 'pel-ffind)              ; use: `pel-ffind'
+(eval-when-compile
+  (require 'subr-x))              ; use: string-join, string-trim
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
