@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Rust source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-10-08 10:29:44 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-01-13 08:51:06 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -59,8 +59,8 @@ etags-rs: build an etags-compliant TAGS in the current directory
   Usage: etags-rs [-u] DIRPATH [DIRPATH ...]
 
    • [Re]build an etags-compliant TAGS file in current directory
-     for the Rust source code files in the directory
-     tree(s) identified on the command line.
+     for the Rust source code files found:
+    - in the DIRPATH directory tree(s) identified on the command line.
    • Uses etags to build the TAGS file by default, but
      -u : force use Universal Ctags (ctags) instead of etags.
    • Set ETAGS_USE_UCTAGS to 1 or the absolute path of

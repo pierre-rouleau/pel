@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-10-08 10:28:41 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-01-13 08:50:06 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -63,13 +63,13 @@ etags-c: build a etags-compliant TAGS file in the current directory
 
   • Print this help information.
 
- Usage: etags-c [--list=FILENAME] | [DIRPATH [DIRPATH ...]]
+ Usage: etags-c DIRPATH [DIRPATH ...]
+        etags-c [--list=FILENAME]
 
   • [Re]build an etags-compliant TAGS file in current directory
     for the C/C++ code & header files found:
-    - in the directory tree(s) identified on the command line, or
-    - in the list provided in the FILENAME specified by the
-      --list option, or
+    - in the DIRPATH directory tree(s) identified on the command line, or
+    - in the list provided in the FILENAME specified by the --list option, or
     - specified by the ETAGS_FILE_LIST environment variable.
   • Overwrites any TAGS file in the current directory.
   • Stores the names of inspected files in the file named
