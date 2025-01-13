@@ -286,7 +286,7 @@ various packages, etc...
   buffer.  This helps simplify using Emacs.
 - All commands, PEL commands, standard Emacs commands and the commands
   provided by external packages are described in the various PDF quicksheets
-  that you can access through the `PEL Topic Index PDF.`_
+  that you can access through the `PEL Topic Index PDF`_.
 
 
 ➣ Credits
