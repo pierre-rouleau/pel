@@ -100,8 +100,10 @@ For example, for FNAME set to
 it returns \"/ssh:root@192.168.0.26#84:\".
 
 If the file name does not hold any Tramp-specific component, the
-function returns nil.
-"
+function returns nil."
+  ;; [:todo 2025-01-15, by Pierre Rouleau: use with-parsed-tramp-file-name
+  ;; instead  of the explicit extraction.  That will provide a way to deal
+  ;; with the domain and hop, in case something special has to be done with it.]
   (when (tramp-tramp-file-p fname)
     (string-match (nth 0 tramp-file-name-structure) fname)
     (let ((method (match-string 5 fname))
