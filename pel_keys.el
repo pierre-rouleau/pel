@@ -6775,6 +6775,8 @@ the ones defined from the buffer now."
 
 (declare-function find-grep "grep")
 (define-pel-global-prefix pel:file (kbd "<f11> f"))
+(define-pel-global-prefix pel:file-help (kbd "<f11> f ?"))
+(define-pel-global-prefix pel:file-cfg (kbd "<f11> f <f4>"))
 (define-pel-global-prefix pel2:file (kbd "<M-f11> M-f"))
 ;; Used keys in <f11> f:
 ;; . / ?
@@ -6798,7 +6800,12 @@ the ones defined from the buffer now."
 (define-key pel:file "w" #'write-region)
 (define-key pel:file (kbd "M-x") 'hexl-find-file)
 (define-key pel:file (kbd "M-l") 'find-file-literally)
-(define-key pel:file "?" #'pel-show-filemng-status)
+
+(define-key pel:file-help "?" 'pel-show-filemng-status)
+(define-key pel:file-help "n" 'pel-show-filename-at-point)
+(define-key pel:file-help "N" 'pel-show-filename-parts-at-point)
+
+
 (when pel-use-popup-switcher
   (define-key pel:file (kbd "M-f") 'pel-psw-navigate-files))
 (unless pel-system-is-windows-p

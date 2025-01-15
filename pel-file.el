@@ -75,7 +75,7 @@
 (require 'pel-window)    ; use pel-window-direction-for
 ;;                       ;     pel-window-valid-for-editing-p
 (require 'pel-filex)     ; use: `pel-open-in-os-app'
-
+(require 'tramp)         ; use: `tramp-tramp-file-p', `tramp-file-local-name'
 (eval-when-compile (require 'subr-x))  ; use: inlined: string-trim
 
 ;; -----------------------------------------------------------------------------
@@ -91,6 +91,23 @@ In that case return the directory part of PATH-NAME."
   (if directory-only
       (file-name-directory path-name)
     path-name))
+
+(defun pel--tramp-remote-fspec (fname)
+  "Return the Tramp-compliant remote part of a tramp-filename.
+
+For example, for FNAME set to
+\"/ssh:root@192.168.0.26#84:/somedir/somefile/test.txt\"
+it returns \"/ssh:root@192.168.0.26#84:\".
+
+If the file name does not hold any Tramp-specific component, the
+function returns nil.
+"
+  (when (tramp-tramp-file-p fname)
+    (string-match (nth 0 tramp-file-name-structure) fname)
+    (let ((method (match-string 5 fname))
+          (user   (match-string 6 fname))
+          (host   (match-string 7 fname)))
+      (format "/%s:%s@%s:" method user host))))
 
 (defun pel-filename-parts-at-point (&optional keep-file-url directory-only)
   "Extract and return (filename line column) from string at point.
@@ -121,7 +138,10 @@ but *only* when the complete string is enclosed in double quotes
   ;; In Perl, file path, or package path  may end with semicolon:
   ;; specify it as an extra separator
   (let* ((isin-perl (memq major-mode '(perl-mode cperl-mode)))
-         (str (pel-filename-at-point)))
+         (full-str (pel-filename-at-point))
+         (isa-tramp-fname (tramp-tramp-file-p full-str))
+         (str (if isa-tramp-fname (tramp-file-local-name full-str) full-str)))
+
     (unless keep-file-url
       (setq str (replace-regexp-in-string "^file:////?/?" "/" str)))
     ;; first check for web URIs and return them.
@@ -161,10 +181,9 @@ but *only* when the complete string is enclosed in double quotes
              (concat
               ;;             G1         g1    G2      g2  G3 G4 G5        g5
               ;;             (-----------)   (---------)  (  (  (----------)
-              (format "^\\`\\([a-zA-Z]:\\)?\\([^%s]+?\\)\\(\\(\\( *[:@] *\\)"
+              (format "^\\`\\([a-zA-Z]:\\)?\\([^&%s]+?\\)\\(\\(\\( *[:@] *\\)"
                       ;; in Perl, allow ':' in paths; it's used in package paths.
                       (if isin-perl "@" "@:"))
-
               ;; G6       g6 g4  G7 G8
               ;; (---------)  )  (  (----------)
               "\\([0-9]+?\\)\\)\\(\\( *[:@] *\\)"
@@ -182,10 +201,13 @@ but *only* when the complete string is enclosed in double quotes
                    ;; column to nil if no line or column in str.
                    (match9   (match-string 9 str))
                    (col_num   (when (and match6 match9)
-                                (string-to-number match9))))
+                                (string-to-number match9)))
+                   (pathname (or (pel--dir-name-if fpath_str directory-only)
+                                 default-directory)))
               (list (if ddrv_str 'fname-w-ddrv 'fname)
-                    (or (pel--dir-name-if fpath_str directory-only)
-                        default-directory)
+                    (if isa-tramp-fname
+                        (concat (pel--tramp-remote-fspec full-str) pathname)
+                      pathname)
                     line_num
                     col_num))
           ;; For reasons I don't yet understand, the above regexp does not work
@@ -203,9 +225,12 @@ but *only* when the complete string is enclosed in double quotes
                      (line_num  (string-to-number (pel-val-or-default
                                                    (match-string 4 str) "")))
                      ;; but change line 0 to line 1
-                     (line_num  (if (equal line_num 0) 1 line_num)))
+                     (line_num  (if (equal line_num 0) 1 line_num))
+                     (pathname (pel--dir-name-if fpath_str directory-only)))
                 (list (if ddrv_str 'fname-w-ddrv 'fname)
-                      (pel--dir-name-if fpath_str directory-only)
+                      (if isa-tramp-fname
+                          (concat (pel--tramp-remote-fspec full-str) pathname)
+                        pathname)
                       line_num
                       nil))))))))
 
@@ -581,7 +606,10 @@ were specified."
 (defun pel-show-filename-parts-at-point (&optional keep-file-url)
   "Display file parts extracted from point.  Testing utility."
   (interactive "P")
-  (message "%S" (pel-filename-parts-at-point keep-file-url)))
+  (let ((fname-parts (pel-filename-parts-at-point keep-file-url)))
+    (if fname-parts
+        (message "%S" fname-parts)
+      (user-error "Nothing found! Possible PEL error for this mode?"))))
 
 ;; -----------------------------------------------------------------------------
 ;; Show filename at point
@@ -634,7 +662,9 @@ probably have to be modified to be a user option in a future version. "
             ;; perform $VARNAME and ${VARNAME} environment variable name expansion
             (require 'env nil :noerror)
             (setq fname (substitute-env-vars fname)))
-          (if (string= (substring fname -1) ":")
+          ;; If the file name ends with  a colon, remove it.
+          (if (and (> (length fname) 1)
+                   (string= (substring fname -1) ":"))
               (substring fname 0 -1)
             fname))))))
 
@@ -642,7 +672,10 @@ probably have to be modified to be a user option in a future version. "
 (defun pel-show-filename-at-point ()
   "Display file name at point in the mini-buffer."
   (interactive)
-  (message "File name :=「%s」" (pel-filename-at-point)))
+  (let ((fname (pel-filename-at-point)))
+    (if (> (length fname) 0)
+        (message "File name :=「%s」" fname)
+      (user-error "Nothing found! Possible PEL error for this mode?"))))
 
 ;;-pel-autoload
 (defun pel-load-visited-file (&optional use-elc)

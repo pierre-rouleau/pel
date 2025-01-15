@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-06-09 15:47:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-01-15 11:45:56 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2025  Pierre Rouleau
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -102,25 +102,29 @@ If ALLOW-SPACE is non-nil, then the space character is never included
 in the delimiters so it becomes possible to capture a delimited string with
 spaces even when point is located between the delimiters."
   (save-excursion
-    (let* (p1
-           p2
-           (at-delimiter (string-match-p (regexp-quote (string (char-after)))
-                                         delimiters))
-           (delimiters (if (or at-delimiter allow-space)
-                           delimiters
-                         (concat " " delimiters)))
-           ;; skip all BUT those delimiters
-           (delimiters (concat "^" delimiters)))
-      (if at-delimiter
-          ;; when at first delimiter move in the string.
-          (forward-char)
-        ;; otherwise search backward for the first delimiter
-        (skip-chars-backward delimiters))
-      (setq p1 (point))
-      ;; move to the second delimiter
-      (skip-chars-forward delimiters)
-      (setq p2 (point))
-      (buffer-substring-no-properties p1 p2))))
+    (let ((next-char (char-after)))
+      (if next-char
+          (let* (p1
+                 p2
+                 (at-delimiter (string-match-p (regexp-quote (string next-char))
+                                               delimiters))
+                 (delimiters (if (or at-delimiter allow-space)
+                                 delimiters
+                               (concat " " delimiters)))
+                 ;; skip all BUT those delimiters
+                 (delimiters (concat "^" delimiters)))
+            (if at-delimiter
+                ;; when at first delimiter move in the string.
+                (forward-char)
+              ;; otherwise search backward for the first delimiter
+              (skip-chars-backward delimiters))
+            (setq p1 (point))
+            ;; move to the second delimiter
+            (skip-chars-forward delimiters)
+            (setq p2 (point))
+            (buffer-substring-no-properties p1 p2))
+        ;; If no next char return empty string
+        ""))))
 
 ;; ---------------------------------------------------------------------------
 ;; Read Customize Symbol at point

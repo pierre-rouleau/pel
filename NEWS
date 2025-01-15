@@ -2,6 +2,23 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- *pel-open-at-point* (which is bound to ~<M-<f6>~ and ~<f11> f .~) is now able to open
+  remote files or directories that are expressed with Tramp-compliant syntax.
+  Note that it was and continues to be possible to use
+  *pel-set-open-at-point-dir* (which is bound to ~<f11> f ;~ ) to set the
+  default directory to a remote host directory and then use pel-open-at-point
+  on relative path-names to open file or directories in that remote host.
+  - The change is in pel-filename-parts-at-point which uses tram functions and
+    one I could not find in tramp code: *pel--tramp-remote-spec*.
+- Modified the key binding of *pel-show-filemng-status* from ~<f11> f ?~ to
+  ~<f11> f ? ?~ to allow adding commands to the ~<f11> f ?~ prefix:
+  - Added ~<f11> f ? n~ binding to *pel-show-filename-at-point*
+  - Added ~<f11> f ? N~ binding to *pel-show-filename-parts-at-point*.  These
+    2 commands are useful to verify how PEL picks up and interpret the file
+    name at point in various major modes.
+- *pel-show-filemng-status* now also prints the file name or the buffer name
+  if point is inside a buffer.  The command was always able to display the
+  information inside a buffer but was not explicit about it.  Now it is.
 - Add *pel-perl-show-status*, bound to ~<f12><f4> ?~, to show cperl-mode sindentation style control variables and eventually others.
 - Add *pel-perl-set-style*, bound to ~<f12><f4> <tab>~, to set new or restore previously used indentation style.
 - Add *pel-perl-show-style*, bound to ~<f12><f4> s~ to show currently used indentation style.

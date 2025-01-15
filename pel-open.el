@@ -175,9 +175,12 @@ Copy the content of the URL into a temporary file, then open that file."
   "Display status of various file management controls."
   (interactive)
   (message "\
+- In: %s:
 - File encoding                             : %s
 - pel-open-at-point relative path resolution: %s
 - ido-use-filename-at-point                 : %s, ido-use-url-at-point : %s"
+           (or  (pel-current-buffer-filename nil nil :no-error)
+                (format "buffer %s" (current-buffer)))
            buffer-file-coding-system
            (pel--open-file-at-point-dir-string-for
             pel--open-file-at-point-dir)
@@ -186,9 +189,9 @@ Copy the content of the URL into a temporary file, then open that file."
                 ido-use-filename-at-point)
              "Not loaded")
            (if (boundp 'ido-use-url-at-point)
-                 (pel-ido-use-url-at-point-string-for
-                  ido-use-url-at-point)
-               "Not loaded")))
+               (pel-ido-use-url-at-point-string-for
+                ido-use-url-at-point)
+             "Not loaded")))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel-open)
