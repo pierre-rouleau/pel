@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags file for Perl source code files.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-13 09:01:34 EST, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-14 16:10:01 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -217,6 +217,7 @@ else
     # Ensure that each directory specified on the command line
     # exists.  Also ensure that a directory name is not specified more
     # than once.  Use the realpath of that directory name when comparing.
+    # Exit on the first error detected.
     dpaths=
     for dname in "$@"; do
         if [ ! -d "${dname}" ]; then
