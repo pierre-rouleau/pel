@@ -151,7 +151,8 @@ but *only* when the complete string is enclosed in double quotes
         (cons 'http str)
       (if (string-match-p "\\`file://" str)
           (cons 'http str)
-
+        ;; Try several regular expressions to handle several possible cases.
+        ;;
         ;; - Regexp provides ability to match with and without line and columns
         ;; - If line is present it's a number between 2 separators, with each
         ;;   each separator being either ':' or '@' with optional spaces.
@@ -177,64 +178,99 @@ but *only* when the complete string is enclosed in double quotes
         ;; Note: The regexp is split to fit in 80 columns: the G-g identify
         ;;       the beginning and end of a group in the expression that spans
         ;;       3 lines.
-        (if (string-match
-             ;;
-             ;;
-             (concat
-              ;;             G1         g1    G2      g2  G3 G4 G5        g5
-              ;;             (-----------)   (---------)  (  (  (----------)
-              (format "^\\`\\([a-zA-Z]:\\)?\\([^&%s]+?\\)\\(\\(\\( *[:@] *\\)"
-                      ;; in Perl, allow ':' in paths; it's used in package paths.
-                      (if isin-perl "@" "@:"))
-              ;; G6       g6 g4  G7 G8
-              ;; (---------)  )  (  (----------)
-              "\\([0-9]+?\\)\\)\\(\\( *[:@] *\\)"
-              ;; G9                      g7 g3
-              ;; (---------------------)  )  )
-              "\\([[:alnum:] ,:;\\.]+\\)\\)\\)?\\'")
-             str)
-            (let* ((ddrv_str  (match-string 1 str))
-                   (fpath_str (concat ddrv_str (match-string 2 str)))
-                   ;; line to 0 if no line in str.
-                   (match6    (match-string 6 str))
-                   (line_num  (if match6 (string-to-number match6)))
-                   ;; change line 0 to line 1
-                   (line_num  (if (equal line_num 0) 1 line_num))
-                   ;; column to nil if no line or column in str.
-                   (match9   (match-string 9 str))
-                   (col_num   (when (and match6 match9)
-                                (string-to-number match9)))
-                   (pathname (or (pel--dir-name-if fpath_str directory-only)
-                                 default-directory)))
-              (list (if ddrv_str 'fname-w-ddrv 'fname)
-                    (if isa-tramp-fname
-                        (concat (pel--tramp-remote-fspec full-str) pathname)
-                      pathname)
-                    line_num
-                    col_num))
-          ;; For reasons I don't yet understand, the above regexp does not work
-          ;; if only one separator; with line number follows the file name.
-          ;; So, I try again, with a different regexp, not looking
-          ;; for a column.
-          (if (string-match
-               ;;     G1              G2           G3     G4
-               ;;     (-----------)   (---------)  (   )  (---------)
-               "^\\`\\([a-zA-Z]:\\)?\\([^:@]+?\\)\\(:\\)\\([0-9]+?\\)\\'"
-               str)
-              (let* ((ddrv_str  (match-string 1 str))
-                     (fpath_str (concat ddrv_str (match-string 2 str)))
-                     ;; line to 0 if no line in str.
-                     (line_num  (string-to-number (pel-val-or-default
-                                                   (match-string 4 str) "")))
-                     ;; but change line 0 to line 1
-                     (line_num  (if (equal line_num 0) 1 line_num))
-                     (pathname (pel--dir-name-if fpath_str directory-only)))
-                (list (if ddrv_str 'fname-w-ddrv 'fname)
-                      (if isa-tramp-fname
-                          (concat (pel--tramp-remote-fspec full-str) pathname)
-                        pathname)
-                      line_num
-                      nil))))))))
+        (cond
+         ;; First check file file name with line and columns
+         ((string-match
+           (concat
+            ;;             G1         g1    G2      g2  G3 G4 G5         g5
+            ;;             (-----------)   (---------)  (  (  (-----------)
+            (format "^\\`\\([a-zA-Z]:\\)?\\([^&%s]+?\\)\\(\\(\\( *[:@] *\\)"
+                    ;; in Perl, allow ':' in paths; it's used in package paths.
+                    (if isin-perl "@" "@:"))
+            ;; G6       g6 g4  G7 G8
+            ;; (---------)  )  (  (----------)
+            "\\([0-9]+?\\)\\)\\(\\( *[:@] *\\)"
+            ;; G9                      g7 g3
+            ;; (---------------------)  )  )
+            "\\([[:alnum:] ,:;\\.]+\\)\\)\\)?\\'")
+           str)
+          (let* ((ddrv_str  (match-string 1 str))
+                 (fpath_str (concat ddrv_str (match-string 2 str)))
+                 ;; line to 0 if no line in str.
+                 (match6    (match-string 6 str))
+                 (line_num  (if match6 (string-to-number match6)))
+                 ;; change line 0 to line 1
+                 (line_num  (if (equal line_num 0) 1 line_num))
+                 ;; column to nil if no line or column in str.
+                 (match9   (match-string 9 str))
+                 (col_num   (when (and match6 match9)
+                              (string-to-number match9)))
+                 (pathname (or (pel--dir-name-if fpath_str directory-only)
+                               default-directory)))
+            (list (if ddrv_str 'fname-w-ddrv 'fname)
+                  (if isa-tramp-fname
+                      (concat (pel--tramp-remote-fspec full-str) pathname)
+                    pathname)
+                  line_num
+                  col_num)))
+         ;; If that fails, check for file and line only.
+         ;;  For reasons I don't yet understand, the first regexp does not work
+         ;;  if only one separator; with line number follows the file name.
+         ;;  So, I try again, with a different regexp, not looking
+         ;;  for a column.
+         ((string-match
+           ;;     G1              G2           G3     G4
+           ;;     (-----------)   (---------)  (   )  (---------)
+           "^\\`\\([a-zA-Z]:\\)?\\([^:@]+?\\)\\(:\\)\\([0-9]+?\\)\\'"
+           str)
+          (let* ((ddrv_str  (match-string 1 str))
+                 (fpath_str (concat ddrv_str (match-string 2 str)))
+                 ;; line to 0 if no line in str.
+                 (line_num  (string-to-number (pel-val-or-default
+                                               (match-string 4 str) "")))
+                 ;; but change line 0 to line 1
+                 (line_num  (if (equal line_num 0) 1 line_num))
+                 (pathname (pel--dir-name-if fpath_str directory-only)))
+            (list (if ddrv_str 'fname-w-ddrv 'fname)
+                  (if isa-tramp-fname
+                      (concat (pel--tramp-remote-fspec full-str) pathname)
+                    pathname)
+                  line_num
+                  nil)))
+         ;; If the above two fail, check for a file name followed by the first
+         ;; line being a shebang line.  The function would only get the #!
+         ;; after the line separator because there's a space in a shebang
+         ;; line.  For example, we could get a string like this as a result
+         ;; for a recursive grep stored in a buffer:
+         ;; somedir/somescript:#! /usr/bin/perl
+         ;;
+         ;; BTW: there's no need to put a shebang line in Perl .pm files
+         ;;      but some people do it anyway for a couple of reasons.
+         ;;      Anyway, this is irrelevant to this elisp code, but that
+         ;;      is just to explain the example.
+         ;;
+         ;; There is no line or column indicator
+         ;; here. Return line 1, nil column.
+         ;; - G1: Windows/DOS disk
+         ;; - G2: file name
+         ((string-match
+           ;;     G1              G2
+           ;;     (-----------)   (---------)
+           "^\\`\\([a-zA-Z]:\\)?\\([^:@]+?\\) *:#!"
+           str)
+          (let* ((ddrv_str  (match-string 1 str))
+                 (fpath_str (concat ddrv_str (match-string 2 str)))
+                 (pathname (pel--dir-name-if fpath_str directory-only)))
+            (list (if ddrv_str 'fname-w-ddrv 'fname)
+                  (if isa-tramp-fname
+                      (concat (pel--tramp-remote-fspec full-str) pathname)
+                    pathname)
+                  1
+                  nil)))
+
+         ;; When nothing matches, return nil
+         (t nil)
+         )))))
 
 (defun pel-prompt-for-filename (default-filename)
   "Prompt for a file name, with DEFAULT-FILENAME shown.
