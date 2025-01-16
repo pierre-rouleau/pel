@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags file for Perl source code files.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-16 10:11:48 EST, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-16 15:35:22 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -229,20 +229,20 @@ else
         for dp in ${dpaths}; do
             if [ "$dp" = "$dpath" ]; then
                 printf -- "Multiple entry of directory: %s\n" "${dname}"
-                exit 3
+                #exit 3
             fi
             # check if new entry is a sub-directory of an exiting entry
             case "${dpath}" in
-                "${dp}"*)
+                "${dp}/"*)
                     printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}"
-                    exit 3
+                    #exit 3
                     ;;
             esac
             # check if new entry is a parent directory of an existing entry
-            case "${dp}" in
+            case "${dp}/" in
                 "${dpath}"*)
                     printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}"
-                    exit 3
+                    #exit 3
                     ;;
             esac
 
@@ -287,10 +287,23 @@ else
     esac
 
     # add shell scripts that use Perl. Exclude perltidy files, Emacs backup and buffers files
+    rm -f .etags-perl-files.0.txt
     if [ -x "$(command -v rg)" ]; then
-        rg -g !'*.tdy' -g !'*~' -g !'*#' -Nl "^#! /usr/bin/perl" > .etags-perl-files.txt
+        if [ -z "$1" ]; then
+            rg -g !'*.tdy' -g !'*~' -g !'*#' -Nl "^#! .+/perl" "$(realpath .)" >> .etags-perl-files.0.txt
+        else
+            for dname in "$@"; do
+                rg -g !'*.tdy' -g !'*~' -g !'*#' -Nl "^#! .+/perl" "$(realpath "$dname")" >> .etags-perl-files.0.txt
+            done
+        fi
     else
-        grep --exclude '*.tdy' --exclude '*~' --exclude '*#'  -r "^#! /usr/bin/perl" > .etags-perl-files.txt
+        if [ -z "$1" ]; then
+            grep --exclude '*.tdy' --exclude '*~' --exclude '*#'  -r -E "^#! .+/perl" "$(realpath .)" >> .etags-perl-files.0.txt
+        else
+            for dname in "$@"; do
+                grep --exclude '*.tdy' --exclude '*~' --exclude '*#' -E -r "^#! .+/perl" "$(realpath "$dname")" >> .etags-perl-files.0.txt
+            done
+        fi
     fi
 
     # Add other Perl files to the file
@@ -308,7 +321,7 @@ else
                  -or -name "*.cgi"         \
                  -or -name "*.psg"         \
                  -or -name "*.psgi"        \
-                 \)  -print >> .etags-perl-files.0.txt
+                 \)  -print  >> .etags-perl-files.0.txt 2> /dev/null
             ;;
 
         fd)
@@ -330,7 +343,7 @@ else
                    -e .cgi            \
                    -e .psg            \
                    -e .psgi           \
-                   . "$@" >> .etags-perl-files.0.txt
+                   . "$@" >> .etags-perl-files.0.txt 2> /dev/null
             ;;
 
         *)
