@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Go source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2024-10-08 10:29:15 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-01-16 17:14:03 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -166,14 +166,14 @@ for dname in "$@"; do
         fi
         # check if new entry is a sub-directory of an exiting entry
         case "${dpath}" in
-            "${dp}"*)
+            "${dp}/"*)
                 printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}"
                 exit 3
                 ;;
         esac
         # check if new entry is a parent directory of an existing entry
         case "${dp}" in
-            "${dpath}"*)
+            "${dpath}/"*)
                 printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}"
                 exit 3
                 ;;

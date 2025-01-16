@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-01-13 08:50:06 EST, updated by Pierre Rouleau>
+#  Time-stamp: <2025-01-16 17:13:01 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -206,14 +206,14 @@ else
             fi
             # check if new entry is a sub-directory of an exiting entry
             case "${dpath}" in
-                "${dp}"*)
+                "${dp}/"*)
                     printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}"
                     exit 3
                     ;;
             esac
             # check if new entry is a parent directory of an existing entry
             case "${dp}" in
-                "${dpath}"*)
+                "${dpath}/"*)
                     printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}"
                     exit 3
                     ;;

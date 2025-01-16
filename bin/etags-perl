@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags file for Perl source code files.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-16 15:35:22 EST, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-16 17:09:11 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -239,8 +239,8 @@ else
                     ;;
             esac
             # check if new entry is a parent directory of an existing entry
-            case "${dp}/" in
-                "${dpath}"*)
+            case "${dp}" in
+                "${dpath}/"*)
                     printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}"
                     #exit 3
                     ;;
