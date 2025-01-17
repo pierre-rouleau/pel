@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags file for Perl source code files.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-17 14:59:34 EST, updated by Pierre Rouleau>
+# Time-stamp: <2025-01-17 16:23:20 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -289,18 +289,18 @@ else
     rm -f .etags-perl-files.0.txt
     if [ -x "$(command -v rg)" ]; then
         if [ -z "$1" ]; then
-            rg -g !'*.tdy' -g !'*~' -g !'*#' -Nl "^#! .+/perl" "$(realpath .)" >> .etags-perl-files.0.txt
+            rg -g !'*.tdy' -g !'*~' -g !'*#' -Nl "^#! .+/perl" "$(realpath .)" >> .etags-perl-files.0.txt 2> /dev/null
         else
             for dname in "$@"; do
-                rg -g !'*.tdy' -g !'*~' -g !'*#' -Nl "^#! .+/perl" "$(realpath "$dname")" >> .etags-perl-files.0.txt
+                rg -g !'*.tdy' -g !'*~' -g !'*#' -Nl "^#! .+/perl" "$(realpath "$dname")" >> .etags-perl-files.0.txt 2> /dev/null
             done
         fi
     else
         if [ -z "$1" ]; then
-            grep --exclude '*.tdy' --exclude '*~' --exclude '*#'  -r -E "^#! .+/perl" "$(realpath .)" >> .etags-perl-files.0.txt
+            grep --exclude '*.tdy' --exclude '*~' --exclude '*#'  -r -E "^#! .+/perl" "$(realpath .)" >> .etags-perl-files.0.txt  2> /dev/null
         else
             for dname in "$@"; do
-                grep --exclude '*.tdy' --exclude '*~' --exclude '*#' -E -r "^#! .+/perl" "$(realpath "$dname")" >> .etags-perl-files.0.txt
+                grep --exclude '*.tdy' --exclude '*~' --exclude '*#' -E -r "^#! .+/perl" "$(realpath "$dname")" >> .etags-perl-files.0.txt 2> /dev/null
             done
         fi
     fi
