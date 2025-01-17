@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix problem with *pel-delete-to-next-visible* not previously deleting all
+  whitespace when there's several lines between point and the next
+  non-whitespace.  It's now also able to delete backwards when provided with a
+  negative argument.
 - *pel-open-at-point* (which is bound to ~<M-<f6>~ and ~<f11> f .~) is now able to open
   remote files or directories that are expressed with Tramp-compliant syntax.
   Note that it was and continues to be possible to use

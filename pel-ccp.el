@@ -1,6 +1,6 @@
 ;;; pel-ccp.el --- PEL cut & paste, etc... -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -717,14 +717,16 @@ All copy operations are performed by `kill-ring-save'."
 ;; Delete whitespace between point and next non-whitespace
 ;; -------------------------------------------------------
 ;;-pel-autoload
-(defun pel-delete-to-next-visible ()
-  "Delete all whitespace between point and next non-whitespace character."
-  (interactive "*")
+(defun pel-delete-to-next-visible (&optional n)
+  "Delete all whitespace between point and next non-whitespace character.
+
+Repeat N times if specified.  With negative numeric argument delete backwards."
+  (interactive "*P")
   (if (and (require 'pel-navigate nil :no-error)
            (fboundp 'pel-next-visible))
       (progn
         (set-mark-command nil)
-        (pel-next-visible 1)
+        (call-interactively (function pel-next-visible) t (vector n))
         (backward-delete-char-untabify 1))
     (error "Function pel-next-visible not loaded")))
 

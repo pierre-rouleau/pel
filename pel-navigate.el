@@ -1,6 +1,6 @@
 ;;; pel-navigate.el --- PEL Navigation Support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2023, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -68,6 +68,12 @@
 (require 'subword)                      ; use: superword-mode
 
 ;; ---------------------------------------------------------------------------
+;; [:todo 2025-01-17, by Pierre Rouleau: Consolidate with pel-next-visible and
+;; pel-previous-visible and reduce the number of available commands while
+;; providing the best control.  There's overlap between these 2 sets of
+;; functions and the difference of behavious issubtle depending of the major
+;; mode of the buffer.]
+
 ;; Move to next space
 (defun pel-to-forward-space ()
   "Move point to the next space character."
@@ -398,7 +404,7 @@ On reaching end of buffer, stop and signal error."
 - Handles `shift-select-mode' so when the Shift key is pressed, the movement
   extends the marked region."
   (interactive "^P")
-  (forward-whitespace (prefix-numeric-value n)))
+  (call-interactively (function pel-forward-token-start) t (vector n)))
 
 ;;-pel-autoload
 (defun pel-previous-visible (&optional n)
@@ -408,7 +414,7 @@ On reaching end of buffer, stop and signal error."
 - Handles `shift-select-mode' so when the Shift key is pressed, the movement
   extends the marked region."
   (interactive "^P")
-  (forward-whitespace (- (prefix-numeric-value n))))
+  (call-interactively (function pel-backward-token-start) t (vector n)))
 
 ;; ---------------------------------------------------------------------------
 ;; Navigate to beginning/end of line/window/buffer
