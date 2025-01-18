@@ -92,24 +92,44 @@ In that case return the directory part of PATH-NAME."
       (file-name-directory path-name)
     path-name))
 
+(defun pel--show-tramp-fspec (fname)
+  "Return alist of Tramp file specification elements for FNAME.
+The keys are: method, user, domain, host, port, localname, and hop.
+"
+  (with-parsed-tramp-file-name fname e
+    (list  (cons 'method e-method)
+           (cons 'user e-user)
+           (cons 'domain e-domain)
+           (cons 'host e-host)
+           (cons 'port e-port)
+           (cons 'localname  e-localname)
+           (cons 'hop e-hop))))
+
 (defun pel--tramp-remote-fspec (fname)
   "Return the Tramp-compliant remote part of a tramp-filename.
 
-For example, for FNAME set to
-\"/ssh:root@192.168.0.26#84:/somedir/somefile/test.txt\"
-it returns \"/ssh:root@192.168.0.26#84:\".
+For example, for FNAME set to:
+
+- \"/ssh:root@192.168.0.26#84:/somedir/somefile/test.txt\",
+  returns: \"/ssh:root@192.168.0.26#84:\".
+- \"/sudo::/abc/def.t.txt\", returns: \"/sudo::\".
 
 If the file name does not hold any Tramp-specific component, the
 function returns nil."
-  ;; [:todo 2025-01-15, by Pierre Rouleau: use with-parsed-tramp-file-name
-  ;; instead  of the explicit extraction.  That will provide a way to deal
-  ;; with the domain and hop, in case something special has to be done with it.]
   (when (tramp-tramp-file-p fname)
-    (string-match (nth 0 tramp-file-name-structure) fname)
-    (let ((method (match-string 5 fname))
-          (user   (match-string 6 fname))
-          (host   (match-string 7 fname)))
-      (format "/%s:%s@%s:" method user host))))
+    (with-parsed-tramp-file-name fname e
+      (cond
+       ((member e-method '("sudo" "su" "sudoedit" "doas" "sg"))
+        (format "/%s::" e-method))
+
+       ((string-equal e-method "rclone")
+        (format "/%s:%s:" e-method e-host))
+
+       (t (format "/%s:%s@%s%s:"
+                  e-method
+                  e-user
+                  e-host
+                  (if e-port (format "#%s" e-port) "")))))))
 
 (defun pel-filename-parts-at-point (&optional keep-file-url directory-only)
   "Extract and return (filename line column) from string at point.
