@@ -380,7 +380,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-find-file-at-point-in-window
     pel-load-visited-file
     pel-open-file-in-other-dir
-    pel-open-file-alternate)
+    pel-open-file-alternate
+    pel-show-rpm-providing-file)
 
   (pel-autoload "pel-filex" for:
     pel-open-in-os-app

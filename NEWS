@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add the *pel-show-rpm-providing-file* command bound to ~<f11> f ? r~ on Linux systems.
+  This command prints the name of the RPM that provides the current buffer's file.
+  It supports remove files accessed via Tramp.
 - Fix problem with *pel-delete-to-next-visible* not previously deleting all
   whitespace when there's several lines between point and the next
   non-whitespace.  It's now also able to delete backwards when provided with a

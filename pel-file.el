@@ -825,6 +825,32 @@ This is very limited as it is.  It will be improved later."
             (setq kill-ring (cdr kill-ring))))
       (user-error "No alternate extension for %s" ext))))
 
+;; --
+(defun pel-shell-command-on-current-file (command-format)
+  "Execute command identified by COMMAND-FORMAT on current buffer file.
+
+The COMMAND-FORMAT *must* be a string that has *one* \"%s\" format specifier:
+this is where the file name will be placed in the command.
+
+This can be issued inside any file buffer, even buffer holding
+local or remote files accessed via Tramp."
+  (let* ((full-filename (pel-current-buffer-filename))
+	 (handler (find-file-name-handler full-filename 'shell-command))
+	 (command (format command-format
+			  (if (tramp-tramp-file-p full-filename)
+			      (with-parsed-tramp-file-name full-filename e
+				e-localname)
+			    full-filename))))
+    (if handler
+	(apply handler 'shell-command (list command))
+      (shell-command command))))
+
+;;-pel-autoload
+(defun pel-show-rpm-providing-file ()
+  "Print the name of the RPM providing the file in current buffer."
+  (interactive)
+  (pel-shell-command-on-current-file "rpm -qf %s"))
+
 ;; -----------------------------------------------------------------------------
 (provide 'pel-file)
 

@@ -6804,6 +6804,8 @@ the ones defined from the buffer now."
 (define-key pel:file-help "?" 'pel-show-filemng-status)
 (define-key pel:file-help "n" 'pel-show-filename-at-point)
 (define-key pel:file-help "N" 'pel-show-filename-parts-at-point)
+(when pel-system-is-linux-p
+  (define-key pel:file-help "r" 'pel-show-rpm-providing-file))
 
 
 (when pel-use-popup-switcher
