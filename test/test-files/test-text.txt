@@ -110,14 +110,21 @@ typedef struct s1
 typedef struct __attribute__ ((__packed__)) packed_s1
 {
     iint i1;
+
+
     cchar c1;
-} packed_s1_t;
+
+
+
+}            packed_s1_t;
 
 
 #define PRINTFOR(type) printf("sizeof(%25s) = %lu\n", #type, sizeof(type))
 
 int main(int argc, char* argv[])
 {
+
+
 
     printf("Data Types:\n");
 
