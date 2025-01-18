@@ -10297,8 +10297,8 @@ emacs-regex-to-match-balanced-parenthesis")
   "Select the search tool used when Emacs starts.
 PEL supports the following tools:
 - nil      : use Emacs default
-- `anzu'   : use Anzu globally to display search match counts in modeline.
-- `swiper' : use Swiper to display search mathes list in minibuffer."
+- `anzu'   : use iSearch with Anzu globally to display search match counts in modeline.
+- `swiper' : use Swiper to display search matches list in minibuffer."
   :group 'pel-pkg-for-search
   :type '(choice
           (const :tag "Use Emacs default" nil)
