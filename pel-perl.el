@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-01-12 23:10:10 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-01-23 18:25:52 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -50,16 +50,22 @@ With optional VERBOSE prefix argument, print extra information:
 
 Show errors in compilation-mode buffer in a format that allows navigation."
   (interactive "P")
-  (if (executable-find "perlcritic")
-      (compile
-       ;; use a format that can be used by the compile mode to move to the error.
-       (format
-        (if verbose
-            "perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s, %%C:\\t%%m.\\n  %%P (%%e):\\n%%d\\n\" %s"
-          "perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s:\\t%%m.\\t(%%e)\\n\" %s")
-        (shell-quote-argument (buffer-file-name)))
-       nil)
-    (user-error "Please install perlcritic")))
+  (save-excursion
+    ;; Ensure that perl-critic is executed in the context of the directory
+    ;; holding the file visited in the buffer. This prevents using the current
+    ;; directory of the Emacs session set to another host directory when
+    ;; several buffers access remote files via Tramp.
+    (let ((default-directory (file-name-directory (buffer-file-name))))
+      (if (executable-find "perlcritic")
+	  (compile
+	   ;; use a format that can be used by the compile mode to move to the error.
+	   (format
+            (if verbose
+		"perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s, %%C:\\t%%m.\\n  %%P (%%e):\\n%%d\\n\" %s"
+              "perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s:\\t%%m.\\t(%%e)\\n\" %s")
+            (shell-quote-argument (buffer-file-name)))
+	   nil)
+	(user-error "Please install perlcritic")))))
 
 ;; ----
 (defun pel-perl-source-directories (&optional directories)
