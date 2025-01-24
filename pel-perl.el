@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-01-23 18:25:52 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-01-23 21:07:48 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,6 +33,7 @@
 ;;
 (require 'pel--base)              ; use: `pel-filesep', `pel-print-in-buffer'
 (require 'pel-ffind)              ; use: `pel-ffind'
+(require 'tramp)                  ; use: `tramp-tramp-file-p', `tramp-file-local-name'
 (eval-when-compile
   (require 'subr-x))              ; use: string-join, string-trim
 
@@ -55,15 +56,19 @@ Show errors in compilation-mode buffer in a format that allows navigation."
     ;; holding the file visited in the buffer. This prevents using the current
     ;; directory of the Emacs session set to another host directory when
     ;; several buffers access remote files via Tramp.
-    (let ((default-directory (file-name-directory (buffer-file-name))))
-      (if (executable-find "perlcritic")
+    (let* ((current-filename (buffer-file-name))
+           (default-directory (file-name-directory current-filename))
+           (is-a-tramp-fname (tramp-tramp-file-p current-filename)))
+      (if (executable-find "perlcritic" is-a-tramp-fname)
 	  (compile
 	   ;; use a format that can be used by the compile mode to move to the error.
 	   (format
             (if verbose
 		"perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s, %%C:\\t%%m.\\n  %%P (%%e):\\n%%d\\n\" %s"
               "perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s:\\t%%m.\\t(%%e)\\n\" %s")
-            (shell-quote-argument (buffer-file-name)))
+            (shell-quote-argument (if is-a-tramp-fname
+                                      (tramp-file-local-name current-filename)
+                                    current-filename)))
 	   nil)
 	(user-error "Please install perlcritic")))))
 
