@@ -1,6 +1,6 @@
 ;;; pel-xref.el --- xref cross referencing utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -545,8 +545,8 @@ dedicated buffer."
   - xref-backend-functions   : %s
    - xref-etags mode         : %s
     - tags-file-name         : %s
-      - modify it with       : M-x visit-tags-table
-    * tags-table-list        : %S
+      - modify it with       : M-x visit-tags-table : <f11> X t
+    * tags-table-list        : %S : set tags-add-tables to 'ask'
    - gxref                   : %s %s
    - rtags-xref (for C/C++)  : %s
   * xref-show-xrefs-function : %s
