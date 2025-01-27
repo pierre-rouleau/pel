@@ -246,7 +246,10 @@
 ;; - `pel-line-has-only-whitespace-p'
 ;;
 ;; File Path processing
+;; - `pel-is-subdir-of'
+;;   - `pel-normalize-fname'
 ;; - `pel-parent-dirpath'
+;;   - `pel-normalize-fname'
 ;; - `pel-sibling-dirpath'
 ;; - `pel-expand-url-file-name'
 ;; - `pel-path-strip'
@@ -2777,6 +2780,13 @@ and use Unix-style formatting.  The function replaces a symlink
 by the file it points to.  The function does *not* expand
 environment variables that may be in the string."
   (directory-file-name (file-truename name)))
+
+(defun pel-is-subdir-of (path1 path2)
+  "Return t if PATH1 is a sub-directory of PATH2."
+  (let ((npath1 (pel-normalize-fname path1))
+        (npath2 (pel-normalize-fname path2)))
+    (when (string-match-p (regexp-quote npath2) npath1)
+      t)))
 
 (defsubst pel-parent-dirpath (pathname)
   "Return parent directory of PATHNAME true name."
