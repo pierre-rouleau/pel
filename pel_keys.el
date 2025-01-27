@@ -7239,7 +7239,10 @@ the ones defined from the buffer now."
 
 
 (when pel-use-deadgrep
-  (pel-ensure-package deadgrep from: melpa)
+  (pel-install-github-file "pierre-rouleau/deadgrep/master" "deadgrep.el")
+  (pel-autoload-file deadgrep for: deadgrep)
+  ;; (pel-ensure-package deadgrep from: melpa)
+
   (define-key pel:grep  "d"     'deadgrep)
   (pel-eval-after-load deadgrep
     (when (boundp 'deadgrep-mode-map)

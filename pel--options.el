@@ -2216,12 +2216,17 @@ The deadgrep Emacs packages uses the ripgrep command line utility
 and implements a search mechanism that uses a dedicated deadgrep
 buffer with buttons that provide extra commands.
 It works well with Emacs in graphics mode with the mouse.
-It also supports the terminal mode."
+It also supports the terminal mode.
+
+For the moment PEL uses my fork, which provides more features."
+  :link '(url-link :tag "my fork of deadgrep @ GitHub"
+                   "https://github.com/pierre-rouleau/deadgrep")
   :link '(url-link :tag "deadgrep @ GitHub"
                    "https://github.com/Wilfred/deadgrep")
   :group 'pel-pkg-for-grep
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-deadgrep :package-is :in-utils)
 
 (defcustom pel-use-ripgrep nil
   "Control whether PEL uses the ripgrep tool and its associated packages.
