@@ -4667,7 +4667,13 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-key pel:for-perl "c"              'pel-perl-critic)
 
   (when pel-perl-mode
-    ;; pel-per-mode is nil when perl-mode is requested, non-nil for cperl-mode
+    ;; pel-perl-mode is nil when perl-mode is requested and non-nil for any of
+    ;; the more advanced cperl-mode.  - Force using the selected cperl-mode
+    ;; when perl-mode is explicitly requested inside a file via the file local
+    ;; variable settings.
+    (defalias 'perl-mode 'cperl-mode)
+
+    ;; Activate cperl-mode
     (setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
     (setq interpreter-mode-alist
           (rassq-delete-all 'perl-mode interpreter-mode-alist))
