@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-01-10 10:50:47 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-02-01 17:18:53 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1037,6 +1037,7 @@ There should be no key binding!" keyseq))
     ("bash-info"        . "lang/bash")
     ("sh-info"          . "lang/sh")
     ("zsh-info"         . "lang/zsh")
+    ("perl5"            . "lang/perl5")
     ("perl-info"        . "lang/perl5")
     ;; cmd sub-directory PDF
     ("ls"               . "cmd/ls")
