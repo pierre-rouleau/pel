@@ -4703,13 +4703,14 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
     (when pel-use-perl-live-coding
       (pel-install-github-files "pierre-rouleau/perl-live/master"
-				'("perl-live.el" "perl-live.pl"))
+				                '("perl-live.el" "perl-live.pl"))
       (pel-autoload "perl-live" for: perl-live-eval
-		    perl-live-eval-region
-		    perl-live-eval-line
-		    perl-live-eval-region-or-line
-		    perl-live-eval-sexp
-		    perl-live-run)))
+		            perl-live-eval-region
+		            perl-live-eval-line
+		            perl-live-eval-region-or-line
+		            perl-live-eval-sexp
+		            perl-live-run)
+      (define-key pel:for-perl "l"  'perl-live-run)))
 
   (add-to-list 'auto-mode-alist  '("\\.?perltidyrc\\'" . conf-unix-mode))
   ;; Associate file to major-mode for Perl
