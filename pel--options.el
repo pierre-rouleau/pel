@@ -9460,7 +9460,7 @@ files from the PEL utils directory."
           (const :tag "Use HaraldJoerg/cperl-mode" HaraldJoerg/cperl-mode)))
 
 (defcustom pel-use-perl-repl nil
-  "Control whether PEL supports the perl-repl package"
+  "Control whether PEL supports the perl-repl package."
   :link '(url-link
           :tag "perl-repl @Github"
           "https://github.com/pierre-rouleau/perl-repl-el/blob/master/perl-repl.el")
@@ -9468,6 +9468,30 @@ files from the PEL utils directory."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-perl-repl :package-is :in-utils)
+
+;; [:todo 2025-02-04, by Pierre Rouleau: Add perlenv support once
+;;                    I have time to look into a top-level integration
+;;                    strategy that would work with customization. ]
+;; (defcustom pel-use-perlenv nil
+;;   "Control whether PEL supports the perlenv package."
+;;   :link '(url-link
+;;           :tag "perlenv @Github"
+;;           "https://github.com/corund/perlenv")
+;;   :group 'pel-pkg-for-perl
+;;   :type 'boolean
+;;   :safe #'booleanp)
+;; (pel-put 'pel-use-perlenv :package-is :in-utils)
+
+(defcustom pel-use-perl-live-coding nil
+  "Control whether PEL supports the perl-live-coding."
+  :group 'pel-pkg-for-perl
+  :link '(url-link :tag "perl live coding @ Github"
+		           "https://github.com/vividsnow/perl-live")
+  :link '(url-link :tag "my fork @ Github"
+		           "https://github.com/pierre-rouleau/perl-live")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-perl-live-coding :package-is :in-utils)
 
 ;; - - - - - - - - - - - - - - - -
 (defgroup pel-pkg-for-perl-general nil

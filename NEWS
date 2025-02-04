@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support to perl-live-coding when *pel-use-perl-live-coding* user-option is set.
+  This provides a very nice and powerful dynamic Perl environment.
 - Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/perl5.pdf][Perl5]] PDF that gives an overview of Perl 5 features with lots of links.
   Open it with ~<f11> p perl5~ or with ~<f11> p perl-info~ .
 - Add the *pel-show-rpm-providing-file* command bound to ~<f11> f ? r~ on Linux systems.

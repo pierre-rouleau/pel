@@ -4699,7 +4699,18 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (when pel-use-iedit
       (pel-eval-after-load cperl-mode
         (require 'pel-sh-iedit)
-        (add-hook 'cperl-mode-hook 'pel-cperl-iedit-enhance))))
+        (add-hook 'cperl-mode-hook 'pel-cperl-iedit-enhance)))
+
+    (when pel-use-perl-live-coding
+      (pel-install-github-files "pierre-rouleau/perl-live/master"
+				'("perl-live.el" "perl-live.pl"))
+      (pel-autoload "perl-live" for: perl-live-eval
+		    perl-live-eval-region
+		    perl-live-eval-line
+		    perl-live-eval-region-or-line
+		    perl-live-eval-sexp
+		    perl-live-run)))
+
   (add-to-list 'auto-mode-alist  '("\\.?perltidyrc\\'" . conf-unix-mode))
   ;; Associate file to major-mode for Perl
   (let ((selected-perl-mode (if pel-perl-mode 'cperl-mode 'perl-mode)))
