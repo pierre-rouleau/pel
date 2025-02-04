@@ -4710,7 +4710,13 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 		            perl-live-eval-region-or-line
 		            perl-live-eval-sexp
 		            perl-live-run)
-      (define-key pel:for-perl "l"  'perl-live-run)))
+      (defun pel-perl-live-run ()
+        "Start perl-live-run and move to the buffer."
+        (interactive)
+        (when (fboundp 'perl-live-run)
+          (call-interactively (function perl-live-run))
+          (switch-to-buffer "*perl-live*")))
+      (define-key pel:for-perl "l"  'pel-perl-live-run)))
 
   (add-to-list 'auto-mode-alist  '("\\.?perltidyrc\\'" . conf-unix-mode))
   ;; Associate file to major-mode for Perl
