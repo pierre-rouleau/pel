@@ -4715,7 +4715,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
         (interactive)
         (when (fboundp 'perl-live-run)
           (call-interactively (function perl-live-run))
-          (switch-to-buffer "*perl-live*")))
+          (switch-to-buffer "*perl live*")))
       (define-key pel:for-perl "l"  'pel-perl-live-run)))
 
   (add-to-list 'auto-mode-alist  '("\\.?perltidyrc\\'" . conf-unix-mode))
