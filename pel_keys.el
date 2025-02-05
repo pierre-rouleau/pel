@@ -4733,7 +4733,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:perl-setup "s" 'pel-perl-show-style)
     (define-key pel:perl-setup (kbd "C-i") 'pel-perl-set-style)
 
-    (define-key pel:for-perl "?"       'cperl-perldoc-at-point)
+    (define-key pel:for-perl (kbd "<f12>") 'cperl-perldoc-at-point)
+    (define-key pel:for-perl "h"       'cperl-perldoc)
     (define-key pel:for-perl "|"       'cperl-lineup))
 
   ;; the perl-mode is part of Emacs

@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Change Perl key bindings: *cperl-perldoc-at-point* PEL extra binding changed from ~<f12> ?~ to ~<f12><f12>~.
+  An the *cperl-perldoc* now has an extra key binding to ~<f12> h~ to make it simpler to type the perldoc
+  option such as ~<f12> h -f~ to search for a specific function name.
 - Add support to perl-live-coding when *pel-use-perl-live-coding* user-option is set.
   This provides a very nice and powerful dynamic Perl environment.
   Also added the ~<f12> l~ key binding to *perl-live-run*
