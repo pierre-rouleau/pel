@@ -6946,7 +6946,9 @@ amount of time to search for a project (even with fd)."
   :type 'boolean
   :safe #'booleanp
   :link `(url-link :tag "Lispy PDF" ,(pel-pdf-file-url "plm-lispy"))
-  :link '(url-link :tag "abo-abo lispy" "https://github.com/abo-abo/lispy"))
+  :link '(url-link :tag "abo-abo lispy" "https://github.com/abo-abo/lispy")
+  :link '(url-link :tag "enzuru fork; temporary maintenance"
+                   "https://github.com/enzuru/lispy"))
 
 (defconst pel-allowed-modes-for-lispy
   '(emacs-lisp-mode                     ; Emacs Lisp  - Lisp 2 for Emacs
