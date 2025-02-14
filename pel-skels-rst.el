@@ -1,6 +1,6 @@
 ;;; pel-skels-rst.el --- Tempo skeletons for reStructuredText  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -63,7 +63,7 @@
      (pel-skel-created-comment "" ":Created: ")
      (pel-skel-author-comment  "" ":Author: ")
      (pel-skel-time-stamp pel-rst-skel-insert-file-timestamp
-                          ""            ; not a comment: place the format string on col 0.
+                          "" ; not a comment: place the format string on col 0.
                           ":Modified: %s%s.")
      (pel-skel-copyright-comment pel-rst-skel-with-license
                                  ""
@@ -74,6 +74,8 @@
      ".. sectnum::" 'n 'n
      (pel-separator-line) 'n 'n 'p
      'n 'n
+     (pel-separator-line) 'n
+     ".. links:" 'n 'p 'n 'n
      (pel-separator-line) 'n
      'n
      ;; Generate the local variable control at the end of the file
