@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- New *pel-emacs-buffer-stats* command, bound to ~<f11> b ?~ instead of pel-show-window-previous-buffer, which
+  remains but is no longer bound to a key.
+  The new command provides more information, listing the count of all buffers and the count of buffer visiting files,
+  special buffers and internal buffers as well as the buffer last used in the current window.
+  The command is also bound to ~<f11> ? e b~.
+  Also added ~<f11> b B~ key binding to *list-buffers* and ~<f11> b m~ to *buffer-menu-open* for awareness.
 - Change Perl key bindings: *cperl-perldoc-at-point* PEL extra binding changed from ~<f12> ?~ to ~<f12><f12>~.
   An the *cperl-perldoc* now has an extra key binding to ~<f12> h~ to make it simpler to type the perldoc
   option such as ~<f12> h -f~ to search for a specific function name.

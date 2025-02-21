@@ -1,6 +1,6 @@
 ;;; pel-emacs.el --- Emacs stats utilities -*- lexical-binding: t -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -238,6 +238,26 @@ Number of global keys (and key prefixes)  : %4d"
            (pel--emacs-command-count)
            (pel--emacs-command-count (function pel--emacs-command-binding))
            (length global-map)))
+
+;; ---------------------------------------------------------------------------
+
+(defun pel-emacs-buffer-stats ()
+  "Print number of buffers buy types and last buffer."
+  (interactive)
+  (let ((special nil)
+        (file-visiting nil)
+        (internal nil))
+    (dolist (bufname (mapcar (function buffer-name) (buffer-list)))
+      (cond
+       ((pel-starts-with-space-p bufname) (push bufname internal))
+       ((pel-string-starts-with-p bufname "*")   (push bufname special))
+       (t (push bufname file-visiting))))
+    (message "%d buffers: %d visiting file, %d special, %d internal. Previous was: %S"
+             (length (buffer-list))
+             (length file-visiting)
+             (length special)
+             (length internal)
+             (other-buffer (current-buffer)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-emacs)

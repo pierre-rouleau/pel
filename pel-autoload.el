@@ -331,7 +331,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-open-emacs-refcard
     pel-emacs-load-stats
     pel-emacs-mem-stats
-    pel-emacs-command-stats)
+    pel-emacs-command-stats
+    pel-emacs-buffer-stats)
 
   (pel-autoload "pel-erlang" for:
     pel-erlang-comma
