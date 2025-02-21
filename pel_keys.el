@@ -6419,7 +6419,7 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:buffer (kbd "<f11> b"))
 (define-pel-global-prefix pel:text-to (kbd "<f11> b t"))
 
-(define-key pel:buffer "B"  #'list-buffers)
+(define-key pel:buffer "B"  #'buffer-menu)
 (define-key pel:buffer "m"  #'buffer-menu-open)
 (define-key pel:buffer "-"  #'ruler-mode)
 (define-key pel:buffer "="  #'diff-buffer-with-file)
