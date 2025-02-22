@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add preliminary support for the Swift programming language when the *pel-use-swift* user option is set to t.
 - Add preliminary support for the Zig programming language when the *pel-use-zig* user option is set to t.
 - New *pel-emacs-buffer-stats* command, bound to ~<f11> b ?~ instead of pel-show-window-previous-buffer, which
   remains but is no longer bound to a key.

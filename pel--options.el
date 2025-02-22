@@ -162,6 +162,7 @@
 ;;       - pel-pkg-for-rust
 ;;       - pel-pkg-for-sh-scripting
 ;;         - pel-sh-script-skeleton-control
+;;       - pel-pkg-for-swift
 ;;       - pel-pkg-for-tcl
 ;;       - pel-pkg-for-v
 ;;       - pel-pkg-for-zig
@@ -9984,6 +9985,51 @@ hard tab when one `pel-sh-use-tabs' is set to t."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Swift Language Support
+;; -----------------------
+(defgroup pel-pkg-for-swift nil
+  "PEL Swift language support."
+  :group 'pel-pkg-for-programming
+  )
+
+(defcustom pel-use-swift nil
+  "Control whether PEL supports the Swift Programming Language Development."
+  :group 'pel-pkg-for-swift
+  :type 'boolean
+  :safe #'booleanp)
+
+
+(defcustom pel-swift-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Swift buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-swift
+  :type '(repeat function))
+
+(defcustom pel-swift-tab-width 4
+  "Distance between tab stop for swift buffers.
+
+PEL stores this in `tab-width' when opening swift buffers.
+
+This does *NOT* control the indentation in swift
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-swift
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-swift-use-tabs nil
+  "Value of `indent-tabs-mode' for editing swift files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-swift
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Tcl  Language Support
+;; ---------------------
 (defgroup pel-pkg-for-tcl nil
   "PEL Tcl language support."
   :group 'pel-pkg-for-programming)
