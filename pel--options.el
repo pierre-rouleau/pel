@@ -164,6 +164,7 @@
 ;;         - pel-sh-script-skeleton-control
 ;;       - pel-pkg-for-tcl
 ;;       - pel-pkg-for-v
+;;       - pel-pkg-for-zig
 ;;     - pel-pkg-for-project-mng
 ;;     - pel-pkg-for-regexp
 ;;     - pel-pkg-for-scrolling
@@ -10092,6 +10093,47 @@ characters."
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
   :group 'pel-pkg-for-v
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-pkg-for-zig nil
+  "PEL Zig language support."
+  :group 'pel-pkg-for-programming
+  :link '(url-link :tag "Zig Language home page" "https://ziglang.org/"))
+
+(defcustom pel-use-zig nil
+  "Control whether PEL supports the Zig Programming Language Development."
+  :group 'pel-pkg-for-zig
+  :type 'boolean
+  :safe #'booleanp)
+
+
+(defcustom pel-zig-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Zig buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-zig
+  :type '(repeat function))
+
+(defcustom pel-zig-tab-width 4
+  "Distance between tab stop for zig buffers.
+
+PEL stores this in `tab-width' when opening zig buffers.
+
+This does *NOT* control the indentation in zig
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-zig
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-zig-use-tabs nil
+  "Value of `indent-tabs-mode' for editing zig files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-zig
   :type 'boolean
   :safe #'booleanp)
 

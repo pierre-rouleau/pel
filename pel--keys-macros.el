@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-02-04 18:09:53 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-02-22 09:19:07 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -593,6 +593,9 @@
     (,(kbd "<f11> SPC M-u") "plantuml" pel-pkg-for-plantuml    plantuml-mode)
     ([f11 32 27 ?u]         "plantuml" pel-pkg-for-plantuml    plantuml-mode)
 
+    (,(kbd "<f11> SPC M-z") "pl-zig" pel-pkg-for-zig    zig-mode)
+    ([f11 32 27 ?z]         "pl-zig" pel-pkg-for-zig    zig-mode)
+
     (,(kbd "<f11> SPC M-M") "mscgen" pel-pkg-for-mscgen    mscgen)
     ([f11 32 27 ?M]         "mscgen" pel-pkg-for-mscgen    mscgen)
 
@@ -711,6 +714,7 @@ stored inside the doc/pdf directory.")
     ("plantuml"        [f11 32 27 ?u])
     ("yaml"            [f11 32 27 ?y])
     ("yang"            [f11 32 27 ?Y])
+    ("zig"             [f11 32 27 ?z])
     ;; shells and terminals
     ("shell"           [f11 32 ?z ?s])
     ("term"            [f11 32 ?z ?t])
@@ -962,6 +966,7 @@ There should be no key binding!" keyseq))
     ("sh"               . "pl-sh")
     ("tcl"              . "pl-tcl")
     ("v"                . "pl-v")
+    ("zig"              . "pl-zig")
     ;; repl
     ;; ("sly"              . "repl-cl-sly")
     ;; ("slime"            . "repl-cl-slime")

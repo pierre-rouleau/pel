@@ -2159,7 +2159,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; v       - V
 ;; x       - Elixir          -              BEAM Language
 ;; y       - Pony
-;; z       - Zig
+;; z       - Reserved for shell terminals
 ;; C-a     - Arc             - Lisp Family
 ;; C-c     - CMake
 ;; C-e     - Eiffel
@@ -2193,10 +2193,11 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-m     - Markdown
 ;; M-o     - OrgMode
 ;; M-r     - reStructuredText
-;; M-y     - YAML
 ;; M-s     - SQL
 ;; M-u     - PlantUML
 ;; M-v     - CSV (comma-separated-value)
+;; M-y     - YAML
+;; M-z     - Zig
 ;; M-A     - Alpaca          -              BEAM Language, Functional/ML
 ;; M-D     - Dired
 ;; M-G     - Gleam           -              BEAM Language
@@ -4906,6 +4907,21 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-install-github-file "pierre-rouleau/vlang-mode/master"
                              "vlang-mode.el")
     (pel-autoload-file vlang-mode for: vlang-mode))))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-z`` : Zig  programming
+;; Experimental 🚧
+
+(when pel-use-zig
+  (define-pel-global-prefix pel:for-zig  (kbd "<f11> SPC M-z"))
+
+  (pel-ensure-package zig-mode from: melpa)
+  (when pel-use-tree-sitter
+    (pel-ensure-package zig-ts-mode from: melpa))
+
+  (pel-eval-after-load zig-mode
+    (pel-config-major-mode zig pel:for-zig))
+  )
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC z s`` : shell-mode
