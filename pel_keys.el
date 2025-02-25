@@ -8863,6 +8863,7 @@ the ones defined from the buffer now."
 (declare-function eshell "eshell")
 
 (define-key pel:execute    "?" #'list-processes)
+(define-key pel:execute    "!" 'pel-shell-as-sudo)
 ;; Terminals
 (define-key pel:execute    "a" #'ansi-term)
 (define-key pel:execute    "e" #'eshell)

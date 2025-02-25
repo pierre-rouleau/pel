@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, March 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-08-09 07:07:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-02-25 16:10:56 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022, 2024  Pierre Rouleau
+;; Copyright (C) 2022, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -154,6 +154,18 @@ Deactivate it with 'M-x compilation-minor-mode'."
   (compilation-minor-mode 1)
   (define-key compilation-minor-mode-map (kbd "RET") 'comint-send-input)
   (define-key compilation-minor-mode-map (kbd "<f12> RET") 'compile-goto-error))
+
+
+;; ---------------------------------------------------------------------------
+;; Execute as sudo
+
+;;-pel-autoload
+(defun pel-shell-as-sudo ()
+  "Prompt for command and sudo password then execute shell command as sudo.
+Print result in the *Shell Command Input* buffer."
+  (interactive)
+  (let ((default-directory "/sudo::"))
+    (call-interactively (function shell-command))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-shell)
