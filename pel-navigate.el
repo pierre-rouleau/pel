@@ -77,7 +77,7 @@
 ;; Move to next space
 (defun pel-to-forward-space ()
   "Move point to the next space character."
-  (interactive)
+  (interactive "^")
   (let ((pos (point)))
     (forward-whitespace 1)
     (forward-whitespace -1)
@@ -91,7 +91,7 @@
 
 (defun pel-to-backward-space ()
   "Move point to the previous space character."
-  (interactive)
+  (interactive "^")
   (let ((pos (point)))
     (forward-whitespace -1)
     (forward-whitespace 1)
@@ -379,13 +379,13 @@ On reaching end of buffer, stop and signal error."
 ;;-pel-autoload
 (defun pel-forward-syntaxchange-start ()
   "Move point forward: stop at beginning of character syntax change."
-  (interactive)
+  (interactive "^")
   (while (progn (forward-char) (not (pel-at-syntax-change-p)))))
 
 ;;-pel-autoload
 (defun pel-backward-syntaxchange-start ()
   "Move point backward: stop at beginning of character syntax change."
-  (interactive)
+  (interactive "^")
   (while (progn (backward-char) (not (pel-at-syntax-change-p)))))
 
 ;; ---------------------------------------------------------------------------
