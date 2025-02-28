@@ -541,7 +541,7 @@ This helps when the length of the line changes."
   "Adorn current line at a higher-level that current if already adorned.
 If the line is not already adorned, adorn it with a level higher than
 previous section."
-  (interactive)
+  (interactive "*")
   (pel--rst-activate-adornment-style)
   (pel-delete-trailing-whitespace)
   (if (pel--line-adorned-p)
@@ -553,7 +553,7 @@ previous section."
   "Adorn current line at a lower-level than current if already adorned.
 If the line not already adorned, adorn it with a level lower than
 previous section."
-  (interactive)
+  (interactive "*")
   (pel--rst-activate-adornment-style)
   (pel-delete-trailing-whitespace)
   (if (pel--line-adorned-p)
@@ -1071,7 +1071,7 @@ See `pel-find-file-at-point-in-window' for more information."
 
 (defun pel-rst-table-dup-separator-lines ()
   "Copy the table separator line to the top and the bottom of the table."
-  (interactive)
+  (interactive "*")
   (save-excursion
     (pel-duplicate-line 2)
     (forward-line -2)
