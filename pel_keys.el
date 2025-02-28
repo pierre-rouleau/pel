@@ -5422,6 +5422,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                      "\\.rst.txt\\'")
 
   (define-key pel:for-reST (kbd "M--") 'pel-itemize-lines)
+  (define-key pel:for-reST (kbd "M-t") 'pel-rst-table-dup-separator-lines)
   (define-key pel:for-reST "." 'pel-rst-makelink)
   (define-key pel:for-reST "g" 'pel-rst-goto-ref-bookmark)
   (define-key pel:for-reST "s" 'pel-rst-set-ref-bookmark)

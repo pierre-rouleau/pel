@@ -686,7 +686,8 @@ Argument FOR: just a required separator keyword to make code look better."
       pel-rst-bold
       pel-rst-italic
       pel-rst-literal
-      pel-rst-interpreted))
+      pel-rst-interpreted
+      pel-rst-table-dup-separator-lines))
 
   (pel-autoload "pel-rpm-spec" for:
     pel-rpm-build

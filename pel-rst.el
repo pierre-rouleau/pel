@@ -1,6 +1,6 @@
 ;;; pel-rst.el --- PEL reStructuredText support -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1065,6 +1065,22 @@ See `pel-find-file-at-point-in-window' for more information."
         (cd original-cwd)))
     (when new-position
       (goto-char new-position))))
+
+;; ---------------------------------------------------------------------------
+;; Table Helper Utility
+
+(defun pel-rst-table-dup-separator-lines ()
+  "Copy the table separator line to the top and the bottom of the table."
+  (interactive)
+  (save-excursion
+    (pel-duplicate-line 2)
+    (forward-line -2)
+    (transpose-lines 1)
+    (forward-line 1)
+    (kill-whole-line 1)
+    (search-forward "\n\n")
+    (forward-line -1)
+    (yank)))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel-rst)
