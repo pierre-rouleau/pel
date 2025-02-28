@@ -87,6 +87,11 @@
 ;;     - `pel--move-to-rst-target'
 ;;     - `pel--rst-reference-target'
 ;;       - `pel-at-rst-reference-p'
+;;
+;; - Table Helper Utility:
+;;
+;;   * `pel-rst-table-dup-separator-lines'
+;;
 
 ;; ---------------------------------------------------------------------------
 ;;; Dependencies:
@@ -1069,9 +1074,13 @@ See `pel-find-file-at-point-in-window' for more information."
 ;; ---------------------------------------------------------------------------
 ;; Table Helper Utility
 
-(defun pel-rst-table-dup-separator-lines ()
-  "Copy the table separator line to the top and the bottom of the table."
-  (interactive "*")
+(defun pel-rst-table-dup-separator-lines (&optional update)
+  "Complete the table separator line to the top and the bottom of the table.
+
+With the optional UPDATE argument the table lines as a copy of
+the current one.  This command *must* be issued from the line
+under the table title line."
+  (interactive "*P")
   (save-excursion
     (pel-duplicate-line 2)
     (forward-line -2)
@@ -1080,7 +1089,14 @@ See `pel-find-file-at-point-in-window' for more information."
     (kill-whole-line 1)
     (search-forward "\n\n")
     (forward-line -1)
-    (yank)))
+    (yank)
+    (when update
+      (forward-line -2)
+      (pel-delete-whole-line)))
+  (when update
+    (save-excursion
+      (forward-line -3)
+      (pel-delete-whole-line))))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel-rst)
