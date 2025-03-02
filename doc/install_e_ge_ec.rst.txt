@@ -6,8 +6,8 @@ Install the Emacs launcher shortcut scripts
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Wednesday, May 29 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-06-06 13:37:58 EDT, updated by Pierre Rouleau.
-:Copyright: © 2024, Pierre Rouleau
+:Modified: 2025-03-01 21:25:27 EST, updated by Pierre Rouleau.
+:Copyright: © 2024, 2025, Pierre Rouleau
 
 
 .. ---------------------------------------------------------------------------
@@ -97,6 +97,7 @@ Here's a sample of a successful execution, where pel is installed in ``~/my/dv/e
 .. ---------------------------------------------------------------------------
 .. links
 
+.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
 .. _e:  ../bin/e
 .. _ge: ../bin/ge
 .. _ec: ../bin/ec

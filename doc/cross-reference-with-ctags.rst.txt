@@ -6,8 +6,8 @@ Using ctags and etags for cross referencing with TAGS
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Wednesday, June  5 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-06-09 14:30:38 EDT, updated by Pierre Rouleau.
-:Copyright: © 2024, Pierre Rouleau
+:Modified: 2025-03-01 21:25:09 EST, updated by Pierre Rouleau.
+:Copyright: © 2024, 2025, Pierre Rouleau
 
 
 
@@ -94,6 +94,7 @@ POSIX compliant shell.
 .. links
 
 
+.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
 .. _Ctags @ Wikipedia:           https://en.wikipedia.org/wiki/Ctags
 .. _FreeBSD CTags:               https://github.com/freebsd/freebsd-src/tree/main/usr.bin/ctags
 .. _Exuberant Ctags:             https://ctags.sourceforge.net/

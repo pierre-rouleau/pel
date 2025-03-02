@@ -139,6 +139,7 @@ If there is anything missing PEL will install it and re-compile it.
 .. ---------------------------------------------------------------------------
 .. links:
 
+.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
 .. _e: https://github.com/pierre-rouleau/pel/blob/master/bin/e
 .. _Using the Emacs daemon and clients: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
 .. _ge: https://github.com/pierre-rouleau/pel/blob/master/bin/ge
