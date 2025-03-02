@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-21 18:09:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-02 13:29:45 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -264,7 +264,6 @@
   (require 'pel-setup-27))
 
 (eval-when-compile (require 'subr-x)) ; use: `string-join'
-(require 'cus-edit)                   ; use: `custom-file'`
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -394,6 +393,7 @@ non-nil, to nil otherwise.  Byte compile the result file if the
   "Return list of string describing problems found in dual custom environment.
 Return nil if no problems were found and all is OK, ready to use Emacs in
 independent environments for terminal and graphics mode."
+  (require 'cus-edit)                   ; use: `custom-file'`
   (let* ((custom-fname    (pel-elpa-name custom-file nil))
          (custom-fname-g  (pel-elpa-name custom-file :for-graphics))
          (elpa-dp         (pel-elpa-name pel-elpa-dirpath nil))
@@ -434,6 +434,7 @@ are requested and if so check if they are setup properly.
 Report an error and list problems if there are any, otherwise display the
 current setup."
   (interactive)
+  (require 'cus-edit)                   ; use: `custom-file'`
   (pel-setup-validate-init-files)
   (if pel--detected-dual-environment-in-init-p
       (let ((problems (pel-dual-environment-problems)))
@@ -486,6 +487,7 @@ Return a list of performed actions (in reverse order of execution)."
   "Setup Emacs environment to support 2 independent customization.
 
 Utility function. If REASON-MSG is specified include that message on error."
+  (require 'cus-edit)                   ; use: `custom-file'`
   (let* ((custom-fn       (pel-elpa-name custom-file nil))
          (custom-fn-g     (pel-elpa-name custom-file :for-graphics))
          (elpa-dp         (pel-elpa-name pel-elpa-dirpath nil))
@@ -947,6 +949,7 @@ Return a list of performed action descriptions in reverse order."
 
 The function verifies all that and return a list of problems detected if any
 problem were detected. It returns nil if all is OK."
+  (require 'cus-edit)                   ; use: `custom-file'`
   (let* ((problems nil)
          (original-elpa-dirpath (pel-locate-elpa))
          (elpa-dirname  (pel-elpa-name (directory-file-name elpa-dirpath)
