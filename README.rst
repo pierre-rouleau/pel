@@ -289,6 +289,16 @@ various packages, etc...
   that you can access through the `PEL Topic Index PDF`_.
 
 
+
+➣ How to Update Emacs with PEL
+------------------------------
+
+When changing Emacs from a major version to another you have to recompile all
+Emacs Lisp files with the version of Emacs you are now using.  It is simple to
+do it with PEL.  Read the document titled
+`How to recompile all Emacs Lisp files after updating Emacs to a different
+version`_; it describes a simple procedure.
+
 ➣ Credits
 ---------
 
@@ -504,6 +514,7 @@ Notes
 .. _samples of Emacs custom files: sample/emacs-customization
 .. _Instructions are inside:    doc/pel-manual.rst#further-configure-the-init-el-file
 .. _Hydra:                      https://github.com/abo-abo/hydra?tab=readme-ov-file#readme
+.. _How to recompile all Emacs Lisp files after updating Emacs to a different version: doc/upgrading-emacs.rst.html
 
 ..
    -----------------------------------------------------------------------------

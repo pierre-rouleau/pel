@@ -1,0 +1,153 @@
+=================================================================================
+How to recompile all Emacs Lisp files after updating Emacs to a different version
+=================================================================================
+
+:Home URL: :Home URL: https://github.com/pierre-rouleau/pel
+:Project: `PEL -- Pragmatic Emacs Library`_
+:Created:  Saturday, March  1 2025.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2025-03-01 16:14:56, by Pierre Rouleau.
+:Copyright: © 2025, Pierre Rouleau
+
+
+.. contents::  **Table of Contents**
+.. sectnum::
+
+.. ---------------------------------------------------------------------------
+
+Overview
+========
+
+This describes what you need to do once you have upgraded Emacs to a newer
+or older version.
+
+It assumes that:
+
+#. You have installed a version of Emacs that is a different major version
+   from the previous version of Emacs you were previously using.  For example,
+   you update Emacs 29.4 to 30.1 or from Emacs 29.1 to 28.1.
+#. You were already using PEL and have followed PEL installation procedure.
+#. PEL/Emacs is currently configured for normal operation
+   (as opposed to fast PEL/Emacs operation).
+
+   - If your PEL/Emacs is currently configured for fast operation,
+     change it to run under normal operation by executing the **pel-setup-normal**
+     command.
+#. You have stored the Emacs Lisp packages inside the directories described
+   in the following table.
+
+= ======================================= ==========================================================================
+  Directory                               Description
+= ======================================= ==========================================================================
+. **Mandatory Directories**
+. ``~/.emacs.d/elpa``                     A symbolic link to ``~/.emacs.d/elpa-complete``
+. ``~/.emacs.d/elpa-complete``            Holds all Emacs Lisp packages that originate
+                                          from GNU Elpa, or MELPA repositories.
+. ``~/.emacs.d/utils``                    Holds Emacs Lisp files that do not originate
+                                          from GNU Elpa, or MELPA repositories.
+. **Optional - Used in dual environment**
+. ``~/.emacs.d/elpa-graphics``            A symbolic link to ``~/.emacs.d/elpa-complete-graphics``
+. ``~/.emacs.d/elpa-complete-graphics``   Holds GUI-specific packages that originate
+                                          from GNU Elpa, or MELPA repositories,
+                                          when PEL dual-environment is used.
+. ``~/.emacs.d/utils-graphics``           Holds GUI-specific Emacs Lisp files that do not originate
+                                          from GNU Elpa, or MELPA repositories
+                                          when PEL dual-environment is used.
+. **Optional - Attic directories**        Directories where PEL stores Emacs Lisp files *removed* bu **pel-cleanup**
+. ``~/.emacs.d/elpa-attic``               Files removed from the ``~/.emacs.d/elpa``
+. ``~/.emacs.d/elpa-attic-graphics``      Files removed from the ``~/.emacs.d/elpa-graphics``
+. ``~/.emacs.d/utils-attic``              Files removed from the ``~/.emacs.d/utils``
+. ``~/.emacs.d/utils-attic-graphics``     Files removed from the ``~/.emacs.d/utils-graphics``
+= ======================================= ==========================================================================
+
+How to recompile all elisp files after changing Emacs Version
+=============================================================
+
+After upgrading Emacs you need to recompile **all** Emacs Lisp files that PEL
+has installed. With PEL this is quite simple.
+
+This assumes Emacs is currently **not** running.
+
+**Step 1**: Rebuild PEL itself.
+
+To rebuild all PEL Emacs Lisp file, change the current directory to the
+PEL directory and execute::
+
+  make clean all
+
+
+**Step 2**: Rebuild ``~/.emacs.d/utils``
+
+- Rename ``~/.emacs.d/utils`` to ``~/.emacs.d/utils.old`` or anything you
+  want.
+
+  - I normally use a number that represents Emacs major version number
+    and keep it around.  This way I can always go back to the previous version
+    of Emacs by renaming the directories  later.
+
+- If you used them, copy ``benchmark-init-modes.el`` and ``benchmark-init.el`` from
+  the old utils into the new one at ``~/.emacs.d/.utils``.
+- Run **Emacs in terminal mode** in a shell.
+  Use the `e`_ script described in the document titled `Using the Emacs daemon and clients`_.
+  Do not edit any file.  Just start it without any argument.
+
+  - PEL will take over, detect that the utils Emacs Lisp files are missing,
+    will download the latest versions available and will recompile them with
+    the new Emacs version.
+  - If any compilation error or warning is detected, please add a report as a
+    bug in the PEL project.  I will try to address those.  Please identify the
+    version of Emacs you run, and include the generate errors.
+  - Exit Emacs.
+
+  At this point all the Emacs Lips packages should be inside the utils
+  directory. The latest version of these package will be in the utils
+  directory.  If you prefer to use the old one you were using previously, just
+  take the file from the backup directory you created earlier.
+
+**Step 3** Rebuild ``~/.emacs.d/elpa-complete``
+
+- Rename ``/.emacs.d/elpa-complete`` to something else, like
+  ``/.emacs.d/elpa-complete.old``
+- Create a new ``~/.emacs.d/elpa-complete``.
+- Verify the ``~/.emacs.d/elpa`` symbolic link points to the new
+  ``~/.emacs.d/elpa-complete`` directory.
+- Run **Emacs in terminal mode** in a shell.
+  Do not edit any file.  Just start it without any argument.
+
+  - PEL will take over, detect missing elpa packages, will download
+    and build them.  This will take some time, depending on how many packages
+    you are using as identified by the various ``pel-use-...`` user-options.
+  - If any compilation error or warning is detected, please add a report as a
+    bug in the PEL project.  I will try to address those.  Please identify the
+    version of Emacs you run, and include the generate errors.
+  - Exit Emacs.
+
+**Step 4** Run Emacs in graphics mode.
+
+- Open a shell and run the `ge`_ script to start an instance of Emacs in
+  graphics-mode.
+
+  - PEL will take over and will download and compile the packages that are
+    required for Emacs in Graphics mode.
+  - Exit Emacs
+
+**Optional Following Steps**
+
+At this point you may want to activate Emacs dual-mode and run it.
+If there is anything missing PEL will install it and re-compile it.
+
+.. ---------------------------------------------------------------------------
+.. links:
+
+.. _e: https://github.com/pierre-rouleau/pel/blob/master/bin/e
+.. _Using the Emacs daemon and clients: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
+.. _ge: https://github.com/pierre-rouleau/pel/blob/master/bin/ge
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
