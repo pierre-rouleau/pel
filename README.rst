@@ -514,7 +514,7 @@ Notes
 .. _samples of Emacs custom files: sample/emacs-customization
 .. _Instructions are inside:    doc/pel-manual.rst#further-configure-the-init-el-file
 .. _Hydra:                      https://github.com/abo-abo/hydra?tab=readme-ov-file#readme
-.. _How to recompile all Emacs Lisp files after updating Emacs to a different version: doc/upgrading-emacs.rst.html
+.. _How to recompile all Emacs Lisp files after updating Emacs to a different version: doc/upgrading-emacs.rst.txt
 
 ..
    -----------------------------------------------------------------------------
