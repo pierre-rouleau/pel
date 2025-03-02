@@ -96,12 +96,13 @@
 ;; ---------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--base)        ; uses: pel-whitespace-in-str-p
-;;                          ;       pel-chars-at-point
+(require 'pel--base)        ; uses: `pel-whitespace-in-str-p'
+;;                          ;       `pel-chars-at-point'
 (require 'pel--options)
-(require 'pel-whitespace)   ; uses: pel-delete-trailing-whitespace
+(require 'pel-whitespace)   ; uses: `pel-delete-trailing-whitespace'
+(require 'pel-ccp)          ; uses: `pel-delete-whole-line', `pel-duplicate-line'
 (require 'pel--macros)
-(require 'rst)              ; rst-mode code. Use rst-backward-section
+(require 'rst)              ; rst-mode code. Use `rst-backward-section'
 
 ;; ---------------------------------------------------------------------------
 ;;; Code:
