@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-02-25 16:10:56 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-02 10:15:12 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -147,10 +147,9 @@ Variables names are also links to customization."
 (defun pel-shell-activate-compilation-awareness ()
   "Activate compilation-minor-mode in the shell.
 
-Jump to error with '<f12> RET'.
-Deactivate it with 'M-x compilation-minor-mode'."
+Jump to error with \\='<f12> RET\\='.
+Deactivate it with \\='M-x compilation-minor-mode\\='."
   (interactive)
-
   (compilation-minor-mode 1)
   (define-key compilation-minor-mode-map (kbd "RET") 'comint-send-input)
   (define-key compilation-minor-mode-map (kbd "<f12> RET") 'compile-goto-error))

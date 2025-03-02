@@ -1,13 +1,13 @@
-;;; pel-custom.el --- PEL custization utilities.  -*- lexical-binding: t; -*-
+;;; pel-custom.el --- PEL customization utilities.  -*- lexical-binding: t; -*-
 
 ;; Created   : Wednesday, October 21 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-19 10:36:06, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-02 09:50:38 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

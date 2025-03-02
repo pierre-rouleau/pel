@@ -284,7 +284,7 @@ Can't set Emacs source directory using %s : it's not a directory!"
 ;; in terminal mode.
 
 (defun pel-bind-negative-argument ()
-  "Bind 'C-_' and 'M-_' to `negative-argument'.
+  "Bind \\='C-_\\=' and \\='M-_\\=' to `negative-argument'.
 Done in this function to allow advising libraries that remap these keys."
   (global-set-key (kbd "C-_") 'negative-argument)
   (global-set-key (kbd "M-_") 'negative-argument))

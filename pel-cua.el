@@ -1,6 +1,6 @@
 ;;; pel-cua.el --- PEL CUA Mode Additions -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -40,9 +40,9 @@
 Activate ability to manage cua rectangle area.
 Activate ability to use the CUA compliant commands
 for copy/cut/paste that can operate on rectangle of text:
-- 'Control C': copy,
-- 'Control U': cut,
-- 'Control V': paste."
+- \\='Control C\\=': copy,
+- \\='Control U\\=': cut,
+- \\='Control V\\=': paste."
   (interactive)
   (cua-mode 1)
   (cua-rectangle-mark-mode t))

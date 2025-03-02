@@ -764,7 +764,7 @@ for the marked area.
 When (abs N) is larger than 1 the function inserts that many
 duplicated lines, and prompts for a new replacement for each new
 line.  The command maintains a prompt history, accessible with
-'M-n' and 'M-p'.
+\\='M-n\\=' and \\='M-p\\='.
 
 Nothing is copied to the kill ring."
   (interactive "*p")

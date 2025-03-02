@@ -10230,9 +10230,9 @@ CAUTION: This package needs major tuning!  It takes forever searching for a
 (defcustom pel-bind-keys-for-regexp nil
   "If set to t, PEL binds several keys in the C-c prefix.
 It binds:
-- 'C-c r' : to replace-regexp or pel-replace-regexp
-- 'C-c q' : to query-replace-regexp or pel-query-replace-regexp
-- 'C-c Q' : to isearch-query-replace-regexp"
+- \\='C-c r\\=' : to replace-regexp or pel-replace-regexp
+- \\='C-c q\\=' : to query-replace-regexp or pel-query-replace-regexp
+- \\='C-c Q\\=' : to isearch-query-replace-regexp"
   :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)
@@ -10822,7 +10822,7 @@ something not located inside Emacs user directory."
     rst-mode
     vc-git-log-edit-mode)
   "List of major modes that automatically activate `flyspell-mode'.
-To activate the changes for this you must 'Apply and Save' and restart Emacs."
+To activate the changes for this you must \\='Apply and Save\\=' and restart Emacs."
   :group 'pel-pkg-for-spelling
   :type '(repeat symbol))
 
@@ -10841,7 +10841,7 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
     python-mode
     shell-script-mode)
   "List of major modes that automatically activate `flyspell-prog-mode'.
-To activate the changes for this you must 'Apply and Save' and restart Emacs."
+To activate the changes for this you must \\='Apply and Save\\=' and restart Emacs."
   :group 'pel-pkg-for-spelling
   :type '(repeat symbol))
 

@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-01-08 13:55:08 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-02 10:07:36 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -133,7 +133,7 @@ The function searches in the directory trees identified by:
 Returns a list of string, each string is the path of a file found.
 
 Uses shell command identified by `pel-ffind-executable'.
-The 'VCS ignore capability' of fd is not used, so all files are found
+The \\='VCS ignore capability\\=' of fd is not used, so all files are found
 whether the VCS is told to ignore them or not."
   (unless directories
     (setq directories (list default-directory)))

@@ -354,6 +354,9 @@ The non-nil value of the predicate is the `module-file-suffix'.")
 (defconst pel-emacs-29-or-later-p (>= emacs-major-version 29)
   "Predicate: t when Emacs version 29 or later is running, nil otherwise.")
 
+(defconst pel-emacs-30-or-later-p (>= emacs-major-version 30)
+  "Predicate: t when Emacs version 30 or later is running, nil otherwise.")
+
 (defconst pel-filesep (if pel-system-is-windows-p "\\" "/")
   "String directory/file separator character for this OS.")
 
@@ -1283,7 +1286,7 @@ separator is specified by the SEPARATOR argument."
   "Return VALUE if (CHECK-FUNCTION VALUE) is non-nil, else return ALTERNATIVE.
 If there are any TRANSFORM-FUNCTIONS return a transformed VALUE by calling the
 first function with VALUE as argument and then the second, etc...
-For example, if t1, t2 and t3 are specified , the returned value is the result
+For example, if t1, t2 and t3 are specified, the returned value is the result
 of the following call sequence:
 
 \(t1 (t2 (t3 VALUE))

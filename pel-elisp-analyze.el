@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, December 22 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-25 18:08:55, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-02 10:14:01 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -41,8 +41,8 @@
 (defun pel-run-ert ()
   "Byte compile and run ERT test on current buffer."
   (interactive)
-  (when (pel-byte-compile-file-and-load))
-    (ert t))
+  (when (pel-byte-compile-file-and-load)
+    (ert t)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elisp-analyze)

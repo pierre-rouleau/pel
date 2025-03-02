@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, September  9 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-13 09:06:14, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-02 10:16:34 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@
 (require 'pel--base)                    ; use: `pel-current-buffer-filename'
 (require 'pel-filedir)                  ; use: `pel-file-in-dir-upwards'
 (require 'pel-prompt)                   ; use: `pel-select-symbol-from'
+(require 'vc)                           ; use `vc-switch-backend'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
