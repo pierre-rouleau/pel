@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, October 21 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-02 09:50:38 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-02 13:16:20 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,7 +42,6 @@
 ;;
 ;;
 (require 'pel--base)
-(require 'cus-edit)                     ; use: customize-save-variable
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -85,6 +84,7 @@ Lazily load file `cus-edit' if needed."
   "Save the VALUE of USER-OPTION-SYMBOL in customize file.
 If FILE is specified force saving to specified customization FILE
 otherwise save to the current custom-file."
+  (require 'cus-edit)                     ; use: customize-save-variable
   (let ((custom-file (or file custom-file)))
     (customize-save-variable user-option-symbol value)))
 
