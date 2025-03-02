@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-emacs-config-features**, bound to ~<f11> ? e C~ . Use it to determine if Emacs is built with native compilation.
 - Add *pel-rst-table-dup-separator-lines* bound to ~<f12> M-t~ and ~M-<f12> M-t~ in rst-mode.
   This helps writing reStructuredText simple tables.
 - The *pel-to-forward-space*, *pel-to-backward-space*, *pel-forward-syntaxchange-start* and *pel-backward-syntaxchange-start*

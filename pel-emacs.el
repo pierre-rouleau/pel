@@ -47,6 +47,7 @@
 ;; * `pel-emacs-command-stats'
 ;;   - `pel--emacs-command-count'
 ;;   - `pel--emacs-command-binding'
+;; * `pel-emacs-compilation-features'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -258,6 +259,14 @@ Number of global keys (and key prefixes)  : %4d"
              (length special)
              (length internal)
              (other-buffer (current-buffer)))))
+
+(defun pel-emacs-config-features ()
+  "Print the names of all Emacs configured compilation features."
+  (interactive)
+  (message "%s: with%s native compilation." system-configuration-features
+           (if (string-match "NATIVE-COMP" system-configuration-features)
+               ""
+             "out")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-emacs)
