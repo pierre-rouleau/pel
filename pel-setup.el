@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-02 13:29:45 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-02 13:41:07 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1230,33 +1230,35 @@ Failed fast startup setup for %s after %d of %d steps: %s
 (defun pel-setup-fast ()
   "Prepare the elpa directories and code to speedup Emacs startup."
   (interactive)
-  (pel-setup-validate-init-files)
-  (cond
-   ((eq (pel--startup-mode) 'fast)
-    (user-error "PEL/Emacs is already setup for fast startup!"))
-   ((and (bound-and-true-p package-quickstart)
-         pel-emacs-is-graphic-p)
-    (user-error "PEL currently is not able to switch to fast startup mode when
+  (if pel-emacs-30-or-later-p
+      (user-error "PEL Fast startup currently does not support Emacs 30 and later.")
+    (pel-setup-validate-init-files)
+    (cond
+     ((eq (pel--startup-mode) 'fast)
+      (user-error "PEL/Emacs is already setup for fast startup!"))
+     ((and (bound-and-true-p package-quickstart)
+           pel-emacs-is-graphic-p)
+      (user-error "PEL currently is not able to switch to fast startup mode when
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off
   to execute this command.  Once the switch is completed, PEL can
   run in fast startup mode with package startup active in graphic mode.
   Sorry for the inconvenience."))
-   (t
-    (when (y-or-n-p (pel--with-quickstart-state-msg
-                     "Change to fast startup mode"
-                     :show-requested-quickstart))
-      ;; First setup the environment used by terminal (TTY) and graphics mode
-      ;; when they both use the same
-      (pel--setup-fast nil)
-      ;; When graphics mode Emacs has its own customization, then also setup
-      ;; the second environment; the one specific to Emacs running in graphics
-      ;; mode.
-      (when pel--detected-dual-environment-in-init-p
-        (pel--setup-fast t))
-      ;; inform user, possibly after a deprecated warning
-      (run-with-idle-timer 1 nil (function pel--setup-fast-message))
-      (setq pel--fast-startup-setup-changed t)))))
+     (t
+      (when (y-or-n-p (pel--with-quickstart-state-msg
+                       "Change to fast startup mode"
+                       :show-requested-quickstart))
+        ;; First setup the environment used by terminal (TTY) and graphics mode
+        ;; when they both use the same
+        (pel--setup-fast nil)
+        ;; When graphics mode Emacs has its own customization, then also setup
+        ;; the second environment; the one specific to Emacs running in graphics
+        ;; mode.
+        (when pel--detected-dual-environment-in-init-p
+          (pel--setup-fast t))
+        ;; inform user, possibly after a deprecated warning
+        (run-with-idle-timer 1 nil (function pel--setup-fast-message))
+        (setq pel--fast-startup-setup-changed t))))))
 
 ;; --
 (defun pel--setup-normal (for-graphics)
