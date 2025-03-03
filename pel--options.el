@@ -4518,6 +4518,8 @@ This may get activated indirectly by other user-options."
               (and pel-use-go
                    (or pel-use-flycheck-golangci-lint
                        (eq pel-use-goflymake 'with-flycheck)))
+              (and pel-use-odin
+                   pel-use-flycheck-odin)
               (and pel-use-plantuml
                    pel-use-flycheck-plantuml)
               (and pel-use-rust
@@ -9425,6 +9427,19 @@ characters."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-odin :package-is :in-utils)
+
+
+(defcustom pel-use-flycheck-odin nil
+  "Control whether PEL supports flycheck for odin.
+
+When activated, automatically activates `pel-use-flycheck'."
+  :link '(url-link :tag "flycheck-odin @ Github"
+                   "https://github.com/mattt-b/flycheck-odin")
+  :group 'pel-pkg-for-odin
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-flycheck-odin :package-is :in-utils)
+
 
 (defcustom pel-odin-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Odin buffers.

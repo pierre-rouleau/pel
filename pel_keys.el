@@ -4529,6 +4529,14 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   (pel-install-github-files "pierre-rouleau/odin-mode/master"
                             '("odin-mode.el" "main.odin"))
+  (when pel-use-flycheck-odin
+    (pel-install-github-file "pierre-rouleau/flycheck-odin/master"
+                             "flycheck-odin.el")
+    (pel-eval-after-load odin-mode
+      (when (fboundp 'flycheck-odin-setup)
+        (eval-after-load 'flycheck
+          '(add-hook 'flycheck-mode-hook #'flycheck-odin-setup)))))
+
   (pel-autoload-file odin-mode for: odin-mode)
   (add-to-list 'auto-mode-alist '("\\.odin\\'" . odin-mode))
   (pel-config-major-mode odin pel:for-odin))
