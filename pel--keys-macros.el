@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-03 08:19:25 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-03 11:22:21 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -317,6 +317,7 @@
     ([f11 32 ?o]     "pl-ocaml"     pel-pkg-for-ocaml       (merlin
                                                              tuareg
                                                              tuareg-opam))
+    ([f11 32 ?O]     "pl-odin"      pel-pkg-for-odin        odin)
     ([f11 32 ?p]     "pl-python"    pel-pkg-for-python      (python
                                                              python-flymake
                                                              electricity))
@@ -680,6 +681,7 @@ stored inside the doc/pdf directory.")
     ("vc-dir"          [f11 32 32 ?v])
     ("nim"             [f11 32 ?n])
     ("ocaml"           [f11 32 ?o])
+    ("odin"            [f11 32 ?O])
     ("tuareg"          [f11 32 ?o])
     ("perl"            [f11 32 ?P])
     ("cperl"           [f11 32 ?P])
@@ -946,6 +948,7 @@ There should be no key binding!" keyseq))
     ("make"             . "pl-make")
     ("nim"              . "pl-nim")
     ("ocaml"            . "pl-ocaml")
+    ("odin"             . "pl-odin")
     ("perl"             . "pl-perl")
     ("cperl"            . "pl-perl")
     ("python"           . "pl-python")
@@ -1178,6 +1181,7 @@ Return nil if nothing found."
                       "lfe-mode"))   ; several files - defgroup is in lfe-mode
     ("markdown"    . "markdown-mode")
     ("netrexx"     . "netrexx-mode")
+    ("odin"        . "odin-mode")
     ("purpose"     . ("window-purpose-configuration"
                       "window-purpose-layout"
                       "window-purpose-switch"

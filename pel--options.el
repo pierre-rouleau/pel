@@ -152,6 +152,7 @@
 ;;       - pel-pkg-for-m4
 ;;       - pel-pkg-for-nim
 ;;       - pel-pkg-for-ocaml
+;;       - pel-pkg-for-odin
 ;;       - pel-pkg-for-perl
 ;;         - pel-pkg-for-perl-general
 ;;         - pel-pkg-for-perl-perl-mode
@@ -9402,6 +9403,49 @@ characters."
   :group 'pel-pkg-for-ocaml
   :type 'boolean
   :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Odin Support
+;; ------------
+(defgroup pel-pkg-for-odin nil
+  "PEL customization for Odin programming language."
+  :group 'pel-pkg-for-programming
+  :group 'odin
+  :link `(url-link :tag "Odin PDF" ,(pel-pdf-file-url "pl-odin"))
+  :link '(url-link :tag "Odin Programming Language"
+                   "https://odin-lang.org/"))
+
+(defcustom pel-use-odin nil
+  "Control whether PEL supports the odin programming language."
+  :link '(url-link :tag "odin-mode @ Github"
+                   "https://github.com/mattt-b/odin-mode")
+  :link '(url-link :tag "my odin-mode fork @ Github"
+                   "https://github.com/pierre-rouleau/odin-mode")
+  :group 'pel-pkg-for-odin
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-odin :package-is :in-utils)
+
+(defcustom pel-odin-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Odin buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-odin
+  :type '(repeat function))
+
+(defcustom pel-odin-use-tabs nil
+  "Value of `indent-tabs-mode' for editing odin files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-odin
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-odin-tab-width 4
+  "Number of columns rendered in a buffer for a tab in Odin."
+  :group 'pel-pkg-for-odin
+  :type 'integer
+  :safe 'pel-indent-valid-p)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Perl Support

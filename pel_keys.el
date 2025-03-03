@@ -2130,7 +2130,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; L       - Common Lisp     - Lisp Family
 ;; M       - Makefile
 ;; N       - NetRexx
-;; O       - Octave
+;; O       - Odin
 ;; P       - Perl
 ;; R       - REXX
 ;; S       - Scala           -              JVM
@@ -4521,6 +4521,17 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; the ocaml-mode is part of Emacs
   (pel-config-major-mode tuareg pel:for-ocaml))
 
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC O`` : Odin  programming
+
+(when pel-use-odin
+  (define-pel-global-prefix pel:for-odin (kbd "<f11> SPC O"))
+
+  (pel-install-github-files "pierre-rouleau/odin-mode/master"
+                            '("odin-mode.el" "main.odin"))
+  (pel-autoload-file odin-mode for: odin-mode)
+  (add-to-list 'auto-mode-alist '("\\.odin\\'" . odin-mode))
+  (pel-config-major-mode odin pel:for-odin))
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming
 (when pel-use-python

@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add (experimental) support for the Odin programming language:
+  - Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pel-odin.pdf][𝕻𝔩 - Odin]] PDF.  It's an early version.
+  - The support for Odin is controlled by the *pel-use-odin* user-option: set it to t and restart Emacs to activate it.
 - Supports org-mode modification in Emacs 30.1 and later: tab-width for org-mode is fixed to 8.
   For Emacs 30.1 and later, PEL does not change tab-width in org-mode to the value identified by
   the *pel-org-tab-width* user-option.  PEL continues to honour it in previous versions of Emacs.
