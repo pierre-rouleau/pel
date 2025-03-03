@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-02-22 10:35:35 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-03 08:19:25 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1590,9 +1590,13 @@ Function created by the `pel-config-major-mode' macro."
     ;; If the major mode is not one of the modes that do not need
     ;; to support hard-tab control and width create code that set them
     (unless (memq target-mode pel--tab-controlling-major-modes)
+      ;; Starting with Emacs 30, org-mode only supports a tab-width of 8
+      (unless (and pel-emacs-30-or-later-p
+                   (eq target-mode 'org))
+        (setq body (append body
+                           `((setq-local tab-width ,gn-tab-width)))))
       (setq body (append body
-                         `((setq-local tab-width ,gn-tab-width)
-                           (setq-local indent-tabs-mode ,gn-use-tabs)))))
+                           `((setq-local indent-tabs-mode ,gn-use-tabs)))))
     ;; return the following generated code:
     `(progn
        (defun ,gn-fct2 ()

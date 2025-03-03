@@ -4118,14 +4118,15 @@ When turned on, the *, /, =, _, ~ and + keys are electric in org-mode.
   :safe #'booleanp)
 
 (defcustom pel-org-tab-width 2
-  "Distance between tab stop for org buffers.
+  "Distance between tab stop for org buffers for Emacs < 30.
 
-PEL stores this in `tab-width' when opening org  buffers.
+For Emacs >= 30.1, org-mode only supports a tab-width of 8,
+For Emacs < 30, PEL set `tab-width' with this value when
+opening org buffers.
 
-This does *NOT* control the indentation in org
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+This does *NOT* control the indentation in org files, only for commands
+that mode point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters."
   :group 'pel-pkg-for-org
   :type 'integer
   :safe 'pel-indent-valid-p)
