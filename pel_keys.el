@@ -1609,12 +1609,14 @@ can't bind negative-argument to C-_ and M-_"
     ;; imenu+ will signal an error if a mode that derives from prog-mode
     ;; does not support imenu.  Prevent this error because imenu is used
     ;; inside a lot of operations.
-    (ignore-errors
-      (call-interactively (function imenup-add-defs-to-menubar))))
+    (unless (eq major-mode 'sh-mode)
+      (ignore-errors
+        (call-interactively (function imenup-add-defs-to-menubar)))))
   (declare-function pel--setup-imenu+ "pel_keys")
 
   (when (fboundp 'imenup-add-defs-to-menubar)
-    (add-hook 'prog-mode-hook 'pel--setup-imenu+)))
+    (add-hook 'prog-mode-hook 'pel--setup-imenu+))
+  )
 
 ;; Although imenu-extra is available through MELPA, that package just provide
 ;; tools that may be used by other PEL code to incorporate symbol generated
