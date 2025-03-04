@@ -6,7 +6,7 @@ How to recompile all Emacs Lisp files after updating Emacs to a different versio
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Saturday, March  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-04 16:27:29 EST, updated by Pierre Rouleau.
+:Modified: 2025-03-04 16:59:17 EST, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -45,6 +45,7 @@ It assumes that:
                                           from GNU Elpa, or MELPA repositories.
 . ``~/.emacs.d/utils``                    Holds Emacs Lisp files that do not originate
                                           from GNU Elpa, or MELPA repositories.
+.
 . **Optional - Used in dual environment**
 . ``~/.emacs.d/elpa-graphics``            A symbolic link to ``~/.emacs.d/elpa-complete-graphics``
 . ``~/.emacs.d/elpa-complete-graphics``   Holds GUI-specific packages that originate
@@ -53,11 +54,25 @@ It assumes that:
 . ``~/.emacs.d/utils-graphics``           Holds GUI-specific Emacs Lisp files that do not originate
                                           from GNU Elpa, or MELPA repositories
                                           when PEL dual-environment is used.
+.
 . **Optional - Attic directories**        Directories where PEL stores Emacs Lisp files *removed* bu **pel-cleanup**
 . ``~/.emacs.d/elpa-attic``               Files removed from the ``~/.emacs.d/elpa``
 . ``~/.emacs.d/elpa-attic-graphics``      Files removed from the ``~/.emacs.d/elpa-graphics``
 . ``~/.emacs.d/utils-attic``              Files removed from the ``~/.emacs.d/utils``
 . ``~/.emacs.d/utils-attic-graphics``     Files removed from the ``~/.emacs.d/utils-graphics``
+.
+. **Optional - Tree Sitter Support**
+. ``~/.emacs.d/tree-sitter-lang-bin``     Directory holding the tree-sitter binary dynamic libraries
+                                          installed by the tree-sitter package.
+. ``~/.emacs.d/libtree-sitter``           Directory holding symbolic links to the files inside the
+                                          ``~/.emacs.d/tree-sitter-lang-bin`` directory.
+. ``~/.emacs.d/tree-sitter-langs-bin``    Symbolic link to the tree-sitter Emacs package bin sub-directory.
+                                          With PEL it should point to something like
+                                          ``~/.emacs.d/elpa-complete/tree-sitter-langs-20250206.19``
+                                          where the tail end date corresponds to the package you installed.
+                                          Remember to update this symbolic link when updating the tree-sitter
+                                          package and when updating Emacs (since you're likely to get a new version
+                                          of the tree-sitter package).
 = ======================================= ==========================================================================
 
 How to recompile all elisp files after changing Emacs Version
@@ -130,6 +145,14 @@ PEL directory and execute::
   - PEL will take over and will download and compile the packages that are
     required for Emacs in Graphics mode.
   - Exit Emacs
+
+**Step 5** Update tree-sitter language symbolic link.
+
+- Check if the ``~/.emacs.d/tree-sitter-langs-bin`` symbolic link points to
+  the tree-sitter lang bin directory inside the elpa-complete directory.
+
+  - If the link is invalid, update it to point to the proper location.
+    Something like: ``~/.emacs.d/elpa-complete/tree-sitter-langs-20250206.19/bin``
 
 **Optional Following Steps**
 
