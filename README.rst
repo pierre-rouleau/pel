@@ -46,7 +46,7 @@ PEL -- Pragmatic Emacs Library
   linux and macOS like a pro? `🥳`_
 
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
-or `update it`_ [#update]_ !
+or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 
 
 ➣ Supports Launching Emacs from GUI and Shell
@@ -516,6 +516,7 @@ Notes
 .. _Hydra:                      https://github.com/abo-abo/hydra?tab=readme-ov-file#readme
 .. _How to recompile all Emacs Lisp files after updating Emacs to a different version: doc/upgrading-emacs.rst.txt
 .. _run Emacs daemon(s) with text and graphics clients: doc/emacs-daemon.rst.txt
+.. _feedback in the discussion: https://github.com/pierre-rouleau/pel/discussions
 
 ..
    -----------------------------------------------------------------------------
