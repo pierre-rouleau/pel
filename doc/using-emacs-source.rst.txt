@@ -2,8 +2,8 @@
 Using Emacs Source Code
 =======================
 
-:Home URL:
-:Project:
+:Home URL: https://github.com/pierre-rouleau/pel
+:Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Monday, March  3 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-03-03 21:18:19, by Pierre Rouleau.
@@ -56,6 +56,9 @@ You can use:
 
 Once you have entered the new path, apply and save the value.
 
+PEL uses the value of **pel-emacs-source-directory** to set
+Emacs **source-directory** variable after checking that the directory exists.
+
 Open Emacs C source code
 ========================
 
@@ -68,6 +71,7 @@ buffer showing the C source code for the C function.
 .. ---------------------------------------------------------------------------
 .. links:
 
+.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
 
 .. ---------------------------------------------------------------------------
 
