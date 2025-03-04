@@ -42,7 +42,7 @@ PEL -- Pragmatic Emacs Library
 - Want to learn Emacs and try several built-in and external packages? `😇`_
 - Want a fast single process startup even with a large number of external packages installed?
   `😃`_
-- You *also* want to `run an Emacs daemon(s) with text and graphics clients`_ on
+- You *also* want to `run Emacs daemon(s) with text and graphics clients`_ on
   linux and macOS like a pro? `🥳`_
 
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
@@ -515,7 +515,7 @@ Notes
 .. _Instructions are inside:    doc/pel-manual.rst#further-configure-the-init-el-file
 .. _Hydra:                      https://github.com/abo-abo/hydra?tab=readme-ov-file#readme
 .. _How to recompile all Emacs Lisp files after updating Emacs to a different version: doc/upgrading-emacs.rst.txt
-.. _run an Emacs daemon(s) with text and graphics clients: doc/emacs-daemon.rst.txt
+.. _run Emacs daemon(s) with text and graphics clients: doc/emacs-daemon.rst.txt
 
 ..
    -----------------------------------------------------------------------------
