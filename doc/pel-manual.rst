@@ -4,9 +4,9 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2024-07-26 22:48:43 EDT, updated by Pierre Rouleau.
+:Modified: 2025-03-04 16:11:13 EST, updated by Pierre Rouleau.
 :License:
-    Copyright (c) 2020, 2021, 2022, 2023, 2024 Pierre Rouleau <prouleau001@gmail.com>
+    Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025 Pierre Rouleau <prouleau001@gmail.com>
 
 
     You can redistribute this document and/or modify it under the terms of the GNU
@@ -2536,6 +2536,16 @@ using ``M-x pel-init`` or by restarting Emacs.
 
 As usual with PEL if new packages are identified by your new configuration
 they will be downloaded, installed, byte-compiled and configured automatically.
+
+**Updating Emacs**
+
+When updating Emacs to a new **major** version, you need to re-compile all
+Emacs Lisp files: the files from PEL but also all files from the packages you
+are using. With PEL this is very simple`.
+See
+`How to recompile all Emacs Lisp files after updating Emacs to a different major version`_.
+
+.. _How to recompile all Emacs Lisp files after updating Emacs to a different major version: upgrading-emacs.rst.txt
 
 .. ---------------------------------------------------------------------------
 

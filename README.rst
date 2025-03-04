@@ -18,15 +18,15 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/PEL_Managed_Packages-268-teal
+.. image:: https://img.shields.io/badge/PEL_Managed_Packages-275-teal
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-636-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-642-teal
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
-.. image:: https://img.shields.io/badge/PDF_Files-171-blue
+.. image:: https://img.shields.io/badge/PDF_Files-174-blue
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
@@ -42,7 +42,7 @@ PEL -- Pragmatic Emacs Library
 - Want to learn Emacs and try several built-in and external packages? `😇`_
 - Want a fast single process startup even with a large number of external packages installed?
   `😃`_
-- And *also* want to run an Emacs daemon(s) with text and graphics clients on
+- You *also* want to `run an Emacs daemon(s) with text and graphics clients`_ on
   linux and macOS like a pro? `🥳`_
 
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
@@ -207,7 +207,7 @@ various packages, etc...
 -----------------------------------------------------------------
 
 - In normal mode, PEL controls the download, installation, configuration and
-  activation of **268** *top-level* [#externp]_ external packages through the
+  activation of **275** *top-level* [#externp]_ external packages through the
   use of easy-to-setup customization user-options that have a name that start
   with the "``pel-use-``" prefix.
 
@@ -237,7 +237,7 @@ various packages, etc...
 ➣ Extends Emacs Documentation
 -----------------------------
 
-- PEL provides **171** `PDF topic-oriented reference sheets`_ [#doc]_ packed
+- PEL provides **174** `PDF topic-oriented reference sheets`_ [#doc]_ packed
   with symbol annotated, colour coded key bindings and command descriptions,
   with hyperlinks to Emacs manuals, external packages, articles and other
   useful references.
@@ -276,7 +276,7 @@ various packages, etc...
 --------------------------
 
 
-- PEL provides over 636 extra commands.  PEL commands extend the packages
+- PEL provides over 642 extra commands.  PEL commands extend the packages
   it supports and provides some of its own features.  Some commands are only
   available for a given OS, most are accessible in every OS.
 - PEL provides 10 specialized Hydra_ key bindings when the ``pel-use-hydra``
@@ -355,7 +355,7 @@ Notes
 
 
 .. [#externp] An external package may have dependencies.  The dependencies are also
-              installed. PEL currently provides access to 268 top-level external packages.
+              installed. PEL currently provides access to 275 top-level external packages.
               The actual number of packages is larger when counting their
               dependencies (currently 48 extra packages installed as dependencies).
               From within PEL execute the **pel-package-info**
@@ -441,7 +441,7 @@ Notes
               The command detects the key sequence and the context to
               identify which PEL PDF to open.
 
-              PEL currently implements 636 interactive commands.  Some are
+              PEL currently implements 642 interactive commands.  Some are
               always loaded.  Several are auto-loaded when needed.  This count
               excludes the number of template commands that are dynamically constructed
               and loaded only for major modes, such as Erlang, that support
@@ -515,6 +515,7 @@ Notes
 .. _Instructions are inside:    doc/pel-manual.rst#further-configure-the-init-el-file
 .. _Hydra:                      https://github.com/abo-abo/hydra?tab=readme-ov-file#readme
 .. _How to recompile all Emacs Lisp files after updating Emacs to a different version: doc/upgrading-emacs.rst.txt
+.. _run an Emacs daemon(s) with text and graphics clients: doc/emacs-daemon.rst.txt
 
 ..
    -----------------------------------------------------------------------------
