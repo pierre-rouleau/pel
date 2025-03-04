@@ -1,0 +1,79 @@
+=======================
+Using Emacs Source Code
+=======================
+
+:Home URL:
+:Project:
+:Created:  Monday, March  3 2025.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2025-03-03 21:18:19, by Pierre Rouleau.
+:Copyright: © 2025, Pierre Rouleau
+
+
+.. contents::  **Table of Contents**
+.. sectnum::
+
+.. ---------------------------------------------------------------------------
+
+Getting Emacs Source Code
+=========================
+
+Get Emacs source code by cloning Emacs Git repository by doing
+something like the following::
+
+  cd ~/my/dvpub/emacs-repos
+  git clone https://git.savannah.gnu.org/git/emacs.git
+
+Setting Up PEL to find Emacs C Source Code
+==========================================
+
+**Check out appropriate Git branch**
+
+Once you have a Git Clone of Emacs repository, check out the Git branch that
+corresponds to the version of Emacs you are running.
+
+For Emacs 30.1 that's done like this::
+
+    cd ~/my/dvpub/emacs-repos
+    git co emacs-30
+
+
+**Set pel-emacs-source-directory**
+
+Set the ``pel-emacs-source-directory`` user-option to the absolute path
+of the root directory where you stored the Emacs Git repository.
+In the case of our example that would be: ``~/my/dvpub/emacs-repos/emacs``
+
+You can use:
+
+- The ``<f1> o`` keybinding to **describe-symbol**
+  followed by ``pel-emacs-source-directory RET`` to show the
+  current value of **pel-emacs-source-directory** and then modify the value if
+  necessary by typing ``c`` in the help buffer to customize the value.
+- The ``<f11> <f2> o`` keybinding to **customize-option**
+  followed by ``pel-emacs-source-directory RET`` to open
+  the customization buffer directly.
+
+Once you have entered the new path, apply and save the value.
+
+Open Emacs C source code
+========================
+
+Once you have the above setup, you will be able to navigate to Emacs C source
+code just as easily as within elisp source code.  For example, inside an
+emacs-lisp-mode buffer, type the ``M-.`` key when point is at an Emacs
+function implemented in C, such as ``funcall``.  Emacs will open a c-mode
+buffer showing the C source code for the C function.
+
+.. ---------------------------------------------------------------------------
+.. links:
+
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
