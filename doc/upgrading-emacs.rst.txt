@@ -2,11 +2,11 @@
 How to recompile all Emacs Lisp files after updating Emacs to a different version
 =================================================================================
 
-:Home URL: :Home URL: https://github.com/pierre-rouleau/pel
+:Home URL: https://github.com/pierre-rouleau/pel
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Saturday, March  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-01 16:14:56, by Pierre Rouleau.
+:Modified: 2025-03-04 16:27:29 EST, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
