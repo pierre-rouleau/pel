@@ -323,6 +323,10 @@
   (eq system-type 'gnu/linux)
   "Predicate: t if running under a Linux Operating System, nil otherwise.")
 
+(defconst pel-system-is-FreeBSD-p
+  (eq system-type 'gnu/kfreebsd)
+  "Predicate: t if running under a FreeBSD Operating System, nil otherwise.")
+
 (defconst pel-system-is-windows-p
   (memq system-type '(windows-nt ms-dos))
   "Predicate: t if running under a Windows Operating System, nil otherwise.")
@@ -1308,7 +1312,7 @@ And with transformation functions:
     ELISP> (pel-use-or \"\" (function pel-hastext) 0
                        (function pel-capitalize-first-letter)
                        (function pel-end-text-with-period))
-    0 (#o0, #x0, ?\C-@)
+    0 (#o0, #x0, ?\\C-@)
     ELISP>"
   (if (funcall check-function value)
       (dolist (transform-fun transform-functions value)
