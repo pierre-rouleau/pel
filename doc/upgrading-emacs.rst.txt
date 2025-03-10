@@ -6,7 +6,7 @@ How to recompile all Emacs Lisp files after updating Emacs to a different versio
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Saturday, March  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-10 11:00:37 EDT, updated by Pierre Rouleau.
+:Modified: 2025-03-10 15:24:54 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -183,7 +183,13 @@ Step 5: Update tree-sitter language symbolic link.
   the tree-sitter lang bin directory inside the elpa-complete directory.
 
   - If the link is invalid, update it to point to the proper location.
-    Something like: ``~/.emacs.d/elpa-complete/tree-sitter-langs-20250206.19/bin``
+    Something like:
+
+    - ``~/.emacs.d/elpa-complete/tree-sitter-langs-20250206.19/bin``, when you
+      have used PEL fast startup, or
+    - ``~/.emacs.d/elpa/tree-sitter-langs-20250206.19/bin/`` if you have not
+      used PEL fast startup.
+
 
 Optional Following Steps
 ------------------------
