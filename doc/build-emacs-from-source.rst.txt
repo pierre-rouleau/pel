@@ -1,0 +1,187 @@
+=======================
+Build Emacs from Source
+=======================
+
+:Home URL: https://github.com/pierre-rouleau/pel
+:Project: `PEL -- Pragmatic Emacs Library`_
+:Created:  Tuesday, March  4 2025.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2025-03-04 22:44:09, by Pierre Rouleau.
+:Copyright: © 2025, Pierre Rouleau
+
+.. contents::  **Table of Contents**
+.. sectnum::
+
+.. ---------------------------------------------------------------------------
+
+
+General Overview
+================
+
+:Ref: `What's new in Emacs 30.1?`_, by Mickey Petersen
+:Ref: `Speed up Emacs with libjansson and native elisp compilation`_, by Mickey Petersen
+:Ref: `How to Get Started with Tree-Sitter`_, by Mickey Petersen
+
+This document describes how to build Emacs 30 on various platforms with
+several useful features.  The build is done inside a specific directory,
+located inside ``~/my/cdpub/emacs-repos``.
+
+Step 1: Create a Git clone or Emacs repository
+----------------------------------------------
+
+::
+
+  mkdir -p ~/my/dvpub/emacs-repos
+  cd       ~/my/dvpub/emacs-repos
+  git clone https://git.savannah.gnu.org/git/emacs.git
+
+If you already had a copy of the repository, get the latest changes with::
+
+  git pull
+
+
+Step 2: Select the Git branch
+-----------------------------
+
+List the available tags and versions from the repository.
+
+- To list the Git branches corresponding to recent Emacs development streams
+  (like ``emacs-30`` for Emacs 30), you can use::
+
+     git branch -r | sed -e s:origin/:: |  awk '{$1=$1; print}' | grep "^emacs"
+
+- To list all Git tags::
+
+    git tag
+
+
+Select a tag or branch to check out.
+
+Unless you have specific reasons to use a branch and want to use the very
+latest code available, you probably want to build an existing release that has
+gone through more testing.
+
+- The tagged version correspond to the code at a specific moment, like a specific release.
+  Something like ``emacs-30.1``.
+- The branch may still be active and may correspond to the code as it evolves.
+  For example, ``emacs-30`` is the branch for Emacs 30 development.
+  After the release of Emacs 30.1,commits for the next Emacs 30 release are placed there.
+
+============================== ===================================
+Git Branch Name                Description
+============================== ===================================
+master                         Main.
+emacs-30                       Branch. Evolution of Emacs 30.  Not stable.
+emacs-30.1                     Tagged version.  Code that corresponds to release 30.1.
+============================== ===================================
+
+Step 3: Install Required Packages and Tools
+-------------------------------------------
+
+============================== =========================================
+Name                           Description
+============================== =========================================
+Build Essentials               Build Essential tools;  ``sudo yum groupinstall "Development Tools"``
+texinfo                        Texinfo package: ``dnf search texinfo``
+gnutls                         GnuTLS support:  ``dnf search gnutls``
+autoconf                       autoconf utility: ``dnf search autoconf``
+libgccjit                      Required to enable Emacs native compiler
+libjpeg-turbo-devel
+libpng-devel
+libtiff
+============================== =========================================
+
+
+
+Getting Help
+============
+
+====================== ==============================
+Command                Purpose
+====================== ==============================
+``./configure --help`` List all configure options along with their purpose.
+                       It's best to save the output of this command into a file
+                       and read it carefully.
+
+``make help``          List all make commands along with their purpose.
+====================== ==============================
+
+
+
+Build Emacs
+===========
+
+From the root of Emacs repository,
+execute the following commands::
+
+  ./autogen.sh
+  make extraclean
+  ./configure --without-x
+  make
+
+The ``--without-x`` is only required when building Emacs in
+terminal mode only.  If you want graphical support do not use
+this option.
+
+
+To install the latest built emacs, execute::
+
+  sudo make install
+
+..
+
+   Build Emacs on Rocky Linux 8.10 - Intel
+   =======================================
+
+
+   Build Emacs on Rocky Linux 9.5 - Arm
+   ====================================
+
+
+   Buid Emacs on Ubuntu 22.04 - Intel
+   ==================================
+
+
+   Build Emacs on Ubuntu 24.04 - Arm
+   =================================
+
+.. ---------------------------------------------------------------------------
+
+Confirming that Emacs Native Compilation is active
+==================================================
+
+- Start Emacs
+- With PEL execute **pel-emacs-config-features**, bound to ``<f11> ? e C``.
+
+  - If native compilation is active the message will show ``NATIVE_COMP``
+    in the list and will confirm it with the following text: ``With native compilation.``
+
+- Without PEL do the same as what PEL does in that function:
+
+  .. code:: elisp
+
+
+      (defun pel-emacs-config-features ()
+        "Print the names of all Emacs configured compilation features."
+        (interactive)
+        (message "%s. With%s native compilation.%s" system-configuration-features
+                 (if (and pel-emacs-28-or-later-p (featurep 'native-compile))
+                     ""
+                   "out")
+
+
+.. ---------------------------------------------------------------------------
+.. links:
+
+.. _What's new in Emacs 30.1?: https://www.masteringemacs.org/article/whats-new-in-emacs-301
+.. _Speed up Emacs with libjansson and native elisp compilation:  https://www.masteringemacs.org/article/speed-up-emacs-libjansson-native-elisp-compilation
+.. _How to Get Started with Tree-Sitter:  https://www.masteringemacs.org/article/how-to-get-started-tree-sitter
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
