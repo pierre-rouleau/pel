@@ -6,7 +6,7 @@ How to recompile all Emacs Lisp files after updating Emacs to a different versio
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Saturday, March  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-04 16:59:17 EST, updated by Pierre Rouleau.
+:Modified: 2025-03-10 11:00:37 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -83,7 +83,8 @@ has installed. With PEL this is quite simple.
 
 This assumes Emacs is currently **not** running.
 
-**Step 1**: Rebuild PEL itself.
+Step 1: Rebuild PEL itself
+--------------------------
 
 To rebuild all PEL Emacs Lisp file, change the current directory to the
 PEL directory and execute::
@@ -91,7 +92,8 @@ PEL directory and execute::
   make clean all
 
 
-**Step 2**: Rebuild ``~/.emacs.d/utils``
+Step 2: Rebuild ``~/.emacs.d/utils``
+------------------------------------
 
 - Rename ``~/.emacs.d/utils`` to ``~/.emacs.d/utils.old`` or anything you
   want.
@@ -119,7 +121,34 @@ PEL directory and execute::
   directory.  If you prefer to use the old one you were using previously, just
   take the file from the backup directory you created earlier.
 
-**Step 3** Rebuild ``~/.emacs.d/elpa-complete``
+Step 3 Rebuild elpa
+-------------------
+
+Inside ``~/.emacs.d/`` check for the presence of ``elpa`` or
+``elpa-complete.``.  If you have ``elpa-complete`` you should also have a
+symbolic link named ``elpa`` that points to it.  This means you have used the
+PEL fast startup mechanism, otherwise you did not use it.
+
+If you only have ``~/.emacs.d/elpa``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Rename ``/.emacs.d/elpa`` to something else, like
+  ``/.emacs.d/elpa-.old``
+- Create a new ``~/.emacs.d/elpa``.
+- Run **Emacs in terminal mode** in a shell.
+  Do not edit any file.  Just start it without any argument.
+
+  - PEL will take over, detect missing elpa packages, will download
+    and build them.  This will take some time, depending on how many packages
+    you are using as identified by the various ``pel-use-...`` user-options.
+  - If any compilation error or warning is detected, please add a report as a
+    bug in the PEL project.  I will try to address those.  Please identify the
+    version of Emacs you run, and include the generate errors.
+  - Exit Emacs.
+
+
+If you have ``~/.emacs.d/elpa-complete``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Rename ``/.emacs.d/elpa-complete`` to something else, like
   ``/.emacs.d/elpa-complete.old``
@@ -137,7 +166,8 @@ PEL directory and execute::
     version of Emacs you run, and include the generate errors.
   - Exit Emacs.
 
-**Step 4** Run Emacs in graphics mode.
+Step 4: Run Emacs in graphics mode.
+-----------------------------------
 
 - Open a shell and run the `ge`_ script to start an instance of Emacs in
   graphics-mode.
@@ -146,7 +176,8 @@ PEL directory and execute::
     required for Emacs in Graphics mode.
   - Exit Emacs
 
-**Step 5** Update tree-sitter language symbolic link.
+Step 5: Update tree-sitter language symbolic link.
+--------------------------------------------------
 
 - Check if the ``~/.emacs.d/tree-sitter-langs-bin`` symbolic link points to
   the tree-sitter lang bin directory inside the elpa-complete directory.
@@ -154,7 +185,8 @@ PEL directory and execute::
   - If the link is invalid, update it to point to the proper location.
     Something like: ``~/.emacs.d/elpa-complete/tree-sitter-langs-20250206.19/bin``
 
-**Optional Following Steps**
+Optional Following Steps
+------------------------
 
 At this point you may want to activate Emacs dual-mode and run it.
 If there is anything missing PEL will install it and re-compile it.
