@@ -6,7 +6,7 @@ Using tree-sitter with Emacs and PEL
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-10 15:45:49 EDT, updated by Pierre Rouleau.
+:Modified: 2025-03-10 15:47:51 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -54,7 +54,7 @@ At this point you should be able to start Emacs and use tree-sitter facilities.
 .. ---------------------------------------------------------------------------
 .. links:
 
-
+.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
 .. _How to Get Started with Tree-Sitter:  https://www.masteringemacs.org/article/how-to-get-started-tree-sitter
 .. _What's new in Emacs 30.1?: https://www.masteringemacs.org/article/whats-new-in-emacs-301
 .. _How to recompile all Emacs Lisp files after updating Emacs to a different version: upgrading-emacs.rst.txt
