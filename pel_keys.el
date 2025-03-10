@@ -1424,6 +1424,7 @@ interactively."
   ;; ability to insert a dash with it (even when the area is marked: just
   ;; toggle the numlock on)
   (declare-function smart-dash-insert-or-overwrite "smart-dash")
+  (declare-function pel-kp-subtract  "pel-numkpad")
   (defun pel--smart-dash-insert-dash-or-kp-subtract ()
     "Insert dash or invoke pel-kp-subtract when area marked."
     (interactive)
@@ -7539,6 +7540,7 @@ the ones defined from the buffer now."
 
     (when (eq major-mode 'erlang-mode)
       ;; Activate Erlang-specific support
+      (declare-function pel-smartparens-setup-erlang "pel-smartparens")
       (pel-smartparens-setup-erlang)
 
       ;; and Erlang specific key bindings
@@ -8408,6 +8410,7 @@ the ones defined from the buffer now."
 ;; `pel-vcs-svn-verbose-log' is turned on.  This is activated right after the
 ;; vc-svn package is loaded
 
+(declare-function pel-vc-svn-init "pel-vc")
 (pel-eval-after-load vc-svn
   (pel-vc-svn-init))
 
@@ -8928,15 +8931,15 @@ the ones defined from the buffer now."
 (when pel-use-arc          (define-key pel:repl (kbd "C-a") #'run-arc))
 (when pel-use-lfe          (define-key pel:repl (kbd "C-l")  'run-lfe))
 ;; - Scheme dialects
-(when pel-use-chez         (define-key pel:repl (kbd "C-z") #'pel-chez-repl))
-(when pel-use-chibi        (define-key pel:repl (kbd "C-i") #'pel-chibi-repl))
-(when pel-use-chicken      (define-key pel:repl (kbd "C-k") #'pel-chicken-repl))
-(when pel-use-gambit       (define-key pel:repl (kbd "C-b") #'pel-gambit-repl))
-(when pel-use-gerbil       (define-key pel:repl (kbd "C-e") #'pel-gerbil-repl))
-(when pel-use-guile        (define-key pel:repl (kbd "C-g") #'pel-guile-repl))
-(when pel-use-mit-scheme   (define-key pel:repl (kbd "C-m") #'pel-mit-scheme-repl))
-(when pel-use-racket       (define-key pel:repl (kbd "C-r") #'pel-racket-repl))
-(when pel-use-scsh         (define-key pel:repl (kbd "C-h") #'pel-scsh-repl))
+(when pel-use-chez         (define-key pel:repl (kbd "C-z") 'pel-chez-repl))
+(when pel-use-chibi        (define-key pel:repl (kbd "C-i") 'pel-chibi-repl))
+(when pel-use-chicken      (define-key pel:repl (kbd "C-k") 'pel-chicken-repl))
+(when pel-use-gambit       (define-key pel:repl (kbd "C-b") 'pel-gambit-repl))
+(when pel-use-gerbil       (define-key pel:repl (kbd "C-e") 'pel-gerbil-repl))
+(when pel-use-guile        (define-key pel:repl (kbd "C-g") 'pel-guile-repl))
+(when pel-use-mit-scheme   (define-key pel:repl (kbd "C-m") 'pel-mit-scheme-repl))
+(when pel-use-racket       (define-key pel:repl (kbd "C-r") 'pel-racket-repl))
+(when pel-use-scsh         (define-key pel:repl (kbd "C-h") 'pel-scsh-repl))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC z f`` : emacs-eat (f:= food ;-)
@@ -8970,8 +8973,8 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:xref          (kbd "<f11> X"))
 (define-pel-global-prefix pel:xref-backend  (kbd "<f11> X B"))
 
-(define-key pel:xref "?" #'pel-xref-show-status)
-(define-key pel:help "X" #'pel-xref-show-status) ; pel:help key
+(define-key pel:xref "?" 'pel-xref-show-status)
+(define-key pel:help "X" 'pel-xref-show-status) ; pel:help key
 
 (define-key pel:xref "X"  'pel-etags-toggle-case-sensitivity)
 (define-key pel:xref "a" #'xref-find-apropos)
@@ -9070,6 +9073,7 @@ the ones defined from the buffer now."
 
 ;; rtags
 (when pel-use-rtags-xref
+  (declare-function pel-xref-rtags-activate  "pel-xref")
   (pel-ensure-package rtags-xref from: melpa)
   (pel-autoload-file rtags-xref for: rtags-xref-enable)
   (define-key pel:xref-backend "R" 'pel-xref-toggle-rtags)
@@ -9091,6 +9095,7 @@ the ones defined from the buffer now."
     (pel-autoload-file helm-xref for: helm-xref-show-xrefs)))
 
 ;; Activate xref front end 1 second after startup.
+(declare-function pel-xref-set-front-end  "pel-xref")
 (run-with-idle-timer
  1 nil
  (function pel-xref-set-front-end) 'select-from-customization)
