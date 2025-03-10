@@ -3472,6 +3472,7 @@ d-mode not added to ac-modes!"
   (pel-setq common-lisp-hyperspec-root
             (pel-expand-url-file-name pel-clisp-hyperspec-root))
 
+  (declare-function pel-skels-clisp "pel-skels-clisp")
   (pel-config-major-mode lisp pel:for-lisp
     (pel-local-set-f12-M-f12 'pel:elisp-function "f")
     (pel--install-clisp-skel pel:lisp-skel)
@@ -3971,6 +3972,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   ;; Augment the skeletons defined inside erlang.el.
   ;; Do this once - right after erlang.el file is loaded and
   ;; before the erlang-mode executes.
+  (declare-function pel--erlang-mode-setup "pel-skels-erlang")
   (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
 
   (when (and pel-use-erlang-syntax-check
@@ -3990,15 +3992,18 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   ;; to use the Erlang Man directory identified by the
   ;; `pel-erlang-man-parent-rootdir' user-option.  This way it's possible
   ;; to force a different location for the Erlang Man files.
+  (declare-function pel-erlang-setup-erlang-man-dir-root "pel-erlang")
   (pel-erlang-setup-erlang-man-dir-root)
 
   (pel-eval-after-load erlang
     ;; Set erlang-root-dir from the method identified by the
     ;; `pel-erlang-version-detection-method' user-option
+    (declare-function pel-erlang-root-path "pel-erlang")
     (if (boundp 'erlang-root-dir)
         (setq erlang-root-dir (pel-erlang-root-path))
       (display-warning 'pel-use-erlang "erlang-root-dir is unbound" :error))
     ;; Optionally add a Erlang Bin directory to the exec-path
+    (declare-function pel-erlang-set-dirpath "pel-erlang")
     (pel-erlang-set-dirpath (function pel-erlang-exec-path)
                             (lambda (dirpath) (add-to-list 'exec-path
                                                            dirpath)))
@@ -4021,12 +4026,14 @@ Can't load ac-geiser: geiser-repl-mode: %S"
         (setq-local pel-filename-at-point-finders '(pel-erlang-find-file)))
       ;;
       ;; setup the Erlang-specific key bindings
+      (declare-function pel--install-erlang-skel "pel-skels-erlang")
       (pel--install-erlang-skel pel:erlang-skel)
       ;;
       ;; Configure M-( to put parentheses after a function name.
       (set (make-local-variable 'parens-require-spaces) nil)
       ;;
       ;; Setup requested electric key behaviour
+      (declare-function pel-erlang-setup-electric-key-behaviour "pel-erlang")
       (pel-erlang-setup-electric-key-behaviour)
       ;;
 
@@ -4284,9 +4291,9 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 The F9 key is used for 2 prefixes: LSP and Greek letters. Change one.
 See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
           (define-key lsp-mode-map
-            (kbd (format "%s d" lsp-keymap-prefix)) 'lsp-doctor)
+                      (kbd (format "%s d" lsp-keymap-prefix)) 'lsp-doctor)
           (define-key lsp-mode-map
-            (kbd (format "%s L" lsp-keymap-prefix)) 'lsp-workspace-show-log))
+                      (kbd (format "%s L" lsp-keymap-prefix)) 'lsp-workspace-show-log))
 
         ;; Enable LSP Origami Mode (for folding ranges)
         ;; TODO: this is not Erlang specific but LSP specific: move
@@ -5495,6 +5502,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-key pel:rst-adorn-style "S" 'pel-rst-adorn-Sphinx-Python)
   (define-key pel:rst-adorn-style "C" 'pel-rst-adorn-CRiSPer)
 
+  (declare-function pel--install-rst-skel "pel-skels-rst")
   (pel-eval-after-load rst
     (pel-config-major-mode rst pel:for-reST
       (pel--install-rst-skel pel:rst-skel)
@@ -5609,6 +5617,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (when pel-use-speedbar
     (pel-add-speedbar-extension ".yang"))
 
+  (declare-function pel-yang-setup-support "pel-yang")
   (pel-eval-after-load yang-mode
     (pel-config-major-mode yang pel:for-yang
       (pel-yang-setup-support))))
@@ -6146,6 +6155,7 @@ to pel-use-helm-descbinds"))
 (define-pel-global-prefix pel:spell (kbd "<f11> $"))
 ;;
 (autoload 'ispell-check-version "ispell")
+(declare-function pel-spell-init-from-user-option "pel-spell")
 (pel-eval-after-load ispell (pel-spell-init-from-user-option))
 
 (define-key pel:spell "." #'ispell)
@@ -7516,6 +7526,7 @@ the ones defined from the buffer now."
   ;; sp-previous-sexp (&optional arg)                ;; C-M-p
   ;; sp-beginning-of-sexp (&optional arg)            ;; C-S-d --> C-M-a
   ;; sp-end-of-sexp (&optional arg)                  ;; C-S-a --> C-M-e
+  (declare-function pel-smartparens-augment "pel-smartparens")
   (with-eval-after-load 'smartparens
     ;; Augment functionality of smartparens with PEL support to display
     ;; string just copied or killed.
@@ -8907,7 +8918,7 @@ the ones defined from the buffer now."
   (define-key pel:execute "v" 'vterm))
 
 ;; Programming Language REPL.  Key used is the same as their f11 SPC key.
-(when pel-use-common-lisp  (define-key pel:repl  "L" #'pel-cl-repl))
+(when pel-use-common-lisp  (define-key pel:repl  "L"  'pel-cl-repl))
 (when pel-use-forth        (define-key pel:repl  "f"  'run-forth))
 (when pel-use-haskell
   (declare-function run-haskell "inf-haskell")
