@@ -6,7 +6,7 @@ Build Emacs from Source
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-04 22:44:09, by Pierre Rouleau.
+:Modified: 2025-03-10 16:50:09 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 .. contents::  **Table of Contents**
@@ -169,6 +169,15 @@ Confirming that Emacs Native Compilation is active
                      ""
                    "out")
 
+Once Emacs has been used at least once after the native compilation is active
+you should see the ``~/.emacs.d/eln-cache`` directory with a sub-directory
+that identifies the Emacs version.  Inside that directory you should see a
+set of ``.eln`` files.  These are the natively compiled emacs lisp files.
+
+For more information on the ``.eln`` files see:
+
+- `Libraries of Lisp Code for Emacs`_
+- `What is an eln-cache and how do I get rid of it? @ StackOverflow`_
 
 .. ---------------------------------------------------------------------------
 .. links:
@@ -176,6 +185,8 @@ Confirming that Emacs Native Compilation is active
 .. _What's new in Emacs 30.1?: https://www.masteringemacs.org/article/whats-new-in-emacs-301
 .. _Speed up Emacs with libjansson and native elisp compilation:  https://www.masteringemacs.org/article/speed-up-emacs-libjansson-native-elisp-compilation
 .. _How to Get Started with Tree-Sitter:  https://www.masteringemacs.org/article/how-to-get-started-tree-sitter
+.. _Libraries of Lisp Code for Emacs: https://www.gnu.org/software/emacs/manual/html_node/emacs/Lisp-Libraries.html
+.. _What is an eln-cache and how do I get rid of it? @ StackOverflow: https://emacs.stackexchange.com/questions/78160/what-is-an-eln-cache-and-how-do-i-get-rid-of-it
 
 .. ---------------------------------------------------------------------------
 
@@ -185,3 +196,5 @@ Confirming that Emacs Native Compilation is active
        time-stamp-start: "^:Modified:[ \t]+\\\\?"
        time-stamp-end:   "\\.$"
        End:
+
+..  LocalWords:  natively
