@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-10 11:12:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-10 11:24:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,7 +33,9 @@
 (require 'pel--options)
 (require 'hydra)
 (require 'pel-buffer)
+(require 'pel-frame-control)
 (require 'pel-hideshow)
+(require 'pel-pp)
 (require 'pel-scroll)
 (require 'pel-window)
 
@@ -652,7 +654,6 @@ CAUTION: the hydra is still active!"
 ;; PEL HYDRA: C preprocessor
 
 (when pel-use-c
-  (require 'pel-pp)
   (pel-autoload-file hideif for:
                      hide-ifdef-mode
                      hide-ifdef-toggle-shadowing
@@ -703,7 +704,6 @@ CAUTION: the hydra is still active!"
   ;;       of identical functions for C++.  This wastes time and memory space.
   ;;
   ;; PEL HYDRA: C preprocessor for C++
-  (require 'pel-pp)
   (defvar pel:for-c++)
   (defhydra pel-∑c++ (pel:for-c++ "<f7>"  :foreign-keys run)
     "C preprocessor"
