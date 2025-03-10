@@ -264,7 +264,7 @@ Number of global keys (and key prefixes)  : %4d"
   "Print the names of all Emacs configured compilation features."
   (interactive)
   (message "%s. With%s native compilation.%s" system-configuration-features
-           (if (string-match "NATIVE-COMP" system-configuration-features)
+           (if (and pel-emacs-28-or-later-p (featurep 'native-compile))
                ""
              "out")
            (if (or pel-system-is-linux-p pel-system-is-FreeBSD-p)
