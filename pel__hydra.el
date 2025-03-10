@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-11-17 09:38:52 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-10 11:12:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,6 +32,11 @@
 (require 'pel--base)
 (require 'pel--options)
 (require 'hydra)
+(require 'pel-buffer)
+(require 'pel-hideshow)
+(require 'pel-scroll)
+(require 'pel-window)
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -647,6 +652,7 @@ CAUTION: the hydra is still active!"
 ;; PEL HYDRA: C preprocessor
 
 (when pel-use-c
+  (require 'pel-pp)
   (pel-autoload-file hideif for:
                      hide-ifdef-mode
                      hide-ifdef-toggle-shadowing
@@ -661,10 +667,6 @@ CAUTION: the hydra is still active!"
                      hide-ifdef-use-define-alist
                      hide-ifdef-set-define-alist
                      hif-clear-all-ifdef-defined)
-
-  (pel-declare-file pel-pp declares:
-                    pel-pp-next-directive
-                    pel-pp-prev-directive)
 
   (pel-autoload-file cc-cmds for:
                      c-backward-conditional
@@ -701,6 +703,7 @@ CAUTION: the hydra is still active!"
   ;;       of identical functions for C++.  This wastes time and memory space.
   ;;
   ;; PEL HYDRA: C preprocessor for C++
+  (require 'pel-pp)
   (defvar pel:for-c++)
   (defhydra pel-∑c++ (pel:for-c++ "<f7>"  :foreign-keys run)
     "C preprocessor"
