@@ -6,7 +6,7 @@ How to recompile all Emacs Lisp files after updating Emacs to a different versio
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Saturday, March  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-10 15:24:54 EDT, updated by Pierre Rouleau.
+:Modified: 2025-03-10 15:44:33 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -179,6 +179,8 @@ Step 4: Run Emacs in graphics mode.
 Step 5: Update tree-sitter language symbolic link.
 --------------------------------------------------
 
+:Ref: `Using tree-sitter with Emacs and PEL`_
+
 - Check if the ``~/.emacs.d/tree-sitter-langs-bin`` symbolic link points to
   the tree-sitter lang bin directory inside the elpa-complete directory.
 
@@ -191,6 +193,8 @@ Step 5: Update tree-sitter language symbolic link.
       used PEL fast startup.
 
 
+
+
 Optional Following Steps
 ------------------------
 
@@ -199,11 +203,13 @@ If there is anything missing PEL will install it and re-compile it.
 
 .. ---------------------------------------------------------------------------
 .. links:
+.. elisp/pel/doc/upgrading-emacs.rst.txt
 
 .. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
 .. _e: https://github.com/pierre-rouleau/pel/blob/master/bin/e
 .. _Using the Emacs daemon and clients: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
 .. _ge: https://github.com/pierre-rouleau/pel/blob/master/bin/ge
+.. _Using tree-sitter with Emacs and PEL: using-tree-sitter.rst.txt
 
 .. ---------------------------------------------------------------------------
 

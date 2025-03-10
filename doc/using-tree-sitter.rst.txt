@@ -1,0 +1,71 @@
+====================================
+Using tree-sitter with Emacs and PEL
+====================================
+
+:Home URL: https://github.com/pierre-rouleau/pel
+:Project: `PEL -- Pragmatic Emacs Library`_
+:Created:  Tuesday, March  4 2025.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2025-03-10 15:45:49 EDT, updated by Pierre Rouleau.
+:Copyright: © 2025, Pierre Rouleau
+
+
+.. contents::  **Table of Contents**
+.. sectnum::
+
+.. ---------------------------------------------------------------------------
+
+Using tree-sitter with Emacs
+=============================
+
+:Ref: `How to Get Started with Tree-Sitter`_, by Mickey Petersen
+:Ref: `What's new in Emacs 30.1?`_, by Mickey Petersen
+:Ref: See also: `How to recompile all Emacs Lisp files after updating Emacs to a different version`_
+
+#. Set the ``pel-use-tree-sitter`` user-option to t.
+
+   - Save.
+   - Exit Emacs.
+   - Restart Emacs.  PEL will automatically install the latest tree-sitter
+     files.
+
+#. Set the ``~/.emacs.d/tree-sitter-langs-bin`` symbolic link to point to
+   the tree-sitter lang bin directory.
+
+  - Set it to something like:
+
+    - ``~/.emacs.d/elpa-complete/tree-sitter-langs-20250206.19/bin``, when you
+      have used PEL fast startup, or
+    - ``~/.emacs.d/elpa/tree-sitter-langs-20250206.19/bin/`` if you have not
+      used PEL fast startup.
+
+#. Set the ``pel-treesit-load-path`` user-option.
+
+   - Add the following directories to the list:
+
+     - ``~/.emacs.d/tree-sitter-langs-bin``
+     - ``~/.emacs.d/libtree-sitter``
+
+   - Save.
+   - Exit Emacs.
+
+At this point you should be able to start Emacs and use tree-sitter facilities.
+
+.. ---------------------------------------------------------------------------
+.. links:
+
+
+.. _How to Get Started with Tree-Sitter:  https://www.masteringemacs.org/article/how-to-get-started-tree-sitter
+.. _What's new in Emacs 30.1?: https://www.masteringemacs.org/article/whats-new-in-emacs-301
+.. _How to recompile all Emacs Lisp files after updating Emacs to a different version: upgrading-emacs.rst.txt
+
+
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
