@@ -1215,6 +1215,7 @@ Your version of Emacs does not support dynamic module.")))
 ;;
 ;; Install the generic skeletons, 1 second after Emacs starts to reduce
 ;; Emacs init time.
+(declare-function pel--install-generic-skel "pel--install-generic-skel")
 (run-with-idle-timer 1 nil (function pel--install-generic-skel) pel:f6)
 
 ;; ---------------------------------------------------------------------------
@@ -1584,6 +1585,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-b M-f M-F M-g M-P M-r
 
 ;; Initialize PEL special imenu handling
+(declare-function pel-imenu-init "pel-imenu")
 (pel-eval-after-load imenu
   (pel-imenu-init))
 
@@ -1805,6 +1807,7 @@ can't bind negative-argument to C-_ and M-_"
     (pel-ensure-package idomenu from: melpa))
 
   (when pel-use-ido-ubiquitous
+    (declare-function pel-set-ido-ubiquitous "pel-completion")
     (pel-ensure-package ido-completing-read+ from: melpa)
     ;; add autoloading control for it.  The actual loading is controlled
     ;; by the logic inside pel-completion.el
@@ -1898,6 +1901,7 @@ can't bind negative-argument to C-_ and M-_"
   ;; Of all input-completion packages, Helm takes the longuest time to load.
   ;; Defer loading of pel-completion a little and allow switching only once
   ;; it's loaded.
+  (declare-function pel-set-completion-mode "pel-completion")
   (pel-require-after-init pel-completion 1)
   (pel-eval-after-load pel-completion
     ;; after specified delay configure input completion:
@@ -2302,8 +2306,8 @@ can't bind negative-argument to C-_ and M-_"
   (pel-config-major-mode makefile pel:for-make
     (define-key pel:for-make (kbd "<up>")      'makefile-previous-dependency)
     (define-key pel:for-make (kbd "<down>")    'makefile-next-dependency)
-    (define-key pel:for-make (kbd "<M-up>")   #'pel-make-previous-macro)
-    (define-key pel:for-make (kbd "<M-down>") #'pel-make-next-macro)
+    (define-key pel:for-make (kbd "<M-up>")    'pel-make-previous-macro)
+    (define-key pel:for-make (kbd "<M-down>")  'pel-make-next-macro)
     (define-key pel:for-make "."               'completion-at-point)
     (when (boundp 'makefile-mode-map)
       (let ((map makefile-mode-map))
@@ -2742,6 +2746,8 @@ MODE must be a symbol."
 
 
   (defvar c-mode-map)        ; declare dynamic: prevent byte-compiler warnings
+  (declare-function pel--install-c-skel "pel-skels-c")
+  (declare-function pel-cc-find-activate-finder-method "pel-cc-find")
   (pel-eval-after-load cc-mode
     (pel-config-major-mode c pel:for-c
       (progn
@@ -2825,6 +2831,7 @@ MODE must be a symbol."
   ;; TODO: learn how Tree Sitter deals with styles and adapt the following code
   ;; Activate extra C styles
   (when pel-use-linux-kernel-code-style-support
+    (declare-function pel-linux-kernel-code-style-setup "pel-cc-linux-kernel")
     (pel-linux-kernel-code-style-setup)
     (define-key pel:for-c (kbd "M-k") 'pel-linux-kernel-code-style)))
 
@@ -2876,7 +2883,7 @@ MODE must be a symbol."
   ;; Add C++ specific commands
   (define-key pel:c++-search-replace (kbd "v") 'pel-move-down-to-class-visibility)
   (define-key pel:c++-search-replace (kbd "V") 'pel-move-up-to-class-visibility)
-
+  (declare-function pel--install-c++-skel "pel-skels-cpp")
   (pel-eval-after-load cc-mode
     (pel-config-major-mode c++ pel:for-c++
 
@@ -3274,6 +3281,7 @@ d-mode not added to ac-modes!"
   ;; parinfer was removed from MELPA, if you have an old copy in your elpa-attic
   ;; set pel-use-parinfer to use-pel-elpa-attic-copy otherwise PEL will extract it
   ;; from the emacsattic.
+  (declare-function pel-install-from-elpa-attic "pel-package")
   (cl-eval-when 'load
     (or (and (eq pel-use-parinfer 'use-pel-elpa-attic-copy)
              (pel-install-from-elpa-attic "parinfer"))
@@ -3384,6 +3392,7 @@ d-mode not added to ac-modes!"
 
 ;; activate the <f12> key binding for elisp-mode and other features.
 (pel-check-minor-modes-in pel-elisp-activates-minor-modes)
+(declare-function pel--install-elisp-skel "pel-skels-elisp")
 (pel--mode-hook-maybe-call
  (lambda ()
    (pel-local-set-f12-M-f12 'pel:for-elisp)
@@ -3472,7 +3481,7 @@ d-mode not added to ac-modes!"
   (pel-setq common-lisp-hyperspec-root
             (pel-expand-url-file-name pel-clisp-hyperspec-root))
 
-  (declare-function pel-skels-clisp "pel-skels-clisp")
+  (declare-function pel--install-clisp-skel "pel-skels-clisp")
   (pel-config-major-mode lisp pel:for-lisp
     (pel-local-set-f12-M-f12 'pel:elisp-function "f")
     (pel--install-clisp-skel pel:lisp-skel)
@@ -4004,6 +4013,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (display-warning 'pel-use-erlang "erlang-root-dir is unbound" :error))
     ;; Optionally add a Erlang Bin directory to the exec-path
     (declare-function pel-erlang-set-dirpath "pel-erlang")
+    (declare-function pel-erlang-exec-path "pel-erlang")
     (pel-erlang-set-dirpath (function pel-erlang-exec-path)
                             (lambda (dirpath) (add-to-list 'exec-path
                                                            dirpath)))
