@@ -2,12 +2,12 @@
 Advising Functions in Emacs Lisp
 ================================
 
-:Home URL:
-:Project:
+:Home URL: https://github.com/pierre-rouleau/pel
+:Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Sunday, July 18 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2021-07-18 12:34:56, by Pierre Rouleau.
-:Copyright: © 2021, Pierre Rouleau
+:Modified: 2025-03-11 23:59:19 EDT, updated by Pierre Rouleau.
+:Copyright: © 2021, 2025, Pierre Rouleau
 
 
 .. contents::  **Table of Contents**
@@ -64,6 +64,11 @@ To restore the original function use the advice-remove:
           (advice-remove 'original-function #'replacement-function)
 
 
+
+.. ---------------------------------------------------------------------------
+.. links
+
+.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
 
 .. ---------------------------------------------------------------------------
 
