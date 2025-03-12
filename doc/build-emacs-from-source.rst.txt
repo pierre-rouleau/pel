@@ -6,7 +6,7 @@ Build Emacs from Source
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-12 00:03:59 EDT, updated by Pierre Rouleau.
+:Modified: 2025-03-12 09:22:37 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 .. contents::  **Table of Contents**
@@ -81,6 +81,7 @@ Step 3: Install Required Packages and Tools
 ============================== =========================================
 Name                           Description
 ============================== =========================================
+makeinfo
 Build Essentials               Build Essential tools;  ``sudo yum groupinstall "Development Tools"``
 texinfo                        Texinfo package: ``dnf search texinfo``
 gnutls                         GnuTLS support:  ``dnf search gnutls``
@@ -179,4 +180,5 @@ For more information on the ``.eln`` files see:
        time-stamp-line-limit: 10
        time-stamp-start: "^:Modified:[ \t]+\\\\?"
        time-stamp-end:   "\\.$"
+       LocalWords:  natively
        End:
