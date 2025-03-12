@@ -409,6 +409,8 @@ Your version of Emacs does not support dynamic module.")))
 (add-to-list 'auto-mode-alist  '("\\.properties\\'" . conf-javaprop-mode))
 ;; conf-mode further parses the file and selects an appropriate sub-mode.
 (add-to-list 'auto-mode-alist  '("\\.?.+rc\\'" . conf-mode))
+;; files like /etc/ssh/ssh_config
+(add-to-list 'auto-mode-alist  '("\\.?.+config\\'" . conf-mode))
 
 (when pel-use-ini
   (pel-install-github-file "pierre-rouleau/ini.el/master" "ini.el"))
