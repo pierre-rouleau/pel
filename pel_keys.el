@@ -407,6 +407,9 @@ Your version of Emacs does not support dynamic module.")))
 (add-to-list 'auto-mode-alist  '("\\.repo\\'" . conf-unix-mode))
 (add-to-list 'auto-mode-alist  '("\\.permission\\'" . java-mode))
 (add-to-list 'auto-mode-alist  '("\\.properties\\'" . conf-javaprop-mode))
+;; conf-mode further parses the file and selects an appropriate sub-mode.
+(add-to-list 'auto-mode-alist  '("\\.?.+rc\\'" . conf-mode))
+
 (when pel-use-ini
   (pel-install-github-file "pierre-rouleau/ini.el/master" "ini.el"))
 (when pel-use-emacs-toml
@@ -418,6 +421,16 @@ Your version of Emacs does not support dynamic module.")))
   (pel-autoload-file kconfig-mode for: kconfig-mode))
 (when pel-use-dockerfile-mode
   (pel-ensure-package dockerfile-mode from: melpa))
+
+;; EditorConfig Support
+;; --------------------
+(when pel-use-editor-config
+  (pel-ensure-package  editorconfig from: melpa)
+  (pel-require-at-load editorconfig)
+  (pel-eval-after-load editorconfig
+    (if (fboundp 'editorconfig-mode)
+        (editorconfig-mode 1)
+      (user-error "Failed loading editorconfig"))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Font Control
@@ -1290,17 +1303,6 @@ Your version of Emacs does not support dynamic module.")))
 ;; Command Execution (Emacs 28.1 and later)
 (when pel-emacs-28-or-later-p
   (define-key pel: (kbd "M-X") 'execute-extended-command-for-buffer))
-;; ---------------------------------------------------------------------------
-;; EditorConfig Support
-;; --------------------
-(when pel-use-editor-config
-  (pel-ensure-package  editorconfig from: melpa)
-  (pel-require-at-load editorconfig)
-  (pel-eval-after-load editorconfig
-    (if (fboundp 'editorconfig-mode)
-        (editorconfig-mode 1)
-      (user-error "Failed loading editorconfig"))))
-
 ;; ---------------------------------------------------------------------------
 ;; Actions on File Save
 ;; --------------------
