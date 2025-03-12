@@ -2,6 +2,13 @@
 iMenu Support Description
 =========================
 
+:Home URL: https://github.com/pierre-rouleau/pel
+:Project: `PEL -- Pragmatic Emacs Library`_
+:Created:  Wednesday, May 12, 2021.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2025-03-11 23:59:19 EDT, updated by Pierre Rouleau.
+:Copyright: © 2021, 2025, Pierre Rouleau
+
 
 Introduction
 ============
@@ -127,3 +134,15 @@ From: https://developpaper.com/exploiting-emacs-imenus-potential/
 
 
 .. ---------------------------------------------------------------------------
+.. links
+
+.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
