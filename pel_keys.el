@@ -411,6 +411,12 @@ Your version of Emacs does not support dynamic module.")))
 (add-to-list 'auto-mode-alist  '("\\.?.+rc\\'" . conf-mode))
 ;; files like /etc/ssh/ssh_config
 (add-to-list 'auto-mode-alist  '("\\.?.+config\\'" . conf-mode))
+(when pel-system-is-linux-p
+  ;; prevent Linux crypto-policy files to be opened as Pike programming language files.
+  (add-to-list 'auto-mode-alist
+               '("/usr/share/crypto-policies/policies/modules/.+\\.pmod\\'"
+                 . conf-mode)))
+
 
 (when pel-use-ini
   (pel-install-github-file "pierre-rouleau/ini.el/master" "ini.el"))
