@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-11-20 10:40:09 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-14 13:57:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -471,11 +471,13 @@ Return entered string, optionally capitalized if CAPITALIZE is non-nil."
 (defun pel-prompt-with-completion (prompt collection &optional scope)
   "Generic PROMPT for string with tab-completion from COLLECTION.
 
+COLLECTION must be a list of strings.
+
 Optionally identify a SCOPE symbol for the prompt history.
 If it is specified the prompt has its own history for each major mode,
 otherwise it has no history."
   (completing-read prompt collection
-                   nil nil
+                   nil nil nil
                    (when scope
                      (intern (format
                               "pel-prompt-%s-%s"
