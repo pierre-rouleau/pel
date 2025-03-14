@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-03 14:42:30 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-14 10:39:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -354,6 +354,7 @@
     (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        (lfe
                                                                  lispy))
 
+    (,(kbd "<f11> SPC C-p") "pl-pike"   pel-pkg-for-pike  c)
     ;; Scheme Dialect Languages
     (,(kbd "<f11> SPC C-s C-s") "pl-scheme"        pel-pkg-for-scheme  ,pel--scheme-groups)
     (,(kbd "<f11> SPC C-s C-z") "pl-chez-scheme"   pel-pkg-for-chez    ,pel--scheme-groups)
@@ -686,6 +687,7 @@ stored inside the doc/pdf directory.")
     ("tuareg"          [f11 32 ?o])
     ("perl"            [f11 32 ?P])
     ("cperl"           [f11 32 ?P])
+    ("pike"            [f11 32 16])
     ("rexx"            [f11 32 ?R])
     ("rpm"             [f11 32 27 ?R])
     ;; ("rpmspec"         [f11 32 27 ?S])
@@ -952,6 +954,7 @@ There should be no key binding!" keyseq))
     ("odin"             . "pl-odin")
     ("perl"             . "pl-perl")
     ("cperl"            . "pl-perl")
+    ("pike"             . "pl-pike")
     ("python"           . "pl-python")
     ("rexx"             . "pl-rexx")
     ("ruby"             . "pl-ruby")

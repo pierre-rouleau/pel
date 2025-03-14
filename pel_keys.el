@@ -2448,11 +2448,12 @@ can't bind negative-argument to C-_ and M-_"
       (define-key pel:narrate "p" 'pel-say-paragraph))))
 
 ;; ---------------------------------------------------------------------------
-;; C-like programming languages: C, C++
-;; ------------------------------------
+;; C-like programming languages: C, C++, Pike
+;; ------------------------------------------
 (when (and pel-use-c-eldoc
            (or pel-use-c
-               pel-use-c++))
+               pel-use-c++
+               pel-use-pike))
 
   ;; TODO: check if main repo is OK.
   ;; c-eldoc is an external package.
@@ -2478,11 +2479,12 @@ can't bind negative-argument to C-_ and M-_"
                      call-graph))
 
 ;; ---------------------------------------------------------------------------
-;; Utility function for mapping CC Mode keys : used by C, C++ and D
+;; Utility function for mapping CC Mode keys : used by C, C++, D and Pike
 (when (or pel-use-awk
           pel-use-c
           pel-use-c++
-          pel-use-d)
+          pel-use-d
+          pel-use-pike)
 
   ;; Autoload cc-cmds for the c-hungry-delete commands.
   ;; Also autoload c-toggle-hungry-state because it is is used for
@@ -2606,6 +2608,9 @@ bind it again after this call."
                 ((and (eq major-mode 'c++-ts-mode)
                       (boundp 'c++-ts-mode-map))
                  c++-ts-mode-map)
+                ((and (eq major-mode 'pike-mode)
+                      (boundp 'pike-mode-map))
+                 pike-mode-map)
                 (t nil))))
       (when map
         ;; AWK supports the switch statement, but nothing else.
@@ -3028,6 +3033,45 @@ d-mode not added to ac-modes!"
       ;; 7) Install language-specific skeletons
       ;; TODO
       )))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-p`` : Pike programming
+(when pel-use-pike
+  (define-pel-global-prefix pel:for-pike         (kbd "<f11> SPC C-p"))
+
+  (pel-eval-after-load cc-mode
+    (pel-config-major-mode pike pel:for-pike
+      (progn
+        (define-key pike-mode-map (kbd "M-;") 'pel-c-comment-dwim)
+
+        ;; Configure how to search for a file name from the user-option
+        ;; `pel-c-file-finder-method' which may be specified in a
+        ;; .dir-local.el file.
+        ;; [:todo 2025-03-14, by Pierre Rouleau: Add finder methods for Pike code]
+        (pel-cc-find-activate-finder-method pel-c-file-finder-method
+                                            pel-c-file-searched-extra-dir-trees)
+
+        ;; Configure the CC Mode style for Pike from PEL custom variables
+        ;; 1) set the style: it identifies everything
+        (pel--set-cc-style 'pike-mode pel-pike-bracket-style pel-pike-newline-mode)
+        ;; 2) apply modifications requested by PEL user options.
+        ;;    set variables only available in a CC mode - prevent warnings
+        (pel-setq-local c-basic-offset pel-pike-indent-width)
+        ;; 3) set fill-column to PEL specified Pike's default if specified
+        (when pel-pike-fill-column
+          (setq-local fill-column pel-pike-fill-column))
+        ;; 4) Set default auto-newline mode as identified by PEL user option
+        (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+        ;; 5) Configure M-( to put parentheses after a function name.
+        (set (make-local-variable 'parens-require-spaces) nil)
+        ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
+        (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
+        ;; 7) Install language-specific skeletons
+        ;; [:todo 2025-03-14, by Pierre Rouleau: Add skeletons for Pike]
+        ;; (pel--install-c-skel pel:c-skel)
+        ;; 8) extra setup
+        (pel--setup-for-cc))))
+  )
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-f`` : Factor programming

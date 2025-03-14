@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add preliminary PEL support for the Pike programming language:
+  - Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pel-pike.pdf][𝕻𝔩 - Pike]] PDF.  It's an early version.
+  - The PEL support for Pike is controlled by the *pel-use-pike* user-option: set it to t and restart Emacs to activate it.
+    - For now it provides the ~<f12>~ key prefix for Pike in pike-mode buffer.
+      Since pike-mode derives from cc-mode, lots of support is inherited, but not yet documented.
+      Several PEL features are not yet activated for Pike.
 - Add (experimental) support for the Odin programming language:
   - Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pel-odin.pdf][𝕻𝔩 - Odin]] PDF.  It's an early version.
   - The support for Odin is controlled by the *pel-use-odin* user-option: set it to t and restart Emacs to activate it.

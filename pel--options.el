@@ -157,6 +157,7 @@
 ;;         - pel-pkg-for-perl-general
 ;;         - pel-pkg-for-perl-perl-mode
 ;;         - pel-pkg-for-perl-cperl-mode
+;;       - pel-pkg-for-pike
 ;;       - pel-pkg-for-python
 ;;       - pel-pkg-for-rexx
 ;;       - pel-pkg-for-ruby
@@ -2673,6 +2674,7 @@ See the author site at URL http://malsyned.net/smart-dash.html"
   :group 'pel-pkg-for-go
   :group 'pel-pkg-for-erlang
   :group 'pel-pkg-for-elixir
+  :group 'pel-pkg-for-pike
   :group 'pel-pkg-for-python
   :group 'pel-pkg-for-rust
   :group 'pel-pkg-for-sh-scripting
@@ -2684,6 +2686,7 @@ See the author site at URL http://malsyned.net/smart-dash.html"
     c++-mode
     d-mode
     elixir-mode
+    pike-mode
     python-mode
     shell-script-mode)
   "List of major modes that automatically activate the smart dash mode.
@@ -9656,6 +9659,128 @@ show the trailing spaces as usual."
   :group 'pel-pkg-for-perl-cperl-mode
   :type 'boolean
   :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Pike Support
+;; ------------
+(defgroup pel-pkg-for-pike nil
+  "PEL customization for Pike."
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Pike PDF" ,(pel-pdf-file-url "pl-pike")))
+
+(defcustom pel-use-pike  nil
+  "Control whether PEL supports Pike development."
+  :group 'pel-pkg-for-pike
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-pike :package-is :builtin-emacs)
+
+(defcustom pel-pike-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Pike buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-pike
+  :type '(repeat function))
+
+(defcustom pel-pike-indent-width 4
+  "Number of columns for Pike source code indentation.
+PEL stores this in `c-basic-offset' when editing buffers with Pike code.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkf-for-pike
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-pike-tab-width 4
+  "Distance between tab stop for buffers in `pike-mode'.
+
+PEL stores this in `tab-width' when opening Pike buffers.
+
+This does *NOT* control the indentation in Pike files.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters.
+
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-pike
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-pike-use-tabs nil
+  "Value of `indent-tabs-mode' for editing pike files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-pike
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-pike-bracket-style "bsd"
+  "Set the bracket style for the Pike programming language.
+PEL stores this value associated with the `pike-mode' into the
+`c-default-style' user option variable in pike buffers.
+If you want to use something else, please select one of the
+CC Mode Built-in Styles, which include the following:
+- gnu
+- k&r
+- bsd
+- whitesmith
+- stroustrup
+- ellemtel
+- linux
+- python
+- java
+- awk
+- user"
+  :link '(custom-group-link "C")
+  :link '(custom-manual "(ccmode)Built-in Styles")
+  :link '(url-link
+          :tag "Bracket styles @ Emacs Manual"
+          "https://www.gnu.org/software/emacs/manual/html_node/\
+ccmode/Built_002din-Styles.html#Built_002din-Styles")
+  :link '(url-link :tag "Indentation styles @ wikipedia"
+                   "https://en.wikipedia.org/wiki/Indentation_style")
+  :group 'pel-pkg-for-pike
+  :type 'string
+  :safe 'pel-c-style-valid-p)
+
+(defcustom pel-pike-fill-column 80
+  "Column beyond which automatic line-wrapping should happen in Pike code.
+Can either be nil or an integer value.
+When set to nil, Emacs user option variable `fill-column' value
+is used for `c-mode' buffers, otherwise the integer value specified by
+`pel-c-fill-column' is stored in the variable `fill-column' for
+`c-mode' buffers.  The default is 80."
+  :group 'pel-pkg_for-pike
+  :type '(choice
+          (const   :tag "Use the default fill-column value." nil)
+          (integer :tag "Use a value specific for c-mode buffers:")))
+
+
+(defcustom  pel-pike-newline-mode 'context-newline
+  "Set default newline mode for c-mode buffers.
+
+This may be one of the following values:
+
+- context-newline : the default : the RET key is bound to
+  the function `c-context-line-break' with the extra ability to
+  repeat its execution with an argument.
+- newline-and-indent: RET uses the function `newline' passing ARG
+  and t for its arguments to insert newline and indent.
+- just-newline-no-indent: RET uses the function
+  `electric-indent-just-newline` with the specified argument (if
+  any).  This only insert a newline; it does not indent."
+  :group 'pel-pkg-for-pike
+  :type '(choice
+          (const :tag "context-newline: use c-context-line-break.\n\
+Does all what newline does plus more."
+                 context-newline)
+          (const :tag "newline-and-indent: use newline. This inserts\n\
+a newline and then indent the new line."
+                 newline-and-indent)
+          (const :tag "just-newline-no-indent: use\
+ electric-indent-just-newline.\n\
+Does not indent."
+                 just-newline-no-indent)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Python Support
