@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- The ~<f12>~ key is bound to *pel-as* (which has a *as* alias unless *pel-has-alias-as* is nil) when the buffer is using the *fundamental-mode*.
+  The command is used to interactively select a major mode for config or script modes that use a shebang line.
+  Once the command is used to select the major mode, the ~<f12>~ key becomes a prefix key.
 - Add preliminary PEL support for the Pike programming language:
   - Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pel-pike.pdf][𝕻𝔩 - Pike]] PDF.  It's an early version.
   - The PEL support for Pike is controlled by the *pel-use-pike* user-option: set it to t and restart Emacs to activate it.

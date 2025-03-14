@@ -294,6 +294,24 @@ Done in this function to allow advising libraries that remap these keys."
 (pel-bind-negative-argument)
 
 ;; ---------------------------------------------------------------------------
+;; Setting the mode of a fundamental-mode buffer
+;; ---------------------------------------------
+;;
+;; Lots of script files have no extension and there's no logic in the
+;; `auto-mode-alist' to identify the mode the buffer should use.
+;; For those buffer you can type the <f12> key, which will prompt for
+;; a major-mode to use, providing potential choices.  Once a major mode is
+;; selected that command binding is no longer available if PEL is controlling
+;; the selected major mode.
+;;
+;; The mode selection is done by the logic of pel-as, which is aliased to the
+;; shorter name `as'.
+
+(global-set-key (kbd "<f12>") 'pel-as)
+(when pel-has-alias-as
+  (defalias 'as 'pel-as "Select major mode for the buffer."))
+
+;; ---------------------------------------------------------------------------
 ;; Inserting empty line above
 ;; --------------------------
 (global-set-key (kbd "M-L") 'pel-insert-line-above)

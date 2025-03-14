@@ -503,6 +503,12 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   "PEL Emacs basic configuration."
   :group 'pel)
 
+(defcustom pel-has-alias-as t
+  "Activate `as' alias to `pel-as' for convenience."
+  :group 'pel-base-emacs
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-future-proof nil
   "Activate future-proofing package download when set to t.
 

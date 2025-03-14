@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-03-10 11:19:41 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-03-14 13:42:01 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -130,6 +130,7 @@ EL_FILES := pel--base.el \
 		pel-abbrev.el \
 		pel-applescript.el \
 		pel-align.el \
+		pel-as.el \
 		pel-autocomplete.el \
 		pel-autoload.el \
 		pel-benchmark.el \
@@ -275,32 +276,32 @@ TEST_FILES := pel-file-test.el pel-list-test.el pel-text-transform-test.el pel-p
 
 # Documentation PDF files to copy verbatim into the doc/pdfs
 PDF_FILES := -legend.pdf                        \
-	-pel-key-maps.pdf			\
-	-index.pdf                              \
-	abbreviations.pdf			\
+	-pel-key-maps.pdf		\
+	-index.pdf				\
+	abbreviations.pdf		\
 	align.pdf				\
-	asciidoc.pdf				\
-	auto-completion.pdf			\
-	autosave-backup.pdf			\
-	bookmarks.pdf				\
-	buffers.pdf				\
-	case-conversion.pdf			\
-	closing-suspending.pdf			\
-	comments.pdf				\
-	completion-input.pdf			\
-	counting.pdf				\
-	cua.pdf					\
+	asciidoc.pdf			\
+	auto-completion.pdf	\
+	autosave-backup.pdf	\
+	bookmarks.pdf			\
+	buffers.pdf			\
+	case-conversion.pdf	\
+	closing-suspending.pdf	\
+	comments.pdf			\
+	completion-input.pdf	\
+	counting.pdf			\
+	cua.pdf				\
 	cursor.pdf				\
-	customize.pdf				\
-	cut-paste.pdf				\
-	diff-merge.pdf				\
-	display-lines.pdf			\
-	drawing.pdf				\
-	enriched-text.pdf			\
-	ert.pdf					\
-	faces-fonts.pdf				\
-	file-mngt.pdf				\
-	file-variables.pdf			\
+	customize.pdf			\
+	cut-paste.pdf			\
+	diff-merge.pdf			\
+	display-lines.pdf		\
+	drawing.pdf			\
+	enriched-text.pdf		\
+	ert.pdf				\
+	faces-fonts.pdf		\
+	file-mngt.pdf			\
+	file-variables.pdf		\
 	filling-justification.pdf		\
 	frames.pdf				\
 	graphviz-dot.pdf			\
@@ -574,6 +575,7 @@ pel--options.elc:       pel--base.elc
 pel-abbrev.elc:         pel--base.elc
 pel-align.elc:          pel--base.elc pel-hash.elc
 pel-applescript.elc:    pel--base.elc pel--options.elc pel-read.elc
+pel-as.elc:             pel-prompt.elc
 pel-autocomplete.elc:   pel--base.elc pel--options.elc pel--macros.elc
 pel-autoload.elc:       pel--options.elc
 pel-benchmark.elc:      pel--base.elc pel-window.elc pel-setup.elc

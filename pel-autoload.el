@@ -100,6 +100,7 @@ Argument FOR: just a required separator keyword to make code look better."
     (pel-autoload-function "pel-applescript" for:
       pel-run-applescript))
 
+  (pel-autoload "pel-as" for: pel-as)
 
   (pel-autoload "pel-autocomplete" for:
     pel-completion-info
