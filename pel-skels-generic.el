@@ -2,12 +2,12 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-02 19:25:57, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-15 10:21:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -30,8 +30,23 @@
 ;; adjust the strings used for comments.
 
 ;; The only command is `pel--install-generic-skel' which dynamically creates
-;; skeletons commands with keyboard mappings for a specific keyboard map.
+;; skeletons commands with keyboard mappings for a specific keyboard map
+;; identified by the argument.  The current skeleton definition creates a
+;; single skeleton-driven command:
 ;;
+;;  - `pel-skels-generic-file-header-block', mapped to the `h' key, which
+;;     writes a file header.
+;;
+;; The function hierarchy is:
+;;
+;; - `pel--install-generic-skel'
+;;
+;; # File Header block:
+;;   - `pel-skels-generic-file-header-block'
+;;     - `pel-skels-generic-header-module-block'
+;;       - `pel-skels-generic-first-line'
+;;         - `pel--file-isa-sourced-script'
+;;     - `pel--file-isa-sourced-script'
 
 ;;; ----------------------------------------------------------------------------
 ;;; Dependencies:
@@ -116,11 +131,11 @@ The arguments are:
      (pel-separator-line) 'n)))
 
 (defun pel-skels-generic-file-header-block ()
-  "Return a tempo list for a C file header block.
-The format of the file header block is adjusted for the supported file types:
-the C code file and the C header file.
+  "Return a tempo list for a generic file header block.
+The format of the file header block is adjusted for the comment
+style of the current file.
 The file header portion is controlled by the style selected by the
-variable `pel-generic-skel-module-header-block-style'."
+`pel-generic-skel-module-header-block-style' user-option."
   (let* ((fname        (pel-current-buffer-filename :sans-directory))
          (cmt-style    (pel-skel-comments-strings))
          (cb       (nth 0 cmt-style))
@@ -142,39 +157,39 @@ variable `pel-generic-skel-module-header-block-style'."
      ;; then add the remainder for either a header file or code file
      (let ((sk (list 'l)))
        (if pel-generic-skel-module-section-titles
-         (dolist (mtitle pel-generic-skel-module-section-titles)
-           (pel-append-to sk
-                          (list
-                           cb " " mtitle 'n
-                           cc " " (make-string (length mtitle) ?-) 'n
-                           cc 'n
-                           cc " " 'p 'n (pel-when-text-in ce (format "%s\n" ce))
-                           'n 'n
-                           (pel-skels-generic-separator-line))))
+           (dolist (mtitle pel-generic-skel-module-section-titles)
+             (pel-append-to sk
+                            (list
+                             cb " " mtitle 'n
+                             cc " " (make-string (length mtitle) ?-) 'n
+                             cc 'n
+                             cc " " 'p 'n (pel-when-text-in ce (format "%s\n" ce))
+                             'n 'n
+                             (pel-skels-generic-separator-line))))
          (pel-append-to sk (list
                             'n
                             'p 'n 'n)))
        sk))))
 
 ;; -----------------------------------------------------------------------------
-;; Install Emacs Lisp skeletons
+;; Install Generic skeletons
 
 (defvar pel-skels-generic-large-header-skel
   '(o
     (pel-skels-generic-file-header-block))
-  "The skeleton of a C file header block.")
+  "The skeleton of a generic file header block.")
 
 (defvar pel-skels-generic-function-definition-skel
   '(o
     (pel-skels-generic-function-definition))
-  "The skeleton of a C function definition block.")
+  "The skeleton of a generic function definition block.")
 
 (defvar pel--generic-skels
   '(("File Header" "file-header" pel-skels-generic-large-header-skel))
-  "List of Emacs Lisp tempo skeletons.")
+  "List of generic file tempo skeletons.")
 
 (defvar pel--generic-skels-keys '(("file-header" . "h"))
-  "Key mapping for Emacs Lisp skeletons.")
+  "Key mapping for generic file skeletons.")
 
 ;;-pel-autoload
 (defun pel--install-generic-skel (key-map)
