@@ -1,6 +1,6 @@
 ;;; pel-erlang.el --- Erlang programming Language support  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -377,7 +377,7 @@ Stop at end of buffer."
          (eq (char-after (point)) ?<))))
 
 (defun pel-erlang-after-binary (&optional pos)
-  "Return non-nil if POS or point is just before \"<<\", nil otherwise."
+  "Return non-nil if POS or point is just after \">>\", nil otherwise."
   (or pos (setq pos (point)))
   (save-excursion
     (backward-char)
