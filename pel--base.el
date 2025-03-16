@@ -292,6 +292,10 @@
 ;; Tags support
 ;; - `pel-visit-tags'
 ;;
+;; Buffer Content Checks
+;; - `pel-has-shebang-line'
+;;
+
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;; subr (always loaded) ; use: called-interactively-p
@@ -3265,6 +3269,7 @@ Return the new value of LIST-VAR."
 ;; ---------------------------------------------------------------------------
 ;; Tags support
 ;; ------------
+
 (defun pel-visit-tags (tags-files)
   "Visit the TAGS files identified in the TAGS-FILES list and the local one."
   (let ((local-tags-fname (locate-dominating-file default-directory "TAGS")))
@@ -3273,6 +3278,20 @@ Return the new value of LIST-VAR."
   (dolist (fname tags-files)
     (when (file-exists-p fname)
       (visit-tags-table fname))))
+
+;; ---------------------------------------------------------------------------
+;; Buffer Content Checks
+;; ---------------------
+
+(defun pel-has-shebang-line ()
+  "Return t if buffer has shebang line, nil if it has none."
+  ;; Simply check if the first 2 characters in the buffer are "#!"
+  (save-excursion
+    (goto-char (point-min))
+    (and (eq (char-after (point)) ?#)
+         (progn
+           (forward-char)
+           (eq (char-after (point)) ?!)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)
