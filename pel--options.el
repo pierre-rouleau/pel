@@ -4614,7 +4614,7 @@ This may get activated indirectly by other user-options."
                    ,(pel-pdf-file-url "inserting-text")))
 
 (defcustom pel-generic-skel-module-header-block-style nil
-  "Specifies the style of the code file module header block.
+  "Specifies the style of the generic code file module header block.
 You can use one of the following:
 
 - The default, controlled by PEL\\='s code.
@@ -4624,8 +4624,10 @@ You can use one of the following:
   appear when you select this option.   The function must accept
   3 arguments:
   - arg 1: string : the file name (without path)
-  - arg 2: boolean: is non-nil when the file is a C header file,
-                    and nil when it is a .c file.
+  - arg 2: boolean: is non-nil when the file is a secondary file type
+                     such as a header file or a sourced file,,
+                    and nil when it is the main file type, such as
+                    the code file or the script file.
   - arg 3: a list of 3 strings: (cb cc ce)
             - cb : comment begin string
             - cc : comment continuation string
@@ -4753,13 +4755,13 @@ Do not include the comment character '#' in the string."
 
 (defcustom pel-shell-sourced-script-first-line
   " Sourced script: %s  -*- mode: sh; -*- "
-  "Format string placed after the comment of the first line.
+  "Format of the sourced script first line.
 
-This string is  inserted by by the function `pel-generic-file-header',
-bound to``<f6> h``.
+This string is inserted by the function `pel-generic-file-header', used
+to format a shell sourced file.
 
-It *must* have ONE string argument in the form of \"%s\".
-The name of the file will be written in side it."
+It *must* have ONE string argument in the form of \"%s\" which will be
+replaced by the file name."
   :group 'pel-sh-script-skeleton-control
   :type 'string)
 
