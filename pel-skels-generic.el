@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-15 10:21:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-16 11:22:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -47,6 +47,16 @@
 ;;       - `pel-skels-generic-first-line'
 ;;         - `pel--file-isa-sourced-script'
 ;;     - `pel--file-isa-sourced-script'
+;;
+;; Tempo Skeleton List Syntax
+;; --------------------------
+;;
+;; See the `tempo-define-template' docstring for information about
+;; the syntax of the tempo skeleton lists.  These lists contain symbols
+;; and strings that describe the text to insert and how to insert it.  Inside
+;; this file the functions create these tempo skeleton lists and are based on
+;; code creating lists based on list that may also contain functions that
+;; return symbols and strings.
 
 ;;; ----------------------------------------------------------------------------
 ;;; Dependencies:
@@ -93,25 +103,47 @@ The identification is done by a match with the user-option variable
                     (not (member file-extension pel-shell-script-extensions))))
       (string-match pel-shell-sourced-script-file-name-prefix fname))))
 
-(defun pel-skels-generic-first-line (fname)
-  "Return a string for the first line.  Starts with a space character."
+(defun pel-skels-generic-first-line (fname has-shebang)
+  "Return a string for the first 1 or 2 lines.
+
+- FNAME := string. the name of the file without path.
+- HAS-SHEBANG := t if the buffer has a shebang line, nil otherwise.
+
+It first checks if the buffer is for a source script or a regular, executable
+script.
+
+- For sourced script: it returns the first line that holds the name of the
+  file.
+- For shell script: it returns 1 or 2 lines:
+  - If a shebang line is already present, the function only returns the second
+    line showing the file type and file name.
+  - If the shebang line is not present, the function returns a string with 2
+    lines:
+    - the shebang line,
+    - the line showing the file type and file name."
   (if (pel--file-isa-sourced-script fname)
+      ;; For a sourced file
       (concat (format pel-shell-sourced-script-first-line fname) "\n")
-    (format "%s %s FILE: %s\n"
+    ;; For a script file
+    (format "%s%s FILE: %s\n"
             (if (eq major-mode 'sh-mode)
-                (format "%s\n#" pel-shell-script-shebang-line)
-              "")
+                (if has-shebang
+                    "\n# "
+                  (format "%s\n# "
+                          pel-shell-script-shebang-line))
+              " ")
             (upcase (car (split-string (symbol-name major-mode) "-")))
             fname)))
 
-(defun pel-skels-generic-header-module-block (fname cmt-style)
+(defun pel-skels-generic-header-module-block (fname cmt-style has-shebang)
   "Return a tempo list for the header/module comment block.
 The arguments are:
 - FNAME := string.  the name of the current file without path.
 - CMT-STYLE := a list of 3 strings: (cb cc ce)
             - cb : comment begin string, or a list of 4 strings
             - cc : comment continuation string
-            - ce : comment end string."
+            - ce : comment end string.
+- HAS-SHEBANG := t if the buffer has a shebang line, nil otherwise."
   (let* ((purpose  (pel-prompt-purpose-for "File" 'p))
          (cb       (nth 0 cmt-style))
          (has4     (listp cb))
@@ -120,7 +152,8 @@ The arguments are:
          (ce       (nth 2 cmt-style)))
     (list
      'l
-     cb (pel-skels-generic-first-line fname)
+     (unless has-shebang cb)
+     (pel-skels-generic-first-line fname has-shebang)
      cc 'n
      cc " Purpose   : " purpose 'n
      (pel-skel-created-comment cc nil :no-new-line)
@@ -136,24 +169,32 @@ The format of the file header block is adjusted for the comment
 style of the current file.
 The file header portion is controlled by the style selected by the
 `pel-generic-skel-module-header-block-style' user-option."
+  ;; First move point to the top of the buffer and check if there is already
+  ;; a shebang line.  If there is one, move point to the end of the line,
+  ;; insert a new line and prevent inserting a new shebang line.
+  (goto-char (point-min))
   (let* ((fname        (pel-current-buffer-filename :sans-directory))
          (cmt-style    (pel-skel-comments-strings))
+         (has-shebang  (pel-has-shebang-line))
          (cb       (nth 0 cmt-style))
          (has4     (listp cb))
          (cb       (string-trim-right (if has4 (nth 2 cb) cb)))
          (cc       (string-trim-right (if has4 cb (nth 1 cmt-style))))
          (ce       (nth 2 cmt-style)))
-    (goto-char (point-min)) ; TODO: del this but mod skels to force entry at top.
+
+    (when has-shebang
+      (move-end-of-line 1))
     (list
      'l
      ;; insert the top level comment block for the top of the file
      ;; Select the style from `pel-generic-skel-module-header-block-style'
      (if pel-generic-skel-module-header-block-style
-         (pel-skel-call 'pel-generic-skel-module-header-block-style
-                        'pel-skels-generic-header-module-block/custom
-                        fname
-                        cmt-style)
-       (pel-skels-generic-header-module-block fname cmt-style))
+         (progn
+           (pel-skel-call 'pel-generic-skel-module-header-block-style
+                          'pel-skels-generic-header-module-block/custom
+                          fname
+                          cmt-style))
+       (pel-skels-generic-header-module-block fname cmt-style has-shebang))
      ;; then add the remainder for either a header file or code file
      (let ((sk (list 'l)))
        (if pel-generic-skel-module-section-titles
@@ -173,9 +214,10 @@ The file header portion is controlled by the style selected by the
 
 ;; -----------------------------------------------------------------------------
 ;; Install Generic skeletons
+;;
 
 (defvar pel-skels-generic-large-header-skel
-  '(o
+  '(
     (pel-skels-generic-file-header-block))
   "The skeleton of a generic file header block.")
 
