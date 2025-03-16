@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-16 11:22:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-16 11:33:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -189,11 +189,10 @@ The file header portion is controlled by the style selected by the
      ;; insert the top level comment block for the top of the file
      ;; Select the style from `pel-generic-skel-module-header-block-style'
      (if pel-generic-skel-module-header-block-style
-         (progn
-           (pel-skel-call 'pel-generic-skel-module-header-block-style
-                          'pel-skels-generic-header-module-block/custom
-                          fname
-                          cmt-style))
+         (pel-skel-call 'pel-generic-skel-module-header-block-style
+                        'pel-skels-generic-header-module-block/custom
+                        fname
+                        cmt-style)
        (pel-skels-generic-header-module-block fname cmt-style has-shebang))
      ;; then add the remainder for either a header file or code file
      (let ((sk (list 'l)))
