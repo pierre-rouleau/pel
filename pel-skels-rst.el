@@ -116,7 +116,8 @@ This function is meant to be called by the function `pel-init' only."
    pel--rst-skels
    key-map
    pel--rst-skels-keys
-   "rst"))
+   "rst"
+   'pel-rst-style))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-skels-rst)

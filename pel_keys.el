@@ -3467,6 +3467,7 @@ d-mode not added to ac-modes!"
 (declare-function pel--install-elisp-skel "pel-skels-elisp")
 (pel--mode-hook-maybe-call
  (lambda ()
+    ;; Make M-<f12> same as <f12> for convenience.
    (pel-local-set-f12-M-f12 'pel:for-elisp)
    (pel-local-set-f12-M-f12 'pel:elisp-analyze  "a")
    (pel-local-set-f12-M-f12 'pel:elisp-compile  "c")
@@ -4976,6 +4977,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   For shell/terminal commend line support, see below.
 (when pel-use-sh
   (define-pel-global-prefix pel:for-sh (kbd "<f11> SPC Z"))
+  (define-pel-global-prefix pel:sh-skel (kbd "<f11> SPC Z <f12>"))
+
   ;; Shell support, the sh-mode is part of Emacs
   (pel-config-major-mode sh pel:for-sh
     (superword-mode 1)
@@ -4986,6 +4989,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-sh "t"  'pel-sh-add-sh-local)
     (define-key pel:for-sh (kbd "<down>")  'pel-sh-next-function)
     (define-key pel:for-sh (kbd "<up>")    'pel-sh-prev-function)
+    ;; activate skeletons
+    (pel--install-generic-skel pel:sh-skel 'pel-pkg-generic-code-style)
+    ;; Make M-<f12> same as <f12> for convenience.
     (pel-local-set-f12-M-f12 'pel:for-sh))
   (cond
    ;; using flymake

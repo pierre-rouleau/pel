@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-14 10:39:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-17 14:14:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -583,8 +583,8 @@
     (,(kbd "<f11> SPC M-a") "asciidoc"         pel-pkg-for-asciidoc    adoc)
     ([f11 32 27 ?a]         "asciidoc"         pel-pkg-for-asciidoc    adoc)
 
-    (,(kbd "<f11> SPC M-r") "mode-rst"         pel-pkg-for-reST        rst)
-    ([f11 32 27 ?r]         "mode-rst"         pel-pkg-for-reST        rst)
+    (,(kbd "<f11> SPC M-r") "mode-rst"         pel-pkg-for-rst        rst)
+    ([f11 32 27 ?r]         "mode-rst"         pel-pkg-for-rst        rst)
     (,(kbd "<f11> SPC M-m") "mode-markdown"    pel-pkg-for-markdown   ,pel--markdown-groups)
     ([f11 32 27 ?m]         "mode-markdown"    pel-pkg-for-markdown   ,pel--markdown-groups)
 

@@ -1,6 +1,6 @@
 ;;; pel-skels-erlang.el --- Erlang specific tempo skeletons  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1380,8 +1380,13 @@ to execute just *before* `erlang-mode'."
 This function is meant to be called by the function `pel-init' only."
   (if (and (require 'erlang nil :noerror)
                (boundp 'erlang-skel))
-      (pel-tempo-install-pel-skel
-       "erlang" erlang-skel key-map pel--erl-skel-key "erl" :use-existing)
+      (pel-tempo-install-pel-skel "erlang"
+                                  erlang-skel
+                                  key-map
+                                  pel--erl-skel-key
+                                  "erl"
+                                  'pel-erlang-skeleton-control
+                                  :use-existing)
     (user-error "The erlang.el package is not loaded!")))
 
 ;; -----------------------------------------------------------------------------

@@ -1,12 +1,12 @@
 ;;; pel-skels-elisp.el --- Tempo skeleton for Emacs Lisp.  -*- lexical-binding: t; -*-
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-24 23:15:47, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-17 14:04:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 ;;
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -164,7 +164,8 @@ This function is meant to be called by the function `pel-init' only."
    pel--elisp-skels
    key-map
    pel--elisp-skels-keys
-   "elisp"))
+   "elisp"
+   'pel-elisp-code-style))
 
 ;;; ----------------------------------------------------------------------------
 (provide 'pel-skels-elisp)

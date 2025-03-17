@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-16 11:33:33 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-17 12:24:06 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -233,15 +233,21 @@ The file header portion is controlled by the style selected by the
   "Key mapping for generic file skeletons.")
 
 ;;-pel-autoload
-(defun pel--install-generic-skel (key-map)
+(defun pel--install-generic-skel (key-map
+                                  &optional customize-group)
   "Create the generic skeletons and bind them in the KEY-MAP specified.
-This function is meant to be called by the function `pel-init' only."
+If CUSTOMIZE-GROUP is specified, create a command bound to <f2> that opens
+the customization buffer four that group.
+
+This function is meant to be called by the function `pel-init' only.
+"
   (pel-tempo-install-pel-skel
    "generic"
    pel--generic-skels
    key-map
    pel--generic-skels-keys
-   "generic"))
+   "generic"
+   customize-group))
 
 ;;; ----------------------------------------------------------------------------
 (provide 'pel-skels-generic)

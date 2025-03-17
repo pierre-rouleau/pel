@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- The ~<f12><f12>~ key prefix holding keybindings related to tempo skeleton insertion and management is now available for the
+  *sh-mode* buffers.
+  - While doing that I also improved the *pel-tempo-install-pel-skel* function, allowing the creation of a command bound
+    to the ~<f2>~ key of the specified keymap: that command opens the customization group controlling various aspects of the tempo skeleton.
+    - Added this feature to the following major modes:
+      c++-mode, c-mode, emacs-lisp-mode, erlang-mode, lisp-mode, rst-mode, and  sh-mode,
 - The ~<f12>~ key is bound to *pel-as* (which has a *as* alias unless *pel-has-alias-as* is nil) when the buffer is using the *fundamental-mode*.
   The command is used to interactively select a major mode for config or script modes that use a shebang line.
   Once the command is used to select the major mode, the ~<f12>~ key becomes a prefix key.

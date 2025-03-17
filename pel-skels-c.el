@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-10-13 17:46:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-17 15:11:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -548,7 +548,8 @@ This function is meant to be called by the function `pel-init' only."
    pel--c-skels
    key-map
    pel--c-skels-keys
-   "c"))
+   "c"
+   'pel-c-skeleton-control))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-skels-c)

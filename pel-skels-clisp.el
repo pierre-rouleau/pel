@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, April 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-24 22:51:17, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-17 14:04:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -141,7 +141,8 @@ This function is meant to be called by the function `pel-init' only."
    pel--clisp-skels
    key-map
    pel--clisp-skels-keys
-   "lisp"))
+   "lisp"
+   'pel-clisp-code-style))
 
 
 ;;; --------------------------------------------------------------------------

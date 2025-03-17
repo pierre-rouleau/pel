@@ -1,6 +1,6 @@
 ;;; pel-tempo.el --- Specialized tempo mode  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -38,15 +38,18 @@
 ;; This file defines logic to create interactive functions that insert text
 ;; generated with the tempo skeleton mechanism.
 ;;
-;; It also defines the very simple pel-tempo-mode, a mode that does only one
-;; thing: it activates a key-map to ease execution of the
-;; `tempo-forward-mark' and `tempo-backward-mark' commands.  These commands
-;; move point to the next or previous template "hot-spot" (officially called
-;; tempo marks): the location where extra text of the template must be
-;; filled in by the user.
+;; It also defines the very simple `pel-tempo-mode', a mode that does only one
+;; thing: it activates a key-map to ease execution of the `tempo-forward-mark'
+;; and `tempo-backward-mark' commands.
 ;;
-;; While active the pel-tempo-mode displays its short lighter: " ‡".
+;; These commands move point to the next or previous template "hot-spot"
+;; (officially called tempo marks): the location where extra text of the
+;; template must be filled in by the user.
 ;;
+;; When active, the `pel-tempo-mode' displays its mode line lighter: "‡".
+;;
+;;
+;; This file holds the following code:
 ;;
 ;; - PEL Tempo minor mode:
 ;;
@@ -62,11 +65,16 @@
 ;;
 ;;     - `pel-tempo-create'
 ;;       - `pel-tempo-include'
+;;     -`pel-tempo-include-when'
 ;;
 ;;   - Create the PEL tempo-template interactive functions with bindings
 ;;
 ;;     - `pel-tempo-install-pel-skel'
 ;;
+
+;;; --------------------------------------------------------------------------
+;;; Dependency
+(require 'pel--keys-macros)             ; use `pel--customize-group'
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
@@ -193,38 +201,70 @@ Return the created skeleton menu list (or nil if no MENU-ITEM-CREATOR-FUNCTION).
 
 (defun pel-tempo-install-pel-skel (mode skeletons key-map keys-alist
                                         &optional mode-abbrev
+                                        skels-custom-group
                                         use-existing-tempo-function)
   "Create commands to insert MODE specific SKELETONS functions.
 
-- MODE is a string identifying the major mode name, such as \"generic\",
-  \"c\", \"lisp\", \"rst\", etc...
-- The created text-generating commands are bound to keys defined in the
-  KEY_MAP  bound inside the KEY-MAP which often is a global PEL key prefix set
-  created by the `define-pel-global-prefix' macro.
-- The KEYS-ALIST is a `(skel-name . key)`  alist:
-  - The `skel-name' must correspond to one of the names in the SKELETONS, the
+- MODE, a string:  either \"generic\" or the major mode name, such as:
+  \"c\", \"c++\", \"lisp\", \"rst\", etc...
+
+- SKELETONS: A list of skeletons.
+  - Each skeleton is a list holding the following 3 elements:
+    - string: Operation Description. Similar to a comment.  Unused.
+    - string: operation name; a portion of the name of the generated function.
+    - symbol: the tempo skeleton describing the text to insert.
+
+- KEY-MAP: The key-map object where new key bindings will be inserted.
+           In PEL, this is often is a global PEL key prefix set
+           created by the `define-pel-global-prefix' macro.
+
+- KEYS-ALIST: a `(skel-name . key)` alist, where:
+  - `skel-name' must correspond to one of the names in the SKELETONS, the
     second element of a SKELETONS entry.
-  - The `key' is the keyboard key that must be typed to insert the
-    corresponding template text.
+  - `key' is the key that must be typed to insert the corresponding
+    template text.
 
-The commands created have names similar to \\='pel-ABBREV-NAME\\=' where:
+- MODE-ABBREV: optional string, a abbreviation for the mode if you do not
+  want to use MODE.
+  The commands created have names similar to \\='pel-ABBREV-NAME\\=' where:
 
- - ABBREV is MODE-ABBREV if specified (or MODE otherwise),
- - NAME corresponds to the second element of the SKELETONS entry.
+    - ABBREV is MODE-ABBREV if specified (or MODE otherwise),
+    - NAME corresponds to the second element of the SKELETONS entry.
+
+- SKELS-CUSTOM-GROUP: optional symbol.  The name of the customization group
+  which controls aspects of the skeleton. When it is set a command is created
+  and bound to the <f2> key of the specified map.
 
 This creates the tempo skeleton function with `tempo-define-template' unless
 USE-EXISTING-TEMPO-FUNCTION is non-nil, in which case it assumes it is already
 defined.
 
-The function also binds the following functions inside the specified KEY_MAP:
-
-- `tempo-complete-tag' : to <f12>
-- `pel-tempo-mode'     : to <space>."
+`pel-tempo-install-pel-skel' also binds the following commands inside
+the specified KEY-MAP:
+ - `tempo-complete-tag' : to <f12>
+ - `pel-tempo-mode'     : to <space>.
+"
   ;; bind non skeleton keys in the key map
   (define-key key-map (kbd "<f12>") 'tempo-complete-tag)
-  (define-key key-map " " 'pel-tempo-mode)
-  (setq mode-abbrev (or mode-abbrev mode))
-  (let ((cap-mode     (capitalize mode)))
+  (define-key key-map " "           'pel-tempo-mode)
+  ;; proceed
+  (let ((mode-abbrev (or mode-abbrev mode))
+        (cap-mode     (capitalize mode)))
+    ;; create an bind a command to access skeleton customization group if one
+    ;; is specified.
+    (when skels-custom-group
+      (let ((s-pel-f2-fname (format "pel-customize-%s-skels" mode-abbrev)))
+        ;; Dynamically create the command
+        (defalias (intern s-pel-f2-fname)
+          (lambda (&optional other-window)
+            (interactive "P")
+            (pel--customize-group skels-custom-group other-window))
+          (format "Open the %s customization group.
+With optional argument, open in other window."
+                  skels-custom-group))
+        ;; bind it to the <f2> key inside the specified key-map
+        (define-key key-map (kbd "<f2>") (intern s-pel-f2-fname))))
+    ;; create function of each specified skeleton
     (dolist (skel skeletons)
       (when skel
         (let ((s-name  (nth 1 skel)))
@@ -241,18 +281,32 @@ The function also binds the following functions inside the specified KEY_MAP:
                                         mode s-name))
                  (s-tempo-fun   (intern s-tempo-fname))
                  (s-pel-fname   (format "pel-%s-%s" mode-abbrev s-name))
-                 (s-docstring   (format "\
+                 (assoc-value (cdr (assoc s-name keys-alist)))
+                 (key         (if (listp assoc-value)
+                                  (car assoc-value)
+                                assoc-value))
+                 (prep-func   (when (listp assoc-value)
+                                (car (cdr assoc-value))))
+                 (s-docstring
+                  (format "\
 Insert '%s' %s skeleton's text (also available through %s/Skeleton menu).
 
 This function is dynamically defined by a call to the function \
-`pel-tempo-install-pel-skel'."
-                                        s-name cap-mode cap-mode))
-                 (assoc-value (cdr (assoc s-name keys-alist)))
-                 (key         (if (listp assoc-value)
-                                    (car assoc-value)
-                                  assoc-value))
-                 (prep-func   (when (listp assoc-value)
-                                  (car (cdr assoc-value)))))
+`pel-tempo-install-pel-skel'.
+The specifications for creating this function is:
+- mode         : %s
+- skeletons    : %S
+- key-map      : %S
+- keys-alist   : %S
+- mode-abbrev  : %S
+- use-existing-tempo-function: %S
+- s-tempo-fname: %s
+- s-pel-fname  : %s
+- prep-func    : %S"
+                          s-name cap-mode cap-mode
+                          mode skeletons key-map keys-alist mode-abbrev
+                          use-existing-tempo-function
+                          s-tempo-fname s-pel-fname prep-func)))
             ;; Define the PEL command that inserts the text
             ;; for the specific template. It uses the tempo function
             ;; and activates the pel-tempo-mode minor mode.
@@ -275,9 +329,9 @@ This function is dynamically defined by a call to the function \
             ;; Bind the function to the identified keystroke.
             (when key
               (define-key
-                key-map
-                (if (> (length key) 1) (kbd key) key)
-                (intern s-pel-fname)))))))))
+               key-map
+               (if (> (length key) 1) (kbd key) key)
+               (intern s-pel-fname)))))))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-tempo)

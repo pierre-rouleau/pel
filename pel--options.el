@@ -88,8 +88,8 @@
 ;;       - pel-pkg-for-markdown
 ;;       - pel-pkg-for-outline
 ;;         - pel-pkg-for-org-mode
-;;       - pel-pkg-for-reST
-;;         - pel-reST-style
+;;       - pel-pkg-for-rst
+;;         - pel-rst-style
 ;;       - pel-pkg-for-xml
 ;;       - pel-pkg-for-yaml
 ;;         - pel-pkg-for-cwl
@@ -4152,14 +4152,14 @@ display of hard TAB characters."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; reStructuredText support
 ;; ------------------------
-(defgroup pel-pkg-for-reST nil
+(defgroup pel-pkg-for-rst nil
   "PEL reStructuredText support."
   :group 'pel-pkg-for-markup
   :link `(url-link :tag "reStructuredText PDF" ,(pel-pdf-file-url "mode-rst")))
 
 (defcustom pel-use-rst-mode nil
   "Control whether PEL supports {rst-mode} (reStructuredText)."
-  :group 'pel-pkg-for-reST
+  :group 'pel-pkg-for-rst
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-rst-mode :package-is :builtin-emacs)
@@ -4171,7 +4171,7 @@ Note: rst := reStructuredText
 
 Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
-  :group 'pel-pkg-for-reST
+  :group 'pel-pkg-for-rst
   :type '(repeat function))
 
 (defcustom pel-rst-adornment-style 'CRiSPer
@@ -4186,7 +4186,7 @@ Identifies the number of levels supported and their adornment.
   - sub-subsections,
   - paragraphs.
 - `CRiSPer', a title and 12-level mode previously developed for CRiSP."
-  :group 'pel-pkg-for-reST
+  :group 'pel-pkg-for-rst
   :type '(choice (const :tag "default" default)
                  (const :tag "Sphinx-Python" Sphinx-Python)
                  (const :tag "CRiSPer" CRiSPer)))
@@ -4200,7 +4200,7 @@ This does *NOT* control the indentation in reStructuredText
 files, only for commands that mode point to tab stop positions
 such as `tab-to-tab-stop', and the display of hard TAB
 characters."
-  :group 'pel-pkg-for-reST
+  :group 'pel-pkg-for-rst
   :type 'integer
   :safe 'pel-indent-valid-p)
 
@@ -4208,21 +4208,21 @@ characters."
   "Value of `indent-tabs-mode' for editing reStructuredText files.
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-reST
+  :group 'pel-pkg-for-rst
   :type 'boolean
   :safe #'booleanp)
 
 ;;   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
-(defgroup pel-reST-style nil
+(defgroup pel-rst-style nil
   "PEL reStructuredText skeleton format control."
-  :group 'pel-pkg-for-reST)
+  :group 'pel-pkg-for-rst)
 
 ;; style - 0 : use-separators : not used for rst templates
 
 ;; style - 1
 (defcustom pel-rst-skel-insert-file-timestamp t
   "Specifies whether a timestamp is inserted inside file module header block."
-  :group 'pel-reST-style
+  :group 'pel-rst-style
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-rst-skel-insert-file-timestamp :choices '(nil t))
@@ -4243,7 +4243,7 @@ That string will be entered verbatim inside a file header line.
 
 For reStructuredText, the ability to include the license text
 itself is not available."
-  :group 'pel-reST-style
+  :group 'pel-rst-style
   :type
   '(choice
     (const :tag  "No license, no copyright." nil)
