@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-14 16:54:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-17 00:02:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,30 +31,34 @@
 ;; created.  The `pel-as' command helps set up the mode and the file shebang
 ;; when one is required.  It supports several types of files.
 ;;
-;; When the `pel-
-
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel-prompt)                   ; for: `pel-prompt-with-completion'
-(require 'cl-lib)                       ; for: `cl-case'
-(require 'sh-script)
+(require 'pel-prompt)       ; use: `pel-prompt-with-completion'
+(require 'cl-lib)           ; use: `cl-case'
+(require 'sh-script)        ; use: `shell-script-mode', `sh-set-shell',
+;;                          ;      `sh-ancestor-alist'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
-(defconst pel-as-modes '(bash csh ksh sh zsh
-                              config
-                              d
-                              lua
-                              nim
-                              perl pike python
-                              ruby
-                              expect tcl
-                              zig)
+(defconst pel--sh-modes (mapcar (lambda (e) (car e))
+                                      sh-ancestor-alist))
+
+(defconst pel-as-modes (append pel--sh-modes
+                               (when (eq system-type 'gnu/linux)
+                                 '(csh ksh))
+                               '(config
+                                 d
+                                 lua
+                                 nim
+                                 perl pike python
+                                 ruby
+                                 expect tcl
+                                 zig))
   "List of modes for languages that support shebang lines.")
 
 
@@ -93,7 +97,7 @@ command you have 2 choices:
                (mapcar (function symbol-name) pel-as-modes)
                'pel-as-modes)))
     (cond
-     ((member mode '("bash" "csh" "ksh" "sh" "zsh"))
+     ((member mode (mapcar (function symbol-name) pel--sh-modes))
       (pel--as-sh mode))
      ((equal mode "config")
       (conf-mode))
