@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-17 00:02:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-17 10:18:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,12 +45,13 @@
 ;;; Code:
 ;;
 
-(defconst pel--sh-modes (mapcar (lambda (e) (car e))
-                                      sh-ancestor-alist))
+(defconst pel--sh-modes (append (mapcar (lambda (e) (car e))
+                                        sh-ancestor-alist)
+                                (when (eq system-type 'gnu/linux)
+                                  '(csh ksh)))
+  "List of potential shells script modes.")
 
-(defconst pel-as-modes (append pel--sh-modes
-                               (when (eq system-type 'gnu/linux)
-                                 '(csh ksh))
+(defconst pel--all-modes (append pel--sh-modes
                                '(config
                                  d
                                  lua
@@ -66,13 +67,19 @@
 (defun pel--as-sh (shell-type)
   "Activate the sh-mode for the specified SHELL-TYPE."
   (shell-script-mode)
-  (sh-set-shell shell-type nil :insert-shebang))
+  (condition-case err
+      (sh-set-shell shell-type nil :insert-shebang)
+    (error
+     (user-error "%s: using native shell instead.
+Write the shebang line manually. Install %s otherwise."
+                 (cadr err) shell-type))))
 
 (defun pel-as (&optional force)
   "Interactively select major mode for buffer.
 
 This command is mostly used to set the major mode of a buffer in
 `fundamental-mode', when the PEL key binding is available for it.
+Select one of the major modes from the provided list.
 After being used once in a buffer the major mode is selected and the PEL key
 binding will not be available when PEL supports the major mode.
 
@@ -94,8 +101,8 @@ command you have 2 choices:
     (user-error "Major-mode already selected. Force with optional arg."))
   (let ((mode (pel-prompt-with-completion
                "Major mode: "
-               (mapcar (function symbol-name) pel-as-modes)
-               'pel-as-modes)))
+               (mapcar (function symbol-name) pel--all-modes)
+               'pel--all-modes)))
     (cond
      ((member mode (mapcar (function symbol-name) pel--sh-modes))
       (pel--as-sh mode))
