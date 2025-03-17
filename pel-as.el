@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-17 10:18:24 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-17 15:29:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -98,7 +98,15 @@ command you have 2 choices:
 "
   (interactive "P")
   (unless (or (eq major-mode 'fundamental-mode) force)
-    (user-error "Major-mode already selected. Force with optional arg."))
+    (let ((pel-use-symbol (pel-major-mode-symbol-for "pel-use-%s"))
+          (pel-use-value  (pel-major-mode-symbol-value-or "pel-use-%s" "UNDEF")))
+      (user-error "Major-mode already selected. Force with optional arg.%s"
+                  (if (string-equal pel-use-value "UNDEF")
+                      ""
+                    (if pel-use-value
+                        ""
+                      (format "\n%s is not set. Did you forget to activate it?"
+                              pel-use-symbol))))))
   (let ((mode (pel-prompt-with-completion
                "Major mode: "
                (mapcar (function symbol-name) pel--all-modes)
