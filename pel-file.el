@@ -158,11 +158,14 @@ Spaces are accepted within the file name and between the separators
 but *only* when the complete string is enclosed in double quotes
 *and* when point is located at the first quote."
   ;; In Perl, file path, or package path  may end with semicolon:
-  ;; specify it as an extra separator
+  ;; specify it as an extra separator.
+  ;; Note that prior to Emacs 27, tramp-file-local-name did not exist.
   (let* ((isin-perl (memq major-mode '(perl-mode cperl-mode)))
          (full-str (pel-filename-at-point))
          (isa-tramp-fname (tramp-tramp-file-p full-str))
-         (str (if isa-tramp-fname (tramp-file-local-name full-str) full-str)))
+         (str (if (and isa-tramp-fname
+                       (fboundp 'tramp-file-local-name))
+                  (tramp-file-local-name full-str) full-str)))
 
     (unless keep-file-url
       (setq str (replace-regexp-in-string "^file:////?/?" "/" str)))

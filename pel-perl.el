@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-18 16:03:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-18 17:26:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -65,11 +65,13 @@ Show errors in compilation-mode buffer in a format that allows navigation."
       (if (pel-is-executable "perlcritic" is-a-tramp-fname)
 	      (compile
 	       ;; use a format that can be used by the compile mode to move to the error.
+           ;; Note that prior to Emacs 27, tramp-file-local-name did not exist.
 	       (format
             (if verbose
 		        "perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s, %%C:\\t%%m.\\n  %%P (%%e):\\n%%d\\n\" %s"
               "perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s:\\t%%m.\\t(%%e)\\n\" %s")
-            (shell-quote-argument (if is-a-tramp-fname
+            (shell-quote-argument (if (and is-a-tramp-fname
+                                           (fboundp 'tramp-file-local-name))
                                       (tramp-file-local-name current-filename)
                                     current-filename)))
 	       nil)
