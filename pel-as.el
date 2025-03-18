@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-17 15:29:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-17 17:46:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -116,6 +116,11 @@ command you have 2 choices:
       (pel--as-sh mode))
      ((equal mode "config")
       (conf-mode))
+     ((equal mode "perl")
+      (cperl-mode)
+      (require 'pel-perl)
+      (declare-function pel-perl-insert-shebang-line "pel-perl")
+      (pel-perl-insert-shebang-line))
      (t (user-error "Currently unsupported: %s" mode)))))
 
 ;;; --------------------------------------------------------------------------

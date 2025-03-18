@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-01-23 21:07:48 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-17 18:58:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,6 +32,8 @@
 ;;
 ;;
 (require 'pel--base)              ; use: `pel-filesep', `pel-print-in-buffer'
+(require 'pel--options)           ; use: `pel-perl-shebang-line'
+(require 'pel-ccp)                ; use: `pel-delete-line'
 (require 'pel-ffind)              ; use: `pel-ffind'
 (require 'tramp)                  ; use: `tramp-tramp-file-p', `tramp-file-local-name'
 (eval-when-compile
@@ -236,6 +238,27 @@ Prompt for indentation style name and apply it."
   (if (fboundp 'cperl-file-style)
       (call-interactively 'cperl-file-style)
     (user-error "First set perl-user-perl to HaraldJoerg/cperl-mode!")))
+
+;; ---------------------------------------------------------------------------
+;; Perl Shebang Line Control
+;; ------------------------
+;;
+;; Use for extension-less Perl files that use Perl directly.
+
+(defun pel-perl-insert-shebang-line ()
+  "Insert a shebang line corresponding to user-option choice."
+  ;; If the user-option specifies to use Emacs default, assume that
+  ;; it was already inserted by the `pel-as' command selecting Perl.
+  ;; Otherwise assume it's there and must be replaced.
+  (save-excursion
+    ;; If the file already has a shebang line, replace it by the user-option selected
+    (when (pel-has-shebang-line)
+      (goto-char (point-min))
+      (pel-delete-line))
+    (goto-char (point-min))
+    (insert pel-perl-shebang-line)
+    (insert "\n")))
+
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-perl)

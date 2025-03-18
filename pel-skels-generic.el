@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-17 12:24:06 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-17 20:42:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -234,10 +234,14 @@ The file header portion is controlled by the style selected by the
 
 ;;-pel-autoload
 (defun pel--install-generic-skel (key-map
-                                  &optional customize-group)
+                                  &optional customize-group
+                                  customize-fct-name-suffix)
   "Create the generic skeletons and bind them in the KEY-MAP specified.
-If CUSTOMIZE-GROUP is specified, create a command bound to <f2> that opens
-the customization buffer four that group.
+
+- CUSTOMIZE-GROUP: optional symbol. If specified, create a command bound
+  to <f2> that opens the customization buffer four that group.
+- CUSTOMIZE-FCT-NAME-SUFFIX: optional string. A suffix to add to the name of
+  the generated function, used to distinguish that function from others.
 
 This function is meant to be called by the function `pel-init' only.
 "
@@ -247,7 +251,8 @@ This function is meant to be called by the function `pel-init' only.
    key-map
    pel--generic-skels-keys
    "generic"
-   customize-group))
+   customize-group
+   customize-fct-name-suffix))
 
 ;;; ----------------------------------------------------------------------------
 (provide 'pel-skels-generic)

@@ -9597,6 +9597,11 @@ Path expansion is done for ~ . "
   :group 'pel-pkg-for-perl-general
   :type '(repeat string))
 
+(defcustom pel-perl-shebang-line "#!/usr/bin/perl -T"
+  "Default shebang line to add in extension-less Perl files."
+  :group 'pel-pkg-for-perl-general
+  :type 'string)
+
 ;; - - - - - - - - - - - - - - - -
 (defgroup pel-pkg-for-perl-perl-mode nil
   "The PEL perl-mode settings."

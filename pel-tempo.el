@@ -202,6 +202,7 @@ Return the created skeleton menu list (or nil if no MENU-ITEM-CREATOR-FUNCTION).
 (defun pel-tempo-install-pel-skel (mode skeletons key-map keys-alist
                                         &optional mode-abbrev
                                         skels-custom-group
+                                        customize-fct-name-suffix
                                         use-existing-tempo-function)
   "Create commands to insert MODE specific SKELETONS functions.
 
@@ -231,9 +232,13 @@ Return the created skeleton menu list (or nil if no MENU-ITEM-CREATOR-FUNCTION).
     - ABBREV is MODE-ABBREV if specified (or MODE otherwise),
     - NAME corresponds to the second element of the SKELETONS entry.
 
-- SKELS-CUSTOM-GROUP: optional symbol.  The name of the customization group
-  which controls aspects of the skeleton. When it is set a command is created
-  and bound to the <f2> key of the specified map.
+- SKELS-CUSTOM-GROUP: optional symbol or list of symbols.  Each symbol is
+  The name of the customization group which controls aspects of the skeleton.
+  When it is set a command is created and bound to the <f2> key of the
+  specified map.
+
+- CUSTOMIZE-FCT-NAME-SUFFIX: optional string. A suffix to add to the name of
+  the generated function, used to distinguish that function from others.
 
 This creates the tempo skeleton function with `tempo-define-template' unless
 USE-EXISTING-TEMPO-FUNCTION is non-nil, in which case it assumes it is already
@@ -253,13 +258,25 @@ the specified KEY-MAP:
     ;; create an bind a command to access skeleton customization group if one
     ;; is specified.
     (when skels-custom-group
-      (let ((s-pel-f2-fname (format "pel-customize-%s-skels" mode-abbrev)))
+      (let ((s-pel-f2-fname
+             (format "pel-customize-%s-%sskels"
+                     mode-abbrev
+                     (if customize-fct-name-suffix
+                         (format "%s-" customize-fct-name-suffix)
+                       ""))))
         ;; Dynamically create the command
         (defalias (intern s-pel-f2-fname)
           (lambda (&optional other-window)
             (interactive "P")
-            (pel--customize-group skels-custom-group other-window))
-          (format "Open the %s customization group.
+            (if (symbolp skels-custom-group)
+                (pel--customize-group skels-custom-group other-window)
+              (require 'pel-prompt nil :noerror)
+              (if (fboundp 'pel-select-symbol-from)
+                  (pel--customize-group
+                   (pel-select-symbol-from "Select group" skels-custom-group)
+                   other-window)
+                (error "Failed loading pel-prompt!"))))
+          (format "Open the %S customization group.
 With optional argument, open in other window."
                   skels-custom-group))
         ;; bind it to the <f2> key inside the specified key-map

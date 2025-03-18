@@ -622,7 +622,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-perl-show-style)
   (pel-autoload-function "pel-perl" for:
     pel-perl-find-file
-    pel-perl-show-source-directories)
+    pel-perl-show-source-directories
+    pel-perl-insert-shebang-line)
 
   (pel-autoload "pel-pathmng" for: pel-emacs-load-path)
 

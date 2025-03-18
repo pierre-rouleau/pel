@@ -4775,6 +4775,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (declare-function pel--perl-activate-file-search  "pel_keys")
 
   (define-pel-global-prefix pel:for-perl (kbd "<f11> SPC P"))
+  (define-pel-global-prefix pel:perl-skel (kbd "<f11> SPC P <f12>"))
   (define-pel-global-prefix pel:perl-setup (kbd "<f11> SPC P <f4>"))
 
   (define-key pel:for-perl (kbd "<up>")     'beginning-of-defun)
@@ -4848,12 +4849,18 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:perl-setup "s" 'pel-perl-show-style)
     (define-key pel:perl-setup (kbd "C-i") 'pel-perl-set-style)
 
-    (define-key pel:for-perl (kbd "<f12>") 'cperl-perldoc-at-point)
+    (define-key pel:for-perl "H"       'cperl-perldoc-at-point)
     (define-key pel:for-perl "h"       'cperl-perldoc)
     (define-key pel:for-perl "|"       'cperl-lineup))
 
   ;; the perl-mode is part of Emacs
   (pel-config-major-mode perl pel:for-perl
+    ;; activate skeletons
+    (pel--install-generic-skel pel:perl-skel
+                               '(pel-pkg-generic-code-style
+                                 pel-pkg-for-perl-general)
+                               "perl")
+    ;;
     (pel--perl-activate-file-search)
     (setq-local tab-width        pel-general-perl-indent-level)
     (setq-local indent-tabs-mode pel-perl-use-tabs)
@@ -4861,6 +4868,12 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (setq-local perl-indent-level pel-general-perl-indent-level)))
 
   (pel-config-major-mode cperl pel:for-perl
+    ;; activate skeletons
+    (pel--install-generic-skel pel:perl-skel
+                               '(pel-pkg-generic-code-style
+                                 pel-pkg-for-perl-general)
+                               "perl")
+    ;;
     (pel--perl-activate-file-search)
     (setq-local tab-width        pel-general-perl-indent-level)
     (setq-local indent-tabs-mode pel-cperl-use-tabs)
@@ -4990,7 +5003,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-sh (kbd "<down>")  'pel-sh-next-function)
     (define-key pel:for-sh (kbd "<up>")    'pel-sh-prev-function)
     ;; activate skeletons
-    (pel--install-generic-skel pel:sh-skel 'pel-pkg-generic-code-style)
+    (pel--install-generic-skel pel:sh-skel 'pel-pkg-generic-code-style "sh")
     ;; Make M-<f12> same as <f12> for convenience.
     (pel-local-set-f12-M-f12 'pel:for-sh))
   (cond

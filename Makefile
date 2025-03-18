@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-03-17 15:07:18 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-03-17 17:30:55 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -575,7 +575,7 @@ pel--options.elc:       pel--base.elc
 pel-abbrev.elc:         pel--base.elc
 pel-align.elc:          pel--base.elc pel-hash.elc
 pel-applescript.elc:    pel--base.elc pel--options.elc pel-read.elc
-pel-as.elc:             pel-prompt.elc
+pel-as.elc:             pel-perl.elc pel-prompt.elc
 pel-autocomplete.elc:   pel--base.elc pel--options.elc pel--macros.elc
 pel-autoload.elc:       pel--options.elc
 pel-benchmark.elc:      pel--base.elc pel-window.elc pel-setup.elc
@@ -638,7 +638,7 @@ pel-open.elc:           pel--base.elc pel--options.elc pel-ido.elc pel-prompt.el
 pel-outline.elc:        pel--base.elc
 pel-package.elc:        pel--base.elc pel--options.elc pel-navigate.elc
 pel-pathmng.elc:        pel--base.elc pel-window.elc
-pel-perl.elc:			pel--base.elc pel-ffind.elc
+pel-perl.elc:			pel--base.elc pel--options.elc pel-ccp.elc pel-ffind.elc
 pel-plantuml.elc:       pel--base.elc
 pel-pp.elc:             pel--base.elc
 pel-ppindent.elc:       pel--base.elc pel-prompt.elc

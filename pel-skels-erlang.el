@@ -1386,6 +1386,7 @@ This function is meant to be called by the function `pel-init' only."
                                   pel--erl-skel-key
                                   "erl"
                                   'pel-erlang-skeleton-control
+                                  nil
                                   :use-existing)
     (user-error "The erlang.el package is not loaded!")))
 
