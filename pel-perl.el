@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-17 21:52:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-18 16:03:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,7 +32,7 @@
 ;;
 ;;
 (require 'pel--base)              ; use: `pel-filesep', `pel-print-in-buffer',
-;;                                ;      `pel-has-shebang-line'
+;;                                ;      `pel-has-shebang-line', `pel-is-executable'
 (require 'pel--options)           ; use: `pel-perl-shebang-line'
 (require 'pel-ccp)                ; use: `pel-delete-line'
 (require 'pel-ffind)              ; use: `pel-ffind'
@@ -62,18 +62,18 @@ Show errors in compilation-mode buffer in a format that allows navigation."
     (let* ((current-filename (buffer-file-name))
            (default-directory (file-name-directory current-filename))
            (is-a-tramp-fname (tramp-tramp-file-p current-filename)))
-      (if (executable-find "perlcritic" is-a-tramp-fname)
-	  (compile
-	   ;; use a format that can be used by the compile mode to move to the error.
-	   (format
+      (if (pel-is-executable "perlcritic" is-a-tramp-fname)
+	      (compile
+	       ;; use a format that can be used by the compile mode to move to the error.
+	       (format
             (if verbose
-		"perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s, %%C:\\t%%m.\\n  %%P (%%e):\\n%%d\\n\" %s"
+		        "perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s, %%C:\\t%%m.\\n  %%P (%%e):\\n%%d\\n\" %s"
               "perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s:\\t%%m.\\t(%%e)\\n\" %s")
             (shell-quote-argument (if is-a-tramp-fname
                                       (tramp-file-local-name current-filename)
                                     current-filename)))
-	   nil)
-	(user-error "Please install perlcritic")))))
+	       nil)
+	    (user-error "Please install perlcritic")))))
 
 ;; ----
 (defun pel-perl-source-directories (&optional directories)

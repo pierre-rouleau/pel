@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-18 08:13:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-18 16:23:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -133,7 +133,8 @@ command you have 2 choices:
       (pel-pike-insert-shebang-line))
 
      ((equal mode "python")
-      (if pel-use-tree-sitter
+      (if (and pel-use-tree-sitter
+               (fboundp 'python-ts-mode))
           (python-ts-mode)
         (python-mode))
       (require 'pel-python)
