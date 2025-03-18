@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-17 22:29:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-18 08:13:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -115,18 +115,31 @@ command you have 2 choices:
     (cond
      ((member mode (mapcar (function symbol-name) pel--sh-modes))
       (pel--as-sh mode))
+
      ((equal mode "config")
       (conf-mode))
+
      ((equal mode "perl")
       (require 'cperl-mode)
       (cperl-mode)
       (require 'pel-perl)
       (declare-function pel-perl-insert-shebang-line "pel-perl")
       (pel-perl-insert-shebang-line))
+
      ((equal mode "pike")
       (pike-mode)
+      (require 'pel-pike)
       (declare-function pel-pike-insert-shebang-line "pel-pike")
       (pel-pike-insert-shebang-line))
+
+     ((equal mode "python")
+      (if pel-use-tree-sitter
+          (python-ts-mode)
+        (python-mode))
+      (require 'pel-python)
+      (declare-function pel-python-insert-shebang-line "pel-python")
+      (pel-python-insert-shebang-line))
+
      (t (user-error "Currently unsupported: %s" mode)))))
 
 ;;; --------------------------------------------------------------------------

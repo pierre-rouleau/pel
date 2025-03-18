@@ -4647,6 +4647,11 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; will load it and once it is loaded, it conflicts with Emacs built-in
   ;; python.el.
 
+  ;; 🚧 Needs work
+  ;; [:todo 2025-03-18, by Pierre Rouleau: run code after the python mode is
+  ;;        loaded,not right at startup.
+  ;;        Look into the impact of tree-sitter on that logic for Emacs <30
+  ;;        and >= 30: 2 possible behaviours. ]
   (when pel-use-elpy
     (pel-ensure-package elpy from: melpa))
   ;; TODO control start of elpy
@@ -4674,11 +4679,16 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
          'python-shell-completion-native-disabled-interpreters "python")
       (setq python-shell-completion-native-disabled-interpreters '("python"))))
 
-  (define-pel-global-prefix pel:for-python (kbd "<f11> SPC p"))
+  ;;
+  (define-pel-global-prefix pel:for-python  (kbd "<f11> SPC p"))
+  (define-pel-global-prefix pel:python-skel (kbd "<f11> SPC p <f12>"))
   (define-key pel:for-python    "."        'pel-find-thing-at-point)
   (define-key pel:for-python    "z"        'run-python)
   (define-key pel:for-python (kbd "M-9")  #'show-paren-mode)
   (define-key pel:for-python (kbd "M-p")  #'superword-mode)
+  ;; activate skeletons
+  (pel--install-generic-skel pel:python-skel 'pel-pkg-for-python "python")
+  ;;
   (when pel-use-plantuml
     (define-key pel:for-python    "u"      'pel-render-commented-plantuml))
   (when pel-use-rainbow-delimiters

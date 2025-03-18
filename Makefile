@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-03-17 22:41:08 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-03-18 08:18:41 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -217,6 +217,7 @@ EL_FILES := pel--base.el \
 		pel-process.el \
 		pel-prompt.el \
 		pel-psw.el \
+		pel-python.el \
 		pel-read.el \
 		pel-register.el \
 		pel-regexp.el \
@@ -576,7 +577,7 @@ pel--options.elc:       pel--base.elc
 pel-abbrev.elc:         pel--base.elc
 pel-align.elc:          pel--base.elc pel-hash.elc
 pel-applescript.elc:    pel--base.elc pel--options.elc pel-read.elc
-pel-as.elc:             pel-perl.elc pel-prompt.elc
+pel-as.elc:             pel-perl.elc pel-prompt.elc pel-pike.elc pel-python.elc
 pel-autocomplete.elc:   pel--base.elc pel--options.elc pel--macros.elc
 pel-autoload.elc:       pel--options.elc
 pel-benchmark.elc:      pel--base.elc pel-window.elc pel-setup.elc

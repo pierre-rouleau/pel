@@ -628,6 +628,9 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-pike" for:
     pel-pike-insert-shebang-line)
 
+  (pel-autoload-function "pel-python" for:
+    pel-python-insert-shebang-line)
+
   (pel-autoload "pel-pathmng" for: pel-emacs-load-path)
 
   (pel-autoload "pel-plantuml" for: pel-render-commented-plantuml)

@@ -9887,6 +9887,10 @@ Note: `pel-use-python' must be t for this to be effective."
   :safe #'booleanp)
 (pel-put 'pel-use-lpy :requires 'pel-use-python)
 
+(defcustom pel-python-shebang-line "#!/usr/bin/env python3"
+  "Default shebang line to add in extension-less Python files."
+  :group 'pel-pkg-for-python
+  :type 'string)
 
 ;; TODO: add support for several Python supporting packages:
 ;; - elpy           : complete the support
