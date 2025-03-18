@@ -9795,6 +9795,11 @@ a newline and then indent the new line."
 Does not indent."
                  just-newline-no-indent)))
 
+(defcustom pel-pike-shebang-line "#!/usr/bin/env pike"
+  "Default shebang line to add in extension-less Pike files."
+  :group 'pel-pkg-for-pike
+  :type 'string)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Python Support
 ;; --------------

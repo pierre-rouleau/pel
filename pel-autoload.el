@@ -625,6 +625,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-perl-show-source-directories
     pel-perl-insert-shebang-line)
 
+  (pel-autoload-function "pel-pike" for:
+    pel-pike-insert-shebang-line)
+
   (pel-autoload "pel-pathmng" for: pel-emacs-load-path)
 
   (pel-autoload "pel-plantuml" for: pel-render-commented-plantuml)

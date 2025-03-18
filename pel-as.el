@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-17 17:46:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-17 22:29:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -51,15 +51,16 @@
                                   '(csh ksh)))
   "List of potential shells script modes.")
 
+;; [:todo 2025-03-17, by Pierre Rouleau: Tie this to pel-skels-generic-first-line]
 (defconst pel--all-modes (append pel--sh-modes
-                               '(config
-                                 d
-                                 lua
-                                 nim
-                                 perl pike python
-                                 ruby
-                                 expect tcl
-                                 zig))
+                                 '(config
+                                   d
+                                   lua
+                                   nim
+                                   perl pike python
+                                   ruby
+                                   expect tcl
+                                   zig))
   "List of modes for languages that support shebang lines.")
 
 
@@ -117,10 +118,15 @@ command you have 2 choices:
      ((equal mode "config")
       (conf-mode))
      ((equal mode "perl")
+      (require 'cperl-mode)
       (cperl-mode)
       (require 'pel-perl)
       (declare-function pel-perl-insert-shebang-line "pel-perl")
       (pel-perl-insert-shebang-line))
+     ((equal mode "pike")
+      (pike-mode)
+      (declare-function pel-pike-insert-shebang-line "pel-pike")
+      (pel-pike-insert-shebang-line))
      (t (user-error "Currently unsupported: %s" mode)))))
 
 ;;; --------------------------------------------------------------------------

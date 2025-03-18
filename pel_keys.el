@@ -3055,13 +3055,17 @@ d-mode not added to ac-modes!"
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-p`` : Pike programming
 (when pel-use-pike
-  (define-pel-global-prefix pel:for-pike         (kbd "<f11> SPC C-p"))
+  (define-pel-global-prefix pel:for-pike  (kbd "<f11> SPC C-p"))
+  (define-pel-global-prefix pel:pike-skel (kbd "<f11> SPC C-p <f12>"))
 
   (pel-eval-after-load cc-mode
     (pel-config-major-mode pike pel:for-pike
       (progn
         (define-key pike-mode-map (kbd "M-;") 'pel-c-comment-dwim)
-
+        ;; activate skeletons
+        (pel--install-generic-skel pel:pike-skel
+                                   'pel-pkg-for-pike
+                                   "pike")
         ;; Configure how to search for a file name from the user-option
         ;; `pel-c-file-finder-method' which may be specified in a
         ;; .dir-local.el file.
@@ -3088,8 +3092,7 @@ d-mode not added to ac-modes!"
         ;; [:todo 2025-03-14, by Pierre Rouleau: Add skeletons for Pike]
         ;; (pel--install-c-skel pel:c-skel)
         ;; 8) extra setup
-        (pel--setup-for-cc))))
-  )
+        (pel--setup-for-cc)))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-f`` : Factor programming

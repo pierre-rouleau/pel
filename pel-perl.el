@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-17 18:58:13 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-17 21:52:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,7 +31,8 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)              ; use: `pel-filesep', `pel-print-in-buffer'
+(require 'pel--base)              ; use: `pel-filesep', `pel-print-in-buffer',
+;;                                ;      `pel-has-shebang-line'
 (require 'pel--options)           ; use: `pel-perl-shebang-line'
 (require 'pel-ccp)                ; use: `pel-delete-line'
 (require 'pel-ffind)              ; use: `pel-ffind'

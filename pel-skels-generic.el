@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-17 20:42:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-17 22:50:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -103,7 +103,7 @@ The identification is done by a match with the user-option variable
                     (not (member file-extension pel-shell-script-extensions))))
       (string-match pel-shell-sourced-script-file-name-prefix fname))))
 
-(defun pel-skels-generic-first-line (fname has-shebang)
+(defun pel-skels-generic-first-line (fname cb has-shebang)
   "Return a string for the first 1 or 2 lines.
 
 - FNAME := string. the name of the file without path.
@@ -126,11 +126,25 @@ script.
       (concat (format pel-shell-sourced-script-first-line fname) "\n")
     ;; For a script file
     (format "%s%s FILE: %s\n"
-            (if (eq major-mode 'sh-mode)
+            ;; [:todo 2025-03-17, by Pierre Rouleau: Tie the following to
+            ;;   pel-as.el.  The current code violates the DRY principle.
+            ;;   in duplicating knowledge about supported modes. ]
+            (if (memq major-mode '(sh-mode
+                                   d-mode
+                                   lua-mode
+                                   nim-mode
+                                   perl-mode
+                                   cperl-mode
+                                   pike-mode
+                                   python-mode
+                                   ruby-mode
+                                   tcl-mode
+                                   zig-mode) )
                 (if has-shebang
-                    "\n# "
-                  (format "%s\n# "
-                          pel-shell-script-shebang-line))
+                    (format "\n%s " cb)
+                  (format "%s\n%s "
+                          pel-shell-script-shebang-line
+                          cb))
               " ")
             (upcase (car (split-string (symbol-name major-mode) "-")))
             fname)))
@@ -153,7 +167,7 @@ The arguments are:
     (list
      'l
      (unless has-shebang cb)
-     (pel-skels-generic-first-line fname has-shebang)
+     (pel-skels-generic-first-line fname cb has-shebang)
      cc 'n
      cc " Purpose   : " purpose 'n
      (pel-skel-created-comment cc nil :no-new-line)
