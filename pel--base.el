@@ -3298,9 +3298,10 @@ Return the new value of LIST-VAR."
   "Return t if FNAME is executable, nil otherwise.
 
 For Emacs >= 27, IS-REMOTE identifies whether this is a tramp file."
-  (if pel-emacs-27-or-later-p
-      (executable-find fname is-remote)
-    (executable-find fname)))
+  (with-no-warnings
+    (if pel-emacs-27-or-later-p
+        (executable-find fname is-remote)
+      (executable-find fname))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)
