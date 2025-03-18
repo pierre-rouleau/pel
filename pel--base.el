@@ -3288,10 +3288,7 @@ Return the new value of LIST-VAR."
   ;; Simply check if the first 2 characters in the buffer are "#!"
   (save-excursion
     (goto-char (point-min))
-    (and (eq (char-after (point)) ?#)
-         (progn
-           (forward-char)
-           (eq (char-after (point)) ?!)))))
+    (looking-at "#!")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)
