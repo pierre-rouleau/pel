@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-19 13:58:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-19 14:06:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -128,10 +128,10 @@ command you have 2 choices:
 
      ((equal mode "nim")
       (require 'nim-mode)
-      (declare-function d-mode "nim-mode")
+      (declare-function nim-mode "nim-mode")
       (nim-mode)
       (require 'pel-nim)
-      (declare-function pel-d-insert-shebang-line "pel-nim")
+      (declare-function pel-nim-insert-shebang-line "pel-nim")
       (pel-nim-insert-shebang-line))
 
      ((equal mode "perl")
