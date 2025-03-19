@@ -3293,26 +3293,31 @@ Return the new value of LIST-VAR."
 ;; ---------------------------------------------------------------------------
 ;; Portability
 ;; -----------
+;;
+;; Use the following functions to prevent warnings.
+;; Select one that supports all required versions:
+;;
+;; - `with-no-warnings':         introduced in Emacs 22.1
+;; - `with-suppressed-warnings': introduced in Emacs 27.1
 
 (defun pel-is-executable (fname &optional is-remote)
   "Return t if FNAME is executable, nil otherwise.
 
 For Emacs >= 27, IS-REMOTE identifies whether this is a tramp file.
-In older Emacs, the argument is ignored, potentially causing en error
-so avoid using Tramp files for this in older Emacs."
-  (condition-case nil
-      (with-suppressed-warnings ((callargs executable-find))
-        (executable-find fname is-remote))
-    (wrong-number-of-arguments
-     (when is-remote
-       (display-warning
-        'old-emacs
-        (format
-         "Can't inspect remote file %s in Emacs %s. Checking local one..."
-         emacs-major-version
-         fname)
-        :warning))
-     (executable-find fname))))
+In older Emacs, the argument is ignored. A warning is emitted if
+it is non-nil."
+  (with-no-warnings
+    (if pel-emacs-27-or-later-p
+        (executable-find fname is-remote)
+      (when is-remote
+        (display-warning
+         'no-support
+         (format
+          "Can't inspect remote file %s in Emacs %s. Checking local one..."
+          emacs-major-version
+          fname)
+         :warning))
+      (executable-find fname))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)
