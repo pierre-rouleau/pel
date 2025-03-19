@@ -3300,12 +3300,12 @@ Return the new value of LIST-VAR."
 ;; - `with-no-warnings':         introduced in Emacs 22.1
 ;; - `with-suppressed-warnings': introduced in Emacs 27.1
 
-(defun pel-is-executable (fname &optional is-remote)
-  "Return t if FNAME is executable, nil otherwise.
-
-For Emacs >= 27, IS-REMOTE identifies whether this is a tramp file.
-In older Emacs, the argument is ignored. A warning is emitted if
-it is non-nil."
+(defun pel-executable-find (fname &optional is-remote)
+  "Search for COMMAND in `exec-path' and return the absolute file name.
+Return nil if COMMAND is not found anywhere in `exec-path'.
+If IS-REMOTE is non-nil:
+- on Emacs >= 27: search on the remote host indicated by `default-directory'.
+- on Emacs < 27: search locally but issue a warning."
   (with-no-warnings
     (if pel-emacs-27-or-later-p
         (executable-find fname is-remote)

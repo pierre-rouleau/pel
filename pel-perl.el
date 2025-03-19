@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-18 17:26:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-19 09:07:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,7 +32,7 @@
 ;;
 ;;
 (require 'pel--base)              ; use: `pel-filesep', `pel-print-in-buffer',
-;;                                ;      `pel-has-shebang-line', `pel-is-executable'
+;;                                ;      `pel-has-shebang-line', `pel-executable-find'
 (require 'pel--options)           ; use: `pel-perl-shebang-line'
 (require 'pel-ccp)                ; use: `pel-delete-line'
 (require 'pel-ffind)              ; use: `pel-ffind'
@@ -62,7 +62,7 @@ Show errors in compilation-mode buffer in a format that allows navigation."
     (let* ((current-filename (buffer-file-name))
            (default-directory (file-name-directory current-filename))
            (is-a-tramp-fname (tramp-tramp-file-p current-filename)))
-      (if (pel-is-executable "perlcritic" is-a-tramp-fname)
+      (if (pel-executable-find "perlcritic" is-a-tramp-fname)
 	      (compile
 	       ;; use a format that can be used by the compile mode to move to the error.
            ;; Note that prior to Emacs 27, tramp-file-local-name did not exist.
