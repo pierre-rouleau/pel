@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-19 10:16:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-19 11:05:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -117,6 +117,14 @@ command you have 2 choices:
 
      ((equal mode "config")
       (conf-mode))
+
+     ((equal mode "d")
+      (require 'd-mode)
+      (declare-function d-mode "d-mode")
+      (d-mode)
+      (require 'pel-d)
+      (declare-function pel-d-insert-shebang-line "pel-d")
+      (pel-d-insert-shebang-line))
 
      ((equal mode "perl")
       (require 'cperl-mode)

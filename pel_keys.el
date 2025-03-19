@@ -2992,6 +2992,7 @@ MODE must be a symbol."
 
 (when pel-use-d
   (define-pel-global-prefix pel:for-d     (kbd "<f11> SPC D"))
+  (define-pel-global-prefix pel:d-skel    (kbd "<f11> SPC D <f12>"))
   (define-pel-global-prefix pel:d-setup   (kbd "<f11> SPC D <f4>"))
   (define-pel-global-prefix pel:d-guess   (kbd "<f11> SPC D <f4> g"))
 
@@ -3032,6 +3033,10 @@ d-mode not added to ac-modes!"
   (pel-eval-after-load d-mode
     (pel-config-major-mode d pel:for-d
       ;; "Set the environment for editing D files."
+      ;; activate skeletons
+      (pel--install-generic-skel pel:d-skel
+                                 'pel-pkg-for-d
+                                 "d")
       ;; Configure the CC Mode style for C++ from PEL custom variables
       ;; 1) set the style: it identifies everything
       (pel--set-cc-style 'd-mode pel-d-bracket-style pel-d-newline-mode)

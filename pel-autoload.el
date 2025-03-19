@@ -303,6 +303,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-browse-group
     pel-customize-pel-base-emacs-group)
 
+  (pel-autoload-function "pel-d" for:
+    pel-d-insert-shebang-line)
+
   (pel-autoload "pel-diff" for:
     pel-ediff-2files
     pel-ediff-revision

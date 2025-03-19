@@ -6491,6 +6491,11 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-d
   :type '(repeat function))
 
+(defcustom pel-d-shebang-line "#!/usr/bin/env rdmd"
+  "Default shebang line to add in extension-less D files."
+  :group 'pel-pkg-for-d
+  :type 'string)
+
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-d-code-style nil
   "D Source Code Style options."
