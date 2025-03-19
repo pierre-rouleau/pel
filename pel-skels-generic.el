@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-18 08:14:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-19 10:16:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -139,8 +139,7 @@ script.
                                    python-mode
                                    python-ts-mode
                                    ruby-mode
-                                   tcl-mode
-                                   zig-mode) )
+                                   tcl-mode) )
                 (if has-shebang
                     (format "\n%s " cb)
                   (format "%s\n%s "
