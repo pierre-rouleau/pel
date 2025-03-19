@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-19 11:05:13 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-19 12:24:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -147,6 +147,14 @@ command you have 2 choices:
       (require 'pel-python)
       (declare-function pel-python-insert-shebang-line "pel-python")
       (pel-python-insert-shebang-line))
+
+     ((equal mode "ruby")
+      (require 'ruby-mode)
+      (declare-function ruby-mode "ruby-mode")
+      (ruby-mode)
+      (require 'pel-ruby)
+      (declare-function pel-ruby-insert-shebang-line "pel-ruby")
+      (pel-ruby-insert-shebang-line))
 
      (t (user-error "Currently unsupported: %s" mode)))))
 

@@ -10038,6 +10038,11 @@ characters."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-ruby-shebang-line "#!/usr/bin/env ruby"
+  "Default shebang line to add in extension-less Ruby files."
+  :group 'pel-pkg-for-ruby
+  :type 'string)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Rust Support
 ;; ------------

@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-03-19 11:03:44 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-03-19 12:20:39 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -224,6 +224,7 @@ EL_FILES := pel--base.el \
 		pel-regexp.el \
 		pel-rst.el \
 		pel-rpm-spec.el \
+		pel-ruby.el \
 		pel-scheme.el \
 		pel-screen.el \
 		pel-scroll.el \
@@ -578,7 +579,7 @@ pel--options.elc:       pel--base.elc
 pel-abbrev.elc:         pel--base.elc
 pel-align.elc:          pel--base.elc pel-hash.elc
 pel-applescript.elc:    pel--base.elc pel--options.elc pel-read.elc
-pel-as.elc:             pel-d.elc pel-perl.elc pel-prompt.elc pel-pike.elc pel-python.elc
+pel-as.elc:             pel-d.elc pel-perl.elc pel-prompt.elc pel-pike.elc pel-python.elc pel-ruby.elc
 pel-autocomplete.elc:   pel--base.elc pel--options.elc pel--macros.elc
 pel-autoload.elc:       pel--options.elc
 pel-benchmark.elc:      pel--base.elc pel-window.elc pel-setup.elc
@@ -650,7 +651,8 @@ pel-ppindent.elc:       pel--base.elc pel-prompt.elc
 pel-prompt.elc:         pel--base.elc pel--options.elc
 pel-read.elc:           pel-navigate.elc
 pel-rst.elc:            pel--base.elc pel--options.elc pel-whitespace.elc pel--macros.elc pel-ccp.elc pel-bookmark.elc pel-file.elc
-epl-sh.elc:             pel--base.elc
+pel-ruby.elc:           pel--base.elc pel--options.elc pel-ccp.elc
+pel-sh.elc:             pel--base.elc
 pel-shell.elc:          pel--options.elc
 pel-scheme.elc:         pel-comint.elc pel-window.elc
 pel-screen.elc:         pel--options.elc pel-whitespace.elc

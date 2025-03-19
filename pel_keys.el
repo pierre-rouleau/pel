@@ -4912,8 +4912,11 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC U`` : Ruby programming
 (when pel-use-ruby
   (define-pel-global-prefix pel:for-ruby (kbd "<f11> SPC U"))
+  (define-pel-global-prefix pel:ruby-skel (kbd "<f11> SPC U <f12>"))
   ;; the ruby-mode is part of Emacs
-  (pel-config-major-mode ruby pel:for-ruby))
+  (pel-config-major-mode ruby pel:for-ruby
+    ;; activate skeletons
+    (pel--install-generic-skel pel:ruby-skel 'pel-pkg-for-ruby "ruby")))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` : Rust programming
