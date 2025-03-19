@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-03-19 14:33:29 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-03-19 15:00:52 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -201,6 +201,7 @@ EL_FILES := pel--base.el \
 		pel-lispy.el \
 		pel-list.el \
 		pel-lsp.el \
+		pel-lua.el \
 		pel-make.el \
 		pel-man.el \
 		pel-mark.el \
@@ -581,7 +582,7 @@ pel--options.elc:       pel--base.elc
 pel-abbrev.elc:         pel--base.elc
 pel-align.elc:          pel--base.elc pel-hash.elc
 pel-applescript.elc:    pel--base.elc pel--options.elc pel-read.elc
-pel-as.elc:             pel-d.elc pel-nim.elc pel-perl.elc pel-prompt.elc pel-pike.elc pel-python.elc pel-ruby.elc pel-tcl.elc
+pel-as.elc:             pel-d.elc pel-lua.elc pel-nim.elc pel-perl.elc pel-prompt.elc pel-pike.elc pel-python.elc pel-ruby.elc pel-tcl.elc
 pel-autocomplete.elc:   pel--base.elc pel--options.elc pel--macros.elc
 pel-autoload.elc:       pel--options.elc
 pel-benchmark.elc:      pel--base.elc pel-window.elc pel-setup.elc
@@ -636,6 +637,7 @@ pel-lisp.elc:           pel--base.elc
 pel-lispy.elc:          pel--base.elc pel--options.elc
 pel-list.elc:           pel--base.elc
 pel-lsp.elc:			pel--base.elc
+pel-lua.elc:            pel--base.elc pel--options.elc pel-ccp.elc
 pel-make.elc:           pel--base.elc pel-syntax.elc
 pel-man.elc:            pel--base.elc
 pel-mark.elc:           pel--base.elc

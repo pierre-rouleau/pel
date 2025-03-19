@@ -541,6 +541,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-byte-compile-file-and-load
     pel-lint-elisp-file)
 
+  (pel-autoload-function "pel-lua" for:
+    pel-lua-insert-shebang-line)
+
   (pel-autoload "pel-make" for:
     pel-make-forward-conditional
     pel-make-backward-conditional

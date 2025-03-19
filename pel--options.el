@@ -149,6 +149,7 @@
 ;;         - pel-pkg-for-gleam
 ;;       - pel-pkg-for-forth
 ;;       - pel-pkg-for-julia
+;;       - pel-pkg-for-lua
 ;;       - pel-pkg-for-m4
 ;;       - pel-pkg-for-nim
 ;;       - pel-pkg-for-ocaml
@@ -9202,7 +9203,7 @@ characters."
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Julia Support
-;; --------------
+;; -------------
 (defgroup pel-pkg-for-julia nil
   "PEL customization for Julia."
   :group 'pel-pkg-for-programming
@@ -9247,6 +9248,53 @@ characters."
   :group 'pel-pkg-for-julia
   :type 'boolean
   :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Lua Support
+;; -----------
+(defgroup pel-pkg-for-lua nil
+  "PEL customization for Lua."
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Lua PDF" ,(pel-pdf-file-url "pl-lua")))
+
+(defcustom pel-use-lua  nil
+  "Control whether PEL supports Lua development."
+  :group 'pel-pkg-for-lua
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-lua-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Lua buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-lua
+  :type '(repeat function))
+
+(defcustom pel-lua-tab-width 4
+  "Distance between tab stop for lua buffers.
+
+PEL stores this in `tab-width' when opening lua  buffers.
+
+This does *NOT* control the indentation in lua
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-lua
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-lua-use-tabs nil
+  "Value of `indent-tabs-mode' for editing lua files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-lua
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-lua-shebang-line "#!/usr/bin/env lua"
+  "Default shebang line to add in extension-less Lua files."
+  :group 'pel-pkg-for-lua
+  :type 'string)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; M4 Support

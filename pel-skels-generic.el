@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-19 13:39:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-19 15:14:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -133,6 +133,7 @@ script.
             (if (memq major-mode '(sh-mode
                                    d-mode
                                    lua-mode
+                                   lua-ts-mode
                                    nim-mode
                                    perl-mode
                                    cperl-mode

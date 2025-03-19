@@ -2,8 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add preliminary support for Lua when *pel-use-lua* is set.
 - The ~<f12><f12>~ key prefix holding keybindings related to tempo skeleton insertion and management is now available for the
-  *sh-mode*, D, Nim, Perl, Pike, Python and Ruby, Tcl and Tcl expect buffers.
+  *sh-mode*, D, Lua, Nim, Perl, Pike, Python and Ruby, Tcl and Tcl expect buffers.
   - While doing that I also improved the *pel-tempo-install-pel-skel* function, allowing the creation of a command bound
     to the ~<f2>~ key of the specified keymap: that command opens the customization group controlling various aspects of the tempo skeleton.
     - Added this feature to the following major modes:

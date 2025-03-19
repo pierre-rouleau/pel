@@ -4999,6 +4999,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC t`` : Tcl  programming
 (when pel-use-tcl
+  ;; tcl-mode is part of Emacs
   (define-pel-global-prefix pel:for-tcl (kbd "<f11> SPC t"))
   (define-pel-global-prefix pel:tcl-skel (kbd "<f11> SPC t <f12>"))
 
@@ -5006,6 +5007,24 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-config-major-mode tcl pel:for-tcl
       ;; activate skeletons
       (pel--install-generic-skel pel:tcl-skel 'pel-pkg-for-tcl "tcl")
+
+      ;; 5) Set tab-width for the buffer as specified by the PEL user option
+      ;; for the major mode.
+      ;; (setq-local tab-width pel-tcl-tab-width)
+      )))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC u`` : Lua programming
+(when pel-use-lua
+  (pel-ensure-package lua-mode from: melpa)
+
+  (define-pel-global-prefix pel:for-lua  (kbd "<f11> SPC u"))
+  (define-pel-global-prefix pel:lua-skel (kbd "<f11> SPC u <f12>"))
+
+  (pel-eval-after-load lua-mode
+    (pel-config-major-mode lua pel:for-lua
+      ;; activate skeletons
+      (pel--install-generic-skel pel:lua-skel 'pel-pkg-for-lua "lua")
 
       ;; 5) Set tab-width for the buffer as specified by the PEL user option
       ;; for the major mode.

@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-19 14:43:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-19 15:17:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -137,6 +137,14 @@ command you have 2 choices:
           (pel-tcl-insert-shebang-line)
         (pel-tcl-expect-insert-shebang-line))
       )
+
+     ((equal mode "lua")
+      (require 'lua-mode)
+      (declare-function lua-mode "lua-mode")
+      (lua-mode)
+      (require 'pel-lua)
+      (declare-function pel-lua-insert-shebang-line "pel-lua")
+      (pel-lua-insert-shebang-line))
 
      ((equal mode "nim")
       (require 'nim-mode)
