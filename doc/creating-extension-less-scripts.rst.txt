@@ -1,0 +1,77 @@
+=================================================
+Create extension-less executable scripts with PEL
+=================================================
+
+:Home URL: https://github.com/pierre-rouleau/pel
+:Project: `PEL -- Pragmatic Emacs Library`_
+:Created:  Tuesday, March 18 2025.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2025-03-18 21:06:22, by Pierre Rouleau.
+:Copyright: © 2025, Pierre Rouleau
+
+
+.. contents::  **Table of Contents**
+.. sectnum::
+
+.. ---------------------------------------------------------------------------
+
+Overview
+========
+
+
+PEL simplifies the steps to create an executable script that has no file
+extension.  Follow these steps to open a extension-less file, create the
+shebang line, add a file header and save the file.
+
+PEL binds the ``<f12>`` key to the **pel-as** command (and optionally its
+alias, the **as** command).  It also supports a major-mode specific key map
+that uses the ``<f12>`` key prefix and a ``<f12><f12>`` sub-prefix to control
+access to the commands used to insert PEL tempo skeleton and to access the
+various customizable user-options that have an impact on the format of the
+generated templates.
+
+The ``<f12>`` key binding to **pel-as** is available globally for any buffer
+in fundamental-mode and for major modes not supported by PEL (or when that
+support has not yet been activated by the setting of the major-mode specific
+``pel-use-....`` user-option).
+
+The **pel-as** command prompts the user for one of the supported major modes,
+such as bash, zsh, perl, pike, python, etc...
+
+Once selected **pel-as** writes the appropriate shebang line at the top of the
+buffer and make the corresponding file executable.  It also sets the
+major-mode of the buffer to the one selected.
+
+From that moment, the ``<f12>`` key becomes a key prefix to the PEL major-mode
+specific key-map.  Inside that key-map there's another key prefix
+``<f12><f12>`` that provides access to the PEL tempo skeleton commands.  These
+commands are either specialized or generic code templates.
+
+For example, the ``<f12><f12> h`` key sequence inserts a file header that
+corresponds to what's needed for this type of file, with the comment properly
+written and several fields automatically filled and others the user should
+complete.
+
+The ``<f12><f12><f2>`` key sequence opens the customization buffer where you
+can modify various user-options that control various aspects of the templates.
+
+The key sequences are the same in all supported major-modes.
+
+For this to work, however, you **must** activet PEL extra support for the
+major mode by setting the corresponding **pel-use-....** user-option.  For
+example, to support creating Pike executable scripts with this method, you
+must set the **pel-use-pike** user option to ``t``.
+
+.. ---------------------------------------------------------------------------
+.. links:
+
+.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
