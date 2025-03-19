@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-19 14:06:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-19 14:43:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -125,6 +125,18 @@ command you have 2 choices:
       (require 'pel-d)
       (declare-function pel-d-insert-shebang-line "pel-d")
       (pel-d-insert-shebang-line))
+
+     ((member mode '("expect" "tcl"))
+      (require 'tcl)
+      (declare-function tcl-mode "tcl")
+      (tcl-mode)
+      (require 'pel-tcl)
+      (declare-function pel-tcl-insert-shebang-line "pel-tcl")
+      (declare-function pel-tcl-expect-insert-shebang-line "pel-tcl")
+      (if (equal mode "tcl")
+          (pel-tcl-insert-shebang-line)
+        (pel-tcl-expect-insert-shebang-line))
+      )
 
      ((equal mode "nim")
       (require 'nim-mode)

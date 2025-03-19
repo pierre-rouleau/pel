@@ -827,6 +827,10 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-syntax" for:
     pel-syntax-at-point)
 
+  (pel-autoload-function "pel-tcl" for:
+    pel-tcl-insert-shebang-line
+    pel-tcl-expect-insert-shebang-line)
+
   (pel-autoload "pel-xref" for:
     pel-xref-toggle-dumb-jump-mode
     pel-xref-toggle-gxref

@@ -5000,13 +5000,18 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC t`` : Tcl  programming
 (when pel-use-tcl
   (define-pel-global-prefix pel:for-tcl (kbd "<f11> SPC t"))
+  (define-pel-global-prefix pel:tcl-skel (kbd "<f11> SPC t <f12>"))
 
-  (pel-config-major-mode tcl pel:for-tcl
-    ;; 5) Set tab-width for the buffer as specified by the PEL user option
-    ;; for the major mode.
-    ;; (setq-local tab-width pel-tcl-tab-width)
-    )
-  )
+  (pel-eval-after-load tcl
+    (pel-config-major-mode tcl pel:for-tcl
+      ;; activate skeletons
+      (pel--install-generic-skel pel:tcl-skel 'pel-pkg-for-tcl "tcl")
+
+      ;; 5) Set tab-width for the buffer as specified by the PEL user option
+      ;; for the major mode.
+      ;; (setq-local tab-width pel-tcl-tab-width)
+      )))
+
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC Z`` : Sh, Unix shell programming
 ;;   This is for shell programming support: editing shell script files.

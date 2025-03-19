@@ -10300,6 +10300,15 @@ commands that mode point to tab stop positions such as
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-tcl-shebang-line "#!/usr/bin/env tclsh"
+  "Default shebang line to add in extension-less Tcl files."
+  :group 'pel-pkg-for-tcl
+  :type 'string)
+
+(defcustom pel-tcl-expect-shebang-line "#!/usr/bin/env expect"
+  "Default shebang line to add in extension-less Tcl expect files."
+  :group 'pel-pkg-for-tcl
+  :type 'string)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; V Language Support
