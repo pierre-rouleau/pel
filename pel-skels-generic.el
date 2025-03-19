@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-19 10:42:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-19 13:39:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -140,6 +140,7 @@ script.
                                    python-mode
                                    python-ts-mode
                                    ruby-mode
+                                   ruby-ts-mode
                                    tcl-mode) )
                 (cond
                  ((file-name-extension fname) " ")
