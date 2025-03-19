@@ -4,10 +4,11 @@ Using the Emacs daemon and clients
 
 :Home URL: https://github.com/pierre-rouleau/pel
 :Project: `PEL -- Pragmatic Emacs Library`_
+:Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2024-05-29 08:23:53 EDT, updated by Pierre Rouleau.
-:Copyright: © 2024, Pierre Rouleau
+:Modified: 2025-03-19 16:59:05 EDT, updated by Pierre Rouleau.
+:Copyright: © 2024, 2025, Pierre Rouleau
 
 
 .. ---------------------------------------------------------------------------
@@ -289,6 +290,7 @@ install emacs`` command::
 
 
 .. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _PEL How-to Tips: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-howto.pdf
 .. _Emacs for Mac OS X:  https://emacsformacosx.com/
 .. _Homebrew package manager: https://en.wikipedia.org/wiki/Homebrew_(package_manager)
 .. _e:  ../bin/e

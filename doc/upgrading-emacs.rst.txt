@@ -4,9 +4,10 @@ How to recompile all Emacs Lisp files after updating Emacs to a different versio
 
 :Home URL: https://github.com/pierre-rouleau/pel
 :Project: `PEL -- Pragmatic Emacs Library`_
+:Ref: `PEL How-to Tips`_
 :Created:  Saturday, March  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-10 15:44:33 EDT, updated by Pierre Rouleau.
+:Modified: 2025-03-19 16:59:32 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -206,6 +207,7 @@ If there is anything missing PEL will install it and re-compile it.
 .. elisp/pel/doc/upgrading-emacs.rst.txt
 
 .. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _PEL How-to Tips: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-howto.pdf
 .. _e: https://github.com/pierre-rouleau/pel/blob/master/bin/e
 .. _Using the Emacs daemon and clients: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
 .. _ge: https://github.com/pierre-rouleau/pel/blob/master/bin/ge

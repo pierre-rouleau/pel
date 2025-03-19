@@ -4,9 +4,10 @@ Using Emacs Source Code
 
 :Home URL: https://github.com/pierre-rouleau/pel
 :Project: `PEL -- Pragmatic Emacs Library`_
+:Ref: `PEL How-to Tips`_
 :Created:  Monday, March  3 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-03 21:18:19, by Pierre Rouleau.
+:Modified: 2025-03-19 17:00:13 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -72,6 +73,7 @@ buffer showing the C source code for the C function.
 .. links:
 
 .. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _PEL How-to Tips: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-howto.pdf
 
 .. ---------------------------------------------------------------------------
 
