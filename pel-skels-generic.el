@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-19 10:16:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-19 10:42:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -115,8 +115,9 @@ script.
 - For sourced script: it returns the first line that holds the name of the
   file.
 - For shell script: it returns 1 or 2 lines:
-  - If a shebang line is already present, the function only returns the second
-    line showing the file type and file name.
+  - If a shebang line is already present, or if the file has an extension,
+    the function only returns the second line showing the file type and file
+    name.
   - If the shebang line is not present, the function returns a string with 2
     lines:
     - the shebang line,
@@ -140,11 +141,12 @@ script.
                                    python-ts-mode
                                    ruby-mode
                                    tcl-mode) )
-                (if has-shebang
-                    (format "\n%s " cb)
-                  (format "%s\n%s "
+                (cond
+                 ((file-name-extension fname) " ")
+                 (has-shebang (format "\n%s " cb))
+                 (t (format "%s\n%s "
                           pel-shell-script-shebang-line
-                          cb))
+                          cb)))
               " ")
             (upcase (car (split-string (symbol-name major-mode) "-")))
             fname)))
