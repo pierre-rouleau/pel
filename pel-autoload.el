@@ -583,6 +583,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-beginning-of-next-defun
     pel-end-of-previous-defun)
 
+  (pel-autoload-function "pel-nim" for:
+    pel-nim-insert-shebang-line)
+
   (pel-autoload "pel-numkpad" for:
     pel-toggle-mac-numlock
     pel-show-mac-numlock

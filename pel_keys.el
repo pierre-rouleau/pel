@@ -3068,9 +3068,7 @@ d-mode not added to ac-modes!"
       (progn
         (define-key pike-mode-map (kbd "M-;") 'pel-c-comment-dwim)
         ;; activate skeletons
-        (pel--install-generic-skel pel:pike-skel
-                                   'pel-pkg-for-pike
-                                   "pike")
+        (pel--install-generic-skel pel:pike-skel 'pel-pkg-for-pike "pike")
         ;; Configure how to search for a file name from the user-option
         ;; `pel-c-file-finder-method' which may be specified in a
         ;; .dir-local.el file.
@@ -4599,14 +4597,18 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC n`` : Nim programming
 (when pel-use-nim
   (define-pel-global-prefix pel:for-nim (kbd "<f11> SPC n"))
+  (define-pel-global-prefix pel:nim-skel (kbd "<f11> SPC n <f12>"))
   (when pel-use-nim-mode
     (pel-ensure-package nim-mode from: melpa))
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".nim"
                                   ".nims"
                                   ".nimble")))
-  ;; the nim-mode is part of Emacs
-  (pel-config-major-mode nim pel:for-nim))
+  ;; the nim-mode is not part of Emacs
+  (pel-eval-after-load nim-mode
+    (pel-config-major-mode nim pel:for-nim
+      ;; activate skeletons
+      (pel--install-generic-skel pel:nim-skel 'pel-pkg-for-nim "nim"))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC o`` : Ocaml programming

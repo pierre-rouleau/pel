@@ -9348,6 +9348,11 @@ characters."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-nim-shebang-line "#!/usr/bin/env -S nim --hints:off"
+  "Default shebang line to add in extension-less Nim files."
+  :group 'pel-pkg-for-nim
+  :type 'string)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Ocaml Support
 ;; -------------
