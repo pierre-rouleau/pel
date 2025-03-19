@@ -3305,18 +3305,14 @@ Return the new value of LIST-VAR."
 Return nil if COMMAND is not found anywhere in `exec-path'.
 If IS-REMOTE is non-nil:
 - on Emacs >= 27: search on the remote host indicated by `default-directory'.
-- on Emacs < 27: search locally but issue a warning."
-  (with-no-warnings
-    (if pel-emacs-27-or-later-p
-        (executable-find fname is-remote)
-      (when is-remote
-        (display-warning
-         'no-support
-         (format
-          "Can't inspect remote file %s in Emacs %s. Checking local one..."
-          emacs-major-version
-          fname)
-         :warning))
+- on Emacs < 27: issue user error describing limitation."
+  (if pel-emacs-27-or-later-p
+      (with-no-warnings
+        (executable-find fname is-remote))
+    (if is-remote
+        (user-error "On Emacs %s can't search for remote file [%s]."
+                    emacs-major-version
+                    fname)
       (executable-find fname))))
 
 ;;; --------------------------------------------------------------------------
