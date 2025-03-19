@@ -57,8 +57,8 @@ can modify various user-options that control various aspects of the templates.
 
 The key sequences are the same in all supported major-modes.
 
-For this to work, however, you **must** activet PEL extra support for the
-major mode by setting the corresponding **pel-use-....** user-option.  For
+For this to work, however, you **must** activate PEL extra support for the
+major mode by setting the corresponding **pel-use-...** user-option.  For
 example, to support creating Pike executable scripts with this method, you
 must set the **pel-use-pike** user option to ``t``.
 
