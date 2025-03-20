@@ -580,7 +580,9 @@ buffer argument.")
 The returned value is the sate of the mode in the buffer identified
 by BUFFER or `pel-insert-symbol-content-context-buffer'.
 - IS-BUILTIN must be non-nil if the mode is built-in Emacs, otherwise nil."
-  (with-current-buffer (or buffer pel-insert-symbol-content-context-buffer)
+  (with-current-buffer (or buffer
+                           pel-insert-symbol-content-context-buffer
+                           (current-buffer))
     (pel-symbol-on-off-string minor-mode nil nil
                               (format
                                "%s but not loaded, use a command to load it."
@@ -937,15 +939,21 @@ on/off value, otherwise use \"on\" and \"off\"."
     (or off-string "off")))
 
 (defun pel-symbol-on-off-string (symbol &optional on-string off-string
-                                        void-string)
+                                        void-string buffer)
   "Return representation of SYMBOL value and whether it is bound.
 When SYMBOL is not bound: return VOID-STRING or \"void\" if it's nil,
 When it is bound, return:
 - the OFF-STRING or \"off\" for nil,
-- the ON-STRING or \"on\" for SYMBOL boolean value."
-  (if (boundp symbol)
-      (pel-on-off-string (eval symbol) on-string off-string)
-    (or void-string "void")))
+- the ON-STRING or \"on\" for SYMBOL boolean value.
+
+The returned value is the sate of the mode in the buffer identified
+by BUFFER or `pel-insert-symbol-content-context-buffer'."
+  (with-current-buffer (or buffer
+                           pel-insert-symbol-content-context-buffer
+                           (current-buffer))
+    (if (boundp symbol)
+        (pel-on-off-string (eval symbol) on-string off-string)
+      (or void-string "void"))))
 
 (defun pel-symbol-text (symbol &optional on-string off-string void-string)
   "Return a string with an interpretation of SYMBOL value.
@@ -964,23 +972,29 @@ If VALUE is nil: show OFF-STRING if defined, \"off\" otherwise."
           name
           (pel-symbol-on-off-string value on-string off-string)))
 
-(defun pel-symbol-value-or (symbol &optional replacement formatter)
+(defun pel-symbol-value-or (symbol &optional replacement formatter buffer)
   "Return SYMBOL value if non void, otherwise its REPLACEMENT.
 
 If SYMBOL is void and there is no REPLACEMENT return a string
 created by (format \"unknown - %S is not loaded\" symbol).
 If SYMBOL is void and replacement is :nil-for-void, return nil.
 If SYMBOL is bound and FORMATTER is non nil it's a function that
-takes the symbol and returns a string."
-  (if (boundp symbol)
-      (if formatter
-          (funcall formatter symbol)
-        (symbol-value symbol))
-    (if replacement
-        (if (eq replacement :nil-for-void)
-            nil
-          replacement)
-      (format "unknown - %S is not loaded" symbol))))
+takes the symbol and returns a string.
+
+The returned value is the sate of the mode in the buffer identified
+by BUFFER or `pel-insert-symbol-content-context-buffer'."
+  (with-current-buffer (or buffer
+                           pel-insert-symbol-content-context-buffer
+                           (current-buffer))
+    (if (boundp symbol)
+        (if formatter
+            (funcall formatter symbol)
+          (symbol-value symbol))
+      (if replacement
+          (if (eq replacement :nil-for-void)
+              nil
+            replacement)
+        (format "unknown - %S is not loaded" symbol)))))
 
 (defun pel-yes-no-string (test &optional true-string false-string)
   "Return TRUE-STRING when boolean TEST is non-nil, otherwise FALSE_STRING.
@@ -1113,29 +1127,36 @@ nil or the value specified by NIL-RETURN if it is specified."
           description)
         nil-return)))
 
-(defun pel-option-mode-state (mode user-option &optional activated-in)
+(defun pel-option-mode-state (mode user-option &optional activated-in buffer)
   "Return description of MODE status controlled by USER_OPTION.
 USER-OPTION is a symbol.  A non-nil value of that symbol
 identifies whether the mode is made available, nil that it is not made
 available and most probably not loaded.
 MODE is the mode symbol, indicating whether the mode is active or not.
 If ACTIVATED-IN is specified that's the list of major modes where MODE
-is automatically activated; this is included in the description."
-  (let ((autoloaded-str (pel-activated-in-str activated-in)))
-    (if (boundp user-option)
-        (if (eval user-option)
-            (if (boundp mode)
-                (format "Available %s.%s"
-                        (pel-symbol-on-off-string mode
-                                                  "and on"
-                                                  "but off")
-                        autoloaded-str)
-              (format "Available but not loaded, use a command to load it.%s"
-                      autoloaded-str))
-          (format "Not available. Activate %s first.%s"
-                  (symbol-name user-option)
-                  autoloaded-str))
-      (format "%s symbol unknown" (symbol-name user-option)))))
+is automatically activated; this is included in the description.
+The returned value is the sate of the mode in the buffer identified
+by BUFFER or `pel-insert-symbol-content-context-buffer'."
+  (with-current-buffer (or buffer
+                           pel-insert-symbol-content-context-buffer
+                           (current-buffer))
+    (let ((autoloaded-str (pel-activated-in-str activated-in)))
+      (if (boundp user-option)
+          (if (eval user-option)
+              (if (boundp mode)
+                  (format "%s%s"
+                          (pel-symbol-on-off-string mode
+                                                    "on"
+                                                    "Available but off")
+                          (if (pel-hastext autoloaded-str)
+                              (format ". %s" autoloaded-str)
+                            ""))
+                (format "Available but not loaded, use a command to load it.%s"
+                        autoloaded-str))
+            (format "Not available. Activate %s first.%s"
+                    (symbol-name user-option)
+                    autoloaded-str))
+        (format "%s symbol unknown" (symbol-name user-option))))))
 
 ;; ---------------------------------------------------------------------------
 ;; String transformation utilities:
