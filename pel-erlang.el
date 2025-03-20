@@ -801,7 +801,8 @@ Can't detect Erlang version." pel-erlang-version-detection-method)
 Also displays `erlang-root-dir' and `pel-erlang-man-parent-rootdir'"
   (interactive)
   (require 'erlang nil :noerror)
-  (let* ((erlang-ls-version (pel-erlang-ls-version))
+  (let* ((pel-insert-symbol-content-context-buffer (current-buffer))
+         (erlang-ls-version (pel-erlang-ls-version))
          (detected-erlang-root-dir (pel-erlang-detected-root-dir))
          (path-mismatch (not (string=  detected-erlang-root-dir
                                        (bound-and-true-p erlang-root-dir)))))

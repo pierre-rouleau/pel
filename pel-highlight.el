@@ -1,6 +1,6 @@
 ;;; pel-highlight.el --- PEL highlight support. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2022, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2022, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -115,7 +115,8 @@ If ARG is positive set to use hard tabs, otherwise force use of spaces only.
 Beep on each change to warn user of the change and display new value."
   (interactive "P")
   (beep :dont-break-macro)
-  (let ((on-string  "t: using hard TABs for indentation in current buffer")
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+        (on-string  "t: using hard TABs for indentation in current buffer")
         (off-string "nil: using SPACEs only for indentation in current buffer"))
     (if (null arg)
         ;; toggle
