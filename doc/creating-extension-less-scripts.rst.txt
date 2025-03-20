@@ -7,7 +7,7 @@ Create extension-less executable scripts with PEL
 :Ref: `PEL How-to Tips`_
 :Created:  Tuesday, March 18 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-19 16:57:24 EDT, updated by Pierre Rouleau.
+:Modified: 2025-03-20 15:40:22 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -37,7 +37,17 @@ support has not yet been activated by the setting of the major-mode specific
 ``pel-use-....`` user-option).
 
 The **pel-as** command prompts the user for one of the supported major modes,
-such as bash, zsh, perl, pike, python, etc...
+such as:
+
+- bash, zsh, sh and other shell script modes.  See `𝕻𝔩 - UNIX Shell`_,
+- configuration files,
+- D, see `𝕻𝔩 - D`_,
+- Lua, see `𝕻𝔩 - Lua`_,
+- Nim, see `𝕻𝔩 - Nim`_,
+- Perl, see `𝕻𝔩 - Perl`_,
+- Pike, see `𝕻𝔩 - Pike`_,
+- Python, see `𝕻𝔩 - Python`_
+- Tcl and expect, see `𝕻𝔩 - Tcl`_ .
 
 Once selected **pel-as** writes the appropriate shebang line at the top of the
 buffer and make the corresponding file executable.  It also sets the
@@ -67,7 +77,15 @@ must set the **pel-use-pike** user option to ``t``.
 .. links:
 
 .. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
-.. _PEL How-to Tips: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-howto.pdf
+.. _PEL How-to Tips:                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-howto.pdf
+.. _𝕻𝔩 - UNIX Shell:                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-sh.pdf#page=1
+.. _𝕻𝔩 - D:                         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-d.pdf#page=1
+.. _𝕻𝔩 - Lua:                       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-lua.pdf#page=1
+.. _𝕻𝔩 - Nim:                       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-nim.pdf#page=1
+.. _𝕻𝔩 - Perl:                      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-perl.pdf#page=1
+.. _𝕻𝔩 - Pike:                      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-pike.pdf#page=1
+.. _𝕻𝔩 - Python:                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf#page=1
+.. _𝕻𝔩 - Tcl:                       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-tcl.pdf#page=1
 
 .. ---------------------------------------------------------------------------
 
