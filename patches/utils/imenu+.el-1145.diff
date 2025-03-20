@@ -1,0 +1,42 @@
+--- original/imenu+.el	2025-03-03 19:06:03
++++ imenu+.el	2025-03-20 08:57:29
+@@ -1,4 +1,4 @@
+-;;; imenu+.el --- Extensions to `imenu.el'.
++;;; imenu+.el --- Extensions to `imenu.el'.   -*-lexical-binding: t; -*-
+ ;;
+ ;; Filename: imenu+.el
+ ;; Description: Extensions to `imenu.el'.
+@@ -86,6 +86,9 @@
+ ;;
+ ;;; Change Log:
+ ;;
++;; 2025/03/20 prouleau
++;;  imenu-update-menubar: remove last element of menu when it is nil.
++;;  Use lexical binding.
+ ;; 2024/03/09 dadams
+ ;;     Renamed (corrected) find-where* to imenup-find-where*.
+ ;; 2023/09/27 dadams
+@@ -555,16 +558,19 @@
+       (unless (equal index-alist imenu--last-menubar-index-alist)
+         (let (menu menu1 old)
+           ;; (message "imenu-update-menubar 40")
+-          (setq imenu--last-menubar-index-alist  index-alist
+-                index-alist                      (imenu--split-submenus
++          (setq imenu--last-menubar-index-alist  index-alist)
++          (setq index-alist                      (imenu--split-submenus
+                                                   (if imenu-sort-function
+                                                       (mapcar (lambda (sm)
+                                                                 (imenup--sort-submenu
+                                                                  sm imenu-sort-function))
+                                                               index-alist)
+                                                     index-alist))
+-                menu                             (imenu--split-menu index-alist (buffer-name))
+-                menu1                            (if (>= emacs-major-version 22)
++                menu                             (imenu--split-menu index-alist (buffer-name)))
++          (unless (car (car (last menu)))
++            ;; (message "imenu-update-menubar -ROUP- 4.2.1. removing last element (nil) of menu ")
++            (setq menu (nbutlast menu)))
++          (setq menu1                            (if (>= emacs-major-version 22)
+                                                      (imenu--create-keymap
+                                                       (car menu)
+                                                       (cdr (if (< 1 (length (cdr menu)))
