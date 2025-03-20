@@ -5914,6 +5914,15 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (global-set-key (kbd "M-l") 'pel-complete))
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
+(when pel-emacs-30-or-later-p
+  (define-key pel:auto-completion   "p"  'completion-preview-mode)
+  (with-eval-after-load 'completion-preview
+    ;; Bindings that take effect when the preview is shown:
+    ;; - Cycle the completion candidate that the preview shows
+    (when (boundp 'completion-preview-active-mode-map)
+      (keymap-set completion-preview-active-mode-map "M-n" 'completion-preview-next-candidate)
+      (keymap-set completion-preview-active-mode-map "M-p" 'completion-preview-prev-candidate))))
+
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> .`` : mark commands
 

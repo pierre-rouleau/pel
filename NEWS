@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- For Emacs 30.1 or later, the ~<f11> , p~ key sequence is bound to *completion-preview-mode*.
+  When the mode is active the ~M-n~ and ~M-p~ keys are active to select next and previous completion candidate.
 - Add an early version of the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pel-tcl.pdf][𝕻𝔩 - Tcl]] PDF.
 - Add preliminary support for Lua when *pel-use-lua* is set. Add an early version of the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pel-lua.pdf][𝕻𝔩 - Lua]] PDF.
 - The ~<f12><f12>~ key prefix holding keybindings related to tempo skeleton insertion and management is now available for the
