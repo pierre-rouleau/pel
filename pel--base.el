@@ -574,13 +574,17 @@ Let-bind this variable in functions that need to call
 `pel-insert-symbol-content' repetitively always passing the same value for its
 buffer argument.")
 
-(defun pel-minor-mode-state (minor-mode &optional buffer)
+(defun pel-minor-mode-state (minor-mode &optional is-builtin buffer)
   "Return a string describing the state of the MINOR-MODE, a symbol.
 
 The returned value is the sate of the mode in the buffer identified
-by BUFFER or `pel-insert-symbol-content-context-buffer'."
+by BUFFER or `pel-insert-symbol-content-context-buffer'.
+- IS-BUILTIN must be non-nil if the mode is built-in Emacs, otherwise nil."
   (with-current-buffer (or buffer pel-insert-symbol-content-context-buffer)
-    (pel-symbol-on-off-string minor-mode)))
+    (pel-symbol-on-off-string minor-mode nil nil
+                              (format
+                               "%s but not loaded, use a command to load it."
+                               (if is-builtin "Built-in" "Available")))))
 
 
 (defun pel-major-mode-symbol-for (symbol-format-string
