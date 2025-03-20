@@ -1,6 +1,6 @@
 ;;; pel-autocomplete.el --- PEL auto-completion support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -311,15 +311,25 @@ non-nil, in which case it appends to the previous report."
        (insert
         (format "\
 Auto-completion package state:
-- auto-complete-mode       : %s
-- global-auto-complete-mode: %s
-- company-mode             : %s
-- global-company-mode      : %s"
+%s
+- auto-complete-mode                      : %s
+- global-auto-complete-mode               : %s
+- company-mode                            : %s
+- global-company-mode                     : %s"
+                (if pel-emacs-30-or-later-p
+                    (format "\
+- completion-preview-mode                 : %s"
+                            (pel-minor-mode-state 'completion-preview-mode ))
+
+                  "")
                 (pel-option-mode-state 'auto-complete-mode 'pel-use-auto-complete)
                 (pel-symbol-on-off-string 'global-auto-complete-mode)
                 (pel-option-mode-state 'company-mode 'pel-use-company)
                 (pel-symbol-on-off-string 'global-company-mode)))
-       (insert "\n\nCustomization:\n")
+       (insert "\n\nCustomization:")
+       (when pel-emacs-30-or-later-p
+         (pel-insert-symbol-content-line 'completion-preview-minimum-symbol-length)
+         (pel-insert-symbol-content-line 'completion-preview-idle-delay))
        (pel-insert-symbol-content-line 'pel-use-auto-complete)
        (pel-insert-symbol-content-line 'pel-use-company)
        (insert "\n")
