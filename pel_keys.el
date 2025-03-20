@@ -5915,6 +5915,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
 (when pel-emacs-30-or-later-p
+  (declare-function keymap-set "keymap") ; introduced in Emacs 29.1.  Prevent
+                                         ; warning when compiling with earlier version
   (define-key pel:auto-completion   "p"  'completion-preview-mode)
   (define-key pel:auto-completion   "P"  'global-completion-preview-mode)
   (with-eval-after-load 'completion-preview
