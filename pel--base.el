@@ -101,6 +101,7 @@
 ;;  - `pel-option-mode-state'
 ;;    - `pel-activated-in-str'
 ;;  - `pel-symbol-value-or'
+;;  - `pel-value-on-off-text'
 ;;  - `pel-symbol-text'
 ;;    - `pel-symbol-on-off-string'
 ;;      - `pel-on-off-string'
@@ -917,6 +918,7 @@ non-nil, just return nil when SYMBOL is not bound."
 ;;  - `pel-option-mode-state'
 ;;    - `pel-activated-in-str'
 ;;  - `pel-symbol-value-or'
+;;  - `pel-value-on-off-text'
 ;;  - `pel-symbol-text'
 ;;    - `pel-symbol-on-off-string'
 ;;      - `pel-on-off-string'
@@ -944,11 +946,19 @@ When it is bound, return:
 (defun pel-symbol-text (symbol &optional on-string off-string void-string)
   "Return a string with an interpretation of SYMBOL value.
 If symbol is not bound: show \"void\".
-If symbol is set to t: show ON-STRING if defined, \"t\" otherwise.
-If symbol is nil: show OFF-STRING if defined, \"nil\" otherwise."
+If symbol is set to t: show ON-STRING if defined, \"on\" otherwise.
+If symbol is nil: show OFF-STRING if defined, \"off\" otherwise."
   (format "%s is now: %s"
           symbol
           (pel-symbol-on-off-string symbol on-string off-string void-string)))
+
+(defun pel-value-on-off-text (name value &optional on-string off-string)
+  "Return a string describing NAME boolean VALUE.
+If VALUE is t  : show ON-STRING if defined, \"on\" otherwise.
+If VALUE is nil: show OFF-STRING if defined, \"off\" otherwise."
+  (format "%s is now: %s"
+          name
+          (pel-symbol-on-off-string value on-string off-string)))
 
 (defun pel-symbol-value-or (symbol &optional replacement formatter)
   "Return SYMBOL value if non void, otherwise its REPLACEMENT.
