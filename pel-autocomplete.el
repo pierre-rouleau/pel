@@ -240,7 +240,8 @@ Does not allow activation if Company Mode is active."
       ;; Prevent byte-compiler warning.  PEL won't invoke this command  if
       ;; it's not already loaded and bound, as controlled by pel_keys.el
       (pel-when-fbound 'global-auto-complete-mode
-        (global-auto-complete-mode (pel--arg-for-action action))))))
+        (global-auto-complete-mode (pel--arg-for-action action))
+        (message (pel-value-on-off-text "global-auto-complete" (eq action 'enable)))))))
 
 ;;-pel-autoload
 (defun pel-auto-complete-mode (&optional arg)
@@ -255,7 +256,8 @@ Does not allow activation if Company Mode is active."
       ;; Prevent byte-compiler warning.  PEL won't invoke this command  if
       ;; it's not already loaded and bound, as controlled by pel_keys.el
       (pel-when-fbound 'auto-complete-mode
-        (auto-complete-mode (pel--arg-for-action action))))))
+        (auto-complete-mode (pel--arg-for-action action))
+        (message (pel-value-on-off-text "auto-complete" (eq action 'enable)))))))
 
 ;; --
 ;; PEL Company Mode Commands
@@ -273,7 +275,8 @@ Does not allow activation if Auto Complete Mode is active."
       ;; Prevent byte-compiler warning.  PEL won't invoke this command  if
       ;; it's not already loaded and bound, as controlled by pel_keys.el
       (pel-when-fbound 'global-company-mode
-        (global-company-mode (pel--arg-for-action action))))))
+        (global-company-mode (pel--arg-for-action action))
+        (message (pel-symbol-text 'global-company-mode))))))
 
 ;;-pel-autoload
 (defun pel-company-mode (&optional arg)
@@ -288,7 +291,8 @@ Does not allow activation if Auto Complete Mode is active."
       ;; Prevent byte-compiler warning.  PEL won't invoke this command  if
       ;; it's not already loaded and bound, as controlled by pel_keys.el
       (pel-when-fbound 'company-mode
-        (company-mode (pel--arg-for-action action))))))
+        (company-mode (pel--arg-for-action action))
+        (message (pel-symbol-text 'company-mode))))))
 
 ;; --
 ;; PEL Generic Automatic Completion Commands
@@ -319,7 +323,7 @@ Auto-completion package state:
                 (if pel-emacs-30-or-later-p
                     (format "\
 - completion-preview-mode                 : %s"
-                            (pel-minor-mode-state 'completion-preview-mode ))
+                            (pel-minor-mode-state 'completion-preview-mode :built-in))
 
                   "")
                 (pel-option-mode-state 'auto-complete-mode 'pel-use-auto-complete)
