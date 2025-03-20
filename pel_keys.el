@@ -9167,10 +9167,10 @@ the ones defined from the buffer now."
 
 ;; Installation of work around for Emacs bug 44494
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=44494
-;; TODO: qualify this with emacs version as soon as a version of Emacs fixes
-;; the bug.
-(add-hook 'xref-etags-mode-hook (function
-                                 (lambda () (load "pel-etags" :no-error))))
+(unless pel-emacs-30-or-later-p
+  ;; The bug fix was incorporated in Emacs 30 stream
+  (add-hook 'xref-etags-mode-hook (function
+                                   (lambda () (load "pel-etags" :no-error)))))
 
 ;; ggtags
 (when pel-use-ggtags

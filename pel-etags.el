@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, November  6 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-06-19 06:58:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-20 17:18:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -75,16 +75,18 @@ Return the file that exists or nil if nothing found."
         (cl-return fpath)))))
 
 (cl-defmethod xref-location-marker ((l xref-etags-location))
-  (with-slots (tag-info file) l
-    (let (buffer
-          (fname (pel-file-or-compressed-file-for file)))
-      (if fname
-          (setq buffer (find-file-noselect fname))
-        (user-error "file %s (or .gz, .bz2, .xz, .lzma) does not exist" file))
-      (with-current-buffer buffer
-        (save-excursion
-          (etags-goto-tag-location tag-info)
-          (point-marker))))))
+  (with-no-warnings                     ; In previous versions of Emacs slot
+                                        ; tag-info and file is undefined.
+    (with-slots (tag-info file) l
+      (let (buffer
+            (fname (pel-file-or-compressed-file-for file)))
+        (if fname
+            (setq buffer (find-file-noselect fname))
+          (user-error "file %s (or .gz, .bz2, .xz, .lzma) does not exist" file))
+        (with-current-buffer buffer
+          (save-excursion
+            (etags-goto-tag-location tag-info)
+            (point-marker)))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-etags)
