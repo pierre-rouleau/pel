@@ -5916,6 +5916,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
 (when pel-emacs-30-or-later-p
   (define-key pel:auto-completion   "p"  'completion-preview-mode)
+  (define-key pel:auto-completion   "P"  'global-completion-preview-mode)
   (with-eval-after-load 'completion-preview
     ;; Bindings that take effect when the preview is shown:
     ;; - Cycle the completion candidate that the preview shows

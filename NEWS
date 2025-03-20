@@ -5,7 +5,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Fixed a long standing bug that prevented several commands to properly display the mode status.
   The bug was located in pel--base.el.  Apologies for those who were affected when this bug
   caused confusion.
-- For Emacs 30.1 or later, the ~<f11> , p~ key sequence is bound to *completion-preview-mode*.
+- For Emacs 30.1 or later:
+  -  the ~<f11> , p~ key sequence is bound to *completion-preview-mode*.
+  -  the ~<f11> , P~ key sequence (upper-case P) is bound to *global-completion-preview-mode*.
   When the mode is active the ~M-n~ and ~M-p~ keys are active to select next and previous completion candidate.
 - Add an early version of the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pel-tcl.pdf][𝕻𝔩 - Tcl]] PDF.
 - Add preliminary support for Lua when *pel-use-lua* is set. Add an early version of the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pel-lua.pdf][𝕻𝔩 - Lua]] PDF.
