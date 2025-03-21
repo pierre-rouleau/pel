@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  9 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-02 10:16:34 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-21 16:55:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,7 +34,7 @@
 (require 'pel--base)                    ; use: `pel-current-buffer-filename'
 (require 'pel-filedir)                  ; use: `pel-file-in-dir-upwards'
 (require 'pel-prompt)                   ; use: `pel-select-symbol-from'
-(require 'vc)                           ; use `vc-switch-backend'
+(require 'vc)                           ; use `vc-switch-backend' / `vc-change-backend'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -63,6 +63,16 @@ The list identify VCS back-end with the symbols used in `vc-handled-backends'."
         (push (cdr fname.backend) detected-backends)))))
 
 
+(defun pel--vc-switch-backend (file backend)
+  "Proxy for `vc-switch-backend' or `vc-change-backend'"
+  (with-no-warnings
+    ;; Prior to Emacs 30, the function was vc-switch-backend.
+    ;; Emacs devs wanted to remove it but I convinced them to keep it.
+    ;; So at Emacs 30 it was renamed to vc-change-backend.
+    (if pel-emacs-30-or-later-p
+        (vc-change-backend file backend)
+      (vc-switch-backend file backend))))
+
 ;;-pel-autoload
 (defun pel-vcs-switch-backend ()
   "Switch VCS back-end for the current file.
@@ -74,9 +84,7 @@ The switch is temporary: it is restricted to the current Emacs
 session.
 
 Use this command when the file is managed by more than one VCS
-back-end.
-
-This uses the function `vc-switch-backend' to perform the switch."
+back-end."
   (interactive)
   (let* ((current-filename (pel-current-buffer-filename))
          (vcs-backends (pel-vcs-backends-for current-filename)))
@@ -86,8 +94,8 @@ This uses the function `vc-switch-backend' to perform the switch."
                         current-filename (car vcs-backends))
           (require 'vc nil :no-error)
 
-          (vc-switch-backend current-filename
-                             (pel-select-symbol-from "VCS" vcs-backends)))
+          (pel--vc-switch-backend current-filename
+                                  (pel-select-symbol-from "VCS" vcs-backends)))
       (user-error "Found no VCS back-end for the file %s" current-filename))))
 
 
