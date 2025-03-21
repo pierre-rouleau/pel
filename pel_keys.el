@@ -6244,7 +6244,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; Note that "<f11> ? k k" will execute autoloaded
   ;; command which-key-show-major-mode which will force
   ;; loading and ensure the key mode if it's not already loaded.
-  (pel-ensure-package     which-key from: melpa)
+  (unless pel-emacs-30-or-later-p
+    ;; which-key is part of Emacs since Emacs 30
+    (pel-ensure-package  which-key from: melpa))
   (pel-require-after-init which-key 1)
   (pel-autoload-file which-key for:
                      which-key-mode
