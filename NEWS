@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- For Emacs 27 and later, PEL now automatically activates *isearch-lazy-count* when *pel-use-anzu* is nil
+  to show match count during iSearch operations.
 - For Emacs 28 and later, PEL now automatically activates *isearch-allow-motion* which provides
   easy-to use/intuitive motion keys during isearch.
 - Fixed a long standing bug that prevented several commands to properly display the mode status.

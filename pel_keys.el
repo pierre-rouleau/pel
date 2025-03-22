@@ -7985,9 +7985,15 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> s`` : Search/Replace  commands
 ;; "S" reserved
 
-(when pel-emacs-28-or-later-p
-  ;; Activate the very useful motion key bindings during isearch
-  (setq isearch-allow-motion t))
+(when pel-emacs-27-or-later-p
+  ;; Emacs 27 introduces isearch-lazy-count which provides the match count
+  ;; but only for isearch.
+  (unless pel-use-anzu
+    (setq isearch-lazy-count t))
+
+  (when pel-emacs-28-or-later-p
+    ;; Activate the very useful motion key bindings during isearch
+    (setq isearch-allow-motion t)))
 
 (global-set-key (kbd "M-<f5>") 'pel-search-word-from-top)
 
