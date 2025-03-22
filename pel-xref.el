@@ -538,7 +538,9 @@ specific backend automatically.
 With PRINT-IN-BUFFER argument, print the information in a
 dedicated buffer."
   (interactive "P")
-  (let ((msg (format "- Xref Front-end: %s (*tags-case-fold-search -> <f11> X X -> search tag is: %s)
+  (let ((msg (format "\
+- Xref Front-end: %s (*tags-case-fold-search -> <f11> X X -> search tag is: %s)
+  - Change front end with <f11> X F.  Change back-ends with <f11> X B.
 - Xref Back-ends:
   - dumb-jump-mode           : %s %s
   - ggtags-mode              : %s %s
@@ -579,7 +581,8 @@ dedicated buffer."
                      (pel-on-off-string pel--helm-cscope-keys-active))))
 
     (if print-in-buffer
-        (pel-print-in-buffer "*xref-status*" "Xref Status" msg)
+        (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+          (pel-print-in-buffer "*xref-status*" "Xref Status" msg))
       (message msg))))
 
 ;; ---------------------------------------------------------------------------
