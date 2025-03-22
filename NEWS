@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- For Emacs 28 and later, PEL now automatically activates *isearch-allow-motion* which provides
+  easy-to use/intuitive motion keys during isearch./
 - Fixed a long standing bug that prevented several commands to properly display the mode status.
   The bug was located in pel--base.el.  Apologies for those who were affected when this bug
   caused confusion.
