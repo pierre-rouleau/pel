@@ -10703,6 +10703,16 @@ PEL supports the following tools:
           (const :tag "Use Anzu" anzu)
           (const :tag "Use Swiper" swiper)))
 
+(defcustom pel-use-isearch-mb nil
+  "Control whether PEL uses isearch-mb."
+  :group 'pel-pkg-for-search
+  :link '(url-link :tag "isearch-mb" "https://github.com/astoff/isearch-mb")
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate globally when Emacs starts"
+                 use-from-start)))
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-session
 ;; -------------------

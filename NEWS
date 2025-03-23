@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for isearch-mb global minor mode, activated by *pel-use-isearch-mb* user-option that can be set to t or use-from-start
+  which activates it manually or automatically from start.  The ~<f11> s i~ key sequnce is bound to *isearch-mb-mode* that can be used
+  to toggle the mode.  The ~<f11> s ?~ now display whether this is used.
 - For Emacs 27 and later, PEL now automatically activates *isearch-lazy-count* when *pel-use-anzu* is nil
   to show match count during iSearch operations.
 - For Emacs 28 and later, PEL now automatically activates *isearch-allow-motion* which provides

@@ -2,12 +2,12 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-12-12 23:34:45 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-22 21:53:41 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau with some code derived
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau with some code derived
 ;;                                 from Mickey Petersen's work
 ;;                                 (see CREDITS below).
 ;;
@@ -381,13 +381,19 @@ A nil value means that Emacs standard search is used.")
 
 (defun pel-active-search-tool-str ()
   "Return a string describing the currently used search tool."
-  (if (not pel--active-search-tool)
-      "default ISearch"
-    (if (eq pel--active-search-tool 'anzu)
-        "ISearch and Anzu"
-      (if (eq pel--active-search-tool 'swiper)
-          "Swiper"
-        "??"))))
+  (format "%s%s"
+          (if (not pel--active-search-tool)
+              "default ISearch"
+            (if (eq pel--active-search-tool 'anzu)
+                "ISearch and Anzu"
+              (if (eq pel--active-search-tool 'swiper)
+                  "Swiper"
+                "??")))
+          (if (and pel-use-isearch-mb
+                                      (boundp 'isearch-mb-mode)
+                                      isearch-mb-mode)
+                                 " with isearch-mb"
+                               "")))
 
 (defun pel--activate-search-tool (tool)
   "Activate the specified search TOOL.

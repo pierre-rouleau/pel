@@ -7989,7 +7989,10 @@ the ones defined from the buffer now."
   ;; Emacs 27 introduces isearch-lazy-count which provides the match count
   ;; but only for isearch.
   (unless pel-use-anzu
-    (setq isearch-lazy-count t))
+    (setq-default isearch-lazy-count t
+                  ;; more history entries than Emacs's default of 16
+                  search-ring-max 200
+                  regexp-search-ring-max 200))
 
   (when pel-emacs-28-or-later-p
     ;; Activate the very useful motion key bindings during isearch
@@ -8032,6 +8035,13 @@ the ones defined from the buffer now."
 
 ;; --
 ;; Search Tool Control
+
+(when pel-use-isearch-mb
+  (pel-ensure-package isearch-mb from: gnu)
+  (pel-autoload-file isearch-mb for: isearch-mb-mode)
+  (when (eq pel-use-isearch-mb 'use-from-start)
+    (isearch-mb-mode 1))
+  (define-key pel:search-replace "i" 'isearch-mb-mode))
 
 (when pel-use-anzu
   (pel-ensure-package anzu from: melpa)
