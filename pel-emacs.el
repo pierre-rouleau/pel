@@ -272,11 +272,22 @@ Number of global keys (and key prefixes)  : %4d"
                (format " With%s D-Bus support." (if  (featurep 'dbusbind) "" "out"))
                "")))
 
-(defun pel-emacs-bug-info ()
-  "Open the report about an Emacs bug report email stream."
-  (interactive)
-  (browse-url (format "https:////debbugs.gnu.org/cgi/bugreport.cgi?bug=%s"
-                      (pel-prompt "Bug number"))))
+(defun pel-emacs-bug-info (&optional in--browser)
+  "Open the report about an Emacs bug report email stream.
+Open it in Gnus buffer unless IN-BROWSER set to open in system browser."
+  (interactive "P")
+  (let ((url (format "https://%sdebbugs.gnu.org/cgi/bugreport.cgi?bug=%s"
+                     ;; To force using system browser add extra // to make it
+                     ;; fail the regexp search while being valid for system browsers
+                     (if in--browser "//" "")
+                     (pel-prompt "Bug number"))))
+    (require 'debbugs-browse)
+    (if (or in--browser
+            (not (fboundp 'debbugs-browse-url)))
+        (browse-url url)
+      (declare-function debbugs-browse-url "debugs-browse")
+      (debbugs-browse-url url))))
+
 ;;; --------------------------------------------------------------------------
 (provide 'pel-emacs)
 
