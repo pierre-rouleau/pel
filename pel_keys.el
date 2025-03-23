@@ -6189,6 +6189,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
 (define-pel-global-prefix pel:emacs (kbd "<f11> ? e"))
 (define-key pel:emacs (kbd "C-p") #'list-processes)
+(define-key pel:emacs "B"  'pel-emacs-bug-info)
 (define-key pel:emacs "b"  'pel-emacs-buffer-stats)
 (define-key pel:emacs "c"  'pel-emacs-command-stats)
 (define-key pel:emacs "C"  'pel-emacs-config-features)
@@ -7985,6 +7986,8 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> s`` : Search/Replace  commands
 ;; "S" reserved
 
+(global-set-key (kbd "M-<f5>") 'pel-search-word-from-top)
+
 (when pel-emacs-27-or-later-p
   ;; Emacs 27 introduces isearch-lazy-count which provides the match count
   ;; but only for isearch.
@@ -7996,9 +7999,8 @@ the ones defined from the buffer now."
 
   (when pel-emacs-28-or-later-p
     ;; Activate the very useful motion key bindings during isearch
-    (setq isearch-allow-motion t)))
-
-(global-set-key (kbd "M-<f5>") 'pel-search-word-from-top)
+    (setq isearch-allow-motion t))
+  )
 
 (define-pel-global-prefix pel:search-replace (kbd "<f11> s"))
 (define-key pel:search-replace "."  'isearch-forward-symbol-at-point)

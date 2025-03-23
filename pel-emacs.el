@@ -48,13 +48,14 @@
 ;;   - `pel--emacs-command-count'
 ;;   - `pel--emacs-command-binding'
 ;; * `pel-emacs-compilation-features'
+;; * `pel-emacs-bug-info'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-(require 'pel--base)                    ; use: pel-print-in-buffer
+(require 'pel--base)                    ; use: `pel-print-in-buffer'
 (require 'pel--options)
-
+(require 'pel-prompt)                   ; use: `pel-prompt'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -271,6 +272,11 @@ Number of global keys (and key prefixes)  : %4d"
                (format " With%s D-Bus support." (if  (featurep 'dbusbind) "" "out"))
                "")))
 
+(defun pel-emacs-bug-info ()
+  "Open the report about an Emacs bug report email stream."
+  (interactive)
+  (browse-url (format "https:////debbugs.gnu.org/cgi/bugreport.cgi?bug=%s"
+                      (pel-prompt "Bug number"))))
 ;;; --------------------------------------------------------------------------
 (provide 'pel-emacs)
 
