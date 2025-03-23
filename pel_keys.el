@@ -7999,8 +7999,8 @@ the ones defined from the buffer now."
 
   (when pel-emacs-28-or-later-p
     ;; Activate the very useful motion key bindings during isearch
-    (setq isearch-allow-motion t))
-  )
+    (when (boundp 'isearch-allow-motion)
+      (setq-default isearch-allow-motion t))))
 
 (define-pel-global-prefix pel:search-replace (kbd "<f11> s"))
 (define-key pel:search-replace "."  'isearch-forward-symbol-at-point)
