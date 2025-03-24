@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, February 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-09 11:39:17, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-24 18:17:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -62,7 +62,6 @@
        (pel-insert-symbol-content 'imenu-level-separator              buffer :on-same-line)
        (pel-insert-symbol-content 'imenu-generic-skip-comments-and-strings  buffer :on-same-line)
        (pel-insert-symbol-content 'imenu-case-fold-search             buffer :on-same-line)
-       (pel-insert-symbol-content 'imenu-create-index-function        buffer :on-same-line)
        (pel-insert-symbol-content 'imenu-prev-index-position-function buffer :on-same-line)
        (pel-insert-symbol-content 'imenu-extract-index-name-function  buffer :on-same-line)
        (pel-insert-symbol-content 'imenu-name-lookup-function         buffer :on-same-line)
@@ -74,9 +73,17 @@
        (pel-insert-symbol-content 'imenu-example--function-name-regexp-c buffer :on-same-line)
        (pel-insert-symbol-content 'imenu--rescan-item                  buffer :on-same-line)
 
-       (pel-insert-list-content   'imenu--index-alist                 buffer)
+       (insert "\n\n")
+       (insert "==============\n")
+       (insert "imenu control:\n")
+       (insert "==============\n")
+       (insert "\nimenu control method 1: using imenu-generic-expression:\n")
        (pel-insert-list-content   'imenu-generic-expression           buffer)
        (pel-insert-list-content   'imenu-syntax-alist                 buffer)
+       (insert "\n\n")
+       (insert "\nimenu control method 2: Using a function that fills imenu--index-alist:")
+       (pel-insert-symbol-content 'imenu-create-index-function        buffer :on-same-line)
+       (pel-insert-list-content   'imenu--index-alist                 buffer)
        (pel-insert-list-content   'imenu--last-menubar-index-alist    buffer)
        (pel-insert-list-content   'imenu--history-list                buffer)))))
 
