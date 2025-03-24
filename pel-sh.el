@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, June  7 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-06-05 10:41:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-24 17:48:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022, 2024  Pierre Rouleau
+;; Copyright (C) 2022, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -217,12 +217,12 @@ is included in the return value."
           ;; When the variable has just been toggle to t, store the original
           ;; imenu-generic-expression into it, it remains 'true'
           (setq pel--accept-hyphen imenu-generic-expression)
-          ;; The modify it
+          ;; Then modify `imenu-generic-expression':
           (setq-local imenu-generic-expression
                 '((nil "^\\s-*function\\s-+\\([[:alpha:]_][[:alnum:]._-]*\\)\\s-*\\(?:()\\)?" 1)
                   (nil "^\\s-*\\([[:alpha:]_][[:alnum:]._-]*\\)\\s-*()" 1))))
       ;; When the variable has just been toggle to nil restore the value of
-      ;; `imenu-generic-expression', restore it from what was previously backed-up
+      ;; `imenu-generic-expression', restore it from what was just backed-up.
       (setq-local imenu-generic-expression
                   original-imenu-generic-expression))))
 
