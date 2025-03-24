@@ -7,7 +7,7 @@ Using tree-sitter with Emacs and PEL
 :Ref: `PEL How-to Tips`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-19 17:00:51 EDT, updated by Pierre Rouleau.
+:Modified: 2025-03-24 18:29:05 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -35,10 +35,7 @@ Using tree-sitter with Emacs
 
   - Set it to something like:
 
-    - ``~/.emacs.d/elpa-complete/tree-sitter-langs-20250206.19/bin``, when you
-      have used PEL fast startup, or
-    - ``~/.emacs.d/elpa/tree-sitter-langs-20250206.19/bin/`` if you have not
-      used PEL fast startup.
+    - ``~/.emacs.d/elpa/tree-sitter-langs-20250206.19/bin/``
 
 #. Set the ``pel-treesit-load-path`` user-option.
 
