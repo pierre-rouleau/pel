@@ -7,7 +7,7 @@ Using tree-sitter with Emacs and PEL
 :Ref: `PEL How-to Tips`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-24 18:29:05 EDT, updated by Pierre Rouleau.
+:Modified: 2025-03-24 18:31:51 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -33,9 +33,7 @@ Using tree-sitter with Emacs
 #. Set the ``~/.emacs.d/tree-sitter-langs-bin`` symbolic link to point to
    the tree-sitter lang bin directory.
 
-  - Set it to something like:
-
-    - ``~/.emacs.d/elpa/tree-sitter-langs-20250206.19/bin/``
+  - Set it to something like:  ``~/.emacs.d/elpa/tree-sitter-langs-20250206.19/bin/``
 
 #. Set the ``pel-treesit-load-path`` user-option.
 
