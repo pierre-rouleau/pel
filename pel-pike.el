@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-17 22:40:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-24 18:42:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -57,6 +57,23 @@
     (goto-char (point-min))
     (insert pel-pike-shebang-line)
     (insert "\n")))
+
+(defun pel-pike-set-imenu ()
+  "Set imenu for Pike syntax. PRELIMINARY."
+
+  (setq-local imenu-generic-expression '(
+                                         ("Function"
+                                          "^\\<.*[^[:alnum:]_:<>~]\\(\\([[:alnum:]_:<>~]*::\\)?operator\\>[ 	]*\\(()\\|[^(]*\\)\\)[ 	]*([^)]*)[ 	]*[^ 	;]"
+                                          1)
+                                         ("Another 1"
+                                          "^\\([[:alpha:]_][[:alnum:]_:<>~]*\\)[ 	]*([ 	]*\\([^ 	(*][^)]*\\)?)[ 	]*[^ 	;(]"
+                                          1)
+                                         ("Another 2"
+                                          "^\\<[^()\n]*[^[:alnum:]_:<>~]\\([[:alpha:]_][[:alnum:]_:<>~]*\\)\\([ 	\n]\\|\\\\\n\\)*(\\([ 	\n]\\|\\\\\n\\)*\\([^ 	\n(*][^()]*\\(([^()]*)[^()]*\\)*\\)?)\\([ 	\n]\\|\\\\\n\\)*[^ 	\n;(]"
+                                          1)
+                                         ("Class"
+                                          "^\\(template[ 	]*<[^>]+>[ 	]*\\)?\\(class\\|struct\\)[ 	]+\\([[:alnum:]_]+\\(<[^>]+>\\)?\\)\\([ 	\n]\\|\\\\\n\\)*[:{]"
+                                          3))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-pike)

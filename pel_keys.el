@@ -3063,6 +3063,10 @@ d-mode not added to ac-modes!"
   (define-pel-global-prefix pel:for-pike  (kbd "<f11> SPC C-p"))
   (define-pel-global-prefix pel:pike-skel (kbd "<f11> SPC C-p <f12>"))
 
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '(".pike"
+                                  ".pmod")))
+
   (pel-eval-after-load cc-mode
     (pel-config-major-mode pike pel:for-pike
       (progn
@@ -3095,7 +3099,9 @@ d-mode not added to ac-modes!"
         ;; [:todo 2025-03-14, by Pierre Rouleau: Add skeletons for Pike]
         ;; (pel--install-c-skel pel:c-skel)
         ;; 8) extra setup
-        (pel--setup-for-cc)))))
+        (pel--setup-for-cc)
+        ;; - Add imenu support
+        (pel-pike-set-imenu)))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-f`` : Factor programming
