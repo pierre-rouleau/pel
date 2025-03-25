@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-24 18:42:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-25 08:04:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -60,20 +60,21 @@
 
 (defun pel-pike-set-imenu ()
   "Set imenu for Pike syntax. PRELIMINARY."
-
+  ;; [:todo 2025-03-25, by Pierre Rouleau: Complete the syntax]
+  ;; Note: the order of items is reverse to what is shown in Speedbar
   (setq-local imenu-generic-expression '(
-                                         ("Function"
-                                          "^\\<.*[^[:alnum:]_:<>~]\\(\\([[:alnum:]_:<>~]*::\\)?operator\\>[ 	]*\\(()\\|[^(]*\\)\\)[ 	]*([^)]*)[ 	]*[^ 	;]"
+                                         ("Constants"
+                                          " *constant +\\([[:alnum:]_]+\\)[ \n]*="
                                           1)
-                                         ("Another 1"
-                                          "^\\([[:alpha:]_][[:alnum:]_:<>~]*\\)[ 	]*([ 	]*\\([^ 	(*][^)]*\\)?)[ 	]*[^ 	;(]"
+                                         ("Enums"
+                                          " *enum +\\([[:alnum:]_]+\\)[ \n]*{"
                                           1)
-                                         ("Another 2"
-                                          "^\\<[^()\n]*[^[:alnum:]_:<>~]\\([[:alpha:]_][[:alnum:]_:<>~]*\\)\\([ 	\n]\\|\\\\\n\\)*(\\([ 	\n]\\|\\\\\n\\)*\\([^ 	\n(*][^()]*\\(([^()]*)[^()]*\\)*\\)?)\\([ 	\n]\\|\\\\\n\\)*[^ 	\n;(]"
+                                         ("Functions"
+                                          "[[:alpha:][[:alnum:]_]+ +\\([[:alpha:]][[:alnum:]_]+\\) *(.*)[ \n]+{"
                                           1)
                                          ("Class"
-                                          "^\\(template[ 	]*<[^>]+>[ 	]*\\)?\\(class\\|struct\\)[ 	]+\\([[:alnum:]_]+\\(<[^>]+>\\)?\\)\\([ 	\n]\\|\\\\\n\\)*[:{]"
-                                          3))))
+                                          " *class +\\([[:alnum:]_]+\\)[ \n]*{"
+                                          1))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-pike)
