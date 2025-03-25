@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-25 08:04:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-25 08:16:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -63,17 +63,17 @@
   ;; [:todo 2025-03-25, by Pierre Rouleau: Complete the syntax]
   ;; Note: the order of items is reverse to what is shown in Speedbar
   (setq-local imenu-generic-expression '(
-                                         ("Constants"
-                                          " *constant +\\([[:alnum:]_]+\\)[ \n]*="
+                                         ("Constant"
+                                          " *constant +\\([[:alpha:]][[:alnum:]_]+\\)[ \n]*="
                                           1)
-                                         ("Enums"
-                                          " *enum +\\([[:alnum:]_]+\\)[ \n]*{"
+                                         ("Enum"
+                                          " *enum +\\([[:alpha:]][[:alnum:]_]+\\)[ \n]*{"
                                           1)
-                                         ("Functions"
-                                          "[[:alpha:][[:alnum:]_]+ +\\([[:alpha:]][[:alnum:]_]+\\) *(.*)[ \n]+{"
+                                         ("Function"
+                                          "[[:alpha:]][[:alnum:]_]+ +\\([[:alpha:]][[:alnum:]_]+\\) *(.*)[ \n]+{"
                                           1)
                                          ("Class"
-                                          " *class +\\([[:alnum:]_]+\\)[ \n]*{"
+                                          " *class +\\([[:alpha:]][[:alnum:]_]+\\)[ \n]*{"
                                           1))))
 
 ;;; --------------------------------------------------------------------------
