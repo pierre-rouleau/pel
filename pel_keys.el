@@ -3101,6 +3101,7 @@ d-mode not added to ac-modes!"
         ;; 8) extra setup
         (pel--setup-for-cc)
         ;; - Add imenu support
+        (declare-function pel-pike-set-imenu "pel-pike")
         (pel-pike-set-imenu)))))
 
 ;; ---------------------------------------------------------------------------
