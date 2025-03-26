@@ -1086,18 +1086,19 @@ under the table title line."
     (pel-duplicate-line 2)
     (forward-line -2)
     (transpose-lines 1)
+    (when update
+      (save-excursion
+        (forward-line -3)
+        (pel-delete-whole-line)))
     (forward-line 1)
     (kill-whole-line 1)
-    (search-forward "\n\n")
-    (forward-line -1)
-    (yank)
-    (when update
-      (forward-line -2)
-      (pel-delete-whole-line)))
-  (when update
-    (save-excursion
-      (forward-line -3)
-      (pel-delete-whole-line))))
+    (if update
+        (progn
+          (search-forward "\n=")
+          (pel-delete-whole-line))
+      (search-forward "\n\n")
+      (forward-line -1))
+    (yank)))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel-rst)
