@@ -2210,6 +2210,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; C-o     - Objective-C
 ;; C-p     - Pike
 ;; C-r     - ReasonML        - ML Family
+;; C-s 7   - Seed7           - Pascal/Ada
 ;; C-s C-s - Scheme Family   - Lisp Family
 ;; C-s C-z - Chez            - Lisp & Scheme Family
 ;; C-s C-i - Chibi           - Lisp & Scheme Family
@@ -7598,7 +7599,7 @@ the ones defined from the buffer now."
   (define-key pel:highlight (kbd "M-c") 'highlight-indentation-current-column-mode))
 ;;
 (when pel-use-iedit
-  (define-key pel:highlight "i" 'iedit-mode))
+  (define-key pel:highlight "e" 'iedit-mode))
 
 (when pel-use-vline
   ;; download and byte-compile vline if not already present
@@ -7898,6 +7899,7 @@ the ones defined from the buffer now."
                      mc/mark-all-like-this)
   ;; guessing from point
   (define-key pel:mcursors "m" 'mc/mark-all-like-this-dwim)
+  (define-key pel:mcursors "M" 'multiple-cursors-mode)
   (define-key pel:mcursors (kbd "M-m") 'mc/mark-all-dwim)
   (define-key pel:mcursors "." 'mc/mark-more-like-this-extended)
   ;; lines
@@ -7942,7 +7944,7 @@ the ones defined from the buffer now."
   (define-key pel:mcursors (kbd "M-/") 'mc-hide-unmatched-lines-mode)
 
   (when pel-use-iedit
-    (define-key pel:mcursors "i" 'iedit-mode)))
+    (define-key pel:mcursors "e" 'iedit-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> o`` : ordering (sorting)
