@@ -747,7 +747,7 @@ Reference: see reStructuredText hyperlink format at URL
               (insert "`")
               (goto-char p_end)
               (right-char 1)
-              (insert (format " <>`_"))
+              (insert " <>`_")
               (left-char 3))
           ;; Use the separate reference format.
           ;; For that, require the presence of the bookmark.
@@ -756,7 +756,8 @@ Reference: see reStructuredText hyperlink format at URL
 with pel-rst-set-ref-bookmark!")
             (if (pel--space-for-extra-link-p)
                 (progn
-                  (if anchor-isa-alnum
+                  (if (and anchor-isa-alnum
+                           pel-rst-use-single-underscore-for-single-word-ref)
                       (progn
                         (goto-char p_end)
                         (insert "_"))

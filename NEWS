@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-rst-use-single-underscore-for-single-word-ref* user-option.  It controls
+  whether the *pel-rst-makelink* command (bound to ~<f12> .~ in rst-mode buffers) uses the enclosing markup
+  for creating a reference to a word (like =<word>_=) when the user-option is set to nil (the default), or
+  with a single trailing underscore (like =word_=) otherwise.  Using the enclosing markup facilitates navigation to referenced
+  documents.
 - Add command to open the Emacs mailing list info about a specific Emacs bug: *pel-emacs-bug-info* bound to ~<f11> ? e B~.
 - Add support for isearch-mb global minor mode, activated by *pel-use-isearch-mb* user-option that can be set to t or use-from-start
   which activates it manually or automatically from start.  The ~<f11> s i~ key sequnce is bound to *isearch-mb-mode* that can be used

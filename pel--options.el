@@ -4192,6 +4192,19 @@ Identifies the number of levels supported and their adornment.
                  (const :tag "Sphinx-Python" Sphinx-Python)
                  (const :tag "CRiSPer" CRiSPer)))
 
+(defcustom pel-rst-use-single-underscore-for-single-word-ref nil
+  "Whether PEL creates references to a single word with a single underscore.
+
+The `pel-rst-makelink' command creates a reference for a single \"word\"
+using the syntax \"<word>_\" if it is nil, otherwise it uses \"word_\"
+style.
+
+Using the fully enclosing style facilitates Emacs navigation to the referenced
+document, something that does not work with a trailing underscore."
+  :group 'pel-pkg-for-rst
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-rst-tab-width 2
   "Distance between tab stop for reStructuredText buffers.
 
