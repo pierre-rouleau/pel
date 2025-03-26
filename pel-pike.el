@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-25 08:16:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-26 17:11:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -63,6 +63,13 @@
   ;; [:todo 2025-03-25, by Pierre Rouleau: Complete the syntax]
   ;; Note: the order of items is reverse to what is shown in Speedbar
   (setq-local imenu-generic-expression '(
+                                         ;; limitations; variables will detect the inherit statements inside classes
+                                         ;; unless the search is not case folding and code follows the guideline of using
+                                         ;; upper case for class names and lower case for variables.
+                                         ;; A more flexible solution would be needed.
+                                         ("Variable"
+                                          "^ *\\([[:alpha:]][[:alnum:]\.|):,(]*\\) +\\([[:lower:]][[:alnum:]]*\\);"
+                                          2)
                                          ("Constant"
                                           " *constant +\\([[:alpha:]][[:alnum:]_]+\\)[ \n]*="
                                           1)
