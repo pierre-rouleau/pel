@@ -7891,6 +7891,7 @@ the ones defined from the buffer now."
 (when pel-use-multiple-cursors
 
   (define-pel-global-prefix pel:mcursors (kbd "<f11> m"))
+  (define-pel-global-prefix pel:mcursors-insert (kbd "<f11> m i"))
   (pel-ensure-package multiple-cursors from: melpa)
   (pel-autoload-file multiple-cursors for:
                      mc/edit-lines
@@ -7934,11 +7935,12 @@ the ones defined from the buffer now."
   ;; special
   (define-key pel:mcursors "c" 'set-rectangular-region-anchor)
   (define-key pel:mcursors "t" 'mc/mark-sgml-tag-pair)
-  (define-key pel:mcursors "0" 'mc/insert-numbers)
-  (define-key pel:mcursors "A" 'mc/insert-letters)
   (define-key pel:mcursors "o" 'mc/sort-regions)
   (define-key pel:mcursors "O" 'mc/reverse-regions)
   (define-key pel:mcursors "|" 'mc/vertical-align-with-space)
+  ;; insert
+  (define-key pel:mcursors-insert "n" 'mc/insert-numbers)
+  (define-key pel:mcursors-insert "l" 'mc/insert-letters)
   ;; TODO: put key in mc/keymap
   (autoload 'mc-hide-unmatched-lines-mode "mc-hide-unmatched-line-mode")
   (define-key pel:mcursors (kbd "M-/") 'mc-hide-unmatched-lines-mode)
