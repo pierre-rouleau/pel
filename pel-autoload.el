@@ -752,6 +752,9 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-search" for:
     pel-set-search-tool)
 
+  (pel-autoload-function "pel-seed7" for:
+    pel-seed7-insert-shebang-line)
+
   (pel-autoload "pel-server" for:
     pel-shutdown-server)
 

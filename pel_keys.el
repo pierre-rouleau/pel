@@ -2157,6 +2157,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;
 ;; .       - APL
 ;; 4       - M4
+;; 7       - Seed7           - Extensible language.  Syntax evolved from Pascal/Modula/Ada
 ;; A       - Ada
 ;; C       - C++
 ;; D       - D
@@ -2210,7 +2211,6 @@ can't bind negative-argument to C-_ and M-_"
 ;; C-o     - Objective-C
 ;; C-p     - Pike
 ;; C-r     - ReasonML        - ML Family
-;; C-s 7   - Seed7           - Pascal/Ada
 ;; C-s C-s - Scheme Family   - Lisp Family
 ;; C-s C-z - Chez            - Lisp & Scheme Family
 ;; C-s C-i - Chibi           - Lisp & Scheme Family
@@ -4989,6 +4989,24 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
         (display-warning 'pel-use-rust
                          "Unbound rust-mode-map!"
                          :error)))))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC 7`` : Seed7 programming
+;; Experimental 🚧
+(when pel-use-seed7
+  (define-pel-global-prefix pel:for-seed7  (kbd "<f11> SPC 7"))
+
+  ;; [:todo 2025-03-29, by Pierre Rouleau: Use seed7-mode once it's written]
+  ;; since seed7-mode does not yet exists, use pascal-mode until I write
+  ;; it.  The pascal-mode is part of Emacs.
+
+  ;; (pel-ensure-package swift-mode from: melpa)
+  ;; (when pel-use-tree-sitter
+  ;;   (pel-ensure-package swift-ts-mode from: melpa))
+
+  (add-to-list 'auto-mode-alist '("\\.s[di]7\\'" . pascal-mode))
+
+  )
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC s`` : Swift  programming

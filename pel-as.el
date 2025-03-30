@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-19 15:17:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-29 16:10:06 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -59,6 +59,7 @@
                                    nim
                                    perl pike python
                                    ruby
+                                   seed7
                                    expect tcl))
   "List of modes for languages that support shebang lines.")
 
@@ -183,6 +184,19 @@ command you have 2 choices:
       (require 'pel-ruby)
       (declare-function pel-ruby-insert-shebang-line "pel-ruby")
       (pel-ruby-insert-shebang-line))
+
+     ((equal mode "seed7")
+      ;; [:todo 2025-03-29, by Pierre Rouleau: Use seed7-mode once it's written]
+      ;; since seed7-mode does not yet exists, use pascal-mode until I write
+      ;; it.  The pascal-mode is part of Emacs.
+      (require 'pascal)
+      (declare-function pascal-mode "pascal")
+      (pascal-mode)
+      ;; (declare-function seed7-mode "seed7-mode")
+      ;; (seed7-mode)
+      (require 'pel-seed7)
+      (declare-function pel-seed7-insert-shebang-line "pel-seed7")
+      (pel-seed7-insert-shebang-line))
 
      (t (user-error "Currently unsupported: %s" mode)))))
 

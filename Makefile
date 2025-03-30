@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-03-22 22:54:39 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-03-29 15:54:55 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -232,6 +232,7 @@ EL_FILES := pel--base.el \
 		pel-scroll.el \
 		pel-search.el \
 		pel-search-regexp.el \
+		pel-seed7.el \
 		pel-seq.el \
 		pel-setup-base.el \
 		pel-setup.el \
@@ -664,6 +665,7 @@ pel-screen.elc:         pel--options.elc pel-whitespace.elc
 pel-scroll.elc:         pel-window.elc
 pel-search-regexp.elc:  pel--options.elc
 pel-search.elc:         pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-search-regexp.elc pel-window.elc
+pel-seed7.elc:          pel--base.elc pel--options.elc pel-ccp.elc
 pel-seq.elc:            pel--base.elc
 pel-setup-base.elc:     pel--base.elc pel--options.elc pel-ccp.elc pel-custom.elc pel-elpa.elc pel-package.elc
 pel-setup.elc:          pel--base.elc pel--options.elc pel-custom.elc pel-elpa.elc pel-list.elc pel-package.elc pel-setup-base.elc pel-setup-27.elc
