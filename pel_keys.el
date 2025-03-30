@@ -5004,6 +5004,12 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; (when pel-use-tree-sitter
   ;;   (pel-ensure-package swift-ts-mode from: melpa))
 
+  ;; Since we're currently using pascal mode for seed7 files, install the
+  ;; PEL Seed7 support for pascal-mode buffers opened in Seed7 files
+  ;; (pel-eval-after-load pascal-mode
+  ;;   (when (member (pel-current-buffer-file-extension) '("sd7" "sdi"))
+  ;;     (pel-config-major-mode pascal-mode)
+  ;;     ))
   (add-to-list 'auto-mode-alist '("\\.s[di]7\\'" . pascal-mode))
 
   )
