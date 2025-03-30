@@ -473,19 +473,24 @@ If not specified (or nil) return the major mode of the current buffer."
 (defun pel-file-type-for (major-mode-symbol &optional suffix)
   "Return the file type name string for the specified MAJOR-MODE-SYMBOL.
 
-By default that's the symbol name stripped off the '-mode' suffix unless
-SUFFIX is specified (like \"-minor-mode\")."
-  (substring (symbol-name major-mode-symbol)
-             0
-             (- (length (or suffix "-mode")))))
+By default that's the symbol name stripped off the '-mode' or '-ts-mode'
+suffix unless SUFFIX is specified (like \"-minor-mode\")."
+  (let ((sname (symbol-name major-mode-symbol)))
+    (substring sname
+               0
+               (- (length (or suffix
+                              (if (string-match "-ts-mode" sname)
+                                  "-ts-mode"
+                                "-mode")))))))
 
 (defun pel-string-with-major-mode (symbol-format-string
                                    &optional buffer-or-name)
   "Return a string formatted with the single %s replaced by the major mode.
 
-The %s in the FORMAT-STRING is replaced by the prefix string
-before the \"-mode\" of the major mode of the current buffer or the one
-specified by BUFFER-OR-NAME."
+The \"%s\" in the SYMBOL-FORMAT-STRING is replaced by the name of the
+major-mode.  That's the prefix string before the \"-mode\" portion of
+the major mode name of the current buffer or the one specified by
+BUFFER-OR-NAME."
   (format symbol-format-string
           (pel-file-type-for (pel-major-mode-of buffer-or-name))))
 
@@ -593,15 +598,16 @@ by BUFFER or `pel-insert-symbol-content-context-buffer'.
                                   &optional buffer-or-name)
   "Return the major-mode specific symbol for specified buffer.
 
-The symbol name is identified by the FORMAT-STRING which must
-contain one \"%s\" that is replaced by the by the prefix string
-before the \"-mode\" of the major mode of the the current buffer
+The symbol name is identified by the SYMBOL-FORMAT-STRING which must
+contain one \"%s\" that is replaced by the prefix string before the
+\"-mode\" (or \"-ts-mode\") of the major mode of the the current buffer
 or of the buffer specified by the BUFFER argument or the variable
-`pel-insert-symbol-content-context-buffer'.  The BUFFER argument
-value takes precedence to the value of the variable
-`pel-insert-symbol-content-context-buffer'. If both are nil, then
-the value is read from the context of the current buffer, which
-may be a local or global."
+`pel-insert-symbol-content-context-buffer'.
+
+The BUFFER argument value takes precedence to the value of the variable
+`pel-insert-symbol-content-context-buffer'. If both are nil, then the
+value is read from the context of the current buffer, which may be a
+local or global."
   (intern
    (pel-string-with-major-mode symbol-format-string
                                (or buffer-or-name pel-insert-symbol-content-context-buffer))))
@@ -610,15 +616,16 @@ may be a local or global."
                                     &optional buffer-or-name)
   "Return the value of major-mode specific symbol for specified buffer.
 
-The symbol name is identified by the FORMAT-STRING which must
-contain one \"%s\" that is replaced by the by the prefix string
-before the \"-mode\" of the major mode of the the current buffer
+The symbol name is identified by the SYMBOL-FORMAT-STRING which must
+contain one \"%s\" that is replaced by the prefix string before the
+\"-mode\" (or \"-ts-mode\") of the major mode of the the current buffer
 or of the buffer specified by the BUFFER argument or the variable
-`pel-insert-symbol-content-context-buffer'.  The BUFFER argument
-value takes precedence to the value of the variable
-`pel-insert-symbol-content-context-buffer'. If both are nil, then
-the value is read from the context of the current buffer, which
-may be a local or global."
+`pel-insert-symbol-content-context-buffer'.
+
+The BUFFER argument value takes precedence to the value of the variable
+`pel-insert-symbol-content-context-buffer'. If both are nil, then the
+value is read from the context of the current buffer, which may be a
+local or global."
   (symbol-value
    (pel-major-mode-symbol-for
     symbol-format-string
@@ -629,15 +636,16 @@ may be a local or global."
                                        &optional buffer-or-name)
   "Return the value or default of major-mode specific symbol for specified buffer.
 
-The symbol name is identified by the FORMAT-STRING which must
-contain one \"%s\" that is replaced by the by the prefix string
-before the \"-mode\" of the major mode of the the current buffer
+The symbol name is identified by the SYMBOL-FORMAT-STRING which must
+contain one \"%s\" that is replaced by the prefix string before the
+\"-mode\" (or \"-ts-mode\") of the major mode of the the current buffer
 or of the buffer specified by the BUFFER argument or the variable
-`pel-insert-symbol-content-context-buffer'.  The BUFFER argument
-value takes precedence to the value of the variable
-`pel-insert-symbol-content-context-buffer'. If both are nil, then
-the value is read from the context of the current buffer, which
-may be a local or global.
+`pel-insert-symbol-content-context-buffer'.
+
+The BUFFER argument value takes precedence to the value of the variable
+`pel-insert-symbol-content-context-buffer'. If both are nil, then the
+value is read from the context of the current buffer, which may be a
+local or global.
 
 If the symbol name does not exists for the specified SYMBOL-FORMAT-STRING
 for the current major mode, then return the specified DEFAULT-VALUE."
@@ -652,10 +660,10 @@ for the current major mode, then return the specified DEFAULT-VALUE."
                                   &optional buffer-or-name)
   "Set symbol identified by SYMBOL-FORMAT-STRING to specified VALUE.
 
-The symbol name is identified by the FORMAT-STRING which must
-contain one \"%s\" that is replaced by the by the prefix string
-before the \"-mode\" of the major mode of the the current buffer
-or the one specified by BUFFER-OR-NAME."
+The symbol name is identified by the SYMBOL-FORMAT-STRING.  The \"%s\"
+in the SYMBOL-FORMAT-STRING is replaced by the name of the major-mode.
+That's the prefix string before the \"-mode\" portion of the major mode
+name of the current buffer or the one specified by BUFFER-OR-NAME."
   (let ((symbol (intern (pel-string-with-major-mode symbol-format-string
                                                     buffer-or-name))))
     (set symbol value)))
