@@ -2156,6 +2156,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; C-s     - prefix for Scheme implementation
 ;;
 ;; .       - APL
+;; 2       - Modula2
 ;; 4       - M4
 ;; 7       - Seed7           - Extensible language.  Syntax evolved from Pascal/Modula/Ada
 ;; A       - Ada
@@ -4992,14 +4993,25 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                          :error)))))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC 2`` : Modula2 programming
+;; Emacs built-in support with PEL extensions
+(when pel-use-modula-2
+  (define-pel-global-prefix pel:for-modula-2  (kbd "<f11> SPC 2"))
+
+  ;; (add-to-list 'auto-mode-alist '("\\.\\(mod\\|MOD\\|m2\\)\\)\\'") . modula-2-mode )
+  ;; The feature is: modula2.  The mode is: m2-mode (with an alias named modula-2-mode)
+  (pel-eval-after-load modula2
+    (pel-config-major-mode m2 pel:for-modula-2)))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-p`` : Pascal programming
 ;; Emacs built-in support with PEL extensions
 (when pel-use-pascal
   (define-pel-global-prefix pel:for-pascal  (kbd "<f11> SPC M-p"))
 
+  ;; The feature is: pascal.  The mode is: pascal-mode.
   (pel-eval-after-load pascal
-    (pel-config-major-mode pascal pel:for-pascal)
-    ))
+    (pel-config-major-mode pascal pel:for-pascal)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC 7`` : Seed7 programming

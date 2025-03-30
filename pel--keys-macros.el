@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-30 13:41:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-30 14:58:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -312,6 +312,7 @@
                                                                    eldoc-box))
 
     ([f11 32 ?4]     "pl-m4"        pel-pkg-for-m4          m4)
+    ([f11 32 ?2]     "pl-modula2"   pel-pkg-for-modula-2    modula2)
     ([f11 32 ?n]     "pl-nim"       pel-pkg-for-nim         (nim
                                                              electricity))
     ([f11 32 ?o]     "pl-ocaml"     pel-pkg-for-ocaml       (merlin
@@ -334,7 +335,7 @@
                                                               perl-live))
     ([f11 32 ?U]     "pl-ruby"      pel-pkg-for-ruby         (ruby
                                                               electricity))
-    ([f11 32 ?7]     "pl-seed7" pel-pkg-for-seed7        seed7-mode)
+    ([f11 32 ?7]     "pl-seed7"     pel-pkg-for-seed7        seed7-mode)
     ([f11 32 ?s]     "pl-swift"     pel-pkg-for-swift         swift)
     ([f11 32 ?t]     "pl-tcl"       pel-pkg-for-tcl           tcl)
     ([f11 32 ?v]     "pl-v"         pel-pkg-for-v            (v-mode
@@ -685,6 +686,7 @@ stored inside the doc/pdf directory.")
     ("inferior-lfe"    [f11 32 32 12])
     ("ibuffer"         [f11 32 32 ?b])
     ("vc-dir"          [f11 32 32 ?v])
+    ("m2"              [f11 32 ?2])     ; modula-2
     ("nim"             [f11 32 ?n])
     ("ocaml"           [f11 32 ?o])
     ("odin"            [f11 32 ?O])
@@ -955,6 +957,8 @@ There should be no key binding!" keyseq))
     ("lfe"              . "pl-lfe")
     ("m4"               . "pl-m4")
     ("make"             . "pl-make")
+    ("m2"               . "pl-modula2")
+    ("modula2"          . "pl-modula2")
     ("nim"              . "pl-nim")
     ("ocaml"            . "pl-ocaml")
     ("odin"             . "pl-odin")

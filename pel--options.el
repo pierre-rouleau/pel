@@ -151,6 +151,7 @@
 ;;       - pel-pkg-for-julia
 ;;       - pel-pkg-for-lua
 ;;       - pel-pkg-for-m4
+;;       - pel-pkg-for-modula-2
 ;;       - pel-pkg-for-nim
 ;;       - pel-pkg-for-ocaml
 ;;       - pel-pkg-for-odin
@@ -9355,7 +9356,43 @@ Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-m4
   :type 'boolean
   :safe #'booleanp)
-`
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Modula2 Support
+;; ---------------
+(defgroup pel-pkg-for-modula-2 nil
+  "PEL customization for Modula2 programming language."
+  :group 'pel-pkg-for-programming
+  :group 'modula2
+  :link `(url-link :tag "Modula2 PDF" ,(pel-pdf-file-url "pl-modula2")))
+
+(defcustom pel-use-modula-2 nil
+  "Control whether PEL supports the Modula2 programming language."
+  :group 'pel-pkg-for-modula-2
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-m2-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Modula2 buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-modula-2
+  :type '(repeat function))
+
+(defcustom pel-m2-use-tabs nil
+  "Value of `indent-tabs-mode' for editing modula2 files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-modula-2
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-m2-tab-width 4
+  "Number of columns rendered in a buffer for a tab in Modula2 buffers."
+  :group 'pel-pkg-for-modula-2
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Nim Support
 ;; -----------
