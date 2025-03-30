@@ -2230,6 +2230,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-l     - Outline mode
 ;; M-m     - Markdown
 ;; M-o     - OrgMode
+;; M-p     - Pascal
 ;; M-r     - reStructuredText
 ;; M-s     - SQL
 ;; M-u     - PlantUML
@@ -4989,6 +4990,16 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
         (display-warning 'pel-use-rust
                          "Unbound rust-mode-map!"
                          :error)))))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-p`` : Pascal programming
+;; Emacs built-in support with PEL extensions
+(when pel-use-pascal
+  (define-pel-global-prefix pel:for-pascal  (kbd "<f11> SPC M-p"))
+
+  (pel-eval-after-load pascal
+    (pel-config-major-mode pascal pel:for-pascal)
+    ))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC 7`` : Seed7 programming

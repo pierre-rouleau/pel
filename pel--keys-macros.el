@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-30 13:02:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-30 13:41:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -595,6 +595,9 @@
     (,(kbd "<f11> SPC M-o") "mode-org-mode"    pel-pkg-for-org-mode    org)
     ([f11 32 27 ?o]         "mode-org-mode"    pel-pkg-for-org-mode    org)
 
+    (,(kbd "<f11> SPC M-p") "pl-pascal" pel-pkg-for-pascal    pascal)
+    ([f11 32 27 ?p]         "pl-pascal" pel-pkg-for-pascal    pascal)
+
     (,(kbd "<f11> SPC M-u") "plantuml" pel-pkg-for-plantuml    plantuml-mode)
     ([f11 32 27 ?u]         "plantuml" pel-pkg-for-plantuml    plantuml-mode)
 
@@ -720,6 +723,7 @@ stored inside the doc/pdf directory.")
     ("org"             [f11 32 27 ?o])
     ("graphviz-dot"    [f11 32 27 ?g])
     ("mscgen"          [f11 32 27 ?M])
+    ("pascal"          [f11 32 27 ?p])
     ("plantuml"        [f11 32 27 ?u])
     ("yaml"            [f11 32 27 ?y])
     ("yang"            [f11 32 27 ?Y])
@@ -954,6 +958,7 @@ There should be no key binding!" keyseq))
     ("nim"              . "pl-nim")
     ("ocaml"            . "pl-ocaml")
     ("odin"             . "pl-odin")
+    ("pascal"           . "pl-pascal")
     ("perl"             . "pl-perl")
     ("cperl"            . "pl-perl")
     ("pike"             . "pl-pike")

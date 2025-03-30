@@ -154,6 +154,7 @@
 ;;       - pel-pkg-for-nim
 ;;       - pel-pkg-for-ocaml
 ;;       - pel-pkg-for-odin
+;;       - pel-pkg-for-pascal
 ;;       - pel-pkg-for-perl
 ;;         - pel-pkg-for-perl-general
 ;;         - pel-pkg-for-perl-perl-mode
@@ -9542,6 +9543,42 @@ Do not enter lambda expressions."
 (defcustom pel-odin-tab-width 4
   "Number of columns rendered in a buffer for a tab in Odin."
   :group 'pel-pkg-for-odin
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Pascal Support
+;; --------------
+(defgroup pel-pkg-for-pascal nil
+  "PEL customization for Pascal  programming language."
+  :group 'pel-pkg-for-programming
+  :group 'pascal
+  :link `(url-link :tag "Pascal PDF" ,(pel-pdf-file-url "pl-pascal")))
+
+(defcustom pel-use-pascal nil
+  "Control whether PEL supports the Pascal programming language."
+  :group 'pel-pkg-for-pascal
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-pascal-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Pascal buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-pascal
+  :type '(repeat function))
+
+(defcustom pel-pascal-use-tabs nil
+  "Value of `indent-tabs-mode' for editing pascal files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-pascal
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-pascal-tab-width 4
+  "Number of columns rendered in a buffer for a tab in Pascal buffers."
+  :group 'pel-pkg-for-pascal
   :type 'integer
   :safe 'pel-indent-valid-p)
 

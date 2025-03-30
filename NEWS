@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add partial PEL support for Pascal when the *pel-use-pascal* user option is set.
+  This uses Emacs built-in pascal-mode.  It does provide usual PEL control for tab, help and minor mode activation.
 - Add *pel-rst-use-single-underscore-for-single-word-ref* user-option.  It controls
   whether the *pel-rst-makelink* command (bound to ~<f12> .~ in rst-mode buffers) uses the enclosing markup
   for creating a reference to a word (like =<word>_=) when the user-option is set to nil (the default), or
