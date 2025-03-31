@@ -2779,14 +2779,13 @@ MODE must be a symbol."
                                     ".l"
                                     ".jison"))))
 
-
-
-  (defvar c-mode-map)        ; declare dynamic: prevent byte-compiler warnings
   (declare-function pel--install-c-skel "pel-skels-c")
   (declare-function pel-cc-find-activate-finder-method "pel-cc-find")
+
   (pel-eval-after-load cc-mode
     (pel-config-major-mode c pel:for-c
       (progn
+        (defvar c-mode-map)        ; declare dynamic: prevent byte-compiler warnings
         (define-key c-mode-map (kbd "M-;") 'pel-c-comment-dwim)
 
         ;; Configure how to search for a file name from the user-option
@@ -2815,56 +2814,6 @@ MODE must be a symbol."
         ;; 8) extra setup
         (pel--setup-for-cc))))
 
-  ;; When Tree-sitter mode is available configure the Tree-Sitter mode for C
-  ;; The Tree-Sitter C major mode does *not* derive from the cc-mode,
-  ;; therefore the code executed when its starts differs a bit:
-  ;; - there is no cc style (so step 1 is skipped)
-  ;; TODO: For not I'm keeping the logic separate until I identify all differences.
-  ;; Later I'll merge the 2 bodies of code with extra logic and use the
-  ;; pel-config-major-mode-with-ts
-
-  (when (pel-major-mode-use-tree-sitter 'c-mode 'c-ts-mode)
-
-    (defvar c-ts-mode-map)   ; declare dynamic: prevent byte-compiler warnings
-
-    (defvar pel-c-ts-tab-width)
-    (defvar pel-c-ts-use-tabs)
-    (defvar pel-c-ts-activates-minor-modes)
-    (setq pel-c-ts-tab-width pel-c-tab-width)
-    (setq pel-c-ts-use-tabs pel-c-use-tabs)
-    (setq pel-c-ts-activates-minor-modes pel-c-activates-minor-modes)
-    (pel-config-major-mode c-ts pel:for-c
-      (progn
-        (define-key c-ts-mode-map (kbd "M-;") 'pel-c-comment-dwim)
-
-        ;; Configure how to search for a file name from the user-option
-        ;; `pel-c-file-finder-method' which may be specified in a
-        ;; .dir-local.el file.
-        (pel-cc-find-activate-finder-method pel-c-file-finder-method
-                                            pel-c-file-searched-extra-dir-trees)
-
-        ;; Configure the CC Mode style for C from PEL custom variables
-        ;; 1) set the style: it identifies everything
-        ;; (pel--set-cc-style 'c-ts-mode pel-c-bracket-style pel-c-newline-mode)
-
-        ;; 2) apply modifications requested by PEL user options.
-        ;;    set variables only available in a CC mode - prevent warnings
-        (pel-setq-local c-basic-offset pel-c-indent-width)
-        ;; 3) set fill-column to PEL specified C's default if specified
-        (when pel-c-fill-column
-          (setq-local fill-column pel-c-fill-column))
-        ;; 4) Set default auto-newline mode as identified by PEL user option
-        (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-        ;; 5) Configure M-( to put parentheses after a function name.
-        (set (make-local-variable 'parens-require-spaces) nil)
-        ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
-        (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
-        ;; 7) Install language-specific skeletons
-        (pel--install-c-skel pel:c-skel)
-        ;; 8) extra setup
-        (pel--setup-for-cc))))
-
-  ;; TODO: learn how Tree Sitter deals with styles and adapt the following code
   ;; Activate extra C styles
   (when pel-use-linux-kernel-code-style-support
     (declare-function pel-linux-kernel-code-style-setup "pel-cc-linux-kernel")
@@ -2933,46 +2882,6 @@ MODE must be a symbol."
       ;; Configure the CC Mode style for C++ from PEL custom variables
       ;; 1) set the style: it identifies everything
       (pel--set-cc-style 'c++-mode pel-c++-bracket-style pel-c++-newline-mode)
-      ;; 2)  apply modifications requested by PEL user options.
-      ;;     set variables only available in a CC mode - prevent warnings
-      (pel-setq c-basic-offset pel-c++-indent-width)
-      ;; 3) set fill-column to PEL specified C++'s default if specified
-      (when pel-c++-fill-column
-        (setq fill-column pel-c++-fill-column))
-      ;; 4) Set default auto-newline mode as identified by PEL user option
-      (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-      ;; 5) Configure M-( to put parentheses after a function name.
-      (set (make-local-variable 'parens-require-spaces) nil)
-      ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
-      (pel-local-set-f12-M-f12 'pel:for-c++-preproc "#")
-      ;; 7) Install language-specific skeletons
-      (pel--install-c++-skel pel:c++-skel)
-      ;; 8) extra setup
-      (pel--setup-for-cc)))
-
-  (when (pel-major-mode-use-tree-sitter 'c++-mode 'c++-ts-mode)
-    (defvar c++-ts-mode-map) ; declare dynamic: prevent byte-compiler warnings
-
-    (defvar pel-c++-ts-tab-width)
-    (defvar pel-c++-ts-use-tabs)
-    (defvar pel-c++-ts-activates-minor-modes)
-    (setq pel-c++-ts-tab-width pel-c++-tab-width)
-    (setq pel-c++-ts-use-tabs pel-c++-use-tabs)
-    (setq pel-c++-ts-activates-minor-modes pel-c++-activates-minor-modes)
-
-    (pel-config-major-mode c++-ts pel:for-c++
-
-      ;; Configure how to search for a file name from the user-option
-      ;; `pel-c++-file-finder-method' which may be specified in a
-      ;; .dir-local.el file.
-      (pel-cc-find-activate-finder-method pel-c++-file-finder-method
-                                          pel-c++-file-searched-extra-dir-trees)
-
-      ;; "Set the environment for editing C++ files."
-      ;; Configure the CC Mode style for C++ from PEL custom variables
-      ;; 1) set the style: it identifies everything
-      ;; (pel--set-cc-style 'c++-mode pel-c++-bracket-style pel-c++-newline-mode)
-
       ;; 2)  apply modifications requested by PEL user options.
       ;;     set variables only available in a CC mode - prevent warnings
       (pel-setq c-basic-offset pel-c++-indent-width)
