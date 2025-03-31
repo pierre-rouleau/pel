@@ -180,7 +180,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   and a new PDF page: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/x509.pdf][Ɱ X.509 Certificates]].
 - Add support for a Perl REPL via the perl-repl package.
 - Improved cperl-mode support: it now supports the ~<f12>~ key binding.
-- Add support for dir-treevew: ~<f11> B D~ is now bound to *dir-treview* and ~<f11> B d~ is bound to *dir_treeview-open*.
+- Add support for dir-treeview: ~<f11> B D~ is now bound to *dir-treview* and ~<f11> B d~ is bound to *dir_treeview-open*.
 - Add support for *dockerfile-mode* when *pel-use-dockerfile-mode* is t.
 - Add *pel-etags-toggle-case-sensitivity*, bound to ~<f11> X X~, to toggle the case sensitivity of etags-based xref
   search.  This changes the global value of the *tags-case-fold-search* user-option for the current Emacs session.
