@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-08-23 16:20:50 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-03-31 14:48:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -158,8 +158,9 @@ return \"void\"."
 (defun pel-cc-mode-info (&optional append)
   "Display information about current CC mode derivative in specialized buffer.
 
-Clear previous buffer content unless optional APPEND argument is non-nil,
-in which case it appends to the previous report."
+By default, clear previous buffer content and show the top of buffer.
+If APPEND argument is non-nil, append to the previous report and show the top
+of the last report."
   (interactive "P")
   (let* ((is-c (eq major-mode 'c-mode))
          (pel-insert-symbol-content-context-buffer (current-buffer))
@@ -369,9 +370,10 @@ F11-⌦  and F11-⌫  keys are available."
          (pel-insert-symbol-content-line 'pel-c++-class-members-sections))
        (insert "\n\n See Also:\n- ")
        (pel-insert-symbol 'auto-mode-alist)
-       )
+       (insert "\n\n"))
      (unless append :clear-buffer)
-     :use-help-mode)))
+     :use-help-mode
+     (unless append :show-top))))
 
 ;; --
 

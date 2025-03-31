@@ -3156,10 +3156,15 @@ buffer, otherwise use the `fundamental-mode'. Activating the
 `help-mode' in the buffer allows quick navigation to the variable
 buttons, a very useful feature.
 
-By default `pel-print-in-buffer' moves point to the bottom of the buffer.
-If SHOW-TOP is non nil it moves point to the top of buffer instead. "
-  (let ((current-buffer-name (buffer-name))
-        (outbuf (get-buffer-create bufname)))
+By default `pel-print-in-buffer' moves point to the top of the last
+report.  If SHOW-TOP is non nil it moves point to the top of buffer
+instead."
+  (let* ((current-buffer-name (buffer-name))
+         (outbuf (get-buffer-create bufname))
+         (top-line (format "----%s from %s --- %s -----\n"
+                       title
+                       current-buffer-name
+                       (format-time-string "%A, %B %d, %Y @ %T"))))
     (with-current-buffer outbuf
       (when (and use-help-mode
                  (eq major-mode 'help-mode))
@@ -3169,12 +3174,7 @@ If SHOW-TOP is non nil it moves point to the top of buffer instead. "
       (when clear-buffer
         (erase-buffer))
       (goto-char (point-max))
-      (insert (propertize
-               (format "----%s from %s --- %s -----\n"
-                       title
-                       current-buffer-name
-                       (format-time-string "%A, %B %d, %Y @ %T"))
-               'face 'bold))
+      (insert (propertize top-line 'face 'bold))
       (cond ((stringp text)
              ;; using format twice because it prints an escaped % ("%%")
              ;; with 2 percent characters instead of only one if it is not
@@ -3191,8 +3191,10 @@ If SHOW-TOP is non nil it moves point to the top of buffer instead. "
     (with-selected-window (display-buffer outbuf)
       (if show-top
           (goto-char (point-min))
-          (goto-char (- (point-max) 2)))     ; last 2 chars are '\n'
-      (recenter -1))))
+        ;; when not showing top, show the beginning of the last created report.
+        (goto-char (point-max))
+        (search-backward top-line)
+        (recenter-top-bottom 0)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Code Parsing Support
