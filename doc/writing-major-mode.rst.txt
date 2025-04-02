@@ -6,7 +6,7 @@ How to write an Emacs major mode
 :Project: `PEL -- Pragmatic Emacs Library`_:
 :Created:  Tuesday, April  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-04-01 14:33:36, by Pierre Rouleau.
+:Modified: 2025-04-02 13:17:47 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 .. warning:: 🚧 This is an early draft of the document  🚧
@@ -218,7 +218,7 @@ Speedbar Support
 
   .. code:: elisp
 
-    (pel-require 'speedbar)
+    (require 'speedbar)
     (declare-function speedbar-add-supported-extension "speedbar")
     (speedbar-add-supported-extension extension)
 
@@ -239,8 +239,6 @@ Emacs Lisp regular expression syntax.
 - The ``re-builder`` command allows you to build and test regexp interactively
   using various regexp syntax supported by Emacs, including the ``rx`` syntax.
 
-
-
 Faces for a Major Mode
 ----------------------
 
@@ -250,7 +248,7 @@ There are some already available font lock face variables defined in the Emacs
 font-lock.el file, listed below.
 
 ================================= ================================================
-Variable name                 Description
+Variable name                     Description
 ================================= ================================================
 font-lock-builtin-face            Face name to use for builtins.
 font-lock-comment-delimiter-face  Face name to use for comment delimiters.
@@ -273,9 +271,6 @@ Lisp macro.  Several of them are defined in the Emacs lisp library files.
 The progmodes files define several. Look at these definitions for example on
 how to create customizable faces.
 
-
-
-
 .. ---------------------------------------------------------------------------
 
 
@@ -295,23 +290,23 @@ faces to colorize the strace output.
 .. ---------------------------------------------------------------------------
 .. links:
 
-.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
-.. _Emacs Major Modes: https://www.gnu.org/software/emacs/manual/html_node/emacs/Major-Modes.html
-.. _Options Controlling Comments: https://www.gnu.org/software/emacs/manual/html_node/emacs/Options-for-Comments.html
-.. _Derived Modes: https://www.gnu.org/software/emacs/manual/html_node/elisp/Derived-Modes.html#Derived-Modes
-.. _Basic Major Modes: https://www.gnu.org/software/emacs/manual/html_node/elisp/Basic-Major-Modes.html
-.. _Defining Derived Modes: https://www.gnu.org/software/emacs/manual/html_node/elisp/Derived-Modes.html#Derived-Modes
-.. _Major Modes: https://www.gnu.org/software/emacs/manual/html_node/elisp/Major-Modes.html
-.. _Major Mode Conventions: https://www.gnu.org/software/emacs/manual/html_node/elisp/Major-Mode-Conventions.html
-.. _How Emacs Chooses a Major Mode: https://www.gnu.org/software/emacs/manual/html_node/elisp/Auto-Major-Mode.html
-.. _alist: https://www.gnu.org/software/emacs/manual/html_node/elisp/Association-Lists.html
-.. _shebang line: https://en.wikipedia.org/wiki/Shebang_(Unix)
-.. _strace-mode @ Github: https://github.com/pierre-rouleau/strace-mode/blob/master/strace-mode.el
-.. _Defining Faces: https://www.gnu.org/software/emacs/manual/html_node/elisp/Defining-Faces.html
-.. _The rx Structured Regexp Notation: https://www.gnu.org/software/emacs/manual/html_node/elisp/Rx-Notation.html
-.. _The rx macro: https://www.gnu.org/software/emacs/manual/html_node/elisp/Rx-Functions.html
+.. _PEL -- Pragmatic Emacs Library:                 https://github.com/pierre-rouleau/pel#readme
+.. _Emacs Major Modes:                              https://www.gnu.org/software/emacs/manual/html_node/emacs/Major-Modes.html
+.. _Options Controlling Comments:                   https://www.gnu.org/software/emacs/manual/html_node/emacs/Options-for-Comments.html
+.. _Derived Modes:                                  https://www.gnu.org/software/emacs/manual/html_node/elisp/Derived-Modes.html#Derived-Modes
+.. _Basic Major Modes:                              https://www.gnu.org/software/emacs/manual/html_node/elisp/Basic-Major-Modes.html
+.. _Defining Derived Modes:                         https://www.gnu.org/software/emacs/manual/html_node/elisp/Derived-Modes.html#Derived-Modes
+.. _Major Modes:                                    https://www.gnu.org/software/emacs/manual/html_node/elisp/Major-Modes.html
+.. _Major Mode Conventions:                         https://www.gnu.org/software/emacs/manual/html_node/elisp/Major-Mode-Conventions.html
+.. _How Emacs Chooses a Major Mode:                 https://www.gnu.org/software/emacs/manual/html_node/elisp/Auto-Major-Mode.html
+.. _alist:                                          https://www.gnu.org/software/emacs/manual/html_node/elisp/Association-Lists.html
+.. _shebang line:                                   https://en.wikipedia.org/wiki/Shebang_(Unix)
+.. _strace-mode @ Github:                           https://github.com/pierre-rouleau/strace-mode/blob/master/strace-mode.el
+.. _Defining Faces:                                 https://www.gnu.org/software/emacs/manual/html_node/elisp/Defining-Faces.html
+.. _The rx Structured Regexp Notation:              https://www.gnu.org/software/emacs/manual/html_node/elisp/Rx-Notation.html
+.. _The rx macro:                                   https://www.gnu.org/software/emacs/manual/html_node/elisp/Rx-Functions.html
 .. _Emacs Regexp Syntax @ PEL ⅀ Search/Replace PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=9
-.. _re-builder @ PEL ⅀ Search/Replace PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=10
+.. _re-builder @ PEL ⅀ Search/Replace PDF:          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=10
 
 .. ---------------------------------------------------------------------------
 
