@@ -6232,9 +6232,9 @@ to pel-use-helm-descbinds"))
     (global-set-key (kbd "C-h b") 'helm-descbinds))
   (define-key pel:keys "B" 'helm-descbinds-mode))
 
-;; ---------------------------------------------------------------------------
-;; Keycast and logging
-;; -------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Keycast and key logging
+;; -----------------------
 (when pel-use-keycast
   (pel-ensure-package keycast from: melpa)
   (pel-autoload-file keycast for: keycast-mode)
@@ -6660,6 +6660,12 @@ the ones defined from the buffer now."
   (define-key pel:buffer (kbd "C-n")  'iflipb-next-buffer)
   (define-key pel:buffer (kbd "C-p")  'iflipb-previous-buffer)
   (global-set-key (kbd "C-x k")       'iflipb-kill-buffer))
+
+(when pel-use-strace-mode
+  (pel-install-github-file "pierre-rouleau/strace-mode/master"
+                           "strace-mode.el")
+  (pel-autoload-file "strace-mode.el" for: strace-mode)
+  (define-key pel:buffer (kbd "M-t")  'strace-mode))
 
 ;; ibuffer-mode support
 ;; --------------------

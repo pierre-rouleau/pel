@@ -3511,6 +3511,17 @@ terminal mode for your environment, change the value."
   "Log File control options."
   :group 'pel-package-use)
 
+(defcustom pel-use-strace-mode nil
+  "Whether PEL uses the strace-mode package."
+  :group 'pel-pkg-for-log-file
+  :link '(url-link :tag "strace-mode @ Github"
+                   "https://github.com/pkmoore/strace-mode")
+  :link '(url-link :tag "my strace-mode fork @ Github"
+                   "https://github.com/pierre-rouleau/strace-mode")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-strace-mode :package-is :in-utils)
+
 (defgroup pel-pkg-for-gnu-screen nil
   "GNU Screen log file support."
   :group 'pel-pkg-for-log-file)
