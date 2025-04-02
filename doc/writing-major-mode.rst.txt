@@ -6,7 +6,7 @@ How to write an Emacs major mode
 :Project: `PEL -- Pragmatic Emacs Library`_:
 :Created:  Tuesday, April  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-04-02 13:17:47 EDT, updated by Pierre Rouleau.
+:Modified: 2025-04-02 13:23:14 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 .. warning:: 🚧 This is an early draft of the document  🚧
@@ -39,47 +39,47 @@ General Conventions
 
 :Ref: `Options Controlling Comments`_
 
-========================= ======================================================================
-Variable                  Description
-========================= ======================================================================
-comment-start             String to insert to start a new comment, or nil if no comment syntax.
+============================ ======================================================================
+Variable                     Description
+============================ ======================================================================
+``comment-start``            String to insert to start a new comment, or nil if no comment syntax.
 
-comment-continue          Continuation string to insert for multiline comments.
+``comment-continue``         Continuation string to insert for multiline comments.
 
-comment-end               String to insert to end a new comment.
-                          Should be an empty string if comments are terminated by
-                          end-of-line.
+``comment-end``              String to insert to end a new comment.
+                             Should be an empty string if comments are terminated by
+                             end-of-line.
 
-comment-padding           Padding string that ``comment-region`` puts between comment chars and text.
-                          Can also be an integer which will be automatically turned into a string
-                          of the corresponding number of spaces.
+``comment-padding``          Padding string that ``comment-region`` puts between comment chars and text.
+                             Can also be an integer which will be automatically turned into a string
+                             of the corresponding number of spaces.
 
-comment-column            Column to indent right-margin comments to.
+``comment-column``           Column to indent right-margin comments to.
 
-comment-fill-column       Column to use for ``comment-indent``.  If nil, use ``fill-column`` instead.
+``comment-fill-column``      Column to use for ``comment-indent``.  If nil, use ``fill-column`` instead.
 
-comment-multi-line        Non-nil means ``comment-indent-new-line`` continues comments.
-                          That is, it inserts no new terminator or starter.
-                          This affects ``auto-fill-mode``, which is the main reason to
-                          customize this variable.
+``comment-multi-line``       Non-nil means ``comment-indent-new-line`` continues comments.
+                             That is, it inserts no new terminator or starter.
+                             This affects ``auto-fill-mode``, which is the main reason to
+                             customize this variable.
 
-comment-start-skip        Regexp to match the start of a comment plus everything up to its body.
-                          If there are any \(...\) pairs and ``comment-use-syntax`` is nil,
-                          the comment delimiter text is held to begin at the place matched
-                          by the close of the first pair.
+``comment-start-skip``       Regexp to match the start of a comment plus everything up to its body.
+                             If there are any \(...\) pairs and ``comment-use-syntax`` is nil,
+                             the comment delimiter text is held to begin at the place matched
+                             by the close of the first pair.
 
-comment-indent-function   Function to compute desired indentation for a comment.
-                          It should return the column in which the comment ought to start.
-                          This function is called with no args with point at the beginning
-                          of the comment``s starting delimiter and should return either the
-                          desired column indentation, a range of acceptable
-                          indentation (MIN . MAX), or nil.
-                          If nil is returned, indentation is delegated to ``indent-according-to-mode``.
+``comment-indent-function``  Function to compute desired indentation for a comment.
+                             It should return the column in which the comment ought to start.
+                             This function is called with no args with point at the beginning
+                             of the comment``s starting delimiter and should return either the
+                             desired column indentation, a range of acceptable
+                             indentation (MIN . MAX), or nil.
+                             If nil is returned, indentation is delegated to ``indent-according-to-mode``.
 
-                          Emacs also tries to align comments on adjacent lines.
-                          To override this, the function may return a cons of two
-                          (possibly equal) integers to indicate an acceptable range of indentation.
-========================= ======================================================================
+                             Emacs also tries to align comments on adjacent lines.
+                             To override this, the function may return a cons of two
+                             (possibly equal) integers to indicate an acceptable range of indentation.
+============================ ======================================================================
 
 **Programming Modes**
 
@@ -98,34 +98,34 @@ comment-indent-function   Function to compute desired indentation for a comment.
 
 Base major modes are listed and described here:
 
-=================== ===============================================================
-Major Mode          Description
-=================== ===============================================================
-fundamental-mode    A major-mode not specialized for anything.
-                    Text is shown without and font-locking,
-                    there is no specified key map.
+===================== ===============================================================
+Major Mode            Description
+===================== ===============================================================
+``fundamental-mode``  A major-mode not specialized for anything.
+                      Text is shown without and font-locking,
+                      there is no specified key map.
 
-special-mode        A major mode that should only be used for *special* major
-                    modes, intended to view specially formatted data rather
-                    than files.  These modes are forced into read-only
-                    buffers.
+``special-mode``      A major mode that should only be used for *special* major
+                      modes, intended to view specially formatted data rather
+                      than files.  These modes are forced into read-only
+                      buffers.
 
-                    For example, the ``dired-mode`` inherit from the
-                    ``special-mode``.  The ``dired-mode`` buffers are
-                    read-only.  The ``wdired-mode`` which activates the
-                    ability change file names and  file attributes also
-                    inherits from the ``special-mode``.
+                      For example, the ``dired-mode`` inherit from the
+                      ``special-mode``.  The ``dired-mode`` buffers are
+                      read-only.  The ``wdired-mode`` which activates the
+                      ability change file names and  file attributes also
+                      inherits from the ``special-mode``.
 
 
-text-mode           A major mode for editing text, as opposed to source code.
-                    In this mode paragraphs are delimited by blank lines or
-                    lines that only contain white space characters.  It
-                    supports adaptive filling.
+``text-mode``         A major mode for editing text, as opposed to source code.
+                      In this mode paragraphs are delimited by blank lines or
+                      lines that only contain white space characters.  It
+                      supports adaptive filling.
 
-prog-mode           A major mode for editing programming language source code.
-                    Major modes for programming modes are usually derived from
-                    ``prog-mode``.
-=================== ===============================================================
+``prog-mode``         A major mode for editing programming language source code.
+                      Major modes for programming modes are usually derived from
+                      ``prog-mode``.
+===================== ===============================================================
 
 
 
@@ -247,24 +247,24 @@ Faces for a Major Mode
 There are some already available font lock face variables defined in the Emacs
 font-lock.el file, listed below.
 
-================================= ================================================
-Variable name                     Description
-================================= ================================================
-font-lock-builtin-face            Face name to use for builtins.
-font-lock-comment-delimiter-face  Face name to use for comment delimiters.
-font-lock-comment-face            Face name to use for comments.
-font-lock-constant-face           Face name to use for constant and label names.
-font-lock-doc-face                Face name to use for documentation.
-font-lock-doc-markup-face         Face name to use for documentation mark-up.
-font-lock-function-name-face      Face name to use for function names.
-font-lock-keyword-face            Face name to use for keywords.
-font-lock-negation-char-face      Face name to use for easy to overlook negation. This can be an '!' or the 'n' in ifndef.
-font-lock-preprocessor-face       Face name to use for preprocessor directives.
-font-lock-string-face             Face name to use for strings.
-font-lock-type-face               Face name to use for type and class names.
-font-lock-variable-name-face      Face name to use for variable names.
-font-lock-warning-face            Face name to use for things that should stand out.
-================================= ================================================
+===================================== ================================================
+Variable name                         Description
+===================================== ================================================
+``font-lock-builtin-face``            Face name to use for builtins.
+``font-lock-comment-delimiter-face``  Face name to use for comment delimiters.
+``font-lock-comment-face``            Face name to use for comments.
+``font-lock-constant-face``           Face name to use for constant and label names.
+``font-lock-doc-face``                Face name to use for documentation.
+``font-lock-doc-markup-face``         Face name to use for documentation mark-up.
+``font-lock-function-name-face``      Face name to use for function names.
+``font-lock-keyword-face``            Face name to use for keywords.
+``font-lock-negation-char-face``      Face name to use for easy to overlook negation. This can be an '!' or the 'n' in ifndef.
+``font-lock-preprocessor-face``       Face name to use for preprocessor directives.
+``font-lock-string-face``             Face name to use for strings.
+``font-lock-type-face``               Face name to use for type and class names.
+``font-lock-variable-name-face``      Face name to use for variable names.
+``font-lock-warning-face``            Face name to use for things that should stand out.
+===================================== ================================================
 
 Each mode can define more customizable faces with the Emacs lisp ``defface``
 Lisp macro.  Several of them are defined in the Emacs lisp library files.
