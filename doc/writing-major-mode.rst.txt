@@ -6,7 +6,7 @@ How to write an Emacs major mode
 :Project: `PEL -- Pragmatic Emacs Library`_:
 :Created:  Tuesday, April  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-04-02 13:23:14 EDT, updated by Pierre Rouleau.
+:Modified: 2025-04-03 14:46:26 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 .. warning:: 🚧 This is an early draft of the document  🚧
@@ -20,7 +20,14 @@ References
 ==========
 
 :Ref: `Emacs Major Modes`_
-
+:Ref: `Emacs Syntax Tables`_
+:Ref: `Emacs Lisp Sequences, Arrays and Vectors`_
+:Ref: `Emacs Sequences`_
+:Ref: `Emacs Vectors`_
+:Ref: `Emacs Arrays`_ and `Functions that Operate on Arrays`_ : ``arrayp``,
+      ``aref`` and ``fillarray``.
+:Ref: `Emacs Vectors`_  and `Vector Type`_. Vectors are `Arrays`_. Which are `Sequences`_.
+:Ref: `Emacs Char-Tables`_
 
 General Conventions
 ===================
@@ -35,7 +42,8 @@ General Conventions
 - ``TAB`` is often used for indentation
 - ``C-c`` is used as prefix for major-modes.
 
-**Comment variables**
+Comment Definition
+------------------
 
 :Ref: `Options Controlling Comments`_
 
@@ -307,6 +315,17 @@ faces to colorize the strace output.
 .. _The rx macro:                                   https://www.gnu.org/software/emacs/manual/html_node/elisp/Rx-Functions.html
 .. _Emacs Regexp Syntax @ PEL ⅀ Search/Replace PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=9
 .. _re-builder @ PEL ⅀ Search/Replace PDF:          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=10
+.. _Emacs Syntax Tables:                            https://www.gnu.org/software/emacs/manual/html_node/elisp/Syntax-Tables.html
+.. _Emacs Char-Tables:                              https://www.gnu.org/software/emacs/manual/html_node/elisp/Char_002dTables.html
+.. _Emacs Lisp Sequences, Arrays and Vectors:       https://www.gnu.org/software/emacs/manual/html_node/elisp/Sequences-Arrays-Vectors.html
+.. _Emacs Vectors:                                  https://www.gnu.org/software/emacs/manual/html_node/elisp/Vectors.html
+.. _Emacs Arrays:                                   https://www.gnu.org/software/emacs/manual/html_node/elisp/Arrays.html
+.. _Vector Type:                                    https://www.gnu.org/software/emacs/manual/html_node/elisp/Vector-Type.html
+.. _Arrays:
+.. _Functions that Operate on Arrays:               https://www.gnu.org/software/emacs/manual/html_node/elisp/Array-Functions.html
+.. _Sequences:
+.. _Emacs Sequences:                                https://www.gnu.org/software/emacs/manual/html_node/elisp/Sequence-Functions.html
+.. _Emacs Vectors:                                  https://www.gnu.org/software/emacs/manual/html_node/elisp/Vectors.html
 
 .. ---------------------------------------------------------------------------
 
