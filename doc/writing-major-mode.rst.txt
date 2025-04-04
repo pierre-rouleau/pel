@@ -6,7 +6,7 @@ How to write an Emacs major mode
 :Project: `PEL -- Pragmatic Emacs Library`_:
 :Created:  Tuesday, April  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-04-03 14:46:26 EDT, updated by Pierre Rouleau.
+:Modified: 2025-04-03 16:19:42 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 .. warning:: 🚧 This is an early draft of the document  🚧
@@ -280,6 +280,15 @@ The progmodes files define several. Look at these definitions for example on
 how to create customizable faces.
 
 .. ---------------------------------------------------------------------------
+
+Tools for Testing Major Modes
+=============================
+
+- ``M-x describe-mode``, also bound to ``C-h m`` and ``<f1> m``,  displays the
+  documentation of the current major mode and minor modes.  The brief
+  description of the minor modes come first followed by the major mode description.
+- ``M-x describe-syntax``, also bound to ``C-h s`` and ``<f1> s``, prints the
+  syntax table of the current major mode.
 
 
 Examples of Major Mode Implementations
