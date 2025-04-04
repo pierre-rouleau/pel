@@ -10364,8 +10364,11 @@ hard tab when one `pel-sh-use-tabs' is set to t."
 (defcustom pel-use-seed7 nil
   "Control whether PEL supports the Seed7 Programming Language Development."
   :group 'pel-pkg-for-seed7
+  :link '(url-link :tag "seed7-mode @ Github"
+                   "https://github.com/pierre-rouleau/seed7-mode")
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-seed7 :package-is :in-utils)
 
 (defcustom pel-seed7-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Seed7 buffers.

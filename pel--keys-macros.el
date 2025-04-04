@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-30 14:58:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-04-04 10:02:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -335,7 +335,7 @@
                                                               perl-live))
     ([f11 32 ?U]     "pl-ruby"      pel-pkg-for-ruby         (ruby
                                                               electricity))
-    ([f11 32 ?7]     "pl-seed7"     pel-pkg-for-seed7        seed7-mode)
+    ([f11 32 ?7]     "pl-seed7"     pel-pkg-for-seed7        seed7)
     ([f11 32 ?s]     "pl-swift"     pel-pkg-for-swift         swift)
     ([f11 32 ?t]     "pl-tcl"       pel-pkg-for-tcl           tcl)
     ([f11 32 ?v]     "pl-v"         pel-pkg-for-v            (v-mode
