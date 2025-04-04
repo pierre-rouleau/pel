@@ -6,7 +6,7 @@ How to write an Emacs major mode
 :Project: `PEL -- Pragmatic Emacs Library`_:
 :Created:  Tuesday, April  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-04-03 16:19:42 EDT, updated by Pierre Rouleau.
+:Modified: 2025-04-04 14:32:09 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 .. warning:: 🚧 This is an early draft of the document  🚧
@@ -255,6 +255,7 @@ Faces for a Major Mode
 There are some already available font lock face variables defined in the Emacs
 font-lock.el file, listed below.
 
+
 ===================================== ================================================
 Variable name                         Description
 ===================================== ================================================
@@ -274,10 +275,55 @@ Variable name                         Description
 ``font-lock-warning-face``            Face name to use for things that should stand out.
 ===================================== ================================================
 
-Each mode can define more customizable faces with the Emacs lisp ``defface``
-Lisp macro.  Several of them are defined in the Emacs lisp library files.
+The above list may not be sufficient.
+If you want more faces for the major mode, you can
+can define more customizable faces with the Emacs lisp ``defface`` macro.
+
+Several extra faces are defined in the Emacs lisp library files.
 The progmodes files define several. Look at these definitions for example on
 how to create customizable faces.
+
+When using ``defface`` remember the following:
+
+- You only need to define it with ``defface``.  There is no need for a
+  corresponding ``defvar`` with the same name.
+- The the name of the *face* symbol, the first ``defface`` argument, must
+  **not** end with ``-face``.  It is redundant and will cause byte-compilation
+  error.
+
+Defining Keywords
+~~~~~~~~~~~~~~~~~
+
+:Ref: `Rx Structured Regexp Notation`_
+:Ref: `Functions and Macros using rx regexps`_
+:Ref: `Exploring the rx macro`_
+:Ref: `Elisp Backquote syntax`_
+
+Emacs Lisp ``rx`` macro is very useful to build maintainable regular expressions
+used to identify the various keywords or symbols for a programming language.
+The ``rx-to-string`` function is also very useful, along with backquoted
+forms, to create the regular expression string from a *list* of strings.
+
+For example, the following defines the regular expression to identify the
+Seed7 declaration introduction keywords:
+
+.. code:: elisp
+
+  (defconst seed7--declaration-intro-keywords
+    '("const"
+      "in"
+      "inout"
+      "ref"
+      "val"
+      "var"))
+
+  (defconst seed7-declaration-intro-keywords-regexp
+    (format "%s\\(%s\\)%s"
+            "\\_<"
+            (rx-to-string
+             `(:  (or ,@seed7--declaration-intro-keywords)))
+            "\\_>"))
+
 
 .. ---------------------------------------------------------------------------
 
@@ -335,6 +381,10 @@ faces to colorize the strace output.
 .. _Sequences:
 .. _Emacs Sequences:                                https://www.gnu.org/software/emacs/manual/html_node/elisp/Sequence-Functions.html
 .. _Emacs Vectors:                                  https://www.gnu.org/software/emacs/manual/html_node/elisp/Vectors.html
+.. _Elisp Backquote syntax:                         https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
+.. _Rx Structured Regexp Notation:                  https://www.gnu.org/software/emacs/manual/html_node/elisp/Rx-Notation.html
+.. _Functions and Macros using rx regexps:          https://www.gnu.org/software/emacs/manual/html_node/elisp/Rx-Functions.html
+.. _Exploring the rx macro:                         https://francismurillo.github.io/2017-03-30-Exploring-Emacs-rx-Macro/
 
 .. ---------------------------------------------------------------------------
 
