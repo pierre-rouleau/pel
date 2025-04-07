@@ -4936,7 +4936,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-eval-after-load seed7-mode
     (pel-config-major-mode seed7 pel:for-seed7))
 
-  (add-to-list 'auto-mode-alist '("\\.s[di]7\\'" . seed7-mode)))
+  (add-to-list 'auto-mode-alist '("\\.s\\(d7\\|7i\\)\\'" . seed7-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC s`` : Swift  programming
