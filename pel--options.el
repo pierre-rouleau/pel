@@ -630,7 +630,7 @@ name \"PEL_SHELL\"."
   :type 'string)
 
 (defcustom pel-gui-process-environment nil
-  "Environment variables to set when for Emacs launched from GUI program.
+  "Environment variables to set when Emacs launched from GUI program.
 
 When Emacs is launched from a shell it inherit the environment
 variables from that shell parent process.  It is then possible to
