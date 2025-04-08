@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- The ~M-S-<f5>~ and ~M-S-<f6>~ are no longer bound to 1-line scroll of other window, freeing the ~M-<f6>~
+  key for use as a prefix.  The *pel-scroll-down-other* and *pel-scroll-up-other* are now only available in the
+  *pel-∑scroll* hydra as ~C-<f7> M-<up>~ and ~C-<f7> M-<down>~ respectively.
 - *pel-open-at-point* is no longer bound to ~<M-<f6>~ freeing this key sequence to be used as a prefix.
   Instead it is now bound to ~M-**~.
 - Add support for strace-mode when *pel-use-strace-mode* user-option is on (set to t).

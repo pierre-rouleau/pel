@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-10 11:24:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-04-08 14:26:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -608,6 +608,8 @@ CAUTION: the hydra is still active!"
   ("C-<down>"    pel-scroll-up               "down"   :column "scroll")
   ("C-<left>"    pel-scroll-right            "left"   :column "scroll")
   ("C-<right>"   pel-scroll-left             "right"  :column "scroll")
+  ("M-<up>"      pel-scroll-down-other       "up"     :column "scroll other")
+  ("M-<down>"    pel-scroll-up-other         "down"   :column "scroll other")
   ("M-?"         pel-∑-customize-hint        "hint cfg"  :column "Other")
   ("?"           pel-toggle-hydra-hint       "hint"   :column "Other")
   ("<C-f7>"      nil                         "cancel" :column "Other"))
