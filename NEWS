@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- *pel-open-at-point* is no longer bound to ~<M-<f6>~ freeing this key sequence to be used as a prefix.
+  Instead it is now bound to ~M-**~.
 - Add support for strace-mode when *pel-use-strace-mode* user-option is on (set to t).
   The ~<f11> b M-t~ key sequence is bound to *strace-mode*.
 - Add partial PEL support for Modula2 when the *pel-use-modula2* user option is set.

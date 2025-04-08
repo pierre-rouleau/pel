@@ -4932,6 +4932,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                            "seed7-mode.el")
   (pel-autoload-file seed7-mode for: seed7-mode)
 
+  (define-key pel:for-seed7 "c" 'seed7-compile)
 
   (pel-eval-after-load seed7-mode
     (pel-config-major-mode seed7 pel:for-seed7))
@@ -7065,7 +7066,7 @@ the ones defined from the buffer now."
 
 ;; - Open file at point
 ;; --------------------
-(global-set-key (kbd "<M-f6>") 'pel-open-at-point)
+(global-set-key (kbd "M-*") 'pel-open-at-point)
 (define-key pel:file "."    'pel-open-at-point)
 (define-key pel:file ";"    'pel-set-open-at-point-dir)
 (define-key pel:file (kbd "M-.") 'pel-set-ido-use-fname-at-point)
