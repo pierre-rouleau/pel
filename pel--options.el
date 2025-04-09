@@ -1710,7 +1710,11 @@ The Hippie Expand can be used together with any."
                                                    (quote pel-ini-file))))
 
 (defcustom pel-use-emacs-toml nil
-  "Whether PEL supports the emacs-toml to read/write .toml files."
+  "Whether PEL supports the emacs-toml to read/write .toml files.
+
+Note that is `pel-use-tomlparse' is t, `pel-use-tree-sitter' is t and
+tree-sitter is available, then tomlparse is used instead of emacs-toml.
+"
   :group 'pel-pkg-for-conf-file
   :link '(url-link :tag "emacs-toml @ Github"
                    "https://github.com/gongo/emacs-toml")
@@ -1720,6 +1724,18 @@ The Hippie Expand can be used together with any."
                    "https://toml.io/en/")
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-use-tomlparse nil
+  "Whether PEL supports tomlparse when tree-sitter is available.
+
+This is only available when pel-use-tree-sitter is t (on).
+"
+  :group 'pel-pkg-for-conf-file
+  :link '(url-link :tag "tomlparse.el @ Github"
+                   "https://github.com/johannes-mueller/tomlparse.el")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-tomlparse :package-is :in-utils)
 
 (defcustom pel-use-kconfig-mode nil
   "Whether PEL supports kconfig-mode for the Linux kernel Konfig files."
@@ -12358,6 +12374,10 @@ indexing system."
 (when pel-use-archive-rpm
   (setq pel-use-rpm-spec-mode t))
 
+(unless pel-use-tree-sitter
+  (setq pel-use-tomlparse nil))
+(when pel-use-tomlparse
+  (setq pel-use-emacs-toml nil))
 
 ;; Automatically disable undo-tree in Emacs >= 28 when pel-use-simple-undo or
 ;; pel-use-vundo because undo-tree is not robust and may corrupt a buffer and

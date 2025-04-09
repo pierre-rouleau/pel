@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add preliminary support for [[https://github.com/johannes-mueller/tomlparse.el][tomlparse]] for TOML file when *pel-use-tomlparse* user option is set and when
+  tree-sitter is activated by *pel-use-tree-sitter* user-option.  The code is in preliminary state pending
+  some investigation, but it appears to work in my system.  Let me know if you detect any problem.
 - The ~M-S-<f5>~ and ~M-S-<f6>~ are no longer bound to 1-line scroll of other window, freeing the ~M-<f6>~
   key for use as a prefix.  The *pel-scroll-down-other* and *pel-scroll-up-other* are now only available in the
   *pel-∑scroll* hydra as ~C-<f7> M-<up>~ and ~C-<f7> M-<down>~ respectively.

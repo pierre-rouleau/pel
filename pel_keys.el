@@ -440,7 +440,33 @@ Your version of Emacs does not support dynamic module.")))
   (pel-install-github-file "pierre-rouleau/ini.el/master" "ini.el"))
 (when pel-use-emacs-toml
   (pel-ensure-package toml from: melpa)
-  (pel-major-mode-use-tree-sitter 'toml-mode 'toml-ts-mode))
+  (unless pel-use-tomlparse
+    (pel-major-mode-use-tree-sitter 'toml-mode 'toml-ts-mode)))
+(when pel-use-tomlparse
+  ;; This is only available when tree-sitter is available and
+  ;; pel-use-tree-sitter is t.
+  (pel-install-github-file "johannes-mueller/tomlparse.el/master"
+                           "tomlparse.el")
+
+  ;; Use toml-ts-mode instead of Emacs standard `conf-toml-mode'
+  (add-to-list 'auto-mode-alist '("\\.toml\\'" . toml-ts-mode))
+
+  ;; [:todo 2025-04-09, by Pierre Rouleau: May have to do the following code.
+  ;;                    But I'm not sure it's required.]
+  ;; (add-to-list
+  ;;  'treesit-language-source-alist
+  ;;  '(toml "https://github.com/tree-sitter-grammars/tree-sitter-toml"))
+  ;; (treesit-install-language-grammar "toml"
+  ;;                                   (expand-file-name
+  ;;                                    "tree-sitter"
+  ;;                                    user-emacs-directory))
+
+  ;; [:todo 2025-04-09, by Pierre Rouleau: not sure if the following is needed]
+  (pel-autoload-function "tomlparse" for:
+    tomlparse-file
+    tomlparse-buffer
+    toml-string))
+
 (when pel-use-kconfig-mode
   (pel-install-github-file "delaanthonio/kconfig-mode/master" "kconfig-mode.el")
   (add-to-list 'auto-mode-alist '("\\Kconfig\\'" . kconfig-mode))
