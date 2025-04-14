@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Removed link to interaction-log @ Github, as its author plans to move it to GNU Elpa.
+  PEL continues to install it via MELPA as this is still supported.
 - Add preliminary support for [[https://github.com/johannes-mueller/tomlparse.el][tomlparse]] for TOML file when *pel-use-tomlparse* user option is set and when
   tree-sitter is activated by *pel-use-tree-sitter* user-option.  The code is in preliminary state pending
   some investigation, but it appears to work in my system.  Let me know if you detect any problem.

@@ -3426,12 +3426,14 @@ waiting for activity to resume in the lewang's repo."
 (defcustom pel-use-interaction-log-mode nil
   "Control whether PEL uses the interaction-log-mode package.
 This package  logs all keys typed in a buffer, showing the command name and
-using colored fonts.  Similar to command-log-mode but with more colors."
+using colored fonts.  Similar to command-log-mode but with more colors.
+
+Note: the author is planning to move the package to GNU elpa;
+the previous Github site was removed but MELPA-based installation
+still works."
   :group 'pel-pkg-for-keys
   :type 'boolean
-  :safe #'booleanp
-  :link '(url-link :tag "interaction-log-mode @ Github"
-                   https://github.com/michael-heerdegen/interaction-log.el))
+  :safe #'booleanp)
 
 (defcustom pel-select-key-is-end nil
   "When set the <select> key is bound as the <end> key.
