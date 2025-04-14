@@ -36,6 +36,9 @@ test/elisp-example-with-defun-in-strings.el
 test/pel-filedir-tests.el
 test/data/*
 
+# PEL test tag
+pel-ran-tests.tag
+
 # PEL Test output directory
 test-result/*
 compile-logs/*
