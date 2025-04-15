@@ -4959,8 +4959,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-autoload-file seed7-mode for: seed7-mode)
 
   (define-key pel:for-seed7 "c" 'seed7-compile)
-  (define-key pel:for-seed7 (kbd "<up>") 'seed7-block-backward)
-  (define-key pel:for-seed7 (kbd "<down>") 'seed7-block-forward)
+  (define-key pel:for-seed7 (kbd "<up>") 'seed7-to-block-backward)
+  (define-key pel:for-seed7 (kbd "<down>") 'seed7-to-block-forward)
 
   (pel-eval-after-load seed7-mode
     (pel-config-major-mode seed7 pel:for-seed7))
