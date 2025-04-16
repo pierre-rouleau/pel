@@ -1,6 +1,6 @@
 ;;; pel-comment.el --- PEL Comments Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -29,25 +29,28 @@
 ;;
 ;; The file holds the following commands:
 
-;; * pel-comment-start
-;; * pel-comment-middle
-;; * pel-comment-end
-;; * pel-toggle-comment-auto-fill-only-comments
-;; * pel-delete-all-comments
-;; * pel-kill-all-comments
+;; * `pel-comment-start'
+;; * `pel-comment-middle'
+;; * `pel-comment-end'
+;; * `pel-comment-style'
+;;   - `pel--comment-styles'
+;; * `pel-toggle-comment-auto-fill-only-comments'
+;; * `pel-delete-all-comments'
+;; * `pel-kill-all-comments'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 
 ;; Elisp functions taken from files always loaded
-;; - from: newcomment                    ; use: comment-kill
-;; - from: simple                        ; use kill-ring
+;; - from: newcomment                    ; use: `comment-kill'
+;; - from: simple                        ; use `kill-ring'
 
-(require 'pel--base)                     ; use: pel-toggle,
-;;                                       ;       pel-print-in-buffer
-(require 'pel-ccp)                       ; use: pel-delete-all-empty-lines
-(eval-when-compile (require 'subr-x))    ; use: dolist, with-current-buffer
+(require 'pel--base)                     ; use: `pel-toggle',
+;;                                       ;      `pel-print-in-buffer'
+(require 'pel-ccp)                       ; use: `pel-delete-all-empty-lines'
+(require 'pel-prompt)                    ; use: `pel-select-from'
+(eval-when-compile (require 'subr-x))    ; use: `dolist', `with-current-buffer'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -85,6 +88,33 @@
            comment-end)))
      (list string)))
   (setq comment-end string))
+
+
+(defun pel--comment-styles ()
+  "Utility - build list of comment style choices."
+  (let ((st nil)
+        (idx -1))
+    (reverse
+     (dolist (style comment-styles st)
+       (setq idx (1+ idx))
+       (setq st (cons
+                 (list (string-to-char (format "%d" idx))
+                       (nth 0 style)
+                       (nth 0 style))
+                 st))))))
+
+;;-pel-autoload
+(defun pel-comment-style (&optional customize)
+  "Prompt and select comment style for current buffer.
+With optional CUSTOMIZE argument, open the customize buffer to modify."
+  (interactive "P")
+  (if customize
+      (customize-option 'comment-style)
+    (setq-local comment-style
+                (pel-select-from "Comment style"
+                                 (pel--comment-styles)
+                                 comment-style))))
+
 
 
 ;;-pel-autoload

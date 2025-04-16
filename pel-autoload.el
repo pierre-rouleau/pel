@@ -246,6 +246,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-comment-start
     pel-comment-middle
     pel-comment-end
+    pel-comment-style
     pel-toggle-comment-auto-fill-only-comments
     pel-delete-all-comments
     pel-kill-all-comments

@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-03-29 15:54:55 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-04-16 11:40:18 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -600,7 +600,7 @@ pel-cc-navigate.elc:    pel--syntax-macros.elc
 pel-ccp.elc:            pel--base.elc pel--options.elc pel-navigate.elc
 pel-comint.elc:         pel--base.elc
 pel-comment-adorn.elc:  pel-rst.elc pel-comment.elc pel-mark.elc
-pel-comment.elc:        pel--base.elc pel-ccp.elc
+pel-comment.elc:        pel--base.elc pel-ccp.elc pel-prompt.elc
 pel-commonlisp.elc:     pel--options.elc
 pel-completion.elc:     pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-seq.elc pel-ido.elc
 pel-cpp.elc:            pel--base.elc

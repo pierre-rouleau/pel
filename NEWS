@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add the *pel-comment-style* command, bound to ~<f11> ; s~ globally.
+  Use it to quickly change the comment style used in the current buffer.
+  Emacs 30 currently supports 8 different styles, as specified by the *comment-styles* user option.
+  The *comment-style* user option identifies the style selected by default for all buffers.
+  The new command allows changing the value for the current buffer quickly and, issued with an argument prefix,
+  opens the customize buffer to change the value of the user option.
 - Removed link to interaction-log @ Github, as its author plans to move it to GNU Elpa.
   PEL continues to install it via MELPA as this is still supported.
 - Add preliminary support for [[https://github.com/johannes-mueller/tomlparse.el][tomlparse]] for TOML file when *pel-use-tomlparse* user option is set and when
