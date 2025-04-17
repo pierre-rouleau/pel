@@ -2,7 +2,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
-- Add the *pel-comment-style* command, bound to ~<f11> ; s~ globally.
+- Add the *pel-bookmark-set-file* command, bound to ~<f1> ' M-f~.
+  Use it to change the name of the Emacs bookmark file quickly for the current buffer.
+  With a prefix argument it changes it for all buffers.
+  Useful when using bookmark annotations when it's not possible to store these
+  annotations inside the text or code files you work with.  Maintaining a separate bookmark file
+  will store the important notes and can be sued later to jump to the corresponding location.
+- Add the *pel-comment-style* command, bound to ~<f11> ; s~.
   Use it to quickly change the comment style used in the current buffer.
   Emacs 30 currently supports 8 different styles, as specified by the *comment-styles* user option.
   The *comment-style* user option identifies the style selected by default for all buffers.

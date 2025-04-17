@@ -118,7 +118,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-show-init-time
     pel-log-init-time)
 
-  (pel-autoload "pel-bookmark" for: pel-bookmark-info)
+  (pel-autoload "pel-bookmark" for:
+    pel-bookmark-info
+    pel-bookmark-set-file)
   (pel-autoload-function "pel-bookmark" for: pel-bookmark-in-current-file-p)
 
   (pel-autoload "pel-browse" for: pel-browse-url)

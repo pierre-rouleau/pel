@@ -1,6 +1,6 @@
 ;;; pel-bookmark.el --- PEL bookmark utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2023, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -56,6 +56,18 @@ non-nil, in which case it appends to the previous report."
        (pel-insert-symbol-content-line 'bookmark-default-file))
      (unless append :clear-buffer)
      :use-help-mode)))
+
+;;-pel-autoload
+(defun pel-bookmark-set-file (&optional globally)
+  "Change Emacs bookmark file used in current buffer.
+Change it globally if GLOBALLY optional argument is set.
+This does not persist, the default is `bookmark-default-file' user-option."
+  (interactive "P")
+  (let ((bookmark-filename (read-file-name "Use Bookmark File: ")))
+    (if globally
+        (setq bookmark-default-file bookmark-filename)
+      (setq-local bookmark-default-file bookmark-filename))))
+
 ;; -----------------------------------------------------------------------------
 (provide 'pel-bookmark)
 
