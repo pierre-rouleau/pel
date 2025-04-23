@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-23 09:32:15 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-23 10:23:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -42,23 +42,28 @@
 #  Code
 #  ----
 
+pgm_name="$(basename "$0")"
+pgm_path="$(dirname "$(which "$pgm_name")")"
+
 print_usage()
 {
     printf -- "
-etags-py: build an etags-compliant TAGS in the current directory
+%s: build an etags-compliant TAGS in the current directory
           for all Python source code files in the specified
           directory tree(s).
 
- Usage: etags-py -h|--help
+ Usage: %s -h|--help
 
    • Print this help information.
 
-  Usage: etags-py [-u] [DIRPATH ...]
+  Usage: %s [-u] [DIRPATH ...]
 
    • [Re]build an etags-compliant TAGS file in current directory
      for the Python source code files in the directory
      tree(s) identified on the command line.
      If none is specified, use the current directory.
+   • Also lists all extension-less Python script files
+     as well as Python files with the usual extensions.
    • Uses etags to build the TAGS file by default, but
      -u : force use Universal Ctags (ctags) instead of etags.
    • Set ETAGS_USE_UCTAGS to 1 or the absolute path of
@@ -85,7 +90,7 @@ etags-py: build an etags-compliant TAGS in the current directory
    • The only output on stdout is the list of files found.
      This allows this script to be used as the first in a pipe
      to do other processing with the list of files found.
-"
+" "$pgm_name" "$pgm_name" "$pgm_name"
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         printf -- "
 ⚠️   ETAGS_USE_FIND is currently set to 1, forcing the use of 'find'!
@@ -240,13 +245,18 @@ search()
 
 # Search in all specified directory to build the list of
 # files in the file '.etags-py-files.txt'.
+# Use find-script-py to identify the names of the extension-less
+# Python files.  This script is inside the same directory as etags-py.
+
 printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
 if [ -z "$1" ]; then
     dirname="."
     search
+    "${pgm_path}/find-script-py" | tee -a .etags-py-files.txt
 else
     for dirname in "$@"; do
         search
+       "${pgm_path}/find-script-py"  "$dirname" | tee -a .etags-py-files.txt
     done
 fi
 
