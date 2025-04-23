@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-01-16 17:10:57 EST, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-23 09:32:15 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -14,7 +14,7 @@
 #
 # Usage:
 #  - cd where you want to store the TAGS file
-#  - etags-py DIRPATH [DIRPATH ...]
+#  - etags-py [DIRPATH ...]
 #
 
 # ----------------------------------------------------------------------------
@@ -38,9 +38,6 @@
 #   You can also set ETAGS_USE_UCTAGS to the absolute path of the
 #   Universal Ctags executable file.
 
-# TODO: eliminate code duplication while keeping capability to stay
-#       compatible with various shells (sh, bash, etc...)
-
 # ----------------------------------------------------------------------------
 #  Code
 #  ----
@@ -56,11 +53,12 @@ etags-py: build an etags-compliant TAGS in the current directory
 
    • Print this help information.
 
-  Usage: etags-py [-u] DIRPATH [DIRPATH ...]
+  Usage: etags-py [-u] [DIRPATH ...]
 
    • [Re]build an etags-compliant TAGS file in current directory
      for the Python source code files in the directory
      tree(s) identified on the command line.
+     If none is specified, use the current directory.
    • Uses etags to build the TAGS file by default, but
      -u : force use Universal Ctags (ctags) instead of etags.
    • Set ETAGS_USE_UCTAGS to 1 or the absolute path of
@@ -80,14 +78,18 @@ etags-py: build an etags-compliant TAGS in the current directory
      variable to 1.
    • ☝️  When 'fdfind' or 'fd' is used, the content of files identified
      by the .gitignore, .ignore or .fdignore files are ignored.
-   • Prints the path of the find program used and when
-     repository ignore files are scanned.
+   • Info printed on stderr:
+     • The path of the find program used and when repository ignore files
+       are skipped from the scan.
+     • A count of found files, and the name of the file that holds them.
+   • The only output on stdout is the list of files found.
+     This allows this script to be used as the first in a pipe
+     to do other processing with the list of files found.
 "
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         printf -- "
-⚠️   ETAGS_USE_FIND is set to 1, forcing the use of 'find'!
-    • To prevent this, set it to 0 or remove that
-      environment variable.
+⚠️   ETAGS_USE_FIND is currently set to 1, forcing the use of 'find'!
+    • To prevent this, set it to 0 or remove that environment variable.
     • With USRHOME, you can use setenv and clrenv.
       See: https://github.com/pierre-rouleau/usrhome
 "
@@ -121,10 +123,7 @@ run__etags__py()
 # --
 # Check validity of arguments
 
-if [ -z "$1" ]; then
-    print_usage
-    exit 1
-elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     if [ "$#" = "1" ]; then
         exit 0
@@ -187,34 +186,79 @@ done
 # Find the files, pass their names to etags which creates the TAGS file.
 # To find the files, try to use fd or fdfind if they exist,
 # otherwise use find.  Echo the actual program used to find files.
+
+# First prepare environment
+rm -f .etags-py-files.txt
+
+# Print operating information on stderr.
 if [ "$ETAGS_USE_FIND" = "1" ]; then
-    echo "- ETAGS_USE_FIND forces the use of find!"
-    echo "-> Using" "$(which find)"
-    find -f "$@" \( \
-         -name     "*.py" \
-         -or -name "*.pyw" \
-         \)  -print | tee .etags-py-files.txt | run__etags__py
+    echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
+    echo "-> Using" "$(which find)"                 1>&2
 else
     if [ -x "$(command -v fdfind)" ]; then
-        echo "-> Using" "$(which fdfind)"
-        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
-        fdfind --type f -e .py -e .pyw \
-               "$@" | tee .etags-py-files.txt | run__etags__py
+        echo "-> 1 Using" "$(which fdfind)" 1>&2
+        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
     elif [ -x "$(command -v fd)" ]; then
-        echo "-> Using" "$(which fd)"
-        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
-        fd --type f -e .py -e .pyw \
-           "$@" | tee .etags-py-files.txt | run__etags__py
+        echo "-> 2 Using" "$(which fd)" 1>&2
+        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
     else
-        echo "-> Using" "$(which find)"
-        find -f "$@" \( \
-             -name "*py" \
-             -or -name "*.pyw" \
-             \) -print | tee .etags-py-files.txt | run__etags__py
+        echo "-> Using" "$(which find)" 1>&2
     fi
 fi
+
+# Define a function that searches into 1 directory
+# and accumulates the list of found files into the
+# file '.etags-py-files.txt'.
+
+search_with_find()
+{
+    # Arg1: dirname : name of directory tree to search
+    find -f "$dirname" \( \
+         -name     "*.py" \
+         -or -name "*.pyw" \
+         \)  -print | tee -a .etags-py-files.txt
+}
+
+search()
+{
+    # Arg1: dirname : name of directory tree to search
+    if [ "$ETAGS_USE_FIND" = "1" ]; then
+        search_with_find
+    else
+        if [ -x "$(command -v fdfind)" ]; then
+            fdfind --type f -e .py -e .pyw \
+                   . "$dirname" | tee -a .etags-py-files.txt
+        elif [ -x "$(command -v fd)" ]; then
+            echo "$dirname"
+            fd --type f -e .py -e .pyw \
+               . "$dirname" | tee -a .etags-py-files.txt
+        else
+            search_with_find
+        fi
+    fi
+}
+
+# Search in all specified directory to build the list of
+# files in the file '.etags-py-files.txt'.
+printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
+if [ -z "$1" ]; then
+    dirname="."
+    search
+else
+    for dirname in "$@"; do
+        search
+    done
+fi
+
+# Then run etags on these files, and sort them in the etags file
+sort < .etags-py-files.txt | uniq >  .etags-py-files.1.txt
+rm -f .etags-py-files.txt
+mv .etags-py-files.1.txt .etags-py-files.txt
+run__etags__py < .etags-py-files.txt
+
+
 file_count="$(wc -l .etags-py-files.txt | awk '{print $1}')"
-printf "%s files found and processed. List stored in: .etags-py-files.txt\n" "${file_count}"
+printf "%s files found and processed. List stored in: .etags-py-files.txt\n" "${file_count}" 1>&2
 
 # -----------------------------------------------------------------------------
 # Local Variables:

@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-01-16 17:13:01 EST, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-23 09:34:03 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -21,7 +21,7 @@
 #
 # Usage:
 #  - cd where you want to store the TAGS file
-#  - etags-c [--list=FILENAME] | [DIRPATH [DIRPATH ...]]
+#  - etags-c [--list=FILENAME] | [DIRPATH ...]
 #
 
 # ----------------------------------------------------------------------------
@@ -45,10 +45,6 @@
 #   Universal Ctags executable file.
 
 # ----------------------------------------------------------------------------
-# TODO: eliminate code duplication while keeping capability to stay
-#       compatible with various shells (sh, bash, etc...)
-
-# ----------------------------------------------------------------------------
 #  Code
 #  ----
 
@@ -63,12 +59,13 @@ etags-c: build a etags-compliant TAGS file in the current directory
 
   • Print this help information.
 
- Usage: etags-c DIRPATH [DIRPATH ...]
+ Usage: etags-c [DIRPATH ...]
         etags-c [--list=FILENAME]
 
   • [Re]build an etags-compliant TAGS file in current directory
     for the C/C++ code & header files found:
     - in the DIRPATH directory tree(s) identified on the command line, or
+      the current directory if none is specified,
     - in the list provided in the FILENAME specified by the --list option, or
     - specified by the ETAGS_FILE_LIST environment variable.
   • Overwrites any TAGS file in the current directory.
@@ -95,14 +92,15 @@ etags-c: build a etags-compliant TAGS file in the current directory
       Ctags executable file to force using Universal Ctags instead.
       When setting it to 1, the ctags found in PATH is expected
       to be Universal Ctags.
-  • Prints the path of the \"find\" program used and when
-    repository ignore files are scanned.\n"
-
+   • Info printed on stderr:
+     • The path of the find program used and when repository ignore files
+       are skipped from the scan.
+     • A count of found files, and the name of the file that holds them.
+"
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         printf -- "
-⚠️   ETAGS_USE_FIND is set to 1, forcing the use of 'find'!
-    • To prevent this, set it to 0 or remove that
-      environment variable.
+⚠️   ETAGS_USE_FIND is currently set to 1, forcing the use of 'find'!
+    • To prevent this, set it to 0 or remove that environment variable.
     • With USRHOME, you can use setenv and clrenv.
       See: https://github.com/pierre-rouleau/usrhome
 "
@@ -148,10 +146,7 @@ run__etags_c()
 # --
 # Check validity of arguments
 
-if [ -z "$1" ]; then
-    print_usage
-    exit 1
-elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     if [ "$#" = "1" ]; then
         exit 0
@@ -178,6 +173,90 @@ esac
 
 # --
 
+# Define a function that searches into 1 directory
+# and accumulates the list of found files into the
+# file '.etags-c-files.txt'.
+
+search_with_find()
+{
+    # Arg: dirname : name of directory tree to search
+    find -L \
+         ${find_path_option} "$dirname" \
+         \(  -name "*.[ch]"      \
+         -or -name "*.[ch].in"   \
+         -or -name "*.[ch]++"    \
+         -or -name "*.[ch]++.in" \
+         -or -name "*.[ch]pp"    \
+         -or -name "*.[ch]pp.in" \
+         -or -name "*.[ch]xx"    \
+         -or -name "*.[ch]xx.in" \
+         -or -name "*.[CH]"      \
+         -or -name "*.[CH].in"   \
+         -or -name "*.cc"        \
+         -or -name "*.cc.in"     \
+         -or -name "*.hh"        \
+         -or -name "*.hh.in"     \
+         -or -name "*.inl"       \
+         -or -name "*.M"         \
+         -or -name "*.pdb"       \
+         \)  -print | tee -a .etags-c-files.txt
+}
+
+search_with_fd()
+{
+    # Arg: dirname : name of directory tree to search
+    # Arg: fd_pgm  : fd or fdfind
+    ${fd_pgm} --absolute-path \
+              --follow   \
+              --type f   \
+              --type l   \
+              -e .c      \
+              -e .c.in   \
+              -e .h      \
+              -e .h.in   \
+              -e .c++    \
+              -e .c++.in \
+              -e .h++    \
+              -e .h++.in \
+              -e .cpp    \
+              -e .cpp.in \
+              -e .hpp    \
+              -e .hpp.in \
+              -e .cxx    \
+              -e .cxx.in \
+              -e .hxx    \
+              -e .hxx.in \
+              -e .C      \
+              -e .C.in   \
+              -e .H      \
+              -e .H.in   \
+              -e .cc     \
+              -e .cc.in  \
+              -e .hh     \
+              -e .hh.in  \
+              -e .inl    \
+              -e .M      \
+              -e .pdb    \
+             . "$dirname" | tee -a .etags-c-files.txt
+}
+
+search()
+{
+    # Arg: dirname : name of directory tree to search
+    # Arg: search_with : find or fd
+    case "$search_with" in
+        find)
+            search_with_find
+            ;;
+
+        fd)
+            search_with_fd
+            ;;
+    esac
+}
+
+# --
+
 if [ -n "$ETAGS_FILE_LIST" ]; then
     if [ "$ETAGS_FILE_LIST" = ".etags-c-files.txt" ]; then
         echo "Error! Do NOT set ETAGS_FILE_LIST to .etags-c-files.txt"
@@ -195,26 +274,26 @@ else
     dpaths=
     for dname in "$@"; do
         if [ ! -d "${dname}" ]; then
-            printf -- "Specified directory does not exists: %s\n" "${dname}"
+            printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2;
             exit 2
         fi
         dpath="$(realpath "${dname}")"
         for dp in ${dpaths}; do
             if [ "$dp" = "$dpath" ]; then
-                printf -- "Multiple entry of directory: %s\n" "${dname}"
+                printf -- "Multiple entry of directory: %s\n" "${dname}" 1>&2;
                 exit 3
             fi
             # check if new entry is a sub-directory of an exiting entry
             case "${dpath}" in
                 "${dp}/"*)
-                    printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}"
+                    printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}" 1>&2;
                     exit 3
                     ;;
             esac
             # check if new entry is a parent directory of an existing entry
             case "${dp}" in
                 "${dpath}/"*)
-                    printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}"
+                    printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}" 1>&2;
                     exit 3
                     ;;
             esac
@@ -223,8 +302,8 @@ else
         dpaths="${dpaths} ${dpath}"
     done
 
-    echo "No list of files identified by ETAGS_FILE_LIST."
-    echo "- Building the list of source files."
+    echo "No list of files identified by ETAGS_FILE_LIST." 1>&2
+    echo "- Building the list of source files."            1>&2
 
     # Find the files, pass their names to etags which creates the TAGS file.
     # To find the files, try to use 'fd' or 'fdfind' if they exist,
@@ -246,6 +325,7 @@ else
         fi
     fi
 
+    # Identify options
     case $(uname) in
         Darwin)
             find_path_option='-f'
@@ -254,85 +334,54 @@ else
             find_path_option=
             ;;
         *)
-            printf -- "etags-c ** Error Operating System, %s, is not supported!\n" "$(uname)"
+            printf -- "etags-c ** Error Operating System, %s, is not supported!\n" "$(uname)" 1>&2
             exit 1
             ;;
     esac
 
+    # Print operating information on stderr.
     case "$search_with" in
         find)
-            printf -- "etags-c -- ETAGS_USE_FIND set to 1: forces the use of find!\n"
-            printf --  "       -> Using %s\n" "$(which find)"
-            find -L \
-                 ${find_path_option} "$@" \
-                 \(  -name "*.[ch]"      \
-                 -or -name "*.[ch].in"   \
-                 -or -name "*.[ch]++"    \
-                 -or -name "*.[ch]++.in" \
-                 -or -name "*.[ch]pp"    \
-                 -or -name "*.[ch]pp.in" \
-                 -or -name "*.[ch]xx"    \
-                 -or -name "*.[ch]xx.in" \
-                 -or -name "*.[CH]"      \
-                 -or -name "*.[CH].in"   \
-                 -or -name "*.cc"        \
-                 -or -name "*.cc.in"     \
-                 -or -name "*.hh"        \
-                 -or -name "*.hh.in"     \
-                 -or -name "*.inl"       \
-                 -or -name "*.M"         \
-                 -or -name "*.pdb"       \
-                 \)  -print | tee .etags-c-files.txt | run__etags_c
+            printf -- "etags-c -- ETAGS_USE_FIND set to 1: forces the use of find!\n" 1>&2
+            printf --  "       -> Using %s\n" "$(which find)"                         1>&2
             ;;
 
         fd)
-            printf -- "etags-c -- Using sharkdp/fd fast find.\n"
-            printf -- "        -> Using %s\n" "$(which "${fd_pgm}")"
-            printf -- " -> ☝️  Ignoring files identified in .gitignore, .ignore or .fdignore\n"
-            printf -- " -> ☝️  You may want to run a search with find once to detect broken symlinks\n"
-            ${fd_pgm} --absolute-path \
-                   --follow   \
-                   --type f   \
-                   --type l   \
-                   -e .c      \
-                   -e .c.in   \
-                   -e .h      \
-                   -e .h.in   \
-                   -e .c++    \
-                   -e .c++.in \
-                   -e .h++    \
-                   -e .h++.in \
-                   -e .cpp    \
-                   -e .cpp.in \
-                   -e .hpp    \
-                   -e .hpp.in \
-                   -e .cxx    \
-                   -e .cxx.in \
-                   -e .hxx    \
-                   -e .hxx.in \
-                   -e .C      \
-                   -e .C.in   \
-                   -e .H      \
-                   -e .H.in   \
-                   -e .cc     \
-                   -e .cc.in  \
-                   -e .hh     \
-                   -e .hh.in  \
-                   -e .inl    \
-                   -e .M      \
-                   -e .pdb    \
-                   . "$@" | tee .etags-c-files.txt | run__etags_c
+            printf -- "etags-c -- Using sharkdp/fd fast find.\n" 1>&2
+            printf -- "        -> Using %s\n" "$(which "${fd_pgm}")" 1>&2
+            printf -- " -> ☝️  Ignoring files identified in .gitignore, .ignore or .fdignore\n" 1>&2
+            printf -- " -> ☝️  You may want to run a search with find once to detect broken symlinks\n" 1>&2
             ;;
 
         *)
-            printf -- "etags-c ** Error: cannot identify find program!\n"
+            printf -- "etags-c ** Error: cannot identify find program!\n" 1>&2
             exit 1
             ;;
     esac
+    printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
+
+    # delete old list
+    rm -f .etags-c-files.txt
+    # Search in all specified directory to build the list of
+    # files in the file '.etags-c-files.txt'.
+    if [ -z "$1" ]; then
+        dirname="."
+        search
+    else
+        for dirname in "$@"; do
+            search
+        done
+    fi
+
+    # Then run etags on these files, and sort them in the etags file
+    sort < .etags-c-files.txt | uniq >  .etags-c-files.1.txt
+    rm -f .etags-c-files.txt
+    mv .etags-c-files.1.txt .etags-c-files.txt
+    run__etags_c < .etags-c-files.txt
 fi
 
 file_count="$(wc -l .etags-c-files.txt | awk '{print $1}')"
-printf -- "%s files found and processed. List stored in: .etags-c-files.txt\n" "${file_count=}"
+printf -- "%s files found and processed. List stored in: .etags-c-files.txt\n" "${file_count=}" 1>&2;
 
 # ----------------------------------------------------------------------------
 # Local Variables:
