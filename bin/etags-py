@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-23 10:23:23 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-23 11:18:32 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -54,42 +54,44 @@ print_usage()
 
  Usage: %s -h|--help
 
-   • Print this help information.
+  • Print this help information.
 
-  Usage: %s [-u] [DIRPATH ...]
+ Usage: %s [-u] [DIRPATH ...]
 
-   • [Re]build an etags-compliant TAGS file in current directory
-     for the Python source code files in the directory
-     tree(s) identified on the command line.
-     If none is specified, use the current directory.
-   • Also lists all extension-less Python script files
-     as well as Python files with the usual extensions.
-   • Uses etags to build the TAGS file by default, but
-     -u : force use Universal Ctags (ctags) instead of etags.
-   • Set ETAGS_USE_UCTAGS to 1 or the absolute path of
-     Universal Ctags executable file to force using Universal Ctags.
-     When setting it to 1, the ctags found in PATH is expected
-     to be Universal Ctags.
-     ☝️  For Python, Universal Ctags generates more information
-        than etags.
-   • Overwrites any TAGS file in the current directory.
-   • Inspects content of .py and .pyw files.
-   • Stores the names of inspected files in the file named
-     .etags-py-files.txt in the current directory.
-   • Uses fast 'fdfind' or 'fd' if available, 'find' otherwise.
-     - The 'fd' utility is from: https://github.com/sharkdp/fd
-     - In some Linux distros, 'fd' is renamed 'fdfind'.
-   • To force the use of 'find', set ETAGS_USE_FIND environment
-     variable to 1.
-   • ☝️  When 'fdfind' or 'fd' is used, the content of files identified
-     by the .gitignore, .ignore or .fdignore files are ignored.
-   • Info printed on stderr:
-     • The path of the find program used and when repository ignore files
-       are skipped from the scan.
-     • A count of found files, and the name of the file that holds them.
-   • The only output on stdout is the list of files found.
-     This allows this script to be used as the first in a pipe
-     to do other processing with the list of files found.
+  • [Re]build an etags-compliant TAGS file in current directory
+    for the Python source code files in the directory
+    tree(s) identified on the command line.
+    If none is specified, use the current directory.
+  • Also lists all extension-less Python script files
+    as well as Python files with the usual extensions.
+  • Follows symbolic links both for directories and files.
+  • Overwrites any TAGS file in the current directory.
+  • Uses etags to build the TAGS file by default, but
+    -u : force use Universal Ctags (ctags) instead of etags.
+  • Set ETAGS_USE_UCTAGS to 1 or the absolute path of
+    Universal Ctags executable file to force using Universal Ctags.
+    When setting it to 1, the ctags found in PATH is expected
+    to be Universal Ctags.
+    ☝️  For Python, Universal Ctags generates more information
+       than etags.
+  • Overwrites any TAGS file in the current directory.
+  • Inspects content of .py and .pyw files.
+  • Stores the names of inspected files in the file named
+    .etags-py-files.txt in the current directory.
+  • Uses fast 'fdfind' or 'fd' if available, 'find' otherwise.
+    - The 'fd' utility is from: https://github.com/sharkdp/fd
+    - In some Linux distros, 'fd' is renamed 'fdfind'.
+  • To force the use of 'find', set ETAGS_USE_FIND environment
+    variable to 1.
+  • ☝️  When 'fdfind' or 'fd' is used, the content of files identified
+    by the .gitignore, .ignore or .fdignore files are ignored.
+  • Info printed on stderr:
+    • The path of the find program used and when repository ignore files
+      are skipped from the scan.
+    • A count of found files, and the name of the file that holds them.
+  • The only output on stdout is the list of files found.
+    This allows this script to be used as the first in a pipe
+    to do other processing with the list of files found.
 " "$pgm_name" "$pgm_name" "$pgm_name"
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         printf -- "
@@ -218,7 +220,7 @@ fi
 search_with_find()
 {
     # Arg1: dirname : name of directory tree to search
-    find -f "$dirname" \( \
+    find -L -f "$dirname" \( \
          -name     "*.py" \
          -or -name "*.pyw" \
          \)  -print | tee -a .etags-py-files.txt
@@ -231,11 +233,11 @@ search()
         search_with_find
     else
         if [ -x "$(command -v fdfind)" ]; then
-            fdfind --type f -e .py -e .pyw \
+            fdfind -L --type f -e .py -e .pyw \
                    . "$dirname" | tee -a .etags-py-files.txt
         elif [ -x "$(command -v fd)" ]; then
             echo "$dirname"
-            fd --type f -e .py -e .pyw \
+            fd -L --type f -e .py -e .pyw \
                . "$dirname" | tee -a .etags-py-files.txt
         else
             search_with_find
