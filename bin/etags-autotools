@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for GNU Autotools source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-24 17:45:05 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-24 18:27:05 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -173,6 +173,7 @@ for dname in "$@"; do
     dpaths="${dpaths} ${dpath}"
 done
 
+# --
 
 # Define a function that searches into 1 directory
 # and accumulates the list of found files into the
@@ -231,7 +232,6 @@ search()
 
 # --
 # First prepare environment
-rm -f .etags-autotools-files.txt
 
 # Select the method to search for files.
 # - Try to use fd or fdfind if they exist,
@@ -241,8 +241,6 @@ if [ "$ETAGS_USE_FIND" = "1" ]; then
     search_with='find'
     echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
     echo "-> Using" "$(which find)"                 1>&2
-    # first find and create tags for GNU Makefile
-
 else
     if [ -x "$(command -v fdfind)" ]; then
         search_with='fd'
@@ -262,6 +260,8 @@ else
 fi
 
 # -- proceed
+# remove the old list of files.
+rm -f .etags-autotools-files.txt
 
 # Search in all specified directory to build the list of
 # files in the file '.etags-autotools-files.txt'.

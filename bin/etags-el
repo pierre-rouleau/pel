@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-24 18:00:23 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-24 18:40:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -188,36 +188,13 @@ done
 
 # --
 
-# Find the files, pass their names to etags which creates the TAGS file.
-# To find the files, try to use fd or fdfind if they exist,
-# otherwise use find.  Echo the actual program used to find files.
-
-# First prepare environment
-rm -f .etags-el-files.txt
-
-# Print operating information on stderr.
-if [ "$ETAGS_USE_FIND" = "1" ]; then
-    echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
-    echo "-> Using" "$(which find)"                 1>&2
-else
-    if [ -x "$(command -v fdfind)" ]; then
-        echo "-> Using" "$(which fdfind)" 1>&2
-        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
-    elif [ -x "$(command -v fd)" ]; then
-        echo "-> Using" "$(which fd)" 1>&2
-        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
-    else
-        echo "-> Using" "$(which find)" 1>&2
-    fi
-fi
-
 # Define a function that searches into 1 directory
 # and accumulates the list of found files into the
 # file '.etags-el-files.txt'.
 
 search_with_find()
 {
-    # Arg1: dirname : name of directory tree to search
+    # Arg: dirname : name of directory tree to search
     find -L -f "$dirname" \( -name "*.el" \
          -or -name "*.el.gz" \
          -or -name "*.[ch]"  \
@@ -225,30 +202,63 @@ search_with_find()
          \)  -print | tee -a .etags-el-files.txt
 }
 
-search()
+search_with_fd()
 {
-    # Arg1: dirname : name of directory tree to search
-    if [ "$ETAGS_USE_FIND" = "1" ]; then
-        search_with_find
-    else
-        if [ -x "$(command -v fdfind)" ]; then
-        fdfind -L --type f -e .el -e .el.gz \
-               -e .c -e .c.gz \
-               -e .h -e .h.gz \
-               . "$dirname" | tee -a .etags-el-files.txt
+    # Arg: dirname : name of directory tree to search
+    # Arg: fd_pgm  : fd or fdfind
 
-        elif [ -x "$(command -v fd)" ]; then
-            fd -L --type f -e .el -e .el.gz \
-               -e .c  -e .c.gz \
-               -e .h  -e .h.gz \
-               . "$dirname" | tee -a .etags-el-files.txt
-        else
-            search_with_find
-        fi
-    fi
+    ${fd_pgm} -L --type f -e .el -e .el.gz \
+              -e .c -e .c.gz \
+              -e .h -e .h.gz \
+              "$dirname" | tee -a .etags-el-files.txt
 }
 
+search()
+{
+    # Arg: dirname : name of directory tree to search
+    # Arg: search_with : find or fd
+    case "$search_with" in
+        find)
+            search_with_find
+            ;;
+
+        fd)
+            search_with_fd
+            ;;
+    esac
+}
+
+
+# --
+# First prepare environment
+# Select the method to search for files.
+# - Try to use fd or fdfind if they exist,
+#   otherwise use find.
+# - Echo the actual program used to find files (on stderr).
+if [ "$ETAGS_USE_FIND" = "1" ]; then
+    search_with='find'
+    echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
+    echo "-> Using" "$(which find)"                 1>&2
+else
+    if [ -x "$(command -v fdfind)" ]; then
+        search_with='fd'
+        fd_pgm=fdfind
+        echo "-> Using" "$(which fdfind)" 1>&2
+        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
+    elif [ -x "$(command -v fd)" ]; then
+        search_with='fd'
+        fd_pgm=fd
+        echo "-> Using" "$(which fd)" 1>&2
+        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
+    else
+        search_with='find'
+        echo "-> Using" "$(which find)" 1>&2
+    fi
+fi
+
 # -- proceed
+# remove the old list of files.
+rm -f .etags-el-files.txt
 
 # Search in all specified directory to build the list of
 # files in the file '.etags-el-files.txt'.
