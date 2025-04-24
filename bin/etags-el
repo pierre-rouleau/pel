@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-24 11:00:29 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-24 17:57:05 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -108,7 +108,7 @@ run__etags__el()
 
     etags -
     if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
-        printf "Using etags despite ETAGS_USE_CTAGS since ctags can't handle compressed file\n"
+        printf "Using etags despite ETAGS_USE_CTAGS since ctags can't handle compressed file\n" 1>&2
     fi
 }
 
@@ -134,7 +134,7 @@ case "$1" in
             shift
         else
             printf -- "\
-*** ERROR: %s: invalid TARGET-DIRPATH: %s\n" "${pgm_name}" "${targetdir}"
+*** ERROR: %s: invalid TARGET-DIRPATH: %s\n" "${pgm_name}" "${targetdir}" 1>&2
             exit 1
         fi
         ;;
@@ -144,7 +144,7 @@ case "$1" in
 
     -*)
         printf -- "\
-*** ERROR: %s: invalid options: %s\n" "${pgm_name}" "$1"
+*** ERROR: %s: invalid options: %s\n" "${pgm_name}" "$1" 1>&2
         exit 1
         ;;
 esac
