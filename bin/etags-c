@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-24 10:23:10 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-24 16:54:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -277,26 +277,26 @@ else
     dpaths=
     for dname in "$@"; do
         if [ ! -d "${dname}" ]; then
-            printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2;
+            printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2
             exit 2
         fi
         dpath="$(realpath "${dname}")"
         for dp in ${dpaths}; do
             if [ "$dp" = "$dpath" ]; then
-                printf -- "Multiple entry of directory: %s\n" "${dname}" 1>&2;
+                printf -- "Multiple entry of directory: %s\n" "${dname}" 1>&2
                 exit 3
             fi
             # check if new entry is a sub-directory of an exiting entry
             case "${dpath}" in
                 "${dp}/"*)
-                    printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}" 1>&2;
+                    printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}" 1>&2
                     exit 3
                     ;;
             esac
             # check if new entry is a parent directory of an existing entry
             case "${dp}" in
                 "${dpath}/"*)
-                    printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}" 1>&2;
+                    printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}" 1>&2
                     exit 3
                     ;;
             esac
