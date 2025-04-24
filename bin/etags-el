@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-24 17:57:05 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-24 18:00:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -158,26 +158,26 @@ esac
 dpaths=
 for dname in "$@"; do
     if [ ! -d "${dname}" ]; then
-        printf -- "Specified directory does not exists: %s\n" "${dname}"
+        printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2
         exit 2
     fi
     dpath="$(realpath "${dname}")"
     for dp in ${dpaths}; do
         if [ "$dp" = "$dpath" ]; then
-            printf -- "Multiple entry of directory: %s\n" "${dname}"
+            printf -- "Multiple entry of directory: %s\n" "${dname}" 1>&2
             exit 3
         fi
         # check if new entry is a sub-directory of an exiting entry
         case "${dpath}" in
             "${dp}/"*)
-                printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}"
+                printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}" 1>&2
                 exit 3
                 ;;
         esac
         # check if new entry is a parent directory of an existing entry
         case "${dp}" in
             "${dpath}/"*)
-                printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}"
+                printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}" 1>&2
                 exit 3
                 ;;
         esac
