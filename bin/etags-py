@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-23 11:18:32 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-24 10:37:59 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -59,9 +59,9 @@ print_usage()
  Usage: %s [-u] [DIRPATH ...]
 
   • [Re]build an etags-compliant TAGS file in current directory
-    for the Python source code files in the directory
-    tree(s) identified on the command line.
-    If none is specified, use the current directory.
+    for the Python source code files found:
+    - in the DIRPATH directory tree(s) identified on the command line, or
+      the current directory if none is specified.
   • Also lists all extension-less Python script files
     as well as Python files with the usual extensions.
   • Follows symbolic links both for directories and files.
@@ -117,7 +117,7 @@ run__etags__py()
             xargs "$ETAGS_USE_UCTAGS" --output-format=etags
             printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS"
         else
-            printf -- "*** etags-py ERROR: invalid ETAGS_USE_UCTAGS value\n"
+            printf -- "*** ERROR: %s:  invalid ETAGS_USE_UCTAGS value\n" "${pgm_name}"
             printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS"
             printf -- "***  This is not 1 nor a valid executable file name.\n"
             exit 4
@@ -133,6 +133,7 @@ run__etags__py()
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     if [ "$#" = "1" ]; then
+        # help requested explicitly with right amount of args: no error.
         exit 0
     else
         exit  1
@@ -189,6 +190,7 @@ for dname in "$@"; do
     dpaths="${dpaths} ${dpath}"
 done
 
+# --
 
 # Find the files, pass their names to etags which creates the TAGS file.
 # To find the files, try to use fd or fdfind if they exist,
@@ -203,10 +205,10 @@ if [ "$ETAGS_USE_FIND" = "1" ]; then
     echo "-> Using" "$(which find)"                 1>&2
 else
     if [ -x "$(command -v fdfind)" ]; then
-        echo "-> 1 Using" "$(which fdfind)" 1>&2
+        echo "-> Using" "$(which fdfind)" 1>&2
         echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
     elif [ -x "$(command -v fd)" ]; then
-        echo "-> 2 Using" "$(which fd)" 1>&2
+        echo "-> Using" "$(which fd)" 1>&2
         echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
     else
         echo "-> Using" "$(which find)" 1>&2
@@ -236,7 +238,6 @@ search()
             fdfind -L --type f -e .py -e .pyw \
                    . "$dirname" | tee -a .etags-py-files.txt
         elif [ -x "$(command -v fd)" ]; then
-            echo "$dirname"
             fd -L --type f -e .py -e .pyw \
                . "$dirname" | tee -a .etags-py-files.txt
         else
