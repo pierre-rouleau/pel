@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Make source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-24 23:42:07 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-24 23:59:26 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -129,11 +129,11 @@ fi
 
 if [ "$1" = "-u" ]; then
     if [ -z "$ETAGS_USE_UCTAGS" ]; then
-        echo "%s: -u option requests use of Universal Ctags." "${pgm_name}" 1>&2
+        printf -- "%s: -u option requests use of Universal Ctags.\n" "${pgm_name}" 1>&2
         ETAGS_USE_UCTAGS=1
     else
-        echo "%s: -u option not necessary (but does no harm)." "${pgm_name}" 1>&2
-        echo " ETAGS_USE_UCTAGS is already set to: $ETAGS_USE_UCTAGS"  1>&2
+        printf -- "%s: -u option not necessary (but does no harm).\n" "${pgm_name}" 1>&2
+        printf -- " ETAGS_USE_UCTAGS is already set to: %s\n" "$ETAGS_USE_UCTAGS"  1>&2
     fi
     shift
 fi
