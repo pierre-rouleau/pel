@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-24 23:46:14 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 08:12:20 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -138,6 +138,7 @@ fi
 
 # --
 
+# Check -u option to force use of universal ctags
 if [ "$1" = "-u" ]; then
     if [ -z "$ETAGS_USE_UCTAGS" ]; then
         echo "etags-py: -u option requests use of Universal Ctags."
@@ -192,10 +193,24 @@ done
 # and accumulates the list of found files into the
 # file '.etags-py-files.txt'.
 
+# Identify options
+case $(uname) in
+    Darwin)
+        find_path_option='-f'
+        ;;
+    Linux)
+        find_path_option=
+        ;;
+    *)
+        printf -- "*** ERROR: %s:  Error Operating System, %s, is not supported!\n" "${pgm_name}"  "$(uname)" 1>&2
+        exit 1
+        ;;
+esac
+
 search_with_find()
 {
     # Arg: dirname : name of directory tree to search
-    find -L -f "$dirname" \( \
+    find -L ${find_path_option} "$dirname" \( \
          -name     "*.py" \
          -or -name "*.pyw" \
          \)  -print | tee -a .etags-py-files.txt
@@ -223,6 +238,13 @@ search()
             ;;
     esac
 }
+
+search_script()
+{
+    # Arg: dirname : name of directory tree to search
+    "${pgm_path}/find-script-py"  "$dirname" | tee -a .etags-py-files.txt
+}
+
 
 # --
 # First prepare environment
@@ -264,11 +286,11 @@ printf -- "Files found printed in found order (not necessarily in sorted order)\
 if [ -z "$1" ]; then
     dirname="."
     search
-    "${pgm_path}/find-script-py" | tee -a .etags-py-files.txt
+    search_script
 else
     for dirname in "$@"; do
         search
-       "${pgm_path}/find-script-py"  "$dirname" | tee -a .etags-py-files.txt
+        search_script
     done
 fi
 

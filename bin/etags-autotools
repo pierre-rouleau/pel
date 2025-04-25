@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for GNU Autotools source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-24 23:47:04 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 07:37:56 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -171,6 +171,20 @@ done
 
 # --
 
+# Identify options
+case $(uname) in
+    Darwin)
+        find_path_option='-f'
+        ;;
+    Linux)
+        find_path_option=
+        ;;
+    *)
+        printf -- "*** ERROR: %s:  Error Operating System, %s, is not supported!\n" "${pgm_name}"  "$(uname)" 1>&2
+        exit 1
+        ;;
+esac
+
 # Define a function that searches into 1 directory
 # and accumulates the list of found files into the
 # file '.etags-autotools-files.txt'.
@@ -181,7 +195,7 @@ search_with_find()
 
     # Search for make files
     # and for the M4, autoconf and automake files
-    find -L -f "$dirname" \( \
+    find -L ${find_path_option} "$dirname" \( \
              -name "Makefile" \
          -or -name "makefile" \
          -or -name "GNUMakefile" \

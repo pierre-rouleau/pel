@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Erlang and C source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-24 23:33:17 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 07:39:43 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -179,12 +179,26 @@ done
 # and accumulates the list of found files into the
 # file '.etags-erl-files.txt'.
 
+# Identify options
+case $(uname) in
+    Darwin)
+        find_path_option='-f'
+        ;;
+    Linux)
+        find_path_option=
+        ;;
+    *)
+        printf -- "*** ERROR: %s:  Error Operating System, %s, is not supported!\n" "${pgm_name}"  "$(uname)" 1>&2
+        exit 1
+        ;;
+esac
+
 search_with_find()
 {
     # Arg: dirname : name of directory tree to search
 
     # Search for C and Erlang files
-    find -L -f "$dirname" -name "*.[ch]" \
+    find -L ${find_path_option} "$dirname" -name "*.[ch]" \
          -print | tee -a .etags-erl-files.txt
     find -L -f "$dirname" \
          \(  -name "*\.[he]rl" \
