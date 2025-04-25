@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Erlang and C source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-24 23:00:20 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-24 23:33:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -12,10 +12,6 @@
 # Build an Emacs Tags file for all Erlang and C source code files in the
 # sub-directory tree.  This includes the .erl, .hrl, .c, .h and Erlang apps
 # and rebar files.
-#
-# Usage:
-#  - cd where you want to store the TAGS file
-#  - etags-erl [DIRPATH ...]
 #
 
 # ----------------------------------------------------------------------------
@@ -64,7 +60,7 @@ print_usage()
 
   • Print this help information.
 
- Usage: %s DIRPATH [DIRPATH ...]
+ Usage: %s [DIRPATH ...]
 
   • [Re]build an etags-compliant TAGS file in current directory
     for the Erlang and C files found:
@@ -173,7 +169,6 @@ for dname in "$@"; do
                 exit 3
                 ;;
         esac
-
     done
     dpaths="${dpaths} ${dpath}"
 done
@@ -276,9 +271,9 @@ fi
 
 
 # Then run etags on these files, and sort them in the etags file
-sort < .etags-erl-files.txt | uniq >  .etags-autotools-files.1.txt
+sort < .etags-erl-files.txt | uniq >  .etags-erl-files.1.txt
 rm -f .etags-erl-files.txt
-mv .etags-autotools-files.1.txt .etags-erl-files.txt
+mv .etags-erl-files.1.txt .etags-erl-files.txt
 run__etags__make < .etags-erl-files.txt
 
 file_count="$(wc -l .etags-erl-files.txt | awk '{print $1}')"

@@ -4,17 +4,13 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-24 23:00:26 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-24 23:46:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
 #
 # Build an Emacs Tags file for all Python source code files in the
 # sub-directory tree.  This includes the .py and .pyw files.
-#
-# Usage:
-#  - cd where you want to store the TAGS file
-#  - etags-py [DIRPATH ...]
 #
 
 # ----------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for GNU Autotools source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-24 18:27:05 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-24 23:47:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -15,10 +15,6 @@
 #                      and makefile.am and all .mk and .mak files.
 # - the M4 files, including aclocal.m4, but also all other .m4 files.
 # - configure.ac, config.h.in, config.h
-#
-# Usage:
-#  - cd where you want to store the TAGS file
-#  - etags-autotools [DIRPATH ...]
 #
 
 # ----------------------------------------------------------------------------
