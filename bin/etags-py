@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-24 10:37:59 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-24 23:00:26 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -43,7 +43,7 @@
 #  ----
 
 pgm_name="$(basename "$0")"
-pgm_path="$(dirname "$(which "$pgm_name")")"
+pgm_path="$(dirname "$(readlink "$0")")"
 
 print_usage()
 {
@@ -192,59 +192,72 @@ done
 
 # --
 
-# Find the files, pass their names to etags which creates the TAGS file.
-# To find the files, try to use fd or fdfind if they exist,
-# otherwise use find.  Echo the actual program used to find files.
-
-# First prepare environment
-rm -f .etags-py-files.txt
-
-# Print operating information on stderr.
-if [ "$ETAGS_USE_FIND" = "1" ]; then
-    echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
-    echo "-> Using" "$(which find)"                 1>&2
-else
-    if [ -x "$(command -v fdfind)" ]; then
-        echo "-> Using" "$(which fdfind)" 1>&2
-        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
-    elif [ -x "$(command -v fd)" ]; then
-        echo "-> Using" "$(which fd)" 1>&2
-        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
-    else
-        echo "-> Using" "$(which find)" 1>&2
-    fi
-fi
-
 # Define a function that searches into 1 directory
 # and accumulates the list of found files into the
 # file '.etags-py-files.txt'.
 
 search_with_find()
 {
-    # Arg1: dirname : name of directory tree to search
+    # Arg: dirname : name of directory tree to search
     find -L -f "$dirname" \( \
          -name     "*.py" \
          -or -name "*.pyw" \
          \)  -print | tee -a .etags-py-files.txt
 }
 
+search_with_fd()
+{
+    # Arg: dirname : name of directory tree to search
+    # Arg: fd_pgm  : fd or fdfind
+    ${fd_pgm} -L --type f -e .py -e .pyw \
+              "$dirname" | tee -a .etags-py-files.txt
+}
+
 search()
 {
-    # Arg1: dirname : name of directory tree to search
-    if [ "$ETAGS_USE_FIND" = "1" ]; then
-        search_with_find
-    else
-        if [ -x "$(command -v fdfind)" ]; then
-            fdfind -L --type f -e .py -e .pyw \
-                   . "$dirname" | tee -a .etags-py-files.txt
-        elif [ -x "$(command -v fd)" ]; then
-            fd -L --type f -e .py -e .pyw \
-               . "$dirname" | tee -a .etags-py-files.txt
-        else
+    # Arg: dirname : name of directory tree to search
+    # Arg: search_with : find or fd
+    case "$search_with" in
+        find)
             search_with_find
-        fi
-    fi
+            ;;
+
+        fd)
+            search_with_fd
+            ;;
+    esac
 }
+
+# --
+# First prepare environment
+# Select the method to search for files.
+# - Try to use fd or fdfind if they exist,
+#   otherwise use find.
+# - Echo the actual program used to find files (on stderr).
+if [ "$ETAGS_USE_FIND" = "1" ]; then
+    search_with='find'
+    echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
+    echo "-> Using" "$(which find)"                 1>&2
+else
+    if [ -x "$(command -v fdfind)" ]; then
+        search_with='fd'
+        fd_pgm=fdfind
+        echo "-> Using" "$(which fdfind)" 1>&2
+        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
+    elif [ -x "$(command -v fd)" ]; then
+        search_with='fd'
+        fd_pgm=fd
+        echo "-> Using" "$(which fd)" 1>&2
+        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
+    else
+        search_with='find'
+        echo "-> Using" "$(which find)" 1>&2
+    fi
+fi
+
+# -- proceed
+# remove the old list of files.
+rm -f .etags-py-files.txt
 
 # Search in all specified directory to build the list of
 # files in the file '.etags-py-files.txt'.
@@ -271,7 +284,11 @@ run__etags__py < .etags-py-files.txt
 
 
 file_count="$(wc -l .etags-py-files.txt | awk '{print $1}')"
-printf "%s files found and processed. List stored in: .etags-py-files.txt\n" "${file_count}" 1>&2
+printf "\
+%s - %s files found and processed.
+           Created: %s/TAGS
+           Scanned file list stored in: %s/.etags-py-files.txt
+" "${pgm_name}" "${file_count}" "$(pwd)" "$(pwd)" 1>&2
 
 # -----------------------------------------------------------------------------
 # Local Variables:
