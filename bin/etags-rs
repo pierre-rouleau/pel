@@ -4,24 +4,19 @@
 #  Purpose   : Build Emacs Tags file for Rust source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 07:19:25 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 12:17:34 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
 #
 # Build an Emacs Tags file for all Rust source code files in the
-# sub-directory tree.  This includes the .rs files.
-#
-# Usage:
-#  - cd where you want to store the TAGS file
-#  - etags-rs DIRPATH [DIRPATH ...]
-#
+# sub-directory tree.  This includes the .rs files and the extension-less
+# rust-script files.
 
 # ----------------------------------------------------------------------------
 #  Dependencies
 #  ------------
 
-#
 # - Uses fd (also named fdfind in some Linux distros like Mint) if it is
 #   available.  See URL:  https://github.com/sharkdp/fd .
 # - if fd/fdfind is not available, use find instead.
@@ -38,54 +33,73 @@
 #   You can also set ETAGS_USE_UCTAGS to the absolute path of the
 #   Universal Ctags executable file.
 
-# TODO: eliminate code duplication while keeping capability to stay
-#       compatible with various shells (sh, bash, etc...)
+#  - Uses rg to search for string files that use a rust-script shebang line
+#    if it is available.  Use grep otherwise.
 
 # ----------------------------------------------------------------------------
-#  Code
-#  ----
+# Code
+# ----
+
+pgm_name="$(basename "$0")"
+etags_flist_fname=.etags-rust-files.txt
+etags_flist_envvar_fname="$ETAGS_FILE_LIST_FOR_RUST"
 
 print_usage()
 {
     printf -- "
-etags-rs: build an etags-compliant TAGS in the current directory
+%s: build an etags-compliant TAGS in the current directory
           for all Rust source code files in the specified
           directory tree(s).
 
- Usage: etags-rs -h|--help
+ Usage: %s -h|--help
 
-   • Print this help information.
+  • Print this help information.
 
-  Usage: etags-rs [-u] DIRPATH [DIRPATH ...]
+ Usage: %s [-u] [DIRPATH ...]
+        %s [-u] [--list=FILENAME]
 
-   • [Re]build an etags-compliant TAGS file in current directory
-     for the Rust source code files found:
-    - in the DIRPATH directory tree(s) identified on the command line.
-   • Uses etags to build the TAGS file by default, but
-     -u : force use Universal Ctags (ctags) instead of etags.
+  • [Re]build an etags-compliant TAGS file in current directory
+    for the Rust source code files found:
+    - in the DIRPATH directory tree(s) identified on the command line, or
+      the current directory if none is specified, or
+    - in the list provided in the FILENAME specified by the --list option, or
+    - specified by the ETAGS_FILE_LIST_FOR_RUST environment variable.
+  • Follows symbolic links both for directories and files.
+  • Uses etags to build the TAGS file by default, but
+   • -u : force use Universal Ctags (ctags) instead of etags.
    • Set ETAGS_USE_UCTAGS to 1 or the absolute path of
      Universal Ctags executable file to force using Universal Ctags.
      When setting it to 1, the ctags found in PATH is expected
      to be Universal Ctags.
-   • Overwrites any TAGS file in the current directory.
-   • Inspects content of .rs files.
-   • Stores the names of inspected files in the file named
-     .etags-rs-files.txt in the current directory.
-   • Uses fast 'fdfind' or 'fd' if available, 'find' otherwise.
-     - The 'fd' utility is from: https://github.com/sharkdp/fd
-     - In some Linux distros, 'fd' is renamed 'fdfind'.
-   • To force the use of 'find', set ETAGS_USE_FIND environment
-     variable to 1.
-   • ☝️  When 'fdfind' or 'fd' is used, the content of files identified
-     by the .gitignore, .ignore or .fdignore files are ignored.
-   • Prints the path of the find program used and when
-     repository ignore files are scanned.
-"
+  • Overwrites any TAGS file in the current directory.
+  • Inspects content of .rs files and extension-less rust-script files.
+  • Stores the names of inspected files in the file named
+    .etags-rs-files.txt in the current directory.
+  • Uses fast 'fdfind' or 'fd' if available, 'find' otherwise.
+    - The 'fd' utility is from: https://github.com/sharkdp/fd
+    - In some Linux distros, 'fd' is renamed 'fdfind'.
+  • To force the use of 'find', set ETAGS_USE_FIND environment
+    variable to 1.
+  • ☝️  When 'fdfind' or 'fd' is used, the content of files identified
+    by the .gitignore, .ignore or .fdignore files are ignored.
+  • Uses etags to build the TAGS file by default, but
+    • -u : force use Universal Ctags (ctags) instead of etags.
+    • Set ETAGS_USE_UCTAGS to 1 or to the absolute path of Universal
+      Ctags executable file to force using Universal Ctags instead.
+      When setting it to 1, the ctags found in PATH is expected
+      to be Universal Ctags.
+  • Info printed on stderr:
+   • The path of the find program used and when repository ignore files
+     are skipped from the scan.
+   • A count of found files, and the name of the file that holds them.
+ • The only output on stdout is the list of files found.
+    This allows this script to be used as the first in a pipe
+    to do other processing with the list of files found.
+" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}"
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         printf -- "
-⚠️   ETAGS_USE_FIND is set to 1, forcing the use of 'find'!
-    • To prevent this, set it to 0 or remove that
-      environment variable.
+⚠️   ETAGS_USE_FIND is currently set to 1, forcing the use of 'find'!
+    • To prevent this, set it to 0 or remove that environment variable.
     • With USRHOME, you can use setenv and clrenv.
       See: https://github.com/pierre-rouleau/usrhome
 "
@@ -93,6 +107,16 @@ etags-rs: build an etags-compliant TAGS in the current directory
 }
 
 # --
+# run__etags__rs -- run etags or ctags on a set of files
+# --------------
+#
+# Use etags to parse the source code files unless ETAGS_USE_UCTAGS
+# environment variable is set to 1.  In which case it uses ctags.
+# Ideally that would be the latest version of Universal ctags
+# from https://github.com/universal-ctags/ctags#readme as opposed to the
+# old and currently un-maintained Exeburant ctags.
+# When using Emacs, Emacs provides its own ctags that is essentially etags.
+# Etags generates a tag file format a little different and better suited for Emacs.
 
 run__etags__rs()
 {
@@ -101,14 +125,14 @@ run__etags__rs()
     if [ -n "$ETAGS_USE_UCTAGS" ]; then
         if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
             xargs ctags --output-format=etags
-            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$(which ctags)"
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)" 1>&2
         elif [ -x "$ETAGS_USE_UCTAGS" ]; then
             xargs "$ETAGS_USE_UCTAGS" --output-format=etags
-            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS"
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS" 1>&2
         else
-            printf -- "*** etags-rs ERROR: invalid ETAGS_USE_UCTAGS value\n"
-            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS"
-            printf -- "***  This is not 1 nor a valid executable file name.\n"
+            printf -- "*** ERROR: %s: invalid ETAGS_USE_UCTAGS value\n" "${pgm_name}" 1>&2
+            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS" 1>&2
+            printf -- "***  This is not 1 nor a valid executable file name.\n" 1>&2
             exit 4
         fi
     else
@@ -119,12 +143,10 @@ run__etags__rs()
 # --
 # Check validity of arguments
 
-if [ -z "$1" ]; then
-    print_usage
-    exit 1
-elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     if [ "$#" = "1" ]; then
+        # help requested explicitly with right amount of args: no error.
         exit 0
     else
         exit  1
@@ -134,85 +156,227 @@ fi
 # Check -u option to force use of universal ctags
 if [ "$1" = "-u" ]; then
     if [ -z "$ETAGS_USE_UCTAGS" ]; then
-        echo "etags-rs: -u option requests use of Universal Ctags."
+        printf -- "%s: -u option requests use of Universal Ctags.\n" "${pgm_name}" 1>&2
         ETAGS_USE_UCTAGS=1
     else
-        echo "etags-rs: -u option not necessary (but does no harm)."
-        echo " ETAGS_USE_UCTAGS is already set to: $ETAGS_USE_UCTAGS"
+        printf -- "%s: -u option not necessary (but does no harm).\n" "${pgm_name}" 1>&2
+        printf -- " ETAGS_USE_UCTAGS is already set to: %s\n" "$ETAGS_USE_UCTAGS" 1>&2
     fi
     shift
 fi
 
 # --
-# Check the validity of directory names specified as arguments.
-# Ensure that each directory specified on the command line
-# exists.  Also ensure that a directory name is not specified more
-# than once.  Use the realpath of that directory name when comparing.
+#  Check --list option to extract list of Rust files.
 
-dpaths=
-for dname in "$@"; do
-    if [ ! -d "${dname}" ]; then
-        printf -- "Specified directory does not exists: %s\n" "${dname}"
-        exit 2
-    fi
-    dpath="$(realpath "${dname}")"
-    for dp in ${dpaths}; do
-        if [ "$dp" = "$dpath" ]; then
-            printf -- "Multiple entry of directory: %s\n" "${dname}"
-            exit 3
+case "$1" in
+    --list=*)
+    # extract the file name from the --list= option
+        fname="$(echo "$1" | sed 's/--list=//g')"
+        if [ ! -f "${fname}" ]; then
+            printf -- "\
+*** ERROR: %s: specified list file does not exist: %s
+" "${pgm_name}" "${fname}" 1>&2
+            exit 1
+        else
+            etags_flist_envvar_fname="${fname}"
+            shift
         fi
-        # check if new entry is a sub-directory of an exiting entry
-        case "${dpath}" in
-            "${dp}/"*)
-                printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}"
-                exit 3
-                ;;
-        esac
-        # check if new entry is a parent directory of an existing entry
-        case "${dp}" in
-            "${dpath}/"*)
-                printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}"
-                exit 3
-                ;;
-        esac
+        ;;
+esac
 
-    done
-    dpaths="${dpaths} ${dpath}"
-done
+# ----------------------------------------------------------------------------
+# Define a function that searches into 1 directory
+# and accumulates the list of found files into the
+# file '.etags-rs-files.txt'.
 
+# Identify options
+case $(uname) in
+    Darwin)
+        find_path_option='-f'
+        ;;
+    Linux)
+        find_path_option=
+        ;;
+    *)
+        printf -- "*** ERROR: %s:  Error Operating System, %s, is not supported!\n" "${pgm_name}"  "$(uname)" 1>&2
+        exit 1
+        ;;
+esac
 
-# Find the files, pass their names to etags which creates the TAGS file.
-# To find the files, try to use fd or fdfind if they exist,
-# otherwise use find.  Echo the actual program used to find files.
-if [ "$ETAGS_USE_FIND" = "1" ]; then
-    echo "- ETAGS_USE_FIND forces the use of find!"
-    echo "-> Using" "$(which find)"
-    find -f "$@" \( \
-         -name     "*.rs" \
-         \)  -print | tee .etags-rs-files.txt | run__etags__rs
-else
-    if [ -x "$(command -v fdfind)" ]; then
-        echo "-> Using" "$(which fdfind)"
-        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
-        fdfind --type f -e .rs \
-               "$@" | tee .etags-rs-files.txt | run__etags__rs
-    elif [ -x "$(command -v fd)" ]; then
-        echo "-> Using" "$(which fd)"
-        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
-        fd --type f -e .rs  \
-           "$@" | tee .etags-rs-files.txt | run__etags__rs
-    else
-        echo "-> Using" "$(which find)"
-        find -f "$@" \( \
-             -name "*rs" \
-             \) -print | tee .etags-rs-files.txt | run__etags__rs
-    fi
+search_with_find()
+{
+    # Arg: dirname : name of directory tree to search
+
+    find -L ${find_path_option} "$dirname" \
+         \( -name "*.rs"                   \
+         \) -print | tee -a "${etags_flist_fname}"
+}
+
+search_with_fd()
+{
+    # Arg: dirname : name of directory tree to search
+    # Arg: fd_pgm  : fd or fdfind
+
+    ${fd_pgm} -L --type f \
+              -e .rs      \
+              '' "$dirname" | tee -a "${etags_flist_fname}"
+}
+
+search()
+{
+    # Arg: dirname : name of directory tree to search
+    # Arg: search_with : find or fd
+    case "$search_with" in
+        find)
+            search_with_find
+            ;;
+
+        fd)
+            search_with_fd
+            ;;
+    esac
+}
+
+use_rg="false"
+if [ -x "$(command -v rg)" ]; then
+    use_rg="true"
 fi
 
-file_count="$(wc -l .etags-rs-files.txt | awk '{print $1}')"
-printf "%s files found and processed. List stored in: .etags-rs-files.txt\n" "${file_count}"
+search_script()
+{
+    # Arg: dirname : name of directory tree to search
+    # add shell scripts that use Perl. Exclude perltidy files, Emacs backup and buffers files
+    if [ "${dirname}" = "." ]; then
+        real_dname=.
+    else
+        real_dname="$(realpath "$dname")"
+    fi
 
-# -----------------------------------------------------------------------------
+    # Find extension-less rust script files in specified directory
+    if [ "$use_rg" = "true" ]; then
+        rg -g !'*~' -g !'*#' -Nl "^#!.* rust-script" "${real_dname}" | tee -a "${etags_flist_fname}"
+    else
+        grep --exclude '*~' --exclude '*#' -E -r "^#!.*  rust-script" "${real_dname}" | tee -a "${etags_flist_fname}"
+    fi
+}
+
+# --
+# Proceed
+
+if [ -n "${etags_flist_envvar_fname}" ]; then
+    if [ "${etags_flist_envvar_fname}" = "${etags_flist_fname}" ]; then
+        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_RUST to %s\n" "${pgm_name}" "${etags_flist_fname}"1>&2
+        exit 1
+    fi
+    printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_RUST: %s\n" "${etags_flist_envvar_fname}" 1>&2
+    cp "${etags_flist_envvar_fname}" "${etags_flist_fname}"
+    run__etags__rust < "${etags_flist_envvar_fname}"
+else
+    # Check the validity of directory names specified as arguments.
+    # Ensure that each directory specified on the command line
+    # exists.  Also ensure that a directory name is not specified more
+    # than once.  Use the realpath of that directory name when comparing.
+    # Exit on the first error detected.
+    dpaths=
+    for dname in "$@"; do
+        if [ ! -d "${dname}" ]; then
+            printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2
+            exit 2
+        fi
+        dpath="$(realpath "${dname}")"
+        for dp in ${dpaths}; do
+            if [ "$dp" = "$dpath" ]; then
+                printf -- "Multiple entry of directory: %s\n" "${dname}" 1>&2
+                exit 3
+            fi
+            # check if new entry is a sub-directory of an exiting entry
+            case "${dpath}" in
+                "${dp}/"*)
+                    printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}" 1>&2
+                    exit 3
+                    ;;
+            esac
+            # check if new entry is a parent directory of an existing entry
+            case "${dp}" in
+                "${dpath}/"*)
+                    printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}" 1>&2
+                    exit 3
+                    ;;
+            esac
+        done
+        dpaths="${dpaths} ${dpath}"
+    done
+
+    # --
+    # First prepare environment
+    # Select the method to search for files.
+    # - Try to use fd or fdfind if they exist,
+    #   otherwise use find.
+    # - Echo the actual program used to find files (on stderr).
+    if [ "$ETAGS_USE_FIND" = "1" ]; then
+        search_with='find'
+        echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
+        echo "-> Using" "$(which find)"                 1>&2
+    else
+        if [ -x "$(command -v fdfind)" ]; then
+            search_with='fd'
+            fd_pgm=fdfind
+            echo "-> Using" "$(which fdfind)" 1>&2
+            echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
+        elif [ -x "$(command -v fd)" ]; then
+            search_with='fd'
+            fd_pgm=fd
+            echo "-> Using" "$(which fd)" 1>&2
+            echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
+        else
+            search_with='find'
+            echo "-> Using" "$(which find)" 1>&2
+        fi
+    fi
+
+    printf -- "No list of files identified by ETAGS_FILE_LIST_FOR_RUST.\n" 1>&2
+    printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
+
+    # -- proceed
+    # Rename the old list of files.
+    mv "${etags_flist_fname}" "${etags_flist_fname}".backup
+
+    # Search in all specified directory to build the list of
+    # files in the file '.etags-rs-files.txt'.
+    if [ -z "$1" ]; then
+        dirname="."
+        search
+        search_script
+    else
+        for dirname in "$@"; do
+            search
+            search_script
+        done
+    fi
+
+    # Then run etags on these files, and sort them in the etags file
+    sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}".new
+    rm -f "${etags_flist_fname}"
+    mv "${etags_flist_fname}".new "${etags_flist_fname}"
+    run__etags__rust < "${etags_flist_fname}"
+fi
+
+file_count="$(wc -l "${etags_flist_fname}" | awk '{print $1}')"
+if [ "$file_count" = "0" ]; then
+    # restore the old list of files.
+    rm -rf "${etags_flist_fname}"
+    mv "${etags_flist_fname}".backup  "${etags_flist_fname}"
+    printf -- "No files found. %s and TAGS files untouched.\n" "${etags_flist_fname}"  1>&2
+    exit 1
+else
+  rm -rf "${etags_flist_fname}".backup
+  printf "\
+  %s - %s files found and processed.
+             Created: %s/TAGS
+             Scanned file list stored in: %s/%s\n" "${pgm_name}" "${file_count}" "$(pwd)" "$(pwd)" "${etags_flist_fname}" 1>&2
+fi
+
+# ----------------------------------------------------------------------------
 # Local Variables:
 # sh-shell: sh
 # End:
