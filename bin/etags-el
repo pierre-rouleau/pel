@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 07:38:45 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 09:25:48 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -220,7 +220,7 @@ search_with_fd()
     ${fd_pgm} -L --type f -e .el -e .el.gz \
               -e .c -e .c.gz \
               -e .h -e .h.gz \
-              "$dirname" | tee -a .etags-el-files.txt
+              '' "$dirname" | tee -a .etags-el-files.txt
 }
 
 search()

@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Go source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 08:53:22 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 09:26:22 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -214,7 +214,7 @@ search_with_fd()
     # Arg: fd_pgm  : fd or fdfind
 
     ${fd_pgm} -L --type f -e .go \
-           "$dirname" | tee -a .etags-go-files.txt
+           '' "$dirname" | tee -a .etags-go-files.txt
 }
 
 search()

@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-24 23:46:30 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 09:25:27 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -236,7 +236,7 @@ search_with_fd()
               -e .inl    \
               -e .M      \
               -e .pdb    \
-             "$dirname" | tee -a .etags-c-files.txt
+             '' "$dirname" | tee -a .etags-c-files.txt
 }
 
 search()

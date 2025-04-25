@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 08:12:20 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 09:27:09 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -221,7 +221,7 @@ search_with_fd()
     # Arg: dirname : name of directory tree to search
     # Arg: fd_pgm  : fd or fdfind
     ${fd_pgm} -L --type f -e .py -e .pyw \
-              "$dirname" | tee -a .etags-py-files.txt
+              '' "$dirname" | tee -a .etags-py-files.txt
 }
 
 search()

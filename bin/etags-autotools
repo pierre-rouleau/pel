@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for GNU Autotools source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 07:37:56 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 09:25:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -218,11 +218,11 @@ search_with_fd()
     # Search for make files
     # and for the M4, autoconf and automake files
     ${fd_pgm} -L --type f '((makefile)|((GNU)?Makefile(.((in)|(am)))?))$' \
-              "$dirname" | tee -a .etags-autotools-files.txt
+              '' "$dirname" | tee -a .etags-autotools-files.txt
     ${fd_pgm} -L --type f -e .m4 -e .mk -e .mak\
-              "$dirname" | tee -a .etags-autotools-files.txt
+              '' "$dirname" | tee -a .etags-autotools-files.txt
     ${fd_pgm} -L --type f '((configure.ac)|(config.h.in)|(config.h))$' \
-              "$dirname" | tee -a .etags-autotools-files.txt
+              '' "$dirname" | tee -a .etags-autotools-files.txt
 }
 
 search()

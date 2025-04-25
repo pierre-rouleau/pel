@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Make source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 07:41:33 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 09:26:50 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -220,7 +220,7 @@ search_with_fd()
            "$dirname" | tee -a .etags-make-files.txt
     # Then the .mk and .mak make files
     ${fd_pgm} -L --type f -e .mk -e .mak\
-           "$dirname" | tee -a .etags-make-files.txt
+           '' "$dirname" | tee -a .etags-make-files.txt
 }
 
 search()

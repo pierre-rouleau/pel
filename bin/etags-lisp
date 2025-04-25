@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Lisp source code files.
 #  Created   : Tuesday, November 10 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 07:40:55 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 09:26:34 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -192,7 +192,7 @@ search_with_fd()
               -e .LSP   -e .LSP.gz \
               -e .lsp   -e .lsp.gz \
               -e .ml    -e .ml.gz \
-              "$dirname" | tee -a .etags-lisp-files.txt
+              '' "$dirname" | tee -a .etags-lisp-files.txt
 }
 
 search()

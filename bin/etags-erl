@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Erlang and C source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 07:39:43 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 09:26:03 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -214,12 +214,12 @@ search_with_fd()
 
     # Search for C and Erlang files
     ${fd_pgm} -L --type f -e .c  -e .h \
-           "$dirname" | tee -a .etags-erl-files.txt
+           '' "$dirname" | tee -a .etags-erl-files.txt
     ${fd_pgm} -L --type f \
            -e .erl  -e .hrl \
            -e .app \
            -e .app.src \
-           "$dirname" | tee -a .etags-erl-files.txt
+           '' "$dirname" | tee -a .etags-erl-files.txt
 }
 
 search()
