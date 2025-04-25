@@ -4,17 +4,13 @@
 #  Purpose   : Build Emacs Tags file for Go source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-01-16 17:14:03 EST, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 00:04:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
 #
 # Build an Emacs Tags file for all Go source code files in the
 # sub-directory tree.  This includes the .go files.
-#
-# Usage:
-#  - cd where you want to store the TAGS file
-#  - etags-go DIRPATH [DIRPATH ...]
 #
 
 # ----------------------------------------------------------------------------
@@ -38,56 +34,61 @@
 #   You can also set ETAGS_USE_UCTAGS to the absolute path of the
 #   Universal Ctags executable file.
 
-# TODO: eliminate code duplication while keeping capability to stay
-#       compatible with various shells (sh, bash, etc...)
-
 # ----------------------------------------------------------------------------
 #  Code
 #  ----
 
+pgm_name="$(basename "$0")"
+
 print_usage()
 {
     printf -- "
-etags-go: build an etags-compliant TAGS in the current directory
+%s: build an etags-compliant TAGS in the current directory
           for all Go source code files in the specified
           directory tree(s).
 
- Usage: etags-go -h|--help
+ Usage: %s -h|--help
 
-   • Print this help information.
+  • Print this help information.
 
-  Usage: etags-go [-u] DIRPATH [DIRPATH ...]
+ Usage: %s [-u] [DIRPATH ...]
 
-   • [Re]build an etags-compliant TAGS file in current directory
-     for the Go source code files in the directory
-     tree(s) identified on the command line.
-   • Uses etags to build the TAGS file by default, but
-     -u : force use Universal Ctags (ctags) instead of etags.
-   • Set ETAGS_USE_UCTAGS to 1 or the absolute path of
-     Universal Ctags executable file to force using Universal Ctags.
-     When setting it to 1, the ctags found in PATH is expected
-     to be Universal Ctags.
-     ☝️  For Go, Universal Ctags generates more information
-        than etags.
-   • Overwrites any TAGS file in the current directory.
-   • Inspects content of .go files.
-   • Stores the names of inspected files in the file named
-     .etags-go-files.txt in the current directory.
-   • Uses fast 'fdfind' or 'fd' if available, 'find' otherwise.
-     - The 'fd' utility is from: https://github.com/sharkdp/fd
-     - In some Linux distros, 'fd' is renamed 'fdfind'.
-   • To force the use of 'find', set ETAGS_USE_FIND environment
-     variable to 1.
-   • ☝️  When 'fdfind' or 'fd' is used, the content of files identified
-     by the .gitignore, .ignore or .fdignore files are ignored.
-   • Prints the path of the find program used and when
-     repository ignore files are scanned.
-"
+  • [Re]build an etags-compliant TAGS file in current directory
+    for the Go source code files found:
+    - in the DIRPATH directory tree(s) identified on the command line, or
+      the current directory if none is specified.
+  • Follows symbolic links both for directories and files.
+  • Uses etags to build the TAGS file by default, but
+    -u : force use Universal Ctags (ctags) instead of etags.
+  • Set ETAGS_USE_UCTAGS to 1 or the absolute path of
+    Universal Ctags executable file to force using Universal Ctags.
+    When setting it to 1, the ctags found in PATH is expected
+    to be Universal Ctags.
+    ☝️  For Go, Universal Ctags generates more information
+       than etags.
+  • Overwrites any TAGS file in the current directory.
+  • Inspects content of .go files.
+  • Stores the names of inspected files in the file named
+    .etags-go-files.txt in the current directory.
+  • Uses fast 'fdfind' or 'fd' if available, 'find' otherwise.
+    - The 'fd' utility is from: https://github.com/sharkdp/fd
+    - In some Linux distros, 'fd' is renamed 'fdfind'.
+  • To force the use of 'find', set ETAGS_USE_FIND environment
+    variable to 1.
+  • ☝️  When 'fdfind' or 'fd' is used, the content of files identified
+    by the .gitignore, .ignore or .fdignore files are ignored.
+  • Info printed on stderr:
+   • The path of the find program used and when repository ignore files
+     are skipped from the scan.
+   • A count of found files, and the name of the file that holds them.
+ • The only output on stdout is the list of files found.
+    This allows this script to be used as the first in a pipe
+    to do other processing with the list of files found.
+" "$pgm_name" "$pgm_name" "$pgm_name"
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         printf -- "
-⚠️   ETAGS_USE_FIND is set to 1, forcing the use of 'find'!
-    • To prevent this, set it to 0 or remove that
-      environment variable.
+⚠️   ETAGS_USE_FIND is currently set to 1, forcing the use of 'find'!
+    • To prevent this, set it to 0 or remove that environment variable.
     • With USRHOME, you can use setenv and clrenv.
       See: https://github.com/pierre-rouleau/usrhome
 "
@@ -103,14 +104,14 @@ run__etags__go()
     if [ -n "$ETAGS_USE_UCTAGS" ]; then
         if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
             xargs ctags --output-format=etags
-            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$(which ctags)"
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$(which ctags)"  1>&2
         elif [ -x "$ETAGS_USE_UCTAGS" ]; then
             xargs "$ETAGS_USE_UCTAGS" --output-format=etags
-            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS"
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS"  1>&2
         else
-            printf -- "*** etags-go ERROR: invalid ETAGS_USE_UCTAGS value\n"
-            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS"
-            printf -- "***  This is not 1 nor a valid executable file name.\n"
+            printf -- "*** ERROR: %s : invalid ETAGS_USE_UCTAGS value\n" "${pgm_name}"  1>&2
+            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS"  1>&2
+            printf -- "***  This is not 1 nor a valid executable file name.\n"  1>&2
             exit 4
         fi
     else
@@ -121,10 +122,7 @@ run__etags__go()
 # --
 # Check validity of arguments
 
-if [ -z "$1" ]; then
-    print_usage
-    exit 1
-elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     if [ "$#" = "1" ]; then
         exit 0
@@ -133,15 +131,13 @@ elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     fi
 fi
 
-# --
-
 if [ "$1" = "-u" ]; then
     if [ -z "$ETAGS_USE_UCTAGS" ]; then
-        echo "etags-go: -u option requests use of Universal Ctags."
+        printf --  "%s: -u option requests use of Universal Ctags.\n" "${pgm_name}" 1>&2
         ETAGS_USE_UCTAGS=1
     else
-        echo "etags-go: -u option not necessary (but does no harm)."
-        echo " ETAGS_USE_UCTAGS is already set to: $ETAGS_USE_UCTAGS"
+        printf -- "%s: -u option not necessary (but does no harm).\n" "${pgm_name}" 1>&2
+        printf -- " ETAGS_USE_UCTAGS is already set to: %s\n" "$ETAGS_USE_UCTAGS" 1>&2
     fi
     shift
 fi
@@ -155,64 +151,131 @@ fi
 dpaths=
 for dname in "$@"; do
     if [ ! -d "${dname}" ]; then
-        printf -- "Specified directory does not exists: %s\n" "${dname}"
+        printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2
         exit 2
     fi
     dpath="$(realpath "${dname}")"
     for dp in ${dpaths}; do
         if [ "$dp" = "$dpath" ]; then
-            printf -- "Multiple entry of directory: %s\n" "${dname}"
+            printf -- "Multiple entry of directory: %s\n" "${dname}" 1>&2
             exit 3
         fi
         # check if new entry is a sub-directory of an exiting entry
         case "${dpath}" in
             "${dp}/"*)
-                printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}"
+                printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}" 1>&2
                 exit 3
                 ;;
         esac
         # check if new entry is a parent directory of an existing entry
         case "${dp}" in
             "${dpath}/"*)
-                printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}"
+                printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}" 1>&2
                 exit 3
                 ;;
         esac
-
     done
     dpaths="${dpaths} ${dpath}"
 done
 
+# --
 
-# Find the files, pass their names to etags which creates the TAGS file.
-# To find the files, try to use fd or fdfind if they exist,
-# otherwise use find.  Echo the actual program used to find files.
-if [ "$ETAGS_USE_FIND" = "1" ]; then
-    echo "- ETAGS_USE_FIND forces the use of find!"
-    echo "-> Using" "$(which find)"
-    find -f "$@" \( \
+# Define a function that searches into 1 directory
+# and accumulates the list of found files into the
+# file '.etags-go-files.txt'.
+
+search_with_find()
+{
+    # Arg: dirname : name of directory tree to search
+
+    find -f "$dirname" \( \
          -name     "*.go" \
-         \)  -print | tee .etags-go-files.txt | run__etags__go
+         \)  -print | tee -a .etags-go-files.txt
+}
+
+search_with_fd()
+{
+    # Arg: dirname : name of directory tree to search
+    # Arg: fd_pgm  : fd or fdfind
+
+    ${fd_pgm} --type f -e .go \
+           "$dirname" | tee -a .etags-go-files.txt
+}
+
+search()
+{
+    # Arg: dirname : name of directory tree to search
+    # Arg: search_with : find or fd
+    case "$search_with" in
+        find)
+            search_with_find
+            ;;
+
+        fd)
+            search_with_fd
+            ;;
+    esac
+}
+
+# --
+# First prepare environment
+# Select the method to search for files.
+# - Try to use fd or fdfind if they exist,
+#   otherwise use find.
+# - Echo the actual program used to find files (on stderr).
+if [ "$ETAGS_USE_FIND" = "1" ]; then
+    search_with='find'
+    echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
+    echo "-> Using" "$(which find)"                 1>&2
 else
     if [ -x "$(command -v fdfind)" ]; then
-        echo "-> Using" "$(which fdfind)"
-        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
-        fdfind --type f -e .go \
-               "$@" | tee .etags-go-files.txt | run__etags__go
+        search_with='fd'
+        fd_pgm=fdfind
+        echo "-> Using" "$(which fdfind)"  1>&2
+        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
+
     elif [ -x "$(command -v fd)" ]; then
-        echo "-> Using" "$(which fd)"
-        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
-        fd --type f -e .go \
-           "$@" | tee .etags-go-files.txt | run__etags__go
+        search_with='fd'
+        fd_pgm=fd
+        echo "-> Using" "$(which fd)" 1>&2
+        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
     else
-        echo "-> Using" "$(which find)"
-        find -f "$@" \( \
-             -name "*go" \
-             \) -print | tee .etags-go-files.txt | run__etags__go
+        search_with='find'
+        echo "-> Using" "$(which find)" 1>&2
     fi
 fi
+
+# -- proceed
+# remove the old list of files.
+rm -f .etags-go-files.txt
+
+# Search in all specified directory to build the list of
+# files in the file '.etags-go-files.txt'.
+
+printf -- "%s - Processing %s/ ...\n" "${pgm_name}" "$(pwd)" 1>&2
+
+if [ -z "$1" ]; then
+    dirname="."
+    search
+else
+    for dirname in "$@"; do
+        search
+    done
+fi
+
+
+# Then run etags on these files, and sort them in the etags file
+sort < .etags-go-files.txt | uniq >  .etags-go-files.1.txt
+rm -f .etags-go-files.txt
+mv .etags-go-files.1.txt .etags-go-files.txt
+run__etags__go < .etags-go-files.txt
+
 file_count="$(wc -l .etags-go-files.txt | awk '{print $1}')"
-printf "%s files found and processed. List stored in: .etags-go-files.txt\n" "${file_count}"
+printf "\
+%s - %s files found and processed.
+           Created: %s/TAGS
+           Scanned file list stored in: %s/.etags-go-files.txt
+" "${pgm_name}" "${file_count}" "$(pwd)" "$(pwd)" 1>&2
 
 # -----------------------------------------------------------------------------
 # Local Variables:
