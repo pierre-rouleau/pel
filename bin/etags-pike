@@ -1,4 +1,6 @@
 #!/bin/sh
+#  SH FILE: etags-rs
+#
 #  SH FILE: etags-pike
 #
 #  Purpose   : Build Emacs Tags file for Pike & C/C++ source code files.
@@ -9,26 +11,14 @@
 #  Module Description
 #  ------------------
 #
-# Build an Emacs Tags file for all C and C++ source code files in the
-# sub-directory tree.  This includes all files with the following extensions:
-#
-# - Pike files: .pike, .pmod
-# - C files  : .c, .h, .c.in, .h.in,
-# - C++ files: .c++, .h++, .c++.in, .h++.in
-#              .cpp, .hpp, .cpp.in, .hpp.in
-#              .C, .H, .C.in, .H.in
-#              .hh, .hh.in
-#              .inl, .M, .pdb
-#
-# Usage:
-#  - cd where you want to store the TAGS file
-#  - etags-pike [--list=FILENAME] | [DIRPATH [DIRPATH ...]]
-#
+# Build an Emacs Tags file for all Pike and C source code files in the
+# sub-directory tree.  This includes the C, Pike files and the extension-less
+# Pike script files.
 
 # ----------------------------------------------------------------------------
 #  Dependencies
 #  ------------
-#
+
 # - Uses fd (also named fdfind in some Linux distros like Mint) if it is
 #   available.  See URL:  https://github.com/sharkdp/fd .
 # - if fd/fdfind is not available, use find instead.
@@ -45,65 +35,73 @@
 #   You can also set ETAGS_USE_UCTAGS to the absolute path of the
 #   Universal Ctags executable file.
 
-# ----------------------------------------------------------------------------
-# TODO: eliminate code duplication while keeping capability to stay
-#       compatible with various shells (sh, bash, etc...)
+#  - Uses rg to search for string files that use a pike script shebang line
+#    if it is available.  Use grep otherwise.
 
 # ----------------------------------------------------------------------------
-#  Code
-#  ----
+# Code
+# ----
+
+pgm_name="$(basename "$0")"
+etags_flist_fname=.etags-pike-files.txt
+etags_flist_envvar_fname="$ETAGS_FILE_LIST_FOR_PIKE"
 
 print_usage()
 {
     printf -- "
-etags-pike: build a etags-pikeompliant TAGS file in the current directory
-         for all C and C++ source code files in the directory trees
-         specified on the command line.
+%s: build an etags-compliant TAGS in the current directory
+          for all Pike and C source code files in the specified
+          directory tree(s).
 
- Usage: etags-pike -h|--help
+ Usage: %s -h|--help
 
   • Print this help information.
 
- Usage: etags-pike DIRPATH [DIRPATH ...]
-        etags-pike [--list=FILENAME]
+ Usage: %s [-u] [DIRPATH ...]
+        %s [-u] [--list=FILENAME]
 
-  • [Re]build an etags-pikeompliant TAGS file in current directory
-    for the Pike/C/C++ code & header files found:
+  • [Re]build an etags-compliant TAGS file in current directory
+    for the Pike and C source code files found:
     - in the DIRPATH directory tree(s) identified on the command line, or
+      the current directory if none is specified, or
     - in the list provided in the FILENAME specified by the --list option, or
-    - specified by the ETAGS_FILE_LIST environment variable.
+    - specified by the ETAGS_FILE_LIST_FOR_PIKE environment variable.
+  • Follows symbolic links both for directories and files.
+  • Uses etags to build the TAGS file by default, but
+   • -u : force use Universal Ctags (ctags) instead of etags.
+   • Set ETAGS_USE_UCTAGS to 1 or the absolute path of
+     Universal Ctags executable file to force using Universal Ctags.
+     When setting it to 1, the ctags found in PATH is expected
+     to be Universal Ctags.
   • Overwrites any TAGS file in the current directory.
+  • Inspects content of C, Pike and extension-less pike script files.
   • Stores the names of inspected files in the file named
-     .etags-pike-files.txt in the current directory.
-  • Identifies the C/C++ files using one of the following methods:
-    • If ETAGS_FILE_LIST environment variable exists, it uses it as
-      the name of a file that holds a list of C/C++ files to parse.
-      The name of this file can be anything except .etags-pike-files.txt
-      and it must exists. It it does not etags-pike exists with an error.
-      Each line of the file must identify a C/C++ file to parse.
-    • Searches the list of C/C++ source code files.
-      • It uses 'fdfind' or 'fd' if available, 'find' otherwise.
-        - The fd utility is from: https://github.com/sharkdp/fd
-        - In some Linux distros, 'fd' is renamed 'fdfind'.
-      • To force the use of 'find', set ETAGS_USE_FIND environment
-        variable to 1.
-      • ☝️  When using 'fdfind' or 'fd', the files identified
-        by the .gitignore, .ignore or .fdignore files are ignored.
-  • Stores the names of inspected files in the file named
-    .etags-pike-files.txt stored in the same directory as TAGS.
-  • Uses etags to build the TAGS file by default.
+    .etags-rs-files.txt in the current directory.
+  • Uses fast 'fdfind' or 'fd' if available, 'find' otherwise.
+    - The 'fd' utility is from: https://github.com/sharkdp/fd
+    - In some Linux distros, 'fd' is renamed 'fdfind'.
+  • To force the use of 'find', set ETAGS_USE_FIND environment
+    variable to 1.
+  • ☝️  When 'fdfind' or 'fd' is used, the content of files identified
+    by the .gitignore, .ignore or .fdignore files are ignored.
+  • Uses etags to build the TAGS file by default, but
+    • -u : force use Universal Ctags (ctags) instead of etags.
     • Set ETAGS_USE_UCTAGS to 1 or to the absolute path of Universal
       Ctags executable file to force using Universal Ctags instead.
       When setting it to 1, the ctags found in PATH is expected
       to be Universal Ctags.
-  • Prints the path of the \"find\" program used and when
-    repository ignore files are scanned.\n"
-
+  • Info printed on stderr:
+   • The path of the find program used and when repository ignore files
+     are skipped from the scan.
+   • A count of found files, and the name of the file that holds them.
+ • The only output on stdout is the list of files found.
+    This allows this script to be used as the first in a pipe
+    to do other processing with the list of files found.
+" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}"
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         printf -- "
-⚠️   ETAGS_USE_FIND is set to 1, forcing the use of 'find'!
-    • To prevent this, set it to 0 or remove that
-      environment variable.
+⚠️   ETAGS_USE_FIND is currently set to 1, forcing the use of 'find'!
+    • To prevent this, set it to 0 or remove that environment variable.
     • With USRHOME, you can use setenv and clrenv.
       See: https://github.com/pierre-rouleau/usrhome
 "
@@ -111,8 +109,8 @@ etags-pike: build a etags-pikeompliant TAGS file in the current directory
 }
 
 # --
-# run__etags_pike -- run etags or ctags on a set of files
-# ---------------
+# run__etags__pike -- run etags or ctags on a set of files
+# ----------------
 #
 # Use etags to parse the source code files unless ETAGS_USE_UCTAGS
 # environment variable is set to 1.  In which case it uses ctags.
@@ -122,44 +120,55 @@ etags-pike: build a etags-pikeompliant TAGS file in the current directory
 # When using Emacs, Emacs provides its own ctags that is essentially etags.
 # Etags generates a tag file format a little different and better suited for Emacs.
 
-run__etags_pike()
+run__etags__pike()
 {
     # Expects no argument, but expects a list of files to parse on stdin.
 
     if [ -n "$ETAGS_USE_UCTAGS" ]; then
         if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
             xargs ctags --output-format=etags
-            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)"
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)" 1>&2
         elif [ -x "$ETAGS_USE_UCTAGS" ]; then
             xargs "$ETAGS_USE_UCTAGS" --output-format=etags
-            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS"
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$ETAGS_USE_UCTAGS" 1>&2
         else
-            printf -- "*** etags-pike ERROR: invalid ETAGS_USE_UCTAGS value\n"
-            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS"
-            printf -- "***  This is not 1 nor a valid executable file name.\n"
+            printf -- "*** ERROR: %s: invalid ETAGS_USE_UCTAGS value\n" "${pgm_name}" 1>&2
+            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS" 1>&2
+            printf -- "***  This is not 1 nor a valid executable file name.\n" 1>&2
             exit 4
         fi
     else
-        # Qualify tag names with their class name in C++.
         etags --class-qualify -
     fi
 }
 
-
 # --
 # Check validity of arguments
 
-if [ -z "$1" ]; then
-    print_usage
-    exit 1
-elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     if [ "$#" = "1" ]; then
+        # help requested explicitly with right amount of args: no error.
         exit 0
     else
         exit  1
     fi
 fi
+
+# Check -u option to force use of universal ctags
+if [ "$1" = "-u" ]; then
+    if [ -z "$ETAGS_USE_UCTAGS" ]; then
+        printf -- "%s: -u option requests use of Universal Ctags.\n" "${pgm_name}" 1>&2
+        ETAGS_USE_UCTAGS=1
+    else
+        printf -- "%s: -u option not necessary (but does no harm).\n" "${pgm_name}" 1>&2
+        printf -- " ETAGS_USE_UCTAGS is already set to: %s\n" "$ETAGS_USE_UCTAGS" 1>&2
+    fi
+    shift
+fi
+
+# --
+#  Check --list option to extract list of Pike  files.
 
 case "$1" in
     --list=*)
@@ -167,177 +176,255 @@ case "$1" in
         fname="$(echo "$1" | sed 's/--list=//g')"
         if [ ! -f "${fname}" ]; then
             printf -- "\
-*** etags-pike ERROR: specified list file does not exist: %s
-" "${fname}"
+*** ERROR: %s: specified list file does not exist: %s
+" "${pgm_name}" "${fname}" 1>&2
             exit 1
         else
-            ETAGS_FILE_LIST="${fname}"
+            etags_flist_envvar_fname="${fname}"
             shift
         fi
         ;;
 esac
 
-# --
+# ----------------------------------------------------------------------------
+# Define a function that searches into 1 directory
+# and accumulates the list of found files into the
+# file '.etags-rs-files.txt'.
 
-if [ -n "$ETAGS_FILE_LIST" ]; then
-    if [ "$ETAGS_FILE_LIST" = ".etags-pike-files.txt" ]; then
-        echo "Error! Do NOT set ETAGS_FILE_LIST to .etags-pike-files.txt"
+# Identify options
+case $(uname) in
+    Darwin)
+        find_path_option='-f'
+        ;;
+    Linux)
+        find_path_option=
+        ;;
+    *)
+        printf -- "*** ERROR: %s:  Error Operating System, %s, is not supported!\n" "${pgm_name}"  "$(uname)" 1>&2
+        exit 1
+        ;;
+esac
+
+search_with_find()
+{
+    # Arg: dirname : name of directory tree to search
+    find -L ${find_path_option} "$dirname" \
+         \(  -name "*.pike"      \
+         -or -name "*.pmod"      \
+         -or -name "*.[ch]"      \
+         -or -name "*.[ch].in"   \
+         -or -name "*.[ch]++"    \
+         -or -name "*.[ch]++.in" \
+         -or -name "*.[ch]pp"    \
+         -or -name "*.[ch]pp.in" \
+         -or -name "*.[ch]xx"    \
+         -or -name "*.[ch]xx.in" \
+         -or -name "*.[CH]"      \
+         -or -name "*.[CH].in"   \
+         -or -name "*.cc"        \
+         -or -name "*.cc.in"     \
+         -or -name "*.hh"        \
+         -or -name "*.hh.in"     \
+         -or -name "*.inl"       \
+         -or -name "*.M"         \
+         -or -name "*.pdb"       \
+         \) -print | tee -a "${etags_flist_fname}"
+}
+
+search_with_fd()
+{
+    # Arg: dirname : name of directory tree to search
+    # Arg: fd_pgm  : fd or fdfind
+    ${fd_pgm} -L --type f \
+              -e .pike   \
+              -e .pmod   \
+              -e .c      \
+              -e .c.in   \
+              -e .h      \
+              -e .h.in   \
+              -e .c++    \
+              -e .c++.in \
+              -e .h++    \
+              -e .h++.in \
+              -e .cpp    \
+              -e .cpp.in \
+              -e .hpp    \
+              -e .hpp.in \
+              -e .cxx    \
+              -e .cxx.in \
+              -e .hxx    \
+              -e .hxx.in \
+              -e .C      \
+              -e .C.in   \
+              -e .H      \
+              -e .H.in   \
+              -e .cc     \
+              -e .cc.in  \
+              -e .hh     \
+              -e .hh.in  \
+              -e .inl    \
+              -e .M      \
+              -e .pdb    \
+              '' "$dirname" | tee -a "${etags_flist_fname}"
+}
+
+search()
+{
+    # Arg: dirname : name of directory tree to search
+    # Arg: search_with : find or fd
+    case "$search_with" in
+        find)
+            search_with_find
+            ;;
+
+        fd)
+            search_with_fd
+            ;;
+    esac
+}
+
+use_rg="false"
+if [ -x "$(command -v rg)" ]; then
+    use_rg="true"
+fi
+
+search_script()
+{
+    # Arg: dirname : name of directory tree to search
+    # add shell scripts that use Perl. Exclude perltidy files, Emacs backup and buffers files
+    if [ "${dirname}" = "." ]; then
+        real_dname=.
+    else
+        real_dname="$(realpath "$dname")"
+    fi
+
+    # Find extension-less pike script files in specified directory
+    if [ "$use_rg" = "true" ]; then
+        rg -g !'*~' -g !'*#' -Nl "^#!.* pike" "${real_dname}" | tee -a "${etags_flist_fname}"
+    else
+        grep --exclude '*~' --exclude '*#' -E -r "^#!.*  pike" "${real_dname}" | tee -a "${etags_flist_fname}"
+    fi
+}
+
+# --
+# Proceed
+
+if [ -n "${etags_flist_envvar_fname}" ]; then
+    if [ "${etags_flist_envvar_fname}" = "${etags_flist_fname}" ]; then
+        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_PIKE to %s\n" "${pgm_name}" "${etags_flist_fname}"1>&2
         exit 1
     fi
-    echo "Using the file list identified by ETAGS_FILE_LIST: $ETAGS_FILE_LIST"
-    cp "$ETAGS_FILE_LIST" .etags-pike-files.txt
-    run__etags_pike < "$ETAGS_FILE_LIST"
+    printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_PIKE: %s\n" "${etags_flist_envvar_fname}" 1>&2
+    cp "${etags_flist_envvar_fname}" "${etags_flist_fname}"
+    run__etags__pike < "${etags_flist_envvar_fname}"
 else
-    # Use the directory names provided on command line.
-    # Check their validity.
+    # Check the validity of directory names specified as arguments.
     # Ensure that each directory specified on the command line
     # exists.  Also ensure that a directory name is not specified more
     # than once.  Use the realpath of that directory name when comparing.
+    # Exit on the first error detected.
     dpaths=
     for dname in "$@"; do
         if [ ! -d "${dname}" ]; then
-            printf -- "Specified directory does not exists: %s\n" "${dname}"
+            printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2
             exit 2
         fi
         dpath="$(realpath "${dname}")"
         for dp in ${dpaths}; do
             if [ "$dp" = "$dpath" ]; then
-                printf -- "Multiple entry of directory: %s\n" "${dname}"
+                printf -- "Multiple entry of directory: %s\n" "${dname}" 1>&2
                 exit 3
             fi
             # check if new entry is a sub-directory of an exiting entry
             case "${dpath}" in
                 "${dp}/"*)
-                    printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}"
+                    printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}" 1>&2
                     exit 3
                     ;;
             esac
             # check if new entry is a parent directory of an existing entry
             case "${dp}" in
                 "${dpath}/"*)
-                    printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}"
+                    printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}" 1>&2
                     exit 3
                     ;;
             esac
-
         done
         dpaths="${dpaths} ${dpath}"
     done
 
-    echo "No list of files identified by ETAGS_FILE_LIST."
-    echo "- Building the list of source files."
-
-    # Find the files, pass their names to etags which creates the TAGS file.
-    # To find the files, try to use 'fd' or 'fdfind' if they exist,
-    # otherwise use 'find'.  Echo the actual program used to find the files.
-    # Search for all possible C and C++ file extensions in the directory tree.
-
-    # - Identify how to search files
+    # --
+    # First prepare environment
+    # Select the method to search for files.
+    # - Try to use fd or fdfind if they exist,
+    #   otherwise use find.
+    # - Echo the actual program used to find files (on stderr).
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         search_with='find'
+        echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
+        echo "-> Using" "$(which find)"                 1>&2
     else
         if [ -x "$(command -v fdfind)" ]; then
             search_with='fd'
             fd_pgm=fdfind
+            echo "-> Using" "$(which fdfind)" 1>&2
+            echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
         elif [ -x "$(command -v fd)" ]; then
             search_with='fd'
             fd_pgm=fd
+            echo "-> Using" "$(which fd)" 1>&2
+            echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
         else
             search_with='find'
+            echo "-> Using" "$(which find)" 1>&2
         fi
     fi
 
-    case $(uname) in
-        Darwin)
-            find_path_option='-f'
-            ;;
-        Linux)
-            find_path_option=
-            ;;
-        *)
-            printf -- "etags-pike ** Error Operating System, %s, is not supported!\n" "$(uname)"
-            exit 1
-            ;;
-    esac
+    printf -- "No list of files identified by ETAGS_FILE_LIST_FOR_PIKE.\n" 1>&2
+    printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
 
-    case "$search_with" in
-        find)
-            printf -- "etags-pike -- ETAGS_USE_FIND set to 1: forces the use of find!\n"
-            printf --  "       -> Using %s\n" "$(which find)"
-            find -L \
-                 ${find_path_option} "$@" \
-                 \(  -name "*.pike"      \
-                 -or -name "*.pmod"      \
-                 -or -name "*.[ch]"      \
-                 -or -name "*.[ch].in"   \
-                 -or -name "*.[ch]++"    \
-                 -or -name "*.[ch]++.in" \
-                 -or -name "*.[ch]pp"    \
-                 -or -name "*.[ch]pp.in" \
-                 -or -name "*.[ch]xx"    \
-                 -or -name "*.[ch]xx.in" \
-                 -or -name "*.[CH]"      \
-                 -or -name "*.[CH].in"   \
-                 -or -name "*.cc"        \
-                 -or -name "*.cc.in"     \
-                 -or -name "*.hh"        \
-                 -or -name "*.hh.in"     \
-                 -or -name "*.inl"       \
-                 -or -name "*.M"         \
-                 -or -name "*.pdb"       \
-                 \)  -print | tee .etags-pike-files.txt | run__etags_pike
-            ;;
+    # -- proceed
+    # Rename the old list of files if it exists
+    if [ -e "${etags_flist_fname}" ]; then
+        mv "${etags_flist_fname}" "${etags_flist_fname}.backup"
+    fi
 
-        fd)
-            printf -- "etags-pike -- Using sharkdp/fd fast find.\n"
-            printf -- "        -> Using %s\n" "$(which "${fd_pgm}")"
-            printf -- " -> ☝️  Ignoring files identified in .gitignore, .ignore or .fdignore\n"
-            printf -- " -> ☝️  You may want to run a search with find once to detect broken symlinks\n"
-            ${fd_pgm} --absolute-path \
-                   --follow   \
-                   --type f   \
-                   --type l   \
-                   -e .pike   \
-                   -e .pmod   \
-                   -e .c      \
-                   -e .c.in   \
-                   -e .h      \
-                   -e .h.in   \
-                   -e .c++    \
-                   -e .c++.in \
-                   -e .h++    \
-                   -e .h++.in \
-                   -e .cpp    \
-                   -e .cpp.in \
-                   -e .hpp    \
-                   -e .hpp.in \
-                   -e .cxx    \
-                   -e .cxx.in \
-                   -e .hxx    \
-                   -e .hxx.in \
-                   -e .C      \
-                   -e .C.in   \
-                   -e .H      \
-                   -e .H.in   \
-                   -e .cc     \
-                   -e .cc.in  \
-                   -e .hh     \
-                   -e .hh.in  \
-                   -e .inl    \
-                   -e .M      \
-                   -e .pdb    \
-                   . "$@" | tee .etags-pike-files.txt | run__etags_pike
-            ;;
+    # Search in all specified directory to build the list of
+    # files in the file '.etags-rs-files.txt'.
+    if [ -z "$1" ]; then
+        dirname="."
+        search
+        search_script
+    else
+        for dirname in "$@"; do
+            search
+            search_script
+        done
+    fi
 
-        *)
-            printf -- "etags-pike ** Error: cannot identify find program!\n"
-            exit 1
-            ;;
-    esac
+    # Then run etags on these files, and sort them in the etags file
+    sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
+    rm -f "${etags_flist_fname}"
+    mv "${etags_flist_fname}.new" "${etags_flist_fname}"
+    run__etags__pike < "${etags_flist_fname}"
 fi
 
-file_count="$(wc -l .etags-pike-files.txt | awk '{print $1}')"
-printf -- "%s files found and processed. List stored in: .etags-pike-files.txt\n" "${file_count=}"
+file_count="$(wc -l "${etags_flist_fname}" | awk '{print $1}')"
+if [ "$file_count" = "0" ]; then
+    # restore the old list of files.
+    rm -rf "${etags_flist_fname}"
+    if [ -e "${etags_flist_fname}.backup" ]; then
+        mv "${etags_flist_fname}.backup"  "${etags_flist_fname}"
+    fi
+    printf -- "No files found. %s and TAGS files untouched.\n" "${etags_flist_fname}"  1>&2
+    exit 1
+else
+  rm -rf "${etags_flist_fname}.backup"
+  printf "\
+  %s - %s files found and processed.
+             Created: %s/TAGS
+             Scanned file list stored in: %s/%s\n" "${pgm_name}" "${file_count}" "$(pwd)" "$(pwd)" "${etags_flist_fname}" 1>&2
+fi
 
 # ----------------------------------------------------------------------------
 # Local Variables:
