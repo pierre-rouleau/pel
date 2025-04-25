@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 09:25:27 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 13:49:34 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -23,7 +23,7 @@
 # ----------------------------------------------------------------------------
 #  Dependencies
 #  ------------
-#
+
 # - Uses fd (also named fdfind in some Linux distros like Mint) if it is
 #   available.  See URL:  https://github.com/sharkdp/fd .
 # - if fd/fdfind is not available, use find instead.
@@ -41,14 +41,17 @@
 #   Universal Ctags executable file.
 
 # ----------------------------------------------------------------------------
-#  Code
-#  ----
+# Code
+# ----
 
 pgm_name="$(basename "$0")"
+etags_flist_fname=.etags-c-files.txt
+etags_flist_envvar_fname="$ETAGS_FILE_LIST_FOR_C"
+
 print_usage()
 {
     printf -- "
-etags-c: build a etags-compliant TAGS file in the current directory
+%s: build a etags-compliant TAGS file in the current directory
          for all C and C++ source code files in the directory trees
          specified on the command line.
 
@@ -56,21 +59,27 @@ etags-c: build a etags-compliant TAGS file in the current directory
 
   • Print this help information.
 
- Usage: %s [DIRPATH ...]
-        %s [--list=FILENAME]
+ Usage: %s [-u] [DIRPATH ...]
+        %s [-u] [--list=FILENAME]
 
   • [Re]build an etags-compliant TAGS file in current directory
     for the C/C++ code & header files found:
     - in the DIRPATH directory tree(s) identified on the command line, or
       the current directory if none is specified,
     - in the list provided in the FILENAME specified by the --list option, or
-    - specified by the ETAGS_FILE_LIST environment variable.
+    - specified by the ETAGS_FILE_LIST_FOR_C environment variable.
   • Follows symbolic links both for directories and files.
+  • Uses etags to build the TAGS file by default, but
+    -u : force use Universal Ctags (ctags) instead of etags.
+  • Set ETAGS_USE_UCTAGS to 1 or the absolute path of
+    Universal Ctags executable file to force using Universal Ctags.
+    When setting it to 1, the ctags found in PATH is expected
+    to be Universal Ctags.
   • Overwrites any TAGS file in the current directory.
   • Stores the names of inspected files in the file named
      .etags-c-files.txt in the current directory.
   • Identifies the C/C++ files using one of the following methods:
-    • If ETAGS_FILE_LIST environment variable exists, it uses it as
+    • If ETAGS_FILE_LIST_FOR_C environment variable exists, it uses it as
       the name of a file that holds a list of C/C++ files to parse.
       The name of this file can be anything except .etags-c-files.txt
       and it must exists. If it does not: exists with an error.
@@ -94,7 +103,7 @@ etags-c: build a etags-compliant TAGS file in the current directory
      • The path of the find program used and when repository ignore files
        are skipped from the scan.
      • A count of found files, and the name of the file that holds them.
-" "$pgm_name" "$pgm_name" "$pgm_name"
+" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         printf -- "
 ⚠️   ETAGS_USE_FIND is currently set to 1, forcing the use of 'find'!
@@ -106,7 +115,7 @@ etags-c: build a etags-compliant TAGS file in the current directory
 }
 
 # --
-# run__etags_c -- run etags or ctags on a set of files
+# run__etags__c -- run etags or ctags on a set of files
 # ------------
 #
 # Use etags to parse the source code files unless ETAGS_USE_UCTAGS
@@ -117,21 +126,21 @@ etags-c: build a etags-compliant TAGS file in the current directory
 # When using Emacs, Emacs provides its own ctags that is essentially etags.
 # Etags generates a tag file format a little different and better suited for Emacs.
 
-run__etags_c()
+run__etags__c()
 {
     # Expects no argument, but expects a list of files to parse on stdin.
 
     if [ -n "$ETAGS_USE_UCTAGS" ]; then
         if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
             xargs ctags --output-format=etags
-            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)"
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)" 1>&2
         elif [ -x "$ETAGS_USE_UCTAGS" ]; then
             xargs "$ETAGS_USE_UCTAGS" --output-format=etags
-            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS"
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS" 1>&2
         else
-            printf -- "*** ERROR: %s: invalid ETAGS_USE_UCTAGS value\n" "${pgm_name}"
-            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS"
-            printf -- "***  This is not 1 nor a valid executable file name.\n"
+            printf -- "*** ERROR: %s: invalid ETAGS_USE_UCTAGS value\n" "${pgm_name}" 1>&2
+            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS" 1>&2
+            printf -- "***  This is not 1 nor a valid executable file name.\n" 1>&2
             exit 4
         fi
     else
@@ -139,7 +148,6 @@ run__etags_c()
         etags --class-qualify -
     fi
 }
-
 
 # --
 # Check validity of arguments
@@ -154,6 +162,21 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     fi
 fi
 
+# Check -u option to force use of universal ctags
+if [ "$1" = "-u" ]; then
+    if [ -z "$ETAGS_USE_UCTAGS" ]; then
+        printf -- "%s: -u option requests use of Universal Ctags.\n" "${pgm_name}" 1>&2
+        ETAGS_USE_UCTAGS=1
+    else
+        printf -- "%s: -u option not necessary (but does no harm).\n" "${pgm_name}" 1>&2
+        printf -- " ETAGS_USE_UCTAGS is already set to: %s\n" "$ETAGS_USE_UCTAGS" 1>&2
+    fi
+    shift
+fi
+
+# --
+#  Check --list option to extract list of C/C++ files.
+
 case "$1" in
     --list=*)
     # extract the file name from the --list= option
@@ -161,20 +184,33 @@ case "$1" in
         if [ ! -f "${fname}" ]; then
             printf -- "\
 *** ERROR: %s: specified list file does not exist: %s
-" "${pgm_name}" "${fname}"
+" "${pgm_name}" "${fname}" 1>&2
             exit 1
         else
-            ETAGS_FILE_LIST="${fname}"
+            etags_flist_envvar_fname="${fname}"
             shift
         fi
         ;;
 esac
 
-# --
-
+# ----------------------------------------------------------------------------
 # Define a function that searches into 1 directory
 # and accumulates the list of found files into the
 # file '.etags-c-files.txt'.
+
+# Identify options
+case $(uname) in
+    Darwin)
+        find_path_option='-f'
+        ;;
+    Linux)
+        find_path_option=
+        ;;
+    *)
+        printf -- "*** ERROR: %s:  Error Operating System, %s, is not supported!\n" "${pgm_name}"  "$(uname)" 1>&2
+        exit 1
+        ;;
+esac
 
 search_with_find()
 {
@@ -198,7 +234,7 @@ search_with_find()
          -or -name "*.inl"       \
          -or -name "*.M"         \
          -or -name "*.pdb"       \
-         \)  -print | tee -a .etags-c-files.txt
+         \)  -print | tee -a "${etags_flist_fname}"
 }
 
 search_with_fd()
@@ -236,7 +272,7 @@ search_with_fd()
               -e .inl    \
               -e .M      \
               -e .pdb    \
-             '' "$dirname" | tee -a .etags-c-files.txt
+             '' "$dirname" | tee -a "${etags_flist_fname}"
 }
 
 search()
@@ -255,21 +291,22 @@ search()
 }
 
 # --
+# Proceed
 
-if [ -n "$ETAGS_FILE_LIST" ]; then
-    if [ "$ETAGS_FILE_LIST" = ".etags-c-files.txt" ]; then
-        echo "Error! Do NOT set ETAGS_FILE_LIST to .etags-c-files.txt" 1>&2
+if [ -n "${etags_flist_envvar_fname}" ]; then
+    if [ "${etags_flist_envvar_fname}" = "${etags_flist_fname}" ]; then
+        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_C to %s\n" "${pgm_name}" "${etags_flist_fname}"1>&2
         exit 1
     fi
-    echo "Using the file list identified by ETAGS_FILE_LIST: $ETAGS_FILE_LIST" 1>&2
-    cp "$ETAGS_FILE_LIST" .etags-c-files.txt
-    run__etags_c < "$ETAGS_FILE_LIST"
+    printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_C: %s\n" "${etags_flist_envvar_fname}" 1>&2
+    cp "${etags_flist_envvar_fname}" "${etags_flist_fname}"
+    run__etags__c < "${etags_flist_envvar_fname}"
 else
-    # Use the directory names provided on command line.
-    # Check their validity.
+    # Check the validity of directory names specified as arguments.
     # Ensure that each directory specified on the command line
     # exists.  Also ensure that a directory name is not specified more
     # than once.  Use the realpath of that directory name when comparing.
+    # Exit on the first error detected.
     dpaths=
     for dname in "$@"; do
         if [ ! -d "${dname}" ]; then
@@ -301,15 +338,12 @@ else
         dpaths="${dpaths} ${dpath}"
     done
 
-    echo "No list of files identified by ETAGS_FILE_LIST." 1>&2
-    echo "- Building the list of source files."            1>&2
-
-    # Find the files, pass their names to etags which creates the TAGS file.
-    # To find the files, try to use 'fd' or 'fdfind' if they exist,
-    # otherwise use 'find'.  Echo the actual program used to find the files.
-    # Search for all possible C and C++ file extensions in the directory tree.
-
-    # - Identify how to search files
+    # --
+    # First prepare environment
+    # Select the method to search for files.
+    # - Try to use fd or fdfind if they exist,
+    #   otherwise use find.
+    # - Echo the actual program used to find files (on stderr).
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         search_with='find'
     else
@@ -323,21 +357,6 @@ else
             search_with='find'
         fi
     fi
-
-    # Identify options
-    case $(uname) in
-        Darwin)
-            find_path_option='-f'
-            ;;
-        Linux)
-            find_path_option=
-            ;;
-        *)
-            printf -- "etags-c ** Error Operating System, %s, is not supported!\n" "$(uname)" 1>&2
-            exit 1
-            ;;
-    esac
-
     # Print operating information on stderr.
     case "$search_with" in
         find)
@@ -357,12 +376,17 @@ else
             exit 1
             ;;
     esac
+    printf --  "No list of files identified by ETAGS_FILE_LIST_FOR_C.\n" 1>&2
     printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
 
-    # delete old list
-    rm -f .etags-c-files.txt
+    # -- proceed
+    # Rename the old list of files if it exists
+    if [ -e "${etags_flist_fname}" ]; then
+        mv "${etags_flist_fname}" "${etags_flist_fname}.backup"
+    fi
+
     # Search in all specified directory to build the list of
-    # files in the file '.etags-c-files.txt'.
+    # files in the file '"${etags_flist_fname}"'.
     if [ -z "$1" ]; then
         dirname="."
         search
@@ -373,14 +397,28 @@ else
     fi
 
     # Then run etags on these files, and sort them in the etags file
-    sort < .etags-c-files.txt | uniq >  .etags-c-files.1.txt
-    rm -f .etags-c-files.txt
-    mv .etags-c-files.1.txt .etags-c-files.txt
-    run__etags_c < .etags-c-files.txt
+    sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
+    rm -f "${etags_flist_fname}"
+    mv "${etags_flist_fname}.new" "${etags_flist_fname}"
+    run__etags__rust < "${etags_flist_fname}"
 fi
 
-file_count="$(wc -l .etags-c-files.txt | awk '{print $1}')"
-printf -- "%s files found and processed. List stored in: .etags-c-files.txt\n" "${file_count=}" 1>&2;
+file_count="$(wc -l "${etags_flist_fname}" | awk '{print $1}')"
+if [ "$file_count" = "0" ]; then
+    # restore the old list of files.
+    rm -rf "${etags_flist_fname}"
+    if [ -e "${etags_flist_fname}.backup" ]; then
+        mv "${etags_flist_fname}.backup"  "${etags_flist_fname}"
+    fi
+    printf -- "No files found. %s and TAGS files untouched.\n" "${etags_flist_fname}"  1>&2
+    exit 1
+else
+  rm -rf "${etags_flist_fname}.backup"
+  printf "\
+  %s - %s files found and processed.
+             Created: %s/TAGS
+             Scanned file list stored in: %s/%s\n" "${pgm_name}" "${file_count}" "$(pwd)" "$(pwd)" "${etags_flist_fname}" 1>&2
+fi
 
 # ----------------------------------------------------------------------------
 # Local Variables:

@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 09:25:48 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 14:39:28 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -37,6 +37,8 @@
 #  ----
 
 pgm_name="$(basename "$0")"
+etags_flist_fname=.etags-el-files.txt
+etags_flist_envvar_fname="$ETAGS_FILE_LIST_FOR_ELISP"
 
 print_usage()
 {
@@ -50,13 +52,16 @@ print_usage()
   • Print this help information.
 
  Usage: %s [--in=TARGET-DIRPATH] [DIRPATH ...]
+        %s [--in=TARGET-DIRPATH] [--list=FILENAME]
 
   • [Re]build an etags-compliant TAGS file in specified
     TARGET-DIRPATH or current directory for the Emacs Lisp,
     C code & header files found:
     - in the DIRPATH directory tree(s) identified on the command line, or
-      the current directory if none is specified.
-    All operations are done with the current directory being
+      the current directory if none is specified, or
+    - in the list provided in the FILENAME specified by the --list option, or
+    - specified by the ETAGS_FILE_LIST_FOR_ELISP environment variable.
+  • All operations are done with the current directory being
     the TARGET-DIRPATH if specified, otherwise it's the current one.
     This means that when specifying TARGET-DIRPATH, all other
     DIRPATH are relative to that directory (if relative).
@@ -85,7 +90,7 @@ print_usage()
  • The only output on stdout is the list of files found.
     This allows this script to be used as the first in a pipe
     to do other processing with the list of files found.
-" "$pgm_name" "$pgm_name" "$pgm_name"
+" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         printf -- "
 ⚠️   ETAGS_USE_FIND is currently set to 1, forcing the use of 'find'!
@@ -97,6 +102,11 @@ print_usage()
 }
 
 # --
+# run__etags__el -- run etags on a set of files
+# --------------
+#
+# Use etags to parse the source code files.
+# Etags generates a tag file format a little different and better suited for Emacs.
 
 run__etags__el()
 {
@@ -121,69 +131,51 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     fi
 fi
 
-case "$1" in
-    --in=*)
-        targetdir="$(echo "$1" | cut -c 6- | sed "s:~:$HOME:g")"
-        targetdir=$(realpath "${targetdir}")
-        if [ -d "${targetdir}" ]; then
-            cd "${targetdir}" || exit 1
-            shift
-        else
-            printf -- "\
+# Check other options
+options=2
+while [ "$options" -ge 1 ]; do
+    case "$1" in
+        --in=*)
+            targetdir="$(echo "$1" | cut -c 6- | sed "s:~:$HOME:g")"
+            targetdir=$(realpath "${targetdir}")
+            if [ -d "${targetdir}" ]; then
+                cd "${targetdir}" || exit 1
+                shift
+            else
+                printf -- "\
 *** ERROR: %s: invalid TARGET-DIRPATH: %s\n" "${pgm_name}" "${targetdir}" 1>&2
-            exit 1
-        fi
-        ;;
-    --)
-        shift
-        ;;
+                exit 1
+            fi
+            ;;
 
-    -*)
-        printf -- "\
+        --list=*)
+            # extract the file name from the --list= option
+            fname="$(echo "$1" | sed 's/--list=//g')"
+            if [ ! -f "${fname}" ]; then
+                printf -- "\
+*** ERROR: %s: specified list file does not exist: %s
+" "${pgm_name}" "${fname}" 1>&2
+                exit 1
+            else
+                etags_flist_envvar_fname="${fname}"
+                shift
+            fi
+            ;;
+
+        --)
+            shift
+            ;;
+
+        -*)
+            printf -- "\
 *** ERROR: %s: invalid options: %s\n" "${pgm_name}" "$1" 1>&2
-        exit 1
-        ;;
-esac
-
-# --
-# Check the validity of directory names specified as arguments.
-# Ensure that each directory specified on the command line
-# exists.  Also ensure that a directory name is not specified more
-# than once.  Use the realpath of that directory name when comparing.
-
-dpaths=
-for dname in "$@"; do
-    if [ ! -d "${dname}" ]; then
-        printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2
-        exit 2
-    fi
-    dpath="$(realpath "${dname}")"
-    for dp in ${dpaths}; do
-        if [ "$dp" = "$dpath" ]; then
-            printf -- "Multiple entry of directory: %s\n" "${dname}" 1>&2
-            exit 3
-        fi
-        # check if new entry is a sub-directory of an exiting entry
-        case "${dpath}" in
-            "${dp}/"*)
-                printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}" 1>&2
-                exit 3
-                ;;
-        esac
-        # check if new entry is a parent directory of an existing entry
-        case "${dp}" in
-            "${dpath}/"*)
-                printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}" 1>&2
-                exit 3
-                ;;
-        esac
-
-    done
-    dpaths="${dpaths} ${dpath}"
+            exit 1
+            ;;
+    esac
+    options=$(( options - 1 ))
 done
 
-# --
-
+# ----------------------------------------------------------------------------
 # Define a function that searches into 1 directory
 # and accumulates the list of found files into the
 # file '.etags-el-files.txt'.
@@ -209,7 +201,7 @@ search_with_find()
          -or -name "*.el.gz" \
          -or -name "*.[ch]"  \
          -or -name "*.[ch].gz" \
-         \)  -print | tee -a .etags-el-files.txt
+         \)  -print | tee -a "${etags_flist_fname}"
 }
 
 search_with_fd()
@@ -220,7 +212,7 @@ search_with_fd()
     ${fd_pgm} -L --type f -e .el -e .el.gz \
               -e .c -e .c.gz \
               -e .h -e .h.gz \
-              '' "$dirname" | tee -a .etags-el-files.txt
+              '' "$dirname" | tee -a "${etags_flist_fname}"
 }
 
 search()
@@ -238,67 +230,125 @@ search()
     esac
 }
 
-
 # --
-# First prepare environment
-# Select the method to search for files.
-# - Try to use fd or fdfind if they exist,
-#   otherwise use find.
-# - Echo the actual program used to find files (on stderr).
-if [ "$ETAGS_USE_FIND" = "1" ]; then
-    search_with='find'
-    echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
-    echo "-> Using" "$(which find)"                 1>&2
-else
-    if [ -x "$(command -v fdfind)" ]; then
-        search_with='fd'
-        fd_pgm=fdfind
-        echo "-> Using" "$(which fdfind)" 1>&2
-        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
-    elif [ -x "$(command -v fd)" ]; then
-        search_with='fd'
-        fd_pgm=fd
-        echo "-> Using" "$(which fd)" 1>&2
-        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
-    else
-        search_with='find'
-        echo "-> Using" "$(which find)" 1>&2
+# Proceed
+
+if [ -n "${etags_flist_envvar_fname}" ]; then
+    if [ "${etags_flist_envvar_fname}" = "${etags_flist_fname}" ]; then
+        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_ELISP to %s\n" "${pgm_name}" "${etags_flist_fname}"1>&2
+        exit 1
     fi
-fi
-
-# -- proceed
-# remove the old list of files.
-rm -f .etags-el-files.txt
-
-# Search in all specified directory to build the list of
-# files in the file '.etags-el-files.txt'.
-
-printf -- "%s - Processing %s/ ...\n" "${pgm_name}" "$(pwd)" 1>&2
-
-if [ -z "$1" ]; then
-    dirname="."
-    search
+    printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_ELISP: %s\n" "${etags_flist_envvar_fname}" 1>&2
+    cp "${etags_flist_envvar_fname}" "${etags_flist_fname}"
+    run__etags__el < "${etags_flist_envvar_fname}"
 else
-    for dirname in "$@"; do
-        search
+    # Check the validity of directory names specified as arguments.
+    # Ensure that each directory specified on the command line
+    # exists.  Also ensure that a directory name is not specified more
+    # than once.  Use the realpath of that directory name when comparing.
+    # Exit on the first error detected.
+    dpaths=
+    for dname in "$@"; do
+        if [ ! -d "${dname}" ]; then
+            printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2
+            exit 2
+        fi
+        dpath="$(realpath "${dname}")"
+        for dp in ${dpaths}; do
+            if [ "$dp" = "$dpath" ]; then
+                printf -- "Multiple entry of directory: %s\n" "${dname}" 1>&2
+                exit 3
+            fi
+            # check if new entry is a sub-directory of an exiting entry
+            case "${dpath}" in
+                "${dp}/"*)
+                    printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}" 1>&2
+                    exit 3
+                    ;;
+            esac
+            # check if new entry is a parent directory of an existing entry
+            case "${dp}" in
+                "${dpath}/"*)
+                    printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}" 1>&2
+                    exit 3
+                    ;;
+            esac
+        done
+        dpaths="${dpaths} ${dpath}"
     done
+
+    # --
+    # First prepare environment
+    # Select the method to search for files.
+    # - Try to use fd or fdfind if they exist,
+    #   otherwise use find.
+    # - Echo the actual program used to find files (on stderr).
+    if [ "$ETAGS_USE_FIND" = "1" ]; then
+        search_with='find'
+        echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
+        echo "-> Using" "$(which find)"                 1>&2
+    else
+        if [ -x "$(command -v fdfind)" ]; then
+            search_with='fd'
+            fd_pgm=fdfind
+            echo "-> Using" "$(which fdfind)" 1>&2
+            echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
+        elif [ -x "$(command -v fd)" ]; then
+            search_with='fd'
+            fd_pgm=fd
+            echo "-> Using" "$(which fd)" 1>&2
+            echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
+        else
+            search_with='find'
+            echo "-> Using" "$(which find)" 1>&2
+        fi
+    fi
+
+    printf -- "No list of files identified by ETAGS_FILE_LIST_FOR_ELISP.\n" 1>&2
+    printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
+
+    # -- proceed
+    # Rename the old list of files if it exists
+    if [ -e "${etags_flist_fname}" ]; then
+        mv "${etags_flist_fname}" "${etags_flist_fname}.backup"
+    fi
+
+    # Search in all specified directory to build the list of
+    # files in the file '.etags-el-files.txt'.
+    if [ -z "$1" ]; then
+        dirname="."
+        search
+    else
+        for dirname in "$@"; do
+            search
+        done
+    fi
+
+    # Then run etags on these files, and sort them in the etags file
+    sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
+    rm -f "${etags_flist_fname}"
+    mv "${etags_flist_fname}.new" "${etags_flist_fname}"
+    run__etags__el < "${etags_flist_fname}"
 fi
 
+file_count="$(wc -l "${etags_flist_fname}" | awk '{print $1}')"
+if [ "$file_count" = "0" ]; then
+    # restore the old list of files.
+    rm -rf "${etags_flist_fname}"
+    if [ -e "${etags_flist_fname}.backup" ]; then
+        mv "${etags_flist_fname}.backup"  "${etags_flist_fname}"
+    fi
+    printf -- "No files found. %s and TAGS files untouched.\n" "${etags_flist_fname}"  1>&2
+    exit 1
+else
+  rm -rf "${etags_flist_fname}.backup"
+  printf "\
+  %s - %s files found and processed.
+             Created: %s/TAGS
+             Scanned file list stored in: %s/%s\n" "${pgm_name}" "${file_count}" "$(pwd)" "$(pwd)" "${etags_flist_fname}" 1>&2
+fi
 
-# Then run etags on these files, and sort them in the etags file
-sort < .etags-el-files.txt | uniq >  .etags-el-files.1.txt
-rm -f .etags-el-files.txt
-mv .etags-el-files.1.txt .etags-el-files.txt
-run__etags__el < .etags-el-files.txt
-
-file_count="$(wc -l .etags-el-files.txt | awk '{print $1}')"
-printf "\
-%s - %s files found and processed.
-           Created: %s/TAGS
-           Scanned file list stored in: %s/.etags-el-files.txt
-" "${pgm_name}" "${file_count}" "$(pwd)" "$(pwd)" 1>&2
-
-# -----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Local Variables:
 # sh-shell: sh
 # End:

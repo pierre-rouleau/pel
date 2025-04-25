@@ -4,14 +4,14 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 09:27:09 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 13:50:12 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
 #
 # Build an Emacs Tags file for all Python source code files in the
-# sub-directory tree.  This includes the .py and .pyw files.
-#
+# sub-directory tree.  This includes the .py and .pyw files and the
+# extension-less python script files.
 
 # ----------------------------------------------------------------------------
 #  Dependencies
@@ -35,11 +35,13 @@
 #   Universal Ctags executable file.
 
 # ----------------------------------------------------------------------------
-#  Code
-#  ----
+# Code
+# ----
 
 pgm_name="$(basename "$0")"
 pgm_path="$(dirname "$(readlink "$0")")"
+etags_flist_fname=.etags-py-files.txt
+etags_flist_envvar_fname="$ETAGS_FILE_LIST_FOR_PYTHON"
 
 print_usage()
 {
@@ -53,14 +55,19 @@ print_usage()
   • Print this help information.
 
  Usage: %s [-u] [DIRPATH ...]
+        %s [-u] [--list=FILENAME]
 
   • [Re]build an etags-compliant TAGS file in current directory
     for the Python source code files found:
     - in the DIRPATH directory tree(s) identified on the command line, or
-      the current directory if none is specified.
+      the current directory if none is specified, or
+    - in the list provided in the FILENAME specified by the --list option, or
+    - specified by the ETAGS_FILE_LIST_FOR_PYTHON environment variable.
   • Also lists all extension-less Python script files
     as well as Python files with the usual extensions.
   • Follows symbolic links both for directories and files.
+  • Uses etags to build the TAGS file by default, but
+    -u : force use Universal Ctags (ctags) instead of etags.
   • Overwrites any TAGS file in the current directory.
   • Uses etags to build the TAGS file by default, but
     -u : force use Universal Ctags (ctags) instead of etags.
@@ -88,7 +95,7 @@ print_usage()
   • The only output on stdout is the list of files found.
     This allows this script to be used as the first in a pipe
     to do other processing with the list of files found.
-" "$pgm_name" "$pgm_name" "$pgm_name"
+" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         printf -- "
 ⚠️   ETAGS_USE_FIND is currently set to 1, forcing the use of 'find'!
@@ -100,6 +107,16 @@ print_usage()
 }
 
 # --
+# run__etags__py -- run etags or ctags on a set of files
+# --------------
+#
+# Use etags to parse the source code files unless ETAGS_USE_UCTAGS
+# environment variable is set to 1.  In which case it uses ctags.
+# Ideally that would be the latest version of Universal ctags
+# from https://github.com/universal-ctags/ctags#readme as opposed to the
+# old and currently un-maintained Exeburant ctags.
+# When using Emacs, Emacs provides its own ctags that is essentially etags.
+# Etags generates a tag file format a little different and better suited for Emacs.
 
 run__etags__py()
 {
@@ -108,14 +125,14 @@ run__etags__py()
     if [ -n "$ETAGS_USE_UCTAGS" ]; then
         if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
             xargs ctags --output-format=etags
-            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$(which ctags)"
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)" 1>&2
         elif [ -x "$ETAGS_USE_UCTAGS" ]; then
             xargs "$ETAGS_USE_UCTAGS" --output-format=etags
-            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS"
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS" 1>&2
         else
-            printf -- "*** ERROR: %s:  invalid ETAGS_USE_UCTAGS value\n" "${pgm_name}"
-            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS"
-            printf -- "***  This is not 1 nor a valid executable file name.\n"
+            printf -- "*** ERROR: %s: invalid ETAGS_USE_UCTAGS value\n" "${pgm_name}" 1>&2
+            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS" 1>&2
+            printf -- "***  This is not 1 nor a valid executable file name.\n" 1>&2
             exit 4
         fi
     else
@@ -136,59 +153,38 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     fi
 fi
 
-# --
-
 # Check -u option to force use of universal ctags
 if [ "$1" = "-u" ]; then
     if [ -z "$ETAGS_USE_UCTAGS" ]; then
-        echo "etags-py: -u option requests use of Universal Ctags."
+        printf -- "%s: -u option requests use of Universal Ctags.\n" "${pgm_name}" 1>&2
         ETAGS_USE_UCTAGS=1
     else
-        echo "etags-py: -u option not necessary (but does no harm)."
-        echo " ETAGS_USE_UCTAGS is already set to: $ETAGS_USE_UCTAGS"
+        printf -- "%s: -u option not necessary (but does no harm).\n" "${pgm_name}" 1>&2
+        printf -- " ETAGS_USE_UCTAGS is already set to: %s\n" "$ETAGS_USE_UCTAGS" 1>&2
     fi
     shift
 fi
 
 # --
-# Check the validity of directory names specified as arguments.
-# Ensure that each directory specified on the command line
-# exists.  Also ensure that a directory name is not specified more
-# than once.  Use the realpath of that directory name when comparing.
+#  Check --list option to extract list of Python files.
 
-dpaths=
-for dname in "$@"; do
-    if [ ! -d "${dname}" ]; then
-        printf -- "Specified directory does not exists: %s\n" "${dname}"
-        exit 2
-    fi
-    dpath="$(realpath "${dname}")"
-    for dp in ${dpaths}; do
-        if [ "$dp" = "$dpath" ]; then
-            printf -- "Multiple entry of directory: %s\n" "${dname}"
-            exit 3
+case "$1" in
+    --list=*)
+    # extract the file name from the --list= option
+        fname="$(echo "$1" | sed 's/--list=//g')"
+        if [ ! -f "${fname}" ]; then
+            printf -- "\
+*** ERROR: %s: specified list file does not exist: %s
+" "${pgm_name}" "${fname}" 1>&2
+            exit 1
+        else
+            etags_flist_envvar_fname="${fname}"
+            shift
         fi
-        # check if new entry is a sub-directory of an exiting entry
-        case "${dpath}" in
-            "${dp}/"*)
-                printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}"
-                exit 3
-                ;;
-        esac
-        # check if new entry is a parent directory of an existing entry
-        case "${dp}" in
-            "${dpath}/"*)
-                printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}"
-                exit 3
-                ;;
-        esac
+        ;;
+esac
 
-    done
-    dpaths="${dpaths} ${dpath}"
-done
-
-# --
-
+# ----------------------------------------------------------------------------
 # Define a function that searches into 1 directory
 # and accumulates the list of found files into the
 # file '.etags-py-files.txt'.
@@ -213,7 +209,7 @@ search_with_find()
     find -L ${find_path_option} "$dirname" \( \
          -name     "*.py" \
          -or -name "*.pyw" \
-         \)  -print | tee -a .etags-py-files.txt
+         \)  -print | tee -a "${etags_flist_fname}"
 }
 
 search_with_fd()
@@ -221,7 +217,7 @@ search_with_fd()
     # Arg: dirname : name of directory tree to search
     # Arg: fd_pgm  : fd or fdfind
     ${fd_pgm} -L --type f -e .py -e .pyw \
-              '' "$dirname" | tee -a .etags-py-files.txt
+              '' "$dirname" | tee -a "${etags_flist_fname}"
 }
 
 search()
@@ -242,73 +238,130 @@ search()
 search_script()
 {
     # Arg: dirname : name of directory tree to search
-    "${pgm_path}/find-script-py"  "$dirname" | tee -a .etags-py-files.txt
+    "${pgm_path}/find-script-py"  "$dirname" | tee -a "${etags_flist_fname}"
 }
 
-
 # --
-# First prepare environment
-# Select the method to search for files.
-# - Try to use fd or fdfind if they exist,
-#   otherwise use find.
-# - Echo the actual program used to find files (on stderr).
-if [ "$ETAGS_USE_FIND" = "1" ]; then
-    search_with='find'
-    echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
-    echo "-> Using" "$(which find)"                 1>&2
-else
-    if [ -x "$(command -v fdfind)" ]; then
-        search_with='fd'
-        fd_pgm=fdfind
-        echo "-> Using" "$(which fdfind)" 1>&2
-        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
-    elif [ -x "$(command -v fd)" ]; then
-        search_with='fd'
-        fd_pgm=fd
-        echo "-> Using" "$(which fd)" 1>&2
-        echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
-    else
-        search_with='find'
-        echo "-> Using" "$(which find)" 1>&2
+# Proceed
+
+if [ -n "${etags_flist_envvar_fname}" ]; then
+    if [ "${etags_flist_envvar_fname}" = "${etags_flist_fname}" ]; then
+        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_PYTHON to %s\n" "${pgm_name}" "${etags_flist_fname}"1>&2
+        exit 1
     fi
-fi
-
-# -- proceed
-# remove the old list of files.
-rm -f .etags-py-files.txt
-
-# Search in all specified directory to build the list of
-# files in the file '.etags-py-files.txt'.
-# Use find-script-py to identify the names of the extension-less
-# Python files.  This script is inside the same directory as etags-py.
-
-printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
-if [ -z "$1" ]; then
-    dirname="."
-    search
-    search_script
+    printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_PYTHON: %s\n" "${etags_flist_envvar_fname}" 1>&2
+    cp "${etags_flist_envvar_fname}" "${etags_flist_fname}"
+    run__etags__python < "${etags_flist_envvar_fname}"
 else
-    for dirname in "$@"; do
+    # Check the validity of directory names specified as arguments.
+    # Ensure that each directory specified on the command line
+    # exists.  Also ensure that a directory name is not specified more
+    # than once.  Use the realpath of that directory name when comparing.
+    # Exit on the first error detected.
+    dpaths=
+    for dname in "$@"; do
+        if [ ! -d "${dname}" ]; then
+            printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2
+            exit 2
+        fi
+        dpath="$(realpath "${dname}")"
+        for dp in ${dpaths}; do
+            if [ "$dp" = "$dpath" ]; then
+                printf -- "Multiple entry of directory: %s\n" "${dname}" 1>&2
+                exit 3
+            fi
+            # check if new entry is a sub-directory of an exiting entry
+            case "${dpath}" in
+                "${dp}/"*)
+                    printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}" 1>&2
+                    exit 3
+                    ;;
+            esac
+            # check if new entry is a parent directory of an existing entry
+            case "${dp}" in
+                "${dpath}/"*)
+                    printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}" 1>&2
+                    exit 3
+                    ;;
+            esac
+        done
+        dpaths="${dpaths} ${dpath}"
+    done
+
+    # --
+    # First prepare environment
+    # Select the method to search for files.
+    # - Try to use fd or fdfind if they exist,
+    #   otherwise use find.
+    # - Echo the actual program used to find files (on stderr).
+    if [ "$ETAGS_USE_FIND" = "1" ]; then
+        search_with='find'
+        echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
+        echo "-> Using" "$(which find)"                 1>&2
+    else
+        if [ -x "$(command -v fdfind)" ]; then
+            search_with='fd'
+            fd_pgm=fdfind
+            echo "-> Using" "$(which fdfind)" 1>&2
+            echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
+        elif [ -x "$(command -v fd)" ]; then
+            search_with='fd'
+            fd_pgm=fd
+            echo "-> Using" "$(which fd)" 1>&2
+            echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
+        else
+            search_with='find'
+            echo "-> Using" "$(which find)" 1>&2
+        fi
+    fi
+
+    printf --  "No list of files identified by ETAGS_FILE_LIST_FOR_PYTHON.\n" 1>&2
+    printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
+
+    # -- proceed
+    # Rename the old list of files if it exists
+    if [ -e "${etags_flist_fname}" ]; then
+        mv "${etags_flist_fname}" "${etags_flist_fname}.backup"
+    fi
+
+    # Search in all specified directory to build the list of
+    # files in the file '.etags-py-files.txt'.
+    if [ -z "$1" ]; then
+        dirname="."
         search
         search_script
-    done
+    else
+        for dirname in "$@"; do
+            search
+            search_script
+        done
+    fi
+
+    # Then run etags on these files, and sort them in the etags file
+    sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
+    rm -f "${etags_flist_fname}"
+    mv "${etags_flist_fname}.new" "${etags_flist_fname}"
+    run__etags__rust < "${etags_flist_fname}"
 fi
 
-# Then run etags on these files, and sort them in the etags file
-sort < .etags-py-files.txt | uniq >  .etags-py-files.1.txt
-rm -f .etags-py-files.txt
-mv .etags-py-files.1.txt .etags-py-files.txt
-run__etags__py < .etags-py-files.txt
+file_count="$(wc -l "${etags_flist_fname}" | awk '{print $1}')"
+if [ "$file_count" = "0" ]; then
+    # restore the old list of files.
+    rm -rf "${etags_flist_fname}"
+    if [ -e "${etags_flist_fname}.backup" ]; then
+        mv "${etags_flist_fname}.backup"  "${etags_flist_fname}"
+    fi
+    printf -- "No files found. %s and TAGS files untouched.\n" "${etags_flist_fname}"  1>&2
+    exit 1
+else
+  rm -rf "${etags_flist_fname}.backup"
+  printf "\
+  %s - %s files found and processed.
+             Created: %s/TAGS
+             Scanned file list stored in: %s/%s\n" "${pgm_name}" "${file_count}" "$(pwd)" "$(pwd)" "${etags_flist_fname}" 1>&2
+fi
 
-
-file_count="$(wc -l .etags-py-files.txt | awk '{print $1}')"
-printf "\
-%s - %s files found and processed.
-           Created: %s/TAGS
-           Scanned file list stored in: %s/.etags-py-files.txt
-" "${pgm_name}" "${file_count}" "$(pwd)" "$(pwd)" 1>&2
-
-# -----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Local Variables:
 # sh-shell: sh
 # End:

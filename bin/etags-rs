@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Rust source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 12:17:34 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 14:04:18 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -128,7 +128,7 @@ run__etags__rs()
             printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)" 1>&2
         elif [ -x "$ETAGS_USE_UCTAGS" ]; then
             xargs "$ETAGS_USE_UCTAGS" --output-format=etags
-            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS" 1>&2
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$ETAGS_USE_UCTAGS" 1>&2
         else
             printf -- "*** ERROR: %s: invalid ETAGS_USE_UCTAGS value\n" "${pgm_name}" 1>&2
             printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS" 1>&2
@@ -206,7 +206,6 @@ esac
 search_with_find()
 {
     # Arg: dirname : name of directory tree to search
-
     find -L ${find_path_option} "$dirname" \
          \( -name "*.rs"                   \
          \) -print | tee -a "${etags_flist_fname}"
@@ -216,7 +215,6 @@ search_with_fd()
 {
     # Arg: dirname : name of directory tree to search
     # Arg: fd_pgm  : fd or fdfind
-
     ${fd_pgm} -L --type f \
               -e .rs      \
               '' "$dirname" | tee -a "${etags_flist_fname}"
@@ -338,8 +336,10 @@ else
     printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
 
     # -- proceed
-    # Rename the old list of files.
-    mv "${etags_flist_fname}" "${etags_flist_fname}".backup
+    # Rename the old list of files if it exists
+    if [ -e "${etags_flist_fname}" ]; then
+        mv "${etags_flist_fname}" "${etags_flist_fname}.backup"
+    fi
 
     # Search in all specified directory to build the list of
     # files in the file '.etags-rs-files.txt'.
@@ -355,9 +355,9 @@ else
     fi
 
     # Then run etags on these files, and sort them in the etags file
-    sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}".new
+    sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
     rm -f "${etags_flist_fname}"
-    mv "${etags_flist_fname}".new "${etags_flist_fname}"
+    mv "${etags_flist_fname}.new" "${etags_flist_fname}"
     run__etags__rust < "${etags_flist_fname}"
 fi
 
@@ -365,11 +365,13 @@ file_count="$(wc -l "${etags_flist_fname}" | awk '{print $1}')"
 if [ "$file_count" = "0" ]; then
     # restore the old list of files.
     rm -rf "${etags_flist_fname}"
-    mv "${etags_flist_fname}".backup  "${etags_flist_fname}"
+    if [ -e "${etags_flist_fname}.backup" ]; then
+        mv "${etags_flist_fname}.backup"  "${etags_flist_fname}"
+    fi
     printf -- "No files found. %s and TAGS files untouched.\n" "${etags_flist_fname}"  1>&2
     exit 1
 else
-  rm -rf "${etags_flist_fname}".backup
+  rm -rf "${etags_flist_fname}.backup"
   printf "\
   %s - %s files found and processed.
              Created: %s/TAGS
