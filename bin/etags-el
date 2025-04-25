@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 14:39:28 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-25 15:42:07 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -164,12 +164,17 @@ while [ "$options" -ge 1 ]; do
 
         --)
             shift
+            continue
             ;;
 
         -*)
             printf -- "\
 *** ERROR: %s: invalid options: %s\n" "${pgm_name}" "$1" 1>&2
             exit 1
+            ;;
+
+        *)
+            break
             ;;
     esac
     options=$(( options - 1 ))
