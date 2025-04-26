@@ -2182,6 +2182,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; C-s     - prefix for Scheme implementation
 ;;
 ;; .       - APL
+;; :       - Smalltalk
 ;; 2       - Modula2
 ;; 4       - M4
 ;; 7       - Seed7           - Extensible language.  Syntax evolved from Pascal/Modula/Ada
@@ -4969,6 +4970,18 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
         (define-key map (kbd "<f6> <down>") 'seed7-beg-of-next-defun))))
 
   (add-to-list 'auto-mode-alist '("\\.s\\(d7\\|7i\\)\\'" . seed7-mode)))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC :`` : Smalltalk  programming
+;; Experimental 🚧
+
+(when pel-use-smalltalk
+  (define-pel-global-prefix pel:for-smalltalk  (kbd "<f11> SPC s"))
+
+  (pel-ensure-package smalltalk-mode from: gnu)
+
+  (pel-eval-after-load smalltalk-mode
+    (pel-config-major-mode smalltalk pel:for-smalltalk)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC s`` : Swift  programming

@@ -168,6 +168,7 @@
 ;;       - pel-pkg-for-sh-scripting
 ;;         - pel-sh-script-skeleton-control
 ;;       - pel-pkg-for-seed7
+;;       - pel-pkg-for-smalltalk
 ;;       - pel-pkg-for-swift
 ;;       - pel-pkg-for-tcl
 ;;       - pel-pkg-for-v
@@ -10432,6 +10433,50 @@ characters."
   "Default shebang line to add in extension-less Seed7 script files."
   :group 'pel-pkg-for-seed7
   :type 'string)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Smalltalk Language Support
+;; --------------------------
+(defgroup pel-pkg-for-smalltalk nil
+  "PEL Smalltalk language support."
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Smalltalk PDF" ,(pel-pdf-file-url "pl-smalltalk")))
+
+(defcustom pel-use-smalltalk nil
+  "Control whether PEL supports the smalltalk-mode for GNU Smalltalk language."
+  :link '(url-link :tag "smalltalk-mode @ GNU elpa"
+                   "https://elpa.gnu.org/packages/smalltalk-mode.html")
+  :group 'pel-pkg-for-smalltalk
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-smalltalk-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Smalltalk buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-smalltalk
+  :type '(repeat function))
+
+(defcustom pel-smalltalk-tab-width 4
+  "Distance between tab stop for smalltalk buffers.
+
+PEL stores this in `tab-width' when opening smalltalk buffers.
+
+This does *NOT* control the indentation in smalltalk
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-smalltalk
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-smalltalk-use-tabs nil
+  "Value of `indent-tabs-mode' for editing smalltalk files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-smalltalk
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Swift Language Support

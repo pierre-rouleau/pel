@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add preliminary support for Smalltalk, via GNU Smalltalk, when *pel-use-smalltalk* user-option is set.
+  - Add an early version of the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-smalltalk.pdf][𝕻𝔩 - Smalltalk]] PDF.
+  - Currently support the Basic PEL ~<f12>~ key bindings to get help and access the customization.
 - Add 2 new commands to insert short time stamps: *pel-insert-date-wkd-short* (bound to ~<f11> i C-d~), and
   *pel-insert-date-wkd-time-short* (bound to to ~<f11> i C-t~). As with others their string formats are fully customizable.
 - Add the *pel-bookmark-set-file* command, bound to ~<f1> ' M-f~.
