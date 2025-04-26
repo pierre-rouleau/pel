@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-06-04 10:29:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-04-26 07:11:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -750,53 +750,53 @@ The function does not support printing a full report on stdout."
          (user-options      (pel-user-options))
          (installable-pkgs  (pel-installable-packages))
          (upgradable-pkgs   (pel-package-upgradable))
-         (                         overview  (format "\
-- custom-file                 : %s
-- package-user-dir            : %s
-- %3d Elpa packages stored in : %s
-- %3d Utils files   stored in : %s
-- size of load-path           : %d directories
-- Number of PEL user-options  : %3d (%d are active)
-- # packages PEL can install  : %d Elpa-compliant, %d others
-- PEL activated elpa  packages: %s
-- PEL Activated utils files   : %s
-- # loaded files              : %d
-- # features                  : %d
-- # package-alist             : %d
-- # packages activated        : %d
-- # packages selected         : %d
-- # PEL loaded commands       : %d
-- # upgradable elpa packages  : %d
-- Emacs init-time             : %s"
-                                                     custom-file
-                                                     package-user-dir
-                                                     (length
-                                                      (pel-elpa-package-directories package-user-dir))
-                                                     package-user-dir
-                                                     (length (pel-el-files-in pel-utils-dirpath))
-                                                     pel-utils-dirpath
-                                                     (length load-path)
-                                                     (length user-options)
-                                                     (length (seq-filter
-                                                              (lambda (x) (symbol-value x))
-                                                              user-options))
-                                                     (length (car installable-pkgs))
-                                                     (length (cadr installable-pkgs))
-                                                     (pel--elpa-stats n-elpa-base n-elpa-deps
-                                                                      n-elpa-locked)
-                                                     (pel--elpa-stats n-utils-base n-utils-deps
-                                                                      n-utils-locked)
-                                                     (length load-history)
-                                                     (length features)
-                                                     (length package-alist)
-                                                     (length package-activated-list)
-                                                     (length package-selected-packages)
-                                                     (length (pel-commands))
-                                                     (length upgradable-pkgs)
-                                                     (if (and (require 'time nil :no-error)
-                                                              (fboundp 'emacs-init-time))
-                                                         (emacs-init-time)
-                                                       "?"))))
+         (overview          (format "\
+- custom-file                : %s
+- package-user-dir           : %s
+- %3d Elpa packages stored in: %s
+- %3d Utils files   stored in: %s
+- size of load-path          : %d directories
+- Number of PEL user-options : %3d (%d are active)
+- # packages PEL can install : %d Elpa-compliant, %d others
+- PEL activated elpa packages: %s
+- PEL Activated utils files  : %s
+- # loaded files             : %d
+- # features                 : %d
+- # package-alist            : %d
+- # packages activated       : %d
+- # packages selected        : %d
+- # PEL loaded commands      : %d
+- # upgradable elpa packages : %d
+- Emacs init-time            : %s"
+                                           custom-file
+                                           package-user-dir
+                                           (length
+                                            (pel-elpa-package-directories package-user-dir))
+                                           package-user-dir
+                                           (length (pel-el-files-in pel-utils-dirpath))
+                                           pel-utils-dirpath
+                                           (length load-path)
+                                           (length user-options)
+                                           (length (seq-filter
+                                                    (lambda (x) (symbol-value x))
+                                                    user-options))
+                                           (length (car installable-pkgs))
+                                           (length (cadr installable-pkgs))
+                                           (pel--elpa-stats n-elpa-base n-elpa-deps
+                                                            n-elpa-locked)
+                                           (pel--elpa-stats n-utils-base n-utils-deps
+                                                            n-utils-locked)
+                                           (length load-history)
+                                           (length features)
+                                           (length package-alist)
+                                           (length package-activated-list)
+                                           (length package-selected-packages)
+                                           (length (pel-commands))
+                                           (length upgradable-pkgs)
+                                           (if (and (require 'time nil :no-error)
+                                                    (fboundp 'emacs-init-time))
+                                               (emacs-init-time)
+                                             "?"))))
     (when (pel-in-fast-startup-p)
       (user-error "PEL is running in fast-startup. \
  This is only available in normal mode!"))
