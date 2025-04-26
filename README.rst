@@ -18,7 +18,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/PEL_Managed_Packages-280-teal
+.. image:: https://img.shields.io/badge/PEL_Managed_Packages-281-teal
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
@@ -26,7 +26,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
-.. image:: https://img.shields.io/badge/PDF_Files-183-blue
+.. image:: https://img.shields.io/badge/PDF_Files-184-blue
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
@@ -207,7 +207,7 @@ various packages, etc...
 -----------------------------------------------------------------
 
 - In normal mode, PEL controls the download, installation, configuration and
-  activation of **280** *top-level* [#externp]_ external packages through the
+  activation of **281** *top-level* [#externp]_ external packages through the
   use of easy-to-setup customization user-options that have a name that start
   with the "``pel-use-``" prefix.
 
@@ -237,7 +237,7 @@ various packages, etc...
 ➣ Extends Emacs Documentation
 -----------------------------
 
-- PEL provides **183** `PDF topic-oriented reference sheets`_ [#doc]_ packed
+- PEL provides **184** `PDF topic-oriented reference sheets`_ [#doc]_ packed
   with symbol annotated, colour coded key bindings and command descriptions,
   with hyperlinks to Emacs manuals, external packages, articles and other
   useful references.
@@ -355,7 +355,7 @@ Notes
 
 
 .. [#externp] An external package may have dependencies.  The dependencies are also
-              installed. PEL currently provides access to 280 top-level external packages.
+              installed. PEL currently provides access to 281 top-level external packages.
               The actual number of packages is larger when counting their
               dependencies (currently 48 extra packages installed as dependencies).
               From within PEL execute the **pel-package-info**
