@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add 2 new commands to insert short time stamps: *pel-insert-date-wkd-short* (bound to ~<f11> i C-d~), and
+  *pel-insert-date-wkd-time-short* (bound to to ~<f11> i C-t~). As with others their string formats are fully customizable.
 - Add the *pel-bookmark-set-file* command, bound to ~<f1> ' M-f~.
   Use it to change the name of the Emacs bookmark file quickly for the current buffer.
   With a prefix argument it changes it for all buffers.

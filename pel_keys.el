@@ -7618,8 +7618,10 @@ the ones defined from the buffer now."
 
 (define-key pel:insert        "d"    'pel-insert-date)
 (define-key pel:insert        "D"    'pel-insert-date-wkd)
+(define-key pel:insert (kbd "C-d")   'pel-insert-date-wkd-short)
 (define-key pel:insert        "t"    'pel-insert-date-time)
 (define-key pel:insert        "T"    'pel-insert-date-wkd-time)
+(define-key pel:insert (kbd "C-t")   'pel-insert-date-wkd-time-short)
 
 (define-key pel:insert (kbd "M-d")   'pel-insert-iso-date)
 (define-key pel:insert (kbd "M-D")   'pel-insert-iso-date-wkd)

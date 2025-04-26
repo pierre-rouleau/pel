@@ -868,8 +868,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-insert-dirname-wtilde
     pel-insert-date
     pel-insert-date-wkd
+    pel-insert-date-wkd-short
     pel-insert-date-time
     pel-insert-date-wkd-time
+    pel-insert-date-wkd-time-short
     pel-insert-iso-date
     pel-insert-iso-date-wkd
     pel-insert-iso-date-time

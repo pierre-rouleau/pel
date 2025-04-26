@@ -37,8 +37,10 @@
 ;;       - `pel-tilde-file-name'
 ;; * `pel-insert-date'
 ;; * `pel-insert-date-wkd'
+;; * `pel-insert-date-wkd-short'
 ;; * `pel-insert-date-time'
 ;; * `pel-insert-date-wkd-time'
+;; * `pel-insert-date-wkd-time-short'
 ;; * `pel-insert-iso-date'
 ;; * `pel-insert-iso-date-wkd'
 ;; * `pel-insert-iso-date-time'
@@ -332,6 +334,16 @@ The `format-time-string' format used is controlled by the
   (interactive "*P")
   (insert (format-time-string pel-date-wkd-format nil (not (null utc)))))
 
+;;-pel-autoload
+(defun pel-insert-date-wkd-short (&optional utc)
+  "Insert current date & week-day at point.
+Local by default, UTC if \\[universal-argument] prefix used.
+The `format-time-string' format used is controlled by the
+`pel-date-wkd-format' custom variable."
+  (interactive "*P")
+  (insert (format-time-string pel-date-wkd-short-format nil (not (null utc)))))
+
+;;-pel-autoload
 (defun pel-insert-date-time (&optional utc)
   "Insert current date and time at point.
 Local by default, UTC if \\[universal-argument] prefix used.
@@ -348,6 +360,15 @@ The `format-time-string' format used is controlled by the
 `pel-date-wkd-time-format' custom variable."
   (interactive "*P")
   (insert (format-time-string pel-date-wkd-time-format nil (not (null utc)))))
+
+;;-pel-autoload
+(defun pel-insert-date-wkd-time-short (&optional utc)
+  "Insert current date & week-day at point.
+Local by default, UTC if \\[universal-argument] prefix used.
+The `format-time-string' format used is controlled by the
+`pel-date-wkd-time-format' custom variable."
+  (interactive "*P")
+  (insert (format-time-string pel-date-wkd-time-short-format nil (not (null utc)))))
 
 ;;-pel-autoload
 (defun pel-insert-iso-date (&optional utc)

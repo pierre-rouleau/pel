@@ -2831,6 +2831,12 @@ ISO-8601 compliant date/time format strings."
   :group 'pel-date-time-insertion
   :type 'string)
 
+(defcustom pel-date-wkd-short-format "%a %b %d %Y"
+  (pel--date-time-doc "%a %b %d %Y"
+                      "Short date & Week-day `format-time-string' used by the `pel-insert-date-wkd-short' command.")
+  :group 'pel-date-time-insertion
+  :type 'string)
+
 (defcustom pel-date-time-format "%F %T %Z"
   (pel--date-time-doc "%F %T %Z"
                       "Date & Time `format-time-string' used by the `pel-insert-date-time' command.")
@@ -2839,7 +2845,13 @@ ISO-8601 compliant date/time format strings."
 
 (defcustom pel-date-wkd-time-format "%A, %B %d %Y at %T %Z"
   (pel--date-time-doc "%A, %B %d %Y at %T %Z"
-                      "Date-only `format-time-string' used by the `pel-insert-date-wkd-time' command.")
+                      "Date & Time `format-time-string' used by the `pel-insert-date-wkd-time' command.")
+  :group 'pel-date-time-insertion
+  :type 'string)
+
+(defcustom pel-date-wkd-time-short-format "%a %b %d %Y at %T %Z"
+  (pel--date-time-doc "%a %b %d %Y at %T %Z"
+                      "Short Date & Time `format-time-string' used by the `pel-insert-date-wkd-time-short' command.")
   :group 'pel-date-time-insertion
   :type 'string)
 
