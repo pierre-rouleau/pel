@@ -4963,7 +4963,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-key pel:for-seed7 (kbd "<down>") 'seed7-to-block-forward)
 
   (pel-eval-after-load seed7-mode
-    (pel-config-major-mode seed7 pel:for-seed7))
+    (pel-config-major-mode seed7 pel:for-seed7)
+    (when (boundp 'seed7-mode-map)
+      (let ((map seed7-mode-map))
+        (define-key map (kbd "<f6> <down>") 'seed7-beg-of-next-defun))))
 
   (add-to-list 'auto-mode-alist '("\\.s\\(d7\\|7i\\)\\'" . seed7-mode)))
 
