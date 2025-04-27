@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-04-26 16:37:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-04-27 08:55:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -85,6 +85,12 @@
                                          electricity)))
                             (when pel-use-call-graph
                               (append items '(call-graph)))))
+
+(defconst pel--objc-groups (let ((items '(c
+                                          c-macro
+                                          electricity)))
+                             (when pel-use-call-graph
+                               (append items '(call-graph)))))
 
 (defconst pel--awk-groups '(c
                             electricity))
@@ -356,6 +362,9 @@
                                                                  lispy))
     (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        (lfe
                                                                  lispy))
+
+    (,(kbd "<f11> SPC C-o") "pl-objc"   pel-pkg-for-objc
+     ,pel--objc-groups)
 
     (,(kbd "<f11> SPC C-p") "pl-pike"   pel-pkg-for-pike  c)
     ;; Scheme Dialect Languages
@@ -694,6 +703,8 @@ stored inside the doc/pdf directory.")
     ("tuareg"          [f11 32 ?o])
     ("perl"            [f11 32 ?P])
     ("cperl"           [f11 32 ?P])
+    ("objc"            [f11 32 15])
+    ("objective-c"     [f11 32 15])
     ("pike"            [f11 32 16])
     ("rexx"            [f11 32 ?R])
     ("rpm"             [f11 32 27 ?R])
@@ -967,6 +978,8 @@ There should be no key binding!" keyseq))
     ("pascal"           . "pl-pascal")
     ("perl"             . "pl-perl")
     ("cperl"            . "pl-perl")
+    ("objc"             . "pl-objc")
+    ("objective-c"      . "pl-objc")
     ("pike"             . "pl-pike")
     ("python"           . "pl-python")
     ("rexx"             . "pl-rexx")

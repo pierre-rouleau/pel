@@ -2496,11 +2496,12 @@ can't bind negative-argument to C-_ and M-_"
       (define-key pel:narrate "p" 'pel-say-paragraph))))
 
 ;; ---------------------------------------------------------------------------
-;; C-like programming languages: C, C++, Pike
-;; ------------------------------------------
+;; C-like programming languages: C, C++, Objective-C, Pike
+;; -------------------------------------------------------
 (when (and pel-use-c-eldoc
            (or pel-use-c
                pel-use-c++
+               pel-use-objc
                pel-use-pike))
 
   ;; TODO: check if main repo is OK.
@@ -2527,11 +2528,13 @@ can't bind negative-argument to C-_ and M-_"
                      call-graph))
 
 ;; ---------------------------------------------------------------------------
-;; Utility function for mapping CC Mode keys : used by C, C++, D and Pike
+;; Utility function for mapping CC Mode keys : used by AWK, C, C++, D,
+;;                                             Objective-C and Pike
 (when (or pel-use-awk
           pel-use-c
           pel-use-c++
           pel-use-d
+          pel-use-objc
           pel-use-pike)
 
   ;; Autoload cc-cmds for the c-hungry-delete commands.
@@ -2656,6 +2659,9 @@ bind it again after this call."
                 ((and (eq major-mode 'c++-ts-mode)
                       (boundp 'c++-ts-mode-map))
                  c++-ts-mode-map)
+                ((and (eq major-mode 'objc-mode)
+                      (boundp 'objc-mode-map))
+                 objc-mode-map)
                 ((and (eq major-mode 'pike-mode)
                       (boundp 'pike-mode-map))
                  pike-mode-map)
@@ -2995,6 +3001,59 @@ d-mode not added to ac-modes!"
       ;; 7) Install language-specific skeletons
       ;; TODO
       )))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-o`` : Objective-C programming
+(when pel-use-objc
+  (define-pel-global-prefix pel:for-objc  (kbd "<f11> SPC C-o"))
+  ;; [:todo 2025-04-27, by Pierre Rouleau: Activate skeletons]
+  ;; (define-pel-global-prefix pel:objc-skel (kbd "<f11> SPC C-o <f12>"))
+
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '(".m"
+                                  ".mm"
+                                  ".M")))
+
+  (pel-eval-after-load cc-mode
+    (pel-config-major-mode objc pel:for-objc
+      (progn
+        ;; (define-key objc-mode-map (kbd "M-;") 'pel-c-comment-dwim)
+
+        ;; [:todo 2025-04-27, by Pierre Rouleau: Activate skeletons]
+        ;; activate skeletons
+        ;; (pel--install-generic-skel pel:objc-skel 'pel-pkg-for-objc "objective-c")
+        ;; Configure how to search for a file name from the user-option
+        ;; `pel-c-file-finder-method' which may be specified in a
+        ;; .dir-local.el file.
+        ;; [:todo 2025-04-27, by Pierre Rouleau: Add finder methods for Objective-C code]
+        (pel-cc-find-activate-finder-method pel-c-file-finder-method
+                                            pel-c-file-searched-extra-dir-trees)
+
+        ;; Configure the CC Mode style for Objective-C from PEL custom variables
+        ;; 1) set the style: it identifies everything
+        (pel--set-cc-style 'objc-mode pel-objc-bracket-style pel-objc-newline-mode)
+        ;; 2) apply modifications requested by PEL user options.
+        ;;    set variables only available in a CC mode - prevent warnings
+        (pel-setq-local c-basic-offset pel-objc-indent-width)
+        ;; 3) set fill-column to PEL specified Objective-C's default if specified
+        (when pel-objc-fill-column
+          (setq-local fill-column pel-objc-fill-column))
+        ;; 4) Set default auto-newline mode as identified by PEL user option
+        (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+        ;; 5) Configure M-( to put parentheses after a function name.
+        (set (make-local-variable 'parens-require-spaces) nil)
+        ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
+        (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
+        ;; 7) Install language-specific skeletons
+        ;; [:todo 2025-04-27, by Pierre Rouleau: Add skeletons for Objective-C]
+        ;; (pel--install-c-skel pel:c-skel)
+        ;; 8) extra setup
+        (pel--setup-for-cc)
+        ;; - Add imenu support
+        ;; [:todo 2025-04-27, by Pierre Rouleau: Add imenu for Objective-C]
+        ;; (declare-function pel-objc-set-imenu "pel-objc")
+        ;; (pel-objc-set-imenu)
+        ))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-p`` : Pike programming

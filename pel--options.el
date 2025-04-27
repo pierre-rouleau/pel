@@ -153,6 +153,7 @@
 ;;       - pel-pkg-for-m4
 ;;       - pel-pkg-for-modula-2
 ;;       - pel-pkg-for-nim
+;;       - pel-pkg-for-objc
 ;;       - pel-pkg-for-ocaml
 ;;       - pel-pkg-for-odin
 ;;       - pel-pkg-for-pascal
@@ -9494,6 +9495,126 @@ characters."
   "Default shebang line to add in extension-less Nim files."
   :group 'pel-pkg-for-nim
   :type 'string)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Objective-C Support
+;; -------------------
+(defgroup pel-pkg-for-objc nil
+  "PEL support for the Objective-C programming language."
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Objective-C PDF" ,(pel-pdf-file-url
+                                            "pl-objc")))
+
+(defcustom pel-use-objc nil
+  "Control whether PEL supports the objc-mode for GNU Objective-C language."
+  :group 'pel-pkg-for-objc
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-objc-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Objective-C buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-objc
+  :type '(repeat function))
+
+(defcustom pel-objc-indent-width 4
+  "Number of columns for Objective-C source code indentation.
+PEL stores this in `c-basic-offset' when editing buffers with Pike code.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkf-for-pike
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-objc-tab-width 4
+  "Distance between tab stop for objc buffers.
+
+PEL stores this in `tab-width' when opening Objective-C buffers.
+
+This does *NOT* control the indentation in Objective-C
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-objc
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-objc-use-tabs nil
+  "Value of `indent-tabs-mode' for editing Objective-C files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-objc
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-objc-bracket-style "bsd"
+  "Set the bracket style for the Objective-C programming language.
+PEL stores this value associated with the `objc-mode' into the
+`c-default-style' user option variable in objc buffers.
+If you want to use something else, please select one of the
+CC Mode Built-in Styles, which include the following:
+- gnu
+- k&r
+- bsd
+- whitesmith
+- stroustrup
+- ellemtel
+- linux
+- python
+- java
+- awk
+- user"
+  :link '(custom-group-link "C")
+  :link '(custom-manual "(ccmode)Built-in Styles")
+  :link '(url-link
+          :tag "Bracket styles @ Emacs Manual"
+          "https://www.gnu.org/software/emacs/manual/html_node/\
+ccmode/Built_002din-Styles.html#Built_002din-Styles")
+  :link '(url-link :tag "Indentation styles @ wikipedia"
+                   "https://en.wikipedia.org/wiki/Indentation_style")
+  :group 'pel-pkg-for-objc
+  :type 'string
+  :safe 'pel-c-style-valid-p)
+
+(defcustom pel-objc-fill-column 80
+  "Column beyond which automatic line-wrapping should happen in Objective-C code.
+Can either be nil or an integer value.
+When set to nil, Emacs user option variable `fill-column' value
+is used for `c-mode' buffers, otherwise the integer value specified by
+`pel-c-fill-column' is stored in the variable `fill-column' for
+`c-mode' buffers.  The default is 80."
+  :group 'pel-pkg_for-objc
+  :type '(choice
+          (const   :tag "Use the default fill-column value." nil)
+          (integer :tag "Use a value specific for c-mode buffers:")))
+
+
+(defcustom  pel-objc-newline-mode 'context-newline
+  "Set default newline mode for c-mode buffers.
+
+This may be one of the following values:
+
+- context-newline : the default : the RET key is bound to
+  the function `c-context-line-break' with the extra ability to
+  repeat its execution with an argument.
+- newline-and-indent: RET uses the function `newline' passing ARG
+  and t for its arguments to insert newline and indent.
+- just-newline-no-indent: RET uses the function
+  `electric-indent-just-newline` with the specified argument (if
+  any).  This only insert a newline; it does not indent."
+  :group 'pel-pkg-for-objc
+  :type '(choice
+          (const :tag "context-newline: use c-context-line-break.\n\
+Does all what newline does plus more."
+                 context-newline)
+          (const :tag "newline-and-indent: use newline. This inserts\n\
+a newline and then indent the new line."
+                 newline-and-indent)
+          (const :tag "just-newline-no-indent: use\
+ electric-indent-just-newline.\n\
+Does not indent."
+                 just-newline-no-indent)))
+
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Ocaml Support
