@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add preliminary support for lsp-mode, lsp-ui and emacs-ccls for C, C++ and Objective-C.
+  The following user-options activate them:
+  - C: *pel-use-emacs-ccls-for-c*, C++: *pel-use-emacs-ccls-for-c++*, Objective-C: *pel-use-emacs-ccls-for-objc*
+  - The above user-options control lower level user options that can also used to install and use lsp-mode, lsp-ui and ccls
+    for other languages (but not yet controlled by PEL): *pel-use-lsp-ui*, *pel-use-lsp-mode*, *pel-use-emacs-ccls*.
+  - Currently the above is not documented in the PDF files.
 - Add preliminary PEL support for Objective-C, when *pel-use-objc* user-option is set.
   - Currently support the Basic PEL ~<f12>~ key bindings to get help and access the customization.
   - Add an early version of the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-objc.pdf][𝕻𝔩 - Objective-C]] PDF.

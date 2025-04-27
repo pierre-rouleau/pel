@@ -2290,6 +2290,22 @@ can't bind negative-argument to C-_ and M-_"
 ;;          - ANS.1
 
 ;; ---------------------------------------------------------------------------
+;; Language Server Mode Support
+;; ============================
+
+;; lsp-mode support
+;; ----------------
+(when pel-use-lsp-mode
+  (pel-ensure-package lsp-mode from: melpa))
+
+(when pel-use-lsp-ui
+  (pel-ensure-package lsp-ui from: melpa))
+
+(when pel-use-emacs-ccls
+  (pel-ensure-package ccls from: melpa))
+
+
+;; ---------------------------------------------------------------------------
 ;; Mode Setting Helper Functions
 ;; -----------------------------
 (defun pel--extend-flymake ()
@@ -2818,7 +2834,7 @@ MODE must be a symbol."
   (pel-eval-after-load cc-mode
     (pel-config-major-mode c pel:for-c
       (progn
-        (defvar c-mode-map)        ; declare dynamic: prevent byte-compiler warnings
+        (defvar c-mode-map)  ; declare dynamic: prevent byte-compiler warnings
         (define-key c-mode-map (kbd "M-;") 'pel-c-comment-dwim)
 
         ;; Configure how to search for a file name from the user-option
@@ -2845,7 +2861,10 @@ MODE must be a symbol."
         ;; 7) Install language-specific skeletons
         (pel--install-c-skel pel:c-skel)
         ;; 8) extra setup
-        (pel--setup-for-cc))))
+        (pel--setup-for-cc)
+        ;; 9) Activate Language server of choice
+        (when pel-use-emacs-ccls-for-c
+          (lsp)))))
 
   ;; Activate extra C styles
   (when pel-use-linux-kernel-code-style-support
@@ -2930,7 +2949,10 @@ MODE must be a symbol."
       ;; 7) Install language-specific skeletons
       (pel--install-c++-skel pel:c++-skel)
       ;; 8) extra setup
-      (pel--setup-for-cc))))
+      (pel--setup-for-cc)
+      ;; 9) Activate Language server of choice
+      (when pel-use-emacs-ccls-for-c++
+        (lsp)))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` : D programming utilities
@@ -3049,11 +3071,10 @@ d-mode not added to ac-modes!"
         ;; (pel--install-c-skel pel:c-skel)
         ;; 8) extra setup
         (pel--setup-for-cc)
-        ;; - Add imenu support
-        ;; [:todo 2025-04-27, by Pierre Rouleau: Add imenu for Objective-C]
-        ;; (declare-function pel-objc-set-imenu "pel-objc")
-        ;; (pel-objc-set-imenu)
-        ))))
+        ;; imenu support is already provided by objc-mode
+        ;; 9) Activate Language server of choice
+        (when pel-use-emacs-ccls-for-objc
+          (lsp))))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-p`` : Pike programming

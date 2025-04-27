@@ -4610,6 +4610,22 @@ This may get activated indirectly by other user-options."
   "PEL support for LSP Mode, a language server protocol."
   :group  'pel-pkg-for-language-server)
 
+(defcustom pel-use-lsp-mode nil
+  "Control whether PEL activates lsp-mode, a language server."
+  :group 'pel-pkg-for-lsp-mode
+  :link '(url-link :tag "lsp-mode @ GitHub"
+                   "https://github.com/emacs-lsp/lsp-mode")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-lsp-ui nil
+  "Control whether PEL activates lsp-ui, a lsp-mode UI support."
+  :group 'pel-pkg-for-lsp-mode
+  :link '(url-link :tag "lsp-ui @ GitHub"
+                   "https://github.com/emacs-lsp/lsp-ui")
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-lsp-treemacs nil
   "Control whether PEL activates the lsp extension for treemacs."
   :group 'pel-pkg-for-lsp-mode
@@ -4663,6 +4679,16 @@ This may get activated indirectly by other user-options."
 ;;   :group 'pel-pkg-for-language-server
 ;;   :type 'boolean
 ;;   :safe #'booleanp)
+
+(defcustom pel-use-emacs-ccls nil
+  "Control whether PEL supports ccls, language server for C,C++,Objective-C.
+
+This forces the `pel-use-lsp-mode' to t."
+  :group 'pel-pkg-for-lsp-mode
+  :link '(url-link :tag "emacs-ccls @ GitHub"
+                   "https://github.com/emacs-lsp/emacs-ccls")
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-pkg-generic-code-style nil
@@ -5206,6 +5232,15 @@ characters."
   :safe #'booleanp)
 (pel-put 'pel-use-c :package-is :builtin-emacs)
 (pel-put 'pel-use-c :also-required-when 'pel-use-bison-mode)
+
+(defcustom pel-use-emacs-ccls-for-c nil
+  "Control whether PEL activates ccls lsp for C.
+
+This automatically activates `pel-use-emacs-ccls', `pel-use-lsp-mode'.
+and `pel-use-lsp-ui-mode'."
+  :group 'pel-pkg-for-c
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-c-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for C buffers.
@@ -5934,6 +5969,15 @@ taking over the default association with c-mode."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-c++ :package-is :builtin-emacs)
+
+(defcustom pel-use-emacs-ccls-for-c++ nil
+  "Control whether PEL activates ccls lsp for C++.
+
+This automatically activates `pel-use-emacs-ccls', `pel-use-lsp-mode'.
+and `pel-use-lsp-ui-mode'."
+  :group 'pel-pkg-for-c++
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-c++-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for C++ buffers.
@@ -9511,6 +9555,15 @@ characters."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-emacs-ccls-for-objc nil
+  "Control whether PEL activates ccls lsp for Objective-C.
+
+This automatically activates `pel-use-emacs-ccls', `pel-use-lsp-mode'.
+and `pel-use-lsp-ui-mode'."
+  :group 'pel-pkg-for-objc
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-objc-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Objective-C buffers.
 Enter *local* minor-mode activating function symbols.
@@ -12558,6 +12611,14 @@ indexing system."
   (setq pel-use-tomlparse nil))
 (when pel-use-tomlparse
   (setq pel-use-emacs-toml nil))
+
+(when (or pel-use-emacs-ccls-for-c
+          pel-use-emacs-ccls-for-c++
+          pel-use-emacs-ccls-for-objc)
+  (setq pel-use-emacs-ccls t))
+(when pel-use-emacs-ccls
+  (setq pel-use-lsp-mode t)
+  (setq pel-use-lsp-ui t))
 
 ;; Automatically disable undo-tree in Emacs >= 28 when pel-use-simple-undo or
 ;; pel-use-vundo because undo-tree is not robust and may corrupt a buffer and
