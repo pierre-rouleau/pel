@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Make source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 15:24:04 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-27 22:55:28 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -339,7 +339,7 @@ else
     sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
     rm -f "${etags_flist_fname}"
     mv "${etags_flist_fname}.new" "${etags_flist_fname}"
-    run__etags__rust < "${etags_flist_fname}"
+    run__etags__make < "${etags_flist_fname}"
 fi
 
 file_count="$(wc -l "${etags_flist_fname}" | awk '{print $1}')"

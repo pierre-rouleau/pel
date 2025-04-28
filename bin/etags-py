@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 13:50:12 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-27 22:54:03 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -107,8 +107,8 @@ print_usage()
 }
 
 # --
-# run__etags__py -- run etags or ctags on a set of files
-# --------------
+# run__etags__python -- run etags or ctags on a set of files
+# ------------------
 #
 # Use etags to parse the source code files unless ETAGS_USE_UCTAGS
 # environment variable is set to 1.  In which case it uses ctags.
@@ -118,7 +118,7 @@ print_usage()
 # When using Emacs, Emacs provides its own ctags that is essentially etags.
 # Etags generates a tag file format a little different and better suited for Emacs.
 
-run__etags__py()
+run__etags__python()
 {
     # Expects no argument, but expects a list of files to parse on stdin.
 
@@ -341,7 +341,7 @@ else
     sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
     rm -f "${etags_flist_fname}"
     mv "${etags_flist_fname}.new" "${etags_flist_fname}"
-    run__etags__rust < "${etags_flist_fname}"
+    run__etags__python < "${etags_flist_fname}"
 fi
 
 file_count="$(wc -l "${etags_flist_fname}" | awk '{print $1}')"

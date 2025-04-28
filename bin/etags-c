@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 13:49:34 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-27 22:51:46 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -400,7 +400,7 @@ else
     sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
     rm -f "${etags_flist_fname}"
     mv "${etags_flist_fname}.new" "${etags_flist_fname}"
-    run__etags__rust < "${etags_flist_fname}"
+    run__etags__c < "${etags_flist_fname}"
 fi
 
 file_count="$(wc -l "${etags_flist_fname}" | awk '{print $1}')"

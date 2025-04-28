@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Rust source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 14:04:18 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-27 22:54:39 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -107,8 +107,8 @@ print_usage()
 }
 
 # --
-# run__etags__rs -- run etags or ctags on a set of files
-# --------------
+# run__etags__rust -- run etags or ctags on a set of files
+# ----------------
 #
 # Use etags to parse the source code files unless ETAGS_USE_UCTAGS
 # environment variable is set to 1.  In which case it uses ctags.
@@ -118,7 +118,7 @@ print_usage()
 # When using Emacs, Emacs provides its own ctags that is essentially etags.
 # Etags generates a tag file format a little different and better suited for Emacs.
 
-run__etags__rs()
+run__etags__rust()
 {
     # Expects no argument, but expects a list of files to parse on stdin.
 

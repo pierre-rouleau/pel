@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Go source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 14:50:58 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-27 22:52:46 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -328,7 +328,7 @@ else
     sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
     rm -f "${etags_flist_fname}"
     mv "${etags_flist_fname}.new" "${etags_flist_fname}"
-    run__etags__rust < "${etags_flist_fname}"
+    run__etags__go < "${etags_flist_fname}"
 fi
 
 file_count="$(wc -l "${etags_flist_fname}" | awk '{print $1}')"
