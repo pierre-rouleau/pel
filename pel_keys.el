@@ -5123,6 +5123,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       ;; 5) Set tab-width for the buffer as specified by the PEL user option
       ;; for the major mode.
       ;; (setq-local tab-width pel-tcl-tab-width)
+      ;; Use the n section for tcl man pages
+      (setq-local pel-tcl-man-section "n")
       )))
 
 ;; ---------------------------------------------------------------------------
