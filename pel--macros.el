@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 20:21:52 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-04-29 08:47:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -64,6 +64,11 @@
 ;;
 ;;    - `pel-setq'
 ;;    - `pel-setq-default'
+;;
+;;  Use the following macro to set a buffer-local variable unless
+;;  it's value is specified as a file variable:
+;;
+;;    - `pel-setq-local-unless-filevar'-
 ;;
 ;;  This last macro is used for writing loops that must not run more than a
 ;;  specified number of times:
@@ -222,6 +227,16 @@ See `pel-turn-mode-on-when-off' for more info."
      ;; declare the symbol to prevent lint warning
      (defvar ,sym)
      ;; now set the symbol to the specified value
+     (setq-default ,sym ,val)))
+
+;; ---------------------------------------------------------------------------
+;; Set buffer local variable unless specified by file variable
+;; -----------------------------------------------------------
+
+(defmacro pel-setq-local-unless-filevar (sym val)
+  "Set symbol SYM to value VAL unless it is specified by file variable."
+  `(unless (and (boundp 'file-local-variable-alist)
+                (assoc ',sym file-local-variable-alist))
      (setq-default ,sym ,val)))
 
 ;; ---------------------------------------------------------------------------
