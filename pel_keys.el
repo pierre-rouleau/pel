@@ -2868,7 +2868,9 @@ MODE must be a symbol."
         (pel--setup-for-cc)
         ;; 9) Activate Language server of choice
         (when pel-use-emacs-ccls-for-c
-          (lsp)))))
+          (lsp))
+        ;; 10) Activate man section for C
+        (setq-local pel-c-man-section "3"))))
 
   ;; Activate extra C styles
   (when pel-use-linux-kernel-code-style-support
@@ -2942,7 +2944,7 @@ MODE must be a symbol."
       ;;     set variables only available in a CC mode with PEL
       ;;     user-options unless the file-variable sets it.
       (unless (assoc 'c-basic-offset file-local-variables-alist)
-          (pel-setq c-basic-offset pel-c++-indent-width))
+        (pel-setq c-basic-offset pel-c++-indent-width))
       ;; 3) set fill-column to PEL specified C++'s default if specified
       (when pel-c++-fill-column
         (setq fill-column pel-c++-fill-column))
@@ -2958,7 +2960,9 @@ MODE must be a symbol."
       (pel--setup-for-cc)
       ;; 9) Activate Language server of choice
       (when pel-use-emacs-ccls-for-c++
-        (lsp)))))
+        (lsp))
+      ;; 10) Activate man section for C++
+        (setq-local pel-c++-man-section "3"))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` : D programming utilities
@@ -4911,36 +4915,51 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-perl "h"       'cperl-perldoc)
     (define-key pel:for-perl "|"       'cperl-lineup))
 
-  ;; the perl-mode is part of Emacs
-  (pel-config-major-mode perl pel:for-perl
-    ;; activate skeletons
-    (pel--install-generic-skel pel:perl-skel
-                               '(pel-pkg-generic-code-style
-                                 pel-pkg-for-perl-general)
-                               "perl")
-    ;;
-    (pel--perl-activate-file-search)
-    (setq-local tab-width        pel-general-perl-indent-level)
-    (setq-local indent-tabs-mode pel-perl-use-tabs)
-    (when (boundp 'perl-indent-level)
-      (setq-local perl-indent-level pel-general-perl-indent-level)))
-
-  (pel-config-major-mode cperl pel:for-perl
-    ;; activate skeletons
-    (pel--install-generic-skel pel:perl-skel
-                               '(pel-pkg-generic-code-style
-                                 pel-pkg-for-perl-general)
-                               "perl")
-    ;;
-    (pel--perl-activate-file-search)
-    (setq-local tab-width        pel-general-perl-indent-level)
-    (setq-local indent-tabs-mode pel-cperl-use-tabs)
-    (when (boundp 'cperl-indent-level)
-      (setq-local cperl-indent-level pel-general-perl-indent-level))
-    (when pel-cperl-show-trailing-whitespace-normally
-      (when (boundp 'cperl-invalid-face)
-        (setq-local cperl-invalid-face nil))
-      (setq-local show-trailing-whitespace t)))
+  ;; TWO modes must be configured when they load:
+  ;; 1) the perl-mode, which is part of Emacs
+  (pel-eval-after-load perl-mode
+    (pel-config-major-mode perl pel:for-perl
+      ;; activate skeletons
+      (pel--install-generic-skel pel:perl-skel
+                                 '(pel-pkg-generic-code-style
+                                   pel-pkg-for-perl-general)
+                                 "perl")
+      ;;
+      (pel--perl-activate-file-search)
+      (pel-setq-local-unless-filevar tab-width
+                                     pel-general-perl-indent-level)
+      (pel-setq-local-unless-filevar indent-tabs-mode
+                                     pel-perl-use-tabs)
+      (when (boundp 'perl-indent-level)
+        (pel-setq-local-unless-filevar perl-indent-level
+                                       pel-general-perl-indent-level))
+      ;; Activate man section for Perl
+      (setq-local pel-perl-man-section "3pm")))
+  ;;
+  ;; 2) the cperl-mode, which may come from Emacs or from external package
+  (pel-eval-after-load cperl-mode
+    (pel-config-major-mode cperl pel:for-perl
+      ;; activate skeletons
+      (pel--install-generic-skel pel:perl-skel
+                                 '(pel-pkg-generic-code-style
+                                   pel-pkg-for-perl-general)
+                                 "perl")
+      ;;
+      (pel--perl-activate-file-search)
+      (pel-setq-local-unless-filevar tab-width
+                                     pel-general-perl-indent-level)
+      (pel-setq-local-unless-filevar indent-tabs-mode
+                                     pel-cperl-use-tabs)
+      (when (boundp 'cperl-indent-level)
+        (pel-setq-local-unless-filevar cperl-indent-level
+                                       pel-general-perl-indent-level))
+      ;; Activate man section for Perl
+      (setq-local pel-cperl-man-section "3pm")
+      ;; control whitespace display
+      (when pel-cperl-show-trailing-whitespace-normally
+        (when (boundp 'cperl-invalid-face)
+          (setq-local cperl-invalid-face nil))
+        (setq-local show-trailing-whitespace t))))
 
   (when pel-use-perl-repl
     (pel-install-github-file "pierre-rouleau/perl-repl-el/master"
