@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix handling of file variables setting *tab-width*, *indent-tabs-mode* and *c-basic-offset* (for the cc-modes).
+  The code no longer overrides the selection made by file variables with PEL customizable user-options that
+  are meant to control these buffer-local variables. The file variable values take priority, allowing
+  full control from them, as expected.
 - Add preliminary support for lsp-mode, lsp-ui and emacs-ccls for C, C++ and Objective-C.
   The following user-options activate them:
   - C: *pel-use-emacs-ccls-for-c*, C++: *pel-use-emacs-ccls-for-c++*, Objective-C: *pel-use-emacs-ccls-for-objc*
