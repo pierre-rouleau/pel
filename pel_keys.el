@@ -7449,6 +7449,7 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> f v`` : File variables
 
 (define-pel-global-prefix pel:filevar (kbd "<f11> f v"))
+(define-key pel:filevar "l"  #'add-file-local-variable)
 (define-key pel:filevar "="  #'add-file-local-variable-prop-line)
 (define-key pel:filevar "-"  #'delete-file-local-variable-prop-line)
 (define-key pel:filevar "c"  #'copy-dir-locals-to-file-locals-prop-line)
