@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- In C, C++, Perl and Tcl buffers, the *pel-man-at-point* now opens the man section
+  specific to the C, Perl and Tcl languages respectively: the mode hooks now automatically
+  set the *pel-%s-man-section* variable to the desired section.
 - Add binding for *add-file-local-variable*: ~<f11> f v l~
 - Fix handling of file variables setting *tab-width*, *indent-tabs-mode* and *c-basic-offset* (for the cc-modes).
   The code no longer overrides the selection made by file variables with PEL customizable user-options that
