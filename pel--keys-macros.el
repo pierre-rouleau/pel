@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-04-27 08:55:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-04-28 21:55:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1611,34 +1611,53 @@ Function created by the `pel-config-major-mode' macro."
                                      target-mode)))
         (gn-tab-width (intern (format "pel-%s-tab-width"
                                       target-mode)))
-        (gn-fname       (file-name-base (macroexp-file-name))))
-    ;; When the <f12> key prefixes are defined, set them up first
-    ;; in the function body to ensure they are available and will not shadow
-    ;; another call to `pel-local-set-f12-M-f12' that wants to install a
-    ;; sub-prefix.
-    (when (and key-prefix
-               (not (eq key-prefix :no-f12-keys)))
-      (push `(pel-local-set-f12-M-f12 (quote ,key-prefix)) body))
-    ;; Add the code that activates the minor modes identified by the
-    ;;`pel-<mode>-activates-minor-modes' user-option.
-    (setq body (append body `((pel-turn-on-local-minor-modes-in
-                               (quote ,gn-minor-modes)))))
+        (gn-fname       (file-name-base (macroexp-file-name)))
+        (newbody nil))
+    ;; Add code to newbody in order: some code is placed *before* BODY
+    ;; to allow BODY to see the values and possibly modify them.
+    ;; Some code is added *after* the BODY.  BODY is a list.
+    ;;
+    ;; 1 - Code before BODY
     ;; If the major mode is not one of the modes that do not need
     ;; to support hard-tab control and width create code that set them
     (unless (memq target-mode pel--tab-controlling-major-modes)
       ;; Starting with Emacs 30, org-mode only supports a tab-width of 8
       (unless (and pel-emacs-30-or-later-p
                    (eq target-mode 'org))
-        (setq body (append body
-                           `((setq-local tab-width ,gn-tab-width)))))
-      (setq body (append body
-                           `((setq-local indent-tabs-mode ,gn-use-tabs)))))
+        (setq newbody
+              (append newbody
+                      `((unless (assoc 'tab-width file-local-variables-alist)
+                          (setq-local tab-width ,gn-tab-width))))))
+      (setq newbody
+            (append newbody
+                    `((unless (assoc 'indent-tabs-mode file-local-variables-alist)
+                          (setq-local indent-tabs-mode ,gn-use-tabs))))))
+    ;;
+    ;; 2 - Include BODY
+    (setq newbody (append newbody body))
+    ;;
+    ;; 3 - Include code that must be done *after* BODY:
+    ;;
+    ;; When the <f12> key prefixes are defined, set them up first
+    ;; in the function body to ensure they are available and will not shadow
+    ;; another call to `pel-local-set-f12-M-f12' that wants to install a
+    ;; sub-prefix.
+    (when (and key-prefix
+               (not (eq key-prefix :no-f12-keys)))
+      (setq newbody
+            (append newbody `((pel-local-set-f12-M-f12 (quote ,key-prefix))))))
+    ;; Add the code that activates the minor modes identified by the
+    ;;`pel-<mode>-activates-minor-modes' user-option.
+    (setq newbody
+          (append newbody `((pel-turn-on-local-minor-modes-in
+                             (quote ,gn-minor-modes)))))
+
     ;; return the following generated code:
     `(progn
        (defun ,gn-fct2 ()
          ,gn-docstring2
          (progn
-           ,@body))
+           ,@newbody))
        (declare-function ,gn-fct2 ,gn-fname)
        ;;
        (defun ,gn-fct1 ()

@@ -2761,8 +2761,10 @@ MODE must be a symbol."
         ;; 1) set the style: it identifies everything
         (pel--set-cc-style 'awk-mode pel-awk-bracket-style pel-awk-newline-mode)
         ;; 2) apply modifications requested by PEL user options.
-        ;;    set variables only available in a CC mode - prevent warnings
-        (pel-setq-local c-basic-offset pel-awk-indent-width)
+        ;;    set variables only available in a CC mode with PEL
+        ;;    user-options unless the file-variable sets it.
+        (unless (assoc 'c-basic-offset file-local-variables-alist)
+          (pel-setq-local c-basic-offset pel-awk-indent-width))
         ;; 3) set fill-column to PEL specified C's default if specified
         (when pel-awk-fill-column
           (setq-local fill-column pel-awk-fill-column))
@@ -2847,8 +2849,10 @@ MODE must be a symbol."
         ;; 1) set the style: it identifies everything
         (pel--set-cc-style 'c-mode pel-c-bracket-style pel-c-newline-mode)
         ;; 2) apply modifications requested by PEL user options.
-        ;;    set variables only available in a CC mode - prevent warnings
-        (pel-setq-local c-basic-offset pel-c-indent-width)
+        ;;    set variables only available in a CC mode with PEL
+        ;;     user-options unless the file-variable sets it.
+        (unless (assoc 'c-basic-offset file-local-variables-alist)
+          (pel-setq-local c-basic-offset pel-c-indent-width))
         ;; 3) set fill-column to PEL specified C's default if specified
         (when pel-c-fill-column
           (setq-local fill-column pel-c-fill-column))
@@ -2935,8 +2939,10 @@ MODE must be a symbol."
       ;; 1) set the style: it identifies everything
       (pel--set-cc-style 'c++-mode pel-c++-bracket-style pel-c++-newline-mode)
       ;; 2)  apply modifications requested by PEL user options.
-      ;;     set variables only available in a CC mode - prevent warnings
-      (pel-setq c-basic-offset pel-c++-indent-width)
+      ;;     set variables only available in a CC mode with PEL
+      ;;     user-options unless the file-variable sets it.
+      (unless (assoc 'c-basic-offset file-local-variables-alist)
+          (pel-setq c-basic-offset pel-c++-indent-width))
       ;; 3) set fill-column to PEL specified C++'s default if specified
       (when pel-c++-fill-column
         (setq fill-column pel-c++-fill-column))
@@ -3008,8 +3014,10 @@ d-mode not added to ac-modes!"
       ;; 1) set the style: it identifies everything
       (pel--set-cc-style 'd-mode pel-d-bracket-style pel-d-newline-mode)
       ;; 2)  apply modifications requested by PEL user options.
-      ;;     set variables only available in a CC mode - prevent warnings
-      (pel-setq-local c-basic-offset pel-d-indent-width)
+      ;;     set variables only available in a CC mode with PEL
+      ;;     user-options unless the file-variable sets it.
+      (unless (assoc 'c-basic-offset file-local-variables-alist)
+        (pel-setq-local c-basic-offset pel-d-indent-width))
       ;; 3) set fill-column to PEL specified D's default if specified
       (when pel-d-fill-column
         (setq-local fill-column pel-d-fill-column))
@@ -3055,8 +3063,10 @@ d-mode not added to ac-modes!"
         ;; 1) set the style: it identifies everything
         (pel--set-cc-style 'objc-mode pel-objc-bracket-style pel-objc-newline-mode)
         ;; 2) apply modifications requested by PEL user options.
-        ;;    set variables only available in a CC mode - prevent warnings
-        (pel-setq-local c-basic-offset pel-objc-indent-width)
+        ;;    set variables only available in a CC mode with PEL
+        ;;     user-options unless the file-variable sets it.
+        (unless (assoc 'c-basic-offset file-local-variables-alist)
+          (pel-setq-local c-basic-offset pel-objc-indent-width))
         ;; 3) set fill-column to PEL specified Objective-C's default if specified
         (when pel-objc-fill-column
           (setq-local fill-column pel-objc-fill-column))
@@ -3103,8 +3113,10 @@ d-mode not added to ac-modes!"
         ;; 1) set the style: it identifies everything
         (pel--set-cc-style 'pike-mode pel-pike-bracket-style pel-pike-newline-mode)
         ;; 2) apply modifications requested by PEL user options.
-        ;;    set variables only available in a CC mode - prevent warnings
-        (pel-setq-local c-basic-offset pel-pike-indent-width)
+        ;;    set variables only available in a CC mode with PEL
+        ;;     user-options unless the file-variable sets it.
+        (unless (assoc 'c-basic-offset file-local-variables-alist)
+          (pel-setq-local c-basic-offset pel-pike-indent-width))
         ;; 3) set fill-column to PEL specified Pike's default if specified
         (when pel-pike-fill-column
           (setq-local fill-column pel-pike-fill-column))
