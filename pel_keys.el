@@ -2869,7 +2869,8 @@ MODE must be a symbol."
         (pel--setup-for-cc)
         (setq-local pel--indentation-width-control-variable  'c-basic-offset)
         ;; 9) Activate Language server of choice
-        (when pel-use-emacs-ccls-for-c
+        (when (and pel-use-emacs-ccls-for-c
+                   (fboundp 'lsp))
           (lsp))
         ;; 10) Activate man section for C
         (setq-local pel-c-man-section "3"))))
@@ -2962,7 +2963,8 @@ MODE must be a symbol."
       (pel--setup-for-cc)
       (setq-local pel--indentation-width-control-variable  'c-basic-offset)
       ;; 9) Activate Language server of choice
-      (when pel-use-emacs-ccls-for-c++
+      (when (and  pel-use-emacs-ccls-for-c++
+                  (fboundp 'lsp))
         (lsp))
       ;; 10) Activate man section for C++
       (setq-local pel-c++-man-section "3"))))
@@ -3091,7 +3093,8 @@ d-mode not added to ac-modes!"
         (pel--setup-for-cc)
         ;; imenu support is already provided by objc-mode
         ;; 9) Activate Language server of choice
-        (when pel-use-emacs-ccls-for-objc
+        (when (and pel-use-emacs-ccls-for-objc
+                   (fboundp 'lsp))
           (lsp))))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
