@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags file for Perl source code files.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-04-30 13:42:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-04-30 19:28:28 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -289,6 +289,7 @@ if [ -n "${etags_flist_envvar_fname}" ]; then
     fi
     printf -- "Using the file list identified by ETAGS_PERL_FILE_LIST: %s\n" "${etags_flist_envvar_fname}" 1>&2
     cp "${etags_flist_envvar_fname}" "${etags_flist_fname}"
+    printf -- "Generating TAGS ...\n" 1>&2
     run__etags__perl < "${etags_flist_envvar_fname}"
 else
     # Use the directory names provided on command line.
@@ -382,6 +383,7 @@ else
     sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
     rm -f "${etags_flist_fname}"
     mv "${etags_flist_fname}.new" "${etags_flist_fname}"
+    printf -- "Generating TAGS ...\n" 1>&2
     run__etags__perl < "${etags_flist_fname}"
 fi
 

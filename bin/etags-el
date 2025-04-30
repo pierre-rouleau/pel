@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-25 15:42:07 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-30 19:25:31 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -245,6 +245,7 @@ if [ -n "${etags_flist_envvar_fname}" ]; then
     fi
     printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_ELISP: %s\n" "${etags_flist_envvar_fname}" 1>&2
     cp "${etags_flist_envvar_fname}" "${etags_flist_fname}"
+    printf -- "Generating TAGS ...\n" 1>&2
     run__etags__el < "${etags_flist_envvar_fname}"
 else
     # Check the validity of directory names specified as arguments.
@@ -333,6 +334,7 @@ else
     sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
     rm -f "${etags_flist_fname}"
     mv "${etags_flist_fname}.new" "${etags_flist_fname}"
+    printf -- "Generating TAGS ...\n" 1>&2
     run__etags__el < "${etags_flist_fname}"
 fi
 

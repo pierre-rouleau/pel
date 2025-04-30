@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-27 22:54:03 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-30 19:29:31 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -251,6 +251,7 @@ if [ -n "${etags_flist_envvar_fname}" ]; then
     fi
     printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_PYTHON: %s\n" "${etags_flist_envvar_fname}" 1>&2
     cp "${etags_flist_envvar_fname}" "${etags_flist_fname}"
+    printf -- "Generating TAGS ...\n" 1>&2
     run__etags__python < "${etags_flist_envvar_fname}"
 else
     # Check the validity of directory names specified as arguments.
@@ -341,6 +342,7 @@ else
     sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
     rm -f "${etags_flist_fname}"
     mv "${etags_flist_fname}.new" "${etags_flist_fname}"
+    printf -- "Generating TAGS ...\n" 1>&2
     run__etags__python < "${etags_flist_fname}"
 fi
 
