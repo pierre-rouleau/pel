@@ -1922,8 +1922,10 @@ Select one of:
 (defcustom pel-use-archive-rpm nil
   "Control if PEL supports the archive-rpm package."
   :group 'pel-pkg-for-rpm
-  :link '(url-link :tag "archive-rpm @ Github"
-                   "https://github.com/legoscia/archive-rpm")
+  :link '(url-link :tag "used archive-rpm @ Github"
+                   "https://github.com/nbarrientos/archive-rpm")
+  :link '(url-link :tag "original archive-rpm @ Github"
+                   "legoscia/archive-rpm")
   :type 'boolean
   :safe #'booleanp)
 
