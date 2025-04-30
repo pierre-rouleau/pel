@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags file for Perl source code files.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-04-25 13:50:05 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-04-30 12:09:49 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -400,9 +400,7 @@ else
     # Then run etags on these files, and sort them in the etags file
     sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
     rm -f "${etags_flist_fname}"
-    if [ -e "${etags_flist_fname}.backup" ]; then
-        mv "${etags_flist_fname}.backup"  "${etags_flist_fname}"
-    fi
+    mv "${etags_flist_fname}.new" "${etags_flist_fname}"
     run__etags__perl < "${etags_flist_fname}"
 fi
 
