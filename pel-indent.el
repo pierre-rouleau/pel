@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 18:30:17 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-04-30 08:05:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2023, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -333,11 +333,26 @@ by the numeric argument N (or if not specified N=1):
         (error "The pel-mark functions are not loaded")))
     (indent-rigidly (region-beginning) (region-end) nil t)))
 
+
+(defconst pel--c-basic-offset-modes '(c-mode
+                                      c++-mode
+                                      objc-mode
+                                      java-mode
+                                      idl-mode
+                                      pike-mode
+                                      awk-mode
+                                      d-mode
+                                      tcl-mode) ; [:todo 2025-04-30, by Pierre
+                                                ; Rouleau: not sure about tcl]
+  "Major modes implemented as cc-modes.")
+
 ;;-pel-autoload
 (defun pel-show-indent (&optional append)
   "Display current buffer's indentation behaviour controlling variable state."
   (interactive "P")
-  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+        (isa-cc-mode (derived-mode-p pel--c-basic-offset-modes))
+        (isa-sh-mode (derived-mode-p '(sh-mode))))
     (pel-print-in-buffer
      "*pel-indent-info*"
      "Indentation Control"
@@ -355,6 +370,10 @@ by the numeric argument N (or if not specified N=1):
            (insert "\n----
 The above major-mode specific user options take precedence
 over the following global ones:"))
+         (when isa-cc-mode
+           (pel-insert-symbol-content-line 'c-basic-offset))
+         (when isa-sh-mode
+           (pel-insert-symbol-content-line 'sh-basic-offset))
          (pel-insert-symbol-content-line 'tab-width)
          (insert "\n  -> Use ")
          (pel-insert-symbol 'pel-set-tab-width)
