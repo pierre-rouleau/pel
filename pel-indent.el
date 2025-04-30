@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-04-30 10:40:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-04-30 11:03:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -354,7 +354,8 @@ by the numeric argument N (or if not specified N=1):
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
         (isa-cc-mode (derived-mode-p pel--c-basic-offset-modes))
         (isa-sh-mode (derived-mode-p '(sh-mode)))
-        (indent-width-control-var pel-indentation-width-control-variable))
+        (indent-width-control-var pel-indentation-width-control-variable)
+        (indent-other-control-vars pel-indentation-other-control-variables))
     (pel-print-in-buffer
      "*pel-indent-info*"
      "Indentation Width Control and Space/Tab Insertion Rendering"
@@ -396,12 +397,17 @@ The following variable control indentation width in this mode:")
              (insert (format "\
 The following variables control indentation width in this mode.
 The last one (%s) is used by the major mode, the others
-set it when the buffer is opened, with first setting next:"
+set it when the buffer is opened, with first setting next.
+Some are overwritten by file variables, other are controlled
+by their mode (as in cc-mode):"
                              (car (last indent-width-control-var))))
              (dolist (var indent-width-control-var)
                (pel-insert-symbol-content-line var))))
-
-         ))
+         (when indent-other-control-vars
+           (insert "\n\
+Indentation is also controlled by these other variables:")
+           (dolist (var indent-other-control-vars)
+             (pel-insert-symbol-content-line var)))))
      (unless append :clear-buffer)
      :use-help-mode)))
 

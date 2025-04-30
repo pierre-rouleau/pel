@@ -388,6 +388,9 @@ It can also be a list of symbols.  The last one is the one controlling
 the indentation, the symbol listed before are values that are stored into the
 next one .  These variables are used to set the default.")
 
+(defvar-local pel-indentation-other-control-variables nil
+  "List of other indentation control variables used for the major mode.")
+
 ;; ---------------------------------------------------------------------------
 ;; Code Style Buffer Local Variables
 ;; ---------------------------------
