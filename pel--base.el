@@ -383,7 +383,10 @@ executed by `pel-init' on startup.")
 (defvar-local pel-indentation-width-control-variable nil
   "Variable used by the current major mode to control indentation width.
 
-This is a symbol set by the major modes that PEL has instrumented.")
+This is a symbol set by the major modes that PEL has instrumented.
+It can also be a list of symbols.  The last one is the one controlling
+the indentation, the symbol listed before are values that are stored into the
+next one .  These variables are used to set the default.")
 
 ;; ---------------------------------------------------------------------------
 ;; Code Style Buffer Local Variables

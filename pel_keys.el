@@ -2778,7 +2778,7 @@ MODE must be a symbol."
         ;; 7) no skeleton for AWK at the moment.
         ;; 8) extra setup
         (pel--setup-for-cc)
-        (setq-local pel--indentation-width-control-variable  'c-basic-offset)))))
+        (setq-local pel-indentation-width-control-variable  '(pel-awk-indent-width c-basic-offset))))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
@@ -2867,7 +2867,7 @@ MODE must be a symbol."
         (pel--install-c-skel pel:c-skel)
         ;; 8) extra setup
         (pel--setup-for-cc)
-        (setq-local pel--indentation-width-control-variable  'c-basic-offset)
+        (setq-local pel-indentation-width-control-variable  '(pel-c-indent-width c-basic-offset))
         ;; 9) Activate Language server of choice
         (when (and pel-use-emacs-ccls-for-c
                    (fboundp 'lsp))
@@ -2961,7 +2961,7 @@ MODE must be a symbol."
       (pel--install-c++-skel pel:c++-skel)
       ;; 8) extra setup
       (pel--setup-for-cc)
-      (setq-local pel--indentation-width-control-variable  'c-basic-offset)
+      (setq-local pel-indentation-width-control-variable  '(pel-c++-indent-width c-basic-offset))
       ;; 9) Activate Language server of choice
       (when (and  pel-use-emacs-ccls-for-c++
                   (fboundp 'lsp))
@@ -3037,7 +3037,7 @@ d-mode not added to ac-modes!"
       ;; 5) Set tab-width for the buffer as specified by the PEL user option
       ;; for the major mode.
       (setq-local tab-width pel-d-tab-width)
-      (setq-local pel--indentation-width-control-variable  'c-basic-offset)
+      (setq-local pel-indentation-width-control-variable  '(pel-d-indent-width c-basic-offset))
       ;; 7) Install language-specific skeletons
       ;; TODO
       )))
@@ -3091,6 +3091,8 @@ d-mode not added to ac-modes!"
         ;; (pel--install-c-skel pel:c-skel)
         ;; 8) extra setup
         (pel--setup-for-cc)
+        ;; [:todo 2025-04-30, by Pierre Rouleau: Check Objective-C indent width control]
+        (setq-local pel-indentation-width-control-variable  '(pel-obj-indent-width c-basic-offset))
         ;; imenu support is already provided by objc-mode
         ;; 9) Activate Language server of choice
         (when (and pel-use-emacs-ccls-for-objc
@@ -3142,8 +3144,8 @@ d-mode not added to ac-modes!"
         ;; (pel--install-c-skel pel:c-skel)
         ;; 8) extra setup
         (pel--setup-for-cc)
-        (setq-local pel--indentation-width-control-variable  'c-basic-offset)
-        (setq-local pel--indentation-width-control-variable  'c-basic-offset)
+        (setq-local pel-indentation-width-control-variable  'c-basic-offset)
+        (setq-local pel-indentation-width-control-variable  '(pel-pike-indent-width c-basic-offset))
         ;; - Add imenu support
         (declare-function pel-pike-set-imenu "pel-pike")
         (pel-pike-set-imenu)))))

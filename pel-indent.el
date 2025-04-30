@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-04-30 09:48:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-04-30 10:40:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -354,10 +354,10 @@ by the numeric argument N (or if not specified N=1):
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
         (isa-cc-mode (derived-mode-p pel--c-basic-offset-modes))
         (isa-sh-mode (derived-mode-p '(sh-mode)))
-        (indent-width-control-var pel--indentation-width-control-variable))
+        (indent-width-control-var pel-indentation-width-control-variable))
     (pel-print-in-buffer
      "*pel-indent-info*"
-     "Indentation Control"
+     "Indentation Width Control and Space/Tab Insertion Rendering"
      (lambda ()
        (let ((some-major-mode-specific nil))
          (dolist (fmt '("pel-%s-indent-width"
@@ -368,14 +368,10 @@ by the numeric argument N (or if not specified N=1):
                (setq some-major-mode-specific t)
                (pel-insert-symbol-content-line (pel-major-mode-symbol-for
                                                 fmt)))))
-         (when indent-width-control-var
-           (insert "\n---
-The following variable control indentation width in this mode:")
-           (pel-insert-symbol-content-line indent-width-control-var))
          (when some-major-mode-specific
            (insert "\n----
-The above major-mode specific user options take precedence
-over the following global ones (unless they are set by
+The above PEL major-mode specific user options take precedence
+over the following variables (unless these are set by
 file variables):"))
          (when isa-cc-mode
            (pel-insert-symbol-content-line 'c-basic-offset))
@@ -388,7 +384,24 @@ file variables):"))
          (pel-insert-symbol-content-line 'indent-tabs-mode)
          (pel-insert-symbol-content-line 'standard-indent)
          (pel-insert-symbol-content-line 'tab-always-indent)
-         (pel-insert-symbol-content-line 'tab-stop-list)))
+         (pel-insert-symbol-content-line 'tab-stop-list)
+
+         (when indent-width-control-var
+           (insert "\n\n**** Indentation Width Control ****\n")
+           (if (symbolp indent-width-control-var)
+               (progn
+                 (insert "\
+The following variable control indentation width in this mode:")
+                 (pel-insert-symbol-content-line indent-width-control-var))
+             (insert (format "\
+The following variables control indentation width in this mode.
+The last one (%s) is used by the major mode, the others
+set it when the buffer is opened, with first setting next:"
+                             (car (last indent-width-control-var))))
+             (dolist (var indent-width-control-var)
+               (pel-insert-symbol-content-line var))))
+
+         ))
      (unless append :clear-buffer)
      :use-help-mode)))
 
