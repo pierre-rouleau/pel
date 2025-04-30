@@ -380,6 +380,11 @@ The non-nil value of the predicate is the `module-file-suffix'.")
 It is set to t only by the logic of pel_keys.el which is
 executed by `pel-init' on startup.")
 
+(defvar-local pel-indentation-width-control-variable nil
+  "Variable used by the current major mode to control indentation width.
+
+This is a symbol set by the major modes that PEL has instrumented.")
+
 ;; ---------------------------------------------------------------------------
 ;; Code Style Buffer Local Variables
 ;; ---------------------------------

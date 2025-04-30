@@ -2777,7 +2777,8 @@ MODE must be a symbol."
         (setq-local tab-width pel-awk-tab-width)
         ;; 7) no skeleton for AWK at the moment.
         ;; 8) extra setup
-        (pel--setup-for-cc)))))
+        (pel--setup-for-cc)
+        (setq-local pel--indentation-width-control-variable  'c-basic-offset)))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
@@ -2866,6 +2867,7 @@ MODE must be a symbol."
         (pel--install-c-skel pel:c-skel)
         ;; 8) extra setup
         (pel--setup-for-cc)
+        (setq-local pel--indentation-width-control-variable  'c-basic-offset)
         ;; 9) Activate Language server of choice
         (when pel-use-emacs-ccls-for-c
           (lsp))
@@ -2958,11 +2960,12 @@ MODE must be a symbol."
       (pel--install-c++-skel pel:c++-skel)
       ;; 8) extra setup
       (pel--setup-for-cc)
+      (setq-local pel--indentation-width-control-variable  'c-basic-offset)
       ;; 9) Activate Language server of choice
       (when pel-use-emacs-ccls-for-c++
         (lsp))
       ;; 10) Activate man section for C++
-        (setq-local pel-c++-man-section "3"))))
+      (setq-local pel-c++-man-section "3"))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` : D programming utilities
@@ -3032,6 +3035,7 @@ d-mode not added to ac-modes!"
       ;; 5) Set tab-width for the buffer as specified by the PEL user option
       ;; for the major mode.
       (setq-local tab-width pel-d-tab-width)
+      (setq-local pel--indentation-width-control-variable  'c-basic-offset)
       ;; 7) Install language-specific skeletons
       ;; TODO
       )))
@@ -3135,6 +3139,8 @@ d-mode not added to ac-modes!"
         ;; (pel--install-c-skel pel:c-skel)
         ;; 8) extra setup
         (pel--setup-for-cc)
+        (setq-local pel--indentation-width-control-variable  'c-basic-offset)
+        (setq-local pel--indentation-width-control-variable  'c-basic-offset)
         ;; - Add imenu support
         (declare-function pel-pike-set-imenu "pel-pike")
         (pel-pike-set-imenu)))))

@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-04-30 08:20:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-04-30 09:48:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -67,6 +67,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;; ---------------------------------------------------------------------------
+
 
 (defun pel-indent-current-line-positions ()
   "Return a cons with the positions of the beginning and end of current line."
@@ -352,7 +353,8 @@ by the numeric argument N (or if not specified N=1):
   (interactive "P")
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
         (isa-cc-mode (derived-mode-p pel--c-basic-offset-modes))
-        (isa-sh-mode (derived-mode-p '(sh-mode))))
+        (isa-sh-mode (derived-mode-p '(sh-mode)))
+        (indent-width-control-var pel--indentation-width-control-variable))
     (pel-print-in-buffer
      "*pel-indent-info*"
      "Indentation Control"
@@ -366,6 +368,10 @@ by the numeric argument N (or if not specified N=1):
                (setq some-major-mode-specific t)
                (pel-insert-symbol-content-line (pel-major-mode-symbol-for
                                                 fmt)))))
+         (when indent-width-control-var
+           (insert "\n---
+The following variable control indentation width in this mode:")
+           (pel-insert-symbol-content-line indent-width-control-var))
          (when some-major-mode-specific
            (insert "\n----
 The above major-mode specific user options take precedence
