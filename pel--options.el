@@ -9573,7 +9573,7 @@ Do not enter lambda expressions."
 
 (defcustom pel-objc-indent-width 4
   "Number of columns for Objective-C source code indentation.
-PEL stores this in `c-basic-offset' when editing buffers with Pike code.
+PEL stores this in `c-basic-offset' when editing buffers with Objective-C code.
 Values in the [2, 8] range are accepted."
   :group 'pel-pkf-for-pike
   :type 'integer
@@ -10717,7 +10717,6 @@ Do not enter lambda expressions."
 
 (defcustom pel-tcl-indent-width 4
   "Number of columns for Tcl source code indentation.
-PEL stores this in `c-basic-offset' when editing buffers with Tcl code.
 Values in the [2, 8] range are accepted.
 
 EXPERIMENTAL: this may be removed once I know more about Tcl support."
