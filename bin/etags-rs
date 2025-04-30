@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Rust source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-04-27 22:54:39 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-04-30 14:19:13 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -41,6 +41,7 @@
 # ----
 
 pgm_name="$(basename "$0")"
+pgm_path="$(dirname "$(readlink "$0")")"
 etags_flist_fname=.etags-rust-files.txt
 etags_flist_envvar_fname="$ETAGS_FILE_LIST_FOR_RUST"
 
@@ -235,27 +236,11 @@ search()
     esac
 }
 
-use_rg="false"
-if [ -x "$(command -v rg)" ]; then
-    use_rg="true"
-fi
-
 search_script()
 {
     # Arg: dirname : name of directory tree to search
-    # add shell scripts that use Perl. Exclude perltidy files, Emacs backup and buffers files
-    if [ "${dirname}" = "." ]; then
-        real_dname=.
-    else
-        real_dname="$(realpath "$dname")"
-    fi
-
-    # Find extension-less rust script files in specified directory
-    if [ "$use_rg" = "true" ]; then
-        rg -g !'*~' -g !'*#' -Nl "^#!.* rust-script" "${real_dname}" | tee -a "${etags_flist_fname}"
-    else
-        grep --exclude '*~' --exclude '*#' -E -r "^#!.*  rust-script" "${real_dname}" | tee -a "${etags_flist_fname}"
-    fi
+    # add Rust shell scripts.
+    "${pgm_path}/find-script-rust"  "$dirname" | tee -a "${etags_flist_fname}"
 }
 
 # --

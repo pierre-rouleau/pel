@@ -1,0 +1,128 @@
+#!/bin/bash
+# SH FILE: find-script-rust
+#
+# Purpose   : Find Rust script files (file with shebang for Rust).
+# Created   : Wednesday, April 30 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-04-30 14:24:59 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Find the extension-less Rust scripts in specified directory trees(s).
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - printf, find, grep
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+pgm_name="$(basename "$0")"
+
+print_usage()
+{
+    printf -- "
+%s: Find and print the name of every Rust   script file found in directory tree.
+           Search for extension-less files with shebang line indicating 'rust-script'.
+
+ Usage: %s -h|--help
+
+  • Print this help information.
+
+ Usage: %s  [DIR, ...]
+
+  • Search and print name of Rust   files found in specified directories.
+    - If DIR is not specified, search in the current working directory.
+
+" "$pgm_name" "$pgm_name" "$pgm_name"
+}
+
+
+# --
+# Check validity of arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    exit 0
+fi
+
+case $(uname) in
+    Darwin)
+        find_path_option='-f'
+        ;;
+    Linux)
+        find_path_option=
+        ;;
+    *)
+        printf -- "%s ** Error Operating System, %s, is not supported!\n" "$pgm_name" "$(uname)"
+        exit 1
+        ;;
+esac
+
+# -----------------------------------------------------------------------------
+# Proceed:
+#
+
+search() {
+    # Arg 1: dirname : name of the directory to search
+
+    # Use find and a loop where extra filtering is done.
+    # I have not been able to get find to skip the .hg and .git repos,
+    # for some reason I did not find a way to properly use the prune and not path
+    # capabilities to I filter them out in the loop.
+    # This is slower but it works on Bash and simplifies the understanding of the code.
+    #
+    # find uses:  -L:                                    to follow symbolic links
+    #             ${find_path_option}  "${directories}": to allow processing several directories
+    #             \( \)                                : to group conditions in a block and allow
+    #                                                  : the previous expressions
+    #            -print0                               : to use NUL separators between files
+
+    find -L \
+         ${find_path_option}  "${dirname}" \
+         \( -type f ! -name '*.*' \) \
+         -print0 | while read -r -d $'\0' file
+    do
+        # skip repo database directory trees, using Bash string regexp matching.
+        # These following 2 tests  make the script dependent on Bash.
+        dname=$(dirname "$file")
+        if [[ "$dname" =~ /.hg ]]; then
+            continue
+        elif [[ "$dname" =~ /.git ]]; then
+            continue
+        fi
+
+        # Use the --brief option to prevent printing the file name which could include
+        # what we're searching.  Check if 'file' detects the file as Rust   executable
+        # before checking if it detects the file as executable; we don't want to skip
+        # files that file identify as Rust   executable.
+        if file --brief "$file" | grep -i rust-script >/dev/null; then
+            # Since the previous check is is not always very reliable,
+            # double check that it really is a Rust  file with the shebang line.
+            if head -1 "$file" | grep -E "^#!.* rust-script" > /dev/null; then
+                echo "$file"
+            fi
+        elif file --brief "$file" | grep -i executable   >/dev/null; then
+            # skip other executable files.
+            continue
+        elif head -1 "$file" | grep -E "^#!.* rust-script" > /dev/null; then
+            echo "$file"
+        fi
+    done
+}
+
+if [ -z "$1" ]; then
+    dirname="."
+    search
+else
+    for dirname in "$@"; do
+        search
+    done
+fi
+
+# ----------------------------------------------------------------------------

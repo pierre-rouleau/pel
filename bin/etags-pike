@@ -43,6 +43,7 @@
 # ----
 
 pgm_name="$(basename "$0")"
+pgm_path="$(dirname "$(readlink "$0")")"
 etags_flist_fname=.etags-pike-files.txt
 etags_flist_envvar_fname="$ETAGS_FILE_LIST_FOR_PIKE"
 
@@ -283,27 +284,11 @@ search()
     esac
 }
 
-use_rg="false"
-if [ -x "$(command -v rg)" ]; then
-    use_rg="true"
-fi
-
 search_script()
 {
     # Arg: dirname : name of directory tree to search
-    # add shell scripts that use Perl. Exclude perltidy files, Emacs backup and buffers files
-    if [ "${dirname}" = "." ]; then
-        real_dname=.
-    else
-        real_dname="$(realpath "$dname")"
-    fi
-
-    # Find extension-less pike script files in specified directory
-    if [ "$use_rg" = "true" ]; then
-        rg -g !'*~' -g !'*#' -Nl "^#!.* pike" "${real_dname}" | tee -a "${etags_flist_fname}"
-    else
-        grep --exclude '*~' --exclude '*#' -E -r "^#!.*  pike" "${real_dname}" | tee -a "${etags_flist_fname}"
-    fi
+    # add Pike shell scripts.
+    "${pgm_path}/find-script-pike"  "$dirname" | tee -a "${etags_flist_fname}"
 }
 
 # --
