@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-04-30 08:05:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-04-30 08:20:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -369,7 +369,8 @@ by the numeric argument N (or if not specified N=1):
          (when some-major-mode-specific
            (insert "\n----
 The above major-mode specific user options take precedence
-over the following global ones:"))
+over the following global ones (unless they are set by
+file variables):"))
          (when isa-cc-mode
            (pel-insert-symbol-content-line 'c-basic-offset))
          (when isa-sh-mode
