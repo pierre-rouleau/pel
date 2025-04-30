@@ -91,12 +91,17 @@ To make the color change persist, modify the `cursor' or the
   (when (stringp colorname)
     (set-cursor-color colorname)))
 
-(defadvice overwrite-mode (after pel--overwrite-mode-change-cursor activate)
-  "Change cursor color in override-mode to `pel-cursor-overwrite-mode-color'."
-  (pel-set-cursor-color
-   (if overwrite-mode
-       (face-attribute 'pel-cursor-overwrite-mode-color :background)
-     pel--default-cursor-color)))
+(with-no-warnings
+  ;; defadvice is obsolete in Emacs 30 BUT not documented .
+  ;; [:todo 2025-04-30, by Pierre Rouleau: change this once I understand the
+  ;;                    new ones. Someone quit Emacs dev group over this...
+  ;;                    ... so the old one may stay available for a while.]
+  (defadvice overwrite-mode (after pel--overwrite-mode-change-cursor activate)
+    "Change cursor color in override-mode to `pel-cursor-overwrite-mode-color'."
+    (pel-set-cursor-color
+     (if overwrite-mode
+         (face-attribute 'pel-cursor-overwrite-mode-color :background)
+       pel--default-cursor-color))))
 
 ;; -----------------------------------------------------------------------------
 ;; Control cursor type (shape) for mark active or not
