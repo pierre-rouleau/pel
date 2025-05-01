@@ -1,6 +1,6 @@
 ;;; pel-text-transform.el --- PEL Text Transformation -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -270,7 +270,7 @@ With negative N: convert that many letters before point."
 - Local newline does align : %-10s. Automatically activated by modes (<f11> t a <f2>): %s
 - Local electric-quote-mode: %-10s, electric-quote-local-mode: %s.
 - whitespace-mode          : %-10s, show-trailing-whitespace : %-10s, indicate-empty-lines: %s.
-- enriched-mode            : %-10s.
+- enriched-mode            : %-10s, prettify-symbols-mode    : %s.
 - overwrite mode           : %-10s, delete-selection-mode    : %s.
 - case-fold-search         : %-10s, sort-fold-case           : %s.
 - subword mode             : %-10s, superword mode           : %-10s, glass-mode: %s.
@@ -291,6 +291,7 @@ With negative N: convert that many letters before point."
            (pel-symbol-on-off-string 'show-trailing-whitespace nil nil "not loaded")
            (pel-symbol-on-off-string 'indicate-empty-lines nil nil "not loaded")
            (pel-symbol-on-off-string 'enriched-mode nil nil "not loaded")
+           (pel-symbol-on-off-string 'prettify-symbols-mode)
            (pel-symbol-on-off-string 'overwrite-mode)
            (pel-symbol-on-off-string 'delete-selection-mode nil nil "not loaded")
            (pel-symbol-on-off-string 'case-fold-search)

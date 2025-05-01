@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add the ~<f11> t m y~ key binding  for *prettify-symbols-mode*.  Its state is now shown by *pel-show-text-modes*.
 - *pel-ediff-2files* (bound to ~<f11> d 2~) can now compare the content of special buffers just as it was (and still is) able to do with files.
   This is quite useful to compare the content of files stored in compressed files such as ZIP, tarbals, and RPM files for example.
 - In C, C++, Perl and Tcl buffers, the *pel-man-at-point* now opens the man section
