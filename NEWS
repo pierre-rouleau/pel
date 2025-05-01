@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- *pel-ediff-2files* (bound to ~<f11> d 2~) can now compare the content of special buffers just as it was (and still is) able to do with files.
+  This is quite useful to compare the content of files stored in compressed files such as ZIP, tarbals, and RPM files for example.
 - In C, C++, Perl and Tcl buffers, the *pel-man-at-point* now opens the man section
   specific to the C, Perl and Tcl languages respectively: the mode hooks now automatically
   set the *pel-%s-man-section* variable to the desired section.

@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, March 12 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 18:40:23 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-04-30 22:19:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -59,7 +59,10 @@
 
 ;;-pel-autoload
 (defun pel-ediff-2files (&optional n)
-  "Run ediff-files on the files of current and other window.
+  "Compare the content of the content of the specified windows.
+
+If both windows are visiting files, compare them with `ediff-files',
+otherwise compare them with `ediff-buffers'.
 
 If argument N is specified and in the [2,8] range it identifies
 the window in the direction corresponding to the cursor numeric keypad:
@@ -75,8 +78,21 @@ the window in the direction corresponding to the cursor numeric keypad:
                      (abs (prefix-numeric-value n))
                      'other))
                    (pel-current-buffer-filename))))
-    (ediff-files fname-a fname-b
-                 (list (function pel--setup-for-ediff-mode)))))
+    (condition-case nil
+        (ediff-files fname-a fname-b
+                     (list (function pel--setup-for-ediff-mode)))
+      ;; if one of the window does not visit a real file, then
+      ;; try again with `ediff-buffers'.
+      (error
+       (let ((buf-a (current-buffer))
+             (buf-b (save-excursion
+                      (pel-window-select
+                       (pel-window-direction-for
+                        (abs (prefix-numeric-value n))
+                        'other))
+                      (current-buffer))))
+         (ediff-buffers buf-a buf-b
+                        (list (function pel--setup-for-ediff-mode))))))))
 
 ;;-pel-autoload
 (defun pel-ediff-revision ()
