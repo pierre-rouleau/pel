@@ -8578,6 +8578,7 @@ the ones defined from the buffer now."
 (define-key pel:textmodes "v" #'visible-mode)
 (define-key pel:textmodes "w" #'whitespace-mode)
 (define-key pel:textmodes "e" #'enriched-mode)
+(define-key pel:textmodes "y" #'prettify-symbols-mode)
 
 (pel-add-hook-for 'pel-modes-activating-superword-mode
                   (lambda ()
