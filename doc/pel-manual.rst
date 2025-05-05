@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2025-03-04 16:11:13 EST, updated by Pierre Rouleau.
+:Modified: 2025-05-05 15:02:43 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -6869,7 +6869,8 @@ PEL Text Insertion Utilities
 ----------------------------
 
 :PDF Sheet: `Inserting Text`_.
-:PEL Customization: - ``pel-use-lice``.
+:PEL Customization: - ``pel-use-lice``
+                    - ``pel-use-spdx``
                     - ``pel-use-smart-dash``
                     - ``pel-use-smartparens``
                     - ``pel-use-yasnippet``
