@@ -4228,6 +4228,23 @@ display of hard TAB characters."
   :safe #'booleanp)
 (pel-put 'pel-use-rst-mode :package-is :builtin-emacs)
 
+
+(defcustom pel-rst-compiler "pel-rst2html"
+  "Command line use to compile reStructuredText file into final format.
+
+Specify a command line that can be used to convert the reStructuredText file
+into the format of your choice, like HTML. PEL appends the name of the
+file to the command line to compile it.
+
+The command you select can have several arguments.
+- The last argument MUST be the name of the reStructuredText file to process.
+  - The default pel-rst2html is provided as a front end to rst2hrtml
+    as an example.  If you use that the one provided by PEL, inside its bin
+    directory is used.  To use another script, change the name or specify
+    the full path of the script."
+  :group 'pel-pkg-for-rst
+  :type 'string)
+
 (defcustom pel-rst-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for rst buffers.
 

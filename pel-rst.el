@@ -92,6 +92,9 @@
 ;;
 ;;   * `pel-rst-table-dup-separator-lines'
 ;;
+;; - Output generation: compilation support
+;;
+;;   * `pel-rst-compile'
 
 ;; ---------------------------------------------------------------------------
 ;;; Dependencies:
@@ -103,6 +106,8 @@
 (require 'pel-ccp)          ; uses: `pel-delete-whole-line', `pel-duplicate-line'
 (require 'pel--macros)
 (require 'rst)              ; rst-mode code. Use `rst-backward-section'
+(eval-when-compile
+  (require 'subr-x))        ; use: split-string
 
 ;; ---------------------------------------------------------------------------
 ;;; Code:
@@ -1100,6 +1105,31 @@ under the table title line."
       (search-forward "\n\n")
       (forward-line -1))
     (yank)))
+
+;; ---------------------------------------------------------------------------
+;; Output generation: compilation support
+;; --------------------------------------
+
+(defvar pel-home-dirpath-name)          ; Prevent byte-compiler warning
+;;                                      ; This is defined in PEL init.el
+(defun pel-rst-compile ()
+  "Generate the output file from the current reStructuredText file."
+  (interactive)
+  (let* ((command-line pel-rst-compiler)
+         (pgm  (car (split-string pel-rst-compiler))))
+    ;; The default is pel-rst2html, located in PEL bin directory.
+    ;; It might not be on PATH, so prefix it automatically.
+    (when (string= pgm "pel-rst2html")
+      (setq pgm (format "%s/bin/pel-rst2html" pel-home-dirpath-name))
+      (setq command-line (format "%s/bin/%s"
+                                 pel-home-dirpath-name
+                                 command-line)))
+    (if (executable-find pgm)
+        (compile (format "%s %s"
+                         command-line (buffer-file-name)))
+      (user-error
+       "Specified command line is invalid: %s is not on PATH.\
+ Update pel-rst-compiler!" pgm))))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel-rst)

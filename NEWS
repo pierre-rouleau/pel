@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add the *pel-rst-compile* command, bound to the ~<f12> c~ key sequence in *rst-mode*.  That command uses the
+  command line identified by the *pel-rst-compiler* user option to render the reStructuredText file into
+  the output format selected by the command.  The default is the provided pel-rst2html command.
 - Add support for the SPDX license inserting code.  Bound ~C-c i l~ as well as ~<f6> M-l~ and ~<f11> i M-l~ to *spdx-insert-spdx*.
   This is still preliminary: integration with tempo-based templates is not done yet.
 - Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/compilation-mode][⅀Compilation Mode]] PDF.

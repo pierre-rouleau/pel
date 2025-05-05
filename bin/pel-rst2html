@@ -1,0 +1,32 @@
+#!/bin/sh
+# SH FILE: pel-rst2html
+#
+# Purpose   : Transform reStructuredText file to HTML.
+# Created   : Monday, May  5 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-05-05 18:56:02 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# This is a crude example of using rst2html FILE > FILE.html
+# It accepts a single argument: the name of the file to render.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+fname="$1"
+out_fname=${fname%.*}.html
+rst2html "$fname" > "$out_fname"
+
+# ----------------------------------------------------------------------------
