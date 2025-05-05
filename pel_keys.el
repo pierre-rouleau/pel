@@ -4943,9 +4943,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-perl "h"       'cperl-perldoc)
     (define-key pel:for-perl "|"       'cperl-lineup))
 
-  (defvar pel-perl-man-section)      ; prevent byte-compiler warning in Emacs 26
   ;; TWO modes must be configured when they load:
   ;; 1) the perl-mode, which is part of Emacs
+  (defvar pel-perl-man-section)      ; prevent byte-compiler warning in Emacs 26
   (pel-eval-after-load perl-mode
     (pel-config-major-mode perl pel:for-perl
       ;; activate skeletons
@@ -4966,6 +4966,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (setq-local pel-perl-man-section "3pm")))
   ;;
   ;; 2) the cperl-mode, which may come from Emacs or from external package
+  (defvar pel-cperl-man-section)    ; prevent byte-compiler warning in Emacs 26
   (pel-eval-after-load cperl-mode
     (pel-config-major-mode cperl pel:for-perl
       ;; activate skeletons
