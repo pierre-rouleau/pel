@@ -2836,7 +2836,7 @@ MODE must be a symbol."
 
   (declare-function pel--install-c-skel "pel-skels-c")
   (declare-function pel-cc-find-activate-finder-method "pel-cc-find")
-
+  (defvar pel-c-man-section)            ; prevent byte-compiler warning in Emacs 26
   (pel-eval-after-load cc-mode
     (pel-config-major-mode c pel:for-c
       (progn
@@ -2933,6 +2933,7 @@ MODE must be a symbol."
                    pel:c++-search-replace)
 
   ;; Add C++ specific commands
+  (defvar pel-c++-man-section)      ; prevent byte-compiler warning in Emacs 26
   (define-key pel:c++-search-replace (kbd "v") 'pel-move-down-to-class-visibility)
   (define-key pel:c++-search-replace (kbd "V") 'pel-move-up-to-class-visibility)
   (declare-function pel--install-c++-skel "pel-skels-cpp")
@@ -2970,7 +2971,7 @@ MODE must be a symbol."
       (setq-local pel-indentation-width-control-variable
                   '(pel-c++-indent-width c-basic-offset))
       (setq-local pel-indentation-other-control-variables
-                    '(c-syntactic-indentation))
+                  '(c-syntactic-indentation))
       ;; 9) Activate Language server of choice
       (when (and  pel-use-emacs-ccls-for-c++
                   (fboundp 'lsp))
@@ -4932,7 +4933,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   (when pel-use-speedbar
     (pel-add-speedbar-extension pel-perl-fext-regex))
-
   (when pel-perl-mode
     (define-key pel:perl-setup "." 'pel-perl-show-source-directories)
     (define-key pel:perl-setup "?" 'pel-perl-show-status)
@@ -4943,6 +4943,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-perl "h"       'cperl-perldoc)
     (define-key pel:for-perl "|"       'cperl-lineup))
 
+  (defvar pel-perl-man-section)      ; prevent byte-compiler warning in Emacs 26
   ;; TWO modes must be configured when they load:
   ;; 1) the perl-mode, which is part of Emacs
   (pel-eval-after-load perl-mode
@@ -5143,6 +5144,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-pel-global-prefix pel:for-tcl (kbd "<f11> SPC t"))
   (define-pel-global-prefix pel:tcl-skel (kbd "<f11> SPC t <f12>"))
 
+  (defvar pel-tcl-man-section)      ; prevent byte-compiler warning in Emacs 26
   (pel-eval-after-load tcl
     (pel-config-major-mode tcl pel:for-tcl
       ;; activate skeletons
@@ -5152,8 +5154,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       ;; for the major mode.
       ;; (setq-local tab-width pel-tcl-tab-width)
       ;; Use the n section for tcl man pages
-      (setq-local pel-tcl-man-section "n")
-      )))
+      (setq-local pel-tcl-man-section "n"))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC u`` : Lua programming
