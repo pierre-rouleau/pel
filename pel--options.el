@@ -68,6 +68,7 @@
 ;;     - pel-pkg-for-imenu
 ;;     - pel-pkg-for-indentation
 ;;     - pel-pkg-for-insertions
+;;       - pel-pkg-for-license-insertion
 ;;       - pel-text-insertions
 ;;         - pel-date-time-insertion
 ;;       - pel-pkg-for-parens
@@ -2679,18 +2680,6 @@ Note that PEL also provides the ``<f6> g`` key binding for Greek letters."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-use-lice nil
-  "Control whether PEL uses the lice package to insert software license text.
-Note that the lice package is installed when its used in PEL tempo skeletons
-as requested by their respective user-options."
-  :group 'pel-pkg-for-insertions
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-lice :also-required-when '(or (eq pel-c-skel-with-license t)
-                                                (eq pel-clisp-skel-with-license t)
-                                                (eq pel-elisp-skel-with-license t)
-                                                (eq pel-erlang-skel-with-license t)))
-
 (defcustom pel-use-smart-dash nil
   "Control whether PEL activates the smart-dash package.
 This helps inserting underscore characters by typing the dash key without
@@ -2745,6 +2734,32 @@ PEL activates it only if variable `pel-use-yasnippet' is non-nil."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-yasnippet-snippets :requires 'pel-use-yasnippet)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-pkg-for-license-insertion nil
+  "Customization of software License control."
+  :group 'pel-pkg-for-insertions)
+
+(defcustom pel-use-lice nil
+  "Control whether PEL uses the lice package to insert software license text.
+Note that the lice package is installed when its used in PEL tempo skeletons
+as requested by their respective user-options."
+  :group 'pel-pkg-for-license-insertions
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-lice :also-required-when
+         '(or (eq pel-c-skel-with-license t)
+              (eq pel-clisp-skel-with-license t)
+              (eq pel-elisp-skel-with-license t)
+              (eq pel-erlang-skel-with-license t)))
+
+(defcustom pel-use-spdx nil
+  "Control whether PEL provides support for spdx.el."
+  :link '(url-link :tag "spdx.el @ Github"
+                   "https://github.com/condy0919/spdx.el")
+  :group 'pel-pkg-for-license-insertions
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-text-insertions nil

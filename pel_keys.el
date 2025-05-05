@@ -7809,6 +7809,12 @@ the ones defined from the buffer now."
   (define-key pel:insert "L" 'lice)
   (define-key pel:f6 "L" 'lice))
 
+(when pel-use-spdx
+  (pel-ensure-package spdx from: melpa)
+  (define-key prog-mode-map (kbd "C-c i l") 'spdx-insert-spdx)
+  (define-key pel:insert (kbd "M-l") 'spdx-insert-spdx)
+  (define-key pel:f6 (kbd "M-l") 'spdx-insert-spdx))
+
 (when pel-use-smart-dash
   (define-key pel:insert "-" 'smart-dash-mode))
 (when pel-use-smartparens
