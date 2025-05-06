@@ -7,7 +7,7 @@ Using the Emacs daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-19 16:59:05 EDT, updated by Pierre Rouleau.
+:Modified: 2025-05-06 13:17:30 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, Pierre Rouleau
 
 
@@ -254,11 +254,11 @@ by name.  The command is::
 
 where, according the emacsclient man page:
 
-  *Use socket named FILENAME for communication.  Relative filenames
+  Use socket named FILENAME for communication.  Relative filenames
   are relative to "$XDG_RUNTIME_DIR/emacs/" or "$TMPDIR/".
 
   See also the EMACS_SOCKET_NAME environment variable, over which
-  this option takes precedence.*
+  this option takes precedence.
 
 
 Opening Emacs Clients to the running Emacs Daemon
