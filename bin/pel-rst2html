@@ -4,20 +4,27 @@
 # Purpose   : Transform reStructuredText file to HTML.
 # Created   : Monday, May  5 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-05-05 18:56:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-05-06 15:47:52 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # This is a crude example of using rst2html FILE > FILE.html
-# It accepts a single argument: the name of the file to render.
+# It accepts a single argument: the name of the file to render
+# and pipes the generated HTML from stdout to a file with .html extension.
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
 #
-
+# - Python 3
+# - Docutils front-end rst2html
+#
+#   - See: https://www.docutils.org/docs/user/tools.html
+#   - Install docutils on your system with: 'pip3 install docutils'
+#     or something similar.
+#
 
 # ----------------------------------------------------------------------------
 # Code
