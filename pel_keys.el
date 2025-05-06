@@ -312,6 +312,20 @@ Done in this function to allow advising libraries that remap these keys."
   (defalias 'as 'pel-as "Select major mode for the buffer."))
 
 ;; ---------------------------------------------------------------------------
+;; Instrumenting the compilation-mode
+;; ----------------------------------
+(defun pel-help-compilation-mode (&optional open-github-page-p)
+  "Open compilation-mode PDF"
+  (interactive "P")
+  (pel-help-open-pdf "compilation-mode" open-github-page-p))
+
+(pel-eval-after-load compile
+
+  (when (boundp 'compilation-mode-map)
+    (define-key compilation-mode-map
+                (kbd "<f12> <f1>") #'pel-help-compilation-mode)))
+
+;; ---------------------------------------------------------------------------
 ;; Inserting empty line above
 ;; --------------------------
 (global-set-key (kbd "M-L") 'pel-insert-line-above)
