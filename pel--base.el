@@ -187,7 +187,6 @@
 ;; Toggle a local mode:
 ;;  - `pel-toggle-mode-and-show'
 ;;    - `pel-toggle-mode'
-;;      - `pel-autoload-p'
 ;;
 ;; Basic functions working with values and variables:
 ;;  - `pel-toggle-and-show-user-option'
@@ -2311,14 +2310,6 @@ The returned value is:
 ;; Toggle a local mode
 ;; -------------------
 
-
-(defun pel-autoload-p (fct)
-  "Return file to load if FCT is an autoloaded function not yet loaded.
-Return nil otherwise."
-  (when (and (fboundp fct)
-             (eq 'autoload (car (symbol-function fct))))
-    (cadr (symbol-function fct))))
-
 (defun pel-toggle-mode (mode)
   "Toggle the specified MODE (a symbol).
 Return the new state of the mode: t if active, nil otherwise.
@@ -2329,13 +2320,14 @@ is loaded and the mode activated."
   ;; Some modes define their state variables only when they are first ran.
   ;; For those allow calling the function with an argument 1 when their
   ;; variable is still not yet bound.
-  (let ((file-to-load (pel-autoload-p mode)))
-    (when file-to-load
-      (load file-to-load))
-    (funcall (symbol-function mode) (if (and (boundp mode)
-                                             (symbol-value mode))
-                                        -1
-                                      1))))
+  (let ((mode-function (symbol-function mode)))
+    (when (and mode-function
+               (autoloadp mode-function))
+      (autoload-do-load mode-function))
+    (funcall mode-function (if (and (boundp mode)
+                                    (symbol-value mode))
+                               -1
+                             1))))
 
 (defun pel-toggle-mode-and-show (mode &optional on-string off-string)
   "Toggle specified MODE (a symbol), and show it\\='s new value.

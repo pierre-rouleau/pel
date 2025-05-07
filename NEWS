@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix management of autoloaded flycheck and flymake by *pel-toggle-mode*: the code of *pel-autoload-p* was using
+  knowledge of the internal data structure of a function used by Emacs prior to Emacs 28.  This PEL base function
+  is no longer available; PEL now uses Emacs provided *autoloadp* and *autoload-do-load* which have been available since Emacs 24.3
 - Add ~<f12><f1>~ key binding for *change-log-mode* to open the new [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/changelog][⅀Changelog]] PDF, activated when *pel-use-changelog-mode*
   user option is on.
 - Add ~<f12><f1>~ key binding for *tup-mode* and *nix-mode* to open their respective PDF files:
