@@ -6875,6 +6875,18 @@ the ones defined from the buffer now."
   (pel-autoload-file "strace-mode.el" for: strace-mode)
   (define-key pel:buffer (kbd "M-t")  'strace-mode))
 
+(when pel-use-changelog-mode
+  (pel-eval-after-load add-log
+    (defun pel-changelog-help (&optional open-github-page-p)
+      "Open Tup PDF"
+      (interactive "P")
+      (pel-help-open-pdf "changelog" open-github-page-p))
+
+    (pel-config-major-mode change-log :no-f12-keys
+      (when (boundp 'change-log-mode-map)
+        (let ((map change-log-mode-map))
+          (define-key map (kbd "<f12> <f1>") 'pel-changelog-help))))))
+
 ;; ibuffer-mode support
 ;; --------------------
 ;;

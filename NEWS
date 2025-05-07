@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add ~<f12><f1>~ key binding for *change-log-mode* to open the new [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/changelog][⅀Changelog]] PDF, activated when *pel-use-changelog-mode*
+  user option is on.
 - Add ~<f12><f1>~ key binding for *tup-mode* and *nix-mode* to open their respective PDF files:
    [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-nix.pdf][𝕻𝔩 - Nix]] and [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-tup.pdf][𝕻𝔩 - Tup]].  Re-organized the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf][➢Index]] PDF to add cells for these 2 build systems along with the others,
    eliminating a section which increases spaces for Emacs topics and programming language tables.
