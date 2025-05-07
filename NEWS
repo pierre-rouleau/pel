@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add ~<f12><f1>~ key binding for *tup-mode* and *nix-mode* to open their respective PDF files:
+   [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-nix.pdf][𝕻𝔩 - Nix]] and [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-tup.pdf][𝕻𝔩 - Tup]].  Re-organized the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf][➢Index]] PDF to add cells for these 2 build systems along with the others,
+   eliminating a section which increases spaces for Emacs topics and programming language tables.
 - Add the *pel-rst-compile* command, bound to the ~<f12> c~ key sequence in *rst-mode*.  That command uses the
   command line identified by the *pel-rst-compiler* user option to render the reStructuredText file into
   the output format selected by the command.  The default is the provided pel-rst2html command.

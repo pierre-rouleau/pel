@@ -6,7 +6,7 @@ Build Emacs from Source
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-12 09:22:37 EDT, updated by Pierre Rouleau.
+:Modified: 2025-05-06 16:55:33 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 .. contents::  **Table of Contents**
@@ -104,6 +104,9 @@ Command                Purpose
                        It's best to save the output of this command into a file
                        and read it carefully.
 
+                       - Here's a copy of the `configure help`_ generated on
+                         my system.
+
 ``make help``          List all make commands along with their purpose.
 ====================== ==============================
 
@@ -172,6 +175,7 @@ For more information on the ``.eln`` files see:
 .. _How to Get Started with Tree-Sitter:  https://www.masteringemacs.org/article/how-to-get-started-tree-sitter
 .. _Libraries of Lisp Code for Emacs: https://www.gnu.org/software/emacs/manual/html_node/emacs/Lisp-Libraries.html
 .. _What is an eln-cache and how do I get rid of it? @ StackOverflow: https://emacs.stackexchange.com/questions/78160/what-is-an-eln-cache-and-how-do-i-get-rid-of-it
+.. _configure help: emacs-configure-help.txt
 
 .. ---------------------------------------------------------------------------
 

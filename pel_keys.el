@@ -2414,15 +2414,31 @@ can't bind negative-argument to C-_ and M-_"
                      "\\.tup\\'"
                      "Tupfile"
                      "tup.config")
-  (pel-config-major-mode tup :no-f12-keys))
+  (pel-eval-after-load tup-mode
+    (defun pel-tup-help (&optional open-github-page-p)
+      "Open Tup PDF"
+      (interactive "P")
+      (pel-help-open-pdf "pl-tup" open-github-page-p))
+
+    (pel-config-major-mode tup :no-f12-keys
+      (when (boundp 'tup-mode-map)
+        (let ((map tup-mode-map))
+          (define-key map (kbd "<f12> <f1>") 'pel-tup-help))))))
 
 ;; - Nix Package Manager Support
 ;; -----------------------------
 (when pel-use-nix-mode
   (pel-ensure-package nix-mode from: melpa)
   (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
-  (pel-config-major-mode nix :no-f12-keys))
-
+  (pel-eval-after-load nix-mode
+    (defun pel-nix-help (&optional open-github-page-p)
+      "Open Nix PDF"
+      (interactive "P")
+      (pel-help-open-pdf "pl-nix" open-github-page-p)))
+  (pel-config-major-mode nix :no-f12-keys
+    (when (boundp 'nix-mode-map)
+      (let ((map nix-mode-map))
+        (define-key map (kbd "<f12> <f1>") 'pel-nix-help)))))
 
 ;; Intel-Hex object file format support
 ;; ------------------------------------
