@@ -6955,7 +6955,7 @@ The following choices are available:
 
 Note that flymake is built-in Emacs, flycheck is not.  flycheck
 seems to be the engine preferred by many people.  If you select
-flycheck it, PEL will install it if it is not already installed.
+flycheck, PEL will install it if it is not already installed.
 
 When either is used you will also require the Go utility goflymake.
 Use the following command line to install it:
