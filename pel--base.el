@@ -395,7 +395,7 @@ next one .  These variables are used to set the default.")
 ;; ---------------------------------
 
 (defvar-local pel-comment-prefix nil
-  "String identifying the comment start. Set by specific modes only.")
+  "String identifying the comment start; set by specific modes only.")
 
 ;; ---------------------------------------------------------------------------
 ;; PEL version
@@ -460,9 +460,9 @@ If BUFFER-OR-NAME is nil, use current buffer."
   (apply (function derived-mode-p) modes))
 
 (defun pel-dired-buffer-p (&optional buffer-or-name strict)
-  "Return mode if mode of BUFFER-OR-NAME is a dired buffer, nil otherwise.
+  "Return mode if mode of BUFFER-OR-NAME is a Dired buffer, nil otherwise.
 
-Accepts mode derived from dired-mode unless STRICT is non-nil."
+Accepts mode derived from `dired-mode' unless STRICT is non-nil."
   (if buffer-or-name
       (with-current-buffer buffer-or-name
         (or (eq major-mode 'dired-mode)
@@ -551,7 +551,7 @@ file."
                               (1 . dos)
                               (2 . mac)
                               (t . nil))
-  "Association list of buffer-file-coding-system value to its symbolic name.")
+  "Association list of `buffer-file-coding-system' value to its symbolic name.")
 
 (defun pel-current-buffer-eol-type ()
   "Return line ending of current buffer content: \\='unix, \\='dos, \\='mac or nil.
@@ -611,7 +611,7 @@ by BUFFER or `pel-insert-symbol-content-context-buffer'.
 The symbol name is identified by the SYMBOL-FORMAT-STRING which must
 contain one \"%s\" that is replaced by the prefix string before the
 \"-mode\" (or \"-ts-mode\") of the major mode of the the current buffer
-or of the buffer specified by the BUFFER argument or the variable
+or of the buffer specified by the BUFFER-OR-NAME argument or the variable
 `pel-insert-symbol-content-context-buffer'.
 
 The BUFFER argument value takes precedence to the value of the variable
@@ -629,7 +629,7 @@ local or global."
 The symbol name is identified by the SYMBOL-FORMAT-STRING which must
 contain one \"%s\" that is replaced by the prefix string before the
 \"-mode\" (or \"-ts-mode\") of the major mode of the the current buffer
-or of the buffer specified by the BUFFER argument or the variable
+or of the buffer specified by the BUFFER-OR-NAME argument or the variable
 `pel-insert-symbol-content-context-buffer'.
 
 The BUFFER argument value takes precedence to the value of the variable
@@ -649,7 +649,7 @@ local or global."
 The symbol name is identified by the SYMBOL-FORMAT-STRING which must
 contain one \"%s\" that is replaced by the prefix string before the
 \"-mode\" (or \"-ts-mode\") of the major mode of the the current buffer
-or of the buffer specified by the BUFFER argument or the variable
+or of the buffer specified by the BUFFER-OR-NAME argument or the variable
 `pel-insert-symbol-content-context-buffer'.
 
 The BUFFER argument value takes precedence to the value of the variable
@@ -851,7 +851,7 @@ Ignore case differences if IGNORE-CASE is non-nil."
 ;; ------------
 
 (defun pel-plural-of (word)
-  "Return the plural of the specified word.
+  "Return the plural of the specified WORD.
 Does not handle all of English, it handles the following types:
   - class   -> classes
   - tomato  -> tomatoes
@@ -878,7 +878,7 @@ If N is 0 or 1, use the singular form.
 If N > 2: use the PLURAL form if specified,
           otherwise use `pel-plural-of' to compute the plural
           form of SINGULAR.
-By default, display the count of 1 unless NO-COUNT_FOR-1 is set."
+By default, display the count of 1 unless NO-COUNT-FOR-1 is set."
 
   (if (> n 1)
       (format "%d %s" n (or plural
@@ -928,7 +928,7 @@ non-nil, just return nil when SYMBOL is not bound."
 ;; Symbol at point
 
 (defun pel-symbol-at-point ()
-  "Return symbol at point. Return nil if there are none."
+  "Return symbol at point; return nil if there are none."
   (if (and (require 'thingatpt nil :noerror)
            (fboundp 'thing-at-point))
       (thing-at-point 'symbol :no-properties)
@@ -975,9 +975,10 @@ by BUFFER or `pel-insert-symbol-content-context-buffer'."
 
 (defun pel-symbol-text (symbol &optional on-string off-string void-string)
   "Return a string with an interpretation of SYMBOL value.
-If symbol is not bound: show \"void\".
-If symbol is set to t: show ON-STRING if defined, \"on\" otherwise.
-If symbol is nil: show OFF-STRING if defined, \"off\" otherwise."
+If SYMBOL is not bound: show \"void\".
+If SYMBOL is set to t: show ON-STRING if defined, \"on\" otherwise.
+If SYMBOL is nil: show OFF-STRING if defined, \"off\" otherwise.
+If SYMBOL is not defined, show VOID-STRING if defined, \"void\" otherwise."
   (format "%s is now: %s"
           symbol
           (pel-symbol-on-off-string symbol on-string off-string void-string)))
@@ -1039,13 +1040,13 @@ followed by the elements of ACTIVATED-IN separated by commas."
 
 
 (defun pel-modes-activating-symbol-name-for (minor-mode)
-  "Return user-option symbol that sets which major mode activates MINOR-MODE.
+  "Return user-option symbol that set which major mode activates MINOR-MODE.
 
 This is typically a symbol like:
 
-- \\='pel-modes-activating-subword-mode   : controls subword-mode
-- \\='pel-modes-activating-dumb-jump      : controls dumb-jump-mode
-- \\='pel-modes-activating-ggtags         : controls ggtags-mode
+- \\='pel-modes-activating-subword-mode : controls `subword-mode'
+- \\='pel-modes-activating-dumb-jump    : controls `dumb-jump-mode'
+- \\='pel-modes-activating-ggtags       : controls `ggtags-mode'
 
 Ideally all minor-mode controlling PEL user-options would have a name that
 ends with \\='-mode\\=' but it\\='s unfortunately not the case.
@@ -1091,7 +1092,7 @@ if the MINOR_MODE is activated globally via
 `pel-activates-global-minor-modes'.
 
 Note: the MINOR-MODE and MAJOR-MODE must evaluate to a valid mode
-symbols. These are normally symbols that have a name that ends with '-mode'.
+symbols.  These are normally symbols that have a name that ends with '-mode'.
 
 if SHOW-ALL optional argument is non-nil, also list all major modes that
 automatically activates this minor-mode.
@@ -1200,7 +1201,7 @@ Otherwise an error is raised."
    ((symbolp val) (symbol-name val))
    ((numberp val) (number-to-string val))
    ((characterp val) (char-to-string val))
-   (t (error "pel-as-string does not support type of specified argument: %S" val))))
+   (t (error "The pel-as-string does not support type of specified argument: %S" val))))
 
 (defun pel-capitalize-first-letter (text)
   "Return TEXT with first character up-cased, all other unchanged.
@@ -1304,11 +1305,11 @@ after the closing parenthesis."
 ;;
 
 (defun pel--format-problem-messages (problems intro &optional extra-intro)
-  "Return string describing problems.
+  "Return string describing PROBLEMS for INTRO.
 
 The generated string starts with an introduction created using the
 INTRO-FMT format string and its ARGS arguments if any.
-The next line starts with the EXTRA-INFO string if non-nil.
+The next line starts with the EXTRA-INTRO string if non-nil.
 Then it lists the provided PROBLEMS list.
 
 The function returns the formatted string.
@@ -1330,7 +1331,7 @@ caller's code."
 
 The generated string starts with an introduction created using the
 INTRO-FMT format string and its ARGS arguments if any.
-The next line starts with the EXTRA-INFO string if non-nil.
+The next line starts with the EXTRA-INTRO string if non-nil.
 Then it lists the provided PROBLEMS list.
 
 This macro uses the function `pel--format-problem-messages' which
@@ -1595,7 +1596,7 @@ If TARGET-TYPE-NAME is specified it must be a string that
 describes the target of the expected symlink target.
 
 Return nil if all OK, otherwise return a list of strings
-describing detected problems. Error descriptions can be padded if
+describing detected problems.  Error descriptions can be padded if
 `pel-problems-text-length' is set."
   (let ((issues nil))
     (if (file-exists-p lname)
@@ -1711,7 +1712,7 @@ time format returned by, e.g., ‘current-idle-time’."
 (defmacro pel-eval-after-load (feature &rest body)
   "Evaluate BODY after the FEATURE has been loaded.
 FEATURE is an unquoted symbol.
-Use this for the configuration phase, like the :config of use-package."
+Use this for the configuration phase, like the :config of `use-package'."
   (declare (indent 1))
   `(with-eval-after-load (quote ,feature)
      (condition-case-unless-debug err
@@ -1785,7 +1786,14 @@ DEFINES: is a cosmetic only argument that must be present."
 ;; -------
 
 (defun pel-url-copy-file (url newname &optional ok-if-already-exists)
-  "Same as url-copy-file but detects URL to non-existing file.
+  "Copy URL to NEWNAME.  Both arguments must be strings.
+
+Signal a `file-already-exists' error if file NEWNAME already
+exists, unless a third argument OK-IF-ALREADY-EXISTS is supplied
+and non-nil.  An integer as third argument means request
+confirmation if NEWNAME already exists.
+
+Same as `url-copy-file' but detects URL to non-existing file.
 Raise an error if the request generates a HTTP 404 error.
 Returns t if all is OK."
   (require 'url-handlers nil :no-error)
@@ -1819,7 +1827,7 @@ Returns t if all is OK."
         (if error-msg
             (error error-msg)
           t))
-    (error "url-handlers file is not loaded!")))
+    (error "The url-handlers file is not loaded!")))
 
 (defun pel-install-file (url fname &optional refresh)
   "Download and install a file FNAME from URL into the PEL\\='s utility directory.
@@ -2250,7 +2258,7 @@ MODE is the symbol of the standard, default mode.
 TS-MODE is the symbol of the corresponding mode that uses tree-sitter.
 
 Normally the difference between the 2 is the ts- prefix before
-the word mode in the symbol name. The function adds the pair to the
+the word mode in the symbol name.  The function adds the pair to the
 `major-mode-remap-alist' when it is available and returns the new value,
 otherwise it returns nil."
   (when (and (boundp 'major-mode-remap-alist)
@@ -2274,7 +2282,7 @@ The function returns nil when tree-sitter mode is not supported."
 ;; ----------------------------
 
 (defun pel-action-for (action current-state)
-  "Return \\='activate, \\='deactivate or nil for requested ACTION on CURRENT-STATE.
+  "Return \\='activate, \\='deactivate, nil for requested ACTION on CURRENT-STATE.
 
 Interpret requested ACTION according to its value:
  - nil or 0        : toggle,
@@ -2501,7 +2509,7 @@ The MINOR-MODES argument must be an unquoted symbol."
 (defun pel-turn-on-global-minor-modes-in (minor-modes)
   "Turn all *global* MINOR-MODES on for all buffers.
 
-MINOR-MODES must be a symbol. In PEL that should be
+MINOR-MODES must be a symbol.  In PEL that should be
 `pel-activates-global-minor-modes'.
 
 The function generates a warning describing the problem if a
@@ -2525,7 +2533,7 @@ local minor mode is specified instead of a local minor mode."
 (defun pel-turn-on-local-minor-modes-in (minor-modes)
   "Turn all *local* MINOR-MODES on for the buffer\\='s major mode.
 
-MINOR-MODES must be a symbol. In PEL that should be one of the
+MINOR-MODES must be a symbol.  In PEL that should be one of the
 `pel-<mode>-activates-minor-modes' symbols.
 
 This must be called within the scope of a buffer using the major mode
@@ -2629,7 +2637,7 @@ Return nil if symbol N value is CEILING or larger."
 ;; -------------
 
 (defmacro pel-swap (var-a var-b)
-  "Swap the content of VAR-A and VAR-B. Return value of VAR-A."
+  "Swap the content of VAR-A and VAR-B.  Return value of VAR-A."
   `(setq ,var-a (prog1 ,var-b (setq ,var-b ,var-a))))
 
 ;; ---------------------------------------------------------------------------
@@ -2993,7 +3001,10 @@ This function handles both."
 ;; -----------------------------------
 
 (defun pel-insert-url-link (title url &optional extra-text)
-  "Insert a TITLE hyperlink button to specified URL."
+  "Insert a TITLE hyperlink button to specified URL.
+
+If EXTRA-TEXT is non-nil it should be a string and is inserted after the
+button."
   (if (and (require 'button nil :no-error)
            (fboundp 'insert-button)
            (fboundp 'browse-url)
@@ -3030,9 +3041,9 @@ By default SYMBOL must be a global symbol as its value is read in
 the scope of the output buffer.  If the SYMBOL is a buffer local
 symbol, specify the buffer in the optional BUFFER argument or
 let-bind the variable `pel-insert-symbol-content-context-buffer'
-to the value of the buffer you need. A non-nil BUFFER argument value
+to the value of the buffer you need.  A non-nil BUFFER argument value
 takes precedence to the value of the variable
-`pel-insert-symbol-content-context-buffer'. If both are nil, then
+`pel-insert-symbol-content-context-buffer'.  If both are nil, then
 the value is read from the context of the current buffer, which
 may be a local or global.
 
@@ -3060,9 +3071,12 @@ By default:
 Insert the SYMBOL name as a clickable button inside current buffer.
 By default SYMBOL must be a global symbol as its value is read in the scope
 of the output buffer.  If the SYMBOL is a buffer local symbol, specify the
-buffer in the optional BUFFER argument. You can also let-bind the variable
+buffer in the optional BUFFER argument.  You can also let-bind the variable
 `pel-insert-symbol-content-context-buffer' to the value of the buffer you
-need."
+need.
+
+If EXTRA-TEXT is non-nil, it should be a string.  That string is
+inserted after the symbol name"
   (pel-insert-symbol-content
    symbol
    (or buffer pel-insert-symbol-content-context-buffer)
@@ -3077,7 +3091,10 @@ need."
              "\n"))
 
 (defun pel--pp (object &optional stream prefix)
-  "Pretty-print OBJECT on STREAM or standard-output."
+  "Pretty-print OBJECT on STREAM if specified, standard output otherwise.
+
+A non-nil PREFIX should a be a string that is inserted before the
+OBJECT."
   (if (and (require 'pp nil :no-error)
            (fboundp 'pp-to-string))
       (let ((text (string-trim (pp-to-string object))))
@@ -3087,15 +3104,21 @@ need."
 
 (defun pel-insert-list-value (list-name list-value
                                         &optional without-index on-same-line)
-  "Insert a description of a list variable with a name and value."
+  "Insert a description of a list variable with a name and value.
+
+- LIST-NAME  : the name of the list.
+- LIST-VALUE : the value of the list.
+- WITHOUT-INDEX : by default an index is printed unless this is non-nil.
+- ON-SAME-LINE : prints all list elements on the same line by default, unless
+                 this is non-nil, which forces placing each element on
+                 its own line."
   (insert (format "\n- %s: " list-name))
   (let ((idx 0))
     (dolist (elem list-value)
       (setq idx (1+ idx))
       (unless without-index
         (insert (format "\n%3d -%s" idx (if on-same-line "" "\n"))))
-      (pel--pp elem (current-buffer) "   ")))
-  )
+      (pel--pp elem (current-buffer) "   "))))
 
 (defun pel-insert-list-content (symbol &optional
                                        buffer without-index
@@ -3155,7 +3178,7 @@ unless CLEAR-BUFFER is non-nil, in which case, previous buffer
 content is first erased.
 
 When USE-HELP-MODE is non-nil, activate the `help-mode' in the
-buffer, otherwise use the `fundamental-mode'. Activating the
+buffer, otherwise use the `fundamental-mode'.  Activating the
 `help-mode' in the buffer allows quick navigation to the variable
 buttons, a very useful feature.
 
@@ -3360,20 +3383,21 @@ Return the new value of LIST-VAR."
 ;; - `with-no-warnings':         introduced in Emacs 22.1
 ;; - `with-suppressed-warnings': introduced in Emacs 27.1
 
-(defun pel-executable-find (fname &optional is-remote)
-  "Search for COMMAND in `exec-path' and return the absolute file name.
-Return nil if COMMAND is not found anywhere in `exec-path'.
+(defun pel-executable-find (command &optional is-remote)
+  "Search COMMAND in variable `exec-path', return its absolute file name.
+
+Return nil if COMMAND is not found in the identified directories.
 If IS-REMOTE is non-nil:
 - on Emacs >= 27: search on the remote host indicated by `default-directory'.
 - on Emacs < 27: issue user error describing limitation."
   (if pel-emacs-27-or-later-p
       (with-no-warnings
-        (executable-find fname is-remote))
+        (executable-find command is-remote))
     (if is-remote
-        (user-error "On Emacs %s can't search for remote file [%s]."
+        (user-error "On Emacs %s can't search for remote file [%s]"
                     emacs-major-version
-                    fname)
-      (executable-find fname))))
+                    command)
+      (executable-find command))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)
