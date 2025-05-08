@@ -2318,8 +2318,10 @@ can't bind negative-argument to C-_ and M-_"
 (when pel-use-emacs-ccls
   (pel-ensure-package ccls from: melpa))
 
-
 ;; ---------------------------------------------------------------------------
+;; Flycheck/Flymake Syntax Checking
+;; ================================
+
 ;; Mode Setting Helper Functions
 ;; -----------------------------
 (defun pel--extend-flymake ()
@@ -2331,7 +2333,6 @@ can't bind negative-argument to C-_ and M-_"
     (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
     (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
 
-;; ---------------------------------------------------------------------------
 ;; Syntax Check with Flycheck (if requested)
 ;; -----------------------------------------
 (when pel-use-flycheck
@@ -3263,10 +3264,8 @@ d-mode not added to ac-modes!"
         ;; To ensure the Emacs Lisp files are available to Emacs regardless of the
         ;; Go project or workspace used, the Emacs Lisp files are stored in PEL
         ;; utility directory.
-        ;; TODO: restore dougm URL once he has accepted by pull-request. In the
-        ;;       mean-time I'm using my fork that has code fixes.
         (if (memq pel-use-goflymake '(with-flycheck with-flymake))
-            (pel--install-github-file "pierre-rouleau/goflymake/master"
+            (pel--install-github-file "dougm/goflymake/master"
                                       (if (eq pel-use-goflymake 'with-flycheck)
                                           "go-flycheck.el"
                                         "go-flymake.el"))
@@ -3285,11 +3284,15 @@ d-mode not added to ac-modes!"
     (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
     (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
     (define-key pel:for-go "?"         'pel-go-setup-info)
-    (when pel-use-goflymake
-      (define-key pel:for-go "!"       'pel-go-toggle-syntax-checker))
 
     (pel-eval-after-load go-mode
       ;; Set environment for Go programming using go-mode.
+      ;; [:todo 2025-05-08, by Pierre Rouleau: automate the activation of
+      ;;         goflymake Go program by adjusting the GOPATH when flycheck
+      ;;         with goflymake support is requested.]
+      (when pel-use-goflymake
+        (when (boundp 'go-mode-map)
+          (define-key go-mode-map (kbd "<f11> !!") 'pel-go-toggle-syntax-checker)))
       (pel-config-major-mode go pel:for-go
         ;; ensure gofmt is executed before saving file if
         ;; configured to do so
@@ -4333,7 +4336,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
             (flycheck-mode))))
         ;;
         ;; When any syntax checker is used with Erlang add a key to toggle it
-        (define-key pel:for-erlang "!" 'pel-erlang-toggle-syntax-checker))
+        (define-key erlang-mode-map (kbd "<f11> !!") 'pel-erlang-toggle-syntax-checker))
 
       ;; Activate EDTS when required.
       (when pel-use-edts

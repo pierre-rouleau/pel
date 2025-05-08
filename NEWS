@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Optimize key bindings for syntax checking by re-using the same key sequence for several major
+  modes and eliminating differences:
+  - In Erlang and Go buffers: the ~<f11> ! !~ key sequence is now used to toggle activation of
+    syntax checking despite their use of a language specific option processing.
+    This way these buffers use the same key sequence used elsewhere,
+    and frees the ~<f12> !~ key binding previously used.
 - Fix management of autoloaded flycheck and flymake by *pel-toggle-mode*: the code of *pel-autoload-p* was using
   knowledge of the internal data structure of a function used by Emacs prior to Emacs 28.  This PEL base function
   is no longer available; PEL now uses Emacs provided *autoloadp* and *autoload-do-load* which have been available since Emacs 24.3
