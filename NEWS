@@ -8,6 +8,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     syntax checking despite their use of a language specific option processing.
     This way these buffers use the same key sequence used elsewhere,
     and frees the ~<f12> !~ key binding previously used.
+  - Replaced the ~<f12> e~ key binding by ~<f11> ! l~ activated in the major mode when flycheck minor mode is active.
+    This simplifies the key binding and increases coherence.
+  - Removed the ~<f12> c l~, ~<f12> c .~ and ~<f12> c //~ key binding in emacs-lisp major mode.  In the Emacs Lisp buffers,
+    like other major mode buffers, use the standard flycheck-mode key bindings.  This standardizes the use of flycheck
+    to all major modes.
 - Fix management of autoloaded flycheck and flymake by *pel-toggle-mode*: the code of *pel-autoload-p* was using
   knowledge of the internal data structure of a function used by Emacs prior to Emacs 28.  This PEL base function
   is no longer available; PEL now uses Emacs provided *autoloadp* and *autoload-do-load* which have been available since Emacs 24.3

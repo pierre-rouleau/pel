@@ -2341,6 +2341,7 @@ can't bind negative-argument to C-_ and M-_"
                      flycheck-mode
                      flycheck-select-checker)
 
+  ;; Extend flycheck mode by adding some key bindings
   (defun pel--extend-flycheck ()
     "Extend the flycheck mode."
     ;; The keys are similar to what flymake uses.
@@ -2348,14 +2349,7 @@ can't bind negative-argument to C-_ and M-_"
     (when (boundp 'flycheck-mode-map)
       (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
       (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error)
-      (if (eq major-mode 'emacs-lisp-mode)
-          (progn
-            (define-key pel:elisp-compile "l" 'flycheck-list-errors)
-            (define-key pel:elisp-compile "." 'flycheck-display-error-at-point)
-            (define-key pel:elisp-compile "/" 'flycheck-explain-error-at-point))
-        (define-key flycheck-mode-map (kbd "<f12> e") 'flycheck-list-errors)
-                                        ; '/' is same key as '?' without having to hit Shift
-        (define-key flycheck-mode-map (kbd "<f12> /") 'flycheck-explain-error-at-point))))
+      (define-key flycheck-mode-map (kbd "<f11> ! l") 'flycheck-list-errors)))
   (declare-function pel--extend-flycheck "pel_keys") ; prevent byte-compiler warning
 
   (define-pel-global-prefix pel:flycheck (kbd "<f11> !"))
