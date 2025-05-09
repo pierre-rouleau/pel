@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, August 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-03-22 09:42:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-05-09 08:01:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2024  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@ Invalid action in PEL environment control list for variable %s"
 ;; [:todo 2024-03-21, by Pierre Rouleau: Add ability to parse string stored in
 ;; temporary buffer and return a list of list with relevant information.  The
 ;; last entry of that list would be the currently running process info.
-;; Currently pel-process-tree only prints the output of pasture.]
+;; Currently pel-process-tree only prints the output of pstree.]
 
 ;; pel-autoload
 (defun pel-process-tree ()
