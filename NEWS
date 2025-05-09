@@ -13,6 +13,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Removed the ~<f12> c l~, ~<f12> c .~ and ~<f12> c //~ key binding in emacs-lisp major mode.  In the Emacs Lisp buffers,
     like other major mode buffers, use the standard flycheck-mode key bindings.  This standardizes the use of flycheck
     to all major modes.
+  - Changed key bindings for *markdown-insert-header-setext-1* from ~<f12> !~ to ~<f12> M-1~ and,
+    *markdown-insert-header-setext-2* from ~<f12> @~ to ~<f12> M-2~ a more logical choice.
 - Fix management of autoloaded flycheck and flymake by *pel-toggle-mode*: the code of *pel-autoload-p* was using
   knowledge of the internal data structure of a function used by Emacs prior to Emacs 28.  This PEL base function
   is no longer available; PEL now uses Emacs provided *autoloadp* and *autoload-do-load* which have been available since Emacs 24.3
