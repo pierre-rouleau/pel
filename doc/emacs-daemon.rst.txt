@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-05-08 22:35:25 EDT, updated by Pierre Rouleau.
+:Modified: 2025-05-08 22:36:22 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, Pierre Rouleau
 
 
@@ -22,7 +22,7 @@ can use the following short commands.  These support both macOS and Linux.
 
 
 = =========================================== ================================================
-  Command                                     Description
+.  Command                                     Description
 = =========================================== ================================================
 . e_\ ``[OPTIONS..] [FILE..]``                Start Emacs in text mode.
 
