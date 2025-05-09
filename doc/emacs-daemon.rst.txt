@@ -1,13 +1,13 @@
-==================================
-Using the Emacs daemon and clients
-==================================
+=========================================================
+Using the Emacs stand-alone processes, daemon and clients
+=========================================================
 
 :Home URL: https://github.com/pierre-rouleau/pel
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-05-06 13:17:30 EDT, updated by Pierre Rouleau.
+:Modified: 2025-05-08 22:32:13 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, Pierre Rouleau
 
 
@@ -26,14 +26,31 @@ can use the following short commands.  These support both macOS and Linux.
 = =========================================== ================================================
 . e_\ ``[OPTIONS..] [FILE..]``                Start Emacs in text mode.
 
+                                              - A stand-alone process.
+                                              - A command that you execute from a shell.
                                               - Supports emacs options and file arguments.
                                                 See emacs man page.
+                                              - Emacs has access to the shell environment
+                                                (``PATH``, ``LIBPATH``, ``MANPATH``, etc...) which
+                                                can be useful in many situations.  You can
+                                                even launch different Emacs processes from
+                                                different shells, each ones having different
+                                                specialized environments.
 
 . ge_ :                                       Start Emacs in graphics mode.
 
-  - ``ge [-h | --help]``                      - Supports emacs options and file arguments.
-  - ``ge [OPTIONS..] [FILE..]``                 See emacs man page.
-
+    - ``ge [-h | --help]``                    - A stand-alone process.
+    - ``ge [OPTIONS..] [FILE..]``             - A command that you execute from a shell.
+                                              - Supports emacs options and file arguments.
+                                                See emacs man page.
+                                              - Emacs has access to the shell environment
+                                                (``PATH``, ``LIBPATH``, ``MANPATH``, etc...) which
+                                                can be useful in many situations.  You can
+                                                even launch different Emacs processes from
+                                                different shells, each ones having different
+                                                specialized environments.
+                                              - With  PEL, it can use a different
+                                                customization file than the text mode Emacs.
 
 . ec_ :                                       Start an Emacs client for an Emacs daemon.
 
@@ -217,6 +234,12 @@ Explicit command line::
 
   emacs
 
+or::
+
+  emacs -nw
+
+or use the `e`_ command `described above`_.
+
 Launching an independent graphical Emacs process from a terminal shell
 ----------------------------------------------------------------------
 
@@ -229,6 +252,7 @@ This uses the macOS open command with the following command line options:
 - ``-n``: open a new instance on each invocation
 - ``-a application``: identify the path of the application
 
+You can also use the `ge`_ command `described above`_.
 
 Launching an independent graphical Emacs process from macOS Finder
 ------------------------------------------------------------------
@@ -237,6 +261,28 @@ Assuming no Emacs daemon is running, you can use Spotlight to open Emacs from
 the keyboard:
 
 - Type ``⌘-SPACE`` then Emacs and ``RET``
+
+Note that when you use this, Emacs runs under the default OS environment.
+In some case that may mean that you wont have access to programs you may want to use because
+they are not present in any directory listed in the systems' PATH.
+
+There are several solutions to this problem.
+
+#. Use PEL's ability to configure the environment variables from customization: customize
+   PEL's **pel-gui-process-environment** user-option.
+
+   - Type ``C-h o pel-gui-process-environment RET`` from Emacs and access the customization
+     buffer. Then insert new environment variables with their value or identify strings to append or
+     prepend to existing environment variables (like ``PATH``).  You can create or update any
+     number of environment variables.
+
+#. Use the `exec-path-from-shell`_ package.  It launches a shell to extract the environment
+   from it when Emacs starts.
+
+The first method, provided by PEL, is very flexible but it requires setting it
+through the powerful Emacs customization system.  It also has very negligible impact on Emacs
+startup time.  The second method requires installation of another package and assumes that you
+only have one shell configured the way you want.
 
 
 Launching a *graphics-capable* Emacs Daemon
@@ -298,6 +344,8 @@ install emacs`` command::
 .. _ec: ../bin/ec
 .. _Closing Suspending PEL PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/closing-suspending.pdf
 .. _quick installation script: ./install_e_ge_ec.rst.txt
+.. _exec-path-from-shell: https://github.com/purcell/exec-path-from-shell
+.. _described above: #short-commands-to-start-emacs-from-the-terminal-shell
 
 .. ---------------------------------------------------------------------------
 
