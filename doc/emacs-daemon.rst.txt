@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-05-08 22:37:02 EDT, updated by Pierre Rouleau.
+:Modified: 2025-05-09 08:03:04 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, Pierre Rouleau
 
 
@@ -274,7 +274,8 @@ There are several solutions to this problem.
    - Type ``C-h o pel-gui-process-environment RET`` from Emacs and access the customization
      buffer. Then insert new environment variables with their value or identify strings to append or
      prepend to existing environment variables (like ``PATH``).  You can create or update any
-     number of environment variables.
+     number of environment variables.  The docstring of this customizable user-option
+     provides more information.
 
 #. Use the `exec-path-from-shell`_ package.  It launches a shell to extract the environment
    from it when Emacs starts.
