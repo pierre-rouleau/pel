@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-05-08 22:32:13 EDT, updated by Pierre Rouleau.
+:Modified: 2025-05-08 22:35:25 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, Pierre Rouleau
 
 
@@ -39,8 +39,8 @@ can use the following short commands.  These support both macOS and Linux.
 
 . ge_ :                                       Start Emacs in graphics mode.
 
-    - ``ge [-h | --help]``                    - A stand-alone process.
-    - ``ge [OPTIONS..] [FILE..]``             - A command that you execute from a shell.
+  - ``ge [-h | --help]``                      - A stand-alone process.
+  - ``ge [OPTIONS..] [FILE..]``               - A command that you execute from a shell.
                                               - Supports emacs options and file arguments.
                                                 See emacs man page.
                                               - Emacs has access to the shell environment
