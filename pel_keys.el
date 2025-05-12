@@ -7999,7 +7999,13 @@ the ones defined from the buffer now."
     (define-key smartparens-mode-map (kbd "<M-f7> . P")   'sp-select-previous-thing-exchange)
     (define-key smartparens-mode-map (kbd "<M-f7> . .")   'sp-mark-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> TAB")   'sp-indent-adjust-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> <C-M-i>") 'sp-dedent-adjust-sexp)))
+    (define-key smartparens-mode-map (kbd "<M-f7> <C-M-i>") 'sp-dedent-adjust-sexp)
+    (define-key smartparens-mode-map (kbd "<M-f7> M-w (")  'sp-wrap-round)
+    (define-key smartparens-mode-map (kbd "<M-f7> M-w [")  'sp-wrap-square)
+    (define-key smartparens-mode-map (kbd "<M-f7> M-w {")  'sp-wrap-curly)
+    (define-key smartparens-mode-map (kbd "<M-f7> ;")      'sp-comment)
+    (define-key smartparens-mode-map (kbd "<M-f7> h .")    'sp-show-enclosing-pair)
+    (define-key smartparens-mode-map (kbd "<M-f7> h (")    'sp-highlight-current-sexp)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> k`` : Keyboard macro operations
