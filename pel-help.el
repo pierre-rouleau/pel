@@ -74,7 +74,7 @@ Proxy form `format-prompt' supporting Emacs before 28."
      (and default
           (or (not (stringp default))
               (length> default 0))
-          (format (substitute-command-keys minibuffer-default-prompt-format)
+          (format (substitute-command-keys " (default %s)")
                   (if (consp default)
                       (car default)
                     default)))
