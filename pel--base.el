@@ -3280,7 +3280,7 @@ speedbar file."
   (file-attribute-modification-time (file-attributes filename)))
 
 (defun pel-byte-compile-if-needed (el-filename &rest other-dependencies)
-  "Byte-compile Emacs Lisp source EL-FILENAME if it\\='s needed.
+  "Byte-compile Emacs Lisp source EL-FILENAME if it is needed.
 The EL-FILENAME string must be the name of a Emacs Lisp file and must
 include the .el extension.  The name of the file may be relative
 or absolute.
