@@ -1,6 +1,6 @@
 ;;; pel-help.el --- PEL extra help utilities  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2023, 2024, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau (concat "prouleau" "001" "@" "gmail" ".com")
 
@@ -29,7 +29,8 @@
 ;; -----------------------------------------------------------------------------
 ;;; Dependency
 (require 'which-func)         ; use: `which-function'  -- part of Emacs.
-
+(require 'cl-extra)           ; use `cl-some'
+(require 'help-fns)           ; use `help--symbol-completion-table'
 ;;; Code:
 
 ;;-pel-autoload
@@ -56,6 +57,32 @@ Also insert it at point when optional INSERT-IT argument is non-nil."
     (when (and fct-name insert-it)
       (insert fct-name))
     (message "%s" (or fct-name "Point is not inside a function definition."))))
+
+;;-pel-autoload
+(defun pel-show-symbol (symbol)
+  "Print a message with the SYMBOL name and value."
+  ;; Interactive code taken from the `describe-symbol' from
+  ;; Emacs built-in help-fns.el
+  (interactive
+   (let* ((v-or-f (symbol-at-point))
+          (found (when v-or-f
+                   (cl-some (lambda (x)
+                              (funcall (nth 1 x) v-or-f))
+                            describe-symbol-backends)))
+          (v-or-f (if found v-or-f (function-called-at-point)))
+          (found (or found v-or-f))
+          (enable-recursive-minibuffers t)
+          (val (completing-read (format-prompt "Describe symbol"
+                                               (and found v-or-f))
+				                #'help--symbol-completion-table
+				                (lambda (vv)
+                                  (cl-some (lambda (x) (funcall (nth 1 x) vv))
+                                           describe-symbol-backends))
+				                t nil nil
+				                (if found (symbol-name v-or-f)))))
+     (list (if (equal val "")
+	           (or v-or-f "") (intern val)))))
+  (message "%s := %s" symbol (symbol-value symbol)))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-help)

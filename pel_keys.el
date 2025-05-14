@@ -1819,8 +1819,8 @@ can't bind negative-argument to C-_ and M-_"
 
 (define-pel-global-prefix pel:completion (kbd "<f11> M-c"))
 
-(defun pel-number-of-available-modes ()
-  "Return number of available modes."
+(defun pel-number-of-available-completion-modes ()
+  "Return number of available completion modes."
   (let ((count 1))
     (dolist (option '(pel-use-ido
                       pel-use-ivy
@@ -1965,7 +1965,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; If more than 1 completion mode is available, this means that the user may
 ;; not want to use Emacs default: activate the one selected by customization
 ;; and install the selection command.
-(when (> (pel-number-of-available-modes) 1)
+(when (> (pel-number-of-available-completion-modes) 1)
   ;; Of all input-completion packages, Helm takes the longuest time to load.
   ;; Defer loading of pel-completion a little and allow switching only once
   ;; it's loaded.
@@ -6264,6 +6264,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (define-key pel:help "$"  'pel-spell-show-use)
 (define-key pel:help "f"  'which-function-mode)
 (define-key pel:help "F"  'pel-show-function)
+(define-key pel:help "S"  'pel-show-symbol)
 (define-key pel:help "P"  'pel-help-pdfs-dir)
 (define-key pel:help "p"  'pel-help-pdf-select)
 (define-key pel:     "p"  'pel-help-pdf-select) ; faster key for help
