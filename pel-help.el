@@ -73,7 +73,7 @@ Proxy form `format-prompt' supporting Emacs before 28."
        (apply #'format (substitute-command-keys prompt) format-args))
      (and default
           (or (not (stringp default))
-              (length> default 0))
+              (> (length default) 0))
           (format (substitute-command-keys " (default %s)")
                   (if (consp default)
                       (car default)
