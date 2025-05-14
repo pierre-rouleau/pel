@@ -2,12 +2,12 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-11-20 10:48:58 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-05-14 17:26:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2024  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -182,7 +182,7 @@ This is ido-grid, not ido-grid-mode, a different one."
            (fboundp 'ido-grid-mode))
       (let ((ido-grid-mode-start-collapsed start-collapsed))
         (ido-grid-mode 1))
-    (user-error "ido-grid-mode is not available!")))
+    (user-error "Mode ido-grid-mode is not available!")))
 
 (defun pel--activate-ido-grid ()
   "Activate ido-grid.
@@ -193,7 +193,7 @@ Note that ido-grid is a different package than ido-grid-mode."
            (featurep 'ido-grid)
            (fboundp 'ido-grid-enable))
       (ido-grid-enable)
-    (user-error "ido-grid is not available!")))
+    (user-error "Mode ido-grid is not available!")))
 
 (defun pel--activate-ido-vertical ()
   "Activate the ido-vertical mode."
@@ -228,12 +228,12 @@ State can be one of:
               ((eq geometry 'ido-grid)       (pel--activate-ido-grid))
               ((eq geometry 'vertical)       (pel--activate-ido-vertical))
               ((memq geometry '(off emacs-default)) nil)
-              (t (error "unsupported Ido geometry requested: %s" geometry)))
+              (t (error "Unsupported Ido geometry requested: %s" geometry)))
         (setq pel--ido-geometry geometry))
     (error "Cannot load required Ido mode!")))
 
 (defun pel-set-ido-geometry (geometry &optional silent now)
-  "Set the Ido prompt GEOMETRY. Display description unless SILENT requested.
+  "Set the Ido prompt GEOMETRY.  Display description unless SILENT requested.
 Identify that its a change when NOW argument is specified.
 This assumes that Ido mode is currently activated."
   (pel--set-ido-geometry geometry)
@@ -287,11 +287,13 @@ This assumes that Ido mode is currently activated."
 ;;    - `pel--flx-ido-state'
 
 (defvar pel--use-flx-with-ido (eq pel-use-flx 'use-from-start)
-  "Whether flx-ido is used with Ido.")
+  "Whether flx-ido mode should be used with Ido on startup or after `pel-init'.
+Note: this does *not* identify whether it is used or not.
+      For that use the variable `flx-ido-mode'.")
 
 (defun pel--flx-ido-state ()
   "Return a string describing the sate of the `flx-ido-mode'."
-  (pel-on-off-string pel--use-flx-with-ido))
+  (pel-symbol-on-off-string 'flx-ido-mode))
 
 (defvar pel--ido-was-using-faces nil
   "Caches `ido-use-faces' while flx-ido is used.") ; TODO find better way
@@ -318,8 +320,7 @@ Constraint: Ido must be active when this is called to activate flx-ido."
               ;; disable ido faces to see flx highlights.
               (setq ido-enable-flex-matching t)
               (setq pel--ido-was-using-faces ido-use-faces)
-              (setq ido-use-faces nil)
-              (setq pel--use-flx-with-ido flx-ido-mode))
+              (setq ido-use-faces nil))
             t )
         (user-error "Failed loading ido-flx!"))
     ;; Deactivate flx-ido
@@ -329,7 +330,6 @@ Constraint: Ido must be active when this is called to activate flx-ido."
                flx-ido-mode)
        (flx-ido-mode -1)
        (setq ido-use-faces pel--ido-was-using-faces)
-       (setq pel--use-flx-with-ido flx-ido-mode)
        nil)))
 
 ;; auto-loaded via use-package in pel_keys: no need for this unless
@@ -364,7 +364,9 @@ Display new state unless SILENT."
 ;;    - `pel--ido-ubiquitous-state'
 
 (defvar pel--use-ido-ubiquitous  (eq pel-use-ido-ubiquitous 'use-from-start)
-  "Whether Ido Ubiquitous is currently used.")
+  "Whether Ido Ubiquitous mode should be used from startup or after `pel-init'.
+Note: this does *not* identify whether it is used or not.
+      For that use the variable `ido-ubiquitous-mode'.")
 
 (defconst pel--ido-ubiquitous-whitelist '(describe-symbol
                                           describe-function
@@ -379,15 +381,18 @@ Display new state unless SILENT."
   "List of function symbols that must use Ido via Ido Ubiquitous.")
 
 (defun pel-set-ido-ubiquitous ()
-  "Set Ido Ubiquitous - ensure that some commands use Ido."
-  (when (boundp 'ido-cr+-function-whitelist)
+  "Set Ido Ubiquitous to use by some interactive functions, not all.
+
+The name of the functions that will use ido Ubiquitous is identified in the
+list `pel--ido-ubiquitous-whitelist'."
+  (when (boundp 'ido-cr+-allow-list)
     (dolist (fct pel--ido-ubiquitous-whitelist)
-      (unless (memq fct ido-cr+-function-whitelist)
-        (push fct ido-cr+-function-whitelist)))))
+      (unless (memq fct ido-cr+-allow-list)
+        (push fct ido-cr+-allow-list)))))
 
 (defun pel--ido-ubiquitous-state ()
   "Return a string describing the state of `ido-ubiquitous-mode'."
-  (pel-on-off-string pel--use-ido-ubiquitous))
+  (pel-symbol-on-off-string 'ido-ubiquitous-mode))
 
 (defun pel--set-ido-ubiquitous (activate)
   "Activate or de-activate ubiquitous IDO according to argument ACTIVATE.
@@ -399,14 +404,12 @@ Constraint:
                (boundp  'ido-ubiquitous-mode)
                (fboundp 'ido-ubiquitous-mode))
           (when (not ido-ubiquitous-mode)
-            (ido-ubiquitous-mode 1)
-            (setq pel--use-ido-ubiquitous ido-ubiquitous-mode))
+            (ido-ubiquitous-mode 1))
         (user-error "Failed loading ido-completing-read+"))
     (when (and (boundp  'ido-ubiquitous-mode)
                (fboundp 'ido-ubiquitous-mode)
                ido-ubiquitous-mode)
-      (ido-ubiquitous-mode -1)
-      (setq pel--use-ido-ubiquitous ido-ubiquitous-mode))))
+      (ido-ubiquitous-mode -1))))
 
 ;;-pel-autoload
 (defun pel-ido-ubiquitous (&optional activate silent)
@@ -440,9 +443,15 @@ Note: If `pel-use-ido-ubiquitous' is nil and ido-ubiquitous
 ;;
 ;; - `pel--ido-mode-silently'
 ;;    * `pel-ido-mode'
+;;      - `pel-initial-ido-geometry--adjusted'
 
 (defun pel-initial-ido-geometry--adjusted ()
-  "Adjust `pel-initial-ido-geometry' according to what is activated."
+  "Adjust `pel-initial-ido-geometry' according to what is activated.
+
+`ido-grid' does not work properly when `ido-grid-mode' is also being used:
+as soon as `ido-grid-mode' runs the `ido-grid' the key map does not activate
+properly for a reason I have not identified yet.  So make sure that only 1
+of the 2 is ever active: give priority to ido-grid."
   (cond
    ;; ido-grid not available but requested as initial
    ((and (eq pel-initial-ido-geometry 'ido-grid)
@@ -507,12 +516,13 @@ Also activate/deactivate the IDO extensions:
             (pel-ido-ubiquitous 1 :silent))
           ;; - set ido geometry
           (pel-set-ido-geometry (or pel--ido-geometry
-                                    (pel-initial-ido-geometry--adjusted)) :silent))
+                                    (pel-initial-ido-geometry--adjusted))
+                                :silent))
          ;;
          ;; Deactivate
          ((eq action 'deactivate)
-          ;; - deactivate extended IDO geometry: use emacs-default
-          (pel-set-ido-geometry 'emacs-default :silent)
+          ;; - deactivate extended IDO geometry: revert to the initial state
+          (pel-set-ido-geometry pel-initial-ido-geometry :silent)
           ;; - deactivate ido-ubiquitous
           (pel-ido-ubiquitous -1 :silent)
           ;; - deactivate flx-ido
@@ -526,14 +536,14 @@ Also activate/deactivate the IDO extensions:
     (user-error "IDO mode is not available! Please install it first")))
 
 (defun pel--ido-mode-silently (&optional activate)
-    "Activate, deactivate or toggle use of the IDO mode silently.
+  "Activate, deactivate or toggle use of the IDO mode silently.
 
 Argument:
 -  ACTIVATE:
  - absent, 0 or nil: toggle IDO mode.
  - > 0             : activate IDO mode.
  - < 0             : deactivate IDO mode."
-    (pel-ido-mode activate :silent))
+  (pel-ido-mode activate :silent))
 
 ;; ---------------------------------------------------------------------------
 ;; Top Level Complement Mode Management
@@ -610,9 +620,8 @@ When starting, start the modes in order of functions in the argument list.
 When stopping, use the reverse order."
   (let ((mode-arg (if start 1 -1))
         (funs     (if start mode-funs (reverse mode-funs))))
-    (mapcar
-     (lambda (fct) (funcall fct mode-arg))
-     funs)))
+    (dolist (fct funs)
+      (funcall fct mode-arg))))
 
 (defmacro pel-map-helm (key start-helm helm-cmd other-cmd)
   "Map KEY to HELM-CMD when START-HELM otherwise to OTHER-CMD."
@@ -656,7 +665,8 @@ When stopping, use the reverse order."
                    (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)))
              (error "The helm-mode command is not bound!")))
           ;;
-          ;; mode:= nil - do nothing
+          ;; mode:= nil - do nothing - called on start to disable ido
+          ;;                           but it's not activated yet.
           ((not mode) t)
           ;;
           ;; otherwise mode is invalid
@@ -770,7 +780,7 @@ Print message describing active mode unless SILENT argument is non-nil."
     (ido           . "Ido")
     (ido/helm      . "Ido/Helm")
     (helm          . "Helm"))
-  "Association list of (symbol . string) for completion mode")
+  "Association list of symbol to completion mode name.")
 
 (defun pel-activated-completion-mode-name ()
   "Return string with name of currently used completion MODE."
@@ -778,15 +788,17 @@ Print message describing active mode unless SILENT argument is non-nil."
               pel--completion-mode-names-alist)))
 
 (defun pel-ido-completion-settings-string (&optional prefix-string)
-  "Return a multi-line string describing IDO settings."
+  "Return a multi-line string describing IDO settings.
+
+If PREFIX-STRING is non-nil, print it on each line."
   (let ((prefix (or prefix-string "")))
     (format "\
-%sIdo prompt geometry (<f11> M-c M-g): %s
-%sIdo Ubiquitous mode (<f11> M-c M-u): %s
-%sflx-ido        mode (<f11> M-c M-f): %s"
+%sIdo prompt geometry (<f11> M-c M-g): %-18s User-option: pel-initial-ido-geometry,
+%sIdo Ubiquitous mode (<f11> M-c M-u): %-18s User-option: pel-use-ido-ubiquitous,
+%sflx-ido        mode (<f11> M-c M-f): %-18s User-option: pel-use-flx"
             prefix (pel-activated-ido-geometry)
             prefix (pel--ido-ubiquitous-state)
-            prefix (pel-on-off-string pel--use-flx-with-ido))))
+            prefix (pel-symbol-on-off-string 'flx-ido-mode))))
 
 ;;-pel-autoload
 (defun pel-show-active-completion-mode (&optional now)

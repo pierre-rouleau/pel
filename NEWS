@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix edge-case in completion mode management: executing *pel-init* to re-initialize PEL re-establishes
+  the user selected options properly.  Previous code changed the settings and changed the completion mode
+  being used.  This bug was affecting PEL for a while.
+  - Also added information printed by *pel-show-active-completion-mode* : the name of the customizable user-option
+    that controls the selection of the various supported completion modes.
 - Add *pel-show-symbol* bound to ~<f11> ? S~.  A simple utility to print the symbol name and value.
   This can help when debugging emacs lisp code.
 - Optimize key bindings for syntax checking by re-using the same key sequence for several major
