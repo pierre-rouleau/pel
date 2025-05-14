@@ -31,6 +31,7 @@
 (require 'which-func)         ; use: `which-function'  -- part of Emacs.
 (require 'cl-extra)           ; use `cl-some'
 (require 'help-fns)           ; use `help--symbol-completion-table'
+(require 'pel--base)
 ;;; Code:
 
 ;;-pel-autoload
@@ -58,6 +59,27 @@ Also insert it at point when optional INSERT-IT argument is non-nil."
       (insert fct-name))
     (message "%s" (or fct-name "Point is not inside a function definition."))))
 
+
+(defun pel--format-prompt (prompt default &rest format-args)
+  "Format PROMPT with DEFAULT.
+Proxy form `format-prompt' supporting Emacs before 28."
+  (if (fboundp 'format-prompt)
+      (format-prompt prompt default format-args)
+    ;; On older Emacs (before 28), `format-prompt', from minibuffer, did not
+    ;; exist: here's a copy of it's implementation from Emacs 30
+    (concat
+     (if (null format-args)
+         (substitute-command-keys prompt)
+       (apply #'format (substitute-command-keys prompt) format-args))
+     (and default
+          (or (not (stringp default))
+              (length> default 0))
+          (format (substitute-command-keys minibuffer-default-prompt-format)
+                  (if (consp default)
+                      (car default)
+                    default)))
+     ": ")))
+
 ;;-pel-autoload
 (defun pel-show-symbol (symbol)
   "Print a message with the SYMBOL name and value."
@@ -72,8 +94,8 @@ Also insert it at point when optional INSERT-IT argument is non-nil."
           (v-or-f (if found v-or-f (function-called-at-point)))
           (found (or found v-or-f))
           (enable-recursive-minibuffers t)
-          (val (completing-read (format-prompt "Describe symbol"
-                                               (and found v-or-f))
+          (val (completing-read (pel--format-prompt "Describe symbol"
+                                                    (and found v-or-f))
 				                #'help--symbol-completion-table
 				                (lambda (vv)
                                   (cl-some (lambda (x) (funcall (nth 1 x) vv))
