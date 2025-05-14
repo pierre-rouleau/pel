@@ -1,6 +1,6 @@
 ;;; pel-lisp.el --- PEL Lisp Editing Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2023, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -23,11 +23,17 @@
 ;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;; Emacs Lisp byte compilation utilities.
+;;
 
-;;; Code:
-
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+;;
 (require 'pel--base)                ; use: `pel-current-buffer-filename'
 (require 'elisp-mode)               ; use: `emacs-lisp-byte-compile-and-load'
+
+;;; ---------------------------------------------------------------------------
+;;; Code:
 
 ;;-pel-autoload
 (defun pel-toggle-lisp-modes ()
