@@ -6656,7 +6656,11 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; - indent-tools
 ;; --------------
 
+(defvar pel--was-hydra-loaded-p (featurep 'pel__hydra)
+    "Remember whether PEL support for Hydra was loaded.")
+
 (when pel-use-indent-tools
+
   (pel-ensure-package indent-tools from: melpa)
   (pel-autoload-file indent-tools for: indent-tools-hydra/body)
 
@@ -6671,7 +6675,19 @@ See `flyspell-auto-correct-previous-word' for more info."
               (boundp 'indent-tools-keymap-prefix))
          (global-set-key indent-tools-keymap-prefix 'indent-tools-hydra/body)
          (define-key pel:indent (kbd "<f7>") 'indent-tools-hydra/body)
-         (global-set-key (kbd "<f7> TAB") 'indent-tools-hydra/body))))))
+         (if pel--was-hydra-loaded-p
+             ;; On a re-execution of pel-init, after was first pel__hydra
+             ;; byte compiled, just re-load it but first install the F7 keys
+             ;; before turning F7 into a prefix again.
+             (progn
+               (global-unset-key (kbd "<f7>"))
+               (global-set-key (kbd "<f7> TAB") 'indent-tools-hydra/body)
+               (load-library "pel__hydra"))
+           ;; When Emacs starts for the first time, just install the F7 keys
+           ;; because pel__hydra has not yet been byte compiled, loaded and the
+           ;; F7 is not yet a prefix.
+           (global-set-key (kbd "<f7> TAB") 'indent-tools-hydra/body))
+         (setq pel--was-hydra-loaded-p t ))))))
 
 (when pel-use-smart-shift
   (pel-ensure-package smart-shift from: melpa)

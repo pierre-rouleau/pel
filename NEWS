@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix the re-installation of the *indent-tools-hydra/body* key binding to ~<f7> <TAB>~ when *pel-init* is re-executed.
+  That happens when we need to re-initialize after changing a *pel-use-...* user option and want to activate it without leaving
+  Emacs.  It's also useful when PEL is re-built inside a different process, modifying the .el and .elc files and we want to re-load
+  everything without leaving Emacs.  In the past the key binding to indent-tools-hydra/body was not re-installed because of the
+  special way PEL treats the hydra logic.  for more information, see the comments at the end of pel_keys.el.
+  This fix should help reloading PEL by just re-executing *pel-init*.
 - Fix edge-case in completion mode management: executing *pel-init* to re-initialize PEL re-establishes
   the user selected options properly.  Previous code changed the settings and changed the completion mode
   being used.  This bug was affecting PEL for a while.
