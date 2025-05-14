@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-06-13 11:19:29, updated by Pierre Rouleau>
+;; Time-stamp: <2025-05-14 15:27:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -78,12 +78,11 @@
 ;;
 ;;
 (require 'pel--base)
-(require 'pel--options)       ; use: pel-goto-symbol-completion-function
-;;                            ;      pel-use-ivy
-(require 'pel-prompt)         ; use: pel-select-symbol-from
-(require 'pel-completion)     ; use: pel--use-ido-ubiquitous
-;;                            ;      pel--ido-ubiquitous-state
-;;                            ;      pel-ido-completion-settings-string
+(require 'pel--options)       ; use: `pel-goto-symbol-completion-function'
+;;                            ;      `pel-use-ivy'
+(require 'pel-prompt)         ; use: `pel-select-symbol-from'
+(require 'pel-completion)     ; use: `pel--ido-ubiquitous-state'
+;;                            ;      `pel-ido-completion-settings-string'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
