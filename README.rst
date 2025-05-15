@@ -86,7 +86,8 @@ or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
     even if PEL fast startup mode is not used!  Emacs is using native compilation mode here,
     and Emacs also runs faster on Linux than under macOS.
   - `On a 2023 macStudio running Emacs 30.1 in terminal`_ (in normal mode,
-    without native compilation)/
+    without native compilation), starts in 0.58 seconds while providing 612
+    features (with 634 loaded files).
   - `On a 2023 macStudio running Emacs 30.1 in Graphics mode`_ (in normal-mode,
     without native compilation).
 
