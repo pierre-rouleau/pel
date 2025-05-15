@@ -536,9 +536,9 @@ Notes
 .. _Emacs < 30: https://github.com/pierre-rouleau/pel/issues/33
 .. _On a 2014 iMac running Emacs 26.3 terminal: doc/res/startup/startup-imac-2014-terminal.png
 .. _On a 2014 iMac running Emacs 26.3 terminal in fast-startup mode: doc/res/startup/startup-imac-2014-terminal-fast-startup.png
-.. _On Emacs 30.1 in terminal mode under Rocky Linux 8.10 VM running in a 2014 iMac: startup-imac-rockylinux-terminal.png
-.. _On a 2023 macStudio running Emacs 30.1 in terminal: startup-macstudio-terminal-01.png
-.. _On a 2023 macStudio running Emacs 30.1 in Graphics mode: startup-macstudio-gui-01.png
+.. _On Emacs 30.1 in terminal mode under Rocky Linux 8.10 VM running in a 2014 iMac: doc/res/startup/startup-imac-rockylinux-terminal.png
+.. _On a 2023 macStudio running Emacs 30.1 in terminal: doc/res/startup/startup-macstudio-terminal-01.png
+.. _On a 2023 macStudio running Emacs 30.1 in Graphics mode: doc/res/startup/startup-macstudio-gui-01.png
 
 ..
    -----------------------------------------------------------------------------
