@@ -304,26 +304,6 @@
 ;; semantics is the same as for the `:requires' property above except for the
 ;; fact that if it is not present nothing is inferred.
 ;;
-;; *Development Tip*:
-;; When writing support for a new package that is coming from and
-;; Elpa-compliant repo:
-;; - write the specification code here and the code calling
-;;   the `pel-ensure-package' inside pel_keys.el,
-;; - turn the option on and execute `pel-init' to get PEL to install the new
-;;   package.
-;; - Inspect the source file(s) of the newly install package to identify its
-;;   dependencies.
-;; - Execute the function `pel-elpa-pkg-dependencies' on the package and see
-;;   if it identifies all its dependencies.
-;;   - If that's not the case, then add a `:requires-package' property to the
-;;     package `pel-use-' user-option that identifies the unspecified
-;;     dependencies.
-;; - Activate the package `pel-use-' variable and run `pel-init' to ensure
-;;   that all required packages are installed.
-;; - With the variable still active, run a dry-run `pel-cleanup' to check that
-;;   nothing it requires would be un-installed.
-;; - Deactivate the variable and run a dry-run `pel-cleanup' to verify that it
-;;   removes only what should be removed.
 
 ;; `:package-is'
 ;; ------------
@@ -386,6 +366,35 @@
 ;; the test code that generate the file sample examples stored inside the
 ;; example/templates directory.  These files provide samples of what is
 ;; possible to generate with the PEL code generation.
+
+
+;; * Development Tip *:
+;; ===================
+;;
+;; When writing support for a new package that is coming from and
+;; Elpa-compliant repo:
+;; - write the specification code here and the code calling
+;;   the `pel-ensure-package' inside pel_keys.el,
+;; - turn the option on and execute `pel-init' to get PEL to install the new
+;;   package.
+;; - Inspect the source file(s) of the newly install package to identify its
+;;   dependencies.
+;; - Execute the function `pel-elpa-pkg-dependencies' on the package and see
+;;   if it identifies all its dependencies.
+;;   - If that's not the case, then add a `:requires-package' property to the
+;;     package `pel-use-' user-option that identifies the unspecified
+;;     dependencies.
+;; - Activate the package `pel-use-' variable and run `pel-init' to ensure
+;;   that all required packages are installed.
+;; - With the variable still active, run a dry-run `pel-cleanup' to check that
+;;   nothing it requires would be un-installed.
+;; - Deactivate the variable and run a dry-run `pel-cleanup' to verify that it
+;;   removes only what should be removed.
+;;
+;;  IELM is your friend for this (too):
+;;
+;;  - To list what would be removed from utils, execute: (pel-utils-unrequired)
+;;  - To list what would be removed from elpa, execute:  (pel-elpa-unrequired)
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependency
@@ -788,10 +797,11 @@ This is only used in Emacs 27 and later."
   :group 'pel)
 
 (defconst pel-elpa-obsolete-packages '(parinfer)
-  "Lists the PEL supported ELPA packages that are no longer available.")
+  "Lists PEL supported ELPA packages that are no longer available.")
 
-(defcustom pel-elpa-packages-to-keep '(benchmark-init
-                                       elisp-lint package-lint dash)
+(defcustom pel-elpa-packages-to-keep '(dash
+                                       elisp-lint
+                                       package-lint)
   "List of Elpa package names that should not be removed by `pel-cleanup'.
 
 Put the names of the packages you install manually in this list.
@@ -804,7 +814,8 @@ By default, PEL identifies the following packages:
   :group 'pel-package-use
   :type '(repeat symbol))
 
-(defcustom pel-utils-packages-to-keep nil
+(defcustom pel-utils-packages-to-keep '("benchmark-init-modes.el"
+                                        "benchmark-init.el")
   "List of utils file names that should not be removed by `pel-cleanup'.
 
 If you manually install Emacs Lisp files in your utils directory, you should
@@ -1234,7 +1245,8 @@ The initial completion mode is set by `pel-initial-completion-mode'."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-ivy :also-required-when '(or pel-use-ivy-xref
-                                               pel-use-lsp-ivy))
+                                               pel-use-lsp-ivy
+                                               pel-use-ivy-erlang-complete))
 
 (defcustom pel-use-counsel nil
   "Control whether Counsel is used when Ivy is used.
@@ -1256,6 +1268,7 @@ You must also activate the user option variable  `pel-use-ivy' to use counsel."
 ;; of its dependencies. Therefore I add the dependency info here.
 (pel-put 'pel-use-counsel :requires-package '(quote ((elpa . lv)
                                                      (elpa . request))))
+(pel-put 'pel-use-counsel :also-required-when 'pel-use-ivy-erlang-complete)
 
 (defcustom pel-use-counsel-osx-app nil
   "Control whether `counsel-osx-app' is used when counsel is used on macOS.
@@ -1306,7 +1319,8 @@ Note that the following user options indirectly activates `pel-use-helm':
 (pel-put 'pel-use-helm :also-required-when '(or pel-use-helm-cscope
                                                 pel-use-helm-xref
                                                 pel-use-helm-lsp
-                                                pel-use-indent-tools))
+                                                pel-use-indent-tools
+                                                pel-use-helm-descbinds))
 
 (defconst pel-USE-IDO     1 "Bitmask identifying Ido.      DON'T CHANGE!")
 (defconst pel-USE-IVY     2 "Bitmask identifying Ivy.      DON'T CHANGE!")
@@ -1577,6 +1591,7 @@ standard diff annotated files."
   :group 'pel-pkg-for-diff-merge
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-diffview-mode :package-is '(quote ((elpa . diffview))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-dired
@@ -1678,6 +1693,7 @@ The Hippie Expand can be used together with any."
   :group 'pel-pkg-for-expand
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-company :also-required-when 'pel-use-company-erlang)
 
 (defcustom pel-use-hippie-expand nil
   "Control whether PEL uses the {hippie-expand} package."
@@ -1727,6 +1743,7 @@ tree-sitter is available, then tomlparse is used instead of emacs-toml.
                    "https://toml.io/en/")
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-tree-sitter :package-is '(quote ((elpa . tree-sitter-langs))))
 
 (defcustom pel-use-tomlparse nil
   "Whether PEL supports tomlparse when tree-sitter is available.
@@ -1938,6 +1955,7 @@ Select one of:
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-rpm-spec-mode :package-is :in-utils)
+(pel-put 'pel-use-rpm-spec-mode :also-required-when 'pel-use-archive-rpm)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Directory Tree Browsing and Management
@@ -2295,6 +2313,8 @@ package is also required because `projectile` uses the `ripgrep` package."
   :group 'pel-pkg-for-grep
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-wgrep :also-required-when'(or pel-use-ripgrep
+                                                pel-use-ivy))
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-pkg-for-help nil
@@ -3465,6 +3485,9 @@ still works."
   :group 'pel-pkg-for-keys
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-interaction-log-mode
+         :package-is '(quote
+                       ((elpa . interaction-log))))
 
 (defcustom pel-select-key-is-end nil
   "When set the <select> key is bound as the <end> key.
@@ -3709,7 +3732,7 @@ It provides support for the authorized_keys and know_hosts files."
                    "https://github.com/petere/emacs-ssh-file-modes")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-emacs-ssh-file-modes :package-is :in-utils)
+(pel-put 'pel-use-emacs-ssh-file-modes :package-is '(quote ((utils . ssh-file-modes))))
 
 ;; ---------------------------------------------------------------------------
 ;; SELinux Policy Definition Files Support
@@ -4691,6 +4714,9 @@ This may get activated indirectly by other user-options."
                    "https://github.com/emacs-lsp/lsp-mode")
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-lsp-mode :package-is '(quote ((elpa . ccls))))
+(pel-put 'pel-use-lsp-mode :also-required-when 'pel-use-emacs-ccls)
+
 
 (defcustom pel-use-lsp-ui nil
   "Control whether PEL activates lsp-ui, a lsp-mode UI support."
@@ -4699,6 +4725,7 @@ This may get activated indirectly by other user-options."
                    "https://github.com/emacs-lsp/lsp-ui")
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-lsp-ui :also-required-when 'pel-use-emacs-ccls)
 
 (defcustom pel-use-lsp-treemacs nil
   "Control whether PEL activates the lsp extension for treemacs."
@@ -4763,6 +4790,9 @@ This forces the `pel-use-lsp-mode' to t."
                    "https://github.com/emacs-lsp/emacs-ccls")
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-emacs-ccls :also-required-when '(or pel-use-emacs-ccls-for-c
+                                                      pel-use-emacs-ccls-for-c++
+                                                      pel-use-emacs-ccls-for-objc))
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-pkg-generic-code-style nil
@@ -6899,6 +6929,7 @@ However it is automatically activated when `pel-use-go-mode' is activated."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-go :package-is :a-gate)
+(pel-put 'pel-use-go :also-required-when 'pel-use-go-mode)
 
 (defcustom pel-go-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Go buffers.
@@ -7550,6 +7581,7 @@ is set: it is used by the helpful package."
   :group 'pel-pkg-for-elisp
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-elisp-refs :also-required-when 'pel-use-helpful)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Arc Support
@@ -8880,6 +8912,7 @@ To use it, `pel-use-erlang' must be on (t)."
 (pel-put 'pel-use-ivy-erlang-complete :requires 'pel-use-erlang)
 (pel-put 'pel-use-ivy-erlang-complete :requires 'pel-use-ivy)
 (pel-put 'pel-use-ivy-erlang-complete :requires 'pel-use-counsel)
+(pel-put 'pel-use-ivy-erlang-complete :also-required-when 'pel-use-company-erlang)
 
 (defcustom pel-use-company-erlang nil
   "Control whether PEL uses company-erlang."
@@ -9439,6 +9472,7 @@ characters."
   :group 'pel-pkg-for-lua
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-lua :package-is '(quote ((elpa . lua-mode))))
 
 (defcustom pel-lua-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Lua buffers.
@@ -9837,7 +9871,7 @@ characters."
   :group 'pel-pkg-for-odin
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-odin :package-is :in-utils)
+(pel-put 'pel-use-odin :package-is '(quote ((utils . odin-mode))))
 
 
 (defcustom pel-use-flycheck-odin nil
@@ -9936,6 +9970,11 @@ When turned on the perl-mode is associated with the PEL ``<f12>`` key."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-perl :package-is :a-gate)
+(pel-put 'pel-use-perl :also-required-when 'pel-use-perl-repl)
+(pel-put 'pel-use-perl :package-is '(when (eq pel-perl-mode
+                                              'HaraldJoerg/cperl-mode)
+                                      (quote ((utils . cperl-mode)
+                                              (utils . perl-tidy-ediff)))))
 
 (defcustom pel-perl-mode 'HaraldJoerg/cperl-mode
   "Selects the major-mode used for Perl files.
@@ -10002,7 +10041,7 @@ files from the PEL utils directory."
 		           "https://github.com/pierre-rouleau/perl-live")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-perl-live-coding :package-is :in-utils)
+(pel-put 'pel-use-perl-live-coding :package-is '(quote ((utils . perl-live))))
 
 ;; - - - - - - - - - - - - - - - -
 (defgroup pel-pkg-for-perl-general nil
@@ -10647,7 +10686,7 @@ hard tab when one `pel-sh-use-tabs' is set to t."
                    "https://github.com/pierre-rouleau/seed7-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-seed7 :package-is :in-utils)
+(pel-put 'pel-use-seed7 :package-is '(quote ((utils . seed7-mode))))
 
 (defcustom pel-seed7-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Seed7 buffers.
@@ -10697,6 +10736,7 @@ characters."
   :group 'pel-pkg-for-smalltalk
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-smalltalk :package-is '(quote ((elpa . smalltalk-mode))))
 
 (defcustom pel-smalltalk-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Smalltalk buffers.
@@ -10739,6 +10779,11 @@ characters."
   :group 'pel-pkg-for-swift
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-swift :package-is '(if pel-use-tree-sitter
+                                         (quote ((elpa . swift-mode)
+                                                 (elpa . swift-ts-mode)))
+                                       (quote ((elpa . swift-mode)))))
+
 
 (defcustom pel-swift-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Swift buffers.
@@ -10902,7 +10947,10 @@ characters."
   :group 'pel-pkg-for-zig
   :type 'boolean
   :safe #'booleanp)
-
+(pel-put 'pel-use-zig :package-is '(if pel-use-tree-sitter
+                                       (quote ((elpa . zig-mode)
+                                               (elpa . zig-ts-mode)))
+                                     (quote ((elpa . zig-mode)))))
 
 (defcustom pel-zig-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Zig buffers.
@@ -11152,7 +11200,8 @@ the window by its position with the other numbers)."
 emacs-regex-to-match-balanced-parenthesis")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-cexp :package-is :in-utils)
+(pel-put 'pel-use-cexp :package-is '(quote ((utils . cexp)
+                                            (utils . cexp-test))))
 
 (defcustom pel-use-swiper nil
   "Control whether PEL uses the Swiper search package."
@@ -11340,6 +11389,7 @@ It requires Emacs 26.1 or later."
   :group 'pel-pkg-for-shells
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-emacs-eat :package-is '(quote ((elpa . eat))))
 
 (defgroup pel-pkg-for-eat-mode nil
   "PEL-specific customization for the `eat-mode'."
@@ -11773,7 +11823,7 @@ Good candidates:
                    "https://gist.github.com/flambard/419770#file-timelog-el")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-timeclock-timelog :package-is :in-utils)
+(pel-put 'pel-use-timeclock-timelog :package-is '(quote ((utils . timelog))))
 (pel-put 'pel-use-timeclock-timelog :requires 'pel-use-timeclock)
 
 ;; TODO: add chronometrist when it's stable enough and compiles cleanly.
@@ -11972,6 +12022,7 @@ It provides access to gitignore-mode, gitconfig-mode and gitattributes-mode."
   :group 'pel-pkg-for-git
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-gitignore-mode :package-is '(quote ((elpa . git-modes))))
 
 ;; ------------------------------
 ;; Mercurial
