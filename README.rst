@@ -81,7 +81,10 @@ or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
   - `On a 2014 iMac running Emacs 26.3 terminal`_ (in normal mode)
   - `On a 2014 iMac running Emacs 26.3 terminal in fast-startup mode`_
   - `On Emacs 30.1 in terminal mode under Rocky Linux 8.10 VM running in a 2014 iMac`_,
-    accessed via ssh with a GNU screen session
+    accessed via ssh with a GNU screen session.
+    Note this one: it has 412 loaded features, yet the Emacs startup time is 0.5 seconds
+    even if PEL fast startup mode is not used!  Emacs is using native compilation mode here,
+    and Emacs also runs faster on Linux than under macOS.
   - `On a 2023 macStudio running Emacs 30.1 in terminal`_ (in normal mode,
     without native compilation)/
   - `On a 2023 macStudio running Emacs 30.1 in Graphics mode`_ (in normal-mode,
