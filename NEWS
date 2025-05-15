@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- The *pel-emacs-load-stats* command now also show Emacs startup time.
 - Fix the re-installation of the *indent-tools-hydra/body* key binding to ~<f7> <TAB>~ when *pel-init* is re-executed.
   That happens when we need to re-initialize after changing a *pel-use-...* user option and want to activate it without leaving
   Emacs.  It's also useful when PEL is re-built inside a different process, modifying the .el and .elc files and we want to re-load

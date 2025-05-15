@@ -135,12 +135,14 @@ With \\[universal-argument] \\[universal-argument] prefix, also print content of
            (boundp  'package-activated-list))
       (let ((numeric-arg   (prefix-numeric-value with-details))
             (overview-msg  (format "\
+- Emacs startup time: %s
 # loaded files      : %d
 # load-path length  : %d
 # features          : %d
 # package-alist     : %d
 # packages activated: %d
 # packages selected : %d"
+                                   (emacs-init-time)
                                    (length load-history)
                                    (length load-path)
                                    (length features)
