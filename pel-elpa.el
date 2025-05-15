@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-02 10:04:28 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-05-15 19:36:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -53,6 +53,7 @@
 ;;
 (require 'pel-filedir)
 (require 'package)
+(require 'seq)                         ; use: `seq-remove'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -202,17 +203,27 @@ The returned file name has no path, unless WITH-PATH is non-nil."
 
 (defun pel-elpa-one-level-package-files (elpa-dirpath)
   "Return all file path-names of one level package -pkg files in ELPA-DIRPATH."
-  (mapcar (lambda (dn)
-            (pel-elpa-pkg-filename (expand-file-name dn elpa-dirpath)
-                                   :with-path))
-          (pel-elpa-one-level-packages "~/.emacs.d/elpa")))
+  ;; first compute a preliminary list that may contain nil entries if non
+  ;; package directories where inside ELPA-DIRPATH.
+  (let ((prelim-list
+         (mapcar (lambda (dn)
+                   (message "Processing %s" dn)
+                   (pel-elpa-pkg-filename (expand-file-name dn elpa-dirpath)
+                                          :with-path))
+                 (pel-elpa-one-level-packages "~/.emacs.d/elpa"))))
+    ;; Return list with all nil removed
+    (seq-remove (function not) prelim-list)))
 
 (defun pel-elpa-load-pkg-descriptor (pkg-file &optional pkg-dir
                                               result-alist-symbol)
   "Load and return package descriptor from file PKG-FILE.
-If a directory is identified in PKG-DIR set the dir slot of the returned
-package descriptor to that directory.
-If the RESULT-ALIST-SYMBOL is specified set its value with the result alist."
+
+- PKG-FILE: a string. The path to a -pkg.el file located inside a Elpa
+  compliant package directory.
+- PKG-DIR. Optional string. If specified, set the dir slot of the returned
+  package descriptor to that directory.
+- RESULT-ALIST-SYMBOL: Optional symbol. If specified, set the value of that
+  symbol to the value of the result alist."
   ;; prevent package-process-define-package from updating package-alist
   (let (package-alist)
     (with-temp-buffer
@@ -229,11 +240,16 @@ If the RESULT-ALIST-SYMBOL is specified set its value with the result alist."
 
 (defun pel-elpa-one-level-package-alist (elpa-dirpath dest-dir)
   "Return alist of all one-level packages in ELPA-DIRPATH held in DEST_DIR.
-The ELPA-DIRPATH is the standard Elpa directory that holds standard Elpa
-packages stored in sub-directories.
-Create and return a association list that associate the package name
-to a `package-desc' structure with a modified `dir' slot pointing to the
-directory specified by DEST-DIR."
+
+- ELPA-DIRPATH: String. Directory path name. Name of the directory that holds
+  standard Elpa packages sub-directories.
+- DEST-DIR: String. Directory path name.
+
+Create and return an association list that associate the one-level
+package name to a `package-desc' structure with a modified `dir' slot
+pointing to the directory specified by DEST-DIR.
+
+This function does not modify the file system."
   (let (alist desc)
     (dolist (pfn (pel-elpa-one-level-package-files elpa-dirpath))
       (setq desc (pel-elpa-load-pkg-descriptor pfn dest-dir))
@@ -241,12 +257,14 @@ directory specified by DEST-DIR."
     alist))
 
 (defun pel-elpa-pkg-files-in (dirpath)
-  "Return the -pkg.el filenames of all Elpa packages in DIRPATH."
+  "Return the -pkg.el filenames of all Elpa packages in DIRPATH.
+Return a list of all -pkg.el files inside each of the Elpa package directories
+of DIRPATH.  Each listed file name has the complete path based on DIRPATH."
   (mapcar (lambda (dn)
             (pel-elpa-pkg-filename (expand-file-name dn dirpath) :with-path))
           (pel-elpa-package-directories dirpath)))
 
-(defun pel-elpa-disable-pkg-deps-in (dirpath)
+(defun pel-elpa-disable-pkg-deps-in (dirpath &optional dont-update-file)
   "Disable the dependencies of all -pkg.el files of packages in DIRPATH.
 Return an alist of (package versions) that should be added to the
 variable `package--builtin-versions'.  This corresponds to all packages
@@ -272,7 +290,8 @@ dependencies that are not already part of the `package--builtin-versions'."
         ;; package dependants.
         (setf (package-desc-reqs pkg-spec) nil)
         ;; Write the modified structure back into its file.
-        (package-generate-description-file pkg-spec pkg-fn)))
+        (unless dont-update-file
+          (package-generate-description-file pkg-spec pkg-fn))))
     pkg-deps-versions))
 
 ;; ---------------------------------------------------------------------------
