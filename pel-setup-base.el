@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-16 10:03:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-05-15 12:10:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2024  Pierre Rouleau
+;; Copyright (C) 2021, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ In the current code this is only done by `pel--setup-dual-environment'")
 ;; Emacs Initialisation file validation
 ;; ------------------------------------
 
-(defconst pel--expected-init-file-version "0.2"
+(defconst pel--expected-init-file-version "0.3"
   "Must match what is in the example/init/init.el")
 
 (defconst pel--expected-early-init-file-version "0.2"
