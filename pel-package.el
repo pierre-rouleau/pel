@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-04-26 07:11:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-05-15 11:52:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -57,7 +57,7 @@
 ;;
 ;;  The file provides two commands:
 ;;
-;;  - Use `pel-package-info' to get a quick                          overview of the packages requested
+;;  - Use `pel-package-info' to get a quick overview of the packages requested
 ;;    by PEL user-options, their dependencies and the packages that must
 ;;    remain because they are use by Emacs running in another mode
 ;;    (graphic/TTY).  Produce a more detailed report in a *pel-user-options*
@@ -1020,10 +1020,10 @@ Returns the list of removed file names."
 
 Each returned list contains directory relative .el file names, in sorted name
 order.
-The first list identifies the files that are currently active, requested by
-PEL user-options.
-The second list identifies the files that are currently not used by the PEL
-user options."
+- The first list identifies the files that are currently active, requested by
+  PEL user-options.
+- The second list identifies the files that are currently not used by the PEL
+  user options."
   (let ((utils-el-files (directory-files pel-utils-dirpath nil "\\.el\\'"))
         (active-utils-files '())
         (excess-utils-files '()))
@@ -1036,6 +1036,7 @@ user options."
       (unless (member util-el-file active-utils-files)
         (unless (member util-el-file pel-utils-packages-to-keep)
           (push util-el-file excess-utils-files))))
+    ;; return both lists
     (list (reverse active-utils-files)
           (reverse excess-utils-files))))
 
