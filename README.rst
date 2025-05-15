@@ -72,7 +72,23 @@ or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 ➣ Emacs Fast Startup
 --------------------
 
-- Speed Emacs startup further with PEL `fast startup mode`_ command
+- With PEL, Emacs will start faster than with several other systems; PEL
+  Emacs initialization is heavily optimized to auto-load and defer execution
+  as much as possible.  Emacs startup time under a second for a large number
+  of activated package is easily achieved, even on old computers.  Take a look
+  at some screen shots in the startup directory:
+
+  - `On a 2014 iMac running Emacs 26.3 terminal`_ (in normal mode)
+  - `On a 2014 iMac running Emacs 26.3 terminal in fast-startup mode`_
+  - `On Emacs 30.1 in terminal mode under Rocky Linux 8.10 VM running in a 2014 iMac`_,
+    accessed via ssh with a GNU screen session
+  - `On a 2023 macStudio running Emacs 30.1 in terminal`_ (in normal mode,
+    without native compilation)/
+  - `On a 2023 macStudio running Emacs 30.1 in Graphics mode`_ (in normal-mode,
+    without native compilation).
+
+
+- On `Emacs < 30`_, you can speed Emacs startup much more with PEL `fast startup mode`_ command
   (see also `⅀ Fast Startup PDF`_ [#firefox]_).
   PEL supports 2 different Emacs startup operation modes:
 
@@ -517,6 +533,12 @@ Notes
 .. _How to recompile all Emacs Lisp files after updating Emacs to a different version: doc/upgrading-emacs.rst.txt
 .. _run Emacs daemon(s) with text and graphics clients: doc/emacs-daemon.rst.txt
 .. _feedback in the discussion: https://github.com/pierre-rouleau/pel/discussions
+.. _Emacs < 30: https://github.com/pierre-rouleau/pel/issues/33
+.. _On a 2014 iMac running Emacs 26.3 terminal: doc/res/startup/startup-imac-2014-terminal.png
+.. _On a 2014 iMac running Emacs 26.3 terminal in fast-startup mode: doc/res/startup/startup-imac-2014-terminal-fast-startup.png
+.. _On Emacs 30.1 in terminal mode under Rocky Linux 8.10 VM running in a 2014 iMac: startup-imac-rockylinux-terminal.png
+.. _On a 2023 macStudio running Emacs 30.1 in terminal: startup-macstudio-terminal-01.png
+.. _On a 2023 macStudio running Emacs 30.1 in Graphics mode: startup-macstudio-gui-01.png
 
 ..
    -----------------------------------------------------------------------------
