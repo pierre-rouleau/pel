@@ -76,8 +76,14 @@
   "Directory where PEL Emacs Lisp source files are stored.")
 
 ;; --
-(defconst pel-init-file-version "0.2"
+(defconst pel-init-file-version "0.3"
   "Version of PEL init.el. Verified by pel-setup logic. Do NOT change.")
+;; Update notes:
+;;  - version 0.3: OPTION C code modified:
+;;                 - Now explicitly load benchmark-init-modes.  It was not
+;;                   required in older versions of Emacs but is required in
+;;                   Emacs >= 30 at least.
+;;                 - Add the after-init-hook to `benchmark-init/deactivate'.
 
 (defconst pel-emacs-is-graphic-p (display-graphic-p)
   "Predicate: t when Emacs is running in graphics mode, nil otherwise.")
@@ -186,9 +192,11 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;;            comment this code after your investigation and want to start
   ;;            a little faster.
   ;;
-  ;; To use, un-comment the following 3 lines of code:
+  ;; To use, un-comment the following 5 lines of code:
   ;; (require 'benchmark-init
   ;;          (expand-file-name "~/.emacs.d/utils/benchmark-init"))
+  ;; (require 'benchmark-init-modes
+  ;;          (expand-file-name "~/.emacs.d/utils/benchmark-init-modes"))
   ;; (add-hook 'after-init-hook 'benchmark-init/deactivate)
 
   ;; Define function to activate package.el Elpa-compliant Package Management
