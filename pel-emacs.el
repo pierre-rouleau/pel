@@ -128,8 +128,8 @@ the variable `pel-emacs-refcard-dirpath' user option."
 (defun pel-emacs-load-stats (&optional with-details)
   "Display number of loaded files & features.
 
-If WITH-DETAILS, print details in the *emacs-load-stats* buffer.
-With \\[universal-argument] \\[universal-argument] prefix, also print content of load-history."
+If WITH-DETAILS, print details in the *emacs-load-stats* buffer.  With
+\\[universal-argument] \\[universal-argument] prefix, also print content of `load-history'."
   (interactive "P")
   (if (and (require 'package nil :no-error)
            (boundp  'package-selected-packages)
@@ -149,14 +149,22 @@ Emacs %-4s startup time: %s   (in %s mode%s)
                      (emacs-init-time)
                      (pel--startup-mode)
                      (if pel-emacs-27-or-later-p
-                         (format ", with%s package quickstart, with%s native compilation"
-                                 (if (pel--with-package-quickstart-p)
-                                     ""
-                                   "out")
-                                 (if (and pel-emacs-28-or-later-p (featurep
-                                                                   'native-compile))
-                                     ""
-                                   "out"))
+                         (format
+                          ", with%s package quickstart, with%s native compilation, %s."
+                          (if (pel--with-package-quickstart-p)
+                              ""
+                            "out")
+                          (if (and pel-emacs-28-or-later-p (featurep
+                                                            'native-compile))
+                              ""
+                            "out")
+                          (if pel-emacs-is-graphic-p
+                              (format "in graphics mode%s"
+                                      (if (bound-and-true-p
+                                           pel-init-support-dual-environment-p)
+                                          " with dual environment"
+                                        ""))
+                            "in terminal mode"))
                        "")
                      (length load-history)
                      (length load-path)
@@ -236,7 +244,7 @@ Return nil if there is no binding."
       key-description)))
 
 (defun pel--emacs-command-count (&optional predicate)
-  "Return number of available commands that meet the (optional predicate)."
+  "Return number of available commands that meet the (optional PREDICATE)."
   (let ((command-count 0))
   (mapatoms
    (lambda (symbol)
@@ -289,17 +297,17 @@ Number of global keys (and key prefixes)  : %4d"
                (format " With%s D-Bus support." (if  (featurep 'dbusbind) "" "out"))
                "")))
 
-(defun pel-emacs-bug-info (&optional in--browser)
+(defun pel-emacs-bug-info (&optional in-browser)
   "Open the report about an Emacs bug report email stream.
 Open it in Gnus buffer unless IN-BROWSER set to open in system browser."
   (interactive "P")
   (let ((url (format "https://%sdebbugs.gnu.org/cgi/bugreport.cgi?bug=%s"
                      ;; To force using system browser add extra // to make it
                      ;; fail the regexp search while being valid for system browsers
-                     (if in--browser "//" "")
+                     (if in-browser "//" "")
                      (pel-prompt "Bug number"))))
     (require 'debbugs-browse)
-    (if (or in--browser
+    (if (or in-browser
             (not (fboundp 'debbugs-browse-url)))
         (browse-url url)
       (declare-function debbugs-browse-url "debugs-browse")
