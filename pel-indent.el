@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-04-30 11:03:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-05-16 17:20:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -386,6 +386,9 @@ file variables):"))
          (pel-insert-symbol-content-line 'standard-indent)
          (pel-insert-symbol-content-line 'tab-always-indent)
          (pel-insert-symbol-content-line 'tab-stop-list)
+         (pel-insert-symbol-content-line 'tab-first-completion)
+         (pel-insert-symbol-content-line 'indent-line-function)
+
 
          (when indent-width-control-var
            (insert "\n\n**** Indentation Width Control ****\n")
