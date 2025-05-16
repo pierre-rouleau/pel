@@ -6257,6 +6257,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;
 ;;   Used `pel:help' keys:  . ? A a b c d e f i k m p P s S w X
 
+(define-key pel:help (kbd "TAB") 'pel-show-indent)
+(define-key pel:help (kbd "M-c") 'pel-show-active-completion-mode)
 (define-key pel:help "." 'pel-mark-ring-stats)
 (define-key pel:help "m"  #'man)
 (define-key pel:help "w"  #'woman)
