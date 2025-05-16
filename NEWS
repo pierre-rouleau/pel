@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- *pel-emacs-load-stats* now prints whether Emacs runs in normal or fast startup mode.
 - Updated the PEL init.el template to better support benchmark-init on Emacs 30.
   - The version of init.el is now 0.3.  PEL now requires that version to support fast startup,
     even on old systems.  This is a *breaking change* but it's easy to fix: just update your
