@@ -53,10 +53,11 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-(require 'pel--base)                    ; use: `pel-print-in-buffer'
+(require 'pel--base)                    ; use: `pel-print-in-buffer', `pel-emacs-27-or-later-p'
 (require 'pel--options)
 (require 'pel-prompt)                   ; use: `pel-prompt'
-(require 'pel-setup-base)               ; use: `pel--startup-mode'
+(require 'pel-setup-base)               ; use: `pel--startup-mode', `pel--with-package-quickstart-p'
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -135,22 +136,33 @@ With \\[universal-argument] \\[universal-argument] prefix, also print content of
            (boundp  'package-alist)
            (boundp  'package-activated-list))
       (let ((numeric-arg   (prefix-numeric-value with-details))
-            (overview-msg  (format "\
-- Emacs startup time: %s   (in %s mode)
+            (overview-msg
+             (format "\
+- Emacs startup time: %s   (in %s mode%s)
 # loaded files      : %d
 # load-path length  : %d
 # features          : %d
 # package-alist     : %d
 # packages activated: %d
 # packages selected : %d"
-                                   (emacs-init-time)
-                                   (pel--startup-mode)
-                                   (length load-history)
-                                   (length load-path)
-                                   (length features)
-                                   (length package-alist)
-                                   (length package-activated-list)
-                                   (length package-selected-packages))))
+                     (emacs-init-time)
+                     (pel--startup-mode)
+                     (if pel-emacs-27-or-later-p
+                         (format ", with%s Emacs 27+ package quickstart, with%s native compilation"
+                                 (if (pel--with-package-quickstart-p)
+                                     ""
+                                   "out")
+                                 (if (and pel-emacs-28-or-later-p (featurep
+                                                                   'native-compile))
+                                     ""
+                                   "out"))
+                       "")
+                     (length load-history)
+                     (length load-path)
+                     (length features)
+                     (length package-alist)
+                     (length package-activated-list)
+                     (length package-selected-packages))))
         (if with-details
             (pel-print-in-buffer
              "*emacs-load-stats*"
