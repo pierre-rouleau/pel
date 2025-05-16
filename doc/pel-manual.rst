@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2025-05-05 15:02:43 EDT, updated by Pierre Rouleau.
+:Modified: 2025-05-15 14:47:49 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2097,7 +2097,7 @@ the elpa package directory and that takes time.  PEL uses several techniques
 to reduce Emacs startup time.  As the number of package used grows you these
 techniques may not be sufficient.
 
-To speed the startup further, PEL provides a fast-startup mode of operation.
+To speed the startup further, PEL provides a **fast-startup mode** of operation.
 In that mode PEL bundles the Emacs Lisp code files of all single directory
 packages inside a single package directory (the pel-bundle *pseudo package*)
 and forces Emacs to use it as if it was a single package.  Doing this reduces
@@ -2107,7 +2107,8 @@ and reduces the startup time substantially.
 PEL provides the following 3 commands to deal with this:
 
 - **pel-setup-info**, bound to ``<f11> M-S ?`` and to ``<f11> ? e M-S`` key sequences.  It displays the current
-  operation mode.
+  operation mode and also check if the emacs directory layout is appropriate
+  for PEL fast startup mode.
 - **pel-setup-fast**, bound to ``<f11> M-S f``.  This commands reorganizes
   the content of your ``user-emacs-directory`` to bundle the elpa external
   packages to provide a faster Emacs init startup time.  In this mode you
