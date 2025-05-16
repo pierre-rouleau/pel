@@ -138,13 +138,14 @@ With \\[universal-argument] \\[universal-argument] prefix, also print content of
       (let ((numeric-arg   (prefix-numeric-value with-details))
             (overview-msg
              (format "\
-- Emacs startup time: %s   (in %s mode%s)
-# loaded files      : %d
-# load-path length  : %d
-# features          : %d
-# package-alist     : %d
-# packages activated: %d
-# packages selected : %d"
+Emacs %-4s startup time: %s   (in %s mode%s)
+# loaded files         : %d
+# load-path length     : %d
+# features             : %d
+# package-alist        : %d
+# packages activated   : %d
+# packages selected    : %d"
+                     emacs-version
                      (emacs-init-time)
                      (pel--startup-mode)
                      (if pel-emacs-27-or-later-p
