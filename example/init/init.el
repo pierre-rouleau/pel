@@ -386,7 +386,8 @@ Also expands to the file true name, replacing symlinks by what they point to."
                                       pel-emacs-is-graphic-p))
         (message "WARNING: Failed loading pel-fast-startup-init\
  from user-emacs-directory")))
-    (add-hook 'emacs-startup-hook (function pel--init-package-support)))
+    (with-no-warnings
+      (add-hook 'emacs-startup-hook (function pel--init-package-support))))
 
 
   ;; -------------------------------------------------------------------------
@@ -523,8 +524,9 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;; which will process all local packages and will grow the `load-path'
   ;; accordingly.
   ;;
-  (unless pel-running-in-fast-startup-p
-    (pel--init-package-support))
+  (with-no-warnings
+    (unless pel-running-in-fast-startup-p
+      (pel--init-package-support)))
 
   ;; -------------------------------------------------------------------------
   ;; Section 7: Prepare load-path for PEL
@@ -569,7 +571,8 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;;   in the (custom-set-variables) form, this code *must* be done after the
   ;;   identification of the `custom-file' and after the loading of that file.
   (require 'pel)
-  (pel-init pel--abbrev-file-name)
+  (with-no-warnings
+    (pel-init pel--abbrev-file-name))
 
   ;; -------------------------------------------------------------------------
   ;; Section 10: Activate some of the *confusing* commands
