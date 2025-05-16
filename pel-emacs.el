@@ -149,7 +149,7 @@ Emacs %-4s startup time: %s   (in %s mode%s)
                      (emacs-init-time)
                      (pel--startup-mode)
                      (if pel-emacs-27-or-later-p
-                         (format ", with%s Emacs 27+ package quickstart, with%s native compilation"
+                         (format ", with%s package quickstart, with%s native compilation"
                                  (if (pel--with-package-quickstart-p)
                                      ""
                                    "out")

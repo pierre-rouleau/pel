@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-02 13:41:07 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-05-16 10:18:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,7 +32,7 @@
 ;;
 ;; - The ability to setup Emacs to support two independents environments: one
 ;;   for Emacs running in terminal (TTY) mode and another for Emacs running in
-;;   graphics mode. Each of them have their own customization file, their
+;;   graphics mode.  Each of them have their own customization file, their
 ;;   own set of Elpa directories to store the external Elpa-compliant
 ;;   packages.  This  allows taking advantage of the strengths of the
 ;;   terminal-based and graphics-based Emacs by customizing each environment
@@ -86,7 +86,7 @@
 ;; 20210121.923 of the ace-link package.
 ;;
 ;; The package directories hold the package Emacs Lisp (.el) files, as well as
-;; the package specification structure stored inside a Emacs lisp file named
+;; the package specification structure stored inside a Emacs Lisp file named
 ;; after the package with the suffix "-pkg".  For example the package
 ;; specification file for the ace-link package described above would be the
 ;; following file: "~/.emacs.d/elpa/ace-link-20210121.923/ace-link-pkg.el".
@@ -116,7 +116,7 @@
 ;; namespace for functions.  Code in *all* packages, whether they're built-in
 ;; Emacs or external must all share these namespaces (and some other).  Most
 ;; package file names, if not all, reflect their package name and differ from
-;; each other. The functions and variable names in them must all be unique
+;; each other.  The functions and variable names in them must all be unique
 ;; otherwise they risk clashing with each other.
 ;;
 ;; Because the file names of all package have a unique name it becomes
@@ -132,7 +132,7 @@
 ;; all stored inside one directory.
 ;;
 ;; At startup Emacs package.el logic prepares Emacs files loading and checks
-;; for the presence of the dependencies of packages. The package.el logic
+;; for the presence of the dependencies of packages.  The package.el logic
 ;; populates the `package-alist' variable with package symbol name and its
 ;; corresponding package spec.  This information is later used to determine
 ;; the presence of a package, its dependencies, and the directory where its
@@ -154,7 +154,7 @@
 ;; package.el code from attempting to download the packages again.  The
 ;; required code is described inside the following files:
 ;;
-;; - example/init/init-5.el and
+;; - example/init/init.el and
 ;; - example/init/early-init.el
 ;;
 ;; The PEL installation instructions require you to install init.el and
@@ -162,7 +162,7 @@
 ;;
 ;; To provide ability to quickly switch from a normal setup to a fast-startup
 ;; setup and back, PEL uses a symlink to point to one of two Elpa directories
-;; inside the `user-emacs-directory'. Assuming that `user-emacs-directory' is
+;; inside the `user-emacs-directory'.  Assuming that `user-emacs-directory' is
 ;; "~/.emacs.d", these directories are:
 ;;
 ;; - "~/.emacs.d/elpa-complete" : The original "~/.emacs.d/elpa" directory
@@ -172,7 +172,8 @@
 ;;                               multi-directory packages; the ones that are
 ;;                               not "one-level packages".  It also contains
 ;;                               the "pel-bundle-yyyymmdd-hhmm" directory; the
-;;                               PEL bundle.
+;;                               PEL bundle of all single-directory (the
+;;                               one-level) packages.
 ;;
 ;; The PEL bundle is created each time the command `pel-setup-fast' is
 ;; executed to prepare Emacs for a fast startup.  Again, assuming that
@@ -182,7 +183,7 @@
 ;;                               Elpa-compliant pel-bundle package.  The
 ;;                               directory holds symlinks to the .el and .elc
 ;;                               files of all one-level packages that it
-;;                               replaces. It is created by `pel-setup-fast'
+;;                               replaces.  It is created by `pel-setup-fast'
 ;;                               with the name tail set to its creation date.
 ;;                               It also holds the 2 important package
 ;;                               required files that are also created by the
@@ -215,7 +216,7 @@
 ;; and, if you use it, your early-init.el.  See the code sample examples
 ;; inside the following files:
 ;;
-;; - example/init/init-5.el and
+;; - example/init/init.el and
 ;; - example/init/early-init.el
 ;;
 ;; The code in pel-setup, specifically the function
@@ -250,7 +251,7 @@
 ;;                             ;      `pel--setup-mode-description'
 ;;                             ;      `pel--fast-setup-met-criteria'
 ;;                             ;      `pel--startup-mode'
-;;                             ;      `pel--with-quickstart-state-msg'
+;;                             ;      `pel--prompt-with-quickstart-state'
 
 ;; Then following functions are defined in pel-setup-27, which is
 ;; only used in Emacs >= 27.
@@ -281,15 +282,15 @@
 ;; pel-copy-directory : copies a directory, skipping Unix socket files
 ;; -------------------------------------------------------------------
 
-(defun pel-copy-only-file (original-copy-file file &rest args)
-  "Copy files but not Unix sockets."
+(defun pel-copy-only-file (copy-file-fun file &rest args)
+  "Copy FILE with COPY-FILE-FUN with ARGS unless it is a Unix socket."
   (unless (pel-unix-socket-p file)
-    (apply original-copy-file
+    (apply copy-file-fun
            file
            args)))
 
 (defun pel-copy-directory (source dest)
-  "Copy SOURCE directory into DEST directory. Skip socket files.
+  "Copy SOURCE directory into DEST directory.  Skip socket files.
 
 Both SOURCE and DIRECTORY may be in the directory name (with a terminating
 slash) or in file name (without the terminating slash) format."
@@ -308,9 +309,9 @@ slash) or in file name (without the terminating slash) format."
 ;; -------------------------------------------------------
 ;;
 ;; This code can update Emacs init.el file that has the content specified
-;; by the example/init/init-5.el file.  You can write more logic inside your
+;; by the example/init/init.el file.  You can write more logic inside your
 ;; own init.el file of course, but to use PEL setup features, you *MUST* have
-;; the code present inside example/init/init-5.el.
+;; the code present inside example/init/init.el.
 ;;
 ;; On Emacs 27 and later the same is true for the early-init.el file: you must
 ;; use a file that contains what is inside the file example/init/early-init.el
@@ -486,7 +487,7 @@ Return a list of performed actions (in reverse order of execution)."
 (defun pel--setup-dual-environment (&optional reason-msg)
   "Setup Emacs environment to support 2 independent customization.
 
-Utility function. If REASON-MSG is specified include that message on error."
+Utility function.  If REASON-MSG is specified include that message on error."
   (require 'cus-edit)                   ; use: `custom-file'`
   (let* ((custom-fn       (pel-elpa-name custom-file nil))
          (custom-fn-g     (pel-elpa-name custom-file :for-graphics))
@@ -670,21 +671,27 @@ There are inconsistencies in the PEL dual environment setup.
 ;;  - - - - - - - - - -
 
 (defun pel--switch-to-elpa (name for-graphics)
-    "Switch elpa symlink to the elpa-NAME sub-directory.
-The FOR_GRAPHICS is non-nil when dual environment is set and Emacs runs in
+  "Change elpa symlink to the elpa-NAME sub-directory.
+
+- NAME: string: the suffix to use for the new elpa-X target directory.
+- FOR-GRAPHICS: non-nil when dual environment is set and Emacs runs in
 graphic mode."
-    (let ((adj (lambda (fn) (pel-elpa-name fn for-graphics))))
-      (pel-point-symlink-to (λc adj pel-elpa-dirpath)
-       (λc adj (pel-sibling-dirpath pel-elpa-dirpath name)))))
+  (let ((adj (lambda (fn) (pel-elpa-name fn for-graphics))))
+    (pel-point-symlink-to (λc adj pel-elpa-dirpath)
+                          (λc adj (pel-sibling-dirpath pel-elpa-dirpath name)))))
 
 (defun pel-switch-to-elpa-complete (for-graphics)
-  "Switch elpa symlink to the elpa-complete sub-directory.
-The FOR_GRAPHICS is non-nil when dual environment is set and Emacs runs in
+  "Change elpa symlink to the elpa-complete sub-directory.
+
+- FOR-GRAPHICS: non-nil when dual environment is set and Emacs runs in
 graphic mode."
   (pel--switch-to-elpa "elpa-complete" for-graphics))
 
 (defun pel-switch-to-elpa-reduced (for-graphics)
-  "Switch elpa symlink to the elpa-reduced sub-directory."
+  "Change the elpa symlink to the elpa-reduced sub-directory.
+
+- FOR-GRAPHICS: non-nil when dual environment is set and Emacs runs in
+graphic mode."
   (pel--switch-to-elpa "elpa-reduced" for-graphics))
 
 (defun pel-generate-autoload-file-for (dir)
@@ -723,7 +730,7 @@ Return the complete name of the generated autoload file."
 (defun pel-create-bundle-pkg-file (dirname &optional time-stamp)
   "Create the pel-bundle-pkg.el file inside DIRNAME directory.
 Use the specified TIME-STAMP string as the version otherwise the
-following format-time-string format string is used:
+following `format-time-string' format string is used:
 \"%Y%m%d.%H%M\".
 Return the complete file path name of the file written."
   (let ((file-path-name (expand-file-name "pel-bundle-pkg.el" dirname)))
@@ -769,25 +776,38 @@ Return a (activate . byte-compile result) cons cell."
                                    ".el"))))
 
 (defun pel-setup-fast-startup-init (fname deps-pkg-versions-alist extra-code)
-  "Write code in FNAME that adds the DEPS-PKG-VERSIONS-ALIST to Emacs.
+  "Write Emacs Lisp code to add the DEPS-PKG-VERSIONS-ALIST to Emacs in FNAME.
 
-The function writes the function pel-fast-startup-init.
-That function code adds each entry of DEPS-PKG-VERSIONS-ALIST to Emacs
-`package--builtin-versions'.  The DEPS-PKG-VERSIONS-ALIST list corresponds to
-the package dependencies gathered from the X-pkg.el for each package X whose
-code was placed in the elpa-reduced/pel-bundle *pseudo-package* that was not
-already part of the `package--builtin-versions' list.  By adding those
-package/version inside the `package--builtin-versions' list we ensure that
-Emacs package.el logic will not attempt to download these packages.  We don't
-need Emacs to download them because they have already been downloaded when
-Emacs was in normal startup mode.  The DEPS-PKG-VERSIONS-ALIST list was
-originally returned by `pel-elpa-disable-pkg-deps-in'."
+- FNAME: string.  Name of the file where the code of the function
+  `pel-fast-startup-init' is written.
+
+The function `pel-fast-startup-init' adds each entry of
+DEPS-PKG-VERSIONS-ALIST to Emacs `package--builtin-versions' and adds
+some EXTRA-CODE.
+
+- DEPS-PKG-VERSIONS-ALIST: list of package dependencies gathered from the
+  various X-pkg.el files for each package X whose code was placed in the
+  elpa-reduced/pel-bundle *pseudo-package* that was not already part of
+  the `package--builtin-versions' list.
+
+By adding those package/version inside the `package--builtin-versions'
+list we ensure that Emacs package.el logic will not attempt to download
+these packages.  We don't need Emacs to download them because they have
+already been downloaded when Emacs was in normal startup mode.  The
+DEPS-PKG-VERSIONS-ALIST list was originally returned by the function
+`pel-elpa-disable-pkg-deps-in'."
   (with-temp-file fname
     (erase-buffer)
     (goto-char (point-min))
     (insert (format "\
 ;;; Setup Emacs for PEL fast startup.  -*- lexical-binding: t; -*-
 ;;; DO NOT EDIT! It will be overwritten next time pel-setup-fast is executed!
+;;;
+;;; This is part of PEL fast startup system.
+;;; - To restore normal Emacs behaviour manually:
+;;;   - delete this file from your ~/.emacs.d  directory.
+;;;   - restore the elpa symlink to elpa-complete
+
 
 \(require 'package)
 
@@ -915,7 +935,7 @@ Return a list of performed action descriptions in reverse order."
             (user-error "Invalid elpa directory in %s:
  The elpa directory name (%s) clash with PEL startup management strategy.
  PEL uses a symlink to points to either %s or %s.
- Please rename your elpa directory & update the package-user-dir user-option."
+ Please rename your elpa directory & update the package-user-dir user-option!"
                         user-emacs-directory
                         elpa-dp
                         (pel-elpa-name "elpa-complete" for-graphics)
@@ -934,7 +954,7 @@ Return a list of performed action descriptions in reverse order."
     (user-error "Invalid init.el file detected:
   The `pel-package-user-dir-original' symbol is unknown.
   PEL cannot safely manage Emacs startup mode.
-  Please update your init.el file; use pel/example/init/init-5.el template.")))
+  Please update your init.el file; use pel/example/init/init.el template!")))
 
 (defun pel--elpa-symlink-problems (elpa-dirpath for-graphics)
   "Check validity of ELPA_DIRPATH used FOR-GRAPHICS.
@@ -948,7 +968,8 @@ Return a list of performed action descriptions in reverse order."
   pointing to a elpa-complete directory that exists.
 
 The function verifies all that and return a list of problems detected if any
-problem were detected. It returns nil if all is OK."
+problem were detected.  Return nil if all is OK."
+  ;; (message "🚧 pel--elpa-symlink-problems:  elpa-dirpath=%s for-graphics=%s" elpa-dirpath for-graphics)
   (require 'cus-edit)                   ; use: `custom-file'`
   (let* ((problems nil)
          (original-elpa-dirpath (pel-locate-elpa))
@@ -1029,7 +1050,7 @@ The elpa symlink target format does not use a directory name format:
     (reverse problems)))
 
 (defun pel--validate-elpa-symlink (elpa-dirpath for-graphics )
-  "Check validity of ELPA_DIRPATH used FOR-GRAPHICS.
+  "Check validity of ELPA-DIRPATH used FOR-GRAPHICS.
 
 The function raises en error describing detected errors if any.
 If all is OK, it just returns nil."
@@ -1041,6 +1062,22 @@ If all is OK, it just returns nil."
         "\
 The Emacs directory (%s) is not compatible with PEL startup management."
         user-emacs-directory)))))
+
+(defun pel--create-pel-setup-fast-startup-init (deps-pkg-versions-alist new-bundle-dp)
+  ""
+  (pel-setup-fast-startup-init
+   pel-fast-startup-init-fname
+   deps-pkg-versions-alist
+   (pel-string-when pel-emacs-27-or-later-p
+                    (format ";; step 2: (only for Emacs >= 27)
+  (when using-package-quickstart
+      (add-to-list 'load-path
+                   (format \"%s\"
+                           (if force-graphics \"-graphics\" \"\"))))"
+                            (replace-regexp-in-string
+                             "elpa-reduced"
+                             "elpa-reduced%s"
+                             new-bundle-dp)))))
 
 (defun pel--setup-fast (for-graphics)
   "Prepare the elpa directories and code to speedup Emacs startup.
@@ -1140,6 +1177,7 @@ is only one or when its for the terminal (TTY) mode."
           ;; placed into the pel-bundle *pseudo package*.  So create code that
           ;; will run at init (or early-init) time in a Emacs lisp file that
           ;; will be detected and loaded by both early-init.el and init.el.
+          ;;
           ;; Call `pel-setup-fast-startup-init' to create the
           ;; pel-fast-startup-init.el file that will be used as an indication
           ;; to init and early-init that PEL fast-startup is requested.  These
@@ -1147,8 +1185,9 @@ is only one or when its for the terminal (TTY) mode."
           ;; pass whether its invoked for graphics mode and whether it's
           ;; called from early-init.
           ;;
-          ;; It's called by early-init for Emacs ≥ 27, and called by init for
-          ;; earlier versions of Emacs, in both cases to add the (package
+          ;; The `pel-fast-startup-init' function is s called by early-init
+          ;; for Emacs ≥ 27, and called by init.el for earlier versions of
+          ;; Emacs.  in both cases to add the (package
           ;; version) dependencies to simulate builtins by adding them to the
           ;; variable `package--builtin-versions' during init.el before the
           ;; call to `package-activate-all' or `package-initialize'.
@@ -1157,19 +1196,9 @@ is only one or when its for the terminal (TTY) mode."
           ;; be created, even when dual independent customization is used.
           ;; So do it when for-graphics is nil.
           (unless for-graphics
-            (pel-setup-fast-startup-init
-             pel-fast-startup-init-fname
+            (pel--create-pel-setup-fast-startup-init
              (pel-elpa-disable-pkg-deps-in elpa-reduced-dp)
-             (pel-string-when pel-emacs-27-or-later-p
-                              (format ";; step 2: (only for Emacs >= 27)
-  (when using-package-quickstart
-      (add-to-list 'load-path
-                   (format \"%s\"
-                           (if force-graphics \"-graphics\" \"\"))))"
-                                      (replace-regexp-in-string
-                                       "elpa-reduced"
-                                       "elpa-reduced%s"
-                                       new-bundle-dp)))))
+             new-bundle-dp))
           (setq step-count (1+ step-count)) ; STEP 14
           ;;
           ;; Move the pel-bundle directory inside the elpa-reduced
@@ -1230,35 +1259,38 @@ Failed fast startup setup for %s after %d of %d steps: %s
 (defun pel-setup-fast ()
   "Prepare the elpa directories and code to speedup Emacs startup."
   (interactive)
-  (if pel-emacs-30-or-later-p
-      (user-error "PEL Fast startup currently does not support Emacs 30 and later.")
-    (pel-setup-validate-init-files)
-    (cond
-     ((eq (pel--startup-mode) 'fast)
-      (user-error "PEL/Emacs is already setup for fast startup!"))
-     ((and (bound-and-true-p package-quickstart)
-           pel-emacs-is-graphic-p)
-      (user-error "PEL currently is not able to switch to fast startup mode when
+  ;; Validate Emacs initialization file -- issue error on any problem
+  (pel-setup-validate-init-files)
+  ;; When Emacs init is OK, check further
+  (cond
+   ;;
+   ((eq (pel--startup-mode) 'fast)
+    (user-error "PEL/Emacs is already setup for fast startup!"))
+   ;;
+   ((and (bound-and-true-p package-quickstart)
+         pel-emacs-is-graphic-p)
+    (user-error "PEL currently is not able to switch to fast startup mode when
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off
   to execute this command.  Once the switch is completed, PEL can
   run in fast startup mode with package startup active in graphic mode.
-  Sorry for the inconvenience."))
-     (t
-      (when (y-or-n-p (pel--with-quickstart-state-msg
-                       "Change to fast startup mode"
-                       :show-requested-quickstart))
-        ;; First setup the environment used by terminal (TTY) and graphics mode
-        ;; when they both use the same
-        (pel--setup-fast nil)
-        ;; When graphics mode Emacs has its own customization, then also setup
-        ;; the second environment; the one specific to Emacs running in graphics
-        ;; mode.
-        (when pel--detected-dual-environment-in-init-p
-          (pel--setup-fast t))
-        ;; inform user, possibly after a deprecated warning
-        (run-with-idle-timer 1 nil (function pel--setup-fast-message))
-        (setq pel--fast-startup-setup-changed t))))))
+  Sorry for the inconvenience"))
+   ;;
+   (t
+    (when (y-or-n-p (pel--prompt-with-quickstart-state
+                     "Change to fast startup mode"
+                     :show-requested-quickstart))
+      ;; First setup the environment used by terminal (TTY) and graphics mode
+      ;; when they both use the same
+      (pel--setup-fast nil)
+      ;; When graphics mode Emacs has its own customization, then also setup
+      ;; the second environment; the one specific to Emacs running in graphics
+      ;; mode.
+      (when pel--detected-dual-environment-in-init-p
+        (pel--setup-fast t))
+      ;; inform user, possibly after a deprecated warning
+      (run-with-idle-timer 1 nil (function pel--setup-fast-message))
+      (setq pel--fast-startup-setup-changed t)))))
 
 ;; --
 (defun pel--setup-normal (for-graphics)
@@ -1299,9 +1331,9 @@ is only one or when its for the terminal (TTY) mode."
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off
   to execute this command.
-  Sorry for the inconvenience."))
+  Sorry for the inconvenience"))
    (t
-    (when (y-or-n-p (pel--with-quickstart-state-msg
+    (when (y-or-n-p (pel--prompt-with-quickstart-state
                      "Restore normal startup mode"
                      :show-requested-quickstart))
       ;; First setup the environment used by terminal (TTY) and graphics mode

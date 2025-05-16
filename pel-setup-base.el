@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-05-15 12:10:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-05-16 09:46:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -63,10 +63,10 @@ In the current code this is only done by `pel--setup-dual-environment'")
 ;; ------------------------------------
 
 (defconst pel--expected-init-file-version "0.3"
-  "Must match what is in the example/init/init.el")
+  "Must match what is in the example/init/init.el.")
 
 (defconst pel--expected-early-init-file-version "0.2"
-  "Must match what is in the example/init/early-init.el")
+  "Must match what is in the example/init/early-init.el.")
 
 ;; --
 
@@ -171,13 +171,16 @@ Raise error describing the problem if there is one."
           (and pel--detected-dual-environment-in-init-p
                pel-emacs-is-graphic-p))))))
 
-(defun pel--with-quickstart-state-msg (prompt &optional show-requested-status
-                                              just-changed)
-  "Augment PROMPT to ask about package-quickstart if necessary.
+(defun pel--prompt-with-quickstart-state (prompt
+                                          &optional show-requested-status
+                                          just-changed)
+  "Prompt with augmented PROMPT to ask about package-quickstart if necessary.
 
-PROMPT can be an empty string to create a status string instead.
-If SHOW-REQUESTED-STATUS is specified the message should also display
-the new requested status instead of the current state."
+- PROMPT: string, the default prompt to which some information might be added.
+- SHOW-REQUESTED-STATUS: boolean : if non-nil, the message should also display
+  the new requested status instead of the current state.
+- JUST-CHANGED: boolean: non-nil identifies a recent change of package
+  quickstart."
   (let ((current-quickstart-status (if show-requested-status
                                        pel-support-package-quickstart
                                      (pel--with-package-quickstart-p))))
@@ -204,7 +207,7 @@ When fast startup is not activated, this file must be deleted.")
 
 (defvar pel--fast-startup-setup-changed nil
   "Identifies that PEL setup has changed.
-Only set by `pel-setup-fast' or `pel-setup-normal'. Never cleared.")
+Only set by `pel-setup-fast' or `pel-setup-normal'.  Never cleared.")
 
 ;; PEL Fast-Startup status extraction
 ;; ----------------------------------
@@ -283,7 +286,7 @@ Returns: \\='normal, \\='fast or \\='inconsistent."
   "Display current state of PEL setup: whether normal or in fast startup.
 Optional arguments:
 - WITH-NOW: set to t to put the word \\='now\\=' in the text.
-- PQ-JUST_MODIFIED: set to t if package quickstart activation has been
+- PQ-JUST-MODIFIED: set to t if package quickstart activation has been
                     modified in the Emacs session."
   (interactive)
   (pel-setup-validate-init-files)
@@ -300,7 +303,7 @@ Optional arguments:
  However, in this setup mode, PEL is not able to install any external package.
  To install new package return to normal mode by executing pel-setup-normal."
                       now-msg
-                      (pel--with-quickstart-state-msg "" nil pq-just-modified)
+                      (pel--prompt-with-quickstart-state "" nil pq-just-modified)
                       user-emacs-directory))
             ((eq mode 'normal)
              (message "PEL/Emacs %soperates in normal mode%s.
@@ -311,7 +314,7 @@ Optional arguments:
  because of the larger number of directories inside %selpa
  If you want to speed up Emacs startup execute pel-setup-fast."
                       now-msg
-                      (pel--with-quickstart-state-msg "" nil pq-just-modified)
+                      (pel--prompt-with-quickstart-state "" nil pq-just-modified)
                       user-emacs-directory))
             (t
              (let* ((tc.met-criteria.problems (pel--fast-setup-met-criteria))
@@ -324,7 +327,8 @@ Optional arguments:
  - %s
  Check the elpa directory inside %s.
  Restore normal setup: try: M-x pel-setup-normal
- In the worst case restore normal setup manually."
+ In the worst case restore normal setup manually or
+ use pel/bin/setup/recover-from-inconsistent-mode.sh"
                            (string-join met-criteria "\n - ")
                            (string-join problems "\n - ")
                            user-emacs-directory)))))))
@@ -333,7 +337,7 @@ Optional arguments:
 
 
 (defun pel-remove-no-byte-compile-in (filename)
-  "Remove the no-byte-compile file variable from FILENAME.
+  "Remove the `no-byte-compile' file variable from FILENAME.
 Return t when done, nil otherwise."
   (with-temp-file filename
     (auto-fill-mode -1)
@@ -364,9 +368,10 @@ Otherwise delete the .elc file if it exists."
                                           &optional byte-compile-it)
   "Update FNAME file: set symbol to value from the SYMBOL-VALUES alist.
 
-The FNAME is assumed to be located inside the user Emacs directory.
-FNAME can be init.el or early-init.el and must define the symbols
-inside defconst forms.
+- FNAME: string.  Name of a file assumed to be located inside the user
+  Emacs directory.  FNAME can be \"init.el\" or \"early-init.el\" and
+  must define the symbols inside defconst forms.
+- BYTE-COMPILE-IT: boolean.  If non-nil, byte compile resulting FNAME.
 
 Raise an error if the function does not find the `defconst' form
 defining a specified symbol."
