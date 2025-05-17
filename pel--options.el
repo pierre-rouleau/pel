@@ -9617,7 +9617,7 @@ When turned on the nim-mode is associated with the PEL ``<f12>`` key."
                    "https://github.com/nim-lang/nim-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-nim-mode :requires 'pel-use-nim)
+(pel-put 'pel-use-nim-mode :also-required-when 'pel-use-nim)
 
 (defcustom pel-nim-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Nim buffers.
@@ -12759,6 +12759,10 @@ indexing system."
 ;; bindings.
 (when (or pel-use-simple-undo pel-use-vundo)
   (setq pel-use-undo-tree nil))
+
+(when pel-use-nim
+  ;; There's only one mode for Nim, auto-activate it.
+  (setq pel-use-nim-mode t))
 
 (when pel-use-ocaml
   (setq pel-use-caml-mode t)

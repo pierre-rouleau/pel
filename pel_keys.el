@@ -4696,6 +4696,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-nim
   (define-pel-global-prefix pel:for-nim (kbd "<f11> SPC n"))
   (define-pel-global-prefix pel:nim-skel (kbd "<f11> SPC n <f12>"))
+
+  ;; Note: PEL automatically activates pel-use-nim-mode when pel-use-nim is set.
+
   (when pel-use-nim-mode
     (pel-ensure-package nim-mode from: melpa))
   (when pel-use-speedbar

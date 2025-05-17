@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Simplified activation of Nim support: when *pel-use-nim* user-option is activated (turned on, set to *t*), the
+  *pel-use-nim-mode* user-option is automatically turned on too to activate the use of the package that provides
+  the major mode.
 - Simplified activation of OCaml support: when *pel-use-ocaml* user-option is activated (turned on, set to *t*), the
   following 3 user-options are automatically also turned on (set to *t*): *pel-use-caml-mode*, *pel-use-merlin* and
   *pel-use-tuareg*.
