@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Simplified activation of OCaml support: when *pel-use-ocaml* user-option is activated (turned on, set to *t*), the
+  following 3 user-options are automatically also turned on (set to *t*): *pel-use-caml-mode*, *pel-use-merlin* and
+  *pel-use-tuareg*.
 - *pel-emacs-load-stats* now prints whether Emacs runs in normal or fast startup mode.
 - Updated the PEL init.el template to better support benchmark-init on Emacs 30.
   - The version of init.el is now 0.3.  PEL now requires that version to support fast startup,

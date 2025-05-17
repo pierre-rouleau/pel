@@ -316,7 +316,11 @@
 ;;  - the `:a-gate' property value means that this user-option acts as a
 ;;    gate and does not install anything.  Other user-options use it as a
 ;;    parent to gate their installation.  This property is often used for
-;;    programming languages.
+;;    programming languages, when another pel-use symbol controls the
+;;    installation of a Emacs major mode package.  That is useful in cases
+;;    where several implementation of major modes for a specific programming
+;;    language exist and we need two pel-use flags to control the
+;;    installation.
 ;;  - the `:builtin-emacs' property value indicates that the package is
 ;;    distributed with Emacs and cannot be de-installed,
 ;;  - the `:in-utils' property value indicates that the package is installed
@@ -9788,7 +9792,12 @@ Does not indent."
 (defcustom pel-use-ocaml nil
   "Control whether PEL supports the Ocaml programming language.
 
-When turned on the ocaml-mode is associated with the PEL ``<f12>`` key."
+When turned on the ocaml-mode is associated with the PEL ``<f12>`` key.
+Activating this activated the following user-options:
+
+- `pel-use-caml-mode'
+- `pel-use-merlin'
+- `pel-use-tuareg'"
   :group 'pel-pkg-for-ocaml
   :type 'boolean
   :safe #'booleanp)
@@ -9801,7 +9810,7 @@ When turned on the ocaml-mode is associated with the PEL ``<f12>`` key."
                    "https://github.com/ocaml/caml-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-caml-mode :requires 'pel-use-ocaml)
+(pel-put 'pel-use-caml-mode :also-required-when 'pel-use-ocaml)
 
 (defcustom pel-use-tuareg nil
   "Control whether PEL activates the tuareg external package.
@@ -9811,7 +9820,7 @@ This provides a major mode for OCaml files"
                    "https://github.com/ocaml/tuareg")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-tuareg :requires 'pel-use-ocaml)
+(pel-put 'pel-use-tuareg :also-required-when 'pel-use-ocaml)
 
 (defcustom pel-use-merlin nil
   "Control whether PEL activates the merlin external package.
@@ -9821,7 +9830,7 @@ This provides an assistant for OCaml."
                    "https://github.com/ocaml/merlin")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-merlin :requires 'pel-use-ocaml)
+(pel-put 'pel-use-merlin :also-required-when 'pel-use-ocaml)
 
 (defcustom pel-tuareg-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Ocaml buffers.
@@ -12750,6 +12759,11 @@ indexing system."
 ;; bindings.
 (when (or pel-use-simple-undo pel-use-vundo)
   (setq pel-use-undo-tree nil))
+
+(when pel-use-ocaml
+  (setq pel-use-caml-mode t)
+  (setq pel-use-tuareg t)
+  (setq pel-use-merlin t))
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)
 
