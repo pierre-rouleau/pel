@@ -2763,6 +2763,21 @@ MODE must be a symbol."
   (declare-function pel--set-cc-style "pel_keys"))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Ada programming language
+;; ------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC A`` : Ada
+(when pel-use-ada
+  (define-pel-global-prefix pel:for-ada   (kbd "<f11> SPC A"))
+  (pel-ensure-package ada-mode from: gnu)
+  (when pel-use-tree-sitter
+    (pel-ensure-package ada-ts-mode from: melpa))
+
+  ;; [:todo 2025-05-17, by Pierre Rouleau: investigate failure of getting the
+  ;;                    <f12> key bindings under macOS and some of the build
+  ;;                    infrastructure tools.]
+  (pel-config-major-mode-with-ts ada pel:for-ada))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Awk programming language
 ;; ------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC W`` : Awk
@@ -4726,6 +4741,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (when pel-use-tuareg
     (pel-ensure-package tuareg from: melpa))
   ;; the ocaml-mode is part of Emacs
+
   (pel-eval-after-load tuareg
     (pel-config-major-mode tuareg pel:for-ocaml)))
 

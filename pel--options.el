@@ -105,6 +105,7 @@
 ;;         - pel-pkg-for-language-server
 ;;         - pel-pkg-generic-code-style
 ;;           - pel-sh-script-skeleton-control
+;;       - pel-pkg-for-ada
 ;;       - pel-pkg-for-applescript
 ;;       - pel-pkg-for-cc
 ;;         - pel-pkg-for-awk
@@ -4992,6 +4993,73 @@ See also: `pel-shell-script-extensions'."
           (regexp :tag "File name regexp" :var "\\`_")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Ada Programmaing Language Support
+;; ---------------------------------
+
+(defgroup pel-pkg-for-ada nil
+  "PEL customization for Ada."
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Ada PDF"
+                   ,(pel-pdf-file-url "pl-ada")))
+
+(defcustom pel-use-ada nil
+  "Whether PEL activates ada-mode.
+When turned on,
+- PEL automatically activate `pel-use-ada-mode'
+- the `ada-mode' is associated with the PEL ``<f12>`` key."
+  :group 'pel-pkg-for-ada
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-ada :package-is :a-gate)
+
+(defcustom pel-use-ada-mode nil
+  "Whether PEL uses the ada-mode external package."
+  :link '(url-link :tag "Ada mode homepage"
+                   "https://www.nongnu.org/ada-mode/")
+  :group 'pel-pkg-for-ada
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-ada-mode :also-required-when 'pel-use-ada)
+
+(defcustom pel-ada-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Ada buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-ada
+  :type '(repeat function))
+
+(defcustom pel-ada-indent-width 4
+  "Number of columns for Ada source code indentation.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkf-for-ada
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-ada-tab-width 4
+  "Distance between tab stop for buffers in `ada-mode'.
+
+PEL stores this in `tab-width' when opening Ada buffers.
+
+This does *NOT* control the indentation in Ada files.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters.
+
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-ada
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-ada-use-tabs nil
+  "Value of `indent-tabs-mode' for editing ada files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-ada
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; AppleScript support
 ;; -------------------
 (defgroup pel-pkg-for-applescript nil
@@ -9604,7 +9672,9 @@ Do not enter lambda expressions."
 (defcustom pel-use-nim nil
   "Control whether PEL supports the Nim programming language.
 
-When turned on the nim-mode is associated with the PEL ``<f12>`` key."
+When turned on:
+- PEL automatically activate `pel-use-nim-mode'
+- the `nim-mode' is associated with the PEL ``<f12>`` key."
   :group 'pel-pkg-for-nim
   :type 'boolean
   :safe #'booleanp)
@@ -12759,6 +12829,10 @@ indexing system."
 ;; bindings.
 (when (or pel-use-simple-undo pel-use-vundo)
   (setq pel-use-undo-tree nil))
+
+(when pel-use-ada
+  ;; Only one major mode for Ada, auto-activate it.
+  (setq pel-use-ada-mode t))
 
 (when pel-use-nim
   ;; There's only one mode for Nim, auto-activate it.
