@@ -4756,7 +4756,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (when pel-use-tuareg
     (pel-ensure-package tuareg from: melpa))
   ;; the ocaml-mode is part of Emacs
-
   (pel-eval-after-load tuareg
     (pel-config-major-mode tuareg pel:for-ocaml)))
 
@@ -5152,6 +5151,43 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; The feature is: pascal.  The mode is: pascal-mode.
   (pel-eval-after-load pascal
     (pel-config-major-mode pascal pel:for-pascal)))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-e`` : Eiffel programming
+
+(when pel-use-eiffel
+  (define-pel-global-prefix pel:for-eiffel   (kbd "<f11> SPC C-e"))
+  (pel-install-github-file "pierre-rouleau/eiffel-mode/master"
+                           "eiffel-mode.el")
+  (pel-autoload "eiffel-mode" for: eiffel-mode)
+  (add-to-list 'auto-mode-alist '("\\.e\\'" . eiffel-mode))
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".e"))
+
+  ;; (pel-config-major-mode eiffel pel:for-eiffel
+  ;; [:todo 2025-05-18, by Pierre Rouleau: The eiffel-mode does not fully
+  ;;   comply with all the mechanics of a major mode yet and therefore the
+  ;;   above macro cannot be used. Use the following expanded code instead
+  ;;   until the eiffel-mode is fixed and/or the macro is adjusted to handle
+  ;;   that situation. ]
+  (pel-eval-after-load eiffel-mode
+    (progn
+      (defun pel--setup-for-eiffel nil
+        "Set the environment for eiffel buffers."
+        (progn
+          (unless (assoc 'tab-width file-local-variables-alist)
+            (setq-local tab-width pel-eiffel-tab-width))
+          (unless (assoc 'indent-tabs-mode file-local-variables-alist)
+            (setq-local indent-tabs-mode pel-eiffel-use-tabs))
+          (pel-local-set-f12-M-f12 'pel:for-eiffel)
+          (pel-turn-on-local-minor-modes-in 'pel-eiffel-activates-minor-modes)))
+      (declare-function pel--setup-for-eiffel "pel_keys")
+
+      (pel-check-minor-modes-in pel-eiffel-activates-minor-modes)
+      (pel--mode-hook-maybe-call
+       ;; (function pel--setup-for-eiffel-with-local-vars) 'eiffel-mode
+       (function pel--setup-for-eiffel) 'eiffel-mode
+       'eiffel-mode-hook))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC 7`` : Seed7 programming

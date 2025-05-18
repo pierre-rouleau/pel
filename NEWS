@@ -2,9 +2,15 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
-- Add support for the Ada programming language.  It is activated when the *pel-use-ada* user options is activated (turned on, set to *t*).
-  - Add the  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ada.pdf][𝕻𝔩 - Ada]] PDF.  Uses the ada-mode.  Experimental; there are still issues with the binding of the F12 key
-    in Ada buffers.
+- Add experimental support for the Eiffel programming language.
+  It is activated when the *pel-use-eiffel* user options is activated (turned on, set to *t*).
+  - Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-eiffel.pdf][𝕻𝔩 - Eiffel]] PDF.  Uses my fork of the eiffel-mode.  This code is not working well, font-locking is not even working.
+    I stared fixing it but lot more is required. This is low in my priority list at the moment.
+    The commands are not yet documented.
+- Add experimental support for the Ada programming language.
+  It is activated when the *pel-use-ada* user options is activated (turned on, set to *t*).
+  - Add the  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ada.pdf][𝕻𝔩 - Ada]] PDF.  Uses the ada-mode.
+    The commands are not yet documented and other useful tools not integrated.
 - Simplified activation of Nim support: when *pel-use-nim* user-option is activated (turned on, set to *t*), the
   *pel-use-nim-mode* user-option is automatically turned on too to activate the use of the package that provides
   the major mode.

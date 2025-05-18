@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-05-17 22:34:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-05-18 10:57:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -354,6 +354,7 @@
     ([f11 32 ?Z]     "pl-sh"        pel-pkg-for-sh-scripting ,pel--sh-scripting-groups)
     (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         (arc
                                                                  lispy))
+    (,(kbd "<f11> SPC C-e") "pl-eiffel" pel-pkg-for-eiffel      eiffel)
     (,(kbd "<f11> SPC C-h") "pl-hy"     pel-pkg-for-hy)
     (,(kbd "<f11> SPC C-j") "pl-clojure" pel-pkg-for-clojure    (clojure
                                                                  cider
@@ -693,6 +694,7 @@ stored inside the doc/pdf directory.")
     ("python"          [f11 32 ?p])
     ("python-ts"       [f11 32 ?p])
     ("arc"             [f11 32 1])
+    ("eiffel"          [f11 32 5])
     ("haskell"         [f11 32 ?h])
     ("hy"              [f11 32 8])
     ("lfe"             [f11 32 12])
@@ -961,6 +963,7 @@ There should be no key binding!" keyseq))
     ("common-lisp"      . "pl-common-lisp")
     ("clojure"          . "pl-clojure")
     ("d"                . "pl-d")
+    ("eiffel"           . "pl-eiffel")
     ("elixir"           . "pl-elixir")
     ("emacs-lisp"       . "pl-emacs-lisp")
     ("erlang"           . "pl-erlang")

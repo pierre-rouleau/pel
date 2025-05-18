@@ -122,6 +122,7 @@
 ;;               - pel-c++-function-header-skeleton-control
 ;;         - pel-pkg-for-d
 ;;           - pel-d-code-style
+;;       - pel-pkg-for-eiffel
 ;;       - pel-pkg-for-javascript
 ;;       - pel-pkg-for-go
 ;;       - pel-pkg-for-haskell
@@ -5003,7 +5004,7 @@ See also: `pel-shell-script-extensions'."
                    ,(pel-pdf-file-url "pl-ada")))
 
 (defcustom pel-use-ada nil
-  "Whether PEL activates ada-mode.
+  "Whether PEL activates Ada support.
 When turned on,
 - PEL automatically activate `pel-use-ada-mode'
 - the `ada-mode' is associated with the PEL ``<f12>`` key."
@@ -6904,6 +6905,77 @@ by the `pel-use-d-ac-dcd'."
   :safe #'booleanp)
 (pel-put 'pel-use-d-company-dcd :package-is 'company-dcd)
 (pel-put 'pel-use-d-company-dcd :requires 'pel-use-d)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Eiffel Programmaing Language Support
+;; ------------------------------------
+
+(defgroup pel-pkg-for-eiffel nil
+  "PEL customization for Eiffel."
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Eiffel PDF"
+                   ,(pel-pdf-file-url "pl-eiffel")))
+
+(defcustom pel-use-eiffel nil
+  "Whether PEL activates Eiffel support.
+When turned on,
+- PEL automatically activate `pel-use-eiffel-mode'
+- the `eiffel-mode' is associated with the PEL ``<f12>`` key."
+  :group 'pel-pkg-for-eiffel
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-eiffel :package-is :a-gate)
+
+(defcustom pel-use-eiffel-mode nil
+  "Whether PEL activates eiffel-mode.
+Note that Eiffel support is not fully working and needs to be
+fixed.  I'm using my fork while I'm trying to make it work,but it
+is a low priority item for me at the moment."
+  :link '(url-link :tag "Eiffel mode @ Github"
+                   "https://github.com/pierre-rouleau/eiffel-mode")
+  :group 'pel-pkg-for-eiffel
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-eiffel-mode :also-required-when 'pel-use-eiffel)
+(pel-put 'pel-use-eiffel :package-is '(quote ((utils . eiffel-mode))))
+
+(defcustom pel-eiffel-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Eiffel buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-eiffel
+  :type '(repeat function))
+
+(defcustom pel-eiffel-indent-width 4
+  "Number of columns for Eiffel source code indentation.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkf-for-eiffel
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-eiffel-tab-width 4
+  "Distance between tab stop for buffers in `eiffel-mode'.
+
+PEL stores this in `tab-width' when opening Eiffel buffers.
+
+This does *NOT* control the indentation in Eiffel files.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters.
+
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-eiffel
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-eiffel-use-tabs nil
+  "Value of `indent-tabs-mode' for editing eiffel files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-eiffel
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Javascript support
@@ -12833,6 +12905,10 @@ indexing system."
 (when pel-use-ada
   ;; Only one major mode for Ada, auto-activate it.
   (setq pel-use-ada-mode t))
+
+(when pel-use-eiffel
+  ;; Only one major mode for Eiffel, auto-activate it.
+  (setq pel-use-eiffel-mode t))
 
 (when pel-use-nim
   ;; There's only one mode for Nim, auto-activate it.
