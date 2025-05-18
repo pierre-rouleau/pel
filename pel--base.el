@@ -2273,9 +2273,12 @@ otherwise it returns nil."
 
 MODE must be a symbol that does NOT end with -mode.
 The function returns nil when tree-sitter mode is not supported."
-  (when (boundp 'major-mode-remap-alist)
-    (let ((mode-symbol (intern  (format "%s-mode" (symbol-name mode)))))
-      (assoc mode-symbol major-mode-remap-alist))))
+  (let ((the-ts-mode (intern (format "%s-ts-mode" mode))))
+    (if (fboundp the-ts-mode)
+        t
+      (when (boundp 'major-mode-remap-alist)
+        (let ((mode-symbol (intern  (format "%s-mode" (symbol-name mode)))))
+          (assoc mode-symbol major-mode-remap-alist))))))
 
 ;; ---------------------------------------------------------------------------
 ;; Mode argument interpretation

@@ -2772,10 +2772,25 @@ MODE must be a symbol."
   (when pel-use-tree-sitter
     (pel-ensure-package ada-ts-mode from: melpa))
 
-  ;; [:todo 2025-05-17, by Pierre Rouleau: investigate failure of getting the
-  ;;                    <f12> key bindings under macOS and some of the build
-  ;;                    infrastructure tools.]
-  (pel-config-major-mode-with-ts ada pel:for-ada))
+  ;; Ada is supported by `ada-mode' (ada-mode feature)
+  ;;     and from `ada-ts-mode' (ada-ts-mode feature)
+  ;;
+  ;; [:todo 2025-05-17, by Pierre Rouleau: Write a macro similar to
+  ;;    `pel-config-major-mode-with-ts' that is more flexible and can generate
+  ;;    the code that follows. ]
+  (when (and pel-use-tree-sitter
+             (pel-major-ts-mode-supported-p 'ada))
+    (defvar pel-ada-ts-tab-width)
+    (defvar pel-ada-ts-use-tabs)
+    (defvar pel-ada-ts-activates-minor-modes)
+    (setq pel-ada-ts-tab-width pel-ada-tab-width)
+    (setq pel-ada-ts-use-tabs pel-ada-use-tabs)
+    (setq pel-ada-ts-activates-minor-modes
+          pel-ada-activates-minor-modes)
+    (pel-eval-after-load ada-ts-mode
+      (pel-config-major-mode ada-ts pel:for-ada)))
+  (pel-eval-after-load ada-mode
+    (pel-config-major-mode ada pel:for-ada)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Awk programming language

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-05-17 16:57:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-05-17 22:34:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -661,6 +661,7 @@ stored inside the doc/pdf directory.")
     ("dired"           [dired])
     ("dired-sidebar"   [dired])
     ("ada"             [f11 32 ?A])
+    ("ada-ts"          [f11 32 ?A])
     ("apples"          [f11 32 ?a])
     ("awk"             [f11 32 ?W])
     ("c++"             [f11 32 ?C])
@@ -1672,6 +1673,16 @@ Function created by the `pel-config-major-mode' macro."
        (pel--mode-hook-maybe-call (function ,gn-fct1)
                                   (quote ,gn-mode-name)
                                   (quote ,gn-mode-hook)))))
+
+;; [:todo 2025-05-17, by Pierre Rouleau: Add support for packages that
+;;  have a same symbols for mode and features, like Ada, which is
+;;  supported by : ada-mode in the file feature ada-mode
+;;           and : ada-ts-mode in the file feature ada-ts-mode
+;;  while keeping the ability to support modes where the feature name
+;;  does not end with '-mode'.
+;;  Perhaps the code should accept 4 symbols in case the code is implemented
+;;  in files that have several functions in them and a feature name that
+;;  differs completely.]
 
 (defmacro pel-config-major-mode-with-ts (target-mode
                                          &optional key-prefix
