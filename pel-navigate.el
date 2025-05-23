@@ -136,7 +136,6 @@ and `back-to-indentation' with a more logical meaning for N."
           (move-end-of-line (1+ n))
           (setq n 1))
       (setq n (1+ n)))
-    (message "N is: %d" n)
     (if (and (eq n 1)
              (bolp))
         (back-to-indentation)
@@ -164,12 +163,16 @@ If N < 0:  move to the end of (abs N) lines backward."
           (move-end-of-line (1+ n))
           (setq n 1))
       (setq n (1+ n)))
-    ;; maximum of 2 pass in this loop.
     (if (and (eq n 1)
              (eolp))
         (progn
-          (re-search-backward "[^ \t\r\n]" nil t)
-          (right-char))
+          (let ((pos (point)))
+            (forward-line 0)
+            (skip-chars-forward " \t")
+            (unless (looking-at "\n")
+              (goto-char pos)
+              (re-search-backward "[^ \t\r\n]" nil t)
+              (right-char))))
       (move-end-of-line n))))
 
 ;; ---------------------------------------------------------------------------
