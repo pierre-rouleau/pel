@@ -33,6 +33,14 @@
 ;;  - `pel-beginning-of-line' is meant to replace `beginning-of-line' as it
 ;;    does the same and extends it: if point is already at the beginning of
 ;;    the line then it moves it to the first non-whitespace character.
+;;  - `pel-end-of-line' does the same for end of line, ending at the
+;;    complete end or the last non-whitespace character, before the trailing
+;;    spaces.
+;;    - Note that calling `pel-end-of-line' followed by
+;;      `pel-beginning-of-line' the point is guaranteed to be at column 0.
+;;      Also, calling `pel-beginning-of-line' followed by `pel-end-of-line'
+;;      ensures that point is located at the real end of the line.
+;;
 ;;  - `pel-find-thing-at-point' provides a search capability without the need
 ;;    for a tag database but it is limited in what it can find.  It's a poor
 ;;    man cross reference.
@@ -109,33 +117,60 @@
 ;; -----------------------
 
 ;;-pel-autoload
-(defun pel-beginning-of-line (n)
+(defun pel-beginning-of-line (&optional n)
   "Move point to beginning of current line or N lines away.
-If point is already at the beginning of line, then instead
-move to first non-whitespace (to indentation).
-By default N is 1.  If N is larger move to the beginning of N-1 line forward.
+If N is not specified, or 0: move to beginning of current line.
+- For the current line, if point is already at the beginning of the
+  line, then move the first non-whitespace (to indentation) if any,
+  otherwise don't move.
+If N > 0:  move to the beginning of N line forward.
+If N < 0:  move to the beginning of (abs N) lines backward.
 This combines the functionality of `move-beginning-of-line'
-and `back-to-indentation'."
-  (interactive "^p")
-  (if (or (not (eq n 1)) (not (bolp)))
-      (move-beginning-of-line n)
-    (back-to-indentation)))
+and `back-to-indentation' with a more logical meaning for N."
+  (interactive "^P")
+  (let ((n (if (not n)
+               0
+             (prefix-numeric-value n))))
+    (if (< n 0)
+        (progn
+          (move-end-of-line (1+ n))
+          (setq n 1))
+      (setq n (1+ n)))
+    (message "N is: %d" n)
+    (if (and (eq n 1)
+             (bolp))
+        (back-to-indentation)
+      (move-beginning-of-line n))))
 
 
 ;; Smart end of line
 ;; -----------------
 
 ;;-pel-autoload
-(defun pel-end-of-line (n)
+(defun pel-end-of-line (&optional n)
   "Move point to end of current line or N lines away.
-If point is already at the end of the line, then instead
-move the last non-whitespace character if any (otherwise don't move).
-By default N is 1.  If N is larger move to the beginning of N-1 line forward."
-  (interactive "^p")
-  (if (or (not (eq n 1)) (not (eolp)))
-      (move-end-of-line n)
-    (re-search-backward "[^ \t\r\n]" nil t)
-    (right-char)))
+
+If N is not specified, or 0: move to the end of the current line.
+- For the current line, if point is already at the end of the line, then
+  move the last non-whitespace character if any (otherwise don't move).
+If N > 0:  move to the end of N line forward.
+If N < 0:  move to the end of (abs N) lines backward."
+  (interactive "^P")
+  (let ((n (if (not n)
+               0
+             (prefix-numeric-value n))))
+    (if (< n 0)
+        (progn
+          (move-end-of-line (1+ n))
+          (setq n 1))
+      (setq n (1+ n)))
+    ;; maximum of 2 pass in this loop.
+    (if (and (eq n 1)
+             (eolp))
+        (progn
+          (re-search-backward "[^ \t\r\n]" nil t)
+          (right-char))
+      (move-end-of-line n))))
 
 ;; ---------------------------------------------------------------------------
 ;; Navigate across code using symbols at point

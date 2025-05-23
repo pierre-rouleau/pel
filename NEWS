@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix & improved *pel-end-of-line*: it no longer moves to the next line when issued from an empty line.
+  It also has better, more logical prefix argument: by default it is 0, meaning current line.
+  A positive value N identifies N lines forward, a negative N identifies N lines backward.
+  Also improved *pel-beginning-of-line* to use the same prefix argument logic for consistency.
 - Add experimental support for the Eiffel programming language.
   It is activated when the *pel-use-eiffel* user options is activated (turned on, set to *t*).
   - Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-eiffel.pdf][𝕻𝔩 - Eiffel]] PDF.  Uses my fork of the eiffel-mode.  This code is not working well, font-locking is not even working.
