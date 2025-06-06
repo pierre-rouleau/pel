@@ -6457,9 +6457,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (define-key pel:emacs (kbd "<f2>") 'pel-setup-info-dual-environment)
 
 (global-set-key (kbd "<M-S-f9>")  'pel-show-init-time)
-
 (define-key pel:emacs "l"  'pel-emacs-load-stats)
 (define-key pel:emacs "m"  'pel-emacs-mem-stats)
+(when pel-emacs-28-or-later-p
+  (define-key pel:emacs "M"  'memory-report))
 (define-key pel:emacs "p" 'pel-emacs-load-path)
 (define-key pel:emacs "P" 'list-packages)
 (define-key pel:emacs (kbd "M-p") 'pel-process-tree)
