@@ -3183,7 +3183,8 @@ d-mode not added to ac-modes!"
   (pel-eval-after-load cc-mode
     (pel-config-major-mode pike pel:for-pike
       (progn
-        (define-key pike-mode-map (kbd "M-;") 'pel-c-comment-dwim)
+        (when (boundp 'pike-mode-map)
+          (define-key pike-mode-map (kbd "M-;") 'pel-c-comment-dwim))
         ;; activate skeletons
         (pel--install-generic-skel pel:pike-skel 'pel-pkg-for-pike "pike")
         ;; Configure how to search for a file name from the user-option
@@ -6852,7 +6853,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (define-key pel:abbrev "?"  'pel-abbrev-info)
 
   (pel-add-hook-for 'pel-modes-activating-abbrev-mode 'abbrev-mode)
-  (when pel--cached-abbrev-file-name
+  (when (bound-and-true-p pel--cached-abbrev-file-name)
     (setq abbrev-file-name pel--cached-abbrev-file-name)
     (quietly-read-abbrev-file nil))
   ;; If files were on the command line when Emacs started buffers may
@@ -6890,7 +6891,7 @@ the ones defined from the buffer now."
 (define-key pel:abbrev "$"   'pel-ispell-word-then-abbrev)
 (define-key pel: (kbd "M-$") 'pel-ispell-word-then-abbrev)
 
-(if pel--cached-abbrev-file-name
+(if (bound-and-true-p pel--cached-abbrev-file-name)
     ;; If PEL is informed to delay load the abbreviation file
     ;; do it silently 2 seconds of idle later.
     (run-at-time "2 sec" nil (function pel--activate-abbrev-mode))
@@ -7396,6 +7397,7 @@ the ones defined from the buffer now."
 (define-key pel:file "j"   'webjump)
 ;; By default, `pel-open-at-point' searches file in the current project
 ;; if it does not find the file from its name.
+(defvar pel-filename-at-point-finders)  ; defined as local in pel-file.el
 (setq pel-filename-at-point-finders '(pel-generic-find-file))
 
 ;; - Revert
@@ -9394,6 +9396,7 @@ the ones defined from the buffer now."
 (define-key pel:execute    "t" #'term)
 (define-key pel:execute    "l" #'ielm)
 (when pel-term-use-shell-prompt-line-regexp
+  ;; [:todo 2025-06-07, by Pierre Rouleau: Set the following in a mode hook]
   (setq term-prompt-regexp pel-shell-prompt-line-regexp))
 ;; support for the extremely fast/nice libvterm-based vterm shell.
 (when pel-use-vterm
