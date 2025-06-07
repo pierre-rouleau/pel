@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-eval-last-sexp-and-copy* command, bound to ~<f12> e e~ in emacs-lisp-mode.
+  It does the same as eval-last-sexp but also copies the result to the kill ring, allowing easy
+  retrieval in any buffer by yanking it in.
 - Add ~<f11> ? e M~ key bindings to *memory-report* on Emacs >= 28.
 - Fix & improved *pel-end-of-line*: it no longer moves to the next line when issued from an empty line.
   It also has better, more logical prefix argument: by default it is 0, meaning current line.

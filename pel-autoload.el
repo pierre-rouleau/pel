@@ -333,6 +333,9 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-elisp-analyze" for:
     pel-run-ert)
 
+  (pel-autoload "pel-elisp-eval" for:
+    pel-eval-last-sexp-and-copy)
+
   (pel-autoload "pel-emacs" for:
     pel-emacs-executable
     pel-open-emacs-refcard

@@ -3562,6 +3562,7 @@ d-mode not added to ac-modes!"
 (define-key pel:elisp-debug "e"  'edebug-defun)
 
 (define-pel-global-prefix pel:elisp-eval (kbd "<f11> SPC l e"))
+(define-key pel:elisp-eval "e" 'pel-eval-last-sexp-and-copy)
 (define-key pel:elisp-eval "b" #'eval-buffer)
 (define-key pel:elisp-eval "r" #'eval-region)
 
