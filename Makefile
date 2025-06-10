@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-06-07 10:11:12 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-06-10 15:03:20 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -261,6 +261,7 @@ EL_FILES := pel--base.el \
 		pel-tempo.el \
 		pel-text-insert.el \
 		pel-text-transform.el \
+		pel-timestamp.el \
 		pel-undo.el \
 		pel-uuid.el \
 		pel-vc.el \
@@ -688,6 +689,7 @@ pel-tempo.elc:          pel--keys-macros.elc
 pel-text-insert.elc:    pel--base.elc pel--macros.elc pel-window.elc pel-syntax.elc
 pel-text-transform.elc: pel--base.elc pel--options.elc
 pel-time.elc:           pel--base.elc
+pel-timestamp.elc:      pel--base.elc pel--options.elc
 pel-undo.elc:           pel--options.elc
 pel-vc.elc:             pel--options.elc
 pel-vcs.elc:			pel--base.elc pel-filedir.elc pel-prompt.elc

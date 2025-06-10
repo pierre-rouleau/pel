@@ -847,6 +847,13 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-tcl-insert-shebang-line
     pel-tcl-expect-insert-shebang-line)
 
+  (pel-autoload "pel-timestamp" for:
+    pel-toggle-update-time-stamp-on-save
+    pel-toggle-update-copyright-on-save)
+  (pel-autoload-function "pel-timestamp" for:
+    pel--update-time-stamp
+    pel--update-copyright)
+
   (pel-autoload "pel-xref" for:
     pel-xref-toggle-dumb-jump-mode
     pel-xref-toggle-gxref
