@@ -110,6 +110,7 @@
 (require 'pel-fs)               ; use: `pel-exec-pel-bin', `pel-exec-cmd'
 (require 'pel-syntax)           ; use: `pel-insert-space-in-enclosing-block'
 (require 'pel-xref)             ; use: `pel-xref-find-definitions'
+(require 'pel-comment)          ; use: `pel-comment-dwim'
 
 ;; newcomment is always available
 (require 'newcomment)           ; use: `comment-dwim'
@@ -923,7 +924,10 @@ commenting a region, if the region starts just below a line with
 \"%%%\" comment the new comment uses \"%%%\" comment as well.
 
 In all other cases the %% style comment is used at the beginning
-of a line and a single % is used after the beginning of a line."
+of a line and a single % is used after the beginning of a line.
+
+This uses `pel-comment-dwim' which provides all features of `comment-dwim'
+plus the ability to comment the current line if ARG is the numeric 0."
   ;; Erlang comments at beginning of line might use 2 or 3 percent characters.
   ;; Check the style used on the preceding line and if it is using 3 percent
   ;; characters, force the comment-add to 2 to ensure that we use "%%% " for
@@ -931,8 +935,8 @@ of a line and a single % is used after the beginning of a line."
   (interactive "*P")
   (if (pel--erlang-line-3%-comment-p)
       (let ((comment-add 2))
-        (comment-dwim arg))
-    (comment-dwim arg)))
+        (pel-comment-dwim arg))
+    (pel-comment-dwim arg)))
 
 ;; ---------------------------------------------------------------------------
 ;; Modify erlang.el electric key behaviour and key bindings

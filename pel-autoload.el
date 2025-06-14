@@ -252,7 +252,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-toggle-comment-auto-fill-only-comments
     pel-delete-all-comments
     pel-kill-all-comments
-    pel-comment-show-variables)
+    pel-comment-show-variables
+    pel-comment-dwim)
 
   (pel-autoload "pel-c-comment" for:
     pel-c-comment-dwim)

@@ -513,8 +513,9 @@ WANTED-MODE is a symbol."
         (when (eq major-mode wanted-major-mode)
           (push buffer buffers-in-wanted-mode))))))
 
-(defun pel-current-buffer-filename
-    (&optional sans-directory sans-extension no-error)
+(defun pel-current-buffer-filename (&optional sans-directory
+                                              sans-extension
+                                              no-error)
   "Return current buffer's filename string.
 Return a filename with full path unless SANS-DIRECTORY is non-nil.
 If SANS-EXTENSION is non-nil exclude the extension, otherwise include it.

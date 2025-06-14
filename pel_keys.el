@@ -294,6 +294,13 @@ Done in this function to allow advising libraries that remap these keys."
 (pel-bind-negative-argument)
 
 ;; ---------------------------------------------------------------------------
+;; Augmenting the behaviour of some Emacs standard commands
+;; --------------------------------------------------------
+;;
+;; comment-dwim: add support for M-0 M-; to comment current line
+(global-set-key (kbd "M-;") 'pel-comment-dwim)
+
+;; ---------------------------------------------------------------------------
 ;; Setting the mode of a fundamental-mode buffer
 ;; ---------------------------------------------
 ;;
@@ -8990,6 +8997,7 @@ the ones defined from the buffer now."
   (define-key pel:tab (kbd "M-b")   'switch-to-buffer-other-tab)
   (define-key pel:tab (kbd "M-f")   'find-file-other-tab)
   (define-key pel:tab (kbd "M-d")   'dired-other-tab)
+  ;; (define-key pel:tab (kbd "M-D")   'tab-duplicate)
 
   (define-key pel:tab (kbd "M-c")   'tab-close)
   (define-key pel:tab (kbd "M-C")   'tab-close-other)

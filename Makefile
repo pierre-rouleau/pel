@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-06-10 15:03:20 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-06-14 10:41:47 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -592,7 +592,7 @@ pel-benchmark.elc:      pel--base.elc pel-window.elc pel-setup.elc
 pel-bookmark.elc:       pel--base.elc
 pel-browse.elc:         pel--base.elc pel--options.elc
 pel-buffer.elc:         pel--base.elc pel-list.elc
-pel-c-comment.elc:      pel--base.elc pel--options.elc
+pel-c-comment.elc:      pel--base.elc pel--options.elc pel-comment.elc
 pel-c-preproc.elc:      pel-syntax.elc
 pel-c-utils.elc:        pel--base.elc pel--syntax-macros.elc
 pel-cc.elc:             pel--base.elc pel--options.elc pel-ffind.elc
@@ -614,7 +614,7 @@ pel-elisp-analyze.elc:  pel-lisp.elc
 pel-elisp.elc:          pel--base.elc pel--options.elc pel-prompt.elc pel-navigate.elc
 pel-elpa.elc:           pel-filedir.elc
 pel-emacs.elc:          pel--base.elc pel--options.elc pel-prompt.elc pel-setup-base.elc
-pel-erlang.elc:         pel--base.elc pel--options.elc pel-ffind.elc pel-fs.elc pel-syntax.elc pel-xref.elc
+pel-erlang.elc:         pel--base.elc pel--options.elc pel-ffind.elc pel-fs.elc pel-syntax.elc pel-xref.elc pel-comment.elc
 pel-ffind.elc:          pel--options.elc
 pel-file-recent.elc:    pel--options.elc pel-prompt.elc
 pel-file.elc:           pel--base.elc pel-prompt.elc pel-read.elc pel-window.elc pel-prompt.elc pel-filex.elc

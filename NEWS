@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-comment-dwim* now bound to ~M-;~ to replace *comment-dwim*.
+  It does the same as *comment-dwim* except that it supports the ~M-0~ prefix argument to comment
+  the current line from the beginning of the line, something that *comment-dwim* should do but currently does not do.
+  Also added that capability to *pel-c-comment-dwim* and *pel-erlang-comment-dwim* commands.
 - Add *pel-eval-last-sexp-and-copy* command, bound to ~<f12> e e~ in emacs-lisp-mode.
   It does the same as eval-last-sexp but also copies the result to the kill ring, allowing easy
   retrieval in any buffer by yanking it in.

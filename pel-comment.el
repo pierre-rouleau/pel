@@ -200,6 +200,15 @@ variables."
        (dolist (symbol comment-symbols)
          (pel-insert-symbol-content-line symbol))))))
 
+;;-pel-autoload
+(defun pel-comment-dwim (arg)
+  "Call (`comment-dwim' arg) but for arg 0 call (`comment-line' 0)"
+  (interactive "*P")
+  (if (and (integerp arg)
+           (eq arg 0))
+      (comment-line 1)
+    (comment-dwim arg)))
+
 ;;; --------------------------------------------------------------------------
 (provide 'pel-comment)
 

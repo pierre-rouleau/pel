@@ -2,12 +2,12 @@
 
 ;; Created   : Wednesday, November 10 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-16 21:48:37, updated by Pierre Rouleau>
+;; Time-stamp: <2025-06-14 10:44:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@
 ;;
 (require 'pel--base)                    ; use: `pel-same-line-p'
 (require 'pel--options)                 ; use: `pel-c-multiline-comments'
-
+(require 'pel-comment)                  ; use: `pel-comment-dwim'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -117,8 +117,9 @@ When no area is selected this function uses `comment-dwim' and provides the
 same flexible commenting mechanism.
 When an area is selected it creates a single multi-line comments when the
 `pel-c-multiline-comments' user-option is t, otherwise it uses the standard
-behaviour of `comment-dwim'."
-  (interactive "P")
+behaviour of `comment-dwim' augmented with the ability to comment the current
+line if ARG is the numeric 0."
+  (interactive "*P")
   (let (start end)
     (if (and pel-c-multiline-comments
              (use-region-p)
@@ -141,7 +142,7 @@ behaviour of `comment-dwim'."
       (if (and
            (require 'newcomment nil :noerror)
            (fboundp 'comment-dwim))
-          (comment-dwim kill)
+          (pel-comment-dwim kill)
         (error "comment-dwim is void")))))
 
 ;;; --------------------------------------------------------------------------
