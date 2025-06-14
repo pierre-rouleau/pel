@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add more PEL-specific key bindings for tab-bar management: ~⌘T~ (on macOS) and ~M-<f11> M-= M-|~ for *tab-bar-duplicate-tab* on Emacs 28 and later.
+  There are several tab specific commends that appeared in Emacs 28 that are not yet documented in PEL.
+  Of course their default Emacs key bindings are available.
 - Add *pel-comment-dwim* now bound to ~M-;~ to replace *comment-dwim*.
   It does the same as *comment-dwim* except that it supports the ~M-0~ prefix argument to comment
   the current line from the beginning of the line, something that *comment-dwim* should do but currently does not do.

@@ -8971,7 +8971,8 @@ the ones defined from the buffer now."
   ;; (define-key pel:tab    "?"   'pel-show-tab-info)  ; future?
 
   (when pel-emacs-28-or-later-p
-    (define-key pel:tab (kbd "M-,") 'other-tab-prefix))
+    (define-key pel:tab (kbd "M-,") 'other-tab-prefix)
+    (define-key pel:tab (kbd "M-|") 'tab-bar-duplicate-tab))
 
   (define-key pel:tab (kbd "M-=")   'tab-bar-mode)
   (define-key pel:tab (kbd "M-\\")  'tab-new)
@@ -8992,12 +8993,13 @@ the ones defined from the buffer now."
     (global-set-key (kbd "s-{") 'tab-bar-switch-to-prev-tab) ; on macOS, that's also C-<tab>
     (global-set-key (kbd "s-}") 'tab-bar-switch-to-next-tab) ; on macOS, that's also C-S-<tab>
     (global-set-key (kbd "s-t") 'tab-bar-new-tab)
+    (when pel-emacs-28-or-later-p
+      (global-set-key (kbd "s-T") 'tab-bar-duplicate-tab))
     (global-set-key (kbd "s-w") 'tab-bar-close-tab))
 
   (define-key pel:tab (kbd "M-b")   'switch-to-buffer-other-tab)
   (define-key pel:tab (kbd "M-f")   'find-file-other-tab)
   (define-key pel:tab (kbd "M-d")   'dired-other-tab)
-  ;; (define-key pel:tab (kbd "M-D")   'tab-duplicate)
 
   (define-key pel:tab (kbd "M-c")   'tab-close)
   (define-key pel:tab (kbd "M-C")   'tab-close-other)
