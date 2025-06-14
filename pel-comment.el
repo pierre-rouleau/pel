@@ -206,7 +206,12 @@ variables."
   (interactive "*P")
   (if (and (integerp arg)
            (eq arg 0))
-      (comment-line 1)
+      (progn
+        (save-excursion
+          (forward-line 0)
+          (set-mark (point))
+          (end-of-line)
+          (comment-dwim nil)))
     (comment-dwim arg)))
 
 ;;; --------------------------------------------------------------------------
