@@ -202,7 +202,7 @@ variables."
 
 ;;-pel-autoload
 (defun pel-comment-dwim (arg)
-  "Call (`comment-dwim' arg) but for arg 0 call (`comment-line' 0)"
+  "Call (`comment-dwim' arg) but support arg 0 to (un)comment current line."
   (interactive "*P")
   (if (and (integerp arg)
            (eq arg 0))
