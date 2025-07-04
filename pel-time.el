@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, January 31 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-03-01 09:45:05, updated by Pierre Rouleau>
+;; Time-stamp: <2025-07-04 11:42:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022  Pierre Rouleau
+;; Copyright (C) 2022, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,47 +25,55 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This file holds a set of simple time aritmetic utilities, converting
+;; This file holds time related code.
+;;
+;; First it holds a set of simple time aritmetic utilities, converting
 ;; hh:mm:ss strings into (hour minute second) triple integer values with the
 ;; ability to detect invalid values (when the minute or the second count
 ;; exceeds 59) and the ability to normalize it.
 ;;
-;; The function `pel-sum-hms' can sum (hour minute second) triple and the
-;; function `pel-sum-hms-strings' can sum "hh:mm:ss" strings.   Both return a
-;; (hour minute second) triple.  The functions `pel-subtract-hms' and
-;; `pel-subtract-hms-strings' perform similar subtraction operations.
+;;     The function `pel-sum-hms' can sum (hour minute second) triple and the
+;;     function `pel-sum-hms-strings' can sum "hh:mm:ss" strings.  Both return
+;;     a (hour minute second) triple.  The functions `pel-subtract-hms' and
+;;     `pel-subtract-hms-strings' perform similar subtraction operations.
 ;;
-;; The functions operate on the following types identified by the argument
-;; names:
+;;     The functions operate on the following types identified by the argument
+;;     names:
 ;;
-;; - `seconds'    : integer number of seconds
-;; - `hms'        : a (hours minutes seconds) triple of integers
-;; - `hms-elems'  : a sequence of `hms'
-;; - `hms-string' : a "hh:mm:ss" string representing hours:minutes:seconds
-;; - `hms-strings': a sequence of `hms-string'
-;;
-;;
-;; The following conversion function are provided:
-;;
-;; - `pel-seconds-to-hms'
-;; - `pel-hms-to-sec'
-;;
-;; - `pel-sum-hms-strings'
-;; - `pel-sum-hms'
-;;
-;; - `pel-hms-string-to-hms'
+;;     - `seconds'    : integer number of seconds
+;;     - `hms'        : a (hours minutes seconds) triple of integers
+;;     - `hms-elems'  : a sequence of `hms'
+;;     - `hms-string' : a "hh:mm:ss" string representing hours:minutes:seconds
+;;     - `hms-strings': a sequence of `hms-string'
 ;;
 ;;
-;; The last 2 functions are used to normalize and validate the time elements:
+;;     The following conversion function are provided:
 ;;
-;; - `pel-normalize-hms'
-;; - `pel-validate-hms'
+;;     - `pel-seconds-to-hms'
+;;     - `pel-hms-to-sec'
+;;
+;;     - `pel-sum-hms-strings'
+;;     - `pel-sum-hms'
+;;
+;;     - `pel-hms-string-to-hms'
+;;
+;;
+;;     The next 2 functions are used to normalize and validate the time
+;;     elements:
+;;
+;;     - `pel-normalize-hms'
+;;     - `pel-validate-hms'
+;;
+;; It also holds time measurement utility:
+;;
+;;  - `pel-time-spent-by'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 (require 'pel--base)           ; use: `pel+='
 (require 'subr-x)              ; use: `split-string'
+(require 'time-date)           ; use: `time-since'
 
 ;; ---------------------------------------------------------------------------
 ;;; Code
@@ -134,6 +142,38 @@ the returned value."
          (mapcar
           (function pel-hms-string-to-hms)
           hms-strings)))
+
+
+;; ---------------------------------------------------------------------------
+;; Time measurement
+;; ----------------
+
+(defun pel--time-fmt (number)
+  "Return empty string if NUMBER is 0, NUMBER followed by colon otherwise."
+  (if (eq number 0)
+      ""
+    (format "%d:" number)))
+
+(defun pel-time-to-hms-fraction-string (time)
+  "Return TIME as a formatted string."
+  (let* ((all-seconds (floor time))
+         (sec-fraction (- time (float all-seconds)))
+         (hms (pel-seconds-to-hms all-seconds))
+         (hours (nth 0 hms))
+         (minutes (nth 1 hms))
+         (seconds (nth 2 hms)))
+    (format "%s%s%s%.06f"
+            (pel--time-fmt hours)
+            (pel--time-fmt minutes)
+            (pel--time-fmt seconds)
+            sec-fraction)))
+
+(defmacro pel-time-spent-by (&rest body)
+  "Measure time spent by the execution of BODY."
+  `(let ((start-time (current-time)))
+     ,@body
+     (message "%s" (pel-time-to-hms-fraction-string
+                       (float-time (time-since start-time))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-time)
