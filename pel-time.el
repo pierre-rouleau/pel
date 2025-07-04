@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, January 31 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-07-04 11:42:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-07-04 12:02:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -162,18 +162,17 @@ the returned value."
          (hours (nth 0 hms))
          (minutes (nth 1 hms))
          (seconds (nth 2 hms)))
-    (format "%s%s%s%.06f"
+    (format "%s%s%.06f"
             (pel--time-fmt hours)
             (pel--time-fmt minutes)
-            (pel--time-fmt seconds)
-            sec-fraction)))
+            (+ seconds sec-fraction))))
 
 (defmacro pel-time-spent-by (&rest body)
   "Measure time spent by the execution of BODY."
   `(let ((start-time (current-time)))
      ,@body
      (message "%s" (pel-time-to-hms-fraction-string
-                       (float-time (time-since start-time))))))
+                    (float-time (time-since start-time))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-time)
