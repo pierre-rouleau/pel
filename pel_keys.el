@@ -5162,8 +5162,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-seed7
   (define-pel-global-prefix pel:for-seed7  (kbd "<f11> SPC 7"))
 
-  (pel-install-github-file "pierre-rouleau/seed7-mode/master"
-                           "seed7-mode.el")
+  (pel-install-github-files "pierre-rouleau/seed7-mode/master"
+                            '("seed7-mode.el"
+                              "tools/s7xref.sd7"))
   (pel-autoload-file seed7-mode for: seed7-mode)
 
   (define-key pel:for-seed7 "c" 'seed7-compile)
