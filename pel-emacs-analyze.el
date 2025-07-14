@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, July 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-07-14 15:08:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-07-14 16:02:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,7 +45,7 @@
   (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
     (pel-print-in-buffer
      "pel-lisp.el-info*"
-     "lisp.el control variables"
+     (format  "lisp.el control variables (Emacs %s)" (emacs-version))
      (lambda ()
        (insert "User options:\n")
        (pel-insert-symbol-content-line 'defun-prompt-regexp)
