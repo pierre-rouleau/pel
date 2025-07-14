@@ -347,6 +347,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-emacs-config-features
     pel-emacs-bug-info)
 
+  (pel-autoload "pel-emacs-analyze" for:
+    pel-show-lisp-control-variables)
+
   (pel-autoload "pel-erlang" for:
     pel-erlang-comma
     pel-erlang-gt

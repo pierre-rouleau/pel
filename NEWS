@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-show-lisp-control-variables*, bound to ~<f11> ? e a l~.
+  This prints the values of lisp.el user-options and variables used by the current buffer.
+  It's a tool used to analyze the implementation of various major modes, specially for their handling
+  of navigation and marking functions.
 - Add more PEL-specific key bindings for tab-bar management: ~⌘T~ (on macOS) and ~M-<f11> M-= M-|~ for *tab-bar-duplicate-tab* on Emacs 28 and later.
   There are several tab specific commends that appeared in Emacs 28 that are not yet documented in PEL.
   Of course their default Emacs key bindings are available.

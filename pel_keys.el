@@ -6441,6 +6441,12 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-key pel:emacs "P"  'esup))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - Function Keys - <f11> - Prefix ``<f11> ? e a`` : Emacs analyze
+
+(define-pel-global-prefix pel:emacs-analyze (kbd "<f11> ? e a"))
+(define-key pel:emacs-analyze "l" 'pel-show-lisp-control-variables)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? k`` : Info on Keys
 
 (define-pel-global-prefix pel:keys (kbd "<f11> ? k"))
