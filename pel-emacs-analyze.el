@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, July 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-07-14 16:15:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-07-14 16:29:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -48,8 +48,8 @@
      "pel-lisp.el-info*"
      (format  "lisp.el control variables (Emacs %s)" (emacs-version))
      (lambda ()
-       (insert (format "\nBuffer's major mode : %s\n\n" inspected-buffer-major-mode) )
-       (insert "User options:\n")
+       (insert (format "\nBuffer's major mode : %s\n" inspected-buffer-major-mode) )
+       (insert "\nUser options:")
        (pel-insert-symbol-content-line 'defun-prompt-regexp)
        (pel-insert-symbol-content-line 'parens-require-spaces)
        (pel-insert-symbol-content-line 'insert-pair-alist)
