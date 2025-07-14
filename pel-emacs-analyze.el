@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, July 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-07-14 16:02:13 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-07-14 16:15:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,11 +42,13 @@
 (defun pel-show-lisp-control-variables (&optional append)
   "Display values of lisp.el control variables."
   (interactive "P")
-  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+        (inspected-buffer-major-mode major-mode))
     (pel-print-in-buffer
      "pel-lisp.el-info*"
      (format  "lisp.el control variables (Emacs %s)" (emacs-version))
      (lambda ()
+       (insert (format "\nBuffer's major mode : %s\n\n" inspected-buffer-major-mode) )
        (insert "User options:\n")
        (pel-insert-symbol-content-line 'defun-prompt-regexp)
        (pel-insert-symbol-content-line 'parens-require-spaces)
