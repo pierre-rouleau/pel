@@ -1838,6 +1838,19 @@ by executing:  M-: (info \"(emacs) Time Stamps\")."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-update-time-stamp-pattern-regexps nil
+  "List of regular expressions identifying time-stamps to update.
+Each regular expression **must**:
+- have **one** match group,
+- use the string syntax.
+
+The time stamp will be placed inside the identified match group.
+The rest of the regular expression must be as complete as possible
+to uniquely identify a text area inside the file to update."
+  :group 'pel-pkg-for-filemng
+  :type '(repeat
+          (string :tag "regexp")))
+
 (defcustom pel-update-copyright t
   "Controls whether copyright notice is updated automatically on file save.
 Update copyright notice automatically when non-nil, don't otherwise."

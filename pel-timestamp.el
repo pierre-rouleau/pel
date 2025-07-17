@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-06-10 15:05:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-06-10 17:23:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -56,10 +56,25 @@ group customize buffer."
   (pel-toggle-and-show-user-option 'pel-update-time-stamp globally))
 
 
+(defun pel-update-time-stamp-patterns ()
+  "Update file time stamp matching `pel-update-time-stamp-pattern-regexps'."
+  (save-excursion
+    (dolist (regexp pel-update-time-stamp-pattern-regexps)
+      (goto-char (point-min))
+      (while (re-search-forward regexp nil :noerror)
+        (replace-match
+         (format-time-string pel-date-wkd-time-iso-format nil t)
+         :fixedcase
+         :literal
+         nil
+         1)))))
+
 (defun pel--update-time-stamp ()
-  "Update time stamp if currently active."
-  (when pel-update-time-stamp
-    (time-stamp)))
+  "Update time stamp in file if currently active."
+  (when (and buffer-file-name
+             pel-update-time-stamp)
+    (time-stamp)
+    (pel-update-time-stamp-patterns)))
 
 ;;* Update Copyright Notice
 ;;  =======================
