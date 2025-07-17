@@ -8355,12 +8355,10 @@ the ones defined from the buffer now."
   (define-key pel:help           "s" 'pel-show-search-status))
 
 ;; --
-;; Regular Expression Builder
+;; Regular Expression Builder (part of Emacs).
 
-(defun pel-reb-re-syntax ()
-  "Customize reb-re-syntax: Regular Expression Builder syntax."
-  (interactive)
-  (customize-option 'reb-re-syntax))
+;; Enhance the regular expression builder mode with useful key bound commands.
+(add-hook 'reb-mode-hook 'pel-reb-enhance)
 
 (define-pel-global-prefix pel:regexp (kbd "<f11> s x"))
 (define-key pel:regexp      " "   'pel-insert-regexp)

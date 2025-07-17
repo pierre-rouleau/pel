@@ -760,9 +760,12 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-multi-occur-in-this-mode
     pel-multi-occur-in-all
     pel-search-two-spaces
-    pel-search-empty-line)
+    pel-search-empty-line
+    pel-reb-re-syntax
+    pel-reb-erase-regxp)
   (pel-autoload-function "pel-search" for:
-    pel-set-search-tool)
+    pel-set-search-tool
+    pel-reb-enhance)
 
   (pel-autoload-function "pel-seed7" for:
     pel-seed7-insert-shebang-line)

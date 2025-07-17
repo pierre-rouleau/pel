@@ -2,7 +2,7 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-22 21:53:41 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-07-17 12:25:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -31,37 +31,42 @@
 ;; This file holds a set of search utilities and function that manages the
 ;; search tools available to PEL.
 ;;
-;; The following is a list of available commands (*) and functions (-) listed in
+;; The following is a list of available commands (.) and functions (-) listed in
 ;; hierarchical calling order.
 ;;
-;; Search behaviour control functions
-;;
-;; * `pel-toggle-case-fold-search'
-;; * `pel-toggle-search-upper-case'
-;; * `pel-show-search-case-state'
+;;* Search behaviour control functions
+;; . `pel-toggle-case-fold-search'
+;; . `pel-toggle-search-upper-case'
+;; . `pel-show-search-case-state'
 ;;   - `pel-search-case-state'
 ;;
-;; Search utility
-;;
+;;* Search utilities
 ;; - `pel-search-word-from-top-noerr'
-;;   * `pel-search-word-from-top'
-;; * `pel-search-two-spaces'
-;; * `pel-search-empty-line'
+;;   . `pel-search-word-from-top'
+;;     - `pel-user-option-title-string'
+;; . `pel-search-two-spaces'
+;; . `pel-search-empty-line'
 ;;
-;; Search Tool Management:
-;;
-;; * `pel-select-search-tool'
+;;* PEL search tool control
+;; . `pel-select-search-tool'
 ;;   - `pel-active-search-tool-str'
 ;;   - `pel--active-search-regexp-engine'
 ;;   - `pel--search-tools-selection'
 ;;   - `pel--activated-search-tool'
 ;;   - `pel-set-search-tool'
-;;     - `pel--disable-search-tool'
+;;     - `pel--disable-search-etool'
 ;;     - `pel--activate-search-tool'
+;; . `pel-show-search-status'
 ;;
-;; Search in buffers:
-;; * `pel-multi-occur-in-this-mode'
-;; * `pel-multi-occur-in-all'
+;;* Search in buffers
+;; . `pel-multi-occur-in-this-mode'
+;;   -`pel-buffers-matching-mode'
+;; . `pel-multi-occur-in-all'
+;;
+;;* Regular Expression Builder Enhancement
+;; . `pel-reb-re-syntax'
+;; - `pel-reb-enhance'
+;;   . `pel-reb-erase-regxp'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -88,8 +93,8 @@
 ;;; Code:
 
 
-;; Search behaviour control functions
-;; ----------------------------------
+;;* Search behaviour control functions
+;;  ----------------------------------
 
 ;;-pel-autoload
 (defun pel-toggle-case-fold-search ()
@@ -169,8 +174,8 @@ Depends on 2 Emacs (base system) variables:
   (message "%s" (pel-search-case-state-str)))
 
 ;; ---------------------------------------------------------------------------
-;; Search Utilities
-;; ----------------
+;;* Search utilities
+;;  ----------------
 
 (defun pel-user-option-title-string (user-option-string)
   "Convert a user-option name string into its title.
@@ -366,8 +371,8 @@ With any argument: move backward to previous empty line."
     (forward-line 1)))
 
 ;; ---------------------------------------------------------------------------
-;; PEL Search Tool Control
-;; -----------------------
+;;* PEL search tool control
+;;  -----------------------
 
 (defvar pel--search-initialized nil
   "Set to t when search tool management is initialized.
@@ -499,7 +504,6 @@ more information about available choices."
           (push buf buffer-mode-matches))))
     buffer-mode-matches))
 
-
 ;;-pel-autoload
 (defun pel-multi-occur-in-this-mode ()
   "Show all lines matching REGEXP in buffers with this major mode."
@@ -511,10 +515,34 @@ more information about available choices."
 ;;-pel-autoload
 (defun pel-multi-occur-in-all (regexp &optional all)
   "Show all lines matching REGEXP in all buffers visiting files.
-
 With prefix argument, search in *all* buffers."
   (interactive (occur-read-primary-args))
   (multi-occur-in-matching-buffers "." regexp all))
+
+;; ---------------------------------------------------------------------------
+;;* Regular Expression Builder Enhancement
+;;  --------------------------------------
+
+;;-pel-autoload
+(defun pel-reb-re-syntax ()
+  "Customize reb-re-syntax: Regular Expression Builder syntax."
+  (interactive)
+  (customize-option 'reb-re-syntax))
+
+;;-pel-autoload
+(defun pel-reb-erase-regxp ()
+  "Replace current regular expression by empty string."
+  (interactive)
+  (goto-char (point-min))
+  (delete-char (- (point-max) (point-min)))
+  (insert "\n\"\"\n")
+  (goto-char 3))
+
+;;-pel-autoload
+(defun pel-reb-enhance ()
+  "Enhance reb-builder: add commands."
+  (when (boundp 'reb-mode-map)
+    (define-key reb-mode-map (kbd "C-c C-d") 'pel-reb-erase-regxp)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-search)

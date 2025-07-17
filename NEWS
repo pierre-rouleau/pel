@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- PEL now enhance Emacs Regular Expression Builder mode by adding the *pel-reb-erase-regxp* command, bound to ~C-c C-d~ in the buffer.
+  This command replaces the currently used regular expression string by an empty string.
 - Add *pel-show-lisp-control-variables*, bound to ~<f11> ? e a l~.
   This prints the values of lisp.el user-options and variables used by the current buffer.
   It's a tool used to analyze the implementation of various major modes, specially for their handling
