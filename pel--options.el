@@ -10846,26 +10846,15 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-seed7
   :type '(repeat function))
 
-(defcustom pel-seed7-tab-width 4
-  "Distance between tab stop for seed7 buffers.
-
-PEL stores this in `tab-width' when opening Seed7 buffers.
-
-This does *NOT* control the indentation in Seed7
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
-  :group 'pel-pkg-for-seed7
-  :type 'integer
-  :safe 'pel-indent-valid-p)
-
-(defcustom pel-seed7-use-tabs nil
-  "Value of `indent-tabs-mode' for editing Seed7 files.
-- If set to nil: only spaces are used for indentation.
-- If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-seed7
-  :type 'boolean
-  :safe #'booleanp)
+;; The seed-mode fully controls indentation and tab-width
+;; via the `seed7-indent-width' user-option.
+;; Therefore, there is no need for a `pel-seed7-tab-width'
+;; and a `pel-seed7-use-tabs' user options.
+;;
+;; The `pel--tab-controlling-major-modes' list includes 'seed7
+;; to prevent PEL from generating mode setup code that would use
+;; PEL specific user options for indent-with and tab control.
+;;
 
 (defcustom pel-seed7-shebang-line "#!/usr/bin/env -S s7 -q"
   "Default shebang line to add in extension-less Seed7 script files."

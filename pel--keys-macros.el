@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-05-18 10:57:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-07-17 16:25:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1573,6 +1573,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
                                                       lfe inferior-lfe
                                                       shell term
                                                       perl rust
+                                                      seed7
                                                       cwl)
   "List of major mode that fully control the tab behaviour and width.
 
