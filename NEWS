@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improved *pel-set-tab-width* and *pel-show-indent*:
+  the new logic allows PEL to identify variables used by a major-mode
+  to set the indentation width and the tab-width.  This information is
+  used by these 2 commands to properly report the behaviour of indentation and tab width
+  control.  It also allows pel-set-tab-width to set the indentation control variable of the major mode when the major mode uses
+  such a variable.
 - PEL now enhance Emacs Regular Expression Builder mode by adding the *pel-reb-erase-regxp* command, bound to ~C-c C-d~ in the buffer.
   This command replaces the currently used regular expression string by an empty string.
 - Add *pel-show-lisp-control-variables*, bound to ~<f11> ? e a l~.

@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-05-16 17:20:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-07-17 23:04:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -351,11 +351,14 @@ by the numeric argument N (or if not specified N=1):
 (defun pel-show-indent (&optional append)
   "Display current buffer's indentation behaviour controlling variable state."
   (interactive "P")
-  (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+  (let ((used-major-mode major-mode)
+        (pel-insert-symbol-content-context-buffer (current-buffer))
         (isa-cc-mode (derived-mode-p pel--c-basic-offset-modes))
         (isa-sh-mode (derived-mode-p '(sh-mode)))
-        (indent-width-control-var pel-indentation-width-control-variable)
-        (indent-other-control-vars pel-indentation-other-control-variables))
+        (indent-width-control-var  pel-indentation-width-control-variable)
+        (indent-other-control-vars pel-indentation-other-control-variables)
+        (tab-width-control-var          pel-tab-width-control-variable)
+        (uses-indent-tabs-mode          indent-tabs-mode))
     (pel-print-in-buffer
      "*pel-indent-info*"
      "Indentation Width Control and Space/Tab Insertion Rendering"
@@ -379,9 +382,10 @@ file variables):"))
          (when isa-sh-mode
            (pel-insert-symbol-content-line 'sh-basic-offset))
          (pel-insert-symbol-content-line 'tab-width)
-         (insert "\n  -> Use ")
-         (pel-insert-symbol 'pel-set-tab-width)
-         (insert " to change locally and have tabs rendered with a different width.")
+         (unless tab-width-control-var
+           (insert "\n  -> Use ")
+           (pel-insert-symbol 'pel-set-tab-width)
+           (insert " to change locally and have tabs rendered with a different width."))
          (pel-insert-symbol-content-line 'indent-tabs-mode)
          (pel-insert-symbol-content-line 'standard-indent)
          (pel-insert-symbol-content-line 'tab-always-indent)
@@ -389,20 +393,19 @@ file variables):"))
          (pel-insert-symbol-content-line 'tab-first-completion)
          (pel-insert-symbol-content-line 'indent-line-function)
 
-
          (when indent-width-control-var
            (insert "\n\n**** Indentation Width Control ****\n")
            (if (symbolp indent-width-control-var)
-               (progn
-                 (insert "\
-The following variable control indentation width in this mode:")
-                 (pel-insert-symbol-content-line indent-width-control-var))
+               (progn (insert (format "\
+The following variable control indentation width in %s:" used-major-mode))
+                      (pel-insert-symbol-content-line indent-width-control-var))
              (insert (format "\
-The following variables control indentation width in this mode.
+The following variables control indentation width in %s.
 The last one (%s) is used by the major mode, the others
 set it when the buffer is opened, with first setting next.
 Some are overwritten by file variables, other are controlled
 by their mode (as in cc-mode):"
+                             used-major-mode
                              (car (last indent-width-control-var))))
              (dolist (var indent-width-control-var)
                (pel-insert-symbol-content-line var))))
@@ -410,7 +413,18 @@ by their mode (as in cc-mode):"
            (insert "\n\
 Indentation is also controlled by these other variables:")
            (dolist (var indent-other-control-vars)
-             (pel-insert-symbol-content-line var)))))
+             (pel-insert-symbol-content-line var)))
+         (when tab-width-control-var
+           (insert "\n-> Use ")
+           (pel-insert-symbol 'pel-set-tab-width)
+           (insert " to temporarily change ")
+           (pel-insert-symbol tab-width-control-var)
+           (insert " and ")
+           (pel-insert-symbol 'tab-width)
+           (insert " in this buffer")
+           (if uses-indent-tabs-mode
+               (insert " and have hard tabs rendered with a different width.")
+             (insert ".")))))
      (unless append :clear-buffer)
      :use-help-mode)))
 

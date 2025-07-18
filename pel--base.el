@@ -385,10 +385,14 @@ executed by `pel-init' on startup.")
 This is a symbol set by the major modes that PEL has instrumented.
 It can also be a list of symbols.  The last one is the one controlling
 the indentation, the symbol listed before are values that are stored into the
-next one .  These variables are used to set the default.")
+next one.  These variables are used to set the default.")
 
 (defvar-local pel-indentation-other-control-variables nil
   "List of other indentation control variables used for the major mode.")
+
+(defvar-local pel-tab-width-control-variable nil
+  "Variable used by the current major mode to control tab width.
+It's assumed that the value of this variable is also stored in `tab-width'.")
 
 ;; ---------------------------------------------------------------------------
 ;; Code Style Buffer Local Variables
@@ -3250,11 +3254,18 @@ of point."
 The change is temporary and affects the current buffer only.
 Return the new `tab-width' or nil if unchanged."
   (interactive "nNew tab-width: ")
-  (while (not (and (< n 9) (> n 1)))
-    (setq n  (read-number "Enter valid tab-width in 2-8 range: " tab-width)))
-  (when (not (= n tab-width))
-    (message "Changed buffer's tab-width from %d to %d" tab-width n)
-    (setq tab-width n)))
+  (let ((current-tab-width
+         (if pel-tab-width-control-variable
+             (pel-symbol-value pel-tab-width-control-variable)
+           tab-width)))
+    (while (not (and (< n 9) (> n 1)))
+      (setq n (read-number "Enter valid tab-width in 2-8 range: "
+                           current-tab-width)))
+    (when (not (= n current-tab-width))
+      (message "Changed buffer's tab-width from %d to %d" current-tab-width n)
+      (when pel-tab-width-control-variable
+        (set (make-local-variable pel-tab-width-control-variable) n))
+      (setq-local tab-width n))))
 
 ;; ---------------------------------------------------------------------------
 ;; Speedbar Support
