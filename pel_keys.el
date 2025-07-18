@@ -5173,8 +5173,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   (pel-eval-after-load seed7-mode
     (pel-config-major-mode seed7 pel:for-seed7
-      (setq-local pel-indentation-width-control-variable 'seed7-indent-width
-                  pel-tab-width-control-variable         'seed7-indent-width)
+      (setq-local pel-indentation-width-control-variable 'seed7-indent-width)
+      (setq-local pel-tab-width-control-variable         'seed7-indent-width)
       (when (boundp 'seed7-mode-map)
         (let ((map seed7-mode-map))
           (define-key map (kbd "<f6> <up>")    'seed7-beg-of-defun)
