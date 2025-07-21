@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-12-23 19:45:23 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-07-21 08:05:41 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2022, 2023, 2024, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -80,6 +80,7 @@ the statements on the current line with the above contiguous lines."
 Clear previous buffer content unless optional APPEND argument is non-nil,
 in which case it appends to the previous report."
   (interactive "P")
+  (require 'align)
   (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
     (pel-print-in-buffer
      "*pel-align-info*"
@@ -95,7 +96,8 @@ in which case it appends to the previous report."
        (insert "\n  -> Use ")
        (pel-insert-symbol 'pel-toggle-newline-indent-align)
        (insert " command to toggle it.")
-       (pel-insert-symbol-content-line 'pel-modes-activating-align-on-return))
+       (pel-insert-symbol-content-line 'pel-modes-activating-align-on-return)
+       (pel-insert-list-content 'align-rules-list))
      (unless append :clear-buffer)
      :use-help-mode)))
 
