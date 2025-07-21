@@ -23,12 +23,11 @@
 ;; ---------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; A collection of copy, kill and delete functions targeting specific
-;; syntax entities, with the implementation of a flexible function
-;; that can kill or delete the current line, multiple lines or the
-;; marked region: `pel-kill-or-delete-marked-or-whole-line'.  The file
-;; also provides other interactive functions to copy, kill or delete
-;; specific entities.
+;; A collection of small but useful copy, kill and delete functions targeting
+;; specific syntax entities, with the implementation of a flexible function
+;; that can kill or delete the current line, multiple lines or the marked
+;; region: `pel-kill-or-delete-marked-or-whole-line'.  The file also provides
+;; other interactive functions to copy, kill or delete specific entities.
 ;;
 ;; Also includes specialized yank function.
 ;;
@@ -36,20 +35,64 @@
 ;;* Table of Content
 ;;  ================
 ;;
-;; Note: The table shows the sections (prefixed with '-'), interactive
-;;       commands (prefixed with '*') and utility functions (prefixed with
-;;       '.').  A 'o' is used to mark a defun identified somewhere else.
-;;       The defuns are mostly listed in code order except when a call
-;;       hierarchy is shown.
-;;       Use `iedit' or the `outline-minor-mode' in `lispy-mode' to outline
-;;       sections and quickly navigate across them.
+;; Note:
+;; The table shows
+;;   - the sections (prefixed with '-'),
+;;   - interactive commands (prefixed with '*')
+;;   - utility functions (prefixed with '.')
+;;   - 'o' is used to mark a defun identified somewhere else.
+;;     Functions called by those are not repeated.
+;;
+;; The defuns are mostly listed in code order except when a call
+;; hierarchy is shown.
+;; Use `iedit' or the `outline-minor-mode' in `lispy-mode' to outline
+;; sections and quickly navigate across them.
 ;;
 ;; - Utility
+;;   . `pel--ccp-require-thingatpt'
 ;; - Display Control
+;;   * `pel-toggle-show-copy-cut-text'
+;;   . `pel-show-copied'
+;;     . `pel--show-copied'
+;;       . `pel--show-kill-ring-top'
+;;   . `pel-show-killed'
+;;     . `pel--show-killed'
+;;       o `pel--show-kill-ring-top'
 ;; - Copy Commands
+;;   * `pel-copy-word-at-point'
+;;     . `pel--copy-thing-at-point'
+;;   * `pel-copy-symbol-at-point'
+;;     o `pel--copy-thing-at-point'
+;;   * `pel-copy-sentence-at-point'
+;;     o `pel--copy-thing-at-point'
+;;   * `pel-copy-function-at-point'
+;;     o `pel--copy-thing-at-point'
+;;   * `pel-copy-sexp-at-point'
+;;     o `pel--copy-thing-at-point'
+;;   * `pel-copy-whitespace-at-point'
+;;     o `pel--copy-thing-at-point'
+;;   * `pel-copy-filename-at-point'
+;;     o `pel--copy-thing-at-point'
+;;   * `pel-copy-url-at-point'
+;;     o `pel--copy-thing-at-point'
+;;   * `pel-copy-list-at-point'
+;;     o `pel--copy-thing-at-point'
+;;   * `pel-copy-paragraph-at-point'
+;;     o `pel--copy-thing-at-point'
+;;   * `pel-copy-paragraph-start'
+;;     o `pel--copy-thing-at-point'
+;;   * `pel-copy-paragraph-end'
+;;     o `pel--copy-thing-at-point'
+;;   * `pel-copy-line-start'
+;;     o `pel--copy-thing-at-point'
+;;   * `pel-copy-line-end'
+;;     o `pel--copy-thing-at-point'
+;;   * `pel-copy-char-at-point'
+;;     o `pel--copy-thing-at-point'
 ;; - Kill Commands
 ;;   * `pel-kill-word-at-point'
 ;;     . `pel--kill-thing-at-point'
+;;       . `pel--ccp-require-thingatpt'
 ;;   * `pel-kill-word-part'
 ;;     o`pel--kill-thing-at-point'
 ;;   * `pel-kill-symbol-at-point'
