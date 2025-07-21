@@ -31,23 +31,120 @@
 ;; specific entities.
 ;;
 ;; Also includes specialized yank function.
+;;
+;;
+;;* Table of Content
+;;  ================
+;;
+;; Note: The table shows the sections (prefixed with '-'), interactive
+;;       commands (prefixed with '*') and utility functions (prefixed with
+;;       '.').  A 'o' is used to mark a defun identified somewhere else.
+;;       The defuns are mostly listed in code order except when a call
+;;       hierarchy is shown.
+;;       Use `iedit' or the `outline-minor-mode' in `lispy-mode' to outline
+;;       sections and quickly navigate across them.
+;;
+;; - Utility
+;; - Display Control
+;; - Copy Commands
+;; - Kill Commands
+;;   * `pel-kill-word-at-point'
+;;     . `pel--kill-thing-at-point'
+;;   * `pel-kill-word-part'
+;;     o`pel--kill-thing-at-point'
+;;   * `pel-kill-symbol-at-point'
+;;     o`pel--kill-thing-at-point'
+;;   * `pel-kill-symbol-part'
+;;     o`pel--kill-thing-at-point'
+;;   * `pel-kill-sentence-at-point'
+;;     o`pel--kill-thing-at-point'
+;;   * `pel-kill-function-at-point'
+;;     o`pel--kill-thing-at-point'
+;;   * `pel-kill-sexp-at-point'
+;;     o`pel--kill-thing-at-point'
+;;   * `pel-kill-whitespace-at-point'
+;;     o`pel--kill-thing-at-point'
+;;   * `pel-kill-filename-at-point'
+;;     o`pel--kill-thing-at-point'
+;;   * `pel-kill-url-at-point'
+;;     o`pel--kill-thing-at-point'
+;;   * `pel-kill-list-at-point'
+;;     o`pel--kill-thing-at-point'
+;;   * `pel-kill-paragraph-at-point'
+;;   * `pel-kill-char-at-point'
+;; - Delete Commands
+;;   * `pel-delete-all-empty-lines'
+;;   * `pel-delete-word-at-point'
+;;     o `pel-kill-word-at-point'
+;;   * `pel-delete-word-part'
+;;     o `pel-kill-word-part'
+;;   * `pel-delete-symbol-at-point'
+;;     o `pel-kill-symbol-at-point'
+;;   * `pel-delete-symbol-part'
+;;     o `pel-kill-symbol-part'
+;;   * `pel-delete-sentence-at-point'
+;;     o `pel-kill-sentence-at-point'
+;;   * `pel-delete-function-at-point'
+;;     o `pel-delete-function-at-point'
+;;   * `pel-delete-sexp-at-point'
+;;     o `pel-kill-sexp-at-point'
+;;   * `pel-delete-whitespace-at-point'
+;;     o `pel-kill-whitespace-at-point'
+;;   * `pel-delete-filename-at-point'
+;;     o `pel-kill-filename-at-point'
+;;   * `pel-delete-url-at-point'
+;;     o `pel-kill-url-at-point'
+;;   * `pel-delete-list-at-point'
+;;     o `pel-kill-list-at-point'
+;;   * `pel-delete-line'
+;;   * `pel-delete-paragraph-at-point'
+;;     o `pel-kill-paragraph-at-point'
+;;   * `pel-backward-delete-paragraph'
+;;   * `pel-delete-paragraph'
+;;   * `pel-delete-sexp'
+;;   * `pel-backward-delete-sexp'
+;;   * `pel-delete-rectangle'
+;; - Flexible whole-line/marked area delete/kill
+;;   * `pel-kill-or-delete-marked-or-whole-line'
+;;     . `pel--kill-line-but-delete-if-empty'
+;;       . `pel--current-line-empty-p'
+;;     . `pel--delete-whole-lines'
+;;       * `pel-delete-whole-line'
+;; - Copy current marked region or whole current line
+;;   * `pel-mark-whole-line'
+;;   * `pel-copy-marked-or-whole-line'
+;; - Kill beginning of line
+;;   * `pel-delete-from-beginning-of-line'
+;;     * `pel-kill-from-beginning-of-line'
+;; - Delete whitespace between point and next non-whitespace
+;;   * `pel-kill-word-and-whitespace'
+;;     * `pel-delete-to-next-visible'
+;; - Duplicate current line
+;;   * `pel-duplicate-line'
+;; - Join with next line
+;;   * `pel-join-next-line'
+;; - Specialized yank
+;;   * `pel-toggle-overwrite-yank'
+;;   * `pel-overwrite-yank'
 
+;; ---------------------------------------------------------------------------
 ;;; Dependencies:
 (require 'pel--base)
 (require 'pel--options)
 
 ;;; Code:
 ;; ---------------------------------------------------------------------------
-;; Utility
-;; -------
+;;* Utility
+;;  =======
 (defun pel--ccp-require-thingatpt ()
   "Load thingatpt/."
   (unless (and (require 'thingatpt nil :noerror)
                (fboundp 'bounds-of-thing-at-point))
     (user-error "Failed loading thingatpt!")))
 
-;; Display Control
-;; ---------------
+;; ---------------------------------------------------------------------------
+;;* Display Control
+;;  ===============
 
 ;;-pel-autoload
 (defun pel-toggle-show-copy-cut-text (&optional globally)
@@ -94,8 +191,9 @@ Use this function as an :after advice to show what was just killed."
   "Display what was killed.  Ignore arguments."
   (pel--show-killed))
 
-;; Copy Commands.
-;; --------------
+;; ---------------------------------------------------------------------------
+;;* Copy Commands
+;;  =============
 
 (defun pel--copy-thing-at-point (thing)
   "Copy the `thing-at-point' for the specified kind of THING.
@@ -167,7 +265,7 @@ which only includes the list at point."
   (interactive)
   (pel--copy-thing-at-point 'list))
 
-;; ---------------------------------------------------------------------------
+;; --
 
 ;;-pel-autoload
 (defun pel-copy-paragraph-at-point (&optional n)
@@ -244,10 +342,9 @@ a negative N copies the character backwards (before point)."
                            (point)))
     (pel--show-copied)))
 
-
 ;; ---------------------------------------------------------------------------
-;; Kill Commands
-;; -------------
+;;* Kill Commands
+;;  =============
 
 (defun pel--kill-thing-at-point (thing)
   "Kill the `thing-at-point' for the specified kind of THING.
@@ -382,8 +479,8 @@ a negative N kills characters backwards."
     (pel--show-killed)))
 
 ;; ---------------------------------------------------------------------------
-;; Delete Commands
-;; ---------------
+;;* Delete Commands
+;;  ===============
 
 (defun pel-delete-all-empty-lines (&optional begin end)
   "Remove all empty lines from marked area or the entire buffer."
@@ -403,7 +500,6 @@ a negative N kills characters backwards."
   (let (kill-ring
         (pel--isa-delete-operation t))
     (pel-kill-word-at-point)))
-
 
 ;;-pel-autoload
 (defun pel-delete-word-part (&optional beginning)
@@ -568,8 +664,8 @@ This command assumes point is not in a string or comment."
       (kill-rectangle start end nil))))
 
 ;; ---------------------------------------------------------------------------
-;; Flexible whole-line/marked area delete/kill
-;; -------------------------------------------
+;;* Flexible whole-line/marked area delete/kill
+;;  -------------------------------------------
 
 ;;-pel-autoload
 (defun pel-delete-whole-line ()
@@ -649,8 +745,9 @@ the filtering and `kill-ring' appending capabilities."
 ;;   (yank)
 ;;   (pel-kill-or-delete-marked-or-whole-line -1))
 
-;; Copy current marked region or whole current line
-;; ------------------------------------------------
+;; ---------------------------------------------------------------------------
+;;* Copy current marked region or whole current line
+;;  ================================================
 
 ;;-pel-autoload
 (defun pel-mark-whole-line ()
@@ -693,8 +790,9 @@ All copy operations are performed by `kill-ring-save'."
                               (point)))))))
     (pel--show-copied)))
 
-;; Kill beginning of line
-;; ----------------------
+;; ---------------------------------------------------------------------------
+;;* Kill beginning of line
+;;  ======================
 ;;-pel-autoload
 (defun pel-kill-from-beginning-of-line ()
   "Kill from the beginning of the line to point."
@@ -714,8 +812,8 @@ All copy operations are performed by `kill-ring-save'."
     (pel-kill-from-beginning-of-line)))
 
 ;; ---------------------------------------------------------------------------
-;; Delete whitespace between point and next non-whitespace
-;; -------------------------------------------------------
+;;* Delete whitespace between point and next non-whitespace
+;;  =======================================================
 ;;-pel-autoload
 (defun pel-delete-to-next-visible (&optional n)
   "Delete all whitespace between point and next non-whitespace character.
@@ -743,8 +841,8 @@ With argument ARG, kill that many words then the whitespace following them."
   (pel-delete-to-next-visible))     ; delete whitespace to next word
 
 ;; ---------------------------------------------------------------------------
-;; Duplicate current line
-;; ----------------------
+;;* Duplicate current line
+;;  ======================
 
 ;;-pel-autoload
 (defun pel-duplicate-line (&optional n)  ; line a line another line
@@ -812,8 +910,8 @@ Nothing is copied to the kill ring."
       (goto-char original-pos))))
 
 ;; ---------------------------------------------------------------------------
-;; Join with next line
-;; -------------------
+;;* Join with next line
+;;  ===================
 
 ;;-pel-autoload
 (defun pel-join-next-line ()
@@ -821,10 +919,9 @@ Nothing is copied to the kill ring."
   (interactive)
   (delete-indentation 1))
 
-
 ;; ---------------------------------------------------------------------------
-;; Specialized yank
-;; ----------------
+;;* Specialized yank
+;;  ================
 ;;
 ;; PEL provides a basic yank command, `pel-overwrite-yank' that behaves as
 ;; Emacs standard yank or as text replacement when the buffer is in overwrite
