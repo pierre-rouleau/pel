@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-07-21 16:30:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-07-21 18:48:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -108,6 +108,9 @@ in which case it appends to the previous report."
        (pel-insert-symbol-content-line 'align-perl-modes)
        (pel-insert-symbol-content-line 'align-tex-modes)
        (pel-insert-symbol-content-line 'align-text-modes)
+       (pel-insert-list-content 'align-mode-exclude-rules-list)
+       (pel-insert-list-content 'align-mode-rules-list)
+       (pel-insert-list-content 'align-exclude-rules-list)
        (pel-insert-list-content 'align-rules-list))
      (unless append :clear-buffer)
      :use-help-mode)))
