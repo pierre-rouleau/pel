@@ -231,7 +231,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-delete-rectangle
     pel-delete-whole-line
     pel-kill-or-delete-marked-or-whole-line
-    ;; pel-replace-with-kill  ;; future
+    pel-replace-line-with-kill
     pel-mark-whole-line
     pel-copy-marked-or-whole-line
     pel-kill-from-beginning-of-line

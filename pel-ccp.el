@@ -148,11 +148,12 @@
 ;;   * `pel-backward-delete-sexp'
 ;;   * `pel-delete-rectangle'
 ;; - Flexible whole-line/marked area delete/kill
-;;   * `pel-kill-or-delete-marked-or-whole-line'
-;;     . `pel--kill-line-but-delete-if-empty'
-;;       . `pel--current-line-empty-p'
-;;     . `pel--delete-whole-lines'
-;;       * `pel-delete-whole-line'
+;;   * `pel-replace-line-with-kill'
+;;     * `pel-kill-or-delete-marked-or-whole-line'
+;;       . `pel--kill-line-but-delete-if-empty'
+;;         . `pel--current-line-empty-p'
+;;       . `pel--delete-whole-lines'
+;;         * `pel-delete-whole-line'
 ;; - Copy current marked region or whole current line
 ;;   * `pel-mark-whole-line'
 ;;   * `pel-copy-marked-or-whole-line'
@@ -783,12 +784,12 @@ the filtering and `kill-ring' appending capabilities."
           (pel--delete-whole-lines (abs n)))))
     (pel--show-killed)))
 
-;; ;;-pel-autoload
-;; (defun pel-replace-with-kill ()
-;;   ""
-;;   (interactive)
-;;   (yank)
-;;   (pel-kill-or-delete-marked-or-whole-line -1))
+;;-pel-autoload
+(defun pel-replace-line-with-kill ()
+  "Replace current line with the content of last kill."
+  (interactive)
+  (yank)
+  (pel-kill-or-delete-marked-or-whole-line -1))
 
 ;; ---------------------------------------------------------------------------
 ;;* Copy current marked region or whole current line

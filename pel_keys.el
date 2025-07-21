@@ -1363,6 +1363,8 @@ Your version of Emacs does not support dynamic module.")))
 (define-key pel: (kbd      "<M-left>")     'pel-backward-syntaxchange-start)
 (define-key pel: (kbd      "0")           #'hl-line-mode)
 (define-key pel: (kbd      "M-=")          'pel-toggle-show-copy-cut-text)
+(define-key pel: (kbd      "C-y")          'pel-replace-line-with-kill)
+
 ;; add ``<f11> C-l`` binding to recenter-top-bottom because some modes use C-l
 ;; as a prefix key and this feature is quite useful.
 (define-key pel: (kbd      "C-l")          'recenter-top-bottom)
