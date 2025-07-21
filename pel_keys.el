@@ -6025,6 +6025,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
 (define-key pel:kill   " "  'pel-kill-whitespace-at-point)
 (define-key pel:delete " "  'pel-delete-whitespace-at-point)
+(define-key pel:kill   "?"  'pel-ccp-info)
+(define-key pel:delete "?"  'pel-ccp-info)
 (define-key pel:kill   "c"  'pel-kill-char-at-point)
 ;; DEL
 (define-key pel:kill   "w"  'pel-kill-word-at-point)

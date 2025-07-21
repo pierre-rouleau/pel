@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-ccp-info*, bound to ~<f11> - ?~ and to ~<f11> = ?~.
+  The command prints the current value of important customizable user-option variables that influence
+  Emacs delete key behaviour as well as various kill, yank, cut and paste operations.
 - Improved *pel-set-tab-width* and *pel-show-indent*:
   the new logic allows PEL to identify variables used by a major-mode
   to set the indentation width and the tab-width.  This information is

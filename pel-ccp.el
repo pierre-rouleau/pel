@@ -169,6 +169,8 @@
 ;; - Specialized yank
 ;;   * `pel-toggle-overwrite-yank'
 ;;   * `pel-overwrite-yank'
+;; - Information Helper
+;;   * `pel-ccp-info'
 
 ;; ---------------------------------------------------------------------------
 ;;; Dependencies:
@@ -995,6 +997,52 @@ Otherwise yank/insert as usual."
     (delete-char (length (current-kill 0))))
   (yank arg))
 
+
+;; ---------------------------------------------------------------------------
+;;* Information Helper
+;;  ==================
+;;
+
+(defun pel-ccp-info (&optional append)
+  "Display current buffer's delete, cut copy & paste behaviour.
+
+Clear previous buffer content unless optional APPEND argument is
+non-nil, in which case it appends to the previous report."
+  (interactive "P")
+  (require 'align)
+  (let ((use-lispy (bound-and-true-p lispy-mode))
+        (pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-ccp-info*"
+     "Delete, Cut & Paste Control"
+     (lambda ()
+       (insert "Delete key behaviour control:")
+       (pel-insert-symbol-content-line 'delete-selection-mode)
+
+       (insert "\n\nOther Emacs delete and kill behaviour control:")
+       (pel-insert-symbol-content-line 'delete-selection-mode)
+       (pel-insert-symbol-content-line 'delete-selection-mode-hook)
+       (pel-insert-symbol-content-line 'delete-selection-temporary-region)
+       (pel-insert-symbol-content-line 'delete-trailing-lines)
+       (pel-insert-symbol-content-line 'kill-ring-deindent-mode)
+       (pel-insert-symbol-content-line 'kill-ring-deindent-mode-hook)
+       (pel-insert-symbol-content-line 'kill-ring-max)
+       (pel-insert-symbol-content-line 'normal-erase-is-backspace)
+       (pel-insert-symbol-content-line 'xterm-store-paste-ok-kill-ring)
+       (pel-insert-symbol-content-line 'yank-from-kill-ring-rotate)
+
+       (when use-lispy
+         (insert "\n\nOther local buffer mode specific controls:")
+         (pel-insert-symbol-content-line 'lispy-safe-delete))
+
+       (insert "\n\nPEL functionality control:")
+       (pel-insert-symbol-content-line 'pel-show-copy-cut-text)
+       (pel-insert-symbol-content-line 'pel-use-browse-kill-ring)
+       (pel-insert-symbol-content-line 'pel-use-popup-kill-ring)
+       (pel-insert-symbol-content-line 'pel-delete-trailing-whitespace)
+       (pel-insert-symbol-content-line 'pel-modes-preventing-delete-trailing-whitespace))
+     (unless append :clear-buffer)
+     :use-help-mode)))
 ;;; --------------------------------------------------------------------------
 
 (provide 'pel-ccp)
