@@ -5991,6 +5991,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> =`` : Copy commands
 
 (define-pel-global-prefix pel:copy (kbd "<f11> ="))
+(define-key pel:copy "?"  'pel-ccp-info)
 (define-key pel:copy " "  'pel-copy-whitespace-at-point)
 (define-key pel:copy "("  'pel-copy-list-at-point)
 (define-key pel:copy "."  'pel-copy-symbol-at-point)

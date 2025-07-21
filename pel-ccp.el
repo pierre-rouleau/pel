@@ -972,18 +972,18 @@ Nothing is copied to the kill ring."
 ;; Emacs standard yank or as text replacement when the buffer is in overwrite
 ;; mode.  The insertion/overwrite behaviour is controlled by the
 ;; `pel-activate-overwrite-yank' user option, which initializes the buffer
-;; local `pel--activate-overwrite-yank'.  That can be further modified
+;; local `pel--activate-overwrite-yank-in-buffer'.  That can be further modified
 ;; dynamically in each buffer by execution of the `pel-toggle-overwrite-yank'
 ;; command.
 
-(defvar-local pel--activate-overwrite-yank pel-activate-overwrite-yank
+(defvar-local pel--activate-overwrite-yank-in-buffer pel-activate-overwrite-yank
   "Activate overwrite yank when overwrite-mode is on.")
 
 (defun pel-toggle-overwrite-yank ()
   "Toggle overwrite yank."
   (interactive)
   (if (eq (key-binding (kbd "C-y")) 'pel-overwrite-yank)
-      (pel-toggle-and-show 'pel--activate-overwrite-yank
+      (pel-toggle-and-show 'pel--activate-overwrite-yank-in-buffer
                            "overwriting" "inserting"
                            :locally "When in overwrite-mode, yank")
     (user-error "C-y is not bound to pel-overwrite-yank in this buffer")))
@@ -992,11 +992,10 @@ Nothing is copied to the kill ring."
   "Yank over existing text when overwrite-mode is active.
 Otherwise yank/insert as usual."
   (interactive)
-  (when (and pel--activate-overwrite-yank
+  (when (and pel--activate-overwrite-yank-in-buffer
              (bound-and-true-p overwrite-mode))
     (delete-char (length (current-kill 0))))
   (yank arg))
-
 
 ;; ---------------------------------------------------------------------------
 ;;* Information Helper
@@ -1037,6 +1036,8 @@ non-nil, in which case it appends to the previous report."
 
        (insert "\n\nPEL functionality control:")
        (pel-insert-symbol-content-line 'pel-show-copy-cut-text)
+       (pel-insert-symbol-content-line 'pel-activate-overwrite-yank)
+       (pel-insert-symbol-content-line 'pel--activate-overwrite-yank-in-buffer)
        (pel-insert-symbol-content-line 'pel-use-browse-kill-ring)
        (pel-insert-symbol-content-line 'pel-use-popup-kill-ring)
        (pel-insert-symbol-content-line 'pel-delete-trailing-whitespace)
