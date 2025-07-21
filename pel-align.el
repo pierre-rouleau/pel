@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-07-21 08:05:41 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-07-21 15:42:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -97,6 +97,14 @@ in which case it appends to the previous report."
        (pel-insert-symbol 'pel-toggle-newline-indent-align)
        (insert " command to toggle it.")
        (pel-insert-symbol-content-line 'pel-modes-activating-align-on-return)
+       (pel-insert-symbol-content-line 'align-open-comment-modes)
+       (pel-insert-symbol-content-line 'align-dq-string-modes)
+       (pel-insert-symbol-content-line 'align-sq-string-modes)
+       (pel-insert-symbol-content-line 'align-c++-modes)
+       (pel-insert-symbol-content-line 'align-lisp-modes)
+       (pel-insert-symbol-content-line 'align-perl-modes)
+       (pel-insert-symbol-content-line 'align-tex-modes)
+       (pel-insert-symbol-content-line 'align-text-modes)
        (pel-insert-list-content 'align-rules-list))
      (unless append :clear-buffer)
      :use-help-mode)))
