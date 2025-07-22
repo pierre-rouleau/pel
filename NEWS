@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add ~<f11> M-a~ key binding to *current-align*.
 - Add *pel-replace-line-with-kill*, bound to ~<f11> C-y~ which replaces the current line
   with the last killed entry.  Use ~M-y~ as usual to replace it.
 - Add *pel-ccp-info*, bound to ~<f11> - ?~, ~<f11> = ?~ and to ~<f11> DEL ?~.

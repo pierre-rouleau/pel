@@ -8635,17 +8635,18 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> t a``: Text align
 
 (define-pel-global-prefix pel:align (kbd "<f11> t a"))
-(define-key pel:align "a" #'align)
-(define-key pel:align "c" #'align-current)
-(define-key pel:align "e" #'align-entire)
-(define-key pel:align "l" #'align-newline-and-indent)
-(define-key pel2: (kbd "M-a")  #'align-regexp)
+(define-key pel:align "a"     #'align)
+(define-key pel:align "c"     #'align-current)
+(define-key pel: (kbd "M-a")  #'align-current)
+(define-key pel:align "e"     #'align-entire)
+(define-key pel:align "l"     #'align-newline-and-indent)
+(define-key pel2: (kbd "M-a") #'align-regexp)
 (define-key pel2: (kbd "M-A")  'pel-multi-align-regexp)
-(define-key pel:align "r" #'align-regexp)
-(define-key pel:align "h" #'align-highlight-rule)
-(define-key pel:align "H" #'align-unhighlight-rule)
-(define-key pel:align "w"  'pel-align-words-vertically)
-(define-key pel:align "?"  'pel-align-info)
+(define-key pel:align "r"     #'align-regexp)
+(define-key pel:align "h"     #'align-highlight-rule)
+(define-key pel:align "H"     #'align-unhighlight-rule)
+(define-key pel:align "w"      'pel-align-words-vertically)
+(define-key pel:align "?"      'pel-align-info)
 
 
 ;; - Alias for align-regexp: ar
