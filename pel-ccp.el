@@ -1017,7 +1017,8 @@ non-nil, in which case it appends to the previous report."
      "Delete, Cut & Paste Control"
      (lambda ()
        (insert "Delete key behaviour control:")
-       (pel-insert-symbol-content-line 'delete-selection-mode)
+       (pel-insert-symbol-content-line 'normal-erase-is-backspace)
+       (pel-insert-symbol-content-line 'pel-force-normal-erase-is-backspace-off-in-terminal)
 
        (insert "\n\nOther Emacs delete and kill behaviour control:")
        (pel-insert-symbol-content-line 'delete-selection-mode)
@@ -1027,7 +1028,6 @@ non-nil, in which case it appends to the previous report."
        (pel-insert-symbol-content-line 'kill-ring-deindent-mode)
        (pel-insert-symbol-content-line 'kill-ring-deindent-mode-hook)
        (pel-insert-symbol-content-line 'kill-ring-max)
-       (pel-insert-symbol-content-line 'normal-erase-is-backspace)
        (pel-insert-symbol-content-line 'xterm-store-paste-ok-kill-ring)
        (pel-insert-symbol-content-line 'yank-from-kill-ring-rotate)
 

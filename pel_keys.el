@@ -294,6 +294,23 @@ Done in this function to allow advising libraries that remap these keys."
 (pel-bind-negative-argument)
 
 ;; ---------------------------------------------------------------------------
+;; Adjust behaviour of the delete key if required
+;; ----------------------------------------------
+;;
+;;
+
+(when (and pel-emacs-is-a-tty-p
+           pel-force-normal-erase-is-backspace-off-in-terminal)
+  (run-with-idle-timer
+   (if (integerp pel-force-normal-erase-is-backspace-off-in-terminal)
+       pel-force-normal-erase-is-backspace-off-in-terminal
+     1)
+   nil
+   (lambda ()
+     (normal-erase-is-backspace-mode -1)
+     (message ":ROUP FORCING (normal-erase-is-backspace-mode -1)"))))
+
+;; ---------------------------------------------------------------------------
 ;; Augmenting the behaviour of some Emacs standard commands
 ;; --------------------------------------------------------
 ;;

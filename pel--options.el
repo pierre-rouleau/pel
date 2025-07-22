@@ -3425,6 +3425,28 @@ To activate it you must also activate `pel-use-log-support'"
   :link `(url-link :tag "Hide/Show PDF" ,(pel-pdf-file-url "hide-show-code"))
   :link `(url-link :tag "Windows PDF" ,(pel-pdf-file-url "windows")))
 
+(defcustom pel-force-normal-erase-is-backspace-off-in-terminal nil
+  "When non-nil force normal-erase-is-backspace to off in terminal mode.
+Use this when you use Emacs in terminal mode and in graphics mode, use
+only one customization file and your delete key deletes forward instead
+of backward in terminal mode.  This is sometimes required to run Emacs on
+macOS Terminal.
+
+When this is set nil, PEL does not modify the value selected by the
+`normal-erase-is-backspace' user-option.
+If it is set to a integer, PEL forces `normal-erase-is-backspace' off in
+terminal mode by executing the necessary command some time after the complete
+initialization.  The amount of time is specified by the integer value, in
+seconds.  If your Emacs initialization is relatively quick a value of 1 second
+is enough. Increase the value if your Emacs initialization exceeds 1 second
+and the setting does not seem to have any impact on the behaviour of the
+delete key."
+  :group 'pel-pkg-for-keys
+  :type '(choice
+          (const :tag "Do not force" nil)
+          (integer :tag "Force it on startup after specified # of seconds"
+                   :value 1)))
+
 (defcustom pel-use-hydra nil
   "Control whether PEL uses the hydra package."
   :group 'pel-pkg-for-keys
