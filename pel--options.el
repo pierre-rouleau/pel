@@ -1460,8 +1460,7 @@ Activating the `pel-use-lispy' user-option indirectly activates
   :group 'pel-pkg-for-cursor
   :type 'boolean
   :safe #'booleanp
-  : link
-  :link `(url-link :tag "multiple-cursors @ GitHub"
+  :link '(url-link :tag "multiple-cursors @ GitHub"
                    "https://github.com/magnars/multiple-cursors.el"))
 (pel-put 'pel-use-multiple-cursors :also-required-when 'pel-use-lispy)
 
@@ -2538,6 +2537,8 @@ Activating the `pel-use-lispy' user-option indirectly activates
   :group 'pel-pkg-for-iedit
   :type 'boolean
   :safe #'booleanp
+  :link '(url-link :tag "Active fork of lispy while abo-abo is inactive on it"
+                   "https://github.com/enzuru/lispy")
   :link '(url-link :tag "iedit @ GitHub"
                    "https://github.com/victorhge/iedit"))
 (pel-put 'pel-use-iedit :also-required-when 'pel-use-lispy)
