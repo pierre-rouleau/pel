@@ -1460,6 +1460,7 @@ Activating the `pel-use-lispy' user-option indirectly activates
   :group 'pel-pkg-for-cursor
   :type 'boolean
   :safe #'booleanp
+  : link
   :link `(url-link :tag "multiple-cursors @ GitHub"
                    "https://github.com/magnars/multiple-cursors.el"))
 (pel-put 'pel-use-multiple-cursors :also-required-when 'pel-use-lispy)
@@ -1506,10 +1507,10 @@ Notes:
 - The version of this package on MELPA is version 0.2.8 and obsolete.
 - The author maintains its latest version (0.2.11) in the EmacsWiki.
 - PEL uses the EmacsWiki version."
-  :link `(url-link :tag "popup-kill-ring @ EmacsWiki"
-                   "https://www.emacswiki.org/emacs/popup-kill-ring.el")
-  :link `(url-link :tag "Uncle Dave's YouTube video on popup-kill-ring"
-                   "https://www.youtube.com/watch?v=LFXA089Tx38")
+  :link '(url-link :tag "popup-kill-ring @ EmacsWiki"
+                  "https://www.emacswiki.org/emacs/popup-kill-ring.el")
+  :link '(url-link :tag "Uncle Dave's YouTube video on popup-kill-ring"
+                  "https://www.youtube.com/watch?v=LFXA089Tx38")
   :group 'pel-pkg-for-cut-and-paste
   :type 'boolean
   :safe #'booleanp)
@@ -2040,8 +2041,8 @@ Select one of:
   :group 'pel-pkg-for-neotree
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link :tag "NeoTree @ GitHub"
-                   "https://github.com/jaypei/emacs-neotree"))
+  :link '(url-link :tag "NeoTree @ GitHub"
+                  "https://github.com/jaypei/emacs-neotree"))
 
 (defcustom pel-neotree-font-in-terminal nil
   "NeoTree view font for directory node in terminal mode.
@@ -2059,8 +2060,8 @@ The Icons choice uses the icons from the package all-the-icons."
   :type  '(choice
            (const :tag "Default" nil)
            (const :tag "Icons" icons))
-  :link `(url-link :tag "all-the-icons @ GitHub"
-                   "https://github.com/domtronn/all-the-icons.el"))
+  :link '(url-link :tag "all-the-icons @ GitHub"
+                  "https://github.com/domtronn/all-the-icons.el"))
 
 ;;   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-pkg-for-ztree nil
@@ -2205,8 +2206,8 @@ This is only used when Emacs runs in graphics mode."
   :group 'pel-pkg-for-graphics-emacs
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link :tag "all-the-icons @ GitHub"
-                   "https://github.com/domtronn/all-the-icons.el"))
+  :link '(url-link :tag "all-the-icons @ GitHub"
+                  "https://github.com/domtronn/all-the-icons.el"))
 (pel-put 'pel-use-all-the-icons :restricted-to 'pel-emacs-is-graphic-p)
 
 (defcustom pel-use-all-the-icons-ibuffer nil
@@ -3077,7 +3078,7 @@ Repository: https://github.com/Silex/elmacro"
   :group 'pel-package-use
   :group 'keyboard
   :link `(url-link :tag "Key-chords PDF" ,(pel-pdf-file-url "key-chords"))
-  :link `(url-link :tag "key-chord.el"
+  :link '(url-link :tag "key-chord.el"
                    "https://github.com/emacsorphanage/key-chord/\
 blob/master/key-chord.el"))
 
@@ -3092,7 +3093,7 @@ This can be set to:
         `key-chord-mode' is executed.  Not before.
 - 2: use-from-start:  Use, load and activate  1 second after Emacs starts."
   :group 'pel-pkg-for-key-chord
-  :link `(url-link :tag "key-chord @ MELPA" "https://melpa.org/#/key-chord")
+  :link '(url-link :tag "key-chord @ MELPA" "https://melpa.org/#/key-chord")
   :type '(choice
           (const :tag "Do not use" nil)
           (const :tag "Use, activate later by command"  t)
@@ -3911,11 +3912,11 @@ characters."
   "Control whether PEL uses the Graphviz Dot tool and its associated package.
 It supports the Graphviz Dot file format and the ability to create graphics
 images from their Graphviz Dot files."
-  :link `(url-link :tag "Graphviz home page"
+  :link '(url-link :tag "Graphviz home page"
                    "https://www.graphviz.org")
-  :link `(url-link :tag "DOT Language"
+  :link '(url-link :tag "DOT Language"
                    "https://www.graphviz.org/doc/info/lang.html")
-  :link `(url-link :tag "graphviz-dot-mode @ MELPA"
+  :link '(url-link :tag "graphviz-dot-mode @ MELPA"
                    "https://melpa.org/#/graphviz-dot-mode")
   :group 'pel-pkg-for-graphviz-dot
   :type 'boolean
@@ -6280,11 +6281,11 @@ CC Mode Built-in Styles."
   :safe 'pel-c-style-valid-p
   :link '(custom-group-link "pel-pkg-for-c")
   :link '(custom-manual "(ccmode)Built-in Styles")
-  :link `(url-link
+  :link '(url-link
           :tag "Bracket styles @ Emacs Manual"
           "https://www.gnu.org/software/emacs/manual/html_node/\
 ccmode/Built_002din-Styles.html#Built_002din-Styles")
-  :link `(url-link :tag "Indentation styles @ wikipedia"
+  :link '(url-link :tag "Indentation styles @ wikipedia"
                    "https://en.wikipedia.org/wiki/Indentation_style"))
 
 (defcustom pel-c++-fill-column 80
