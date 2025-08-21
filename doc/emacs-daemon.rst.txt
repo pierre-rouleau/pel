@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-05-09 08:03:04 EDT, updated by Pierre Rouleau.
+:Modified: 2025-08-21 16:30:39 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, Pierre Rouleau
 
 
@@ -92,7 +92,8 @@ can use the following short commands.  These support both macOS and Linux.
 For instructions on how to close/terminate the Emacs daemon and its clients, see
 the `Closing Suspending PEL PDF`_
 
-PEL also provides a `quick installation script`_.
+PEL also provides a Emacs launcher that installs the above scripts in your
+environment.  See the `quick installation script`_ page for more information.
 
 **Test environments**:
 

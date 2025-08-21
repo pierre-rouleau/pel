@@ -4,14 +4,13 @@
 # Purpose   : Install the e, ge and ce scripts in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-01 11:50:38 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-08-21 16:23:02 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Creates symbolic links from ~/bin to the e, ge and ce scripts.
-# Tell user to put ~/bin inside PATH if it's not already.
-
+# Tell user to put ~/bin inside PATH if it's not already there.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -32,7 +31,7 @@ bin_dirpath="$(dirname "$script_dirpath")"
 
 if [ ! -d "$HOME/bin" ]; then
     printf -- "***ERROR: The ~/bin directory does not exist.\n"
-    printf -- "   Please create it.\n\n"
+    printf -- "   Please create it (or create a symlink to it).\n\n"
     exit 1
 fi
 
