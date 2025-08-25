@@ -1540,6 +1540,8 @@ Your version of Emacs does not support dynamic module.")))
 
 (define-pel-global-prefix pel:undo (kbd "<f11> u"))
 
+(define-key pel:undo    "?"      'pel-undo-info)
+(pel-autoload-file pel-undo for: pel-undo-info)
 (if pel-use-undo-tree
     (progn
       ;; autoload pel-undo if one of the following commands

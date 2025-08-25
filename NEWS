@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-undo-info*, bound to ~<f11 u ?~.  It shows relevant user-options and variables controlling undo and redo.
 - Add *pel-force-normal-erase-is-backspace-off-in-terminal* user-option that can be used to
   fix the behaviour of the delete key on Emacs running in terminal mode, specially on macOS systems.
 - Add ~<f11> M-a~ key binding to *current-align*.

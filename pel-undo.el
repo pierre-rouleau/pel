@@ -1,6 +1,6 @@
 ;;; pel-undo.el --- PEL undo/redo management  -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -37,8 +37,13 @@
 ;; statement is written to not cause error and the functions are used only if
 ;; it is available.
 
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+
 (require 'pel--options)
 (require 'undo-tree nil :noerror)
+
+;; ---------------------------------------------------------------------------
 ;;; Code
 
 ;;-pel-autoload
@@ -84,6 +89,34 @@ changes within the current region."
            (fboundp 'undo-tree-redo))
       (undo-tree-redo arg)
     (undo arg)))
+
+
+;; ---------------------------------------------------------------------------
+;;-pel-autoload
+(defun pel-undo-info (&optional append)
+  "Display current status of undo control in specialized buffer.
+
+Clear previous buffer content unless optional APPEND argument is non-nil,
+in which case it appends to the previous report."
+  (interactive "P")
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-undo-info*"
+     "Undo/Redo Control"
+     (lambda ()
+       "Print undo/redo control variable values."
+       (insert "PEL undo control:")
+       (pel-insert-symbol-content-line 'pel-use-simple-undo)
+       (pel-insert-symbol-content-line 'pel-use-undo-tree)
+       (pel-insert-symbol-content-line 'pel-use-undo-propose)
+       (pel-insert-symbol-content-line 'pel-use-vundo)
+       (insert "Emacs undo variables:")
+       (pel-insert-symbol-content-line 'undo-limit)
+       (pel-insert-symbol-content-line 'undo-strong-limit)
+       (pel-insert-list-content 'buffer-undo-list)
+       )
+     (unless append :clear-buffer)
+     :use-help-mode)))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-undo)
