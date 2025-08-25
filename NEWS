@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix *pel-insert-symbol* function, used in all PEL info commands that print variable/user-option
+  values and provide a button to customize the user option.  The new code ensures that the button
+  describes the value for the proper buffer, not the info buffer (as it was previously doing).
 - Add *pel-undo-info*, bound to ~<f11 u ?~.  It shows relevant user-options and variables controlling undo and redo.
 - Add *pel-force-normal-erase-is-backspace-off-in-terminal* user-option that can be used to
   fix the behaviour of the delete key on Emacs running in terminal mode, specially on macOS systems.

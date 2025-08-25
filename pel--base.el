@@ -3033,8 +3033,12 @@ Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
         (insert name)
       (if (and (require 'button nil :no-error)
                (fboundp 'insert-button))
-          (insert-button name 'action (lambda (_s)
-                                        (describe-symbol symbol)))
+          ;; When a button is required, ensure that it describes the variable
+          ;; in the context of the original buffer, not the info buffer.
+          (let ((context-buffer pel-insert-symbol-content-context-buffer))
+            (insert-button name 'action (lambda (_s)
+                                          (describe-symbol symbol
+                                                           context-buffer))))
         (insert name)))))
 
 
