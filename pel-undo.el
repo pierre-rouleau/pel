@@ -110,7 +110,7 @@ in which case it appends to the previous report."
        (pel-insert-symbol-content-line 'pel-use-undo-tree)
        (pel-insert-symbol-content-line 'pel-use-undo-propose)
        (pel-insert-symbol-content-line 'pel-use-vundo)
-       (insert "Emacs undo variables:")
+       (insert "\nEmacs undo variables:")
        (pel-insert-symbol-content-line 'undo-limit)
        (pel-insert-symbol-content-line 'undo-strong-limit)
        (pel-insert-list-content 'buffer-undo-list)
