@@ -7,7 +7,7 @@ How to recompile all Emacs Lisp files after updating Emacs to a different versio
 :Ref: `PEL How-to Tips`_
 :Created:  Saturday, March  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-08-27 18:44:28 EDT, updated by Pierre Rouleau.
+:Modified: 2025-08-27 18:47:16 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -24,9 +24,9 @@ or older version.
 
 It assumes that:
 
-#. You have installed a version of Emacs that is a different major version
+#. You have installed a version of Emacs that is a different minor or major version
    from the previous version of Emacs you were previously using.  For example,
-   you update Emacs 29.4 to 30.1 or from Emacs 29.1 to 28.1.
+   you update Emacs 28.1 to 28.2, or 29.4 to 30.1 or from Emacs 29.1 to 28.1.
 #. You were already using PEL and have followed PEL installation procedure.
 #. PEL/Emacs is currently configured for normal operation
    (as opposed to fast PEL/Emacs operation).
