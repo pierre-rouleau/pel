@@ -7,7 +7,7 @@ How to recompile all Emacs Lisp files after updating Emacs to a different versio
 :Ref: `PEL How-to Tips`_
 :Created:  Saturday, March  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-19 16:59:32 EDT, updated by Pierre Rouleau.
+:Modified: 2025-08-27 18:44:28 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -82,7 +82,8 @@ How to recompile all elisp files after changing Emacs Version
 After upgrading Emacs you need to recompile **all** Emacs Lisp files that PEL
 has installed. With PEL this is quite simple.
 
-This assumes Emacs is currently **not** running.
+This assumes Emacs is currently **not** running and is **not** using the
+fast startup mode PEL provides.
 
 Step 1: Rebuild PEL itself
 --------------------------
@@ -90,45 +91,36 @@ Step 1: Rebuild PEL itself
 To rebuild all PEL Emacs Lisp file, change the current directory to the
 PEL directory and execute::
 
-  make clean all
+  make build-after-emacs-update
 
+This will perform the byte-compilation of:
 
-Step 2: Rebuild ``~/.emacs.d/utils``
-------------------------------------
+- all PEL elisp files,
+- your ~/.emacs/init.el,
+- all package elisp files used in terminal mode (and graphics mode unless you
+  use PEL's ability to manage them separately with its dual-mode),
+- all PEL utils elisp files.
 
-- Rename ``~/.emacs.d/utils`` to ``~/.emacs.d/utils.old`` or anything you
-  want.
+If the emacs is update is a minor update and if you
+only use Emacs in terminal mode that should be sufficient.
 
-  - I normally use a number that represents Emacs major version number
-    and keep it around.  This way I can always go back to the previous version
-    of Emacs by renaming the directories  later.
+However if this is a major Emacs update or if you use Emacs in both terminal
+mode and graphics mode with two independent configurations (as supported by
+PEL dual-mode)
+then extra commands described in the following sections will be required
+because they are not yet automated.
 
-- If you used them, copy ``benchmark-init-modes.el`` and ``benchmark-init.el`` from
-  the old utils into the new one at ``~/.emacs.d/.utils``.
-- Run **Emacs in terminal mode** in a shell.
-  Use the `e`_ script described in the document titled `Using the Emacs daemon and clients`_.
-  Do not edit any file.  Just start it without any argument.
-
-  - PEL will take over, detect that the utils Emacs Lisp files are missing,
-    will download the latest versions available and will recompile them with
-    the new Emacs version.
-  - If any compilation error or warning is detected, please add a report as a
-    bug in the PEL project.  I will try to address those.  Please identify the
-    version of Emacs you run, and include the generate errors.
-  - Exit Emacs.
-
-  At this point all the Emacs Lips packages should be inside the utils
-  directory. The latest version of these package will be in the utils
-  directory.  If you prefer to use the old one you were using previously, just
-  take the file from the backup directory you created earlier.
-
-Step 3 Rebuild elpa
--------------------
+Step 2: Rebuild elpa
+--------------------
 
 Inside ``~/.emacs.d/`` check for the presence of ``elpa`` or
 ``elpa-complete.``.  If you have ``elpa-complete`` you should also have a
 symbolic link named ``elpa`` that points to it.  This means you have used the
 PEL fast startup mechanism, otherwise you did not use it.
+
+At the time you are building the ``elpa`` symlink should point to
+``elpa-complete``; it should not use the fast startup mode.
+
 
 If you only have ``~/.emacs.d/elpa``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -167,7 +159,7 @@ If you have ``~/.emacs.d/elpa-complete``
     version of Emacs you run, and include the generate errors.
   - Exit Emacs.
 
-Step 4: Run Emacs in graphics mode.
+Step 3: Run Emacs in graphics mode.
 -----------------------------------
 
 - Open a shell and run the `ge`_ script to start an instance of Emacs in
@@ -177,7 +169,7 @@ Step 4: Run Emacs in graphics mode.
     required for Emacs in Graphics mode.
   - Exit Emacs
 
-Step 5: Update tree-sitter language symbolic link.
+Step 4: Update tree-sitter language symbolic link.
 --------------------------------------------------
 
 :Ref: `Using tree-sitter with Emacs and PEL`_
@@ -193,11 +185,8 @@ Step 5: Update tree-sitter language symbolic link.
     - ``~/.emacs.d/elpa/tree-sitter-langs-20250206.19/bin/`` if you have not
       used PEL fast startup.
 
-
-
-
-Optional Following Steps
-------------------------
+Optional Extra Steps for Dual-Mode
+----------------------------------
 
 At this point you may want to activate Emacs dual-mode and run it.
 If there is anything missing PEL will install it and re-compile it.
