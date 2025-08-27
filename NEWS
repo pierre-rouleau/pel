@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improved *pel-show-fill-columns* (bound to ~<f11> t f ?~): it now shows the values of more user options
+  inside a info buffer where you can get more information about each user-option and gain access to their customization buffer.
 - Fix *pel-insert-symbol* function, used in all PEL info commands that print variable/user-option
   values and provide a button to customize the user option.  The new code ensures that the button
   describes the value for the proper buffer, not the info buffer (as it was previously doing).
