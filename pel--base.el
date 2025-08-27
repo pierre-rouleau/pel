@@ -1971,6 +1971,12 @@ expands to nil which will be optimized out by the byte compiler."
                                  ,refresh))))
 
 ;; -------
+(defun pel-rebuild-utils ()
+  "Byte compile all elisp files inside PEL utils directory."
+  (let ((utils-dirname (expand-file-name "utils" user-emacs-directory)))
+    (byte-recompile-directory utils-dirname 0 :force :follow-symlink)))
+
+;; -------
 (defun pel-package-install (pkg)
   "Install package PKG, return t on success, nil otherwise.
 

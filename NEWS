@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add the *build-after-emacs-update* make target.  Use it to rebuild the Emacs/PEL/ ecosystem
+  after upgrading Emacs. This re-compiles all PEL emacs lisp files, Emacs init.el,
+  all Emacs lisp package files and all PEL utils emacs lisp files.
 - Improved *pel-show-fill-columns* (bound to ~<f11> t f ?~): it now shows the values of more user options
   inside a info buffer where you can get more information about each user-option and gain access to their customization buffer.
 - Fix *pel-insert-symbol* function, used in all PEL info commands that print variable/user-option

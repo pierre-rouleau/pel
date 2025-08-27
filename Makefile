@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-07-14 15:15:42 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-08-27 18:11:42 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -65,7 +65,6 @@ EMACS ?= emacs
 # This is required for elisp-lint so that it can find the elisp-lint
 # and its dependencies.  This can be changed on the command line.
 EMACS_INIT = "~/.emacs.d/init.el"
-
 # -----------------------------------------------------------------------------
 # PEL Package Version - increase this number on each release
 PEL_VERSION := 0.4.1
@@ -286,33 +285,33 @@ OTHER_FILES := README
 TEST_FILES := pel-file-test.el pel-list-test.el pel-text-transform-test.el pel-package-test.el
 
 # Documentation PDF files to copy verbatim into the doc/pdfs
-PDF_FILES := -legend.pdf                        \
-	-pel-key-maps.pdf		\
+PDF_FILES := -legend.pdf			\
+	-pel-key-maps.pdf			\
 	-index.pdf				\
-	abbreviations.pdf		\
+	abbreviations.pdf			\
 	align.pdf				\
-	asciidoc.pdf			\
-	auto-completion.pdf	\
-	autosave-backup.pdf	\
-	bookmarks.pdf			\
-	buffers.pdf			\
-	case-conversion.pdf	\
-	closing-suspending.pdf	\
-	comments.pdf			\
-	completion-input.pdf	\
-	counting.pdf			\
-	cua.pdf				\
+	asciidoc.pdf				\
+	auto-completion.pdf			\
+	autosave-backup.pdf			\
+	bookmarks.pdf				\
+	buffers.pdf				\
+	case-conversion.pdf			\
+	closing-suspending.pdf			\
+	comments.pdf				\
+	completion-input.pdf			\
+	counting.pdf				\
+	cua.pdf					\
 	cursor.pdf				\
-	customize.pdf			\
-	cut-paste.pdf			\
-	diff-merge.pdf			\
-	display-lines.pdf		\
-	drawing.pdf			\
-	enriched-text.pdf		\
-	ert.pdf				\
-	faces-fonts.pdf		\
-	file-mngt.pdf			\
-	file-variables.pdf		\
+	customize.pdf				\
+	cut-paste.pdf				\
+	diff-merge.pdf				\
+	display-lines.pdf			\
+	drawing.pdf				\
+	enriched-text.pdf			\
+	ert.pdf					\
+	faces-fonts.pdf				\
+	file-mngt.pdf				\
+	file-variables.pdf			\
 	filling-justification.pdf		\
 	frames.pdf				\
 	graphviz-dot.pdf			\
@@ -475,6 +474,8 @@ help:
 	@printf " * make local-pkg   - build local PEL melpa archive: make pkg mypelpa.\n"
 	@printf " * make pkg         - Build the tar file inside $(OUT_DIR).\n"
 	@printf " * make mypelpa     - Copy the tar file into a local package archive.\n"
+	@printf "\n"
+	@printf " * make build-after-emacs-update - Recompile all elisp files after updating emacs.\n"
 	@printf "\n"
 	@printf "LIMITATIONS:\n"
 	@printf "  - To build a package, the package version number must be updated\n"
@@ -866,5 +867,22 @@ clean: clean-tar clean-mypelpa
 	-rm -rf $(TMP_DIR)
 
 clean-build: clean all
+
+# ----------------------------------------------------------------------------
+# Byte-Compile all el files after an update of emacs
+
+.PHONY: build-after-emacs-update
+
+build-after-emacs-update: clean all
+	@printf "\n******************************************************************\n"
+	@printf "**** Recompiling all .el file\n"
+	@printf "* Emacs init:\n"
+	$(EMACS) -Q --batch -f batch-byte-compile $(EMACS_INIT)
+	@printf "\n******************************************************************\n"
+	@printf "* Emacs package files:\n"
+	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -f package-recompile-all
+	@printf "\n******************************************************************\n"
+	@printf "* PEL utils files:\n"
+	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -f pel-rebuild-utils
 
 # -----------------------------------------------------------------------------
