@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent, detached, GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-01 11:21:03 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-08-29 19:39:48 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -33,6 +33,19 @@ ge : Open an independent, detached, graphical-mode instance of Emacs.
        Emacs is launched inside an independent OS window, but
        that process inherit the current directory.
        Control is returned right away to the terminal shell.
+
+       On macOS the graphics version of Emacs is taken from one of
+       the following locations:
+
+       - If PEL_GE_DIR environment variable is defined, it must identify
+         the path of an emacs executable file that launches in graphics
+         mode by default.  If the environment variable is set and
+         $PEL_GE_DIR/emacs is valid then that is used.
+         Use this, for example,  if you have built Emacs yourself
+         and want to use this version of Emacs without activating it
+         by default in your shells or in the system.
+       - If /Applications/Emacs.app/Contents/MacOS exists and holds
+         an appropriate Emacs executable file, that is used.
 "
 }
 
@@ -63,7 +76,11 @@ fi
 
 case $(uname) in
     Darwin)
-        if [ -d /Applications/Emacs.app/Contents ]; then
+        if [ -n "$PEL_GE_DIR" ] && [ -x "$PEL_GE_DIR/emacs" ]; then
+            export PEL_EMACS_IN_GRAPHICS=1
+            "$PEL_GE_DIR/emacs" --chdir="$(pwd)" "$@"
+
+        elif [ -d /Applications/Emacs.app/Contents ]; then
             # Under macOS use the open application to launch the GUI Emacs application.
             # -n : open a new instance on each invocation
             # -a application: identify the path of the application
