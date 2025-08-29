@@ -1101,6 +1101,15 @@ move to that buffer."
   :link `(url-link :tag "Input Completion PDF"
                    ,(pel-pdf-file-url "completion-input")))
 
+
+(defcustom pel-allow-recursive-minibuffer nil
+  "Control whether minibuffer recursive editing is allowed."
+  :link '(url-link :tag "Making The Emacs Minibuffer Recursive @ Irreal"
+                   "https://irreal.org/blog/?p=314")
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-ido nil
   "Control whether PEL uses the Ido package.
 

@@ -308,8 +308,14 @@ Done in this function to allow advising libraries that remap these keys."
    nil
    (lambda ()
      (normal-erase-is-backspace-mode -1)
-     (message ":ROUP FORCING (normal-erase-is-backspace-mode -1)"))))
+     (message "FORCING (normal-erase-is-backspace-mode -1)"))))
 
+;; ---------------------------------------------------------------------------
+;; Activate Recursive minibuffer editing if required
+;; -------------------------------------------------
+(when pel-allow-recursive-minibuffer
+  (setq enable-recursive-minibuffers t)
+  (minibuffer-depth-indicate-mode 1))
 ;; ---------------------------------------------------------------------------
 ;; Augmenting the behaviour of some Emacs standard commands
 ;; --------------------------------------------------------

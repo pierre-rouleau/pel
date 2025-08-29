@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-allow-recursive-minibuffer* user-option to control activation of minibuffer recursive editing
+  with activation of the minibuffer-depth-indicate-mode.
+  It is disabled by default.
+  Also added the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/recursive-edit.pdf][⅀ Recursive Edit PDF]].
 - Add the *build-after-emacs-update* make target.  Use it to rebuild the Emacs/PEL/ ecosystem
   after upgrading Emacs. This re-compiles all PEL emacs lisp files, Emacs init.el,
   all Emacs lisp package files and all PEL utils emacs lisp files.
