@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent, detached, GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-08-29 19:39:48 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-08-29 19:48:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -78,7 +78,7 @@ case $(uname) in
     Darwin)
         if [ -n "$PEL_GE_DIR" ] && [ -x "$PEL_GE_DIR/emacs" ]; then
             export PEL_EMACS_IN_GRAPHICS=1
-            "$PEL_GE_DIR/emacs" --chdir="$(pwd)" "$@"
+            "$PEL_GE_DIR/emacs" --chdir="$(pwd)" "$@" &
 
         elif [ -d /Applications/Emacs.app/Contents ]; then
             # Under macOS use the open application to launch the GUI Emacs application.
