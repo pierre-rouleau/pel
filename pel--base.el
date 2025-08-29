@@ -1974,7 +1974,12 @@ expands to nil which will be optimized out by the byte compiler."
 (defun pel-rebuild-utils ()
   "Byte compile all elisp files inside PEL utils directory."
   (let ((utils-dirname (expand-file-name "utils" user-emacs-directory)))
-    (byte-recompile-directory utils-dirname 0 :force :follow-symlink)))
+    ;; byte-recompile-directory got a 4th argument in Emacs 28.1 as result of
+    ;; fixing bug #10292.
+    (if pel-emacs-28-or-later-p
+        (with-no-warnings
+          (byte-recompile-directory utils-dirname 0 :force :follow-symlink))
+      (byte-recompile-directory utils-dirname 0 :force))))
 
 ;; -------
 (defun pel-package-install (pkg)
