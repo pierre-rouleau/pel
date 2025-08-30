@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-08-21 16:30:39 EDT, updated by Pierre Rouleau.
+:Modified: 2025-08-30 15:43:20 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, Pierre Rouleau
 
 
@@ -88,6 +88,16 @@ can use the following short commands.  These support both macOS and Linux.
                                                 named socket use the same command and specify
                                                 the ``--name=NAME`` option.
 = =========================================== ================================================
+
+**The PEL_GE_DIR environment variable for macOS and locally built Emacs**
+
+Note that on macOS, if you use a locally built Emacs executable file that has
+not been activated as the system Emacs, and you want to use that Emacs
+executable in graphics mode with the ge_ and ec_ commands, you will also need
+to set the ``PEL_GE_DIR``environment variable to the name of the directory
+holing that Emacs executable file.
+
+**For Closing and Terminating Emacs**
 
 For instructions on how to close/terminate the Emacs daemon and its clients, see
 the `Closing Suspending PEL PDF`_
