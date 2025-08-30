@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the deamon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-01 11:20:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-08-30 15:50:25 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -30,44 +30,65 @@ print_usage()
     printf -- "\
 ec : Open specified files in emacsclient. Start Emacs daemon if necessary.
 
- Usage:  ec [-h|--help]
-         ec [-g|--gui] [--name=DAEMON-NAME]
-         ec --check-daemon [--name=DAEMON-NAME]
-         ec --start-daemon [--name=DAEMON-NAME]
+ USAGES:
+  ➨ ec [-h|--help]
 
- -h, --help: print this help.
- -g, --gui:  start a graphical emacsclient, otherwise
-             start a terminal-based emacsclient (the default).
+        -h, --help: print this help.
 
- If the Emacs daemon is not already running, start it.
+  ➨ ec [-g|--gui] [--name=DAEMON-NAME] [emacsclient-options]
 
- If the --name option is specified, DAEMON-NAME identifies the
- socket name the daemon and the client must use.
- It's possible to create several daemons and client(s)
- attaching to that daemon by using that option.
+        If the Emacs daemon is not already running, start it.
+        -g, --gui:  start a graphical emacsclient, otherwise
+                    start a terminal-based emacsclient (the default).
 
- Use ec --start-daemon to only start the daemon without starting any client.
- If the daemon is already running the command prints a message and exit with
- an exit code of 1.  It can be used to check if the daemon is running.
+  ➨ ec --start-daemon [--name=DAEMON-NAME] [emacsclient-options]
 
- See emacsclient man page for more command line options.
+        Use ec --start-daemon to only start the daemon without starting
+        any client.
+        If the daemon is already running the command prints a message
+        and exit with an exit code of 1.  You can use it to check if the
+        daemon is running.
+
+  ➨ ec --check-daemon [--name=DAEMON-NAME] [emacsclient-options]
+
+        The --check-daemon is used to explicitly check if the Emacs
+        daemon for the default socket is running.
+
+      For the last 2 commands, if the --name option is specified,
+      DAEMON-NAME identifies the socket name the daemon and the client
+      must use.  It's possible to create several daemons and client(s)
+      attaching to that daemon by using that option.
+
+      The emacsclient options are also supported when specified last.
+      See emacsclient man page for information about those.
 "
     case "${os_name}" in
         Darwin)
         printf -- "\
 
- Note: under macOS, to be able to launch an Emacs client that is a GUI Emacs
-       the GUI supporting Emacs from https://emacsformacosx.com/
-       must be installed.
+ Note: Under macOS, to be able to launch an Emacs client that is a GUI
+       Emacs the GUI supporting Emacs such as Emacs from
+       https://emacsformacosx.com/ must be installed.
+
+       You can also use a locally built Emacs, built with GUI support,
+       as described in the document How to build Emacs from source in
+       the PEL website on Github, at:
+       https://github.com/pierre-rouleau/pel/blob/master/doc/build-emacs-from-source.rst.txt
+
+   ENVIRONMENT:
+       To use the locally built Emacs in graphics mode you will also need
+       to set the PEL_GE_DIR environment variable to the name of the
+       directory holding the Emacs executable file.
+
 "
         ;;
     Linux)
         printf -- "\
 
- Note: under Linux, emacs-lucid is used to start the daemon
-       if the --gui option is specified and the emacs-lucid
-       executable file is found on the current PATH.
-       Otherwise, ec defaults to emacs.
+ Note: Under Linux, emacs-lucid is used to start the daemon if the --gui
+       option is specified and the emacs-lucid executable file is found
+       on the current PATH.  Otherwise, ec defaults to emacs.
+
 "
         ;;
     esac
