@@ -287,6 +287,13 @@ various packages, etc...
   - `PEL convenience features`_ with PEL commands that extend several aspects
     of Emacs.
 
+- `Several Documentation Pages on various Emacs Topics`_, including:
+
+  - `How to build Emacs from source`_
+  - `How to recompile all Emacs Lisp files after upgrading Emacs`_
+  - `How to use Emacs stand-alone processes, daemon and clients`_
+  - `Install the Emacs launcher shortcut scripts`_
+
   ..
      .. warning:: GitHub presently fails to render several reStructuredText files
                   to HTML.  They are currently working to resolve `this issue`_.
@@ -544,6 +551,11 @@ Notes
 .. _On Emacs 30.1 in terminal mode under Rocky Linux 8.10 VM running in a 2014 iMac: doc/res/startup/startup-imac-rockylinux-terminal.png
 .. _On a 2023 macStudio running Emacs 30.1 in terminal: doc/res/startup/startup-macstudio-terminal-01.png
 .. _On a 2023 macStudio running Emacs 30.1 in Graphics mode: doc/res/startup/startup-macstudio-gui-01.png
+.. _Several Documentation Pages on various Emacs Topics: https://github.com/pierre-rouleau/pel/tree/master/doc
+.. _How to build Emacs from source: https://github.com/pierre-rouleau/pel/blob/master/doc/build-emacs-from-source.rst.txt
+.. _How to recompile all Emacs Lisp files after upgrading Emacs: https://github.com/pierre-rouleau/pel/blob/master/doc/upgrading-emacs.rst.txt
+.. _How to use Emacs stand-alone processes, daemon and clients: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
+.. _Install the Emacs launcher shortcut scripts: https://github.com/pierre-rouleau/pel/blob/master/doc/install_e_ge_ec.rst.txt
 
 ..
    -----------------------------------------------------------------------------
