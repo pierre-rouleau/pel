@@ -287,10 +287,11 @@ various packages, etc...
   - `PEL convenience features`_ with PEL commands that extend several aspects
     of Emacs.
 
-  .. warning:: GitHub presently fails to render several reStructuredText files
-               to HTML.  They are currently working to resolve `this issue`_.
+  ..
+     .. warning:: GitHub presently fails to render several reStructuredText files
+                  to HTML.  They are currently working to resolve `this issue`_.
 
-.. _this issue: https://github.com/orgs/community/discussions/86715
+   .. _this issue: https://github.com/orgs/community/discussions/86715
 
 ➣ PEL Convenience Commands
 --------------------------
