@@ -279,23 +279,21 @@ Number of global keys (and key prefixes)  : %4d"
        ((pel-starts-with-space-p bufname) (push bufname internal))
        ((pel-string-starts-with-p bufname "*")   (push bufname special))
        (t (push bufname file-visiting))))
-    (message "%d buffers: %d visiting file, %d special, %d internal. Previous was: %S"
-             (length (buffer-list))
-             (length file-visiting)
-             (length special)
-             (length internal)
-             (other-buffer (current-buffer)))))
+    (message
+     "%d buffers: %d visiting file, %d special, %d internal. Previous was: %S"
+     (length (buffer-list))
+     (length file-visiting)
+     (length special)
+     (length internal)
+     (other-buffer (current-buffer)))))
 
 (defun pel-emacs-config-features ()
   "Print the names of all Emacs configured compilation features."
   (interactive)
   (message "%s. With%s native compilation.%s" system-configuration-features
-           (if (and pel-emacs-28-or-later-p (featurep 'native-compile))
-               ""
-             "out")
-           (if (or pel-system-is-linux-p pel-system-is-FreeBSD-p)
-               (format " With%s D-Bus support." (if  (featurep 'dbusbind) "" "out"))
-               "")))
+           (if pel-emacs-with-native-comp-p "" "out")
+           (format
+            " With%s D-Bus support." (if  (featurep 'dbusbind) "" "out"))))
 
 (defun pel-emacs-bug-info (&optional in-browser)
   "Open the report about an Emacs bug report email stream.

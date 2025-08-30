@@ -371,6 +371,11 @@ The non-nil value of the predicate is the `module-file-suffix'.")
 (defconst pel-filesep (if pel-system-is-windows-p "\\" "/")
   "String directory/file separator character for this OS.")
 
+(defconst pel-emacs-with-native-comp-p (and
+                                        (fboundp 'native-comp-available-p)
+                                        (native-comp-available-p))
+  "Predicate: t if emacs supports native compilation.")
+
 ;; Variables
 ;; ---------
 (defvar pel-uses-tree-sitter nil
