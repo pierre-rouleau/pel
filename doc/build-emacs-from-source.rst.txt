@@ -6,7 +6,7 @@ Build Emacs from Source
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-08-30 10:29:03 EDT, updated by Pierre Rouleau.
+:Modified: 2025-08-30 10:43:22 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 .. contents::  **Table of Contents**
@@ -203,18 +203,23 @@ Confirming that Emacs Native Compilation is active
   - If native compilation is active the message will show ``NATIVE_COMP``
     in the list and will confirm it with the following text: ``With native compilation.``
 
-- Without PEL do the same as what PEL does in that function:
+- PEL sets the ``pel-emacs-with-native-comp-p`` constant to t if native compilation
+  is supported, nil otherwise.
+- Without PEL use the following function to print the features:
 
   .. code:: elisp
 
 
-      (defun pel-emacs-config-features ()
+      (defun my-emacs-config-features ()
         "Print the names of all Emacs configured compilation features."
         (interactive)
-        (message "%s. With%s native compilation.%s" system-configuration-features
-                 (if (and pel-emacs-28-or-later-p (featurep 'native-compile))
+        (message "%s. With%s native compilation."
+                 system-configuration-features
+                 (if (and
+                       (fboundp 'native-comp-available-p)
+                       (native-comp-available-p))
                      ""
-                   "out")
+                   "out")))
 
 Once Emacs has been used at least once after the native compilation is active
 you should see the ``~/.emacs.d/eln-cache`` directory with a sub-directory
