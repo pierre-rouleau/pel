@@ -6,7 +6,7 @@ Build Emacs from Source
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-05-06 16:55:33 EDT, updated by Pierre Rouleau.
+:Modified: 2025-08-30 10:29:03 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 .. contents::  **Table of Contents**
@@ -93,6 +93,23 @@ libtiff
 ============================== =========================================
 
 
+macOS Packages
+~~~~~~~~~~~~~~
+
+On macOS, several required packages can be installed with `Homebrew`_.
+Use the following commands to install them. The last column shows the command
+that prints the name of the directory holding the files. It works for both
+Intel and Apple Silicon macOS and you may need those in the configure command
+if it does not find the library (see the build instructions below).
+
+============ ===================================== ==========================
+Package      Installation command                  Installed directory
+============ ===================================== ==========================
+libgccjit    ``brew install libgccjit``            ``brew --prefix libgccjit``
+libtiff      ``brew install libtiff``              ``brew --prefix libtiff``
+libpng       ``brew install libpng``               ``brew --prefix libpng``
+libjpeg      ``brew install libjpeg``              ``brew --prefix libjpeg``
+============ ===================================== ==========================
 
 Getting Help
 ============
@@ -115,8 +132,21 @@ Command                Purpose
 Build Emacs
 ===========
 
+Standard Build
+--------------
+
 From the root of Emacs repository,
 execute the following commands::
+
+  ./autogen.sh
+  make extraclean
+  ./configure
+  make
+
+Build without GUI support
+-------------------------
+
+::
 
   ./autogen.sh
   make extraclean
@@ -125,8 +155,38 @@ execute the following commands::
 
 The ``--without-x`` is only required when building Emacs in
 terminal mode only.  If you want graphical support do not use
-this option.
+this option as shown in the previous section..
 
+
+Build with native compilation
+-----------------------------
+
+Building with native compilation is the default since Emacs 30.
+However, to be able to build with it you must install libgccjit
+and configure must be able to find it.
+
+Build with native compilation on macOS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+On macOS configure often does not find the location of
+libgccjit installed with homebrew, therefore you must specify it in the
+command line by setting ``CFLAGS`` and ``LDFLAGS`` to the directory where the
+files are located.  I also add the ``--with-native-compilation`` option.
+It's not needed in Emacs 30 but you must use it for Emacs 29 and 28.
+
+You must also specify the ``--with-ns`` to add macOS (NextStep) support.
+
+The build command is::
+
+  ./autogen.sh
+  make extraclean
+  ./configure  --with-native-compilation --with-ns --with-modules CFLAGS="-I$(brew --prefix libgccjit)/include" LDFLAGS="-L$(brew --prefix libgccjit)/lib"
+  make
+
+
+
+Installing the build Emacs
+--------------------------
 
 To install the latest built emacs, execute::
 
@@ -176,6 +236,7 @@ For more information on the ``.eln`` files see:
 .. _Libraries of Lisp Code for Emacs: https://www.gnu.org/software/emacs/manual/html_node/emacs/Lisp-Libraries.html
 .. _What is an eln-cache and how do I get rid of it? @ StackOverflow: https://emacs.stackexchange.com/questions/78160/what-is-an-eln-cache-and-how-do-i-get-rid-of-it
 .. _configure help: emacs-configure-help.txt
+.. _Homebrew: https://brew.sh/
 
 .. ---------------------------------------------------------------------------
 
