@@ -106,6 +106,34 @@ Proxy form `format-prompt' supporting Emacs before 28."
 	           (or v-or-f "") (intern val)))))
   (message "%s := %s" symbol (symbol-value symbol)))
 
+
+;; ---------------------------------------------------------------------------
+;; Cursor Information Help
+;; -----------------------
+
+;;-pel-autoload
+(defun pel-what-cursor-position ()
+  "Show full details about current point - (what-cursor-position t)."
+  (interactive)
+  (what-cursor-position t))
+
+;; ---------------------------------------------------------------------------
+;; File Encoding Help Utilities
+;; ----------------------------
+
+;;-pel-autoload
+(defun pel-show-buffer-file-encoding ()
+  "Show coding system of file in current buffer."
+  (interactive)
+  (describe-symbol 'buffer-file-coding-system))
+
+;;-pel-autoload
+(defun pel-list-coding-categories ()
+  "List coding categories inside a help buffer."
+  (interactive)
+  (list-coding-categories))
+
+
 ;; -----------------------------------------------------------------------------
 (provide 'pel-help)
 

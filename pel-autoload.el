@@ -425,7 +425,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-show-kill-ring
     pel-show-major-mode
     pel-show-function
-    pel-show-symbol)
+    pel-show-symbol
+    pel-what-cursor-position
+    pel-show-buffer-file-encoding
+    pel-list-coding-categories)
 
   (pel-autoload-function "pel-hex" for:
     pel-bibyte)

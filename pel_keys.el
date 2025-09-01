@@ -6398,24 +6398,15 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? d`` : Describe
 
-(defun pel-show-buffer-file-encoding ()
-  "Show coding system of file in current buffer."
-  (interactive)
-  (describe-symbol 'buffer-file-coding-system))
-
-(defun pel-what-cursor-position ()
-  "Show full details about current point - (what-cursor-position t)."
-  (interactive)
-  (what-cursor-position t))
-
 (define-pel-global-prefix pel:describe (kbd "<f11> ? d"))
 (define-key pel:describe "$"  'pel-spell-show-use)
 (define-key pel:describe "a"  'pel-show-face-at-point)
 (define-key pel:describe "c" #'list-colors-display)
 (define-key pel:describe (kbd "M-c") #'list-coding-systems)
+(define-key pel:describe (kbd "M-C")  'pel-list-coding-categories)
 (when pel-emacs-28-or-later-p
   (define-key pel:describe "d" 'shortdoc))
-(define-key pel:describe "e" #'pel-show-buffer-file-encoding)
+(define-key pel:describe "e"  'pel-show-buffer-file-encoding)
 (define-key pel:describe "C" #'describe-coding-system)
 (define-key pel:describe "F" #'list-faces-display)
 (define-key pel:describe "f"  'pel-show-window-filename-or-buffer-name)
@@ -6424,7 +6415,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (define-key pel:describe "k"  'pel-show-kill-ring)
 (define-key pel:describe "l" #'what-line)
 (define-key pel:describe "p" #'what-cursor-position)
-(define-key pel:describe "P" #'pel-what-cursor-position)
+(define-key pel:describe "P"  'pel-what-cursor-position)
 (define-key pel:describe "s"  'pel-show-char-syntax)
 (define-key pel:describe "w"  'pel-show-window-info)
 
