@@ -48,6 +48,43 @@ PEL -- Pragmatic Emacs Library
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 
+Essentially PEL:
+
+- extends the standard Emacs system,
+- adds a large number of convenient commands,
+- provides the ability to install a large set of external packages,
+- uses the extremely powerful Emacs customization system to drive activation
+  of features,
+- provides integrated features tying several built-in Emacs functionality and
+  external packages to increase cohesion between those features in ways that
+  external packages can't do alone (and would require more programming on your
+  part),
+- support Emacs in terminal mode, providing key bindings that can be used in
+  terminal mode for commands that normally do not have them,
+- support Emacs in graphical mode with some extensions specific to macOS and
+  Linux,
+- allow independent configuration of terminal-based and GUI-based emacs
+  customization to prevent slowing down terminal mode with logic that is only
+  available in graphical mode,
+- attempt to provide globally unified keyboard experience for a large set of
+  commands across multiple major modes,
+- document Emacs features in several topic oriented PDF tables,
+- provide documentation on several other topics.
+
+
+PEL keeps evolving.  It allows me to maintain my Emacs configuration on
+several macOS and Linux systems and also under Windows (whenever I have to use
+it).  The configuration logic is inside the PEL source code, which is byte
+compiled by a make file. All I need to do is install PEL on the various
+systems and copy the customization files (which I keep under VCS control for
+historical and distribution control).
+
+And, using PEL, I can still use other Emacs packages installed under Emacs
+package management and if I need to use them often in multiple systems I
+integrate their management under PEL.
+
+If you find PEL useful please drop me a comment, and if you'd like some new
+features don't hesitate to ask!  Thanks!
 
 ➣ Supports Launching Emacs from GUI and Shell
 ---------------------------------------------
