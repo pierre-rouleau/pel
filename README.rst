@@ -22,7 +22,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-660-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-661-teal
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
@@ -51,8 +51,8 @@ or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 Essentially PEL:
 
 - extends the standard Emacs system,
-- adds a large number of convenient commands,
-- provides the ability to install a large set of external packages,
+- adds a large number (661) of convenient commands,
+- provides the ability to install a large set (261) of external packages,
 - uses the extremely powerful Emacs customization system to drive activation
   of features,
 - provides integrated features tying several built-in Emacs functionality and
@@ -63,13 +63,26 @@ Essentially PEL:
   terminal mode for commands that normally do not have them,
 - support Emacs in graphical mode with some extensions specific to macOS and
   Linux,
-- allow independent configuration of terminal-based and GUI-based emacs
+- allow independent configuration of terminal-based and GUI-based Emacs
   customization to prevent slowing down terminal mode with logic that is only
   available in graphical mode,
 - attempt to provide globally unified keyboard experience for a large set of
   commands across multiple major modes,
-- document Emacs features in several topic oriented PDF tables,
-- provide documentation on several other topics.
+- document Emacs features in several (192) topic oriented PDF tables which
+  provide and overview of the topic, list standard Emacs commands, PEL extra
+  commands, their key bindings, links to the Emacs manual, to the external
+  packages, to description articles and more.
+  Some tables describe tools like `GNU make`_ or languages (like `Perl 5`_).
+
+  - All PDF tables are heavily hyperlinked, with table of contents links to
+    the table topics, links to other tables, and links back to the
+    `➢Index PDF`_ that gives you a top level view of all topics inside one page.
+  - The PDF tables use colour codes and icons (see the `➢Legend PDF`_ for their
+    meaning) to speed identification of commands, identify if they are
+    available globally, for major mode, minor mode or under special
+    circumstances to help you understand Emacs.
+
+- PEL also provide documentation on several other topics.
 
 
 PEL keeps evolving.  It allows me to maintain my Emacs configuration on
@@ -84,7 +97,10 @@ package management and if I need to use them often in multiple systems I
 integrate their management under PEL.
 
 If you find PEL useful please drop me a comment, and if you'd like some new
-features don't hesitate to ask!  Thanks!
+features don't hesitate to ask.  And if you like what you see why not give
+this project a star to encourage me further?
+
+Again any feedback is welcome. Thanks!
 
 ➣ Supports Launching Emacs from GUI and Shell
 ---------------------------------------------
@@ -341,7 +357,7 @@ various packages, etc...
 --------------------------
 
 
-- PEL provides over 660 extra commands.  PEL commands extend the packages
+- PEL provides over 661 extra commands.  PEL commands extend the packages
   it supports and provides some of its own features.  Some commands are only
   available for a given OS, most are accessible in every OS.
 - PEL provides 10 specialized Hydra_ key bindings when the ``pel-use-hydra``
@@ -506,7 +522,7 @@ Notes
               The command detects the key sequence and the context to
               identify which PEL PDF to open.
 
-              PEL currently implements 660 interactive commands.  Some are
+              PEL currently implements 661 interactive commands.  Some are
               always loaded.  Several are auto-loaded when needed.  This count
               excludes the number of template commands that are dynamically constructed
               and loaded only for major modes, such as Erlang, that support
@@ -525,6 +541,7 @@ Notes
 .. _PEL Key Maps PDF:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
 .. _🤔: `➣ Extends Emacs Documentation`_
 .. _🥳: doc/emacs-daemon.rst.txt
+.. _➢Index PDF:
 .. _PEL Topic Index PDF:
 .. _PEL Index PDF:      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 .. _Emacs easy customization:
@@ -593,6 +610,9 @@ Notes
 .. _How to recompile all Emacs Lisp files after upgrading Emacs: https://github.com/pierre-rouleau/pel/blob/master/doc/upgrading-emacs.rst.txt
 .. _How to use Emacs stand-alone processes, daemon and clients: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
 .. _Install the Emacs launcher shortcut scripts: https://github.com/pierre-rouleau/pel/blob/master/doc/install_e_ge_ec.rst.txt
+.. _➢Legend PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-legend.pdf
+.. _GNU make: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/gmake.pdf
+.. _Perl 5: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/perl5.pdf
 
 ..
    -----------------------------------------------------------------------------
