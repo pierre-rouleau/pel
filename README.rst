@@ -55,6 +55,17 @@ Essentially PEL:
 - provides the ability to easily install, update a large set (261) of external packages,
 - uses the extremely powerful Emacs customization system to drive activation
   of features,
+
+  - PEL provides an Emacs init.el and early-init.el file; to use PEL you need
+    to use the PEL specific init.el file
+    , as described inside the `PEL installation`_,
+    and you won't need to edit it to control installation and manage the PEL
+    supported packages.  If you need to add extra logic that PEL does not yet
+    implement then you can add it to your copy of that init.el file, otherwise
+    all control is done by the PEL logic located in the PEL source code files
+    stored in the PEL repository you get from this project.  All activation
+    and configuration is controlled by the customizable user-options.
+
 - provides integrated features tying several built-in Emacs functionality and
   external packages to increase cohesion between those features in ways that
   external packages can't do alone (and would require more programming on your
@@ -562,6 +573,7 @@ Notes
 .. _which-key:                  https://elpa.gnu.org/packages/which-key.html
 .. _.emacs bankruptcy:          https://www.emacswiki.org/emacs/DotEmacsBankruptcy
 .. _wiki:                       https://github.com/pierre-rouleau/pel/wiki
+.. _PEL installation:
 .. _install it:
 .. _section 2:
 .. _How to install PEL:         doc/pel-manual.rst#how-to-install-pel
