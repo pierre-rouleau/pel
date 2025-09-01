@@ -52,7 +52,7 @@ Essentially PEL:
 
 - extends the standard Emacs system,
 - adds a large number (661) of convenient commands,
-- provides the ability to install a large set (261) of external packages,
+- provides the ability to easily install, update a large set (261) of external packages,
 - uses the extremely powerful Emacs customization system to drive activation
   of features,
 - provides integrated features tying several built-in Emacs functionality and
