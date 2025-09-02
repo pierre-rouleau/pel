@@ -94,7 +94,12 @@ Essentially PEL:
     circumstances to help you understand Emacs.
 
 - PEL also provide documentation on several other topics.
+- And PEL also provides several other tools:
 
+  - `shell scripts`_ to start Emacs or execute various tools to help use several
+    features inside Emacs.
+  - `awk scripts`_ for text filtering and transformation.
+  - You might also be interested by the tools provided by my `USRHOME project`_.
 
 PEL keeps evolving.  It allows me to maintain my Emacs configuration on
 several macOS and Linux systems and also under Windows (whenever I have to use
@@ -625,6 +630,9 @@ Notes
 .. _➢Legend PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-legend.pdf
 .. _GNU make: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/gmake.pdf
 .. _Perl 5: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/perl5.pdf
+.. _shell scripts: https://github.com/pierre-rouleau/pel/tree/master/bin
+.. _awk scripts: https://github.com/pierre-rouleau/pel/tree/master/awk
+.. _USRHOME project: https://github.com/pierre-rouleau/usrhome?tab=readme-ov-file#readme
 
 ..
    -----------------------------------------------------------------------------
