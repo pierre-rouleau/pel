@@ -19,6 +19,8 @@
 #  Dependencies
 #  ------------
 
+# - etags
+# - xargs, printf, uname, sort, uniq, find, rm.
 # - Uses fd (also named fdfind in some Linux distros like Mint) if it is
 #   available.  See URL:  https://github.com/sharkdp/fd .
 # - if fd/fdfind is not available, use find instead.
@@ -46,6 +48,7 @@ pgm_name="$(basename "$0")"
 pgm_path="$(dirname "$(readlink "$0")")"
 etags_flist_fname=.etags-pike-files.txt
 etags_flist_envvar_fname="$ETAGS_FILE_LIST_FOR_PIKE"
+build_tags=true
 
 print_usage()
 {
@@ -58,7 +61,7 @@ print_usage()
 
   • Print this help information.
 
- Usage: %s [-u] [DIRPATH ...]
+ Usage: %s [-u] [-n] [DIRPATH ...]
         %s [-u] [--list=FILENAME]
 
   • [Re]build an etags-compliant TAGS file in current directory
@@ -91,6 +94,11 @@ print_usage()
       Ctags executable file to force using Universal Ctags instead.
       When setting it to 1, the ctags found in PATH is expected
       to be Universal Ctags.
+  • -n : do not create TAGS file, just add names of Pike
+         source code files into the .etags-pike-files.txt
+         file.  Use this option to create the list of source
+         files in multiple commands and then later the
+         etags-pike --list to create the TAGS file.
   • Info printed on stderr:
    • The path of the find program used and when repository ignore files
      are skipped from the scan.
@@ -154,6 +162,13 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     else
         exit  1
     fi
+elif [ "$1" = "-n" ]; then
+    build_tags=false
+    shift
+fi
+if [ "$1" = "-n" ]; then
+    build_tags=false
+    shift
 fi
 
 # Check -u option to force use of universal ctags
@@ -295,8 +310,12 @@ search_script()
 # Proceed
 
 if [ -n "${etags_flist_envvar_fname}" ]; then
+    # If the ETAGS_FILE_LIST_FOR_PIKE environment variable was set in the shell
+    # invoking etags-pike then use that if possible: that variable should
+    # identify a file name different than what we use internally.
     if [ "${etags_flist_envvar_fname}" = "${etags_flist_fname}" ]; then
         printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_PIKE to %s\n" "${pgm_name}" "${etags_flist_fname}"1>&2
+        printf -- "           Use a different file name!\n" 1>&2
         exit 1
     fi
     printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_PIKE: %s\n" "${etags_flist_envvar_fname}" 1>&2
@@ -370,9 +389,11 @@ else
     printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
 
     # -- proceed
-    # Rename the old list of files if it exists
-    if [ -e "${etags_flist_fname}" ]; then
-        mv "${etags_flist_fname}" "${etags_flist_fname}.backup"
+    # Rename the old list of files if it exists and TAGS will be built
+    if [ "${build_tags}" = "true" ]; then
+        if [ -e "${etags_flist_fname}" ]; then
+            mv "${etags_flist_fname}" "${etags_flist_fname}.backup"
+        fi
     fi
 
     # Search in all specified directory to build the list of
@@ -388,29 +409,35 @@ else
         done
     fi
 
-    # Then run etags on these files, and sort them in the etags file
-    sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
-    rm -f "${etags_flist_fname}"
-    mv "${etags_flist_fname}.new" "${etags_flist_fname}"
-    printf -- "Generating TAGS ...\n" 1>&2
-    run__etags__pike < "${etags_flist_fname}"
+    # If required, run etags on these files, and sort them in the etags file
+    if [ "${build_tags}" = "true" ]; then
+        sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
+        rm -f "${etags_flist_fname}"
+        mv "${etags_flist_fname}.new" "${etags_flist_fname}"
+        printf -- "Generating TAGS ...\n" 1>&2
+        run__etags__pike < "${etags_flist_fname}"
+    fi
 fi
 
-file_count="$(wc -l "${etags_flist_fname}" | awk '{print $1}')"
-if [ "$file_count" = "0" ]; then
-    # restore the old list of files.
-    rm -rf "${etags_flist_fname}"
-    if [ -e "${etags_flist_fname}.backup" ]; then
-        mv "${etags_flist_fname}.backup"  "${etags_flist_fname}"
-    fi
-    printf -- "No files found. %s and TAGS files untouched.\n" "${etags_flist_fname}"  1>&2
-    exit 1
-else
-  rm -rf "${etags_flist_fname}.backup"
-  printf "\
+if [ "${build_tags}" = "true" ]; then
+    file_count="$(wc -l "${etags_flist_fname}" | awk '{print $1}')"
+    if [ "$file_count" = "0" ]; then
+        # restore the old list of files.
+        rm -f "${etags_flist_fname}"
+        if [ -e "${etags_flist_fname}.backup" ]; then
+            mv "${etags_flist_fname}.backup"  "${etags_flist_fname}"
+        fi
+        printf -- "No files found. %s and TAGS files untouched.\n" "${etags_flist_fname}"  1>&2
+        exit 1
+    else
+        rm -f "${etags_flist_fname}.backup"
+        printf "\
   %s - %s files found and processed.
              Created: %s/TAGS
              Scanned file list stored in: %s/%s\n" "${pgm_name}" "${file_count}" "$(pwd)" "$(pwd)" "${etags_flist_fname}" 1>&2
+    fi
+else
+    printf -- "Appended file list to: %s\nNo TAGS file created\n" "${etags_flist_fname}"
 fi
 
 # ----------------------------------------------------------------------------
