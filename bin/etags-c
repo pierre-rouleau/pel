@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-09-03 10:44:36 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-09-03 11:28:22 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -24,6 +24,8 @@
 #  Dependencies
 #  ------------
 
+# - etags
+# - xargs, printf, uname, sort, uniq, find, rm.
 # - Uses fd (also named fdfind in some Linux distros like Mint) if it is
 #   available.  See URL:  https://github.com/sharkdp/fd .
 # - if fd/fdfind is not available, use find instead.
