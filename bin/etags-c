@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-09-03 11:28:22 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-09-03 13:17:57 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -440,14 +440,14 @@ if [ "${build_tags}" = "true" ]; then
     file_count="$(wc -l "${etags_flist_fname}" | awk '{print $1}')"
     if [ "$file_count" = "0" ]; then
         # restore the old list of files.
-        rm -rf "${etags_flist_fname}"
+        rm -f "${etags_flist_fname}"
         if [ -e "${etags_flist_fname}.backup" ]; then
             mv "${etags_flist_fname}.backup"  "${etags_flist_fname}"
         fi
         printf -- "No files found. %s and TAGS files untouched.\n" "${etags_flist_fname}"  1>&2
         exit 1
     else
-        rm -rf "${etags_flist_fname}.backup"
+        rm -f "${etags_flist_fname}.backup"
         printf "\
   %s - %s files found and processed.
              Created: %s/TAGS
@@ -456,7 +456,6 @@ if [ "${build_tags}" = "true" ]; then
 else
     printf -- "Appended file list to: %s\nNo TAGS file created\n" "${etags_flist_fname}"
 fi
-
 
 # ----------------------------------------------------------------------------
 # Local Variables:
