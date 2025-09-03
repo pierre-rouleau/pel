@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Make source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-09-03 14:26:09 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-09-03 14:31:03 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -77,7 +77,7 @@ print_usage()
          source code files into the .etags-make-files.txt
          file.  Use this option to create the list of source
          files in multiple commands and then later the
-         etags-c --list to create the TAGS file.
+         etags-make --list to create the TAGS file.
   • Inspects content of the Makefile, makefile, GNUMakefile,
      Makefile.in, makefile.am and all .mk and .mak files.
   • Stores the names of inspected files in the file named

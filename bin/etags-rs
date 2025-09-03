@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Rust source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-09-03 14:06:55 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-09-03 14:31:19 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -163,7 +163,7 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 fi
 
 # Check -u option to force use of universal ctags
-# Check -n option: if specified do not build TAGS file and append to .etags-c-files.txt
+# Check -n option: if specified do not build TAGS file and append to .etags-rust-files.txt
 # Note that we can have -u -n, -u, or -n: so handle all possible cases.
 if [ "$1" = "-u" ]; then
     if [ -z "$ETAGS_USE_UCTAGS" ]; then
