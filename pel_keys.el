@@ -7328,6 +7328,7 @@ the ones defined from the buffer now."
 (define-key pel:file "f" #'find-file)
 (define-key pel:file "i" #'insert-file)
 (define-key pel:file "o" #'find-file-other-window)
+(define-key pel:file "s" #'find-name-dired)
 
 (define-key pel:file "t" #'time-stamp)
 (define-key pel:file (kbd "M-t") #'time-stamp-toggle-active)

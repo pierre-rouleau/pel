@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add ~<f11> f s~ key binding to the very useful *find-name-dired* command.
+  This complements the ~<f11> f F n~ key binding.
+  Also fixed key bindings listed in the File PDF.
 - Add *pel-list-coding-categories* command, bound to ~<f11> ? d M-C~
 - Add *pel-allow-recursive-minibuffer* user-option to control activation of minibuffer recursive editing
   with activation of the minibuffer-depth-indicate-mode.
