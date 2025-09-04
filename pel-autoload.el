@@ -317,6 +317,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-diff-hunk-files-occur
     pel-diff-ignore-whitespace-in-hunks)
 
+  (pel-autoload "pel-dtreplace" for:
+    pel-dirtree-find-replace)
+
   (pel-autoload "pel-elisp" for:
     pel-toggle-paren-in-column-0-is-defun-start
     pel-elisp-set-navigate-target-form

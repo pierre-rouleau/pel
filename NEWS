@@ -2,6 +2,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-dirtree-find-replace*, bound to ~<f11> s M-%~, that is used to
+  replace text in all files under a directory tree containing the identified
+  matching regexp, replacing that with the specified replacement.  By default,
+  The command prints the changes in the message buffer and creates backup
+  files.  This can be modified by customization of the user-variables in the
+  *pel-dirtree-replace* customization group.
+  Documented in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]].
 - Add ~<f11> f n~ key binding to the very useful *find-name-dired* command.
   This complements the ~<f11> f F n~ key binding.
   Also fixed key bindings listed in the File PDF.

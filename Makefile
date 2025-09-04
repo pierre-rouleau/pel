@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-08-27 18:11:42 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-09-04 16:39:24 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -155,6 +155,7 @@ EL_FILES := pel--base.el \
 		pel-custom.el \
 		pel-d.el \
 		pel-diff.el \
+		pel-dtreplace.el \
 		pel-elisp.el \
 		pel-elisp-eval.el \
 		pel-elisp-analyze.el \
@@ -285,9 +286,14 @@ OTHER_FILES := README
 TEST_FILES := pel-file-test.el pel-list-test.el pel-text-transform-test.el pel-package-test.el
 
 # Documentation PDF files to copy verbatim into the doc/pdfs
-PDF_FILES := -legend.pdf			\
-	-pel-key-maps.pdf			\
+PDF_FILES :=					\
+	-CRiSP-Emacs.pdf			\
+	-emacs-user-options.pdf			\
+	-howto.pdf				\
 	-index.pdf				\
+	-legend.pdf				\
+	-pel-key-maps.pdf			\
+	-pel-pdf-Licence.pdf			\
 	abbreviations.pdf			\
 	align.pdf				\
 	asciidoc.pdf				\
@@ -296,86 +302,175 @@ PDF_FILES := -legend.pdf			\
 	bookmarks.pdf				\
 	buffers.pdf				\
 	case-conversion.pdf			\
+	changelog.pdf				\
 	closing-suspending.pdf			\
 	comments.pdf				\
+	compilation-mode.pdf			\
+	completion-input-availability.pdf	\
 	completion-input.pdf			\
 	counting.pdf				\
 	cua.pdf					\
 	cursor.pdf				\
 	customize.pdf				\
 	cut-paste.pdf				\
+	cwl.pdf					\
 	diff-merge.pdf				\
+	display-buffer.pdf			\
 	display-lines.pdf			\
 	drawing.pdf				\
+	eat-mode.pdf				\
+	emacs-lisp-types.pdf			\
 	enriched-text.pdf			\
 	ert.pdf					\
 	faces-fonts.pdf				\
+	fast-startup.pdf			\
 	file-mngt.pdf				\
 	file-variables.pdf			\
 	filling-justification.pdf		\
 	frames.pdf				\
+	gnu-screen.pdf				\
 	graphviz-dot.pdf			\
 	grep.pdf				\
 	help.pdf				\
 	hide-show-code.pdf			\
 	highlight.pdf				\
 	hooks.pdf				\
+	ibuffer-mode.pdf			\
+	imenu-speedbar-support.pdf		\
 	indentation.pdf				\
 	input-method.pdf			\
 	inserting-text.pdf			\
 	key-chords.pdf				\
 	keyboard-macros.pdf			\
 	keys-f11.pdf				\
+	keys-f12.pdf				\
 	keys-fn.pdf				\
+	keys-mac-fn.pdf				\
+	linux-mit-20-desktop-keys.pdf		\
+	macOS-keys.pdf				\
 	macOS-terminal-settings.pdf		\
 	marking.pdf				\
 	menus.pdf				\
 	mode-dired.pdf				\
+	mode-line.pdf				\
+	mode-markdown.pdf			\
 	mode-org-mode.pdf			\
 	mode-rst.pdf				\
 	modifier-keys.pdf			\
 	mouse.pdf				\
+	move-keys.pdf				\
+	mscgen.pdf				\
 	narrowing.pdf				\
 	navigation.pdf				\
 	numkeypad.pdf				\
+	object-files.pdf			\
+	outlines.pdf				\
 	packages.pdf				\
+	pel-environment-variables.pdf		\
+	pel-naming-conventions.pdf		\
+	pl-ada.pdf				\
 	pl-applescript.pdf			\
+	pl-arc.pdf				\
+	pl-awk.pdf				\
 	pl-c++.pdf				\
 	pl-c.pdf				\
+	pl-chez-scheme.pdf			\
+	pl-chibi-scheme.pdf			\
+	pl-chicken-scheme.pdf			\
+	pl-clojure.pdf				\
+	pl-cmake.pdf				\
 	pl-common-lisp.pdf			\
 	pl-d.pdf				\
+	pl-eiffel.pdf				\
 	pl-elixir.pdf				\
 	pl-emacs-lisp.pdf			\
 	pl-erlang.pdf				\
+	pl-factor.pdf				\
 	pl-forth.pdf				\
+	pl-gambit-scheme.pdf			\
+	pl-gerbil-scheme.pdf			\
+	pl-gleam.pdf				\
 	pl-go.pdf				\
+	pl-guile-scheme.pdf			\
+	pl-haskell.pdf				\
+	pl-hy.pdf				\
+	pl-janet.pdf				\
 	pl-julia.pdf				\
-	pl-lfe.pdf                              \
+	pl-lfe.pdf				\
+	pl-lua.pdf				\
+	pl-m4.pdf				\
 	pl-make.pdf				\
+	pl-modula2.pdf				\
 	pl-netrexx.pdf				\
+	pl-nim.pdf				\
+	pl-nix.pdf				\
+	pl-objc.pdf				\
+	pl-ocaml.pdf				\
+	pl-odin.pdf				\
+	pl-pascal.pdf				\
+	pl-perl.pdf				\
+	pl-pike.pdf				\
 	pl-python.pdf				\
+	pl-racket.pdf				\
 	pl-rexx.pdf				\
+	pl-ruby.pdf				\
+	pl-rust.pdf				\
+	pl-scheme.pdf				\
+	pl-seed7.pdf				\
+	pl-sh.pdf				\
+	pl-smalltalk.pdf			\
+	pl-swift.pdf				\
+	pl-tcl.pdf				\
+	pl-tup.pdf				\
+	pl-v.pdf				\
+	pl-zig.pdf				\
 	plantuml.pdf				\
 	plm-lispy.pdf				\
 	projectile.pdf				\
 	rectangles.pdf				\
+	recursive-edit.pdf			\
 	registers.pdf				\
+	rockylinux8-desktop-keys.pdf		\
+	rpm-spec-file.pdf			\
+	rpm.pdf					\
 	scrolling.pdf				\
 	search-replace.pdf			\
 	sessions.pdf				\
+	shell-mode.pdf				\
+	shells-comparison.pdf			\
 	shells.pdf				\
+	smartparens.pdf				\
 	sorting.pdf				\
 	speedbar-and-modes.pdf			\
 	speedbar.pdf				\
 	spell-checking.pdf			\
+	syntax-checking.pdf			\
+	tab-bar.pdf				\
+	templates.pdf				\
+	term-mode.pdf				\
 	text-modes.pdf				\
+	themes.pdf				\
+	time-tracking.pdf			\
+	tmux.pdf				\
+	tramp.pdf				\
 	transpose.pdf				\
+	treemacs.pdf				\
+	ubuntu-16-04-desktop-keys.pdf		\
 	undo-redo-repeat.pdf			\
+	vcs-git.pdf				\
 	vcs-mercurial.pdf			\
+	vcs-subversion.pdf			\
+	vterm-mode.pdf				\
 	web.pdf					\
 	whitespaces.pdf				\
 	windows.pdf				\
-	xref.pdf
+	x509.pdf				\
+	xref-backend.pdf			\
+	xref-frontend.pdf			\
+	xref-support.pdf			\
+	xref.pdf				\
+	yaml.pdf				\
+	yang.pdf
 
 
 # SRC_FILES include *all* Emacs Lisp source files that are part of PEL,
@@ -612,6 +707,7 @@ pel-cursor.elc:         pel--options.elc
 pel-custom.elc:         pel--base.elc
 pel-d.elc:              pel--base.elc pel--options.elc pel-ccp.elc
 pel-diff.elc:           pel--base.elc pel-window.elc pel--keys-macros.elc
+pel-dtreplace.elc:      pel--options.elc
 pel-elisp-analyze.elc:  pel-lisp.elc
 pel-elisp.elc:          pel--base.elc pel--options.elc pel-prompt.elc pel-navigate.elc
 pel-elpa.elc:           pel-filedir.elc

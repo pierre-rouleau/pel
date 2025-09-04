@@ -8314,6 +8314,7 @@ the ones defined from the buffer now."
 (define-key pel:search-replace (kbd "RET") 'pel-search-empty-line)
 (when pel-use-fzf
   (define-key pel:search-replace "z" 'fzf-find-in-buffer))
+(define-key pel:search-replace (kbd "M-%") 'pel-dirtree-find-replace)
 
 (global-set-key (kbd "M-s m") 'pel-multi-occur-in-this-mode)
 (global-set-key (kbd "M-s /") 'pel-multi-occur-in-all)
