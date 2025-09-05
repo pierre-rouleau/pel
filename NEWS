@@ -8,6 +8,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   The command prompts for the root directory, the file name regexp, the text and the replacement text.
   The behaviour of the command is controlled by several customizable
   user-options, part of the   *pel-dirtree-replace* customization group:
+- *pel-dirtree-replace-file-forbidden-dir-re*: a list of regexp identifying
+  directory base names that are skipped (no recursive descent is done in
+  these directories and no file inside them will be modified).
+  This defaults to ='("/\\.")=.
   - *pel-dirtree-replace-files-is-verbose*: if non-nil (the default) the
     command prints messages listing the names of the modified files and
     prints the count of modified files.
@@ -23,7 +27,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       customized value.
   - *pel-dirtree-replace-file-newtext-is-fixedcase*: a boolean that determines
     whether the replacement text is done as a fixed case replacement or
-    whether the replacement follows the case folding rules currently used.
+    follows the case folding rules currently used.
     - You can also use the *pel-dt-fr-set-toggle-fixedcase* command, bound to
       ~<f11> s <f4> c~ to dynamically toggle this value for the current Emacs
       session: it does not change the customized user-option: it's original
@@ -31,8 +35,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       customized value.
   - *pel-dirtree-replace-file-newtext-is-literal*: a boolean that determines
     whether the replacement text is used literally (when *t*, the default) or
-    whether the replacement text is an Emacs regexp, allowing regexp based
-    text replacements.
+    text is an Emacs regexp, allowing regexp based text replacements.
     - You can also use the *pel-dt-fr-set-toggle-literal* command, bound to
       ~<f11> s <f4> l~ to dynamically toggle this value for the current Emacs
       session: it does not change the customized user-option: it's original

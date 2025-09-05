@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-05 12:25:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-05 16:36:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -104,6 +104,12 @@ name with the string is appended."
           (const :tag "Do not create backup files" nil)
           (string :tag "Create backup files with following suffix")))
 
+(defcustom pel-dirtree-replace-file-forbidden-dir-re '("/\\.")
+  "List of directory names that hold files that must not be modified."
+  :group 'pel-dirtree-replace
+  :type '(repeat
+          (string :tag "Base name regexp of directory to ignore")))
+
 (defvar pel-dirtree-replaced-files nil
   "List of files replaced by last `pel-dirtree-find-replace' command.")
 
@@ -136,12 +142,24 @@ prints a message showing how many instances were replaced."
                    fname mods text-re new-text))))))
 
 
+(defun pel--allow-descent-in (dirname)
+  "Return t if recursive descent is allowed in DIRNAME, nil otherwise."
+  (let ((forbidden-name-regexp-list pel-dirtree-replace-file-forbidden-dir-re)
+        (forbidden-dirname-re nil)
+        (is-forbidden nil))
+    (while forbidden-name-regexp-list
+      (setq forbidden-dirname-re (pop forbidden-name-regexp-list))
+      (when (string-match forbidden-dirname-re dirname)
+        (setq is-forbidden t)
+        (setq forbidden-name-regexp-list nil)))
+    (not is-forbidden)))
+
 (defun pel--dt (root-dir fn-re)
   "Return a list of files with names matching FN-RE under ROOT-DIR."
   (directory-files-recursively root-dir
                                fn-re
                                nil
-                               (lambda (x) (not (string-match-p "/\\." x)))))
+                               (function pel--allow-descent-in)))
 
 (defun pel--dt-prompt  (prompt scope)
   "Print PROMPT formatted, read minibuffer with SCOPE history."
@@ -152,11 +170,33 @@ prints a message showing how many instances were replaced."
 
 ;;-pel-autoload
 (defun pel-dirtree-find-replace (text-re new-text root-dir fn-re)
-  "Replace TEXT-RE  with NEW-TEXT in all files named FN-RE under ROOT-DIR.
+  "Replace TEXT-RE with NEW-TEXT in all files named FN-RE under ROOT-DIR.
 TEXT-RE is a Emacs regular expression.
 FN-RE is also a Emacs regular expression (not a glob!)
-Create backup of each modified file.
-List all modified files inside a Dired buffer."
+
+The following user-options control various aspects of the operation:
+- `pel-dirtree-replace-file-forbidden-dir-re': a list of regexp identifying
+  directory base names that are skipped (no recursive descent is done in
+  these directories and no file inside them will be modified).
+- `pel-dirtree-replace-files-is-verbose': if non-nil (the default) the
+  command prints messages listing the names of the modified files and
+  prints the count of modified files.
+- `pel-dirtree-replace-file-backup-suffix': a string that identifies the
+  suffix used when creating backup files: the name of the backup file has
+  the original file name with this suffix appended to its name. This can
+  also be set to nil, which disables creation of backup files. The default
+  is a the \".original\" string.
+- `pel-dirtree-replace-file-newtext-is-fixedcase': a boolean that determines
+  whether the replacement text is done as a fixed case replacement or
+  follows the case folding rules currently used.
+- `pel-dirtree-replace-file-newtext-is-literal': a boolean that determines
+  whether the replacement text is used literally (when *t*, the default) or
+  text is an Emacs regexp, allowing regexp based text replacements.
+
+
+The function remembers a list of modified files.
+Use the command `pel-dt-fr-changed-files-in-dired' to open a Dired
+buffer with this list of files."
   (interactive
    (list
     (pel--dt-prompt "Text regexp" 'text-re)
@@ -173,15 +213,21 @@ List all modified files inside a Dired buffer."
                     'new-text)
     (read-directory-name "Root directory: " )
     (pel--dt-prompt "File name regexp" 'fn-re)))
-  ;; process each file found open each file
-  (setq pel-dirtree-replaced-files nil)
-  (mapc (lambda (fname)
-          (pel-find-replace fname text-re new-text))
-        (pel--dt root-dir fn-re))
-  (setq pel-dirtree-rootdir root-dir)
-  (when pel-dirtree-replace-files-is-verbose
-    (message "Replaced text inside %d files"
-             (length pel-dirtree-replaced-files))))
+  (cond
+   ((string= fn-re ".")
+    (user-error ". means all files! Use a more restricted regexp!"))
+   ((string= fn-re "")
+    (user-error "Please specify a non-empty Emacs regexp!"))
+   (t
+    ;; process each file found open each file
+    (setq pel-dirtree-replaced-files nil)
+    (mapc (lambda (fname)
+            (pel-find-replace fname text-re new-text))
+          (pel--dt root-dir fn-re))
+    (setq pel-dirtree-rootdir root-dir)
+    (when pel-dirtree-replace-files-is-verbose
+      (message "Replaced text inside %d files"
+               (length pel-dirtree-replaced-files))))))
 
 ;;-pel-autoload
 (defun pel-dt-fr-set-backup-suffix (new-suffix)
@@ -239,7 +285,8 @@ string as an Emacs regexp."
                   mod-fnames))
           (setq fnames (append fnames mod-fnames))
           (setq fnames (sort fnames)))
-        (dired (cons pel-dirtree-rootdir fnames)))
+        (dired (cons (format "%s (modified files)" pel-dirtree-rootdir)
+                     fnames)))
     (user-error
      "pel-dirtree-replaced-file has not been used to modify files!")))
 
