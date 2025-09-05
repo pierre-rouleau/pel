@@ -8301,6 +8301,8 @@ the ones defined from the buffer now."
       (setq-default isearch-allow-motion t))))
 
 (define-pel-global-prefix pel:search-replace (kbd "<f11> s"))
+(define-pel-global-prefix pel:search-replace-setup (kbd "<f11> s <f4>"))
+
 (define-key pel:search-replace "."  'isearch-forward-symbol-at-point)
 (define-key pel:search-replace "_"  'isearch-forward-symbol)
 (define-key pel:search-replace "b" #'search-backward)
@@ -8315,6 +8317,10 @@ the ones defined from the buffer now."
 (when pel-use-fzf
   (define-key pel:search-replace "z" 'fzf-find-in-buffer))
 (define-key pel:search-replace (kbd "M-%") 'pel-dirtree-find-replace)
+(define-key pel:search-replace "%"         'pel-dt-fr-changed-files-in-dired)
+(define-key pel:search-replace-setup "b"   'pel-dt-fr-set-backup-suffix)
+(define-key pel:search-replace-setup "c"   'pel-dt-fr-toggle-fixedcase)
+(define-key pel:search-replace-setup "l"   'pel-dt-fr-toggle-literal)
 
 (global-set-key (kbd "M-s m") 'pel-multi-occur-in-this-mode)
 (global-set-key (kbd "M-s /") 'pel-multi-occur-in-all)

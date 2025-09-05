@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-04 17:40:33 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-05 12:25:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,7 +45,8 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--options)                 ; use pel-pkg-for-search
+(require 'pel--base)          ; use `pel-toggle-and-show-user-option'
+(require 'pel--options)       ; use `pel-pkg-for-search'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -61,6 +62,38 @@
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-dirtree-replace-file-newtext-is-fixedcase t
+  "Whether the new text replacement string is fixed case or not.
+
+If it is non-nil, `pel-dirtree-replace-file'  not alter the case of
+the replacement text.  Otherwise, maybe capitalize the whole text, or
+maybe just word initials, based on the replaced text.  If the replaced
+text has only capital letters and has at least one multiletter word,
+convert NEWTEXT to all caps.  Otherwise if all words are capitalized
+in the replaced text, capitalize each word in NEWTEXT.  Note that
+what exactly is a word is determined by the syntax tables in effect
+in the current buffer, and the variable `case-symbols-as-words’."
+  :group 'pel-dirtree-replace
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-dirtree-replace-file-newtext-is-literal t
+  "Whether the new text replacement string is literal or an Emacs regexp.
+
+If optional it is non-nil, NEWTEXT is inserted literally.
+Otherwise treat ‘\\’ as special:
+  ‘\\&’ in NEWTEXT means substitute original matched text.
+  ‘\\N’ means substitute what matched the Nth ‘\\(...\\)’.
+       If Nth parens didn’t match, substitute nothing.
+  ‘\\\\’ means insert one ‘\\’.
+  ‘\\?’ is treated literally
+       (for compatibility with ‘query-replace-regexp’).
+  Any other character following ‘\\’ signals an error.
+Case conversion does not apply to these substitutions."
+  :group 'pel-dirtree-replace
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-dirtree-replace-file-backup-suffix ".original"
   "Whether the `pel-dirtree-find-replace' creates a backup file.
 If nil, it does not backup files.
@@ -72,7 +105,10 @@ name with the string is appended."
           (string :tag "Create backup files with following suffix")))
 
 (defvar pel-dirtree-replaced-files nil
-  "List of files replaced by `pel-dirtree-find-replace'")
+  "List of files replaced by last `pel-dirtree-find-replace' command.")
+
+(defvar pel-dirtree-rootdir nil
+  "Root directory used in last `pel-dirtree-find-replace' command.")
 
 (defun pel-find-replace (fname text-re new-text)
   "Replace TEXT with NEW-TEXT inside FNAME file.
@@ -84,7 +120,9 @@ prints a message showing how many instances were replaced."
       (insert-file-contents fname)
       (goto-char (point-min))
       (while (re-search-forward text-re nil :noerror)
-        (replace-match new-text :fixedcase :literal)
+        (replace-match new-text
+                       pel-dirtree-replace-file-newtext-is-fixedcase
+                       pel-dirtree-replace-file-newtext-is-literal)
         (setq mods (1+ mods)))
       (unless (eq mods 0)
         (when pel-dirtree-replace-file-backup-suffix
@@ -107,9 +145,10 @@ prints a message showing how many instances were replaced."
 
 (defun pel--dt-prompt  (prompt scope)
   "Print PROMPT formatted, read minibuffer with SCOPE history."
-  (read-from-minibuffer (format "%s: " prompt)
-                        nil nil nil
-                        (intern (format "pel-dirtree-find-replace-%s" scope))))
+  (substring-no-properties
+   (read-from-minibuffer (format "%s: " prompt)
+                         nil nil nil
+                         (intern (format "pel-dt-fr-%s" scope)))))
 
 ;;-pel-autoload
 (defun pel-dirtree-find-replace (text-re new-text root-dir fn-re)
@@ -121,7 +160,17 @@ List all modified files inside a Dired buffer."
   (interactive
    (list
     (pel--dt-prompt "Text regexp" 'text-re)
-    (pel--dt-prompt "Replacement" 'new-text)
+    (pel--dt-prompt (format "%s%sreplacement (%s case)"
+                            (if pel-dirtree-replace-files-is-verbose
+                                "Verbose "
+                              "Silent ")
+                            (if pel-dirtree-replace-file-newtext-is-literal
+                                ""
+                              "regexp ")
+                            (if pel-dirtree-replace-file-newtext-is-fixedcase
+                                "fixed"
+                              "adjusted"))
+                    'new-text)
     (read-directory-name "Root directory: " )
     (pel--dt-prompt "File name regexp" 'fn-re)))
   ;; process each file found open each file
@@ -129,7 +178,70 @@ List all modified files inside a Dired buffer."
   (mapc (lambda (fname)
           (pel-find-replace fname text-re new-text))
         (pel--dt root-dir fn-re))
-  (message "Replaced: %S" pel-dirtree-replaced-files))
+  (setq pel-dirtree-rootdir root-dir)
+  (when pel-dirtree-replace-files-is-verbose
+    (message "Replaced text inside %d files"
+             (length pel-dirtree-replaced-files))))
+
+;;-pel-autoload
+(defun pel-dt-fr-set-backup-suffix (new-suffix)
+  "Change backup suffix used by `pel-dirtree-find-replace'.
+Modify the value of `pel-dirtree-replace-file-backup-suffix' in current session."
+  (interactive
+   (list
+    (pel--dt-prompt (format "Backup suffix [%s]"
+                            (or pel-dirtree-replace-file-backup-suffix ""))
+                    'new-suffix)))
+
+  (setq pel-dirtree-replace-file-backup-suffix new-suffix)
+  (if (string=  new-suffix "")
+      (progn
+        (setq pel-dirtree-replace-file-backup-suffix nil)
+        (message "pel-dirtree-find-replace no longer creates backup files."))
+    (message "pel-dirtree-find-replace backup files now use suffix %S" new-suffix)))
+
+;;-pel-autoload
+(defun pel-dt-fr-toggle-fixedcase ()
+  "Change behaviour of `pel-dirtree-find-replace' string replacement fixedcase.
+Toggle `pel-dirtree-replace-file-newtext-is-fixedcase' to change whether
+the function performs a fixed case string replacement or adjust capitalization
+based on the replaced text."
+  (interactive)
+  (pel-toggle-and-show-user-option
+   'pel-dirtree-replace-file-newtext-is-fixedcase
+   :globally
+   "t: perform fixed case replacement."
+   "nil: perform case adjusted replacement."))
+
+;;-pel-autoload
+(defun pel-dt-fr-toggle-literal ()
+  "Change behaviour of `pel-dirtree-find-replace' literal string replacement.
+Toggle `pel-dirtree-replace-file-newtext-is-literal' to change whether
+the function performs a literal string replacement or interpret the new-text
+string as an Emacs regexp."
+  (interactive)
+  (pel-toggle-and-show-user-option
+   'pel-dirtree-replace-file-newtext-is-literal
+   :globally
+   "t: new-text is a literal replacement."
+   "nil: new-text is an Emacs regexp."))
+
+;;-pel-autoload
+(defun pel-dt-fr-changed-files-in-dired ()
+  "Show all files changed by `pel-dirtree-replaced-file' in a dired buffer."
+  (interactive)
+  (if pel-dirtree-replaced-files
+      (let ((fnames pel-dirtree-replaced-files)
+            (mod-fnames nil))
+        (when pel-dirtree-replace-file-backup-suffix
+          (dolist (fn fnames)
+            (push (format "%s%s" fn pel-dirtree-replace-file-backup-suffix)
+                  mod-fnames))
+          (setq fnames (append fnames mod-fnames))
+          (setq fnames (sort fnames)))
+        (dired (cons pel-dirtree-rootdir fnames)))
+    (user-error
+     "pel-dirtree-replaced-file has not been used to modify files!")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-dtreplace)

@@ -2,12 +2,47 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
-- Add *pel-dirtree-find-replace*, bound to ~<f11> s M-%~, that is used to
-  replace text in all files under a directory tree containing the identified
-  matching regexp, replacing that with the specified replacement.  By default,
-  The command prints the changes in the message buffer and creates backup
-  files.  This can be modified by customization of the user-variables in the
-  *pel-dirtree-replace* customization group.
+- Add the powerful and flexible *pel-dirtree-find-replace* command, bound to ~<f11> s M-%~.
+  This command is used to replace text in a set of files under a specified directory tree.
+  The files inspected are found by their names matching an Emacs regexp.
+  The command prompts for the root directory, the file name regexp, the text and the replacement text.
+  The behaviour of the command is controlled by several customizable
+  user-options, part of the   *pel-dirtree-replace* customization group:
+  - *pel-dirtree-replace-files-is-verbose*: if non-nil (the default) the
+    command prints messages listing the names of the modified files and
+    prints the count of modified files.
+  - *pel-dirtree-replace-file-backup-suffix*: a string that identifies the
+    suffix used when creating backup files: the name of the backup file has
+    the original file name with this suffix appended to its name. This can
+    also be set to nil, which disables creation of backup files. The default
+    is a the ".original" string.
+    - You can also use the *pel-dt-fr-set-backup-suffix* command, bound to
+      ~<f11> s <f4> b~ to dynamically change this value for the current Emacs
+      session: it does not change the customized user-option: it's original
+      value will continue to be used in future sessions unless you change the
+      customized value.
+  - *pel-dirtree-replace-file-newtext-is-fixedcase*: a boolean that determines
+    whether the replacement text is done as a fixed case replacement or
+    whether the replacement follows the case folding rules currently used.
+    - You can also use the *pel-dt-fr-set-toggle-fixedcase* command, bound to
+      ~<f11> s <f4> c~ to dynamically toggle this value for the current Emacs
+      session: it does not change the customized user-option: it's original
+      value will continue to be used in future sessions unless you change the
+      customized value.
+  - *pel-dirtree-replace-file-newtext-is-literal*: a boolean that determines
+    whether the replacement text is used literally (when *t*, the default) or
+    whether the replacement text is an Emacs regexp, allowing regexp based
+    text replacements.
+    - You can also use the *pel-dt-fr-set-toggle-literal* command, bound to
+      ~<f11> s <f4> l~ to dynamically toggle this value for the current Emacs
+      session: it does not change the customized user-option: it's original
+      value will continue to be used in future sessions unless you change the
+      customized value.
+  - Once you have replaced text with the *pel-dirtree-find-replace* command
+    you can then use the *pel-dt-fr-changed-files-in-dired* command, bound to
+    ~<f11> s %~ to open  a Dired buffer that lists all modified files and
+    their backup (if any where created).  You can then review all changes,
+    revert some of them or delete the backup files.
   Documented in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]].
 - Add ~<f11> f n~ key binding to the very useful *find-name-dired* command.
   This complements the ~<f11> f F n~ key binding.
@@ -194,8 +229,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   The bug was located in pel--base.el.  Apologies for those who were affected when this bug
   caused confusion.
 - For Emacs 30.1 or later:
-  -  the ~<f11> , p~ key sequence is bound to *completion-preview-mode*.
-  -  the ~<f11> , P~ key sequence (upper-case P) is bound to *global-completion-preview-mode*.
+  - the ~<f11> , p~ key sequence is bound to *completion-preview-mode*.
+  - the ~<f11> , P~ key sequence (upper-case P) is bound to *global-completion-preview-mode*.
   When the mode is active the ~M-n~ and ~M-p~ keys are active to select next and previous completion candidate.
 - Add an early version of the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-tcl.pdf][𝕻𝔩 - Tcl]] PDF.
 - Add preliminary support for Lua when *pel-use-lua* is set. Add an early version of the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-lua.pdf][𝕻𝔩 - Lua]] PDF.
