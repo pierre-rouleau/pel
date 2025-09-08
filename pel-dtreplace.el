@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-05 16:36:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-08 07:49:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -110,6 +110,9 @@ name with the string is appended."
   :type '(repeat
           (string :tag "Base name regexp of directory to ignore")))
 
+(defvar pel--dirtree-allow-operation-in-forbidden-directories nil
+ "Allow search/replace in forbidden directories on old versions of Emacs." )
+
 (defvar pel-dirtree-replaced-files nil
   "List of files replaced by last `pel-dirtree-find-replace' command.")
 
@@ -154,12 +157,33 @@ prints a message showing how many instances were replaced."
         (setq forbidden-name-regexp-list nil)))
     (not is-forbidden)))
 
+(defvar pel--dt-old-version-warning-done nil)
+
 (defun pel--dt (root-dir fn-re)
   "Return a list of files with names matching FN-RE under ROOT-DIR."
-  (directory-files-recursively root-dir
-                               fn-re
-                               nil
-                               (function pel--allow-descent-in)))
+  (condition-case nil
+      (directory-files-recursively root-dir
+                                   fn-re
+                                   nil
+                                   (function pel--allow-descent-in))
+    (wrong-number-of-arguments
+     ;; in Emacs 26 at least, `directory-files-recursively'
+     ;; has only 3 arguments: either upgrade Emacs or get a copy of the
+     ;; newer function from the files.el of a later version of Emacs.
+     (if pel--dirtree-allow-operation-in-forbidden-directories
+         (unless pel--dt-old-version-warning-done
+           (message "\
+WARNING: this version of Emacs does not skip forbidden directories
+         identified by `pel-dirtree-replace-file-forbidden-dir-re'.
+         Get a newer version of Emacs or get a copy of
+         `directory-files-recursively' from the files.el from a
+         later version of Emacs.")
+           (setq pel--dt-old-version-warning-done t))
+       (user-error "\
+In this version of Emacs, directory-files-recursively cannot skip
+forbidden directories: Upgrade Emacs, update files.el or allow this
+by setting `pel--dirtree-allow-operation-in-forbidden-directories' to t"))
+     (directory-files-recursively root-dir fn-re nil))))
 
 (defun pel--dt-prompt  (prompt scope)
   "Print PROMPT formatted, read minibuffer with SCOPE history."
