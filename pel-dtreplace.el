@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-08 08:11:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-08 08:19:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -162,10 +162,11 @@ prints a message showing how many instances were replaced."
 (defun pel--dt (root-dir fn-re)
   "Return a list of files with names matching FN-RE under ROOT-DIR."
   (condition-case nil
-      (directory-files-recursively root-dir
-                                   fn-re
-                                   nil
-                                   (function pel--allow-descent-in))
+      (with-no-warnings    ; prevent byte-compiler warnings in Emacs 26
+        (directory-files-recursively root-dir
+                                     fn-re
+                                     nil
+                                     (function pel--allow-descent-in)))
     (wrong-number-of-arguments
      ;; in Emacs 26 at least, `directory-files-recursively'
      ;; has only 3 arguments: either upgrade Emacs or get a copy of the
