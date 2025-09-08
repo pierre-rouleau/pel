@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-08 08:36:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-08 14:00:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -213,10 +213,15 @@ by setting `pel--dirtree-allow-operation-in-forbidden-directories' to t")))))
 
 (defun pel--dt-prompt  (prompt scope)
   "Print PROMPT formatted, read minibuffer with SCOPE history."
-  (substring-no-properties
-   (read-from-minibuffer (format "%s: " prompt)
-                         nil nil nil
-                         (intern (format "pel-dt-fr-%s" scope)))))
+  (let* ((use-read-syntax (and (eq scope 'new-text)
+                               (not pel-dirtree-replace-file-newtext-is-literal)))
+         (syntax (if use-read-syntax
+                     " (string in read syntax) "
+                   "")))
+    (substring-no-properties
+     (read-from-minibuffer (format "%s%s: " prompt syntax)
+                           nil nil use-read-syntax
+                           (intern (format "pel-dt-fr-%s" scope))))))
 
 ;;-pel-autoload
 (defun pel-dirtree-find-replace (text-re new-text root-dir fn-re)
@@ -320,7 +325,11 @@ string as an Emacs regexp."
    'pel-dirtree-replace-file-newtext-is-literal
    :globally
    "t: new-text is a literal replacement."
-   "nil: new-text is an Emacs regexp."))
+   "nil: new-text is an Emacs regexp:
+ Surround text in double quote and use read syntax:
+  Double up the backslashes!!! For example,
+  type: \"AA\\\\1BB\" to replace match group 1 with AA and BB around it.
+        ^^^^^^^^^"))
 
 ;;-pel-autoload
 (defun pel-dt-fr-changed-files-in-dired ()
