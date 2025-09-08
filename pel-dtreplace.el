@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-08 07:49:33 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-08 08:11:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -178,12 +178,13 @@ WARNING: this version of Emacs does not skip forbidden directories
          Get a newer version of Emacs or get a copy of
          `directory-files-recursively' from the files.el from a
          later version of Emacs.")
-           (setq pel--dt-old-version-warning-done t))
+           (setq pel--dt-old-version-warning-done t)
+           (with-no-warnings
+             (directory-files-recursively root-dir fn-re nil)))
        (user-error "\
 In this version of Emacs, directory-files-recursively cannot skip
 forbidden directories: Upgrade Emacs, update files.el or allow this
-by setting `pel--dirtree-allow-operation-in-forbidden-directories' to t"))
-     (directory-files-recursively root-dir fn-re nil))))
+by setting `pel--dirtree-allow-operation-in-forbidden-directories' to t")))))
 
 (defun pel--dt-prompt  (prompt scope)
   "Print PROMPT formatted, read minibuffer with SCOPE history."
@@ -307,8 +308,8 @@ string as an Emacs regexp."
           (dolist (fn fnames)
             (push (format "%s%s" fn pel-dirtree-replace-file-backup-suffix)
                   mod-fnames))
-          (setq fnames (append fnames mod-fnames))
-          (setq fnames (sort fnames)))
+          (setq fnames (append fnames mod-fnames)))
+        (sort fnames 'string<) ; sort in place: support Emacs 26
         (dired (cons (format "%s (modified files)" pel-dirtree-rootdir)
                      fnames)))
     (user-error
