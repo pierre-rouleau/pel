@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-08 08:29:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-08 08:36:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -111,7 +111,28 @@ name with the string is appended."
           (string :tag "Base name regexp of directory to ignore")))
 
 (defcustom pel--dirtree-allow-operation-in-forbidden-directories nil
-  "Allow search/replace in forbidden directories on old versions of Emacs."
+  "Allow search/replace in forbidden directories on old versions of Emacs.
+
+In old versions of Emacs, such as Emacs 26, the `directory-files-recursively'
+only accepts 3 arguments and does not use a function that can be used to
+prevent processing of files in forbidden directories.
+
+In those versions of Emacs the function `pel--dt' detects the problem and
+prevents the operation warning the user.  At this point you can do several
+things:
+
+- Upgrade Emacs to a later version where the `directory-files-recursively'
+  function accepts 4 arguments.
+- Keep using the same old version of Emacs but get the source code of the
+  `directory-files-recursively' function from the files.el from a newer
+  version of Emacs and use that.
+- Keep using the same old version of Emacs, change nothing and accept the fact
+  that the `pel-dirtree-find-replace' may change the content of files in the
+  forbidden directories by setting
+  `pel--dirtree-allow-operation-in-forbidden-directories' to t.
+
+  - In that case, you can mitigate the issue by identifying the file names
+    more carefully."
   :group 'pel-dirtree-replace
   :type 'boolean
   :safe #'booleanp)
