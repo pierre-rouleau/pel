@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-08 08:25:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-08 08:29:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -110,7 +110,7 @@ name with the string is appended."
   :type '(repeat
           (string :tag "Base name regexp of directory to ignore")))
 
-(defvar pel--dirtree-allow-operation-in-forbidden-directories nil
+(defcustom pel--dirtree-allow-operation-in-forbidden-directories nil
   "Allow search/replace in forbidden directories on old versions of Emacs."
   :group 'pel-dirtree-replace
   :type 'boolean
