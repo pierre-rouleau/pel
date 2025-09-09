@@ -46,7 +46,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     ~<f11> s %~ to open  a Dired buffer that lists all modified files and
     their backup (if any where created).  You can then review all changes,
     revert some of them or delete the backup files.
-  - You can also revert all modifications done in all files by the last
+  - *Undo support*: revert all modifications done in all files by the last
     execution of the *pel-dirtree-find-replace* command by executing the
     *pel-dirtree-replace-undo* command, bound to ~<f11> s M-u~.  This restores
     all files to their original state when the list of modified file is non
