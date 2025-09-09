@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-09 11:14:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-09 11:17:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -352,7 +352,7 @@ pel-dirtree-find-replace new-text is an Emacs regexp in using string syntax:
 
 ;;-pel-autoload
 (defun pel-dt-fr-changed-files-in-dired ()
-  "Show all files changed by `pel-dirtree-replaced-file' in a dired buffer."
+  "Show all files changed by `pel-dirtree-find-replace' in a dired buffer."
   (interactive)
   (if pel-dirtree-replaced-files
       (let ((fnames pel-dirtree-replaced-files)
@@ -366,7 +366,7 @@ pel-dirtree-find-replace new-text is an Emacs regexp in using string syntax:
         (dired (cons (format "%s (modified files)" pel-dirtree-rootdir)
                      fnames)))
     (user-error
-     "pel-dirtree-replaced-file has not been used to modify files!")))
+     "pel-dirtree-find-replace has not been used to modify files!")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-dtreplace)
