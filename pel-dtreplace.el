@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-08 14:00:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-09 10:20:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,9 +45,10 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)          ; use `pel-toggle-and-show-user-option'
+(require 'pel--base)          ; use `pel-toggle-and-show-user-option',
+;;                            ;     `pel--prompt-separator'
 (require 'pel--options)       ; use `pel-pkg-for-search'
-
+(require 'replace)            ; use `query-replace-read-to'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -226,7 +227,10 @@ by setting `pel--dirtree-allow-operation-in-forbidden-directories' to t")))))
 ;;-pel-autoload
 (defun pel-dirtree-find-replace (text-re new-text root-dir fn-re)
   "Replace TEXT-RE with NEW-TEXT in all files named FN-RE under ROOT-DIR.
-TEXT-RE is a Emacs regular expression.
+TEXT-RE is a Emacs regular expression using string syntax:
+ - `\\&' stands for whatever matched the whole of TEXT-RE regexp,
+ - `\\N' (where N is a digit) stands for whatever matched
+   the Nth `\\(...\\)' (1-based) in TEXT-RE regexp.
 FN-RE is also a Emacs regular expression (not a glob!)
 
 The following user-options control various aspects of the operation:
@@ -253,21 +257,28 @@ The function remembers a list of modified files.
 Use the command `pel-dt-fr-changed-files-in-dired' to open a Dired
 buffer with this list of files."
   (interactive
-   (list
-    (pel--dt-prompt "Text regexp" 'text-re)
-    (pel--dt-prompt (format "%s%sreplacement (%s case)"
-                            (if pel-dirtree-replace-files-is-verbose
-                                "Verbose "
-                              "Silent ")
-                            (if pel-dirtree-replace-file-newtext-is-literal
-                                ""
-                              "regexp ")
-                            (if pel-dirtree-replace-file-newtext-is-fixedcase
-                                "fixed"
-                              "adjusted"))
-                    'new-text)
-    (read-directory-name "Root directory: " )
-    (pel--dt-prompt "File name regexp" 'fn-re)))
+   (let* ((from (pel--dt-prompt "Text regexp" 'text-re))
+          (to-prompt (format "%s%s%s case replace%s"
+                             (if pel-dirtree-replace-files-is-verbose
+                                 "Verbose "
+                               "Silent ")
+                             (if pel-dirtree-replace-file-newtext-is-literal
+                                 ""
+                               "regexp ")
+                             (if pel-dirtree-replace-file-newtext-is-fixedcase
+                                 "fixed"
+                               "adjusted")
+                             (if pel-dirtree-replace-file-newtext-is-literal
+                                 (format "%s:" from)
+                               "")))
+          (to (if pel-dirtree-replace-file-newtext-is-literal
+                  (pel--dt-prompt to-prompt 'new-text)
+                (query-replace-read-to from to-prompt :is-a-regexp))))
+     (list from
+           to
+           (read-directory-name "Root directory: " )
+           (pel--dt-prompt "File name regexp" 'fn-re))))
+  (message "From: %S  To: %S" text-re new-text)
   (cond
    ((string= fn-re ".")
     (user-error ". means all files! Use a more restricted regexp!"))
@@ -311,8 +322,8 @@ based on the replaced text."
   (pel-toggle-and-show-user-option
    'pel-dirtree-replace-file-newtext-is-fixedcase
    :globally
-   "t: perform fixed case replacement."
-   "nil: perform case adjusted replacement."))
+   "t: pel-dirtree-find-replace perform fixed case replacement."
+   "nil: pel-dirtree-find-replace perform case adjusted replacement."))
 
 ;;-pel-autoload
 (defun pel-dt-fr-toggle-literal ()
@@ -321,15 +332,16 @@ Toggle `pel-dirtree-replace-file-newtext-is-literal' to change whether
 the function performs a literal string replacement or interpret the new-text
 string as an Emacs regexp."
   (interactive)
-  (pel-toggle-and-show-user-option
-   'pel-dirtree-replace-file-newtext-is-literal
-   :globally
-   "t: new-text is a literal replacement."
-   "nil: new-text is an Emacs regexp:
- Surround text in double quote and use read syntax:
-  Double up the backslashes!!! For example,
-  type: \"AA\\\\1BB\" to replace match group 1 with AA and BB around it.
-        ^^^^^^^^^"))
+  (let ((pel--prompt-separator ""))
+    (pel-toggle-and-show-user-option
+     'pel-dirtree-replace-file-newtext-is-literal
+     :globally
+     "t: new-text is a literal replacement."
+     "nil:
+pel-dirtree-find-replace new-text is an Emacs regexp in using string syntax:
+ - `\\&' stands for whatever matched the whole of from regexp,
+ - `\\N' (where N is a digit) stands for whatever matched
+   the Nth `\\(...\\)' (1-based) in from regexp.")))
 
 ;;-pel-autoload
 (defun pel-dt-fr-changed-files-in-dired ()
