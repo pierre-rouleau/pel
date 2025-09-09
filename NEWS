@@ -8,10 +8,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   The command prompts for the root directory, the file name regexp, the text and the replacement text.
   The behaviour of the command is controlled by several customizable
   user-options, part of the   *pel-dirtree-replace* customization group:
-- *pel-dirtree-replace-file-forbidden-dir-re*: a list of regexp identifying
-  directory base names that are skipped (no recursive descent is done in
-  these directories and no file inside them will be modified).
-  This defaults to ='("/\\.")=.
+  - *pel-dirtree-replace-file-forbidden-dir-re*: a list of regexp identifying
+    directory base names that are skipped (no recursive descent is done in
+    these directories and no file inside them will be modified).
+    This defaults to ='("/\\.")=.
   - *pel-dirtree-replace-files-is-verbose*: if non-nil (the default) the
     command prints messages listing the names of the modified files and
     prints the count of modified files.
