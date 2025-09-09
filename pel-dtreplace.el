@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-09 10:20:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-09 11:14:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -40,6 +40,11 @@
 ;;   - `pel--dt-prompt'
 ;;   - `pel-find-replace'
 ;;   - `pel--dt'
+;;     - `pel--allow-descent-in'
+;; * `pel-dt-fr-set-backup-suffix'
+;; * `pel-dt-fr-toggle-fixedcase'
+;; * `pel-dt-fr-toggle-literal'
+;; * `pel-dt-fr-changed-files-in-dired'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -214,8 +219,9 @@ by setting `pel--dirtree-allow-operation-in-forbidden-directories' to t")))))
 
 (defun pel--dt-prompt  (prompt scope)
   "Print PROMPT formatted, read minibuffer with SCOPE history."
-  (let* ((use-read-syntax (and (eq scope 'new-text)
-                               (not pel-dirtree-replace-file-newtext-is-literal)))
+  (let* ((use-read-syntax
+          (and (eq scope 'new-text)
+               (not pel-dirtree-replace-file-newtext-is-literal)))
          (syntax (if use-read-syntax
                      " (string in read syntax) "
                    "")))
@@ -310,7 +316,8 @@ Modify the value of `pel-dirtree-replace-file-backup-suffix' in current session.
       (progn
         (setq pel-dirtree-replace-file-backup-suffix nil)
         (message "pel-dirtree-find-replace no longer creates backup files."))
-    (message "pel-dirtree-find-replace backup files now use suffix %S" new-suffix)))
+    (message "pel-dirtree-find-replace backup files now use suffix %S"
+             new-suffix)))
 
 ;;-pel-autoload
 (defun pel-dt-fr-toggle-fixedcase ()
