@@ -51,7 +51,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     *pel-dirtree-replace-undo* command, bound to ~<f11> s M-u~.  This restores
     all files to their original state when the list of modified file is non
     nil and backup files were created.
-  Documented in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]].
+  - Documented in at end of [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=7=][⅀ Search/Replace PDF page 7]].
 - Add ~<f11> f n~ key binding to the very useful *find-name-dired* command.
   This complements the ~<f11> f F n~ key binding.
   Also fixed key bindings listed in the File PDF.
