@@ -983,22 +983,26 @@ by BUFFER or `pel-insert-symbol-content-context-buffer'."
         (pel-on-off-string (eval symbol) on-string off-string)
       (or void-string "void"))))
 
+(defvar pel--prompt-separator ":")
+
 (defun pel-symbol-text (symbol &optional on-string off-string void-string)
   "Return a string with an interpretation of SYMBOL value.
 If SYMBOL is not bound: show \"void\".
 If SYMBOL is set to t: show ON-STRING if defined, \"on\" otherwise.
 If SYMBOL is nil: show OFF-STRING if defined, \"off\" otherwise.
 If SYMBOL is not defined, show VOID-STRING if defined, \"void\" otherwise."
-  (format "%s is now: %s"
+  (format "%s is now%s %s"
           symbol
+          pel--prompt-separator
           (pel-symbol-on-off-string symbol on-string off-string void-string)))
 
 (defun pel-value-on-off-text (name value &optional on-string off-string)
   "Return a string describing NAME boolean VALUE.
 If VALUE is t  : show ON-STRING if defined, \"on\" otherwise.
 If VALUE is nil: show OFF-STRING if defined, \"off\" otherwise."
-  (format "%s is now: %s"
+  (format "%s is now%s %s"
           name
+          pel--prompt-separator
           (pel-symbol-on-off-string value on-string off-string)))
 
 (defun pel-symbol-value-or (symbol &optional replacement formatter buffer)
@@ -2425,11 +2429,14 @@ The function issue an error if the argument is not a symbol."
   (pel-toggle symbol)
   (message "%s%s"
            (if name
-               (format "%s is now: %s" name
+               (format "%s is now%s %s"
+                       name
+                       pel--prompt-separator
                        (pel-symbol-on-off-string symbol
                                                  on-string off-string))
 
-               (pel-symbol-text symbol on-string off-string))
+
+             (pel-symbol-text symbol on-string off-string))
            (if locally " (in current buffer)" "")))
 
 (defun pel-toggle-and-show-user-option (user-option
