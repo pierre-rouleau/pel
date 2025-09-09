@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-09 11:17:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-09 13:25:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -258,7 +258,6 @@ The following user-options control various aspects of the operation:
   whether the replacement text is used literally (when *t*, the default) or
   text is an Emacs regexp, allowing regexp based text replacements.
 
-
 The function remembers a list of modified files.
 Use the command `pel-dt-fr-changed-files-in-dired' to open a Dired
 buffer with this list of files."
@@ -275,7 +274,7 @@ buffer with this list of files."
                                  "fixed"
                                "adjusted")
                              (if pel-dirtree-replace-file-newtext-is-literal
-                                 (format "%s:" from)
+                                 (format ": %s " from)
                                "")))
           (to (if pel-dirtree-replace-file-newtext-is-literal
                   (pel--dt-prompt to-prompt 'new-text)
@@ -284,7 +283,6 @@ buffer with this list of files."
            to
            (read-directory-name "Root directory: " )
            (pel--dt-prompt "File name regexp" 'fn-re))))
-  (message "From: %S  To: %S" text-re new-text)
   (cond
    ((string= fn-re ".")
     (user-error ". means all files! Use a more restricted regexp!"))
@@ -367,6 +365,60 @@ pel-dirtree-find-replace new-text is an Emacs regexp in using string syntax:
                      fnames)))
     (user-error
      "pel-dirtree-find-replace has not been used to modify files!")))
+
+;;-pel-autoload
+(defun pel-dirtree-replace-undo (&optional no-prompt)
+  "Undo all changes done by last `pel-dirtree-find-replace' execution.
+Prompt to confirm unless NO-PROMPT is non-nil.
+When `pel-dirtree-replace-files-is-verbose' is non-nil, print the name of
+restored files. In all case print number of restored files.
+If `pel-dirtree-replaced-files' or `pel-dirtree-replace-file-backup-suffix'
+is nil no restoring can be done and the function issues a user-error.
+
+The function returns a list of 2 elements: the number of restored files and
+the list of files that could not be replaced (if any). This can be useful in
+non-interactive code."
+  (interactive "P")
+  (if (and pel-dirtree-replaced-files
+           pel-dirtree-replace-file-backup-suffix)
+      (let ((tmp-fn nil)
+            (bkp-fn nil)
+            (restored-fnames nil)
+            (missing-fnames nil)
+            (prompt-msg (format
+                         "Undo last pel-dirtree-find-replace of %d files"
+                         (length pel-dirtree-replaced-files))))
+        (when (or no-prompt (y-or-n-p prompt-msg))
+          (dolist (fn pel-dirtree-replaced-files)
+            (setq tmp-fn (format "%s--backup" fn)
+                  bkp-fn (format "%s%s" fn
+                                 pel-dirtree-replace-file-backup-suffix))
+            (if (and (file-exists-p fn)
+                     (file-exists-p bkp-fn))
+                (progn
+                  (copy-file fn tmp-fn :ok-if-exists)
+                  (rename-file bkp-fn fn :ok-if-exists)
+                  (when (file-exists-p tmp-fn)
+                    (delete-file tmp-fn))
+                  (push fn restored-fnames)
+                  (when pel-dirtree-replace-files-is-verbose
+                    (message "Restored: %s" fn)))
+              (push fn missing-fnames)))
+          (if missing-fnames
+              (user-error
+               "Restored %d files but failed restoring %d of them: %S"
+               (length restored-fnames)
+               (length missing-fnames)
+               missing-fnames)
+            (message "Restored all (%d) files." (length restored-fnames)))
+          ;; Once a undo is done, erase the list of changed files.
+          (setq pel-dirtree-replaced-files nil)
+          ;; return number of restored file names and the list of files
+          ;; that could not be restored (if any).
+          (list (length restored-fnames)
+                missing-fnames)))
+    (user-error
+     "No pel-dirtree-find-replace recorded modifications to undo!")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-dtreplace)

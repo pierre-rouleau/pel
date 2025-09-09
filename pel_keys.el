@@ -8317,6 +8317,7 @@ the ones defined from the buffer now."
 (when pel-use-fzf
   (define-key pel:search-replace "z" 'fzf-find-in-buffer))
 (define-key pel:search-replace (kbd "M-%") 'pel-dirtree-find-replace)
+(define-key pel:search-replace (kbd "M-u") 'pel-dirtree-replace-undo)
 (define-key pel:search-replace "%"         'pel-dt-fr-changed-files-in-dired)
 (define-key pel:search-replace-setup "b"   'pel-dt-fr-set-backup-suffix)
 (define-key pel:search-replace-setup "c"   'pel-dt-fr-toggle-fixedcase)
