@@ -41,7 +41,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       session: it does not change the customized user-option: it's original
       value will continue to be used in future sessions unless you change the
       customized value.
-  - Once you have replaced text with the *pel-dirtree-find-replace* command
+  - *See changed files in Dired*: once you have replaced text with the *pel-dirtree-find-replace* command
     you can then use the *pel-dt-fr-changed-files-in-dired* command, bound to
     ~<f11> s %~ to open  a Dired buffer that lists all modified files and
     their backup (if any where created).  You can then review all changes,
