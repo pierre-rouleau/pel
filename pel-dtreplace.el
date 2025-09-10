@@ -2,13 +2,15 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-09 13:25:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-10 08:19:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
 ;; Copyright (C) 2025  Pierre Rouleau
 ;;
+;; Package-Requires: ((emacs "26.1") (spinner "1.7.3"))
+
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
@@ -50,10 +52,18 @@
 ;;; Dependencies:
 ;;
 ;;
+;; From PEL
 (require 'pel--base)          ; use `pel-toggle-and-show-user-option',
 ;;                            ;     `pel--prompt-separator'
 (require 'pel--options)       ; use `pel-pkg-for-search'
+;;
+;; From Emacs
 (require 'replace)            ; use `query-replace-read-to'
+;;
+;; From 3rd party
+(require 'spinner nil :noerror) ; use it if available
+                                ; from: https://github.com/Malabarba/spinner.el
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -290,10 +300,18 @@ buffer with this list of files."
     (user-error "Please specify a non-empty Emacs regexp!"))
    (t
     ;; process each file found open each file
+
+    (with-no-warnings
+      (when (featurep 'spinner)
+        (spinner-start 'vertical-breathing 10)))
     (setq pel-dirtree-replaced-files nil)
     (mapc (lambda (fname)
             (pel-find-replace fname text-re new-text))
           (pel--dt root-dir fn-re))
+    (with-no-warnings
+      (when (featurep 'spinner)
+        (spinner-stop)))
+
     (setq pel-dirtree-rootdir root-dir)
     (when pel-dirtree-replace-files-is-verbose
       (message "Replaced text inside %d files"
