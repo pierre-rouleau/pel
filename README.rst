@@ -22,7 +22,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-661-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-667-teal
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
@@ -50,8 +50,9 @@ or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 
 Essentially PEL:
 
-- extends the standard Emacs system,
-- adds a large number (661) of convenient commands,
+- extends the standard Emacs system and enhance the synergy in your use of Emacs,
+- adds a large number (667) of convenient commands and provides glue logic to
+  increase feature cohesion and simplify their use,
 - provides the ability to easily install, update a large set (261) of external packages,
 - uses the extremely powerful Emacs customization system to drive activation
   of features,
@@ -373,7 +374,7 @@ various packages, etc...
 --------------------------
 
 
-- PEL provides over 661 extra commands.  PEL commands extend the packages
+- PEL provides over 667 extra commands.  PEL commands extend the packages
   it supports and provides some of its own features.  Some commands are only
   available for a given OS, most are accessible in every OS.
 - PEL provides 10 specialized Hydra_ key bindings when the ``pel-use-hydra``
@@ -538,7 +539,7 @@ Notes
               The command detects the key sequence and the context to
               identify which PEL PDF to open.
 
-              PEL currently implements 661 interactive commands.  Some are
+              PEL currently implements 667 interactive commands.  Some are
               always loaded.  Several are auto-loaded when needed.  This count
               excludes the number of template commands that are dynamically constructed
               and loaded only for major modes, such as Erlang, that support
