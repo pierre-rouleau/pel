@@ -2,6 +2,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add PEL support for the VHDL hardware description language when
+  *pel-use-vhdl* is activated (set to t).  This is a early implementation.
+  When activated, PEL provides the PEL conventional keys in *vhdl-mode*
+  buffers:
+  - ~<f12> <f1>~  opens the (new, early) [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/hdl-vhdl.pdf][𝖍𝖉𝔩 - VHDL PDF]] file(or HTML page).
+  - ~<f12> <f2>~ opens the customization buffer for PEL VHDL support.
+  - ~<f12> <f3>~ opens the Emacs customization buffer for *vhdl-mode*.
 - Add PEL support for the Verilog hardware description language when
   *pel-use-verilog* is activated (set to t).  This is a early implementation.
   When activated, PEL provides the PEL conventional keys in *verilog-mode*

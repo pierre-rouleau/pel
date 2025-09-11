@@ -107,6 +107,7 @@
 ;;           - pel-sh-script-skeleton-control
 ;;       - pel-pkg-for-hardware-description-languages
 ;;         - pel-use-verilog
+;;         - pel-use-vhdl
 ;;       - pel-pkg-for-software-programming-languages
 ;;         - pel-pkg-for-ada
 ;;         - pel-pkg-for-applescript
@@ -4666,6 +4667,7 @@ Note: currently nothing is placed under this group, BUT several other
   "PEL customization for hardware description languages."
   :group 'pel-pkg-for-programming-languages)
 
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Verilog Language Support
 ;; ------------------------
 
@@ -4711,6 +4713,54 @@ characters."
   :group 'pel-pkg-for-verilog
   :type 'boolean
   :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; VHDL Language Support
+;; ---------------------
+
+(defgroup pel-pkg-for-vhdl nil
+  "PEL VHDL language support."
+  :group 'pel-pkg-for-hardware-description-languages
+  :link '(url-link :tag "VHDL @ Wikipedia" "https://en.wikipedia.org/wiki/VHDL"))
+
+(defcustom pel-use-vhdl nil
+  "Control whether PEL supports the VHDL Programming Language Development."
+  :group 'pel-pkg-for-vhdl
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-vhdl :package-is '(if pel-use-tree-sitter
+                                       (quote ((elpa . vhdl-mode)
+                                               (elpa . vhdl-ts-mode)))
+                                     (quote ((elpa . vhdl-mode)))))
+
+(defcustom pel-vhdl-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for VHDL buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-vhdl
+  :type '(repeat function))
+
+(defcustom pel-vhdl-tab-width 4
+  "Distance between tab stop for vhdl buffers.
+
+PEL stores this in `tab-width' when opening vhdl buffers.
+
+This does *NOT* control the indentation in vhdl
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-vhdl
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-vhdl-use-tabs nil
+  "Value of `indent-tabs-mode' for editing vhdl files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-vhdl
+  :type 'boolean
+  :safe #'booleanp)
+
 
 ;; ---------------------------------------------------------------------------
 ;; Programming Language Support

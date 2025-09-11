@@ -2198,6 +2198,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; E       - Elm
 ;; F       - FORTRAN
 ;; G       - Groovy
+;; H       - VHDL
 ;; J       - Java            -              JVM
 ;; L       - Common Lisp     - Lisp Family
 ;; M       - Makefile
@@ -5380,6 +5381,19 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-pel-global-prefix pel:for-verilog  (kbd "<f11> SPC V"))
   (pel-eval-after-load verilog-mode
     (pel-config-major-mode verilog pel:for-verilog))
+  )
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC H`` : VHDL programming
+;; Preliminary 🚧
+
+(when pel-use-vhdl
+  (define-pel-global-prefix pel:for-vhdl  (kbd "<f11> SPC H"))
+
+  (add-to-list 'auto-mode-alist '("\\.vhdl?\\'" . vhdl-mode))
+
+  (pel-eval-after-load vhdl-mode
+    (pel-config-major-mode vhdl pel:for-vhdl))
   )
 
 ;; ---------------------------------------------------------------------------

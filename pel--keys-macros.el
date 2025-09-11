@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-11 12:26:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-11 15:34:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -350,6 +350,7 @@
     ([f11 32 ?v]     "pl-v"         pel-pkg-for-v            (v-mode
                                                               electricity))
     ([f11 32 ?V]     "hdl-verilog"  pel-pkg-for-verilog       verilog-mode)
+    ([f11 32 ?H]     "hdl-vhdl"     pel-pkg-for-vhdl          vhdl)
 
     ([f11 32 ?x]     "pl-elixir"    pel-pkg-for-elixir        (elixir
                                                                electricity))
@@ -698,6 +699,7 @@ stored inside the doc/pdf directory.")
     ("arc"             [f11 32 1])
     ("eiffel"          [f11 32 5])
     ("haskell"         [f11 32 ?h])
+    ("vhdl"            [f11 32 ?H])
     ("hy"              [f11 32 8])
     ("lfe"             [f11 32 12])
     ("inferior-lfe"    [f11 32 32 12])
@@ -1015,6 +1017,7 @@ There should be no key binding!" keyseq))
     ("tcl"              . "pl-tcl")
     ("v"                . "pl-v")
     ("verilog"          . "hdl-verilog")
+    ("vhdl"             . "hdl-vhdl")
     ("zig"              . "pl-zig")
     ;; repl
     ;; ("sly"              . "repl-cl-sly")
