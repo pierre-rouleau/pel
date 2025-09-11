@@ -2208,6 +2208,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; S       - Scala           -              JVM
 ;; T       - Janet           - Lisp Family
 ;; U       - Ruby
+;; V       - Verilog
 ;; W       - AWK
 ;; Z       - shell script modes
 ;; a       - AppleScript
@@ -5370,6 +5371,16 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (add-to-list 'auto-mode-alist (cons "\\.v\\'" 'pel-v-or-verilog-mode))
 
   (run-at-time "3 sec" nil (function pel--cleanup-auto-mode-alist)))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC V`` : Verilog programming
+;; Preliminary 🚧
+
+(when pel-use-verilog
+  (define-pel-global-prefix pel:for-verilog  (kbd "<f11> SPC V"))
+  (pel-eval-after-load verilog-mode
+    (pel-config-major-mode verilog pel:for-verilog))
+  )
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-z`` : Zig  programming

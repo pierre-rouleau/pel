@@ -2,6 +2,19 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add PEL support for the Verilog hardware description language when
+  *pel-use-verilog* is activated (set to t).  This is a early implementation.
+  When activated, PEL provides the PEL conventional keys in *verilog-mode*
+  buffers:
+  - ~<f12> <f1>~  opens the (new, early) [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/hdl-verilog.pdf][𝖍𝖉𝔩 - Verilog PDF]] file(or HTML page).
+  - ~<f12> <f2>~ opens the customization buffer for PEL Verilog support.
+  - ~<f12> <f3>~ opens the Emacs customization buffer for *verilog-mode*.
+  There's also a slight re-organization of the PEL customization groups: all
+  programming language groups are now children of the
+  *pel-pkg-for-software-programming-languages* customization group, the
+  hardware description languages (such as Verilog) are children of the
+  *pel-pkg-for-hardware-description-languages* group and both of those are
+  children of *pel-pkg-for-programming-languages*.
 - Add logic to clean up the *auto-mode-alist* ~.v~ file association to allow
   simultaneous editing of V ~.v~ file and Verilog ~.v~ file.
   PEL associates a special function with files that use the ~.v~ file

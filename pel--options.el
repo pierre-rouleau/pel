@@ -98,85 +98,88 @@
 ;;     - pel-pkg-for-navigation
 ;;       - pel-pkg-for-xref
 ;;     - pel-pkg-for-parser
-;;     - pel-pkg-for-programming
+;;     - pel-pkg-for-programming-languages
 ;;       - pel-pkg-for-all-languages
 ;;         - pel-pkg-for-parens
 ;;         - pel-pkg-for-syntax-check
 ;;         - pel-pkg-for-language-server
 ;;         - pel-pkg-generic-code-style
 ;;           - pel-sh-script-skeleton-control
-;;       - pel-pkg-for-ada
-;;       - pel-pkg-for-applescript
-;;       - pel-pkg-for-cc
-;;         - pel-pkg-for-awk
-;;         - pel-pkg-for-c
-;;           - pel-c-code-style
-;;             - pel-c-skeleton-control
-;;               - pel-c-module-header-skeleton-control
-;;               - pel-c-function-header-skeleton-control
-;;           - pel-pkg-for-bison
-;;         - pel-pkg-for-c++
-;;           - pel-c++-code-style
-;;             - pel-c++-skeleton-control
-;;               - pel-c++-module-header-skeleton-control
-;;               - pel-c++-function-header-skeleton-control
-;;         - pel-pkg-for-d
-;;           - pel-d-code-style
-;;       - pel-pkg-for-eiffel
-;;       - pel-pkg-for-javascript
-;;       - pel-pkg-for-go
-;;       - pel-pkg-for-haskell
-;;       - pel-pkg-for-lisp
-;;         - pel-pkg-for-clisp
-;;           - pel-clisp-code-style
-;;           - pel-sexp-form-navigation
-;;         - pel-pkg-for-elisp
-;;           - pel-elisp-code-style
-;;           - pel-sexp-form-navigation
-;;         - pel-pkg-for-arc
-;;         - pel-pkg-for-clojure
-;;         - pel-pkg-for-janet
-;;         - pel-pkg-for-hy
-;;         - pel-pkg-for-scheme
-;;           - pel-pkg-for-racket
-;;           - pel-pkg-for-gambit
-;;           - pel-pkg-for-gerbil
-;;       - pel-pkg-for-beam-vm
-;;         - pel-pkg-for-elixir
-;;         - pel-pkg-for-erlang
-;;           - pel-erlang-environment
-;;           - pel-erlang-ide
-;;           - pel-erlang-code-style
-;;             - pel-erlang-skeleton-control
-;;         - pel-pkg-for-lfe
-;;         - pel-pkg-for-gleam
-;;       - pel-pkg-for-forth
-;;       - pel-pkg-for-julia
-;;       - pel-pkg-for-lua
-;;       - pel-pkg-for-m4
-;;       - pel-pkg-for-modula-2
-;;       - pel-pkg-for-nim
-;;       - pel-pkg-for-objc
-;;       - pel-pkg-for-ocaml
-;;       - pel-pkg-for-odin
-;;       - pel-pkg-for-pascal
-;;       - pel-pkg-for-perl
-;;         - pel-pkg-for-perl-general
-;;         - pel-pkg-for-perl-perl-mode
-;;         - pel-pkg-for-perl-cperl-mode
-;;       - pel-pkg-for-pike
-;;       - pel-pkg-for-python
-;;       - pel-pkg-for-rexx
-;;       - pel-pkg-for-ruby
-;;       - pel-pkg-for-rust
-;;       - pel-pkg-for-sh-scripting
-;;         - pel-sh-script-skeleton-control
-;;       - pel-pkg-for-seed7
-;;       - pel-pkg-for-smalltalk
-;;       - pel-pkg-for-swift
-;;       - pel-pkg-for-tcl
-;;       - pel-pkg-for-v
-;;       - pel-pkg-for-zig
+;;       - pel-pkg-for-hardware-description-languages
+;;         - pel-use-verilog
+;;       - pel-pkg-for-software-programming-languages
+;;         - pel-pkg-for-ada
+;;         - pel-pkg-for-applescript
+;;         - pel-pkg-for-cc
+;;           - pel-pkg-for-awk
+;;           - pel-pkg-for-c
+;;             - pel-c-code-style
+;;               - pel-c-skeleton-control
+;;                 - pel-c-module-header-skeleton-control
+;;                 - pel-c-function-header-skeleton-control
+;;             - pel-pkg-for-bison
+;;           - pel-pkg-for-c++
+;;             - pel-c++-code-style
+;;               - pel-c++-skeleton-control
+;;                 - pel-c++-module-header-skeleton-control
+;;                 - pel-c++-function-header-skeleton-control
+;;           - pel-pkg-for-d
+;;             - pel-d-code-style
+;;         - pel-pkg-for-eiffel
+;;         - pel-pkg-for-javascript
+;;         - pel-pkg-for-go
+;;         - pel-pkg-for-haskell
+;;         - pel-pkg-for-lisp
+;;           - pel-pkg-for-clisp
+;;             - pel-clisp-code-style
+;;             - pel-sexp-form-navigation
+;;           - pel-pkg-for-elisp
+;;             - pel-elisp-code-style
+;;             - pel-sexp-form-navigation
+;;           - pel-pkg-for-arc
+;;           - pel-pkg-for-clojure
+;;           - pel-pkg-for-janet
+;;           - pel-pkg-for-hy
+;;           - pel-pkg-for-scheme
+;;             - pel-pkg-for-racket
+;;             - pel-pkg-for-gambit
+;;             - pel-pkg-for-gerbil
+;;         - pel-pkg-for-beam-vm
+;;           - pel-pkg-for-elixir
+;;           - pel-pkg-for-erlang
+;;             - pel-erlang-environment
+;;             - pel-erlang-ide
+;;             - pel-erlang-code-style
+;;               - pel-erlang-skeleton-control
+;;           - pel-pkg-for-lfe
+;;           - pel-pkg-for-gleam
+;;         - pel-pkg-for-forth
+;;         - pel-pkg-for-julia
+;;         - pel-pkg-for-lua
+;;         - pel-pkg-for-m4
+;;         - pel-pkg-for-modula-2
+;;         - pel-pkg-for-nim
+;;         - pel-pkg-for-objc
+;;         - pel-pkg-for-ocaml
+;;         - pel-pkg-for-odin
+;;         - pel-pkg-for-pascal
+;;         - pel-pkg-for-perl
+;;           - pel-pkg-for-perl-general
+;;           - pel-pkg-for-perl-perl-mode
+;;           - pel-pkg-for-perl-cperl-mode
+;;         - pel-pkg-for-pike
+;;         - pel-pkg-for-python
+;;         - pel-pkg-for-rexx
+;;         - pel-pkg-for-ruby
+;;         - pel-pkg-for-rust
+;;         - pel-pkg-for-sh-scripting
+;;           - pel-sh-script-skeleton-control
+;;         - pel-pkg-for-seed7
+;;         - pel-pkg-for-smalltalk
+;;         - pel-pkg-for-swift
+;;         - pel-pkg-for-tcl
+;;         - pel-pkg-for-v
+;;         - pel-pkg-for-zig
 ;;     - pel-pkg-for-project-mng
 ;;     - pel-pkg-for-regexp
 ;;     - pel-pkg-for-scrolling
@@ -4654,19 +4657,74 @@ Note: currently nothing is placed under this group, BUT several other
   :group 'pel-package-use)
 
 ;; ---------------------------------------------------------------------------
+(defgroup pel-pkg-for-programming-languages nil
+  "PEL customization for programming languages."
+  :group 'pel-package-use)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-pkg-for-hardware-description-languages nil
+  "PEL customization for hardware description languages."
+  :group 'pel-pkg-for-programming-languages)
+
+;; Verilog Language Support
+;; ------------------------
+
+(defgroup pel-pkg-for-verilog nil
+  "PEL Verilog language support."
+  :group 'pel-pkg-for-hardware-description-languages
+  :link '(url-link :tag "Verilog @ Wikipedia" "https://en.wikipedia.org/wiki/Verilog"))
+
+(defcustom pel-use-verilog nil
+  "Control whether PEL supports the Verilog Programming Language Development."
+  :group 'pel-pkg-for-verilog
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-verilog :package-is '(if pel-use-tree-sitter
+                                       (quote ((elpa . verilog-mode)
+                                               (elpa . verilog-ts-mode)))
+                                     (quote ((elpa . verilog-mode)))))
+
+(defcustom pel-verilog-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Verilog buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-verilog
+  :type '(repeat function))
+
+(defcustom pel-verilog-tab-width 4
+  "Distance between tab stop for verilog buffers.
+
+PEL stores this in `tab-width' when opening verilog buffers.
+
+This does *NOT* control the indentation in verilog
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-verilog
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-verilog-use-tabs nil
+  "Value of `indent-tabs-mode' for editing verilog files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-verilog
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
 ;; Programming Language Support
 ;; ============================
-(defgroup pel-pkg-for-programming nil
+(defgroup pel-pkg-for-software-programming-languages nil
   "PEL customization for programming languages."
-  :group 'pel-package-use
-  :link `(url-link :tag "Comments PDF" ,(pel-pdf-file-url "comments")))
+  :group 'pel-pkg-for-programming-languages)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Generic Programming Support
 ;; ---------------------------
 (defgroup pel-pkg-for-all-languages nil
   "PEL Generic Programming support."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-languages
   :link `(url-link :tag "Comments PDF" ,(pel-pdf-file-url "comments"))
   :link `(url-link :tag "Inserting Text PDF"
                    ,(pel-pdf-file-url "inserting-text")))
@@ -5045,7 +5103,7 @@ See also: `pel-shell-script-extensions'."
 
 (defgroup pel-pkg-for-ada nil
   "PEL customization for Ada."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Ada PDF"
                    ,(pel-pdf-file-url "pl-ada")))
 
@@ -5111,7 +5169,7 @@ Values in the [2, 8] range are accepted."
 ;; -------------------
 (defgroup pel-pkg-for-applescript nil
   "PEL customization for AppleScript."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :group 'apples
   :link `(url-link :tag "AppleScript PDF"
                    ,(pel-pdf-file-url "pl-applescript")))
@@ -5137,7 +5195,7 @@ Values in the [2, 8] range are accepted."
 ;; ------------------------
 (defgroup pel-pkg-for-cc nil
   "PEL customization for curly-bracket programming languages."
-  :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-software-programming-languages)
 
 (defcustom pel-cc-auto-newline t
   "Set the default state of CC Mode electric auto-newline for all CC Modes.
@@ -6958,7 +7016,7 @@ by the `pel-use-d-ac-dcd'."
 
 (defgroup pel-pkg-for-eiffel nil
   "PEL customization for Eiffel."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Eiffel PDF"
                    ,(pel-pdf-file-url "pl-eiffel")))
 
@@ -7028,7 +7086,7 @@ Values in the [2, 8] range are accepted."
 ;; ------------------
 (defgroup pel-pkg-for-javascript nil
   "PEL support for Javascript. Experimental."
-  :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-software-programming-languages)
 
 
 (defcustom pel-use-javascript nil
@@ -7106,7 +7164,7 @@ characters."
 
 (defgroup pel-pkg-for-go nil
   "PEL customization for tools supporting the Go programming language."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Go PDF" ,(pel-pdf-file-url "pl-go"))  )
 
 (defcustom pel-use-go nil
@@ -7291,7 +7349,7 @@ Requires gocode."
 ;; ---------------
 (defgroup pel-pkg-for-haskell nil
   "PEL support for the Haskell programming language."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Haskell PDF" ,(pel-pdf-file-url "pl-haskell")))
 
 (defcustom pel-use-haskell nil
@@ -7352,7 +7410,7 @@ characters."
 
 (defgroup pel-pkg-for-lisp nil
   "PEL customization for tools supporting LISP-like programming languages."
-  :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-software-programming-languages)
 
 (defcustom pel-use-lispy nil
   "Control whether PEL uses the lispy package.
@@ -8665,7 +8723,7 @@ specified as a string."
 ;; --------------------------
 (defgroup pel-pkg-for-beam-vm nil
   "PEL customization for BEAM Virtual Machine programming languages."
-  :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-software-programming-languages)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Elixir Support
@@ -9518,7 +9576,7 @@ characters."
 
 (defgroup pel-pkg-for-factor nil
   "PEL customization for Factor."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Factor PDF" ,(pel-pdf-file-url "pl-factor")))
 
 (defcustom pel-use-factor nil
@@ -9563,7 +9621,7 @@ characters."
 ;; -------------
 (defgroup pel-pkg-for-forth nil
   "PEL customization for Forth."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Forth PDF" ,(pel-pdf-file-url "pl-forth")))
 
 (defcustom pel-use-forth nil
@@ -9606,7 +9664,7 @@ characters."
 ;; -------------
 (defgroup pel-pkg-for-julia nil
   "PEL customization for Julia."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Julia PDF" ,(pel-pdf-file-url "pl-julia")))
 
 (defcustom pel-use-julia  nil
@@ -9654,7 +9712,7 @@ characters."
 ;; -----------
 (defgroup pel-pkg-for-lua nil
   "PEL customization for Lua."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Lua PDF" ,(pel-pdf-file-url "pl-lua")))
 
 (defcustom pel-use-lua  nil
@@ -9702,7 +9760,7 @@ characters."
 ;; ----------
 (defgroup pel-pkg-for-m4 nil
   "PEL support for the M4 preprocessor programming language."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "M4 PDF" ,(pel-pdf-file-url "pl-m4")))
 
 (defcustom pel-use-m4 nil
@@ -9747,7 +9805,7 @@ Values in the [2, 8] range are accepted."
 ;; ---------------
 (defgroup pel-pkg-for-modula-2 nil
   "PEL customization for Modula2 programming language."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :group 'modula2
   :link `(url-link :tag "Modula2 PDF" ,(pel-pdf-file-url "pl-modula2")))
 
@@ -9784,7 +9842,7 @@ Do not enter lambda expressions."
 
 (defgroup pel-pkg-for-nim nil
   "PEL support for the Nim programming language."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Nim PDF" ,(pel-pdf-file-url "pl-nim")))
 
 (defcustom pel-use-nim nil
@@ -9845,7 +9903,7 @@ characters."
 ;; -------------------
 (defgroup pel-pkg-for-objc nil
   "PEL support for the Objective-C programming language."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Objective-C PDF" ,(pel-pdf-file-url
                                             "pl-objc")))
 
@@ -9974,7 +10032,7 @@ Does not indent."
 ;; -------------
 (defgroup pel-pkg-for-ocaml nil
   "PEL support for the Ocaml programming language."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Ocaml PDF" ,(pel-pdf-file-url "pl-ocaml")))
 
 (defcustom pel-use-ocaml nil
@@ -10053,7 +10111,7 @@ characters."
 ;; ------------
 (defgroup pel-pkg-for-odin nil
   "PEL customization for Odin programming language."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :group 'odin
   :link `(url-link :tag "Odin PDF" ,(pel-pdf-file-url "pl-odin"))
   :link '(url-link :tag "Odin Programming Language"
@@ -10109,7 +10167,7 @@ Do not enter lambda expressions."
 ;; --------------
 (defgroup pel-pkg-for-pascal nil
   "PEL customization for Pascal  programming language."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :group 'pascal
   :link `(url-link :tag "Pascal PDF" ,(pel-pdf-file-url "pl-pascal")))
 
@@ -10156,7 +10214,7 @@ The perl-mode and cperl-mode settings exits because PEL code depend
 on their presence.  However, the PEL General Perl setting user-options that
 use the same name are stored into the perl and cperl specific ones.  Therefore
 you should set the general user options to set the other two."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Perl PDF" ,(pel-pdf-file-url "pl-perl")))
 
 (defcustom pel-use-perl nil
@@ -10350,7 +10408,7 @@ show the trailing spaces as usual."
 ;; ------------
 (defgroup pel-pkg-for-pike nil
   "PEL customization for Pike."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Pike PDF" ,(pel-pdf-file-url "pl-pike")))
 
 (defcustom pel-use-pike  nil
@@ -10477,7 +10535,7 @@ Does not indent."
 ;; --------------
 (defgroup pel-pkg-for-python nil
   "PEL customization for Python."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Python PDF" ,(pel-pdf-file-url "pl-python")))
 
 (defcustom pel-use-python  nil
@@ -10575,7 +10633,7 @@ Note: `pel-use-python' must be t for this to be effective."
 ;; ------------
 (defgroup pel-pkg-for-rexx nil
   "PEL customization for REXX Programming language."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "REXX PDF" ,(pel-pdf-file-url "pl-rexx")))
 
 (defcustom pel-use-rexx nil
@@ -10665,7 +10723,7 @@ characters."
 ;; ------------
 (defgroup pel-pkg-for-ruby nil
   "PEL support for the Ruby programming language."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Ruby PDF" ,(pel-pdf-file-url "pl-ruby")))
 
 (defcustom pel-use-ruby nil
@@ -10715,7 +10773,7 @@ characters."
 ;; ------------
 (defgroup pel-pkg-for-rust nil
   "PEL customization for Rust."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Rust PDF" ,(pel-pdf-file-url "pl-rust")))
 
 (defcustom pel-use-rust  nil
@@ -10800,7 +10858,7 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
 ;; ----------------------------
 (defgroup pel-pkg-for-sh-scripting nil
   "PEL support for Unix shell scripting."
-  :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-software-programming-languages)
 
 (defcustom pel-use-sh nil
   "Control whether PEL supports the Shell programming language.
@@ -10873,7 +10931,7 @@ hard tab when one `pel-sh-use-tabs' is set to t."
 ;; ----------------------
 (defgroup pel-pkg-for-seed7 nil
   "PEL Seed7 language support."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Seed7 PDF" ,(pel-pdf-file-url "pl-seed7")))
 
 (defcustom pel-use-seed7 nil
@@ -10912,7 +10970,7 @@ Do not enter lambda expressions."
 ;; --------------------------
 (defgroup pel-pkg-for-smalltalk nil
   "PEL Smalltalk language support."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Smalltalk PDF" ,(pel-pdf-file-url "pl-smalltalk")))
 
 (defcustom pel-use-smalltalk nil
@@ -10957,7 +11015,7 @@ characters."
 ;; -----------------------
 (defgroup pel-pkg-for-swift nil
   "PEL Swift language support."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Swift PDF" ,(pel-pdf-file-url "pl-swift")))
 
 (defcustom pel-use-swift nil
@@ -11004,7 +11062,7 @@ characters."
 ;; ---------------------
 (defgroup pel-pkg-for-tcl nil
   "PEL Tcl language support."
-  :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-software-programming-languages)
 
 (defcustom pel-use-tcl nil
   "Control whether PEL supports the Tcl programming language."
@@ -11064,7 +11122,7 @@ commands that mode point to tab stop positions such as
 ;; ------------------
 (defgroup pel-pkg-for-v nil
   "PEL V language support. Experimental."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link '(url-link :tag "V Language home page" "https://vlang.io"))
 
 
@@ -11123,9 +11181,12 @@ characters."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Zig  Language Support
+;; ---------------------
+
 (defgroup pel-pkg-for-zig nil
   "PEL Zig language support."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link '(url-link :tag "Zig Language home page" "https://ziglang.org/"))
 
 (defcustom pel-use-zig nil
@@ -12464,7 +12525,7 @@ USE WITH CAUTION! It's old code that clashes with many modes."
   "List of external packages PEL can use for handling cross references."
   :group 'pel-package-use
   :group 'pel-pkg-for-navigation
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-software-programming-languages
   :link '(custom-group-link "pel-pkg-for-project-mng")
   :link '(custom-group-link "projectile")
   :link '(custom-group-link "speedbar")
