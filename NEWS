@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add logic to clean up the *auto-mode-alist* ~.v~ file association to allow
+  simultaneous editing of V ~.v~ file and Verilog ~.v~ file.
+  PEL associates a special function with files that use the ~.v~ file
+  extension; inspecting the file content to decide whether the *v-mode* or the
+  *verilog-mode* must be activated.
 - Add the powerful and flexible *pel-dirtree-find-replace* command, bound to ~<f11> s M-%~.
   This command is used to replace text in a set of files under a specified directory tree.
   The files inspected are found by their names matching an Emacs regexp.

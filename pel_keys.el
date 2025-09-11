@@ -5312,36 +5312,64 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC v`` : V programming
-;; Experimental 🚧
+;; Preliminary 🚧
+
+(defun pel-v-or-verilog-mode ()
+  "Open buffer in V or Verilog specific mode."
+  (let ((is-verilog (save-excursion
+                      (goto-char (point-min))
+                      (search-forward-regexp "\\<endmodule\\>"
+                                             nil :noerror))))
+    (if is-verilog
+        (verilog-mode)
+      (if (eq pel-use-v 'v-mode)
+          (v-mode)
+        (vlang-mode)))))
+
+(defun pel--cleanup-auto-mode-alist ()
+  "Remove invalid entries for V from auto-mode-alist."
+  ;; Remove any other .v rules from the auto-mode-alist that
+  ;; might have been added by the loading of the V language mode code.
+  ;; remove what v-mode code adds (if present)
+  (setq auto-mode-alist (delete '("\\(\\.v?v\\|\\.vsh\\)$" . v-mode)
+                                auto-mode-alist))
+
+  ;; remove what vlang-mode adds (if present)
+  (setq auto-mode-alist (delete '("\\.v\\'" . vlang-or-verilog-mode)
+                                auto-mode-alist)))
 
 (when pel-use-v
   (define-pel-global-prefix pel:for-v  (kbd "<f11> SPC v"))
-  ;; TODO: V file name extension clashes with Verilog.
-  ;;       Need to find a way to read the file content to distinguish them.
-  ;;       Perhaps using magic-mode-alist and a regexp or a function that
-  ;;       looks for what could be either V or Verilog code.
-  ;; TODO: Document purpose of .v, .vv, .vsh files
-  ;;       (ie. find where it's described)
-  (add-to-list 'auto-mode-alist (cons "\\.\\(v?v\\|vsh\\)\\'"
-                                      (if (eq pel-use-v 'v-mode)
-                                          'v-mode
-                                        'vlang-mode)))
+
   (cond
    ((eq pel-use-v 'v-mode)
-    ;; TODO: since v-mode uses a hydra, PEL will
-    ;; cause a warning when a V file is opened before f7 is typed.
     (pel-ensure-package v-mode from: melpa)
     (pel-autoload-file v-mode for: v-mode)
     (define-key pel:for-v (kbd "C-f") 'v-format-buffer)
     (define-key pel:for-v (kbd "<f10>") 'v-menu)
-    (pel-config-major-mode v pel:for-v))
+    (pel-config-major-mode v pel:for-v
+      (pel--cleanup-auto-mode-alist)))
 
    ((eq pel-use-v 'vlang-mode)
     ;; vlang-mode is experimental: only provides font-locking
     ;; use, not on MELPA: download directly from github.
     (pel-install-github-file "pierre-rouleau/vlang-mode/master"
                              "vlang-mode.el")
-    (pel-autoload-file vlang-mode for: vlang-mode))))
+    (pel-autoload-file vlang-mode for: vlang-mode)
+    (pel-config-major-mode v pel:for-v
+      (pel--cleanup-auto-mode-alist))))
+
+  ;; V file name extension clashes with Verilog file names.
+  ;; To allow both V and Verilog to coexist,
+  ;;   use `pel-v-or-verilog' for .v files.
+  ;; The other file types are not ambiguous.
+  (add-to-list 'auto-mode-alist (cons "\\.\\(vv\\|vsh\\)\\'"
+                                      (if (eq pel-use-v 'v-mode)
+                                          'v-mode
+                                        'vlang-mode)))
+  (add-to-list 'auto-mode-alist (cons "\\.v\\'" 'pel-v-or-verilog-mode))
+
+  (run-at-time "3 sec" nil (function pel--cleanup-auto-mode-alist)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-z`` : Zig  programming
