@@ -7,7 +7,7 @@ Using Emacs Source Code
 :Ref: `PEL How-to Tips`_
 :Created:  Monday, March  3 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-19 17:00:13 EDT, updated by Pierre Rouleau.
+:Modified: 2025-09-11 17:24:16 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -64,10 +64,14 @@ Open Emacs C source code
 ========================
 
 Once you have the above setup, you will be able to navigate to Emacs C source
-code just as easily as within elisp source code.  For example, inside an
-emacs-lisp-mode buffer, type the ``M-.`` key when point is at an Emacs
-function implemented in C, such as ``funcall``.  Emacs will open a c-mode
-buffer showing the C source code for the C function.
+code just as easily as within elisp source code.
+
+- Inside a *\*Help\** buffer describing a *primitive-function* and identifying
+  the name of the C source code file, you can hit the filename button to open
+  the relevant C source code file in a c-mode buffer.
+- Inside an *emacs-lisp-mode* buffer, type the ``M-.`` key when point is at an
+  Emacs function implemented in C, such as ``funcall``.  Emacs will open a
+  c-mode buffer showing the C source code for the C function.
 
 .. ---------------------------------------------------------------------------
 .. links:
