@@ -5323,7 +5323,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                       (search-forward-regexp "\\<endmodule\\>"
                                              nil :noerror))))
     (if is-verilog
-        (verilog-mode)
+        (if (and (treesit-language-available-p 'verilog)
+                 (fboundp 'verilog-ts-mode))
+            (verilog-ts-mode)
+          (verilog-mode))
       (if (eq pel-use-v 'v-mode)
           (v-mode)
         (vlang-mode)))))
@@ -5379,6 +5382,22 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
 (when pel-use-verilog
   (define-pel-global-prefix pel:for-verilog  (kbd "<f11> SPC V"))
+
+  ;; Get the Emacs Lisp Tree sitter mode
+  (when pel-use-tree-sitter
+    (pel-ensure-package verilog-ts-mode from: melpa)
+
+    ;; once installed, if loaded, use it to install the verilog grammar for it.
+    (unless (treesit-language-available-p 'verilog)
+      (when (fboundp 'verilog-ts-install-grammar)
+        (verilog-ts-install-grammar)))
+    ;; There are no reasons to use verilog-mode when the  verilog-ts-mode
+    ;; mode is available and working.  Therefore ensure that whenever
+    ;; verilog-mode is requested, verilog-ts-mode is used.
+    (when (treesit-language-available-p 'verilog)
+      (add-to-list 'major-mode-remap-alist '(verilog-mode . verilog-ts-mode)))
+    )
+
   (pel-eval-after-load verilog-mode
     (pel-config-major-mode verilog pel:for-verilog))
   )
@@ -5391,6 +5410,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-pel-global-prefix pel:for-vhdl  (kbd "<f11> SPC H"))
 
   (add-to-list 'auto-mode-alist '("\\.vhdl?\\'" . vhdl-mode))
+  (when pel-use-tree-sitter
+    (pel-ensure-package vhdl-ts-mode from: melpa))
 
   (pel-eval-after-load vhdl-mode
     (pel-config-major-mode vhdl pel:for-vhdl))

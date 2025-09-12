@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-11 15:34:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-11 22:27:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -173,6 +173,9 @@
                              (if pel-emacs-28-or-later-p
                                  (append items '(vundo)))))
 
+(defconst pel--verilog-groups (if (fboundp 'verilog-ts-mode)
+                                  '(verilog-mode verilog-ts)
+                                '(verilog-mode)))
 
 ;; TODO: add logic in the processing of that table to allow the first element
 ;;       of a row to be a list of key sequences.
@@ -349,7 +352,7 @@
     ([f11 32 ?t]     "pl-tcl"       pel-pkg-for-tcl           tcl)
     ([f11 32 ?v]     "pl-v"         pel-pkg-for-v            (v-mode
                                                               electricity))
-    ([f11 32 ?V]     "hdl-verilog"  pel-pkg-for-verilog       verilog-mode)
+    ([f11 32 ?V]     "hdl-verilog"  pel-pkg-for-verilog       ,pel--verilog-groups)
     ([f11 32 ?H]     "hdl-vhdl"     pel-pkg-for-vhdl          vhdl)
 
     ([f11 32 ?x]     "pl-elixir"    pel-pkg-for-elixir        (elixir
@@ -739,6 +742,7 @@ stored inside the doc/pdf directory.")
     ("tcl"             [f11 32 ?t])
     ("v"               [f11 32 ?v])
     ("verilog"         [f11 32 ?V])
+    ("verilog-ts"      [f11 32 ?V])
     ("adoc"            [f11 32 27 ?a])
     ("markdown"        [f11 32 27 ?m])
     ("netrexx"         [f11 32 ?N])
