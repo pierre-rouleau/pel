@@ -635,22 +635,29 @@ Note: currently nothing is placed under this group, BUT several other
 (defcustom pel-use-tree-sitter nil
   "Activate the tree-sitter support.
 
-NOTES: - Emacs must be build --with-tree-sitter to be able to use
-         tree-sitter.  PEL will warn on startup if that's not the case
-         and you activate this.
-       - PEL only supports tree-sitter for Emacs 30.1 and later.
-         Emacs 29.1 supports tree-sitter, however Emacs 30.1 introduces
-         a breaking change that simplifies the way tree-sitter major modes
-         are implemented. PEL code is compatible with the new logic to
-         enhance user-experience and automate the installation."
+NOTES: - PEL only supports tree-sitter for Emacs 30.1 and later and
+         automatically turns this off (set to nil) when running under
+         an earlier version of Emacs.
+
+           Emacs 29.1 supports tree-sitter, however Emacs 30.1 introduces
+           a breaking change that simplifies the way tree-sitter major modes
+           are implemented. PEL code is compatible with the new logic to
+           enhance user-experience and automate the installation.
+
+       - To use tree-sitter modes under PEL you must setup your ~/.emacs.d
+         directory according to the PEL Tree-Sitter Setup Instructions.
+         (see the link inside the customize buffer)."
   :link '(url-link :tag "Emacs tree-sitter @ GitHub.io"
                    "https://emacs-tree-sitter.github.io/")
   :link '(url-link :tag "elisp-tree-sitter @ GitHub"
                    "https://github.com/emacs-tree-sitter/elisp-tree-sitter")
   :link '(url-link :tag "tree-sitter-langs @ GitHub"
                    "https://github.com/emacs-tree-sitter/tree-sitter-langs")
+  :link '(url-link :tag "PEL Tree-Sitter Setup Instructions"
+                   "https://github.com/pierre-rouleau/pel/blob/master/doc/using-tree-sitter.rst.txt")
   :type 'boolean
   :safe #'booleanp)
+(unless pel-emacs-30-or-later-p (setq pel-use-tree-sitter nil))
 
 (defcustom pel-treesit-load-path nil
   "List of directories to look for tree-sitter language definition.
