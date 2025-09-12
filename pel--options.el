@@ -1751,8 +1751,7 @@ The Hippie Expand can be used together with any."
   "Whether PEL supports the emacs-toml to read/write .toml files.
 
 Note that is `pel-use-tomlparse' is t, `pel-use-tree-sitter' is t and
-tree-sitter is available, then tomlparse is used instead of emacs-toml.
-"
+tree-sitter is available, then tomlparse is used instead of emacs-toml."
   :group 'pel-pkg-for-conf-file
   :link '(url-link :tag "emacs-toml @ Github"
                    "https://github.com/gongo/emacs-toml")
@@ -1767,8 +1766,7 @@ tree-sitter is available, then tomlparse is used instead of emacs-toml.
 (defcustom pel-use-tomlparse nil
   "Whether PEL supports tomlparse when tree-sitter is available.
 
-This is only available when pel-use-tree-sitter is t (on).
-"
+This is only available when pel-use-tree-sitter is t (on)."
   :group 'pel-pkg-for-conf-file
   :link '(url-link :tag "tomlparse.el @ Github"
                    "https://github.com/johannes-mueller/tomlparse.el")
@@ -12180,9 +12178,14 @@ turns it off."
 (defcustom pel-use-tree-sitter nil
   "Activate the tree-sitter support.
 
-NOTE:  Emacs must be build --with-tree-sitter to be able to use
-       tree-sitter.  PEL will warn on startup if that's not the case
-       and you activate this."
+NOTES: - Emacs must be build --with-tree-sitter to be able to use
+         tree-sitter.  PEL will warn on startup if that's not the case
+         and you activate this.
+       - PEL only supports tree-sitter for Emacs 30.1 and later.
+         Emacs 29.1 supports tree-sitter, however Emacs 30.1 introduces
+         a breaking change that simplifies the way tree-sitter major modes
+         are implemented. PEL code is compatible with the new logic to
+         enhance user-experience and automate the installation."
   :link '(url-link :tag "Emacs tree-sitter @ GitHub.io"
                    "https://emacs-tree-sitter.github.io/")
   :link '(url-link :tag "elisp-tree-sitter @ GitHub"
