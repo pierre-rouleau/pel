@@ -5316,35 +5316,51 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC v`` : V programming
 ;; Preliminary 🚧
 
-(defun pel-v-or-verilog-mode ()
-  "Open buffer in V or Verilog specific mode."
-  (let ((is-verilog (save-excursion
-                      (goto-char (point-min))
-                      (search-forward-regexp "\\<endmodule\\>"
-                                             nil :noerror))))
-    (if is-verilog
-        (if (and (treesit-language-available-p 'verilog)
-                 (fboundp 'verilog-ts-mode))
-            (verilog-ts-mode)
-          (verilog-mode))
-      (if (eq pel-use-v 'v-mode)
-          (v-mode)
-        (vlang-mode)))))
-
-(defun pel--cleanup-auto-mode-alist ()
-  "Remove invalid entries for V from auto-mode-alist."
-  ;; Remove any other .v rules from the auto-mode-alist that
-  ;; might have been added by the loading of the V language mode code.
-  ;; remove what v-mode code adds (if present)
-  (setq auto-mode-alist (delete '("\\(\\.v?v\\|\\.vsh\\)$" . v-mode)
-                                auto-mode-alist))
-
-  ;; remove what vlang-mode adds (if present)
-  (setq auto-mode-alist (delete '("\\.v\\'" . vlang-or-verilog-mode)
-                                auto-mode-alist)))
-
 (when pel-use-v
   (define-pel-global-prefix pel:for-v  (kbd "<f11> SPC v"))
+
+  (defun pel-v-or-verilog-mode ()
+    "Open buffer in V or Verilog specific mode.
+If buffer is empty prompt user.
+Otherwise check for a Verilog file variable or a endmodule statement
+to identify a Verilog file.  Anything else is assumed being V."
+    (let ((is-verilog
+           (or
+            (and
+             (or (eq (buffer-size) 0)
+                 (not (search-forward-regexp "[^ \t\n\r]" nil :noerror)))
+             (y-or-n-p "Create a Verilog (y) or V (n) file?"))
+            (save-excursion
+              (goto-char (point-min))
+              (search-forward-regexp "\\-\\*\\- [Mm]ode: [Vv]erilog[; ]"
+                                     nil :noerror))
+            (save-excursion
+              (goto-char (point-min))
+              (search-forward-regexp "\\<endmodule\\>"
+                                     nil :noerror)))))
+      (if is-verilog
+          (if (and (treesit-language-available-p 'verilog)
+                   (fboundp 'verilog-ts-mode))
+              (verilog-ts-mode)
+            (verilog-mode))
+        (if (eq pel-use-v 'v-mode)
+            (v-mode)
+          (vlang-mode)))))
+  (declare-function pel-v-or-verilog-mode "pel_keys")
+
+  (defun pel-v-cleanup-auto-mode-alist ()
+    "Remove invalid entries for V from auto-mode-alist."
+    ;; Remove any other .v rules from the auto-mode-alist that
+    ;; might have been added by the loading of the V language mode code.
+    ;; remove what v-mode code adds (if present)
+    (setq auto-mode-alist (delete '("\\(\\.v?v\\|\\.vsh\\)$" . v-mode)
+                                  auto-mode-alist))
+
+    ;; remove what vlang-mode adds (if present)
+    (setq auto-mode-alist (delete '("\\.v\\'" . vlang-or-verilog-mode)
+                                  auto-mode-alist)))
+  (declare-function pel-v-cleanup-auto-mode-alist "pel_keys")
+
 
   (cond
    ((eq pel-use-v 'v-mode)
@@ -5353,7 +5369,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-v (kbd "C-f") 'v-format-buffer)
     (define-key pel:for-v (kbd "<f10>") 'v-menu)
     (pel-config-major-mode v pel:for-v
-      (pel--cleanup-auto-mode-alist)))
+      (pel-v-cleanup-auto-mode-alist)))
 
    ((eq pel-use-v 'vlang-mode)
     ;; vlang-mode is experimental: only provides font-locking
@@ -5362,7 +5378,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                              "vlang-mode.el")
     (pel-autoload-file vlang-mode for: vlang-mode)
     (pel-config-major-mode v pel:for-v
-      (pel--cleanup-auto-mode-alist))))
+      (pel-v-cleanup-auto-mode-alist))))
 
   ;; V file name extension clashes with Verilog file names.
   ;; To allow both V and Verilog to coexist,
@@ -5374,11 +5390,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                                         'vlang-mode)))
   (add-to-list 'auto-mode-alist (cons "\\.v\\'" 'pel-v-or-verilog-mode))
 
-  (run-at-time "3 sec" nil (function pel--cleanup-auto-mode-alist)))
+  (run-at-time "3 sec" nil (function pel-v-cleanup-auto-mode-alist)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC V`` : Verilog programming
-;; Preliminary 🚧
 
 (when pel-use-verilog
   (define-pel-global-prefix pel:for-verilog  (kbd "<f11> SPC V"))
@@ -5386,8 +5401,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; Get the Emacs Lisp Tree sitter mode
   (when pel-use-tree-sitter
     (pel-ensure-package verilog-ts-mode from: melpa)
-
-    ;; once installed, if loaded, use it to install the verilog grammar for it.
+    ;; Once installed & loaded, use it to install the verilog grammar for it.
     (unless (treesit-language-available-p 'verilog)
       (when (fboundp 'verilog-ts-install-grammar)
         (verilog-ts-install-grammar)))
@@ -5395,11 +5409,28 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;; mode is available and working.  Therefore ensure that whenever
     ;; verilog-mode is requested, verilog-ts-mode is used.
     (when (treesit-language-available-p 'verilog)
-      (add-to-list 'major-mode-remap-alist '(verilog-mode . verilog-ts-mode)))
-    )
+      (add-to-list 'major-mode-remap-alist
+                   '(verilog-mode . verilog-ts-mode))))
 
+  ;; Install/use other external package when requested.
+  (when pel-use-verilog-ext
+    (pel-ensure-package verilog-ext from: melpa))
+  (when pel-use-veri-kompass
+    (pel-ensure-package veri-kompass from: melpa))
+
+  ;; Activate PEL <f12> key management
   (pel-eval-after-load verilog-mode
-    (pel-config-major-mode verilog pel:for-verilog))
+    (pel-config-major-mode verilog pel:for-verilog
+      (when (and pel-use-verilog-ext
+                 (fboundp 'verilog-ext-mode))
+        (verilog-ext-mode 1)
+        (condition-case nil
+            (when (fboundp 'verilog-ext-mode-setup)
+              (verilog-ext-mode-setup))
+          (error (message
+                  "Some of verilog-ext features failed during loading.\n\
+ Please check Messages, fix the configuration or disable failing features!\n\
+ See verilog-ext-feature-list user-option."))))))
   )
 
 ;; ---------------------------------------------------------------------------

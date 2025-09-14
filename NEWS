@@ -16,7 +16,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - ~<f12> <f1>~  opens the (new, early) [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/hdl-verilog.pdf][𝖍𝖉𝔩 - Verilog PDF]] file(or HTML page).
   - ~<f12> <f2>~ opens the customization buffer for PEL Verilog support.
   - ~<f12> <f3>~ opens the Emacs customization buffer for *verilog-mode*.
-  There's also a slight re-organization of the PEL customization groups: all
+- Add support for the following external package supporting Verilog:
+  - [[https://github.com/gmlarumbe/verilog-ts-mode][verilog-ts-mode]], activated by *pel-use-tree-sitter* on Emacs 30.1 or later.
+  - [[https://github.com/gmlarumbe/verilog-ext][verilog-ext]] , activated by *pel-use-verilog-ext*.
+  - [[https://gitlab.com/koral/veri-kompass][veri-kompass]] , activated by *pel-use-veri-kompass*.
+- There's also a slight re-organization of the PEL customization groups: all
   programming language groups are now children of the
   *pel-pkg-for-software-programming-languages* customization group, the
   hardware description languages (such as Verilog) are children of the

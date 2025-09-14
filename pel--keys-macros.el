@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-11 22:27:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-14 13:02:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -170,12 +170,18 @@
 (defconst pel--undo-groups (let ((items '(undo
                                           undo-propose
                                           undo-tree)))
-                             (if pel-emacs-28-or-later-p
-                                 (append items '(vundo)))))
+                             (when pel-emacs-28-or-later-p
+                               (setq items (append items '(vundo))))
+                             items))
 
-(defconst pel--verilog-groups (if (fboundp 'verilog-ts-mode)
-                                  '(verilog-mode verilog-ts)
-                                '(verilog-mode)))
+(defconst pel--verilog-groups (let ((items (if (fboundp 'verilog-ts-mode)
+                                               '(verilog-mode verilog-ts)
+                                             '(verilog-mode))))
+                                (when pel-use-verilog-ext
+                                  (setq items (append items '(verilog-ext))))
+                                (when pel-use-veri-kompass
+                                  (setq items (append items '(veri-kompass))))
+                                items))
 
 ;; TODO: add logic in the processing of that table to allow the first element
 ;;       of a row to be a list of key sequences.

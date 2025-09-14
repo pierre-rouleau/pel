@@ -2863,6 +2863,7 @@ Used when `pel-use-smart-dash' user option is t."
           (const :tag "Use, activate later by command"  t)
           (const :tag "Use, activate globally when Emacs starts"
                  use-from-start)))
+(pel-put 'pel-use-yasnippet :also-required-when 'pel-use-verilog-ext)
 
 (defcustom pel-use-yasnippet-snippets nil
   "Control whether PEL uses the yasnippet-snippets package.
@@ -3555,7 +3556,8 @@ delete key."
                                                  pel-use-iflipb
                                                  pel-use-treemacs
                                                  pel-activate-hydra-for-greek
-                                                 pel-use-ivy-hydra))
+                                                 pel-use-ivy-hydra
+                                                 pel-use-verilog-ext))
 
 (defcustom pel-use-which-key t
   "Control whether PEL uses the which-key package."
@@ -4752,7 +4754,10 @@ That mode prints the current point value on the mode line."
   :link '(url-link :tag "Verilog @ Wikipedia" "https://en.wikipedia.org/wiki/Verilog"))
 
 (defcustom pel-use-verilog nil
-  "Control whether PEL supports the Verilog Programming Language Development."
+  "Control whether PEL supports the Verilog Programming Language Development.
+On Emacs >= 30.1, if `pel-use-tree-sitter' is on, this also activates the
+verilog-ts-mode package and automatically install and build the required
+Tree-Sitter syntax grammar."
   :group 'pel-pkg-for-verilog
   :type 'boolean
   :safe #'booleanp)
@@ -4785,6 +4790,22 @@ characters."
   "Value of `indent-tabs-mode' for editing verilog files.
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-verilog
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-verilog-ext nil
+  "Whether PEL uses the verilog-ext package."
+  :link '(url-link :tag "verilog-ext @ Github"
+                   "https://github.com/gmlarumbe/verilog-ext")
+  :group 'pel-pkg-for-verilog
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-veri-kompass nil
+  "Whether PEL uses the ver-kompass package."
+  :link '(url-link :tag "veri-kompass @ Gitlab"
+                   "https://gitlab.com/koral/veri-kompass")
   :group 'pel-pkg-for-verilog
   :type 'boolean
   :safe #'booleanp)
@@ -12952,8 +12973,12 @@ indexing system."
           pel-use-iflipb
           pel-use-treemacs
           pel-activate-hydra-for-greek
-          pel-use-ivy-hydra)
+          pel-use-ivy-hydra
+          pel-use-verilog-ext)
   (setq pel-use-hydra t))
+
+(when pel-use-verilog-ext
+  (setq pel-use-yasnippet t))
 
 (when pel-use-lsp-origami
   (setq pel-use-origami t))
@@ -13080,4 +13105,4 @@ indexing system."
 
 ;;; pel--options.el ends here
 
-; LocalWords:  cscope xcscope CScope quickstart
+; LocalWords:  cscope xcscope CScope quickstart PEL
