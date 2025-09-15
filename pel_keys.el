@@ -5418,12 +5418,18 @@ to identify a Verilog file.  Anything else is assumed being V."
   (when pel-use-veri-kompass
     (pel-ensure-package veri-kompass from: melpa))
 
-  ;; Activate PEL <f12> key management
+  ;; Activate PEL <f12> key management,
+  ;; and minor modes required for Verilog files.
   (pel-eval-after-load verilog-mode
     (pel-config-major-mode verilog pel:for-verilog
       (when (and pel-use-verilog-ext
                  (fboundp 'verilog-ext-mode))
         (verilog-ext-mode 1)
+        (when (boundp 'verilog-ext-feature-list)
+          (when (and (member 'template verilog-ext-feature-list)
+                     pel-use-yasnippet
+                     (fboundp 'yas-minor-mode))
+            (yas-minor-mode 1)))
         (condition-case err
             (when (fboundp 'verilog-ext-mode-setup)
               (verilog-ext-mode-setup))
