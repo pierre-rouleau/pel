@@ -5424,14 +5424,15 @@ to identify a Verilog file.  Anything else is assumed being V."
       (when (and pel-use-verilog-ext
                  (fboundp 'verilog-ext-mode))
         (verilog-ext-mode 1)
-        (condition-case nil
+        (condition-case err
             (when (fboundp 'verilog-ext-mode-setup)
               (verilog-ext-mode-setup))
           (error (message
                   "Some of verilog-ext features failed during loading.\n\
- Please check Messages, fix the configuration or disable failing features!\n\
- See verilog-ext-feature-list user-option."))))))
-  )
+ Error: %s
+ Check *Messages* buffer for more info.n\
+  Fix the configuration or disable failing features!\n\
+  See verilog-ext-feature-list user-option." err)))))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC H`` : VHDL programming
