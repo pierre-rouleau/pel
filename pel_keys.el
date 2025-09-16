@@ -8876,7 +8876,7 @@ the ones defined from the buffer now."
 (define-key pel:text-transpose "p"  #'transpose-paragraphs)
 (define-key pel:text-transpose "x"  #'transpose-sexps)
 (define-key pel:text-transpose "r"  #'transpose-regions)
-(define-key pel:text-transpose "S"  #'subword-transpose)
+(define-key pel:text-transpose "W"   'subword-transpose)
 ;; TODO: pel-transpose-functions, pel-transpose-classes,
 ;;       pel-transpose-statements, pel-transpose-clauses
 

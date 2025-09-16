@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 ** Modifications, Fixes and Improvements:
 - Add key bindings for Emacs text transpose commands:
   - ~<f11> t t r~ bound to *transpose-regions*
-  - ~<f11> t t S~ bound to *subword-transpose*
+  - ~<f11> t t W~ bound to *subword-transpose*
 - Add PEL support for the VHDL hardware description language when
   *pel-use-vhdl* is activated (set to t).  This is a early implementation.
   When activated, PEL provides the PEL conventional keys in *vhdl-mode*
