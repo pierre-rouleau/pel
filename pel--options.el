@@ -3872,6 +3872,8 @@ It provides support for the authorized_keys and know_hosts files."
   :group 'pel-pkg-for-x509-file
   :link '(url-link :tag "emacs-ssh-file-modes @ Github"
                    "https://github.com/petere/emacs-ssh-file-modes")
+  :link '(url-link :tag "my fork of emacs-ssh-file-modes @ Github"
+                   "https://github.com/pierre-rouleau/emacs-ssh-file-modes")
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-emacs-ssh-file-modes :package-is '(quote ((utils . ssh-file-modes))))

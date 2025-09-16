@@ -7652,7 +7652,7 @@ the ones defined from the buffer now."
   (add-to-list 'auto-mode-alist '("\\.crt\\'" . x509-dwim)))
 
 (when pel-use-emacs-ssh-file-modes
-  (pel-install-github-file "petere/emacs-ssh-file-modes/master" "ssh-file-modes.el")
+  (pel-install-github-file "pierre-rouleau/emacs-ssh-file-modes/master" "ssh-file-modes.el")
   (pel-autoload "ssh-file-modes" for:
     ssh-authorized-keys-mode
     ssh-known-hosts-mode)
