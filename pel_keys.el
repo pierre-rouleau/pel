@@ -5339,8 +5339,9 @@ to identify a Verilog file.  Anything else is assumed being V."
               (search-forward-regexp "\\<endmodule\\>"
                                      nil :noerror)))))
       (if is-verilog
-          (if (and (treesit-language-available-p 'verilog)
-                   (fboundp 'verilog-ts-mode))
+          (if (and
+               (pel-treesit-language-available-p 'verilog)
+               (fboundp 'verilog-ts-mode))
               (verilog-ts-mode)
             (verilog-mode))
         (if (eq pel-use-v 'v-mode)
@@ -5402,15 +5403,13 @@ to identify a Verilog file.  Anything else is assumed being V."
   (when pel-use-tree-sitter
     (pel-ensure-package verilog-ts-mode from: melpa)
     ;; Once installed & loaded, use it to install the verilog grammar for it.
-    (unless (and (fboundp 'treesit-language-available-p)
-                 (treesit-language-available-p 'verilog))
+    (unless (and (pel-treesit-language-available-p 'verilog))
       (when (fboundp 'verilog-ts-install-grammar)
         (verilog-ts-install-grammar)))
     ;; There are no reasons to use verilog-mode when the  verilog-ts-mode
     ;; mode is available and working.  Therefore ensure that whenever
     ;; verilog-mode is requested, verilog-ts-mode is used.
-    (when (and (fboundp 'treesit-language-available-p)
-               (treesit-language-available-p 'verilog)
+    (when (and (pel-treesit-language-available-p 'verilog)
                (boundp 'major-mode-remap-alist))
       (add-to-list 'major-mode-remap-alist
                    '(verilog-mode . verilog-ts-mode))))

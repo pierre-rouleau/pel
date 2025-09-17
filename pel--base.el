@@ -3446,6 +3446,12 @@ If IS-REMOTE is non-nil:
                     command)
       (executable-find command))))
 
+(defun pel-treesit-language-available-p (language)
+  "Return non-nil if tree-sitter LANGUAGE exists and is loadable.
+Returns nil when Emacs does not support tree-sitter."
+  (and (fboundp 'treesit-language-available-p)
+       (treesit-language-available-p language)))
+
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)
 
