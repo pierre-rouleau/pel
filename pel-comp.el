@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-17 14:45:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-17 15:04:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -49,14 +49,17 @@
 (defun pel-comp-eln-file-for-util (fname)
   "Return the full path of the .eln file for .el util FNAME.
 FNAME must be a file base name with the .el extension."
-  (let* ((util-dpathname (expand-file-name "utils" user-emacs-directory))
-         (bname (comp-el-to-eln-rel-filename
-                 (expand-file-name fname util-dpathname)))
-         (eln-dirpathname
-          (expand-file-name comp-native-version-dir
-                            (expand-file-name "eln-cache"
-                                              user-emacs-directory))))
-    (expand-file-name bname eln-dirpathname)))
+  (if (and (fboundp 'comp-el-to-eln-rel-filename)
+           (boundp  'comp-native-version-dir))
+      (let* ((util-dpathname (expand-file-name "utils" user-emacs-directory))
+             (bname (comp-el-to-eln-rel-filename
+                     (expand-file-name fname util-dpathname)))
+             (eln-dirpathname
+              (expand-file-name comp-native-version-dir
+                                (expand-file-name "eln-cache"
+                                                  user-emacs-directory))))
+        (expand-file-name bname eln-dirpathname))
+    (error "This Emacs is not built with native-compile support")))
 
 
 (defun pel-native-compile-util (fname)
