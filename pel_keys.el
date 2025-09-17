@@ -5402,7 +5402,8 @@ to identify a Verilog file.  Anything else is assumed being V."
   (when pel-use-tree-sitter
     (pel-ensure-package verilog-ts-mode from: melpa)
     ;; Once installed & loaded, use it to install the verilog grammar for it.
-    (unless (treesit-language-available-p 'verilog)
+    (unless (and (fboundp 'treesit-language-available-p)
+                 (treesit-language-available-p 'verilog))
       (when (fboundp 'verilog-ts-install-grammar)
         (verilog-ts-install-grammar)))
     ;; There are no reasons to use verilog-mode when the  verilog-ts-mode
