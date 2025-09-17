@@ -5408,7 +5408,9 @@ to identify a Verilog file.  Anything else is assumed being V."
     ;; There are no reasons to use verilog-mode when the  verilog-ts-mode
     ;; mode is available and working.  Therefore ensure that whenever
     ;; verilog-mode is requested, verilog-ts-mode is used.
-    (when (treesit-language-available-p 'verilog)
+    (when (and (fboundp 'treesit-language-available-p)
+               (treesit-language-available-p 'verilog)
+               (boundp 'major-mode-remap-alist))
       (add-to-list 'major-mode-remap-alist
                    '(verilog-mode . verilog-ts-mode))))
 
