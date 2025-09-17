@@ -9521,8 +9521,12 @@ the ones defined from the buffer now."
 (define-key pel:execute    "t" #'term)
 (define-key pel:execute    "l" #'ielm)
 (when pel-term-use-shell-prompt-line-regexp
-  ;; [:todo 2025-06-07, by Pierre Rouleau: Set the following in a mode hook]
-  (setq term-prompt-regexp pel-shell-prompt-line-regexp))
+  ;; [:todo 2025-09-17, by Pierre Rouleau: See term.el and possibly add more
+  ;;                       logic in the hooked function.]
+  (add-hook 'term-mode-hook
+            (lambda ()
+              (when (boundp 'term-prompt-regexp)
+                (setq term-prompt-regexp pel-shell-prompt-line-regexp)))))
 ;; support for the extremely fast/nice libvterm-based vterm shell.
 (when pel-use-vterm
   (pel-ensure-package vterm from: melpa)
