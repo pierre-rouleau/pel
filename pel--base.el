@@ -302,6 +302,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;; subr (always loaded) ; use: called-interactively-p
+(require 'pel-comp)
 (eval-when-compile
   (require 'subr-x)              ; use: split-string, string-join, string-trim
   (require 'cl-macs))  ; use: cl-eval-when
@@ -1844,10 +1845,12 @@ Returns t if all is OK."
     (error "The url-handlers file is not loaded!")))
 
 (defun pel-install-file (url fname &optional refresh)
-  "Download and install a file FNAME from URL into the PEL\\='s utility directory.
-Also byte compile that file.
-This is the \\='utils\\=' sub-directory of the directory identified by
-the Emacs variable `user-emacs-directory'.
+  "Download, install a file FNAME from URL into the PEL\\='s utility directory.
+On success, byte compile that file and when Emacs use native compilation
+the also build the native-compiled .eln file for it .
+
+The utility directory is the \\='utils\\=' sub-directory of the Emacs
+directory identified by the Emacs variable `user-emacs-directory'.
 If this directory does not exist, the function creates it.
 
 If the file already exists in the destination, no download
@@ -1870,7 +1873,9 @@ downloaded, nil otherwise.  Permission errors are raised."
         (when (and (pel-url-copy-file url target-fname refresh)
                    (string= (file-name-extension target-fname) "el"))
           (message "Byte compiling it to %s" target-fname)
-          (byte-compile-file target-fname))))))
+          (byte-compile-file target-fname)
+          (when (featurep 'native-compile)
+            (pel-native-compile-util fname)))))))
 
 (defun pel-install-files (url-base fnames &optional refresh)
   "Download & install files identified by their URL-BASE and FNAMES.

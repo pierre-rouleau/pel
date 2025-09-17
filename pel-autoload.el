@@ -280,6 +280,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-cl-hyperspec-lookup
     pel-cl-add-symbol-to-imenu)
 
+  (pel-autoload-function "pel-comp" for:
+    pel-native-compile-util)
+
   (pel-autoload "pel-completion" for:
     pel-select-completion-mode
     pel-show-active-completion-mode

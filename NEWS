@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add logic to native compile Emacs lisp files downloaded into PEL =~/.emacs.d/utils=
+  directory.  The new pel-comp.el file holds the logic.
 - Add key bindings for Emacs text transpose commands:
   - ~<f11> t t r~ bound to *transpose-regions*
   - ~<f11> t t W~ bound to *subword-transpose*

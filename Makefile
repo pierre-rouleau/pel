@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-09-13 10:29:57 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-09-17 14:08:02 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -147,6 +147,7 @@ EL_FILES := pel--base.el \
 		pel-comint.el \
 		pel-comment.el \
 		pel-comment-adorn.el \
+		pel-comp.el \
 		pel-commonlisp.el \
 		pel-completion.el \
 		pel-cpp.el \
@@ -677,6 +678,7 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 
 # TODO: find a way to generate the dependency list automatically by code scanning.
 
+pel--base.elc:          pel-comp.elc
 pel--keys-macros.elc:   pel--base.elc pel--options.elc pel-browse.elc pel-prompt.elc
 pel--options.elc:       pel--base.elc
 pel-abbrev.elc:         pel--base.elc
