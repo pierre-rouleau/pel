@@ -5,7 +5,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Improved support for the emacs-ssh-file-modes making Emacs aware of the format of the SSH /known_hosts/ and /authorized_keys/ files.
   This is activated by the *pel-use-emacs-ssh-file-modes* user-option.
   - PEL now use my fork of the original project which modernizes the code and fixes font locking issues that shows under the latest Emacs.
-  - Add the ~<f12>~ key prefix binding top the two modes allowing quick access to the new [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/x509.pdf][ssh PDF]] help file and to the
+  - Add the ~<f12>~ key prefix binding top the two modes allowing quick access to the new [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ssh-files.pdf][ssh PDF]] help file and to the
     PEL and mode specific customization buffers.
   - also add the ~<f12> =~ key binding to the *ssh-abbreviated-keys-mode* command.
 - Add logic to native compile Emacs lisp files downloaded into PEL =~/.emacs.d/utils=
