@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-14 13:02:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-17 22:33:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -329,6 +329,8 @@
                                                                    eldoc-box))
 
     ([f11 32 ?4]     "pl-m4"        pel-pkg-for-m4          m4)
+    ([f11 32 ?0]     "ssh-files"    pel-pkg-for-ssh         ssh-file)
+    ([f11 32 ?1]     "ssh-files"    pel-pkg-for-ssh         ssh-file)
     ([f11 32 ?2]     "pl-modula2"   pel-pkg-for-modula-2    modula2)
     ([f11 32 ?n]     "pl-nim"       pel-pkg-for-nim         (nim
                                                              electricity))
@@ -772,6 +774,8 @@ stored inside the doc/pdf directory.")
     ("diff"            [f11 32 32 ?d ?d])
     ("ediff"           [f11 32 32 ?d ?e])
     ("smerge"          [f11 32 32 ?d ?s])
+    ("ssh-authorized-keys" [f11 32 ?0])
+    ("ssh-known-hosts" [f11 32 ?1])
     )
   "Maps the name of a major mode (without the -mode suffix)
 to a symbol or key sequence array to use as map key inside
@@ -1092,6 +1096,7 @@ There should be no key binding!" keyseq))
     ("desktop"          . "sessions")
     ("diff"             . "diff-merge")
     ("execute"          . "pl-emacs-lisp")
+    ("ssh"              . "ssh-files")
     ("x.509"            . "x509")
     ("rpm"              . "rpm")
     ;; OS keys
@@ -1248,7 +1253,8 @@ Return nil if nothing found."
     ("rainbow"     . "rainbow-mode")
     ("rfc-mode-group" . "rfc-mode")
     ("ffip"        . "find-file-in-project")
-    ("x509"        . "x509-mode"))
+    ("x509"        . "x509-mode")
+    ("ssh-file"    . "ssh-file-modes"))
   "Maps a group name for the library that defines it.
 This is only required for the libraries that cannot be found
 with the existing code, such as when the group name is different
@@ -1591,7 +1597,9 @@ optional argument APPEND is non-nil, in which case it is added at the end."
                                                       shell term
                                                       perl rust
                                                       seed7
-                                                      cwl)
+                                                      cwl
+                                                      ssh-authorized-keys
+                                                      ssh-known-hosts)
   "List of major mode that fully control the tab behaviour and width.
 
 These modes do not have both `pel-<mode>-tab-width' and a `pel-<mode>-use-tabs'

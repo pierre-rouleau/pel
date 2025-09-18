@@ -2189,6 +2189,8 @@ can't bind negative-argument to C-_ and M-_"
 ;;
 ;; .       - APL
 ;; :       - Smalltalk
+;; 0       - ssh-authorized-keys-mode
+;; 1       - ssh-known-host-mode
 ;; 2       - Modula2
 ;; 4       - M4
 ;; 7       - Seed7           - Extensible language.  Syntax evolved from Pascal/Modula/Ada
@@ -7654,13 +7656,24 @@ the ones defined from the buffer now."
   (add-to-list 'auto-mode-alist '("\\.crt\\'" . x509-dwim)))
 
 (when pel-use-emacs-ssh-file-modes
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC 0`` : ssh-authorized-keys-mode
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC 1`` : ssh-known-host-mode
+  (define-pel-global-prefix pel:for-ssh-autorized-keys  (kbd "<f11> SPC 0"))
+  (define-pel-global-prefix pel:for-ssh-known-hosts     (kbd "<f11> SPC 1"))
+  (define-key pel:for-ssh-autorized-keys "=" 'ssh-abbreviated-keys-mode)
+  (define-key pel:for-ssh-known-hosts    "=" 'ssh-abbreviated-keys-mode)
+
   (pel-install-github-file "pierre-rouleau/emacs-ssh-file-modes/master" "ssh-file-modes.el")
-  (pel-autoload "ssh-file-modes" for:
-    ssh-authorized-keys-mode
-    ssh-known-hosts-mode)
+  (pel-autoload "ssh-file-modes" for: ssh-authorized-keys-mode
+                ssh-known-hosts-mode
+                ssh-abbreviated-keys-mode)
   (add-to-list 'auto-mode-alist '(".ssh/authorized_keys2?\\'" . ssh-authorized-keys-mode))
   (add-to-list 'auto-mode-alist '(".ssh/known_hosts\\'"       . ssh-known-hosts-mode))
-  (add-to-list 'auto-mode-alist '("ssh_known_hosts\\'"        . ssh-known-hosts-mode)))
+  (add-to-list 'auto-mode-alist '("ssh_known_hosts\\'"        . ssh-known-hosts-mode))
+
+  (pel-eval-after-load ssh-file-modes
+    (pel-config-major-mode ssh-authorized-keys pel:for-ssh-autorized-keys)
+    (pel-config-major-mode ssh-known-hosts     pel:for-ssh-known-hosts)))
 
 (when pel-use-selinux-policy
   (pel-install-github-file   "pierre-rouleau/selinux-policy/master"

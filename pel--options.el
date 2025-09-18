@@ -58,6 +58,8 @@
 ;;           - pel-pkg-for-neotree
 ;;           - pel-pkg-for-ztree
 ;;         - pel-pkg-for-web-browse
+;;       - pel-pkg-for-ssh
+;;       - pel-pkg-for-x509-file
 ;;     - pel-pkg-for-frame
 ;;     - pel-pkg-for-graphics-emacs
 ;;       - pel-pkg-for-graphics-cursor
@@ -80,7 +82,6 @@
 ;;     - pel-keypad-keys
 ;;     - pel-pkg-for-log-file
 ;;     - pel-pkg-for-object-file
-;;     - pel-pkg-for-x509-file
 ;;     - pel-pkg-for-marking
 ;;     - pel-pkg-for-markup
 ;;       - pel-pkg-for-asciidoc
@@ -3851,6 +3852,41 @@ Do not enter lambda expressions."
   :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
+;; SSH Support
+;; -----------
+
+(defgroup pel-pkg-for-ssh nil
+  "Packages that support editing SSH configuration files."
+  :group 'pel-pkg-for-filemng)
+
+(defcustom pel-use-emacs-ssh-file-modes nil
+  "Control whether PEL uses the emacs-ssh-file-modes.
+
+It provides support for the authorized_keys and know_hosts files."
+  :group 'pel-pkg-for-ssh
+  :link '(url-link :tag "emacs-ssh-file-modes @ Github"
+                   "https://github.com/petere/emacs-ssh-file-modes")
+  :link '(url-link :tag "my fork of emacs-ssh-file-modes @ Github"
+                   "https://github.com/pierre-rouleau/emacs-ssh-file-modes")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-emacs-ssh-file-modes :package-is '(quote ((utils . ssh-file-modes))))
+
+(defcustom pel-ssh-authorized-keys-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for authorized_keys buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-ssh
+  :type '(repeat function))
+
+(defcustom pel-ssh-known-hosts-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for known_host buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-ssh
+  :type '(repeat function))
+
+;; ---------------------------------------------------------------------------
 ;; X.509 File format Support
 ;; -------------------------
 (defgroup pel-pkg-for-x509-file nil
@@ -3864,19 +3900,6 @@ Do not enter lambda expressions."
                    "https://github.com/jobbflykt/x509-mode")
   :type 'boolean
   :safe #'booleanp)
-
-(defcustom pel-use-emacs-ssh-file-modes nil
-  "Control whether PEL uses the emacs-ssh-file-modes.
-
-It provides support for the authorized_keys and know_hosts files."
-  :group 'pel-pkg-for-x509-file
-  :link '(url-link :tag "emacs-ssh-file-modes @ Github"
-                   "https://github.com/petere/emacs-ssh-file-modes")
-  :link '(url-link :tag "my fork of emacs-ssh-file-modes @ Github"
-                   "https://github.com/pierre-rouleau/emacs-ssh-file-modes")
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-emacs-ssh-file-modes :package-is '(quote ((utils . ssh-file-modes))))
 
 ;; ---------------------------------------------------------------------------
 ;; SELinux Policy Definition Files Support
