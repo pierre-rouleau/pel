@@ -4831,6 +4831,8 @@ characters."
   "Whether PEL uses the ver-kompass package."
   :link '(url-link :tag "veri-kompass @ Gitlab"
                    "https://gitlab.com/koral/veri-kompass")
+  :link '(url-link :tag "My clone of veri-kompass @ Gitlab"
+                   "https://gitlab.com/prouleau/veri-kompass")
   :group 'pel-pkg-for-verilog
   :type 'boolean
   :safe #'booleanp)
