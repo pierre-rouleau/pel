@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-05-15 11:52:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-19 17:59:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -289,9 +289,15 @@ EXPR is not an expression."
   "^ *(pel-ensure-package +\\(\\(\\s_\\|\\sw\\)+\\)"
   "Regexp to find & extract package name installed by `pel-ensure-package'.")
 
-(defconst pel--regxp-froml-github
-  "^ *(pel-install-github-files* +\\(\\\"\\([-[:alnum:]\\./]+\\)\\\"\\)"
-  "Regexp to find & extra dir names of github extracted packages.")
+(defconst pel--regxp-from-github
+  "^ *(pel-install-github-files* +\\(?:\\\"\\([-[:alnum:]\\./]+\\)\\\"\\)"
+  "Regexp to find & extra dir names of github extracted packages.
+Group 1 is the path that holds the package name.")
+
+(defconst pel--regxp-from-gitlab
+  "^ *(pel-install-gitlab-files* +\\(?:\\\"\\([-[:alnum:]\\./]+\\)\\\"\\) +\\(?:\\\"\\([-[:alnum:]\\./]+\\)\\\"\\)"
+  "Regexp to find & extra dir names of gitlab extracted packages.
+Group 2 is package name.")
 
 (defconst pel--regexp-pel-install-file
   "(pel-install-file +\"[-[:alnum:]:/\\.
@@ -318,16 +324,18 @@ Name of package is in group 1.")
               (setq found-text (match-string group))
               (when extracter
                 (setq found-text (λc extracter found-text)))
-              (unless (member found-text pkg-names)
-                (push found-text pkg-names))
+              (if found-text
+                  (unless (member found-text pkg-names)
+                    (push found-text pkg-names))
+                (message "FAILED extraction of: %s" (match-string group) ))
               found))))
     (reverse pkg-names)))
 
 (defconst pel--regexp-github-pkg-path
-  "[-[:alnum:]\\.]+/\\([-[:alnum:]\\.]+\\)/master"
+  "[-[:alnum:]\\.]+/\\([-[:alnum:]\\.]+\\)/\\(?:master\\|upstream\\)"
   "Regexp to extract package name from a Github master path.")
 
-(defun pel--extract-pkg-name (github-pkg-path)
+(defun pel--extract-github-pkg-name (github-pkg-path)
   "Extract package name from a Github package path used in pel_keys."
   (with-temp-buffer
     (insert github-pkg-path)
@@ -337,17 +345,18 @@ Name of package is in group 1.")
 
 (defun pel-installable-packages ()
   "Return a list of packages PEL can install."
-  (let ((pkgs-from-elpa (sort (pel--pkg-installed-by-pel pel--regxp-pel-ensure
-                                                         1)
-                              (function string<)))
-        (pkgs-others (sort (append
-                            (pel--pkg-installed-by-pel
-                             pel--regxp-froml-github
-                             2 (function pel--extract-pkg-name))
-                            (pel--pkg-installed-by-pel
-                             pel--regexp-pel-install-file
-                             1))
-                      (function string<))))
+  (let ((pkgs-from-elpa (sort
+                         (pel--pkg-installed-by-pel pel--regxp-pel-ensure 1)
+                         (function string<)))
+        (pkgs-others
+         (sort
+          (append
+           '("quelpa")                  ; uses a special method
+           (pel--pkg-installed-by-pel pel--regxp-from-github 1
+                                      (function pel--extract-github-pkg-name))
+           (pel--pkg-installed-by-pel pel--regxp-from-gitlab 2)
+           (pel--pkg-installed-by-pel pel--regexp-pel-install-file 1))
+          (function string<))))
     (list pkgs-from-elpa pkgs-others)))
 
 ;; --
