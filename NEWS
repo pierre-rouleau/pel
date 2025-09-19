@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- PEL can now install Emacs Lisp files hosted in Gitlab projects using the *pel-install-gitlab-file* function.
 - Improved support for the emacs-ssh-file-modes making Emacs aware of the format of the SSH /known_hosts/ and /authorized_keys/ files.
   This is activated by the *pel-use-emacs-ssh-file-modes* user-option.
   - PEL now use my fork of the original project which modernizes the code and fixes font locking issues that shows under the latest Emacs.

@@ -5420,7 +5420,10 @@ to identify a Verilog file.  Anything else is assumed being V."
   (when pel-use-verilog-ext
     (pel-ensure-package verilog-ext from: melpa))
   (when pel-use-veri-kompass
-    (pel-ensure-package veri-kompass from: melpa))
+    ;; Instead of using melpa, use my fork until my PR gets merged.
+    ;; (pel-ensure-package veri-kompass from: melpa)
+    (pel-install-gitlab-file "prouleau" "veri-kompass" "veri-kompass.el")
+    (pel-autoload "veri-kompass" for: veri-kompass))
 
   ;; Activate PEL <f12> key management,
   ;; and minor modes required for Verilog files.

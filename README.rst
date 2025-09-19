@@ -53,7 +53,15 @@ Essentially PEL:
 - extends the standard Emacs system and enhance the synergy in your use of Emacs,
 - adds a large number (667) of convenient commands and provides glue logic to
   increase feature cohesion and simplify their use,
-- provides the ability to easily install, update a large set (261) of external packages,
+- provides the ability to easily install, update a large set (261) of external
+  packages from various sources:
+
+  - elpa compliant sites: GNU elpa, MELPA,
+  - Github hosted files that are not setup as Emacs packages,
+  - Gitlab hosted files that are not setup as Emacs packages,
+  - and you can still install packages with Emacs package management commands,
+    and manually configure them by adding specific logic in the PEL init.el file.
+
 - uses the extremely powerful Emacs customization system to drive activation
   of features,
 
