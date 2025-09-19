@@ -433,6 +433,20 @@ Done in this function to allow advising libraries that remap these keys."
   (pel-bind-greek-to "<f9>"))
 
 ;; ---------------------------------------------------------------------------
+;; Optional Extra Package Management Support
+;; -----------------------------------------
+;; Install quelpa if requested.
+;; Using method suggested by quelpa inside its documentation at
+;;  https://github.com/quelpa/quelpa/blob/master/README.org#installation
+(when pel-use-quelpa
+  (unless (package-installed-p 'quelpa)
+    (with-temp-buffer
+      (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+      (eval-buffer)
+      (with-no-warnings
+        (quelpa-self-upgrade)))))
+
+;; ---------------------------------------------------------------------------
 ;; tree-sitter support
 ;; -------------------
 

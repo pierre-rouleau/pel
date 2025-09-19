@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Adding support for the quelpa package manager to broaden PEL's ability to
+  install packages from various sources.  Preliminary.
 - Fix (modernize) support for the keycast package: it now provides 4 different
   commands, with one that uses a frame and therefore can only be used in Emacs
   running in GUI mode.  Add the following key bindings for it:

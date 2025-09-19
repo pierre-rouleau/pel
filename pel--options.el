@@ -39,6 +39,7 @@
 ;;   - pel-syntax-tools
 ;;   - pel-fast-startup
 ;;   - pel-package-use
+;;     - pel-pkg-package-mng
 ;;     - pel-pkg-for-align
 ;;     - pel-pkg-for-bookmark
 ;;     - pel-pkg-for-buffer
@@ -953,6 +954,24 @@ directory for whatever reason."
 ;;      the current cleanup has been done, they will just be left in the
 ;;      `custom-set-variable' which has no impact once `pel-cleanup' ran and
 ;;      uninstalled editorconfig.
+
+;; ---------------------------------------------------------------------------
+;; Package Management Extensions
+;; -----------------------------
+(defgroup pel-pkg-package-mng nil
+  "Package Management Extensions - more ways to get Emacs packages."
+  :group 'pel-package-use
+  :link `(url-link :tag "Package Management PDF" ,(pel-pdf-file-url
+                                                   "packages")))
+(defcustom pel-use-quelpa nil
+  "Control whether PEL activates and uses the quelpa package manager."
+  :link '(url-link :tag "quelpa @ github"
+                   "https://github.com/quelpa/quelpa")
+  :link '(url-link :tag "quelpa readme"
+                   "https://github.com/quelpa/quelpa/blob/master/README.org")
+  :group 'pel-pkg-package-mng
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; Alignment Support
