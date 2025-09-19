@@ -1494,7 +1494,7 @@ Your version of Emacs does not support dynamic module.")))
   (advice-add 'smart-dash-insert-dash
               :override (function pel--smart-dash-insert-dash-or-kp-subtract))
 
-  ;; when we can, activate a red lighter for Smart dash
+  ;; when we can, activate a green lighter for Smart dash
   (when (and pel-use-delight
              (fboundp 'delight))
     (delight 'smart-dash-mode
