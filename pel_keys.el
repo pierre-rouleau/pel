@@ -5423,7 +5423,19 @@ to identify a Verilog file.  Anything else is assumed being V."
     ;; Instead of using melpa, use my fork until my PR gets merged.
     ;; (pel-ensure-package veri-kompass from: melpa)
     (pel-install-gitlab-file "prouleau" "veri-kompass" "veri-kompass.el")
-    (pel-autoload "veri-kompass" for: veri-kompass))
+    (pel-autoload "veri-kompass" for: veri-kompass
+                  veri-kompass-search-driver-at-point
+                  veri-kompass-search-load-at-point
+                  veri-kompass-follow-from-point
+                  veri-kompass-mark-comments
+                  veri-kompass-mark-code-blocks
+                  veri-kompass-open-at-point
+                  veri-kompass-unmark
+                  veri-kompass-mark
+                  veri-kompass-mark-and-jump
+                  veri-kompass-go-backward
+                  veri-kompass-go-up
+                  veri-kompass-go-up-from-point))
 
   ;; Activate PEL <f12> key management,
   ;; and minor modes required for Verilog files.
