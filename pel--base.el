@@ -1873,9 +1873,7 @@ downloaded, nil otherwise.  Permission errors are raised."
         (when (and (pel-url-copy-file url target-fname refresh)
                    (string= (file-name-extension target-fname) "el"))
           (message "Byte compiling it to %s" target-fname)
-          (byte-compile-file target-fname)
-          (when (featurep 'native-compile)
-            (pel-native-compile-util fname)))))))
+          (byte-compile-file target-fname))))))
 
 (defun pel-install-files (url-base fnames &optional refresh)
   "Download & install files identified by their URL-BASE and FNAMES.
@@ -1900,6 +1898,8 @@ downloaded, nil otherwise.  Permission errors are raised."
       (pel-install-file (pel-url-join url-base fname)
                         fname
                         refresh))))
+
+;; -------
 
 (defun pel--install-github-files (user-project-branch
                                   fnames
@@ -1943,6 +1943,8 @@ startup mode."
                                   ,fnames
                                   ,refresh))))
 
+;; -------
+
 (defun pel--install-github-file (user-project-branch
                                  fname
                                  &optional url-fname refresh)
@@ -1983,6 +1985,55 @@ expands to nil which will be optimized out by the byte compiler."
                                  ,fname
                                  ,url-fname
                                  ,refresh))))
+
+;; -------
+
+(defun pel--install-gitlab-file (gitlab-user gitlab-project fname
+                                             &optional refresh)
+  "Download & install FNAME from Gitlab user and project.
+GITLAB-USER is the name of Gitlab user.
+GITLAB-PROJECT is the name of Gitlab project.
+
+If a file already exists in the destination, no download
+is done unless REFRESH is non-nil, in which case the function
+prompts for confirmation.
+
+The function returns t if the file was
+downloaded, nil otherwise.  Permission errors are raised.
+
+This is normally called by the `pel-install-gitlab-files' macro."
+  (pel-install-file (format "https://gitlab.com/%s/%s/-/raw/master/%s"
+                            gitlab-user
+                            gitlab-project
+                            fname)
+                    fname
+                    refresh))
+
+
+(defmacro pel-install-gitlab-file (gitlab-user gitlab-project fname
+                                               &optional refresh)
+  "Download & install FNAME from Gitlab user and project.
+GITLAB-USER is the name of Gitlab user.
+GITLAB-PROJECT is the name of Gitlab project.
+REFRESH if required.
+
+The function returns t if the file was
+downloaded, nil otherwise.  Permission errors are raised.
+
+If a file already exists in the destination, no download
+is done unless REFRESH is non-nil, in which case the function
+prompts for confirmation.
+
+The macro generates code that runs only at load time.  However,
+when PEL operates in fast startup the macro creates no code and
+expands to nil which will be optimized out by the byte compiler."
+  (unless (pel-in-fast-startup-p)
+    `(cl-eval-when 'load
+       (pel--install-gitlab-file ,gitlab-user
+                                 ,gitlab-project
+                                 ,fname
+                                 ,refresh))))
+
 
 ;; -------
 (defun pel-rebuild-utils ()
