@@ -6652,9 +6652,19 @@ to pel-use-helm-descbinds"))
 ;; -----------------------
 (when pel-use-keycast
   (pel-ensure-package keycast from: melpa)
-  (pel-autoload-file keycast for: keycast-mode)
-  (define-key pel:keys  "c"  'keycast-mode))
+  (define-pel-global-prefix pel:keycast (kbd "<f11> ? k a"))
+  (pel-autoload-file keycast for:
+                     keycast-mode-line-mode
+                     keycast-header-line-mode
+                     keycast-tab-bar-mode)
+  (define-key pel:keycast "m" 'keycast-mode-line-mode)
+  (define-key pel:keycast "h" 'keycast-header-line-mode)
+  (define-key pel:keycast "t" 'keycast-tab-bar-mode)
+  (when pel-emacs-is-graphic-p
+    (pel-autoload-file keycast for: keycast-log-mode)
+    (define-key pel:keycast "f" 'keycast-log-mode)))
 
+;; [:todo 2025-09-19, by Pierre Rouleau:  fix command-log-mode does not seem to work]
 (when pel-use-command-log-mode
   (define-pel-global-prefix pel:command-log (kbd "<f11> ? k c"))
   (pel-install-github-file "pierre-rouleau/command-log-mode/master"

@@ -2,6 +2,15 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix (modernize) support for the keycast package: it now provides 4 different
+  commands, with one that uses a frame and therefore can only be used in Emacs
+  running in GUI mode.  Add the following key bindings for it:
+  - ~<f11> ? k a m~ for *keycast-mode-line-mode*
+  - ~<f11> ? k a h~ for *keycast-header-line-mode*
+  - ~<f11> ? k a t~ for *keycast-tab-bar-mode*
+  - ~<f11> ? k a f~ for *keycast-log-mode* , now only available when Emacs is
+    used in GUI mode because this mode prints the logged events inside a
+    separate Emacs frame.
 - PEL can now install Emacs Lisp files hosted in Gitlab projects using the *pel-install-gitlab-file* function.
 - Improved support for the emacs-ssh-file-modes making Emacs aware of the format of the SSH /known_hosts/ and /authorized_keys/ files.
   This is activated by the *pel-use-emacs-ssh-file-modes* user-option.
