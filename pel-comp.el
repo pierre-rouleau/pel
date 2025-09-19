@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-17 15:04:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-18 23:15:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,18 +64,22 @@ FNAME must be a file base name with the .el extension."
 
 (defun pel-native-compile-util (fname)
   "Native compile the util .el FNAME if necessary.
-FNAME must be a file base name with the .el extension."
+FNAME must be a file base name with the .el extension.
+Return: t when the file has been natively compiled,
+        \\='eln-present if it was already present."
   (let* ((util-dpathname (expand-file-name "utils" user-emacs-directory))
          (el-fpathname (expand-file-name fname util-dpathname))
          (eln-fpathname (pel-comp-eln-file-for-util fname)))
-    (unless (file-exists-p eln-fpathname)
-      (if (featurep 'native-compile)
-          (progn
-            (require 'comp-run)
-            (when (fboundp 'native-compile-async)
-              (message "Native compile %s --> %s" el-fpathname eln-fpathname)
-              (native-compile-async el-fpathname)))
-        (user-error "This Emacs is not built with native-compile support")))))
+    (if (file-exists-p eln-fpathname)
+        'eln-present
+        (if (featurep 'native-compile)
+            (progn
+              (require 'comp-run)
+              (when (fboundp 'native-compile-async)
+                (message "Native compile %s --> %s" el-fpathname eln-fpathname)
+                (native-compile-async el-fpathname))
+              t)
+          (user-error "This Emacs is not built with native-compile support")))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-comp)
