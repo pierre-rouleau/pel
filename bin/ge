@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent, detached, GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-08-29 19:48:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-09-22 16:51:22 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -40,13 +40,23 @@ ge : Open an independent, detached, graphical-mode instance of Emacs.
        - If PEL_GE_DIR environment variable is defined, it must identify
          the path of an emacs executable file that launches in graphics
          mode by default.  If the environment variable is set and
-         $PEL_GE_DIR/emacs is valid then that is used.
+         %s/emacs is valid then that is used.
          Use this, for example,  if you have built Emacs yourself
          and want to use this version of Emacs without activating it
          by default in your shells or in the system.
        - If /Applications/Emacs.app/Contents/MacOS exists and holds
          an appropriate Emacs executable file, that is used.
+" "$PEL_GE_DIR"
+    if [ "$(uname)" = "Darwin" ]; then
+        printf -- "\
+
+ BUGS: On macOS Sonoma, the started Emacs application window is
+       buried under the window of the current terminal shell.
+       This problem does not occur on macOS Mojave.
 "
+    fi
+
+
 }
 
 
