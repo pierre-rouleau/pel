@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 15 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-23 12:10:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-23 12:16:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -96,7 +96,8 @@ otherwise return an integer indicating the current comment nesting."
   (pel--inside-string-p (syntax-ppss pos)))
 
 (defun pel-inside-code-p (&optional pos)
-  "Return t if POS, or point, is inside code; not in string nor comment."
+  "Return t if POS, or point, is inside code; not in string nor comment.
+Moves point if POS is specified."
   (let ((syntax-sexp (syntax-ppss pos)))
     (not (or (nth 3 syntax-sexp)
              (nth 4 syntax-sexp)))))
