@@ -1,6 +1,6 @@
 ;;; pel-cursor.el --- PEL cursor control  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -21,11 +21,11 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;; -----------------------------------------------------------------------------
-
 ;;; Commentary:
+
 ;;
-;; This contains a collection of commands to control the cursor attributes:
-;; its color and its type (shape).
+;; This contains a collection of commands to control the attributes of a
+;; graphics Emacs cursor: its color and its type (shape).
 ;;
 ;; The persistent values are stored inside the following user options, part of
 ;; the `pel-pkg-for-cursor' group:
@@ -91,17 +91,22 @@ To make the color change persist, modify the `cursor' or the
   (when (stringp colorname)
     (set-cursor-color colorname)))
 
-(with-no-warnings
-  ;; defadvice is obsolete in Emacs 30 BUT not documented .
-  ;; [:todo 2025-04-30, by Pierre Rouleau: change this once I understand the
-  ;;                    new ones. Someone quit Emacs dev group over this...
-  ;;                    ... so the old one may stay available for a while.]
-  (defadvice overwrite-mode (after pel--overwrite-mode-change-cursor activate)
-    "Change cursor color in override-mode to `pel-cursor-overwrite-mode-color'."
-    (pel-set-cursor-color
-     (if overwrite-mode
-         (face-attribute 'pel-cursor-overwrite-mode-color :background)
-       pel--default-cursor-color))))
+(defun pel--cursor-overwrite-ext (original-overwrite-mode &optional arg)
+  "Advice function that extends `overwrite-mode' by changing cursor color."
+  (funcall original-overwrite-mode arg)
+  (pel-set-cursor-color
+   (if overwrite-mode
+       (face-attribute
+        'pel-cursor-overwrite-mode-color :background)
+     pel--default-cursor-color)))
+
+(defun pel--activate-colored-cursor ()
+  "Activate a cursor that changes color in overwrite mode."
+  (advice-add 'overwrite-mode :around
+              (function pel--cursor-overwrite-ext)))
+
+(when (display-graphic-p)
+  (pel--activate-colored-cursor))
 
 ;; -----------------------------------------------------------------------------
 ;; Control cursor type (shape) for mark active or not
