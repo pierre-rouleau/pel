@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, October 15 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-11-28 14:56:09 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-23 12:10:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2022, 2023, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -98,8 +98,8 @@ otherwise return an integer indicating the current comment nesting."
 (defun pel-inside-code-p (&optional pos)
   "Return t if POS, or point, is inside code; not in string nor comment."
   (let ((syntax-sexp (syntax-ppss pos)))
-    (and (not (nth 3 syntax-sexp))
-         (not (nth 4 syntax-sexp)))))
+    (not (or (nth 3 syntax-sexp)
+             (nth 4 syntax-sexp)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--syntax-macros)
