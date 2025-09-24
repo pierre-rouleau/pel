@@ -777,7 +777,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-search-empty-line
     pel-reb-re-syntax
     pel-reb-erase-regxp
-    pel-isearch-toggle-just-in-code)
+    pel-isearch-in)
   (pel-autoload-function "pel-search" for:
     pel-set-search-tool
     pel-reb-enhance)

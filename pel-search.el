@@ -2,7 +2,7 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-24 00:16:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-24 09:09:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -60,7 +60,7 @@
 ;;
 ;;* isearch enhancement
 ;; . `pel-isearch-toggle-just-in-code'
-;;   - `pel--isearch-filter-in-code-p'
+;;   - `pel--isearch-in-code-p'
 ;;
 ;;* Search in buffers
 ;; . `pel-multi-occur-in-this-mode'
@@ -93,7 +93,6 @@
 (require 'pel-window)    ; use: `pel-window-direction-for'
 ;;                       ;      `pel-count-non-dedicated-windows'
 (require 'pel--syntax-macros)           ; use: `pel-inside-code-p'
-
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
@@ -379,33 +378,104 @@ With any argument: move backward to previous empty line."
 ;;* isearch enhancement
 ;; --------------------
 
-(defvar-local pel-isearch-only-in-code nil
-  "Non-nil when isearch is limited to search in code.")
+(defvar-local pel--isearch-constraint nil
+  "Type of restriction applied to `isearch`.
+This can be:
+- nil : no restriction; search everywhere
+- code :         search only in code
+- comment :      search only in comments
+- string :       search only in strings
+- code-comment : search in code and comments
+- code-string :  search in code and strings.")
 
-(defun pel--isearch-filter-in-code-p (beg end)
+(defun pel--isearch-in-code-p (beg end)
   "An `isearch' predicate to restrict search to only code."
   (save-excursion
     (and
      (pel-inside-code-p beg)
      (pel-inside-code-p end))))
 
-(defun pel-isearch-toggle-just-in-code ()
-  "Restrict `isearch' to just code; exclude comment and strings."
+(defun pel--isearch-in-comment-p (beg end)
+  "An `isearch' predicate to restrict search to comments."
+  (save-excursion
+    (and
+     (pel-inside-comment-p beg)
+     (pel-inside-comment-p end))))
+
+(defun pel--isearch-in-code-and-comment-p (beg end)
+  "An `isearch' predicate to restrict search to code and comments."
+  (save-excursion
+    (or
+     (and
+      (pel-inside-code-p beg)
+      (pel-inside-code-p end))
+     (and
+      (pel-inside-comment-p beg)
+      (pel-inside-comment-p end)))))
+
+(defun pel--isearch-in-string-p (beg end)
+  "An `isearch' predicate to restrict search to strings."
+  (save-excursion
+    (and
+     (pel-inside-string-p beg)
+     (pel-inside-string-p end))))
+
+(defun pel--isearch-in-code-and-string-p (beg end)
+  "An `isearch' predicate to restrict search to code and strings."
+  (save-excursion
+    (or
+     (and
+      (pel-inside-code-p beg)
+      (pel-inside-code-p end))
+     (and
+      (pel-inside-string-p beg)
+      (pel-inside-string-p end)))))
+
+(defun pel--title-function-for-constraint (constraint)
+  "Return a (title . function) cost for a specified CONSTRAINT."
+  (cond
+   ((eq constraint nil)          '("" . nil))
+   ((eq constraint 'code)         (cons "In code " #'pel--isearch-in-code-p))
+   ((eq constraint 'comment)      (cons "In comments " #'pel--isearch-in-comment-p))
+   ((eq constraint 'string)       (cons "In strings " #'pel--isearch-in-string-p))
+   ((eq constraint 'code-comment) (cons "In code & comments " #'pel--isearch-in-code-and-comment-p))
+   ((eq constraint 'code-string)  (cons "In code & strings " #'pel--isearch-in-code-and-string-p))))
+
+(defun pel-isearch-in ()
+  "Restrict `isearch' in buffer to just code, string, comment or everything."
   (interactive)
-  (if pel-isearch-only-in-code
-      (progn
-        (remove-function (local 'isearch-filter-predicate)
-                       (function pel--isearch-filter-in-code-p))
-        (setq pel-isearch-only-in-code nil)
-        (message "isearch%s everywhere" (if (fboundp 'iedit-mode)
-                                             "/iedit" "")))
-    (add-function :after-while
-                  (local  'isearch-filter-predicate)
-                  (function pel--isearch-filter-in-code-p)
-                  '((isearch-message-prefix . "In-code ")))
-    (setq pel-isearch-only-in-code t)
-    (message "isearch%s only in code!" (if (fboundp 'iedit-mode)
-                                           "/iedit" ""))))
+  (let ((new-constraint
+         (pel-select-from (format "isearch%s in" (if (fboundp 'iedit-mode)
+                                                     "/iedit" ""))
+                          (list '(?, "Everywhere" nil)
+                                '(?c "code" code)
+                                '(?k "comments" comment)
+                                '(?s  "strings" string)
+                                '(?K "code & comments" code-comment)
+                                '(?S "code & strings" code-string)))))
+    ;; Disable the previous constraint if there was one
+    (when pel--isearch-constraint
+      (remove-function (local 'isearch-filter-predicate)
+                       (cdr (pel--title-function-for-constraint
+                             pel--isearch-constraint)))
+      (setq pel--isearch-constraint nil))
+    ;; If there is a new constraint, apply it.
+    (if new-constraint
+        (let* ((title.function
+                (pel--title-function-for-constraint new-constraint))
+               (title (car title.function))
+               (predicate-function (cdr title.function) ))
+          (add-function :after-while
+                        (local 'isearch-filter-predicate)
+                        predicate-function
+                        (list (cons 'isearch-message-prefix title)))
+          (setq pel--isearch-constraint t)
+          (message "isearch%s only %s!" (if (fboundp 'iedit-mode)
+                                               "/iedit" "")
+                   (string-trim (downcase title))))
+      ;; Otherwise let the user know there's no constraint.
+      (message "isearch%s everywhere" (if (fboundp 'iedit-mode)
+                                          "/iedit" "")))))
 
 ;; ---------------------------------------------------------------------------
 ;;* PEL search tool control

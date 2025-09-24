@@ -2,8 +2,17 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
-- Add *pel-isearch-toggle-just-in-code* command, bound to ~<f11> s M-c~.
-  This toggles whether isearch and iedit search everywhere (as usual) or only in code, skipping comments and strings.
+- Add *pel-isearch-in* command, bound to ~<f11> s ,~.
+  This command applies or removes a constraint applied to the isearch and iedit search
+  operations performed in the current buffer.  The command prompts for the
+  type of constraint to apply.  These  constraints are the following:
+  - none; search everywhere,
+  - search in code only,
+  - search in comment only,
+  - search in strings only,
+  - search in code and comments,
+  - search in code and strings.
+  When a constraint is in effect, it is shown in the isearch prompt.
 - Adding support for the quelpa package manager to broaden PEL's ability to
   install packages from various sources.  Preliminary.
 - Fix (modernize) support for the keycast package: it now provides 4 different
