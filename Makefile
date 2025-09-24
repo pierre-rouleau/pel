@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-09-17 14:08:02 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-09-24 00:16:41 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -729,7 +729,7 @@ pel-hide-docstring.elc: pel-navigate.elc pel-face-ut.elc
 pel-hideshow.elc:       pel--base.elc
 pel-highlight.elc:      pel--base.elc pel-prompt.elc
 pel-ido.elc:            pel-prompt.elc
-pel-iedit.elc:          pel--options.elc pel--syntax-macros.elc
+pel-iedit.elc:          pel--options.elc
 pel-imenu-dbg.elc:      pel--base.elc
 pel-imenu-ido.elc:      pel--base.elc pel--options.elc pel-prompt.elc pel-completion.elc
 pel-imenu.elc:          pel--base.elc pel--options.elc
@@ -767,7 +767,7 @@ pel-scheme.elc:         pel-comint.elc pel-window.elc
 pel-screen.elc:         pel--options.elc pel-whitespace.elc
 pel-scroll.elc:         pel-window.elc
 pel-search-regexp.elc:  pel--options.elc
-pel-search.elc:         pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-search-regexp.elc pel-window.elc
+pel-search.elc:         pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-search-regexp.elc pel-window.elc pel--syntax-macros.elc
 pel-seed7.elc:          pel--base.elc pel--options.elc pel-ccp.elc
 pel-seq.elc:            pel--base.elc
 pel-setup-base.elc:     pel--base.elc pel--options.elc pel-ccp.elc pel-custom.elc pel-elpa.elc pel-package.elc

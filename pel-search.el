@@ -2,7 +2,7 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-07-17 12:25:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-24 00:16:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -58,6 +58,10 @@
 ;;     - `pel--activate-search-tool'
 ;; . `pel-show-search-status'
 ;;
+;;* isearch enhancement
+;; . `pel-isearch-toggle-just-in-code'
+;;   - `pel--isearch-filter-in-code-p'
+;;
 ;;* Search in buffers
 ;; . `pel-multi-occur-in-this-mode'
 ;;   -`pel-buffers-matching-mode'
@@ -88,6 +92,7 @@
 ;;                            ;      `pel-set-search-regexp-engine'
 (require 'pel-window)    ; use: `pel-window-direction-for'
 ;;                       ;      `pel-count-non-dedicated-windows'
+(require 'pel--syntax-macros)           ; use: `pel-inside-code-p'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -369,6 +374,38 @@ With any argument: move backward to previous empty line."
         (forward-line -1))
     (search-backward "\n\n")
     (forward-line 1)))
+
+;; ---------------------------------------------------------------------------
+;;* isearch enhancement
+;; --------------------
+
+(defvar-local pel-isearch-only-in-code nil
+  "Non-nil when isearch is limited to search in code.")
+
+(defun pel--isearch-filter-in-code-p (beg end)
+  "An `isearch' predicate to restrict search to only code."
+  (save-excursion
+    (and
+     (pel-inside-code-p beg)
+     (pel-inside-code-p end))))
+
+(defun pel-isearch-toggle-just-in-code ()
+  "Restrict `isearch' to just code; exclude comment and strings."
+  (interactive)
+  (if pel-isearch-only-in-code
+      (progn
+        (remove-function (local 'isearch-filter-predicate)
+                       (function pel--isearch-filter-in-code-p))
+        (setq pel-isearch-only-in-code nil)
+        (message "isearch%s everywhere" (if (fboundp 'iedit-mode)
+                                             "/iedit" "")))
+    (add-function :after-while
+                  (local  'isearch-filter-predicate)
+                  (function pel--isearch-filter-in-code-p)
+                  '((isearch-message-prefix . "In-code ")))
+    (setq pel-isearch-only-in-code t)
+    (message "isearch%s only in code!" (if (fboundp 'iedit-mode)
+                                           "/iedit" ""))))
 
 ;; ---------------------------------------------------------------------------
 ;;* PEL search tool control

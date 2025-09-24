@@ -2,12 +2,12 @@
 
 ;; Created   : Sunday, November 26 2023.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-11-28 15:23:30 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-24 00:48:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2023  Pierre Rouleau
+;; Copyright (C) 2023, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -32,18 +32,6 @@
 ;; way to access the iedit customization buffer.  The new bindings are
 ;; installed by calling `pel-add-keys-to-iedit-mode'.
 
-;; TODO: complete the following:
-;;
-;; Another goal of this file is to provide ability to use iedit on source code and
-;; exclude comments and strings. That feature is experimental and currently
-;; does not work (at least on Emacs 26.3).  The theory is that since iedit
-;; uses isearch for performing it search we can provide isearch a filter to
-;; only search in source code. However, the implementation here is not working
-;; properly. It attempts to advice the function identified by the
-;; `isearch-filter-predicate' variable to return nil when point is not over
-;; code.  The goal was to be able to toggle that search behaviour on or off.
-;; The variables and functions are defined but not bound to any key sequence.
-
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
@@ -52,29 +40,9 @@
 (require 'isearch)
 (require 'nadvice)
 (require 'pel--options)
-(require 'pel--syntax-macros)
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
-
-(defvar-local pel-iedit-only-in-code nil
-  "When non-nil iedit only operator on code, not in comment nor strings.")
-
-(defun pel-isearch-in-code (start-pos end-pos)
-  "isearch predicate to search inside code only."
-  (and
-   (pel-inside-code-p start-pos)
-   (pel-inside-code-p end-pos)))
-
-(defun pel-iedit-toggle-just-in-code ()
-  "Restrict iedit to just code; exclude comment and strings."
-  (interactive)
-  (if pel-iedit-only-in-code
-      (progn
-        (remove-function isearch-filter-predicate #'pel-isearch-in-code)
-        (setq pel-iedit-only-in-code nil))
-    (add-function :around isearch-filter-predicate #'pel-isearch-in-code)
-    (setq pel-iedit-only-in-code t)))
 
 (defun pel-customize-iedit ()
   "Customize the iedit group."
@@ -99,11 +67,7 @@
 
   (define-key map (kbd "TAB")       nil)
   (define-key map (kbd "<tab>")     nil)
-  (define-key map (kbd "M-S-<f9>")    'iedit-next-occurrence)
-
-  ;; Add ability to toggle including comments and strings -- FUTURE: currently does not work
-  ;; (define-key map (kbd "M-;") #'pel-iedit-toggle-just-in-code)
-  )
+  (define-key map (kbd "M-S-<f9>")    'iedit-next-occurrence))
 
 (defun pel-add-keys-to-iedit-mode ()
   "Add keys that work in terminal mode to iedit-mode key maps."

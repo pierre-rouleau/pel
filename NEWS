@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-isearch-toggle-just-in-code* command, bound to ~<f11> s M-c~.
+  This toggles whether isearch and iedit search everywhere (as usual) or only in code, skipping comments and strings.
 - Adding support for the quelpa package manager to broaden PEL's ability to
   install packages from various sources.  Preliminary.
 - Fix (modernize) support for the keycast package: it now provides 4 different

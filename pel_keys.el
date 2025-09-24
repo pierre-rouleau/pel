@@ -8484,6 +8484,7 @@ the ones defined from the buffer now."
 (define-key pel:search-replace "?"  'pel-show-search-status)
 (define-key pel:search-replace " "  'pel-search-two-spaces)
 (define-key pel:search-replace (kbd "RET") 'pel-search-empty-line)
+(define-key pel:search-replace (kbd "M-c") 'pel-isearch-toggle-just-in-code)
 (when pel-use-fzf
   (define-key pel:search-replace "z" 'fzf-find-in-buffer))
 (define-key pel:search-replace (kbd "M-%") 'pel-dirtree-find-replace)
