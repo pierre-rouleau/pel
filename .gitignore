@@ -89,6 +89,7 @@ cscope.po.out
 TAGS
 TAGS.*
 TAGS-PROJECTILE
+.etags-*
 
 # Globag gtags files
 GPATH
