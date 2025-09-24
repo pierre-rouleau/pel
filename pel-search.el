@@ -2,7 +2,7 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-24 09:09:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-24 11:43:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -59,8 +59,13 @@
 ;; . `pel-show-search-status'
 ;;
 ;;* isearch enhancement
-;; . `pel-isearch-toggle-just-in-code'
+;; . `pel-isearch-in'
+;;   - `pel--title-function-for-constraint'
 ;;   - `pel--isearch-in-code-p'
+;;   - `pel--isearch-in-comment-p'
+;;   - `pel--isearch-in-code-and-comment-p'
+;;   - `pel--isearch-in-string-p'
+;;   - `pel--isearch-in-code-and-string-p'
 ;;
 ;;* Search in buffers
 ;; . `pel-multi-occur-in-this-mode'
