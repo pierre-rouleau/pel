@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-17 22:33:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-20 11:11:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -328,10 +328,12 @@
     ([f11 32 ?l ??]  "pl-emacs-lisp"    pel-pkg-for-all-languages (eldoc
                                                                    eldoc-box))
 
-    ([f11 32 ?4]     "pl-m4"        pel-pkg-for-m4          m4)
     ([f11 32 ?0]     "ssh-files"    pel-pkg-for-ssh         ssh-file)
     ([f11 32 ?1]     "ssh-files"    pel-pkg-for-ssh         ssh-file)
     ([f11 32 ?2]     "pl-modula2"   pel-pkg-for-modula-2    modula2)
+    ([f11 32 ?3]     "pl-meson"     pel-pkg-for-meson       meson)
+    ([f11 32 ?4]     "pl-m4"        pel-pkg-for-m4          m4)
+    ([f11 32 ?5]     "pl-ninja"     pel-pkg-for-ninja       ninja)
     ([f11 32 ?n]     "pl-nim"       pel-pkg-for-nim         (nim
                                                              electricity))
     ([f11 32 ?o]     "pl-ocaml"     pel-pkg-for-ocaml       (merlin
@@ -697,7 +699,9 @@ stored inside the doc/pdf directory.")
     ("go"              [f11 32 ?g])
     ("janet"           [f11 32 ?T])
     ("julia"           [f11 32 ?j])
+    ("meson"           [f11 32 ?3])
     ("m4"              [f11 32 ?4])
+    ("ninja"           [f11 32 ?5])
     ("makefile"        [f11 32 ?M])
     ("makefile-bsdmake" [f11 32 ?M])
     ("makefile-gmake"  [f11 32 ?M])
@@ -998,6 +1002,8 @@ There should be no key binding!" keyseq))
     ("make"             . "pl-make")
     ("m2"               . "pl-modula2")
     ("modula2"          . "pl-modula2")
+    ("meson"            . "pl-meson")
+    ("ninja"            . "pl-ninja")
     ("nim"              . "pl-nim")
     ("ocaml"            . "pl-ocaml")
     ("odin"             . "pl-odin")

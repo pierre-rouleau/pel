@@ -2,6 +2,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for Meson and ninja build files.  Both implementations are simple, early implementations.
+- Improved *iedit* support for *cperl-mode*, *sh-mode*, *tcl-mode*, and *ninja-mode*:
+  in these modes (and probably other) iedit is not able to match all instances
+  of symbols due to the weakness of the syntax of the major mode.  PEL enhance
+  *iedit* search capabilities by changing the syntax table of the major mode
+  at critical points during the iedit operation, then restore the original
+  syntax table when iedit completes.
 - Add *pel-isearch-in* command, bound to ~<f11> s ,~.
   This command applies or removes a constraint applied to the isearch and iedit search
   operations performed in the current buffer.  The command prompts for the

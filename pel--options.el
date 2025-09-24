@@ -206,6 +206,8 @@
 ;;     - pel-pkg-for-sw-build
 ;;       - pel-pkg-for-cmake
 ;;       - pel-pkg-for-make
+;;       - pel-pkg-for-meson
+;;       - pel-pkg-for-ninja
 ;;     - pel-pkg-for-text-mode
 ;;     - pel-pkg-for-time-tracking
 ;;     - pel-pkg-for-text-translation
@@ -3815,14 +3817,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-change-log-tab-width 8
-  "Distance between tab stop for asciidoc buffers.
+  "Column width display rendering of hard tab for asciidoc buffers.
 
 PEL stores this in `tab-width' when opening change-log buffers.
 
 This does *NOT* control the indentation in change-log
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-changelog-file
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -3945,14 +3946,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-selinuxpolicy-tab-width 2
-  "Distance between tab stop for asciidoc buffers.
+  "Column width display rendering of hard tab for asciidoc buffers.
 
 PEL stores this in `tab-width' when opening selinuxpolicy buffers.
 
 This does *NOT* control the indentation in selinuxpolicy
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-selinux
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -4016,14 +4016,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-adoc-tab-width 2
-  "Distance between tab stop for asciidoc buffers.
+  "Column width display rendering of hard tab for asciidoc buffers.
 
 PEL stores this in `tab-width' when opening asciidoc  buffers.
 
 This does *NOT* control the indentation in asciidoc
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-asciidoc
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -4075,14 +4074,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-graphviz-dot-tab-width 2
-  "Distance between tab stop for graphviz-dot buffers.
+  "Column width display rendering of hard tab for graphviz-dot buffers.
 
 PEL stores this in `tab-width' when opening graphviz-dot  buffers.
 
 This does *NOT* control the indentation in graphviz-dot
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-graphviz-dot
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -4123,14 +4121,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-mscgen-tab-width 2
-  "Distance between tab stop for mscgen buffers.
+  "Column width display rendering of hard tab for mscgen buffers.
 
 PEL stores this in `tab-width' when opening mscgen  buffers.
 
 This does *NOT* control the indentation in mscgen
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-mscgen
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -4196,14 +4193,13 @@ Do not enter lambda expressions."
 (pel-put 'pel-use-flycheck-plantuml :requires 'pel-use-plantuml)
 
 (defcustom pel-plantuml-tab-width 2
-  "Distance between tab stop for plantuml buffers.
+  "Column width display rendering of hard tab for plantuml buffers.
 
 PEL stores this in `tab-width' when opening plantuml  buffers.
 
 This does *NOT* control the indentation in plantuml
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-plantuml
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -4360,14 +4356,13 @@ activate this package."
 (pel-put 'pel-use-remark-mode :requires 'pel-use-markdown)
 
 (defcustom pel-markdown-tab-width 2
-  "Distance between tab stop for markdown buffers.
+  "Column width display rendering of hard tab for markdown buffers.
 
 PEL stores this in `tab-width' when opening markdown  buffers.
 
 This does *NOT* control the indentation in markdown
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-markdown
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -4441,7 +4436,7 @@ When turned on, the *, /, =, _, ~ and + keys are electric in org-mode.
   :safe #'booleanp)
 
 (defcustom pel-org-tab-width 2
-  "Distance between tab stop for org buffers for Emacs < 30.
+  "Column width display rendering of hard tab for org buffers for Emacs < 30.
 
 For Emacs >= 30.1, org-mode only supports a tab-width of 8,
 For Emacs < 30, PEL set `tab-width' with this value when
@@ -4535,14 +4530,13 @@ document, something that does not work with a trailing underscore."
   :safe #'booleanp)
 
 (defcustom pel-rst-tab-width 2
-  "Distance between tab stop for reStructuredText buffers.
+  "Column width display rendering of hard tab for reStructuredText buffers.
 
 PEL stores this in `tab-width' when opening reStructuredText buffers.
 
 This does *NOT* control the indentation in reStructuredText
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-rst
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -4638,14 +4632,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-yaml-tab-width 2
-  "Distance between tab stop for yaml buffers.
+  "Column width display rendering of hard tab for yaml buffers.
 
 PEL stores this in `tab-width' when opening yaml  buffers.
 
 This does *NOT* control the indentation in yaml
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-yaml
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -4818,14 +4811,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-verilog-tab-width 4
-  "Distance between tab stop for verilog buffers.
+  "Column width display rendering of hard tab for verilog buffers.
 
 PEL stores this in `tab-width' when opening verilog buffers.
 
 This does *NOT* control the indentation in verilog
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-verilog
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -4883,14 +4875,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-vhdl-tab-width 4
-  "Distance between tab stop for vhdl buffers.
+  "Column width display rendering of hard tab for vhdl buffers.
 
 PEL stores this in `tab-width' when opening vhdl buffers.
 
 This does *NOT* control the indentation in vhdl
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-vhdl
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -5333,7 +5324,7 @@ Values in the [2, 8] range are accepted."
   :safe 'pel-indent-valid-p)
 
 (defcustom pel-ada-tab-width 4
-  "Distance between tab stop for buffers in `ada-mode'.
+  "Column width display rendering of hard tab for buffers in `ada-mode'.
 
 PEL stores this in `tab-width' when opening Ada buffers.
 
@@ -5668,14 +5659,13 @@ Values in the [2, 8] range are accepted."
   :safe 'pel-indent-valid-p)
 
 (defcustom pel-awk-tab-width 4
-  "Distance between tab stop for awk-mode buffers.
+  "Column width display rendering of hard tab for awk-mode buffers.
 
 PEL stores this in `tab-width' when opening awk buffers.
 
 This does *NOT* control the indentation in AWK
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-awk
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -6000,7 +5990,7 @@ Values in the [2, 8] range are accepted."
   :safe 'pel-indent-valid-p)
 
 (defcustom pel-c-tab-width 4
-  "Distance between tab stop for C source code.
+  "Column width display rendering of hard tab for C source code.
 
 PEL stores this in `tab-width' when editing buffer with C source.
 
@@ -6595,7 +6585,7 @@ Values in the [2, 8] range are accepted."
   :safe 'pel-indent-valid-p)
 
 (defcustom pel-c++-tab-width 3
-  "Distance between tab stop for C++ source code.
+  "Column width display rendering of hard tab for C++ source code.
 
 PEL stores this in `tab-width' when editing buffer with C++ source.
 It is used, however, to control the display rendering of hard tab
@@ -7140,7 +7130,7 @@ Values in the [2, 8] range are accepted."
   :safe 'pel-indent-valid-p)
 
 (defcustom pel-d-tab-width 4
-  "Distance between tab stop for D source code.
+  "Column width display rendering of hard tab for D source code.
 
 PEL stores this in `tab-width' when editing buffer in `d-mode'.
 
@@ -7250,7 +7240,7 @@ Values in the [2, 8] range are accepted."
   :safe 'pel-indent-valid-p)
 
 (defcustom pel-eiffel-tab-width 4
-  "Distance between tab stop for buffers in `eiffel-mode'.
+  "Column width display rendering of hard tab for buffers in `eiffel-mode'.
 
 PEL stores this in `tab-width' when opening Eiffel buffers.
 
@@ -7309,14 +7299,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-javascript-tab-width 4
-  "Distance between tab stop for javascript buffers.
+  "Column width display rendering of hard tab for javascript buffers.
 
 PEL stores this in `tab-width' when opening javascript  buffers.
 
 This does *NOT* control the indentation in javascript
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-javascript
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -7330,14 +7319,13 @@ characters."
   :safe #'booleanp)
 
 (defcustom pel-js-tab-width 4
-  "Distance between tab stop for javascript buffers.
+  "Column width display rendering of hard tab for javascript buffers.
 
 PEL stores this in `tab-width' when opening javascript  buffers.
 
 This does *NOT* control the indentation in javascript
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-javascript
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -7572,14 +7560,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-haskell-tab-width 2
-  "Distance between tab stop for haskell buffers.
+  "Column width display rendering of hard tab for haskell buffers.
 
 PEL stores this in `tab-width' when opening haskell  buffers.
 
 This does *NOT* control the indentation in haskell
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-haskell
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -8206,14 +8193,13 @@ Activating this automatically turns `pel-use-janet' on."
 (pel-put 'pel-use-hy :package-is 'hy-mode)
 
 (defcustom pel-hy-tab-width 4
-  "Distance between tab stop for hy buffers.
+  "Column width display rendering of hard tab for hy buffers.
 
 PEL stores this in `tab-width' when opening hy  buffers.
 
 This does *NOT* control the indentation in hy
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-hy
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -8971,14 +8957,13 @@ package which provides the client/library for LSP."
 (pel-put 'pel-use-elixir-lsp :requires 'pel-use-elixir)
 
 (defcustom pel-elixir-tab-width 4
-  "Distance between tab stop for elixir buffers.
+  "Column width display rendering of hard tab for elixir buffers.
 
 PEL stores this in `tab-width' when opening elixir  buffers.
 
 This does *NOT* control the indentation in elixir
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-elixir
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -9447,7 +9432,7 @@ Coding Standards & Guidelines."
 
 
 (defcustom pel-erlang-tab-width 8
-  "Distance between tab stop for Erlang source code.
+  "Column width display rendering of hard tab for Erlang source code.
 
 PEL stores this in `tab-width' when editing buffer with Erlang source.
 
@@ -9719,14 +9704,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-gleam-tab-width 2
-  "Distance between tab stop for gleam buffers.
+  "Column width display rendering of hard tab for gleam buffers.
 
 PEL stores this in `tab-width' when opening gleam  buffers.
 
 This does *NOT* control the indentation in gleam
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-gleam
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -9788,14 +9772,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-factor-tab-width 4
-  "Distance between tab stop for factor buffers.
+  "Column width display rendering of hard tab for factor buffers.
 
 PEL stores this in `tab-width' when opening factor buffers.
 
 This does *NOT* control the indentation in factor
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-factor
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -9831,14 +9814,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-forth-tab-width 4
-  "Distance between tab stop for forth buffers.
+  "Column width display rendering of hard tab for forth buffers.
 
 PEL stores this in `tab-width' when opening forth  buffers.
 
 This does *NOT* control the indentation in forth
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-forth
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -9879,14 +9861,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-julia-tab-width 4
-  "Distance between tab stop for julia buffers.
+  "Column width display rendering of hard tab for julia buffers.
 
 PEL stores this in `tab-width' when opening julia  buffers.
 
 This does *NOT* control the indentation in julia
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-julia
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -9922,14 +9903,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-lua-tab-width 4
-  "Distance between tab stop for lua buffers.
+  "Column width display rendering of hard tab for lua buffers.
 
 PEL stores this in `tab-width' when opening lua  buffers.
 
 This does *NOT* control the indentation in lua
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-lua
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -9972,7 +9952,7 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-m4-tab-width 4
-  "Distance between tab stop for M4 source code.
+  "Column width display rendering of hard tab for M4 source code.
 
 PEL stores this in `tab-width' when editing buffer with M4 source.
 
@@ -10065,14 +10045,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-nim-tab-width 4
-  "Distance between tab stop for nim buffers.
+  "Column width display rendering of hard tab for nim buffers.
 
 PEL stores this in `tab-width' when opening nim  buffers.
 
 This does *NOT* control the indentation in nim
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-nim
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -10130,14 +10109,13 @@ Values in the [2, 8] range are accepted."
   :safe 'pel-indent-valid-p)
 
 (defcustom pel-objc-tab-width 4
-  "Distance between tab stop for objc buffers.
+  "Column width display rendering of hard tab for objc buffers.
 
 PEL stores this in `tab-width' when opening Objective-C buffers.
 
 This does *NOT* control the indentation in Objective-C
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-objc
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -10278,14 +10256,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-tuareg-tab-width 4
-  "Distance between tab stop for ocaml buffers.
+  "Column width display rendering of hard tab for ocaml buffers.
 
 PEL stores this in `tab-width' when opening ocaml  buffers.
 
 This does *NOT* control the indentation in ocaml
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-ocaml
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -10626,7 +10603,7 @@ Values in the [2, 8] range are accepted."
   :safe 'pel-indent-valid-p)
 
 (defcustom pel-pike-tab-width 4
-  "Distance between tab stop for buffers in `pike-mode'.
+  "Column width display rendering of hard tab for buffers in `pike-mode'.
 
 PEL stores this in `tab-width' when opening Pike buffers.
 
@@ -10745,7 +10722,7 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-python-tab-width 4
-  "Distance between tab stop for buffers in `python-mode'.
+  "Column width display rendering of hard tab for buffers in `python-mode'.
 
 PEL stores this in `tab-width' when opening Python buffers.
 
@@ -10848,14 +10825,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-rexx-tab-width 2
-  "Distance between tab stop for rexx buffers.
+  "Column width display rendering of hard tab for rexx buffers.
 
 PEL stores this in `tab-width' when opening rexx  buffers.
 
 This does *NOT* control the indentation in rexx
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-rexx
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -10890,14 +10866,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-netrexx-tab-width 2
-  "Distance between tab stop for netrexx buffers.
+  "Column width display rendering of hard tab for netrexx buffers.
 
 PEL stores this in `tab-width' when opening netrexx  buffers.
 
 This does *NOT* control the indentation in netrexx
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-rexx
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -10935,14 +10910,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-ruby-tab-width 4
-  "Distance between tab stop for ruby buffers.
+  "Column width display rendering of hard tab for ruby buffers.
 
 PEL stores this in `tab-width' when opening ruby  buffers.
 
 This does *NOT* control the indentation in ruby
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-ruby
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -11098,7 +11072,7 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-sh-tab-width 2
-  "Distance between tab stop for sh buffers.
+  "Column width display rendering of hard tab for sh buffers.
 
 PEL stores this in `tab-width' when opening sh buffers.
 
@@ -11182,14 +11156,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-smalltalk-tab-width 4
-  "Distance between tab stop for smalltalk buffers.
+  "Column width display rendering of hard tab for smalltalk buffers.
 
 PEL stores this in `tab-width' when opening smalltalk buffers.
 
 This does *NOT* control the indentation in smalltalk
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-smalltalk
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -11229,14 +11202,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-swift-tab-width 4
-  "Distance between tab stop for swift buffers.
+  "Column width display rendering of hard tab for swift buffers.
 
 PEL stores this in `tab-width' when opening swift buffers.
 
 This does *NOT* control the indentation in swift
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-swift
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -11280,7 +11252,7 @@ EXPERIMENTAL: this may be removed once I know more about Tcl support."
   :safe 'pel-indent-valid-p)
 
 (defcustom pel-tcl-tab-width 4
-  "Distance between tab stop for Tcl buffers.
+  "Column width display rendering of hard tab for Tcl buffers.
 
 PEL stores this in `tab-width' when opening Tcl buffers.
 
@@ -11352,14 +11324,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-v-tab-width 4
-  "Distance between tab stop for v buffers.
+  "Column width display rendering of hard tab for v buffers.
 
 PEL stores this in `tab-width' when opening v  buffers.
 
 This does *NOT* control the indentation in v
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-v
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -11399,14 +11370,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-zig-tab-width 4
-  "Distance between tab stop for zig buffers.
+  "Column width display rendering of hard tab for zig buffers.
 
 PEL stores this in `tab-width' when opening zig buffers.
 
 This does *NOT* control the indentation in zig
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-zig
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -11893,14 +11863,13 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-yang-tab-width 2
-  "Distance between tab stop for yang buffers.
+  "Column width display rendering of hard tab for yang buffers.
 
 PEL stores this in `tab-width' when opening yang  buffers.
 
 This does *NOT* control the indentation in yang
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-yang
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -12174,13 +12143,105 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-make-mode-alist '(("\\.mak\\'" . makefile-nmake-mode))
-  "Alist of file name regexp to make major modes."
+  "Alist of file name regexp to make major modes.
+This list is added to the list Emacs already supports for Make."
   :group 'pel-pkg-for-make
   :type
   '(repeat
     (cons
      (string :tag "file pattern regex")
      (symbol :tag "major mode        "))))
+
+;; ---------------------------------------------------------------------------
+;; Support for Meson build system
+;; ------------------------------
+(defgroup pel-pkg-for-meson nil
+  "PEL support for meson software build systems."
+  :link `(url-link :tag "Meson PDF" ,(pel-pdf-file-url "pl-meson"))
+  :group 'pel-pkg-for-sw-build)
+
+(defcustom pel-use-meson-mode nil
+  "Control whether PEL provides support for meson file via meson-mode."
+  :link '(url-link :tag "meson-mode @ Github"
+                   "https://github.com/wentasah/meson-mode")
+  :group 'pel-pkg-for-meson
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-meson-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for meson buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-meson
+  :type '(repeat function))
+
+(defcustom pel-meson-tab-width 4
+  "Column width display rendering of hard tab for meson buffers.
+
+PEL stores this in `tab-width' when opening meson buffers.
+
+This does *NOT* control the indentation in meson files, it only controls
+the column width display rendering of hard tabs in buffers and tab stop
+positions for commands such as `tab-to-tab-stop'.
+
+Indentation in Meson build buffers controlled by `meson-indent-basic'."
+  :group 'pel-pkg-for-meson
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-meson-use-tabs nil
+  "Value of `indent-tabs-mode' for editing meson files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-meson
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
+;; Support for Ninja build back-end
+;; --------------------------------
+(defgroup pel-pkg-for-ninja nil
+  "PEL support for ninja software build systems."
+  :link `(url-link :tag "Ninja PDF" ,(pel-pdf-file-url "pl-ninja"))
+  :group 'pel-pkg-for-sw-build)
+
+(defcustom pel-use-ninja-mode nil
+  "Control whether PEL provides support for ninja file via ninja-mode."
+  :link '(url-link :tag "ninja-emacs @ Github"
+                   "https://github.com/ninja-build/ninja-emacs")
+  :group 'pel-pkg-for-ninja
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-ninja-mode :package-is :in-utils)
+
+(defcustom pel-ninja-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for ninja buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-ninja
+  :type '(repeat function))
+
+(defcustom pel-ninja-tab-width 2
+  "Column width display rendering of hard tab for ninja buffers.
+
+PEL stores this in `tab-width' when opening ninja buffers.
+
+This does *NOT* control the indentation in ninja files, it only controls
+the column width display rendering of hard tabs in buffers and tab stop
+positions for commands such as `tab-to-tab-stop'.
+
+Indentation in ninja buffers is controlled by `ninja-indent-offset'."
+  :group 'pel-pkg-for-ninja
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-ninja-use-tabs nil
+  "Value of `indent-tabs-mode' for editing ninja files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-ninja
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; Text Mode support

@@ -2206,7 +2206,9 @@ can't bind negative-argument to C-_ and M-_"
 ;; 0       - ssh-authorized-keys-mode
 ;; 1       - ssh-known-host-mode
 ;; 2       - Modula2
+;; 3       - Meson build system
 ;; 4       - M4
+;; 5       - Ninja build back-end
 ;; 7       - Seed7           - Extensible language.  Syntax evolved from Pascal/Modula/Ada
 ;; A       - Ada
 ;; C       - C++
@@ -2409,6 +2411,45 @@ can't bind negative-argument to C-_ and M-_"
         (define-key map (kbd "<f6> <down>")  'pel-make-outward-forward-conditional)
         (define-key map (kbd "<f6> <up>")    'pel-make-outward-backward-conditional)
         (define-key map (kbd "<f6> o")       'pel-make-conditionals-occur)))))
+
+;; - Meson build system
+;; --------------------
+(when pel-use-meson-mode
+  (define-pel-global-prefix pel:for-meson (kbd "<f11> SPC 3"))
+
+  (pel-ensure-package meson-mode from: melpa)
+  (add-to-list 'auto-mode-alist
+               '("/meson\\(\\.build\\|_options\\.txt\\|\\.options\\)\\'"
+                 . meson-mode))
+  (pel-eval-after-load meson-mode
+    (pel-config-major-mode meson pel:for-meson)))
+
+;; - Ninja build-backend
+;; ---------------------
+(when pel-use-ninja-mode
+  (define-pel-global-prefix pel:for-ninja (kbd "<f11> SPC 5"))
+
+  (pel-ensure-package ninja-mode from: melpa)
+  (add-to-list 'auto-mode-alist '("\\.ninja\\'" . ninja-mode))
+  (pel-eval-after-load ninja-mode
+    (require 'pel-sh-iedit)
+    (add-hook 'ninja-mode-hook 'pel-ninja-iedit-enhance)
+    (pel-config-major-mode ninja pel:for-ninja)))
+
+;; - Nix Package Manager Support
+;; -----------------------------
+(when pel-use-nix-mode
+  (pel-ensure-package nix-mode from: melpa)
+  (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
+  (pel-eval-after-load nix-mode
+    (defun pel-nix-help (&optional open-github-page-p)
+      "Open Nix PDF"
+      (interactive "P")
+      (pel-help-open-pdf "pl-nix" open-github-page-p)))
+  (pel-config-major-mode nix :no-f12-keys
+    (when (boundp 'nix-mode-map)
+      (let ((map nix-mode-map))
+        (define-key map (kbd "<f12> <f1>") 'pel-nix-help)))))
 
 ;; - Tup Built Tool Support
 ;; ------------------------
