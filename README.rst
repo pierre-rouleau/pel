@@ -18,15 +18,15 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/PEL_Managed_Packages-290-teal
+.. image:: https://img.shields.io/badge/PEL_Managed_Packages-292-teal
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-667-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-670-teal
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
-.. image:: https://img.shields.io/badge/PDF_Files-194-blue
+.. image:: https://img.shields.io/badge/PDF_Files-202-blue
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
@@ -51,9 +51,9 @@ or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 Essentially PEL:
 
 - extends the standard Emacs system and enhance the synergy in your use of Emacs,
-- adds a large number (667) of convenient commands and provides glue logic to
+- adds a large number (670) of convenient commands and provides glue logic to
   increase feature cohesion and simplify their use,
-- provides the ability to easily install, update a large set (261) of external
+- provides the ability to easily install, update a large set (292) of external
   packages from various sources:
 
   - elpa compliant sites: GNU elpa, MELPA,
@@ -88,7 +88,7 @@ Essentially PEL:
   available in graphical mode,
 - attempt to provide globally unified keyboard experience for a large set of
   commands across multiple major modes,
-- document Emacs features in several (194) topic oriented PDF tables which
+- document Emacs features in several (202) topic oriented PDF tables which
   provide and overview of the topic, list standard Emacs commands, PEL extra
   commands, their key bindings, links to the Emacs manual, to the external
   packages, to description articles and more.
@@ -305,7 +305,7 @@ various packages, etc...
 -----------------------------------------------------------------
 
 - In normal mode, PEL controls the download, installation, configuration and
-  activation of **290** *top-level* [#externp]_ external packages through the
+  activation of **292** *top-level* [#externp]_ external packages through the
   use of easy-to-setup customization user-options that have a name that start
   with the "``pel-use-``" prefix.
 
@@ -335,7 +335,7 @@ various packages, etc...
 ➣ Extends Emacs Documentation
 -----------------------------
 
-- PEL provides **194** `PDF topic-oriented reference sheets`_ [#doc]_ packed
+- PEL provides **202** `PDF topic-oriented reference sheets`_ [#doc]_ packed
   with symbol annotated, colour coded key bindings and command descriptions,
   with hyperlinks to Emacs manuals, external packages, articles and other
   useful references.
@@ -382,7 +382,7 @@ various packages, etc...
 --------------------------
 
 
-- PEL provides over 667 extra commands.  PEL commands extend the packages
+- PEL provides over 670 extra commands.  PEL commands extend the packages
   it supports and provides some of its own features.  Some commands are only
   available for a given OS, most are accessible in every OS.
 - PEL provides 10 specialized Hydra_ key bindings when the ``pel-use-hydra``
@@ -461,7 +461,7 @@ Notes
 
 
 .. [#externp] An external package may have dependencies.  The dependencies are also
-              installed. PEL currently provides access to 290 top-level external packages.
+              installed. PEL currently provides access to 292 top-level external packages.
               The actual number of packages is larger when counting their
               dependencies (currently 48 extra packages installed as dependencies).
               From within PEL execute the **pel-package-info**
@@ -547,7 +547,7 @@ Notes
               The command detects the key sequence and the context to
               identify which PEL PDF to open.
 
-              PEL currently implements 667 interactive commands.  Some are
+              PEL currently implements 670 interactive commands.  Some are
               always loaded.  Several are auto-loaded when needed.  This count
               excludes the number of template commands that are dynamically constructed
               and loaded only for major modes, such as Erlang, that support
