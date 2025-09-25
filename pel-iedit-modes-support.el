@@ -1,8 +1,8 @@
-;;; pel-sh-iedit.el --- Sh-mode iedit support.  -*- lexical-binding: t; -*-
+;;; pel-iedit-modes-support.el --- Improve iedit support for modes.  -*- lexical-binding: t; -*-
 
 ;; Created   : Monday, April 18 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-24 15:59:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-25 09:53:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,6 +31,7 @@
 ;; - `cperl-mode'
 ;; - `sh-mode'
 ;; - `tcl-mode'
+;; - `ninja-mode'
 ;;
 ;; It handles problems related to mis-handling of several syntactic elements
 ;; for the supported major modes, handling the problem described by the
@@ -51,16 +52,14 @@
 ;; character is identified as part of the '_' syntax preventing detection of
 ;; symbols in strings that are prefixed or followed by the ':' character.
 ;;
-;; To correct the issue, call `pel-sh-iedit-enhance' when sh-mode starts when
-;; iedit is available.
+;; To correct the issue for a given mode, call the `pel-iedit-enhance-MODE'
+;; function (with MODE replaced by the proper mode name) when the mode starts
+;; and iedit is available.  The best way to do that is to schedule its call
+;; via a hook.
 ;;
-
-;; [:todo 2025-01-10, by Pierre Rouleau: Future Refactoring]
-;;
-;; This file was originally written to support only `sh-mode' but has evolved
-;; to support other modes.  Ideally it would be renamed to reflect its true
-;; nature but I'm leaving this for the future, if I ever refactor PEL in major
-;; ways.
+;; For example, for cperl you could add the function to the cperl mode hook
+;; with:
+;;        (add-hook 'cperl-mode-hook 'pel-iedit-enhance-cperl)
 ;;
 
 ;;; --------------------------------------------------------------------------
@@ -92,7 +91,7 @@
       ;; return iedit function result
       result)))
 
-(defun pel-cperl-iedit-enhance ()
+(defun pel-iedit-enhance-cperl ()
   "Fix cperl syntax table during iedit to allow proper parsing in `cperl-mode'."
   (advice-add 'iedit-default-occurrence :around #'pel--fix-cperl-syntax-for-iedit)
   (advice-add 'iedit-start :around #'pel--fix-cperl-syntax-for-iedit)
@@ -128,7 +127,7 @@
       ;; return iedit function result
       result)))
 
-(defun pel-sh-iedit-enhance ()
+(defun pel-iedit-enhance-sh ()
   "Fix sh syntax table during iedit to allow proper parsing in `sh-mode'."
   (advice-add 'iedit-default-occurrence :around #'pel--fix-sh-syntax-for-iedit)
   (advice-add 'iedit-start :around #'pel--fix-sh-syntax-for-iedit)
@@ -156,7 +155,7 @@
       ;; return iedit function result
       result)))
 
-(defun pel-tcl-iedit-enhance ()
+(defun pel-iedit-enhance-tcl ()
   "Fix tcl syntax table during iedit to allow proper parsing in `tcl-mode'."
   (advice-add 'iedit-default-occurrence :around #'pel--fix-tcl-syntax-for-iedit)
   (advice-add 'iedit-start :around #'pel--fix-tcl-syntax-for-iedit)
@@ -188,13 +187,13 @@
       ;; return iedit function result
       result)))
 
-(defun pel-ninja-iedit-enhance ()
+(defun pel-iedit-enhance-ninja ()
   "Fix ninja syntax table during iedit to allow proper parsing in `ninja-mode'."
   (advice-add 'iedit-default-occurrence :around #'pel--fix-ninja-syntax-for-iedit)
   (advice-add 'iedit-start :around #'pel--fix-ninja-syntax-for-iedit)
   (advice-add 'iedit-done  :around #'pel--restore-ninja-syntax))
 
 ;;; --------------------------------------------------------------------------
-(provide 'pel-sh-iedit)
+(provide 'pel-iedit-modes-support)
 
-;;; pel-sh-iedit.el ends here
+;;; pel-iedit-modes-support.el ends here

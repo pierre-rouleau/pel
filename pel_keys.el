@@ -1458,11 +1458,11 @@ Your version of Emacs does not support dynamic module.")))
     (pel-spell-iedit-check-conflict)
     (pel-add-keys-to-iedit-mode))
   (pel-eval-after-load sh-script
-    (require 'pel-sh-iedit)
-    (add-hook 'sh-mode-hook 'pel-sh-iedit-enhance))
+    (require 'pel-iedit-modes-support)
+    (add-hook 'sh-mode-hook 'pel-iedit-enhance-sh))
   (pel-eval-after-load tcl
-    (require 'pel-sh-iedit)
-    (add-hook 'tcl-mode-hook 'pel-tcl-iedit-enhance)))
+    (require 'pel-iedit-modes-support)
+    (add-hook 'tcl-mode-hook 'pel-iedit-enhance-tcl)))
 
 ;; - popup-kill-ring
 ;; -----------------
@@ -2432,8 +2432,8 @@ can't bind negative-argument to C-_ and M-_"
   (pel-ensure-package ninja-mode from: melpa)
   (add-to-list 'auto-mode-alist '("\\.ninja\\'" . ninja-mode))
   (pel-eval-after-load ninja-mode
-    (require 'pel-sh-iedit)
-    (add-hook 'ninja-mode-hook 'pel-ninja-iedit-enhance)
+    (require 'pel-iedit-modes-support)
+    (add-hook 'ninja-mode-hook 'pel-iedit-enhance-ninja)
     (pel-config-major-mode ninja pel:for-ninja)))
 
 ;; - Nix Package Manager Support
@@ -5020,8 +5020,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;; Enhance iedit-mode for cperl-mode
     (when pel-use-iedit
       (pel-eval-after-load cperl-mode
-        (require 'pel-sh-iedit)
-        (add-hook 'cperl-mode-hook 'pel-cperl-iedit-enhance)))
+        (require 'pel-iedit-modes-support)
+        (add-hook 'cperl-mode-hook 'pel-iedit-enhance-cperl)))
 
     (when pel-use-perl-live-coding
       (pel-install-github-files "pierre-rouleau/perl-live/master"

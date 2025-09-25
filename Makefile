@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-09-24 00:16:41 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-09-25 09:54:15 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -243,7 +243,7 @@ EL_FILES := pel--base.el \
 		pel-server.el \
 		pel-sh.el \
 		pel-shell.el \
-		pel-sh-iedit.el \
+		pel-iedit-modes-support.el \
 		pel-skels.el \
 		pel-skels-generic.el \
 		pel-skels-c.el \
