@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, April 18 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-25 09:53:13 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-25 15:42:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -72,6 +72,9 @@
 
 ;; -- Perl Editing
 ;;
+;; For something like:
+;;  'log4perl.logger.Doxygen::Filter::Perl::_ChangeState'
+;; allow selection of the word 'Doxygen' or 'Filter'.
 
 (defun pel--fix-cperl-syntax-for-iedit (function &rest args)
   "Activate iedit extension for the cperl-mode."
@@ -92,7 +95,10 @@
       result)))
 
 (defun pel-iedit-enhance-cperl ()
-  "Fix cperl syntax table during iedit to allow proper parsing in `cperl-mode'."
+  "Improve `cperl-mode' syntax table during iedit search.
+
+Treat the colon character as punctuation to allow changing
+only one portion of a Perl symbol separated by \"::\"."
   (advice-add 'iedit-default-occurrence :around #'pel--fix-cperl-syntax-for-iedit)
   (advice-add 'iedit-start :around #'pel--fix-cperl-syntax-for-iedit)
   (advice-add 'iedit-done  :around #'pel--restore-cperl-syntax))
@@ -101,41 +107,46 @@
 ;; ---------------------------------------------------------------------------
 ;; -- Unix Shell Mode editing
 ;;
-(defun pel--fix-sh-syntax-for-iedit (function &rest args)
-  "Activate iedit extension for the sh-mode."
-  (when (boundp 'sh-mode-syntax-table)
-    ;; Modify the sh syntax table during text search operation.
-    (modify-syntax-entry ?/ "." sh-mode-syntax-table)
-    (modify-syntax-entry ?: "." sh-mode-syntax-table)
-    (modify-syntax-entry ?. "." sh-mode-syntax-table)
-    (modify-syntax-entry ?+ "." sh-mode-syntax-table)
+;; Note: code disabled since it seems that iedit now works fine in sh-mode.
+;;       Kept commented out for now.
 
-    ;; Then execute iedit operation.  Return its value
-    (apply function args)))
-
-(defun pel--restore-sh-syntax (function &rest args)
-  "Deactivate iedit extension for the sh-mode."
-  (when (boundp 'sh-mode-syntax-table)
-    ;; Execute iedit operation, remember its result.
-    (let ((result (apply function args)))
-      ;; Restore sh syntax table
-      (modify-syntax-entry ?/ "_" sh-mode-syntax-table)
-      (modify-syntax-entry ?: "_" sh-mode-syntax-table)
-      (modify-syntax-entry ?. "_" sh-mode-syntax-table)
-      (modify-syntax-entry ?+ "_" sh-mode-syntax-table)
-
-      ;; return iedit function result
-      result)))
-
-(defun pel-iedit-enhance-sh ()
-  "Fix sh syntax table during iedit to allow proper parsing in `sh-mode'."
-  (advice-add 'iedit-default-occurrence :around #'pel--fix-sh-syntax-for-iedit)
-  (advice-add 'iedit-start :around #'pel--fix-sh-syntax-for-iedit)
-  (advice-add 'iedit-done  :around #'pel--restore-sh-syntax))
+;; (defun pel--fix-sh-syntax-for-iedit (function &rest args)
+;;   "Activate iedit extension for the sh-mode."
+;;   (when (boundp 'sh-mode-syntax-table)
+;;     ;; Modify the sh syntax table during text search operation.
+;;     (modify-syntax-entry ?/ "." sh-mode-syntax-table)
+;;     (modify-syntax-entry ?: "." sh-mode-syntax-table)
+;;     (modify-syntax-entry ?. "." sh-mode-syntax-table)
+;;     (modify-syntax-entry ?+ "." sh-mode-syntax-table)
+;;
+;;     ;; Then execute iedit operation.  Return its value
+;;     (apply function args)))
+;;
+;; (defun pel--restore-sh-syntax (function &rest args)
+;;   "Deactivate iedit extension for the sh-mode."
+;;   (when (boundp 'sh-mode-syntax-table)
+;;     ;; Execute iedit operation, remember its result.
+;;     (let ((result (apply function args)))
+;;       ;; Restore sh syntax table
+;;       (modify-syntax-entry ?/ "_" sh-mode-syntax-table)
+;;       (modify-syntax-entry ?: "_" sh-mode-syntax-table)
+;;       (modify-syntax-entry ?. "_" sh-mode-syntax-table)
+;;       (modify-syntax-entry ?+ "_" sh-mode-syntax-table)
+;;
+;;       ;; return iedit function result
+;;       result)))
+;;
+;; (defun pel-iedit-enhance-sh ()
+;;   "Fix sh syntax table during iedit to allow proper parsing in `sh-mode'."
+;;   (advice-add 'iedit-default-occurrence :around #'pel--fix-sh-syntax-for-iedit)
+;;   (advice-add 'iedit-start :around #'pel--fix-sh-syntax-for-iedit)
+;;   (advice-add 'iedit-done  :around #'pel--restore-sh-syntax))
 
 ;; ---------------------------------------------------------------------------
 ;; -- TCL Editing
 ;;
+;; In tcl-mode buffers,  selecting 'debug' does not match inside '{$debug}'.
+;; Fix it my changing the syntax of character '$' to punctuation.
 
 (defun pel--fix-tcl-syntax-for-iedit (function &rest args)
   "Activate iedit extension for the tcl-mode."

@@ -1458,8 +1458,11 @@ Your version of Emacs does not support dynamic module.")))
     (pel-spell-iedit-check-conflict)
     (pel-add-keys-to-iedit-mode))
   (pel-eval-after-load sh-script
-    (require 'pel-iedit-modes-support)
-    (add-hook 'sh-mode-hook 'pel-iedit-enhance-sh))
+    ;; iedit seems to work fine in sh-mode now.
+    ;; [:todo 2025-09-25, by Pierre Rouleau: remove after longer test period]
+    ;; (require 'pel-iedit-modes-support)
+    ;; (add-hook 'sh-mode-hook 'pel-iedit-enhance-sh)
+    )
   (pel-eval-after-load tcl
     (require 'pel-iedit-modes-support)
     (add-hook 'tcl-mode-hook 'pel-iedit-enhance-tcl)))
