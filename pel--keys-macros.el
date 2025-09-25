@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-20 11:11:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-09-24 21:16:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -187,7 +187,7 @@
 ;;       of a row to be a list of key sequences.
 ;;       This will help reduce duplication when several key sequences lead
 ;;       to the same data.
-(defconst pel--prefix-to-topic-alist
+(defconst pel---prefix-to-topic-alist-1
   ;; key sequence    F1: Help PDF fname F2: PEL custom group F3: lib custom
   ;;                                                             group
   ;; ------------    ------------------ -------------------- -----------------
@@ -509,7 +509,13 @@
     ([f11 ?m]        "cursor"           pel-pkg-for-cursor      (cursor
                                                                  display
                                                                  multiple-cursors))
-    ([f11 ?o]        "sorting"          nil)
+    )
+  "Map from key prefix array to topic string.
+The topic string correspond to the base name of the PDF file
+stored inside the doc/pdf directory.")
+
+(defconst pel---prefix-to-topic-alist-2
+  `(([f11 ?o]        "sorting"          nil)
     ([f11 ?r]        "registers"        nil)
     ([f11 ?s]        "search-replace"   pel-pkg-for-search      (isearch
                                                                  anzu
@@ -648,10 +654,10 @@
     ([f11 32 27 ?y]         "yaml"             pel-pkg-for-yaml    ,pel--yaml-groups)
 
     (,(kbd "<f11> SPC M-Y") "yang"      pel-pkg-for-spec-definition)
-    ([f11 32 27 ?Y]         "yang"      pel-pkg-for-spec-definition))
-  "Map from key prefix array to topic string.
-The topic string correspond to the base name of the PDF file
-stored inside the doc/pdf directory.")
+    ([f11 32 27 ?Y]         "yang"      pel-pkg-for-spec-definition)))
+
+(defconst pel--prefix-to-topic-alist
+  (append pel---prefix-to-topic-alist-1 pel---prefix-to-topic-alist-2))
 
 ;; PDF files not identified by the key sequences above
 ;;   "autosave-backup"
@@ -1543,6 +1549,10 @@ No special keys are bound in this map by the macro."
      (define-prefix-command (quote ,prefix))
      (global-set-key ,key (quote ,prefix))))
 
+(defun pel--get-kte (keyseq)
+  ""
+  (assoc keyseq pel--prefix-to-topic-alist))
+
 (defmacro define-pel-global-prefix (prefix key)
   "Define a PREFIX key name for KEY sequence on the global key map.
 If the variable `pel--prefix-to-topic-alist' identifies the
@@ -1553,8 +1563,8 @@ KEY sequence then create function bindings under the PREFIX
   group identified in the entry.
 - Bind f3 to the function `pel-customize-library' if there are library
   customization group(s) in the entry."
-  (let* ((keyseq   (eval key))  ; key is a kbd expression.
-         (kte      (assoc keyseq pel--prefix-to-topic-alist))
+  (let* ((keyseq   (eval key))          ; key is a kbd expression.
+         (kte      (pel--get-kte keyseq))
          (with-f1  (pel--kte-pdfs kte))
          (with-f2  (pel--kte-pel-groups kte))
          (with-f3  (pel--kte-lib-groups kte))
