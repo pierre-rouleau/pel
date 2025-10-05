@@ -763,6 +763,779 @@ re-execute `pel-init' again to activate them.
 ;;;;;;  0 0 0))
 
 ;;;***
+
+
+;;; Generated autoloads from pel.el
+
+(autoload 'pel-init "pel" "\
+Initialize PEL, map its keys, autoload its functions.
+
+If CACHED-ABBREV-FILE-NAME is non-nil it should hold a the value
+the name of the abbreviation file, the name that the variable
+`abbrev-file-name' had before it was changed in the init file.
+This is done to delay the loading of the abbreviation file, speeding
+up Emacs initialization time when the file is big.
+
+Only the PEL features activated via the `pel-use-...' customization variables
+from the  \"Pel Package Use\" subgroup of the \"Pel\" group are loaded and the
+respective PEL keys are mapped.  The others are not.
+
+If you need to activate new features, use \\[customize] to customize variables
+inside the \"Pel\" group.  The \"Pel Package Use\" subgroup contains the
+customization variables that control PEL activated features.
+
+You can customize PEL feature only after execution of the `pel-init' command.
+After a customization change its best to restart Emacs, however if your
+modifications simply activate new features, you may be able to simply
+re-execute `pel-init' again to activate them.
+
+(fn &optional CACHED-ABBREV-FILE-NAME)" t)
+(register-definition-prefixes "pel" '("pel--cached-abbrev-file-name"))
+
+
+;;; Generated autoloads from pel--base.el
+
+(register-definition-prefixes "pel--base" '("pel"))
+
+
+;;; Generated autoloads from pel--keys-macros.el
+
+(register-definition-prefixes "pel--keys-macros" '("define-pel-" "pel-"))
+
+
+;;; Generated autoloads from pel--macros.el
+
+(register-definition-prefixes "pel--macros" '("pel-" "while-n"))
+
+
+;;; Generated autoloads from pel--options.el
+
+(register-definition-prefixes "pel--options" '("pel-"))
+
+
+;;; Generated autoloads from pel--syntax-macros.el
+
+(register-definition-prefixes "pel--syntax-macros" '("pel-"))
+
+
+;;; Generated autoloads from pel-align.el
+
+(register-definition-prefixes "pel-align" '("pel-"))
+
+
+;;; Generated autoloads from pel-autoload.el
+
+(register-definition-prefixes "pel-autoload" '("pel-"))
+
+
+;;; Generated autoloads from pel-benchmark.el
+
+(register-definition-prefixes "pel-benchmark" '("pel-"))
+
+
+;;; Generated autoloads from pel-bookmark.el
+
+(register-definition-prefixes "pel-bookmark" '("pel-bookmark-"))
+
+
+;;; Generated autoloads from pel-browse.el
+
+(register-definition-prefixes "pel-browse" '("pel-"))
+
+
+;;; Generated autoloads from pel-buffer.el
+
+(register-definition-prefixes "pel-buffer" '("pel-"))
+
+
+;;; Generated autoloads from pel-c-comment.el
+
+(register-definition-prefixes "pel-c-comment" '("pel-"))
+
+
+;;; Generated autoloads from pel-c-preproc.el
+
+(register-definition-prefixes "pel-c-preproc" '("pel-"))
+
+
+;;; Generated autoloads from pel-c-utils.el
+
+(register-definition-prefixes "pel-c-utils" '("pel-"))
+
+
+;;; Generated autoloads from pel-cc.el
+
+(register-definition-prefixes "pel-cc" '("pel-cc-"))
+
+
+;;; Generated autoloads from pel-cc-find.el
+
+(register-definition-prefixes "pel-cc-find" '("pel-"))
+
+
+;;; Generated autoloads from pel-cc-linux-kernel.el
+
+(register-definition-prefixes "pel-cc-linux-kernel" '("pel-"))
+
+
+;;; Generated autoloads from pel-cc-navigate.el
+
+(register-definition-prefixes "pel-cc-navigate" '("pel-"))
+
+
+;;; Generated autoloads from pel-ccp.el
+
+(register-definition-prefixes "pel-ccp" '("pel-"))
+
+
+;;; Generated autoloads from pel-comint.el
+
+(register-definition-prefixes "pel-comint" '("pel-comint-"))
+
+
+;;; Generated autoloads from pel-comment.el
+
+(register-definition-prefixes "pel-comment" '("pel-"))
+
+
+;;; Generated autoloads from pel-comment-adorn.el
+
+(register-definition-prefixes "pel-comment-adorn" '("pel-"))
+
+
+;;; Generated autoloads from pel-commonlisp.el
+
+(register-definition-prefixes "pel-commonlisp" '("pel-cl-"))
+
+
+;;; Generated autoloads from pel-comp.el
+
+(register-definition-prefixes "pel-comp" '("pel-"))
+
+
+;;; Generated autoloads from pel-completion.el
+
+(register-definition-prefixes "pel-completion" '("pel-"))
+
+
+;;; Generated autoloads from pel-cpp.el
+
+(register-definition-prefixes "pel-cpp" '("pel-"))
+
+
+;;; Generated autoloads from pel-cua.el
+
+(register-definition-prefixes "pel-cua" '("pel-cua-"))
+
+
+;;; Generated autoloads from pel-cursor.el
+
+(register-definition-prefixes "pel-cursor" '("pel-"))
+
+
+;;; Generated autoloads from pel-custom.el
+
+(register-definition-prefixes "pel-custom" '("pel-"))
+
+
+;;; Generated autoloads from pel-d.el
+
+(register-definition-prefixes "pel-d" '("pel-d-insert-shebang-line"))
+
+
+;;; Generated autoloads from pel-diff.el
+
+(register-definition-prefixes "pel-diff" '("pel"))
+
+
+;;; Generated autoloads from pel-dtreplace.el
+
+(register-definition-prefixes "pel-dtreplace" '("pel-"))
+
+
+;;; Generated autoloads from pel-elisp.el
+
+(register-definition-prefixes "pel-elisp" '("pel-"))
+
+
+;;; Generated autoloads from pel-elisp-analyze.el
+
+(register-definition-prefixes "pel-elisp-analyze" '("pel-run-ert"))
+
+
+;;; Generated autoloads from pel-elisp-eval.el
+
+(register-definition-prefixes "pel-elisp-eval" '("pel-eval-last-sexp-and-copy"))
+
+
+;;; Generated autoloads from pel-elpa.el
+
+(register-definition-prefixes "pel-elpa" '("pel-el"))
+
+
+;;; Generated autoloads from pel-emacs.el
+
+(register-definition-prefixes "pel-emacs" '("pel-"))
+
+
+;;; Generated autoloads from pel-emacs-analyze.el
+
+(register-definition-prefixes "pel-emacs-analyze" '("pel-show-lisp-control-variables"))
+
+
+;;; Generated autoloads from pel-erlang.el
+
+(register-definition-prefixes "pel-erlang" '("pel-"))
+
+
+;;; Generated autoloads from pel-ert.el
+
+(register-definition-prefixes "pel-ert" '("pel-"))
+
+
+;;; Generated autoloads from pel-etags.el
+
+(register-definition-prefixes "pel-etags" '("pel-file-or-compressed-file-for"))
+
+
+;;; Generated autoloads from pel-face-ut.el
+
+(register-definition-prefixes "pel-face-ut" '("pel-"))
+
+
+;;; Generated autoloads from pel-ffind.el
+
+(register-definition-prefixes "pel-ffind" '("pel-"))
+
+
+;;; Generated autoloads from pel-ffind-inpath.el
+
+(register-definition-prefixes "pel-ffind-inpath" '("pel-ffind-inpath"))
+
+
+;;; Generated autoloads from pel-file.el
+
+(register-definition-prefixes "pel-file" '("pel-"))
+
+
+;;; Generated autoloads from pel-file-recent.el
+
+(register-definition-prefixes "pel-file-recent" '("ido-recentf-open" "pel-"))
+
+
+;;; Generated autoloads from pel-filedir.el
+
+(register-definition-prefixes "pel-filedir" '("pel-"))
+
+
+;;; Generated autoloads from pel-filex.el
+
+(register-definition-prefixes "pel-filex" '("pel-open-"))
+
+
+;;; Generated autoloads from pel-fill.el
+
+(register-definition-prefixes "pel-fill" '("pel-"))
+
+
+;;; Generated autoloads from pel-font.el
+
+(register-definition-prefixes "pel-font" '("pel-font-"))
+
+
+;;; Generated autoloads from pel-frame-control.el
+
+(register-definition-prefixes "pel-frame-control" '("pel-"))
+
+
+;;; Generated autoloads from pel-fs.el
+
+(register-definition-prefixes "pel-fs" '("pel-"))
+
+
+;;; Generated autoloads from pel-go.el
+
+(register-definition-prefixes "pel-go" '("pel-go-"))
+
+
+;;; Generated autoloads from pel-goto-addr.el
+
+(register-definition-prefixes "pel-goto-addr" '("pel-goto-"))
+
+
+;;; Generated autoloads from pel-graphviz-dot.el
+
+(register-definition-prefixes "pel-graphviz-dot" '("pel-"))
+
+
+;;; Generated autoloads from pel-hash.el
+
+(register-definition-prefixes "pel-hash" '("pel-"))
+
+
+;;; Generated autoloads from pel-help.el
+
+(register-definition-prefixes "pel-help" '("pel-"))
+
+
+;;; Generated autoloads from pel-hex.el
+
+(register-definition-prefixes "pel-hex" '("pel-bibyte"))
+
+
+;;; Generated autoloads from pel-hide-docstring.el
+
+(register-definition-prefixes "pel-hide-docstring" '("pel-"))
+
+
+;;; Generated autoloads from pel-hideshow.el
+
+(register-definition-prefixes "pel-hideshow" '("pel-"))
+
+
+;;; Generated autoloads from pel-highlight.el
+
+(register-definition-prefixes "pel-highlight" '("pel-"))
+
+
+;;; Generated autoloads from pel-ibuffer.el
+
+(register-definition-prefixes "pel-ibuffer" '("dirname" "get-all-buffer-directories" "ibuffer-set-filter-groups-by-directory" "pel-map-ibuffer-mode-filters"))
+
+
+;;; Generated autoloads from pel-ido.el
+
+(register-definition-prefixes "pel-ido" '("pel-"))
+
+
+;;; Generated autoloads from pel-iedit.el
+
+(register-definition-prefixes "pel-iedit" '("pel-"))
+
+
+;;; Generated autoloads from pel-iedit-modes-support.el
+
+(register-definition-prefixes "pel-iedit-modes-support" '("pel-"))
+
+
+;;; Generated autoloads from pel-imenu.el
+
+(register-definition-prefixes "pel-imenu" '("pel-"))
+
+
+;;; Generated autoloads from pel-imenu-dbg.el
+
+(register-definition-prefixes "pel-imenu-dbg" '("pel-imenu-print-vars"))
+
+
+;;; Generated autoloads from pel-imenu-ido.el
+
+(register-definition-prefixes "pel-imenu-ido" '("pel-"))
+
+
+;;; Generated autoloads from pel-indent.el
+
+(register-definition-prefixes "pel-indent" '("pel-"))
+
+
+;;; Generated autoloads from pel-ini.el
+
+(register-definition-prefixes "pel-ini" '("pel-ini-"))
+
+
+;;; Generated autoloads from pel-itemize.el
+
+(register-definition-prefixes "pel-itemize" '("pel-itemize-lines"))
+
+
+;;; Generated autoloads from pel-kbmacros.el
+
+(register-definition-prefixes "pel-kbmacros" '("pel-"))
+
+
+;;; Generated autoloads from pel-key-chord.el
+
+(register-definition-prefixes "pel-key-chord" '("pel-"))
+
+
+;;; Generated autoloads from pel-lfe.el
+
+(register-definition-prefixes "pel-lfe" '("pel-lfe-eval-buffer"))
+
+
+;;; Generated autoloads from pel-line-control.el
+
+(register-definition-prefixes "pel-line-control" '("pel-"))
+
+
+;;; Generated autoloads from pel-lisp.el
+
+(register-definition-prefixes "pel-lisp" '("pel-"))
+
+
+;;; Generated autoloads from pel-lispy.el
+
+(register-definition-prefixes "pel-lispy" '("pel-"))
+
+
+;;; Generated autoloads from pel-list.el
+
+(register-definition-prefixes "pel-list" '("pel-"))
+
+
+;;; Generated autoloads from pel-lsp.el
+
+(register-definition-prefixes "pel-lsp" '("pel-toggle-lsp-"))
+
+
+;;; Generated autoloads from pel-lua.el
+
+(register-definition-prefixes "pel-lua" '("pel-lua-insert-shebang-line"))
+
+
+;;; Generated autoloads from pel-make.el
+
+(register-definition-prefixes "pel-make" '("makefile-nmake-" "pel-"))
+
+
+;;; Generated autoloads from pel-man.el
+
+(register-definition-prefixes "pel-man" '("pel-man-at-point"))
+
+
+;;; Generated autoloads from pel-mark.el
+
+(register-definition-prefixes "pel-mark" '("pel-"))
+
+
+;;; Generated autoloads from pel-navigate.el
+
+(register-definition-prefixes "pel-navigate" '("pel-"))
+
+
+;;; Generated autoloads from pel-nim.el
+
+(register-definition-prefixes "pel-nim" '("pel-nim-insert-shebang-line"))
+
+
+;;; Generated autoloads from pel-numkpad.el
+
+(register-definition-prefixes "pel-numkpad" '("pel-"))
+
+
+;;; Generated autoloads from pel-open.el
+
+(register-definition-prefixes "pel-open" '("pel-"))
+
+
+;;; Generated autoloads from pel-outline.el
+
+(register-definition-prefixes "pel-outline" '("pel-outline-print-vars"))
+
+
+;;; Generated autoloads from pel-package.el
+
+(register-definition-prefixes "pel-package" '("loaded-file-name" "pel-"))
+
+
+;;; Generated autoloads from pel-pathmng.el
+
+(register-definition-prefixes "pel-pathmng" '("pel-"))
+
+
+;;; Generated autoloads from pel-perl.el
+
+(register-definition-prefixes "pel-perl" '("pel-perl-"))
+
+
+;;; Generated autoloads from pel-pike.el
+
+(register-definition-prefixes "pel-pike" '("pel-pike-"))
+
+
+;;; Generated autoloads from pel-plantuml.el
+
+(register-definition-prefixes "pel-plantuml" '("pel-"))
+
+
+;;; Generated autoloads from pel-pp.el
+
+(register-definition-prefixes "pel-pp" '("pel-pp-"))
+
+
+;;; Generated autoloads from pel-process.el
+
+(register-definition-prefixes "pel-process" '("pel-process-"))
+
+
+;;; Generated autoloads from pel-prompt.el
+
+(register-definition-prefixes "pel-prompt" '("pel-"))
+
+
+;;; Generated autoloads from pel-psw.el
+
+(register-definition-prefixes "pel-psw" '("pel-psw-navigate-files"))
+
+
+;;; Generated autoloads from pel-python.el
+
+(register-definition-prefixes "pel-python" '("pel-python-insert-shebang-line"))
+
+
+;;; Generated autoloads from pel-read.el
+
+(register-definition-prefixes "pel-read" '("pel-"))
+
+
+;;; Generated autoloads from pel-regexp.el
+
+(register-definition-prefixes "pel-regexp" '("pel-insert-"))
+
+
+;;; Generated autoloads from pel-register.el
+
+(register-definition-prefixes "pel-register" '("pel-"))
+
+
+;;; Generated autoloads from pel-reload.el
+
+(register-definition-prefixes "pel-reload" '("pel-"))
+
+
+;;; Generated autoloads from pel-rpm-spec.el
+
+(register-definition-prefixes "pel-rpm-spec" '("pel-"))
+
+
+;;; Generated autoloads from pel-rst.el
+
+(register-definition-prefixes "pel-rst" '("pel-"))
+
+
+;;; Generated autoloads from pel-ruby.el
+
+(register-definition-prefixes "pel-ruby" '("pel-ruby-insert-shebang-line"))
+
+
+;;; Generated autoloads from pel-scheme.el
+
+(register-definition-prefixes "pel-scheme" '("pel-"))
+
+
+;;; Generated autoloads from pel-screen.el
+
+(register-definition-prefixes "pel-screen" '("pel-screen-log-fix-rendering"))
+
+
+;;; Generated autoloads from pel-scroll.el
+
+(register-definition-prefixes "pel-scroll" '("pel-"))
+
+
+;;; Generated autoloads from pel-search.el
+
+(register-definition-prefixes "pel-search" '("pel-"))
+
+
+;;; Generated autoloads from pel-search-regexp.el
+
+(register-definition-prefixes "pel-search-regexp" '("pel-"))
+
+
+;;; Generated autoloads from pel-seed7.el
+
+(register-definition-prefixes "pel-seed7" '("pel-seed7-insert-shebang-line"))
+
+
+;;; Generated autoloads from pel-seq.el
+
+(register-definition-prefixes "pel-seq" '("pel-all-fboundp"))
+
+
+;;; Generated autoloads from pel-server.el
+
+(register-definition-prefixes "pel-server" '("pel-shutdown-server"))
+
+
+;;; Generated autoloads from pel-setup.el
+
+(register-definition-prefixes "pel-setup" '("pel-"))
+
+
+;;; Generated autoloads from pel-setup-27.el
+
+(register-definition-prefixes "pel-setup-27" '("pel-"))
+
+
+;;; Generated autoloads from pel-setup-base.el
+
+(register-definition-prefixes "pel-setup-base" '("pel-"))
+
+
+;;; Generated autoloads from pel-sh.el
+
+(register-definition-prefixes "pel-sh" '("pel-"))
+
+
+;;; Generated autoloads from pel-shell.el
+
+(register-definition-prefixes "pel-shell" '("pel-shell"))
+
+
+;;; Generated autoloads from pel-skels.el
+
+(register-definition-prefixes "pel-skels" '("pel-"))
+
+
+;;; Generated autoloads from pel-skels-c.el
+
+(register-definition-prefixes "pel-skels-c" '("pel-"))
+
+
+;;; Generated autoloads from pel-skels-clisp.el
+
+(register-definition-prefixes "pel-skels-clisp" '("pel-"))
+
+
+;;; Generated autoloads from pel-skels-cpp.el
+
+(register-definition-prefixes "pel-skels-cpp" '("pel-"))
+
+
+;;; Generated autoloads from pel-skels-elisp.el
+
+(register-definition-prefixes "pel-skels-elisp" '("pel-"))
+
+
+;;; Generated autoloads from pel-skels-erlang.el
+
+(register-definition-prefixes "pel-skels-erlang" '("pel-"))
+
+
+;;; Generated autoloads from pel-skels-generic.el
+
+(register-definition-prefixes "pel-skels-generic" '("pel-"))
+
+
+;;; Generated autoloads from pel-skels-rst.el
+
+(register-definition-prefixes "pel-skels-rst" '("pel-"))
+
+
+;;; Generated autoloads from pel-smartparens.el
+
+(register-definition-prefixes "pel-smartparens" '("pel-"))
+
+
+;;; Generated autoloads from pel-speedbar.el
+
+(register-definition-prefixes "pel-speedbar" '("pel-"))
+
+
+;;; Generated autoloads from pel-spell.el
+
+(register-definition-prefixes "pel-spell" '("pel-"))
+
+
+;;; Generated autoloads from pel-spell-iedit.el
+
+(register-definition-prefixes "pel-spell-iedit" '("pel-spell-iedit-check-conflict"))
+
+
+;;; Generated autoloads from pel-sudo-edit.el
+
+(register-definition-prefixes "pel-sudo-edit" '("pel-"))
+
+
+;;; Generated autoloads from pel-syntax.el
+
+(register-definition-prefixes "pel-syntax" '("pel-"))
+
+
+;;; Generated autoloads from pel-tcl.el
+
+(register-definition-prefixes "pel-tcl" '("pel-tcl-"))
+
+
+;;; Generated autoloads from pel-tempo.el
+
+(register-definition-prefixes "pel-tempo" '("pel-tempo-"))
+
+
+;;; Generated autoloads from pel-text-insert.el
+
+(register-definition-prefixes "pel-text-insert" '("pel-"))
+
+
+;;; Generated autoloads from pel-text-transform.el
+
+(register-definition-prefixes "pel-text-transform" '("pel-"))
+
+
+;;; Generated autoloads from pel-time.el
+
+(register-definition-prefixes "pel-time" '("pel-"))
+
+
+;;; Generated autoloads from pel-timestamp.el
+
+(register-definition-prefixes "pel-timestamp" '("pel-"))
+
+
+;;; Generated autoloads from pel-undo.el
+
+(register-definition-prefixes "pel-undo" '("pel-"))
+
+
+;;; Generated autoloads from pel-uuid.el
+
+(register-definition-prefixes "pel-uuid" '("pel-"))
+
+
+;;; Generated autoloads from pel-vc.el
+
+(register-definition-prefixes "pel-vc" '("pel-vc-"))
+
+
+;;; Generated autoloads from pel-vcs.el
+
+(register-definition-prefixes "pel-vcs" '("pel-"))
+
+
+;;; Generated autoloads from pel-whitespace.el
+
+(register-definition-prefixes "pel-whitespace" '("pel-"))
+
+
+;;; Generated autoloads from pel-window.el
+
+(register-definition-prefixes "pel-window" '("pel-"))
+
+
+;;; Generated autoloads from pel-xr.el
+
+(register-definition-prefixes "pel-xr" '("pel-"))
+
+
+;;; Generated autoloads from pel-xref.el
+
+(register-definition-prefixes "pel-xref" '("pel-"))
+
+
+;;; Generated autoloads from pel-yang.el
+
+(register-definition-prefixes "pel-yang" '("pel-yang-"))
+
+
+;;; Generated autoloads from pel__hydra.el
+
+(register-definition-prefixes "pel__hydra" '("pel-"))
+
+
+;;; Generated autoloads from pel_keys.el
+
+(register-definition-prefixes "pel_keys" '("pel"))
 
 ;; Local Variables:
 ;; version-control: never

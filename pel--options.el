@@ -5009,6 +5009,7 @@ This may get activated indirectly by other user-options."
   :safe #'booleanp)
 (pel-put 'pel-use-lsp-mode :package-is '(quote ((elpa . ccls))))
 (pel-put 'pel-use-lsp-mode :also-required-when 'pel-use-emacs-ccls)
+(pel-put 'pel-use-lsp-mode :also-required-when 'pel-use-lsp-java)
 
 
 (defcustom pel-use-lsp-ui nil
@@ -7260,6 +7261,58 @@ Values in the [2, 8] range are accepted."
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
   :group 'pel-pkg-for-eiffel
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Java support
+;; ------------
+(defgroup pel-pkg-for-java nil
+  "PEL support for Java."
+  :group 'pel-pkg-for-software-programming-languages)
+
+(defcustom pel-use-java nil
+  "Control whether PEL enhancement for Java support are active."
+  :group 'pel-pkg-for-java
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-java-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Java buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-java
+  :type '(repeat function))
+
+(defcustom pel-java-tab-width 4
+  "Column width display rendering of hard tab for buffers in `java-mode'.
+
+PEL stores this in `tab-width' when opening Java buffers.
+
+This does *NOT* control the indentation in Java files.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters.
+
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-java
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-java-use-tabs nil
+  "Value of `indent-tabs-mode' for editing java files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-java
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-lsp-java nil
+  "Control whether PEL use lsp-java."
+  :link '(url-link :tag "lsp-java @ Github"
+                   "https://github.com/emacs-lsp/lsp-java")
+  :group 'pel-pkg-for-java
   :type 'boolean
   :safe #'booleanp)
 
@@ -9679,7 +9732,8 @@ Do not enter lambda expressions."
 
 (defcustom pel-use-gleam nil
   "Control whether PEL supports Gleam development.
-Gleam is an experimental functional static-type checking language for the BEAM."
+Gleam is a functional static-type checking language for the BEAM.
+Activating this automatically activates `pel-use-gleam-mode'."
   :group 'pel-pkg-for-gleam
   :type 'boolean
   :safe #'booleanp)
@@ -9687,14 +9741,25 @@ Gleam is an experimental functional static-type checking language for the BEAM."
 
 (defcustom pel-use-gleam-mode nil
   "Control whether PEL supports the gleam-mode package.
-This is an early version of Gleam support for Emacs."
+
+PEL supports both `gleam-mode' and `gleam-ts-mode' with the user-options
+in this user-option group when the `pel-use-gleam-mode' user option is
+turned on.  The `gleam-mode' was the original code from this package which was
+then deprecated and replaced by `gleam-ts-mode'. They can co-exist for
+debugging purpose (by installing both) but PEL will select `gleam-ts-mode'.
+You can manually change the mode by executing `gleam-mode'.
+
+Note that tree-sitter support is now required for this and PEL only
+supports tree-sitter for Emacs 30.1 and later.  Therefore support for Gleam is
+only available with PEL for Emacs 30.1 and later."
   :link '(url-link :tag "gleam-mode @ Github"
-                   "https://github.com/pierre-rouleau/gleam-mode")
+                   "https://github.com/gleam-lang/gleam-mode")
   :group 'pel-pkg-for-gleam
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-gleam-mode :package-is :in-utils)
 (pel-put 'pel-use-gleam-mode :requires 'pel-use-gleam)
+(pel-put 'pel-use-gleam-mode :requires 'pel-use-tree-sitter)
 
 (defcustom pel-gleam-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for GLEAM buffers.
@@ -13183,6 +13248,8 @@ indexing system."
 (when pel-use-emacs-ccls
   (setq pel-use-lsp-mode t)
   (setq pel-use-lsp-ui t))
+(when pel-use-lsp-java
+  (setq pel-use-lsp-mode t))
 
 ;; Automatically disable undo-tree in Emacs >= 28 when pel-use-simple-undo or
 ;; pel-use-vundo because undo-tree is not robust and may corrupt a buffer and

@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improve Gleam support now that the mode is based on tree-sitter.
+- Provide PEL support for Java.
 - Add support for Meson and ninja build files.  Both implementations are simple, early implementations.
 - Improved *iedit* support for *cperl-mode*, *sh-mode*, *tcl-mode*, and *ninja-mode*:
   in these modes (and probably other) iedit is not able to match all instances

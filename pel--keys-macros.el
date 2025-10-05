@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-24 21:16:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-05 11:21:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -54,11 +54,12 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)    ; use: macroexp-file-name
-(require 'pel--options)
-(require 'seq)          ; use: seq-concatenate, seq-drop, seq-subseq
+(require 'pel--base)    ; use: `macroexp-file-name'
+(require 'pel--macros)  ; use: `pel-append-to'
+(require 'pel--options) ; use: `pel-use-call-graph', `pel-use-tree-sitter', ...
+(require 'seq)          ; use: `seq-concatenate', `seq-drop', `seq-subseq'
 (eval-when-compile
-  (require 'cl-lib))    ; use: cl-dolist and cl-return
+  (require 'cl-lib))    ; use: `cl-dolist', `cl-return'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -313,6 +314,7 @@
     ([f11 32 ?T]     "pl-janet"         pel-pkg-for-janet       (janet
                                                                  ijanet
                                                                  inf-janet))
+    ([f11 32 ?J]     "pl-java"          pel-pkg-for-java        (java c))
     ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       (julia
                                                                  julia-mode
                                                                  julia-snail
@@ -371,6 +373,10 @@
     (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         (arc
                                                                  lispy))
     (,(kbd "<f11> SPC C-e") "pl-eiffel" pel-pkg-for-eiffel      eiffel)
+
+    (,(kbd "<f11> SPC M-G") "pl-gleam"  pel-pkg-for-gleam       gleam-ts)
+    ([f11 32 27 ?G]         "pl-gleam"  pel-pkg-for-gleam       gleam-ts)
+
     (,(kbd "<f11> SPC C-h") "pl-hy"     pel-pkg-for-hy)
     (,(kbd "<f11> SPC C-j") "pl-clojure" pel-pkg-for-clojure    (clojure
                                                                  cider
@@ -719,9 +725,12 @@ stored inside the doc/pdf directory.")
     ("python-ts"       [f11 32 ?p])
     ("arc"             [f11 32 1])
     ("eiffel"          [f11 32 5])
+    ("gleam"           [f11 32 27 ?G])
+    ("gleam-ts"        [f11 32 27 ?G])
     ("haskell"         [f11 32 ?h])
     ("vhdl"            [f11 32 ?H])
     ("hy"              [f11 32 8])
+    ("java"            [f11 32 ?J])
     ("lfe"             [f11 32 12])
     ("inferior-lfe"    [f11 32 32 12])
     ("ibuffer"         [f11 32 32 ?b])
@@ -998,10 +1007,12 @@ There should be no key binding!" keyseq))
     ("erlang"           . "pl-erlang")
     ("factor"           . "pl-factor")
     ("forth"            . "pl-forth")
+    ("gleam"            . "pl-gleam")
     ("go"               . "pl-go")
     ("haskell"          . "pl-haskell")
     ("hy"               . "pl-hy")
     ("janet"            . "pl-janet")
+    ("java"             . "pl-java")
     ("julia"            . "pl-julia")
     ("lfe"              . "pl-lfe")
     ("m4"               . "pl-m4")
@@ -1602,20 +1613,23 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   (if (eq major-mode mode)
       (funcall fct)))
 
-(defconst pel--tab-controlling-major-modes '(makefile tup nix
-                                                      intel-hex go
-                                                      lisp arc clojure janet
-                                                      scheme chez chibi
-                                                      chicken gambit gerbil
-                                                      guile mit-scheme racket
-                                                      scsh
-                                                      lfe inferior-lfe
-                                                      shell term
-                                                      perl rust
-                                                      seed7
-                                                      cwl
-                                                      ssh-authorized-keys
-                                                      ssh-known-hosts)
+(defconst pel--tab-controlling-major-modes
+  '(cwl
+    go
+    intel-hex
+    janet
+    lfe inferior-lfe
+    lisp arc clojure
+    makefile
+    nix
+    perl
+    rust
+    scheme chez chibi chicken gambit gerbil guile mit-scheme racket scsh
+    seed7
+    shell
+    ssh-authorized-keys ssh-known-hosts
+    term
+    tup)
   "List of major mode that fully control the tab behaviour and width.
 
 These modes do not have both `pel-<mode>-tab-width' and a `pel-<mode>-use-tabs'
@@ -1624,7 +1638,14 @@ user-options variables.")
 ;; TODO: pel-config-major-mode does not seem to support shell-mode and
 ;;       term-mode properly.  Investigate and fix.
 
-(defmacro pel-config-major-mode (target-mode &optional key-prefix &rest body)
+(defun pel-treesit-remap-available-for (mode)
+  "Return non-nil when treesit is available the ts MODE can use MODE.
+MODE is a symbol like \\='c or \\='lisp identifying the major mode."
+  (and pel-use-tree-sitter
+       (pel-treesit-language-available-p mode)
+       (boundp 'major-mode-remap-alist)))
+
+(defmacro pel-config-major-mode (target-mode key-prefix &optional ts-option &rest body)
   "Setup the major mode identified by TARGET-MODE.
 
 TARGET-MODE is an unquoted symbol identifying the mode: it's the
@@ -1637,6 +1658,10 @@ symbol must already been defined prior to the macro invocation,
 and it should have been defined with a `define-pel-global-prefix'
 form.  If KEY-PREFIX is nil or has the value :no-f12-keys then
 no <f12> and <M-f12> PEL key prefixes are created for the major mode.
+
+The TS-OPTION control how tree-sitter mode is supported.
+This can be:
+- :same-for-ts
 
 The BODY is a set of forms to execute when the major mode hook
 executes, at the moment when a buffer with that major mode opens
@@ -1653,7 +1678,9 @@ Function created by the `pel-config-major-mode' macro."
         (gn-docstring2 (format "Set the environment for %s buffers."
                                target-mode))
         (gn-mode-name (intern (format "%s-mode" target-mode)))
+        (gn-ts-mode-name (intern (format "%s-ts-mode" target-mode)))
         (gn-mode-hook (intern (format "%s-mode-hook" target-mode)))
+        (gn-ts-mode-hook (intern (format "%s-ts-mode-hook" target-mode)))
         (gn-minor-modes (intern (format "pel-%s-activates-minor-modes"
                                         target-mode)))
         (gn-use-tabs (intern (format "pel-%s-use-tabs"
@@ -1661,7 +1688,8 @@ Function created by the `pel-config-major-mode' macro."
         (gn-tab-width (intern (format "pel-%s-tab-width"
                                       target-mode)))
         (gn-fname       (file-name-base (macroexp-file-name)))
-        (newbody nil))
+        (newbody nil)
+        (hook-body nil))
     ;; Add code to newbody in order: some code is placed *before* BODY
     ;; to allow BODY to see the values and possibly modify them.
     ;; Some code is added *after* the BODY.  BODY is a list.
@@ -1673,17 +1701,28 @@ Function created by the `pel-config-major-mode' macro."
       ;; Starting with Emacs 30, org-mode only supports a tab-width of 8
       (unless (and pel-emacs-30-or-later-p
                    (eq target-mode 'org))
-        (setq newbody
-              (append newbody
-                      `((unless (assoc 'tab-width file-local-variables-alist)
-                          (setq-local tab-width ,gn-tab-width))))))
-      (setq newbody
-            (append newbody
-                    `((unless (assoc 'indent-tabs-mode file-local-variables-alist)
-                          (setq-local indent-tabs-mode ,gn-use-tabs))))))
+        (pel-append-to newbody
+                       `((unless (assoc 'tab-width file-local-variables-alist)
+                           (setq-local tab-width ,gn-tab-width)))))
+      (pel-append-to
+       newbody
+       `((unless (assoc 'indent-tabs-mode file-local-variables-alist)
+           (setq-local indent-tabs-mode ,gn-use-tabs)))))
+
+    ;; - Add tree sitter control if necessary
+    (when (eq ts-option :same-for-ts)
+      ;; There are no reasons to use major-mode when the major-ts-mode
+      ;; mode is available and working.  Therefore ensure that whenever
+      ;; major-mode is requested, major-ts-mode is used.
+      (pel-append-to
+       newbody
+       `((when (pel-treesit-remap-available-for (quote ,target-mode))
+           (add-to-list (quote major-mode-remap-alist)
+                        (quote
+                         (,gn-mode-name . ,gn-ts-mode-name)))))))
     ;;
     ;; 2 - Include BODY
-    (setq newbody (append newbody body))
+    (pel-append-to newbody body)
     ;;
     ;; 3 - Include code that must be done *after* BODY:
     ;;
@@ -1693,31 +1732,45 @@ Function created by the `pel-config-major-mode' macro."
     ;; sub-prefix.
     (when (and key-prefix
                (not (eq key-prefix :no-f12-keys)))
-      (setq newbody
-            (append newbody `((pel-local-set-f12-M-f12 (quote ,key-prefix))))))
+      (pel-append-to newbody
+                     `((pel-local-set-f12-M-f12 (quote ,key-prefix)))))
+
     ;; Add the code that activates the minor modes identified by the
     ;;`pel-<mode>-activates-minor-modes' user-option.
-    (setq newbody
-          (append newbody `((pel-turn-on-local-minor-modes-in
-                             (quote ,gn-minor-modes)))))
+    (pel-append-to newbody
+                   `((pel-turn-on-local-minor-modes-in
+                      (quote ,gn-minor-modes))))
 
-    ;; return the following generated code:
+    ;; 4 - Prepare the code that is invoked after the newbody
+    (pel-append-to hook-body
+                   `(
+                     (declare-function ,gn-fct2 ,gn-fname)
+                     ;;
+                     (defun ,gn-fct1 ()
+                       ,gn-docstring1
+                       (add-hook 'hack-local-variables-hook
+                                 (function ,gn-fct2) nil t))
+                     (declare-function ,gn-fct1 ,gn-fname)
+                     ;;
+                     (pel-check-minor-modes-in ,gn-minor-modes)
+                     (pel--mode-hook-maybe-call (function ,gn-fct1)
+                                                (quote ,gn-mode-name)
+                                                (quote ,gn-mode-hook))))
+    ;; 4.1 - Append ts-mode hook if necessary
+    (when (eq ts-option :same-for-ts)
+      (pel-append-to hook-body
+                     `((pel--mode-hook-maybe-call (function ,gn-fct1)
+                                                  (quote ,gn-ts-mode-name)
+                                                  (quote ,gn-ts-mode-hook)))))
+
+    ;; 5 - Return the following generated code:
     `(progn
        (defun ,gn-fct2 ()
          ,gn-docstring2
          (progn
            ,@newbody))
-       (declare-function ,gn-fct2 ,gn-fname)
-       ;;
-       (defun ,gn-fct1 ()
-         ,gn-docstring1
-         (add-hook 'hack-local-variables-hook (function ,gn-fct2) nil t))
-       (declare-function ,gn-fct1 ,gn-fname)
-       ;;
-       (pel-check-minor-modes-in ,gn-minor-modes)
-       (pel--mode-hook-maybe-call (function ,gn-fct1)
-                                  (quote ,gn-mode-name)
-                                  (quote ,gn-mode-hook)))))
+       (progn
+         ,@hook-body))))
 
 ;; [:todo 2025-05-17, by Pierre Rouleau: Add support for packages that
 ;;  have a same symbols for mode and features, like Ada, which is

@@ -2192,8 +2192,8 @@ can't bind negative-argument to C-_ and M-_"
 
 
 ;; ---------------------------------------------------------------------------
-;; Global prefixes to specialized prefixes
-;; =======================================
+;;* Global prefixes to specialized prefixes
+;;  =======================================
 ;;
 ;; All PEL specialized prefixes start with <f11> SPC followed by another
 ;; character. These characters are listed below.
@@ -3390,6 +3390,22 @@ d-mode not added to ac-modes!"
                    pel-use-goflymake))))))))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC J`` : Java programming
+(when pel-use-java
+  (define-pel-global-prefix pel:for-java  (kbd "<f11> SPC J"))
+  (when pel-use-lsp-java
+    (pel-ensure-package lsp-java from: melpa))
+
+
+  ;; java-mode is implemented in the cc-mode.el
+  (pel-eval-after-load cc-mode
+    (pel-config-major-mode java pel:for-java)
+    (when pel-use-lsp-java
+      (require 'lsp-java)
+      (when (fboundp 'lsp)
+        (add-hook 'java-mode-hook #'lsp)))))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC i`` : Javascript programming
 (when pel-use-javascript
   (define-pel-global-prefix pel:for-javascript  (kbd "<f11> SPC i"))
@@ -3426,8 +3442,8 @@ d-mode not added to ac-modes!"
     (pel-eval-after-load js-mode
       (pel-config-major-mode js pel:for-javascript
         ;; 5) Set tab-width for the buffer as specified by the PEL user option
-      ;; for the major mode.
-      (setq-local tab-width pel-js-tab-width))))))
+        ;; for the major mode.
+        (setq-local tab-width pel-js-tab-width))))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC j`` : Julia programming
@@ -4700,18 +4716,28 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; Programming Language Family: BEAM
 (when pel-use-gleam
   (when pel-use-gleam-mode
-    (pel-install-github-files "pierre-rouleau/gleam-mode/master"
-                              "gleam-mode.el")
-    (pel-autoload-file gleam-mode for: gleam-mode)
-    (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-mode))
+    ;; Originally Gleam Emacs support was provided by `gleam-mode'.
+    ;; The developers eventually dropped it for a new `gleam-ts-mode'.
+    ;; PEL was supporting the first one, and it now supports the other.
+    ;; All PEL defcustom use gleam-mode and will remain that way, however, PEL
+    ;; will activate `gleam-ts-mode' for gleam buffers. If you want to use
+    ;; `gleam-mode' make sure the old gleam-mode.el is present in the utils
+    ;; directory and execute `gleam-mode' manually.
+    ;; All user-options identified in the `pel-pkg-for-gleam' will be applied
+    ;; to both `gleam-mode' and `gleam-ts-mode'
+
+    (pel-install-github-files "gleam-lang/gleam-mode/master"
+                              "gleam-ts-mode.el")
+    (pel-autoload-file gleam-ts-mode for: gleam-ts-mode)
+    (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-ts-mode))
     (when pel-use-speedbar
       (pel-add-speedbar-extension ".gleam"))
 
     (define-pel-global-prefix pel:for-gleam (kbd "<f11> SPC M-G"))
-    (pel--lisp-languages-map-for pel:for-gleam)
 
-    ;; Activate GLEAM setup.
-    (pel-config-major-mode gleam pel:for-gleam)))
+    ;; Activate Gleam setup for both `gleam-mode' and `gleam-ts-mode' using
+    ;; the same user-options identified in the `pel-pkg-for-gleam' group.
+    (pel-config-major-mode gleam pel:for-gleam :same-for-ts)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-H `` : Hamler
@@ -5466,7 +5492,7 @@ to identify a Verilog file.  Anything else is assumed being V."
     (unless (and (pel-treesit-language-available-p 'verilog))
       (when (fboundp 'verilog-ts-install-grammar)
         (verilog-ts-install-grammar)))
-    ;; There are no reasons to use verilog-mode when the  verilog-ts-mode
+    ;; There are no reasons to use verilog-mode when the verilog-ts-mode
     ;; mode is available and working.  Therefore ensure that whenever
     ;; verilog-mode is requested, verilog-ts-mode is used.
     (when (and (pel-treesit-language-available-p 'verilog)
