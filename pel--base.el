@@ -1418,6 +1418,7 @@ And with transformation functions:
       (setq acc (concat acc elem)))
     acc))
 
+;; [:todo 2025-10-05, by Pierre Rouleau: Move the macros to pel--macros.el?]
 (defmacro pel-push-fmt (lst fmt &rest args)
   "Push string FMT formatted with ARGS to the list LST."
   (declare (indent 2))
@@ -3336,7 +3337,7 @@ of point."
 
 The change is temporary and affects the current buffer only.
 Return the new `tab-width' or nil if unchanged."
-  (interactive "nNew tab-width: ")
+  (interactive (list (read-number (format "New tab-width [%d]: " tab-width))))
   (let ((current-tab-width
          (if pel-tab-width-control-variable
              (pel-symbol-value pel-tab-width-control-variable)
