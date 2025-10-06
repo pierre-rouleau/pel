@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-06 15:24:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-06 16:55:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1713,7 +1713,8 @@ Function created by the `pel-config-major-mode' macro."
            (setq-local indent-tabs-mode ,gn-use-tabs)))))
 
     ;; - Add tree sitter control if necessary
-    (when (eq ts-option :same-for-ts)
+    (when (and (eq ts-option :same-for-ts)
+               (boundp 'major-mode-remap-alist))
       ;; There are no reasons to use major-mode when the major-ts-mode
       ;; mode is available and working.  Therefore ensure that whenever
       ;; major-mode is requested, major-ts-mode is used.
