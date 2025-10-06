@@ -4740,7 +4740,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
     ;; Activate Gleam setup for both `gleam-mode' and `gleam-ts-mode' using
     ;; the same user-options identified in the `pel-pkg-for-gleam' group.
-    (pel-config-major-mode gleam pel:for-gleam :same-for-ts)))
+    (pel-config-major-mode gleam pel:for-gleam :independent-ts)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-H `` : Hamler
@@ -5494,14 +5494,7 @@ to identify a Verilog file.  Anything else is assumed being V."
     ;; Once installed & loaded, use it to install the verilog grammar for it.
     (unless (and (pel-treesit-language-available-p 'verilog))
       (when (fboundp 'verilog-ts-install-grammar)
-        (verilog-ts-install-grammar)))
-    ;; There are no reasons to use verilog-mode when the verilog-ts-mode
-    ;; mode is available and working.  Therefore ensure that whenever
-    ;; verilog-mode is requested, verilog-ts-mode is used.
-    (when (and (pel-treesit-language-available-p 'verilog)
-               (boundp 'major-mode-remap-alist))
-      (add-to-list 'major-mode-remap-alist
-                   '(verilog-mode . verilog-ts-mode))))
+        (verilog-ts-install-grammar))))
 
   ;; Install/use other external package when requested.
   (when pel-use-verilog-ext
@@ -5527,7 +5520,11 @@ to identify a Verilog file.  Anything else is assumed being V."
   ;; Activate PEL <f12> key management,
   ;; and minor modes required for Verilog files.
   (pel-eval-after-load verilog-mode
+    ;; There are no reasons to use verilog-mode when the verilog-ts-mode
+    ;; mode is available and working.  Therefore ensure that whenever
+    ;; verilog-mode is requested, verilog-ts-mode is used.
     (pel-config-major-mode verilog pel:for-verilog
+      :same-for-ts
       (when (and pel-use-verilog-ext
                  (fboundp 'verilog-ext-mode))
         (verilog-ext-mode 1)

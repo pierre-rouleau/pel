@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-06 16:55:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-06 17:11:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1664,7 +1664,10 @@ no <f12> and <M-f12> PEL key prefixes are created for the major mode.
 
 The TS-OPTION control how tree-sitter mode is supported.
 This can be:
-- :same-for-ts
+- :same-for-ts    : when the tree-sitter-based mode derives from the normal
+                    mode and PEL must support both.
+- :independent-ts : when the ts-sitter mode exists but does not derive from
+                    the normal mode and PEL must support both.
 
 The BODY is a set of forms to execute when the major mode hook
 executes, at the moment when a buffer with that major mode opens
@@ -1713,7 +1716,7 @@ Function created by the `pel-config-major-mode' macro."
            (setq-local indent-tabs-mode ,gn-use-tabs)))))
 
     ;; - Add tree sitter control if necessary
-    (when (and (eq ts-option :same-for-ts)
+    (when (and (memq ts-option '(:same-for-ts :independent-ts))
                (boundp 'major-mode-remap-alist))
       ;; There are no reasons to use major-mode when the major-ts-mode
       ;; mode is available and working.  Therefore ensure that whenever
@@ -1760,8 +1763,9 @@ Function created by the `pel-config-major-mode' macro."
                      (pel--mode-hook-maybe-call (function ,gn-fct1)
                                                 (quote ,gn-mode-name)
                                                 (quote ,gn-mode-hook))))
-    ;; 4.1 - Append ts-mode hook if necessary
-    (when (eq ts-option :same-for-ts)
+    ;; 4.1 - Append ts-mode hook if necessary: when the ts-mode does not
+    ;;       derive from the standard mode.
+    (when (eq ts-option :independent-ts)
       (pel-append-to hook-body
                      `((pel--mode-hook-maybe-call (function ,gn-fct1)
                                                   (quote ,gn-ts-mode-name)
