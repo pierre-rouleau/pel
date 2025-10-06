@@ -9773,20 +9773,19 @@ Do not enter lambda expressions."
 
 PEL stores this in `tab-width' when opening gleam  buffers.
 
-This does *NOT* control the indentation in gleam
-files, it only controls the column width display rendering of hard tabs
-in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
+This does *NOT* control the indentation in gleam files, it only controls
+the column width display rendering of hard tabs in buffers and tab stop
+positions for commands such as `tab-to-tab-stop'.
+
+Note that the Gleam community decided that all Gleam file should use
+a 2-space character indentation level and no hard tab."
   :group 'pel-pkg-for-gleam
   :type 'integer
   :safe 'pel-indent-valid-p)
 
-(defcustom pel-gleam-use-tabs nil
+(defconst pel-gleam-use-tabs nil
   "Value of `indent-tabs-mode' for editing gleam files.
-- If set to nil: only spaces are used for indentation.
-- If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-gleam
-  :type 'boolean
-  :safe #'booleanp)
+Gleam does not use hard tabs, as decided by the Gleam community.")
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Tools for BEAM languages

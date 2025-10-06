@@ -432,6 +432,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-goto-next-url
     pel-goto-previous-url)
 
+  (pel-autoload "pel-gleam" for:
+    pel-gleam-toggle-format-on-buffer-save
+    pel-gleam-setup-info)
+
   (pel-autoload "pel-help" for:
     pel-show-kill-ring
     pel-show-major-mode

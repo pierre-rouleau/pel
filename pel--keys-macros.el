@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-05 11:21:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-06 15:24:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1615,6 +1615,9 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 
 (defconst pel--tab-controlling-major-modes
   '(cwl
+    ;; Gleam community decided against hard tab and decided to fix
+    ;; indentation to 2 spaces but PEL still provides the user-options for
+    ;; tab-width and hard tab control for other editing purposes.
     go
     intel-hex
     janet

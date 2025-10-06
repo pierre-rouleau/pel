@@ -3,7 +3,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
 - Improve Gleam support now that the mode is based on tree-sitter.
-- Provide PEL support for Java.
+  - PEL support for Gleam is activated by setting *pel-use-gleam* and *pel-use-gleam-mode*.
+    I might simplify this later; I have to decide whether PEL will support both gleam-ts-mode
+    as well as gleam-mode, specially to support Emacs before Emacs 30.
+    Currently PEL support is limited to Emacs 30 and later because the gleam-mode package
+    dropped non tree-sitter support.  I'd like to revive it, but first need to learn more about the implementations.
+  - The Gleam PDF is an early version.
+- Provide PEL support for Java.  PEL support is activated by *pel-use-java*.
+  The Java PDF is an early version.
 - Add support for Meson and ninja build files.  Both implementations are simple, early implementations.
 - Improved *iedit* support for *cperl-mode*, *sh-mode*, *tcl-mode*, and *ninja-mode*:
   in these modes (and probably other) iedit is not able to match all instances

@@ -4734,6 +4734,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (pel-add-speedbar-extension ".gleam"))
 
     (define-pel-global-prefix pel:for-gleam (kbd "<f11> SPC M-G"))
+    (define-key pel:for-gleam "?"         'pel-gleam-setup-info)
+    (define-key pel:for-gleam (kbd "M-s") 'pel-gleam-toggle-format-on-buffer-save)
+    (define-key pel:for-gleam (kbd "M-t") 'pel-set-tab-width)
 
     ;; Activate Gleam setup for both `gleam-mode' and `gleam-ts-mode' using
     ;; the same user-options identified in the `pel-pkg-for-gleam' group.
