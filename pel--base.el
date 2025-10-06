@@ -982,7 +982,7 @@ by BUFFER or `pel-insert-symbol-content-context-buffer'."
                            (current-buffer))
     (if (boundp symbol)
         (pel-on-off-string (eval symbol) on-string off-string)
-      (or void-string "void"))))
+      (or void-string (format "unknown - `%S' is not bound!" symbol)))))
 
 (defvar pel--prompt-separator ":")
 
@@ -1028,7 +1028,7 @@ by BUFFER or `pel-insert-symbol-content-context-buffer'."
           (if (eq replacement :nil-for-void)
               nil
             replacement)
-        (format "unknown - %S is not loaded" symbol)))))
+        (format "unknown - `%S' is not bound!" symbol)))))
 
 (defun pel-yes-no-string (test &optional true-string false-string)
   "Return TRUE-STRING when boolean TEST is non-nil, otherwise FALSE_STRING.
