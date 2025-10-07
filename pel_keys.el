@@ -9069,6 +9069,17 @@ the ones defined from the buffer now."
   (pel-ensure-package tzc from melpa))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> C-t`` : Tree-Sitter operations
+(when pel-use-tree-sitter
+
+  (define-pel-global-prefix pel:tree-sitter (kbd "<f11> C-t"))
+  (define-key pel:tree-sitter (kbd "<f1>")  'pel-treesit-help)
+  (define-key pel:tree-sitter (kbd "<f2>")  'pel-treesit-customize)
+  (define-key pel:tree-sitter (kbd "<f3>")  'pel-treesit-emacs-customize)
+  (define-key pel:tree-sitter "e"  'treesit-explore-mode)
+  (define-key pel:tree-sitter "i"  'treesit-inspect-mode))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> v`` : VCS operations
 ;;
 (define-pel-global-prefix pel:vcs (kbd "<f11> v"))

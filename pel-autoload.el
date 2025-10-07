@@ -880,6 +880,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel--update-time-stamp
     pel--update-copyright)
 
+  (pel-autoload "pel-treesit" for:
+    pel-treesit-help)
+
   (pel-autoload "pel-xref" for:
     pel-xref-toggle-dumb-jump-mode
     pel-xref-toggle-gxref

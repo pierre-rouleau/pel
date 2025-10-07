@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add a the *pel:tree-sitter* prefix key (bound to ~<f11> C-t~) which holds tree-sitter specific commands:
+  *treesit-explore-mode* and *treesit-inspect-mode*.
+  Also add the PEL standard F1, F2 and F3 bound commands to access the PDF help and the
+  customization groups.
 - Improve Gleam support now that the mode is based on tree-sitter.
   - PEL support for Gleam is activated by setting *pel-use-gleam* and *pel-use-gleam-mode*.
     I might simplify this later; I have to decide whether PEL will support both gleam-ts-mode
