@@ -659,6 +659,7 @@ NOTES: - PEL only supports tree-sitter for Emacs 30.1 and later and
                    "https://github.com/emacs-tree-sitter/tree-sitter-langs")
   :link '(url-link :tag "PEL Tree-Sitter Setup Instructions"
                    "https://github.com/pierre-rouleau/pel/blob/master/doc/using-tree-sitter.rst.txt")
+  :group 'pel-pkg-for-tree-sitter
   :type 'boolean
   :safe #'booleanp)
 (unless pel-emacs-30-or-later-p (setq pel-use-tree-sitter nil))
@@ -699,7 +700,16 @@ Here's what I do in my environments:
 - Add the following 2 directories to the list here:
   - ~/.emacs.d/tree-sitter-langs-bin
   - ~/.emacs.d/libtree-sitter"
+  :group 'pel-pkg-for-tree-sitter
   :type '(repeat string))
+
+;; (defcustom pel-use-combobulate nil
+;;   :link '(url-link :tag "combobulate @ Github"
+;;                    "https://github.com/mickeynp/combobulate")
+;;   :link '(url-link :tag )
+;;   :group 'pel-pkg-for-tree-sitter
+;;   :type 'boolean
+;;   :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-syntax-tools nil
