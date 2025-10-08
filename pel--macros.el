@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-04-29 08:47:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-08 13:55:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -192,6 +192,7 @@ See `pel-turn-mode-on-when-off' for more info."
 
 (defmacro pel-append-to (listvar elem)
   "Append ELEM to LISTVAR."
+  (declare (indent 1))
   `(setq ,listvar (append ,listvar ,elem)))
 
 ;; ---------------------------------------------------------------------------
