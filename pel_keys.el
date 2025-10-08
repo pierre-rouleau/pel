@@ -3378,7 +3378,12 @@ d-mode not added to ac-modes!"
     (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
     (define-key pel:for-go "?"         'pel-go-setup-info)
 
-    (pel-eval-after-load go-mode
+    ;; The go-ts-mode really derives from prog-mode even though it updates the
+    ;; dependency tree to make it look like a child of go-mode, but it does
+    ;; not load go-mode.  Therefore the PEL hooking must be done for both
+    ;; go-mode and go-ts-mode.
+    ;;
+    (pel-eval-after-load (go-mode go-ts-mode)
       ;; Set environment for Go programming using go-mode.
       ;; [:todo 2025-05-08, by Pierre Rouleau: automate the activation of
       ;;         goflymake Go program by adjusting the GOPATH when flycheck
@@ -5533,6 +5538,8 @@ to identify a Verilog file.  Anything else is assumed being V."
 
   ;; Activate PEL <f12> key management,
   ;; and minor modes required for Verilog files.
+  ;; The verilog-ts-mode derives from verilog-mode and loads it.
+  ;; Therefore we can schedule the hook when verilog-mode is loaded.
   (pel-eval-after-load verilog-mode
     ;; There are no reasons to use verilog-mode when the verilog-ts-mode
     ;; mode is available and working.  Therefore ensure that whenever

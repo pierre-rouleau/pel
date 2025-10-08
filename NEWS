@@ -2,6 +2,24 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- PEL now support both go-mode and go-ts-mode.
+- Improve PEL lazy loading macros:
+  - *pel-eval-after-load* macro now accepts a list of features or just one.
+    It is mostly useful
+    when a tree-sitter based major mode is implemented inside a file that does
+    not load the file that implements the classic major mode as it is the case
+    for go-ts-mode and go-mode (even though the go-ts-mode identifies deriving
+    from go-mode but only by modifying the property data, not by explicitly
+    deriving from go-mode and loading that feature.)
+  - *pel-config-major-mode* macro now requires a new parameter specifying how
+    tree-sitter is handled.  For some major-modes, the tree-sitter mode
+    derives from the classic major mode and an association must be created
+    inside the *major-mode-remap-alist* between the two.  In that case, the
+    parameter must be set to =:same-for-ts=.  If the tree-sitter based major
+    mode is independent from the classic major mode, the parameter must
+    instead be set to =:independent-ts=.  If PEL does not yet support the
+    tree-sitter based mode, the parameter must be set to =:no-ts=.  Any other
+    value is rejected and a warning is issued.
 - Add combobulate support when using Emacs >= 30.  It is installed via quelpa when the *pel-use-combobulate*
   customizable user-option is set to t.  If necessary, quelpa is installed first.
 - Add a the *pel:tree-sitter* prefix key (bound to ~<f11> C-t~) which holds tree-sitter specific commands:

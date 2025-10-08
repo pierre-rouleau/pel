@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-08 13:35:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-08 14:37:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1718,21 +1718,33 @@ DEFINES: is a cosmetic only argument that must be present."
 
 ;; --
 
-(defmacro pel-eval-after-load (feature &rest body)
-  "Evaluate BODY after the FEATURE has been loaded.
-FEATURE is an unquoted symbol.
-Use this for the configuration phase, like the :config of `use-package'."
+(defun pel--eval-after-load-error (feature error)
+  "Display warning for FEATURE loaded by `pel-eval-after-load'."
+  (display-warning 'pel-eval-after-load
+                   (format "Failed configuring %s: %s"
+                           feature
+                           error)
+                   :error))
+
+(defmacro pel-eval-after-load (features &rest body)
+  "Evaluate BODY after the FEATURES has been loaded.
+FEATURE is either a symbol or a list of feature symbols.
+Both must be unquoted.
+A list of feature symbol is useful,for example, when the tree-sitter
+mode is provided by a different file them the classic major mode,
+and the tree-sitter mode file does not load the classic mode file."
   (declare (indent 1))
-  `(with-eval-after-load (quote ,feature)
-     (condition-case-unless-debug err
-         (progn
-           ,@body)
-       (error
-        (display-warning 'pel-eval-after-load
-                         (format "Failed configuring %s: %s"
-                                 (quote ,feature)
-                                 err)
-                         :error)))))
+  (let ((code nil))
+    (dolist (the-feature (if (listp features) features (list features)))
+      (pel-append-to code
+        `((with-eval-after-load (quote ,the-feature)
+            (condition-case-unless-debug err
+                (progn ,@body)
+              (error (pel--eval-after-load-error (quote ,the-feature)
+                                                 err)))))))
+    ;; Return the generated code
+    `(progn
+       ,@code)))
 
 ;; --
 
@@ -1846,12 +1858,11 @@ Function created by the `pel-config-major-mode' macro."
       (unless (and pel-emacs-30-or-later-p
                    (eq target-mode 'org))
         (pel-append-to newbody
-                       `((unless (assoc 'tab-width file-local-variables-alist)
-                           (setq-local tab-width ,gn-tab-width)))))
-      (pel-append-to
-       newbody
-       `((unless (assoc 'indent-tabs-mode file-local-variables-alist)
-           (setq-local indent-tabs-mode ,gn-use-tabs)))))
+          `((unless (assoc 'tab-width file-local-variables-alist)
+              (setq-local tab-width ,gn-tab-width)))))
+      (pel-append-to newbody
+        `((unless (assoc 'indent-tabs-mode file-local-variables-alist)
+            (setq-local indent-tabs-mode ,gn-use-tabs)))))
 
     ;; - Add tree sitter control if necessary
     (when (and (eq ts-option :same-for-ts)
@@ -1859,8 +1870,7 @@ Function created by the `pel-config-major-mode' macro."
       ;; There are no reasons to use major-mode when the major-ts-mode
       ;; mode is available and working.  Therefore ensure that whenever
       ;; major-mode is requested, major-ts-mode is used.
-      (pel-append-to
-       newbody
+      (pel-append-to newbody
        `((when (pel-treesit-remap-available-for (quote ,target-mode))
            (add-to-list (quote major-mode-remap-alist)
                         (quote
@@ -1878,7 +1888,7 @@ Function created by the `pel-config-major-mode' macro."
     (when (and key-prefix
                (not (eq key-prefix :no-f12-keys)))
       (pel-append-to newbody
-                     `((pel-local-set-f12-M-f12 (quote ,key-prefix)))))
+        `((pel-local-set-f12-M-f12 (quote ,key-prefix)))))
 
     ;; Add the code that activates the minor modes identified by the
     ;;`pel-<mode>-activates-minor-modes' user-option.
@@ -1888,25 +1898,25 @@ Function created by the `pel-config-major-mode' macro."
 
     ;; 4 - Prepare the code that is invoked after the newbody
     (pel-append-to hook-body
-                   `(
-                     (declare-function ,gn-fct2 ,gn-fname)
-                     ;;
-                     (defun ,gn-fct1 ()
-                       ,gn-docstring1
-                       (add-hook 'hack-local-variables-hook
-                                 (function ,gn-fct2) nil t))
-                     (declare-function ,gn-fct1 ,gn-fname)
-                     ;;
-                     (pel-check-minor-modes-in ,gn-minor-modes)
-                     (pel--mode-hook-maybe-call (function ,gn-fct1)
-                                                (quote ,gn-mode-name)
-                                                (quote ,gn-mode-hook))))
+      `(
+        (declare-function ,gn-fct2 ,gn-fname)
+        ;;
+        (defun ,gn-fct1 ()
+          ,gn-docstring1
+          (add-hook 'hack-local-variables-hook
+                    (function ,gn-fct2) nil t))
+        (declare-function ,gn-fct1 ,gn-fname)
+        ;;
+        (pel-check-minor-modes-in ,gn-minor-modes)
+        (pel--mode-hook-maybe-call (function ,gn-fct1)
+                                   (quote ,gn-mode-name)
+                                   (quote ,gn-mode-hook))))
     ;; 4.1 - Append ts-mode hook if necessary
     (when (memq ts-option '(:same-for-ts :independent-ts))
       (pel-append-to hook-body
-                     `((pel--mode-hook-maybe-call (function ,gn-fct1)
-                                                  (quote ,gn-ts-mode-name)
-                                                  (quote ,gn-ts-mode-hook)))))
+        `((pel--mode-hook-maybe-call (function ,gn-fct1)
+                                     (quote ,gn-ts-mode-name)
+                                     (quote ,gn-ts-mode-hook)))))
 
     ;; 5 - Return the following generated code:
     `(progn
