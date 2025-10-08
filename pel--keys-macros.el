@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-08 12:21:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-08 12:35:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1673,7 +1673,7 @@ This can only be one of the following:
 The BODY is a set of forms to execute when the major mode hook
 executes, at the moment when a buffer with that major mode opens
 and after the local variables have been loaded."
-  (declare (indent 2))
+  (declare (indent 3))
   (unless (memq ts-option '(:no-ts :same-for-ts :independent-ts))
     (display-warning 'Invalid-PEL-code
                      (format
