@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-06 17:11:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-08 11:42:39 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1648,7 +1648,7 @@ MODE is a symbol like \\='c or \\='lisp identifying the major mode."
        (pel-treesit-language-available-p mode)
        (boundp 'major-mode-remap-alist)))
 
-(defmacro pel-config-major-mode (target-mode key-prefix &optional ts-option &rest body)
+(defmacro pel-config-major-mode (target-mode key-prefix ts-option &rest body)
   "Setup the major mode identified by TARGET-MODE.
 
 TARGET-MODE is an unquoted symbol identifying the mode: it's the
@@ -1664,6 +1664,7 @@ no <f12> and <M-f12> PEL key prefixes are created for the major mode.
 
 The TS-OPTION control how tree-sitter mode is supported.
 This can be:
+- nil             : no special tree-sitter support
 - :same-for-ts    : when the tree-sitter-based mode derives from the normal
                     mode and PEL must support both.
 - :independent-ts : when the ts-sitter mode exists but does not derive from
