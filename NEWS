@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add combobulate support when using Emacs >= 30.  It is installed via quelpa when the *pel-use-combobulate*
+  customizable user-option is set to t.  If necessary, quelpa is installed first.
 - Add a the *pel:tree-sitter* prefix key (bound to ~<f11> C-t~) which holds tree-sitter specific commands:
   *treesit-explore-mode* and *treesit-inspect-mode*.
   Also add the PEL standard F1, F2 and F3 bound commands to access the PDF help and the
@@ -3154,3 +3156,4 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#how-to-install-pel][PEL's installation instructions]] should alleviate this problem.
 
 #  LocalWords:  Pygments speedbar gxref rtags ggtags RTags eopengrok
+#  LocalWords:  combobulate

@@ -436,7 +436,10 @@ Done in this function to allow advising libraries that remap these keys."
 ;; Optional Extra Package Management Support
 ;; -----------------------------------------
 ;; Install quelpa if requested.
-;; Using method suggested by quelpa inside its documentation at
+;; Done early because some other packages are installed by quelpa.
+;;
+;; The installation of quelpa is done using a method suggested in its
+;; documentation at:
 ;;  https://github.com/quelpa/quelpa/blob/master/README.org#installation
 (when pel-use-quelpa
   (unless (package-installed-p 'quelpa)
@@ -669,6 +672,16 @@ Your version of Emacs does not support dynamic module.")))
   (global-set-key (kbd "M-g l")   'avy-goto-line)
   (global-set-key (kbd "M-g w")   'avy-goto-word-1)
   (global-set-key (kbd "M-g e")   'avy-goto-word-0))
+
+;; ---------------------------------------------------------------------------
+;; Combobulate -- Tree Sitter Based operations
+;; -------------------------------------------
+(when pel-use-combobulate
+  (unless (package-installed-p 'combobulate)
+    (when (fboundp 'quelpa)
+      (quelpa '(combobulate :fetcher git
+                            :url
+                            "https://github.com/mickeynp/combobulate.git")))))
 
 ;; ---------------------------------------------------------------------------
 ;; Move to imenu symbol using Ido prompting

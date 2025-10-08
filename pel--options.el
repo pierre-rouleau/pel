@@ -703,13 +703,23 @@ Here's what I do in my environments:
   :group 'pel-pkg-for-tree-sitter
   :type '(repeat string))
 
-;; (defcustom pel-use-combobulate nil
-;;   :link '(url-link :tag "combobulate @ Github"
-;;                    "https://github.com/mickeynp/combobulate")
-;;   :link '(url-link :tag )
-;;   :group 'pel-pkg-for-tree-sitter
-;;   :type 'boolean
-;;   :safe #'booleanp)
+(defcustom pel-use-combobulate nil
+  "Whether PEL uses the combobulate package.
+
+NOTES: - PEL only supports tree-sitter for Emacs 30.1 and later and
+         automatically turns this off (set to nil) when running under
+         an earlier version of Emacs because combobulate requires
+         tree-sitter support. "
+  :link '(url-link :tag "combobulate @ Github"
+                   "https://github.com/mickeynp/combobulate")
+  :link '(url-link :tag )
+  :group 'pel-pkg-for-tree-sitter
+  :type 'boolean
+  :safe #'booleanp)
+;; combobulate uses Tree-Sitter technology and is installed with quelpa
+(pel-put 'pel-use-combobulate :requires '(:all pel-use-tree-sitter
+                                               pel-use-quelpa))
+(unless pel-use-tree-sitter  (setq pel-use-tree-sitter nil))
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-syntax-tools nil
@@ -984,6 +994,8 @@ directory for whatever reason."
   :group 'pel-pkg-package-mng
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-quelpa :also-required-when '(and pel-use-tree-sitter
+                                                   pel-use-combobulate))
 
 ;; ---------------------------------------------------------------------------
 ;; Alignment Support
@@ -13094,6 +13106,11 @@ indexing system."
 ;;       `pel-use-' user-option of the package(s) that get activated
 ;;       indirectly.
 
+;; quelpa is used to install some packages. Identify them first.
+(when pel-use-tree-sitter
+  (when pel-use-combobulate
+    (setq pel-use-quelpa t)))
+
 (cl-case pel-erlang-xref-engine
   (ivy-erlang-complete (setq pel-use-ivy-erlang-complete t))
   (dumb-jump           (setq pel-use-dumb-jump t))
@@ -13288,4 +13305,4 @@ indexing system."
 
 ;;; pel--options.el ends here
 
-; LocalWords:  cscope xcscope CScope quickstart PEL
+; LocalWords:  cscope xcscope CScope quickstart PEL combobulate
