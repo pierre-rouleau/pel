@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-08 11:42:39 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-08 12:21:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1663,8 +1663,8 @@ form.  If KEY-PREFIX is nil or has the value :no-f12-keys then
 no <f12> and <M-f12> PEL key prefixes are created for the major mode.
 
 The TS-OPTION control how tree-sitter mode is supported.
-This can be:
-- nil             : no special tree-sitter support
+This can only be one of the following:
+- :no-ts          : no special tree-sitter support
 - :same-for-ts    : when the tree-sitter-based mode derives from the normal
                     mode and PEL must support both.
 - :independent-ts : when the ts-sitter mode exists but does not derive from
@@ -1674,6 +1674,11 @@ The BODY is a set of forms to execute when the major mode hook
 executes, at the moment when a buffer with that major mode opens
 and after the local variables have been loaded."
   (declare (indent 2))
+  (unless (memq ts-option '(:no-ts :same-for-ts :independent-ts))
+    (display-warning 'Invalid-PEL-code
+                     (format
+                      "Invalid (pel-config-major-mode %S %S %S)"
+                      target-mode key-prefix ts-option)))
   (let ((gn-fct1 (intern (format "pel--setup-for-%s-with-local-vars"
                                  target-mode)))
         (gn-docstring1
@@ -1791,6 +1796,8 @@ Function created by the `pel-config-major-mode' macro."
 ;;  in files that have several functions in them and a feature name that
 ;;  differs completely.]
 
+;; [:todo 2025-10-08, by Pierre Rouleau: Update the following: it may not be
+;; required anymore]
 (defmacro pel-config-major-mode-with-ts (target-mode
                                          &optional key-prefix
                                          &rest body)
@@ -1824,9 +1831,9 @@ this uses the exact same arguments.
              (setq ,gn-ts-use-tabs  ,gn-use-tabs)
              (setq ,gn-ts-activates-mm ,gn-activates-mm))
            ;; activate
-           (pel-config-major-mode ,gn-ts-target-mode ,key-prefix ,@body))
+           (pel-config-major-mode ,gn-ts-target-mode ,key-prefix :no-ts ,@body))
          ;; 2- setup for the standard mode
-         (pel-config-major-mode ,target-mode ,key-prefix ,@body)))))
+         (pel-config-major-mode ,target-mode ,key-prefix :no-ts ,@body)))))
 
 ;; --
 

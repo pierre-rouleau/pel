@@ -2414,7 +2414,7 @@ can't bind negative-argument to C-_ and M-_"
   (dolist (pattern-mode pel-make-mode-alist)
     (add-to-list 'auto-mode-alist pattern-mode))
 
-  (pel-config-major-mode makefile pel:for-make nil
+  (pel-config-major-mode makefile pel:for-make :no-ts
     (define-key pel:for-make (kbd "<up>")      'makefile-previous-dependency)
     (define-key pel:for-make (kbd "<down>")    'makefile-next-dependency)
     (define-key pel:for-make (kbd "<M-up>")    'pel-make-previous-macro)
@@ -2438,7 +2438,7 @@ can't bind negative-argument to C-_ and M-_"
                '("/meson\\(\\.build\\|_options\\.txt\\|\\.options\\)\\'"
                  . meson-mode))
   (pel-eval-after-load meson-mode
-    (pel-config-major-mode meson pel:for-meson nil)))
+    (pel-config-major-mode meson pel:for-meson :no-ts)))
 
 ;; - Ninja build-backend
 ;; ---------------------
@@ -2450,7 +2450,7 @@ can't bind negative-argument to C-_ and M-_"
   (pel-eval-after-load ninja-mode
     (require 'pel-iedit-modes-support)
     (add-hook 'ninja-mode-hook 'pel-iedit-enhance-ninja)
-    (pel-config-major-mode ninja pel:for-ninja nil)))
+    (pel-config-major-mode ninja pel:for-ninja :no-ts)))
 
 ;; - Nix Package Manager Support
 ;; -----------------------------
@@ -2462,7 +2462,7 @@ can't bind negative-argument to C-_ and M-_"
       "Open Nix PDF"
       (interactive "P")
       (pel-help-open-pdf "pl-nix" open-github-page-p)))
-  (pel-config-major-mode nix :no-f12-keys nil
+  (pel-config-major-mode nix :no-f12-keys :no-ts
     (when (boundp 'nix-mode-map)
       (let ((map nix-mode-map))
         (define-key map (kbd "<f12> <f1>") 'pel-nix-help)))))
@@ -2482,7 +2482,7 @@ can't bind negative-argument to C-_ and M-_"
       (interactive "P")
       (pel-help-open-pdf "pl-tup" open-github-page-p))
 
-    (pel-config-major-mode tup :no-f12-keys nil
+    (pel-config-major-mode tup :no-f12-keys :no-ts
       (when (boundp 'tup-mode-map)
         (let ((map tup-mode-map))
           (define-key map (kbd "<f12> <f1>") 'pel-tup-help))))))
@@ -2497,7 +2497,7 @@ can't bind negative-argument to C-_ and M-_"
       "Open Nix PDF"
       (interactive "P")
       (pel-help-open-pdf "pl-nix" open-github-page-p)))
-  (pel-config-major-mode nix :no-f12-keys nil
+  (pel-config-major-mode nix :no-f12-keys :no-ts
     (when (boundp 'nix-mode-map)
       (let ((map nix-mode-map))
         (define-key map (kbd "<f12> <f1>") 'pel-nix-help)))))
@@ -2510,7 +2510,7 @@ can't bind negative-argument to C-_ and M-_"
   (add-to-list 'auto-mode-alist '("\\.a90\\'" . intel-hex-mode))
   (add-to-list 'auto-mode-alist '("\\.a43\\'" . intel-hex-mode))
   (add-to-list 'auto-mode-alist '("\\.ihx\\'" . intel-hex-mode))
-  (pel-config-major-mode intel-hex :no-f12-keys nil))
+  (pel-config-major-mode intel-hex :no-f12-keys :no-ts))
 
 (when pel-use-elf-mode
   (if (executable-find "readelf")
@@ -2543,7 +2543,7 @@ can't bind negative-argument to C-_ and M-_"
     (pel-add-speedbar-extension ".m4"))
 
   ;; m4 is part of Emacs
-  (pel-config-major-mode m4 pel:for-m4 nil))
+  (pel-config-major-mode m4 pel:for-m4 :no-ts))
 
 ;; ---------------------------------------------------------------------------
 ;; - AppleScript support
@@ -2855,9 +2855,9 @@ MODE must be a symbol."
     (setq pel-ada-ts-activates-minor-modes
           pel-ada-activates-minor-modes)
     (pel-eval-after-load ada-ts-mode
-      (pel-config-major-mode ada-ts pel:for-ada nil)))
+      (pel-config-major-mode ada-ts pel:for-ada :no-ts)))
   (pel-eval-after-load ada-mode
-    (pel-config-major-mode ada pel:for-ada nil)))
+    (pel-config-major-mode ada pel:for-ada :no-ts)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Awk programming language
@@ -2878,7 +2878,7 @@ MODE must be a symbol."
   ;; Activate PEL Awk setup.  awk-mode is from cc-mode
   ;; Load this when the cc-mode is loaded.
   (pel-eval-after-load cc-mode
-    (pel-config-major-mode awk pel:for-awk nil
+    (pel-config-major-mode awk pel:for-awk :no-ts
       (progn
         ;; 1) set the style: it identifies everything
         (pel--set-cc-style 'awk-mode pel-awk-bracket-style pel-awk-newline-mode)
@@ -2960,7 +2960,7 @@ MODE must be a symbol."
   (declare-function pel-cc-find-activate-finder-method "pel-cc-find")
   (defvar pel-c-man-section)            ; prevent byte-compiler warning in Emacs 26
   (pel-eval-after-load cc-mode
-    (pel-config-major-mode c pel:for-c nil
+    (pel-config-major-mode c pel:for-c :no-ts
       (progn
         (defvar c-mode-map)  ; declare dynamic: prevent byte-compiler warnings
         (define-key c-mode-map (kbd "M-;") 'pel-c-comment-dwim)
@@ -3060,7 +3060,7 @@ MODE must be a symbol."
   (define-key pel:c++-search-replace (kbd "V") 'pel-move-up-to-class-visibility)
   (declare-function pel--install-c++-skel "pel-skels-cpp")
   (pel-eval-after-load cc-mode
-    (pel-config-major-mode c++ pel:for-c++ nil
+    (pel-config-major-mode c++ pel:for-c++ :no-ts
 
       ;; Configure how to search for a file name from the user-option
       ;; `pel-c++-file-finder-method' which may be specified in a
@@ -3145,7 +3145,7 @@ d-mode not added to ac-modes!"
     (add-hook 'd-mode-hook 'company-dcd-mode))
 
   (pel-eval-after-load d-mode
-    (pel-config-major-mode d pel:for-d nil
+    (pel-config-major-mode d pel:for-d :no-ts
       ;; "Set the environment for editing D files."
       ;; activate skeletons
       (pel--install-generic-skel pel:d-skel
@@ -3190,7 +3190,7 @@ d-mode not added to ac-modes!"
                                   ".M")))
 
   (pel-eval-after-load cc-mode
-    (pel-config-major-mode objc pel:for-objc nil
+    (pel-config-major-mode objc pel:for-objc :no-ts
       (progn
         ;; (define-key objc-mode-map (kbd "M-;") 'pel-c-comment-dwim)
 
@@ -3248,7 +3248,7 @@ d-mode not added to ac-modes!"
                                   ".pmod")))
 
   (pel-eval-after-load cc-mode
-    (pel-config-major-mode pike pel:for-pike nil
+    (pel-config-major-mode pike pel:for-pike :no-ts
       (progn
         (when (boundp 'pike-mode-map)
           (define-key pike-mode-map (kbd "M-;") 'pel-c-comment-dwim))
@@ -3309,7 +3309,7 @@ d-mode not added to ac-modes!"
   ;; Activate Factor setup.
   (pel-eval-after-load factor-mode
 
-    (pel-config-major-mode factor pel:for-factor nil
+    (pel-config-major-mode factor pel:for-factor :no-ts
       ;; 5) Set tab-width for the buffer as specified by the PEL user option
       ;; for the major mode.
       ;; [:todo 2024-01-06, by Pierre Rouleau: take factor-mode customization
@@ -3329,7 +3329,7 @@ d-mode not added to ac-modes!"
   (define-key pel:for-forth  "z"  'run-forth)
   ;; Activate Forth setup.
   (pel-eval-after-load forth-mode
-    (pel-config-major-mode forth pel:for-forth nil
+    (pel-config-major-mode forth pel:for-forth :no-ts
       ;; 5) Set tab-width for the buffer as specified by the PEL user option
       ;; for the major mode.
       (setq-local tab-width pel-forth-tab-width))))
@@ -3385,7 +3385,7 @@ d-mode not added to ac-modes!"
       (when pel-use-goflymake
         (when (boundp 'go-mode-map)
           (define-key go-mode-map (kbd "<f11> !!") 'pel-go-toggle-syntax-checker)))
-      (pel-config-major-mode go pel:for-go nil
+      (pel-config-major-mode go pel:for-go :no-ts
         ;; ensure gofmt is executed before saving file if
         ;; configured to do so
         (when pel-go-run-gofmt-on-buffer-save
@@ -3412,7 +3412,7 @@ d-mode not added to ac-modes!"
 
   ;; java-mode is implemented in the cc-mode.el
   (pel-eval-after-load cc-mode
-    (pel-config-major-mode java pel:for-java nil)
+    (pel-config-major-mode java pel:for-java :no-ts)
     (when pel-use-lsp-java
       (require 'lsp-java)
       (when (fboundp 'lsp)
@@ -3447,13 +3447,13 @@ d-mode not added to ac-modes!"
     ;; js2-error-buffer-mode
     ;; js2-error-buffer-next
     ;; js2-error-buffer-prev and some more...
-    (pel-config-major-mode javascript pel:for-javascript nil))
+    (pel-config-major-mode javascript pel:for-javascript :no-ts))
    ;;
    ((eq pel-use-javascript 'js-mode)
     ;; Use the built-in js.el
     (pel-autoload-file js for: js-mode)
     (pel-eval-after-load js-mode
-      (pel-config-major-mode js pel:for-javascript nil
+      (pel-config-major-mode js pel:for-javascript :no-ts
         ;; 5) Set tab-width for the buffer as specified by the PEL user option
         ;; for the major mode.
         (setq-local tab-width pel-js-tab-width))))))
@@ -3472,7 +3472,7 @@ d-mode not added to ac-modes!"
                      julia-snail-mode)
   (define-pel-global-prefix pel:for-julia (kbd "<f11> SPC j"))
   (define-key pel:for-julia  "z" #'julia-snail)
-  (pel-config-major-mode julia pel:for-julia nil
+  (pel-config-major-mode julia pel:for-julia :no-ts
     (if (fboundp 'julia-snail-mode)
         (julia-snail-mode 1)
       (display-warning 'pel-use-julia
@@ -3774,7 +3774,7 @@ d-mode not added to ac-modes!"
             (pel-expand-url-file-name pel-clisp-hyperspec-root))
 
   (declare-function pel--install-clisp-skel "pel-skels-clisp")
-  (pel-config-major-mode lisp pel:for-lisp nil
+  (pel-config-major-mode lisp pel:for-lisp :no-ts
     (pel-local-set-f12-M-f12 'pel:elisp-function "f")
     (pel--install-clisp-skel pel:lisp-skel)
     ;;
@@ -3834,7 +3834,7 @@ d-mode not added to ac-modes!"
   (pel--lisp-languages-map-for pel:for-arc)
 
   ;; activate the <f12> key binding for arc-mode
-  (pel-config-major-mode arc pel:for-arc nil))
+  (pel-config-major-mode arc pel:for-arc :no-ts))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC T`` : Janet
@@ -3870,7 +3870,7 @@ d-mode not added to ac-modes!"
   ;; Key Bindings
   (define-pel-global-prefix pel:for-janet (kbd "<f11> SPC T"))
   (pel--lisp-languages-map-for pel:for-janet)
-  (pel-config-major-mode janet pel:for-janet nil))
+  (pel-config-major-mode janet pel:for-janet :no-ts))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-j`` : Clojure
@@ -3905,7 +3905,7 @@ d-mode not added to ac-modes!"
     (pel-ensure-package clj-refactor from: melpa))
 
   ;; activate the <f12> key binding for clojure-mode
-  (pel-config-major-mode clojure pel:for-clojure nil
+  (pel-config-major-mode clojure pel:for-clojure :no-ts
     (when pel-use-clj-refactor
       ;; Activate clj-refactor and optionally Yasnippet
       (if (and (fboundp 'clj-refactor-mode)
@@ -4061,7 +4061,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (pel--lisp-languages-map-for pel:for-scheme)
 
   ;; activate the <f12> key binding for scheme-mode
-  (pel-config-major-mode scheme pel:for-scheme nil)
+  (pel-config-major-mode scheme pel:for-scheme :no-ts)
 
   ;; ---------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-z`` : Chez
@@ -4071,7 +4071,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:for-chez "z" 'pel-chez-repl)
     (define-key pel:for-chez (kbd "C-l") 'pel-clear-scheme-repl-buffer)
     ;; activate the <f12> key binding for chez-mode
-    (pel-config-major-mode chez pel:for-chez nil))
+    (pel-config-major-mode chez pel:for-chez :no-ts))
 
   ;; ---------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-i`` : Chibi
@@ -4082,7 +4082,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:for-chibi "z" 'pel-chibi-repl)
     (define-key pel:for-chibi (kbd "C-l") 'pel-clear-scheme-repl-buffer)
     ;; activate the <f12> key binding for chibi-mode
-    (pel-config-major-mode chibi pel:for-chibi nil))
+    (pel-config-major-mode chibi pel:for-chibi :no-ts))
 
   ;; ---------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-k`` : Chicken
@@ -4093,7 +4093,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:for-chicken "z" 'pel-chicken-repl)
     (define-key pel:for-chicken (kbd "C-l") 'pel-clear-scheme-repl-buffer)
     ;; activate the <f12> key binding for chicken-mode
-    (pel-config-major-mode chicken pel:for-chicken nil))
+    (pel-config-major-mode chicken pel:for-chicken :no-ts))
 
   ;; ---------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-b`` : Gambit
@@ -4120,7 +4120,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:for-gambit (kbd "C-l") 'pel-clear-scheme-repl-buffer)
 
     ;; activate the <f12> key binding for gambit-mode
-    (pel-config-major-mode gambit pel:for-gambit nil
+    (pel-config-major-mode gambit pel:for-gambit :no-ts
       ;; Inside Gambit mode, ensure that the Scheme REPL is the Gambit REPL
       ;; unless Gerbil is also used.
       (unless pel-use-gerbil
@@ -4151,7 +4151,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:for-gerbil (kbd "C-l") 'pel-clear-scheme-repl-buffer)
 
     ;; activate the <f12> key binding for gerbil-mode
-    (pel-config-major-mode gerbil pel:for-gerbil nil
+    (pel-config-major-mode gerbil pel:for-gerbil :no-ts
       ;; Inside Gerbil mode, ensure that the Scheme REPL is the gerbil REPL.
       (pel--set-scheme-repl pel-gerbil-repl)
       ;; Visit identified TAGS files
@@ -4165,7 +4165,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:for-guile "z" 'pel-guile-repl)
     (define-key pel:for-guile (kbd "C-l") 'pel-clear-scheme-repl-buffer)
     ;; activate the <f12> key binding for guile-mode
-    (pel-config-major-mode guile pel:for-guile nil))
+    (pel-config-major-mode guile pel:for-guile :no-ts))
 
   ;; ---------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-m`` : Mit-Scheme
@@ -4175,7 +4175,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:for-mit-scheme "z" 'pel-mit-scheme-repl)
     (define-key pel:for-mit-scheme (kbd "C-l") 'pel-clear-scheme-repl-buffer)
     ;; activate the <f12> key binding for mit-scheme-mode
-    (pel-config-major-mode mit-scheme pel:for-mit-scheme nil))
+    (pel-config-major-mode mit-scheme pel:for-mit-scheme :no-ts))
 
   ;; ---------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-r`` : Racket
@@ -4198,7 +4198,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (when pel-use-speedbar
       (pel-add-speedbar-extension "\\.rkt[dl]?\\'"))
     ;; activate the <f12> key binding for racket-mode
-    (pel-config-major-mode racket pel:for-racket nil))
+    (pel-config-major-mode racket pel:for-racket :no-ts))
 
   ;; ---------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-h`` : Scsh
@@ -4208,7 +4208,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:for-scsh "z" 'pel-scsh-repl)
     (define-key pel:for-scsh (kbd "C-l") 'pel-clear-scheme-repl-buffer)
     ;; activate the <f12> key binding for scsh-mode
-    (pel-config-major-mode scsh pel:for-scsh nil)))
+    (pel-config-major-mode scsh pel:for-scsh :no-ts)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming
@@ -4318,7 +4318,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (require 'erlang-start)
     (defvar erlang-mode-map) ; declare dynamic: prevent byte-compiler warnings
 
-    (pel-config-major-mode erlang pel:for-erlang nil
+    (pel-config-major-mode erlang pel:for-erlang :no-ts
       ;; Activate Erlang setup.
       ;; Set fill-column to Erlang's default if specified
       (when pel-erlang-fill-column
@@ -4678,7 +4678,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (add-hook 'elixir-mode-hook 'lsp))
 
   ;; Activate Elixir setup.
-  (pel-config-major-mode elixir pel:for-elixir nil))
+  (pel-config-major-mode elixir pel:for-elixir :no-ts))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` : LFE programming
@@ -4699,7 +4699,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-key pel:for-lfe (kbd "M-c") 'pel-lfe-eval-buffer)
 
   ;; Setup the LFE major mode
-  (pel-config-major-mode lfe pel:for-lfe nil
+  (pel-config-major-mode lfe pel:for-lfe :no-ts
     (when pel-emacs-is-a-tty-p
       (if (boundp 'lfe-mode-map)
           (define-key lfe-mode-map (kbd "M-[") nil)
@@ -4714,7 +4714,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; TODO simplify this code, integrate the ability to add <f12> key setup
   ;;      to an inferior process mode to the macros I normally use.
   (define-pel-global-prefix pel:for-inferior-lfe (kbd "<f11> SPC SPC C-l"))
-  ;; (pel-config-major-mode inferior-lfe pel:for-inferior-lfe nil)
+  ;; (pel-config-major-mode inferior-lfe pel:for-inferior-lfe :no-ts)
   (defun pel--setup-for-inferior-lfe ()
     "Activate inferior-lfe setup, take local variables into account."
     (pel-local-set-f12-M-f12 'pel:for-inferior-lfe)
@@ -4773,7 +4773,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   (pel--lisp-languages-map-for pel:for-hamler)
 ;;
 ;;   ;; Activate HAMLER setup.
-;;   (pel-config-major-mode hamler pel:for-hamler nil))
+;;   (pel-config-major-mode hamler pel:for-hamler :no-ts))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; BEAM programming Language common tools
@@ -4801,7 +4801,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                                   ".hsc"
                                   ".gs")))
   ;; the haskell-mode is part of Emacs
-  (pel-config-major-mode haskell pel:for-haskell nil))
+  (pel-config-major-mode haskell pel:for-haskell :no-ts))
 
 ;; Using Intero to support Haskell programming language.
 ;; (add-hook 'haskell-mode-hook 'intero-mode)
@@ -4817,7 +4817,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel--lisp-languages-map-for pel:for-hy)
 
   ;; activate the <f12> key binding for hy-mode
-  (pel-config-major-mode hy pel:for-hy nil))
+  (pel-config-major-mode hy pel:for-hy :no-ts))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC n`` : Nim programming
@@ -4835,7 +4835,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                                   ".nimble")))
   ;; the nim-mode is not part of Emacs
   (pel-eval-after-load nim-mode
-    (pel-config-major-mode nim pel:for-nim nil
+    (pel-config-major-mode nim pel:for-nim :no-ts
       ;; activate skeletons
       (pel--install-generic-skel pel:nim-skel 'pel-pkg-for-nim "nim"))))
 
@@ -4855,7 +4855,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-ensure-package tuareg from: melpa))
   ;; the ocaml-mode is part of Emacs
   (pel-eval-after-load tuareg
-    (pel-config-major-mode tuareg pel:for-ocaml nil)))
+    (pel-config-major-mode tuareg pel:for-ocaml :no-ts)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC O`` : Odin  programming
@@ -4875,7 +4875,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   (pel-autoload-file odin-mode for: odin-mode)
   (add-to-list 'auto-mode-alist '("\\.odin\\'" . odin-mode))
-  (pel-config-major-mode odin pel:for-odin nil))
+  (pel-config-major-mode odin pel:for-odin :no-ts))
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming
 (when pel-use-python
@@ -4986,7 +4986,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-key pel:for-rexx (kbd "<up>")   'rexx-goto-previous-procedure)
 
   ;; activate the <f12> key binding for rexx-mode
-  (pel-config-major-mode rexx pel:for-rexx nil))
+  (pel-config-major-mode rexx pel:for-rexx :no-ts))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC N`` : NetRexx programming
@@ -5010,7 +5010,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-key pel:for-netrexx "j"          'netrexx-insert-javadoc-for-method)
 
   ;; activate the <f12> key binding for netrexx-mode
-  (pel-config-major-mode netrexx pel:for-netrexx nil))
+  (pel-config-major-mode netrexx pel:for-netrexx :no-ts))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC P`` : Perl programming
@@ -5107,7 +5107,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; 1) the perl-mode, which is part of Emacs
   (defvar pel-perl-man-section)      ; prevent byte-compiler warning in Emacs 26
   (pel-eval-after-load perl-mode
-    (pel-config-major-mode perl pel:for-perl nil
+    (pel-config-major-mode perl pel:for-perl :no-ts
       ;; activate skeletons
       (pel--install-generic-skel pel:perl-skel
                                  '(pel-pkg-generic-code-style
@@ -5128,7 +5128,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; 2) the cperl-mode, which may come from Emacs or from external package
   (defvar pel-cperl-man-section)    ; prevent byte-compiler warning in Emacs 26
   (pel-eval-after-load cperl-mode
-    (pel-config-major-mode cperl pel:for-perl nil
+    (pel-config-major-mode cperl pel:for-perl :no-ts
       ;; activate skeletons
       (pel--install-generic-skel pel:perl-skel
                                  '(pel-pkg-generic-code-style
@@ -5163,7 +5163,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-pel-global-prefix pel:for-ruby (kbd "<f11> SPC U"))
   (define-pel-global-prefix pel:ruby-skel (kbd "<f11> SPC U <f12>"))
   ;; the ruby-mode is part of Emacs
-  (pel-config-major-mode ruby pel:for-ruby nil
+  (pel-config-major-mode ruby pel:for-ruby :no-ts
     ;; activate skeletons
     (pel--install-generic-skel pel:ruby-skel 'pel-pkg-for-ruby "ruby")))
 
@@ -5215,7 +5215,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-key pel:for-rust "d" 'rust-dbg-wrap-or-unwrap)
   (define-key pel:for-rust "l" 'rust-run-clippy)
 
-  (pel-config-major-mode rust pel:for-rust nil
+  (pel-config-major-mode rust pel:for-rust :no-ts
 
     (setq indent-tabs-mode nil)
     (when (boundp 'rust-indent-offset)
@@ -5238,7 +5238,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; (add-to-list 'auto-mode-alist '("\\.\\(mod\\|MOD\\|m2\\)\\)\\'") . modula-2-mode )
   ;; The feature is: modula2.  The mode is: m2-mode (with an alias named modula-2-mode)
   (pel-eval-after-load modula2
-    (pel-config-major-mode m2 pel:for-modula-2 nil)))
+    (pel-config-major-mode m2 pel:for-modula-2 :no-ts)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-p`` : Pascal programming
@@ -5248,7 +5248,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   ;; The feature is: pascal.  The mode is: pascal-mode.
   (pel-eval-after-load pascal
-    (pel-config-major-mode pascal pel:for-pascal nil)))
+    (pel-config-major-mode pascal pel:for-pascal :no-ts)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-e`` : Eiffel programming
@@ -5262,7 +5262,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (when pel-use-speedbar
     (pel-add-speedbar-extension ".e"))
 
-  ;; (pel-config-major-mode eiffel pel:for-eiffel nil
+  ;; (pel-config-major-mode eiffel pel:for-eiffel :no-ts
   ;; [:todo 2025-05-18, by Pierre Rouleau: The eiffel-mode does not fully
   ;;   comply with all the mechanics of a major mode yet and therefore the
   ;;   above macro cannot be used. Use the following expanded code instead
@@ -5303,7 +5303,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-key pel:for-seed7 (kbd "<down>") 'seed7-to-block-forward)
 
   (pel-eval-after-load seed7-mode
-    (pel-config-major-mode seed7 pel:for-seed7 nil
+    (pel-config-major-mode seed7 pel:for-seed7 :no-ts
       (setq-local pel-indentation-width-control-variable 'seed7-indent-width)
       (setq-local pel-tab-width-control-variable         'seed7-indent-width)
       (when (boundp 'seed7-mode-map)
@@ -5324,7 +5324,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-ensure-package smalltalk-mode from: gnu)
 
   (pel-eval-after-load smalltalk-mode
-    (pel-config-major-mode smalltalk pel:for-smalltalk nil)))
+    (pel-config-major-mode smalltalk pel:for-smalltalk :no-ts)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC s`` : Swift  programming
@@ -5338,7 +5338,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-ensure-package swift-ts-mode from: melpa))
 
   (pel-eval-after-load swift-mode
-    (pel-config-major-mode swift pel:for-swift nil)))
+    (pel-config-major-mode swift pel:for-swift :no-ts)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC t`` : Tcl  programming
@@ -5349,7 +5349,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   (defvar pel-tcl-man-section)      ; prevent byte-compiler warning in Emacs 26
   (pel-eval-after-load tcl
-    (pel-config-major-mode tcl pel:for-tcl nil
+    (pel-config-major-mode tcl pel:for-tcl :no-ts
       ;; activate skeletons
       (pel--install-generic-skel pel:tcl-skel 'pel-pkg-for-tcl "tcl")
 
@@ -5368,7 +5368,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-pel-global-prefix pel:lua-skel (kbd "<f11> SPC u <f12>"))
 
   (pel-eval-after-load lua-mode
-    (pel-config-major-mode lua pel:for-lua nil
+    (pel-config-major-mode lua pel:for-lua :no-ts
       ;; activate skeletons
       (pel--install-generic-skel pel:lua-skel 'pel-pkg-for-lua "lua")
 
@@ -5386,7 +5386,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-pel-global-prefix pel:sh-skel (kbd "<f11> SPC Z <f12>"))
 
   ;; Shell support, the sh-mode is part of Emacs
-  (pel-config-major-mode sh pel:for-sh nil
+  (pel-config-major-mode sh pel:for-sh :no-ts
     (superword-mode 1)
     (define-key pel:for-sh "\"" 'pel-sh-double-quote-word)
     (define-key pel:for-sh "'"  'pel-sh-single-quote-word)
@@ -5471,7 +5471,7 @@ to identify a Verilog file.  Anything else is assumed being V."
     (pel-autoload-file v-mode for: v-mode)
     (define-key pel:for-v (kbd "C-f") 'v-format-buffer)
     (define-key pel:for-v (kbd "<f10>") 'v-menu)
-    (pel-config-major-mode v pel:for-v nil
+    (pel-config-major-mode v pel:for-v :no-ts
       (pel-v-cleanup-auto-mode-alist)))
 
    ((eq pel-use-v 'vlang-mode)
@@ -5480,7 +5480,7 @@ to identify a Verilog file.  Anything else is assumed being V."
     (pel-install-github-file "pierre-rouleau/vlang-mode/master"
                              "vlang-mode.el")
     (pel-autoload-file vlang-mode for: vlang-mode)
-    (pel-config-major-mode v pel:for-v nil
+    (pel-config-major-mode v pel:for-v :no-ts
       (pel-v-cleanup-auto-mode-alist))))
 
   ;; V file name extension clashes with Verilog file names.
@@ -5568,7 +5568,7 @@ to identify a Verilog file.  Anything else is assumed being V."
     (pel-ensure-package vhdl-ts-mode from: melpa))
 
   (pel-eval-after-load vhdl-mode
-    (pel-config-major-mode vhdl pel:for-vhdl nil))
+    (pel-config-major-mode vhdl pel:for-vhdl :no-ts))
   )
 
 ;; ---------------------------------------------------------------------------
@@ -5583,7 +5583,7 @@ to identify a Verilog file.  Anything else is assumed being V."
     (pel-ensure-package zig-ts-mode from: melpa))
 
   (pel-eval-after-load zig-mode
-    (pel-config-major-mode zig pel:for-zig nil)))
+    (pel-config-major-mode zig pel:for-zig :no-ts)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC z s`` : shell-mode
@@ -5696,7 +5696,7 @@ to identify a Verilog file.  Anything else is assumed being V."
                      "\\.adoc\\'"
                      "\\.adoc.txt\\'")
   (pel-eval-after-load adoc-mode
-    (pel-config-major-mode adoc pel:for-asciidoc nil
+    (pel-config-major-mode adoc pel:for-asciidoc :no-ts
       ;; Preliminary bindings - there's way too many - and not structured
       ;; enough.  It would probably be possible to combine some, like
       ;; constrained and un-constrained, if the command first checks text at
@@ -5892,7 +5892,7 @@ to identify a Verilog file.  Anything else is assumed being V."
           (define-key org-mode-map (kbd "M-Y") 'org-metaleft)
           (define-key org-mode-map (kbd "M-Z") 'org-metaright))))
 
-    (pel-config-major-mode org pel:for-org-mode nil
+    (pel-config-major-mode org pel:for-org-mode :no-ts
       ;; Use the cleaner outline view mode.
       (if (fboundp 'org-indent-mode)
           (org-indent-mode 1)
@@ -5930,14 +5930,14 @@ to identify a Verilog file.  Anything else is assumed being V."
   ;; .raml for RESTful API Modeling Language
   (pel-set-auto-mode yaml-mode for: "\\.\\(e?ya?\\|ra\\)ml\\'")
 
-  (pel-config-major-mode yaml pel:for-yaml nil))
+  (pel-config-major-mode yaml pel:for-yaml :no-ts))
 
 (when pel-use-cwl-mode
   (define-pel-global-prefix pel:for-cwl (kbd "<f11> SPC M-c"))
   (pel-ensure-package cwl-mode from: melpa)
   ;; .cwl files are associated with cwl-mode
   (pel-set-auto-mode cwl-mode for: "\\.cwl\\'")
-  (pel-config-major-mode cwl pel:for-cwl nil))
+  (pel-config-major-mode cwl pel:for-cwl :no-ts))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-m`` : Markdown
@@ -6032,7 +6032,7 @@ to identify a Verilog file.  Anything else is assumed being V."
                                   ".mkdn"
                                   ".mdwn")))
 
-  (pel-config-major-mode markdown pel:for-markdown nil
+  (pel-config-major-mode markdown pel:for-markdown :no-ts
     (when (eq pel-use-markdown-toc 'update-toc-on-save)
       (defun pel-markdown-toc-refresh ()
         "Update the table of content if present."
@@ -6123,7 +6123,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
   (declare-function pel--install-rst-skel "pel-skels-rst")
   (pel-eval-after-load rst
-    (pel-config-major-mode rst pel:for-reST nil
+    (pel-config-major-mode rst pel:for-reST :no-ts
       (pel--install-rst-skel pel:rst-skel)
       (when (and pel-use-imenu+
                  (fboundp 'imenup-add-defs-to-menubar))
@@ -6145,7 +6145,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:for-graphviz-dot "p" 'graphviz-dot-preview)
   (define-key pel:for-graphviz-dot (kbd "TAB") 'graphviz-dot-indent-graph)
 
-  (pel-config-major-mode graphviz-dot pel:for-graphviz-dot nil))
+  (pel-config-major-mode graphviz-dot pel:for-graphviz-dot :no-ts))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-M`` : MscGen
@@ -6167,7 +6167,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:for-mscgen "l" 'mscgen-insert-label-at-point)
 
   (pel-eval-after-load mscgen-mode
-    (pel-config-major-mode mscgen pel:for-mscgen nil)))
+    (pel-config-major-mode mscgen pel:for-mscgen :no-ts)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-u`` : PlantUML
@@ -6200,7 +6200,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:for-plantuml "/"          'plantuml-complete-symbol)
   (define-key pel:for-plantuml (kbd "TAB")  'plantuml-indent-line)
 
-  (pel-config-major-mode plantuml pel:for-plantuml nil
+  (pel-config-major-mode plantuml pel:for-plantuml :no-ts
     ;; Configure plantuml default execution mode according to PEL's selection.
     (if (boundp 'plantuml-default-exec-mode)
         (setq plantuml-default-exec-mode (if (eq pel-use-plantuml 'server)
@@ -6238,7 +6238,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
   (declare-function pel-yang-setup-support "pel-yang")
   (pel-eval-after-load yang-mode
-    (pel-config-major-mode yang pel:for-yang nil
+    (pel-config-major-mode yang pel:for-yang :no-ts
       (pel-yang-setup-support))))
 
 
@@ -7208,7 +7208,7 @@ the ones defined from the buffer now."
       (interactive "P")
       (pel-help-open-pdf "changelog" open-github-page-p))
 
-    (pel-config-major-mode change-log :no-f12-keys nil
+    (pel-config-major-mode change-log :no-f12-keys :no-ts
       (when (boundp 'change-log-mode-map)
         (let ((map change-log-mode-map))
           (define-key map (kbd "<f12> <f1>") 'pel-changelog-help))))))
@@ -7756,7 +7756,7 @@ the ones defined from the buffer now."
   ;;       then add the necessary user-options and un-comment the following
   ;;       and comment what follows it.
   ;; (define-pel-global-prefix pel:for-rpm-spec  (kbd "<f11> SPC M-S"))
-  ;; (pel-config-major-mode rpm-spec pel:for-rpm-spec nil
+  ;; (pel-config-major-mode rpm-spec pel:for-rpm-spec :no-ts
   ;;   (define-key pel:for-rpm-spec "l" 'pel-rpm-spec-lint))
 
   (pel-eval-after-load rpm-spec-mode
@@ -7794,8 +7794,8 @@ the ones defined from the buffer now."
   (add-to-list 'auto-mode-alist '("ssh_known_hosts\\'"        . ssh-known-hosts-mode))
 
   (pel-eval-after-load ssh-file-modes
-    (pel-config-major-mode ssh-authorized-keys pel:for-ssh-autorized-keys nil)
-    (pel-config-major-mode ssh-known-hosts     pel:for-ssh-known-hosts nil)))
+    (pel-config-major-mode ssh-authorized-keys pel:for-ssh-autorized-keys :no-ts)
+    (pel-config-major-mode ssh-known-hosts     pel:for-ssh-known-hosts :no-ts)))
 
 (when pel-use-selinux-policy
   (pel-install-github-file   "pierre-rouleau/selinux-policy/master"
