@@ -149,15 +149,6 @@
 ;;   - `pel--problem-format'
 ;;
 ;; Lazy loading and package installation:
-;; - `pel-require-at-load'
-;;   - `pel--require-at-load'
-;; - `pel-require-after-init'
-;;   - `pel--require-after-init'
-;; - `pel-eval-after-load'
-;; - `pel-set-auto-mode'
-;; - `pel-autoload-file'
-;; - `pel-declare-file'
-;;
 ;; - `pel-install-github-file'
 ;;   - `pel--install-github-file'
 ;; - `pel-install-github-files'
@@ -1632,19 +1623,21 @@ describing detected problems.  Error descriptions can be padded if
 
 ;; ---------------------------------------------------------------------------
 ;; Lazy loading and package installation:
+;;
+;; [:todo 2025-10-08, by Pierre Rouleau: Move tha set of function definitions
+;; inside its own file.]
+;;
+;;  The first set is defined in pel--keys.macros.el:
+;;
+;; @ `pel-require-at-load'
+;;   - `pel--require-at-load'
+;; @ `pel-require-after-init'
+;;   - `pel--require-after-init'
+;; @ `pel-eval-after-load'
+;; @ `pel-set-auto-mode'
+;; @ `pel-autoload-file'
+;; @ `pel-declare-file'
 
-;; The first set of functions and macros provide mechanism to require, load,
-;; autoload and byte-compiler declaration facilities.
-;;
-;; -> - `pel-require-at-load'
-;;      - `pel--require-at-load'
-;; -> - `pel-require-after-init'
-;;      - `pel--require-after-init'
-;; -> - `pel-eval-after-load'
-;; -> - `pel-set-auto-mode'
-;; -> - `pel-autoload-file'
-;; -> - `pel-declare-file'
-;;
 ;; The second set of functions and macros in this group provide the logic to
 ;; download and install Emacs Lisp files into PEL's "utils" utility directory
 ;; stored in the directory identified by the variable `user-emacs-directory'.
@@ -1686,118 +1679,6 @@ describing detected problems.  Error descriptions can be padded if
 ;;         - `pel--package-install'
 ;;
 
-(defun pel--require-at-load (feature)
-  "Require specified FEATURE when loading only, not when compiling.
-FEATURE must be a quoted symbol.
-This is normally used by the macro `pel-require-at-load'."
-  (unless (require feature nil :no-error)
-    (display-warning 'pel-require-at-load
-                     (format "Failed loading %s" feature)
-                     :error)))
-
-(defmacro pel-require-at-load (feature)
-  "Require specified FEATURE when loading only, not when compiling.
-
-FEATURE must be an unquoted symbol representing the required
-feature."
-  `(cl-eval-when 'load
-     (pel--require-at-load (quote ,feature))))
-
-;; --
-(defun pel--require-after-init (feature secs)
-  "Require specified FEATURE some SECS after initializing Emacs.
-FEATURE must be a quoted symbol.
-This is normally used by the macro `pel-require-after-init'."
-  (run-with-idle-timer secs nil
-                       (function require)
-                       feature nil :no-error))
-
-(defmacro pel-require-after-init (feature secs)
-  "Require specified FEATURE some SECS after initializing Emacs.
-
-Don't require the feature when compiling.
-FEATURE must be an unquoted symbol representing the required
-feature.
-SECS may be an integer, a floating point number, or the internal
-time format returned by, e.g., ‘current-idle-time’."
-  `(cl-eval-when 'load
-     (pel--require-after-init (quote ,feature) ,secs)))
-
-;; --
-
-(defmacro pel-eval-after-load (feature &rest body)
-  "Evaluate BODY after the FEATURE has been loaded.
-FEATURE is an unquoted symbol.
-Use this for the configuration phase, like the :config of `use-package'."
-  (declare (indent 1))
-  `(with-eval-after-load (quote ,feature)
-     (condition-case-unless-debug err
-         (progn
-           ,@body)
-       (error
-        (display-warning 'pel-eval-after-load
-                         (format "Failed configuring %s: %s"
-                                 (quote ,feature)
-                                 err)
-                         :error)))))
-
-;; --
-(defmacro pel-set-auto-mode (mode for: &rest regexps)
-  "Activate automatic MODE for the list of file REGXEPS.
-MODE must be an un-quoted symbol.
-FOR: separator must be present.  It is cosmetic only.
-REGEXPS is on or several regular expression strings."
-  (declare (indent 0))
-  (ignore for:)
-  (let ((forms '()))
-    (setq forms
-          (dolist (regxp regexps (reverse forms))
-            (push `(add-to-list 'auto-mode-alist
-                                (quote (,regxp . ,mode)))
-                  forms)))
-    `(progn
-       ,@forms)))
-
-;; --
-(defmacro pel-autoload-file (fname for: &rest commands)
-  "Schedule the autoloading of FNAME for specified COMMANDS.
-FNAME is either a string or an unquoted symbol.
-The autoload is generated only when the command is not already bound.
-Argument FOR: just a required separator keyword to make code look better.
-
-The macro also generates a `declare-function' for each function in
-COMMANDS preventing byte-compiler warnings on code referencing these
-functions."
-  (declare (indent 0))
-  (ignore for:)
-  (let ((fname     (if (stringp fname) fname (symbol-name fname)))
-        (decl-fcts '()))
-    (dolist (fct commands)
-      (push `(declare-function ,fct ,fname) decl-fcts))
-    (if (> (length commands) 1)
-        `(progn
-           (dolist (fct (quote (,@commands)))
-             (unless (fboundp fct)
-               (autoload fct ,fname nil :interactive)))
-           ,@decl-fcts)
-      `(progn
-         (unless (fboundp (quote ,@commands))
-           (autoload (quote ,@commands) ,fname nil :interactive))
-         ,@decl-fcts))))
-
-;; --
-(defmacro pel-declare-file (fname defines: &rest commands)
-  "Declare one or several COMMANDS to be defined in specified FNAME.
-This does not generate any code.  It prevents byte-compiler warnings.
-DEFINES: is a cosmetic only argument that must be present."
-  (declare (indent 0))
-  (ignore defines:)
-  (let ((fname     (if (stringp fname) fname (symbol-name fname)))
-        (decl-fcts '()))
-    (dolist (fct commands)
-      (push `(declare-function ,fct ,fname) decl-fcts))
-    `(progn
-       ,@decl-fcts)))
 
 ;; -------
 

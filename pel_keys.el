@@ -132,7 +132,8 @@
 ;;                      ;
 ;;                      ;
 (require 'pel--macros)  ; use: pel-setq, pel-seq-default
-(require 'pel--keys-macros)
+(require 'pel--keys-macros) ; use: `pel-eval-after-load'
+;;                          ;      `pel-config-major-mode'
 (require 'pel--options) ; all `pel-use-...' variables identify what to use.
 ;;                      ; also defines a set of utility functions to deal with
 ;;                      ; the options: pel-auto-complete-help
@@ -3385,7 +3386,7 @@ d-mode not added to ac-modes!"
       (when pel-use-goflymake
         (when (boundp 'go-mode-map)
           (define-key go-mode-map (kbd "<f11> !!") 'pel-go-toggle-syntax-checker)))
-      (pel-config-major-mode go pel:for-go :no-ts
+      (pel-config-major-mode go pel:for-go :same-for-ts
         ;; ensure gofmt is executed before saving file if
         ;; configured to do so
         (when pel-go-run-gofmt-on-buffer-save
@@ -5536,8 +5537,7 @@ to identify a Verilog file.  Anything else is assumed being V."
     ;; There are no reasons to use verilog-mode when the verilog-ts-mode
     ;; mode is available and working.  Therefore ensure that whenever
     ;; verilog-mode is requested, verilog-ts-mode is used.
-    (pel-config-major-mode verilog pel:for-verilog
-      :same-for-ts
+    (pel-config-major-mode verilog pel:for-verilog :same-for-ts
       (when (and pel-use-verilog-ext
                  (fboundp 'verilog-ext-mode))
         (verilog-ext-mode 1)

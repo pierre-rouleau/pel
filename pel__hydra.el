@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-04-08 14:26:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-08 13:38:02 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,6 +31,7 @@
 ;;
 (require 'pel--base)
 (require 'pel--options)
+(require 'pel--keys-macros)
 (require 'hydra)
 (require 'pel-buffer)
 (require 'pel-frame-control)

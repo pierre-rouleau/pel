@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-08 12:35:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-08 13:35:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -49,6 +49,21 @@
 ;;         - `pel--multi-file-customization-p'
 ;;         - `pel--load-all-libs-for'
 ;;           - `pel--load-all-in'
+
+;; Lazy loading and package installation:
+
+;; The first set of functions and macros provide mechanism to require, load,
+;; autoload and byte-compiler declaration facilities.
+;;
+;;
+;; @ `pel-require-at-load'
+;;   - `pel--require-at-load'
+;; @ `pel-require-after-init'
+;;   - `pel--require-after-init'
+;; @ `pel-eval-after-load'
+;; @ `pel-set-auto-mode'
+;; @ `pel-autoload-file'
+;; @ `pel-declare-file'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -1602,6 +1617,123 @@ KEY sequence then create function bindings under the PREFIX
                  `(define-key ,prefix (kbd "<f3>") 'pel-customize-library)))
       code)))
 
+;; ---------------------------------------------------------------------------
+
+(defun pel--require-at-load (feature)
+  "Require specified FEATURE when loading only, not when compiling.
+FEATURE must be a quoted symbol.
+This is normally used by the macro `pel-require-at-load'."
+  (unless (require feature nil :no-error)
+    (display-warning 'pel-require-at-load
+                     (format "Failed loading %s" feature)
+                     :error)))
+
+(defmacro pel-require-at-load (feature)
+  "Require specified FEATURE when loading only, not when compiling.
+
+FEATURE must be an unquoted symbol representing the required
+feature."
+  `(cl-eval-when 'load
+     (pel--require-at-load (quote ,feature))))
+
+;; --
+(defun pel--require-after-init (feature secs)
+  "Require specified FEATURE some SECS after initializing Emacs.
+FEATURE must be a quoted symbol.
+This is normally used by the macro `pel-require-after-init'."
+  (run-with-idle-timer secs nil
+                       (function require)
+                       feature nil :no-error))
+
+(defmacro pel-require-after-init (feature secs)
+  "Require specified FEATURE some SECS after initializing Emacs.
+
+Don't require the feature when compiling.
+FEATURE must be an unquoted symbol representing the required
+feature.
+SECS may be an integer, a floating point number, or the internal
+time format returned by, e.g., ‘current-idle-time’."
+  `(cl-eval-when 'load
+     (pel--require-after-init (quote ,feature) ,secs)))
+
+
+;; --
+(defmacro pel-set-auto-mode (mode for: &rest regexps)
+  "Activate automatic MODE for the list of file REGXEPS.
+MODE must be an un-quoted symbol.
+FOR: separator must be present.  It is cosmetic only.
+REGEXPS is on or several regular expression strings."
+  (declare (indent 0))
+  (ignore for:)
+  (let ((forms '()))
+    (setq forms
+          (dolist (regxp regexps (reverse forms))
+            (push `(add-to-list 'auto-mode-alist
+                                (quote (,regxp . ,mode)))
+                  forms)))
+    `(progn
+       ,@forms)))
+
+;; --
+
+(defmacro pel-autoload-file (fname for: &rest commands)
+  "Schedule the autoloading of FNAME for specified COMMANDS.
+FNAME is either a string or an unquoted symbol.
+The autoload is generated only when the command is not already bound.
+Argument FOR: just a required separator keyword to make code look better.
+
+The macro also generates a `declare-function' for each function in
+COMMANDS preventing byte-compiler warnings on code referencing these
+functions."
+  (declare (indent 0))
+  (ignore for:)
+  (let ((fname     (if (stringp fname) fname (symbol-name fname)))
+        (decl-fcts '()))
+    (dolist (fct commands)
+      (push `(declare-function ,fct ,fname) decl-fcts))
+    (if (> (length commands) 1)
+        `(progn
+           (dolist (fct (quote (,@commands)))
+             (unless (fboundp fct)
+               (autoload fct ,fname nil :interactive)))
+           ,@decl-fcts)
+      `(progn
+         (unless (fboundp (quote ,@commands))
+           (autoload (quote ,@commands) ,fname nil :interactive))
+         ,@decl-fcts))))
+
+;; --
+(defmacro pel-declare-file (fname defines: &rest commands)
+  "Declare one or several COMMANDS to be defined in specified FNAME.
+This does not generate any code.  It prevents byte-compiler warnings.
+DEFINES: is a cosmetic only argument that must be present."
+  (declare (indent 0))
+  (ignore defines:)
+  (let ((fname     (if (stringp fname) fname (symbol-name fname)))
+        (decl-fcts '()))
+    (dolist (fct commands)
+      (push `(declare-function ,fct ,fname) decl-fcts))
+    `(progn
+       ,@decl-fcts)))
+
+;; --
+
+(defmacro pel-eval-after-load (feature &rest body)
+  "Evaluate BODY after the FEATURE has been loaded.
+FEATURE is an unquoted symbol.
+Use this for the configuration phase, like the :config of `use-package'."
+  (declare (indent 1))
+  `(with-eval-after-load (quote ,feature)
+     (condition-case-unless-debug err
+         (progn
+           ,@body)
+       (error
+        (display-warning 'pel-eval-after-load
+                         (format "Failed configuring %s: %s"
+                                 (quote ,feature)
+                                 err)
+                         :error)))))
+
 ;; --
 
 (defun pel--mode-hook-maybe-call (fct mode hook &optional append)
@@ -1722,7 +1854,7 @@ Function created by the `pel-config-major-mode' macro."
            (setq-local indent-tabs-mode ,gn-use-tabs)))))
 
     ;; - Add tree sitter control if necessary
-    (when (and (memq ts-option '(:same-for-ts :independent-ts))
+    (when (and (eq ts-option :same-for-ts)
                (boundp 'major-mode-remap-alist))
       ;; There are no reasons to use major-mode when the major-ts-mode
       ;; mode is available and working.  Therefore ensure that whenever
@@ -1769,9 +1901,8 @@ Function created by the `pel-config-major-mode' macro."
                      (pel--mode-hook-maybe-call (function ,gn-fct1)
                                                 (quote ,gn-mode-name)
                                                 (quote ,gn-mode-hook))))
-    ;; 4.1 - Append ts-mode hook if necessary: when the ts-mode does not
-    ;;       derive from the standard mode.
-    (when (eq ts-option :independent-ts)
+    ;; 4.1 - Append ts-mode hook if necessary
+    (when (memq ts-option '(:same-for-ts :independent-ts))
       (pel-append-to hook-body
                      `((pel--mode-hook-maybe-call (function ,gn-fct1)
                                                   (quote ,gn-ts-mode-name)
