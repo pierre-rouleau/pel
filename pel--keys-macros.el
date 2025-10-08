@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-08 14:37:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-08 17:01:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -330,6 +330,7 @@
                                                                  ijanet
                                                                  inf-janet))
     ([f11 32 ?J]     "pl-java"          pel-pkg-for-java        (java c))
+    ([f11 32 ?i]     "pl-javascript"    pel-pkg-for-javascript  (js js2))
     ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       (julia
                                                                  julia-mode
                                                                  julia-snail
@@ -699,7 +700,9 @@ stored inside the doc/pdf directory.")
 ;;   "rectangles"
 
 ;; --
-
+;; [:todo 2025-10-08, by Pierre Rouleau: Add logic to search for the classic
+;; mode when the ts-mode is requested and a mapping is done for it in the
+;; `major-mode-remap-alist'. Once this is in place, remove the -ts specific entries.]
 (defconst pel--mode-letter-alist
   '(("Custom"          [f11 f2])
     ("dired"           [dired])
@@ -724,6 +727,7 @@ stored inside the doc/pdf directory.")
     ("factor"          [f11 32 27 ?f])
     ("forth"           [f11 32 ?f])
     ("go"              [f11 32 ?g])
+    ("go-ts"           [f11 32 ?g])
     ("janet"           [f11 32 ?T])
     ("julia"           [f11 32 ?j])
     ("meson"           [f11 32 ?3])
@@ -746,6 +750,10 @@ stored inside the doc/pdf directory.")
     ("vhdl"            [f11 32 ?H])
     ("hy"              [f11 32 8])
     ("java"            [f11 32 ?J])
+    ("java-ts"         [f11 32 ?J])
+    ("js2"             [f11 32 ?i])     ; javascript
+    ("js"              [f11 32 ?i])     ; javascript
+    ("js-ts"           [f11 32 ?i])     ; javascript
     ("lfe"             [f11 32 12])
     ("inferior-lfe"    [f11 32 32 12])
     ("ibuffer"         [f11 32 32 ?b])
@@ -765,6 +773,7 @@ stored inside the doc/pdf directory.")
     ;; ("rpmspec"         [f11 32 27 ?S])
     ("ruby"            [f11 32 ?U])
     ("rust"            [f11 32 ?r])
+    ("rust-ts"         [f11 32 ?r])
     ;;
     ("scheme"          [f11 32 19 19])
     ("chez"            [f11 32 19 26])
@@ -1028,6 +1037,8 @@ There should be no key binding!" keyseq))
     ("hy"               . "pl-hy")
     ("janet"            . "pl-janet")
     ("java"             . "pl-java")
+    ("javascript"       . "pl-javascript")
+    ("js"               . "pl-javascript")
     ("julia"            . "pl-julia")
     ("lfe"              . "pl-lfe")
     ("m4"               . "pl-m4")

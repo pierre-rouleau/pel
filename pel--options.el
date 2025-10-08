@@ -7352,19 +7352,40 @@ Values in the [2, 8] range are accepted."
 When set, identifies what mode is used to support Javascript."
   :group 'pel-pkg-for-javascript
   :type '(choice
-          (const :tag "Emacs basic support." nil)
-          (const :tag "Future: Emacs basic + \
-PEL additions using built-in js-mode." js-mode)
+          (const :tag "Emacs basic support using built-in \
+js-mode and js-ts-mode." nil)
+          (const :tag "Emacs basic + \
+PEL additions using built-in js-mode and js-ts-mode." js-mode)
           (const :tag "Supported by the js2-mode external package." js2-mode)))
 (pel-put 'pel-use-javascript :package-is '(when (eq pel-use-javascript 'js2-mode)
                                             '((elpa . js2-mode))))
 
-(defcustom pel-javascript-activates-minor-modes nil
-  "List of *local* minor-modes automatically activated for javascript-mode buffers.
-Enter *local* minor-mode activating function symbols.
-Do not enter lambda expressions."
-  :group 'pel-pkg-for-javascript
-  :type '(repeat function))
+;; (defcustom pel-javascript-activates-minor-modes nil
+;;   "List of *local* minor-modes automatically activated for javascript-mode buffers.
+;; Enter *local* minor-mode activating function symbols.
+;; Do not enter lambda expressions."
+;;   :group 'pel-pkg-for-javascript
+;;   :type '(repeat function))
+
+;; (defcustom pel-javascript-tab-width 4
+;;   "Column width display rendering of hard tab for javascript buffers.
+;;
+;; PEL stores this in `tab-width' when opening javascript  buffers.
+;;
+;; This does *NOT* control the indentation in javascript
+;; files, it only controls the column width display rendering of hard tabs
+;; in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
+;;   :group 'pel-pkg-for-javascript
+;;   :type 'integer
+;;   :safe 'pel-indent-valid-p)
+
+;; (defcustom pel-javascript-use-tabs nil
+;;   "Value of `indent-tabs-mode' for editing javascript files.
+;; - If set to nil: only spaces are used for indentation.
+;; - If set to t: hard tabs are used when possible."
+;;   :group 'pel-pkg-for-javascript
+;;   :type 'boolean
+;;   :safe #'booleanp)
 
 (defcustom pel-js-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for js-mode buffers.
@@ -7372,26 +7393,6 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-javascript
   :type '(repeat function))
-
-(defcustom pel-javascript-tab-width 4
-  "Column width display rendering of hard tab for javascript buffers.
-
-PEL stores this in `tab-width' when opening javascript  buffers.
-
-This does *NOT* control the indentation in javascript
-files, it only controls the column width display rendering of hard tabs
-in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
-  :group 'pel-pkg-for-javascript
-  :type 'integer
-  :safe 'pel-indent-valid-p)
-
-(defcustom pel-javascript-use-tabs nil
-  "Value of `indent-tabs-mode' for editing javascript files.
-- If set to nil: only spaces are used for indentation.
-- If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-javascript
-  :type 'boolean
-  :safe #'booleanp)
 
 (defcustom pel-js-tab-width 4
   "Column width display rendering of hard tab for javascript buffers.
@@ -7406,6 +7407,33 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :safe 'pel-indent-valid-p)
 
 (defcustom pel-js-use-tabs nil
+  "Value of `indent-tabs-mode' for editing javascript files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-javascript
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-js2-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for js2-mode buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-javascript
+  :type '(repeat function))
+
+(defcustom pel-js2-tab-width 4
+  "Column width display rendering of hard tab for javascript buffers.
+
+PEL stores this in `tab-width' when opening javascript  buffers.
+
+This does *NOT* control the indentation in javascript
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
+  :group 'pel-pkg-for-javascript
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-js2-use-tabs nil
   "Value of `indent-tabs-mode' for editing javascript files.
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."

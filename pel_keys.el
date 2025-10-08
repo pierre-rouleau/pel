@@ -3440,7 +3440,9 @@ d-mode not added to ac-modes!"
         (progn
           (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
           (add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode)))
+      (add-to-list 'auto-mode-alist '("\\.js?\\'" . js2-mode))
       (add-hook 'js-mode-hook 'js2-minor-mode))
+
     ;; Experimental ...
     (define-key pel:for-javascript "." 'js2-find-node-at-point)
     (define-key pel:for-javascript "?" 'js2-node-name-at-point)
@@ -3453,13 +3455,14 @@ d-mode not added to ac-modes!"
     ;; js2-error-buffer-mode
     ;; js2-error-buffer-next
     ;; js2-error-buffer-prev and some more...
-    (pel-config-major-mode javascript pel:for-javascript :no-ts))
+    (pel-config-major-mode js2 pel:for-javascript :no-ts))
    ;;
    ((eq pel-use-javascript 'js-mode)
     ;; Use the built-in js.el
-    (pel-autoload-file js for: js-mode)
-    (pel-eval-after-load js-mode
-      (pel-config-major-mode js pel:for-javascript :no-ts
+    (pel-autoload-file js for:
+                       js-mode js-ts-mode)
+    (pel-eval-after-load js
+      (pel-config-major-mode js pel:for-javascript :same-for-ts
         ;; 5) Set tab-width for the buffer as specified by the PEL user option
         ;; for the major mode.
         (setq-local tab-width pel-js-tab-width))))))
