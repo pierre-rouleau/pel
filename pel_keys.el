@@ -3418,7 +3418,7 @@ d-mode not added to ac-modes!"
 
   ;; java-mode is implemented in the cc-mode.el
   (pel-eval-after-load cc-mode
-    (pel-config-major-mode java pel:for-java :no-ts)
+    (pel-config-major-mode java pel:for-java :same-for-ts)
     (when pel-use-lsp-java
       (require 'lsp-java)
       (when (fboundp 'lsp)
@@ -5227,13 +5227,19 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (when (boundp 'rust-indent-offset)
       (setq-local tab-width rust-indent-offset))
     (setq-local indent-tabs-mode pel-rust-use-tabs)
+    ;; [:todo 2025-10-08, by Pierre Rouleau: better handle adding a key to a
+    ;; mode that may also be a ts-mode]
     (when pel-use-cargo
-      (if (boundp 'rust-mode-map)
-          (define-key rust-mode-map
-            (kbd "TAB") 'company-indent-or-complete-common)
-        (display-warning 'pel-use-rust
-                         "Unbound rust-mode-map!"
-                         :error)))))
+      (cond
+       ((boundp 'rust-mode-map)
+        (define-key rust-mode-map
+                    (kbd "TAB") 'company-indent-or-complete-common))
+       ((boundp 'rust-ts-mode-map)
+        (define-key rust-ts-mode-map
+                    (kbd "TAB") 'company-indent-or-complete-common))
+       (t (display-warning 'pel-use-rust
+                           "Unbound rust-mode-map or rust-ts-mode-map!"
+                           :error))))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC 2`` : Modula2 programming
