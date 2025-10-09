@@ -27,8 +27,9 @@
 ;;  ========
 ;;
 ;; Code navigation: the layout of this file supports Emacs outline mode.  Use
-;; `outline-minor-mode' (<f11> M-l) to hide all text except the section
-;; headings to get a quick overview of the structure of this code.
+;; `outline-minor-mode' (<f11> M-l) with `lispy' mode active to hide all text
+;; except the section headings to get a quick overview of the structure of
+;; this code.
 ;;
 ;; This file defines most PEL key bindings, with some defined by the pel-skels
 ;; files and by pel__hydra file.
@@ -2520,8 +2521,8 @@ can't bind negative-argument to C-_ and M-_"
                      "pel-use-elf-mode is on, but can't find readelf executable!")))
 
 ;; ---------------------------------------------------------------------------
-;; - Programming Language Support
-;; ==============================
+;;* Programming Language Support
+;;  ============================
 
 (when (and pel-use-eldoc-box
            pel-emacs-is-graphic-p)
@@ -2531,7 +2532,8 @@ can't bind negative-argument to C-_ and M-_"
                      eldoc-box-hover-at-point-mode))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC 4`` : M4 programming utilities
+;;** M4 programming utilities
+;; Function Keys - <f11> - Prefix ``<f11> SPC 4`` :
 
 (when pel-use-m4
   (define-pel-global-prefix pel:for-m4     (kbd "<f11> SPC 4"))
@@ -2542,7 +2544,9 @@ can't bind negative-argument to C-_ and M-_"
   (pel-config-major-mode m4 pel:for-m4 :no-ts))
 
 ;; ---------------------------------------------------------------------------
-;; - AppleScript support
+;;** AppleScript support
+;; Function Keys - <f11> - Prefix ``<f11> SPC a`` :
+
 (when pel-use-applescript
   ;; the Melpa package does not seemed maintained. Use my copy instead.
   (pel-install-github-files "pierre-rouleau/apples-mode/master"
@@ -2581,8 +2585,8 @@ can't bind negative-argument to C-_ and M-_"
    'apples-mode 'apples-mode-hook)
 
 
-  ;; Text narration on macOS
-  ;; -----------------------
+;;*** Text narration on macOS
+;;    -----------------------
   ;; HYDRA: pel-∑narrate is at the bottom of this file with all other PEL hydras.
   (when pel-system-is-macos-p
     (pel-autoload-file pel-applescript for:
@@ -2600,8 +2604,8 @@ can't bind negative-argument to C-_ and M-_"
       (define-key pel:narrate "p" 'pel-say-paragraph))))
 
 ;; ---------------------------------------------------------------------------
-;; C-like programming languages: C, C++, Objective-C, Pike
-;; -------------------------------------------------------
+;;** C-like programming languages: C, C++, Objective-C, Pike
+;;   -------------------------------------------------------
 (when (and pel-use-c-eldoc
            (or pel-use-c
                pel-use-c++
@@ -2632,8 +2636,7 @@ can't bind negative-argument to C-_ and M-_"
                      call-graph))
 
 ;; ---------------------------------------------------------------------------
-;; Utility function for mapping CC Mode keys : used by AWK, C, C++, D,
-;;                                             Objective-C and Pike
+;;** Utility for mapping CC Mode keys for AWK, C, C++, D, Objective-C & Pike
 (when (or pel-use-awk
           pel-use-c
           pel-use-c++
@@ -2826,8 +2829,8 @@ MODE must be a symbol."
   (declare-function pel--set-cc-style "pel_keys"))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; Ada programming language
-;; ------------------------
+;;** Ada programming language
+;;   ------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC A`` : Ada
 (when pel-use-ada
   (define-pel-global-prefix pel:for-ada   (kbd "<f11> SPC A"))
@@ -2856,8 +2859,8 @@ MODE must be a symbol."
     (pel-config-major-mode ada pel:for-ada :no-ts)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; Awk programming language
-;; ------------------------
+;;** Awk Programming Language Support
+;;   -------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC W`` : Awk
 (when pel-use-awk
   (define-pel-global-prefix pel:for-awk   (kbd "<f11> SPC W"))
@@ -2902,8 +2905,9 @@ MODE must be a symbol."
                     '(c-syntactic-indentation))))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
-
+;;** C Programming Language Support
+;;   ------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC c``
 ;; Note: C editing is always available in Emacs via the CC Mode and the c-mode
 ;; that is part of Emacs.  All autoloading is already set by Emacs.  The only
 ;; extra code needed is to add the specialized menu and then activate it,
@@ -2954,7 +2958,7 @@ MODE must be a symbol."
 
   (declare-function pel--install-c-skel "pel-skels-c")
   (declare-function pel-cc-find-activate-finder-method "pel-cc-find")
-  (defvar pel-c-man-section)            ; prevent byte-compiler warning in Emacs 26
+  (defvar pel-c-man-section)       ; prevent byte-compiler warning in Emacs 26
   (pel-eval-after-load cc-mode
     (pel-config-major-mode c pel:for-c :no-ts
       (progn
@@ -3006,7 +3010,9 @@ MODE must be a symbol."
     (define-key pel:for-c (kbd "M-k") 'pel-linux-kernel-code-style)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C`` : C++ programming utilities
+;;** C++ Programming Language Support
+;;   --------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C`` :
 
 ;; Note: C++ editing is always available in Emacs via the CC Mode and the
 ;; c++-mode that is part of Emacs.  All autoloading is already set by Emacs.
@@ -3051,7 +3057,7 @@ MODE must be a symbol."
                    pel:c++-search-replace)
 
   ;; Add C++ specific commands
-  (defvar pel-c++-man-section)      ; prevent byte-compiler warning in Emacs 26
+  (defvar pel-c++-man-section)     ; prevent byte-compiler warning in Emacs 26
   (define-key pel:c++-search-replace (kbd "v") 'pel-move-down-to-class-visibility)
   (define-key pel:c++-search-replace (kbd "V") 'pel-move-up-to-class-visibility)
   (declare-function pel--install-c++-skel "pel-skels-cpp")
@@ -3098,7 +3104,9 @@ MODE must be a symbol."
       (setq-local pel-c++-man-section "3"))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` : D programming utilities
+;;** D Programming Language Support
+;;   ------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` :
 
 (when pel-use-d
   (define-pel-global-prefix pel:for-d     (kbd "<f11> SPC D"))
@@ -3168,13 +3176,15 @@ d-mode not added to ac-modes!"
       (setq-local pel-indentation-width-control-variable
                   '(pel-d-indent-width c-basic-offset))
       (setq-local pel-indentation-other-control-variables
-                    '(c-syntactic-indentation))
+                  '(c-syntactic-indentation))
       ;; 7) Install language-specific skeletons
       ;; TODO
       )))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-o`` : Objective-C programming
+;;** Objective-C Programming Language Support
+;;   ----------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-o`` :
 (when pel-use-objc
   (define-pel-global-prefix pel:for-objc  (kbd "<f11> SPC C-o"))
   ;; [:todo 2025-04-27, by Pierre Rouleau: Activate skeletons]
@@ -3234,7 +3244,9 @@ d-mode not added to ac-modes!"
           (lsp))))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-p`` : Pike programming
+;;** Pike Programming Language Support
+;;   ---------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-p`` :
 (when pel-use-pike
   (define-pel-global-prefix pel:for-pike  (kbd "<f11> SPC C-p"))
   (define-pel-global-prefix pel:pike-skel (kbd "<f11> SPC C-p <f12>"))
@@ -3288,7 +3300,9 @@ d-mode not added to ac-modes!"
         (pel-pike-set-imenu)))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC M-f`` : Factor programming
+;;** Factor Programming Language Support
+;;   -----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-f`` :
 ;; [:todo 2024-01-05, by Pierre Rouleau: complete/clean support]
 (when pel-use-factor
   (pel-ensure-package fuel from: melpa)
@@ -3313,7 +3327,9 @@ d-mode not added to ac-modes!"
       (setq-local tab-width pel-factor-tab-width))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : Forth programming
+;;** Forth Programming Language Support
+;;   ----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` :
 (when pel-use-forth
   (pel-ensure-package forth-mode from: melpa)
   (pel-autoload-file forth-mode for:
@@ -3331,11 +3347,15 @@ d-mode not added to ac-modes!"
       (setq-local tab-width pel-forth-tab-width))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC F`` : FORTRAN programming
+;;** FORTRAN Programming Language Support
+;;   ------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC F`` :
 ;; reserved but not implemented.
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC g`` : Go programming
+;;** Go Programming Language Support
+;;   ------------------------------
+;; - function Language Support Keys - <f11> - Prefix ``<f11> SPC g`` :
 (when pel-use-go
   (when pel-use-go-mode
     ;; go-mode installation
@@ -3404,7 +3424,9 @@ d-mode not added to ac-modes!"
                    pel-use-goflymake))))))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC J`` : Java programming
+;;** Java Programming Language Support
+;;   ---------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC J`` :
 (when pel-use-java
   (define-pel-global-prefix pel:for-java  (kbd "<f11> SPC J"))
   (when pel-use-lsp-java
@@ -3420,7 +3442,9 @@ d-mode not added to ac-modes!"
         (add-hook 'java-mode-hook #'lsp)))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC i`` : Javascript programming
+;;** Javascript Programming Language Support
+;;   ---------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC i`` :
 (when pel-use-javascript
   (define-pel-global-prefix pel:for-javascript  (kbd "<f11> SPC i"))
   (add-to-list 'auto-mode-alist (cons "\\.js\\'"
@@ -3463,7 +3487,9 @@ d-mode not added to ac-modes!"
         (setq-local tab-width pel-js-tab-width))))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC j`` : Julia programming
+;;** Julia Programming Language Support
+;;   ----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC j`` :
 (when (and pel-use-julia pel-use-vterm)
   ;; 🚧 Experimental: not yet completed.
   ;; For Julia, the julia-snail package uses julia-mode and
@@ -3487,8 +3513,8 @@ d-mode not added to ac-modes!"
     (setq-local tab-width pel-julia-tab-width)))
 
 ;; ---------------------------------------------------------------------------
-;; Lisp-style programming Languages
-;; --------------------------------
+;;** Lisp-style Programming languages Support
+;; ------------------------------------------
 
 (when pel-use-lispy
   (pel-ensure-package lispy from: melpa)
@@ -3567,10 +3593,12 @@ d-mode not added to ac-modes!"
     (define-key prefix (kbd "DEL") 'lispy-kill-at-point)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC l`` : Emacs Lisp programming
+;;** Emacs Lisp Programming Language Support
+;;   ---------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC l`` :
 
-;; - Use parinfer
-;; --------------
+;;*** Use parinfer
+;;    ------------
 (when pel-use-parinfer
   ;; parinfer was removed from MELPA, if you have an old copy in your elpa-attic
   ;; set pel-use-parinfer to use-pel-elpa-attic-copy otherwise PEL will extract it
@@ -3589,8 +3617,8 @@ d-mode not added to ac-modes!"
                      parinfer-auto-fix
                      parinfer-diff))
 
-;; - Use rainbow-delimiters
-;; ------------------------
+;;*** Use rainbow-delimiters
+;;    ----------------------
 (when pel-use-rainbow-delimiters
   (pel-ensure-package rainbow-delimiters from: melpa)
   (pel-autoload-file rainbow-delimiters for:
@@ -3602,6 +3630,8 @@ d-mode not added to ac-modes!"
 ;; rainbow-delimiters-depth-X-face  (where 'X' is a digit between 1 and
 ;; 9 included.) Customize these user option variables.
 
+;;*** Other Emacs Lisp support
+;;    ------------------------
 (define-pel-global-prefix pel:for-elisp  (kbd "<f11> SPC l"))
 (define-pel-global-prefix pel:elisp-skel (kbd "<f11> SPC l <f12>"))
 
@@ -3732,7 +3762,9 @@ d-mode not added to ac-modes!"
   (define-key pel:elisp-refs "o" 'elisp-refs-symbol))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` : Common Lisp
+;;** Common Lisp Programming Language Support
+;;   ----------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` :
 (when pel-use-common-lisp
   (defvar pel-lisp-imenu-generic-expression nil
     "Cache copy for the PEL computed imenu index rule for Common Lisp.")
@@ -3822,7 +3854,9 @@ d-mode not added to ac-modes!"
       (setq-local imenu-generic-expression lisp-imenu-generic-expression))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-a`` : Arc
+;;** Arc Programming Language Support
+;;   --------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-a`` :
 (when pel-use-arc
   (pel-autoload-file arc for: arc-mode)
   (pel-autoload-file inferior-arc for: run-arc)
@@ -3841,7 +3875,9 @@ d-mode not added to ac-modes!"
   (pel-config-major-mode arc pel:for-arc :no-ts))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC T`` : Janet
+;;** Janet Programming Language Support
+;;   ----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC T`` :
 (when pel-use-janet
 
   ;; Installation
@@ -3877,7 +3913,9 @@ d-mode not added to ac-modes!"
   (pel-config-major-mode janet pel:for-janet :no-ts))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-j`` : Clojure
+;;** Clojure Programming Language Support
+;;   ------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-j`` :
 (when pel-use-clojure
   ;; Installation
   (pel-ensure-package clojure-mode from: melpa)
@@ -3927,7 +3965,9 @@ d-mode not added to ac-modes!"
                          :error)))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-s`` : Scheme Family
+;;** Scheme Family Programming Language Support
+;;   ------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-s`` :
 ;; IMPORTANT:
 ;; From EMacs implementation point of view Scheme is a language family that
 ;; includes the following Scheme dialects:
@@ -4215,7 +4255,9 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (pel-config-major-mode scsh pel:for-scsh :no-ts)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming
+;;** Erlang Programming Language Support
+;;   -----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` :
 ;; Programming Language Family: BEAM
 (when pel-use-erlang
   ;; Installation control
@@ -4646,7 +4688,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` : Elixir programming
+;;** Elixir Programming Language Support
+;;   -----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` :
 ;; Programming Language Family: BEAM
 (when pel-use-elixir
   (pel-ensure-package elixir-mode from: melpa)
@@ -4685,7 +4729,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-config-major-mode elixir pel:for-elixir :no-ts))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` : LFE programming
+;;** LFE Programming Language Support
+;;   --------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` :
 ;; LFE := Lisp Flavoured Erlang
 ;; Programming Language Family: BEAM, Lisp
 (when pel-use-lfe
@@ -4760,9 +4806,11 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-config-major-mode gleam pel:for-gleam :independent-ts)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC M-H `` : Hamler
+;;** Hamler Programming Language Support
+;;   -----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-H `` :
 ;; Programming Language Family: BEAM, Functional/ML/Haskell
-;; Future: hamler-mode is not written yet
+;; Future: haml-mode
 ;;
 ;; (when pel-use-hamler
 ;;   (pel-install-github-files "hamler-lang/hamler-mode/master"
@@ -4780,7 +4828,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   (pel-config-major-mode hamler pel:for-hamler :no-ts))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; BEAM programming Language common tools
+;;** BEAM programming Language common tools
 (when (or pel-use-erlang
           pel-use-elixir
           pel-use-lfe
@@ -4793,7 +4841,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; TODO: test and complete dependency management of flycheck and rebar3
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC h`` : Haskell programming
+;;** Haskell Programming Language Support
+;;   ------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC h`` :
 (when pel-use-haskell
   (define-pel-global-prefix pel:for-haskell (kbd "<f11> SPC h"))
   (when pel-use-haskell-mode
@@ -4811,8 +4861,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; (add-hook 'haskell-mode-hook 'intero-mode)
 
 ;; ---------------------------------------------------------------------------
+;;** Hy Programming Language Support -- Hy, A Lisp in Python
+;;   -------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-h`` : Hy
-;; Hy: A Lisp in Python
 (when pel-use-hy
   (pel-ensure-package hy-mode from: melpa)
   (pel-autoload-file hy-mode for: hy-mode)
@@ -4824,7 +4875,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-config-major-mode hy pel:for-hy :no-ts))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC n`` : Nim programming
+;;** Nim Programming Language Support
+;;   --------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC n`` :
 (when pel-use-nim
   (define-pel-global-prefix pel:for-nim (kbd "<f11> SPC n"))
   (define-pel-global-prefix pel:nim-skel (kbd "<f11> SPC n <f12>"))
@@ -4844,7 +4897,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (pel--install-generic-skel pel:nim-skel 'pel-pkg-for-nim "nim"))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC o`` : Ocaml programming
+;;** Ocaml Programming Language Support
+;;   ----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC o`` :
 (when pel-use-ocaml
   (define-pel-global-prefix pel:for-ocaml (kbd "<f11> SPC o"))
   (when pel-use-speedbar
@@ -4862,7 +4917,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-config-major-mode tuareg pel:for-ocaml :no-ts)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC O`` : Odin  programming
+;;** Odin Programming Language Support
+;;   ---------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC O`` :
 
 (when pel-use-odin
   (define-pel-global-prefix pel:for-odin (kbd "<f11> SPC O"))
@@ -4881,7 +4938,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (add-to-list 'auto-mode-alist '("\\.odin\\'" . odin-mode))
   (pel-config-major-mode odin pel:for-odin :no-ts))
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming
+;;** Python Programming Language Support
+;;   -----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` :
 (when pel-use-python
 
   ;; ⚠️  I recommend that you stay away from the external package python-mode.el
@@ -4968,7 +5027,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; inside /usr/local/bin/virtualenv
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC R`` : REXX programming
+;;** REXX Programming Language Support
+;;   ---------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC R`` :
 (when pel-use-rexx
   ;; Download and byte-compile rexx-mode if not already present.
   ;; See home page: https://github.com/emacsattic/rexx-mode
@@ -4993,7 +5054,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-config-major-mode rexx pel:for-rexx :no-ts))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC N`` : NetRexx programming
+;;** NetRexx Programming Language Support
+;;   ------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC N`` :
 (when pel-use-netrexx
   ;; Download netrexx.el directly from GitHub as there is no official support
   ;; by either GNU Elpa or MELPA
@@ -5017,7 +5080,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-config-major-mode netrexx pel:for-netrexx :no-ts))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC P`` : Perl programming
+;;** Perl Programming Language Support
+;;   ---------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC P`` :
 (when pel-use-perl
   ;; Perl file extension - associations for buffer and speedbar
   (defconst pel-perl-fext-regex
@@ -5162,7 +5227,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-perl    "z" 'perl-repl)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC U`` : Ruby programming
+;;** Ruby Programming Language Support
+;;   ---------------------------------[<65;57;36M
+;; - Function Keys - <f11> - Prefix ``<f11> SPC U`` :
 (when pel-use-ruby
   (define-pel-global-prefix pel:for-ruby (kbd "<f11> SPC U"))
   (define-pel-global-prefix pel:ruby-skel (kbd "<f11> SPC U <f12>"))
@@ -5172,7 +5239,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel--install-generic-skel pel:ruby-skel 'pel-pkg-for-ruby "ruby")))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` : Rust programming
+;;** Rust Programming Language Support
+;;   ---------------------------------[1;3B
+;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` :
 (when pel-use-rust
   ;; TODO: only allow one of rust-mode or rustic and determine what
   ;;       must be made available for rustic.  Currently the code assumes
@@ -5240,7 +5309,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                            :error))))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC 2`` : Modula2 programming
+;;** Modula2 Programming Language Support
+;;   ------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC 2`` :
 ;; Emacs built-in support with PEL extensions
 (when pel-use-modula-2
   (define-pel-global-prefix pel:for-modula-2  (kbd "<f11> SPC 2"))
@@ -5251,7 +5322,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-config-major-mode m2 pel:for-modula-2 :no-ts)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC M-p`` : Pascal programming
+;;** Pascal Programming Language Support
+;;   -----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-p`` :
 ;; Emacs built-in support with PEL extensions
 (when pel-use-pascal
   (define-pel-global-prefix pel:for-pascal  (kbd "<f11> SPC M-p"))
@@ -5261,7 +5334,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-config-major-mode pascal pel:for-pascal :no-ts)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-e`` : Eiffel programming
+;;** Eiffel Programming Language Support
+;;   -----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-e`` :
 
 (when pel-use-eiffel
   (define-pel-global-prefix pel:for-eiffel   (kbd "<f11> SPC C-e"))
@@ -5298,8 +5373,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
        'eiffel-mode-hook))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC 7`` : Seed7 programming
-;; Experimental 🚧
+;;** Seed7 Programming Language Support
+;;   ---------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC 7`` :
 (when pel-use-seed7
   (define-pel-global-prefix pel:for-seed7  (kbd "<f11> SPC 7"))
 
@@ -5325,7 +5401,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (add-to-list 'auto-mode-alist '("\\.s\\(d7\\|7i\\)\\'" . seed7-mode)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC :`` : Smalltalk  programming
+;;** Smalltalk  Programming Language Support
+;;   ---------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC :`` :
 ;; Experimental 🚧
 
 (when pel-use-smalltalk
@@ -5337,7 +5415,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-config-major-mode smalltalk pel:for-smalltalk :no-ts)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC s`` : Swift  programming
+;;** Swift  Programming Language Support
+;;   -----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC s`` :
 ;; Experimental 🚧
 
 (when pel-use-swift
@@ -5351,7 +5431,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-config-major-mode swift pel:for-swift :no-ts)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC t`` : Tcl  programming
+;;** Tcl  Programming Language Support
+;;   ---------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC t`` :
 (when pel-use-tcl
   ;; tcl-mode is part of Emacs
   (define-pel-global-prefix pel:for-tcl (kbd "<f11> SPC t"))
@@ -5370,7 +5452,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (setq-local pel-tcl-man-section "n"))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC u`` : Lua programming
+;;** Lua Programming Language Support
+;;   --------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC u`` :
 (when pel-use-lua
   (pel-ensure-package lua-mode from: melpa)
 
@@ -5388,7 +5472,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       )))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC Z`` : Sh, Unix shell programming
+;;** Sh, Unix Shell Programming Support
+;;   ----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC Z`` :
 ;;   This is for shell programming support: editing shell script files.
 ;;   For shell/terminal commend line support, see below.
 (when pel-use-sh
@@ -5425,7 +5511,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (add-hook 'sh-mode-hook 'flycheck-mode))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC v`` : V programming
+;;** V Programming Language Support
+;;   ------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC v`` :
 ;; Preliminary 🚧
 
 (when pel-use-v
@@ -5506,7 +5594,9 @@ to identify a Verilog file.  Anything else is assumed being V."
   (run-at-time "3 sec" nil (function pel-v-cleanup-auto-mode-alist)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC V`` : Verilog programming
+;;** Verilog Programming Language Support
+;;   ------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC V`` :
 
 (when pel-use-verilog
   (define-pel-global-prefix pel:for-verilog  (kbd "<f11> SPC V"))
@@ -5568,7 +5658,9 @@ to identify a Verilog file.  Anything else is assumed being V."
   See verilog-ext-feature-list user-option." err)))))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC H`` : VHDL programming
+;;** VHDL Programming Language Support
+;;   ---------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC H`` :
 ;; Preliminary 🚧
 
 (when pel-use-vhdl
@@ -5583,7 +5675,9 @@ to identify a Verilog file.  Anything else is assumed being V."
   )
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC M-z`` : Zig  programming
+;;** Zig  Programming Language Support
+;;   ---------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-z`` :
 ;; Experimental 🚧
 
 (when pel-use-zig
@@ -5597,12 +5691,12 @@ to identify a Verilog file.  Anything else is assumed being V."
     (pel-config-major-mode zig pel:for-zig :no-ts)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC z s`` : shell-mode
+;;** shell-mode Support
+;;   ------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC z s`` :
 ;;   This is for shell/terminal support.  For editing shell script file see above.
 (define-pel-global-prefix pel:for-shell     (kbd "<f11> SPC z s"))
 (define-pel-global-prefix pel:for-shell-cfg (kbd "<f11> SPC z s <f4>"))
-
-
 
 (pel-eval-after-load shell
   ;; TODO: pel-config-major-mode does not work properly with shell-mode
@@ -5628,14 +5722,16 @@ to identify a Verilog file.  Anything else is assumed being V."
    (function pel--setup-for-shell)
    'shell-mode 'shell-mode-hook))
 
-;; ------------------------------
-;; Telnet support
+;;** Telnet Support
+;;   --------------
 (pel-eval-after-load telnet
   (when (boundp 'telnet-mode-map)
     (define-key telnet-mode-map "\t" 'completion-at-point)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC z t`` : term-mode
+;;** term-mode
+;;   ---------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC z t`` :
 (define-pel-global-prefix pel:for-term (kbd "<f11> SPC z t"))
 ;; (define-pel-global-prefix pel:for-term-cfg (kbd "<f11> SPC z t <f4>"))
 
@@ -5659,7 +5755,10 @@ to identify a Verilog file.  Anything else is assumed being V."
    'term-mode 'term-mode-hook))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC z v`` : vterm-mode
+;;** vterm-mode
+;;   ----------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC z v`` :
+
 (when pel-use-vterm
   (define-pel-global-prefix pel:for-vterm (kbd "<f11> SPC z v"))
 
@@ -5680,18 +5779,18 @@ to identify a Verilog file.  Anything else is assumed being V."
        'vterm-mode 'vterm-mode-hook))))
 
 ;; ---------------------------------------------------------------------------
-;; Data Files Support
-;; --================
+;;* Data Files Support
+;; ===================
 
 ;; csv-mode
 (when pel-use-csv-mode
   (pel-ensure-package csv-mode from: gnu))
 ;; ---------------------------------------------------------------------------
-;; Markup Language Support
-;; --=====================
+;;* Markup Language Support
+;;  =======================
 
-;; AsciiDoc support
-;; ----------------
+;;** AsciiDoc support
+;;   ----------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-a`` : AsciiDoc
 (when pel-use-asciidoc
   (pel-ensure-package adoc-mode from: melpa)
@@ -5791,8 +5890,8 @@ to identify a Verilog file.  Anything else is assumed being V."
       (define-key pel:for-asciidoc (kbd "M-p") 'tempo-template-adoc-pass-$$))))
 
 ;; ---------------------------------------------------------------------------
-;; Outline Mode
-;; ------------
+;;** Outline Mode
+;;   ------------
 (define-pel-global-prefix pel:for-outline-mode (kbd "<f11> SPC M-l"))
 (define-key pel: (kbd      "M-l")          'outline-minor-mode)
 (define-key pel: (kbd      "M-L")          'outline-mode)
@@ -5847,8 +5946,8 @@ to identify a Verilog file.  Anything else is assumed being V."
   (pel-ensure-package outshine from: melpa))
 
 ;; ---------------------------------------------------------------------------
-;; Org-Mode Support
-;; ----------------
+;;** Org-Mode Support
+;;   ----------------
 
 (when pel-use-org-mode
   (define-pel-global-prefix pel:for-org-mode   (kbd "<f11> SPC M-o"))
@@ -5923,14 +6022,14 @@ to identify a Verilog file.  Anything else is assumed being V."
         (setq-local electric-pair-text-pairs electric-pair-pairs)))))
 
 ;; ---------------------------------------------------------------------------
-;; XML Support
-;; -----------
+;;** XML Support
+;;   -----------
 (when pel-use-osx-plist
   ;; Early support - no major mode - TODO: investigate enhancement.
   (pel-ensure-package osx-plist from: melpa))
 ;; ---------------------------------------------------------------------------
-;; YAML Support
-;; ------------
+;;** YAML Support
+;;   ------------
 
 (when pel-use-yaml-mode
   (define-pel-global-prefix pel:for-yaml (kbd "<f11> SPC M-y"))
@@ -5951,7 +6050,9 @@ to identify a Verilog file.  Anything else is assumed being V."
   (pel-config-major-mode cwl pel:for-cwl :no-ts))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC M-m`` : Markdown
+;;** Markdown
+;;   --------
+;; Function Keys - <f11> - Prefix ``<f11> SPC M-m`` :
 (when pel-use-markdown
   (define-pel-global-prefix pel:for-markdown (kbd "<f11> SPC M-m"))
   (define-pel-global-prefix pel:for-markdown-preview (kbd "<f11> SPC M-m M-p"))
@@ -6062,7 +6163,10 @@ to identify a Verilog file.  Anything else is assumed being V."
                 nil :local))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC M-r`` : reSTucturedText
+;;** reSTucturedText
+;;   ---------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-r`` :
+
 (when pel-use-rst-mode
   ;; Nothing to install, rst-mode is built in Emacs
 
@@ -6141,7 +6245,9 @@ to identify a Verilog file.  Anything else is assumed being V."
         (imenup-add-defs-to-menubar)))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC M-g`` : Graphviz Dot
+;;** Graphviz Dot
+;;   ------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-g`` :
 (when pel-use-graphviz-dot
   (pel-ensure-package graphviz-dot-mode from: melpa)
   (pel-autoload-file graphviz-dot-mode for: graphviz-dot-mode)
@@ -6159,7 +6265,9 @@ to identify a Verilog file.  Anything else is assumed being V."
   (pel-config-major-mode graphviz-dot pel:for-graphviz-dot :no-ts))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC M-M`` : MscGen
+;;** MscGen
+;;   ------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-M`` :
 (when pel-use-mscgen-mode
   (pel-install-github-file "thomsten/mscgen-mode/master"
                            "mscgen-mode.el")
@@ -6181,7 +6289,9 @@ to identify a Verilog file.  Anything else is assumed being V."
     (pel-config-major-mode mscgen pel:for-mscgen :no-ts)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC M-u`` : PlantUML
+;;** PlantUML
+;;   --------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-u`` :
 (when pel-use-plantuml
 
   (pel-ensure-package plantuml-mode from: melpa)
@@ -6226,17 +6336,22 @@ to identify a Verilog file.  Anything else is assumed being V."
       (flycheck-plantuml-setup))))
 
 ;; ---------------------------------------------------------------------------
-;; Specification/Interface definition languages support
-;; ----------------------------------------------------
+;;* Specification/Interface definition languages support
+;;  ----------------------------------------------------
 ;;
 ;; Early support.  No PDF nor major-mode specific key additional bindings yet.
 
+;; ------------
+;;** ASN.1
+;;   -----
 (when pel-use-asn1-mode
   (pel-ensure-package asn1-mode from: melpa))
 
 
-;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC M-Y`` : YANG
+;; ------------
+;;** YANG
+;;   ----
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-Y`` :
 
 (when pel-use-yang-mode
   ;; Installation control
@@ -6254,7 +6369,8 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> =`` : Copy commands
+;;* Copy commands
+;; - Function Keys - <f11> - Prefix ``<f11> =`` :
 
 (define-pel-global-prefix pel:copy (kbd "<f11> ="))
 (define-key pel:copy "?"  'pel-ccp-info)
@@ -6283,6 +6399,7 @@ to identify a Verilog file.  Anything else is assumed being V."
                                         ; replaces kill-ring-save
 
 ;; ---------------------------------------------------------------------------
+;;* Kill & Delete Commands
 ;; - Function Keys - <f11> - Prefix ``<f11> -`` : Kill commands
 ;; - Function Keys - <f11> - Prefix ``<f11> DEL`` : delete commands
 (define-pel-global-prefix pel:kill   (kbd "<f11> -"))
@@ -6364,7 +6481,8 @@ to identify a Verilog file.  Anything else is assumed being V."
 (global-set-key (kbd "M-D")               'pel-kill-word-and-whitespace)
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> ,`` : auto-completion
+;;* auto-completion
+;; - Function Keys - <f11> - Prefix ``<f11> ,`` :
 
 (when pel-use-auto-complete
   ;; Defer loading of auto-complete using its autoload that will be
@@ -6412,7 +6530,8 @@ to identify a Verilog file.  Anything else is assumed being V."
       (keymap-set completion-preview-active-mode-map "M-p" 'completion-preview-prev-candidate))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> .`` : mark commands
+;;* mark commands
+;; - Function Keys - <f11> - Prefix ``<f11> .`` :
 
 (define-pel-global-prefix pel:mark (kbd "<f11> ."))
 (define-key pel:mark       " "         'pel-push-mark-no-activate)
@@ -6444,7 +6563,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   (global-set-key   (kbd "M-=") 'er/expand-region))
 
 ;; ---------------------------------------------------------------------------
-;; CUA mode setup
+;;* CUA mode setup
 ;; Activate the ability to use cua-rectangle-mark-mode without using
 ;; the CUA re-binding of C-c, C-v, C-x and C-z.
 
@@ -6457,7 +6576,8 @@ to identify a Verilog file.  Anything else is assumed being V."
   (global-set-key (kbd "C-v")  'pel-overwrite-yank))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> ;`` : comment commands
+;;* comment commands
+;; - Function Keys - <f11> - Prefix ``<f11> ;`` :
 
 (define-pel-global-prefix pel:comment (kbd "<f11> ;"))
 ;;
@@ -6489,7 +6609,8 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:comment ":" 'hide/show-comments))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> M-/`` : Hide/Show commands
+;;* Hide/Show commands
+;; - Function Keys - <f11> - Prefix ``<f11> M-/`` :
 (define-pel-global-prefix pel:hide-show (kbd "<f11> M-/"))
 
 (define-key pel:hide-show (kbd "M-/") 'pel-toggle-hide-indent)
@@ -6557,7 +6678,8 @@ to identify a Verilog file.  Anything else is assumed being V."
   (add-hook 'origami-mode-hook (function pel--activate-origami)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands
+;;* Help /apropos/info commands
+;; - Function Keys - <f11> - Prefix ``<f11> ?`` :
 
 ;; pel:help prefix is defined at the beginning of the <f11> section to allow
 ;; insertion of help under that prefix, later when logic dictates that
@@ -6596,7 +6718,8 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:help "A" 'ascii-table))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> ? a`` : Help Apropos commands
+;;** Help Apropos commands
+;; - Function Keys - <f11> - Prefix ``<f11> ? a`` :
 
 (define-pel-global-prefix pel:apropos (kbd "<f11> ? a"))
 (define-key pel:apropos "a"  #'apropos)
@@ -6609,7 +6732,8 @@ to identify a Verilog file.  Anything else is assumed being V."
 (define-key pel:apropos "v"  #'apropos-variable)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> ? b`` : Emacs Bug Db Browsing
+;;** Emacs Bug Db Browsing
+;; - Function Keys - <f11> - Prefix ``<f11> ? b`` :
 
 (when pel-use-debbugs
   (define-pel-global-prefix pel:emacs-bugs (kbd "<f11> ? b"))
@@ -6627,7 +6751,8 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:emacs-bugs "T" 'debbugs-org-tagged))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> ? i`` : Help Info commands
+;;** Help Info commands
+;; - Function Keys - <f11> - Prefix ``<f11> ? i`` :
 
 (define-pel-global-prefix pel:info (kbd "<f11> ? i"))
 (define-key pel:info "a"  #'info-apropos)
@@ -6635,7 +6760,8 @@ to identify a Verilog file.  Anything else is assumed being V."
 (define-key pel:info "m"  #'info-display-manual)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> ? d`` : Describe
+;;** Describe
+;; - Function Keys - <f11> - Prefix ``<f11> ? d`` :
 
 (define-pel-global-prefix pel:describe (kbd "<f11> ? d"))
 (define-key pel:describe "$"  'pel-spell-show-use)
@@ -6659,7 +6785,8 @@ to identify a Verilog file.  Anything else is assumed being V."
 (define-key pel:describe "w"  'pel-show-window-info)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> ? e`` : Emacs info
+;;** Emacs info
+;; - Function Keys - <f11> - Prefix ``<f11> ? e`` :
 ;; Used keys:
 ;; P
 ;; c l m p r s t u v x
@@ -6703,13 +6830,15 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:emacs "P"  'esup))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> ? e a`` : Emacs analyze
+;;** Emacs analyze
+;; - Function Keys - <f11> - Prefix ``<f11> ? e a`` :
 
 (define-pel-global-prefix pel:emacs-analyze (kbd "<f11> ? e a"))
 (define-key pel:emacs-analyze "l" 'pel-show-lisp-control-variables)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> ? k`` : Info on Keys
+;;** Info on Keys
+;; - Function Keys - <f11> - Prefix ``<f11> ? k`` :
 
 (define-pel-global-prefix pel:keys (kbd "<f11> ? k"))
 (define-key pel:keys "#"  'pel-show-mac-numlock)
@@ -6756,8 +6885,8 @@ to pel-use-helm-descbinds"))
   (define-key pel:keys "B" 'helm-descbinds-mode))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; Keycast and key logging
-;; -----------------------
+;;* Keycast and key logging
+;;  -----------------------
 (when pel-use-keycast
   (pel-ensure-package keycast from: melpa)
   (define-pel-global-prefix pel:keycast (kbd "<f11> ? k a"))
@@ -6804,7 +6933,8 @@ to pel-use-helm-descbinds"))
   (define-key pel:interaction-log "v" 'ilog-toggle-view))
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> $`` : Spell Check
+;;* Spell Check
+;; - Function Keys - <f11> - Prefix ``<f11> $`` :
 
 ;; popup is used in Terminal mode for spell check menu,
 ;; and must be available when pel-spell-init is called.
@@ -6861,7 +6991,8 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-ensure-package go-translate from: melpa))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> '`` : bookmark commands
+;;* bookmark commands
+;; - Function Keys - <f11> - Prefix ``<f11> '`` :
 
 (define-pel-global-prefix pel:bookMark (kbd "<f11> '"))
 (define-key pel:bookMark (kbd "M-?")  'pel-bookmark-info)
@@ -6880,8 +7011,8 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:bookMark "w" #'bookmark-write)
 
 
-;; Visible Bookmark (bm.el)
-;; ------------------------
+;;** Visible Bookmark (bm.el)
+;;    ------------------------
 ;; configure bm package to be loaded only on first use.
 (when pel-use-bm
   (pel-ensure-package bm from: melpa)
@@ -6949,7 +7080,8 @@ See `flyspell-auto-correct-previous-word' for more info."
     (add-hook 'vc-before-checkin-hook 'bm-buffer-save)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> <tab>`` : indentation
+;;* Indentation
+;; - Function Keys - <f11> - Prefix ``<f11> <tab>`` :
 
 ;; More powerful indent-rigidly: pel-indent-rigidly
 ;; ------------------------------------------------
@@ -7034,8 +7166,10 @@ See `flyspell-auto-correct-previous-word' for more info."
   (declare-function pel--setup-smart-shift "pel_keys")
 
   (add-hook 'smart-shift-mode-hook (function pel--setup-smart-shift)))
+
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> |`` : Windows scroll commands
+;;* Windows scroll commands
+;; - Function Keys - <f11> - Prefix ``<f11> |`` :
 ;;
 ;; - Scrolling up & down without moving point
 ;; ------------------------------------------
@@ -7088,7 +7222,8 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-require-after-init smooth-scrolling 2))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> a`` : abbreviations
+;;* Abbreviations
+;; - Function Keys - <f11> - Prefix ``<f11> a`` :
 
 (define-pel-global-prefix pel:abbrev (kbd "<f11> a"))
 
@@ -7144,7 +7279,8 @@ the ones defined from the buffer now."
   (pel--activate-abbrev-mode))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> b`` : buffer commands
+;;* Buffer Commands
+;; - Function Keys - <f11> - Prefix ``<f11> b`` :
 ;; Used keys:
 ;;   - [ ]
 ;;   C-c
@@ -7224,8 +7360,8 @@ the ones defined from the buffer now."
         (let ((map change-log-mode-map))
           (define-key map (kbd "<f12> <f1>") 'pel-changelog-help))))))
 
-;; ibuffer-mode support
-;; --------------------
+;;** ibuffer-mode support
+;;   --------------------
 ;;
 ;; - Add useful ibuffer filters
 (pel-eval-after-load ibuffer
@@ -7282,7 +7418,8 @@ the ones defined from the buffer now."
 ;;       which is a good thing: it helps speed up Emacs startup.
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> b I`` : Indirect buffer commands
+;;** Indirect buffer commands
+;; - Function Keys - <f11> - Prefix ``<f11> b I`` :
 
 (define-pel-global-prefix pel:indirect-buffer (kbd "<f11> b I"))
 (define-key pel:indirect-buffer "c"  #'clone-indirect-buffer)
@@ -7290,7 +7427,8 @@ the ones defined from the buffer now."
 (define-key pel:indirect-buffer "w"  #'clone-indirect-buffer-other-window)
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> B`` : Browse commands
+;;* Browse commands
+;; - Function Keys - <f11> - Prefix ``<f11> B`` :
 ;; pel:diff is defined later but used here.
 (define-pel-global-prefix pel:diff (kbd "<f11> d"))
 
@@ -7389,7 +7527,8 @@ the ones defined from the buffer now."
     (define-key pel:browse  "R" 'rfc-mode-browse)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> c`` : count things
+;;* Count Things
+;; - Function Keys - <f11> - Prefix ``<f11> c`` :
 
 (define-pel-global-prefix pel:count (kbd "<f11> c"))
 (define-key pel:count "m" #'count-matches)
@@ -7398,7 +7537,8 @@ the ones defined from the buffer now."
 (define-key pel:count "w" #'count-words)
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> C`` : clipboard commands
+;;* Clipboard Commands
+;; - Function Keys - <f11> - Prefix ``<f11> C`` :
 (when pel-emacs-is-graphic-p
   (define-pel-global-prefix pel:clipboard (kbd "<f11> C"))
   (define-key pel:clipboard "c" #'clipboard-kill-ring-save)
@@ -7406,7 +7546,8 @@ the ones defined from the buffer now."
   (define-key pel:clipboard "v" #'clipboard-yank))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> d`` : diff commands
+;;* Diff Commands
+;; - Function Keys - <f11> - Prefix ``<f11> d`` :
 (define-key pel:diff "f"  'diff)
 (define-key pel:diff "b"  'diff-buffer-with-file)
 (define-key pel:diff "k"  'diff-backup)
@@ -7420,7 +7561,8 @@ the ones defined from the buffer now."
   (define-key pel:diff (kbd "M-|")  'diffview-region))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> d e`` : ediff commands
+;;** ediff Commands
+;; - Function Keys - <f11> - Prefix ``<f11> d e`` :
 (define-pel-global-prefix pel:ediff (kbd "<f11> d e"))
 (define-key pel:ediff "?"  'ediff-documentation)
 
@@ -7527,20 +7669,23 @@ the ones defined from the buffer now."
     (add-hook 'find-file-hook 'sm-try-smerge t)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> d p`` : patch commands
+;;** patch Commands
+;; - Function Keys - <f11> - Prefix ``<f11> d p`` :
 (define-pel-global-prefix pel:patch (kbd "<f11> d p"))
 (define-key pel:patch "f"  'epatch)
 (define-key pel:patch "b"  'epatch-buffer)
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> D`` : draw commands
+;;** draw Commands
+;; - Function Keys - <f11> - Prefix ``<f11> D`` :
 
 (define-pel-global-prefix pel:draw (kbd "<f11> D"))
 (define-key pel:draw "a"  'artist-mode)       ; toggle artist-mode
 (define-key pel:draw "p"  'picture-mode)      ; activate picture-mode
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> f`` : File operations
+;;* File Operations
+;; - Function Keys - <f11> - Prefix ``<f11> f`` :
 
 (defun pel-auto-revert-set-timer ()
   "Execute `auto-revert-set-timer' if the auto-revert  mode is active."
@@ -7591,7 +7736,6 @@ the ones defined from the buffer now."
 (when pel-system-is-linux-p
   (define-key pel:file-help "r" 'pel-show-rpm-providing-file))
 
-
 (when pel-use-popup-switcher
   (define-key pel:file (kbd "M-f") 'pel-psw-navigate-files))
 (unless pel-system-is-windows-p
@@ -7607,7 +7751,7 @@ the ones defined from the buffer now."
 (define-key pel:find "l" #'find-lisp-find-dired)
 (define-key pel:find "n" #'find-name-dired)
 
-;; - Open recent file
+;;** Open recent file
 ;; ------------------
 (when pel-use-recentf
   (define-pel-global-prefix pel:recent-file (kbd "<f11> f M-r"))
@@ -7629,7 +7773,7 @@ the ones defined from the buffer now."
     (define-key pel:recent-file (kbd "M-R") 'pel-select-recentf-function))
   (pel-require-at-load recentf))
 
-;; - Open file at point
+;;** Open file at point
 ;; --------------------
 (global-set-key (kbd "M-*") 'pel-open-at-point)
 (define-key pel:file "."    'pel-open-at-point)
@@ -7646,23 +7790,23 @@ the ones defined from the buffer now."
 (defvar pel-filename-at-point-finders)  ; defined as local in pel-file.el
 (setq pel-filename-at-point-finders '(pel-generic-find-file))
 
-;; - Revert
-;; -------
+;;** Revert
+;; --------
 (define-pel-global-prefix pel:file-revert (kbd "<f11> f r"))
 (define-key pel:file-revert "a" #'auto-revert-mode)
 (define-key pel:file-revert " "  'pel-auto-revert-set-timer) ; cancel/restart the timer
 (define-key pel:file-revert "f" #'revert-buffer)
 (define-key pel:file-revert "t" #'auto-revert-tail-mode)
 
-;; Navigating URL: goto-address-mode
-;; ---------------------------------
+;;** Navigating URL: goto-address-mode
+;; -----------------------------------
 ;; PEL provides the ability to open URL with several commands listed above.
 ;; Emacs also provides the goto-address-mode, which is also included in the
 ;; binding PEL activates.
 (define-key pel:file "u" 'goto-address-mode)
 (define-key pel:file "U" 'goto-address-prog-mode)
 
-;; - fzf : fast fuzzy find
+;;** fzf : fast fuzzy find
 ;; -----------------------
 (when pel-use-fzf
   (pel-install-github-file "pierre-rouleau/fzf.el/master" "fzf.el")
@@ -7719,7 +7863,7 @@ the ones defined from the buffer now."
 (pel--mode-hook-maybe-call  (function pel--augment-goto-addr-map)
                             'goto-address-mode 'goto-address-mode-hook)
 
-;; RPM and CPIO archive file support
+;;* RPM and CPIO archive file support
 
 (when (or pel-use-archive-rpm pel-use-rpm-spec-mode)
   (defun pel-rpm-help (&optional open-github-page-p)
@@ -7778,7 +7922,7 @@ the ones defined from the buffer now."
       (define-key rpm-spec-mode-map (kbd "<f12> b") 'pel-rpm-build)
       (define-key rpm-spec-mode-map (kbd "<f12> l") 'pel-rpm-spec-lint))))
 
-;; X.509 support: Major mode for viewing  certificates, CRLs, keys,
+;;* X.509 support: Major mode for viewing  certificates, CRLs, keys,
 ;; DH-parameters and ASN.1 using OpenSSL
 (when pel-use-x509-mode
   (pel-ensure-package x509-mode from: melpa)
@@ -7808,6 +7952,7 @@ the ones defined from the buffer now."
     (pel-config-major-mode ssh-authorized-keys pel:for-ssh-autorized-keys :no-ts)
     (pel-config-major-mode ssh-known-hosts     pel:for-ssh-known-hosts :no-ts)))
 
+;;* SELinux support
 (when pel-use-selinux-policy
   (pel-install-github-file   "pierre-rouleau/selinux-policy/master"
                              "selinux-policy.el")
@@ -7826,7 +7971,8 @@ the ones defined from the buffer now."
   (pel-autoload-file crontab-mode for: crontab-mode))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Find File At Point (ffap)
+;;* Find File At Point (ffap)
+;; - Function Keys - <f11> - Prefix ``<f11> f a`` :
 
 (when pel-use-ffap
   ;; ffap is built-in Emacs.  When requested by PEL customization provide key
@@ -7873,7 +8019,7 @@ the ones defined from the buffer now."
     (run-with-idle-timer 1 nil (function pel--activate-ffap-bindings))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Project Management - find-file-in-project
+;;* Project Management - find-file-in-project
 
 ;; CAUTION: This package needs major tuning!  It takes forever searching for a
 ;;          project.  For the moment, Projectile is MUCH better!
@@ -7894,7 +8040,8 @@ the ones defined from the buffer now."
 ;;   :commands find-file-in-project)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> f v`` : File variables
+;;* File variables
+;; - Function Keys - <f11> - Prefix ``<f11> f v`` :
 
 (define-pel-global-prefix pel:filevar (kbd "<f11> f v"))
 (define-key pel:filevar "l"  #'add-file-local-variable)
@@ -7903,7 +8050,8 @@ the ones defined from the buffer now."
 (define-key pel:filevar "c"  #'copy-dir-locals-to-file-locals-prop-line)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> f v D`` : Directory File variables
+;;* Directory File variables
+;; - Function Keys - <f11> - Prefix ``<f11> f v D`` :
 
 (define-pel-global-prefix pel:dirvar (kbd "<f11> f v D"))
 (define-key pel:dirvar "="  #'add-dir-local-variable)
@@ -7923,7 +8071,8 @@ the ones defined from the buffer now."
     (pel-ensure-package vlf from: melpa)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> F`` : Frame operations
+;;* Frame operations
+;; - Function Keys - <f11> - Prefix ``<f11> F`` :
 
 (define-pel-global-prefix pel:frame (kbd "<f11> F"))
 (define-key pel:frame "?"   'pel-show-frame-count)
@@ -7943,7 +8092,8 @@ the ones defined from the buffer now."
   (define-key pel:frame "F" 'menu-set-font))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> g`` : Grep operations
+;;* Grep operations
+;; - Function Keys - <f11> - Prefix ``<f11> g`` :
 
 (define-pel-global-prefix pel:grep (kbd "<f11> g"))
 (declare-function kill-grep "grep")
@@ -7955,6 +8105,7 @@ the ones defined from the buffer now."
 (define-key pel:grep      "R"         #'zrgrep)
 (define-key pel:grep      "1"          'first-error)
 
+;;** wgrep
 (when pel-use-wgrep
   ;; autoload wgrep-change-to-wgrep-mode in case its requested by ag-mode
   (autoload 'wgrep-change-to-wgrep-mode "wgrep" nil :interactive)
@@ -7967,7 +8118,7 @@ the ones defined from the buffer now."
       (define-key wgrep-mode-map (kbd "C-c C-c") 'wgrep-finish-edit)
       (define-key wgrep-mode-map (kbd "C-c C-s") 'wgrep-save-all-buffers))))
 
-;; ripgrep - a faster grep easier to use than grep.
+;;** ripgrep - a faster grep easier to use than grep.
 ;; 2 packages support ripgrep: rg.el and ripgrep.el
 ;; Install rg.el and install ripgrep.el if projectile is used.
 (when  pel-use-ripgrep
@@ -7995,8 +8146,8 @@ the ones defined from the buffer now."
       (when (boundp 'rg-mode-map)
         '(define-key rg-mode-map  (kbd "C-x C-q") 'wgrep-change-to-wgrep-mode)))))
 
-;; ag
-;; --
+;;** ag
+;;   --
 
 (when pel-use-ag
   (pel-ensure-package ag from: melpa)
@@ -8038,7 +8189,7 @@ the ones defined from the buffer now."
       (when (boundp 'ag-mode-map)
         '(define-key ag-mode-map  (kbd "C-x C-q") 'wgrep-change-to-wgrep-mode)))))
 
-
+;;** deadgrep
 (when pel-use-deadgrep
   (pel-install-github-file "pierre-rouleau/deadgrep/master" "deadgrep.el")
   (pel-autoload-file deadgrep for: deadgrep)
@@ -8062,7 +8213,8 @@ the ones defined from the buffer now."
   (define-key pel:grep     "H"          'fzf-hg-grep))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> h`` : highlight commands
+;;* Highlight Commands
+;; - Function Keys - <f11> - Prefix ``<f11> h`` :
 
 (define-pel-global-prefix pel:highlight (kbd "<f11> h"))
 
@@ -8161,7 +8313,8 @@ the ones defined from the buffer now."
   (define-key pel:mode      "\\" 'display-fill-column-indicator-mode))
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> i`` : Insert text operations
+;;* Insert Text Operations
+;; - Function Keys - <f11> - Prefix ``<f11> i`` :
 
 ;; Used keys in <f11> i:
 ;; -
@@ -8197,6 +8350,7 @@ the ones defined from the buffer now."
 (define-key pel:insert (kbd "<f4> n")  'pel-customize-todo-note)
 (define-key pel:insert (kbd "<f4> f")  'pel-customize-insert-filename)
 
+;;** lice
 (when (or pel-use-lice
           (eq pel-c-skel-with-license t)
           (eq pel-c++-skel-with-license t)
@@ -8208,14 +8362,18 @@ the ones defined from the buffer now."
   (define-key pel:insert "L" 'lice)
   (define-key pel:f6 "L" 'lice))
 
+;;** spdx
 (when pel-use-spdx
   (pel-ensure-package spdx from: melpa)
   (define-key prog-mode-map (kbd "C-c i l") 'spdx-insert-spdx)
   (define-key pel:insert (kbd "M-l") 'spdx-insert-spdx)
   (define-key pel:f6 (kbd "M-l") 'spdx-insert-spdx))
 
+;;** smart-dash
 (when pel-use-smart-dash
   (define-key pel:insert "-" 'smart-dash-mode))
+
+;;** smartparens
 (when pel-use-smartparens
   (pel-ensure-package smartparens from: melpa)
   (define-pel-global-prefix pel:smartparens (kbd "<f11> ("))
@@ -8363,7 +8521,8 @@ the ones defined from the buffer now."
     (define-key smartparens-mode-map (kbd "<M-f7> h (")    'sp-highlight-current-sexp)))
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> k`` : Keyboard macro operations
+;;* Keyboard Macro Operations
+;; - Function Keys - <f11> - Prefix ``<f11> k`` :
 
 (define-pel-global-prefix pel:kbmacro (kbd "<f11> k"))
 (define-key pel:kbmacro "k"   'pel-forget-recorded-keyboard-macro)
@@ -8424,7 +8583,8 @@ the ones defined from the buffer now."
     (define-key pel:emacros (kbd "DEL") 'emacros-remove-macro)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> l`` : Line control commands
+;;* Line Control Commands
+;; - Function Keys - <f11> - Prefix ``<f11> l`` :
 
 (define-pel-global-prefix pel:linectrl (kbd "<f11> l"))
 (define-key pel:linectrl (kbd "<up>")    'pel-lc-previous-logical-line)
@@ -8437,7 +8597,8 @@ the ones defined from the buffer now."
 (define-key pel:linectrl "v"            #'visual-line-mode)
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> m`` : Multiple Cursors
+;;* Multiple Cursors
+;; - Function Keys - <f11> - Prefix ``<f11> m`` :
 
 (when pel-use-multiple-cursors
 
@@ -8500,7 +8661,8 @@ the ones defined from the buffer now."
     (define-key pel:mcursors "e" 'iedit-mode)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> o`` : ordering (sorting)
+;;* Ordering (sorting)
+;; - Function Keys - <f11> - Prefix ``<f11> o`` :
 
 (define-pel-global-prefix pel:order (kbd "<f11> o"))
 (define-key pel:order "l" #'sort-lines)
@@ -8522,7 +8684,8 @@ the ones defined from the buffer now."
              "sensitive (the default)")))
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> r`` : Register commands
+;;* Register Commands
+;; - Function Keys - <f11> - Prefix ``<f11> r`` :
 
 (define-pel-global-prefix pel:register (kbd "<f11> r"))
 (define-key pel:register "l"    #'list-registers)
@@ -8545,7 +8708,8 @@ the ones defined from the buffer now."
 (define-key pel:register "i"    #'insert-register)
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> s`` : Search/Replace  commands
+;;* Search/Replace Commands
+;; - Function Keys - <f11> - Prefix ``<f11> s`` :
 ;; "S" reserved
 
 (global-set-key (kbd "M-<f5>") 'pel-search-word-from-top)
@@ -8607,7 +8771,7 @@ the ones defined from the buffer now."
 (define-key pel:search-mode "l"  #'isearch-toggle-lax-whitespace)
 
 ;; --
-;; Search Tool Control
+;;** Search Tool Control
 
 (when pel-use-isearch-mb
   (pel-ensure-package isearch-mb from: gnu)
@@ -8652,7 +8816,7 @@ the ones defined from the buffer now."
   (define-key pel:help           "s" 'pel-show-search-status))
 
 ;; --
-;; Regular Expression Builder (part of Emacs).
+;;** Regular Expression Builder (part of Emacs).
 
 ;; Enhance the regular expression builder mode with useful key bound commands.
 (add-hook 'reb-mode-hook 'pel-reb-enhance)
@@ -8675,7 +8839,7 @@ the ones defined from the buffer now."
 ;;
 
 ;; --
-;; Other Regular Expression support
+;;** Other Regular Expression support
 
 (when pel-use-regex-tool
   (defun pel-select-regex-tool-backend ()
@@ -8768,7 +8932,7 @@ the ones defined from the buffer now."
   (define-key pel:regexp "L" 'pel-xr-lint))
 
 ;; - - -
-;; relint
+;;** relint
 
 (when pel-use-relint
   ;; provide access to the command via search/regexp and elisp/analyze
@@ -8788,7 +8952,8 @@ the ones defined from the buffer now."
   (define-key pel:elisp-regxp-lint "d" 'relint-directory))
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> M-s`` : Speedbar/SR-Speedbar commands
+;;* Speedbar/SR-Speedbar Commands
+;; - Function Keys - <f11> - Prefix ``<f11> M-s`` :
 
 (when pel-use-speedbar
   ;; Install sr-speedbar from my GitHub depot instead of from Melpa,
@@ -8848,7 +9013,8 @@ the ones defined from the buffer now."
 ;; See the code above.
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> t`` : Text control commands
+;;* Text Control Commands
+;; - Function Keys - <f11> - Prefix ``<f11> t`` :
 
 (define-pel-global-prefix pel:text (kbd "<f11> t"))
 (define-key pel:text "c"   'pel-capitalize-word-or-region)
@@ -8922,7 +9088,8 @@ the ones defined from the buffer now."
 ;;       (message "Toggled overwrite in text mode".))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> t a``: Text align
+;;* Text Align
+;; - Function Keys - <f11> - Prefix ``<f11> t a``:
 
 (define-pel-global-prefix pel:align (kbd "<f11> t a"))
 (define-key pel:align "a"     #'align)
@@ -8951,13 +9118,15 @@ the ones defined from the buffer now."
    (setq pel-newline-does-align t)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> t e``: Enriched Text
+;;* Enriched Text
+;; - Function Keys - <f11> - Prefix ``<f11> t e``:
 (define-pel-global-prefix pel:enriched-text (kbd "<f11> t e"))
 
 (define-key pel:enriched-text "e" #'enriched-mode)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> t f``: Text fill
+;;* Text Fill
+;; - Function Keys - <f11> - Prefix ``<f11> t f``:
 ;;
 (define-pel-global-prefix pel:fill (kbd "<f11> t f"))
 (define-key pel:fill "?"    'pel-show-fill-columns)
@@ -8974,7 +9143,8 @@ the ones defined from the buffer now."
 (define-key pel:fill "q"   #'fill-region-as-paragraph)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> t j``: Text justification
+;;* Text Justification
+;; - Function Keys - <f11> - Prefix ``<f11> t j``:
 ;;
 (define-pel-global-prefix pel:justification (kbd "<f11> t j"))
 (define-key pel:justification "b" #'set-justification-full) ;'b' for "both-side"
@@ -8984,7 +9154,8 @@ the ones defined from the buffer now."
 (define-key pel:justification "r" #'set-justification-right)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> t m``: Text word modes
+;;* Text Word Modes
+;; - Function Keys - <f11> - Prefix ``<f11> t m``:
 ;;
 (define-pel-global-prefix pel:textmodes (kbd "<f11> t m"))
 (define-key pel:textmodes "'" #'electric-quote-local-mode)
@@ -9019,7 +9190,8 @@ the ones defined from the buffer now."
                     (electric-quote-local-mode 1)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; Function Keys - <f11> - Prefix ``<f11> t t``: Text transpose commands
+;;* Text Transpose Commands
+;; Function Keys - <f11> - Prefix ``<f11> t t``:
 ;;
 (define-pel-global-prefix pel:text-transpose (kbd "<f11> t t"))
 (define-key pel:text-transpose "c"  #'transpose-chars)
@@ -9034,7 +9206,8 @@ the ones defined from the buffer now."
 ;;       pel-transpose-statements, pel-transpose-clauses
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> t w`` : Text whitespace commands
+;;* Text Whitespace Commands
+;; - Function Keys - <f11> - Prefix ``<f11> t w`` :
 ;;
 (define-pel-global-prefix pel:text-whitespace (kbd "<f11> t w"))
 (define-key pel:text-whitespace " "         #'untabify)
@@ -9051,7 +9224,8 @@ the ones defined from the buffer now."
 (define-key pel:text-whitespace (kbd "M-W") 'pel-toggle-delete-trailing-space-on-save)
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> T`` : Time-Tracking
+;;* Time-Tracking
+;; - Function Keys - <f11> - Prefix ``<f11> T`` :
 (define-pel-global-prefix pel:time (kbd "<f11> T"))
 (when pel-use-timeclock
   (define-key pel:time "W"         'display-time-world)
@@ -9088,12 +9262,13 @@ the ones defined from the buffer now."
 ;;   (pel-ensure-package chronometrist from: melpa-stable))
 
 ;; ---------------------
-;; Time Management tools
+;;** Time Management tools
 (when pel-use-tzc
   (pel-ensure-package tzc from melpa))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> C-t`` : Tree-Sitter operations
+;;* Tree-Sitter operations
+;; - Function Keys - <f11> - Prefix ``<f11> C-t`` :
 (when pel-use-tree-sitter
 
   (define-pel-global-prefix pel:tree-sitter (kbd "<f11> C-t"))
@@ -9104,7 +9279,8 @@ the ones defined from the buffer now."
   (define-key pel:tree-sitter "i"  'treesit-inspect-mode))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> v`` : VCS operations
+;;* VCS Operations
+;; - Function Keys - <f11> - Prefix ``<f11> v`` :
 ;;
 (define-pel-global-prefix pel:vcs (kbd "<f11> v"))
 (define-key pel:vcs "v"  'vc-dir)
@@ -9112,7 +9288,7 @@ the ones defined from the buffer now."
 (define-key pel:vcs "l"  'pel-vcs-toggle-vc-log)
 
 ;; ----------------
-;; Git support
+;;** Git support
 (when pel-use-magit
   (define-pel-global-prefix pel:vcs-magit (kbd "<f11> v g"))
 
@@ -9140,7 +9316,7 @@ the ones defined from the buffer now."
   (pel-ensure-package git-modes from: melpa))
 
 ;; ----------------
-;; Mercurial Support
+;;** Mercurial Support
 (when pel-use-monky
   (define-pel-global-prefix pel:vcs-monky (kbd "<f11> v m"))
   (pel-ensure-package monky from: melpa)
@@ -9155,7 +9331,7 @@ the ones defined from the buffer now."
   (pel-ensure-package hgignore-mode from: melpa))
 
 ;; ----------------
-;; Perforce Support
+;;** Perforce Support
 ;; [:todo 2022-03-22, by Pierre Rouleau: Complete Perforce support, delay
 ;; load, add <f11> and <f12> key support, ensure that both work together, document.]
 (when pel-use-perforce
@@ -9175,7 +9351,7 @@ the ones defined from the buffer now."
     (setq p4-do-find-file nil)))
 
 ;; ----------------
-;; Subversion Support
+;;** Subversion Support
 (when pel-use-dsvn
   (pel-ensure-package dsvn from: melpa))
 
@@ -9194,7 +9370,7 @@ the ones defined from the buffer now."
   (pel-vc-svn-init))
 
 ;; ----------------
-;; vc-dir-mode support
+;;** vc-dir-mode support
 ;; Provide <f12> <f1>, <f12><f2> and <f12><f3> in vc-dir-mode
 ;; TODO simplify this code
 (define-pel-global-prefix pel:for-vc-dir (kbd "<f11> SPC SPC v"))
@@ -9215,12 +9391,12 @@ the ones defined from the buffer now."
    'vc-dir-mode 'vc-dir-mode-hook)
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> M-d`` : Mode line commands
+;;* Mode Line Commands
+;; - Function Keys - <f11> - Prefix ``<f11> M-d`` :
 (define-pel-global-prefix pel:mode-line (kbd "<f11> M-d"))
 
 (when pel-modeline-display-time
   (run-at-time "2 sec" nil (function display-time)))
-
 
 (defun pel-toggle-time-display ()
   "Toggle display of time on the mode line."
@@ -9240,7 +9416,8 @@ the ones defined from the buffer now."
   (define-key pel:mode-line "p"  'show-point-mode))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> w`` : Windows operations
+;;* Windows Operations
+;; - Function Keys - <f11> - Prefix ``<f11> w`` :
 ;; Use the global local winner-mode, but don't use its key bindings;
 ;; use some in the '<f11> w' group:
 
@@ -9530,7 +9707,8 @@ the ones defined from the buffer now."
 
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> w s`` : Window size operations
+;;** Window Size Operations
+;; - Function Keys - <f11> - Prefix ``<f11> w s`` :
 ;;
 
 (defun pel--global-resize-window-on (prefix)
@@ -9557,7 +9735,8 @@ the ones defined from the buffer now."
 (define-key pel:window-size "." #'fit-window-to-buffer)
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> S`` : Session operations
+;;* Session Operations
+;; - Function Keys - <f11> - Prefix ``<f11> S`` :
 ;;
 ;; desktop can be used alone or used with either desktop-registry or desktop+
 ;; The following code control the auto-loading of the 3 modules and creation of
@@ -9660,7 +9839,8 @@ the ones defined from the buffer now."
     (define-key pel:session "L" 'desktop+-load-auto))))
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> z`` : Process & shells execution
+;;* Process & Shells Execution
+;; - Function Keys - <f11> - Prefix ``<f11> z`` :
 ;;   - These commands manage and launch REPL and shells.
 ;;
 (define-pel-global-prefix pel:execute (kbd "<f11> z"))
@@ -9729,7 +9909,8 @@ the ones defined from the buffer now."
 (when pel-use-scsh         (define-key pel:repl (kbd "C-h") 'pel-scsh-repl))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC z f`` : emacs-eat (f:= food ;-)
+;;** emacs-eat
+;; - Function Keys - <f11> - Prefix ``<f11> SPC z f`` : (f:= food ;-) ;
 (when pel-use-emacs-eat
   (unless pel-emacs-29-or-later-p
     ;; eat requires compat for Emacs < 29
@@ -9755,7 +9936,8 @@ the ones defined from the buffer now."
      'eat-mode 'eat-mode-hook)))
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> X`` : Xref utilities
+;;* Xref Utilities
+;; - Function Keys - <f11> - Prefix ``<f11> X`` :
 ;;
 (define-pel-global-prefix pel:xref          (kbd "<f11> X"))
 (define-pel-global-prefix pel:xref-backend  (kbd "<f11> X B"))
@@ -9788,7 +9970,7 @@ the ones defined from the buffer now."
   (add-hook 'xref-etags-mode-hook (function
                                    (lambda () (load "pel-etags" :no-error)))))
 
-;; ggtags
+;;** ggtags
 (when pel-use-ggtags
   (pel-ensure-package ggtags from: melpa)
   (pel-autoload-file ggtags for: ggtags-mode)
@@ -9814,7 +9996,7 @@ the ones defined from the buffer now."
    (lambda ()
      (ggtags-mode 1))))
 
-;; cscope
+;;** cscope
 (when (or  pel-use-xcscope
            pel-use-helm-cscope)
   (define-pel-global-prefix pel:cscope (kbd "<f11> X C"))
@@ -9835,7 +10017,7 @@ the ones defined from the buffer now."
                       'pel-activate-helm-cscope)))
 
 
-;; dumb-jump
+;;** dumb-jump
 (when pel-use-dumb-jump
   (pel-ensure-package dumb-jump from: melpa)
   (pel-autoload-file dumb-jump for: pel-xref-toggle-dumb-jump-mode)
@@ -9846,7 +10028,7 @@ the ones defined from the buffer now."
   (pel-add-hook-for 'pel-modes-activating-dumb-jump
                     'pel-xref-dumb-jump-activate-locally))
 
-;; gxref
+;;** gxref
 (when pel-use-gxref
   (pel-ensure-package gxref from: melpa)
   (pel-autoload-file gxref for: xref-show-xrefs-function)
@@ -9854,11 +10036,11 @@ the ones defined from the buffer now."
   (pel-add-hook-for 'pel-modes-activating-gxref
                     'pel-xref-gxref-activate))
 
-;; jtags
+;;** jtags
 (when pel-use-jtags
   (pel-ensure-package jtags from: melpa))
 
-;; rtags
+;;** rtags
 (when pel-use-rtags-xref
   (declare-function pel-xref-rtags-activate  "pel-xref")
   (pel-ensure-package rtags-xref from: melpa)
@@ -9867,12 +10049,12 @@ the ones defined from the buffer now."
   (when (eq pel-use-rtags-xref 'use-from-start)
     (pel-xref-rtags-activate)))
 
-;; ivy-xref
+;;** ivy-xref
 (when pel-use-ivy-xref
   (pel-ensure-package ivy-xref from: melpa)
   (pel-autoload-file ivy-xref for: ivy-xref-show-xrefs))
 
-;; helm-xref
+;;** helm-xref
 (when pel-use-helm-xref
   (pel-ensure-package helm-xref from: melpa)
   (if pel-emacs-27-or-later-p
@@ -9888,7 +10070,7 @@ the ones defined from the buffer now."
  (function pel-xref-set-front-end) 'select-from-customization)
 
 
-;; eopengrok
+;;** eopengrok
 (when pel-use-eopengrok
   (pel-ensure-package eopengrok from: melpa)
   (pel-autoload-file eopengrok for:
@@ -9914,7 +10096,8 @@ the ones defined from the buffer now."
   (define-key pel:opengrok "b" 'eopengrok-resume))
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> _`` : Underlining commands
+;;* Underlining Commands
+;; - Function Keys - <f11> - Prefix ``<f11> _`` :
 
 (pel-autoload-file pel-comment-adorn for:
                    pel-commented-adorn-1
@@ -9940,8 +10123,8 @@ the ones defined from the buffer now."
 (define-key pel:underline "0" 'pel-commented-adorn-10)
 
 ;; -----------------------------------------------------------------------------
-;; Key-Chord Mode
-;; ==============
+;;* Key-Chord Mode
+;;  ==============
 
 (define-pel-global-prefix pel:mode-key-chord (kbd "<f11> <f5> k"))
 
@@ -9975,8 +10158,8 @@ the ones defined from the buffer now."
     (run-with-idle-timer 1 nil (function pel--start-key-chord-mode))))
 
 ;; ---------------------------------------------------------------------------
-;; Set Automatic Modes for specified file associations
-;; ---------------------------------------------------
+;;* Set Automatic Modes for specified file associations
+;;  ---------------------------------------------------
 ;;
 ;; Activate the list identified by the `pel-auto-mode-alist' user option
 (dolist (pattern-mode pel-auto-mode-alist)
@@ -9993,8 +10176,8 @@ the ones defined from the buffer now."
        :error))))
 
 ;; ---------------------------------------------------------------------------
-;; Activate global minor modes
-;; ---------------------------
+;;* Activate global minor modes
+;;  ---------------------------
 ;;
 ;; Once initialization is completed, activate the requested global minor
 ;; modes.
@@ -10007,8 +10190,8 @@ the ones defined from the buffer now."
 (add-hook 'after-init-hook 'pel--cfg-global-minor-modes :append)
 
 ;; ---------------------------------------------------------------------------
-;; PEL Hydras Control
-;; ------------------
+;;* PEL Hydras Control
+;;  ------------------
 
 (when pel-use-hydra
   ;; PEL's code for Hydra control is located in the file pel__hydra.el.
