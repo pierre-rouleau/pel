@@ -23,6 +23,13 @@
 ;;;---------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;;* Overview
+;;  ========
+;;
+;; Code navigation: the layout of this file supports Emacs outline mode.  Use
+;; `outline-minor-mode' (<f11> M-l) to hide all text except the section
+;; headings to get a quick overview of the structure of this code.
+;;
 ;; This file defines most PEL key bindings, with some defined by the pel-skels
 ;; files and by pel__hydra file.
 ;;
@@ -37,8 +44,9 @@
 ;;       a little unusual in the Emacs Lisp world but provides a simple way
 ;;       to provide proper file name ordering.
 ;;
-;; Declaration of the auto-loaded interactive functions
-;; ----------------------------------------------------
+
+;;** Declaration of the auto-loaded interactive functions
+;;   ----------------------------------------------------
 ;;
 ;; The code uses the `pel-autoload-file' macro to setup the auto-loading of
 ;; interactive functions.  The macro generates a call to the `autoload'
@@ -55,8 +63,8 @@
 ;; forms.  The logic must therefore be correct to ensure the existence of the
 ;; function at run-time.
 
-;; Major Mode setup
-;; ----------------
+;;** Major Mode setup
+;;   ----------------
 ;;
 ;; Each major mode supported by PEL is initialized when its corresponding
 ;; `pel-use-<mode>' user-option is turned on.
@@ -66,8 +74,8 @@
 ;; major mode.  These user-options are accessed via the `pel-config-major-mode'
 ;; macro.
 
-;; Minor Modes
-;; -----------
+;;** Minor Modes
+;;   -----------
 ;;
 ;; The definition of minor mode symbols must be done prior to the definition
 ;; of any major mode, since the user may request the automatic activation of a
@@ -78,8 +86,8 @@
 ;; warning message will be annoying.  This check is not absolutely necessary
 ;; but it prevents undetected invalid entries in the customization.
 
-;; Package Installation
-;; --------------------
+;;** Package Installation
+;;   --------------------
 ;;
 ;; The code uses the following macros to control package installation:
 ;;
@@ -96,9 +104,8 @@
 ;;                              elpa-compliant.  The files are stored in the
 ;;                              PEL utils directory.
 
-
-;; Delayed evaluation
-;; ------------------
+;;** Delayed evaluation
+;;   ------------------
 ;;
 ;; The code uses the following functions to delay execution:
 ;;
@@ -139,8 +146,8 @@
 ;;                      ; the options: pel-auto-complete-help
 
 ;; ---------------------------------------------------------------------------
-;; Install Future-Proof Packages
-;; -----------------------------
+;;* Install Future-Proof Packages
+;;  =============================
 ;;
 ;; Once you have PEL running and are comfortable with it, you should
 ;; activate the `pel-future-proof' user option.
@@ -154,8 +161,8 @@
     (pel-ensure-package compat from: gnu)))
 
 ;; ---------------------------------------------------------------------------
-;; Setup GUI launched Emacs environment
-;; ------------------------------------
+;;* Setup GUI launched Emacs environment
+;; =====================================
 (defvar pel--init-called-once nil
   "Remembers that `pel-init' was called.  DO NOT MODIFY!")
 
@@ -168,8 +175,8 @@
     (setq pel--init-called-once t))
 
 ;; ---------------------------------------------------------------------------
-;; Configure PEL-level autoloading
-;; -------------------------------
+;;* Configure PEL-level autoloading
+;;  ===============================
 
 ;; autoload all PEL functions
 (require 'pel-autoload)
@@ -178,15 +185,15 @@
   (message "ERROR! pel--autoload-init is not bound!"))
 
 ;; ---------------------------------------------------------------------------
-;; Control Emacs prompting
-;; -----------------------
+;;* Control Emacs prompting
+;;  =======================
 (when pel-prompt-accept-y-n
   ;; Use 'y'/'n' or SPC/DEL instead of 'yes'/'no'
   (fset 'yes-or-no-p 'y-or-n-p))
 
 ;; ---------------------------------------------------------------------------
-;; Dual Environment Check
-;; ----------------------
+;;* Dual Environment Check
+;;  ======================
 ;;
 ;; When Emacs is running in graphic mode, verifies if the dual environment has
 ;; been requested and if so if it is set properly, activating it if necessary
@@ -203,8 +210,8 @@
   (run-at-time "3 sec" nil (function pel-setup-check-dual-environment)))
 
 ;; ---------------------------------------------------------------------------
-;; Initialize Emacs source-directory if possible
-;; ---------------------------------------------
+;;* Initialize Emacs source-directory if possible
+;;  =============================================
 (when pel-emacs-source-directory
   (if (file-directory-p pel-emacs-source-directory)
       (let ((src-subdir-name (expand-file-name "src" pel-emacs-source-directory)))
@@ -219,8 +226,8 @@ Can't set Emacs source directory using %s : it's not a directory!"
              pel-emacs-source-directory)))
 
 ;; ---------------------------------------------------------------------------
-;; - PEL Modifier keys on different OS
-;; -----------------------------------
+;;* PEL Modifier keys on different OS
+;;  =================================
 ;;
 ;; Ideally, mostly used keybindings are available on all platforms and
 ;; keyboards, with an easy to use layout.
@@ -263,8 +270,8 @@ Can't set Emacs source directory using %s : it's not a directory!"
   (pel-setq w32-apps-modifier 'hyper))      ; Menu/App key      := hyper
 
 ;; ---------------------------------------------------------------------------
-;; - Preserve negative-argument with C-- and C-_
-;; ---------------------------------------------
+;;* Preserve negative-argument with C-- and C-_
+;;  ===========================================
 ;;
 ;; When running Emacs inside a terminal, the key C-- is not available since
 ;; there is no "Control -" in ASCII.  On macOS, the terminal shells generate
@@ -295,11 +302,9 @@ Done in this function to allow advising libraries that remap these keys."
 (pel-bind-negative-argument)
 
 ;; ---------------------------------------------------------------------------
-;; Adjust behaviour of the delete key if required
-;; ----------------------------------------------
+;;* Adjust behaviour of the delete key if required
+;;  ==============================================
 ;;
-;;
-
 (when (and pel-emacs-is-a-tty-p
            pel-force-normal-erase-is-backspace-off-in-terminal)
   (run-with-idle-timer
@@ -312,21 +317,40 @@ Done in this function to allow advising libraries that remap these keys."
      (message "FORCING (normal-erase-is-backspace-mode -1)"))))
 
 ;; ---------------------------------------------------------------------------
-;; Activate Recursive minibuffer editing if required
-;; -------------------------------------------------
+;;* Activate Recursive minibuffer editing if required
+;;  =================================================
 (when pel-allow-recursive-minibuffer
   (setq enable-recursive-minibuffers t)
   (minibuffer-depth-indicate-mode 1))
 ;; ---------------------------------------------------------------------------
-;; Augmenting the behaviour of some Emacs standard commands
-;; --------------------------------------------------------
+;;* Enhance the behaviour of some Emacs standard commands
+;;  =====================================================
 ;;
-;; comment-dwim: add support for M-0 M-; to comment current line
+;;** comment-dwim
+;;   add support for M-0 M-; to comment current line
 (global-set-key (kbd "M-;") 'pel-comment-dwim)
 
+;;** Insert empty line above
+(global-set-key (kbd "M-L") 'pel-insert-line-above)
+
+;;** ibuffer
+;; Replace `list-buffer' by the nicer, more flexible and more
+;; powerful `ibuffer'. Show in current window, not other one.
+(global-set-key "\C-x\C-b" 'ibuffer)
+
+;;** Yank Operation
+;;
+;; PEL provides a basic yank command that behaves as Emacs standard yank
+;; or as text replacement when the buffer is in overwrite mode.
+;; This behaviour is controlled by the `pel-activate-overwrite-yank' user
+;; option, which initializes the buffer local `pel--activate-overwrite-yank'.
+;; That can be further modified dynamically in each buffer by execution of the
+;; `pel-toggle-overwrite-yank' command.
+
+(global-set-key (kbd "C-y") 'pel-overwrite-yank)
 ;; ---------------------------------------------------------------------------
-;; Setting the mode of a fundamental-mode buffer
-;; ---------------------------------------------
+;;* Setting the mode of a fundamental-mode buffer
+;;  =============================================
 ;;
 ;; Lots of script files have no extension and there's no logic in the
 ;; `auto-mode-alist' to identify the mode the buffer should use.
@@ -343,8 +367,8 @@ Done in this function to allow advising libraries that remap these keys."
   (defalias 'as 'pel-as "Select major mode for the buffer."))
 
 ;; ---------------------------------------------------------------------------
-;; Instrumenting the compilation-mode
-;; ----------------------------------
+;;* Instrument `compilation-mode'
+;;  =============================
 (defun pel-help-compilation-mode (&optional open-github-page-p)
   "Open compilation-mode PDF"
   (interactive "P")
@@ -357,13 +381,8 @@ Done in this function to allow advising libraries that remap these keys."
                 (kbd "<f12> <f1>") #'pel-help-compilation-mode)))
 
 ;; ---------------------------------------------------------------------------
-;; Inserting empty line above
-;; --------------------------
-(global-set-key (kbd "M-L") 'pel-insert-line-above)
-
-;; ---------------------------------------------------------------------------
-;; Binding for Greek Letter
-;; ------------------------
+;;* Binding for Greek Letters
+;;  =========================
 
 (defconst pel-latin-to-greek
   '(
@@ -434,9 +453,22 @@ Done in this function to allow advising libraries that remap these keys."
   (pel-bind-greek-to "<f9>"))
 
 ;; ---------------------------------------------------------------------------
-;; Optional Extra Package Management Support
-;; -----------------------------------------
-;; Install quelpa if requested.
+;;* PEL Top Level key prefix definitions - F11 and variations
+;;  =========================================================
+
+;; <f11> Global key prefixes used for multiple packages:
+(define-pel-global-prefix pel:     (kbd "<f11>"))
+(define-pel-global-prefix pel2:    (kbd "<M-f11>"))
+(define-pel-global-prefix pel:help (kbd "<f11> ?"))
+(define-pel-global-prefix pel:mode (kbd "<f11> <f5>"))
+(define-pel-global-prefix pel:cfg-goto (kbd "M-g <f4>"))
+
+;; ---------------------------------------------------------------------------
+;;* Optional Extra Package Management Support
+;;  =========================================
+;;
+;;** Install quelpa if requested.
+;;
 ;; Done early because some other packages are installed by quelpa.
 ;;
 ;; The installation of quelpa is done using a method suggested in its
@@ -451,8 +483,8 @@ Done in this function to allow advising libraries that remap these keys."
         (quelpa-self-upgrade)))))
 
 ;; ---------------------------------------------------------------------------
-;; tree-sitter support
-;; -------------------
+;;* Tree-Sitter Support
+;;  ===================
 
 (when pel-use-tree-sitter
   (if pel-emacs-has-dynamic-module-support-p
@@ -482,8 +514,8 @@ Tree-sitter requires Emacs built with dynamic module support.
 Your version of Emacs does not support dynamic module.")))
 
 ;; ---------------------------------------------------------------------------
-;; File format parsing support
-;; ---------------------------
+;;* File Format Parsing Support
+;;  ===========================
 (add-to-list 'auto-mode-alist  '("\\.repo\\'" . conf-unix-mode))
 (add-to-list 'auto-mode-alist  '("\\.permission\\'" . java-mode))
 (add-to-list 'auto-mode-alist  '("\\.properties\\'" . conf-javaprop-mode))
@@ -496,7 +528,6 @@ Your version of Emacs does not support dynamic module.")))
   (add-to-list 'auto-mode-alist
                '("/usr/share/crypto-policies/policies/modules/.+\\.pmod\\'"
                  . conf-mode)))
-
 
 (when pel-use-ini
   (pel-install-github-file "pierre-rouleau/ini.el/master" "ini.el"))
@@ -536,8 +567,9 @@ Your version of Emacs does not support dynamic module.")))
 (when pel-use-dockerfile-mode
   (pel-ensure-package dockerfile-mode from: melpa))
 
-;; EditorConfig Support
-;; --------------------
+;; ---------------------------------------------------------------------------
+;;* EditorConfig Support
+;;  ====================
 (when pel-use-editor-config
   (pel-ensure-package  editorconfig from: melpa)
   (pel-require-at-load editorconfig)
@@ -547,8 +579,8 @@ Your version of Emacs does not support dynamic module.")))
       (user-error "Failed loading editorconfig"))))
 
 ;; ---------------------------------------------------------------------------
-;; - Font Control
-;; --------------
+;;* Visual Effect -- Font Control
+;;  =============================
 
 (when pel-emacs-is-graphic-p
   ;; Activate the all-the-icons package to get nice icons in graphics mode if
@@ -605,15 +637,8 @@ Your version of Emacs does not support dynamic module.")))
     (global-set-key (kbd "<s-kp-0>")        'pel-font-reset-size-all-buffers)))
 
 ;; ---------------------------------------------------------------------------
-;; - Buffer navigation
-;; -------------------
-;; Replace `list-buffer' by the nicer, more flexible and more
-;; powerful `ibuffer'. Show in current window, not other one.
-(global-set-key "\C-x\C-b" 'ibuffer)
-
-;; ---------------------------------------------------------------------------
-;; delight - control mode lighters
-;; -------------------------------
+;;* Visual Effect -- delight - control mode lighters
+;;  ================================================
 (when pel-use-delight
   (pel-ensure-package delight from: melpa)
   (when (and pel-delight-specs
@@ -624,8 +649,11 @@ Your version of Emacs does not support dynamic module.")))
                (list 'electric-pair-mode pel-electric-pair-lighter)))
 
 ;; ---------------------------------------------------------------------------
-;; ace-link
-;; --------
+;;* Navigation Help
+;;  ===============
+
+;;** ace-link
+;;   --------
 ;;
 ;; ace-link provides quick navigation in info-mode, help-mode, woman-mode,
 ;; eww-mode, compilation-mode, Custom mode and several other.
@@ -642,9 +670,8 @@ Your version of Emacs does not support dynamic module.")))
                        "ace-link-setup-default is void"
                        :error))))
 
-;; ---------------------------------------------------------------------------
-;; avy: fast tree movement
-;; -----------------------
+;;** avy: fast movement with char based decision tree
+;;   ------------------------------------------------
 ;;
 ;; The avy package provides quick navigation inside any buffer and across
 ;; windows. See URL https://github.com/abo-abo/avy
@@ -674,9 +701,8 @@ Your version of Emacs does not support dynamic module.")))
   (global-set-key (kbd "M-g w")   'avy-goto-word-1)
   (global-set-key (kbd "M-g e")   'avy-goto-word-0))
 
-;; ---------------------------------------------------------------------------
-;; Combobulate -- Tree Sitter Based operations
-;; -------------------------------------------
+;;** Combobulate -- Tree Sitter Based operations
+;;   -------------------------------------------
 (when pel-use-combobulate
   (unless (package-installed-p 'combobulate)
     (when (fboundp 'quelpa)
@@ -684,16 +710,17 @@ Your version of Emacs does not support dynamic module.")))
                             :url
                             "https://github.com/mickeynp/combobulate.git")))))
 
-;; ---------------------------------------------------------------------------
-;; Move to imenu symbol using Ido prompting
-;; ----------------------------------------
-
-(define-pel-global-prefix pel:cfg-goto (kbd "M-g <f4>"))
-
-(global-set-key (kbd "M-g ?")   'pel-show-goto-symbol-settings)
+;;** Move to 2-spaces, empty-/lines
+;;   ------------------------------
 
 (global-set-key (kbd "M-g M-SPC") 'pel-search-two-spaces)
 (global-set-key (kbd "M-g M-RET") 'pel-search-empty-line)
+
+;;** Move to symbol using imenu and Ido prompting
+;;   --------------------------------------------
+
+
+(global-set-key (kbd "M-g ?")   'pel-show-goto-symbol-settings)
 (global-set-key (kbd "M-g i")   'imenu)
 (global-set-key (kbd "M-g M-i") 'imenu)
 (global-set-key (kbd "M-g h")   'pel-goto-symbol)
@@ -714,18 +741,8 @@ Your version of Emacs does not support dynamic module.")))
 (define-key pel:cfg-goto "R" 'pel-imenu-toggle-auto-rescan)
 
 ;; ---------------------------------------------------------------------------
-;; PEL Top Level key prefix
-;; ------------------------
-
-;; <f11> Global key prefixes used for multiple packages:
-(define-pel-global-prefix pel:     (kbd "<f11>"))
-(define-pel-global-prefix pel2:    (kbd "<M-f11>"))
-(define-pel-global-prefix pel:help (kbd "<f11> ?"))
-(define-pel-global-prefix pel:mode (kbd "<f11> <f5>"))
-
-;; ---------------------------------------------------------------------------
-;; Dynamic configurations
-;; ----------------------
+;;** Dynamic configurations
+;;   ----------------------
 ;; <f11> <f4> will be used for commands that change the behaviour of
 ;; some basic operations, such as yank.
 
@@ -734,20 +751,8 @@ Your version of Emacs does not support dynamic module.")))
 (define-key pel:change (kbd "C-y") 'pel-toggle-overwrite-yank)
 
 ;; ---------------------------------------------------------------------------
-;; Yank Operation
-;; --------------
-;;
-;; PEL provides a basic yank command that behaves as Emacs standard yank
-;; or as text replacement when the buffer is in overwrite mode.
-;; This behaviour is controlled by the `pel-activate-overwrite-yank' user
-;; option, which initializes the buffer local `pel--activate-overwrite-yank'.
-;; That can be further modified dynamically in each buffer by execution of the
-;; `pel-toggle-overwrite-yank' command.
-
-(global-set-key (kbd "C-y") 'pel-overwrite-yank)
-;; ---------------------------------------------------------------------------
-;; Dired Extensions
-;; ----------------
+;;** Dired Extensions
+;;   ----------------
 (define-pel-global-prefix pel:for-dired (kbd "<f11> SPC M-D"))
 ;;
 ;; activate the <f12> key binding for dired
@@ -756,8 +761,8 @@ Your version of Emacs does not support dynamic module.")))
    (pel-local-set-f12 'pel:for-dired))
  'dired-mode 'dired-mode-hook)
 
-;; Emacs ls emulation support
-;; --------------------------
+;;** Emacs ls emulation support
+;;   --------------------------
 (when pel-use-emacs-ls-emulation
   (defvar dired-use-ls-dired)           ; prevent byte-compile warnings
   (defvar ls-lisp-use-insert-directory-program) ; ditto
@@ -809,14 +814,14 @@ Your version of Emacs does not support dynamic module.")))
 ;; 	                   '(".*" "\\`.+\\'" "/ssh:%h:")))))))
 
 
-;; Open files with OS-registered applications from Dired
-;; -----------------------------------------------------
+;;** Open files with OS-registered applications from Dired
+;;   -----------------------------------------------------
 (defvar dired-mode-map) ; forward declare - dired is loaded early in Emacs
 (with-eval-after-load 'dired
   (define-key dired-mode-map "z" 'pel-open-in-os-app))
 
-;; dired-narrow
-;; ------------
+;;** dired-narrow
+;;   ------------
 ;; When dired-narrow is used, add <f12> prefix keys to dired-narrow specific
 ;; commands.
 
@@ -847,8 +852,8 @@ Your version of Emacs does not support dynamic module.")))
     (define-key dired-mode-map ")" 'dired-git-info-mode)))
 
 ;; ---------------------------------------------------------------------------
-;; - PEL: Window Behaviour & operations
-;; ------------------------------------
+;;** PEL: Window Behaviour & operations
+;;   ------------------------------------
 ;;
 ;; Uses: pel-window, which is autoloaded.
 ;;
@@ -946,14 +951,14 @@ Your version of Emacs does not support dynamic module.")))
     (define-key pel: (kbd  "<S-left>")     'fm-left-frame)
     (define-key pel: (kbd  "<S-right>")    'fm-right-frame)))
 
-;; - Full Screen and Mouse Control
-;; -------------------------------
+;;*** Full Screen and Mouse Control
+;;    -----------------------------
 (define-key pel: (kbd      "<f11>")        'pel-toggle-frame-fullscreen)
 (when pel-emacs-is-a-tty-p
   (define-key pel: (kbd    "<f12>")       #'xterm-mouse-mode))
 
-;; - Uniquify: meaningful names when multiple buffers have the same name
-;; ---------------------------------------------------------------------
+;;*** Uniquify: meaningful names when multiple buffers have the same name
+;;    -------------------------------------------------------------------
 ;; Uniquify provides meaningful names for buffers with the same name.
 ;; The following code snippet evolved from what's available on
 ;; https://github.com/bbatsov/prelude.
@@ -967,8 +972,8 @@ Your version of Emacs does not support dynamic module.")))
     ;; Don't  not uniquify special buffers
     (pel-setq uniquify-ignore-buffers-re "^\\*")))
 
-;; - Use Hippie Expand
-;; -------------------
+;;*** Use Hippie Expand
+;;    -----------------
 (when pel-use-hippie-expand
   (global-set-key [remap dabbrev-expand] 'hippie-expand)
   ;; Default PEL setup for Hippie Expand is to use DAbbrev *first*
@@ -991,12 +996,12 @@ Your version of Emacs does not support dynamic module.")))
 ;; - try-expand-line
 
 ;; ---------------------------------------------------------------------------
-;; - Extra key bindings
-;; --==================
+;;* Extra key bindings
+;;  ==================
 ;;
 
-;; - Numeric Keypad Keys
-;; ---------------------
+;;** Numeric Keypad Keys
+;;   -------------------
 ;;
 ;; The nummeric keypad has 18 keys. They are shown here:
 ;;
@@ -1017,7 +1022,7 @@ Your version of Emacs does not support dynamic module.")))
 ;; modes for all environments despite the difference.
 ;;
 
-;; -- Numlock/Clear
+;;*** Numlock/Clear
 ;;
 ;; For macOS, the top-left key, labelled as "NumLock" above, is detected only
 ;; in graphics mode and is the [clear] key.  The Terminal mode does not detect
@@ -1032,7 +1037,7 @@ Your version of Emacs does not support dynamic module.")))
 ;; The "=", "/" and "*" keys are untouched, left to self-insert in all cases.
 ;;
 
-;; -- The numeric keys: 0 to 9
+;;*** The numeric keys: 0 to 9
 ;;
 ;; The numeric keys are mapped to pel-0 to pel-9 commands.  These commands
 ;; check the state of num-locking managed by the pel-numkpad.el to determine
@@ -1069,7 +1074,7 @@ Your version of Emacs does not support dynamic module.")))
   (global-set-key [kp-insert] 'pel-overwrite-yank)
   (global-set-key [kp-space] 'recenter-top-bottom))
 
-;; -- The . ([kp-decimal]) key
+;;*** The . ([kp-decimal]) key
 ;;
 ;; In terminal (TTY) mode, the keypad "." is not recognized
 ;; as [kp-decimal] but as "M-O n" so adjust the binding accordingly.
@@ -1080,7 +1085,7 @@ Your version of Emacs does not support dynamic module.")))
     (global-set-key [kp-decimal] 'pel-kp-decimal)
   (global-set-key (kbd "M-O n") 'pel-kp-decimal))
 
-;; -- The + key on the numerical keypad
+;;*** The + key on the numerical keypad
 ;;
 ;; That key registers as [kp-add] when Emacs runs in graphics mode, but
 ;; registers as [kp-separator] when Emacs runs in terminal mode.
@@ -1096,7 +1101,7 @@ Your version of Emacs does not support dynamic module.")))
     (global-set-key (kbd pel-keypad-meta+-special-sequence)
                     'pel-copy-symbol-at-point)))
 
-;; -- The - key on the numeric keypad
+;;*** The - key on the numeric keypad
 ;;
 ;; That key alwyas registers as [kp-subtract], so bind it to the
 ;; pel-kp-subtract which selects the action according to the state
@@ -1104,7 +1109,7 @@ Your version of Emacs does not support dynamic module.")))
 
 (global-set-key [kp-subtract] 'pel-kp-subtract)
 
-;; -- Numerical Keypad keys with modifier keys : Copy/Delete/Kill at point
+;;*** Numerical Keypad keys with modifier keys : Copy/Delete/Kill at point
 ;;
 ;; The following code controls the following operations:
 ;; - Copy a `thing` from the buffer to the kill-ring (for later pasting).
@@ -1147,8 +1152,8 @@ Your version of Emacs does not support dynamic module.")))
   (global-set-key [C-kp-down]     #'down-list))
 
 ;; ---------------------------------------------------------------------------
-;; - Navigation control facilities
-;; -------------------------------
+;;** Navigation control facilities
+;;   -----------------------------
 ;; - uses: pel-navigate
 ;;
 ;; Remap standard `beginning-of-line' to `pel-beginning-of-line'.  The PEL
@@ -1194,8 +1199,8 @@ Your version of Emacs does not support dynamic module.")))
 (global-set-key (kbd "<C-right>") 'pel-forward-token-start)
 (global-set-key (kbd "<C-left>")  'pel-backward-token-start)
 
-;; - Navigate to beginning/end of line/window/buffer
-;; -------------------------------------------------
+;;*** Navigate to beginning/end of line/window/buffer
+;;    -----------------------------------------------
 ;;
 ;; Replacement for the binding of the <home> and <end>
 ;; bindings (originally bound respectively to 'beginning-of-buffer
@@ -1215,8 +1220,8 @@ Your version of Emacs does not support dynamic module.")))
 (global-set-key (kbd "C-M-]") 'up-list)
 
 ;; ---------------------------------------------------------------------------
-;; - Cursor Keys
-;; -------------
+;;** Cursor Keys
+;;   -----------
 
 ;; ============ ========== ==================== =============================
 ;; Cursor key   Modifier   Function             Notes
@@ -1268,8 +1273,8 @@ Your version of Emacs does not support dynamic module.")))
 ;; ============ ========== ==================== ==============================
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys
-;; ---------------
+;;** Function Keys
+;;   -------------
 ;;
 ;; The first 4 function keys are used by Emacs and do not support combinations
 ;; with Control, Meta and Shift in macOS terminal:  I have not found a
@@ -1299,15 +1304,15 @@ Your version of Emacs does not support dynamic module.")))
 (global-set-key (kbd "<f3>") 'pel-kmacro-start-macro-or-insert-counter)
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f5>
-;; ----------------------
+;;*** Function Keys - <f5>
+;;    --------------------
 ;; Bind repeat to a single key: <f5> and <S-F5>
 (global-set-key (kbd "<f5>") 'repeat)
 ;; <S-f5> is also bound to repeat but also marks.
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f6>
-;; ----------------------
+;;*** Function Keys - <f6>
+;;    --------------------
 ;;
 ;; pel:f6 keys:
 ;;  d f l L
@@ -1356,18 +1361,14 @@ Your version of Emacs does not support dynamic module.")))
 (run-with-idle-timer 1 nil (function pel--install-generic-skel) pel:f6)
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11>
-;; -----------------------
-;;
-;; See the definition of pel: in the upper portion of this file.
-
-;; --
-;; - Function Keys - <f11> top-level prefix keys
-
+;;*** Shutdown Server
 
 (define-key pel: (kbd "C-x C-c") 'pel-shutdown-server)
+
+;;*** Tab Width Control
 (define-key pel: (kbd "M-t") 'pel-set-tab-width)
 
+;;*** Window navigation
 (defun pel--global-windmove-on (prefix)
   "Bind windmove commands on PREFIX key followed by cursor."
   (global-set-key (kbd (format "%s <up>"        prefix)) 'windmove-up)
@@ -1383,10 +1384,8 @@ Your version of Emacs does not support dynamic module.")))
   (global-set-key (kbd (format "%s <C-S-left>"  prefix)) 'pel-close-window-left)
   (global-set-key (kbd (format "%s <C-S-right>" prefix)) 'pel-close-window-right))
 
-(when pel-windmove-on-esc-cursor
-  (pel--global-windmove-on "ESC"))
-(when pel-windmove-on-f1-cursor
-  (pel--global-windmove-on "<f1>"))
+(when pel-windmove-on-esc-cursor  (pel--global-windmove-on "ESC"))
+(when pel-windmove-on-f1-cursor   (pel--global-windmove-on "<f1>"))
 
 (define-key pel: (kbd      "<down>")       'windmove-down)
 (define-key pel: (kbd      "<up>")         'windmove-up)
@@ -1420,18 +1419,19 @@ Your version of Emacs does not support dynamic module.")))
 ;; as a prefix key and this feature is quite useful.
 (define-key pel: (kbd      "C-l")          'recenter-top-bottom)
 
-;; Electric-pair-mode control
+
+;;*** Electric-pair-mode control
 (define-key pel: (kbd      "M-e")          'electric-pair-local-mode)
 
-;; Restore current directory to the directory of the file in current buffer
+;;*** Restore current directory to the directory of the file in current buffer
 (define-key pel: (kbd      "M-.")          'pel-cd-to-current)
 
-;; Command Execution (Emacs 28.1 and later)
+;;*** Command Execution (Emacs 28.1 and later)
 (when pel-emacs-28-or-later-p
   (define-key pel: (kbd "M-X") 'execute-extended-command-for-buffer))
 ;; ---------------------------------------------------------------------------
-;; Actions on File Save
-;; --------------------
+;;** Actions on File Save
+;;   --------------------
 ;; As controlled by PEL customized user options.
 
 (when pel-delete-trailing-whitespace
@@ -1456,8 +1456,9 @@ Your version of Emacs does not support dynamic module.")))
   (add-hook 'after-save-hook
             'executable-make-buffer-file-executable-if-script-p))
 
-;; - iedit - Powerful editing of multiple instances
-;; ------------------------------------------------
+;; ---------------------------------------------------------------------------
+;;** iedit - Powerful editing of multiple instances
+;;   ------------------------------------------------
 
 (when pel-use-iedit
   (pel-ensure-package iedit from: melpa)
@@ -1481,8 +1482,9 @@ Your version of Emacs does not support dynamic module.")))
     (require 'pel-iedit-modes-support)
     (add-hook 'tcl-mode-hook 'pel-iedit-enhance-tcl)))
 
-;; - popup-kill-ring
-;; -----------------
+;; ---------------------------------------------------------------------------
+;;** popup-kill-ring
+;;   -----------------
 ;; View all kill-ring deletions in a pop-up menu, when M-y is typed.
 ;; Activate the popup-kill-ring in graphic mode only
 ;; because it does not seem to work in terminal mode.
@@ -1495,14 +1497,15 @@ Your version of Emacs does not support dynamic module.")))
   (pel-autoload-file popup-kill-ring for: popup-kill-ring)
   (define-key pel: (kbd "M-y") 'popup-kill-ring))
 
-;; - browse-kill-ring
-;; ------------------
+;;** browse-kill-ring
+;;   ----------------
 (when pel-use-browse-kill-ring
   (pel-ensure-package browse-kill-ring from: melpa)
   (global-set-key "\C-cy" 'browse-kill-ring))
 
-;; - smart-dash
-;; ------------
+;; ---------------------------------------------------------------------------
+;;** smart-dash
+;;   ----------
 (when pel-use-smart-dash
   (pel-ensure-package smart-dash from: melpa)
   (pel-autoload-file smart-dash for: smart-dash-mode)
@@ -1541,8 +1544,8 @@ Your version of Emacs does not support dynamic module.")))
      (fset 'smart-dash-insert-dash 'pel-kp-subtract))))
 
 ;; ---------------------------------------------------------------------------
-;; - Display of Regular Expression -- easy-escape
-;; ----------------------------------------------
+;;** Display of Regular Expression -- easy-escape
+;;   --------------------------------------------
 (when pel-use-easy-escape
   (pel-ensure-package easy-escape from: melpa)
   (pel-autoload-file easy-escape for: easy-escape-minor-mode)
@@ -1553,8 +1556,8 @@ Your version of Emacs does not support dynamic module.")))
      (easy-escape-minor-mode 1))))
 
 ;; ---------------------------------------------------------------------------
-;; - Use undo-tree
-;; ---------------
+;;** Use undo-tree
+;;   -------------
 ;; Use undo-tree which provides undo/redo ability with complete storage and
 ;; no loss of history even when redo is done.
 ;; The key bindings use keys similar to Brief & CRiSP keys: M-u, M-U
@@ -1656,8 +1659,8 @@ can't bind negative-argument to C-_ and M-_"
   (pel-ensure-package vundo from: gnu)
   (define-key pel:undo  "v"    'vundo))
 
-;; - Use goto-last-change
-;; ----------------------
+;;*** Use goto-last-change
+;;    --------------------
 (when pel-use-goto-last-change
   (pel-ensure-package goto-last-change from: melpa)
   (pel-autoload-file goto-last-change for: goto-last-change)
@@ -1666,7 +1669,7 @@ can't bind negative-argument to C-_ and M-_"
   (global-set-key (kbd "C-x C-\\")   'goto-last-change))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> <f10>`` : Menu commands
+;;** Function Keys - <f11> - Prefix ``<f11> <f10>`` : Menu commands
 ;; Force load of pel-imenu after load of imenu: pel-imenu-init is identified
 ;; as an autoload, and it configures the imenu system.
 ;;
@@ -1762,7 +1765,7 @@ can't bind negative-argument to C-_ and M-_"
                      psw-switch-projectile-projects))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> <f2>`` : Customization
+;;** Function Keys - <f11> - Prefix ``<f11> <f2>`` : Customization
 ;;
 
 ;; -- Key bindings
@@ -1815,7 +1818,7 @@ can't bind negative-argument to C-_ and M-_"
 (add-hook 'Custom-mode-hook 'pel--setup-for-custom)
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> M-S`` : Startup Operation Mode
+;;** Function Keys - <f11> - Prefix ``<f11> M-S`` : Startup Operation Mode
 
 (define-pel-global-prefix pel:startup     (kbd "<f11> M-S"))
 (define-key pel:startup "?" 'pel-setup-info)
@@ -1828,8 +1831,8 @@ can't bind negative-argument to C-_ and M-_"
   (define-key pel:startup (kbd "M-q") 'pel-setup-no-quickstart))
 
 ;; ---------------------------------------------------------------------------
-;; Input Completion Framework activation
-;; -------------------------------------
+;;** Input Completion Framework activation
+;;   -------------------------------------
 ;;
 ;; Activate the mode(s) available, activate the initial mode and provide keys
 ;; to show current mode and to select a different one. The code supports the
@@ -1853,8 +1856,8 @@ can't bind negative-argument to C-_ and M-_"
         (setq count (1+ count))))
     count))
 
-;; Helm
-;; ----
+;;*** Helm
+;;    ----
 (when pel-use-helm
   (pel-ensure-package helm from: melpa)
   (pel-ensure-package helm-core from: melpa)
@@ -1868,8 +1871,8 @@ can't bind negative-argument to C-_ and M-_"
     (when pel-use-helm-lsp
       (pel-ensure-package helm-lsp from: melpa))))
 
-;; Ido
-;; ---
+;;*** Ido
+;;    ---
 (when pel-use-ido
   ;; The Ido extenders sometime fail on ido-completions being void.
   ;; to prevent that make sure it is auto-loaded.
@@ -1932,8 +1935,8 @@ can't bind negative-argument to C-_ and M-_"
     (global-set-key (kbd "M-X") 'smex-major-mode-commands)
     (define-key pel: (kbd "M-x") 'execute-extended-command)))
 
-;; ivy
-;; ---
+;;*** ivy
+;;    ---
 (when pel-use-ivy
   (defvar ivy-use-virtual-buffers)      ; prevent byte-compiler warning
   (defvar ivy-count-format)
@@ -1975,16 +1978,16 @@ can't bind negative-argument to C-_ and M-_"
     ;; lsp-ivy-global-workspace-symbol - workspace symbols from all of the active workspaces.
     ))
 
-;; flx-ido
-;; -------
+;;*** flx-ido
+;;    -------
 (when (and pel-use-flx
            (or pel-use-ido pel-use-ivy))
   (pel-ensure-package flx-ido from: melpa)
   ;; Note: flx-ido also explicitly requires the flx package
   (pel-autoload-file flx-ido for: flx-ido-mode))
 
-;; All completion
-;; --------------
+;;*** For all completion
+;;    ------------------
 ;; If more than 1 completion mode is available, this means that the user may
 ;; not want to use Emacs default: activate the one selected by customization
 ;; and install the selection command.
@@ -2014,7 +2017,7 @@ can't bind negative-argument to C-_ and M-_"
     (pel-set-completion-mode pel-initial-completion-mode :silent)))
 
 ;; ---------------------------------------------------------------------------
-;; - Project Management - Projectile
+;;** Project Management - Projectile
 
 (when pel-use-projectile
 
@@ -2060,7 +2063,7 @@ can't bind negative-argument to C-_ and M-_"
     (pel-ensure-package treemacs-projectile from: melpa))  )
 
 ;; ---------------------------------------------------------------------------
-;; Tempo skeleton - a powerful lisp-style templating system
+;;** Tempo skeleton - a powerful lisp-style templating system
 ;; Load pel-tempo when programming languages using it are used.
 ;; See the use of skeletons in the following sections.
 
@@ -2072,7 +2075,7 @@ can't bind negative-argument to C-_ and M-_"
   (pel-autoload-file pel-tempo for: pel-tempo-mode))
 
 ;; ---------------------------------------------------------------------------
-;; yasnippet - a Texmate-like templating system
+;;** yasnippet - a Texmate-like templating system
 
 (when pel-use-yasnippet
 
@@ -2115,8 +2118,12 @@ can't bind negative-argument to C-_ and M-_"
     (run-with-idle-timer 4 nil (function pel--start-yasnippet))))
 
 ;; ---------------------------------------------------------------------------
-;; How to add major-mode support to PEL
-;; ====================================
+;;* PEL Major Modes Extension Support
+;;  =================================
+
+
+;;** How to add major-mode support to PEL
+;;   ====================================
 ;;
 ;; - Identify the name of the major-mode used and select the prefix name as
 ;;   the identifier for the major mode.  Later in this instruction set it is
@@ -2204,10 +2211,8 @@ can't bind negative-argument to C-_ and M-_"
 ;;       - pel-xxx-tab-width
 ;;       - pel-xxx-use-tabs
 
-
-;; ---------------------------------------------------------------------------
-;;* Global prefixes to specialized prefixes
-;;  =======================================
+;;** Global prefixes to specialized major-mode prefixes
+;;    =================================================
 ;;
 ;; All PEL specialized prefixes start with <f11> SPC followed by another
 ;; character. These characters are listed below.
@@ -2333,11 +2338,11 @@ can't bind negative-argument to C-_ and M-_"
 ;;          - ANS.1
 
 ;; ---------------------------------------------------------------------------
-;; Language Server Mode Support
-;; ============================
+;;** Language Server Mode Support
+;;   ============================
 
-;; lsp-mode support
-;; ----------------
+;;*** lsp-mode support
+;;    ----------------
 (when pel-use-lsp-mode
   (pel-ensure-package lsp-mode from: melpa))
 
@@ -2348,8 +2353,8 @@ can't bind negative-argument to C-_ and M-_"
   (pel-ensure-package ccls from: melpa))
 
 ;; ---------------------------------------------------------------------------
-;; Flycheck/Flymake Syntax Checking
-;; ================================
+;;** Flycheck/Flymake Syntax Checking
+;;   ================================
 
 ;; Mode Setting Helper Functions
 ;; -----------------------------
@@ -2388,11 +2393,11 @@ can't bind negative-argument to C-_ and M-_"
     (pel--extend-flycheck)))
 
 ;; ---------------------------------------------------------------------------
-;; Software Build Tool Support
-;; ===========================
+;;** Software Build Tool Support
+;;   ===========================
 
-;; - CMake support
-;; ---------------
+;;*** CMake support
+;;    -------------
 (when pel-use-cmake-mode
   (pel-ensure-package cmake-mode from: melpa)
   (if (and pel-use-tree-sitter
@@ -2404,8 +2409,8 @@ can't bind negative-argument to C-_ and M-_"
     (add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
     (add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode))))
 
-;; - Makefile editing support
-;; --------------------------
+;;*** Makefile editing support
+;;    ------------------------
 ;; Nothing needs to be installed as make support is built-in Emacs.
 
 (when pel-use-makefile
@@ -2429,8 +2434,8 @@ can't bind negative-argument to C-_ and M-_"
         (define-key map (kbd "<f6> <up>")    'pel-make-outward-backward-conditional)
         (define-key map (kbd "<f6> o")       'pel-make-conditionals-occur)))))
 
-;; - Meson build system
-;; --------------------
+;;*** Meson build system
+;;    ------------------
 (when pel-use-meson-mode
   (define-pel-global-prefix pel:for-meson (kbd "<f11> SPC 3"))
 
@@ -2441,8 +2446,8 @@ can't bind negative-argument to C-_ and M-_"
   (pel-eval-after-load meson-mode
     (pel-config-major-mode meson pel:for-meson :no-ts)))
 
-;; - Ninja build-backend
-;; ---------------------
+;;*** Ninja build-backend
+;;    -------------------
 (when pel-use-ninja-mode
   (define-pel-global-prefix pel:for-ninja (kbd "<f11> SPC 5"))
 
@@ -2453,8 +2458,8 @@ can't bind negative-argument to C-_ and M-_"
     (add-hook 'ninja-mode-hook 'pel-iedit-enhance-ninja)
     (pel-config-major-mode ninja pel:for-ninja :no-ts)))
 
-;; - Nix Package Manager Support
-;; -----------------------------
+;;*** Nix Package Manager Support
+;;    ---------------------------
 (when pel-use-nix-mode
   (pel-ensure-package nix-mode from: melpa)
   (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
@@ -2468,7 +2473,7 @@ can't bind negative-argument to C-_ and M-_"
       (let ((map nix-mode-map))
         (define-key map (kbd "<f12> <f1>") 'pel-nix-help)))))
 
-;; - Tup Built Tool Support
+;;*** Tup Built Tool Support
 ;; ------------------------
 (when pel-use-tup
   (pel-install-github-file "pierre-rouleau/tup-mode/master" "tup-mode.el")
@@ -2488,23 +2493,11 @@ can't bind negative-argument to C-_ and M-_"
         (let ((map tup-mode-map))
           (define-key map (kbd "<f12> <f1>") 'pel-tup-help))))))
 
-;; - Nix Package Manager Support
-;; -----------------------------
-(when pel-use-nix-mode
-  (pel-ensure-package nix-mode from: melpa)
-  (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
-  (pel-eval-after-load nix-mode
-    (defun pel-nix-help (&optional open-github-page-p)
-      "Open Nix PDF"
-      (interactive "P")
-      (pel-help-open-pdf "pl-nix" open-github-page-p)))
-  (pel-config-major-mode nix :no-f12-keys :no-ts
-    (when (boundp 'nix-mode-map)
-      (let ((map nix-mode-map))
-        (define-key map (kbd "<f12> <f1>") 'pel-nix-help)))))
+;; ---------------------------------------------------------------------------
+;;** Object File/ Executable File Format Support
 
-;; Intel-Hex object file format support
-;; ------------------------------------
+;;*** Intel-Hex object file format support
+;;    ------------------------------------
 (when pel-use-intel-hex-mode
   (pel-ensure-package intel-hex-mode from: melpa)
   (add-to-list 'auto-mode-alist '("\\.hex\\'" . intel-hex-mode))
@@ -2513,6 +2506,8 @@ can't bind negative-argument to C-_ and M-_"
   (add-to-list 'auto-mode-alist '("\\.ihx\\'" . intel-hex-mode))
   (pel-config-major-mode intel-hex :no-f12-keys :no-ts))
 
+;;*** ELF - Executable & Linkable File
+;;    --------------------------------
 (when pel-use-elf-mode
   (if (executable-find "readelf")
       (progn
