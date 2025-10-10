@@ -5295,7 +5295,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-key pel:for-rust "l" 'rust-run-clippy)
 
   (pel-config-major-mode rust pel:for-rust :same-for-ts
-
     (setq indent-tabs-mode nil)
     (when (boundp 'rust-indent-offset)
       (setq-local tab-width rust-indent-offset))
@@ -5810,7 +5809,7 @@ to identify a Verilog file.  Anything else is assumed being V."
     (pel-add-speedbar-extension '("adoc" ".adoc.txt")))
   (pel-set-auto-mode adoc-mode for:
                      "\\.adoc\\'"
-                     "\\.adoc.txt\\'")
+                     "\\.adoc\\.txt\\'")
   (pel-eval-after-load adoc-mode
     (pel-config-major-mode adoc pel:for-asciidoc :no-ts
       ;; Preliminary bindings - there's way too many - and not structured
@@ -6189,7 +6188,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   ;; that can read normal text files.
   (pel-set-auto-mode rst-mode for:
                      "\\.stxt\\'"
-                     "\\.rst.txt\\'")
+                     "\\.rst\\.txt\\'")
 
   (define-key pel:for-reST (kbd "M--") 'pel-itemize-lines)
   (define-key pel:for-reST (kbd "M-t") 'pel-rst-table-dup-separator-lines)
@@ -6281,7 +6280,7 @@ to identify a Verilog file.  Anything else is assumed being V."
                      mscgen-mode)
   ;; set the file extensions
   (pel-set-auto-mode mscgen-mode for:
-                     "\\.\\(msc?\\|msc.txt\\)\\'")
+                     "\\.\\(msc?\\|msc\\.txt\\)\\'")
   ;; Add speedbar support
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".msc" ".msc.txt")))
