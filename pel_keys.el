@@ -3397,7 +3397,10 @@ d-mode not added to ac-modes!"
     ;; not load go-mode.  Therefore the PEL hooking must be done for both
     ;; go-mode and go-ts-mode.
     ;;
-    (pel--autoload-go)
+    (add-to-list 'auto-mode-alist (cons "\\.go\\'"
+                                      (if (eq pel-use-go 'with-tree-sitter)
+                                          'go-ts-mode
+                                        'go-mode)))
     (pel-eval-after-load (go-mode go-ts-mode)
       ;; Set environment for Go programming using go-mode.
       ;; [:todo 2025-05-08, by Pierre Rouleau: automate the activation of
@@ -3421,8 +3424,7 @@ d-mode not added to ac-modes!"
            ((eq pel-use-goflymake 'with-flymake)  (pel-require 'go-flymake))
            (t
             (error "Unsupported pel-use-goflymake value: %S"
-                   pel-use-goflymake)))))
-      (pel--autoload-go))))
+                   pel-use-goflymake))))))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Java Programming Language Support
@@ -5246,7 +5248,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
 ;; ---------------------------------------------------------------------------
 ;;** Rust Programming Language Support
-;;   ---------------------------------[1;3B
+;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` :
 (when pel-use-rust
   ;; TODO: only allow one of rust-mode or rustic and determine what
@@ -5265,6 +5267,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (when (and pel-use-rust-mode
              pel-use-flycheck-rust)
     (pel-ensure-package flycheck-rust from: melpa)
+    (add-to-list 'auto-mode-alist (cons "\\.rs\\'"
+                                      (if (eq pel-use-rust 'with-tree-sitter)
+                                          'rust-ts-mode
+                                        'rust-mode)))
     (pel-eval-after-load (rust-mode rust-ts-mode)
       (add-hook 'flycheck-mode-hook 'flycheck-rust-setup)
       (pel-eval-after-load flycheck

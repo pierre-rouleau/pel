@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- PEL now support both *rust-mode* and Tree-Sitter based *rust-ts-mode*.
+  - It automatically associates the tree-sitter based *rust-ts-mode* with Rust
+    files when *pel-use-rust* customizable user-option is set to the new value
+    =with-tree-sitter=. If it is set to =t= it select the classic *rust-mode*.
 - PEL activates Javascript support extension when the *pel-use-js* is turned
   on (set to =t=).
 - PEL now support both *go-mode* and Tree-Sitter based *go-ts-mode*.

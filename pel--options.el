@@ -7434,18 +7434,23 @@ When activating it you can select between the following values:
                    "https://en.wikipedia.org/wiki/Go_(programming_language)")
   :group 'pel-pkg-for-go
   :type '(choice
-          (const :tag "Do not use go" nil)
+          (const :tag "Do not use Go" nil)
           (const :tag "Use classic mode: go-mode" t)
           (const :tag "Use tree-sitter mode: go-ts-mode" with-tree-sitter)))
 (pel-put 'pel-use-go :package-is :a-gate)
 (pel-put 'pel-use-go :also-required-when 'pel-use-go-mode)
 
-(defun pel--autoload-go ()
-  "Select which go major mode is used."
-  (add-to-list 'auto-mode-alist (cons "\\.go\\'"
-                                      (if (eq pel-use-go 'with-tree-sitter)
-                                          'go-ts-mode
-                                        'go-mode))))
+(defcustom pel-use-go-mode nil
+  "Controls whether PEL use the gomode package."
+  :link '(url-link :tag "gomode @ Github"
+                   "https://github.com/dominikh/go-mode.el")
+  :group 'pel-pkg-for-go
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-go-mode :requires 'pel-use-go)
+(when pel-use-go-mode
+  (unless pel-use-go
+    (setq pel-use-go t)))
 
 (defcustom pel-go-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Go buffers.
@@ -7482,14 +7487,7 @@ even when the user-option sets it on."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-use-go-mode nil
-  "Controls whether PEL use the gomode package."
-  :link '(url-link :tag "gomode @ Github"
-                   "https://github.com/dominikh/go-mode.el")
-  :group 'pel-pkg-for-go
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-go-mode :requires 'pel-use-go)
+
 
 (defcustom pel-use-goflymake nil
   "Controls whether PEL use the goflymake package.
@@ -11044,12 +11042,18 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 (defcustom pel-use-rust  nil
   "Control whether PEL supports Rust development.
 
-This must be turned on (set to t) to allow the other user-options
-to take effect."
+This *must* be turned on to allow other packages for Rust.
+However it is automatically activated when `pel-use-rust-mode' is activated.
+When activating it you can select between the following values:
+- t                : use `rust-mode'
+- with-tree-sitter : use `rust-ts-mode'"
   :group 'pel-pkg-for-rust
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use Rust" nil)
+          (const :tag "Use classic mode: rust-mode" t)
+          (const :tag "Use tree-sitter mode: rust-ts-mode" with-tree-sitter)))
 (pel-put 'pel-use-rust :package-is :a-gate)
+(pel-put 'pel-use-rust :also-required-when 'pel-use-rust-mode)
 
 (defcustom pel-use-rust-mode nil
   "Control whether rust-mode is activated.
@@ -11060,6 +11064,9 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-rust-mode :requires 'pel-use-rust)
+(when pel-use-rust-mode
+  (unless pel-use-rust
+    (setq pel-use-rust t)))
 
 (defcustom pel-rust-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Rust buffers.
@@ -13130,10 +13137,6 @@ indexing system."
   (ggtags              (setq pel-use-ggtags t))
   (edts                (setq pel-use-edts 'start-automatically))
   (erlang-ls           (setq pel-use-erlang-ls t)))
-
-(when pel-use-go-mode
-  (unless pel-use-go
-    (setq pel-use-go t)))
 
 (when (eq pel-c-file-finder-method 'pel-ini-file)
   (setq pel-use-ini t))
