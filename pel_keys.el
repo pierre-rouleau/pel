@@ -3384,7 +3384,6 @@ d-mode not added to ac-modes!"
            :error))))
 
     ;; Setup Go
-    (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
     ;; Overcome omission bug in go-mode: add support for Speedbar
     (when pel-use-speedbar
       (pel-add-speedbar-extension ".go"))
@@ -3398,6 +3397,7 @@ d-mode not added to ac-modes!"
     ;; not load go-mode.  Therefore the PEL hooking must be done for both
     ;; go-mode and go-ts-mode.
     ;;
+    (pel--autoload-go)
     (pel-eval-after-load (go-mode go-ts-mode)
       ;; Set environment for Go programming using go-mode.
       ;; [:todo 2025-05-08, by Pierre Rouleau: automate the activation of
@@ -3421,7 +3421,8 @@ d-mode not added to ac-modes!"
            ((eq pel-use-goflymake 'with-flymake)  (pel-require 'go-flymake))
            (t
             (error "Unsupported pel-use-goflymake value: %S"
-                   pel-use-goflymake))))))))
+                   pel-use-goflymake)))))
+      (pel--autoload-go))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Java Programming Language Support
@@ -3432,27 +3433,32 @@ d-mode not added to ac-modes!"
   (when pel-use-lsp-java
     (pel-ensure-package lsp-java from: melpa))
 
+  (defun pel--java-setup-with-lsp ()
+    "Setup Java with language server capability."
+    (require 'lsp-java)
+    (when (fboundp 'lsp)
+      (lsp)))
 
   ;; java-mode is implemented in the cc-mode.el
   (pel-eval-after-load cc-mode
     (pel-config-major-mode java pel:for-java :same-for-ts)
     (when pel-use-lsp-java
-      (require 'lsp-java)
-      (when (fboundp 'lsp)
-        (add-hook 'java-mode-hook #'lsp)))))
+      ;; don't load lsp on cc-mode loaded; wait until user opens a Java file.
+      (when (fboundp 'pel--java-setup-with-lsp)
+        (add-hook 'java-mode-hook (function pel--java-setup-with-lsp))))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Javascript Programming Language Support
 ;;   ---------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC i`` :
-(when pel-use-javascript
+(when pel-use-js
   (define-pel-global-prefix pel:for-javascript  (kbd "<f11> SPC i"))
   (add-to-list 'auto-mode-alist (cons "\\.js\\'"
-                                      (if (eq pel-use-javascript 'js-mode)
+                                      (if (eq pel-use-js 'js-mode)
                                           'js-mode
                                         'js2-mode)))
   (cond
-   ((eq pel-use-javascript 'js2-mode)
+   ((eq pel-use-js 'js2-mode)
     (pel-ensure-package js2-mode from: melpa)
     (pel-autoload-file js2-mode for: js2-mode)
     (if (version< emacs-version "27.1")
@@ -3476,7 +3482,7 @@ d-mode not added to ac-modes!"
     ;; js2-error-buffer-prev and some more...
     (pel-config-major-mode js2 pel:for-javascript :no-ts))
    ;;
-   ((eq pel-use-javascript 'js-mode)
+   ((eq pel-use-js 'js-mode)
     ;; Use the built-in js.el
     (pel-autoload-file js for:
                        js-mode js-ts-mode)

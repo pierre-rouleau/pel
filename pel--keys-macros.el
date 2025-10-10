@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-08 17:08:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-10 08:50:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1853,6 +1853,7 @@ Function created by the `pel-config-major-mode' macro."
         (gn-ts-mode-hook (intern (format "%s-ts-mode-hook" target-mode)))
         (gn-minor-modes (intern (format "pel-%s-activates-minor-modes"
                                         target-mode)))
+        (gn-use      (intern (format "pel-use-%s" target-mode)))
         (gn-use-tabs (intern (format "pel-%s-use-tabs"
                                      target-mode)))
         (gn-tab-width (intern (format "pel-%s-tab-width"
@@ -1882,13 +1883,15 @@ Function created by the `pel-config-major-mode' macro."
     (when (and (eq ts-option :same-for-ts)
                (boundp 'major-mode-remap-alist))
       ;; There are no reasons to use major-mode when the major-ts-mode
-      ;; mode is available and working.  Therefore ensure that whenever
+      ;; mode is available and working.  Therefore, when the tree-sitter mode
+      ;; is requested by the user for this major mode, ensure that whenever
       ;; major-mode is requested, major-ts-mode is used.
       (pel-append-to newbody
-       `((when (pel-treesit-remap-available-for (quote ,target-mode))
-           (add-to-list (quote major-mode-remap-alist)
-                        (quote
-                         (,gn-mode-name . ,gn-ts-mode-name)))))))
+        `((when (and (eq ,gn-use 'with-tree-sitter)
+                     (pel-treesit-remap-available-for (quote ,target-mode)))
+            (add-to-list (quote major-mode-remap-alist)
+                         (quote
+                          (,gn-mode-name . ,gn-ts-mode-name)))))))
     ;;
     ;; 2 - Include BODY
     (pel-append-to newbody body)
@@ -1907,8 +1910,8 @@ Function created by the `pel-config-major-mode' macro."
     ;; Add the code that activates the minor modes identified by the
     ;;`pel-<mode>-activates-minor-modes' user-option.
     (pel-append-to newbody
-                   `((pel-turn-on-local-minor-modes-in
-                      (quote ,gn-minor-modes))))
+      `((pel-turn-on-local-minor-modes-in
+         (quote ,gn-minor-modes))))
 
     ;; 4 - Prepare the code that is invoked after the newbody
     (pel-append-to hook-body

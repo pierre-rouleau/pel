@@ -7346,7 +7346,7 @@ Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-software-programming-languages)
 
 
-(defcustom pel-use-javascript nil
+(defcustom pel-use-js nil
   "Control whether PEL supports Javascript development.
 
 When set, identifies what mode is used to support Javascript."
@@ -7357,7 +7357,7 @@ js-mode and js-ts-mode." nil)
           (const :tag "Emacs basic + \
 PEL additions using built-in js-mode and js-ts-mode." js-mode)
           (const :tag "Supported by the js2-mode external package." js2-mode)))
-(pel-put 'pel-use-javascript :package-is '(when (eq pel-use-javascript 'js2-mode)
+(pel-put 'pel-use-js :package-is '(when (eq pel-use-js 'js2-mode)
                                             '((elpa . js2-mode))))
 
 (defcustom pel-js-activates-minor-modes nil
@@ -7426,14 +7426,26 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 (defcustom pel-use-go nil
   "Controls whether PEL supports the Go programming language.
 This *must* be activated to allow any other package for Go.
-However it is automatically activated when `pel-use-go-mode' is activated."
+However it is automatically activated when `pel-use-go-mode' is activated.
+When activating it you can select between the following values:
+- t                : use `go-mode'
+- with-tree-sitter : use `go-ts-mode'"
   :link '(url-link :tag "Go @ wikipedia"
                    "https://en.wikipedia.org/wiki/Go_(programming_language)")
   :group 'pel-pkg-for-go
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use go" nil)
+          (const :tag "Use classic mode: go-mode" t)
+          (const :tag "Use tree-sitter mode: go-ts-mode" with-tree-sitter)))
 (pel-put 'pel-use-go :package-is :a-gate)
 (pel-put 'pel-use-go :also-required-when 'pel-use-go-mode)
+
+(defun pel--autoload-go ()
+  "Select which go major mode is used."
+  (add-to-list 'auto-mode-alist (cons "\\.go\\'"
+                                      (if (eq pel-use-go 'with-tree-sitter)
+                                          'go-ts-mode
+                                        'go-mode))))
 
 (defcustom pel-go-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Go buffers.
@@ -13120,7 +13132,8 @@ indexing system."
   (erlang-ls           (setq pel-use-erlang-ls t)))
 
 (when pel-use-go-mode
-  (setq pel-use-go t))
+  (unless pel-use-go
+    (setq pel-use-go t)))
 
 (when (eq pel-c-file-finder-method 'pel-ini-file)
   (setq pel-use-ini t))

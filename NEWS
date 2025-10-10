@@ -2,7 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
-- PEL now support both go-mode and go-ts-mode.
+- PEL activates Javascript support extension when the *pel-use-js* is turned
+  on (set to =t=).
+- PEL now support both *go-mode* and Tree-Sitter based *go-ts-mode*.
+  - It automatically associates the tree-sitter based *go-ts-mode* with GO
+    files when *pel-use-go* customizable user-option is set to the new value
+    =with-tree-sitter=. If it is set to =t= it select the classic *go-mode*.
 - Improve PEL lazy loading macros:
   - *pel-eval-after-load* macro now accepts a list of features or just one.
     It is mostly useful
@@ -34,6 +39,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     dropped non tree-sitter support.  I'd like to revive it, but first need to learn more about the implementations.
   - The Gleam PDF is an early version.
 - Provide PEL support for Java.  PEL support is activated by *pel-use-java*.
+  It also supports and activates LSP support for java when *pel-use-lsp-java*
+  user-option is on (set to =t=).
   The Java PDF is an early version.
 - Add support for Meson and ninja build files.  Both implementations are simple, early implementations.
 - Improved *iedit* support for *cperl-mode*, *sh-mode*, *tcl-mode*, and *ninja-mode*:
