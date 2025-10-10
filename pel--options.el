@@ -7426,31 +7426,30 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 (defcustom pel-use-go nil
   "Controls whether PEL supports the Go programming language.
 This *must* be activated to allow any other package for Go.
-However it is automatically activated when `pel-use-go-mode' is activated.
 When activating it you can select between the following values:
-- t                : use `go-mode'
-- with-tree-sitter : use `go-ts-mode'"
+- t                : use `go-mode' provided by the go-mode.el external package.
+- with-tree-sitter : use `go-ts-mode' which is built-in Emacs.
+
+"
   :link '(url-link :tag "Go @ wikipedia"
                    "https://en.wikipedia.org/wiki/Go_(programming_language)")
+  :link '(url-link :tag "gomode @ Github"
+                   "https://github.com/dominikh/go-mode.el")
   :group 'pel-pkg-for-go
   :type '(choice
           (const :tag "Do not use Go" nil)
           (const :tag "Use classic mode: go-mode" t)
           (const :tag "Use tree-sitter mode: go-ts-mode" with-tree-sitter)))
-(pel-put 'pel-use-go :package-is :a-gate)
-(pel-put 'pel-use-go :also-required-when 'pel-use-go-mode)
-
-(defcustom pel-use-go-mode nil
-  "Controls whether PEL use the gomode package."
-  :link '(url-link :tag "gomode @ Github"
-                   "https://github.com/dominikh/go-mode.el")
-  :group 'pel-pkg-for-go
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-go-mode :requires 'pel-use-go)
-(when pel-use-go-mode
-  (unless pel-use-go
-    (setq pel-use-go t)))
+;; `go-ts-mode' is built-in, `go-mode' is an elpa package that is
+;; installed in both cases.
+(pel-put 'pel-use-go :package-is 'go-mode)
+(pel-put 'pel-use-go :also-required-when '(or pel-use-goflymake
+                                              pel-use-gocode
+                                              pel-use-go-errcheck
+                                              pel-use-gorepl-mode
+                                              pel-use-gotest
+                                              pel-use-go-tag
+                                              pel-use-flycheck-golangci-lint))
 
 (defcustom pel-go-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Go buffers.
@@ -7486,8 +7485,6 @@ even when the user-option sets it on."
   :group 'pel-pkg-for-go
   :type 'boolean
   :safe #'booleanp)
-
-
 
 (defcustom pel-use-goflymake nil
   "Controls whether PEL use the goflymake package.

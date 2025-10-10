@@ -3357,74 +3357,73 @@ d-mode not added to ac-modes!"
 ;;   ------------------------------
 ;; - function Language Support Keys - <f11> - Prefix ``<f11> SPC g`` :
 (when pel-use-go
-  (when pel-use-go-mode
-    ;; go-mode installation
-    (pel-ensure-package go-mode from: melpa)
-    (pel-autoload-file go-mode for: go-mode)
+  ;; go-mode installation
+  (pel-ensure-package go-mode from: melpa)
+  (pel-autoload-file go-mode for: go-mode)
 
-    ;; goflymake package installation - either using flymake or flycheck
-    (cl-eval-when 'load
-      (when pel-use-goflymake
-        ;; goflymake is a mixed package:
-        ;; - it has the Go source:  goflymake/main.go  that Go will compile into
-        ;;   the executable stored in a directory that should be on your PATH,
-        ;; - the emacs lisp go-flymake.el and go-flycheck.el
-        ;; To ensure the Emacs Lisp files are available to Emacs regardless of the
-        ;; Go project or workspace used, the Emacs Lisp files are stored in PEL
-        ;; utility directory.
-        (if (memq pel-use-goflymake '(with-flycheck with-flymake))
-            (pel--install-github-file "dougm/goflymake/master"
-                                      (if (eq pel-use-goflymake 'with-flycheck)
-                                          "go-flycheck.el"
-                                        "go-flymake.el"))
-          (display-warning
-           'pel-use-goflymake
-           (format "Unsupported pel-use-goflymake value: %S"
-                   pel-use-goflymake)
-           :error))))
+  ;; goflymake package installation - either using flymake or flycheck
+  (cl-eval-when 'load
+    (when pel-use-goflymake
+      ;; goflymake is a mixed package:
+      ;; - it has the Go source:  goflymake/main.go  that Go will compile into
+      ;;   the executable stored in a directory that should be on your PATH,
+      ;; - the emacs lisp go-flymake.el and go-flycheck.el
+      ;; To ensure the Emacs Lisp files are available to Emacs regardless of the
+      ;; Go project or workspace used, the Emacs Lisp files are stored in PEL
+      ;; utility directory.
+      (if (memq pel-use-goflymake '(with-flycheck with-flymake))
+          (pel--install-github-file "dougm/goflymake/master"
+                                    (if (eq pel-use-goflymake 'with-flycheck)
+                                        "go-flycheck.el"
+                                      "go-flymake.el"))
+        (display-warning
+         'pel-use-goflymake
+         (format "Unsupported pel-use-goflymake value: %S"
+                 pel-use-goflymake)
+         :error))))
 
-    ;; Setup Go
-    ;; Overcome omission bug in go-mode: add support for Speedbar
-    (when pel-use-speedbar
-      (pel-add-speedbar-extension ".go"))
+  ;; Setup Go
+  ;; Overcome omission bug in go-mode: add support for Speedbar
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".go"))
 
-    (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
-    (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
-    (define-key pel:for-go "?"         'pel-go-setup-info)
+  (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
+  (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
+  (define-key pel:for-go "?"         'pel-go-setup-info)
 
-    ;; The go-ts-mode really derives from prog-mode even though it updates the
-    ;; dependency tree to make it look like a child of go-mode, but it does
-    ;; not load go-mode.  Therefore the PEL hooking must be done for both
-    ;; go-mode and go-ts-mode.
-    ;;
-    (add-to-list 'auto-mode-alist (cons "\\.go\\'"
+  ;; The go-ts-mode really derives from prog-mode even though it updates the
+  ;; dependency tree to make it look like a child of go-mode, but it does
+  ;; not load go-mode.  Therefore the PEL hooking must be done for both
+  ;; go-mode and go-ts-mode.
+  ;;
+  (add-to-list 'auto-mode-alist (cons "\\.go\\'"
                                       (if (eq pel-use-go 'with-tree-sitter)
                                           'go-ts-mode
                                         'go-mode)))
-    (pel-eval-after-load (go-mode go-ts-mode)
-      ;; Set environment for Go programming using go-mode.
-      ;; [:todo 2025-05-08, by Pierre Rouleau: automate the activation of
-      ;;         goflymake Go program by adjusting the GOPATH when flycheck
-      ;;         with goflymake support is requested.]
+  (pel-eval-after-load (go-mode go-ts-mode)
+    ;; Set environment for Go programming using go-mode.
+    ;; [:todo 2025-05-08, by Pierre Rouleau: automate the activation of
+    ;;         goflymake Go program by adjusting the GOPATH when flycheck
+    ;;         with goflymake support is requested.]
+    (when pel-use-goflymake
+      (when (boundp 'go-mode-map)
+        (define-key go-mode-map (kbd "<f11> !!") 'pel-go-toggle-syntax-checker)))
+    (pel-config-major-mode go pel:for-go :same-for-ts
+      ;; ensure gofmt is executed before saving file if
+      ;; configured to do so
+      (when pel-go-run-gofmt-on-buffer-save
+        (add-hook 'before-save-hook  'pel-go-gofmt-on-buffer-save))
+      ;; Set the display width of hard tabs used in Go source
+      ;; as controlled by the user-option
+      (setq-local tab-width pel-go-tab-width)
       (when pel-use-goflymake
-        (when (boundp 'go-mode-map)
-          (define-key go-mode-map (kbd "<f11> !!") 'pel-go-toggle-syntax-checker)))
-      (pel-config-major-mode go pel:for-go :same-for-ts
-        ;; ensure gofmt is executed before saving file if
-        ;; configured to do so
-        (when pel-go-run-gofmt-on-buffer-save
-          (add-hook 'before-save-hook  'pel-go-gofmt-on-buffer-save))
-        ;; Set the display width of hard tabs used in Go source
-        ;; as controlled by the user-option
-        (setq-local tab-width pel-go-tab-width)
-        (when pel-use-goflymake
-          ;; Activate flycheck or flymake if requested
-          (cond
-           ((eq pel-use-goflymake 'with-flycheck) (pel-require 'go-flycheck))
-           ((eq pel-use-goflymake 'with-flymake)  (pel-require 'go-flymake))
-           (t
-            (error "Unsupported pel-use-goflymake value: %S"
-                   pel-use-goflymake))))))))
+        ;; Activate flycheck or flymake if requested
+        (cond
+         ((eq pel-use-goflymake 'with-flycheck) (pel-require 'go-flycheck))
+         ((eq pel-use-goflymake 'with-flymake)  (pel-require 'go-flymake))
+         (t
+          (error "Unsupported pel-use-goflymake value: %S"
+                 pel-use-goflymake)))))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Java Programming Language Support

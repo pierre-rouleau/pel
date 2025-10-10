@@ -258,7 +258,6 @@
  '(pel-use-gleam t)
  '(pel-use-gleam-mode t)
  '(pel-use-go t)
- '(pel-use-go-mode t)
  '(pel-use-goflymake (quote with-flycheck))
  '(pel-use-goto-last-change t)
  '(pel-use-graphviz-dot t)

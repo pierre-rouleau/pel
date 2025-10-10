@@ -2,12 +2,12 @@
 
 ;; Created   : Wednesday, March 24 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-29 12:38:09, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-10 16:16:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -90,29 +90,43 @@
 ;; The following test must provide all the let-bound variables invoked in the
 ;; verification of the logic.
 
-(ert-deftest ert-test-package-goflymake ()
+(ert-deftest ert-test-packages-for-goflymake ()
   "Test pel-use-goflymake."
-  (should (equal
-           (let ((pel-use-go nil)
-                 (pel-use-goflymake 'with-flymake))
-             (pel-packages-for 'pel-use-goflymake))
-           nil))
-  (should (equal
-           (let ((pel-use-go t)
-                 (pel-use-goflymake 'with-flymake))
-             (pel-packages-for 'pel-use-goflymake))
-           '((utils . go-flymake))))
-  (should (equal
-           (let ((pel-use-go t)
-                 (pel-use-goflymake 'with-flycheck))
-             (pel-packages-for 'pel-use-goflymake))
-           '((elpa . flycheck)
-             (utils . go-flycheck))))
-  (should (equal
-           (let ((pel-use-go t)
-                 (pel-use-goflymake nil))
-             (pel-packages-for 'pel-use-goflymake))
-           nil)))
+  (let ((pel-use-go nil)
+        (pel-use-goflymake nil))
+    (should (equal (pel-packages-for 'pel-use-goflymake)
+                   nil))
+
+    ;; -- use `go-mode'
+    (setq pel-use-go t)
+    (should (equal (pel-packages-for 'pel-use-goflymake)
+                   '((elpa . go-mode))))
+
+    (let ((pel-use-goflymake 'with-flymake))
+      (should (equal (pel-packages-for 'pel-use-goflymake)
+                     '((utils . go-flymake)
+                       (elpa . go-mode)))))
+    (let ((pel-use-goflymake 'with-flycheck))
+      (should (equal (pel-packages-for 'pel-use-goflymake)
+                     '((elpa . flycheck)
+                       (utils . go-flycheck)
+                       (elpa . go-mode)))))
+
+    ;; -- use `go-ts-mode' (but also install `go-mode')
+    (setq pel-use-go 'with-tree-sitter)
+    (should (equal (pel-packages-for 'pel-use-goflymake)
+                   '((elpa . go-mode))))
+    ;;
+    (setq pel-use-goflymake 'with-flymake)
+    (should (equal (pel-packages-for 'pel-use-goflymake)
+                   '((utils . go-flymake)
+                     (elpa . go-mode))))
+    ;;
+    (setq pel-use-goflymake 'with-flycheck)
+    (should (equal (pel-packages-for 'pel-use-goflymake)
+                   '((elpa . flycheck)
+                     (utils . go-flycheck)
+                     (elpa . go-mode))))))
 
 (ert-deftest ert-test-package-lice ()
   "Test pel-use-lice."
