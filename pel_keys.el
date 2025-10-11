@@ -3395,11 +3395,15 @@ d-mode not added to ac-modes!"
   ;; dependency tree to make it look like a child of go-mode, but it does
   ;; not load go-mode.  Therefore the PEL hooking must be done for both
   ;; go-mode and go-ts-mode.
-  ;;
-  (add-to-list 'auto-mode-alist (cons "\\.go\\'"
-                                      (if (eq pel-use-go 'with-tree-sitter)
-                                          'go-ts-mode
-                                        'go-mode)))
+
+  ;; Unfortunately when go-ts-mode loads it puts an entry into
+  ;; auto-mode-alist.  This imposes using `go-ts-mode' forever once it has
+  ;; been loaded.  The only way I can see to prevent that is to provide an
+  ;; advice to `go-ts-mode' that removes that entry from `auto-mode-alist'
+
+  ;; Use a mode dispatcher: select mode according to `pel-use-go' value.
+  (add-to-list 'auto-mode-alist '("\\.go\\'" . pel-go-mode))
+
   (pel-eval-after-load (go-mode go-ts-mode)
     ;; Set environment for Go programming using go-mode.
     ;; [:todo 2025-05-08, by Pierre Rouleau: automate the activation of

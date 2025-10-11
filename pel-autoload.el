@@ -524,6 +524,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-toggle-all-docstrings)
 
   (pel-autoload "pel-go" for:
+    pel-go-mode
+    pel--go-ts-mode-fixer
     pel-go-toggle-gofmt-on-buffer-save
     pel-go-setup-info
     pel-go-toggle-syntax-checker)

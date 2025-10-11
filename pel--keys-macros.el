@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-10 08:50:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-11 15:14:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1740,23 +1740,38 @@ DEFINES: is a cosmetic only argument that must be present."
                            error)
                    :error))
 
+(defconst pel--ts-mode-with-fixer '(go-ts-mode)
+  "List of Tree Sitter modes that require execution of a mode fixer function.
+The fixer mode function has a name that has a format like
+pel--MODE-fixer with where MODE corresponds to the name of the mode taken from
+this list.")
+
 (defmacro pel-eval-after-load (features &rest body)
   "Evaluate BODY after the FEATURES has been loaded.
 FEATURE is either a symbol or a list of feature symbols.
 Both must be unquoted.
-A list of feature symbol is useful,for example, when the tree-sitter
+A list of feature symbol is useful, for example, when the tree-sitter
 mode is provided by a different file them the classic major mode,
 and the tree-sitter mode file does not load the classic mode file."
   (declare (indent 1))
-  (let ((code nil))
+  (let ((code nil)
+        (feature-body nil))
     (dolist (the-feature (if (listp features) features (list features)))
-      (pel-append-to code
-        `((with-eval-after-load (quote ,the-feature)
-            (condition-case-unless-debug err
+      (setq feature-body nil)
+      (when (memq the-feature pel--ts-mode-with-fixer)
+        (let ((fixer-fct (intern (format "pel--%s-fixer" the-feature))))
+          (pel-append-to feature-body
+            `((when (fboundp (quote ,fixer-fct))
+                (,fixer-fct))))))
+      (pel-append-to feature-body
+        `((condition-case-unless-debug err
                 (progn ,@body)
               (error (pel--eval-after-load-error (quote ,the-feature)
-                                                 err)))))))
-    ;; Return the generated code
+                                                 err)))))
+      (pel-append-to code
+        `((with-eval-after-load (quote ,the-feature)
+            ,@feature-body))))
+    ;; Return the generated code for all features.
     `(progn
        ,@code)))
 
@@ -1796,15 +1811,15 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 These modes do not have both `pel-<mode>-tab-width' and a `pel-<mode>-use-tabs'
 user-options variables.")
 
-;; TODO: pel-config-major-mode does not seem to support shell-mode and
-;;       term-mode properly.  Investigate and fix.
-
 (defun pel-treesit-remap-available-for (mode)
   "Return non-nil when treesit is available the ts MODE can use MODE.
 MODE is a symbol like \\='c or \\='lisp identifying the major mode."
   (and pel-use-tree-sitter
        (pel-treesit-language-available-p mode)
        (boundp 'major-mode-remap-alist)))
+
+;; TODO: pel-config-major-mode does not seem to support shell-mode and
+;;       term-mode properly.  Investigate and fix.
 
 (defmacro pel-config-major-mode (target-mode key-prefix ts-option &rest body)
   "Setup the major mode identified by TARGET-MODE.
@@ -1886,12 +1901,15 @@ Function created by the `pel-config-major-mode' macro."
       ;; mode is available and working.  Therefore, when the tree-sitter mode
       ;; is requested by the user for this major mode, ensure that whenever
       ;; major-mode is requested, major-ts-mode is used.
+      ;; See: https://cgit.git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?h=emacs-30#n123
       (pel-append-to newbody
-        `((when (and (eq ,gn-use 'with-tree-sitter)
-                     (pel-treesit-remap-available-for (quote ,target-mode)))
-            (add-to-list (quote major-mode-remap-alist)
-                         (quote
-                          (,gn-mode-name . ,gn-ts-mode-name)))))))
+        `((when (pel-treesit-remap-available-for (quote ,target-mode))
+            (if (eq ,gn-use 'with-tree-sitter)
+                (add-to-list (quote major-mode-remap-alist)
+                             (quote
+                              (,gn-mode-name . ,gn-ts-mode-name)))
+              (add-to-list (quote major-mode-remap-alist)
+                           (quote (,gn-mode-name))))))))
     ;;
     ;; 2 - Include BODY
     (pel-append-to newbody body)

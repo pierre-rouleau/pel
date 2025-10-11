@@ -2,6 +2,15 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- PEL mode loading macro *pel-eval-after-load* is now aware of Emacs
+  tree-sitter handling code current weakness and executes a fixed function
+  when one is identified by the *pel--ts-mode-with-fixer* list.  The concept
+  of fixer function is flexible: it can dynamically verifies the version of
+  Emacs and operate accordingly for example.  PEL also starts associating mode
+  dispatching functions with a file regexp in the *auto-mode-alist* allowing a
+  properly controlled selection of the classic or tree-sitter aware major mode
+  that can be changed dynamically by changing the pel-use-MODE customizable
+  user-option.
 - PEL now support both *rust-mode* and Tree-Sitter based *rust-ts-mode*.
   - It automatically associates the tree-sitter based *rust-ts-mode* with Rust
     files when *pel-use-rust* customizable user-option is set to the new value

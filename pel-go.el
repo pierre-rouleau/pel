@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-12 13:32:16, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-11 15:17:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -37,6 +37,29 @@
 ;;; Code:
 ;;
 
+;;-pel-autoload
+(defun pel-go-mode ()
+  "Major mode dispatcher for editing Go source text.
+Uses `go-mode' or `go-ts-mode' depending on what is available
+and required by `pel-use-go'."
+  (cond
+   ;; When `pel-use-go` is t, PEL has downloaded and installed `go-mode'
+   ((eq pel-use-go t)
+    (when (fboundp 'go-mode)
+      (go-mode)))
+
+   ;; The `go-ts-mode' is built-in Emacs
+   ((eq pel-use-go 'with-tree-sitter)
+    (require 'go-ts-mode)
+    (when (fboundp 'go-ts-mode)
+      (go-ts-mode)))))
+
+;;-pel-autoload
+(defun pel--go-ts-mode-fixer ()
+  "Remove `go-ts-mode' entries from `auto-mode-alist'.
+It removes what entered when `go-ts-mode' loads."
+  (setq auto-mode-alist
+        (delete '("\\.go\\'" . go-ts-mode) auto-mode-alist)))
 ;; --
 
 ;; (defvar pel-go-run-gofmt-on-buffer-save pel-go-run-gofmt-on-buffer-save
