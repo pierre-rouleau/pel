@@ -24,6 +24,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Also simplified the customization: the *pel-use-go-mode* user option is no
     longer used: setting *pel-use-go* is enough to request its installation.
     It is installed even if Go support done by Tree Sitter is requested.
+  - Also support the go.mod files.  When *pel-use-go* is set to =t=, the
+    *go-dot-mod-mode* from go-mode.el is used, when *pel-use-go* is set to
+    =with-tree-sitter= the *go-mod-ts-mode* is used.
 - Improve PEL lazy loading macros:
   - *pel-eval-after-load* macro now accepts a list of features or just one.
     It is mostly useful

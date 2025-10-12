@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-11 15:17:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-12 13:07:02 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,8 +31,9 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)                    ; use: pel-set-tab-width
-(require 'pel--options)                 ; use: pel-go-run-gofmt-on-buffer-save
+(require 'pel--base)        ; use: `pel-set-tab-width', `pel-treesit-ready-p'
+(require 'pel--options)     ; use: `pel-go-run-gofmt-on-buffer-save'
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -43,18 +44,61 @@
 Uses `go-mode' or `go-ts-mode' depending on what is available
 and required by `pel-use-go'."
   (cond
-   ;; When `pel-use-go` is t, PEL has downloaded and installed `go-mode'
+   ;; When `pel-use-go` is t, PEL has downloaded and installed go-mode.el that
+   ;; provides the `go-mode'.  Use that.
    ((eq pel-use-go t)
     (when (fboundp 'go-mode)
       (go-mode)))
 
    ;; The `go-ts-mode' is built-in Emacs
    ((eq pel-use-go 'with-tree-sitter)
-    (require 'go-ts-mode)
-    (when (fboundp 'go-ts-mode)
-      (go-ts-mode)))))
+    (if (and (pel-treesit-ready-p 'go)
+             (require 'go-ts-mode nil :noerror)
+             (fboundp 'go-mod-ts-mode))
+        (go-ts-mode)
+      (display-warning 'pel-go-with-tree-sitter
+                       (format "Can't use go-ts-mode: %s"
+                               (if (pel-treesit-ready-p 'go)
+                                   "error loading go-ts-mode"
+                                 "no grammar for go")))
+
+      (if (fboundp 'go-mode)
+          (go-mode)
+        (user-error
+         "Can't use `go-ts-mode' nor `go-mode': check installation!"))))))
 
 ;;-pel-autoload
+(defun pel-go-dot-mod-mode ()
+  "Major mode dispatcher for editing Go source text.
+Uses `go-dot-mod-mode' or `go-mod-ts-mode' depending on what is available
+and required by `pel-use-go'."
+  (cond
+   ;; When `pel-use-go` is t, PEL has downloaded and installed go-mode.el
+   ;; which provides the `go-dot-mod-mode'.  Use that.
+   ((eq pel-use-go t)
+    (when (fboundp 'go-dot-mod-mode)
+      (go-dot-mod-mode)))
+
+   ;; The `go-dot-ts-mode' is provided by the go-ts-mode.el which is
+   ;; built-in Emacs but the grammar must also be present.
+   ((eq pel-use-go 'with-tree-sitter)
+    (if (and (pel-treesit-ready-p 'go)
+             (require 'go-ts-mode nil :noerror)
+             (fboundp 'go-mod-ts-mode))
+        (go-mod-ts-mode)
+      (display-warning 'pel-go-with-tree-sitter
+                       (format "Can't use go-ts-mode: %s"
+                               (if (pel-treesit-ready-p 'go)
+                                   "error loading go-ts-mode"
+                                 "no grammar for go")))
+      (if (fboundp 'go-dot-mod-mode)
+          (go-dot-mod-mode)
+        (user-error
+         "Can't use `go-dot-ts-mode' nor `go-dot-mod-mode':\
+ check installation!"))))))
+
+
+;;-pel-autoload`
 (defun pel--go-ts-mode-fixer ()
   "Remove `go-ts-mode' entries from `auto-mode-alist'.
 It removes what entered when `go-ts-mode' loads."
@@ -93,15 +137,40 @@ group customize buffer."
 ;; --
 
 ;;-pel-autoload
-(defun pel-go-setup-info ()
+(defun pel-go-mode-used-text (use-go)
+  "Return a description of what USE-GO (`pel-use-go') specifies for major mode."
+  (cond
+   ((eq use-go t)
+    "use go-mode and go-dot-mod-mode from go-mode.el.")
+   ((eq use-go 'with-tree-sitter)
+    "use go-ts-mode and go-mod-ts-mode tree-sitter aware modes.")
+   (t "Invalid! Use t or with-tree-sitter")))
+
+;;-pel-autoload
+(defun pel-go-setup-info (&optional append)
   "Display Go setup information."
-  (interactive)
-  (message "\
-Tab-width for this buffer: %d
-Runs gofmt on buffer save: %s"
-           tab-width
-           (pel-symbol-on-off-string 'pel-go-run-gofmt-on-buffer-save
-                                     "yes" "no")))
+  (interactive "P")
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-go-info*"
+     "PEL setup for Go programming language"
+     (lambda ()
+       "Print Go setup info."
+       (pel-insert-symbol-content-line 'pel-use-go nil
+                                       (function pel-go-mode-used-text))
+       (pel-insert-symbol-content-line 'tab-width nil
+                                       "\
+corresponds to rendered indentation width. \
+Changing it has no impact on file content!")
+       (pel-insert-symbol-content-line 'pel-go-run-gofmt-on-buffer-save
+                                       nil
+                                       (lambda (v)
+                                         (pel-on-off-string
+                                          v
+                                          "yes, format on save."
+                                          "no, save buffer unchanged."))))
+     (unless append :clear-buffer)
+     :use-help-mode)))
 
 ;; --
 

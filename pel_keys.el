@@ -3403,6 +3403,7 @@ d-mode not added to ac-modes!"
 
   ;; Use a mode dispatcher: select mode according to `pel-use-go' value.
   (add-to-list 'auto-mode-alist '("\\.go\\'" . pel-go-mode))
+  (add-to-list 'auto-mode-alist '("go\\.mod\\'" . pel-go-dot-mod-mode))
 
   (pel-eval-after-load (go-mode go-ts-mode)
     ;; Set environment for Go programming using go-mode.
@@ -3427,7 +3428,10 @@ d-mode not added to ac-modes!"
          ((eq pel-use-goflymake 'with-flymake)  (pel-require 'go-flymake))
          (t
           (error "Unsupported pel-use-goflymake value: %S"
-                 pel-use-goflymake)))))))
+                 pel-use-goflymake))))))
+
+  ;; [:todo 2025-10-12, by Pierre Rouleau: Add support for the Go packages]
+  )
 
 ;; ---------------------------------------------------------------------------
 ;;** Java Programming Language Support

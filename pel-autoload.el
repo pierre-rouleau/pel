@@ -525,6 +525,7 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-go" for:
     pel-go-mode
+    pel-go-dot-mod-mode
     pel--go-ts-mode-fixer
     pel-go-toggle-gofmt-on-buffer-save
     pel-go-setup-info

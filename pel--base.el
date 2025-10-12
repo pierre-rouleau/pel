@@ -44,6 +44,7 @@
 ;;  - `pel-current-buffer-eol-type'
 ;;  - `pel-running-under-ssh-p'
 ;;  - `pel-cd-to-current'
+;;  - `pel-treesit-ready-p'
 ;;
 ;; Read state of minor mode:
 ;; - `pel-minor-mode-state'
@@ -580,6 +581,26 @@ SILENT is non-nil (can be requested by prefix argument)."
     (unless (string= new-cwd original-cwd)
       (unless silent
         (message "Current directory back to: %s" new-cwd)))))
+
+(defun pel-treesit-ready-p (language &optional quiet)
+  "Check whether tree-sitter is ready to be used for MODE and LANGUAGE.
+
+LANGUAGE is the language symbol to check for availability.
+It can also be a list of language symbols.
+
+If Emacs < 30 or tree-sitter is not ready, emit a warning and return
+nil.  If the user has chosen to activate tree-sitter for LANGUAGE and
+tree-sitter is ready, return non-nil.  If QUIET is t, don't emit a
+warning in either case; if quiet is `message', display a message instead
+of emitting a warning."
+  (if (and pel-emacs-30-or-later-p
+           (require 'treesit nil :noerror)
+           (fboundp 'treesit-ready-p))
+      (treesit-ready-p language quiet)
+    (unless quiet
+      (display-warning 'pel-treesit-support
+                       "Tree-Sitter is not supported in this Emacs."))
+    nil))
 
 ;; ---------------------------------------------------------------------------
 ;; Read/Set variable with a formatted name derived from major mode
@@ -3048,14 +3069,23 @@ buffer in the optional BUFFER argument.  You can also let-bind the variable
 `pel-insert-symbol-content-context-buffer' to the value of the buffer you
 need.
 
-If EXTRA-TEXT is non-nil, it should be a string.  That string is
-inserted after the symbol name"
+If EXTRA-TEXT is non-nil, it can be a string or a function:
+- A string is inserted after the symbol name.
+- A function is used to convert the value into a description string
+  and that string is printed after the symbol."
   (pel-insert-symbol-content
    symbol
-   (or buffer pel-insert-symbol-content-context-buffer)
+   buffer
    :on-same-line)
   (when extra-text
-    (insert extra-text)))
+    (insert "  : ")
+    (if (stringp extra-text)
+        (insert extra-text)
+      (insert (funcall
+               extra-text
+               (pel-symbol-value
+                symbol
+                (or buffer pel-insert-symbol-content-context-buffer)))))))
 
 (defun pel-line-prefixed-with (text prefix)
   "Return TEXT with each line prefixed with PREFIX string."
