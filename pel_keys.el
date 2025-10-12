@@ -3419,8 +3419,9 @@ d-mode not added to ac-modes!"
       (when pel-go-run-gofmt-on-buffer-save
         (add-hook 'before-save-hook  'pel-go-gofmt-on-buffer-save))
       ;; Set the display width of hard tabs used in Go source
-      ;; as controlled by the user-option
+      ;; as controlled by PEL user-option
       (setq-local tab-width pel-go-tab-width)
+      (setq-local go-ts-mode-indent-offset pel-go-tab-width)
       (when pel-use-goflymake
         ;; Activate flycheck or flymake if requested
         (cond

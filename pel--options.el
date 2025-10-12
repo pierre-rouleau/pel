@@ -7467,7 +7467,11 @@ according to official Go style. That style requires that hard tab
 be used for indentation. By default, a hard-tab is displayed with
 a width of 8 columns. You can safely change it to any number
 between 2 and 8. It changes the way the code looks inside an
-Emacs Go buffer, but does not change the content of the file."
+Emacs Go buffer, but does not change the content of the file.
+
+Note that PEL sets both `tab-width' and `go-ts-mode-indent-offset' with
+this value, ensuring constant experience when using Go with `go-mode'
+and `go-ts-mode'."
   :group 'pel-pkg-for-go
   :type 'integer
   :safe 'pel-indent-valid-p)
