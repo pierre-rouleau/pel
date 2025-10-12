@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-29 16:10:06 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-12 13:10:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -37,7 +37,6 @@
 ;;
 ;;
 (require 'pel-prompt)       ; use: `pel-prompt-with-completion'
-(require 'cl-lib)           ; use: `cl-case'
 (require 'sh-script)        ; use: `shell-script-mode', `sh-set-shell',
 ;;                          ;      `sh-ancestor-alist'
 
@@ -186,14 +185,9 @@ command you have 2 choices:
       (pel-ruby-insert-shebang-line))
 
      ((equal mode "seed7")
-      ;; [:todo 2025-03-29, by Pierre Rouleau: Use seed7-mode once it's written]
-      ;; since seed7-mode does not yet exists, use pascal-mode until I write
-      ;; it.  The pascal-mode is part of Emacs.
-      (require 'pascal)
-      (declare-function pascal-mode "pascal")
-      (pascal-mode)
-      ;; (declare-function seed7-mode "seed7-mode")
-      ;; (seed7-mode)
+      (require 'seed7-model)
+      (declare-function seed7-mode "seed7-mode")
+      (seed7-mode)
       (require 'pel-seed7)
       (declare-function pel-seed7-insert-shebang-line "pel-seed7")
       (pel-seed7-insert-shebang-line))
