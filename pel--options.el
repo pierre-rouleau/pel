@@ -7448,7 +7448,7 @@ When activating it you can select between the following values:
                                               pel-use-go-errcheck
                                               pel-use-gorepl-mode
                                               pel-use-gotest
-                                              ;; pel-use-go-tag
+                                              pel-use-emacs-go-tag
                                               pel-use-flycheck-golangci-lint))
 
 (defcustom pel-go-activates-minor-modes nil
