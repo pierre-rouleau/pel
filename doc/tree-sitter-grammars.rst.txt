@@ -1,0 +1,87 @@
+===============================
+Installing Tree-Sitter Grammars
+===============================
+
+:Home URL:
+:Project:
+:Created:  Sunday, October 12 2025.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2025-10-12 07:15:15, by Pierre Rouleau.
+:Copyright: © 2025, Pierre Rouleau
+
+
+.. contents::  **Table of Contents**
+.. sectnum::
+
+.. ---------------------------------------------------------------------------
+
+
+Installing Tree-Sitter Grammars for Go
+======================================
+
+:Ref: `Using tree-sitter with Emacs and PEL`_
+:Using: `tree-sitter grammar for go.mod files`_
+
+The grammar for go.mod filess mut be installed separately.
+For that:
+
+- Clone the `tree-sitter grammar for go.mod files`_ Git repository to your
+  system::
+
+    mkdir go-repos
+    cd go-repos
+    git clone https://github.com/camdencheek/tree-sitter-go-mod.git
+
+- Build using make::
+
+    make
+
+- Create symlink inside the directory pointed by the
+  ``~/.emacs.d/tree-sitter`` symlink to the new dynamically loadable file
+  created for your operating system.
+
+  - on macOS, from the current directory, use commands like these (they may
+    change as the code for this repo evolves)::
+
+      ln -s libtree-sitter-gomod.0.0.dylib ~/.emacs.d/tree-sitter/libtree-sitter-gomod.dylib
+      ln -s libtree-sitter-gomod.0.0.dylib ~/.emacs.d/tree-sitter/gomod.dylib
+
+At this point you should be able to use the ``go-mod-ts-mode`` in Emacs as the
+major mode for ``go.mod`` files.
+
+For reference the make command, issued on macOS system produces the following
+commands::
+
+    cc -O3 -Wall -Wextra -Isrc -std=gnu99 -fPIC   -c -o src/parser.o src/parser.c
+    ar rcs libtree-sitter-gomod.a src/parser.o
+    cc  -dynamiclib -Wl,-install_name,/usr/local/lib/libtree-sitter-gomod.0.dylib,-rpath,@executable_path/../Frameworks src/parser.o  -o libtree-sitter-gomod.0.0.dylib
+    ln -sf libtree-sitter-gomod.0.0.dylib libtree-sitter-gomod.dylib
+    ln -sf libtree-sitter-gomod.0.0.dylib libtree-sitter-gomod.0.dylib
+    sed -e 's|@UPPER_PARSERNAME@|GOMOD|' \
+      -e 's|@PARSERNAME@|gomod|' \
+      bindings/c/tree-sitter.h.in > bindings/c/gomod.h
+    sed -e 's|@LIBDIR@|/usr/local/lib|;s|@INCLUDEDIR@|/usr/local/include|;s|@VERSION@|1.0.2|' \
+      -e 's|=/usr/local|=${prefix}|' \
+      -e 's|@PREFIX@|/usr/local|' \
+      -e 's|@ADDITIONALLIBS@||' \
+      -e 's|@PARSERNAME@|gomod|' \
+      -e 's|@PARSERURL@|https://github.com/camdencheek/tree-sitter-go-mod|' \
+      bindings/c/tree-sitter.pc.in > bindings/c/tree-sitter-gomod.pc
+
+
+
+.. ---------------------------------------------------------------------------
+.. links:
+
+
+.. _tree-sitter grammar for go.mod files: https://github.com/camdencheek/tree-sitter-go-mod
+.. _Using tree-sitter with Emacs and PEL: using-tree-sitter.rst.txt
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
