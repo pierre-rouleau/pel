@@ -3357,11 +3357,12 @@ d-mode not added to ac-modes!"
 ;;   ------------------------------
 ;; - function Language Support Keys - <f11> - Prefix ``<f11> SPC g`` :
 (when pel-use-go
-  ;; go-mode installation
+  ;; 1- Install required packages for Go
+  ;;    - Always install go-mode when Go is used.
   (pel-ensure-package go-mode from: melpa)
   (pel-autoload-file go-mode for: go-mode)
 
-  ;; goflymake package installation - either using flymake or flycheck
+  ;;    - goflymake package installation - either using flymake or flycheck
   (cl-eval-when 'load
     (when pel-use-goflymake
       ;; goflymake is a mixed package:
@@ -3382,29 +3383,27 @@ d-mode not added to ac-modes!"
                  pel-use-goflymake)
          :error))))
 
-  ;; Setup Go
-  ;; Overcome omission bug in go-mode: add support for Speedbar
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension ".go"))
+  ;; 2- Associate files with Go mode selector
+  (add-to-list 'auto-mode-alist '("\\.go\\'" . pel-go-mode))
+  (add-to-list 'auto-mode-alist '("go\\.mod\\'" . pel-go-dot-mod-mode))
 
+  ;; 3- Speedbar support for Go
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".go")
+    (pel-add-speedbar-extension "go.mod"))
+
+  ;; 4- Go buffer keymap
   (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
   (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
   (define-key pel:for-go "?"         'pel-go-setup-info)
 
-  ;; The go-ts-mode really derives from prog-mode even though it updates the
-  ;; dependency tree to make it look like a child of go-mode, but it does
-  ;; not load go-mode.  Therefore the PEL hooking must be done for both
-  ;; go-mode and go-ts-mode.
-
-  ;; Unfortunately when go-ts-mode loads it puts an entry into
-  ;; auto-mode-alist.  This imposes using `go-ts-mode' forever once it has
-  ;; been loaded.  The only way I can see to prevent that is to provide an
-  ;; advice to `go-ts-mode' that removes that entry from `auto-mode-alist'
-
-  ;; Use a mode dispatcher: select mode according to `pel-use-go' value.
-  (add-to-list 'auto-mode-alist '("\\.go\\'" . pel-go-mode))
-  (add-to-list 'auto-mode-alist '("go\\.mod\\'" . pel-go-dot-mod-mode))
-
+  ;; 5- Schedule more configuration upon Go feature loading
+  ;;
+  ;;   The go-ts-mode really derives from prog-mode even though it updates
+  ;;   the dependency tree to make it look like a child of go-mode, but it
+  ;;   does not load go-mode.  Therefore the PEL hooking must be done for
+  ;;   both go-mode and go-ts-mode.
+  ;;
   (pel-eval-after-load (go-mode go-ts-mode)
     ;; Set environment for Go programming using go-mode.
     ;; [:todo 2025-05-08, by Pierre Rouleau: automate the activation of
@@ -5260,9 +5259,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` :
 (when pel-use-rust
-  ;; TODO: only allow one of rust-mode or rustic and determine what
-  ;;       must be made available for rustic.  Currently the code assumes
-  ;;       that rust-mode is used.
+  ;; 1- Install required packages for Rust
+
+  ;; [:todo 2025-10-13, by Pierre Rouleau: better integrate rustic if still
+  ;; needed, otherwise remove it from PEL.  Currently not integrated.]
   (when pel-use-rust-mode
     ;; Important rust-mode user-options:
     ;; - rust-format-on-save
@@ -5271,61 +5271,70 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (when pel-use-rustic
     (pel-ensure-package rustic from: melpa)
     (pel-autoload-file rustic for: rustic))
-
+  (when pel-use-cargo
+    (pel-ensure-package cargo from: melpa)
+    (pel-autoload-file cargo for: cargo-minor-mode))
+  (when pel-use-emacs-racer
+    (pel-ensure-package racer from: melpa)
+    (pel-autoload-file racer for: racer-mode))
   ;; flycheck with rust-mode
   (when (and pel-use-rust-mode
              pel-use-flycheck-rust)
     (pel-ensure-package flycheck-rust from: melpa)
+    (add-hook 'flycheck-mode-hook 'flycheck-rust-setup)
+    (pel-eval-after-load flycheck
+      (require 'flycheck-rust)))
 
-    (add-to-list 'auto-mode-alist '("\\.rs\\'" . pel-rust-mode))
-    (pel-eval-after-load (rust-mode rust-ts-mode)
-      (add-hook 'flycheck-mode-hook 'flycheck-rust-setup)
-      (pel-eval-after-load flycheck
-        (require 'flycheck-rust))))
+  ;; 2- Associate files with Rust major mode selector
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . pel-rust-mode))
 
-  (when pel-use-emacs-racer
-    (pel-ensure-package racer from: melpa)
-    (pel-autoload-file racer for: racer-mode))
+  ;; 3- Speedbar support for Rust
+  (when pel-use-speedbar (pel-add-speedbar-extension ".rs"))
 
-  ;; Add Speedbar support for Rust
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension ".rs"))
-
-  (when pel-use-cargo
-    (pel-ensure-package cargo from: melpa)
-    (pel-autoload-file cargo for: cargo-minor-mode)
-    (pel-eval-after-load cargo
-      ;; M-x package-install company
-      (add-hook 'rust-mode-hook 'cargo-minor-mode)
-      (add-hook 'rust-mode-hook 'racer-mode)
-      (add-hook 'racer-mode-hook 'eldoc-mode)
-      (when pel-use-company
-        (add-hook 'racer-mode-hook 'company-mode))))
-
+  ;; 4- Rust buffer keymap
   (define-pel-global-prefix pel:for-rust (kbd "<f11> SPC r"))
   (define-key pel:for-rust "?" 'pel-rust-setup-info)
   (define-key pel:for-rust "c" 'rust-run)
   (define-key pel:for-rust "d" 'rust-dbg-wrap-or-unwrap)
   (define-key pel:for-rust "l" 'rust-run-clippy)
 
-  (pel-config-major-mode rust pel:for-rust :same-for-ts
-    (setq indent-tabs-mode nil)
-    (when (boundp 'rust-indent-offset)
-      (setq-local tab-width rust-indent-offset))
-    (setq-local indent-tabs-mode pel-rust-use-tabs)
-    ;; [:todo 2025-10-08, by Pierre Rouleau: better handle adding a key to a
-    ;; mode that may also be a ts-mode]
-    (when pel-use-cargo
-      (cond
-       ((boundp 'rust-mode-map)
-        (define-key rust-mode-map
-                    (kbd "TAB") 'company-indent-or-complete-common))
-       ((boundp 'rust-ts-mode-map)
-        (define-key rust-ts-mode-map
-                    (kbd "TAB") 'company-indent-or-complete-common))
-       (t (display-warning 'pel-use-rust
-                           "Unbound rust-mode-map or rust-ts-mode-map!"
-                           :error))))))
+  ;; 5- Schedule more configuration upon Rust feature loading
+  ;;  - 5.1 Schedule minor mode configuration
+  ;;
+  (when pel-use-cargo
+    (pel-eval-after-load cargo
+      ;; [:todo 2025-10-13, by Pierre Rouleau:
+      ;;                should these also be used with rust-ts-mode?]
+      ;; M-x package-install company
+      (add-hook 'rust-mode-hook 'cargo-minor-mode)
+      (add-hook 'rust-mode-hook 'racer-mode)
+      (add-hook 'racer-mode-hook 'eldoc-mode)
+      (when pel-use-company
+        (add-hook 'racer-mode-hook 'company-mode))))
+  ;;
+  ;;  - 5.2 Schedule major mode configuration
+  ;;    Do it for both rust-mode and tree-sitter aware rust-ts-mode
+  ;;    rust-ts-mode is declared derived from rust-mode.
+  ;;
+  (pel-eval-after-load (rust-mode rust-ts-mode)
+    (pel-config-major-mode rust pel:for-rust :same-for-ts
+      (setq indent-tabs-mode nil)
+      (when (boundp 'rust-indent-offset)
+        (setq-local tab-width rust-indent-offset))
+      (setq-local indent-tabs-mode pel-rust-use-tabs)
+      ;; [:todo 2025-10-08, by Pierre Rouleau: check if the following is needed]
+      ;; (when pel-use-cargo
+      ;;   (cond
+      ;;    ((boundp 'rust-mode-map)
+      ;;     (define-key rust-mode-map
+      ;;                 (kbd "TAB") 'company-indent-or-complete-common))
+      ;;    ((boundp 'rust-ts-mode-map)
+      ;;     (define-key rust-ts-mode-map
+      ;;                 (kbd "TAB") 'company-indent-or-complete-common))
+      ;;    (t (display-warning 'pel-use-rust
+      ;;                        "Unbound rust-mode-map or rust-ts-mode-map!"
+      ;;                        :error))))
+      )))
 
 ;; ---------------------------------------------------------------------------
 ;;** Modula2 Programming Language Support
