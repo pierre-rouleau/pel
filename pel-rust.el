@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 12 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-12 22:26:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-13 11:38:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -96,11 +96,18 @@ It removes what entered when `rust-ts-mode' loads."
        "Print Rust setup info."
        (pel-insert-symbol-content-line 'pel-use-rust nil
                                        (function pel-rust-mode-used-text))
-
+       (insert "\n\n")
+       (insert (propertize "* Rust Packages:" 'face 'bold))
+       (dolist (s '(pel-use-rust-mode
+                    pel-use-rustic
+                    pel-use-cargo
+                    pel-use-emacs-racer
+                    pel-use-flycheck-rust))
+         (pel-insert-symbol-content-line s))
        (insert "\n\n")
        (insert (propertize "* Indentation Control:" 'face 'bold))
-       (pel-insert-symbol-content-line 'rust-indent-offset))
-       (pel-insert-symbol-content-line 'tab-width)
+       (pel-insert-symbol-content-line 'rust-indent-offset)
+       (pel-insert-symbol-content-line 'tab-width))
      (unless append :clear-buffer)
      :use-help-mode)))
 
