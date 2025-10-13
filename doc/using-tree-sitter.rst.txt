@@ -7,7 +7,7 @@ Using tree-sitter with Emacs and PEL
 :Ref: `PEL How-to Tips`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-09-12 08:00:27 EDT, updated by Pierre Rouleau.
+:Modified: 2025-10-13 15:04:34 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -16,15 +16,15 @@ Using tree-sitter with Emacs and PEL
 
 .. ---------------------------------------------------------------------------
 
-Requirements for using Tree-Sitter with Emacs
-=============================================
+Requirements for using Tree-Sitter with Emacs and PEL
+=====================================================
 
 :Ref: `How to Get Started with Tree-Sitter`_, by Mickey Petersen
 :Ref: `What's new in Emacs 30.1?`_, by Mickey Petersen
 
 **Use Emacs 30.1 or later!**
 
-- Because there were breaking code change in Emacs 30 in the support of
+- Because there were `breaking code change in Emacs 30`_ in the support of
   tree-sitter, if you plan to use tree-sitter modes, then **you should use
   Emacs 30.1 or later**.
 
@@ -35,8 +35,8 @@ Requirements for using Tree-Sitter with Emacs
 
 
 
-Setting up Emacs Tree-Sitter Environment
-========================================
+Setting up Emacs Tree-Sitter Environment for PEL
+================================================
 
 :Ref: `How to Get Started with Tree-Sitter`_, by Mickey Petersen
 :Ref: `What's new in Emacs 30.1?`_, by Mickey Petersen
@@ -46,11 +46,12 @@ Setting up Emacs Tree-Sitter Environment
 
    - Save.
    - Exit Emacs.
-   - Restart Emacs.  PEL will automatically install the latest tree-sitter
-     files.
+   - Restart Emacs.
+
+   PEL will automatically install the latest tree-sitter files.
 
 #. Create (or update) the ``~/.emacs.d/tree-sitter-langs-bin`` symbolic link to point to
-   the tree-sitter lang bin directory.
+   the tree-sitter lang bin directory that was installed.
 
    - Set it to something like:  ``~/.emacs.d/elpa/tree-sitter-langs-20250206.19/bin/``
 
@@ -72,7 +73,8 @@ At this point you should be able to start Emacs and use tree-sitter facilities.
 Controlling Automatic Invocation of the Tree-Sitter Modes
 =========================================================
 
-Emacs 30 NEWS file (located inside the etc directory of the Emacs Git repo)
+Emacs 30 NEWS file located inside the etc directory of the Emacs Git repo
+has a `section on Tree-Sitter`_
 nicely describes what needs to be done. The following
 is a copy of the relevant information from that file.
 
@@ -114,7 +116,39 @@ variants of major modes are available, because that variable overrides
 the remapping Emacs might decide to perform as result of loading Lisp
 files and features.
 
+Allowing execution of classic and tree-sitter based major modes
+===============================================================
 
+Although Emacs has a mechanism for being able to use tree-sitter based major
+modes, there are still limitations that are important to remember:
+
+- As `mentioned in the Emacs 30 Notes`_ the tree-sitter major modes dot **not**
+  inherit from the classic modes.  Therefore Hooks for the classic and the tree-sitter
+  major modes are different.
+- Unless something is done in the handling of classic and tree-sitter based
+  major modes, as soon as you execute the major mode command for a type of
+  file, Emacs will always use the tree-sitter mode for these buffer types in
+  the remaining of the Emacs session.
+
+For major modes that have classic and tree-sitter major modes supported by
+PEL, these two problems are resolved.  For those types, PEL implements startup
+logic that
+
+- associate the hooks to the classic and the tree-sitter major mode for a file
+  type,
+- associates a major mode selector with the file type in ``auto-mode-alist``:
+  the mode selector command checks the ``pel-use-MODE`` customizable
+  user-option for the specific MODE and runs the selected major mode (either
+  an appropriate classic mode or a tree-sitter based mode),
+- schedules the execution of a *fixer* function when the file implementing a
+  major mode loads.  The fixer function for several tree-sitter major mode
+  remove the insertion of a rule from `auto-mode-alist` that associates the
+  file type with the tree-sitter major mode, ensuring that the PEL major mode
+  selector function is used instead.  This way you can always control whether
+  you want to use the classic or the tree-sitter major mode.
+
+  - As of Oct 13, 2025, PEL has logic that deals with Go and Rust classic and
+    tree-sitter major modes.
 
 .. ---------------------------------------------------------------------------
 .. links:
@@ -124,6 +158,9 @@ files and features.
 .. _How to Get Started with Tree-Sitter:  https://www.masteringemacs.org/article/how-to-get-started-tree-sitter
 .. _What's new in Emacs 30.1?: https://www.masteringemacs.org/article/whats-new-in-emacs-301
 .. _How to recompile all Emacs Lisp files after updating Emacs to a different version: upgrading-emacs.rst.txt
+.. _breaking code change in Emacs 30: https://cgit.git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?h=emacs-30#n111
+.. _section on Tree-Sitter: https://cgit.git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?h=emacs-30#n120
+.. _mentioned in the Emacs 30 Notes: https://cgit.git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?h=emacs-30#n120
 
 
 
