@@ -746,6 +746,12 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-rpm-build
     pel-rpm-spec-lint)
 
+  (pel-autoload "pel-rust" for:
+    pel-rust-mode
+    pel--rust-ts-mode-fixer
+    pel-rust-mode-used-text
+    pel-rust-setup-info)
+
   (pel-autoload "pel-scheme" for:
     pel-clear-scheme-repl-buffer
     pel-chez-repl

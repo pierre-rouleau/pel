@@ -5275,10 +5275,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (when (and pel-use-rust-mode
              pel-use-flycheck-rust)
     (pel-ensure-package flycheck-rust from: melpa)
-    (add-to-list 'auto-mode-alist (cons "\\.rs\\'"
-                                      (if (eq pel-use-rust 'with-tree-sitter)
-                                          'rust-ts-mode
-                                        'rust-mode)))
+
+    (add-to-list 'auto-mode-alist '("\\.rs\\'" . pel-rust-mode))
     (pel-eval-after-load (rust-mode rust-ts-mode)
       (add-hook 'flycheck-mode-hook 'flycheck-rust-setup)
       (pel-eval-after-load flycheck
@@ -5304,6 +5302,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
         (add-hook 'racer-mode-hook 'company-mode))))
 
   (define-pel-global-prefix pel:for-rust (kbd "<f11> SPC r"))
+  (define-key pel:for-rust "?" 'pel-rust-setup-info)
   (define-key pel:for-rust "c" 'rust-run)
   (define-key pel:for-rust "d" 'rust-dbg-wrap-or-unwrap)
   (define-key pel:for-rust "l" 'rust-run-clippy)

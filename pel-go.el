@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-12 15:39:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-12 22:16:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,7 +32,7 @@
 ;;
 ;;
 (require 'pel--base)        ; use: `pel-set-tab-width', `pel-treesit-ready-p'
-(require 'pel--options)     ; use: `pel-go-run-gofmt-on-buffer-save'
+(require 'pel--options)     ; use:
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:

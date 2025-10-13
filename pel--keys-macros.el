@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-11 15:14:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-12 22:19:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1740,7 +1740,8 @@ DEFINES: is a cosmetic only argument that must be present."
                            error)
                    :error))
 
-(defconst pel--ts-mode-with-fixer '(go-ts-mode)
+(defconst pel--ts-mode-with-fixer '(go-ts-mode
+                                    rust-ts-mode)
   "List of Tree Sitter modes that require execution of a mode fixer function.
 The fixer mode function has a name that has a format like
 pel--MODE-fixer with where MODE corresponds to the name of the mode taken from
@@ -1765,9 +1766,9 @@ and the tree-sitter mode file does not load the classic mode file."
                 (,fixer-fct))))))
       (pel-append-to feature-body
         `((condition-case-unless-debug err
-                (progn ,@body)
-              (error (pel--eval-after-load-error (quote ,the-feature)
-                                                 err)))))
+              (progn ,@body)
+            (error (pel--eval-after-load-error (quote ,the-feature)
+                                               err)))))
       (pel-append-to code
         `((with-eval-after-load (quote ,the-feature)
             ,@feature-body))))
