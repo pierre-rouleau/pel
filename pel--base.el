@@ -3270,7 +3270,7 @@ Return the new `tab-width' or nil if unchanged."
   "Add Speedbar support for the specified file EXTENSION.
 EXTENSION is either a string or a list of strings.
 Each string is either:
--  a complete filename,
+- a complete filename,
 - a the file extension starting with a (non-quoted) period,
 - a regular expression to express the above.
 
