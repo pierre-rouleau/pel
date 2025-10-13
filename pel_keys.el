@@ -3421,7 +3421,8 @@ d-mode not added to ac-modes!"
       ;; Set the display width of hard tabs used in Go source
       ;; as controlled by PEL user-option
       (setq-local tab-width pel-go-tab-width)
-      (setq-local go-ts-mode-indent-offset pel-go-tab-width)
+      (when (boundp 'go-ts-mode-indent-offset)
+        (setq-local go-ts-mode-indent-offset pel-go-tab-width))
       (when pel-use-goflymake
         ;; Activate flycheck or flymake if requested
         (cond
