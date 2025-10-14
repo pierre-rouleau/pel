@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-14 10:30:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-14 14:47:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -103,11 +103,11 @@ and required by `pel-use-go'."
   "Remove `go-ts-mode' entries from `auto-mode-alist'.
 It removes what entered when `go-ts-mode' loads."
   (setq auto-mode-alist
-        (delete '("\\.go\\'" . go-ts-mode) auto-mode-alist)))
-;; --
+        (rassq-delete-all 'go-ts-mode auto-mode-alist))
+  (setq auto-mode-alist
+        (rassq-delete-all 'go-mod-ts-mode auto-mode-alist)))
 
-;; (defvar pel-go-run-gofmt-on-buffer-save pel-go-run-gofmt-on-buffer-save
-;;   "Modifiable setting of the corresponding user-option.")
+;; --
 
 ;;-pel-autoload
 (defun pel-go-gofmt-on-buffer-save ()
