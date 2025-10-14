@@ -328,6 +328,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-dt-fr-changed-files-in-dired
     pel-dirtree-replace-undo)
 
+  ;; --
   (pel-autoload "pel-elisp" for:
     pel-toggle-paren-in-column-0-is-defun-start
     pel-elisp-set-navigate-target-form
@@ -348,6 +349,14 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-elisp-eval" for:
     pel-eval-last-sexp-and-copy)
 
+  ;; --
+  (pel-autoload "pel-elixir" for:
+    pel-elixir-mode
+    pel--elixir-ts-mode-fixer
+    pel-elixir-mode-used-text
+    pel-elixir-setup-info)
+
+  ;; --
   (pel-autoload "pel-emacs" for:
     pel-emacs-executable
     pel-open-emacs-refcard

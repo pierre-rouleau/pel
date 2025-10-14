@@ -7439,12 +7439,11 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 (defcustom pel-use-go nil
   "Controls whether PEL supports the Go programming language.
+
 This *must* be activated to allow any other package for Go.
 When activating it you can select between the following values:
 - t                : use `go-mode' provided by the go-mode.el external package.
-- with-tree-sitter : use `go-ts-mode' which is built-in Emacs.
-
-"
+- with-tree-sitter : use `go-ts-mode' which is built-in Emacs."
   :link '(url-link :tag "Go @ wikipedia"
                    "https://en.wikipedia.org/wiki/Go_(programming_language)")
   :link '(url-link :tag "gomode @ Github"
@@ -9015,10 +9014,19 @@ specified as a string."
   :link `(url-link :tag "Elixir PDF" ,(pel-pdf-file-url "pl-elixir")))
 
 (defcustom pel-use-elixir nil
-  "Control whether PEL supports Elixir development."
+  "Control whether PEL supports the Elixir programming language.
+
+This *must* be activated to allow any other package for Elixir.
+When activating it you can select between the following values:
+- t                : use `elixir-mode' provided by the elixir-mode.el
+                     external package.
+- with-tree-sitter : use `elixir-ts-mode' which is built-in Emacs."
   :group 'pel-pkg-for-elixir
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use Elixir" nil)
+          (const :tag "Use classic mode: elixir-mode" t)
+          (const :tag "Use tree-sitter mode: elixir-ts-mode"
+                 with-tree-sitter)))
 (pel-put 'pel-use-elixir :package-is 'elixir-mode)
 
 (defcustom pel-elixir-activates-minor-modes nil
@@ -9057,10 +9065,24 @@ package which provides the client/library for LSP."
 (pel-put 'pel-use-elixir-lsp :package-is 'lsp-elixir)
 (pel-put 'pel-use-elixir-lsp :requires 'pel-use-elixir)
 
-(defcustom pel-elixir-tab-width 4
+(defcustom pel-elixir-indent-width 2
+  "Indentation width for elixir buffers.
+
+PEL stores this value inside the following Elixir modes user-options to
+ensure consistency across classic and tree-sitter modes for indentation
+control:
+
+- `elixir-basic-offset',
+- `elixir-match-label-offset',
+- `elixir-ts-indent-offset'."
+  :group 'pel-pkg-for-elixir
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-elixir-tab-width 2
   "Column width display rendering of hard tab for elixir buffers.
 
-PEL stores this in `tab-width' when opening elixir  buffers.
+PEL stores this in `tab-width' when opening elixir buffers.
 
 This does *NOT* control the indentation in elixir
 files, it only controls the column width display rendering of hard tabs

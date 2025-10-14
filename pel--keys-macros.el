@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-12 22:19:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-14 15:34:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -122,6 +122,14 @@
                               wdired)
   "List of groups used related to dired.")
 
+;; Unfortunately the group used by elixir-ts-mode is not elixir but `elixir-ts'
+(defconst pel--elixir-groups (if pel-use-tree-sitter
+                                 '(elixir
+                                   elixir-ts
+                                   electricity)
+                               '(elixir
+                                 electricity))
+  "List of groups related to Elixir.")
 
 (defconst pel--highligh-groups (let ((items '(auto-highlight-symbol
                                               electricity
@@ -386,8 +394,7 @@
     ([f11 32 ?V]     "hdl-verilog"  pel-pkg-for-verilog       ,pel--verilog-groups)
     ([f11 32 ?H]     "hdl-vhdl"     pel-pkg-for-vhdl          vhdl)
 
-    ([f11 32 ?x]     "pl-elixir"    pel-pkg-for-elixir        (elixir
-                                                               electricity))
+    ([f11 32 ?x]     "pl-elixir"    pel-pkg-for-elixir        ,pel--elixir-groups)
     ([f11 32 ?Z]     "pl-sh"        pel-pkg-for-sh-scripting ,pel--sh-scripting-groups)
     (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         (arc
                                                                  lispy))
@@ -723,6 +730,7 @@ stored inside the doc/pdf directory.")
     ("clojure"         [f11 32 10])
     ("d"               [f11 32 ?D])
     ("elixir"          [f11 32 ?x])
+    ("elixir-ts"       [f11 32 ?x])
     ("lisp-interaction" [f11 32 ?l])    ; for scratch buffer
     ("suggest"         [f11 32 ?l])     ; suggest -> emacs-lisp help
     ("emacs-lisp"      [f11 32 ?l])
@@ -1740,7 +1748,8 @@ DEFINES: is a cosmetic only argument that must be present."
                            error)
                    :error))
 
-(defconst pel--ts-mode-with-fixer '(go-ts-mode
+(defconst pel--ts-mode-with-fixer '(elixir-ts-mode
+                                    go-ts-mode
                                     rust-ts-mode)
   "List of Tree Sitter modes that require execution of a mode fixer function.
 The fixer mode function has a name that has a format like

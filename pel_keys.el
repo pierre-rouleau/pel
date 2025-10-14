@@ -3365,7 +3365,22 @@ d-mode not added to ac-modes!"
   (pel-ensure-package go-mode from: melpa)
   (pel-autoload-file go-mode for: go-mode)
 
-  ;;    - goflymake package installation - either using flymake or flycheck
+  ;; 2- Associate files with Go mode selector
+  (add-to-list 'auto-mode-alist '("\\.go\\'" . pel-go-mode))
+  (add-to-list 'auto-mode-alist '("go\\.mod\\'" . pel-go-dot-mod-mode))
+
+  ;; 3- Speedbar support for Go
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".go")
+    (pel-add-speedbar-extension "go.mod"))
+
+  ;; 4- Buffer keymap for Go
+  (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
+  (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
+  (define-key pel:for-go "?"         'pel-go-setup-info)
+
+  ;;5- Install optional packages for Go
+  ;; - goflymake package installation - either using flymake or flycheck
   (cl-eval-when 'load
     (when pel-use-goflymake
       ;; goflymake is a mixed package:
@@ -3386,26 +3401,13 @@ d-mode not added to ac-modes!"
                  pel-use-goflymake)
          :error))))
 
-  ;; 2- Associate files with Go mode selector
-  (add-to-list 'auto-mode-alist '("\\.go\\'" . pel-go-mode))
-  (add-to-list 'auto-mode-alist '("go\\.mod\\'" . pel-go-dot-mod-mode))
-
-  ;; 3- Speedbar support for Go
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension ".go")
-    (pel-add-speedbar-extension "go.mod"))
-
-  ;; 4- Go buffer keymap
-  (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
-  (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
-  (define-key pel:for-go "?"         'pel-go-setup-info)
-
-  ;; 5- Schedule more configuration upon Go feature loading
+  ;; 6- Activate Go Setup
+  ;;    Schedule more configuration upon Go feature loading
   ;;
-  ;;   The go-ts-mode really derives from prog-mode even though it updates
-  ;;   the dependency tree to make it look like a child of go-mode, but it
-  ;;   does not load go-mode.  Therefore the PEL hooking must be done for
-  ;;   both go-mode and go-ts-mode.
+  ;;    The go-ts-mode really derives from prog-mode even though it updates
+  ;;    the dependency tree to make it look like a child of go-mode, but it
+  ;;    does not load go-mode.  Therefore the PEL hooking must be done for
+  ;;    both go-mode and go-ts-mode.
   ;;
   (pel-eval-after-load (go-mode go-ts-mode)
     ;; Set environment for Go programming using go-mode.
@@ -4712,15 +4714,32 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` :
 ;; Programming Language Family: BEAM
 (when pel-use-elixir
+  ;; 1- Install required packages for Elixir
+  ;;    - Always install elixir-mode when Elixir is used.
   (pel-ensure-package elixir-mode from: melpa)
   (pel-autoload-file elixir-mode for: elixir-mode)
 
-  (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
+  ;; 2- Associate files with Elixir mode selector
+  (add-to-list 'auto-mode-alist
+               (cons
+                (regexp-opt '("ex'" "exs'" "elixir'" "mix.lock"))
+                'pel-elixir-mode))
 
+  ;; 3- Speedbar support for Elixir
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".ex")
+    (pel-add-speedbar-extension ".exs")
+    (pel-add-speedbar-extension ".elixir")
+    (pel-add-speedbar-extension "mix.lock"))
+
+  ;; 4- Buffer keymap for Elixir
+  (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
+  (define-key pel:for-elixir "?" 'pel-elixir-setup-info)
   (define-key pel:for-elixir (kbd "M-p") #'superword-mode)
+
+  ;;5- Install optional packages for Elixir
   (when pel-use-plantuml
     (define-key pel:for-elixir "u" 'pel-render-commented-plantuml))
-
   (when pel-use-alchemist
     (pel-ensure-package alchemist from: melpa)
     (pel-autoload-file alchemist for:
@@ -4738,14 +4757,22 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                        exunit-verify
                        exunit-toggle-file-and-test
                        exunit-toggle-file-and-test-other-window))
-
   (when pel-use-elixir-lsp
     (pel-ensure-package lsp-elixir from: melpa)
     (pel-autoload-file lsp-elixir for: elixir-mode)
     (add-hook 'elixir-mode-hook 'lsp))
 
-  ;; Activate Elixir setup.
-  (pel-config-major-mode elixir pel:for-elixir :no-ts))
+  ;; 6- Activate Elixir setup.
+  ;;    Schedule more configuration upon Elixir feature loading
+  ;;
+  (pel-eval-after-load (elixir-mode elixir-ts-mode)
+    (pel-config-major-mode elixir pel:for-elixir :same-for-ts
+      (when (boundp 'elixir-basic-offset)
+        (setq elixir-basic-offset pel-elixir-indent-width))
+      (when (boundp 'elixir-match-label-offset)
+        (setq elixir-match-label-offset pel-elixir-indent-width))
+      (when (boundp 'elixir-ts-indent-offset)
+        (setq elixir-ts-indent-offset pel-elixir-indent-width)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** LFE Programming Language Support
@@ -5247,7 +5274,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
 ;; ---------------------------------------------------------------------------
 ;;** Ruby Programming Language Support
-;;   ---------------------------------[<65;57;36M
+;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC U`` :
 (when pel-use-ruby
   (define-pel-global-prefix pel:for-ruby (kbd "<f11> SPC U"))
