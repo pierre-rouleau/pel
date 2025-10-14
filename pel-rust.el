@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 12 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-14 10:31:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-14 14:49:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -71,8 +71,7 @@ and required by `pel-use-rust'."
   "Remove `rust-ts-mode' entries from `auto-mode-alist'.
 It removes what entered when `rust-ts-mode' loads."
   (setq auto-mode-alist
-        (delete '("\\.rs\\'" . rust-ts-mode) auto-mode-alist)))
-
+        (rassq-delete-all 'rust-ts-mode auto-mode-alist)))
 
 ;;-pel-autoload
 (defun pel-rust-mode-used-text (use-rust)
