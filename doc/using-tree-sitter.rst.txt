@@ -7,7 +7,7 @@ Using tree-sitter with Emacs and PEL
 :Ref: `PEL How-to Tips`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-10-13 15:04:34 EDT, updated by Pierre Rouleau.
+:Modified: 2025-10-14 10:42:02 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -32,7 +32,57 @@ Requirements for using Tree-Sitter with Emacs and PEL
     This simplifies the logic but it is also better since Emacs has better
     tree-sitter support starting with Emacs 30.1.
 
+Emacs Tree-Sitter Language Grammar Files
+========================================
 
+:Ref: `Tree-Sitter Language Grammar`_, Emacs Manual
+
+**- The Dynamic Library Language File:**
+
+The name of the dynamic libraries for language grammar files used by Emacs
+follows the following naming convention:
+
+   libtree-sitter-\ *lang.ext*
+
+where:
+
+- *lang* : is the name of the language.  Like python or c.
+- *ext* : is the file extension for dynamic libraries:
+
+  - ``so`` for Linux,
+  - ``dylib`` for macOS,
+  - ``dll`` for Windows.
+
+**- The function provided by the Dynamic Library Language File:**
+
+By convention, the function provided by that library is named
+``tree_sitter_``\ *lang*
+
+where *lang* is the name of the language, like python or c.
+
+
+**- The treesit-load-name-override-list variable:**
+
+If a file does not follow this convention, Emacs provides the
+``treesit-load-name-override-list`` variable that can be used to provide
+translation rules to override unconventional tree-sitter libraries.
+
+This is a list with entries that have the following format:
+
+    (LANG LIBRARY-BASE-NAME FUNCTION-NAME)
+
+where LANG is the language, LIBRARY-BASE-NAME is the filename of the dynamic
+library without the file-name extension, and FUNCTION-NAME is the
+function provided by the library.
+
+**- Use symlink for unconventional named files:**
+
+Currently, PEL does not have a corresponding customizable user option that
+would be used to set the value of the ``treesit-load-name-override-list``
+variable.  If you use a language grammar file that has the proper function
+name but the wrong file name (and that is often the case because the
+tree-sitter language grammar files are used by several other editors), create
+symbolic links that have the conventional name to the implementation file.
 
 
 Setting up Emacs Tree-Sitter Environment for PEL
@@ -48,27 +98,98 @@ Setting up Emacs Tree-Sitter Environment for PEL
    - Exit Emacs.
    - Restart Emacs.
 
-   PEL will automatically install the latest tree-sitter files.
+   PEL will automatically install the tree-sitter grammar files from the
+   `tree-sitter-langs`_ package.
 
-#. Create (or update) the ``~/.emacs.d/tree-sitter-langs-bin`` symbolic link to point to
-   the tree-sitter lang bin directory that was installed.
+   This installs inside a directory
+   ``~/.emacs.d/elpa/tree-sitter-langs-20YYMMDD.VV``, where ``YYMMDD`` is the date
+   and ``VV`` the version.  The dynamic library files are stored inside the
+   ``bin`` sub-directory.
 
-   - Set it to something like:  ``~/.emacs.d/elpa/tree-sitter-langs-20250206.19/bin/``
+#. Create (or update) the ``~/.emacs.d/tree-sitter-langs-bin`` symbolic link.
 
-#. Create the ``~/.emacs.d/tree-sitter`` symbolic link to point to
-   ``~/.emacs.d/tree-sitter-langs-bin``.
+   - It must point to the bin sub-directory of the
+     ``~/.emacs.d/elpa/tree-sitter-langs-20YYMMDD.VV``
+     directory that was installed by the `tree-sitter-langs`_ package.
+
+     For example, you would create it with::
+
+       cd ~/.emacs.d
+       ln -s ~/.emacs.d/elpa/tree-sitter-langs-20250511.737/bin tree-sitter-langs-bin
+
+   - Later, when you will update the `tree-sitter-langs`_ package and get a
+     new directory with a different data and version, just update the symbolic
+     link to the new one.
+
+#. Create the ``~/.emacs.d/libtree-sitter`` directory if it does not exists.
+
+   - Inside this directory create one symbolic link with the libtree-sitter-\*lang.ext*
+     conventional name to point to each of the language grammar dynamic library
+     file installed by the `tree-sitter-langs`_ package.
+   - Instead of using the real name of the directory installed by the
+     `tree-sitter-langs`_ package, as the target, use
+     ``~/.emacs.d/tree-sitter-langs-bin`` as the directory path.
+
+     - This will allow the symbolic links created inside
+       ``~/.emacs.d/libtree-sitter`` directory
+       to remain valid when you will update the `tree-sitter-langs`_ package
+       later.
+
+   For example::
+
+     cd ~/.emacs.d/libtree-sitter
+     ln -s ~/.emacs.d/tree-sitter-langs-bin/ada.dylib libtree-sitter-ada.dylib
+
+#. Create the ``~/.emacs.d/libtree-sitter-extra`` directory.
+
+   Inside this directory store symbolic links to other language grammar
+   dynamic library files supporting other languages or newer versions of the
+   language supported by the `tree-sitter-langs`_ package.
+
+   - Remember that the file name expected by Emacs is:
+     libtree-sitter-\ *lang.ext* .
+     Each of the symlinks inside the directory should have a name that match
+     this convention.
 
 #. Set the ``pel-treesit-load-path`` user-option.
 
    - Add the following directories to the list:
 
-     - ``~/.emacs.d/tree-sitter-langs-bin``
+     - ``~/.emacs.d/libtree-sitter-extra``
      - ``~/.emacs.d/libtree-sitter``
 
    - Save.
    - Exit Emacs.
 
-At this point you should be able to start Emacs and use tree-sitter facilities.
+At this point you should be able to start Emacs and use tree-sitter
+facilities.
+
+Note that symlinks present in ``~/.emacs.d/libtree-sitter`` shadow symlinks
+with same name in ``~/.emacs.d/tree-sitter-langs-bin``.  You can use this to
+use a language grammar different from what is provided by the
+`tree-sitter-langs`_ package.
+
+Testing Tree-Sitter Language Grammar Support
+============================================
+
+Inside emacs you can evaluate the following functions to check whether the
+language grammar for a specific major mode is available:
+
+- ``treesit-ready-p``
+- ``treesit-language-abi-version``
+
+For example, to test for the availability of Tree-Sitter language grammar
+for Go, evaluate the following:
+
+.. code:: elisp
+
+           (treesit-ready-p 'go)
+           (treesit-language-abi-version 'go)
+
+
+The first will return t if it is available, nil, otherwise.
+The second will return the API version of the language grammar if it is
+available, nil otherwise.
 
 Controlling Automatic Invocation of the Tree-Sitter Modes
 =========================================================
@@ -161,6 +282,8 @@ logic that
 .. _breaking code change in Emacs 30: https://cgit.git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?h=emacs-30#n111
 .. _section on Tree-Sitter: https://cgit.git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?h=emacs-30#n120
 .. _mentioned in the Emacs 30 Notes: https://cgit.git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?h=emacs-30#n120
+.. _Tree-Sitter Language Grammar: https://www.gnu.org/software/emacs/manual/html_node/elisp/Language-Grammar.html
+.. _tree-sitter-langs: https://github.com/emacs-tree-sitter/tree-sitter-langs
 
 
 
