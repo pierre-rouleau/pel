@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October  6 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-06 15:47:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-14 12:34:06 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,6 +34,7 @@
 (require 'pel--base)  ; use: `pel-toggle-and-show-user-option'
 ;;                           `pel-symbol-value-or'
 ;;                           `pel-symbol-on-off-string'
+(require 'pel--options)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -52,16 +53,31 @@ customized value of the `gleam-ts-format-on-save' user option."
   (pel-toggle-and-show-user-option 'gleam-ts-format-on-save globally))
 
 ;;-pel-autoload
-(defun pel-gleam-setup-info ()
-    "Display Gleam setup information."
-(interactive)
-  (message "\
-Tab-width for this buffer     : %d
-Indentation offset this buffer: %s
-Runs gleam format on buffer save: %s"
-           tab-width
-           (pel-symbol-value-or 'gleam-ts-indent-offset)
-           (pel-symbol-on-off-string 'gleam-ts-format-on-save "yes" "no")))
+(defun pel-gleam-setup-info (&optional append)
+  "Display Gleam setup information."
+  (interactive "P")
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-gleam-info*"
+     "PEL setup for Gleam programming language"
+     (lambda ()
+       "Print Gleam setup"
+       (insert "\
+Note: Gleam is currently only supported by a Tree-Sitter aware mode.")
+       (when pel-use-tree-sitter
+         (insert (format "\n- %s" (pel-ts-language-grammar-status-for
+                                   'gleam))))
+       (pel-insert-symbol-content-line 'gleam-ts-format-on-save
+                                       nil
+                                       (lambda (v)
+                                         (pel-on-off-string
+                                          v
+                                          "yes, format on save."
+                                          "no, save buffer unchanged.")))
+       (pel-insert-symbol-content-line 'gleam-ts-indent-offset)
+       (pel-insert-symbol-content-line 'tab-width))))
+  (unless append :clear-buffer)
+  :use-help-mode)
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-gleam)
