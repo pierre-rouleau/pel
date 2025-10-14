@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 12 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-14 14:49:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-14 16:10:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -93,6 +93,7 @@ It removes what entered when `rust-ts-mode' loads."
      "PEL setup for Rust programming language"
      (lambda ()
        "Print Rust setup info."
+       (pel-insert-symbol-content-line 'major-mode nil "major mode currently used.")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for 'rust))))
        (pel-insert-symbol-content-line 'pel-use-rust nil

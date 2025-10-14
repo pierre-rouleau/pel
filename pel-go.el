@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-14 14:47:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-14 16:10:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -156,6 +156,7 @@ group customize buffer."
      "PEL setup for Go programming language"
      (lambda ()
        "Print Go setup info."
+       (pel-insert-symbol-content-line 'major-mode nil "major mode currently used.")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for 'go))))
        (pel-insert-symbol-content-line 'pel-use-go nil
