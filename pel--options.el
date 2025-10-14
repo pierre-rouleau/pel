@@ -678,28 +678,42 @@ IMPORTANT NOTE:
 I noticed the following:
 
 - The tree-sitter-langs package installs the language dynamic
-  libraries inside the ~/.emacs.d/elpa/tree-sitter-langs-YYYYMMDD.vvv.bin
+  libraries inside the ~/.emacs.d/elpa/tree-sitter-langs-YYYYMMDD.vvv/bin
   directory, where YYYMMMDD.vvv depends on the moment the installation
   was done.
-- The files stored inside that directory have a name like cmake.dylib or
-  cmake.so (depending on your OS extension for the dynamic libraries).
-- Some packages look for language dynamic library files that have a name
-  that starts with \\='libtree-sitter-\\=',
-  like \\='libree-sitter-cmake.dylib\\='.
+- The files stored inside that directory have a name like cmake.dylib,
+  cmake.so or cmake.dll (depending on your OS extension for the dynamic
+  libraries).
+- These names do not follow Emacs naming convention for tree-sitter language
+  grammar dynamic library files, which is: libtree-sitter-lang.ext .
 
-So it seems that some work is needed to properly support tree-sitter.
+Some some work is required to properly support tree-sitter.
 Here's what I do in my environments:
 
 - Create a symbolic link named tree-sitter-langs-bin that points to the
   appropriate ~/.emacs.d/elpa/tree-sitter-langs-YYYYMMDD.vvv.bin directory.
+
 - Create a ~/.emacs.d/libtree-sitter directory.
+
 - Inside that directory I create symbolic links named
   \\='libree-sitter-MODE.EXT\\=' for each MODE.EXT file located inside the
-  ~/.emacs.d/elpa/tree-sitter-langs-YYYYMMDD.vvv.bin directory via the
+  ~/.emacs.d/elpa/tree-sitter-langs-YYYYMMDD.vvv/bin directory via the
   ~/.emacs.d/tree-sitter-langs-bin symbolic link.
+
+- Create another directory: ~/.emacs.d/libtree-sitter-extra .
+  Use this directory to store symbolic links to language grammar files
+  dynamic library files that you prefer to use over the ones installed by
+  the tree-sitter-langs package or files not yet included in the
+  tree-sitter-langs package.
+
 - Add the following 2 directories to the list here:
-  - ~/.emacs.d/tree-sitter-langs-bin
-  - ~/.emacs.d/libtree-sitter"
+  - ~/.emacs.d/libtree-sitter-extra
+  - ~/.emacs.d/libtree-sitter
+
+IMPORTANT TO REMEMBER:
+Remember to update the tree-sitter-langs-bin symbolic link to the new version
+of the ~/.emacs.d/elpa/tree-sitter-langs-YYYYMMDD.vvv/bin directory next time
+you update the tree-sitter-langs package!"
   :group 'pel-pkg-for-tree-sitter
   :type '(repeat string))
 

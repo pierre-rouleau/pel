@@ -44,7 +44,6 @@
 ;;  - `pel-current-buffer-eol-type'
 ;;  - `pel-running-under-ssh-p'
 ;;  - `pel-cd-to-current'
-;;  - `pel-treesit-ready-p'
 ;;
 ;; Read state of minor mode:
 ;; - `pel-minor-mode-state'
@@ -172,7 +171,9 @@
 ;; Tree-sitter major mode support
 ;; - `pel-major-mode-use-tree-sitter'
 ;; - `pel-major-ts-mode-supported-p'
-;;
+;; - `pel-ts-language-grammar-status-for'
+;;   - `pel-treesit-ready-p'
+
 ;; Mode argument interpretation
 ;; -  `pel-action-for'
 ;;
@@ -581,26 +582,6 @@ SILENT is non-nil (can be requested by prefix argument)."
     (unless (string= new-cwd original-cwd)
       (unless silent
         (message "Current directory back to: %s" new-cwd)))))
-
-(defun pel-treesit-ready-p (language &optional quiet)
-  "Check whether tree-sitter is ready to be used for MODE and LANGUAGE.
-
-LANGUAGE is the language symbol to check for availability.
-It can also be a list of language symbols.
-
-If Emacs < 30 or tree-sitter is not ready, emit a warning and return
-nil.  If the user has chosen to activate tree-sitter for LANGUAGE and
-tree-sitter is ready, return non-nil.  If QUIET is t, don't emit a
-warning in either case; if quiet is `message', display a message instead
-of emitting a warning."
-  (if (and pel-emacs-30-or-later-p
-           (require 'treesit nil :noerror)
-           (fboundp 'treesit-ready-p))
-      (treesit-ready-p language quiet)
-    (unless quiet
-      (display-warning 'pel-treesit-support
-                       "Tree-Sitter is not supported in this Emacs."))
-    nil))
 
 ;; ---------------------------------------------------------------------------
 ;; Read/Set variable with a formatted name derived from major mode
@@ -2263,6 +2244,37 @@ The function returns nil when tree-sitter mode is not supported."
       (when (boundp 'major-mode-remap-alist)
         (let ((mode-symbol (intern  (format "%s-mode" (symbol-name mode)))))
           (assoc mode-symbol major-mode-remap-alist))))))
+
+(defun pel-treesit-ready-p (language &optional quiet)
+  "Check whether tree-sitter is ready to be used for MODE and LANGUAGE.
+
+LANGUAGE is the language symbol to check for availability.
+It can also be a list of language symbols.
+
+If Emacs < 30 or tree-sitter is not ready, emit a warning and return
+nil.  If the user has chosen to activate tree-sitter for LANGUAGE and
+tree-sitter is ready, return non-nil.  If QUIET is t, don't emit a
+warning in either case; if quiet is `message', display a message instead
+of emitting a warning."
+  (if (and pel-emacs-30-or-later-p
+           (require 'treesit nil :noerror)
+           (fboundp 'treesit-ready-p))
+      (treesit-ready-p language quiet)
+    (unless quiet
+      (display-warning 'pel-treesit-support
+                       "Tree-Sitter is not supported in this Emacs."))
+    nil))
+
+(defun pel-ts-language-grammar-status-for (mode)
+  "Return a string describing Tree-Sitter language grammar state for MODE.
+
+MODE must be a symbol that does NOT end with -mode."
+  (if (and (pel-treesit-ready-p mode)
+           (fboundp 'treesit-language-abi-version))
+      (format "Tree-Sitter language grammar for %s uses: ABI version %d."
+              mode
+              (treesit-language-abi-version mode))
+    (format "Tree-Sitter language grammar is NOT available for %s." mode)))
 
 ;; ---------------------------------------------------------------------------
 ;; Mode argument interpretation

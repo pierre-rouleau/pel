@@ -486,6 +486,9 @@ Done in this function to allow advising libraries that remap these keys."
 ;; ---------------------------------------------------------------------------
 ;;* Tree-Sitter Support
 ;;  ===================
+;;
+;; PEL supports tree-sitter starting at Emacs 30.  The `pel-use-tree-sitter'
+;; user-option is forced to nil for earlier versions.
 
 (when pel-use-tree-sitter
   (if pel-emacs-has-dynamic-module-support-p
@@ -493,7 +496,7 @@ Done in this function to allow advising libraries that remap these keys."
            (fboundp 'treesit-available-p)
            (treesit-available-p))
           (progn
-            (pel-ensure-package tree-sitter from: melpa)
+            ;; Get language grammars
             (pel-ensure-package tree-sitter-langs from: melpa)
 
             ;; For some reason the treesit-extra-load-path variable is not always
