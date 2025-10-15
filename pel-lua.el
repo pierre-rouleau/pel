@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 17:18:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 17:20:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -77,9 +77,9 @@ the selection made by `pel-lua-repl-used'."
   (if (and pel-use-tree-sitter
            (eq pel-lua-repl-used 'use-lua-ts-mode-repl-when-available)
            (fboundp 'lua-ts-inferior-lua))
-      (lua-ts-inferior-lua)
+      (call-interactively (function lua-ts-inferior-lua))
     (if (fboundp 'lua-start-process)
-        (lua-start-process)
+        (call-interactively (function lua-start-process))
       (error "lua-start-process is not bound."))))
 
 
