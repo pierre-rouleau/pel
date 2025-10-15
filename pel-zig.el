@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 07:32:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 09:29:12 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -101,7 +101,8 @@ USE-ZIG should be set to `pel-use-zig' value used in current buffer."
      (lambda ()
        "Print Zig setup info."
        (insert (propertize "* Major Mode Control:" 'face 'bold))
-       (pel-insert-symbol-content-line 'major-mode nil "major mode currently used.")
+       (pel-insert-symbol-content-line 'major-mode nil
+                                       "major mode currently used.")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for 'zig))))
        (pel-insert-symbol-content-line 'pel-use-zig nil
@@ -116,7 +117,7 @@ USE-ZIG should be set to `pel-use-zig' value used in current buffer."
        (insert "
 - Under PEL, Zig indentation level width is controlled entirely by the
   value of the pel-zig-indent-width user-option:
-  PEL stores its value in side the variables used by the zig-mode and
+  PEL stores its value inside the variables used by the zig-mode and
   zig-ts-mode to ensure consistency.
 - The hard tab rendering width is for zig buffer is controlled by
   pel-zig-tab-width and stored into tab-width.  These do not control the

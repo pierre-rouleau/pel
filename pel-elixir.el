@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 07:52:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 09:28:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -113,7 +113,7 @@ USE-ELIXIR should be set to `pel-use-elixir' value used in current buffer."
        (insert "
 - Under PEL, Elixir indentation level width is controlled entirely by the
   value of the pel-elixir-indent-width user-option:
-  PEL stores its value in side the variables used by the elixir-mode and
+  PEL stores its value inside the variables used by the elixir-mode and
   elixir-ts-mode to ensure consistency.
 - The hard tab rendering width is for elixir buffer is controlled by
   pel-elixir-tab-width and stored into tab-width.  These do not control the
