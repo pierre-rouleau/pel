@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-14 16:10:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 07:52:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,8 +45,8 @@
 Uses `elixir-mode' or `elixir-ts-mode' depending on what is available
 and required by `pel-use-elixir'."
   (cond
-   ;; When `pel-use-elixir` is t, PEL has downloaded and installed elixir-mode.el that
-   ;; provides the `elixir-mode'.  Use that.
+   ;; When `pel-use-elixir` is t, PEL has downloaded and installed
+   ;; elixir-mode.el that ;; provides the `elixir-mode'.  Use that.
    ((eq pel-use-elixir t)
     (when (fboundp 'elixir-mode)
       (elixir-mode)))
@@ -55,7 +55,7 @@ and required by `pel-use-elixir'."
    ((eq pel-use-elixir 'with-tree-sitter)
     (if (and (pel-treesit-ready-p 'elixir)
              (require 'elixir-ts-mode nil :noerror)
-             (fboundp 'elixir-mod-ts-mode))
+             (fboundp 'elixir-ts-mode))
         (elixir-ts-mode)
       (display-warning 'pel-elixir-with-tree-sitter
                        (format "Can't use elixir-ts-mode: %s"
@@ -101,12 +101,14 @@ USE-ELIXIR should be set to `pel-use-elixir' value used in current buffer."
      "PEL setup for Elixir programming language"
      (lambda ()
        "Print Elixir setup info."
+       (insert (propertize "* Major Mode Control:" 'face 'bold))
        (pel-insert-symbol-content-line 'major-mode nil "major mode currently used.")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for 'elixir))))
        (pel-insert-symbol-content-line 'pel-use-elixir nil
                                        (function pel-elixir-mode-used-text))
        (insert "\n\n")
+       ;;
        (insert (propertize "* Indentation Control:" 'face 'bold))
        (insert "
 - Under PEL, Elixir indentation level width is controlled entirely by the
