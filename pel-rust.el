@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 12 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 08:08:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 08:10:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -53,7 +53,7 @@ and required by `pel-use-rust'."
    ((eq pel-use-rust 'with-tree-sitter)
     (if (and (pel-treesit-ready-p 'rust)
              (require 'rust-ts-mode nil :noerror)
-             (fboundp 'rust--ts-mode))
+             (fboundp 'rust-ts-mode))
         (rust-ts-mode)
       (display-warning 'pel-rust-with-tree-sitter
                        (format "Can't use rust-ts-mode: %s"
