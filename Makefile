@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-10-14 15:06:01 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-10-14 16:39:32 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -275,7 +275,8 @@ EL_FILES := pel--base.el \
 		pel-whitespace.el \
 		pel-window.el \
 		pel-xr.el \
-		pel-yang.el
+		pel-yang.el \
+		pel-zig.el
 
 EL_FILES2 := pel.el
 
@@ -808,6 +809,7 @@ pel-window.elc:         pel--base.elc pel--options.elc  pel-prompt.elc
 pel-xr.elc:             pel--base.elc pel-read.elc
 pel-xref.elc:           pel--base.elc pel--options.elc pel-prompt.elc pel-read.elc pel-text-transform.elc pel-pathmng.elc
 pel-yang.elc:           pel--base.elc
+pel-zig.elc:            pel--base.elc pel--options.elc
 pel__hydra.elc:         pel--base.elc pel--options.elc pel--key-macros.el pel-buffer.elc pel-frame-control.elc pel-hideshow.elc pel-pp.elc pel-scroll.elc pel-window.elc pel-pp.el
 # Note that pel__hydra.el is byte-compiled by the code of pel_keys.el
 # when pel_keys is loading. Therefore, if pel__hydra.el is modified

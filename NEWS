@@ -2,6 +2,18 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- PEL now support both *zig-mode* and Tree-Sitter based *zig-ts-mode*.
+  - It automatically associates the tree-sitter based *zig-ts-mode* with Zig
+    files when *pel-use-zig* customizable user-option is set to the new value
+    =with-tree-sitter=. If it is set to =t= it select the classic *zig-mode*.
+  - User can switch anytime and can also use one or the other mode for a given
+    buffer: that has no influence on the mode selected for other Zig buffers
+    opened later.
+    - Note: at this point the zig-ts-mode lacks several features.
+  - The new *pel-zig-setup-info* command, bound to ~<f12> ?~ in Zig buffers,
+    provide information about the Zig support setup and access to the
+    customization of several important user-options.
+
 - PEL now support both *elixir-mode* and Tree-Sitter based *elixir-ts-mode*.
   - It automatically associates the tree-sitter based *elixir-ts-mode* with Elixir
     files when *pel-use-elixir* customizable user-option is set to the new value

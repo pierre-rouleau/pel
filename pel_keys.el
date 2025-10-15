@@ -4722,7 +4722,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; 2- Associate files with Elixir mode selector
   (add-to-list 'auto-mode-alist
                (cons
-                (regexp-opt '("ex'" "exs'" "elixir'" "mix.lock"))
+                (regexp-opt '(".ex'" ".exs'" ".elixir'" "mix.lock"))
                 'pel-elixir-mode))
 
   ;; 3- Speedbar support for Elixir
@@ -5739,14 +5739,38 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;; Experimental 🚧
 
 (when pel-use-zig
-  (define-pel-global-prefix pel:for-zig  (kbd "<f11> SPC M-z"))
-
+  ;; 1- Install required packages for Zig
+  ;;    - Always install zig-mode when Elixir is used.
   (pel-ensure-package zig-mode from: melpa)
+  ;;    - Install zig-ts-mode when Elixir and Tree-Sitter are supported
   (when pel-use-tree-sitter
     (pel-ensure-package zig-ts-mode from: melpa))
 
+  ;; 2- Associate files with Zig mode selector
+  (add-to-list 'auto-mode-alist
+               (cons (regexp-opt '(".zig'" ".zon'" ))
+                     'pel-zig-mode))
+
+  ;; 3- Speedbar support for Zig
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".zig")
+    (pel-add-speedbar-extension ".zon"))
+
+  ;; 4- Buffer keymap for Zig
+  (define-pel-global-prefix pel:for-zig  (kbd "<f11> SPC M-z"))
+  (define-key pel:for-zig "?" 'pel-zig-setup-info)
+
+  ;; 5- Install optional packages for Elixir
+
+  ;; 6- Activate Zig setup.
+  ;;    Schedule more configuration upon Zig feature loading
+  ;;
   (pel-eval-after-load zig-mode
-    (pel-config-major-mode zig pel:for-zig :no-ts)))
+    (pel-config-major-mode zig pel:for-zig :same-for-ts
+      (when (boundp 'zig-indent-offset)
+        (setq zig-indent-offset pel-zig-indent-width))
+      (when (boundp 'zig-ts-indent-offset)
+        (setq zig-ts-indent-offset pel-zig-indent-width)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** shell-mode Support

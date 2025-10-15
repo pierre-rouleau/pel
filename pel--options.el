@@ -11496,10 +11496,17 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :link '(url-link :tag "Zig Language home page" "https://ziglang.org/"))
 
 (defcustom pel-use-zig nil
-  "Control whether PEL supports the Zig Programming Language Development."
+  "Control whether PEL supports the Zig Programming Language Development.
+
+This *must* be activated to allow any other package for Zig.
+When activating it you can select between the following values:
+- t                : use `go-mode' provided by the go-mode.el external package.
+- with-tree-sitter : use `go-ts-mode' which is built-in Emacs."
   :group 'pel-pkg-for-zig
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use Zig" nil)
+          (const :tag "Use classic mode: zig-mode" t)
+          (const :tag "Use tree-sitter mode: zig-ts-mode" with-tree-sitter)))
 (pel-put 'pel-use-zig :package-is '(if pel-use-tree-sitter
                                        (quote ((elpa . zig-mode)
                                                (elpa . zig-ts-mode)))
@@ -11511,6 +11518,19 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-zig
   :type '(repeat function))
+
+(defcustom pel-zig-indent-width 4
+  "Indentation width for zig buffers.
+
+PEL stores this value inside the following Zig modes user-options to
+ensure consistency across classic and tree-sitter modes for indentation
+control:
+
+- `zig-indent-offset',
+- `zig-ts-indent-offset'."
+  :group 'pel-pkg-for-zig
+  :type 'integer
+  :safe 'pel-indent-valid-p)
 
 (defcustom pel-zig-tab-width 4
   "Column width display rendering of hard tab for zig buffers.

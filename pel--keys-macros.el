@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-14 15:34:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 07:57:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -206,6 +206,12 @@
                                 (when pel-use-veri-kompass
                                   (setq items (append items '(veri-kompass))))
                                 items))
+
+;; Unfortunately the group used by elixir-ts-mode is not elixir but `elixir-ts'
+(defconst pel--zig-groups (if pel-use-tree-sitter
+                                 '(zig-mode
+                                   zig-ts)
+                            '(zig-mode)))
 
 ;; TODO: add logic in the processing of that table to allow the first element
 ;;       of a row to be a list of key sequences.
@@ -668,8 +674,8 @@ stored inside the doc/pdf directory.")
     (,(kbd "<f11> SPC M-u") "plantuml" pel-pkg-for-plantuml    plantuml-mode)
     ([f11 32 27 ?u]         "plantuml" pel-pkg-for-plantuml    plantuml-mode)
 
-    (,(kbd "<f11> SPC M-z") "pl-zig" pel-pkg-for-zig    zig-mode)
-    ([f11 32 27 ?z]         "pl-zig" pel-pkg-for-zig    zig-mode)
+    (,(kbd "<f11> SPC M-z") "pl-zig" pel-pkg-for-zig    ,pel--zig-groups)
+    ([f11 32 27 ?z]         "pl-zig" pel-pkg-for-zig    ,pel--zig-groups)
 
     (,(kbd "<f11> SPC M-M") "mscgen" pel-pkg-for-mscgen    mscgen)
     ([f11 32 27 ?M]         "mscgen" pel-pkg-for-mscgen    mscgen)
@@ -819,6 +825,7 @@ stored inside the doc/pdf directory.")
     ("yaml"            [f11 32 27 ?y])
     ("yang"            [f11 32 27 ?Y])
     ("zig"             [f11 32 27 ?z])
+    ("zig-ts"          [f11 32 27 ?z])
     ;; shells and terminals
     ("shell"           [f11 32 ?z ?s])
     ("term"            [f11 32 ?z ?t])
@@ -1750,7 +1757,8 @@ DEFINES: is a cosmetic only argument that must be present."
 
 (defconst pel--ts-mode-with-fixer '(elixir-ts-mode
                                     go-ts-mode
-                                    rust-ts-mode)
+                                    rust-ts-mode
+                                    zig-ts-mode)
   "List of Tree Sitter modes that require execution of a mode fixer function.
 The fixer mode function has a name that has a format like
 pel--MODE-fixer with where MODE corresponds to the name of the mode taken from
