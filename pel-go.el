@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-14 16:10:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 07:32:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -156,11 +156,15 @@ group customize buffer."
      "PEL setup for Go programming language"
      (lambda ()
        "Print Go setup info."
+       (insert (propertize "* Major Mode Control:" 'face 'bold))
        (pel-insert-symbol-content-line 'major-mode nil "major mode currently used.")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for 'go))))
        (pel-insert-symbol-content-line 'pel-use-go nil
                                        (function pel-go-mode-used-text))
+       (insert "\n\n")
+       ;;
+       (insert (propertize "* Code Formatting Control:" 'face 'bold))
        (pel-insert-symbol-content-line 'pel-go-run-gofmt-on-buffer-save
                                        nil
                                        (lambda (v)
@@ -170,6 +174,7 @@ group customize buffer."
                                           "no, save buffer unchanged.")))
        (pel-insert-symbol-content-line 'pel-use-goflymake)
        (insert "\n\n")
+       ;;
        (insert (propertize "* Indentation Control:" 'face 'bold))
        (insert "
 - Under PEL, Go indentation level width is controlled by pel-go-tab-width:
