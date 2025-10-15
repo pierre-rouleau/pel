@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 07:32:33 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 08:05:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -54,7 +54,7 @@ and required by `pel-use-go'."
    ((eq pel-use-go 'with-tree-sitter)
     (if (and (pel-treesit-ready-p 'go)
              (require 'go-ts-mode nil :noerror)
-             (fboundp 'go-mod-ts-mode))
+             (fboundp 'go-ts-mode))
         (go-ts-mode)
       (display-warning 'pel-go-with-tree-sitter
                        (format "Can't use go-ts-mode: %s"
