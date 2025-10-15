@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 10:37:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 11:37:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,13 +45,13 @@
 Uses `ruby-mode' or `ruby-ts-mode' depending on what is available
 and required by `pel-use-ruby'."
   (cond
-   ;; When `pel-use-ruby` is t, PEL has downloaded and installed ruby-mode.el
-   ;; that provides the `ruby-mode'.  Use that.
+   ;; When `pel-use-ruby` is t, PEL uses Emacs built-in `ruby-mode'.
+   ;; Use that.
    ((eq pel-use-ruby t)
     (when (fboundp 'ruby-mode)
       (ruby-mode)))
 
-   ;; The `ruby-ts-mode' is not built-in Emacs
+   ;; The `ruby-ts-mode' is also built-in Emacs
    ((eq pel-use-ruby 'with-tree-sitter)
     (if (and (pel-treesit-ready-p 'ruby)
              (require 'ruby-ts-mode nil :noerror)
