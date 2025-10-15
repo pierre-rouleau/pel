@@ -585,6 +585,7 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload-function "pel-lua" for:
     pel-lua-mode
+    pel-lua-repl
     pel--lua-ts-mode-fixer
     pel-lua-mode-used-text
     pel-lua-setup-info
@@ -633,6 +634,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-end-of-previous-defun)
 
   (pel-autoload-function "pel-nim" for:
+    pel-nim-setup-info
     pel-nim-insert-shebang-line)
 
   (pel-autoload "pel-numkpad" for:
@@ -899,6 +901,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-syntax-at-point)
 
   (pel-autoload-function "pel-tcl" for:
+    pel-tcl-setup-info
     pel-tcl-insert-shebang-line
     pel-tcl-expect-insert-shebang-line)
 

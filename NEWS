@@ -2,6 +2,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add ~<f12> z~ binding to *pel-lua-repl* that invokes the Lua REPL that is
+  either from the lua-mode or lua-ts-mode, depending of the availability of
+  the latter and the value of the *pel-lua-repl-used* user-option.
+- Add *pel-nim-setup-info* and *pel-tcl-setup-info*, bound to ~<f12> ?~ in
+  both modes.
+- Simplified activation of Nim support: when *pel-use-nim* user-option is the
+  only user-option required to activate Nim support.
+  The *pel-use-nim-mode* user-option is no longer used.
 - PEL now support both *ruby-mode* and Tree-Sitter based *ruby-ts-mode*.
   - It automatically associates the tree-sitter based *ruby-ts-mode* with Ruby
     files when *pel-use-ruby* customizable user-option is set to the new value

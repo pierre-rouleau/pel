@@ -315,7 +315,6 @@
  '(pel-use-netrexx t)
  '(pel-use-nhexl-mode t)
  '(pel-use-nim t)
- '(pel-use-nim-mode t)
  '(pel-use-nix-mode t)
  '(pel-use-ocaml t)
  '(pel-use-org-mode t)

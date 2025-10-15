@@ -33,6 +33,9 @@
 ;; * `pel-version'
 ;;
 ;; Environment Querying functions:
+;;  - `pel-major-mode-must-be'
+;;  - `pel-derived-mode-p'
+;;  - `pel-dired-buffer-p'
 ;;  - `pel-in-fast-startup-p'
 ;;  - `pel-string-with-major-mode'
 ;;    - `pel-file-type-for'
@@ -453,6 +456,18 @@ Other uses risk returning non-nil value that point to the wrong file."
 ;; ---------------------------------------------------------------------------
 ;; Functions checking Major Mode
 ;; -----------------------------
+
+(defun pel-major-mode-must-be (modes)
+  "Check that the current buffer major mode is one of MODES.
+MODES is either a major-mode symbol or a list of major-mode symbols.
+Raise an user error if the current buffer is not using one of the MODES;
+the message state that the current command is not appropriate."
+  (unless (memq major-mode (if (listp modes)
+                               modes
+                             (list modes)))
+    (user-error "This command is not meant for %s; use it in %S"
+                major-mode
+                modes)))
 
 (defun pel-derived-mode-p (buffer-or-name &rest modes)
   "Non-nil if major mode of BUFFER-OR-NAME is derived from one of MODES.

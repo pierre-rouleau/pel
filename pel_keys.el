@@ -4925,22 +4925,36 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   --------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC n`` :
 (when pel-use-nim
-  (define-pel-global-prefix pel:for-nim (kbd "<f11> SPC n"))
-  (define-pel-global-prefix pel:nim-skel (kbd "<f11> SPC n <f12>"))
+  ;; 1- Install required packages for Nim
+  ;;    - Always install nim-mode when Nim is used.
+  (pel-ensure-package nim-mode from: melpa)
 
-  ;; Note: PEL automatically activates pel-use-nim-mode when pel-use-nim is set.
+  ;; 2- Associate files with Nim mode selector
+  ;;   Not needed : there 's no nim-ts-mode yet.
 
-  (when pel-use-nim-mode
-    (pel-ensure-package nim-mode from: melpa))
+  ;; 3- Speedbar support for Nim
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".nim"
                                   ".nims"
                                   ".nimble")))
-  ;; the nim-mode is not part of Emacs
+
+  ;; 4- Buffer keymap for Nim
+  (define-pel-global-prefix pel:for-nim (kbd "<f11> SPC n"))
+  (define-pel-global-prefix pel:nim-skel (kbd "<f11> SPC n <f12>"))
+  (define-key pel:for-nim "?" 'pel-nim-setup-info)
+
+  ;; 5- Install optional packages for Nim
+
+  ;; 6- Activate Nim Setup
+  ;;    Schedule more configuration upon Nim feature loading
+  ;;
   (pel-eval-after-load nim-mode
     (pel-config-major-mode nim pel:for-nim :no-ts
       ;; activate skeletons
-      (pel--install-generic-skel pel:nim-skel 'pel-pkg-for-nim "nim"))))
+      (pel--install-generic-skel pel:nim-skel 'pel-pkg-for-nim "nim")
+      ;; ensure consistent indentation control
+      (when (boundp 'nim-indent-offset)
+        (setq-local nim-indent-offset pel-nim-indent-width)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Ocaml Programming Language Support
@@ -5529,21 +5543,36 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC t`` :
 (when pel-use-tcl
-  ;; tcl-mode is part of Emacs
+  ;; 1- Install required packages for Tcl
+  ;;   tcl-mode is built in Emacs
+
+  ;; 2- Associate files with Tcl mode selector
+  ;;   Not needed : there 's no tcl-ts-mode yet.
+
+  ;; 3- Speedbar support for Tcl
+  ;;    Already identified in speedbar.el
+
+  ;; 4- Buffer keymap for Tcl
   (define-pel-global-prefix pel:for-tcl (kbd "<f11> SPC t"))
   (define-pel-global-prefix pel:tcl-skel (kbd "<f11> SPC t <f12>"))
+  (define-key pel:for-tcl "?" 'pel-tcl-setup-info)
 
-  (defvar pel-tcl-man-section)      ; prevent byte-compiler warning in Emacs 26
+  ;; 5- Install optional packages for Tcl
+
+  ;; 6- Activate Tcl Setup
+  ;;    Schedule more configuration upon Tcl feature loading
+  ;;
+  (defvar pel-tcl-man-section)     ; prevent byte-compiler warning in Emacs 26
   (pel-eval-after-load tcl
     (pel-config-major-mode tcl pel:for-tcl :no-ts
       ;; activate skeletons
       (pel--install-generic-skel pel:tcl-skel 'pel-pkg-for-tcl "tcl")
-
-      ;; 5) Set tab-width for the buffer as specified by the PEL user option
-      ;; for the major mode.
-      ;; (setq-local tab-width pel-tcl-tab-width)
       ;; Use the n section for tcl man pages
-      (setq-local pel-tcl-man-section "n"))))
+      (setq-local pel-tcl-man-section "n")
+      ;; ensure consistency of indent control
+      ;; [:todo 2025-10-15, by Pierre Rouleau: should we set tcl-continued-indent-level?]
+      (when (boundp 'tcl-indent-level)
+        (setq-local tcl-indent-level pel-tcl-indent-width)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Lua Programming Language Support
@@ -5566,6 +5595,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-pel-global-prefix pel:for-lua  (kbd "<f11> SPC u"))
   (define-pel-global-prefix pel:lua-skel (kbd "<f11> SPC u <f12>"))
   (define-key pel:for-lua "?" 'pel-lua-setup-info)
+  (when pel-use-tree-sitter
+    (define-key pel:for-lua "z" 'pel-lua-repl))
 
   ;; 5- Install optional packages for Lua
 
@@ -10010,29 +10041,28 @@ the ones defined from the buffer now."
   (define-key pel:execute "v" 'vterm))
 
 ;; Programming Language REPL.  Key used is the same as their f11 SPC key.
-(when pel-use-common-lisp  (define-key pel:repl  "L"  'pel-cl-repl))
-(when pel-use-forth        (define-key pel:repl  "f"  'run-forth))
-(when pel-use-haskell
-  (declare-function run-haskell "inf-haskell")
-  (define-key pel:repl  "h" #'run-haskell))
-(when pel-use-julia        (define-key pel:repl  "j" #'julia-snail))
-
-(when pel-use-python       (define-key pel:repl  "p" #'run-python))
-(when pel-use-erlang       (define-key pel:repl  "e"  'erlang-shell))
-(when (and pel-use-elixir
-           pel-use-alchemist)
-                           (define-key pel:repl  "x"  #'alchemist-iex-run))
-(when (and pel-use-ocaml
-           pel-use-tuareg)
-  (declare-function run-ocaml "tuareg")
-  (define-key pel:repl  "o"  #'run-ocaml))
-
+(when pel-use-common-lisp  (define-key pel:repl  "L" 'pel-cl-repl))
 (when (and pel-use-perl
            pel-use-perl-repl)
-  (define-key pel:repl    "P" 'perl-repl))
+                           (define-key pel:repl  "P" 'perl-repl))
+(when pel-use-erlang       (define-key pel:repl  "e" 'erlang-shell))
+(when pel-use-forth        (define-key pel:repl  "f" 'run-forth))
+(when pel-use-haskell      (define-key pel:repl  "h" 'run-haskell))
+(when pel-use-julia        (define-key pel:repl  "j" 'julia-snail))
+(when pel-use-python       (define-key pel:repl  "p" 'run-python))
+(when (and pel-use-ocaml
+           pel-use-tuareg)
+                           (define-key pel:repl  "o" 'run-ocaml))
+(when (and pel-use-lua
+           pel-use-tree-sitter)
+                          (define-key pel:repl  "u" 'pel-lua-repl))
 
-(when pel-use-arc          (define-key pel:repl (kbd "C-a") #'run-arc))
-(when pel-use-lfe          (define-key pel:repl (kbd "C-l")  'run-lfe))
+(when (and pel-use-elixir
+           pel-use-alchemist)
+                           (define-key pel:repl  "x"  'alchemist-iex-run))
+
+(when pel-use-arc          (define-key pel:repl (kbd "C-a") 'run-arc))
+(when pel-use-lfe          (define-key pel:repl (kbd "C-l") 'run-lfe))
 ;; - Scheme dialects
 (when pel-use-chez         (define-key pel:repl (kbd "C-z") 'pel-chez-repl))
 (when pel-use-chibi        (define-key pel:repl (kbd "C-i") 'pel-chibi-repl))

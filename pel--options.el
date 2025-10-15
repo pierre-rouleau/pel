@@ -10036,6 +10036,21 @@ When activating it you can select between the following values:
           (const :tag "Use tree-sitter mode: lua-ts-mode" with-tree-sitter)))
 (pel-put 'pel-use-lua :package-is '(quote ((elpa . lua-mode))))
 
+(defcustom pel-lua-repl-used nil
+  "Control which Lua REPL is used when requested.
+
+The choice depends on whether `pel-use-tree-sitter' is on or off.
+When it is off, then the `lua-start-process' is always used, since this is the
+only one available. Otherwise the choice is defined by the value selected by
+this user-option; one of:
+- always-use-lua-mode-repl  (same meaning as nil)
+- use-lua-ts-mode-repl-when-available"
+  :group 'pel-pkg-for-lua
+  :type '(choice
+          (const :tag "Always use lua-mode REPL" always-use-lua-mode-repl)
+          (const :tag "Use lua-ts-mode REPL when available"
+                 use-lua-ts-mode-repl-when-available)))
+
 (defcustom pel-lua-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Lua buffers.
 Enter *local* minor-mode activating function symbols.
@@ -10175,21 +10190,14 @@ Do not enter lambda expressions."
   "Control whether PEL supports the Nim programming language.
 
 When turned on:
-- PEL automatically activate `pel-use-nim-mode'
+- PEL automatically use `nim-mode'.
 - the `nim-mode' is associated with the PEL ``<f12>`` key."
-  :group 'pel-pkg-for-nim
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-nim :package-is :a-gate)
-
-(defcustom pel-use-nim-mode nil
-  "Control whether PEL activates the nim-mode external package."
   :group 'pel-pkg-for-nim
   :link '(url-link :tag "nim-mode @ GitHub"
                    "https://github.com/nim-lang/nim-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-nim-mode :also-required-when 'pel-use-nim)
+(pel-put 'pel-use-nim :package-is '(quote ((elpa . nim-mode))))
 
 (defcustom pel-nim-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Nim buffers.
@@ -10197,6 +10205,17 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-nim
   :type '(repeat function))
+
+(defcustom pel-nim-indent-width 2
+  "Indentation width for Nim buffers.
+
+PEL stores this value inside the following Nim modes user-options to
+ensure consistency:
+
+- `nim-indent-offset'."
+  :group 'pel-pkg-for-nim
+  :type 'integer
+  :safe 'pel-indent-valid-p)
 
 (defcustom pel-nim-tab-width 4
   "Column width display rendering of hard tab for nim buffers.
@@ -11424,10 +11443,24 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-tcl-indent-width 4
+  "Indentation width for Tcl buffers.
+
+PEL stores this value inside the following Tcl modes user-options to
+ensure consistency:
+
+- `tcl-indent-level'."
+  :group 'pel-pkg-for-tcl
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-tcl-indent-width 4
   "Number of columns for Tcl source code indentation.
 Values in the [2, 8] range are accepted.
 
-EXPERIMENTAL: this may be removed once I know more about Tcl support."
+PEL stores this value inside the following Tcl modes user-options to
+ensure consistency:
+
+- `tcl-indent-level'."
   :group 'pel-pkg-for-tcl
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -13403,10 +13436,6 @@ indexing system."
 (when pel-use-eiffel
   ;; Only one major mode for Eiffel, auto-activate it.
   (setq pel-use-eiffel-mode t))
-
-(when pel-use-nim
-  ;; There's only one mode for Nim, auto-activate it.
-  (setq pel-use-nim-mode t))
 
 (when pel-use-ocaml
   (setq pel-use-caml-mode t)

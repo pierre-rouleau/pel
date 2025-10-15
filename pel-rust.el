@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 12 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 08:10:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 15:24:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -87,6 +87,7 @@ It removes what entered when `rust-ts-mode' loads."
 (defun pel-rust-setup-info (&optional append)
   "Display Rust setup information."
   (interactive "P")
+  (pel-major-mode-must-be '(rust-mode rust-ts-mode))
   (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
     (pel-print-in-buffer
      "*pel-rust-info*"

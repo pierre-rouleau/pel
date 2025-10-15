@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 09:28:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 15:25:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -95,6 +95,7 @@ USE-ELIXIR should be set to `pel-use-elixir' value used in current buffer."
 (defun pel-elixir-setup-info (&optional append)
   "Display Elixir setup information."
   (interactive "P")
+  (pel-major-mode-must-be '(elixir-mode elixir-ts-mode))
   (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
     (pel-print-in-buffer
      "*pel-elixir-info*"
@@ -102,7 +103,8 @@ USE-ELIXIR should be set to `pel-use-elixir' value used in current buffer."
      (lambda ()
        "Print Elixir setup info."
        (insert (propertize "* Major Mode Control:" 'face 'bold))
-       (pel-insert-symbol-content-line 'major-mode nil "major mode currently used.")
+       (pel-insert-symbol-content-line 'major-mode nil
+                                       "major mode currently used.")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for 'elixir))))
        (pel-insert-symbol-content-line 'pel-use-elixir nil

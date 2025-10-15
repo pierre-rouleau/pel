@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 08:05:33 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 15:32:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -150,6 +150,10 @@ group customize buffer."
 (defun pel-go-setup-info (&optional append)
   "Display Go setup information."
   (interactive "P")
+  (pel-major-mode-must-be '(go-mode
+                            go-ts-mode
+                            go-dot-mod-mode
+                            go-mod-ts-mode))
   (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
     (pel-print-in-buffer
      "*pel-go-info*"

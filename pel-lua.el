@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 10:33:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 17:06:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -69,6 +69,20 @@ and required by `pel-use-lua'."
          "Can't use `lua-ts-mode' nor `lua-mode': check installation!"))))))
 
 ;;-pel-autoload
+(defun pel-lua-repl ()
+  "Start the Lua REPL.
+The actual REPL command used depends on whether `lua-ts-mode' is available and
+the selection made by `pel-lua-repl-used'."
+  (if (and pel-use-tree-sitter
+           (eq pel-lua-repl-used 'use-lua-ts-mode-repl-when-available)
+           (fboundp 'lua-ts-inferior-lua))
+      (lua-ts-inferior-lua)
+    (if (fboundp 'lua-start-process)
+        (lua-start-process)
+      (error "lua-start-process is not bound."))))
+
+
+;;-pel-autoload
 (defun pel--lua-ts-mode-fixer ()
   "Remove `lua-ts-mode' entries from `auto-mode-alist'.
 It removes what entered when `lua-ts-mode' loads."
@@ -95,6 +109,7 @@ USE-LUA should be set to `pel-use-lua' value used in current buffer."
 (defun pel-lua-setup-info (&optional append)
   "Display Lua setup information."
   (interactive "P")
+  (pel-major-mode-must-be '(lua-mode lua-ts-mode))
   (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
     (pel-print-in-buffer
      "*pel-lua-info*"

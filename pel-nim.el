@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-19 13:47:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 15:35:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -39,11 +39,57 @@
 ;;; Code:
 ;;
 
+;;-pel-autoload
+(defun pel-nim-setup-info (&optional append)
+  "Display Nim setup information."
+  (interactive "P")
+  (pel-major-mode-must-be '(nim-mode))
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-nim-info*"
+     "PEL setup for Nim programming language"
+     (lambda ()
+       "Print Nim setup info."
+       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (pel-insert-symbol-content-line 'major-mode nil
+                                       "major mode currently used.")
+       (insert "\nThere is no known Tree-Sitter based Emacs major mode for Nim yet.")
+       (insert "\n\n")
+       ;;
+       (insert (propertize "* Indentation Control:" 'face 'bold))
+       (insert "
+- Under PEL, Nim indentation level width is controlled entirely by the
+  value of the pel-nim-indent-width user-option:
+  PEL stores its value inside the variables used by the nim-mode
+  to ensure consistency.
+- The hard tab rendering width is for nim buffer is controlled by
+  pel-nim-tab-width and stored into tab-width.  These do not control the
+  indentation, just the visual width (in columns) that Emacs uses to render a
+  hard tab character.
+
+  If you want to use hard tabs for indentation, you should set the value
+  tab-width to the same value of pel-nim-indent-width and then you can
+  control the visual rendering of indentation by changing the values of those
+  two user-options: the content of the buffer and file does wont change but
+  the indentation rendering will.
+
+  Note, however, that other editors may not be able to do the same; the use of
+  hard tabs in Nim source code is not required as it is for Go, therefore
+  this technique may not as well-spread as it is for Go.
+")
+       (pel-insert-symbol-content-line 'pel-nim-indent-width)
+       (pel-insert-symbol-content-line 'nim-indent-offset)
+       (pel-insert-symbol-content-line 'pel-nim-tab-width)
+       (pel-insert-symbol-content-line 'tab-width))
+     (unless append :clear-buffer)
+     :use-help-mode)))
+
 ;; Nim Shebang Line Control
 ;; ------------------------
 ;;
 ;; Use for extension-less Nim files that use Nim directly.
 
+;;-pel-autoload
 (defun pel-nim-insert-shebang-line ()
   "Insert a shebang line corresponding to user-option choice."
   ;; If the user-option specifies to use Emacs default, assume that

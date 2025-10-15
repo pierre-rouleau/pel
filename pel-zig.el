@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 09:29:12 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 15:25:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -94,6 +94,7 @@ USE-ZIG should be set to `pel-use-zig' value used in current buffer."
 (defun pel-zig-setup-info (&optional append)
   "Display Zig setup information."
   (interactive "P")
+  (pel-major-mode-must-be '(zig-mode 'zig-ts-mode))
   (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
     (pel-print-in-buffer
      "*pel-zig-info*"
