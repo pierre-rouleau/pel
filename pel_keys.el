@@ -5277,12 +5277,48 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC U`` :
 (when pel-use-ruby
+  ;; 1- Install required packages for Ruby
+  ;;    - ruby-mode and ruby-ts-mode are built-in Emacs
+
+  ;; 2- Associate files with Ruby mode selector
+  (add-to-list 'auto-mode-alist
+               (cons (purecopy (concat "\\(?:\\.\\(?:"
+                                       "rbw?\\|ru\\|rake\\|thor\\|axlsx"
+                                       "\\|jbuilder\\|rabl\\|gemspec\\|podspec"
+                                       "\\)"
+                                       "\\|/"
+                                       "\\(?:Gem\\|Rake\\|Cap\\|Thor"
+                                       "\\|Puppet\\|Berks\\|Brew\\|Fast"
+                                       "\\|Vagrant\\|Guard\\|Pod\\)file"
+                                       "\\)\\'"))
+                     'pel-ruby-mode))
+
+  ;; 3- Speedbar support for Ruby
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".rb")
+    (pel-add-speedbar-extension ".arb")
+    (pel-add-speedbar-extension ".erb")
+    (pel-add-speedbar-extension ".rake")
+    (pel-add-speedbar-extension ".rdoc"))
+
+  ;; 4- Buffer keymap for Ruby
   (define-pel-global-prefix pel:for-ruby (kbd "<f11> SPC U"))
   (define-pel-global-prefix pel:ruby-skel (kbd "<f11> SPC U <f12>"))
-  ;; the ruby-mode is part of Emacs
-  (pel-config-major-mode ruby pel:for-ruby :no-ts
-    ;; activate skeletons
-    (pel--install-generic-skel pel:ruby-skel 'pel-pkg-for-ruby "ruby")))
+  (define-key pel:for-ruby "?" 'pel-ruby-setup-info)
+
+  ;; 5- Install optional packages for Ruby
+
+  ;; 6- Activate Ruby setup.
+  ;;    Schedule more configuration upon Ruby feature loading
+  ;;
+  (pel-eval-after-load (ruby-mode ruby-ts-mode)
+    (pel-config-major-mode ruby pel:for-ruby :same-for-ts
+      ;; activate skeletons
+      (pel--install-generic-skel pel:ruby-skel 'pel-pkg-for-ruby "ruby")
+
+      ;; Ensure consistency among indentation user-options
+      (when (boundp 'ruby-indent-level)
+        (setq-local ruby-indent-level pel-ruby-indent-width)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Rust Programming Language Support

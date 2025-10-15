@@ -759,6 +759,13 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-rpm-build
     pel-rpm-spec-lint)
 
+  (pel-autoload "pel-ruby" for:
+    pel-ruby-mode
+    pel--ruby-ts-mode-fixer
+    pel-ruby-mode-used-text
+    pel-ruby-setup-info
+    pel-ruby-insert-shebang-line)
+
   (pel-autoload "pel-rust" for:
     pel-rust-mode
     pel--rust-ts-mode-fixer

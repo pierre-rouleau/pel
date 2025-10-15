@@ -2,6 +2,17 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- PEL now support both *ruby-mode* and Tree-Sitter based *ruby-ts-mode*.
+  - It automatically associates the tree-sitter based *ruby-ts-mode* with Ruby
+    files when *pel-use-ruby* customizable user-option is set to the new value
+    =with-tree-sitter=. If it is set to =t= it select the classic *ruby-mode*.
+  - User can switch anytime and can also use one or the other mode for a given
+    buffer: that has no influence on the mode selected for other Ruby buffers
+    opened later.
+    - Note: at this point the ruby-ts-mode lacks several features.
+  - The new *pel-ruby-setup-info* command, bound to ~<f12> ?~ in Ruby buffers,
+    provide information about the Ruby support setup and access to the
+    customization of several important user-options.
 - PEL now support both *lua-mode* and Tree-Sitter based *lua-ts-mode*.
   - It automatically associates the tree-sitter based *lua-ts-mode* with Lua
     files when *pel-use-lua* customizable user-option is set to the new value

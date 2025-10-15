@@ -10028,10 +10028,9 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 This *must* be activated to allow any other package for Lua.
 When activating it you can select between the following values:
 - t                : use `go-mode' provided by the go-mode.el external package.
-- with-tree-sitter : use `go-ts-mode' which is built-in Emacs.
-"
+- with-tree-sitter : use `go-ts-mode' which is built-in Emacs."
   :group 'pel-pkg-for-lua
-    :type '(choice
+  :type '(choice
           (const :tag "Do not use Lua" nil)
           (const :tag "Use classic mode: lua-mode" t)
           (const :tag "Use tree-sitter mode: lua-ts-mode" with-tree-sitter)))
@@ -10051,7 +10050,7 @@ PEL stores this value inside the following Lua modes user-options to
 ensure consistency across classic and tree-sitter modes for indentation
 control:
 
-- `lua-indent-offset',
+- `lua-indent-level',
 - `lua-ts-indent-offset'."
   :group 'pel-pkg-for-lua
   :type 'integer
@@ -11051,10 +11050,16 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 (defcustom pel-use-ruby nil
   "Control whether PEL supports the Ruby programming language.
 
+This *must* be activated to allow any other package for Ruby.
+When activating it you can select between the following values:
+- t                : use `go-mode' provided by the go-mode.el external package.
+- with-tree-sitter : use `go-ts-mode' which is built-in Emacs.
 When turned on the ruby-mode is associated with the PEL ``<f12>`` key."
   :group 'pel-pkg-for-ruby
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use Ruby" nil)
+          (const :tag "Use classic mode: ruby-mode" t)
+          (const :tag "Use tree-sitter mode: ruby-ts-mode" with-tree-sitter)))
 (pel-put 'pel-use-ruby :package-is :a-gate)
 
 (defcustom pel-ruby-activates-minor-modes nil
@@ -11064,7 +11069,19 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-ruby
   :type '(repeat function))
 
-(defcustom pel-ruby-tab-width 4
+(defcustom pel-ruby-indent-width 2
+  "Indentation width for ruby buffers.
+
+PEL stores this value inside the following Ruby modes user-options to
+ensure consistency across classic and tree-sitter modes for indentation
+control:
+
+- `ruby-indent-level' used by both modes."
+  :group 'pel-pkg-for-ruby
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-ruby-tab-width 2
   "Column width display rendering of hard tab for ruby buffers.
 
 PEL stores this in `tab-width' when opening ruby  buffers.

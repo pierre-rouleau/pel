@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 10:05:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 10:33:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -73,7 +73,7 @@ and required by `pel-use-lua'."
   "Remove `lua-ts-mode' entries from `auto-mode-alist'.
 It removes what entered when `lua-ts-mode' loads."
   ;; There are several file extensions for Lua and the lua-ts-mode
-  ;; adds several entries (entries for .lua, .zon).
+  ;; adds several entries (entries for .lua).
   ;; Delete them all from auto-mode-alist.
   (setq auto-mode-alist
         (rassq-delete-all 'lua-ts-mode auto-mode-alist)))

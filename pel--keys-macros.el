@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 08:55:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 10:31:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -204,6 +204,13 @@
                                (setq items (append items '(vundo))))
                              items))
 
+(defconst pel--ruby-groups (if pel-use-tree-sitter
+                               '(ruby
+                                 ruby-ts
+                                 electricity)
+                             '(ruby
+                              electricity)))
+
 (defconst pel--verilog-groups (let ((items (if (fboundp 'verilog-ts-mode)
                                                '(verilog-mode verilog-ts)
                                              '(verilog-mode))))
@@ -398,8 +405,7 @@
                                                               electricity
                                                               perl-repl
                                                               perl-live))
-    ([f11 32 ?U]     "pl-ruby"      pel-pkg-for-ruby         (ruby
-                                                              electricity))
+    ([f11 32 ?U]     "pl-ruby"      pel-pkg-for-ruby         ,pel--ruby-groups)
     ([f11 32 ?7]     "pl-seed7"     pel-pkg-for-seed7        seed7)
     ([f11 32 ?:]     "pl-smalltalk" pel-pkg-for-smalltalk    smalltalk-mode)
     ([f11 32 ?s]     "pl-swift"     pel-pkg-for-swift         swift)
@@ -800,6 +806,7 @@ stored inside the doc/pdf directory.")
     ("rpm"             [f11 32 27 ?R])
     ;; ("rpmspec"         [f11 32 27 ?S])
     ("ruby"            [f11 32 ?U])
+    ("ruby-ts"         [f11 32 ?U])
     ("rust"            [f11 32 ?r])
     ("rust-ts"         [f11 32 ?r])
     ;;
