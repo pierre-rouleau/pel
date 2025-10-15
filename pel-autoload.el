@@ -584,6 +584,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-lint-elisp-file)
 
   (pel-autoload-function "pel-lua" for:
+    pel-lua-mode
+    pel--lua-ts-mode-fixer
+    pel-lua-mode-used-text
+    pel-lua-setup-info
     pel-lua-insert-shebang-line)
 
   (pel-autoload "pel-make" for:

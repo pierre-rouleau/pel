@@ -4768,11 +4768,11 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-eval-after-load (elixir-mode elixir-ts-mode)
     (pel-config-major-mode elixir pel:for-elixir :same-for-ts
       (when (boundp 'elixir-basic-offset)
-        (setq elixir-basic-offset pel-elixir-indent-width))
+        (setq-local elixir-basic-offset pel-elixir-indent-width))
       (when (boundp 'elixir-match-label-offset)
-        (setq elixir-match-label-offset pel-elixir-indent-width))
+        (setq-local elixir-match-label-offset pel-elixir-indent-width))
       (when (boundp 'elixir-ts-indent-offset)
-        (setq elixir-ts-indent-offset pel-elixir-indent-width)))))
+        (setq-local elixir-ts-indent-offset pel-elixir-indent-width)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** LFE Programming Language Support
@@ -5348,7 +5348,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;;
   (pel-eval-after-load (rust-mode rust-ts-mode)
     (pel-config-major-mode rust pel:for-rust :same-for-ts
-      (setq indent-tabs-mode nil)
+      (setq-local indent-tabs-mode nil)
       (when (boundp 'rust-indent-offset)
         (setq-local tab-width rust-indent-offset))
       (setq-local indent-tabs-mode pel-rust-use-tabs)
@@ -5514,20 +5514,38 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   --------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC u`` :
 (when pel-use-lua
+  ;; 1- Install required packages for Lua
+  ;;    - Always install lua-mode when Lua is used.
   (pel-ensure-package lua-mode from: melpa)
+  ;;    - The lua-ts-mode is built-in Emacs.
 
+  ;; 2- Associate files with Lua mode selector
+  (add-to-list 'auto-mode-alist '("\\.lua\\'" . pel-lua-mode))
+
+  ;; 3- Speedbar support for Lua
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".lua"))
+
+  ;; 4- Buffer keymap for Lua
   (define-pel-global-prefix pel:for-lua  (kbd "<f11> SPC u"))
   (define-pel-global-prefix pel:lua-skel (kbd "<f11> SPC u <f12>"))
+  (define-key pel:for-lua "?" 'pel-lua-setup-info)
 
-  (pel-eval-after-load lua-mode
-    (pel-config-major-mode lua pel:for-lua :no-ts
+  ;; 5- Install optional packages for Lua
+
+  ;; 6- Activate Lua setup.
+  ;;    Schedule more configuration upon Lua feature loading
+  ;;
+  (pel-eval-after-load (lua-mode lua-ts-mode)
+    (pel-config-major-mode lua pel:for-lua :same-for-ts
       ;; activate skeletons
       (pel--install-generic-skel pel:lua-skel 'pel-pkg-for-lua "lua")
 
-      ;; 5) Set tab-width for the buffer as specified by the PEL user option
-      ;; for the major mode.
-      ;; (setq-local tab-width pel-tcl-tab-width)
-      )))
+      ;; Ensure consistency among indentation user-options
+      (when (boundp 'lua-indent-level)
+        (setq-local lua-indent-level pel-lua-indent-width))
+      (when (boundp 'lua-ts-indent-offset)
+        (setq-local lua-ts-indent-offset pel-lua-indent-width)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Sh, Unix Shell Programming Support
@@ -5740,9 +5758,9 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 (when pel-use-zig
   ;; 1- Install required packages for Zig
-  ;;    - Always install zig-mode when Elixir is used.
+  ;;    - Always install zig-mode when Zig is used.
   (pel-ensure-package zig-mode from: melpa)
-  ;;    - Install zig-ts-mode when Elixir and Tree-Sitter are supported
+  ;;    - Install zig-ts-mode when Zig and Tree-Sitter are supported
   (when pel-use-tree-sitter
     (pel-ensure-package zig-ts-mode from: melpa))
 
@@ -5760,17 +5778,17 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-pel-global-prefix pel:for-zig  (kbd "<f11> SPC M-z"))
   (define-key pel:for-zig "?" 'pel-zig-setup-info)
 
-  ;; 5- Install optional packages for Elixir
+  ;; 5- Install optional packages for Zig
 
   ;; 6- Activate Zig setup.
   ;;    Schedule more configuration upon Zig feature loading
   ;;
-  (pel-eval-after-load zig-mode
+  (pel-eval-after-load (zig-mode zig-ts-mode)
     (pel-config-major-mode zig pel:for-zig :same-for-ts
       (when (boundp 'zig-indent-offset)
-        (setq zig-indent-offset pel-zig-indent-width))
+        (setq-local zig-indent-offset pel-zig-indent-width))
       (when (boundp 'zig-ts-indent-offset)
-        (setq zig-ts-indent-offset pel-zig-indent-width)))))
+        (setq-local zig-ts-indent-offset pel-zig-indent-width)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** shell-mode Support

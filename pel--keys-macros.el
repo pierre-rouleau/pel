@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 07:57:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-15 08:55:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -131,6 +131,12 @@
                                  electricity))
   "List of groups related to Elixir.")
 
+;; Unfortunately the group used by lua-ts-mode is not lua but lua-ts
+(defconst pel--lua-groups (if pel-use-tree-sitter
+                                 '(lua
+                                   lua-ts)
+                            '(lua)))
+
 (defconst pel--highligh-groups (let ((items '(auto-highlight-symbol
                                               electricity
                                               iedit
@@ -207,11 +213,13 @@
                                   (setq items (append items '(veri-kompass))))
                                 items))
 
-;; Unfortunately the group used by elixir-ts-mode is not elixir but `elixir-ts'
+;; Unfortunately the group used by zig-ts-mode is not zig but zig-ts
 (defconst pel--zig-groups (if pel-use-tree-sitter
                                  '(zig-mode
                                    zig-ts)
                             '(zig-mode)))
+
+
 
 ;; TODO: add logic in the processing of that table to allow the first element
 ;;       of a row to be a list of key sequences.
@@ -340,6 +348,7 @@
                                                                  go-dot-mod
                                                                  electricity))
     ([f11 32 ?h]     "pl-haskell"       pel-pkg-for-haskell     haskell)
+    ([f11 32 ?u]     "pl-lua"           pel-pkg-for-lua         ,pel--lua-groups)
     ([f11 32 ?T]     "pl-janet"         pel-pkg-for-janet       (janet
                                                                  ijanet
                                                                  inf-janet))
@@ -764,6 +773,8 @@ stored inside the doc/pdf directory.")
     ("gleam"           [f11 32 27 ?G])
     ("gleam-ts"        [f11 32 27 ?G])
     ("haskell"         [f11 32 ?h])
+    ("lua"             [f11 32 ?u])
+    ("lua-ts"          [f11 32 ?u])
     ("vhdl"            [f11 32 ?H])
     ("hy"              [f11 32 8])
     ("java"            [f11 32 ?J])
@@ -1059,6 +1070,7 @@ There should be no key binding!" keyseq))
     ("js"               . "pl-javascript")
     ("julia"            . "pl-julia")
     ("lfe"              . "pl-lfe")
+    ("lua"              . "pl-lua")
     ("m4"               . "pl-m4")
     ("make"             . "pl-make")
     ("m2"               . "pl-modula2")

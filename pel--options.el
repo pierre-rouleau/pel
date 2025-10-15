@@ -10023,10 +10023,18 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :link `(url-link :tag "Lua PDF" ,(pel-pdf-file-url "pl-lua")))
 
 (defcustom pel-use-lua  nil
-  "Control whether PEL supports Lua development."
+  "Control whether PEL supports Lua development.
+
+This *must* be activated to allow any other package for Lua.
+When activating it you can select between the following values:
+- t                : use `go-mode' provided by the go-mode.el external package.
+- with-tree-sitter : use `go-ts-mode' which is built-in Emacs.
+"
   :group 'pel-pkg-for-lua
-  :type 'boolean
-  :safe #'booleanp)
+    :type '(choice
+          (const :tag "Do not use Lua" nil)
+          (const :tag "Use classic mode: lua-mode" t)
+          (const :tag "Use tree-sitter mode: lua-ts-mode" with-tree-sitter)))
 (pel-put 'pel-use-lua :package-is '(quote ((elpa . lua-mode))))
 
 (defcustom pel-lua-activates-minor-modes nil
@@ -10036,7 +10044,20 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-lua
   :type '(repeat function))
 
-(defcustom pel-lua-tab-width 4
+(defcustom pel-lua-indent-width 3
+  "Indentation width for lua buffers.
+
+PEL stores this value inside the following Lua modes user-options to
+ensure consistency across classic and tree-sitter modes for indentation
+control:
+
+- `lua-indent-offset',
+- `lua-ts-indent-offset'."
+  :group 'pel-pkg-for-lua
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-lua-tab-width 3
   "Column width display rendering of hard tab for lua buffers.
 
 PEL stores this in `tab-width' when opening lua  buffers.
