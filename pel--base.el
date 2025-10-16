@@ -2299,6 +2299,13 @@ MODE must be a symbol that does NOT end with -mode."
     (when found-path
       (file-truename (car-safe found-path)))))
 
+(defun pel-file-md5 (filename)
+  "Return the MD5 hash digest of FILENAME.
+FILENAME is the file path."
+  (with-temp-buffer
+    (insert-file-contents filename)
+    (secure-hash 'md5 (current-buffer))))
+
 (defun pel-ts-language-grammar-status-for (mode &optional line-sep)
   "Return a string describing Tree-Sitter language grammar state for MODE.
 
@@ -2308,17 +2315,30 @@ following that line separator."
   (if (and (pel-treesit-ready-p mode)
            (fboundp 'treesit-language-abi-version))
       (let ((lines nil))
-        (push (format "Tree-Sitter language grammar for %s uses: ABI version %d."
-                      mode
-                      (treesit-language-abi-version mode))
+        (push (format
+               "Tree-Sitter language grammar for %s uses: ABI version %d."
+               mode
+               (treesit-language-abi-version mode))
               lines)
         (when line-sep
-          (push line-sep lines)
-          (push (format "Tree-Sitter language grammar file for %s: %s"
-                        mode
-                        (or (pel-ts-language-grammar-filename-for mode)
-                            "not found!"))
-                lines))
+          (let ((grammar-fname (pel-ts-language-grammar-filename-for mode))
+                (attrs nil))
+            (push line-sep lines)
+            (push (format "Tree-Sitter language grammar file for %s: %s"
+                          mode
+                          (or grammar-fname "not found!"))
+                  lines)
+            (when grammar-fname
+              (setq attrs (file-attributes grammar-fname 'string))
+              (push (format
+                     "
+\t\t\t\t\t\tfile size: %s bytes, modified: %s, modes: %s
+\t\t\t\t\t\t      md5: %s"
+                     (file-attribute-size attrs)
+                     (format-time-string "%Y-%m-%d %H:%M:%S" (file-attribute-modification-time attrs))
+                     (file-attribute-modes attrs)
+                     (pel-file-md5 grammar-fname))
+                    lines))))
         (mapconcat #'identity (reverse lines)))
     (format "Tree-Sitter language grammar is NOT available for %s." mode)))
 
