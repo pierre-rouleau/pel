@@ -2296,7 +2296,8 @@ MODE must be a symbol that does NOT end with -mode."
         (setq found-path (directory-files-recursively rootdir fname
                                                       nil nil
                                                       :follow-symlinks))))
-    (car-safe found-path)))
+    (when found-path
+      (file-truename (car-safe found-path)))))
 
 (defun pel-ts-language-grammar-status-for (mode &optional line-sep)
   "Return a string describing Tree-Sitter language grammar state for MODE.
