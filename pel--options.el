@@ -7471,6 +7471,22 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-go
   :type '(repeat function))
 
+(defcustom pel-go-dot-mod-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for go.mod buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-go
+  :type '(repeat function))
+
+(defcustom pel-go-mod-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for go.mod buffers.
+Same as `pel-go-dot-mod-activates-minor-modes' but when Tree-Sitter aware
+`go-mod-ts-mode' is used.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-go
+  :type '(repeat function))
+
 (defcustom pel-go-tab-width 8
   "Hard-tab display width used for Go source code.
 
@@ -9803,33 +9819,16 @@ Do not enter lambda expressions."
 (defcustom pel-use-gleam nil
   "Control whether PEL supports Gleam development.
 Gleam is a functional static-type checking language for the BEAM.
-Activating this automatically activates `pel-use-gleam-mode'."
+Currently Gleam is only supported by `gleam-ts-mode', a Tree-Sitter based
+mode.  There is no classic mode.  There was but the Gleam team dropped it
+and does not plan to develop it.  Therefore, PEL only support `gleam-ts-mode'."
   :group 'pel-pkg-for-gleam
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-gleam :package-is :a-gate)
-
-(defcustom pel-use-gleam-mode nil
-  "Control whether PEL supports the gleam-mode package.
-
-PEL supports both `gleam-mode' and `gleam-ts-mode' with the user-options
-in this user-option group when the `pel-use-gleam-mode' user option is
-turned on.  The `gleam-mode' was the original code from this package which was
-then deprecated and replaced by `gleam-ts-mode'. They can co-exist for
-debugging purpose (by installing both) but PEL will select `gleam-ts-mode'.
-You can manually change the mode by executing `gleam-mode'.
-
-Note that tree-sitter support is now required for this and PEL only
-supports tree-sitter for Emacs 30.1 and later.  Therefore support for Gleam is
-only available with PEL for Emacs 30.1 and later."
-  :link '(url-link :tag "gleam-mode @ Github"
+  :link '(url-link :tag "gleam-ts-mode @ Github"
                    "https://github.com/gleam-lang/gleam-mode")
-  :group 'pel-pkg-for-gleam
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-gleam-mode :package-is :in-utils)
-(pel-put 'pel-use-gleam-mode :requires 'pel-use-gleam)
-(pel-put 'pel-use-gleam-mode :requires 'pel-use-tree-sitter)
+(pel-put 'pel-use-gleam :package-is '(quote ((utils . gleam-ts-mode))))
+(pel-put 'pel-use-gleam :requires 'pel-use-tree-sitter)
 
 (defcustom pel-gleam-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for GLEAM buffers.

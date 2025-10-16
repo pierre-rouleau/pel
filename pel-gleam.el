@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October  6 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 09:55:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 13:34:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -62,11 +62,17 @@ customized value of the `gleam-ts-format-on-save' user option."
      "PEL setup for Gleam programming language"
      (lambda ()
        "Print Gleam setup"
-       (insert "\
-Note: Gleam is currently only supported by a Tree-Sitter aware mode.")
+       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (insert "
+- Note: Gleam is currently only supported by a Tree-Sitter aware mode.")
+       (pel-insert-symbol-content-line 'major-mode nil
+                                       "major mode currently used.")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for
                                    'gleam "\n- "))))
+       (insert "\n\n")
+       ;;
+       (insert (propertize "* Code Formatting Control:" 'face 'bold))
        (pel-insert-symbol-content-line 'gleam-ts-format-on-save
                                        nil
                                        (lambda (v)
@@ -74,6 +80,9 @@ Note: Gleam is currently only supported by a Tree-Sitter aware mode.")
                                           v
                                           "yes, format on save."
                                           "no, save buffer unchanged.")))
+       (insert "\n\n")
+       ;;
+       (insert (propertize "* Indentation Control:" 'face 'bold))
        (pel-insert-symbol-content-line 'gleam-ts-indent-offset)
        (pel-insert-symbol-content-line 'tab-width))))
   (unless append :clear-buffer)

@@ -3414,10 +3414,8 @@ d-mode not added to ac-modes!"
     ;; [:todo 2025-05-08, by Pierre Rouleau: automate the activation of
     ;;         goflymake Go program by adjusting the GOPATH when flycheck
     ;;         with goflymake support is requested.]
-    (when pel-use-goflymake
-      (when (boundp 'go-mode-map)
-        (define-key go-mode-map (kbd "<f11> !!") 'pel-go-toggle-syntax-checker)))
-    (pel-config-major-mode go pel:for-go :same-for-ts
+    (defun pel--go-mode-config ()
+      "Setup the Go specific major mode."
       ;; ensure gofmt is executed before saving file if
       ;; configured to do so
       (when pel-go-run-gofmt-on-buffer-save
@@ -3434,7 +3432,18 @@ d-mode not added to ac-modes!"
          ((eq pel-use-goflymake 'with-flymake)  (pel-require 'go-flymake))
          (t
           (error "Unsupported pel-use-goflymake value: %S"
-                 pel-use-goflymake))))))
+                 pel-use-goflymake)))))
+    (declare-function pel--go-mode-config "pel_keys")
+
+    (when pel-use-goflymake
+      (when (boundp 'go-mode-map)
+        (define-key go-mode-map (kbd "<f11> !!") 'pel-go-toggle-syntax-checker)))
+    (pel-config-major-mode go pel:for-go :same-for-ts
+      (pel--go-mode-config))
+    (pel-config-major-mode go-dot-mod pel:for-go :no-ts
+      (pel--go-mode-config))
+    (pel-config-major-mode go-mod pel:for-go :ts-only
+      (pel--go-mode-config)))
 
   ;; [:todo 2025-10-12, by Pierre Rouleau: Add support for the Go packages]
   )
@@ -4821,35 +4830,38 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
    (function pel--setup-for-inferior-lfe)
    'inferior-lfe-mode 'inferior-lfe-mode-hook))
 ;; ---------------------------------------------------------------------------
+;;** Gleam Programming Language Support
+;;   ----------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-G `` : Gleam
-;; Programming Language Family: BEAM
 (when pel-use-gleam
-  (when pel-use-gleam-mode
-    ;; Originally Gleam Emacs support was provided by `gleam-mode'.
-    ;; The developers eventually dropped it for a new `gleam-ts-mode'.
-    ;; PEL was supporting the first one, and it now supports the other.
-    ;; All PEL defcustom use gleam-mode and will remain that way, however, PEL
-    ;; will activate `gleam-ts-mode' for gleam buffers. If you want to use
-    ;; `gleam-mode' make sure the old gleam-mode.el is present in the utils
-    ;; directory and execute `gleam-mode' manually.
-    ;; All user-options identified in the `pel-pkg-for-gleam' will be applied
-    ;; to both `gleam-mode' and `gleam-ts-mode'
+  ;; 1- Install required packages for Gleam
+  ;;    - Always install `gleam-ts-mode' when Gleam is used.
+  ;;      Originally Gleam Emacs support was provided by `gleam-mode'.
+  ;;      The developers eventually dropped it for a new `gleam-ts-mode'.
+  ;;      PEL was only supporting the first one, and it now only supports the other.
+  (pel-install-github-files "gleam-lang/gleam-mode/master"
+                            "gleam-ts-mode.el")
+  (pel-autoload-file gleam-ts-mode for: gleam-ts-mode)
 
-    (pel-install-github-files "gleam-lang/gleam-mode/master"
-                              "gleam-ts-mode.el")
-    (pel-autoload-file gleam-ts-mode for: gleam-ts-mode)
-    (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-ts-mode))
-    (when pel-use-speedbar
-      (pel-add-speedbar-extension ".gleam"))
+  ;; 2- Associate files with Gleam mode selector
+  (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-ts-mode))
 
-    (define-pel-global-prefix pel:for-gleam (kbd "<f11> SPC M-G"))
-    (define-key pel:for-gleam "?"         'pel-gleam-setup-info)
-    (define-key pel:for-gleam (kbd "M-s") 'pel-gleam-toggle-format-on-buffer-save)
-    (define-key pel:for-gleam (kbd "M-t") 'pel-set-tab-width)
+  ;; 3- Speedbar support for Gleam
+  (when pel-use-speedbar (pel-add-speedbar-extension ".gleam"))
 
-    ;; Activate Gleam setup for both `gleam-mode' and `gleam-ts-mode' using
-    ;; the same user-options identified in the `pel-pkg-for-gleam' group.
-    (pel-config-major-mode gleam pel:for-gleam :independent-ts)))
+  ;; 4- Buffer keymap for Gleam
+  (define-pel-global-prefix pel:for-gleam (kbd "<f11> SPC M-G"))
+  (define-key pel:for-gleam "?"         'pel-gleam-setup-info)
+  (define-key pel:for-gleam (kbd "M-s") 'pel-gleam-toggle-format-on-buffer-save)
+  (define-key pel:for-gleam (kbd "M-t") 'pel-set-tab-width)
+
+  ;; 5- Install optional packages for Gleam
+
+  ;; 6- Activate Gleam setup.
+  ;;    Schedule more configuration upon Gleam feature loading
+  ;;
+  (pel-eval-after-load gleam-ts-mode
+    (pel-config-major-mode gleam pel:for-gleam :ts-only)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Hamler Programming Language Support
@@ -5821,7 +5833,6 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;;** Zig  Programming Language Support
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-z`` :
-;; Experimental 🚧
 
 (when pel-use-zig
   ;; 1- Install required packages for Zig

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 10:31:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 13:59:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1829,6 +1829,8 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     ;; indentation to 2 spaces but PEL still provides the user-options for
     ;; tab-width and hard tab control for other editing purposes.
     go
+    go-dot-mod
+    go-mod                              ; for go-mod-ts-mode
     intel-hex
     janet
     lfe inferior-lfe
@@ -1875,6 +1877,8 @@ no <f12> and <M-f12> PEL key prefixes are created for the major mode.
 The TS-OPTION control how tree-sitter mode is supported.
 This can only be one of the following:
 - :no-ts          : no special tree-sitter support
+- :ts-only        : support for tree-sitter specific mode only is requested,
+                    but no support for the classic mode
 - :same-for-ts    : when the tree-sitter-based mode derives from the normal
                     mode and PEL must support both.
 - :independent-ts : when the ts-sitter mode exists but does not derive from
@@ -1884,7 +1888,7 @@ The BODY is a set of forms to execute when the major mode hook
 executes, at the moment when a buffer with that major mode opens
 and after the local variables have been loaded."
   (declare (indent 3))
-  (unless (memq ts-option '(:no-ts :same-for-ts :independent-ts))
+  (unless (memq ts-option '(:no-ts :ts-only :same-for-ts :independent-ts))
     (display-warning 'Invalid-PEL-code
                      (format
                       "Invalid (pel-config-major-mode %S %S %S)"
@@ -1966,25 +1970,26 @@ Function created by the `pel-config-major-mode' macro."
     ;;`pel-<mode>-activates-minor-modes' user-option.
     (pel-append-to newbody
       `((pel-turn-on-local-minor-modes-in
-         (quote ,gn-minor-modes))))
+         (quote ,gn-minor-modes))
+        (pel-check-minor-modes-in ,gn-minor-modes)))
 
     ;; 4 - Prepare the code that is invoked after the newbody
     (pel-append-to hook-body
-      `(
-        (declare-function ,gn-fct2 ,gn-fname)
-        ;;
+      `((declare-function ,gn-fct2 ,gn-fname)
         (defun ,gn-fct1 ()
           ,gn-docstring1
           (add-hook 'hack-local-variables-hook
                     (function ,gn-fct2) nil t))
-        (declare-function ,gn-fct1 ,gn-fname)
-        ;;
-        (pel-check-minor-modes-in ,gn-minor-modes)
-        (pel--mode-hook-maybe-call (function ,gn-fct1)
-                                   (quote ,gn-mode-name)
-                                   (quote ,gn-mode-hook))))
-    ;; 4.1 - Append ts-mode hook if necessary
-    (when (memq ts-option '(:same-for-ts :independent-ts))
+        (declare-function ,gn-fct1 ,gn-fname)))
+
+    ;; 4.1 - Append support for classic mode if necessary
+    (unless (eq ts-option :ts-only)
+      (pel-append-to hook-body
+        `((pel--mode-hook-maybe-call (function ,gn-fct1)
+                                     (quote ,gn-mode-name)
+                                     (quote ,gn-mode-hook)))))
+    ;; 4.1 - Append support for ts-mode if necessary
+    (when (memq ts-option '(:ts-only :same-for-ts :independent-ts))
       (pel-append-to hook-body
         `((pel--mode-hook-maybe-call (function ,gn-fct1)
                                      (quote ,gn-ts-mode-name)
