@@ -176,6 +176,7 @@
 ;; - `pel-major-ts-mode-supported-p'
 ;; - `pel-ts-language-grammar-status-for'
 ;;   - `pel-treesit-ready-p'
+;;   - `pel-ts-language-grammar-filename-for'
 
 ;; Mode argument interpretation
 ;; -  `pel-action-for'
@@ -2280,15 +2281,44 @@ of emitting a warning."
                        "Tree-Sitter is not supported in this Emacs."))
     nil))
 
-(defun pel-ts-language-grammar-status-for (mode)
-  "Return a string describing Tree-Sitter language grammar state for MODE.
+(defun pel-ts-language-grammar-filename-for (mode)
+  "Return the full path of the Tree-Sitter grammar file for MODE.
 
 MODE must be a symbol that does NOT end with -mode."
+  (let* ((ext (cond
+               (pel-system-is-macos-p "dylib")
+               (pel-system-is-windows-p "dll")
+               (t "so")))
+         (fname (format "libtree-sitter-%s.%s" mode ext))
+         (found-path nil))
+    (dolist (rootdir treesit-extra-load-path)
+      (unless found-path
+        (setq found-path (directory-files-recursively rootdir fname
+                                                      nil nil
+                                                      :follow-symlinks))))
+    (car-safe found-path)))
+
+(defun pel-ts-language-grammar-status-for (mode &optional line-sep)
+  "Return a string describing Tree-Sitter language grammar state for MODE.
+
+MODE must be a symbol that does NOT end with -mode.
+If a LINE-SEP is specified, print the name of the tree-sitter grammar file
+following that line separator."
   (if (and (pel-treesit-ready-p mode)
            (fboundp 'treesit-language-abi-version))
-      (format "Tree-Sitter language grammar for %s uses: ABI version %d."
-              mode
-              (treesit-language-abi-version mode))
+      (let ((lines nil))
+        (push (format "Tree-Sitter language grammar for %s uses: ABI version %d."
+                      mode
+                      (treesit-language-abi-version mode))
+              lines)
+        (when line-sep
+          (push line-sep lines)
+          (push (format "Tree-Sitter language grammar file for %s: %s"
+                        mode
+                        (or (pel-ts-language-grammar-filename-for mode)
+                            "not found!"))
+                lines))
+        (mapconcat #'identity (reverse lines)))
     (format "Tree-Sitter language grammar is NOT available for %s." mode)))
 
 ;; ---------------------------------------------------------------------------

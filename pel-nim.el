@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 15:35:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 09:58:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -53,7 +53,8 @@
        (insert (propertize "* Major Mode Control:" 'face 'bold))
        (pel-insert-symbol-content-line 'major-mode nil
                                        "major mode currently used.")
-       (insert "\nThere is no known Tree-Sitter based Emacs major mode for Nim yet.")
+       (insert "
+There is no known Tree-Sitter based Emacs major mode for Nim yet.")
        (insert "\n\n")
        ;;
        (insert (propertize "* Indentation Control:" 'face 'bold))

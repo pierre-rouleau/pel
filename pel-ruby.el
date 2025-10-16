@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 08:31:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 09:58:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -106,7 +106,8 @@ USE-RUBY should be set to `pel-use-ruby' value used in current buffer."
        (pel-insert-symbol-content-line 'major-mode nil
                                        "major mode currently used.")
        (when pel-use-tree-sitter
-         (insert (format "\n- %s" (pel-ts-language-grammar-status-for 'ruby))))
+         (insert (format "\n- %s" (pel-ts-language-grammar-status-for
+                                   'ruby "\n- "))))
        (pel-insert-symbol-content-line 'pel-use-ruby nil
                                        (function pel-ruby-mode-used-text))
        (insert "\n\n")

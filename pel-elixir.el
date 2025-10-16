@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 08:33:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 09:56:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -107,7 +107,8 @@ USE-ELIXIR should be set to `pel-use-elixir' value used in current buffer."
        (pel-insert-symbol-content-line 'major-mode nil
                                        "major mode currently used.")
        (when pel-use-tree-sitter
-         (insert (format "\n- %s" (pel-ts-language-grammar-status-for 'elixir))))
+         (insert (format "\n- %s" (pel-ts-language-grammar-status-for
+                                   'elixir "\n- "))))
        (pel-insert-symbol-content-line 'pel-use-elixir nil
                                        (function pel-elixir-mode-used-text))
        (insert "\n\n")

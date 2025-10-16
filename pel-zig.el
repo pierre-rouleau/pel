@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 08:43:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 09:55:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -106,7 +106,8 @@ USE-ZIG should be set to `pel-use-zig' value used in current buffer."
        (pel-insert-symbol-content-line 'major-mode nil
                                        "major mode currently used.")
        (when pel-use-tree-sitter
-         (insert (format "\n- %s" (pel-ts-language-grammar-status-for 'zig))))
+         (insert (format "\n- %s" (pel-ts-language-grammar-status-for
+                                   'zig "\n- "))))
        (pel-insert-symbol-content-line 'pel-use-zig nil
                                        (function pel-zig-mode-used-text))
        (insert "\n\n")

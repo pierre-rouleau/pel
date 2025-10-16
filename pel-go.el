@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 08:31:50 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 09:56:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -162,9 +162,11 @@ group customize buffer."
      (lambda ()
        "Print Go setup info."
        (insert (propertize "* Major Mode Control:" 'face 'bold))
-       (pel-insert-symbol-content-line 'major-mode nil "major mode currently used.")
+       (pel-insert-symbol-content-line 'major-mode nil
+                                       "major mode currently used.")
        (when pel-use-tree-sitter
-         (insert (format "\n- %s" (pel-ts-language-grammar-status-for 'go))))
+         (insert (format "\n- %s" (pel-ts-language-grammar-status-for
+                                   'go "\n- "))))
        (pel-insert-symbol-content-line 'pel-use-go nil
                                        (function pel-go-mode-used-text))
        (insert "\n\n")

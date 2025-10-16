@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October  6 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-14 12:34:06 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 09:55:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -66,7 +66,7 @@ customized value of the `gleam-ts-format-on-save' user option."
 Note: Gleam is currently only supported by a Tree-Sitter aware mode.")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for
-                                   'gleam))))
+                                   'gleam "\n- "))))
        (pel-insert-symbol-content-line 'gleam-ts-format-on-save
                                        nil
                                        (lambda (v)
