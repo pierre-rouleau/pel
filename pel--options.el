@@ -11574,6 +11574,10 @@ When activating it you can select between the following values:
 - t                : use `go-mode' provided by the go-mode.el external package.
 - with-tree-sitter : use `go-ts-mode' which is built-in Emacs."
   :group 'pel-pkg-for-zig
+  :link '(url-link :tag "zig-mode @ GitHub"
+                   "https://github.com/ziglang/zig-mode")
+  :link '(url-link :tag "zig-ts-mode @ Codeberg"
+                   "https://codeberg.org/meow_king/zig-ts-mode")
   :type '(choice
           (const :tag "Do not use Zig" nil)
           (const :tag "Use classic mode: zig-mode" t)
