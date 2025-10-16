@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 09:57:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 14:28:11 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -119,8 +119,8 @@ USE-LUA should be set to `pel-use-lua' value used in current buffer."
      (lambda ()
        "Print Lua setup info."
        (insert (propertize "* Major Mode Control:" 'face 'bold))
-       (pel-insert-symbol-content-line 'major-mode nil
-                                       "major mode currently used.")
+       (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
+                                  "major mode currently used")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for
                                    'lua "\n- "))))

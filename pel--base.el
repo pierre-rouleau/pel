@@ -3083,8 +3083,9 @@ Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
 
 
 
-(defun pel-insert-symbol-content (symbol
-                                  &optional buffer on-same-line no-button description)
+(defun pel-insert-symbol-content (symbol &optional
+                                         buffer on-same-line
+                                         no-button description)
   "Insert the name followed by the content of the specified SYMBOL.
 
 Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil.
@@ -3111,7 +3112,9 @@ By default:
                 (or buffer pel-insert-symbol-content-context-buffer)))
         (name  (or description (symbol-name symbol))))
     (insert "\n- ")
-    (pel-insert-symbol symbol (or no-button description))
+    (if description
+        (insert description)
+      (pel-insert-symbol symbol (or no-button description)))
     (insert (format "%s:%s%S"
                     (make-string (max 0 (- 40 (length name))) ?\s)
                     (if on-same-line " " "\n")

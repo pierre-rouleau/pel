@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 09:59:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 14:29:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -51,8 +51,8 @@
      (lambda ()
        "Print Tcl setup info."
        (insert (propertize "* Major Mode Control:" 'face 'bold))
-       (pel-insert-symbol-content-line 'major-mode nil
-                                       "major mode currently used.")
+       (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
+                                  "major mode currently used")
        (insert "
 There is no known Tree-Sitter based Emacs major mode for Tcl yet.")
        (insert "\n\n")

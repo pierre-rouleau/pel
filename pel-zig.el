@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 09:55:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 14:28:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -103,8 +103,8 @@ USE-ZIG should be set to `pel-use-zig' value used in current buffer."
      (lambda ()
        "Print Zig setup info."
        (insert (propertize "* Major Mode Control:" 'face 'bold))
-       (pel-insert-symbol-content-line 'major-mode nil
-                                       "major mode currently used.")
+       (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
+                                  "major mode currently used")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for
                                    'zig "\n- "))))
