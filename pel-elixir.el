@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 15:25:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 08:33:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -44,6 +44,7 @@
   "Major mode dispatcher for editing Elixir source text.
 Uses `elixir-mode' or `elixir-ts-mode' depending on what is available
 and required by `pel-use-elixir'."
+  (interactive)
   (cond
    ;; When `pel-use-elixir` is t, PEL has downloaded and installed
    ;; elixir-mode.el that ;; provides the `elixir-mode'.  Use that.

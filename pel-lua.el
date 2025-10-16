@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 17:20:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 08:30:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -44,6 +44,7 @@
   "Major mode dispatcher for editing Lua source text.
 Uses `lua-mode' or `lua-ts-mode' depending on what is available
 and required by `pel-use-lua'."
+  (interactive)
   (cond
    ;; When `pel-use-lua` is t, PEL has downloaded and installed lua-mode.el
    ;; that provides the `lua-mode'.  Use that.

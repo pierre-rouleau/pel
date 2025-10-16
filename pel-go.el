@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 15:32:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 08:31:50 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -43,6 +43,7 @@
   "Major mode dispatcher for editing Go source text.
 Uses `go-mode' or `go-ts-mode' depending on what is available
 and required by `pel-use-go'."
+  (interactive)
   (cond
    ;; When `pel-use-go` is t, PEL has downloaded and installed go-mode.el that
    ;; provides the `go-mode'.  Use that.

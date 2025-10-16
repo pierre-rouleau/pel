@@ -5832,9 +5832,8 @@ to identify a Verilog file.  Anything else is assumed being V."
     (pel-ensure-package zig-ts-mode from: melpa))
 
   ;; 2- Associate files with Zig mode selector
-  (add-to-list 'auto-mode-alist
-               (cons (regexp-opt '(".zig'" ".zon'" ))
-                     'pel-zig-mode))
+  (add-to-list 'auto-mode-alist '("\\.zig\\'" . pel-zig-mode))
+  (add-to-list 'auto-mode-alist '("\\.zon\\'" . pel-zig-mode))
 
   ;; 3- Speedbar support for Zig
   (when pel-use-speedbar

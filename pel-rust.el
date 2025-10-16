@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 12 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 15:24:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 08:32:11 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,6 +42,7 @@
   "Major mode dispatcher for editing Rust source text.
 Uses `rust-mode' or `rust-ts-mode' depending on what is available
 and required by `pel-use-rust'."
+  (interactive)
   (cond
    ;; When `pel-use-rust` is t, PEL has downloaded and installed rust-mode.el that
    ;; provides the `rust-mode'.  Use that.

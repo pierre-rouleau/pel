@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-15 11:37:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 08:31:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -44,6 +44,7 @@
   "Major mode dispatcher for editing Ruby source text.
 Uses `ruby-mode' or `ruby-ts-mode' depending on what is available
 and required by `pel-use-ruby'."
+  (interactive)
   (cond
    ;; When `pel-use-ruby` is t, PEL uses Emacs built-in `ruby-mode'.
    ;; Use that.
