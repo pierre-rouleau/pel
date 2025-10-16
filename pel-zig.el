@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 14:28:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-16 15:38:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -139,7 +139,7 @@ USE-ZIG should be set to `pel-use-zig' value used in current buffer."
 ")
        (pel-insert-symbol-content-line 'pel-zig-indent-width)
        (pel-insert-symbol-content-line 'zig-indent-offset)
-       (pel-insert-symbol-content-line 'zig-ts-indent-offset)
+       (pel-insert-symbol-content-line 'zig-ts-mode-indent-offset)
        (pel-insert-symbol-content-line 'pel-zig-tab-width)
        (pel-insert-symbol-content-line 'tab-width))
      (unless append :clear-buffer)

@@ -5864,8 +5864,8 @@ to identify a Verilog file.  Anything else is assumed being V."
     (pel-config-major-mode zig pel:for-zig :same-for-ts
       (when (boundp 'zig-indent-offset)
         (setq-local zig-indent-offset pel-zig-indent-width))
-      (when (boundp 'zig-ts-indent-offset)
-        (setq-local zig-ts-indent-offset pel-zig-indent-width)))))
+      (when (boundp 'zig-ts-mode-indent-offset)
+        (setq-local zig-ts-mode-indent-offset pel-zig-indent-width)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** shell-mode Support
