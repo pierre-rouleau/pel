@@ -4285,14 +4285,19 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (pel-config-major-mode scsh pel:for-scsh :no-ts)))
 
 ;; ---------------------------------------------------------------------------
-;;** Erlang Programming Language Support
-;;   -----------------------------------
+;;** Erlang Programming Language Support - BEAM Language Family
+;;   ----------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` :
-;; Programming Language Family: BEAM
 (when pel-use-erlang
-  ;; Installation control
+  ;; 1- Install required packages for Erlang
+  ;;    - Always install erlang-mode from erlang.el when Erlang is used.
   (pel-ensure-package erlang from: melpa)
-  (pel-autoload-file erlang for: erlang-mode)
+  ;; (pel-autoload-file erlang for: erlang-mode)
+  ;;    - Install erlang-ts-mode when Erlang and Tree-Sitter are supported
+  (when pel-use-tree-sitter
+    (pel-ensure-package erlang-ts from: melpa))
+
+  ;; 1.1- Install optional packages for Erlang
   (when pel-use-erlstack-mode
     (pel-ensure-package erlstack-mode from: melpa))
   (when pel-use-ivy-erlang-complete
@@ -4307,6 +4312,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (pel-ensure-package lsp-mode from: melpa)
     (pel-ensure-package lsp-ui from: melpa))
 
+  ;; 2- Associate files with Erlang mode selector
   ;; Invocation control
   ;; - Identify Erlang files:
   ;;   The ~/.erlang is the Erlang configuration file: allow the file
@@ -4315,7 +4321,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   ;;   allow opening the file in fundamental mode and then choose to activate
   ;;   the erlang mode, just in case we want to modify it without it having
   ;;   an impact on the Erlang process we're trying to modify.
-  (pel-set-auto-mode erlang-mode for:
+  (pel-set-auto-mode pel-erlang-mode for:
                      "\\.erl?\\'"
                      "\\.hrl?\\'"
                      "[\\/]\\.erlang\\'"
@@ -4329,26 +4335,37 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                      "\\.app.src?\\'"
                      "\\Emakefile")
 
-  ;; - Add Speedbar support (no done by erlang.el)
+  ;; 3- Speedbar support for Erlang (not done by erlang.el)
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".erl"
                                   ".hrl"
                                   ".escript")))
 
-  ;; Bind keys that can be used *before* the erlang.el file is loaded
-  ;; and that essentially start the use of Erlang withing Emacs.
-  ;; The remaining keys will be mapped after erlang.el is loaded.
-  ;; Some of those are only providing the PEL F1, F2 and F3 keys.
+  ;; 4- Buffer keymap for Erlang
+  ;;    Bind keys that can be used *before* the erlang.el file is loaded
+  ;;    and that essentially start the use of Erlang withing Emacs.
+  ;;    The remaining keys will be mapped after erlang.el is loaded.
+  ;;    Some of those are only providing the PEL F1, F2 and F3 keys.
   (define-pel-global-prefix pel:for-erlang        (kbd "<f11> SPC e"))
+  (define-pel-global-prefix pel:erlang-info       (kbd "<f11> SPC e ?"))
   (define-pel-global-prefix pel:erlang-skel       (kbd "<f11> SPC e <f12>"))
   (define-pel-global-prefix pel:erlang-lsp        (kbd "<f11> SPC e L"))
   (define-pel-global-prefix pel:erlang-lsp-window (kbd "<f11> SPC e w"))
-  (define-key pel:for-erlang      "z"         'erlang-shell)
-  (define-key pel:for-erlang      "?"         'pel-show-erlang-version)
+  (define-key pel:for-erlang  "z"   'erlang-shell)
+  (define-key pel:erlang-info "?"   'pel-erlang-setup-info)
+  (define-key pel:erlang-info "v"   'pel-show-erlang-version)
+
+  ;; 5- Install optional packages for Erlang
+
+  ;; 6- Activate Erlang setup.
+  ;;    Schedule more configuration upon Erlang feature loading
+  ;;
 
   ;; Augment the skeletons defined inside erlang.el.
   ;; Do this once - right after erlang.el file is loaded and
   ;; before the erlang-mode executes.
+  ;; [:todo 2025-10-16, by Pierre Rouleau: Should this not be done in the hook
+  ;;                                       below, in the pel-eval-after-load erlang?]
   (declare-function pel--erlang-mode-setup "pel-skels-erlang")
   (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
 
@@ -4372,7 +4389,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (declare-function pel-erlang-setup-erlang-man-dir-root "pel-erlang")
   (pel-erlang-setup-erlang-man-dir-root)
 
-  (pel-eval-after-load erlang
+  (pel-eval-after-load (erlang erlang-ts)
     ;; Set erlang-root-dir from the method identified by the
     ;; `pel-erlang-version-detection-method' user-option
     (declare-function pel-erlang-root-path "pel-erlang")
@@ -4394,8 +4411,9 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (require 'erlang-start)
     (defvar erlang-mode-map) ; declare dynamic: prevent byte-compiler warnings
 
-    (pel-config-major-mode erlang pel:for-erlang :no-ts
+    (pel-config-major-mode erlang pel:for-erlang :same-for-ts
       ;; Activate Erlang setup.
+      (setq-local erlang-indent-level pel-erlang-indent-width )
       ;; Set fill-column to Erlang's default if specified
       (when pel-erlang-fill-column
         (setq-local fill-column pel-erlang-fill-column))
@@ -4717,14 +4735,14 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:erlang-xref-settings (kbd "M-?") 'pel-erlang-show-xref)
     ))
 
-;; ---------------------------------------------------------------------------
-;;** Elixir Programming Language Support
-;;   -----------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;;** Elixir Programming Language Support - BEAM Language Family
+;;   ----------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` :
-;; Programming Language Family: BEAM
 (when pel-use-elixir
   ;; 1- Install required packages for Elixir
   ;;    - Always install elixir-mode when Elixir is used.
+  ;;    - elixir-ts-mode is built-in Emacs.
   (pel-ensure-package elixir-mode from: melpa)
   (pel-autoload-file elixir-mode for: elixir-mode)
 
@@ -4734,19 +4752,19 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                 (regexp-opt '(".ex'" ".exs'" ".elixir'" "mix.lock"))
                 'pel-elixir-mode))
 
-  ;; 3- Speedbar support for Elixir
+  ;; 3- Speedbar support for Elixir (not done by elixir-mode.el)
   (when pel-use-speedbar
-    (pel-add-speedbar-extension ".ex")
-    (pel-add-speedbar-extension ".exs")
-    (pel-add-speedbar-extension ".elixir")
-    (pel-add-speedbar-extension "mix.lock"))
+    (pel-add-speedbar-extension '(".ex"
+                                  ".exs"
+                                  ".elixir"
+                                  "mix.lock")))
 
   ;; 4- Buffer keymap for Elixir
   (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
   (define-key pel:for-elixir "?" 'pel-elixir-setup-info)
   (define-key pel:for-elixir (kbd "M-p") #'superword-mode)
 
-  ;;5- Install optional packages for Elixir
+  ;; 5- Install optional packages for Elixir
   (when pel-use-plantuml
     (define-key pel:for-elixir "u" 'pel-render-commented-plantuml))
   (when pel-use-alchemist
@@ -4783,12 +4801,11 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (when (boundp 'elixir-ts-indent-offset)
         (setq-local elixir-ts-indent-offset pel-elixir-indent-width)))))
 
-;; ---------------------------------------------------------------------------
-;;** LFE Programming Language Support
-;;   --------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;;** LFE Programming Language Support - BEAM Language Family Lisp
+;;   ------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` :
 ;; LFE := Lisp Flavoured Erlang
-;; Programming Language Family: BEAM, Lisp
 (when pel-use-lfe
   (pel-ensure-package lfe-mode from: melpa)
   (require 'lfe-start nil :no-error)    ; autoloads lfe commands
@@ -4829,9 +4846,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel--mode-hook-maybe-call
    (function pel--setup-for-inferior-lfe)
    'inferior-lfe-mode 'inferior-lfe-mode-hook))
-;; ---------------------------------------------------------------------------
-;;** Gleam Programming Language Support
-;;   ----------------------------------
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;;** Gleam Programming Language Support - BEAM Language Family
+;;   ---------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-G `` : Gleam
 (when pel-use-gleam
   ;; 1- Install required packages for Gleam
@@ -4863,9 +4881,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-eval-after-load gleam-ts-mode
     (pel-config-major-mode gleam pel:for-gleam :ts-only)))
 
-;; ---------------------------------------------------------------------------
-;;** Hamler Programming Language Support
-;;   -----------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;;** Hamler Programming Language Support - BEAM Language Family
+;;   ----------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-H `` :
 ;; Programming Language Family: BEAM, Functional/ML/Haskell
 ;; Future: haml-mode

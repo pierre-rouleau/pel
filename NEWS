@@ -2,6 +2,18 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- PEL now support both *erlang-mode* and Tree-Sitter based *erlang-ts-mode*.
+  - It automatically associates the tree-sitter based *erlang-ts-mode* with Erlang
+    files when *pel-use-erlang* customizable user-option is set to the new value
+    =with-tree-sitter=. If it is set to =t= it select the classic *erlang-mode*.
+  - User can switch anytime and can also use one or the other mode for a given
+    buffer: that has no influence on the mode selected for other Erlang buffers
+    opened later.
+    - Note: at this point the erlang-ts-mode lacks several features.
+  - The new *pel-erlang-setup-info* command, bound to ~<f12> ? ?~ in Erlang buffers,
+    provide information about the Erlang support setup and access to the
+    customization of several important user-options.
+  - The *pel-show-erlang-version* command is now bound to ~<f12> ? v~.
 - Add ~<f12> z~ binding to *pel-lua-repl* that invokes the Lua REPL that is
   either from the lua-mode or lua-ts-mode, depending of the availability of
   the latter and the value of the *pel-lua-repl-used* user-option.

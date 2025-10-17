@@ -9127,10 +9127,28 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :link `(url-link :tag "Erlang PDF" ,(pel-pdf-file-url "pl-erlang")))
 
 (defcustom pel-use-erlang nil
-  "Control whether PEL supports Erlang development."
+  "Control whether PEL supports Erlang development.
+
+This *must* be activated to allow any other package for Erlang.
+When activating it you can select between the following values:
+- t                : use `erlang-mode' provided by the erlang-mode.el
+                     external package.
+- with-tree-sitter : use `erlang-ts-mode' provided by the erlang-ts.el
+                     external package."
   :group 'pel-pkg-for-erlang
-  :type 'boolean
-  :safe #'booleanp)
+  :link '(url-link :tag "erlang-mode @ Github"
+                   "https://github.com/erlang/otp")
+  :link '(url-link :tag "erlang-ts @ Github"
+                   "https://github.com/erlang/emacs-erlang-ts")
+  :type '(choice
+          (const :tag "Do not use Erlang" nil)
+          (const :tag "Use classic mode: erlang-mode" t)
+          (const :tag "Use tree-sitter mode: erlang-ts-mode"
+                 with-tree-sitter)))
+(pel-put 'pel-use-erlang :package-is '(if pel-use-tree-sitter
+                                       (quote ((elpa . erlang)
+                                               (elpa . erlang-ts)))
+                                     (quote ((elpa . erlang)))))
 
 (defcustom pel-erlang-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Erlang buffers.
@@ -9568,6 +9586,15 @@ Coding Standards & Guidelines."
   :link '(url-link :tag "Inka Erlang Guideline"
                    "https://github.com/inaka/erlang_guidelines#\
 100-column-per-line"))
+
+(defcustom pel-erlang-indent-width 4
+  "Number of columns for Erlang source code indentation.
+PEL stores this in `erlang-indent-level' in Erlang buffers.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-erlang
+  :group 'pel-erlang-code-style
+  :type 'integer
+  :safe 'pel-indent-valid-p)
 
 
 (defcustom pel-erlang-tab-width 8

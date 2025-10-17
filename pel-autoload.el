@@ -371,6 +371,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-show-lisp-control-variables)
 
   (pel-autoload "pel-erlang" for:
+    pel-erlang-mode
+    pel--erlang-ts-mode-fixer
+    pel-erlang-mode-used-text
+    pel-erlang-setup-info
     pel-erlang-comma
     pel-erlang-gt
     pel-erlang-newline

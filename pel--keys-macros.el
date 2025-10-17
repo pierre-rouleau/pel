@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 13:59:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-17 09:13:02 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -756,6 +756,7 @@ stored inside the doc/pdf directory.")
     ("suggest"         [f11 32 ?l])     ; suggest -> emacs-lisp help
     ("emacs-lisp"      [f11 32 ?l])
     ("erlang"          [f11 32 ?e])
+    ("erlang-ts"       [f11 32 ?e])
     ("factor"          [f11 32 27 ?f])
     ("forth"           [f11 32 ?f])
     ("go"              [f11 32 ?g])
@@ -1775,17 +1776,19 @@ DEFINES: is a cosmetic only argument that must be present."
                    :error))
 
 (defconst pel--ts-mode-with-fixer '(elixir-ts-mode
+                                    erlang-ts-mode
                                     go-ts-mode
                                     rust-ts-mode
                                     zig-ts-mode)
   "List of Tree Sitter modes that require execution of a mode fixer function.
+
 The fixer mode function has a name that has a format like
-pel--MODE-fixer with where MODE corresponds to the name of the mode taken from
-this list.")
+pel--MODE-fixer with where MODE corresponds to the name of the mode
+taken from this list.")
 
 (defmacro pel-eval-after-load (features &rest body)
   "Evaluate BODY after the FEATURES has been loaded.
-FEATURE is either a symbol or a list of feature symbols.
+FEATURE is either a feature symbol or a list of feature symbols.
 Both must be unquoted.
 A list of feature symbol is useful, for example, when the tree-sitter
 mode is provided by a different file them the classic major mode,

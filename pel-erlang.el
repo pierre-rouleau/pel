@@ -122,6 +122,121 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
+;; Major Mode Management
+;; ---------------------
+
+;;-pel-autoload
+(defun pel-erlang-mode ()
+  "Major mode dispatcher for editing Erlang source text.
+Uses `erlang-mode' or `erlang-ts-mode' depending on what is available
+and required by `pel-use-erlang'."
+  (interactive)
+  (cond
+   ;; When `pel-use-erlang` is t, PEL has downloaded and installed
+   ;; erlang-mode.el that ;; provides the `erlang-mode'.  Use that.
+   ((eq pel-use-erlang t)
+    (when (fboundp 'erlang-mode)
+      (erlang-mode)))
+
+   ;; The `erlang-ts-mode' is an external package
+   ((eq pel-use-erlang 'with-tree-sitter)
+    (if (and (pel-treesit-ready-p 'erlang)
+             (require 'erlang-ts nil :noerror)
+             (fboundp 'erlang-ts-mode))
+        (erlang-ts-mode)
+      (display-warning 'pel-erlang-with-tree-sitter
+                       (format "Can't use erlang-ts-mode: %s"
+                               (if (pel-treesit-ready-p 'erlang)
+                                   "error loading erlang-ts-mode"
+                                 "no grammar for erlang")))
+
+      (if (fboundp 'erlang-mode)
+          (erlang-mode)
+        (user-error
+         "Can't use `erlang-ts-mode' nor `erlang-mode': check installation!"))))))
+
+;;-pel-autoload
+(defun pel--erlang-ts-mode-fixer ()
+  "Remove `erlang-ts-mode' entries from `auto-mode-alist'.
+It removes what entered when `erlang-ts-mode' loads."
+  ;; There are several file extensions for Erlang and the erlang-ts-mode
+  ;; adds several entries (entries for .erlang, .ex, .exs, mix.lock).
+  ;; Delete them all from auto-mode-alist.
+  (setq auto-mode-alist
+        (rassq-delete-all 'erlang-ts-mode auto-mode-alist)))
+
+;; --
+
+;;-pel-autoload
+(defun pel-erlang-mode-used-text (use-erlang)
+  "Description of what USE-ERLANG specifies for major mode.
+USE-ERLANG should be set to `pel-use-erlang' value used in current buffer."
+  (cond
+   ((eq use-erlang t)
+    "use erlang-mode from erlang-mode.el.")
+   ((eq use-erlang 'with-tree-sitter)
+    "use erlang-ts-mode tree-sitter aware mode.")
+   (t "Invalid! Use t or with-tree-sitter")))
+
+;;-pel-autoload
+(defun pel-erlang-setup-info (&optional append)
+  "Display Erlang setup information."
+  (interactive "P")
+  (pel-major-mode-must-be '(erlang-mode erlang-ts-mode))
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-erlang-info*"
+     "PEL setup for Erlang programming language"
+     (lambda ()
+       "Print Erlang setup info."
+       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
+                                  "major mode currently used")
+       (when pel-use-tree-sitter
+         (insert (format "\n- %s" (pel-ts-language-grammar-status-for
+                                   'erlang "\n- "))))
+       (pel-insert-symbol-content-line 'pel-use-erlang nil
+                                       (function pel-erlang-mode-used-text))
+       (insert "\n\n")
+       ;;
+       (insert (propertize "* Indentation Control:" 'face 'bold))
+       (insert "
+- Under PEL, Erlang main indentation level width is controlled entirely
+  by the value of the `pel-erlang-indent-width' user-option:
+  PEL stores its value inside `erlang-indent-level' used by erlang-mode and
+  erlang-ts-mode to ensure consistency.
+- Erlang has 2 other user-options that control indentation of specific parts
+  of code: `erlang-argument-indent' and `erlang-indent-guard'. These values
+  are not updated by PEL.
+- In most major modes the TAB key updates indentation of the current line,
+  regardless of the position of point in line.  This is also the default
+  behaviour for Erlang buffers.  Change it via `erlang-tab-always-indent'.
+- The hard tab rendering width is for erlang buffer is controlled by
+  `pel-erlang-tab-width' and stored into `tab-width'.  These do not
+  control the indentation, just the visual width (in columns) that Emacs
+  uses to render a hard tab character.
+
+  If you want to use hard tabs for indentation, you should set the value
+  tab-width to the same value of pel-erlang-indent-width and then you can
+  control the visual rendering of indentation by changing the values of those
+  two user-options: the content of the buffer and file does wont change but
+  the indentation rendering will.
+
+  Note, however, that other editors may not be able to do the same; the use of
+  hard tabs in Erlang source code is not required as it is for Go, therefore
+  this technique may not as well-spread as it is for Go.
+")
+       (pel-insert-symbol-content-line 'pel-erlang-indent-width)
+       (pel-insert-symbol-content-line 'erlang-indent-level)
+       (pel-insert-symbol-content-line 'erlang-argument-indent)
+       (pel-insert-symbol-content-line 'erlang-indent-guard)
+       (pel-insert-symbol-content-line 'pel-erlang-tab-width)
+       (pel-insert-symbol-content-line 'tab-width)
+       (pel-insert-symbol-content-line 'erlang-tab-always-indent))
+     (unless append :clear-buffer)
+     :use-help-mode)))
+
+
 ;; -------------------------------------
 ;; Query Erlang information using Erlang
 ;; -------------------------------------
