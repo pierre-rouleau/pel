@@ -2284,18 +2284,25 @@ of emitting a warning."
 (defun pel-ts-language-grammar-filename-for (mode)
   "Return the full path of the Tree-Sitter grammar file for MODE.
 
-MODE must be a symbol that does NOT end with -mode."
+MODE must be a symbol that does NOT end with -mode.
+Return nil of none found, or when tree-sitter is not supported."
   (let* ((ext (cond
                (pel-system-is-macos-p "dylib")
                (pel-system-is-windows-p "dll")
                (t "so")))
          (fname (format "libtree-sitter-%s.%s" mode ext))
-         (found-path nil))
-    (dolist (rootdir treesit-extra-load-path)
+         (found-path nil)
+         (ts-dirpath (when (boundp 'treesit-extra-load-path)
+                       treesit-extra-load-path)))
+    (dolist (rootdir ts-dirpath)
       (unless found-path
-        (setq found-path (directory-files-recursively rootdir fname
-                                                      nil nil
-                                                      :follow-symlinks))))
+        (with-no-warnings
+          ;; directory-files-recursively has only 5 args in later
+          ;; versions of emacs, but in older ones, tree-sitter is
+          ;; not supported.
+          (setq found-path (directory-files-recursively rootdir fname
+                                                        nil nil
+                                                        :follow-symlinks)))))
     (when found-path
       (file-truename (car-safe found-path)))))
 
@@ -2335,11 +2342,13 @@ following that line separator."
 \t\t\t\t\t\tfile size: %s bytes, modified: %s, modes: %s
 \t\t\t\t\t\t      md5: %s"
                      (file-attribute-size attrs)
-                     (format-time-string "%Y-%m-%d %H:%M:%S" (file-attribute-modification-time attrs))
+                     (format-time-string "%Y-%m-%d %H:%M:%S"
+                                         (file-attribute-modification-time
+                                          attrs))
                      (file-attribute-modes attrs)
                      (pel-file-md5 grammar-fname))
                     lines))))
-        (mapconcat #'identity (reverse lines)))
+        (mapconcat #'identity (reverse lines) "")) ; sep needed in old emacs
     (format "Tree-Sitter language grammar is NOT available for %s." mode)))
 
 ;; ---------------------------------------------------------------------------
