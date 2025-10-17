@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-17 09:13:02 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-17 14:12:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -348,7 +348,9 @@
                                                                  lsp-treemacs))
     (,(kbd "<f11> SPC M-f") "pl-factor" pel-pkg-for-factor      factor)
     ([f11 32 27 ?f]         "pl-factor" pel-pkg-for-factor      factor)
-    ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth)
+    ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth       (forth
+                                                                 forth-smie
+                                                                 forth-spec))
     ([f11 32 ?g]     "pl-go"            pel-pkg-for-go          (go
                                                                  go-cover
                                                                  godoc

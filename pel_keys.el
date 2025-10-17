@@ -3333,20 +3333,37 @@ d-mode not added to ac-modes!"
 ;;** Forth Programming Language Support
 ;;   ----------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` :
+
 (when pel-use-forth
+  ;; 1- Install required packages for Forth
+  ;;    - Always install forth-mode when Forth is used.
+  ;;    - There is no tree-sitter mode available yet AFAIK.
   (pel-ensure-package forth-mode from: melpa)
   (pel-autoload-file forth-mode for:
                      forth-mode
                      forth-block-mode
                      forth-interaction-mode)
-  ;; the <f12> key provides access to help and customization
+
+  ;; 2- Associate files with Forth mode selector
+  ;;    Done by forth-mode elpa-based installation.
+
+  ;; 3- Speedbar support for Forth
+  ;;    Done by forth-mode.el
+
+  ;; 4- Buffer keymap for Forth
   (define-pel-global-prefix pel:for-forth (kbd "<f11> SPC f"))
+  (define-key pel:for-forth  "?"  'pel-forth-setup-info)
   (define-key pel:for-forth  "z"  'run-forth)
-  ;; Activate Forth setup.
+
+  ;; 5- Install optional packages for Forth
+
+  ;; 6- Activate Forth setup.
+  ;;    Schedule more configuration upon Forth feature loading
+  ;;
   (pel-eval-after-load forth-mode
     (pel-config-major-mode forth pel:for-forth :no-ts
-      ;; 5) Set tab-width for the buffer as specified by the PEL user option
-      ;; for the major mode.
+      (when (boundp 'forth-smie-basic-indent)
+        (setq-local forth-smie-basic-indent pel-forth-indent-width))
       (setq-local tab-width pel-forth-tab-width))))
 
 ;; ---------------------------------------------------------------------------
@@ -5848,8 +5865,8 @@ to identify a Verilog file.  Anything else is assumed being V."
   )
 
 ;; ---------------------------------------------------------------------------
-;;** Zig  Programming Language Support
-;;   ---------------------------------
+;;** Zig Programming Language Support
+;;   --------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-z`` :
 
 (when pel-use-zig

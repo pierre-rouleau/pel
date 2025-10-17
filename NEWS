@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improve Forth support:
+  - The *pel-forth-setup-info*, bound to ~<f12> ?~ in Forth buffers,
+    provides information about the Forth support setup and access to the
+    customization of several important user-options.
+  - Provide access to the customization buffer used by the forth-mode files.
 - PEL now support both *erlang-mode* and Tree-Sitter based *erlang-ts-mode*.
   - It automatically associates the tree-sitter based *erlang-ts-mode* with Erlang
     files when *pel-use-erlang* customizable user-option is set to the new value

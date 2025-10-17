@@ -9973,6 +9973,13 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-forth
   :type '(repeat function))
 
+(defcustom pel-forth-indent-width 2
+  "Number of columns for Forth source code indentation.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkf-for-forth
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
 (defcustom pel-forth-tab-width 4
   "Column width display rendering of hard tab for forth buffers.
 

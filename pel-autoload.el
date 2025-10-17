@@ -441,6 +441,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-next-frame
     pel-previous-frame)
 
+  (pel-autoload "pel-forth" for:
+    pel-forth-setup-info)
+
   (pel-autoload "pel-goto-addr" for:
     pel-goto-next-url
     pel-goto-previous-url)
