@@ -2831,35 +2831,37 @@ MODE must be a symbol."
                        :error)))
   (declare-function pel--set-cc-style "pel_keys"))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; ---------------------------------------------------------------------------
 ;;** Ada programming language
 ;;   ------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC A`` : Ada
+
 (when pel-use-ada
-  (define-pel-global-prefix pel:for-ada   (kbd "<f11> SPC A"))
+  ;; 1- Install required packages for Ada
+  ;;    - Always install ada-mode when Ada is used.
   (pel-ensure-package ada-mode from: gnu)
+  ;;    - Install ada-ts-mode when tree-sitter is used.
   (when pel-use-tree-sitter
     (pel-ensure-package ada-ts-mode from: melpa))
 
-  ;; Ada is supported by `ada-mode' (ada-mode feature)
-  ;;     and from `ada-ts-mode' (ada-ts-mode feature)
+  ;; 2- Associate files with Ada mode selector
+  (add-to-list 'auto-mode-alist '("\\.ad[abs]\\'" . pel-ada-mode))
+
+  ;; 3- Speedbar support for Ada
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".ad[abs]"))
+
+  ;; 4- Buffer keymap for Ada
+  (define-pel-global-prefix pel:for-ada   (kbd "<f11> SPC A"))
+  (define-key pel:for-ada "?" 'pel-ada-setup-info)
+
+  ;; 5- Install optional packages for Ada
+
+  ;; 6- Activate Ada setup.
+  ;;    Schedule more configuration upon Ada feature loading
   ;;
-  ;; [:todo 2025-05-17, by Pierre Rouleau: Write a macro similar to
-  ;;    `pel-config-major-mode-with-ts' that is more flexible and can generate
-  ;;    the code that follows. ]
-  (when (and pel-use-tree-sitter
-             (pel-major-ts-mode-supported-p 'ada))
-    (defvar pel-ada-ts-tab-width)
-    (defvar pel-ada-ts-use-tabs)
-    (defvar pel-ada-ts-activates-minor-modes)
-    (setq pel-ada-ts-tab-width pel-ada-tab-width)
-    (setq pel-ada-ts-use-tabs pel-ada-use-tabs)
-    (setq pel-ada-ts-activates-minor-modes
-          pel-ada-activates-minor-modes)
-    (pel-eval-after-load ada-ts-mode
-      (pel-config-major-mode ada-ts pel:for-ada :no-ts)))
-  (pel-eval-after-load ada-mode
-    (pel-config-major-mode ada pel:for-ada :no-ts)))
+  (pel-eval-after-load (ada-mode ada-ts-mode)
+    (pel-config-major-mode ada pel:for-ada :same-for-ts)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** Awk Programming Language Support
@@ -3388,8 +3390,8 @@ d-mode not added to ac-modes!"
 
   ;; 3- Speedbar support for Go
   (when pel-use-speedbar
-    (pel-add-speedbar-extension ".go")
-    (pel-add-speedbar-extension "go.mod"))
+    (pel-add-speedbar-extension '(".go"
+                                  "go.mod")))
 
   ;; 4- Buffer keymap for Go
   (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
@@ -5356,11 +5358,11 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   ;; 3- Speedbar support for Ruby
   (when pel-use-speedbar
-    (pel-add-speedbar-extension ".rb")
-    (pel-add-speedbar-extension ".arb")
-    (pel-add-speedbar-extension ".erb")
-    (pel-add-speedbar-extension ".rake")
-    (pel-add-speedbar-extension ".rdoc"))
+    (pel-add-speedbar-extension '(".rb"
+                                  ".arb"
+                                  ".erb"
+                                  ".rake"
+                                  ".rdoc")))
 
   ;; 4- Buffer keymap for Ruby
   (define-pel-global-prefix pel:for-ruby (kbd "<f11> SPC U"))
@@ -5883,8 +5885,8 @@ to identify a Verilog file.  Anything else is assumed being V."
 
   ;; 3- Speedbar support for Zig
   (when pel-use-speedbar
-    (pel-add-speedbar-extension ".zig")
-    (pel-add-speedbar-extension ".zon"))
+    (pel-add-speedbar-extension '(".zig"
+                                  ".zon")))
 
   ;; 4- Buffer keymap for Zig
   (define-pel-global-prefix pel:for-zig  (kbd "<f11> SPC M-z"))

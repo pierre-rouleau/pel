@@ -5327,24 +5327,30 @@ See also: `pel-shell-script-extensions'."
   :link `(url-link :tag "Ada PDF"
                    ,(pel-pdf-file-url "pl-ada")))
 
-(defcustom pel-use-ada nil
-  "Whether PEL activates Ada support.
-When turned on,
-- PEL automatically activate `pel-use-ada-mode'
-- the `ada-mode' is associated with the PEL ``<f12>`` key."
-  :group 'pel-pkg-for-ada
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-ada :package-is :a-gate)
+(defcustom pel-use-ada (when pel-use-tree-sitter 'with-tree-sitter)
+  "Control whether PEL supports the Ada Programming language.
 
-(defcustom pel-use-ada-mode nil
-  "Whether PEL uses the ada-mode external package."
+This *must* be activated to allow any other package for Ada.
+When activating it you can select between the following values:
+- t                : use `ada-mode' provided by the ada-model external package.
+- with-tree-sitter : use `ada-ts-mode' provided by the ada-ts-mode external
+                     package.
+
+Because of the high implementation quality of `ada-ts-mode` PEL activates it
+when `pel-use-tree-sitter' is turned on."
+  :group 'pel-pkg-for-ada
   :link '(url-link :tag "Ada mode homepage"
                    "https://www.nongnu.org/ada-mode/")
-  :group 'pel-pkg-for-ada
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-ada-mode :also-required-when 'pel-use-ada)
+  :link '(url-link :tag "adat-ts-mode @ Github"
+                   "https://github.com/brownts/ada-ts-mode")
+  :type '(choice
+          (const :tag "Do not use Ada" nil)
+          (const :tag "Use classic mode: ada-mode" t)
+          (const :tag "Use tree-sitter mode: ada-ts-mode" with-tree-sitter)))
+(pel-put 'pel-use-ada :package-is '(if pel-use-tree-sitter
+                                       (quote ((elpa . ada-mode)
+                                               (elpa . ada-ts-mode)))
+                                     (quote ((elpa . ada-mode)))))
 
 (defcustom pel-ada-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Ada buffers.
@@ -5353,12 +5359,12 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-ada
   :type '(repeat function))
 
-(defcustom pel-ada-indent-width 4
-  "Number of columns for Ada source code indentation.
-Values in the [2, 8] range are accepted."
-  :group 'pel-pkf-for-ada
-  :type 'integer
-  :safe 'pel-indent-valid-p)
+;; (defcustom pel-ada-indent-width 4
+;;   "Number of columns for Ada source code indentation.
+;; Values in the [2, 8] range are accepted."
+;;   :group 'pel-pkf-for-ada
+;;   :type 'integer
+;;   :safe 'pel-indent-valid-p)
 
 (defcustom pel-ada-tab-width 4
   "Column width display rendering of hard tab for buffers in `ada-mode'.
@@ -11604,8 +11610,9 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 This *must* be activated to allow any other package for Zig.
 When activating it you can select between the following values:
-- t                : use `go-mode' provided by the go-mode.el external package.
-- with-tree-sitter : use `go-ts-mode' which is built-in Emacs."
+- t                : use `zig-mode' provided by the zig-mode external package.
+- with-tree-sitter : use `zig-ts-mode' provided by the zig-ts-mode external
+                     package."
   :group 'pel-pkg-for-zig
   :link '(url-link :tag "zig-mode @ GitHub"
                    "https://github.com/ziglang/zig-mode")
@@ -13465,10 +13472,6 @@ indexing system."
 ;; bindings.
 (when (or pel-use-simple-undo pel-use-vundo)
   (setq pel-use-undo-tree nil))
-
-(when pel-use-ada
-  ;; Only one major mode for Ada, auto-activate it.
-  (setq pel-use-ada-mode t))
 
 (when pel-use-eiffel
   ;; Only one major mode for Eiffel, auto-activate it.

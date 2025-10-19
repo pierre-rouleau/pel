@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-17 14:12:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-17 21:46:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1315,7 +1315,9 @@ Return nil if nothing found."
         (cl-return file-path)))))
 
 (defconst pel--group-library-names
-  '(("rxt"         . "pcre2el")
+  '(("ada"         . "ada-mode")
+    ("ada-ts"      . "ada-ts-mode")
+    ("rxt"         . "pcre2el")
     ("Imenu-Plus"  . "imenu+")
     ("Ztree"       . "ztree-view")
     ("command-log" . "command-log-mode")
@@ -1777,7 +1779,8 @@ DEFINES: is a cosmetic only argument that must be present."
                            error)
                    :error))
 
-(defconst pel--ts-mode-with-fixer '(elixir-ts-mode
+(defconst pel--ts-mode-with-fixer '(ada-ts-mode
+                                    elixir-ts-mode
                                     erlang-ts-mode
                                     go-ts-mode
                                     rust-ts-mode

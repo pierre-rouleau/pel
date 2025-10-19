@@ -2,6 +2,16 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- PEL now support both *ada-mode* and Tree-Sitter based *ada-ts-mode*.
+  - It automatically associates the tree-sitter based *ada-ts-mode* with Ada
+    files when *pel-use-ada* customizable user-option is set to the new value
+    =with-tree-sitter=. If it is set to =t= it select the classic *ada-mode*.
+  - User can switch anytime and can also use one or the other mode for a given
+    buffer: that has no influence on the mode selected for other Ada buffers
+    opened later.
+  - The new *pel-ada-setup-info* command, bound to ~<f12> ?~ in Ada buffers,
+    provide information about the Ada support setup and access to the
+    customization of several important user-options.
 - Improve Forth support:
   - The *pel-forth-setup-info*, bound to ~<f12> ?~ in Forth buffers,
     provides information about the Forth support setup and access to the
@@ -56,7 +66,6 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - User can switch anytime and can also use one or the other mode for a given
     buffer: that has no influence on the mode selected for other Zig buffers
     opened later.
-    - Note: at this point the zig-ts-mode lacks several features.
   - The new *pel-zig-setup-info* command, bound to ~<f12> ?~ in Zig buffers,
     provide information about the Zig support setup and access to the
     customization of several important user-options.
