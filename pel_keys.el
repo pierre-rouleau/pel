@@ -9489,6 +9489,7 @@ the ones defined from the buffer now."
   (define-key pel:tree-sitter (kbd "<f1>")  'pel-treesit-help)
   (define-key pel:tree-sitter (kbd "<f2>")  'pel-treesit-customize)
   (define-key pel:tree-sitter (kbd "<f3>")  'pel-treesit-emacs-customize)
+  (define-key pel:tree-sitter (kbd "C-t")   'pel-treesit-toggle-mode)
   (define-key pel:tree-sitter "e"  'treesit-explore-mode)
   (define-key pel:tree-sitter "i"  'treesit-inspect-mode))
 

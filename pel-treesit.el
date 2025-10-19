@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-07 17:19:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-19 16:39:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,6 +31,7 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--base)
 (require 'pel--keys-macros)              ; use: `pel-help-open-pdf'
 ;;                                       ;      `pel--customize-group'
 
@@ -58,6 +59,34 @@ instead."
   (interactive "P")
   (pel--customize-group 'treesit other-window))
 
+;; [:todo 2025-10-19, by Pierre Rouleau: reduce size of the following code.]
+;; pel-autoload
+(defun pel-treesit-toggle-mode ()
+  "Toggle the major mode between classic mode and tree-sitter based mode.
+Signals a user-error if the other mode is not available."
+  (interactive)
+  (let ((current-mode-name (symbol-name major-mode)))
+    (if (string-match "-ts-mode" current-mode-name)
+        ;; currently using a tree-sitter mode.
+        (let* ((classic-mode-name (format "%s-mode"
+                                          (substring current-mode-name 0 -8)))
+               (classic-mode (intern classic-mode-name)))
+          (if (fboundp classic-mode)
+              (progn
+                (call-interactively classic-mode)
+                (message "Switched to classic-mode: %s" classic-mode-name))
+            (user-error "Classic major mode `%s' is not loaded!"
+                        classic-mode-name)))
+      ;; currently using a classic mode
+      (let* ((ts-mode-name (format "%s-ts-mode"
+                                   (substring current-mode-name 0 -5)))
+             (ts-mode (intern ts-mode-name)))
+        (if (fboundp ts-mode)
+            (progn
+              (call-interactively ts-mode)
+              (message "Switched to Tree-Sitter based mode: %s" ts-mode-name))
+          (user-error "Tree-Sitter based major mode `%s' is not loaded!"
+                      ts-mode-name))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-treesit)

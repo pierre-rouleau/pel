@@ -928,7 +928,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-treesit" for:
     pel-treesit-help
     pel-treesit-customize
-    pel-treesit-emacs-customize)
+    pel-treesit-emacs-customize
+    pel-treesit-toggle-mode)
 
   (pel-autoload "pel-xref" for:
     pel-xref-toggle-dumb-jump-mode

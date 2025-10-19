@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-treesit-toggle-mode* command, bound to ~<f11> C-t C-t~, which
+  toggles the major mode  from the classic mode to the Tree-Sitter based major mode.
 - PEL now support both *ada-mode* and Tree-Sitter based *ada-ts-mode*.
   - It automatically associates the tree-sitter based *ada-ts-mode* with Ada
     files when *pel-use-ada* customizable user-option is set to the new value
