@@ -68,6 +68,12 @@ Essentially PEL:
   dynamically switch from classic to Tree-Sitter based major mode and back
   at any time and without any impact on your original selection;
   the `🚦 Tree-sitter PDF`_ lists these modes,
+
+  - the `🚦 Tree-sitter PDF`_ provides information on the various Tree-Sitter
+    language grammar and major modes supporting it, and
+  - the document titled `Using tree-sitter with Emacs and PEL`_ describes how to setup
+    your environment to use the Tree-Sitter based modes,
+
 - uses the extremely powerful Emacs customization system to drive activation
   of features,
 
@@ -649,6 +655,7 @@ Notes
 .. _shell scripts: https://github.com/pierre-rouleau/pel/tree/master/bin
 .. _awk scripts: https://github.com/pierre-rouleau/pel/tree/master/awk
 .. _USRHOME project: https://github.com/pierre-rouleau/usrhome?tab=readme-ov-file#readme
+.. _Using tree-sitter with Emacs and PEL: https://github.com/pierre-rouleau/pel/blob/master/doc/using-tree-sitter.rst.txt
 
 ..
    -----------------------------------------------------------------------------
