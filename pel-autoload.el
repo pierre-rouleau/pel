@@ -454,18 +454,48 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-next-frame
     pel-previous-frame)
 
+  ;; --
   (pel-autoload "pel-forth" for:
     pel-forth-setup-info)
 
+  ;; --
   (pel-autoload "pel-goto-addr" for:
     pel-goto-next-url
     pel-goto-previous-url)
 
+  ;; --
   (pel-autoload "pel-gleam" for:
     pel-gleam-toggle-format-on-buffer-save
     pel-gleam-setup-info)
   (pel-autoload-function "pel-gleam" for:
     pel-gleam-insert-indent-tab-info)
+
+  ;; --
+  (pel-autoload "pel-go" for:
+    pel-go-mode
+    pel-go-dot-mod-mode
+    pel-go-toggle-gofmt-on-buffer-save
+    pel-go-setup-info
+    pel-go-toggle-syntax-checker)
+  (pel-autoload-function "pel-go" for:
+    pel--go-ts-mode-fixer
+    pel-go-gofmt-on-buffer-save)
+
+  ;; --
+  (pel-autoload "pel-graphviz-dot" for:
+    pel-render-commented-graphviz-dot)
+
+  ;; --
+  (pel-autoload "pel-highlight" for:
+    pel-set-highlight-color
+    pel-customize-highlight
+    pel-toggle-hl-line-sticky
+    pel-toggle-show-trailing-whitespace
+    pel-toggle-indicate-empty-lines
+    pel-toggle-indent-tabs-mode
+    pel-highlight-line
+    pel-remove-line-highlight
+    pel-show-paren-info)
 
   (pel-autoload "pel-help" for:
     pel-show-kill-ring
@@ -554,28 +584,6 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-hide/show-all-docstrings
     pel-toggle-all-docstrings)
 
-  (pel-autoload "pel-go" for:
-    pel-go-mode
-    pel-go-dot-mod-mode
-    pel-go-toggle-gofmt-on-buffer-save
-    pel-go-setup-info
-    pel-go-toggle-syntax-checker)
-  (pel-autoload-function "pel-go" for:
-    pel--go-ts-mode-fixer
-    pel-go-gofmt-on-buffer-save)
-
-  (pel-autoload "pel-graphviz-dot" for: pel-render-commented-graphviz-dot)
-
-  (pel-autoload "pel-highlight" for:
-    pel-set-highlight-color
-    pel-customize-highlight
-    pel-toggle-hl-line-sticky
-    pel-toggle-show-trailing-whitespace
-    pel-toggle-indicate-empty-lines
-    pel-toggle-indent-tabs-mode
-    pel-highlight-line
-    pel-remove-line-highlight
-    pel-show-paren-info)
 
   (pel-autoload "pel-imenu" for:
     pel-imenu-rescan)
