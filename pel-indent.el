@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-20 08:22:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 10:04:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -353,9 +353,9 @@ by the numeric argument N (or if not specified N=1):
   (insert (substitute-command-keys "
 
  You can use \\[pel-set-tab-width] to change the width rendering of
- hard tabs.  If the indentation width is made equal to the `tab-width'
- then you can quickly change the rendering of the indentation using
- that command. ")))
+ hard tabs temporarily in the current buffer.
+ If the indentation width is made equal to the `tab-width' then you can
+ quickly change the rendering of the indentation using that command.")))
 
 ;;-pel-autoload
 (defun pel-show-indent (&optional append)
