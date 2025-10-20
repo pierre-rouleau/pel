@@ -4432,7 +4432,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
     (pel-config-major-mode erlang pel:for-erlang :same-for-ts
       ;; Activate Erlang setup.
-      (setq-local erlang-indent-level pel-erlang-indent-width )
+      (when (boundp 'erlang-indent-level)
+        (setq-local erlang-indent-level pel-erlang-indent-width ))
       ;; Set fill-column to Erlang's default if specified
       (when pel-erlang-fill-column
         (setq-local fill-column pel-erlang-fill-column))
