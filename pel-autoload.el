@@ -380,6 +380,7 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-emacs-analyze" for:
     pel-show-lisp-control-variables)
 
+  ;; --
   (pel-autoload "pel-erlang" for:
     pel-erlang-mode
     pel-erlang-mode-used-text
@@ -405,6 +406,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-erlang-unwind)
   (pel-autoload-function "pel-erlang" for:
     pel--erlang-ts-mode-fixer
+    pel-erlang-insert-indent-tab-info
     pel-erlang-root-path
     pel-erlang-version
     pel-erlang-set-dirpath
@@ -419,6 +421,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel--erlang-mode-setup
     pel--install-erlang-skel)
 
+  ;; --
   (pel-autoload "pel-face-ut" for: pel-show-face-at-point)
 
   (pel-autoload-function "pel-ffind" for:

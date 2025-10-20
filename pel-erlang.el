@@ -106,6 +106,7 @@
 (require 'pel--options)         ; use: `pel-erlang-version-detection-method'
 ;;                              ;      `pel-erlang-path-detection-method'
 ;;                              ;      `pel-erlang-electric-keys'
+(require 'pel-indent)           ; use `pel-insert-tab-set-width-info'
 (require 'pel-ffind)            ; use: `pel-ffind'
 (require 'pel-fs)               ; use: `pel-exec-pel-bin', `pel-exec-cmd'
 (require 'pel-syntax)           ; use: `pel-insert-space-in-enclosing-block'
@@ -179,28 +180,11 @@ USE-ERLANG should be set to `pel-use-erlang' value used in current buffer."
    (t "Invalid! Use t or with-tree-sitter")))
 
 ;;-pel-autoload
-(defun pel-erlang-setup-info (&optional append)
-  "Display Erlang setup information."
-  (interactive "P")
-  (pel-major-mode-must-be '(erlang-mode erlang-ts-mode))
-  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
-    (pel-print-in-buffer
-     "*pel-erlang-info*"
-     "PEL setup for Erlang programming language"
-     (lambda ()
-       "Print Erlang setup info."
-       (insert (propertize "* Major Mode Control:" 'face 'bold))
-       (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
-                                  "major mode currently used")
-       (when pel-use-tree-sitter
-         (insert (format "\n- %s" (pel-ts-language-grammar-status-for
-                                   'erlang "\n- "))))
-       (pel-insert-symbol-content-line 'pel-use-erlang nil
-                                       (function pel-erlang-mode-used-text))
-       (insert "\n\n")
-       ;;
-       (insert (propertize "* Indentation Control:" 'face 'bold))
-       (insert "
+(defun pel-erlang-insert-indent-tab-info ()
+  "Insert Erlang indentation and hard tab setup info in current context.
+Return `pel-show-indent' capability list."
+  (insert (propertize "* Indentation Control:" 'face 'bold))
+  (insert "
 - Under PEL, Erlang main indentation level width is controlled entirely
   by the value of the `pel-erlang-indent-width' user-option:
   PEL stores its value inside `erlang-indent-level' used by erlang-mode and
@@ -226,13 +210,41 @@ USE-ERLANG should be set to `pel-use-erlang' value used in current buffer."
   hard tabs in Erlang source code is not required as it is for Go, therefore
   this technique may not as well-spread as it is for Go.
 ")
-       (pel-insert-symbol-content-line 'pel-erlang-indent-width)
-       (pel-insert-symbol-content-line 'erlang-indent-level)
-       (pel-insert-symbol-content-line 'erlang-argument-indent)
-       (pel-insert-symbol-content-line 'erlang-indent-guard)
-       (pel-insert-symbol-content-line 'pel-erlang-tab-width)
-       (pel-insert-symbol-content-line 'tab-width)
-       (pel-insert-symbol-content-line 'erlang-tab-always-indent))
+  (pel-insert-symbol-content-line 'pel-erlang-indent-width)
+  (pel-insert-symbol-content-line 'erlang-indent-level)
+  (pel-insert-symbol-content-line 'erlang-argument-indent)
+  (pel-insert-symbol-content-line 'erlang-indent-guard)
+  (insert "\n\n")
+  ;;
+  (insert (propertize "* Hard Tab Control:" 'face 'bold))
+  (pel-insert-symbol-content-line 'erlang-tab-always-indent)
+  (pel-insert-symbol-content-line 'pel-erlang-tab-width)
+  (pel-insert-symbol-content-line 'tab-width)
+    ;; Return a capability list for `pel-show-indent' or similar callers
+  '(supports-set-tab-width))
+
+;;-pel-autoload
+(defun pel-erlang-setup-info (&optional append)
+  "Display Erlang setup information."
+  (interactive "P")
+  (pel-major-mode-must-be '(erlang-mode erlang-ts-mode))
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-erlang-info*"
+     "PEL setup for Erlang programming language"
+     (lambda ()
+       "Print Erlang setup info."
+       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
+                                  "major mode currently used")
+       (when pel-use-tree-sitter
+         (insert (format "\n- %s" (pel-ts-language-grammar-status-for
+                                   'erlang "\n- "))))
+       (pel-insert-symbol-content-line 'pel-use-erlang nil
+                                       (function pel-erlang-mode-used-text))
+       (insert "\n\n")
+       (pel-erlang-insert-indent-tab-info)
+       (pel-insert-tab-set-width-info))
      (unless append :clear-buffer)
      :use-help-mode)))
 
