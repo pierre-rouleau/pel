@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-19 20:03:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 08:22:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -348,6 +348,16 @@ by the numeric argument N (or if not specified N=1):
   "Major modes implemented as cc-modes.")
 
 ;;-pel-autoload
+(defun pel-insert-tab-set-width-info ()
+  "Insert more information related to the use of `pel-set-tab-with'."
+  (insert (substitute-command-keys "
+
+ You can use \\[pel-set-tab-width] to change the width rendering of
+ hard tabs.  If the indentation width is made equal to the `tab-width'
+ then you can quickly change the rendering of the indentation using
+ that command. ")))
+
+;;-pel-autoload
 (defun pel-show-indent (&optional append)
   "Display current buffer's indentation behaviour controlling variable state."
   (interactive "P")
@@ -365,7 +375,9 @@ by the numeric argument N (or if not specified N=1):
      "Indentation Width Control and Space/Tab Insertion Rendering"
      (lambda ()
        (if (fboundp indent-tab-info-fun)
-           (funcall indent-tab-info-fun)
+           (let ((capabilities (funcall indent-tab-info-fun)))
+             (when (memq 'supports-set-tab-width capabilities)
+               (pel-insert-tab-set-width-info)))
          (let ((some-major-mode-specific nil))
            (dolist (fmt '("pel-%s-indent-width"
                           "pel-%s-tab-width"

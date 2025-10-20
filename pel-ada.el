@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-19 17:04:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 08:19:12 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,7 +33,7 @@
 ;;
 (require 'pel--base)        ; use:
 (require 'pel--options)     ; use:
-
+(require 'pel-indent)       ; use: `pel-insert-tab-set-width-info'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -93,7 +93,8 @@ USE-ADA should be set to `pel-use-ada' value used in current buffer."
 
 ;;-pel-autoload
 (defun pel-ada-insert-indent-tab-info ()
-  "Insert ADA indentation setup in current context."
+  "Insert ADA indentation setup in current context.
+Return pel-show-indent capability list."
   (insert (propertize "* Indentation Control:" 'face 'bold))
   (insert "
 - Ada indentation under `ada-mode' is controlled by a LSP back-end,
@@ -129,7 +130,9 @@ USE-ADA should be set to `pel-use-ada' value used in current buffer."
   (pel-insert-symbol-content-line 'pel-ada-use-tabs
                                   nil #'pel-on-off-string)
   (pel-insert-symbol-content-line 'indent-tabs-mode
-                                  nil #'pel-on-off-string))
+                                  nil #'pel-on-off-string)
+  ;; Return a capability list
+  '(supports-set-tab-width))
 
 ;;-pel-autoload
 (defun pel-ada-setup-info (&optional append)
@@ -155,7 +158,8 @@ USE-ADA should be set to `pel-use-ada' value used in current buffer."
          (unless (eq pel-use-ada 'with-tree-sitter)
            (insert "\n Unless you have a specific reason to not use it, you should.")))
        (insert "\n\n")
-       (pel-ada-insert-indent-tab-info))
+       (pel-ada-insert-indent-tab-info)
+       (pel-insert-tab-set-width-info))
      (unless append :clear-buffer)
      :use-help-mode)))
 
