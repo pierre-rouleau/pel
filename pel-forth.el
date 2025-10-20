@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-20 13:53:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 14:05:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -51,7 +51,7 @@ Return `pel-show-indent' capability list."
   `forth-smie-basic-indent' to ensure consistency.
 
   If you want to use hard tabs for indentation, you should set the value
-  tab-width to the same value of pel-forth-indent-width and then you can
+  `tab-width' to the same value of `pel-forth-indent-width' and then you can
   control the visual rendering of indentation by changing the values of those
   two user-options: the content of the buffer and file does wont change but
   the indentation rendering will.
