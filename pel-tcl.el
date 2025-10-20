@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 14:29:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 15:52:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,13 +31,58 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)              ; use: `pel-has-shebang-line'
-(require 'pel--options)           ; use: `pel-tcl-shebang-line'
-(require 'pel-ccp)                ; use: `pel-delete-line'
+(require 'pel--base)        ; use: `pel-has-shebang-line'
+(require 'pel--options)     ; use: `pel-tcl-shebang-line'
+(require 'pel-ccp)          ; use: `pel-delete-line'
+(require 'pel-indent)       ; use: `pel-insert-tab-set-width-info'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+;;-pel-autoload
+(defun pel-tcl-insert-indent-tab-info ()
+  "Insert Tcl indentation and hard tab setup info in current context.
+Return `pel-show-indent' capability list."
+  (insert (propertize "* Indentation Control:" 'face 'bold))
+  (insert "
+- Under PEL, Tcl indentation level width is controlled entirely by the
+  value of the `pel-tcl-indent-width' user-option:
+  PEL stores its value inside the variables used by the tcl-mode
+  to ensure consistency.  It does, however, not change the value
+  of tcl-continued-indent-level.
+  You probably want to ensure they all have the same values.
+
+  If you want to use hard tabs for indentation, you should set the value
+  `tab-width' to the same value of `pel-tcl-indent-width' and then you can
+  control the visual rendering of indentation by changing the values of those
+  two user-options: the content of the buffer and file does wont change but
+  the indentation rendering will.
+
+  Note, however, that other editors may not be able to do the same; the use of
+  hard tabs in Tcl source code is not required as it is for Go, therefore
+  this technique may not as well-spread as it is for Go.
+")
+  (pel-insert-symbol-content-line 'pel-tcl-indent-width)
+  (pel-insert-symbol-content-line 'tcl-indent-level)
+  (pel-insert-symbol-content-line 'tcl-continued-indent-level)
+  (insert "\n\n")
+  ;;
+  (insert (propertize "* Hard Tab Control:" 'face 'bold))
+  (insert "
+- The hard tab rendering width is for tcl buffer is controlled by
+  `pel-tcl-tab-width' and stored into `tab-width'.
+  These do not control the indentation, just the visual width (in columns)
+  that Emacs uses to render a hard tab character.
+")
+  (pel-insert-symbol-content-line 'pel-tcl-tab-width)
+  (pel-insert-symbol-content-line 'tab-width)
+  (pel-insert-symbol-content-line 'pel-tcl-use-tabs
+                                  nil #'pel-on-off-string)
+  (pel-insert-symbol-content-line 'indent-tabs-mode
+                                  nil #'pel-on-off-string)
+  ;; Return a capability list for `pel-show-indent' or similar callers
+  '(supports-set-tab-width))
 
 ;;-pel-autoload
 (defun pel-tcl-setup-info (&optional append)
@@ -56,35 +101,8 @@
        (insert "
 There is no known Tree-Sitter based Emacs major mode for Tcl yet.")
        (insert "\n\n")
-       ;;
-       (insert (propertize "* Indentation Control:" 'face 'bold))
-       (insert "
-- Under PEL, Tcl indentation level width is controlled entirely by the
-  value of the pel-tcl-indent-width user-option:
-  PEL stores its value inside the variables used by the tcl-mode
-  to ensure consistency.  It does, however, not change the value
-  of tcl-continued-indent-level.
-  You probably want to ensure they all have the same values.
-- The hard tab rendering width is for tcl buffer is controlled by
-  pel-tcl-tab-width and stored into tab-width.  These do not control the
-  indentation, just the visual width (in columns) that Emacs uses to render a
-  hard tab character.
-
-  If you want to use hard tabs for indentation, you should set the value
-  tab-width to the same value of pel-tcl-indent-width and then you can
-  control the visual rendering of indentation by changing the values of those
-  two user-options: the content of the buffer and file does wont change but
-  the indentation rendering will.
-
-  Note, however, that other editors may not be able to do the same; the use of
-  hard tabs in Tcl source code is not required as it is for Go, therefore
-  this technique may not as well-spread as it is for Go.
-")
-       (pel-insert-symbol-content-line 'pel-tcl-indent-width)
-       (pel-insert-symbol-content-line 'tcl-indent-level)
-       (pel-insert-symbol-content-line 'tcl-continued-indent-level)
-       (pel-insert-symbol-content-line 'pel-tcl-tab-width)
-       (pel-insert-symbol-content-line 'tab-width))
+       (pel-tcl-insert-indent-tab-info)
+       (pel-insert-tab-set-width-info))
      (unless append :clear-buffer)
      :use-help-mode)))
 

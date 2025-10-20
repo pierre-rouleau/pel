@@ -950,11 +950,15 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-syntax" for:
     pel-syntax-at-point)
 
+  ;; --
+  (pel-autoload "pel-tcl" for:
+    pel-tcl-setup-info)
   (pel-autoload-function "pel-tcl" for:
-    pel-tcl-setup-info
+    pel-tcl-insert-indent-tab-info
     pel-tcl-insert-shebang-line
     pel-tcl-expect-insert-shebang-line)
 
+  ;; --
   (pel-autoload "pel-timestamp" for:
     pel-toggle-update-time-stamp-on-save
     pel-toggle-update-copyright-on-save)
