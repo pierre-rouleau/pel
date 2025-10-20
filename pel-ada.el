@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-18 15:32:12 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-19 17:04:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -92,6 +92,46 @@ USE-ADA should be set to `pel-use-ada' value used in current buffer."
    (t "Invalid! Use t or with-tree-sitter")))
 
 ;;-pel-autoload
+(defun pel-ada-insert-indent-tab-info ()
+  "Insert ADA indentation setup in current context."
+  (insert (propertize "* Indentation Control:" 'face 'bold))
+  (insert "
+- Ada indentation under `ada-mode' is controlled by a LSP back-end,
+  and under `ada-ts-mode' it is either controlled by a LSP back-end or
+  by the `ada-ts-mode' tree-sitter grammar control with specific concepts
+  controlled by 9 customizable user-options listed below.
+  Using this last method is the most flexible, works very well and is the
+  recommended way;  depending on a LSP back-end means that the indentation is
+  essentially done by code reformatting and you may have less control over it.
+")
+  (pel-insert-symbol-content-line 'ada-ts-mode-indent-backend)
+  (pel-insert-symbol-content-line 'ada-ts-mode-indent-strategy)
+  (pel-insert-symbol-content-line 'ada-ts-mode-indent-offset)
+  (pel-insert-symbol-content-line 'ada-ts-mode-indent-when-offset)
+  (pel-insert-symbol-content-line 'ada-ts-mode-indent-broken-offset)
+  (pel-insert-symbol-content-line 'ada-ts-mode-indent-exp-item-offset)
+  (pel-insert-symbol-content-line 'ada-ts-mode-indent-subprogram-is-offset)
+  (pel-insert-symbol-content-line 'ada-ts-mode-indent-record-offset)
+  (pel-insert-symbol-content-line 'ada-ts-mode-indent-label-offset)
+  (insert "\n\n")
+  ;;
+  (insert (propertize "* Hard Tab Control:" 'face 'bold))
+  (insert "
+- The hard tab rendering width is for ada buffer is controlled by
+  `pel-ada-tab-width' and stored into `tab-width'.
+  These do not control the indentation, just the visual width (in
+  columns) that Emacs uses to render a hard tab character.
+  Whether hard tabs are used in ada buffer is controlled by
+  `pel-ada-use-tabs' and stored inside `indent-tabs-mode'.
+")
+  (pel-insert-symbol-content-line 'pel-ada-tab-width)
+  (pel-insert-symbol-content-line 'tab-width)
+  (pel-insert-symbol-content-line 'pel-ada-use-tabs
+                                  nil #'pel-on-off-string)
+  (pel-insert-symbol-content-line 'indent-tabs-mode
+                                  nil #'pel-on-off-string))
+
+;;-pel-autoload
 (defun pel-ada-setup-info (&optional append)
   "Display Ada setup information."
   (interactive "P")
@@ -115,43 +155,7 @@ USE-ADA should be set to `pel-use-ada' value used in current buffer."
          (unless (eq pel-use-ada 'with-tree-sitter)
            (insert "\n Unless you have a specific reason to not use it, you should.")))
        (insert "\n\n")
-       ;;
-       (insert (propertize "* Indentation Control:" 'face 'bold))
-       (insert "
-- Ada indentation under `ada-mode' is controlled by a LSP back-end,
-  and under `ada-ts-mode' it is either controlled by a LSP back-end or
-  by the `ada-ts-mode' tree-sitter grammar control with specific concepts
-  controlled by 9 customizable user-options listed below.
-  Using this last method is the most flexible, works very well and is the
-  recommended way;  depending on a LSP back-end means that the indentation is
-  essentially done by code reformatting and you may have less control over it.
-")
-       (pel-insert-symbol-content-line 'ada-ts-mode-indent-backend)
-       (pel-insert-symbol-content-line 'ada-ts-mode-indent-strategy)
-       (pel-insert-symbol-content-line 'ada-ts-mode-indent-offset)
-       (pel-insert-symbol-content-line 'ada-ts-mode-indent-when-offset)
-       (pel-insert-symbol-content-line 'ada-ts-mode-indent-broken-offset)
-       (pel-insert-symbol-content-line 'ada-ts-mode-indent-exp-item-offset)
-       (pel-insert-symbol-content-line 'ada-ts-mode-indent-subprogram-is-offset)
-       (pel-insert-symbol-content-line 'ada-ts-mode-indent-record-offset)
-       (pel-insert-symbol-content-line 'ada-ts-mode-indent-label-offset)
-       (insert "\n\n")
-       ;;
-       (insert (propertize "* Hard Tab Control:" 'face 'bold))
-       (insert "
-- The hard tab rendering width is for ada buffer is controlled by
-  `pel-ada-tab-width' and stored into `tab-width'.
-  These do not control the indentation, just the visual width (in
-  columns) that Emacs uses to render a hard tab character.
-  Whether hard tabs are used in ada buffer is controlled by
-  `pel-ada-use-tabs' and stored inside `indent-tabs-mode'.
-")
-       (pel-insert-symbol-content-line 'pel-ada-tab-width)
-       (pel-insert-symbol-content-line 'tab-width)
-       (pel-insert-symbol-content-line 'pel-ada-use-tabs
-                                       nil #'pel-on-off-string)
-       (pel-insert-symbol-content-line 'indent-tabs-mode
-                                       nil #'pel-on-off-string))
+       (pel-ada-insert-indent-tab-info))
      (unless append :clear-buffer)
      :use-help-mode)))
 

@@ -87,6 +87,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel--ada-ts-mode-fixer
     pel-ada-mode-used-text
     pel-ada-setup-info)
+  (pel-autoload-function "pel-ada" for:
+    pel-ada-insert-indent-tab-info)
 
   (pel-autoload "pel-align" for:
     pel-newline-and-indent-below
