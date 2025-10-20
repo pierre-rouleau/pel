@@ -195,10 +195,6 @@ Return `pel-show-indent' capability list."
 - In most major modes the TAB key updates indentation of the current line,
   regardless of the position of point in line.  This is also the default
   behaviour for Erlang buffers.  Change it via `erlang-tab-always-indent'.
-- The hard tab rendering width is for erlang buffer is controlled by
-  `pel-erlang-tab-width' and stored into `tab-width'.  These do not
-  control the indentation, just the visual width (in columns) that Emacs
-  uses to render a hard tab character.
 
   If you want to use hard tabs for indentation, you should set the value
   tab-width to the same value of pel-erlang-indent-width and then you can
@@ -217,6 +213,12 @@ Return `pel-show-indent' capability list."
   (insert "\n\n")
   ;;
   (insert (propertize "* Hard Tab Control:" 'face 'bold))
+  (insert "
+- The hard tab rendering width is for erlang buffer is controlled by
+  `pel-erlang-tab-width' and stored into `tab-width'.  These do not
+  control the indentation, just the visual width (in columns) that Emacs
+  uses to render a hard tab character.
+")
   (pel-insert-symbol-content-line 'erlang-tab-always-indent)
   (pel-insert-symbol-content-line 'pel-erlang-tab-width)
   (pel-insert-symbol-content-line 'tab-width)
