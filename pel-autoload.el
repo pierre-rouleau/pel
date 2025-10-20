@@ -808,6 +808,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-ruby-setup-info)
   (pel-autoload-function "pel-ruby" for:
     pel--ruby-ts-mode-fixer
+    pel-ruby-insert-indent-tab-info
     pel-ruby-insert-shebang-line)
 
   (pel-autoload "pel-rust" for:
