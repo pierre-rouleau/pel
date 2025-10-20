@@ -464,6 +464,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-gleam" for:
     pel-gleam-toggle-format-on-buffer-save
     pel-gleam-setup-info)
+  (pel-autoload-function "pel-gleam" for:
+    pel-gleam-insert-indent-tab-info)
 
   (pel-autoload "pel-help" for:
     pel-show-kill-ring

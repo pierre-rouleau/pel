@@ -9885,9 +9885,16 @@ a 2-space character indentation level and no hard tab."
   :type 'integer
   :safe 'pel-indent-valid-p)
 
-(defconst pel-gleam-use-tabs nil
+(defcustom pel-gleam-use-tabs nil
   "Value of `indent-tabs-mode' for editing gleam files.
-Gleam does not use hard tabs, as decided by the Gleam community.")
+CAUTION: Be aware that Gleam code normally does not use hard tabs,
+         as decided by the Gleam community.
+ But since Gleam is also pushing for a 2-space indentation,
+ it might be useful to use hard-tabs and change the `tab-width' from 2 to
+ a larger number to render existing code and show wider indentation."
+  :group 'pel-pkg-for-gleam
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Tools for BEAM languages

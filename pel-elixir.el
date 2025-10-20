@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-20 09:31:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 10:44:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -126,6 +126,10 @@ Return `pel-show-indent' capability list."
   (insert (propertize "* Hard Tab Control:" 'face 'bold))
   (pel-insert-symbol-content-line 'pel-elixir-tab-width)
   (pel-insert-symbol-content-line 'tab-width)
+  (pel-insert-symbol-content-line 'pel-elixir-use-tabs
+                                  nil #'pel-on-off-string)
+  (pel-insert-symbol-content-line 'indent-tabs-mode
+                                  nil #'pel-on-off-string)
   ;; Return a capability list for `pel-show-indent' or similar callers
   '(supports-set-tab-width))
 

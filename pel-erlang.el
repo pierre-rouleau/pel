@@ -220,7 +220,11 @@ Return `pel-show-indent' capability list."
   (pel-insert-symbol-content-line 'erlang-tab-always-indent)
   (pel-insert-symbol-content-line 'pel-erlang-tab-width)
   (pel-insert-symbol-content-line 'tab-width)
-    ;; Return a capability list for `pel-show-indent' or similar callers
+  (pel-insert-symbol-content-line 'pel-erlang-use-tabs
+                                  nil #'pel-on-off-string)
+  (pel-insert-symbol-content-line 'indent-tabs-mode
+                                  nil #'pel-on-off-string)
+  ;; Return a capability list for `pel-show-indent' or similar callers
   '(supports-set-tab-width))
 
 ;;-pel-autoload
