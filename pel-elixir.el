@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 14:20:12 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 09:31:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,7 +33,7 @@
 ;;
 (require 'pel--base)        ; use:
 (require 'pel--options)     ; use:
-
+(require 'pel-indent)       ; use `pel-insert-tab-set-width-info'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -93,28 +93,11 @@ USE-ELIXIR should be set to `pel-use-elixir' value used in current buffer."
    (t "Invalid! Use t or with-tree-sitter")))
 
 ;;-pel-autoload
-(defun pel-elixir-setup-info (&optional append)
-  "Display Elixir setup information."
-  (interactive "P")
-  (pel-major-mode-must-be '(elixir-mode elixir-ts-mode))
-  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
-    (pel-print-in-buffer
-     "*pel-elixir-info*"
-     "PEL setup for Elixir programming language"
-     (lambda ()
-       "Print Elixir setup info."
-       (insert (propertize "* Major Mode Control:" 'face 'bold))
-       (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
-                                  "major mode currently used")
-       (when pel-use-tree-sitter
-         (insert (format "\n- %s" (pel-ts-language-grammar-status-for
-                                   'elixir "\n- "))))
-       (pel-insert-symbol-content-line 'pel-use-elixir nil
-                                       (function pel-elixir-mode-used-text))
-       (insert "\n\n")
-       ;;
-       (insert (propertize "* Indentation Control:" 'face 'bold))
-       (insert "
+(defun pel-elixir-insert-indent-tab-info ()
+  "Insert Elixir indentation and hard tab setup info in current context.
+Return `pel-show-indent' capability list."
+  (insert (propertize "* Indentation Control:" 'face 'bold))
+  (insert "
 - Under PEL, Elixir indentation level width is controlled entirely by the
   value of the pel-elixir-indent-width user-option:
   PEL stores its value inside the variables used by the elixir-mode and
@@ -134,12 +117,40 @@ USE-ELIXIR should be set to `pel-use-elixir' value used in current buffer."
   hard tabs in Elixir source code is not required as it is for Go, therefore
   this technique may not as well-spread as it is for Go.
 ")
-       (pel-insert-symbol-content-line 'pel-elixir-indent-width)
-       (pel-insert-symbol-content-line 'elixir-basic-offset)
-       (pel-insert-symbol-content-line 'elixir-match-label-offset)
-       (pel-insert-symbol-content-line 'elixir-ts-indent-offset)
-       (pel-insert-symbol-content-line 'pel-elixir-tab-width)
-       (pel-insert-symbol-content-line 'tab-width))
+  (pel-insert-symbol-content-line 'pel-elixir-indent-width)
+  (pel-insert-symbol-content-line 'elixir-basic-offset)
+  (pel-insert-symbol-content-line 'elixir-match-label-offset)
+  (pel-insert-symbol-content-line 'elixir-ts-indent-offset)
+  (insert "\n\n")
+  ;;
+  (insert (propertize "* Hard Tab Control:" 'face 'bold))
+  (pel-insert-symbol-content-line 'pel-elixir-tab-width)
+  (pel-insert-symbol-content-line 'tab-width)
+  ;; Return a capability list for `pel-show-indent' or similar callers
+  '(supports-set-tab-width))
+
+;;-pel-autoload
+(defun pel-elixir-setup-info (&optional append)
+  "Display Elixir setup information."
+  (interactive "P")
+  (pel-major-mode-must-be '(elixir-mode elixir-ts-mode))
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-elixir-info*"
+     "PEL setup for Elixir programming language"
+     (lambda ()
+       "Print Elixir setup info."
+       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
+                                  "major mode currently used")
+       (when pel-use-tree-sitter
+         (insert (format "\n- %s" (pel-ts-language-grammar-status-for
+                                   'elixir "\n- "))))
+       (pel-insert-symbol-content-line 'pel-use-elixir nil
+                                       (function pel-elixir-mode-used-text))
+       (insert "\n\n")
+       (pel-elixir-insert-indent-tab-info)
+       (pel-insert-tab-set-width-info))
      (unless append :clear-buffer)
      :use-help-mode)))
 

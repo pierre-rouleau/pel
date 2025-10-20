@@ -363,6 +363,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel--elixir-ts-mode-fixer
     pel-elixir-mode-used-text
     pel-elixir-setup-info)
+  (pel-autoload-function "pel-elixir" for:
+    pel-elixir-insert-indent-tab-info)
 
   ;; --
   (pel-autoload "pel-emacs" for:
