@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-20 08:19:12 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 09:30:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -93,8 +93,8 @@ USE-ADA should be set to `pel-use-ada' value used in current buffer."
 
 ;;-pel-autoload
 (defun pel-ada-insert-indent-tab-info ()
-  "Insert ADA indentation setup in current context.
-Return pel-show-indent capability list."
+  "Insert Ada indentation and hard tab  setup in current context.
+Return `pel-show-indent' capability list."
   (insert (propertize "* Indentation Control:" 'face 'bold))
   (insert "
 - Ada indentation under `ada-mode' is controlled by a LSP back-end,
@@ -131,7 +131,7 @@ Return pel-show-indent capability list."
                                   nil #'pel-on-off-string)
   (pel-insert-symbol-content-line 'indent-tabs-mode
                                   nil #'pel-on-off-string)
-  ;; Return a capability list
+  ;; Return a capability list for `pel-show-indent' or similar callers
   '(supports-set-tab-width))
 
 ;;-pel-autoload
