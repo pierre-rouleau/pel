@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 12 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-20 14:27:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 14:45:50 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,7 +33,7 @@
 ;;
 (require 'pel--base)        ; use: `pel-set-tab-width', `pel-treesit-ready-p'
 (require 'pel--options)     ; use: `pel-go-run-gofmt-on-buffer-save'
-(require 'pel-indent)       ; use `pel-insert-tab-set-width-info'
+(require 'pel-indent)       ; use: `pel-insert-tab-set-width-info'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -113,8 +113,8 @@ Return `pel-show-indent' capability list."
   ;;
   (insert (propertize "* Hard Tab Control:" 'face 'bold))
   (insert "
-- The hard tab rendering width is for ruby buffer is controlled by
-  `pel-ruby-tab-width' and stored into `tab-width'.
+- The hard tab rendering width is for rust buffer is controlled by
+  `pel-rust-tab-width' and stored into `tab-width'.
   These do not control the indentation, just the visual width (in columns)
   that Emacs uses to render a hard tab character.
 ")
