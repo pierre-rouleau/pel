@@ -18,11 +18,11 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/PEL_Managed_Packages-292-teal
+.. image:: https://img.shields.io/badge/PEL_Managed_Packages-293-teal
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-670-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-695-teal
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
@@ -51,9 +51,9 @@ or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 Essentially PEL:
 
 - extends the standard Emacs system and enhance the synergy in your use of Emacs,
-- adds a large number (670) of convenient commands and provides glue logic to
+- adds a large number (695) of convenient commands and provides glue logic to
   increase feature cohesion and simplify their use,
-- provides the ability to easily install, update a large set (292) of external
+- provides the ability to easily install, update a large set (293) of external
   packages from various sources:
 
   - elpa compliant sites: GNU elpa, MELPA,
@@ -62,12 +62,17 @@ Essentially PEL:
   - and you can still install packages with Emacs package management commands,
     and manually configure them by adding specific logic in the PEL init.el file.
 
+- provides contextual help commands that describe how to deal with indentation
+  and hard tab control in several major modes,
+- provides the ability to use Tree-Sitter based major modes but also
+  dynamically switch from classic to Tree-Sitter based major mode and back
+  at any time and without any impact on your original selection,
 - uses the extremely powerful Emacs customization system to drive activation
   of features,
 
   - PEL provides an Emacs init.el and early-init.el file; to use PEL you need
-    to use the PEL specific init.el file
-    , as described inside the `PEL installation`_,
+    to use the PEL specific init.el file,
+    as described inside the `PEL installation`_,
     and you won't need to edit it to control installation and manage the PEL
     supported packages.  If you need to add extra logic that PEL does not yet
     implement then you can add it to your copy of that init.el file, otherwise
@@ -305,7 +310,7 @@ various packages, etc...
 -----------------------------------------------------------------
 
 - In normal mode, PEL controls the download, installation, configuration and
-  activation of **292** *top-level* [#externp]_ external packages through the
+  activation of **293** *top-level* [#externp]_ external packages through the
   use of easy-to-setup customization user-options that have a name that start
   with the "``pel-use-``" prefix.
 
@@ -382,7 +387,7 @@ various packages, etc...
 --------------------------
 
 
-- PEL provides over 670 extra commands.  PEL commands extend the packages
+- PEL provides over 695 extra commands.  PEL commands extend the packages
   it supports and provides some of its own features.  Some commands are only
   available for a given OS, most are accessible in every OS.
 - PEL provides 10 specialized Hydra_ key bindings when the ``pel-use-hydra``
@@ -461,7 +466,7 @@ Notes
 
 
 .. [#externp] An external package may have dependencies.  The dependencies are also
-              installed. PEL currently provides access to 292 top-level external packages.
+              installed. PEL currently provides access to 293 top-level external packages.
               The actual number of packages is larger when counting their
               dependencies (currently 48 extra packages installed as dependencies).
               From within PEL execute the **pel-package-info**
@@ -547,7 +552,7 @@ Notes
               The command detects the key sequence and the context to
               identify which PEL PDF to open.
 
-              PEL currently implements 670 interactive commands.  Some are
+              PEL currently implements 695 interactive commands.  Some are
               always loaded.  Several are auto-loaded when needed.  This count
               excludes the number of template commands that are dynamically constructed
               and loaded only for major modes, such as Erlang, that support
