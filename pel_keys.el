@@ -5001,7 +5001,16 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (pel--install-generic-skel pel:nim-skel 'pel-pkg-for-nim "nim")
       ;; ensure consistent indentation control
       (when (boundp 'nim-indent-offset)
-        (setq-local nim-indent-offset pel-nim-indent-width)))))
+        (setq-local nim-indent-offset pel-nim-indent-width))
+      (setq-local tab-width pel-nim-indent-width))
+
+    (pel-config-major-mode nimscript pel:for-nim :no-ts
+      ;; activate skeletons
+      (pel--install-generic-skel pel:nim-skel 'pel-pkg-for-nim "nim")
+      ;; ensure consistent indentation control
+      (when (boundp 'nimscript-indent-offset)
+        (setq-local nimscript-indent-offset pel-nim-indent-width))
+      (setq-local tab-width pel-nim-indent-width))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Ocaml Programming Language Support

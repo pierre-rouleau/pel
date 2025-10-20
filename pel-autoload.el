@@ -674,10 +674,15 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-beginning-of-next-defun
     pel-end-of-previous-defun)
 
+  ;; --
+  (pel-autoload "pel-nim" for:
+    pel-nim-setup-info)
   (pel-autoload-function "pel-nim" for:
-    pel-nim-setup-info
+    pel-nim-insert-indent-tab-info
+    pel-nimscript-insert-indent-tab-info
     pel-nim-insert-shebang-line)
 
+  ;; --
   (pel-autoload "pel-numkpad" for:
     pel-toggle-mac-numlock
     pel-show-mac-numlock
@@ -816,6 +821,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-rust-mode-used-text
     pel-rust-setup-info)
   (pel-autoload-function "pel-rust" for:
+    pel-rust-mode-used-text
     pel--rust-ts-mode-fixer)
 
   (pel-autoload "pel-scheme" for:

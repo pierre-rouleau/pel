@@ -10252,6 +10252,13 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-nim
   :type '(repeat function))
 
+(defcustom pel-nimscript-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Nim Script buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-nim
+  :type '(repeat function))
+
 (defcustom pel-nim-indent-width 2
   "Indentation width for Nim buffers.
 

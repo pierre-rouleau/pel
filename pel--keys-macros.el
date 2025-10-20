@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-17 21:46:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 15:12:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -797,6 +797,7 @@ stored inside the doc/pdf directory.")
     ("vc-dir"          [f11 32 32 ?v])
     ("m2"              [f11 32 ?2])     ; modula-2
     ("nim"             [f11 32 ?n])
+    ("nimscript"       [f11 32 ?n])
     ("ocaml"           [f11 32 ?o])
     ("odin"            [f11 32 ?O])
     ("tuareg"          [f11 32 ?o])
@@ -1844,6 +1845,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     lfe inferior-lfe
     lisp arc clojure
     makefile
+    nimscript
     nix
     perl
     rust
