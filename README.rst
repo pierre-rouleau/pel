@@ -66,7 +66,8 @@ Essentially PEL:
   and hard tab control in several major modes,
 - provides the ability to use Tree-Sitter based major modes but also
   dynamically switch from classic to Tree-Sitter based major mode and back
-  at any time and without any impact on your original selection,
+  at any time and without any impact on your original selection;
+  the `🚦 Tree-sitter PDF`_ lists these modes,
 - uses the extremely powerful Emacs customization system to drive activation
   of features,
 
@@ -614,6 +615,7 @@ Notes
 .. _fast startup mode:          doc/pel-manual.rst#normal-startup-and-fast-startup-modes
 .. _⅀ Fast Startup PDF:         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/fast-startup.pdf
 .. _⅀ Customize PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf
+.. _🚦 Tree-sitter PDF:         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/tree-sitter-parsers.pdf
 .. _Mozilla Firefox:            https://en.wikipedia.org/wiki/Firefox
 .. _How to setup GUI Emacs environment: doc/pel-manual.rst#prepare-using-gui-launched-emacs-running-in-graphics-mode
 .. _PEL compatible Emacs init.el: example/init/init.el
