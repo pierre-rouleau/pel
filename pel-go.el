@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 14:28:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 12:56:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,6 +33,7 @@
 ;;
 (require 'pel--base)        ; use: `pel-set-tab-width', `pel-treesit-ready-p'
 (require 'pel--options)     ; use:
+(require 'pel-indent)       ; use `pel-insert-tab-set-width-info'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -148,6 +149,59 @@ group customize buffer."
    (t "Invalid! Use t or with-tree-sitter")))
 
 ;;-pel-autoload
+(defun pel-go-insert-indent-tab-info ()
+  "Insert Go indentation and hard tab setup info in current context.
+Return `pel-show-indent' capability list."
+  (insert (propertize "* Indentation/Tab Width Control:" 'face 'bold))
+  (insert "
+- Under PEL, Go indentation level width is controlled by `pel-go-tab-width':
+  PEL stores its value in `tab-width' and `go-ts-mode-indent-offset' when
+  a Go buffer is opened in go-mode and in go-ts-mode.
+  Without PEL, indentation width is controlled either by either user-option
+  depending of the major mode used.  That can lead to confusion,
+  a confusion that PEL avoids.
+")
+  (pel-insert-symbol-content-line 'pel-go-tab-width nil
+                                  "\
+corresponds to rendered indentation width. \
+Changing it has no impact on buffer/file content!")
+  (pel-insert-symbol-content-line 'tab-width nil
+                                  "used by go-mode.")
+  (pel-insert-symbol-content-line 'go-ts-mode-indent-offset nil
+                                  "used by go-ts-mode.")
+  (insert "
+
+ You can temporarily change the one used by the major mode you are using to
+ increase or decrease the visual indentation spacing.  The best way to do
+ that is to use something like:
+  -  M-: (setq-local tab-width 8) for go-mode
+  -  M-: (setq-local go-ts-mode-indent-offset 8) for go-ts-mode.
+
+  Changing `pel-go-tab-width' will only affect the rendering of the next Go
+  buffer(s) you open.
+
+  Under normal circumstances (if you do nothing) the 3 user-options should
+  have the exact same value, imposed by the value of `pel-go-tab-width' when
+  the Go buffer is opened.
+
+ Also:"
+          )
+  ;; Return a capability list for `pel-show-indent' or similar callers
+  '(supports-set-tab-width))
+
+;;-pel-autoload
+(defun pel-go-mod-insert-indent-tab-info ()
+  "Insert go.mod indentation and hard tab setup info in current context.
+Return `pel-show-indent' capability list."
+  (pel-go-insert-indent-tab-info))
+
+;;-pel-autoload
+(defun pel-go-dot-mod-insert-indent-tab-info ()
+  "Insert go.mod indentation and hard tab setup info in current context.
+Return `pel-show-indent' capability list."
+  (pel-go-insert-indent-tab-info))
+
+;;-pel-autoload
 (defun pel-go-setup-info (&optional append)
   "Display Go setup information."
   (interactive "P")
@@ -181,37 +235,8 @@ group customize buffer."
                                           "no, save buffer unchanged.")))
        (pel-insert-symbol-content-line 'pel-use-goflymake)
        (insert "\n\n")
-       ;;
-       (insert (propertize "* Indentation Control:" 'face 'bold))
-       (insert "
-- Under PEL, Go indentation level width is controlled by pel-go-tab-width:
-  PEL stores its value in tab-width and go-ts-mode-indent-offset when
-  a Go buffer is opened in go-mode and in go-ts-mode.
-  Without PEL, indentation width is controlled either by either user-option
-  depending of the major mode used.  That can lead to confusion,
-  a confusion that PEL avoids.
-
-  You can temporarily change the one used by the major mode you are using to
-  increase or decrease the visual indentation spacing.  The best way to do
-  that is to use something like:
-  -  M-: (setq-local tab-width 8) for go-mode
-  -  M-: (setq-local go-ts-mode-indent-offset 8) for go-ts-mode.
-
-  Changing pel-go-tab-width will only affect the rendering of the next Go
-  buffer(s) you open.
-
-  Under normal circumstances (if you do nothing) the 3 user-options should
-  have the exact same value, imposed by the value of pel-go-tab-width when
-  the Go buffer is opened.
-")
-       (pel-insert-symbol-content-line 'pel-go-tab-width nil
-                                       "\
-corresponds to rendered indentation width. \
-Changing it has no impact on buffer/file content!")
-       (pel-insert-symbol-content-line 'tab-width nil
-                                       "used by go-mode.")
-       (pel-insert-symbol-content-line 'go-ts-mode-indent-offset nil
-                                       "used by go-ts-mode."))
+       (pel-go-insert-indent-tab-info)
+       (pel-insert-tab-set-width-info))
      (unless append :clear-buffer)
      :use-help-mode)))
 

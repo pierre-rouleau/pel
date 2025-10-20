@@ -479,6 +479,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-go-toggle-syntax-checker)
   (pel-autoload-function "pel-go" for:
     pel--go-ts-mode-fixer
+    pel-go-insert-indent-tab-info
+    pel-go-mod-insert-indent-tab-info
+    pel-go-dot-mod-insert-indent-tab-info
     pel-go-gofmt-on-buffer-save)
 
   ;; --
