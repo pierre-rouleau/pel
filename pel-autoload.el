@@ -84,10 +84,10 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-ada" for:
     pel-ada-mode
-    pel-ada-mode-used-text
     pel-ada-setup-info)
   (pel-autoload-function "pel-ada" for:
     pel--ada-ts-mode-fixer
+    pel-ada-mode-used-text
     pel-ada-insert-indent-tab-info)
 
   (pel-autoload "pel-align" for:
@@ -360,10 +360,10 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; --
   (pel-autoload "pel-elixir" for:
     pel-elixir-mode
-    pel-elixir-mode-used-text
     pel-elixir-setup-info)
   (pel-autoload-function "pel-elixir" for:
     pel--elixir-ts-mode-fixer
+    pel-elixir-mode-used-text
     pel-elixir-insert-indent-tab-info)
 
   ;; --
@@ -383,7 +383,6 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; --
   (pel-autoload "pel-erlang" for:
     pel-erlang-mode
-    pel-erlang-mode-used-text
     pel-erlang-setup-info
     pel-erlang-comma
     pel-erlang-gt
@@ -406,6 +405,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-erlang-unwind)
   (pel-autoload-function "pel-erlang" for:
     pel--erlang-ts-mode-fixer
+    pel-erlang-mode-used-text
     pel-erlang-insert-indent-tab-info
     pel-erlang-root-path
     pel-erlang-version
@@ -807,23 +807,26 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-rpm-build
     pel-rpm-spec-lint)
 
+  ;; --
   (pel-autoload "pel-ruby" for:
     pel-ruby-mode
-    pel-ruby-mode-used-text
     pel-ruby-setup-info)
   (pel-autoload-function "pel-ruby" for:
     pel--ruby-ts-mode-fixer
+    pel-ruby-mode-used-text
     pel-ruby-insert-indent-tab-info
     pel-ruby-insert-shebang-line)
 
+  ;; --
   (pel-autoload "pel-rust" for:
     pel-rust-mode
-    pel-rust-mode-used-text
     pel-rust-setup-info)
   (pel-autoload-function "pel-rust" for:
     pel-rust-mode-used-text
+    pel-rust-insert-indent-tab-info
     pel--rust-ts-mode-fixer)
 
+  ;; --
   (pel-autoload "pel-scheme" for:
     pel-clear-scheme-repl-buffer
     pel-chez-repl
@@ -1124,9 +1127,10 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-zig" for:
     pel-zig-mode
-    pel-zig-mode-used-text
     pel-zig-setup-info)
   (pel-autoload-function "pel-zig" for:
+    pel-zig-insert-indent-tab-info
+    pel-zig-mode-used-text
     pel--zig-ts-mode-fixer))
 
 

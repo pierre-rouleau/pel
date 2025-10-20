@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 15:38:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 15:59:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,6 +33,7 @@
 ;;
 (require 'pel--base)        ; use:
 (require 'pel--options)     ; use:
+(require 'pel-indent)       ; use: `pel-insert-tab-set-width-info'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -92,6 +93,49 @@ USE-ZIG should be set to `pel-use-zig' value used in current buffer."
    (t "Invalid! Use t or with-tree-sitter")))
 
 ;;-pel-autoload
+(defun pel-zig-insert-indent-tab-info ()
+  "Insert Zig indentation and hard tab setup info in current context.
+Return `pel-show-indent' capability list."
+  (insert (propertize "* Indentation Control:" 'face 'bold))
+  (insert "
+- Under PEL, Zig indentation level width is controlled entirely by the
+  value of the `pel-zig-indent-width' user-option:
+  PEL stores its value inside the variables used by the zig-mode and
+  zig-ts-mode to ensure consistency.
+
+  If you want to use hard tabs for indentation, you should set the value
+  tab-width to the same value of pel-zig-indent-width and then you can
+  control the visual rendering of indentation by changing the values of those
+  two user-options: the content of the buffer and file does wont change but
+  the indentation rendering will.
+
+  Note, however, that other editors may not be able to do the same; the use of
+  hard tabs in Zig source code is not required as it is for Go, therefore
+  this technique may not as well-spread as it is for Go.
+")
+  (pel-insert-symbol-content-line 'pel-zig-indent-width)
+  (pel-insert-symbol-content-line 'zig-indent-offset)
+  (pel-insert-symbol-content-line 'zig-ts-mode-indent-offset)
+  (insert "\n\n")
+  ;;
+  (insert (propertize "* Hard Tab Control:" 'face 'bold))
+  (insert "
+- The hard tab rendering width is for zig buffer is controlled by
+  `pel-zig-tab-width' and stored into `tab-width'.
+  These do not control the indentation, just the visual width (in columns)
+  that Emacs uses to render a hard tab character.
+")
+  (pel-insert-symbol-content-line 'pel-zig-tab-width)
+  (pel-insert-symbol-content-line 'tab-width)
+  (pel-insert-symbol-content-line 'pel-zig-use-tabs
+                                  nil #'pel-on-off-string)
+  (pel-insert-symbol-content-line 'indent-tabs-mode
+                                  nil #'pel-on-off-string)
+  ;; Return a capability list for `pel-show-indent' or similar callers
+  '(supports-set-tab-width)
+  (pel-insert-symbol-content-line 'tab-width))
+
+;;-pel-autoload
 (defun pel-zig-setup-info (&optional append)
   "Display Zig setup information."
   (interactive "P")
@@ -116,32 +160,8 @@ USE-ZIG should be set to `pel-use-zig' value used in current buffer."
        (pel-insert-symbol-content-line 'zig-format-on-save)
        ;;
        (insert "\n\n")
-       (insert (propertize "* Indentation Control:" 'face 'bold))
-       (insert "
-- Under PEL, Zig indentation level width is controlled entirely by the
-  value of the pel-zig-indent-width user-option:
-  PEL stores its value inside the variables used by the zig-mode and
-  zig-ts-mode to ensure consistency.
-- The hard tab rendering width is for zig buffer is controlled by
-  pel-zig-tab-width and stored into tab-width.  These do not control the
-  indentation, just the visual width (in columns) that Emacs uses to render a
-  hard tab character.
-
-  If you want to use hard tabs for indentation, you should set the value
-  tab-width to the same value of pel-zig-indent-width and then you can
-  control the visual rendering of indentation by changing the values of those
-  two user-options: the content of the buffer and file does wont change but
-  the indentation rendering will.
-
-  Note, however, that other editors may not be able to do the same; the use of
-  hard tabs in Zig source code is not required as it is for Go, therefore
-  this technique may not as well-spread as it is for Go.
-")
-       (pel-insert-symbol-content-line 'pel-zig-indent-width)
-       (pel-insert-symbol-content-line 'zig-indent-offset)
-       (pel-insert-symbol-content-line 'zig-ts-mode-indent-offset)
-       (pel-insert-symbol-content-line 'pel-zig-tab-width)
-       (pel-insert-symbol-content-line 'tab-width))
+       (pel-zig-insert-indent-tab-info)
+       (pel-insert-tab-set-width-info))
      (unless append :clear-buffer)
      :use-help-mode)))
 
