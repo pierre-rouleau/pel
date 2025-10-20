@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-10-20 11:44:59 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-10-20 13:42:48 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -745,15 +745,15 @@ pel-iedit.elc:          pel--options.elc
 pel-imenu-dbg.elc:      pel--base.elc
 pel-imenu-ido.elc:      pel--base.elc pel--options.elc pel-prompt.elc pel-completion.elc
 pel-imenu.elc:          pel--base.elc pel--options.elc
-pel-ini.elc:			pel--base.elc
+pel-ini.elc:		pel--base.elc
 pel-indent.elc:         pel--base.elc pel-ccp.elc pel-mark.elc
 pel-kbmacros.elc:       pel--options.elc pel-list.elc
 pel-key-chord.elc:      pel--base.elc pel--options.elc
 pel-lisp.elc:           pel--base.elc
 pel-lispy.elc:          pel--base.elc pel--options.elc
 pel-list.elc:           pel--base.elc
-pel-lsp.elc:			pel--base.elc
-pel-lua.elc:            pel--base.elc pel--options.elc pel-ccp.elc
+pel-lsp.elc:		pel--base.elc
+pel-lua.elc:            pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc
 pel-make.elc:           pel--base.elc pel-syntax.elc
 pel-man.elc:            pel--base.elc
 pel-mark.elc:           pel--base.elc
@@ -764,7 +764,7 @@ pel-open.elc:           pel--base.elc pel--options.elc pel-ido.elc pel-prompt.el
 pel-outline.elc:        pel--base.elc
 pel-package.elc:        pel--base.elc pel--options.elc pel-navigate.elc
 pel-pathmng.elc:        pel--base.elc pel-window.elc
-pel-perl.elc:			pel--base.elc pel--options.elc pel-ccp.elc pel-ffind.elc
+pel-perl.elc:		pel--base.elc pel--options.elc pel-ccp.elc pel-ffind.elc
 pel-pike.elc:           pel--base.elc pel--options.elc pel-ccp.elc
 pel-plantuml.elc:       pel--base.elc
 pel-pp.elc:             pel--base.elc
@@ -773,7 +773,7 @@ pel-prompt.elc:         pel--base.elc pel--options.elc
 pel-read.elc:           pel-navigate.elc
 pel-rst.elc:            pel--base.elc pel--options.elc pel-whitespace.elc pel--macros.elc pel-ccp.elc pel-bookmark.elc pel-file.elc
 pel-ruby.elc:           pel--base.elc pel--options.elc pel-ccp.elc
-pre-rust.elc:          pel--base.elc pel--options.elc
+pre-rust.elc:           pel--base.elc pel--options.elc
 pel-sh.elc:             pel--base.elc
 pel-shell.elc:          pel--options.elc
 pel-scheme.elc:         pel-comint.elc pel-window.elc

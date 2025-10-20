@@ -625,6 +625,7 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-lua" for:
     pel--lua-ts-mode-fixer
     pel-lua-mode-used-text
+    pel-lua-insert-indent-tab-info
     pel-lua-insert-shebang-line)
 
   (pel-autoload "pel-make" for:
