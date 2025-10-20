@@ -1369,9 +1369,6 @@ Your version of Emacs does not support dynamic module.")))
 
 (define-key pel: (kbd "C-x C-c") 'pel-shutdown-server)
 
-;;*** Tab Width Control
-(define-key pel: (kbd "M-t") 'pel-set-tab-width)
-
 ;;*** Window navigation
 (defun pel--global-windmove-on (prefix)
   "Bind windmove commands on PREFIX key followed by cursor."
@@ -7316,6 +7313,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:indent "r"            #'indent-relative)
 (define-key pel:indent "c"             'pel-indent-lines)
 (define-key pel:indent "C"             'pel-unindent-lines)
+(define-key pel:indent "w"             'pel-set-tab-width)
 (define-key pel:indent (kbd "TAB")     'pel-indent-rigidly)
 (define-key pel:indent (kbd "<RET>")   'pel-newline-and-indent-below)
 

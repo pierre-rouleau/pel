@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Changed *pel-set-tab-width* binding from ~<f11> M-t~ to ~<f11> <tab> w~.
+  The new binding is also easy to use and is associated with the other tab
+  related commands by its prefix, serving as a reminder that other commands exist.
 - Add *pel-treesit-toggle-mode* command, bound to ~<f11> C-t C-t~, which
   toggles the major mode  from the classic mode to the Tree-Sitter based major mode.
 - PEL now support both *ada-mode* and Tree-Sitter based *ada-ts-mode*.
