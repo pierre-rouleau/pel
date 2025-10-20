@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 12 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-16 14:27:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 14:27:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,6 +33,7 @@
 ;;
 (require 'pel--base)        ; use: `pel-set-tab-width', `pel-treesit-ready-p'
 (require 'pel--options)     ; use: `pel-go-run-gofmt-on-buffer-save'
+(require 'pel-indent)       ; use `pel-insert-tab-set-width-info'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -85,6 +86,48 @@ It removes what entered when `rust-ts-mode' loads."
    (t "Invalid! Use t or with-tree-sitter")))
 
 ;;-pel-autoload
+(defun pel-rust-insert-indent-tab-info ()
+  "Insert Rust indentation and hard tab setup info in current context.
+Return `pel-show-indent' capability list."
+  (insert (propertize "* Indentation Control:" 'face 'bold))
+  (insert "
+- Under PEL, Rust indentation level width is controlled entirely by the
+  value of the `rust-indent-offset' user-option:
+  PEL stores its value inside the variables used by the rust-mode and
+  rust-ts-mode to ensure consistency.
+
+  If you want to use hard tabs for indentation, you should set the value
+  `tab-width' to the same value of `pel-rust-indent-width' and then you can
+  control the visual rendering of indentation by changing the values of those
+  two user-options: the content of the buffer and file does wont change but
+  the indentation rendering will.
+
+  Note, however, that other editors may not be able to do the same; the use of
+  hard tabs in Rust source code is not required as it is for Go, therefore
+  this technique may not as well-spread as it is for Go.
+")
+  (pel-insert-symbol-content-line 'rust-indent-offset)
+  (pel-insert-symbol-content-line 'rust-ts-mode-indent-offset)
+  (pel-insert-symbol-content-line 'tab-width)
+  (insert "\n\n")
+  ;;
+  (insert (propertize "* Hard Tab Control:" 'face 'bold))
+  (insert "
+- The hard tab rendering width is for ruby buffer is controlled by
+  `pel-ruby-tab-width' and stored into `tab-width'.
+  These do not control the indentation, just the visual width (in columns)
+  that Emacs uses to render a hard tab character.
+")
+  (pel-insert-symbol-content-line 'pel-rust-tab-width)
+  (pel-insert-symbol-content-line 'tab-width)
+  (pel-insert-symbol-content-line 'pel-rust-use-tabs
+                                  nil #'pel-on-off-string)
+  (pel-insert-symbol-content-line 'indent-tabs-mode
+                                  nil #'pel-on-off-string)
+  ;; Return a capability list for `pel-show-indent' or similar callers
+  '(supports-set-tab-width))
+
+;;-pel-autoload
 (defun pel-rust-setup-info (&optional append)
   "Display Rust setup information."
   (interactive "P")
@@ -114,10 +157,8 @@ It removes what entered when `rust-ts-mode' loads."
                     pel-use-flycheck-rust))
          (pel-insert-symbol-content-line s))
        (insert "\n\n")
-       ;;
-       (insert (propertize "* Indentation Control:" 'face 'bold))
-       (pel-insert-symbol-content-line 'rust-indent-offset)
-       (pel-insert-symbol-content-line 'tab-width))
+       (pel-rust-insert-indent-tab-info)
+       (pel-insert-tab-set-width-info))
      (unless append :clear-buffer)
      :use-help-mode)))
 

@@ -4054,7 +4054,7 @@ Do not enter lambda expressions."
 (defcustom pel-adoc-tab-width 2
   "Column width display rendering of hard tab for asciidoc buffers.
 
-PEL stores this in `tab-width' when opening asciidoc  buffers.
+PEL stores this in `tab-width' when opening asciidoc buffers.
 
 This does *NOT* control the indentation in asciidoc
 files, it only controls the column width display rendering of hard tabs
@@ -4112,7 +4112,7 @@ Do not enter lambda expressions."
 (defcustom pel-graphviz-dot-tab-width 2
   "Column width display rendering of hard tab for graphviz-dot buffers.
 
-PEL stores this in `tab-width' when opening graphviz-dot  buffers.
+PEL stores this in `tab-width' when opening graphviz-dot buffers.
 
 This does *NOT* control the indentation in graphviz-dot
 files, it only controls the column width display rendering of hard tabs
@@ -4159,7 +4159,7 @@ Do not enter lambda expressions."
 (defcustom pel-mscgen-tab-width 2
   "Column width display rendering of hard tab for mscgen buffers.
 
-PEL stores this in `tab-width' when opening mscgen  buffers.
+PEL stores this in `tab-width' when opening mscgen buffers.
 
 This does *NOT* control the indentation in mscgen
 files, it only controls the column width display rendering of hard tabs
@@ -4231,7 +4231,7 @@ Do not enter lambda expressions."
 (defcustom pel-plantuml-tab-width 2
   "Column width display rendering of hard tab for plantuml buffers.
 
-PEL stores this in `tab-width' when opening plantuml  buffers.
+PEL stores this in `tab-width' when opening plantuml buffers.
 
 This does *NOT* control the indentation in plantuml
 files, it only controls the column width display rendering of hard tabs
@@ -4394,7 +4394,7 @@ activate this package."
 (defcustom pel-markdown-tab-width 2
   "Column width display rendering of hard tab for markdown buffers.
 
-PEL stores this in `tab-width' when opening markdown  buffers.
+PEL stores this in `tab-width' when opening markdown buffers.
 
 This does *NOT* control the indentation in markdown
 files, it only controls the column width display rendering of hard tabs
@@ -4670,7 +4670,7 @@ Do not enter lambda expressions."
 (defcustom pel-yaml-tab-width 2
   "Column width display rendering of hard tab for yaml buffers.
 
-PEL stores this in `tab-width' when opening yaml  buffers.
+PEL stores this in `tab-width' when opening yaml buffers.
 
 This does *NOT* control the indentation in yaml
 files, it only controls the column width display rendering of hard tabs
@@ -7390,7 +7390,7 @@ Do not enter lambda expressions."
 (defcustom pel-js-tab-width 4
   "Column width display rendering of hard tab for javascript buffers.
 
-PEL stores this in `tab-width' when opening javascript  buffers.
+PEL stores this in `tab-width' when opening javascript buffers.
 
 This does *NOT* control the indentation in javascript
 files, it only controls the column width display rendering of hard tabs
@@ -7417,7 +7417,7 @@ Do not enter lambda expressions."
 (defcustom pel-js2-tab-width 4
   "Column width display rendering of hard tab for javascript buffers.
 
-PEL stores this in `tab-width' when opening javascript  buffers.
+PEL stores this in `tab-width' when opening javascript buffers.
 
 This does *NOT* control the indentation in javascript
 files, it only controls the column width display rendering of hard tabs
@@ -7684,7 +7684,7 @@ Do not enter lambda expressions."
 (defcustom pel-haskell-tab-width 2
   "Column width display rendering of hard tab for haskell buffers.
 
-PEL stores this in `tab-width' when opening haskell  buffers.
+PEL stores this in `tab-width' when opening haskell buffers.
 
 This does *NOT* control the indentation in haskell
 files, it only controls the column width display rendering of hard tabs
@@ -8296,7 +8296,7 @@ Activating this automatically turns `pel-use-janet' on."
   :link `(url-link :tag "HyPDF" ,(pel-pdf-file-url "pl-hy")))
 
 (defcustom pel-hy-activates-minor-modes nil
-  "List of *local* minor-modes automatically activated for Hy  buffers.
+  "List of *local* minor-modes automatically activated for Hy buffers.
   Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-hy
@@ -8317,7 +8317,7 @@ Activating this automatically turns `pel-use-janet' on."
 (defcustom pel-hy-tab-width 4
   "Column width display rendering of hard tab for hy buffers.
 
-PEL stores this in `tab-width' when opening hy  buffers.
+PEL stores this in `tab-width' when opening hy buffers.
 
 This does *NOT* control the indentation in hy
 files, it only controls the column width display rendering of hard tabs
@@ -9873,7 +9873,7 @@ Do not enter lambda expressions."
 (defcustom pel-gleam-tab-width 2
   "Column width display rendering of hard tab for gleam buffers.
 
-PEL stores this in `tab-width' when opening gleam  buffers.
+PEL stores this in `tab-width' when opening gleam buffers.
 
 This does *NOT* control the indentation in gleam files, it only controls
 the column width display rendering of hard tabs in buffers and tab stop
@@ -9996,7 +9996,7 @@ Values in the [2, 8] range are accepted."
 (defcustom pel-forth-tab-width 4
   "Column width display rendering of hard tab for forth buffers.
 
-PEL stores this in `tab-width' when opening forth  buffers.
+PEL stores this in `tab-width' when opening forth buffers.
 
 This does *NOT* control the indentation in forth
 files, it only controls the column width display rendering of hard tabs
@@ -10043,7 +10043,7 @@ Do not enter lambda expressions."
 (defcustom pel-julia-tab-width 4
   "Column width display rendering of hard tab for julia buffers.
 
-PEL stores this in `tab-width' when opening julia  buffers.
+PEL stores this in `tab-width' when opening julia buffers.
 
 This does *NOT* control the indentation in julia
 files, it only controls the column width display rendering of hard tabs
@@ -10120,7 +10120,7 @@ control:
 (defcustom pel-lua-tab-width 3
   "Column width display rendering of hard tab for lua buffers.
 
-PEL stores this in `tab-width' when opening lua  buffers.
+PEL stores this in `tab-width' when opening lua buffers.
 
 This does *NOT* control the indentation in lua
 files, it only controls the column width display rendering of hard tabs
@@ -10266,7 +10266,7 @@ ensure consistency:
 (defcustom pel-nim-tab-width 4
   "Column width display rendering of hard tab for nim buffers.
 
-PEL stores this in `tab-width' when opening nim  buffers.
+PEL stores this in `tab-width' when opening nim buffers.
 
 This does *NOT* control the indentation in nim
 files, it only controls the column width display rendering of hard tabs
@@ -10477,7 +10477,7 @@ Do not enter lambda expressions."
 (defcustom pel-tuareg-tab-width 4
   "Column width display rendering of hard tab for ocaml buffers.
 
-PEL stores this in `tab-width' when opening ocaml  buffers.
+PEL stores this in `tab-width' when opening ocaml buffers.
 
 This does *NOT* control the indentation in ocaml
 files, it only controls the column width display rendering of hard tabs
@@ -11046,7 +11046,7 @@ Do not enter lambda expressions."
 (defcustom pel-rexx-tab-width 2
   "Column width display rendering of hard tab for rexx buffers.
 
-PEL stores this in `tab-width' when opening rexx  buffers.
+PEL stores this in `tab-width' when opening rexx buffers.
 
 This does *NOT* control the indentation in rexx
 files, it only controls the column width display rendering of hard tabs
@@ -11087,7 +11087,7 @@ Do not enter lambda expressions."
 (defcustom pel-netrexx-tab-width 2
   "Column width display rendering of hard tab for netrexx buffers.
 
-PEL stores this in `tab-width' when opening netrexx  buffers.
+PEL stores this in `tab-width' when opening netrexx buffers.
 
 This does *NOT* control the indentation in netrexx
 files, it only controls the column width display rendering of hard tabs
@@ -11149,7 +11149,7 @@ control:
 (defcustom pel-ruby-tab-width 2
   "Column width display rendering of hard tab for ruby buffers.
 
-PEL stores this in `tab-width' when opening ruby  buffers.
+PEL stores this in `tab-width' when opening ruby buffers.
 
 This does *NOT* control the indentation in ruby
 files, it only controls the column width display rendering of hard tabs
@@ -11214,6 +11214,18 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-rust
   :type '(repeat function))
+
+(defcustom pel-rust-tab-width 4
+  "Column width display rendering of hard tab for rust buffers.
+
+PEL stores this in `tab-width' when opening rust buffers.
+
+This does *NOT* control the indentation in rust
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
+  :group 'pel-pkg-for-rust
+  :type 'integer
+  :safe 'pel-indent-valid-p)
 
 (defcustom pel-rust-use-tabs nil
   "Value of `indent-tabs-mode' for editing rust files.
@@ -11586,7 +11598,7 @@ Do not enter lambda expressions."
 (defcustom pel-v-tab-width 4
   "Column width display rendering of hard tab for v buffers.
 
-PEL stores this in `tab-width' when opening v  buffers.
+PEL stores this in `tab-width' when opening v buffers.
 
 This does *NOT* control the indentation in v
 files, it only controls the column width display rendering of hard tabs
@@ -12150,7 +12162,7 @@ Do not enter lambda expressions."
 (defcustom pel-yang-tab-width 2
   "Column width display rendering of hard tab for yang buffers.
 
-PEL stores this in `tab-width' when opening yang  buffers.
+PEL stores this in `tab-width' when opening yang buffers.
 
 This does *NOT* control the indentation in yang
 files, it only controls the column width display rendering of hard tabs
