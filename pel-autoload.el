@@ -84,10 +84,10 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-ada" for:
     pel-ada-mode
-    pel--ada-ts-mode-fixer
     pel-ada-mode-used-text
     pel-ada-setup-info)
   (pel-autoload-function "pel-ada" for:
+    pel--ada-ts-mode-fixer
     pel-ada-insert-indent-tab-info)
 
   (pel-autoload "pel-align" for:
@@ -360,10 +360,10 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; --
   (pel-autoload "pel-elixir" for:
     pel-elixir-mode
-    pel--elixir-ts-mode-fixer
     pel-elixir-mode-used-text
     pel-elixir-setup-info)
   (pel-autoload-function "pel-elixir" for:
+    pel--elixir-ts-mode-fixer
     pel-elixir-insert-indent-tab-info)
 
   ;; --
@@ -382,7 +382,6 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-erlang" for:
     pel-erlang-mode
-    pel--erlang-ts-mode-fixer
     pel-erlang-mode-used-text
     pel-erlang-setup-info
     pel-erlang-comma
@@ -405,6 +404,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-erlang-find-definitions
     pel-erlang-unwind)
   (pel-autoload-function "pel-erlang" for:
+    pel--erlang-ts-mode-fixer
     pel-erlang-root-path
     pel-erlang-version
     pel-erlang-set-dirpath
@@ -552,11 +552,11 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-go" for:
     pel-go-mode
     pel-go-dot-mod-mode
-    pel--go-ts-mode-fixer
     pel-go-toggle-gofmt-on-buffer-save
     pel-go-setup-info
     pel-go-toggle-syntax-checker)
   (pel-autoload-function "pel-go" for:
+    pel--go-ts-mode-fixer
     pel-go-gofmt-on-buffer-save)
 
   (pel-autoload "pel-graphviz-dot" for: pel-render-commented-graphviz-dot)
@@ -602,12 +602,13 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-byte-compile-file-and-load
     pel-lint-elisp-file)
 
-  (pel-autoload-function "pel-lua" for:
+  (pel-autoload "pel-lua" for:
     pel-lua-mode
     pel-lua-repl
+    pel-lua-setup-info)
+  (pel-autoload-function "pel-lua" for:
     pel--lua-ts-mode-fixer
     pel-lua-mode-used-text
-    pel-lua-setup-info
     pel-lua-insert-shebang-line)
 
   (pel-autoload "pel-make" for:
@@ -782,16 +783,18 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-ruby" for:
     pel-ruby-mode
-    pel--ruby-ts-mode-fixer
     pel-ruby-mode-used-text
-    pel-ruby-setup-info
+    pel-ruby-setup-info)
+  (pel-autoload-function "pel-ruby" for:
+    pel--ruby-ts-mode-fixer
     pel-ruby-insert-shebang-line)
 
   (pel-autoload "pel-rust" for:
     pel-rust-mode
-    pel--rust-ts-mode-fixer
     pel-rust-mode-used-text
     pel-rust-setup-info)
+  (pel-autoload-function "pel-rust" for:
+    pel--rust-ts-mode-fixer)
 
   (pel-autoload "pel-scheme" for:
     pel-clear-scheme-repl-buffer
@@ -1089,9 +1092,11 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-zig" for:
     pel-zig-mode
-    pel--zig-ts-mode-fixer
     pel-zig-mode-used-text
-    pel-zig-setup-info))
+    pel-zig-setup-info)
+  (pel-autoload-function "pel-zig" for:
+    pel--zig-ts-mode-fixer))
+
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-autoload)
