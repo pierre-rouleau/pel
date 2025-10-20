@@ -457,6 +457,8 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; --
   (pel-autoload "pel-forth" for:
     pel-forth-setup-info)
+  (pel-autoload-function "pel-forth" for:
+    pel-forth-insert-indent-tab-info)
 
   ;; --
   (pel-autoload "pel-goto-addr" for:
@@ -618,6 +620,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-byte-compile-file-and-load
     pel-lint-elisp-file)
 
+  ;; --
   (pel-autoload "pel-lua" for:
     pel-lua-mode
     pel-lua-repl
@@ -628,6 +631,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-lua-insert-indent-tab-info
     pel-lua-insert-shebang-line)
 
+  ;; --
   (pel-autoload "pel-make" for:
     pel-make-forward-conditional
     pel-make-backward-conditional
