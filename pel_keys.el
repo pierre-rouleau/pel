@@ -3563,7 +3563,7 @@ d-mode not added to ac-modes!"
         (when (boundp 'js-indent-level)
           (setq-local js-indent-level pel-js-indent-width))
         (when (boundp 'js-jsx-indent-level)
-          (setq-local pel-js-jsx-indent-level pel-js-indent-width))
+          (setq-local js-jsx-indent-level pel-js-indent-width))
         (setq-local tab-width pel-js-tab-width)
         (when (memq pel-use-js '(with-js2-minor
                                  with-ts-js2-minor))
