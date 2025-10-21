@@ -3554,15 +3554,16 @@ d-mode not added to ac-modes!"
     (pel-autoload-file js for:
                        js-mode js-ts-mode)
     ;; the javascript language grammar is used for js-ts-mode
-    (add-to-list 'treesit-load-name-override-list
-                 '(js "libtree-sitter-javascript" "tree_sitter_javascript"))
+    (when (boundp 'treesit-load-name-override-list)
+      (add-to-list 'treesit-load-name-override-list
+                   '(js "libtree-sitter-javascript" "tree_sitter_javascript")))
 
     (pel-eval-after-load js
       (pel-config-major-mode js pel:for-js :same-for-ts
         (when (boundp 'js-indent-level)
-          (setq-local js-indent-width pel-js-indent-width))
+          (setq-local js-indent-level pel-js-indent-width))
         (when (boundp 'js-jsx-indent-level)
-          (setq-local pel-js-jsx-indent-width pel-js-indent-width))
+          (setq-local pel-js-jsx-indent-level pel-js-indent-width))
         (setq-local tab-width pel-js-tab-width)
         (when (memq pel-use-js '(with-js2-minor
                                  with-ts-js2-minor))
