@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October  6 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-20 11:17:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 17:49:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -52,6 +52,8 @@ Emacs sessions).  To modify the global state permanently modify the
 customized value of the `gleam-ts-format-on-save' user option."
   (interactive "P")
   (pel-toggle-and-show-user-option 'gleam-ts-format-on-save globally))
+
+;; see https://github.com/gleam-lang/gleam/discussions/3633
 
 ;;-pel-autoload
 (defun pel-gleam-insert-indent-tab-info ()

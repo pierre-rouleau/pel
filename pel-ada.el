@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-20 09:30:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 18:44:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -62,7 +62,6 @@ and required by `pel-use-ada'."
                                (if (pel-treesit-ready-p 'ada)
                                    "error loading ada-ts-mode"
                                  "no grammar for ada")))
-
       (if (fboundp 'ada-mode)
           (ada-mode)
         (user-error
