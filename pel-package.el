@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-21 16:01:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-21 16:35:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -566,7 +566,18 @@ PKG may be a symbol or a string."
               ;; The argument for the new version is a list.
               (when pel-emacs-27-or-later-p
                 (setq pkg-arg (list pkg-arg)))
-              (setq dependencies (package--get-deps pkg-arg))
+              (condition-case err
+                  (setq dependencies (package--get-deps pkg-arg))
+                (error
+                 (setq dependencies nil)
+                 (display-warning
+                  'emacs-pkg-dependencies
+                  (format "\
+Warning: %s dependencies are not identified properly: %s
+Please report the issue to the package developer
+if this is a recent version of the package."
+                          pkg-arg
+                          err))))
               ;; package--get-deps of October 6th 2019 leaves the searched
               ;; pkg in the list of dependencies it returns.  The old code did
               ;; not do that. IMHO its a bug, violating the principle of least
@@ -577,11 +588,13 @@ PKG may be a symbol or a string."
               (when (memq pkg dependencies)
                 (delete pkg dependencies))
               dependencies)
+          ;; error handler
           (wrong-type-argument
            (unless (memq pkg pel-elpa-obsolete-packages)
              (display-warning
               'pel-elpa-pkg-dependencies
-              (format "Error extracting dependencies for %s : %s
+              (format "\
+Error extracting dependencies for %s : %s
 Is it obsolete? If so it should be added to pel-elpa-obsolete-packages."
                       pkg err)
               :error))
