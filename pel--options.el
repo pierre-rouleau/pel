@@ -7375,22 +7375,31 @@ When activating it you can select between the following values:
 - with-tree-sitter : use `js-ts-mode' provided by the js.el built-in file,
 - js2-mode         : use `js2-mode' provided by the js2-mode external package,
 - with-js2-minor   : use `js-mode' with `js2-minor-mode',
-- with-ts-js2-minor: use `js-ts-mode' with `js2-minor-mode'."
+- with-ts-js2-minor: use `js-ts-mode' with `js2-minor-mode'.
+- js3-mode         : use `js3-mode', another external package."
   :group 'pel-pkg-for-javascript
+  :link '(url-link :tag "js2-mode @ Github"
+                   "https://github.com/mooz/js2-mode/")
+  :link '(url-link :tag "js3-mode @ Github"
+                   "https://github.com/tamzinblake/js3-mode")
   :type '(choice
           (const :tag "Do not use Javascript" nil)
           (const :tag "Use Emacs classic built-in js-mode" t)
           (const :tag "Use tree-sitter built-in js-ts-mode" with-tree-sitter)
-          (const :tag "Use Emacs classic external js2-mode" js2-mode)
+          (const :tag "Use classic external js2-mode" js2-mode)
           (const :tag "\
 Use Emacs classic built-in js-mode with js2-minor-mode" with-js2-minor)
           (const :tag "\
-Use tree-sitter built-in js-ts-mode with js2-minor-mode" with-ts-js2-minor)))
-(pel-put 'pel-use-js :package-is '(when (memq pel-use-js
-                                              '(js2-mode
-                                                with-js2-minor
-                                                with-ts-js2-minor))
-                                            '((elpa . js2-mode))))
+Use tree-sitter built-in js-ts-mode with js2-minor-mode" with-ts-js2-minor)
+          (const :tag "Use classic external js3-mode" js3-mode)))
+(pel-put 'pel-use-js :package-is '(cond
+                                   ((memq pel-use-js
+                                          '(js2-mode
+                                            with-js2-minor
+                                            with-ts-js2-minor))
+                                    '((elpa . js2-mode)))
+                                   ((eq pel-use-js 'js3-mode)
+                                    '((elpa . js3-mode)))))
 
 (defcustom pel-js-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for js-mode buffers.
@@ -7433,25 +7442,12 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-javascript
   :type '(repeat function))
 
-(defcustom pel-js2-tab-width 4
-  "Column width display rendering of hard tab for javascript buffers.
-
-PEL stores this in `tab-width' when opening javascript buffers.
-
-This does *NOT* control the indentation in javascript
-files, it only controls the column width display rendering of hard tabs
-in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
+(defcustom pel-js3-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for js3-mode buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
   :group 'pel-pkg-for-javascript
-  :type 'integer
-  :safe 'pel-indent-valid-p)
-
-(defcustom pel-js2-use-tabs nil
-  "Value of `indent-tabs-mode' for editing javascript files.
-- If set to nil: only spaces are used for indentation.
-- If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-javascript
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Go language support

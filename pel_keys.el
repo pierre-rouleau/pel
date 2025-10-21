@@ -3502,73 +3502,91 @@ d-mode not added to ac-modes!"
   (define-pel-global-prefix pel:for-js  (kbd "<f11> SPC i"))
   (define-key pel:for-js "?" 'pel-js-setup-info)
 
-  ;; Install the js2-mode when it is required for it's major mode or for its
-  ;; minor mode that can be used to augment the features of the js-mode or
-  ;; js-ts-mode.  Note that using js2-mode you get no Tree-Sitter support.
-  ;; But it's possible to use the js-mode or js-ts-mode with the
-  ;; js2-minor-mode.
-  (when (memq pel-use-js '(js2-mode
-                           with-js2-minor
-                           with-ts-js2-minor))
-    (pel-ensure-package js2-mode from: melpa)
-    (pel-autoload-file js2-mode for:
-                       js2-mode
-                       js2-minor-mode
-                       js2-jsx-mode)
+  ;; The javascript language grammar is used for js-ts-mode.
+  ;; Set it up regardless of the mode used; for Emacs that can use it, the
+  ;; user will be able to switch to the mode using it if necessary.
+  (when (boundp 'treesit-load-name-override-list)
+    (add-to-list 'treesit-load-name-override-list
+                 '(js "libtree-sitter-javascript" "tree_sitter_javascript")))
 
-    ;; Add js2 commands when the js2 major or minor mode is used
-    (define-key pel:for-js "." 'js2-find-node-at-point)
-    (define-key pel:for-js "/" 'js2-node-name-at-point)
-    (define-key pel:for-js "j" 'js2-print-json-path)
-    (define-key pel:for-js (kbd "<right>") 'js2-forward-sws)
-    (define-key pel:for-js (kbd "<left>") 'js2-backward-sws)
-    (define-key pel:for-js (kbd "TAB") 'js2-indent-bounce)
-    (define-key pel:for-js (kbd "<C-M-i>") 'js2-indent-bounce-backward)
-    ;; js2-display-error-list
-    ;; js2-error-buffer-mode
-    ;; js2-error-buffer-next
-    ;; js2-error-buffer-prev and some more...
-
-    ;; If the js2 major mode is requested, associate the mode to the files
-    ;; and config the major mode.
-    (when (eq pel-use-js 'js2-mode)
-      (if (version< emacs-version "27.1")
-          (progn
-            (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
-            (add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode)))
-        (add-to-list 'auto-mode-alist '("\\.js?\\'" . js2-mode))
-        (add-hook 'js-mode-hook 'js2-minor-mode))
-      (pel-eval-after-load js2-mode
-        (pel-config-major-mode js2 pel:for-js :no-ts))))
-
-  ;; When using the built-in js-mode or js-ts-mode, without or
-  ;; with the js2-minor-mode
-  (when (memq pel-use-js '(t
-                           with-tree-sitter
-                           with-js2-minor
-                           with-ts-js2-minor))
-    ;; Use PEL mode selector
-    ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . pel-js-mode))
+  (cond
+   ;; When using the external js3-mode
+   ((eq pel-use-js 'js3-mode)
+    (pel-ensure-package js3-mode from: melpa)
+    (pel-autoload-file js3-mode for:
+                       js3-mode)
     (add-to-list 'auto-mode-alist
-                 '("\\(\\.js[mx]?\\|\\.har\\)\\'" . pel-js-mode))
-    (pel-autoload-file js for:
-                       js-mode js-ts-mode)
-    ;; the javascript language grammar is used for js-ts-mode
-    (when (boundp 'treesit-load-name-override-list)
-      (add-to-list 'treesit-load-name-override-list
-                   '(js "libtree-sitter-javascript" "tree_sitter_javascript")))
+                 '("\\(\\.js[mx]?\\|\\.har\\)\\'" . js3-mode))
+    (pel-eval-after-load js3-mode
+      (pel-config-major-mode js3 pel:for-js :no-ts
+        (when (boundp 'js3-indent-level)
+          (setq-local js3-indent-level pel-js-indent-width)))))
 
-    (pel-eval-after-load js
-      (pel-config-major-mode js pel:for-js :same-for-ts
-        (when (boundp 'js-indent-level)
-          (setq-local js-indent-level pel-js-indent-width))
-        (when (boundp 'js-jsx-indent-level)
-          (setq-local js-jsx-indent-level pel-js-indent-width))
-        (setq-local tab-width pel-js-tab-width)
-        (when (memq pel-use-js '(with-js2-minor
-                                 with-ts-js2-minor))
-          (when (fboundp 'js2-minor-mode)
-            (js2-minor-mode)))))))
+   ;; for all other modes
+   (t
+    ;; Install the js2-mode when it is required for it's major mode or for its
+    ;; minor mode that can be used to augment the features of the js-mode or
+    ;; js-ts-mode.  Note that using js2-mode you get no Tree-Sitter support.
+    ;; But it's possible to use the js-mode or js-ts-mode with the
+    ;; js2-minor-mode.
+    (when (memq pel-use-js '(js2-mode
+                             with-js2-minor
+                             with-ts-js2-minor))
+      (pel-ensure-package js2-mode from: melpa)
+      (pel-autoload-file js2-mode for:
+                         js2-mode
+                         js2-minor-mode
+                         js2-jsx-mode)
+
+      ;; Add js2 commands when the js2 major or minor mode is used
+      (define-key pel:for-js "." 'js2-find-node-at-point)
+      (define-key pel:for-js "/" 'js2-node-name-at-point)
+      (define-key pel:for-js "j" 'js2-print-json-path)
+      (define-key pel:for-js (kbd "<right>") 'js2-forward-sws)
+      (define-key pel:for-js (kbd "<left>") 'js2-backward-sws)
+      (define-key pel:for-js (kbd "TAB") 'js2-indent-bounce)
+      (define-key pel:for-js (kbd "<C-M-i>") 'js2-indent-bounce-backward)
+      ;; js2-display-error-list
+      ;; js2-error-buffer-mode
+      ;; js2-error-buffer-next
+      ;; js2-error-buffer-prev and some more...
+
+      ;; If the js2 major mode is requested, associate the mode to the files
+      ;; and config the major mode.
+      (when (eq pel-use-js 'js2-mode)
+        (if (version< emacs-version "27.1")
+            (progn
+              (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
+              (add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode)))
+          (add-to-list 'auto-mode-alist '("\\.js?\\'" . js2-mode))
+          (add-hook 'js-mode-hook 'js2-minor-mode))
+        (pel-eval-after-load js2-mode
+          (pel-config-major-mode js2 pel:for-js :no-ts))))
+
+    ;; When using the built-in js-mode or js-ts-mode, without or
+    ;; with the js2-minor-mode
+    (when (memq pel-use-js '(t
+                             with-tree-sitter
+                             with-js2-minor
+                             with-ts-js2-minor))
+      ;; Use PEL mode selector
+      ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . pel-js-mode))
+      (add-to-list 'auto-mode-alist
+                   '("\\(\\.js[mx]?\\|\\.har\\)\\'" . pel-js-mode))
+      (pel-autoload-file js for:
+                         js-mode js-ts-mode)
+
+      (pel-eval-after-load js
+        (pel-config-major-mode js pel:for-js :same-for-ts
+          (when (boundp 'js-indent-level)
+            (setq-local js-indent-level pel-js-indent-width))
+          (when (boundp 'js-jsx-indent-level)
+            (setq-local js-jsx-indent-level pel-js-indent-width))
+          (setq-local tab-width pel-js-tab-width)
+          (when (memq pel-use-js '(with-js2-minor
+                                   with-ts-js2-minor))
+            (when (fboundp 'js2-minor-mode)
+              (js2-minor-mode)))))))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Julia Programming Language Support
