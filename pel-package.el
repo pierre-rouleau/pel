@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-25 10:05:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-21 16:01:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -597,35 +597,50 @@ The list includes all packages that cannot be removed because of imposed
 restriction unless IGNORE-RESTRICTION is non-nil.
 
 Return a list of 2 lists:
-- first list is a list of elpa package symbols,
-- second list is a list of utils file name symbols.
+- 1: list is a list of elpa package symbols,
+- 2: list is a list of utils file name symbols.
+- 3: list of error messages, if any
 
 The elements of each list are sorted by alphabetical order of
 their names."
   (let ((elpa-list '())
-        (utils-list '()))
-    (dolist (user-option (pel-user-options))
-      (dolist (spec (pel-packages-for user-option ignore-restriction))
-        (cond
-         ;; elpa package
-         ((eq 'elpa (car spec))
-          (let  ((elpa-pkg (cdr spec)))
-            (unless (memq elpa-pkg elpa-list)
-              (push elpa-pkg elpa-list)
-              (unless without-dependants
-                (dolist (dep-pkg (pel-elpa-pkg-dependencies elpa-pkg))
-                  (unless (memq dep-pkg elpa-list)
-                    (push dep-pkg elpa-list)))))))
-         ;; utils package
-         ((eq 'utils (car spec))
-          (let ((utils-pkg (cdr spec)))
-            (unless (memq utils-pkg utils-list)
-              (push utils-pkg utils-list))))
-         (t (error "Invalid spec for %s: %S" user-option spec)))
-        ))
+        (utils-list '())
+        (error-list nil))
+    (condition-case err
+        (dolist (user-option (pel-user-options))
+          ;; (message ".. Testing: %s" (symbol-name user-option))
+          (condition-case err
+              (dolist (spec (pel-packages-for user-option ignore-restriction))
+                (cond
+                 ;; elpa package
+                 ((eq 'elpa (car spec))
+                  (let  ((elpa-pkg (cdr spec)))
+                    (unless (memq elpa-pkg elpa-list)
+                      (push elpa-pkg elpa-list)
+                      (unless without-dependants
+                        (dolist (dep-pkg (pel-elpa-pkg-dependencies elpa-pkg))
+                          (unless (memq dep-pkg elpa-list)
+                            (push dep-pkg elpa-list)))))))
+                 ;; utils package
+                 ((eq 'utils (car spec))
+                  (let ((utils-pkg (cdr spec)))
+                    (unless (memq utils-pkg utils-list)
+                      (push utils-pkg utils-list))))
+                 (t (push (format "Invalid spec for %s: %S" user-option spec)
+                          error-list))))
+            (error
+             (push (format "*** PEL Specification Error: %S for %s: %S *****"
+                           err
+                           (symbol-name user-option)
+                           user-option)
+                   error-list))))
+      (error
+       (push (format "*** PEL Specification Error: %S" err)
+             error-list)))
     (list
      (sort elpa-list (function pel-symbol-name-<))
-     (sort utils-list (function pel-symbol-name-<)))))
+     (sort utils-list (function pel-symbol-name-<))
+     error-list)))
 
 ;; --
 
@@ -733,7 +748,7 @@ whether it is a dependency or included because of a restriction
 lock.
 The function does not support printing a full report on stdout."
   (interactive "P")
-  (message "Gathering information...")
+  (message "pel-package-info: Gathering information...")
   (let* ((all-activated   (unless (pel-in-fast-startup-p)
                             (pel-activated-packages))) ; all (with dependencies & locks)
          (activated+lock  (unless (pel-in-fast-startup-p)
@@ -741,6 +756,7 @@ The function does not support printing a full report on stdout."
          (activated-bdeps (unless (pel-in-fast-startup-p)
                             (pel-activated-packages nil :without-locks)))
          (elpa-all          (car all-activated))
+         (errors            (nth 2 all-activated))
          (n-elpa-all        (length elpa-all))
          (elpa+lock         (car activated+lock))
          (n-elpa-base       (length elpa+lock))
@@ -777,40 +793,45 @@ The function does not support printing a full report on stdout."
 - # PEL loaded commands      : %d
 - # upgradable elpa packages : %d
 - Emacs init-time            : %s"
-                                           custom-file
-                                           package-user-dir
-                                           (length
-                                            (pel-elpa-package-directories package-user-dir))
-                                           package-user-dir
-                                           (length (pel-el-files-in pel-utils-dirpath))
-                                           pel-utils-dirpath
-                                           (length load-path)
-                                           (length user-options)
-                                           (length (seq-filter
-                                                    (lambda (x) (symbol-value x))
-                                                    user-options))
-                                           (length (car installable-pkgs))
-                                           (length (cadr installable-pkgs))
-                                           (pel--elpa-stats n-elpa-base n-elpa-deps
-                                                            n-elpa-locked)
-                                           (pel--elpa-stats n-utils-base n-utils-deps
-                                                            n-utils-locked)
-                                           (length load-history)
-                                           (length features)
-                                           (length package-alist)
-                                           (length package-activated-list)
-                                           (length package-selected-packages)
-                                           (length (pel-commands))
-                                           (length upgradable-pkgs)
-                                           (if (and (require 'time nil :no-error)
-                                                    (fboundp 'emacs-init-time))
-                                               (emacs-init-time)
-                                             "?"))))
+                                    custom-file
+                                    package-user-dir
+                                    (length
+                                     (pel-elpa-package-directories package-user-dir))
+                                    package-user-dir
+                                    (length (pel-el-files-in pel-utils-dirpath))
+                                    pel-utils-dirpath
+                                    (length load-path)
+                                    (length user-options)
+                                    (length (seq-filter
+                                             (lambda (x) (symbol-value x))
+                                             user-options))
+                                    (length (car installable-pkgs))
+                                    (length (cadr installable-pkgs))
+                                    (pel--elpa-stats n-elpa-base n-elpa-deps
+                                                     n-elpa-locked)
+                                    (pel--elpa-stats n-utils-base n-utils-deps
+                                                     n-utils-locked)
+                                    (length load-history)
+                                    (length features)
+                                    (length package-alist)
+                                    (length package-activated-list)
+                                    (length package-selected-packages)
+                                    (length (pel-commands))
+                                    (length upgradable-pkgs)
+                                    (if (and (require 'time nil :no-error)
+                                             (fboundp 'emacs-init-time))
+                                        (emacs-init-time)
+                                      "?"))))
     (when (pel-in-fast-startup-p)
       (user-error "PEL is running in fast-startup. \
  This is only available in normal mode!"))
     (if on-stdout
-        (message overview)
+        (when errors
+          (message "****** ERRORS: ")
+          (dolist (errmsg errors)
+            (message errmsg))
+          (message "***************"))
+      (message overview)
       (pel-print-in-buffer
        "*pel-user-options*"
        "PEL User Option activated packages"
@@ -846,7 +867,9 @@ also be requested by PEL user-options.\n"
             (cadr installable-pkgs))
            (pel--insert-pkgs-list
             "\nList of elpa-compliant packages that could be updated:\n"
-            upgradable-pkgs)))))))
+            upgradable-pkgs)))))
+    (when errors
+      (error "PEL Specification errors: %d" (length errors)))))
 
 (defvar loaded-file-name load-file-name)
 
