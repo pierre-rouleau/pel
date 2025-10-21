@@ -544,6 +544,16 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-itemize" for:
     pel-itemize-lines)
 
+  ;; --
+  (pel-autoload "pel-js" for:
+    pel-js-mode
+    pel-js-setup-info)
+  (pel-autoload-function "pel-js" for:
+    pel--js-ts-mode-fixer
+    pel-js-mode-used-text
+    pel-js-insert-indent-tab-info)
+
+  ;; --
   (pel-autoload "pel-lsp" for:
     pel-toggle-lsp-log-io
     pel-toggle-lsp-ui-sideline

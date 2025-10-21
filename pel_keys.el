@@ -3491,16 +3491,22 @@ d-mode not added to ac-modes!"
 ;;** Javascript Programming Language Support
 ;;   ---------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC i`` :
+
 (when pel-use-js
-  (define-pel-global-prefix pel:for-javascript  (kbd "<f11> SPC i"))
-  (add-to-list 'auto-mode-alist (cons "\\.js\\'"
-                                      (if (eq pel-use-js 'js-mode)
-                                          'js-mode
-                                        'js2-mode)))
+  ;;    - js-mode and js-ts-mode are built-in Emacs
+  ;;    - js2-mode is an external package
+
+  ;; Note: the code does not exactly follow the regular pattern
+  ;; because of the multiple choices to reduce the decisions.
+
+  (define-pel-global-prefix pel:for-js  (kbd "<f11> SPC i"))
+  (define-key pel:for-js "?" 'pel-js-setup-info)
+
   (cond
+   ;; When using the js2 external package -- no Tree-Sitter support
    ((eq pel-use-js 'js2-mode)
     (pel-ensure-package js2-mode from: melpa)
-    (pel-autoload-file js2-mode for: js2-mode)
+    (pel-autoload-file js2-mode for: js2-mode js2-jsx-mode)
     (if (version< emacs-version "27.1")
         (progn
           (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
@@ -3509,27 +3515,38 @@ d-mode not added to ac-modes!"
       (add-hook 'js-mode-hook 'js2-minor-mode))
 
     ;; Experimental ...
-    (define-key pel:for-javascript "." 'js2-find-node-at-point)
-    (define-key pel:for-javascript "?" 'js2-node-name-at-point)
-    (define-key pel:for-javascript "j" 'js2-print-json-path)
-    (define-key pel:for-javascript (kbd "<right>") 'js2-forward-sws)
-    (define-key pel:for-javascript (kbd "<left>") 'js2-backward-sws)
-    (define-key pel:for-javascript (kbd "TAB") 'js2-indent-bounce)
-    (define-key pel:for-javascript (kbd "<C-M-i>") 'js2-indent-bounce-backward)
+    (define-key pel:for-js "." 'js2-find-node-at-point)
+    (define-key pel:for-js "/" 'js2-node-name-at-point)
+    (define-key pel:for-js "j" 'js2-print-json-path)
+    (define-key pel:for-js (kbd "<right>") 'js2-forward-sws)
+    (define-key pel:for-js (kbd "<left>") 'js2-backward-sws)
+    (define-key pel:for-js (kbd "TAB") 'js2-indent-bounce)
+    (define-key pel:for-js (kbd "<C-M-i>") 'js2-indent-bounce-backward)
     ;; js2-display-error-list
     ;; js2-error-buffer-mode
     ;; js2-error-buffer-next
     ;; js2-error-buffer-prev and some more...
-    (pel-config-major-mode js2 pel:for-javascript :no-ts))
-   ;;
-   ((eq pel-use-js 'js-mode)
-    ;; Use the built-in js.el
+    (pel-eval-after-load js2-mode
+      (pel-config-major-mode js2 pel:for-js :no-ts)))
+
+   ;; When using the built-in js-mode or js-ts-mode
+   ((memq pel-use-js '(t with-tree-sitter))
+    ;; Use PEL mode selector
+    ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . pel-js-mode))
+    (add-to-list 'auto-mode-alist
+                 '("\\(\\.js[mx]?\\|\\.har\\)\\'" . pel-js-mode))
     (pel-autoload-file js for:
                        js-mode js-ts-mode)
+    ;; the javascript language grammar is used for js-ts-mode
+    (add-to-list 'treesit-load-name-override-list
+                 '(js "libtree-sitter-javascript" "tree_sitter_javascript"))
+
     (pel-eval-after-load js
-      (pel-config-major-mode js pel:for-javascript :same-for-ts
-        ;; 5) Set tab-width for the buffer as specified by the PEL user option
-        ;; for the major mode.
+      (pel-config-major-mode js pel:for-js :same-for-ts
+        (when (boundp 'js-indent-level)
+          (setq-local js-indent-width pel-js-indent-width))
+        (when (boundp 'js-jsx-indent-level)
+          (setq-local pel-js-jsx-indent-width pel-js-indent-width))
         (setq-local tab-width pel-js-tab-width))))))
 
 ;; ---------------------------------------------------------------------------

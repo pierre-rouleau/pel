@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-20 15:12:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-20 18:48:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1784,6 +1784,7 @@ DEFINES: is a cosmetic only argument that must be present."
                                     elixir-ts-mode
                                     erlang-ts-mode
                                     go-ts-mode
+                                    js-ts-mode
                                     rust-ts-mode
                                     zig-ts-mode)
   "List of Tree Sitter modes that require execution of a mode fixer function.

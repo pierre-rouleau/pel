@@ -5332,7 +5332,7 @@ See also: `pel-shell-script-extensions'."
 
 This *must* be activated to allow any other package for Ada.
 When activating it you can select between the following values:
-- t                : use `ada-mode' provided by the ada-model external package.
+- t                : use `ada-mode' provided by the ada-mode external package.
 - with-tree-sitter : use `ada-ts-mode' provided by the ada-ts-mode external
                      package.
 
@@ -7369,14 +7369,17 @@ Values in the [2, 8] range are accepted."
 (defcustom pel-use-js nil
   "Control whether PEL supports Javascript development.
 
-When set, identifies what mode is used to support Javascript."
+This *must* be activated to allow any other package for Javascript.
+When activating it you can select between the following values:
+- t                : use `js-mode' provided by the js.el built-in file.
+- js2-mode         : use `js2-mode' provided by the js2-mode external package,
+- with-tree-sitter : use `js-ts-mode' provided by the js.el built-in file."
   :group 'pel-pkg-for-javascript
   :type '(choice
-          (const :tag "Emacs basic support using built-in \
-js-mode and js-ts-mode." nil)
-          (const :tag "Emacs basic + \
-PEL additions using built-in js-mode and js-ts-mode." js-mode)
-          (const :tag "Supported by the js2-mode external package." js2-mode)))
+          (const :tag "Do not use Javascript" nil)
+          (const :tag "Use Emacs classic built-in js-mode" t)
+          (const :tag "Use tree-sitter built-in js-ts-mode" with-tree-sitter)
+          (const :tag "Use Emacs classic external js2-mode" js2-mode)))
 (pel-put 'pel-use-js :package-is '(when (eq pel-use-js 'js2-mode)
                                             '((elpa . js2-mode))))
 
@@ -7386,6 +7389,13 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-javascript
   :type '(repeat function))
+
+(defcustom pel-js-indent-width 4
+  "Number of columns for Javascript source code indentation.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-js
+  :type 'integer
+  :safe 'pel-indent-valid-p)
 
 (defcustom pel-js-tab-width 4
   "Column width display rendering of hard tab for javascript buffers.
