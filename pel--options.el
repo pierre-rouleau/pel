@@ -7372,15 +7372,24 @@ Values in the [2, 8] range are accepted."
 This *must* be activated to allow any other package for Javascript.
 When activating it you can select between the following values:
 - t                : use `js-mode' provided by the js.el built-in file.
+- with-tree-sitter : use `js-ts-mode' provided by the js.el built-in file,
 - js2-mode         : use `js2-mode' provided by the js2-mode external package,
-- with-tree-sitter : use `js-ts-mode' provided by the js.el built-in file."
+- with-js2-minor   : use `js-mode' with `js2-minor-mode',
+- with-ts-js2-minor: use `js-ts-mode' with `js2-minor-mode'."
   :group 'pel-pkg-for-javascript
   :type '(choice
           (const :tag "Do not use Javascript" nil)
           (const :tag "Use Emacs classic built-in js-mode" t)
           (const :tag "Use tree-sitter built-in js-ts-mode" with-tree-sitter)
-          (const :tag "Use Emacs classic external js2-mode" js2-mode)))
-(pel-put 'pel-use-js :package-is '(when (eq pel-use-js 'js2-mode)
+          (const :tag "Use Emacs classic external js2-mode" js2-mode)
+          (const :tag "\
+Use Emacs classic built-in js-mode with js2-minor-mode" with-js2-minor)
+          (const :tag "\
+Use tree-sitter built-in js-ts-mode with js2-minor-mode" with-ts-js2-minor)))
+(pel-put 'pel-use-js :package-is '(when (memq pel-use-js
+                                              '(js2-mode
+                                                with-js2-minor
+                                                with-ts-js2-minor))
                                             '((elpa . js2-mode))))
 
 (defcustom pel-js-activates-minor-modes nil

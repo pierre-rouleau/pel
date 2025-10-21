@@ -3494,27 +3494,29 @@ d-mode not added to ac-modes!"
 
 (when pel-use-js
   ;;    - js-mode and js-ts-mode are built-in Emacs
-  ;;    - js2-mode is an external package
+  ;;    - js2-mode  is an external package
 
-  ;; Note: the code does not exactly follow the regular pattern
+  ;; Note: the code does not exactly follow the regular code layout pattern
   ;; because of the multiple choices to reduce the decisions.
 
   (define-pel-global-prefix pel:for-js  (kbd "<f11> SPC i"))
   (define-key pel:for-js "?" 'pel-js-setup-info)
 
-  (cond
-   ;; When using the js2 external package -- no Tree-Sitter support
-   ((eq pel-use-js 'js2-mode)
+  ;; Install the js2-mode when it is required for it's major mode or for its
+  ;; minor mode that can be used to augment the features of the js-mode or
+  ;; js-ts-mode.  Note that using js2-mode you get no Tree-Sitter support.
+  ;; But it's possible to use the js-mode or js-ts-mode with the
+  ;; js2-minor-mode.
+  (when (memq pel-use-js '(js2-mode
+                           with-js2-minor
+                           with-ts-js2-minor))
     (pel-ensure-package js2-mode from: melpa)
-    (pel-autoload-file js2-mode for: js2-mode js2-jsx-mode)
-    (if (version< emacs-version "27.1")
-        (progn
-          (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
-          (add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode)))
-      (add-to-list 'auto-mode-alist '("\\.js?\\'" . js2-mode))
-      (add-hook 'js-mode-hook 'js2-minor-mode))
+    (pel-autoload-file js2-mode for:
+                       js2-mode
+                       js2-minor-mode
+                       js2-jsx-mode)
 
-    ;; Experimental ...
+    ;; Add js2 commands when the js2 major or minor mode is used
     (define-key pel:for-js "." 'js2-find-node-at-point)
     (define-key pel:for-js "/" 'js2-node-name-at-point)
     (define-key pel:for-js "j" 'js2-print-json-path)
@@ -3526,11 +3528,25 @@ d-mode not added to ac-modes!"
     ;; js2-error-buffer-mode
     ;; js2-error-buffer-next
     ;; js2-error-buffer-prev and some more...
-    (pel-eval-after-load js2-mode
-      (pel-config-major-mode js2 pel:for-js :no-ts)))
 
-   ;; When using the built-in js-mode or js-ts-mode
-   ((memq pel-use-js '(t with-tree-sitter))
+    ;; If the js2 major mode is requested, associate the mode to the files
+    ;; and config the major mode.
+    (when (eq pel-use-js 'js2-mode)
+      (if (version< emacs-version "27.1")
+          (progn
+            (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
+            (add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode)))
+        (add-to-list 'auto-mode-alist '("\\.js?\\'" . js2-mode))
+        (add-hook 'js-mode-hook 'js2-minor-mode))
+      (pel-eval-after-load js2-mode
+        (pel-config-major-mode js2 pel:for-js :no-ts))))
+
+  ;; When using the built-in js-mode or js-ts-mode, without or
+  ;; with the js2-minor-mode
+  (when (memq pel-use-js '(t
+                           with-tree-sitter
+                           with-js2-minor
+                           with-ts-js2-minor))
     ;; Use PEL mode selector
     ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . pel-js-mode))
     (add-to-list 'auto-mode-alist
@@ -3547,7 +3563,11 @@ d-mode not added to ac-modes!"
           (setq-local js-indent-width pel-js-indent-width))
         (when (boundp 'js-jsx-indent-level)
           (setq-local pel-js-jsx-indent-width pel-js-indent-width))
-        (setq-local tab-width pel-js-tab-width))))))
+        (setq-local tab-width pel-js-tab-width)
+        (when (memq pel-use-js '(with-js2-minor
+                                 with-ts-js2-minor))
+          (when (fboundp 'js2-minor-mode)
+            (js2-minor-mode)))))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Julia Programming Language Support

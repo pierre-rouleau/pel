@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-20 13:26:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-21 11:29:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -88,7 +88,8 @@ Signals a user-error if the other mode is not available."
                     (call-interactively alternate-mode)
                     (message "Switched to Tree-Sitter based mode: %s"
                              (symbol-name alternate-mode)))
-                (user-error "Classic major mode `%s' is not loaded!"
+                (user-error "\
+Classic major mode `%s' is not loaded! Does it exist? Is it installed?"
                             classic-mode-name)))))
       ;; currently using a classic mode
       (let* ((ts-mode-name (format "%s-ts-mode"
@@ -106,7 +107,8 @@ Signals a user-error if the other mode is not available."
                   (call-interactively alternate-ts-mode)
                   (message "Switched to Tree-Sitter based mode: %s"
                            (symbol-name alternate-ts-mode)))
-              (user-error "Tree-Sitter based major mode `%s' is not loaded!"
+              (user-error "\
+Tree-Sitter based major mode `%s' is not loaded! Does it exist? Is it installed?"
                           ts-mode-name))))))))
 
 ;;; --------------------------------------------------------------------------
