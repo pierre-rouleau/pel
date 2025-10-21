@@ -7,7 +7,7 @@ Using tree-sitter with Emacs and PEL
 :Ref: `PEL How-to Tips`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-10-14 10:42:02 EDT, updated by Pierre Rouleau.
+:Modified: 2025-10-21 10:05:12 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -75,6 +75,24 @@ where LANG is the language, LIBRARY-BASE-NAME is the filename of the dynamic
 library without the file-name extension, and FUNCTION-NAME is the
 function provided by the library.
 
+For example, the Javascript language grammar file base name is
+``libtree-sitter-javascript`` and the entry point function name
+is ``tree_sitter_javascript``.  Unfortunately the name of mode that supports
+it is ``js-mode`` and it expects the language to be identified by the name
+``js``.
+
+The entry required in the ``treesit-load-name-override-list`` variable is::
+
+  (js "libtree-sitter-javascript" "tree_sitter_javascript")
+
+The code required to add it in the list is:
+
+.. code:: elisp
+
+    ;; the javascript language grammar is used for js-ts-mode
+    (add-to-list 'treesit-load-name-override-list
+                 '(js "libtree-sitter-javascript" "tree_sitter_javascript"))
+
 **- Use symlink for unconventional named files:**
 
 Currently, PEL does not have a corresponding customizable user option that
@@ -91,6 +109,7 @@ Setting up Emacs Tree-Sitter Environment for PEL
 :Ref: `How to Get Started with Tree-Sitter`_, by Mickey Petersen
 :Ref: `What's new in Emacs 30.1?`_, by Mickey Petersen
 :Ref: See also: `How to recompile all Emacs Lisp files after updating Emacs to a different version`_
+:Ref: `🚦Tree-sitter PDF`_
 
 #. Set the ``pel-use-tree-sitter`` user-option to t.
 
@@ -162,12 +181,28 @@ Setting up Emacs Tree-Sitter Environment for PEL
    - Exit Emacs.
 
 At this point you should be able to start Emacs and use tree-sitter
-facilities.
+facilities for the languages that have Tree-Sitter grammars provided by the
+`tree-sitter-langs`_ package.
 
 Note that symlinks present in ``~/.emacs.d/libtree-sitter`` shadow symlinks
 with same name in ``~/.emacs.d/tree-sitter-langs-bin``.  You can use this to
 use a language grammar different from what is provided by the
-`tree-sitter-langs`_ package.
+`tree-sitter-langs`_ package or not provided by that package.
+
+**Using Other Language Grammars**
+
+The `🚦Tree-sitter PDF`_ has links to the Tree-Sitter language grammar packages
+for the programming languages supported by PEL.
+
+To use them, clone their repository on your computer and build them.
+Most of them have a Makefile.  Just issue the ``make`` command in the
+repo directory and then add a symlink located inside
+``~/.emacs.d/libtree-sitter-extra``
+that points to the generated libtree-sitter-LANG.EXT file.
+
+In some cases the generated file has version numbers in the file.
+Do not modify the file name, just point the symlink to that file.
+
 
 Testing Tree-Sitter Language Grammar Support
 ============================================
@@ -284,6 +319,7 @@ logic that
 .. _mentioned in the Emacs 30 Notes: https://cgit.git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?h=emacs-30#n120
 .. _Tree-Sitter Language Grammar: https://www.gnu.org/software/emacs/manual/html_node/elisp/Language-Grammar.html
 .. _tree-sitter-langs: https://github.com/emacs-tree-sitter/tree-sitter-langs
+.. _🚦Tree-sitter PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/tree-sitter-parsers.pdf
 
 
 
