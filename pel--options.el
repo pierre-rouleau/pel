@@ -7468,6 +7468,37 @@ the js2 major or minor mode is used."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-xref-js2 nil
+  "Control whether PEL use the xref-js2 package.
+Note: to use this, the `pel-use-js' must be set to a value where
+the js2 major or minor mode is used."
+  :link '(url-link :tag "xref-js2 @ Github"
+                   "https://github.com/js-emacs/xref-js2")
+  :group 'pel-pkg-for-javascript
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-js2-refactor nil
+  "Control whether PEL use the js2-refactor package.
+
+To activate it you can select the following values:
+- t               : use js2-refactor alone
+- with-discover   : use js2-refactor with discover-js2-refactor which provides
+                    a discover menu for it.
+
+Note: to use this, the `pel-use-js' must be set to a value where
+the js2 major or minor mode is used."
+  :group 'pel-pkg-for-javascript
+  :link '(url-link :tag "js2-refactor @ Github"
+                   "https://github.com/js-emacs/js2-refactor.el")
+  :link '(url-link :tag "discover-js2-refactor @ Github"
+                   "https://github.com/js-emacs/js2-refactor.el")
+  :type '(choice
+          (const :tag "Do not use js2-refactor" nil)
+          (const :tag "Use js2-refactor" t)
+          (const :tag "Use js2-refactor with discover-js2-refactor" with-discover)))
+
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Go language support
 ;; -------------------
