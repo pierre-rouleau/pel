@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-21 16:35:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-22 07:20:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -838,13 +838,14 @@ The function does not support printing a full report on stdout."
     (when (pel-in-fast-startup-p)
       (user-error "PEL is running in fast-startup. \
  This is only available in normal mode!"))
+    (when errors
+      (setq overview
+            (concat
+             "****** ERRORS:\n"
+             (mapconcat #'identity errors "\n")
+             "\n***************\n")))
     (if on-stdout
-        (when errors
-          (message "****** ERRORS: ")
-          (dolist (errmsg errors)
-            (message errmsg))
-          (message "***************"))
-      (message overview)
+        (message overview)
       (pel-print-in-buffer
        "*pel-user-options*"
        "PEL User Option activated packages"
