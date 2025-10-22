@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-22 07:20:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-22 08:10:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -300,11 +300,8 @@ Group 1 is the path that holds the package name.")
 Group 2 is package name.")
 
 (defconst pel--regexp-pel-install-file
-  "(pel-install-file +\"[-[:alnum:]:/\\.
- ]+\"[
- \\t]+\"\\(.+\\)\""
-  "Regexp to extract package name from a pel-install-file form.
-
+  "(pel-install-file[\n \\t]+\\\"[-[:alnum:]:/._]+\\\"[\n \\t]+\\\"\\(.+\\)\\(?:\\.el\\)?\\\""
+  "Regexp to extract package name from a `pel-install-file' form.
 Name of package is in group 1.")
 
 (defun pel--pkg-installed-by-pel (regexp &optional group extracter)
@@ -818,6 +815,7 @@ The function does not support printing a full report on stdout."
                                     (length (seq-filter
                                              (lambda (x) (symbol-value x))
                                              user-options))
+                                    ;; # package PEL can install
                                     (length (car installable-pkgs))
                                     (length (cadr installable-pkgs))
                                     (pel--elpa-stats n-elpa-base n-elpa-deps
