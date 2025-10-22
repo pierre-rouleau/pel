@@ -3542,6 +3542,11 @@ d-mode not added to ac-modes!"
         (pel-ensure-package js2-closure from: melpa)
         (pel-autoload-file js2-closure for:
                            js2-closure-fix))
+      (when pel-use-flow-js2-mode
+        (pel-ensure-package flow-js2-mode from: melpa)
+        ;; (pel-autoload-file js2-closure for:
+        ;;                    js2-closure-fix)
+        )
 
       ;; Add js2 commands when the js2 major or minor mode is used
       (define-key pel:for-js "." 'js2-find-node-at-point)
@@ -3551,6 +3556,8 @@ d-mode not added to ac-modes!"
       (define-key pel:for-js (kbd "<left>") 'js2-backward-sws)
       (define-key pel:for-js (kbd "TAB") 'js2-indent-bounce)
       (define-key pel:for-js (kbd "<C-M-i>") 'js2-indent-bounce-backward)
+      (when pel-use-flow-js2-mode
+        (define-key pel:for-js (kbd "M-f") 'flow-js2-mode))
       ;; js2-display-error-list
       ;; js2-error-buffer-mode
       ;; js2-error-buffer-next

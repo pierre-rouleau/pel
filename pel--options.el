@@ -7456,6 +7456,18 @@ the js2 major or minor mode is used."
 ;; (pel-put 'pel-use-js2-closure :package-is )
 ;; [:todo 2025-10-22, by Pierre Rouleau: ensure that js2-mode is installed.]
 
+(defcustom pel-use-flow-js2-mode nil
+  "Control whether PEL use the flow-js2-mode package.
+Note: to use this, the `pel-use-js' must be set to a value where
+the js2 major or minor mode is used."
+  :link '(url-link :tag "flow-js2-mode @ Github"
+                   "https://github.com/Fuco1/flow-js2-mode")
+  :link '(url-link :tag "Flow home"
+                   "https://flow.org/")
+  :group 'pel-pkg-for-javascript
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Go language support
 ;; -------------------

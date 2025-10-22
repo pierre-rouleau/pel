@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-21 14:52:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-22 10:45:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -365,7 +365,10 @@
     ;; [:todo 2025-10-08, by Pierre Rouleau: Add ability to select the js or
     ;; js2-mode group automatically, corresponding to the major mode being
     ;; used for Javascript.]
-    ([f11 32 ?i]     "pl-javascript"    pel-pkg-for-javascript  (js js2-mode js3-mode))
+    ([f11 32 ?i]     "pl-javascript"    pel-pkg-for-javascript  (js
+                                                                 js2-mode
+                                                                 js3-mode
+                                                                 flow-minor-mode))
     ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       (julia
                                                                  julia-mode
                                                                  julia-snail
