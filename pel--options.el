@@ -7442,6 +7442,20 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-javascript
   :type '(repeat function))
 
+(defcustom pel-use-js2-closure nil
+  "Control whether PEL use the js2-closure package.
+Note: to use this, the `pel-use-js' must be set to a value where
+the js2 major or minor mode is used."
+  :link '(url-link :tag "js2-closure @ Github"
+                   "https://github.com/jart/js2-closure")
+  :link '(url-link :tag "Google Javascript style guide"
+                   "https://google.github.io/styleguide/jsguide.html")
+  :group 'pel-pkg-for-javascript
+  :type 'boolean
+  :safe #'booleanp)
+;; (pel-put 'pel-use-js2-closure :package-is )
+;; [:todo 2025-10-22, by Pierre Rouleau: ensure that js2-mode is installed.]
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Go language support
 ;; -------------------

@@ -3538,6 +3538,11 @@ d-mode not added to ac-modes!"
                          js2-minor-mode
                          js2-jsx-mode)
 
+      (when pel-use-js2-closure
+        (pel-ensure-package js2-closure from: melpa)
+        (pel-autoload-file js2-closure for:
+                           js2-closure-fix))
+
       ;; Add js2 commands when the js2 major or minor mode is used
       (define-key pel:for-js "." 'js2-find-node-at-point)
       (define-key pel:for-js "/" 'js2-node-name-at-point)
@@ -3561,7 +3566,11 @@ d-mode not added to ac-modes!"
           (add-to-list 'auto-mode-alist '("\\.js?\\'" . js2-mode))
           (add-hook 'js-mode-hook 'js2-minor-mode))
         (pel-eval-after-load js2-mode
-          (pel-config-major-mode js2 pel:for-js :no-ts))))
+          (pel-config-major-mode js2 pel:for-js :no-ts
+            (when (and pel-use-js2-closure
+                       (boundp 'js2-mode-map))
+              (define-key js2-mode-map (kbd "C-c C-c") 'js2-closure-fix)
+              )))))
 
     ;; When using the built-in js-mode or js-ts-mode, without or
     ;; with the js2-minor-mode
@@ -3570,7 +3579,6 @@ d-mode not added to ac-modes!"
                              with-js2-minor
                              with-ts-js2-minor))
       ;; Use PEL mode selector
-      ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . pel-js-mode))
       (add-to-list 'auto-mode-alist
                    '("\\(\\.js[mx]?\\|\\.har\\)\\'" . pel-js-mode))
       (pel-autoload-file js for:
@@ -3586,7 +3594,9 @@ d-mode not added to ac-modes!"
           (when (memq pel-use-js '(with-js2-minor
                                    with-ts-js2-minor))
             (when (fboundp 'js2-minor-mode)
-              (js2-minor-mode)))))))))
+              (js2-minor-mode))
+            (when (boundp 'js-mode-map)
+              (define-key js-mode-map (kbd "C-c C-c") 'js2-closure-fix)))))))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Julia Programming Language Support

@@ -2,6 +2,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improved Javascript support: *pel-use-js* now specifies whether Tree-Sitter is
+  used and can also specify whether you want to use the js2-mode  or the
+  js3-mode.  It can also specify whether you want to use the js-mode with the
+  js2-minor mode.
+  - The Javascript major modes support the ~<f12> ?~  key sequence to get setup
+    information.  It also supports the ~<f11> C- C-t~ key sequence to switch
+    to Tree-Sitter aware mode or to classic mode.
+  - Add the *pel-use-js2-closure* to support the js2-closure external package.
 - Changed *pel-set-tab-width* binding from ~<f11> M-t~ to ~<f11> <tab> w~.
   The new binding is also easy to use and is associated with the other tab
   related commands by its prefix, serving as a reminder that other commands exist.
