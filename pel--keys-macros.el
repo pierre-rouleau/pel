@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-22 16:54:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-23 09:38:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -368,8 +368,9 @@
     ([f11 32 ?i]     "pl-javascript"    pel-pkg-for-javascript  (js
                                                                  js2-mode
                                                                  js3-mode
-                                                                 flow-minor-mode
+                                                                 js-comint
                                                                  js2-refactor
+                                                                 flow-minor-mode
                                                                  xref-js2))
     ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       (julia
                                                                  julia-mode

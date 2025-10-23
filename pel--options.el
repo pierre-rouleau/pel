@@ -183,6 +183,7 @@
 ;;         - pel-pkg-for-smalltalk
 ;;         - pel-pkg-for-swift
 ;;         - pel-pkg-for-tcl
+;;         - pel-pkg-for-typescript
 ;;         - pel-pkg-for-v
 ;;         - pel-pkg-for-zig
 ;;     - pel-pkg-for-project-mng
@@ -7394,8 +7395,18 @@ Use tree-sitter built-in js-ts-mode with js2-minor-mode" with-ts-js2-minor)
                                    ((eq pel-use-js 'js3-mode)
                                     '((elpa . js3-mode)))))
 
+(defcustom pel-js2-activates-development-mode nil
+  "Activates development mode in js2-mode. Provides more js2 commands.
+
+When turned on, PEL sets js2-mode-dev-mode-p to t when js2-mode is loaded,
+to activate extra js2 commands and features."
+  :group 'pel-pkg-for-js
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-js-activates-minor-modes nil
-  "List of *local* minor-modes automatically activated for js-mode buffers.
+  "List of *local* minor-modes automatically activated for `js-mode' buffers.
+The minor modes are also activated in the `js-ts-mode' buffers.
 Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-javascript
@@ -7498,6 +7509,14 @@ the js2 major or minor mode is used."
           (const :tag "Use js2-refactor" t)
           (const :tag "Use js2-refactor with discover-js2-refactor" with-discover)))
 
+
+(defcustom pel-use-js-comint nil
+  "Control whether PEL use the js-comint package."
+  :group 'pel-pkg-for-javascript
+  :link '(url-link :tag "js-comint @ Github"
+                   "https://github.com/redguardtoo/js-comint")
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Go language support
@@ -11625,6 +11644,23 @@ commands that mode point to tab stop positions such as
   :group 'pel-pkg-for-tcl
   :type 'string)
 
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; (defgroup pel-pkg-for-typescript nil
+;;   "PEL Typescript support."
+;;   :group 'pel-pkg-for-software-programming-languages
+;;   :link '(url-link :tag "Typescript home page"
+;;                    "https://www.typescriptlang.org/"))
+;;
+;; (defcustom pel-use-typescript nil
+;;   "Whether PEL supports the Typescript Language.
+;;
+;; This *must* be activated to allow any other package for Typescript.
+;; When activating it you can select between the following values:
+;; - t                : use `typescript-mode' provided by the js.el built-in file.
+;; - with-tree-sitter : use `typescript-ts-mode' built-in Emacs."
+;;   :group 'pel-pkg-for-typescript
+;;
+;;   )
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; V Language Support
 ;; ------------------

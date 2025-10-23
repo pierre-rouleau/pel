@@ -3509,6 +3509,17 @@ d-mode not added to ac-modes!"
     (add-to-list 'treesit-load-name-override-list
                  '(js "libtree-sitter-javascript" "tree_sitter_javascript")))
 
+  ;; install js-comint if required, regardless of the mode used to support
+  ;; Javascript.
+  (when pel-use-js-comint
+    (pel-ensure-package js-comint from: melpa)
+    (define-key pel:for-js "z" 'js-comint-repl))
+
+  (when pel-js2-activates-development-mode
+    ;; Activate dev mode for js2-mode before it is loaded.
+    ;; In js2-mode this is a defvar set to nil.  Force it to t.
+    (defvar js2-mode-dev-mode-p t))
+
   (cond
    ;; When using the external js3-mode
    ((eq pel-use-js 'js3-mode)
@@ -3555,8 +3566,11 @@ d-mode not added to ac-modes!"
         (pel-ensure-package xref-js2 from: melpa))
 
       ;; Add js2 commands when the js2 major or minor mode is used
-      (define-key pel:for-js "." 'js2-find-node-at-point)
-      (define-key pel:for-js "/" 'js2-node-name-at-point)
+      (when pel-js2-activates-development-mode
+        (define-pel-global-prefix pel:for-js2-debug  (kbd "<f11> SPC i d"))
+        (define-key pel:for-js2-debug "." 'js2-node-name-at-point)
+        (define-key pel:for-js2-debug "/" 'js2-find-node-at-point))
+      (define-key pel:for-js "2" 'js2-minor-mode)
       (define-key pel:for-js "j" 'js2-print-json-path)
       (define-key pel:for-js (kbd "<right>") 'js2-forward-sws)
       (define-key pel:for-js (kbd "<left>") 'js2-backward-sws)
@@ -3584,11 +3598,10 @@ d-mode not added to ac-modes!"
           (pel-config-major-mode js2 pel:for-js :no-ts
             (when (and pel-use-js2-closure
                        (boundp 'js2-mode-map))
-              (define-key js2-mode-map (kbd "C-c C-c") 'js2-closure-fix)
-              )))))
+              (define-key js2-mode-map (kbd "C-c C-c") 'js2-closure-fix))))))
 
-    ;; When using the built-in js-mode or js-ts-mode, without or
-    ;; with the js2-minor-mode
+    ;; When using the built-in `js-mode' or `js-ts-mode', with or
+    ;; without the `js2-minor-mode'
     (when (memq pel-use-js '(t
                              with-tree-sitter
                              with-js2-minor
@@ -10185,6 +10198,9 @@ the ones defined from the buffer now."
 (when pel-use-erlang       (define-key pel:repl  "e" 'erlang-shell))
 (when pel-use-forth        (define-key pel:repl  "f" 'run-forth))
 (when pel-use-haskell      (define-key pel:repl  "h" 'run-haskell))
+(when (and pel-use-js
+           pel-use-js-comint)
+                           (define-key pel:repl  "i" 'js-comint-repl))
 (when pel-use-julia        (define-key pel:repl  "j" 'julia-snail))
 (when pel-use-python       (define-key pel:repl  "p" 'run-python))
 (when (and pel-use-ocaml
