@@ -7011,6 +7011,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 (define-key pel:help "m"  #'man)
 (define-key pel:help "w"  #'woman)
 (define-key pel:help "?"  'pel-show-major-mode)
+(define-key pel:help "/"  'pel-mode-setup-info)
 (define-key pel:help "$"  'pel-spell-show-use)
 (define-key pel:help "f"  'which-function-mode)
 (define-key pel:help "F"  'pel-show-function)

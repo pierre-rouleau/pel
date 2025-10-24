@@ -2,6 +2,16 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add an early version of *pel-mode-setup-info* command, bound to ~<f11> ? /~.
+  This command prints information related to the PEL customization control for
+  the current major mode.  It also prints the extra specialization information
+  for the current mode when PEL code has that specialization support.
+  The buffer provides access to the various customization user-options
+  and lists the user-options that control activation of minor modes for this major mode.
+  Each variable is a button the user can press to get more information and change the values.
+  - This is an early version.  More work is required to get generic
+    indentation control info  for modes that do not already have PEL
+    specialization control.
 - Improved Javascript support: *pel-use-js* now specifies whether Tree-Sitter is
   used and can also specify whether you want to use the js2-mode  or the
   js3-mode.  It can also specify whether you want to use the js-mode with the

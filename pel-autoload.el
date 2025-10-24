@@ -663,6 +663,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-jump-to-mark
     pel-exchange-point-and-mark-no-activate)
 
+  (pel-autoload "pel-modes" for:
+    pel-mode-setup-info)
+
   (pel-autoload "pel-navigate" for:
     pel-to-forward-space
     pel-to-backward-space

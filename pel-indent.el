@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-20 10:04:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-24 12:31:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -348,8 +348,35 @@ by the numeric argument N (or if not specified N=1):
   "Major modes implemented as cc-modes.")
 
 ;;-pel-autoload
-(defun pel-insert-tab-set-width-info ()
-  "Insert more information related to the use of `pel-set-tab-with'."
+(defun pel-insert-tab-set-width-info (&optional mode-base)
+  "Insert more information related to the use of `pel-set-tab-with'.
+
+If MODE-BASE is non-nil and set to a value specified by the
+evaluation of intern (pel-file-type-for major-mode)), insert the title
+for Tab width and information about default user-options specific to the
+`major-mode' used by the caller."
+  (when mode-base
+    (insert (propertize "* Hard Tab Control:" 'face 'bold))
+    (insert (format "
+- The hard tab rendering width is for %s buffer is controlled by
+  `pel-%s-tab-width' and stored into `tab-width'.
+  These do not control the indentation, just the visual width (in
+  columns) that Emacs uses to render a hard tab character.
+  Whether hard tabs are used in js buffer is controlled by
+  `pel-%s-use-tabs' and stored inside `indent-tabs-mode'.
+" mode-base mode-base mode-base))
+    (let ((mode-tw-uo-symbol (intern (format "pel-%s-tab-width"
+                                             mode-base)))
+          (use-tabs-uo-symbol (intern (format "pel-%s-use-tabs"
+                                              mode-base))))
+      (when (boundp mode-tw-uo-symbol)
+        (pel-insert-symbol-content-line mode-tw-uo-symbol))
+      (pel-insert-symbol-content-line 'tab-width)
+      (when (boundp use-tabs-uo-symbol)
+        (pel-insert-symbol-content-line use-tabs-uo-symbol
+                                        nil #'pel-on-off-string))
+      (pel-insert-symbol-content-line 'indent-tabs-mode
+                                      nil #'pel-on-off-string)))
   (insert (substitute-command-keys "
 
  You can use \\[pel-set-tab-width] to change the width rendering of
