@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 24 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-24 12:22:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-24 17:43:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -67,6 +67,19 @@ USER-OPTION is a symbol for one of the pel-modes-activating- user-options.
 MODE is a symbol for the specific mode."
   (memq mode (symbol-value user-option)))
 
+
+(defun pel-custom-group-for (user-option)
+  "Return the customization group for a USER-OPTION."
+  ;; I did not find any mechanism to identify the group of a defcustom.
+  ;; So, I added the :in-group property to the pel-modes-activating-
+  ;; defcustom as a work-around.
+  (get user-option :in-group))
+
+(defun pel--add-uo-to-group (user-option group hash-table)
+  "Add the USER-OPTION to the list associated with GROUP in HASH-TABLE."
+  (let ((current-list (gethash group hash-table nil)))
+    (puthash group (cons user-option current-list) hash-table)))
+
 (defun pel-insert-minor-mode-activation-info (mode &optional prelim-inserter)
   "Insert text listing each pel-modes-activating user-option.
 For each one add whether it activates the specific MODE."
@@ -78,12 +91,24 @@ For each one add whether it activates the specific MODE."
 Other user-options can be also used to activate feature for several modes.
 The ones activated for this mode show a check-mark to the right.
 ")
-  (dolist (user-option (pel-mode-activating-user-options))
-    (pel-insert-symbol-content
-     user-option
-     nil nil nil nil :no-value)
-    (when (pel-mode-activates-p user-option mode)
-      (insert "  ✅"))))
+  (let ((group-names nil)
+        (group-minor-mode-hash (make-hash-table))
+        (group-name nil))
+    ;; First pass: accumulate names of user-options per groups
+    (dolist (user-option (pel-mode-activating-user-options))
+      (setq group-name (symbol-name (pel-custom-group-for user-option)))
+      (unless (memq group-name group-names)
+        (push group-name group-names))
+      (pel--add-uo-to-group user-option group-name group-minor-mode-hash))
+    ;; Print info: user-option per group
+    (dolist (grp-name (sort group-names #'string<))
+      (insert (propertize (format "\n - %s:" grp-name) 'face 'bold))
+      (dolist (usr-opt (sort (gethash grp-name group-minor-mode-hash)
+                             #'string<))
+        (insert "\n            - ")
+        (pel-insert-symbol usr-opt)
+        (when (pel-mode-activates-p usr-opt mode)
+          (insert "  ✅"))))))
 
 ;;-pel-autoload
 (defun pel-mode-setup-info (&optional append)
@@ -115,27 +140,29 @@ most generic information about the mode."
      title
      (lambda ()
        "Print setup info for the major mode."
+       ;; -- Major Mode
        (insert (propertize "* Major Mode Control:" 'face 'bold))
        (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
                                   "major mode currently used")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for
                                    mode-base-symbol "\n- "))))
-       ;; --
        (when (boundp pel-use-mode-user-option-symbol)
          (pel-insert-symbol-content-line
           pel-use-mode-user-option-symbol
           nil
           (when (fboundp major-mode-used-text-fct)
             major-mode-used-text-fct)))
-       ;; --
+       ;; -- Minor Mode activation
        (insert "\n\n")
        (pel-insert-minor-mode-activation-info
         current-major-mode
         (when (fboundp minor-mode-info-inserter-fct)
           minor-mode-info-inserter-fct))
        (insert "\n\n")
-       ;; --
+       ;; -- Indentation Control
+
+       ;; -- Hard Tab Control
        (if (fboundp indent-tab-info-inserter-fct)
            (progn
              (funcall indent-tab-info-inserter-fct)

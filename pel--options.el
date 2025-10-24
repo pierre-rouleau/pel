@@ -383,6 +383,14 @@
 ;; example/templates directory.  These files provide samples of what is
 ;; possible to generate with the PEL code generation.
 
+;; `:in-group'
+;; ----------
+;;
+;; This property is applied to the user-options that activate minor modes, and
+;; are set to the name of the group that is the parent of the user-option.
+;; This allows code to quickly identify the parent group of such user-options
+;; and allow their grouping when they are listed by the `pel-mode-setup-info'
+;; command.
 
 ;; * Development Tip *:
 ;; ===================
@@ -469,6 +477,10 @@ Validate at `byte-compile' time."
        ;; choices is to help testing - accept them
        ((eq propname :choices)
         t)
+       ;; identify defcustom group: accept them
+       ((eq propname :in-group)
+        t)
+
        (t nil))
       `(put ,symbol ,propname ,value)
     `(error "Invalid %s property value %S for symbol %s"
@@ -609,6 +621,7 @@ For example, to activate it in Erlang, add a line with
 `erlang-mode' without the quotes."
   :group 'pel-base-emacs
   :type '(repeat symbol))
+(pel-put 'pel-modes-activating-syntax-check :in-group 'pel-base-emacs)
 
 (defcustom pel-activates-global-minor-modes nil
   "List of *global* minor-modes automatically activated for all buffers.
@@ -1040,6 +1053,7 @@ For example, to activate it for C, add the c-mode symbol to the list."
   :type  '(repeat symbol)
   :link '(emacs-commentary-link :tag "commentary" "align.el")
   :link `(url-link :tag "Align PDF" ,(pel-pdf-file-url "align")))
+(pel-put 'pel-modes-activating-align-on-return :in-group 'pel-pkg-for-align)
 
 ;; ---------------------------------------------------------------------------
 ;; Bookmark Support
@@ -1870,6 +1884,7 @@ The Hippie Expand can be used together with any."
   "List of major modes that automatically activate abbrev-mode."
   :group 'pel-pkg-for-expand
   :type '(repeat symbol))
+(pel-put 'pel-modes-activating-abbrev-mode :in-group 'pel-pkg-for-expand)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-conf-file
@@ -2913,6 +2928,7 @@ Used when `pel-use-smart-dash' user option is t."
   :group 'pel-pkg-for-insertions
   :group 'pel-pkg-for-text-mode
   :type  '(repeat symbol))
+(pel-put 'pel-modes-activating-smart-dash-mode :in-group 'pel-pkg-for-insertions)
 
 (defcustom pel-use-yasnippet nil
   "Control whether PEL uses yasnippet package."
@@ -7848,6 +7864,7 @@ variable `pel-allowed-modes-for-lispy'.
 PEL will ignore other modes."
   :group 'pel-pkg-for-lisp
   :type '(repeat symbol))
+(pel-put 'pel-modes-activating-lispy :in-group 'pel-pkg-for-lisp)
 
 (defcustom pel-enable-lispy-meta-return nil
   "Enable the lispy-meta-return binding to M-RET when on.
@@ -11942,6 +11959,7 @@ The minor mode can also be activated manually using the
 command `easy-escape-minor-mode'."
   :group 'pel-pkg-for-regexp
   :type  '(repeat symbol))
+(pel-put 'pel-modes-activating-easy-escape :in-group 'pel-pkg-for-regexp)
 
 (defcustom pel-use-relint nil
   "Controls whether PEL uses the relint package.
@@ -12447,6 +12465,7 @@ something not located inside Emacs user directory."
 To activate the changes for this you must \\='Apply and Save\\=' and restart Emacs."
   :group 'pel-pkg-for-spelling
   :type '(repeat symbol))
+(pel-put 'pel-modes-activating-flyspell-mode :in-group 'pel-pkg-for-spelling)
 
 (defcustom pel-modes-activating-flyspell-prog-mode
   '(c-mode
@@ -12466,6 +12485,7 @@ To activate the changes for this you must \\='Apply and Save\\=' and restart Ema
 To activate the changes for this you must \\='Apply and Save\\=' and restart Emacs."
   :group 'pel-pkg-for-spelling
   :type '(repeat symbol))
+(pel-put 'pel-modes-activating-flyspell-prog-mode :in-group 'pel-pkg-for-spelling)
 
 ;; ---------------------------------------------------------------------------
 ;; Software Build Support
@@ -12673,20 +12693,25 @@ Add or remove any.  Use the `superword-mode' command to toggle this
 mode during an editing session."
   :group 'pel-pkg-for-text-mode
   :type '(repeat symbol))
+(pel-put 'pel-modes-activating-superword-mode :in-group 'pel-pkg-for-text-mode)
 
 (defcustom pel-modes-activating-subword-mode nil
   "List of major modes that automatically activate the `subword-mode'."
   :group 'pel-pkg-for-text-mode
   :type '(repeat symbol))
+(pel-put 'pel-modes-activating-subword-mode :in-group 'pel-pkg-for-text-mode)
 
 (defcustom pel-modes-activating-glasses-mode nil
   "List of major modes that automatically activate the `glasses-mode'."
   :group 'pel-pkg-for-text-mode
   :type '(repeat symbol))
+(pel-put 'pel-modes-activating-glasses-mode :in-group 'pel-pkg-for-text-mode)
+
 (defcustom pel-modes-activating-auto-fill-mode nil
   "List of major modes that automatically activate the `auto-fill-mode'."
   :group 'pel-pkg-for-text-mode
   :type '(repeat symbol))
+(pel-put 'pel-modes-activating-auto-fill-mode :in-group 'pel-pkg-for-text-mode)
 
 (defcustom pel-modes-activating-whitespace-mode nil
   "List of major modes that automatically activate the `whitespace-mode'.
@@ -12696,11 +12721,13 @@ Good candidates:
                 as well as trailing whitespace."
   :group 'pel-pkg-for-text-mode
   :type '(repeat symbol))
+(pel-put 'pel-modes-activating-whitespace-mode :in-group 'pel-pkg-for-text-mode)
 
 (defcustom pel-modes-activating-electric-quote-local-mode nil
   "List of major modes that automatically activate the `electric-quote-local-mode'."
   :group 'pel-pkg-for-text-mode
   :type '(repeat symbol))
+(pel-put 'pel-modes-activating-electric-quote-local-mode :in-group 'pel-pkg-for-text-mode)
 
 ;; ---------------------------------------------------------------------------
 ;; Time Tracking
@@ -13180,6 +13207,7 @@ put the following in the list:
 - dired-mode"
   :group 'pel-pkg-for-xref
   :type '(repeat symbol))
+(pel-put 'pel-modes-activating-cscope :in-group 'pel-pkg-for-xref)
 
 (defcustom pel-modes-activating-helm-cscope nil
   "List of major modes that automatically activate helm-cscope mode.
@@ -13197,6 +13225,7 @@ put the following in the list:
 - dired-mode"
   :group 'pel-pkg-for-xref
   :type '(repeat symbol))
+(pel-put 'pel-modes-activating-helm-cscope :in-group 'pel-pkg-for-xref)
 
 ;; -- dumb-jump
 (defcustom pel-use-dumb-jump nil
@@ -13221,6 +13250,8 @@ using the function `pel-xref-toggle-dumb-jump-mode' which is bound
 to \\[pel-xref-toggle-dumb-jump-mode], regardless of the initial state."
   :group 'pel-pkg-for-xref
   :type '(repeat symbol))
+(pel-put 'pel-modes-activating-dumb-jump :in-group 'pel-pkg-for-xref)
+
 
 ;; -- ggtags
 (defcustom pel-use-ggtags nil
@@ -13259,6 +13290,7 @@ key sequence."
                    "https://github.com/leoliu/ggtags")
   :link '(url-link :tag "GNU Global home page"
                    "https://www.gnu.org/software/global/"))
+(pel-put 'pel-modes-activating-ggtags :in-group 'pel-pkg-for-xref)
 
 ;; -- gxref
 (defcustom pel-use-gxref nil
@@ -13285,6 +13317,7 @@ with gxref-mode with the <f11> X B g key sequence."
   :type '(repeat symbol)
   :link '(url-link :tag "gxref @ GitHub"
                    "https://github.com/dedi/gxref"))
+(pel-put 'pel-modes-activating-gxref :in-group 'pel-pkg-for-xref)
 
 ;; -- jtags
 (defcustom pel-use-jtags nil

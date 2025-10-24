@@ -2573,7 +2573,9 @@ mode switching symbol."
     (when (> error-count 0)
       (display-warning
        'pel-invalid-mode-symbol
-       (format "Please fix the above errors in the %s customization user-option." list-var)
+       (format
+        "Please fix the above errors in the %s customization user-option."
+        list-var)
        :error))
     error-count))
 
