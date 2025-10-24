@@ -1536,13 +1536,13 @@ Your version of Emacs does not support dynamic module.")))
              (propertize "-" 'font-lock-face '(:foreground "green"))
              "smart-dash"))
 
-  (pel-add-hook-for
-   'pel-modes-activating-smart-dash-mode
-   (lambda ()
-     (smart-dash-mode 1)
-     ;; ensure that the keypad dash is used as pel-kp-subtract
-     ;; which either cuts current line or inserts a normal dash.
-     (fset 'smart-dash-insert-dash 'pel-kp-subtract))))
+  (pel-add-hook-for 'pel-modes-activating-smart-dash-mode
+                    (lambda ()
+                      (smart-dash-mode 1)
+                      ;; ensure that the keypad dash is used as
+                      ;; pel-kp-subtract which either cuts current line or
+                      ;; inserts a normal dash.
+                      (fset 'smart-dash-insert-dash 'pel-kp-subtract))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Display of Regular Expression -- easy-escape
@@ -1551,10 +1551,9 @@ Your version of Emacs does not support dynamic module.")))
   (pel-ensure-package easy-escape from: melpa)
   (pel-autoload-file easy-escape for: easy-escape-minor-mode)
   (define-key pel: "\"" 'easy-escape-minor-mode)
-  (pel-add-hook-for
-   'pel-modes-activating-easy-escape
-   (lambda ()
-     (easy-escape-minor-mode 1))))
+  (pel-add-hook-for 'pel-modes-activating-easy-escape
+                    (lambda ()
+                      (easy-escape-minor-mode 1))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Use undo-tree
@@ -7292,14 +7291,12 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;;Activate Flyspell for modes identified by PEL customization
 ;;
 (declare-function pel-spell-maybe-activate-flyspell "pel-spell")
-(pel-add-hook-for
- 'pel-modes-activating-flyspell-mode
- (function pel-spell-maybe-activate-flyspell))
+(pel-add-hook-for 'pel-modes-activating-flyspell-mode
+                  (function pel-spell-maybe-activate-flyspell))
 
 (declare-function pel-spell-maybe-activate-flyspell-prog "pel-spell")
-(pel-add-hook-for
- 'pel-modes-activating-flyspell-prog-mode
- (function pel-spell-maybe-activate-flyspell-prog))
+(pel-add-hook-for 'pel-modes-activating-flyspell-prog-mode
+                  (function pel-spell-maybe-activate-flyspell-prog))
 
 ;; Text Translation
 (when (and pel-use-go-translate
@@ -9428,11 +9425,10 @@ the ones defined from the buffer now."
 ;; Use M-x ar to align a region with a regular expression.
 (defalias 'ar #'align-regexp)
 
-(pel-add-hook-for
- 'pel-modes-activating-align-on-return
- (lambda ()
-   (defvar pel-newline-does-align)      ;forward declare
-   (setq pel-newline-does-align t)))
+(pel-add-hook-for 'pel-modes-activating-align-on-return
+                  (lambda ()
+                    (defvar pel-newline-does-align)      ;forward declare
+                    (setq pel-newline-does-align t)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;* Enriched Text
@@ -10310,11 +10306,11 @@ the ones defined from the buffer now."
   (add-hook 'ggtags-mode-hook
             (function pel--ggtags-setup))
 
-  ;; Activate ggtags mode automatically on modes requested by user customization
-  (pel-add-hook-for
-   'pel-modes-activating-ggtags
-   (lambda ()
-     (ggtags-mode 1))))
+  ;; Activate ggtags mode automatically on modes requested by user
+  ;; customization
+  (pel-add-hook-for 'pel-modes-activating-ggtags
+                    (lambda ()
+                      (ggtags-mode 1))))
 
 ;;** cscope
 (when (or  pel-use-xcscope
