@@ -7,7 +7,7 @@ Using tree-sitter with Emacs and PEL
 :Ref: `PEL How-to Tips`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-10-21 10:05:12 EDT, updated by Pierre Rouleau.
+:Modified: 2025-10-24 09:23:02 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -16,8 +16,8 @@ Using tree-sitter with Emacs and PEL
 
 .. ---------------------------------------------------------------------------
 
-Requirements for using Tree-Sitter with Emacs and PEL
-=====================================================
+Emacs Requirements for using Tree-Sitter with PEL
+=================================================
 
 :Ref: `How to Get Started with Tree-Sitter`_, by Mickey Petersen
 :Ref: `What's new in Emacs 30.1?`_, by Mickey Petersen
@@ -31,6 +31,24 @@ Requirements for using Tree-Sitter with Emacs and PEL
   - **PEL tree-sitter support logic is written for Emacs 30.1 and later**.
     This simplifies the logic but it is also better since Emacs has better
     tree-sitter support starting with Emacs 30.1.
+
+The Tree-Sitter Library
+=======================
+
+:Ref: `Tree-Sitter library`_
+:Ref: `Tree-Sitter Library Documentation`_
+:Ref: `tree-sitter library tags page`_
+:Ref: `List of parsers @ tree-sitter wiki`_
+
+Emacs needs access to the Tree-Sitter library itself.
+
+- Installing on macOS:   ``brew install tree-sitter``
+- Installing on Linux:  Install ``tree-sitter-dev`` library with your package
+  manager.
+
+You may need to use a previous or later version of the tree-sitter library
+for compatibility with the language grammar or your system.  You can get
+the tree-sitter library tags page, and you can then build the version you need.
 
 Emacs Tree-Sitter Language Grammar Files
 ========================================
@@ -110,6 +128,7 @@ Setting up Emacs Tree-Sitter Environment for PEL
 :Ref: `What's new in Emacs 30.1?`_, by Mickey Petersen
 :Ref: See also: `How to recompile all Emacs Lisp files after updating Emacs to a different version`_
 :Ref: `🚦Tree-sitter PDF`_
+:Ref: `List of parsers @ tree-sitter wiki`_
 
 #. Set the ``pel-use-tree-sitter`` user-option to t.
 
@@ -320,6 +339,10 @@ logic that
 .. _Tree-Sitter Language Grammar: https://www.gnu.org/software/emacs/manual/html_node/elisp/Language-Grammar.html
 .. _tree-sitter-langs: https://github.com/emacs-tree-sitter/tree-sitter-langs
 .. _🚦Tree-sitter PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/tree-sitter-parsers.pdf
+.. _Tree-Sitter library: https://github.com/tree-sitter/tree-sitter?tab=readme-ov-file#readme
+.. _Tree-Sitter Library Documentation: https://tree-sitter.github.io/tree-sitter/
+.. _List of parsers @ tree-sitter wiki: https://github.com/tree-sitter/tree-sitter/wiki/List-of-parsers
+.. _tree-sitter library tags page: https://github.com/tree-sitter/tree-sitter/tags
 
 
 
