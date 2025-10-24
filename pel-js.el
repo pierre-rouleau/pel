@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 20 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-23 15:57:24 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-24 11:00:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,6 +34,7 @@
 (require 'pel--base)        ; use:
 (require 'pel--options)     ; use:
 (require 'pel-indent)       ; use: `pel-insert-tab-set-width-info'
+(require 'pel-modes)        ; use: `pel-insert-minor-mode-activation-info'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -159,12 +160,35 @@ Return `pel-show-indent' capability list."
   ;; Return a capability list for `pel-show-indent' or similar callers
   '(supports-set-tab-width))
 
+(defun pel--js-minor-mode-info ()
+  "Insert information related to Javascript minor modes."
+  (insert (substitute-command-keys "
+Minor Modes:
+ - You can use the `js2-minor-mode' with `js-mode' or `js-ts-mode'.
+   The minor mode is automatically activated when the `pel-use-js'
+   user option is set to with-js2-minor or with-ts-js2-minor.
+ - When enabled, toggle `js2-minor-mode' with \\[js2-minor-mode].
+ - The development js2 commands and features are activated by the
+   `pel-js2-activates-development-mode' user-option.
+"))
+  (pel-insert-symbol-content-line 'pel-js2-activates-development-mode)
+  (insert "
+Automatic activation of minor mode is also controlled by the
+following user-options:")
+  (pel-insert-list-content 'pel-js-activates-minor-modes
+                           nil nil nil :1line)
+  (pel-insert-list-content 'pel-js2-activates-minor-modes
+                           nil nil nil :1line)
+  (pel-insert-list-content 'pel-js3-activates-minor-modes
+                           nil nil nil :1line))
+
 ;;-pel-autoload
 (defun pel-js-setup-info (&optional append)
   "Display Javascript setup information."
   (interactive "P")
   (pel-major-mode-must-be '(js-mode js-ts-mode js2-mode js3-mode))
-  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+        (current-major-mode major-mode))
     (pel-print-in-buffer
      "*pel-js-info*"
      "PEL setup for Javascript programming language"
@@ -175,28 +199,12 @@ Return `pel-show-indent' capability list."
                                   "major mode currently used")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for
-                                   'js "\n- "))))
+                                    'js "\n- "))))
        (pel-insert-symbol-content-line 'pel-use-js nil
                                        (function pel-js-mode-used-text))
-       (insert (substitute-command-keys "
-Minor Modes:
- - You can use the `js2-minor-mode' with `js-mode' or `js-ts-mode'.
-   The minor mode is automatically activated when the `pel-use-js'
-   user option is set to with-js2-minor or with-ts-js2-minor.
- -  When enabled, toggle `js2-minor-mode' with \\[js2-minor-mode].
- - The development js2 commands and features are activated by the
-   `pel-js2-activates-development-mode' user-option.
-"))
-       (pel-insert-symbol-content-line 'pel-js2-activates-development-mode)
-       (insert "
-Automatic activation of minor mode is also controlled by the
-following user-options:")
-       (pel-insert-list-content 'pel-js-activates-minor-modes
-                                nil nil nil :1line)
-       (pel-insert-list-content 'pel-js2-activates-minor-modes
-                                nil nil nil :1line)
-       (pel-insert-list-content 'pel-js3-activates-minor-modes
-                                nil nil nil :1line)
+       (insert "\n\n")
+       (pel-insert-minor-mode-activation-info current-major-mode
+                                              #'pel--js-minor-mode-info)
        (insert "\n\n")
        (pel-js-insert-indent-tab-info)
        (pel-insert-tab-set-width-info))

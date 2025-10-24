@@ -755,7 +755,7 @@ code execution)."
            (consp val))))
 
 (defun pel-user-option-p (symbol)
-  "Return t when SYMBOL is a valid PEL User-option, nil otherwise."
+  "Return t when SYMBOL is a valid PEL user-option, nil otherwise."
   (and (custom-variable-p symbol)
        (eq t (compare-strings "pel-use-" nil nil
                               (symbol-name symbol) 0 8))))
@@ -3114,10 +3114,11 @@ Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
 
 (defun pel-insert-symbol-content (symbol &optional
                                          buffer on-same-line
-                                         no-button description)
+                                         no-button description no-value)
   "Insert the name followed by the content of the specified SYMBOL.
 
 Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil.
+Print the symbol value unless NO-VALUE is non-nil.
 
 By default SYMBOL must be a global symbol as its value is read in
 the scope of the output buffer.  If the SYMBOL is a buffer local
@@ -3144,10 +3145,11 @@ By default:
     (if description
         (insert description)
       (pel-insert-symbol symbol (or no-button description)))
-    (insert (format "%s:%s%S"
-                    (make-string (max 0 (- 40 (length name))) ?\s)
-                    (if on-same-line " " "\n")
-                    value))))
+    (unless no-value
+      (insert (format "%s:%s%S"
+                      (make-string (max 0 (- 40 (length name))) ?\s)
+                      (if on-same-line " " "\n")
+                      value)))))
 
 (defun pel-insert-symbol-content-line (symbol &optional buffer extra-text)
   "Insert the name followed by the content of the specified SYMBOL.
