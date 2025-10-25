@@ -3501,9 +3501,15 @@ d-mode not added to ac-modes!"
   (define-pel-global-prefix pel:for-js  (kbd "<f11> SPC i"))
   (define-key pel:for-js "?" 'pel-js-setup-info)
 
-  ;; The javascript language grammar is used for js-ts-mode.
-  ;; Set it up regardless of the mode used; for Emacs that can use it, the
-  ;; user will be able to switch to the mode using it if necessary.
+  ;; PEL code deals with the language name extracted from the
+  ;; LANG-ts-mode major mode name.  For Javascript, this is js.
+  ;; That means that PEL code will use (treesit-ready-p 'js)
+  ;; to detect if the Tree-Sitter is ready for JavaScript.
+  ;; However, the js-ts-mode identifies, in `treesit-thing-settings'
+  ;; the language name to be javascript.
+  ;; Normally they will all be the same, but in this case they differ.
+  ;; To allow PEL code to work we must associate js to javscript
+  ;; in the `treesit-load-name-override-list'
   (when (boundp 'treesit-load-name-override-list)
     (add-to-list 'treesit-load-name-override-list
                  '(js "libtree-sitter-javascript" "tree_sitter_javascript")))
