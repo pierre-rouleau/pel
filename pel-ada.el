@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-20 18:44:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-26 08:33:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,7 +33,12 @@
 ;;
 (require 'pel--base)        ; use:
 (require 'pel--options)     ; use:
-(require 'pel-indent)       ; use: `pel-insert-tab-set-width-info'
+(require 'pel-indent)       ; use: `pel-indent-insert-control-info',
+;;                          ;      `pel-indent-control-context'
+;;                          ;      `pel-tab-insert-control-info',
+;;                          ;      `pel-tab-control-context'
+(require 'pel-modes)        ; use: `pel-insert-minor-mode-activation-info'
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -77,8 +82,7 @@ It removes what entered when `ada-ts-mode' loads."
   (setq auto-mode-alist
         (rassq-delete-all 'ada-ts-mode auto-mode-alist)))
 
-;; --
-
+;; ---------------------------------------------------------------------------
 ;;-pel-autoload
 (defun pel-ada-mode-used-text (use-ada)
   "Description of what USE-ADA specifies for major mode.
@@ -90,11 +94,11 @@ USE-ADA should be set to `pel-use-ada' value used in current buffer."
     "use ada-ts-mode tree-sitter aware mode.")
    (t "Invalid! Use t or with-tree-sitter")))
 
+
 ;;-pel-autoload
-(defun pel-ada-insert-indent-tab-info ()
-  "Insert Ada indentation and hard tab  setup in current context.
-Return `pel-show-indent' capability list."
-  (insert (propertize "* Indentation Control:" 'face 'bold))
+(defun pel-ada-insert-indent-info ()
+  "Insert Ada indentation setup used in current context.
+Return a list of generic symbols described."
   (insert "
 - Ada indentation under `ada-mode' is controlled by a LSP back-end,
   and under `ada-ts-mode' it is either controlled by a LSP back-end or
@@ -113,9 +117,13 @@ Return `pel-show-indent' capability list."
   (pel-insert-symbol-content-line 'ada-ts-mode-indent-subprogram-is-offset)
   (pel-insert-symbol-content-line 'ada-ts-mode-indent-record-offset)
   (pel-insert-symbol-content-line 'ada-ts-mode-indent-label-offset)
-  (insert "\n\n")
-  ;;
-  (insert (propertize "* Hard Tab Control:" 'face 'bold))
+  ;; Return the list of generic symbols described here.
+  '(indent-description-info))
+
+;;-pel-autoload
+(defun pel-ada-insert-tab-info ()
+  "Insert Ada hard tab setup used in current context.
+Return a list of generic symbols described."
   (insert "
 - The hard tab rendering width is for ada buffer is controlled by
   `pel-ada-tab-width' and stored into `tab-width'.
@@ -125,20 +133,30 @@ Return `pel-show-indent' capability list."
   `pel-ada-use-tabs' and stored inside `indent-tabs-mode'.
 ")
   (pel-insert-symbol-content-line 'pel-ada-tab-width)
-  (pel-insert-symbol-content-line 'tab-width)
   (pel-insert-symbol-content-line 'pel-ada-use-tabs
                                   nil #'pel-on-off-string)
-  (pel-insert-symbol-content-line 'indent-tabs-mode
-                                  nil #'pel-on-off-string)
-  ;; Return a capability list for `pel-show-indent' or similar callers
-  '(supports-set-tab-width))
+    ;; Return the list of generic symbols described here.
+  '(tab-description-intro
+    pel-MM-tab-width
+    pel-MM-use-tabs))
+
+(defun pel--ada-minor-mode-info ()
+  "Insert information related to Ada minor modes."
+  (insert "
+Automatic activation of minor mode is also controlled by the
+following user-options:")
+  (pel-insert-list-content 'pel-ada-activates-minor-modes
+                           nil nil nil :1line))
 
 ;;-pel-autoload
 (defun pel-ada-setup-info (&optional append)
   "Display Ada setup information."
   (interactive "P")
   (pel-major-mode-must-be '(ada-mode ada-ts-mode))
-  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+        (current-major-mode major-mode)
+        (indent-control-context (pel-indent-control-context))
+        (tab-control-context (pel-tab-control-context)))
     (pel-print-in-buffer
      "*pel-ada-info*"
      "PEL setup for Ada programming language"
@@ -157,8 +175,12 @@ Return `pel-show-indent' capability list."
          (unless (eq pel-use-ada 'with-tree-sitter)
            (insert "\n Unless you have a specific reason to not use it, you should.")))
        (insert "\n\n")
-       (pel-ada-insert-indent-tab-info)
-       (pel-insert-tab-set-width-info))
+       ;; --
+       (pel-insert-minor-mode-activation-info current-major-mode
+                                              #'pel--ada-minor-mode-info)
+       (insert "\n\n")
+       (pel-indent-insert-control-info indent-control-context)
+       (pel-tab-insert-control-info tab-control-context))
      (unless append :clear-buffer)
      :use-help-mode)))
 

@@ -2900,7 +2900,7 @@ MODE must be a symbol."
         ;; 7) no skeleton for AWK at the moment.
         ;; 8) extra setup
         (pel--setup-for-cc)
-        (setq-local pel-indentation-width-control-variable
+        (setq-local pel-indentation-width-control-variables
                     '(pel-awk-indent-width c-basic-offset))
         (setq-local pel-indentation-other-control-variables
                     '(c-syntactic-indentation))))))
@@ -2993,7 +2993,7 @@ MODE must be a symbol."
         (pel--install-c-skel pel:c-skel)
         ;; 8) extra setup
         (pel--setup-for-cc)
-        (setq-local pel-indentation-width-control-variable
+        (setq-local pel-indentation-width-control-variables
                     '(pel-c-indent-width c-basic-offset))
         (setq-local pel-indentation-other-control-variables
                     '(c-syntactic-indentation))
@@ -3093,7 +3093,7 @@ MODE must be a symbol."
       (pel--install-c++-skel pel:c++-skel)
       ;; 8) extra setup
       (pel--setup-for-cc)
-      (setq-local pel-indentation-width-control-variable
+      (setq-local pel-indentation-width-control-variables
                   '(pel-c++-indent-width c-basic-offset))
       (setq-local pel-indentation-other-control-variables
                   '(c-syntactic-indentation))
@@ -3174,7 +3174,7 @@ d-mode not added to ac-modes!"
       ;; 5) Set tab-width for the buffer as specified by the PEL user option
       ;; for the major mode.
       (setq-local tab-width pel-d-tab-width)
-      (setq-local pel-indentation-width-control-variable
+      (setq-local pel-indentation-width-control-variables
                   '(pel-d-indent-width c-basic-offset))
       (setq-local pel-indentation-other-control-variables
                   '(c-syntactic-indentation))
@@ -3234,7 +3234,7 @@ d-mode not added to ac-modes!"
         ;; 8) extra setup
         (pel--setup-for-cc)
         ;; [:todo 2025-04-30, by Pierre Rouleau: Check Objective-C indent width control]
-        (setq-local pel-indentation-width-control-variable
+        (setq-local pel-indentation-width-control-variables
                     '(pel-obj-indent-width c-basic-offset))
         (setq-local pel-indentation-other-control-variables
                     '(c-syntactic-indentation))
@@ -3292,7 +3292,7 @@ d-mode not added to ac-modes!"
         ;; (pel--install-c-skel pel:c-skel)
         ;; 8) extra setup
         (pel--setup-for-cc)
-        (setq-local pel-indentation-width-control-variable
+        (setq-local pel-indentation-width-control-variables
                     '(pel-pike-indent-width c-basic-offset))
         (setq-local pel-indentation-other-control-variables
                     '(c-syntactic-indentation))
@@ -3440,6 +3440,9 @@ d-mode not added to ac-modes!"
       (setq-local tab-width pel-go-tab-width)
       (when (boundp 'go-ts-mode-indent-offset)
         (setq-local go-ts-mode-indent-offset pel-go-tab-width))
+      (when (and (eq major-mode 'go-ts-mode)
+                 (boundp 'go-ts-mode-indent-offset))
+        (setq-local pel-tab-width-control-variables 'go-ts-mode-indent-offset))
       (when pel-use-goflymake
         ;; Activate flycheck or flymake if requested
         (cond
@@ -5101,7 +5104,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       ;; ensure consistent indentation control
       (when (boundp 'nim-indent-offset)
         (setq-local nim-indent-offset pel-nim-indent-width))
-      (setq-local tab-width pel-nim-indent-width))
+      (setq-local tab-width pel-nim-tab-width)
+      (setq-local pel-tab-width-control-variables 'nim-indent-offset))
 
     (pel-config-major-mode nimscript pel:for-nim :no-ts
       ;; activate skeletons
@@ -5109,7 +5113,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       ;; ensure consistent indentation control
       (when (boundp 'nimscript-indent-offset)
         (setq-local nimscript-indent-offset pel-nim-indent-width))
-      (setq-local tab-width pel-nim-indent-width))))
+      (setq-local tab-width pel-nim-tab-width)
+      (setq-local pel-tab-width-control-variables 'nim-indent-offset))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Ocaml Programming Language Support
@@ -5653,8 +5658,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   (pel-eval-after-load seed7-mode
     (pel-config-major-mode seed7 pel:for-seed7 :no-ts
-      (setq-local pel-indentation-width-control-variable 'seed7-indent-width)
-      (setq-local pel-tab-width-control-variable         'seed7-indent-width)
+      (setq-local pel-indentation-width-control-variables 'seed7-indent-width)
+      (setq-local pel-tab-width-control-variables         'seed7-indent-width)
       (when (boundp 'seed7-mode-map)
         (let ((map seed7-mode-map))
           (define-key map (kbd "<f6> <up>")    'seed7-beg-of-defun)

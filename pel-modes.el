@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 24 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-24 17:43:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-25 17:14:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,9 +34,12 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)   ; use: `pel-string-starts-with-p'
+(require 'pel--base)        ; use: `pel-string-starts-with-p'
 (require 'pel--options)
-(require 'pel-indent)  ; use: `pel-insert-tab-set-width-info'
+(require 'pel-indent)       ; use: `pel-indent-insert-control-info',
+;;                          ;      `pel-indent-control-context'
+;;                          ;      `pel-tab-insert-control-info',
+;;                          ;      `pel-tab-control-context'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -123,53 +126,54 @@ when bound.
 If no specialized mode function is defined (bound) then this only prints the
 most generic information about the mode."
   (interactive "P")
-  (let* ((pel-insert-symbol-content-context-buffer (current-buffer))
-         (current-major-mode major-mode)
-         (mode-base-symbol (intern (pel-file-type-for major-mode)))
-         (pel-use-mode-user-option-symbol (intern (pel-string-with-major-mode
-                                                   "pel-use-%s")))
-         (major-mode-used-text-fct (intern (pel-string-with-major-mode
-                                       "pel-%s-mode-used-text")))
-         (minor-mode-info-inserter-fct (intern (pel-string-with-major-mode
-                                                "pel--%s-minor-mode-info")))
-         (indent-tab-info-inserter-fct (intern (pel-string-with-major-mode
-                                                "pel-%s-insert-indent-tab-info")))
-         (title (pel-string-with-major-mode "PEL setup for %s mode")))
-    (pel-print-in-buffer
-     "*pel-mode-info*"
-     title
-     (lambda ()
-       "Print setup info for the major mode."
-       ;; -- Major Mode
-       (insert (propertize "* Major Mode Control:" 'face 'bold))
-       (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
-                                  "major mode currently used")
-       (when pel-use-tree-sitter
-         (insert (format "\n- %s" (pel-ts-language-grammar-status-for
-                                   mode-base-symbol "\n- "))))
-       (when (boundp pel-use-mode-user-option-symbol)
-         (pel-insert-symbol-content-line
-          pel-use-mode-user-option-symbol
-          nil
-          (when (fboundp major-mode-used-text-fct)
-            major-mode-used-text-fct)))
-       ;; -- Minor Mode activation
-       (insert "\n\n")
-       (pel-insert-minor-mode-activation-info
-        current-major-mode
-        (when (fboundp minor-mode-info-inserter-fct)
-          minor-mode-info-inserter-fct))
-       (insert "\n\n")
-       ;; -- Indentation Control
+  (let ((setup-info-cmd (intern (pel-string-with-major-mode
+                                 "pel-%s-setup-info"))))
+    (if (fboundp setup-info-cmd)
+        (call-interactively setup-info-cmd)
+      (let* ((indent-control-context (pel-indent-control-context))
+             (tab-control-context    (pel-tab-control-context))
+             (pel-insert-symbol-content-context-buffer (current-buffer))
+             (current-major-mode major-mode)
+             (mode-base-symbol (intern (pel-file-type-for major-mode)))
+             (pel-use-mode-user-option-symbol (intern (pel-string-with-major-mode
+                                                       "pel-use-%s")))
+             (major-mode-used-text-fct (intern (pel-string-with-major-mode
+                                                "pel-%s-mode-used-text")))
+             (minor-mode-info-inserter-fct (intern (pel-string-with-major-mode
+                                                    "pel--%s-minor-mode-info")))
 
-       ;; -- Hard Tab Control
-       (if (fboundp indent-tab-info-inserter-fct)
-           (progn
-             (funcall indent-tab-info-inserter-fct)
-             (pel-insert-tab-set-width-info))
-         (pel-insert-tab-set-width-info mode-base-symbol)))
-     (unless append :clear-buffer)
-     :use-help-mode)))
+             (title (pel-string-with-major-mode "PEL setup for %s mode")))
+        (pel-print-in-buffer
+         "*pel-mode-info*"
+         title
+         (lambda ()
+           "Print setup info for the major mode."
+           ;; -- Major Mode
+           (insert (propertize "* Major Mode Control:" 'face 'bold))
+           (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
+                                      "major mode currently used")
+           (when pel-use-tree-sitter
+             (insert (format "\n- %s" (pel-ts-language-grammar-status-for
+                                       mode-base-symbol "\n- "))))
+           (when (boundp pel-use-mode-user-option-symbol)
+             (pel-insert-symbol-content-line
+              pel-use-mode-user-option-symbol
+              nil
+              (when (fboundp major-mode-used-text-fct)
+                major-mode-used-text-fct)))
+           ;; -- Minor Mode activation
+           (insert "\n\n")
+           (pel-insert-minor-mode-activation-info
+            current-major-mode
+            (when (fboundp minor-mode-info-inserter-fct)
+              minor-mode-info-inserter-fct))
+           (insert "\n\n")
+           ;; -- Indentation & Hard Tab Control
+           (pel-indent-insert-control-info indent-control-context)
+           ;; -- Hard Tab Control
+           (pel-tab-insert-control-info tab-control-context))
+         (unless append :clear-buffer)
+         :use-help-mode)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-modes)

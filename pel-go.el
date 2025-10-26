@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-20 12:56:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-26 11:32:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,7 +33,11 @@
 ;;
 (require 'pel--base)        ; use: `pel-set-tab-width', `pel-treesit-ready-p'
 (require 'pel--options)     ; use:
-(require 'pel-indent)       ; use `pel-insert-tab-set-width-info'
+(require 'pel-indent)       ; use: `pel-indent-insert-control-info',
+;;                          ;      `pel-indent-control-context'
+;;                          ;      `pel-tab-insert-control-info',
+;;                          ;      `pel-tab-control-context'
+(require 'pel-modes)        ; use: `pel-insert-minor-mode-activation-info'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -149,10 +153,9 @@ group customize buffer."
    (t "Invalid! Use t or with-tree-sitter")))
 
 ;;-pel-autoload
-(defun pel-go-insert-indent-tab-info ()
+(defun pel-go-insert-indent-info ()
   "Insert Go indentation and hard tab setup info in current context.
-Return `pel-show-indent' capability list."
-  (insert (propertize "* Indentation/Tab Width Control:" 'face 'bold))
+Return a list of generic symbols described."
   (insert "
 - Under PEL, Go indentation level width is controlled by `pel-go-tab-width':
   PEL stores its value in `tab-width' and `go-ts-mode-indent-offset' when
@@ -161,45 +164,71 @@ Return `pel-show-indent' capability list."
   depending of the major mode used.  That can lead to confusion,
   a confusion that PEL avoids.
 ")
+  (pel-insert-symbol-content-line 'go-ts-mode-indent-offset nil
+                                  "used by go-ts-mode.")
+
+  ;; Return a capability list for `pel-show-indent' or similar callers
+  '(indent-description-info precedence-info))
+
+;;-pel-autoload
+(defun pel-go-insert-tab-info ()
+  "Insert Go indentation and hard tab setup info in current context.
+Return a list of generic symbols described."
   (pel-insert-symbol-content-line 'pel-go-tab-width nil
                                   "\
 corresponds to rendered indentation width. \
 Changing it has no impact on buffer/file content!")
   (pel-insert-symbol-content-line 'tab-width nil
                                   "used by go-mode.")
-  (pel-insert-symbol-content-line 'go-ts-mode-indent-offset nil
-                                  "used by go-ts-mode.")
-  (insert "
+  (pel-insert-symbol-content-line 'indent-tabs-mode)
+  (pel-insert-symbol-content-line 'tab-stop-list)
+  (insert (substitute-command-keys "
 
- You can temporarily change the one used by the major mode you are using to
- increase or decrease the visual indentation spacing.  The best way to do
- that is to use something like:
-  -  M-: (setq-local tab-width 8) for go-mode
-  -  M-: (setq-local go-ts-mode-indent-offset 8) for go-ts-mode.
-
-  Changing `pel-go-tab-width' will only affect the rendering of the next Go
-  buffer(s) you open.
-
-  Under normal circumstances (if you do nothing) the 3 user-options should
-  have the exact same value, imposed by the value of `pel-go-tab-width' when
-  the Go buffer is opened.
-
- Also:"
-          )
+ You can temporarily change the current indentation used by a Go buffer
+ with `pel-set-tab-width' command via \\[pel-set-tab-width] to increase
+ or decrease the visual indentation spacing, since Go uses tab for
+ indentation.
+ Using this command does not impact the indentation rendering of
+ other Go buffers."))
   ;; Return a capability list for `pel-show-indent' or similar callers
-  '(supports-set-tab-width))
+  '(tab-description-intro
+    pel-set-tab-width-description
+    pel-MM-tab-width
+    tab-width
+    indent-tabs-mode
+    tab-stop-list))
 
 ;;-pel-autoload
-(defun pel-go-mod-insert-indent-tab-info ()
+(defun pel-go-mod-insert-indent-info ()
   "Insert go.mod indentation and hard tab setup info in current context.
 Return `pel-show-indent' capability list."
-  (pel-go-insert-indent-tab-info))
+  (pel-go-insert-indent-info))
 
 ;;-pel-autoload
-(defun pel-go-dot-mod-insert-indent-tab-info ()
+(defun pel-go-mod-insert-tab-info ()
   "Insert go.mod indentation and hard tab setup info in current context.
 Return `pel-show-indent' capability list."
-  (pel-go-insert-indent-tab-info))
+  (pel-go-insert-tab-info))
+
+;;-pel-autoload
+(defun pel-go-dot-mod-insert-indent-info ()
+  "Insert go.mod indentation and hard tab setup info in current context.
+Return `pel-show-indent' capability list."
+  (pel-go-insert-indent-info))
+
+;;-pel-autoload
+(defun pel-go-dot-mod-insert-tab-info ()
+  "Insert go.mod indentation and hard tab setup info in current context.
+Return `pel-show-indent' capability list."
+  (pel-go-insert-indent-info))
+
+(defun pel--go-minor-mode-info ()
+  "Insert information related to Go minor modes."
+  (insert "
+Automatic activation of minor mode is also controlled by the
+following user-options:")
+  (pel-insert-list-content 'pel-go-activates-minor-modes
+                           nil nil nil :1line))
 
 ;;-pel-autoload
 (defun pel-go-setup-info (&optional append)
@@ -209,7 +238,10 @@ Return `pel-show-indent' capability list."
                             go-ts-mode
                             go-dot-mod-mode
                             go-mod-ts-mode))
-  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+        (current-major-mode major-mode)
+        (indent-control-context (pel-indent-control-context))
+        (tab-control-context (pel-tab-control-context)))
     (pel-print-in-buffer
      "*pel-go-info*"
      "PEL setup for Go programming language"
@@ -235,8 +267,12 @@ Return `pel-show-indent' capability list."
                                           "no, save buffer unchanged.")))
        (pel-insert-symbol-content-line 'pel-use-goflymake)
        (insert "\n\n")
-       (pel-go-insert-indent-tab-info)
-       (pel-insert-tab-set-width-info))
+       ;; --
+       (pel-insert-minor-mode-activation-info current-major-mode
+                                              #'pel--go-minor-mode-info)
+       (insert "\n\n")
+       (pel-indent-insert-control-info indent-control-context)
+       (pel-tab-insert-control-info tab-control-context))
      (unless append :clear-buffer)
      :use-help-mode)))
 

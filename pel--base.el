@@ -382,20 +382,36 @@ The non-nil value of the predicate is the `module-file-suffix'.")
 It is set to t only by the logic of pel_keys.el which is
 executed by `pel-init' on startup.")
 
-(defvar-local pel-indentation-width-control-variable nil
-  "Variable used by the current major mode to control indentation width.
+(defvar-local pel-indentation-width-control-variables nil
+  "Variable(s) used by the current major mode to control indentation width.
 
-This is a symbol set by the major modes that PEL has instrumented.
-It can also be a list of symbols.  The last one is the one controlling
-the indentation, the symbol listed before are values that are stored into the
-next one.  These variables are used to set the default.")
+Symbol or list of symbols of the variable(s) that are used by the major
+mode to control indentation.
+
+If a list is specified, the last symbol is the variable controlling the
+indentation, the symbol listed before are values that are stored into
+the next one.  These variables are used to set the default.
+
+Set by the major modes that PEL has instrumented.")
 
 (defvar-local pel-indentation-other-control-variables nil
   "List of other indentation control variables used for the major mode.")
 
-(defvar-local pel-tab-width-control-variable nil
-  "Variable used by the current major mode to control tab width.
-It's assumed that the value of this variable is also stored in `tab-width'.")
+(defvar-local pel-tab-width-control-variables nil
+  "Variable(s) controlling tab width of the current major mode.
+
+Symbol or list of symbols of the variable(s) that are used by the major
+mode to control tab-width and possibly indentation.
+
+Its value affect the behaviour of the `pel-set-tab-width' command.
+If `pel-tab-width-control-variables' is nil, `pel-set-tab-width'
+sets `tab-width'.
+If `pel-tab-width-control-variables' identifies one or several variables
+then `pel-set-tab-width' sets all of the identified variables.  If you want
+it to set `tab-width' with another variable, place them both in a list.
+When identifying several variables, put the name of the tab width controlling
+variable in the first position in the list; `pel-set-tab-width' reads the tab
+width from that variable..")
 
 ;; ---------------------------------------------------------------------------
 ;; Code Style Buffer Local Variables
@@ -3337,23 +3353,34 @@ of point."
 ;; Control Tab Width
 ;; -----------------
 
+(defun pel-list-of (val)
+  "Return VAL if it is a list, (list val) otherwise."
+  (if (listp val)
+      val
+    (list val)))
+
 (defun pel-set-tab-width (n)
   "Set the tab width used in current buffer to the value N.
 
 The change is temporary and affects the current buffer only.
 Return the new `tab-width' or nil if unchanged."
   (interactive (list (read-number (format "New tab-width [%d]: " tab-width))))
-  (let ((current-tab-width
-         (if pel-tab-width-control-variable
-             (pel-symbol-value pel-tab-width-control-variable)
-           tab-width)))
+  (let* ((control-vars (pel-list-of pel-tab-width-control-variables))
+        (current-tab-width (if control-vars
+                               (pel-symbol-value (car control-vars))
+                             tab-width)))
+    ;;
     (while (not (and (< n 9) (> n 1)))
       (setq n (read-number "Enter valid tab-width in 2-8 range: "
                            current-tab-width)))
     (when (not (= n current-tab-width))
       (message "Changed buffer's tab-width from %d to %d" current-tab-width n)
-      (when pel-tab-width-control-variable
-        (set (make-local-variable pel-tab-width-control-variable) n))
+      (when control-vars
+        (dolist (var control-vars)
+          (set (make-local-variable var) n)))
+      ;; Regardless of `pel-tab-width-control-variables' content also
+      ;; set tab-width in case PEL code did not put it in
+      ;; `pel-tab-width-control-variables'
       (setq-local tab-width n))))
 
 ;; ---------------------------------------------------------------------------

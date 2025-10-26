@@ -106,9 +106,13 @@
 (require 'pel--options)         ; use: `pel-erlang-version-detection-method'
 ;;                              ;      `pel-erlang-path-detection-method'
 ;;                              ;      `pel-erlang-electric-keys'
-(require 'pel-indent)           ; use `pel-insert-tab-set-width-info'
 (require 'pel-ffind)            ; use: `pel-ffind'
 (require 'pel-fs)               ; use: `pel-exec-pel-bin', `pel-exec-cmd'
+(require 'pel-indent)           ; use: `pel-indent-insert-control-info',
+;;                              ;      `pel-indent-control-context'
+;;                              ;      `pel-tab-insert-control-info',
+;;                              ;      `pel-tab-control-context'
+(require 'pel-modes)            ; use: `pel-insert-minor-mode-activation-info'
 (require 'pel-syntax)           ; use: `pel-insert-space-in-enclosing-block'
 (require 'pel-xref)             ; use: `pel-xref-find-definitions'
 (require 'pel-comment)          ; use: `pel-comment-dwim'
@@ -180,10 +184,9 @@ USE-ERLANG should be set to `pel-use-erlang' value used in current buffer."
    (t "Invalid! Use t or with-tree-sitter")))
 
 ;;-pel-autoload
-(defun pel-erlang-insert-indent-tab-info ()
+(defun pel-erlang-insert-indent-info ()
   "Insert Erlang indentation and hard tab setup info in current context.
-Return `pel-show-indent' capability list."
-  (insert (propertize "* Indentation Control:" 'face 'bold))
+Return a list of generic symbols described."
   (insert "
 - Under PEL, Erlang main indentation level width is controlled entirely
   by the value of the `pel-erlang-indent-width' user-option:
@@ -196,11 +199,11 @@ Return `pel-show-indent' capability list."
   regardless of the position of point in line.  This is also the default
   behaviour for Erlang buffers.  Change it via `erlang-tab-always-indent'.
 
-  If you want to use hard tabs for indentation, you should set the value
-  tab-width to the same value of pel-erlang-indent-width and then you can
-  control the visual rendering of indentation by changing the values of those
-  two user-options: the content of the buffer and file does wont change but
-  the indentation rendering will.
+  If you want to use hard tabs for indentation, you should set
+  `tab-width' to the same value of `pel-erlang-indent-width' and then
+  you can control the visual rendering of indentation by changing the
+  values of those two user-options: the content of the buffer and file
+  does wont change but the indentation rendering will.
 
   Note, however, that other editors may not be able to do the same; the use of
   hard tabs in Erlang source code is not required as it is for Go, therefore
@@ -210,9 +213,13 @@ Return `pel-show-indent' capability list."
   (pel-insert-symbol-content-line 'erlang-indent-level)
   (pel-insert-symbol-content-line 'erlang-argument-indent)
   (pel-insert-symbol-content-line 'erlang-indent-guard)
-  (insert "\n\n")
-  ;;
-  (insert (propertize "* Hard Tab Control:" 'face 'bold))
+  ;; Return the list of generic symbols described here.
+  '(indent-description-info
+    pel-MM-indent-width))
+
+(defun pel-erlang-insert-tab-info ()
+  "Insert Erlang indentation and hard tab setup info in current context.
+Return a list of generic symbols described."
   (insert "
 - The hard tab rendering width is for erlang buffer is controlled by
   `pel-erlang-tab-width' and stored into `tab-width'.  These do not
@@ -221,20 +228,30 @@ Return `pel-show-indent' capability list."
 ")
   (pel-insert-symbol-content-line 'erlang-tab-always-indent)
   (pel-insert-symbol-content-line 'pel-erlang-tab-width)
-  (pel-insert-symbol-content-line 'tab-width)
   (pel-insert-symbol-content-line 'pel-erlang-use-tabs
                                   nil #'pel-on-off-string)
-  (pel-insert-symbol-content-line 'indent-tabs-mode
-                                  nil #'pel-on-off-string)
-  ;; Return a capability list for `pel-show-indent' or similar callers
-  '(supports-set-tab-width))
+  ;; Return the list of generic symbols described here.
+  '(tab-description-intro
+    pel-MM-tab-width
+    pel-MM-use-tabs))
+
+(defun pel--erlang-minor-mode-info ()
+  "Insert information related to Erlang minor modes."
+  (insert "
+Automatic activation of minor mode is also controlled by the
+following user-options:")
+  (pel-insert-list-content 'pel-erlang-activates-minor-modes
+                           nil nil nil :1line))
 
 ;;-pel-autoload
 (defun pel-erlang-setup-info (&optional append)
   "Display Erlang setup information."
   (interactive "P")
   (pel-major-mode-must-be '(erlang-mode erlang-ts-mode))
-  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+        (current-major-mode major-mode)
+        (indent-control-context (pel-indent-control-context))
+        (tab-control-context (pel-tab-control-context)))
     (pel-print-in-buffer
      "*pel-erlang-info*"
      "PEL setup for Erlang programming language"
@@ -249,8 +266,12 @@ Return `pel-show-indent' capability list."
        (pel-insert-symbol-content-line 'pel-use-erlang nil
                                        (function pel-erlang-mode-used-text))
        (insert "\n\n")
-       (pel-erlang-insert-indent-tab-info)
-       (pel-insert-tab-set-width-info))
+       ;; --
+       (pel-insert-minor-mode-activation-info current-major-mode
+                                              #'pel--erlang-minor-mode-info)
+       (insert "\n\n")
+       (pel-indent-insert-control-info indent-control-context)
+       (pel-tab-insert-control-info tab-control-context))
      (unless append :clear-buffer)
      :use-help-mode)))
 

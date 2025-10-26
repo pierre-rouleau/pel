@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-24 12:31:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-26 13:34:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -347,126 +347,221 @@ by the numeric argument N (or if not specified N=1):
                                                 ; Rouleau: not sure about tcl]
   "Major modes implemented as cc-modes.")
 
-;;-pel-autoload
-(defun pel-insert-tab-set-width-info (&optional mode-base)
-  "Insert more information related to the use of `pel-set-tab-with'.
 
-If MODE-BASE is non-nil and set to a value specified by the
-evaluation of intern (pel-file-type-for major-mode)), insert the title
-for Tab width and information about default user-options specific to the
-`major-mode' used by the caller."
-  (when mode-base
+;;-pel-autoload
+(defun pel-indent-control-context ()
+  "Capture & return the indentation context for current major mode.
+The returned value is a symbol -> value hash.
+The symbols are:
+- used-major-mode
+- pel-insert-symbol-content-context-buffer
+- isa-cc-mode
+- isa-sh-mode
+- pel-indentation-width-control-variables
+- pel-indentation-other-control-variables
+- "
+  (let ((context (make-hash-table)))
+    ;; (puthash 'used-major-mode           major-mode context)
+    (puthash 'pel-insert-symbol-content-context-buffer
+             (current-buffer) context)
+    (puthash 'standard-indent   standard-indent context)
+    (puthash 'tab-always-indent tab-always-indent context)
+    (puthash 'indent-line-function indent-line-function context)
+    (puthash 'isa-cc-mode
+             (derived-mode-p pel--c-basic-offset-modes)
+             context)
+    (puthash 'isa-sh-mode (derived-mode-p '(sh-mode)) context)
+    (puthash 'pel-indentation-width-control-variables
+             pel-indentation-width-control-variables context)
+    (puthash 'pel-indentation-other-control-variables
+             pel-indentation-other-control-variables context)
+    (puthash 'indent-indent-info-inserter-fct
+             (intern
+              (pel-string-with-major-mode
+               "pel-%s-insert-indent-info"))
+             context)
+    (puthash 'pel-MM-indent-width
+             (pel-major-mode-symbol-for "pel-%s-indent-width") context)
+    context))
+
+(defun pel-indent-insert-control-info (context)
+  "Insert information related to the indentation control.
+
+CONTEXT, a hash created by `pel-indent-control-context', captures the values of
+important variables and symbols in the context of the inspected major mode."
+  ;; 1- restore the context in let-bound variables.
+  (let* ((pel-insert-symbol-content-context-buffer
+          (gethash
+           'pel-insert-symbol-content-context-buffer
+           context))
+         (standard-indent (gethash 'standard-indent context))
+         (tab-always-indent (gethash 'tab-always-indent context ))
+         (indent-line-function (gethash 'indent-line-function context))
+         (isa-cc-mode     (gethash 'isa-cc-mode     context))
+         (isa-sh-mode     (gethash 'isa-sh-mode     context))
+         (pel-indentation-width-control-variables
+          (gethash 'pel-indentation-width-control-variables context))
+         (pel-indentation-other-control-variables
+          (gethash 'pel-indentation-other-control-variables context))
+         (indent-indent-info-inserter-fct
+          (gethash 'indent-indent-info-inserter-fct context))
+         (pel-MM-indent-width (gethash 'pel-MM-indent-width context))
+         (already-inserted nil)
+         (major-mode-specific-inserted nil))
+    ;; 2- insert information using those values
+    (insert (propertize "* Indentation Control:" 'face 'bold))
+    ;;    - insert mode specialized info if a function exists for it.
+    (when (fboundp indent-indent-info-inserter-fct)
+      (setq already-inserted (funcall indent-indent-info-inserter-fct))
+      (setq major-mode-specific-inserted t))
+    ;;    - insert the generic info after; the ones that have not been
+    ;;      already inserted by the mode specialized function as identified
+    ;;      by the list of symbol it returns.
+    (unless (memq 'pel-MM-indent-width already-inserted)
+      (when (boundp pel-MM-indent-width)
+        (pel-insert-symbol-content-line pel-MM-indent-width)
+        (setq major-mode-specific-inserted t)))
+    (when major-mode-specific-inserted
+      (unless (memq 'precedence-info already-inserted)
+        (insert "\n
+Note: the above PEL and major-mode specific user options take precedence
+      over the following variables, unless these are set by file variables:")))
+    (unless (memq 'indent-description-info already-inserted)
+      (when isa-cc-mode
+        (pel-insert-symbol-content-line 'c-basic-offset))
+      (when isa-sh-mode
+        (pel-insert-symbol-content-line 'sh-basic-offset)))
+    (dolist (symb '(standard-indent
+                    tab-always-indent
+                    indent-line-function))
+      (unless (memq symb already-inserted)
+        (pel-insert-symbol-content-line symb)))
+    ;; --
+    (unless (fboundp indent-indent-info-inserter-fct)
+      ;; If there is no specialized inserter for this mode
+      ;; but PEL has identified the variables that have an
+      ;; impact on the indentation, insert information about
+      ;; those here.
+      (when pel-indentation-width-control-variables
+        (insert "
+ Indentation is controlled by the following variables:")
+        (dolist (varsymb (if (listp pel-indentation-width-control-variables)
+                             pel-indentation-width-control-variables
+                           (list pel-indentation-width-control-variables)))
+          (pel-insert-symbol-content-line varsymb)))
+      (when pel-indentation-other-control-variables
+        (insert "
+ These other variables control various aspect of indentation:")
+        (dolist (varsymb pel-indentation-other-control-variables)
+          (pel-insert-symbol-content-line varsymb))))))
+
+
+(defun pel-tab-control-context ()
+  "Capture & return tab control context for current major mode.
+The returned value is a symbol -> value hash.
+The symbols are:
+- used-major-mode
+- pel-insert-symbol-content-context-buffer
+- pel-tab-width-control-variables
+- indent-tabs-mode : the value of indent-tabs-mode
+- tab-width
+- indent-tab-info-inserter-fct"
+  (let ((context (make-hash-table)))
+    (puthash 'used-major-mode           major-mode context)
+    (puthash 'pel-insert-symbol-content-context-buffer (current-buffer) context)
+    (puthash 'pel-tab-width-control-variables     pel-tab-width-control-variables context)
+    (puthash 'indent-tabs-mode     indent-tabs-mode context)
+    (puthash 'tab-width            tab-width context)
+    (puthash 'tab-stop-list        tab-stop-list context)
+    (puthash 'indent-tab-info-inserter-fct
+             (intern
+              (pel-string-with-major-mode
+               "pel-%s-insert-tab-info"))
+             context)
+    (puthash 'pel-MM-tab-width
+             (pel-major-mode-symbol-for "pel-%s-tab-width") context)
+    (puthash 'pel-MM-use-tabs
+             (pel-major-mode-symbol-for "pel-%s-use-tabs") context)
+    context))
+
+(defun pel-tab-insert-control-info (context)
+  "Insert information related to the hard tab control.
+
+CONTEXT, a hash created by `pel-tab-control-context', captures the values of
+important variables and symbols in the context of the inspected major mode."
+  ;; 1- restore the context in let-bound variables.
+  (let* ((used-major-mode (gethash 'used-major-mode context))
+         (pel-insert-symbol-content-context-buffer
+          (gethash
+           'pel-insert-symbol-content-context-buffer
+           context))
+         (pel-tab-width-control-variables     (gethash 'pel-tab-width-control-variables context))
+         (indent-tabs-mode          (gethash 'indent-tabs-mode context))
+         (tab-width                 (gethash 'tab-width context))
+         (tab-stop-list             (gethash 'tab-stop-list context))
+         (indent-tab-info-inserter-fct (gethash
+                                        'indent-tab-info-inserter-fct
+                                        context))
+         (pel-MM-tab-width (gethash 'pel-MM-tab-width context))
+         (pel-MM-use-tabs  (gethash 'pel-MM-use-tabs context))
+         (already-inserted nil)
+         (mode-base (pel-file-type-for used-major-mode)))
+    ;; 2- insert information using those values
+    (insert "\n\n")
     (insert (propertize "* Hard Tab Control:" 'face 'bold))
-    (insert (format "
+    (when (fboundp indent-tab-info-inserter-fct)
+      (setq already-inserted (funcall indent-tab-info-inserter-fct)))
+    (when (and (not (memq 'tab-description-intro already-inserted))
+               (boundp pel-MM-tab-width))
+      (insert (format "
 - The hard tab rendering width is for %s buffer is controlled by
   `pel-%s-tab-width' and stored into `tab-width'.
   These do not control the indentation, just the visual width (in
   columns) that Emacs uses to render a hard tab character.
-  Whether hard tabs are used in js buffer is controlled by
+  Whether hard tabs are used in %s buffer is controlled by
   `pel-%s-use-tabs' and stored inside `indent-tabs-mode'.
-" mode-base mode-base mode-base))
-    (let ((mode-tw-uo-symbol (intern (format "pel-%s-tab-width"
-                                             mode-base)))
-          (use-tabs-uo-symbol (intern (format "pel-%s-use-tabs"
-                                              mode-base))))
-      (when (boundp mode-tw-uo-symbol)
-        (pel-insert-symbol-content-line mode-tw-uo-symbol))
-      (pel-insert-symbol-content-line 'tab-width)
-      (when (boundp use-tabs-uo-symbol)
-        (pel-insert-symbol-content-line use-tabs-uo-symbol
-                                        nil #'pel-on-off-string))
-      (pel-insert-symbol-content-line 'indent-tabs-mode
-                                      nil #'pel-on-off-string)))
-  (insert (substitute-command-keys "
+" mode-base mode-base mode-base mode-base)))
+    (unless (memq 'pel-MM-tab-width already-inserted)
+      (when (boundp pel-MM-tab-width)
+        (pel-insert-symbol-content-line pel-MM-tab-width)))
+    (unless (memq 'pel-MM-use-tabs already-inserted)
+      (when (boundp pel-MM-use-tabs)
+        (pel-insert-symbol-content-line pel-MM-use-tabs)))
+    (dolist (symb '(tab-width
+                    indent-tabs-mode
+                    tab-stop-list))
+      (unless (memq symb already-inserted)
+        (pel-insert-symbol-content-line symb)))
+    (unless (memq 'pel-set-tab-width-description already-inserted)
+      (insert (substitute-command-keys
+               "
 
- You can use \\[pel-set-tab-width] to change the width rendering of
- hard tabs temporarily in the current buffer.
+ You can use the `pel-set-tab-width' command via \\[pel-set-tab-width] to
+ change the width rendering of hard tabs temporarily in the current buffer.
  If the indentation width is made equal to the `tab-width' then you can
  quickly change the rendering of the indentation using that command.")))
+    (insert (format "
+
+ Also note that:
+  - The `pel-set-tab-width' command sets either `tab-width' or the variable
+    identified inside `pel-tab-width-control-variables' if any.  PEL sets
+    the buffer local value of `pel-tab-width-control-variables' when the buffer
+    is opened.
+  - For this mode its value is:
+     - pel-tab-width-control-variables : %S" pel-tab-width-control-variables))))
 
 ;;-pel-autoload
 (defun pel-show-indent (&optional append)
   "Display current buffer's indentation behaviour controlling variable state."
   (interactive "P")
-  (let ((used-major-mode major-mode)
-        (pel-insert-symbol-content-context-buffer (current-buffer))
-        (isa-cc-mode (derived-mode-p pel--c-basic-offset-modes))
-        (isa-sh-mode (derived-mode-p '(sh-mode)))
-        (indent-width-control-var  pel-indentation-width-control-variable)
-        (indent-other-control-vars pel-indentation-other-control-variables)
-        (tab-width-control-var          pel-tab-width-control-variable)
-        (uses-indent-tabs-mode          indent-tabs-mode)
-        (indent-tab-info-fun (intern (pel-string-with-major-mode "pel-%s-insert-indent-tab-info"))))
+  (let ((indent-control-context (pel-indent-control-context))
+        (tab-control-context (pel-tab-control-context)))
     (pel-print-in-buffer
      "*pel-indent-info*"
      "Indentation Width Control and Space/Tab Insertion Rendering"
      (lambda ()
-       (if (fboundp indent-tab-info-fun)
-           (let ((capabilities (funcall indent-tab-info-fun)))
-             (when (memq 'supports-set-tab-width capabilities)
-               (pel-insert-tab-set-width-info)))
-         (let ((some-major-mode-specific nil))
-           (dolist (fmt '("pel-%s-indent-width"
-                          "pel-%s-tab-width"
-                          "pel-%s-use-tabs"))
-             (let ((symbol (pel-major-mode-symbol-value-or fmt 'not-defined)))
-               (unless (eq symbol 'not-defined)
-                 (setq some-major-mode-specific t)
-                 (pel-insert-symbol-content-line (pel-major-mode-symbol-for
-                                                  fmt)))))
-           (when some-major-mode-specific
-             (insert "\n----
-The above PEL major-mode specific user options take precedence
-over the following variables (unless these are set by
-file variables):"))
-           (when isa-cc-mode
-             (pel-insert-symbol-content-line 'c-basic-offset))
-           (when isa-sh-mode
-             (pel-insert-symbol-content-line 'sh-basic-offset))
-           (pel-insert-symbol-content-line 'tab-width)
-           (unless tab-width-control-var
-             (insert "\n  -> Use ")
-             (pel-insert-symbol 'pel-set-tab-width)
-             (insert " to change locally and have tabs rendered with a different width."))
-           (pel-insert-symbol-content-line 'indent-tabs-mode)
-           (pel-insert-symbol-content-line 'standard-indent)
-           (pel-insert-symbol-content-line 'tab-always-indent)
-           (pel-insert-symbol-content-line 'tab-stop-list)
-           (pel-insert-symbol-content-line 'tab-first-completion)
-           (pel-insert-symbol-content-line 'indent-line-function)
-
-           (when indent-width-control-var
-             (insert "\n\n**** Indentation Width Control ****\n")
-             (if (symbolp indent-width-control-var)
-                 (progn (insert (format "\
-The following variable control indentation width in %s:" used-major-mode))
-                        (pel-insert-symbol-content-line indent-width-control-var))
-               (insert (format "\
-The following variables control indentation width in %s.
-The last one (%s) is used by the major mode, the others
-set it when the buffer is opened, with first setting next.
-Some are overwritten by file variables, other are controlled
-by their mode (as in cc-mode):"
-                               used-major-mode
-                               (car (last indent-width-control-var))))
-               (dolist (var indent-width-control-var)
-                 (pel-insert-symbol-content-line var))))
-           (when indent-other-control-vars
-             (insert "\n\
-Indentation is also controlled by these other variables:")
-             (dolist (var indent-other-control-vars)
-               (pel-insert-symbol-content-line var)))
-           (when tab-width-control-var
-             (insert "\n-> Use ")
-             (pel-insert-symbol 'pel-set-tab-width)
-             (insert " to temporarily change ")
-             (pel-insert-symbol tab-width-control-var)
-             (insert " and ")
-             (pel-insert-symbol 'tab-width)
-             (insert " in this buffer")
-             (if uses-indent-tabs-mode
-                 (insert " and have hard tabs rendered with a different width.")
-               (insert "."))))))
+       (pel-indent-insert-control-info indent-control-context)
+       (pel-tab-insert-control-info tab-control-context))
      (unless append :clear-buffer)
      :use-help-mode)))
 

@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-05-14 17:26:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-25 12:56:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -133,6 +133,17 @@
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
+
+;; [:todo 2025-10-25, by Pierre Rouleau:
+;;
+;;  Major Mode Behaviour Introspection Help support:
+;;
+;;   Add a pel-completion-control-info function that describes how completion
+;;   is controlled for a major mode.
+;;   The function should describe : tab-first-completion
+;;   It should call (pel-string-with-major-mode "pel-%s-insert-completion-info")
+;;   to insert major-mode specialized information if that function exists.
+;; ]
 
 ;; --
 ;; Ido Prompt Geometry Management

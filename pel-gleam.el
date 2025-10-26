@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October  6 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-20 17:49:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-26 08:31:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,11 +31,15 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)  ; use: `pel-toggle-and-show-user-option'
-;;                           `pel-symbol-value-or'
-;;                           `pel-symbol-on-off-string'
+(require 'pel--base)        ; use: `pel-toggle-and-show-user-option'
+;;                          ;      `pel-symbol-value-or'
+;;                          ;      `pel-symbol-on-off-string'
 (require 'pel--options)
-(require 'pel-indent)           ; use `pel-insert-tab-set-width-info'
+(require 'pel-indent)       ; use: `pel-indent-insert-control-info',
+;;                          ;      `pel-indent-control-context'
+;;                          ;      `pel-tab-insert-control-info',
+;;                          ;      `pel-tab-control-context'
+(require 'pel-modes)        ; use: `pel-insert-minor-mode-activation-info'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -53,20 +57,24 @@ customized value of the `gleam-ts-format-on-save' user option."
   (interactive "P")
   (pel-toggle-and-show-user-option 'gleam-ts-format-on-save globally))
 
-;; see https://github.com/gleam-lang/gleam/discussions/3633
+;;-pel-autoload
+(defun pel-gleam-insert-indent-info ()
+  "Insert Gleam indentation and hard tab setup info in current context.
+Return a list of generic symbols described."
+  (pel-insert-symbol-content-line 'gleam-ts-indent-offset)
+  ;; Return the list of generic symbols described here.
+  '(indent-description-info))
 
 ;;-pel-autoload
-(defun pel-gleam-insert-indent-tab-info ()
+(defun pel-gleam-insert-tab-info ()
   "Insert Gleam indentation and hard tab setup info in current context.
-Return `pel-show-indent' capability list."
-  (insert (propertize "* Indentation Control:" 'face 'bold))
-  (pel-insert-symbol-content-line 'gleam-ts-indent-offset)
-  (insert "\n\n")
-  ;;
-  (insert (propertize "* Hard Tab Control:" 'face 'bold))
+Return a list of generic symbols described."
   (insert (substitute-command-keys "
  The Gleam designers are pushing for an 2-column indentation
  made of space only. No tabs.
+
+ See https://github.com/gleam-lang/gleam/discussions/3633
+
  However, several people find the 2-column indentation too small.
  If this is the case for you, and you work on official Gleam code,
  you could use a temporary use a `tab-width' of 2, tabify the code
@@ -76,19 +84,30 @@ Return `pel-show-indent' capability list."
  When you're done just untabify the code with \\[untabify].
 "))
   (pel-insert-symbol-content-line 'pel-gleam-tab-width)
-  (pel-insert-symbol-content-line 'tab-width)
   (pel-insert-symbol-content-line 'pel-gleam-use-tabs
                                   nil #'pel-on-off-string)
-  (pel-insert-symbol-content-line 'indent-tabs-mode
-                                  nil #'pel-on-off-string)
-  ;; Return a capability list for `pel-show-indent' or similar callers
-  '(supports-set-tab-width))
+  ;; Return the list of generic symbols described here.
+  '(tab-description-intro
+    pel-MM-tab-width
+    pel-MM-use-tabs))
+
+(defun pel--gleam-minor-mode-info ()
+  "Insert information related to Gleam minor modes."
+  (insert "
+Automatic activation of minor mode is also controlled by the
+following user-options:")
+  (pel-insert-list-content 'pel-gleam-activates-minor-modes
+                           nil nil nil :1line))
 
 ;;-pel-autoload
 (defun pel-gleam-setup-info (&optional append)
   "Display Gleam setup information."
   (interactive "P")
-  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+  (pel-major-mode-must-be 'gleam-ts-mode)
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+        (current-major-mode major-mode)
+        (indent-control-context (pel-indent-control-context))
+        (tab-control-context (pel-tab-control-context)))
     (pel-print-in-buffer
      "*pel-gleam-info*"
      "PEL setup for Gleam programming language"
@@ -113,10 +132,14 @@ Return `pel-show-indent' capability list."
                                           "yes, format on save."
                                           "no, save buffer unchanged.")))
        (insert "\n\n")
-       (pel-gleam-insert-indent-tab-info)
-       (pel-insert-tab-set-width-info))))
-  (unless append :clear-buffer)
-  :use-help-mode)
+       ;; --
+       (pel-insert-minor-mode-activation-info current-major-mode
+                                              #'pel--gleam-minor-mode-info)
+       (insert "\n\n")
+       (pel-indent-insert-control-info indent-control-context)
+       (pel-tab-insert-control-info tab-control-context))
+     (unless append :clear-buffer)
+     :use-help-mode)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-gleam)

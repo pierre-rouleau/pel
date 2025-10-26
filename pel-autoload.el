@@ -88,7 +88,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-ada" for:
     pel--ada-ts-mode-fixer
     pel-ada-mode-used-text
-    pel-ada-insert-indent-tab-info)
+    pel-ada-insert-indent-info
+    pel-ada-insert-tab-info)
 
   (pel-autoload "pel-align" for:
     pel-newline-and-indent-below
@@ -364,7 +365,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-elixir" for:
     pel--elixir-ts-mode-fixer
     pel-elixir-mode-used-text
-    pel-elixir-insert-indent-tab-info)
+    pel-elixir-insert-indent-info
+    pel-elixir-insert-tab-info)
 
   ;; --
   (pel-autoload "pel-emacs" for:
@@ -406,7 +408,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-erlang" for:
     pel--erlang-ts-mode-fixer
     pel-erlang-mode-used-text
-    pel-erlang-insert-indent-tab-info
+    pel-erlang-insert-indent-info
+    pel-erlang-insert-tab-info
     pel-erlang-root-path
     pel-erlang-version
     pel-erlang-set-dirpath
@@ -458,7 +461,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-forth" for:
     pel-forth-setup-info)
   (pel-autoload-function "pel-forth" for:
-    pel-forth-insert-indent-tab-info)
+    pel-forth-insert-indent-info
+    pel-forth-insert-tab-info)
 
   ;; --
   (pel-autoload "pel-goto-addr" for:
@@ -470,7 +474,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-gleam-toggle-format-on-buffer-save
     pel-gleam-setup-info)
   (pel-autoload-function "pel-gleam" for:
-    pel-gleam-insert-indent-tab-info)
+    pel-gleam-insert-indent-info
+    pel-gleam-insert-tab-info)
 
   ;; --
   (pel-autoload "pel-go" for:
@@ -481,9 +486,12 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-go-toggle-syntax-checker)
   (pel-autoload-function "pel-go" for:
     pel--go-ts-mode-fixer
-    pel-go-insert-indent-tab-info
-    pel-go-mod-insert-indent-tab-info
-    pel-go-dot-mod-insert-indent-tab-info
+    pel-go-insert-indent-info
+    pel-go-insert-tab-info
+    pel-go-mod-insert-indent-info
+    pel-go-mod-insert-tab-info
+    pel-go-dot-mod-insert-indent-info
+    pel-go-dot-mod-insert-tab-info
     pel-go-gofmt-on-buffer-save)
 
   ;; --
@@ -551,7 +559,7 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-js" for:
     pel--js-ts-mode-fixer
     pel-js-mode-used-text
-    pel-js-insert-indent-tab-info)
+    pel-js-insert-indent-info)
 
   ;; --
   (pel-autoload "pel-lsp" for:
@@ -638,7 +646,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-lua" for:
     pel--lua-ts-mode-fixer
     pel-lua-mode-used-text
-    pel-lua-insert-indent-tab-info
+    pel-lua-insert-indent-info
+    pel-lua-insert-tab-info
     pel-lua-insert-shebang-line)
 
   ;; --
@@ -691,8 +700,10 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-nim" for:
     pel-nim-setup-info)
   (pel-autoload-function "pel-nim" for:
-    pel-nim-insert-indent-tab-info
-    pel-nimscript-insert-indent-tab-info
+    pel-nim-insert-indent-info
+    pel-nim-insert-tab-info
+    pel-nimscript-insert-indent-info
+    pel-nimscript-insert-tab-info
     pel-nim-insert-shebang-line)
 
   ;; --
@@ -827,7 +838,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-ruby" for:
     pel--ruby-ts-mode-fixer
     pel-ruby-mode-used-text
-    pel-ruby-insert-indent-tab-info
+    pel-ruby-insert-indent-info
+    pel-ruby-insert-tab-info
     pel-ruby-insert-shebang-line)
 
   ;; --
@@ -836,7 +848,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-rust-setup-info)
   (pel-autoload-function "pel-rust" for:
     pel-rust-mode-used-text
-    pel-rust-insert-indent-tab-info
+    pel-rust-insert-indent-info
+    pel-rust-insert-tab-info
     pel--rust-ts-mode-fixer)
 
   ;; --
@@ -970,7 +983,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-tcl" for:
     pel-tcl-setup-info)
   (pel-autoload-function "pel-tcl" for:
-    pel-tcl-insert-indent-tab-info
+    pel-tcl-insert-indent-info
+    pel-tcl-insert-tab-info
     pel-tcl-insert-shebang-line
     pel-tcl-expect-insert-shebang-line)
 
@@ -1142,7 +1156,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-zig-mode
     pel-zig-setup-info)
   (pel-autoload-function "pel-zig" for:
-    pel-zig-insert-indent-tab-info
+    pel-zig-insert-indent-info
+    pel-zig-insert-tab-info
     pel-zig-mode-used-text
     pel--zig-ts-mode-fixer))
 

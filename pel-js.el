@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 20 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-24 11:00:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-26 12:19:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,7 +33,10 @@
 ;;
 (require 'pel--base)        ; use:
 (require 'pel--options)     ; use:
-(require 'pel-indent)       ; use: `pel-insert-tab-set-width-info'
+(require 'pel-indent)       ; use: `pel-indent-insert-control-info',
+;;                          ;      `pel-indent-control-context'
+;;                          ;      `pel-tab-insert-control-info',
+;;                          ;      `pel-tab-control-context'
 (require 'pel-modes)        ; use: `pel-insert-minor-mode-activation-info'
 
 ;;; --------------------------------------------------------------------------
@@ -86,7 +89,6 @@ It removes what entered when `js-ts-mode' loads."
   (setq auto-mode-alist
         (rassq-delete-all 'js3-mode auto-mode-alist)))
 
-;; --
 
 ;;-pel-autoload
 (defun pel-js-mode-used-text (use-js)
@@ -109,22 +111,23 @@ use js-ts-mode tree-sitter aware mode with js2-minor-mode from js2-mode.el")
     "use js3-mode from external js3-mode.el")
    (t "Invalid! Use t, js2-mode or with-tree-sitter")))
 
+;; ---------------------------------------------------------------------------
+
 ;;-pel-autoload
-(defun pel-js-insert-indent-tab-info ()
-  "Insert Javascript indentation and hard tab  setup in current context.
-Return `pel-show-indent' capability list."
-  (insert (propertize "* Indentation Control:" 'face 'bold))
+(defun pel-js-insert-indent-info ()
+  "Insert Javascript indentation used setup in current context.
+Return a list of generic symbols described."
   (insert "
 - Under PEL, Javascript indentation level width is controlled entirely by the
   value of the `pel-js-indent-width' user-option:
   PEL stores its value inside the variables used by the js-mode and
   js-ts-mode to ensure consistency.
 
-  If you want to use hard tabs for indentation, you should set the value
-  `tab-width' to the same value of `pel-js-indent-width' and then you can
-  control the visual rendering of indentation by changing the values of those
-  two user-options: the content of the buffer and file does wont change but
-  the indentation rendering will.
+  If you want to use hard tabs for indentation, you should set
+  `tab-width' to the same value of `pel-js-indent-width' and then you
+  can control the visual rendering of indentation by changing the values
+  of those two user-options: the content of the buffer and file does
+  wont change but the indentation rendering will.
 
   Note, however, that other editors may not be able to do the same; the use of
   hard tabs in Javascript source code is not required as it is for Go, therefore
@@ -140,9 +143,12 @@ Return `pel-show-indent' capability list."
   (pel-insert-symbol-content-line 'js-square-indent-offset)
   (pel-insert-symbol-content-line 'js-switch-indent-offset)
   (pel-insert-symbol-content-line 'js3-indent-level)
-  (insert "\n\n")
-  ;;
-  (insert (propertize "* Hard Tab Control:" 'face 'bold))
+  ;; Return the list of generic symbols described here.
+  '(indent-description-info pel-MM-indent-width))
+
+(defun pel-js-insert-tab-info ()
+  "Insert Javascript hard tab setup used in current context.
+Return a list of generic symbols described."
   (insert "
 - The hard tab rendering width is for js buffer is controlled by
   `pel-js-tab-width' and stored into `tab-width'.
@@ -152,18 +158,16 @@ Return `pel-show-indent' capability list."
   `pel-js-use-tabs' and stored inside `indent-tabs-mode'.
 ")
   (pel-insert-symbol-content-line 'pel-js-tab-width)
-  (pel-insert-symbol-content-line 'tab-width)
   (pel-insert-symbol-content-line 'pel-js-use-tabs
                                   nil #'pel-on-off-string)
-  (pel-insert-symbol-content-line 'indent-tabs-mode
-                                  nil #'pel-on-off-string)
-  ;; Return a capability list for `pel-show-indent' or similar callers
-  '(supports-set-tab-width))
+  ;; Return the list of generic symbols described here.
+  '(tab-description-intro
+    pel-MM-tab-width
+    pel-MM-use-tabs))
 
 (defun pel--js-minor-mode-info ()
   "Insert information related to Javascript minor modes."
   (insert (substitute-command-keys "
-Minor Modes:
  - You can use the `js2-minor-mode' with `js-mode' or `js-ts-mode'.
    The minor mode is automatically activated when the `pel-use-js'
    user option is set to with-js2-minor or with-ts-js2-minor.
@@ -188,7 +192,9 @@ following user-options:")
   (interactive "P")
   (pel-major-mode-must-be '(js-mode js-ts-mode js2-mode js3-mode))
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
-        (current-major-mode major-mode))
+        (current-major-mode major-mode)
+        (indent-control-context (pel-indent-control-context))
+        (tab-control-context (pel-tab-control-context)))
     (pel-print-in-buffer
      "*pel-js-info*"
      "PEL setup for Javascript programming language"
@@ -199,15 +205,16 @@ following user-options:")
                                   "major mode currently used")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for
-                                    'js "\n- "))))
+                                   'js "\n- "))))
        (pel-insert-symbol-content-line 'pel-use-js nil
                                        (function pel-js-mode-used-text))
        (insert "\n\n")
+       ;; --
        (pel-insert-minor-mode-activation-info current-major-mode
                                               #'pel--js-minor-mode-info)
        (insert "\n\n")
-       (pel-js-insert-indent-tab-info)
-       (pel-insert-tab-set-width-info))
+       (pel-indent-insert-control-info indent-control-context)
+       (pel-tab-insert-control-info tab-control-context))
      (unless append :clear-buffer)
      :use-help-mode)))
 

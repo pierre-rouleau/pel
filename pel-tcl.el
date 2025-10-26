@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-20 15:52:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-26 15:16:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,17 +34,20 @@
 (require 'pel--base)        ; use: `pel-has-shebang-line'
 (require 'pel--options)     ; use: `pel-tcl-shebang-line'
 (require 'pel-ccp)          ; use: `pel-delete-line'
-(require 'pel-indent)       ; use: `pel-insert-tab-set-width-info'
+(require 'pel-indent)       ; use: `pel-indent-insert-control-info',
+;;                          ;      `pel-indent-control-context'
+;;                          ;      `pel-tab-insert-control-info',
+;;                          ;      `pel-tab-control-context'
+(require 'pel-modes)        ; use: `pel-insert-minor-mode-activation-info'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
 ;;-pel-autoload
-(defun pel-tcl-insert-indent-tab-info ()
-  "Insert Tcl indentation and hard tab setup info in current context.
-Return `pel-show-indent' capability list."
-  (insert (propertize "* Indentation Control:" 'face 'bold))
+(defun pel-tcl-insert-indent-info ()
+  "Insert Tcl indentation setup info in current context.
+Return a list of generic symbols described."
   (insert "
 - Under PEL, Tcl indentation level width is controlled entirely by the
   value of the `pel-tcl-indent-width' user-option:
@@ -53,11 +56,11 @@ Return `pel-show-indent' capability list."
   of tcl-continued-indent-level.
   You probably want to ensure they all have the same values.
 
-  If you want to use hard tabs for indentation, you should set the value
-  `tab-width' to the same value of `pel-tcl-indent-width' and then you can
-  control the visual rendering of indentation by changing the values of those
-  two user-options: the content of the buffer and file does wont change but
-  the indentation rendering will.
+  If you want to use hard tabs for indentation, you should set
+  `tab-width' to the same value of `pel-tcl-indent-width' and then you
+  can control the visual rendering of indentation by changing the values
+  of those two user-options: the content of the buffer and file does
+  wont change but the indentation rendering will.
 
   Note, however, that other editors may not be able to do the same; the use of
   hard tabs in Tcl source code is not required as it is for Go, therefore
@@ -66,9 +69,14 @@ Return `pel-show-indent' capability list."
   (pel-insert-symbol-content-line 'pel-tcl-indent-width)
   (pel-insert-symbol-content-line 'tcl-indent-level)
   (pel-insert-symbol-content-line 'tcl-continued-indent-level)
-  (insert "\n\n")
-  ;;
-  (insert (propertize "* Hard Tab Control:" 'face 'bold))
+  ;; Return the list of generic symbols described here.
+  '(indent-description-intro
+    pel-MM-indent-width))
+
+;;-pel-autoload
+(defun pel-tcl-insert-tab-info ()
+  "Insert Tcl hard tab setup info in current context.
+Return a list of generic symbols described."
   (insert "
 - The hard tab rendering width is for tcl buffer is controlled by
   `pel-tcl-tab-width' and stored into `tab-width'.
@@ -81,15 +89,30 @@ Return `pel-show-indent' capability list."
                                   nil #'pel-on-off-string)
   (pel-insert-symbol-content-line 'indent-tabs-mode
                                   nil #'pel-on-off-string)
-  ;; Return a capability list for `pel-show-indent' or similar callers
-  '(supports-set-tab-width))
+  ;; Return the list of generic symbols described here.
+  '(tab-description-intro
+    pel-MM-tab-width
+    tab-width
+    pel-MM-use-tabs
+    indent-tabs-mode))
+
+(defun pel--tcl-minor-mode-info ()
+  "Insert information related to Tcl minor modes."
+  (insert "
+Automatic activation of minor mode is also controlled by the
+following user-options:")
+  (pel-insert-list-content 'pel-tcl-activates-minor-modes
+                           nil nil nil :1line))
 
 ;;-pel-autoload
 (defun pel-tcl-setup-info (&optional append)
   "Display Tcl setup information."
   (interactive "P")
   (pel-major-mode-must-be '(tcl-mode))
-  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+        (current-major-mode major-mode)
+        (indent-control-context (pel-indent-control-context))
+        (tab-control-context (pel-tab-control-context)))
     (pel-print-in-buffer
      "*pel-tcl-info*"
      "PEL setup for Tcl programming language"
@@ -101,8 +124,12 @@ Return `pel-show-indent' capability list."
        (insert "
 There is no known Tree-Sitter based Emacs major mode for Tcl yet.")
        (insert "\n\n")
-       (pel-tcl-insert-indent-tab-info)
-       (pel-insert-tab-set-width-info))
+       ;; --
+       (pel-insert-minor-mode-activation-info current-major-mode
+                                              #'pel--tcl-minor-mode-info)
+       (insert "\n\n")
+       (pel-indent-insert-control-info indent-control-context)
+       (pel-tab-insert-control-info tab-control-context))
      (unless append :clear-buffer)
      :use-help-mode)))
 

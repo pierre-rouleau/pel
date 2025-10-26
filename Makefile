@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-10-24 12:05:41 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-10-26 14:54:43 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -200,6 +200,7 @@ EL_FILES := pel--base.el \
 		pel-ini.el \
 		pel-indent.el \
 		pel-itemize.el \
+		pel-js.el \
 		pel-key-chord.el \
 		pel-kbmacros.el \
 		pel-lfe.el \
@@ -691,7 +692,7 @@ pel--base.elc:          pel-comp.elc
 pel--keys-macros.elc:   pel--base.elc pel--options.elc pel-browse.elc pel-prompt.elc
 pel--options.elc:       pel--base.elc
 pel-abbrev.elc:         pel--base.elc
-pel-ada.elc:            pel--base.elc pel--options.elc pel-indent.elc
+pel-ada.elc:            pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel-align.elc:          pel--base.elc pel-hash.elc
 pel-applescript.elc:    pel--base.elc pel--options.elc pel-read.elc
 pel-as.elc:             pel-d.elc pel-lua.elc pel-nim.elc pel-perl.elc pel-prompt.elc pel-pike.elc pel-python.elc pel-ruby.elc pel-tcl.elc
@@ -722,21 +723,21 @@ pel-diff.elc:           pel--base.elc pel-window.elc pel--keys-macros.elc
 pel-dtreplace.elc:      pel--base.elc pel--options.elc
 pel-elisp-analyze.elc:  pel-lisp.elc
 pel-elisp.elc:          pel--base.elc pel--options.elc pel-prompt.elc pel-navigate.elc
-pel-elixir.elc:         pel--base.elc pel--options.elc pel-indent.el
+pel-elixir.elc:         pel--base.elc pel--options.elc pel-indent.el pel-modes.elc
 pel-elpa.elc:           pel-filedir.elc
 pel-emacs.elc:          pel--base.elc pel--options.elc pel-prompt.elc pel-setup-base.elc
 pel-emacs-analyze.elc:  pel--base.elc
-pel-erlang.elc:         pel--base.elc pel--options.elc pel-indent.elc pel-ffind.elc pel-fs.elc pel-syntax.elc pel-xref.elc pel-comment.elc
+pel-erlang.elc:         pel--base.elc pel--options.elc pel-ffind.elc pel-fs.elc pel-indent.elc pel-modes.elc pel-syntax.elc pel-xref.elc pel-comment.elc
 pel-ffind.elc:          pel--options.elc
 pel-file-recent.elc:    pel--options.elc pel-prompt.elc
 pel-file.elc:           pel--base.elc pel-prompt.elc pel-read.elc pel-window.elc pel-prompt.elc pel-filex.elc
 pel-filedir.elc:        pel--base.elc
 pel-filex.elc:          pel--base.elc
 pel-fill.elc:           pel--base.elc
-pel-forth.elc:          pel--base.elc pel--options.elc pel-indent.elc
+pel-forth.elc:          pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel-frame-control.elc:  pel--base.elc
-pel-gleam.elc:          pel--base.elc pel--options.elc pel-indent.elc
-pel-go.elc:             pel--base.elc pel--options.elc pel-indent.elc
+pel-gleam.elc:          pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
+pel-go.elc:             pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel-graphviz-dot.elc:   pel--base.elc pel-ccp.elc
 pel-hide-docstring.elc: pel-navigate.elc pel-face-ut.elc
 pel-hideshow.elc:       pel--base.elc
@@ -748,19 +749,20 @@ pel-imenu-ido.elc:      pel--base.elc pel--options.elc pel-prompt.elc pel-comple
 pel-imenu.elc:          pel--base.elc pel--options.elc
 pel-ini.elc:		pel--base.elc
 pel-indent.elc:         pel--base.elc pel-ccp.elc pel-mark.elc
+pel-js.elc:             pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel-kbmacros.elc:       pel--options.elc pel-list.elc
 pel-key-chord.elc:      pel--base.elc pel--options.elc
 pel-lisp.elc:           pel--base.elc
 pel-lispy.elc:          pel--base.elc pel--options.elc
 pel-list.elc:           pel--base.elc
 pel-lsp.elc:		pel--base.elc
-pel-lua.elc:            pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc
+pel-lua.elc:            pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
 pel-make.elc:           pel--base.elc pel-syntax.elc
 pel-man.elc:            pel--base.elc
 pel-mark.elc:           pel--base.elc
 pel-modes.elc:		pel--base.elc pel--options.elc pel-indent.elc
 pel-navigate.elc:       pel--base.elc pel-scroll.elc
-pel-nim.elc:            pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc
+pel-nim.elc:            pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
 pel-numkpad.elc:        pel--base.elc pel-ccp.elc pel-navigate.elc pel-scroll.elc
 pel-open.elc:           pel--base.elc pel--options.elc pel-ido.elc pel-prompt.elc pel-ffind.elc pel-file.elc pel-rst.elc
 pel-outline.elc:        pel--base.elc
@@ -774,8 +776,8 @@ pel-ppindent.elc:       pel--base.elc pel-prompt.elc
 pel-prompt.elc:         pel--base.elc pel--options.elc
 pel-read.elc:           pel-navigate.elc
 pel-rst.elc:            pel--base.elc pel--options.elc pel-whitespace.elc pel--macros.elc pel-ccp.elc pel-bookmark.elc pel-file.elc
-pel-ruby.elc:           pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc
-pel-rust.elc:           pel--base.elc pel--options.elc pel-indent.elc
+pel-ruby.elc:           pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
+pel-rust.elc:           pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel-sh.elc:             pel--base.elc
 pel-shell.elc:          pel--options.elc
 pel-scheme.elc:         pel-comint.elc pel-window.elc
@@ -800,7 +802,7 @@ pel-smartparens.elc:    pel--base.elc pel-syntax.elc
 pel-speedbar.elc:       pel--base.elc pel--macros.elc pel--options.elc
 pel-spell.elc:          pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc
 pel-syntax.elc:         pel--base.elc pel--options.elc pel--syntax-macros.elc
-pel-tcl.elc:            pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc
+pel-tcl.elc:            pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
 pel-tempo.elc:          pel--keys-macros.elc
 pel-text-insert.elc:    pel--base.elc pel--macros.elc pel-window.elc pel-syntax.elc
 pel-text-transform.elc: pel--base.elc pel--options.elc
@@ -815,7 +817,7 @@ pel-window.elc:         pel--base.elc pel--options.elc  pel-prompt.elc
 pel-xr.elc:             pel--base.elc pel-read.elc
 pel-xref.elc:           pel--base.elc pel--options.elc pel-prompt.elc pel-read.elc pel-text-transform.elc pel-pathmng.elc
 pel-yang.elc:           pel--base.elc
-pel-zig.elc:            pel--base.elc pel--options.elc pel-indent.elc
+pel-zig.elc:            pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel__hydra.elc:         pel--base.elc pel--options.elc pel--key-macros.el pel-buffer.elc pel-frame-control.elc pel-hideshow.elc pel-pp.elc pel-scroll.elc pel-window.elc pel-pp.el
 # Note that pel__hydra.el is byte-compiled by the code of pel_keys.el
 # when pel_keys is loading. Therefore, if pel__hydra.el is modified
