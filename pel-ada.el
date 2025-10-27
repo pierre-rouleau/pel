@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-26 08:33:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-27 12:08:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -131,6 +131,8 @@ Return a list of generic symbols described."
   columns) that Emacs uses to render a hard tab character.
   Whether hard tabs are used in ada buffer is controlled by
   `pel-ada-use-tabs' and stored inside `indent-tabs-mode'.
+- The Ada Guideline recommends using spaces for indentation.
+  Ref: https://www.adaic.org/resources/add_content/docs/95style/95style.pdf
 ")
   (pel-insert-symbol-content-line 'pel-ada-tab-width)
   (pel-insert-symbol-content-line 'pel-ada-use-tabs

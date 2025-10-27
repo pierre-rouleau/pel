@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-26 12:18:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-27 12:44:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -132,6 +132,8 @@ Return a list of generic symbols described."
   `pel-elixir-tab-width' and stored into `tab-width'.
   These do not control the indentation, just the visual width (in columns)
   that Emacs uses to render a hard tab character.
+- The Elixir Guideline recommends using 2 spaces for indentation.
+  Ref: https://github.com/lexmag/elixir-style-guide?tab=readme-ov-file#spaces-indentation
 ")
   (pel-insert-symbol-content-line 'pel-elixir-tab-width)
   (pel-insert-symbol-content-line 'pel-elixir-use-tabs

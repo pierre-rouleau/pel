@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-26 13:34:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-27 17:00:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -482,6 +482,10 @@ The symbols are:
              (pel-major-mode-symbol-for "pel-%s-tab-width") context)
     (puthash 'pel-MM-use-tabs
              (pel-major-mode-symbol-for "pel-%s-use-tabs") context)
+    (puthash 'pel-MM-tie-indent-to-tab-width
+             (pel-major-mode-symbol-for "pel-%s-tie-indent-to-tab-width") context)
+    (puthash 'pel--MM-indent-predef-vars
+             (pel-major-mode-symbol-for "pel--%s-indent-predef-vars") context)
     context))
 
 (defun pel-tab-insert-control-info (context)
@@ -504,6 +508,11 @@ important variables and symbols in the context of the inspected major mode."
                                         context))
          (pel-MM-tab-width (gethash 'pel-MM-tab-width context))
          (pel-MM-use-tabs  (gethash 'pel-MM-use-tabs context))
+         (pel-MM-tie-indent-to-tab-width (gethash
+                                          'pel-MM-tie-indent-to-tab-width
+                                          context))
+         (pel--MM-indent-predef-vars (gethash
+                                          'pel--MM-indent-predef-vars context))
          (already-inserted nil)
          (mode-base (pel-file-type-for used-major-mode)))
     ;; 2- insert information using those values
@@ -547,8 +556,65 @@ important variables and symbols in the context of the inspected major mode."
     identified inside `pel-tab-width-control-variables' if any.  PEL sets
     the buffer local value of `pel-tab-width-control-variables' when the buffer
     is opened.
-  - For this mode its value is:
-     - pel-tab-width-control-variables : %S" pel-tab-width-control-variables))))
+  - For this mode its value is: pel-tab-width-control-variables : %S"
+                    pel-tab-width-control-variables))
+    (when (boundp pel-MM-tie-indent-to-tab-width)
+      (insert "
+  - That buffer local value is controlled by customization by:")
+      (pel-insert-symbol-content-line pel-MM-tie-indent-to-tab-width)
+      (unless (memq 'technique-to-use-hard-tab already-inserted)
+        (insert "\n
+     Although the use of hard tab for indentation is not popular for
+     most programming languages, using hard tabs only for indentation
+     allows full control of the visual rendering of indentation without
+     any impact on the file content once the file has been tabified:
+     just change the tab-width to make indentation appear narrower or wider.
+
+     However, that technique only works nicely when all indentation are equal
+     to a multiple number of the `tab-width' value.  If some indentation
+     control variables differ by some amount, then spaces and hard tabs
+     will be used and changing the tab width will impose insertion or removal
+     of space characters when re-indenting.")
+        (if (and pel-tab-width-control-variables
+                 (not (pel-indent--indent-vars-have-offset
+                       pel-tab-width-control-variables)))
+            (insert (format "
+     - For this buffer you can use this technique, given the current variables
+       identified in pel-tab-width-control-variables."))
+          (when (and (boundp pel--MM-indent-predef-vars)
+                     (symbol-value pel--MM-indent-predef-vars))
+            (if (not (pel-indent--indent-vars-have-offset
+                      (symbol-value pel--MM-indent-predef-vars)))
+                (insert (format "
+     - For this mode, if you set `%s'
+       to use-predef-vars, you will be able to use this technique
+       in the next buffers you open."
+                                pel-MM-tie-indent-to-tab-width))
+              (insert (format "
+     - For this mode, if you set `%s'
+       to a list of indent variables with 0 for their offset,
+       then you will be able to use this technique in the next
+       buffers you open."
+                              pel-MM-tie-indent-to-tab-width)))))))))
+
+
+(defun pel-indent--indent-vars-have-offset (vars)
+  "Return t if any indentation target variable is identified with an offset.
+
+The VARS parameter must be either:
+- a symbol,
+- a list of symbols
+- a list of (symbol . offset) cons cells.
+
+The function return t only if there is at least one cons cell that
+specifies a non-zero offset for a variable bound in the current mode."
+  (let ((has-offset nil))
+    (dolist (var (pel-list-of vars))
+      (when (and (consp var)
+                 (boundp (car var))
+                 (not (eq (cdr var) 0)))
+        (setq has-offset t)))
+    has-offset))
 
 ;;-pel-autoload
 (defun pel-show-indent (&optional append)

@@ -225,6 +225,14 @@ Return a list of generic symbols described."
   `pel-erlang-tab-width' and stored into `tab-width'.  These do not
   control the indentation, just the visual width (in columns) that Emacs
   uses to render a hard tab character.
+- Several Erlang Guidelines recommend using 2 spaces for indentation.
+  Those guidelines were mostly written by younger programmers, attempting to
+  compress mode code in 80 columns.  A width of 4 was mostly used before.
+  Note that people with impaired vision may find it difficult to maintain code
+  written with a 2 column indentation width.
+
+  - Ref: https://github.com/inaka/erlang_guidelines?tab=readme-ov-file#spaces-over-tabs
+  - Ref: https://github.com/nuex/erlang-style-guide?tab=readme-ov-file#file-composition
 ")
   (pel-insert-symbol-content-line 'erlang-tab-always-indent)
   (pel-insert-symbol-content-line 'pel-erlang-tab-width)

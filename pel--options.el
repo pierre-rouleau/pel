@@ -392,6 +392,27 @@
 ;; and allow their grouping when they are listed by the `pel-mode-setup-info'
 ;; command.
 
+;; * Major Modes With Setup Help*:
+;; ===============================
+;;
+;; The following major modes support explicit specialized configuration
+;; support help:
+;;
+;; - Ada
+;; - Elixir
+;; - Erlang
+;; - Gleam
+;; - Go
+;; - Js (Javascript)
+;; - Lua
+;; - Nim
+;; - Ruby
+;; - Rust
+;; - Tcl
+;; - Zig
+;;
+;; This list will grow over time.
+;;
 ;; * Development Tip *:
 ;; ===================
 ;;
@@ -5369,6 +5390,52 @@ when `pel-use-tree-sitter' is turned on."
                                                (elpa . ada-ts-mode)))
                                      (quote ((elpa . ada-mode)))))
 
+;; Define a list of Ada indentation control variables that could be tied to
+;; `tab-width'.  These will be used when `pel-ada-tie-indent-to-tab-width' is
+;; set to use-predef-vars.
+(defconst pel--ada-indent-predef-vars
+  '((ada-ts-mode-indent-offset  .  0)
+    (ada-ts-mode-indent-when-offset  .  0)
+    (ada-ts-mode-indent-broken-offset .  -1)
+    (ada-ts-mode-indent-subprogram-is-offset .  -1)
+    (ada-ts-mode-indent-record-offset  .  0)
+    (ada-ts-mode-indent-label-offset  .  0))
+  "List of ada indentation variables that can be tied to tab width.
+In Ada buffers, when `pel-ada-tie-indent-to-tab-width' is set to
+use-predef-vars, the `pel-set-tab-width' command stores the value of
+`tab-width' inside each of these variables.
+
+Each entry is a cons cell:
+- the car is the variable name.
+- the cdr is the offset applied to `tab-width':
+   The value stored in the variable is: (+ tab-with offset)")
+
+;; Ada style guide recommends use of spaces for indentation.
+(defcustom pel-ada-tie-indent-to-tab-width nil
+  "Identify whether `pel-set-tab-width' also sets indentation.
+This can have the following values:
+- nil             : In Ada buffers, `pel-set-tab-width' only sets the value
+                    of `tab-width'.
+- use-predef-vars : In Ada buffers, `pel-set-tab-width' sets the value of
+                    `tab-width' and all variables identified by the
+                    `pel--ada-indent-predef-vars' constant.
+- A list of (variable . offset) cons cells defined explicitly as value.
+  When using this be careful to leave no leading or trailing space for the
+  variable name."
+  :group 'pel-pkg-for-ada
+  :type '(choice
+          (const :tag "Not tied; tab width is independent of indentation" nil)
+          (const
+           :tag "Tied; use variables defined in `pel--ada-indent-predef-vars'"
+           use-predef-vars)
+          ;; The variable list defined in `pel--ada-indent-predef-vars' may
+          ;; not be appropriate for your needs.
+          ;; In that case specify your own list here:
+          (repeat :tag "Tied; define the list of indent variables to use"
+                  (cons
+                   (symbol :tag  "variable (no space) ")
+                   (integer :tag "offset from tab-width" :value 0)))))
+
 (defcustom pel-ada-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Ada buffers.
 Enter *local* minor-mode activating function symbols.
@@ -7411,14 +7478,49 @@ Use tree-sitter built-in js-ts-mode with js2-minor-mode" with-ts-js2-minor)
                                    ((eq pel-use-js 'js3-mode)
                                     '((elpa . js3-mode)))))
 
-(defcustom pel-js2-activates-development-mode nil
-  "Activates development mode in js2-mode. Provides more js2 commands.
 
-When turned on, PEL sets js2-mode-dev-mode-p to t when js2-mode is loaded,
-to activate extra js2 commands and features."
+;; Define a list of Javascript indentation control variables that could be
+;; tied to `tab-width'.  These will be used when
+;; `pel-js-tie-indent-to-tab-width' is set to use-predef-vars.
+(defconst pel--js-indent-predef-vars
+  '((js-indent-level  .  0)
+    (js-jsx-indent-level . 0)
+    (js3-indent-level . 0))
+  "List of js indentation variables that can be tied to tab width.
+In Js buffers, when `pel-js-tie-indent-to-tab-width' is set to
+use-predef-vars, the `pel-set-tab-width' command stores the value of
+`tab-width' inside each of these variables.
+
+Each entry is a cons cell:
+- the car is the variable name.
+- the cdr is the offset applied to `tab-width':
+   The value stored in the variable is: (+ tab-with offset)")
+
+;; Js style guide recommends use of spaces for indentation.
+(defcustom pel-js-tie-indent-to-tab-width nil
+  "Identify whether `pel-set-tab-width' also sets indentation.
+This can have the following values:
+- nil             : In Js buffers, `pel-set-tab-width' only sets the value
+                    of `tab-width'.
+- use-predef-vars : In Js buffers, `pel-set-tab-width' sets the value of
+                    `tab-width' and all variables identified by the
+                    `pel--js-indent-predef-vars' constant.
+- A list of (variable . offset) cons cells defined explicitly as value.
+  When using this be careful to leave no leading or trailing space for the
+  variable name."
   :group 'pel-pkg-for-js
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Not tied; tab width is independent of indentation" nil)
+          (const
+           :tag "Tied; use variables defined in `pel--js-indent-predef-vars'"
+           use-predef-vars)
+          ;; The variable list defined in `pel--js-indent-predef-vars' may
+          ;; not be appropriate for your needs.
+          ;; In that case specify your own list here:
+          (repeat :tag "Tied; define the list of indent variables to use"
+                  (cons
+                   (symbol :tag  "variable (no space) ")
+                   (integer :tag "offset from tab-width" :value 0)))))
 
 (defcustom pel-js-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for `js-mode' buffers.
@@ -7452,6 +7554,15 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
   :group 'pel-pkg-for-javascript
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-js2-activates-development-mode nil
+  "Activates development mode in js2-mode. Provides more js2 commands.
+
+When turned on, PEL sets js2-mode-dev-mode-p to t when js2-mode is loaded,
+to activate extra js2 commands and features."
+  :group 'pel-pkg-for-js
   :type 'boolean
   :safe #'booleanp)
 
@@ -7569,6 +7680,47 @@ When activating it you can select between the following values:
                                               pel-use-gotest
                                               pel-use-emacs-go-tag
                                               pel-use-flycheck-golangci-lint))
+
+;; Define a list of Go indentation control variables that could be tied to
+;; `tab-width'.  These will be used when `pel-go-tie-indent-to-tab-width'
+;; is set to use-predef-vars.
+(defconst pel--go-indent-predef-vars
+  '((go-ts-indent-offset  .  0))
+  "List of go indentation variables that can be tied to tab width.
+In Go buffers, when `pel-go-tie-indent-to-tab-width' is set to
+use-predef-vars, the `pel-set-tab-width' command stores the value of
+`tab-width' inside each of these variables.
+
+Each entry is a cons cell:
+- the car is the variable name.
+- the cdr is the offset applied to `tab-width':
+   The value stored in the variable is: (+ tab-with offset)")
+
+;; Go uses hard tab for indentation.
+(defcustom pel-go-tie-indent-to-tab-width 'use-predef-vars
+  "Identify whether `pel-set-tab-width' also sets indentation.
+This can have the following values:
+- nil             : In Go buffers, `pel-set-tab-width' only sets the value
+                    of `tab-width'.
+- use-predef-vars : In Go buffers, `pel-set-tab-width' sets the value of
+                    `tab-width' and all variables identified by the
+                    `pel--go-indent-predef-vars' constant.
+- A list of (variable . offset) cons cells defined explicitly as value.
+  When using this be careful to leave no leading or trailing space for the
+  variable name."
+  :group 'pel-pkg-for-go
+  :type '(choice
+          (const :tag "Not tied; tab width is independent of indentation" nil)
+          (const
+           :tag "Tied; use variables defined in `pel--go-indent-predef-vars'"
+           use-predef-vars)
+          ;; The variable list defined in `pel--go-indent-predef-vars' may
+          ;; not be appropriate for your needs.
+          ;; In that case specify your own list here:
+          (repeat :tag "Tied; define the list of indent variables to use"
+                  (cons
+                   (symbol :tag  "variable (no space) ")
+                   (integer :tag "offset from tab-width" :value 0)))))
 
 (defcustom pel-go-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Go buffers.
@@ -9152,6 +9304,49 @@ When activating it you can select between the following values:
                  with-tree-sitter)))
 (pel-put 'pel-use-elixir :package-is 'elixir-mode)
 
+;; Define a list of Elixir indentation control variables that could be tied to
+;; `tab-width'.  These will be used when `pel-elixir-tie-indent-to-tab-width' is
+;; set to use-predef-vars.
+(defconst pel--elixir-indent-predef-vars
+  '((elixir-basic-offset  .  0)
+    (elixir-match-label-offset  .  0)
+    (elixir-ts-indent-offset .  0))
+  "List of elixir indentation variables that can be tied to tab width.
+In Elixir buffers, when `pel-elixir-tie-indent-to-tab-width' is set to
+use-predef-vars, the `pel-set-tab-width' command stores the value of
+`tab-width' inside each of these variables.
+
+Each entry is a cons cell:
+- the car is the variable name.
+- the cdr is the offset applied to `tab-width':
+   The value stored in the variable is: (+ tab-with offset)")
+
+;; Elixir style guide recommends use of spaces for indentation.
+(defcustom pel-elixir-tie-indent-to-tab-width nil
+  "Identify whether `pel-set-tab-width' also sets indentation.
+This can have the following values:
+- nil             : In Elixir buffers, `pel-set-tab-width' only sets the value
+                    of `tab-width'.
+- use-predef-vars : In Elixir buffers, `pel-set-tab-width' sets the value of
+                    `tab-width' and all variables identified by the
+                    `pel--elixir-indent-predef-vars' constant.
+- A list of (variable . offset) cons cells defined explicitly as value.
+  When using this be careful to leave no leading or trailing space for the
+  variable name."
+  :group 'pel-pkg-for-elixir
+  :type '(choice
+          (const :tag "Not tied; tab width is independent of indentation" nil)
+          (const
+           :tag "Tied; use variables defined in `pel--elixir-indent-predef-vars'"
+           use-predef-vars)
+          ;; The variable list defined in `pel--elixir-indent-predef-vars' may
+          ;; not be appropriate for your needs.
+          ;; In that case specify your own list here:
+          (repeat :tag "Tied; define the list of indent variables to use"
+                  (cons
+                   (symbol :tag  "variable (no space) ")
+                   (integer :tag "offset from tab-width" :value 0)))))
+
 (defcustom pel-elixir-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Elixir buffers.
 Enter *local* minor-mode activating function symbols.
@@ -9704,7 +9899,7 @@ Values in the [2, 8] range are accepted."
   :safe 'pel-indent-valid-p)
 
 
-(defcustom pel-erlang-tab-width 8
+(defcustom pel-erlang-tab-width 4
   "Column width display rendering of hard tab for Erlang source code.
 
 PEL stores this in `tab-width' when editing buffer with Erlang source.
@@ -9735,6 +9930,49 @@ Values in the [2, 8] range are accepted."
   :type 'boolean
   :safe #'booleanp)
 
+;; Define a list of Erlang indentation control variables that could be tied to
+;; `tab-width'.  These will be used when `pel-erlang-tie-indent-to-tab-width'
+;; is set to use-predef-vars.
+(defconst pel--erlang-indent-predef-vars
+  '((erlang-indent-level    .  0)
+    (erlang-argument-indent .  -2)
+    (erlang-indent-guard    .  -2))
+  "List of erlang indentation variables that can be tied to tab width.
+In Erlang buffers, when `pel-erlang-tie-indent-to-tab-width' is set to
+use-predef-vars, the `pel-set-tab-width' command stores the value of
+`tab-width' inside each of these variables.
+
+Each entry is a cons cell:
+- the car is the variable name.
+- the cdr is the offset applied to `tab-width':
+   The value stored in the variable is: (+ tab-with offset)")
+
+;; Erlang style guide recommends use of spaces for indentation.
+(defcustom pel-erlang-tie-indent-to-tab-width nil
+  "Identify whether `pel-set-tab-width' also sets indentation.
+This can have the following values:
+- nil             : In Erlang buffers, `pel-set-tab-width' only sets the value
+                    of `tab-width'.
+- use-predef-vars : In Erlang buffers, `pel-set-tab-width' sets the value of
+                    `tab-width' and all variables identified by the
+                    `pel--erlang-indent-predef-vars' constant.
+- A list of (variable . offset) cons cells defined explicitly as value.
+  When using this be careful to leave no leading or trailing space for the
+  variable name."
+  :group 'pel-pkg-for-erlang
+  :group 'pel-erlang-code-style
+  :type '(choice
+          (const :tag "Not tied; tab width is independent of indentation" nil)
+          (const
+           :tag "Tied; use variables defined in `pel--erlang-indent-predef-vars'"
+           use-predef-vars)
+          ;; The variable list defined in `pel--erlang-indent-predef-vars' may
+          ;; not be appropriate for your needs.
+          ;; In that case specify your own list here:
+          (repeat :tag "Tied; define the list of indent variables to use"
+                  (cons
+                   (symbol :tag  "variable (no space) ")
+                   (integer :tag "offset from tab-width" :value 0)))))
 
 ;; Note: the symbol names used in the following defcustom MUST
 ;;       correspond to the ones used by erlang.el.
@@ -9963,6 +10201,47 @@ and does not plan to develop it.  Therefore, PEL only support `gleam-ts-mode'."
   :safe #'booleanp)
 (pel-put 'pel-use-gleam :package-is '(quote ((utils . gleam-ts-mode))))
 (pel-put 'pel-use-gleam :requires 'pel-use-tree-sitter)
+
+;; Define a list of Gleam indentation control variables that could be tied to
+;; `tab-width'.  These will be used when `pel-gleam-tie-indent-to-tab-width'
+;; is set to use-predef-vars.
+(defconst pel--gleam-indent-predef-vars
+  '((gleam-ts-indent-offset  .  0))
+  "List of gleam indentation variables that can be tied to tab width.
+In Gleam buffers, when `pel-gleam-tie-indent-to-tab-width' is set to
+use-predef-vars, the `pel-set-tab-width' command stores the value of
+`tab-width' inside each of these variables.
+
+Each entry is a cons cell:
+- the car is the variable name.
+- the cdr is the offset applied to `tab-width':
+   The value stored in the variable is: (+ tab-with offset)")
+
+;; Gleam style guide recommends use of spaces for indentation.
+(defcustom pel-gleam-tie-indent-to-tab-width nil
+  "Identify whether `pel-set-tab-width' also sets indentation.
+This can have the following values:
+- nil             : In Gleam buffers, `pel-set-tab-width' only sets the value
+                    of `tab-width'.
+- use-predef-vars : In Gleam buffers, `pel-set-tab-width' sets the value of
+                    `tab-width' and all variables identified by the
+                    `pel--gleam-indent-predef-vars' constant.
+- A list of (variable . offset) cons cells defined explicitly as value.
+  When using this be careful to leave no leading or trailing space for the
+  variable name."
+  :group 'pel-pkg-for-gleam
+  :type '(choice
+          (const :tag "Not tied; tab width is independent of indentation" nil)
+          (const
+           :tag "Tied; use variables defined in `pel--gleam-indent-predef-vars'"
+           use-predef-vars)
+          ;; The variable list defined in `pel--gleam-indent-predef-vars' may
+          ;; not be appropriate for your needs.
+          ;; In that case specify your own list here:
+          (repeat :tag "Tied; define the list of indent variables to use"
+                  (cons
+                   (symbol :tag  "variable (no space) ")
+                   (integer :tag "offset from tab-width" :value 0)))))
 
 (defcustom pel-gleam-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for GLEAM buffers.
@@ -10198,6 +10477,48 @@ this user-option; one of:
           (const :tag "Use lua-ts-mode REPL when available"
                  use-lua-ts-mode-repl-when-available)))
 
+;; Define a list of Lua indentation control variables that could be tied to
+;; `tab-width'.  These will be used when `pel-lua-tie-indent-to-tab-width'
+;; is set to use-predef-vars.
+(defconst pel--lua-indent-predef-vars
+  '((lua-indent-width     .  0)
+    (lua-ts-indent-width  .  0))
+  "List of lua indentation variables that can be tied to tab width.
+In Lua buffers, when `pel-lua-tie-indent-to-tab-width' is set to
+use-predef-vars, the `pel-set-tab-width' command stores the value of
+`tab-width' inside each of these variables.
+
+Each entry is a cons cell:
+- the car is the variable name.
+- the cdr is the offset applied to `tab-width':
+   The value stored in the variable is: (+ tab-with offset)")
+
+;; Lua style guide recommends use of spaces for indentation.
+(defcustom pel-lua-tie-indent-to-tab-width nil
+  "Identify whether `pel-set-tab-width' also sets indentation.
+This can have the following values:
+- nil             : In Lua buffers, `pel-set-tab-width' only sets the value
+                    of `tab-width'.
+- use-predef-vars : In Lua buffers, `pel-set-tab-width' sets the value of
+                    `tab-width' and all variables identified by the
+                    `pel--lua-indent-predef-vars' constant.
+- A list of (variable . offset) cons cells defined explicitly as value.
+  When using this be careful to leave no leading or trailing space for the
+  variable name."
+  :group 'pel-pkg-for-lua
+  :type '(choice
+          (const :tag "Not tied; tab width is independent of indentation" nil)
+          (const
+           :tag "Tied; use variables defined in `pel--lua-indent-predef-vars'"
+           use-predef-vars)
+          ;; The variable list defined in `pel--lua-indent-predef-vars' may
+          ;; not be appropriate for your needs.
+          ;; In that case specify your own list here:
+          (repeat :tag "Tied; define the list of indent variables to use"
+                  (cons
+                   (symbol :tag  "variable (no space) ")
+                   (integer :tag "offset from tab-width" :value 0)))))
+
 (defcustom pel-lua-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Lua buffers.
 Enter *local* minor-mode activating function symbols.
@@ -10345,6 +10666,47 @@ When turned on:
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-nim :package-is '(quote ((elpa . nim-mode))))
+
+;; Define a list of Nim indentation control variables that could be tied to
+;; `tab-width'.  These will be used when `pel-nim-tie-indent-to-tab-width'
+;; is set to use-predef-vars.
+(defconst pel--nim-indent-predef-vars
+  '((nim-indent-offset  .  0))
+  "List of nim indentation variables that can be tied to tab width.
+In Nim buffers, when `pel-nim-tie-indent-to-tab-width' is set to
+use-predef-vars, the `pel-set-tab-width' command stores the value of
+`tab-width' inside each of these variables.
+
+Each entry is a cons cell:
+- the car is the variable name.
+- the cdr is the offset applied to `tab-width':
+   The value stored in the variable is: (+ tab-with offset)")
+
+;; Nim style guide recommends use of spaces for indentation.
+(defcustom pel-nim-tie-indent-to-tab-width nil
+  "Identify whether `pel-set-tab-width' also sets indentation.
+This can have the following values:
+- nil             : In Nim buffers, `pel-set-tab-width' only sets the value
+                    of `tab-width'.
+- use-predef-vars : In Nim buffers, `pel-set-tab-width' sets the value of
+                    `tab-width' and all variables identified by the
+                    `pel--nim-indent-predef-vars' constant.
+- A list of (variable . offset) cons cells defined explicitly as value.
+  When using this be careful to leave no leading or trailing space for the
+  variable name."
+  :group 'pel-pkg-for-nim
+  :type '(choice
+          (const :tag "Not tied; tab width is independent of indentation" nil)
+          (const
+           :tag "Tied; use variables defined in `pel--nim-indent-predef-vars'"
+           use-predef-vars)
+          ;; The variable list defined in `pel--nim-indent-predef-vars' may
+          ;; not be appropriate for your needs.
+          ;; In that case specify your own list here:
+          (repeat :tag "Tied; define the list of indent variables to use"
+                  (cons
+                   (symbol :tag  "variable (no space) ")
+                   (integer :tag "offset from tab-width" :value 0)))))
 
 (defcustom pel-nim-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Nim buffers.
@@ -11235,6 +11597,47 @@ When turned on the ruby-mode is associated with the PEL ``<f12>`` key."
           (const :tag "Use tree-sitter mode: ruby-ts-mode" with-tree-sitter)))
 (pel-put 'pel-use-ruby :package-is :a-gate)
 
+;; Define a list of Ruby indentation control variables that could be tied to
+;; `tab-width'.  These will be used when `pel-ruby-tie-indent-to-tab-width'
+;; is set to use-predef-vars.
+(defconst pel--ruby-indent-predef-vars
+  '((ruby-indent-level  .  0))
+  "List of ruby indentation variables that can be tied to tab width.
+In Ruby buffers, when `pel-ruby-tie-indent-to-tab-width' is set to
+use-predef-vars, the `pel-set-tab-width' command stores the value of
+`tab-width' inside each of these variables.
+
+Each entry is a cons cell:
+- the car is the variable name.
+- the cdr is the offset applied to `tab-width':
+   The value stored in the variable is: (+ tab-with offset)")
+
+;; Ruby style guide recommends use of spaces for indentation.
+(defcustom pel-ruby-tie-indent-to-tab-width nil
+  "Identify whether `pel-set-tab-width' also sets indentation.
+This can have the following values:
+- nil             : In Ruby buffers, `pel-set-tab-width' only sets the value
+                    of `tab-width'.
+- use-predef-vars : In Ruby buffers, `pel-set-tab-width' sets the value of
+                    `tab-width' and all variables identified by the
+                    `pel--ruby-indent-predef-vars' constant.
+- A list of (variable . offset) cons cells defined explicitly as value.
+  When using this be careful to leave no leading or trailing space for the
+  variable name."
+  :group 'pel-pkg-for-ruby
+  :type '(choice
+          (const :tag "Not tied; tab width is independent of indentation" nil)
+          (const
+           :tag "Tied; use variables defined in `pel--ruby-indent-predef-vars'"
+           use-predef-vars)
+          ;; The variable list defined in `pel--ruby-indent-predef-vars' may
+          ;; not be appropriate for your needs.
+          ;; In that case specify your own list here:
+          (repeat :tag "Tied; define the list of indent variables to use"
+                  (cons
+                   (symbol :tag  "variable (no space) ")
+                   (integer :tag "offset from tab-width" :value 0)))))
+
 (defcustom pel-ruby-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Ruby buffers.
 Enter *local* minor-mode activating function symbols.
@@ -11315,6 +11718,48 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
 (when pel-use-rust-mode
   (unless pel-use-rust
     (setq pel-use-rust t)))
+
+;; Define a list of Rust indentation control variables that could be tied to
+;; `tab-width'.  These will be used when `pel-rust-tie-indent-to-tab-width'
+;; is set to use-predef-vars.
+(defconst pel--rust-indent-predef-vars
+  '((rust-indent-offset         .  0)
+    (rust-ts-mode-indent-offset .  0))
+  "List of rust indentation variables that can be tied to tab width.
+In Rust buffers, when `pel-rust-tie-indent-to-tab-width' is set to
+use-predef-vars, the `pel-set-tab-width' command stores the value of
+`tab-width' inside each of these variables.
+
+Each entry is a cons cell:
+- the car is the variable name.
+- the cdr is the offset applied to `tab-width':
+   The value stored in the variable is: (+ tab-with offset)")
+
+;; Rust style guide recommends use of spaces for indentation.
+(defcustom pel-rust-tie-indent-to-tab-width nil
+  "Identify whether `pel-set-tab-width' also sets indentation.
+This can have the following values:
+- nil             : In Rust buffers, `pel-set-tab-width' only sets the value
+                    of `tab-width'.
+- use-predef-vars : In Rust buffers, `pel-set-tab-width' sets the value of
+                    `tab-width' and all variables identified by the
+                    `pel--rust-indent-predef-vars' constant.
+- A list of (variable . offset) cons cells defined explicitly as value.
+  When using this be careful to leave no leading or trailing space for the
+  variable name."
+  :group 'pel-pkg-for-rust
+  :type '(choice
+          (const :tag "Not tied; tab width is independent of indentation" nil)
+          (const
+           :tag "Tied; use variables defined in `pel--rust-indent-predef-vars'"
+           use-predef-vars)
+          ;; The variable list defined in `pel--rust-indent-predef-vars' may
+          ;; not be appropriate for your needs.
+          ;; In that case specify your own list here:
+          (repeat :tag "Tied; define the list of indent variables to use"
+                  (cons
+                   (symbol :tag  "variable (no space) ")
+                   (integer :tag "offset from tab-width" :value 0)))))
 
 (defcustom pel-rust-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Rust buffers.
@@ -11601,6 +12046,48 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :safe #'booleanp)
 (pel-put 'pel-use-tcl :package-is :builtin-emacs)
 
+;; Define a list of Tcl indentation control variables that could be tied to
+;; `tab-width'.  These will be used when `pel-tcl-tie-indent-to-tab-width'
+;; is set to use-predef-vars.
+(defconst pel--tcl-indent-predef-vars
+  '((tcl-indent-level           .  0)
+    (tcl-continued-indent-level .  0))
+  "List of tcl indentation variables that can be tied to tab width.
+In Tcl buffers, when `pel-tcl-tie-indent-to-tab-width' is set to
+use-predef-vars, the `pel-set-tab-width' command stores the value of
+`tab-width' inside each of these variables.
+
+Each entry is a cons cell:
+- the car is the variable name.
+- the cdr is the offset applied to `tab-width':
+   The value stored in the variable is: (+ tab-with offset)")
+
+;; Tcl style guide recommends use of spaces for indentation.
+(defcustom pel-tcl-tie-indent-to-tab-width nil
+  "Identify whether `pel-set-tab-width' also sets indentation.
+This can have the following values:
+- nil             : In Tcl buffers, `pel-set-tab-width' only sets the value
+                    of `tab-width'.
+- use-predef-vars : In Tcl buffers, `pel-set-tab-width' sets the value of
+                    `tab-width' and all variables identified by the
+                    `pel--tcl-indent-predef-vars' constant.
+- A list of (variable . offset) cons cells defined explicitly as value.
+  When using this be careful to leave no leading or trailing space for the
+  variable name."
+  :group 'pel-pkg-for-tcl
+  :type '(choice
+          (const :tag "Not tied; tab width is independent of indentation" nil)
+          (const
+           :tag "Tied; use variables defined in `pel--tcl-indent-predef-vars'"
+           use-predef-vars)
+          ;; The variable list defined in `pel--tcl-indent-predef-vars' may
+          ;; not be appropriate for your needs.
+          ;; In that case specify your own list here:
+          (repeat :tag "Tied; define the list of indent variables to use"
+                  (cons
+                   (symbol :tag  "variable (no space) ")
+                   (integer :tag "offset from tab-width" :value 0)))))
+
 (defcustom pel-tcl-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Tcl buffers.
 Enter *local* minor-mode activating function symbols.
@@ -11770,6 +12257,48 @@ When activating it you can select between the following values:
                                        (quote ((elpa . zig-mode)
                                                (elpa . zig-ts-mode)))
                                      (quote ((elpa . zig-mode)))))
+
+;; Define a list of Zig indentation control variables that could be tied to
+;; `tab-width'.  These will be used when `pel-zig-tie-indent-to-tab-width'
+;; is set to use-predef-vars.
+(defconst pel--zig-indent-predef-vars
+  '((zig--indent-offset        .  0)
+    (zig-ts-mode-indent-offset .  0))
+  "List of zig indentation variables that can be tied to tab width.
+In Zig buffers, when `pel-zig-tie-indent-to-tab-width' is set to
+use-predef-vars, the `pel-set-tab-width' command stores the value of
+`tab-width' inside each of these variables.
+
+Each entry is a cons cell:
+- the car is the variable name.
+- the cdr is the offset applied to `tab-width':
+   The value stored in the variable is: (+ tab-with offset)")
+
+;; Zig style guide recommends use of spaces for indentation.
+(defcustom pel-zig-tie-indent-to-tab-width nil
+  "Identify whether `pel-set-tab-width' also sets indentation.
+This can have the following values:
+- nil             : In Zig buffers, `pel-set-tab-width' only sets the value
+                    of `tab-width'.
+- use-predef-vars : In Zig buffers, `pel-set-tab-width' sets the value of
+                    `tab-width' and all variables identified by the
+                    `pel--zig-indent-predef-vars' constant.
+- A list of (variable . offset) cons cells defined explicitly as value.
+  When using this be careful to leave no leading or trailing space for the
+  variable name."
+  :group 'pel-pkg-for-zig
+  :type '(choice
+          (const :tag "Not tied; tab width is independent of indentation" nil)
+          (const
+           :tag "Tied; use variables defined in `pel--zig-indent-predef-vars'"
+           use-predef-vars)
+          ;; The variable list defined in `pel--zig-indent-predef-vars' may
+          ;; not be appropriate for your needs.
+          ;; In that case specify your own list here:
+          (repeat :tag "Tied; define the list of indent variables to use"
+                  (cons
+                   (symbol :tag  "variable (no space) ")
+                   (integer :tag "offset from tab-width" :value 0)))))
 
 (defcustom pel-zig-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Zig buffers.

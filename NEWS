@@ -2,6 +2,24 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- If you used Go, you know how useful the use of hard tabs for indentation
+  can be. Despite this, most programming languages use spaces for indentation,
+  and now most newer programming language use a 2-column indentation scheme.
+  In 2025, you can setup pretty much every programmer editor to render render
+  hard tabs to represent any width.  It's not enough to alleviate the fear of hard
+  tabs for indentation (and spaces for alignment).
+  But some people find difficult using a 2-column indentation level
+  (that's not my case).  For those people, the use of hard tabs for indentation
+  provides the ability change the rendering width of hard tabs to be able to
+  see the code logic better.   Even for the others, it's nice to be able to do that.
+  PEL now has the logic for several major mode to check if it's possible to implement
+  a temporary hard-tab indentation scheme, based on the knowledge of the customization variables used
+  by the mode to control indentation.  If these variables use the same values
+  and that can be assigned the same width as what the hard tab uses, then you
+  can use the techniques and PEL reports provided by the *pel-mode-setup-info*
+  and the *pel-show-indent* commands show how to do that.
+  For the moment this is available for 12 programming languages.
+  More to come.
 - Add *pel-mode-setup-info* command, bound to ~<f11> ? /~.
   This command prints information related to the PEL customization control for
   the current major mode.  It also prints the extra specialization information

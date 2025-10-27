@@ -3440,9 +3440,10 @@ d-mode not added to ac-modes!"
       (setq-local tab-width pel-go-tab-width)
       (when (boundp 'go-ts-mode-indent-offset)
         (setq-local go-ts-mode-indent-offset pel-go-tab-width))
-      (when (and (eq major-mode 'go-ts-mode)
-                 (boundp 'go-ts-mode-indent-offset))
-        (setq-local pel-tab-width-control-variables 'go-ts-mode-indent-offset))
+      ;; Hard tabs are not explicitly handled for Go, so set
+      ;; `pel-tab-width-control-variables' explicitly from the value
+      ;; identified by `pel-go-tie-indent-to-tab-width'
+      (pel--set-indent-control-variables pel-go-tie-indent-to-tab-width)
       (when pel-use-goflymake
         ;; Activate flycheck or flymake if requested
         (cond
@@ -5104,8 +5105,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       ;; ensure consistent indentation control
       (when (boundp 'nim-indent-offset)
         (setq-local nim-indent-offset pel-nim-indent-width))
-      (setq-local tab-width pel-nim-tab-width)
-      (setq-local pel-tab-width-control-variables 'nim-indent-offset))
+      (setq-local tab-width pel-nim-tab-width))
 
     (pel-config-major-mode nimscript pel:for-nim :no-ts
       ;; activate skeletons
@@ -5113,8 +5113,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       ;; ensure consistent indentation control
       (when (boundp 'nimscript-indent-offset)
         (setq-local nimscript-indent-offset pel-nim-indent-width))
-      (setq-local tab-width pel-nim-tab-width)
-      (setq-local pel-tab-width-control-variables 'nim-indent-offset))))
+      (setq-local tab-width pel-nim-tab-width))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Ocaml Programming Language Support
@@ -5561,7 +5560,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (setq-local indent-tabs-mode pel-rust-use-tabs)
       (when (boundp 'rust-indent-offset)
         (setq-local tab-width rust-indent-offset))
-      (setq-local indent-tabs-mode pel-rust-use-tabs)
+      ;; Hard tabs are not explicitly handled for Rust, so set
+      ;; `pel-tab-width-control-variables' explicitly from the value
+      ;; identified by `pel-go-tie-indent-to-tab-width'
+      (pel--set-indent-control-variables pel-rust-tie-indent-to-tab-width)
       ;; [:todo 2025-10-08, by Pierre Rouleau: check if the following is needed]
       ;; (when pel-use-cargo
       ;;   (cond

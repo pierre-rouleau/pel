@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-26 11:32:13 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-27 16:04:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -187,7 +187,8 @@ Changing it has no impact on buffer/file content!")
  You can temporarily change the current indentation used by a Go buffer
  with `pel-set-tab-width' command via \\[pel-set-tab-width] to increase
  or decrease the visual indentation spacing, since Go uses tab for
- indentation.
+ indentation and all variables, as defined by
+ `pel-tab-width-control-variables' are updated.
  Using this command does not impact the indentation rendering of
  other Go buffers."))
   ;; Return a capability list for `pel-show-indent' or similar callers
@@ -196,7 +197,8 @@ Changing it has no impact on buffer/file content!")
     pel-MM-tab-width
     tab-width
     indent-tabs-mode
-    tab-stop-list))
+    tab-stop-list
+    technique-to-use-hard-tab))
 
 ;;-pel-autoload
 (defun pel-go-mod-insert-indent-info ()

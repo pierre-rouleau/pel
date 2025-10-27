@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-23 09:38:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-27 11:06:06 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1933,6 +1933,9 @@ Function created by the `pel-config-major-mode' macro."
                                      target-mode)))
         (gn-tab-width (intern (format "pel-%s-tab-width"
                                       target-mode)))
+        (gn-tie-indent-2-tab (intern
+                              (format "pel-%s-tie-indent-to-tab-width"
+                               target-mode)))
         (gn-fname       (file-name-base (macroexp-file-name)))
         (newbody nil)
         (hook-body nil))
@@ -1952,7 +1955,10 @@ Function created by the `pel-config-major-mode' macro."
               (setq-local tab-width ,gn-tab-width)))))
       (pel-append-to newbody
         `((unless (assoc 'indent-tabs-mode file-local-variables-alist)
-            (setq-local indent-tabs-mode ,gn-use-tabs)))))
+            (setq-local indent-tabs-mode ,gn-use-tabs))))
+      (when (boundp gn-tie-indent-2-tab)
+        (pel-append-to newbody
+          `((pel--set-indent-control-variables ,gn-tie-indent-2-tab)))))
 
     ;; - Add tree sitter control if necessary
     (when (and (eq ts-option :same-for-ts)

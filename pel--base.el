@@ -400,18 +400,17 @@ Set by the major modes that PEL has instrumented.")
 (defvar-local pel-tab-width-control-variables nil
   "Variable(s) controlling tab width of the current major mode.
 
-Symbol or list of symbols of the variable(s) that are used by the major
-mode to control tab-width and possibly indentation.
+This variable can hold the following:
+- One symbol,
+- A list of symbols,
+- A list of (symbol . offset) cons cells.
 
-Its value affect the behaviour of the `pel-set-tab-width' command.
-If `pel-tab-width-control-variables' is nil, `pel-set-tab-width'
-sets `tab-width'.
-If `pel-tab-width-control-variables' identifies one or several variables
-then `pel-set-tab-width' sets all of the identified variables.  If you want
-it to set `tab-width' with another variable, place them both in a list.
-When identifying several variables, put the name of the tab width controlling
-variable in the first position in the list; `pel-set-tab-width' reads the tab
-width from that variable..")
+The symbols are the symbols of variables that must be set to the value
+of tab-width.  The offset from that value defaults to 0, but can also be
+specified by the offset integer value in cons cells.
+
+The `pel-set-tab-width' command sets each variable identified in this list
+to the following value:  (+ tab-width offset)")
 
 ;; ---------------------------------------------------------------------------
 ;; Code Style Buffer Local Variables
@@ -3353,6 +3352,20 @@ of point."
 ;; Control Tab Width
 ;; -----------------
 
+(defun pel--set-indent-control-variables (indent-to-tab-width)
+  "Activate the value identified by the INDENT-TO-TAB-WIDTH.
+This must be the value of the  pel-MM-tie-indent-to-tab-width customizable
+user-option, Where MM is the major mode name (like c or python).
+The function saves its value in the `pel-tab-width-control-variables' buffer
+local variable."
+  (let ((value (if (eq indent-to-tab-width 'use-predef-vars)
+                   (let ((constvar (pel-major-mode-symbol-for
+                                    "pel--%s-indent-predef-vars")))
+                     (when (boundp constvar)
+                       (symbol-value constvar)))
+                 indent-to-tab-width)))
+    (setq-local pel-tab-width-control-variables value)))
+
 (defun pel-list-of (val)
   "Return VAL if it is a list, (list val) otherwise."
   (if (listp val)
@@ -3365,22 +3378,29 @@ of point."
 The change is temporary and affects the current buffer only.
 Return the new `tab-width' or nil if unchanged."
   (interactive (list (read-number (format "New tab-width [%d]: " tab-width))))
-  (let* ((control-vars (pel-list-of pel-tab-width-control-variables))
-        (current-tab-width (if control-vars
-                               (pel-symbol-value (car control-vars))
-                             tab-width)))
+  (let ((control-vars (pel-list-of pel-tab-width-control-variables))
+        (current-tab-width tab-width)
+        (offset nil))
     ;;
     (while (not (and (< n 9) (> n 1)))
       (setq n (read-number "Enter valid tab-width in 2-8 range: "
                            current-tab-width)))
+    ;;
     (when (not (= n current-tab-width))
       (message "Changed buffer's tab-width from %d to %d" current-tab-width n)
       (when control-vars
         (dolist (var control-vars)
-          (set (make-local-variable var) n)))
-      ;; Regardless of `pel-tab-width-control-variables' content also
-      ;; set tab-width in case PEL code did not put it in
-      ;; `pel-tab-width-control-variables'
+          (if (consp var)
+              ;; a (symbol . offset)
+              (progn
+                (setq offset (cdr var))
+                (setq var (car var))
+                (when (boundp var)
+                  (set (make-local-variable var) (+ n offset))))
+            ;; just a symbol
+            (when (boundp var)
+              (set (make-local-variable var) n)))))
+      ;; Always set `tab-width' to the new value.
       (setq-local tab-width n))))
 
 ;; ---------------------------------------------------------------------------
