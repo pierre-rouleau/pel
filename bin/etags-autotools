@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for GNU Autotools source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-09-03 14:22:38 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2025-10-27 21:59:49 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -21,7 +21,7 @@
 #  Dependencies
 #  ------------
 
-# - etags
+# - ctags - Universal CTags
 # - xargs, printf, uname, sort, uniq, find, rm.
 # - Uses fd (also named fdfind in some Linux distros like Mint) if it is
 #   available.  See URL:  https://github.com/sharkdp/fd .
