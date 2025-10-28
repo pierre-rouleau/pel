@@ -564,11 +564,11 @@ Your version of Emacs does not support dynamic module.")))
     tomlparse-buffer
     toml-string))
 
-(when pel-use-kconfig-mode
+(when pel-use-kconfig
   (pel-install-github-file "delaanthonio/kconfig-mode/master" "kconfig-mode.el")
   (add-to-list 'auto-mode-alist '("\\Kconfig\\'" . kconfig-mode))
   (pel-autoload-file kconfig-mode for: kconfig-mode))
-(when pel-use-dockerfile-mode
+(when pel-use-dockerfile
   (pel-ensure-package dockerfile-mode from: melpa))
 
 ;; ---------------------------------------------------------------------------
@@ -2071,7 +2071,7 @@ can't bind negative-argument to C-_ and M-_"
           pel-use-c++
           pel-use-common-lisp
           pel-use-erlang
-          pel-use-rst-mode)
+          pel-use-rst)
   (pel-autoload-file pel-tempo for: pel-tempo-mode))
 
 ;; ---------------------------------------------------------------------------
@@ -2398,7 +2398,7 @@ can't bind negative-argument to C-_ and M-_"
 
 ;;*** CMake support
 ;;    -------------
-(when pel-use-cmake-mode
+(when pel-use-cmake
   (pel-ensure-package cmake-mode from: melpa)
   (if (and pel-use-tree-sitter
            pel-emacs-has-dynamic-module-support-p
@@ -2436,7 +2436,7 @@ can't bind negative-argument to C-_ and M-_"
 
 ;;*** Meson build system
 ;;    ------------------
-(when pel-use-meson-mode
+(when pel-use-meson
   (define-pel-global-prefix pel:for-meson (kbd "<f11> SPC 3"))
 
   (pel-ensure-package meson-mode from: melpa)
@@ -2448,7 +2448,7 @@ can't bind negative-argument to C-_ and M-_"
 
 ;;*** Ninja build-backend
 ;;    -------------------
-(when pel-use-ninja-mode
+(when pel-use-ninja
   (define-pel-global-prefix pel:for-ninja (kbd "<f11> SPC 5"))
 
   (pel-ensure-package ninja-mode from: melpa)
@@ -2460,7 +2460,7 @@ can't bind negative-argument to C-_ and M-_"
 
 ;;*** Nix Package Manager Support
 ;;    ---------------------------
-(when pel-use-nix-mode
+(when pel-use-nix
   (pel-ensure-package nix-mode from: melpa)
   (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
   (pel-eval-after-load nix-mode
@@ -2498,7 +2498,7 @@ can't bind negative-argument to C-_ and M-_"
 
 ;;*** Intel-Hex object file format support
 ;;    ------------------------------------
-(when pel-use-intel-hex-mode
+(when pel-use-intel-hex
   (pel-ensure-package intel-hex-mode from: melpa)
   (add-to-list 'auto-mode-alist '("\\.hex\\'" . intel-hex-mode))
   (add-to-list 'auto-mode-alist '("\\.a90\\'" . intel-hex-mode))
@@ -2941,7 +2941,7 @@ MODE must be a symbol."
                    pel:for-c-preproc
                    pel:c-search-replace)
 
-  (when pel-use-bison-mode
+  (when pel-use-bison
     (pel-ensure-package bison-mode from: melpa)
     ;; the bison-mode file associates: .y -> bison-mode
     ;;                                 .l -> flex-mode
@@ -4040,7 +4040,7 @@ d-mode not added to ac-modes!"
     (add-to-list 'auto-mode-alist '("\\.janet\\'" . janet-mode))
     (add-to-list 'interpreter-mode-alist '("janet" . janet-mode)))
 
-  (when pel-use-ijanet-mode
+  (when pel-use-ijanet
     (pel-install-github-file "SerialDev/ijanet-mode/master/"
                              "ijanet.el")
     (pel-autoload-file ijanet for:
@@ -6110,7 +6110,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;; ===================
 
 ;; csv-mode
-(when pel-use-csv-mode
+(when pel-use-csv
   (pel-ensure-package csv-mode from: gnu))
 ;; ---------------------------------------------------------------------------
 ;;* Markup Language Support
@@ -6276,7 +6276,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;;** Org-Mode Support
 ;;   ----------------
 
-(when pel-use-org-mode
+(when pel-use-org
   (define-pel-global-prefix pel:for-org-mode   (kbd "<f11> SPC M-o"))
   ;; (define-pel-global-prefix pel:org-mode-setup (kbd "<f11> SPC M-o <f4>"))
 
@@ -6333,7 +6333,7 @@ to identify a Verilog file.  Anything else is assumed being V."
       ;; Use the cleaner outline view mode.
       (if (fboundp 'org-indent-mode)
           (org-indent-mode 1)
-        (display-warning 'pel-use-org-mode
+        (display-warning 'pel-use-org
                          "Unbound org-indent-mode"
                          :error))
       (when (and pel-use-imenu+
@@ -6358,7 +6358,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;;** YAML Support
 ;;   ------------
 
-(when pel-use-yaml-mode
+(when pel-use-yaml
   (define-pel-global-prefix pel:for-yaml (kbd "<f11> SPC M-y"))
   (pel-ensure-package yaml-mode from: melpa)
   (pel-autoload-file yaml-mode for: yaml-mode)
@@ -6369,7 +6369,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
   (pel-config-major-mode yaml pel:for-yaml :no-ts))
 
-(when pel-use-cwl-mode
+(when pel-use-cwl
   (define-pel-global-prefix pel:for-cwl (kbd "<f11> SPC M-c"))
   (pel-ensure-package cwl-mode from: melpa)
   ;; .cwl files are associated with cwl-mode
@@ -6494,7 +6494,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;;   ---------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-r`` :
 
-(when pel-use-rst-mode
+(when pel-use-rst
   ;; Nothing to install, rst-mode is built in Emacs
 
   (when pel-use-speedbar
@@ -6595,7 +6595,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;;** MscGen
 ;;   ------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-M`` :
-(when pel-use-mscgen-mode
+(when pel-use-mscgen
   (pel-install-github-file "thomsten/mscgen-mode/master"
                            "mscgen-mode.el")
   (pel-autoload-file mscgen-mode for:
@@ -6671,7 +6671,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;; ------------
 ;;** ASN.1
 ;;   -----
-(when pel-use-asn1-mode
+(when pel-use-asn1
   (pel-ensure-package asn1-mode from: melpa))
 
 
@@ -6680,7 +6680,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;;   ----
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-Y`` :
 
-(when pel-use-yang-mode
+(when pel-use-yang
   ;; Installation control
   (pel-ensure-package yang-mode from: melpa)
 
@@ -7669,16 +7669,16 @@ the ones defined from the buffer now."
   (define-key pel:buffer (kbd "C-p")  'iflipb-previous-buffer)
   (global-set-key (kbd "C-x k")       'iflipb-kill-buffer))
 
-(when pel-use-strace-mode
+(when pel-use-strace
   (pel-install-github-file "pierre-rouleau/strace-mode/master"
                            "strace-mode.el")
   (pel-autoload-file "strace-mode.el" for: strace-mode)
   (define-key pel:buffer (kbd "M-t")  'strace-mode))
 
-(when pel-use-changelog-mode
+(when pel-use-changelog
   (pel-eval-after-load add-log
     (defun pel-changelog-help (&optional open-github-page-p)
-      "Open Tup PDF"
+      "Open Changelog PDF"
       (interactive "P")
       (pel-help-open-pdf "changelog" open-github-page-p))
 
@@ -7763,7 +7763,7 @@ the ones defined from the buffer now."
           pel-use-ztree
           pel-use-treemacs
           pel-use-dir-treeview
-          pel-use-rfc-mode)
+          pel-use-rfc)
   (define-pel-global-prefix pel:browse (kbd "<f11> B"))
 
   (when pel-use-treemacs
@@ -7848,7 +7848,7 @@ the ones defined from the buffer now."
       (setq-default ztree-dir-show-filtered-files
                     pel-ztree-dir-show-filtered-files)))
 
-  (when pel-use-rfc-mode
+  (when pel-use-rfc
     (pel-ensure-package rfc-mode from: melpa)
     (define-key pel:browse  "r" 'rfc-mode-read)
     (define-key pel:browse  "R" 'rfc-mode-browse)))
@@ -8192,7 +8192,7 @@ the ones defined from the buffer now."
 
 ;;* RPM and CPIO archive file support
 
-(when (or pel-use-archive-rpm pel-use-rpm-spec-mode)
+(when (or pel-use-archive-rpm pel-use-rpm-spec)
   (defun pel-rpm-help (&optional open-github-page-p)
     (interactive "P")
     (pel-help-open-pdf "rpm" open-github-page-p))
@@ -8222,7 +8222,7 @@ the ones defined from the buffer now."
   ;; ]
   )
 
-(when pel-use-rpm-spec-mode
+(when pel-use-rpm-spec
   (defun pel-rpm-spec-customize (&optional other-window)
     "Open rpm customization group."
     (interactive "P")
@@ -8251,7 +8251,7 @@ the ones defined from the buffer now."
 
 ;;* X.509 support: Major mode for viewing  certificates, CRLs, keys,
 ;; DH-parameters and ASN.1 using OpenSSL
-(when pel-use-x509-mode
+(when pel-use-x509-modes
   (pel-ensure-package x509-mode from: melpa)
   (pel-autoload "x509-mode" for: x509-dwim x509-mode)
   ;; The following works only for direct files, not files inside a archive
@@ -8290,7 +8290,7 @@ the ones defined from the buffer now."
   (add-to-list 'auto-mode-alist '("\\.\\(if\\|fc\\|te\\|spt\\)\\'" . selinuxpolicy-mode))
   (pel-autoload-file selinux-policy for: selinuxpolicy-mode))
 
-(when pel-use-crontab-mode
+(when pel-use-crontab
   (pel-install-github-file "emacs-pe/crontab-mode/master"
                            "crontab-mode.el")
   (add-to-list 'auto-mode-alist '("/crontab\\(\\.X*[[:alnum:]]+\\)?\\'"
@@ -8388,11 +8388,11 @@ the ones defined from the buffer now."
 (when pel-use-log-support
   (when pel-use-logview
     (pel-ensure-package logview from: melpa))
-  (when pel-use-log4j-mode
+  (when pel-use-log4j
     (pel-ensure-package log4j-mode from: melpa))
-  (when pel-use-rails-log-mode
+  (when pel-use-rails-log
     (pel-ensure-package rails-log-mode from: melpa))
-  (when pel-use-syslog-mode
+  (when pel-use-syslog
     (pel-ensure-package syslog-mode from: melpa))
   (when pel-use-vlf
     (pel-ensure-package vlf from: melpa)))
@@ -9639,7 +9639,7 @@ the ones defined from the buffer now."
   (when pel-use-treemacs-magit
     (pel-ensure-package treemacs-magit from: melpa)))
 
-(when pel-use-gitignore-mode
+(when pel-use-gitignore
   (pel-ensure-package git-modes from: melpa))
 
 ;; ----------------
@@ -9651,7 +9651,7 @@ the ones defined from the buffer now."
   (define-key pel:vcs-monky "s"  'monky-status)
   (define-key pel:vcs-monky "b"  'monky-blame-current-file))
 
-(when pel-use-hgignore-mode
+(when pel-use-hgignore
   ;; Install & compile hgignore-mode if requested.  No key assignment;
   ;; the package installation will activate the file name association
   ;; and the auto-loading.

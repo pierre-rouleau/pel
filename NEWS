@@ -2,6 +2,51 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- *Breaking change!* Renamed the PEL user-options that activate a package
+  for major modes that had a name ending with '-mode'.:
+  the name of these user options no longer ends with '-mode'.
+  The affected user options are:
+  - pel-use-asn1-mode is now pel-use-asn1
+  - pel-use-bison-mode is now pel-use-bison
+  - pel-use-changelog-mode is now pel-use-changelog
+  - pel-use-cmake-mode is now pel-use-cmake
+  - pel-use-crontab-mode is now pel-use-crontab
+  - pel-use-csv-mode is now pel-use-csv
+  - pel-use-cwl-mode is now pel-use-cwl
+  - pel-use-diffview-mode is now pel-use-diffview
+  - pel-use-dockerfile-mode is now pel-use-dockerfile
+  - pel-use-gitignore-mode is now pel-use-gitignore
+  - pel-use-hgignore-mode is now pel-use-hgignore
+  - pel-use-ijanet-mode is now pel-use-ijanet
+  - pel-use-intel-hex-mode is now pel-use-intel-hex
+  - pel-use-kconfig-mode is now pel-use-kconfig
+  - pel-use-log4j-mode is now pel-use-log4j
+  - pel-use-meson-mode is now pel-use-meson
+  - pel-use-mscgen-mode is now pel-use-mscgen
+  - pel-use-ninja-mode is now pel-use-ninja
+  - pel-use-nix-mode is now pel-use-nix
+  - pel-use-org-mode is now pel-use-org
+  - pel-use-rails-log-mode is now pel-use-rails-log
+  - pel-use-rfc-mode is now pel-use-rfc
+  - pel-use-rpm-spec-mode is now pel-use-rpm-spec
+  - pel-use-rpm-spec-mode is now pel-use-rpm-spec
+  - pel-use-rst-mode is now pel-use-rst
+  - pel-use-strace-mode is now pel-use-strace
+  - pel-use-syslog-mode is now pel-use-syslog
+  - pel-use-yaml-mode is now pel-use-yaml
+  - pel-use-yang-mode is now pel-use-yang
+  Also renamed pel-use-x509-mode renamed to pel-use-x509-modes (add a 's')
+
+  Execute the upgrade script provided in upgrade/upgrade-01.
+  Type =upgrade/upgrade-01 --help= to get more information on the command
+  and to check you can access it.
+
+  Once this is done execute =upgrade/upgrade-01= to update the content of your
+  PEL Emacs customization files where the PEL user-options selection resides.
+
+  The renaming was done to provide the ability to control the use of Tree-Sitter
+  based mode from the PEL user-option activating the explicit support of that major mode.
+  It will also enable the ability to provide better help for PEL users.
 - If you used Go, you know how useful the use of hard tabs for indentation
   can be. Despite this, most programming languages use spaces for indentation,
   and now most newer programming language use a 2-column indentation scheme.

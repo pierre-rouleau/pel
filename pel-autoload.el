@@ -795,7 +795,7 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-regexp" for: pel-insert-regexp)
 
-  (when (and (boundp 'pel-use-rst-mode) pel-use-rst-mode)
+  (when (and (boundp 'pel-use-rst) pel-use-rst)
     (pel-autoload "pel-rst" for:
       pel-rst-set-underscore-syntax
       pel-rst-set-ref-bookmark

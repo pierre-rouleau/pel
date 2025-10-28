@@ -1,0 +1,86 @@
+#!/bin/sh
+# SH FILE: upgrade-01
+#
+# Purpose   : Update the emacs customization files: modify user-name options.
+# Created   : Tuesday, October 28 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-10-28 11:50:51 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+
+# Module Description
+# ------------------
+#
+# This PEL upgrade shells script uses the Emacs logic provided by the file
+# pel-update-user-options-names.el located in the same directory.
+#
+# It replaces the names of PEL customizable user-option; those that
+# were renamed in PEL code on October 28, 2025, in the PEL Emacs customization
+# files or any other file specified on the command line.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - emacs, PEL
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+pgm_name="$(basename "$0")"
+
+print_usage()
+{
+    printf -- "
+%s: Replace PEL user-option names as requested by Oct 28 2025 change.
+
+ Usage: %s -h|--help
+
+  • Print this help information.
+
+ Usage: %s [FILE-PATH..]
+
+  • Replace the name of the PEL user-options affected by the
+    Oct 28 2025 code change in the specified files.
+    - By default, if no file is specified, the script changes the
+      following files:
+      - ~/.emacs.d/emacs-customization.el an
+      - ~/.emacs.d/emacs-customization-graphics.el
+
+    - You can specify any other file(s) as arguments.
+
+The work is performed by an Emacs script.
+Here's the help provided by this Emacs script:
+" "$pgm_name" "$pgm_name" "$pgm_name"
+}
+
+# --
+# Check validity of arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    emacs --batch -l pel-update-user-options-names.el -f pel-update-user-options-names --pel-help
+    if [ "$#" = "1" ]; then
+        # help requested explicitly with right amount of args: no error.
+        exit 0
+    else
+        exit  1
+    fi
+fi
+
+# --
+# Proceed
+if [ -z "$1" ]; then
+    # No explicit file named.  Process default PEL customization files.
+    emacs --batch -l pel-update-user-options-names.el -f pel-update-user-options-names \
+          "$HOME/.emacs.d/emacs-customization.el" \
+          "$HOME/.emacs.d/emacs-customization-graphics.el"
+else
+    emacs --batch -l pel-update-user-options-names.el -f pel-update-user-options-names "$@"
+fi
+
+# ----------------------------------------------------------------------------

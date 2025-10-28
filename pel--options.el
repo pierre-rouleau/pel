@@ -1144,7 +1144,7 @@ open the ASCII table in the current buffer."
 
 (defcustom pel-use-nhexl-mode nil
   "Control whether PEL uses the package and function `nhexl-mode'.
-This mode supports editing a file in hexadecimal dump mode.
+A minor mode that supports editing a file in hexadecimal dump mode.
 When set, PEL activates the following key sequences:
 - <f11> t O  : `nhexl-overwrite-only-mode'
 - <f11> b x  : `nhexl-mode'
@@ -1755,7 +1755,7 @@ to create the binding."
   "List of packages supporting data file formats."
   :group 'pel-package-use)
 
-(defcustom pel-use-csv-mode nil
+(defcustom pel-use-csv nil
   "Whether PEL activates the csv-mode.
 
 Requires Emacs 27.1 or later."
@@ -1786,8 +1786,11 @@ standard diff annotated files."
                  auto)))
 
 (defcustom pel-use-diffview-mode nil
-  "Whether PEL activates diffview-mode package."
+  "Whether PEL activates diffview-mode package.
+Activates a minor mode for viewing diffs."
   :group 'pel-pkg-for-diff-merge
+  :link '(url-link :tag "diff-view @ Github"
+                   "https://github.com/mgalgs/diffview-mode")
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-diffview-mode :package-is '(quote ((elpa . diffview))))
@@ -1955,19 +1958,20 @@ This is only available when pel-use-tree-sitter is t (on)."
   :safe #'booleanp)
 (pel-put 'pel-use-tomlparse :package-is :in-utils)
 
-(defcustom pel-use-kconfig-mode nil
-  "Whether PEL supports kconfig-mode for the Linux kernel Konfig files."
+(defcustom pel-use-kconfig nil
+  "Whether PEL supports kconfig-mode for the Linux kernel Konfig files.
+A Major mode."
   :group 'pel-pkg-for-conf-file
   :link '(url-link :tag "kconfig-mode @ Github"
                    "https://github.com/delaanthonio/kconfig-mode#readme")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-kconfig-mode :package-is :in-utils)
+(pel-put 'pel-use-kconfig :package-is :in-utils)
 
 ;; Docker Support
 ;; --------------
 
-(defcustom pel-use-dockerfile-mode nil
+(defcustom pel-use-dockerfile nil
   "Whether PEL supports the dockerfile-mode."
   :group 'pel-pkg-for-conf-file
   :link '(url-link :tag "dockerfile-mode @ Github"
@@ -2158,15 +2162,16 @@ Select one of:
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-use-rpm-spec-mode nil
-  "Control if PEL supports the rpm-spec-mode package."
+(defcustom pel-use-rpm-spec nil
+  "Control if PEL supports the rpm-spec-mode package.
+A major mode."
   :group 'pel-pkg-for-rpm
   :link '(url-link :tag "rpm-spec-mode @ Github"
                    "https://github.com/pierre-rouleau/rpm-spec-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-rpm-spec-mode :package-is :in-utils)
-(pel-put 'pel-use-rpm-spec-mode :also-required-when 'pel-use-archive-rpm)
+(pel-put 'pel-use-rpm-spec :package-is :in-utils)
+(pel-put 'pel-use-rpm-spec :also-required-when 'pel-use-archive-rpm)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Directory Tree Browsing and Management
@@ -2181,7 +2186,7 @@ Select one of:
   "PEL Local File And Directory Tree Browsing and Management."
   :group 'pel-pkg-for-browse)
 
-(defcustom pel-use-rfc-mode nil
+(defcustom pel-use-rfc nil
   "Control whether PEL provides access to rfc-mode external package."
   :group 'pel-pkg-for-file-browse
   :type 'boolean
@@ -2627,7 +2632,7 @@ and is also supported by LSP servers."
 
 (defcustom pel-use-beacon-mode nil
   "Control whether PEL uses and activates the beacon-mode.
-
+A global minor mode.
 PEL currently restricts it to Emacs 27 and later."
   :group 'pel-pkg-for-highlight
   :link '(url-link :tag "beacon-mode @ GitHub"
@@ -2674,6 +2679,7 @@ current window:
 
 (defcustom pel-use-rainbow-mode nil
   "Control whether PEL uses the `rainbow-mode' package.
+A minor mode.
 When activated the color code value constant strings in code file
 are highlighted with the color represented by the color code in the string.
 
@@ -3569,27 +3575,29 @@ To activate it you must also activate `pel-use-log-support'"
   :safe #'booleanp)
 (pel-put 'pel-use-logview :requires 'pel-use-log-support)
 
-(defcustom pel-use-log4j-mode nil
+(defcustom pel-use-log4j nil
   "Control whether PEL uses the log4j-mode external package.
+A major mode.
 To activate it you must also activate `pel-use-log-support'"
   :link '(url-link :tag "log4j-mode @ MELPA"
                    "https://melpa.org/#/log4j-mode")
   :group 'pel-pkg-for-logging
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-log4j-mode :requires 'pel-use-log-support)
+(pel-put 'pel-use-log4j :requires 'pel-use-log-support)
 
-(defcustom pel-use-rails-log-mode nil
+(defcustom pel-use-rails-log nil
   "Control whether PEL uses the rails-mode external package.
+A major mode.
 To activate it you must also activate `pel-use-log-support'"
   :link '(url-link :tag "rails-log-mode @ GitHub"
                    "https://github.com/ananthakumaran/rails-log-mode")
   :group 'pel-pkg-for-logging
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-rails-log-mode :requires 'pel-use-log-support)
+(pel-put 'pel-use-rails-log :requires 'pel-use-log-support)
 
-(defcustom pel-use-syslog-mode nil
+(defcustom pel-use-syslog nil
   "Control whether PEL uses the syslog-mode external package.
 To activate it you must also activate `pel-use-log-support'"
   :link '(url-link :tag "syslog-mode @ GitHub"
@@ -3597,7 +3605,7 @@ To activate it you must also activate `pel-use-log-support'"
   :group 'pel-pkg-for-logging
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-syslog-mode :requires 'pel-use-log-support)
+(pel-put 'pel-use-syslog :requires 'pel-use-log-support)
 
 (defcustom pel-use-vlf nil
   "Control whether PEL uses the vlf external package.
@@ -3702,7 +3710,7 @@ help-descbind-mode to invoke it via C-h b or <f1> b"
 
 (defcustom pel-use-command-log-mode nil
   "Control whether PEL uses the command-log package.
-
+A minor mode.
 For the moment this uses a fork of the lewang/command-log-mode
 waiting for activity to resume in the lewang's repo."
   :group 'pel-pkg-for-keys
@@ -3714,6 +3722,7 @@ waiting for activity to resume in the lewang's repo."
 
 (defcustom pel-use-interaction-log-mode nil
   "Control whether PEL uses the interaction-log-mode package.
+A minor mode.
 This package  logs all keys typed in a buffer, showing the command name and
 using colored fonts.  Similar to command-log-mode but with more colors.
 
@@ -3807,21 +3816,22 @@ terminal mode for your environment, change the value."
   "Unix/Linux configuration file supporting modes."
   :group 'pel-package-use)
 
-(defcustom pel-use-crontab-mode nil
-  "Whether PEL activates the crontab-mode to edit crontab files."
+(defcustom pel-use-crontab nil
+  "Whether PEL activates the crontab-mode to edit crontab files.
+A major mode."
   :group 'pel-pkg-for-unix-cfg-files
   :link '(url-link :tag "crontab-mode @ GitHub"
                    "https://github.com/emacs-pe/crontab-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-crontab-mode :package-is :in-utils)
+(pel-put 'pel-use-crontab :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-pkg-for-log-file nil
   "Log File control options."
   :group 'pel-package-use)
 
-(defcustom pel-use-strace-mode nil
+(defcustom pel-use-strace nil
   "Whether PEL uses the strace-mode package."
   :group 'pel-pkg-for-log-file
   :link '(url-link :tag "strace-mode @ Github"
@@ -3830,7 +3840,7 @@ terminal mode for your environment, change the value."
                    "https://github.com/pierre-rouleau/strace-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-strace-mode :package-is :in-utils)
+(pel-put 'pel-use-strace :package-is :in-utils)
 
 (defgroup pel-pkg-for-gnu-screen nil
   "GNU Screen log file support."
@@ -3877,8 +3887,9 @@ TO-STRING argument:
   "Packages that support object file formats."
   :group 'pel-pkg-for-log-file)
 
-(defcustom pel-use-changelog-mode nil
-  "Whether PEL adds special support for the change-log-mode."
+(defcustom pel-use-changelog nil
+  "Whether PEL adds special support for the change-log-mode.
+A major mode."
   :group 'pel-pkg-for-changelog-file
   :type 'boolean
   :safe #'booleanp)
@@ -3917,9 +3928,9 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   "Packages that support object file formats."
   :group 'pel-pkg-for-filemng)
 
-(defcustom pel-use-intel-hex-mode nil
+(defcustom pel-use-intel-hex nil
   "Control whether PEL uses the external intel-hex-mode package.
-
+A major mode.
 This package allows easy editing of Intel HEX object files."
   :group 'pel-pkg-for-object-file
   :link '(url-link :tag "intel-hex-mode @ Github"
@@ -3936,7 +3947,8 @@ Do not enter lambda expressions."
 
 
 (defcustom pel-use-elf-mode nil
-  "Control whether ELF files are opened in elf-mode buffer showing symbols."
+  "Control whether ELF files are opened in elf-mode buffer showing symbols.
+A minor mode."
   :link '(url-link :tag "ELF files @ Wikipedia"
                    "https://en.wikipedia.org/wiki/Executable_and_Linkable_Format")
   :link '(url-link :tag "elf-mode @ MELPA"
@@ -3955,7 +3967,7 @@ Do not enter lambda expressions."
 
 (defcustom pel-use-emacs-ssh-file-modes nil
   "Control whether PEL uses the emacs-ssh-file-modes.
-
+Provides major modes and minor modes.
 It provides support for the authorized_keys and know_hosts files."
   :group 'pel-pkg-for-ssh
   :link '(url-link :tag "emacs-ssh-file-modes @ Github"
@@ -3987,8 +3999,9 @@ Do not enter lambda expressions."
   "Packages that support X.509 file viewing."
   :group 'pel-pkg-for-filemng)
 
-(defcustom pel-use-x509-mode nil
-  "Control whether PEL uses the x509-mode package."
+(defcustom pel-use-x509-modes nil
+  "Control whether PEL uses the x509-mode package.
+Provides several major modes."
   :group 'pel-pkg-for-x509-file
   :link '(url-link :tag "509-mode @ Github"
                    "https://github.com/jobbflykt/x509-mode")
@@ -4180,12 +4193,15 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :link '(url-link :tag "mscgen-mode @ Github"
                    "https://github.com/thomsten/mscgen-mode#readme"))
 
-(defcustom pel-use-mscgen-mode nil
-  "Control whether PEL activates support for mscgen-mode."
+(defcustom pel-use-mscgen nil
+  "Control whether PEL activates support for mscgen-mode.
+Major mode."
   :group 'pel-pkg-for-mscgen
+  :link '(url-link :tag "mscgen @ Github"
+                   "https://github.com/thomsten/mscgen-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-mscgen-mode :package-is :in-utils)
+(pel-put 'pel-use-mscgen :package-is :in-utils)
 
 (defcustom pel-mscgen-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Mscgen buffers.
@@ -4335,6 +4351,7 @@ major mode of that programming language."
 
 (defcustom pel-use-grip-mode nil
   "Control whether PEL activates grip-mode external package.
+A minor mode.
 This package provides HTML rendering of markdown and org-mode buffers.
 It requires Python and the grip python package that you can install
 using the command \\='pip install grip\\='."
@@ -4380,6 +4397,7 @@ NOTE: ⚠️  not recommended: markdown-live-preview-mode from
 
 (defcustom pel-use-markdown-preview-mode nil
   "Control whether PEL activates the markdown-preview-mode package.
+A minor mode.
 The `pel-use-markdown' user-option must also be turned on to
 activate this package."
   :link '(url-link :tag "markdown-preview-mode @ GitHub"
@@ -4409,6 +4427,7 @@ activate this package."
 
 (defcustom pel-use-vmd-mode nil
   "Control whether PEL activates the vmd-mode package.
+A minor mode.
 The `pel-use-markdown' user-option must also be turned on to
 activate this package."
   :link '(url-link :tag "vmd-mode @ GitHub"
@@ -4420,6 +4439,7 @@ activate this package."
 
 (defcustom pel-use-remark-mode nil
   "Control whether PEL activates the remark-mode package.
+A minor mode.
 The `pel-use-markdown' user-option must also be turned on to
 activate this package."
   :link '(url-link :tag "remark-mode @ GitHub"
@@ -4485,12 +4505,12 @@ programming language files."
   :group 'pel-pkg-for-outline
   :link `(url-link :tag "Org Mode PDF" ,(pel-pdf-file-url "mode-org-mode")))
 
-(defcustom pel-use-org-mode nil
+(defcustom pel-use-org nil
   "Control whether PEL supports Org-Mode."
   :group 'pel-pkg-for-org-mode
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-org-mode :package-is :builtin-emacs)
+(pel-put 'pel-use-org :package-is :builtin-emacs)
 
 (defcustom pel-org-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Org-Mode buffers.
@@ -4539,12 +4559,12 @@ display of hard TAB characters."
   :group 'pel-pkg-for-markup
   :link `(url-link :tag "reStructuredText PDF" ,(pel-pdf-file-url "mode-rst")))
 
-(defcustom pel-use-rst-mode nil
+(defcustom pel-use-rst nil
   "Control whether PEL supports {rst-mode} (reStructuredText)."
   :group 'pel-pkg-for-rst
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-rst-mode :package-is :builtin-emacs)
+(pel-put 'pel-use-rst :package-is :builtin-emacs)
 
 
 (defcustom pel-rst-compiler "pel-rst2html"
@@ -4692,9 +4712,11 @@ itself is not available."
   :group 'pel-pkg-for-markup
   :link `(url-link :tag "yaml PDF" ,(pel-pdf-file-url "yaml")))
 
-(defcustom pel-use-yaml-mode nil
+(defcustom pel-use-yaml nil
   "Control whether PEL provides access to the yaml-mode external package."
   :group 'pel-pkg-for-yaml
+  :link '(url-link :tag "yaml-mode @ Github"
+                   "https://github.com/yoshiki/yaml-mode")
   :type 'boolean
   :safe #'booleanp)
 
@@ -4734,8 +4756,9 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-yaml
   :link `(url-link :tag "cwl PDF" ,(pel-pdf-file-url "cwl")))
 
-(defcustom pel-use-cwl-mode nil
-  "Control whether PEL activates the cwl-mode external package."
+(defcustom pel-use-cwl nil
+  "Control whether PEL activates the cwl-mode external package.
+A major mode."
   :group 'pel-pkg-for-cwl
   :link '(url-link :tag "cwl-mode @ GitHub"
                    "https://github.com/tom-tan/cwl-mode")
@@ -4807,7 +4830,7 @@ To disable it replace it by an empty string."
 
 (defcustom pel-use-show-point-mode nil
   "Control whether PEL activates the show-point-mode.
-
+A minor mode.
 That mode prints the current point value on the mode line."
   :group 'pel-pkg-for-modeline
   :link '(url-link :tag "Show Point Mode @ Emacs Wiki"
@@ -5075,7 +5098,7 @@ This may get activated indirectly by other user-options."
   :group  'pel-pkg-for-language-server)
 
 (defcustom pel-use-lsp-mode nil
-  "Control whether PEL activates lsp-mode, a language server."
+  "Control whether PEL activates lsp-mode, access to language server."
   :group 'pel-pkg-for-lsp-mode
   :link '(url-link :tag "lsp-mode @ GitHub"
                    "https://github.com/emacs-lsp/lsp-mode")
@@ -5814,7 +5837,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-c :package-is :builtin-emacs)
-(pel-put 'pel-use-c :also-required-when 'pel-use-bison-mode)
+(pel-put 'pel-use-c :also-required-when 'pel-use-bison)
 
 (defcustom pel-use-emacs-ccls-for-c nil
   "Control whether PEL activates ccls lsp for C.
@@ -6527,8 +6550,9 @@ defined ones, which could use that variable too."
   :group 'pel-pkg-for-parser
   :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
-(defcustom pel-use-bison-mode nil
+(defcustom pel-use-bison nil
   "Control whether PEL activates the bison-mode.
+Major mode.
 When active it is associated to the .lex and .yacc files,
 taking over the default association with c-mode."
   :group 'pel-pkg-for-bison
@@ -7332,8 +7356,13 @@ When turned on,
   :safe #'booleanp)
 (pel-put 'pel-use-eiffel :package-is :a-gate)
 
+;; [:todo 2025-10-28, by Pierre Rouleau: eliminate `pel-use-eiffel-mode'
+;;                    in favor of major mode selection done by pel-use-eiffel
+;;                    value.
+;; ]
 (defcustom pel-use-eiffel-mode nil
   "Whether PEL activates eiffel-mode.
+A major mode.
 Note that Eiffel support is not fully working and needs to be
 fixed.  I'm using my fork while I'm trying to make it work,but it
 is a low priority item for me at the moment."
@@ -7858,7 +7887,7 @@ defcustom variable `pel-modes-activating-syntax-check'."
 
 (defcustom pel-use-gorepl-mode nil
   "Controls whether PEL use the gorepl-mode package.
-
+A minor mode.
 Requires gocode."
   :link '(url-link :tag "gorepl-mode @ Github"
                    "https://github.com/manute/gorepl-mode")
@@ -7915,6 +7944,9 @@ When turned on the haskell-mode is associated with the PEL ``<f12>`` key."
   :safe #'booleanp)
 (pel-put 'pel-use-haskell :package-is :a-gate)
 
+;; [:todo 2025-10-28, by Pierre Rouleau: Eliminate `pel-use-haskell-mode'
+;;    in favor of mode selected by `pel-use-haskell'.
+;; ]
 (defcustom pel-use-haskell-mode nil
   "Control whether PEL activates the haskell-mode external package."
   :group 'pel-pkg-for-haskell
@@ -8492,13 +8524,16 @@ relatively small footprint with several interesting features."
   :safe #'booleanp)
 (pel-put 'pel-use-janet :package-is :a-gate)
 
+;; [:todo 2025-10-28, by Pierre Rouleau: eliminate `pel-use-janet-mode'
+;;    in favor of mode selected by `pel-use-janet'
+;; ]
 (defcustom pel-use-janet-mode nil
   "Control whether PEL uses janet-mode external package.
 
 Provides access to the major mode `janet-mode'.
 Activating this automatically turns `pel-use-janet' on."
   :group 'pel-pkg-for-janet
-    :link '(url-link :tag "My janet-mode @ GitHub"
+  :link '(url-link :tag "My janet-mode @ GitHub"
                    "https://github.com/pierre-rouleau/janet-mode")
   :link '(url-link :tag "janet-mode @ GitHub"
                    "https://github.com/ALSchwalm/janet-mode")
@@ -8508,21 +8543,21 @@ Activating this automatically turns `pel-use-janet' on."
 (pel-put 'pel-use-janet-mode :requires 'pel-use-janet)
 
 
-(defcustom pel-use-ijanet-mode nil
+(defcustom pel-use-ijanet nil
   "Control whether PEL uses ijanet-mode external package.
-
+A major comint derived mode.
 Activating this automatically turns `pel-use-janet' on."
   :group 'pel-pkg-for-janet
   :link '(url-link :tag "ijanet-mode @Github"
                    "https://github.com/SerialDev/ijanet-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-ijanet-mode :package-is '(quote ((utils . ijanet))))
-(pel-put 'pel-use-ijanet-mode :requires 'pel-use-janet)
+(pel-put 'pel-use-ijanet :package-is '(quote ((utils . ijanet))))
+(pel-put 'pel-use-ijanet :requires 'pel-use-janet)
 
 (defcustom pel-use-inf-janet nil
   "Control whether PEL uses ijanet-mode external package.
-
+A minor mode.
 Activating this automatically turns `pel-use-janet' on."
   :group 'pel-pkg-for-janet
   :link '(url-link :tag "inf-janet @Github"
@@ -9773,7 +9808,7 @@ These files are added to the files identified by the generic
 
 (defcustom pel-use-erlstack-mode nil
   "Control whether PEL uses erlstack-mode.
-
+A minor mode.
 To use it, `pel-use-erlang' must be on (t)."
   :group 'pel-erlang-ide
   :link '(url-link "erlstack-mode @ GitHub"
@@ -10908,6 +10943,9 @@ Activating this activated the following user-options:
   :safe #'booleanp)
 (pel-put 'pel-use-ocaml :package-is :a-gate)
 
+;; [:todo 2025-10-28, by Pierre Rouleau: eliminate `pel-use-caml-mode'
+;; in favor of `pel-use-ocaml' to select the major mode used.
+;; ]
 (defcustom pel-use-caml-mode nil
   "Control whether PEL activates the caml-mode external package."
   :group 'pel-pkg-for-ocaml
@@ -11434,6 +11472,11 @@ Values in the [2, 8] range are accepted."
   :type 'boolean
   :safe #'booleanp)
 
+;; [:todo 2025-10-28, by Pierre Rouleau: eliminate
+;; `pel-use-external-python-mode'
+;; in favor of `pel-use-python' to select which major mode
+;; is used for Python.
+;; ]
 (defcustom pel-use-external-python-mode nil
   "Control whether PEL uses this external python-mode package is used.
 
@@ -11706,6 +11749,10 @@ When activating it you can select between the following values:
 (pel-put 'pel-use-rust :package-is :a-gate)
 (pel-put 'pel-use-rust :also-required-when 'pel-use-rust-mode)
 
+;; [:todo 2025-10-28, by Pierre Rouleau: Eliminate `pel-use-rust-mode'
+;;   and others to select which major mode is used for Rust.
+;;   The selection should be done by the value of `pel-use-rust'.
+;; ]
 (defcustom pel-use-rust-mode nil
   "Control whether rust-mode is activated.
 Requires the user-option variable `pel-use-rust' to be on (t)."
@@ -12784,8 +12831,9 @@ Do not enter lambda expressions."
   "PEL Specification Definition Languages."
   :group 'pel-package-use)
 
-(defcustom pel-use-asn1-mode nil
-  "Whether PEL provides access to the asn1-mode external package."
+(defcustom pel-use-asn1 nil
+  "Whether PEL provides access to the asn1-mode external package.
+A major mode."
   :group 'pel-pkg-for-spec-definition
   :type 'boolean
   :safe #'booleanp
@@ -12799,8 +12847,9 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-spec-definition
   :type '(repeat function))
 
-(defcustom pel-use-yang-mode nil
-  "Whether PEL provides access to the yang-mode external package."
+(defcustom pel-use-yang nil
+  "Whether PEL provides access to the yang-mode external package.
+A major mode."
   :group 'pel-pkg-for-spec-definition
   :type 'boolean
   :safe #'booleanp
@@ -13041,8 +13090,9 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-sw-build
   :type '(repeat function))
 
-(defcustom pel-use-nix-mode nil
-  "Control whether PEL activates support for the Nix package manager files."
+(defcustom pel-use-nix nil
+  "Control whether PEL activates support for the Nix package manager files.
+A major mode."
   :link '(url-link :tag "nix-mode @ Github"
                    "https://github.com/NixOS/nix-mode")
   :group 'pel-pkg-for-sw-build
@@ -13063,8 +13113,9 @@ Do not enter lambda expressions."
   "PEL support for CMake software build system."
   :group 'pel-pkg-for-sw-build)
 
-(defcustom pel-use-cmake-mode nil
-  "Control whether PEL provides extra support for CMake."
+(defcustom pel-use-cmake nil
+  "Control whether PEL provides extra support for CMake.
+A major mode."
   :group 'pel-pkg-for-cmake
   :group 'cmake
   :link '(url-link :tag "cmake-mode @ GitHub"
@@ -13114,8 +13165,9 @@ This list is added to the list Emacs already supports for Make."
   :link `(url-link :tag "Meson PDF" ,(pel-pdf-file-url "pl-meson"))
   :group 'pel-pkg-for-sw-build)
 
-(defcustom pel-use-meson-mode nil
-  "Control whether PEL provides support for meson file via meson-mode."
+(defcustom pel-use-meson nil
+  "Control whether PEL provides support for meson file via meson-mode.
+A major mode."
   :link '(url-link :tag "meson-mode @ Github"
                    "https://github.com/wentasah/meson-mode")
   :group 'pel-pkg-for-meson
@@ -13159,14 +13211,14 @@ Indentation in Meson build buffers controlled by `meson-indent-basic'."
   :link `(url-link :tag "Ninja PDF" ,(pel-pdf-file-url "pl-ninja"))
   :group 'pel-pkg-for-sw-build)
 
-(defcustom pel-use-ninja-mode nil
+(defcustom pel-use-ninja nil
   "Control whether PEL provides support for ninja file via ninja-mode."
   :link '(url-link :tag "ninja-emacs @ Github"
                    "https://github.com/ninja-build/ninja-emacs")
   :group 'pel-pkg-for-ninja
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-ninja-mode :package-is :in-utils)
+(pel-put 'pel-use-ninja :package-is :in-utils)
 
 (defcustom pel-ninja-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for ninja buffers.
@@ -13411,15 +13463,16 @@ turn this off."
   :safe #'booleanp)
 (pel-put 'pel-use-magit :also-required-when 'pel-use-treemacs-magit)
 
-(defcustom pel-use-gitignore-mode nil
+(defcustom pel-use-gitignore nil
   "Control whether PEL provides access to the git-modes package.
+A major mode.
 It provides access to gitignore-mode, gitconfig-mode and gitattributes-mode."
   :link '(url-link :tag "git-modes @ GitHub"
                    "https://github.com/magit/git-modes")
   :group 'pel-pkg-for-git
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-gitignore-mode :package-is '(quote ((elpa . git-modes))))
+(pel-put 'pel-use-gitignore :package-is '(quote ((elpa . git-modes))))
 
 ;; ------------------------------
 ;; Mercurial
@@ -13428,8 +13481,9 @@ It provides access to gitignore-mode, gitconfig-mode and gitattributes-mode."
   :group 'pel-pkg-for-vcs
   :link `(url-link :tag "Mercurial PDF" ,(pel-pdf-file-url "vcs-mercurial")))
 
-(defcustom pel-use-hgignore-mode nil
-  "Determines whether PEL activates the hgignore-mode for .hgignore files."
+(defcustom pel-use-hgignore nil
+  "Determines whether PEL activates the hgignore-mode for .hgignore files.
+A major mode."
   :link '(url-link :tag "hgignore-mode @ GitHub"
                    "https://github.com/omajid/hgignore-mode")
   :group 'pel-pkg-for-mercurial
@@ -14042,7 +14096,7 @@ indexing system."
   (setq pel-use-ivy t
         pel-use-counsel t))
 
-(when pel-use-bison-mode
+(when pel-use-bison
   (setq pel-use-c t))
 
 (when (or pel-use-indent-tools
@@ -14083,7 +14137,7 @@ indexing system."
   (setq pel-use-flycheck t))
 
 (when (or pel-use-janet-mode
-          pel-use-ijanet-mode
+          pel-use-ijanet
           pel-use-inf-janet)
   (setq pel-use-janet t))
 
@@ -14132,13 +14186,13 @@ indexing system."
 (when (version< emacs-version "27.1")
   (setq pel-use-go-translate nil)
   (setq pel-use-tzc nil)
-  (setq pel-use-csv-mode nil))
+  (setq pel-use-csv nil))
 (when (version< emacs-version "28.1")
   (setq pel-use-simple-undo nil)
   (setq pel-use-vundo nil))
 
 (when pel-use-archive-rpm
-  (setq pel-use-rpm-spec-mode t))
+  (setq pel-use-rpm-spec t))
 
 (unless pel-use-tree-sitter
   (setq pel-use-tomlparse nil))

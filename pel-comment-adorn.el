@@ -1,6 +1,6 @@
 ;;; pel-comment-adorn.el --- PEL Commented Adornment  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2025  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -28,7 +28,7 @@
 ;; with a specific reST-level adornment and comment the 2 lines, providing a
 ;; quick way to create underlined comments in code.
 ;;
-;; Note that these are available even when pel-use-rst is set to t; there is no
+;; Note that these are available even when `pel-use-rst' is set to t; there is no
 ;; harm since the pel-rst does not depend on any external package; it use the
 ;; rst package which is incorporated inside Emacs.
 ;;

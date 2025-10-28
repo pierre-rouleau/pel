@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2025-05-15 14:47:49 EDT, updated by Pierre Rouleau.
+:Modified: 2025-10-28 09:30:59 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3827,7 +3827,7 @@ PEL reStructuredText Support Utilities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :PDF Sheet: `reStructuredText mode`_.
-:PEL Customization: - ``pel-use-rst-mode``,
+:PEL Customization: - ``pel-use-rst``,
                     - ``pel-rst-adornment-style``,
                     - ``rst-preferred-adornments``.
 :PEL Key Prefix: - Globally: **pel:for-reST** : ``<f11> SPC r``
@@ -3949,7 +3949,7 @@ key                             binding
 The longer to type global prefix is always available: ``<f11> SPC r``.
 
 All of the above is activated by ``pel-init`` only when the
-``pel-use-rst-mode`` user option is set to **t**.
+``pel-use-rst`` user option is set to **t**.
 
 .. _reStructuredText: https://en.wikipedia.org/wiki/ReStructuredText
 .. _external hyperlink targets: https://docutils.sourceforge.io/docs/user/rst/quickref.html#hyperlink-targets
@@ -6184,8 +6184,9 @@ PEL Support for Janet
 
                       - Activation:
 
+                        - ``pel-use-janet``
                         - ``pel-use-janet-mode``
-                        - ``pel-use-ijanet-mode``
+                        - ``pel-use-ijanet``
                         - ``pel-use-inf-janet``
 
                       - Configuration:
