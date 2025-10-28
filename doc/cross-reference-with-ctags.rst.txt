@@ -6,7 +6,7 @@ Using ctags and etags for cross referencing with TAGS
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Wednesday, June  5 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-01 21:25:09 EST, updated by Pierre Rouleau.
+:Modified: 2025-10-27 21:51:37 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, Pierre Rouleau
 
 
@@ -69,6 +69,8 @@ Utility       Programming Language
 `etags-erl`_  Erlang and C
 `etags-go`_   Go
 `etags-lisp`_ Common Lisp
+`etags-perl`_ Perl
+`etags-pike`_ Pike
 `etags-py`_   Python
 `etags-rs`_   Rust
 ============= ========================
@@ -108,6 +110,8 @@ POSIX compliant shell.
 .. _etags-lisp:                  https://github.com/pierre-rouleau/pel/blob/master/bin/etags-lisp
 .. _etags-make:                  https://github.com/pierre-rouleau/pel/blob/master/bin/etags-make
 .. _etags-autotools:             https://github.com/pierre-rouleau/pel/blob/master/bin/etags-autotools
+.. _etags-perl:                  https://github.com/pierre-rouleau/pel/blob/master/bin/etags-perl
+.. _etags-pike:                  https://github.com/pierre-rouleau/pel/blob/master/bin/etags-pike
 .. _etags-py:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py
 .. _etags-rs:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-rs
 .. _Xref-Support PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref-support.pdf
