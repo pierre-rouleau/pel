@@ -6,7 +6,7 @@ Using ctags and etags for cross referencing with TAGS
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Wednesday, June  5 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-10-27 21:51:37 EDT, updated by Pierre Rouleau.
+:Modified: 2025-10-27 22:30:14 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, Pierre Rouleau
 
 
@@ -61,19 +61,20 @@ This includes the following utilities that
 Build a Emacs-compliant TAGS for specific programming
 language sets for the source code files in specified directory tree(s).
 
-============= ========================
-Utility       Programming Language
-============= ========================
-`etags-c`_    C and C++
-`etags-el`_   Emacs Lisp and C
-`etags-erl`_  Erlang and C
-`etags-go`_   Go
-`etags-lisp`_ Common Lisp
-`etags-perl`_ Perl
-`etags-pike`_ Pike
-`etags-py`_   Python
-`etags-rs`_   Rust
-============= ========================
+===================== ========================
+Utility               Programming Language
+===================== ========================
+`etags-c`_            C and C++
+`etags-el`_           Emacs Lisp and C
+`etags-erl`_          Erlang and C
+`etags-javascript`_   Javascript
+`etags-go`_           Go
+`etags-lisp`_         Common Lisp
+`etags-perl`_         Perl
+`etags-pike`_         Pike
+`etags-py`_           Python
+`etags-rs`_           Rust
+===================== ========================
 
 There's also a set of etags builder for build tool
 files:
@@ -107,6 +108,7 @@ POSIX compliant shell.
 .. _etags-el:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-el
 .. _etags-erl:                   https://github.com/pierre-rouleau/pel/blob/master/bin/etags-erl
 .. _etags-go:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-go
+.. _etags-javascript:            https://github.com/pierre-rouleau/pel/blob/master/bin/etags-javascript
 .. _etags-lisp:                  https://github.com/pierre-rouleau/pel/blob/master/bin/etags-lisp
 .. _etags-make:                  https://github.com/pierre-rouleau/pel/blob/master/bin/etags-make
 .. _etags-autotools:             https://github.com/pierre-rouleau/pel/blob/master/bin/etags-autotools
