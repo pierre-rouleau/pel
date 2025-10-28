@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 24 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-28 12:45:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-28 13:43:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -160,25 +160,32 @@ most generic information about the mode."
              (insert (format "\n- %s" (pel-ts-language-grammar-status-for
                                        mode-base-symbol "\n- "))))
            (if (or (boundp pel-use-mode-user-option-symbol)
-                   (member pel-use-mode-user-option-symbol pel-used-by-default))
+                   (member pel-use-mode-user-option-symbol
+                           pel-used-by-default))
                (progn
-                 (insert "
- This major mode is explicitly supported by PEL.")
-                 (unless (or (member pel-use-mode-user-option-symbol pel-used-by-default)
-                              (symbol-value pel-use-mode-user-option-symbol))
+                 (if (or (member pel-use-mode-user-option-symbol pel-used-by-default)
+                         (symbol-value pel-use-mode-user-option-symbol))
+                     (insert "
+ This major mode is explicitly supported by PEL and is activated.
+ Use the the PEL mode-specific key mapped under <f12>, including:
+ - <f12><f1> to open PEL PDF for the mode
+ - <f12><f2> to access PEL customization buffer for the mode,
+ - <f12><f3> to access the customization buffers of the major node and related features.")
                    (insert "
- PEL enhancement support for the mode is not activated. Activate it with:"))
+ This major mode is explicitly supported by PEL but not activated.
+ Activate it with the following user-option to gain access to the PEL
+ mode specific commands mapped under the <f12> key:"))
                  (unless (member pel-use-mode-user-option-symbol pel-used-by-default)
                    (pel-insert-symbol-content-line
                     pel-use-mode-user-option-symbol
                     nil
                     (when (fboundp major-mode-used-text-fct)
                       major-mode-used-text-fct))))
-             ;;
+             ;; PEL does not support this major mode.
              (insert "\n
  PEL does not yet provide enhancement control for this mode aside from the
  ability to activate minor modes and control several user options, as shown below.
- Please create a bug report  in https://github.com/pierre-rouleau/pel
+ Please create a bug report in https://github.com/pierre-rouleau/pel
  to request explicit control of facilities you would need for this mode.
 "))
            ;; -- Minor Mode activation
