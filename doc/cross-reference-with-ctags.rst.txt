@@ -6,7 +6,7 @@ Using ctags and etags for cross referencing with TAGS
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Wednesday, June  5 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-10-27 22:30:14 EDT, updated by Pierre Rouleau.
+:Modified: 2025-10-27 22:40:36 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, Pierre Rouleau
 
 
@@ -66,6 +66,7 @@ Utility               Programming Language
 ===================== ========================
 `etags-c`_            C and C++
 `etags-el`_           Emacs Lisp and C
+`etags-elixir`_       Elixir
 `etags-erl`_          Erlang and C
 `etags-javascript`_   Javascript
 `etags-go`_           Go
@@ -106,6 +107,7 @@ POSIX compliant shell.
 .. _Universal Ctags Manual:      https://docs.ctags.io/en/latest/
 .. _etags-c:                     https://github.com/pierre-rouleau/pel/blob/master/bin/etags-c
 .. _etags-el:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-el
+.. _etags-elixir:                https://github.com/pierre-rouleau/pel/blob/master/bin/etags-elixir
 .. _etags-erl:                   https://github.com/pierre-rouleau/pel/blob/master/bin/etags-erl
 .. _etags-go:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-go
 .. _etags-javascript:            https://github.com/pierre-rouleau/pel/blob/master/bin/etags-javascript
