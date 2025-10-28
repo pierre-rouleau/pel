@@ -62,15 +62,15 @@ activated.
 
 **Screenshots**
 
-===============================
-Major Mode Setup Buffer Example
-===============================
-`Ada`_
-`Dockerfile`_
-`Erlang`_
-`HTML`_
-`Javascript`_
-===============================
+= ===============================
+. Major Mode Setup Buffer Example
+= ===============================
+. `Ada`_
+. `Dockerfile`_
+. `Erlang`_
+. `HTML`_
+. `Javascript`_
+= ===============================
 
 
 
