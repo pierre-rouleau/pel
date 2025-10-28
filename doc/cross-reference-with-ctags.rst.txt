@@ -6,7 +6,7 @@ Using ctags and etags for cross referencing with TAGS
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Wednesday, June  5 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-10-27 22:40:36 EDT, updated by Pierre Rouleau.
+:Modified: 2025-10-27 22:59:00 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, Pierre Rouleau
 
 
@@ -75,6 +75,7 @@ Utility               Programming Language
 `etags-pike`_         Pike
 `etags-py`_           Python
 `etags-rs`_           Rust
+`etags-tcl`_          Tcl
 ===================== ========================
 
 There's also a set of etags builder for build tool
@@ -118,6 +119,7 @@ POSIX compliant shell.
 .. _etags-pike:                  https://github.com/pierre-rouleau/pel/blob/master/bin/etags-pike
 .. _etags-py:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py
 .. _etags-rs:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-rs
+.. _etags-tcl:                   https://github.com/pierre-rouleau/pel/blob/master/bin/etags-tcl
 .. _Xref-Support PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref-support.pdf
 .. _GNU Autotools:               https://en.wikipedia.org/wiki/GNU_Autotools
 .. _pel/bin/setup/install-etags-builders.sh: https://github.com/pierre-rouleau/pel/blob/master/bin/setup/install-etags-builders.sh
