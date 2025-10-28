@@ -32,6 +32,7 @@
 (require 'cl-extra)           ; use `cl-some'
 (require 'help-fns)           ; use `help--symbol-completion-table'
 (require 'pel--base)
+(require 'pel-modes)          ; use `pel-mode-setup-info'
 ;;; Code:
 
 ;;-pel-autoload
@@ -42,10 +43,13 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
   (describe-variable 'kill-ring))
 
 ;;-pel-autoload
-(defun pel-show-major-mode ()
-  "Display the symbol of the current major mode."
-  (interactive)
-  (message "Major mode: %S" major-mode))
+(defun pel-show-major-mode (&optional show-setup)
+  "Display the symbol of the current major mode.
+With optional argument SHOW-SETUP, display information about major mode. "
+  (interactive "P")
+  (if show-setup
+      (pel-mode-setup-info)
+    (message "Major mode: %S" major-mode)))
 
 
 ;;-pel-autoload
