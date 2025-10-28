@@ -1,0 +1,95 @@
+==============================================================
+Showing Information about Emacs Major Mode and its PEL Support
+==============================================================
+
+:Home URL:
+:Project:
+:Created:  Tuesday, October 28 2025.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2025-10-28 14:12:45, by Pierre Rouleau.
+:Copyright: © 2025, Pierre Rouleau
+
+
+.. contents::  **Table of Contents**
+.. sectnum::
+
+.. ---------------------------------------------------------------------------
+
+Feature Overview
+================
+
+PEL controls the installation of external package *and* the activation of
+features, major and minor modes through customization.
+This allows users to drive the way they use Emacs entirely via customization.
+
+PEL users can have a customization for terminal-based Emacs and a different
+one for graphical capable Emacs.
+
+The default names of the two customization files are:
+
+- ``~/emacs.d/emacs-customization.el``
+- ``~/emacs.d/emacs-customization-graphics.el``
+
+PEL provides a large number of customizable user-option varables, and defines
+one user-option for each major mode it supports.  These all have the same name
+format: ``pel-use-MM`` where ``MM`` is the name of the major mode, such as
+``c``, ``cpp``, ``python``, ```rst``, etc...
+
+PEL also provides a set of commands that provide extensive information about
+the user-options controlling activation of PEL explicit support for a major
+mode, the minor modes it supports for it, the various features, etc.
+
+For several of the supported modes it provides a description on how some
+features are controlled and which user-options is required for that.  For
+example, it describes how indentation and hard-tab control is supported by the
+major mode for several major modes.
+
+The information is shown inside a help buffer; the user-options shown are
+buttons that provide access to more information about the variable and to its
+customization buffer where you can change the value for the Emacs session of
+store the new value inside the customization file to make the selection
+persistent.
+
+PEL provides this information to help users setup the major modes they use.
+
+There are several aspects of the PEL configuration not yet supported by this
+mechanism, and more will be developed.
+
+The following screen shots show Emacs in terminal mode with the setup
+information help buffer for some of the modes.  Since the information can be
+printed in several lines, the window is split in two with the follow-mode
+activated.
+
+**Screenshots**
+
+===============================
+Major Mode Setup Buffer Example
+===============================
+`Ada`_
+`Dockerfile`_
+`Erlang`_
+`HTML`_
+`Javascript`_
+===============================
+
+
+
+
+
+.. ---------------------------------------------------------------------------
+.. links:
+
+.. _Ada:           res/ada-mode-setup.png
+.. _Dockerfile:    res/dockerfile-mode-setup.png
+.. _Erlang:        res/erlang-mode-setup.png
+.. _HTML:          res/mhtml-mode-setup.png
+.. _Javascript:    res/javascript-mode-setup.png
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
