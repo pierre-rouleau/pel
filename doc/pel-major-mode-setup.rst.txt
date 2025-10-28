@@ -68,6 +68,8 @@ activated.
 . `Ada`_
 . `Dockerfile`_
 . `Erlang`_
+. `Gleam`_
+. `Go`_
 . `HTML`_
 . `Javascript`_
 = ===============================
@@ -82,8 +84,11 @@ activated.
 .. _Ada:           res/ada-mode-setup.png
 .. _Dockerfile:    res/dockerfile-mode-setup.png
 .. _Erlang:        res/erlang-mode-setup.png
+.. _Gleam:         res/gleam-mode-setup.png
+.. _Go:            res/go-mode-setup.png
 .. _HTML:          res/mhtml-mode-setup.png
 .. _Javascript:    res/javascript-mode-setup.png
+
 
 .. ---------------------------------------------------------------------------
 
