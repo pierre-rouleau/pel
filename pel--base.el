@@ -2334,7 +2334,7 @@ FILENAME is the file path."
 MODE must be a symbol that does NOT end with -mode.
 If a LINE-SEP is specified, print the name of the tree-sitter grammar file
 following that line separator."
-  (if (and (pel-treesit-ready-p mode)
+  (if (and (pel-treesit-ready-p mode :quiet)
            (fboundp 'treesit-language-abi-version))
       (let ((lines nil))
         (push (format

@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 24 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-25 17:14:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-28 12:45:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -113,6 +113,10 @@ The ones activated for this mode show a check-mark to the right.
         (when (pel-mode-activates-p usr-opt mode)
           (insert "  ✅"))))))
 
+
+(defconst pel-used-by-default  '(pel-use-emacs-lisp)
+  "List of pel-use user-options that are always activated.")
+
 ;;-pel-autoload
 (defun pel-mode-setup-info (&optional append)
   "Print setup information for the current major mode in specialized buffer.
@@ -155,12 +159,28 @@ most generic information about the mode."
            (when pel-use-tree-sitter
              (insert (format "\n- %s" (pel-ts-language-grammar-status-for
                                        mode-base-symbol "\n- "))))
-           (when (boundp pel-use-mode-user-option-symbol)
-             (pel-insert-symbol-content-line
-              pel-use-mode-user-option-symbol
-              nil
-              (when (fboundp major-mode-used-text-fct)
-                major-mode-used-text-fct)))
+           (if (or (boundp pel-use-mode-user-option-symbol)
+                   (member pel-use-mode-user-option-symbol pel-used-by-default))
+               (progn
+                 (insert "
+ This major mode is explicitly supported by PEL.")
+                 (unless (or (member pel-use-mode-user-option-symbol pel-used-by-default)
+                              (symbol-value pel-use-mode-user-option-symbol))
+                   (insert "
+ PEL enhancement support for the mode is not activated. Activate it with:"))
+                 (unless (member pel-use-mode-user-option-symbol pel-used-by-default)
+                   (pel-insert-symbol-content-line
+                    pel-use-mode-user-option-symbol
+                    nil
+                    (when (fboundp major-mode-used-text-fct)
+                      major-mode-used-text-fct))))
+             ;;
+             (insert "\n
+ PEL does not yet provide enhancement control for this mode aside from the
+ ability to activate minor modes and control several user options, as shown below.
+ Please create a bug report  in https://github.com/pierre-rouleau/pel
+ to request explicit control of facilities you would need for this mode.
+"))
            ;; -- Minor Mode activation
            (insert "\n\n")
            (pel-insert-minor-mode-activation-info
