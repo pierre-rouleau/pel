@@ -41,7 +41,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   Type =cd upgrades; ./upgrade-01 --help= to get more information on the command
   and to check you can access it.
 
-  Once this is done execute =cd upgrades; .//upgrade-01= to update the content of your
+  Once this is done execute =cd upgrades; ./upgrade-01= to update the content of your
   PEL Emacs customization files where the PEL user-options selection resides.
 
   The renaming was done to provide the ability to control the use of Tree-Sitter
