@@ -55,33 +55,31 @@ PEL provides this information to help users setup the major modes they use.
 There are several aspects of the PEL configuration not yet supported by this
 mechanism, and more will be developed.
 
-The following screen shots show Emacs in terminal mode with the setup
+The following screen shots show Emacs mode with the setup
 information help buffer for some of the modes.  Since the information can be
 printed in several lines, the window is split in two with the follow-mode
 activated.
 
 **Screenshots**
 
-= ===============================
-. Major Mode Setup Buffer Example
-= ===============================
-. `Ada`_
-. `Dockerfile`_
-. `Erlang`_
-. `Gleam`_
-. `Go`_
-. `HTML`_
-. `Javascript`_
-= ===============================
-
-
-
-
+= =============================== ===================== ================ =====================
+. Major Mode Setup Buffer Example Explicit PEL support  Specialized Help Emacs mode
+= =============================== ===================== ================ =====================
+. `Ada`_                          Yes                   Yes              terminal
+. `C`_                            Yes                   No               GUI
+. `Dockerfile`_                   Yes                   No               terminal
+. `Erlang`_                       Yes                   Yes              terminal
+. `Gleam`_                        Yes                   Yes              terminal
+. `Go`_                           Yes                   Yes              terminal
+. `HTML`_                         No                    No               terminal
+. `Javascript`_                   Yes                   Yes              terminal
+= =============================== ===================== ================ =====================
 
 .. ---------------------------------------------------------------------------
 .. links:
 
 .. _Ada:           res/ada-mode-setup.png
+.. _C:             res/c-mode-setup.png
 .. _Dockerfile:    res/dockerfile-mode-setup.png
 .. _Erlang:        res/erlang-mode-setup.png
 .. _Gleam:         res/gleam-mode-setup.png
