@@ -3028,6 +3028,19 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:c++-skel        (kbd "<f11> SPC C <f12>"))
   (define-pel-global-prefix pel:c++-search-replace (kbd "<f11> SPC C s"))
 
+  ;; PEL code deals with the language name extracted from the
+  ;; LANG-ts-mode major mode name.  For C++, this is c++.
+  ;; That means that PEL code will use (treesit-ready-p 'c++)
+  ;; to detect if the Tree-Sitter is ready for C++.
+  ;; However, Emacs uses 'cpp' for the Tree-Sitter language name for C++.
+  ;; Normally they will all be the same, but in this case they differ.
+  ;; To allow PEL code to work we must associate c++ to cpp
+  ;; in the `treesit-load-name-override-list'
+  (when (boundp 'treesit-load-name-override-list)
+    (add-to-list 'treesit-load-name-override-list
+                 '(c++ "libtree-sitter-cpp" "tree_sitter_cpp")))
+
+
   (when pel-use-speedbar
     ;; Add extensions not already covered by default Emacs code
     (pel-add-speedbar-extension '(".cc"
