@@ -76,6 +76,14 @@ activated.
 . `Javascript`_                   Yes                   Yes              terminal
 = =============================== ===================== ================ =====================
 
+The command works for **all** major modes.   The major modes explicitly
+supported by PEL show more information and the supported ones that have
+a specialized command provide even more specialized information.
+
+As time go, PEL will support mode major modes explicitly and will provide more
+specialized setup information help for more modes.  It will also provide
+information help on more topics.
+
 .. ---------------------------------------------------------------------------
 .. links:
 
