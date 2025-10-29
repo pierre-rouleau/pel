@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 28 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-28 11:47:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-29 13:44:31 EDT, updated by Pierre Rouleau>
 
 ;; This file-path is part of the PEL package.
 ;; This file-path is not part of GNU Emacs.
@@ -83,7 +83,6 @@ Return change count."
   - pel-use-rails-log-mode   to pel-use-rails-log
   - pel-use-rfc-mode         to pel-use-rfc
   - pel-use-rpm-spec-mode    to pel-use-rpm-spec
-  - pel-use-rpm-spec-mode    to pel-use-rpm-spec
   - pel-use-rst-mode         to pel-use-rst
   - pel-use-strace-mode      to pel-use-strace
   - pel-use-syslog-mode      to pel-use-syslog
@@ -117,7 +116,6 @@ Return number of changes."
            (pel-rename "pel-use-org-mode"        "pel-use-org")
            (pel-rename "pel-use-rails-log-mode"  "pel-use-rails-log")
            (pel-rename "pel-use-rfc-mode"        "pel-use-rfc")
-           (pel-rename "pel-use-rpm-spec-mode"   "pel-use-rpm-spec")
            (pel-rename "pel-use-rpm-spec-mode"   "pel-use-rpm-spec")
            (pel-rename "pel-use-rst-mode"        "pel-use-rst")
            (pel-rename "pel-use-strace-mode"     "pel-use-strace")

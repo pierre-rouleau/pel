@@ -29,7 +29,6 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - pel-use-rails-log-mode is now pel-use-rails-log
   - pel-use-rfc-mode is now pel-use-rfc
   - pel-use-rpm-spec-mode is now pel-use-rpm-spec
-  - pel-use-rpm-spec-mode is now pel-use-rpm-spec
   - pel-use-rst-mode is now pel-use-rst
   - pel-use-strace-mode is now pel-use-strace
   - pel-use-syslog-mode is now pel-use-syslog
