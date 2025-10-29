@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 24 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-28 13:43:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-28 22:47:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -114,6 +114,18 @@ The ones activated for this mode show a check-mark to the right.
           (insert "  ✅"))))))
 
 
+
+(defvar pel--MM-activates-minor-modes nil
+  "Hold symbol for the user-option used for activating minor modes.")
+
+(defun pel--maj-mode-minor-mode-activation-info ()
+  "Insert information about current major mode activation of minor modes."
+  (insert "
+Automatic activation of minor mode is also controlled by the
+following user-options:")
+  (pel-insert-list-content pel--MM-activates-minor-modes
+                           nil nil nil :1line))
+
 (defconst pel-used-by-default  '(pel-use-emacs-lisp)
   "List of pel-use user-options that are always activated.")
 
@@ -143,8 +155,9 @@ most generic information about the mode."
                                                        "pel-use-%s")))
              (major-mode-used-text-fct (intern (pel-string-with-major-mode
                                                 "pel-%s-mode-used-text")))
-             (minor-mode-info-inserter-fct (intern (pel-string-with-major-mode
-                                                    "pel--%s-minor-mode-info")))
+             (major-mode-activates-minor-modes (intern
+                                                (pel-string-with-major-mode
+                                                 "pel-%s-activates-minor-modes")))
 
              (title (pel-string-with-major-mode "PEL setup for %s mode")))
         (pel-print-in-buffer
@@ -190,10 +203,11 @@ most generic information about the mode."
 "))
            ;; -- Minor Mode activation
            (insert "\n\n")
-           (pel-insert-minor-mode-activation-info
-            current-major-mode
-            (when (fboundp minor-mode-info-inserter-fct)
-              minor-mode-info-inserter-fct))
+           (let ((pel--MM-activates-minor-modes major-mode-activates-minor-modes))
+             (pel-insert-minor-mode-activation-info
+              current-major-mode
+              (when (boundp major-mode-activates-minor-modes)
+                #'pel--maj-mode-minor-mode-activation-info)))
            (insert "\n\n")
            ;; -- Indentation & Hard Tab Control
            (pel-indent-insert-control-info indent-control-context)
