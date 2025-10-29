@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add early support for *smart-tabs-mode* minor mode, activated by *pel-use-smart-tabs*.
+  Not yet documented, tested, nor fully integrated.
 - *Breaking change!* Renamed the PEL user-options that activate a package
   for major modes that had a name ending with '-mode'.:
   the name of these user options no longer ends with '-mode'.

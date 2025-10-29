@@ -7482,6 +7482,20 @@ See `flyspell-auto-correct-previous-word' for more info."
            (global-set-key (kbd "<f7> TAB") 'indent-tools-hydra/body))
          (setq pel--was-hydra-loaded-p t ))))))
 
+(when pel-use-smart-tabs
+  ;; (pel-ensure-package smart-tabs-mode from: melpa)
+  ;; Use my fork instead of the melpa registered project until the main
+  ;; project integrates the fixes provided by many people.
+  ;;
+  ;; Install it inside utils and explicitly autoload it.
+  (pel-install-github-file "pierre-rouleau/smarttabs/master"
+                           "smart-tabs-mode.el")
+  (pel-autoload-file smart-tabs-mode for:
+                     smart-tabs-mode
+                     smart-tabs-mode-enable
+                     smart-tabs-advice
+                     smart-tabs-insinuate))
+
 (when pel-use-smart-shift
   (pel-ensure-package smart-shift from: melpa)
   (define-key pel:indent "s" 'smart-shift-mode)

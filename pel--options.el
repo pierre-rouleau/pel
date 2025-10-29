@@ -2868,6 +2868,19 @@ Note: popup-switcher 2.14 has several bugs I fixed in my fork, which PEL
           (const :tag "Available globally" globally)
           (const :tag "Available in python-mode" python)))
 
+(defcustom pel-use-smart-tabs nil
+  "Whether PEL activates the smart-tabs external package."
+  :group 'pel-pkg-for-indentation
+  :link '(url-link :tag "smart-tabs @ Github"
+                   "https://github.com/jcsalomon/smarttabs")
+  :link '(url-link :tag "My fork of smart-tabs @ Github used by PEL"
+                   "https://github.com/pierre-rouleau/smarttabs")
+  :link '(url-link :tag "smart-tabs @ Melpa"
+                   "https://melpa.org/#/smart-tabs-mode")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put pel-use-smart-tabs :package-is :in-utils)
+
 (defcustom pel-use-smart-shift nil
   "Whether PEL activates the smart-shift external package."
   :group 'pel-pkg-for-indentation
