@@ -1,0 +1,257 @@
+====================================================================
+Showing Information About Indentation and Hard Tab Control under PEL
+====================================================================
+
+:Home URL: https://github.com/pierre-rouleau/pel
+:Project: `PEL -- Pragmatic Emacs Library`_
+:Created:  Wednesday, October 29 2025.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2025-10-29 08:11:45, by Pierre Rouleau.
+:Copyright: © 2025, Pierre Rouleau
+
+
+.. contents::  **Table of Contents**
+.. sectnum::
+
+.. ---------------------------------------------------------------------------
+
+Feature Overview
+================
+
+:See also: `Showing Information about Emacs Major Mode and its PEL Support`_
+:See also: `⅀ Indentation PDF`_
+
+Under Emacs, the indentation mechanism used by a programming language is
+controlled by the major mode for this programming language.  The major mode
+may use or completely replace the base indentation mechanisms provided by
+Emacs.
+
+The concept of indentation and the concept of hard tab width rendering are two
+independent concepts, but they may be interrelated in some cases.
+
+Emacs provides the ability to control the visual rendered width of a hard-tab
+character (ASCII HT, binary value of 0x09) that may be inserted in text when
+Emacs inserts hard tabs to replace a specified number of consecutive spaces to
+the left of text when Emacs **indent-tabs-mode** (a minor mode) is active.
+
+About Tab Width and Indentation
+-------------------------------
+
+Historically, the number of columns corresponding to a tab stop was 8.
+Emacs controls the visual rendering width of hard tab via the **tab-width**
+customizable user-option variable. That has a default value of 8, similar to
+what was historically used.
+
+The tab-width does **not** identify the indentation width;
+it simply identifies the number of columns of each tab stop.
+
+For example:
+
+- with a tab-width of 8, the tab stops are located at column
+  8, 16, 24, 32, 40, 48, etc ...
+- with a tab-width of 4, the tab stops are located at column
+  4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, etc ...
+
+In a major mode where the indent-tabs-mode is active and the tab-width is
+set to 4, Emacs would use a hard tab character for the first 4 columns.
+If the first non-whitespace character is supposed to be located at column 6,
+as imposed by the indentation rules active for the mode,
+then Emacs would use a hard-tab followed by 2 spaces then followed by that
+character.  In this case the indentation text would be using a mix of hard-tab
+characters and spaces.
+
+Also note that under Emacs the ``<TAB>`` key in most major modes
+does **not** mean inserting a hard-tab or its equivalent in space characters.
+The key requests Emacs to perform the indentation of the current line.
+Pressing the ``<TAB>`` key *anywhere* on the line will adjust the indentation
+of that line.
+If the indentation is already correct according to the rules, then nothing
+happens, if the line is not indented properly according to the rules the Emacs
+major mode code adjusts the indentation appropriately.
+
+The ``<TAB>`` key is normally bound to the **indent-for-tab-command** or
+something similar for the above purpose. Of course you can change it.  You can
+also use other commands to insert hard tab characters rigidly but that's for
+purposes other than code indentation.
+
+About Indentation Schemes - Use hard tab or not?
+------------------------------------------------
+
+Back in the 1980's where a personal computer could be a `Apple-II`_, a
+`Commodore-64`_, a `Heathkit H89`_ a `TRS-80`_ or some other machine with 64K of
+system RAM or less and floppy disks used for storage, file space was a scarce resource.
+It also was even if you were lucky enough to work with a `PDP-11`_ or even a
+`VAX`_.
+
+In those days, using hard tabs matching the indentation width made sense.
+But with the normal physical screen width of 80 columns people soon wanted to
+be able to use a narrower indentation width and the push for using spaces for
+indentation and the push for being able to render hard tabs to less than 8
+columns became more pressing.
+
+People advocating the use of hard-tabs for indentation and matching the
+indentation width saw it as a way to reduce file size.  Others saw it as a
+non-consistent rendering problem since nobody was able to guarantee that all
+printers would all print the code the same way: have drivers that could
+interpret the printing of a hard tab to line up on 4 column tab-stops.
+
+With computer with vast amount of system and storage memory, the use of spaces
+for indentation became prevalent.  The guideline of most programming languages and
+projects recommend using spaces for indentation.  Most but not all.
+
+Others are pushing for a strategy using hard tab for indentation and spaces
+for alignment.
+
+That strategy is indeed a very good compromise and used by Go and the Linux
+kernel C code development.
+
+Not only it is space efficient but using hard tabs for indentation (all
+indentation) allows someone to change the rendering of hard-tabs to widen or
+narrow the rendering of the code shown on screen.  That allows several people
+to be able to properly see the code; people with impaired vision often have
+problem correctly interpreting code that use a 2-column indentation width
+strategy.  And the use of that strategy is gaining in popularity for the newer
+programming languages.
+
+Considering that software development is often a team-activity and that living
+software gets maintained over its entire lifetime (or should be), it's
+important that all people working on the code can see it properly.
+
+Where Emacs and PEL helps
+-------------------------
+
+PEL provides the **pel-show-indent** command which displays information about
+the indentation and hard tab width control for the current major mode inside a
+information help buffer.  That command is bound to the ``<f11> <TAB> ?`` key
+sequence.
+
+
+The buffer lists the customizable user-options controlling the behaviour of
+indentation for the major mode and the management of hard tab.  Each
+user-option listed is a button that you can use to get more information about
+it and gain access to the customization buffer where you can change the value
+of the variable for this Emacs session or permanently.
+
+For some major modes, PEL provides specialized information and describes
+whether you could use a hard-tab based indentation scheme for this major mode,
+allowing you to modify the rendered width of the indentation as you can in Go
+buffers, and how to do it.
+
+For example, in Gleam, where the indentation is normally made of 2 space
+characters, you could:
+
+- set *gleam-ts-indent-offset** to 2 (that's the default)
+- set *pel-gleam-tab-width** to 2,
+- set *pel-gleam-use-tabs** to t (on)
+
+The text of the help buffer also instructs you to set
+**pel-gleam-tie-indent-to-tab-width** to use-predef-vars.
+Do that:
+
+- press on the variable link to open help about it,
+- select customize from that help buffer,
+- set the customized value to use-predef-vars,
+- save (either for the current session or permanently)
+- close and reopen the file to use the new customization.
+
+For Gleam buffer, the Gleam formatter is executed when you
+the buffer is saved.  The Gleam formatter
+
+Upon entering the Gleam buffer all indentation will be using space characters.
+You can see it by using the **whitespace-mode**.
+
+Mark the entire buffer with ``M-x mark-whole-buffer`` (or its key binding
+``C-x h``) and execute ``M-x tabify`` (or its PEL key binding:
+``<f11> t w TAB``).
+
+After that all indentation should be implemented with hard tabs, one hard-tab
+per level.  You have just changed the file content here by replacing spaces
+with hard tabs.
+
+At this point you can use the **pel-set-tab-width** command to change the
+tab-width and the indentation control variables to use the same new value and
+adjust the way the indentation renders on the screen.
+
+Here's an example of this technique used on a Gleam buffer with a screen shot
+taken after each step.
+
+= ====================== ==================================================
+. Screenshot             Description
+= ====================== ==================================================
+. `Step 1`_              At the beginning.  Hard tabs are used, tab-width is
+                         equal to gleam-ts-indent-offset: they are both set to
+                         2 as can be seen in the ``*pel-indent-info*`` buffer
+                         on the left-hand side window.
+
+. `Step 2`_              This shows the Gleam buffer with the
+                         ``whitespace-mode`` minor mode turned on: each space
+                         character is rendered as a period.  This is a
+                         screenshot taken with Emacs running in a terminal
+                         mode, so the period is rendered in red.  From this you
+                         can see that each indentation level is using 2 space
+                         characters.
+
+. `Step 3`_              This shows the result after tabifying the entire buffer, we can see that
+                         each indentation step was replaced by a single tab.
+                         We're still using the same setup of 2 columns for
+                         indentation and tab-width.
+. `Step 4`_              This show of the screen looks after executing the
+                         **pel-set-tab-width** command (bound to ``<f11> <tab>
+                         w``) to select 6.  The command changes tab-width and
+                         the variables identified by
+                         pel-tab-width-control-variables
+                         which, for Gleam is gleam-ts-indent-offset with a
+                         offset of 0.  The effect of this change is that the
+                         indentation now uses a level of 6 columns and that
+                         still corresponds to a hard-tab, so the buffer content
+                         does not change but the rendering  is wider.
+
+. `Step 5`_              Once you deactivate the ``whitespace-mode`` you get a
+                         more conventional rendering of the text.
+
+                         From this point on you can use the
+                         **pel-set-tab-width** command
+                         to change the indentation width from 2 to 8; the
+                         change does not affect the file content.
+
+                         You can work with files this way and modify the
+                         rendering of indentation as you see fit.
+
+. Before submitting      At the end, before
+                         submitting the file back to a repo that expect a
+                         2-space indentation scheme, you can use
+                         **pel-set-tab-width** to set the width to 2, abd
+                         either untabify the buffer or use the gleam formatter
+                         to replace the tabs to space characters.
+= ====================== ==================================================
+
+
+
+
+.. ---------------------------------------------------------------------------
+.. links:
+
+.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _Showing Information about Emacs Major Mode and its PEL Support: pel-major-mode-setup.rst.txt
+.. _Apple-II: https://en.wikipedia.org/wiki/Apple_II
+.. _Commodore-64: https://en.wikipedia.org/wiki/Commodore_64
+.. _Heathkit H89: https://en.wikipedia.org/wiki/Zenith_Z-89
+.. _TRS-80: https://en.wikipedia.org/wiki/TRS-80
+.. _PDP-11: https://en.wikipedia.org/wiki/PDP-11
+.. _VAX: https://en.wikipedia.org/wiki/VAX
+.. _⅀ Indentation PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/indentation.pdf
+.. _Step 1: res/gleam-indent-01.png
+.. _Step 2: res/gleam-indent-02.png
+.. _Step 3: res/gleam-indent-03.png
+.. _Step 4: res/gleam-indent-04.png
+.. _Step 5: res/gleam-indent-05.png
+
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
