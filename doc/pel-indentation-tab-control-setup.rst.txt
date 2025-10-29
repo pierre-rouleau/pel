@@ -232,7 +232,7 @@ taken after each step.
 .. links:
 
 .. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
-.. _Showing Information about Emacs Major Mode and its PEL Support: pel-major-mode-setup.rst.txt
+.. _Showing Information about Emacs Major Mode and its PEL Support: pel-major-mode-setup.rst.txt#showing-information-about-emacs-major-mode-and-its-pel-support
 .. _Apple-II: https://en.wikipedia.org/wiki/Apple_II
 .. _Commodore-64: https://en.wikipedia.org/wiki/Commodore_64
 .. _Heathkit H89: https://en.wikipedia.org/wiki/Zenith_Z-89

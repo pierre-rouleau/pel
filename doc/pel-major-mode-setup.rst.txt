@@ -111,7 +111,7 @@ information help on more topics.
 .. _Go:            res/go-mode-setup.png
 .. _HTML:          res/mhtml-mode-setup.png
 .. _Javascript:    res/javascript-mode-setup.png
-.. _Showing Information About Indentation and Hard Tab Control under PEL: pel-indentation-tab-control-setup.rst.txt
+.. _Showing Information About Indentation and Hard Tab Control under PEL: pel-indentation-tab-control-setup.rst.txt#showing-information-about-indentation-and-hard-tab-control-under-pel
 .. _⅀ Help/Info PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf#page=5
 
 
