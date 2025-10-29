@@ -140,9 +140,9 @@ buffers, and how to do it.
 For example, in Gleam, where the indentation is normally made of 2 space
 characters, you could:
 
-- set *gleam-ts-indent-offset** to 2 (that's the default)
-- set *pel-gleam-tab-width** to 2,
-- set *pel-gleam-use-tabs** to t (on)
+- set **gleam-ts-indent-offset** to 2 (that's the default)
+- set **pel-gleam-tab-width** to 2,
+- set **pel-gleam-use-tabs** to t (on)
 
 The text of the help buffer also instructs you to set
 **pel-gleam-tie-indent-to-tab-width** to use-predef-vars.
