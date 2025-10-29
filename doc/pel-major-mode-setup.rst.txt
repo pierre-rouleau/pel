@@ -55,6 +55,16 @@ persistent.
 
 PEL provides this information to help users setup the major modes they use.
 
+Use one of the following commands to open these useful buffers:
+
+- **pel-mode-setup-info** , bound to ``<f11> ? /`` globally and available
+  inside buffers.  It can also be accessed by typing ``C-u <f11> ? ?``.
+- The ``<f12> ?`` key sequence, available in major modes that PEL explicitly
+  supports and have support for specialized information.  For those modes, typing
+  ``<f12> ?`` ,  ``<f11> ? /`` or ``C-u <f11> ? ?`` does the same thing and
+  opens up the specialized setup info buffer for the mode..
+
+
 There are several aspects of the PEL configuration not yet supported by this
 mechanism, and more will be developed.
 
