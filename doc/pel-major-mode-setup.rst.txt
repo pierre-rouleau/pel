@@ -2,8 +2,8 @@
 Showing Information about Emacs Major Mode and its PEL Support
 ==============================================================
 
-:Home URL:
-:Project:
+:Home URL: https://github.com/pierre-rouleau/pel
+:Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Tuesday, October 28 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-10-28 14:12:45, by Pierre Rouleau.
@@ -17,6 +17,9 @@ Showing Information about Emacs Major Mode and its PEL Support
 
 Feature Overview
 ================
+
+:See also: `Showing Information About Indentation and Hard Tab Control under PEL`_
+:See also: `⅀ Help/Info PDF`_
 
 PEL controls the installation of external package *and* the activation of
 features, major and minor modes through customization.
@@ -87,6 +90,7 @@ information help on more topics.
 .. ---------------------------------------------------------------------------
 .. links:
 
+.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
 .. _Ada:           res/ada-mode-setup.png
 .. _C:             res/c-mode-setup.png
 .. _in terminal:   res/c-mode-setup-terminal.png
@@ -97,6 +101,8 @@ information help on more topics.
 .. _Go:            res/go-mode-setup.png
 .. _HTML:          res/mhtml-mode-setup.png
 .. _Javascript:    res/javascript-mode-setup.png
+.. _Showing Information About Indentation and Hard Tab Control under PEL: pel-indentation-tab-control-setup.rst.txt
+.. _⅀ Help/Info PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf#page=5
 
 
 .. ---------------------------------------------------------------------------
