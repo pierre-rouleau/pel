@@ -33,7 +33,7 @@ The default names of the two customization files are:
 PEL provides a large number of customizable user-option varables, and defines
 one user-option for each major mode it supports.  These all have the same name
 format: ``pel-use-MM`` where ``MM`` is the name of the major mode, such as
-``c``, ``cpp``, ``python``, ```rst``, etc...
+``c``, ``cpp``, ``python``, ``rst``, etc...
 
 PEL also provides a set of commands that provide extensive information about
 the user-options controlling activation of PEL explicit support for a major
