@@ -10265,18 +10265,19 @@ This can have the following values:
   When using this be careful to leave no leading or trailing space for the
   variable name."
   :group 'pel-pkg-for-gleam
-  :type '(choice
-          (const :tag "Not tied; tab width is independent of indentation" nil)
-          (const
-           :tag "Tied; use variables defined in `pel--gleam-indent-predef-vars'"
+  :type
+  '(choice
+    (const :tag "nil: Not tied; tab width is independent of indentation" nil)
+    (const :tag "use-predef-vars: Tied; use variables defined in\
+ `pel--gleam-indent-predef-vars'"
            use-predef-vars)
-          ;; The variable list defined in `pel--gleam-indent-predef-vars' may
-          ;; not be appropriate for your needs.
-          ;; In that case specify your own list here:
-          (repeat :tag "Tied; define the list of indent variables to use"
-                  (cons
-                   (symbol :tag  "variable (no space) ")
-                   (integer :tag "offset from tab-width" :value 0)))))
+    ;; The variable list defined in `pel--gleam-indent-predef-vars' may
+    ;; not be appropriate for your needs.
+    ;; In that case specify your own list here:
+    (repeat :tag "Tied; define the list of indent variables to use"
+            (cons
+             (symbol :tag  "variable (no space) ")
+             (integer :tag "offset from tab-width" :value 0)))))
 
 (defcustom pel-gleam-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for GLEAM buffers.

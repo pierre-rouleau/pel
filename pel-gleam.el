@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October  6 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-26 08:31:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-29 10:51:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -65,6 +65,7 @@ Return a list of generic symbols described."
   ;; Return the list of generic symbols described here.
   '(indent-description-info))
 
+
 ;;-pel-autoload
 (defun pel-gleam-insert-tab-info ()
   "Insert Gleam indentation and hard tab setup info in current context.
@@ -80,6 +81,7 @@ Return a list of generic symbols described."
  you could use a temporary use a `tab-width' of 2, tabify the code
  with \\[tabify], then change the `tab-width' to a larger value
  for wider indentation.
+
  You can disable the format on save while you work on that file.
  When you're done just untabify the code with \\[untabify].
 "))
@@ -90,6 +92,30 @@ Return a list of generic symbols described."
   '(tab-description-intro
     pel-MM-tab-width
     pel-MM-use-tabs))
+
+;;-pel-autoload
+(defun pel-gleam-indent-tab-info (&optional append)
+  "Display Gleam Indentation and hard tab control information."
+  (interactive "P")
+  (pel-major-mode-must-be 'gleam-ts-mode)
+  (let ((indent-control-context (pel-indent-control-context))
+        (tab-control-context (pel-tab-control-context))
+        (format-on-save gleam-ts-format-on-save))
+    (pel-print-in-buffer
+     "*pel-indent-info*"
+     "Indentation Width Control and Space/Tab Insertion Rendering"
+     (lambda ()
+       (pel-indent-insert-control-info indent-control-context)
+       (pel-tab-insert-control-info tab-control-context)
+       (when format-on-save
+         (insert "\n
+     Remember: the Gleam formatter imposes its own style and is executed
+               when the buffer is saved.  If you want to use a different
+               format you will need to turn it off:")
+         (pel-insert-symbol-content-line 'gleam-ts-format-on-save)))
+     (unless append :clear-buffer)
+     :use-help-mode)))
+
 
 (defun pel--gleam-minor-mode-info ()
   "Insert information related to Gleam minor modes."
@@ -107,7 +133,8 @@ following user-options:")
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
         (current-major-mode major-mode)
         (indent-control-context (pel-indent-control-context))
-        (tab-control-context (pel-tab-control-context)))
+        (tab-control-context (pel-tab-control-context))
+        (format-on-save gleam-ts-format-on-save))
     (pel-print-in-buffer
      "*pel-gleam-info*"
      "PEL setup for Gleam programming language"
@@ -137,7 +164,13 @@ following user-options:")
                                               #'pel--gleam-minor-mode-info)
        (insert "\n\n")
        (pel-indent-insert-control-info indent-control-context)
-       (pel-tab-insert-control-info tab-control-context))
+       (pel-tab-insert-control-info tab-control-context)
+       (when format-on-save
+         (insert "\n
+     Remember: the Gleam formatter imposes its own style and is executed
+               when the buffer is saved.  If you want to use a different
+               format you will need to turn it off:")
+         (pel-insert-symbol-content-line 'gleam-ts-format-on-save)))
      (unless append :clear-buffer)
      :use-help-mode)))
 

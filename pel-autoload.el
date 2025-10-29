@@ -472,7 +472,8 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; --
   (pel-autoload "pel-gleam" for:
     pel-gleam-toggle-format-on-buffer-save
-    pel-gleam-setup-info)
+    pel-gleam-setup-info
+    pel-gleam-indent-tab-info)
   (pel-autoload-function "pel-gleam" for:
     pel-gleam-insert-indent-info
     pel-gleam-insert-tab-info)

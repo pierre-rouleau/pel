@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-27 17:00:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-29 10:49:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -620,16 +620,20 @@ specifies a non-zero offset for a variable bound in the current mode."
 (defun pel-show-indent (&optional append)
   "Display current buffer's indentation behaviour controlling variable state."
   (interactive "P")
-  (let ((indent-control-context (pel-indent-control-context))
-        (tab-control-context (pel-tab-control-context)))
-    (pel-print-in-buffer
-     "*pel-indent-info*"
-     "Indentation Width Control and Space/Tab Insertion Rendering"
-     (lambda ()
-       (pel-indent-insert-control-info indent-control-context)
-       (pel-tab-insert-control-info tab-control-context))
-     (unless append :clear-buffer)
-     :use-help-mode)))
+  (let ((indent-tab-info-cmd (intern (pel-string-with-major-mode
+                                      "pel-%s-indent-tab-info"))))
+    (if (fboundp indent-tab-info-cmd)
+        (call-interactively indent-tab-info-cmd)
+      (let ((indent-control-context (pel-indent-control-context))
+            (tab-control-context (pel-tab-control-context)))
+        (pel-print-in-buffer
+         "*pel-indent-info*"
+         "Indentation Width Control and Space/Tab Insertion Rendering"
+         (lambda ()
+           (pel-indent-insert-control-info indent-control-context)
+           (pel-tab-insert-control-info tab-control-context))
+         (unless append :clear-buffer)
+         :use-help-mode)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-indent)
