@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October  6 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-29 10:51:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-10-29 15:46:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -100,7 +100,7 @@ Return a list of generic symbols described."
   (pel-major-mode-must-be 'gleam-ts-mode)
   (let ((indent-control-context (pel-indent-control-context))
         (tab-control-context (pel-tab-control-context))
-        (format-on-save gleam-ts-format-on-save))
+        (format-on-save (pel--symbol-value 'gleam-ts-format-on-save :quiet)))
     (pel-print-in-buffer
      "*pel-indent-info*"
      "Indentation Width Control and Space/Tab Insertion Rendering"
@@ -134,7 +134,7 @@ following user-options:")
         (current-major-mode major-mode)
         (indent-control-context (pel-indent-control-context))
         (tab-control-context (pel-tab-control-context))
-        (format-on-save gleam-ts-format-on-save))
+        (format-on-save (pel--symbol-value 'gleam-ts-format-on-save :quiet)))
     (pel-print-in-buffer
      "*pel-gleam-info*"
      "PEL setup for Gleam programming language"
