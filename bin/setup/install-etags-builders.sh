@@ -4,7 +4,7 @@
 # Purpose   : Install PEL etags builder scripts.
 # Created   : Thursday, June  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-30 10:32:58 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-30 10:43:38 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -28,57 +28,30 @@ if [ ! -d "$HOME/bin" ]; then
     exit 1
 fi
 
-check_file()
+process_file()
 {
     if [ -e "$1" ]; then
-        printf -- "***ERROR: File %s already exists.\n" "$1"
-        printf -- "   Was this already installed?\n"
-        printf -- "   If not, remove that file or rename it and try again.\n\n"
-        exit 1
+        printf -- "***Warning: File %s already exists.\n" "$1"
+    else
+        ln -s "${bin_dirpath}/$1" "$HOME/bin/$1"  || exit 1
+        printf -- "Installed: %s\n" "$(ls -l "$1")"
     fi
 }
 
-check_file "$HOME/bin/etags-autotools"
-check_file "$HOME/bin/etags-c"
-check_file "$HOME/bin/etags-el"
-check_file "$HOME/bin/etags-elixir"
-check_file "$HOME/bin/etags-erl"
-check_file "$HOME/bin/etags-go"
-check_file "$HOME/bin/etags-javascript"
-check_file "$HOME/bin/etags-lisp"
-check_file "$HOME/bin/etags-make"
-check_file "$HOME/bin/etags-perl"
-check_file "$HOME/bin/etags-pike"
-check_file "$HOME/bin/etags-py"
-check_file "$HOME/bin/etags-rs"
-check_file "$HOME/bin/etags-tcl"
-
-install_symlink_for()
-{
-    ln -s "${bin_dirpath}/$1" "$HOME/bin/$1"  || exit 1
-}
-
-install_symlink_for etags-autotools
-install_symlink_for etags-c
-install_symlink_for etags-el
-install_symlink_for etags-erl
-install_symlink_for etags-go
-install_symlink_for etags-lisp
-install_symlink_for etags-make
-install_symlink_for etags-py
-install_symlink_for etags-rs
-
-printf -- "SUCCESS!!\nInstallation of the script completed!\They are:\n\n"
-
-ls -l "$HOME/bin/etags-autotools"
-ls -l "$HOME/bin/etags-c"
-ls -l "$HOME/bin/etags-el"
-ls -l "$HOME/bin/etags-erl"
-ls -l "$HOME/bin/etags-go"
-ls -l "$HOME/bin/etags-lisp"
-ls -l "$HOME/bin/etags-make"
-ls -l "$HOME/bin/etags-py"
-ls -l "$HOME/bin/etags-rs"
+process_file "$HOME/bin/etags-autotools"
+process_file "$HOME/bin/etags-c"
+process_file "$HOME/bin/etags-el"
+process_file "$HOME/bin/etags-elixir"
+process_file "$HOME/bin/etags-erl"
+process_file "$HOME/bin/etags-go"
+process_file "$HOME/bin/etags-javascript"
+process_file "$HOME/bin/etags-lisp"
+process_file "$HOME/bin/etags-make"
+process_file "$HOME/bin/etags-perl"
+process_file "$HOME/bin/etags-pike"
+process_file "$HOME/bin/etags-py"
+process_file "$HOME/bin/etags-rs"
+process_file "$HOME/bin/etags-tcl"
 
 if [ "$(which etags-c)" != "$HOME/bin/etags-c" ]; then
     printf -- "***NEXT STEP:\n"
