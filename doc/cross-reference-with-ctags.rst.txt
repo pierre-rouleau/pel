@@ -6,7 +6,7 @@ Using ctags and etags for cross referencing with TAGS
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Wednesday, June  5 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-10-30 11:09:57 EDT, updated by Pierre Rouleau.
+:Modified: 2025-10-30 11:27:03 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, Pierre Rouleau
 
 
@@ -45,7 +45,7 @@ Emacs has its own program, etags which generates a format that Emacs
 understand.  Emacs also provides a version of ctags that generates the
 vi-style format used elsewhere.
 
-Also see the 🚦 `Xref-Support PDF`_.
+Also see the `🚦 Xref-Support PDF`_.
 
 The PEL project provides a set of file finding and TAGS creation tools
 that use etags.  Some of them will also use the Universal Ctags program
@@ -56,6 +56,9 @@ to be Universal Ctags.
 
 PEL etags tools
 ---------------
+
+:See also: `⅀ Xref PDF`_
+:See also: `🚦 Xref-Support PDF`_.
 
 This includes the following utilities that
 Build a Emacs-compliant TAGS for specific programming
@@ -122,7 +125,8 @@ installed symbolic link differs from what is expected.
 .. _etags-py:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py
 .. _etags-rs:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-rs
 .. _etags-tcl:                   https://github.com/pierre-rouleau/pel/blob/master/bin/etags-tcl
-.. _Xref-Support PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref-support.pdf
+.. _🚦 Xref-Support PDF:         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref-support.pdf
+.. _⅀ Xref PDF:                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref.pdf
 .. _GNU Autotools:               https://en.wikipedia.org/wiki/GNU_Autotools
 .. _pel/bin/setup/install-etags-builders.sh: https://github.com/pierre-rouleau/pel/blob/master/bin/setup/install-etags-builders.sh
 
