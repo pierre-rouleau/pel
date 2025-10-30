@@ -4,7 +4,7 @@
 # Purpose   : Install PEL etags builder scripts.
 # Created   : Thursday, June  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-30 10:43:38 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-30 10:52:21 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -28,30 +28,31 @@ if [ ! -d "$HOME/bin" ]; then
     exit 1
 fi
 
-process_file()
+install_file()
 {
-    if [ -e "$1" ]; then
-        printf -- "***Warning: File %s already exists.\n" "$1"
+    # argument: $1 := base name of script to install.
+    if [ -e "$HOME/bin/$1" ]; then
+        printf -- "***Warning: File %s already exists.\n" "$HOME/bin/$1"
     else
         ln -s "${bin_dirpath}/$1" "$HOME/bin/$1"  || exit 1
-        printf -- "Installed: %s\n" "$(ls -l "$1")"
+        printf -- "Installed : %s\n" "$(ls -l "${bin_dirpath}/$1")"
     fi
 }
 
-process_file "$HOME/bin/etags-autotools"
-process_file "$HOME/bin/etags-c"
-process_file "$HOME/bin/etags-el"
-process_file "$HOME/bin/etags-elixir"
-process_file "$HOME/bin/etags-erl"
-process_file "$HOME/bin/etags-go"
-process_file "$HOME/bin/etags-javascript"
-process_file "$HOME/bin/etags-lisp"
-process_file "$HOME/bin/etags-make"
-process_file "$HOME/bin/etags-perl"
-process_file "$HOME/bin/etags-pike"
-process_file "$HOME/bin/etags-py"
-process_file "$HOME/bin/etags-rs"
-process_file "$HOME/bin/etags-tcl"
+install_file "etags-autotools"
+install_file "etags-c"
+install_file "etags-el"
+install_file "etags-elixir"
+install_file "etags-erl"
+install_file "etags-go"
+install_file "etags-javascript"
+install_file "etags-lisp"
+install_file "etags-make"
+install_file "etags-perl"
+install_file "etags-pike"
+install_file "etags-py"
+install_file "etags-rs"
+install_file "etags-tcl"
 
 if [ "$(which etags-c)" != "$HOME/bin/etags-c" ]; then
     printf -- "***NEXT STEP:\n"
