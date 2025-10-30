@@ -1,0 +1,75 @@
+#!/bin/sh
+# SH FILE: jslint
+#
+# Purpose   : Run jslint - Lint Javascript file.
+# Created   : Thursday, October 30 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-10-30 13:53:09 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+
+# Module Description
+# ------------------
+#
+# A Javascript linter using JSLint.
+# A front end script allowing execution from the command line using jslint as
+# the program name.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#  printf, which, ln
+# - curl
+# - node
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+pgm_name="$(basename "$0")"
+
+print_usage()
+{
+    printf -- "
+%s: Lint Javascript code file.
+
+ Usage: %s -h|--help
+
+  • Print this help information.
+
+ Usage: %s FILE [FILE..]
+" "$pgm_name" "$pgm_name" "$pgm_name"
+}
+
+# --
+# Check validity of arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    if [ "$#" = "1" ]; then
+        # help requested explicitly with right amount of args: no error.
+        exit 0
+    else
+        exit  1
+    fi
+fi
+
+if [ -z "$1" ]; then
+    print_usage
+    exit 1
+fi
+
+# -- Validate environment
+if ! which node > /dev/null ; then
+    printf -- "***ERROR: %s requires node on PATH. It's not. Is it installed?" "$pgm_name"
+    exit 1
+fi
+
+# --
+# proceed
+
+node "$HOME/bin/javascript/jslint.mjs" "$@"
+
+# ----------------------------------------------------------------------------
