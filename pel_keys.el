@@ -3508,6 +3508,9 @@ d-mode not added to ac-modes!"
 ;;   ---------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC i`` :
 
+(defconst pel--js-files-regexp "\\(\\.js[mx]?\\|\\.har\\|\\.mjs\\)\\'"
+  "File regexp for Javascript.")
+
 (when pel-use-js
   ;;    - js-mode and js-ts-mode are built-in Emacs
   ;;    - js2-mode  is an external package
@@ -3549,7 +3552,7 @@ d-mode not added to ac-modes!"
     (pel-autoload-file js3-mode for:
                        js3-mode)
     (add-to-list 'auto-mode-alist
-                 '("\\(\\.js[mx]?\\|\\.har\\)\\'" . js3-mode))
+                 (cons pel--js-files-regexp 'js3-mode))
     (pel-eval-after-load js3-mode
       (pel-config-major-mode js3 pel:for-js :no-ts
         (when (boundp 'js3-indent-level)
@@ -3612,9 +3615,9 @@ d-mode not added to ac-modes!"
       (when (eq pel-use-js 'js2-mode)
         (if (version< emacs-version "27.1")
             (progn
-              (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
+              (add-to-list 'auto-mode-alist (cons pel--js-files-regexp 'js2-jsx-mode))
               (add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode)))
-          (add-to-list 'auto-mode-alist '("\\.js?\\'" . js2-mode))
+          (add-to-list 'auto-mode-alist (cons pel--js-files-regexp 'js2-mode))
           (add-hook 'js-mode-hook 'js2-minor-mode))
         (pel-eval-after-load js2-mode
           (pel-config-major-mode js2 pel:for-js :no-ts
@@ -3629,8 +3632,7 @@ d-mode not added to ac-modes!"
                              with-js2-minor
                              with-ts-js2-minor))
       ;; Use PEL mode selector
-      (add-to-list 'auto-mode-alist
-                   '("\\(\\.js[mx]?\\|\\.har\\)\\'" . pel-js-mode))
+      (add-to-list 'auto-mode-alist (cons pel--js-files-regexp 'pel-js-mode))
       (pel-autoload-file js for:
                          js-mode js-ts-mode)
 
