@@ -7494,7 +7494,8 @@ See `flyspell-auto-correct-previous-word' for more info."
                      smart-tabs-mode
                      smart-tabs-mode-enable
                      smart-tabs-advice
-                     smart-tabs-insinuate))
+                     smart-tabs-insinuate)
+  (define-key pel:indent (kbd "M-s") 'smart-tabs-mode))
 
 (when pel-use-smart-shift
   (pel-ensure-package smart-shift from: melpa)
