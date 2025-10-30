@@ -4,7 +4,7 @@
 # Purpose   : Install PEL etags builder scripts.
 # Created   : Thursday, June  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-30 10:52:21 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-30 11:04:02 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -32,7 +32,13 @@ install_file()
 {
     # argument: $1 := base name of script to install.
     if [ -e "$HOME/bin/$1" ]; then
-        printf -- "***Warning: File %s already exists.\n" "$HOME/bin/$1"
+        current_target="$(readlink -f "$HOME/bin/$1")"
+        required_target="${bin_dirpath}/$1"
+        if [ "${current_target}" = "${required_target}" ]; then
+            printf -- "***Warning: File %s already exists.\n" "$HOME/bin/$1"
+        else
+            printf -- "***ERROR  : File %s already exists but links to: %s\n" "$HOME/bin/$1" "${current_target}"
+        fi
     else
         ln -s "${bin_dirpath}/$1" "$HOME/bin/$1"  || exit 1
         printf -- "Installed : %s\n" "$(ls -l "${bin_dirpath}/$1")"
