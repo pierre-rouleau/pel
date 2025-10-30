@@ -4,7 +4,7 @@
 # Purpose   : Install PEL etags builder scripts.
 # Created   : Thursday, June  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-07 17:04:13 EST, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-30 10:32:58 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -41,12 +41,17 @@ check_file()
 check_file "$HOME/bin/etags-autotools"
 check_file "$HOME/bin/etags-c"
 check_file "$HOME/bin/etags-el"
+check_file "$HOME/bin/etags-elixir"
 check_file "$HOME/bin/etags-erl"
 check_file "$HOME/bin/etags-go"
+check_file "$HOME/bin/etags-javascript"
 check_file "$HOME/bin/etags-lisp"
 check_file "$HOME/bin/etags-make"
+check_file "$HOME/bin/etags-perl"
+check_file "$HOME/bin/etags-pike"
 check_file "$HOME/bin/etags-py"
 check_file "$HOME/bin/etags-rs"
+check_file "$HOME/bin/etags-tcl"
 
 install_symlink_for()
 {
