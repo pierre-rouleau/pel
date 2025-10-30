@@ -3,7 +3,7 @@
 # Purpose   : Install jslint Javascript linter.
 # Created   : Thursday, October 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-30 13:38:29 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-30 14:07:55 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -21,8 +21,8 @@
 # Dependencies
 # ------------
 #
-#
-
+# - printf, which, ln
+# - curl
 
 # ----------------------------------------------------------------------------
 # Code
@@ -30,15 +30,18 @@
 #
 # Ref: https://github.com/jslint-org/jslint?tab=readme-ov-file#quickstart-install
 
+pgm_name="$(basename "$0")"
+
+# -- Validate environment
+if ! which curl > /dev/null ; then
+    printf -- "***ERROR: %s requires curl on PATH. It's not. Is it installed?" "$pgm_name"
+    exit 1
+fi
+
+# -- Use directory names
 script="$(realpath "$0")"
 install_script_dirpath="$(dirname "$script")"
 script_dirpath="$(dirname "$install_script_dirpath")"
-
-# echo "script := $script"
-# echo "install_script_dirpath := $install_script_dirpath"
-# echo "script_dirpath := $script_dirpath"
-
-
 bin_dir="$HOME/bin"
 bin_js_dir="$HOME/bin/javascript"
 

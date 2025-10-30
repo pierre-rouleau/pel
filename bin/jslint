@@ -4,7 +4,7 @@
 # Purpose   : Run jslint - Lint Javascript file.
 # Created   : Thursday, October 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-30 13:58:23 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-30 14:07:58 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -18,8 +18,7 @@
 # Dependencies
 # ------------
 #
-#  printf, which, ln
-# - curl
+# - printf, which, ln
 # - node
 
 # ----------------------------------------------------------------------------
