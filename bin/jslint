@@ -4,7 +4,7 @@
 # Purpose   : Run jslint - Lint Javascript file.
 # Created   : Thursday, October 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-30 13:53:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-30 13:58:23 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -40,6 +40,10 @@ print_usage()
   • Print this help information.
 
  Usage: %s FILE [FILE..]
+
+  • Analyze Javascript FILE specified on command line with
+    the JSLint Javascript Linter.
+
 " "$pgm_name" "$pgm_name" "$pgm_name"
 }
 
