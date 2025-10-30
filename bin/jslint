@@ -4,7 +4,7 @@
 # Purpose   : Run jslint - Lint Javascript file.
 # Created   : Thursday, October 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-30 16:33:48 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-30 19:07:00 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -84,6 +84,11 @@ file_path="$HOME/bin/javascript/jslint.mjs"
 #
 rel_jslint=$(python -c "import os.path; print(os.path.relpath('$file_path', '$curdir'))")
 
+if [ ! -e "${rel_jslint}" ]; then
+    printf -- "***ERROR: jslint.mjs file is missing at %s\n" "${rel_jslint}"
+    exit 1
+fi
+
 # Loop in a POSIX compatible way.
 
 while [ "$#" -gt 0 ]; do
@@ -93,7 +98,7 @@ while [ "$#" -gt 0 ]; do
     printf -- "***ERROR: does not exist: %s\n" "${fn}"
     exit 1
   else
-      # echo "${rel_jslint}" "${fn}"
+      # echo "node ${rel_jslint}" "${fn}"
       node "${rel_jslint}" "${fn}"
   fi
 done
