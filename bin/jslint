@@ -4,7 +4,7 @@
 # Purpose   : Run jslint - Lint Javascript file.
 # Created   : Thursday, October 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-30 19:07:00 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-31 08:17:42 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -33,7 +33,7 @@ pgm_name="$(basename "$0")"
 print_usage()
 {
     printf -- "
-%s: Lint Javascript code file.
+%s: Lint Javascript code file with JSLint.
 
  Usage: %s -h|--help
 
@@ -72,7 +72,7 @@ if ! which node > /dev/null ; then
 fi
 
 # --
-# proceed
+# proceed: lint all files identified on command line.
 # Node need to get a RELATIVE path to the $HOME/bin/javascript/jslint.mjs file!
 
 curdir="$(pwd)"
