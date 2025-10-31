@@ -4,7 +4,7 @@
 # Purpose   : Run eslint - Lint Javascript file.
 # Created   : Thursday, October 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-31 09:13:51 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-31 12:48:18 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -85,7 +85,8 @@ while [ "$#" -gt 0 ]; do
   else
       if ! npx eslint "${fn}"; then
           if [ ! -e eslint.config.js ]; then
-              printf -- "To create a eslint.config.js file, execute: npm init @eslint/config\n"
+              printf -- "Did you install ESLint with:       'npm install eslint --save-dev' \n"
+              printf -- "To create a eslint.config.js file: 'npm init @eslint/config' \n"
           fi
           # Stop on first detected error
           exit 1
