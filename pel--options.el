@@ -2852,6 +2852,14 @@ Note: popup-switcher 2.14 has several bugs I fixed in my fork, which PEL
   :group 'pel-package-use
   :link `(url-link :tag "Indentation PDF" ,(pel-pdf-file-url "indentation")))
 
+(defcustom pel-use-indent-bars nil
+  "Whether PEL activates the smart-shift external package."
+  :group 'pel-pkg-for-indentation
+  :link '(url-link :tag "indent-bars @ Github"
+                   "https://github.com/jdtsmith/indent-bars")
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-indent-tools nil
   "Whether PEL activates the indent-tools external package."
   :group 'pel-pkg-for-indentation
@@ -12064,7 +12072,6 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
                                          (quote ((elpa . swift-mode)
                                                  (elpa . swift-ts-mode)))
                                        (quote ((elpa . swift-mode)))))
-
 
 (defcustom pel-swift-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Swift buffers.

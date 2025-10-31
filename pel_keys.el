@@ -7448,13 +7448,19 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (global-set-key (kbd "<C-M-i>") 'pel-unindent-lines)
 
-;; - indent-tools
-;; --------------
+;; -- indent-bars
+(when pel-use-indent-bars
+  (pel-ensure-package indent-bars from: gnu)
+  (define-pel-global-prefix pel:indent-bars (kbd "<f11> TAB b"))
+  (define-key pel:indent-bars "b" 'indent-bars-mode)
+  (define-key pel:indent-bars "r" 'indent-bars-reset)
+  (define-key pel:indent-bars "s" 'indent-bars-reset-styles))
 
-(defvar pel--was-hydra-loaded-p (featurep 'pel__hydra)
-    "Remember whether PEL support for Hydra was loaded.")
-
+;; -- indent-tools
 (when pel-use-indent-tools
+
+  (defvar pel--was-hydra-loaded-p (featurep 'pel__hydra)
+    "Remember whether PEL support for Hydra was loaded.")
 
   (pel-ensure-package indent-tools from: melpa)
   (pel-autoload-file indent-tools for: indent-tools-hydra/body)
@@ -7484,6 +7490,7 @@ See `flyspell-auto-correct-previous-word' for more info."
            (global-set-key (kbd "<f7> TAB") 'indent-tools-hydra/body))
          (setq pel--was-hydra-loaded-p t ))))))
 
+;; -- smart-tabs
 (when pel-use-smart-tabs
   ;; (pel-ensure-package smart-tabs-mode from: melpa)
   ;; Use my fork instead of the melpa registered project until the main
@@ -7499,6 +7506,7 @@ See `flyspell-auto-correct-previous-word' for more info."
                      smart-tabs-insinuate)
   (define-key pel:indent (kbd "M-s") 'smart-tabs-mode))
 
+;; -- smart-shift
 (when pel-use-smart-shift
   (pel-ensure-package smart-shift from: melpa)
   (define-key pel:indent "s" 'smart-shift-mode)

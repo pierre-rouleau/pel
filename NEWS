@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for *indent-bars-mode* minor-mode, activated by *pel-use-indent-bars*.
+  The key sequences for its interactive commands are bound under the ~<f11> <tab> b~ key prefix.
 - Add early support for *smart-tabs-mode* minor mode, activated by *pel-use-smart-tabs*.
   Not yet documented, tested, nor fully integrated.
 - *Breaking change!* Renamed the PEL user-options that activate a package
