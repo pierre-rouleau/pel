@@ -3,7 +3,7 @@
 # Purpose   : Install jslint Javascript linter.
 # Created   : Thursday, October 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-30 14:07:55 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-10-31 08:47:30 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -39,10 +39,16 @@ if ! which curl > /dev/null ; then
 fi
 
 # -- Use directory names
-script="$(realpath "$0")"
-install_script_dirpath="$(dirname "$script")"
+# The install script is stored in pel/bin/setup/
+installer_script_pathname="$(realpath "$0")"
+install_script_dirpath="$(dirname "$installer_script_pathname")"
+# The eslint script is stored inside pel/bin/
 script_dirpath="$(dirname "$install_script_dirpath")"
+
+# The ~/bin directory should be in PATH: store the symlink to jslint there.
 bin_dir="$HOME/bin"
+# And store the jslint.mjs into ~/bin/javascript : it won't be on PATH
+#  and its name will not be caught by command line tab completion.
 bin_js_dir="$HOME/bin/javascript"
 
 # -- Check for presence of ~/bin, create it if missing, stop on error.
@@ -73,11 +79,29 @@ fi
 #    If already present, copy over it: update it to the latest version.
 #    Then check if we have one.
 if [ -e "${bin_js_dir}/jslint.mjs" ]; then
-    printf -- "Updating jslint.mjs ...\n"
+    again=true
+    while "$again"; do
+        printf "jslint.mjs exists. Do you want to update it? (y/n): "
+        read -r yn
+
+        case "$yn" in
+            [Yy]* )
+                printf -- "Updating jslint.mjs ...\n"
+                curl -L https://www.jslint.com/jslint.mjs > "${bin_js_dir}/jslint.mjs"
+                again=false
+                ;;
+            [Nn]* )
+                again=false
+                ;;
+            * )
+                echo "Please answer 'y' or 'n'."
+                ;;
+        esac
+    done
 else
     printf -- "Getting a copy of jslint.mjs ...\n"
+    curl -L https://www.jslint.com/jslint.mjs > "${bin_js_dir}/jslint.mjs"
 fi
-curl -L https://www.jslint.com/jslint.mjs > "${bin_js_dir}/jslint.mjs"
 if [ ! -f "${bin_js_dir}/jslint.mjs" ]; then
     printf -- "*** ERROR: failed getting a copy of https://www.jslint.com/jslint.mjs\n"
     exit 1
@@ -93,10 +117,11 @@ if [ -h "${bin_dir}/jslint"  ]; then
             printf -- "          Check your PEL repo!\n"
             exit 1
         else
-            printf -- "***Warning: File %s already exists.\n" "$HOME/bin/$1"
+            printf -- "***Warning: symlink %s already exists:\n" "$HOME/bin/jslint"
+            printf -- " %s\n" "$(ls -l "$(which jslint)")"
         fi
     else
-        printf -- "***ERROR  : File %s already exists but links to: %s\n" "$HOME/bin/$1" "${current_target}"
+        printf -- "***ERROR  : File %s already exists but links to: %s\n" "$HOME/bin/jslint" "${current_target}"
     fi
 else
     if [ -e "${bin_dir}/jslint"  ]; then
