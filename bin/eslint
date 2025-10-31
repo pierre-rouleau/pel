@@ -1,0 +1,96 @@
+#!/bin/sh
+# SH FILE: eslint
+#
+# Purpose   : Run eslint - Lint Javascript file.
+# Created   : Thursday, October 30 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-10-31 09:13:51 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+
+# Module Description
+# ------------------
+#
+# A Javascript linter using ESLint.
+# A front end script allowing execution from the command line using eslint as
+# the program name.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - printf, which, ln
+# - npx eslint
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+pgm_name="$(basename "$0")"
+
+print_usage()
+{
+    printf -- "
+%s: Lint Javascript code file with ESLint.
+
+ Usage: %s -h|--help
+
+  • Print this help information.
+
+ Usage: %s FILE [FILE..]
+
+  • Analyze Javascript FILE specified on command line with
+    the ESLint Javascript Linter.
+
+" "$pgm_name" "$pgm_name" "$pgm_name"
+}
+
+# --
+# Check validity of arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    if [ "$#" = "1" ]; then
+        # help requested explicitly with right amount of args: no error.
+        exit 0
+    else
+        exit  1
+    fi
+fi
+
+if [ -z "$1" ]; then
+    print_usage
+    exit 1
+fi
+
+# -- Validate environment
+if ! which npx > /dev/null ; then
+    printf -- "***ERROR: %s requires npx on PATH. It's not. Is it installed?" "$pgm_name"
+    exit 1
+fi
+
+# --
+# proceed: lint all files identified on command line.
+
+# Loop in a POSIX compatible way.
+
+while [ "$#" -gt 0 ]; do
+  fn="$1"
+  shift
+  if [ ! -e "${fn}" ]; then
+    printf -- "***ERROR: does not exist: %s\n" "${fn}"
+    exit 1
+  else
+      if ! npx eslint "${fn}"; then
+          if [ ! -e eslint.config.js ]; then
+              printf -- "To create a eslint.config.js file, execute: npm init @eslint/config\n"
+          fi
+          # Stop on first detected error
+          exit 1
+      fi
+  fi
+done
+
+# ----------------------------------------------------------------------------
