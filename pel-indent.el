@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-29 10:49:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-03 16:25:22 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,6 +64,7 @@
 ;;
 
 (require 'pel--base)
+(require 'pel--options)                 ; use: `pel-use-dtrt-indent'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;; ---------------------------------------------------------------------------
@@ -335,42 +336,134 @@ by the numeric argument N (or if not specified N=1):
     (indent-rigidly (region-beginning) (region-end) nil t)))
 
 
-(defconst pel--c-basic-offset-modes '(c-mode
+(defconst pel--c-basic-offset-modes '(awk-mode
+                                      c-mode
+                                      c-ts-mode
                                       c++-mode
-                                      objc-mode
-                                      java-mode
-                                      idl-mode
-                                      pike-mode
-                                      awk-mode
+                                      c++-ts-mode
                                       d-mode
+                                      go-ts-mode
+                                      groovy-mode
+                                      idl-mode
+                                      java-mode
+                                      java-ts-mode
+                                      jde-mode
+                                      objc-mode
+                                      php-mode
+                                      pike-mode
+                                      protobuf-mode
+                                      rust-mode
+                                      rust-ts-mode
+                                      rustic-mode
+                                      scala-mode
+                                      swift-mode
                                       tcl-mode) ; [:todo 2025-04-30, by Pierre
                                                 ; Rouleau: not sure about tcl]
   "Major modes implemented as cc-modes.")
 
+(defconst pel--sh-based-modes '(sh-mode
+                                bash-ts-mode)
+  "Major modes based on sh-mode.")
+
+;; Credit Note: the following table was originally derived from code
+;;              that resides inside dtrt-indent.el
+;;              See: https://github.com/jscheid/dtrt-indent
+(defvar pel--mode-indent-vars
+  ;; Mode            Syntax        Variable
+  '((c-mode              c-basic-offset)                  ; C
+    (c++-mode            c-basic-offset)                  ; C++
+    (d-mode              c-basic-offset)                  ; D
+    (java-mode           c-basic-offset)                  ; Java
+    (jde-mode            c-basic-offset)                  ; Java (JDE)
+    (js-mode             js-indent-level)                 ; JavaScript
+    (js-json-mode        js-indent-level)                 ; JSON
+    (js2-mode            js2-basic-offset)                ; JavaScript-IDE
+    (js3-mode            js3-indent-level)                ; JavaScript-IDE
+    (json-mode           js-indent-level)                 ; JSON
+    (lua-mode            lua-indent-level)                ; Lua
+    (objc-mode           c-basic-offset)                  ; Objective C
+    (php-mode            c-basic-offset)                  ; PHP
+    (perl-mode           perl-indent-level)               ; Perl
+    (cperl-mode          cperl-indent-level)              ; Perl
+    (raku-mode           raku-indent-offset)              ; Perl6/Raku
+    (erlang-mode         erlang-indent-level)             ; Erlang
+    (ada-mode            ada-indent)                      ; Ada
+    (sgml-mode           sgml-basic-offset)               ; SGML
+    (nxml-mode           nxml-child-indent)               ; XML
+    (web-mode            (web-mode-markup-indent-offset
+                          web-mode-code-indent-offset
+                          web-mode-sql-indent-offset
+                          web-mode-css-indent-offset))    ; HTML
+    (pascal-mode         pascal-indent-level)             ; Pascal
+    (typescript-mode     typescript-indent-level)         ; Typescript
+    (protobuf-mode       c-basic-offset)                  ; Protobuf
+    (plantuml-mode       plantuml-indent-level)           ; PlantUML
+    (pug-mode            pug-tab-width)                   ; Pug
+    (cmake-mode          cmake-tab-width)                 ; CMake
+    (xquery-mode         xquery-mode-indent-width)        ; XQuery
+    (vhdl-mode           vhdl-basic-offset)               ; VHDL
+    (groovy-mode         (groovy-indent-offset
+                          tab-width))                     ; Groovy
+    (yaml-mode           (yaml-indent-offset
+                          tab-width))                     ; YAML
+    (swift-mode          swift-mode:basic-offset)         ; Swift
+
+    ;; Modes that use SMIE if available
+    (sh-mode             sh-basic-offset)                 ; Shell Script
+    (bash-ts-mode        sh-basic-offset)                 ; Shell Script
+    (ruby-mode           ruby-indent-level)               ; Ruby
+    (enh-ruby-mode       enh-ruby-indent-level)           ; Ruby
+    (crystal-mode        crystal-indent-level)            ; Crystal (Ruby)
+    (css-mode            css-indent-offset)               ; CSS
+    (rust-mode           rust-indent-offset)              ; Rust
+    (rustic-mode         rustic-indent-offset)            ; Rust
+    (scala-mode          scala-indent:step)               ; Scala
+
+    ;; modes with treesitter enabled
+    (ada-ts-mode         ada-ts-mode-indent-offset)
+    (c-ts-mode           c-ts-mode-indent-offset)
+    (c++-ts-mode         c-ts-mode-indent-offset)
+    (go-ts-mode          go-ts-mode-indent-offset)
+    (gpr-ts-mode         gpr-ts-mode-indent-offset)
+    (java-ts-mode        java-ts-mode-indent-offset)
+    (rust-ts-mode        rust-ts-mode-indent-offset)
+    (js-ts-mode          js-indent-level)
+    (json-ts-mode        json-ts-mode-indent-offset)
+    (cmake-ts-mode       cmake-ts-mode-indent-offset)
+    (typescript-ts-base-mode typescript-ts-mode-indent-offset))
+  "Map mode name to indentation control variable(s).")
+
+
+(defun pel-mode-indent-control-vars (&optional mode)
+  "Return list of indentation control vars for current major mode or MODE.
+Return nil if none is known.  In that case the variable is probably the
+default: `standard-indent'."
+  (cdr (assoc (or mode major-mode) pel--mode-indent-vars)))
 
 ;;-pel-autoload
 (defun pel-indent-control-context ()
   "Capture & return the indentation context for current major mode.
 The returned value is a symbol -> value hash.
 The symbols are:
-- used-major-mode
 - pel-insert-symbol-content-context-buffer
-- isa-cc-mode
-- isa-sh-mode
+- standard-indent
+- tab-always-indent
+- indent-line-function
+- the-indent-control-vars and all of those
 - pel-indentation-width-control-variables
 - pel-indentation-other-control-variables
 - "
   (let ((context (make-hash-table)))
-    ;; (puthash 'used-major-mode           major-mode context)
     (puthash 'pel-insert-symbol-content-context-buffer
              (current-buffer) context)
     (puthash 'standard-indent   standard-indent context)
     (puthash 'tab-always-indent tab-always-indent context)
     (puthash 'indent-line-function indent-line-function context)
-    (puthash 'isa-cc-mode
-             (derived-mode-p pel--c-basic-offset-modes)
-             context)
-    (puthash 'isa-sh-mode (derived-mode-p '(sh-mode)) context)
+    ;; (dolist (var (pel-mode-indent-control-vars))
+    ;;   (puthash (symbol-name var)
+    ;;            (symbol-value var)
+    ;;            context))
+    (puthash 'the-indent-control-vars (pel-mode-indent-control-vars) context)
     (puthash 'pel-indentation-width-control-variables
              pel-indentation-width-control-variables context)
     (puthash 'pel-indentation-other-control-variables
@@ -391,14 +484,11 @@ CONTEXT, a hash created by `pel-indent-control-context', captures the values of
 important variables and symbols in the context of the inspected major mode."
   ;; 1- restore the context in let-bound variables.
   (let* ((pel-insert-symbol-content-context-buffer
-          (gethash
-           'pel-insert-symbol-content-context-buffer
-           context))
+          (gethash 'pel-insert-symbol-content-context-buffer context))
          (standard-indent (gethash 'standard-indent context))
          (tab-always-indent (gethash 'tab-always-indent context ))
          (indent-line-function (gethash 'indent-line-function context))
-         (isa-cc-mode     (gethash 'isa-cc-mode     context))
-         (isa-sh-mode     (gethash 'isa-sh-mode     context))
+         (the-indent-control-vars (gethash 'the-indent-control-vars context))
          (pel-indentation-width-control-variables
           (gethash 'pel-indentation-width-control-variables context))
          (pel-indentation-other-control-variables
@@ -407,7 +497,8 @@ important variables and symbols in the context of the inspected major mode."
           (gethash 'indent-indent-info-inserter-fct context))
          (pel-MM-indent-width (gethash 'pel-MM-indent-width context))
          (already-inserted nil)
-         (major-mode-specific-inserted nil))
+         (major-mode-specific-inserted nil)
+         (pel-controls-indentation nil))
     ;; 2- insert information using those values
     (insert (propertize "* Indentation Control:" 'face 'bold))
     ;;    - insert mode specialized info if a function exists for it.
@@ -420,17 +511,36 @@ important variables and symbols in the context of the inspected major mode."
     (unless (memq 'pel-MM-indent-width already-inserted)
       (when (boundp pel-MM-indent-width)
         (pel-insert-symbol-content-line pel-MM-indent-width)
+        (push pel-MM-indent-width already-inserted)
+        (setq pel-controls-indentation t)
         (setq major-mode-specific-inserted t)))
+    (when the-indent-control-vars
+        (dolist (var the-indent-control-vars)
+          (pel-insert-symbol-content-line var)
+          (push var already-inserted)
+          (setq major-mode-specific-inserted t)))
     (when major-mode-specific-inserted
       (unless (memq 'precedence-info already-inserted)
-        (insert "\n
-Note: the above PEL and major-mode specific user options take precedence
-      over the following variables, unless these are set by file variables:")))
-    (unless (memq 'indent-description-info already-inserted)
-      (when isa-cc-mode
-        (pel-insert-symbol-content-line 'c-basic-offset))
-      (when isa-sh-mode
-        (pel-insert-symbol-content-line 'sh-basic-offset)))
+        (if pel-controls-indentation
+            (progn
+              (insert (format "\n
+Note: `%s' controls indentation for new files as PEL uses
+      its value and stores it in the other variables for
+      the mode shown above.
+" pel-MM-indent-width))
+              (when pel-use-dtrt-indent
+                (insert "\
+      However, `dtrt-indent-mode' may detect a different indentation
+      scheme for already written files and change the Emacs indentation
+      and hard-tab controlling variable after PEL has set their
+      value(s).  In that case you will see a different value in the
+      above list and a message note describing the adjustment made by
+      `dtrt-indent-mode'.
+")))
+          (insert "\n
+Note: The above variable control the indentation of this major mode.
+      It takes precedence over the following:
+"))))
     (dolist (symb '(standard-indent
                     tab-always-indent
                     indent-line-function))
@@ -443,17 +553,15 @@ Note: the above PEL and major-mode specific user options take precedence
       ;; impact on the indentation, insert information about
       ;; those here.
       (when pel-indentation-width-control-variables
-        (insert "
- Indentation is controlled by the following variables:")
         (dolist (varsymb (if (listp pel-indentation-width-control-variables)
                              pel-indentation-width-control-variables
                            (list pel-indentation-width-control-variables)))
-          (pel-insert-symbol-content-line varsymb)))
+          (unless (memq varsymb already-inserted)
+            (pel-insert-symbol-content-line varsymb))))
       (when pel-indentation-other-control-variables
-        (insert "
- These other variables control various aspect of indentation:")
         (dolist (varsymb pel-indentation-other-control-variables)
-          (pel-insert-symbol-content-line varsymb))))))
+          (unless (memq varsymb already-inserted)
+                  (pel-insert-symbol-content-line varsymb)))))))
 
 
 (defun pel-tab-control-context ()

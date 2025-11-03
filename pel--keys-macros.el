@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-31 15:08:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-01 09:44:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -301,6 +301,7 @@
     ([f11 9]         "indentation"      pel-pkg-for-indentation (indent
                                                                  indent-bars
                                                                  indent-tools
+                                                                 dtrt-indent
                                                                  smart-shift))
 
     ;; 2 different possible key sequences for speedbar,

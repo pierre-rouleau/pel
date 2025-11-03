@@ -647,7 +647,9 @@ For example, to activate it in Erlang, add a line with
 (defcustom pel-activates-global-minor-modes nil
   "List of *global* minor-modes automatically activated for all buffers.
 Enter *global* minor-mode activating function symbols.
-Do not enter lambda expressions."
+Do not enter lambda expressions.
+The following are automatically activated based on specific conditions:
+- dtrt-indent-mode     : when pel-use-dtrt-indent"
   :group 'pel-base-emacs
   :type '(repeat function))
 
@@ -2852,8 +2854,19 @@ Note: popup-switcher 2.14 has several bugs I fixed in my fork, which PEL
   :group 'pel-package-use
   :link `(url-link :tag "Indentation PDF" ,(pel-pdf-file-url "indentation")))
 
+(defcustom pel-use-dtrt-indent nil
+  "Whether PEL activates the dtrt-indent external package.
+To adapt to foreign indentation offset.
+Note that when this is activated, PEL automatically turns
+`dtrt-indent-global-mode' on."
+  :group 'pel-pkg-for-indentation
+  :link '(url-link :tag "dtrt-indent @ Github"
+                   "https://github.com/jscheid/dtrt-indent")
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-indent-bars nil
-  "Whether PEL activates the smart-shift external package."
+  "Whether PEL activates the indent-bars external package."
   :group 'pel-pkg-for-indentation
   :link '(url-link :tag "indent-bars @ Github"
                    "https://github.com/jdtsmith/indent-bars")
@@ -11209,9 +11222,9 @@ files from the PEL utils directory."
   "Control whether PEL supports the perl-live-coding."
   :group 'pel-pkg-for-perl
   :link '(url-link :tag "perl live coding @ Github"
-		           "https://github.com/vividsnow/perl-live")
+                   "https://github.com/vividsnow/perl-live")
   :link '(url-link :tag "my fork @ Github"
-		           "https://github.com/pierre-rouleau/perl-live")
+                   "https://github.com/pierre-rouleau/perl-live")
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-perl-live-coding :package-is '(quote ((utils . perl-live))))
@@ -13133,6 +13146,9 @@ Do not enter lambda expressions."
 (defgroup pel-pkg-for-cmake nil
   "PEL support for CMake software build system."
   :group 'pel-pkg-for-sw-build)
+
+;; [:todo 2025-11-03, by Pierre Rouleau: Add indentation control, dtrt-indent
+;; support for CMake]
 
 (defcustom pel-use-cmake nil
   "Control whether PEL provides extra support for CMake.

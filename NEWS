@@ -2,6 +2,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for the *dtrt-indent-mode* global minor-mode, activated by *pel-use-dtrt-indent*.
+  This package provides automatic indentation with detection from the content of file opens in several major modes.
+  This is extremely useful when editing files that do not conform to the indentation width you have identified
+  in your PEL customization.  The PEL customization continue to impose the indentation width and use of hard tabs used for all new created files.
+  But for files that have been written by others you can use the dtrt-indent-mode to detect the style used in the file
+  and adapt the settings to edit this file without having to change your customization imposing something else.
+  PEL binds several useful dtrt-indent commands in the ~<f11> <ta> d~ key prefix.
 - Add support for *indent-bars-mode* minor-mode, activated by *pel-use-indent-bars*.
   The key sequences for its interactive commands are bound under the ~<f11> <tab> b~ key prefix.
 - Add early support for *smart-tabs-mode* minor mode, activated by *pel-use-smart-tabs*.

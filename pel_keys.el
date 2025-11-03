@@ -7448,6 +7448,16 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (global-set-key (kbd "<C-M-i>") 'pel-unindent-lines)
 
+;; -- dtrt-indent
+(when pel-use-dtrt-indent
+  (pel-ensure-package dtrt-indent from: melpa)
+  (setq dtrt-indent-global-mode 'activated-by-PEL)
+  (define-pel-global-prefix pel:indent-dtrt (kbd "<f11> TAB d"))
+  (define-key pel:indent-dtrt "d" 'dtrt-indent-try-set-offset)
+  (define-key pel:indent-dtrt "D" 'dtrt-indent-set)
+  (define-key pel:indent-dtrt "u" 'dtrt-indent-undo)
+  (define-key pel:indent-dtrt "?" 'dtrt-indent-diagnosis))
+
 ;; -- indent-bars
 (when pel-use-indent-bars
   (pel-ensure-package indent-bars from: gnu)
