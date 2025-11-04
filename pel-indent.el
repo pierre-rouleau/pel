@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-03 16:25:22 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-04 09:43:35 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -337,6 +337,7 @@ by the numeric argument N (or if not specified N=1):
 
 
 (defconst pel--c-basic-offset-modes '(awk-mode
+                                      bpftrace-mode
                                       c-mode
                                       c-ts-mode
                                       c++-mode
@@ -356,9 +357,7 @@ by the numeric argument N (or if not specified N=1):
                                       rust-ts-mode
                                       rustic-mode
                                       scala-mode
-                                      swift-mode
-                                      tcl-mode) ; [:todo 2025-04-30, by Pierre
-                                                ; Rouleau: not sure about tcl]
+                                      swift-mode)
   "Major modes implemented as cc-modes.")
 
 (defconst pel--sh-based-modes '(sh-mode
@@ -366,58 +365,137 @@ by the numeric argument N (or if not specified N=1):
   "Major modes based on sh-mode.")
 
 ;; Credit Note: the following table was originally derived from code
-;;              that resides inside dtrt-indent.el
-;;              See: https://github.com/jscheid/dtrt-indent
+;;              that resides inside dtrt-indent.el and indent-control.el
+;;        See:  https://github.com/jscheid/dtrt-indent
+;;              https://github.com/jcs-elpa/indent-control
 (defvar pel--mode-indent-vars
   ;; Mode            Syntax        Variable
-  '((c-mode              c-basic-offset)                  ; C
-    (c++-mode            c-basic-offset)                  ; C++
-    (d-mode              c-basic-offset)                  ; D
-    (java-mode           c-basic-offset)                  ; Java
-    (jde-mode            c-basic-offset)                  ; Java (JDE)
-    (js-mode             js-indent-level)                 ; JavaScript
-    (js-json-mode        js-indent-level)                 ; JSON
-    (js2-mode            js2-basic-offset)                ; JavaScript-IDE
-    (js3-mode            js3-indent-level)                ; JavaScript-IDE
-    (json-mode           js-indent-level)                 ; JSON
-    (lua-mode            lua-indent-level)                ; Lua
-    (objc-mode           c-basic-offset)                  ; Objective C
-    (php-mode            c-basic-offset)                  ; PHP
-    (perl-mode           perl-indent-level)               ; Perl
-    (cperl-mode          cperl-indent-level)              ; Perl
-    (raku-mode           raku-indent-offset)              ; Perl6/Raku
-    (erlang-mode         erlang-indent-level)             ; Erlang
-    (ada-mode            ada-indent)                      ; Ada
-    (sgml-mode           sgml-basic-offset)               ; SGML
-    (nxml-mode           nxml-child-indent)               ; XML
-    (web-mode            (web-mode-markup-indent-offset
+  '((actionscript-mode   actionscript-indent-level)
+    (ada-mode            ada-indent)    ; Ada
+    (apache-mode         apache-indent-level)
+    (awk-mode            c-basic-offset)
+    (bash-ts-mode        sh-basic-offset) ; Shell Script - use SMIE if available
+    (c-mode              c-basic-offset)  ; C
+    (c++-mode            c-basic-offset)  ; C++
+    (cmake-mode          cmake-tab-width) ; CMake
+    (coffee-mode         coffee-tab-width)
+    (coq-mode            coq-indent-basic)
+    (cperl-mode          cperl-indent-level) ; Perl
+    (cperl-mode          cperl-indent-level)
+    (crystal-mode        crystal-indent-level) ; Crystal (Ruby) - use SMIE if available
+    (csharp-mode         (c-basic-offset csharp-mode-indent-offset))
+    (css-mode            css-indent-offset) ; CSS - use SMIE if available
+    (less-css-mode       css-indent-offset)
+    (scss-mode           css-indent-offset)
+    (ssass-mode          ssass-tab-width)
+    (dockerfile-mode     dockerfile-indent-offset)
+    (d-mode              c-basic-offset) ; D
+    (elixir-mode         elixir-smie-indent-basic)
+    (elm-mode            elm-indent-offset)
+    (emacs-lisp-mode     lisp-body-indent)
+    (enh-ruby-mode       enh-ruby-indent-level)
+    (erlang-mode         erlang-indent-level) ; Erlang
+    (ess-mode            ess-indent-offset)
+    (f90-mode            (f90-associate-indent
+                          f90-continuation-indent
+                          f90-critical-indent
+                          f90-do-indent
+                          f90-if-indent
+                          f90-program-indent
+                          f90-type-indent))
+    (feature-mode        (feature-indent-offset
+                          feature-indent-level))
+    (fsharp-mode         (fsharp-continuation-offset
+                          fsharp-indent-level
+                          fsharp-indent-offset))
+    (gdscript-mode       gdscript-indent-offset)
+    (groovy-mode         groovy-indent-offset) ; Groovy
+    (jenkinsfile-mode    groovy-indent-offset)
+    (haskell-mode        (haskell-indent-spaces
+                          haskell-indent-offset
+                          haskell-indentation-layout-offset
+                          haskell-indentation-left-offset
+                          haskell-indentation-starter-offset
+                          haskell-indentation-where-post-offset
+                          haskell-indentation-where-pre-offset
+                          shm-indent-spaces))
+    (haxe-mode           c-basic-offset)
+    (haxor-mode          haxor-tab-width)
+    (idl-mode            c-basic-offset)
+    (jade-mode           jade-tab-width)
+    (java-mode           c-basic-offset) ; Java
+    (jde-mode            c-basic-offset) ; Java (JDE)
+    (javascript-mode     js-indent-level)
+    (js-mode             js-indent-level)  ; JavaScript
+    (js-json-mode        js-indent-level)  ; JSON
+    (js2-mode            js2-basic-offset) ; JavaScript-IDE
+    (js2-jsx-mode        (js2-basic-offset sgml-basic-offset))
+    (js3-mode            js3-indent-level) ; JavaScript-IDE
+    (json-mode           js-indent-level)  ; JSON
+    (julia-mode          julia-indent-offset)
+    (kotlin-mode         kotlin-tab-width)
+    (lisp-mode             lisp-body-indent)
+    (lisp-interaction-mode lisp-body-indent)
+    (livescript-mode       livescript-tab-width)
+    (lua-mode            lua-indent-level) ; Lua
+    (magik-mode          magik-indent-level)
+    (matlab-mode         matlab-indent-level)
+    (meson-mode          meson-indent-basic)
+    (mips-mode           mips-tab-width)
+    (mustache-mode       mustache-basic-offset)
+    (nasm-mode           nasm-basic-offset)
+    (nginx-mode          nginx-indent-level)
+    (nxml-mode           (nxml-child-indent nxml-attribute-indent))
+    (objc-mode           c-basic-offset) ; Objective C
+    (octave-mode         octave-block-offset)
+    (nxml-mode           nxml-child-indent) ; XML
+    (pascal-mode         pascal-indent-level) ; Pascal
+    (perl-mode           perl-indent-level)   ; Perl
+    (php-mode            c-basic-offset)      ; PHP
+    (pike-mode           c-basic-offset)
+    (plantuml-mode       plantuml-indent-level) ; PlantUML
+    (protobuf-mode       c-basic-offset)        ; Protobuf
+    (pug-mode            pug-tab-width)         ; Pug
+    (puppet-mode         puppet-indent-level)
+    (ps-mode             ps-mode-tab)
+    (python-mode         py-indent-offset)
+    (raku-mode           raku-indent-offset) ; Perl6/Raku
+    (rjsx-mode           (js-indent-level sgml-basic-offset))
+    (ruby-mode           ruby-indent-level)     ; Ruby - use SMIE if available
+    (enh-ruby-mode       enh-ruby-indent-level) ; Ruby - use SMIE if available
+    (rust-mode           rust-indent-offset)    ; Rust - use SMIE if available
+    (rustic-mode         rustic-indent-offset)  ; Rust - use SMIE if available
+    (scala-mode          scala-indent:step) ; Scala - use SMIE if available
+    (sgml-mode           sgml-basic-offset) ; SGML
+    (shader-mode         shader-indent-offset)
+    (slim-mode           slim-indent-offset)
+    (sml-mode            sml-indent-level)
+    (sql-mode            sql-indent-offset)
+    (svelte-mode         svelte-basic-offset)
+    (sh-mode             sh-basic-offset) ; Shell Script - use SMIE if available
+    (swift-mode          swift-mode:basic-offset) ; Swift
+    (tcl-mode            (tcl-indent-level tcl-continued-indent-level))
+    (terra-mode          terra-indent-level)
+    (typescript-mode     typescript-indent-level) ; Typescript
+    (verilog-mode        (verilog-indent-level
+                          verilog-indent-level-behavioral
+                          verilog-indent-level-declaration
+                          verilog-indent-level-module
+                          verilog-cexp-indent
+                          verilog-case-indent))
+    (vhdl-mode           vhdl-basic-offset) ; VHDL
+    (web-mode            (web-mode-attr-indent-offset
+                          web-mode-attr-value-indent-offset
                           web-mode-code-indent-offset
+                          web-mode-css-indent-offset
+                          web-mode-markup-indent-offset
                           web-mode-sql-indent-offset
-                          web-mode-css-indent-offset))    ; HTML
-    (pascal-mode         pascal-indent-level)             ; Pascal
-    (typescript-mode     typescript-indent-level)         ; Typescript
-    (protobuf-mode       c-basic-offset)                  ; Protobuf
-    (plantuml-mode       plantuml-indent-level)           ; PlantUML
-    (pug-mode            pug-tab-width)                   ; Pug
-    (cmake-mode          cmake-tab-width)                 ; CMake
-    (xquery-mode         xquery-mode-indent-width)        ; XQuery
-    (vhdl-mode           vhdl-basic-offset)               ; VHDL
-    (groovy-mode         (groovy-indent-offset
-                          tab-width))                     ; Groovy
-    (yaml-mode           (yaml-indent-offset
-                          tab-width))                     ; YAML
-    (swift-mode          swift-mode:basic-offset)         ; Swift
-
-    ;; Modes that use SMIE if available
-    (sh-mode             sh-basic-offset)                 ; Shell Script
-    (bash-ts-mode        sh-basic-offset)                 ; Shell Script
-    (ruby-mode           ruby-indent-level)               ; Ruby
-    (enh-ruby-mode       enh-ruby-indent-level)           ; Ruby
-    (crystal-mode        crystal-indent-level)            ; Crystal (Ruby)
-    (css-mode            css-indent-offset)               ; CSS
-    (rust-mode           rust-indent-offset)              ; Rust
-    (rustic-mode         rustic-indent-offset)            ; Rust
-    (scala-mode          scala-indent:step)               ; Scala
+                          web-mode-block-padding
+                          web-mode-script-padding
+                          web-mode-style-padding)) ; HTML
+    (xquery-mode         xquery-mode-indent-width)     ; XQuery
+    (yaml-mode           yaml-indent-offset)         ; YAML
+    (zig-mode            zig-indent-offset)
 
     ;; modes with treesitter enabled
     (ada-ts-mode         ada-ts-mode-indent-offset)
@@ -459,10 +537,6 @@ The symbols are:
     (puthash 'standard-indent   standard-indent context)
     (puthash 'tab-always-indent tab-always-indent context)
     (puthash 'indent-line-function indent-line-function context)
-    ;; (dolist (var (pel-mode-indent-control-vars))
-    ;;   (puthash (symbol-name var)
-    ;;            (symbol-value var)
-    ;;            context))
     (puthash 'the-indent-control-vars (pel-mode-indent-control-vars) context)
     (puthash 'pel-indentation-width-control-variables
              pel-indentation-width-control-variables context)
@@ -522,24 +596,23 @@ important variables and symbols in the context of the inspected major mode."
     (when major-mode-specific-inserted
       (unless (memq 'precedence-info already-inserted)
         (if pel-controls-indentation
-            (progn
-              (insert (format "\n
+            (insert (format "\n
 Note: `%s' controls indentation for new files as PEL uses
       its value and stores it in the other variables for
       the mode shown above.
 " pel-MM-indent-width))
-              (when pel-use-dtrt-indent
-                (insert "\
-      However, `dtrt-indent-mode' may detect a different indentation
-      scheme for already written files and change the Emacs indentation
-      and hard-tab controlling variable after PEL has set their
-      value(s).  In that case you will see a different value in the
-      above list and a message note describing the adjustment made by
-      `dtrt-indent-mode'.
-")))
           (insert "\n
 Note: The above variable control the indentation of this major mode.
-      It takes precedence over the following:
+      It takes precedence over the variables listed below.
+"))
+        (when pel-use-dtrt-indent
+          (insert "\
+      However, `dtrt-indent-mode' may detect a different indentation
+      scheme for already written files and change the indentation
+      control variable value used by the major-mode, overriding the
+      value selected by customization.  In that case you will see a
+      different value in the above list and a message note describing
+      the adjustment made by `dtrt-indent-mode'.
 "))))
     (dolist (symb '(standard-indent
                     tab-always-indent
