@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-26 12:18:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-04 15:08:29 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -66,7 +66,8 @@ Return a list of generic symbols described."
   (pel-insert-symbol-content-line 'forth-smie-basic-indent)
   ;; Return the list of generic symbols described here.
   '(indent-description-info
-    pel-MM-indent-width))
+    pel-MM-indent-width
+    forth-smie-basic-indent))
 
 ;;-pel-autoload
 (defun pel-forth-insert-tab-info ()

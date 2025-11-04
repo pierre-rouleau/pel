@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 20 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-26 12:19:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-04 15:12:21 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -144,7 +144,17 @@ Return a list of generic symbols described."
   (pel-insert-symbol-content-line 'js-switch-indent-offset)
   (pel-insert-symbol-content-line 'js3-indent-level)
   ;; Return the list of generic symbols described here.
-  '(indent-description-info pel-MM-indent-width))
+  '(indent-description-info
+    pel-MM-indent-width
+    js-curly-indent-offset
+    js-expr-indent-offset
+    js-indent-level
+    js-jsx-attribute-offset
+    js-jsx-indent-level
+    js-paren-indent-offset
+    js-square-indent-offset
+    js-switch-indent-offset
+    js3-indent-level))
 
 (defun pel-js-insert-tab-info ()
   "Insert Javascript hard tab setup used in current context.

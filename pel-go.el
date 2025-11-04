@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-27 16:04:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-04 15:04:21 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -168,7 +168,9 @@ Return a list of generic symbols described."
                                   "used by go-ts-mode.")
 
   ;; Return a capability list for `pel-show-indent' or similar callers
-  '(indent-description-info precedence-info))
+  '(indent-description-info
+    precedence-info
+    go-ts-mode-indent-offset))
 
 ;;-pel-autoload
 (defun pel-go-insert-tab-info ()

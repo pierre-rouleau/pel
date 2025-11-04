@@ -215,7 +215,10 @@ Return a list of generic symbols described."
   (pel-insert-symbol-content-line 'erlang-indent-guard)
   ;; Return the list of generic symbols described here.
   '(indent-description-info
-    pel-MM-indent-width))
+    pel-MM-indent-width
+    erlang-indent-level
+    erlang-argument-indent
+    erlang-indent-guard))
 
 (defun pel-erlang-insert-tab-info ()
   "Insert Erlang indentation and hard tab setup info in current context.

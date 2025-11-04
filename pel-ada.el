@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-27 12:08:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-04 15:10:08 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -118,7 +118,17 @@ Return a list of generic symbols described."
   (pel-insert-symbol-content-line 'ada-ts-mode-indent-record-offset)
   (pel-insert-symbol-content-line 'ada-ts-mode-indent-label-offset)
   ;; Return the list of generic symbols described here.
-  '(indent-description-info))
+  '(indent-description-info
+    ada-ts-mode-indent-backend
+    ada-ts-mode-indent-strategy
+    ada-ts-mode-indent-offset
+    ada-ts-mode-indent-when-offset
+    ada-ts-mode-indent-broken-offset
+    ada-ts-mode-indent-exp-item-offset
+    ada-ts-mode-indent-subprogram-is-offset
+    ada-ts-mode-indent-record-offset
+    ada-ts-mode-indent-label-offset
+    ))
 
 ;;-pel-autoload
 (defun pel-ada-insert-tab-info ()

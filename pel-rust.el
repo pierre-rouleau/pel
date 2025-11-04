@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 12 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-26 15:16:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-04 15:03:02 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -112,7 +112,9 @@ Return a list of generic symbols described."
   (pel-insert-symbol-content-line 'rust-indent-offset)
   (pel-insert-symbol-content-line 'rust-ts-mode-indent-offset)
   ;; Return the list of generic symbols described here.
-  '(indent-description-intro))
+  '(indent-description-intro
+    rust-indent-offset
+    rust-ts-mode-indent-offset))
 
 ;;-pel-autoload
 (defun pel-rust-insert-tab-info ()
