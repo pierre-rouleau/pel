@@ -6,7 +6,7 @@ Showing Information About Indentation and Hard Tab Control under PEL
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Wednesday, October 29 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-10-29 08:11:45, by Pierre Rouleau.
+:Modified: 2025-11-04 14:36:45 EST, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -119,6 +119,88 @@ important that all people working on the code can see it properly.
 
 Where Emacs and PEL helps
 -------------------------
+
+
+Selecting Indentation Scheme for a Major Mode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+PEL explicitly supports a large and growing number of programming language
+major modes where it provides a set of customizable user-option variables that
+identify the indentation scheme to use for new created files for the
+corresponding programming language.
+
+Here's a sample of some of the available PEL customizable user-options.
+
+=================== ================================= =======================
+Major Mode          Indentation Width Control         Tab Width Control
+=================== ================================= =======================
+c-mode              pel-c-indent-width                pel-c-tab-width
+c++-mode            pel-c++-indent-width              pel-c++-tab-width
+d-mode              pel-d-indent-width                pel-d-tab-width
+erlang-mode         pel-erlang-indent-width           pel-erlang-tab-width
+elixir-mode         pel-elixir-indent-width           pel-elixir-tab-width
+python-mode         pel-python-indent-width           pel-python-tab-width
+=================== ================================= =======================
+
+For the modes where PEL identifies an indentation width and a tab width
+control customizable user-option, PEL stores the value of the indentation
+width control user-option to the buffer local variable that controls the
+indentation for the major mode.  It does the same for the tab width control
+user-option.
+
+This ensures consistency when a programming language is supported by several
+major modes (like a classical major mode and a tree-sitter aware major mode)
+since several major modes may use different control variables.   PEL has the
+logic that controls the settings, you do not have to worry and set the
+appropriate mode variable; just set the PEL customizable user-option and PEL
+will use it to set the variables that are needed for the major mode.
+
+PEL also provides the **pel-show-indent** command,
+bound to the ``<f11> <tab> ?`` key sequence,
+that prints information about the customizable user-option variables
+controlling the indentation and the tab width for the current major mode.
+
+That command uses specialized logic for some of the major modes that PEL
+supports, but not all of them.  The command is able to handle a large number
+of major modes, even some that are not explicitly supported by PEL yet.
+
+Here's a screenshot showing the report printed by **pel-show-indent** on Emacs
+C source code files.
+
+
+.. figure:: res/pel-show-indent-on-c.png
+   :scale: 50 %
+
+Adapting to Files' Indentation Scheme
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Ref: `dtrt-indent in ⅀ Indentation PDF`_
+
+The indentation and tab width control user options provide by PEL and the
+major mode functions constitute the the indentation configuration scheme for
+the major mode; what is used when creating a new file.  Your configuration
+corresponds to your way of writing indentation in your files.
+
+But you might want to edit *foreign* files; files that have been created by
+others and that may use a different indentation scheme: a different indentation
+width, and possibly a different convention in the use of hard tabs for
+indentation.
+
+When editing *foreign* files, it is best to activate the `dtrt-indent-mode`_ by
+setting **pel-use-dtrt-indent** on.  With this activated, PEL ensures that the
+`dtrt-indent-mode`_  global minor mode is active.  When a non-empty file is
+opened, `dtrt-indent-mode`_ scans the content of the file, analyzes its
+content to determine if the indentation control and hard tab use must be
+modified. If it is necessary the mode overwrites the relevant mode local
+buffer variables to automatically adjust the indentation behaviour to what is
+already being used in the file.
+
+The **pel-show-indent** command will show the modified value of these
+variables.
+
+
+Showing Indentation Scheme used by Current Buffer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PEL provides the **pel-show-indent** command which displays information about
 the indentation and hard tab width control for the current major mode inside a
@@ -245,6 +327,8 @@ taken after each step.
 .. _Step 3: res/gleam-indent-03.png
 .. _Step 4: res/gleam-indent-04.png
 .. _Step 5: res/gleam-indent-05.png
+.. _dtrt-indent-mode: https://github.com/jscheid/dtrt-indent
+.. _dtrt-indent in ⅀ Indentation PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/indentation.pdf#page=4
 
 
 .. ---------------------------------------------------------------------------
