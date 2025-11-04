@@ -6166,7 +6166,7 @@ Values in the [2, 8] range are accepted."
   :type 'integer
   :safe 'pel-indent-valid-p)
 
-(defcustom pel-c-tab-width 4
+(defcustom pel-c-tab-width 8
   "Column width display rendering of hard tab for C source code.
 
 PEL stores this in `tab-width' when editing buffer with C source.
@@ -6181,7 +6181,9 @@ It is often the same value as `pel-c-indent-width', if it is
 different it should probably be a multiple of
 `pel-c-indent-width'.
 
-Values in the [2, 8] range are accepted."
+Values in the [2, 8] range are accepted.
+The default is 8, which is often used for C code that uses a mix of hard-tab
+and spaces for indentation, like what is being used for the Emacs C code."
   :group 'pel-c-code-style
   :type 'integer
   :safe 'pel-indent-valid-p)
