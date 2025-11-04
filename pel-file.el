@@ -714,7 +714,7 @@ probably have to be modified to be a user option in a future version. "
         ;; and equal sign used in various statements.
         (when (eq major-mode 'sh-mode)
           (setq delimiters (concat "=:" delimiters)))
-        (unless (memq major-mode '(rst-mode markdown-mode))
+        (unless (memq major-mode '(rst-mode))
           (setq delimiters (concat ",;()[]" delimiters)))
         (unless (memq major-mode '(sh-mode tcl-mode rst-mode markdown-mode))
           (setq delimiters (concat "{}" delimiters)))
