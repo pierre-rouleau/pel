@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-04 09:43:35 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-04 11:25:57 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -63,7 +63,8 @@
 ;;; Dependencies:
 ;;
 
-(require 'pel--base)
+(require 'pel--base)                    ; use: `pel-string-ends-with-p',
+                                        ; `pel-file-type-for', `pel-list-of'
 (require 'pel--options)                 ; use: `pel-use-dtrt-indent'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -458,7 +459,7 @@ by the numeric argument N (or if not specified N=1):
     (pug-mode            pug-tab-width)         ; Pug
     (puppet-mode         puppet-indent-level)
     (ps-mode             ps-mode-tab)
-    (python-mode         py-indent-offset)
+    (python-mode         (python-indent-offset py-indent-offset python-indent-levels))
     (raku-mode           raku-indent-offset) ; Perl6/Raku
     (rjsx-mode           (js-indent-level sgml-basic-offset))
     (ruby-mode           ruby-indent-level)     ; Ruby - use SMIE if available
@@ -516,7 +517,13 @@ by the numeric argument N (or if not specified N=1):
   "Return list of indentation control vars for current major mode or MODE.
 Return nil if none is known.  In that case the variable is probably the
 default: `standard-indent'."
-  (cdr (assoc (or mode major-mode) pel--mode-indent-vars)))
+  (let* ((mode (or mode major-mode))
+         (vars (cadr (assoc mode pel--mode-indent-vars))))
+    (unless vars
+      (when (pel-string-ends-with-p (symbol-name mode) "-ts-mode")
+        (setq mode (intern (format "%s-mode" (pel-file-type-for mode))))
+        (setq vars (cadr (assoc mode pel--mode-indent-vars)))))
+    (pel-list-of vars)))
 
 ;;-pel-autoload
 (defun pel-indent-control-context ()
