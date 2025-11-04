@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-04 12:06:41 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-04 12:26:06 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -599,9 +599,10 @@ important variables and symbols in the context of the inspected major mode."
         (setq major-mode-specific-inserted t)))
     (when the-indent-control-vars
         (dolist (var the-indent-control-vars)
-          (pel-insert-symbol-content-line var)
-          (push var already-inserted)
-          (setq major-mode-specific-inserted t)))
+          (unless (memq var already-inserted)
+            (pel-insert-symbol-content-line var)
+            (push var already-inserted)
+            (setq major-mode-specific-inserted t))))
     (when major-mode-specific-inserted
       (unless (memq 'precedence-info already-inserted)
         (if pel-controls-indentation
