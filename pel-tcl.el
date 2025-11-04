@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-26 15:16:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-04 13:53:32 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -71,7 +71,9 @@ Return a list of generic symbols described."
   (pel-insert-symbol-content-line 'tcl-continued-indent-level)
   ;; Return the list of generic symbols described here.
   '(indent-description-intro
-    pel-MM-indent-width))
+    pel-MM-indent-width
+    tcl-indent-level
+    tcl-continued-indent-level))
 
 ;;-pel-autoload
 (defun pel-tcl-insert-tab-info ()
