@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-26 15:20:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-04 12:30:38 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -121,7 +121,9 @@ Return a list of generic symbols described."
   (pel-insert-symbol-content-line 'zig-ts-mode-indent-offset)
   ;; Return the list of generic symbols described here.
   '(indent-description-intro
-    pel-MM-indent-width))
+    pel-MM-indent-width
+    zig-indent-offset
+    zig-ts-mode-indent-offset))
 
 ;;-pel-autoload
 (defun pel-zig-insert-tab-info ()
@@ -144,8 +146,7 @@ Return a list of generic symbols described."
     pel-MM-tab-width
     tab-width
     pel-MM-use-tabs
-    indent-tabs-mode)
-  (pel-insert-symbol-content-line 'tab-width))
+    indent-tabs-mode))
 
 (defun pel--zig-minor-mode-info ()
   "Insert information related to Zig minor modes."
