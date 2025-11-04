@@ -5751,9 +5751,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       ;; Use the n section for tcl man pages
       (setq-local pel-tcl-man-section "n")
       ;; ensure consistency of indent control
-      ;; [:todo 2025-10-15, by Pierre Rouleau: should we set tcl-continued-indent-level?]
       (when (boundp 'tcl-indent-level)
-        (setq-local tcl-indent-level pel-tcl-indent-width)))))
+        (setq-local tcl-indent-level pel-tcl-indent-width))
+      (when (boundp 'tcl-continued-indent-level)
+        (setq-local tcl-continued-indent-level pel-tcl-indent-width)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Lua Programming Language Support
