@@ -7451,7 +7451,8 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; -- dtrt-indent
 (when pel-use-dtrt-indent
   (pel-ensure-package dtrt-indent from: melpa)
-  (setq dtrt-indent-global-mode 'activated-by-PEL)
+  (when (boundp 'dtrt-indent-global-mode)
+    (setq dtrt-indent-global-mode 'activated-by--pel-use-dtrt-indent))
   (define-pel-global-prefix pel:indent-dtrt (kbd "<f11> TAB d"))
   (define-key pel:indent-dtrt "d" 'dtrt-indent-try-set-offset)
   (define-key pel:indent-dtrt "D" 'dtrt-indent-set)
