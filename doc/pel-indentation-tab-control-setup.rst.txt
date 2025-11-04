@@ -6,7 +6,7 @@ Showing Information About Indentation and Hard Tab Control under PEL
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Wednesday, October 29 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-11-04 14:36:45 EST, updated by Pierre Rouleau.
+:Modified: 2025-11-04 16:20:34 EST, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -142,11 +142,12 @@ elixir-mode         pel-elixir-indent-width           pel-elixir-tab-width
 python-mode         pel-python-indent-width           pel-python-tab-width
 =================== ================================= =======================
 
-For the modes where PEL identifies an indentation width and a tab width
-control customizable user-option, PEL stores the value of the indentation
-width control user-option to the buffer local variable that controls the
-indentation for the major mode.  It does the same for the tab width control
-user-option.
+PEL does not define the indentation width control variables for all
+programming language modes supported.  For the modes where PEL identifies an
+indentation width and a tab width control customizable user-option, PEL
+defines a hook function that stores the value of the indentation width control
+user-option to the buffer local variable that controls the indentation for the
+major mode.  It does the same for the tab width control user-option.
 
 This ensures consistency when a programming language is supported by several
 major modes (like a classical major mode and a tree-sitter aware major mode)
