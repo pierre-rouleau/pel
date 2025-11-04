@@ -18,7 +18,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/PEL_Managed_Packages-304-teal
+.. image:: https://img.shields.io/badge/PEL_Managed_Packages-307-teal
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
@@ -53,7 +53,7 @@ Essentially PEL:
 - extends the standard Emacs system and enhance the synergy in your use of Emacs,
 - adds a large number (695) of convenient commands and provides glue logic to
   increase feature cohesion and simplify their use,
-- provides the ability to easily install, update a large set (304) of external
+- provides the ability to easily install, update a large set (307) of external
   packages from various sources:
 
   - elpa compliant sites: GNU elpa, MELPA,
@@ -63,7 +63,12 @@ Essentially PEL:
     and manually configure them by adding specific logic in the PEL init.el file.
 
 - provides contextual help commands that describe how to deal with indentation
-  and hard tab control in several major modes,
+  and hard tab control in most major modes showing you which customizable
+  user-option sets the indentation width and the use of hard-tabs, describe
+  why those values may be overridden in files written by other when
+  pel-use-dtrt-indent is activated, and also describe how to use a hard-tab
+  indentation scheme to dynamically modify rendered indentation in some modes
+  where that technique is possible,
 - provides the ability to use Tree-Sitter based major modes but also
   dynamically switch from classic to Tree-Sitter based major mode and back
   at any time and without any impact on your original selection;
@@ -317,7 +322,7 @@ various packages, etc...
 -----------------------------------------------------------------
 
 - In normal mode, PEL controls the download, installation, configuration and
-  activation of **304** *top-level* [#externp]_ external packages through the
+  activation of **307** *top-level* [#externp]_ external packages through the
   use of easy-to-setup customization user-options that have a name that start
   with the "``pel-use-``" prefix.
 
@@ -473,7 +478,7 @@ Notes
 
 
 .. [#externp] An external package may have dependencies.  The dependencies are also
-              installed. PEL currently provides access to 304 top-level external packages.
+              installed. PEL currently provides access to 307 top-level external packages.
               The actual number of packages is larger when counting their
               dependencies (currently 48 extra packages installed as dependencies).
               From within PEL execute the **pel-package-info**
