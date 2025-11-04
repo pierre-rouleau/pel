@@ -5240,6 +5240,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-config-major-mode-with-ts
       python
       pel:for-python
+    (when (boundp 'python-indent-offset)
+      (setq-local python-indent-offset pel-python-indent-width))
+    (when (boundp 'py-indent-offset)
+      (setq-local py-indent-offset pel-python-indent-width))
     (when (and pel-use-indent-tools
                (eq pel-indent-tools-key-bound 'python)
                (require 'indent-tools nil :noerror)

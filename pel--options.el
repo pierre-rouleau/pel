@@ -11485,6 +11485,14 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-python
   :type '(repeat function))
 
+(defcustom pel-python-indent-width 4
+  "Number of columns for PYTHON source code indentation.
+PEL stores this inside the Python mode indentation control variable.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-python
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
 (defcustom pel-python-tab-width 4
   "Column width display rendering of hard tab for buffers in `python-mode'.
 
