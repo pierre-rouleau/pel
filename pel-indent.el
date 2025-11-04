@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-04 11:25:57 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-04 12:06:41 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -459,7 +459,9 @@ by the numeric argument N (or if not specified N=1):
     (pug-mode            pug-tab-width)         ; Pug
     (puppet-mode         puppet-indent-level)
     (ps-mode             ps-mode-tab)
-    (python-mode         (python-indent-offset py-indent-offset python-indent-levels))
+    (python-mode         (python-indent-offset
+                          py-indent-offset ; used by the badly maintained python-mode.
+                          python-indent-levels))
     (raku-mode           raku-indent-offset) ; Perl6/Raku
     (rjsx-mode           (js-indent-level sgml-basic-offset))
     (ruby-mode           ruby-indent-level)     ; Ruby - use SMIE if available
