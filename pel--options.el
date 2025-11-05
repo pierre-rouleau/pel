@@ -130,6 +130,7 @@
 ;;                 - pel-c++-function-header-skeleton-control
 ;;           - pel-pkg-for-d
 ;;             - pel-d-code-style
+;;         - pel-pkg-for-dart
 ;;         - pel-pkg-for-eiffel
 ;;         - pel-pkg-for-javascript
 ;;         - pel-pkg-for-go
@@ -7371,6 +7372,84 @@ by the `pel-use-d-ac-dcd'."
   :safe #'booleanp)
 (pel-put 'pel-use-d-company-dcd :package-is 'company-dcd)
 (pel-put 'pel-use-d-company-dcd :requires 'pel-use-d)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Dart Programming Language Support
+;; ---------------------------------
+
+(defgroup pel-pkg-for-dart nil
+  "PEL customization for Dart."
+  :group 'pel-pkg-for-software-programming-languages
+  :link `(url-link :tag "Dart PDF"
+                   ,(pel-pdf-file-url "pl-dart")))
+
+(defcustom pel-use-dart nil
+  "Control whether PEL supports the Dart Programming Language Development.
+
+This *must* be activated to allow any other package for Dart.
+When activating it you can select between the following values:
+- t                : use `dart-mode' provided by the dart-mode external package.
+- with-tree-sitter : use `dart-ts-mode' provided by the dart-ts-mode external
+                     package."
+  :group 'pel-pkg-for-dart
+  :link '(url-link :tag "dart-mode @ GitHub"
+                   "https://github.com/emacsorphanage/dart-mode")
+  :link '(url-link :tag "dart-ts-mode @ Github"
+                   "https://github.com/50ways2sayhard/dart-ts-mode")
+  :type '(choice
+          (const :tag "Do not use Dart" nil)
+          (const :tag "Use classic mode: dart-mode" t)
+          (const :tag "Use tree-sitter mode: dart-ts-mode" with-tree-sitter)))
+(pel-put 'pel-use-dart :package-is '(if pel-use-tree-sitter
+                                       (quote ((elpa . dart-mode)
+                                               (utils . dart-ts-mode)))
+                                     (quote ((elpa . dart-mode)))))
+
+(defcustom pel-dart-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Dart buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-dart
+  :type '(repeat function))
+
+(defcustom pel-dart-indent-width 2
+  "Number of columns for Dart source code indentation.
+
+PEL stores this value in the indentation control variable used by the Dart
+major mode:
+- For `dart-mode'   : inside `tab-width'
+- For `dart-ts-mode': inside `dart-ts-mode-indent-offset'
+
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkf-for-dart
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-dart-tab-width 2
+  "Column width display rendering of hard tab for buffers in `dart-mode'.
+
+PEL stores this in `tab-width' when opening `dart-ts-mode' buffers only, not
+`dart-mode' buffers, since `dart-mode' uses `tab-width' for indentation and
+PEL sets `tab-width' to `pel-dart-indent-width'.
+
+This does *NOT* control the indentation in Dart files.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters.
+
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-dart
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-dart-use-tabs nil
+  "Value of `indent-tabs-mode' for editing dart files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-dart
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Eiffel Programmaing Language Support

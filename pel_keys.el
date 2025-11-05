@@ -3314,6 +3314,54 @@ d-mode not added to ac-modes!"
         (pel-pike-set-imenu)))))
 
 ;; ---------------------------------------------------------------------------
+;;** Dart Programming Language Support
+;;   -----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC d`` :
+
+(when pel-use-dart
+  ;; 1- Install required packages for Dart
+  ;;    - Always install dart-mode when Dart is used.
+  (pel-ensure-package dart-mode from: melpa)
+  ;;    - Install dart-ts-mode when Dart and Tree-Sitter are supported
+  (when pel-use-tree-sitter
+    (pel-install-github-file "50ways2sayhard/dart-ts-mode/master"
+                             "dart-ts-mode.el")
+    (pel-autoload-file dart-ts-mode for:
+                       dart-ts-mode))
+
+  ;; 2- Associate files with Dart mode selector
+  (add-to-list 'auto-mode-alist '("\\.dart\\'" . pel-dart-mode))
+
+  ;; 3- Speedbar support for Dart
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '(".dart")))
+
+  ;; 4- Buffer keymap for Dart
+  (define-pel-global-prefix pel:for-dart  (kbd "<f11> SPC d"))
+  (define-key pel:for-dart "?" 'pel-dart-setup-info)
+
+  ;; 5- Install optional packages for Dart
+
+  ;; 6- Activate Dart setup.
+  ;;    Schedule more configuration upon Dart feature loading
+  ;;
+  (pel-eval-after-load (dart-mode dart-ts-mode)
+    (pel-config-major-mode dart pel:for-dart :same-for-ts
+      ;; `dart-mode'    uses `tab-width' for indentation width.
+      ;; `dart-ts-mode' uses `dart-ts-mode-indent-offset'.
+      (if (boundp 'dart-ts-mode-indent-offset)
+          ;; for `dart-ts-mode':
+          (progn
+            (setq-local dart-ts-mode-indent-offset pel-dart-indent-width)
+            (setq-local tab-width pel-dart-indent-width)
+            ;; Since `dart-ts-mode' uses `dart-ts-mode-indent-offset' to
+            ;; control indentation, add that variable to the
+            ;; `pel-tab-width-control-variables' to ensure that
+            ;; `pel-set-tab-width' changes it.
+            (setq-local pel-tab-width-control-variables 'dart-ts-mode-indent-offset))
+        (setq-local tab-width pel-dart-indent-width)))))
+
+;; ---------------------------------------------------------------------------
 ;;** Factor Programming Language Support
 ;;   -----------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-f`` :
@@ -7450,6 +7498,9 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:indent "w"             'pel-set-tab-width)
 (define-key pel:indent (kbd "TAB")     'pel-indent-rigidly)
 (define-key pel:indent (kbd "<RET>")   'pel-newline-and-indent-below)
+(define-pel-global-prefix pel:indent-with (kbd "<f11> TAB i"))
+(define-key pel:indent-with (kbd "TAB") 'pel-indent-with-tabs)
+(define-key pel:indent-with (kbd "SPC") 'pel-indent-with-spaces)
 
 (global-set-key (kbd "<C-M-i>") 'pel-unindent-lines)
 

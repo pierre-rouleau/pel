@@ -322,6 +322,13 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-d" for:
     pel-d-insert-shebang-line)
 
+  ;; --
+  (pel-autoload "pel-dart" for:
+    pel-dart-mode)
+  (pel-autoload-function "pel-dart" for:
+    pel--dart-ts-mode-fixer)
+
+  ;; --
   (pel-autoload "pel-diff" for:
     pel-ediff-2files
     pel-ediff-revision
@@ -616,7 +623,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-indent-lines
     pel-unindent-lines
     pel-indent-rigidly
-    pel-show-indent)
+    pel-show-indent
+    pel-indent-with-tabs
+    pel-indent-with-spaces)
   (pel-autoload-function "pel-indent" for:
     pel-insert-tab-set-width-info)
 

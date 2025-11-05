@@ -2,6 +2,26 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add preliminary support for the Dart programming language.
+  PEL activates it with the *dart-mode* the *pel-use-dart* user-option is set
+  to *t*, and with *dart-ts-mode* when it is set to *with-tree-sitter*.
+  User can toggle from the classic or tree-sitter based mode with  ~<f11>
+  C-t C-t~.
+- Add commands that can be used to convert the indentation of the entire
+  buffer from a space-only indentation scheme to a hard-tab indentation scheme
+  allowing control of the indentation visual rendering with the use of the
+  *pel-set-tab-width* command.  This should help people that have problem
+  working with code that uses the increasingly popular 2-space indentation
+  scheme which is strictly imposed by languages such as Dart and Gleam.
+  The commands are:
+  - *pel-indent-with-tabs*, bound to ~<f11> <tab> i <tab>~. It sets the
+    indentation to use hard-tabs of the same width as the indentation width.
+  - After doing that you can change the indentation width by executing the
+    *pel-set-tab-width* command, bound to ~<f1> ,tab> w~.
+  - When you are done, execute the *pel-indent-with-spaces* command, bound to
+    ~<f11> <tab> i <spc>~.  It reverts the file content to use spaces for
+    indentation using the same scheme as was used before you executed
+    *pel-indent-with-tabs* for the first time in the current buffer.
 - Add support for the *dtrt-indent-mode* global minor-mode, activated by *pel-use-dtrt-indent*.
   This package provides automatic indentation with detection from the content of file opens in several major modes.
   This is extremely useful when editing files that do not conform to the indentation width you have identified

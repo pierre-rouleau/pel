@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-01 09:44:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-05 11:31:27 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -319,6 +319,7 @@
     ([f11 32 ?C ?#]  "pl-c++"           pel-pkg-for-c++         hide-ifdef)
     ([f11 32 ?D]     "pl-d"             pel-pkg-for-d           (d-mode
                                                                  electricity))
+    ([f11 32 ?d]     "pl-dart"          pel-pkg-for-dart        (dart dart-ts))
     ([f11 32 ?L]     "pl-common-lisp"   pel-pkg-for-clisp       (lisp
                                                                  lispy
                                                                  slime
@@ -760,6 +761,7 @@ stored inside the doc/pdf directory.")
     ("common-lisp"     [f11 32 ?L])     ; an alias for lisp.
     ("clojure"         [f11 32 10])
     ("d"               [f11 32 ?D])
+    ("dart"            [f11 32 ?d])
     ("elixir"          [f11 32 ?x])
     ("elixir-ts"       [f11 32 ?x])
     ("lisp-interaction" [f11 32 ?l])    ; for scratch buffer
@@ -1074,6 +1076,7 @@ There should be no key binding!" keyseq))
     ("common-lisp"      . "pl-common-lisp")
     ("clojure"          . "pl-clojure")
     ("d"                . "pl-d")
+    ("dart"             . "pl-dart")
     ("eiffel"           . "pl-eiffel")
     ("elixir"           . "pl-elixir")
     ("emacs-lisp"       . "pl-emacs-lisp")
@@ -1790,6 +1793,7 @@ DEFINES: is a cosmetic only argument that must be present."
                    :error))
 
 (defconst pel--ts-mode-with-fixer '(ada-ts-mode
+                                    dart-ts-mode
                                     elixir-ts-mode
                                     erlang-ts-mode
                                     go-ts-mode
@@ -1844,6 +1848,13 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 
 (defconst pel--tab-controlling-major-modes
   '(cwl
+    ;; Dart:
+    ;; `dart-mode' uses `tab-width' as the indentation width, but
+    ;; `dart-ts-mode' does not do that.  Disable implicit code generation
+    ;; to assign pel-dart-tab-with to tab-width as it's done explicitly
+    ;; in the code in pel_keys.el
+    dart
+    ;; Gleam:
     ;; Gleam community decided against hard tab and decided to fix
     ;; indentation to 2 spaces but PEL still provides the user-options for
     ;; tab-width and hard tab control for other editing purposes.

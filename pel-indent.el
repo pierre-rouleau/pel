@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-04 12:26:06 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-05 15:06:53 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,7 +64,7 @@
 ;;
 
 (require 'pel--base)                    ; use: `pel-string-ends-with-p',
-                                        ; `pel-file-type-for', `pel-list-of'
+					; `pel-file-type-for', `pel-list-of'
 (require 'pel--options)                 ; use: `pel-use-dtrt-indent'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -76,11 +76,11 @@
   (let (begin end)
     (save-excursion
       (setq begin (progn
-                    (beginning-of-line)
-                    (point)))
+		    (beginning-of-line)
+		    (point)))
       (setq end   (progn
-                    (end-of-line)
-                    (point))))
+		    (end-of-line)
+		    (point))))
     (cons begin end)))
 
 (defun pel-indent-tabify-current-line ()
@@ -102,17 +102,17 @@ of the first hard tab found.
 Return nil if there are no hard tab in the indentation."
   (let (begin-pos end-pos)
     (if (use-region-p)
-        (progn
-          (setq begin-pos (region-beginning))
-          (setq end-pos   (region-end)))
+	(progn
+	  (setq begin-pos (region-beginning))
+	  (setq end-pos   (region-end)))
       (let ((begin.end (pel-indent-current-line-positions)))
-        (setq begin-pos (car begin.end))
-        (setq end-pos   (cdr begin.end))))
+	(setq begin-pos (car begin.end))
+	(setq end-pos   (cdr begin.end))))
     (save-excursion
       (goto-char begin-pos)
       (condition-case nil
-          (re-search-forward "^ *\t" end-pos)
-        (search-failed nil)))))
+	  (re-search-forward "^ *\t" end-pos)
+	(search-failed nil)))))
 
 (defun pel-indent-untabify-region (marked-lines-spec)
   "Replace all hard tabs by spaces in the MARKED-LINES-SPEC region of lines.
@@ -122,9 +122,9 @@ ORDER      := symbol.  One of \\='point-before-mark or \\='mark-before-point.
 The ORDER argument identifies the relative position of the point and mark
 in the region created by the function."
   (let ((first-line (nth 0 marked-lines-spec))
-        (end-line   (nth 1 marked-lines-spec)))
+	(end-line   (nth 1 marked-lines-spec)))
     (untabify (pel-indent-line-pos first-line nil)
-              (pel-indent-line-pos end-line t))))
+	      (pel-indent-line-pos end-line t))))
 
 (defun pel-indent-tabify-region (marked-lines-spec)
   "Use hard tabs and spaces in the MARKED-LINES-SPEC region of lines.
@@ -134,18 +134,18 @@ ORDER      := symbol.  One of \\='point-before-mark or \\='mark-before-point.
 The ORDER argument identifies the relative position of the point and mark
 in the region created by the function."
   (let ((first-line (nth 0 marked-lines-spec))
-        (end-line   (nth 1 marked-lines-spec)))
+	(end-line   (nth 1 marked-lines-spec)))
     (tabify (pel-indent-line-pos first-line nil)
-            (pel-indent-line-pos end-line t))))
+	    (pel-indent-line-pos end-line t))))
 
 ;; --
 (defun pel-indent-level-columns (&optional n)
   "Return the number of columns corresponding to 1 (or N) indentation levels.
 The indentation level depends on the type of buffer."
   (let ((cols-by-indentation-level   (if (and (boundp 'c-basic-offset)
-                                              (integerp c-basic-offset))
-                                         c-basic-offset
-                                       tab-width)))
+					      (integerp c-basic-offset))
+					 c-basic-offset
+				       tab-width)))
     (* (or n 1) cols-by-indentation-level)))
 
 (defun pel-indent-marked-lines ()
@@ -167,7 +167,7 @@ The returned value is a list of 3 elements:
     (goto-char (point-min))
     (forward-line (1- line))
     (if at-end
-        (move-end-of-line nil)
+	(move-end-of-line nil)
       (move-beginning-of-line nil))
     (point)))
 
@@ -179,13 +179,13 @@ ORDER      := symbol.  One of \\='point-before-mark or \\='mark-before-point.
 The ORDER argument identifies the relative position of the point and mark
 in the region created by the function."
   (cond ((eq order 'point-before-mark)
-         (goto-char (pel-indent-line-pos first-line nil))
-         (set-mark  (pel-indent-line-pos end-line t)))
-        ((eq order 'mark-before-point)
-         (set-mark  (pel-indent-line-pos first-line nil))
-         (goto-char (pel-indent-line-pos end-line t)))
-        (t
-         (error "Invalid order argument value: %s" order))))
+	 (goto-char (pel-indent-line-pos first-line nil))
+	 (set-mark  (pel-indent-line-pos end-line t)))
+	((eq order 'mark-before-point)
+	 (set-mark  (pel-indent-line-pos first-line nil))
+	 (goto-char (pel-indent-line-pos end-line t)))
+	(t
+	 (error "Invalid order argument value: %s" order))))
 
 
 (defun pel-indent-mark-lines-by-spec (marked-lines-spec)
@@ -195,13 +195,13 @@ The MARKED-LINES-SPEC argument is a list with the following 3 elements:
 - line number of the last line in the region
 - symbol \\='point-before-mark or \\='mark-before-point."
   (pel-indent-mark-lines (nth 0 marked-lines-spec)
-                         (nth 1 marked-lines-spec)
-                         (nth 2 marked-lines-spec)))
+			 (nth 1 marked-lines-spec)
+			 (nth 2 marked-lines-spec)))
 
 (defun pel--insert-c-indent-line (n)
   "Insert N times the indentation level number of space chars on current line."
     (if (< n 0)
-        (pel-unindent-lines (abs n))
+	(pel-unindent-lines (abs n))
       (move-beginning-of-line nil)
       (insert (make-string (pel-indent-level-columns n) ?\s))))
 
@@ -227,31 +227,31 @@ Handles presence of hard tabs:
   (let ((n (prefix-numeric-value n)))
     (let ((has-hard-tab (pel-indent-hard-tab-in-region-or-line-p)))
       (if (use-region-p)
-          (let ((original-region-spec (pel-indent-marked-lines))
-                (begin-point (region-beginning))
-                (line-count (count-lines (region-beginning) (region-end)))
-                ;; Normally, Emacs deactivates the region right after a
-                ;; command has executed.  To prevent this, and allow region to
-                ;; stay active and visible for further execution of this
-                ;; command, set the deactivate-mark variable to nil for this
-                ;; form.
-                (deactivate-mark nil))
-            (when has-hard-tab
-              (pel-indent-untabify-region original-region-spec))
-            (deactivate-mark)
-            (goto-char begin-point)
-            (dotimes (_i line-count)
-              (pel--insert-c-indent-line n)
-              (forward-line 1))
-            (when indent-tabs-mode
-              (pel-indent-tabify-region original-region-spec))
-            (pel-indent-mark-lines-by-spec original-region-spec))
-        ;; handle single line
-        (when has-hard-tab
-          (pel-indent-untabify-current-line))
-        (pel--insert-c-indent-line n)
-        (when indent-tabs-mode
-          (pel-indent-tabify-current-line))))))
+	  (let ((original-region-spec (pel-indent-marked-lines))
+		(begin-point (region-beginning))
+		(line-count (count-lines (region-beginning) (region-end)))
+		;; Normally, Emacs deactivates the region right after a
+		;; command has executed.  To prevent this, and allow region to
+		;; stay active and visible for further execution of this
+		;; command, set the deactivate-mark variable to nil for this
+		;; form.
+		(deactivate-mark nil))
+	    (when has-hard-tab
+	      (pel-indent-untabify-region original-region-spec))
+	    (deactivate-mark)
+	    (goto-char begin-point)
+	    (dotimes (_i line-count)
+	      (pel--insert-c-indent-line n)
+	      (forward-line 1))
+	    (when indent-tabs-mode
+	      (pel-indent-tabify-region original-region-spec))
+	    (pel-indent-mark-lines-by-spec original-region-spec))
+	;; handle single line
+	(when has-hard-tab
+	  (pel-indent-untabify-current-line))
+	(pel--insert-c-indent-line n)
+	(when indent-tabs-mode
+	  (pel-indent-tabify-current-line))))))
 
 ;; --
 (defun pel--line-unindent (&optional n)
@@ -263,9 +263,9 @@ Limitation: does not handle hard tabs and may move point."
     (when (> (current-column) 0)
       (left-char (min (current-column) (pel-indent-level-columns n)))
       (if (and (require 'pel-ccp nil :no-error)
-               (fboundp 'pel-delete-to-next-visible))
-          (pel-delete-to-next-visible)
-        (error "Function pel-delete-to-next-visible is not loaded")))))
+	       (fboundp 'pel-delete-to-next-visible))
+	  (pel-delete-to-next-visible)
+	(error "Function pel-delete-to-next-visible is not loaded")))))
 
 ;;-pel-autoload
 (defun pel-unindent-lines (&optional n)
@@ -287,30 +287,30 @@ Handles presence of hard tabs:
   (interactive "*P")
   (let ((has-hard-tab (pel-indent-hard-tab-in-region-or-line-p)))
     (if (use-region-p)
-        (let ((original-region-spec (pel-indent-marked-lines))
-              (begin-point (region-beginning))
-              (line-count (count-lines (region-beginning) (region-end)))
-              ;; Normally, Emacs deactivates the region right after a command
-              ;; has executed.  To prevent this, and allow region to stay
-              ;; active and visible for further execution of this command,
-              ;; set the deactivate-mark variable to nil for this form.
-              (deactivate-mark nil))
-          (when has-hard-tab
-              (pel-indent-untabify-region original-region-spec))
-          (deactivate-mark)
-          (goto-char begin-point)
-          (dotimes (_i line-count)
-            (pel--line-unindent n)
-            (forward-line 1))
-          (when indent-tabs-mode
-            (pel-indent-tabify-region original-region-spec))
-          (pel-indent-mark-lines-by-spec original-region-spec))
+	(let ((original-region-spec (pel-indent-marked-lines))
+	      (begin-point (region-beginning))
+	      (line-count (count-lines (region-beginning) (region-end)))
+	      ;; Normally, Emacs deactivates the region right after a command
+	      ;; has executed.  To prevent this, and allow region to stay
+	      ;; active and visible for further execution of this command,
+	      ;; set the deactivate-mark variable to nil for this form.
+	      (deactivate-mark nil))
+	  (when has-hard-tab
+	      (pel-indent-untabify-region original-region-spec))
+	  (deactivate-mark)
+	  (goto-char begin-point)
+	  (dotimes (_i line-count)
+	    (pel--line-unindent n)
+	    (forward-line 1))
+	  (when indent-tabs-mode
+	    (pel-indent-tabify-region original-region-spec))
+	  (pel-indent-mark-lines-by-spec original-region-spec))
       ;; handle single line
       (when has-hard-tab
-          (pel-indent-untabify-current-line))
+	  (pel-indent-untabify-current-line))
       (pel--line-unindent n)
       (when indent-tabs-mode
-        (pel-indent-tabify-current-line)))))
+	(pel-indent-tabify-current-line)))))
 
 ;;-pel-autoload
 (defun pel-indent-rigidly (&optional n)
@@ -326,43 +326,43 @@ by the numeric argument N (or if not specified N=1):
   (let ((n (prefix-numeric-value n)))
     (unless (use-region-p)
       (if (= n 0)
-          (setq n 1))
+	  (setq n 1))
       (if (and (require 'pel-mark nil :no-error)
-               (fboundp 'pel-mark-line-up)
-               (fboundp 'pel-mark-line-down))
-          (if (< n 0)
-              (pel-mark-line-up n)
-            (pel-mark-line-down n))
-        (error "The pel-mark functions are not loaded")))
+	       (fboundp 'pel-mark-line-up)
+	       (fboundp 'pel-mark-line-down))
+	  (if (< n 0)
+	      (pel-mark-line-up n)
+	    (pel-mark-line-down n))
+	(error "The pel-mark functions are not loaded")))
     (indent-rigidly (region-beginning) (region-end) nil t)))
 
 
 (defconst pel--c-basic-offset-modes '(awk-mode
-                                      bpftrace-mode
-                                      c-mode
-                                      c-ts-mode
-                                      c++-mode
-                                      c++-ts-mode
-                                      d-mode
-                                      go-ts-mode
-                                      groovy-mode
-                                      idl-mode
-                                      java-mode
-                                      java-ts-mode
-                                      jde-mode
-                                      objc-mode
-                                      php-mode
-                                      pike-mode
-                                      protobuf-mode
-                                      rust-mode
-                                      rust-ts-mode
-                                      rustic-mode
-                                      scala-mode
-                                      swift-mode)
+				      bpftrace-mode
+				      c-mode
+				      c-ts-mode
+				      c++-mode
+				      c++-ts-mode
+				      d-mode
+				      go-ts-mode
+				      groovy-mode
+				      idl-mode
+				      java-mode
+				      java-ts-mode
+				      jde-mode
+				      objc-mode
+				      php-mode
+				      pike-mode
+				      protobuf-mode
+				      rust-mode
+				      rust-ts-mode
+				      rustic-mode
+				      scala-mode
+				      swift-mode)
   "Major modes implemented as cc-modes.")
 
 (defconst pel--sh-based-modes '(sh-mode
-                                bash-ts-mode)
+				bash-ts-mode)
   "Major modes based on sh-mode.")
 
 ;; Credit Note: the following table was originally derived from code
@@ -389,6 +389,7 @@ by the numeric argument N (or if not specified N=1):
     (less-css-mode       css-indent-offset)
     (scss-mode           css-indent-offset)
     (ssass-mode          ssass-tab-width)
+    (dart-mode           tab-width)
     (dockerfile-mode     dockerfile-indent-offset)
     (d-mode              c-basic-offset) ; D
     (elixir-mode         elixir-smie-indent-basic)
@@ -398,28 +399,28 @@ by the numeric argument N (or if not specified N=1):
     (erlang-mode         erlang-indent-level) ; Erlang
     (ess-mode            ess-indent-offset)
     (f90-mode            (f90-associate-indent
-                          f90-continuation-indent
-                          f90-critical-indent
-                          f90-do-indent
-                          f90-if-indent
-                          f90-program-indent
-                          f90-type-indent))
+			  f90-continuation-indent
+			  f90-critical-indent
+			  f90-do-indent
+			  f90-if-indent
+			  f90-program-indent
+			  f90-type-indent))
     (feature-mode        (feature-indent-offset
-                          feature-indent-level))
+			  feature-indent-level))
     (fsharp-mode         (fsharp-continuation-offset
-                          fsharp-indent-level
-                          fsharp-indent-offset))
+			  fsharp-indent-level
+			  fsharp-indent-offset))
     (gdscript-mode       gdscript-indent-offset)
     (groovy-mode         groovy-indent-offset) ; Groovy
     (jenkinsfile-mode    groovy-indent-offset)
     (haskell-mode        (haskell-indent-spaces
-                          haskell-indent-offset
-                          haskell-indentation-layout-offset
-                          haskell-indentation-left-offset
-                          haskell-indentation-starter-offset
-                          haskell-indentation-where-post-offset
-                          haskell-indentation-where-pre-offset
-                          shm-indent-spaces))
+			  haskell-indent-offset
+			  haskell-indentation-layout-offset
+			  haskell-indentation-left-offset
+			  haskell-indentation-starter-offset
+			  haskell-indentation-where-post-offset
+			  haskell-indentation-where-pre-offset
+			  shm-indent-spaces))
     (haxe-mode           c-basic-offset)
     (haxor-mode          haxor-tab-width)
     (idl-mode            c-basic-offset)
@@ -449,7 +450,7 @@ by the numeric argument N (or if not specified N=1):
     (nxml-mode           (nxml-child-indent nxml-attribute-indent))
     (objc-mode           c-basic-offset) ; Objective C
     (octave-mode         octave-block-offset)
-    (nxml-mode           nxml-child-indent) ; XML
+    (nxml-mode           nxml-child-indent)   ; XML
     (pascal-mode         pascal-indent-level) ; Pascal
     (perl-mode           perl-indent-level)   ; Perl
     (php-mode            c-basic-offset)      ; PHP
@@ -460,8 +461,8 @@ by the numeric argument N (or if not specified N=1):
     (puppet-mode         puppet-indent-level)
     (ps-mode             ps-mode-tab)
     (python-mode         (python-indent-offset
-                          py-indent-offset ; used by the badly maintained python-mode.
-                          python-indent-levels))
+			  py-indent-offset ; used by the badly maintained python-mode.
+			  python-indent-levels))
     (raku-mode           raku-indent-offset) ; Perl6/Raku
     (rjsx-mode           (js-indent-level sgml-basic-offset))
     (ruby-mode           ruby-indent-level)     ; Ruby - use SMIE if available
@@ -481,29 +482,30 @@ by the numeric argument N (or if not specified N=1):
     (terra-mode          terra-indent-level)
     (typescript-mode     typescript-indent-level) ; Typescript
     (verilog-mode        (verilog-indent-level
-                          verilog-indent-level-behavioral
-                          verilog-indent-level-declaration
-                          verilog-indent-level-module
-                          verilog-cexp-indent
-                          verilog-case-indent))
+			  verilog-indent-level-behavioral
+			  verilog-indent-level-declaration
+			  verilog-indent-level-module
+			  verilog-cexp-indent
+			  verilog-case-indent))
     (vhdl-mode           vhdl-basic-offset) ; VHDL
     (web-mode            (web-mode-attr-indent-offset
-                          web-mode-attr-value-indent-offset
-                          web-mode-code-indent-offset
-                          web-mode-css-indent-offset
-                          web-mode-markup-indent-offset
-                          web-mode-sql-indent-offset
-                          web-mode-block-padding
-                          web-mode-script-padding
-                          web-mode-style-padding)) ; HTML
-    (xquery-mode         xquery-mode-indent-width)     ; XQuery
-    (yaml-mode           yaml-indent-offset)         ; YAML
+			  web-mode-attr-value-indent-offset
+			  web-mode-code-indent-offset
+			  web-mode-css-indent-offset
+			  web-mode-markup-indent-offset
+			  web-mode-sql-indent-offset
+			  web-mode-block-padding
+			  web-mode-script-padding
+			  web-mode-style-padding)) ; HTML
+    (xquery-mode         xquery-mode-indent-width) ; XQuery
+    (yaml-mode           yaml-indent-offset)       ; YAML
     (zig-mode            zig-indent-offset)
 
     ;; modes with treesitter enabled
     (ada-ts-mode         ada-ts-mode-indent-offset)
     (c-ts-mode           c-ts-mode-indent-offset)
     (c++-ts-mode         c-ts-mode-indent-offset)
+    (dart-ts-mode        dart-ts-mode-indent-offset)
     (go-ts-mode          go-ts-mode-indent-offset)
     (gpr-ts-mode         gpr-ts-mode-indent-offset)
     (java-ts-mode        java-ts-mode-indent-offset)
@@ -520,11 +522,11 @@ by the numeric argument N (or if not specified N=1):
 Return nil if none is known.  In that case the variable is probably the
 default: `standard-indent'."
   (let* ((mode (or mode major-mode))
-         (vars (cadr (assoc mode pel--mode-indent-vars))))
+	 (vars (cadr (assoc mode pel--mode-indent-vars))))
     (unless vars
       (when (pel-string-ends-with-p (symbol-name mode) "-ts-mode")
-        (setq mode (intern (format "%s-mode" (pel-file-type-for mode))))
-        (setq vars (cadr (assoc mode pel--mode-indent-vars)))))
+	(setq mode (intern (format "%s-mode" (pel-file-type-for mode))))
+	(setq vars (cadr (assoc mode pel--mode-indent-vars)))))
     (pel-list-of vars)))
 
 ;;-pel-autoload
@@ -542,22 +544,22 @@ The symbols are:
 - "
   (let ((context (make-hash-table)))
     (puthash 'pel-insert-symbol-content-context-buffer
-             (current-buffer) context)
+	     (current-buffer) context)
     (puthash 'standard-indent   standard-indent context)
     (puthash 'tab-always-indent tab-always-indent context)
     (puthash 'indent-line-function indent-line-function context)
     (puthash 'the-indent-control-vars (pel-mode-indent-control-vars) context)
     (puthash 'pel-indentation-width-control-variables
-             pel-indentation-width-control-variables context)
+	     pel-indentation-width-control-variables context)
     (puthash 'pel-indentation-other-control-variables
-             pel-indentation-other-control-variables context)
+	     pel-indentation-other-control-variables context)
     (puthash 'indent-indent-info-inserter-fct
-             (intern
-              (pel-string-with-major-mode
-               "pel-%s-insert-indent-info"))
-             context)
+	     (intern
+	      (pel-string-with-major-mode
+	       "pel-%s-insert-indent-info"))
+	     context)
     (puthash 'pel-MM-indent-width
-             (pel-major-mode-symbol-for "pel-%s-indent-width") context)
+	     (pel-major-mode-symbol-for "pel-%s-indent-width") context)
     context))
 
 (defun pel-indent-insert-control-info (context)
@@ -567,21 +569,21 @@ CONTEXT, a hash created by `pel-indent-control-context', captures the values of
 important variables and symbols in the context of the inspected major mode."
   ;; 1- restore the context in let-bound variables.
   (let* ((pel-insert-symbol-content-context-buffer
-          (gethash 'pel-insert-symbol-content-context-buffer context))
-         (standard-indent (gethash 'standard-indent context))
-         (tab-always-indent (gethash 'tab-always-indent context ))
-         (indent-line-function (gethash 'indent-line-function context))
-         (the-indent-control-vars (gethash 'the-indent-control-vars context))
-         (pel-indentation-width-control-variables
-          (gethash 'pel-indentation-width-control-variables context))
-         (pel-indentation-other-control-variables
-          (gethash 'pel-indentation-other-control-variables context))
-         (indent-indent-info-inserter-fct
-          (gethash 'indent-indent-info-inserter-fct context))
-         (pel-MM-indent-width (gethash 'pel-MM-indent-width context))
-         (already-inserted nil)
-         (major-mode-specific-inserted nil)
-         (pel-controls-indentation nil))
+	  (gethash 'pel-insert-symbol-content-context-buffer context))
+	 (standard-indent (gethash 'standard-indent context))
+	 (tab-always-indent (gethash 'tab-always-indent context ))
+	 (indent-line-function (gethash 'indent-line-function context))
+	 (the-indent-control-vars (gethash 'the-indent-control-vars context))
+	 (pel-indentation-width-control-variables
+	  (gethash 'pel-indentation-width-control-variables context))
+	 (pel-indentation-other-control-variables
+	  (gethash 'pel-indentation-other-control-variables context))
+	 (indent-indent-info-inserter-fct
+	  (gethash 'indent-indent-info-inserter-fct context))
+	 (pel-MM-indent-width (gethash 'pel-MM-indent-width context))
+	 (already-inserted nil)
+	 (major-mode-specific-inserted nil)
+	 (pel-controls-indentation nil))
     ;; 2- insert information using those values
     (insert (propertize "* Indentation Control:" 'face 'bold))
     ;;    - insert mode specialized info if a function exists for it.
@@ -593,30 +595,30 @@ important variables and symbols in the context of the inspected major mode."
     ;;      by the list of symbol it returns.
     (unless (memq 'pel-MM-indent-width already-inserted)
       (when (boundp pel-MM-indent-width)
-        (pel-insert-symbol-content-line pel-MM-indent-width)
-        (push pel-MM-indent-width already-inserted)
-        (setq pel-controls-indentation t)
-        (setq major-mode-specific-inserted t)))
+	(pel-insert-symbol-content-line pel-MM-indent-width)
+	(push pel-MM-indent-width already-inserted)
+	(setq pel-controls-indentation t)
+	(setq major-mode-specific-inserted t)))
     (when the-indent-control-vars
-        (dolist (var the-indent-control-vars)
-          (unless (memq var already-inserted)
-            (pel-insert-symbol-content-line var)
-            (push var already-inserted)
-            (setq major-mode-specific-inserted t))))
+	(dolist (var the-indent-control-vars)
+	  (unless (memq var already-inserted)
+	    (pel-insert-symbol-content-line var)
+	    (push var already-inserted)
+	    (setq major-mode-specific-inserted t))))
     (when major-mode-specific-inserted
       (unless (memq 'precedence-info already-inserted)
-        (if pel-controls-indentation
-            (insert (format "\n
+	(if pel-controls-indentation
+	    (insert (format "\n
 Note: `%s' controls indentation for new files as PEL uses
       its value and stores it in the other variables for
       the mode shown above.
 " pel-MM-indent-width))
-          (insert "\n
+	  (insert "\n
 Note: The above variable control the indentation of this major mode.
       It takes precedence over the variables listed below.
 "))
-        (when pel-use-dtrt-indent
-          (insert "\
+	(when pel-use-dtrt-indent
+	  (insert "\
       However, `dtrt-indent-mode' may detect a different indentation
       scheme for already written files and change the indentation
       control variable value used by the major-mode, overriding the
@@ -625,10 +627,10 @@ Note: The above variable control the indentation of this major mode.
       the adjustment made by `dtrt-indent-mode'.
 "))))
     (dolist (symb '(standard-indent
-                    tab-always-indent
-                    indent-line-function))
+		    tab-always-indent
+		    indent-line-function))
       (unless (memq symb already-inserted)
-        (pel-insert-symbol-content-line symb)))
+	(pel-insert-symbol-content-line symb)))
     ;; --
     (unless (fboundp indent-indent-info-inserter-fct)
       ;; If there is no specialized inserter for this mode
@@ -636,15 +638,15 @@ Note: The above variable control the indentation of this major mode.
       ;; impact on the indentation, insert information about
       ;; those here.
       (when pel-indentation-width-control-variables
-        (dolist (varsymb (if (listp pel-indentation-width-control-variables)
-                             pel-indentation-width-control-variables
-                           (list pel-indentation-width-control-variables)))
-          (unless (memq varsymb already-inserted)
-            (pel-insert-symbol-content-line varsymb))))
+	(dolist (varsymb (if (listp pel-indentation-width-control-variables)
+			     pel-indentation-width-control-variables
+			   (list pel-indentation-width-control-variables)))
+	  (unless (memq varsymb already-inserted)
+	    (pel-insert-symbol-content-line varsymb))))
       (when pel-indentation-other-control-variables
-        (dolist (varsymb pel-indentation-other-control-variables)
-          (unless (memq varsymb already-inserted)
-                  (pel-insert-symbol-content-line varsymb)))))))
+	(dolist (varsymb pel-indentation-other-control-variables)
+	  (unless (memq varsymb already-inserted)
+		  (pel-insert-symbol-content-line varsymb)))))))
 
 
 (defun pel-tab-control-context ()
@@ -665,18 +667,18 @@ The symbols are:
     (puthash 'tab-width            tab-width context)
     (puthash 'tab-stop-list        tab-stop-list context)
     (puthash 'indent-tab-info-inserter-fct
-             (intern
-              (pel-string-with-major-mode
-               "pel-%s-insert-tab-info"))
-             context)
+	     (intern
+	      (pel-string-with-major-mode
+	       "pel-%s-insert-tab-info"))
+	     context)
     (puthash 'pel-MM-tab-width
-             (pel-major-mode-symbol-for "pel-%s-tab-width") context)
+	     (pel-major-mode-symbol-for "pel-%s-tab-width") context)
     (puthash 'pel-MM-use-tabs
-             (pel-major-mode-symbol-for "pel-%s-use-tabs") context)
+	     (pel-major-mode-symbol-for "pel-%s-use-tabs") context)
     (puthash 'pel-MM-tie-indent-to-tab-width
-             (pel-major-mode-symbol-for "pel-%s-tie-indent-to-tab-width") context)
+	     (pel-major-mode-symbol-for "pel-%s-tie-indent-to-tab-width") context)
     (puthash 'pel--MM-indent-predef-vars
-             (pel-major-mode-symbol-for "pel--%s-indent-predef-vars") context)
+	     (pel-major-mode-symbol-for "pel--%s-indent-predef-vars") context)
     context))
 
 (defun pel-tab-insert-control-info (context)
@@ -686,33 +688,33 @@ CONTEXT, a hash created by `pel-tab-control-context', captures the values of
 important variables and symbols in the context of the inspected major mode."
   ;; 1- restore the context in let-bound variables.
   (let* ((used-major-mode (gethash 'used-major-mode context))
-         (pel-insert-symbol-content-context-buffer
-          (gethash
-           'pel-insert-symbol-content-context-buffer
-           context))
-         (pel-tab-width-control-variables     (gethash 'pel-tab-width-control-variables context))
-         (indent-tabs-mode          (gethash 'indent-tabs-mode context))
-         (tab-width                 (gethash 'tab-width context))
-         (tab-stop-list             (gethash 'tab-stop-list context))
-         (indent-tab-info-inserter-fct (gethash
-                                        'indent-tab-info-inserter-fct
-                                        context))
-         (pel-MM-tab-width (gethash 'pel-MM-tab-width context))
-         (pel-MM-use-tabs  (gethash 'pel-MM-use-tabs context))
-         (pel-MM-tie-indent-to-tab-width (gethash
-                                          'pel-MM-tie-indent-to-tab-width
-                                          context))
-         (pel--MM-indent-predef-vars (gethash
-                                          'pel--MM-indent-predef-vars context))
-         (already-inserted nil)
-         (mode-base (pel-file-type-for used-major-mode)))
+	 (pel-insert-symbol-content-context-buffer
+	  (gethash
+	   'pel-insert-symbol-content-context-buffer
+	   context))
+	 (pel-tab-width-control-variables     (gethash 'pel-tab-width-control-variables context))
+	 (indent-tabs-mode          (gethash 'indent-tabs-mode context))
+	 (tab-width                 (gethash 'tab-width context))
+	 (tab-stop-list             (gethash 'tab-stop-list context))
+	 (indent-tab-info-inserter-fct (gethash
+					'indent-tab-info-inserter-fct
+					context))
+	 (pel-MM-tab-width (gethash 'pel-MM-tab-width context))
+	 (pel-MM-use-tabs  (gethash 'pel-MM-use-tabs context))
+	 (pel-MM-tie-indent-to-tab-width (gethash
+					  'pel-MM-tie-indent-to-tab-width
+					  context))
+	 (pel--MM-indent-predef-vars (gethash
+					  'pel--MM-indent-predef-vars context))
+	 (already-inserted nil)
+	 (mode-base (pel-file-type-for used-major-mode)))
     ;; 2- insert information using those values
     (insert "\n\n")
     (insert (propertize "* Hard Tab Control:" 'face 'bold))
     (when (fboundp indent-tab-info-inserter-fct)
       (setq already-inserted (funcall indent-tab-info-inserter-fct)))
     (when (and (not (memq 'tab-description-intro already-inserted))
-               (boundp pel-MM-tab-width))
+	       (boundp pel-MM-tab-width))
       (insert (format "
 - The hard tab rendering width is for %s buffer is controlled by
   `pel-%s-tab-width' and stored into `tab-width'.
@@ -723,18 +725,18 @@ important variables and symbols in the context of the inspected major mode."
 " mode-base mode-base mode-base mode-base)))
     (unless (memq 'pel-MM-tab-width already-inserted)
       (when (boundp pel-MM-tab-width)
-        (pel-insert-symbol-content-line pel-MM-tab-width)))
+	(pel-insert-symbol-content-line pel-MM-tab-width)))
     (unless (memq 'pel-MM-use-tabs already-inserted)
       (when (boundp pel-MM-use-tabs)
-        (pel-insert-symbol-content-line pel-MM-use-tabs)))
+	(pel-insert-symbol-content-line pel-MM-use-tabs)))
     (dolist (symb '(tab-width
-                    indent-tabs-mode
-                    tab-stop-list))
+		    indent-tabs-mode
+		    tab-stop-list))
       (unless (memq symb already-inserted)
-        (pel-insert-symbol-content-line symb)))
+	(pel-insert-symbol-content-line symb)))
     (unless (memq 'pel-set-tab-width-description already-inserted)
       (insert (substitute-command-keys
-               "
+	       "
 
  You can use the `pel-set-tab-width' command via \\[pel-set-tab-width] to
  change the width rendering of hard tabs temporarily in the current buffer.
@@ -748,13 +750,13 @@ important variables and symbols in the context of the inspected major mode."
     the buffer local value of `pel-tab-width-control-variables' when the buffer
     is opened.
   - For this mode its value is: pel-tab-width-control-variables : %S"
-                    pel-tab-width-control-variables))
+		    pel-tab-width-control-variables))
     (when (boundp pel-MM-tie-indent-to-tab-width)
       (insert "
   - That buffer local value is controlled by customization by:")
       (pel-insert-symbol-content-line pel-MM-tie-indent-to-tab-width)
       (unless (memq 'technique-to-use-hard-tab already-inserted)
-        (insert "\n
+	(insert "\n
      Although the use of hard tab for indentation is not popular for
      most programming languages, using hard tabs only for indentation
      allows full control of the visual rendering of indentation without
@@ -766,27 +768,27 @@ important variables and symbols in the context of the inspected major mode."
      control variables differ by some amount, then spaces and hard tabs
      will be used and changing the tab width will impose insertion or removal
      of space characters when re-indenting.")
-        (if (and pel-tab-width-control-variables
-                 (not (pel-indent--indent-vars-have-offset
-                       pel-tab-width-control-variables)))
-            (insert (format "
+	(if (and pel-tab-width-control-variables
+		 (not (pel-indent--indent-vars-have-offset
+		       pel-tab-width-control-variables)))
+	    (insert (format "
      - For this buffer you can use this technique, given the current variables
        identified in pel-tab-width-control-variables."))
-          (when (and (boundp pel--MM-indent-predef-vars)
-                     (symbol-value pel--MM-indent-predef-vars))
-            (if (not (pel-indent--indent-vars-have-offset
-                      (symbol-value pel--MM-indent-predef-vars)))
-                (insert (format "
+	  (when (and (boundp pel--MM-indent-predef-vars)
+		     (symbol-value pel--MM-indent-predef-vars))
+	    (if (not (pel-indent--indent-vars-have-offset
+		      (symbol-value pel--MM-indent-predef-vars)))
+		(insert (format "
      - For this mode, if you set `%s'
        to use-predef-vars, you will be able to use this technique
        in the next buffers you open."
-                                pel-MM-tie-indent-to-tab-width))
-              (insert (format "
+				pel-MM-tie-indent-to-tab-width))
+	      (insert (format "
      - For this mode, if you set `%s'
        to a list of indent variables with 0 for their offset,
        then you will be able to use this technique in the next
        buffers you open."
-                              pel-MM-tie-indent-to-tab-width)))))))))
+			      pel-MM-tie-indent-to-tab-width)))))))))
 
 
 (defun pel-indent--indent-vars-have-offset (vars)
@@ -802,9 +804,9 @@ specifies a non-zero offset for a variable bound in the current mode."
   (let ((has-offset nil))
     (dolist (var (pel-list-of vars))
       (when (and (consp var)
-                 (boundp (car var))
-                 (not (eq (cdr var) 0)))
-        (setq has-offset t)))
+		 (boundp (car var))
+		 (not (eq (cdr var) 0)))
+	(setq has-offset t)))
     has-offset))
 
 ;;-pel-autoload
@@ -812,19 +814,95 @@ specifies a non-zero offset for a variable bound in the current mode."
   "Display current buffer's indentation behaviour controlling variable state."
   (interactive "P")
   (let ((indent-tab-info-cmd (intern (pel-string-with-major-mode
-                                      "pel-%s-indent-tab-info"))))
+				      "pel-%s-indent-tab-info"))))
     (if (fboundp indent-tab-info-cmd)
-        (call-interactively indent-tab-info-cmd)
+	(call-interactively indent-tab-info-cmd)
       (let ((indent-control-context (pel-indent-control-context))
-            (tab-control-context (pel-tab-control-context)))
-        (pel-print-in-buffer
-         "*pel-indent-info*"
-         "Indentation Width Control and Space/Tab Insertion Rendering"
-         (lambda ()
-           (pel-indent-insert-control-info indent-control-context)
-           (pel-tab-insert-control-info tab-control-context))
-         (unless append :clear-buffer)
-         :use-help-mode)))))
+	    (tab-control-context (pel-tab-control-context)))
+	(pel-print-in-buffer
+	 "*pel-indent-info*"
+	 "Indentation Width Control and Space/Tab Insertion Rendering"
+	 (lambda ()
+	   (pel-indent-insert-control-info indent-control-context)
+	   (pel-tab-insert-control-info tab-control-context))
+	 (unless append :clear-buffer)
+	 :use-help-mode)))))
+
+;; ---------------------------------------------------------------------------
+;; Using Hard Tabs for indentation to help visibility
+;; --------------------------------------------------
+
+(defun pel-inside-code (&optional pos)
+  "Return non-nil when point is in code, nil if in comment or string."
+  (let* ((pos (or pos (point)))
+	 (syntax (syntax-ppss pos)))
+    (and (not (nth 3 syntax))
+	 (not (nth 4 syntax)))))
+
+(defun pel-tabify-all-indent ()
+  "Convert multiple spaces in indent to tabs when possible.
+A group of spaces is partially replaced by tabs
+when this can be done without changing the column they end at.
+Process complete buffer.
+The variable `tab-width' controls the spacing of tab stops."
+  (save-excursion
+    (save-restriction
+      ;; Process entire buffer.
+      (narrow-to-region (point-min) (point-max))
+      (goto-char (point-min))
+      (let ((indent-tabs-mode t)
+	    (inside-code nil))
+	(while (re-search-forward "^[ \t]* [ \t]+" nil t)
+	  ;; In white-space indentation: adjust to TABs were possible.
+	  (save-match-data
+	    (setq inside-code (pel-inside-code (point))))
+	  (when inside-code
+	    (let ((end-col (current-column))
+		  (beg-col (save-excursion (goto-char (match-beginning 0))
+					   (skip-chars-forward "\t")
+					   (current-column))))
+	      (unless (= (/ end-col tab-width) (/ beg-col tab-width))
+		;; The spacing (after some leading TABs which we wouldn't
+		;; want to touch anyway) does not straddle a TAB boundary,
+		;; so it neither contains a TAB, nor will we be able to use
+		;; a TAB here anyway: there's nothing to do.
+		(delete-region (match-beginning 0) (point))
+		(indent-to end-col)))))))))
+
+(defvar-local pel--original-tab-width nil
+  "Remember original tab width.")
+
+(defun pel-indent-with-tabs (&optional with-tab-width)
+  "Convert current buffer to use tabs for indentation.
+
+If the optional WITH-TAB-WIDTH numerical argument is specified use that
+otherwise prompt for the tab width to use."
+  (interactive
+   (if (and current-prefix-arg (not (consp current-prefix-arg)))
+       (list (prefix-numeric-value current-prefix-arg))
+     (list (read-number (format "Tab width [%d]: " tab-width)))))
+  (save-excursion
+    (pel-tabify-all-indent)
+    (when with-tab-width
+      (unless pel--original-tab-width
+        (setq-local pel--original-tab-width tab-width))
+      (pel-set-tab-width with-tab-width))))
+
+(defun pel-indent-with-spaces (&optional with-tab-width)
+  "Convert current buffer to use space for indentation.
+
+Use the original scheme unless a the optional WITH-TAB-WIDTH
+numerical argument is specified.  If an optional numerical
+argument is  specified, use that for tab width."
+  (interactive "P")
+  (save-excursion
+    (if with-tab-width
+        (pel-set-tab-width with-tab-width)
+      ;; Restore the original tab-width if it was stored in
+      ;; `pel--original-tab-width'
+      (when pel--original-tab-width
+        (pel-set-tab-width pel--original-tab-width)))
+    (untabify (point-min) (point-max))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-indent)
