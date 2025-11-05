@@ -9512,7 +9512,7 @@ the ones defined from the buffer now."
 (define-key pel:fill "?"    'pel-show-fill-columns)
 (define-key pel:fill "c"   #'set-fill-column)
 (define-key pel:fill "."   #'set-fill-prefix)
-(define-key pel:fill "a"   #'auto-fill-mode)
+(define-key pel:fill "C"   #'auto-fill-mode)
 (define-key pel:fill ";"    'pel-auto-fill-only-comments)
 (define-key pel:fill "f"   #'refill-mode)
 (define-key pel:fill "l"   #'lisp-fill-paragraph)
