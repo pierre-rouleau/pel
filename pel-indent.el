@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-05 15:06:53 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-05 16:07:14 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -886,7 +886,10 @@ otherwise prompt for the tab width to use."
     (when with-tab-width
       (unless pel--original-tab-width
         (setq-local pel--original-tab-width tab-width))
-      (pel-set-tab-width with-tab-width))))
+      (pel-set-tab-width with-tab-width))
+    ;; all indentation use tabs now, new code should also
+    ;; use tabs.
+    (indent-tabs-mode 1)))
 
 (defun pel-indent-with-spaces (&optional with-tab-width)
   "Convert current buffer to use space for indentation.
@@ -902,7 +905,8 @@ argument is  specified, use that for tab width."
       ;; `pel--original-tab-width'
       (when pel--original-tab-width
         (pel-set-tab-width pel--original-tab-width)))
-    (untabify (point-min) (point-max))))
+    (untabify (point-min) (point-max))
+    (indent-tabs-mode -1)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-indent)
