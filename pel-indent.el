@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-06 16:25:36 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-06 16:37:55 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -522,19 +522,26 @@ by the numeric argument N (or if not specified N=1):
 (defvar-local pel--last-set-tab-width nil
   "Tab width set by last `pel-set-tab-width' call.")
 
+(defun pel-read-number (prompt default history-symbol)
+  "Emacs version sensitive `read-number'."
+  (with-no-warnings
+    (if pel-emacs-28-or-later-p
+        (read-number prompt default history-symbol)
+      (read-number prompt default))))
+
 (defun pel-set-tab-width (n)
   "Set the tab width used in current buffer to the value N.
 
 The change is temporary and affects the current buffer only.
 Return the new `tab-width' or nil if unchanged."
-  (interactive (list (read-number "New tab-width: " tab-width
+  (interactive (list (pel-read-number "New tab-width: " tab-width
                                   'pel-set-tab-width-history)))
   (let ((control-vars (pel-list-of pel-tab-width-control-variables))
         (current-tab-width tab-width)
         (offset nil))
     ;;
     (while (not (and (< n 9) (> n 1)))
-      (setq n (read-number "Enter valid tab-width in 2-8 range: "
+      (setq n (pel-read-number "Enter valid tab-width in 2-8 range: "
                            current-tab-width
                            'pel-set-tab-width-history)))
     ;;
@@ -1094,7 +1101,7 @@ width to use."
   (interactive
    (if (and current-prefix-arg (not (consp current-prefix-arg)))
        (list (prefix-numeric-value current-prefix-arg))
-     (list (read-number "Indent with tab width: "
+     (list (pel-read-number "Indent with tab width: "
                         tab-width
                         (intern (format
                                  "pel-indent-with-tabs-history-for-%s" major-mode))))))
