@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-06 15:59:24 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-06 16:25:36 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -181,6 +181,7 @@
 (require 'pel--indent)                  ; use: `'
 (require 'pel--options)                 ; use: `pel-use-dtrt-indent'
 
+(require 'simple)                       ; use: `indent-tabs-mode'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;; ---------------------------------------------------------------------------
