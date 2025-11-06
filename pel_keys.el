@@ -139,9 +139,13 @@
 ;;                      ;
 ;;                      ;
 ;;                      ;
+(require 'pel--indent)  ; use: `pel-indentation-width-control-variables',
+;;                      ;      `pel-indentation-other-control-variables',
+;;                      ;      `pel-tab-width-control-variables'.
 (require 'pel--macros)  ; use: pel-setq, pel-seq-default
 (require 'pel--keys-macros) ; use: `pel-eval-after-load'
 ;;                          ;      `pel-config-major-mode'
+;;                          ;      `pel--set-indent-control-variables'.
 (require 'pel--options) ; all `pel-use-...' variables identify what to use.
 ;;                      ; also defines a set of utility functions to deal with
 ;;                      ; the options: pel-auto-complete-help
@@ -3346,20 +3350,7 @@ d-mode not added to ac-modes!"
   ;;    Schedule more configuration upon Dart feature loading
   ;;
   (pel-eval-after-load (dart-mode dart-ts-mode)
-    (pel-config-major-mode dart pel:for-dart :same-for-ts
-      ;; `dart-mode'    uses `tab-width' for indentation width.
-      ;; `dart-ts-mode' uses `dart-ts-mode-indent-offset'.
-      (if (boundp 'dart-ts-mode-indent-offset)
-          ;; for `dart-ts-mode':
-          (progn
-            (setq-local dart-ts-mode-indent-offset pel-dart-indent-width)
-            (setq-local tab-width pel-dart-indent-width)
-            ;; Since `dart-ts-mode' uses `dart-ts-mode-indent-offset' to
-            ;; control indentation, add that variable to the
-            ;; `pel-tab-width-control-variables' to ensure that
-            ;; `pel-set-tab-width' changes it.
-            (setq-local pel-tab-width-control-variables 'dart-ts-mode-indent-offset))
-        (setq-local tab-width pel-dart-indent-width)))))
+    (pel-config-major-mode dart pel:for-dart :same-for-ts)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Factor Programming Language Support
@@ -5624,13 +5615,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;;
   (pel-eval-after-load (rust-mode rust-ts-mode)
     (pel-config-major-mode rust pel:for-rust :same-for-ts
-      (setq-local indent-tabs-mode pel-rust-use-tabs)
-      (when (boundp 'rust-indent-offset)
-        (setq-local tab-width rust-indent-offset))
-      ;; Hard tabs are not explicitly handled for Rust, so set
-      ;; `pel-tab-width-control-variables' explicitly from the value
-      ;; identified by `pel-go-tie-indent-to-tab-width'
-      (pel--set-indent-control-variables pel-rust-tie-indent-to-tab-width)
       ;; [:todo 2025-10-08, by Pierre Rouleau: check if the following is needed]
       ;; (when pel-use-cargo
       ;;   (cond
@@ -7501,6 +7485,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-pel-global-prefix pel:indent-with (kbd "<f11> TAB i"))
 (define-key pel:indent-with (kbd "TAB") 'pel-indent-with-tabs)
 (define-key pel:indent-with (kbd "SPC") 'pel-indent-with-spaces)
+(define-key pel:indent-with "m"         'pel-indent-with-tabs-mode)
 
 (global-set-key (kbd "<C-M-i>") 'pel-unindent-lines)
 

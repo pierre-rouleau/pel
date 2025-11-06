@@ -7,6 +7,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   to *t*, and with *dart-ts-mode* when it is set to *with-tree-sitter*.
   User can toggle from the classic or tree-sitter based mode with  ~<f11>
   C-t C-t~.
+- Add the *pel-indent-with-tabs-mode* minor mode.  When activated that minor
+  mode automatically turn all space-based indentation into tabs-based
+  indentation using the same width. You can then widen the indentation
+  visually by increasing the tab and indentation width by executing the
+  *pel-set-tab-width* command.  When saving the file, the mode automatically
+  converts the indentation back to space-based indentation.
 - Add commands that can be used to convert the indentation of the entire
   buffer from a space-only indentation scheme to a hard-tab indentation scheme
   allowing control of the indentation visual rendering with the use of the

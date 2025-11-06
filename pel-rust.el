@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 12 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-04 15:03:02 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-05 21:59:23 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,7 +31,7 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)        ; use: `pel-set-tab-width', `pel-treesit-ready-p'
+(require 'pel--base)        ; use: `pel-treesit-ready-p'
 (require 'pel--options)     ; use: `pel-go-run-gofmt-on-buffer-save'
 (require 'pel-indent)       ; use: `pel-indent-insert-control-info',
 ;;                          ;      `pel-indent-control-context'

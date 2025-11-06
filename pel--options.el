@@ -5414,8 +5414,8 @@ See also: `pel-shell-script-extensions'."
           (regexp :tag "File name regexp" :var "\\`_")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; Ada Programmaing Language Support
-;; ---------------------------------
+;; Ada Programming Language Support
+;; --------------------------------
 
 (defgroup pel-pkg-for-ada nil
   "PEL customization for Ada."
@@ -5423,7 +5423,7 @@ See also: `pel-shell-script-extensions'."
   :link `(url-link :tag "Ada PDF"
                    ,(pel-pdf-file-url "pl-ada")))
 
-(defcustom pel-use-ada (when pel-use-tree-sitter 'with-tree-sitter)
+(defcustom pel-use-ada nil
   "Control whether PEL supports the Ada Programming language.
 
 This *must* be activated to allow any other package for Ada.
@@ -5432,8 +5432,8 @@ When activating it you can select between the following values:
 - with-tree-sitter : use `ada-ts-mode' provided by the ada-ts-mode external
                      package.
 
-Because of the high implementation quality of `ada-ts-mode` PEL activates it
-when `pel-use-tree-sitter' is turned on."
+Because of the high implementation quality of `ada-ts-mode' PEL selects it as
+default when `pel-use-tree-sitter' is turned on."
   :group 'pel-pkg-for-ada
   :link '(url-link :tag "Ada mode homepage"
                    "https://www.nongnu.org/ada-mode/")
@@ -5442,7 +5442,7 @@ when `pel-use-tree-sitter' is turned on."
   :type '(choice
           (const :tag "Do not use Ada" nil)
           (const :tag "Use classic mode: ada-mode" t)
-          (const :tag "Use tree-sitter mode: ada-ts-mode" with-tree-sitter)))
+          (const :tag "Use tree-sitter mode: ada-ts-mode. Preferred." with-tree-sitter)))
 (pel-put 'pel-use-ada :package-is '(if pel-use-tree-sitter
                                        (quote ((elpa . ada-mode)
                                                (elpa . ada-ts-mode)))
@@ -7390,7 +7390,11 @@ This *must* be activated to allow any other package for Dart.
 When activating it you can select between the following values:
 - t                : use `dart-mode' provided by the dart-mode external package.
 - with-tree-sitter : use `dart-ts-mode' provided by the dart-ts-mode external
-                     package."
+                     package.
+
+Because of the higher implementation quality of `dart-ts-mode' over
+`dart-mode', PEL selects it as default when `pel-use-tree-sitter' is turned
+on."
   :group 'pel-pkg-for-dart
   :link '(url-link :tag "dart-mode @ GitHub"
                    "https://github.com/emacsorphanage/dart-mode")
@@ -7399,7 +7403,7 @@ When activating it you can select between the following values:
   :type '(choice
           (const :tag "Do not use Dart" nil)
           (const :tag "Use classic mode: dart-mode" t)
-          (const :tag "Use tree-sitter mode: dart-ts-mode" with-tree-sitter)))
+          (const :tag "Use tree-sitter mode: dart-ts-mode . Preferred." with-tree-sitter)))
 (pel-put 'pel-use-dart :package-is '(if pel-use-tree-sitter
                                        (quote ((elpa . dart-mode)
                                                (utils . dart-ts-mode)))
@@ -7451,9 +7455,52 @@ Values in the [2, 8] range are accepted."
   :type 'boolean
   :safe #'booleanp)
 
+;; Define a list of Dart indentation control variables that could be tied to
+;; `tab-width'.  These will be used when `pel-dart-tie-indent-to-tab-width'
+;; is set to use-predef-vars.
+(defconst pel--dart-indent-predef-vars
+  '((dart-ts-mode-indent-offset  .  0))
+  "List of dart indentation variables that can be tied to tab width.
+In Dart buffers, when `pel-dart-tie-indent-to-tab-width' is set to
+use-predef-vars, the `pel-set-tab-width' command stores the value of
+`tab-width' inside each of these variables.
+
+Each entry is a cons cell:
+- the car is the variable name.
+- the cdr is the offset applied to `tab-width':
+   The value stored in the variable is: (+ tab-with offset)")
+
+;; Dart style guide imposes use of 2-spaces for indentation.
+;; Dart imposes this as a law.  No other style is accepted despite
+;; complaints by several.  PEL is written to ease their pain.
+(defcustom pel-dart-tie-indent-to-tab-width 'use-predef-vars
+  "Identify whether `pel-set-tab-width' also sets indentation.
+This can have the following values:
+- nil             : In Dart buffers, `pel-set-tab-width' only sets the value
+                    of `tab-width'.
+- use-predef-vars : In Dart buffers, `pel-set-tab-width' sets the value of
+                    `tab-width' and all variables identified by the
+                    `pel--dart-indent-predef-vars' constant.
+- A list of (variable . offset) cons cells defined explicitly as value.
+  When using this be careful to leave no leading or trailing space for the
+  variable name."
+  :group 'pel-pkg-for-dart
+  :type '(choice
+          (const :tag "Not tied; tab width is independent of indentation" nil)
+          (const
+           :tag "Tied; use variables defined in `pel--dart-indent-predef-vars'"
+           use-predef-vars)
+          ;; The variable list defined in `pel--dart-indent-predef-vars' may
+          ;; not be appropriate for your needs.
+          ;; In that case specify your own list here:
+          (repeat :tag "Tied; define the list of indent variables to use"
+                  (cons
+                   (symbol :tag  "variable (no space) ")
+                   (integer :tag "offset from tab-width" :value 0)))))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; Eiffel Programmaing Language Support
-;; ------------------------------------
+;; Eiffel Programming Language Support
+;; -----------------------------------
 
 (defgroup pel-pkg-for-eiffel nil
   "PEL customization for Eiffel."

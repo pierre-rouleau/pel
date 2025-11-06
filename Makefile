@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-11-04 22:55:33 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-11-06 08:17:05 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -123,6 +123,7 @@ DEST_DOC_PDF_DIR := $(DEST_DIR)/doc/pdf
 #    - The file names are selected to impose that order when files
 #      are byte compiled by a process that select files alphabetically.
 EL_FILES := pel--base.el \
+		pel--indent.el \
 		pel--keys-macros.el \
 		pel--macros.el \
 		pel--options.el \
@@ -690,7 +691,7 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 # TODO: find a way to generate the dependency list automatically by code scanning.
 
 pel--base.elc:          pel-comp.elc
-pel--keys-macros.elc:   pel--base.elc pel--options.elc pel-browse.elc pel-prompt.elc
+pel--keys-macros.elc:   pel--base.elc pel--indent.elc pel--macros.elc pel--options.elc
 pel--options.elc:       pel--base.elc
 pel-abbrev.elc:         pel--base.elc
 pel-ada.elc:            pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
@@ -751,7 +752,7 @@ pel-imenu-dbg.elc:      pel--base.elc
 pel-imenu-ido.elc:      pel--base.elc pel--options.elc pel-prompt.elc pel-completion.elc
 pel-imenu.elc:          pel--base.elc pel--options.elc
 pel-ini.elc:		pel--base.elc
-pel-indent.elc:         pel--base.elc pel--options.elc
+pel-indent.elc:         pel--base.elc pel--indent.elc pel--options.elc
 pel-js.elc:             pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel-kbmacros.elc:       pel--options.elc pel-list.elc
 pel-key-chord.elc:      pel--base.elc pel--options.elc

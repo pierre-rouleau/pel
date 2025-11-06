@@ -620,12 +620,14 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-imenu-rescan)
 
   (pel-autoload "pel-indent" for:
+    pel-set-tab-width
     pel-indent-lines
     pel-unindent-lines
     pel-indent-rigidly
     pel-show-indent
     pel-indent-with-tabs
-    pel-indent-with-spaces)
+    pel-indent-with-spaces
+    pel-indent-with-tabs-mode)
   (pel-autoload-function "pel-indent" for:
     pel-insert-tab-set-width-info)
 

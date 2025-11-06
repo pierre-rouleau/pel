@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-05 16:07:14 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-06 15:59:24 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,39 +25,152 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This file provides rigid indentation support.  It is meant to be used in
-;; files where the super useful automatic indentation of the function
-;; `indent-for-tab-command' is used (and assigned to the tab key).
+;; This file provides several features related to indentation control.
 ;;
-;; The force rigid indentation is needed in several scenarios.  It's not that
-;; useful for edit Lisp source code but is useful for other modes such as C
-;; and other curly bracket programming languages as well as indentation
-;; sensitive programming languages like Python.
+;; * Rigid Indentation Support
+;;
+;; Meant to be used in files where the super useful automatic indentation of
+;; the function `indent-for-tab-command' is used and assigned to the tab key.
+;;
+;; Forcing rigid indentation is needed in several scenarios in major modes
+;; such as C and other curly bracket programming languages as well as for
+;; indentation sensitive programming languages like Python.
 ;;
 ;; 3 commands are provided:
 ;;
-;; - Function `pel-indent-lines' and `pel-unindent-lines' rigidly indent and
-;;   un-indent the region by a specified number of indentation levels which
-;;   defaults to 1.
-;; - Function `pel-indent-rigidly' allows interactive indentation by 1
+;;   - `pel-indent-lines'
+;;   - `pel-unindent-lines'
+;;   - `pel-indent-rigidly'
+;;
+;;   The `pel-indent-lines' command rigidly indent, and `pel-unindent-lines'
+;;   rigidly un-indent the region by a specified number of indentation levels
+;;   which defaults to 1.
+;;
+;;   The command `pel-indent-rigidly' allows interactive indentation by 1
 ;;   character at a time or indentation level at a time.
 ;;
-;; The number of columns used for the indentation level used by the functions
-;; `pel-indent-lines' and 'pel-unindent-lines' is returned by the function
-;; `pel-indent-level-colums'.
+;;   The number of columns used for the indentation level used by the
+;;   functions `pel-indent-lines' and 'pel-unindent-lines' is returned by the
+;;   function `pel-indent-level-colums'.
 ;;
-;; The function `pel-indent-lines' and `pel-unindent-lines' handle hard tabs
-;; properly according to the currently active `indent-tabs-mode'.
+;;   The function `pel-indent-lines' and `pel-unindent-lines' handle hard tabs
+;;   properly according to the currently active `indent-tabs-mode'.
 ;;
-;; - When hard tabs are not permitted (i.e. `indent-tabs-mode' is nil), the
-;;   function replace all hard tabs in the indentation by the appropriate
-;;   number of space characters.  The functions do not replace hard tabs that
-;;   are somewhere else on the line (e.g. inside a code string).
-;; - When hard tabs are permitted (i.e. `indent-tabs-mode' is t), the
-;;   functions tabify the line or region marked.
+;;   - When hard tabs are not permitted (i.e. `indent-tabs-mode' is nil), the
+;;     function replace all hard tabs in the indentation by the appropriate
+;;     number of space characters.  The functions do not replace hard tabs
+;;     that are somewhere else on the line (e.g. inside a code string).
+;;   - When hard tabs are permitted (i.e. `indent-tabs-mode' is t), the
+;;     functions tabify the line or region marked.
+;;
+;;    TODO: enhance pel-indent-level-columns to better consider various types
+;;          of files for various programming and markup languages.
+;;
+;;
+;; * Control Tab Width
+;;
+;; Provide the `pel-set-tab-width' command.  This command sets the `tab-width'
+;; value as well as the indentation control variable or variables used by the
+;; current major mode.  By changing both the tab width and indentation width
+;; control variables it becomes possible to change the visual rendering of the
+;; indentation width when the indentation level width corresponds to the hard
+;; tab with.
+;;
+;; The challenge comes from the fact that Emacs does not impose a strategy for
+;; indentation to major modes.  Fortunately most major modes implementation
+;; use a variable that controls the width of the indentation.  Some major
+;; modes define several variables that sometimes all have the same value,
+;; sometimes their value differ by an offset from the main indentation control
+;; variable.
+;;
+;; PEL sets the content of the `pel-tab-width-control-variables' variable with
+;; a list of the symbol of variables used by the major mode to control
+;; indentation width and possibly an offset from the tab width.  The
+;; `pel-set-tab-width' command sets `tab-width' to the requested value and
+;; also sets the values of the identified variables to the same value or the
+;; value with the identified offset.  This way the `pel-set-tab-width' command
+;; can control the tab width and the indentation width.
+;;
+;;
+;; * Indentation and Tab Width Control Introspection
+;;
+;; The `pel-show-indent' command prints information about the indentation and
+;; tab width control for the current major mode.  It lists the control
+;; variables used by the major mode and guides the user on what can be done in
+;; this mode.
+;;
+;; The command uses several functions that can also be used by the mode
+;; specialized commands named `pel-MM-indent-tab-info' where MM is replaced by
+;; the major mode name.  If command exists for the current major mode,
+;; `pel-show-indent' defers controls to that instead.  PEL provides several
+;; such specialized functions.
+;;
+;; The utility functions can also be used by other commands such as the
+;; `pel-mode-setup-info' provided by pel-modes.el
+;;
+;; When printing information about a major mode, the value of tjhe buffer
+;; local variables must be first captured in a context.  In Lisp, lambda
+;; expressions are often used as closures to do that.  Unfortunately this
+;; technique cannot be used here because the function that insert the text are
+;; sometimes used directly by the command sometimes used in other
+;; functions. The solution is to capture the variable and their values inside
+;; a hash that represents the context and use that in the function that prints
+;; the information inside the help mode buffer.  Two functions capture such
+;; context: `pel-indent-control-context' and `pel-tab-control-context'.  They
+;; are called by the top level command where they call those in the context of
+;; the inspected major mode and passing the resulting hash structure to the
+;; printing function.
+;;
+;;
+;; * Hard-tab Based Indentation Control
+;;
+;; Although not popular in most software development circles, using hard tabs
+;; for indentation provides the undeniable advantage of flexibility in terms
+;; of visual rendering.  Once all indentation level correspond to 1 hard-tab
+;; it becomes very easy to change the visual width of indentation by simply
+;; changing the rendered width of a hard tab character and that does not
+;; modify the content of the file.
+;;
+;; This is a feature that appeals to people that have problems working with
+;; small indentation width as increasing being reported on the Internet.  To
+;; them the hard-line strict guidelines imposed by programming communities
+;; such as Dart and Gleam who impose a 2-space indentation scheme is a real
+;; problem.
+;;
+;; If the indentation scheme content of the files in those programming
+;; languages cannot be changed as imposed by these draconian rules, a
+;; workaround is to temporary change the indentation scheme to a hard-tab
+;; based indentation and then change the width of the hard tab as well as the
+;; width of all indentation control variables for the mode.
+;;
+;; For example, Dart and Gleam impose a 2-space indentation level.  For
+;; buffers using major modes for those languages, we can use the following
+;; procedure:
+;;
+;; - set the indentation control variable to 2 and the `tab-width' to 2,
+;; - tabify the indentation whitespace of the entire buffer excluding all
+;;   strings and comments.
+;; - change the with of hard tabs (controlled by the `tab-width' variable),
+;;   and the width of the variables for the major mode to a larger value.
+;;
+;; Once this is done, we can see the code with a wider indentation and
+;; continue to work with the rules imposed by the major mode logic.
+;;
+;; Later, before saving the buffer back to the file, we simply perform the
+;; following steps:
+;;
+;; - restore the tab and indentation width back to 2,
+;; - untabify all indentation whitespace,
+;; - saving the file.
+;;
+;; All necessary functions are provided here, along with a special minor-mode
+;; that automatically performs all operation seamlessly, allowing editing the
+;; Dart and Gleam files with wider indentation just as if they had flexible
+;; guidelines.  The files will always retain their original indentation scheme
+;; rigidity and everybody might be happier!
 
-;; TODO: enhance pel-indent-level-columns to better consider various types of
-;; files for various programming and markup languages.
+
+
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -65,11 +178,49 @@
 
 (require 'pel--base)                    ; use: `pel-string-ends-with-p',
 					; `pel-file-type-for', `pel-list-of'
+(require 'pel--indent)                  ; use: `'
 (require 'pel--options)                 ; use: `pel-use-dtrt-indent'
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;; ---------------------------------------------------------------------------
-
+;; * Rigid Indentation Support
+;; ---------------------------
+;;
+;;  * `pel-indent-lines'
+;;    - pel-indent-hard-tab-in-region-or-line-p
+;;      - pel-indent-current-line-positions
+;;    - pel-indent-marked-lines
+;;    - pel-indent-mark-lines-by-spec
+;;      - pel-indent-mark-lines
+;;        - pel-indent-line-pos
+;;    - pel--insert-c-indent-line
+;;      - pel-indent-level-columns
+;;    - pel-indent-tabify-region
+;;      - pel-indent-line-pos
+;;    - pel-indent-untabify-region
+;;      - pel-indent-line-pos
+;;    - pel-indent-untabify-current-line
+;;      - pel-indent-current-line-positions
+;;    - pel-indent-tabify-current-line
+;;      - pel-indent-current-line-positions
+;;  * `pel-unindent-lines'
+;;    - pel-indent-hard-tab-in-region-or-line-p
+;;      - pel-indent-current-line-positions
+;;    - pel-indent-marked-lines
+;;    - pel--line-unindent
+;;      - pel-indent-level-columns
+;;        - pel--insert-c-indent-line
+;;      - pel-indent-level-columns
+;;    - pel-indent-tabify-region
+;;      - pel-indent-line-pos
+;;    - pel-indent-untabify-region
+;;      - pel-indent-line-pos
+;;    - pel-indent-untabify-current-line
+;;      - pel-indent-current-line-positions
+;;    - pel-indent-tabify-current-line
+;;      - pel-indent-current-line-positions
+;;  * `pel-indent-rigidly'
 
 (defun pel-indent-current-line-positions ()
   "Return a cons with the positions of the beginning and end of current line."
@@ -187,7 +338,6 @@ in the region created by the function."
 	(t
 	 (error "Invalid order argument value: %s" order))))
 
-
 (defun pel-indent-mark-lines-by-spec (marked-lines-spec)
   "Mark a region of lines identified by the MARKED-LINES-SPEC argument.
 The MARKED-LINES-SPEC argument is a list with the following 3 elements:
@@ -200,11 +350,10 @@ The MARKED-LINES-SPEC argument is a list with the following 3 elements:
 
 (defun pel--insert-c-indent-line (n)
   "Insert N times the indentation level number of space chars on current line."
-    (if (< n 0)
-	(pel-unindent-lines (abs n))
-      (move-beginning-of-line nil)
-      (insert (make-string (pel-indent-level-columns n) ?\s))))
-
+  (if (< n 0)
+      (pel-unindent-lines (abs n))
+    (move-beginning-of-line nil)
+    (insert (make-string (pel-indent-level-columns n) ?\s))))
 
 ;;-pel-autoload
 (defun pel-indent-lines (&optional n)
@@ -336,34 +485,88 @@ by the numeric argument N (or if not specified N=1):
 	(error "The pel-mark functions are not loaded")))
     (indent-rigidly (region-beginning) (region-end) nil t)))
 
+;; ---------------------------------------------------------------------------
+;; * Control Tab Width
+;; -------------------
 
-(defconst pel--c-basic-offset-modes '(awk-mode
-				      bpftrace-mode
-				      c-mode
-				      c-ts-mode
-				      c++-mode
-				      c++-ts-mode
-				      d-mode
-				      go-ts-mode
-				      groovy-mode
-				      idl-mode
-				      java-mode
-				      java-ts-mode
-				      jde-mode
-				      objc-mode
-				      php-mode
-				      pike-mode
-				      protobuf-mode
-				      rust-mode
-				      rust-ts-mode
-				      rustic-mode
-				      scala-mode
-				      swift-mode)
-  "Major modes implemented as cc-modes.")
+;; This code uses the following defvar-local variables defined in the
+;; pel--indent.el file:
+;; - `pel-indentation-width-control-variables':
+;;     - Identifies variables that play a role in the indentation
+;;       and hold a width value.
+;;     - used by functions that print information about the major mode.
+;;     - set by pel_keys.el major mode setup logic.
+;;
+;; - `pel-indentation-other-control-variables'
+;;     - Identifies variables that play a role in the indentation
+;;       but are not a width value.
+;;     - used by functions that print information about the major mode.
+;;     - set by pel_keys.el major mode setup logic.
+;;
+;; - `pel-tab-width-control-variables'
+;;     - Identifies variables that play a role in the indentation
+;;       width that must be set by `pel-set-tab-width' when changing
+;;       the width of hard tabs for indentation purpose.
+;;
+;; [:todo 2025-11-06, by Pierre Rouleau: Eventually, when a larger number of
+;; major modes will be supported and a broader sample of how indentation
+;; control is done on them, it might be appropriate to merge the use of the
+;; first and third variable above and update the logic, reducing duplication
+;; and increasing efficiency of the code.]
+;;
 
-(defconst pel--sh-based-modes '(sh-mode
-				bash-ts-mode)
-  "Major modes based on sh-mode.")
+(defvar-local pel--original-tab-width nil
+  "Tab width value used before `pel-indent-with-tabs' is used.")
+
+(defvar-local pel--last-set-tab-width nil
+  "Tab width set by last `pel-set-tab-width' call.")
+
+(defun pel-set-tab-width (n)
+  "Set the tab width used in current buffer to the value N.
+
+The change is temporary and affects the current buffer only.
+Return the new `tab-width' or nil if unchanged."
+  (interactive (list (read-number "New tab-width: " tab-width
+                                  'pel-set-tab-width-history)))
+  (let ((control-vars (pel-list-of pel-tab-width-control-variables))
+        (current-tab-width tab-width)
+        (offset nil))
+    ;;
+    (while (not (and (< n 9) (> n 1)))
+      (setq n (read-number "Enter valid tab-width in 2-8 range: "
+                           current-tab-width
+                           'pel-set-tab-width-history)))
+    ;;
+    (when (not (= n current-tab-width))
+      (message "Changed buffer's tab-width from %d to %d" current-tab-width n)
+      (when control-vars
+        (dolist (var control-vars)
+          (if (consp var)
+              ;; a (symbol . offset)
+              (progn
+                (setq offset (cdr var))
+                (setq var (car var))
+                (when (boundp var)
+                  (set (make-local-variable var) (+ n offset))))
+            ;; just a symbol
+            (when (boundp var)
+              (set (make-local-variable var) n)))))
+      ;; Always set `tab-width' to the new value.
+      (setq-local tab-width n)
+      (setq-local pel--last-set-tab-width n))))
+
+;; ---------------------------------------------------------------------------
+;; * Indentation and Tab Width Control Introspection
+;; -------------------------------------------------
+;;
+;; * `pel-show-indent'
+;;   - pel-indent-insert-control-info
+;;     . pel-indent-control-context
+;;       - pel-mode-indent-control-vars
+;;   - pel-tab-insert-control-info
+;;     . pel-tab-control-context
+;;     - pel-indent--indent-vars-have-offset
+
 
 ;; Credit Note: the following table was originally derived from code
 ;;              that resides inside dtrt-indent.el and indent-control.el
@@ -681,6 +884,25 @@ The symbols are:
 	     (pel-major-mode-symbol-for "pel--%s-indent-predef-vars") context)
     context))
 
+(defun pel-indent--indent-vars-have-offset (vars)
+  "Return t if any indentation target variable is identified with an offset.
+
+The VARS parameter must be either:
+- a symbol,
+- a list of symbols
+- a list of (symbol . offset) cons cells.
+
+The function return t only if there is at least one cons cell that
+specifies a non-zero offset for a variable bound in the current mode."
+  (let ((has-offset nil))
+    (dolist (var (pel-list-of vars))
+      (when (and (consp var)
+		 (boundp (car var))
+		 (not (eq (cdr var) 0)))
+	(setq has-offset t)))
+    has-offset))
+
+
 (defun pel-tab-insert-control-info (context)
   "Insert information related to the hard tab control.
 
@@ -772,8 +994,9 @@ important variables and symbols in the context of the inspected major mode."
 		 (not (pel-indent--indent-vars-have-offset
 		       pel-tab-width-control-variables)))
 	    (insert (format "
-     - For this buffer you can use this technique, given the current variables
-       identified in pel-tab-width-control-variables."))
+     - For this buffer you can use this technique, because the current variables
+       identified in pel-tab-width-control-variables identify variables that
+       have an offset of zero from the tab width."))
 	  (when (and (boundp pel--MM-indent-predef-vars)
 		     (symbol-value pel--MM-indent-predef-vars))
 	    (if (not (pel-indent--indent-vars-have-offset
@@ -789,25 +1012,6 @@ important variables and symbols in the context of the inspected major mode."
        then you will be able to use this technique in the next
        buffers you open."
 			      pel-MM-tie-indent-to-tab-width)))))))))
-
-
-(defun pel-indent--indent-vars-have-offset (vars)
-  "Return t if any indentation target variable is identified with an offset.
-
-The VARS parameter must be either:
-- a symbol,
-- a list of symbols
-- a list of (symbol . offset) cons cells.
-
-The function return t only if there is at least one cons cell that
-specifies a non-zero offset for a variable bound in the current mode."
-  (let ((has-offset nil))
-    (dolist (var (pel-list-of vars))
-      (when (and (consp var)
-		 (boundp (car var))
-		 (not (eq (cdr var) 0)))
-	(setq has-offset t)))
-    has-offset))
 
 ;;-pel-autoload
 (defun pel-show-indent (&optional append)
@@ -829,11 +1033,19 @@ specifies a non-zero offset for a variable bound in the current mode."
 	 :use-help-mode)))))
 
 ;; ---------------------------------------------------------------------------
-;; Using Hard Tabs for indentation to help visibility
-;; --------------------------------------------------
+;; * Hard-tab Based Indentation Control
+;;
+;;   * `pel-indent-with-tabs-mode', the minor mode.
+;;     * `pel-indent-with-tabs'
+;;       - pel-tabify-all-indent
+;;         - pel-inside-code
+;;       . `pel-set-tab-width'
+;;     * `pel-indent-with-spaces'
+;;       . `pel-set-tab-width'
 
 (defun pel-inside-code (&optional pos)
-  "Return non-nil when point is in code, nil if in comment or string."
+  "Return non-nil when point is in code, nil if in comment or string.
+Note that this changes the search match data!"
   (let* ((pos (or pos (point)))
 	 (syntax (syntax-ppss pos)))
     (and (not (nth 3 syntax))
@@ -841,14 +1053,16 @@ specifies a non-zero offset for a variable bound in the current mode."
 
 (defun pel-tabify-all-indent ()
   "Convert multiple spaces in indent to tabs when possible.
-A group of spaces is partially replaced by tabs
-when this can be done without changing the column they end at.
-Process complete buffer.
-The variable `tab-width' controls the spacing of tab stops."
+
+Process complete buffer: a group of spaces in the leading indentation is
+partially replaced by tabs when this can be done without changing the
+column they end at.  Comments and strings are not modified.
+
+The variable `tab-width' controls the spacing of tab stops.
+This is a indentation specific `tabify' function."
   (save-excursion
     (save-restriction
       ;; Process entire buffer.
-      (narrow-to-region (point-min) (point-max))
       (goto-char (point-min))
       (let ((indent-tabs-mode t)
 	    (inside-code nil))
@@ -869,44 +1083,125 @@ The variable `tab-width' controls the spacing of tab stops."
 		(delete-region (match-beginning 0) (point))
 		(indent-to end-col)))))))))
 
-(defvar-local pel--original-tab-width nil
-  "Remember original tab width.")
-
 (defun pel-indent-with-tabs (&optional with-tab-width)
   "Convert current buffer to use tabs for indentation.
 
-If the optional WITH-TAB-WIDTH numerical argument is specified use that
-otherwise prompt for the tab width to use."
+If the optional WITH-TAB-WIDTH numerical argument is specified, after
+conversion to tab-based indentation change the tab width to that
+specified value.  If the argument is not specified, prompt for the tab
+width to use."
   (interactive
    (if (and current-prefix-arg (not (consp current-prefix-arg)))
        (list (prefix-numeric-value current-prefix-arg))
-     (list (read-number (format "Tab width [%d]: " tab-width)))))
-  (save-excursion
-    (pel-tabify-all-indent)
-    (when with-tab-width
-      (unless pel--original-tab-width
-        (setq-local pel--original-tab-width tab-width))
-      (pel-set-tab-width with-tab-width))
-    ;; all indentation use tabs now, new code should also
-    ;; use tabs.
-    (indent-tabs-mode 1)))
+     (list (read-number "Indent with tab width: "
+                        tab-width
+                        (intern (format
+                                 "pel-indent-with-tabs-history-for-%s" major-mode))))))
+  ;; (message "pel-indent-with-tabs %S" with-tab-width)
+  ;; first untabify, replacing space-based indentation with tabs
+  (pel-tabify-all-indent)
+  ;; Remember `tab-width' originally used in the buffer.
+  ;; It should correspond with the indentation width.
+  (unless pel--original-tab-width
+    (setq-local pel--original-tab-width tab-width))
+  ;; Adjust the tab and indentation width to the new selection.
+  (pel-set-tab-width with-tab-width)
+  ;; New indented code must now be indented with hard tabs.
+  (indent-tabs-mode 1))
 
 (defun pel-indent-with-spaces (&optional with-tab-width)
   "Convert current buffer to use space for indentation.
 
-Use the original scheme unless a the optional WITH-TAB-WIDTH
-numerical argument is specified.  If an optional numerical
-argument is  specified, use that for tab width."
+Restore the space-based indentation scheme using the tab width that was
+used before the first call to `pel-indent-with-tabs' unless the optional
+WITH-TAB-WIDTH numerical argument is specified.  If an optional
+numerical argument is specified, use that for tab width."
   (interactive "P")
+  ;; (message "pel-indent-with-spaces %S" with-tab-width)
   (save-excursion
     (if with-tab-width
         (pel-set-tab-width with-tab-width)
       ;; Restore the original tab-width if it was stored in
       ;; `pel--original-tab-width'
-      (when pel--original-tab-width
+      (when (or  pel--original-tab-width
+                 pel--last-set-tab-width)
         (pel-set-tab-width pel--original-tab-width)))
+    ;; Then untabify.  Note that hard-tabs inside strings and comments will be
+    ;; replaced by spaces.  If this is a problem in some cases, please let me
+    ;; know.
     (untabify (point-min) (point-max))
+    ;; New indented code must now be indented with spaces.
     (indent-tabs-mode -1)))
+
+;; --
+
+(defvar-local pel--tab-width-used-during-tab-based-indent nil)
+
+(defun pel--tm-before-save-or-kill ()
+  "Disable tab-based indentation and restore native space-base indent.
+This is performed just before saving a buffer to a file or killing it."
+  (setq-local pel--tab-width-used-during-tab-based-indent tab-width)
+  (pel-indent-with-spaces))
+
+(defun pel--tm-after-save ()
+  "Restore tab-based indentation with same width used before buffer save."
+  (if pel--tab-width-used-during-tab-based-indent
+      (pel-indent-with-tabs pel--tab-width-used-during-tab-based-indent)
+    (message "pel--tm-after-save: pel--tab-width-used-during-tab-based-indent is nil")))
+
+(define-minor-mode pel-indent-with-tabs-mode
+  "A minor mode that automatically changes to tab-based indentation."
+  :lighter " ⍈"
+  (let ((message-printed nil))
+    (if pel-indent-with-tabs-mode
+        ;; When turning mode on
+        (progn
+          ;; if buffer is modified allow user to save first.
+          ;; If user quit, catch and activate the mode anyway, without saving.
+          (condition-case nil
+              (when (and (buffer-modified-p)
+                         (y-or-n-p (format "Save modified %S first? "
+                                           (current-buffer))))
+                (save-buffer))
+            (quit
+             (message "Indenting with tabs Mode enabled, buffer not saved!")
+             (setq message-printed t)))
+          ;; activate indentation with tabs using native tab-width matching
+          ;; indentation width
+          (pel-indent-with-tabs tab-width)
+          ;; The buffer was modified by replacing spaces with tabs but
+          ;; since we want to use it as if it was normal, don't show
+          ;; the buffer modified unless it already was.
+          (unless message-printed
+            (set-buffer-modified-p nil))
+          ;; schedule operation before and after buffer save.
+          (unless (memq 'pel--tm-before-save-or-kill  before-save-hook)
+            (add-hook 'before-save-hook 'pel--tm-before-save-or-kill
+                      -100
+                      'local
+                      ))
+          (unless (memq 'pel--tm-before-save-or-kill  kill-buffer-hook)
+            (add-hook 'kill-buffer-hook 'pel--tm-before-save-or-kill
+                      -100
+                      'local
+                      ))
+          (unless (memq 'pel--tm-after-save after-save-hook)
+            (add-hook 'after-save-hook 'pel--tm-after-save
+                      +100
+                      'local))
+
+          (unless message-printed
+            (message "Indenting with tabs Mode enabled.")))
+
+          ;; When turning mode off
+          (pel-indent-with-spaces)
+          (when (memq 'pel--tm-before-save-or-kill before-save-hook)
+            (remove-hook 'before-save-hook 'pel--tm-before-save-or-kill 'local))
+          (when (memq 'pel--tm-before-save-or-kill kill-buffer-hook)
+            (remove-hook 'kill-buffer-hook 'pel--tm-before-save-or-kill 'local))
+          (when (memq 'pel--tm-after-save after-save-hook)
+            (remove-hook 'after-save-hook 'pel--tm-after-save 'local))
+          (message "Indenting with tabs Mode disabled."))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-indent)

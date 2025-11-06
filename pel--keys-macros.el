@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-05 11:31:27 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-06 11:16:48 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -70,6 +70,7 @@
 ;;
 ;;
 (require 'pel--base)    ; use: `macroexp-file-name'
+(require 'pel--indent)  ; use: `pel-tab-width-control-variables'.
 (require 'pel--macros)  ; use: `pel-append-to'
 (require 'pel--options) ; use: `pel-use-call-graph', `pel-use-tree-sitter', ...
 (require 'seq)          ; use: `seq-concatenate', `seq-drop', `seq-subseq'
@@ -1848,16 +1849,6 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 
 (defconst pel--tab-controlling-major-modes
   '(cwl
-    ;; Dart:
-    ;; `dart-mode' uses `tab-width' as the indentation width, but
-    ;; `dart-ts-mode' does not do that.  Disable implicit code generation
-    ;; to assign pel-dart-tab-with to tab-width as it's done explicitly
-    ;; in the code in pel_keys.el
-    dart
-    ;; Gleam:
-    ;; Gleam community decided against hard tab and decided to fix
-    ;; indentation to 2 spaces but PEL still provides the user-options for
-    ;; tab-width and hard tab control for other editing purposes.
     go
     go-dot-mod
     go-mod                              ; for go-mod-ts-mode
@@ -1870,7 +1861,6 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     nimscript
     nix
     perl
-    rust
     scheme chez chibi chicken gambit gerbil guile mit-scheme racket scsh
     seed7
     shell
@@ -1888,6 +1878,20 @@ MODE is a symbol like \\='c or \\='lisp identifying the major mode."
   (and pel-use-tree-sitter
        (pel-treesit-language-available-p mode)
        (boundp 'major-mode-remap-alist)))
+
+(defun pel--set-indent-control-variables (indent-to-tab-width)
+  "Activate the value identified by the INDENT-TO-TAB-WIDTH.
+This must be the value of the  pel-MM-tie-indent-to-tab-width customizable
+user-option, where MM is the major mode name (like c or python).
+The function saves its value in the `pel-tab-width-control-variables' buffer
+local variable."
+  (let ((value (if (eq indent-to-tab-width 'use-predef-vars)
+                   (let ((constvar (pel-major-mode-symbol-for
+                                    "pel--%s-indent-predef-vars")))
+                     (when (boundp constvar)
+                       (symbol-value constvar)))
+                 indent-to-tab-width)))
+    (setq-local pel-tab-width-control-variables value)))
 
 ;; TODO: pel-config-major-mode does not seem to support shell-mode and
 ;;       term-mode properly.  Investigate and fix.
@@ -1948,7 +1952,7 @@ Function created by the `pel-config-major-mode' macro."
                                       target-mode)))
         (gn-tie-indent-2-tab (intern
                               (format "pel-%s-tie-indent-to-tab-width"
-                               target-mode)))
+                                      target-mode)))
         (gn-fname       (file-name-base (macroexp-file-name)))
         (newbody nil)
         (hook-body nil))

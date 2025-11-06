@@ -32,6 +32,9 @@
 ;; PEL version:
 ;; * `pel-version'
 ;;
+;; List Handling:
+;;  - `pel-list-of'
+;;
 ;; Environment Querying functions:
 ;;  - `pel-major-mode-must-be'
 ;;  - `pel-derived-mode-p'
@@ -276,9 +279,6 @@
 ;; Code parsing support
 ;; - `pel-point-in-comment-or-docstring'
 ;;
-;; Tab width control
-;; - `pel-set-tab-width'
-;;
 ;; Speedbar Support
 ;; - `pel-add-speedbar-extension'
 ;;
@@ -382,36 +382,6 @@ The non-nil value of the predicate is the `module-file-suffix'.")
 It is set to t only by the logic of pel_keys.el which is
 executed by `pel-init' on startup.")
 
-(defvar-local pel-indentation-width-control-variables nil
-  "Variable(s) used by the current major mode to control indentation width.
-
-Symbol or list of symbols of the variable(s) that are used by the major
-mode to control indentation.
-
-If a list is specified, the last symbol is the variable controlling the
-indentation, the symbol listed before are values that are stored into
-the next one.  These variables are used to set the default.
-
-Set by the major modes that PEL has instrumented.")
-
-(defvar-local pel-indentation-other-control-variables nil
-  "List of other indentation control variables used for the major mode.")
-
-(defvar-local pel-tab-width-control-variables nil
-  "Variable(s) controlling tab width of the current major mode.
-
-This variable can hold the following:
-- One symbol,
-- A list of symbols,
-- A list of (symbol . offset) cons cells.
-
-The symbols are the symbols of variables that must be set to the value
-of tab-width.  The offset from that value defaults to 0, but can also be
-specified by the offset integer value in cons cells.
-
-The `pel-set-tab-width' command sets each variable identified in this list
-to the following value:  (+ tab-width offset)")
-
 ;; ---------------------------------------------------------------------------
 ;; Code Style Buffer Local Variables
 ;; ---------------------------------
@@ -458,6 +428,16 @@ Other uses risk returning non-nil value that point to the wrong file."
 ;;                                        "macroexp"))
 
 ;; ---------------------------------------------------------------------------
+;; List Handling
+;; -------------
+
+(defun pel-list-of (val)
+  "Return VAL if it is a list, (list val) otherwise."
+  (if (listp val)
+      val
+    (list val)))
+
+;; ---------------------------------------------------------------------------
 ;; Environment Querying functions:
 ;; ------------------------------
 ;;
@@ -478,9 +458,7 @@ Other uses risk returning non-nil value that point to the wrong file."
 MODES is either a major-mode symbol or a list of major-mode symbols.
 Raise an user error if the current buffer is not using one of the MODES;
 the message state that the current command is not appropriate."
-  (unless (memq major-mode (if (listp modes)
-                               modes
-                             (list modes)))
+  (unless (memq major-mode (pel-list-of modes))
     (user-error "This command is not meant for %s; use it in %S"
                 major-mode
                 modes)))
@@ -1806,9 +1784,7 @@ prompts for confirmation.
 
 The function returns t if the file was
 downloaded, nil otherwise.  Permission errors are raised."
-  (let ((fnames (if (listp fnames)
-                    fnames
-                  (list fnames))))
+  (let ((fnames (pel-list-of fnames)))
     (dolist (fname fnames)
       (pel-install-file (pel-url-join url-base fname)
                         fname
@@ -3347,61 +3323,6 @@ of point."
     (when move-fct
       (funcall move-fct))
     (nth 8 (parse-partial-sexp (point-min) (point)))))
-
-;; ---------------------------------------------------------------------------
-;; Control Tab Width
-;; -----------------
-
-(defun pel--set-indent-control-variables (indent-to-tab-width)
-  "Activate the value identified by the INDENT-TO-TAB-WIDTH.
-This must be the value of the  pel-MM-tie-indent-to-tab-width customizable
-user-option, Where MM is the major mode name (like c or python).
-The function saves its value in the `pel-tab-width-control-variables' buffer
-local variable."
-  (let ((value (if (eq indent-to-tab-width 'use-predef-vars)
-                   (let ((constvar (pel-major-mode-symbol-for
-                                    "pel--%s-indent-predef-vars")))
-                     (when (boundp constvar)
-                       (symbol-value constvar)))
-                 indent-to-tab-width)))
-    (setq-local pel-tab-width-control-variables value)))
-
-(defun pel-list-of (val)
-  "Return VAL if it is a list, (list val) otherwise."
-  (if (listp val)
-      val
-    (list val)))
-
-(defun pel-set-tab-width (n)
-  "Set the tab width used in current buffer to the value N.
-
-The change is temporary and affects the current buffer only.
-Return the new `tab-width' or nil if unchanged."
-  (interactive (list (read-number (format "New tab-width [%d]: " tab-width))))
-  (let ((control-vars (pel-list-of pel-tab-width-control-variables))
-        (current-tab-width tab-width)
-        (offset nil))
-    ;;
-    (while (not (and (< n 9) (> n 1)))
-      (setq n (read-number "Enter valid tab-width in 2-8 range: "
-                           current-tab-width)))
-    ;;
-    (when (not (= n current-tab-width))
-      (message "Changed buffer's tab-width from %d to %d" current-tab-width n)
-      (when control-vars
-        (dolist (var control-vars)
-          (if (consp var)
-              ;; a (symbol . offset)
-              (progn
-                (setq offset (cdr var))
-                (setq var (car var))
-                (when (boundp var)
-                  (set (make-local-variable var) (+ n offset))))
-            ;; just a symbol
-            (when (boundp var)
-              (set (make-local-variable var) n)))))
-      ;; Always set `tab-width' to the new value.
-      (setq-local tab-width n))))
 
 ;; ---------------------------------------------------------------------------
 ;; Speedbar Support
