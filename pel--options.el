@@ -4833,8 +4833,9 @@ This provides ability to control the lighter of major and minor modes."
 (defcustom pel-delight-specs
   '((origami-mode "⋱⋯" "origami")
     (abbrev-mode " Abv" abbrev)
-    (rainbow-mode)
+    (rainbow-mode "🌈" rainbow-mode)
     (overwrite-mode " Ov" t)
+    (command-log-mode " ⏺️ " command-log-mode)
     (emacs-lisp-mode ("ELisp" (lexical-binding "" ":Dyn")) :major))
   "Identify delight specifications to create/modify/disable lighters.
 
@@ -4880,8 +4881,12 @@ A minor mode that provides a scroll bar inside the modeline.."
   :group 'pel-pkg-for-modeline
   :link '(url-link :tag "mlscroll @ Github"
                    "https://github.com/jdtsmith/mlscroll")
-  :type 'boolean
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate when Emacs starts" use-from-start))
   :safe #'booleanp)
+(pel-put 'pel-use-mlscroll :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-navigation

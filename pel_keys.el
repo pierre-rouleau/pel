@@ -1738,8 +1738,8 @@ can't bind negative-argument to C-_ and M-_"
 
 (when pel-use-popup-imenu
   ;; No key binding - its used by pel-goto-symbol.
-  (pel--install-github-file "pierre-rouleau/popup-imenu/master"
-                            "popup-imenu.el")
+  (pel-install-github-file "pierre-rouleau/popup-imenu/master"
+                           "popup-imenu.el")
   ;; install it's external mandatory dependencies
   (pel-ensure-package dash from: melpa)
   (pel-ensure-package popup from: melpa)
@@ -1747,8 +1747,8 @@ can't bind negative-argument to C-_ and M-_"
   (pel-autoload-file popup-imenu for: popup-imenu))
 
 (when pel-use-popup-switcher
-  (pel--install-github-file "pierre-rouleau/popup-switcher/fixes"
-                              "popup-switcher.el")
+  (pel-install-github-file "pierre-rouleau/popup-switcher/fixes"
+                           "popup-switcher.el")
     ;; install it's mandatory external dependencies
     (pel-ensure-package dash from: melpa)
     (pel-ensure-package popup from: melpa)
@@ -3464,10 +3464,10 @@ d-mode not added to ac-modes!"
     ;; Go project or workspace used, the Emacs Lisp files are stored in PEL
     ;; utility directory.
     (if (memq pel-use-goflymake '(with-flycheck with-flymake))
-        (pel--install-github-file "dougm/goflymake/master"
-                                  (if (eq pel-use-goflymake 'with-flycheck)
-                                      "go-flycheck.el"
-                                    "go-flymake.el"))
+        (pel-install-github-file "dougm/goflymake/master"
+                                 (if (eq pel-use-goflymake 'with-flycheck)
+                                     "go-flycheck.el"
+                                   "go-flymake.el"))
       (display-warning
        'pel-use-goflymake
        (format "Unsupported pel-use-goflymake value: %S"
@@ -9831,10 +9831,20 @@ the ones defined from the buffer now."
 (define-key pel:mode-line "c"  'column-number-mode)
 
 (when pel-use-show-point-mode
-  (pel--install-github-file "dmgerman/predictive/master"
-                              "show-point-mode.el")
+  (pel-install-github-file "dmgerman/predictive/master"
+                           "show-point-mode.el")
     (pel-autoload "show-point-mode" for: show-point-mode)
   (define-key pel:mode-line "p"  'show-point-mode))
+
+;; mlscroll - Mode Line Scroll
+(when pel-use-mlscroll
+  (pel-install-github-file "jdtsmith/mlscroll/master"
+                           "mlscroll.el")
+  (pel-autoload "mlscroll" for: mlscroll-mode)
+  (define-key pel:mode-line "s"  'mlscroll-mode)
+  (when (and (eq pel-use-mlscroll 'use-from-start)
+             (fboundp 'mlscroll-mode))
+    (mlscroll-mode 1)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Windows Operations

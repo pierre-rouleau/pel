@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-07 08:51:50 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-07 15:33:40 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -674,9 +674,11 @@ stored inside the doc/pdf directory.")
                                                                        smex))
 
     ([f11 27 ?d]            "mode-line"        pel-pkg-for-modeline   (display-time
-                                                                       mode-line))
+                                                                       mode-line
+                                                                       mlscroll))
     (,(kbd "<f11> M-d")     "mode-line"        pel-pkg-for-modeline   (display-time
-                                                                       mode-line))
+                                                                       mode-line
+                                                                       mlscroll))
 
     (,(kbd "<f11> SPC M-g") "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
     ([f11 32 27 ?g]         "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
