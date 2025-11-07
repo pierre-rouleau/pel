@@ -456,6 +456,12 @@
 ;; Validation Utilities
 ;; --------------------
 
+(defun pel-opt-indent-valid-p (n)
+  "Return t if N is nil or a valid indentation integer in 2-8 range.
+Return nil otherwise."
+  (or (not n)
+      (and (integerp n) (< n 9) (> n 1))))
+
 (defun pel-indent-valid-p (n)
   "Return t if N is a valid indentation integer in 2-8 range, nil otherwise."
   (and (integerp n) (< n 9) (> n 1)))
@@ -7429,6 +7435,32 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-dart
   :type '(repeat function))
+
+(defcustom pel-indent-with-tabs-mode-for-dart nil
+  "Indentation width rendering of hard tabs `pel-indent-with-tabs-mode'.
+- If nil, the Dart file is edited with the indentation scheme selected
+  by `pel-dart-indent-width' and `pel-dart-tab-width'.
+- If a number is selected it, the `pel-indent-with-tabs-mode' is automatically
+  enabled for Dart files with the visual indentation width specified by this
+  value.
+  - Selecting this also automatically adds pel-indent-with-tabs-mode
+    to pel-dart-activates-minor-modes to automatically active the minor mode.
+
+For example, set this to 4 if you want to edit Dart files with a visual
+indentation rendering of 4 columns, even if the file uses a 2-space
+indentation scheme.  The buffer will render indentation with hard-tabs
+using a tab width of 4.  The modified buffer will be saved back to the
+file with the original 2-space indentation scheme."
+  :group 'pel-pkg-for-dart
+  :type '(choice
+          (const
+           :tag "Normal editing; do not use `pel-indent-with-tabs-mode'"
+           nil)
+          (integer
+           :tag "Use `pel-indent-with-tabs-mode' with selected indent width")))
+
+(when pel-indent-with-tabs-mode-for-dart
+  (push 'pel-indent-with-tabs-mode pel-dart-activates-minor-modes))
 
 (defcustom pel-dart-indent-width 2
   "Number of columns for Dart source code indentation.

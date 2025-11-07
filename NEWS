@@ -8,6 +8,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   to *t*, and with *dart-ts-mode* when it is set to *with-tree-sitter*.
   User can toggle from the classic or tree-sitter based mode with  ~<f11>
   C-t C-t~.
+  - When setting *pel-indent-with-tabs-mode-for-dart* to a number, PEL automatically
+    activates the *pel-indent-with-tabs-mode* open for Dart buffers with the selected
+    indentation width. This way it overrides the 2-space indentation used in
+    the file with a tabs-based indentation scheme used in the buffer and saves
+    the buffer content back to the file  with the 2-space indentation scheme.
+    You can then conform to the strict and inflexible Dart guideline while
+    using something else inside your buffer.
 - Add the *pel-indent-with-tabs-mode* minor mode.  When activated that minor
   mode automatically turn all space-based indentation into tabs-based
   indentation using the same width. You can then widen the indentation

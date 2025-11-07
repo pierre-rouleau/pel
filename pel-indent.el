@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-07 10:23:11 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-07 16:38:28 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1153,7 +1153,9 @@ This is performed just before saving a buffer to a file or killing it."
 (defun pel--tm-after-save ()
   "Restore tab-based indentation with same width used before buffer save."
   (if pel--tab-width-used-during-tab-based-indent
-      (pel-indent-with-tabs pel--tab-width-used-during-tab-based-indent)
+      (progn
+        (pel-indent-with-tabs pel--tab-width-used-during-tab-based-indent)
+        (set-buffer-modified-p nil))
     (message "pel--tm-after-save: pel--tab-width-used-during-tab-based-indent is nil")))
 
 (define-minor-mode pel-indent-with-tabs-mode
@@ -1173,9 +1175,13 @@ This is performed just before saving a buffer to a file or killing it."
             (quit
              (message "Indenting with tabs Mode enabled, buffer not saved!")
              (setq message-printed t)))
-          ;; activate indentation with tabs using native tab-width matching
-          ;; indentation width
-          (pel-indent-with-tabs tab-width)
+          ;; activate indentation with tabs using either the indentation width
+          ;; specified by customization (if that symbol exists and is non-nil
+          ;; or the native tab-width matching indentation width
+          (pel-indent-with-tabs (or (pel-major-mode-symbol-value-or
+                                     "pel-indent-with-tabs-mode-for-%s"
+                                     nil)
+                                    tab-width))
           ;; The buffer was modified by replacing spaces with tabs but
           ;; since we want to use it as if it was normal, don't show
           ;; the buffer modified unless it already was.
