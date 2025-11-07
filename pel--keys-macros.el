@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-07 07:23:48 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-07 08:51:50 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1850,6 +1850,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 
 (defconst pel--tab-controlling-major-modes
   '(cwl
+    dart      ; dart-mode and dart-ts-mode ; differ; explicit logic is needed.
     go
     go-dot-mod
     go-mod                              ; for go-mod-ts-mode
@@ -1969,11 +1970,9 @@ Function created by the `pel-config-major-mode' macro."
       (unless (and pel-emacs-30-or-later-p
                    (eq target-mode 'org))
         (pel-append-to newbody
-          `((unless (assoc 'tab-width file-local-variables-alist)
-              (setq-local tab-width ,gn-tab-width)))))
+          `((pel-setq-local-unless-filevar tab-width ,gn-tab-width))))
       (pel-append-to newbody
-        `((unless (assoc 'indent-tabs-mode file-local-variables-alist)
-            (setq-local indent-tabs-mode ,gn-use-tabs))))
+        `((pel-setq-local-unless-filevar indent-tabs-mode ,gn-use-tabs)))
       (when (boundp gn-tie-indent-2-tab)
         (pel-append-to newbody
           `((pel--set-indent-control-variables ,gn-tie-indent-2-tab)))))

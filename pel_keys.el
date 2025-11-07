@@ -3350,7 +3350,22 @@ d-mode not added to ac-modes!"
   ;;    Schedule more configuration upon Dart feature loading
   ;;
   (pel-eval-after-load (dart-mode dart-ts-mode)
-    (pel-config-major-mode dart pel:for-dart :same-for-ts)))
+    (pel-config-major-mode dart pel:for-dart :same-for-ts
+      (if (bound-and-true-p dart-ts-mode)
+          ;; In dart-ts-mode
+          (progn
+            (pel-setq-local-unless-filevar tab-width
+                                           pel-dart-tab-width)
+            (pel-setq-local-unless-filevar dart-ts-mode-indent-offset
+                                           pel-dart-indent-width)
+
+            )
+        ;; In dart-mode
+        ;; - dart-mode has no indent width control variable; it uses tab-width
+        (pel-setq-local-unless-filevar tab-width pel-dart-indent-width))
+      ;; for both modes
+      (pel-setq-local-unless-filevar indent-tabs-mode pel-dart-use-tabs)
+      (pel--set-indent-control-variables pel-dart-tie-indent-to-tab-width))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Factor Programming Language Support

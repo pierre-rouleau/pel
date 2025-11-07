@@ -7419,8 +7419,8 @@ Do not enter lambda expressions."
 (defcustom pel-dart-indent-width 2
   "Number of columns for Dart source code indentation.
 
-PEL stores this value in the indentation control variable used by the Dart
-major mode:
+PEL stores this value in the indentation control variable used by the
+Dart major mode:
 - For `dart-mode'   : inside `tab-width'
 - For `dart-ts-mode': inside `dart-ts-mode-indent-offset'
 

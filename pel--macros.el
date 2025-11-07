@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-08 13:55:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-07 09:19:16 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -63,12 +63,13 @@
 ;;  The following 2 macros are used to prevent lint warnings:
 ;;
 ;;    - `pel-setq'
+;;    - `pel-setq-local'
 ;;    - `pel-setq-default'
 ;;
 ;;  Use the following macro to set a buffer-local variable unless
 ;;  it's value is specified as a file variable:
 ;;
-;;    - `pel-setq-local-unless-filevar'-
+;;    - `pel-setq-local-unless-filevar'
 ;;
 ;;  This last macro is used for writing loops that must not run more than a
 ;;  specified number of times:
@@ -145,6 +146,10 @@ VARIABLES := list of variable symbol(s) or nil
          (progn
            ,@body)
        (error "Failed loading required resources!")))))
+
+(defmacro bound-and-true-p (var)
+  "Return the value of symbol VAR if it is bound, else nil."
+  `(and (boundp (quote ,var)) ,var))
 
 ;; ---------------------------------------------------------------------------
 ;; Set mode state
@@ -223,7 +228,10 @@ See `pel-turn-mode-on-when-off' for more info."
      (setq-local ,sym ,val)))
 
 (defmacro pel-setq-default (sym val)
-  "Set a symbol SYM to specified default value VAL and prevent warning."
+  "Set a symbol SYM to specified default value VAL and prevent warning.
+This establishes the value a SYM will have in buffers where no specific
+buffer-local value has been set. This means it affects all new buffers and
+any existing buffers that have not explicitly overridden the value of SYM."
   `(progn
      ;; declare the symbol to prevent lint warning
      (defvar ,sym)
@@ -237,8 +245,8 @@ See `pel-turn-mode-on-when-off' for more info."
 (defmacro pel-setq-local-unless-filevar (sym val)
   "Set symbol SYM to value VAL unless it is specified by file variable."
   `(unless (and (boundp 'file-local-variable-alist)
-                (assoc ',sym file-local-variable-alist))
-     (setq-default ,sym ,val)))
+                (assoc (quote ,sym) file-local-variable-alist))
+     (setq-local ,sym ,val)))
 
 ;; ---------------------------------------------------------------------------
 ;; Loop Control Macro
