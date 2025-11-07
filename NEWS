@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support to Mode Line Scroll, mlscroll, when *pel-use-mlscroll* user-option is set to either t or to use-from-start.
 - Add preliminary support for the Dart programming language.
   PEL activates it with the *dart-mode* the *pel-use-dart* user-option is set
   to *t*, and with *dart-ts-mode* when it is set to *with-tree-sitter*.
