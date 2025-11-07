@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2025-10-28 09:30:59 EDT, updated by Pierre Rouleau.
+:Modified: 2025-11-07 14:18:59 EST, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -779,7 +779,7 @@ Simpler Prompts
 
 Emacs prompts that require you to type ``yes`` or ``no`` might be annoying.  If
 you would prefer being able to just type ``y`` or ``n`` instead, as most
-people do, set the ``pel-prompt-accept-y-n`` user option to **t**.  There are
+people do, set the ``pel-prompt-accept-y-n`` user option to ``t``.  There are
 several ways you can do this:
 
 - Execute:  ``M-x customize-option`` then type ``pel-prompt-accept-y-n``, hit
@@ -797,11 +797,11 @@ of those because their corresponding file should already been loaded in Emacs.
 ======================================== ======================================
 Emacs user option                        Description
 ======================================== ======================================
-column-number-mode                       Set it to **t** to activate the
+column-number-mode                       Set it to ``t`` to activate the
                                          display of the column number on the
                                          mode line.
 
-comment-empty-lines                      Set it to **t** if you want to
+comment-empty-lines                      Set it to ``t`` if you want to
                                          comment empty lines when commenting
                                          a region of lines.
 
@@ -823,7 +823,7 @@ hl-line-sticky-flag                      Set it to **nil** if you only want to
                                          multiple windows.
 
 
-truncate-lines                           Set it to **t** if you want Emacs to
+truncate-lines                           Set it to ``t`` if you want Emacs to
                                          truncate long lines instead of
                                          wrapping them.  You can change this
                                          behaviour by using ``<f11> l t`` or
@@ -1218,7 +1218,7 @@ checker program (aspell, hunspell or ispell) or several compilers.
 - Make sure that your ``init.el`` file contains the logic identified in the
   `example/init/init.el`_ file:
 
-  - Set OPTION A: set ``pel-init-support-dual-environment-p`` to **t**
+  - Set OPTION A: set ``pel-init-support-dual-environment-p`` to ``t``
   - Set OPTION B: set ``pel-ei-shell-detection-envvar`` to the name of the
     environment variable your shell always set or the one you always set
     inside your shell startup script (something like ``PEL_SHELL``).
@@ -1230,7 +1230,7 @@ checker program (aspell, hunspell or ispell) or several compilers.
   `example/init/early-init.el`_ file:
 
   - Set OPTION A: set ``pel-early-init-support-dual-environment-p`` to
-    **t**.
+    ``t``.
 
 **To support GUI-launched GUI Emacs**
 
@@ -1409,7 +1409,7 @@ default when you first get PEL.  Turn them on, save the customization and
 execute ``pel-init`` or restart Emacs to activate them.  When you restart
 Emacs, some more packages might be automatically downloaded when required.
 
-Note:  In Emacs Lisp the value **t**, is the symbol for truth and **nil** is
+Note:  In Emacs Lisp the value ``t``, is the symbol for truth and **nil** is
 used for the empty list and represent falsehood.
 
 You can repeat the operation several times.  If you saved the customization, you
@@ -1597,7 +1597,7 @@ the following commands to access which-key customization group:
 - ``<f11> ? <f3> 5``
 
 If the which-key_ package is not enabled, you can enable it by setting the
-``pel-use-which-key`` user-option to **t**.  You can access it by opening the
+``pel-use-which-key`` user-option to ``t``.  You can access it by opening the
 customization buffer for help by typing the ``<f11> ? <f2>`` key sequence.
 
 Once set, it must be activated: execute ``pel-init`` by typing ``M-x pel-init
@@ -1666,7 +1666,7 @@ your local browser.  There are several ways to do that:
 - You can invert the meaning of the argument key presence such that typing
   ``<f11> <f1>`` opens the Github file in your browser and ``C-u <f11> <f1>``
   opens your local PDF file.  For that set the ``pel-flip-help-pdf-arg``
-  user-option to **t**.
+  user-option to ``t``.
   You can access its customization buffer with ``<f11> ? <f2>``.
 
 
@@ -2014,7 +2014,7 @@ Check customization state
 The command ``pel-setup-info-dual-environment``, bound to the ``<f11> <f2> ?``
 and to the ``<f11> ? e <f2>``
 key sequences, displays the name of the customization file or files used by PEL.
-If the symbol ``pel-init-support-dual-environment-p`` is set to **t**,
+If the symbol ``pel-init-support-dual-environment-p`` is set to ``t``,
 requesting the use of two independent customization files it also checks if
 the environment is properly configured to support two independent
 customization files and reports all detected problems.
@@ -2571,7 +2571,7 @@ PEL Abbreviation Management Support
 :PEL Key Prefix: **pel:abbrev** : ``<f11> a``
 
 PEL provides automatic activation of Hippie expansion when the
-``pel-use-hippie-expand`` `user option`_ is set to **t**.  Otherwise
+``pel-use-hippie-expand`` `user option`_ is set to ``t``.  Otherwise
 it defaults to Dabbrev_ expansion.
 PEL also provides the **pel:abbrev** key map which provides access to some
 abbreviation related commands.  PEL binds it to ``<f11> a``.
@@ -2661,7 +2661,7 @@ For supporting bookmarks PEL provides the following:
 
 - PEL provides a set of key bindings under the
   **pel:bookmark** key prefix set to ``<f11> '`` by default.
-- If the ``pel-use-bm`` user option is set to **t** PEL add bindings to
+- If the ``pel-use-bm`` user option is set to ``t`` PEL add bindings to
   the visible bookmark commands and binds the **F2** key to ``bm-next`` which
   moves point to the next visible bookmark. PEL sets it to support bookmarks in
   several files and moving across files.
@@ -2693,7 +2693,7 @@ comment management.
   Each killed comment group is retained in the kill ring, as a separate kill
   ring entry.  That allows selective restoration of comments later with yank
   operations.  See the `Cut, Delete, Copy and Paste`_ document.
-- When ``pel-use-hide-cmnt`` user option is **t** the `hide-comnt.el`_ file,
+- When ``pel-use-hide-cmnt`` user option is ``t`` the `hide-comnt.el`_ file,
   written by `Drew Adams`_ is used and provides 2 commands to hide the comments
   in the buffer or just in a marked region.
 
@@ -2989,7 +2989,7 @@ type when Emacs is running in graphical mode.
 - With ``pel-cursor-type-when-mark`` you can set a different cursor type
   (shape) used when the mark is active.
 
-When ``pel-use-multiple-cursors`` is set to **t** the popular
+When ``pel-use-multiple-cursors`` is set to ``t`` the popular
 `multiple-cursors`_ mode is made available and PEL provides a set of key
 bindings for this.  The ``pel-use-visual-regexp`` and
 ``pel-use-visual-regexp-steroids`` activate the ability to perform a search
@@ -3247,8 +3247,8 @@ for the PlantUML-mode commands.  See the `PlantUML-Mode`_ PDF document for more
 information.
 
 PEL activates support for PlantUML with the plantuml-mode when the
-``pel-use-plantuml`` user options is either set to **t** or to **server**.
-When set to **t** you use a local instance of the PlantUML Java application.
+``pel-use-plantuml`` user options is either set to ``t`` or to **server**.
+When set to ``t`` you use a local instance of the PlantUML Java application.
 You need to install PlantUML.  If set to **server** Emacs communicates with a
 remote PlantUML server to crete the image.  Your data is sent to that external
 server, so make sure you set this to what you need and do not sent proprietary
@@ -3316,10 +3316,10 @@ PEL also provides the ability to use the ffap (find file at
 point) standard library which complements the PEL command that can also open a file or
 URL at point (but can also specify a window by coordinates and handle line and
 column numbers). PEL activates the special ``pel:ffap`` binding when
-``pel-use-ffap`` user option is set to **t**. If you prefer the standard ffap binding, then
+``pel-use-ffap`` user option is set to ``t``. If you prefer the standard ffap binding, then
 set ``pel-use-ffap`` user option to **ffap-bindings**.
 
-When the ``pel-use-ido-mode`` user option is set to **t** ``pel-init``
+When the ``pel-use-ido-mode`` user option is set to ``t`` ``pel-init``
 activates IDO-mode_ everywhere, enables flex matching and prevents prompt when
 creating new buffers with ``C-x b``.
 
@@ -3440,13 +3440,13 @@ Instead PEL uses the following function keys:
 
 - **F2**, bound to ``bm-next`` (from `visible bookmarks`_)
   to quickly move to next visible bookmark
-  when the ``pel-use-bm`` user option is **t**.
+  when the ``pel-use-bm`` user option is ``t``.
 - **F5**, bound to ``repeat``.
 - **F6**, the ``pel:f6`` prefix, which provides quick access to some
   often used commands, and generic template insertion commands that work
   in all major modes.
 - **F7** is used for `Hydra keys`_
-  key sequences when ``pel-use-hydra`` is **t**.
+  key sequences when ``pel-use-hydra`` is ``t``.
 - **F11**, the ``pel:`` prefix , is the main prefix key for PEL, providing
   access to a large set of key bindings and second-level key prefixes.
 -  **F12** is a mode-sensitive key prefix with quick access bindings for the
@@ -3474,8 +3474,8 @@ key when `which-key`_ is installed and activated:
 .. image:: res/pel-which-key.png
 
 To install and activate it, you must set the ``pel-use-which-key`` customize
-variable to **t**.  Use the ``M-x customize`` command and search
-for ``pel-use-which-key``.  Set it to **t**.  The restart PEL by using
+variable to ``t``.  Use the ``M-x customize`` command and search
+for ``pel-use-which-key``.  Set it to ``t``.  The restart PEL by using
 ``M-x pel-init``.  PEL will download and install the `which-key`_ package
 and will activate it.
 
@@ -3493,14 +3493,14 @@ PEL Grep Support
 :PEL Key Prefix: **pel:grep** : ``<f11> g``
 
 PEL provides the **pel:grep** (``<f11> g``) key map to regroup grep commands.
-If the ``pel-use-ripgrep`` user option is **t** that includes access to
+If the ``pel-use-ripgrep`` user option is ``t`` that includes access to
 the ``rg`` command that uses the fast ripgrep_ executable.
 
-When ``pel-use-projectile`` is set to **t**, the `ripgrep.el`_ package is also
+When ``pel-use-projectile`` is set to ``t``, the `ripgrep.el`_ package is also
 used because `projectile`_ uses `ripgrep.el`_ instead of the `rg`_ package.
 Both provide access to the ripgrep_ executable.
 
-When ``pel-use-ag`` is set to **t**, the `ag`_ (`ag, the silver searcher`_)  is also
+When ``pel-use-ag`` is set to ``t``, the `ag`_ (`ag, the silver searcher`_)  is also
 available.  This is another fast grep alternative that requires the ag command
 line.
 
@@ -3593,7 +3593,7 @@ The file `pel-highlight.el`_ provides the following simple utility commands.
     for indentation inside the current buffer (but does *not* tabify or untabify
     existing content.) It displays what's being used now.
 
-- When ``pel-use-vline`` user option is **t** the ``<f11> b h v`` key is bound
+- When ``pel-use-vline`` user option is ``t`` the ``<f11> b h v`` key is bound
   to vline-mode_ which toggles a vertical bar across the current window at
   the cursor location.
 
@@ -3654,11 +3654,11 @@ PEL Key Chords Support
 :PEL Key Prefix: *none*
 
 PEL provides access to the `key-chord`_ external library when the
-``pel-use-key-chord`` user option is set to either **t** (to activate key-chords
-when the key-chord-mode is ttuned on) or to **use-from-start** (to activate the
+``pel-use-key-chord`` user option is set to either ``t`` (to activate key-chords
+when the key-chord-mode is turned on) or to ``use-from-start`` (to activate the
 key-chord mode and all defined global key-chords when Emacs starts).
 
-If you set the ``pel-use-key-seq`` suer option to **t**, PEL also
+If you set the ``pel-use-key-seq`` suer option to ``t``, PEL also
 provides access to the `key-seq`_ external library and allow you to identify
 your *key-chord* to be a *key-seq* instead.
 
@@ -3727,7 +3727,7 @@ PEL Keyboard Macro Utilities
 The file `pel-kbmacros.el`_ implements ``pel-kmacro-start-macro-or-insert-counter``
 used to replace the standard ``kmacro-start-macro-or-insert-counter`` to record
 a keyboard macro.  If the user option ``pel-kmacro-prompts`` is set to
-**t**, the PEL function checks if the macro is already defined and if it is,
+``t``, the PEL function checks if the macro is already defined and if it is,
 prompts before allowing to replace the existing keyboard macro with a new one.
 It just offer a little protection.  And this protection can be reset by
 executing the second command: ``pel-forget-recorded-keyboard-macro``.  In some
@@ -3819,7 +3819,7 @@ PEL AsciiDoc Support
 :PEL Customization: ``pel-use-asciidoc``
 :PEL Key Prefix: *none*
 
-When ``pel-use-asciidoc`` is set to **t**, PEL activates the adoc-mode for files
+When ``pel-use-asciidoc`` is set to ``t``, PEL activates the adoc-mode for files
 with the ``.adoc`` file extension.
 
 
@@ -3949,7 +3949,7 @@ key                             binding
 The longer to type global prefix is always available: ``<f11> SPC r``.
 
 All of the above is activated by ``pel-init`` only when the
-``pel-use-rst`` user option is set to **t**.
+``pel-use-rst`` user option is set to ``t``.
 
 .. _reStructuredText: https://en.wikipedia.org/wiki/ReStructuredText
 .. _external hyperlink targets: https://docutils.sourceforge.io/docs/user/rst/quickref.html#hyperlink-targets
@@ -4674,7 +4674,7 @@ You can toggle the **pel-tempo-mode** minor mode with the ``<f12> <f12>
 
 
 The comment block contains sections because the user option
-``pel-c-skel-insert-module-sections`` is set to **t**.  This always includes the
+``pel-c-skel-insert-module-sections`` is set to ``t``.  This always includes the
 section with the "Module Description" title.  The following section names
 ("Header Inclusion", "Local Types",  etc..) are identified by the user option
 ``pel-c-skel-module-section-titles``.
@@ -4919,7 +4919,7 @@ The default comment style is the C-style ``/* */`` style (also called block
 style).  But you can switch to the C++ ``//`` style (also called line style)
 using the ``<f12> M-;`` key sequence.
 
-The ``pel-c-skel-function-name-on-first-column`` user option is set to **t** the
+The ``pel-c-skel-function-name-on-first-column`` user option is set to ``t`` the
 function return type is written on the line above the function name.  By default
 this is set to nil and the return type precedes the function name on the same
 line. The skeleton inserts ``void`` as the type but leaves a tempo marker on the
@@ -5110,7 +5110,7 @@ The indentation is controlled by the ``pel-c-indent-width`` user option.
 Use ``C-c .`` to move point to the next tempo marker and ``C-c ,`` to the previous one.
 
 With C++ style comments and ``pel-c-skel-function-name-on-first-column`` set to
-**t**, the code inserted is the following instead:
+``t``, the code inserted is the following instead:
 
 .. code:: c
 
@@ -5333,7 +5333,7 @@ PEL Support for Common Lisp
 The file `pel-commonlisp.el`_ is in a very early stage.
 It only provides the ``pel-cl-init`` function that is used by ``pel-init`` to
 initialize support for Common Lisp when the ``pel-use-common-lisp`` customize
-variable is set to **t**.
+variable is set to ``t``.
 The ``pel-use-common-lisp`` function sets the indentation rule to the Common
 Lisp indentation style.
 The ``pel-init`` function also set the variable ``common-lisp-hyperspec-root``
@@ -5370,7 +5370,7 @@ PEL Support For D
 
 PEL provides support for the `D Programming Language`_ via the `Emacs D-mode`_ and
 related external packages that it activates when the **pel-use-d** user option
-is set to **t**.  The selection of important editor behaviour such as the
+is set to ``t``.  The selection of important editor behaviour such as the
 indentation/bracket style and the indentation is completely controlled by user
 options.  The defaults are adapted to what is proposed by the `D Style code
 guideline`_ and can easily be changed using Emacs customize system.
@@ -6537,9 +6537,9 @@ PEL Project Management Utilities
 :PEL Key Prefix: **projectile-command-map** : ``<f8>``
 
 PEL supports the `projectile`_ external package when the ``pel-use-projectile``
-user option is set to either **t** or **use-from-start**.  If you set it to
-**t** it makes it available but does not activate it when Emacs starts.  If you
-set it to **use-from-start** it activates it when Emacs starts.
+user option is set to either ``t`` or ``use-from-start``.  If you set it to
+``t`` it makes it available but does not activate it when Emacs starts.  If you
+set it to ``use-from-start`` it activates it when Emacs starts.
 
 PEL uses the ``<f8>`` key as the projectile prefix and adds some key bindings
 into it.
@@ -6630,7 +6630,7 @@ following commands are used:
   See `PEL Navigation Support`_.
 
 When the `smooth scrolling package`_ is available and ``pel-smooth-scrolling``
-user option is set to **t**, PEL provide a key binding to toggle smooth
+user option is set to ``t``, PEL provide a key binding to toggle smooth
 scrolling on and off.  See the `Scrolling`_ PDF table for more info.
 
 .. _smooth scrolling package: https://melpa.org/#/smooth-scrolling
@@ -6672,7 +6672,7 @@ value:
   buffer.
 
 PEL also integrates several search enhancement packages when their corresponding
-user option variable are set to **t**. See the above ``Customization`` list.
+user option variable are set to ``t``. See the above ``Customization`` list.
 With those you can set the regular expression engine and the search tool you
 want to use by default and you can change them dynamically during editing.
 
@@ -6734,7 +6734,7 @@ PEL Speedbar Management
 
 The file `pel-speedbar.el`_ manages the accessibility and use of Emacs speed-bars:
 both Emacs native Speedbar and the `SR-Speedbar`_ external package.
-When the ``pel-use-speedbar`` user option is set to **t** PEL provides
+When the ``pel-use-speedbar`` user option is set to ``t`` PEL provides
 key bindings for activating the speed-bars and provide some management
 facilities. As shown in the PDF `Speedbar`_ table, Plus
 default key bindings for those use the ``<f11> M-s`` prefix.
@@ -7240,9 +7240,9 @@ Using YASnippet
 
 PEL also supports the popular yasnippet_ templating system and the official
 yasnippet-snippets_ templates when the ``pel-use-yasnippet`` and
-``pel-use-yasnippet-snippets`` user options are set to **t**.  If you want
+``pel-use-yasnippet-snippets`` user options are set to ``t``.  If you want
 yasnippet_ activated when Emacs starts set the ``pel-use-yasnippet`` user option
-to **use-from-start** otherwise you can activate (and de-activate) the YASnippet
+to ``use-from-start`` otherwise you can activate (and de-activate) the YASnippet
 minor mode by using the ``<f11> y y`` key sequence.
 
 Aside from keys to manage snippets, bound inside the **pel:yasnippet** key
@@ -7317,9 +7317,9 @@ PEL Undo Support
 :PEL Key Prefix: **pel:undo** : ``<f11> u``
 
 PEL provides the **pel:undo** key prefix (``<f11> u``) to Emacs undo commands.
-If the ``pel-use-undo-tree`` customization variable is set to **t**, it uses the
+If the ``pel-use-undo-tree`` customization variable is set to ``t``, it uses the
 undo-tree package to control undo and binds its keys.
-If the ``pel-use-goto-last-change`` customization variable is set to **t** it
+If the ``pel-use-goto-last-change`` customization variable is set to ``t`` it
 also provides access to the ``goto-last-change`` command and binds it.
 All key binding details are in the `Undo, Redo, Repeat and Prefix Arguments`_ PDF table.
 
@@ -7786,7 +7786,7 @@ Variable Scoping
 ~~~~~~~~~~~~~~~~
 
 PEL code uses lexical scope in all Emacs Lisp files.
-Each of these file sets the ``lexical-binding`` local variable to **t**.
+Each of these file sets the ``lexical-binding`` local variable to ``t``.
 
 For more information on why this is done, read
 Chris Wellons' article titled
@@ -8062,7 +8062,7 @@ when PEL supports new packages.
 
 
 It also provides access to the features of the libraries listed in the
-following table when the corresponding PEL user option is set to **t**.
+following table when the corresponding PEL user option is set to ``t``.
 This table is currently incomplete.  The link to the original projects are
 available in the source code and inside the customization buffers.
 
