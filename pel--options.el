@@ -2838,7 +2838,7 @@ Note: popup-switcher 2.14 has several bugs I fixed in my fork, which PEL
       uses until they're integrated."
   :link '(url-link :tag "popup-switcher @ GitHub"
                    "https://github.com/kostafey/popup-switcher")
-  :link '(url-link :tag "popup-switcher fork wit bug fixed"
+  :link '(url-link :tag "popup-switcher fork with bug fixed"
                    "https://github.com/pierre-rouleau/popup-switcher")
   :group 'pel-pkg-for-imenu
   :group 'pel-pkg-for-completion
@@ -4873,6 +4873,15 @@ That mode prints the current point value on the mode line."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-show-point-mode :package-is :in-utils)
+
+(defcustom pel-use-mlscroll nil
+  "Control whether PEL activates the mlscroll package.
+A minor mode that provides a scroll bar inside the modeline.."
+  :group 'pel-pkg-for-modeline
+  :link '(url-link :tag "mlscroll @ Github"
+                   "https://github.com/jdtsmith/mlscroll")
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-navigation

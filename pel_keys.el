@@ -120,14 +120,10 @@
 ;; - `with-eval-after-load' does the same with less error handling; it is used
 ;;                          in cases where less code is part of its BODY.
 ;;
-;;; --------------------------------------------------------------------------
-;;; Code:
 
 ;;;---------------------------------------------------------------------------
-;; Required packages:
-(eval-when-compile
-  (require 'cl-lib))    ; use: cl-eval-when
-
+;;; Dependencies:
+;;
 (require 'pel--base)    ; use pel-system-is-macos-p
 ;;                      ;     pel-system-is-windows-p
 ;;                      ;     pel-emacs-is-a-tty-p
@@ -149,6 +145,9 @@
 (require 'pel--options) ; all `pel-use-...' variables identify what to use.
 ;;                      ; also defines a set of utility functions to deal with
 ;;                      ; the options: pel-auto-complete-help
+
+;;; --------------------------------------------------------------------------
+;;; Code:
 
 ;; ---------------------------------------------------------------------------
 ;;* Install Future-Proof Packages
@@ -1739,26 +1738,20 @@ can't bind negative-argument to C-_ and M-_"
 
 (when pel-use-popup-imenu
   ;; No key binding - its used by pel-goto-symbol.
-  (cl-eval-when 'load
-    (pel--install-github-file "pierre-rouleau/popup-imenu/master"
-                              "popup-imenu.el")
-    ;; install it's external mandatory dependencies
-    (pel-ensure-package dash from: melpa)
-    (pel-ensure-package popup from: melpa)
-    (pel-ensure-package flx-ido from melpa))
+  (pel--install-github-file "pierre-rouleau/popup-imenu/master"
+                            "popup-imenu.el")
+  ;; install it's external mandatory dependencies
+  (pel-ensure-package dash from: melpa)
+  (pel-ensure-package popup from: melpa)
+  (pel-ensure-package flx-ido from melpa)
   (pel-autoload-file popup-imenu for: popup-imenu))
 
 (when pel-use-popup-switcher
-  ;; (pel-ensure-package popup-switcher from: melpa)
-  ;; popup-switcher 2.14 has several bugs I fixed in
-  ;; https://github.com/kostafey/popup-switcher/pull/20
-  ;; Until this is integrated, we'll use my fork.
-  (cl-eval-when 'load
-    (pel--install-github-file "pierre-rouleau/popup-switcher/master"
+  (pel--install-github-file "pierre-rouleau/popup-switcher/fixes"
                               "popup-switcher.el")
     ;; install it's mandatory external dependencies
     (pel-ensure-package dash from: melpa)
-    (pel-ensure-package popup from: melpa))
+    (pel-ensure-package popup from: melpa)
   ;; autoload when installed in utils
   (pel-autoload-file popup-switcher for:
                      psw-switch-buffer
@@ -3462,25 +3455,24 @@ d-mode not added to ac-modes!"
 
   ;;5- Install optional packages for Go
   ;; - goflymake package installation - either using flymake or flycheck
-  (cl-eval-when 'load
-    (when pel-use-goflymake
-      ;; goflymake is a mixed package:
-      ;; - it has the Go source:  goflymake/main.go  that Go will compile into
-      ;;   the executable stored in a directory that should be on your PATH,
-      ;; - the emacs lisp go-flymake.el and go-flycheck.el
-      ;; To ensure the Emacs Lisp files are available to Emacs regardless of the
-      ;; Go project or workspace used, the Emacs Lisp files are stored in PEL
-      ;; utility directory.
-      (if (memq pel-use-goflymake '(with-flycheck with-flymake))
-          (pel--install-github-file "dougm/goflymake/master"
-                                    (if (eq pel-use-goflymake 'with-flycheck)
-                                        "go-flycheck.el"
-                                      "go-flymake.el"))
-        (display-warning
-         'pel-use-goflymake
-         (format "Unsupported pel-use-goflymake value: %S"
-                 pel-use-goflymake)
-         :error))))
+  (when pel-use-goflymake
+    ;; goflymake is a mixed package:
+    ;; - it has the Go source:  goflymake/main.go  that Go will compile into
+    ;;   the executable stored in a directory that should be on your PATH,
+    ;; - the emacs lisp go-flymake.el and go-flycheck.el
+    ;; To ensure the Emacs Lisp files are available to Emacs regardless of the
+    ;; Go project or workspace used, the Emacs Lisp files are stored in PEL
+    ;; utility directory.
+    (if (memq pel-use-goflymake '(with-flycheck with-flymake))
+        (pel--install-github-file "dougm/goflymake/master"
+                                  (if (eq pel-use-goflymake 'with-flycheck)
+                                      "go-flycheck.el"
+                                    "go-flymake.el"))
+      (display-warning
+       'pel-use-goflymake
+       (format "Unsupported pel-use-goflymake value: %S"
+               pel-use-goflymake)
+       :error)))
 
   ;; 6- Activate Go Setup
   ;;    Schedule more configuration upon Go feature loading
@@ -3821,13 +3813,12 @@ d-mode not added to ac-modes!"
   ;; set pel-use-parinfer to use-pel-elpa-attic-copy otherwise PEL will extract it
   ;; from the emacsattic.
   (declare-function pel-install-from-elpa-attic "pel-package")
-  (cl-eval-when 'load
-    (or (and (eq pel-use-parinfer 'use-pel-elpa-attic-copy)
-             (pel-install-from-elpa-attic "parinfer"))
-        (pel--install-github-files "emacsattic/parinfer/master"
-                                   '("parinfer.el"
-                                     "parinferlib.el"
-                                     "parinfer-ext.el"))))
+  (or (and (eq pel-use-parinfer 'use-pel-elpa-attic-copy)
+           (pel-install-from-elpa-attic "parinfer"))
+      (pel--install-github-files "emacsattic/parinfer/master"
+                                 '("parinfer.el"
+                                   "parinferlib.el"
+                                   "parinfer-ext.el")))
   (pel-autoload-file parinfer for:
                      parinfer-mode
                      parinfer-toggle-mode
@@ -9840,10 +9831,9 @@ the ones defined from the buffer now."
 (define-key pel:mode-line "c"  'column-number-mode)
 
 (when pel-use-show-point-mode
-  (cl-eval-when 'load
-    (pel--install-github-file "dmgerman/predictive/master"
+  (pel--install-github-file "dmgerman/predictive/master"
                               "show-point-mode.el")
-    (pel-autoload "show-point-mode" for: show-point-mode))
+    (pel-autoload "show-point-mode" for: show-point-mode)
   (define-key pel:mode-line "p"  'show-point-mode))
 
 ;; ---------------------------------------------------------------------------
