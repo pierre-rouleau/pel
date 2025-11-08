@@ -69,6 +69,10 @@ Essentially PEL:
   pel-use-dtrt-indent is activated, and also describe how to use a hard-tab
   indentation scheme to dynamically modify rendered indentation in some modes
   where that technique is possible,
+- help you edit files with narrow indentation schemes such as Dart and Gleam
+  files that must use a 2-space indent; the **pel-indent-with-tabs-mode**
+  minor mode automatically converts the indentation to tabs-based indentation
+  in the buffer so you can see the code better 😎,
 - provides the ability to use Tree-Sitter based major modes but also
   dynamically switch from classic to Tree-Sitter based major mode and back
   at any time and without any impact on your original selection;
