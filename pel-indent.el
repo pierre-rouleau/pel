@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-09 11:41:22 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-09 12:09:49 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1011,10 +1011,23 @@ important variables and symbols in the context of the inspected major mode."
         (if (and pel-tab-width-control-variables
                  (not (pel-indent--indent-vars-have-offset
                        pel-tab-width-control-variables)))
-            (insert (format "
+            (let ((pel-indent-with-tabs-mode-for-MM
+                   (pel-major-mode-symbol-for "pel-indent-with-tabs-mode-for-%s")))
+              (insert
+               (format "
      - For this buffer you can use this technique, because the current variables
        identified in pel-tab-width-control-variables identify variables that
-       have an offset of zero from the tab width."))
+       have an offset of zero from the tab width.
+       - Use the `pel-indent-with-tabs-mode' for that.%s"
+                       (if (boundp pel-indent-with-tabs-mode-for-MM)
+                           (format "
+         The easiest way is to set `%s' to the indentation width
+         you want to use in the buffer to automatically activate this minor
+         mode which convert indentation when opening and saving the file."
+                                   pel-indent-with-tabs-mode-for-MM)
+                         "")))
+              (when (boundp pel-indent-with-tabs-mode-for-MM)
+                (pel-insert-symbol-content-line pel-indent-with-tabs-mode-for-MM)))
           (when (and (boundp pel--MM-indent-predef-vars)
                      (symbol-value pel--MM-indent-predef-vars))
             (if (not (pel-indent--indent-vars-have-offset
