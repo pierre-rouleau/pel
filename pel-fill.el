@@ -61,6 +61,7 @@ in which case it appends to the previous report."
      (lambda ()
        "Print fill control variable values."
        (pel-insert-symbol-content-line 'auto-fill-function)
+       (pel-insert-symbol-content-line 'normal-auto-fill-function)
        (pel-insert-symbol-content-line 'auto-fill-inhibit-regexp)
        (pel-insert-symbol-content-line 'fill-column)
        (insert (format ", active value for text: %S" text-fill-column))
