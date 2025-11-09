@@ -7396,7 +7396,6 @@ by the `pel-use-d-ac-dcd'."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Dart Programming Language Support
 ;; ---------------------------------
-
 (defgroup pel-pkg-for-dart nil
   "PEL customization for Dart."
   :group 'pel-pkg-for-software-programming-languages
@@ -10448,9 +10447,43 @@ and does not plan to develop it.  Therefore, PEL only support `gleam-ts-mode'."
 (pel-put 'pel-use-gleam :package-is '(quote ((utils . gleam-ts-mode))))
 (pel-put 'pel-use-gleam :requires 'pel-use-tree-sitter)
 
+(defcustom pel-gleam-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for GLEAM buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-gleam
+  :type '(repeat function))
+
+(defcustom pel-indent-with-tabs-mode-for-gleam nil
+  "Indentation width rendering of hard tabs `pel-indent-with-tabs-mode'.
+- If nil, the Gleam file is edited with the indentation scheme selected
+  by `pel-gleam-indent-width' and `pel-gleam-tab-width'.
+- If a number is selected it, the `pel-indent-with-tabs-mode' is automatically
+  enabled for Gleam files with the visual indentation width specified by this
+  value.
+  - Selecting this also automatically adds pel-indent-with-tabs-mode
+    to pel-gleam-activates-minor-modes to automatically active the minor mode.
+
+For example, set this to 4 if you want to edit Gleam files with a visual
+indentation rendering of 4 columns, even if the file uses a 2-space
+indentation scheme.  The buffer will render indentation with hard-tabs
+using a tab width of 4.  The modified buffer will be saved back to the
+file with the original 2-space indentation scheme.
+
+IMPORTANT: after changing this value you must restart Emacs for the
+           modifications to take effect."
+  :group 'pel-pkg-for-gleam
+  :type '(choice
+          (const
+           :tag "Normal editing; do not use `pel-indent-with-tabs-mode'"
+           nil)
+          (integer
+           :tag "Use `pel-indent-with-tabs-mode' with selected indent width")))
+
 ;; Define a list of Gleam indentation control variables that could be tied to
 ;; `tab-width'.  These will be used when `pel-gleam-tie-indent-to-tab-width'
 ;; is set to use-predef-vars.
+
 (defconst pel--gleam-indent-predef-vars
   '((gleam-ts-indent-offset  .  0))
   "List of gleam indentation variables that can be tied to tab width.
@@ -10462,8 +10495,8 @@ Each entry is a cons cell:
 - the car is the variable name.
 - the cdr is the offset applied to `tab-width':
    The value stored in the variable is: (+ tab-with offset)")
-
 ;; Gleam style guide recommends use of spaces for indentation.
+
 (defcustom pel-gleam-tie-indent-to-tab-width nil
   "Identify whether `pel-set-tab-width' also sets indentation.
 This can have the following values:
@@ -10489,13 +10522,6 @@ This can have the following values:
             (cons
              (symbol :tag  "variable (no space) ")
              (integer :tag "offset from tab-width" :value 0)))))
-
-(defcustom pel-gleam-activates-minor-modes nil
-  "List of *local* minor-modes automatically activated for GLEAM buffers.
-Enter *local* minor-mode activating function symbols.
-Do not enter lambda expressions."
-  :group 'pel-pkg-for-gleam
-  :type '(repeat function))
 
 (defcustom pel-gleam-tab-width 2
   "Column width display rendering of hard tab for gleam buffers.
