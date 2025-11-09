@@ -7450,7 +7450,10 @@ For example, set this to 4 if you want to edit Dart files with a visual
 indentation rendering of 4 columns, even if the file uses a 2-space
 indentation scheme.  The buffer will render indentation with hard-tabs
 using a tab width of 4.  The modified buffer will be saved back to the
-file with the original 2-space indentation scheme."
+file with the original 2-space indentation scheme.
+
+IMPORTANT: after changing this value you must restart Emacs for the
+           modifications to take effect."
   :group 'pel-pkg-for-dart
   :type '(choice
           (const

@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-07 16:38:28 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-09 11:41:22 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -181,7 +181,8 @@
 (require 'pel--indent)                  ; use: `'
 (require 'pel--options)                 ; use: `pel-use-dtrt-indent'
 
-(require 'simple)                       ; use: `indent-tabs-mode'
+(require 'simple)                       ; use: `indent-tabs-mode',
+;;                                      ;      `normal-auto-fill-function'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;; ---------------------------------------------------------------------------
@@ -584,12 +585,16 @@ Return the new `tab-width' or nil if unchanged."
   ;; Mode            Syntax        Variable
   '((actionscript-mode   actionscript-indent-level)
     (ada-mode            ada-indent)    ; Ada
+    (ada-ts-mode         ada-ts-mode-indent-offset)
     (apache-mode         apache-indent-level)
     (awk-mode            c-basic-offset)
     (bash-ts-mode        sh-basic-offset) ; Shell Script - use SMIE if available
     (c-mode              c-basic-offset)  ; C
-    (c++-mode            c-basic-offset)  ; C++
+    (c-ts-mode           c-ts-mode-indent-offset)
+    (c++-mode            c-basic-offset) ; C++
+    (c++-ts-mode         c-ts-mode-indent-offset)
     (cmake-mode          cmake-tab-width) ; CMake
+    (cmake-ts-mode       cmake-ts-mode-indent-offset)
     (coffee-mode         coffee-tab-width)
     (coq-mode            coq-indent-basic)
     (cperl-mode          cperl-indent-level) ; Perl
@@ -601,6 +606,7 @@ Return the new `tab-width' or nil if unchanged."
     (scss-mode           css-indent-offset)
     (ssass-mode          ssass-tab-width)
     (dart-mode           tab-width)
+    (dart-ts-mode        dart-ts-mode-indent-offset)
     (dockerfile-mode     dockerfile-indent-offset)
     (d-mode              c-basic-offset) ; D
     (elixir-mode         elixir-smie-indent-basic)
@@ -622,6 +628,8 @@ Return the new `tab-width' or nil if unchanged."
                           fsharp-indent-level
                           fsharp-indent-offset))
     (gdscript-mode       gdscript-indent-offset)
+    (go-ts-mode          go-ts-mode-indent-offset)
+    (gpr-ts-mode         gpr-ts-mode-indent-offset)
     (groovy-mode         groovy-indent-offset) ; Groovy
     (jenkinsfile-mode    groovy-indent-offset)
     (haskell-mode        (haskell-indent-spaces
@@ -637,14 +645,17 @@ Return the new `tab-width' or nil if unchanged."
     (idl-mode            c-basic-offset)
     (jade-mode           jade-tab-width)
     (java-mode           c-basic-offset) ; Java
+    (java-ts-mode        java-ts-mode-indent-offset)
     (jde-mode            c-basic-offset) ; Java (JDE)
     (javascript-mode     js-indent-level)
-    (js-mode             js-indent-level)  ; JavaScript
+    (js-mode             js-indent-level) ; JavaScript
+    (js-ts-mode          js-indent-level)
     (js-json-mode        js-indent-level)  ; JSON
     (js2-mode            js2-basic-offset) ; JavaScript-IDE
     (js2-jsx-mode        (js2-basic-offset sgml-basic-offset))
     (js3-mode            js3-indent-level) ; JavaScript-IDE
     (json-mode           js-indent-level)  ; JSON
+    (json-ts-mode        json-ts-mode-indent-offset)
     (julia-mode          julia-indent-offset)
     (kotlin-mode         kotlin-tab-width)
     (lisp-mode             lisp-body-indent)
@@ -679,9 +690,10 @@ Return the new `tab-width' or nil if unchanged."
     (ruby-mode           ruby-indent-level)     ; Ruby - use SMIE if available
     (enh-ruby-mode       enh-ruby-indent-level) ; Ruby - use SMIE if available
     (rust-mode           rust-indent-offset)    ; Rust - use SMIE if available
-    (rustic-mode         rustic-indent-offset)  ; Rust - use SMIE if available
-    (scala-mode          scala-indent:step) ; Scala - use SMIE if available
-    (sgml-mode           sgml-basic-offset) ; SGML
+    (rust-ts-mode        rust-ts-mode-indent-offset)
+    (rustic-mode         rustic-indent-offset) ; Rust - use SMIE if available
+    (scala-mode          scala-indent:step)    ; Scala - use SMIE if available
+    (sgml-mode           sgml-basic-offset)    ; SGML
     (shader-mode         shader-indent-offset)
     (slim-mode           slim-indent-offset)
     (sml-mode            sml-indent-level)
@@ -692,6 +704,7 @@ Return the new `tab-width' or nil if unchanged."
     (tcl-mode            (tcl-indent-level tcl-continued-indent-level))
     (terra-mode          terra-indent-level)
     (typescript-mode     typescript-indent-level) ; Typescript
+    (typescript-ts-base-mode typescript-ts-mode-indent-offset)
     (verilog-mode        (verilog-indent-level
                           verilog-indent-level-behavioral
                           verilog-indent-level-declaration
@@ -710,21 +723,7 @@ Return the new `tab-width' or nil if unchanged."
                           web-mode-style-padding)) ; HTML
     (xquery-mode         xquery-mode-indent-width) ; XQuery
     (yaml-mode           yaml-indent-offset)       ; YAML
-    (zig-mode            zig-indent-offset)
-
-    ;; modes with treesitter enabled
-    (ada-ts-mode         ada-ts-mode-indent-offset)
-    (c-ts-mode           c-ts-mode-indent-offset)
-    (c++-ts-mode         c-ts-mode-indent-offset)
-    (dart-ts-mode        dart-ts-mode-indent-offset)
-    (go-ts-mode          go-ts-mode-indent-offset)
-    (gpr-ts-mode         gpr-ts-mode-indent-offset)
-    (java-ts-mode        java-ts-mode-indent-offset)
-    (rust-ts-mode        rust-ts-mode-indent-offset)
-    (js-ts-mode          js-indent-level)
-    (json-ts-mode        json-ts-mode-indent-offset)
-    (cmake-ts-mode       cmake-ts-mode-indent-offset)
-    (typescript-ts-base-mode typescript-ts-mode-indent-offset))
+    (zig-mode            zig-indent-offset))
   "Map mode name to indentation control variable(s).")
 
 
@@ -739,6 +738,17 @@ default: `standard-indent'."
         (setq mode (intern (format "%s-mode" (pel-file-type-for mode))))
         (setq vars (cadr (assoc mode pel--mode-indent-vars)))))
     (pel-list-of vars)))
+
+(defun pel-mode-indentation-width (&optional mode)
+  "Return the indentation width used by current major mode or MODE.
+Return the value of the indentation control variable used for the
+current major mode (or the specified MODE) if there is one.  If there
+are several, return the value of the first one. Return the value of
+`standard-indent' otherwise."
+  (let ((vars (pel-mode-indent-control-vars mode)))
+    (if vars
+        (symbol-value (car vars))
+      standard-indent)))
 
 ;;-pel-autoload
 (defun pel-indent-control-context ()
@@ -839,7 +849,8 @@ Note: The above variable control the indentation of this major mode.
 "))))
     (dolist (symb '(standard-indent
                     tab-always-indent
-                    indent-line-function))
+                    indent-line-function
+                    pel-indent-with-tabs-mode))
       (unless (memq symb already-inserted)
         (pel-insert-symbol-content-line symb)))
     ;; --
@@ -1142,6 +1153,66 @@ numerical argument is specified, use that for tab width."
 
 ;; --
 
+(defvar-local pel--normalfile-fill-column nil
+  "The fill-column value used for the normal space indented file format.")
+
+(defun pel--adjusted-fill-column (space-indent-width viewed-tab-width
+                                                     &optional position)
+  "Return adjusted fill column for tab-indented line at POSITION or point.
+
+That is the fill-column that can be used in the tab-indented buffer to
+correspond to what `fill-column' is inside the real space-indented file."
+  (save-excursion
+    (when position (goto-char position))
+    (let* ((extra-columns-per-tab (- viewed-tab-width space-indent-width))
+           (line-start-pos (progn (forward-line 0) (point)))
+           (line-end-pos   (progn (end-of-line) (point)))
+           (tab-count      (count-matches "\t" line-start-pos line-end-pos))
+           (extra-columns  (* tab-count extra-columns-per-tab)))
+      ;; Cache the real, file-specific, `fill-column' value in buffer local
+      ;; variable.
+      (unless pel--normalfile-fill-column
+        (setq-local pel--normalfile-fill-column fill-column))
+      ;; return what fill column should be for this line
+      (+ pel--normalfile-fill-column extra-columns))))
+
+(defvar-local pel--normal-auto-fill-function nil
+  "Remember auto-fill-function normally used for normal files.")
+
+(defvar-local pel--space-based-indent-width nil
+  "Original space based indentation width for the file.")
+
+(defun pel-indented-with-tabs-do-auto-fill ()
+  "Perform the auto-fill inside a tabs-indented buffer.
+Adjust the buffer-local `fill-column' based on the indentation scheme used and
+in the normal file and the tabs-based indentation used inside the buffer, then
+  execute the `do-auto-fill' "
+  ;; Adjust the fill-column to what it should be if the indentation had been
+  ;; reconverted back to 2-space indents and then execute the fill function.
+  (let ((fill-column (pel--adjusted-fill-column pel--space-based-indent-width
+                                                tab-width)))
+    (funcall pel--normal-auto-fill-function)))
+
+(defun pel--install-indented-with-tabs-auto-fill ()
+  "Install the tabs-indented aware auto fill function."
+  ;; Cache the `auto-fill-function' for the buffer.
+  (unless pel--normal-auto-fill-function
+    (setq-local pel--normal-auto-fill-function normal-auto-fill-function)
+    (make-local-variable 'normal-auto-fill-function)
+    (setq-local normal-auto-fill-function
+                'pel-indented-with-tabs-do-auto-fill))
+  (when auto-fill-function
+    (setq-local auto-fill-function
+                (function pel-indented-with-tabs-do-auto-fill))))
+
+(defun pel--restore-original-fill-function ()
+  "Restore original fill function."
+  (when pel--normal-auto-fill-function
+    (setq-local normal-auto-fill-function pel--normal-auto-fill-function)
+    (when auto-fill-function
+      (setq-local auto-fill-function pel--normal-auto-fill-function))))
+
+
 (defvar-local pel--tab-width-used-during-tab-based-indent nil)
 
 (defun pel--tm-before-save-or-kill ()
@@ -1164,6 +1235,7 @@ This is performed just before saving a buffer to a file or killing it."
   (let ((message-printed nil))
     (if pel-indent-with-tabs-mode
         ;; When turning mode on
+        ;; --------------------
         (progn
           ;; if buffer is modified allow user to save first.
           ;; If user quit, catch and activate the mode anyway, without saving.
@@ -1175,6 +1247,10 @@ This is performed just before saving a buffer to a file or killing it."
             (quit
              (message "Indenting with tabs Mode enabled, buffer not saved!")
              (setq message-printed t)))
+          ;; Remember the original space based indentation width
+          (setq-local pel--space-based-indent-width
+                      (pel-mode-indentation-width))
+
           ;; activate indentation with tabs using either the indentation width
           ;; specified by customization (if that symbol exists and is non-nil
           ;; or the native tab-width matching indentation width
@@ -1182,6 +1258,10 @@ This is performed just before saving a buffer to a file or killing it."
                                      "pel-indent-with-tabs-mode-for-%s"
                                      nil)
                                     tab-width))
+          ;; Install a special auto-fill function that is aware that each tab
+          ;; in the buffer corresponds to the file original space indentation
+          ;; scheme.
+          (pel--install-indented-with-tabs-auto-fill)
           ;; The buffer was modified by replacing spaces with tabs but
           ;; since we want to use it as if it was normal, don't show
           ;; the buffer modified unless it already was.
@@ -1206,15 +1286,17 @@ This is performed just before saving a buffer to a file or killing it."
           (unless message-printed
             (message "Indenting with tabs Mode enabled.")))
 
-          ;; When turning mode off
-          (pel-indent-with-spaces)
-          (when (memq 'pel--tm-before-save-or-kill before-save-hook)
-            (remove-hook 'before-save-hook 'pel--tm-before-save-or-kill 'local))
-          (when (memq 'pel--tm-before-save-or-kill kill-buffer-hook)
-            (remove-hook 'kill-buffer-hook 'pel--tm-before-save-or-kill 'local))
-          (when (memq 'pel--tm-after-save after-save-hook)
-            (remove-hook 'after-save-hook 'pel--tm-after-save 'local))
-          (message "Indenting with tabs Mode disabled."))))
+      ;; When turning mode off
+      ;; ---------------------
+      (pel-indent-with-spaces)
+      (pel--restore-original-fill-function)
+      (when (memq 'pel--tm-before-save-or-kill before-save-hook)
+        (remove-hook 'before-save-hook 'pel--tm-before-save-or-kill 'local))
+      (when (memq 'pel--tm-before-save-or-kill kill-buffer-hook)
+        (remove-hook 'kill-buffer-hook 'pel--tm-before-save-or-kill 'local))
+      (when (memq 'pel--tm-after-save after-save-hook)
+        (remove-hook 'after-save-hook 'pel--tm-after-save 'local))
+      (message "Indenting with tabs Mode disabled."))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-indent)
