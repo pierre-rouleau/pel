@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-10 08:19:28 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-10 12:14:45 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -587,7 +587,7 @@ Return the new `tab-width' or nil if unchanged."
 ;;              that resides inside dtrt-indent.el and indent-control.el
 ;;        See:  https://github.com/jscheid/dtrt-indent
 ;;              https://github.com/jcs-elpa/indent-control
-(defvar pel--mode-indent-vars
+(defconst pel--mode-indent-vars
   ;; Mode            Syntax        Variable
   '((actionscript-mode   actionscript-indent-level)
     (ada-mode            ada-indent)    ; Ada
@@ -730,7 +730,7 @@ Return the new `tab-width' or nil if unchanged."
     (xquery-mode         xquery-mode-indent-width) ; XQuery
     (yaml-mode           yaml-indent-offset)       ; YAML
     (zig-mode            zig-indent-offset))
-  "Map mode name to indentation control variable(s).")
+  "Map mode name to indentation control variable(s) it uses.")
 
 
 (defun pel-mode-indent-control-vars (&optional mode)
@@ -1131,11 +1131,11 @@ width to use."
    (if (and current-prefix-arg (not (consp current-prefix-arg)))
        (list (prefix-numeric-value current-prefix-arg))
      (list (pel-read-number "Indent with tab width: "
-                        tab-width
-                        (intern (format
-                                 "pel-indent-with-tabs-history-for-%s" major-mode))))))
-  ;; (message "pel-indent-with-tabs %S" with-tab-width)
-  ;; first untabify, replacing space-based indentation with tabs
+                            tab-width
+                            (pel-major-mode-symbol-for
+                             "pel-indent-with-tabs-history-for-%s")))))
+  ;; first tabify indentation whitespace, replacing space-based indentation
+  ;; with tabs that represent the specified tab width.
   (pel-tabify-all-indent)
   ;; Remember `tab-width' originally used in the buffer.
   ;; It should correspond with the indentation width.
@@ -1154,7 +1154,6 @@ used before the first call to `pel-indent-with-tabs' unless the optional
 WITH-TAB-WIDTH numerical argument is specified.  If an optional
 numerical argument is specified, use that for tab width."
   (interactive "P")
-  ;; (message "pel-indent-with-spaces %S" with-tab-width)
   (save-excursion
     (if with-tab-width
         (pel-set-tab-width with-tab-width)
@@ -1170,7 +1169,37 @@ numerical argument is specified, use that for tab width."
     ;; New indented code must now be indented with spaces.
     (indent-tabs-mode -1)))
 
-;; --
+;; ---------------------------------------------------------------------------
+;;* Manage auto-fill in tab-based indented buffer
+;;  ---------------------------------------------
+;;
+;; When a buffer is loaded with the content of a file that uses a 2-space
+;; indentation scheme and a maximum line length of 80 columns, we need to
+;; adjust the `fill-column' value when then buffer holds the text that uses a
+;; different indentation based on tabs that are rendered with a different
+;; width. The code in this section deals with that.
+;;
+;; The value of the original `fill-column' used for the space-based
+;; indentation file is remembered in the `pel--normalfile-fill-column'
+;; buffer local variable.
+;;
+;; When the `pel-mode' is active, it replaces the function that performs
+;; the automatic filling by `pel--normalfile-fill-column' which computes
+;; the adjusted value of fill-column on each line by counting the number of
+;; hard tab character present on the line and their impact on the fill-column.
+;; That function is only called when automatic filling is activated.
+;;
+;; These are only used indirectly by the `pel-mode' as shown by the
+;; following call hierarchy, where
+;; `pel--install-indented-with-tabs-auto-fill' installs that function to
+;; deal with automatic filling and `pel--restore-original-fill-function'
+;; restores the original function when turning off `pel-mode':
+;;
+;;  * `pel-indent-with-tabs-mode'
+;;    - `pel--install-indented-with-tabs-auto-fill'
+;;      > `pel-indented-with-tabs-do-auto-fill'
+;;      - `pel--adjusted-fill-column'
+;;    - `pel--restore-original-fill-function'
 
 (defvar-local pel--normalfile-fill-column nil
   "The fill-column value used for the normal space indented file format.")
@@ -1180,7 +1209,9 @@ numerical argument is specified, use that for tab width."
   "Return adjusted fill column for tab-indented line at POSITION or point.
 
 That is the fill-column that can be used in the tab-indented buffer to
-correspond to what `fill-column' is inside the real space-indented file."
+correspond to what `fill-column' is inside the real space-indented file.
+- SPACE-INDENT-WIDTH corresponds to what the file normally uses.
+- VIEWED-TAB-WIDTH corresponds to what is used in the buffer."
   (save-excursion
     (when position (goto-char position))
     (let* ((extra-columns-per-tab (- viewed-tab-width space-indent-width))
@@ -1246,7 +1277,12 @@ This is performed just before saving a buffer to a file or killing it."
       (progn
         (pel-indent-with-tabs pel--tab-width-used-during-tab-based-indent)
         (set-buffer-modified-p nil))
-    (message "pel--tm-after-save: pel--tab-width-used-during-tab-based-indent is nil")))
+    (display-warning 'pel-indent
+                     "pelt--tm-after-save: unknown indentation width!"
+                     :error)))
+;; ---------------------------------------------------------------------------
+;;* Minor Mode
+;;  ----------
 
 (define-minor-mode pel-indent-with-tabs-mode
   "Minor mode that automatically converts buffer to tab-based indentation."
