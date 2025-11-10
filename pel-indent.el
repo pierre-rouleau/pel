@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-09 12:09:49 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-10 08:19:28 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -27,7 +27,7 @@
 ;;
 ;; This file provides several features related to indentation control.
 ;;
-;; * Rigid Indentation Support
+;;* Rigid Indentation Support
 ;;
 ;; Meant to be used in files where the super useful automatic indentation of
 ;; the function `indent-for-tab-command' is used and assigned to the tab key.
@@ -67,7 +67,7 @@
 ;;          of files for various programming and markup languages.
 ;;
 ;;
-;; * Control Tab Width
+;;* Control Tab Width
 ;;
 ;; Provide the `pel-set-tab-width' command.  This command sets the `tab-width'
 ;; value as well as the indentation control variable or variables used by the
@@ -92,7 +92,7 @@
 ;; can control the tab width and the indentation width.
 ;;
 ;;
-;; * Indentation and Tab Width Control Introspection
+;;* Indentation and Tab Width Control Introspection
 ;;
 ;; The `pel-show-indent' command prints information about the indentation and
 ;; tab width control for the current major mode.  It lists the control
@@ -122,7 +122,7 @@
 ;; printing function.
 ;;
 ;;
-;; * Hard-tab Based Indentation Control
+;;* Hard-tab Based Indentation Control
 ;;
 ;; Although not popular in most software development circles, using hard tabs
 ;; for indentation provides the undeniable advantage of flexibility in terms
@@ -169,9 +169,6 @@
 ;; guidelines.  The files will always retain their original indentation scheme
 ;; rigidity and everybody might be happier!
 
-
-
-
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
@@ -186,7 +183,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;; ---------------------------------------------------------------------------
-;; * Rigid Indentation Support
+;;* Rigid Indentation Support
 ;; ---------------------------
 ;;
 ;;  * `pel-indent-lines'
@@ -488,7 +485,7 @@ by the numeric argument N (or if not specified N=1):
     (indent-rigidly (region-beginning) (region-end) nil t)))
 
 ;; ---------------------------------------------------------------------------
-;; * Control Tab Width
+;;* Control Tab Width
 ;; -------------------
 
 ;; This code uses the following defvar-local variables defined in the
@@ -565,17 +562,26 @@ Return the new `tab-width' or nil if unchanged."
       (setq-local pel--last-set-tab-width n))))
 
 ;; ---------------------------------------------------------------------------
-;; * Indentation and Tab Width Control Introspection
+;;* Indentation and Tab Width Control Introspection
 ;; -------------------------------------------------
 ;;
-;; * `pel-show-indent'
-;;   - pel-indent-insert-control-info
-;;     . pel-indent-control-context
+;;  * `pel-show-indent'
+;;     - pel-indent-insert-control-info
+;;       . pel-indent-control-context
+;;         - pel-mode-indent-control-vars
+;;     - pel-tab-insert-control-info
+;;       . pel-tab-control-context
+;;       - pel-indent--indent-vars-have-offset
+;;
+;;  * `pel-indent-with-tabs-mode'
+;;     - pel-mode-indentation-width
 ;;       - pel-mode-indent-control-vars
-;;   - pel-tab-insert-control-info
-;;     . pel-tab-control-context
-;;     - pel-indent--indent-vars-have-offset
-
+;;     - pel--install-indented-with-tabs-auto-fill
+;;       - pel-indented-with-tabs-do-auto-fill
+;;         - pel--adjusted-fill-column
+;;     - pel--restore-original-fill-function
+;;     - pel--tm-before-save-or-kill
+;;     - pel--tm-after-save
 
 ;; Credit Note: the following table was originally derived from code
 ;;              that resides inside dtrt-indent.el and indent-control.el
@@ -1064,7 +1070,7 @@ important variables and symbols in the context of the inspected major mode."
          :use-help-mode)))))
 
 ;; ---------------------------------------------------------------------------
-;; * Hard-tab Based Indentation Control
+;;* Hard-tab Based Indentation Control
 ;;
 ;;   * `pel-indent-with-tabs-mode', the minor mode.
 ;;     * `pel-indent-with-tabs'
