@@ -623,7 +623,7 @@ by BUFFER or `pel-insert-symbol-content-context-buffer'.
 
 The symbol name is identified by the SYMBOL-FORMAT-STRING which must
 contain one \"%s\" that is replaced by the prefix string before the
-\"-mode\" (or \"-ts-mode\") of the major mode of the the current buffer
+\"-mode\" (or \"-ts-mode\") of the major mode of the current buffer
 or of the buffer specified by the BUFFER-OR-NAME argument or the variable
 `pel-insert-symbol-content-context-buffer'.
 
@@ -641,7 +641,7 @@ local or global."
 
 The symbol name is identified by the SYMBOL-FORMAT-STRING which must
 contain one \"%s\" that is replaced by the prefix string before the
-\"-mode\" (or \"-ts-mode\") of the major mode of the the current buffer
+\"-mode\" (or \"-ts-mode\") of the major mode of the current buffer
 or of the buffer specified by the BUFFER-OR-NAME argument or the variable
 `pel-insert-symbol-content-context-buffer'.
 
@@ -661,7 +661,7 @@ local or global."
 
 The symbol name is identified by the SYMBOL-FORMAT-STRING which must
 contain one \"%s\" that is replaced by the prefix string before the
-\"-mode\" (or \"-ts-mode\") of the major mode of the the current buffer
+\"-mode\" (or \"-ts-mode\") of the major mode of the current buffer
 or of the buffer specified by the BUFFER-OR-NAME argument or the variable
 `pel-insert-symbol-content-context-buffer'.
 
