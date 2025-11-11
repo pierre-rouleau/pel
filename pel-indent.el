@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-11 10:24:38 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-11 12:59:05 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1136,13 +1136,19 @@ This is a indentation specific `tabify' function."
                 (delete-region (match-beginning 0) (point))
                 (indent-to end-col)))))))))
 
-(defun pel-indent-with-tabs (&optional with-tab-width)
+(defun pel-indent-with-tabs (&optional with-tab-width
+                                       by-minor-mode)
   "Convert current buffer to use tabs for indentation.
 
 If the optional WITH-TAB-WIDTH numerical argument is specified, after
 conversion to tab-based indentation change the tab width to that
 specified value.  If the argument is not specified, prompt for the tab
-width to use."
+width to use.
+
+This command is only available when the `pel-indent-with-tabs-mode' is
+turned off.  Since it is used internally by `pel-indent-with-tabs-mode',
+the BY-MINOR-MODE parameter must only be set by the call from
+`pel-indent-with-tabs-mode'."
   (interactive
    (if (and current-prefix-arg (not (consp current-prefix-arg)))
        (list (prefix-numeric-value current-prefix-arg))
@@ -1150,40 +1156,52 @@ width to use."
                             tab-width
                             (pel-major-mode-symbol-for
                              "pel-indent-with-tabs-history-for-%s")))))
-  ;; first tabify indentation whitespace, replacing space-based indentation
-  ;; with tabs that represent the specified tab width.
-  (pel-tabify-all-indent)
-  ;; Remember `tab-width' originally used in the buffer.
-  ;; It should correspond with the indentation width.
-  (unless pel--original-tab-width
-    (setq-local pel--original-tab-width tab-width))
-  ;; Adjust the tab and indentation width to the new selection.
-  (pel-set-tab-width with-tab-width)
-  ;; New indented code must now be indented with hard tabs.
-  (indent-tabs-mode 1))
+  (if (or by-minor-mode (not pel-indent-with-tabs-mode))
+      (progn
+        ;; first tabify indentation whitespace, replacing space-based
+        ;; indentation with tabs that represent the specified tab width.
+        (pel-tabify-all-indent)
+        ;; Remember `tab-width' originally used in the buffer.
+        ;; It should correspond with the indentation width.
+        (unless pel--original-tab-width
+          (setq-local pel--original-tab-width tab-width))
+        ;; Adjust the tab and indentation width to the new selection.
+        (pel-set-tab-width with-tab-width)
+        ;; New indented code must now be indented with hard tabs.
+        (indent-tabs-mode 1))
+    (user-error
+     "Command not available while pel-indent-with-tabs-mode is active!")))
 
-(defun pel-indent-with-spaces (&optional with-tab-width)
+(defun pel-indent-with-spaces (&optional with-tab-width by-minor-mode)
   "Convert current buffer to use space for indentation.
 
 Restore the space-based indentation scheme using the tab width that was
 used before the first call to `pel-indent-with-tabs' unless the optional
 WITH-TAB-WIDTH numerical argument is specified.  If an optional
-numerical argument is specified, use that for tab width."
+numerical argument is specified, use that for tab width.
+
+This command is only available when the `pel-indent-with-tabs-mode' is
+turned off.  Since it is used internally by `pel-indent-with-tabs-mode',
+the BY-MINOR-MODE parameter must only be set by the call from
+`pel-indent-with-tabs-mode'."
   (interactive "P")
-  (save-excursion
-    (if with-tab-width
-        (pel-set-tab-width with-tab-width)
-      ;; Restore the original tab-width if it was stored in
-      ;; `pel--original-tab-width'
-      (when (or  pel--original-tab-width
-                 pel--last-set-tab-width)
-        (pel-set-tab-width pel--original-tab-width)))
-    ;; Then untabify.  Note that hard-tabs inside strings and comments will be
-    ;; replaced by spaces.  If this is a problem in some cases, please let me
-    ;; know.
-    (untabify (point-min) (point-max))
-    ;; New indented code must now be indented with spaces.
-    (indent-tabs-mode -1)))
+  (if (or by-minor-mode (not pel-indent-with-tabs-mode))
+      (save-excursion
+        (if with-tab-width
+            (pel-set-tab-width with-tab-width)
+          ;; Restore the original tab-width if it was stored in
+          ;; `pel--original-tab-width'
+          (when (or  pel--original-tab-width
+                     pel--last-set-tab-width)
+            (pel-set-tab-width pel--original-tab-width)))
+        ;; Then untabify.  Note that hard-tabs inside strings and comments
+        ;; will be replaced by spaces.  If this is a problem in some cases,
+        ;; please let me know.
+        (untabify (point-min) (point-max))
+        ;; New indented code must now be indented with spaces.
+        (indent-tabs-mode -1))
+    (user-error
+     "Command not available while pel-indent-with-tabs-mode is active!")))
 
 ;; ---------------------------------------------------------------------------
 ;;* Manage auto-fill in tab-based indented buffer
@@ -1285,13 +1303,14 @@ in the normal file and the tabs-based indentation used inside the buffer, then
   "Disable tab-based indentation and restore native space-base indent.
 This is performed just before saving a buffer to a file or killing it."
   (setq-local pel--tab-width-used-during-tab-based-indent tab-width)
-  (pel-indent-with-spaces))
+  (pel-indent-with-spaces nil :by-minor-mode))
 
 (defun pel--tm-after-save ()
   "Restore tab-based indentation with same width used before buffer save."
   (if pel--tab-width-used-during-tab-based-indent
       (progn
-        (pel-indent-with-tabs pel--tab-width-used-during-tab-based-indent)
+        (pel-indent-with-tabs pel--tab-width-used-during-tab-based-indent
+                              :by-minor-mode)
         (set-buffer-modified-p nil))
     (display-warning 'pel-indent
                      "pelt--tm-after-save: unknown indentation width!"
@@ -1337,7 +1356,8 @@ This is performed just before saving a buffer to a file or killing it."
                   (pel-indent-with-tabs (or (pel-major-mode-symbol-value-or
                                              "pel-indent-with-tabs-mode-for-%s"
                                              nil)
-                                            tab-width))
+                                            tab-width)
+                                        :by-minor-mode)
                   ;; Install a special auto-fill function that is aware that each tab
                   ;; in the buffer corresponds to the file original space indentation
                   ;; scheme.
@@ -1380,7 +1400,7 @@ To change tab-width, type:  M-: (setq-local tab-width %d)"
       ;; When turning mode off
       ;; ---------------------
       (with-silent-modifications
-        (pel-indent-with-spaces))
+        (pel-indent-with-spaces nil :by-minor-mode))
       (pel--restore-original-fill-function)
       (when (memq 'pel--tm-before-save-or-kill before-save-hook)
         (remove-hook 'before-save-hook 'pel--tm-before-save-or-kill 'local))
