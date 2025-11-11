@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-11 09:34:41 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-11 10:24:38 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1326,21 +1326,22 @@ This is performed just before saving a buffer to a file or killing it."
                   (message "Converting %s to tab-based indent, width=%d ..."
                            (current-buffer)
                            tab-width ))
-                ;; Remember the original space based indentation width
-                (setq-local pel--space-based-indent-width
-                            (pel-mode-indentation-width))
+                (with-silent-modifications
+                  ;; Remember the original space based indentation width
+                  (setq-local pel--space-based-indent-width
+                              (pel-mode-indentation-width))
 
-                ;; activate indentation with tabs using either the indentation width
-                ;; specified by customization (if that symbol exists and is non-nil
-                ;; or the native tab-width matching indentation width
-                (pel-indent-with-tabs (or (pel-major-mode-symbol-value-or
-                                           "pel-indent-with-tabs-mode-for-%s"
-                                           nil)
-                                          tab-width))
-                ;; Install a special auto-fill function that is aware that each tab
-                ;; in the buffer corresponds to the file original space indentation
-                ;; scheme.
-                (pel--install-indented-with-tabs-auto-fill)
+                  ;; activate indentation with tabs using either the indentation width
+                  ;; specified by customization (if that symbol exists and is non-nil
+                  ;; or the native tab-width matching indentation width
+                  (pel-indent-with-tabs (or (pel-major-mode-symbol-value-or
+                                             "pel-indent-with-tabs-mode-for-%s"
+                                             nil)
+                                            tab-width))
+                  ;; Install a special auto-fill function that is aware that each tab
+                  ;; in the buffer corresponds to the file original space indentation
+                  ;; scheme.
+                  (pel--install-indented-with-tabs-auto-fill))
                 ;; The buffer was modified by replacing spaces with tabs but
                 ;; since we want to use it as if it was normal, don't show
                 ;; the buffer modified unless it already was.
@@ -1378,7 +1379,8 @@ To change tab-width, type:  M-: (setq-local tab-width %d)"
 
       ;; When turning mode off
       ;; ---------------------
-      (pel-indent-with-spaces)
+      (with-silent-modifications
+        (pel-indent-with-spaces))
       (pel--restore-original-fill-function)
       (when (memq 'pel--tm-before-save-or-kill before-save-hook)
         (remove-hook 'before-save-hook 'pel--tm-before-save-or-kill 'local))
