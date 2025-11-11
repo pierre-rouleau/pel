@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-11 12:59:05 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-11 16:33:55 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1135,6 +1135,8 @@ This is a indentation specific `tabify' function."
                 ;; a TAB here anyway: there's nothing to do.
                 (delete-region (match-beginning 0) (point))
                 (indent-to end-col)))))))))
+
+(defvar pel-indent-with-tabs-mode)      ; prevent byte compiler warning
 
 (defun pel-indent-with-tabs (&optional with-tab-width
                                        by-minor-mode)
