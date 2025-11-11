@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-11 08:05:34 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-11 09:34:41 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -507,12 +507,13 @@ by the numeric argument N (or if not specified N=1):
 ;;       width that must be set by `pel-set-tab-width' when changing
 ;;       the width of hard tabs for indentation purpose.
 ;;
-;; [:todo 2025-11-06, by Pierre Rouleau: Eventually, when a larger number of
-;; major modes will be supported and a broader sample of how indentation
-;; control is done on them, it might be appropriate to merge the use of the
-;; first and third variable above and update the logic, reducing duplication
-;; and increasing efficiency of the code.]
+;; The call hierarchy is:
 ;;
+;;  * `pel-set-tab-width'
+;;    - pel-read-number
+;;    - pel-mode-indent-control-vars
+;;      - pel-mode-or-ts-mode-indent-control-vars
+
 
 (defvar-local pel--original-tab-width nil
   "Tab width value used before `pel-indent-with-tabs' is used.")
@@ -533,15 +534,15 @@ by the numeric argument N (or if not specified N=1):
 The change is temporary and affects the current buffer only.
 Return the new `tab-width' or nil if unchanged."
   (interactive (list (pel-read-number "New tab-width: " tab-width
-                                  'pel-set-tab-width-history)))
-  (let ((control-vars (pel-list-of pel-tab-width-control-variables))
+                                      'pel-set-tab-width-history)))
+  (let ((control-vars (pel-mode-indent-control-vars))
         (current-tab-width tab-width)
         (offset nil))
     ;;
     (while (not (and (< n 9) (> n 1)))
       (setq n (pel-read-number "Enter valid tab-width in 2-8 range: "
-                           current-tab-width
-                           'pel-set-tab-width-history)))
+                               current-tab-width
+                               'pel-set-tab-width-history)))
     ;;
     (when (not (= n current-tab-width))
       (message "Changed buffer's tab-width from %d to %d" current-tab-width n)
@@ -569,6 +570,7 @@ Return the new `tab-width' or nil if unchanged."
 ;;     - pel-indent-insert-control-info
 ;;       . pel-indent-control-context
 ;;         - pel-mode-indent-control-vars
+;;           - pel-mode-or-ts-mode-indent-control-vars
 ;;     - pel-tab-insert-control-info
 ;;       . pel-tab-control-context
 ;;       - pel-indent--indent-vars-have-offset
@@ -576,6 +578,7 @@ Return the new `tab-width' or nil if unchanged."
 ;;  * `pel-indent-with-tabs-mode'
 ;;     - pel-mode-indentation-width
 ;;       - pel-mode-indent-control-vars
+;;           - pel-mode-or-ts-mode-indent-control-vars
 ;;     - pel--install-indented-with-tabs-auto-fill
 ;;       - pel-indented-with-tabs-do-auto-fill
 ;;         - pel--adjusted-fill-column
@@ -733,16 +736,29 @@ Return the new `tab-width' or nil if unchanged."
   "Map mode name to indentation control variable(s) it uses.")
 
 
-(defun pel-mode-indent-control-vars (&optional mode)
-  "Return list of indentation control vars for current major mode or MODE.
-Return nil if none is known.  In that case the variable is probably the
-default: `standard-indent'."
+(defun pel-mode-or-ts-mode-indent-control-vars (&optional mode)
+  "Return list of indentation control vars for classic/TS mode or MODE.
+Return nil if nothing found for either."
   (let* ((mode (or mode major-mode))
          (vars (cadr (assoc mode pel--mode-indent-vars))))
+    ;; If nothing is found for the -ts-mode, check if there is something for
+    ;; the corresponding -mode since they are often tied together. If the
+    ;; classic and TS mode use different variables there should be 2 entries
+    ;; in the above table.
     (unless vars
       (when (pel-string-ends-with-p (symbol-name mode) "-ts-mode")
         (setq mode (intern (format "%s-mode" (pel-file-type-for mode))))
         (setq vars (cadr (assoc mode pel--mode-indent-vars)))))
+    (pel-list-of vars)))
+
+(defun pel-mode-indent-control-vars (&optional mode)
+  "Return list of indentation control vars for current major mode or MODE.
+Check the variables identified in `pel-tab-width-control-variables' if there is
+some, otherwise check the variables defined in `pel--mode-indent-vars.'
+Return nil if none is identified in either location."
+  (let ((vars pel-tab-width-control-variables))
+    (unless vars
+      (setq vars (pel-mode-or-ts-mode-indent-control-vars mode)))
     (pel-list-of vars)))
 
 (defun pel-mode-indentation-width (&optional mode)
@@ -1287,7 +1303,7 @@ This is performed just before saving a buffer to a file or killing it."
 (define-minor-mode pel-indent-with-tabs-mode
   "Minor mode that automatically converts buffer to tab-based indentation."
   :lighter " ⍈"
-  (let ((message-printed nil))
+  (let ((warning-message-printed nil))
     (if pel-indent-with-tabs-mode
         ;; When turning mode on
         ;; --------------------
@@ -1304,7 +1320,12 @@ This is performed just before saving a buffer to a file or killing it."
                       (save-buffer))
                   (quit
                    (message "Indenting with tabs Mode enabled, buffer not saved!")
-                   (setq message-printed t)))
+                   (setq warning-message-printed t)))
+                ;; Proceed
+                (unless warning-message-printed
+                  (message "Converting %s to tab-based indent, width=%d ..."
+                           (current-buffer)
+                           tab-width ))
                 ;; Remember the original space based indentation width
                 (setq-local pel--space-based-indent-width
                             (pel-mode-indentation-width))
@@ -1323,7 +1344,7 @@ This is performed just before saving a buffer to a file or killing it."
                 ;; The buffer was modified by replacing spaces with tabs but
                 ;; since we want to use it as if it was normal, don't show
                 ;; the buffer modified unless it already was.
-                (unless message-printed
+                (unless warning-message-printed
                   (set-buffer-modified-p nil))
                 ;; schedule operation before and after buffer save.
                 (unless (memq 'pel--tm-before-save-or-kill  before-save-hook)
@@ -1341,7 +1362,7 @@ This is performed just before saving a buffer to a file or killing it."
                             +100
                             'local))
 
-                (unless message-printed
+                (unless warning-message-printed
                   (message "Indenting with tabs Mode enabled.")))
             ;; conditions are NOT met to transform buffer to tab-based indent
             ;; tab-width differs from current indentation!
