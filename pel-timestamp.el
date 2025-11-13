@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-06-10 17:23:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-12 22:59:20 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -35,7 +35,7 @@
 (require 'pel--base)       ; use: `pel-toggle-and-show-user-option'
 (require 'pel--options)    ; use: `pel-update-time-stamp',
 ;;                         ;      `pel-update-copyright'
-(require 'time-stamp)      ; use: `time-stamp'
+(require 'time-stamp)      ; use: `time-stamp', `time-stamp-active'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -51,9 +51,16 @@ When GLOBALLY argument is non-nil, change it for all buffers for the current
 Emacs editing session (the change does not persist across Emacs sessions).
 To modify the global state permanently modify the customized value of the
 `pel-update-time-stamp' user option via the `pel-pkg-for-filemng'
-group customize buffer."
+group customize buffer.
+This also update the value of `time-stamp-active'."
   (interactive "P")
-  (pel-toggle-and-show-user-option 'pel-update-time-stamp globally))
+  (pel-toggle-and-show-user-option 'pel-update-time-stamp globally)
+  (if globally
+      (setq time-stamp-active pel-update-time-stamp)
+    (setq-local time-stamp-active pel-update-time-stamp))
+  (when pel-update-time-stamp
+    (unless (memq 'pel--update-time-stamp before-save-hook)
+      (add-hook 'before-save-hook  'pel--update-time-stamp))))
 
 
 (defun pel-update-time-stamp-patterns ()
@@ -75,6 +82,64 @@ group customize buffer."
              pel-update-time-stamp)
     (time-stamp)
     (pel-update-time-stamp-patterns)))
+
+;;-pel-autoload
+(defun pel-time-stamp-control-show-info (&optional append)
+  "Display buffer current time stamp control variables and their state.
+The information is shown inside a *pel-time-stamp-info* help buffer."
+  (interactive "P")
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-time-stamp-info*"
+     "Automatic File Time Stamp Control"
+     (lambda ()
+       ;; (insert (propertize  "* Control Time Stamp Update on File Save:"
+       ;;                      'face
+       ;;                      'bold))
+       (insert (substitute-command-keys "
+PEL provides control of the hook logic required to automate the update
+of time stamp when a file is saved; it controls it with the value of the
+`pel-update-time-stamp' option.  On startup, PEL sets up the hook for a
+function that updates time stamp when it is non-nil.
+
+- You can change this dynamically with `pel-toggle-update-time-stamp-on-save'
+  command, bound to \\[pel-toggle-update-time-stamp-on-save].
+- It also updates `time-stamp-active' for consistency.
+- When Emacs starts, PEL set `time-stamp-active' to the value of
+  `pel-update-time-stamp' to ensure consistency.
+- Note that `time-stamp-toggle-active' (bound to \\[time-stamp-toggle-active])
+  only toggle `time-stamp-active' which affects whether time stamp is updated
+  by the `time-stamp' command (bound to \\[time-stamp].
+- For a time stamp to be updated on file save, both variables must be non-nil.
+"))
+       (pel-insert-symbol-content-line
+        'pel-update-time-stamp nil
+        (lambda (v)
+          (if v
+              "Time stamp updated on file save in this session."
+            "Time stamps are not updated in this session.")))
+       (pel-insert-symbol-content-line
+        'time-stamp-active nil
+        "Only controls whether time-stamp command updates the time stamp.")
+
+       (insert "\n\n")
+       (insert (propertize  "*Time Stamp Location and Format Control:" 'face
+                            'bold))
+       (insert "
+
+The location and format of the time stamp is either controlled by the single
+`time-stamp-pattern' or all of the other 4 user-options, all 4 of them
+otherwise you risk using a mix of what you want and what was already active.
+")
+       (pel-insert-symbol-content-line 'time-stamp-pattern)
+       (pel-insert-symbol-content-line 'time-stamp-line-limit)
+       (pel-insert-symbol-content-line 'time-stamp-start)
+       (pel-insert-symbol-content-line 'time-stamp-end)
+       (pel-insert-symbol-content-line 'time-stamp-format))
+     (unless append :clear-buffer)
+     :use-help-mode)))
+
+;; ---------------------------------------------------------------------------
 
 ;;* Update Copyright Notice
 ;;  =======================

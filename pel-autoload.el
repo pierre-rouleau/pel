@@ -1003,7 +1003,8 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; --
   (pel-autoload "pel-timestamp" for:
     pel-toggle-update-time-stamp-on-save
-    pel-toggle-update-copyright-on-save)
+    pel-toggle-update-copyright-on-save
+    pel-time-stamp-control-show-info)
   (pel-autoload-function "pel-timestamp" for:
     pel--update-time-stamp
     pel--update-copyright)

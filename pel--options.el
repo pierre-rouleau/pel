@@ -1043,6 +1043,7 @@ directory for whatever reason."
   :group 'pel-package-use
   :link `(url-link :tag "Package Management PDF" ,(pel-pdf-file-url
                                                    "packages")))
+
 (defcustom pel-use-quelpa nil
   "Control whether PEL activates and uses the quelpa package manager."
   :link '(url-link :tag "quelpa @ github"
@@ -2037,8 +2038,10 @@ trailing whitespace and one that does not have them."
 (defcustom pel-update-time-stamp t
   "Controls whether file timestamp is updated automatically on file save.
 Update timestamp automatically when non-nil, don't otherwise.
+This also set the value of Emacs `time-stamp-active'.
 See the time stamp format and location constraints in the Emacs manual
-by executing:  M-: (info \"(emacs) Time Stamps\")."
+by executing:  M-: (info \"(emacs) Time Stamps\").
+Use \\[pel-time-stamp-control-show-info] to see the current values for those."
   :group 'pel-pkg-for-filemng
   :type 'boolean
   :safe #'booleanp)
@@ -5123,7 +5126,8 @@ This may get activated indirectly by other user-options."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-flycheck :also-required-when
-         '(or (and pel-use-erlang
+         '(or pel-use-flycheck-package
+              (and pel-use-erlang
                    (or pel-use-flycheck-rebar3
                        (eq pel-use-erlang-syntax-check 'with-flycheck)))
               (and pel-use-go
@@ -8626,6 +8630,29 @@ is set: it is used by the helpful package."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-elisp-refs :also-required-when 'pel-use-helpful)
+
+
+(defcustom pel-use-package-lint nil
+  "Control whether PEL activates and uses the package-lint package."
+  :link '(url-link :tag "package-lint @ github"
+                   "https://github.com/purcell/package-lint")
+  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-package-mng
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-package-lint :also-required-when 'pel-use-flycheck-package)
+
+(defcustom pel-use-flycheck-package nil
+  "Control whether PEL activates and uses the flycheck-package package."
+  :link '(url-link :tag "flycheck-package @ github"
+                   "https://github.com/purcell/flycheck-package")
+  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-package-mng
+  :type 'boolean
+  :safe #'booleanp)
+(when pel-use-flycheck-package
+  (setq pel-use-package-lint t)
+  (setq pel-use-flycheck t))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Arc Support
@@ -12790,6 +12817,7 @@ expressions of buffer, file, or directory."
   :link '(url-link :tag "relint @ GitHub"
                    "https://github.com/mattiase/relint")
   :group 'pel-pkg-for-regexp
+  :group 'pel-pkg-for-elisp
   :type 'boolean
   :safe #'booleanp)
 

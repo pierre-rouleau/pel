@@ -486,6 +486,10 @@ Done in this function to allow advising libraries that remap these keys."
       (with-no-warnings
         (quelpa-self-upgrade)))))
 
+(when pel-use-package-lint
+  (pel-ensure-package package-lint from: melpa))
+(when pel-use-flycheck-package
+  (pel-ensure-package flycheck-package from: melpa))
 ;; ---------------------------------------------------------------------------
 ;;* Tree-Sitter Support
 ;;  ===================
@@ -1445,8 +1449,8 @@ Your version of Emacs does not support dynamic module.")))
 
 (when pel-update-time-stamp
   ;; - Update file timestamp on file same (if any)
-  (add-hook 'before-save-hook  'pel--update-time-stamp)
-  (define-key pel: (kbd "M-T") 'pel-toggle-update-time-stamp-on-save))
+  (add-hook 'before-save-hook  'pel--update-time-stamp))
+(setq time-stamp-active pel-update-time-stamp)
 
 (when pel-update-copyright
   ;; Update the copyright notice present in a file
@@ -8132,7 +8136,7 @@ the ones defined from the buffer now."
 ;; . / ?
 ;; F I L O W
 ;; a d f g h i j l n o p r t u v w
-;; M-. M-/ M-d M-l M-t M-u M-x
+;; M-. M-/ M-d M-l M-u M-x
 (define-key pel:file  (kbd "M-d") 'pel-open-file-in-other-dir)
 (define-key pel2:file (kbd "M-d") 'pel-open-file-in-other-dir)
 (define-key pel2:file (kbd "M-f") #'find-file)
@@ -8146,8 +8150,6 @@ the ones defined from the buffer now."
 (define-key pel:file "o" #'find-file-other-window)
 (define-key pel:file "n" #'find-name-dired)
 
-(define-key pel:file "t" #'time-stamp)
-(define-key pel:file (kbd "M-t") #'time-stamp-toggle-active)
 (define-key pel:file "w" #'write-region)
 (define-key pel:file (kbd "M-x") 'hexl-find-file)
 (define-key pel:file (kbd "M-l") 'find-file-literally)
@@ -8460,6 +8462,16 @@ the ones defined from the buffer now."
 ;;   :ensure t
 ;;   :pin melpa
 ;;   :commands find-file-in-project)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;;* File Time Stamp Control (more Actions on File Save)
+
+(define-pel-global-prefix pel:time-stamp (kbd "<f11> f t"))
+
+(define-key pel:time-stamp "t"         #'time-stamp)
+(define-key pel:time-stamp "T"          'pel-toggle-update-time-stamp-on-save)
+(define-key pel:time-stamp (kbd "M-T") #'time-stamp-toggle-active)
+(define-key pel:time-stamp "?"          'pel-time-stamp-control-show-info)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;* File variables
