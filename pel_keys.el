@@ -490,6 +490,9 @@ Done in this function to allow advising libraries that remap these keys."
   (pel-ensure-package package-lint from: melpa))
 (when pel-use-flycheck-package
   (pel-ensure-package flycheck-package from: melpa))
+(when pel-use-elx
+  (pel-ensure-package elx from: melpa))
+
 ;; ---------------------------------------------------------------------------
 ;;* Tree-Sitter Support
 ;;  ===================
