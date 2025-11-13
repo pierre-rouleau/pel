@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-11 16:33:55 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-13 18:03:01 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1170,7 +1170,10 @@ the BY-MINOR-MODE parameter must only be set by the call from
         ;; Adjust the tab and indentation width to the new selection.
         (pel-set-tab-width with-tab-width)
         ;; New indented code must now be indented with hard tabs.
-        (indent-tabs-mode 1))
+        ;; support older Emacs where the function was not available.
+        (if (fboundp 'indent-tabs-mode)
+            (indent-tabs-mode 1)
+          (setq-local indent-tabs-mode t)))
     (user-error
      "Command not available while pel-indent-with-tabs-mode is active!")))
 
@@ -1201,7 +1204,10 @@ the BY-MINOR-MODE parameter must only be set by the call from
         ;; please let me know.
         (untabify (point-min) (point-max))
         ;; New indented code must now be indented with spaces.
-        (indent-tabs-mode -1))
+        ;; support older Emacs where the function was not available.
+        (if (fboundp 'indent-tabs-mode)
+            (indent-tabs-mode -1)
+          (setq-local indent-tabs-mode nil)))
     (user-error
      "Command not available while pel-indent-with-tabs-mode is active!")))
 
