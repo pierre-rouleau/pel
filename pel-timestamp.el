@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-12 22:59:20 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-13 09:07:35 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -109,7 +109,7 @@ function that updates time stamp when it is non-nil.
   `pel-update-time-stamp' to ensure consistency.
 - Note that `time-stamp-toggle-active' (bound to \\[time-stamp-toggle-active])
   only toggle `time-stamp-active' which affects whether time stamp is updated
-  by the `time-stamp' command (bound to \\[time-stamp].
+  by the `time-stamp' command (bound to \\[time-stamp]).
 - For a time stamp to be updated on file save, both variables must be non-nil.
 "))
        (pel-insert-symbol-content-line
@@ -140,7 +140,6 @@ otherwise you risk using a mix of what you want and what was already active.
      :use-help-mode)))
 
 ;; ---------------------------------------------------------------------------
-
 ;;* Update Copyright Notice
 ;;  =======================
 
