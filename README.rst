@@ -72,7 +72,8 @@ Essentially PEL:
 - help you edit files with narrow indentation schemes such as Dart and Gleam
   files that must use a 2-space indent; the **pel-indent-with-tabs-mode**
   minor mode automatically converts the indentation to tabs-based indentation
-  in the buffer so you can see the code better 😎,
+  in the buffer so you can see the code better 😎, (you can also use my
+  stand-alone `tbindent`_ equivalent for that),
 - provides the ability to use Tree-Sitter based major modes but also
   dynamically switch from classic to Tree-Sitter based major mode and back
   at any time and without any impact on your original selection;
@@ -665,6 +666,7 @@ Notes
 .. _awk scripts: https://github.com/pierre-rouleau/pel/tree/master/awk
 .. _USRHOME project: https://github.com/pierre-rouleau/usrhome?tab=readme-ov-file#readme
 .. _Using tree-sitter with Emacs and PEL: https://github.com/pierre-rouleau/pel/blob/master/doc/using-tree-sitter.rst.txt
+.. _tbindent: https://github.com/pierre-rouleau/tab-based-indent
 
 ..
    -----------------------------------------------------------------------------
