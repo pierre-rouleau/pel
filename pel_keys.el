@@ -1751,7 +1751,7 @@ can't bind negative-argument to C-_ and M-_"
   (pel-autoload-file popup-imenu for: popup-imenu))
 
 (when pel-use-popup-switcher
-  (pel-install-github-file "pierre-rouleau/popup-switcher/fixes"
+  (pel-install-github-file "pierre-rouleau/popup-switcher/master"
                            "popup-switcher.el")
     ;; install it's mandatory external dependencies
     (pel-ensure-package dash from: melpa)
