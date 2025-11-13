@@ -8632,6 +8632,15 @@ is set: it is used by the helpful package."
 (pel-put 'pel-use-elisp-refs :also-required-when 'pel-use-helpful)
 
 
+(defcustom pel-use-elx nil
+  "Control whether PEL activates and uses the elx package."
+  :link '(url-link :tag "elx @ github"
+                   "https://github.com/emacscollective/elx")
+  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-package-mng
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-package-lint nil
   "Control whether PEL activates and uses the package-lint package."
   :link '(url-link :tag "package-lint @ github"
