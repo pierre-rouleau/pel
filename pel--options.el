@@ -223,6 +223,7 @@
 ;;       - pel-pkg-for-scrolling
 ;;       - pel-pkg-for-session
 ;;       - pel-pkg-for-speedbar
+;;     - pel-pkg-for-writing
 ;;
 
 ;; Naming conventions:
@@ -13242,6 +13243,7 @@ Setting this non-nil also sets up the use of speedbar and projectile."
 (defgroup pel-pkg-for-spelling nil
   "PEL Spelling Support."
   :group 'pel-package-use
+  :group 'pel-pkg-for-writing
   :link `(url-link :tag "Spell Checking PDF"
                    ,(pel-pdf-file-url "spell-checking")))
 
@@ -14288,6 +14290,34 @@ indexing system."
   :link '(url-link :tag "OpengGrok home page"
                    "https://oracle.github.io/opengrok/")
   :group 'pel-pkg-for-xref
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
+(defgroup pel-pkg-for-writing nil
+  "List of packages that can be sued to improve writing."
+  :group 'pel-package-use)
+
+(defcustom pel-use-wc-mode nil
+  "Control whether PEL uses the wc-mode package."
+  :link '(url-link :tag "wc-mode @ Github"
+                   "https://github.com/bnbeckwith/wc-mode")
+  :group 'pel-pkg-for-writing
+  :type 'boolean
+  :safe #'booleanp)
+(defcustom pel-use-writegood-mode nil
+  "Control whether PEL uses the writegood-mode package."
+  :link '(url-link :tag "writegood-mode  @ Github"
+                   "https://github.com/bnbeckwith/writegood-mode")
+  :group 'pel-pkg-for-writing
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-artbollocks-mode nil
+  "Control whether PEL uses the artbollocks-mode package."
+  :link '(url-link :tag "artbollocks-mode @ Github"
+                   "https://github.com/sachac/artbollocks-mode")
+  :group 'pel-pkg-for-writing
   :type 'boolean
   :safe #'booleanp)
 

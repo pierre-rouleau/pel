@@ -2524,6 +2524,16 @@ can't bind negative-argument to C-_ and M-_"
                      "pel-use-elf-mode is on, but can't find readelf executable!")))
 
 ;; ---------------------------------------------------------------------------
+;;** Writing Help Packages
+
+(when pel-use-wc-mode
+  (pel-ensure-package wc-mode from: melpa))
+(when pel-use-writegood-mode
+  (pel-ensure-package writegood-mode from: melpa))
+(when pel-use-artbollocks-mode
+  (pel-ensure-package artbollocks-mode from: melpa))
+
+;; ---------------------------------------------------------------------------
 ;;* Programming Language Support
 ;;  ============================
 
