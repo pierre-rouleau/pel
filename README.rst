@@ -50,11 +50,11 @@ or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 
 Essentially PEL:
 
-- extends the standard Emacs system and enhance the synergy in your use of Emacs,
+- extends Emacs,
 - adds a large number (699) of convenient commands and provides glue logic to
   increase feature cohesion and simplify their use,
 - provides the ability to easily install, update a large set (317) of external
-  packages from various sources:
+  packages from multiple sources:
 
   - elpa compliant sites: GNU elpa, MELPA,
   - Github hosted files that are not setup as Emacs packages,
@@ -66,7 +66,7 @@ Essentially PEL:
   and hard tab control in most major modes showing you which customizable
   user-option sets the indentation width and the use of hard-tabs, describe
   why those values may be overridden in files written by other when
-  pel-use-dtrt-indent is activated, and also describe how to use a hard-tab
+  pel-use-dtrt-indent is activate, and also describe how to use a hard-tab
   indentation scheme to dynamically modify rendered indentation in some modes
   where that technique is possible,
 - help you edit files with narrow indentation schemes such as Dart and Gleam
@@ -79,12 +79,12 @@ Essentially PEL:
   at any time and without any impact on your original selection;
   the `🚦 Tree-sitter PDF`_ lists these modes,
 
-  - the `🚦 Tree-sitter PDF`_ provides information on the various Tree-Sitter
+  - the `🚦 Tree-sitter PDF`_ provides information on the Tree-Sitter
     language grammar and major modes supporting it, and
   - the document titled `Using tree-sitter with Emacs and PEL`_ describes how to setup
     your environment to use the Tree-Sitter based modes,
 
-- uses the extremely powerful Emacs customization system to drive activation
+- uses Emacs powerful customization system to drive activation
   of features,
 
   - PEL provides an Emacs init.el and early-init.el file; to use PEL you need
@@ -92,17 +92,15 @@ Essentially PEL:
     as described inside the `PEL installation`_,
     and you won't need to edit it to control installation and manage the PEL
     supported packages.  If you need to add extra logic that PEL does not yet
-    implement then you can add it to your copy of that init.el file, otherwise
-    all control is done by the PEL logic located in the PEL source code files
-    stored in the PEL repository you get from this project.  All activation
-    and configuration is controlled by the customizable user-options.
+    implement, you can add it to your copy of that init.el file, otherwise
+    PEL logic controls it via customizable user-options.
 
-- provides integrated features tying several built-in Emacs functionality and
-  external packages to increase cohesion between those features in ways that
+- provides integrated features between built-in Emacs and
+  external packages, increasing cohesion between those features in ways that
   external packages can't do alone (and would require more programming on your
   part),
-- support Emacs in terminal mode, providing key bindings that can be used in
-  terminal mode for commands that normally do not have them,
+- support Emacs in terminal mode, providing terminal key bindings for
+  commands that normally do not have them,
 - support Emacs in graphical mode with some extensions specific to macOS and
   Linux,
 - allow independent configuration of terminal-based and GUI-based Emacs
@@ -110,7 +108,7 @@ Essentially PEL:
   available in graphical mode,
 - attempt to provide globally unified keyboard experience for a large set of
   commands across multiple major modes,
-- document Emacs features in several (202) topic oriented PDF tables which
+- document Emacs features in over 202 topic oriented PDF tables which
   provide and overview of the topic, list standard Emacs commands, PEL extra
   commands, their key bindings, links to the Emacs manual, to the external
   packages, to description articles and more.
@@ -124,18 +122,18 @@ Essentially PEL:
     available globally, for major mode, minor mode or under special
     circumstances to help you understand Emacs.
 
-- PEL also provide documentation on several other topics.
-- And PEL also provides several other tools:
+- PEL also provide documentation on other topics.
+- And PEL also provides other tools:
 
-  - `shell scripts`_ to start Emacs or execute various tools to help use several
+  - `shell scripts`_ to start Emacs or execute tools to help use
     features inside Emacs.
   - `awk scripts`_ for text filtering and transformation.
-  - You might also be interested by the tools provided by my `USRHOME project`_.
+  - See the tools provided by my `USRHOME project`_.
 
-PEL keeps evolving.  It allows me to maintain my Emacs configuration on
+PEL keeps evolving.  I use it to  maintain my Emacs configuration on
 several macOS and Linux systems and also under Windows (whenever I have to use
 it).  The configuration logic is inside the PEL source code, which is byte
-compiled by a make file. All I need to do is install PEL on the various
+compiled by a make file. All I need to do is install PEL on the
 systems and copy the customization files (which I keep under VCS control for
 historical and distribution control).
 
@@ -239,8 +237,8 @@ Again any feedback is welcome. Thanks!
   - installation and
   - configuration of packages,
   - the activation of various major and minor modes,
-  - the improvement of behaviour of various major and minor modes,
-  - the use of various features provided by PEL.
+  - the improvement of behaviour of several major and minor modes,
+  - the use of the features provided by PEL.
 
 - PEL saves your customization data inside a file separate from your
   ``init.el`` file, providing an extra degree of freedom and control. This
@@ -304,23 +302,16 @@ package repositories like `GNU Elpa`_, MELPA_.  There are also Emacs Lisp
 files available on Github and Gitlab.  PEL provides access to a growing number
 of these packages as described in the next section.
 
-One of PEL's goals is to enhance the cohesion and the integration of these
-packages to provide a more pleasant and customizable user experience.  PEL
-implements various convenience commands, easy-to-remember key bindings and
-glue control code to enhance several minor and major modes, allowing behaviour
-selection through customization and PEL use-option variables.
+One of PEL's goals is to enhance the cohesion and the integration of the
+packages it supports and keep everything easily customizable.
 
-Some of the improvements created for PEL are fed back to the original project(s)
-but it's available inside PEL if the code has not yet been merged in the
-original project.
-
-PEL also implements various template-driven text insertion for various
+PEL also implements template-driven text insertion for a set of
 programming and markup languages.
 
 As PEL evolves the goal is to support for programming languages will increase
 and each fully supported programming language will come with a topic-oriented
 help PDF, enhanced electric key behaviours, enhanced navigation integrating
-various packages, etc...
+packages, etc...
 
 
 ➣ Automatic Download, Installation and Setup of External Packages
@@ -350,9 +341,9 @@ various packages, etc...
       terminal mode,
     - adding extra commands that complement Emacs and external packages.
 
-- PEL integrates these packages and adds a large number of key bindings
-  **that mostly do not interfere with the standard Emacs key bindings**
-  (except for a very small few documented ones).
+- PEL integrates these packages and adds a large number of key bindings.
+  The PEL key-bindings **do not interfere with the Emacs standard key bindings**
+  (except for a small number of documented ones).
 
 ➣ Extends Emacs Documentation
 -----------------------------
