@@ -14295,7 +14295,7 @@ indexing system."
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-pkg-for-writing nil
-  "List of packages that can be sued to improve writing."
+  "List of packages that can be used to improve writing."
   :group 'pel-package-use)
 
 (defcustom pel-use-wc-mode nil
