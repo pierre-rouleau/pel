@@ -1,8 +1,8 @@
-;;; pel-indent.el --- PEL indentation utilities.  -*- lexical-binding: t; -*-
+;;; pel-indent.el --- PEL indentation utilities  -*- lexical-binding: t; -*-
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-17 15:37:14 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-17 15:58:19 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1381,13 +1381,11 @@ This is performed just before saving a buffer to a file or killing it."
                 (unless (memq 'pel--tm-before-save-or-kill  before-save-hook)
                   (add-hook 'before-save-hook 'pel--tm-before-save-or-kill
                             -100
-                            'local
-                            ))
+                            'local))
                 (unless (memq 'pel--tm-before-save-or-kill  kill-buffer-hook)
                   (add-hook 'kill-buffer-hook 'pel--tm-before-save-or-kill
                             -100
-                            'local
-                            ))
+                            'local))
                 (unless (memq 'pel--tm-after-save after-save-hook)
                   (add-hook 'after-save-hook 'pel--tm-after-save
                             +100
