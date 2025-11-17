@@ -7209,11 +7209,18 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;;** Emacs info
 ;; - Function Keys - <f11> - Prefix ``<f11> ? e`` :
 ;; Used keys:
-;; P
-;; c l m p r s t u v x
+;; B C M P
+;; b c h i l m o p r s t u v x ? .
 ;; C-p
-;; M-S
-;; <f2>
+;; M-p M-S
+;; <f2> <M-S-f9>
+
+(unless pel-emacs-28-or-later-p
+  ;; hierarchy.el was integrated in Emacs as of Emacs 28.1
+  ;; PEL uses it, install the original package in utils on Emacs < 28
+  (pel-install-github-file "DamienCassou/hierarchy/master"
+                           "hierarchy.el")
+  (pel-autoload-file hierarchy for: hierachy))
 
 (define-pel-global-prefix pel:emacs (kbd "<f11> ? e"))
 (define-key pel:emacs (kbd "C-p") #'list-processes)
@@ -7221,6 +7228,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 (define-key pel:emacs "b"  'pel-emacs-buffer-stats)
 (define-key pel:emacs "c"  'pel-emacs-command-stats)
 (define-key pel:emacs "C"  'pel-emacs-config-features)
+(define-key pel:emacs "h"  'pel-hier-modes)
 (define-key pel:emacs "i"  'pel-imenu-print-vars)
 (define-key pel:emacs "o"  'pel-outline-print-vars)
 (define-key pel:emacs "r"  'pel-open-emacs-refcard)

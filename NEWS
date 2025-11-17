@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-hier-modes* command, bound to ~<f11> ? e h~.  This prints the hierarchy of major modes
+  currently loaded inside a hierarchy-tablulated buffer.  The PEL code is a slight modification of
+  the hierarchy-examples-major-modes.el written by Damien Cassou where I
+  renamed the symbols to integrate his excellent example into PEL.
 - Add support for several writing tools and a Writing Tools PDF. The tools are:
   - artbollocks-mode, activated by *pel-use-artbollocks-mode*,
   - harper-ls, activated by *pel-use-harper-ls*,

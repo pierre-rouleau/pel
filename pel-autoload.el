@@ -518,6 +518,11 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-remove-line-highlight
     pel-show-paren-info)
 
+  ;; --
+  (pel-autoload "pel-hier-modes" for:
+    pel-hier-modes)
+
+  ;; --
   (pel-autoload "pel-help" for:
     pel-show-kill-ring
     pel-show-major-mode
