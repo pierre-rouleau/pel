@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-11-17 11:22:26 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-11-17 14:12:58 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -746,6 +746,7 @@ pel-graphviz-dot.elc:   pel--base.elc pel-ccp.elc
 pel-help.elc:           pel--base.elc pel-modes.elc
 pel-hide-docstring.elc: pel-navigate.elc pel-face-ut.elc
 pel-hideshow.elc:       pel--base.elc
+pel-hier-modes.elc:     pel--base.elc pel--keys-macros
 pel-highlight.elc:      pel--base.elc pel-prompt.elc
 pel-ido.elc:            pel-prompt.elc
 pel-iedit.elc:          pel--options.elc

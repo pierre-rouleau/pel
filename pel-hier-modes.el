@@ -32,11 +32,12 @@
 
 ;;; Code:
 
-(require 'pel--base)
 (unless (require 'hierarchy nil :noerror)
   ;; hierarchy.el was integrated in Emacs as of Emacs 28.1
   ;; PEL uses it, install the original package in utils on Emacs < 28
   ;; on: https://github.com/DamienCassou/hierarchy
+  (require 'pel--base)
+  (require 'pel--keys-macros)
   (pel-install-github-file "DamienCassou/hierarchy/refs/head/master"
                            "hierarchy.el")
   (pel-autoload-file hierarchy for: hierarchy)
