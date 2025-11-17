@@ -38,7 +38,7 @@
   ;; on: https://github.com/DamienCassou/hierarchy
   (require 'pel--base)
   (require 'pel--keys-macros)
-  (pel-install-github-file "DamienCassou/hierarchy/refs/head/master"
+  (pel-install-github-file "DamienCassou/hierarchy/refs/heads/master"
                            "hierarchy.el")
   (pel-autoload-file hierarchy for: hierarchy)
   (require 'hierarchy))
