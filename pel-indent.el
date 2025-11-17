@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-13 18:03:01 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-17 15:37:14 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -113,7 +113,7 @@
 ;; expressions are often used as closures to do that.  Unfortunately this
 ;; technique cannot be used here because the function that insert the text are
 ;; sometimes used directly by the command sometimes used in other
-;; functions. The solution is to capture the variable and their values inside
+;; functions.  The solution is to capture the variable and their values inside
 ;; a hash that represents the context and use that in the function that prints
 ;; the information inside the help mode buffer.  Two functions capture such
 ;; context: `pel-indent-control-context' and `pel-tab-control-context'.  They
@@ -522,7 +522,9 @@ by the numeric argument N (or if not specified N=1):
   "Tab width set by last `pel-set-tab-width' call.")
 
 (defun pel-read-number (prompt default history-symbol)
-  "Emacs version sensitive `read-number'."
+  "Emacs version sensitive `read-number'.
+Prompts with PROMPT, use DEFAULT value and the HISTORY-SYMBOL to track
+reply history."
   (with-no-warnings
     (if pel-emacs-28-or-later-p
         (read-number prompt default history-symbol)
@@ -765,7 +767,7 @@ Return nil if none is identified in either location."
   "Return the indentation width used by current major mode or MODE.
 Return the value of the indentation control variable used for the
 current major mode (or the specified MODE) if there is one.  If there
-are several, return the value of the first one. Return the value of
+are several, return the value of the first one.  Return the value of
 `standard-indent' otherwise."
   (let ((vars (pel-mode-indent-control-vars mode)))
     (if vars
@@ -777,14 +779,13 @@ are several, return the value of the first one. Return the value of
   "Capture & return the indentation context for current major mode.
 The returned value is a symbol -> value hash.
 The symbols are:
-- pel-insert-symbol-content-context-buffer
-- standard-indent
-- tab-always-indent
-- indent-line-function
-- the-indent-control-vars and all of those
-- pel-indentation-width-control-variables
-- pel-indentation-other-control-variables
-- "
+- `pel-insert-symbol-content-context-buffer',
+- `standard-indent',
+- `tab-always-indent',
+- `indent-line-function',
+- the-indent-control-vars,
+- `pel-indentation-width-control-variables',
+- `pel-indentation-other-control-variables'."
   (let ((context (make-hash-table)))
     (puthash 'pel-insert-symbol-content-context-buffer
              (current-buffer) context)
@@ -898,10 +899,10 @@ Note: The above variable control the indentation of this major mode.
 The returned value is a symbol -> value hash.
 The symbols are:
 - used-major-mode
-- pel-insert-symbol-content-context-buffer
-- pel-tab-width-control-variables
-- indent-tabs-mode : the value of indent-tabs-mode
-- tab-width
+- `pel-insert-symbol-content-context-buffer'
+- `pel-tab-width-control-variables'
+- `indent-tabs-mode' : the value of `indent-tabs-mode'
+- `tab-width'
 - indent-tab-info-inserter-fct"
   (let ((context (make-hash-table)))
     (puthash 'used-major-mode           major-mode context)
@@ -1068,7 +1069,8 @@ important variables and symbols in the context of the inspected major mode."
 
 ;;-pel-autoload
 (defun pel-show-indent (&optional append)
-  "Display current buffer's indentation behaviour controlling variable state."
+  "Display current buffer's indentation behaviour controlling variable state.
+With APPEND optional argument non-nil, append to the buffer."
   (interactive "P")
   (let ((indent-tab-info-cmd (intern (pel-string-with-major-mode
                                       "pel-%s-indent-tab-info"))))
@@ -1097,7 +1099,7 @@ important variables and symbols in the context of the inspected major mode."
 ;;       . `pel-set-tab-width'
 
 (defun pel-inside-code (&optional pos)
-  "Return non-nil when point is in code, nil if in comment or string.
+  "Return non-nil when point or POS is in code, nil if in comment or string.
 Note that this changes the search match data!"
   (let* ((pos (or pos (point)))
          (syntax (syntax-ppss pos)))
@@ -1244,13 +1246,13 @@ the BY-MINOR-MODE parameter must only be set by the call from
 ;;    - `pel--restore-original-fill-function'
 
 (defvar-local pel--normalfile-fill-column nil
-  "The fill-column value used for the normal space indented file format.")
+  "The `fill-column' value used for the normal space indented file format.")
 
 (defun pel--adjusted-fill-column (space-indent-width viewed-tab-width
                                                      &optional position)
   "Return adjusted fill column for tab-indented line at POSITION or point.
 
-That is the fill-column that can be used in the tab-indented buffer to
+That is the `fill-column' that can be used in the tab-indented buffer to
 correspond to what `fill-column' is inside the real space-indented file.
 - SPACE-INDENT-WIDTH corresponds to what the file normally uses.
 - VIEWED-TAB-WIDTH corresponds to what is used in the buffer."
@@ -1269,7 +1271,7 @@ correspond to what `fill-column' is inside the real space-indented file.
       (+ pel--normalfile-fill-column extra-columns))))
 
 (defvar-local pel--normal-auto-fill-function nil
-  "Remember auto-fill-function normally used for normal files.")
+  "Remember function `auto-fill-function' normally used for normal files.")
 
 (defvar-local pel--space-based-indent-width nil
   "Original space based indentation width for the file.")
@@ -1278,7 +1280,7 @@ correspond to what `fill-column' is inside the real space-indented file.
   "Perform the auto-fill inside a tabs-indented buffer.
 Adjust the buffer-local `fill-column' based on the indentation scheme used and
 in the normal file and the tabs-based indentation used inside the buffer, then
-  execute the `do-auto-fill' "
+execute the `do-auto-fill'."
   ;; Adjust the fill-column to what it should be if the indentation had been
   ;; reconverted back to 2-space indents and then execute the fill function.
   (let ((fill-column (pel--adjusted-fill-column pel--space-based-indent-width
