@@ -264,23 +264,24 @@ Also expands to the file true name, replacing symlinks by what they point to."
             ;; Add MELPA Stable before MELPA: some packages are only on MELPA
             ;; but several store their stable packages on MELPA Stable and
             ;; the unstable ones in MELPA.
-            (add-to-list 'package-archives
-                         (cons "melpa"
-                               (concat proto "://melpa.org/packages/"))
-                         t)
-            (add-to-list 'package-archives
-                         (cons "melpa-stable"
-                               (concat proto "://stable.melpa.org/packages/"))
-                         t)
-            (add-to-list 'package-archives
-                         (cons "nongnu"
-                               (concat proto "://elpa.nongnu.org/nongnu/"))
-                         t)
-            (when (< emacs-major-version 24)
-              ;; For important compatibility libraries like cl-lib
+            (when (boundp 'package-archives)
               (add-to-list 'package-archives
-                           (cons "gnu"
-                                 (concat proto "://elpa.gnu.org/packages/")))))
+                           (cons "melpa"
+                                 (concat proto "://melpa.org/packages/"))
+                           t)
+              (add-to-list 'package-archives
+                           (cons "melpa-stable"
+                                 (concat proto "://stable.melpa.org/packages/"))
+                           t)
+              (add-to-list 'package-archives
+                           (cons "nongnu"
+                                 (concat proto "://elpa.nongnu.org/nongnu/"))
+                           t)
+              (when (< emacs-major-version 24)
+                ;; For important compatibility libraries like cl-lib
+                (add-to-list 'package-archives
+                             (cons "gnu"
+                                   (concat proto "://elpa.gnu.org/packages/"))))))
           (package-initialize))
 
       ;; Emacs 27 or later.
@@ -311,15 +312,16 @@ Also expands to the file true name, replacing symlinks by what they point to."
       ;;    of all packages. If you need to modify this behaviour when the
       ;;    package quickstart is used, set the value inside the early-init.el
       ;;
-      (add-to-list 'package-archives
-                   (cons "melpa" "https://melpa.org/packages/")
-                   t)
-      (add-to-list 'package-archives
-                   (cons "melpa-stable" "https://stable.melpa.org/packages/")
-                   t)
-      (add-to-list 'package-archives
-                   (cons "nongnu" "https://elpa.nongnu.org/nongnu/")
-                   t)
+      (when (boundp 'package-archives)
+        (add-to-list 'package-archives
+                     (cons "melpa" "https://melpa.org/packages/")
+                     t)
+        (add-to-list 'package-archives
+                     (cons "melpa-stable" "https://stable.melpa.org/packages/")
+                     t)
+        (add-to-list 'package-archives
+                     (cons "nongnu" "https://elpa.nongnu.org/nongnu/")
+                     t))
       (if (and pel-emacs-is-graphic-p
                pel-init-support-dual-environment-p)
           ;; In forced graphics mode: use a graphics mode-specific Elpa
@@ -386,7 +388,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
                                       pel-emacs-is-graphic-p))
         (message "WARNING: Failed loading pel-fast-startup-init\
  from user-emacs-directory")))
-    (with-no-warnings
+    (with-no-warnings    ; prevent complaining about pel--init-package-support
       (add-hook 'emacs-startup-hook (function pel--init-package-support))))
 
 
@@ -400,6 +402,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;; file name of the abbreviation list with the name of a non-existing file.
   ;; Pass the original name to pel-init, it will initialize it properly later.
   ;;
+  (defvar pel--abbrev-file-name nil)
   (setq pel--abbrev-file-name abbrev-file-name
         abbrev-file-name      "~/abbrev_defs-invalid")
 
@@ -433,12 +436,13 @@ Also expands to the file true name, replacing symlinks by what they point to."
     ;;    it will blink the terminal screen)
     ;;  - When using a graphical emacs, the beeping sound is annoying so
     ;;    the following code disables it and activates a visual bell.
-    (setq ring-bell-function nil
-          visible-bell       t
-          ;; - Configure Speedbar:
-          ;;   The speedbar icons used in graphics mode are ancient
-          ;;   looking. Using ASCII characters instead is nicer.
-          speedbar-use-images nil)
+    (with-no-warnings               ; don't complain about speedbar-use-images
+      (setq ring-bell-function nil
+            visible-bell       t
+            ;; - Configure Speedbar:
+            ;;   The speedbar icons used in graphics mode are ancient
+            ;;   looking. Using ASCII characters instead is nicer.
+            speedbar-use-images nil))
 
     ;; - Set the theme to: adwaita .  Replace with what you prefer.
     ;;   Tested Themes: theme-name, face-background-highlight, flicker evaluation
@@ -524,7 +528,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;; which will process all local packages and will grow the `load-path'
   ;; accordingly.
   ;;
-  (with-no-warnings
+  (with-no-warnings ; don't complain about pel--init-package-support
     (unless pel-running-in-fast-startup-p
       (pel--init-package-support)))
 
