@@ -32,16 +32,28 @@
 
 ;;; Code:
 
-(unless (require 'hierarchy nil :noerror)
-  ;; hierarchy.el was integrated in Emacs as of Emacs 28.1
-  ;; PEL uses it, install the original package in utils on Emacs < 28
-  ;; on: https://github.com/DamienCassou/hierarchy
-  (require 'pel--base)
-  (require 'pel--keys-macros)
-  (pel-install-github-file "DamienCassou/hierarchy/refs/heads/master"
-                           "hierarchy.el")
-  (pel-autoload-file hierarchy for: hierarchy)
-  (require 'hierarchy))
+;; Starting with Emacs 28.1, hierarchy.el is built-in Emacs, before it was
+;; provided by Damien Cassou's GitHub based project.
+;; PEL supports Emacs 26 and later, therefore we need to ensure that
+;; it is installed from GitHub on earlier version *and* silence all
+;; byte-compilation warnings.  The `pel-require' function ensure that
+;; it is present and installs it if not but that's unknown to the byte
+;; compiler which would report its functions as unknown.  Explicitly declare
+;; them after to prevent the byte compiler warnings.
+
+(require 'pel--base)
+(pel-require 'hierarchy :install-when-missing
+             "DamienCassou/hierarchy/refs/heads/master"
+             "hierarchy.el")
+
+(declare-function hierarchy-new "hierarchy.el")
+(declare-function hierarchy-add-trees "hierarchy.el")
+(declare-function hierarchy-sort "hierarchy.el")
+(declare-function hierarchy-tabulated-display "hierarchy.el")
+(declare-function hierarchy-labelfn-indent "hierarchy.el")
+(declare-function hierarchy-labelfn-button "hierarchy.el")
+
+;; --
 
 (defun pel-hier-modes--major-mode-p (f)
   "Return non-nil if F is a major-mode function."
