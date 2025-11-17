@@ -1453,7 +1453,9 @@ Your version of Emacs does not support dynamic module.")))
 (when pel-update-time-stamp
   ;; - Update file timestamp on file same (if any)
   (add-hook 'before-save-hook  'pel--update-time-stamp))
-(setq time-stamp-active pel-update-time-stamp)
+(with-eval-after-load 'time-stamp
+  (when (boundp 'time-stamp-active)
+    (setq time-stamp-active pel-update-time-stamp)))
 
 (when pel-update-copyright
   ;; Update the copyright notice present in a file
@@ -2526,12 +2528,28 @@ can't bind negative-argument to C-_ and M-_"
 ;; ---------------------------------------------------------------------------
 ;;** Writing Help Packages
 
+(when pel-use-artbollocks-mode
+  (pel-ensure-package artbollocks-mode from: melpa))
 (when pel-use-wc-mode
   (pel-ensure-package wc-mode from: melpa))
 (when pel-use-writegood-mode
   (pel-ensure-package writegood-mode from: melpa))
-(when pel-use-artbollocks-mode
-  (pel-ensure-package artbollocks-mode from: melpa))
+(when pel-use-writeroom-mode
+  (pel-ensure-package writeroom-mode from: melpa))
+(when pel-use-harper-ls
+  (when (boundp 'eglot-server-programs)
+    (cond
+     ((eq pel-use-harper-ls 'english-prose-mode-plaintext)
+      (with-eval-after-load 'eglot
+        (add-to-list
+         'eglot-server-programs
+         '((english-prose-mode :language-id "plaintext")
+           .
+           ("harper-ls" "--stdio")))))
+     (t (dolist (m pel-use-harper-ls)
+          (with-eval-after-load 'eglot
+            (add-to-list 'eglot-server-programs
+                         (cons m '("harper-ls" "--stdio")))))))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Programming Language Support
@@ -7389,7 +7407,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; Text Translation
 (when (and pel-use-go-translate
            pel-emacs-27-or-later-p)
-  (pel-ensure-package go-translate from: melpa))
+  (pel-ensure-package gt from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;;* bookmark commands

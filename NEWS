@@ -2,6 +2,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for several writing tools and a Writing Tools PDF. The tools are:
+  - artbollocks-mode, activated by *pel-use-artbollocks-mode*,
+  - harper-ls, activated by *pel-use-harper-ls*,
+  - my-whisper, activated by *pel-use-my-whisper*,
+  - wc-mode, activated by *pel-use-wc-mode*,
+  - writegood-mode, activated by *pel-use-writegood-mode*,
+  - writeroom-mode, activated by *pel-use-writeroom-mode*,
+  - Update link to go-translate, activated by *pel-use-go-translate*; it was renamed gt by its author.
 - Add support to Mode Line Scroll, mlscroll, when *pel-use-mlscroll* user-option is set to either t or to use-from-start.
 - Add preliminary support for the Dart programming language.
   PEL activates it with the *dart-mode* the *pel-use-dart* user-option is set

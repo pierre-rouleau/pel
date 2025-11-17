@@ -13662,9 +13662,10 @@ This requires Emacs 27.1 or later."
 This requires Emacs 27.1 or later.  On previous versions PEL automatically
 turns it off."
   :group 'pel-pkg-for-text-translation
+  :group 'pel-pkg-for-writing
   :group 'pel-pkg-for-spelling
   :link '(url-link :tag "Go-Translate @ GitHub"
-                   "https://github.com/lorniu/go-translate")
+                   "https://github.com/lorniu/gt")
   :type 'boolean
   :safe #'booleanp)
 
@@ -14298,6 +14299,32 @@ indexing system."
   "List of packages that can be used to improve writing."
   :group 'pel-package-use)
 
+(defcustom pel-use-harper-ls nil
+  "Control whether PEL uses the harper-ls package.
+Set this to:
+- 1: Do not use (default): nil
+- 2: Major modes.  Identify one or several major mode to use.
+- 3: English Prose setup (use only if 2 above does not work.)"
+  :link '(url-link :tag "harper-ls @ Github"
+                   "https://github.com/automattic/harper")
+  :link '(url-link :tag "harper-ls/Emacs integration @ Harper home"
+                   "https://writewithharper.com/docs/integrations/emacs")
+  :link '(url-link :tag "Harper correction rules"
+                   "https://writewithharper.com/docs/rules")
+  :group 'pel-pkg-for-writing
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (repeat :tag "Major modes" symbol)
+          (const :tag "English prose mode" english-prose-mode-plaintext)))
+
+(defcustom pel-use-writeroom-mode nil
+  "Control whether PEL uses the writeroom-mode package."
+  :link '(url-link :tag "writeroom-mode @ Github"
+                   "https://github.com/joostkremers/writeroom-mode")
+  :group 'pel-pkg-for-writing
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-wc-mode nil
   "Control whether PEL uses the wc-mode package."
   :link '(url-link :tag "wc-mode @ Github"
@@ -14305,6 +14332,7 @@ indexing system."
   :group 'pel-pkg-for-writing
   :type 'boolean
   :safe #'booleanp)
+
 (defcustom pel-use-writegood-mode nil
   "Control whether PEL uses the writegood-mode package."
   :link '(url-link :tag "writegood-mode  @ Github"
@@ -14320,6 +14348,7 @@ indexing system."
   :group 'pel-pkg-for-writing
   :type 'boolean
   :safe #'booleanp)
+
 
 ;; ---------------------------------------------------------------------------
 ;; Incompatible selection Management
