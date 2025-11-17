@@ -7,7 +7,7 @@ How to recompile all Emacs Lisp files after updating Emacs to a different versio
 :Ref: `PEL How-to Tips`_
 :Created:  Saturday, March  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-08-27 18:47:16 EDT, updated by Pierre Rouleau.
+:Modified: 2025-11-17 10:55:27 EST, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 
@@ -82,7 +82,11 @@ How to recompile all elisp files after changing Emacs Version
 After upgrading Emacs you need to recompile **all** Emacs Lisp files that PEL
 has installed. With PEL this is quite simple.
 
-This assumes Emacs is currently **not** running and is **not** using the
+**IMPORTANT  -- SAVE ALL YOUR FILES BEFORE REBUILDING!**
+
+It is also best to exit all your Emacs sessions as they may become
+unstable during and after the rebuild. Therefore,
+this assumes Emacs is currently **not** running and is **not** using the
 fast startup mode PEL provides.
 
 Step 1: Rebuild PEL itself
