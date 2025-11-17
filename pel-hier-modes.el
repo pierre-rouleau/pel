@@ -32,7 +32,15 @@
 
 ;;; Code:
 
-(require 'hierarchy)
+(require 'pel--base)
+(unless (require 'hierarchy nil :noerror)
+  ;; hierarchy.el was integrated in Emacs as of Emacs 28.1
+  ;; PEL uses it, install the original package in utils on Emacs < 28
+  ;; on: https://github.com/DamienCassou/hierarchy
+  (pel-install-github-file "DamienCassou/hierarchy/refs/head/master"
+                           "hierarchy.el")
+  (pel-autoload-file hierarchy for: hierarchy)
+  (require 'hierarchy))
 
 (defun pel-hier-modes--major-mode-p (f)
   "Return non-nil if F is a major-mode function."
