@@ -3905,6 +3905,12 @@ d-mode not added to ac-modes!"
 (define-key pel:elisp-analyze   "b"  'pel-lint-elisp-file)
 (define-key pel:elisp-analyze   "d" #'checkdoc)
 (define-key pel:elisp-analyze   "f" #'elint-file)
+(when pel-use-package-lint
+  (define-pel-global-prefix pel:lint-package (kbd "<f11> SPC l a p"))
+  (define-key pel:lint-package  "p"  'package-lint-current-buffer)
+  (define-key pel:lint-package  "h"  'package-lint-describe-symbol-history)
+  (when pel-use-flycheck-package
+    (define-key pel:lint-package  "!" 'flycheck-package-setup)))
 
 (define-pel-global-prefix pel:elisp-compile (kbd "<f11> SPC l c"))
 (define-key pel:for-elisp (kbd "M-c") 'pel-byte-compile-file-and-load)
