@@ -7220,7 +7220,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   ;; PEL uses it, install the original package in utils on Emacs < 28
   (pel-install-github-file "DamienCassou/hierarchy/master"
                            "hierarchy.el")
-  (pel-autoload-file hierarchy for: hierachy))
+  (pel-autoload-file hierarchy for: hierarchy))
 
 (define-pel-global-prefix pel:emacs (kbd "<f11> ? e"))
 (define-key pel:emacs (kbd "C-p") #'list-processes)
