@@ -73,10 +73,10 @@
  '(pel-activate-f9-for-greek t)
  '(pel-auto-mode-alist
    (quote
-    (("SConstruct" python-mode)
-     ("SConscript" python-mode)
+    (("SConstruct\\'" python-mode)
+     ("SConscript\\'" python-mode)
      ("/bin/[^.]+\\'" shell-script-mode)
-     ("Cask" emacs-lisp-mode)
+     ("Cask\\'" emacs-lisp-mode)
      ("\\.gdot\\'" graphviz-dot-mode)
      ("\\.sexp\\'" lisp-mode))))
  '(pel-bind-keys-for-regexp t)
