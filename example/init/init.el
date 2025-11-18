@@ -342,7 +342,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
         (progn
           (setq package-user-dir (file-truename package-user-dir))
           (package-initialize)))))
-  (declare-function 'pel--init-package-support "init")
+  (declare-function pel--init-package-support "init")
 
   ;; Schedule restoration of garbage collector normal values once Emacs
   ;; startup is completed to prevent Emacs from stalling/stuttering on large
