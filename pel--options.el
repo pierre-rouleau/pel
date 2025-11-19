@@ -1183,6 +1183,15 @@ When set, PEL activates the following key sequences:
   :link `(url-link :tag "ibuffer-mode PDF" ,(pel-pdf-file-url
                                              "ibuffer-mode")))
 
+(defcustom pel-ibuffer-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for IBUFFER buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions.
+For the ibuffer-mode, you may want to activate the following minor modes:
+- `ibuffer-auto-mode'"
+  :group 'pel-pkg-for-ibuffer
+  :type '(repeat function))
+
 (defcustom pel-use-ibuffer-vc nil
   "Control whether PEL uses & activates the ibuffer-vc package."
   :group 'pel-pkg-for-ibuffer

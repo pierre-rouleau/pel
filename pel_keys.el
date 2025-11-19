@@ -7854,12 +7854,17 @@ the ones defined from the buffer now."
 
 ;; - Provide <f12> <f1>, <f12><f2> and <f12><f3> in ibuffer-mode
 (define-pel-global-prefix pel:for-ibuffer (kbd "<f11> SPC SPC b"))
+(define-key pel:for-ibuffer "a" 'ibuffer-auto-mode)
 (define-key pel:for-ibuffer "c" 'ibuffer-filter-chosen-by-completion)
 (define-key pel:for-ibuffer "d" 'ibuffer-filter-by-directory)
 (defun pel--setup-for-ibuffer ()
   "Activate ibuffer setup, take local variables into account."
-  (pel-local-set-f12-M-f12 'pel:for-ibuffer))
+  (pel-local-set-f12-M-f12 'pel:for-ibuffer)
+  ;; turn on any automatically assigned minor mode
+  (pel-turn-on-local-minor-modes-in 'pel-ibuffer-activates-minor-modes)
+  (pel-check-minor-modes-in pel-ibuffer-activates-minor-modes))
 (declare-function pel--setup-for-ibuffer "pel_keys")
+
 (pel--mode-hook-maybe-call
  (function pel--setup-for-ibuffer)
  'ibuffer-mode 'ibuffer-mode-hook)

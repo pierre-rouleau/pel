@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-07 15:33:40 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-19 13:44:28 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1856,6 +1856,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     go
     go-dot-mod
     go-mod                              ; for go-mod-ts-mode
+    ibuffer
     intel-hex
     janet
     js2 js3
