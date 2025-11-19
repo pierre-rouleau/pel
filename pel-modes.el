@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 24 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-28 22:47:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-19 14:47:33 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -209,10 +209,11 @@ most generic information about the mode."
               (when (boundp major-mode-activates-minor-modes)
                 #'pel--maj-mode-minor-mode-activation-info)))
            (insert "\n\n")
-           ;; -- Indentation & Hard Tab Control
-           (pel-indent-insert-control-info indent-control-context)
-           ;; -- Hard Tab Control
-           (pel-tab-insert-control-info tab-control-context))
+           (unless (memq current-major-mode pel-major-modes-with-no-indentation)
+             ;; -- Indentation & Hard Tab Control
+             (pel-indent-insert-control-info indent-control-context)
+             ;; -- Hard Tab Control
+             (pel-tab-insert-control-info tab-control-context)))
          (unless append :clear-buffer)
          :use-help-mode)))))
 

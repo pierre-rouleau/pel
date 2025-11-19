@@ -576,6 +576,17 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   "PEL Emacs basic configuration."
   :group 'pel)
 
+(defcustom pel-major-modes-with-no-indentation '(dired-mode
+                                                 help-mode
+                                                 ibuffer-mode
+                                                 message-buffer-mode)
+  "List of major-modes that do not deal with indentation and tab width.
+For those major modes, the `pel-mode-setup-info' command will not show
+information related to indentation and width control."
+  :group 'pel-base-emacs
+  :type '(repeat
+          (symbol :tag "major mode")))
+
 (defcustom pel-has-alias-as t
   "Activate `as' alias to `pel-as' for convenience."
   :group 'pel-base-emacs
