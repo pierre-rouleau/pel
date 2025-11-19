@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-17 15:58:19 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-19 11:08:46 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1379,15 +1379,15 @@ This is performed just before saving a buffer to a file or killing it."
                   (set-buffer-modified-p nil))
                 ;; schedule operation before and after buffer save.
                 (unless (memq 'pel--tm-before-save-or-kill  before-save-hook)
-                  (add-hook 'before-save-hook 'pel--tm-before-save-or-kill
+                  (add-hook 'before-save-hook #'pel--tm-before-save-or-kill
                             -100
                             'local))
                 (unless (memq 'pel--tm-before-save-or-kill  kill-buffer-hook)
-                  (add-hook 'kill-buffer-hook 'pel--tm-before-save-or-kill
+                  (add-hook 'kill-buffer-hook #'pel--tm-before-save-or-kill
                             -100
                             'local))
                 (unless (memq 'pel--tm-after-save after-save-hook)
-                  (add-hook 'after-save-hook 'pel--tm-after-save
+                  (add-hook 'after-save-hook #'pel--tm-after-save
                             +100
                             'local))
 
@@ -1411,11 +1411,11 @@ To change tab-width, type:  M-: (setq-local tab-width %d)"
         (pel-indent-with-spaces nil :by-minor-mode))
       (pel--restore-original-fill-function)
       (when (memq 'pel--tm-before-save-or-kill before-save-hook)
-        (remove-hook 'before-save-hook 'pel--tm-before-save-or-kill 'local))
+        (remove-hook 'before-save-hook #'pel--tm-before-save-or-kill 'local))
       (when (memq 'pel--tm-before-save-or-kill kill-buffer-hook)
-        (remove-hook 'kill-buffer-hook 'pel--tm-before-save-or-kill 'local))
+        (remove-hook 'kill-buffer-hook #'pel--tm-before-save-or-kill 'local))
       (when (memq 'pel--tm-after-save after-save-hook)
-        (remove-hook 'after-save-hook 'pel--tm-after-save 'local))
+        (remove-hook 'after-save-hook #'pel--tm-after-save 'local))
       (message "Indenting with tabs Mode disabled."))))
 
 ;;; --------------------------------------------------------------------------
