@@ -481,8 +481,8 @@ Accepts mode derived from `dired-mode' unless STRICT is non-nil."
             (unless strict
               (derived-mode-p 'dired-mode))))
     (or (eq major-mode 'dired-mode)
-            (unless strict
-              (derived-mode-p 'dired-mode)))))
+        (unless strict
+          (derived-mode-p 'dired-mode)))))
 
 (defun pel-major-mode-of (&optional buffer-or-name)
   "Return the major mode symbol of the specified BUFFER-OR-NAME.
@@ -1355,7 +1355,7 @@ This macro uses the function `pel--format-problem-messages' which
 returns the formatted string."
   `(pel--format-problem-messages
     ,problems
-    (format ,intro-fmt ,@args) ,extra-intro ))
+    (format ,intro-fmt ,@args) ,extra-intro))
 
 ;; --
 (defun pel-message-for (intro messages &optional separator)
