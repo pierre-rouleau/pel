@@ -1055,7 +1055,9 @@ directory for whatever reason."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-quelpa :also-required-when '(and pel-use-tree-sitter
-                                                   pel-use-combobulate))
+                                                   pel-use-combobulate
+                                                   (eq pel-use-lispy
+                                                       'use-enzuru-lispy)))
 
 ;; ---------------------------------------------------------------------------
 ;; Alignment Support
@@ -3209,32 +3211,41 @@ grouping characters:
 (defcustom pel-use-parinfer nil
   "Control whether PEL uses the parinfer package.
 
-Note that this package is obsolete, the author failed to complete a fast
-enough implementation using Emacs Lisp.  There is, however, a successor,
-implemented in Rust, parinfer-rust-mode that can be used instead.  Activate
-that with `pel-use-parinfer-rust-mode'.
+The parinfer system is similar to what Lispy provides: a modal minor mode
+that helps writing Lisp code.
+The parinfer system is supported on several editors and there is several
+implementations.  You need to select which implementation you want to use from
+the following choices:
 
-If you have an old installation of parinfer downloaded via Melpa, and you
-request a PEL cleanup, your copy will be stored inside your
-~/.emacs.d/elpa-attic directory.
+- 1: Not used.
+- 2: Use the original, unmaintained, EmacsAttic parinfer.
+- 3: Use parinfer-rust-mode, a maintained parinfer implemented in Rust.
+     Recommended.
 
-New installations will be done using the files from EmacsAttic.
+Notes: The original Elisp implementation, no longer maintained, now
+accessible in emacsattic was too slow to be usable in older Emacs.  You
+may get better results on newer Emacs with native compilation.
 
-To activate this package select one of the options:
-- use-local-elpa-attic-copy but only if you have an old copy in your
-  elpa-attic.
-- use-emacs-attic for all other case."
-  :link '(url-link :tab "parinfer manual"
+A successor implementation written in Rust, parinfer-rust-mode, that can
+be used instead.  Activate that with use-parinfer-rust-mode.
+
+If you have an old installation of parinfer downloaded via Melpa, and
+you request a PEL cleanup, your copy will be stored inside your
+~/.emacs.d/elpa-attic directory.  Copy it back into elpa if you want to
+keep using it."
+  :link '(url-link :tag "parinfer manual"
                    "https://shaunlebron.github.io/parinfer/")
-  :link '(url-link :tab "parinfer @ EmacsAttic"
+  :link '(url-link :tag "parinfer @ EmacsAttic"
                    "https://github.com/emacsattic/parinfer")
-  :link '(url-link :tab "parinfer @ GitHub, archived."
+  :link '(url-link :tag "parinfer-rust-mode @ Github"
+                   "https://github.com/justinbarclay/parinfer-rust-mode")
+  :link '(url-link :tag "parinfer @ GitHub, archived."
                    "https://github.com/shaunlebron/parinfer")
   :group 'pel-pkg-for-parens
   :type '(choice
           (const :tag "Don't use" nil)
           (const :tag "Use emacsattic site files" t)
-          (const :tag "Use local Elpa attic copy" use-pel-elpa-attic-copy)))
+          (const :tag "Use parinfer-rust-mode" use-parinfer-rust-mode)))
 (pel-put 'pel-use-parinfer :package-is '(if (eq pel-use-parinfer
                                                 'use-pel-elpa-attic-copy)
                                             '((elpa . parinfer))
@@ -8215,6 +8226,13 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 (defcustom pel-use-lispy nil
   "Control whether PEL uses the lispy package.
 
+PEL supports 2 implementations:
+- 1: abo-abo lispy.  The original author. Unfortunately currently
+                     un-maintained.
+- 2: enzuru lispy.   A temporary maintained fork that exists while abo-abo
+                     is unavailable.  Selecting that will also activate
+                     quelpa, which is used to install the enzuru lispy fork.
+
 Note that lispy has commands that use find-file-in-project
 or projectile.  PEL supports these package with, respectively:
 - User-option variable `pel-use-find-file-in-project'
@@ -8222,21 +8240,27 @@ or projectile.  PEL supports these package with, respectively:
 
 I strongly recommend using projectile.  ffip takes an enormous
 amount of time to search for a project (even with fd)."
-  :type 'boolean
-  :safe #'booleanp
+  :group 'pel-pkg-for-lisp
   :link `(url-link :tag "Lispy PDF" ,(pel-pdf-file-url "plm-lispy"))
   :link '(url-link :tag "abo-abo lispy" "https://github.com/abo-abo/lispy")
   :link '(url-link :tag "enzuru fork; temporary maintenance"
-                   "https://github.com/enzuru/lispy"))
+                   "https://github.com/enzuru/lispy")
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use abo-abo lispy - currently not maintained." t)
+          (const :tag "Use temporary enzuru maintained fork"
+                 use-enzuru-lispy)))
+(when (eq pel-use-lispy 'use-enzuru-lispy)
+  (setq pel-use-quelpa t))
 
 (defconst pel-allowed-modes-for-lispy
-  '(emacs-lisp-mode                     ; Emacs Lisp  - Lisp 2 for Emacs
-    ielm-mode                           ;  repl := inferior-emacs-lisp-mode
-    lisp-mode                           ; Common Lisp - Lisp 2
-    inferior-lisp-mode                  ;  repl
-    slime-repl-mode                     ;  repl
-    sly-mrepl-mode                      ;  repl
-    lfe-mode                            ; LFE         - Lisp 2 for BEAM
+  '(emacs-lisp-mode       ; Emacs Lisp  - Lisp 2 for Emacs
+    ielm-mode             ;  repl := inferior-emacs-lisp-mode
+    lisp-mode             ; Common Lisp - Lisp 2
+    inferior-lisp-mode    ;  repl
+    slime-repl-mode       ;  repl
+    sly-mrepl-mode        ;  repl
+    lfe-mode              ; LFE         - Lisp 2 for BEAM
     ;; inferior-lfe-mode does not work well with lispy -
     ;; See: https://github.com/abo-abo/lispy/issues/592
     clojure-mode                        ; Clojure     - Lisp 1 for the JVM

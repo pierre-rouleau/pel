@@ -374,7 +374,8 @@ Done in this function to allow advising libraries that remap these keys."
 ;;* Instrument `compilation-mode'
 ;;  =============================
 (defun pel-help-compilation-mode (&optional open-github-page-p)
-  "Open compilation-mode PDF"
+  "Open The `compilation-mode' PDF.
+Open GitHub file if OPEN-GITHUB-PAGE-P IS non-nil."
   (interactive "P")
   (pel-help-open-pdf "compilation-mode" open-github-page-p))
 
@@ -3762,7 +3763,14 @@ d-mode not added to ac-modes!"
 ;; ------------------------------------------
 
 (when pel-use-lispy
-  (pel-ensure-package lispy from: melpa)
+  ;; abo-abo lispy has been unfortunately unmaintained for a while, enzuru
+  ;; has created and maintains a fork which can be installed.
+  ;; Use enzuru fork when requested (quelpa should also be available),
+  ;; otherwise use abo-abo original repo.
+  (if (and (eq pel-use-lispy 'use-enzuru-lispy)
+           (fboundp 'quelpa))
+      (quelpa '(lispy :repo "enzuru/lispy" :fetcher github))
+    (pel-ensure-package lispy from: melpa))
 
   (defun pel--activate-lispy ()
     "Activate lispy lazily."
@@ -3845,21 +3853,22 @@ d-mode not added to ac-modes!"
 ;;*** Use parinfer
 ;;    ------------
 (when pel-use-parinfer
-  ;; parinfer was removed from MELPA, if you have an old copy in your elpa-attic
-  ;; set pel-use-parinfer to use-pel-elpa-attic-copy otherwise PEL will extract it
-  ;; from the emacsattic.
-  (declare-function pel-install-from-elpa-attic "pel-package")
-  (or (and (eq pel-use-parinfer 'use-pel-elpa-attic-copy)
-           (pel-install-from-elpa-attic "parinfer"))
-      (pel--install-github-files "emacsattic/parinfer/master"
-                                 '("parinfer.el"
-                                   "parinferlib.el"
-                                   "parinfer-ext.el")))
-  (pel-autoload-file parinfer for:
-                     parinfer-mode
-                     parinfer-toggle-mode
-                     parinfer-auto-fix
-                     parinfer-diff))
+  (cond
+   ;; use-pel-elpa-attic-copy used to support a local copy.
+   ;; Now it means using the emacsattic version.
+   ((memq pel-use-parinfer '(t use-pel-elpa-attic-copy))
+    (pel--install-github-files "emacsattic/parinfer/master"
+                               '("parinfer.el"
+                                 "parinferlib.el"
+                                 "parinfer-ext.el"))
+    (pel-autoload-file parinfer for:
+                       parinfer-mode
+                       parinfer-toggle-mode
+                       parinfer-auto-fix
+                       parinfer-diff))
+   ;; recommended: the rust implementation
+   ((eq pel-use-parinfer 'use-parinfer-rust-mode)
+    (pel-ensure-package parinfer-rust-mode from: melpa))))
 
 ;;*** Use rainbow-delimiters
 ;;    ----------------------
@@ -8329,7 +8338,7 @@ the ones defined from the buffer now."
         (define-key goto-address-highlight-keymap (kbd "C-c C-f") 'pel-open-url-at-point)
         (define-key goto-address-highlight-keymap (kbd "C-c C-n") 'pel-goto-next-url)
         (define-key goto-address-highlight-keymap (kbd "C-c C-p") 'pel-goto-previous-url))
-    (error "goto-address-highlight-keymap not defined!")))
+    (error "The goto-address-highlight-keymap not defined!")))
 
 ;; activate the extra keys for goto-addr-mode
 (pel--mode-hook-maybe-call  (function pel--augment-goto-addr-map)
@@ -8719,7 +8728,7 @@ the ones defined from the buffer now."
   (define-key pel:highlight (kbd "M-r") 'rainbow-mode))
 
 (defun pel-hi-lock-find-patterns ()
-  "Execute hi-lock-find-patterns when `hi-lock-mode' is active."
+  "Execute `hi-lock-find-patterns' when `hi-lock-mode' is active."
   (interactive)
   (declare-function hi-lock-find-patterns "hi-lock")
   (if (fboundp 'hi-lock-find-patterns)
