@@ -8632,8 +8632,14 @@ the ones defined from the buffer now."
   (define-key pel:grep  "m"     'rg-menu)
   (global-set-key (kbd "C-c s") 'rg-menu)
 
-  ;; ripgrep.el
-  (when pel-use-projectile
+  ;; rg support was added to Projectile v2.6, before only ripgrep was
+  ;; supported.  rg is newer and better than ripgrep; install ripgrep only if
+  ;; needed: when an old version of projectile is used.  Since this code was
+  ;; written after the existence of Projectile 2.6, if Projectile is not yet
+  ;; installed, that means a newer version will be installed.
+  (when (and pel-use-projectile
+             (boundp 'projectile-version)
+             (version-list-< (version-to-list projectile-version) '(2 6)))
     (pel-ensure-package ripgrep from: melpa)
     (pel-autoload-file ripgrep for: ripgrep-regexp))
   ;; wgrep support
