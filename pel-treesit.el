@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-21 11:29:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-20 11:20:19 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,6 +25,24 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;;  PEL support for Tree-Sitter and the ability to dynamically toggle the
+;;  major mode from a classic major mode to a Tree-Sitter based major mode,
+;;  something Emacs is not normally doing.
+;;
+;;  The `pel-treesit-toggle-mode' toggles the classic and tree-sitter major
+;;  modes.  For this to work extra work is performed by PEL for the modes that
+;;  are supported.
+;;
+;;  * `pel-treesit-toggle-mode'
+;;    - `pel--mode-for'
+;;      -d: `pel-treesit-mode-assoc-alist'
+;;
+;;
+;;  The file also hold PEL F12 help commands:
+;;
+;;  * `pel-treesit-help'
+;;  * `pel-treesit-customize'
+;;  * `pel-treesit-emacs-customize'
 ;;
 
 ;;; --------------------------------------------------------------------------
@@ -64,52 +82,51 @@ instead."
     (go-mod-mode . go-dot-mod-mode))
   "Map expected mode name with non-conventional implemented mode name.")
 
-;; [:todo 2025-10-19, by Pierre Rouleau: reduce size of the following code.]
+
+;; --
+(defun pel--mode-for (conventional-mode)
+  "Return the real mode symbol for CONVENTIONAL-MODE.
+- If CONVENTIONAL-MODE is bound, return that,
+- otherwise if an alternative is identified inside
+  `pel-treesit-mode-assoc-alist', return that,
+- otherwise, nothing is bound and return nil."
+  (if (fboundp conventional-mode)
+      conventional-mode
+    (if-let (alternate-mode (alist-get conventional-mode
+                                       pel-treesit-mode-assoc-alist))
+        (when (fboundp alternate-mode)
+          alternate-mode)
+      nil)))
+
 ;; pel-autoload
 (defun pel-treesit-toggle-mode ()
   "Toggle the major mode between classic mode and tree-sitter based mode.
 Signals a user-error if the other mode is not available."
   (interactive)
-  (let ((current-mode-name (symbol-name major-mode)))
-    (if (string-match "-ts-mode" current-mode-name)
+  (let ((current-mode-str (symbol-name major-mode))
+        (current-mode-name (pel-file-type-for major-mode)))
+    (if (string-match "-ts-mode" current-mode-str)
         ;; currently using a tree-sitter mode.
-        (let* ((classic-mode-name (format "%s-mode"
-                                          (substring current-mode-name 0 -8)))
-               (classic-mode (intern classic-mode-name)))
-          (if (fboundp classic-mode)
+        (let* ((classic-mode-str (format "%s-mode" current-mode-name))
+               (classic-mode (pel--mode-for (intern classic-mode-str))))
+          (if classic-mode
               (progn
                 (call-interactively classic-mode)
-                (message "Switched to classic-mode: %s" classic-mode-name))
-            (let ((alternate-mode (alist-get classic-mode
-                                             pel-treesit-mode-assoc-alist)))
-              (if (and alternate-mode
-                       (fboundp alternate-mode))
-                  (progn
-                    (call-interactively alternate-mode)
-                    (message "Switched to Tree-Sitter based mode: %s"
-                             (symbol-name alternate-mode)))
-                (user-error "\
-Classic major mode `%s' is not loaded! Does it exist? Is it installed?"
-                            classic-mode-name)))))
+                (message "Switched to classic-mode: %s" classic-mode-str))
+            (user-error "Classic major mode `%s' is not loaded! \
+Does it exist? Is it installed?"
+                        classic-mode-str)))
+      ;;
       ;; currently using a classic mode
-      (let* ((ts-mode-name (format "%s-ts-mode"
-                                   (substring current-mode-name 0 -5)))
-             (ts-mode (intern ts-mode-name)))
-        (if (fboundp ts-mode)
+      (let* ((ts-mode-str (format "%s-ts-mode" current-mode-name))
+             (ts-mode (pel--mode-for (intern ts-mode-str))))
+        (if ts-mode
             (progn
               (call-interactively ts-mode)
-              (message "Switched to Tree-Sitter based mode: %s" ts-mode-name))
-          (let ((alternate-ts-mode (alist-get ts-mode
-                                              pel-treesit-mode-assoc-alist)))
-            (if (and alternate-ts-mode
-                     (fboundp alternate-ts-mode))
-                (progn
-                  (call-interactively alternate-ts-mode)
-                  (message "Switched to Tree-Sitter based mode: %s"
-                           (symbol-name alternate-ts-mode)))
-              (user-error "\
-Tree-Sitter based major mode `%s' is not loaded! Does it exist? Is it installed?"
-                          ts-mode-name))))))))
+              (message "Switched to Tree-Sitter based mode: %s" ts-mode-str))
+          (user-error "Tree-Sitter based major mode `%s' is not loaded! \
+Does it exist? Is it installed?"
+                      ts-mode-str))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-treesit)
