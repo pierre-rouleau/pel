@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-19 13:44:28 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-20 08:26:26 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -569,7 +569,7 @@
                                                                  centimacro))
     ([f11 ?k ?e]     "keyboard-macros"  pel-pkg-for-kbmacro     emacros)
     ([f11 ?k ?l]     "keyboard-macros"  pel-pkg-for-kbmacro     elmacro)
-    ([f11 ?l]        "display-lines"    nil                     (display-line-numbers
+    ([f11 ?l]        "display-lines"    pel-pkg-for-line        (display-line-numbers
                                                                  visual-line))
     ([f11 ?m]        "cursor"           pel-pkg-for-cursor      (cursor
                                                                  display

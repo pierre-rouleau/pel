@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for the atl-long-lines package.
+  Add *atl-long-lines-mode* command, bound to ~<f11> l a~, provided by the
+  atl-long-lines package, activated when the *pel-use-atl-long-lines* user
+  option is on (*t*).
 - Add *pel-hier-modes* command, bound to ~<f11> ? e h~.  This prints the hierarchy of major modes
   currently loaded inside a hierarchy-tablulated buffer.  The PEL code is a slight modification of
   the hierarchy-examples-major-modes.el written by Damien Cassou where I

@@ -81,6 +81,7 @@
 ;;     - pel-pkg-for-key-chord
 ;;     - pel-pkg-for-keys
 ;;     - pel-keypad-keys
+;;     - pel-pkg-for-line
 ;;     - pel-pkg-for-log-file
 ;;     - pel-pkg-for-object-file
 ;;     - pel-pkg-for-marking
@@ -3901,6 +3902,19 @@ A major mode."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-crontab :package-is :in-utils)
+
+;; ---------------------------------------------------------------------------
+(defgroup pel-pkg-for-line nil
+  "Line display control options."
+  :group 'pel-package-use)
+
+(defcustom pel-use-atl-long-lines nil
+  "Whether PEL uses the atl-long-lines package."
+  :group 'pel-pkg-for-line
+  :link '(url-link :tag "atl-long-lines @ Github"
+                   "https://github.com/jcs-legacy/atl-long-lines")
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-pkg-for-log-file nil

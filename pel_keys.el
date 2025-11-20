@@ -9097,6 +9097,9 @@ the ones defined from the buffer now."
                                           'display-line-numbers-mode))
 (define-key pel:linectrl "t"            #'toggle-truncate-lines)
 (define-key pel:linectrl "v"            #'visual-line-mode)
+(when pel-use-atl-long-lines
+  (pel-ensure-package atl-long-lines from: melpa)
+  (define-key pel:linectrl "a"           'atl-long-lines-mode))
 
 ;; ---------------------------------------------------------------------------
 ;;* Multiple Cursors
