@@ -9781,7 +9781,8 @@ the ones defined from the buffer now."
   (define-key pel:tree-sitter (kbd "<f3>")  'pel-treesit-emacs-customize)
   (define-key pel:tree-sitter (kbd "C-t")   'pel-treesit-toggle-mode)
   (define-key pel:tree-sitter "e"  'treesit-explore-mode)
-  (define-key pel:tree-sitter "i"  'treesit-inspect-mode))
+  (define-key pel:tree-sitter "i"  'treesit-inspect-mode)
+  (define-key pel:tree-sitter "?"  'pel-treesit-check-setup))
 
 ;; ---------------------------------------------------------------------------
 ;;* VCS Operations

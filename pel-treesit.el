@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-20 14:30:53 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-20 14:57:57 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -60,7 +60,7 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)
+(require 'pel--base)                     ; use: `pel-os-lib-file-extension'
 (require 'pel--keys-macros)              ; use: `pel-help-open-pdf'
 ;;                                       ;      `pel--customize-group'
 
@@ -237,7 +237,8 @@ Return 1 if error, 0 if OK."
       (setq err-count (+ err-count ))
       (if (eq (pel--check-dpath dpath) 0)
           ;; valid dpath: check it's content.
-          (dolist (fname (directory-files dpath :full-names "\\.dylib\\'" ))
+          (dolist (fname (directory-files dpath :full-names
+                                          (format "\\.%s\\'" pel-os-lib-file-extension)))
             (setq err-count (+ err-count (pel--check-fname fname))))
           ;; invalid dpath
           (setq err-count (1+ err-count ))))

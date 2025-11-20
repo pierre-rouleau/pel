@@ -374,6 +374,12 @@ The non-nil value of the predicate is the `module-file-suffix'.")
                                         (native-comp-available-p))
   "Predicate: t if emacs supports native compilation.")
 
+(defconst pel-os-lib-file-extension (cond
+                                     (pel-system-is-macos-p "dylib")
+                                     (pel-system-is-windows-p "dll")
+                                     (t "so"))
+  "File extension (without leading period) of OS library files.")
+
 ;; Variables
 ;; ---------
 (defvar pel-uses-tree-sitter nil
@@ -2277,11 +2283,7 @@ of emitting a warning."
 
 MODE must be a symbol that does NOT end with -mode.
 Return nil of none found, or when tree-sitter is not supported."
-  (let* ((ext (cond
-               (pel-system-is-macos-p "dylib")
-               (pel-system-is-windows-p "dll")
-               (t "so")))
-         (fname (format "libtree-sitter-%s.%s" mode ext))
+  (let* ((fname (format "libtree-sitter-%s.%s" mode pel-os-lib-file-extension))
          (found-path nil)
          (ts-dirpath (when (boundp 'treesit-extra-load-path)
                        treesit-extra-load-path)))
