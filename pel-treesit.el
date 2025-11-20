@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-20 11:20:19 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-20 14:30:53 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,6 +25,12 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;;  The file hold PEL F12 help commands:
+;;
+;;  * `pel-treesit-help'
+;;  * `pel-treesit-customize'
+;;  * `pel-treesit-emacs-customize'
+
 ;;  PEL support for Tree-Sitter and the ability to dynamically toggle the
 ;;  major mode from a classic major mode to a Tree-Sitter based major mode,
 ;;  something Emacs is not normally doing.
@@ -38,12 +44,17 @@
 ;;      -d: `pel-treesit-mode-assoc-alist'
 ;;
 ;;
-;;  The file also hold PEL F12 help commands:
+
+;;  The last group of functions implement a quick check on the validity of the
+;;  Tree-Sitter Language Grammar directory setup:
 ;;
-;;  * `pel-treesit-help'
-;;  * `pel-treesit-customize'
-;;  * `pel-treesit-emacs-customize'
-;;
+;;  * `pel-treesit-check-setup'
+;;    - `pel--check-dpath'
+;;      - `pel-check-dirpath'
+;;      - `pel--check-symlink'
+;;    - `pel--check-fname'
+;;      - `pel--treesit-format'
+;;        -d `pel--treesit-path-lenght'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -56,6 +67,9 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+;;* PEL F12 Commands
+;;  ----------------
 
 ;; pel-autoload
 (defun pel-treesit-help (&optional open-github-page-p)
@@ -83,7 +97,10 @@ instead."
   "Map expected mode name with non-conventional implemented mode name.")
 
 
-;; --
+;; ---------------------------------------------------------------------------
+;;* Toggle between Classic and Tree-Sitter Mode
+;;  -------------------------------------------
+
 (defun pel--mode-for (conventional-mode)
   "Return the real mode symbol for CONVENTIONAL-MODE.
 - If CONVENTIONAL-MODE is bound, return that,
@@ -127,6 +144,107 @@ Does it exist? Is it installed?"
           (user-error "Tree-Sitter based major mode `%s' is not loaded! \
 Does it exist? Is it installed?"
                       ts-mode-str))))))
+
+;; ---------------------------------------------------------------------------
+;;* Check Tree-Sitter Setup
+;;  -----------------------
+
+(defvar pel--treesit-path-lenght 60
+  "Minimum width of the file paths printed.")
+
+(defun pel--treesit-format (format-str path)
+  "Return adjusted FORMAT-STR to hold PATH.
+
+Replace \"PATH\" with a `format' width specifier that is wide enough for the
+largest of all PATH seen in the Emacs session."
+  (when (> (length path) pel--treesit-path-lenght)
+    (setq pel--treesit-path-lenght (length path)))
+  (replace-regexp-in-string "PATH" (format "%%-%ds" pel--treesit-path-lenght)
+                            format-str :fixedcase :literal))
+
+(defun pel--check-symlink (path &optional parent)
+  "Check validity of  symbolic link PATH.
+The optional PARENT identifies the parent directory.
+Issue a warning if there are any problem.
+Return 1 if error, 0 if OK."
+  (if (file-directory-p path)
+      0
+    (display-warning 'tree-sitter-setup
+                     (format (pel--treesit-format "%sPATH ->-- x --> %s" path)
+                             (if parent
+                                 (format "Inside %s: " parent)
+                               "")
+                             path (file-symlink-p path)))
+    1))
+
+(defun pel--check-fname (fpath &optional parent)
+  "Check validity of FPATH file path.
+The optional PARENT identifies the parent directory.
+Issue a warning if there are any problem.
+Return 1 if error, 0 if OK."
+  (if (file-exists-p fpath)
+      0
+    (if (file-symlink-p fpath)
+        (display-warning 'tree-sitter-setup
+                         (format (pel--treesit-format "%sPATH ->-- x --> %s" fpath)
+                                 (if parent
+                                     (format "Inside %s: " parent)
+                                   "")
+                                 fpath
+                                 (file-symlink-p fpath)))
+      (display-warning 'tree-sitter-setup
+                       (format "%s%s: does not exists!"
+                               (if parent
+                                   (format "Inside %s: " parent)
+                                 "")
+                               fpath)))
+    1))
+
+(defun pel-check-dirpath (dpath &optional parent)
+  "Check validity of directory DPATH.
+The optional PARENT identifies the parent directory.
+Issue a warning if there are any problem.
+Return 1 if error, 0 if OK."
+  (if (file-directory-p dpath)
+      0
+    (display-warning 'tree-sitter-setup
+                     (format "%s%s: does not exists!"
+                             (if parent
+                                 (format "Inside %s: " parent)
+                               "")
+                             dpath))
+    1))
+
+(defun pel--check-dpath (dpath &optional parent)
+  "Check the validity of the directory path DPATH.
+The optional PARENT identifies the parent directory.
+Issue a warning if there are any problems.
+Return 1 if error, 0 if OK."
+  (if (file-directory-p dpath)
+      (if (file-symlink-p dpath)
+          (pel--check-symlink dpath parent)
+        (pel-check-dirpath dpath parent))
+    (if (file-symlink-p dpath)
+        (pel--check-symlink dpath parent)
+      (pel-check-dirpath dpath parent))))
+
+(defun pel-treesit-check-setup ()
+  "Check the Emacs Tree-Sitter environment and report problems."
+  (interactive)
+  (let ((err-count 0))
+    (dolist (dpath (append treesit-extra-load-path
+                           (list (concat user-emacs-directory "tree-sitter"))))
+      (setq err-count (+ err-count ))
+      (if (eq (pel--check-dpath dpath) 0)
+          ;; valid dpath: check it's content.
+          (dolist (fname (directory-files dpath :full-names "\\.dylib\\'" ))
+            (setq err-count (+ err-count (pel--check-fname fname))))
+          ;; invalid dpath
+          (setq err-count (1+ err-count ))))
+    (if (eq err-count 0)
+        (message "Tree-Sitter directory settings appears OK")
+      (message "Detected %d errors in Tree-Sitter directory settings!"
+               err-count))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-treesit)

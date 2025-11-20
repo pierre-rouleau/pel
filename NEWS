@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-treesit-check-setup* command, bound to ~<f11> C-t ?~.  This command
+  checks the validity of Emacs Tree-Sitter grammar language directory settings
+  and print any detected issue as a warning.
 - Add support for the atl-long-lines package.
   Add *atl-long-lines-mode* command, bound to ~<f11> l a~, provided by the
   atl-long-lines package, activated when the *pel-use-atl-long-lines* user
