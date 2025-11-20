@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2025-11-07 14:18:59 EST, updated by Pierre Rouleau.
+:Modified: 2025-11-20 15:28:36 EST, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5440,7 +5440,7 @@ PEL Support for Emacs Lisp
 
                       - Configuration:
 
-                        - ``pel-elisp-activates-minor-modes``
+                        - ``pel-emacs-lisp-activates-minor-modes``
 
 :PEL Key Prefix: - Globally: **pel:for-elisp** : ``<f11> SPC l``
                  - From a buffer in elisp-mode: ``<f12>`` and ``<M-f12>``

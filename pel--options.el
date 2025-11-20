@@ -8615,7 +8615,7 @@ The string is placed between the two -*- tags."
   :group 'pel-pkg-for-lisp
   :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp")))
 
-(defcustom pel-elisp-activates-minor-modes nil
+(defcustom pel-emacs-lisp-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Emacs Lisp buffers.
   Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."

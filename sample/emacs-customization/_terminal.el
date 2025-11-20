@@ -103,7 +103,7 @@
  '(pel-clisp-skel-insert-file-timestamp t)
  '(pel-clisp-skel-with-license t)
  '(pel-cursor-type-when-mark (quote bar))
- '(pel-elisp-activates-minor-modes (quote (show-paren-mode)))
+ '(pel-emacs-lisp-activates-minor-modes (quote (show-paren-mode)))
  '(pel-elisp-skel-insert-file-timestamp t)
  '(pel-elisp-skel-with-license t)
  '(pel-elisp-user-specified-targets (quote (defcustom defgroup)))

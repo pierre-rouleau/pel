@@ -3975,7 +3975,7 @@ d-mode not added to ac-modes!"
   (define-key pel:for-elisp "S" 'suggest))
 
 ;; activate the <f12> key binding for elisp-mode and other features.
-(pel-check-minor-modes-in pel-elisp-activates-minor-modes)
+(pel-check-minor-modes-in pel-emacs-lisp-activates-minor-modes)
 (declare-function pel--install-elisp-skel "pel-skels-elisp")
 (pel--mode-hook-maybe-call
  (lambda ()
@@ -3990,7 +3990,7 @@ d-mode not added to ac-modes!"
    ;; activate skeletons
    (pel--install-elisp-skel pel:elisp-skel)
    ;; activate PEL customized minor modes
-   (pel-turn-on-local-minor-modes-in 'pel-elisp-activates-minor-modes)
+   (pel-turn-on-local-minor-modes-in 'pel-emacs-lisp-activates-minor-modes)
    ;; Activate open-at-point for elisp files
    (setq-local pel-filename-at-point-finders '(pel-elisp-find-file)))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)

@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- *⚠️  BREAKING CHANGE:* renamed *pel-elisp-activates-minor-modes*  to
+  *pel-emacs-lisp-activates-minor-modes*.
+  If you have set the old one inside your Emacs customization files,
+  rename then variable (and re-order them).
 - Add *pel-treesit-check-setup* command, bound to ~<f11> C-t ?~.  This command
   checks the validity of Emacs Tree-Sitter grammar language directory settings
   and print any detected issue as a warning.
