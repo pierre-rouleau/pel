@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-20 08:26:26 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-20 16:55:36 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -466,7 +466,9 @@
     (,(kbd "<f11> SPC C-s C-h") "pl-scsh-scheme"   pel-pkg-for-scsh    ,pel--scheme-groups)
     ;;
     ;; ([f11 ?C]
-    ([f11 ?D]        "drawing"          pel-pkg-for-drawing-markup)
+    ([f11 ?D]        "drawing"          pel-pkg-for-drawing-markup (artist
+                                                                    picture
+                                                                    syntree))
     ([f11 ?D ?u]     "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
     ([f11 ?F]        "frames"           pel-pkg-for-frame       frames)
     ([f11 ?T]        "time-tracking"    pel-pkg-for-time-tracking (display-time
@@ -573,8 +575,7 @@
                                                                  visual-line))
     ([f11 ?m]        "cursor"           pel-pkg-for-cursor      (cursor
                                                                  display
-                                                                 multiple-cursors))
-    )
+                                                                 multiple-cursors)))
   "Map from key prefix array to topic string.
 The topic string correspond to the base name of the PDF file
 stored inside the doc/pdf directory.")

@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for the syntree package via *pel-use-syntree*.
+  When active use *syntree-new* (bound to ~<f11> D s~) to create new
+  syntree diagrams.
 - *⚠️  BREAKING CHANGE:* renamed *pel-elisp-activates-minor-modes*  to
   *pel-emacs-lisp-activates-minor-modes*.
   If you have set the old one inside your Emacs customization files,

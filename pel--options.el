@@ -4220,6 +4220,14 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-markup
   :link `(url-link :tag "Drawing PDF" ,(pel-pdf-file-url "drawing")))
 
+(defcustom pel-use-syntree nil
+  "Whether PEL activates the syntree package."
+  :group 'pel-pkg-for-drawing-markup
+  :link '(url-link "syntree @ GitHub"
+                   "https://github.com/enricoflor/syntree")
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; GraphViz-Dot Support
 ;; --------------------

@@ -8170,6 +8170,9 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:draw (kbd "<f11> D"))
 (define-key pel:draw "a"  'artist-mode)       ; toggle artist-mode
 (define-key pel:draw "p"  'picture-mode)      ; activate picture-mode
+(when pel-use-syntree
+  (pel-ensure-package syntree from: melpa)
+  (define-key pel:draw "s"  'syntree-new))
 
 ;; ---------------------------------------------------------------------------
 ;;* File Operations
