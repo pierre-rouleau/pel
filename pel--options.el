@@ -141,7 +141,7 @@
 ;;           - pel-pkg-for-clisp
 ;;             - pel-clisp-code-style
 ;;             - pel-sexp-form-navigation
-;;           - pel-pkg-for-elisp
+;;           - pel-pkg-for-emacs-lisp
 ;;             - pel-elisp-code-style
 ;;             - pel-sexp-form-navigation
 ;;           - pel-pkg-for-arc
@@ -988,7 +988,7 @@ This is only used in Emacs 27 and later."
   "List of external packages that can be used by PEL."
   :group 'pel)
 
-(defconst pel-elpa-obsolete-packages '(parinfer)
+(defconst pel-elpa-obsolete-packages nil
   "Lists PEL supported ELPA packages that are no longer available.")
 
 (defcustom pel-elpa-packages-to-keep '(dash
@@ -5141,6 +5141,8 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 (defcustom pel-use-eldoc-box nil
   "Control whether PEL supports the eldoc-box package.
 
+*Available in GUI mode ONLY!*
+
 The eldoc-box various modes display Eldoc information inside a
 child frame over the current window, covering text in the current
 buffer.  It is possible to select between 2 modes:
@@ -8633,7 +8635,7 @@ The string is placed between the two -*- tags."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support
 ;; ------------------
-(defgroup pel-pkg-for-elisp nil
+(defgroup pel-pkg-for-emacs-lisp nil
   "PEL customization for Emacs Lisp."
   :group 'pel-pkg-for-lisp
   :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp")))
@@ -8642,12 +8644,12 @@ The string is placed between the two -*- tags."
   "List of *local* minor-modes automatically activated for Emacs Lisp buffers.
   Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
-  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-for-emacs-lisp
   :type '(repeat function))
 
 (defcustom pel-use-macrostep nil
   "Control whether PEL uses the macrostep package."
-  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-for-emacs-lisp
   :type 'boolean
   :safe #'booleanp
   :link '(url-link :tag "macrostep @ GitHub"
@@ -8664,14 +8666,14 @@ The string is placed between the two -*- tags."
   in Graphics mode."
   :link '(url-link :tag "esup @ GitHub"
                    "https://github.com/jschaf/esup")
-  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-for-emacs-lisp
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-esup :restricted-to 'pel-emacs-is-graphic-p)
 
 (defcustom pel-use-highlight-defined nil
   "Control whether PEL uses the {highlight-defined} package."
-  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-for-emacs-lisp
   :type 'boolean
   :safe #'booleanp)
 
@@ -8684,7 +8686,7 @@ The string is placed between the two -*- tags."
   as an overlay instead of showing it inside the minibuffer."
   :link '(url-link :tag "eros @ GitHub"
                    "https://github.com/xiongtx/eros")
-  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-for-emacs-lisp
   :type 'boolean
   :safe #'booleanp)
 
@@ -8697,7 +8699,7 @@ The string is placed between the two -*- tags."
   A great tool for learning new Emacs Lisp functions."
   :link '(url-link :tag "suggest @ GitHub"
                    "https://github.com/Wilfred/suggest.el")
-  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-for-emacs-lisp
   :type 'boolean
   :safe #'booleanp)
 
@@ -8708,18 +8710,25 @@ This user-option is also set to t  when the `pel-use-helpful' user-option
 is set: it is used by the helpful package."
   :link '(url-link :tag "elisp-refs @ GitHub"
                    "https://github.com/Wilfred/elisp-refs")
-  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-for-emacs-lisp
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-elisp-refs :also-required-when 'pel-use-helpful)
-
 
 (defcustom pel-use-elx nil
   "Control whether PEL activates and uses the elx package."
   :link '(url-link :tag "elx @ github"
                    "https://github.com/emacscollective/elx")
-  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-for-emacs-lisp
   :group 'pel-pkg-package-mng
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-elisp-depend nil
+  "Control whether PEL activates and uses the elisp-depend package."
+  :link '(url-link :tag "elisp-depend @ github"
+                   "https://github.com/emacsorphanage/elisp-depend")
+  :group 'pel-pkg-for-emacs-lisp
   :type 'boolean
   :safe #'booleanp)
 
@@ -8727,7 +8736,7 @@ is set: it is used by the helpful package."
   "Control whether PEL activates and uses the package-lint package."
   :link '(url-link :tag "package-lint @ github"
                    "https://github.com/purcell/package-lint")
-  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-for-emacs-lisp
   :group 'pel-pkg-package-mng
   :type 'boolean
   :safe #'booleanp)
@@ -8737,7 +8746,7 @@ is set: it is used by the helpful package."
   "Control whether PEL activates and uses the flycheck-package package."
   :link '(url-link :tag "flycheck-package @ github"
                    "https://github.com/purcell/flycheck-package")
-  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-for-emacs-lisp
   :group 'pel-pkg-package-mng
   :type 'boolean
   :safe #'booleanp)
@@ -9360,7 +9369,7 @@ Note that activating Scsh also activates Scheme support."
   specify the group of targets.  The last possible choice is a user-specified
   list identified in the other user-option variable:
   `pel-elisp-user-specified-targets'."
-  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-for-emacs-lisp
   :group 'pel-pkg-for-clisp)
 
 (defcustom pel-elisp-target-forms 'all-top-level-forms
@@ -9556,7 +9565,7 @@ inside comments and docstrings."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-elisp-code-style nil
   "Emacs Lisp Source Code Style options."
-  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-for-emacs-lisp
   :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp")))
 
 ;; style - 0
@@ -12908,7 +12917,7 @@ expressions of buffer, file, or directory."
   :link '(url-link :tag "relint @ GitHub"
                    "https://github.com/mattiase/relint")
   :group 'pel-pkg-for-regexp
-  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-for-emacs-lisp
   :type 'boolean
   :safe #'booleanp)
 

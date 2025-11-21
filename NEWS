@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for elisp-depend package via *pel-use-elisp-depend*.
+  When active its 3 commands are available under the ~<f11> a d~ key prefix.
 - Add support for the syntree package via *pel-use-syntree*.
   When active use *syntree-new* (bound to ~<f11> D s~) to create new
   syntree diagrams.

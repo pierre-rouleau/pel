@@ -4027,6 +4027,13 @@ d-mode not added to ac-modes!"
   (define-key pel:elisp-refs "s" 'elisp-refs-special)
   (define-key pel:elisp-refs "o" 'elisp-refs-symbol))
 
+(when pel-use-elisp-depend
+  (pel-ensure-package elisp-depend from: melpa)
+  (define-pel-global-prefix pel:elisp-depend (kbd "<f11> SPC l a d"))
+  (define-key pel:elisp-depend "d" 'elisp-depend-print-dependencies)
+  (define-key pel:elisp-depend "r" 'elisp-depend-insert-require)
+  (define-key pel:elisp-depend "c" 'elisp-depend-insert-comment))
+
 ;; ---------------------------------------------------------------------------
 ;;** Common Lisp Programming Language Support
 ;;   ----------------------------------------

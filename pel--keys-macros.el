@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-20 16:55:36 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-21 14:40:31 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -380,12 +380,16 @@
                                                                  julia-mode
                                                                  julia-snail
                                                                  electricity))
-    ([f11 32 ?l]     "pl-emacs-lisp"    pel-pkg-for-elisp       (checkdoc
+    ([f11 32 ?l]     "pl-emacs-lisp"    pel-pkg-for-emacs-lisp  (checkdoc
                                                                  editing-basics
                                                                  elint
+                                                                 elisp-depend
                                                                  eros
+                                                                 highlight-defined
                                                                  lisp
                                                                  lispy
+                                                                 parinfer-rust-mode
+                                                                 rainbow-delimiters
                                                                  suggest))
     ([f11 32 ?l f12] "pl-emacs-lisp"    pel-elisp-code-style)
     ([f11 32 ?l ??]  "pl-emacs-lisp"    pel-pkg-for-all-languages (eldoc
