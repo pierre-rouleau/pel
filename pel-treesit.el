@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-21 16:56:47 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-21 17:06:55 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -230,21 +230,23 @@ Return 1 if error, 0 if OK."
 (defun pel-treesit-check-setup ()
   "Check the Emacs Tree-Sitter environment and report problems."
   (interactive)
-  (let ((err-count 0))
-    (dolist (dpath (append treesit-extra-load-path
-                           (list (concat user-emacs-directory "tree-sitter"))))
-      (setq err-count (+ err-count ))
-      (if (eq (pel--check-dpath dpath) 0)
-          ;; valid dpath: check it's content.
-          (dolist (fname (directory-files dpath :full-names
-                                          (format "\\.%s\\'" pel-os-lib-file-extension)))
-            (setq err-count (+ err-count (pel--check-fname fname))))
-          ;; invalid dpath
-          (setq err-count (1+ err-count ))))
-    (if (eq err-count 0)
-        (message "Tree-Sitter directory settings appears OK")
-      (message "Detected %d errors in Tree-Sitter directory settings!"
-               err-count))))
+  (if (boundp 'treesit-extra-load-path)
+      (let ((err-count 0))
+        (dolist (dpath (append treesit-extra-load-path
+                               (list (concat user-emacs-directory "tree-sitter"))))
+          (setq err-count (+ err-count ))
+          (if (eq (pel--check-dpath dpath) 0)
+              ;; valid dpath: check it's content.
+              (dolist (fname (directory-files dpath :full-names
+                                              (format "\\.%s\\'" pel-os-lib-file-extension)))
+                (setq err-count (+ err-count (pel--check-fname fname))))
+            ;; invalid dpath
+            (setq err-count (1+ err-count ))))
+        (if (eq err-count 0)
+            (message "Tree-Sitter directory settings appears OK")
+          (message "Detected %d errors in Tree-Sitter directory settings!"
+                   err-count)))
+    (user-error "This Emacs does not support Tree-Sitter")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-treesit)
