@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-11-17 15:04:47 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-11-21 15:35:15 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -537,6 +537,7 @@ all: it
 it: pel pel_keys.elc
 
 local-pkg: pkg mypelpa
+
 # ------------------------------------------------------------------------------
 # Build all normal PEL files, except pel_keys for the very first build.
 #
@@ -842,7 +843,7 @@ pel_keys.elc:           pel__hydra.el pel--base.elc pel--macros.elc pel--keys-ma
 # Single .el file byte-compile to .elc rule
 .SUFFIXES: .el .elc
 .el.elc:
-	$(EMACS) -Q  --batch -L . -f batch-byte-compile $<
+	$(EMACS) -Q --batch -L . --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile $<
 
 
 # Target to byte-compile all Emacs Lisp files inside one Emacs Session.
