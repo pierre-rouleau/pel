@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-20 14:57:57 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-21 16:56:47 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -109,11 +109,10 @@ instead."
 - otherwise, nothing is bound and return nil."
   (if (fboundp conventional-mode)
       conventional-mode
-    (if-let (alternate-mode (alist-get conventional-mode
-                                       pel-treesit-mode-assoc-alist))
-        (when (fboundp alternate-mode)
-          alternate-mode)
-      nil)))
+    (let ((alternate-mode (alist-get conventional-mode
+                                     pel-treesit-mode-assoc-alist)))
+      (when (fboundp alternate-mode)
+        alternate-mode))))
 
 ;; pel-autoload
 (defun pel-treesit-toggle-mode ()
