@@ -594,8 +594,8 @@ Your version of Emacs does not support dynamic module.")))
       (user-error "Failed loading editorconfig"))))
 
 ;; ---------------------------------------------------------------------------
-;;* Visual Effect -- Font Control
-;;  =============================
+;;* Visual Effect -- Font Control, Graphics Applications
+;;  ====================================================
 
 (when pel-emacs-is-graphic-p
   ;; Activate the all-the-icons package to get nice icons in graphics mode if
@@ -649,7 +649,14 @@ Your version of Emacs does not support dynamic module.")))
                        pel-font-reset-size-all-buffers)
     (global-set-key (kbd "<s-kp-add>")      'pel-font-increase-size-all-buffers)
     (global-set-key (kbd "<s-kp-subtract>") 'pel-font-decrease-size-all-buffers)
-    (global-set-key (kbd "<s-kp-0>")        'pel-font-reset-size-all-buffers)))
+    (global-set-key (kbd "<s-kp-0>")        'pel-font-reset-size-all-buffers))
+
+  ;; Graphics packages.
+  (when pel-use-el-easydraw
+    (unless (package-installed-p 'el-easydraw)
+      (when (fboundp 'quelpa)
+        (quelpa '(el-easydraw :fetcher git
+                              :url "https://github.com/misohena/el-easydraw.git"))))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Visual Effect -- delight - control mode lighters

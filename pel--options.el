@@ -64,6 +64,7 @@
 ;;     - pel-pkg-for-frame
 ;;     - pel-pkg-for-graphics-emacs
 ;;       - pel-pkg-for-graphics-cursor
+;;       - pel-pkg-for-graphics-icons
 ;;     - pel-pkg-for-grep
 ;;     - pel-pkg-for-help
 ;;     - pel-pkg-for-hide-show
@@ -1068,6 +1069,7 @@ directory for whatever reason."
   :safe #'booleanp)
 (pel-put 'pel-use-quelpa :also-required-when '(and pel-use-tree-sitter
                                                    pel-use-combobulate
+                                                   pel-use-el-easydraw
                                                    (eq pel-use-lispy
                                                        'use-enzuru-lispy)))
 
@@ -2432,39 +2434,15 @@ emacs-tip-35-framemove.html")
   "List of external packages that PEL can use for Emacs in graphics mode."
   :group 'pel-package-use)
 
-(defcustom pel-use-all-the-icons nil
-  "Control whether PEL uses the all-the-icons package.
-This is only used when Emacs runs in graphics mode."
-  :group 'pel-pkg-for-graphics-emacs
-  :type 'boolean
-  :safe #'booleanp
-  :link '(url-link :tag "all-the-icons @ GitHub"
-                  "https://github.com/domtronn/all-the-icons.el"))
-(pel-put 'pel-use-all-the-icons :restricted-to 'pel-emacs-is-graphic-p)
 
-(defcustom pel-use-all-the-icons-ibuffer nil
-  "Control whether PEL uses the all-the-icons package in ibuffer.
-This is only used when Emacs runs in graphics mode."
+(defcustom pel-use-el-easydraw nil
+  "Whether PEL supports the el-easydraw package."
   :group 'pel-pkg-for-graphics-emacs
+  :link '(url-link :tag "el-easydraw @ GitHub"
+                   "https://github.com/misohena/el-easydraw")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-all-the-icons-ibuffer :restricted-to 'pel-emacs-is-graphic-p)
-
-(defcustom pel-use-all-the-icons-dired nil
-  "Control whether PEL uses the all-the-icons package in dired.
-This is only used when Emacs runs in graphics mode."
-  :group 'pel-pkg-for-graphics-emacs
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-all-the-icons-dired :restricted-to 'pel-emacs-is-graphic-p)
-
-(defcustom pel-use-all-the-icons-ivy nil
-  "Control whether PEL uses the all-the-icons package in ivy.
-This is only used when Emacs runs in graphics mode."
-  :group 'pel-pkg-for-graphics-emacs
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-all-the-icons-ivy :restricted-to 'pel-emacs-is-graphic-p)
+(pel-put 'pel-use-el-easydraw :requires 'pel-use-quelpa)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Graphics Cursor Control
@@ -2499,6 +2477,45 @@ These only take effect when Emacs is running in graphics mode."
           (const :tag "bar" bar)
           (const :tag "box" box)
           (const :tag "hollow" hollow)))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-pkg-for-graphics-icons nil
+  "List of external packages that PEL can use for Emacs in graphics mode."
+  :group 'pel-pkg-for-graphics-emacs)
+
+(defcustom pel-use-all-the-icons nil
+  "Control whether PEL uses the all-the-icons package.
+This is only used when Emacs runs in graphics mode."
+  :group 'pel-pkg-for-graphics-icons
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "all-the-icons @ GitHub"
+                  "https://github.com/domtronn/all-the-icons.el"))
+(pel-put 'pel-use-all-the-icons :restricted-to 'pel-emacs-is-graphic-p)
+
+(defcustom pel-use-all-the-icons-ibuffer nil
+  "Control whether PEL uses the all-the-icons package in ibuffer.
+This is only used when Emacs runs in graphics mode."
+  :group 'pel-pkg-for-graphics-icons
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-all-the-icons-ibuffer :restricted-to 'pel-emacs-is-graphic-p)
+
+(defcustom pel-use-all-the-icons-dired nil
+  "Control whether PEL uses the all-the-icons package in dired.
+This is only used when Emacs runs in graphics mode."
+  :group 'pel-pkg-for-graphics-icons
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-all-the-icons-dired :restricted-to 'pel-emacs-is-graphic-p)
+
+(defcustom pel-use-all-the-icons-ivy nil
+  "Control whether PEL uses the all-the-icons package in ivy.
+This is only used when Emacs runs in graphics mode."
+  :group 'pel-pkg-for-graphics-icons
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-all-the-icons-ivy :restricted-to 'pel-emacs-is-graphic-p)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-grep
@@ -8292,8 +8309,6 @@ amount of time to search for a project (even with fd)."
           (const :tag "Use abo-abo lispy - currently not maintained." t)
           (const :tag "Use temporary enzuru maintained fork"
                  use-enzuru-lispy)))
-(when (eq pel-use-lispy 'use-enzuru-lispy)
-  (setq pel-use-quelpa t))
 
 (defconst pel-allowed-modes-for-lispy
   '(emacs-lisp-mode       ; Emacs Lisp  - Lisp 2 for Emacs
@@ -14452,9 +14467,10 @@ Set this to:
 ;;       indirectly.
 
 ;; quelpa is used to install some packages. Identify them first.
-(when pel-use-tree-sitter
-  (when pel-use-combobulate
-    (setq pel-use-quelpa t)))
+(when (or (and pel-use-tree-sitter pel-use-combobulate)
+          (eq pel-use-lispy 'use-enzuru-lispy)
+          pel-use-el-easydraw)
+  (setq pel-use-quelpa t))
 
 (cl-case pel-erlang-xref-engine
   (ivy-erlang-complete (setq pel-use-ivy-erlang-complete t))
