@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, September 14 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-24 18:05:06, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-22 10:29:39 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2025  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ NEW-VALUE is either 1, to activate or -1, to de-activate"
                                       hy-mode)))
           (let ((mode-name (substring (symbol-name major-mode) 0 -5)))
             (require (intern (format "le-%s" mode-name)) nil :no-error))))
-    (error "Function lispy-mode is void!")))
+    (error "lispy-mode is not loaded!")))
 
 (defun pel-lispy-mode ()
   "Activate or toggle lispy mode.
