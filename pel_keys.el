@@ -656,7 +656,8 @@ Your version of Emacs does not support dynamic module.")))
     (unless (package-installed-p 'el-easydraw)
       (when (fboundp 'quelpa)
         (quelpa '(el-easydraw :fetcher git
-                              :url "https://github.com/misohena/el-easydraw.git"))))))
+                              :url
+                              "https://github.com/misohena/el-easydraw.git"))))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Visual Effect -- delight - control mode lighters
@@ -3775,6 +3776,7 @@ d-mode not added to ac-modes!"
   ;; Use enzuru fork when requested (quelpa should also be available),
   ;; otherwise use abo-abo original repo.
   (if (and (eq pel-use-lispy 'use-enzuru-lispy)
+           (not (package-installed-p 'lispy))
            (fboundp 'quelpa))
       (quelpa '(lispy :repo "enzuru/lispy" :fetcher github))
     (pel-ensure-package lispy from: melpa))
@@ -3845,8 +3847,18 @@ d-mode not added to ac-modes!"
   (define-key prefix   ")"         #'check-parens)
   ;;
   (when pel-use-parinfer
-    (define-key prefix (kbd "M-i")  'parinfer-mode)
-    (define-key prefix (kbd "M-I")  'parinfer-toggle-mode))
+    (cond
+     ((memq pel-use-parinfer '(t use-pel-elpa-attic-copy))
+      (define-key prefix (kbd "M-i")  'parinfer-mode)
+      (define-key prefix (kbd "M-I")  'parinfer-toggle-mode))
+
+     ((eq pel-use-parinfer 'use-parinfer-rust-mode)
+      (define-key prefix (kbd "M-i") 'parinfer-rust-mode)
+      (define-key prefix (kbd "M-I") 'parinfer-rust-switch-mode)
+      ;; parinfer-rust-toggle-disable
+      ;; parinfer-rust-toggle-debug
+      ;; parinfer-rust-toggle-paren-mode2
+      )))
   (when pel-use-rainbow-delimiters
     (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode))
   (define-key prefix   (kbd "M-s") #'semantic-mode)
