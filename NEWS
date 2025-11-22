@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support to the uniline external package via *pel-use-uniline*.  When active,
+  toggle the *uniline-mode* minor mode with ~<f11> D u~.  It can be used to create text
+  drawings using Unicode characters.  PEL activates ~<f8>~ as the insert key while the mode is active.
+  - Also add support for the ascii-art-to-unicode external package when either *pel-use-ascii-ast-to-unicode*
+    or *pel-use-uniline* is activated.
 - Add support for lisp-docstring-toggle via *pel-use-doctring-toggle*.
   When active the *lisp-docstring-toggle-mode* command is mapped to the ~<f12> M-D~ key of the
   current lisp major mode.  Available on all supported Lisp major modes.

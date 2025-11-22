@@ -8220,6 +8220,23 @@ the ones defined from the buffer now."
 (when pel-use-syntree
   (pel-ensure-package syntree from: melpa)
   (define-key pel:draw "s"  'syntree-new))
+(when pel-use-ascii-art-to-unicode
+  (pel-ensure-package ascii-art-to-unicode from: gnu))
+(when pel-use-uniline
+  (pel-ensure-package uniline from: melpa)
+  ;; for reason I don't yet understand uniline-mode does not autoload
+  ;; properly with the MELPA installation, so I explicitly autoload it here:
+  (pel-autoload-file uniline for: uniline-mode)
+  ;; Add <f8> as the uniline key insert as <insert> is often not available
+  ;; on various keyboards ans <f8> can be used in minor modes because PEL
+  ;; reserves it for projectile only.
+  (pel-eval-after-load uniline-core
+    (when (and (boundp 'uniline-key-insert)
+               (fboundp 'uniline--set-insert-key))
+      (unless (member "<f8>" uniline-key-insert)
+        (push "<f8>" uniline-key-insert)
+        (uniline--set-insert-key 'uniline-key-insert uniline-key-insert))))
+  (define-key pel:draw "u"  'uniline-mode))
 
 ;; ---------------------------------------------------------------------------
 ;;* File Operations

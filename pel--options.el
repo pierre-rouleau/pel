@@ -3755,6 +3755,7 @@ delete key."
                                                  pel-use-treemacs
                                                  pel-activate-hydra-for-greek
                                                  pel-use-ivy-hydra
+                                                 pel-use-uniline
                                                  pel-use-verilog-ext))
 
 (defcustom pel-use-which-key t
@@ -4244,6 +4245,27 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
                    "https://github.com/enricoflor/syntree")
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-use-ascii-art-to-unicode nil
+  "Whether PEL activates the ascii-art-to-unicode package."
+  :group 'pel-pkg-for-drawing-markup
+  :link '(url-link "ascii-art-to-unicode @ GitHub"
+                   "https://elpa.gnu.org/packages/ascii-art-to-unicode.html")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-uniline nil
+  "Whether PEL activates the uniline package."
+  :group 'pel-pkg-for-drawing-markup
+  :link '(url-link "uniline @ GitHub"
+                   "https://github.com/tbanel/uniline")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put pel-use-uniline :requires '(:all pel-use-hydra
+                                    `     pel-use-ascii-art-to-unicode))
+(when pel-use-uniline
+  (setq pel-use-ascii-art-to-unicode t))
+
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; GraphViz-Dot Support
@@ -14556,6 +14578,7 @@ Set this to:
           pel-use-treemacs
           pel-activate-hydra-for-greek
           pel-use-ivy-hydra
+          pel-use-uniline
           pel-use-verilog-ext)
   (setq pel-use-hydra t))
 
