@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for lisp-docstring-toggle via *pel-use-doctring-toggle*.
+  When active the *lisp-docstring-toggle-mode* command is mapped to the ~<f12> M-D~ key of the
+  current lisp major mode.  Available on all supported Lisp major modes.
+- Add support for elisp-depmap in Emacs graphics mode via *pel-use-elisp-depmap*.
+  When active its 3 commands are mapped under the ~<f11> a m~ key prefix.
 - Add support for elisp-depend package via *pel-use-elisp-depend*.
   When active its 3 commands are available under the ~<f11> a d~ key prefix.
 - Add support for the syntree package via *pel-use-syntree*.

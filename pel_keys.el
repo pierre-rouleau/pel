@@ -3814,6 +3814,17 @@ d-mode not added to ac-modes!"
                      lispy-describe-inline
                      lispy-arglist-inline))
 
+(when pel-use-lisp-docstring-toggle
+  (pel-install-github-file "gggion/lisp-docstring-toggle/master"
+                           "lisp-docstring-toggle.el")
+  (pel-autoload-file lisp-docstring-toggle for:
+                     lisp-docstring-toggle-mode
+                     lisp-docstring-toggle
+                     lisp-docstring-toggle-at-point
+                     lisp-docstring-toggle-debug-show-snippets))
+
+
+
 (defun pel--lisp-languages-map-for (prefix)
   "Map in the PEL keys for Lisp-like mode in the keymap for PREFIX."
   (define-key prefix (kbd "<down>")   'pel-elisp-beginning-of-next-form)
@@ -3850,7 +3861,9 @@ d-mode not added to ac-modes!"
     (define-key prefix "7"         'lispy-cursor-down)
     (define-key prefix "8"         'lispy-parens-down)
     (define-key prefix "9"         'lispy-out-forward-newline)
-    (define-key prefix (kbd "DEL") 'lispy-kill-at-point)))
+    (define-key prefix (kbd "DEL") 'lispy-kill-at-point))
+  (when pel-use-lisp-docstring-toggle
+    (define-key prefix (kbd "M-D") 'lisp-docstring-toggle-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Emacs Lisp Programming Language Support
@@ -4033,6 +4046,14 @@ d-mode not added to ac-modes!"
   (define-key pel:elisp-depend "d" 'elisp-depend-print-dependencies)
   (define-key pel:elisp-depend "r" 'elisp-depend-insert-require)
   (define-key pel:elisp-depend "c" 'elisp-depend-insert-comment))
+
+(when (and pel-use-elisp-depmap
+           pel-emacs-is-graphic-p)
+  (pel-ensure-package elisp-depmap from: melpa)
+  (define-pel-global-prefix pel:elisp-depmap (kbd "<f11> SPC l a m"))
+  (define-key pel:elisp-depmap "d" 'elisp-depmap-graphviz-digraph)
+  (define-key pel:elisp-depmap "g" 'elisp-depmap-graphviz)
+  (define-key pel:elisp-depmap "s" 'elisp-depmap-makesummarytable))
 
 ;; ---------------------------------------------------------------------------
 ;;** Common Lisp Programming Language Support

@@ -8359,6 +8359,14 @@ key."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-lisp-docstring-toggle nil
+  "Control whether PEL activates and uses the lisp-docstring-toggle package."
+  :link '(url-link :tag "lisp-docstring-toggle @ github"
+                   "https://github.com/gggion/lisp-docstring-toggle")
+  :group 'pel-pkg-for-lisp
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Common Lisp Support
 ;; -------------------
@@ -8728,6 +8736,15 @@ is set: it is used by the helpful package."
   "Control whether PEL activates and uses the elisp-depend package."
   :link '(url-link :tag "elisp-depend @ github"
                    "https://github.com/emacsorphanage/elisp-depend")
+  :group 'pel-pkg-for-emacs-lisp
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-elisp-depmap nil
+  "Control whether PEL activates and uses the elisp-depmap.el package.
+Available for Emacs in graphics mode only."
+  :link '(url-link :tag "elisp-depmap.el @ github"
+                   "https://github.com/mtekman/elisp-depmap.el")
   :group 'pel-pkg-for-emacs-lisp
   :type 'boolean
   :safe #'booleanp)
