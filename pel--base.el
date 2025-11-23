@@ -3479,6 +3479,13 @@ Returns nil when Emacs does not support tree-sitter."
   (and (fboundp 'treesit-language-available-p)
        (treesit-language-available-p language)))
 
+(defun pel-emacs-config-features-string ()
+  "Print the names of all Emacs configured compilation features."
+  (format "%s. With%s native compilation.%s" system-configuration-features
+           (if pel-emacs-with-native-comp-p "" "out")
+           (format
+            " With%s D-Bus support." (if  (featurep 'dbusbind) "" "out"))))
+
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)
 

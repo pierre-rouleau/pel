@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-23 09:48:33 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-23 10:18:04 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -150,15 +150,17 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)                    ; use: `pel-as-string', `pel-as-symbol'
-;;                                      ;      `pel-print-in-buffer'
-;;                                      ;      `pel-in-fast-startup-p'
-(require 'pel--options)                 ; use: `pel-elpa-packages-to-keep'
-;;                                      ;      `pel-utils-packages-to-keep'
-;;                                      ;      `pel-elpa-obsolete-packages'
-(require 'pel-navigate)                 ; use: `pel-backward-token-start'
-(require 'pel-elpa)                     ; use: `pel-elpa-package-directories'
-;;                                      ;      `pel-el-files-in'
+(require 'pel--base)            ; use: `pel-as-string', `pel-as-symbol'
+;;                              ;      `pel-print-in-buffer'
+;;                              ;      `pel-in-fast-startup-p'
+;;                              ;      `pel-emacs-config-features-string'
+(require 'pel--options)         ; use: `pel-elpa-packages-to-keep'
+;;                              ;      `pel-utils-packages-to-keep'
+;;                              ;      `pel-elpa-obsolete-packages'
+(require 'pel-navigate)         ; use: `pel-backward-token-start'
+(require 'pel-elpa)             ; use: `pel-elpa-package-directories'
+;;                              ;      `pel-el-files-in'
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -802,7 +804,9 @@ The function does not support printing a full report on stdout."
 - # packages selected        : %d
 - # PEL loaded commands      : %d
 - # upgradable elpa packages : %d
-- Emacs init-time            : %s"
+- Emacs init-time            : %s
+- Emacs version              : %s
+- Emacs config features      : %s"
                                     custom-file
                                     package-user-dir
                                     (length
@@ -832,7 +836,9 @@ The function does not support printing a full report on stdout."
                                     (if (and (require 'time nil :no-error)
                                              (fboundp 'emacs-init-time))
                                         (emacs-init-time)
-                                      "?"))))
+                                      "?")
+                                    (emacs-version)
+                                    (pel-emacs-config-features-string))))
     (when (pel-in-fast-startup-p)
       (user-error "PEL is running in fast-startup. \
  This is only available in normal mode!"))

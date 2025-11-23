@@ -290,10 +290,7 @@ Number of global keys (and key prefixes)  : %4d"
 (defun pel-emacs-config-features ()
   "Print the names of all Emacs configured compilation features."
   (interactive)
-  (message "%s. With%s native compilation.%s" system-configuration-features
-           (if pel-emacs-with-native-comp-p "" "out")
-           (format
-            " With%s D-Bus support." (if  (featurep 'dbusbind) "" "out"))))
+  (message (pel-emacs-config-features-string)))
 
 (defun pel-emacs-bug-info (&optional in-browser)
   "Open the report about an Emacs bug report email stream.
