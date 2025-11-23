@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-22 08:10:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-23 09:48:33 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -848,15 +848,18 @@ The function does not support printing a full report on stdout."
        "*pel-user-options*"
        "PEL User Option activated packages"
        (lambda ()
-         "Print full report."
-         (insert (format "\n\n%s\n
+         "Print report."
+         (insert (format "\n%s\n
+More information about Elpa packages and Utils files are printed in the
+full report. Request it by invoking the command with a prefix argument."
+                         overview))
+         (when full-report
+           (insert (format "\n
 Elpa packages and Utils files are shown below.
 The dependencies and lock restrictions are identified.
 Note that a package required by PEL may also be a dependency
 of another package; the ones identified as dependencies may
-also be requested by PEL user-options.\n"
-                         overview))
-         (when full-report
+also be requested by PEL user-options.\n"))
            (pel--show-pkgs-for "Elpa" elpa-all elpa+lock elpa-bdeps
                                pel-elpa-packages-to-keep)
            (pel--show-pkgs-for "Utils" utils-all utils+lock utils-bdeps
