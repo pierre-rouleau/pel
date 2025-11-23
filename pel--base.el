@@ -3486,6 +3486,31 @@ Returns nil when Emacs does not support tree-sitter."
            (format
             " With%s D-Bus support." (if  (featurep 'dbusbind) "" "out"))))
 
+(defun pel-hardware-model-string ()
+  "Return a string describing the computer hardware model."
+  ;; This uses OS-specific commands via shell
+  (cond
+   ;; macOS/FreeBSD
+   ((or pel-system-is-macos-p
+        pel-system-is-FreeBSD-p)
+    (format "%s:  %s"
+            (pel-path-strip (shell-command-to-string "sysctl -n hw.model"))
+            (shell-command-to-string "uname -a")))
+   ;;
+   ;; Linux
+   (pel-system-is-linux-p
+    (format "%s:  %s"
+            (pel-path-strip (shell-command-to-string "cat /sys/class/dmi/id/product_name"))
+            (shell-command-to-string "uname -a")))
+   ;;
+   ;; Windows NT (not MS-DOS)
+   ((eq system-type 'windows-nt)
+    (shell-command-to-string "wmic computersystem get model"))
+   ;;
+   ;; No other support yet
+   (t
+    (format "Hardware model retrieval not yet supported for %s." system-type))))
+
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)
 

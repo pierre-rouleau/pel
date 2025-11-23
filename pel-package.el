@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-23 10:18:04 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-23 11:29:51 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -154,6 +154,7 @@
 ;;                              ;      `pel-print-in-buffer'
 ;;                              ;      `pel-in-fast-startup-p'
 ;;                              ;      `pel-emacs-config-features-string'
+;;                              ;      `pel-hardware-model-string'
 (require 'pel--options)         ; use: `pel-elpa-packages-to-keep'
 ;;                              ;      `pel-utils-packages-to-keep'
 ;;                              ;      `pel-elpa-obsolete-packages'
@@ -806,7 +807,8 @@ The function does not support printing a full report on stdout."
 - # upgradable elpa packages : %d
 - Emacs init-time            : %s
 - Emacs version              : %s
-- Emacs config features      : %s"
+- Emacs config features      : %s
+- Hardware model, OS info    : %s"
                                     custom-file
                                     package-user-dir
                                     (length
@@ -838,7 +840,8 @@ The function does not support printing a full report on stdout."
                                         (emacs-init-time)
                                       "?")
                                     (emacs-version)
-                                    (pel-emacs-config-features-string))))
+                                    (pel-emacs-config-features-string)
+                                    (pel-hardware-model-string))))
     (when (pel-in-fast-startup-p)
       (user-error "PEL is running in fast-startup. \
  This is only available in normal mode!"))
