@@ -519,6 +519,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-show-paren-info)
 
   ;; --
+  (pel-autoload "pel-hier-face" for:
+    pel-hier-face)
   (pel-autoload "pel-hier-modes" for:
     pel-hier-modes)
 

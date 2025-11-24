@@ -7292,6 +7292,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 (define-key pel:emacs "b"  'pel-emacs-buffer-stats)
 (define-key pel:emacs "c"  'pel-emacs-command-stats)
 (define-key pel:emacs "C"  'pel-emacs-config-features)
+(define-key pel:emacs "f"  'pel-hier-face)
 (define-key pel:emacs "h"  'pel-hier-modes)
 (define-key pel:emacs "i"  'pel-imenu-print-vars)
 (define-key pel:emacs "o"  'pel-outline-print-vars)

@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add the *pel-hier-face* command bound to ~<f11> ? e f~ which prints the
+  hierarchy of the currently loaded faces in a buffer where each face is a
+  link to the code that implements it.
 - Add support to the uniline external package via *pel-use-uniline*.  When active,
   toggle the *uniline-mode* minor mode with ~<f11> D u~.  It can be used to create text
   drawings using Unicode characters.  PEL activates ~<f8>~ as the insert key while the mode is active.
