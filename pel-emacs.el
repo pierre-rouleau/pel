@@ -178,14 +178,20 @@ Emacs %-4s startup time: %s   (in %s mode%s)
              "Emacs Load Statistics"
              (lambda ()
                "Print stats in buffer."
-               (insert overview-msg "\n\n")
+               (insert overview-msg
+                       "\n\nfeatures, package-activated-list and package-selected-packages:\n")
                (when (>= numeric-arg 16)
                  (pel-insert-list-content 'load-history))
-               (pel-insert-list-content 'features)
-               (pel-insert-list-content 'package-activated-list)
-               (pel-insert-list-content 'package-selected-packages)))
-          (message overview-msg)
-          ))
+               (pel-insert-list-content 'features nil :without-index nil
+                                        :on-same-line)
+               (insert "\n")
+               (pel-insert-list-content 'package-activated-list nil
+                                        :without-index nil :on-same-line)
+               (insert "\n")
+               (pel-insert-list-content 'package-selected-packages nil
+                                        :without-index nil :on-same-line)
+               (toggle-truncate-lines -1)))
+          (message overview-msg)))
     (user-error "The package file is not loaded!")))
 
 ;; ---------------------------------------------------------------------------
