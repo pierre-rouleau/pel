@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, November 22 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-24 17:05:57 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-24 17:12:47 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,7 +34,17 @@
 ;;
 ;;
 (require 'pel--base)
-(require 'hierarchy)
+(pel-require 'hierarchy :install-when-missing
+             "DamienCassou/hierarchy/refs/heads/master"
+             "hierarchy.el")
+
+(declare-function hierarchy-new "hierarchy.el")
+(declare-function hierarchy-add-trees "hierarchy.el")
+(declare-function hierarchy-sort "hierarchy.el")
+(declare-function hierarchy-tabulated-display "hierarchy.el")
+(declare-function hierarchy-labelfn-indent "hierarchy.el")
+(declare-function hierarchy-labelfn-button "hierarchy.el")
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
