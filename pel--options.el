@@ -53,6 +53,7 @@
 ;;     - pel-pkg-for-dired
 ;;     - pel-pkg-for-expand
 ;;     - pel-pkg-for-conf-file
+;;     - pel-pkg-for-face-font
 ;;     - pel-pkg-for-filemng
 ;;       - pel-pkg-for-browse
 ;;         - pel-pkg-for-file-browse
@@ -2012,6 +2013,46 @@ A Major mode."
   :group 'pel-pkg-for-conf-file
   :link '(url-link :tag "dockerfile-mode @ Github"
                    "https://github.com/spotify/dockerfile-mode")
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
+;; pel-pkg-for-face-font
+;; ---------------------
+(defgroup pel-pkg-for-face-font nil
+  "List of external packages for face and font management."
+  :group 'pel-package-use
+  :link `(url-link :tag "Face/Font Management PDF" ,(pel-pdf-file-url
+                                                     "face/fonts")))
+(defcustom pel-use-face-explorer nil
+  "Whether PEL supports the face-explorer package."
+  :group 'pel-pkg-for-face-font
+  :link '(url-link :tag "face-explorer @ GitHub"
+                   "https://github.com/Lindydancer/face-explorer")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-faceup nil
+  "Whether PEL supports the faceup package."
+  :group 'pel-pkg-for-face-font
+  :link '(url-link :tag "faceup @ GitHub"
+                   "https://github.com/Lindydancer/faceup")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-font-lock-profiler nil
+  "Whether PEL supports the font-lock-profiler package."
+  :group 'pel-pkg-for-face-font
+  :link '(url-link :tag "font-lock-profiler @ GitHub"
+                   "https://github.com/Lindydancer/font-lock-profiler")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-font-lock-studio nil
+  "Whether PEL supports the font-lock-studio package."
+  :group 'pel-pkg-for-face-font
+  :link '(url-link :tag "font-lock-studio @ GitHub"
+                   "https://github.com/Lindydancer/font-lock-studio")
   :type 'boolean
   :safe #'booleanp)
 

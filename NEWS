@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add a new PEL key prefix: ~<f11> C-f~ for face and fonts.
+  It include the PEL conventional ~<f1>~, ~<f2>~ and ~<f3>~ keys to access the help and customization buffers related to face and fonts.
+  It also include several key bindings for face and font information and management.
+- Add support for 4 external packages that support face and font management and tooling:
+  face-explorer (*pel-use-face-explorer*), faceup (*pel-use-faceup*), font-lock-profiler (*pel-user-face-profiler*)
+  and font-lock-studio (*pel-use-font-lock-studio*).
 - Add the *pel-hier-face* command bound to ~<f11> ? e f~ which prints the
   hierarchy of the currently loaded faces in a buffer where each face is a
   link to the code that implements it.

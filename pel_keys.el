@@ -8240,6 +8240,37 @@ the ones defined from the buffer now."
   (define-key pel:draw "u"  'uniline-mode))
 
 ;; ---------------------------------------------------------------------------
+;;* Face/Font Management
+;; - Function Keys - <f11> - Prefix ``<f11> C-f`` :
+;;
+
+(define-pel-global-prefix pel:facefont (kbd "<f11> C-f"))
+(define-key pel:facefont "h"  'pel-hier-face)
+(define-key pel:facefont (kbd "C-f")  'pel-show-face-at-point)
+(define-key pel:facefont "c" #'list-colors-display)
+(define-key pel:facefont "f" #'list-faces-display)
+
+(when pel-use-face-explorer
+  (define-pel-global-prefix pel:face-explorer (kbd "<f11> C-f C-e"))
+  (pel-ensure-package face-explorer from: melpa)
+  (define-key pel:face-explorer (kbd "C-e") 'face-explorer-list-faces)
+  (define-key pel:face-explorer (kbd "C-d") 'face-explorer-describe-face)
+  (define-key pel:face-explorer (kbd "C-p") 'face-explorer-describe-face-prop)
+  (define-key pel:face-explorer (kbd "C-f") 'face-explorer-list-display-features)
+  (define-key pel:face-explorer "e" 'face-explorer-list-face-prop-examples)
+  (define-key pel:face-explorer "E" 'face-explorer-list-overlay-examples)
+  (when pel-emacs-is-graphic-p
+    (define-key pel:face-explorer (kbd "C-t") 'face-explorer-tooltip-mode))
+  (define-key pel:face-explorer (kbd "C-s") 'face-explorer-simulate-display-mode))
+(when pel-use-faceup
+  (pel-ensure-package faceup from: melpa))
+(when pel-use-font-lock-profiler
+  (pel-ensure-package font-lock-profiler from: melpa))
+(when pel-use-font-lock-studio
+  (pel-ensure-package font-lock-studio from: melpa)
+  (define-key pel:facefont (kbd "C-s") 'font-lock-studio))
+
+;; ---------------------------------------------------------------------------
 ;;* File Operations
 ;; - Function Keys - <f11> - Prefix ``<f11> f`` :
 
