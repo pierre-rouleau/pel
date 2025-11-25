@@ -1837,8 +1837,10 @@ can't bind negative-argument to C-_ and M-_"
 
 (define-pel-global-prefix pel:startup     (kbd "<f11> M-S"))
 (define-key pel:startup "?" 'pel-setup-info)
-(define-key pel:startup "f" 'pel-setup-fast)
-(define-key pel:startup "n" 'pel-setup-normal)
+
+(unless pel-emacs-30-or-later-p
+  (define-key pel:startup "f" 'pel-setup-fast)
+  (define-key pel:startup "n" 'pel-setup-normal))
 (define-key pel:startup (kbd "M-?") 'pel-setup-info-dual-environment)
 (define-key pel:startup (kbd "M-d") 'pel-setup-dual-environment)
 (when pel-emacs-27-or-later-p

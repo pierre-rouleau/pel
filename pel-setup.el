@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-05-16 10:18:24 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-25 15:57:53 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1262,6 +1262,8 @@ Failed fast startup setup for %s after %d of %d steps: %s
   ;; Validate Emacs initialization file -- issue error on any problem
   (pel-setup-validate-init-files)
   ;; When Emacs init is OK, check further
+  (when pel-emacs-30-or-later-p
+    (user-error "PEL Fast startup is not yet working in Emacs >= 30!"))
   (cond
    ;;
    ((eq (pel--startup-mode) 'fast)
@@ -1321,6 +1323,8 @@ is only one or when its for the terminal (TTY) mode."
 (defun pel-setup-normal ()
   "Restore normal PEL/Emacs operation mode."
   (interactive)
+  (when pel-emacs-30-or-later-p
+    (user-error "PEL Fast startup is not yet working in Emacs >= 30!"))
   (pel-setup-validate-init-files)
   (cond
    ((eq (pel--startup-mode) 'normal)
