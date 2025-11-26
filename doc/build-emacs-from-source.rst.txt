@@ -6,7 +6,7 @@ Build Emacs from Source
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-11-26 10:52:35 EST, updated by Pierre Rouleau.
+:Modified: 2025-11-26 11:56:02 EST, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 .. contents::  **Table of Contents**
@@ -22,9 +22,10 @@ General Overview
 :Ref: `Speed up Emacs with libjansson and native elisp compilation`_, by Mickey Petersen
 :Ref: `How to Get Started with Tree-Sitter`_, by Mickey Petersen
 
-This document describes how to build Emacs 30 on various platforms with
-several useful features.  The build is done inside a specific directory,
-located inside ``~/my/cdpub/emacs-repos``.
+This document describes how to build Emacs 30 on OS platforms.
+
+This shows Emacs build commands for an example Emacs repository located
+in ``~/my/dvpub/emacs-repos``.
 
 Step 1: Create a Git clone or Emacs repository
 ----------------------------------------------
@@ -59,7 +60,7 @@ List the available tags and versions from the repository.
 
 Select a tag or branch to check out.
 
-Unless you have specific reasons to use a branch and want to use the very
+Unless you have specific reasons to use a branch and want to use the
 latest code available, you probably want to build an existing release that has
 gone through more testing.
 
@@ -67,7 +68,7 @@ gone through more testing.
   Something like ``emacs-30.1``.
 - The branch may still be active and may correspond to the code as it evolves.
   For example, ``emacs-30`` is the branch for Emacs 30 development.
-  After the release of Emacs 30.1,commits for the next Emacs 30 release are placed there.
+  After the release of Emacs 30.1, commits for the next Emacs 30 release are placed there.
 
 ============================== ===================================
 Git Branch Name                Description
@@ -100,7 +101,7 @@ See next.
 macOS Packages
 ~~~~~~~~~~~~~~
 
-On macOS, several required packages can be installed with `Homebrew`_.
+On macOS, you can use `Homebrew`_ to install some of the required packages.
 Use the following commands to install them. The last column shows the command
 that prints the name of the directory holding the files. It works for both
 Intel and Apple Silicon macOS and you may need those in the configure command
@@ -213,11 +214,11 @@ you are not modifying the system and do not need sudo or su credentials.
 
 For example, assuming you have a ``~/bin`` directory that holds symbolic links
 to the executable files made available to your shell, and assuming you built
-Emacs from the ``~/my/emacs-repos/emacs``, the Emacs executable will be
-``~/my/emacs-repos/emacs/src/emacs``, use the following command::
+Emacs from the ``~/my/dvpub/emacs-repos/emacs``, the Emacs executable will be
+``~/my/dvpub/emacs-repos/emacs/src/emacs``, use the following command::
 
   cd ~/bin
-  ln -s ~/my/emacs-repos/emacs/src/emacs emacs
+  ln -s ~/my/dvpub/emacs-repos/emacs/src/emacs emacs
 
 .. ---------------------------------------------------------------------------
 
