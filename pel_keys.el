@@ -29,13 +29,16 @@
 ;; Code navigation: the layout of this file supports Emacs outline mode.  Use
 ;; `outline-minor-mode' (<f11> M-l) with `lispy' mode active to hide all text
 ;; except the section headings to get a quick overview of the structure of
-;; this code.
+;; this code.  With PEL, type:
+;;
+;;  - <f2> t   : to hide the entire body of code, showing only the titles
+;;  - <f2> a   : to restore all code.
 ;;
 ;; This file defines most PEL key bindings, with some defined by the pel-skels
 ;; files and by pel__hydra file.
 ;;
-;; This file is *only* loaded by pel-init, nothing else.
-;; This way time is only spent when pel-init is executed, not when
+;; This file is *only* loaded by `pel-init', nothing else.
+;; This way, time is only spent when `pel-init' is executed, not when
 ;; Emacs starts.
 ;;
 ;; Note: the file and feature name has been selected so that the file name
@@ -2539,16 +2542,36 @@ can't bind negative-argument to C-_ and M-_"
                      "pel-use-elf-mode is on, but can't find readelf executable!")))
 
 ;; ---------------------------------------------------------------------------
-;;** Writing Help Packages
+;;** Writing-Tools
+;;   -------------
+;;
+(define-pel-global-prefix pel:writing-tools (kbd "<f11> W"))
 
 (when pel-use-artbollocks-mode
-  (pel-ensure-package artbollocks-mode from: melpa))
+  (pel-ensure-package artbollocks-mode from: melpa)
+  (define-key pel:writing-tools "a" 'artbollocks-mode))
+
 (when pel-use-wc-mode
-  (pel-ensure-package wc-mode from: melpa))
+  (pel-ensure-package wc-mode from: melpa)
+  (define-key pel:writing-tools "c" 'wc-mode))
+
 (when pel-use-writegood-mode
-  (pel-ensure-package writegood-mode from: melpa))
+  (pel-ensure-package writegood-mode from: melpa)
+  (define-pel-global-prefix pel:writegood (kbd "<f11> W g"))
+  (define-key pel:writegood "g" 'writegood-mode)
+  (define-key pel:writegood "v" 'writegood-version)
+  (define-key pel:writegood "r" 'writegood-reading-ease)
+  (define-key pel:writegood "l" 'writegood-grade-level))
+
 (when pel-use-writeroom-mode
-  (pel-ensure-package writeroom-mode from: melpa))
+  (pel-ensure-package writeroom-mode from: melpa)
+  (define-pel-global-prefix pel:writeroom (kbd "<f11> W r"))
+  (define-key pel:writeroom "r" 'writeroom-mode)
+  (define-key pel:writeroom "+" 'writeroom-increase-width)
+  (define-key pel:writeroom "-" 'writeroom-decrease-width)
+  (define-key pel:writeroom "0" 'writeroom-adjust-width)
+  (define-key pel:writeroom "m" 'writeroom-toggle-mode-line))
+
 (when pel-use-harper-ls
   (when (boundp 'eglot-server-programs)
     (cond

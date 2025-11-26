@@ -14467,6 +14467,7 @@ indexing system."
 ;; ---------------------------------------------------------------------------
 (defgroup pel-pkg-for-writing nil
   "List of packages that can be used to improve writing."
+  :link `(url-link :tag "Writing Tools PDF" ,(pel-pdf-file-url "writing-tools"))
   :group 'pel-package-use)
 
 (defcustom pel-use-harper-ls nil

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-25 09:17:16 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-26 10:25:53 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -476,11 +476,14 @@
                                                                     uniline))
     ([f11 ?D ?u]     "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
     ([f11 ?F]        "frames"           pel-pkg-for-frame       frames)
+    ([f11 ?S]        "sessions"         pel-pkg-for-sessions    desktop)
     ([f11 ?T]        "time-tracking"    pel-pkg-for-time-tracking (display-time
                                                                    timeclock
                                                                    timelog))
-    ([f11 ?S]        "sessions"         pel-pkg-for-sessions    desktop)
-    ;; ([f11 ?S ?R]
+    ([f11 ?W]        "writing-tools"    pel-pkg-for-writing    (artbollocks-mode
+                                                                wc
+                                                                writegood
+                                                                writeroom))
     ([f11 ?X]        "xref"             pel-pkg-for-xref        (cscope
                                                                  dumb-jump
                                                                  eopengrok
@@ -1372,9 +1375,12 @@ Return nil if nothing found."
     ("rainbow"     . "rainbow-mode")
     ("rfc-mode-group" . "rfc-mode")
     ("ffip"        . "find-file-in-project")
+    ("wc"          . "wc-mode")
+    ("writegood"   . "writegood-mode")
+    ("writeroom"   . "writeroom-mode")
     ("x509"        . "x509-mode")
     ("ssh-file"    . "ssh-file-modes"))
-  "Maps a group name for the library that defines it.
+  "Map a group name for the library that defines it.
 This is only required for the libraries that cannot be found
 with the existing code, such as when the group name is different
 enough from the feature name.")

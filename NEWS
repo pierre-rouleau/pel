@@ -2,6 +2,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add new PEL key prefix: ~<f11> W~ for Writing tools.
+  It include the PEL conventional ~<f1>~, ~<f2>~ and ~<f3>~ keys to access the help and customization buffers related to Writing Tools.
+  - Add support for artbollocks-mode via *pel-use-artbollocks-mode*.
+  - Add support for wc-mode via *pel-use-wc-mode*.
+  - Add support for writegood-mode via *pel-use-writegood-mode*.
+  - Add support for writeroom-mode via *pel-use-writeroom-mode*.
+  - See the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/writing-tools.pdf][Writing Tools PDF]] for the key bindings.
 - Add a new PEL key prefix: ~<f11> C-f~ for face and fonts.
   It include the PEL conventional ~<f1>~, ~<f2>~ and ~<f3>~ keys to access the help and customization buffers related to face and fonts.
   It also include several key bindings for face and font information and management.
