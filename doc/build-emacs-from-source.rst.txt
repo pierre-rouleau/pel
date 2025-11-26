@@ -6,7 +6,7 @@ Build Emacs from Source
 :Project: `PEL -- Pragmatic Emacs Library`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-08-30 10:43:22 EDT, updated by Pierre Rouleau.
+:Modified: 2025-11-26 10:52:35 EST, updated by Pierre Rouleau.
 :Copyright: © 2025, Pierre Rouleau
 
 .. contents::  **Table of Contents**
@@ -39,6 +39,8 @@ If you already had a copy of the repository, get the latest changes with::
 
   git pull
 
+Then check out (via ``git co``) the branch you want to build and then do
+another ``git pull`` to get the last changes on that branch.
 
 Step 2: Select the Git branch
 -----------------------------
@@ -92,6 +94,8 @@ libpng-devel
 libtiff
 ============================== =========================================
 
+On macOS you may want to use `Homebrew`_ to install some of these tools.
+See next.
 
 macOS Packages
 ~~~~~~~~~~~~~~
@@ -111,8 +115,13 @@ libpng       ``brew install libpng``               ``brew --prefix libpng``
 libjpeg      ``brew install libjpeg``              ``brew --prefix libjpeg``
 ============ ===================================== ==========================
 
+---------------------------------------------------------------------------
+
 Getting Help
 ============
+
+From the emacs repo root, you can issue the following commands to get
+extra information.
 
 ====================== ==============================
 Command                Purpose
@@ -127,13 +136,18 @@ Command                Purpose
 ``make help``          List all make commands along with their purpose.
 ====================== ==============================
 
+---------------------------------------------------------------------------
 
 
 Build Emacs
 ===========
 
-Standard Build
---------------
+There are several ways you can build Emacs.
+This section describes some of those ways.
+
+
+Standard Emacs Build
+--------------------
 
 From the root of Emacs repository,
 execute the following commands::
@@ -143,8 +157,8 @@ execute the following commands::
   ./configure
   make
 
-Build without GUI support
--------------------------
+Build Emacs without GUI support
+-------------------------------
 
 ::
 
@@ -158,8 +172,8 @@ terminal mode only.  If you want graphical support do not use
 this option as shown in the previous section..
 
 
-Build with native compilation
------------------------------
+Build Emacs with native compilation
+-----------------------------------
 
 Building with native compilation is the default since Emacs 30.
 However, to be able to build with it you must install libgccjit
@@ -185,12 +199,25 @@ The build command is::
 
 
 
-Installing the build Emacs
+Installing the built Emacs
 --------------------------
 
-To install the latest built emacs, execute::
+If you want to install the latest built Emacs in your system you can execute
+the following command::
 
   sudo make install
+
+However, you may prefer to create a symbolic link to the Emacs executable
+inside a directory that is in the shell PATH environment variable.  This way
+you are not modifying the system and do not need sudo or su credentials.
+
+For example, assuming you have a ``~/bin`` directory that holds symbolic links
+to the executable files made available to your shell, and assuming you built
+Emacs from the ``~/my/emacs-repos/emacs``, the Emacs executable will be
+``~/my/emacs-repos/emacs/src/emacs``, use the following command::
+
+  cd ~/bin
+  ln -s ~/my/emacs-repos/emacs/src/emacs emacs
 
 .. ---------------------------------------------------------------------------
 
