@@ -1386,7 +1386,9 @@ Your version of Emacs does not support dynamic module.")))
 ;; ---------------------------------------------------------------------------
 ;;*** Shutdown Server
 
-(define-key pel: (kbd "C-x C-c") 'pel-shutdown-server)
+(define-pel-global-prefix pel:server (kbd "<f11> C-x"))
+
+(define-key pel:server (kbd "C-c") 'pel-shutdown-server)
 
 ;;*** Window navigation
 (defun pel--global-windmove-on (prefix)
