@@ -1798,6 +1798,28 @@ downloaded, nil otherwise.  Permission errors are raised."
 
 ;; -------
 
+(defmacro pel-install-web-file (url-fname fname
+                                          &optional refresh)
+  "Download & install FNAME from URL-FNAME.
+
+- URL-FNAME is the complete url of the file.
+- FNAME is the file name as it must appear locally.
+
+If a file already exists in the destination, no download
+is done unless REFRESH is non-nil, in which case the function
+prompts for confirmation.
+
+The macro generates code that runs only at load time.  However,
+when PEL operates in fast startup the macro creates no code and
+expands to nil which will be optimized out by the byte compiler."
+  (unless (pel-in-fast-startup-p)
+    `(cl-eval-when 'load
+       (pel-install-file ,url-fname
+                         ,fname
+                         ,refresh))))
+
+;; -------
+
 (defun pel--install-github-files (user-project-branch
                                   fnames
                                   &optional refresh)

@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for the my-whisper via *pel-use-my-whisper*.  This provides speech to text transcribe using a LLM model
+  that is running locally provided by the Whisper.cpp open-source project. PEL binds the *my-whisper-transcribe* command to ~<f11> W t~.
+  You must install Whisper manually.
+  PEL currently uses my fork of my-whisper as it is still evolving.
 - Add new PEL key prefix: ~<f11> W~ for Writing tools.
   It include the PEL conventional ~<f1>~, ~<f2>~ and ~<f3>~ keys to access the help and customization buffers related to Writing Tools.
   - Add support for artbollocks-mode via *pel-use-artbollocks-mode*.
@@ -27,9 +31,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   When active the *lisp-docstring-toggle-mode* command is mapped to the ~<f12> M-D~ key of the
   current lisp major mode.  Available on all supported Lisp major modes.
 - Add support for elisp-depmap in Emacs graphics mode via *pel-use-elisp-depmap*.
-  When active its 3 commands are mapped under the ~<f11> a m~ key prefix.
+  When active its 3 commands are mapped under the ~<f11> a M-D~ key prefix.
 - Add support for elisp-depend package via *pel-use-elisp-depend*.
-  When active its 3 commands are available under the ~<f11> a d~ key prefix.
+  When active its 3 commands are available under the ~<f11> a M-d~ key prefix.
 - Add support for the syntree package via *pel-use-syntree*.
   When active use *syntree-new* (bound to ~<f11> D s~) to create new
   syntree diagrams.

@@ -2587,6 +2587,15 @@ can't bind negative-argument to C-_ and M-_"
             (add-to-list 'eglot-server-programs
                          (cons m '("harper-ls" "--stdio")))))))))
 
+(when pel-use-my-whisper
+  (pel-install-web-file
+   "https://raw.githubusercontent.com/pierre-rouleau/my-whisper/refs/heads/improv-1/my-whisper.el"
+   "my-whisper.el")
+  (pel-autoload-file my-whisper for:
+                     my-whisper-transcribe-fast
+                     my-whisper-transcribe)
+  (define-key pel:writing-tools "t" 'my-whisper-transcribe))
+
 ;; ---------------------------------------------------------------------------
 ;;* Programming Language Support
 ;;  ============================
@@ -3956,7 +3965,7 @@ d-mode not added to ac-modes!"
 (define-key pel:for-elisp   "t"  'pel-run-ert)
 (when pel-use-plantuml
   (define-key pel:for-elisp   "u"  'pel-render-commented-plantuml))
-(when pel-use-parinfer
+(when (eq pel-use-parinfer t)
   (define-key pel:for-elisp "i" 'parinfer-auto-fix))
 
 (define-pel-global-prefix pel:elisp-help (kbd "<f11> SPC l ?"))
@@ -3968,7 +3977,7 @@ d-mode not added to ac-modes!"
 
 (define-pel-global-prefix pel:elisp-analyze (kbd "<f11> SPC l a"))
 (define-key pel:elisp-analyze ")" #'check-parens)
-(when pel-use-parinfer
+(when(eq pel-use-parinfer t)
   (define-key pel:elisp-analyze "D"  'parinfer-diff))
 (define-key pel:elisp-analyze   "b"  'pel-lint-elisp-file)
 (define-key pel:elisp-analyze   "d" #'checkdoc)
@@ -4081,7 +4090,7 @@ d-mode not added to ac-modes!"
 
 (when pel-use-elisp-depend
   (pel-ensure-package elisp-depend from: melpa)
-  (define-pel-global-prefix pel:elisp-depend (kbd "<f11> SPC l a d"))
+  (define-pel-global-prefix pel:elisp-depend (kbd "<f11> SPC l a M-d"))
   (define-key pel:elisp-depend "d" 'elisp-depend-print-dependencies)
   (define-key pel:elisp-depend "r" 'elisp-depend-insert-require)
   (define-key pel:elisp-depend "c" 'elisp-depend-insert-comment))
@@ -4089,7 +4098,7 @@ d-mode not added to ac-modes!"
 (when (and pel-use-elisp-depmap
            pel-emacs-is-graphic-p)
   (pel-ensure-package elisp-depmap from: melpa)
-  (define-pel-global-prefix pel:elisp-depmap (kbd "<f11> SPC l a m"))
+  (define-pel-global-prefix pel:elisp-depmap (kbd "<f11> SPC l a M-D"))
   (define-key pel:elisp-depmap "d" 'elisp-depmap-graphviz-digraph)
   (define-key pel:elisp-depmap "g" 'elisp-depmap-graphviz)
   (define-key pel:elisp-depmap "s" 'elisp-depmap-makesummarytable))

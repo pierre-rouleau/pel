@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-26 10:25:53 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-26 14:46:22 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -483,7 +483,8 @@
     ([f11 ?W]        "writing-tools"    pel-pkg-for-writing    (artbollocks-mode
                                                                 wc
                                                                 writegood
-                                                                writeroom))
+                                                                writeroom
+                                                                my-whisper))
     ([f11 ?X]        "xref"             pel-pkg-for-xref        (cscope
                                                                  dumb-jump
                                                                  eopengrok

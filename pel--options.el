@@ -14474,7 +14474,7 @@ indexing system."
   "Control whether PEL uses the harper-ls package.
 Set this to:
 - 1: Do not use (default): nil
-- 2: Major modes.  Identify one or several major mode to use.
+- 2: Major modes.  Identify one or several major mode that must us it.
 - 3: English Prose setup (use only if 2 above does not work.)"
   :link '(url-link :tag "harper-ls @ Github"
                    "https://github.com/automattic/harper")
@@ -14520,6 +14520,16 @@ Set this to:
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-my-whisper nil
+  "Control whether PEL uses the my-whisper package.
+While waiting for my PR to be merged in, PEL uses my fork."
+  :link '(url-link :tag "my-whisper @ Github"
+                   "https://github.com/emacselements/my-whisper")
+  :link '(url-link :tag "my fork of my-whisper @ Github"
+                   "https://github.com/pierre-rouleau/my-whisper/tree/add-customization")
+  :group 'pel-pkg-for-writing
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; Incompatible selection Management
