@@ -2588,13 +2588,10 @@ can't bind negative-argument to C-_ and M-_"
                          (cons m '("harper-ls" "--stdio")))))))))
 
 (when pel-use-my-whisper
-  (pel-install-web-file
-   "https://raw.githubusercontent.com/pierre-rouleau/my-whisper/refs/heads/improv-1/my-whisper.el"
-   "my-whisper.el")
+  (pel-install-github-file "pierre-rouleau/my-whisper/master" "my-whisper.el")
   (pel-autoload-file my-whisper for:
-                     my-whisper-transcribe-fast
-                     my-whisper-transcribe)
-  (define-key pel:writing-tools "t" 'my-whisper-transcribe))
+                     my-whisper-mode)
+  (define-key pel:writing-tools "W" 'my-whisper-mode))
 
 ;; ---------------------------------------------------------------------------
 ;;* Programming Language Support

@@ -14522,14 +14522,13 @@ Set this to:
 
 (defcustom pel-use-my-whisper nil
   "Control whether PEL uses the my-whisper package.
-While waiting for my PR to be merged in, PEL uses my fork."
-  :link '(url-link :tag "my-whisper @ Github"
-                   "https://github.com/emacselements/my-whisper")
+PEL uses my fork of this project."
   :link '(url-link :tag "my fork of my-whisper @ Github"
-                   "https://github.com/pierre-rouleau/my-whisper/tree/add-customization")
+                   "https://github.com/pierre-rouleau/my-whisper")
   :group 'pel-pkg-for-writing
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-my-whisper :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; Incompatible selection Management

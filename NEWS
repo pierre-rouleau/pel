@@ -3,9 +3,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
 - Add support for the my-whisper via *pel-use-my-whisper*.  This provides speech to text transcribe using a LLM model
-  that is running locally provided by the Whisper.cpp open-source project. PEL binds the *my-whisper-transcribe* command to ~<f11> W t~.
-  You must install Whisper manually.
-  PEL currently uses my fork of my-whisper as it is still evolving.
+  that is running locally provided by the Whisper.cpp open-source project. PEL binds the *my-whisper-mode* command to ~<f11> W W~.
+  This is a global minor mode that perform audio recording in the background.  You can stop the mode or stop recording.
+  At that moment the recorded audio is transcribed into text inserted at point in the current buffer.
+  The transcription is performed by the Whipser.cpp driven AI model selected by customization.
+  You must install Whisper.cpp and the SoX library  manually.
+  PEL currently uses my fork of my-whisper project because the original project has code that blocks Emacs while recording audio.
+  The original project is also less flexible and uses the /bin/sh to launch processes.
 - Add new PEL key prefix: ~<f11> W~ for Writing tools.
   It include the PEL conventional ~<f1>~, ~<f2>~ and ~<f3>~ keys to access the help and customization buffers related to Writing Tools.
   - Add support for artbollocks-mode via *pel-use-artbollocks-mode*.
