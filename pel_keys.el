@@ -2590,8 +2590,10 @@ can't bind negative-argument to C-_ and M-_"
 (when pel-use-my-whisper
   (pel-install-github-file "pierre-rouleau/my-whisper/master" "my-whisper.el")
   (pel-autoload-file my-whisper for:
-                     my-whisper-mode)
-  (define-key pel:writing-tools "W" 'my-whisper-mode))
+                     my-whisper-mode
+                     my-whisper-transcribe-file)
+  (define-key pel:writing-tools "W" 'my-whisper-mode)
+  (define-key pel:writing-tools "w" 'my-whisper-transcribe-file))
 
 ;; ---------------------------------------------------------------------------
 ;;* Programming Language Support
