@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-19 11:08:46 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-11-30 12:50:53 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -757,7 +757,9 @@ Return nil if nothing found for either."
   "Return list of indentation control vars for current major mode or MODE.
 Check the variables identified in `pel-tab-width-control-variables' if there is
 some, otherwise check the variables defined in `pel--mode-indent-vars.'
-Return nil if none is identified in either location."
+Return nil if none is identified in either location.
+Note that the returned list may be a list of variable symbol as well as
+(variable . offset) cons cells."
   (let ((vars pel-tab-width-control-variables))
     (unless vars
       (setq vars (pel-mode-or-ts-mode-indent-control-vars mode)))
@@ -846,6 +848,8 @@ important variables and symbols in the context of the inspected major mode."
     (when the-indent-control-vars
         (dolist (var the-indent-control-vars)
           (unless (memq var already-inserted)
+            (when (consp var)
+              (setq var (car var)))
             (pel-insert-symbol-content-line var)
             (push var already-inserted)
             (setq major-mode-specific-inserted t))))
