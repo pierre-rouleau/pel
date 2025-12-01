@@ -14513,12 +14513,16 @@ Set this to:
   :safe #'booleanp)
 
 (defcustom pel-use-artbollocks-mode nil
-  "Control whether PEL uses the artbollocks-mode package."
+  "Control whether PEL uses the artbollocks-mode package.
+PEL uses my fork until my PRs are merged in."
+  :link '(url-link :tag "My artbollocks-mode fork @ Github"
+                   "https://github.com/pierre-rouleau/artbollocks-mode")
   :link '(url-link :tag "artbollocks-mode @ Github"
                    "https://github.com/sachac/artbollocks-mode")
   :group 'pel-pkg-for-writing
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-artbollocks-mode :package-is :in-utils)
 
 (defcustom pel-use-my-whisper nil
   "Control whether PEL uses the my-whisper package.

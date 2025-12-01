@@ -2542,13 +2542,20 @@ can't bind negative-argument to C-_ and M-_"
                      "pel-use-elf-mode is on, but can't find readelf executable!")))
 
 ;; ---------------------------------------------------------------------------
+;; [:todo 2025-11-30, by Pierre Rouleau: TEST remove!!]
+(pel-autoload-file tbindent for: tbindent-mode)
+;; ---------------------------------------------------------------------------
 ;;** Writing-Tools
 ;;   -------------
 ;;
 (define-pel-global-prefix pel:writing-tools (kbd "<f11> W"))
 
 (when pel-use-artbollocks-mode
-  (pel-ensure-package artbollocks-mode from: melpa)
+  ;; (pel-ensure-package artbollocks-mode from: melpa)
+  (pel-install-github-file "pierre-rouleau/artbollocks-mode/master"
+                           "artbollocks-mode.el")
+  (pel-autoload-file artbollocks-mode for:
+                     artbollocks-mode)
   (define-key pel:writing-tools "a" 'artbollocks-mode))
 
 (when pel-use-wc-mode
