@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-26 14:46:22 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-01 15:31:59 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -481,6 +481,7 @@
                                                                    timeclock
                                                                    timelog))
     ([f11 ?W]        "writing-tools"    pel-pkg-for-writing    (artbollocks-mode
+                                                                gt
                                                                 wc
                                                                 writegood
                                                                 writeroom
@@ -1360,6 +1361,7 @@ Return nil if nothing found."
     ("erlstack"    . "erlstack-mode")
     ("factor"      . "factor-mode")
     ("grip"        . "grip-mode")
+    ("gt"          . "gt-core")
     ("janet"       . "janet-mode")
     ("lfe"         . ("lfe-indent"
                       "lfe-mode"))   ; several files - defgroup is in lfe-mode
