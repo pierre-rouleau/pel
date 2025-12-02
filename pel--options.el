@@ -2864,7 +2864,12 @@ Activating the `pel-use-lispy' user-option indirectly activates
   :safe #'booleanp)
 
 (defcustom pel-use-imenu+ nil
-  "Control whether PEL provides access to imenu+ external package."
+  "Control whether PEL provides access to imenu+ external package.
+PEL installs my Github hosted fork; a version that drops support for
+Emacs < 25, fixes all warnings and solves an error.
+To update it, just delete ~/.emacs.d/utils/imenu+.* and restart Emacs."
+  :link '(url-link :tag "My fork of Imenu+ @ Github"
+                   "https://github.com/pierre-rouleau/imenu-plus")
   :link '(url-link :tag "Imenu+ description @ emacswiki"
                    "https://www.emacswiki.org/emacs/ImenuMode#h5o-10")
   :link '(url-link :tag "imenu+.el @ emacswiki"

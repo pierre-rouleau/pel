@@ -1721,10 +1721,13 @@ can't bind negative-argument to C-_ and M-_"
 (define-key pel:menu "R"      'pel-imenu-toggle-auto-rescan)
 
 (when pel-use-imenu+
-  (pel-install-github-file "emacsmirror/imenu-plus/master"
+  (pel-install-github-file "pierre-rouleau/imenu-plus/master"
                            "imenu+.el" "imenu%2B.el")
   (pel-autoload-file imenu+ for:
-                     imenup-add-defs-to-menubar)
+                     imenup-add-defs-to-menubar
+                     imenup-toggle-showing-bookmarks
+                     imenup-toggle-sort
+                     imenup-toggle-case-sensitive-sorting)
 
   (declare-function imenup-add-defs-to-menubar "ext:imenu+")
   (defun pel--setup-imenu+ ()

@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- PEL now uses my fork of imenu+.  To upgrade, delete or move the original out of the elpa directory and restart Emacs;
+  PEL will download the new version and use that.  The new version only supports Emacs 25 and later but fixes all warnings
+  and the error that occurs in some mode.
 - Add support for the my-whisper via *pel-use-my-whisper*.  This provides speech to text transcribe using a LLM model
   that is running locally provided by the Whisper.cpp open-source project. PEL binds the *my-whisper-mode* command to ~<f11> W W~.
   This is a global minor mode that perform audio recording in the background.  You can stop the mode or stop recording.
