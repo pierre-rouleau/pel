@@ -2545,9 +2545,6 @@ can't bind negative-argument to C-_ and M-_"
                      "pel-use-elf-mode is on, but can't find readelf executable!")))
 
 ;; ---------------------------------------------------------------------------
-;; [:todo 2025-11-30, by Pierre Rouleau: TEST remove!!]
-(pel-autoload-file tbindent for: tbindent-mode)
-;; ---------------------------------------------------------------------------
 ;;** Writing-Tools
 ;;   -------------
 ;;
@@ -2560,6 +2557,14 @@ can't bind negative-argument to C-_ and M-_"
   (pel-autoload-file artbollocks-mode for:
                      artbollocks-mode)
   (define-key pel:writing-tools "a" 'artbollocks-mode))
+
+;; Text Translation
+(when (and pel-use-go-translate
+           pel-emacs-27-or-later-p)
+  (pel-ensure-package gt from: melpa)
+  (define-pel-global-prefix pel:go-translate (kbd "<f11> W T"))
+  (define-key pel:writing-tools "T" 'gt-translate)
+  )
 
 (when pel-use-wc-mode
   (pel-ensure-package wc-mode from: melpa)
@@ -7521,11 +7526,6 @@ See `flyspell-auto-correct-previous-word' for more info."
 (declare-function pel-spell-maybe-activate-flyspell-prog "pel-spell")
 (pel-add-hook-for 'pel-modes-activating-flyspell-prog-mode
                   (function pel-spell-maybe-activate-flyspell-prog))
-
-;; Text Translation
-(when (and pel-use-go-translate
-           pel-emacs-27-or-later-p)
-  (pel-ensure-package gt from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;;* bookmark commands
