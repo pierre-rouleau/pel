@@ -2941,9 +2941,10 @@ MODE must be a symbol."
   (when pel-use-speedbar
     (pel-add-speedbar-extension ".ad[abs]"))
 
-  ;; 4- Buffer keymap for Ada
+  ;; 4- Define Buffer keymap for Ada
   (define-pel-global-prefix pel:for-ada   (kbd "<f11> SPC A"))
   (define-key pel:for-ada "?" 'pel-ada-setup-info)
+  (define-key pel:for-ada (kbd "M-f") 'pel-open-file-alternate)
 
   ;; 5- Install optional packages for Ada
 
@@ -8360,7 +8361,7 @@ the ones defined from the buffer now."
 ;; M-. M-/ M-d M-l M-u M-x
 (define-key pel:file  (kbd "M-d") 'pel-open-file-in-other-dir)
 (define-key pel2:file (kbd "M-d") 'pel-open-file-in-other-dir)
-(define-key pel2:file (kbd "M-f") #'find-file)
+(define-key pel2:file (kbd "M-f") 'pel-open-file-alternate)
 (define-key pel:file "I" #'insert-file-literally)
 (define-key pel:file "O" #'find-file-read-only-other-window)
 (define-key pel:file "L" (if pel-use-counsel 'counsel-locate #'locate))

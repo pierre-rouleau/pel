@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improved key bindings: ~M-<f11> M-f M-f~ is now bound to *pel-open-file-alternate* and the ~M-<F12> M-f~ binding to *pel-open-file-alternate*
+  is now available to Ada, Objective-C, and Seed7.
 - PEL now uses my fork of imenu+.  To upgrade, delete or move the original out of the elpa directory and restart Emacs;
   PEL will download the new version and use that.  The new version only supports Emacs 25 and later but fixes all warnings
   and the error that occurs in some mode.
