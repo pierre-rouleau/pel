@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-03 15:36:36 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-03 15:55:37 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -477,12 +477,14 @@ the file and the values of `pel-use-c', `pel-use-c++' and `pel-use-objc'."
    ;;       searches everywhere, including inside comments and strings.
    ;; C++
    ((pel-is-cpp-buffer)
-    (if (eq pel-use-c++ 'with-tree-sitter)
+    (if (and  (eq pel-use-c++ 'with-tree-sitter)
+              (fboundp 'c++-ts-mode))
         (c++-ts-mode)
       (c++-mode)))
    ;; Defaults to C
    (t
-    (if (eq pel-use-c 'with-tree-sitter)
+    (if (and (eq pel-use-c 'with-tree-sitter)
+             (fboundp 'c-ts-mode))
         (c-ts-mode)
       (c-mode)))))
 ;;; --------------------------------------------------------------------------
