@@ -2748,7 +2748,10 @@ can't bind negative-argument to C-_ and M-_"
                      c-toggle-hungry-state
                      c-toggle-syntactic-indentation)
 
-  (defun pel--map-cc-for (prefix setup-prefix guess-prefix &optional c-preproc-prefix c-search-replace-prefix)
+  (defun pel--map-cc-for (prefix
+                          setup-prefix
+                          guess-prefix
+                          &optional c-preproc-prefix c-search-replace-prefix)
     "Map in the PEL keys for CC Mode in the global keymap specified by PREFIX.
 If C-PREPROC-PREFIX also bind the keys for C preprocessor related
 commands and sub-keys inside that prefix.  If a key must be
@@ -2962,13 +2965,12 @@ MODE must be a symbol."
   (when pel-use-speedbar
     (pel-add-speedbar-extension ".awk"))
 
-  (pel--map-cc-for pel:for-awk
-                   pel:awk-setup
-                   pel:awk-guess)
-
   ;; Activate PEL Awk setup.  awk-mode is from cc-mode
   ;; Load this when the cc-mode is loaded.
   (pel-eval-after-load cc-mode
+    (pel--map-cc-for pel:for-awk
+                     pel:awk-setup
+                     pel:awk-guess)
     (pel-config-major-mode awk pel:for-awk :no-ts
       (progn
         ;; 1) set the style: it identifies everything
@@ -3026,12 +3028,6 @@ MODE must be a symbol."
   (when pel-use-call-graph
     (define-key pel:for-c (kbd "M-g") 'call-graph))
 
-  (pel--map-cc-for pel:for-c
-                   pel:c-setup
-                   pel:c-guess
-                   pel:for-c-preproc
-                   pel:c-search-replace)
-
   (when pel-use-bison
     (pel-ensure-package bison-mode from: melpa)
     ;; the bison-mode file associates: .y -> bison-mode
@@ -3052,6 +3048,11 @@ MODE must be a symbol."
   (declare-function pel-cc-find-activate-finder-method "pel-cc-find")
   (defvar pel-c-man-section)       ; prevent byte-compiler warning in Emacs 26
   (pel-eval-after-load cc-mode
+    (pel--map-cc-for pel:for-c
+                   pel:c-setup
+                   pel:c-guess
+                   pel:for-c-preproc
+                   pel:c-search-replace)
     (pel-config-major-mode c pel:for-c :no-ts
       (progn
         (defvar c-mode-map)  ; declare dynamic: prevent byte-compiler warnings
@@ -3155,18 +3156,19 @@ MODE must be a symbol."
   (when pel-use-call-graph
     (define-key pel:for-c++ (kbd "M-g") 'call-graph))
 
-  (pel--map-cc-for pel:for-c++
-                   pel:c++-setup
-                   pel:c++-guess
-                   pel:for-c++-preproc
-                   pel:c++-search-replace)
-
   ;; Add C++ specific commands
   (defvar pel-c++-man-section)     ; prevent byte-compiler warning in Emacs 26
-  (define-key pel:c++-search-replace (kbd "v") 'pel-move-down-to-class-visibility)
-  (define-key pel:c++-search-replace (kbd "V") 'pel-move-up-to-class-visibility)
   (declare-function pel--install-c++-skel "pel-skels-cpp")
+
   (pel-eval-after-load cc-mode
+    (pel--map-cc-for pel:for-c++
+                     pel:c++-setup
+                     pel:c++-guess
+                     pel:for-c++-preproc
+                     pel:c++-search-replace)
+    (define-key pel:c++-search-replace (kbd "v") 'pel-move-down-to-class-visibility)
+    (define-key pel:c++-search-replace (kbd "V") 'pel-move-up-to-class-visibility)
+
     (pel-config-major-mode c++ pel:for-c++ :no-ts
 
       ;; Configure how to search for a file name from the user-option
@@ -3292,6 +3294,10 @@ d-mode not added to ac-modes!"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-o`` :
 (when pel-use-objc
   (define-pel-global-prefix pel:for-objc  (kbd "<f11> SPC C-o"))
+  (define-pel-global-prefix pel:objc-setup          (kbd "<f11> SPC C-o <f4>"))
+  (define-pel-global-prefix pel:objc-guess          (kbd "<f11> SPC C-o <f4> g"))
+  (define-pel-global-prefix pel:for-objc-preproc    (kbd "<f11> SPC C-o #"))
+  (define-pel-global-prefix pel:objc-search-replace (kbd "<f11> SPC C-o s"))
   ;; [:todo 2025-04-27, by Pierre Rouleau: Activate skeletons]
   ;; (define-pel-global-prefix pel:objc-skel (kbd "<f11> SPC C-o <f12>"))
 
@@ -3300,7 +3306,14 @@ d-mode not added to ac-modes!"
                                   ".mm"
                                   ".M")))
 
+
+
   (pel-eval-after-load cc-mode
+    (pel--map-cc-for pel:for-objc
+                   pel:objc-setup
+                   pel:objc-guess
+                   pel:for-objc-preproc
+                   pel:objc-search-replace)
     (pel-config-major-mode objc pel:for-objc :no-ts
       (progn
         ;; (define-key objc-mode-map (kbd "M-;") 'pel-c-comment-dwim)
