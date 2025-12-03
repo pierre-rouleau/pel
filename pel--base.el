@@ -34,6 +34,7 @@
 ;;
 ;; List Handling:
 ;;  - `pel-list-of'
+;;  - `pel-transpose-alist'
 ;;
 ;; Environment Querying functions:
 ;;  - `pel-major-mode-must-be'
@@ -442,6 +443,12 @@ Other uses risk returning non-nil value that point to the wrong file."
   (if (listp val)
       val
     (list val)))
+
+(defun pel-transpose-alist (alist)
+  "Transpose an (a . b) ALIST into a (b . a) alist."
+  (mapcar (lambda (pair)
+            (cons (cdr pair) (car pair)))
+          alist))
 
 ;; ---------------------------------------------------------------------------
 ;; Environment Querying functions:

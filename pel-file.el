@@ -783,33 +783,46 @@ directory."
 
 ;; ---------------------------------------------------------------------------
 
-(defconst pel-alternate-extension-alist '(("c" . "h")
-                                          ("h" . "c")
-                                          ("cc" . "hh")
-                                          ("hh" . "cc")
-                                          ("cpp" . "hpp")
-                                          ("hpp" . "cpp")
-                                          ("cxx" . "hxx")
-                                          ("hxx" . "cxx"))
-  "Alternate file extensions for C and C++.")
+(defcustom  pel-alternate-extension-alist '(
+                                            ;; Ada
+                                            ("adb" . "ads")
+                                            ;; C
+                                            ("c" . "h")
+                                            ;; C++
+                                            ("cc" . "hh")
+                                            ("cpp" . "hpp")
+                                            ("cxx" . "hxx")
+                                            ;; Erlang
+                                            ("erl" . "hrl")
+                                            ;; Objective-C
+                                            ("m"   . "h")
+                                            ;; Objective-C++
+                                            ("mm" . "h")
+                                            ;; Seed7
+                                            ("sd7" . "s7i"))
+  "Alternate file extensions for programming languages."
+  :group 'pel-pkg-for-programming-languages
+  :type '(repeat :tag "extension pairs"
+                 (cons
+                  (string :tag "code  ")
+                  (string :tag "header"))))
 
 (defun pel--alternate-extension-for (ext)
   "Return alternate extension for EXT extension, a string.
 Return a string if one is found, nil otherwise."
-  (cdr (assoc ext pel-alternate-extension-alist)))
+  (or (cdr (assoc ext pel-alternate-extension-alist))
+      (cdr (assoc ext (pel-transpose-alist pel-alternate-extension-alist)))))
 
 ;;-pel-autoload
 (defun pel-open-file-alternate ()
   "Open a file with same name but an alternate extension.
 
 The new extension depends on the current file extension.
-The list of alternate extensions is currently very limited
-and restricted to C and C++.
+The list of alternate extensions is limited to the list defined in
+`pel-alternate-extension-alist' user-option.
 
 If the alternate file is not found, save the file basename in the
-kill ring and prompt for the file name to open.
-
-This is very limited as it is.  It will be improved later."
+kill ring and prompt for the file name to open."
   (interactive)
   (let* ((fname (pel-current-buffer-filename))
          (ext   (pel-current-buffer-file-extension))
