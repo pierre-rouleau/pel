@@ -2702,6 +2702,9 @@ can't bind negative-argument to C-_ and M-_"
                pel-use-objc
                pel-use-pike))
 
+  ;; Associate .h file with C/C++/Objective C mode selector
+  (add-to-list 'auto-mode-alist '("\\.h\\'" . pel-cc-mode))
+
   ;; TODO: check if main repo is OK.
   ;; c-eldoc is an external package.
   ;; I am waiting for a fix to be incorporated, using my copy with the fix
@@ -3050,10 +3053,10 @@ MODE must be a symbol."
   (defvar pel-c-man-section)       ; prevent byte-compiler warning in Emacs 26
   (pel-eval-after-load cc-mode
     (pel--map-cc-for pel:for-c
-                   pel:c-setup
-                   pel:c-guess
-                   pel:for-c-preproc
-                   pel:c-search-replace)
+                     pel:c-setup
+                     pel:c-guess
+                     pel:for-c-preproc
+                     pel:c-search-replace)
     (pel-config-major-mode c pel:for-c :no-ts
       (progn
         (defvar c-mode-map)  ; declare dynamic: prevent byte-compiler warnings

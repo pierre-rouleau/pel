@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-31 14:48:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-03 15:36:36 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -394,6 +394,97 @@ Prompt if not specified."
         (message "indentation is now %s" c-basic-offset))
     (error "c-basic-offset is not loaded!")))
 
+;; ---------------------------------------------------------------------------
+;; Distinguish Objective-C, C++ and C Code
+;; ---------------------------------------
+
+(defconst pel-cpp-keywords '("class "
+                             "final"
+                             "namespace "
+                             "override"
+                             "private:"
+                             "protected:"
+                             "public:"
+                             "std::"
+                             "template<"
+                             "using namespace "
+                             "virtual ")
+  "Strings only found in C++ code.")
+
+(defconst pel-cpp-regexp (rx-to-string
+                          `(: (or ,@pel-cpp-keywords)))
+  "Regexp string to search for C++ distinguishing code.")
+
+(defconst pel-objective-c-keywords '("@dynamic"
+                                     "@end"
+                                     "@implementation"
+                                     "@interface"
+                                     "@property"
+                                     "@protocol"
+                                     "@synthesize")
+  "Symbols only found in Objective-C code.")
+
+(defconst pel-objective-c-regexp (rx-to-string
+                                  `(: (or ,@pel-objective-c-keywords)))
+  "Regexp string to search for Objective-C distinguishing code.")
+
+(defun pel--isa-buffer-of (lang-regexp)
+  "Return t if the buffer hold the language identified by LANG-REGEXP.
+Return nil otherwise."
+  (let ((found nil))
+    (save-excursion
+      (goto-char (point-min))
+      (while (and (not found)
+                  (re-search-forward lang-regexp nil t))
+        (save-match-data
+          (when (pel-inside-code (point))
+            (setq found t)))))
+    found))
+
+(defun pel-is-objective-c-buffer ()
+  "Return t if current buffer holds Objective-C code, nil otherwise."
+  (pel--isa-buffer-of pel-objective-c-regexp))
+
+;; (defun pel-is-objective-c-file (fpath)
+;;   "Return t if file at FPATH contains Objective-C code.
+;; Return nil otherwise."
+;;   (with-temp-buffer
+;;     (insert-file-contents fpath)
+;;     (pel-is-objective-c-buffer)))
+
+(defun pel-is-cpp-buffer ()
+  "Return t if current buffer holds C++ code, nil otherwise."
+  (pel--isa-buffer-of pel-cpp-regexp))
+
+;; (defun pel-is-cpp-file (fpath)
+;;   "Return t if file at FPATH contains C++ code.
+;; Return nil otherwise."
+;;   (with-temp-buffer
+;;     (insert-file-contents fpath)
+;;     (pel-is-cpp-buffer)))
+
+;;-pel-autoload
+(defun pel-cc-mode ()
+  "Major mode dispatcher for C, C++ and Objective-C.
+Use one of the following modes depending what is found inside the content of
+the file and the values of `pel-use-c', `pel-use-c++' and `pel-use-objc'."
+  (interactive)
+  (cond
+   ;; Objective-C (there is no Tree-Sitter support for Objective-C yet.)
+   ((pel-is-objective-c-buffer)
+    (objc-mode))
+   ;; Note: Emacs uses `c-or-c++-mode' to distinguish C++ from C, but that
+   ;;       searches everywhere, including inside comments and strings.
+   ;; C++
+   ((pel-is-cpp-buffer)
+    (if (eq pel-use-c++ 'with-tree-sitter)
+        (c++-ts-mode)
+      (c++-mode)))
+   ;; Defaults to C
+   (t
+    (if (eq pel-use-c 'with-tree-sitter)
+        (c-ts-mode)
+      (c-mode)))))
 ;;; --------------------------------------------------------------------------
 (provide 'pel-cc)
 

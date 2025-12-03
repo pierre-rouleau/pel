@@ -248,6 +248,7 @@
 ;;
 ;; Check text from buffer
 ;; - `pel-line-has-only-whitespace-p'
+;; - `pel-inside-code'
 ;;
 ;; File Path processing
 ;; - `pel-is-subdir-of'
@@ -2944,6 +2945,14 @@ current major mode."
          (skip-syntax-forward " ")
          (point))
        (line-end-position))))
+
+(defun pel-inside-code (&optional pos)
+  "Return non-nil when point or POS is in code, nil if in comment or string.
+Note that this changes the search match data!"
+  (let* ((pos (or pos (point)))
+         (syntax (syntax-ppss pos)))
+    (and (not (nth 3 syntax))
+         (not (nth 4 syntax)))))
 
 ;; ---------------------------------------------------------------------------
 ;; File Path processing

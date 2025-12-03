@@ -6032,10 +6032,17 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
 (defcustom pel-use-c nil
-  "Controls whether PEL implements extra functionality for C support."
+  "Controls whether PEL implements extra functionality for C support.
+
+This *must* be activated to allow any other package for C support.
+When activating it you can select between the following values:
+- t                : use `c-mode' provided by the c-mode built-in.
+- with-tree-sitter : use `c-ts-mode' provided by the c-ts-mode built-in."
   :group 'pel-pkg-for-c
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use C" nil)
+          (const :tag "Use classic mode: c-mode" t)
+          (const :tag "Use tree-sitter mode: c-ts-mode" with-tree-sitter)))
 (pel-put 'pel-use-c :package-is :builtin-emacs)
 (pel-put 'pel-use-c :also-required-when 'pel-use-bison)
 
@@ -6773,10 +6780,17 @@ taking over the default association with c-mode."
   :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
 
 (defcustom pel-use-c++ nil
-  "Controls whether PEL implements extra functionality for C++ support."
+  "Controls whether PEL implements extra functionality for C++ support.
+
+This *must* be activated to allow any other package for C++ support.
+When activating it you can select between the following values:
+- t                : use `c++-mode' provided by the c++-mode built-in.
+- with-tree-sitter : use `c++-ts-mode' provided by the c++-ts-mode built-in."
   :group 'pel-pkg-for-c++
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use C++" nil)
+          (const :tag "Use classic mode: c++-mode" t)
+          (const :tag "Use tree-sitter mode: c++-ts-mode" with-tree-sitter)))
 (pel-put 'pel-use-c++ :package-is :builtin-emacs)
 
 (defcustom pel-use-emacs-ccls-for-c++ nil

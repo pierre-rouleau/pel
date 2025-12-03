@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- When opening a .h file, PEL now uses the new *pel-cc-mode* mode dispatcher function that checks the content of the file
+  to determine if the file is C, C++ or Objective-C code and uses the appropriate mode.
+  The *pel-use-c* and *pel-use-c++* user-options can now be set to with-tree-sitter to automatically open the file in the Tree-Sitter based mode.
 - Improved key bindings: ~M-<f11> M-f M-f~ is now bound to *pel-open-file-alternate* and the ~M-<F12> M-f~ binding to *pel-open-file-alternate*
   is now available to Ada, Objective-C, and Seed7.
 - PEL now uses my fork of imenu+.  To upgrade, delete or move the original out of the elpa directory and restart Emacs;

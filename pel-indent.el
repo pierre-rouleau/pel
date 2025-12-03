@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-30 12:50:53 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-03 13:58:38 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -174,7 +174,8 @@
 ;;
 
 (require 'pel--base)                    ; use: `pel-string-ends-with-p',
-                                        ; `pel-file-type-for', `pel-list-of'
+;;                                      ;      `pel-file-type-for', `pel-list-of'
+;;                                      ;      `pel-inside-code'
 (require 'pel--indent)                  ; use: `'
 (require 'pel--options)                 ; use: `pel-use-dtrt-indent'
 
@@ -1101,14 +1102,6 @@ With APPEND optional argument non-nil, append to the buffer."
 ;;       . `pel-set-tab-width'
 ;;     * `pel-indent-with-spaces'
 ;;       . `pel-set-tab-width'
-
-(defun pel-inside-code (&optional pos)
-  "Return non-nil when point or POS is in code, nil if in comment or string.
-Note that this changes the search match data!"
-  (let* ((pos (or pos (point)))
-         (syntax (syntax-ppss pos)))
-    (and (not (nth 3 syntax))
-         (not (nth 4 syntax)))))
 
 (defun pel-tabify-all-indent ()
   "Convert multiple spaces in indent to tabs when possible.
