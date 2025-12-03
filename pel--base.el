@@ -445,7 +445,7 @@ Other uses risk returning non-nil value that point to the wrong file."
     (list val)))
 
 (defun pel-transpose-alist (alist)
-  "Transpose an (a . b) ALIST into a (b . a) alist."
+  "Transpose the (a . b) ALIST into a (b . a) alist."
   (mapcar (lambda (pair)
             (cons (cdr pair) (car pair)))
           alist))
