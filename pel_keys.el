@@ -3233,7 +3233,6 @@ MODE must be a symbol."
   ;; Configure commands available on the D key-map.
   (when pel-use-plantuml
     (define-key pel:for-d "u" 'pel-render-commented-plantuml))
-  (pel--map-cc-for pel:for-d pel:d-setup pel:d-guess)
 
   ;; Configure auto-completion based on selection
   ;; There are 2 possibilities
@@ -3256,6 +3255,9 @@ d-mode not added to ac-modes!"
     (add-hook 'd-mode-hook 'company-dcd-mode))
 
   (pel-eval-after-load d-mode
+
+    (pel--map-cc-for pel:for-d pel:d-setup pel:d-guess)
+
     (pel-config-major-mode d pel:for-d :no-ts
       ;; "Set the environment for editing D files."
       ;; activate skeletons
