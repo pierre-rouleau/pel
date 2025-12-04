@@ -94,8 +94,7 @@ In that case return the directory part of PATH-NAME."
 
 (defun pel--show-tramp-fspec (fname)
   "Return alist of Tramp file specification elements for FNAME.
-The keys are: method, user, domain, host, port, localname, and hop.
-"
+The keys are: method, user, domain, host, port, localname, and hop."
   (with-parsed-tramp-file-name fname e
     (list  (cons 'method e-method)
            (cons 'user e-user)
@@ -473,9 +472,8 @@ which encodes the window position and other booleans."
 - ACTION    := \\='edit | \\='create | message-string
          where the message string is returned with nil to describe why
          we do not edit or create the file.
-- N       := identifies target window. See `pel-find-file-at-point-in-window'.
-- TARGET-REGEXP: optional search regexp to search location.
-"
+- N       := identifies target window.  See `pel-find-file-at-point-in-window'.
+- TARGET-REGXP: optional search regexp to search location."
   (let* ((nspec (pel--file-window-info-for n))
          (n-value  (nth 1 nspec))
          (filename (nth 0 fileparts))
@@ -665,7 +663,8 @@ were specified."
 
 ;;-pel-autoload
 (defun pel-show-filename-parts-at-point (&optional keep-file-url)
-  "Display file parts extracted from point.  Testing utility."
+  "Display file parts extracted from point.  Testing utility.
+Use the URL part when KEEP-FILE-URL is non nil."
   (interactive "P")
   (let ((fname-parts (pel-filename-parts-at-point keep-file-url)))
     (if fname-parts
@@ -687,7 +686,7 @@ character or the filename are accepted but removed.
 The comma, semi-comma, parenthesis and square brackets are used
 as delimiters except for `rst-mode' and `markdown-mode'.
 
-When executed from with a buffer in sh-mode, the shell variables
+When executed from with a buffer in `sh-mode', the shell variables
 found in the string are expanded and the delimiters include the
 '=' and ':' characters.  This helps extracting file names in
 shell scripts.
@@ -697,12 +696,12 @@ Variable name expansion:
   variable substitution in the file name.
   That's useful for environment variables in file names.
 
-The optional EXTRA_DELIMITERS string allows adding extra
+The optional EXTRA-DELIMITERS string allows adding extra
 delimiter characters to the existing list.
 
 Limitation: the file name delimiters currently used are
-relatively safe but not sufficient for all cases. These will
-probably have to be modified to be a user option in a future version. "
+relatively safe but not sufficient for all cases.  These will
+probably have to be modified to be a user option in a future version."
   (if (use-region-p)
       (buffer-substring-no-properties (region-beginning) (region-end))
     (save-excursion
@@ -782,36 +781,43 @@ directory."
     (find-file (format "%s/%s" new-dirname file-basename))))
 
 ;; ---------------------------------------------------------------------------
+;; Open Alternate File
+;; -------------------
 
-(defcustom  pel-alternate-extension-alist '(
-                                            ;; Ada
-                                            ("adb" . "ads")
-                                            ;; C
-                                            ("c" . "h")
-                                            ;; C++
-                                            ("cc" . "hh")
-                                            ("cpp" . "hpp")
-                                            ("cxx" . "hxx")
-                                            ;; Erlang
-                                            ("erl" . "hrl")
-                                            ;; Objective-C
-                                            ("m"   . "h")
-                                            ;; Objective-C++
-                                            ("mm" . "h")
-                                            ;; Seed7
-                                            ("sd7" . "s7i"))
-  "Alternate file extensions for programming languages."
+(defcustom  pel-file-extension-alist '((ada
+                                        (("adb")
+                                         ("ads")))
+                                       (c
+                                        (("c")
+                                         ("h")))
+                                       (c++
+                                        (("cpp" "cxx" "cc" "C")
+                                         ("hpp" "hxx" "hh" "h")))
+                                       (erlang
+                                        (("erl")
+                                         ("hrl")))
+                                       (objc
+                                        (("m" "mm")
+                                         ("h")) )
+                                       (seed7
+                                        (("sd7") ("s7i"))))
+  "Alternate file extensions for programming languages.
+An association lists that maps a language mode name to lists of code
+extensions and header extensions.
+Each list contains:
+- The language mode name is a symbol that exclude the -mode or -ts-mode.
+  For example, something like ada, c or c++.
+- A list of on or more strings, where each string is the code file
+  extension without the leading period.
+- A list of on or more strings, where each string is the header file
+  extension without the leading period."
   :group 'pel-pkg-for-programming-languages
-  :type '(repeat :tag "extension pairs"
-                 (cons
-                  (string :tag "code  ")
-                  (string :tag "header"))))
-
-(defun pel--alternate-extension-for (ext)
-  "Return alternate extension for EXT extension, a string.
-Return a string if one is found, nil otherwise."
-  (or (cdr (assoc ext pel-alternate-extension-alist))
-      (cdr (assoc ext (pel-transpose-alist pel-alternate-extension-alist)))))
+  :type '(repeat
+          (list
+           (symbol :tag "language mode name")
+           (list :tag "list tag"
+                 (repeat :tag "code   file extension(s)" (string :tag "code  "))
+                 (repeat :tag "header file extension(s)" (string :tag "header"))))))
 
 ;;-pel-autoload
 (defun pel-open-file-alternate ()
@@ -824,22 +830,45 @@ The list of alternate extensions is limited to the list defined in
 If the alternate file is not found, save the file basename in the
 kill ring and prompt for the file name to open."
   (interactive)
-  (let* ((fname (pel-current-buffer-filename))
-         (ext   (pel-current-buffer-file-extension))
-         (bname (file-name-sans-extension fname))
-         (alt-ext (pel--alternate-extension-for ext)))
-    (if alt-ext
-        (let ((alt-fname (format "%s.%s" bname alt-ext)))
-          (if (file-exists-p alt-fname)
+  (let* ((mode-name (intern (pel-file-type-for major-mode)))
+         (mode-ext-list (car-safe
+                         (cdr-safe
+                          (assoc mode-name pel-file-extension-alist)))))
+    (if mode-ext-list
+        ;; Alternate extension for this mode are defined
+        (let* ((code-exts (car mode-ext-list))
+               (header-exts (cadr mode-ext-list))
+               (fname (pel-current-buffer-filename))
+               (ext   (pel-current-buffer-file-extension))
+               (bname (file-name-sans-extension fname))
+               (alt-exts (cond
+                          ((member ext code-exts) header-exts)
+                          ((member ext header-exts) code-exts)
+                          (t nil)))
+               (alt-fname nil)
+               (found nil))
+          (while (and alt-exts
+                      (not found))
+            (setq alt-fname (format "%s.%s" bname (car alt-exts)))
+            (setq alt-exts (cdr alt-exts))
+            (when (file-exists-p alt-fname)
+              (setq found t)))
+          (if found
               (find-file alt-fname)
-            ;; On failure remember base name of file (without path) in kill
-            ;; ring and prompt for the file.
+            ;; if nothing found (or when no alternates are known)
+            ;; remember the base name of file (without path) in kill ring and
+            ;; prompt for the file.
             (kill-new (file-name-nondirectory bname))
             (ido-find-file)
             ;; remove that entry from kill ring (naive, should probably check
             ;; for the value and remove that: todo later)
             (setq kill-ring (cdr kill-ring))))
-      (user-error "No alternate extension for %s" ext))))
+
+        ;; No alternate defined for language
+        (user-error
+         "No %s alternate extensions defined in `pel-file-extension-alist'.
+Customize it to add extensions if necessary"
+         mode-name))))
 
 ;; --
 (defun pel-shell-command-on-current-file (command-format)
