@@ -3299,13 +3299,28 @@ d-mode not added to ac-modes!"
 ;;   ----------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-o`` :
 (when pel-use-objc
-  (define-pel-global-prefix pel:for-objc  (kbd "<f11> SPC C-o"))
+  (define-pel-global-prefix pel:for-objc            (kbd "<f11> SPC C-o"))
   (define-pel-global-prefix pel:objc-setup          (kbd "<f11> SPC C-o <f4>"))
   (define-pel-global-prefix pel:objc-guess          (kbd "<f11> SPC C-o <f4> g"))
   (define-pel-global-prefix pel:for-objc-preproc    (kbd "<f11> SPC C-o #"))
   (define-pel-global-prefix pel:objc-search-replace (kbd "<f11> SPC C-o s"))
   ;; [:todo 2025-04-27, by Pierre Rouleau: Activate skeletons]
   ;; (define-pel-global-prefix pel:objc-skel (kbd "<f11> SPC C-o <f12>"))
+
+  (when pel-use-flycheck-objc-clang
+    (pel-ensure-package flycheck-objc-clang from: melpa)
+    (when pel-use-flycheck
+      (with-eval-after-load 'flycheck
+        (when (fboundp 'flycheck-objc-clang-setup)
+          (add-hook 'flycheck-mode-hook #'flycheck-objc-clang-setup)))))
+
+  (when pel-use-objc-font-lock
+    (pel-install-github-file "pierre-rouleau/objc-font-lock/master/"
+                             "objc-font-lock.el")
+    (pel-autoload-file objc-font-lock for:
+                       objc-font-lock-mode
+                       objc-font-lock-global-mode)
+    (define-key pel:for-objc (kbd "M-F") 'objc-font-lock-mode))
 
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".m"
@@ -3316,10 +3331,10 @@ d-mode not added to ac-modes!"
 
   (pel-eval-after-load cc-mode
     (pel--map-cc-for pel:for-objc
-                   pel:objc-setup
-                   pel:objc-guess
-                   pel:for-objc-preproc
-                   pel:objc-search-replace)
+                     pel:objc-setup
+                     pel:objc-guess
+                     pel:for-objc-preproc
+                     pel:objc-search-replace)
     (pel-config-major-mode objc pel:for-objc :no-ts
       (progn
         ;; (define-key objc-mode-map (kbd "M-;") 'pel-c-comment-dwim)

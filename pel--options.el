@@ -11272,11 +11272,34 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :type 'boolean
   :safe #'booleanp)
 
+
+(defcustom pel-use-flycheck-objc-clang nil
+  "Control whether PEL activates flycheck-objc-clang for Objective-C."
+  :link '(url-link :tag "flycheck-objc-clang @ Github"
+                   "https://github.com/GyazSquare/flycheck-objc-clang")
+  :group 'pel-pkg-for-objc
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-objc-font-lock nil
+  "Control whether PEL activates objc-font-lock for Objective-C.
+PEL currently uses my fork to prevent byte compiler warning."
+  :link '(url-link :tag "My fork of objc-font-lock @ Github"
+                   "https://github.com/pierre-rouleau/objc-font-lock")
+  :link '(url-link :tag "objc-font-lock @ Github"
+                   "https://github.com/Lindydancer/objc-font-lock")
+  :group 'pel-pkg-for-objc
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-objc-font-lock :package-is :in-utils)
+
 (defcustom pel-use-emacs-ccls-for-objc nil
   "Control whether PEL activates ccls lsp for Objective-C.
 
 This automatically activates `pel-use-emacs-ccls', `pel-use-lsp-mode'.
 and `pel-use-lsp-ui-mode'."
+  :link '(url-link :tag "ccls @ Github"
+                   "https://github.com/MaskRay/ccls")
   :group 'pel-pkg-for-objc
   :type 'boolean
   :safe #'booleanp)

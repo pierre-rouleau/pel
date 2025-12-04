@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for objc-font-lock via *pel-use-objc-font-lock*, and to via flycheck-objc-clang via *pel-use-flycheck-objc-clang*.
 - When opening a .h file, PEL now uses the new *pel-cc-mode* mode dispatcher function that checks the content of the file
   to determine if the file is C, C++ or Objective-C code and uses the appropriate mode.
   The *pel-use-c* and *pel-use-c++* user-options can now be set to with-tree-sitter to automatically open the file in the Tree-Sitter based mode.

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-01 15:31:59 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-04 12:04:55 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -105,7 +105,8 @@
 
 (defconst pel--objc-groups (let ((items '(c
                                           c-macro
-                                          electricity)))
+                                          electricity
+                                          objc-font-lock)))
                              (when pel-use-call-graph
                                (append items '(call-graph)))))
 
@@ -450,8 +451,7 @@
     (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        (lfe
                                                                  lispy))
 
-    (,(kbd "<f11> SPC C-o") "pl-objc"   pel-pkg-for-objc
-     ,pel--objc-groups)
+    (,(kbd "<f11> SPC C-o") "pl-objc"   pel-pkg-for-objc ,pel--objc-groups)
 
     (,(kbd "<f11> SPC C-p") "pl-pike"   pel-pkg-for-pike  c)
     ;; Scheme Dialect Languages
