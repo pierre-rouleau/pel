@@ -42,7 +42,7 @@
 ;; Credits: The pathstop string with Unicode block characters
 ;;          originally borrowed from Xah Lee's xah-open-file-at-cursor
 ;;          function at his web site:
-;;          `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'.
+;;          'http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'.
 
 ;; Implementation call hierarchy
 ;; -----------------------------
@@ -64,6 +64,13 @@
 ;; * pel-show-filename-parts-at-point
 ;;   - pel-filename-parts-at-point
 ;;
+;; * pel-open-file-in-other-dir
+;;
+;; * pel-open-file-alternate
+;;
+;; * pel-show-rpm-providing-file
+;;   - pel-shell-command-on-current-file
+
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
 
@@ -752,7 +759,9 @@ Interactively use any prefix argument."
             (load-file (concat fn ".el"))))
       (user-error "Cannot load %s.  It is not an Emacs Lisp file!" fn))))
 
-
+;; ---------------------------------------------------------------------------
+;; Open Same File in Other Directory
+;; ---------------------------------
 
 ;;-pel-autoload
 (defun pel-open-file-in-other-dir ()
