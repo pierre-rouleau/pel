@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 24 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-19 14:47:33 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-05 09:47:58 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,10 +25,23 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;; This file provides the `pel-mode-setup-info' command.  It prints
+;; information about the current major mode in a help-like buffer providing
+;; quick access to information and customization by showing customizable
+;; user-option variables and functions as clickable buttons.
 ;;
-;; - pel-startup-<thing to activate at startup>
-;; pel-startup-xref-front-end
-
+;;  * `pel-mode-setup-info'
+;;    - `pel-insert-minor-mode-activation-info'
+;;      - `pel-insert-bold'
+;;      - `pel-mode-activating-user-options'
+;;        - `pel-mode-activating-user-option-p'
+;;        - `pel-compare-symbol-names'
+;;      - `pel-custom-group-for'
+;;      - `pel--add-uo-to-group'
+;;      - `pel-mode-activates-p'
+;;    - `pel--maj-mode-minor-mode-activation-info'
+;;    - `pel-active-minor-modes'
+;;    - `pel-insert-bold'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -70,7 +83,6 @@ USER-OPTION is a symbol for one of the pel-modes-activating- user-options.
 MODE is a symbol for the specific mode."
   (memq mode (symbol-value user-option)))
 
-
 (defun pel-custom-group-for (user-option)
   "Return the customization group for a USER-OPTION."
   ;; I did not find any mechanism to identify the group of a defcustom.
@@ -83,10 +95,13 @@ MODE is a symbol for the specific mode."
   (let ((current-list (gethash group hash-table nil)))
     (puthash group (cons user-option current-list) hash-table)))
 
+(defun pel-insert-bold (text)
+  (insert (propertize text 'face 'bold)))
+
 (defun pel-insert-minor-mode-activation-info (mode &optional prelim-inserter)
   "Insert text listing each pel-modes-activating user-option.
 For each one add whether it activates the specific MODE."
-  (insert (propertize "* Minor Mode Activation Control:" 'face 'bold))
+  (pel-insert-bold "* Minor Mode Activation Control:")
   (when prelim-inserter
     (funcall prelim-inserter))
   (insert "
@@ -105,7 +120,7 @@ The ones activated for this mode show a check-mark to the right.
       (pel--add-uo-to-group user-option group-name group-minor-mode-hash))
     ;; Print info: user-option per group
     (dolist (grp-name (sort group-names #'string<))
-      (insert (propertize (format "\n - %s:" grp-name) 'face 'bold))
+      (pel-insert-bold (format "\n - %s:" grp-name))
       (dolist (usr-opt (sort (gethash grp-name group-minor-mode-hash)
                              #'string<))
         (insert "\n            - ")
@@ -129,6 +144,24 @@ following user-options:")
 (defconst pel-used-by-default  '(pel-use-emacs-lisp)
   "List of pel-use user-options that are always activated.")
 
+
+(defun pel-active-minor-modes ()
+  "Return a list of all active minor modes in the current buffer."
+  (let (active-modes)
+    (mapc (lambda (mode-symbol)
+            (condition-case nil
+                (when (and (symbolp mode-symbol) (symbol-value mode-symbol))
+                  (setq active-modes (cons mode-symbol active-modes)))
+              (error nil))) ; Ignore errors for non-variable symbols
+          minor-mode-list)
+    (sort active-modes #'string<)))
+
+
+;; [:todo 2025-12-05, by Pierre Rouleau: Investigate extra symbols like:
+;;     - pel-startup-<thing to activate at startup>
+;;     - pel-startup-xref-front-end
+;; ]
+
 ;;-pel-autoload
 (defun pel-mode-setup-info (&optional append)
   "Print setup information for the current major mode in specialized buffer.
@@ -146,13 +179,15 @@ most generic information about the mode."
                                  "pel-%s-setup-info"))))
     (if (fboundp setup-info-cmd)
         (call-interactively setup-info-cmd)
-      (let* ((indent-control-context (pel-indent-control-context))
+      (let* ((active-modes (pel-active-minor-modes))
+             (indent-control-context (pel-indent-control-context))
              (tab-control-context    (pel-tab-control-context))
              (pel-insert-symbol-content-context-buffer (current-buffer))
              (current-major-mode major-mode)
              (mode-base-symbol (intern (pel-file-type-for major-mode)))
-             (pel-use-mode-user-option-symbol (intern (pel-string-with-major-mode
-                                                       "pel-use-%s")))
+             (pel-use-mode-user-option-symbol (intern
+                                               (pel-string-with-major-mode
+                                                "pel-use-%s")))
              (major-mode-used-text-fct (intern (pel-string-with-major-mode
                                                 "pel-%s-mode-used-text")))
              (major-mode-activates-minor-modes (intern
@@ -166,7 +201,7 @@ most generic information about the mode."
          (lambda ()
            "Print setup info for the major mode."
            ;; -- Major Mode
-           (insert (propertize "* Major Mode Control:" 'face 'bold))
+           (pel-insert-bold "* Major Mode Control:")
            (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
                                       "major mode currently used")
            (when pel-use-tree-sitter
@@ -201,6 +236,11 @@ most generic information about the mode."
  Please create a bug report in https://github.com/pierre-rouleau/pel
  to request explicit control of facilities you would need for this mode.
 "))
+           ;; -- List of minor modes
+           (insert "\n\n")
+           (pel-insert-bold "*Active minor modes:\n")
+           (pel-insert-symbol-list active-modes 80)
+
            ;; -- Minor Mode activation
            (insert "\n\n")
            (let ((pel--MM-activates-minor-modes major-mode-activates-minor-modes))

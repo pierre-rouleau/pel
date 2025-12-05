@@ -3248,6 +3248,24 @@ OBJECT."
         (insert (format "\n%3d -%s" idx (if on-same-line "" "\n"))))
       (pel--pp elem (current-buffer) "   "))))
 
+(defun pel-insert-symbol-list (symbol-list &optional
+                                           line-width )
+  "Insert a list of symbols over a set of wrapped lines.
+The list of symbol is in SYMBOL-LIST and the maximum line width is LINE-WIDTH."
+  (let ((w 12)
+        (scount (length symbol-list)))
+    (insert (format "- %2d modes: " scount))
+    (dolist (s symbol-list)
+      (setq w (+ w (length (symbol-name s)) 2))
+      (pel-insert-symbol s)
+      (setq scount (1- scount))
+      (if (> scount 0)
+          (insert ", ")
+        (insert "."))
+      (when (>= w line-width)
+        (setq w 1)
+        (insert "\n ")))))
+
 (defun pel-insert-list-content (symbol &optional
                                        buffer without-index
                                        no-button on-same-line)
