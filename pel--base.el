@@ -3188,7 +3188,9 @@ By default:
                       (make-string (max 0 (- 40 (length name))) ?\s)
                       (if on-same-line " " "\n")))
       (if (and (symbolp value)
-               (not (memq value '(t nil))))
+               (not (memq value '(t nil)))
+               (or (boundp value)
+                   (fboundp value)))
           (pel-insert-symbol value no-button)
         (insert (format "%s" value))))))
 

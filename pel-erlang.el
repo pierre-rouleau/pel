@@ -272,7 +272,7 @@ following user-options:")
      (lambda ()
        "Print Erlang setup info."
        (insert (propertize "* Major Mode Control:" 'face 'bold))
-       (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
+       (pel-insert-symbol-content 'major-mode nil :on-same-line nil
                                   "major mode currently used")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-05 16:37:28 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-05 16:46:43 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -190,7 +190,7 @@ following user-options:")
      (lambda ()
        "Print Lua setup info."
        (insert (propertize "* Major Mode Control:" 'face 'bold))
-       (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
+       (pel-insert-symbol-content 'major-mode nil :on-same-line nil
                                   "major mode currently used")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for

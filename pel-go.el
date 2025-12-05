@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-05 15:33:50 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-05 16:44:23 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -255,7 +255,7 @@ following user-options:")
      (lambda ()
        "Print Go setup info."
        (pel-insert-bold "* Major Mode Control:")
-       (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
+       (pel-insert-symbol-content 'major-mode nil :on-same-line nil
                                   "major mode currently used")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for

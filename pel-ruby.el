@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-04 15:01:49 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-05 16:59:56 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -39,7 +39,8 @@
 ;;                          ;      `pel-tab-insert-control-info',
 ;;                          ;      `pel-tab-control-context'
 (require 'pel-modes)        ; use: `pel-insert-minor-mode-activation-info'
-
+;;                          ;      `pel-active-minor-modes'
+;;                          ;      `pel-insert-list-of-minor-modes'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -162,6 +163,7 @@ following user-options:")
   (pel-major-mode-must-be '(ruby-mode ruby-ts-mode))
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
         (current-major-mode major-mode)
+        (active-modes (pel-active-minor-modes))
         (indent-control-context (pel-indent-control-context))
         (tab-control-context (pel-tab-control-context)))
     (pel-print-in-buffer
@@ -170,18 +172,20 @@ following user-options:")
      (lambda ()
        "Print Ruby setup info."
        (insert (propertize "* Major Mode Control:" 'face 'bold))
-       (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
+       (pel-insert-symbol-content 'major-mode nil :on-same-line nil
                                   "major mode currently used")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for
                                    'ruby "\n- "))))
        (pel-insert-symbol-content-line 'pel-use-ruby nil
                                        (function pel-ruby-mode-used-text))
+       ;; -- List of minor modes
+       (pel-insert-list-of-minor-modes active-modes)
        (insert "\n\n")
-       ;; --
        (pel-insert-minor-mode-activation-info current-major-mode
                                               #'pel--ruby-minor-mode-info)
        (insert "\n\n")
+       ;; --
        (pel-indent-insert-control-info indent-control-context)
        (pel-tab-insert-control-info tab-control-context))
      (unless append :clear-buffer)
