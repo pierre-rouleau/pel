@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October  6 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-29 15:46:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-05 16:30:10 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -40,6 +40,8 @@
 ;;                          ;      `pel-tab-insert-control-info',
 ;;                          ;      `pel-tab-control-context'
 (require 'pel-modes)        ; use: `pel-insert-minor-mode-activation-info'
+;;                          ;      `pel-active-minor-modes'
+;;                          ;      `pel-insert-list-of-minor-modes'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -132,6 +134,7 @@ following user-options:")
   (pel-major-mode-must-be 'gleam-ts-mode)
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
         (current-major-mode major-mode)
+        (active-modes (pel-active-minor-modes))
         (indent-control-context (pel-indent-control-context))
         (tab-control-context (pel-tab-control-context))
         (format-on-save (pel--symbol-value 'gleam-ts-format-on-save :quiet)))
@@ -158,10 +161,12 @@ following user-options:")
                                           v
                                           "yes, format on save."
                                           "no, save buffer unchanged.")))
+       ;; -- List of minor modes
+       (pel-insert-list-of-minor-modes active-modes)
        (insert "\n\n")
-       ;; --
        (pel-insert-minor-mode-activation-info current-major-mode
                                               #'pel--gleam-minor-mode-info)
+       ;; --
        (insert "\n\n")
        (pel-indent-insert-control-info indent-control-context)
        (pel-tab-insert-control-info tab-control-context)
