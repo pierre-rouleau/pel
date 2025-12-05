@@ -28,14 +28,19 @@
 ;;
 
 ;;-pel-autoload
-(defun pel-show-face-at-point ()
-  "Display information about face at point."
-  (interactive)
-  (message "\
+(defun pel-show-face-at-point (&optional edit)
+  "Display information about face at point.
+With \\[universal-argument] optional argument or EDIT non-nil,
+customize the face found at point."
+  (interactive "P")
+  (let ((the-face (get-char-property (point) 'face)))
+    (message "\
 - face           : %s
 - read-face-name : %s"
-           (get-char-property (point) 'face)
-           (get-char-property (point) 'read-face-name)))
+             the-face
+             (get-char-property (point) 'read-face-name))
+    (when edit
+      (customize-face the-face))))
 
 ;; --
 
