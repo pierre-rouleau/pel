@@ -3179,10 +3179,13 @@ By default:
         (insert description)
       (pel-insert-symbol symbol (or no-button description)))
     (unless no-value
-      (insert (format "%s:%s%S"
+      (insert (format "%s:%s"
                       (make-string (max 0 (- 40 (length name))) ?\s)
-                      (if on-same-line " " "\n")
-                      value)))))
+                      (if on-same-line " " "\n")))
+      (if (and (symbolp value)
+               (not (memq value '(t nil))))
+          (pel-insert-symbol value no-button)
+        (insert (format "%s" value))))))
 
 (defun pel-insert-symbol-content-line (symbol &optional buffer extra-text)
   "Insert the name followed by the content of the specified SYMBOL.
