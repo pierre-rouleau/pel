@@ -492,6 +492,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-go-dot-mod-mode
     pel-go-toggle-gofmt-on-buffer-save
     pel-go-setup-info
+    pel-go-mod-setup-info
     pel-go-toggle-syntax-checker)
   (pel-autoload-function "pel-go" for:
     pel--go-ts-mode-fixer

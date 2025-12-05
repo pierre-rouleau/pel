@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 24 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-05 10:05:35 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-05 15:27:49 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,7 +32,6 @@
 ;;
 ;;  * `pel-mode-setup-info'
 ;;    - `pel-insert-minor-mode-activation-info'
-;;      - `pel-insert-bold'
 ;;      - `pel-mode-activating-user-options'
 ;;        - `pel-mode-activating-user-option-p'
 ;;        - `pel-compare-symbol-names'
@@ -41,13 +40,12 @@
 ;;      - `pel-mode-activates-p'
 ;;    - `pel--maj-mode-minor-mode-activation-info'
 ;;    - `pel-active-minor-modes'
-;;    - `pel-insert-bold'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)        ; use: `pel-string-starts-with-p'
+(require 'pel--base)        ; use: `pel-string-starts-with-p', `pel-insert-bold'
 (require 'pel--options)
 (require 'pel-indent)       ; use: `pel-indent-insert-control-info',
 ;;                          ;      `pel-indent-control-context'
@@ -94,9 +92,6 @@ MODE is a symbol for the specific mode."
   "Add the USER-OPTION to the list associated with GROUP in HASH-TABLE."
   (let ((current-list (gethash group hash-table nil)))
     (puthash group (cons user-option current-list) hash-table)))
-
-(defun pel-insert-bold (text)
-  (insert (propertize text 'face 'bold)))
 
 (defun pel-insert-minor-mode-activation-info (mode &optional prelim-inserter)
   "Insert text listing each pel-modes-activating user-option.
@@ -156,6 +151,12 @@ following user-options:")
           minor-mode-list)
     (sort active-modes #'string<)))
 
+
+(defun pel-insert-list-of-minor-modes (minor-modes)
+  "Insert a list of MINOR-MODES in current buffer in a set of wrapped lines."
+  (insert "\n\n")
+  (pel-insert-bold "*Active minor modes:\n")
+  (pel-insert-symbol-list minor-modes 80))
 
 ;; [:todo 2025-12-05, by Pierre Rouleau: Investigate extra symbols like:
 ;;     - pel-startup-<thing to activate at startup>
@@ -237,9 +238,7 @@ most generic information about the mode."
  to request explicit control of facilities you would need for this mode.
 "))
            ;; -- List of minor modes
-           (insert "\n\n")
-           (pel-insert-bold "*Active minor modes:\n")
-           (pel-insert-symbol-list active-modes 80)
+           (pel-insert-list-of-minor-modes active-modes)
 
            ;; -- Minor Mode activation
            (insert "\n\n")

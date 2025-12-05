@@ -266,6 +266,7 @@
 ;; - `pel-symlink-points-to-p'
 ;;
 ;; Insertion of text in current buffer
+;; - `pel-insert-bold'
 ;; - `pel-insert-url-link'
 ;; - `pel-insert-symbol-content-line'
 ;;   - `pel-insert-symbol-content'
@@ -3109,6 +3110,10 @@ This function handles both."
 ;; ---------------------------------------------------------------------------
 ;; Insertion of text in current buffer
 ;; -----------------------------------
+
+(defun pel-insert-bold (text)
+  "Insert bold TEXT at point."
+  (insert (propertize text 'face 'bold)))
 
 (defun pel-insert-url-link (title url &optional extra-text)
   "Insert a TITLE hyperlink button to specified URL.

@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-05 22:24:17 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-05 15:33:50 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,13 +31,15 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)        ; use: `pel-treesit-ready-p'
+(require 'pel--base)        ; use: `pel-treesit-ready-p', `pel-insert-bold'
 (require 'pel--options)     ; use:
 (require 'pel-indent)       ; use: `pel-indent-insert-control-info',
 ;;                          ;      `pel-indent-control-context'
 ;;                          ;      `pel-tab-insert-control-info',
 ;;                          ;      `pel-tab-control-context'
 (require 'pel-modes)        ; use: `pel-insert-minor-mode-activation-info'
+;;                          ;      `pel-active-minor-modes'
+;;                          ;      `pel-insert-list-of-minor-modes'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -243,6 +245,7 @@ following user-options:")
                             go-dot-mod-mode
                             go-mod-ts-mode))
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+        (active-modes (pel-active-minor-modes))
         (current-major-mode major-mode)
         (indent-control-context (pel-indent-control-context))
         (tab-control-context (pel-tab-control-context)))
@@ -251,7 +254,7 @@ following user-options:")
      "PEL setup for Go programming language"
      (lambda ()
        "Print Go setup info."
-       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (pel-insert-bold "* Major Mode Control:")
        (pel-insert-symbol-content 'major-mode nil :on-same-line :no-button
                                   "major mode currently used")
        (when pel-use-tree-sitter
@@ -259,9 +262,10 @@ following user-options:")
                                    'go "\n- "))))
        (pel-insert-symbol-content-line 'pel-use-go nil
                                        (function pel-go-mode-used-text))
+
        (insert "\n\n")
        ;;
-       (insert (propertize "* Code Formatting Control:" 'face 'bold))
+       (pel-insert-bold "* Code Formatting Control:")
        (pel-insert-symbol-content-line 'pel-go-run-gofmt-on-buffer-save
                                        nil
                                        (lambda (v)
@@ -270,6 +274,8 @@ following user-options:")
                                           "yes, format on save."
                                           "no, save buffer unchanged.")))
        (pel-insert-symbol-content-line 'pel-use-goflymake)
+       ;; -- List of minor modes
+       (pel-insert-list-of-minor-modes active-modes)
        (insert "\n\n")
        ;; --
        (pel-insert-minor-mode-activation-info current-major-mode
@@ -279,6 +285,12 @@ following user-options:")
        (pel-tab-insert-control-info tab-control-context))
      (unless append :clear-buffer)
      :use-help-mode)))
+
+;;-pel-autoload
+(defun pel-go-mod-setup-info (&optional append)
+  "Display Go.Mod setup information."
+  (interactive "P")
+  (pel-go-setup-info append))
 
 ;; --
 
