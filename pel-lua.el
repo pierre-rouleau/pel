@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-04 14:55:29 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-05 16:37:28 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -39,6 +39,8 @@
 ;;                          ;      `pel-tab-insert-control-info',
 ;;                          ;      `pel-tab-control-context'
 (require 'pel-modes)        ; use: `pel-insert-minor-mode-activation-info'
+;;                          ;      `pel-active-minor-modes'
+;;                          ;      `pel-insert-list-of-minor-modes'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -179,7 +181,8 @@ following user-options:")
   (pel-major-mode-must-be '(lua-mode lua-ts-mode))
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
         (current-major-mode major-mode)
-        (indent-control-context (pel-indent-control-context))
+        (active-modes (pel-active-minor-modes))
+       (indent-control-context (pel-indent-control-context))
         (tab-control-context (pel-tab-control-context)))
     (pel-print-in-buffer
      "*pel-lua-info*"
@@ -194,10 +197,12 @@ following user-options:")
                                    'lua "\n- "))))
        (pel-insert-symbol-content-line 'pel-use-lua nil
                                        (function pel-lua-mode-used-text))
+       ;; -- List of minor modes
+       (pel-insert-list-of-minor-modes active-modes)
        (insert "\n\n")
-       ;; --
        (pel-insert-minor-mode-activation-info current-major-mode
                                               #'pel--lua-minor-mode-info)
+       ;; --
        (insert "\n\n")
        (pel-indent-insert-control-info indent-control-context)
        (pel-tab-insert-control-info tab-control-context))
