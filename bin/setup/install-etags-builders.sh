@@ -4,7 +4,7 @@
 # Purpose   : Install PEL etags builder scripts.
 # Created   : Thursday, June  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-30 11:04:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2025-12-05 13:52:23 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -54,6 +54,7 @@ install_file "etags-go"
 install_file "etags-javascript"
 install_file "etags-lisp"
 install_file "etags-make"
+install_file "etags-objc"
 install_file "etags-perl"
 install_file "etags-pike"
 install_file "etags-py"

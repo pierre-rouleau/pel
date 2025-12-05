@@ -1,0 +1,434 @@
+#!/bin/sh
+# SH FILE: etags-objc
+#
+# Purpose   : Build Emacs Tags files for Objective-C code files.
+# Created   : Friday, December  5 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2025-12-05 14:07:49 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+
+# Module Description
+# ------------------
+#
+# Build an Emacs Tags file for all Objective-C source code files in the
+# sub-directory tree.  This includes all files with  the following extensions:
+#
+# - Objective-C files: .m, .mm, .h
+#
+
+# Use Universal Ctags
+# ...................
+# Although this supports etags and Universal Ctags, Universal CTags appears
+# to handle Objective-C code better than etags.  Therefore you may want to use
+# the -u option or set ETAGS_USE_UCTAGS to 1 to force the use of Universal
+# CTags for Objective-C projects.
+#
+
+# ----------------------------------------------------------------------------
+#  Dependencies
+#  ------------
+
+# - etags
+# - xargs, printf, uname, sort, uniq, find, rm.
+# - Uses fd (also named fdfind in some Linux distros like Mint) if it is
+#   available.  See URL:  https://github.com/sharkdp/fd .
+# - if fd/fdfind is not available, use find instead.
+#
+# Using fd/fdfind is preferred because it supports ignoring files identified
+# by .gitignore, .ignore, .fdignore files. The fd utility can also execute
+# faster than find in several scenarios.
+#
+# - To force use of find, set the ETAGS_USE_FIND environment variable to 1.
+
+# - Uses etags to process files unless ETAGS_USE_UCTAGS environment variable
+#   is set to 1, in which case the ctags utility is found, assuming that it
+#   is the Universal Ctags utility, not any other ctag command.
+#   You can also set ETAGS_USE_UCTAGS to the absolute path of the
+#   Universal Ctags executable file.
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+pgm_name="$(basename "$0")"
+etags_flist_fname=.etags-objc-files.txt
+etags_flist_envvar_fname="$ETAGS_FILE_LIST_FOR_OBJC"
+build_tags=true
+
+print_usage()
+{
+    printf -- "
+%s: build a etags-compliant TAGS file in the current directory
+         for all Objective-C source code files in the directory trees
+         specified on the command line.
+
+ Usage: %s -h|--help
+
+  • Print this help information.
+
+ Usage: %s [-u] [-n] [DIRPATH ...]
+        %s [-u] [--list=FILENAME]
+
+  • [Re]build an etags-compliant TAGS file in current directory
+    for the Objective-C code & header files found:
+    - in the DIRPATH directory tree(s) identified on the command line, or
+      the current directory if none is specified,
+    - in the list provided in the FILENAME specified by the --list option, or
+    - specified by the ETAGS_FILE_LIST_FOR_OBJC environment variable.
+  • Follows symbolic links both for directories and files.
+  • Uses etags to build the TAGS file by default, but
+    -u : force use Universal Ctags (ctags) instead of etags.
+         RECOMMENDED: Universal Ctags appears to handle Objective-C
+                      better than etags.
+  • Set ETAGS_USE_UCTAGS to 1 or the absolute path of
+    Universal Ctags executable file to force using Universal Ctags.
+    When setting it to 1, the ctags found in PATH is expected
+    to be Universal Ctags.
+  • Overwrites any TAGS file in the current directory.
+  • Stores the names of inspected files in the file named
+     .etags-objc-files.txt in the current directory.
+  • Identifies the Objective-C files using one of the following methods:
+    • If ETAGS_FILE_LIST_FOR_OBJC environment variable exists, it uses it as
+      the name of a file that holds a list of Objective-C files to parse.
+      The name of this file can be anything except .etags-objc-files.txt
+      and it must exists. If it does not: exists with an error.
+      Each line of the file must identify a Objective-C file to parse.
+    • Searches the list of Objective-C source code files.
+      • It uses 'fdfind' or 'fd' if available, 'find' otherwise.
+        - The fd utility is from: https://github.com/sharkdp/fd
+        - In some Linux distros, 'fd' is renamed 'fdfind'.
+      • To force the use of 'find', set ETAGS_USE_FIND environment
+        variable to 1.
+      • ☝️  When using 'fdfind' or 'fd', the files identified
+        by the .gitignore, .ignore or .fdignore files are ignored.
+        You may want to check if some Objective-C files are identified
+        in those files, then manually add them to .etags-objc-files.txt
+        and re-run etags-c with --list specified.
+  • Stores the names of inspected files in the file named
+    .etags-objc-files.txt stored in the same directory as TAGS.
+  • -n : do not create TAGS file, just add names of Objective-C
+         source code files into the .etags-objc-files.txt
+         file.  Use this option to create the list of source
+         files in multiple commands and then later the
+         etags-c --list to create the TAGS file.
+  • Uses etags to build the TAGS file by default.
+    • Set ETAGS_USE_UCTAGS to 1 or to the absolute path of Universal
+      Ctags executable file to force using Universal Ctags instead.
+      When setting it to 1, the ctags found in PATH is expected
+      to be Universal Ctags.
+   • Info printed on stderr:
+     • The path of the find program used and when repository ignore files
+       are skipped from the scan.
+     • A count of found files, and the name of the file that holds them.
+" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
+    if [ "$ETAGS_USE_FIND" = "1" ]; then
+        printf -- "
+⚠️   ETAGS_USE_FIND is currently set to 1, forcing the use of 'find'!
+    • To prevent this, set it to 0 or remove that environment variable.
+    • With USRHOME, you can use setenv and clrenv.
+      See: https://github.com/pierre-rouleau/usrhome
+"
+    fi
+}
+
+# --
+# run__etags__objc -- run etags or ctags on a set of files
+# ----------------
+#
+# Use etags to parse the source code files unless ETAGS_USE_UCTAGS
+# environment variable is set to 1.  In which case it uses ctags.
+# Ideally that would be the latest version of Universal ctags
+# from https://github.com/universal-ctags/ctags#readme as opposed to the
+# old and currently un-maintained Exeburant ctags.
+# When using Emacs, Emacs provides its own ctags that is essentially etags.
+# Etags generates a tag file format a little different and better suited for Emacs.
+
+run__etags__objc()
+{
+    # Expects no argument, but expects a list of files to parse on stdin.
+
+    if [ -n "$ETAGS_USE_UCTAGS" ]; then
+        if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
+            xargs ctags --output-format=etags
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)" 1>&2
+        elif [ -x "$ETAGS_USE_UCTAGS" ]; then
+            xargs "$ETAGS_USE_UCTAGS" --output-format=etags
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS" 1>&2
+        else
+            printf -- "*** ERROR: %s: invalid ETAGS_USE_UCTAGS value\n" "${pgm_name}" 1>&2
+            printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS" 1>&2
+            printf -- "***  This is not 1 nor a valid executable file name.\n" 1>&2
+            exit 4
+        fi
+    else
+        # Qualify tag names with their class name in Objective-C
+        etags --class-qualify -
+    fi
+}
+
+# --
+# Check validity of arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    if [ "$#" = "1" ]; then
+        # help requested explicitly with right amount of args: no error.
+        exit 0
+    else
+        exit  1
+    fi
+fi
+
+# Check -u option to force use of universal ctags
+# Check -n option: if specified do not build TAGS file and append to .etags-objc-files.txt
+# Note that we can have -u -n, -u, or -n: so handle all possible cases.
+if [ "$1" = "-u" ]; then
+    if [ -z "$ETAGS_USE_UCTAGS" ]; then
+        printf -- "%s: -u option requests use of Universal Ctags.\n" "${pgm_name}" 1>&2
+        ETAGS_USE_UCTAGS=1
+    else
+        printf -- "%s: -u option not necessary (but does no harm).\n" "${pgm_name}" 1>&2
+        printf -- " ETAGS_USE_UCTAGS is already set to: %s\n" "$ETAGS_USE_UCTAGS" 1>&2
+    fi
+    shift
+elif [ "$1" = "-n" ]; then
+    build_tags=false
+    shift
+fi
+if [ "$1" = "-n" ]; then
+    build_tags=false
+    shift
+fi
+
+# --
+
+
+# --
+#  Check --list option to extract list of Objective-C files.
+
+case "$1" in
+    --list=*)
+    # extract the file name from the --list= option
+        fname="$(echo "$1" | sed 's/--list=//g')"
+        if [ ! -f "${fname}" ]; then
+            printf -- "\
+*** ERROR: %s: specified list file does not exist: %s
+" "${pgm_name}" "${fname}" 1>&2
+            exit 1
+        else
+            etags_flist_envvar_fname="${fname}"
+            shift
+        fi
+        ;;
+esac
+
+# ----------------------------------------------------------------------------
+# Define a function that searches into 1 directory
+# and accumulates the list of found files into the
+# file '.etags-objc-files.txt'.
+
+# Identify options
+case $(uname) in
+    Darwin)
+        find_path_option='-f'
+        ;;
+    Linux)
+        find_path_option=
+        ;;
+    *)
+        printf -- "*** ERROR: %s:  Error Operating System, %s, is not supported!\n" "${pgm_name}"  "$(uname)" 1>&2
+        exit 1
+        ;;
+esac
+
+search_with_find()
+{
+    # Arg: dirname : name of directory tree to search
+    find -L \
+         ${find_path_option} "$dirname" \
+         \(  -name "*.m"                \
+         -or -name "*.mm"               \
+         -or -name "*.h"                \
+         \)  -print | tee -a "${etags_flist_fname}"
+}
+
+search_with_fd()
+{
+    # Arg: dirname : name of directory tree to search
+    # Arg: fd_pgm  : fd or fdfind
+    ${fd_pgm} -L --absolute-path \
+              --follow           \
+              --type f           \
+              --type l           \
+              -e .m              \
+              -e .mm             \
+              -e .h              \
+             '' "$dirname" | tee -a "${etags_flist_fname}"
+}
+
+search()
+{
+    # Arg: dirname : name of directory tree to search
+    # Arg: search_with : find or fd
+    case "$search_with" in
+        find)
+            search_with_find
+            ;;
+
+        fd)
+            search_with_fd
+            ;;
+    esac
+}
+
+# --
+# Proceed
+
+if [ -n "${etags_flist_envvar_fname}" ]; then
+    # If the ETAGS_FILE_LIST_FOR_OBJC environment variable was set in the shell
+    # invoking etags-c then use that if possible: that variable should
+    # identify a file name different than what we use internally.
+    if [ "${etags_flist_envvar_fname}" = "${etags_flist_fname}" ]; then
+        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_OBJC to %s\n" "${pgm_name}" "${etags_flist_fname}"1>&2
+        printf -- "           Use a different file name!\n" 1>&2
+        exit 1
+    fi
+    printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_C: %s\n" "${etags_flist_envvar_fname}" 1>&2
+    cp "${etags_flist_envvar_fname}" "${etags_flist_fname}"
+    printf -- "Generating TAGS ...\n" 1>&2
+    run__etags__objc < "${etags_flist_envvar_fname}"
+else
+    # Check the validity of directory names specified as arguments.
+    # Ensure that each directory specified on the command line
+    # exists.  Also ensure that a directory name is not specified more
+    # than once.  Use the realpath of that directory name when comparing.
+    # Exit on the first error detected.
+    dpaths=
+    for dname in "$@"; do
+        if [ ! -d "${dname}" ]; then
+            printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2
+            exit 2
+        fi
+        dpath="$(realpath "${dname}")"
+        for dp in ${dpaths}; do
+            if [ "$dp" = "$dpath" ]; then
+                printf -- "Multiple entry of directory: %s\n" "${dname}" 1>&2
+                exit 3
+            fi
+            # check if new entry is a sub-directory of an exiting entry
+            case "${dpath}" in
+                "${dp}/"*)
+                    printf -- "%s is a sub-dir of already specified %s\n" "${dname}" "${dp}" 1>&2
+                    exit 3
+                    ;;
+            esac
+            # check if new entry is a parent directory of an existing entry
+            case "${dp}" in
+                "${dpath}/"*)
+                    printf -- "%s is a parent dir of already specified %s\n" "${dname}" "${dp}" 1>&2
+                    exit 3
+                    ;;
+            esac
+
+        done
+        dpaths="${dpaths} ${dpath}"
+    done
+
+    # --
+    # First prepare environment
+    # Select the method to search for files.
+    # - Try to use fd or fdfind if they exist,
+    #   otherwise use find.
+    # - Echo the actual program used to find files (on stderr).
+    if [ "$ETAGS_USE_FIND" = "1" ]; then
+        search_with='find'
+    else
+        if [ -x "$(command -v fdfind)" ]; then
+            search_with='fd'
+            fd_pgm=fdfind
+        elif [ -x "$(command -v fd)" ]; then
+            search_with='fd'
+            fd_pgm=fd
+        else
+            search_with='find'
+        fi
+    fi
+    # Print operating information on stderr.
+    case "$search_with" in
+        find)
+            printf -- "etags-c -- ETAGS_USE_FIND set to 1: forces the use of find!\n" 1>&2
+            printf --  "       -> Using %s\n" "$(which find)"                         1>&2
+            ;;
+
+        fd)
+            printf -- "etags-c -- Using sharkdp/fd fast find.\n" 1>&2
+            printf -- "        -> Using %s\n" "$(which "${fd_pgm}")" 1>&2
+            printf -- " -> ☝️  Ignoring files identified in .gitignore, .ignore or .fdignore\n" 1>&2
+            printf -- " -> ☝️  You may want to run a search with find once to detect broken symlinks\n" 1>&2
+            ;;
+
+        *)
+            printf -- "etags-c ** Error: cannot identify find program!\n" 1>&2
+            exit 1
+            ;;
+    esac
+    printf --  "No list of files identified by ETAGS_FILE_LIST_FOR_C.\n" 1>&2
+    printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
+
+    # -- proceed
+    # Rename the old list of files if it exists and TAGS will be built
+    if [ "${build_tags}" = "true" ]; then
+        if [ -e "${etags_flist_fname}" ]; then
+            mv "${etags_flist_fname}" "${etags_flist_fname}.backup"
+        fi
+    fi
+
+    # Search in all specified directory to build the list of
+    # files in the file '"${etags_flist_fname}"'.
+    if [ -z "$1" ]; then
+        dirname="."
+        search
+    else
+        for dirname in "$@"; do
+            search
+        done
+    fi
+
+    # If required, run etags on these files, and sort them in the etags file
+    if [ "${build_tags}" = "true" ]; then
+        sort < "${etags_flist_fname}" | uniq >  "${etags_flist_fname}.new"
+        rm -f "${etags_flist_fname}"
+        mv "${etags_flist_fname}.new" "${etags_flist_fname}"
+        printf -- "Generating TAGS ...\n" 1>&2
+        run__etags__objc < "${etags_flist_fname}"
+    fi
+fi
+
+if [ "${build_tags}" = "true" ]; then
+    file_count="$(wc -l "${etags_flist_fname}" | awk '{print $1}')"
+    if [ "$file_count" = "0" ]; then
+        # restore the old list of files.
+        rm -f "${etags_flist_fname}"
+        if [ -e "${etags_flist_fname}.backup" ]; then
+            mv "${etags_flist_fname}.backup"  "${etags_flist_fname}"
+        fi
+        printf -- "No files found. %s and TAGS files untouched.\n" "${etags_flist_fname}"  1>&2
+        exit 1
+    else
+        rm -f "${etags_flist_fname}.backup"
+        printf "\
+  %s - %s files found and processed.
+             Created: %s/TAGS
+             Scanned file list stored in: %s/%s\n" "${pgm_name}" "${file_count}" "$(pwd)" "$(pwd)" "${etags_flist_fname}" 1>&2
+    fi
+else
+    printf -- "Appended file list to: %s\nNo TAGS file created\n" "${etags_flist_fname}"
+fi
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
