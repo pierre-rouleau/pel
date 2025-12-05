@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-04 15:08:29 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-05 15:50:01 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -38,6 +38,8 @@
 ;;                          ;      `pel-tab-insert-control-info',
 ;;                          ;      `pel-tab-control-context'
 (require 'pel-modes)        ; use: `pel-insert-minor-mode-activation-info'
+;;                          ;      `pel-active-minor-modes'
+;;                          ;      `pel-insert-list-of-minor-modes'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -101,6 +103,7 @@ following user-options:")
   (interactive "P")
   (pel-major-mode-must-be 'forth-mode)
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+        (active-modes (pel-active-minor-modes))
         (current-major-mode major-mode)
         (indent-control-context (pel-indent-control-context))
         (tab-control-context (pel-tab-control-context)))
@@ -114,8 +117,9 @@ following user-options:")
                                   "major mode currently used")
        (insert "
 There is no known Tree-Sitter based Emacs major mode for Forth yet.")
+       ;; -- List of minor modes
+       (pel-insert-list-of-minor-modes active-modes)
        (insert "\n\n")
-       ;; --
        (pel-insert-minor-mode-activation-info current-major-mode
                                               #'pel--forth-minor-mode-info)
        (insert "\n\n")
