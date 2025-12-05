@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 20 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-04 15:12:21 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-05 16:34:38 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -38,6 +38,8 @@
 ;;                          ;      `pel-tab-insert-control-info',
 ;;                          ;      `pel-tab-control-context'
 (require 'pel-modes)        ; use: `pel-insert-minor-mode-activation-info'
+;;                          ;      `pel-active-minor-modes'
+;;                          ;      `pel-insert-list-of-minor-modes'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -203,6 +205,7 @@ following user-options:")
   (pel-major-mode-must-be '(js-mode js-ts-mode js2-mode js3-mode))
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
         (current-major-mode major-mode)
+        (active-modes (pel-active-minor-modes))
         (indent-control-context (pel-indent-control-context))
         (tab-control-context (pel-tab-control-context)))
     (pel-print-in-buffer
@@ -218,10 +221,12 @@ following user-options:")
                                    'js "\n- "))))
        (pel-insert-symbol-content-line 'pel-use-js nil
                                        (function pel-js-mode-used-text))
+       ;; -- List of minor modes
+       (pel-insert-list-of-minor-modes active-modes)
        (insert "\n\n")
-       ;; --
        (pel-insert-minor-mode-activation-info current-major-mode
                                               #'pel--js-minor-mode-info)
+       ;; --
        (insert "\n\n")
        (pel-indent-insert-control-info indent-control-context)
        (pel-tab-insert-control-info tab-control-context))
