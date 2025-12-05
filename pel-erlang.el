@@ -113,6 +113,8 @@
 ;;                              ;      `pel-tab-insert-control-info',
 ;;                              ;      `pel-tab-control-context'
 (require 'pel-modes)            ; use: `pel-insert-minor-mode-activation-info'
+;;                              ;      `pel-active-minor-modes'
+;;                              ;      `pel-insert-list-of-minor-modes'
 (require 'pel-syntax)           ; use: `pel-insert-space-in-enclosing-block'
 (require 'pel-xref)             ; use: `pel-xref-find-definitions'
 (require 'pel-comment)          ; use: `pel-comment-dwim'
@@ -260,6 +262,7 @@ following user-options:")
   (interactive "P")
   (pel-major-mode-must-be '(erlang-mode erlang-ts-mode))
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+        (active-modes (pel-active-minor-modes))
         (current-major-mode major-mode)
         (indent-control-context (pel-indent-control-context))
         (tab-control-context (pel-tab-control-context)))
@@ -276,6 +279,8 @@ following user-options:")
                                    'erlang "\n- "))))
        (pel-insert-symbol-content-line 'pel-use-erlang nil
                                        (function pel-erlang-mode-used-text))
+       ;; -- List of minor modes
+       (pel-insert-list-of-minor-modes active-modes)
        (insert "\n\n")
        ;; --
        (pel-insert-minor-mode-activation-info current-major-mode
