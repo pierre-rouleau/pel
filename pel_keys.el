@@ -2236,6 +2236,8 @@ can't bind negative-argument to C-_ and M-_"
 ;;       - pel-xxx-tab-width
 ;;       - pel-xxx-use-tabs
 
+(define-pel-global-prefix pel:for-programming    (kbd "<f11> SPC -"))
+
 ;;** Global prefixes to specialized major-mode prefixes
 ;;    =================================================
 ;;
@@ -2248,6 +2250,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; SPC     - prefix for sub keys
 ;; C-s     - prefix for Scheme implementation
 ;;
+;; -       - All programming languages
 ;; .       - APL
 ;; :       - Smalltalk
 ;; 0       - ssh-authorized-keys-mode
@@ -4001,8 +4004,11 @@ d-mode not added to ac-modes!"
 
 ;;*** Other Emacs Lisp support
 ;;    ------------------------
-(define-pel-global-prefix pel:for-elisp  (kbd "<f11> SPC l"))
-(define-pel-global-prefix pel:elisp-skel (kbd "<f11> SPC l <f12>"))
+(define-pel-global-prefix pel:for-elisp    (kbd "<f11> SPC l"))
+(define-pel-global-prefix pel:elisp-help   (kbd "<f11> SPC l ?"))
+(define-pel-global-prefix pel:elisp-setup  (kbd "<f11> SPC l <f4>"))
+(define-pel-global-prefix pel:elisp-eldoc  (kbd "<f11> SPC l <f4> d"))
+(define-pel-global-prefix pel:elisp-skel   (kbd "<f11> SPC l <f12>"))
 
 (define-key pel:for-elisp "z"  'ielm)
 (define-key pel:for-elisp "D"  'pel-add-dir-to-loadpath)
@@ -4016,12 +4022,11 @@ d-mode not added to ac-modes!"
 (when (eq pel-use-parinfer t)
   (define-key pel:for-elisp "i" 'parinfer-auto-fix))
 
-(define-pel-global-prefix pel:elisp-help (kbd "<f11> SPC l ?"))
-(define-key pel:elisp-help "e" 'eldoc-mode)
+(define-key pel:elisp-eldoc "d" 'eldoc-mode)
 (when (and pel-use-eldoc-box
            pel-emacs-is-graphic-p)
-  (define-key pel:elisp-help "b" 'eldoc-box-hover-mode)
-  (define-key pel:elisp-help "B" 'eldoc-box-hover-at-point-mode))
+  (define-key pel:elisp-eldoc "b" 'eldoc-box-hover-mode)
+  (define-key pel:elisp-eldoc "B" 'eldoc-box-hover-at-point-mode))
 
 (define-pel-global-prefix pel:elisp-analyze (kbd "<f11> SPC l a"))
 (define-key pel:elisp-analyze ")" #'check-parens)

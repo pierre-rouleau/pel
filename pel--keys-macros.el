@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-04 12:04:55 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-06 17:36:44 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -393,8 +393,14 @@
                                                                  rainbow-delimiters
                                                                  suggest))
     ([f11 32 ?l f12] "pl-emacs-lisp"    pel-elisp-code-style)
-    ([f11 32 ?l ??]  "pl-emacs-lisp"    pel-pkg-for-all-languages (eldoc
-                                                                   eldoc-box))
+
+    ;; [:todo 2025-12-06, by Pierre Rouleau: Create a page for programming
+    ;; language support. It could be used to hold general information about
+    ;; Language Server Protocol support, AI LLM support and other important
+    ;; topics that apply to programming, markup, data, hardware major
+    ;; modes. For the moment it only has information about eldoc]
+    ([f11 32 ?-]  "eldoc"    pel-pkg-for-all-languages           (eldoc
+                                                                  eldoc-box))
 
     ([f11 32 ?0]     "ssh-files"    pel-pkg-for-ssh         ssh-file)
     ([f11 32 ?1]     "ssh-files"    pel-pkg-for-ssh         ssh-file)
