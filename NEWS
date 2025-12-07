@@ -2,6 +2,15 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Starting keymap refactoring to use ~<f12> <f4>~ in each major mode to be
+  used as a key prefix to manage minor modes and toggle various minor-mode
+  features that are used in several major modes.  This way the key binding
+  will be the same in all the major modes, making them easier to remember.
+  - The first change concerns eldoc and its Emacs Lisp mode key bindings:
+    instead of being in ~<f12> ?~  the key binding for all eldoc related
+    commands are now inside ~<f12> <f4> d~.  They will also be in the major
+    modes that support it nicely.  I might also add support inside the ~<f11>
+    <f4>~ in the future.  I also add a preliminary PDF for Eldoc.
 - The *pel-show-face-at-point* now accepts an optional argument to request editing (customizing) the face at point.
 - Add support for objc-font-lock via *pel-use-objc-font-lock*, and to via flycheck-objc-clang via *pel-use-flycheck-objc-clang*.
 - When opening a .h file, PEL now uses the new *pel-cc-mode* mode dispatcher function that checks the content of the file
