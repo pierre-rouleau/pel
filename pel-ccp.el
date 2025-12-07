@@ -115,6 +115,7 @@
 ;;     o`pel--kill-thing-at-point'
 ;;   * `pel-kill-paragraph-at-point'
 ;;   * `pel-kill-char-at-point'
+;;   * `pel-clean-kill-ring'
 ;; - Delete Commands
 ;;   * `pel-delete-all-empty-lines'
 ;;   * `pel-delete-word-at-point'
@@ -177,6 +178,7 @@
 ;;; Dependencies:
 (require 'pel--base)
 (require 'pel--options)
+(require 'cl-seq)                       ; use'cl-delete-duplicates'
 
 ;;; Code:
 ;; ---------------------------------------------------------------------------
@@ -523,6 +525,19 @@ a negative N kills characters backwards."
                    (forward-char (prefix-numeric-value n))
                    (point)))
     (pel--show-killed)))
+
+;;-pel-autoload
+(defun pel-clean-kill-ring ()
+  "Clean kill-ring: remove all duplicate entries."
+  (interactive)
+  (let ((original-size (length kill-ring))
+        (duplicate-count 0))
+    (setq kill-ring (cl-delete-duplicates kill-ring :test 'equal))
+    (setq duplicate-count (- original-size (length kill-ring)) )
+    (if (eq duplicate-count 0)
+        (message "No duplicates in kill-ring")
+      (message "Removed %d duplicate%s from kill-ring" duplicate-count
+               (if (> duplicate-count 1) "s" "")))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Delete Commands

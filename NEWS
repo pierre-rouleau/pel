@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+_ Add *pel-clean-kill-ring* command, bound to ~<f11> - C-k~ , and update key
+binding of *browse-kill-ring* : replaced ~C-c y~ by ~<f11> - C-b~.   Also, now
+PEL uses my fork of the project to eliminate most warnings.
 - Starting keymap refactoring to use ~<f12> <f4>~ in each major mode to be
   used as a key prefix to manage minor modes and toggle various minor-mode
   features that are used in several major modes.  This way the key binding

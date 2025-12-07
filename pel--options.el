@@ -1761,12 +1761,16 @@ command to change it either for the local buffer or globally."
 (defcustom pel-use-browse-kill-ring nil
   "Whether PEL uses the `browse-kill-ring' package.
 
-This adds the `browse-kill-ring' command to easily see the kill ring content."
+This adds the `browse-kill-ring' command to easily see the kill ring content.
+PEL uses my fork of the project."
   :group 'pel-pkg-for-cut-and-paste
   :type 'boolean
   :safe #'booleanp
+  :link '(url-link :tag "my fork @Github"
+                   "https://github.com/pierre-rouleau/browse-kill-ring")
   :link '(url-link :tag "@Github"
-                   "https://github.com/browse-kill-ring/browse-kill-ring"))
+                   "https://github.com/browse-kill-ring/browse-kill-ring")
+  )
 
 (defcustom pel-kill-symbol-at-point-terminal-binding nil
   "Optional key binding in terminal mode for pel-kill-symbol-at-point.

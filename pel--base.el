@@ -902,10 +902,10 @@ Does not handle all of English, it handles the following types:
 
 (defun pel-count-string (n singular &optional plural no-count-for-1)
   "Return a formatted string for N in SINGULAR form or PLURAL form.
-If N is 0 or 1, use the singular form.
-If N > 2: use the PLURAL form if specified,
-          otherwise use `pel-plural-of' to compute the plural
-          form of SINGULAR.
+- If N is 0 or 1, use the singular form.
+- If N > 2: use the PLURAL form if specified,
+            - otherwise use `pel-plural-of' to compute the plural
+              form of SINGULAR.
 By default, display the count of 1 unless NO-COUNT-FOR-1 is set."
 
   (if (> n 1)

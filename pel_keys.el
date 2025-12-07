@@ -1510,27 +1510,6 @@ Your version of Emacs does not support dynamic module.")))
     (add-hook 'tcl-mode-hook 'pel-iedit-enhance-tcl)))
 
 ;; ---------------------------------------------------------------------------
-;;** popup-kill-ring
-;;   -----------------
-;; View all kill-ring deletions in a pop-up menu, when M-y is typed.
-;; Activate the popup-kill-ring in graphic mode only
-;; because it does not seem to work in terminal mode.
-;; It uses the pos-tip package.
-(when (and pel-use-popup-kill-ring
-           pel-emacs-is-graphic-p)
-  ;; Note: pos-tip, required by popup-kill-ring is installed
-  ;;       when popup-kill-ring is installed.
-  (pel-ensure-package popup-kill-ring from: melpa)
-  (pel-autoload-file popup-kill-ring for: popup-kill-ring)
-  (define-key pel: (kbd "M-y") 'popup-kill-ring))
-
-;;** browse-kill-ring
-;;   ----------------
-(when pel-use-browse-kill-ring
-  (pel-ensure-package browse-kill-ring from: melpa)
-  (global-set-key "\C-cy" 'browse-kill-ring))
-
-;; ---------------------------------------------------------------------------
 ;;** smart-dash
 ;;   ----------
 (when pel-use-smart-dash
@@ -7029,6 +7008,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 (define-key pel:delete "*" #'delete-duplicate-lines)
 (define-key pel:kill   "l"  'pel-kill-or-delete-marked-or-whole-line)
+(define-key pel:kill   (kbd "C-k")  'pel-clean-kill-ring)
 
 (when pel-emacs-is-graphic-p
   (global-set-key (kbd "s-x") 'pel-kill-or-delete-marked-or-whole-line)
@@ -7051,6 +7031,31 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;; - Delete next word(s) and whitespace following it
 ;; -------------------------------------------------
 (global-set-key (kbd "M-D")               'pel-kill-word-and-whitespace)
+
+;; ---------------------------------------------------------------------------
+;;** popup-kill-ring
+;;   -----------------
+;; View all kill-ring deletions in a pop-up menu, when M-y is typed.
+;; Activate the popup-kill-ring in graphic mode only
+;; because it does not seem to work in terminal mode.
+;; It uses the pos-tip package.
+(when (and pel-use-popup-kill-ring
+           pel-emacs-is-graphic-p)
+  ;; Note: pos-tip, required by popup-kill-ring is installed
+  ;;       when popup-kill-ring is installed.
+  (pel-ensure-package popup-kill-ring from: melpa)
+  (define-key pel: (kbd "M-y") 'popup-kill-ring))
+
+;;** browse-kill-ring
+;;   ----------------
+(when pel-use-browse-kill-ring
+  ;; (pel-ensure-package browse-kill-ring from: melpa)
+  (pel-install-github-file "pierre-rouleau/browse-kill-ring/master"
+                           "browse-kill-ring.el")
+  (pel-autoload-file browse-kill-ring for: browse-kill-ring
+                     browse-kill-ring-default-keybindings)
+  (define-key pel:kill (kbd "C-b")  'browse-kill-ring))
+
 
 ;; ---------------------------------------------------------------------------
 ;;* auto-completion
