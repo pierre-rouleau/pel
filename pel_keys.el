@@ -1437,7 +1437,6 @@ Your version of Emacs does not support dynamic module.")))
 (define-key pel: (kbd      "M-b")          'pel-backward-syntaxchange-start)
 (define-key pel: (kbd      "<M-left>")     'pel-backward-syntaxchange-start)
 (define-key pel: (kbd      "0")           #'hl-line-mode)
-(define-key pel: (kbd      "M-=")          'pel-toggle-show-copy-cut-text)
 (define-key pel: (kbd      "C-y")          'pel-replace-line-with-kill)
 
 ;; add ``<f11> C-l`` binding to recenter-top-bottom because some modes use C-l
@@ -6958,6 +6957,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 (define-key pel:delete (kbd "DEL") 'c-hungry-delete-backwards)
 
+(define-key pel:kill   "-"  'pel-toggle-show-copy-cut-text)
 (define-key pel:kill   " "  'pel-kill-whitespace-at-point)
 (define-key pel:delete " "  'pel-delete-whitespace-at-point)
 (define-key pel:kill   "?"  'pel-ccp-info)
