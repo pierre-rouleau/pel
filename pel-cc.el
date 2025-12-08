@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-03 15:55:37 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-08 16:18:09 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -393,6 +393,21 @@ Prompt if not specified."
          (t (user-error "Enter 0 or positive value!")))
         (message "indentation is now %s" c-basic-offset))
     (error "c-basic-offset is not loaded!")))
+
+;; ---------------------------------------------------------------------------
+(defun pel-toggle-c-eldoc-mode ()
+  "Toggle c-eldoc mode on/off."
+  (interactive)
+  (if (pel-eglot-active-p)
+      (user-error "This buffer uses eglot; that has built-in edoc support!")
+    (require 'c-eldoc nil :noerror)
+    (when (fboundp 'c-turn-on-eldoc-mode)
+      (if eldoc-mode
+          (progn
+            (eldoc-mode -1)
+            (message "eldoc-mode now OFF."))
+        (c-turn-on-eldoc-mode)
+        (message "c-eldoc-mode now ON. ")))))
 
 ;; ---------------------------------------------------------------------------
 ;; Distinguish Objective-C, C++ and C Code

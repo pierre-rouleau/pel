@@ -3577,6 +3577,13 @@ Returns nil when Emacs does not support tree-sitter."
    (t
     (format "Hardware model retrieval not yet supported for %s." system-type))))
 
+;; ---------------------------------------------------------------------------
+
+(defun pel-eglot-active-p ()
+  "Return t if `eglot' is used in the current buffer, nil otherwise."
+  (and (fboundp 'eglot-managed-p)
+       (eglot-managed-p)))
+
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)
 

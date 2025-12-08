@@ -2683,37 +2683,18 @@ can't bind negative-argument to C-_ and M-_"
 ;; ---------------------------------------------------------------------------
 ;;** C-like programming languages: C, C++, Objective-C, Pike
 ;;   -------------------------------------------------------
-(when (and pel-use-c-eldoc
-           (or pel-use-c
-               pel-use-c++
-               pel-use-objc
-               pel-use-pike))
+(when (or pel-use-c
+          pel-use-c++
+          pel-use-objc
+          pel-use-pike)
 
-  ;; Associate .h file with C/C++/Objective C mode selector
+  ;; Associate .h file with C/C++/Objective mode selector
   (add-to-list 'auto-mode-alist '("\\.h\\'" . pel-cc-mode))
 
-  ;; TODO: check if main repo is OK.
-  ;; c-eldoc is an external package.
-  ;; I am waiting for a fix to be incorporated, using my copy with the fix
-  ;; incorporated for now.
-  (pel-install-github-file "pierre-rouleau/c-eldoc/master" "c-eldoc.el")
-  (defun pel-toggle-c-eldoc-mode ()
-    "Toggle c-eldoc mode on/off."
-    (interactive)
-    (unless (boundp 'eldoc-mode)
-      (require 'c-eldoc nil :noerror))
-    (if eldoc-mode
-        (eldoc-mode -1)
-      (c-turn-on-eldoc-mode)))
-  (declare-function pel-toggle-c-eldoc-mode "pel_keys")
-
-  (pel-autoload-file c-eldoc for: c-turn-on-eldoc-mode)
-  (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode))
-
-(when pel-use-call-graph
-  (pel-ensure-package call-graph from: melpa)
-  (pel-autoload-file call-graph for:
-                     call-graph))
+  (when pel-use-call-graph
+    (pel-ensure-package call-graph from: melpa)
+    (pel-autoload-file call-graph for:
+                       call-graph)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Utility for mapping CC Mode keys for AWK, C, C++, D, Objective-C & Pike
@@ -3001,10 +2982,20 @@ MODE must be a symbol."
 (when pel-use-c
   (define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
   (define-pel-global-prefix pel:c-setup       (kbd "<f11> SPC c <f4>"))
+  (define-pel-global-prefix pel:c-eldoc       (kbd "<f11> SPC c <f4> d"))
   (define-pel-global-prefix pel:c-guess       (kbd "<f11> SPC c <f4> g"))
   (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
   (define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
   (define-pel-global-prefix pel:c-search-replace (kbd "<f11> SPC c s"))
+
+  (define-key pel:c-eldoc "d" 'eldoc-mode)
+  (define-key pel:c-eldoc "?" 'pel-eldoc-setup-info)
+  (when pel-use-c-eldoc
+    (pel-install-github-file "nflath/c-eldoc/master" "c-eldoc.el")
+    (pel-autoload-file c-eldoc for: c-turn-on-eldoc-mode)
+    (when (eq pel-use-c-eldoc 'use-from-start)
+      (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode))
+    (define-key pel:c-eldoc "c" 'pel-toggle-c-eldoc-mode))
 
   ;; Add extra key bindings specific to the C mode
   (define-key pel:c-setup "#" 'c-toggle-cpp-indent-to-body)
@@ -3013,9 +3004,7 @@ MODE must be a symbol."
     (define-key pel:c-setup (kbd "<f54>") 'pel-cc-set-file-finder-ini-tool-name))
   (when pel-use-plantuml
     (define-key pel:for-c "u" 'pel-render-commented-plantuml))
-  (when pel-use-c-eldoc
-    (define-pel-global-prefix pel:c-help (kbd "<f11> SPC c ?"))
-    (define-key pel:c-help "e" 'pel-toggle-c-eldoc-mode))
+
   (when pel-use-call-graph
     (define-key pel:for-c (kbd "M-g") 'call-graph))
 

@@ -5370,14 +5370,6 @@ This may get activated indirectly by other user-options."
   :type 'boolean
   :safe #'booleanp)
 
-;; TODO:  FUTURE
-;; (defcustom pel-use-eglot nil
-;;   "Control whether PEL supports the eglot package.
-;; eglot is a client for Language Server Protocol servers."
-;;   :group 'pel-pkg-for-language-server
-;;   :type 'boolean
-;;   :safe #'booleanp)
-
 (defcustom pel-use-emacs-ccls nil
   "Control whether PEL supports ccls, language server for C,C++,Objective-C.
 
@@ -6079,14 +6071,16 @@ c-eldoc uses a local compiler to pre-process the current buffer in order
 to provide the information.  It can slow down cursor movement.
 
 If you activate this option PEL provides a command to toggle this mode
-via the ``<f12> ? e`` sequence."
+via the ``<f12> <f4> d c`` sequence."
   :group 'pel-pkg-for-c
-  :type 'boolean
-  :safe #'booleanp
-  :link '(url-link :tag "c-eldoc @ GitHub"
-                   "https://github.com/pierre-rouleau/c-eldoc"))
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate in c-mode buffer" use-from-start))
+  :link '(url-link :tag "my c-eldoc fork @ GitHub"
+                   "https://github.com/nflath/c-eldoc"))
 (pel-put 'pel-use-c-eldoc :package-is :in-utils)
-(pel-put 'pel-use-c-eldoc :requires '(pel-use-c pel-use-c++))
+(pel-put 'pel-use-c-eldoc :requires '(pel-use-c))
 
 
 (defcustom pel-awk-file-searched-extra-dir-trees nil

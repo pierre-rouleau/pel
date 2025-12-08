@@ -179,7 +179,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-cc-newline
     pel-cc-mode-info
     pel-cc-set-indent-width
-    pel-cc-mode)
+    pel-cc-mode
+    pel-toggle-c-eldoc-mode)
 
   (pel-autoload-function "pel-cc-linux-kernel" for:
     pel-linux-kernel-code-style-setup)
