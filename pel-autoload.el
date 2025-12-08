@@ -347,6 +347,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-dirtree-replace-undo)
 
   ;; --
+  (pel-autoload "pel-eldoc" for:
+    pel-eldoc-setup-info)
+
+  ;; --
   (pel-autoload "pel-elisp" for:
     pel-toggle-paren-in-column-0-is-defun-start
     pel-elisp-set-navigate-target-form

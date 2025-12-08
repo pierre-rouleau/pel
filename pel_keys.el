@@ -2214,8 +2214,6 @@ can't bind negative-argument to C-_ and M-_"
 ;;       - pel-xxx-tab-width
 ;;       - pel-xxx-use-tabs
 
-(define-pel-global-prefix pel:for-programming    (kbd "<f11> SPC -"))
-
 ;;** Global prefixes to specialized major-mode prefixes
 ;;    =================================================
 ;;
@@ -2225,123 +2223,141 @@ can't bind negative-argument to C-_ and M-_"
 ;; reserved character.  This is for reference and planning.
 ;;
 ;; Prefix keys:
-;; SPC     - prefix for sub keys
-;; C-s     - prefix for Scheme implementation
+;;  SPC     - prefix for sub keys
+;;  C-s     - prefix for Scheme implementation
 ;;
-;; -       - All programming languages
-;; .       - APL
-;; :       - Smalltalk
-;; 0       - ssh-authorized-keys-mode
-;; 1       - ssh-known-host-mode
-;; 2       - Modula2
-;; 3       - Meson build system
-;; 4       - M4
-;; 5       - Ninja build back-end
-;; 7       - Seed7           - Extensible language.  Syntax evolved from Pascal/Modula/Ada
-;; A       - Ada
-;; C       - C++
-;; D       - D
-;; E       - Elm
-;; F       - FORTRAN
-;; G       - Groovy
-;; H       - VHDL
-;; J       - Java            -              JVM
-;; L       - Common Lisp     - Lisp Family
-;; M       - Makefile
-;; N       - NetRexx
-;; O       - Odin
-;; P       - Perl
-;; R       - REXX
-;; S       - Scala           -              JVM
-;; T       - Janet           - Lisp Family
-;; U       - Ruby
-;; V       - Verilog
-;; W       - AWK
-;; Z       - shell script modes
-;; a       - AppleScript
-;; c       - C
-;; d       - Dart
-;; e       - Erlang          -              BEAM language
-;; f       - Forth
-;; g       - Go
-;; h       - Haskell
-;; i       - Javascript
-;; j       - Julia
-;; k       - Kotlin          -              JVM
-;; l       - Emacs Lisp      - Lisp Family
-;; n       - Nim
-;; o       - OCaml           - ML Family
-;; p       - Python
-;; r       - Rust
-;; s       - Swift
-;; t       - Tcl
-;; u       - Lua
-;; v       - V
-;; x       - Elixir          -              BEAM Language
-;; y       - Pony
-;; z       - Reserved for shell terminals
-;; C-a     - Arc             - Lisp Family
-;; C-c     - CMake
-;; C-e     - Eiffel
-;; C-f     - Fennel          - Lisp Family, Lua
-;; C-g
-;; C-h     - Hy              - Lisp Family, Python
-;; C-i     -
-;; C-j     - Clojure         - Lisp Family, JVM
-;; C-l     - LFE             - Lisp Family, BEAM language
-;; C-m
-;; C-o     - Objective-C
-;; C-p     - Pike
-;; C-r     - ReasonML        - ML Family
-;; C-s C-s - Scheme Family   - Lisp Family
-;; C-s C-z - Chez            - Lisp & Scheme Family
-;; C-s C-i - Chibi           - Lisp & Scheme Family
-;; C-s C-k - Chicken         - Lisp & Scheme Family
-;; C-s C-b - Gambit          - Lisp & Scheme Family
-;; C-s C-e - Gerbil          - Lisp & Scheme Family
-;; C-s C-g - Guile           - Lisp & Scheme Family
-;; C-s C-m - MIT/GNU Scheme  - Lisp & Scheme Family
-;; C-s C-r - Racket          - Lisp & Scheme Family
-;; C-s C-h - Scsh            - Lisp & Scheme Family
-;; C-u     - Raku
-;; M-a     - AsciiDoc
-;; M-c     - Common Workspace Language (CWL)
-;; M-f     - Factor
-;; M-g     - GraphViz Dot
-;; M-k     - Kconfig
-;; M-l     - Outline mode
-;; M-m     - Markdown
-;; M-o     - OrgMode
-;; M-p     - Pascal
-;; M-r     - reStructuredText
-;; M-s     - SQL
-;; M-u     - PlantUML
-;; M-v     - CSV (comma-separated-value)
-;; M-y     - YAML
-;; M-z     - Zig
-;; M-A     - Alpaca          -              BEAM Language, Functional/ML
-;; M-D     - Dired
-;; M-G     - Gleam           -              BEAM Language
-;; M-H     - Hamler          -              BEAM Language, Functional/ML/Haskell
-;; M-M     - MscGen
-;; M-P     - Prolog
-;; M-R     - RPM
-;; M-S     - RPM Specfile
-;; M-Y     - YANG            - Specification definition language
+;;  *       - All programming languages
+;;  .       - APL
+;;  :       - Smalltalk
+;;  0       - ssh-authorized-keys-mode
+;;  1       - ssh-known-host-mode
+;;  2       - Modula2
+;;  3       - Meson build system
+;;  4       - M4
+;;  5       - Ninja build back-end
+;;  7       - Seed7           - Extensible language.  Syntax evolved from Pascal/Modula/Ada
+;;  A       - Ada
+;;  C       - C++
+;;  D       - D
+;;  E       - Elm
+;;  F       - FORTRAN
+;;  G       - Groovy
+;;  H       - VHDL
+;;  J       - Java            -              JVM
+;;  L       - Common Lisp     - Lisp Family
+;;  M       - Makefile
+;;  N       - NetRexx
+;;  O       - Odin
+;;  P       - Perl
+;;  R       - REXX
+;;  S       - Scala           -              JVM
+;;  T       - Janet           - Lisp Family
+;;  U       - Ruby
+;;  V       - Verilog
+;;  W       - AWK
+;;  Z       - shell script modes
+;;  a       - AppleScript
+;;  c       - C
+;;  d       - Dart
+;;  e       - Erlang          -              BEAM language
+;;  f       - Forth
+;;  g       - Go
+;;  h       - Haskell
+;;  i       - Javascript
+;;  j       - Julia
+;;  k       - Kotlin          -              JVM
+;;  l       - Emacs Lisp      - Lisp Family
+;;  n       - Nim
+;;  o       - OCaml           - ML Family
+;;  p       - Python
+;;  r       - Rust
+;;  s       - Swift
+;;  t       - Tcl
+;;  u       - Lua
+;;  v       - V
+;;  x       - Elixir          -              BEAM Language
+;;  y       - Pony
+;;  z       - Reserved for shell terminals
+;;  C-a     - Arc             - Lisp Family
+;;  C-c     - CMake
+;;  C-e     - Eiffel
+;;  C-f     - Fennel          - Lisp Family, Lua
+;;  C-g
+;;  C-h     - Hy              - Lisp Family, Python
+;;  C-i     -
+;;  C-j     - Clojure         - Lisp Family, JVM
+;;  C-l     - LFE             - Lisp Family, BEAM language
+;;  C-m
+;;  C-o     - Objective-C
+;;  C-p     - Pike
+;;  C-r     - ReasonML        - ML Family
+;;  C-s C-s - Scheme Family   - Lisp Family
+;;  C-s C-z - Chez            - Lisp & Scheme Family
+;;  C-s C-i - Chibi           - Lisp & Scheme Family
+;;  C-s C-k - Chicken         - Lisp & Scheme Family
+;;  C-s C-b - Gambit          - Lisp & Scheme Family
+;;  C-s C-e - Gerbil          - Lisp & Scheme Family
+;;  C-s C-g - Guile           - Lisp & Scheme Family
+;;  C-s C-m - MIT/GNU Scheme  - Lisp & Scheme Family
+;;  C-s C-r - Racket          - Lisp & Scheme Family
+;;  C-s C-h - Scsh            - Lisp & Scheme Family
+;;  C-u     - Raku
+;;  M-a     - AsciiDoc
+;;  M-c     - Common Workspace Language (CWL)
+;;  M-f     - Factor
+;;  M-g     - GraphViz Dot
+;;  M-k     - Kconfig
+;;  M-l     - Outline mode
+;;  M-m     - Markdown
+;;  M-o     - OrgMode
+;;  M-p     - Pascal
+;;  M-r     - reStructuredText
+;;  M-s     - SQL
+;;  M-u     - PlantUML
+;;  M-v     - CSV (comma-separated-value)
+;;  M-y     - YAML
+;;  M-z     - Zig
+;;  M-A     - Alpaca          -              BEAM Language, Functional/ML
+;;  M-D     - Dired
+;;  M-G     - Gleam           -              BEAM Language
+;;  M-H     - Hamler          -              BEAM Language, Functional/ML/Haskell
+;;  M-M     - MscGen
+;;  M-P     - Prolog
+;;  M-R     - RPM
+;;  M-S     - RPM Specfile
+;;  M-Y     - YANG            - Specification definition language
 ;;
-;; SPC C-l - inferior-lfe-mode
-;; SPC b   - ibuffer-mode
-;; SPC d d - diff-mode
-;; SPC d e - ediff-mode
-;; SPC d s - smerge-mode
-;; SPC v   - vc-dir-mode
-;; SPC t   - term-mode
-;; SPC z s - shell-mode
-;; SPC z t - term-mode
-;; SPC z v - vterm-mode
+;;  SPC C-l - inferior-lfe-mode
+;;  SPC b   - ibuffer-mode
+;;  SPC d d - diff-mode
+;;  SPC d e - ediff-mode
+;;  SPC d s - smerge-mode
+;;  SPC v   - vc-dir-mode
+;;  SPC t   - term-mode
+;;  SPC z s - shell-mode
+;;  SPC z t - term-mode
+;;  SPC z v - vterm-mode
 
-;;          - SNMP MIP
-;;          - ANS.1
+;;           - SNMP MIP
+;;           - ANS.1
+
+;; ---------------------------------------------------------------------------
+;;* All Programming Language Support
+;;  ================================
+
+(define-pel-global-prefix pel:for-programming    (kbd "<f11> SPC *"))
+(define-pel-global-prefix pel:pgm-eldoc          (kbd "<f11> SPC * d"))
+
+(define-key pel:pgm-eldoc "d" 'eldoc-mode)
+(define-key pel:pgm-eldoc "?" 'pel-eldoc-setup-info)
+(when pel-use-eldoc-box
+  (pel-ensure-package eldoc-box from: melpa)
+  (pel-autoload-file eldoc-box for:
+                     eldoc-box-hover-mode
+                     eldoc-box-hover-at-point-mode)
+
+  (define-key pel:pgm-eldoc "b" 'eldoc-box-hover-mode)
+  (define-key pel:pgm-eldoc "B" 'eldoc-box-hover-at-point-mode))
 
 ;; ---------------------------------------------------------------------------
 ;;** Language Server Mode Support
@@ -2591,16 +2607,6 @@ can't bind negative-argument to C-_ and M-_"
   (define-key pel:writing-tools "W" 'my-whisper-mode)
   (define-key pel:writing-tools "w" 'my-whisper-transcribe-file))
 
-;; ---------------------------------------------------------------------------
-;;* Programming Language Support
-;;  ============================
-
-(when (and pel-use-eldoc-box
-           pel-emacs-is-graphic-p)
-  (pel-ensure-package eldoc-box from: melpa)
-  (pel-autoload-file eldoc-box for:
-                     eldoc-box-hover-mode
-                     eldoc-box-hover-at-point-mode))
 
 ;; ---------------------------------------------------------------------------
 ;;** M4 programming utilities
@@ -4001,8 +4007,8 @@ d-mode not added to ac-modes!"
   (define-key pel:for-elisp "i" 'parinfer-auto-fix))
 
 (define-key pel:elisp-eldoc "d" 'eldoc-mode)
-(when (and pel-use-eldoc-box
-           pel-emacs-is-graphic-p)
+(define-key pel:elisp-eldoc "?" 'pel-eldoc-setup-info)
+(when pel-use-eldoc-box
   (define-key pel:elisp-eldoc "b" 'eldoc-box-hover-mode)
   (define-key pel:elisp-eldoc "B" 'eldoc-box-hover-at-point-mode))
 

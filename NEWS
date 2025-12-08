@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add ~<f11> SPACE *~ key prefix for commands grouped under the 'All Programming Support'.
+  This currently holds eldoc but will also hold support for LSP  (eglot and lsp) to provide global
+  key bindings as well as mode-specific key bindings.
+  Add the *pel-eldoc-setup-info* command bound to ~<f11> SPACE * d ?~ or ~<f12> <f4> d ?~ for major modes that support it.
+  I will be adding support for several major modes and will use it to investigate and complete their support.
+  Updated the index PDF accordingly.
 - Change *pel-toggle-show-copy-cut-text* key binding from ~<f11> M-=~ to
   ~<f11> - -~ . It frees a key binding under ~<f11>~, regroups it under ~<f11>
   -~ and is easier to type.

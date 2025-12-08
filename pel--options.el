@@ -5253,6 +5253,8 @@ This package provides the ability to hide comments."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-hide-comnt :package-is :in-utils)
+(unless pel-emacs-is-graphic-p
+  (setq pel-use-eldoc-box nil))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Syntax Checking
