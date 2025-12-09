@@ -1387,7 +1387,7 @@ Your version of Emacs does not support dynamic module.")))
 (run-with-idle-timer 1 nil (function pel--install-generic-skel) pel:f6)
 
 ;; ---------------------------------------------------------------------------
-;;*** Shutdown Server
+;;*** Shutdown Server - <f11> C-x
 
 (define-pel-global-prefix pel:server (kbd "<f11> C-x"))
 
@@ -1560,7 +1560,7 @@ Your version of Emacs does not support dynamic module.")))
                       (easy-escape-minor-mode 1))))
 
 ;; ---------------------------------------------------------------------------
-;;** Use undo-tree
+;;** Use undo-tree - <f11> u
 ;;   -------------
 ;; Use undo-tree which provides undo/redo ability with complete storage and
 ;; no loss of history even when redo is done.
@@ -1834,7 +1834,7 @@ can't bind negative-argument to C-_ and M-_"
   (define-key pel:startup (kbd "M-q") 'pel-setup-no-quickstart))
 
 ;; ---------------------------------------------------------------------------
-;;** Input Completion Framework activation
+;;** Input Completion Framework activation - <f11> M-c
 ;;   -------------------------------------
 ;;
 ;; Activate the mode(s) available, activate the initial mode and provide keys
@@ -2078,7 +2078,7 @@ can't bind negative-argument to C-_ and M-_"
   (pel-autoload-file pel-tempo for: pel-tempo-mode))
 
 ;; ---------------------------------------------------------------------------
-;;** yasnippet - a Texmate-like templating system
+;;** yasnippet - a Texmate-like templating system - <f11> y
 
 (when pel-use-yasnippet
 
@@ -2343,7 +2343,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;           - ANS.1
 
 ;; ---------------------------------------------------------------------------
-;;* All Programming Language Support
+;;* All Programming Language Support - <f11> SPC *
 ;;  ================================
 
 (define-pel-global-prefix pel:for-programming    (kbd "<f11> SPC *"))
@@ -2381,7 +2381,7 @@ can't bind negative-argument to C-_ and M-_"
   (pel-ensure-package ccls from: melpa))
 
 ;; ---------------------------------------------------------------------------
-;;** Flycheck/Flymake Syntax Checking
+;;** Flycheck/Flymake Syntax Checking - <f11> !
 ;;   ================================
 
 ;; Mode Setting Helper Functions
@@ -6929,7 +6929,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 
 ;; ---------------------------------------------------------------------------
-;;* Copy commands
+;;* Copy commands - <f11> =
 ;; - Function Keys - <f11> - Prefix ``<f11> =`` :
 
 (define-pel-global-prefix pel:copy (kbd "<f11> ="))
@@ -6959,7 +6959,7 @@ to identify a Verilog file.  Anything else is assumed being V."
                                         ; replaces kill-ring-save
 
 ;; ---------------------------------------------------------------------------
-;;* Kill & Delete Commands
+;;* Kill & Delete Commands - <f11> -  and <f11> DEL
 ;; - Function Keys - <f11> - Prefix ``<f11> -`` : Kill commands
 ;; - Function Keys - <f11> - Prefix ``<f11> DEL`` : delete commands
 (define-pel-global-prefix pel:kill   (kbd "<f11> -"))
@@ -7068,7 +7068,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 
 ;; ---------------------------------------------------------------------------
-;;* auto-completion
+;;* auto-completion - <f11> ,
 ;; - Function Keys - <f11> - Prefix ``<f11> ,`` :
 
 (when pel-use-auto-complete
@@ -7117,7 +7117,7 @@ to identify a Verilog file.  Anything else is assumed being V."
       (keymap-set completion-preview-active-mode-map "M-p" 'completion-preview-prev-candidate))))
 
 ;; ---------------------------------------------------------------------------
-;;* mark commands
+;;* mark commands - <f11> .
 ;; - Function Keys - <f11> - Prefix ``<f11> .`` :
 
 (define-pel-global-prefix pel:mark (kbd "<f11> ."))
@@ -7163,7 +7163,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   (global-set-key (kbd "C-v")  'pel-overwrite-yank))
 
 ;; ---------------------------------------------------------------------------
-;;* comment commands
+;;* comment commands - <f11> ;
 ;; - Function Keys - <f11> - Prefix ``<f11> ;`` :
 
 (define-pel-global-prefix pel:comment (kbd "<f11> ;"))
@@ -7196,7 +7196,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:comment ":" 'hide/show-comments))
 
 ;; ---------------------------------------------------------------------------
-;;* Hide/Show commands
+;;* Hide/Show commands - <f11> M-/
 ;; - Function Keys - <f11> - Prefix ``<f11> M-/`` :
 (define-pel-global-prefix pel:hide-show (kbd "<f11> M-/"))
 
@@ -7265,7 +7265,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   (add-hook 'origami-mode-hook (function pel--activate-origami)))
 
 ;; ---------------------------------------------------------------------------
-;;* Help /apropos/info commands
+;;* Help /apropos/info commands - <f11> ?
 ;; - Function Keys - <f11> - Prefix ``<f11> ?`` :
 
 ;; pel:help prefix is defined at the beginning of the <f11> section to allow
@@ -7305,7 +7305,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:help "A" 'ascii-table))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;** Help Apropos commands
+;;** Help Apropos commands - <f11> ? a
 ;; - Function Keys - <f11> - Prefix ``<f11> ? a`` :
 
 (define-pel-global-prefix pel:apropos (kbd "<f11> ? a"))
@@ -7319,7 +7319,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 (define-key pel:apropos "v"  #'apropos-variable)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;** Emacs Bug Db Browsing
+;;** Emacs Bug Db Browsing - <f11> ? b
 ;; - Function Keys - <f11> - Prefix ``<f11> ? b`` :
 
 (when pel-use-debbugs
@@ -7338,7 +7338,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:emacs-bugs "T" 'debbugs-org-tagged))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;** Help Info commands
+;;** Help Info commands - <f11> ? i
 ;; - Function Keys - <f11> - Prefix ``<f11> ? i`` :
 
 (define-pel-global-prefix pel:info (kbd "<f11> ? i"))
@@ -7347,7 +7347,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 (define-key pel:info "m"  #'info-display-manual)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;** Describe
+;;** Describe Commands - <f11> ? d
 ;; - Function Keys - <f11> - Prefix ``<f11> ? d`` :
 
 (define-pel-global-prefix pel:describe (kbd "<f11> ? d"))
@@ -7372,7 +7372,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 (define-key pel:describe "w"  'pel-show-window-info)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;** Emacs info
+;;** Emacs Information Commands - <f11> ? e
 ;; - Function Keys - <f11> - Prefix ``<f11> ? e`` :
 ;; Used keys:
 ;; B C M P
@@ -7427,14 +7427,14 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:emacs "P"  'esup))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;** Emacs analyze
+;;** Emacs analyze - <f11> ? e a
 ;; - Function Keys - <f11> - Prefix ``<f11> ? e a`` :
 
 (define-pel-global-prefix pel:emacs-analyze (kbd "<f11> ? e a"))
 (define-key pel:emacs-analyze "l" 'pel-show-lisp-control-variables)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;** Info on Keys
+;;** Information on Keys - <f11> ? k
 ;; - Function Keys - <f11> - Prefix ``<f11> ? k`` :
 
 (define-pel-global-prefix pel:keys (kbd "<f11> ? k"))
@@ -7482,7 +7482,7 @@ to pel-use-helm-descbinds"))
   (define-key pel:keys "B" 'helm-descbinds-mode))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;* Keycast and key logging
+;;* Keycast and key logging - <f11? ? k a
 ;;  -----------------------
 (when pel-use-keycast
   (pel-ensure-package keycast from: melpa)
@@ -7530,7 +7530,7 @@ to pel-use-helm-descbinds"))
   (define-key pel:interaction-log "v" 'ilog-toggle-view))
 
 ;; -----------------------------------------------------------------------------
-;;* Spell Check
+;;* Spell Check - <f11> $
 ;; - Function Keys - <f11> - Prefix ``<f11> $`` :
 
 ;; popup is used in Terminal mode for spell check menu,
@@ -7581,7 +7581,7 @@ See `flyspell-auto-correct-previous-word' for more info."
                   (function pel-spell-maybe-activate-flyspell-prog))
 
 ;; ---------------------------------------------------------------------------
-;;* bookmark commands
+;;* bookmark commands - <f11> '
 ;; - Function Keys - <f11> - Prefix ``<f11> '`` :
 
 (define-pel-global-prefix pel:bookMark (kbd "<f11> '"))
@@ -7670,7 +7670,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     (add-hook 'vc-before-checkin-hook 'bm-buffer-save)))
 
 ;; ---------------------------------------------------------------------------
-;;* Indentation
+;;* Indentation - <f11> tab
 ;; - Function Keys - <f11> - Prefix ``<f11> <tab>`` :
 
 ;; More powerful indent-rigidly: pel-indent-rigidly
@@ -7797,7 +7797,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (add-hook 'smart-shift-mode-hook (function pel--setup-smart-shift)))
 
 ;; ---------------------------------------------------------------------------
-;;* Windows scroll commands
+;;* Windows scroll commands - <f11> |
 ;; - Function Keys - <f11> - Prefix ``<f11> |`` :
 ;;
 ;; - Scrolling up & down without moving point
@@ -7851,7 +7851,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-require-after-init smooth-scrolling 2))
 
 ;; ---------------------------------------------------------------------------
-;;* Abbreviations
+;;* Abbreviations Commands - <f11> a
 ;; - Function Keys - <f11> - Prefix ``<f11> a`` :
 
 (define-pel-global-prefix pel:abbrev (kbd "<f11> a"))
@@ -7908,7 +7908,7 @@ the ones defined from the buffer now."
   (pel--activate-abbrev-mode))
 
 ;; ---------------------------------------------------------------------------
-;;* Buffer Commands
+;;* Buffer Commands - <f11> b
 ;; - Function Keys - <f11> - Prefix ``<f11> b`` :
 ;; Used keys:
 ;;   - [ ]
@@ -8052,7 +8052,7 @@ the ones defined from the buffer now."
 ;;       which is a good thing: it helps speed up Emacs startup.
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;** Indirect buffer commands
+;;** Indirect buffer commands - <f11> b I
 ;; - Function Keys - <f11> - Prefix ``<f11> b I`` :
 
 (define-pel-global-prefix pel:indirect-buffer (kbd "<f11> b I"))
@@ -8061,7 +8061,7 @@ the ones defined from the buffer now."
 (define-key pel:indirect-buffer "w"  #'clone-indirect-buffer-other-window)
 
 ;; ---------------------------------------------------------------------------
-;;* Browse commands
+;;* Browse commands - <f11> B
 ;; - Function Keys - <f11> - Prefix ``<f11> B`` :
 ;; pel:diff is defined later but used here.
 (define-pel-global-prefix pel:diff (kbd "<f11> d"))
@@ -8161,7 +8161,7 @@ the ones defined from the buffer now."
     (define-key pel:browse  "R" 'rfc-mode-browse)))
 
 ;; ---------------------------------------------------------------------------
-;;* Count Things
+;;* Count Things - <f11> c
 ;; - Function Keys - <f11> - Prefix ``<f11> c`` :
 
 (define-pel-global-prefix pel:count (kbd "<f11> c"))
@@ -8171,7 +8171,7 @@ the ones defined from the buffer now."
 (define-key pel:count "w" #'count-words)
 
 ;; ---------------------------------------------------------------------------
-;;* Clipboard Commands
+;;* Clipboard Commands - <f11> C
 ;; - Function Keys - <f11> - Prefix ``<f11> C`` :
 (when pel-emacs-is-graphic-p
   (define-pel-global-prefix pel:clipboard (kbd "<f11> C"))
@@ -8180,7 +8180,7 @@ the ones defined from the buffer now."
   (define-key pel:clipboard "v" #'clipboard-yank))
 
 ;; ---------------------------------------------------------------------------
-;;* Diff Commands
+;;* Diff Commands - <f11> d
 ;; - Function Keys - <f11> - Prefix ``<f11> d`` :
 (define-key pel:diff "f"  'diff)
 (define-key pel:diff "b"  'diff-buffer-with-file)
@@ -8195,7 +8195,7 @@ the ones defined from the buffer now."
   (define-key pel:diff (kbd "M-|")  'diffview-region))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;** ediff Commands
+;;** ediff Commands - <f11> e
 ;; - Function Keys - <f11> - Prefix ``<f11> d e`` :
 (define-pel-global-prefix pel:ediff (kbd "<f11> d e"))
 (define-key pel:ediff "?"  'ediff-documentation)
@@ -8303,14 +8303,14 @@ the ones defined from the buffer now."
     (add-hook 'find-file-hook 'sm-try-smerge t)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;** patch Commands
+;;** patch Commands - <f11> d p
 ;; - Function Keys - <f11> - Prefix ``<f11> d p`` :
 (define-pel-global-prefix pel:patch (kbd "<f11> d p"))
 (define-key pel:patch "f"  'epatch)
 (define-key pel:patch "b"  'epatch-buffer)
 
 ;; ---------------------------------------------------------------------------
-;;** draw Commands
+;;** draw Commands - <f11> D
 ;; - Function Keys - <f11> - Prefix ``<f11> D`` :
 
 (define-pel-global-prefix pel:draw (kbd "<f11> D"))
@@ -8338,7 +8338,7 @@ the ones defined from the buffer now."
   (define-key pel:draw "u"  'uniline-mode))
 
 ;; ---------------------------------------------------------------------------
-;;* Face/Font Management
+;;* Face/Font Management - <f11> C-f
 ;; - Function Keys - <f11> - Prefix ``<f11> C-f`` :
 ;;
 
@@ -8369,7 +8369,7 @@ the ones defined from the buffer now."
   (define-key pel:facefont (kbd "C-s") 'font-lock-studio))
 
 ;; ---------------------------------------------------------------------------
-;;* File Operations
+;;* File Operations - <f11> f
 ;; - Function Keys - <f11> - Prefix ``<f11> f`` :
 
 (defun pel-auto-revert-set-timer ()
@@ -8654,7 +8654,7 @@ the ones defined from the buffer now."
   (pel-autoload-file crontab-mode for: crontab-mode))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;* Find File At Point (ffap)
+;;** Find File At Point (ffap) - <f11> f a
 ;; - Function Keys - <f11> - Prefix ``<f11> f a`` :
 
 (when pel-use-ffap
@@ -8702,28 +8702,7 @@ the ones defined from the buffer now."
     (run-with-idle-timer 1 nil (function pel--activate-ffap-bindings))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;* Project Management - find-file-in-project
-
-;; CAUTION: This package needs major tuning!  It takes forever searching for a
-;;          project.  For the moment, Projectile is MUCH better!
-
-(define-pel-global-prefix pel:ffip (kbd "<f11> f p"))
-
-(when pel-use-find-file-in-project
-  (pel-install-github-file "pierre-rouleau/find-file-in-project/master"
-                           "find-file-in-project.el")
-  (autoload 'find-file-in-project "find-file-in-project")
-  (define-key pel:ffip "p" 'find-file-in-project))
-
-;; Use my fork of this project until my contribution to support Emacs Customization
-;; is merged in. See https://github.com/redguardtoo/find-file-in-project/pull/126
-;; (use-package find-file-in-project
-;;   :ensure t
-;;   :pin melpa
-;;   :commands find-file-in-project)
-
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;* File Time Stamp Control (more Actions on File Save)
+;;* File Time Stamp Control (more Actions on File Save) - <f11> f t
 
 (define-pel-global-prefix pel:time-stamp (kbd "<f11> f t"))
 
@@ -8733,7 +8712,7 @@ the ones defined from the buffer now."
 (define-key pel:time-stamp "?"          'pel-time-stamp-control-show-info)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;* File variables
+;;* File variables - <f11> f v
 ;; - Function Keys - <f11> - Prefix ``<f11> f v`` :
 
 (define-pel-global-prefix pel:filevar (kbd "<f11> f v"))
@@ -8743,7 +8722,7 @@ the ones defined from the buffer now."
 (define-key pel:filevar "c"  #'copy-dir-locals-to-file-locals-prop-line)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;* Directory File variables
+;;* Directory File variables - <f11> f v D
 ;; - Function Keys - <f11> - Prefix ``<f11> f v D`` :
 
 (define-pel-global-prefix pel:dirvar (kbd "<f11> f v D"))
@@ -8764,7 +8743,7 @@ the ones defined from the buffer now."
     (pel-ensure-package vlf from: melpa)))
 
 ;; ---------------------------------------------------------------------------
-;;* Frame operations
+;;* Frame operations - <f11> F
 ;; - Function Keys - <f11> - Prefix ``<f11> F`` :
 
 (define-pel-global-prefix pel:frame (kbd "<f11> F"))
@@ -8785,7 +8764,7 @@ the ones defined from the buffer now."
   (define-key pel:frame "F" 'menu-set-font))
 
 ;; ---------------------------------------------------------------------------
-;;* Grep operations
+;;* Grep operations - <f11> g
 ;; - Function Keys - <f11> - Prefix ``<f11> g`` :
 
 (define-pel-global-prefix pel:grep (kbd "<f11> g"))
@@ -8912,7 +8891,7 @@ the ones defined from the buffer now."
   (define-key pel:grep     "H"          'fzf-hg-grep))
 
 ;; ---------------------------------------------------------------------------
-;;* Highlight Commands
+;;* Highlight Commands - <f11> h
 ;; - Function Keys - <f11> - Prefix ``<f11> h`` :
 
 (define-pel-global-prefix pel:highlight (kbd "<f11> h"))
@@ -9012,7 +8991,7 @@ the ones defined from the buffer now."
   (define-key pel:mode      "\\" 'display-fill-column-indicator-mode))
 
 ;; -----------------------------------------------------------------------------
-;;* Insert Text Operations
+;;* Insert Text Operations - <f11> i
 ;; - Function Keys - <f11> - Prefix ``<f11> i`` :
 
 ;; Used keys in <f11> i:
@@ -9220,7 +9199,7 @@ the ones defined from the buffer now."
     (define-key smartparens-mode-map (kbd "<M-f7> h (")    'sp-highlight-current-sexp)))
 
 ;; -----------------------------------------------------------------------------
-;;* Keyboard Macro Operations
+;;* Keyboard Macro Operations - <f11> k
 ;; - Function Keys - <f11> - Prefix ``<f11> k`` :
 
 (define-pel-global-prefix pel:kbmacro (kbd "<f11> k"))
@@ -9282,7 +9261,7 @@ the ones defined from the buffer now."
     (define-key pel:emacros (kbd "DEL") 'emacros-remove-macro)))
 
 ;; ---------------------------------------------------------------------------
-;;* Line Control Commands
+;;* Line Control Commands - <f11> l
 ;; - Function Keys - <f11> - Prefix ``<f11> l`` :
 
 (define-pel-global-prefix pel:linectrl (kbd "<f11> l"))
@@ -9299,7 +9278,7 @@ the ones defined from the buffer now."
   (define-key pel:linectrl "a"           'atl-long-lines-mode))
 
 ;; ---------------------------------------------------------------------------
-;;* Multiple Cursors
+;;* Multiple Cursors - <f11> m
 ;; - Function Keys - <f11> - Prefix ``<f11> m`` :
 
 (when pel-use-multiple-cursors
@@ -9363,7 +9342,7 @@ the ones defined from the buffer now."
     (define-key pel:mcursors "e" 'iedit-mode)))
 
 ;; ---------------------------------------------------------------------------
-;;* Ordering (sorting)
+;;* Ordering (sorting) - <f11> o
 ;; - Function Keys - <f11> - Prefix ``<f11> o`` :
 
 (define-pel-global-prefix pel:order (kbd "<f11> o"))
@@ -9385,8 +9364,25 @@ the ones defined from the buffer now."
                "insensitive"
              "sensitive (the default)")))
 
+;; ---------------------------------------------------------------------------
+;;* Project Management - <f11> p
+;; - Function Keys - <f11> - Prefix ``<f11> p`` :
+
+(define-pel-global-prefix pel:project (kbd "<f11> p"))
+
+
+
+(when pel-use-find-file-in-project
+  ;; CAUTION: This package needs major tuning!  It takes forever searching for a
+  ;;          project.  For the moment, Projectile is MUCH better!
+  (pel-install-github-file "redguardtoo/find-file-in-project/master"
+                           "find-file-in-project.el")
+  (autoload 'find-file-in-project "find-file-in-project")
+  (define-pel-global-prefix pel:ffip (kbd "<f11> p f"))
+  (define-key pel:ffip "f" 'find-file-in-project))
+
 ;; -----------------------------------------------------------------------------
-;;* Register Commands
+;;* Register Commands - <f11> r
 ;; - Function Keys - <f11> - Prefix ``<f11> r`` :
 
 (define-pel-global-prefix pel:register (kbd "<f11> r"))
@@ -9410,7 +9406,7 @@ the ones defined from the buffer now."
 (define-key pel:register "i"    #'insert-register)
 
 ;; -----------------------------------------------------------------------------
-;;* Search/Replace Commands
+;;* Search/Replace Commands - <f11> s
 ;; - Function Keys - <f11> - Prefix ``<f11> s`` :
 ;; "S" reserved
 
@@ -9654,7 +9650,7 @@ the ones defined from the buffer now."
   (define-key pel:elisp-regxp-lint "d" 'relint-directory))
 
 ;; -----------------------------------------------------------------------------
-;;* Speedbar/SR-Speedbar Commands
+;;* Speedbar/SR-Speedbar Commands - <f11> M-s
 ;; - Function Keys - <f11> - Prefix ``<f11> M-s`` :
 
 (when pel-use-speedbar
@@ -9715,7 +9711,7 @@ the ones defined from the buffer now."
 ;; See the code above.
 
 ;; ---------------------------------------------------------------------------
-;;* Text Control Commands
+;;* Text Control Commands - <f11> t
 ;; - Function Keys - <f11> - Prefix ``<f11> t`` :
 
 (define-pel-global-prefix pel:text (kbd "<f11> t"))
@@ -9790,7 +9786,7 @@ the ones defined from the buffer now."
 ;;       (message "Toggled overwrite in text mode".))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;* Text Align
+;;* Text Align - <f11> t a
 ;; - Function Keys - <f11> - Prefix ``<f11> t a``:
 
 (define-pel-global-prefix pel:align (kbd "<f11> t a"))
@@ -9819,14 +9815,14 @@ the ones defined from the buffer now."
                     (setq pel-newline-does-align t)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;* Enriched Text
+;;* Enriched Text - <f11> t e
 ;; - Function Keys - <f11> - Prefix ``<f11> t e``:
 (define-pel-global-prefix pel:enriched-text (kbd "<f11> t e"))
 
 (define-key pel:enriched-text "e" #'enriched-mode)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;* Text Fill
+;;* Text Fill - <f11> t f
 ;; - Function Keys - <f11> - Prefix ``<f11> t f``:
 ;;
 (define-pel-global-prefix pel:fill (kbd "<f11> t f"))
@@ -9844,7 +9840,7 @@ the ones defined from the buffer now."
 (define-key pel:fill "q"   #'fill-region-as-paragraph)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;* Text Justification
+;;* Text Justification - <f11> t j
 ;; - Function Keys - <f11> - Prefix ``<f11> t j``:
 ;;
 (define-pel-global-prefix pel:justification (kbd "<f11> t j"))
@@ -9855,7 +9851,7 @@ the ones defined from the buffer now."
 (define-key pel:justification "r" #'set-justification-right)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;* Text Word Modes
+;;* Text Word Modes - <f11> t m
 ;; - Function Keys - <f11> - Prefix ``<f11> t m``:
 ;;
 (define-pel-global-prefix pel:textmodes (kbd "<f11> t m"))
@@ -9891,7 +9887,7 @@ the ones defined from the buffer now."
                     (electric-quote-local-mode 1)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;* Text Transpose Commands
+;;* Text Transpose Commands - <f11> t t
 ;; Function Keys - <f11> - Prefix ``<f11> t t``:
 ;;
 (define-pel-global-prefix pel:text-transpose (kbd "<f11> t t"))
@@ -9907,7 +9903,7 @@ the ones defined from the buffer now."
 ;;       pel-transpose-statements, pel-transpose-clauses
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;* Text Whitespace Commands
+;;* Text Whitespace Commands - <f11> t w
 ;; - Function Keys - <f11> - Prefix ``<f11> t w`` :
 ;;
 (define-pel-global-prefix pel:text-whitespace (kbd "<f11> t w"))
@@ -9925,7 +9921,7 @@ the ones defined from the buffer now."
 (define-key pel:text-whitespace (kbd "M-W") 'pel-toggle-delete-trailing-space-on-save)
 
 ;; ---------------------------------------------------------------------------
-;;* Time-Tracking
+;;* Time-Tracking - <f11> T
 ;; - Function Keys - <f11> - Prefix ``<f11> T`` :
 (define-pel-global-prefix pel:time (kbd "<f11> T"))
 (when pel-use-timeclock
@@ -9968,7 +9964,7 @@ the ones defined from the buffer now."
   (pel-ensure-package tzc from melpa))
 
 ;; ---------------------------------------------------------------------------
-;;* Tree-Sitter operations
+;;* Tree-Sitter operations - <f11> C-t
 ;; - Function Keys - <f11> - Prefix ``<f11> C-t`` :
 (when pel-use-tree-sitter
 
@@ -9982,7 +9978,7 @@ the ones defined from the buffer now."
   (define-key pel:tree-sitter "?"  'pel-treesit-check-setup))
 
 ;; ---------------------------------------------------------------------------
-;;* VCS Operations
+;;* VCS Operations - <f11> v
 ;; - Function Keys - <f11> - Prefix ``<f11> v`` :
 ;;
 (define-pel-global-prefix pel:vcs (kbd "<f11> v"))
@@ -10094,7 +10090,7 @@ the ones defined from the buffer now."
    'vc-dir-mode 'vc-dir-mode-hook)
 
 ;; ---------------------------------------------------------------------------
-;;* Mode Line Commands
+;;* Mode Line Commands - <f11> M-d
 ;; - Function Keys - <f11> - Prefix ``<f11> M-d`` :
 (define-pel-global-prefix pel:mode-line (kbd "<f11> M-d"))
 
@@ -10128,7 +10124,7 @@ the ones defined from the buffer now."
     (mlscroll-mode 1)))
 
 ;; ---------------------------------------------------------------------------
-;;* Windows Operations
+;;* Windows Operations - <f11> w
 ;; - Function Keys - <f11> - Prefix ``<f11> w`` :
 ;; Use the global local winner-mode, but don't use its key bindings;
 ;; use some in the '<f11> w' group:
@@ -10419,7 +10415,7 @@ the ones defined from the buffer now."
 
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;** Window Size Operations
+;;** Window Size Operations - <f11> w s
 ;; - Function Keys - <f11> - Prefix ``<f11> w s`` :
 ;;
 
@@ -10447,7 +10443,7 @@ the ones defined from the buffer now."
 (define-key pel:window-size "." #'fit-window-to-buffer)
 
 ;; -----------------------------------------------------------------------------
-;;* Session Operations
+;;* Session Operations - <f11> S
 ;; - Function Keys - <f11> - Prefix ``<f11> S`` :
 ;;
 ;; desktop can be used alone or used with either desktop-registry or desktop+
@@ -10551,7 +10547,7 @@ the ones defined from the buffer now."
     (define-key pel:session "L" 'desktop+-load-auto))))
 
 ;; -----------------------------------------------------------------------------
-;;* Process & Shells Execution
+;;* Process & Shells Execution - <f11> z
 ;; - Function Keys - <f11> - Prefix ``<f11> z`` :
 ;;   - These commands manage and launch REPL and shells.
 ;;
@@ -10650,7 +10646,7 @@ the ones defined from the buffer now."
      'eat-mode 'eat-mode-hook)))
 
 ;; -----------------------------------------------------------------------------
-;;* Xref Utilities
+;;* Xref Utilities - <f11> X
 ;; - Function Keys - <f11> - Prefix ``<f11> X`` :
 ;;
 (define-pel-global-prefix pel:xref          (kbd "<f11> X"))
@@ -10810,7 +10806,7 @@ the ones defined from the buffer now."
   (define-key pel:opengrok "b" 'eopengrok-resume))
 
 ;; -----------------------------------------------------------------------------
-;;* Underlining Commands
+;;* Underlining Commands - <f11> _
 ;; - Function Keys - <f11> - Prefix ``<f11> _`` :
 
 (pel-autoload-file pel-comment-adorn for:
@@ -10837,7 +10833,7 @@ the ones defined from the buffer now."
 (define-key pel:underline "0" 'pel-commented-adorn-10)
 
 ;; -----------------------------------------------------------------------------
-;;* Key-Chord Mode
+;;* Key-Chord Mode - <f11> <f5> k
 ;;  ==============
 
 (define-pel-global-prefix pel:mode-key-chord (kbd "<f11> <f5> k"))
