@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Simplified key bindings for *show-paren-mode* and *rainbow-delimiters-mode* globally and in the major modes where these are bound under ~<f12>~.
+  The mappings are ~<f11> h (~ and ~<f12> h (~ for *show-paren-mode* and ~<f11> h )~ and ~<f12> h )~ for *rainbow-delimiters-mode*.
 - Removed ~<f11> p~ binding to *pel-help-pdf-select*, as ~<f11> p~  is now used for the PEL key prefix for Emacs project
   commands.
 - Add ~<f11> SPACE *~ key prefix for commands grouped under the 'All Programming Support'.

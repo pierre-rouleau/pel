@@ -2778,14 +2778,14 @@ bind it again after this call."
     (define-key prefix      "F"      'c-fill-paragraph)
     (define-key prefix      "f"      'c-display-defun-name)
     ;;
-    (define-key prefix (kbd "M-9")  #'show-paren-mode)
     ;; reserve "." for a command that find the thing at point in C (via CTags?)
     (define-key prefix      ")"      #'check-parens)
     ;; Alternate file
     (define-key prefix (kbd "M-f") 'pel-open-file-alternate)
 
+    (define-key prefix (kbd "h (")  #'show-paren-mode)
     (when pel-use-rainbow-delimiters
-      (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode))
+      (define-key prefix (kbd "h )")  'rainbow-delimiters-mode))
     (when c-preproc-prefix
       (define-key prefix (kbd "M-#")  'hide-ifdef-mode)
       (define-key c-preproc-prefix "#" 'c-macro-expand)
@@ -3917,9 +3917,12 @@ d-mode not added to ac-modes!"
   (define-key prefix (kbd "<left>")  'pel-end-of-previous-defun)
   (define-key prefix (kbd "<right>") 'end-of-defun)
   ;;
-  (define-key prefix   (kbd "M-9") #'show-paren-mode)
   (define-key prefix   (kbd "M-p") #'superword-mode)
   (define-key prefix   ")"         #'check-parens)
+
+  (define-key prefix   (kbd "h (") #'show-paren-mode)
+  (when pel-use-rainbow-delimiters
+    (define-key prefix (kbd "h )")  'rainbow-delimiters-mode))
   ;;
   (when pel-use-parinfer
     (cond
@@ -3934,8 +3937,7 @@ d-mode not added to ac-modes!"
       ;; parinfer-rust-toggle-debug
       ;; parinfer-rust-toggle-paren-mode2
       )))
-  (when pel-use-rainbow-delimiters
-    (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode))
+
   (define-key prefix   (kbd "M-s") #'semantic-mode)
   (define-key prefix (kbd "M-n") 'pel-elisp-set-navigate-target-form)
   (define-key prefix (kbd "M-N") 'pel-toggle-paren-in-column-0-is-defun-start)
@@ -3992,11 +3994,12 @@ d-mode not added to ac-modes!"
 
 ;;*** Other Emacs Lisp support
 ;;    ------------------------
-(define-pel-global-prefix pel:for-elisp    (kbd "<f11> SPC l"))
-(define-pel-global-prefix pel:elisp-help   (kbd "<f11> SPC l ?"))
-(define-pel-global-prefix pel:elisp-setup  (kbd "<f11> SPC l <f4>"))
-(define-pel-global-prefix pel:elisp-eldoc  (kbd "<f11> SPC l <f4> d"))
-(define-pel-global-prefix pel:elisp-skel   (kbd "<f11> SPC l <f12>"))
+(define-pel-global-prefix pel:for-elisp       (kbd "<f11> SPC l"))
+(define-pel-global-prefix pel:elisp-help      (kbd "<f11> SPC l ?"))
+(define-pel-global-prefix pel:elisp-highlight (kbd "<f11> SPC l h"))
+(define-pel-global-prefix pel:elisp-setup     (kbd "<f11> SPC l <f4>"))
+(define-pel-global-prefix pel:elisp-eldoc     (kbd "<f11> SPC l <f4> d"))
+(define-pel-global-prefix pel:elisp-skel      (kbd "<f11> SPC l <f12>"))
 
 (define-key pel:for-elisp "z"  'ielm)
 (define-key pel:for-elisp "D"  'pel-add-dir-to-loadpath)
@@ -4792,6 +4795,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (define-pel-global-prefix pel:erlang-clause     (kbd "<f11> SPC e c"))
       (define-pel-global-prefix pel:erlang-debug      (kbd "<f11> SPC e d"))
       (define-pel-global-prefix pel:erlang-function   (kbd "<f11> SPC e f"))
+      (define-pel-global-prefix pel:erlang-highlight  (kbd "<f11> SPC e h"))
       (define-pel-global-prefix pel:erlang-statement  (kbd "<f11> SPC e s"))
 
       (define-key pel:erlang-electric (kbd "M-,") 'pel-erlang-toggle-space-after-comma)
@@ -4807,8 +4811,6 @@ Can't load ac-geiser: geiser-repl-mode: %S"
         (define-key pel:for-erlang "R"     'pel-erlang-format-code))
       (when pel-use-plantuml
         (define-key pel:for-erlang "u"     'pel-render-commented-plantuml))
-      (when pel-use-rainbow-delimiters
-        (define-key pel:for-erlang (kbd "M-r")    'rainbow-delimiters-mode))
       (define-key pel:for-erlang      (kbd "TAB") 'erlang-indent-current-buffer)
       (define-key pel:erlang-function (kbd "TAB") 'erlang-indent-function)
       (define-key pel:erlang-function "N"         'pel-beginning-of-next-defun)
@@ -4831,10 +4833,14 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (define-key pel:erlang-statement "a"        'bsckward-sentence)
       (define-key pel:erlang-statement "e"        'forward-sentence)
       (define-key pel:for-erlang (kbd "M-p")     #'superword-mode)
-      (define-key pel:for-erlang (kbd "M-9")     #'show-paren-mode)
       (define-key pel:for-erlang (kbd "M-c")      'erlang-compile)
       (define-key pel:for-erlang (kbd "M-d")      'erlang-man-function-no-prompt)
       (define-key pel:for-erlang (kbd "M-D")      'erlang-man-function)
+
+      (define-key pel:erlang-highlight "(" #'show-paren-mode)
+      (when pel-use-rainbow-delimiters
+        (define-key pel:erlang-highlight ")" 'rainbow-delimiters-mode))
+
       (when pel-use-ivy-erlang-complete
         (if (and (require 'ivy-erlang-complete nil :noerror)
                  (fboundp 'ivy-erlang-complete-init))
@@ -5434,19 +5440,20 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (setq python-shell-completion-native-disabled-interpreters '("python"))))
 
   ;;
-  (define-pel-global-prefix pel:for-python  (kbd "<f11> SPC p"))
-  (define-pel-global-prefix pel:python-skel (kbd "<f11> SPC p <f12>"))
+  (define-pel-global-prefix pel:for-python       (kbd "<f11> SPC p"))
+  (define-pel-global-prefix pel:python-highlight (kbd "<f11> SPC p h"))
+  (define-pel-global-prefix pel:python-skel      (kbd "<f11> SPC p <f12>"))
   (define-key pel:for-python    "."        'pel-find-thing-at-point)
   (define-key pel:for-python    "z"        'run-python)
-  (define-key pel:for-python (kbd "M-9")  #'show-paren-mode)
   (define-key pel:for-python (kbd "M-p")  #'superword-mode)
   ;; activate skeletons
   (pel--install-generic-skel pel:python-skel 'pel-pkg-for-python "python")
   ;;
   (when pel-use-plantuml
     (define-key pel:for-python    "u"      'pel-render-commented-plantuml))
+  (define-key pel:python-highlight "("  #'show-paren-mode)
   (when pel-use-rainbow-delimiters
-    (define-key pel:for-python (kbd "M-r") 'rainbow-delimiters-mode))
+    (define-key pel:python-highlight ")" 'rainbow-delimiters-mode))
 
   ;; lpy-mode: lispy-style modal editing for Python.
   (when pel-use-lpy
@@ -8935,7 +8942,7 @@ the ones defined from the buffer now."
 (define-key pel:highlight      "l"  #'highlight-lines-matching-regexp)   ; M-s h l
 (define-key pel:highlight      "p"  #'highlight-phrase)                  ; M-s h p
 (when pel-use-rainbow-delimiters
-  (define-key pel:highlight (kbd "M-(")  'rainbow-delimiters-mode))
+  (define-key pel:highlight    ")" 'rainbow-delimiters-mode))
 (define-key pel:highlight      "r"  #'highlight-regexp)                  ; M-s h r
 (define-key pel:highlight      "s"   'pel-toggle-hl-line-sticky)
 (define-key pel:highlight      "u"  #'unhighlight-regexp)                ; M-s h u
