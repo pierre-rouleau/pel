@@ -10960,6 +10960,7 @@ When activating it you can select between the following values:
           (const :tag "Use classic mode: lua-mode" t)
           (const :tag "Use tree-sitter mode: lua-ts-mode" with-tree-sitter)))
 (pel-put 'pel-use-lua :package-is '(quote ((elpa . lua-mode))))
+(pel-put 'pel-use-lua :also-required-when 'pel-use-xmake)
 
 (defcustom pel-lua-repl-used nil
   "Control which Lua REPL is used when requested.
@@ -13602,6 +13603,22 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-sw-build
   :type '(repeat function))
 
+(defcustom pel-use-xmake nil
+  "Control whether PEL activates support for the Xmake build system.
+This automatically activates support for Lua."
+  :group 'pel-pkg-for-sw-build
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-xmake-emacs nil
+  "Control whether PEL activates support for the xmake-emacs package."
+  :group 'pel-pkg-for-sw-build
+  :link '(url-link :tag "xmake-emacs @ Github"
+                   "https://github.com/MiroYld/xmake-emacs")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-xmake-emacs :package-is :in-utils)
+
 ;; ---------------------------------------------------------------------------
 ;; CMake file support
 ;; ------------------
@@ -14796,6 +14813,9 @@ PEL uses my fork of this project."
   (setq pel-use-caml-mode t)
   (setq pel-use-tuareg t)
   (setq pel-use-merlin t))
+
+(when pel-use-xmake
+  (setq pel-use-lua t))
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)
 

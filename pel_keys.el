@@ -2235,6 +2235,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;  3       - Meson build system
 ;;  4       - M4
 ;;  5       - Ninja build back-end
+;;  6       - Xmake
 ;;  7       - Seed7           - Extensible language.  Syntax evolved from Pascal/Modula/Ada
 ;;  A       - Ada
 ;;  C       - C++
@@ -2515,6 +2516,15 @@ can't bind negative-argument to C-_ and M-_"
         (let ((map tup-mode-map))
           (define-key map (kbd "<f12> <f1>") 'pel-tup-help))))))
 
+;;*** XMake Build System Support
+;;    --------------------------
+(when pel-use-xmake
+  (when pel-use-xmake-emacs
+    (pel-install-github-file "MiroYld/xmake-emacs/master" "xmake.el")
+    (pel-autoload-file "xmake.el" for:
+                       xmake-build
+                       xmake-clean
+                       xmake-run)))
 ;; ---------------------------------------------------------------------------
 ;;** Object File/ Executable File Format Support
 
