@@ -2363,6 +2363,11 @@ can't bind negative-argument to C-_ and M-_"
 ;; ---------------------------------------------------------------------------
 ;;** Language Server Mode Support
 ;;   ============================
+;;
+;; PEL supports LSP servers starting with Emacs 28.1
+;; and eglot with Emacs 29.
+;; On earlier versions of Emacs LSP was not supported efficiently.
+;; However, PEL does not impose a version for the moment.
 
 ;;*** lsp-mode support
 ;;    ----------------
@@ -7285,7 +7290,6 @@ to identify a Verilog file.  Anything else is assumed being V."
 (define-key pel:help "S"  'pel-show-symbol)
 (define-key pel:help "P"  'pel-help-pdfs-dir)
 (define-key pel:help "p"  'pel-help-pdf-select)
-(define-key pel:     "p"  'pel-help-pdf-select) ; faster key for help
 
 (global-set-key (kbd "<M-f8>")   #'man)
 (global-set-key (kbd "<M-S-f8>") 'pel-man-at-point)

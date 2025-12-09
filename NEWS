@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Removed ~<f11> p~ binding to *pel-help-pdf-select*, as ~<f11> p~  will be used for the PEL key prefix for Emacs project
+  commands.
 - Add ~<f11> SPACE *~ key prefix for commands grouped under the 'All Programming Support'.
   This currently holds eldoc but will also hold support for LSP  (eglot and lsp) to provide global
   key bindings as well as mode-specific key bindings.
