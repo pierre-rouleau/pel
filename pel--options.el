@@ -13432,6 +13432,7 @@ This behaviour can be modified dynamically by the command
 This provides the command `pel-speedbar-focus-current-file'.
 Setting this non-nil also sets up the use of speedbar and projectile."
   :group 'pel-pkg-for-speedbar
+  :group 'pel-pkg-for-project-mng
   :type  'boolean
   :safe  #'booleanp
   :link '(custom-group-link "pel-pkg-for-project-mng")

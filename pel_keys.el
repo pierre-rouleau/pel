@@ -7482,8 +7482,8 @@ to pel-use-helm-descbinds"))
   (define-key pel:keys "B" 'helm-descbinds-mode))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;* Keycast and key logging - <f11? ? k a
-;;  -----------------------
+;;*** Keycast and key logging - <f11? ? k a
+;;    -----------------------
 (when pel-use-keycast
   (pel-ensure-package keycast from: melpa)
   (define-pel-global-prefix pel:keycast (kbd "<f11> ? k a"))
@@ -8195,7 +8195,7 @@ the ones defined from the buffer now."
   (define-key pel:diff (kbd "M-|")  'diffview-region))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;** ediff Commands - <f11> e
+;;** ediff Commands - <f11> d e
 ;; - Function Keys - <f11> - Prefix ``<f11> d e`` :
 (define-pel-global-prefix pel:ediff (kbd "<f11> d e"))
 (define-key pel:ediff "?"  'ediff-documentation)
@@ -9367,19 +9367,18 @@ the ones defined from the buffer now."
 ;; ---------------------------------------------------------------------------
 ;;* Project Management - <f11> p
 ;; - Function Keys - <f11> - Prefix ``<f11> p`` :
+;; See also: Projectile, above.
 
 (define-pel-global-prefix pel:project (kbd "<f11> p"))
 
-
-
 (when pel-use-find-file-in-project
-  ;; CAUTION: This package needs major tuning!  It takes forever searching for a
-  ;;          project.  For the moment, Projectile is MUCH better!
+  ;; CAUTION: This package needs some work. Projectile is MUCH better!
   (pel-install-github-file "redguardtoo/find-file-in-project/master"
                            "find-file-in-project.el")
-  (autoload 'find-file-in-project "find-file-in-project")
+  (pel-autoload-file find-file-in-project for:
+                     find-file-in-project-by-selected)
   (define-pel-global-prefix pel:ffip (kbd "<f11> p f"))
-  (define-key pel:ffip "f" 'find-file-in-project))
+  (define-key pel:ffip "f" 'find-file-in-project-by-selected))
 
 ;; -----------------------------------------------------------------------------
 ;;* Register Commands - <f11> r
