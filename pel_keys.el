@@ -4074,7 +4074,7 @@ d-mode not added to ac-modes!"
 (when pel-use-highlight-defined
   (pel-ensure-package highlight-defined from: melpa)
   (pel-autoload-file highlight-defined for: highlight-defined-mode)
-  (define-key pel:for-elisp  (kbd "M-d") 'highlight-defined-mode))
+  (define-key pel:elisp-highlight "d" 'highlight-defined-mode))
 
 (when pel-use-eros
   (pel-ensure-package eros from: melpa)
