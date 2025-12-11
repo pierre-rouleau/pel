@@ -34,8 +34,8 @@
 ;;(require 'paragraphs)  ; use: `sentence-end-double-space', `paragraph-start'
 ;;                       ;      and `paragraph-separate'.
 ;;                       ; However, paragraphs.el has no provide form,
-;;                       ; probably because it's always part of emacs.
-;; *declare* its variables to prevent lint warnings.
+;;                       ; probably because it's always part of Emacs.
+;;  Declare paragraph.el variables used dynamically to prevent warnings.
 (defvar sentence-end-double-space)
 (defvar paragraph-start)
 (defvar paragraph-separate)
@@ -45,13 +45,13 @@
 ;;
 ;; Call hierarchy:
 ;;
-;; - pel-capitalize-first-letter
-;; * pel-capitalize-word-or-region
-;; * pel-upcase-word-or-region
-;; * pel-downcase-word-or-region
-;;   - pel-casechg-word-or-region
-;; * pel-upcase-letter
-;; * pel-downcase-letter
+;;  - pel-capitalize-first-letter
+;;  * pel-capitalize-word-or-region
+;;  * pel-upcase-word-or-region
+;;  * pel-downcase-word-or-region
+;;    - pel-casechg-word-or-region
+;;  * pel-upcase-letter
+;;  * pel-downcase-letter
 
 (defun pel-capitalize-first-letter (text)
   "Return TEXT string with first letter capitalized."
@@ -62,14 +62,15 @@
 
 (defun pel-casechg-word-or-region (operation n)
   "Detect marked region and perform case convert OPERATION N times.
-When N is 0 check the case of current character to determine the case
-change operation.
-When N is positive check the case of the current char (or the next letter
-char) to determine the case change operation.
-When N is negative, check the case of the first letter of the previous
-word to determine the case change operation.
+- When N is 0: check the case of current character to determine the case
+               change operation.
+- When N > 0:  check the case of the current char (or the next letter
+               char) to determine the case change operation.
+- When N < 0:  check the case of the first letter of the previous
+               word to determine the case change operation.
+
 The case change operation is determined according to the requested
-OPERATION (a symbol that must be one of upcase, downcase or capitalize)
+OPERATION (a symbol that must be upcase, downcase or capitalize)
 and the case of the checked letter, as described below:
 
 ----------------------------------------------------
@@ -83,12 +84,14 @@ capitalize           lower case  capitalized
 capitalize           upper case  capitalized
 ----------------------------------------------------
 
-For all cases except when N is -1, check the case of character at point
-(or next/previous letter character depending of the sign of N) to check
+For all cases except when N is -1, check the case of character at point,
+or next/previous letter character depending of the sign of N, to check
 the current case and identify the case change action.
-When N is -1, check the case of the first letter of the previous word
-to determine the case change action.
-When N is 0, perform the operation once on the beginning of the current word."
+
+- When N is -1, check the case of the first letter of the previous word
+  to determine the case change action.
+- When N is 0, perform the operation once for the beginning of the
+  current word."
   (let ((backward (< n 0))
         (byword n))
     (if (use-region-p)
@@ -210,7 +213,7 @@ When N is 0, perform the operation once on the beginning of the current word."
 
 ;;-pel-autoload
 (defun pel-upcase-letter (&optional n)
-  "upcase n letters at point or all region.
+  "Upcase n letters at point or all region.
 
 n defaults to 1 unless a region already exists, in which case
 all region is up-cased.
