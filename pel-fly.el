@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, December 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-11 23:23:57 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-11 23:26:43 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -149,10 +149,13 @@ If ALL-FILES optional prefix used, list diagnostics of all project files."
   (pel-fly--check-buffer-settings)
   (cond
    ;; When using flymake
+   ;; [:todo 2025-12-11, by Pierre Rouleau: Add better support for old Emacs versions]
    ((eq pel-fly--buffer-fly-engine 'flymake)
     (if all-files
-        (flymake-show-project-diagnostics)
-      (flymake-show-buffer-diagnostics)))
+        (when (fboundp 'flymake-show-project-diagnostics)
+          (flymake-show-project-diagnostics))
+      (when (fboundp 'flymake-show-buffer-diagnostics)
+        (flymake-show-buffer-diagnostics))))
    ;; When using flycheck
    ((and (fboundp 'flycheck-mode)
          (eq pel-fly--buffer-fly-engine 'flycheck))
