@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, December 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-11 22:25:45 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-11 23:20:59 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -126,8 +126,9 @@ activating otherwise activate display of all diagnostics at the end of line."
           (progn
             (setq-local flymake-show-diagnostics-at-end-of-line 'short)
             (message "Display most severe diagnostics at end of line."))
-        (setq-local flymake-show-diagnostics-at-end-of-line t)
-        (message "Display all diagnostics at end of line.")))
+        (when (boundp 'flymake-show-diagnostics-at-end-of-line)
+          (setq-local flymake-show-diagnostics-at-end-of-line t)
+          (message "Display all diagnostics at end of line."))))
       (flymake-mode 1)
     )
    ;; Toggle flycheck on/off
