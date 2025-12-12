@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, December 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-11 23:20:59 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-11 23:23:57 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -115,21 +115,21 @@ activating otherwise activate display of all diagnostics at the end of line."
   (cond
    ;; Toggle display of diagnostics at end of line with flymake.
    ((eq pel-fly--buffer-fly-engine 'flymake)
-    (flymake-mode -1)
-    (if flymake-show-diagnostics-at-end-of-line
-        ;; Disable showing flymake diagnostics at end of line
-        (progn
-          (setq-local flymake-show-diagnostics-at-end-of-line nil)
-          (message "Stop display of diagnostics at end of line."))
-      ;; Activate showing flymake diagnostics at end of line
-      (if only-error
+    (when (boundp 'flymake-show-diagnostics-at-end-of-line)
+      (flymake-mode -1)
+      (if flymake-show-diagnostics-at-end-of-line
+          ;; Disable showing flymake diagnostics at end of line
           (progn
-            (setq-local flymake-show-diagnostics-at-end-of-line 'short)
-            (message "Display most severe diagnostics at end of line."))
-        (when (boundp 'flymake-show-diagnostics-at-end-of-line)
+            (setq-local flymake-show-diagnostics-at-end-of-line nil)
+            (message "Stop display of diagnostics at end of line."))
+        ;; Activate showing flymake diagnostics at end of line
+        (if only-error
+            (progn
+              (setq-local flymake-show-diagnostics-at-end-of-line 'short)
+              (message "Display most severe diagnostics at end of line."))
           (setq-local flymake-show-diagnostics-at-end-of-line t)
-          (message "Display all diagnostics at end of line."))))
-      (flymake-mode 1)
+          (message "Display all diagnostics at end of line.")))
+      (flymake-mode 1))
     )
    ;; Toggle flycheck on/off
    ((and (fboundp 'flycheck-mode)
