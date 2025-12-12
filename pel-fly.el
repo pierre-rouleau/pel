@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, December 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-12 10:46:02 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-12 13:05:31 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -200,9 +200,25 @@ it and display information from the top."
        (pel-insert-symbol-content-line 'flymake-mode)
        (pel-insert-symbol-content-line 'flycheck-mode)
        (when buffer-flymake-mode
-         (pel-insert-symbol-content-line
-          'flymake-show-diagnostics-at-end-of-line)
-         (pel-insert-symbol-content-line 'flymake-show-project-diagnostics))
+         (pel-insert-symbol-content-line 'flymake-show-project-diagnostics)
+         (pel-insert-symbol-content-line 'flymake-diagnostic-functions)
+         (pel-insert-symbol-content-line 'flymake-proc-ignored-file-name-regexps)
+         (pel-insert-symbol-content-line 'flymake-autoresize-margins)
+         (pel-insert-symbol-content-line 'flymake-compilation-prevents-syntax-check)
+         (pel-insert-symbol-content-line 'flymake-mode-hook)
+         (pel-insert-symbol-content-line 'flymake-no-changes-timeout)
+         (pel-insert-symbol-content-line 'flymake-proc-master-file-count-limit)
+         (pel-insert-symbol-content-line 'flymake-start-on-flymake-mode)
+         (pel-insert-symbol-content-line 'flymake-show-diagnostics-at-end-of-line)
+         (pel-insert-list-content 'flymake-collection-config
+                                         nil nil nil
+                                         'on-same-line)
+         (pel-insert-list-content 'flymake-proc-allowed-file-name-masks
+                                         nil nil nil
+                                         'on-same-line)
+         (pel-insert-list-content 'flymake-collection-hook-config
+                                         nil nil nil
+                                         'on-same-line))
        (when buffer-flycheck-mode
          (pel-insert-symbol-content-line 'flycheck-inline-mode)
          (pel-insert-symbol-content-line 'flycheck-projectile-list-errors)
