@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-11 23:05:55 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-12 10:11:03 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -123,7 +123,7 @@
                               files
                               ls-lisp
                               wdired)
-  "List of groups used related to dired.")
+  "List of groups used related to Dired.")
 
 ;; Unfortunately the group used by elixir-ts-mode is not elixir but `elixir-ts'
 (defconst pel--elixir-groups (if pel-use-tree-sitter
@@ -992,7 +992,7 @@ allowed the command to be invoked."
   "Return string identifying the shell scripting language for current buffer.
 
 Something like \"sh\", \"bash\", or \"zsh\".
-If the current buffer "
+If the current buffer."
   (unless (fboundp 'sh-shell)
     (require 'sh-script))
   (defvar sh-shell)
@@ -1021,7 +1021,7 @@ Each entry of the list is file base name without file extension."
       ;; Example: for makefile-gmake-mode: return "gmake".
       (list (substring major-mode-str 9 -5)))
 
-     (t  (user-error "No language specific for this major mode.")))))
+     (t  (user-error "No language specific for this major mode!")))))
 
 ;;-pel-autoload
 (defun pel-help-pdf (&optional n)
@@ -1264,15 +1264,17 @@ There should be no key binding!" keyseq))
       (user-error "Failed loading pel-browse, used Emacs browse-url instead!"))))
 
 (defun pel-help-open-pdf (topic &optional open-github-page-p)
-  "Open PDF help for TOPIC string potentially OPEN-WEB-PAGE."
+  "Open PDF help for TOPIC string.
+If OPEN-GITHUB-PAGE-P is non-nil open the corresponding GitHub web page
+instead."
   (pel--help-browse (pel-pdf-file-url topic open-github-page-p)))
 
 ;;-pel-autoload
 (defun pel-help-on-completion-input (&optional open-github-page-p)
-  "Open the input completion help PDF, in a browser if arg OPEN-WEB-PAGE set.
+  "Open the input completion help PDF.
 
 By default the function opens the local PDF file unless the
-OPEN-GITHUB-PAGE is specified, in which case it opens the GitHub
+OPEN-GITHUB-PAGE-P is specified, in which case it opens the GitHub
 hosted raw PDF file.  However, if the user-option variable
 `pel-flip-help-pdf-arg' is set, it's the other way around: the
 GitHub remote file is opened by default."
@@ -1286,7 +1288,7 @@ GitHub remote file is opened by default."
   "Open the outline help PDF, in a browser if arg OPEN-WEB-PAGE set.
 
 By default the function opens the local PDF file unless the
-OPEN-GITHUB-PAGE is specified, in which case it opens the GitHub
+OPEN-GITHUB-PAGE-P is specified, in which case it opens the GitHub
 hosted raw PDF file.  However, if the user-option variable
 `pel-flip-help-pdf-arg' is set, it's the other way around: the
 GitHub remote file is opened by default."
@@ -1298,14 +1300,13 @@ GitHub remote file is opened by default."
 ;;-pel-autoload
 (defun pel-help-pdf-select (&optional open-github-page-p)
   "Prompt for a PEL PDF and open it.
-By default it opens the local PDF file, but if the OPEN-WEB-PAGE argument
-is non-nil it opens the web-based PDF copy hosted on Github.
-Supports completion and history.  The presented list includes
-some aliases to the file names.
-If enter is typed with no entry it defaults to the PEL key maps pdf.
-If Emacs runs under SSH, and `pel-help-under-ssh' is set,
-it issues an error instead to prevent you from opening a file you
-won't be able to see anyway"
+By default it opens the local PDF file, but if the OPEN-GITHUB-PAGE-P
+argument is non-nil it opens the web-based PDF copy hosted on Github.
+Supports completion and history.  The presented list includes some
+aliases to the file names.  If enter is typed with no entry it defaults
+to the PEL key maps pdf.  If Emacs runs under SSH, and
+`pel-help-under-ssh' is set, it issues an error instead to prevent you
+from opening a file you won't be able to see anyway"
   (interactive "P")
   (let* ((topics (mapcar
                   (lambda (fn)
@@ -1676,7 +1677,7 @@ No special keys are bound in this map by the macro."
      (global-set-key ,key (quote ,prefix))))
 
 (defun pel--get-kte (keyseq)
-  ""
+  "Get topic for corresponding KEYSEQ."
   (assoc keyseq pel--prefix-to-topic-alist))
 
 (defmacro define-pel-global-prefix (prefix key)
@@ -1760,6 +1761,7 @@ time format returned by, e.g., ‘current-idle-time’."
 ;; --
 (defmacro pel-set-auto-mode (mode for: &rest regexps)
   "Activate automatic MODE for the list of file REGXEPS.
+The FOR: argument is a cosmetic separator.
 MODE must be an un-quoted symbol.
 FOR: separator must be present.  It is cosmetic only.
 REGEXPS is on or several regular expression strings."
@@ -1819,7 +1821,8 @@ DEFINES: is a cosmetic only argument that must be present."
 ;; --
 
 (defun pel--eval-after-load-error (feature error)
-  "Display warning for FEATURE loaded by `pel-eval-after-load'."
+  "Display warning for FEATURE loaded by `pel-eval-after-load'.
+The ERROR argument is the caught error."
   (display-warning 'pel-eval-after-load
                    (format "Failed configuring %s: %s"
                            feature
@@ -1931,9 +1934,8 @@ local variable."
 (defun pel--auto-activate-fly ()
   "Auto-activate fly syntax checking engine if necessary.
 Automatic activation is done for a file identified inside
-`pel-auto-activate-fly-engine-in-files' when the major mode is in
+`pel-files-activating-syntax-check' when the major mode is in
 `pel-fly-engine-for-modes' and identifies an fly engine."
-  (message "ROUP: pel--auto-activate-fly: checking for %S" (current-buffer))
   (let ((filename (buffer-file-name))
         (found nil)
         (fullpath-name nil)
@@ -1945,7 +1947,7 @@ Automatic activation is done for a file identified inside
                             pel-fly-engine-for-modes))))
       (when engine
         ;; [:todo 2025-12-11, by Pierre Rouleau: optimize with a while?]
-        (dolist (pathname pel-auto-activate-fly-engine-in-files)
+        (dolist (pathname pel-files-activating-syntax-check)
           (setq fullpath-name (expand-file-name pathname))
           (if (pel-string-ends-with-p pathname "/")
               (when (pel-string-starts-with-p filename fullpath-name)
@@ -1953,7 +1955,6 @@ Automatic activation is done for a file identified inside
             (when (string= fullpath-name filename)
               (setq found t))))
         (when found
-          (message "ROUP: pel--auto-activate-fly: found: %s : %s" filename engine)
           (cond
            ((eq engine 'flymake) (flymake-mode 1))
            ((eq engine 'flycheck) (when pel-use-flycheck
@@ -1971,12 +1972,12 @@ TARGET-MODE is an unquoted symbol identifying the mode: it's the
 major mode name without the -mode suffix.  Something like
 emacs-lisp, c, python, etc...
 
-The KEY-PREFIX argument is a PEL mode-specific key-prefix
-unquoted symbol.  Something like pel:for-c and pel-for-make.  That
-symbol must already been defined prior to the macro invocation,
-and it should have been defined with a `define-pel-global-prefix'
-form.  If KEY-PREFIX is nil or has the value :no-f12-keys then
-no <f12> and <M-f12> PEL key prefixes are created for the major mode.
+The KEY-PREFIX argument is a PEL mode-specific key-prefix unquoted
+symbol.  Something like symbol `pel:for-c' and symbol `pel:for-make'.
+That symbol must already been defined prior to the macro invocation, and
+it should have been defined with a `define-pel-global-prefix' form.  If
+KEY-PREFIX is nil or has the value :no-f12-keys then no <f12> and
+<M-f12> PEL key prefixes are created for the major mode.
 
 The TS-OPTION control how tree-sitter mode is supported.
 This can only be one of the following:
@@ -2077,7 +2078,7 @@ Function created by the `pel-config-major-mode' macro."
     ;; Add the code that activates the minor modes identified by the
     ;;`pel-<mode>-activates-minor-modes' user-option, and other PEL
     ;; user options:
-    ;; - `pel-fly-engine-for-modes' & `pel-auto-activate-fly-engine-in-files'
+    ;; - `pel-fly-engine-for-modes' & `pel-files-activating-syntax-check'
     (pel-append-to newbody
       `((pel-turn-on-local-minor-modes-in
          (quote ,gn-minor-modes))
@@ -2130,11 +2131,10 @@ Function created by the `pel-config-major-mode' macro."
 (defmacro pel-config-major-mode-with-ts (target-mode
                                          &optional key-prefix
                                          &rest body)
-  "Setup the major-mode and tree-sitter major mode for TARGET_MODE.
+  "Setup the major-mode and tree-sitter major mode for TARGET-MODE.
 
-See `pel-config-major-mode' for the description of the arguments;
-this uses the exact same arguments.
-"
+See `pel-config-major-mode' for the description of the arguments KEY-PREFIX
+and BODY; this uses the exact same arguments."
   (declare (indent 2))
   (let ((gn-mode    (intern (format "%s-mode"    target-mode)))
         (gn-ts-mode (intern (format "%s-ts-mode" target-mode)))

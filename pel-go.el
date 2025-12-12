@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-11 10:28:06 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-12 08:09:36 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,7 +32,6 @@
 ;;
 ;;
 (require 'pel--base)        ; use: `pel-treesit-ready-p', `pel-insert-bold'
-(require 'pel-fly)          ; use: `pel-toggle-syntax-check-mode'
 (require 'pel--options)     ; use:
 (require 'pel-indent)       ; use: `pel-indent-insert-control-info',
 ;;                          ;      `pel-indent-control-context'
@@ -239,7 +238,8 @@ following user-options:")
 
 ;;-pel-autoload
 (defun pel-go-setup-info (&optional append)
-  "Display Go setup information."
+  "Display Go setup information.
+If APPEND is non-nil, append information in buffer."
   (interactive "P")
   (pel-major-mode-must-be '(go-mode
                             go-ts-mode
@@ -289,21 +289,10 @@ following user-options:")
 
 ;;-pel-autoload
 (defun pel-go-mod-setup-info (&optional append)
-  "Display Go.Mod setup information."
+  "Display Go.Mod setup information.
+If APPEND is non-nil, append information in buffer."
   (interactive "P")
   (pel-go-setup-info append))
-
-;; --
-
-;; [:todo 2025-12-11, by Pierre Rouleau: Remove this command]
-;;-pel-autoload
-(defun pel-go-toggle-syntax-checker ()
-  "Toggle the syntax checker mode on/off.
-The syntax checker activated or deactivated is either flycheck
-or flymake, as selected by the user-option variable
-`pel-use-goflymake'."
-  (interactive)
-  (pel-toggle-syntax-check-mode 'pel-use-goflymake))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-go)

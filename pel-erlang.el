@@ -85,9 +85,6 @@
 ;;   - `pel-erlang-ls-version'
 ;;   - `pel-erlang-version'
 
-;; Erlang Syntax Checking Control:
-;; - `pel-erlang-toggle-syntax-checker'
-
 ;; Insertion of Erlang Comments:
 ;; * `pel-erlang-comment-dwim'
 ;;   - `pel--erlang-line-3%-comment-p'
@@ -103,7 +100,6 @@
 ;;; Dependencies:
 (require 'comint)
 (require 'pel--base)
-(require 'pel-fly)              ; use: `pel-toggle-syntax-check-mode'
 (require 'pel--options)         ; use: `pel-erlang-version-detection-method'
 ;;                              ;      `pel-erlang-path-detection-method'
 ;;                              ;      `pel-erlang-electric-keys'
@@ -1041,6 +1037,8 @@ lsp-keymap-prefix                   : %s" lsp-keymap-prefix)
                "Not available: to activate, customize pel-use-erlang-ls."))))
 
 ;; ---------------------------------------------------------------------------
+;; [:todo 2025-12-12, by Pierre Rouleau: Investigate: complete or remove the
+;; following:]
 
 ;; (defun pel-erlang-organize-fs ()
 ;;   "Organize the file system for Erlang.
@@ -1052,20 +1050,6 @@ lsp-keymap-prefix                   : %s" lsp-keymap-prefix)
 ;;   (let ((erlang-version (pel-erlang-version)))
 ;;     ;;
 ;;     (setq edts-man-download "https://erlang.org/download"))) ; use secure HTTP
-
-;; ---------------------------------------------------------------------------
-;; Erlang Syntax Checking Control
-;; ------------------------------
-
-;; [:todo 2025-12-11, by Pierre Rouleau: Remove this command]
-;;-pel-autoload
-(defun pel-erlang-toggle-syntax-checker ()
-  "Toggle the syntax checker mode on/off.
-The syntax checker activated or deactivated is either flycheck
-or flymake, as selected by the user-option variable
-`pel-use-erlang-syntax-check'."
-  (interactive)
-  (pel-toggle-syntax-check-mode 'pel-use-erlang-syntax-check))
 
 ;; ---------------------------------------------------------------------------
 ;; Insertion of Erlang Comments

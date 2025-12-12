@@ -5310,7 +5310,7 @@ When a syntax checker engine is used, the key bindings under the <f11> !
 key prefix refer to the commands for the selected engine.
 
 To activate the syntax checker automatically for a file, identify that
-file or its directory inside `pel-auto-activate-fly-engine-in-files'
+file or its directory inside `pel-files-activating-syntax-check'
 user-option."
   :group 'pel-pkg-for-syntax-check
   :type '(repeat
@@ -5321,7 +5321,7 @@ user-option."
             (const :tag "Use with flymake"  flymake)
             (const :tag "Use with flycheck" flycheck)))))
 
-(defcustom pel-auto-activate-fly-engine-in-files nil
+(defcustom pel-files-activating-syntax-check nil
   "List of files and directories where selected fly engine auto-activates.
 Identify the files and directories where syntax checking identified by
 the `pel-fly-engine-for-modes' activates automatically.
@@ -10380,8 +10380,7 @@ EDTS := Erlang Development Tool Suite."
 (defcustom pel-use-erlang-ls nil
   "Control whether PEL uses the Erlang Language Server.
 
-Note that when set this activates the `flycheck-mode', regardless
-of the value of the `pel-use-erlang-syntax-check' user-option."
+Note that when set this activates the `flycheck-mode'."
   :link '(url-link :tag "erlang_ls @ GitHub"
                    "https://github.com/erlang-ls/erlang_ls")
   :link '(custom-group-link :tag "lsp-erlang group (when loaded)" "lsp-erlang")

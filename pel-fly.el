@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, December 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-11 23:26:43 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-12 10:46:02 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,7 +31,7 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)
+(require 'pel--base)             ; use: `pel-symbol-text'
 (require 'pel--options)          ; use: `pel-use-flycheck',
 ;;                               ;      `pel-use-flycheck-inline'
 ;;                               ;      `pel-toggle-mode-and-show'
@@ -49,6 +49,14 @@ The values can be:
 
 (defun pel-fly--check-buffer-settings ()
   "Check buffer settings.  Issue user error if invalid."
+  ;; When eglot is active and `pel-use-flycheck-eglot' is on,
+  ;; then eglot uses flycheck, so override any requested settings
+  ;; and identify flycheck as being active.
+  (when (and pel-use-flycheck-eglot
+             (fboundp 'eglot-managed-p)
+             (eglot-managed-p))
+    (setq-local pel-fly--buffer-fly-engine 'flycheck))
+  ;; If not set check which one is required by customization.
   (unless pel-fly--buffer-fly-engine
     (setq-local pel-fly--buffer-fly-engine
                 (car-safe
@@ -58,7 +66,7 @@ The values can be:
   (unless pel-fly--buffer-fly-engine
     (user-error "\
 No syntax check engine used in this buffer!
-Check `pel-fly-engine-for-modes' & `pel-auto-activate-fly-engine-in-files'")))
+Check `pel-fly-engine-for-modes' & `pel-files-activating-syntax-check'")))
 
 
 ;;-pel-autoload
@@ -131,11 +139,14 @@ activating otherwise activate display of all diagnostics at the end of line."
           (message "Display all diagnostics at end of line.")))
       (flymake-mode 1))
     )
-   ;; Toggle flycheck on/off
+   ;; Toggle display of diagnostics at end of line with flycheck
+   ;; - toggle the flycheck-inline-mode
    ((and (fboundp 'flycheck-mode)
          (eq pel-fly--buffer-fly-engine 'flycheck))
     (if (fboundp 'flycheck-inline-mode)
-        (pel-toggle-mode-and-show 'flycheck-inline-mode)
+        (progn
+          (flycheck-inline-mode 'toggle)
+          (message (pel-symbol-text 'flycheck-inline-mode)))
       (user-error "Command flycheck-inline-mode not bound.  Is it installed?
 Turn `pel-use-flycheck-inline' and restart Emacs: PEL will install it!")))
    ;;
@@ -176,6 +187,8 @@ If APPEND is non-nil, append information to the buffer, otherwise clear
 it and display information from the top."
   (interactive "P")
   (let* ((pel-insert-symbol-content-context-buffer (current-buffer))
+         (buffer-flymake-mode  (bound-and-true-p flymake-mode))
+         (buffer-flycheck-mode (bound-and-true-p flycheck-mode))
          (title (format "PEL setup for %s"
                         pel-insert-symbol-content-context-buffer)))
     (pel-print-in-buffer
@@ -183,14 +196,26 @@ it and display information from the top."
      title
      (lambda ()
        "Print syntax check setup control."
-       (pel-insert-bold "* Flymake/Flycheck status:")
+       (pel-insert-bold "* Flymake/Flycheck current status:")
        (pel-insert-symbol-content-line 'flymake-mode)
        (pel-insert-symbol-content-line 'flycheck-mode)
+       (when buffer-flymake-mode
+         (pel-insert-symbol-content-line
+          'flymake-show-diagnostics-at-end-of-line)
+         (pel-insert-symbol-content-line 'flymake-show-project-diagnostics))
+       (when buffer-flycheck-mode
+         (pel-insert-symbol-content-line 'flycheck-inline-mode)
+         (pel-insert-symbol-content-line 'flycheck-projectile-list-errors)
+         (pel-insert-symbol-content-line 'flycheck-eglot-mode))
+
        (pel-insert-bold "\n\n* Flymake/Flycheck activation control:")
        (pel-insert-list-content 'pel-fly-engine-for-modes
                                 nil nil nil
                                 'on-same-line)
-       (pel-insert-list-content 'pel-auto-activate-fly-engine-in-files
+       (pel-insert-list-content 'pel-modes-activating-syntax-check
+                                nil nil nil
+                                'on-same-line)
+       (pel-insert-list-content 'pel-files-activating-syntax-check
                                 nil nil nil
                                 'on-same-line)
 
@@ -211,30 +236,6 @@ it and display information from the top."
        (pel-insert-symbol-content-line 'pel-use-shellcheck))
      (unless append :clear-buffer)
      :use-help-mode)))
-
-;; ---------------------------------------------------------------------------
-
-;; [:todo 2025-12-11, by Pierre Rouleau: Remove this command]
-(defun pel-toggle-syntax-check-mode (selector)
-  "Toggle the active state of syntax checker mode identified by SELECTOR.
-
-SELECTOR must be the symbol of a (often defcustom) variable.
-That variable must have one of the following values:
-
-- nil
-- \\='with-flymake
-- \\='with-flycheck
-
-These values identify the syntax checker to control.
-When the value of the SELECTOR symbol is nil nothing is done.
-If the value is \\='with-flymake, then flymake is toggled.
-If the value is \\='with-flycheck then flycheck is toggled."
-  (let ((syntax-checker (symbol-value selector)))
-    (cond
-     ((eq syntax-checker 'with-flycheck)
-      (pel-toggle-mode 'flycheck-mode))
-     ((eq syntax-checker 'with-flymake)
-      (pel-toggle-mode 'flymake-mode)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-fly)

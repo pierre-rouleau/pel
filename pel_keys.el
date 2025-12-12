@@ -3593,22 +3593,14 @@ d-mode not added to ac-modes!"
   ;; - goflymake package installation - either using flymake or flycheck
   (when pel-use-goflymake
     ;; goflymake is a mixed package:
-    ;; - it has the Go source:  goflymake/main.go  that Go will compile into
+    ;; - it has the Go source: 'goflymake/main.go' that Go will compile into
     ;;   the executable stored in a directory that should be on your PATH,
-    ;; - the emacs lisp go-flymake.el and go-flycheck.el
+    ;; - the emacs lisp go-flymake.el and go-flycheck.el files.
     ;; To ensure the Emacs Lisp files are available to Emacs regardless of the
-    ;; Go project or workspace used, the Emacs Lisp files are stored in PEL
+    ;; Go project or workspace used, both Emacs Lisp files are stored in PEL
     ;; utility directory.
-    (if (memq pel-use-goflymake '(with-flycheck with-flymake))
-        (pel-install-github-file "dougm/goflymake/master"
-                                 (if (eq pel-use-goflymake 'with-flycheck)
-                                     "go-flycheck.el"
-                                   "go-flymake.el"))
-      (display-warning
-       'pel-use-goflymake
-       (format "Unsupported pel-use-goflymake value: %S"
-               pel-use-goflymake)
-       :error)))
+    (pel-install-github-files "dougm/goflymake/master"
+                              '("go-flycheck.el" "go-flymake.el")))
 
   ;; 6- Activate Go Setup
   ;;    Schedule more configuration upon Go feature loading
@@ -3648,9 +3640,6 @@ d-mode not added to ac-modes!"
                  pel-use-goflymake)))))
     (declare-function pel--go-mode-config "pel_keys")
 
-    (when pel-use-goflymake
-      (when (boundp 'go-mode-map)
-        (define-key go-mode-map (kbd "<f11> !!") 'pel-go-toggle-syntax-checker)))
     (pel-config-major-mode go pel:for-go :same-for-ts
       (pel--go-mode-config))
     (pel-config-major-mode go-dot-mod pel:for-go :no-ts
@@ -4913,10 +4902,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
             ;; - Note that both flycheck-select-checker and flycheck-mode
             ;;   are autoloaded.  See section: 'Syntax Check with Flycheck'
             (flycheck-select-checker 'erlang-otp)
-            (flycheck-mode))))
-        ;;
-        ;; When any syntax checker is used with Erlang add a key to toggle it
-        (define-key erlang-mode-map (kbd "<f11> !!") 'pel-erlang-toggle-syntax-checker))
+            (flycheck-mode)))))
 
       ;; Activate EDTS when required.
       (when pel-use-edts

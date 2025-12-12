@@ -413,7 +413,6 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-erlang-backward-sexp
     pel-erlang-forward-sexp
     pel-show-erlang-version
-    pel-erlang-toggle-syntax-checker
     pel-erlang-comment-dwim
     pel-erlang-show-xref
     pel-erlang-select-xref
@@ -505,8 +504,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-go-dot-mod-mode
     pel-go-toggle-gofmt-on-buffer-save
     pel-go-setup-info
-    pel-go-mod-setup-info
-    pel-go-toggle-syntax-checker)
+    pel-go-mod-setup-info)
   (pel-autoload-function "pel-go" for:
     pel--go-ts-mode-fixer
     pel-go-insert-indent-info
