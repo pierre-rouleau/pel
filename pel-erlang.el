@@ -102,7 +102,8 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 (require 'comint)
-(require 'pel--base)            ; use: `pel-toggle-syntax-check-mode'
+(require 'pel--base)
+(require 'pel-fly)              ; use: `pel-toggle-syntax-check-mode'
 (require 'pel--options)         ; use: `pel-erlang-version-detection-method'
 ;;                              ;      `pel-erlang-path-detection-method'
 ;;                              ;      `pel-erlang-electric-keys'
@@ -1056,6 +1057,7 @@ lsp-keymap-prefix                   : %s" lsp-keymap-prefix)
 ;; Erlang Syntax Checking Control
 ;; ------------------------------
 
+;; [:todo 2025-12-11, by Pierre Rouleau: Remove this command]
 ;;-pel-autoload
 (defun pel-erlang-toggle-syntax-checker ()
   "Toggle the syntax checker mode on/off.

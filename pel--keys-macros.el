@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-09 13:57:59 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-11 23:05:55 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -75,7 +75,8 @@
 (require 'pel--options) ; use: `pel-use-call-graph', `pel-use-tree-sitter', ...
 (require 'seq)          ; use: `seq-concatenate', `seq-drop', `seq-subseq'
 (eval-when-compile
-  (require 'cl-lib))    ; use: `cl-dolist', `cl-return'
+  (require 'cl-lib)     ; use: `cl-dolist', `cl-return'
+  (require 'cl-macs))   ; use: `cl-eval-when'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -608,12 +609,16 @@ stored inside the doc/pdf directory.")
                                                                re-builder
                                                                visual-regexp))
     ([f11 ?!]        "syntax-checking"  pel-pkg-for-syntax-check (flymake
-                                                                  flycheck))
+                                                                  flymake-collection
+                                                                  flycheck
+                                                                  flycheck-eglot
+                                                                  flycheck-inline
+                                                                  flycheck-projectile))
     ([f11 ?t]        ("case-conversion"
                       "input-method"
                       "text-modes")     pel-pkg-for-text-mode  (editing-basics
-                      glasses
-                      whitespace))
+                                                                glasses
+                                                                whitespace))
     ([f11 ?t ?a]     "align"            pel-pkg-for-align       align)
     ([f11 ?t ?e]     "enriched-text"    nil                     enriched)
     ([f11 ?t ?f]     "filling-justification" nil               fill)
@@ -1923,6 +1928,39 @@ local variable."
                  indent-to-tab-width)))
     (setq-local pel-tab-width-control-variables value)))
 
+(defun pel--auto-activate-fly ()
+  "Auto-activate fly syntax checking engine if necessary.
+Automatic activation is done for a file identified inside
+`pel-auto-activate-fly-engine-in-files' when the major mode is in
+`pel-fly-engine-for-modes' and identifies an fly engine."
+  (message "ROUP: pel--auto-activate-fly: checking for %S" (current-buffer))
+  (let ((filename (buffer-file-name))
+        (found nil)
+        (fullpath-name nil)
+        (engine nil))
+    (when filename
+      (setq engine (car-safe
+                    (cdr-safe
+                     (assoc (intern (pel-file-type-for major-mode))
+                            pel-fly-engine-for-modes))))
+      (when engine
+        ;; [:todo 2025-12-11, by Pierre Rouleau: optimize with a while?]
+        (dolist (pathname pel-auto-activate-fly-engine-in-files)
+          (setq fullpath-name (expand-file-name pathname))
+          (if (pel-string-ends-with-p pathname "/")
+              (when (pel-string-starts-with-p filename fullpath-name)
+                (setq found t))
+            (when (string= fullpath-name filename)
+              (setq found t))))
+        (when found
+          (message "ROUP: pel--auto-activate-fly: found: %s : %s" filename engine)
+          (cond
+           ((eq engine 'flymake) (flymake-mode 1))
+           ((eq engine 'flycheck) (when pel-use-flycheck
+                                    (with-no-warnings
+                                      (flycheck-mode 1))))))))))
+
+
 ;; TODO: pel-config-major-mode does not seem to support shell-mode and
 ;;       term-mode properly.  Investigate and fix.
 
@@ -2037,11 +2075,14 @@ Function created by the `pel-config-major-mode' macro."
         `((pel-local-set-f12-M-f12 (quote ,key-prefix)))))
 
     ;; Add the code that activates the minor modes identified by the
-    ;;`pel-<mode>-activates-minor-modes' user-option.
+    ;;`pel-<mode>-activates-minor-modes' user-option, and other PEL
+    ;; user options:
+    ;; - `pel-fly-engine-for-modes' & `pel-auto-activate-fly-engine-in-files'
     (pel-append-to newbody
       `((pel-turn-on-local-minor-modes-in
          (quote ,gn-minor-modes))
-        (pel-check-minor-modes-in ,gn-minor-modes)))
+        (pel-check-minor-modes-in ,gn-minor-modes)
+        (pel--auto-activate-fly)))
 
     ;; 4 - Prepare the code that is invoked after the newbody
     (pel-append-to hook-body

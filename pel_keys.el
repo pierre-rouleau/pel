@@ -148,6 +148,8 @@
 (require 'pel--options) ; all `pel-use-...' variables identify what to use.
 ;;                      ; also defines a set of utility functions to deal with
 ;;                      ; the options: pel-auto-complete-help
+(eval-when-compile
+  (require 'cl-macs))   ; use: `cl-eval-when'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -783,6 +785,7 @@ Your version of Emacs does not support dynamic module.")))
 ;;
 ;; activate the <f12> key binding for dired
 (pel--mode-hook-maybe-call
+
  (lambda ()
    (pel-local-set-f12 'pel:for-dired))
  'dired-mode 'dired-mode-hook)
@@ -1811,7 +1814,7 @@ can't bind negative-argument to C-_ and M-_"
 (pel--cfg-emacs pel:cfg-emacs "w" "woman")
 
 (defun pel--setup-for-custom ()
-  "PEL setup for Custom-mode."
+  "PEL setup for `Custom-mode'."
   (pel-local-set-f12-M-f12 'pel:cfg)
   (when pel-bind-m-dot-to-xref-find-custom-definition
     (local-set-key (kbd "M-.") 'pel-xref-find-custom-definition-at-line))
@@ -2382,15 +2385,40 @@ can't bind negative-argument to C-_ and M-_"
 
 ;; ---------------------------------------------------------------------------
 ;;** Flycheck/Flymake Syntax Checking - <f11> !
-;;   ================================
+;;   ==========================================
+(define-pel-global-prefix pel:fly (kbd "<f11> !"))
+(define-key pel:fly "E"  'pel-fly-toggle-engine)
+(define-key pel:fly "!"  'pel-fly-toggle-syntax-check)
+(define-key pel:fly "I"  'pel-fly-toggle-diag-at-eol)
+(define-key pel:fly "L"  'pel-fly-list-diagnostics)
+(define-key pel:fly "?"  'pel-fly-show-setup-info)
+
+(when pel-use-flymake-collection
+  (pel-ensure-package flymake-collection from: melpa))
+
+(when pel-use-flycheck-eglot
+  (pel-install-github-file "flycheck/flycheck-eglot/master"
+                           "flycheck-eglot.el")
+  (pel-autoload-file flycheck-eglot for:
+                     flycheck-eglot-mode
+                     global-flycheck-eglot-mode)
+  (global-flycheck-eglot-mode 1))
+
+(when pel-use-flycheck-inline
+  (pel-install-github-file "flycheck/flycheck-inline/master"
+                           "flycheck-inline.el")
+  (pel-autoload-file flycheck-inline for:
+                     flycheck-inline-mode))
+
+(when pel-use-flycheck-projectile
+  (pel-install-github-file "nbfalcon/flycheck-projectile/master"
+                           "flycheck-projectile.el")
+  (pel-autoload-file flycheck-projectile for:
+                     flycheck-projectile-list-errors))
 
 ;; Mode Setting Helper Functions
 ;; -----------------------------
-(defun pel--extend-flymake ()
-  "Extend the flymake mode."
-  ;; The keys are similar to what is used by flycheck
-  ;; See pel--extend-flycheck code.
-
+(pel-eval-after-load flymake
   (when (boundp 'flymake-mode-map)
     (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
     (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
@@ -2402,23 +2430,10 @@ can't bind negative-argument to C-_ and M-_"
   (pel-autoload-file flycheck for:
                      flycheck-mode
                      flycheck-select-checker)
-
-  ;; Extend flycheck mode by adding some key bindings
-  (defun pel--extend-flycheck ()
-    "Extend the flycheck mode."
-    ;; The keys are similar to what flymake uses.
-    ;; See pel--extend-flymake
-    (when (boundp 'flycheck-mode-map)
-      (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
-      (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error)
-      (define-key flycheck-mode-map (kbd "<f11> ! l") 'flycheck-list-errors)))
-  (declare-function pel--extend-flycheck "pel_keys") ; prevent byte-compiler warning
-
-  (define-pel-global-prefix pel:flycheck (kbd "<f11> !"))
-  (define-key pel:flycheck "!"         'flycheck-mode)
-  (define-key pel:flycheck (kbd "M-!") 'global-flycheck-mode)
-  (pel-eval-after-load flycheck
-    (pel--extend-flycheck)))
+    (pel-eval-after-load flycheck
+      (when (boundp 'flycheck-mode-map)
+        (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
+        (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Software Build Tool Support
@@ -2672,6 +2687,7 @@ can't bind negative-argument to C-_ and M-_"
   ;;
   ;; activate the <f12> key binding for apples-mode
   (pel--mode-hook-maybe-call
+
    (lambda ()
      (pel-local-set-f12 'pel:for-applescript))
    'apples-mode 'apples-mode-hook)
@@ -4090,8 +4106,9 @@ d-mode not added to ac-modes!"
 (pel-check-minor-modes-in pel-emacs-lisp-activates-minor-modes)
 (declare-function pel--install-elisp-skel "pel-skels-elisp")
 (pel--mode-hook-maybe-call
+
  (lambda ()
-    ;; Make M-<f12> same as <f12> for convenience.
+   ;; Make M-<f12> same as <f12> for convenience.
    (pel-local-set-f12-M-f12 'pel:for-elisp)
    (pel-local-set-f12-M-f12 'pel:elisp-analyze  "a")
    (pel-local-set-f12-M-f12 'pel:elisp-compile  "c")
@@ -4103,6 +4120,8 @@ d-mode not added to ac-modes!"
    (pel--install-elisp-skel pel:elisp-skel)
    ;; activate PEL customized minor modes
    (pel-turn-on-local-minor-modes-in 'pel-emacs-lisp-activates-minor-modes)
+   ;; Activate syntax checkers if necessary
+   (pel--auto-activate-fly)
    ;; Activate open-at-point for elisp files
    (setq-local pel-filename-at-point-finders '(pel-elisp-find-file)))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
@@ -4885,9 +4904,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
         (cond
          ;; when using flymake with Erlang
          ((eq pel-use-erlang-syntax-check 'with-flymake)
-          (pel-require 'erlang-flymake :install-when-missing)
-          ;; TODO: activate flymake when (memq 'erlang-mode pel-modes-activating-syntax-check)
-          (pel--extend-flymake))
+          (pel-require 'erlang-flymake :install-when-missing))
          ;;
          ;; when using flycheck with Erlang
          ((eq pel-use-erlang-syntax-check 'with-flycheck)
@@ -5204,6 +5221,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (declare-function pel--setup-for-inferior-lfe "pel_keys")
   (pel-check-minor-modes-in pel-inferior-lfe-activates-minor-modes)
   (pel--mode-hook-maybe-call
+
    (function pel--setup-for-inferior-lfe)
    'inferior-lfe-mode 'inferior-lfe-mode-hook))
 
@@ -5871,11 +5889,15 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
           (unless (assoc 'indent-tabs-mode file-local-variables-alist)
             (setq-local indent-tabs-mode pel-eiffel-use-tabs))
           (pel-local-set-f12-M-f12 'pel:for-eiffel)
-          (pel-turn-on-local-minor-modes-in 'pel-eiffel-activates-minor-modes)))
+          (pel-turn-on-local-minor-modes-in
+           'pel-eiffel-activates-minor-modes))
+        ;; Activate syntax checkers if necessary
+        (pel--auto-activate-fly))
       (declare-function pel--setup-for-eiffel "pel_keys")
 
       (pel-check-minor-modes-in pel-eiffel-activates-minor-modes)
       (pel--mode-hook-maybe-call
+
        ;; (function pel--setup-for-eiffel-with-local-vars) 'eiffel-mode
        (function pel--setup-for-eiffel) 'eiffel-mode
        'eiffel-mode-hook))))
@@ -6045,9 +6067,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                                flymake-automatic))
     (pel-ensure-package flymake-shellcheck from: melpa)
     (when (eq pel-use-shellcheck 'flymake-automatic)
-      (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
-    (pel-eval-after-load flymake
-      (pel--extend-flymake)))
+      (add-hook 'sh-mode-hook 'flymake-shellcheck-load)))
    ;; using flycheck
    ;; - flycheck support is already extended by default.
    ;; - start it automatically if it was requested by user-option
@@ -6286,6 +6306,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
   (pel-check-minor-modes-in pel-shell-activates-minor-modes)
   (pel--mode-hook-maybe-call
+
    (function pel--setup-for-shell)
    'shell-mode 'shell-mode-hook))
 
@@ -6318,6 +6339,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
   (pel-check-minor-modes-in pel-term-activates-minor-modes)
   (pel--mode-hook-maybe-call
+
    (function pel--setup-for-term)
    'term-mode 'term-mode-hook))
 
@@ -6342,6 +6364,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
       (pel-check-minor-modes-in pel-term-activates-minor-modes)
       (pel--mode-hook-maybe-call
+
        (function pel--setup-for-vterm)
        'vterm-mode 'vterm-mode-hook))))
 
@@ -6465,6 +6488,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 ;; Activate the <f12> key binding for outline-mode
   (pel--mode-hook-maybe-call
+
    (lambda ()
      (pel-local-set-f12 'pel:for-outline-mode))
    'outline-mode 'outline-mode-hook)
@@ -8019,6 +8043,7 @@ the ones defined from the buffer now."
 (declare-function pel--setup-for-ibuffer "pel_keys")
 
 (pel--mode-hook-maybe-call
+
  (function pel--setup-for-ibuffer)
  'ibuffer-mode 'ibuffer-mode-hook)
 
@@ -8049,6 +8074,7 @@ the ones defined from the buffer now."
         (define-key map (kbd "<f6> w")      'pel-diff-ignore-whitespace-in-hunks))))
 (declare-function pel--setup-for-diff-mode "pel_keys")
 (pel--mode-hook-maybe-call
+
  (function pel--setup-for-diff-mode)
  'diff-mode 'diff-mode-hook)
 
@@ -8550,8 +8576,9 @@ the ones defined from the buffer now."
     (error "The goto-address-highlight-keymap not defined!")))
 
 ;; activate the extra keys for goto-addr-mode
-(pel--mode-hook-maybe-call  (function pel--augment-goto-addr-map)
-                            'goto-address-mode 'goto-address-mode-hook)
+(pel--mode-hook-maybe-call
+ (function pel--augment-goto-addr-map)
+ 'goto-address-mode 'goto-address-mode-hook)
 
 ;;* RPM and CPIO archive file support
 

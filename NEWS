@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Simplified key bindings using flymake and flycheck syntax checking: they use the same key sequences mapped to PEL command dispatching commands.
+  PEL provides the ability to dynamically switch from flymake to flycheck and vice versa, and select wich one is used by default for each major mode.
+  PEL also provides the ability to identify files/directories where the selected syntax checking minor mode is automatically activated.
+  The pel commands are all bound under the ~<f11> !~ key prefix.
 - Simplified key bindings for *show-paren-mode* and *rainbow-delimiters-mode* globally and in the major modes where these are bound under ~<f12>~.
   The mappings are ~<f11> h (~ and ~<f12> h (~ for *show-paren-mode* and ~<f11> h )~ and ~<f12> h )~ for *rainbow-delimiters-mode*.
 - Removed ~<f11> p~ binding to *pel-help-pdf-select*, as ~<f11> p~  is now used for the PEL key prefix for Emacs project

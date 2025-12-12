@@ -304,8 +304,8 @@
 ;; subr (always loaded) ; use: called-interactively-p
 (require 'pel-comp)
 (eval-when-compile
-  (require 'subr-x)              ; use: split-string, string-join, string-trim
-  (require 'cl-macs))  ; use: cl-eval-when
+  (require 'subr-x)    ; use: `split-string', `string-join', `string-trim'
+  (require 'cl-macs))  ; use: `cl-eval-when'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -2442,27 +2442,6 @@ on/off value, otherwise use \"on\" and \"off\".
 The function issue an error if the argument is not a symbol."
   (pel-toggle-mode mode)
   (message (pel-symbol-text mode on-string off-string)))
-
-(defun pel-toggle-syntax-check-mode (selector)
-  "Toggle the active state of syntax checker mode identified by SELECTOR.
-
-SELECTOR must be the symbol of a (often defcustom) variable.
-That variable must have one of the following values:
-
-- nil
-- \\='with-flymake
-- \\='with-flycheck
-
-These values identify the syntax checker to control.
-When the value of the SELECTOR symbol is nil nothing is done.
-If the value is \\='with-flymake, then flymake is toggled.
-If the value is \\='with-flycheck then flycheck is toggled."
-  (let ((syntax-checker (symbol-value selector)))
-    (cond
-     ((eq syntax-checker 'with-flycheck)
-      (pel-toggle-mode 'flycheck-mode))
-     ((eq syntax-checker 'with-flymake)
-      (pel-toggle-mode 'flymake-mode)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Basic functions working with values and variables

@@ -462,6 +462,13 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-auto-fill-only-comments
     pel-show-fill-columns)
 
+  (pel-autoload "pel-fly" for:
+    pel-fly-toggle-engine
+    pel-fly-toggle-syntax-check
+    pel-fly-toggle-diag-at-eol
+    pel-fly-list-diagnostics
+    pel-fly-show-setup-info)
+
   ;; pel-font loading is directly controlled by pel-init
   ;; by the logic inside pel_keys.el
 

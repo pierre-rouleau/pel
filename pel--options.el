@@ -536,7 +536,7 @@ CATEGORY identifies the PDF category directory name:
 - if nil (the default), return main PEL mode PDF file name.
 - otherwise, the CATEGORY identifies the name of a sub-directory
   where other PDF files are stored and the function returns the
-  name of that file. This allows managing a set of PDF files for
+  name of that file.  This allows managing a set of PDF files for
   a given topic.  For instance, CATEGORY set to \"lang\",
   identifies PDF files that contain programming language specific
   syntax and reference information.
@@ -601,7 +601,7 @@ information related to indentation and width control."
 
 This activates the automatic download and installation of packages that
 protect your Emacs installation against time changes to Emacs and to its
-ecosystem.  See the logic inside pel_keys.el "
+ecosystem.  See the logic inside pel_keys.el."
   :group 'pel-base-emacs
   :type 'boolean
   :safe #'booleanp)
@@ -671,7 +671,7 @@ For example, to activate it in Erlang, add a line with
 Enter *global* minor-mode activating function symbols.
 Do not enter lambda expressions.
 The following are automatically activated based on specific conditions:
-- dtrt-indent-mode     : when pel-use-dtrt-indent"
+- `dtrt-indent-mode'     : when `pel-use-dtrt-indent'"
   :group 'pel-base-emacs
   :type '(repeat function))
 
@@ -704,7 +704,7 @@ NOTES: - PEL only supports tree-sitter for Emacs 30.1 and later and
 
            Emacs 29.1 supports tree-sitter, however Emacs 30.1 introduces
            a breaking change that simplifies the way tree-sitter major modes
-           are implemented. PEL code is compatible with the new logic to
+           are implemented.  PEL code is compatible with the new logic to
            enhance user-experience and automate the installation.
 
        - To use tree-sitter modes under PEL you must setup your ~/.emacs.d
@@ -782,7 +782,7 @@ you update the tree-sitter-langs package!"
 NOTES: - PEL only supports tree-sitter for Emacs 30.1 and later and
          automatically turns this off (set to nil) when running under
          an earlier version of Emacs because combobulate requires
-         tree-sitter support. "
+         tree-sitter support."
   :link '(url-link :tag "combobulate @ Github"
                    "https://github.com/mickeynp/combobulate")
   :link '(url-link :tag )
@@ -927,7 +927,7 @@ Note that this assumes that your init.el file does not prevent byte
 compilation.  If your file defines the `no-byte-compile' variable, remove that
 or force it nil if you want PEL to `byte-compile' it.
 
-Unlike the pel-bundle and package-quickstart files, PEL will not change the
+Unlike the pel-bundle and `package-quickstart' files, PEL will not change the
 value of `no-byte-compile' file variable in your init.el file."
   :group 'pel-fast-startup
   :type 'boolean
@@ -940,7 +940,7 @@ Note that this assumes that your early-init.el file does not prevent byte
 compilation.  If your file defines the `no-byte-compile' variable, remove that
 or force it nil if you want PEL to `byte-compile' it.
 
-Unlike the pel-bundle and package-quickstart files, PEL will not change the
+Unlike the pel-bundle and `package-quickstart' files, PEL will not change the
 value of `no-byte-compile' file variable in your early-init.el file."
   :group 'pel-fast-startup
   :type 'boolean
@@ -948,7 +948,7 @@ value of `no-byte-compile' file variable in your early-init.el file."
 
 ;; ----
 (defcustom pel-support-package-quickstart nil
-  "When non-nil: activate package-quickstart, otherwise don't activate it.
+  "When non-nil: activate `package-quickstart', otherwise don't activate it.
 
 This is only used in Emacs 27 and later."
   :group 'pel-fast-startup
@@ -1193,7 +1193,7 @@ When set, PEL activates the following key sequences:
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-pkg-for-ibuffer nil
-  "List of external packages that PEL can use to extend ibuffer-mode."
+  "List of external packages that PEL can use to extend `ibuffer-mode'."
   :group 'pel-pkg-for-buffer
   :link `(url-link :tag "ibuffer-mode PDF" ,(pel-pdf-file-url
                                              "ibuffer-mode")))
@@ -1202,7 +1202,7 @@ When set, PEL activates the following key sequences:
   "List of *local* minor-modes automatically activated for IBUFFER buffers.
 Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions.
-For the ibuffer-mode, you may want to activate the following minor modes:
+For the `ibuffer-mode', you may want to activate the following minor modes:
 - `ibuffer-auto-mode'"
   :group 'pel-pkg-for-ibuffer
   :type '(repeat function))
@@ -1264,7 +1264,7 @@ Ido extensions include the following:
   - Ido Grid:
     - Select between two incompatible grid mechanisms:
       - `pel-use-ido-grid', which provides a simpler all-in-one ido-grid, or
-      - `pel-use-ido-grid-mode' which provides a ido-grid-mode that has two
+      - `pel-use-ido-grid-mode' which provides a `ido-grid-mode' that has two
          sub-modes: ability to start collapsed or fully extended.
   - Ido Vertical mode: activate with `pel-use-ido-vertical-mode'
 
@@ -1273,7 +1273,7 @@ Ido extensions include the following:
   the `ido-grid-mode' feature prevents the `ido-grid' feature from working
   properly.
 
-  - Select initial Ido geometry with: `pel-initial-ido-geometry'. If you set
+  - Select initial Ido geometry with: `pel-initial-ido-geometry'.  If you set
    `pel-use-ido-grid' then the modes related to `pel-use-ido-grid-mode' are
    automatically replaced by the ido-grid value.
 
@@ -1281,9 +1281,9 @@ Ido extensions include the following:
 - Ido completion is multiple prompt commands: activate it
   with `pel-use-ido-ubiquitous'.
 
-There is also a set of extension packages for Ivy. PEL supports:
+There is also a set of extension packages for Ivy.  PEL supports:
 
-- Counsel. If you want to be able to use Ivy completion mode in most
+- Counsel.  If you want to be able to use Ivy completion mode in most
   prompting commands, then activate Counsel with `pel-use-counsel'.
 - Counsel OSX App on macOS to launch macOS application via en Emacs prompt
   with Ivy completion: activate with `pel-use-counsel-osx-app'.
@@ -1296,12 +1296,12 @@ PEL also provides 2 commands to navigate into the current buffer and all
 opened buffers using the symbols detected by the Emacs imenu symbol parsing of
 the buffer major modes.
 
-- The `pel-goto-symbol' moves point to a symbol in current buffer. PEL
+- The `pel-goto-symbol' moves point to a symbol in current buffer.  PEL
   provides  several user interface mechanisms for it, various input
-  completions or popup menu systems. Select its user interface with
+  completions or popup menu systems.  Select its user interface with
  `pel-initial-goto-symbol-UI'.
 - The `pel-goto-symbol-any-buffer', which does the same but for
-  all currently opened buffer.  It uses imenu-anywhere which you
+  all currently opened buffer.  It uses `imenu-anywhere' which you
   must activate with `pel-use-imenu-anywhere'.  This user option
   also selects the user interface used when Emacs starts.
 
@@ -1421,16 +1421,16 @@ The initial Ido geometry is set by `pel-initial-ido-geometry'."
 (pel-put 'pel-use-ido-vertical-mode :requires 'pel-use-ido)
 
 (defcustom pel-use-ido-ubiquitous nil
-  "Control whether the ido-completing-read+ package is used.
+  "Control whether the `ido-completing-read+' package is used.
 
 Note that the original name of that package used to be
-ido-ubiquitous.  The new name is ido-completing-read+.  However,
+ido-ubiquitous.  The new name is `ido-completing-read+'.  However,
 the name of the user-option uses the old name as it's shorter and
 better represents the concept.
 
 With this package used, IDO completion is made available for a
 larger number of prompt functions and more can be activated via
-its customization. The functions that now support IDO completion
+its customization.  The functions that now support IDO completion
 will also use the ivy or helm completion if they are selected.
 
 To activate this you must also activate `pel-use-ido'."
@@ -1644,9 +1644,9 @@ Warning: both `popup-imenu' and popup-switcher seem to be affected by
                  popup-switcher)))
 
 (defcustom pel-use-imenu-anywhere nil
-  "Whether PEL uses the imenu-anywhere external package.
+  "Whether PEL uses the `imenu-anywhere' external package.
 
-The imenu-anywhere package provides navigation for the imenu tags across
+The `imenu-anywhere' package provides navigation for the imenu tags across
 all buffers, not just the current one.  It supports several completion methods:
 
 - Emacs default
@@ -1706,9 +1706,9 @@ Activating the `pel-use-lispy' user-option indirectly activates
                    ,(pel-pdf-file-url "cut-paste")))
 
 (defcustom pel-activate-overwrite-yank nil
-  "Activate pel-overwrite-yank in place of yank.
+  "Activate `pel-overwrite-yank' in place of yank.
 
-When overwrite-yank is active a yank while overwrite-mode
+When overwrite-yank is active a yank while `overwrite-mode'
 is active overwrites text instead of inserting it.
 
 Toggle this behaviour dynamically with `pel-toggle-overwrite-yank'."
@@ -1773,7 +1773,7 @@ PEL uses my fork of the project."
   )
 
 (defcustom pel-kill-symbol-at-point-terminal-binding nil
-  "Optional key binding in terminal mode for pel-kill-symbol-at-point.
+  "Optional key binding in terminal mode for `pel-kill-symbol-at-point'.
 
 On most terminals the [M-kp-subtract] binding does not work.
 You can define another key binding for the command, ideally one
@@ -1797,7 +1797,7 @@ to create the binding."
   :group 'pel-package-use)
 
 (defcustom pel-use-csv nil
-  "Whether PEL activates the csv-mode.
+  "Whether PEL activates the `csv-mode'.
 
 Requires Emacs 27.1 or later."
   :group 'pel-pkg-for-data-files
@@ -1912,12 +1912,12 @@ The choices are:
 ;; Text Abbreviation, Code Completion and Expansion
 ;; ------------------------------------------------
 (defgroup pel-pkg-for-expand nil
-  "Text abbreviation, code completion and expansion control
+  "Text abbreviation, code completion and expansion control.
 
 - List of external packages that PEL can use to complete code or expand text.
 - Automatic activation of abbreviation mode.
 
-Note that auto-complete and company can both be activated.
+Note that `auto-complete' and company can both be activated.
 However, PEL only allow one of them to be used per buffer.
 The Hippie Expand can be used together with any."
   :group 'pel-package-use
@@ -1946,7 +1946,7 @@ The Hippie Expand can be used together with any."
 (pel-put 'pel-use-hippie-expand :package-is :builtin-emacs)
 
 (defcustom pel-modes-activating-abbrev-mode nil
-  "List of major modes that automatically activate abbrev-mode."
+  "List of major modes that automatically activate `abbrev-mode'."
   :group 'pel-pkg-for-expand
   :type '(repeat symbol))
 (pel-put 'pel-modes-activating-abbrev-mode :in-group 'pel-pkg-for-expand)
@@ -1991,7 +1991,7 @@ tree-sitter is available, then tomlparse is used instead of emacs-toml."
 (defcustom pel-use-tomlparse nil
   "Whether PEL supports tomlparse when tree-sitter is available.
 
-This is only available when pel-use-tree-sitter is t (on)."
+This is only available when `pel-use-tree-sitter' is t (on)."
   :group 'pel-pkg-for-conf-file
   :link '(url-link :tag "tomlparse.el @ Github"
                    "https://github.com/johannes-mueller/tomlparse.el")
@@ -2000,7 +2000,7 @@ This is only available when pel-use-tree-sitter is t (on)."
 (pel-put 'pel-use-tomlparse :package-is :in-utils)
 
 (defcustom pel-use-kconfig nil
-  "Whether PEL supports kconfig-mode for the Linux kernel Konfig files.
+  "Whether PEL supports `kconfig-mode' for the Linux kernel Konfig files.
 A Major mode."
   :group 'pel-pkg-for-conf-file
   :link '(url-link :tag "kconfig-mode @ Github"
@@ -2013,7 +2013,7 @@ A Major mode."
 ;; --------------
 
 (defcustom pel-use-dockerfile nil
-  "Whether PEL supports the dockerfile-mode."
+  "Whether PEL supports the `dockerfile-mode'."
   :group 'pel-pkg-for-conf-file
   :link '(url-link :tag "dockerfile-mode @ Github"
                    "https://github.com/spotify/dockerfile-mode")
@@ -2053,7 +2053,7 @@ A Major mode."
   :safe #'booleanp)
 
 (defcustom pel-use-font-lock-studio nil
-  "Whether PEL supports the font-lock-studio package."
+  "Whether PEL supports the `font-lock-studio' package."
   :group 'pel-pkg-for-face-font
   :link '(url-link :tag "font-lock-studio @ GitHub"
                    "https://github.com/Lindydancer/font-lock-studio")
@@ -2098,7 +2098,7 @@ major-mode is one identified by the value of the
   "List of major modes that prevent automatic deletion of trailing whitespace.
 
 Identify the major modes where you do *NOT* want automatic deletion of
-trailing whitespace when the file is saved when the
+trailing whitespace when the file is saved when the variable
 `pel-delete-trailing-whitespace' user-option is turned on.
 By default the `diff-mode' is in this list: it prevents removing the trailing
 whitespace from diff files identifying differences between a file that had
@@ -2184,9 +2184,9 @@ initialization time."
 Note that:
 
 - `pel-use-counsel' must be turned on to be able to use
-  counsel-recentf,
+  `counsel-recentf',
 - `pel-use-popup-switcher' must be turned on to be able to use
-  psw-switch-recentf."
+  `psw-switch-recentf'."
   :group 'pel-pkg-for-filemng
   :group 'pel-pkg-for-buffer
   :type '(choice
@@ -2196,7 +2196,7 @@ Note that:
                  psw-switch-recentf)))
 
 (defcustom pel-ffind-executable 'find
-  "Name of the file finding executable that pel-ffind uses.
+  "Name of the file finding executable that `pel-ffind' uses.
 
 Select one of:
 - find    : the Unix ubiquitous find utility.
@@ -2206,8 +2206,7 @@ Select one of:
   -  {FNAME}    : the base name of the file.
   -  {DIRNAMES} : a space separated list of directory names to search.
 
-  When this is selected an example sis placed in the input field.
-"
+  When this is selected an example sis placed in the input field."
   :group 'pel-pkg-for-filemng
   :group 'pel-pkg-for-c++
   :group 'pel-pkg-for-c
@@ -2246,7 +2245,7 @@ Select one of:
   :safe #'booleanp)
 
 (defcustom pel-use-rpm-spec nil
-  "Control if PEL supports the rpm-spec-mode package.
+  "Control if PEL supports the `rpm-spec-mode' package.
 A major mode."
   :group 'pel-pkg-for-rpm
   :link '(url-link :tag "rpm-spec-mode @ Github"
@@ -2270,7 +2269,7 @@ A major mode."
   :group 'pel-pkg-for-browse)
 
 (defcustom pel-use-rfc nil
-  "Control whether PEL provides access to rfc-mode external package."
+  "Control whether PEL provides access to `rfc-mode' external package."
   :group 'pel-pkg-for-file-browse
   :type 'boolean
   :safe #'booleanp
@@ -2278,7 +2277,7 @@ A major mode."
                    "https://github.com/galdor/rfc-mode"))
 
 (defcustom pel-use-dir-treeview nil
-  "Control whether PEL supports the dir-treeview package."
+  "Control whether PEL supports the `dir-treeview' package."
   :group 'pel-pkg-for-file-browse
   :type 'boolean
   :safe #'booleanp
@@ -2398,8 +2397,8 @@ of the impact these user-option variable have."
 
 
 (defcustom pel-flip-help-pdf-arg nil
-  "When set, flip value of the pel-help-pdf argument.
-When pel-flip-help-pdf-arg is set, the argument of the function `pel-help-pdf'
+  "When set, flip value of the `pel-help-pdf' argument.
+When `pel-flip-help-pdf-arg' is set, the argument of the function `pel-help-pdf'
 is reversed before used.
 
 By default, `pel-help-pdf' opens the local PDF file when no
@@ -2429,7 +2428,7 @@ The alternate method is the other one."
 
 ;; TODO: once PEL explicitly supports TCL, move the next user option into it.
 (defcustom pel-tcl-man-section (if pel-system-is-linux-p "3tcl" "n")
-  "Section of the Man pages for tcl major mode"
+  "Section of the Man pages for tcl major mode."
   :group 'pel-pkg-for-help
   :type 'string)
 
@@ -2500,7 +2499,7 @@ emacs-tip-35-framemove.html")
 (defface pel-cursor-overwrite-mode-color
   '((((background light)) :background "black")
     (((background dark))  :background "white"))
-  "Cursor face of cursor in overwrite-mode.
+  "Cursor face of cursor in `overwrite-mode'.
 Takes effects only when Emacs runs in graphics mode."
   :group 'pel-pkg-for-graphics-cursor
   :group 'pel-pkg-for-cursor
@@ -2547,7 +2546,7 @@ This is only used when Emacs runs in graphics mode."
 (pel-put 'pel-use-all-the-icons-ibuffer :restricted-to 'pel-emacs-is-graphic-p)
 
 (defcustom pel-use-all-the-icons-dired nil
-  "Control whether PEL uses the all-the-icons package in dired.
+  "Control whether PEL uses the all-the-icons package in Dired.
 This is only used when Emacs runs in graphics mode."
   :group 'pel-pkg-for-graphics-icons
   :type 'boolean
@@ -2695,7 +2694,7 @@ store them inside a directory and identify that directory here."
   :link `(url-link :tag "Hide/Show PDF" ,(pel-pdf-file-url "hide-show-code")))
 
 (defcustom pel-use-hide-lines nil
-  "Control whether PEL uses the hide-lines package."
+  "Control whether PEL uses the `hide-lines' package."
   :group 'pel-pkg-for-hide-show
   :link '(url-link :tag "hide-lines @ GitHub"
                    "https://github.com/vapniks/hide-lines")
@@ -2729,7 +2728,7 @@ and is also supported by LSP servers."
   :link `(url-link :tag "Highlighting PDF" ,(pel-pdf-file-url "highlight")))
 
 (defcustom pel-use-beacon-mode nil
-  "Control whether PEL uses and activates the beacon-mode.
+  "Control whether PEL uses and activates the `beacon-mode'.
 A global minor mode.
 PEL currently restricts it to Emacs 27 and later."
   :group 'pel-pkg-for-highlight
@@ -2813,7 +2812,7 @@ PEL binds command `rainbow-mode' to ``<f11> b h c``."
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-pkg-for-iedit nil
-  "PEL customization of the iedit-mode."
+  "PEL customization of the `iedit-mode'."
   :group 'pel-pkg-for-all-languages
   :group 'pel-pkg-for-cursor
   :group 'pel-pkg-for-highlight)
@@ -2904,10 +2903,10 @@ eliminating the hierarchical access and provide a flat list."
   :safe #'booleanp)
 
 (defcustom pel-use-popup-imenu nil
-  "Control whether PEL provides access to the popup-imenu package.
+  "Control whether PEL provides access to the `popup-imenu' package.
 
 When available and when `pel-use-popup-switcher' is not active,
-PEL uses it for the pel-goto-symbol when the popup-imenu
+PEL uses it for the `pel-goto-symbol' when the `popup-imenu'
 mode is selected."
   :link '(url-link :tag "popup-imenu @ GitHub"
                    "https://github.com/ancane/popup-imenu")
@@ -2932,7 +2931,7 @@ This package provides popup menu for navigating across:
   - projectile files
   - projectile projects
 
-When available PEL uses it for the pel-goto-symbol when the popup-imenu
+When available PEL uses it for the `pel-goto-symbol' when the `popup-imenu'
 mode is selected.
 Note: popup-switcher 2.14 has several bugs I fixed in my fork, which PEL
       uses until they're integrated."
@@ -3162,13 +3161,13 @@ that are expanded when the note is inserted:
 
 - \"(DATE)\" : replaced by a UTC date using the format specified
   by `pel-todo-note-date-format',
-- \"(USER)\" : replaced by the value of `user-full-name'.
-"
+- \"(USER)\" : replaced by the value of variable `user-full-name'."
   :group 'pel-text-insertions
   :type 'string)
 
 
 (defun pel--date-time-doc (fmt doc)
+  "Generate docstring from format FMT and DOC description."
   (format
    "%s
 
@@ -3307,14 +3306,14 @@ the following choices:
 
 - 1: Not used.
 - 2: Use the original, unmaintained, EmacsAttic parinfer.
-- 3: Use parinfer-rust-mode, a maintained parinfer implemented in Rust.
+- 3: Use `parinfer-rust-mode', a maintained parinfer implemented in Rust.
      Recommended.
 
 Notes: The original Elisp implementation, no longer maintained, now
 accessible in emacsattic was too slow to be usable in older Emacs.  You
 may get better results on newer Emacs with native compilation.
 
-A successor implementation written in Rust, parinfer-rust-mode, that can
+A successor implementation written in Rust, `parinfer-rust-mode', that can
 be used instead.  Activate that with use-parinfer-rust-mode.
 
 If you have an old installation of parinfer downloaded via Melpa, and
@@ -3618,7 +3617,7 @@ The `pel-key-chords' value is a list of objects.
     - global   : this key-chord is global
     - A mode name that identifies the major or minor mode
       where the key-chord must be activated.
-      For example:  c++-mode or flyspell-mode
+      For example:  `c++-mode' or `flyspell-mode'
   - The second is a string identifying the Emacs Lisp file
     that provides the mode identified in the first item.
     This is empty when the first item is set to global.
@@ -3627,7 +3626,7 @@ The `pel-key-chords' value is a list of objects.
     the name of a Emacs Lisp file accessible in Emacs load path.
     Do not identify a file extension.  For most files, the file
     base name is sufficient and more portable.
-    So, for flyspell-mode use \"flyspell\" in this field.
+    So, for `flyspell-mode' use \"flyspell\" in this field.
   - The third item identifies if the key sequence must be treated
     as a normal key-chord or as a key-seq.  The default is
     key-chord but you can also use key-seq to impose an order
@@ -3635,7 +3634,7 @@ The `pel-key-chords' value is a list of objects.
     but the key-seq package is not loaded, key-chord is used
     instead.
   - The fourth item is the 2 characters used for the key-chord
-    or key-seq. Do not quote the characters.
+    or key-seq.  Do not quote the characters.
     For key-chord you can identify control characters in this
     way:
     - for <tab>, type: C-q C-i
@@ -3649,7 +3648,7 @@ The `pel-key-chords' value is a list of objects.
     or key-seq.  The action can be expressed using one of 3 ways,
     selected by its Value Menu:
     - 0: expansion string:
-         Type the keys you want as replacement. You can
+         Type the keys you want as replacement.  You can
          place several keys on a line, or spread them on several
          lines.  You can identify control keys by entering the
          kbd-style like C-b (by typing \\='C\\=', \\='-\\=', then \\='b\\=')
@@ -3774,7 +3773,7 @@ To activate it you must also activate `pel-use-log-support'"
   :link `(url-link :tag "Windows PDF" ,(pel-pdf-file-url "windows")))
 
 (defcustom pel-force-normal-erase-is-backspace-off-in-terminal nil
-  "When non-nil force normal-erase-is-backspace to off in terminal mode.
+  "When non-nil force `normal-erase-is-backspace' to off in terminal mode.
 Use this when you use Emacs in terminal mode and in graphics mode, use
 only one customization file and your delete key deletes forward instead
 of backward in terminal mode.  This is sometimes required to run Emacs on
@@ -3786,7 +3785,7 @@ If it is set to a integer, PEL forces `normal-erase-is-backspace' off in
 terminal mode by executing the necessary command some time after the complete
 initialization.  The amount of time is specified by the integer value, in
 seconds.  If your Emacs initialization is relatively quick a value of 1 second
-is enough. Increase the value if your Emacs initialization exceeds 1 second
+is enough.  Increase the value if your Emacs initialization exceeds 1 second
 and the setting does not seem to have any impact on the behaviour of the
 delete key."
   :group 'pel-pkg-for-keys
@@ -3866,10 +3865,10 @@ waiting for activity to resume in the lewang's repo."
 (pel-put 'pel-use-command-log-mode :package-is :in-utils)
 
 (defcustom pel-use-interaction-log-mode nil
-  "Control whether PEL uses the interaction-log-mode package.
+  "Control whether PEL uses the `interaction-log-mode' package.
 A minor mode.
 This package  logs all keys typed in a buffer, showing the command name and
-using colored fonts.  Similar to command-log-mode but with more colors.
+using colored fonts.  Similar to `command-log-mode' but with more colors.
 
 Note: the author is planning to move the package to GNU elpa;
 the previous Github site was removed but MELPA-based installation
@@ -3901,7 +3900,7 @@ For those system, set `pel-select-key-is-end' to t and PEL will bind the
 (defcustom pel-keypad-0-is-kp-yank nil
   "Whether PEL enforce using keypad 0 as yank when not in numlock mode.
 
-This setting is normally not required. It is, however, required in
+This setting is normally not required.  It is, however, required in
 some situations like when running Emacs on a Linux system accessed through
 ssh."
   :group 'pel-keypad-keys
@@ -3909,9 +3908,9 @@ ssh."
   :safe #'booleanp)
 
 (defcustom pel-keypad-esc-0-is-overwrite-mode nil
-  "Whether PEL enforce ESC keypad 0 as overwrite-mode if not in numlock mode.
+  "Whether PEL enforce ESC keypad 0 as `overwrite-mode' if not in numlock mode.
 
-This setting is normally not required. It is, however, required in
+This setting is normally not required.  It is, however, required in
 some situations like when running Emacs on a Linux system accessed through
 ssh."
   :group 'pel-keypad-keys
@@ -3990,7 +3989,7 @@ A major mode."
   :group 'pel-package-use)
 
 (defcustom pel-use-strace nil
-  "Whether PEL uses the strace-mode package."
+  "Whether PEL uses the `strace-mode' package."
   :group 'pel-pkg-for-log-file
   :link '(url-link :tag "strace-mode @ Github"
                    "https://github.com/pkmoore/strace-mode")
@@ -4046,7 +4045,7 @@ TO-STRING argument:
   :group 'pel-pkg-for-log-file)
 
 (defcustom pel-use-changelog nil
-  "Whether PEL adds special support for the change-log-mode.
+  "Whether PEL adds special support for the `change-log-mode'.
 A major mode."
   :group 'pel-pkg-for-changelog-file
   :type 'boolean
@@ -4087,7 +4086,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-filemng)
 
 (defcustom pel-use-intel-hex nil
-  "Control whether PEL uses the external intel-hex-mode package.
+  "Control whether PEL uses the external `intel-hex-mode' package.
 A major mode.
 This package allows easy editing of Intel HEX object files."
   :group 'pel-pkg-for-object-file
@@ -4158,7 +4157,7 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-filemng)
 
 (defcustom pel-use-x509-modes nil
-  "Control whether PEL uses the x509-mode package.
+  "Control whether PEL uses the `x509-mode' package.
 Provides several major modes."
   :group 'pel-pkg-for-x509-file
   :link '(url-link :tag "509-mode @ Github"
@@ -4381,7 +4380,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
                    "https://github.com/thomsten/mscgen-mode#readme"))
 
 (defcustom pel-use-mscgen nil
-  "Control whether PEL activates support for mscgen-mode.
+  "Control whether PEL activates support for `mscgen-mode'.
 Major mode."
   :group 'pel-pkg-for-mscgen
   :link '(url-link :tag "mscgen @ Github"
@@ -4465,6 +4464,7 @@ Do not enter lambda expressions."
   :link '(url-link :tag "flycheck-plantuml @ GitHub"
                    "https://github.com/alexmurray/flycheck-plantuml")
   :group 'pel-pkg-for-plantuml
+  :group 'pel-pkg-for-syntax-check
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-flycheck-plantuml :requires 'pel-use-plantuml)
@@ -4512,7 +4512,7 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-use-markdown-mode nil
-  "Control whether PEL activates the markdown-mode external package.
+  "Control whether PEL activates the `markdown-mode' external package.
 The `pel-use-markdown' user-option must also be turned on to
 activate this package."
   :link '(url-link "markdown-mode @ Github"
@@ -4539,7 +4539,7 @@ major mode of that programming language."
 (defcustom pel-use-grip-mode nil
   "Control whether PEL activates grip-mode external package.
 A minor mode.
-This package provides HTML rendering of markdown and org-mode buffers.
+This package provides HTML rendering of markdown and `org-mode' buffers.
 It requires Python and the grip python package that you can install
 using the command \\='pip install grip\\='."
   :link '(url-link "grip-mode @ GitHub"
@@ -4572,8 +4572,8 @@ the buffer is updated."
 The `pel-use-markdown' user-option must also be turned on to
 activate this package.
 
-NOTE: ⚠️  not recommended: markdown-live-preview-mode from
-         markdown-mode does the same and does not need the setup
+NOTE: ⚠️  not recommended: `markdown-live-preview-mode' from
+         `markdown-mode' does the same and does not need the setup
          required by markdown-preview-eww."
   :link '(url-link :tag "markdown-preview-eww @ GitHub"
                    "https://github.com/niku/markdown-preview-eww")
@@ -4583,7 +4583,7 @@ NOTE: ⚠️  not recommended: markdown-live-preview-mode from
 (pel-put 'pel-use-markdown-preview-eww :requires 'pel-use-markdown)
 
 (defcustom pel-use-markdown-preview-mode nil
-  "Control whether PEL activates the markdown-preview-mode package.
+  "Control whether PEL activates the `markdown-preview-mode' package.
 A minor mode.
 The `pel-use-markdown' user-option must also be turned on to
 activate this package."
@@ -4613,7 +4613,7 @@ activate this package."
 (pel-put 'pel-use-markdown-toc :package-is :in-utils)
 
 (defcustom pel-use-vmd-mode nil
-  "Control whether PEL activates the vmd-mode package.
+  "Control whether PEL activates the `vmd-mode' package.
 A minor mode.
 The `pel-use-markdown' user-option must also be turned on to
 activate this package."
@@ -4709,7 +4709,7 @@ Do not enter lambda expressions."
 (defcustom pel-org-use-electric-markup nil
   "Whether org markup keys are electric.
 
-When turned on, the *, /, =, _, ~ and + keys are electric in org-mode.
+When turned on, the *, /, =, _, ~ and + keys are electric in `org-mode'.
 - Typing one of these keys inserts the other after the cursor.
 - Typing a key when an area is marked inserts the keys around the area."
   :group 'pel-pkg-for-org-mode
@@ -4719,7 +4719,7 @@ When turned on, the *, /, =, _, ~ and + keys are electric in org-mode.
 (defcustom pel-org-tab-width 2
   "Column width display rendering of hard tab for org buffers for Emacs < 30.
 
-For Emacs >= 30.1, org-mode only supports a tab-width of 8,
+For Emacs >= 30.1, `org-mode' only supports a `tab-width' of 8,
 For Emacs < 30, PEL set `tab-width' with this value when
 opening org buffers.
 
@@ -4758,7 +4758,7 @@ display of hard TAB characters."
   "Command line use to compile reStructuredText file into final format.
 
 Specify a command line that can be used to convert the reStructuredText file
-into the format of your choice, like HTML. PEL appends the name of the
+into the format of your choice, like HTML.  PEL appends the name of the
 file to the command line to compile it.
 
 The command you select can have several arguments.
@@ -4900,7 +4900,7 @@ itself is not available."
   :link `(url-link :tag "yaml PDF" ,(pel-pdf-file-url "yaml")))
 
 (defcustom pel-use-yaml nil
-  "Control whether PEL provides access to the yaml-mode external package."
+  "Control whether PEL provides access to the `yaml-mode' external package."
   :group 'pel-pkg-for-yaml
   :link '(url-link :tag "yaml-mode @ Github"
                    "https://github.com/yoshiki/yaml-mode")
@@ -4944,7 +4944,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :link `(url-link :tag "cwl PDF" ,(pel-pdf-file-url "cwl")))
 
 (defcustom pel-use-cwl nil
-  "Control whether PEL activates the cwl-mode external package.
+  "Control whether PEL activates the `cwl-mode' external package.
 A major mode."
   :group 'pel-pkg-for-cwl
   :link '(url-link :tag "cwl-mode @ GitHub"
@@ -4994,7 +4994,7 @@ This provides ability to control the lighter of major and minor modes."
 Specify the mode-line lighters modifications you need here.
 
 The data stored in this user-option corresponds to the data type
-accepted by the function `delight'. See its documentation for
+accepted by the function `delight'.  See its documentation for
 more details.
 
 Some are provided by default to help show the possibilities of
@@ -5002,7 +5002,7 @@ the supported syntax.
 
 PEL applies them when the `pel-use-delight' is turned on.
 
-NOTE: lighter for electric-pair-mode must be activated separately
+NOTE: lighter for `electric-pair-mode' must be activated separately
       by the `pel-electric-pair-lighter'."
   :group 'pel-pkg-for-modeline
   :link '(url-link :tag "delight @ Emacs Wiki"
@@ -5010,14 +5010,14 @@ NOTE: lighter for electric-pair-mode must be activated separately
   :type '(repeat sexp))
 
 (defcustom pel-electric-pair-lighter " ℇ⒧ "
-  "Mode-line lighter for the electric-pair-mode.
+  "Mode-line lighter for the `electric-pair-mode'.
 
 To disable it replace it by an empty string."
   :group 'pel-pkg-for-modeline
   :type 'string)
 
 (defcustom pel-use-show-point-mode nil
-  "Control whether PEL activates the show-point-mode.
+  "Control whether PEL activates the `show-point-mode'.
 A minor mode.
 That mode prints the current point value on the mode line."
   :group 'pel-pkg-for-modeline
@@ -5091,7 +5091,7 @@ A minor mode that provides a scroll bar inside the modeline.."
 (defcustom pel-use-verilog nil
   "Control whether PEL supports the Verilog Programming Language Development.
 On Emacs >= 30.1, if `pel-use-tree-sitter' is on, this also activates the
-verilog-ts-mode package and automatically install and build the required
+`verilog-ts-mode' package and automatically install and build the required
 Tree-Sitter syntax grammar."
   :group 'pel-pkg-for-verilog
   :type 'boolean
@@ -5289,6 +5289,84 @@ This may get activated indirectly by other user-options."
               (and pel-use-sh
                    (or (memq pel-use-shellcheck
                              '(flycheck-manual flycheck-automatic))))))
+
+(defcustom pel-fly-engine-for-modes '((emacs-lisp flymake))
+  "Maps major mode to its default fly syntax check engine.
+
+Each entry of the list maps the mode name of a major mode to the syntax
+checker used to check the buffer syntax.  The mode name exclude the -mode or
+-ts-mode suffix.  For example use c, c++, python, rst.
+
+The choice is one of:
+
+- nil     : use nothing.
+- flymake : use `flymake-mode' to syntax check the major mode.
+- flycheck: use `flycheck-mode' to syntax check the major mode.
+
+If a major mode is not identified in the list, no syntax checker is used for
+the mode as if the entry was explicitly selecting nothing (nil).
+
+When a syntax checker engine is used, the key bindings under the <f11> !
+key prefix refer to the commands for the selected engine.
+
+To activate the syntax checker automatically for a file, identify that
+file or its directory inside `pel-auto-activate-fly-engine-in-files'
+user-option."
+  :group 'pel-pkg-for-syntax-check
+  :type '(repeat
+          (list
+           (symbol :tag "major mode")
+           (choice
+            (const :tag "Use nothing" nil)
+            (const :tag "Use with flymake"  flymake)
+            (const :tag "Use with flycheck" flycheck)))))
+
+(defcustom pel-auto-activate-fly-engine-in-files nil
+  "List of files and directories where selected fly engine auto-activates.
+Identify the files and directories where syntax checking identified by
+the `pel-fly-engine-for-modes' activates automatically.
+Each entry should be a string:
+- If it ends in \"/\", it is considered as a directory name and means that
+  PEL will activate the selected syntax checker when Emacs opens a file
+  located in this directory.
+- Otherwise, it is considered a file name."
+  :group 'pel-pkg-for-syntax-check
+  :type '(repeat :tag "List" file))
+
+(defcustom pel-use-flymake-collection nil
+  "Whether PEL uses flymake-collection package."
+  :link '(url-link :tag "flymake-collection @GitHub"
+                   "https://github.com/mohkale/flymake-collection")
+  :group 'pel-pkg-for-syntax-check
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-flycheck-eglot nil
+  "Whether PEL uses flycheck-eglot package."
+  :link '(url-link :tag "flycheck-eglot @GitHub"
+                   "https://github.com/flycheck/flycheck-eglot")
+  :group 'pel-pkg-for-syntax-check
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-flycheck-eglot :package-is :in-utils)
+
+(defcustom pel-use-flycheck-inline nil
+  "Whether PEL uses flycheck-inline package."
+  :link '(url-link :tag "flycheck-inline @GitHub"
+                   "https://github.com/flycheck/flycheck-inline")
+  :group 'pel-pkg-for-syntax-check
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-flycheck-inline :package-is :in-utils)
+
+(defcustom pel-use-flycheck-projectile nil
+  "Whether PEL uses flycheck-projectile package."
+  :link '(url-link :tag "flycheck-projectile @GitHub"
+                   "https://github.com/nbfalcon/flycheck-projectile")
+  :group 'pel-pkg-for-syntax-check
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-flycheck-projectile :package-is :in-utils)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Language Server Protocol (LSP) Support
@@ -5548,7 +5626,7 @@ replaced by the file name."
   "Recognized extensions for shell script.
 
 PEL code generation function `pel-generic-file-header' is able to generate
-special code for shell script meant to be sourced. It recognizes the files
+special code for shell script meant to be sourced.  It recognizes the files
 meant to be sourced when the file is recognized as a shell script file that
 has a name prefix identifiable by `pel-shell-sourced-script-file-name-prefix'.
 But you can force some files to have that prefix and still be regular shell
@@ -5750,7 +5828,7 @@ This complements the header search method identified by the
   :type '(repeat string))
 
 (defcustom pel-c-file-finder-method 'generic
-  "Specify method used by `pel-open-at-point' to search C header files.
+  "Set method used by `pel-open-at-point' to search C header files.
 
 The following 4 methods listed below are supported, with the ability to
 also identify an extra list of directory trees to search in the
@@ -5780,8 +5858,8 @@ The 4 methods are:
   elements:
 
   - section: \\='[file-finder]\\='
-  - key:     \\='project-path\\=' : a list of directories where files are searched
-                              for the current project.
+  - key:     \\='project-path\\=' : a list of directories where files
+                                    are searched for the current project.
 
   - extra tool-specific path key(s):
 
@@ -5829,7 +5907,7 @@ The 4 methods are:
 
 4: Two lists of directories: one for the project and one for the compiler tool:
 
-  This specifies two lists of directories. The first list identifies the
+  This specifies two lists of directories.  The first list identifies the
   project directories and the second list identifies the directories where the
   compiler and libraries headers are stored.
 
@@ -5966,7 +6044,7 @@ is used for `c-mode' buffers, otherwise the integer value specified by
           (integer :tag "Use a value specific for awk-mode buffers:")))
 
 (defcustom  pel-awk-newline-mode 'context-newline
-  "Set default newline mode for c-mode buffers.
+  "Set default newline mode for `c-mode' buffers.
 
 This may be one of the following values:
 
@@ -6000,7 +6078,7 @@ Values in the [2, 8] range are accepted."
   :safe 'pel-indent-valid-p)
 
 (defcustom pel-awk-tab-width 4
-  "Column width display rendering of hard tab for awk-mode buffers.
+  "Column width display rendering of hard tab for `awk-mode' buffers.
 
 PEL stores this in `tab-width' when opening awk buffers.
 
@@ -6034,8 +6112,8 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 This *must* be activated to allow any other package for C support.
 When activating it you can select between the following values:
-- t                : use `c-mode' provided by the c-mode built-in.
-- with-tree-sitter : use `c-ts-mode' provided by the c-ts-mode built-in."
+- t                : use `c-mode' provided by the `c-mode' built-in.
+- with-tree-sitter : use `c-ts-mode' provided by the `c-ts-mode' built-in."
   :group 'pel-pkg-for-c
   :type '(choice
           (const :tag "Do not use C" nil)
@@ -6122,8 +6200,8 @@ The 4 methods are:
   elements:
 
   - section: \\='[file-finder]\\='
-  - key:     \\='project-path\\=' : a list of directories where files are searched
-                              for the current project.
+  - key:     \\='project-path\\=' : a list of directories where files
+                                    are searched for the current project.
 
   - extra tool-specific path key(s):
 
@@ -6173,7 +6251,7 @@ The 4 methods are:
 
 4: Two lists of directories: one for the project and one for the compiler tool:
 
-  This specifies two lists of directories. The first list identifies the
+  This specifies two lists of directories.  The first list identifies the
   project directories and the second list identifies the directories where the
   compiler and libraries headers are stored.
 
@@ -6306,7 +6384,7 @@ is used for `c-mode' buffers, otherwise the integer value specified by
           (integer :tag "Use a value specific for c-mode buffers:")))
 
 (defcustom  pel-c-newline-mode 'context-newline
-  "Set default newline mode for c-mode buffers.
+  "Set default newline mode for `c-mode' buffers.
 
 This may be one of the following values:
 
@@ -6385,9 +6463,7 @@ following:
 - 1-star   /* One star
             * continuation
             * comment.
-            */
-
-"
+            */"
   :group 'pel-c-code-style
   :type '(choice
           (const :tag "No multi-line comments" nil)
@@ -6701,10 +6777,12 @@ The choices are:
 - A user defined skeleton.  For this you need to write Emacs Lisp code.
   You have to write a function `pel-skels-c-function-def/custom'
   inside a file and store the name of that file inside the box that
-  appear when you select this option.  You can start by using the
-  example that is stored inside the file \\='custom/skeleton/custom-c-skel.el\\='.
+  appear when you select this option.
+  You can start by using the example that is stored inside
+  the file \\='custom/skeleton/custom-c-skel.el\\='.
   The file name can be an absolute file name but it can also be a relative
-  file name.  On Unix systems you can use \\='~\\=' to identify your home directory."
+  file name.  On Unix systems you can use \\='~\\=' to identify your
+  home directory."
   :group 'pel-c-function-header-skeleton-control
   :type '(choice
           (const :tag "Just code, no comment block." nil)
@@ -6760,10 +6838,10 @@ defined ones, which could use that variable too."
   :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
 (defcustom pel-use-bison nil
-  "Control whether PEL activates the bison-mode.
+  "Control whether PEL activates the `bison-mode'.
 Major mode.
 When active it is associated to the .lex and .yacc files,
-taking over the default association with c-mode."
+taking over the default association with `c-mode'."
   :group 'pel-pkg-for-bison
   :link '(url-link :tag "bison-mode @ GitHub"
                    "https://github.com/Wilfred/bison-mode")
@@ -7225,7 +7303,7 @@ The choices are:
 
 - nil: No documentation comment inserted.
 - basic-style: Basic documentation comment just above the
-  function definition. This includes a function purpose.
+  function definition.  This includes a function purpose.
 - man-page: Man-page style documentation above the function definition.
   If variable `pel-c++-skel-insert-function-sections' is t, the comment also
   include a DESCRIPTION section and other sections as defined by the
@@ -7233,10 +7311,12 @@ The choices are:
 - A user defined skeleton.  For this you need to write Emacs Lisp code.
   You have to write a function `pel-skels-c++-function-def/custom'
   inside a file and store the name of that file inside the box that
-  appear when you select this option.  You can start by using the
-  example that is stored inside the file \\='custom/skeleton/custom-c++-skel.el\\='.
+  appear when you select this option.
+  You can start by using the example that is stored inside the
+  file \\='custom/skeleton/custom-c++-skel.el\\='.
   The file name can be an absolute file name but it can also be a relative
-  file name.  On Unix systems you can use \\='~\\=' to identify your home directory."
+  file name.  On Unix systems you can use \\='~\\=' to identify your
+  home directory."
   :group 'pel-c++-function-header-skeleton-control
   :type '(choice
           (const :tag "Just code, no comment block." nil)
@@ -7454,7 +7534,7 @@ is used for `d-mode' buffers, otherwise the integer value specified by
           (integer :tag "Use a value specific for d-mode buffers:")))
 
 (defcustom  pel-d-newline-mode 'context-newline
-  "Set default newline mode for d-mode buffers.
+  "Set default newline mode for `d-mode' buffers.
 
 This may be one of the following values:
 
@@ -7566,8 +7646,9 @@ by the `pel-use-d-ac-dcd'."
 
 This *must* be activated to allow any other package for Dart.
 When activating it you can select between the following values:
-- t                : use `dart-mode' provided by the dart-mode external package.
-- with-tree-sitter : use `dart-ts-mode' provided by the dart-ts-mode external
+- t                : use `dart-mode' provided by the `dart-mode'
+                     external package.
+- with-tree-sitter : use `dart-ts-mode' provided by the `dart-ts-mode' external
                      package.
 
 Because of the higher implementation quality of `dart-ts-mode' over
@@ -7581,7 +7662,8 @@ on."
   :type '(choice
           (const :tag "Do not use Dart" nil)
           (const :tag "Use classic mode: dart-mode" t)
-          (const :tag "Use tree-sitter mode: dart-ts-mode . Preferred." with-tree-sitter)))
+          (const :tag "Use tree-sitter mode: dart-ts-mode . Preferred."
+                 with-tree-sitter)))
 (pel-put 'pel-use-dart :package-is '(if pel-use-tree-sitter
                                        (quote ((elpa . dart-mode)
                                                (utils . dart-ts-mode)))
@@ -7601,8 +7683,8 @@ Do not enter lambda expressions."
 - If a number is selected it, the `pel-indent-with-tabs-mode' is automatically
   enabled for Dart files with the visual indentation width specified by this
   value.
-  - Selecting this also automatically adds pel-indent-with-tabs-mode
-    to pel-dart-activates-minor-modes to automatically active the minor mode.
+  - Selecting this also automatically adds `pel-indent-with-tabs-mode'
+    to `pel-dart-activates-minor-modes' to automatically active the minor mode.
 
 For example, set this to 4 if you want to edit Dart files with a visual
 indentation rendering of 4 columns, even if the file uses a 2-space
@@ -7730,7 +7812,7 @@ When turned on,
 ;;                    value.
 ;; ]
 (defcustom pel-use-eiffel-mode nil
-  "Whether PEL activates eiffel-mode.
+  "Whether PEL activates `eiffel-mode'.
 A major mode.
 Note that Eiffel support is not fully working and needs to be
 fixed.  I'm using my fork while I'm trying to make it work,but it
@@ -7837,7 +7919,7 @@ Values in the [2, 8] range are accepted."
 ;; Javascript support
 ;; ------------------
 (defgroup pel-pkg-for-javascript nil
-  "PEL support for Javascript. Experimental."
+  "PEL support for Javascript.  Experimental."
   :group 'pel-pkg-for-software-programming-languages)
 
 
@@ -7956,7 +8038,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :safe #'booleanp)
 
 (defcustom pel-js2-activates-development-mode nil
-  "Activates development mode in js2-mode. Provides more js2 commands.
+  "Activates development mode in js2-mode.  Provides more js2 commands.
 
 When turned on, PEL sets js2-mode-dev-mode-p to t when js2-mode is loaded,
 to activate extra js2 commands and features."
@@ -8148,9 +8230,9 @@ Do not enter lambda expressions."
 
 The Go programming language requires that Go source code file be
 processed by the gofmt utility which re-formats the file
-according to official Go style. That style requires that hard tab
-be used for indentation. By default, a hard-tab is displayed with
-a width of 8 columns. You can safely change it to any number
+according to official Go style.  That style requires that hard tab
+be used for indentation.  By default, a hard-tab is displayed with
+a width of 8 columns.  You can safely change it to any number
 between 2 and 8. It changes the way the code looks inside an
 Emacs Go buffer, but does not change the content of the file.
 
@@ -8165,7 +8247,7 @@ and `go-ts-mode'."
   "Control if gofmt is executed automatically when Go buffer saved.
 
 Turn on (set to t) to have gofmt run automatically when the Go buffer
-is saved. Turn off if you do not want it done.
+is saved.  Turn off if you do not want it done.
 Turned on by default.
 
 Note that the command `pel-go-toggle-gofmt-on-buffer-save' changes the
@@ -8194,7 +8276,7 @@ Use the following command line to install it:
     go get -u github.com/dougm/goflymake
 
 By default PEL does not automatically activate the syntax checker
-when a Go file is visited. If you want it activated
+when a Go file is visited.  If you want it activated
 automatically, then you must add the symbol `go-mode' to the
 defcustom variable `pel-modes-activating-syntax-check'."
   :link '(custom-group-link "pel-base-emacs")
@@ -8292,6 +8374,7 @@ Requires gocode."
   :link '(url-link :tag "flycheck-golangci-lint @ Github"
                    "https://github.com/weijiangan/flycheck-golangci-lint")
   :group 'pel-pkg-for-go
+  :group 'pel-pkg-for-syntax-check
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-flycheck-golangci-lint :requires 'pel-use-go)
@@ -8370,7 +8453,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   "Control whether PEL uses the lispy package.
 
 PEL supports 2 implementations:
-- 1: abo-abo lispy.  The original author. Unfortunately currently
+- 1: abo-abo lispy.  The original author.  Unfortunately currently
                      un-maintained.
 - 2: enzuru lispy.   A temporary maintained fork that exists while abo-abo
                      is unavailable.  Selecting that will also activate
@@ -8431,7 +8514,7 @@ PEL will ignore other modes."
 (pel-put 'pel-modes-activating-lispy :in-group 'pel-pkg-for-lisp)
 
 (defcustom pel-enable-lispy-meta-return nil
-  "Enable the lispy-meta-return binding to M-RET when on.
+  "Enable the `lispy-meta-return' binding to M-RET when on.
 
 It is off by default, since it conflicts with PEL global binding to the M-RET
 key."
@@ -8471,7 +8554,7 @@ editing:
   - Sly, by setting `pel-use-sly'.
 
 You will also want to use a Common Lisp REPL and want to use it
-inside Emacs. For that you can identify the executable inside
+inside Emacs.  For that you can identify the executable inside
 `pel-inferior-lisp-program'."
   :group 'pel-pkg-for-clisp
   :type 'boolean
@@ -8732,7 +8815,7 @@ The string is placed between the two -*- tags."
 
 (defcustom pel-emacs-lisp-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Emacs Lisp buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-emacs-lisp
   :type '(repeat function))
@@ -8847,6 +8930,7 @@ Available for Emacs in graphics mode only."
                    "https://github.com/purcell/flycheck-package")
   :group 'pel-pkg-for-emacs-lisp
   :group 'pel-pkg-package-mng
+  :group 'pel-pkg-for-syntax-check
   :type 'boolean
   :safe #'booleanp)
 (when pel-use-flycheck-package
@@ -8863,7 +8947,7 @@ Available for Emacs in graphics mode only."
 
 (defcustom pel-arc-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Arc buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-arc
   :type '(repeat function))
@@ -8872,7 +8956,7 @@ Available for Emacs in graphics mode only."
   "Control whether PEL supports the Arc programming language.
 
   When this is activated, PEL activates the packages that support Arc and
-  provide arc-mode and Arc inferior mode."
+  provide `arc-mode' and Arc inferior mode."
   :group 'pel-pkg-for-arc
   :link '(url-link :tag "Arc anarki @ GitHub"
                    "https://github.com/arclanguage/anarki")
@@ -8890,7 +8974,7 @@ Available for Emacs in graphics mode only."
 
 (defcustom pel-clojure-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Clojure buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-clojure
   :type '(repeat function))
@@ -8964,7 +9048,7 @@ relatively small footprint with several interesting features."
 ;;    in favor of mode selected by `pel-use-janet'
 ;; ]
 (defcustom pel-use-janet-mode nil
-  "Control whether PEL uses janet-mode external package.
+  "Control whether PEL uses `janet-mode' external package.
 
 Provides access to the major mode `janet-mode'.
 Activating this automatically turns `pel-use-janet' on."
@@ -9005,7 +9089,7 @@ Activating this automatically turns `pel-use-janet' on."
 
 (defcustom pel-janet-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Janet buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-janet
   :type '(repeat function))
@@ -9015,20 +9099,20 @@ Activating this automatically turns `pel-use-janet' on."
 ;; -----------
 (defgroup pel-pkg-for-hy nil
   "PEL customization for the Hy programming language support.
-  Hy is a Lisp in Python."
+Hy is a Lisp in Python."
   :group 'pel-pkg-for-lisp
   :link `(url-link :tag "HyPDF" ,(pel-pdf-file-url "pl-hy")))
 
 (defcustom pel-hy-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Hy buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-hy
   :type '(repeat function))
 
 (defcustom pel-use-hy nil
   "Control whether PEL supports the Hy programming language.
-  Hy is a Lisp in Python."
+Hy is a Lisp in Python."
   :group 'pel-pkg-for-hy
   :link '(url-link :tag "Hy Homepage"
                    "https://docs.hylang.org/en/stable/")
@@ -9068,7 +9152,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 (defcustom pel-scheme-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Scheme buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-scheme
   :type '(repeat function))
@@ -9117,7 +9201,7 @@ Provides in-buffer macro expansion, using the macrostep package."
 
 (defcustom pel-use-ac-geiser nil
   "Control whether PEL activates the ac-geiser external package.
-Provides auto-completion for Geiser using the auto-complete-mode. "
+Provides auto-completion for Geiser using the `auto-complete-mode'."
   :link '(url-link :tag "ac-geiser @ GitHub"
                    "https://github.com/xiaohanyu/ac-geiser/")
   :group 'pel-pkg-for-scheme
@@ -9144,7 +9228,7 @@ Provides auto-completion for Geiser using the auto-complete-mode. "
 
 (defcustom pel-chez-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Chez buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-chez
   :type '(repeat function))
@@ -9175,7 +9259,7 @@ Note that activating Chez also activates Scheme support."
 
 (defcustom pel-chibi-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Chibi buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-chibi
   :type '(repeat function))
@@ -9206,7 +9290,7 @@ Note that activating Chibi also activates Scheme support."
 
 (defcustom pel-chicken-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Chicken buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-chicken
   :type '(repeat function))
@@ -9240,7 +9324,7 @@ Gambit is a Scheme implementation with its own tools."
 
 (defcustom pel-gambit-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Gambit buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-gambit
   :type '(repeat function))
@@ -9288,7 +9372,7 @@ If the program is available in your PATH that is good enough."
 
 (defcustom pel-gerbil-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Gerbil buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-gerbil
   :type '(repeat function))
@@ -9336,7 +9420,7 @@ These file are visited upon entering the gerbil-mode."
 
 (defcustom pel-guile-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Guile buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-guile
   :type '(repeat function))
@@ -9367,7 +9451,7 @@ Note that activating Guile also activates Gambit support."
 
 (defcustom pel-mit-scheme-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Mit-Scheme buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-mit-scheme
   :type '(repeat function))
@@ -9398,7 +9482,7 @@ Note that activating Mit-Scheme also activates Scheme support."
 
 (defcustom pel-racket-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Racket buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-racket
   :type '(repeat function))
@@ -9406,7 +9490,7 @@ Note that activating Mit-Scheme also activates Scheme support."
 (defcustom pel-use-racket nil
   "Control whether PEL supports the Racket programming language.
 
-  When this is activated, PEL activates the racket-mode
+  When this is activated, PEL activates the `racket-mode'
   package."
   :group 'pel-pkg-for-racket
   :link '(url-link :tag "racket-mode @ GitHub"
@@ -9433,7 +9517,7 @@ Note that activating Mit-Scheme also activates Scheme support."
 
 (defcustom pel-scsh-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Scsh buffers.
-  Enter *local* minor-mode activating function symbols.
+Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-scsh
   :type '(repeat function))
@@ -9462,7 +9546,7 @@ Note that activating Scsh also activates Scheme support."
   programming languages such as Emacs Lisp and Common Lisp.
 
   PEL binds these commands to the ``<f12>`` key prefix in Emacs-Lisp and
-  Common-Lisp major modes. They can also be used in any other Lisp-like text.
+  Common-Lisp major modes.  They can also be used in any other Lisp-like text.
 
   The main user-option variable is `pel-elisp-target-forms'.  With it you
   specify the group of targets.  The last possible choice is a user-specified
@@ -9480,7 +9564,7 @@ Note that activating Scsh also activates Scheme support."
 
   The target is specified using one of the following:
 
-  0) All top-level forms. The default.
+  0) All top-level forms.  The default.
 1) Top-level defun forms only.
 2) All defun forms, any level.
 3) All of the following forms, any level
@@ -9538,7 +9622,7 @@ Note that activating Scsh also activates Scheme support."
 
   Note that each entry in `pel-elisp-user-specified-targets' has a checkbox.
   Only the lines activated are searched.  The entries in that list correspond
-  to valid Emacs Lisp function or macro symbols. Their docstrings are
+  to valid Emacs Lisp function or macro symbols.  Their docstrings are
   available except for those defined in files not yet loaded.  More free
   format regular expressions can be defined in the second user-option
   `pel-elisp-user-specified-targets2' to complement the first list.
@@ -9953,7 +10037,7 @@ select flycheck it, PEL will install it if it is not already
 installed.
 
 By default PEL does not automatically activate the syntax checker
-when an Erlang file is visited. If you want it activated
+when an Erlang file is visited.  If you want it activated
 automatically, then you must add the symbol `erlang-mode' to the
 defcustom variable `pel-modes-activating-syntax-check'.
 
@@ -9978,8 +10062,8 @@ regardless of the value of this user-option."
 
 Except for \\='etags, all other choices require activation of a PEL
 user option.  If you select one of those PEL will automatically activate the
-corresponding user option to activate that package. If you select \\='edts, then
-EDTS will be activated automatically when an Erlang buffer is opened."
+corresponding user option to activate that package.  If you select \\='edts,
+then EDTS will be activated automatically when an Erlang buffer is opened."
   :group 'pel-pkg-for-erlang
   :type '(choice
           (const :tag "Use built-in etag system" etag)
@@ -10254,7 +10338,7 @@ To use it, `pel-use-erlang' must be on (t)."
 (pel-put 'pel-use-erlstack-mode :requires 'pel-use-erlang)
 
 (defcustom pel-use-ivy-erlang-complete nil
-  "Control whether PEL uses ivy-erlang-complete.
+  "Control whether PEL uses `ivy-erlang-complete'.
 
 Provides context sensitive completion for Erlang without
 connecting to Erlang nodes.
@@ -10270,7 +10354,7 @@ To use it, `pel-use-erlang' must be on (t)."
 (pel-put 'pel-use-ivy-erlang-complete :also-required-when 'pel-use-company-erlang)
 
 (defcustom pel-use-company-erlang nil
-  "Control whether PEL uses company-erlang."
+  "Control whether PEL uses `company-erlang'."
   :group 'pel-erlang-ide
   :link '(url-link "company-erlang @ GitHub"
                    "https://github.com/s-kostyaev/company-erlang")
@@ -10296,7 +10380,7 @@ EDTS := Erlang Development Tool Suite."
 (defcustom pel-use-erlang-ls nil
   "Control whether PEL uses the Erlang Language Server.
 
-Note that when set this activates the flycheck-mode, regardless
+Note that when set this activates the `flycheck-mode', regardless
 of the value of the `pel-use-erlang-syntax-check' user-option."
   :link '(url-link :tag "erlang_ls @ GitHub"
                    "https://github.com/erlang-ls/erlang_ls")
@@ -10382,7 +10466,7 @@ point to tab stop positions such as `tab-to-tab-stop', and the
 display of hard TAB characters.
 
 The indentation of Erlang code is mostly controlled by
-`erlang-indent-level'. If `pel-erlang-tab-width' differs
+`erlang-indent-level'.  If `pel-erlang-tab-width' differs
 `erlang-indent-level' then `pel-erlang-tab-width' should be a
 multiple of `erlang-indent-level' in case hard tabs have been
 inserted inside the source code.
@@ -10687,8 +10771,8 @@ Do not enter lambda expressions."
 - If a number is selected it, the `pel-indent-with-tabs-mode' is automatically
   enabled for Gleam files with the visual indentation width specified by this
   value.
-  - Selecting this also automatically adds pel-indent-with-tabs-mode
-    to pel-gleam-activates-minor-modes to automatically active the minor mode.
+  - Selecting this also automatically adds `pel-indent-with-tabs-mode'
+    to `pel-gleam-activates-minor-modes' to automatically active the minor mode.
 
 For example, set this to 4 if you want to edit Gleam files with a visual
 indentation rendering of 4 columns, even if the file uses a 2-space
@@ -10791,6 +10875,7 @@ CAUTION: Be aware that Gleam code normally does not use hard tabs,
   :group 'pel-pkg-for-elixir
   :group 'pel-pkg-for-lfe
   :group 'pel-pkg-for-gleam
+  :group 'pel-pkg-for-syntax-check
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-flycheck-rebar3 :requires '(pel-use-erlang
@@ -10967,7 +11052,7 @@ When activating it you can select between the following values:
 
 The choice depends on whether `pel-use-tree-sitter' is on or off.
 When it is off, then the `lua-start-process' is always used, since this is the
-only one available. Otherwise the choice is defined by the value selected by
+only one available.  Otherwise the choice is defined by the value selected by
 this user-option; one of:
 - always-use-lua-mode-repl  (same meaning as nil)
 - use-lua-ts-mode-repl-when-available"
@@ -11268,7 +11353,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
                                             "pl-objc")))
 
 (defcustom pel-use-objc nil
-  "Control whether PEL supports the objc-mode for GNU Objective-C language."
+  "Control whether PEL supports the `objc-mode' for GNU Objective-C language."
   :group 'pel-pkg-for-objc
   :type 'boolean
   :safe #'booleanp)
@@ -11279,6 +11364,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :link '(url-link :tag "flycheck-objc-clang @ Github"
                    "https://github.com/GyazSquare/flycheck-objc-clang")
   :group 'pel-pkg-for-objc
+  :group 'pel-pkg-for-syntax-check
   :type 'boolean
   :safe #'booleanp)
 
@@ -11383,7 +11469,7 @@ is used for `c-mode' buffers, otherwise the integer value specified by
 
 
 (defcustom  pel-objc-newline-mode 'context-newline
-  "Set default newline mode for c-mode buffers.
+  "Set default newline mode for `c-mode' buffers.
 
 This may be one of the following values:
 
@@ -11435,7 +11521,7 @@ Activating this activated the following user-options:
 ;; in favor of `pel-use-ocaml' to select the major mode used.
 ;; ]
 (defcustom pel-use-caml-mode nil
-  "Control whether PEL activates the caml-mode external package."
+  "Control whether PEL activates the `caml-mode' external package."
   :group 'pel-pkg-for-ocaml
   :link '(url-link :tag "caml-mode @ GitHub"
                    "https://github.com/ocaml/caml-mode")
@@ -11520,6 +11606,7 @@ When activated, automatically activates `pel-use-flycheck'."
   :link '(url-link :tag "flycheck-odin @ Github"
                    "https://github.com/mattt-b/flycheck-odin")
   :group 'pel-pkg-for-odin
+  :group 'pel-pkg-for-syntax-check
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-flycheck-odin :package-is :in-utils)
@@ -11591,10 +11678,10 @@ Do not enter lambda expressions."
 PEL has 3 sub-groups of Perl customization user options:
 
 - PEL General Perl settings, which apply to perl and cperl.
-- perl-mode settings,
-- cperl-mode settings.
+- `perl-mode' settings,
+- `cperl-mode' settings.
 
-The perl-mode and cperl-mode settings exits because PEL code depend
+The `perl-mode' and `cperl-mode' settings exits because PEL code depend
 on their presence.  However, the PEL General Perl setting user-options that
 use the same name are stored into the perl and cperl specific ones.  Therefore
 you should set the general user options to set the other two."
@@ -11604,7 +11691,7 @@ you should set the general user options to set the other two."
 (defcustom pel-use-perl nil
   "Control whether PEL supports the Perl programming language.
 
-When turned on the perl-mode is associated with the PEL ``<f12>`` key."
+When turned on the `perl-mode' is associated with the PEL ``<f12>`` key."
   :group 'pel-pkg-for-perl
   :type 'boolean
   :safe #'booleanp)
@@ -11621,8 +11708,8 @@ When turned on the perl-mode is associated with the PEL ``<f12>`` key."
 3 different major-modes are supported:
 
 - The `perl-mode' distributed with Emacs.  The simplest
-  mode. Emacs (but not PEL's) default.
-- The `cperl-mode' distributed with Emacs. More powerful, with
+  mode.  Emacs (but not PEL's) default.
+- The `cperl-mode' distributed with Emacs.  More powerful, with
   more features than `perl-mode'.
 - A newer `cperl-mode' implementation from Harald Jörg, the
   maintainer of Emacs official `cperl-mode'.  This uses the
@@ -11638,7 +11725,7 @@ since PEL places that directory at the beginning of Emacs
 `load-path' it is used instead of Emacs own cperl.el file.
 
 If later you change your mind and want to use Emacs own cperl.el,
-then you must first delete the cperl-mode and perl-tidy-ediff
+then you must first delete the `cperl-mode' and `perl-tidy-ediff'
 files from the PEL utils directory."
   :group 'pel-pkg-for-perl
   :link '(url-link :tag "Harald Jörg cperl-mode"
@@ -11649,7 +11736,7 @@ files from the PEL utils directory."
           (const :tag "Use HaraldJoerg/cperl-mode" HaraldJoerg/cperl-mode)))
 
 (defcustom pel-use-perl-repl nil
-  "Control whether PEL supports the perl-repl package."
+  "Control whether PEL supports the `perl-repl' package."
   :link '(url-link
           :tag "perl-repl @Github"
           "https://github.com/pierre-rouleau/perl-repl-el/blob/master/perl-repl.el")
@@ -11707,7 +11794,7 @@ This is applied to `perl-indent-level' and `cperl-indent-level'."
 
 PEl appends this list to the directory list specified by Perl @INC array
 variable.  Each string should represent an absolute path.
-Path expansion is done for ~ . "
+Path expansion is done for ~ ."
   :group 'pel-pkg-for-perl-general
   :type '(repeat string))
 
@@ -11718,7 +11805,7 @@ Path expansion is done for ~ . "
 
 ;; - - - - - - - - - - - - - - - -
 (defgroup pel-pkg-for-perl-perl-mode nil
-  "The PEL perl-mode settings."
+  "The PEL `perl-mode' settings."
   :group 'pel-pkg-for-perl)
 
 (defcustom pel-perl-activates-minor-modes nil
@@ -11744,7 +11831,7 @@ Do not enter lambda expressions."
 
 ;; - - - - - - - - - - - - - - - -
 (defgroup pel-pkg-for-perl-cperl-mode nil
-  "The PEL cperl-mode settings."
+  "The PEL `cperl-mode' settings."
   :group 'pel-pkg-for-perl)
 
 ;; activation for cperl-mode to mimic the perl-mode
@@ -11756,7 +11843,7 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-cperl-use-tabs pel-general-perl-use-tabs
-  "Value of `indent-tabs-mode' for editing perl files in cperl-mode.
+  "Value of `indent-tabs-mode' for editing perl files in `cperl-mode'.
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
   :group 'pel-pkg-for-perl-cperl-mode
@@ -11764,7 +11851,7 @@ Do not enter lambda expressions."
   :safe #'booleanp)
 
 (defcustom pel-cperl-tab-width pel-general-perl-indent-level
-  "Number of columns rendered in a buffer for a hard tab cperl-mode buffers.
+  "Number of columns rendered in a buffer for a hard tab `cperl-mode' buffers.
 
 This is currently unused, adjusted to the value of
 `pel-general-perl-indent-level' for consistency."
@@ -11884,7 +11971,7 @@ is used for `c-mode' buffers, otherwise the integer value specified by
 
 
 (defcustom  pel-pike-newline-mode 'context-newline
-  "Set default newline mode for c-mode buffers.
+  "Set default newline mode for `c-mode' buffers.
 
 This may be one of the following values:
 
@@ -11974,7 +12061,7 @@ Values in the [2, 8] range are accepted."
 ;; is used for Python.
 ;; ]
 (defcustom pel-use-external-python-mode nil
-  "Control whether PEL uses this external python-mode package is used.
+  "Control whether PEL uses this external `python-mode' package is used.
 
 ⚠️ CAUTION ⚠️ : This is no longer supported as it causes too many
 problems.  I strongly recommend you stay away from using this as
@@ -12128,7 +12215,7 @@ This *must* be activated to allow any other package for Ruby.
 When activating it you can select between the following values:
 - t                : use `go-mode' provided by the go-mode.el external package.
 - with-tree-sitter : use `go-ts-mode' which is built-in Emacs.
-When turned on the ruby-mode is associated with the PEL ``<f12>`` key."
+When turned on the Ruby Mode is associated with the PEL ``<f12>`` key."
   :group 'pel-pkg-for-ruby
   :type '(choice
           (const :tag "Do not use Ruby" nil)
@@ -12347,6 +12434,7 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
   :link '(url-link :tag "flycheck-rust @ GitHub"
                    "https://github.com/flycheck/flycheck-rust")
   :group 'pel-pkg-for-rust
+  :group 'pel-pkg-for-syntax-check
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-flycheck-rust :requires '(:all pel-use-rust
@@ -12408,6 +12496,7 @@ NOTE: THIS IS OBSOLETE and will be removed eventually.
 
 This can be set to one of the following values:"
   :group 'pel-pkg-for-sh-scripting
+  :group 'pel-pkg-for-syntax-check
   :link '(url-link :tag "flymake-shellcheck @Github"
                    https://github.com/federicotdn/flymake-shellcheck)
   :type
@@ -12432,7 +12521,7 @@ PEL stores this in `tab-width' when opening sh buffers.
 
 This controls the number of space characters used in for
 indentation level in sh files when the `pel-sh-use-tabs' is set
-to nil. It also controls the number of columns shown to render a
+to nil.  It also controls the number of columns shown to render a
 hard tab when one `pel-sh-use-tabs' is set to t."
   :group 'pel-pkg-for-sh-scripting
   :type 'integer
@@ -12711,7 +12800,7 @@ commands that mode point to tab stop positions such as
 ;; V Language Support
 ;; ------------------
 (defgroup pel-pkg-for-v nil
-  "PEL V language support. Experimental."
+  "PEL V Experimental language support."
   :group 'pel-pkg-for-software-programming-languages
   :link '(url-link :tag "V Language home page" "https://vlang.io"))
 
@@ -12910,7 +12999,8 @@ CAUTION: This package needs major tuning!  It takes forever searching for a
           (const :tag "Use, activate later by command"  t)
           (const :tag "Use, activate when Emacs starts" use-from-start)))
 (pel-put 'pel-use-projectile :also-required-when '(or pel-use-projectile-speedbar
-                                                      pel-use-treemacs-projectile))
+                                                      pel-use-treemacs-projectile
+                                                      pel-use-flycheck-projectile))
 
 (defcustom pel-project-root-identifiers '(".git" ".hg" ".projectile" ".pel-project")
   "File names that identify the root of a project directory tree."
@@ -13000,7 +13090,7 @@ This is indirectly activated by `pel-use-visual-regexp-steroids' user-option."
   "Control whether PEL uses the external xr library.
 
 xr : Emacs regexp parser and analyser.
-Use it to describe regular expressions using lisp forms.
+Use it to describe regular expressions using Lisp forms.
 PEL provide xr commands bound to the ``<f11> s x`` key prefix."
   :link '(url-link :tag "xr @ elpa" "https://elpa.gnu.org/packages/xr.html")
   :group 'pel-pkg-for-regexp
@@ -13221,7 +13311,7 @@ Do not enter lambda expressions."
 
 The regexp must identify (at the very least) the *end* of the prompt,
 to allow placing the point at the very first character where a command was or
-will be typed. "
+will be typed."
   :group 'pel-pkg-for-shells
   :type 'string)
 
@@ -13243,7 +13333,7 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 (defcustom pel-term-use-shell-prompt-line-regexp t
-  "When t, term-prompt-regexp set to pel-shell-prompt-line-regexp value."
+  "When t, term-prompt-regexp set to `pel-shell-prompt-line-regexp' value."
   :type 'boolean
   :safe #'booleanp)
 
@@ -13463,7 +13553,7 @@ Setting this non-nil also sets up the use of speedbar and projectile."
 
 
 (defcustom pel-spell-prevent-flyspell nil
-  "Prevent automatic activation of flyspell-mode and flyspell-prog-mode.
+  "Prevent automatic activation of `flyspell-mode' and `flyspell-prog-mode'.
 
 When this is non-nil, it prevents the automatic activation of
 flyspell-mode and flyspell-prog-mode in the major modes where
@@ -13518,10 +13608,10 @@ should have a name that corresponds to the name of the natural language
 used by the base dictionary/ies that you use with this personal dictionary.
 
 The Aspell program accepts a personal dictionnary as long as it is identified
-using the same natural language as the base language specifeid by emacs ispell
+using the same natural language as the base language specifeid by Emacs ispell
 logic.
 
-The default location is inside the ispell-personal-dictionary located inside
+The default location is inside the `ispell-personal-dictionary' located inside
 the `user-emacs-directory', which is \"~/.emacs.d\" by default.
 
 On Windows you may want to identify the directory used by the tool,
@@ -13651,7 +13741,7 @@ A major mode."
 
 (defcustom pel-use-makefile t
   "Control whether PEL provides extra support for makefile.
-On by default. Turn it off if you don't need it."
+On by default.  Turn it off if you don't need it."
   :group 'pel-pkg-for-make
   :type 'boolean
   :safe #'booleanp)
@@ -13683,7 +13773,7 @@ This list is added to the list Emacs already supports for Make."
   :group 'pel-pkg-for-sw-build)
 
 (defcustom pel-use-meson nil
-  "Control whether PEL provides support for meson file via meson-mode.
+  "Control whether PEL provides support for meson file via `meson-mode'.
 A major mode."
   :link '(url-link :tag "meson-mode @ Github"
                    "https://github.com/wentasah/meson-mode")
@@ -13729,7 +13819,7 @@ Indentation in Meson build buffers controlled by `meson-indent-basic'."
   :group 'pel-pkg-for-sw-build)
 
 (defcustom pel-use-ninja nil
-  "Control whether PEL provides support for ninja file via ninja-mode."
+  "Control whether PEL provides support for ninja file via `ninja-mode'."
   :link '(url-link :tag "ninja-emacs @ Github"
                    "https://github.com/ninja-build/ninja-emacs")
   :group 'pel-pkg-for-ninja
@@ -13914,17 +14004,17 @@ turns it off."
 Be aware that intensive of undo/redo with this package
 may lead to buffer CORRUPTION and LOST DATA! Use with care.
 
-You may want to use undo-propose with on Emacs 27 and earlier.
+You may want to use `undo-propose' with on Emacs 27 and earlier.
 
-On Emacs 28 and later, if any of pel-use-simple-undo or
-pel-use-vundo is active, pel-use-undo-tree is automatically
+On Emacs 28 and later, if any of `pel-use-simple-undo' or
+`pel-use-vundo' is active, `pel-use-undo-tree' is automatically
 turned off."
   :group 'pel-pkg-for-undo
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-undo-propose nil
-  "Control whether PEL uses the undo-propose package.
+  "Control whether PEL uses the `undo-propose' package.
 
 Use it only when using Classic Emacs undo.  You can also use it with simple
 undo on Emacs >= 28 but it will not allow to redo anything in simple undo so
@@ -13936,9 +14026,9 @@ there's limited added value in that case."
   :safe #'booleanp)
 
 (defcustom pel-use-simple-undo nil
-  "Control whether PEL uses the undo-only and undo-redo commands.
+  "Control whether PEL uses the `undo-only' and `undo-redo' commands.
 
-This requires Emacs 28.1 or later. On previous versions PEL automatically
+This requires Emacs 28.1 or later.  On previous versions PEL automatically
 turn this off."
   :group 'pel-pkg-for-undo
   :type 'boolean
@@ -13947,7 +14037,7 @@ turn this off."
 (defcustom pel-use-vundo nil
   "Control whether PEL uses the vundo external package.
 
-This requires Emacs 28.1 or later. On previous versions PEL automatically
+This requires Emacs 28.1 or later.  On previous versions PEL automatically
 turn this off."
   :link '(url-link :tag "vundo @ GNU Elpa"
                    "https://elpa.gnu.org/packages/vundo.html")
@@ -13984,7 +14074,8 @@ turn this off."
 (defcustom pel-use-gitignore nil
   "Control whether PEL provides access to the git-modes package.
 A major mode.
-It provides access to gitignore-mode, gitconfig-mode and gitattributes-mode."
+It provides access to `gitignore-mode', `gitconfig-mode'
+and `gitattributes-mode'."
   :link '(url-link :tag "git-modes @ GitHub"
                    "https://github.com/magit/git-modes")
   :group 'pel-pkg-for-git
@@ -14000,7 +14091,7 @@ It provides access to gitignore-mode, gitconfig-mode and gitattributes-mode."
   :link `(url-link :tag "Mercurial PDF" ,(pel-pdf-file-url "vcs-mercurial")))
 
 (defcustom pel-use-hgignore nil
-  "Determines whether PEL activates the hgignore-mode for .hgignore files.
+  "Determines whether PEL activates the `hgignore-mode' for .hgignore files.
 A major mode."
   :link '(url-link :tag "hgignore-mode @ GitHub"
                    "https://github.com/omajid/hgignore-mode")
@@ -14027,7 +14118,7 @@ Two packages can be used to provide Perforce support:
 
 - vc-p4.el: provides Perforce support through Emacs VC mode.
             Useful if you know VC and want to use it with Perforce.
-- p4.el   : An independent implementation. Provides more Perforce
+- p4.el   : An independent implementation.  Provides more Perforce
             commands.
 
 PEL provides the ability to use one or the other and also to use a mix of
@@ -14054,7 +14145,7 @@ The selection is made by what you select here:
   :group 'pel-pkg-for-vcs)
 
 (defcustom pel-use-dsvn nil
-  "Determines whether PEL provides support for the dsvn external package"
+  "Determines whether PEL provides support for the dsvn external package."
   :link '(url-link :tag "dsvm @ EmacsMirror"
                    "https://github.com/emacsmirror/dsvn")
   :group 'pel-pkg-for-subversion
@@ -14062,7 +14153,7 @@ The selection is made by what you select here:
   :safe #'booleanp)
 
 (defcustom pel-use-psvn nil
-  "Determines whether PEL provides support for the psvn external package"
+  "Determines whether PEL provides support for the psvn external package."
   :link '(url-link :tag "psvn @ Emacs Wiki"
                    "https://www.emacswiki.org/emacs/SvnStatusMode")
   :link '(url-link :tag "psvn @ Github"
@@ -14078,7 +14169,7 @@ The selection is made by what you select here:
 
 The `vc-svn-global-switches' user option allows you to add the --version
 switch, unfortunately some svn commands do not accept the --verbose switch and
-the related command will fail. If it is the case for the version of Subversion
+the related command will fail.  If it is the case for the version of Subversion
 you use, then set `pel-vcs-svn-verbose-log' to non-nil.  PEL will dynamically
 append the --verbose switch when the svn log commands are executed, but will
 not modify other commands."
@@ -14272,7 +14363,7 @@ This is the default.  To prevent this binding, set it to nil."
 
 Activates the xcscope package which provides commands
 to interact with the CScope built databases, via the
-cscope-minor-mode.
+`cscope-minor-mode'.
 
 This requires the CScope command line utility.
 Note: on macOS you can install cscope with Homebrew
@@ -14297,7 +14388,7 @@ implicitly activates `pel-use-helm'."
 (pel-put 'pel-use-helm-cscope :requires 'pel-use-xcscope)
 
 (defcustom pel-modes-activating-cscope nil
-  "List of major modes that automatically activate cscope-minor-mode.
+  "List of major modes that automatically activate `cscope-minor-mode'.
 
 CScope minor mode only supports the following major modes, so only
 put the following in the list:
@@ -14367,7 +14458,7 @@ to \\[pel-xref-toggle-dumb-jump-mode], regardless of the initial state."
   :safe #'booleanp)
 
 (defcustom pel-modes-activating-ggtags nil
-  "List of major modes that automatically activate ggtags-mode.
+  "List of major modes that automatically activate `ggtags-mode'.
 
 Each entry must be the symbol name of a major mode.
 For example, to activate it in Python, add a line with `python-mode'
@@ -14378,11 +14469,11 @@ the GNU Global tag system, one of the ctags-type cross referencing systems
 supported by Emacs.
 
 Note:
-Automatic loading of ggtags-mode will incur processing time and will
+Automatic loading of `ggtags-mode' will incur processing time and will
 mask the M-= key binding of er/expand-region (but the <f11> . = binding
 remains available).
 
-As an alternative you can quickly toggle ggtags-mode with the <f11> X B G
+As an alternative you can quickly toggle `ggtags-mode' with the <f11> X B G
 key sequence."
   :group 'pel-pkg-for-xref
   :group 'pel-pkg-for-cc
@@ -14708,7 +14799,9 @@ PEL uses my fork of this project."
           pel-use-treemacs-magit)
   (setq pel-use-treemacs t))
 
-(when pel-use-treemacs-projectile
+(when (or pel-use-projectile-speedbar
+          pel-use-treemacs-projectile
+          pel-use-flycheck-projectile)
   (setq pel-use-projectile t))
 
 (when pel-use-treemacs-magit

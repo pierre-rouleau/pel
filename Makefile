@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2025-12-08 08:30:12 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2025-12-10 15:55:23 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -180,6 +180,7 @@ EL_FILES := pel--base.el \
 		pel-filex.el \
 		pel-file-recent.el \
 		pel-fill.el \
+		pel-fly.el \
 		pel-font.el \
 		pel-forth.el \
 		pel-frame-control.el \
@@ -735,17 +736,18 @@ pel-elixir.elc:         pel--base.elc pel--options.elc pel-indent.el pel-modes.e
 pel-elpa.elc:           pel-filedir.elc
 pel-emacs.elc:          pel--base.elc pel--options.elc pel-prompt.elc pel-setup-base.elc
 pel-emacs-analyze.elc:  pel--base.elc
-pel-erlang.elc:         pel--base.elc pel--options.elc pel-ffind.elc pel-fs.elc pel-indent.elc pel-modes.elc pel-syntax.elc pel-xref.elc pel-comment.elc
+pel-erlang.elc:         pel--base.elc pel--options.elc pel-fly.elc pel-ffind.elc pel-fs.elc pel-indent.elc pel-modes.elc pel-syntax.elc pel-xref.elc pel-comment.elc
 pel-ffind.elc:          pel--options.elc
 pel-file-recent.elc:    pel--options.elc pel-prompt.elc
 pel-file.elc:           pel--base.elc pel-prompt.elc pel-read.elc pel-window.elc pel-prompt.elc pel-filex.elc
 pel-filedir.elc:        pel--base.elc
 pel-filex.elc:          pel--base.elc
 pel-fill.elc:           pel--base.elc
+pel-fly.elc:            pel--base.elc pel--options.elc
 pel-forth.elc:          pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel-frame-control.elc:  pel--base.elc
 pel-gleam.elc:          pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
-pel-go.elc:             pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
+pel-go.elc:             pel--base.elc pel--options.elc pel-fly.elc pel-indent.elc pel-modes.elc
 pel-graphviz-dot.elc:   pel--base.elc pel-ccp.elc
 pel-help.elc:           pel--base.elc pel-modes.elc
 pel-hide-docstring.elc: pel-navigate.elc pel-face-ut.elc

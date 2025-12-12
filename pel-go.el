@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-05 16:44:23 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-11 10:28:06 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,6 +32,7 @@
 ;;
 ;;
 (require 'pel--base)        ; use: `pel-treesit-ready-p', `pel-insert-bold'
+(require 'pel-fly)          ; use: `pel-toggle-syntax-check-mode'
 (require 'pel--options)     ; use:
 (require 'pel-indent)       ; use: `pel-indent-insert-control-info',
 ;;                          ;      `pel-indent-control-context'
@@ -294,6 +295,7 @@ following user-options:")
 
 ;; --
 
+;; [:todo 2025-12-11, by Pierre Rouleau: Remove this command]
 ;;-pel-autoload
 (defun pel-go-toggle-syntax-checker ()
   "Toggle the syntax checker mode on/off.
