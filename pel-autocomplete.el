@@ -297,6 +297,10 @@ Does not allow activation if Auto Complete Mode is active."
 ;; --
 ;; PEL Generic Automatic Completion Commands
 
+(defun pel--built-in-minor-mode-state-string (mode)
+  "Built in minor MODE state string."
+  (pel-minor-mode-state mode :built-in))
+
 ;;-pel-autoload
 (defun pel-completion-info (&optional append)
   "Display information about available auto-completion in specialized buffer.
@@ -312,25 +316,26 @@ non-nil, in which case it appends to the previous report."
      "*pel-autocomplete-info*"
      "Auto-Completion Control"
      (lambda ()
-       (insert
-        (format "\
-Auto-completion package state:
-%s
-- auto-complete-mode                      : %s
-- global-auto-complete-mode               : %s
-- company-mode                            : %s
-- global-company-mode                     : %s"
-                (if pel-emacs-30-or-later-p
-                    (format "\
-- completion-preview-mode                 : %s"
-                            (pel-minor-mode-state 'completion-preview-mode :built-in))
-
-                  "")
-                (pel-option-mode-state 'auto-complete-mode 'pel-use-auto-complete)
-                (pel-symbol-on-off-string 'global-auto-complete-mode)
-                (pel-option-mode-state 'company-mode 'pel-use-company)
-                (pel-symbol-on-off-string 'global-company-mode)))
-       (insert "\n\nCustomization:")
+       (pel-insert-bold "Auto-completion package state:")
+       (pel-insert-symbol-content-line 'completion-preview-mode nil
+                                       #'pel--built-in-minor-mode-state-string)
+       (pel-insert-symbol-content-line 'auto-complete-mode
+                                       nil
+                                       (lambda (m)
+                                         (pel-option-mode-state m
+                                                                'pel-use-auto-complete)))
+       (pel-insert-symbol-content-line 'global-auto-complete-mode
+                                       nil
+                                       #'pel-symbol-on-off-string)
+       (pel-insert-symbol-content-line 'company-mode
+                                       nil
+                                       (lambda (m)
+                                         (pel-option-mode-state m
+                                                                'pel-use-company)))
+       (pel-insert-symbol-content-line 'global-company-mode
+                                       nil
+                                       #'pel-symbol-on-off-string)
+       (pel-insert-bold "\n\nCustomization:")
        (when pel-emacs-30-or-later-p
          (pel-insert-symbol-content-line 'completion-preview-minimum-symbol-length)
          (pel-insert-symbol-content-line 'completion-preview-idle-delay))
@@ -342,12 +347,18 @@ Auto-completion package state:
        (pel-insert-symbol-content-line 'company-mode)
        (pel-insert-symbol-content-line 'global-company-mode)
 
-       (insert "\n\nEmacs Built-in completion:")
+       (pel-insert-bold "\n\nEmacs Built-in completion:")
        (pel-insert-symbol-content-line 'completion-at-point-functions)
        (pel-insert-symbol-content-line 'completion-styles)
-       (pel-insert-symbol-content-line 'completion-category-overrides)
-       (pel-insert-symbol-content-line 'completion-extra-properties)
-       (pel-insert-symbol-content-line 'completion-styles-alist))
+       (pel-insert-list-content 'completion-category-overrides
+                                nil nil nil
+                                :on-sameline)
+       (pel-insert-list-content 'completion-extra-properties
+                                nil nil nil
+                                :on-sameline)
+       (pel-insert-list-content 'completion-styles-alist
+                                nil nil nil
+                                :on-sameline))
      (unless append :clear-buffer)
      :use-help-mode)))
 
