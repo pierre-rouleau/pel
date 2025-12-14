@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-14 13:57:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-14 17:03:44 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -244,7 +244,10 @@ value is not part of the SELECTION."
                      ", ")))
 
 ;; pel-autoload
-(defun pel-select-from (title selection &optional current-value action nil-value)
+(defun pel-select-from (title selection
+                              &optional current-value
+                              action nil-value
+                              always-perform-action)
   "Prompt user with a TITLE for a SELECTION of choices.
 It optionally displays the CURRENT-VALUE in the prompt and
 also optionally calls the ACTION function passing selected value.
@@ -261,13 +264,17 @@ returns the value returned by (ACTION selected-value) evaluation.
 NIL-VALUE optional string identifies a meaning for a nil value.  It is
 required when the USER-OPTION may be set to the same thing by one
 value in the SELECTION but also by the nil value, and that nil
-value is not part of the SELECTION."
+value is not part of the SELECTION.
+
+If user selects the same as the CURRENT-VALUE, the ACTION is not called
+unless ALWAYS-PERFORM-ACTION is non-nil."
   (let* ((prompt    (pel--prompt-for title selection current-value nil-value))
          (chars     (mapcar #'car selection))
          (choice    (read-char-choice prompt chars))
          (requested-value (nth 2 (assoc choice selection))))
     (if (and action
-             (not (equal requested-value current-value)))
+             (or always-perform-action
+                 (not (equal requested-value current-value))))
         (funcall action requested-value)
       requested-value)))
 
