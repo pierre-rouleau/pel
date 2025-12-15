@@ -1995,8 +1995,9 @@ can't bind negative-argument to C-_ and M-_"
 
 ;;*** Vertico
 ;;    -------
-(when pel-use-vertico
-  (pel-ensure-package vertico from: melpa))
+;; [:todo 2025-12-15, by Pierre Rouleau: future]
+;; (when pel-use-vertico
+;;   (pel-ensure-package vertico from: melpa))
 
 ;;*** For all completion
 ;;    ------------------
