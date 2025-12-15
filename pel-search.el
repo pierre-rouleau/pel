@@ -2,7 +2,7 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-24 11:43:33 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-15 17:01:58 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -52,7 +52,7 @@
 ;;   - `pel-active-search-tool-str'
 ;;   - `pel--active-search-regexp-engine'
 ;;   - `pel--search-tools-selection'
-;;   - `pel--activated-search-tool'
+;;   - `pel--active-search-tool'
 ;;   - `pel-set-search-tool'
 ;;     - `pel--disable-search-etool'
 ;;     - `pel--activate-search-tool'
@@ -485,7 +485,23 @@ This can be:
 ;; ---------------------------------------------------------------------------
 ;;* PEL search tool control
 ;;  -----------------------
-
+;;
+;; Initialization: when PEL starts, the code in pel_keys.el
+;; binds the C-s key to the command selected by the `pel-initial-search-tool'
+;; user option.
+;;
+;;  * pel-select-search-tool
+;;    - pel--search-tools-selection
+;;    - pel-set-search-tool
+;;      - pel--set-search-tool-to-default
+;;      - pel--activate-search-tool
+;;        - pel-active-search-tool-str
+;;  * pel-show-search-status
+;;    - pel--search-regexp-initialized
+;;    - pel-active-search-tool-str
+;;    - pel-active-search-regexp-engine-str
+;;    - pel-search-case-state-str
+;;
 (defvar pel--search-initialized nil
   "Set to t when search tool management is initialized.
 Modified by pel-search code ONLY.")
@@ -500,62 +516,59 @@ A nil value means that Emacs standard search is used.")
   "Return a string describing the currently used search tool."
   (format "%s%s"
           (if (not pel--active-search-tool)
-              "default ISearch"
+              "default iSearch"
             (if (eq pel--active-search-tool 'anzu)
-                "ISearch and Anzu"
+                "iSearch and Anzu"
               (if (eq pel--active-search-tool 'swiper)
                   "Swiper"
                 "??")))
           (if (and pel-use-isearch-mb
-                                      (boundp 'isearch-mb-mode)
-                                      isearch-mb-mode)
-                                 " with isearch-mb"
-                               "")))
+                   (boundp 'isearch-mb-mode)
+                   isearch-mb-mode)
+              " with isearch-mb"
+            "")))
 
 (defun pel--activate-search-tool (tool)
   "Activate the specified search TOOL.
 The TOOL argument can be any of nil | anzu | swiper."
-  (cond ((eq tool nil)
-         (global-set-key "\C-s" 'isearch-forward))
-        ;;
-        ((and (eq tool 'anzu) (fboundp 'global-anzu-mode))
-         (global-anzu-mode +1))
-        ;;
-        ((eq tool 'swiper)
-         (global-set-key "\C-s" 'swiper)))
+  (cond
+   ((eq tool nil)
+    (global-set-key "\C-s" 'isearch-forward))
+   ;;
+   ((and (eq tool 'anzu)
+         (fboundp 'global-anzu-mode))
+    (global-anzu-mode +1))
+   ;;
+   ((eq tool 'swiper)
+    (global-set-key "\C-s" 'swiper)))
   (setq pel--active-search-tool tool)
   (message "Now searching with %s" (pel-active-search-tool-str)))
 
-(defun pel--disable-search-tool (tool)
-  "Disable currently specified search TOOL.
-The TOOL argument can be any of nil | anzu | swiper.
-If TOOL is nil, do nothing."
-  (cond ((and (eq tool 'anzu) (fboundp 'global-anzu-mode))
-         (global-anzu-mode -1))
-        ((eq tool 'swiper)
-         (global-set-key "\C-s" 'isearch-forward)))
+(defun pel--set-search-tool-to-default ()
+  "Restore Emacs default search settings."
+  ;; Disable anzu; it will be re-enable if selected.
+  (when (and (fboundp 'global-anzu-mode)
+             (fboundp 'anzu-mode))
+   (global-anzu-mode -1)
+   (anzu-mode -1))
+  ;; Disable Swiper binding
+  (global-set-key "\C-s" 'isearch-forward)
   (setq pel--active-search-tool nil))
 
-;;-pel-autoload
 (defun pel-set-search-tool (tool)
   "Activate the specified search TOOL.
 The TOOL argument can be any of nil | anzu | swiper.
 A nil value corresponds to Emacs default."
   ;; Disable the currently used tool (if any)
-  (pel--disable-search-tool (pel--activated-search-tool))
+  (pel--set-search-tool-to-default)
   ;; Activate the requested one
-  (pel--activate-search-tool tool))
-
-(defun pel--activated-search-tool()
-  "Return search tool currently used.
-Return one of: nil | \\='anzu | \\='swiper
-The nil value means that Emacs default is used."
-  pel--active-search-tool)
+  (pel--activate-search-tool tool)
+  (setq pel--search-initialized t))
 
 (defun pel--search-tools-selection ()
   "Return a list of (char prompt symbol) of available search tool choices."
-  (let ((selection '((?e "Emacs Default" nil))))
-    (when pel-use-anzu   (push '(?a "Anzu" anzu) selection))
+  (let ((selection '((?e "iSearch (default)" nil))))
+    (when pel-use-anzu   (push '(?a "iSearch & Anzu" anzu) selection))
     (when pel-use-swiper (push '(?s "Swiper" swiper) selection))
     (reverse selection)))
 
@@ -565,41 +578,76 @@ The nil value means that Emacs default is used."
   (interactive)
   (unless pel--search-initialized
       ;; select the initial search tool from user option.
-    (pel-set-search-tool pel-initial-search-tool)
-    (setq pel--search-initialized 1))
+    (pel-set-search-tool pel-initial-search-tool))
   ;;
   (pel-select-from "Search tool"
                    (pel--search-tools-selection)
-                   (pel--activated-search-tool)
-                   #'pel-set-search-tool))
+                   pel--active-search-tool
+                   #'pel-set-search-tool
+                   nil :always-perform))
 
 ;; --
 ;;-pel-autoload
-(defun pel-show-search-status (&optional with-details)
-  "Display search status.
+(defun pel-show-search-status (&optional append)
+  "Display search status in specialized buffer.
+The buffer name is *pel-search-info*.
+If APPEND is non-nil, append to the buffer.
+
 Display:
 - the name of the search tool used,
 - the regular expression tool used,
-- the search case settings used.
-
-With non-nil WITH-DETAILS or any prefix argument, displays
-more information about available choices."
+- the search case settings used."
   (interactive "P")
   (unless pel--search-initialized
     ;; select the initial search tool from user option.
-    (pel-set-search-tool pel-initial-search-tool)
-    (setq pel--search-initialized 1))
+    (pel-set-search-tool pel-initial-search-tool))
   (unless pel--search-regexp-initialized
     ;; select the initial search regexp engine
     (pel-set-search-regexp-engine pel-initial-regexp-engine)
     (setq pel--search-regexp-initialized 1))
-  (message "\
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+        (isa-lisp-buffer (derived-mode-p 'lisp-data-mode))
+        (srch-tool (pel-active-search-tool-str))
+        (srch-regexp-engine (pel-active-search-regexp-engine-str
+                             :with-details))
+        (srch-case (pel-search-case-state-str))
+        (title (format "Search setup for %s" (current-buffer))))
+    (pel-print-in-buffer
+     "*pel-search-info*"
+     title
+     (lambda ()
+
+       (pel-insert-bold "Search status:\n")
+       (insert (format "\
 - Searching with %s
 - %s
 %s"
-           (pel-active-search-tool-str)
-           (pel-active-search-regexp-engine-str with-details)
-           (pel-search-case-state-str)))
+                       srch-tool
+                       srch-regexp-engine
+                       srch-case))
+       (pel-insert-bold "\n\nSearch control user-options:")
+       (pel-insert-symbol-content-line 'pel-use-anzu)
+       (pel-insert-symbol-content-line 'pel-use-swiper)
+       (pel-insert-symbol-content-line 'pel-use-isearch-mb)
+       (pel-insert-symbol-content-line 'pel-initial-search-tool)
+       (pel-insert-symbol-content-line 'pel-search-from-top-in-other)
+       (pel-insert-bold "\n\nRegex control user-options:")
+       (pel-insert-symbol-content-line 'pel-use-regex-tool)
+       (pel-insert-symbol-content-line 'pel-use-visual-regex)
+       (pel-insert-symbol-content-line 'pel-use-visual-regexp-steroids)
+       (pel-insert-symbol-content-line 'pel-initial-regexp-engine)
+       (pel-insert-symbol-content-line 'pel-bind-keys-for-regexp)
+       (when isa-lisp-buffer
+         (pel-insert-bold "\n\nRegex control user-options for Lisp modes:")
+         (pel-insert-symbol-content-line 'pel-use-cexp)
+         (pel-insert-symbol-content-line 'pel-use-easy-escape)
+         (pel-insert-list-content   'pel-modes-activating-easy-escape
+                                    nil nil
+                                    nil :on-same-line)
+         (pel-insert-symbol-content-line  'pel-use-pcre2el)
+         (pel-insert-symbol-content-line  'pel-use-xr)))
+     (unless append :clear-buffer)
+     :use-help-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;; CREDITS : the following code is derived almost verbatim from Mickey

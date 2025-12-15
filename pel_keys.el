@@ -1848,6 +1848,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; - Ido mode
 ;; - Ivy mode
 ;; - Ivy mode with Counsel
+;; - Vertico
 
 (define-pel-global-prefix pel:completion (kbd "<f11> M-c"))
 
@@ -1991,6 +1992,11 @@ can't bind negative-argument to C-_ and M-_"
   (pel-ensure-package flx-ido from: melpa)
   ;; Note: flx-ido also explicitly requires the flx package
   (pel-autoload-file flx-ido for: flx-ido-mode))
+
+;;*** Vertico
+;;    -------
+(when pel-use-vertico
+  (pel-ensure-package vertico from: melpa))
 
 ;;*** For all completion
 ;;    ------------------
@@ -7087,6 +7093,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;; ---------------------------------------------------------------------------
 ;;* auto-completion - <f11> ,
 ;; - Function Keys - <f11> - Prefix ``<f11> ,`` :
+(define-pel-global-prefix pel:auto-completion (kbd "<f11> ,"))
 
 (when pel-use-auto-complete
   ;; Defer loading of auto-complete using its autoload that will be
@@ -7105,7 +7112,18 @@ to identify a Verilog file.  Anything else is assumed being V."
                      company-mode
                      global-company-mode))
 
-(define-pel-global-prefix pel:auto-completion (kbd "<f11> ,"))
+;; [:todo 2025-12-15, by Pierre Rouleau: future support]
+;; (when pel-use-corfu
+;;   (pel-ensure-package corfu from: melpa)
+;;   (when pel-use-corfu-terminal
+;;     (pel-install-web-file
+;;      "https://codeberg.org/akib/emacs-corfu-terminal/raw/branch/master/corfu-terminal.el"
+;;      "corfu-terminal.el")
+;;     (pel-autoload-file corfu-terminal for:
+;;                        corfu-terminal-mode))
+;;   (define-key pel:auto-completion "U"  'pel-global-corfu-mode)
+;;   (define-key pel:auto-completion "u"  'pel-corfu-mode))
+
 (define-key pel:auto-completion   "?"   'pel-completion-info)
 (when pel-use-auto-complete
   (define-key pel:auto-completion "A"  'pel-global-auto-complete-mode)
@@ -9490,18 +9508,26 @@ the ones defined from the buffer now."
 ;; --
 ;;** Search Tool Control
 
+;; Search done by C-s:
+;;  - ISearch and anzu
+(when pel-use-anzu
+  (pel-ensure-package anzu from: melpa)
+  (pel-autoload-file anzu for: global-anzu-mode)
+  (when (eq pel-initial-search-tool 'anzu)
+    (pel-after-startup-do (global-anzu-mode +1))))
+;;  - swiper
+(when pel-use-swiper
+  (pel-ensure-package swiper from: melpa)
+  (pel-autoload-file swiper for: swiper)
+  (when (eq pel-initial-search-tool 'swiper)
+    (global-set-key "\C-s" 'swiper)))
+
 (when pel-use-isearch-mb
   (pel-ensure-package isearch-mb from: gnu)
   (pel-autoload-file isearch-mb for: isearch-mb-mode)
   (when (eq pel-use-isearch-mb 'use-from-start)
     (isearch-mb-mode 1))
   (define-key pel:search-replace "i" 'isearch-mb-mode))
-
-(when pel-use-anzu
-  (pel-ensure-package anzu from: melpa)
-  (pel-autoload-file anzu for: global-anzu-mode)
-  (when (eq pel-initial-search-tool 'anzu)
-    (pel-after-startup-do (global-anzu-mode +1))))
 
 (when pel-use-cexp
   ;; download and byte-compile cexp if not already present
@@ -9510,12 +9536,6 @@ the ones defined from the buffer now."
                                                          "cexp-test.el"))
   (pel-autoload-file cexp for: cexp-search-forward)
   (define-key pel:search-replace "c" 'cexp-search-forward))
-
-(when pel-use-swiper
-  (pel-ensure-package swiper from: melpa)
-  (pel-autoload-file swiper for: swiper)
-  (when (eq pel-initial-search-tool 'swiper)
-    (global-set-key "\C-s" 'swiper)))
 
 (defun pel-number-of-available-search-tools ()
   "Return the number of available search tools."
