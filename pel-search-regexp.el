@@ -49,7 +49,7 @@
   "Set to t when search regexp engine management is initialized.
 Modified by pel-search-regexp code ONLY.")
 
-(defvar pel--search-regexp-engine 'emacs
+(defvar pel--search-regexp-engine pel-initial-regexp-engine
   "Search regexp engine used by various search commands.
 Possible values are:
 - emacs         : default: use Standard Emacs search regexp
@@ -60,7 +60,8 @@ Possible values are:
 - vr/python     : use visual-regexp-steroids python.
 - vr/custom     : use visual-regexp-steroids custom.
 
-Change it with function `pel-select-search-regexp-engine'.")
+The initial value is set by `pel-initial-regexp-engine'.
+Change it in session with function `pel-select-search-regexp-engine'.")
 
 ;; --
 
