@@ -369,6 +369,9 @@ The non-nil value of the predicate is the `module-file-suffix'.")
 (defconst pel-emacs-30-or-later-p (>= emacs-major-version 30)
   "Predicate: t when Emacs version 30 or later is running, nil otherwise.")
 
+(defconst pel-emacs-31-or-later-p (>= emacs-major-version 31)
+  "Predicate: t when Emacs version 30 or later is running, nil otherwise.")
+
 (defconst pel-filesep (if pel-system-is-windows-p "\\" "/")
   "String directory/file separator character for this OS.")
 
@@ -1753,9 +1756,9 @@ Returns t if all is OK."
     (error "The url-handlers file is not loaded!")))
 
 (defun pel-install-file (url fname &optional refresh)
-  "Download, install a file FNAME from URL into the PEL\\='s utility directory.
+  "Download, install a file FNAME from URL into PEL\\='s utility directory.
 On success, byte compile that file and when Emacs use native compilation
-the also build the native-compiled .eln file for it .
+the also build the native-compiled .eln file for it.
 
 The utility directory is the \\='utils\\=' sub-directory of the Emacs
 directory identified by the Emacs variable `user-emacs-directory'.
@@ -1809,18 +1812,20 @@ downloaded, nil otherwise.  Permission errors are raised."
 
 (defmacro pel-install-web-file (url-fname fname
                                           &optional refresh)
-  "Download & install FNAME from URL-FNAME.
+  "Download & install FNAME from URL-FNAME into PEL\\='s utility directory.
 
 - URL-FNAME is the complete url of the file.
 - FNAME is the file name as it must appear locally.
 
-If a file already exists in the destination, no download
-is done unless REFRESH is non-nil, in which case the function
-prompts for confirmation.
+On success, byte compile that file and when Emacs use native compilation
+the also build the native-compiled .eln file for it.
 
-The macro generates code that runs only at load time.  However,
-when PEL operates in fast startup the macro creates no code and
-expands to nil which will be optimized out by the byte compiler."
+If a file already exists in the destination, no download is done unless
+REFRESH is non-nil, in which case the function prompts for confirmation.
+
+The macro generates code that runs only at load time.  However, when PEL
+operates in fast startup the macro creates no code and expands to nil
+which will be optimized out by the byte compiler."
   (unless (pel-in-fast-startup-p)
     `(cl-eval-when 'load
        (pel-install-file ,url-fname
@@ -3192,14 +3197,15 @@ If EXTRA-TEXT is non-nil, it can be a string or a function:
    buffer
    :on-same-line)
   (when extra-text
-    (insert "  : ")
     (if (stringp extra-text)
-        (insert extra-text)
-      (insert (funcall
-               extra-text
-               (pel-symbol-value
-                symbol
-                (or buffer pel-insert-symbol-content-context-buffer)))))))
+        (insert (format  "  : %s" extra-text))
+      (when (boundp symbol)
+        (insert " : ")
+        (insert (funcall
+                 extra-text
+                 (pel-symbol-value
+                  symbol
+                  (or buffer pel-insert-symbol-content-context-buffer))))))))
 
 (defun pel-line-prefixed-with (text prefix)
   "Return TEXT with each line prefixed with PREFIX string."
