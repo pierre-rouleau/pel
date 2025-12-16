@@ -620,19 +620,24 @@ Let-bind this variable in functions that need to call
 `pel-insert-symbol-content' repetitively always passing the same value for its
 buffer argument.")
 
-(defun pel-minor-mode-state (minor-mode &optional is-builtin buffer)
+(defun pel-minor-mode-state (minor-mode &optional activator-symbol buffer)
   "Return a string describing the state of the MINOR-MODE, a symbol.
 
-The returned value is the sate of the mode in the buffer identified
-by BUFFER or `pel-insert-symbol-content-context-buffer'.
-- IS-BUILTIN must be non-nil if the mode is built-in Emacs, otherwise nil."
+If ACTIVATOR-SYMBOL is nil, this is a built-in minor mode, otherwise
+ACTIVATOR-SYMBOL is the symbol that activates the installation and use
+of that MINOR-MODE.
+
+The returned value is the state of the mode in the buffer identified
+by BUFFER or `pel-insert-symbol-content-context-buffer'."
   (with-current-buffer (or buffer
                            pel-insert-symbol-content-context-buffer
                            (current-buffer))
     (pel-symbol-on-off-string minor-mode nil nil
-                              (format
-                               "%s but not loaded, use a command to load it."
-                               (if is-builtin "Built-in" "Available")))))
+                              (if activator-symbol
+                                  (if (symbol-value activator-symbol)
+                                      (format "Activated by %s." activator-symbol)
+                                    (format "Not loaded. Activate it by turning %s on then restart." activator-symbol))
+                                "Built-in but not loaded, use a command to load it"))))
 
 
 (defun pel-major-mode-symbol-for (symbol-format-string
@@ -995,7 +1000,7 @@ When it is bound, return:
 - the OFF-STRING or \"off\" for nil,
 - the ON-STRING or \"on\" for SYMBOL boolean value.
 
-The returned value is the sate of the mode in the buffer identified
+The returned value is the state of the mode in the buffer identified
 by BUFFER or `pel-insert-symbol-content-context-buffer'."
   (with-current-buffer (or buffer
                            pel-insert-symbol-content-context-buffer
@@ -1035,7 +1040,7 @@ If SYMBOL is void and replacement is :nil-for-void, return nil.
 If SYMBOL is bound and FORMATTER is non nil it's a function that
 takes the symbol and returns a string.
 
-The returned value is the sate of the mode in the buffer identified
+The returned value is the state of the mode in the buffer identified
 by BUFFER or `pel-insert-symbol-content-context-buffer'."
   (with-current-buffer (or buffer
                            pel-insert-symbol-content-context-buffer
@@ -1189,7 +1194,7 @@ available and most probably not loaded.
 MODE is the mode symbol, indicating whether the mode is active or not.
 If ACTIVATED-IN is specified that's the list of major modes where MODE
 is automatically activated; this is included in the description.
-The returned value is the sate of the mode in the buffer identified
+The returned value is the state of the mode in the buffer identified
 by BUFFER or `pel-insert-symbol-content-context-buffer'."
   (with-current-buffer (or buffer
                            pel-insert-symbol-content-context-buffer
@@ -3199,13 +3204,15 @@ If EXTRA-TEXT is non-nil, it can be a string or a function:
   (when extra-text
     (if (stringp extra-text)
         (insert (format  "  : %s" extra-text))
-      (when (boundp symbol)
-        (insert " : ")
-        (insert (funcall
-                 extra-text
-                 (pel-symbol-value
-                  symbol
-                  (or buffer pel-insert-symbol-content-context-buffer))))))))
+      (insert " : ")
+      (if (boundp symbol)
+          (progn
+            (insert (funcall
+                     extra-text
+                     (pel-symbol-value
+                      symbol
+                      (or buffer pel-insert-symbol-content-context-buffer)))))
+        (insert (funcall extra-text symbol))))))
 
 (defun pel-line-prefixed-with (text prefix)
   "Return TEXT with each line prefixed with PREFIX string."
