@@ -1995,9 +1995,8 @@ can't bind negative-argument to C-_ and M-_"
 
 ;;*** Vertico
 ;;    -------
-;; [:todo 2025-12-15, by Pierre Rouleau: future]
-;; (when pel-use-vertico
-;;   (pel-ensure-package vertico from: melpa))
+(when pel-use-vertico
+  (pel-ensure-package vertico from: melpa))
 
 ;;*** For all completion
 ;;    ------------------
@@ -7113,17 +7112,16 @@ to identify a Verilog file.  Anything else is assumed being V."
                      company-mode
                      global-company-mode))
 
-;; [:todo 2025-12-15, by Pierre Rouleau: future support]
-;; (when pel-use-corfu
-;;   (pel-ensure-package corfu from: melpa)
-;;   (when pel-use-corfu-terminal
-;;     (pel-install-web-file
-;;      "https://codeberg.org/akib/emacs-corfu-terminal/raw/branch/master/corfu-terminal.el"
-;;      "corfu-terminal.el")
-;;     (pel-autoload-file corfu-terminal for:
-;;                        corfu-terminal-mode))
-;;   (define-key pel:auto-completion "U"  'pel-global-corfu-mode)
-;;   (define-key pel:auto-completion "u"  'pel-corfu-mode))
+(when pel-use-corfu
+  (pel-ensure-package corfu from: melpa)
+  (when pel-use-corfu-terminal
+    (pel-install-web-file
+     "https://codeberg.org/akib/emacs-corfu-terminal/raw/branch/master/corfu-terminal.el"
+     "corfu-terminal.el")
+    (pel-autoload-file corfu-terminal for:
+                       corfu-terminal-mode))
+  (define-key pel:auto-completion "U"  'pel-global-corfu-mode)
+  (define-key pel:auto-completion "u"  'pel-corfu-mode))
 
 (define-key pel:auto-completion   "?"   'pel-completion-info)
 (when pel-use-auto-complete

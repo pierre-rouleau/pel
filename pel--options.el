@@ -1674,13 +1674,13 @@ Select the completion method you want as default when activating this package."
           (const :tag "Built-in (default)" nil)
           (const :tag "Use ivy vertical completion" ivy)))
 
-;; (defcustom pel-use-vertico nil
-;;   "Control whether PEL uses the vertico package."
-;;   :link '(url-link  :tag "vertico @ Github"
-;;                     "https://github.com/minad/vertico")
-;;   :group 'pel-pkg-for-auto-completion
-;;   :type 'boolean
-;;   :safe #'booleanp)
+(defcustom pel-use-vertico nil
+  "Control whether PEL uses the vertico package."
+  :link '(url-link  :tag "vertico @ Github"
+                    "https://github.com/minad/vertico")
+  :group 'pel-pkg-for-auto-completion
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-cursor
@@ -1967,31 +1967,31 @@ The Hippie Expand can be used together with any."
   :safe #'booleanp)
 (pel-put 'pel-use-company :also-required-when 'pel-use-company-erlang)
 
-;; (defcustom pel-use-corfu nil
-;;   "Control whether PEL supports the corfu package.
-;; Note that on Emacs < 31, activating this also activates
-;; the `pel-use-corfu-terminal' user-option."
-;;   :link '(url-link :tag "corfu @ Github"
-;;                    "https://github.com/minad/corfu")
-;;   :group 'pel-pkg-for-auto-completion
-;;   :type 'boolean
-;;   :safe #'booleanp)
+(defcustom pel-use-corfu nil
+  "Control whether PEL supports the corfu package.
+Note that on Emacs < 31, activating this also activates
+the `pel-use-corfu-terminal' user-option."
+  :link '(url-link :tag "corfu @ Github"
+                   "https://github.com/minad/corfu")
+  :group 'pel-pkg-for-auto-completion
+  :type 'boolean
+  :safe #'booleanp)
 
-;; (defcustom pel-use-corfu-terminal nil
-;;   "Control whether PEL supports the corfu-terminal package."
-;;   :link '(url-link :tag "corfu @ Github"
-;;                    "https://codeberg.org/akib/emacs-corfu-terminal")
-;;   :group 'pel-pkg-for-auto-completion
-;;   :type 'boolean
-;;   :safe #'booleanp)
+(defcustom pel-use-corfu-terminal nil
+  "Control whether PEL supports the corfu-terminal package."
+  :link '(url-link :tag "corfu @ Github"
+                   "https://codeberg.org/akib/emacs-corfu-terminal")
+  :group 'pel-pkg-for-auto-completion
+  :type 'boolean
+  :safe #'booleanp)
 
-;; (pel-put 'pel-use-corfu-terminal :package-is :in-utils)
-;; (when pel-use-corfu
-;;   (unless (or pel-emacs-is-graphic-p
-;;               pel-emacs-31-or-later-p)
-;;     (setq pel-use-corfu-terminal t)))
-;; (when pel-use-corfu-terminal
-;;   (setq pel-use-corfu t))
+(pel-put 'pel-use-corfu-terminal :package-is :in-utils)
+(when pel-use-corfu
+  (unless (or pel-emacs-is-graphic-p
+              pel-emacs-31-or-later-p)
+    (setq pel-use-corfu-terminal t)))
+(when pel-use-corfu-terminal
+  (setq pel-use-corfu t))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-conf-file

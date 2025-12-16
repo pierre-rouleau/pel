@@ -113,15 +113,13 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-autocomplete" for:
     pel-completion-info
-    pel-complete)
-  (when (and (boundp 'pel-use-auto-complete) pel-use-auto-complete)
-    (pel-autoload "pel-autocomplete" for:
-      pel-global-auto-complete-mode
-      pel-auto-complete-mode))
-  (when (and (boundp 'pel-use-company) pel-use-company)
-    (pel-autoload "pel-autocomplete" for:
-      pel-global-company-mode
-      pel-company-mode))
+    pel-complete
+    pel-global-auto-complete-mode
+    pel-auto-complete-mode
+    pel-global-company-mode
+    pel-company-mode
+    pel-global-corfu-mode
+    pel-corfu-mode)
 
   (pel-autoload "pel-benchmark" for:
     pel-show-init-time
@@ -925,7 +923,6 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-reb-erase-regxp
     pel-isearch-in)
   (pel-autoload-function "pel-search" for:
-    pel-set-search-tool
     pel-reb-enhance)
 
   (pel-autoload-function "pel-seed7" for:

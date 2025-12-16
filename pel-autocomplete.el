@@ -28,27 +28,33 @@
 ;;
 ;; - auto-complete-mode
 ;; - company-mode
+;; - corfu
 ;;
 ;; The features are:
 ;;
-;; - On a given buffer, or globally, don't allow both modes active at the same
-;;   time as they have not been designed to be used together.
-;; - Provide the user to see what is activeand the commands to activate or
+;; - On a given buffer, or globally, only allow one of these mode active; they
+;;   are mutually exclusive minor modes with global minor mode support.
+;; - Provide the user to see what is active and the commands to activate or
 ;;   de-activate  one of them, as long as the other is not active.
-;; - Support the modes customization variable, allowing the user to selct the
-;;   behaviour of these modes to the customization variables of these modes, as
-;;   well as the PEL customization variables used to activate one of them, but
-;;   not both.
-;; - The customization variables known as this code is written are:
+;; - Support the modes customization variable, allowing the user to select the
+;;   behaviour of these modes to the customization variables of these modes,
+;;   as well as the PEL customization variables used to activate one of them,
+;;   but not both.
+;; - The customization variables are:
 ;;   - PEL customization variables:
-;;     - pel-use-auto-complete
-;;     - pel-use-company
+;;     - `pel-use-auto-complete'
+;;     - `pel-use-company'
+;;     - `pel-use-corfu' (with the associated `pel-use-corfu-terminal')
+;;
 ;;   - auto-complete variables:
-;;     - global-auto-complete-mode
-;;     - auto-complete-mode
+;;     - `global-auto-complete-mode'
+;;     - `auto-complete-mode'
 ;;   - company variables:
-;;     - global-company-mode
-;;     - company-mode
+;;     - `global-company-mode'
+;;     - `company-mode'
+;;   - corfu variables:
+;;     - `corfu-mode'
+;;     - `global-corfu-mode'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -67,14 +73,15 @@
   ;; at byte-compile time.  However, allow user to byte compile\
   ;; the file even if the packages are not installed.
   (require 'auto-complete nil :noerror)
-  (require 'company nil :noerror))
+  (require 'company nil :noerror)
+  (require 'corfu nil :noerror)
+  (require 'corfu-terminal nil :noerror))
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
-
-;; ---------------------------------------------------------------------------
-;; Utilities
+;;* Utilities
+;;  ---------
 
 (defun pel--action-for (arg current-state)
   "Return the new state of a mode from ARG and CURRENT-STATE.
@@ -98,12 +105,23 @@ Return: enable or disable"
       1
     -1))
 
+(defun pel--autocomplete-active-mode ()
+  "Return symbol of currently active auto-completion mode is any.
+If none is active, return nil."
+  (cond
+   ((bound-and-true-p global-company-mode) 'global-company-mode)
+   ((bound-and-true-p company-mode) 'company-mode)
+   ((bound-and-true-p global-auto-complete-mode) 'global-auto-complete-mode)
+   ((bound-and-true-p auto-complete-mode) 'auto-complete-mode)
+   ((bound-and-true-p global-corfu-mode) 'global-corfu-mode)
+   ((bound-and-true-p corfu-mode) 'corfu-mode)
+   (t nil)))
 ;; -----------------------------------------------------------------------------
-;; Auto-Complete Support
-;; =====================
+;;* Auto-Complete Support
+;;  =====================
 ;;
-;; Auto-Complete Initialization
-;; ----------------------------
+;;** Auto-Complete Initialization
+;;   ----------------------------
 ;;
 ;; TODO: update for finer control once PEL has explicit support for various
 ;;       programming languages.
@@ -162,11 +180,11 @@ On first call, also configure it according to its customization."
               (global-auto-complete-mode -1)))))))
 
 ;; -----------------------------------------------------------------------------
-;; Company Mode Support
-;; ====================
+;;* Company Mode Support
+;;  ====================
 ;;
-;; Company Mode Initialization
-;; ---------------------------
+;;** Company Mode Initialization
+;;   ---------------------------
 ;; TODO: update for finer control once PEL has explicit support for various
 ;;       programming languages.
 (defun pel--setup-company ()
@@ -233,15 +251,15 @@ On first call, also configure it according to its customization."
 If ARG is positive: activate it, otherwise de-activate it.
 Does not allow activation if Company Mode is active."
   (interactive "P")
-  (let ((action (pel--action-for arg (pel--global-auto-complete-mode-p))))
+  (let ((active-mode (pel--autocomplete-active-mode))
+        (action (pel--action-for arg (pel--global-auto-complete-mode-p))))
     (if (and (eq action 'enable)
-             (pel--company-mode-p))
-        (user-error "First turn company-mode off!")
-      ;; Prevent byte-compiler warning.  PEL won't invoke this command  if
-      ;; it's not already loaded and bound, as controlled by pel_keys.el
+             active-mode)
+        (user-error "First turn %s off!" active-mode)
       (pel-when-fbound 'global-auto-complete-mode
         (global-auto-complete-mode (pel--arg-for-action action))
-        (message (pel-value-on-off-text "global-auto-complete" (eq action 'enable)))))))
+        (message (pel-value-on-off-text "global-auto-complete"
+                                        (eq action 'enable)))))))
 
 ;;-pel-autoload
 (defun pel-auto-complete-mode (&optional arg)
@@ -249,15 +267,15 @@ Does not allow activation if Company Mode is active."
 If ARG >= 0: activate it, otherwise de-activate it.
 Does not allow activation if Company Mode is active."
   (interactive "P")
-  (let ((action (pel--action-for arg (pel--auto-complete-mode-p))))
+  (let ((active-mode (pel--autocomplete-active-mode))
+        (action (pel--action-for arg (pel--auto-complete-mode-p))))
     (if (and (eq action 'enable)
-             (pel--company-mode-p))
-        (user-error "First turn company-mode off!")
-      ;; Prevent byte-compiler warning.  PEL won't invoke this command  if
-      ;; it's not already loaded and bound, as controlled by pel_keys.el
+             active-mode)
+        (user-error "First turn %s off!" active-mode)
       (pel-when-fbound 'auto-complete-mode
         (auto-complete-mode (pel--arg-for-action action))
-        (message (pel-value-on-off-text "auto-complete" (eq action 'enable)))))))
+        (message (pel-value-on-off-text "auto-complete"
+                                        (eq action 'enable)))))))
 
 ;; --
 ;; PEL Company Mode Commands
@@ -268,12 +286,11 @@ Does not allow activation if Company Mode is active."
 If ARG is positive: activate it, otherwise de-activate it.
 Does not allow activation if Auto Complete Mode is active."
   (interactive "P")
-  (let ((action (pel--action-for arg (pel--global-company-mode-p))))
+  (let ((active-mode (pel--autocomplete-active-mode))
+        (action (pel--action-for arg (pel--global-company-mode-p))))
     (if (and (eq action 'enable)
-             (pel--auto-complete-mode-p))
-        (user-error "First turn auto-complete-mode off!")
-      ;; Prevent byte-compiler warning.  PEL won't invoke this command  if
-      ;; it's not already loaded and bound, as controlled by pel_keys.el
+             active-mode)
+        (user-error "First turn %s off!" active-mode)
       (pel-when-fbound 'global-company-mode
         (global-company-mode (pel--arg-for-action action))
         (message (pel-symbol-text 'global-company-mode))))))
@@ -284,22 +301,112 @@ Does not allow activation if Auto Complete Mode is active."
 If ARG >= 0: activate it, otherwise de-activate it.
 Does not allow activation if Auto Complete Mode is active."
   (interactive "P")
-  (let ((action (pel--action-for arg (pel--company-mode-p))))
+  (let ((active-mode (pel--autocomplete-active-mode))
+        (action (pel--action-for arg (pel--company-mode-p))))
     (if (and (eq action 'enable)
-             (pel--auto-complete-mode-p))
-        (user-error "First turn auto-complete-mode off!")
-      ;; Prevent byte-compiler warning.  PEL won't invoke this command  if
-      ;; it's not already loaded and bound, as controlled by pel_keys.el
+             active-mode)
+        (user-error "First turn %s off!" active-mode)
       (pel-when-fbound 'company-mode
         (company-mode (pel--arg-for-action action))
         (message (pel-symbol-text 'company-mode))))))
 
-;; --
-;; PEL Generic Automatic Completion Commands
+;; ---------------------------------------------------------------------------
+;;* Corfu Support
+;;  =============
+
+(defun pel--corfu-mode-p ()
+  "Return t if variable `corfu-mode' is loaded and on, nil otherwise."
+  (if (and pel-use-corfu-terminal
+           (not pel-emacs-is-graphic-p))
+      (bound-and-true-p corfu-terminal-mode)
+    (bound-and-true-p corfu-mode)))
+
+(defun pel--global-corfu-mode-p ()
+  "Return t if variable `global-corfu-mode' is loaded and on.
+Return nil otherwise."
+  (if (and pel-use-corfu-terminal
+           (not pel-emacs-is-graphic-p))
+      ;; corfu-terminal-mode is a global minor mode
+      (bound-and-true-p corfu-terminal-mode)
+    (bound-and-true-p global-corfu-mode)))
+
+;;-pel-autoload
+(defun pel-global-corfu-mode (&optional arg)
+  "Toggle Global Corfu mode when ARG is nil.
+If ARG is positive: activate it, otherwise de-activate it.
+Does not allow activation if another completion is active."
+  (interactive "P")
+  (let ((active-mode (pel--autocomplete-active-mode))
+        (action (pel--action-for arg (pel--global-corfu-mode-p))))
+    (if (and (eq action 'enable)
+             active-mode)
+        (user-error "First turn %s off!" active-mode)
+      (if (and pel-use-corfu-terminal
+               (not pel-emacs-is-graphic-p))
+          ;; corfu-terminal-mode is a global minor mode!
+          (pel-when-fbound 'corfu-terminal-mode
+            (corfu-terminal-mode (pel--arg-for-action action))
+            (message (pel-value-on-off-text "corfu-terminal"
+                                            (eq action 'enable))))
+        (pel-when-fbound 'global-corfu-mode
+          (global-corfu-mode (pel--arg-for-action action))
+          (message (pel-value-on-off-text "global-corfu"
+                                          (eq action 'enable))))))))
+
+
+;;-pel-autoload
+(defun pel-corfu-mode (&optional arg)
+  "Toggle buffer's Corfu mode when ARG is nil.
+If ARG >= 0: activate it, otherwise de-activate it.
+Does not allow activation if another completion Mode is active."
+  (interactive "P")
+  (let ((active-mode (pel--autocomplete-active-mode))
+        (action (pel--action-for arg (pel--corfu-mode-p))))
+    (message "active-mode: %s, action: %s" active-mode action)
+    (if (and (eq action 'enable)
+             active-mode)
+        (user-error "First turn %s off!" active-mode)
+      (if (and pel-use-corfu-terminal
+               (not pel-emacs-is-graphic-p))
+          ;; corfu-terminal-mode is a global minor mode!
+          (pel-when-fbound 'corfu-terminal-mode
+            (corfu-terminal-mode (pel--arg-for-action action))
+            (message (pel-value-on-off-text "corfu-terminal"
+                                            (eq action 'enable))))
+        (pel-when-fbound 'corfu-mode
+          (corfu-mode (pel--arg-for-action action))
+          (message (pel-value-on-off-text "corfu"
+                                          (eq action 'enable))))))))
+
+;; ---------------------------------------------------------------------------
+;;* PEL Generic Automatic Completion Commands
+;;  =========================================
+;;
+;;  * pel-complete
+;;    - pel--auto-complete-mode-p
+;;    - auto-complete
+;;    - pel--company-mode-p
+;;    - company-complete
+;;  * pel-completion-info
+;;    - pel--built-in-minor-mode-state-string
 
 (defun pel--built-in-minor-mode-state-string (mode)
-  "Built in minor MODE state string."
-  (pel-minor-mode-state mode :built-in))
+  "Built in minor MODE (a symbol) state string."
+  (pel-minor-mode-state mode))
+
+(defun pel-insert-mode-state-and-use (mode use-symbol)
+  "Insert information about MODE symbol and its USE-SYMBOL activator."
+  (pel-insert-symbol-content-line mode
+                                  nil
+                                  (lambda (m)
+                                    (pel-minor-mode-state m use-symbol))))
+
+(defun pel-insert-mode-state (mode)
+  "Insert information about MODE symbol only."
+  (pel-insert-symbol-content-line mode
+                                  nil
+                                  (when (boundp mode)
+                                    #'pel-symbol-on-off-string)))
 
 ;;-pel-autoload
 (defun pel-completion-info (&optional append)
@@ -316,38 +423,34 @@ non-nil, in which case it appends to the previous report."
      "*pel-autocomplete-info*"
      "Auto-Completion Control"
      (lambda ()
-       (pel-insert-bold "Auto-completion package state:")
+       (pel-insert-bold "***Auto-completion package state:")
+       (insert "\n* built-in:")
        (pel-insert-symbol-content-line 'completion-preview-mode nil
                                        #'pel--built-in-minor-mode-state-string)
-       (pel-insert-symbol-content-line 'auto-complete-mode
-                                       nil
-                                       (lambda (m)
-                                         (pel-option-mode-state m
-                                                                'pel-use-auto-complete)))
-       (pel-insert-symbol-content-line 'global-auto-complete-mode
-                                       nil
-                                       #'pel-symbol-on-off-string)
-       (pel-insert-symbol-content-line 'company-mode
-                                       nil
-                                       (lambda (m)
-                                         (pel-option-mode-state m
-                                                                'pel-use-company)))
-       (pel-insert-symbol-content-line 'global-company-mode
-                                       nil
-                                       #'pel-symbol-on-off-string)
-       (pel-insert-bold "\n\nCustomization:")
+       (insert "\n\n* External:")
+       (pel-insert-mode-state-and-use  'auto-complete-mode
+                                       'pel-use-auto-complete)
+
+       (pel-insert-mode-state          'global-auto-complete-mode)
+       (insert "\n")
+       (pel-insert-mode-state-and-use  'company-mode 'pel-use-company)
+       (pel-insert-mode-state          'global-company-mode)
+       (insert "\n")
+       (pel-insert-mode-state-and-use  'corfu-mode 'pel-use-corfu)
+       (pel-insert-mode-state          'global-corfu-mode)
+       (when (and pel-use-corfu-terminal
+                  (not pel-emacs-is-graphic-p))
+         (pel-insert-mode-state        'corfu-terminal-mode))
+
+       (pel-insert-bold "\n\n****Customization:")
+       (insert "\n* Activation:")
+       (pel-insert-symbol-content-line 'pel-use-auto-complete)
+       (pel-insert-symbol-content-line 'pel-use-company)
+       (pel-insert-symbol-content-line 'pel-use-corfu)
+       (insert "\n\n* Control:")
        (when pel-emacs-30-or-later-p
          (pel-insert-symbol-content-line 'completion-preview-minimum-symbol-length)
          (pel-insert-symbol-content-line 'completion-preview-idle-delay))
-       (pel-insert-symbol-content-line 'pel-use-auto-complete)
-       (pel-insert-symbol-content-line 'pel-use-company)
-       (insert "\n")
-       (pel-insert-symbol-content-line 'auto-complete-mode)
-       (pel-insert-symbol-content-line 'global-auto-complete-mode)
-       (pel-insert-symbol-content-line 'company-mode)
-       (pel-insert-symbol-content-line 'global-company-mode)
-
-       (pel-insert-bold "\n\nEmacs Built-in completion:")
        (pel-insert-symbol-content-line 'completion-at-point-functions)
        (pel-insert-symbol-content-line 'completion-styles)
        (pel-insert-list-content 'completion-category-overrides
@@ -367,13 +470,37 @@ non-nil, in which case it appends to the previous report."
   "Start auto-completion for text at point.
 Use the currently active auto-completion system."
   (interactive)
-  (cond ((pel--auto-complete-mode-p) (pel-when-fbound 'auto-complete
-                                       (auto-complete)))
-        ((pel--company-mode-p)       (pel-when-fbound 'company-complete
-                                       (company-complete)))
+  (cond ((pel--auto-complete-mode-p)
+         (pel-when-fbound 'auto-complete (auto-complete)))
+        ((pel--company-mode-p)
+         (pel-when-fbound 'company-complete (company-complete)))
+        ((pel--corfu-mode-p)
+         (pel-when-fbound 'corfu-complete (corfu-complete)))
         (t (user-error "First activate a completion system \
-with: <f11> , [aAcC]"))))
+with: <f11> , [aAcCuU]"))))
 
+;; ---------------------------------------------------------------------------
+(defvar pel--autocomplete-initialized nil
+  "Set to t when auto-complete tool management is initialized.
+Modified by pel-search code ONLY.")
+
+(defvar pel--active-search-tool nil
+  "Search tool currently used.  One of: nil | anzu | swiper.
+A nil value means that Emacs standard search is used.")
+
+;;-pel-autoload
+;; (defun pel-select-autocomplete ()
+;;   "Prompt user for auto-complete tool to use."
+;;   (interactive)
+;;   (unless pel--autocomplete-initialized
+;;     ;; select the initial search tool from user option.
+;;     (pel-set-search-tool pel-initial-search-tool)
+;;     (setq pel--autocomplete-initialized 1))
+;;   ;;
+;;   (pel-select-from "Search tool"
+;;                    (pel--search-tools-selection)
+;;                    (pel--activated-search-tool)
+;;                    #'pel-set-search-tool))
 ;; -----------------------------------------------------------------------------
 (provide 'pel-autocomplete)
 
