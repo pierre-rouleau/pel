@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-02-06 22:28:25 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-16 11:29:24 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -100,12 +100,14 @@ in which case it appends to the previous report."
        "Print abbreviation control variables."
        (pel-insert-symbol-content-line 'abbrev-mode)
        (pel-insert-symbol-content-line 'save-abbrevs)
-       (insert (format "\n\n* Dynamic abbreviation done with %s as specified by:"
-                       (if (bound-and-true-p pel-use-hippie-expand)
-                           "Hippie Expand"
-                         "DAbbrev Mode")))
+       (pel-insert-bold
+        (format "\n\n* Dynamic abbreviation done with %s as specified by:"
+                (if (bound-and-true-p pel-use-hippie-expand)
+                    "Hippie Expand"
+                  "DAbbrev Mode")))
        (pel-insert-symbol-content-line 'pel-use-hippie-expand)
-       (pel-insert-symbol-content-line 'pel-modes-activating-abbrev-mode)
+       (pel-insert-list-content 'pel-modes-activating-abbrev-mode
+                                nil nil nil :on-same-line)
        (pel-insert-symbol-content-line 'pel-use-origami)
        (when (bound-and-true-p pel-use-origami)
          (insert "
@@ -114,10 +116,12 @@ in which case it appends to the previous report."
          (insert (propertize "M-/ M-/" 'face 'bold))
          (insert " instead of the standard ")
          (insert (propertize "M-/" 'face 'bold)))
-       (insert "\n\n* Abbreviations are stored in the file specified by:")
+       (pel-insert-bold
+        "\n\n* Abbreviations are stored in the file specified by:")
        (pel-insert-symbol-content-line 'abbrev-file-name)
-       (pel-insert-symbol-content-line 'abbrev-table-name-list)
-       (insert "\n\n* Spell Checking:")
+       (pel-insert-list-content 'abbrev-table-name-list
+                                nil nil nil :on-same-line)
+       (pel-insert-bold "\n\n* Spell Checking:")
        (pel-insert-symbol-content-line 'flyspell-auto-correct-word)
        (pel-insert-symbol-content-line 'flyspell-abbrev-p)
        (pel-insert-symbol-content-line 'flyspell-use-global-abbrev-table-p))

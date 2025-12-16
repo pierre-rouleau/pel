@@ -51,7 +51,8 @@
 ;;     - pel-pkg-for-data-files
 ;;     - pel-pkg-for-diff-merge
 ;;     - pel-pkg-for-dired
-;;     - pel-pkg-for-expand
+;;     - pel-pkg-for-abbrev
+;;     - pel-pkg-for-auto-completion
 ;;     - pel-pkg-for-conf-file
 ;;     - pel-pkg-for-face-font
 ;;     - pel-pkg-for-filemng
@@ -1673,6 +1674,14 @@ Select the completion method you want as default when activating this package."
           (const :tag "Built-in (default)" nil)
           (const :tag "Use ivy vertical completion" ivy)))
 
+;; (defcustom pel-use-vertico nil
+;;   "Control whether PEL uses the vertico package."
+;;   :link '(url-link  :tag "vertico @ Github"
+;;                     "https://github.com/minad/vertico")
+;;   :group 'pel-pkg-for-auto-completion
+;;   :type 'boolean
+;;   :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-cursor
 ;; ------------------
@@ -1909,47 +1918,80 @@ The choices are:
 ;;   :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
-;; Text Abbreviation, Code Completion and Expansion
-;; ------------------------------------------------
-(defgroup pel-pkg-for-expand nil
-  "Text abbreviation, code completion and expansion control.
+;; Text Abbreviation Expansion
+;; ---------------------------
+(defgroup pel-pkg-for-abbrev nil
+  "Text abbreviation text expansion control.
 
-- List of external packages that PEL can use to complete code or expand text.
+- List of external packages that PEL can use to expand text.
 - Automatic activation of abbreviation mode.
 
-Note that `auto-complete' and company can both be activated.
-However, PEL only allow one of them to be used per buffer.
 The Hippie Expand can be used together with any."
   :group 'pel-package-use
-  :link `(url-link :tag "Auto-Completion PDF"
-                   ,(pel-pdf-file-url "auto-completion")))
-
-(defcustom pel-use-auto-complete nil
-  "Control whether PEL supports the {auto-complete} package."
-  :group 'pel-pkg-for-expand
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-auto-complete :also-required-when 'pel-use-ac-geiser)
-
-(defcustom pel-use-company nil
-  "Control whether PEL supports the company package."
-  :group 'pel-pkg-for-expand
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-company :also-required-when 'pel-use-company-erlang)
+  :link `(url-link :tag "Abbreviation PDF"
+                   ,(pel-pdf-file-url "abbreviations")))
 
 (defcustom pel-use-hippie-expand nil
   "Control whether PEL uses the {hippie-expand} package."
-  :group 'pel-pkg-for-expand
+  :group 'pel-pkg-for-abbrev
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-hippie-expand :package-is :builtin-emacs)
 
 (defcustom pel-modes-activating-abbrev-mode nil
   "List of major modes that automatically activate `abbrev-mode'."
-  :group 'pel-pkg-for-expand
+  :group 'pel-pkg-for-abbrev
   :type '(repeat symbol))
-(pel-put 'pel-modes-activating-abbrev-mode :in-group 'pel-pkg-for-expand)
+(pel-put 'pel-modes-activating-abbrev-mode :in-group 'pel-pkg-for-abbrev)
+
+;; ---------------------------------------------------------------------------
+;; Text Abbreviation, Code Completion and Expansion
+;; ------------------------------------------------
+(defgroup pel-pkg-for-auto-completion nil
+  "Text abbreviation, code completion and expansion control."
+  :group 'pel-package-use
+  :link `(url-link :tag "Auto-Completion PDF"
+                   ,(pel-pdf-file-url "auto-completion")))
+
+(defcustom pel-use-auto-complete nil
+  "Control whether PEL supports the {auto-complete} package."
+  :group 'pel-pkg-for-auto-completion
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-auto-complete :also-required-when 'pel-use-ac-geiser)
+
+(defcustom pel-use-company nil
+  "Control whether PEL supports the company package."
+  :group 'pel-pkg-for-auto-completion
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-company :also-required-when 'pel-use-company-erlang)
+
+;; (defcustom pel-use-corfu nil
+;;   "Control whether PEL supports the corfu package.
+;; Note that on Emacs < 31, activating this also activates
+;; the `pel-use-corfu-terminal' user-option."
+;;   :link '(url-link :tag "corfu @ Github"
+;;                    "https://github.com/minad/corfu")
+;;   :group 'pel-pkg-for-auto-completion
+;;   :type 'boolean
+;;   :safe #'booleanp)
+
+;; (defcustom pel-use-corfu-terminal nil
+;;   "Control whether PEL supports the corfu-terminal package."
+;;   :link '(url-link :tag "corfu @ Github"
+;;                    "https://codeberg.org/akib/emacs-corfu-terminal")
+;;   :group 'pel-pkg-for-auto-completion
+;;   :type 'boolean
+;;   :safe #'booleanp)
+
+;; (pel-put 'pel-use-corfu-terminal :package-is :in-utils)
+;; (when pel-use-corfu
+;;   (unless (or pel-emacs-is-graphic-p
+;;               pel-emacs-31-or-later-p)
+;;     (setq pel-use-corfu-terminal t)))
+;; (when pel-use-corfu-terminal
+;;   (setq pel-use-corfu t))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-conf-file
@@ -13206,8 +13248,8 @@ emacs-regex-to-match-balanced-parenthesis")
 (defcustom pel-initial-search-tool nil
   "Select the search tool used when Emacs starts.
 PEL supports the following tools:
-- nil     : use Emacs default.
-- `anzu'  : use iSearch with Anzu globally to show match counts in modeline.
+- nil     : use iSearch, Emacs default.
+- `anzu'  : use iSearch with global `anzu-mode': show match counts in modeline.
 - `swiper': use Swiper to show search matches list in minibuffer."
   :group 'pel-pkg-for-search
   :type '(choice
