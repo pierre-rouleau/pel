@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-16 11:29:24 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-17 16:39:05 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -100,6 +100,22 @@ in which case it appends to the previous report."
        "Print abbreviation control variables."
        (pel-insert-symbol-content-line 'abbrev-mode)
        (pel-insert-symbol-content-line 'save-abbrevs)
+
+       (pel-insert-bold "\n\nDabbrev control variables:")
+       (pel-insert-symbol-content-line 'dabbrev-backward-only)
+       (pel-insert-symbol-content-line 'dabbrev-case-fold-search)
+       (pel-insert-symbol-content-line 'dabbrev-case-replace)
+       (pel-insert-symbol-content-line 'dabbrev-abbrev-char-regexp)
+       (pel-insert-symbol-content-line 'dabbrev-check-all-buffers)
+       (pel-insert-symbol-content-line 'dabbrev-check-other-buffers)
+       (pel-insert-symbol-content-line 'dabbrev-friend-buffer-function)
+       (pel-insert-list-content 'dabbrev-ignored-buffer-names nil nil nil t)
+       (pel-insert-list-content 'dabbrev-ignored-buffer-modes nil nil nil t)
+       (pel-insert-list-content 'dabbrev-search-these-buffers-only nil nil nil
+                                t)
+       (pel-insert-bold "\n\nHippie Expand control variables:")
+       (pel-insert-list-content 'hippie-expand-try-functions-list nil nil nil t)
+
        (pel-insert-bold
         (format "\n\n* Dynamic abbreviation done with %s as specified by:"
                 (if (bound-and-true-p pel-use-hippie-expand)
