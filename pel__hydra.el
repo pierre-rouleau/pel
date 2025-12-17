@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-08 13:38:02 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-16 22:13:57 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -634,15 +634,15 @@ CAUTION: the hydra is still active!"
                    pel-hs-hide-block-below-inc
                    pel-hs-hide-block-below-dec)
 
-(defhydra pel-∑hideshow (global-map "<f7> /"
+(defhydra pel-∑hideshow (global-map "<f7> H"
                                     :foreign-keys run)
   "Hide/Show:"
-  ("/" hs-minor-mode               "Toggle hs mode" :column "State")
+  ("H" hs-minor-mode               "Toggle hs mode" :column "State")
   ("?" pel-show-hide-state         "info")
-  ("a" pel-toggle-hide-all         "all"    :column "Hide/Show")
-  ("b" pel-toggle-hide-block       "block")
-  ("H" pel-hide-all                "all"    :column "Hide")
-  ("h" pel-hide-block              "block")
+  ("A" pel-toggle-hide-all         "all"    :column "Hide/Show")
+  ("B" pel-toggle-hide-block       "block")
+  ("*" pel-hide-all                "all"    :column "Hide")
+  ("b" pel-hide-block              "block")
   ("S" pel-show-all                "all"    :column "Show")
   ("s" pel-show-block              "block")
   ("1" pel-hide-level-1            ">= 1"  :column "Hide levels")

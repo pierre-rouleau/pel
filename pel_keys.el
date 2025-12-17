@@ -7230,23 +7230,23 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:comment ":" 'hide/show-comments))
 
 ;; ---------------------------------------------------------------------------
-;;* Hide/Show commands - <f11> M-/
-;; - Function Keys - <f11> - Prefix ``<f11> M-/`` :
-(define-pel-global-prefix pel:hide-show (kbd "<f11> M-/"))
+;;* Hide/Show commands - <f11> H
+;; - Function Keys - <f11> - Prefix ``<f11> H`` :
+(define-pel-global-prefix pel:hide-show (kbd "<f11> H"))
 
-(define-key pel:hide-show (kbd "M-/") 'pel-toggle-hide-indent)
+(define-key pel:hide-show "I" 'pel-toggle-hide-indent)
 
 (when pel-use-hide-lines
   (pel-ensure-package hide-lines from: melpa)
   (define-key pel:hide-show "0"         'pel-selective-display-unhide)
   (define-key pel:hide-show "1"         'pel-selective-display-at-1)
   (define-key pel:hide-show "h"         'hide-lines)
-  (define-key pel:hide-show (kbd "M-h") 'hide-lines-matching)
-  (define-key pel:hide-show (kbd "M-o") 'hide-lines-not-matching)
-  (define-key pel:hide-show (kbd "M-s") 'hide-lines-show-all)
-  (define-key pel:hide-show "b"         'hide-blocks)
+  (define-key pel:hide-show (kbd "M-l") 'hide-lines-matching)
+  (define-key pel:hide-show (kbd "M-L") 'hide-lines-not-matching)
+  (define-key pel:hide-show "A"         'hide-lines-show-all)
+  (define-key pel:hide-show "B"         'hide-blocks)
   (define-key pel:hide-show (kbd "M-b") 'hide-blocks-matching)
-  (define-key pel:hide-show (kbd "M-p") 'hide-blocks-not-matching))
+  (define-key pel:hide-show (kbd "M-B") 'hide-blocks-not-matching))
 
 (when pel-use-origami
   (pel-install-github-files "pierre-rouleau/origami.el/master"
