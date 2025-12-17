@@ -3282,10 +3282,11 @@ By default, each element of the list is printed on a new line preceded by an
 element index number unless WITHOUT-INDEX is non-nil.
 By default, the index is printed on a line above the value, unless
 ON-SAME-LINE is non-nil"
-  (let ((list-value (pel-symbol-value
-                     symbol
-                     (or buffer
-                         pel-insert-symbol-content-context-buffer))))
+  (let ((list-value (when (boundp symbol)
+                      (pel-symbol-value
+                       symbol
+                       (or buffer
+                           pel-insert-symbol-content-context-buffer)))))
     (if (null list-value)
         (pel-insert-symbol-content
          symbol
