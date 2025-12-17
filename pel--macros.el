@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-07 09:19:16 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-17 16:55:32 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -86,8 +86,7 @@
 (defmacro pel-when-fbound (fct &rest body)
   "Eval the BODY if FCT is a bound function, otherwise raise a user error.
 FCT must be a quoted function symbol."
-  (declare (debug (symbolp body))
-           (indent 1))
+  (declare (indent 1))
   `(if (fboundp ,fct)
        (progn
          ,@body)
@@ -98,8 +97,7 @@ FCT must be a quoted function symbol."
 (defmacro pel-when-bound (var &rest body)
   "Eval the BODY if VAR is a bound variable, otherwise raise a user error.
 VAR must be a quoted variable symbol"
-  (declare (debug (symbolp body))
-           (indent 1))
+  (declare (indent 1))
   `(if (boundp ,var)
        (progn
          ,@body)
@@ -133,8 +131,7 @@ FUNCTIONS := list of function symbol(s) or nil
 VARIABLES := list of variable symbol(s) or nil
 
 \(fn (FEATURES) (FUNCS) (VARS) BODY... )"
-  (declare (debug ((symbolp) (symbolp) (symbolp) body))
-           (indent 3))
+  (declare (indent 3))
   (let ((check-features  (pel-make-apply-to-elems 'require features nil
                                                   :noerror))
         (check-functions (pel-make-apply-to-elems 'fboundp functions))
