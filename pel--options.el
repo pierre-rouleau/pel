@@ -1938,6 +1938,42 @@ The Hippie Expand can be used together with any."
   :safe #'booleanp)
 (pel-put 'pel-use-hippie-expand :package-is :builtin-emacs)
 
+(defcustom pel-hippie-expand-try-functions '(try-expand-dabbrev
+                                             try-expand-dabbrev-all-buffers
+                                             try-complete-file-name-partially
+                                             try-complete-file-name)
+  "List of completion functions used by the `hippie-expand' command.
+
+The standard available functions are:
+
+- `try-expand-dabbrev'
+- `try-expand-dabbrev-all-buffers'
+- `try-complete-file-name-partially'
+- `try-complete-file-name'
+- `try-expand-all-abbrevs'
+- `try-complete-lisp-symbol-partially'
+- `try-complete-lisp-symbol'
+- `try-expand-list'
+- `try-expand-dabbrev-from-kill'
+- `try-expand-line'
+
+The default setup for Hippie Expand is to use DAbbrev *first* as this is
+what most search need, then search in other buffers and file names.  It
+does not do source code expansion: that will be handled by the
+completion facilities (like completion-at-point, Company mode, corfu,
+etc...)
+
+PEL stores this into `hippie-expand-try-functions-list'."
+  :group 'pel-pkg-for-abbrev
+  :type '(repeat function))
+
+(defcustom pel-dabbrev-friend-buffer-function 'dabbrev--same-major-mode-p
+  "Function used by dabbrev to detect searchable buffers.
+
+PEL stores this into `dabbrev-friend-buffer-function'"
+  :group 'pel-pkg-for-abbrev
+  :type 'function)
+
 (defcustom pel-modes-activating-abbrev-mode nil
   "List of major modes that automatically activate `abbrev-mode'."
   :group 'pel-pkg-for-abbrev
@@ -1977,6 +2013,22 @@ the `pel-use-corfu-terminal' user-option."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-auto-completion-tool nil
+  "Identify which auto-completion tool is used when Emacs starts."
+  :group 'pel-pkg-for-auto-completion
+  :type '(choice
+          (const :tag "Non used" nil)
+          (const :tag "auto-complete" auto-complete)
+          (const :tag "company"       company)
+          (const :tag "corfu"         corfu)))
+(cond
+ ((eq pel-use-auto-completion-tool 'auto-complete)
+  (setq pel-use-auto-complete t))
+ ((eq pel-use-auto-completion-tool 'company)
+  (setq pel-use-company t))
+ ((eq pel-use-auto-completion-tool 'corfu)
+  (setq pel-use-corfu t)))
+
 (defcustom pel-use-corfu-terminal nil
   "Control whether PEL supports the corfu-terminal package."
   :link '(url-link :tag "corfu @ Github"
@@ -1984,12 +2036,12 @@ the `pel-use-corfu-terminal' user-option."
   :group 'pel-pkg-for-auto-completion
   :type 'boolean
   :safe #'booleanp)
-
 (pel-put 'pel-use-corfu-terminal :package-is :in-utils)
 (when pel-use-corfu
   (unless (or pel-emacs-is-graphic-p
               pel-emacs-31-or-later-p)
     (setq pel-use-corfu-terminal t)))
+
 (when pel-use-corfu-terminal
   (setq pel-use-corfu t))
 

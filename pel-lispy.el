@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 14 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-22 10:29:39 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-18 12:33:18 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -120,10 +120,11 @@ NEW-VALUE is either 1, to activate or -1, to de-activate"
 (defun pel-lispy-mode ()
   "Activate or toggle lispy mode.
 This PEL function acts as a proxy to the real function
-`lispy-mode' to ensure that the PEL setup is taken into account."
+`lispy-mode' to ensure that the PEL setup is taken into account.
+When activating lispy-mode, disable `overwrite-mode'."
   (interactive)
-  (if  (or (not (boundp 'lispy-mode))
-           (not (fboundp 'lispy-mode)))
+  (if (or (not (boundp 'lispy-mode))
+          (not (fboundp 'lispy-mode)))
       ;; lispy is not loaded
       ;; ensure that both Hydra and Lispy packages are available.
       ;; then activate it
@@ -140,7 +141,11 @@ Try again or restart Emacs."))
         ;; if the variable is bound, toggle lispy mode
         (pel-set-lispy-mode-to (if lispy-mode -1 1))
       ;; otherwise just activate lispy mode
-      (pel-set-lispy-mode-to 1))))
+      (pel-set-lispy-mode-to 1)))
+  ;; When lispy-mode has been activated, disable `overwrite-mode'
+  ;; because it causes problems in lispy-mode.
+  (when (bound-and-true-p lispy-mode)
+    (overwrite-mode -1)))
 
 ;; lpy mode
 ;; --------

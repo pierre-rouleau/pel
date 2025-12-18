@@ -80,7 +80,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-abbrev" for:
     pel-ispell-word-then-abbrev
-    pel-abbrev-info)
+    pel-abbrev-info
+    pel-extract-abbrev-definitions)
 
   (pel-autoload "pel-ada" for:
     pel-ada-mode
@@ -112,14 +113,9 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-as" for: pel-as)
 
   (pel-autoload "pel-autocomplete" for:
+    pel-select-auto-complete-tool
     pel-completion-info
-    pel-complete
-    pel-global-auto-complete-mode
-    pel-auto-complete-mode
-    pel-global-company-mode
-    pel-company-mode
-    pel-global-corfu-mode
-    pel-corfu-mode)
+    pel-complete)
 
   (pel-autoload "pel-benchmark" for:
     pel-show-init-time

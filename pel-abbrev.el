@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-17 16:39:05 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-18 10:53:02 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -102,6 +102,7 @@ in which case it appends to the previous report."
        (pel-insert-symbol-content-line 'save-abbrevs)
 
        (pel-insert-bold "\n\nDabbrev control variables:")
+       (pel-insert-symbol-content-line 'pel-dabbrev-friend-buffer-function)
        (pel-insert-symbol-content-line 'dabbrev-backward-only)
        (pel-insert-symbol-content-line 'dabbrev-case-fold-search)
        (pel-insert-symbol-content-line 'dabbrev-case-replace)
@@ -109,11 +110,13 @@ in which case it appends to the previous report."
        (pel-insert-symbol-content-line 'dabbrev-check-all-buffers)
        (pel-insert-symbol-content-line 'dabbrev-check-other-buffers)
        (pel-insert-symbol-content-line 'dabbrev-friend-buffer-function)
+       (pel-insert-symbol-content-line 'dabbrev-select-buffers-function)
        (pel-insert-list-content 'dabbrev-ignored-buffer-names nil nil nil t)
-       (pel-insert-list-content 'dabbrev-ignored-buffer-modes nil nil nil t)
        (pel-insert-list-content 'dabbrev-search-these-buffers-only nil nil nil
                                 t)
        (pel-insert-bold "\n\nHippie Expand control variables:")
+       (pel-insert-symbol-content-line 'pel-use-hippie-expand)
+       (pel-insert-list-content 'pel-hippie-expand-try-functions nil nil nil t)
        (pel-insert-list-content 'hippie-expand-try-functions-list nil nil nil t)
 
        (pel-insert-bold
@@ -121,7 +124,6 @@ in which case it appends to the previous report."
                 (if (bound-and-true-p pel-use-hippie-expand)
                     "Hippie Expand"
                   "DAbbrev Mode")))
-       (pel-insert-symbol-content-line 'pel-use-hippie-expand)
        (pel-insert-list-content 'pel-modes-activating-abbrev-mode
                                 nil nil nil :on-same-line)
        (pel-insert-symbol-content-line 'pel-use-origami)
@@ -143,6 +145,19 @@ in which case it appends to the previous report."
        (pel-insert-symbol-content-line 'flyspell-use-global-abbrev-table-p))
      (unless append :clear-buffer)
      :use-help-mode)))
+
+
+;;-pel-autoload
+(defun pel-extract-abbrev-definitions (&optional arg)
+  "Read abbreviations/expansion data from current abbrev definition buffer.
+First prompt user to confirm.
+With argument ARG , eliminate all abbrev definitions except
+the ones defined from the buffer now."
+  (interactive "P")
+  (if (yes-or-no-p "Read abbreviations/expansion definition data from current buffer? ")
+      (define-abbrevs arg)
+    (message "Nothing done.")))
+
 ;;; --------------------------------------------------------------------------
 (provide 'pel-abbrev)
 

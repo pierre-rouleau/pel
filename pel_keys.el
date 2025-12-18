@@ -1001,29 +1001,6 @@ Your version of Emacs does not support dynamic module.")))
     ;; Don't  not uniquify special buffers
     (pel-setq uniquify-ignore-buffers-re "^\\*")))
 
-;;*** Use Hippie Expand
-;;    -----------------
-(when pel-use-hippie-expand
-  (global-set-key [remap dabbrev-expand] 'hippie-expand)
-  ;; Default PEL setup for Hippie Expand is to use DAbbrev *first*
-  ;; as this is what most search need, then search in other buffers
-  ;; and file names.
-  ;; Don't do source code expansion: that will be handled by the
-  ;; completion facilities (like completion-at-point, Company mode, etc...)
-  (setq hippie-expand-try-functions-list
-        (quote
-         (try-expand-dabbrev
-          try-expand-dabbrev-all-buffers
-          try-complete-file-name-partially
-          try-complete-file-name))))
-;; Other search rules exist, they are:
-;; - try-expand-all-abbrevs
-;; - try-complete-lisp-symbol-partially
-;; - try-complete-lisp-symbol
-;; - try-expand-list
-;; - try-expand-dabbrev-from-kill
-;; - try-expand-line
-
 ;; ---------------------------------------------------------------------------
 ;;* Extra key bindings
 ;;  ==================
@@ -1357,8 +1334,8 @@ Your version of Emacs does not support dynamic module.")))
 (define-key pel:f6 (kbd "C-f")  'pel-insert-dirname)
 (define-key pel:f6 (kbd "M-f")  'pel-insert-filename-wtilde)
 (define-key pel:f6 (kbd "C-M-f") 'pel-insert-dirname-wtilde)
-(define-key pel:f6 "," 'complete-symbol)
-(define-key pel:f6 "." 'info-complete-symbol)
+(define-key pel:f6 "c" 'complete-symbol)
+(define-key pel:f6 "C" 'info-complete-symbol)
 (define-key pel:f6 ";" #'comment-line)
 (define-key pel:f6 "6" 'delete-indentation)
 (define-key pel:f6 "7" 'pel-join-next-line)
@@ -1871,9 +1848,9 @@ can't bind negative-argument to C-_ and M-_"
   (pel-autoload-file helm for: helm-mode)
   (pel-eval-after-load helm
     (defvar helm-map)                   ; prevent byte-compiler warning
-    ;; <tab> or C-i are mapped to helm-select-action.  Use M-C-i to run
+    ;; <tab> or C-i are mapped to helm-select-action.  Use C-M-i to run
     ;; persistent action.
-    (define-key helm-map (kbd "M-C-i") 'helm-execute-persistent-action)
+    (define-key helm-map (kbd "C-M-i") 'helm-execute-persistent-action)
     ;;
     (when pel-use-helm-lsp
       (pel-ensure-package helm-lsp from: melpa))))
@@ -2474,7 +2451,7 @@ can't bind negative-argument to C-_ and M-_"
     (define-key pel:for-make (kbd "<down>")    'makefile-next-dependency)
     (define-key pel:for-make (kbd "<M-up>")    'pel-make-previous-macro)
     (define-key pel:for-make (kbd "<M-down>")  'pel-make-next-macro)
-    (define-key pel:for-make "."               'completion-at-point)
+    (define-key pel:for-make (kbd "C-M-i")     'completion-at-point)
     (when (boundp 'makefile-mode-map)
       (let ((map makefile-mode-map))
         (define-key map (kbd "<f6> <right>") 'pel-make-forward-conditional)
@@ -7091,22 +7068,17 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 
 ;; ---------------------------------------------------------------------------
-;;* auto-completion - <f11> ,
-;; - Function Keys - <f11> - Prefix ``<f11> ,`` :
-(define-pel-global-prefix pel:auto-completion (kbd "<f11> ,"))
+;;* auto-completion - <f11> c
+;; - Function Keys - <f11> - Prefix ``<f11> c`` :
+(define-pel-global-prefix pel:auto-completion (kbd "<f11> c"))
 
 (when pel-use-auto-complete
-  ;; Defer loading of auto-complete using its autoload that will be
-  ;; trigerred when the one of the pel-auto-complete-mode or
-  ;; pel-global-auto-complete-mode is executed.
   (pel-ensure-package auto-complete from: melpa)
   (pel-autoload-file auto-complete for:
                      auto-complete-mode
                      global-auto-complete-mode))
 
 (when pel-use-company
-  ;; Defer-load company.el via the autoload company-mode and
-  ;; global-autoload-mode are called by one of the pel functions.
   (pel-ensure-package company from: melpa)
   (pel-autoload-file company for:
                      company-mode
@@ -7119,19 +7091,15 @@ to identify a Verilog file.  Anything else is assumed being V."
      "https://codeberg.org/akib/emacs-corfu-terminal/raw/branch/master/corfu-terminal.el"
      "corfu-terminal.el")
     (pel-autoload-file corfu-terminal for:
-                       corfu-terminal-mode))
-  (define-key pel:auto-completion "U"  'pel-global-corfu-mode)
-  (define-key pel:auto-completion "u"  'pel-corfu-mode))
+                       corfu-terminal-mode)))
 
-(define-key pel:auto-completion   "?"   'pel-completion-info)
-(when pel-use-auto-complete
-  (define-key pel:auto-completion "A"  'pel-global-auto-complete-mode)
-  (define-key pel:auto-completion "a"  'pel-auto-complete-mode))
-(when pel-use-company
-  (define-key pel:auto-completion "C"  'pel-global-company-mode)
-  (define-key pel:auto-completion "c"  'pel-company-mode))
-(when (or pel-use-auto-complete pel-use-company)
-  (define-key pel:auto-completion ","  'pel-complete)
+(define-key pel:auto-completion ":" 'pel-select-auto-complete-tool)
+(define-key pel:auto-completion "?" 'pel-completion-info)
+
+
+
+(when (or pel-use-auto-complete pel-use-company pel-use-corfu)
+  (define-key pel:auto-completion "c"  'pel-complete)
   ;; TODO: when no autocompletion is active,
   ;;       re-install the binding that was present
   ;;       at the moment it was turned-on.
@@ -7890,10 +7858,15 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (define-pel-global-prefix pel:abbrev (kbd "<f11> a"))
 
+(setq dabbrev-friend-buffer-function pel-dabbrev-friend-buffer-function)
+(when pel-use-hippie-expand
+  (global-set-key [remap dabbrev-expand] 'hippie-expand)
+  (setq hippie-expand-try-functions-list pel-hippie-expand-try-functions))
+
+;; Delay loading the abbreviation lists as this can slowdown Emacs startup
 (defun pel--activate-abbrev-mode ()
   "Activate `abbrev-mode'."
   (define-key pel:abbrev "a" #'abbrev-mode)
-  (define-key pel:abbrev "?"  'pel-abbrev-info)
 
   (pel-add-hook-for 'pel-modes-activating-abbrev-mode 'abbrev-mode)
   (when (bound-and-true-p pel--cached-abbrev-file-name)
@@ -7906,19 +7879,17 @@ See `flyspell-auto-correct-previous-word' for more info."
     (with-current-buffer buffer
       (when (memq major-mode pel-modes-activating-abbrev-mode)
         (abbrev-mode 1)))))
+;;
+(if (bound-and-true-p pel--cached-abbrev-file-name)
+    ;; If PEL is informed to delay load the abbreviation file
+    ;; do it silently 2 seconds of idle later.
+    (run-at-time "2 sec" nil (function pel--activate-abbrev-mode))
+  ;; Otherwise do it right away.
+  (pel--activate-abbrev-mode))
 
-(defun pel-extract-abbrev-definitions (&optional arg)
-  "Read abbreviations/expansion data from current abbrev definition buffer.
-First prompt user to confirm.
-With argument ARG , eliminate all abbrev definitions except
-the ones defined from the buffer now."
-  (interactive "P")
-  (if (yes-or-no-p "Read abbreviations/expansion definition data from current buffer? ")
-      (define-abbrevs arg)
-    (message "Nothing done.")))
-
-(define-key pel:abbrev "X"  #'pel-extract-abbrev-definitions)
-(define-key pel:       "/"  #'expand-abbrev)
+;; Complete key map.
+(define-key pel:abbrev "?"   'pel-abbrev-info)
+(define-key pel:abbrev "X"   'pel-extract-abbrev-definitions)
 (define-key pel:abbrev "e"  #'expand-abbrev)
 (define-key pel:abbrev "E"  #'expand-region-abbrevs)
 (define-key pel:abbrev "g"  #'add-global-abbrev)
@@ -7933,13 +7904,8 @@ the ones defined from the buffer now."
 (define-key pel:abbrev "u"  #'unexpand-abbrev)
 (define-key pel:abbrev "$"   'pel-ispell-word-then-abbrev)
 (define-key pel: (kbd "M-$") 'pel-ispell-word-then-abbrev)
-
-(if (bound-and-true-p pel--cached-abbrev-file-name)
-    ;; If PEL is informed to delay load the abbreviation file
-    ;; do it silently 2 seconds of idle later.
-    (run-at-time "2 sec" nil (function pel--activate-abbrev-mode))
-  ;; Otherwise do it right away.
-  (pel--activate-abbrev-mode))
+(define-key pel:abbrev "/"   'dabbrev-expand)
+(define-key pel:abbrev "c"   'dabbrev-completion)
 
 ;; ---------------------------------------------------------------------------
 ;;* Buffer Commands - <f11> b
@@ -8197,20 +8163,20 @@ the ones defined from the buffer now."
     (define-key pel:browse  "R" 'rfc-mode-browse)))
 
 ;; ---------------------------------------------------------------------------
-;;* Count Things - <f11> c
-;; - Function Keys - <f11> - Prefix ``<f11> c`` :
+;;* Count Things - <f11> C
+;; - Function Keys - <f11> - Prefix ``<f11> C`` :
 
-(define-pel-global-prefix pel:count (kbd "<f11> c"))
-(define-key pel:count "m" #'count-matches)
-(define-key pel:count "p" #'count-lines-page)
-(define-key pel:count "W" #'count-words-region)
-(define-key pel:count "w" #'count-words)
+(define-pel-global-prefix pel:count (kbd "<f11> C"))
+(define-key pel:count "M" #'count-matches)
+(define-key pel:count "P" #'count-lines-page)
+(define-key pel:count "R" #'count-words-region)
+(define-key pel:count "B" #'count-words)
 
 ;; ---------------------------------------------------------------------------
-;;* Clipboard Commands - <f11> C
-;; - Function Keys - <f11> - Prefix ``<f11> C`` :
+;;* Clipboard Commands - <f11> C-c
+;; - Function Keys - <f11> - Prefix ``<f11> C-c :
 (when pel-emacs-is-graphic-p
-  (define-pel-global-prefix pel:clipboard (kbd "<f11> C"))
+  (define-pel-global-prefix pel:clipboard (kbd "<f11> C-c"))
   (define-key pel:clipboard "c" #'clipboard-kill-ring-save)
   (define-key pel:clipboard "x" #'clipboard-kill-region)
   (define-key pel:clipboard "v" #'clipboard-yank))

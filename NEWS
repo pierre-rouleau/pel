@@ -2,6 +2,18 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Change/simplify/ key bindings for better mnemonic:
+  - auto-completion use the ~<f11> c~ key prefix (instead of ~<f11> ,~),
+  - counting uses ~<f11> C~ key prefix (instead of ~<f11> c~), and updated the key bindings underneath,
+  - clipboard commands use the ~<f11> C-c~ key prefix (instead of ~<f11> C~),
+  - inside make buffer the ~C-M-i~ equivalent binding is ~<f12> C-M-i~ instead of ~<f12> .~,
+  - The ~<f6> ,~ binding to *complete-symbol* is now ~<f6 c~,
+  - The ~<f6> .~ binding to *info-complete-symbol* is now ~<f6 C~.
+- Add more use-options for abbreviation expansion: *pel-hippie-expand-try-functions*, *pel-dabbrev-friend-buffer-function*.
+- Modified/simplified selection of auto-completion tool selection with a default specified by *pel-use-auto-completion-tool*
+  Also completely rewrote its support (more to come) in pel-auto-complete.el.
+- When activating lispy-mode (via *pel-lispy-mode*) the code automatically disables overwrite-mode to prevent some issues
+  when it is active with lispy.
 - Simplified key bindings using flymake and flycheck syntax checking: they use the same key sequences mapped to PEL command dispatching commands.
   PEL provides the ability to dynamically switch from flymake to flycheck and vice versa, and select wich one is used by default for each major mode.
   PEL also provides the ability to identify files/directories where the selected syntax checking minor mode is automatically activated.
