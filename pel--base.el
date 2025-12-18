@@ -3302,7 +3302,15 @@ ON-SAME-LINE is non-nil"
           (setq idx (1+ idx))
           (unless without-index
             (insert (format "\n%3d -%s" idx (if on-same-line "" "\n"))))
-          (pel--pp elem (current-buffer) "   "))))))
+          (if (and (symbolp elem)
+                   (not (eq elem t))
+                   (not (eq elem nil))
+                   (or (fboundp elem)
+                       (boundp elem)))
+              (progn
+                (insert "   ")
+                (pel-insert-symbol elem no-button))
+            (pel--pp elem (current-buffer) "   ")))))))
 
 ;; ---------------------------------------------------------------------------
 ;; Print in dedicated buffer
