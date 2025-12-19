@@ -286,8 +286,10 @@ On systems that must also use `corfu-terminal-mode' also check if it is on."
 
 (defun pel--set-corfu-features ()
   "Set features used by corfu modes."
-  (setq-local corfu-cycle t)
-  (setq-local corfu-auto t))
+  (when (boundp 'corfu-cycle)
+    (setq-local corfu-cycle t))
+  (when (boundp 'corfu-auto)
+    (setq-local corfu-auto t)))
 
 (defun pel--corfu-terminal-maybe ()
   "If required activate corfu-terminal mode."
