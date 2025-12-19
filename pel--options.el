@@ -1678,7 +1678,7 @@ Select the completion method you want as default when activating this package."
   "Control whether PEL uses the vertico package."
   :link '(url-link  :tag "vertico @ Github"
                     "https://github.com/minad/vertico")
-  :group 'pel-pkg-for-auto-completion
+  :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
 
@@ -1992,7 +1992,7 @@ PEL stores this into `dabbrev-friend-buffer-function'"
 (defcustom pel-use-auto-complete nil
   "Control whether PEL supports the {auto-complete} package."
   :group 'pel-pkg-for-auto-completion
-  :link '(usrl-link :tag "auto-complete @ Github"
+  :link '(url-link :tag "auto-complete @ Github"
                     "https://github.com/auto-complete/auto-complete")
   :type 'boolean
   :safe #'booleanp)
@@ -2029,12 +2029,33 @@ This is only available on Emacs 29.1 and later."
   (unless (or pel-emacs-is-graphic-p
               pel-emacs-31-or-later-p)
     (setq pel-use-corfu-terminal t)))
-
 (when pel-use-corfu-terminal
   (setq pel-use-corfu t))
 (unless pel-emacs-29-or-later-p
   (setq pel-use-corfu nil)
   (setq pel-use-corfu-terminal nil))
+
+(defcustom pel-use-orderless nil
+  "Control whether PEL supports the orderless package.
+This is only available on Emacs 27.1 and later."
+  :link '(url-link :tag "orderless @ Github"
+                   "https://github.com/oantolin/orderless")
+  :group 'pel-pkg-for-auto-completion
+  :type 'boolean
+  :safe #'booleanp)
+(unless pel-emacs-27-or-later-p
+  (setq pel-use-orderless nil))
+
+(defcustom pel-use-corfu-prescient nil
+  "Control whether PEL supports the corfu-prescient package.
+This is only available on Emacs 27.1 and later."
+  :link '(url-link :tag "prescient @ Github"
+                   "https://github.com/radian-software/prescient.el")
+  :group 'pel-pkg-for-auto-completion
+  :type 'boolean
+  :safe #'booleanp)
+(unless pel-use-corfu
+  (setq pel-use-corfu-prescient nil))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-conf-file

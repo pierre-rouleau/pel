@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-18 22:16:31 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-19 16:17:46 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -269,7 +269,7 @@
     ([f11 ?$]        "spell-checking"   pel-pkg-for-spelling    ,pel--spell-groups)
     ([f11 ?']        "bookmarks"        pel-pkg-for-bookmark    (bookmark
                                                                  bm))
-    ([f11 ?c]        "auto-completion"  pel-pkg-for-expand   (auto-complete
+    ([f11 ?c]        "auto-completion"  pel-pkg-for-auto-completion   (auto-complete
                                                               company
                                                               corfu
                                                               corfu-terminal
@@ -506,7 +506,7 @@
                                                                  speedbar
                                                                  xref))
     ([f11 ?_]        "inserting-text")
-    ([f11 ?a]        "abbreviations"    pel-pkg-for-expand      abbrev)
+    ([f11 ?a]        "abbreviations"    pel-pkg-for-abbrev      abbrev)
 
     (,(kbd "<f11> SPC SPC b") "ibuffer-mode"  pel-pkg-for-ibuffer (ibuffer ibuffer-vc))
     ([f11 ?b]        "buffers"          pel-pkg-for-buffer      (Buffer-menu
