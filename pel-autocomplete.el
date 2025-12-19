@@ -535,7 +535,8 @@ Issues an error if there are any state inconsistency."
       (push '(?a "Auto-complete" auto-complete) selection))
     (when pel-use-company
       (push '(?c "Company" company) selection))
-    (when pel-use-corfu
+    (when (and pel-use-corfu
+               pel-emacs-29-or-later-p)
       (push '(?u "corfU" corfu) selection))
     (setq selection (reverse selection))
     (or selection

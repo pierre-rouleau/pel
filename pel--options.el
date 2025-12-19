@@ -2005,6 +2005,7 @@ PEL stores this into `dabbrev-friend-buffer-function'"
 
 (defcustom pel-use-corfu nil
   "Control whether PEL supports the corfu package.
+This is only available on Emacs 29.1 and later.
 Note that on Emacs < 31, activating this also activates
 the `pel-use-corfu-terminal' user-option."
   :link '(url-link :tag "corfu @ Github"
@@ -2014,7 +2015,8 @@ the `pel-use-corfu-terminal' user-option."
   :safe #'booleanp)
 
 (defcustom pel-use-corfu-terminal nil
-  "Control whether PEL supports the corfu-terminal package."
+  "Control whether PEL supports the corfu-terminal package.
+This is only available on Emacs 29.1 and later."
   :link '(url-link :tag "corfu @ Github"
                    "https://codeberg.org/akib/emacs-corfu-terminal")
   :group 'pel-pkg-for-auto-completion
@@ -2028,6 +2030,9 @@ the `pel-use-corfu-terminal' user-option."
 
 (when pel-use-corfu-terminal
   (setq pel-use-corfu t))
+(unless pel-emacs-29-or-later-p
+  (setq pel-use-corfu nil)
+  (setq pel-use-corfu-terminal nil))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-conf-file
