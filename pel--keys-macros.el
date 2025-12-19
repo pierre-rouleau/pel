@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-12 10:11:03 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-18 22:16:31 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -269,8 +269,10 @@
     ([f11 ?$]        "spell-checking"   pel-pkg-for-spelling    ,pel--spell-groups)
     ([f11 ?']        "bookmarks"        pel-pkg-for-bookmark    (bookmark
                                                                  bm))
-    ([f11 ?,]        "auto-completion"  pel-pkg-for-expand   (auto-complete
+    ([f11 ?c]        "auto-completion"  pel-pkg-for-expand   (auto-complete
                                                               company
+                                                              corfu
+                                                              corfu-terminal
                                                               hippie-expand))
     ([f11 ?-]        "cut-paste"  pel-pkg-for-cut-and-paste (editing-basics
                                                              browse-kill-ring
@@ -521,7 +523,7 @@
                                   pel-pkg-for-parens)
      ,pel--highligh-groups)
 
-    ([f11 ?c]        "counting"         nil)
+    ([f11 ?C]        "counting"         nil)
 
     (,(kbd "<f11> SPC SPC d d") "diff-merge" pel-pkg-for-diff-merge  diff)
     ([f11 ?d]        "diff-merge"       pel-pkg-for-diff-merge  (diff
