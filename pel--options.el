@@ -2013,22 +2013,6 @@ the `pel-use-corfu-terminal' user-option."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-use-auto-completion-tool nil
-  "Identify which auto-completion tool is used when Emacs starts."
-  :group 'pel-pkg-for-auto-completion
-  :type '(choice
-          (const :tag "Non used" nil)
-          (const :tag "auto-complete" auto-complete)
-          (const :tag "company"       company)
-          (const :tag "corfu"         corfu)))
-(cond
- ((eq pel-use-auto-completion-tool 'auto-complete)
-  (setq pel-use-auto-complete t))
- ((eq pel-use-auto-completion-tool 'company)
-  (setq pel-use-company t))
- ((eq pel-use-auto-completion-tool 'corfu)
-  (setq pel-use-corfu t)))
-
 (defcustom pel-use-corfu-terminal nil
   "Control whether PEL supports the corfu-terminal package."
   :link '(url-link :tag "corfu @ Github"

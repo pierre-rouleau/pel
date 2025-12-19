@@ -7093,7 +7093,7 @@ to identify a Verilog file.  Anything else is assumed being V."
     (pel-autoload-file corfu-terminal for:
                        corfu-terminal-mode)))
 
-(define-key pel:auto-completion ":" 'pel-select-auto-complete-tool)
+(define-key pel:auto-completion "=" 'pel-select-auto-complete-tool)
 (define-key pel:auto-completion "?" 'pel-completion-info)
 
 

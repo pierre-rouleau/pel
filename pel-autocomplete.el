@@ -136,6 +136,18 @@ On first call, also configure it."
   (pel-when-fbound 'auto-complete-mode
     (auto-complete-mode 1)))
 
+;;-pel-autoload
+(defun pel-auto-complete-mode (arg)
+  "Activate or deactivate auto-complete completion engine in buffer.
+Activate when ARG is t or positive, deactivate when it is negative."
+  (cond
+   ((or (eq arg t)
+        (> arg 0))
+    (pel--auto-complete-mode-on))
+   ((< arg 0)
+    (pel-autocomplete--disable))
+   (t (error "Invalid Arg: %s" arg))))
+
 ;; -----------------------------------------------------------------------------
 ;;* Company Mode Support
 ;;  ====================
@@ -200,6 +212,18 @@ On first call, also configure it."
   (pel-when-fbound 'company-mode
     (company-mode t)))
 
+;;-pel-autoload
+(defun pel-company-mode (arg)
+  "Activate or deactivate company completion engine in buffer.
+Activate when ARG is t or positive, deactivate when it is negative."
+  (cond
+   ((or (eq arg t)
+        (> arg 0))
+    (pel--company-mode-on))
+   ((< arg 0)
+    (pel-autocomplete--disable))
+   (t (error "Invalid Arg: %s" arg))))
+
 ;; ---------------------------------------------------------------------------
 ;;* Corfu Support
 ;;  =============
@@ -260,33 +284,53 @@ On systems that must also use `corfu-terminal-mode' also check if it is on."
              (not pel-emacs-is-graphic-p))
     (require 'corfu-terminal nil :noerror)))
 
+(defun pel--set-corfu-features ()
+  "Set features used by corfu modes."
+  (setq-local corfu-cycle t)
+  (setq-local corfu-auto t))
+
+(defun pel--corfu-terminal-maybe ()
+  "If required activate corfu-terminal mode."
+  (when (and pel-use-corfu-terminal
+             (not pel-emacs-is-graphic-p)
+             (fboundp 'corfu-terminal-mode))
+    (corfu-terminal-mode 1)))
+
 (defun pel--global-corfu-mode-on ()
   "Turn `global-corfu-mode' ON.
 On first call, also configure it."
-  (if (not (featurep 'corfu))
+  (unless (featurep 'corfu)
       (pel--setup-corfu))
-  (pel-when-fbound 'global-corfu-mode
-    (global-corfu-mode 1)
-    (when
-        (and pel-use-corfu-terminal
-             (not pel-emacs-is-graphic-p)
-             (bound-and-true-p corfu-terminal-mode)
-             (fboundp 'corfu-terminal-mode))
-      (corfu-terminal-mode 1))))
+  (if (fboundp 'global-corfu-mode)
+      (progn
+        (pel--set-corfu-features)
+        (global-corfu-mode 1)
+        (pel--corfu-terminal-maybe))
+    (user-error "global-corfu-mode not bound.  Is it loaded?")))
 
 (defun pel--corfu-mode-on ()
   "Turn `corfu-mode' ON.
 On first call, also configure it."
-  ;; (if (not (featurep 'corfu))
-  ;;     (pel--setup-corfu))
+  (unless (featurep 'corfu)
+      (pel--setup-corfu))
   (if (fboundp 'corfu-mode)
       (progn
+        (pel--set-corfu-features)
         (corfu-mode 1)
-        (when (and pel-use-corfu-terminal
-                   (not pel-emacs-is-graphic-p)
-                   (fboundp 'corfu-terminal-mode))
-          (corfu-terminal-mode 1)))
+        (pel--corfu-terminal-maybe))
     (user-error "corfu-mode not bound.  Is it loaded?")))
+
+;;-pel-autoload
+(defun pel-corfu-mode (arg)
+  "Activate or deactivate corfu completion engine in buffer.
+Activate when ARG is t or positive, deactivate when it is negative."
+  (cond
+   ((or (eq arg t)
+        (> arg 0))
+    (pel--corfu-mode-on))
+   ((< arg 0)
+    (pel-autocomplete--disable))
+   (t (error "Invalid Arg: %s" arg))))
 
 ;; ---------------------------------------------------------------------------
 ;;* PEL Generic Automatic Completion Commands
@@ -371,13 +415,26 @@ non-nil, in which case it appends to the previous report."
                                 :on-sameline)
        (pel-insert-list-content 'completion-styles-alist
                                 nil nil nil
-                                :on-sameline))
+                                :on-sameline)
+       (pel-insert-bold "\n\n****Corfu customization:")
+       (pel-insert-symbol-content-line 'corfu-cycle)
+       (pel-insert-symbol-content-line 'corfu-auto)
+       (pel-insert-symbol-content-line 'corfu-auto-prefix)
+       (pel-insert-symbol-content-line 'corfu-auto-delay)
+       (pel-insert-symbol-content-line 'corfu-quit-at-boundary)
+       (pel-insert-symbol-content-line 'corfu-echo-documentation)
+       (pel-insert-symbol-content-line 'corfu-preview-current)
+       (pel-insert-symbol-content-line 'corfu-preselect-first)
+       (pel-insert-symbol-content-line 'corfu-history-mode))
      (unless append :clear-buffer)
      :use-help-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Overall Mode Selection Control
 ;;  ==============================
+
+(defvar pel--globally-used-auto-completion-tool nil
+  "Auto-completion tool currently used globally.")
 
 (defvar-local pel--used-auto-completion-tool nil
   "Auto-completion tool currently used in the buffer.")
@@ -400,46 +457,49 @@ Issues an error if there are any state inconsistency."
     (when (pel--company-mode-p)       (pel--company-mode-off))
     (when (pel--corfu-mode-p)         (pel--corfu-mode-off))))
 
+(defvar pel--auto-complete-globally)    ; special/dynamic bound
 
-(defun pel-select-auto-completion (tool &optional globally)
+(defun pel-select-auto-completion (tool &optional select-globally)
   "Activate the auto-completion TOOL.
 Update `pel--used-auto-completion-tool'.
 Issues an error if there are any state inconsistency."
   ;; First disable previously used auto-completion tool if any.
-  (pel-autocomplete--disable globally)
+  (let* ((globally (or select-globally pel--auto-complete-globally))
+         (scope-str (if globally "Global" "Local")))
+    (pel-autocomplete--disable globally)
 
-  ;; Then activate the new auto-completion tool.
-  (setq pel--used-auto-completion-tool
-        (cond
-         ((eq tool 'auto-complete)
-          (if globally
-              (pel--global-auto-complete-mode-on)
-            (pel--auto-complete-mode-on))
-          'auto-complete)
-         ;;
-         ((eq tool 'company)
-          (if globally
-              (pel--global-company-mode-on)
-            (pel--company-mode-on))
-          'company)
-         ;;
-         ((eq tool 'corfu)
-          (if globally
-              (pel--global-corfu-mode-on)
-            (pel--corfu-mode-on))
-          'corfu)
-         ;;
-         ((eq tool nil)
-          nil)
-         ;;
-         (t (error "Invalid auto-completion tool: %S" tool))))
-  (if pel--used-auto-completion-tool
-      (message "Auto-completion now uses %s." pel--used-auto-completion-tool)
-    (message "Auto-completion not using any engine!")))
+    ;; Then activate the new auto-completion tool.
+    (setq pel--used-auto-completion-tool
+          (cond
+           ((eq tool 'auto-complete)
+            (if globally
+                (pel--global-auto-complete-mode-on)
+              (pel--auto-complete-mode-on))
+            'auto-complete)
+           ;;
+           ((eq tool 'company)
+            (if globally
+                (pel--global-company-mode-on)
+              (pel--company-mode-on))
+            'company)
+           ;;
+           ((eq tool 'corfu)
+            (if globally
+                (pel--global-corfu-mode-on)
+              (pel--corfu-mode-on))
+            'corfu)
+           ;;
+           ((eq tool 'none)
+            nil)
+           ;;
+           (t (error "Invalid auto-completion tool: %S" tool))))
+    (if pel--used-auto-completion-tool
+        (message "%s auto-completion now uses %s." scope-str pel--used-auto-completion-tool)
+      (message "%s auto-completion now off; not using any engine!" scope-str))))
 
 (defun pel--autocompletion-tools-selection ()
   "Return a list of (char prompt symbol) for available auto-completion tools."
-  (let ((selection nil ))
+  (let ((selection '((?n "None" none))))
     (when pel-use-auto-complete
       (push '(?a "Auto-complete" auto-complete) selection))
     (when pel-use-company
@@ -453,14 +513,21 @@ Issues an error if there are any state inconsistency."
 
 
 ;;-pel-autoload
-(defun pel-select-auto-complete-tool ()
-  "Prompt user to select auto-complete tool to use."
-  (interactive)
-  (pel-select-from "auto-completion tool"
-                   (pel--autocompletion-tools-selection)
-                   pel--used-auto-completion-tool
-                   #'pel-select-auto-completion
-                   nil))
+(defun pel-select-auto-complete-tool (&optional globally)
+  "Prompt user to select auto-complete tool to use.
+With optional GLOBALLY, select the tool for all buffers."
+  (interactive "P")
+  (let ((pel--auto-complete-globally globally))
+    (pel-select-from (format "%s auto-completion tool"
+                             (if globally
+                                 "Global"
+                               "Local"))
+                     (pel--autocompletion-tools-selection)
+                     (if globally
+                         pel--globally-used-auto-completion-tool
+                       pel--used-auto-completion-tool)
+                     #'pel-select-auto-completion
+                     nil)))
 
 
 ;;-pel-autoload
@@ -473,7 +540,11 @@ Use the currently active auto-completion system."
         ((pel--company-mode-p)
          (pel-when-fbound 'company-complete (company-complete)))
         ((pel--corfu-mode-p)
-         (pel-when-fbound 'corfu-complete (corfu-complete)))
+         (if (fboundp 'corfu-complete)
+             (progn (corfu-complete))
+           (user-error "Function not bound: %s" 'corfu-complete))
+         ;; (pel-when-fbound 'corfu-complete (corfu-complete))
+         )
         (t (user-error "\
 First activate a completion system with: <f11> , s"))))
 
