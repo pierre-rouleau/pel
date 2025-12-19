@@ -126,16 +126,14 @@ Trying to use auto-complete while pel-use-auto-complete user-option is off."
 (defun pel--global-auto-complete-mode-on ()
   "Turn `global-auto-complete-mode' ON.
 On first call, also configure it."
-  (if (not (featurep 'auto-complete))
-      (pel--setup-auto-complete))
+  (pel--setup-auto-complete)
   (pel-when-fbound 'global-auto-complete-mode
     (global-auto-complete-mode 1)))
 
 (defun pel--auto-complete-mode-on ()
   "Turn `auto-complete-mode' ON.
 On first call, also configure it."
-  (if (not (featurep 'auto-complete))
-      (pel--setup-auto-complete))
+  (pel--setup-auto-complete)
   (pel-when-fbound 'auto-complete-mode
     (auto-complete-mode 1)))
 
