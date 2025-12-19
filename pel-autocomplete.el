@@ -414,14 +414,19 @@ non-nil, in which case it appends to the previous report."
 
        (pel-insert-bold "\n\n****Built-in completion control:")
        (pel-insert-bold "\n- Note: ")
-       (insert "More user-options are available in Minibuffer customization group.")
-       (pel-insert-symbol-content-line 'completion-auto-help)
+       (insert "More user-options in Minibuffer customization group.")
+       (pel-insert-bold "\n- Completion mechanism control:")
+       (when pel-emacs-29-or-later-p
+         (insert "\n   (Identify orderless or corfu-prescient here:)"))
        (pel-insert-symbol-content-line 'completion-styles)
+       (pel-insert-list  'completion-category-overrides)
+       (when pel-emacs-31-or-later-p
+         (pel-insert-symbol-content-line 'completion-pcm-leading-wildcard))
+       (pel-insert-symbol-content-line 'completion-auto-help)
        (pel-insert-symbol-content-line 'completion-cycle-threshold)
        (pel-insert-symbol-content-line 'completions-format)
        (pel-insert-symbol-content-line 'read-file-name-completion-ignore-case)
        (pel-insert-list  'completion-at-point-functions)
-       (pel-insert-list  'completion-category-overrides)
        (pel-insert-list  'completion-extra-properties)
        (pel-insert-list  'completion-styles-alist)
 
