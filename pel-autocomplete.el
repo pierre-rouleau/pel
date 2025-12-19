@@ -368,6 +368,10 @@ Activate when ARG is t or positive, deactivate when it is negative."
                                   (when (boundp mode)
                                     #'pel-symbol-on-off-string)))
 
+(defun pel-insert-list (list-var)
+  "Insert information about LIST-VAR symbol with items on separate lines."
+  (pel-insert-list-content list-var nil nil nil :on-sameline))
+
 ;;-pel-autoload
 (defun pel-completion-info (&optional append)
   "Display information about available auto-completion in specialized buffer.
@@ -409,21 +413,31 @@ non-nil, in which case it appends to the previous report."
        (pel-insert-symbol-content-line 'pel-use-corfu)
 
        (pel-insert-bold "\n\n****Built-in completion control:")
+       (pel-insert-bold "\n- Note: ")
+       (insert "More user-options are available in Minibuffer customization group.")
+       (pel-insert-symbol-content-line 'completion-auto-help)
        (pel-insert-symbol-content-line 'completion-styles)
-       (pel-insert-list-content 'completion-at-point-functions
-                                nil nil nil
-                                :on-sameline)
-       (pel-insert-list-content 'completion-category-overrides
-                                nil nil nil
-                                :on-sameline)
-       (pel-insert-list-content 'completion-extra-properties
-                                nil nil nil
-                                :on-sameline)
-       (pel-insert-list-content 'completion-styles-alist
-                                nil nil nil
-                                :on-sameline)
+       (pel-insert-symbol-content-line 'completion-cycle-threshold)
+       (pel-insert-symbol-content-line 'completions-sort)
+       (pel-insert-symbol-content-line 'completions-group)
+       (pel-insert-symbol-content-line 'completions-group-sort)
+       (pel-insert-symbol-content-line 'completions-group-format)
+       (pel-insert-symbol-content-line 'completions-format)
+       (pel-insert-symbol-content-line 'completions-detailed)
+       (pel-insert-symbol-content-line 'completions-header-format)
+       (pel-insert-symbol-content-line 'completions-max-height)
+       (pel-insert-symbol-content-line 'completion-auto-deselect)
+       (pel-insert-symbol-content-line 'read-file-name-completion-ignore-case)
+       (pel-insert-symbol-content-line 'minibuffer-visible-completions)
+       (pel-insert-list  'set-message-functions)
+       (pel-insert-list  'inhibit-message-regexps)
+       (pel-insert-list  'completion-at-point-functions)
+       (pel-insert-list  'completion-category-overrides)
+       (pel-insert-list  'completion-extra-properties)
+       (pel-insert-list  'completion-styles-alist)
+       (pel-insert-list  'minibuffer-regexp-prompts)
        (when pel-emacs-30-or-later-p
-         (pel-insert-bold "\n\n****Emacs >= 30 completion preview control:")
+         (pel-insert-bold "\n\n****Completion Preview control (Emacs >= 30):")
          (pel-insert-symbol-content-line 'completion-preview-minimum-symbol-length)
          (pel-insert-symbol-content-line 'completion-preview-idle-delay))
 
