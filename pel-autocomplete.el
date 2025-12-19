@@ -114,11 +114,14 @@ Return nil otherwise."
   ;; [:todo 2025-12-17, by Pierre Rouleau: Clarify what ac-config-default does
   ;; (it's not documented) and determine if something is needed for each
   ;; programming major mode]
-  ;; Write extra support here
-  (require 'auto-complete nil :noerror)
-  ;; (pel-when-fbound 'ac-config-default
-  ;;   (ac-config-default))
-  )
+  (if pel-use-auto-complete
+      (progn
+        (require 'auto-complete nil :noerror)
+        (pel-when-fbound 'ac-config-default
+          (ac-config-default)))
+    (display-warning 'pel-ensure-package "\
+Trying to use auto-complete while pel-use-auto-complete user-option is off."
+                     :error)))
 
 (defun pel--global-auto-complete-mode-on ()
   "Turn `global-auto-complete-mode' ON.
@@ -184,17 +187,17 @@ Activate when ARG is t or positive, deactivate when it is negative."
 ;; Turn company-mode on
 (defun pel--setup-company ()
   "Initialize Company Mode."
-  ;; Write extra support here
-  ;; variables affecting automatic completion:
-  ;; - company-idle-delay
-  ;; - company-minimum-prefix-length
-  (require 'company nil :noerror)
-  (if (and (boundp 'company-tooltip-align-annotations)
-           (boundp 'company-show-numbers))
+  (if pel-use-company
       (progn
-        (setq company-tooltip-align-annotations t)
-        (setq company-show-numbers t))
-    (error "Package company not loaded")))
+        (require 'company nil :noerror)
+        (if (and (boundp 'company-tooltip-align-annotations)
+                 (boundp 'company-show-numbers))
+            (progn
+              (setq company-tooltip-align-annotations t)
+              (setq company-show-numbers t))
+          (error "Package company not loaded")))
+    (display-warning 'pel-ensure-package "\
+Trying to use company while pel-use-company user-option is off." :error)))
 
 (defun pel--global-company-mode-on ()
   "Turn `global-company-mode' ON.
@@ -276,13 +279,14 @@ On systems that must also use `corfu-terminal-mode' also check if it is on."
 ;; Turn corfu modes on
 (defun pel--setup-corfu ()
   "Initialize `corfu'."
-  ;; [:todo 2025-12-17, by Pierre Rouleau: Clarify what is required for corfu
-  ;; for the various programming major modes]
-  ;; Write extra support here
-  (require 'corfu nil :noerror)
-  (when (and pel-use-corfu-terminal
-             (not pel-emacs-is-graphic-p))
-    (require 'corfu-terminal nil :noerror)))
+  (if  pel-use-corfu
+      (progn
+        (require 'corfu nil :noerror)
+        (when (and pel-use-corfu-terminal
+                   (not pel-emacs-is-graphic-p))
+          (require 'corfu-terminal nil :noerror)))
+    (display-warning 'pel-ensure-package "\
+Trying to use corfu while pel-use-corfu user-option is off." :error)))
 
 (defun pel--set-corfu-features ()
   "Set features used by corfu modes."
@@ -418,6 +422,11 @@ non-nil, in which case it appends to the previous report."
        (pel-insert-list-content 'completion-styles-alist
                                 nil nil nil
                                 :on-sameline)
+
+       (pel-insert-bold "\n\n****Company customization:")
+       (pel-insert-symbol-content-line 'company-idle-delay)
+       (pel-insert-symbol-content-line 'company-minimum-prefix-length)
+
        (pel-insert-bold "\n\n****Corfu customization:")
        (pel-insert-symbol-content-line 'corfu-cycle)
        (pel-insert-symbol-content-line 'corfu-auto)
@@ -491,17 +500,17 @@ Issues an error if there are any state inconsistency."
               (pel--corfu-mode-on))
             'corfu)
            ;;
-           ((eq tool 'none)
+           ((eq tool 'emacs-builtin)
             nil)
            ;;
            (t (error "Invalid auto-completion tool: %S" tool))))
     (if pel--used-auto-completion-tool
         (message "%s auto-completion now uses %s." scope-str pel--used-auto-completion-tool)
-      (message "%s auto-completion now off; not using any engine!" scope-str))))
+      (message "%sly using Emacs built-in auto-completion." scope-str))))
 
 (defun pel--autocompletion-tools-selection ()
   "Return a list of (char prompt symbol) for available auto-completion tools."
-  (let ((selection '((?n "None" none))))
+  (let ((selection '((?e "Emacs built-in" emacs-builtin))))
     (when pel-use-auto-complete
       (push '(?a "Auto-complete" auto-complete) selection))
     (when pel-use-company
@@ -526,8 +535,8 @@ With optional GLOBALLY, select the tool for all buffers."
                                "Local"))
                      (pel--autocompletion-tools-selection)
                      (if globally
-                         pel--globally-used-auto-completion-tool
-                       pel--used-auto-completion-tool)
+                         (or pel--globally-used-auto-completion-tool 'emacs-builtin)
+                       (or pel--used-auto-completion-tool 'emacs-builtin))
                      #'pel-select-auto-completion
                      nil)))
 
