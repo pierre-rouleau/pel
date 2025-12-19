@@ -7091,12 +7091,16 @@ to identify a Verilog file.  Anything else is assumed being V."
      "https://codeberg.org/akib/emacs-corfu-terminal/raw/branch/master/corfu-terminal.el"
      "corfu-terminal.el")
     (pel-autoload-file corfu-terminal for:
-                       corfu-terminal-mode)))
+                       corfu-terminal-mode))
+  (when pel-use-corfu-prescient
+    (pel-ensure-package prescient from: melpa)))
+
+(when pel-use-orderless
+  (pel-ensure-package orderless from: melpa)
+  (require 'orderless))
 
 (define-key pel:auto-completion "=" 'pel-select-auto-complete-tool)
 (define-key pel:auto-completion "?" 'pel-completion-info)
-
-
 
 (when (or pel-use-auto-complete pel-use-company pel-use-corfu)
   (define-key pel:auto-completion "c"  'pel-complete)
