@@ -399,18 +399,20 @@ non-nil, in which case it appends to the previous report."
        (insert "\n")
        (pel-insert-mode-state-and-use  'company-mode 'pel-use-company)
        (pel-insert-mode-state          'global-company-mode)
-       (insert "\n")
-       (pel-insert-mode-state-and-use  'corfu-mode 'pel-use-corfu)
-       (pel-insert-mode-state          'global-corfu-mode)
-       (when (and pel-use-corfu-terminal
-                  (not pel-emacs-is-graphic-p))
-         (pel-insert-mode-state        'corfu-terminal-mode))
+       (when pel-emacs-29-or-later-p
+         (insert "\n")
+         (pel-insert-mode-state-and-use  'corfu-mode 'pel-use-corfu)
+         (pel-insert-mode-state          'global-corfu-mode)
+         (when (and pel-use-corfu-terminal
+                    (not pel-emacs-is-graphic-p))
+           (pel-insert-mode-state        'corfu-terminal-mode)))
 
        (pel-insert-bold "\n\n****Customization:")
        (insert "\n* Activation:")
        (pel-insert-symbol-content-line 'pel-use-auto-complete)
        (pel-insert-symbol-content-line 'pel-use-company)
-       (pel-insert-symbol-content-line 'pel-use-corfu)
+       (when pel-emacs-29-or-later-p
+         (pel-insert-symbol-content-line 'pel-use-corfu))
 
        (pel-insert-bold "\n\n****Built-in completion control:")
        (pel-insert-bold "\n- Note: ")
@@ -424,17 +426,22 @@ non-nil, in which case it appends to the previous report."
        (pel-insert-list  'completion-category-overrides)
        (pel-insert-list  'completion-extra-properties)
        (pel-insert-list  'completion-styles-alist)
+
        (pel-insert-bold "\n- On Emacs 28 and later:")
-       (pel-insert-list  'set-message-functions)
-       (pel-insert-list  'inhibit-message-regexps)
-       (pel-insert-list  'minibuffer-regexp-prompts)
-       (pel-insert-symbol-content-line 'completions-sort)
        (pel-insert-symbol-content-line 'completions-group)
        (pel-insert-symbol-content-line 'completions-group-sort)
        (pel-insert-symbol-content-line 'completions-group-format)
        (pel-insert-symbol-content-line 'completions-detailed)
+
+       (pel-insert-bold "\n- On Emacs 29 and later:")
+       (pel-insert-list  'inhibit-message-regexps)
+       (pel-insert-list  'set-message-functions)
        (pel-insert-symbol-content-line 'completions-header-format)
        (pel-insert-symbol-content-line 'completions-max-height)
+
+       (pel-insert-bold "\n- On Emacs 30 and later:")
+       (pel-insert-list  'minibuffer-regexp-prompts)
+       (pel-insert-symbol-content-line 'completions-sort)
        (pel-insert-symbol-content-line 'completion-auto-deselect)
        (pel-insert-symbol-content-line 'minibuffer-visible-completions)
 
