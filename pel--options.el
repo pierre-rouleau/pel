@@ -1992,6 +1992,8 @@ PEL stores this into `dabbrev-friend-buffer-function'"
 (defcustom pel-use-auto-complete nil
   "Control whether PEL supports the {auto-complete} package."
   :group 'pel-pkg-for-auto-completion
+  :link '(usrl-link :tag "auto-complete @ Github"
+                    "https://github.com/auto-complete/auto-complete")
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-auto-complete :also-required-when 'pel-use-ac-geiser)
