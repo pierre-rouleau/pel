@@ -407,12 +407,12 @@ non-nil, in which case it appends to the previous report."
        (pel-insert-symbol-content-line 'pel-use-auto-complete)
        (pel-insert-symbol-content-line 'pel-use-company)
        (pel-insert-symbol-content-line 'pel-use-corfu)
-       (insert "\n\n* Control:")
-       (when pel-emacs-30-or-later-p
-         (pel-insert-symbol-content-line 'completion-preview-minimum-symbol-length)
-         (pel-insert-symbol-content-line 'completion-preview-idle-delay))
-       (pel-insert-symbol-content-line 'completion-at-point-functions)
+
+       (pel-insert-bold "\n\n****Built-in completion control:")
        (pel-insert-symbol-content-line 'completion-styles)
+       (pel-insert-list-content 'completion-at-point-functions
+                                nil nil nil
+                                :on-sameline)
        (pel-insert-list-content 'completion-category-overrides
                                 nil nil nil
                                 :on-sameline)
@@ -422,6 +422,10 @@ non-nil, in which case it appends to the previous report."
        (pel-insert-list-content 'completion-styles-alist
                                 nil nil nil
                                 :on-sameline)
+       (when pel-emacs-30-or-later-p
+         (pel-insert-bold "\n\n****Emacs >= 30 completion preview control:")
+         (pel-insert-symbol-content-line 'completion-preview-minimum-symbol-length)
+         (pel-insert-symbol-content-line 'completion-preview-idle-delay))
 
        (pel-insert-bold "\n\n****Company customization:")
        (pel-insert-symbol-content-line 'company-idle-delay)
