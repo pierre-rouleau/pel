@@ -2046,6 +2046,15 @@ This is only available on Emacs 27.1 and later."
 (unless pel-emacs-27-or-later-p
   (setq pel-use-orderless nil))
 
+(defcustom pel-use-prescient nil
+  "Control whether PEL supports the prescient package.
+This is only available on Emacs 27.1 and later."
+  :link '(url-link :tag "prescient @ Github"
+                   "https://github.com/radian-software/prescient.el")
+  :group 'pel-pkg-for-auto-completion
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-corfu-prescient nil
   "Control whether PEL supports the corfu-prescient package.
 This is only available on Emacs 27.1 and later."
@@ -2056,6 +2065,28 @@ This is only available on Emacs 27.1 and later."
   :safe #'booleanp)
 (unless pel-use-corfu
   (setq pel-use-corfu-prescient nil))
+
+(defcustom pel-use-company-prescient nil
+  "Control whether PEL supports the company-prescient package.
+This is only available on Emacs 27.1 and later."
+  :link '(url-link :tag "prescient @ Github"
+                   "https://github.com/radian-software/prescient.el")
+  :group 'pel-pkg-for-auto-completion
+  :type 'boolean
+  :safe #'booleanp)
+(unless pel-use-company
+  (setq pel-use-company-prescient nil))
+
+(defcustom pel-use-ivy-prescient nil
+  "Control whether PEL supports the ivy-prescient package.
+This is only available on Emacs 27.1 and later."
+  :link '(url-link :tag "prescient @ Github"
+                   "https://github.com/radian-software/prescient.el")
+  :group 'pel-pkg-for-auto-completion
+  :type 'boolean
+  :safe #'booleanp)
+(unless pel-use-ivy
+  (setq pel-use-ivy-prescient nil))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-conf-file
