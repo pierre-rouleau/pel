@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for corfu completion when *pel-use-corfu* is turned on and corfu-terminal when *pel-use-corfu-terminal* is turned on: it is required for Emacs < 31 to use corfu in terminal mode.
+- Add support for marginalia when *pel-use-marginalia* is turned on.  It's possible to activate it when Emacs starts or later with a command.
 - Change/simplify/ key bindings for better mnemonic:
   - auto-completion use the ~<f11> c~ key prefix (instead of ~<f11> ,~),
   - counting uses ~<f11> C~ key prefix (instead of ~<f11> c~), and updated the key bindings underneath,

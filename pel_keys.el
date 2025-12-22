@@ -7117,9 +7117,14 @@ to identify a Verilog file.  Anything else is assumed being V."
   (global-set-key (kbd "M-l") 'pel-complete))
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
+(declare-function keymap-set "keymap") ; introduced in Emacs 29.1.  Prevent
+                                       ; warning when compiling with earlier
+                                       ; version but used only in code that
+                                       ; can only run under Emacs 29 or later
+                                       ; either explicitly controlled here or
+                                       ; in pel--options.el.
+
 (when pel-emacs-30-or-later-p
-  (declare-function keymap-set "keymap") ; introduced in Emacs 29.1.  Prevent
-                                         ; warning when compiling with earlier version
   (define-key pel:auto-completion   "p"  'completion-preview-mode)
   (define-key pel:auto-completion   "P"  'global-completion-preview-mode)
   (with-eval-after-load 'completion-preview
@@ -7128,6 +7133,33 @@ to identify a Verilog file.  Anything else is assumed being V."
     (when (boundp 'completion-preview-active-mode-map)
       (keymap-set completion-preview-active-mode-map "M-n" 'completion-preview-next-candidate)
       (keymap-set completion-preview-active-mode-map "M-p" 'completion-preview-prev-candidate))))
+
+(when pel-use-marginalia
+  (pel-install-github-file "/minad/marginalia/master"
+                           "marginalia.el")
+  (pel-autoload-file marginalia for:
+                     marginalia-mode
+                     marginalia-cycle)
+  (defun pel-marginalia-symbols ()
+    "Describe marginalia symbols."
+    (interactive)
+    (if (bound-and-true-p marginalia-mode)
+        (describe-symbol 'marginalia--symbol-class)
+      (user-error "Activate marginalia-mode first!")))
+  (declare-function pel-marginalia-symbols "pel_keys")
+  (define-pel-global-prefix pel:marginalia (kbd "<f11> c m"))
+  (define-key pel:marginalia "m"  'marginalia-mode)
+  (define-key pel:marginalia "c"  'marginalia-cycle)
+  (define-key pel:marginalia "s"  'pel-marginalia-symbols)
+
+  (with-eval-after-load 'marginalia-mode
+    (keymap-set minibuffer-local-map     "M-A" 'marginalia-cycle)
+    (keymap-set completion-list-mode-map "M-A" 'marginalia-cycle))
+
+  (when (and (eq pel-use-marginalia 'use-from-start)
+             (fboundp 'marginalia-mode))
+    (marginalia-mode)))
+
 
 ;; ---------------------------------------------------------------------------
 ;;* mark commands - <f11> .

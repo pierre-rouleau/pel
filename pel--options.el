@@ -2088,6 +2088,22 @@ This is only available on Emacs 27.1 and later."
 (unless pel-use-ivy
   (setq pel-use-ivy-prescient nil))
 
+
+(defcustom pel-use-marginalia nil
+  "Control whether PEL supports the marginalia package.
+This is only available on Emacs 29.1 and later."
+  :link '(url-link :tag "prescient @ Github"
+                   "https://github.com/minad/marginalia")
+  :group 'pel-pkg-for-auto-completion
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate globally when Emacs starts"
+                 use-from-start)))
+(pel-put pel-use-marginalia :package-is :in-utils)
+(unless pel-emacs-29-or-later-p
+  (setq pel-use-marginalia nil))
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-conf-file
 ;; ---------------------
