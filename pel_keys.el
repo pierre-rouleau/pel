@@ -2305,6 +2305,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;  M-y     - YAML
 ;;  M-z     - Zig
 ;;  M-A     - Alpaca          -              BEAM Language, Functional/ML
+;;  M-C     - C3
 ;;  M-D     - Dired
 ;;  M-G     - Gleam           -              BEAM Language
 ;;  M-H     - Hamler          -              BEAM Language, Functional/ML/Haskell
@@ -3429,8 +3430,50 @@ d-mode not added to ac-modes!"
         (pel-pike-set-imenu)))))
 
 ;; ---------------------------------------------------------------------------
+;;** C3 Programming Language Support
+;;   -------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-C`` :
+(when pel-use-c3
+  ;; 1 - Install required package for C3
+  (pel-install-github-file "c3lang/c3-ts-mode/master"
+                           "c3-ts-mode.el")
+  (pel-autoload-file c3-ts-mode for: c3-ts-mode)
+
+  ;; 1.1 - Install tree-sitter language grammar for C3 if missing.
+  (when (and (fboundp 'treesit-language-available-p)
+             (fboundp 'treesit-install-language-grammar)
+             (boundp  'treesit-language-source-alist))
+    (unless (treesit-language-available-p 'c3)
+      (add-to-list 'treesit-language-source-alist
+                   '(c3 "https://github.com/c3lang/tree-sitter-c3"))
+      (treesit-install-language-grammar 'c3
+                                        (expand-file-name
+                                         "tree-sitter"
+                                         user-emacs-directory))))
+
+  ;; 2- Associate files with C3 mode selector
+  (add-to-list 'auto-mode-alist '("\\.c3\\'" . c3-ts-mode))
+
+  ;; 3- Speedbar support for C3
+  (when pel-use-speedbar (pel-add-speedbar-extension ".c3"))
+
+  ;; 4- Buffer keymap for C3
+  (define-pel-global-prefix pel:for-c3 (kbd "<f11> SPC M-C"))
+  ;; (define-key pel:for-c3 "?"         'pel-c3-setup-info)
+  ;; (define-key pel:for-c3 (kbd "M-s") 'pel-c3-toggle-format-on-buffer-save)
+  ;; (define-key pel:for-c3 (kbd "M-t") 'pel-set-tab-width)
+
+  ;; 5- Install optional packages for C3
+
+  ;; 6- Activate C3 setup.
+  ;;    Schedule more configuration upon C3 feature loading
+  ;;
+  (pel-eval-after-load c3-ts-mode
+    (pel-config-major-mode c3 pel:for-c3 :ts-only)))
+
+;; ---------------------------------------------------------------------------
 ;;** Dart Programming Language Support
-;;   -----------------------------------
+;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC d`` :
 
 (when pel-use-dart

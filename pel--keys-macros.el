@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-22 11:28:11 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-22 15:50:44 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -448,8 +448,12 @@
                                                                  lispy))
     (,(kbd "<f11> SPC C-e") "pl-eiffel" pel-pkg-for-eiffel      eiffel)
 
+    (,(kbd "<f11> SPC M-C") "pl-c3"  pel-pkg-for-c3       c3-ts)
+    ([f11 32 27 ?C]         "pl-c3"  pel-pkg-for-c3       c3-ts)
+
     (,(kbd "<f11> SPC M-G") "pl-gleam"  pel-pkg-for-gleam       gleam-ts)
     ([f11 32 27 ?G]         "pl-gleam"  pel-pkg-for-gleam       gleam-ts)
+
 
     (,(kbd "<f11> SPC C-h") "pl-hy"     pel-pkg-for-hy)
     (,(kbd "<f11> SPC C-j") "pl-clojure" pel-pkg-for-clojure    (clojure
@@ -786,6 +790,8 @@ stored inside the doc/pdf directory.")
     ("c++"                 [f11 32 ?C])
     ("c++-ts"              [f11 32 ?C])
     ("c-ts"                [f11 32 ?c])
+    ("c3"                  [f11 32 27 ?C])
+    ("c3-ts"               [f11 32 27 ?C])
     ("clojure"             [f11 32 10])
     ("common-lisp"         [f11 32 ?L]) ; an alias for lisp.
     ("cperl"               [f11 32 ?P])
@@ -1107,6 +1113,7 @@ There should be no key binding!" keyseq))
     ("awk"              . "pl-awk")
     ("c++"              . "pl-c++")
     ("c"                . "pl-c")
+    ("c3"               . "pl-c3")
     ("common-lisp"      . "pl-common-lisp")
     ("clojure"          . "pl-clojure")
     ("d"                . "pl-d")
