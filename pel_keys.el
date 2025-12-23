@@ -2729,7 +2729,7 @@ can't bind negative-argument to C-_ and M-_"
                      c-hungry-delete-backwards
                      c-hungry-delete-forward
                      c-toggle-auto-newline
-                     c-toggle-comment-style
+                     pel-c-toggle-comment-style
                      c-toggle-electric-state
                      c-toggle-hungry-state
                      c-toggle-syntactic-indentation)
@@ -2766,10 +2766,14 @@ bind it again after this call."
     (define-key setup-prefix "e"         'c-toggle-electric-state)
     (define-key setup-prefix "s"         'c-set-style) ; interactively select style
     (define-key setup-prefix "i"         'c-toggle-syntactic-indentation)
-    (define-key setup-prefix (kbd "M-;") 'c-toggle-comment-style)
+    (define-key setup-prefix (kbd "M-;") 'pel-c-toggle-comment-style)
     (define-key setup-prefix (kbd "DEL") 'c-toggle-hungry-state)
     (define-key setup-prefix (kbd "M-RET") 'c-toggle-auto-newline)
     (define-key setup-prefix (kbd "RET")   'pel-cc-change-newline-mode)
+
+    (when (boundp 'c-mode-base-map)
+      (define-key c-mode-base-map [remap c-toggle-comment-style]
+                  'pel-c-toggle-comment-style))
 
     ;; electric mode control
     (define-key prefix (kbd "M-b")  #'subword-mode)
@@ -3450,6 +3454,10 @@ d-mode not added to ac-modes!"
                                         (expand-file-name
                                          "tree-sitter"
                                          user-emacs-directory))))
+  ;; 1.2 Identify the language for LSP server
+  (pel-eval-after-load lsp-mode
+    (when (boundp 'lsp-language-id-configuration)
+      (add-to-list 'lsp-language-id-configuration '(c3-ts-mode . "c3"))))
 
   ;; 2- Associate files with C3 mode selector
   (add-to-list 'auto-mode-alist '("\\.c3\\'" . c3-ts-mode))

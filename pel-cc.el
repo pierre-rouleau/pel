@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-08 16:18:09 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-23 10:21:57 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -393,6 +393,24 @@ Prompt if not specified."
          (t (user-error "Enter 0 or positive value!")))
         (message "indentation is now %s" c-basic-offset))
     (error "c-basic-offset is not loaded!")))
+
+;; ---------------------------------------------------------------------------
+
+(defun pel-c-toggle-comment-style (&optional arg)
+  "Toggle the comment style between block and line comments.
+Calls `c-toggle-comment-style' and print a message describing
+the newly used comment style.
+
+Optional numeric ARG, if supplied, switches to block comment
+style when positive, to line comment style when negative, and
+just toggles it when zero or left out.
+
+This action does nothing when the mode only has one comment style."
+  (interactive "P")
+  (require 'cc-cmds)
+  (when (fboundp 'c-toggle-comment-style)
+    (c-toggle-comment-style arg)
+    (message "Now commenting with: %s %s" comment-start comment-end)))
 
 ;; ---------------------------------------------------------------------------
 (defun pel-toggle-c-eldoc-mode ()
