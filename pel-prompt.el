@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-14 17:03:44 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-26 16:17:10 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -238,8 +238,11 @@ value is not part of the SELECTION."
                   (format " [%s]. Select" initial-value)
                 "")))
           (mapconcat (lambda (elt)
-                       (format "%c: %s"
-                               (car elt) (cadr elt)))
+                       (format "%s: %s"
+                               (propertize (format "%c" (car elt))
+                                           'face
+                                           '(:foreground "green" :weight bold) )
+                               (cadr elt)))
                      selection
                      ", ")))
 
