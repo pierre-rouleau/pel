@@ -3467,10 +3467,6 @@ d-mode not added to ac-modes!"
   ;; 3- Speedbar support for C3
   (when pel-use-speedbar (pel-add-speedbar-extension ".c3[it]?"))
 
-  ;; 3.1 - Set default C3 language control values - Drive from PEL options.
-  (setq c3-ts-mode-indent-offset pel-c3-indent-width)
-
-
   ;; 4- Buffer keymap for C3
   (define-pel-global-prefix pel:for-c3   (kbd "<f11> SPC M-C"))
   (define-pel-global-prefix pel:c3-setup (kbd "<f11> SPC M-C <f4>"))
@@ -3493,10 +3489,14 @@ d-mode not added to ac-modes!"
       ;; options and update the rendering of the current buffer.
       ;; This way the setting does not affect other buffers that use other
       ;; tree-sitter based major modes.
-      (when (fboundp 'treesit-font-lock-recompute-features)
+      (when (and (fboundp 'treesit-font-lock-recompute-features)
+                 (fboundp 'font-lock-update))
         (setq-local treesit-font-lock-level pel-c3-treesit-font-lock-level)
         (treesit-font-lock-recompute-features)
-        (font-lock-update)))))
+        (font-lock-update))
+      ;; Set default C3 language control values - Drive from PEL options.
+      (when (boundp 'c3-ts-mode-indent-offset)
+        (setq c3-ts-mode-indent-offset pel-c3-indent-width)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Dart Programming Language Support
