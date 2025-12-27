@@ -3489,8 +3489,10 @@ d-mode not added to ac-modes!"
       ;; options and update the rendering of the current buffer.
       ;; This way the setting does not affect other buffers that use other
       ;; tree-sitter based major modes.
-      (when (and (fboundp 'treesit-font-lock-recompute-features)
-                 (fboundp 'font-lock-update))
+      (when (and
+             (boundp 'treesit-font-lock-level)
+             (fboundp 'treesit-font-lock-recompute-features)
+             (fboundp 'font-lock-update))
         (setq-local treesit-font-lock-level pel-c3-treesit-font-lock-level)
         (treesit-font-lock-recompute-features)
         (font-lock-update))
