@@ -2718,7 +2718,8 @@ can't bind negative-argument to C-_ and M-_"
           pel-use-c++
           pel-use-d
           pel-use-objc
-          pel-use-pike)
+          pel-use-pike
+          pel-use-c3)
 
   ;; Autoload cc-cmds for the c-hungry-delete commands.
   ;; Also autoload c-toggle-hungry-state because it is is used for
@@ -2736,8 +2737,8 @@ can't bind negative-argument to C-_ and M-_"
 
   (defun pel--map-cc-for (prefix
                           setup-prefix
-                          guess-prefix
-                          &optional c-preproc-prefix c-search-replace-prefix)
+                          &optional guess-prefix
+                          c-preproc-prefix c-search-replace-prefix)
     "Map in the PEL keys for CC Mode in the global keymap specified by PREFIX.
 If C-PREPROC-PREFIX also bind the keys for C preprocessor related
 commands and sub-keys inside that prefix.  If a key must be
@@ -2751,13 +2752,14 @@ bind it again after this call."
     (define-key prefix (kbd "<M-up>")   'pel-end-of-previous-defun)
     (define-key prefix (kbd "<M-down>") 'pel-beginning-of-next-defun)
 
-    ;; guess style
-    (define-key guess-prefix "g" 'c-guess-buffer-no-install)
-    (define-key guess-prefix "B" 'c-guess-buffer)
-    (define-key guess-prefix "G" 'c-guess)
-    (define-key guess-prefix "I" 'c-guess-install)
-    (define-key guess-prefix "R" 'c-guess-region)
-    (define-key guess-prefix "?" 'c-guess-view)
+    (when guess-prefix
+      ;; guess style
+      (define-key guess-prefix "g" 'c-guess-buffer-no-install)
+      (define-key guess-prefix "B" 'c-guess-buffer)
+      (define-key guess-prefix "G" 'c-guess)
+      (define-key guess-prefix "I" 'c-guess-install)
+      (define-key guess-prefix "R" 'c-guess-region)
+      (define-key guess-prefix "?" 'c-guess-view))
 
     ;; setup - electric mode control
     (define-key setup-prefix "?"         'pel-cc-mode-info)
@@ -3460,16 +3462,23 @@ d-mode not added to ac-modes!"
       (add-to-list 'lsp-language-id-configuration '(c3-ts-mode . "c3"))))
 
   ;; 2- Associate files with C3 mode selector
-  (add-to-list 'auto-mode-alist '("\\.c3\\'" . c3-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.c3[it]?\\'" . c3-ts-mode))
 
   ;; 3- Speedbar support for C3
-  (when pel-use-speedbar (pel-add-speedbar-extension ".c3"))
+  (when pel-use-speedbar (pel-add-speedbar-extension ".c3[it]?"))
+
+  ;; 3.1 - Set default C3 language control values - Drive from PEL options.
+  (setq c3-ts-mode-indent-offset pel-c3-indent-width)
+
 
   ;; 4- Buffer keymap for C3
-  (define-pel-global-prefix pel:for-c3 (kbd "<f11> SPC M-C"))
-  ;; (define-key pel:for-c3 "?"         'pel-c3-setup-info)
+  (define-pel-global-prefix pel:for-c3   (kbd "<f11> SPC M-C"))
+  (define-pel-global-prefix pel:c3-setup (kbd "<f11> SPC M-C <f4>"))
+  ;; (define-pel-global-prefix pel:c3-guess (kbd "<f11> SPC M-C <f4> g"))
+  (define-key pel:c3-setup (kbd "M-;")   'pel-select-c3-comment-style)
+  (define-key pel:for-c3 "?"         'pel-c3-setup-info)
+  (define-key pel:for-c3 (kbd "M-t") 'pel-set-tab-width)
   ;; (define-key pel:for-c3 (kbd "M-s") 'pel-c3-toggle-format-on-buffer-save)
-  ;; (define-key pel:for-c3 (kbd "M-t") 'pel-set-tab-width)
 
   ;; 5- Install optional packages for C3
 
@@ -3477,7 +3486,17 @@ d-mode not added to ac-modes!"
   ;;    Schedule more configuration upon C3 feature loading
   ;;
   (pel-eval-after-load c3-ts-mode
-    (pel-config-major-mode c3 pel:for-c3 :ts-only)))
+
+    (pel--map-cc-for pel:for-c3 pel:c3-setup)
+    (pel-config-major-mode c3 pel:for-c3 :ts-only
+      ;; Update the treesit font lock level to what is identified by PEL
+      ;; options and update the rendering of the current buffer.
+      ;; This way the setting does not affect other buffers that use other
+      ;; tree-sitter based major modes.
+      (when (fboundp 'treesit-font-lock-recompute-features)
+        (setq-local treesit-font-lock-level pel-c3-treesit-font-lock-level)
+        (treesit-font-lock-recompute-features)
+        (font-lock-update)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Dart Programming Language Support

@@ -277,6 +277,11 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-c-preproc-conditionals-occur
     pel-c-preproc-conditionals-multi-occur)
 
+  (pel-autoload "pel-c3" for:
+    pel-select-c3-comment-style
+    pel-c3-indent-tab-info
+    pel-c3-setup-info)
+
   (pel-autoload "pel-comint" for:
     pel-comint-clear-buffer
     pel-comint-clear-buffer-and-get-prompt

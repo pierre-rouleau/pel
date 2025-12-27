@@ -13027,7 +13027,7 @@ Currently C3 is only supported by `c3-ts-mode', a Tree-Sitter based
 mode.  There is no classic mode.  Therefore, PEL only support `c3-ts-mode'."
   :group 'pel-pkg-for-c3
   :link '(url-link :tag "c3-ts-mode @ Github"
-                   "https://github.com/c3-lang/c3-mode")
+                   "https://github.com/c3lang/c3-ts-mode")
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-c3 :package-is '(quote ((utils . c3-ts-mode))))
@@ -13076,14 +13076,14 @@ This can have the following values:
                    (symbol :tag  "variable (no space) ")
                    (integer :tag "offset from tab-width" :value 0)))))
 
-(defcustom pel-c3-activates-minor-modes nil
+(defcustom pel-c3-activates-minor-modes '(smart-dash-mode)
   "List of *local* minor-modes automatically activated for C3 buffers.
 Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-c3
   :type '(repeat function))
 
-(defcustom pel-c3-indent-width 2
+(defcustom pel-c3-indent-width 4
   "Indentation width for c3 buffers.
 
 PEL stores this value inside the following C3 modes user-options to
@@ -13096,7 +13096,7 @@ control:
   :type 'integer
   :safe 'pel-indent-valid-p)
 
-(defcustom pel-c3-tab-width 2
+(defcustom pel-c3-tab-width 4
   "Column width display rendering of hard tab for c3 buffers.
 
 PEL stores this in `tab-width' when opening c3 buffers.
@@ -13115,6 +13115,12 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-c3
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-c3-treesit-font-lock-level 3
+  "Value of the `treesit-font-lock-level' used in C3 buffers.
+Support values from 1 to 4, inclusive."
+  :group 'pel-pkg-for-c3
+  :type '(integer 1 4))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Zig  Language Support
