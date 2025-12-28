@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, December 23 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-27 12:32:49 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-28 08:54:12 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -127,7 +127,6 @@ following user-options:")
        (when pel-use-tree-sitter
          (insert (format "\n- %s" (pel-ts-language-grammar-status-for
                                    'c3 "\n- "))))
-       (insert "\n\n")
        ;; -- List of minor modes
        (pel-insert-list-of-minor-modes active-modes)
        (insert "\n\n")
