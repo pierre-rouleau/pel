@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-22 15:50:44 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-28 15:06:39 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -627,9 +627,11 @@ stored inside the doc/pdf directory.")
                                                                   flycheck-projectile))
     ([f11 ?t]        ("case-conversion"
                       "input-method"
-                      "text-modes")     pel-pkg-for-text-mode  (editing-basics
-                                                                glasses
-                                                                whitespace))
+                      "text-modes")
+     pel-pkg-for-text-mode
+     (editing-basics
+      glasses
+      whitespace))
     ([f11 ?t ?a]     "align"            pel-pkg-for-align       align)
     ([f11 ?t ?e]     "enriched-text"    nil                     enriched)
     ([f11 ?t ?f]     "filling-justification" nil               fill)

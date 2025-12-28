@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-21 17:06:55 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-28 15:14:28 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -89,7 +89,10 @@ instead."
 (defun pel-treesit-emacs-customize (&optional other-window)
   "Open the treesit customize group in current or OTHER_WINDOW."
   (interactive "P")
-  (pel--customize-group 'treesit other-window))
+  (pel--customize-group
+   (pel-select-symbol-from "Select group" '(treesit
+                                            combobulate))
+   other-window))
 
 (defconst pel-treesit-mode-assoc-alist
   '((go-dot-mod-ts-mode . go-mod-ts-mode)
