@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-28 15:14:28 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-28 16:04:22 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -60,9 +60,10 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)                     ; use: `pel-os-lib-file-extension'
-(require 'pel--keys-macros)              ; use: `pel-help-open-pdf'
-;;                                       ;      `pel--customize-group'
+(require 'pel--base)                    ; use: `pel-os-lib-file-extension'
+(require 'pel--keys-macros)             ; use: `pel-help-open-pdf'
+;;                                      ;      `pel--customize-group'
+(require 'pel-prompt)                   ; use: `pel-select-symbol-from'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
