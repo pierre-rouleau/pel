@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-23 11:29:51 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2025-12-28 14:36:56 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -723,6 +723,13 @@ a string that says so."
     (format "%3d (%3d dependants, %d imposed by restrictions)"
             base deps locked)))
 
+
+(defvar pel-home-dirpath-name)   ; prevent compiler warning: defined in init.el
+
+(defun pel-doc-pdf-file-count ()
+  "Return the number of PEL documentation PDF files."
+  (length (directory-files-recursively pel-home-dirpath-name "\\.pdf$")))
+
 ;; Identify packages that can be upgraded
 ;; --------------------------------------
 
@@ -805,6 +812,7 @@ The function does not support printing a full report on stdout."
 - # packages selected        : %d
 - # PEL loaded commands      : %d
 - # upgradable elpa packages : %d
+- # PEL PDF files            : %d
 - Emacs init-time            : %s
 - Emacs version              : %s
 - Emacs config features      : %s
@@ -835,6 +843,7 @@ The function does not support printing a full report on stdout."
                                     (length package-selected-packages)
                                     (length (pel-commands))
                                     (length upgradable-pkgs)
+                                    (pel-doc-pdf-file-count)
                                     (if (and (require 'time nil :no-error)
                                              (fboundp 'emacs-init-time))
                                         (emacs-init-time)
