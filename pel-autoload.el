@@ -115,8 +115,7 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-autocomplete" for:
     pel-select-auto-complete-tool
     pel-completion-info
-    pel-complete)
-  (pel-autoload-function "pel-autocomplete" for:
+    pel-complete
     pel-auto-complete-mode
     pel-company-mode
     pel-corfu-mode)

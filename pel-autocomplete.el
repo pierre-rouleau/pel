@@ -140,13 +140,15 @@ On first call, also configure it."
 ;;-pel-autoload
 (defun pel-auto-complete-mode (arg)
   "Activate or deactivate auto-complete completion engine in buffer.
-Activate when ARG is t or positive, deactivate when it is negative."
+Activate when ARG is nil, t or positive, deactivate when it is negative."
+  (interactive "P")
   (cond
    ((or (eq arg t)
-        (> arg 0))
-    (pel--auto-complete-mode-on))
-   ((< arg 0)
-    (pel-autocomplete--disable))
+        (> (prefix-numeric-value arg) 0))
+    (pel-select-auto-completion 'auto-complete))
+   ((< (prefix-numeric-value arg) 0)
+    (pel-autocomplete--disable)
+    (setq-local pel--used-auto-completion-tool nil))
    (t (error "Invalid Arg: %s" arg))))
 
 ;; -----------------------------------------------------------------------------
@@ -217,12 +219,14 @@ On first call, also configure it."
 (defun pel-company-mode (arg)
   "Activate or deactivate company completion engine in buffer.
 Activate when ARG is t or positive, deactivate when it is negative."
+  (interactive "P")
   (cond
    ((or (eq arg t)
-        (> arg 0))
-    (pel--company-mode-on))
-   ((< arg 0)
-    (pel-autocomplete--disable))
+        (> (prefix-numeric-value arg) 0))
+    (pel-select-auto-completion 'company))
+   ((< (prefix-numeric-value arg) 0)
+    (pel-autocomplete--disable)
+    (setq-local pel--used-auto-completion-tool nil))
    (t (error "Invalid Arg: %s" arg))))
 
 ;; ---------------------------------------------------------------------------
@@ -328,12 +332,16 @@ On first call, also configure it."
 (defun pel-corfu-mode (arg)
   "Activate or deactivate corfu completion engine in buffer.
 Activate when ARG is t or positive, deactivate when it is negative."
+  (interactive "P")
+  (message "pel-corfu-mode %S" arg)
   (cond
    ((or (eq arg t)
-        (> arg 0))
-    (pel--corfu-mode-on))
-   ((< arg 0)
-    (pel-autocomplete--disable))
+        (> (prefix-numeric-value arg) 0))
+    (message "--> select corfu")
+    (pel-select-auto-completion 'corfu))
+   ((< (prefix-numeric-value arg) 0)
+    (pel-autocomplete--disable)
+    (setq-local pel--used-auto-completion-tool nil))
    (t (error "Invalid Arg: %s" arg))))
 
 ;; ---------------------------------------------------------------------------
@@ -492,7 +500,12 @@ non-nil, in which case it appends to the previous report."
 ;;  ==============================
 
 (defvar pel--globally-used-auto-completion-tool nil
-  "Auto-completion tool currently used globally.")
+  "Auto-completion tool currently used globally.
+The possible values are:
+- nil : for emacs-builtin
+- auto-complete
+- company
+- corfu.")
 
 (defvar-local pel--used-auto-completion-tool nil
   "Auto-completion tool currently used in the buffer.")
@@ -515,19 +528,21 @@ Issues an error if there are any state inconsistency."
     (when (pel--company-mode-p)       (pel--company-mode-off))
     (when (pel--corfu-mode-p)         (pel--corfu-mode-off))))
 
-(defvar pel--auto-complete-globally)    ; special/dynamic bound
+(defvar pel--select-auto-complete-tool-globally nil
+  "Allow global selection.")
 
 (defun pel-select-auto-completion (tool &optional select-globally)
   "Activate the auto-completion TOOL.
 Update `pel--used-auto-completion-tool'.
 Issues an error if there are any state inconsistency."
   ;; First disable previously used auto-completion tool if any.
-  (let* ((globally (or select-globally pel--auto-complete-globally))
-         (scope-str (if globally "Global" "Local")))
+  (let* ((globally (or select-globally pel--select-auto-complete-tool-globally))
+         (scope-str (if globally "Global" "Local"))
+         (new-used-auto-completion-tool nil))
     (pel-autocomplete--disable globally)
 
     ;; Then activate the new auto-completion tool.
-    (setq pel--used-auto-completion-tool
+    (setq new-used-auto-completion-tool
           (cond
            ((eq tool 'auto-complete)
             (if globally
@@ -551,8 +566,14 @@ Issues an error if there are any state inconsistency."
             nil)
            ;;
            (t (error "Invalid auto-completion tool: %S" tool))))
-    (if pel--used-auto-completion-tool
-        (message "%s auto-completion now uses %s." scope-str pel--used-auto-completion-tool)
+    (if globally
+        (setq pel--globally-used-auto-completion-tool
+              new-used-auto-completion-tool)
+      (setq-local pel--used-auto-completion-tool
+                  new-used-auto-completion-tool))
+    (if new-used-auto-completion-tool
+        (message "%s auto-completion now uses %s." scope-str
+                 new-used-auto-completion-tool)
       (message "%sly using Emacs built-in auto-completion." scope-str))))
 
 (defun pel--autocompletion-tools-selection ()
@@ -576,7 +597,8 @@ Issues an error if there are any state inconsistency."
   "Prompt user to select auto-complete tool to use.
 With optional GLOBALLY, select the tool for all buffers."
   (interactive "P")
-  (let ((pel--auto-complete-globally globally))
+  ;; set value for `pel-select-auto-completion' call
+  (let ((pel--select-auto-complete-tool-globally globally))
     (pel-select-from (format "%s auto-completion tool"
                              (if globally
                                  "Global"
