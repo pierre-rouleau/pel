@@ -279,7 +279,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-c3" for:
     pel-select-c3-comment-style
     pel-c3-indent-tab-info
-    pel-c3-setup-info)
+    pel-c3-setup-info
+    pel-c3-compile)
 
   (pel-autoload "pel-comint" for:
     pel-comint-clear-buffer

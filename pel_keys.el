@@ -385,9 +385,12 @@ Open GitHub file if OPEN-GITHUB-PAGE-P IS non-nil."
   (pel-help-open-pdf "compilation-mode" open-github-page-p))
 
 (pel-eval-after-load compile
-
   (when (boundp 'compilation-mode-map)
     (define-key compilation-mode-map
+                (kbd "<f12> <f1>") #'pel-help-compilation-mode)))
+(pel-eval-after-load comint
+  (when (boundp 'comint-mode-map)
+    (define-key comint-mode-map
                 (kbd "<f12> <f1>") #'pel-help-compilation-mode)))
 
 ;; ---------------------------------------------------------------------------
@@ -3474,6 +3477,7 @@ d-mode not added to ac-modes!"
   (define-key pel:c3-setup (kbd "M-;")   'pel-select-c3-comment-style)
   (define-key pel:for-c3 "?"         'pel-c3-setup-info)
   (define-key pel:for-c3 (kbd "M-t") 'pel-set-tab-width)
+  (define-key pel:for-c3 "c"         'pel-c3-compile)
   ;; (define-key pel:for-c3 (kbd "M-s") 'pel-c3-toggle-format-on-buffer-save)
 
   ;; 5- Install optional packages for C3
