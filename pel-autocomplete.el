@@ -72,6 +72,9 @@
 ;;* Auto-Complete Support
 ;;  =====================
 ;;
+(defvar-local pel--used-auto-completion-tool nil
+  "Auto-completion tool currently used in the buffer.")
+
 ;;** Auto-Complete Initialization
 ;;   ----------------------------
 ;;
@@ -506,9 +509,6 @@ The possible values are:
 - auto-complete
 - company
 - corfu.")
-
-(defvar-local pel--used-auto-completion-tool nil
-  "Auto-completion tool currently used in the buffer.")
 
 (defun pel-autocomplete--disable (&optional globally)
   "Disable currently active auto-completion.
