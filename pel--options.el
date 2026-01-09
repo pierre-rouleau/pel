@@ -7786,6 +7786,118 @@ by the `pel-use-d-ac-dcd'."
 (pel-put 'pel-use-d-company-dcd :requires 'pel-use-d)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; C3  Language Support
+;; ---------------------
+
+(defgroup pel-pkg-for-c3 nil
+  "PEL C3 language support."
+  :group 'pel-pkg-for-software-programming-languages
+  :link '(url-link :tag "C3 Language home page" "https://c3-lang.org/"))
+
+
+(defcustom pel-use-c3 nil
+  "Control whether PEL supports C3 development.
+
+Currently C3 is only supported by `c3-ts-mode', a Tree-Sitter based
+mode.  There is no classic mode.  Therefore, PEL only support `c3-ts-mode'."
+  :group 'pel-pkg-for-c3
+  :link '(url-link :tag "c3-ts-mode @ Github"
+                   "https://github.com/c3lang/c3-ts-mode")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-c3 :package-is '(quote ((utils . c3-ts-mode))))
+(pel-put 'pel-use-c3 :requires 'pel-use-tree-sitter)
+
+
+;; Define a list of C3 indentation control variables that could be tied to
+;; `tab-width'.  These will be used when `pel-c3-tie-indent-to-tab-width'
+;; is set to use-predef-vars.
+(defconst pel--c3-indent-predef-vars
+  '((c3-ts-mode-indent-offset .  0))
+  "List of c3 indentation variables that can be tied to tab width.
+In C3 buffers, when `pel-c3-tie-indent-to-tab-width' is set to
+use-predef-vars, the `pel-set-tab-width' command stores the value of
+`tab-width' inside each of these variables.
+
+Each entry is a cons cell:
+- the car is the variable name.
+- the cdr is the offset applied to `tab-width':
+   The value stored in the variable is: (+ tab-with offset)")
+
+;; C3 style guide recommends use of hard-tab for indentation
+;; and spaces for formatting.
+(defcustom pel-c3-tie-indent-to-tab-width nil
+  "Identify whether `pel-set-tab-width' also sets indentation.
+This can have the following values:
+- nil             : In C3 buffers, `pel-set-tab-width' only sets the value
+                    of `tab-width'.
+- use-predef-vars : In C3 buffers, `pel-set-tab-width' sets the value of
+                    `tab-width' and all variables identified by the
+                    `pel--c3-indent-predef-vars' constant.
+- A list of (variable . offset) cons cells defined explicitly as value.
+  When using this be careful to leave no leading or trailing space for the
+  variable name."
+  :group 'pel-pkg-for-c3
+  :type '(choice
+          (const :tag "Not tied; tab width is independent of indentation" nil)
+          (const
+           :tag "Tied; use variables defined in `pel--c3-indent-predef-vars'"
+           use-predef-vars)
+          ;; The variable list defined in `pel--c3-indent-predef-vars' may
+          ;; not be appropriate for your needs.
+          ;; In that case specify your own list here:
+          (repeat :tag "Tied; define the list of indent variables to use"
+                  (cons
+                   (symbol :tag  "variable (no space) ")
+                   (integer :tag "offset from tab-width" :value 0)))))
+
+(defcustom pel-c3-activates-minor-modes '(smart-dash-mode)
+  "List of *local* minor-modes automatically activated for C3 buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-c3
+  :type '(repeat function))
+
+(defcustom pel-c3-indent-width 4
+  "Indentation width for c3 buffers.
+
+PEL stores this value inside the following C3 modes user-options to
+ensure consistency across classic and tree-sitter modes for indentation
+control:
+
+- `c3-indent-offset',
+- `c3-ts-indent-offset'."
+  :group 'pel-pkg-for-c3
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-c3-tab-width 4
+  "Column width display rendering of hard tab for c3 buffers.
+
+PEL stores this in `tab-width' when opening c3 buffers.
+
+This does *NOT* control the indentation in c3
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
+  :group 'pel-pkg-for-c3
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-c3-use-tabs t
+  "Value of `indent-tabs-mode' for editing c3 files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-c3
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-c3-treesit-font-lock-level 3
+  "Value of the `treesit-font-lock-level' used in C3 buffers.
+Support values from 1 to 4, inclusive."
+  :group 'pel-pkg-for-c3
+  :type '(integer 1 4))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Dart Programming Language Support
 ;; ---------------------------------
 (defgroup pel-pkg-for-dart nil
@@ -13009,118 +13121,6 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-v
   :type 'boolean
   :safe #'booleanp)
-
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; C3  Language Support
-;; ---------------------
-
-(defgroup pel-pkg-for-c3 nil
-  "PEL C3 language support."
-  :group 'pel-pkg-for-software-programming-languages
-  :link '(url-link :tag "C3 Language home page" "https://c3-lang.org/"))
-
-
-(defcustom pel-use-c3 nil
-  "Control whether PEL supports C3 development.
-
-Currently C3 is only supported by `c3-ts-mode', a Tree-Sitter based
-mode.  There is no classic mode.  Therefore, PEL only support `c3-ts-mode'."
-  :group 'pel-pkg-for-c3
-  :link '(url-link :tag "c3-ts-mode @ Github"
-                   "https://github.com/c3lang/c3-ts-mode")
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-c3 :package-is '(quote ((utils . c3-ts-mode))))
-(pel-put 'pel-use-c3 :requires 'pel-use-tree-sitter)
-
-
-;; Define a list of C3 indentation control variables that could be tied to
-;; `tab-width'.  These will be used when `pel-c3-tie-indent-to-tab-width'
-;; is set to use-predef-vars.
-(defconst pel--c3-indent-predef-vars
-  '((c3-ts-mode-indent-offset .  0))
-  "List of c3 indentation variables that can be tied to tab width.
-In C3 buffers, when `pel-c3-tie-indent-to-tab-width' is set to
-use-predef-vars, the `pel-set-tab-width' command stores the value of
-`tab-width' inside each of these variables.
-
-Each entry is a cons cell:
-- the car is the variable name.
-- the cdr is the offset applied to `tab-width':
-   The value stored in the variable is: (+ tab-with offset)")
-
-;; C3 style guide recommends use of hard-tab for indentation
-;; and spaces for formatting.
-(defcustom pel-c3-tie-indent-to-tab-width nil
-  "Identify whether `pel-set-tab-width' also sets indentation.
-This can have the following values:
-- nil             : In C3 buffers, `pel-set-tab-width' only sets the value
-                    of `tab-width'.
-- use-predef-vars : In C3 buffers, `pel-set-tab-width' sets the value of
-                    `tab-width' and all variables identified by the
-                    `pel--c3-indent-predef-vars' constant.
-- A list of (variable . offset) cons cells defined explicitly as value.
-  When using this be careful to leave no leading or trailing space for the
-  variable name."
-  :group 'pel-pkg-for-c3
-  :type '(choice
-          (const :tag "Not tied; tab width is independent of indentation" nil)
-          (const
-           :tag "Tied; use variables defined in `pel--c3-indent-predef-vars'"
-           use-predef-vars)
-          ;; The variable list defined in `pel--c3-indent-predef-vars' may
-          ;; not be appropriate for your needs.
-          ;; In that case specify your own list here:
-          (repeat :tag "Tied; define the list of indent variables to use"
-                  (cons
-                   (symbol :tag  "variable (no space) ")
-                   (integer :tag "offset from tab-width" :value 0)))))
-
-(defcustom pel-c3-activates-minor-modes '(smart-dash-mode)
-  "List of *local* minor-modes automatically activated for C3 buffers.
-Enter *local* minor-mode activating function symbols.
-Do not enter lambda expressions."
-  :group 'pel-pkg-for-c3
-  :type '(repeat function))
-
-(defcustom pel-c3-indent-width 4
-  "Indentation width for c3 buffers.
-
-PEL stores this value inside the following C3 modes user-options to
-ensure consistency across classic and tree-sitter modes for indentation
-control:
-
-- `c3-indent-offset',
-- `c3-ts-indent-offset'."
-  :group 'pel-pkg-for-c3
-  :type 'integer
-  :safe 'pel-indent-valid-p)
-
-(defcustom pel-c3-tab-width 4
-  "Column width display rendering of hard tab for c3 buffers.
-
-PEL stores this in `tab-width' when opening c3 buffers.
-
-This does *NOT* control the indentation in c3
-files, it only controls the column width display rendering of hard tabs
-in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
-  :group 'pel-pkg-for-c3
-  :type 'integer
-  :safe 'pel-indent-valid-p)
-
-(defcustom pel-c3-use-tabs t
-  "Value of `indent-tabs-mode' for editing c3 files.
-- If set to nil: only spaces are used for indentation.
-- If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-c3
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-c3-treesit-font-lock-level 3
-  "Value of the `treesit-font-lock-level' used in C3 buffers.
-Support values from 1 to 4, inclusive."
-  :group 'pel-pkg-for-c3
-  :type '(integer 1 4))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Zig  Language Support
