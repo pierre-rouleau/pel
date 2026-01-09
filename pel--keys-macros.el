@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-28 15:06:39 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-01-09 15:57:05 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -400,6 +400,7 @@
                                                                  parinfer-rust-mode
                                                                  rainbow-delimiters
                                                                  suggest))
+    ([f11 32 ?l 20] "ert" pel-pkg-for-testing (coverlay testcover testcover-mark-line))
     ([f11 32 ?l f12] "pl-emacs-lisp"    pel-elisp-code-style)
 
     ([f11 32 ?*]  "all-pl"    pel-pkg-for-all-languages      (eldoc
@@ -812,6 +813,7 @@ stored inside the doc/pdf directory.")
     ("elixir"              [f11 32 ?x])
     ("elixir-ts"           [f11 32 ?x])
     ("emacs-lisp"          [f11 32 ?l])
+    ("ert"                 [f11 32 ?l 20])
     ("erlang"              [f11 32 ?e])
     ("erlang-ts"           [f11 32 ?e])
     ("factor"              [f11 32 27 ?f])
@@ -822,7 +824,7 @@ stored inside the doc/pdf directory.")
     ("go-ts"               [f11 32 ?g])
     ("graphviz-dot"        [f11 32 27 ?g])
     ("haskell"             [f11 32 ?h])
-    ("hy"                  [f11 32 8])
+    ("hy" [f11 32 8])
     ("ibuffer"             [f11 32 32 ?b])
     ("inferior-lfe"        [f11 32 32 12])
     ("janet"               [f11 32 ?T])

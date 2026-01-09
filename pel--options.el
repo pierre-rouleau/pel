@@ -214,6 +214,7 @@
 ;;       - pel-pkg-for-make
 ;;       - pel-pkg-for-meson
 ;;       - pel-pkg-for-ninja
+;;     - pel-pkg-for-testing
 ;;     - pel-pkg-for-text-mode
 ;;     - pel-pkg-for-time-tracking
 ;;     - pel-pkg-for-text-translation
@@ -14119,6 +14120,64 @@ Indentation in ninja buffers is controlled by `ninja-indent-offset'."
   :group 'pel-pkg-for-ninja
   :type 'boolean
   :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
+;; Software Testing support
+;; ------------------------
+(defgroup pel-pkg-for-testing nil
+  "PEL support for software testing."
+  :group 'pel-package-use
+  :link `(url-link :tag "ERT - Emacs Lisp Regression Testing PDF"
+                   ,(pel-pdf-file-url "ert")))
+
+(defcustom pel-use-noflet nil
+  "Whether PEL supports noflet library."
+  :group 'pel-pkg-for-testing
+  :link '(url-link :tag "noflet @ Github"
+                   "https://github.com/nicferrier/emacs-noflet")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-el-mock nil
+  "Whether PEL supports el-mock library."
+  :group 'pel-pkg-for-testing
+  :link '(url-link :tag "el-mock @ Github"
+                   "https://github.com/rejeep/el-mock.el")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-el-spy nil
+  "Whether PEL supports el-spy library."
+  :group 'pel-pkg-for-testing
+  :link '(url-link :tag "el-spy @ Github"
+                   "https://github.com/uk-ar/el-spy")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-mocker nil
+  "Whether PEL supports mocker library."
+  :group 'pel-pkg-for-testing
+  :link '(url-link :tag "mocker @ Github"
+                   "https://github.com/sigma/mocker.el")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-coverlay nil
+  "Whether PEL supports coverlay library."
+  :group 'pel-pkg-for-testing
+  :link '(url-link :tag "coverlay @ Github"
+                   "https://github.com/twada/coverlay.el")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-test-cover-mark nil
+  "Whether PEL supports test-cover-mark library."
+  :group 'pel-pkg-for-testing
+  :link '(url-link :tag "test-cover-mark @ Github"
+                   "https://codeberg.org/akib/emacs-testcover-mark-line")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-test-cover-mark :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; Text Mode support

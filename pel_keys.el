@@ -4064,6 +4064,7 @@ d-mode not added to ac-modes!"
 (define-pel-global-prefix pel:elisp-setup     (kbd "<f11> SPC l <f4>"))
 (define-pel-global-prefix pel:elisp-eldoc     (kbd "<f11> SPC l <f4> d"))
 (define-pel-global-prefix pel:elisp-skel      (kbd "<f11> SPC l <f12>"))
+(define-pel-global-prefix pel:ert             (kbd "<f11> SPC l C-t"))
 
 (define-key pel:for-elisp "z"  'ielm)
 (define-key pel:for-elisp "D"  'pel-add-dir-to-loadpath)
@@ -4071,7 +4072,7 @@ d-mode not added to ac-modes!"
 (define-key pel:for-elisp  (kbd "M-l")  'pel-toggle-lisp-modes)
 ;;
 (define-key pel:for-elisp   "."  'pel-find-thing-at-point)
-(define-key pel:for-elisp   "t"  'pel-run-ert)
+(define-key pel:ert   (kbd "C-t")  'pel-run-ert)
 (when pel-use-plantuml
   (define-key pel:for-elisp   "u"  'pel-render-commented-plantuml))
 (when (eq pel-use-parinfer t)
@@ -4149,6 +4150,21 @@ d-mode not added to ac-modes!"
   (pel-ensure-package suggest from: melpa)
   (pel-autoload-file suggest for: suggest)
   (define-key pel:for-elisp "S" 'suggest))
+
+(when pel-use-noflet
+  (pel-ensure-package noflet from: melpa))
+(when pel-use-el-mock
+  (pel-ensure-package el-mock from: melpa))
+(when pel-use-el-spy
+  (pel-ensure-package el-spy from: melpa))
+(when pel-use-mocker
+  (pel-ensure-package mocker from: melpa))
+(when pel-use-coverlay
+  (pel-ensure-package coverlay from: melpa))
+(when pel-use-test-cover-mark
+  (pel-install-file
+   "https://codeberg.org/akib/emacs-testcover-mark-line/raw/branch/master/testcover-mark-line.el"
+   "testcover-mark-line.el"))
 
 ;; activate the <f12> key binding for elisp-mode and other features.
 (pel-check-minor-modes-in pel-emacs-lisp-activates-minor-modes)
