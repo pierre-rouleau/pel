@@ -4152,7 +4152,7 @@ d-mode not added to ac-modes!"
   (define-key pel:for-elisp "S" 'suggest))
 
 (when pel-use-noflet
-  (pel-ensure-package noflet from: melpa))
+  (pel-install-github-file "pierre-rouleau/emacs-noflet/master" "noflet.el"))
 (when pel-use-el-mock
   (pel-ensure-package el-mock from: melpa))
 (when pel-use-el-spy

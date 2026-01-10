@@ -14131,12 +14131,17 @@ Indentation in ninja buffers is controlled by `ninja-indent-offset'."
                    ,(pel-pdf-file-url "ert")))
 
 (defcustom pel-use-noflet nil
-  "Whether PEL supports noflet library."
+  "Whether PEL supports noflet library.
+PEL uses my fork of this library: my fork integrates many fixes from many
+contributions that have not been integrated in the authors repo yet."
   :group 'pel-pkg-for-testing
   :link '(url-link :tag "noflet @ Github"
                    "https://github.com/nicferrier/emacs-noflet")
+    :link '(url-link :tag "my noflet fork @ Github"
+                   "https://github.com/pierre-rouleaur/emacs-noflet")
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-noflet :package-is :in-utils)
 
 (defcustom pel-use-el-mock nil
   "Whether PEL supports el-mock library."
