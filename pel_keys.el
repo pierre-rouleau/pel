@@ -2313,6 +2313,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;  M-G     - Gleam           -              BEAM Language
 ;;  M-H     - Hamler          -              BEAM Language, Functional/ML/Haskell
 ;;  M-M     - MscGen
+;;  M-O     - Creole
 ;;  M-P     - Prolog
 ;;  M-R     - RPM
 ;;  M-S     - RPM Specfile
@@ -6539,6 +6540,22 @@ to identify a Verilog file.  Anything else is assumed being V."
       (define-key pel:for-asciidoc "x" 'tempo-template-adoc-latexmath)
       (define-key pel:for-asciidoc "P" 'tempo-template-adoc-pass-+++)
       (define-key pel:for-asciidoc (kbd "M-p") 'tempo-template-adoc-pass-$$))))
+
+;; ---------------------------------------------------------------------------
+;;** Creole Mode -- Not used: broken on dependency of dead orgstruct
+;;   -----------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-O`` : Creole
+;; (when pel-use-creole-mode
+;;
+;;   (pel-install-github-file "nicferrier/creole-mode/master"
+;;                            "creole-mode.el")
+;;   (pel-autoload-file creole-mode for: creole-mode)
+;;
+;;   (define-pel-global-prefix pel:for-creole (kbd "<f11> SPC M-O"))
+;;   (pel-set-auto-mode creole-mode for: "\\.creole\\'")
+;;   (pel-eval-after-load creole-mode
+;;     (message "ROULEAUP: LOADED creole-mode")
+;;     (pel-config-major-mode creole pel:for-creole :no-ts)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Outline Mode

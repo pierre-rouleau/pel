@@ -90,6 +90,7 @@
 ;;     - pel-pkg-for-marking
 ;;     - pel-pkg-for-markup
 ;;       - pel-pkg-for-asciidoc
+;;       - pel-pkg-for-creole
 ;;       - pel-pkg-for-drawing-markup
 ;;         - pel-pkg-for-graphviz-dot
 ;;         - pel-pkg-for-mscgen
@@ -4432,6 +4433,56 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-asciidoc
   :type 'boolean
   :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Creole Support
+;; --------------
+;;
+;; Support for creole will never be done: it is broken since it depends on
+;; orgstruct-mode and that is dead because it was itself flaky and broken.
+;; SO: just use text mode for .creole files and avoid Creole markup.
+;;     I'm keeping this as comments to remember that.
+
+;; (defgroup pel-pkg-for-creole nil
+;;   "PEL Creole support."
+;;   :group 'pel-pkg-for-markup
+;;   :link `(url-link :tag "Creole PDF" ,(pel-pdf-file-url "creole")))
+;;
+;; (defcustom pel-use-creole-mode nil
+;;   "Whether PEL activates creole-mode."
+;;   :link '(url-link :tag "creole-mode @ Github"
+;;                    "https://github.com/nicferrier/creole-mode")
+;;   :group 'pel-pkg-for-creole
+;;   :type 'boolean
+;;   :safe #'booleanp)
+;; (pel-put 'pel-use-creole-mode :package-is :in-utils)
+;;
+;; (defcustom pel-creole-activates-minor-modes nil
+;;   "List of *local* minor-modes automatically activated for Creole buffers.
+;; Enter *local* minor-mode activating function symbols.
+;; Do not enter lambda expressions."
+;;   :group 'pel-pkg-for-creole
+;;   :type '(repeat function))
+;;
+;; (defcustom pel-creole-tab-width 2
+;;   "Column width display rendering of hard tab for creole buffers.
+;;
+;; PEL stores this in `tab-width' when opening creole buffers.
+;;
+;; This does *NOT* control the indentation in creole
+;; files, it only controls the column width display rendering of hard tabs
+;; in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
+;;   :group 'pel-pkg-for-creole
+;;   :type 'integer
+;;   :safe 'pel-indent-valid-p)
+;;
+;; (defcustom pel-creole-use-tabs nil
+;;   "Value of `indent-tabs-mode' for editing creole files.
+;; - If set to nil: only spaces are used for indentation.
+;; - If set to t: hard tabs are used when possible."
+;;   :group 'pel-pkg-for-creole
+;;   :type 'boolean
+;;   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; pel-pkg-for-draw-markup

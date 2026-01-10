@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-01-09 15:57:05 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-01-10 12:01:15 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -719,6 +719,9 @@ stored inside the doc/pdf directory.")
     (,(kbd "<f11> SPC M-a") "asciidoc"         pel-pkg-for-asciidoc    adoc)
     ([f11 32 27 ?a]         "asciidoc"         pel-pkg-for-asciidoc    adoc)
 
+    ;; (,(kbd "<f11> SPC M-O") "creole"         pel-pkg-for-creole)
+    ;; ([f11 32 27 ?O]         "creole"         pel-pkg-for-creole)
+
     (,(kbd "<f11> SPC M-r") "mode-rst"         pel-pkg-for-rst        rst)
     ([f11 32 27 ?r]         "mode-rst"         pel-pkg-for-rst        rst)
     (,(kbd "<f11> SPC M-m") "mode-markdown"    pel-pkg-for-markdown   ,pel--markdown-groups)
@@ -798,6 +801,7 @@ stored inside the doc/pdf directory.")
     ("clojure"             [f11 32 10])
     ("common-lisp"         [f11 32 ?L]) ; an alias for lisp.
     ("cperl"               [f11 32 ?P])
+    ;; ("creole"              [f11 32 27 ?O])
     ("cwl"                 [f11 32 27 ?c])
     ("d"                   [f11 32 ?D])
     ("dart"                [f11 32 ?d])
