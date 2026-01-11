@@ -1,0 +1,39 @@
+name: Build
+on:
+  push:
+    paths-ignore:
+      - '**.pdf'
+      - '**.rst'
+  pull_request:
+    paths-ignore:
+      - '**.pdf'
+      - '**.rst'
+
+
+jobs:
+  build:
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        emacs_version:
+          - '26.1'
+          - '26.2'
+          - '26.3'
+          - '27.1'
+          - '28.1'
+          - '29.4'
+          - '30.1'
+        cask_version:
+          - 'snapshot'
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          architecture: 'x64'
+      - uses: purcell/setup-emacs@master
+        with:
+          version: ${{ matrix.emacs_version }}
+
+      - name: Run build
+        run: make clean all
