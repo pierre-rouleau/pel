@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-01-11 08:59:34 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-01-11 09:58:52 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -64,7 +64,15 @@ EMACS ?= emacs
 # Define the location of the normal Emacs initialization file.
 # This is required for elisp-lint so that it can find the elisp-lint
 # and its dependencies.  This can be changed on the command line.
-EMACS_INIT = "~/.emacs.d/init.el"
+# - Support GitHub CI/CD by checking if Make is running inside an environment
+#   where GITHUB_WORKSPACE environment variable is defined.  If so use the
+#   ci/init.el file for the build.
+ifeq ($(GITHUB_WORKSPACE),)
+	EMACS_INIT = "~/.emacs.d/init.el"
+else
+	EMACS_INIT = "$(GITHUB_WORKSPACE)/ci/init.el"
+endif
+
 # -----------------------------------------------------------------------------
 # PEL Package Version - increase this number on each release
 PEL_VERSION := 0.4.1
@@ -887,6 +895,7 @@ pel-ran-tests.tag:
 	$(EMACS) --batch -L . -l ert -l test/pel-list-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
 	touch pel-ran-tests.tag
+	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info-all
 
 
 stats:
