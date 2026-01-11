@@ -11,29 +11,32 @@ PEL -- Pragmatic Emacs Library
    :target: https://github.com/pierre-rouleau/pel/blob/master/NEWS
 
 .. image:: https://img.shields.io/badge/Fast-startup-green
-   :alt: Version
+   :alt: Fast Startup
    :target: https://github.com/pierre-rouleau/pel#quick
 
 .. image:: https://img.shields.io/badge/package_quickstart-Compatible-green
-   :alt: Version
+   :alt: Package Quickstart
    :target: https://github.com/pierre-rouleau/pel#quickst
 
 .. image:: https://img.shields.io/badge/PEL_Managed_Packages-357-teal
-   :alt: Version
+   :alt: Managed Packages
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
 .. image:: https://img.shields.io/badge/PEL_Commands-721-teal
-   :alt: Version
+   :alt: PEL Commands
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
 .. image:: https://img.shields.io/badge/PDF_Files-213-blue
-   :alt: Version
+   :alt: PDF Files
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
 .. image:: https://img.shields.io/badge/PEL_Manual-Αlpha_state-blue
-   :alt: Version
+   :alt: Manual Status
    :target: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 
+.. image:: https://github.com/pierre-rouleau/pel/workflows/Build/badge.svg
+   :alt: Build State
+   :target: https://github.com/pierre-rouleau/pel/actions
 
 - Tired of writing Emacs configuration code? `🤯`_
 - Afraid of or ever declared `.emacs bankruptcy`_? 😰
