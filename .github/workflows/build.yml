@@ -3,7 +3,7 @@
 # Purpose   : Automated PEL build.
 # Created   : Sunday, January 11 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-01-11 12:16:01 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-01-11 12:18:55 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -19,6 +19,9 @@
 # - Github Action for Emacs: https://github.com/marketplace/actions/set-up-emacs
 #   - This uses Nix.  Since Nix does not support Windows, this prevents running
 #     the tests under Windows, unfortunately.
+#
+# Note that costly tests are currently disabled since I'm trying to only use
+# what is free from Github.
 
 # ----------------------------------------------------------------------------
 # Code
