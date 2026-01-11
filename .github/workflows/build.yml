@@ -16,9 +16,10 @@ jobs:
   build:
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
         emacs_version:
           - '26.1'
           - '26.2'
