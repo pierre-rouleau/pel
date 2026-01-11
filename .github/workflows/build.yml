@@ -30,6 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
         with:
+          python-version: '3.9'
           architecture: 'x64'
       - uses: purcell/setup-emacs@master
         with:
