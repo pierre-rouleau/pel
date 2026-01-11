@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-01-11 09:58:52 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-01-11 10:02:08 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -895,7 +895,6 @@ pel-ran-tests.tag:
 	$(EMACS) --batch -L . -l ert -l test/pel-list-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
 	touch pel-ran-tests.tag
-	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info-all
 
 
 stats:
