@@ -1,3 +1,31 @@
+# YAML FILE: build.yml
+#
+# Purpose   : Automated PEL build.
+# Created   : Sunday, January 11 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-01-11 11:08:05 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Controls Github action controlled build of PEL code.
+# The PEL build byte-compiles all code and runs the ERT-driven tests.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - Github actions
+# - Github Action for Emacs: https://github.com/marketplace/actions/set-up-emacs
+#   - This uses Nix.  Since Nix does not support Windows, this prevents running
+#     the tests under Windows, unfortunately.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
 name: Build
 on:
   push:
@@ -36,6 +64,8 @@ jobs:
           - os: ubuntu-latest
             emacs_version: '30.1'
           - os: macos-latest
+            emacs_version: '28.1'
+          - os: macos-latest
             emacs_version: '29.4'
           - os: macos-latest
             emacs_version: '30.1'
@@ -53,3 +83,5 @@ jobs:
         env:
           EMACS_INIT: ${{ github.workspace }}/ci/init.el
         run: make clean all
+
+# ----------------------------------------------------------------------------
