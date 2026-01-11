@@ -4,10 +4,12 @@ on:
     paths-ignore:
       - '**.pdf'
       - '**.rst'
+      - '.gitignore'
   pull_request:
     paths-ignore:
       - '**.pdf'
       - '**.rst'
+      - '.gitignore'
 
 
 jobs:
