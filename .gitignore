@@ -104,7 +104,7 @@ HTML/*
 .etags-el-files.txt
 
 # Undo-tree save-files
-*.~undo-tree
+*.~undo-tree~
 
 # Build output
 out/*
