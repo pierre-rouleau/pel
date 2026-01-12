@@ -14218,6 +14218,26 @@ contributions that have not been integrated in the authors repo yet."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-ert-expectations nil
+  "Whether PEL supports ert-expectations library."
+  :group 'pel-pkg-for-testing
+  :link '(url-link :tag "ert-expectations @ Github"
+                   "https://github.com/emacsorphanage/ert-expectations")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-ert-expectations :also-required-when 'pel-use-coverage)
+
+(defcustom pel-use-coverage nil
+  "Whether PEL supports coverage library."
+  :group 'pel-pkg-for-testing
+  :link '(url-link :tag "coverage @ Github"
+                   "https://github.com/trezona-lecomte/coverage")
+  :type 'boolean
+  :safe #'booleanp)
+;; (pel-put 'pel-use-coverage :package-is :in-utils)
+(when pel-use-coverage
+  (setq pel-use-ert-expectations t))
+
 (defcustom pel-use-coverlay nil
   "Whether PEL supports coverlay library."
   :group 'pel-pkg-for-testing
@@ -14234,6 +14254,22 @@ contributions that have not been integrated in the authors repo yet."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-test-cover-mark :package-is :in-utils)
+
+(defcustom pel-use-buttercup nil
+  "Whether PEL supports buttercup library."
+  :group 'pel-pkg-for-testing
+  :link '(url-link :tag "buttercup @ Github"
+                   "https://github.com/jorgenschaefer/emacs-buttercup/")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-ert-runner nil
+  "Whether PEL supports ert-runner library."
+  :group 'pel-pkg-for-testing
+  :link '(url-link :tag "ert-runner @ Github"
+                   "https://github.com/rejeep/ert-runner.el")
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; Text Mode support

@@ -4160,12 +4160,20 @@ d-mode not added to ac-modes!"
   (pel-ensure-package el-spy from: melpa))
 (when pel-use-mocker
   (pel-ensure-package mocker from: melpa))
+(when pel-use-coverage
+  (pel-ensure-package coverage from: melpa))
+(when pel-use-ert-expectations
+  (pel-install-github-file "emacsorphanage/ert-expectations/master" "ert-expectations.el"))
 (when pel-use-coverlay
   (pel-ensure-package coverlay from: melpa))
 (when pel-use-test-cover-mark
   (pel-install-file
    "https://codeberg.org/akib/emacs-testcover-mark-line/raw/branch/master/testcover-mark-line.el"
    "testcover-mark-line.el"))
+(when pel-use-buttercup
+  (pel-ensure-package buttercup from: melpa))
+(when pel-use-ert-runner
+  (pel-ensure-package ert-runner from: melpa))
 
 ;; activate the <f12> key binding for elisp-mode and other features.
 (pel-check-minor-modes-in pel-emacs-lisp-activates-minor-modes)

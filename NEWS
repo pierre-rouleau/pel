@@ -3,7 +3,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
 - Add support for several package/libraries that help writing ERT test code and check for test coverage:
-  noflet, el-mock, el-spy, mocker, coverlay and test-cover-mark. Also add the ~<f12> C-t~ prefix to Emacs-Lisp mode
+  noflet, el-mock, el-spy, mocker, coverlay, test-cover-mark, coverage, ert-expectation, ert-runner and buttercup.
+  Also add the ~<f12> C-t~ prefix to Emacs-Lisp mode
   to access the PEL ~<f1>~, ~<f2>~ and ~<f3>~ keys to get access to the ERT PDF, and customization of test package/libraries including Emacs builtin testcover.
 - Modified the key binding to *pel-run-ert* to ~<f12> C-t C-t~ to allow use the prefix.
 - For C, C++, D, Objective-C, ~C-c C-k~ and ~<f12> F4> M-;~ are now bound to *pel-c-toggle-comment-style* instead of *c-toggle-comment-style*.
