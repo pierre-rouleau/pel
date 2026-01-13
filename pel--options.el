@@ -14271,6 +14271,98 @@ contributions that have not been integrated in the authors repo yet."
   :type 'boolean
   :safe #'booleanp)
 
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-pkg-for-cram nil
+  "PEL support for software testing with cram."
+  :group 'pel-pkg-for-testing
+  :link `(url-link :tag "ERT - Emacs Lisp Regression Testing PDF"
+                   ,(pel-pdf-file-url "ert")))
+
+(defcustom pel-use-cram-mode nil
+  "Whether PEL supports Cram test files."
+  :group 'pel-pkg-for-cram
+  :link '(url-link :tag "cram-mode gist @ Github"
+                   "https://gist.github.com/mikeshulman/ab124d5db7aaa9330ff6457649b05f3a")
+  :link '(url-link :tag "An Emacs mode for Cram tests"
+                   "https://discuss.ocaml.org/t/an-emacs-mode-for-cram-tests/11221")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put pel-use-cram-mode :package-is :in-utils)
+
+(defcustom pel-cram-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Cram buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-cram
+  :type '(repeat function))
+
+(defcustom pel-indent-with-tabs-mode-for-cram nil
+  "Indentation width rendering of hard tabs `pel-indent-with-tabs-mode'.
+- If nil, the Cram file is edited with the indentation scheme selected
+  by `pel-cram-indent-width' and `pel-cram-tab-width'.
+- If a number is selected it, the `pel-indent-with-tabs-mode' is automatically
+  enabled for Cram files with the visual indentation width specified by this
+  value.
+  - Selecting this also automatically adds `pel-indent-with-tabs-mode'
+    to `pel-cram-activates-minor-modes' to automatically active the minor mode.
+
+For example, set this to 4 if you want to edit Cram files with a visual
+indentation rendering of 4 columns, even if the file uses a 2-space
+indentation scheme.  The buffer will render indentation with hard-tabs
+using a tab width of 4.  The modified buffer will be saved back to the
+file with the original 2-space indentation scheme.
+
+IMPORTANT: after changing this value you must restart Emacs for the
+           modifications to take effect."
+  :group 'pel-pkg-for-cram
+  :type '(choice
+          (const
+           :tag "Normal editing; do not use `pel-indent-with-tabs-mode'"
+           nil)
+          (integer
+           :tag "Use `pel-indent-with-tabs-mode' with selected indent width")))
+
+
+
+(defcustom pel-cram-indent-width 2
+  "Number of columns for Cram source code indentation.
+
+PEL stores this value in the indentation control variable used by the
+Cram major mode:
+- For `cram-mode'   : inside `tab-width'
+- For `cram-ts-mode': inside `cram-ts-mode-indent-offset'
+
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkf-for-cram
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-cram-tab-width 2
+  "Column width display rendering of hard tab for buffers in `cram-mode'.
+
+PEL stores this in `tab-width' when opening `cram-ts-mode' buffers only, not
+`cram-mode' buffers, since `cram-mode' uses `tab-width' for indentation and
+PEL sets `tab-width' to `pel-cram-indent-width'.
+
+This does *NOT* control the indentation in Cram files.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters.
+
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-cram
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-cram-use-tabs nil
+  "Value of `indent-tabs-mode' for editing cram files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-cram
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; Text Mode support
 ;; -----------------

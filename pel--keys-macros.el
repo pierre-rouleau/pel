@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-01-10 12:01:15 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-01-13 16:17:16 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -329,6 +329,7 @@
     ([f11 32 ?C ?#]  "pl-c++"           pel-pkg-for-c++         hide-ifdef)
     ([f11 32 ?D]     "pl-d"             pel-pkg-for-d           (d-mode
                                                                  electricity))
+
     ([f11 32 ?d]     "pl-dart"          pel-pkg-for-dart        (dart dart-ts))
     ([f11 32 ?L]     "pl-common-lisp"   pel-pkg-for-clisp       (lisp
                                                                  lispy
@@ -400,7 +401,10 @@
                                                                  parinfer-rust-mode
                                                                  rainbow-delimiters
                                                                  suggest))
-    ([f11 32 ?l 20] "ert" pel-pkg-for-testing (coverlay testcover testcover-mark-line))
+    ([f11 32 ?l 20] "ert" pel-pkg-for-testing (coverlay testcover
+                                                        testcover-mark-line))
+    (,(kbd "<f11> SPC C-t") "ert"   pel-pkg-for-cram)
+
     ([f11 32 ?l f12] "pl-emacs-lisp"    pel-elisp-code-style)
 
     ([f11 32 ?*]  "all-pl"    pel-pkg-for-all-languages      (eldoc
@@ -803,6 +807,7 @@ stored inside the doc/pdf directory.")
     ("cperl"               [f11 32 ?P])
     ;; ("creole"              [f11 32 27 ?O])
     ("cwl"                 [f11 32 27 ?c])
+    ("cram"                [f11 32 20])
     ("d"                   [f11 32 ?D])
     ("dart"                [f11 32 ?d])
     ("dart-ts"             [f11 32 ?d])

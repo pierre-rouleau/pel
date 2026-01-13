@@ -2291,6 +2291,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;  C-s C-m - MIT/GNU Scheme  - Lisp & Scheme Family
 ;;  C-s C-r - Racket          - Lisp & Scheme Family
 ;;  C-s C-h - Scsh            - Lisp & Scheme Family
+;;  C-t     - Cram testing file  (next test should go under C-t and suffix)
 ;;  C-u     - Raku
 ;;  M-a     - AsciiDoc
 ;;  M-c     - Common Workspace Language (CWL)
@@ -6562,7 +6563,6 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;;   (define-pel-global-prefix pel:for-creole (kbd "<f11> SPC M-O"))
 ;;   (pel-set-auto-mode creole-mode for: "\\.creole\\'")
 ;;   (pel-eval-after-load creole-mode
-;;     (message "ROULEAUP: LOADED creole-mode")
 ;;     (pel-config-major-mode creole pel:for-creole :no-ts)))
 
 ;; ---------------------------------------------------------------------------
@@ -7011,6 +7011,24 @@ to identify a Verilog file.  Anything else is assumed being V."
       (require 'flycheck-plantuml)
       (declare-function flycheck-plantuml-setup "flycheck-plantuml")
       (flycheck-plantuml-setup))))
+
+;; ---------------------------------------------------------------------------
+;;** Testing Control Files - Cram Test Files
+;;   ---------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-t`` :
+(when pel-use-cram-mode
+  (define-pel-global-prefix pel:for-cram (kbd "<f11> SPC C-t"))
+  (pel-install-file
+   "https://gist.githubusercontent.com/mikeshulman/ab124d5db7aaa9330ff6457649b05f3a/raw/73026b4b9c8b74326186095dbb3ef7bdf9d4925b/cram-mode.el"
+   "cram-mode.el")
+  (pel-autoload-file cram-mode for: cram-mode)
+  (add-to-list 'auto-mode-alist '("\\.t\\'" . cram-mode))
+  (pel-eval-after-load cram-mode
+    (pel-config-major-mode cram pel:for-cram :no-ts
+      ;; Although Text start starts at the beginning of the line is a comment,
+      ;; and it's no necessary to have a specific character, I prefer to make
+      ;; it explicit when a line is a comment and I'll use #
+      (setq-local comment-start "# "))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Specification/Interface definition languages support

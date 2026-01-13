@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for cram test files via cram-mode when *pel-use-cram-mode* is on.
 - Add support for several package/libraries that help writing ERT test code and check for test coverage:
   noflet, el-mock, el-spy, mocker, coverlay, test-cover-mark, coverage, ert-expectation, ert-runner and buttercup.
   Also add the ~<f12> C-t~ prefix to Emacs-Lisp mode
