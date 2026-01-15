@@ -4074,6 +4074,7 @@ d-mode not added to ac-modes!"
 (define-key pel:for-elisp  (kbd "M-l")  'pel-toggle-lisp-modes)
 ;;
 (define-key pel:for-elisp   "."  'pel-find-thing-at-point)
+(define-key pel:ert   (kbd "C-r")  'ert)
 (define-key pel:ert   (kbd "C-t")  'pel-run-ert)
 (when pel-use-plantuml
   (define-key pel:for-elisp   "u"  'pel-render-commented-plantuml))
