@@ -4067,6 +4067,7 @@ d-mode not added to ac-modes!"
 (define-pel-global-prefix pel:elisp-eldoc     (kbd "<f11> SPC l <f4> d"))
 (define-pel-global-prefix pel:elisp-skel      (kbd "<f11> SPC l <f12>"))
 (define-pel-global-prefix pel:ert             (kbd "<f11> SPC l C-t"))
+(define-pel-global-prefix pel:testcover       (kbd "<f11> SPC l C-t C-c"))
 
 (define-key pel:for-elisp "z"  'ielm)
 (define-key pel:for-elisp "D"  'pel-add-dir-to-loadpath)
@@ -4076,6 +4077,16 @@ d-mode not added to ac-modes!"
 (define-key pel:for-elisp   "."  'pel-find-thing-at-point)
 (define-key pel:ert   (kbd "C-r")  'ert)
 (define-key pel:ert   (kbd "C-t")  'pel-run-ert)
+(define-key pel:testcover  (kbd "C-s")  'testcover-start)
+(define-key pel:testcover  (kbd "C-e")  'testcover-end)
+(define-key pel:testcover  (kbd "C-a")  'testcover-mark-all)
+(define-key pel:testcover  "."          'testcover-this-defun)
+(define-key pel:testcover  (kbd "C-u")  'testcover-unmark-all)
+(define-key pel:testcover  (kbd "C-n")  'testcover-next-mark)
+(when pel-use-test-cover-mark
+  (define-key pel:testcover  (kbd "C-l")  'testcover-mark-line-mode)
+  (define-key pel:testcover  (kbd "C-m")  'testcover-mark-line-mark-all))
+
 (when pel-use-plantuml
   (define-key pel:for-elisp   "u"  'pel-render-commented-plantuml))
 (when (eq pel-use-parinfer t)
@@ -4171,7 +4182,10 @@ d-mode not added to ac-modes!"
 (when pel-use-test-cover-mark
   (pel-install-file
    "https://codeberg.org/akib/emacs-testcover-mark-line/raw/branch/master/testcover-mark-line.el"
-   "testcover-mark-line.el"))
+   "testcover-mark-line.el")
+  (pel-autoload-file testcover-mark-line from:
+                     testcover-mark-line-mode
+                     testcover-mark-line-mark-all))
 (when pel-use-buttercup
   (pel-ensure-package buttercup from: melpa))
 (when pel-use-ert-runner
