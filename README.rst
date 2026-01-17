@@ -18,7 +18,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Package Quickstart
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/PEL_Managed_Packages-362-teal
+.. image:: https://img.shields.io/badge/PEL_Managed_Packages-363-teal
    :alt: Managed Packages
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
@@ -26,7 +26,7 @@ PEL -- Pragmatic Emacs Library
    :alt: PEL Commands
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
-.. image:: https://img.shields.io/badge/PDF_Files-213-blue
+.. image:: https://img.shields.io/badge/PDF_Files-215-blue
    :alt: PDF Files
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
@@ -56,7 +56,7 @@ Essentially PEL:
 - extends Emacs,
 - adds a large number (721) of convenient commands and provides glue logic to
   increase feature cohesion and simplify their use,
-- provides the ability to easily install, update a large set (362) of external
+- provides the ability to easily install, update a large set (363) of external
   packages from multiple sources:
 
   - elpa compliant sites: GNU elpa, MELPA,
@@ -111,7 +111,7 @@ Essentially PEL:
   available in graphical mode,
 - attempt to provide globally unified keyboard experience for a large set of
   commands across multiple major modes,
-- document Emacs features in over 213 topic oriented PDF tables which
+- document Emacs features in over 215 topic oriented PDF tables which
   provide and overview of the topic, list standard Emacs commands, PEL extra
   commands, their key bindings, links to the Emacs manual, to the external
   packages, to description articles and more.
@@ -186,10 +186,10 @@ Again any feedback is welcome. Thanks!
     Note this one: it has 412 loaded features, yet the Emacs startup time is 0.5 seconds
     even if PEL fast startup mode is not used!  Emacs is using native compilation mode here,
     and Emacs also runs faster on Linux than under macOS.
-  - `On a 2133 macStudio running Emacs 30.1 in terminal`_ (in normal mode,
+  - `On a 2153 macStudio running Emacs 30.1 in terminal`_ (in normal mode,
     without native compilation), starts in 0.58 seconds while providing 612
     features (with 634 loaded files).
-  - `On a 2133 macStudio running Emacs 30.1 in Graphics mode`_ (in normal-mode,
+  - `On a 2153 macStudio running Emacs 30.1 in Graphics mode`_ (in normal-mode,
     without native compilation).
 
 
@@ -321,7 +321,7 @@ packages, etc...
 -----------------------------------------------------------------
 
 - In normal mode, PEL controls the download, installation, configuration and
-  activation of **362** *top-level* [#externp]_ external packages through the
+  activation of **363** *top-level* [#externp]_ external packages through the
   use of easy-to-setup customization user-options that have a name that start
   with the "``pel-use-``" prefix.
 
@@ -351,7 +351,7 @@ packages, etc...
 ➣ Extends Emacs Documentation
 -----------------------------
 
-- PEL provides **213** `PDF topic-oriented reference sheets`_ [#doc]_ packed
+- PEL provides **215** `PDF topic-oriented reference sheets`_ [#doc]_ packed
   with symbol annotated, colour coded key bindings and command descriptions,
   with hyperlinks to Emacs manuals, external packages, articles and other
   useful references.
@@ -477,7 +477,7 @@ Notes
 
 
 .. [#externp] An external package may have dependencies.  The dependencies are also
-              installed. PEL currently provides access to 362 top-level external packages.
+              installed. PEL currently provides access to 363 top-level external packages.
               The actual number of packages is larger when counting their
               dependencies (currently 48 extra packages installed as dependencies).
               From within PEL execute the **pel-package-info**
@@ -646,8 +646,8 @@ Notes
 .. _On a 2014 iMac running Emacs 26.3 terminal: doc/res/startup/startup-imac-2014-terminal.png
 .. _On a 2014 iMac running Emacs 26.3 terminal in fast-startup mode: doc/res/startup/startup-imac-2014-terminal-fast-startup.png
 .. _On Emacs 30.1 in terminal mode under Rocky Linux 8.10 VM running in a 2014 iMac: doc/res/startup/startup-imac-rockylinux-terminal.png
-.. _On a 2133 macStudio running Emacs 30.1 in terminal: doc/res/startup/startup-macstudio-terminal-01.png
-.. _On a 2133 macStudio running Emacs 30.1 in Graphics mode: doc/res/startup/startup-macstudio-gui-01.png
+.. _On a 2153 macStudio running Emacs 30.1 in terminal: doc/res/startup/startup-macstudio-terminal-01.png
+.. _On a 2153 macStudio running Emacs 30.1 in Graphics mode: doc/res/startup/startup-macstudio-gui-01.png
 .. _Several Documentation Pages on various Emacs Topics: https://github.com/pierre-rouleau/pel/tree/master/doc
 .. _How to build Emacs from source: https://github.com/pierre-rouleau/pel/blob/master/doc/build-emacs-from-source.rst.txt
 .. _How to recompile all Emacs Lisp files after upgrading Emacs: https://github.com/pierre-rouleau/pel/blob/master/doc/upgrading-emacs.rst.txt
