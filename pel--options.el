@@ -119,6 +119,7 @@
 ;;         - pel-use-vhdl
 ;;       - pel-pkg-for-software-programming-languages
 ;;         - pel-pkg-for-ada
+;;         - pel-pkg-for-algol
 ;;         - pel-pkg-for-applescript
 ;;         - pel-pkg-for-cc
 ;;           - pel-pkg-for-awk
@@ -5968,6 +5969,55 @@ Values in the [2, 8] range are accepted."
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
   :group 'pel-pkg-for-ada
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Algol-68 Support
+;; ----------------
+(defgroup pel-pkg-for-algol nil
+  "PEL customization for Algol."
+  :group 'pel-pkg-for-software-programming-languages
+  :link `(url-link :tag "Algol PDF"
+                   ,(pel-pdf-file-url "pl-algol")))
+
+(defcustom pel-use-algol nil
+  "Control whether PEL supports the Algol Programming language."
+  :group 'pel-pkg-for-algol
+  :link '(url-link :tag "algo68-mode @ sourcehut"
+                   "https://git.sr.ht/~jemarch/a68-mode")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put pel-use-algol :package-is :in-utils)
+
+(defcustom pel-a68-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Algol buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-algol
+  :type '(repeat function))
+
+(defcustom pel-a68-tab-width 4
+  "Column width display rendering of hard tab for buffers in `algol-mode'.
+
+PEL stores this in `tab-width' when opening Algol buffers.
+
+This does *NOT* control the indentation in Algol files.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters.
+
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-algol
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-a68-use-tabs nil
+  "Value of `indent-tabs-mode' for editing algol files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-algol
   :type 'boolean
   :safe #'booleanp)
 

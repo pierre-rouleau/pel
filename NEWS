@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add preliminary support for Algol68 programming language via the *a68-mode* when *pel-use-algol* is turned on.
 - Add key bindings for Emacs Lisp code test code coverage under the ~<f12> C-t C-c~ key prefix.
 - Add support for cram test files via cram-mode when *pel-use-cram-mode* is on.
 - Add support for several package/libraries that help writing ERT test code and check for test coverage:

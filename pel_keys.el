@@ -2226,6 +2226,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;  5       - Ninja build back-end
 ;;  6       - Xmake
 ;;  7       - Seed7           - Extensible language.  Syntax evolved from Pascal/Modula/Ada
+;;  8       - Algol
 ;;  A       - Ada
 ;;  C       - C++
 ;;  D       - D
@@ -2950,6 +2951,33 @@ MODE must be a symbol."
   ;;
   (pel-eval-after-load (ada-mode ada-ts-mode)
     (pel-config-major-mode ada pel:for-ada :same-for-ts)))
+
+;; ---------------------------------------------------------------------------
+;;** Algol programming language
+;;   --------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC 8`` : Algol
+(when pel-use-algol
+  ;; 1- Install required packages for Algol
+  (pel-install-file
+   "https://git.sr.ht/~jemarch/a68-mode/blob/master/a68-mode.el"
+   "a68-mode.el")
+  (pel-autoload-file a68-mode for: a68-mode)
+
+  ;; 2- Associate files with Algol mode selector
+  (add-to-list 'auto-mode-alist '("\\.a68\\'" . a68-mode))
+
+  ;; 3- Speedbar support for Algol
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".a68"))
+
+  ;; 4- Define Buffer keymap for Algol
+  (define-pel-global-prefix pel:for-algol (kbd "<f11> SPC 8"))
+  ;; 5- Install optional packages for Algol
+
+  ;; 6- Activate Algol setup.
+  ;;    Schedule more configuration upon Algol feature loading
+  (pel-eval-after-load a68-mode
+    (pel-config-major-mode a68 pel:for-algol :no-ts)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** Awk Programming Language Support
