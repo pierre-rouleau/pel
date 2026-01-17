@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-28 14:36:56 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-01-17 17:58:28 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -303,7 +303,7 @@ Group 1 is the path that holds the package name.")
 Group 2 is package name.")
 
 (defconst pel--regexp-pel-install-file
-  "(pel-install-file[\n \\t]+\\\"[-[:alnum:]:/._]+\\\"[\n \\t]+\\\"\\(.+\\)\\(?:\\.el\\)?\\\""
+  "(pel-install-file[\n \\t]+\\\"[-[:alnum:]~:/._]+\\\"[\n \\t]+\\\"\\(.+\\)\\(?:\\.el\\)?\\\""
   "Regexp to extract package name from a `pel-install-file' form.
 Name of package is in group 1.")
 
