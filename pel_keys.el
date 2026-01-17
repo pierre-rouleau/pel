@@ -3652,7 +3652,27 @@ d-mode not added to ac-modes!"
 ;;** FORTRAN Programming Language Support
 ;;   ------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC F`` :
-;; reserved but not implemented.
+(when pel-use-fortran
+  ;; 1- Fortran support is built-in. No installation required for classic mode.
+
+  ;; 2- Associate files with Fortran mode selector
+  ;; Emacs built-in support Fortran and Fortran 90 modes.
+
+  ;; 3- Speedbar support for Fortran
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '(".f" ".F" ".for"
+                                  ".f90" ".f95" ".f03" ".f08")))
+
+  ;; 4- Define Buffer keymap for Fortran
+  (define-pel-global-prefix pel:for-fortran (kbd "<f11> SPC F"))
+  ;; 5- Install optional packages for Fortran
+
+  ;; 6- Activate Fortran setup.
+  ;;    Schedule more configuration upon Fortran feature loading
+  (pel-eval-after-load fortran
+    (pel-config-major-mode fortran pel:for-fortran :no-ts))
+  (pel-eval-after-load f90
+    (pel-config-major-mode f90 pel:for-fortran :no-ts)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Go Programming Language Support

@@ -166,6 +166,7 @@
 ;;           - pel-pkg-for-lfe
 ;;           - pel-pkg-for-gleam
 ;;         - pel-pkg-for-forth
+;;         - pel-pkg-for-fortran
 ;;         - pel-pkg-for-julia
 ;;         - pel-pkg-for-lua
 ;;         - pel-pkg-for-m4
@@ -11340,6 +11341,84 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
   :group 'pel-pkg-for-forth
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Fortran support
+;; ---------------
+(defgroup pel-pkg-for-fortran nil
+  "PEL customization for Fortran."
+  :group 'pel-pkg-for-software-programming-languages
+  :link `(url-link :tag "Fortran PDF"
+                   ,(pel-pdf-file-url "pl-fortran")))
+
+(defcustom pel-use-fortran nil
+  "Control whether PEL supports the Fortran Programming language."
+  :group 'pel-pkg-for-fortran
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put pel-use-fortran :package-is :a-gate)
+
+(defcustom pel-fortran-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Fortran buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-fortran
+  :type '(repeat function))
+
+(defcustom pel-fortran-tab-width 4
+  "Column width display rendering of hard tab for buffers in `fortran-mode'.
+
+PEL stores this in `tab-width' when opening Fortran buffers.
+
+This does *NOT* control the indentation in Fortran files.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters.
+
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-fortran
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-fortran-use-tabs nil
+  "Value of `indent-tabs-mode' for editing fortran files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-fortran
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-f90-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for F90 buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-fortran
+  :type '(repeat function))
+
+(defcustom pel-f90-tab-width 4
+  "Column width display rendering of hard tab for buffers in `f90-mode'.
+
+PEL stores this in `tab-width' when opening F90 buffers.
+
+This does *NOT* control the indentation in F90 files.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters.
+
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-fortran
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-f90-use-tabs nil
+  "Value of `indent-tabs-mode' for editing f90 files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-fortran
   :type 'boolean
   :safe #'booleanp)
 

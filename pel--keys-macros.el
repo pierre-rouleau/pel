@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-01-17 12:30:10 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-01-17 17:35:37 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -324,6 +324,7 @@
                                                                  projectile-speedbar))
     ([f11 32 ?A]     "pl-ada"           pel-pkg-for-ada         (ada ada-ts))
     ([f11 32 ?8]     "pl-algol"         pel-pkg-for-algol       a68)
+    ([f11 32 ?F]     "pl-fortran"       pel-pkg-for-fortran     fortran)
     ([f11 32 ?W]     "pl-awk"           pel-pkg-for-awk         ,pel--awk-groups)
     ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         ,pel--c++-groups)
     ([f11 32 ?C f12] "pl-c++"           pel-c++-skeleton-control)
@@ -829,6 +830,8 @@ stored inside the doc/pdf directory.")
     ("erlang-ts"           [f11 32 ?e])
     ("factor"              [f11 32 27 ?f])
     ("forth"               [f11 32 ?f])
+    ("fortran"             [f11 32 ?F])
+    ("f90"                 [f11 32 ?F])
     ("gleam"               [f11 32 27 ?G])
     ("gleam-ts"            [f11 32 27 ?G])
     ("go"                  [f11 32 ?g])
@@ -1143,6 +1146,7 @@ There should be no key binding!" keyseq))
     ("erlang"           . "pl-erlang")
     ("factor"           . "pl-factor")
     ("forth"            . "pl-forth")
+    ("fortran"          . "pl-fortran")
     ("gleam"            . "pl-gleam")
     ("go"               . "pl-go")
     ("haskell"          . "pl-haskell")
