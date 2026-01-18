@@ -190,6 +190,7 @@
 ;;         - pel-pkg-for-seed7
 ;;         - pel-pkg-for-smalltalk
 ;;         - pel-pkg-for-swift
+;;         - pel-pkg-for-sql
 ;;         - pel-pkg-for-tcl
 ;;         - pel-pkg-for-typescript
 ;;         - pel-pkg-for-v
@@ -1076,6 +1077,7 @@ directory for whatever reason."
 (pel-put 'pel-use-quelpa :also-required-when '(and pel-use-tree-sitter
                                                    pel-use-combobulate
                                                    pel-use-el-easydraw
+                                                   pel-use-pgmacs
                                                    (eq pel-use-lispy
                                                        'use-enzuru-lispy)))
 
@@ -13107,6 +13109,70 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-swift
   :type 'boolean
   :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; SQL Language Support
+;; --------------------
+(defgroup  pel-pkg-for-sql nil
+  "PEL SQL Language support."
+  :group 'pel-pkg-for-software-programming-languages)
+
+(defgroup pel-pkg-for-sql-emacs-lisp nil
+  "PEL SLQ Emacs Lisp Library and Tool support."
+  :group 'pel-pkg-for-sql
+  :group 'pel-pkg-for-emacs-lisp)
+
+(defcustom pel-use-emacsql nil
+  "Whether PEL supports the emacsql package."
+  :link '(url-link :tag "emacsql @ Github"
+                   "https://github.com/magit/emacsql")
+  :group 'pel-pkg-for-sql-emacs-lisp
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-closql nil
+  "Whether PEL supports the closql package."
+  :link '(url-link :tag "closql @ Github"
+                   "https://github.com/magit/closql")
+  :group 'pel-pkg-for-sql-emacs-lisp
+  :type 'boolean
+  :safe #'booleanp)
+(when pel-use-closql (setq pel-use-emacsql t))
+
+(defcustom pel-use-emacs-db nil
+  "Whether PEL supports the emacs-db package."
+  :link '(url-link :tag "emacs-db @ Github"
+                   "https://github.com/nicferrier/emacs-db")
+  :group 'pel-pkg-for-sql-emacs-lisp
+  :type 'boolean
+  :safe #'booleanp)
+(defcustom pel-use-db-pg nil
+  "Whether PEL supports the db-pg package."
+  :link '(url-link :tag "db-pg @ Github"
+                   "https://github.com/nicferrier/emacs-db-pg")
+  :group 'pel-pkg-for-sql-emacs-lisp
+  :type 'boolean
+  :safe #'booleanp)
+(when pel-use-db-pg (setq pel-use-emacs-db t))
+
+(defcustom pel-use-pg nil
+  "Whether PEL supports the pg package.
+Emacs Lisp network-level interface to the PostgreSQL RDBMS."
+  :link '(url-link :tag "pg @ Github"
+                   "https://github.com/emarsden/pg-el")
+  :group 'pel-pkg-for-sql-emacs-lisp
+  :type 'boolean
+  :safe #'booleanp)
+(defcustom pel-use-pgmacs nil
+  "Whether PEL supports the pgmacs package.
+Emacs editing of PostgreSQL database."
+  :link '(url-link :tag "pg @ Github"
+                   "https://github.com/emarsden/pgmacs")
+  :group 'pel-pkg-for-sql-emacs-lisp
+  :type 'boolean
+  :safe #'booleanp)
+(when pel-use-pgmacs (setq pel-use-pg t))
+(pel-put pel-use-pgmacs :requires 'pel-use-quelpa)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Tcl  Language Support

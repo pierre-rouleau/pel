@@ -6209,6 +6209,32 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (add-hook 'sh-mode-hook 'flycheck-mode))))
 
 ;; ---------------------------------------------------------------------------
+;;** SQL Programming Language Support
+;;   --------------------------------
+;;
+;; Emacs has built-in support for SQL.
+;; The following are extra packages that support SQL.
+
+;;*** Emacs Lisp SQLite Support
+(when pel-use-emacsql
+  (pel-ensure-package emacsql from: melpa)
+  (when pel-use-closql
+    (pel-ensure-package closql from: melpa)))
+
+;;*** Postgres support
+(when pel-use-emacs-db
+  (pel-ensure-package emacs-db from: melpa)
+  (when pel-use-db-pg
+    (pel-ensure-package db-pg from: melpa)))
+
+(when pel-use-pg
+  (pel-ensure-package pg from: melpa)
+  (when pel-use-pgmacs
+    (when (fboundp 'quelpa)
+      (quelpa '(pgmacs :fetcher git
+                       :url "https://github.com/emarsden/pgmacs.git")))))
+
+;; ---------------------------------------------------------------------------
 ;;** V Programming Language Support
 ;;   ------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC v`` :
