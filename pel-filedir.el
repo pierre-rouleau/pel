@@ -1,8 +1,8 @@
-;;; pel-filedir.el --- File Dirpath Management.  -*- lexical-binding: t; -*-
+;;; pel-filedir.el --- File, Directory and Dirpath Management  -*- lexical-binding: t; -*-
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-09 18:30:43, updated by Pierre Rouleau>
+;; Time-stamp: <2026-01-19 15:53:24 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -35,6 +35,7 @@
 ;; - `pel-file-in-dir-upwards'
 ;;    - `pel-dir-is-root'
 ;;    - `pel-parent-directory'
+;; - `pel-symlink-is-relative-p'
 ;; - `pel-duplicate-dir'
 ;; - `pel-subdir-count'
 ;;   - `pel--dirspec-for-dir-p'
@@ -112,18 +113,51 @@ If FILE is not found in DIRPATH, the parent of DIRPATH is searched."
       filepath)))
 
 ;; --
+(defun pel-symlink-is-relative-p (link-path)
+  "Return t if a LINK-PATH symlink is a relative symlink, nil if absolute.
+Assumes that LINK-PATH exists!"
+  (pel-string-starts-with-p (file-symlink-p link-path) "."))
 
-(defun pel-duplicate-dir (source destination &optional with-symlinks)
+
+;; --
+(defun pel-duplicate-dir (source destination)
   "Copy all files of SOURCE directory into DESTINATION directory.
-If WITH-SYMLINKS is non-nil create symlinks in DESTINATION to the files
-in SOURCE."
+Reproduce the symbolic links in the copy: if the original symlinks are
+relative, the symlinks in the copied directory are also relative (to the
+copy)."
   (let (source-fn destination-fn)
     (dolist (file-name (directory-files source))
       (setq source-fn (expand-file-name file-name source))
       (setq destination-fn (expand-file-name file-name destination))
-      (if with-symlinks
-          (make-symbolic-link source-fn destination-fn)
-        (copy-file source-fn destination-fn)))))
+      (cond
+       ;;
+       ;; Directory: create peer if possible and needed.
+       ((string= file-name ".")
+        (cond
+         ((and (file-exists-p destination-fn)
+               (file-symlink-p destination-fn ))
+          (error "A destination target but is a symlink: %s" destination-fn))
+         ((and (file-exists-p destination-fn)
+               (not (file-directory-p destination-fn)))
+          (error "A destination target but is a file: %s" destination-fn))
+         ((not (file-exists-p destination-fn))
+          (make-directory destination-fn))))
+       ;;
+       ;; parent: skip
+       ((string= file-name "..")
+        nil)
+       ;;
+       ;; A directory: recurse copy it
+       ((file-directory-p source-fn)
+        (pel-duplicate-dir source-fn destination-fn))
+       ;;
+       ;; A symlink: copy it keeping it relative or absolute as the original
+       ((file-symlink-p source-fn)
+        (let ((immediate-target (file-symlink-p source-fn)))
+          (make-symbolic-link immediate-target destination-fn)))
+       ;;
+       ;; a file: copy it
+       (t  (copy-file source-fn destination-fn))))))
 
 ;; --
 
