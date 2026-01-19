@@ -1,0 +1,90 @@
+==================================================
+Manipulating files and directories with Emacs Lisp
+==================================================
+
+:Home URL:
+:Project:
+:Created:  Monday, January 19 2026.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2026-01-19 10:43:48, by Pierre Rouleau.
+:Copyright: © 2026, Pierre Rouleau
+
+
+.. contents::  **Table of Contents**
+.. sectnum::
+
+.. ---------------------------------------------------------------------------
+
+Manipulating Symbolic Links
+===========================
+
+Checking if a file is a symbolic link
+-------------------------------------
+
+:function: ``(file-symlink-p FILENAME)``
+:function: ``(file-truename FILENAME)``
+
+- Use ``file-symlink-p`` to check if a file is a symbolic link.
+- Use ``file-truename`` to return the absolute path of the symlink target if
+  FILENAME is a symbolic link.  Note that it returns the file path of the
+  final target if symlinks point to other symlinks.
+
+
+Creating Symbolic Links
+-----------------------
+
+:function: ``(make-symbolic-link TARGET LINKNAME &optional OK-IF-ALREADY-EXISTS)``
+
+Create a **relative** symbolic link in the ``~/my/tmp`` directory named ``link.txt`` to a file
+named ``target.txt`` with the following code:
+
+.. code:: elisp
+
+          (make-symbolic-link "./target.txt" (expand-file-name "~/my/tmp/link.txt"))
+
+
+Create an **absolute** symbolic link in the ``~/my/tmp`` directory named ``link.txt`` to a file
+named ``target.txt`` with the following code:
+
+.. code:: elisp
+
+          (make-symbolic-link (expand-file-name "~/tmp/target.txt")
+                              (expand-file-name "~/my/tmp/link.txt"))
+
+The above 2 calls will fail with  error if the ``~/my/tmp/link.txt`` symbolic
+link already exists.
+
+Change the target of an existing symbolic link
+----------------------------------------------
+
+:function: ``(make-symbolic-link TARGET LINKNAME &optional OK-IF-ALREADY-EXISTS)``
+
+To change the target of an existing symbolic link the argument
+OK-IF-ALREADY-EXISTS must be non-nil.
+
+To change the absolute symlink named ``~/my/tmp/link.txt`` from pointing to
+to ``~/tmp/target.txt`` as done above to pointing to ``/tmp/another-file.txt``
+the last argument must be t.
+
+.. code:: elisp
+
+          (make-symbolic-link (expand-file-name "~/tmp/another-file.txt")
+                              (expand-file-name "~/my/tmp/link.txt")
+                              t)
+
+Its also possible to transform an absolute symlink to a relative one (or
+vice-versa) using this technique.
+
+
+.. ---------------------------------------------------------------------------
+.. links:
+
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
