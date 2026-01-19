@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-01-19 15:53:24 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-01-19 16:07:32 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -120,11 +120,22 @@ Assumes that LINK-PATH exists!"
 
 
 ;; --
-(defun pel-duplicate-dir (source destination)
+(defun pel-duplicate-dir (source destination &optional keep-time
+                                 preserve-uid-gid preserve-permissions)
   "Copy all files of SOURCE directory into DESTINATION directory.
 Reproduce the symbolic links in the copy: if the original symlinks are
 relative, the symlinks in the copied directory are also relative (to the
-copy)."
+copy).
+
+- KEEP-TIME non-nil means give the destination files have the same
+  last-modified time as the original ones.  (This works on only some systems.)
+- If PRESERVE-UID-GID is non-nil, try to transfer the uid and gid of
+  files from SOURCE directory tree to DESTINATION directory tree.
+- If PRESERVE-PERMISSIONS is non-nil, copy permissions of files
+  from SOURCE directory tree to DESTINATION directory tree;
+  this includes the file modes, along with ACL entries and SELinux
+  context if present.  Otherwise, the file permission bits of the copied files
+  are those of the original files, masked by the default file permissions."
   (let (source-fn destination-fn)
     (dolist (file-name (directory-files source))
       (setq source-fn (expand-file-name file-name source))
@@ -157,7 +168,9 @@ copy)."
           (make-symbolic-link immediate-target destination-fn)))
        ;;
        ;; a file: copy it
-       (t  (copy-file source-fn destination-fn))))))
+       (t  (copy-file source-fn destination-fn nil keep-time
+                      preserve-uid-gid
+                      preserve-permissions))))))
 
 ;; --
 
