@@ -12,7 +12,7 @@ PEL -- Pragmatic Emacs Library
 
 .. image:: https://img.shields.io/badge/Fast-startup-green
    :alt: Fast Startup
-   :target: https://github.com/pierre-rouleau/pel#quick
+   :target: https://github.com/pierre-rouleau/pel?tab=readme-ov-file#-emacs-fast-startup
 
 .. image:: https://img.shields.io/badge/package_quickstart-Compatible-green
    :alt: Package Quickstart
