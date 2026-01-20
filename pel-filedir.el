@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-01-20 11:28:16 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-01-20 14:32:05 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -39,6 +39,7 @@
 ;; - `pel-symlink-is-absolute-p'
 ;; * `pel-show-broken-symlinks'
 ;;   - `pel-broken-symlinks'
+;;     - `pel-iter-directory-files'
 ;;     - `pel-symlink-broken-p'
 ;; - `pel-duplicate-dir'
 ;; - `pel-subdir-count'
@@ -65,6 +66,8 @@
 ;;
 ;;
 (require 'pel--base)    ; use pel-system-is-windows-p
+(require 'generator)    ; use `iter-defun', `iter-yield-from', `iter-yield',
+;;                      ;     `iter-end-of-sequence'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -140,22 +143,45 @@ If FILE is not found in DIRPATH, the parent of DIRPATH is searched."
                 target
               (expand-file-name target (file-name-directory fpath))))))))
 
+
+(iter-defun pel-iter-directory-files (directory &optional regexp pred sorted)
+  "Generator.  Yield absolute file names in DIRECTORY matching REGEXP and PRED.
+REGEXP is a file name regular expression. If REGEXP is nil, yield all file
+names.
+PRED is a predicate function that accepts the file name and return non-nil if
+the file must be included.
+If SORTED is non-nil the files in each directory are given in sorting order."
+  (let ((fpaths (directory-files directory t nil t))) ; Get absolute names
+    (when sorted
+      (sort fpaths #'string<))    ; Sort in place, support Emacs 26 and later.
+    (dolist (fpath fpaths)
+      (let ((base (file-name-nondirectory fpath)))
+        (unless (member base '("." ".."))
+          (if (file-directory-p fpath)
+              ;; Recursively yield from sub-directories
+              (iter-yield-from (pel-iter-directory-files fpath regexp pred sorted))
+            ;; Yield fpath if it matches regexp and the predicate
+            (when (and (or (null regexp)
+                           (string-match-p regexp base))
+                       (or (null pred)
+                           (funcall pred fpath)))
+              (iter-yield fpath))))))))
+
 (defun pel-broken-symlinks (dirpath)
   "Return a list of broken symlinks inside the DIRPATH directory tree."
-  (let ((broken-links nil))
-    (dolist (fname (directory-files-recursively dirpath "" t)
-                   (reverse broken-links))
-      (when (pel-symlink-broken-p fname)
-        (push fname broken-links)))))
+  (let ((broken-links nil)
+        (it (pel-iter-directory-files dirpath nil #'pel-symlink-broken-p)))
+    (condition-case nil
+        (while t
+          (push (iter-next it) broken-links))
+      (iter-end-of-sequence nil))
+    (sort broken-links #'string<)))
 
 ;;-pel-autoload
 (defun pel-show-broken-symlinks ()
   "Find and list broken symbolic links in directory tree.
 Prompts for a directory and list found broken symlinks in the special
-*Broken Symlinks* buffer.
-**CAUTION⚠️ **
-  This function first builds a list of all files inside the directory
-  tree. For large directory trees it will consume a lot of memory!"
+*Broken Symlinks* buffer."
   (interactive)
   (let* ((dirpath (read-directory-name "Search broken symlinks in: "
                                        nil
