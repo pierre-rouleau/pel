@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, November 24 2023.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-19 14:20:24 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-01-20 13:38:35 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -61,13 +61,12 @@
 ;; -------------------------
 (defun pel--get-all-buffer-directories ()
   "Return list of all directories that have at least one file being visited."
-  (interactive)
   (let (lst)
-    (dolist (e (sort (mapcar 'file-name-directory
+    (dolist (e (sort (mapcar #'file-name-directory
                              (cl-remove-if-not 'identity
                                                (mapcar 'buffer-file-name
                                                        (buffer-list))))
-                     'string<))
+                     #'string<))
       (unless (string= (car lst) e)
         (setq lst (cons e lst))))
     lst))

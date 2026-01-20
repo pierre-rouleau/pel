@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-10 08:19:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-01-20 13:36:13 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -378,7 +378,7 @@ pel-dirtree-find-replace new-text is an Emacs regexp in using string syntax:
             (push (format "%s%s" fn pel-dirtree-replace-file-backup-suffix)
                   mod-fnames))
           (setq fnames (append fnames mod-fnames)))
-        (sort fnames 'string<) ; sort in place: support Emacs 26
+        (sort fnames #'string<) ; sort in place: support Emacs 26
         (dired (cons (format "%s (modified files)" pel-dirtree-rootdir)
                      fnames)))
     (user-error

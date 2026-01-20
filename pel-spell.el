@@ -232,7 +232,7 @@ to allow the flyspell pop-up menu to work in terminal mode."
       (require 'popup nil :no-error)
       (require 'flyspell)
       (let* ((corrects (if flyspell-sort-corrections
-                           (sort (car (cdr (cdr poss))) 'string<)
+                           (sort (car (cdr (cdr poss))) #'string<)
                          (car (cdr (cdr poss)))))
              (cor-menu (if (consp corrects)
                            (mapcar (lambda (correct)

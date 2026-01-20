@@ -1368,7 +1368,7 @@ with a slash.  There are no duplicates and the list is sorted."
                      (not (member directory dir-list)))
             (push (directory-file-name directory ) dir-list)))))
     ;; Return the list of directories sorted.
-    (sort dir-list 'string<)))
+    (sort dir-list #'string<)))
 
 
 (defun pel-erlang-find-file (filename &optional directories)
