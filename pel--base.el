@@ -2063,20 +2063,21 @@ Load the package library if that's not already done."
 
 FEATURE is a symbol.
 
-If optional PACKAGE is specified (non-nil) and FEATURE is not loaded,
-try to install the specified package if it is not already available
-and try checking for the presence of FEATURE again, with the same behaviour.
+PACKAGE is specified (non-nil) and FEATURE is not loaded,
+  try to install the specified package if it is not already available
+  and try checking for the presence of FEATURE again, with the same
+  behaviour. It can be either:
+  - The special symbol `:install-when-missing' to indicate that the
+    package to install has the same name as the FEATURE.
+  - Another symbol that identifies the name of the required package.
 
-The specified package is specified by the PACKAGE argument.  It can be either:
-
-- The special symbol `:install-when-missing' to indicate that the package to
-  install has the same name as the FEATURE.
-- Another symbol that identifies the name of the required package.
-
-If WITH-PEL-INSTALL is non-nil it should be a user-project-branch
-of the format used by `pel-install-github-file' that will be used
-to perform the installation with FNAME and URL-FNAME argument
-passed to that function.
+If WITH-PEL-INSTALL is non-nil it should be a `pel-install-github-file'
+compliant USER-PROJECT-BRANCH argument; a GitHub usr/project/branch name
+path string identifying the project file to install and FNAME should be
+the name of the .el file installed in the PEL utils directory. The
+URL-FNAME is also treated as it is by `pel-install-github-file' and
+required only when the web file name differs from what is needed
+locally.
 
 Generate a warning when failing to load the FEATURE.
 Otherwise return the loading state of the FEATURE."
