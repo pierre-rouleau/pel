@@ -186,10 +186,10 @@ Again any feedback is welcome. Thanks!
     Note this one: it has 412 loaded features, yet the Emacs startup time is 0.5 seconds
     even if PEL fast startup mode is not used!  Emacs is using native compilation mode here,
     and Emacs also runs faster on Linux than under macOS.
-  - `On a 2153 macStudio running Emacs 30.1 in terminal`_ (in normal mode,
+  - `On a 2023 macStudio running Emacs 30.1 in terminal`_ (in normal mode,
     without native compilation), starts in 0.58 seconds while providing 612
     features (with 634 loaded files).
-  - `On a 2153 macStudio running Emacs 30.1 in Graphics mode`_ (in normal-mode,
+  - `On a 2023 macStudio running Emacs 30.1 in Graphics mode`_ (in normal-mode,
     without native compilation).
 
 
@@ -646,8 +646,8 @@ Notes
 .. _On a 2014 iMac running Emacs 26.3 terminal: doc/res/startup/startup-imac-2014-terminal.png
 .. _On a 2014 iMac running Emacs 26.3 terminal in fast-startup mode: doc/res/startup/startup-imac-2014-terminal-fast-startup.png
 .. _On Emacs 30.1 in terminal mode under Rocky Linux 8.10 VM running in a 2014 iMac: doc/res/startup/startup-imac-rockylinux-terminal.png
-.. _On a 2153 macStudio running Emacs 30.1 in terminal: doc/res/startup/startup-macstudio-terminal-01.png
-.. _On a 2153 macStudio running Emacs 30.1 in Graphics mode: doc/res/startup/startup-macstudio-gui-01.png
+.. _On a 2023 macStudio running Emacs 30.1 in terminal: doc/res/startup/startup-macstudio-terminal-01.png
+.. _On a 2023 macStudio running Emacs 30.1 in Graphics mode: doc/res/startup/startup-macstudio-gui-01.png
 .. _Several Documentation Pages on various Emacs Topics: https://github.com/pierre-rouleau/pel/tree/master/doc
 .. _How to build Emacs from source: https://github.com/pierre-rouleau/pel/blob/master/doc/build-emacs-from-source.rst.txt
 .. _How to recompile all Emacs Lisp files after upgrading Emacs: https://github.com/pierre-rouleau/pel/blob/master/doc/upgrading-emacs.rst.txt
