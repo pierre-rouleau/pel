@@ -15,6 +15,23 @@ Manipulating files and directories with Emacs Lisp
 
 .. ---------------------------------------------------------------------------
 
+Copying Files
+=============
+
+:function: ``(copy-file FILE NEWNAME &optional OK-IF-ALREADY-EXISTS KEEP-TIME PRESERVE-UID-GID PRESERVE-PERMISSIONS)``
+
+By default copying a file with ``copy-file`` and passing only required
+arguments copies a file to a new file that does not exists.  The new file has
+a new time stamp, a new UID-GID and permission flags.
+
+- To allow copying a file over an existing file to replace it, the optional
+  OK-IF-ALREADY-EXISTS argument must be non-nil.
+- To preserve the original file's time-stamp, the KEEP-TIME argument must be
+  non-nil (but that only works on some Operating Systems).
+
+More information is available in the well-written function docstring.
+
+
 Manipulating Symbolic Links
 ===========================
 
@@ -74,6 +91,14 @@ the last argument must be t.
 
 Its also possible to transform an absolute symlink to a relative one (or
 vice-versa) using this technique.
+
+As explained by the function docstring, that the OK-IF-ALREADY-EXISTS argument
+can also be an integer to force interactive confirmation if the LINKNAME
+already exists.  It will also expand a leading "~" or strip a leading "/:".
+
+
+Copy a Directory Tree
+=====================
 
 
 .. ---------------------------------------------------------------------------
