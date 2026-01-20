@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-01-19 16:07:32 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-01-20 11:28:16 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,6 +36,10 @@
 ;;    - `pel-dir-is-root'
 ;;    - `pel-parent-directory'
 ;; - `pel-symlink-is-relative-p'
+;; - `pel-symlink-is-absolute-p'
+;; * `pel-show-broken-symlinks'
+;;   - `pel-broken-symlinks'
+;;     - `pel-symlink-broken-p'
 ;; - `pel-duplicate-dir'
 ;; - `pel-subdir-count'
 ;;   - `pel--dirspec-for-dir-p'
@@ -114,9 +118,65 @@ If FILE is not found in DIRPATH, the parent of DIRPATH is searched."
 
 ;; --
 (defun pel-symlink-is-relative-p (link-path)
-  "Return t if a LINK-PATH symlink is a relative symlink, nil if absolute.
-Assumes that LINK-PATH exists!"
-  (pel-string-starts-with-p (file-symlink-p link-path) "."))
+  "Return t if a LINK-PATH symlink is a relative symlink, nil otherwise."
+  (let ((target (file-symlink-p link-path)))
+    (and target
+         (not (file-name-absolute-p target)))))
+
+(defun pel-symlink-is-absolute-p (link-path)
+  "Return t if a LINK-PATH symlink is an absolute symlink, nil otherwise."
+  (let ((target (file-symlink-p link-path)))
+    (and target
+         (file-name-absolute-p target))))
+
+
+;; --
+(defun pel-symlink-broken-p (fpath)
+  "Return t if FPATH is a broken symlink, nil otherwise."
+  (let ((target (file-symlink-p fpath)))
+    (when target
+      (not (file-exists-p
+            (if (file-name-absolute-p target)
+                target
+              (expand-file-name target (file-name-directory fpath))))))))
+
+(defun pel-broken-symlinks (dirpath)
+  "Return a list of broken symlinks inside the DIRPATH directory tree."
+  (let ((broken-links nil))
+    (dolist (fname (directory-files-recursively dirpath "" t)
+                   (reverse broken-links))
+      (when (pel-symlink-broken-p fname)
+        (push fname broken-links)))))
+
+;;-pel-autoload
+(defun pel-show-broken-symlinks ()
+  "Find and list broken symbolic links in directory tree.
+Prompts for a directory and list found broken symlinks in the special
+*Broken Symlinks* buffer.
+**CAUTION⚠️ **
+  This function first builds a list of all files inside the directory
+  tree. For large directory trees it will consume a lot of memory!"
+  (interactive)
+  (let* ((dirpath (read-directory-name "Search broken symlinks in: "
+                                       nil
+                                       nil
+                                       t
+                                       nil))
+         (buffer (get-buffer-create "*Broken Symlinks*"))
+         (broken-links (pel-broken-symlinks dirpath))
+         (title (pel-count-string (length broken-links) "broken symlink")))
+    (when broken-links
+      (with-current-buffer buffer
+        (erase-buffer)
+        (pel-insert-bold
+         (format "At %s, found %s in %s:\n"
+                 (format-time-string "%Y-%m-%d %H:%M:%S" (current-time))
+                 title
+                 (expand-file-name dirpath)))
+        (dolist (fname (reverse broken-links))
+          (insert (format "%s\t-> %s\n" fname (file-symlink-p fname))))
+        (display-buffer buffer)))
+    (message "Found %s." title)))
 
 
 ;; --
@@ -137,40 +197,52 @@ copy).
   context if present.  Otherwise, the file permission bits of the copied files
   are those of the original files, masked by the default file permissions."
   (let (source-fn destination-fn)
+    ;; First create destination directory
+    ;; Directory: create peer if possible and needed.
+    (let ((destination-fn (expand-file-name destination)))
+      (cond
+       ((and (file-exists-p destination-fn)
+             (file-symlink-p destination-fn))
+        (error "A destination target but is a symlink: %s" destination-fn))
+       ((and (file-exists-p destination-fn)
+             (not (file-directory-p destination-fn)))
+        (error "A destination target but is a file: %s" destination-fn))
+       ((not (file-exists-p destination-fn))
+        (make-directory destination-fn))))
+
+    ;; Then copy the directory content
     (dolist (file-name (directory-files source))
       (setq source-fn (expand-file-name file-name source))
       (setq destination-fn (expand-file-name file-name destination))
       (cond
+       ;; Do no copy Emacs temporary files  (files with a name that starts
+       ;; with #
+       ((pel-string-starts-with-p file-name "#")
+        nil)
        ;;
-       ;; Directory: create peer if possible and needed.
-       ((string= file-name ".")
-        (cond
-         ((and (file-exists-p destination-fn)
-               (file-symlink-p destination-fn ))
-          (error "A destination target but is a symlink: %s" destination-fn))
-         ((and (file-exists-p destination-fn)
-               (not (file-directory-p destination-fn)))
-          (error "A destination target but is a file: %s" destination-fn))
-         ((not (file-exists-p destination-fn))
-          (make-directory destination-fn))))
-       ;;
-       ;; parent: skip
-       ((string= file-name "..")
+       ;; skip ". and ".." "
+       ((member file-name '("." ".."))
         nil)
        ;;
        ;; A directory: recurse copy it
        ((file-directory-p source-fn)
-        (pel-duplicate-dir source-fn destination-fn))
+        (pel-duplicate-dir source-fn destination-fn
+                           keep-time
+                           preserve-uid-gid
+                           preserve-permissions))
        ;;
        ;; A symlink: copy it keeping it relative or absolute as the original
        ((file-symlink-p source-fn)
-        (let ((immediate-target (file-symlink-p source-fn)))
-          (make-symbolic-link immediate-target destination-fn)))
+        (when (file-regular-p (file-truename source-fn))
+          (make-symbolic-link
+           (file-symlink-p source-fn) ; immediate target (relative or absolute)
+           destination-fn)))
        ;;
        ;; a file: copy it
-       (t  (copy-file source-fn destination-fn nil keep-time
-                      preserve-uid-gid
-                      preserve-permissions))))))
+       (t (when (file-regular-p source-fn)
+            (copy-file source-fn destination-fn nil keep-time
+                       preserve-uid-gid
+                       preserve-permissions)))))))
 
 ;; --
 
@@ -178,8 +250,8 @@ copy).
   "Return dirname when DIRSPEC is for a Elpa package directory, nil otherwise.
 DIRSPEC is the data structure returned by `directory-files-and-attributes'.
 Exclude the directory entries that start with a period."
-  (when (and (cadr dirspec)                          ; is a directory
-             (not (eq (string-to-char (car dirspec)) ; but does not start with period
+  (when (and (cadr dirspec)                          ; is a directory that
+             (not (eq (string-to-char (car dirspec)) ; doesn't start with '.'
                       ?.)))
     (car dirspec)))
 

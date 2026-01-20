@@ -8674,6 +8674,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:file "W" #'append-to-file)
 (define-key pel:file "\C-o"  'pel-open-buffer-file-in-os-app)
 (define-key pel:file "f" #'find-file)
+(define-key pel:file "s"  'pel-show-broken-symlinks)
 (define-key pel:file "i" #'insert-file)
 (define-key pel:file "o" #'find-file-other-window)
 (define-key pel:file "n" #'find-name-dired)

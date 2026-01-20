@@ -457,6 +457,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-open-file-alternate
     pel-show-rpm-providing-file)
 
+  (pel-autoload "pel-filedir" for:
+    pel-show-broken-symlinks)
+
   (pel-autoload "pel-filex" for:
     pel-open-in-os-app
     pel-open-buffer-file-in-os-app)
