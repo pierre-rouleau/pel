@@ -152,7 +152,10 @@ Beep on each change to warn user of the change and display new value."
 The prompt has a buffer-specific history and supports tab completion."
   (interactive "P")
   (when change-color
-    (let ((color-requested (pel-prompt-with-completion "Color: " (defined-colors))))
+    (let ((color-requested (pel-prompt-with-completion
+                            "Color: "
+                            (defined-colors)
+                            'pel-highlight-line)))
       (if (color-supported-p color-requested)
           (setq pel--highlight-color color-requested)
         (user-error "%s is not a supported color" color-requested))))
