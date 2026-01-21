@@ -8125,6 +8125,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (define-pel-global-prefix pel:abbrev (kbd "<f11> a"))
 
+(defvar dabbrev-friend-buffer-function) ; prevent warning
 (setq dabbrev-friend-buffer-function pel-dabbrev-friend-buffer-function)
 (when pel-use-hippie-expand
   (global-set-key [remap dabbrev-expand] 'hippie-expand)
