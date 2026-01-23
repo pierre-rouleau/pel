@@ -4,13 +4,12 @@
 # Purpose   : Byte compile an Emacs Lisp file in isolation.
 # Created   : Tuesday, December  2 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-01-23 09:03:42 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-01-23 09:26:01 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Byte-Compile a single Emacs Lisp file.  Generate the .elc file.
-
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -22,8 +21,6 @@
 # Code
 # ----
 #
-#
-
 pgm_name="$(basename "$0")"
 
 print_usage()
@@ -42,6 +39,11 @@ print_usage()
     on the first warning detected in byte compilation.
     Also perform native compilation if Emacs supports it and stop on
     any native compilation warning.
+
+ Limitation: the Emacs Lisp file compiled and all Emacs Lisp dependencies
+             of the compiled file MUST be located in the current directory,
+             because Emacs load path normally used is ignored and replaced
+             by a single directory: the current one.
 " "$pgm_name" "$pgm_name" "$pgm_name"
 }
 
@@ -102,7 +104,7 @@ if [ "${warning_as_error}" = "true" ]; then
     { set +x; } 2>/dev/null
     if [ "${emacs_can_native_compile}" = "yes" ]; then
         set -x
-	      emacs -Q --batch -L . --eval '(setq byte-compile-error-on-warn t)' -f batch-native-compile "$1"
+	      emacs -Q --batch -L .  --eval '(setq byte-compile-error-on-warn t)' -f batch-native-compile "$1"
     fi
 else
     set -x
