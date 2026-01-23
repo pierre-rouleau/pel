@@ -4,7 +4,7 @@
 # Purpose   : Byte compile an Emacs Lisp file in isolation.
 # Created   : Tuesday, December  2 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-12-02 15:23:15 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-01-23 09:03:42 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -39,7 +39,9 @@ print_usage()
 
   • Byte-compile Emacs Lisp FILE.
   • If --warn-as-error is specified treat warnings as errors and stop
-    on the first warning detected.
+    on the first warning detected in byte compilation.
+    Also perform native compilation if Emacs supports it and stop on
+    any native compilation warning.
 " "$pgm_name" "$pgm_name" "$pgm_name"
 }
 
@@ -89,9 +91,19 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+emacs_can_native_compile=$(emacs --batch --eval '(when
+                                                  (and (fboundp (quote native-comp-available-p))
+                                                       (native-comp-available-p))
+                                                    (princ "yes"))')
+
 if [ "${warning_as_error}" = "true" ]; then
     set -x
     emacs -Q --batch -L .  --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile "$1"
+    { set +x; } 2>/dev/null
+    if [ "${emacs_can_native_compile}" = "yes" ]; then
+        set -x
+	      emacs -Q --batch -L . --eval '(setq byte-compile-error-on-warn t)' -f batch-native-compile "$1"
+    fi
 else
     set -x
     emacs -Q --batch -L .  -f batch-byte-compile "$1"
