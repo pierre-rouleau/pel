@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-01-11 10:02:08 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-01-22 22:50:11 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -856,11 +856,22 @@ pel_keys.elc:           pel__hydra.el pel--base.elc pel--macros.elc pel--keys-ma
 # bindings with use-package forms.
 # Compiling pel_keys.el would cause installation of external packages.
 
+EMACS_NATIVE_COMP_AVAILABLE := $(shell $(EMACS) --batch --eval '(when \
+                                                                  (and (fboundp (quote native-comp-available-p)) \
+                                                                       (native-comp-available-p)) \
+                                                                    (princ "yes"))')
+
 # Single .el file byte-compile to .elc rule
 .SUFFIXES: .el .elc
+
+ifeq ($(EMACS_NATIVE_COMP_AVAILABLE), yes)
 .el.elc:
 	$(EMACS) -Q --batch -L . --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile $<
-
+	$(EMACS) -Q --batch -L . --eval '(setq byte-compile-error-on-warn t)' -f batch-native-compile $<
+else
+.el.elc:
+	$(EMACS) -Q --batch -L . --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile $<
+endif
 
 # Target to byte-compile all Emacs Lisp files inside one Emacs Session.
 # Compile all without any init configuration.
