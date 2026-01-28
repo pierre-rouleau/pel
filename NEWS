@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Modified the global key bindings for Org commands.  Instead of using the ~C-c~ prefix, use the ~<f11> M-o~ prefix that is now reserved
+  for all Org-mode related global key bindings.  Four key bindings are affected: the keys are a, b, c and l.
 - Add *pel-show-broken-symlinks* command bound to ~<f11> f s~.  It searches for broken symlink in a directory tree and lists them in a buffer if any are found.
 - Add PEL preliminary support for Fortran programming language when *pel-use-fortran* is turned on.
 - Add preliminary support for Algol68 programming language via the *a68-mode* when *pel-use-algol* is turned on.

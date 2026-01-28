@@ -6717,6 +6717,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 (when pel-use-org
   (define-pel-global-prefix pel:for-org-mode   (kbd "<f11> SPC M-o"))
+  (define-pel-global-prefix pel:org-mode (kbd "<f11> M-o"))
   ;; (define-pel-global-prefix pel:org-mode-setup (kbd "<f11> SPC M-o <f4>"))
 
   ;; Org-Mode activation, as suggested by
@@ -6728,14 +6729,15 @@ to identify a Verilog file.  Anything else is assumed being V."
                      org-agenda
                      org-capture
                      org-switchb)
-  (global-set-key "\C-cl" 'org-store-link)
-  (global-set-key "\C-ca" 'org-agenda)
-  (global-set-key "\C-cc" 'org-capture)
-  (global-set-key "\C-cb" 'org-switchb)
-
-  (define-key pel:for-org-mode (kbd "TAB") 'org-indent-mode)
+  ;; instead of using the C-c keys suggested by the Org manual, use
+  ;; keys under the pel:org-mode prefix.
+  (define-key pel:org-mode "l" 'org-store-link)
+  (define-key pel:org-mode "a" 'org-agenda)
+  (define-key pel:org-mode "c" 'org-capture)
+  (define-key pel:org-mode "b" 'org-switchb)
 
   (pel-eval-after-load org
+    (define-key pel:for-org-mode (kbd "TAB") 'org-indent-mode)
     (defvar pel-org-electric-pairs '((?\* . ?\*)
                                      (?/ . ?/)
                                      (?= . ?=)
