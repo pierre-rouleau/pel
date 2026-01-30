@@ -2619,13 +2619,13 @@ can't bind negative-argument to C-_ and M-_"
             (add-to-list 'eglot-server-programs
                          (cons m '("harper-ls" "--stdio")))))))))
 
-(when pel-use-my-whisper
-  (pel-install-github-file "pierre-rouleau/my-whisper/master" "my-whisper.el")
-  (pel-autoload-file my-whisper for:
-                     my-whisper-mode
-                     my-whisper-transcribe-file)
-  (define-key pel:writing-tools "W" 'my-whisper-mode)
-  (define-key pel:writing-tools "w" 'my-whisper-transcribe-file))
+(when pel-use-pr-whisper
+  (pel-install-github-file "pierre-rouleau/pr-whisper/master" "pr-whisper.el")
+  (pel-autoload-file pr-whisper for:
+                     pr-whisper-mode
+                     pr-whisper-transcribe-file)
+  (define-key pel:writing-tools "W" 'pr-whisper-mode)
+  (define-key pel:writing-tools "w" 'pr-whisper-transcribe-file))
 
 
 ;; ---------------------------------------------------------------------------

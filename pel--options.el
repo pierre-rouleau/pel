@@ -15377,15 +15377,15 @@ PEL uses my fork until my PRs are merged in."
   :safe #'booleanp)
 (pel-put pel-use-artbollocks-mode :package-is :in-utils)
 
-(defcustom pel-use-my-whisper nil
+(defcustom pel-use-pr-whisper nil
   "Control whether PEL uses the my-whisper package.
 PEL uses my fork of this project."
-  :link '(url-link :tag "my fork of my-whisper @ Github"
-                   "https://github.com/pierre-rouleau/my-whisper")
+  :link '(url-link :tag "pr-whisper @ Github"
+                   "https://github.com/pierre-rouleau/pr-whisper")
   :group 'pel-pkg-for-writing
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-my-whisper :package-is :in-utils)
+(pel-put pel-use-pr-whisper :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; Incompatible selection Management

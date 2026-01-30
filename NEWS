@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- *Breaking change!*: Renamed *pel-use-my-whisper* to *pel-use-pr-whisper* now that the project and library has been renamed to *pr-whisper*.
+  The *my-* prefix was changed to the *pr-* prefix for the project, the file and all functions, variables and user-options.
+  Also instead of a command to start the audio recording and one to stop it, there is a single command to toggle the audio recording on/off
+  Thanks to Le Wang for this and other improvements!
 - Modified the global key bindings for Org commands.  Instead of using the ~C-c~ prefix, use the ~<f11> M-o~ prefix that is now reserved
   for all Org-mode related global key bindings.  Four key bindings are affected: the keys are a, b, c and l.
 - Add *pel-show-broken-symlinks* command bound to ~<f11> f s~.  It searches for broken symlink in a directory tree and lists them in a buffer if any are found.
