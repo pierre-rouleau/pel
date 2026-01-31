@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-01-17 17:35:37 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-01-31 13:19:40 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -117,6 +117,7 @@
 (defconst pel--dired-groups '(dired
                               dired-git-info
                               dired-hide-dotfiles
+                              dired-lister
                               dired-narrow
                               dired-sidebar
                               dired-x
