@@ -1866,6 +1866,15 @@ Activates a minor mode for viewing diffs."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-dired-lister nil
+  "Control whether PEL activates the dired-lister."
+  :link '(url-link :tag "dired-lister @ GitHub"
+                   "https://github.com/MichaelKazarian/dired-lister")
+  :group 'pel-pkg-for-dired
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put pel-use-dired-lister :package-is :in-utils)
+
 (defcustom pel-use-dired-sidebar nil
   "Control whether PEL activates the dired-sidebar."
   :link '(url-link :tag "dired-sidebar @ GitHub"

@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add support for dired-lister when *pel-use-dired-lister* is turned on.  This activates the ~M-l~ key binding to *dired-lister-mode* in Dired buffers.
 - *Breaking change!*: Renamed *pel-use-my-whisper* to *pel-use-pr-whisper* now that the project and library has been renamed to *pr-whisper*.
   The *my-* prefix was changed to the *pr-* prefix for the project, the file and all functions, variables and user-options.
   Also instead of a command to start the audio recording and one to stop it, there is a single command to toggle the audio recording on/off

@@ -802,14 +802,11 @@ Your version of Emacs does not support dynamic module.")))
   (require 'ls-lisp)
   (setq ls-lisp-use-insert-directory-program nil))
 
-(when pel-use-undo-tree
-  (pel-eval-after-load dired
-    ;; Ensure that `dired-undo' is available in Dired buffer.
-    (when (boundp 'dired-mode-map)
-      (define-key dired-mode-map (kbd "M-u")   'dired-undo)
-      (define-key dired-mode-map (kbd "C-x u") 'dired-undo)
-      (define-key dired-mode-map (kbd "C-/")   'dired-undo))))
-
+(when pel-use-dired-lister
+  (pel-install-github-file "MichaelKazarian/dired-lister/master"
+                           "dired-lister.el")
+  (pel-autoload-file dired-lister for:
+                     dired-lister-mode))
 
 (when pel-use-dired-sidebar
   (pel-ensure-package dired-sidebar from: melpa)
@@ -824,10 +821,6 @@ Your version of Emacs does not support dynamic module.")))
   (define-key pel: (kbd "C-d") 'dired-sidebar-toggle-sidebar)
   (define-key pel:for-dired (kbd "C-d") 'dired-sidebar-toggle-sidebar))
 
-;; Activate extra Dired-x features when requested.
-(when pel-use-dired-x
-  (pel-eval-after-load dired
-    (load "dired-x" :noerror :nomessage)))
 
 ;; Activate dired-toggle-sudo when requested
 ;;
@@ -844,13 +837,6 @@ Your version of Emacs does not support dynamic module.")))
 ;;           ;; Allow to use: /sudo:user@host:/path/to/file
 ;;           (add-to-list 'tramp-default-proxies-alist
 ;; 	                   '(".*" "\\`.+\\'" "/ssh:%h:")))))))
-
-
-;;** Open files with OS-registered applications from Dired
-;;   -----------------------------------------------------
-(defvar dired-mode-map) ; forward declare - dired is loaded early in Emacs
-(with-eval-after-load 'dired
-  (define-key dired-mode-map "z" 'pel-open-in-os-app))
 
 ;;** dired-narrow
 ;;   ------------
@@ -872,16 +858,37 @@ Your version of Emacs does not support dynamic module.")))
   (pel-ensure-package dired-hide-dotfiles from: melpa)
   (when (eq pel-use-dired-hide-dotfiles 'hide-dot-files-by-default)
     (declare-function dired-hide-dotfiles-mode "dired-hide-dotfiles")
-    (add-hook 'dired-mode-hook (function dired-hide-dotfiles-mode)))
-  (with-eval-after-load 'dired
-    (define-key dired-mode-map "/" 'dired-hide-dotfiles-mode)))
+    (add-hook 'dired-mode-hook (function dired-hide-dotfiles-mode))))
 
 (when pel-use-dired-git-info
   (pel-ensure-package dired-git-info from: melpa)
   (when (eq pel-use-dired-git-info 'on-for-git-directories)
-    (add-hook 'dired-after-readin-hook 'dired-git-info-auto-enable))
-  (with-eval-after-load 'dired
-    (define-key dired-mode-map ")" 'dired-git-info-mode)))
+    (add-hook 'dired-after-readin-hook 'dired-git-info-auto-enable)))
+
+;; Bind extra keys to dired mode map
+(pel-eval-after-load dired
+  (defvar dired-mode-map) ; forward declare - dired is loaded early in Emacs
+  ;; Open files with OS-registered applications from Dired
+  (define-key dired-mode-map "z" 'pel-open-in-os-app)
+
+  (when pel-use-dired-lister
+    (define-key dired-mode-map (kbd "M-l")   'dired-lister-mode))
+
+  (when pel-use-dired-git-info
+    (define-key dired-mode-map ")" 'dired-git-info-mode))
+
+  (when pel-use-dired-hide-dotfiles
+    (define-key dired-mode-map "/" 'dired-hide-dotfiles-mode))
+
+  (when pel-use-dired-x
+    ;; Activate extra Dired-x features when requested.
+    (load "dired-x" :noerror :nomessage))
+
+  (when pel-use-undo-tree
+    ;; Ensure that `dired-undo' is available in Dired buffer.
+    (define-key dired-mode-map (kbd "M-u")   'dired-undo)
+    (define-key dired-mode-map (kbd "C-x u") 'dired-undo)
+    (define-key dired-mode-map (kbd "C-/")   'dired-undo)))
 
 ;; ---------------------------------------------------------------------------
 ;;** PEL: Window Behaviour & operations
