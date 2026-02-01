@@ -2629,10 +2629,15 @@ can't bind negative-argument to C-_ and M-_"
                          (cons m '("harper-ls" "--stdio")))))))))
 
 (when pel-use-pr-whisper
-  (pel-install-github-file "pierre-rouleau/pr-whisper/master" "pr-whisper.el")
+  (pel-install-github-files "pierre-rouleau/pr-whisper/master"
+                            "pr-whisper.el"
+                            "pr-whisper-server.el")
   (pel-autoload-file pr-whisper for:
                      pr-whisper-mode
-                     pr-whisper-transcribe-file)
+                     pr-whisper-stop-record
+                     pr-whisper-toggle-recording
+                     pr-whisper-transcribe-file
+                     pr-whisper-insert-from-history)
   (define-key pel:writing-tools "W" 'pr-whisper-mode)
   (define-key pel:writing-tools "w" 'pr-whisper-transcribe-file))
 
