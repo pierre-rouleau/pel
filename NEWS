@@ -2,6 +2,19 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Refactoring of PEL Hydra head key prefixes:  All PEL hydra head prefixes are now using ~<f7>~ followed by one other key.
+  Also modified the way the key binding for the PEL hydras are written to ensure their name now show in the mini-buffer when which-key-mode is active.
+  Also added a hydra for the dumb-jump specific commands: they can now be accessed independently of the xref backend being used.
+  The PEL hydras and their head keys are now set to:
+   - *pel-∑buffer*       : Buffer Navigation Hydra:  ~<f7> b~
+   - *pel-∑dumb-jump*    : Dumb-jump commands     :  ~<f7> j~
+   - *pel-∑greek*        : Greek Letters Hydra    :  ~<f7> G~
+   - *pel-∑hideshow*     : Hide/Show Management   :  ~<f7> H~
+   - *pel-∑say*          : macOS Narrator Hydra   :  ~<f7> S~
+   - *pel-∑scroll*       : Window scrolling       :  ~<f7> |~
+   - *pel-∑sel-display*  : Selective Display      :  ~<f7> M-h~
+   - *pel-∑winInfo*      : Window/Buffer purpose  :  ~<f7> W~
+   - *pel-∑window*       : Window management Hydra:  ~<f7> w~
 - Add support for dired-lister when *pel-use-dired-lister* is turned on.  This activates the ~M-l~ key binding to *dired-lister-mode* in Dired buffers.
 - *Breaking change!*: Renamed *pel-use-my-whisper* to *pel-use-pr-whisper* now that the project and library has been renamed to *pr-whisper*.
   The *my-* prefix was changed to the *pr-* prefix for the project, the file and all functions, variables and user-options.
