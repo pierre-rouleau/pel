@@ -867,9 +867,11 @@ Your version of Emacs does not support dynamic module.")))
 
 ;; Bind extra keys to dired mode map
 (pel-eval-after-load dired
-  (defvar dired-mode-map) ; forward declare - dired is loaded early in Emacs
+  (defvar dired-mode-map)   ; forward declare - dired is loaded early in Emacs
   ;; Open files with OS-registered applications from Dired
   (define-key dired-mode-map "z" 'pel-open-in-os-app)
+  (define-key dired-mode-map (kbd "M-RET") 'dired-find-file-other-window)
+
 
   (when pel-use-dired-lister
     (define-key dired-mode-map (kbd "M-l")   'dired-lister-mode))
@@ -11013,12 +11015,18 @@ See `flyspell-auto-correct-previous-word' for more info."
 (when pel-use-dumb-jump
   (pel-ensure-package dumb-jump from: melpa)
   (pel-autoload-file dumb-jump for: pel-xref-toggle-dumb-jump-mode)
+
   ;; pel-xref-toggle-dumb-jump-mode sets up the xref-backend-functions
   ;; to use dumb-jump as the backend for xref, and use its key bindings.
   (define-key pel:xref-backend "D" 'pel-xref-toggle-dumb-jump-mode)
   ;; schedule activation for requested major modes.
   (pel-add-hook-for 'pel-modes-activating-dumb-jump
-                    'pel-xref-dumb-jump-activate-locally))
+                    'pel-xref-dumb-jump-activate-locally)
+  ;; The old dumb-jump functions are useful and bound in PEL; prevent getting
+  ;; warned about them being obsolete!
+  (pel-eval-after-load dumb-jump
+    (when (boundp 'dumb-jump-disable-obsolete-warnings)
+      (setq dumb-jump-disable-obsolete-warnings t))))
 
 ;;** gxref
 (when pel-use-gxref

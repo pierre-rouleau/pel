@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-16 22:13:57 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-01 16:06:03 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -51,7 +51,7 @@
 ;; determines what Hydra will be used. Therefore try to limit using the same
 ;; keys inside the various PEL Hydras otherwise there won't be many keys to
 ;; identify the exact Hydra to use.  For the moment most top left keys are
-;; used by the Window Hydra (pel-∑wnd), the other PEL Hydras use a secondary
+;; used by the Window Hydra (pel-∑window), the other PEL Hydras use a secondary
 ;; prefix key.
 ;;
 ;; Hydra auto-loading is controlled by the <f7> key. At first that key is
@@ -60,6 +60,21 @@
 ;; the ```use-package hydra`` call.  Then it simulates a second <f7> key event
 ;; to get the effect the user expects and then removes itself from Emacs.
 ;;
+;; The various Hydras supported by PEL and their initial key(s) are listed
+;; below:
+;;
+;; - pel-∑buffer       : Buffer Navigation Hydra:  <f7> b
+;; - pel-∑dumb-jump    : Dumb-jump commands     :  <f7> j
+;; - pel-∑greek        : Greek Letters Hydra    :  <f7> G
+;; - pel-∑hideshow     : Hide/Show Management   :  <f7> H
+;; - pel-∑say          : macOS Narrator Hydra   :  <f7> S
+;; - pel-∑scroll       : Window scrolling       :  <f7> |
+;; - pel-∑sel-display  : Selective Display      :  <f7> M-h
+;; - pel-∑winInfo      : Window/Buffer purpose  :  <f7> W
+;; - pel-∑window       : Window management Hydra:  <f7> w
+;;
+;; Mode specific Hydras:
+;; - pel-∑c       : C code management      :  <f12> <f7> - in C/C++ buffers
 ;;
 ;; Byte-compilation
 ;; ----------------
@@ -130,7 +145,7 @@
 
 (when pel-activate-hydra-for-greek
 
-  ;; Define Greek letter commands used by the pel-∑gr Hydra defined inside
+  ;; Define Greek letter commands used by the pel-∑greek Hydra defined inside
   ;; pel__hydra.el.  Code should really be located in there, but placing it
   ;; here prevents byte compiler warnings.
   ;; Note: pel--options.el ensures that `pel-use-hydra' is t when
@@ -187,12 +202,9 @@
   (pel--define-greek-command "Ψ") (declare-function Ψ "pel_keys")
   (pel--define-greek-command "Ζ") (declare-function Ζ "pel_keys")
 
-  ;; Note: Hydra docstrings are generated to include the base hydra name and
-  ;; the key map.  I would like to use pel-∑greek as the hydra name but that
-  ;; would generate a docstring first line that is longer than 80 characters.
-  (defhydra pel-∑gr (global-map "<f7> <f6> <f6>"
-                                :base-map (make-sparse-keymap)
-                                :foreign-keys run)
+  (defhydra pel-∑greek (:base-map (make-sparse-keymap)
+                                  :foreign-keys run)
+                                        ;"Greek letter hydra; foreign keys allowed\n"
     ""
     ("M-a"  α "α")
     ("M-b"  β "β")
@@ -224,7 +236,7 @@
     ("M-C"  Χ "Χ")
     ("M-D"  Δ "Δ")
     ("M-E"  Ε "Ε")
-    ("M-F"  Φ "Φ")
+    ;("M-F"  Φ "Φ")
     ("M-G"  Γ "Γ")
     ("M-H"  Η "Η")
     ("M-I"  Ι "Ι")
@@ -244,7 +256,8 @@
     ("M-X"  Ξ "Ξ")
     ("M-Y"  Ψ "Ψ")
     ("M-Z"  Ζ "Ζ")
-    ("<f7>" nil "cancel" )))
+    ("<f7>" nil "cancel" ))
+  (global-set-key (kbd "<f7> G") 'pel-∑greek/body))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL HYDRA: Narrate : activated with <f7> <f8>
@@ -271,8 +284,8 @@
     (pel-forward-word-start))
   (declare-function pel-nxt-sentence "pel__hydra")
 
-  (defhydra pel-∑say (global-map "<f7> <f8>" :foreign-keys run)
-    ""
+  (defhydra pel-∑say ( :foreign-keys run)
+    "Narrator hydra;  foreign keys allowed"
     ("w"     pel-say-word             "word"              :column "Read")
     ("s"     pel-say-sentence         "sentence"          :column "Read")
     ("p"     pel-say-paragraph        "paragraph"         :column "Read")
@@ -283,43 +296,63 @@
     ("n"     pel-forward-word-start   "next word"         :column "Move to")
     ("B"     backward-sentence        "previous sentence" :column "Move to")
     ("N"     pel-nxt-sentence         "next sentence"     :column "Move to")
-    ("<f7>" nil                       "cancel"            :column "End")))
+    ("<f7>" nil                       "cancel"            :column "End"))
+  (global-set-key (kbd "<f7> S") 'pel-∑say/body))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL HYDRA: Buffer Navigation/Management
 
-(when (not pel-use-iflipb)
+(unless pel-use-iflipb
   (defun iflipb-next-buffer ()
     "Warning stub."
+    (interactive)
     (user-error "Unavailable - set pel-use-iflipb to activate!"))
   (declare-function iflipb-next-buffer "pel__hydra")
 
   (defun iflipb-previous-buffer ()
     "Warning stub."
+    (interactive)
     (user-error "Unavailable - set pel-use-iflipb to activate!"))
-  (declare-function iflipb-previous-buffer "pel__hydra")
+  (declare-function iflipb-previous-buffer "pel__hydra"))
 
-  )
-(defhydra pel-∑buffer (global-map "<f7> <f9>"
-                                  :foreign-keys run)
-  ""
-  ("M-n"     next-buffer             "next"      :column "Buffer")
-  ("M-p"     previous-buffer         "prev"      :column "Buffer")
-  ("M-l"     pel-switch-to-last-used-buffer "last" :column "Buffer")
-  ("M-v"     view-mode               "view"      :column "Buffer")
+(defun pel-fzf-switch-buffer ()
+  "Hydra-aware `fzf-switch-buffer.  Closes the hydra."
+  (interactive)
+  (unless pel-use-fzf
+    (user-error "Unavailable - set pel-use-fzf to activate!"))
+  (when (fboundp 'fzf-switch-buffer)
+    (fzf-switch-buffer)))
 
+;; An alias to make the hydra docstring narrower.
+(defalias 'pel-to-last-used-buffer 'pel-switch-to-last-used-buffer)
 
-  ("M-."     pel-bs-next             "next"      :column "Buffer Selection")
-  ("M-,"     pel-bs-previous         "prev"      :column "Buffer Selection")
+(defhydra pel-∑buffer (:foreign-keys run)
+  "Buffer management hydra; foreign keys allowed"
+  ("M-n"  next-buffer             "next"      :column "Buffer")
+  ("M-p"  previous-buffer         "prev"      :column "Buffer")
+  ("M-l"  pel-to-last-used-buffer "last"      :column "Buffer")
+  ("M-v"  view-mode               "view"      :column "Buffer")
 
-  ("C-n"     iflipb-next-buffer      "next"      :column "Flip")
-  ("C-p"     iflipb-previous-buffer  "prev"      :column "Flip")
+  ("M-s"  bs-show                 "window"    :column "Buffer Selection")
+  ("M-."  pel-bs-next             "next"      :column "Buffer Selection")
+  ("M-,"  pel-bs-previous         "prev"      :column "Buffer Selection")
+  ;; fzf-switch-buffer interfere with the hydra display.
+  ;; To prevent problems, quit the hydra once it's used.
+  ("M-z"  pel-fzf-switch-buffer   "fzf & close" :column "Buffer Selection" :exit t)
 
-  ("]"       pel-smb-next            "next"      :column "Same Mode")
-  ("["       pel-smb-previous        "previous"  :column "Same Mode")
+  ("C-n"  iflipb-next-buffer      "next"      :column "Flip Recently Viewed")
+  ("C-p"  iflipb-previous-buffer  "prev"      :column "Flip Recently Viewed")
 
-  ("?"       pel-toggle-hydra-hint   "hint"      :column "Other")
-  ("<f7>"    nil                     "cancel"    :column "Other"))
+  ;; Note: I would have liked to use M-] and M-[ instead of ] and [
+  ;; but M-[ interfere with <f7> and make the <f7> key insert several '~'
+  ;; characters in the buffer in terminal mode for a reason that
+  ;; eludes me at this point.
+  ("]"  pel-smb-next            "next"      :column "Same Mode")
+  ("["  pel-smb-previous        "previous"  :column "Same Mode")
+
+  ("?"    pel-toggle-hydra-hint   "hint"      :column "Other")
+  ("<f7>" nil                     "cancel"    :column "Other"))
+(global-set-key (kbd "<f7> b") 'pel-∑buffer/body)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL HYDRA: Window Management
@@ -328,22 +361,26 @@
 (when (not pel-use-winner)
   (defun winner-redo ()
     "Warning stub."
+    (interactive)
     (user-error "Unavailable - set pel-use-winner to t to activate!"))
   (declare-function winner-redo "pel__hydra")
 
   (defun winner-undo ()
     "Warning stub."
+    (interactive)
     (user-error "Unavailable - set pel-use-winner to t to activate!"))
   (declare-function winner-undo "pel__hydra"))
 
 (when (not pel-use-ace-window)
   (defun ace-window ()
     "Warning stub."
+    (interactive)
     (user-error "Unavailable - set pel-ace-window to t to activate!"))
   (declare-function ace-window "pel__hydra")
 
   (defun ace-swap-window ()
     "Warning stub."
+    (interactive)
     (user-error "Unavailable - set pel-ace-window to t to activate!"))
   (declare-function ace-swap-window "pel__hydra"))
 
@@ -434,12 +471,10 @@ CAUTION: the hydra is still active!"
 
 
 
-(defhydra pel-∑wnd (global-map "<f7>"
-                               :pre  (pel--cache-hydra-is-helpful)
-                               :post (pel--restore-hydra-is-helpful)
-                               :foreign-keys run)
-  ""
-
+(defhydra pel-∑window (:pre  (pel--cache-hydra-is-helpful)
+                             :post (pel--restore-hydra-is-helpful)
+                             :foreign-keys run)
+  "Window management hydra; foreign keys allowed"
   ("/ 8"         pel-split-root-window-top    "root⬆"        :column "SplitF")
   ("/ 2"         pel-split-root-window-bottom "root⬇"        :column "SplitF")
   ("/ 4"         pel-split-root-window-left   "root⬅"        :column "SplitF")
@@ -509,6 +544,7 @@ CAUTION: the hydra is still active!"
   ("?"           pel-toggle-hydra-hint        "hint"         :column "Other")
   ("q"           quit-window                  "quit"         :column "Other")
   ("<f7>"        nil                          "cancel"       :column "Other"))
+(global-set-key (kbd "<f7> w") 'pel-∑window/body)
 
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -581,11 +617,10 @@ CAUTION: the hydra is still active!"
   (pel-toggle-window-dedicated)
   (pel-show-window-info))
 
-(defhydra pel-∑winInfo (global-map "<f7> M-i"
-                                   :pre (pel--cache-hydra-is-helpful)
-                                   :post (pel--restore-hydra-is-helpful)
-                                   :foreign-keys nil)
-  ""
+(defhydra pel-∑winInfo (:pre (pel--cache-hydra-is-helpful)
+                             :post (pel--restore-hydra-is-helpful)
+                             :foreign-keys nil)
+  "Window info hydra; foreign keys blocked"
   ("M-d"         pel--twd                  "window"               :column "Dedicate")
   ("M-b"         pel--ptbpd                "buffer purpose"       :column "Dedicate")
   ("M-w"         pel--ptwpd                "window purpose"       :column "Dedicate")
@@ -596,24 +631,26 @@ CAUTION: the hydra is still active!"
   ("<right>"     pel--wininfo-right        "➡️"                    :column "Window info")
   ("M-p"         pel--purpose-mode         "toggle purpose mode"  :column "Other")
   ("?"           pel-toggle-hydra-hint     "hint"                 :column "Other")
-  ("<f7>"        nil                       "cancel"               :column "Other")
-  )
+  ("<f7>"        nil                       "cancel"               :column "Other"))
+(global-set-key (kbd "<f7> W") 'pel-∑winInfo/body)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL HYDRA: Scroll
-(defhydra pel-∑scroll (global-map "C-<f7>"
-                                  :pre  (pel--cache-hydra-is-helpful)
-                                  :post (pel--restore-hydra-is-helpful)
-                                  :foreign-keys run)
-  ""
-  ("C-<up>"      pel-scroll-down             "up"     :column "scroll")
-  ("C-<down>"    pel-scroll-up               "down"   :column "scroll")
-  ("C-<left>"    pel-scroll-right            "left"   :column "scroll")
-  ("C-<right>"   pel-scroll-left             "right"  :column "scroll")
+(defhydra pel-∑scroll (:pre  (pel--cache-hydra-is-helpful)
+                             :post (pel--restore-hydra-is-helpful)
+                             :foreign-keys run)
+  "Scroll hydra; foreign keys allowed"
+  ("<up>"        pel-scroll-down             "up"     :column "scroll")
+  ("<down>"      pel-scroll-up               "down"   :column "scroll")
+  ("<left>"      pel-scroll-right            "left"   :column "scroll")
+  ("<right>"     pel-scroll-left             "right"  :column "scroll")
   ("M-<up>"      pel-scroll-down-other       "up"     :column "scroll other")
   ("M-<down>"    pel-scroll-up-other         "down"   :column "scroll other")
+  ("|"           pel-toggle-scroll-sync      "sync"   :column "Other")
   ("M-?"         pel-∑-customize-hint        "hint cfg"  :column "Other")
   ("?"           pel-toggle-hydra-hint       "hint"   :column "Other")
-  ("<C-f7>"      nil                         "cancel" :column "Other"))
+  ("<f7>"        nil                         "cancel" :column "Other"))
+(global-set-key (kbd "<f7> |") 'pel-∑scroll/body)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL HYDRA: Hide/Show
@@ -634,9 +671,8 @@ CAUTION: the hydra is still active!"
                    pel-hs-hide-block-below-inc
                    pel-hs-hide-block-below-dec)
 
-(defhydra pel-∑hideshow (global-map "<f7> H"
-                                    :foreign-keys run)
-  "Hide/Show:"
+(defhydra pel-∑hideshow (:foreign-keys run)
+  "Hide/Show hydra; foreign keys allowed"
   ("H" hs-minor-mode               "Toggle hs mode" :column "State")
   ("?" pel-show-hide-state         "info")
   ("A" pel-toggle-hide-all         "all"    :column "Hide/Show")
@@ -652,6 +688,7 @@ CAUTION: the hydra is still active!"
   (">" pel-hs-hide-block-below-inc "+1" :column "Hide levels:")
   ("<" pel-hs-hide-block-below-dec "-1")
   ("<f7>" nil                      "cancel" :column "End"))
+(global-set-key (kbd "<f7> H") 'pel-∑hideshow/body)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL HYDRA: C preprocessor
@@ -678,7 +715,7 @@ CAUTION: the hydra is still active!"
                      c-up-conditional)
   (defvar pel:for-c)
   (defhydra pel-∑c (pel:for-c "<f7>"  :foreign-keys run)
-    "C preprocessor"
+    "C preprocessor hydra; foreign keys allowed"
     ("n"    pel-pp-next-directive       "next"           :column "Move to")
     ("p"    pel-pp-prev-directive       "prev"           :column "Move to")
     ("C-p"  c-backward-conditional      "begin"          :column "Move to")
@@ -709,7 +746,7 @@ CAUTION: the hydra is still active!"
   ;; PEL HYDRA: C preprocessor for C++
   (defvar pel:for-c++)
   (defhydra pel-∑c++ (pel:for-c++ "<f7>"  :foreign-keys run)
-    "C preprocessor"
+    "C preprocessor hydra; foreign keys allowed"
     ("n"    pel-pp-next-directive       "next"           :column "Move to")
     ("p"    pel-pp-prev-directive       "prev"           :column "Move to")
     ("C-p"  c-backward-conditional      "begin"          :column "Move to")
@@ -755,20 +792,52 @@ Customize pel-use-vline to t!")))
 ;; Define functions (instead of placing lambdas inside the hydra)
 ;; to prevent warnings about excessive docstring width.
 
+;; Define alias to reduce the width of the hydra docstring line.
+(defalias 'pel-sd-col-inc 'pel-selective-display-column-inc)
+(defalias 'pel-sd-col-dec 'pel-selective-display-column-dec)
+(defalias 'pel-sd-unhide  'pel-selective-display-unhide)
+(defalias 'pel-sd-at-1    'pel-selective-display-at-1)
+(defalias 'pel-sd-ind-inc 'pel-selective-display-indent-inc)
+(defalias 'pel-sd-ind-dec 'pel-selective-display-indent-dec)
+(defalias 'pel-sd-vline   'pel--sd-maybe-vline-mode)
 
 ;; pel Hydra hide-indent : renamed to reduce size
-(defhydra pel-∑hi (global-map "<f7> C-x $" :foreign-keys run)
-  "Selective Display"
-  ("<right>" pel-selective-display-column-inc "+1"        :column "By Column")
-  ("<left>"  pel-selective-display-column-dec "-1"        :column "By Column")
-  ("0"       pel-selective-display-unhide     "unhide"    :column "By Column")
-  ("1"       pel-selective-display-at-1       "hide at 1" :column "By Column")
-  ("S-<right>"
-   pel-selective-display-indent-inc        "+indent" :column "By Indent")
-  ("S-<left>"
-   pel-selective-display-indent-dec        "-indent" :column "By Indent")
-  ("|"      pel--sd-maybe-vline-mode "rightmost visible limit" :column "Show")
-  ("<f7>"      nil                           "cancel"      :column "End"))
+(defhydra pel-∑sel-display (:foreign-keys run)
+  "Selective Display hydra; foreign keys allowed"
+  ("<right>"   pel-sd-col-inc "+1"        :column "By Column")
+  ("<left>"    pel-sd-col-dec "-1"        :column "By Column")
+  ("0"         pel-sd-unhide  "unhide"    :column "By Column")
+  ("1"         pel-sd-at-1    "hide at 1" :column "By Column")
+  ("S-<right>" pel-sd-ind-inc "+indent"   :column "By Indent")
+  ("S-<left>"  pel-sd-ind-dec "-indent"   :column "By Indent")
+  ("|"         pel-sd-vline   "rightmost visible limit" :column "Show")
+  ("?"         pel-toggle-hydra-hint      "hint"        :column "Other")
+  ("<f7>"      nil                        "cancel"      :column "End"))
+(global-set-key (kbd "<f7> M-h") 'pel-∑sel-display/body)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; PEL HYDRA: Dumb-Jump Commands
+
+(defalias 'dump-jump-go-ext-other-window 'dumb-jump-go-prefer-external-other-window)
+(when pel-use-dumb-jump
+  (declare-function dumb-jump-go  "dumb-jump")
+  (declare-function dumb-jump-go-other-window  "dumb-jump")
+  (declare-function dumb-jump-go-prefer-external  "dumb-jump")
+  (declare-function dumb-jump-go-prefer-external-other-window  "dumb-jump")
+  (declare-function dumb-jump-go-prompt  "dumb-jump")
+  (declare-function dumb-jump-quick-look  "dumb-jump")
+  (declare-function dumb-jump-back  "dumb-jump")
+  (defhydra pel-∑dumb-jump (:color blue :columns 3)
+    "Dumb Jump hydra; foreign keys allowed"
+    ("j" dumb-jump-go "Go"    :column "1")
+    ("o" dumb-jump-go-other-window "Other window"    :column "1")
+    ("e" dumb-jump-go-prefer-external "Go external"  :column "1")
+    ("x" dump-jump-go-ext-other-window  "Go other window" :column "2")
+    ("i" dumb-jump-go-prompt "Prompt"   :column "2")
+    ("l" dumb-jump-quick-look "Quick look" :column "2")
+    ("b" dumb-jump-back "Back"             :column "2")
+    ("?"      pel-toggle-hydra-hint            "hint"        :column "Other"))
+  (global-set-key (kbd "<f7> j") 'pel-∑dumb-jump/body))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel__hydra)
