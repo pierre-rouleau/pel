@@ -26,7 +26,7 @@ PEL -- Pragmatic Emacs Library
    :alt: PEL Commands
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
-.. image:: https://img.shields.io/badge/PDF_Files-215-blue
+.. image:: https://img.shields.io/badge/PDF_Files-219-blue
    :alt: PDF Files
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
@@ -111,7 +111,7 @@ Essentially PEL:
   available in graphical mode,
 - attempt to provide globally unified keyboard experience for a large set of
   commands across multiple major modes,
-- document Emacs features in over 215 topic oriented PDF tables which
+- document Emacs features in over 219 topic oriented PDF tables which
   provide and overview of the topic, list standard Emacs commands, PEL extra
   commands, their key bindings, links to the Emacs manual, to the external
   packages, to description articles and more.
@@ -351,7 +351,7 @@ packages, etc...
 ➣ Extends Emacs Documentation
 -----------------------------
 
-- PEL provides **215** `PDF topic-oriented reference sheets`_ [#doc]_ packed
+- PEL provides **219** `PDF topic-oriented reference sheets`_ [#doc]_ packed
   with symbol annotated, colour coded key bindings and command descriptions,
   with hyperlinks to Emacs manuals, external packages, articles and other
   useful references.
