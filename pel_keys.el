@@ -11018,8 +11018,20 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;;** dumb-jump
 (when pel-use-dumb-jump
-  (pel-ensure-package dumb-jump from: melpa)
-  (pel-autoload-file dumb-jump for: pel-xref-toggle-dumb-jump-mode)
+  ;; install dumb-jump only needed file in utils for speed.
+  (pel-install-github-file "jacktasia/dumb-jump/master"
+                           "dumb-jump.el")
+  (pel-autoload-file dumb-jump for:
+                     dumb-jump-mode
+                     dumb-jump-go
+                     dumb-jump-go-other-window
+                     dumb-jump-go-prefer-external
+                     dumb-jump-go-prefer-external-other-window
+                     dumb-jump-go-prompt
+                     dumb-jump-quick-look
+                     dumb-jump-back
+                     dumb-jump-xref-activate
+                     pel-xref-toggle-dumb-jump-mode)
 
   ;; pel-xref-toggle-dumb-jump-mode sets up the xref-backend-functions
   ;; to use dumb-jump as the backend for xref, and use its key bindings.

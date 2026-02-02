@@ -15140,6 +15140,7 @@ identify symbol in several programming languages."
                    "https://github.com/jacktasia/dumb-jump")
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-dumb-jump :package-is :in-utils)
 
 (defcustom pel-modes-activating-dumb-jump nil
   "List of major modes that automatically activate dumb-jump.
@@ -15387,7 +15388,7 @@ PEL uses my fork until my PRs are merged in."
 (pel-put pel-use-artbollocks-mode :package-is :in-utils)
 
 (defcustom pel-use-pr-whisper nil
-  "Control whether PEL uses the my-whisper package.
+  "Control whether PEL uses the pr-whisper package.
 PEL uses my fork of this project."
   :link '(url-link :tag "pr-whisper @ Github"
                    "https://github.com/pierre-rouleau/pr-whisper")

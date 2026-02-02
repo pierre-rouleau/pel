@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-01 16:06:03 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 11:43:20 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -827,16 +827,20 @@ Customize pel-use-vline to t!")))
   (declare-function dumb-jump-go-prompt  "dumb-jump")
   (declare-function dumb-jump-quick-look  "dumb-jump")
   (declare-function dumb-jump-back  "dumb-jump")
-  (defhydra pel-∑dumb-jump (:color blue :columns 3)
+
+  (defhydra pel-∑dumb-jump (:foreign-keys run)
     "Dumb Jump hydra; foreign keys allowed"
-    ("j" dumb-jump-go "Go"    :column "1")
-    ("o" dumb-jump-go-other-window "Other window"    :column "1")
-    ("e" dumb-jump-go-prefer-external "Go external"  :column "1")
-    ("x" dump-jump-go-ext-other-window  "Go other window" :column "2")
-    ("i" dumb-jump-go-prompt "Prompt"   :column "2")
-    ("l" dumb-jump-quick-look "Quick look" :column "2")
-    ("b" dumb-jump-back "Back"             :column "2")
-    ("?"      pel-toggle-hydra-hint            "hint"        :column "Other"))
+    ;; Select as many keys as possible that won't collide with often used keys
+    ;; in various major and minor modes, while being as mnemonic as possible.
+    ("M->"  dumb-jump-go                    "Go"                   :column "Jump @ point")
+    ("M-] o"  dumb-jump-go-other-window     "Other window"         :column "Jump @ point")
+    ("M-] e"  dumb-jump-go-prefer-external  "Go external"          :column "Jump @ point")
+    ("M-] f"  dump-jump-go-ext-other-window "Go ext, other window" :column "Jump @ point")
+    ("M-P"  dumb-jump-go-prompt             "Prompt"               :column "Jump")
+    ("M-Q"  dumb-jump-quick-look            "Quick look"           :column "Preview")
+    ("M-<"  dumb-jump-back                  "Back"                 :column "Go Back")
+    ("?"    pel-toggle-hydra-hint           "hint"                 :column "Other")
+    ("<f7>" nil                             "cancel"               :column "Other"))
   (global-set-key (kbd "<f7> j") 'pel-∑dumb-jump/body))
 
 ;;; --------------------------------------------------------------------------

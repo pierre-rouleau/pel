@@ -2,6 +2,21 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improved *pel-xref-show-status* command (bound to ~<f11> X ?~) to display
+  the information inside its own special help-type buffer which provides links
+  to the customization buffer of important user-options.
+- Now installing dumb-jump inside the PEL utils directory, reducing the number
+  of packages in the elpa directory tree and reducing Emacs load-path length
+  to speed Emacs start-up a little.
+- Updated the *pel-∑dumb-jump* hydra, using an improved layout, adding ability
+  to hide/restore the hint view and adding the ~<f7>~ key to exit, because the
+  hydra now allow other keys while it is active.  Because of that all hydra
+  keys are now using the meta modifier key.  Note that ~M-.~ and ~M-,~ are not
+  part of this hydra; this allows using the ~M-.~  key bound to use the
+  currently active Xref backend for a search and you can also use
+  dumb-jump commands via PEL key bindings or the *pel-∑dumb-jump* hydra
+  providing access to *two* cross reference systems while editing files!
+  Also added dumb-jump command key bindings under the ~<f11> X~ key prefix.
 - Refactoring of PEL Hydra head key prefixes:  All PEL hydra head prefixes are now using ~<f7>~ followed by one other key.
   Also modified the way the key binding for the PEL hydras are written to ensure their name now show in the mini-buffer when which-key-mode is active.
   Also added a hydra for the dumb-jump specific commands: they can now be accessed independently of the xref backend being used.
