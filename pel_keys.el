@@ -2630,8 +2630,8 @@ can't bind negative-argument to C-_ and M-_"
 
 (when pel-use-pr-whisper
   (pel-install-github-files "pierre-rouleau/pr-whisper/master"
-                            "pr-whisper.el"
-                            "pr-whisper-server.el")
+                            '("pr-whisper.el"
+                              "pr-whisper-server.el"))
   (pel-autoload-file pr-whisper for:
                      pr-whisper-mode
                      pr-whisper-stop-record
