@@ -435,7 +435,9 @@ packages, etc...
     **pel-∑window**       Window management Hydra   ``<f7> w``
     ===================== ========================= ================
 
-  - PEL also provides language-specific Hydras for C and C++ major modes.
+  - PEL also provides language-specific Hydras for C and C++ major modes; both
+    are accessed via the ``<f12> <f7>`` key sequence, a key sequence PEL uses
+    for major-mode specific commands.
   - And PEL provides a key binding (``<f7> <TAB>``) to the indent-tool-hydra.
 
 - The key bindings of several commands are the same in several major-modes but
