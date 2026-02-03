@@ -30,6 +30,10 @@ PEL -- Pragmatic Emacs Library
    :alt: PEL Commands
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
+.. image:: https://img.shields.io/badge/PEL_Key_Hydras-12-teal
+   :alt: PEL Hydras
+   :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
+
 .. image:: https://img.shields.io/badge/PDF_Files-219-blue
    :alt: PDF Files
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
@@ -410,8 +414,30 @@ packages, etc...
 - PEL provides over 722 extra commands.  PEL commands extend the packages
   it supports and provides some of its own features.  Some commands are only
   available for a given OS, most are accessible in every OS.
-- PEL provides 10 specialized Hydra_ key bindings when the ``pel-use-hydra``
-  and the topic specific user-options are activated.
+- When the ``pel-use-hydra`` user-option is turned on, PEL provides 12
+  specialized key Hydra_  and provides access to one from an external package.
+  From the 12 PEL Hydras, 10 are global and invoked by typing the ``<f7>``
+  prefix key followed by one selection key.
+
+  - The global key Hydras are:
+
+    ===================== ========================= ================
+    PEL Global Hydra Name Description               Hydra Head
+    ===================== ========================= ================
+    **pel-∑buffer**       Buffer Navigation Hydra   ``<f7> b``
+    **pel-∑dumb-jump**    Dumb-jump commands        ``<f7> j``
+    **pel-∑greek**        Greek Letters Hydra       ``<f7> G``
+    **pel-∑hideshow**     Hide/Show Management      ``<f7> H``
+    **pel-∑say**          macOS Narrator Hydra      ``<f7> S``
+    **pel-∑scroll**       Window scrolling          ``<f7> |``
+    **pel-∑sel-display**  Selective Display         ``<f7> M-h``
+    **pel-∑winInfo**      Window/Buffer purpose     ``<f7> W``
+    **pel-∑window**       Window management Hydra   ``<f7> w``
+    ===================== ========================= ================
+
+  - PEL also provides language-specific Hydras for C and C++ major modes.
+  - And PEL provides a key binding (``<f7> <TAB>``) to the indent-tool-hydra.
+
 - The key bindings of several commands are the same in several major-modes but
   they perform actions that are specialized to the major mode of the current
   buffer.  This helps simplify using Emacs.
