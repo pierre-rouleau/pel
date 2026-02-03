@@ -22,6 +22,10 @@ PEL -- Pragmatic Emacs Library
    :alt: Managed Packages
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
+.. image:: https://img.shields.io/badge/PEL_User_Options-419-teal
+   :alt: User Options
+   :target: `➣ Customization Driven Package Management & Configuration`_
+
 .. image:: https://img.shields.io/badge/PEL_Commands-722-teal
    :alt: PEL Commands
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
@@ -242,6 +246,11 @@ Again any feedback is welcome. Thanks!
   - the activation of various major and minor modes,
   - the improvement of behaviour of several major and minor modes,
   - the use of the features provided by PEL.
+
+- PEL provides a large number (419) of customizable user options to control all
+  this and provides several commands to access the customization buffers and
+  help commands that generate reports in ``*Help*`` like buffers listing
+  relevant user-options and providing quick access to their customization.
 
 - PEL saves your customization data inside a file separate from your
   ``init.el`` file, providing an extra degree of freedom and control. This
