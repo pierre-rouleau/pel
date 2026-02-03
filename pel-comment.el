@@ -94,7 +94,7 @@
   "Utility - build list of comment style choices."
   (let ((st nil)
         (idx -1))
-    (reverse
+    (nreverse
      (dolist (style comment-styles st)
        (setq idx (1+ idx))
        (setq st (cons

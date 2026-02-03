@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-05-16 09:46:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:46:21 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -137,7 +137,7 @@ Return nil if all is OK."
  - `pel-package-user-dir-original' is not bound.
    It should be set in init.el to remember `package-user-dir'.")))
     ;;
-    (reverse problems)))
+    (nreverse problems)))
 
 
 (defun pel-setup-validate-init-files (&optional early-init-must-exist)

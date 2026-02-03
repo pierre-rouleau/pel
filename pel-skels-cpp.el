@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-17 15:11:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:49:00 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -267,7 +267,7 @@ SECTION-TITLES may be nil.  In that case the function returns nil."
 (defun pel-skels-c++-instrumented-code (code-line)
   "Return skeleton list for CODE-LINE, replace $$ by tempo marker."
   (let ((sk (list 'l)))
-    (dolist (code (split-string code-line "\\$\\$") (butlast (reverse sk)))
+    (dolist (code (split-string code-line "\\$\\$") (butlast (nreverse sk)))
       (push code sk)
       (push 'p sk))))
 

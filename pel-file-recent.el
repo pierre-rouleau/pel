@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, April  2 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-02 15:36:42, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:38:39 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -91,7 +91,7 @@ If AFTER_SELECTION-P is non-nil the message is issued after changing it."
       (setq selection (append selection '((?c "Ivy/Counsel" counsel-recentf)))))
     (when pel-use-popup-switcher
       (push '(?p "Popup-switcher" psw-switch-recentf) selection))
-    (reverse selection)))
+    (nreverse selection)))
 
 (defun pel-select-recentf-function (&optional recentf-function silent)
   "Select the function to visit recently opened files.

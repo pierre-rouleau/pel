@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-07-25 12:42:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:27:31 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -135,7 +135,7 @@ with a non alphanumeric or underscore character."
       (setq varname (match-string 1 (substring string idx)))
       (push varname varnames)
       (setq idx (+ idx new-idx 1 (length varname))))
-    (reverse varnames)))
+    (nreverse varnames)))
 
 (defun pel-substitute-in-file-name (filename)
   "Substitute environment variables referred to in FILENAME.

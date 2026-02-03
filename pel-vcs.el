@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  9 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-21 16:55:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:51:34 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -56,7 +56,7 @@ The list identify VCS back-end with the symbols used in `vc-handled-backends'."
         (filepath (if (file-directory-p filepath)
                       (file-name-as-directory filepath)
                     filepath)))
-    (dolist (fname.backend pel--vcs-repo-fnames (reverse detected-backends))
+    (dolist (fname.backend pel--vcs-repo-fnames (nreverse detected-backends))
       (when (pel-file-in-dir-upwards
              (car fname.backend)
              (file-name-directory filepath))

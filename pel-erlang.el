@@ -1215,7 +1215,7 @@ dynamically select another engine for the current editing session.")
       (push (list ?e "edts" 'edts) choices))
     (when pel-use-erlang-ls
       (push (list ?l "erlang-ls" 'erlang-ls) choices))
-    (reverse choices)))
+    (nreverse choices)))
 
 ;;-pel-autoload
 (defun pel-erlang-select-xref ()

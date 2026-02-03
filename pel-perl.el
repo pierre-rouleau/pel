@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-19 09:07:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:44:58 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -150,7 +150,7 @@ file name and file names with the following extensions:
     (if (file-name-extension real-filepath)
         (list real-filepath)
       (let ((filepaths nil))
-        (dolist (ext extensions (reverse filepaths))
+        (dolist (ext extensions (nreverse filepaths))
           (push (concat real-filepath "." ext) filepaths))))))
 
 ;;-pel-autoload

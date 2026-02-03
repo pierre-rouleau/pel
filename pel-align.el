@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-07-21 18:48:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:13:38 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -150,7 +150,7 @@ text."
                (push new-regexp regexps))))
     (save-restriction
       (narrow-to-region pos-beg pos-end)
-      (dolist (regexp (reverse regexps))
+      (dolist (regexp (nreverse regexps))
         (align-regexp (point-min)
                       (point-max)
                       (concat "\\(\\s-*\\)" regexp)

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-12-20 12:09:43 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:38:25 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -71,7 +71,7 @@ Note that this function is similar to Emacs built-in
 found file and `pel-ffind-inpath' returns all files found."
   (let ((found-fnames nil)
         fname)
-    (dolist (dir path (reverse found-fnames))
+    (dolist (dir path (nreverse found-fnames))
       (setq fname (expand-file-name filename dir))
       (when (file-exists-p fname)
         (push fname found-fnames)))))

@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-25 12:56:24 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:37:02 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -274,7 +274,7 @@ This assumes that Ido mode is currently activated."
       (push '(?x "grid - eXpanded"  grid-expanded)  selection))
     (when pel-use-ido-vertical-mode
       (push '(?v "vertical" vertical) selection))
-    (reverse selection)))
+    (nreverse selection)))
 
 ;;-pel-autoload
 (defun pel-select-ido-geometry ()
@@ -767,7 +767,7 @@ Print message describing active mode unless SILENT argument is non-nil."
                                  selection))
     (when pel-use-counsel (push '(?c "Ivy/Counsel" ivy/counsel)
                                 selection))
-    (reverse selection)))
+    (nreverse selection)))
 
 
 ;;-pel-autoload

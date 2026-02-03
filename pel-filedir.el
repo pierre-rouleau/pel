@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-01-20 14:32:05 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:26:07 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -199,7 +199,7 @@ Prompts for a directory and list found broken symlinks in the special
                  (format-time-string "%Y-%m-%d %H:%M:%S" (current-time))
                  title
                  (expand-file-name dirpath)))
-        (dolist (fname (reverse broken-links))
+        (dolist (fname (nreverse broken-links))
           (insert (format "%s\t-> %s\n" fname (file-symlink-p fname))))
         (display-buffer buffer)))
     (message "Found %s." title)))

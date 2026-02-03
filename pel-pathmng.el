@@ -83,7 +83,7 @@
           (pel-system-is-linux-p (progn
                                    (push "/usr/local/share" paths)
                                    (push "/usr/local/share/emacs" paths))))
-    (reverse paths)))
+    (nreverse paths)))
 
 (defconst pel-paths-excluded-loadpath (pel--paths-excluded-loadpath-here)
   "List of directories that are parent of important Emacs directories.")
@@ -99,7 +99,7 @@ Return nil if no parent in common."
          (common '())
          (skip    nil)
          (dirb    nil)
-         (common-paths (dolist (dira dirs-a (reverse common))
+         (common-paths (dolist (dira dirs-a (nreverse common))
                          (unless skip
                            (setq dirb (car dirs-b))
                            (setq dirs-b (cdr dirs-b))
@@ -161,7 +161,7 @@ Return nil if no parent in common."
 (defun pel-emacs-roots-in (directories &optional excluded)
   "Return a list of the directory roots listed in load-path"
   (let ((roots (list (car directories))))
-    (dolist (dir (cdr directories) (reverse roots))
+    (dolist (dir (cdr directories) (nreverse roots))
       ;; dir has common-path in common with something inside roots
       ;; It's possible that we placed something in roots that is a
       ;; child of what is common-path.  If this is the case it must be

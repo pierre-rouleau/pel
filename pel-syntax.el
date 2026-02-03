@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-15 12:14:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:50:20 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -101,7 +101,7 @@ otherwise list only the ones specified by it."
   (if pel-syntax-text-properties
       (let ((prop-msgs nil))
         (setq prop-msgs
-              (dolist (prop pel-syntax-text-properties (reverse prop-msgs))
+              (dolist (prop pel-syntax-text-properties (nreverse prop-msgs))
                 (push (format "%-20s: %S"
                               prop
                               (get-text-property (point) prop))

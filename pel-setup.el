@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-25 15:57:53 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:47:37 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -425,7 +425,7 @@ independent environments for terminal and graphics mode."
     ;;
     (unless pel-support-dual-environment
       (pel-push-fmt issues "pel-support-dual-environment user-option not set"))
-    (reverse issues)))
+    (nreverse issues)))
 
 ;;-pel-autoload
 (defun pel-setup-info-dual-environment ()
@@ -1047,7 +1047,7 @@ The elpa symlink target format does not use a directory name format:
                 (pel-point-symlink-to elpa-dirname elpa-complete-dirpath)))
           (pel-push-fmt problems "The elpa is not a symlink  : %s"
             elpa-dirname))))
-    (reverse problems)))
+    (nreverse problems)))
 
 (defun pel--validate-elpa-symlink (elpa-dirpath for-graphics )
   "Check validity of ELPA-DIRPATH used FOR-GRAPHICS.

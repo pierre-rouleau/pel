@@ -2,7 +2,7 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-15 17:01:58 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:45:55 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -570,7 +570,7 @@ A nil value corresponds to Emacs default."
   (let ((selection '((?e "iSearch (default)" nil))))
     (when pel-use-anzu   (push '(?a "iSearch & Anzu" anzu) selection))
     (when pel-use-swiper (push '(?s "Swiper" swiper) selection))
-    (reverse selection)))
+    (nreverse selection)))
 
 ;;-pel-autoload
 (defun pel-select-search-tool ()

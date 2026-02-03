@@ -229,7 +229,7 @@ KEY-CHORDS-SPEC is a list of the following 5 elements:
 Return a list of (mode fname key-type key-string) for which the
 activation must be deferred."
   (let ((deferred-modes ())) ; alist of (mode . fname) that must be deferred
-    (dolist (spec key-chords-spec (reverse deferred-modes))
+    (dolist (spec key-chords-spec (nreverse deferred-modes))
       (let ((activation-result (pel-activate-key-chord-from-spec spec)))
         ;; activation-result := t | (mode-symbol
         ;;                           fname

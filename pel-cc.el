@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-23 10:21:57 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:29:01 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -141,7 +141,7 @@ variable `c-default-style' if bound.  If it is unbound
 return \"void\"."
   (if (boundp 'c-default-style)
       (let ((styles '()))
-        (dolist (mode.style c-default-style (reverse styles))
+        (dolist (mode.style c-default-style (nreverse styles))
           (if (eq (car mode.style) mode)
               (push (cdr mode.style) styles))))
     "void"))

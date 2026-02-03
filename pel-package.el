@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-01-17 17:58:28 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:43:47 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -248,7 +248,7 @@ when it is requested as specified by the presence of
      (lambda (symbol)
        (when (pel-user-option-p symbol)
          (push symbol symbols))))
-    (reverse symbols)))
+    (nreverse symbols)))
 
 (defun pel-commands ()
   "Return a list of PEL command symbols."
@@ -264,7 +264,7 @@ when it is requested as specified by the presence of
                        (not (pel-string-starts-with-p cmd-name "pel-∑"))
                        (not (pel-string-starts-with-p cmd-name "pel-⅀")))))
        (push symbol symbols))))
-  (reverse symbols)))
+  (nreverse symbols)))
 
 (defun pel--assert-valid-user-option  (symbol)
   "Assert that the SYMBOL argument is a valid PEL user-option symbol.
@@ -329,7 +329,7 @@ Name of package is in group 1.")
                     (push found-text pkg-names))
                 (message "FAILED extraction of: %s" (match-string group) ))
               found))))
-    (reverse pkg-names)))
+    (nreverse pkg-names)))
 
 (defconst pel--regexp-github-pkg-path
   "[-[:alnum:]\\.]+/\\([-[:alnum:]\\.]+\\)/\\(?:master\\|upstream\\)"
@@ -1136,8 +1136,8 @@ order.
         (unless (member util-el-file pel-utils-packages-to-keep)
           (push util-el-file excess-utils-files))))
     ;; return both lists
-    (list (reverse active-utils-files)
-          (reverse excess-utils-files))))
+    (list (nreverse active-utils-files)
+          (nreverse excess-utils-files))))
 
 (defun pel-utils-unrequired ()
   "Return the list of utils files not currently required."
@@ -1306,7 +1306,7 @@ The list of package symbols is sorted by symbol names."
         (let ((pkg-name  (intern (match-string 1 dir-name))))
           (unless (memq pkg-name elpa-pkg-names)
             (push pkg-name elpa-pkg-names)))))
-    (reverse elpa-pkg-names)))
+    (nreverse elpa-pkg-names)))
 
 (defun pel-elpa-unrequired ()
   "Return a list of the elpa packages that are not required by PEL.

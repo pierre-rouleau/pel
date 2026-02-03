@@ -586,7 +586,7 @@ Issues an error if there are any state inconsistency."
     (when (and pel-use-corfu
                pel-emacs-29-or-later-p)
       (push '(?u "corfU" corfu) selection))
-    (setq selection (reverse selection))
+    (setq selection (nreverse selection))
     (or selection
         (user-error "None activated!  Turn on at least one of the following:
  pel-use-auto-complete, pel-use-company and pel-use-corfu."))))

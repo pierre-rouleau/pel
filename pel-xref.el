@@ -335,7 +335,7 @@ where: nil := Emacs xref default (not initialized).")
   (let ((selection '((?x "xref buffer" xref))))
     (when pel-use-ivy-xref   (push '(?i "ivy-xref"  ivy-xref)  selection))
     (when pel-use-helm-xref  (push '(?h "helm-xref" helm-xref) selection))
-    (reverse selection)))
+    (nreverse selection)))
 
 
 ;;-pel-autoload
@@ -529,25 +529,46 @@ The modification holds only for the current Emacs session."
                                      "global")))
 
 ;;-pel-autoload
-(defun pel-xref-show-status (&optional print-in-buffer)
-  "Show the mode status of Xref back-ends in current buffer.
-
-Also show the name of the PEL user-option(s) that activate a
-specific backend automatically.
-
-With PRINT-IN-BUFFER argument, print the information in a
-dedicated buffer."
+(defun pel-xref-show-status (&optional append)
+  "Print Xref status information for current buffer in specialized buffer.
+The buffer name is *pel-xref-info*.
+If APPEND is non-nil, append to the buffer."
   (interactive "P")
-  (let ((msg (format "\
-- Xref Front-end: %s (*tags-case-fold-search -> <f11> X X -> search tag is: %s)
-  - Change front end with <f11> X F.  Change back-ends with <f11> X B.
-- Xref Back-ends:
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer))
+        (used-xref-tool pel--xref-front-end-used-tool)
+        (used-tags-case-fold-search tags-case-fold-search)
+        (used-fold-case (pel--tags-case-fold-search-string
+                         tags-case-fold-search))
+        (used-state (pel-xref-dumb-jump-mode-state-str))
+        (title (pel-string-with-major-mode "xref setup for %s mode")))
+    (pel-print-in-buffer
+     "*pel-xref-info*"
+     title
+     (lambda ()
+       "Print xref state for the buffer."
+       (pel-insert-bold (format "* Xref Front End: %s\n" used-xref-tool))
+       (insert
+        (format
+         "\
+  - Change front end with: %s.
+  - tags-case-fold-search -> %s -> search tag is: %s.
+  - Toggle search case sensitivity with: %s.\n\n"
+         (propertize "<f11> X F"
+                     'face '(:foreground "forest green" :weight bold))
+         used-tags-case-fold-search
+         used-fold-case
+         (propertize "<f11> X X"
+                     'face '(:foreground "forest green" :weight bold))))
+       (pel-insert-bold "* Xref Back Ends:\n")
+       (insert
+        (format "\
+  - Change back  end with: %s.
   - dumb-jump-mode           : %s %s
   - ggtags-mode              : %s %s
   - xref-backend-functions   : %s
    - xref-etags mode         : %s
     - tags-file-name         : %s
-      - modify it with       : M-x visit-tags-table : <f11> X t
+      - modify it with       : M-x visit-tags-table : %s
     * tags-table-list        : %S : set tags-add-tables to 'ask'
    - gxref                   : %s %s
    - rtags-xref (for C/C++)  : %s
@@ -556,34 +577,49 @@ dedicated buffer."
     - helm-xref              : %s
   - cscope-minor-mode        : %s %s
     - helm-cscope-mode       : %s
-    - helm-scope key bindings: %s"
-                     pel--xref-front-end-used-tool
-                     (pel--tags-case-fold-search-string tags-case-fold-search)
-                     (pel-xref-dumb-jump-mode-state-str)
-                     (pel-minor-mode-auto-activated-by 'dumb-jump-mode nil "" :show-all)
-                     (pel-option-mode-state 'ggtags-mode 'pel-use-ggtags)
-                     (pel-minor-mode-auto-activated-by 'ggtags-mode  nil "" :show-all)
-                     (pel-xref-functions-hook-str xref-backend-functions)
-                     (pel-symbol-on-off-string 'xref-etags-mode)
-                     tags-file-name
-                     tags-table-list
-                     (pel-xref-gxref-state-str)
-                     (pel-minor-mode-auto-activated-by 'gxref-mode  nil "" :show-all)
-                     (pel-xref-rtags-state-str)
-                     xref-show-xrefs-function
-                     (pel-xref-ivy-xref-state-str)
-                     (pel-xref-helm-xref-state-str)
-                     (pel-option-mode-state 'cscope-minor-mode
-                                            'pel-use-xcscope
-                                            pel-modes-activating-cscope)
-                     (pel-minor-mode-auto-activated-by 'cscope-minor-mode  nil "" :show-all)
-                     (pel-symbol-on-off-string 'helm-cscope-mode nil nil "not loaded")
-                     (pel-on-off-string pel--helm-cscope-keys-active))))
+    - helm-scope key bindings: %s\n\n"
+                (propertize "<f11> X X"
+                     'face '(:foreground "forest green" :weight bold))
+                used-state
+                (pel-minor-mode-auto-activated-by 'dumb-jump-mode nil "" :show-all)
+                (pel-option-mode-state 'ggtags-mode 'pel-use-ggtags)
+                (pel-minor-mode-auto-activated-by 'ggtags-mode  nil "" :show-all)
+                (pel-xref-functions-hook-str xref-backend-functions)
+                (pel-symbol-on-off-string 'xref-etags-mode)
+                tags-file-name
+                (propertize "<f11> X t"
+                            'face '(:foreground "forest green" :weight bold))
+                tags-table-list
+                (pel-xref-gxref-state-str)
+                (pel-minor-mode-auto-activated-by 'gxref-mode  nil "" :show-all)
+                (pel-xref-rtags-state-str)
+                xref-show-xrefs-function
+                (pel-xref-ivy-xref-state-str)
+                (pel-xref-helm-xref-state-str)
+                (pel-option-mode-state 'cscope-minor-mode
+                                       'pel-use-xcscope
+                                       pel-modes-activating-cscope)
+                (pel-minor-mode-auto-activated-by 'cscope-minor-mode  nil "" :show-all)
+                (pel-symbol-on-off-string 'helm-cscope-mode nil nil "not loaded")
+                (pel-on-off-string pel--helm-cscope-keys-active)))
 
-    (if print-in-buffer
-        (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
-          (pel-print-in-buffer "*xref-status*" "Xref Status" msg))
-      (message msg))))
+       (pel-insert-bold "User-Option for xref front-end selection:")
+       (pel-insert-symbol-content-line 'pel-startup-xref-front-end)
+       (pel-insert-symbol-content-line 'tags-case-fold-search)
+
+       (pel-insert-bold "\n\nUser-Options activating xref back-ends by major modes:")
+       (pel-insert-symbol-content-line 'pel-modes-activating-cscope)
+       (pel-insert-symbol-content-line 'pel-modes-activating-dumb-jump)
+       (pel-insert-symbol-content-line 'pel-modes-activating-ggtags)
+       (pel-insert-symbol-content-line 'pel-modes-activating-gxref)
+       (pel-insert-symbol-content-line 'pel-modes-activating-helm-cscope)
+
+       (pel-insert-bold "\n\nXref control variables:")
+       (pel-insert-symbol-content-line 'xref-show-xrefs-function)
+
+       )
+     (unless append :clear-buffer)
+     :use-help-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;; Find definition of Customize symbol

@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 22:34:34 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-02 22:45:15 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -292,7 +292,7 @@ SYMBOLS := a list of symbols."
          (idx     (or first-idx ?1))
          (choice (pel-select-from
                   title
-                  (dolist (symbol symbols (reverse choices))
+                  (dolist (symbol symbols (nreverse choices))
                     (push (list                 ; each list entry must have:
                            idx                  ; a selector character
                            (symbol-name symbol) ; a descriptive string
