@@ -11033,7 +11033,9 @@ See `flyspell-auto-correct-previous-word' for more info."
                      dumb-jump-xref-activate
                      pel-xref-toggle-dumb-jump-mode)
 
-  ;; pel-xref-toggle-dumb-jump-mode sets up the xref-backend-functions
+  (define-pel-global-prefix pel:dumb-jump (kbd "<f11> X D"))
+
+  ;; `pel-xref-toggle-dumb-jump-mode' sets up the xref-backend-functions
   ;; to use dumb-jump as the backend for xref, and use its key bindings.
   (define-key pel:xref-backend "D" 'pel-xref-toggle-dumb-jump-mode)
   ;; schedule activation for requested major modes.
@@ -11043,7 +11045,15 @@ See `flyspell-auto-correct-previous-word' for more info."
   ;; warned about them being obsolete!
   (pel-eval-after-load dumb-jump
     (when (boundp 'dumb-jump-disable-obsolete-warnings)
-      (setq dumb-jump-disable-obsolete-warnings t))))
+      (setq dumb-jump-disable-obsolete-warnings t))
+    (define-key pel:dumb-jump "D" 'dumb-jump-mode)
+    (define-key pel:dumb-jump "G" 'dumb-jump-go)
+    (define-key pel:dumb-jump "O" 'dumb-jump-go-other-window)
+    (define-key pel:dumb-jump "E" 'dumb-jump-go-prefer-external)
+    (define-key pel:dumb-jump "X" 'dumb-jump-go-prefer-external-other-window)
+    (define-key pel:dumb-jump "P" 'dumb-jump-go-prompt)
+    (define-key pel:dumb-jump "B" 'dumb-jump-go-back)
+    (define-key pel:dumb-jump "Q" 'dumb-jump-go-quick-look)))
 
 ;;** gxref
 (when pel-use-gxref
