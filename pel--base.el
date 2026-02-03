@@ -536,9 +536,9 @@ BUFFER-OR-NAME."
 
 (defun pel-buffers-in-mode (wanted-major-mode)
   "Return a list of buffers with specified WANTED-MAJOR-MODE, nil if none open.
-WANTED-MODE is a symbol."
+WANTED-MODE is a symbol; something like \\='emacs-lisp-mode"
   (let ((buffers-in-wanted-mode '()))
-    (dolist (buffer (buffer-list) (reverse buffers-in-wanted-mode))
+    (dolist (buffer (buffer-list) (nreverse buffers-in-wanted-mode))
       (with-current-buffer buffer
         (when (eq major-mode wanted-major-mode)
           (push buffer buffers-in-wanted-mode))))))
@@ -2383,7 +2383,7 @@ following that line separator."
                      (file-attribute-modes attrs)
                      (pel-file-md5 grammar-fname))
                     lines))))
-        (mapconcat #'identity (reverse lines) "")) ; sep needed in old emacs
+        (mapconcat #'identity (nreverse lines) "")) ; sep needed in old emacs
     (format "Tree-Sitter language grammar is NOT available for %s." mode)))
 
 ;; ---------------------------------------------------------------------------
