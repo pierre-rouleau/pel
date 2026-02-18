@@ -4406,9 +4406,10 @@ d-mode not added to ac-modes!"
            'common-lisp-indent-function))
     ;; When Slime is used and extra slime contributions are identified
     ;; activate them.
-    (when (and (eq pel-use-common-lisp 'with-slime+)
-               (fboundp 'slime-setup))
-      (slime-setup))
+    (when (eq pel-use-common-lisp 'with-slime+)
+      (pel-eval-after-load slime
+        (when (fboundp 'slime-setup)
+          (slime-setup))))
     ;; imenu support: add ability to extract more Common Lisp definitions.
     ;; compute it once after a pel-init (instead of on each file opened).
     (when (boundp 'lisp-imenu-generic-expression)

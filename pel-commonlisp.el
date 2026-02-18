@@ -138,10 +138,15 @@ The behaviour of the command is affected by the optional argument N:
               (or new-repl
                   (not (pel-switch-to-window 'inferior-lisp-mode
                                              in-other-window)))
-            (if (and  (boundp 'inferior-lisp-program)
-                      inferior-lisp-program)
-                (run-lisp inferior-lisp-program)
-              (user-error "Invalid inferior-lisp-program value!")))
+            (let ((lisp-program
+                   (or (and (boundp 'pel-inferior-lisp-program)
+                            pel-inferior-lisp-program)
+                       (and (boundp 'inferior-lisp-program)
+                            inferior-lisp-program))))
+              (if lisp-program
+                  (run-lisp lisp-program)
+                (user-error "No Common Lisp program configured!
+Set `pel-inferior-lisp-program' or `inferior-lisp-program'"))))
         (user-error "Function run-lisp is unbound!"))))))
 
 ;; --------------------------------------------------------------------------
@@ -154,41 +159,45 @@ The behaviour of the command is affected by the optional argument N:
 Use the linter program specified by `pel-clisp-linter'."
   (interactive)
   (if pel-clisp-linter
-      (let* ((pgm-name nil)
-             (check-pgm t)
-             (cmd
-              (cond
-               ;;
-               ((eq pel-clisp-linter 'use-mallet-4emacs)
-                (setq check-pgm nil)
-                (format "$PEL_DIR_BIN/mallet-4emacs %s" (buffer-file-name)))
-               ;;
-               ((stringp pel-clisp-linter)
-                (let* ((space-pos (string-match "[[:space:]]" pel-clisp-linter)))
-                  (setq pgm-name (if space-pos
-                                     (substring pel-clisp-linter 0 space-pos)
-                                   pel-clisp-linter))
-                  (format "%s %s" pel-clisp-linter (buffer-file-name))))
-               ;;
-               ((listp pel-clisp-linter)
-                (setq pgm-name (plist-get pel-clisp-linter :command))
-                (format "%s %s %s %s"
-                        pgm-name
-                        (or (plist-get pel-clisp-linter :options) "")
-                        (buffer-file-name)
-                        (let ((filter-cmd (plist-get pel-clisp-linter :filter)))
-                          (if filter-cmd
-                              (format "| %s" filter-cmd)
-                            "")))))))
-        (if (or (not check-pgm)
-                (executable-find pgm-name))
-            (let* ((pel-dir-bin (format "%s/bin" pel-home-dirpath-name))
-                   (process-environment
-                    (cons (format "PEL_DIR_BIN=%s" pel-dir-bin)
-                          process-environment)))
-              (compile cmd))
-          (user-error "Program identified by pel-clisp-linter not found: %s"
-                      pgm-name)))
+      (let ((fname (buffer-file-name)))
+        (unless fname
+          (user-error "Current buffer is not visiting a file"))
+        (setq fname (shell-quote-argument fname))
+        (let* ((pgm-name nil)
+               (check-pgm t)
+               (cmd
+                (cond
+                 ;;
+                 ((eq pel-clisp-linter 'use-mallet-4emacs)
+                  (setq check-pgm nil)
+                  (format "$PEL_DIR_BIN/mallet-4emacs %s" fname))
+                 ;;
+                 ((stringp pel-clisp-linter)
+                  (let* ((space-pos (string-match "[[:space:]]" pel-clisp-linter)))
+                    (setq pgm-name (if space-pos
+                                       (substring pel-clisp-linter 0 space-pos)
+                                     pel-clisp-linter))
+                    (format "%s %s" pel-clisp-linter fname)))
+                 ;;
+                 ((listp pel-clisp-linter)
+                  (setq pgm-name (plist-get pel-clisp-linter :command))
+                  (format "%s %s %s %s"
+                          pgm-name
+                          (or (plist-get pel-clisp-linter :options) "")
+                          fname
+                          (let ((filter-cmd (plist-get pel-clisp-linter :filter)))
+                            (if filter-cmd
+                                (format "| %s" filter-cmd)
+                              "")))))))
+          (if (or (not check-pgm)
+                  (executable-find pgm-name))
+              (let* ((pel-dir-bin (format "%s/bin" pel-home-dirpath-name))
+                     (process-environment
+                      (cons (format "PEL_DIR_BIN=%s" pel-dir-bin)
+                            process-environment)))
+                (compile cmd))
+            (user-error "Program identified by pel-clisp-linter not found: %s"
+                        pgm-name))))
     ;; pel-clisp-linter is not initialized: prompt user to initialize it
     (when (y-or-n-p "The linter program for Common Lisp unknown. Set it")
       (customize-option 'pel-clisp-linter))))
@@ -212,7 +221,7 @@ Use the Slime, SLY or PEL mechanism, whatever is available."
    ((eq pel-use-common-lisp 'with-sly)
     (if (fboundp 'sly-documentation-lookup)
         (sly-documentation-lookup)
-      (user-error "Function sly is unbound")))
+      (user-error "Function `sly-documentation-lookup' is unbound")))
    ;;
    ;; No IDE: implement it.
    (t
@@ -228,9 +237,9 @@ Use the Slime, SLY or PEL mechanism, whatever is available."
 (defun pel-cl-qr-pdf (&optional open-web-page)
   "Open the Common Lisp Quick Reference PDF.
 Open the local PDF file when the `pel-clisp-quickref-pdf-fname' is set and
-both OPEN-WEB-PAGE and `pel-clisp-quickref-pdf-fname' are nil.
-If either of
-these are non-nil then open the remote web-base file in the browser.
+both OPEN-WEB-PAGE and `pel-flip-help-pdf-arg' are nil.
+If either of these are non-nil then open the remote web-base file in the
+browser.
 
 The command opens the local file or a web based remote file according to the
 following rules:

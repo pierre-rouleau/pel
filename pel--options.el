@@ -2106,7 +2106,7 @@ This is only available on Emacs 27.1 and later."
 (defcustom pel-use-marginalia nil
   "Control whether PEL supports the marginalia package.
 This is only available on Emacs 29.1 and later."
-  :link '(url-link :tag "prescient @ GitHub"
+  :link '(url-link :tag "marginalia @ GitHub"
                    "https://github.com/minad/marginalia")
   :group 'pel-pkg-for-auto-completion
   :type '(choice
@@ -4327,7 +4327,7 @@ Do not enter lambda expressions."
   "Control whether PEL uses the `x509-mode' package.
 Provides several major modes."
   :group 'pel-pkg-for-x509-file
-  :link '(url-link :tag "509-mode @ GitHub"
+  :link '(url-link :tag "x509-mode @ GitHub"
                    "https://github.com/jobbflykt/x509-mode")
   :type 'boolean
   :safe #'booleanp)
@@ -4732,7 +4732,7 @@ Do not enter lambda expressions."
   "Control whether PEL activates the `markdown-mode' external package.
 The `pel-use-markdown' user-option must also be turned on to
 activate this package."
-  :link '(url-link "markdown-mode @ GitHub"
+  :link '(url-link :tag "markdown-mode @ GitHub"
                    "https://jblevins.org/projects/markdown-mode/")
   :group 'pel-pkg-for-markdown
   :type 'boolean
@@ -4747,7 +4747,7 @@ activate this package."
 This package provides the ability to edit code blocks of specified programming
 languages located inside markdown file via indirect buffers operating in the
 major mode of that programming language."
-  :link '(url-link "edit-indirect @ GitHub"
+  :link '(url-link :tag "edit-indirect @ GitHub"
                    "https://github.com/Fanael/edit-indirect/")
   :group 'pel-pkg-for-markdown
   :type 'boolean
@@ -4759,9 +4759,9 @@ A minor mode.
 This package provides HTML rendering of markdown and `org-mode' buffers.
 It requires Python and the grip python package that you can install
 using the command \\='pip install grip\\='."
-  :link '(url-link "grip-mode @ GitHub"
+  :link '(url-link :tag "grip-mode @ GitHub"
                    "https://github.com/seagle0128/grip-mode")
-  :link '(url-link "grip @ GitHub"
+  :link '(url-link :tag "grip @ GitHub"
                    "https://github.com/joeyespo/grip")
   :group 'pel-pkg-for-markdown
   :type 'boolean
@@ -5895,7 +5895,7 @@ default when `pel-use-tree-sitter' is turned on."
   :group 'pel-pkg-for-ada
   :link '(url-link :tag "Ada mode homepage"
                    "https://www.nongnu.org/ada-mode/")
-  :link '(url-link :tag "adat-ts-mode @ GitHub"
+  :link '(url-link :tag "ada-ts-mode @ GitHub"
                    "https://github.com/brownts/ada-ts-mode")
   :type '(choice
           (const :tag "Do not use Ada" nil)
@@ -8488,7 +8488,7 @@ the js2 major or minor mode is used."
   :link '(url-link :tag "js2-refactor @ GitHub"
                    "https://github.com/js-emacs/js2-refactor.el")
   :link '(url-link :tag "discover-js2-refactor @ GitHub"
-                   "https://github.com/js-emacs/js2-refactor.el")
+                   "https://github.com/NicolasPetton/discover-js2-refactor")
   :type '(choice
           (const :tag "Do not use js2-refactor" nil)
           (const :tag "Use js2-refactor" t)
@@ -8929,7 +8929,7 @@ Select one of the following values:
 - with-slime  : activate Common Lisp support with slime IDE.
 - with-slime+ : activate Common Lisp support with slime IDE
                 and slime extra contrib.
-- with-sly    : Activate Common Lisp support with SLY IDE.
+- with-sly    : Activate Common Lisp support with Sly IDE.
 
 When using Slime, selecting with-slime activates only slime-fancy
 contribution. When selecting with-slime+ to activate all slime all slime
@@ -8941,7 +8941,7 @@ that will help with Common Lisp editing:
 
 - Lispy, by setting `pel-use-lispy'
 - Select the Common LISP REPL via `pel-inferior-lisp-program' if you are not
-  using Slime or SLY or want to use a different Common Lisp REPL when
+  using Slime or Sly or want to use a different Common Lisp REPL when
   executing the `pel-cl-repl' command."
   :group 'pel-pkg-for-clisp
   :link '(url-link :tag "Slime @ Wikipedia"
@@ -8959,7 +8959,7 @@ that will help with Common Lisp editing:
           (const :tag "Use Common Lisp with Slime" with-slime)
           (const :tag "Use Common Lisp with Slime and extra contrib"
                  with-slime+)
-          (const :tag "Use Common Lisp with SLY" with-sly)))
+          (const :tag "Use Common Lisp with Sly" with-sly)))
 
 (defcustom pel-inferior-lisp-program nil
   "Name (with optional path) of the Common Lisp REPL to use.
@@ -14425,7 +14425,7 @@ contributions that have not been integrated in the authors repo yet."
   :link '(url-link :tag "noflet @ GitHub"
                    "https://github.com/nicferrier/emacs-noflet")
     :link '(url-link :tag "my noflet fork @ GitHub"
-                   "https://github.com/pierre-rouleaur/emacs-noflet")
+                   "https://github.com/pierre-rouleau/emacs-noflet")
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-noflet :package-is :in-utils)

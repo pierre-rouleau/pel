@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 ** Modifications, Fixes and Improvements:
 - Simplified user-options for Common Lisp, add linter command.
   - The *pel-use-common-lisp* user option now control whether a Common Lisp IDE
-      (slime or SLY) is used.  The *pel-use-slime* and *pel-use-sly* are no longer
+      (Slime or Sly) is used.  The *pel-use-slime* and *pel-use-sly* are no longer
       required nor used.
   -  Add the *pel-cl-lint* command, bound to ~<f12> a l~ key sequence in common lisp
       buffers.  This executes the Common Lisp analyzer/linter program identified
