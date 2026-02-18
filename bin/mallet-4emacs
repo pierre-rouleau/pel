@@ -4,7 +4,7 @@
 # Purpose   : Run mallet Common LISP linter and reformat output.
 # Created   : Tuesday, February 17 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-17 23:10:42 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 07:38:14 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -40,8 +40,8 @@ if [ -z "$PEL_DIR_BIN" ]; then
     exit 1
 fi
 
-if which mallet > /dev/null; then
-    if which gawk > /dev/null; then
+if command -v mallet > /dev/null; then
+    if command -v gawk > /dev/null; then
         mallet --all "$@" | "${PEL_DIR_BIN}/filter-ansi-seq" | gawk -f "${PEL_DIR_BIN}/../awk/mallet-filter.awk"
     else
         mallet --all "$@" | "${PEL_DIR_BIN}/filter-ansi-seq" | awk -f "${PEL_DIR_BIN}/../awk/mallet-filter.awk"
