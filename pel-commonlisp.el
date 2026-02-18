@@ -87,7 +87,7 @@
   "Open or switch to Common-Lisp REPL buffer window.
 Use the Common Lisp REPL selected by the PEL user-options:
 - Slime when `pel-use-common-lisp' is set to either with-slime or with-slime+,
-- SLY when `pel-used-common-lisp' is set to with-sly,
+- SLY when `pel-use-common-lisp' is set to with-sly,
 - the inferior Lisp program specified by `inferior-lisp-program' or
   `pel-inferior-lisp-program' otherwise.
 

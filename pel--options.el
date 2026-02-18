@@ -9073,7 +9073,7 @@ file you want to use which should be one of:
 Identifies command line program to use and the way to invoke it.
 You have several choices:
 - nil    : No program identified. Nothing used. The default.
-- mallet-4emacs: Use mallet invoked through a script that filters the ANSI
+- use-mallet-4emacs: Use mallet invoked through a script that filters the ANSI
   escape sequence and ensure that each error line starts with a file name.
   PEL provides this shell script which use GNU awk.
 - Linter program or path: a string.
