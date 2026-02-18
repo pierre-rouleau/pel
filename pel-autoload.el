@@ -294,6 +294,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-commonlisp" for:
     pel-cl-repl
     pel-cl-hyperspec-lookup
+    pel-cl-qr-pdf
+    pel-cl-lint
     pel-cl-add-symbol-to-imenu)
 
   (pel-autoload-function "pel-comp" for:

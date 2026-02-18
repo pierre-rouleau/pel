@@ -68,11 +68,12 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-(require 'pel--base)                    ; use: pel-symbol-at-point
-;;                                      ;      pel-add-imenu-sections-to
+(require 'pel--base)                    ; use: `pel-symbol-at-point'
+;;                                      ;      `pel-add-imenu-sections-to'
 (require 'pel--options)
-(require 'pel-prompt)                   ; use: pel-prompt
-(require 'pel-window)                   ; use: pel-switch-to-window
+(require 'pel-browse)                   ; use: `pel-browse-url'
+(require 'pel-prompt)                   ; use: `pel-prompt'
+(require 'pel-window)                   ; use: `pel-switch-to-window'
 ;;;---------------------------------------------------------------------------
 ;;; Code:
 
@@ -81,14 +82,14 @@
 ;; pel-cl-repl
 ;; -----------
 
-
 ;;-pel-autoload
 (defun pel-cl-repl (&optional n)
   "Open or switch to Common-Lisp REPL buffer window.
 Use the Common Lisp REPL selected by the PEL user-options:
-- SLY when `pel-used-sly' is on and `pel-clisp-ide' is set to sly,
-- Slime when `pel-use-slime'is on and `pel-clisp-ide' is set to slime,
-- the inferior Lisp mode otherwise.
+- Slime when `pel-use-common-lisp' is set to either with-slime or with-slime+,
+- SLY when `pel-used-common-lisp' is set to with-sly,
+- the inferior Lisp program specified by `inferior-lisp-program' or
+  `pel-inferior-lisp-program' otherwise.
 
 The behaviour of the command is affected by the optional argument N:
  - with no buffers running REPL:
@@ -107,36 +108,90 @@ The behaviour of the command is affected by the optional argument N:
           > N is positive:       - open REPL in other window
           > N is negative:       - create new REPL in current window."
   (interactive "P")
-  (let* ((n               (prefix-numeric-value n))
-         (in-other-window (and n (> n 0)))
+  (let* ((in-other-window (and n (> n 0)))
          (new-repl        (and n (< n 0))))
     (cond
      ;;
      ;; Use Slime
-     ((and pel-use-slime
-           (eq pel-clisp-ide 'slime))
+     ((memq pel-use-common-lisp '(with-slime with-slime+))
       (if (fboundp 'slime)
           (when (or new-repl
-                    (not (pel-switch-to-window 'slime-repl-mode in-other-window)))
+                    (not (pel-switch-to-window 'slime-repl-mode
+                                               in-other-window)))
             (slime))
         (user-error "Function slime is unbound")))
      ;;
      ;; Use SLY
-     ((and pel-use-sly
-           (eq pel-clisp-ide 'sly))
+     ((eq pel-use-common-lisp 'with-sly)
       (if (fboundp 'sly)
           (when (or new-repl
-                    (not (pel-switch-to-window 'sly-mrepl-mode in-other-window)))
+                    (not (pel-switch-to-window 'sly-mrepl-mode
+                                               in-other-window)))
             (sly))
         (user-error "Function sly is unbound")))
      ;;
      ;; No IDE: use default Common Lisp REPL
      (t
+      (require 'inf-lisp)
       (if (fboundp 'run-lisp)
-          (when (or new-repl
-                    (not (pel-switch-to-window 'inferior-lisp-mode in-other-window)))
-            (run-lisp nil))
-        (user-error "Function run-lisp is unbound"))))))
+          (when
+              (or new-repl
+                  (not (pel-switch-to-window 'inferior-lisp-mode
+                                             in-other-window)))
+            (if (and  (boundp 'inferior-lisp-program)
+                      inferior-lisp-program)
+                (run-lisp inferior-lisp-program)
+              (user-error "Invalid inferior-lisp-program value!")))
+        (user-error "Function run-lisp is unbound!"))))))
+
+;; --------------------------------------------------------------------------
+
+(defvar pel-home-dirpath-name)   ; prevent compiler warning: defined in init.el
+
+;;-pel-autoload
+(defun pel-cl-lint ()
+  "Lint the Common Lisp code in current buffer.
+Use the linter program specified by `pel-clisp-linter'."
+  (interactive)
+  (if pel-clisp-linter
+      (let* ((pgm-name nil)
+             (check-pgm t)
+             (cmd
+              (cond
+               ;;
+               ((eq pel-clisp-linter 'use-mallet-4emacs)
+                (setq check-pgm nil)
+                (format "$PEL_DIR_BIN/mallet-4emacs %s" (buffer-file-name)))
+               ;;
+               ((stringp pel-clisp-linter)
+                (let* ((space-pos (string-match "[[:space:]]" pel-clisp-linter)))
+                  (setq pgm-name (if space-pos
+                                     (substring pel-clisp-linter 0 space-pos)
+                                   pel-clisp-linter))
+                  (format "%s %s" pel-clisp-linter (buffer-file-name))))
+               ;;
+               ((listp pel-clisp-linter)
+                (setq pgm-name (plist-get pel-clisp-linter :command))
+                (format "%s %s %s %s"
+                        pgm-name
+                        (or (plist-get pel-clisp-linter :options) "")
+                        (buffer-file-name)
+                        (let ((filter-cmd (plist-get pel-clisp-linter :filter)))
+                          (if filter-cmd
+                              (format "| %s" filter-cmd)
+                            "")))))))
+        (if (or (not check-pgm)
+                (executable-find pgm-name))
+            (let* ((pel-dir-bin (format "%s/bin" pel-home-dirpath-name))
+                   (process-environment
+                    (cons (format "PEL_DIR_BIN=%s" pel-dir-bin)
+                          process-environment)))
+              (compile cmd))
+          (user-error "Program identified by pel-clisp-linter not found: %s"
+                      pgm-name)))
+    ;; pel-clisp-linter is not initialized: prompt user to initialize it
+    (when (y-or-n-p "The linter program for Common Lisp unknown. Set it")
+      (customize-option 'pel-clisp-linter))))
 
 ;; ---------------------------------------------------------------------------
 
@@ -148,15 +203,13 @@ Use the Slime, SLY or PEL mechanism, whatever is available."
   (cond
    ;;
    ;; Use Slime
-   ((and pel-use-slime
-         (eq pel-clisp-ide 'slime))
+   ((memq pel-use-common-lisp '(with-slime with-slime+))
     (if (fboundp 'slime-documentation-lookup)
         (slime-documentation-lookup)
       (user-error "Function slime-documentation-lookup is unbound")))
    ;;
    ;; Use SLY
-   ((and pel-use-sly
-         (eq pel-clisp-ide 'sly))
+   ((eq pel-use-common-lisp 'with-sly)
     (if (fboundp 'sly-documentation-lookup)
         (sly-documentation-lookup)
       (user-error "Function sly is unbound")))
@@ -170,6 +223,50 @@ Use the Slime, SLY or PEL mechanism, whatever is available."
                                       'hyperspec-search))))
           (common-lisp-hyperspec symbol))
       (user-error "Function common-lisp-hyperspec not available!")))))
+
+;;-pel-autoload
+(defun pel-cl-qr-pdf (&optional open-web-page)
+  "Open the Common Lisp Quick Reference PDF.
+Open the local PDF file when the `pel-clisp-quickref-pdf-fname' is set and
+both OPEN-WEB-PAGE and `pel-clisp-quickref-pdf-fname' are nil.
+If either of
+these are non-nil then open the remote web-base file in the browser.
+
+The command opens the local file or a web based remote file according to the
+following rules:
+
+- If `pel-clisp-quickref-pdf-fname' is nil (not set) the command prompts
+  before attempting to open the remote web site page and open a window to
+  customize the user-option.
+- If `pel-clisp-quickref-pdf-fname' is set then the command checks if the
+  identified file exists.
+  - If it does not exists it issues an error.
+  - If the file exists, and both the OPEN-WEB-PAGE and `pel-flip-help-pdf-arg'
+    are nil the command opens the local file.
+  - If the local file exists but OPEN-WEB-PAGE or `pel-flip-help-pdf-arg' is
+    non-nil then the command opens the remote web base file without first
+    prompting."
+  (interactive "P")
+  (let ((remote-url "http://clqr.boundp.org/"))
+    (if pel-clisp-quickref-pdf-fname
+        (if (file-exists-p pel-clisp-quickref-pdf-fname)
+            (if (and (not open-web-page)
+                     (not pel-flip-help-pdf-arg))
+                ;; Open local PDF
+                (pel-browse-url (format "file:%s"
+                                        pel-clisp-quickref-pdf-fname))
+              ;; Open remote PDF A4 file, without prompting
+              (pel-browse-url (concat remote-url "clqr-a4-consec.pdf")))
+          ;; Specified file does not exists!
+          (user-error "\
+Invalid pel-clisp-quickref-pdf-fname: file does not exist: %s"
+                      pel-clisp-quickref-pdf-fname))
+      ;; `pel-clisp-quickref-pdf-fname' is not set.
+      ;; Prompt user before attempting to open remote web file.
+      (when (y-or-n-p (format "Open remote CL Quick Ref site at %s"
+                              remote-url))
+        (pel-browse-url remote-url)
+        (customize-option-other-window 'pel-clisp-quickref-pdf-fname)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Add Common Lisp define macro symbols to iMenu section
@@ -223,6 +320,25 @@ Then the `imenu' list will be able to show the \"rule\" and
           (when title
             (pel-cl-add-to-imenu symbol title)))
       (user-error "No symbol at point"))))
+
+;; ---------------------------------------------------------------------------
+;; Common Lisp Comments
+;; --------------------
+;;
+;; Single Line comments:
+;;   ;       For short, inline comments on the same line
+;;   ;;      For comment on their own line that describes code that follows.
+;;   ;;;     For major section of code or documentation comments.
+;;           Aligned to the left margin.
+;;   ;;;;    For file-level comments or title at the top of a file.
+;;           Aligned to the left margin.
+;;
+;; Block comments:
+;;   Nested between #| and |#
+;;
+;; Commenting out a S-expression using the #+NIL or #+(or) reader macros,
+;; placed on the line before the S-expression to comment out.
+
 
 ;;;---------------------------------------------------------------------------
 (provide 'pel-commonlisp)
