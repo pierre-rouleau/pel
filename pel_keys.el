@@ -11030,8 +11030,8 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;;** dumb-jump
 (when pel-use-dumb-jump
   ;; install dumb-jump only needed file in utils for speed.
-  ;; (pel-install-github-file "jacktasia/dumb-jump/master"
-  ;;                          "dumb-jump.el")
+  (pel-install-github-file "jacktasia/dumb-jump/master"
+                           "dumb-jump.el")
   (pel-autoload-file dumb-jump for:
                      dumb-jump-mode
                      dumb-jump-go
