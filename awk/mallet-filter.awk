@@ -1,9 +1,9 @@
 # AWK FILE: mallet-filter.awk
 #
-# Purpose   : Reformat mallet output: generate file:file:column error format.
+# Purpose   : Reformat mallet output: generate file:line:column error format.
 # Created   : Tuesday, February 17 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 07:52:28 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 08:00:42 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
