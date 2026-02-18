@@ -1,24 +1,23 @@
 #!/bin/sh
-# SH FILE: rpmlin-4emacs
+# SH FILE: rpmlint-4emacs
 #
 # Purpose   : Run rpmlint on specified file, format output.
 # Created   : Wednesday, November 20 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-11-20 21:01:29 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-17 23:08:40 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Run rpmlint and adjust output to comply with Emacs error line format.
 
-
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-# - GNU awk
-# - rpmlint
-
+# - rpmlint ( https://github.com/rpm-software-management/rpmlint )
+# - GNU awk (normally available on Linux)
+# - printf (POSIX shell builtin)
 
 # ----------------------------------------------------------------------------
 # Code
