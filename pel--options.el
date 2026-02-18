@@ -2407,7 +2407,7 @@ Select one of:
   :link '(url-link :tag "used archive-rpm @ GitHub"
                    "https://github.com/nbarrientos/archive-rpm")
   :link '(url-link :tag "original archive-rpm @ GitHub"
-                   "legoscia/archive-rpm")
+                   "https://github.com/legoscia/archive-rpm")
   :type 'boolean
   :safe #'booleanp)
 
