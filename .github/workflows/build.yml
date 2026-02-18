@@ -3,7 +3,7 @@
 # Purpose   : Automated PEL build.
 # Created   : Sunday, January 11 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-01-11 12:18:55 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 12:12:31 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -91,6 +91,6 @@ jobs:
       - name: Run build
         env:
           EMACS_INIT: ${{ github.workspace }}/ci/init.el
-        run: make clean all
+        run: make all
 
 # ----------------------------------------------------------------------------
