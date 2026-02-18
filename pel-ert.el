@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, December  7 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-16 17:16:52, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-10 10:59:27 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -87,7 +87,7 @@
 ;;
 ;;
 ;; When the test fails the ERT buffer will not show the input arguments, it only
-;; shows the following
+;; shows the following:
 ;;
 ;; F ert-test-max
 ;;     (ert-test-failed
