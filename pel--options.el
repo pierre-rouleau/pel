@@ -8932,7 +8932,7 @@ Select one of the following values:
 - with-sly    : Activate Common Lisp support with Sly IDE.
 
 When using Slime, selecting with-slime activates only slime-fancy
-contribution. When selecting with-slime+ to activate all slime all slime
+contribution. When selecting with-slime+ to activate all slime
 extra contributions like: `slime-fancy', `slime-quicklisp' and
 `slime-asdf'.
 
@@ -8960,6 +8960,8 @@ that will help with Common Lisp editing:
           (const :tag "Use Common Lisp with Slime and extra contrib"
                  with-slime+)
           (const :tag "Use Common Lisp with Sly" with-sly)))
+;; [:todo 2026-02-18, by Pierre Rouleau: add logic to track use of slime and sly]
+(pel-put pel-use-common-lisp :package-is :a-gate)
 
 (defcustom pel-inferior-lisp-program nil
   "Name (with optional path) of the Common Lisp REPL to use.
@@ -9075,7 +9077,7 @@ You have several choices:
 - nil    : No program identified. Nothing used. The default.
 - use-mallet-4emacs: Use mallet invoked through a script that filters the ANSI
   escape sequence and ensure that each error line starts with a file name.
-  PEL provides this shell script which use GNU awk.
+  PEL provides this shell script which uses GNU awk.
 - Linter program or path: a string.
   - With this you can identify the name of the program with or without
     an absolute path (which may use ~ to identify your home project.
@@ -9088,13 +9090,13 @@ You have several choices:
   - :command identifies the first portion: the program name with
              or without a path (which may use ~).
   - :options A string with options append to :command.
-  - :filter  A string that identifies a filter command the takes
+  - :filter  A string that identifies a filter command that takes
              the output of the first program and pipes it
              into this filter.  This may be used to filter the ANSI
              escape sequences.
              PEL provides the filter-ansi-seq shell script in the
              bin directory for that purpose. To use it make sure you
-             identify the fill path or make a symlink to it in your PATH."
+             identify the full path or make a symlink to it in your PATH."
   :group 'pel-pkg-for-clisp
   :link '(url-link :tag "mallet @ GitHub"
                    "https://github.com/fukamachi/mallet")

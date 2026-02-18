@@ -256,7 +256,7 @@ following rules:
     non-nil then the command opens the remote web base file without first
     prompting."
   (interactive "P")
-  (let ((remote-url "http://clqr.boundp.org/"))
+  (let ((remote-url "https://clqr.boundp.org/"))
     (if pel-clisp-quickref-pdf-fname
         (if (file-exists-p pel-clisp-quickref-pdf-fname)
             (if (and (not open-web-page)
