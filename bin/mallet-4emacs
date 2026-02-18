@@ -1,0 +1,55 @@
+#!/bin/sh
+# SH FILE: mallet-4emacs
+#
+# Purpose   : Run mallet Common LISP linter and reformat output.
+# Created   : Tuesday, February 17 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-02-17 23:10:42 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+
+# Module Description
+# ------------------
+#
+# Filters and reformat mallet output:
+# - remove all ANSI escape sequences (used to color the output)
+# - reformat the error lines to generate the "file:line:colum:" format expected
+#   by Emacs compilation-mode
+#
+
+# Emacs pel-clisp-linter can be set to use-mallet-4emacs to use this script to
+# filter mallet's output.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - mallet:  https://github.com/fukamachi/mallet
+# - ./filter-ansi-seq : which depends on Perl or GNU sed.
+# - GNU awk: use gawk if available, awk otherwise.
+# - printf (POSIX shell built-in)
+# - PEL_DIR_BIN environment variable that identifies this directory.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+if [ -z "$PEL_DIR_BIN" ]; then
+    printf -- "***ERROR mallet-4emacs: PEL_DIR_BIN is not defined!\n"
+    exit 1
+fi
+
+if which mallet > /dev/null; then
+    if which gawk > /dev/null; then
+        mallet --all "$@" | "${PEL_DIR_BIN}/filter-ansi-seq" | gawk -f "${PEL_DIR_BIN}/../awk/mallet-filter.awk"
+    else
+        mallet --all "$@" | "${PEL_DIR_BIN}/filter-ansi-seq" | awk -f "${PEL_DIR_BIN}/../awk/mallet-filter.awk"
+    fi
+else
+    printf -- "***ERROR mallet-4emacs: mallet is not in PATH!\n"
+    exit 1
+fi
+
+
+# ----------------------------------------------------------------------------
