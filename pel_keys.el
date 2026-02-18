@@ -4322,25 +4322,31 @@ d-mode not added to ac-modes!"
 ;;   ----------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` :
 (when pel-use-common-lisp
-  (defvar pel-lisp-imenu-generic-expression nil
-    "Cache copy for the PEL computed imenu index rule for Common Lisp.")
-
-  (when (and pel-inferior-lisp-program
-             (boundp 'inferior-lisp-program))
-    (setq inferior-lisp-program pel-inferior-lisp-program))
-
-  ;; Install Slime or Sly, not both.
-  ;; TODO: enhance PEL package management and options to support
-  ;;       selections of packages by choice better.
+  ;; PEL supports the installation of both Slime and Sly, but only supports
+  ;; using one of them in an Emacs session, as they both use the same hooks.
   (cond
-   ;; Use Slime
-   ((and pel-use-slime
-         (eq pel-clisp-ide 'slime))
-    (pel-ensure-package slime from: melpa))
-   ;; Use SLY
-   ((and pel-use-sly
-         (eq pel-clisp-ide 'sly))
-    (pel-ensure-package sly from: melpa)))
+   ;; Using Slime
+   ((memq pel-use-common-lisp '(with-slime with-slime+))
+    (pel-ensure-package slime from: melpa)
+    ;; [:todo 2026-02-13, by Pierre Rouleau: should this be done when loading
+    ;; a lisp-mode file or right away as done now?]
+    ;; (load )
+
+    )
+
+   ;; Using SLY
+   ((eq pel-use-common-lisp 'with-sly)
+    (pel-ensure-package sly from: melpa))
+   )
+
+
+
+  (pel-eval-after-load inf-lisp ; `inferior-lisp-program' is defined in `inf-lisp'
+    (when (and pel-inferior-lisp-program
+               (boundp 'inferior-lisp-program))
+      (message "PEL: setting inferior-lisp-program to pel-inferior-lisp-program value: %S" pel-inferior-lisp-program)
+      (setq inferior-lisp-program pel-inferior-lisp-program)))
+
 
   ;; Add support for Speedbar listing Common Lisp files:
   (when pel-use-speedbar
@@ -4352,6 +4358,7 @@ d-mode not added to ac-modes!"
     (add-to-list 'auto-mode-alist ext-regexp))
 
   (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
+  (define-pel-global-prefix pel:cl-analyze (kbd "<f11> SPC L a"))
   (define-pel-global-prefix pel:lisp-skel (kbd "<f11> SPC L <f12>"))
   ;; (define-pel-global-prefix pel:for-lisp-repl (kbd "<f11> SPC z L")) Future <f12> key right inside the REPL.
   (pel--lisp-languages-map-for pel:for-lisp)
@@ -4359,6 +4366,11 @@ d-mode not added to ac-modes!"
     (define-key pel:for-lisp "u" 'pel-render-commented-plantuml))
   (define-key pel:for-lisp "z" 'pel-cl-repl)
   (define-key pel:for-lisp "?" 'pel-cl-hyperspec-lookup)
+  (define-key pel:for-lisp (kbd "M-?") 'pel-cl-qr-pdf)
+  (define-key pel:cl-analyze "l" 'pel-cl-lint)
+
+  (defvar pel-lisp-imenu-generic-expression nil
+    "Cache copy for the PEL computed imenu index rule for Common Lisp.")
 
   ;; Enable use of the Common Lisp Hyperspec by setting their location.
   ;; Customize `pel-clisp-hyperspec-root' if you want to use a local copy.
@@ -4389,15 +4401,15 @@ d-mode not added to ac-modes!"
     ;;   indentation rules).
     ;; NOTE: this code is already done by slime-setup, so this is therefore
     ;; not required when Slime is used.
-    (unless pel-use-slime
+    (unless (memq pel-use-common-lisp '(with-slime with-slime+))
       (set (make-local-variable 'lisp-indent-function)
            'common-lisp-indent-function))
     ;; When Slime is used and extra slime contributions are identified
     ;; activate them.
-    (when (and pel-use-slime
-               (listp pel-use-slime)
-               (fboundp 'slime-setup))
-      (slime-setup pel-use-slime))
+    (when (eq pel-use-common-lisp 'with-slime+)
+      (pel-eval-after-load slime
+        (when (fboundp 'slime-setup)
+          (slime-setup))))
     ;; imenu support: add ability to extract more Common Lisp definitions.
     ;; compute it once after a pel-init (instead of on each file opened).
     (when (boundp 'lisp-imenu-generic-expression)

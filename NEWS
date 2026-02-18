@@ -2,6 +2,16 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Simplified user-options for Common Lisp, add linter command.
+  - The *pel-use-common-lisp* user option now control whether a Common Lisp IDE
+      (Slime or Sly) is used.  The *pel-use-slime* and *pel-use-sly* are no longer
+      required nor used.
+  -  Add the *pel-cl-lint* command, bound to ~<f12> a l~ key sequence in common lisp
+      buffers.  This executes the Common Lisp analyzer/linter program identified
+      by the `pel-clisp-linter` user-option.  The user option provides multiple
+      ways to identify the program.  One of them is the selection of the
+      use-mallet-4emacs symbol which selects the mallet-4emacs script provided
+      with PEL (and that uses a Common Lisp application called mallet).
 - Improved *pel-xref-show-status* command (bound to ~<f11> X ?~) to display
   the information inside its own special help-type buffer which provides links
   to the customization buffer of important user-options.

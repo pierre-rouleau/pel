@@ -3,7 +3,7 @@
 # Purpose   : Reformat mallet output: generate file:line:column error format.
 # Created   : Tuesday, February 17 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 08:00:42 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 08:18:51 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -59,7 +59,7 @@ BEGIN {
 # The file name must start at the beginning of the line and may hold path
 # Unix or Windows path.
 # Currently limiting the special characters in file names.
-$0 ~ /^[[:alnum:]_.-/\\:]+/ {
+$0 ~ /^[[:alnum:]_./\\:-]+/ {
     file_name = $0
     printf "- For: %s:\n", $0
     line_printed=1
@@ -94,7 +94,7 @@ $0 ~ /^$/ {
     line_printed = 0
 }
 
-# print through anything no previously handled.
+# print through anything not previously handled.
 line_printed == 0 { print }
 
 # ------------------------------------------------------------------------------

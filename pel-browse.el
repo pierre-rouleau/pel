@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 11 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-03-18 17:42:41 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-18 11:14:33 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -26,7 +26,7 @@
 ;;; Commentary:
 ;;
 ;; This file provides the `pel-browse-url' command that can use a mechanism
-;; identified by Emacs browse-url custom variable but can also be overridden
+;; identified by Emacs `browse-url'  function but can also be overridden
 ;; to force the use of a browser different than the system default browser.
 ;; It handles macOS specially: in macOS the normal Emacs mechanism does not
 ;; work and the macOS scripting application osascript is used.
@@ -69,36 +69,41 @@ only when the user-option `pel-browser-used' is nil.
 Use the browser identified by the user-option variable
 `pel-browser-used'."
   (interactive (browse-url-interactive-arg "URL: "))
-  (when (pel-string-starts-with-p url "file:")
-    ;; If the URL is a 'file:' URL first check if the file is present.
-    (let ((fname (substring url 5)))
-      (unless (file-exists-p fname)
-        (user-error "No such file: %s" fname))))
+  (let ((fname nil))
+    (when (pel-string-starts-with-p url "file:")
+      ;; If the URL is a 'file:' URL first check if the file is present.
+      (let ((fname (substring url 5)))
+        (unless (file-exists-p fname)
+          (user-error "No such file: %s" fname))))
 
-  ;; On macOS, the normal browser-url- functions do not work.
-  ;; So use the macOS scripting osascript to launch the browser
-  ;; when firefox or chrome is selected by the user-option.
-  (let* ((url-location (pel-url-location url))
-         (msg-fmt (format "%s page opened in %%s." url-location)))
-    (cond
-     ((or (null pel-browser-used)
-          (and (string= url-location "Local")
-               (eq pel-open-pdf-method 'pdf-viewer)))
-      (browse-url url args)
-      (message "%s file opened." url-location))
-     ;;
-     ((eq pel-browser-used 'firefox)
-      (when (if pel-system-is-macos-p
-                (pel--macos-browse "Firefox" url)
-              (browse-url-firefox url))
-        (message msg-fmt "Firefox")))
-     ;;
-     ((eq pel-browser-used 'chrome)
-      (when (if pel-system-is-macos-p
-                (pel--macos-browse "Google Chrome" url)
-              (browse-url-chrome url))
-        (message msg-fmt "Google Chrome")))
-     (t (user-error "Invalid value for pel-browser-used: %s" pel-browser-used)))))
+    ;; On macOS, the normal browser-url- functions do not work.
+    ;; So use the macOS scripting osascript to launch the browser
+    ;; when firefox or chrome is selected by the user-option.
+    (let* ((url-location (pel-url-location url))
+           (msg-fmt (format "%s page opened in %%s." url-location)))
+      (cond
+       ((or (null pel-browser-used)
+            (and (string= url-location "Local")
+                 (eq pel-open-pdf-method 'pdf-viewer)))
+        (browse-url url args)
+        (message "%s file opened." url-location))
+       ;;
+       ((eq pel-browser-used 'firefox)
+        (when fname
+          (setq url (browse-url-file-usr fname)))
+        (when (if pel-system-is-macos-p
+                  (pel--macos-browse "Firefox" url)
+                (browse-url-firefox url))
+          (message msg-fmt "Firefox")))
+       ;;
+       ((eq pel-browser-used 'chrome)
+        (when fname
+          (setq url (browse-url-file-usr fname)))
+        (when (if pel-system-is-macos-p
+                  (pel--macos-browse "Google Chrome" url)
+                (browse-url-chrome url))
+          (message msg-fmt "Google Chrome")))
+       (t (user-error "Invalid value for pel-browser-used: %s" pel-browser-used))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-browse)

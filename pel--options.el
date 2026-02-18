@@ -789,9 +789,8 @@ NOTES: - PEL only supports tree-sitter for Emacs 30.1 and later and
          automatically turns this off (set to nil) when running under
          an earlier version of Emacs because combobulate requires
          tree-sitter support."
-  :link '(url-link :tag "combobulate @ Github"
+  :link '(url-link :tag "combobulate @ GitHub"
                    "https://github.com/mickeynp/combobulate")
-  :link '(url-link :tag )
   :group 'pel-pkg-for-tree-sitter
   :type 'boolean
   :safe #'booleanp)
@@ -1217,7 +1216,7 @@ For the `ibuffer-mode', you may want to activate the following minor modes:
 (defcustom pel-use-ibuffer-vc nil
   "Control whether PEL uses & activates the ibuffer-vc package."
   :group 'pel-pkg-for-ibuffer
-  :link '(url-link :tag "ibuffer-vc @ Github"
+  :link '(url-link :tag "ibuffer-vc @ GitHub"
                    "https://github.com/purcell/ibuffer-vc")
   :type 'boolean
   :safe #'booleanp)
@@ -1357,7 +1356,7 @@ completion mechanism that is preferred by many people."
 
 (defcustom pel-use-idomenu nil
   "Control  whether PEL uses the idomenu package."
-  :link '(url-link :tag "idomenu @ Github"
+  :link '(url-link :tag "idomenu @ GitHub"
                    "https://github.com/birkenfeld/idomenu")
   :group 'pel-pkg-for-completion
   :type 'boolean
@@ -1441,7 +1440,7 @@ its customization.  The functions that now support IDO completion
 will also use the ivy or helm completion if they are selected.
 
 To activate this you must also activate `pel-use-ido'."
-  :link '(url-link :tag "ido-completing-read+ @ Github"
+  :link '(url-link :tag "ido-completing-read+ @ GitHub"
                    "https://github.com/DarwinAwardWinner\
 /ido-completing-read-plus")
   :group 'pel-pkg-for-completion
@@ -1462,7 +1461,7 @@ a long path easily.  It is similar to what is available on the
 Sublime editor.
 
 To use this you must also have `pel-use-ido' or `pel-use-ivy' set to t."
-  :link '(url-link :tag "flx @ Github"
+  :link '(url-link :tag "flx @ GitHub"
                    "https://github.com/lewang/flx")
   :group 'pel-pkg-for-completion
   :type '(choice
@@ -1682,7 +1681,7 @@ Select the completion method you want as default when activating this package."
 
 (defcustom pel-use-vertico nil
   "Control whether PEL uses the vertico package."
-  :link '(url-link  :tag "vertico @ Github"
+  :link '(url-link  :tag "vertico @ GitHub"
                     "https://github.com/minad/vertico")
   :group 'pel-pkg-for-completion
   :type 'boolean
@@ -1845,7 +1844,7 @@ standard diff annotated files."
   "Whether PEL activates diffview-mode package.
 Activates a minor mode for viewing diffs."
   :group 'pel-pkg-for-diff-merge
-  :link '(url-link :tag "diff-view @ Github"
+  :link '(url-link :tag "diff-view @ GitHub"
                    "https://github.com/mgalgs/diffview-mode")
   :type 'boolean
   :safe #'booleanp)
@@ -1907,7 +1906,7 @@ The choices are:
 - Do not use               : nil , default
 - Use, activate later      : t
 - Use, activate on startup : hide-dot-files-by-default"
-  :link '(url-link :tag "dired-hide-dotfiles @ Github"
+  :link '(url-link :tag "dired-hide-dotfiles @ GitHub"
                    "https://github.com/mattiasb/dired-hide-dotfiles")
   :group 'pel-pkg-for-dired
   :type '(choice
@@ -2007,7 +2006,7 @@ PEL stores this into `dabbrev-friend-buffer-function'"
 (defcustom pel-use-auto-complete nil
   "Control whether PEL supports the {auto-complete} package."
   :group 'pel-pkg-for-auto-completion
-  :link '(url-link :tag "auto-complete @ Github"
+  :link '(url-link :tag "auto-complete @ GitHub"
                     "https://github.com/auto-complete/auto-complete")
   :type 'boolean
   :safe #'booleanp)
@@ -2025,7 +2024,7 @@ PEL stores this into `dabbrev-friend-buffer-function'"
 This is only available on Emacs 29.1 and later.
 Note that on Emacs < 31, activating this also activates
 the `pel-use-corfu-terminal' user-option."
-  :link '(url-link :tag "corfu @ Github"
+  :link '(url-link :tag "corfu @ GitHub"
                    "https://github.com/minad/corfu")
   :group 'pel-pkg-for-auto-completion
   :type 'boolean
@@ -2034,7 +2033,7 @@ the `pel-use-corfu-terminal' user-option."
 (defcustom pel-use-corfu-terminal nil
   "Control whether PEL supports the corfu-terminal package.
 This is only available on Emacs 29.1 and later."
-  :link '(url-link :tag "corfu @ Github"
+  :link '(url-link :tag "corfu @ GitHub"
                    "https://codeberg.org/akib/emacs-corfu-terminal")
   :group 'pel-pkg-for-auto-completion
   :type 'boolean
@@ -2053,7 +2052,7 @@ This is only available on Emacs 29.1 and later."
 (defcustom pel-use-orderless nil
   "Control whether PEL supports the orderless package.
 This is only available on Emacs 27.1 and later."
-  :link '(url-link :tag "orderless @ Github"
+  :link '(url-link :tag "orderless @ GitHub"
                    "https://github.com/oantolin/orderless")
   :group 'pel-pkg-for-auto-completion
   :type 'boolean
@@ -2064,7 +2063,7 @@ This is only available on Emacs 27.1 and later."
 (defcustom pel-use-prescient nil
   "Control whether PEL supports the prescient package.
 This is only available on Emacs 27.1 and later."
-  :link '(url-link :tag "prescient @ Github"
+  :link '(url-link :tag "prescient @ GitHub"
                    "https://github.com/radian-software/prescient.el")
   :group 'pel-pkg-for-auto-completion
   :type 'boolean
@@ -2073,7 +2072,7 @@ This is only available on Emacs 27.1 and later."
 (defcustom pel-use-corfu-prescient nil
   "Control whether PEL supports the corfu-prescient package.
 This is only available on Emacs 27.1 and later."
-  :link '(url-link :tag "prescient @ Github"
+  :link '(url-link :tag "prescient @ GitHub"
                    "https://github.com/radian-software/prescient.el")
   :group 'pel-pkg-for-auto-completion
   :type 'boolean
@@ -2084,7 +2083,7 @@ This is only available on Emacs 27.1 and later."
 (defcustom pel-use-company-prescient nil
   "Control whether PEL supports the company-prescient package.
 This is only available on Emacs 27.1 and later."
-  :link '(url-link :tag "prescient @ Github"
+  :link '(url-link :tag "prescient @ GitHub"
                    "https://github.com/radian-software/prescient.el")
   :group 'pel-pkg-for-auto-completion
   :type 'boolean
@@ -2095,7 +2094,7 @@ This is only available on Emacs 27.1 and later."
 (defcustom pel-use-ivy-prescient nil
   "Control whether PEL supports the ivy-prescient package.
 This is only available on Emacs 27.1 and later."
-  :link '(url-link :tag "prescient @ Github"
+  :link '(url-link :tag "prescient @ GitHub"
                    "https://github.com/radian-software/prescient.el")
   :group 'pel-pkg-for-auto-completion
   :type 'boolean
@@ -2107,7 +2106,7 @@ This is only available on Emacs 27.1 and later."
 (defcustom pel-use-marginalia nil
   "Control whether PEL supports the marginalia package.
 This is only available on Emacs 29.1 and later."
-  :link '(url-link :tag "prescient @ Github"
+  :link '(url-link :tag "marginalia @ GitHub"
                    "https://github.com/minad/marginalia")
   :group 'pel-pkg-for-auto-completion
   :type '(choice
@@ -2130,7 +2129,7 @@ This is only available on Emacs 29.1 and later."
 (defcustom pel-use-ini nil
   "Whether PEL supports the ini package to read/write .ini files."
   :group 'pel-pkg-for-conf-file
-  :link '(url-link :tag "ini @ Github"
+  :link '(url-link :tag "ini @ GitHub"
                    "https://github.com/pierre-rouleau/ini.el")
   :type 'boolean
   :safe #'booleanp)
@@ -2146,9 +2145,9 @@ This is only available on Emacs 29.1 and later."
 Note that is `pel-use-tomlparse' is t, `pel-use-tree-sitter' is t and
 tree-sitter is available, then tomlparse is used instead of emacs-toml."
   :group 'pel-pkg-for-conf-file
-  :link '(url-link :tag "emacs-toml @ Github"
+  :link '(url-link :tag "emacs-toml @ GitHub"
                    "https://github.com/gongo/emacs-toml")
-  :link '(url-link :tag "TOML @ Github"
+  :link '(url-link :tag "TOML @ GitHub"
                    "https://github.com/toml-lang/toml")
   :link '(url-link :tag "TOML manual"
                    "https://toml.io/en/")
@@ -2161,7 +2160,7 @@ tree-sitter is available, then tomlparse is used instead of emacs-toml."
 
 This is only available when `pel-use-tree-sitter' is t (on)."
   :group 'pel-pkg-for-conf-file
-  :link '(url-link :tag "tomlparse.el @ Github"
+  :link '(url-link :tag "tomlparse.el @ GitHub"
                    "https://github.com/johannes-mueller/tomlparse.el")
   :type 'boolean
   :safe #'booleanp)
@@ -2171,7 +2170,7 @@ This is only available when `pel-use-tree-sitter' is t (on)."
   "Whether PEL supports `kconfig-mode' for the Linux kernel Konfig files.
 A Major mode."
   :group 'pel-pkg-for-conf-file
-  :link '(url-link :tag "kconfig-mode @ Github"
+  :link '(url-link :tag "kconfig-mode @ GitHub"
                    "https://github.com/delaanthonio/kconfig-mode#readme")
   :type 'boolean
   :safe #'booleanp)
@@ -2183,7 +2182,7 @@ A Major mode."
 (defcustom pel-use-dockerfile nil
   "Whether PEL supports the `dockerfile-mode'."
   :group 'pel-pkg-for-conf-file
-  :link '(url-link :tag "dockerfile-mode @ Github"
+  :link '(url-link :tag "dockerfile-mode @ GitHub"
                    "https://github.com/spotify/dockerfile-mode")
   :type 'boolean
   :safe #'booleanp)
@@ -2389,7 +2388,7 @@ Select one of:
   :group 'pel-pkg-for-filemng
   :group 'pel-pkg-for-grep
   :group 'pel-pkg-for-search
-  :link '(url-link :tag "fzf.el @ Github"
+  :link '(url-link :tag "fzf.el @ GitHub"
                    "https://github.com/bling/fzf.el")
   :link '(url-link :tag "my fzf fork @ Github, used by PEL"
                    "https://github.com/pierre-rouleau/fzf.el")
@@ -2405,10 +2404,10 @@ Select one of:
 (defcustom pel-use-archive-rpm nil
   "Control if PEL supports the archive-rpm package."
   :group 'pel-pkg-for-rpm
-  :link '(url-link :tag "used archive-rpm @ Github"
+  :link '(url-link :tag "used archive-rpm @ GitHub"
                    "https://github.com/nbarrientos/archive-rpm")
-  :link '(url-link :tag "original archive-rpm @ Github"
-                   "legoscia/archive-rpm")
+  :link '(url-link :tag "original archive-rpm @ GitHub"
+                   "https://github.com/legoscia/archive-rpm")
   :type 'boolean
   :safe #'booleanp)
 
@@ -2416,7 +2415,7 @@ Select one of:
   "Control if PEL supports the `rpm-spec-mode' package.
 A major mode."
   :group 'pel-pkg-for-rpm
-  :link '(url-link :tag "rpm-spec-mode @ Github"
+  :link '(url-link :tag "rpm-spec-mode @ GitHub"
                    "https://github.com/pierre-rouleau/rpm-spec-mode")
   :type 'boolean
   :safe #'booleanp)
@@ -2441,7 +2440,7 @@ A major mode."
   :group 'pel-pkg-for-file-browse
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "rfc-mode @ Github"
+  :link '(url-link :tag "rfc-mode @ GitHub"
                    "https://github.com/galdor/rfc-mode"))
 
 (defcustom pel-use-dir-treeview nil
@@ -2449,7 +2448,7 @@ A major mode."
   :group 'pel-pkg-for-file-browse
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "emacs-dir-treeview @ Github"
+  :link '(url-link :tag "emacs-dir-treeview @ GitHub"
                    "https://github.com/tilmanrassy/emacs-dir-treeview"))
 
 (defcustom pel-use-treemacs nil
@@ -2773,7 +2772,7 @@ Setting `pel-use-ripgrep' to t indicates that you want to use ripgrep, so
 it identifies the installation of the `rg` package.  If you also set
 `pel-use-projectile' to non-nil, then the installation of the `ripgrep`
 package is also required because `projectile` uses the `ripgrep` package."
-  :link '(url-link :tag "rg @ Github"
+  :link '(url-link :tag "rg @ GitHub"
                   "https://github.com/dajva/rg.el")
   :link '(url-link :tag "ripgrep @ GitHub"
                   "https://github.com/BurntSushi/ripgrep")
@@ -2789,7 +2788,7 @@ package is also required because `projectile` uses the `ripgrep` package."
 
 (defcustom pel-use-wgrep nil
   "Control whether PEL uses the wgrep external package."
-  :link '(url-link :tag "wgrep @ Github"
+  :link '(url-link :tag "wgrep @ GitHub"
                    "https://github.com/mhayashi1120/Emacs-wgrep")
   :group 'pel-pkg-for-grep
   :type 'boolean
@@ -2967,7 +2966,7 @@ PEL binds command `rainbow-mode' to ``<f11> b h c``."
 
 (defcustom pel-use-highlight-indentation nil
   "Control whether PEL activates the highlight-indentation external package."
-  :link '(url-link :tag "highlight-indentation @ Github"
+  :link '(url-link :tag "highlight-indentation @ GitHub"
                    "https://github.com/antonj/Highlight-Indentation-for-Emacs")
   :group 'pel-pkg-for-highlight
   :type 'boolean
@@ -3039,7 +3038,7 @@ Activating the `pel-use-lispy' user-option indirectly activates
 PEL installs my Github hosted fork; a version that drops support for
 Emacs < 25, fixes all warnings and solves an error.
 To update it, just delete ~/.emacs.d/utils/imenu+.* and restart Emacs."
-  :link '(url-link :tag "My fork of Imenu+ @ Github"
+  :link '(url-link :tag "My fork of Imenu+ @ GitHub"
                    "https://github.com/pierre-rouleau/imenu-plus")
   :link '(url-link :tag "Imenu+ description @ emacswiki"
                    "https://www.emacswiki.org/emacs/ImenuMode#h5o-10")
@@ -3128,7 +3127,7 @@ To adapt to foreign indentation offset.
 Note that when this is activated, PEL automatically turns
 `dtrt-indent-global-mode' on."
   :group 'pel-pkg-for-indentation
-  :link '(url-link :tag "dtrt-indent @ Github"
+  :link '(url-link :tag "dtrt-indent @ GitHub"
                    "https://github.com/jscheid/dtrt-indent")
   :type 'boolean
   :safe #'booleanp)
@@ -3136,7 +3135,7 @@ Note that when this is activated, PEL automatically turns
 (defcustom pel-use-indent-bars nil
   "Whether PEL activates the indent-bars external package."
   :group 'pel-pkg-for-indentation
-  :link '(url-link :tag "indent-bars @ Github"
+  :link '(url-link :tag "indent-bars @ GitHub"
                    "https://github.com/jdtsmith/indent-bars")
   :type 'boolean
   :safe #'booleanp)
@@ -3160,7 +3159,7 @@ Note that when this is activated, PEL automatically turns
 (defcustom pel-use-smart-tabs nil
   "Whether PEL activates the smart-tabs external package."
   :group 'pel-pkg-for-indentation
-  :link '(url-link :tag "smart-tabs @ Github"
+  :link '(url-link :tag "smart-tabs @ GitHub"
                    "https://github.com/jcsalomon/smarttabs")
   :link '(url-link :tag "My fork of smart-tabs @ Github used by PEL"
                    "https://github.com/pierre-rouleau/smarttabs")
@@ -3173,7 +3172,7 @@ Note that when this is activated, PEL automatically turns
 (defcustom pel-use-smart-shift nil
   "Whether PEL activates the smart-shift external package."
   :group 'pel-pkg-for-indentation
-  :link '(url-link :tag "smart-shift @ Github"
+  :link '(url-link :tag "smart-shift @ GitHub"
                    "https://github.com/hbin/smart-shift")
   :type 'boolean
   :safe #'booleanp)
@@ -3298,7 +3297,7 @@ as requested by their respective user-options."
 
 (defcustom pel-use-spdx nil
   "Control whether PEL provides support for spdx.el."
-  :link '(url-link :tag "spdx.el @ Github"
+  :link '(url-link :tag "spdx.el @ GitHub"
                    "https://github.com/condy0919/spdx.el")
   :group 'pel-pkg-for-license-insertions
   :type 'boolean
@@ -3492,7 +3491,7 @@ keep using it."
                    "https://shaunlebron.github.io/parinfer/")
   :link '(url-link :tag "parinfer @ EmacsAttic"
                    "https://github.com/emacsattic/parinfer")
-  :link '(url-link :tag "parinfer-rust-mode @ Github"
+  :link '(url-link :tag "parinfer-rust-mode @ GitHub"
                    "https://github.com/justinbarclay/parinfer-rust-mode")
   :link '(url-link :tag "parinfer @ GitHub, archived."
                    "https://github.com/shaunlebron/parinfer")
@@ -4146,7 +4145,7 @@ A major mode."
 (defcustom pel-use-atl-long-lines nil
   "Whether PEL uses the atl-long-lines package."
   :group 'pel-pkg-for-line
-  :link '(url-link :tag "atl-long-lines @ Github"
+  :link '(url-link :tag "atl-long-lines @ GitHub"
                    "https://github.com/jcs-legacy/atl-long-lines")
   :type 'boolean
   :safe #'booleanp)
@@ -4159,9 +4158,9 @@ A major mode."
 (defcustom pel-use-strace nil
   "Whether PEL uses the `strace-mode' package."
   :group 'pel-pkg-for-log-file
-  :link '(url-link :tag "strace-mode @ Github"
+  :link '(url-link :tag "strace-mode @ GitHub"
                    "https://github.com/pkmoore/strace-mode")
-  :link '(url-link :tag "my strace-mode fork @ Github"
+  :link '(url-link :tag "my strace-mode fork @ GitHub"
                    "https://github.com/pierre-rouleau/strace-mode")
   :type 'boolean
   :safe #'booleanp)
@@ -4258,7 +4257,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 A major mode.
 This package allows easy editing of Intel HEX object files."
   :group 'pel-pkg-for-object-file
-  :link '(url-link :tag "intel-hex-mode @ Github"
+  :link '(url-link :tag "intel-hex-mode @ GitHub"
                    "https://github.com/mschuldt/intel-hex-mode")
   :type 'boolean
   :safe #'booleanp)
@@ -4295,9 +4294,9 @@ A minor mode."
 Provides major modes and minor modes.
 It provides support for the authorized_keys and know_hosts files."
   :group 'pel-pkg-for-ssh
-  :link '(url-link :tag "emacs-ssh-file-modes @ Github"
+  :link '(url-link :tag "emacs-ssh-file-modes @ GitHub"
                    "https://github.com/petere/emacs-ssh-file-modes")
-  :link '(url-link :tag "my fork of emacs-ssh-file-modes @ Github"
+  :link '(url-link :tag "my fork of emacs-ssh-file-modes @ GitHub"
                    "https://github.com/pierre-rouleau/emacs-ssh-file-modes")
   :type 'boolean
   :safe #'booleanp)
@@ -4328,7 +4327,7 @@ Do not enter lambda expressions."
   "Control whether PEL uses the `x509-mode' package.
 Provides several major modes."
   :group 'pel-pkg-for-x509-file
-  :link '(url-link :tag "509-mode @ Github"
+  :link '(url-link :tag "x509-mode @ GitHub"
                    "https://github.com/jobbflykt/x509-mode")
   :type 'boolean
   :safe #'booleanp)
@@ -4343,7 +4342,7 @@ Provides several major modes."
 (defcustom pel-use-selinux-policy nil
   "Control whether PEL uses the selinux-policy package."
   :group 'pel-pkg_for-selinux
-  :link '(url-link :tag "selinux-policy @ Github"
+  :link '(url-link :tag "selinux-policy @ GitHub"
                    "https://github.com/pierre-rouleau/selinux-policy")
   :type 'boolean
   :safe #'booleanp)
@@ -4463,7 +4462,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 ;;
 ;; (defcustom pel-use-creole-mode nil
 ;;   "Whether PEL activates creole-mode."
-;;   :link '(url-link :tag "creole-mode @ Github"
+;;   :link '(url-link :tag "creole-mode @ GitHub"
 ;;                    "https://github.com/nicferrier/creole-mode")
 ;;   :group 'pel-pkg-for-creole
 ;;   :type 'boolean
@@ -4594,14 +4593,14 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :link `(url-link :tag "MscGen PDF" ,(pel-pdf-file-url "mscgen"))
   :link '(url-link :tag "MscGen @ Wikipedia"
                    "https://en.wikipedia.org/wiki/MscGen")
-  :link '(url-link :tag "mscgen-mode @ Github"
+  :link '(url-link :tag "mscgen-mode @ GitHub"
                    "https://github.com/thomsten/mscgen-mode#readme"))
 
 (defcustom pel-use-mscgen nil
   "Control whether PEL activates support for `mscgen-mode'.
 Major mode."
   :group 'pel-pkg-for-mscgen
-  :link '(url-link :tag "mscgen @ Github"
+  :link '(url-link :tag "mscgen @ GitHub"
                    "https://github.com/thomsten/mscgen-mode")
   :type 'boolean
   :safe #'booleanp)
@@ -4733,7 +4732,7 @@ Do not enter lambda expressions."
   "Control whether PEL activates the `markdown-mode' external package.
 The `pel-use-markdown' user-option must also be turned on to
 activate this package."
-  :link '(url-link "markdown-mode @ Github"
+  :link '(url-link :tag "markdown-mode @ GitHub"
                    "https://jblevins.org/projects/markdown-mode/")
   :group 'pel-pkg-for-markdown
   :type 'boolean
@@ -4748,7 +4747,7 @@ activate this package."
 This package provides the ability to edit code blocks of specified programming
 languages located inside markdown file via indirect buffers operating in the
 major mode of that programming language."
-  :link '(url-link "edit-indirect @ GitHub"
+  :link '(url-link :tag "edit-indirect @ GitHub"
                    "https://github.com/Fanael/edit-indirect/")
   :group 'pel-pkg-for-markdown
   :type 'boolean
@@ -4760,9 +4759,9 @@ A minor mode.
 This package provides HTML rendering of markdown and `org-mode' buffers.
 It requires Python and the grip python package that you can install
 using the command \\='pip install grip\\='."
-  :link '(url-link "grip-mode @ GitHub"
+  :link '(url-link :tag "grip-mode @ GitHub"
                    "https://github.com/seagle0128/grip-mode")
-  :link '(url-link "grip @ GitHub"
+  :link '(url-link :tag "grip @ GitHub"
                    "https://github.com/joeyespo/grip")
   :group 'pel-pkg-for-markdown
   :type 'boolean
@@ -5120,7 +5119,7 @@ itself is not available."
 (defcustom pel-use-yaml nil
   "Control whether PEL provides access to the `yaml-mode' external package."
   :group 'pel-pkg-for-yaml
-  :link '(url-link :tag "yaml-mode @ Github"
+  :link '(url-link :tag "yaml-mode @ GitHub"
                    "https://github.com/yoshiki/yaml-mode")
   :type 'boolean
   :safe #'booleanp)
@@ -5249,7 +5248,7 @@ That mode prints the current point value on the mode line."
   "Control whether PEL activates the mlscroll package.
 A minor mode that provides a scroll bar inside the modeline.."
   :group 'pel-pkg-for-modeline
-  :link '(url-link :tag "mlscroll @ Github"
+  :link '(url-link :tag "mlscroll @ GitHub"
                    "https://github.com/jdtsmith/mlscroll")
   :type '(choice
           (const :tag "Do not use" nil)
@@ -5348,7 +5347,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 (defcustom pel-use-verilog-ext nil
   "Whether PEL uses the verilog-ext package."
-  :link '(url-link :tag "verilog-ext @ Github"
+  :link '(url-link :tag "verilog-ext @ GitHub"
                    "https://github.com/gmlarumbe/verilog-ext")
   :group 'pel-pkg-for-verilog
   :type 'boolean
@@ -5896,7 +5895,7 @@ default when `pel-use-tree-sitter' is turned on."
   :group 'pel-pkg-for-ada
   :link '(url-link :tag "Ada mode homepage"
                    "https://www.nongnu.org/ada-mode/")
-  :link '(url-link :tag "adat-ts-mode @ Github"
+  :link '(url-link :tag "ada-ts-mode @ GitHub"
                    "https://github.com/brownts/ada-ts-mode")
   :type '(choice
           (const :tag "Do not use Ada" nil)
@@ -6604,7 +6603,7 @@ about the expected file format of the pel.ini file."
   :group 'pel-c-code-style
   :link '(custom-group-link "C")
   :link '(custom-manual "(ccmode)Built-in Styles")
-  :link '(url-link :tag "Linux kernel coding style @ Github"
+  :link '(url-link :tag "Linux kernel coding style @ GitHub"
                    "https://github.com/torvalds/linux/blob/master/Documentation/process/coding-style.rst")
   :type 'boolean
   :safe #'booleanp)
@@ -7915,7 +7914,7 @@ by the `pel-use-d-ac-dcd'."
 Currently C3 is only supported by `c3-ts-mode', a Tree-Sitter based
 mode.  There is no classic mode.  Therefore, PEL only support `c3-ts-mode'."
   :group 'pel-pkg-for-c3
-  :link '(url-link :tag "c3-ts-mode @ Github"
+  :link '(url-link :tag "c3-ts-mode @ GitHub"
                    "https://github.com/c3lang/c3-ts-mode")
   :type 'boolean
   :safe #'booleanp)
@@ -8036,7 +8035,7 @@ on."
   :group 'pel-pkg-for-dart
   :link '(url-link :tag "dart-mode @ GitHub"
                    "https://github.com/emacsorphanage/dart-mode")
-  :link '(url-link :tag "dart-ts-mode @ Github"
+  :link '(url-link :tag "dart-ts-mode @ GitHub"
                    "https://github.com/50ways2sayhard/dart-ts-mode")
   :type '(choice
           (const :tag "Do not use Dart" nil)
@@ -8196,7 +8195,7 @@ A major mode.
 Note that Eiffel support is not fully working and needs to be
 fixed.  I'm using my fork while I'm trying to make it work,but it
 is a low priority item for me at the moment."
-  :link '(url-link :tag "Eiffel mode @ Github"
+  :link '(url-link :tag "Eiffel mode @ GitHub"
                    "https://github.com/pierre-rouleau/eiffel-mode")
   :group 'pel-pkg-for-eiffel
   :type 'boolean
@@ -8288,7 +8287,7 @@ Values in the [2, 8] range are accepted."
 
 (defcustom pel-use-lsp-java nil
   "Control whether PEL use lsp-java."
-  :link '(url-link :tag "lsp-java @ Github"
+  :link '(url-link :tag "lsp-java @ GitHub"
                    "https://github.com/emacs-lsp/lsp-java")
   :group 'pel-pkg-for-java
   :type 'boolean
@@ -8314,9 +8313,9 @@ When activating it you can select between the following values:
 - with-ts-js2-minor: use `js-ts-mode' with `js2-minor-mode'.
 - js3-mode         : use `js3-mode', another external package."
   :group 'pel-pkg-for-javascript
-  :link '(url-link :tag "js2-mode @ Github"
+  :link '(url-link :tag "js2-mode @ GitHub"
                    "https://github.com/mooz/js2-mode/")
-  :link '(url-link :tag "js3-mode @ Github"
+  :link '(url-link :tag "js3-mode @ GitHub"
                    "https://github.com/tamzinblake/js3-mode")
   :type '(choice
           (const :tag "Do not use Javascript" nil)
@@ -8443,7 +8442,7 @@ Do not enter lambda expressions."
   "Control whether PEL use the js2-closure package.
 Note: to use this, the `pel-use-js' must be set to a value where
 the js2 major or minor mode is used."
-  :link '(url-link :tag "js2-closure @ Github"
+  :link '(url-link :tag "js2-closure @ GitHub"
                    "https://github.com/jart/js2-closure")
   :link '(url-link :tag "Google Javascript style guide"
                    "https://google.github.io/styleguide/jsguide.html")
@@ -8457,7 +8456,7 @@ the js2 major or minor mode is used."
   "Control whether PEL use the flow-js2-mode package.
 Note: to use this, the `pel-use-js' must be set to a value where
 the js2 major or minor mode is used."
-  :link '(url-link :tag "flow-js2-mode @ Github"
+  :link '(url-link :tag "flow-js2-mode @ GitHub"
                    "https://github.com/Fuco1/flow-js2-mode")
   :link '(url-link :tag "Flow home"
                    "https://flow.org/")
@@ -8469,7 +8468,7 @@ the js2 major or minor mode is used."
   "Control whether PEL use the xref-js2 package.
 Note: to use this, the `pel-use-js' must be set to a value where
 the js2 major or minor mode is used."
-  :link '(url-link :tag "xref-js2 @ Github"
+  :link '(url-link :tag "xref-js2 @ GitHub"
                    "https://github.com/js-emacs/xref-js2")
   :group 'pel-pkg-for-javascript
   :type 'boolean
@@ -8486,10 +8485,10 @@ To activate it you can select the following values:
 Note: to use this, the `pel-use-js' must be set to a value where
 the js2 major or minor mode is used."
   :group 'pel-pkg-for-javascript
-  :link '(url-link :tag "js2-refactor @ Github"
+  :link '(url-link :tag "js2-refactor @ GitHub"
                    "https://github.com/js-emacs/js2-refactor.el")
-  :link '(url-link :tag "discover-js2-refactor @ Github"
-                   "https://github.com/js-emacs/js2-refactor.el")
+  :link '(url-link :tag "discover-js2-refactor @ GitHub"
+                   "https://github.com/NicolasPetton/discover-js2-refactor")
   :type '(choice
           (const :tag "Do not use js2-refactor" nil)
           (const :tag "Use js2-refactor" t)
@@ -8499,7 +8498,7 @@ the js2 major or minor mode is used."
 (defcustom pel-use-js-comint nil
   "Control whether PEL use the js-comint package."
   :group 'pel-pkg-for-javascript
-  :link '(url-link :tag "js-comint @ Github"
+  :link '(url-link :tag "js-comint @ GitHub"
                    "https://github.com/redguardtoo/js-comint")
   :type 'boolean
   :safe #'booleanp)
@@ -8522,7 +8521,7 @@ When activating it you can select between the following values:
 - with-tree-sitter : use `go-ts-mode' which is built-in Emacs."
   :link '(url-link :tag "Go @ wikipedia"
                    "https://en.wikipedia.org/wiki/Go_(programming_language)")
-  :link '(url-link :tag "gomode @ Github"
+  :link '(url-link :tag "gomode @ GitHub"
                    "https://github.com/dominikh/go-mode.el")
   :group 'pel-pkg-for-go
   :type '(choice
@@ -8659,7 +8658,7 @@ when a Go file is visited.  If you want it activated
 automatically, then you must add the symbol `go-mode' to the
 defcustom variable `pel-modes-activating-syntax-check'."
   :link '(custom-group-link "pel-base-emacs")
-  :link '(url-link :tag "goflymake @ Github"
+  :link '(url-link :tag "goflymake @ GitHub"
                    "https://github.com/dougm/goflymake")
   :group 'pel-pkg-for-go
   :type '(choice
@@ -8677,7 +8676,7 @@ defcustom variable `pel-modes-activating-syntax-check'."
 
 (defcustom pel-use-gocode nil
   "Controls whether PEL use the gocode package."
-  :link '(url-link :tag "gocode @ Github"
+  :link '(url-link :tag "gocode @ GitHub"
                    "https://github.com/mdempsky/gocode")
   :group 'pel-pkg-for-go
   :type 'boolean
@@ -8686,9 +8685,9 @@ defcustom variable `pel-modes-activating-syntax-check'."
 
 (defcustom pel-use-gopls nil
   "Controls whether PEL use the gopls package."
-  :link '(url-link :tag "gopls @ Github"
+  :link '(url-link :tag "gopls @ GitHub"
                    "https://github.com/golang/tools/blob/master/gopls/doc/emacs.md")
-  :link '(url-link :tag "Go Tools @ Github"
+  :link '(url-link :tag "Go Tools @ GitHub"
                    "https://github.com/golang/tools")
   :group 'pel-pkg-for-go
   :type 'boolean
@@ -8697,7 +8696,7 @@ defcustom variable `pel-modes-activating-syntax-check'."
 
 (defcustom pel-use-go-errcheck nil
   "Controls whether PEL use the go-errcheck package."
-  :link '(url-link :tag "go-errcheck @ Github"
+  :link '(url-link :tag "go-errcheck @ GitHub"
                    "https://github.com/dominikh/go-errcheck.el")
   :link '(url-link :tag "Go errcheck @ GitHub"
                    "https://github.com/kisielk/errcheck")
@@ -8708,7 +8707,7 @@ defcustom variable `pel-modes-activating-syntax-check'."
 
 (defcustom pel-use-go-playground nil
   "Controls whether PEL use the go-playground package."
-  :link '(url-link :tag "go-playground @ Github"
+  :link '(url-link :tag "go-playground @ GitHub"
                    "https://github.com/grafov/go-playground")
   :group 'pel-pkg-for-go
   :type 'boolean
@@ -8719,7 +8718,7 @@ defcustom variable `pel-modes-activating-syntax-check'."
   "Controls whether PEL use the gorepl-mode package.
 A minor mode.
 Requires gocode."
-  :link '(url-link :tag "gorepl-mode @ Github"
+  :link '(url-link :tag "gorepl-mode @ GitHub"
                    "https://github.com/manute/gorepl-mode")
   :link '(url-link :tag "gore @ GitHub"
                    "https://github.com/motemen/gore")
@@ -8730,7 +8729,7 @@ Requires gocode."
 
 (defcustom pel-use-gotest nil
   "Controls whether PEL use the gotest package."
-  :link '(url-link :tag "gotest @ Github"
+  :link '(url-link :tag "gotest @ GitHub"
                    "https://github.com/nlamirault/gotest.el")
   :group 'pel-pkg-for-go
   :type 'boolean
@@ -8739,7 +8738,7 @@ Requires gocode."
 
 (defcustom pel-use-emacs-go-tag nil
   "Controls whether PEL use the emacs-go-tag package."
-  :link '(url-link :tag "emacs-go-tag @ Github"
+  :link '(url-link :tag "emacs-go-tag @ GitHub"
                    "https://github.com/brantou/emacs-go-tag")
   :link '(url-link :tag "gomodifytags @ GitHub"
                    "https://github.com/fatih/gomodifytags")
@@ -8750,7 +8749,7 @@ Requires gocode."
 
 (defcustom pel-use-flycheck-golangci-lint nil
   "Controls whether PEL use the flycheck-golangci-lint package."
-  :link '(url-link :tag "flycheck-golangci-lint @ Github"
+  :link '(url-link :tag "flycheck-golangci-lint @ GitHub"
                    "https://github.com/weijiangan/flycheck-golangci-lint")
   :group 'pel-pkg-for-go
   :group 'pel-pkg-for-syntax-check
@@ -8923,34 +8922,67 @@ key."
 (defcustom pel-use-common-lisp nil
   "Control whether PEL supports Common Lisp development.
 
-When turning this on, you will probably also want to activate one
-of the following minor modes that will help with Common Lisp
-editing:
+Select one of the following values:
+
+- nil         : not activated.
+- t           : activate basic Common Lisp support: no explicit IDE.
+- with-slime  : activate Common Lisp support with slime IDE.
+- with-slime+ : activate Common Lisp support with slime IDE
+                and slime extra contrib.
+- with-sly    : Activate Common Lisp support with Sly IDE.
+
+When using Slime, selecting with-slime activates only slime-fancy
+contribution. When selecting with-slime+ to activate all slime
+extra contributions like: `slime-fancy', `slime-quicklisp' and
+`slime-asdf'.
+
+You will probably also want to activate one of the following minor modes
+that will help with Common Lisp editing:
 
 - Lispy, by setting `pel-use-lispy'
-- One of:
-  - Slime, by setting `pel-use-slime', or
-  - Sly, by setting `pel-use-sly'.
-
-You will also want to use a Common Lisp REPL and want to use it
-inside Emacs.  For that you can identify the executable inside
-`pel-inferior-lisp-program'."
+- Select the Common LISP REPL via `pel-inferior-lisp-program' if you are not
+  using Slime or Sly or want to use a different Common Lisp REPL when
+  executing the `pel-cl-repl' command."
   :group 'pel-pkg-for-clisp
-  :type 'boolean
-  :safe #'booleanp)
+  :link '(url-link :tag "Slime @ Wikipedia"
+                   "https://en.wikipedia.org/wiki/SLIME")
+  :link '(url-link :tag "Slime home page"
+                   "https://common-lisp.net/project/slime/")
+  :link '(url-link :tag "Slime @ GitHub"
+                   "https://github.com/slime/slime")
+  :link '(url-link :tag "Sly @ GitHub"
+                   "https://github.com/joaotavora/sly")
+
+  :type '(choice
+          (const :tag "Not used" nil)
+          (const :tag "Use Common Lisp without specific IDE" t)
+          (const :tag "Use Common Lisp with Slime" with-slime)
+          (const :tag "Use Common Lisp with Slime and extra contrib"
+                 with-slime+)
+          (const :tag "Use Common Lisp with Sly" with-sly)))
+;; [:todo 2026-02-18, by Pierre Rouleau: add logic to track use of slime and sly]
+(pel-put pel-use-common-lisp :package-is :a-gate)
 
 (defcustom pel-inferior-lisp-program nil
   "Name (with optional path) of the Common Lisp REPL to use.
 
-PEL will copy this inside the variable `inferior-lisp-program',
-which defaults to \"lisp\".
+When `pel-inferior-lisp-program' is non-nil, PEL stores its value into
+the lisp-mode `inferior-lisp-program', which is set to \"lisp\" by
+default.  Leaving `pel-inferior-lisp-program' nil (the default) leaves
+control to the `lisp-mode' code.
 
-Another way would be to create an executable shell script called \\='lisp\\='
-that executes the a Common Lisp REPL selected by some external criteria or use
-a symlink to the one you want and ensure that is on your path.
-In any case, you can override it by setting the name here."
+You can impose a Common Lisp program here, something like clisp, clasp,
+sbcl or another Common Lisp program.  You may also want to use the
+USRHOME lisp script which selects a Common Lisp program from an
+environment variable previously set."
   :group 'pel-pkg-for-clisp
-  :type 'string)
+  :link '(url-link :tag "USRHOME @ GitHub"
+                   "https://github.com/pierre-rouleau/usrhome")
+  :link '(url-link :tag "USRHOME lisp script"
+                   "https://github.com/pierre-rouleau/usrhome/blob/main/bin/lisp")
+  :type '(choice
+          (const :tag "None specified." nil)
+          (string :tag "Specific program by name or path")))
 
 (defcustom pel-lisp-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Common Lisp buffers.
@@ -9023,58 +9055,60 @@ install them locally."
   :group 'pel-pkg-for-clisp
   :type 'string)
 
-(defcustom pel-clisp-ide nil
-  "Control what Common Lisp IDE is used, if any.
-The following IDE are supported:  Slime and SLY."
+(defcustom pel-clisp-quickref-pdf-fname nil
+  "File name of the local copy of the Common Lisp Quick Reference PDF.
+
+To use you must first download the PDF file and store it inside a local
+directory, then store its file name inside this user-option.
+See the link to access the web site where you can retrieve a copy of the
+file you want to use which should be one of:
+- clqr-a4-consec.pdf, or
+- clqr-letter-consec.pdf."
   :group 'pel-pkg-for-clisp
   :type '(choice
-          (const :tag "No IDE" nil)
-          (const :tag "Use Slime - `pel-use-slime' must be set" slime)
-          (const :tag "Use SLY   - `pel-use-sly' must be set"   sly)))
+          (const :tag "No file downloaded yet." nil)
+          (file :must-match t)))
 
-(defcustom pel-use-slime nil
-  "Control whether PEL activates SLIME for Common Lisp.
+(defcustom pel-clisp-linter  nil
+  "File name of Common Lisp linter command.
 
-The value can be:
-- 0: not used
-- 1: Use - no extra contrib
-- 2: Use with extra contrib.
-
-Select 2 to specify extra slime features to activate, as symbols
-that have a name that starts with \\='slime-\\=' and corresponds to
-slime extra contributions, like: slime-fancy, slime-quicklisp and
-slime-asdf.  By default, slime activates only slime-fancy
-contribution.
-
-Also note that to activate Slime you must also set:
-- `pel-clisp-ide' to slime.
-- `pel-use-common-lisp' to t."
-  :link '(url-link :tag "Slime @ Wikipedia"
-                   "https://en.wikipedia.org/wiki/SLIME")
-  :link '(url-link :tag "Slime home page"
-                   "https://common-lisp.net/project/slime/")
-  :link '(url-link :tag "Slime @ GitHub"
-                   "https://github.com/slime/slime")
+Identifies command line program to use and the way to invoke it.
+You have several choices:
+- nil    : No program identified. Nothing used. The default.
+- use-mallet-4emacs: Use mallet invoked through a script that filters the ANSI
+  escape sequence and ensure that each error line starts with a file name.
+  PEL provides this shell script which uses GNU awk.
+- Linter program or path: a string.
+  - With this you can identify the name of the program with or without
+    an absolute path (which may use ~ to identify your home project.
+    You can also append a set of options.
+    The name of the Common Lisp file to process will be appended
+    after that string.
+- Linter program, options and possibly piped output.
+  The most flexible way to specify the program to use inside a
+  property list with 1, 2 or 3 strings:
+  - :command identifies the first portion: the program name with
+             or without a path (which may use ~).
+  - :options A string with options append to :command.
+  - :filter  A string that identifies a filter command that takes
+             the output of the first program and pipes it
+             into this filter.  This may be used to filter the ANSI
+             escape sequences.
+             PEL provides the filter-ansi-seq shell script in the
+             bin directory for that purpose. To use it make sure you
+             identify the full path or make a symlink to it in your PATH."
   :group 'pel-pkg-for-clisp
+  :link '(url-link :tag "mallet @ GitHub"
+                   "https://github.com/fukamachi/mallet")
   :type '(choice
-          (const :tag "Not used" nil)
-          (const :tag "Use - no extra contribs" t)
-          (repeat :tag "Use with extra contribs"
-                  (symbol :tag "extra contrib"))))
-(pel-put 'pel-use-slime :requires 'pel-use-common-lisp)
+          (const :tag "No program identified." nil)
+          (const :tag "Use mallet-4emacs" use-mallet-4emacs)
+          (string :tag "Linter program or path" :value "mallet")
+          (plist :tag "Linter program, options and possibly piped output"
+                 :options ((:command string)
+                           (:options string)
+                           (:filter string)))))
 
-(defcustom pel-use-sly nil
-  "Control whether PEL activates SLY for Common Lisp.
-
-Also note that to activate SLY you must also set:
-- `pel-clisp-ide' to sly.
-- `pel-use-common-lisp' to t."
-  :link '(url-link :tag "Sly @ GitHub"
-                   "https://github.com/joaotavora/sly")
-  :group 'pel-pkg-for-clisp
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-sly :requires 'pel-use-common-lisp)
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-clisp-code-style nil
@@ -9714,9 +9748,9 @@ Downloads gambit.el from the GitHub repo instead of relying on a
 local installation of Gambit.  This allows PEL to manage Gambit
 like its other packages."
   :group 'pel-pkg-for-gambit
-  :link '(url-link :tag "gambit.el @ Github"
+  :link '(url-link :tag "gambit.el @ GitHub"
                    "https://github.com/gambit/gambit/blob/master/misc/gambit.el")
-  :link '(url-link :tag "pierre-rouleau gambit.el fork @ Github"
+  :link '(url-link :tag "pierre-rouleau gambit.el fork @ GitHub"
                     "https://github.com/pierre-rouleau/gambit/blob/master/misc/gambit.el")
   :type 'boolean
   :safe #'booleanp)
@@ -9761,9 +9795,9 @@ Enter *local* minor-mode activating function symbols.
 Note that activating Gerbil also activates Gambit support."
   :link '(url-link :tag "Gerbil Homepage"
                    "https://cons.io")
-  :link '(url-link :tag "Gerbil @ Github"
+  :link '(url-link :tag "Gerbil @ GitHub"
                    "https://github.com/vyzo/gerbil")
-  :link '(url-link :tag "gerbil-mode @ Github"
+  :link '(url-link :tag "gerbil-mode @ GitHub"
                    "https://github.com/vyzo/gerbil/blob/master/etc/gerbil-mode.el")
   :group 'pel-pkg-for-gerbil
   :type 'boolean
@@ -10372,9 +10406,9 @@ When activating it you can select between the following values:
 - with-tree-sitter : use `erlang-ts-mode' provided by the erlang-ts.el
                      external package."
   :group 'pel-pkg-for-erlang
-  :link '(url-link :tag "erlang-mode @ Github"
+  :link '(url-link :tag "erlang-mode @ GitHub"
                    "https://github.com/erlang/otp")
-  :link '(url-link :tag "erlang-ts @ Github"
+  :link '(url-link :tag "erlang-ts @ GitHub"
                    "https://github.com/erlang/emacs-erlang-ts")
   :type '(choice
           (const :tag "Do not use Erlang" nil)
@@ -11128,7 +11162,7 @@ Currently Gleam is only supported by `gleam-ts-mode', a Tree-Sitter based
 mode.  There is no classic mode.  There was but the Gleam team dropped it
 and does not plan to develop it.  Therefore, PEL only support `gleam-ts-mode'."
   :group 'pel-pkg-for-gleam
-  :link '(url-link :tag "gleam-ts-mode @ Github"
+  :link '(url-link :tag "gleam-ts-mode @ GitHub"
                    "https://github.com/gleam-lang/gleam-mode")
   :type 'boolean
   :safe #'booleanp)
@@ -11817,7 +11851,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 (defcustom pel-use-flycheck-objc-clang nil
   "Control whether PEL activates flycheck-objc-clang for Objective-C."
-  :link '(url-link :tag "flycheck-objc-clang @ Github"
+  :link '(url-link :tag "flycheck-objc-clang @ GitHub"
                    "https://github.com/GyazSquare/flycheck-objc-clang")
   :group 'pel-pkg-for-objc
   :group 'pel-pkg-for-syntax-check
@@ -11827,9 +11861,9 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 (defcustom pel-use-objc-font-lock nil
   "Control whether PEL activates objc-font-lock for Objective-C.
 PEL currently uses my fork to prevent byte compiler warning."
-  :link '(url-link :tag "My fork of objc-font-lock @ Github"
+  :link '(url-link :tag "My fork of objc-font-lock @ GitHub"
                    "https://github.com/pierre-rouleau/objc-font-lock")
-  :link '(url-link :tag "objc-font-lock @ Github"
+  :link '(url-link :tag "objc-font-lock @ GitHub"
                    "https://github.com/Lindydancer/objc-font-lock")
   :group 'pel-pkg-for-objc
   :type 'boolean
@@ -11841,7 +11875,7 @@ PEL currently uses my fork to prevent byte compiler warning."
 
 This automatically activates `pel-use-emacs-ccls', `pel-use-lsp-mode'.
 and `pel-use-lsp-ui-mode'."
-  :link '(url-link :tag "ccls @ Github"
+  :link '(url-link :tag "ccls @ GitHub"
                    "https://github.com/MaskRay/ccls")
   :group 'pel-pkg-for-objc
   :type 'boolean
@@ -12045,9 +12079,9 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 (defcustom pel-use-odin nil
   "Control whether PEL supports the odin programming language."
-  :link '(url-link :tag "odin-mode @ Github"
+  :link '(url-link :tag "odin-mode @ GitHub"
                    "https://github.com/mattt-b/odin-mode")
-  :link '(url-link :tag "my odin-mode fork @ Github"
+  :link '(url-link :tag "my odin-mode fork @ GitHub"
                    "https://github.com/pierre-rouleau/odin-mode")
   :group 'pel-pkg-for-odin
   :type 'boolean
@@ -12059,7 +12093,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   "Control whether PEL supports flycheck for odin.
 
 When activated, automatically activates `pel-use-flycheck'."
-  :link '(url-link :tag "flycheck-odin @ Github"
+  :link '(url-link :tag "flycheck-odin @ GitHub"
                    "https://github.com/mattt-b/flycheck-odin")
   :group 'pel-pkg-for-odin
   :group 'pel-pkg-for-syntax-check
@@ -12217,9 +12251,9 @@ files from the PEL utils directory."
 (defcustom pel-use-perl-live-coding nil
   "Control whether PEL supports the perl-live-coding."
   :group 'pel-pkg-for-perl
-  :link '(url-link :tag "perl live coding @ Github"
+  :link '(url-link :tag "perl live coding @ GitHub"
                    "https://github.com/vividsnow/perl-live")
-  :link '(url-link :tag "my fork @ Github"
+  :link '(url-link :tag "my fork @ GitHub"
                    "https://github.com/pierre-rouleau/perl-live")
   :type 'boolean
   :safe #'booleanp)
@@ -13002,7 +13036,7 @@ hard tab when one `pel-sh-use-tabs' is set to t."
 (defcustom pel-use-seed7 nil
   "Control whether PEL supports the Seed7 Programming Language Development."
   :group 'pel-pkg-for-seed7
-  :link '(url-link :tag "seed7-mode @ Github"
+  :link '(url-link :tag "seed7-mode @ GitHub"
                    "https://github.com/pierre-rouleau/seed7-mode")
   :type 'boolean
   :safe #'booleanp)
@@ -13133,7 +13167,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 (defcustom pel-use-emacsql nil
   "Whether PEL supports the emacsql package."
-  :link '(url-link :tag "emacsql @ Github"
+  :link '(url-link :tag "emacsql @ GitHub"
                    "https://github.com/magit/emacsql")
   :group 'pel-pkg-for-sql-emacs-lisp
   :type 'boolean
@@ -13141,7 +13175,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 (defcustom pel-use-closql nil
   "Whether PEL supports the closql package."
-  :link '(url-link :tag "closql @ Github"
+  :link '(url-link :tag "closql @ GitHub"
                    "https://github.com/magit/closql")
   :group 'pel-pkg-for-sql-emacs-lisp
   :type 'boolean
@@ -13150,14 +13184,14 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 (defcustom pel-use-emacs-db nil
   "Whether PEL supports the emacs-db package."
-  :link '(url-link :tag "emacs-db @ Github"
+  :link '(url-link :tag "emacs-db @ GitHub"
                    "https://github.com/nicferrier/emacs-db")
   :group 'pel-pkg-for-sql-emacs-lisp
   :type 'boolean
   :safe #'booleanp)
 (defcustom pel-use-db-pg nil
   "Whether PEL supports the db-pg package."
-  :link '(url-link :tag "db-pg @ Github"
+  :link '(url-link :tag "db-pg @ GitHub"
                    "https://github.com/nicferrier/emacs-db-pg")
   :group 'pel-pkg-for-sql-emacs-lisp
   :type 'boolean
@@ -13167,7 +13201,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 (defcustom pel-use-pg nil
   "Whether PEL supports the pg package.
 Emacs Lisp network-level interface to the PostgreSQL RDBMS."
-  :link '(url-link :tag "pg @ Github"
+  :link '(url-link :tag "pg @ GitHub"
                    "https://github.com/emarsden/pg-el")
   :group 'pel-pkg-for-sql-emacs-lisp
   :type 'boolean
@@ -13175,7 +13209,7 @@ Emacs Lisp network-level interface to the PostgreSQL RDBMS."
 (defcustom pel-use-pgmacs nil
   "Whether PEL supports the pgmacs package.
 Emacs editing of PostgreSQL database."
-  :link '(url-link :tag "pg @ Github"
+  :link '(url-link :tag "pg @ GitHub"
                    "https://github.com/emarsden/pgmacs")
   :group 'pel-pkg-for-sql-emacs-lisp
   :type 'boolean
@@ -13504,7 +13538,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 CAUTION: This package needs major tuning!  It takes forever searching for a
          project.  For the moment, Projectile is MUCH better!"
-  :link '(url-link :tag "find-file-in-project @ Github"
+  :link '(url-link :tag "find-file-in-project @ GitHub"
                    "https://github.com/redguardtoo/find-file-in-project")
   :group 'pel-pkg-for-project-mng
   :type 'boolean
@@ -13943,7 +13977,7 @@ A major mode."
   :group 'pel-pkg-for-spec-definition
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "asn1-mode @ Github"
+  :link '(url-link :tag "asn1-mode @ GitHub"
                    "https://github.com/kawabata/asn1-mode"))
 
 (defcustom pel-asn1-activates-minor-modes nil
@@ -13959,7 +13993,7 @@ A major mode."
   :group 'pel-pkg-for-spec-definition
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "yang-mode @ Github"
+  :link '(url-link :tag "yang-mode @ GitHub"
                    "https://github.com/mbj4668/yang-mode"))
 
 (defcustom pel-yang-activates-minor-modes nil
@@ -14201,7 +14235,7 @@ Do not enter lambda expressions."
 (defcustom pel-use-nix nil
   "Control whether PEL activates support for the Nix package manager files.
 A major mode."
-  :link '(url-link :tag "nix-mode @ Github"
+  :link '(url-link :tag "nix-mode @ GitHub"
                    "https://github.com/NixOS/nix-mode")
   :group 'pel-pkg-for-sw-build
   :type 'boolean
@@ -14224,7 +14258,7 @@ This automatically activates support for Lua."
 (defcustom pel-use-xmake-emacs nil
   "Control whether PEL activates support for the xmake-emacs package."
   :group 'pel-pkg-for-sw-build
-  :link '(url-link :tag "xmake-emacs @ Github"
+  :link '(url-link :tag "xmake-emacs @ GitHub"
                    "https://github.com/MiroYld/xmake-emacs")
   :type 'boolean
   :safe #'booleanp)
@@ -14295,7 +14329,7 @@ This list is added to the list Emacs already supports for Make."
 (defcustom pel-use-meson nil
   "Control whether PEL provides support for meson file via `meson-mode'.
 A major mode."
-  :link '(url-link :tag "meson-mode @ Github"
+  :link '(url-link :tag "meson-mode @ GitHub"
                    "https://github.com/wentasah/meson-mode")
   :group 'pel-pkg-for-meson
   :type 'boolean
@@ -14340,7 +14374,7 @@ Indentation in Meson build buffers controlled by `meson-indent-basic'."
 
 (defcustom pel-use-ninja nil
   "Control whether PEL provides support for ninja file via `ninja-mode'."
-  :link '(url-link :tag "ninja-emacs @ Github"
+  :link '(url-link :tag "ninja-emacs @ GitHub"
                    "https://github.com/ninja-build/ninja-emacs")
   :group 'pel-pkg-for-ninja
   :type 'boolean
@@ -14390,10 +14424,10 @@ Indentation in ninja buffers is controlled by `ninja-indent-offset'."
 PEL uses my fork of this library: my fork integrates many fixes from many
 contributions that have not been integrated in the authors repo yet."
   :group 'pel-pkg-for-testing
-  :link '(url-link :tag "noflet @ Github"
+  :link '(url-link :tag "noflet @ GitHub"
                    "https://github.com/nicferrier/emacs-noflet")
-    :link '(url-link :tag "my noflet fork @ Github"
-                   "https://github.com/pierre-rouleaur/emacs-noflet")
+    :link '(url-link :tag "my noflet fork @ GitHub"
+                   "https://github.com/pierre-rouleau/emacs-noflet")
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-noflet :package-is :in-utils)
@@ -14401,7 +14435,7 @@ contributions that have not been integrated in the authors repo yet."
 (defcustom pel-use-el-mock nil
   "Whether PEL supports el-mock library."
   :group 'pel-pkg-for-testing
-  :link '(url-link :tag "el-mock @ Github"
+  :link '(url-link :tag "el-mock @ GitHub"
                    "https://github.com/rejeep/el-mock.el")
   :type 'boolean
   :safe #'booleanp)
@@ -14409,7 +14443,7 @@ contributions that have not been integrated in the authors repo yet."
 (defcustom pel-use-el-spy nil
   "Whether PEL supports el-spy library."
   :group 'pel-pkg-for-testing
-  :link '(url-link :tag "el-spy @ Github"
+  :link '(url-link :tag "el-spy @ GitHub"
                    "https://github.com/uk-ar/el-spy")
   :type 'boolean
   :safe #'booleanp)
@@ -14417,7 +14451,7 @@ contributions that have not been integrated in the authors repo yet."
 (defcustom pel-use-mocker nil
   "Whether PEL supports mocker library."
   :group 'pel-pkg-for-testing
-  :link '(url-link :tag "mocker @ Github"
+  :link '(url-link :tag "mocker @ GitHub"
                    "https://github.com/sigma/mocker.el")
   :type 'boolean
   :safe #'booleanp)
@@ -14425,7 +14459,7 @@ contributions that have not been integrated in the authors repo yet."
 (defcustom pel-use-ert-expectations nil
   "Whether PEL supports ert-expectations library."
   :group 'pel-pkg-for-testing
-  :link '(url-link :tag "ert-expectations @ Github"
+  :link '(url-link :tag "ert-expectations @ GitHub"
                    "https://github.com/emacsorphanage/ert-expectations")
   :type 'boolean
   :safe #'booleanp)
@@ -14434,7 +14468,7 @@ contributions that have not been integrated in the authors repo yet."
 (defcustom pel-use-coverage nil
   "Whether PEL supports coverage library."
   :group 'pel-pkg-for-testing
-  :link '(url-link :tag "coverage @ Github"
+  :link '(url-link :tag "coverage @ GitHub"
                    "https://github.com/trezona-lecomte/coverage")
   :type 'boolean
   :safe #'booleanp)
@@ -14445,7 +14479,7 @@ contributions that have not been integrated in the authors repo yet."
 (defcustom pel-use-coverlay nil
   "Whether PEL supports coverlay library."
   :group 'pel-pkg-for-testing
-  :link '(url-link :tag "coverlay @ Github"
+  :link '(url-link :tag "coverlay @ GitHub"
                    "https://github.com/twada/coverlay.el")
   :type 'boolean
   :safe #'booleanp)
@@ -14453,7 +14487,7 @@ contributions that have not been integrated in the authors repo yet."
 (defcustom pel-use-test-cover-mark nil
   "Whether PEL supports test-cover-mark library."
   :group 'pel-pkg-for-testing
-  :link '(url-link :tag "test-cover-mark @ Github"
+  :link '(url-link :tag "test-cover-mark @ GitHub"
                    "https://codeberg.org/akib/emacs-testcover-mark-line")
   :type 'boolean
   :safe #'booleanp)
@@ -14462,7 +14496,7 @@ contributions that have not been integrated in the authors repo yet."
 (defcustom pel-use-buttercup nil
   "Whether PEL supports buttercup library."
   :group 'pel-pkg-for-testing
-  :link '(url-link :tag "buttercup @ Github"
+  :link '(url-link :tag "buttercup @ GitHub"
                    "https://github.com/jorgenschaefer/emacs-buttercup/")
   :type 'boolean
   :safe #'booleanp)
@@ -14470,7 +14504,7 @@ contributions that have not been integrated in the authors repo yet."
 (defcustom pel-use-ert-runner nil
   "Whether PEL supports ert-runner library."
   :group 'pel-pkg-for-testing
-  :link '(url-link :tag "ert-runner @ Github"
+  :link '(url-link :tag "ert-runner @ GitHub"
                    "https://github.com/rejeep/ert-runner.el")
   :type 'boolean
   :safe #'booleanp)
@@ -14485,7 +14519,7 @@ contributions that have not been integrated in the authors repo yet."
 (defcustom pel-use-cram-mode nil
   "Whether PEL supports Cram test files."
   :group 'pel-pkg-for-cram
-  :link '(url-link :tag "cram-mode gist @ Github"
+  :link '(url-link :tag "cram-mode gist @ GitHub"
                    "https://gist.github.com/mikeshulman/ab124d5db7aaa9330ff6457649b05f3a")
   :link '(url-link :tag "An Emacs mode for Cram tests"
                    "https://discuss.ocaml.org/t/an-emacs-mode-for-cram-tests/11221")
@@ -14867,7 +14901,7 @@ The selection is made by what you select here:
   "Determines whether PEL provides support for the psvn external package."
   :link '(url-link :tag "psvn @ Emacs Wiki"
                    "https://www.emacswiki.org/emacs/SvnStatusMode")
-  :link '(url-link :tag "psvn @ Github"
+  :link '(url-link :tag "psvn @ GitHub"
                    "https://github.com/pierre-rouleau/psvn")
   :group 'pel-pkg-for-subversion
   :type 'boolean
@@ -14905,7 +14939,7 @@ not modify other commands."
 
 (defcustom pel-use-golden-ratio nil
   "Controls whether PEL uses the `golden-ratio' package."
-  :link '(url-link :tag "golden-ratio @ Github"
+  :link '(url-link :tag "golden-ratio @ GitHub"
                    "https://github.com/roman/golden-ratio.el")
   :group 'pel-pkg-for-window
   :type '(choice
@@ -14931,7 +14965,7 @@ See the key bindings in the Windows PDF."
   :group 'pel-pkg-for-windows
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "window-purpose @ Github"
+  :link '(url-link :tag "window-purpose @ GitHub"
                    "https://github.com/bmag/emacs-purpose"))
 
 (defcustom pel-use-winner nil
@@ -15339,7 +15373,7 @@ Set this to:
 - 1: Do not use (default): nil
 - 2: Major modes.  Identify one or several major mode that must us it.
 - 3: English Prose setup (use only if 2 above does not work.)"
-  :link '(url-link :tag "harper-ls @ Github"
+  :link '(url-link :tag "harper-ls @ GitHub"
                    "https://github.com/automattic/harper")
   :link '(url-link :tag "harper-ls/Emacs integration @ Harper home"
                    "https://writewithharper.com/docs/integrations/emacs")
@@ -15353,7 +15387,7 @@ Set this to:
 
 (defcustom pel-use-writeroom-mode nil
   "Control whether PEL uses the writeroom-mode package."
-  :link '(url-link :tag "writeroom-mode @ Github"
+  :link '(url-link :tag "writeroom-mode @ GitHub"
                    "https://github.com/joostkremers/writeroom-mode")
   :group 'pel-pkg-for-writing
   :type 'boolean
@@ -15361,7 +15395,7 @@ Set this to:
 
 (defcustom pel-use-wc-mode nil
   "Control whether PEL uses the wc-mode package."
-  :link '(url-link :tag "wc-mode @ Github"
+  :link '(url-link :tag "wc-mode @ GitHub"
                    "https://github.com/bnbeckwith/wc-mode")
   :group 'pel-pkg-for-writing
   :type 'boolean
@@ -15369,7 +15403,7 @@ Set this to:
 
 (defcustom pel-use-writegood-mode nil
   "Control whether PEL uses the writegood-mode package."
-  :link '(url-link :tag "writegood-mode  @ Github"
+  :link '(url-link :tag "writegood-mode  @ GitHub"
                    "https://github.com/bnbeckwith/writegood-mode")
   :group 'pel-pkg-for-writing
   :type 'boolean
@@ -15378,9 +15412,9 @@ Set this to:
 (defcustom pel-use-artbollocks-mode nil
   "Control whether PEL uses the artbollocks-mode package.
 PEL uses my fork until my PRs are merged in."
-  :link '(url-link :tag "My artbollocks-mode fork @ Github"
+  :link '(url-link :tag "My artbollocks-mode fork @ GitHub"
                    "https://github.com/pierre-rouleau/artbollocks-mode")
-  :link '(url-link :tag "artbollocks-mode @ Github"
+  :link '(url-link :tag "artbollocks-mode @ GitHub"
                    "https://github.com/sachac/artbollocks-mode")
   :group 'pel-pkg-for-writing
   :type 'boolean
@@ -15390,7 +15424,7 @@ PEL uses my fork until my PRs are merged in."
 (defcustom pel-use-pr-whisper nil
   "Control whether PEL uses the pr-whisper package.
 PEL uses my fork of this project."
-  :link '(url-link :tag "pr-whisper @ Github"
+  :link '(url-link :tag "pr-whisper @ GitHub"
                    "https://github.com/pierre-rouleau/pr-whisper")
   :group 'pel-pkg-for-writing
   :type 'boolean
