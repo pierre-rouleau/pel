@@ -791,7 +791,6 @@ NOTES: - PEL only supports tree-sitter for Emacs 30.1 and later and
          tree-sitter support."
   :link '(url-link :tag "combobulate @ GitHub"
                    "https://github.com/mickeynp/combobulate")
-  :link '(url-link :tag )
   :group 'pel-pkg-for-tree-sitter
   :type 'boolean
   :safe #'booleanp)
