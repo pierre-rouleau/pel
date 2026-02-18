@@ -3,7 +3,7 @@
 # Purpose   : Reformat mallet output: generate file:file:column error format.
 # Created   : Tuesday, February 17 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-17 17:29:09 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 07:52:28 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -56,7 +56,10 @@ BEGIN {
 }
 
 # Identify the file name and remember it in 'file_name':
-$0 ~ /[a-zA-Z_]+.lisp/ {
+# The file name must start at the beginning of the line and may hold path
+# Unix or Windows path.
+# Currently limiting the special characters in file names.
+$0 ~ /^[[:alnum:]_.-/\\:]+/ {
     file_name = $0
     printf "- For: %s:\n", $0
     line_printed=1
@@ -65,10 +68,10 @@ $0 ~ /[a-zA-Z_]+.lisp/ {
 # For lines error lines, print them starting with the file name in the
 # following format: file-name:line:column error message
 #
-$0 ~ / +[0-9]+:[0-9]+/ {
+$0 ~ /^ +[0-9]+:[0-9]+/ {
 
     # Remember the line following
-    restofline=gensub($0, "", 1, $0 )
+    restofline=$0
 
     # Remove leading spaces from it
     sub(/^[ \t]+/, "", restofline)
