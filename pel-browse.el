@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 11 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-18 11:14:33 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-18 13:46:58 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,9 +42,9 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)                    ; use: pel-url-location
+(require 'pel--base)           ; use: `pel-url-location'
 (require 'pel--options)
-(require 'browse-url)
+(require 'browse-url)          ; use: `browse-url', `browse-url-file-url'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -90,7 +90,7 @@ Use the browser identified by the user-option variable
        ;;
        ((eq pel-browser-used 'firefox)
         (when fname
-          (setq url (browse-url-file-usr fname)))
+          (setq url (browse-url-file-url fname)))
         (when (if pel-system-is-macos-p
                   (pel--macos-browse "Firefox" url)
                 (browse-url-firefox url))
@@ -98,7 +98,7 @@ Use the browser identified by the user-option variable
        ;;
        ((eq pel-browser-used 'chrome)
         (when fname
-          (setq url (browse-url-file-usr fname)))
+          (setq url (browse-url-file-url fname)))
         (when (if pel-system-is-macos-p
                   (pel--macos-browse "Google Chrome" url)
                 (browse-url-chrome url))
