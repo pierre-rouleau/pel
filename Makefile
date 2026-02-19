@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-02-14 15:42:33 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-02-19 16:06:20 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -28,7 +28,7 @@
 
 # To get a description on how to use this makefile, execute "make help".
 #
-# - Tested with macOS GNU Make version 3.81
+# - Tested with macOS GNU Make version 3.81 as well as 4.4.1
 
 # ----------------------------------------------------------------------------
 # Technical Details - Make syntax notes
@@ -74,7 +74,12 @@ else
 endif
 
 # -----------------------------------------------------------------------------
-# PEL Package Version - increase this number on each release
+# PEL Package Version - will increase this number on each release
+#                       once PEL reaches a state where completion,
+#                       Language Server (LSP/Eglot) and LLM features
+#                       are broadly supported.
+#                       In the meantime PEL is staying at 0.4.1
+#                       unless someone requests package versions.
 PEL_VERSION := 0.4.1
 
 # NOTE: Also update the version numbers in the following files:
@@ -551,11 +556,9 @@ it: pel pel_keys.elc
 local-pkg: pkg mypelpa
 
 # ------------------------------------------------------------------------------
-# Build all normal PEL files, except pel_keys for the very first build.
-#
-# If Emacs is started and pel-init is run, that will download the external
-# libraries (use-package and its dependencies) which will allow Emacs to
-# automatically download the rest on the normal ``make all``.
+# Build all normal PEL files, except pel_keys.el and pel.el for the very first
+# build.  PEL files hold the logic to install external package and does not
+# need any other tool to help for external package installation.
 
 first-build: pel
 
@@ -594,7 +597,7 @@ help:
 	@printf " * make test        - Run the regression tests.\n"
 	@printf " * make timeit      - Check startup time of Emacs with and without packages\n"
 	@printf " * make local-pkg   - build local PEL melpa archive: make pkg mypelpa.\n"
-	@printf " * make pkg         - Build the tar file inside $(OUT_DIR).\n"
+	@printf " * make pkg         - Build the tar file inside directory: $(OUT_DIR).\n"
 	@printf " * make mypelpa     - Copy the tar file into a local package archive.\n"
 	@printf "\n"
 	@printf " * make build-after-emacs-update - Recompile all elisp files after updating emacs.\n"
@@ -873,6 +876,7 @@ else
 	$(EMACS) -Q --batch -L . --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile $<
 endif
 
+.PHONY:	compile pel
 # Target to byte-compile all Emacs Lisp files inside one Emacs Session.
 # Compile all without any init configuration.
 # Compile pel_keys.el last, *with* init.el so it can find the external packages.
@@ -882,10 +886,12 @@ compile: pel
 
 pel: $(ELC_FILES)
 
-# Remove pel_keys.elc to ensure we always run the very latest.
+# Remove pel_keys.elc and pel.elc and recompile: ensure we always run the very latest.
+# This is only done after successfully running all tests.
 pel_keys.elc: pel_keys.el pel-ran-tests.tag
-	-rm pel_keys.elc
+	-rm pel_keys.elc pel.elc
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -f batch-byte-compile pel_keys.el
+	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -f batch-byte-compile pel.el
 
 # -----------------------------------------------------------------------------
 # Integration test rules
@@ -894,6 +900,8 @@ pel_keys.elc: pel_keys.el pel-ran-tests.tag
 # The logic uses a 0-byte tag file, pel-ran-tests.tag, that remembers the
 # completed execution of PEL tests and prevents running them again if they
 # were executed.
+
+.PHONY:	test stats
 
 test:	pel-ran-tests.tag
 	@echo "To run tests again, remove the file pel-ran-tests.tag"
@@ -906,7 +914,6 @@ pel-ran-tests.tag:
 	$(EMACS) --batch -L . -l ert -l test/pel-list-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
 	touch pel-ran-tests.tag
-
 
 stats:
 	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info-all
