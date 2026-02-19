@@ -4,7 +4,7 @@
 #  Purpose   : Build CScope database for C files in specified directories.
 #  Created   : Wednesday, November 11 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2026-02-18 22:33:44 EST, updated by Pierre Rouleau>
+#  Time-stamp: <2026-02-18 23:11:56 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -82,7 +82,7 @@ show_usage() {
 
 # --
 
-if [ "$#" = "1" ] && [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     show_usage
 elif [ "$#" = "0" ]; then
     show_usage
@@ -93,7 +93,7 @@ else
     if [ "$CSCOPE_USE_FIND" = "1" ]; then
         echo "CSCOPE_USE_FIND forces the use of find!"
         echo "Using " "$(command -v find)"
-        find -f "$@" \
+        find . "$@" -type f  \
              \(  -name "*.[ch]" \
              \)  -print > cscope.files
     else
@@ -109,7 +109,7 @@ else
                . "$@" > cscope.files
         else
             echo "Using " "$(command -v find)"
-            find . -type f "$@" \
+            find . "$@" -type f \
                  \(  -name "*.[ch]" \
                  \)  -print > cscope.files
         fi
