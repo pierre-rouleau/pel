@@ -4,7 +4,7 @@
 # Purpose   : Run eslint - Lint Javascript file.
 # Created   : Thursday, October 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-31 12:48:18 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 18:25:27 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -19,7 +19,7 @@
 # Dependencies
 # ------------
 #
-# - printf, which, ln
+# - printf, ln, command (shell built-in)
 # - npx eslint
 
 # ----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ if [ -z "$1" ]; then
 fi
 
 # -- Validate environment
-if ! which npx > /dev/null ; then
+if ! command -v npx > /dev/null ; then
     printf -- "***ERROR: %s requires npx on PATH. It's not. Is it installed?" "$pgm_name"
     exit 1
 fi

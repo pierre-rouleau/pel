@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-09-03 13:17:57 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2026-02-18 18:24:21 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -144,10 +144,10 @@ run__etags__c()
     if [ -n "$ETAGS_USE_UCTAGS" ]; then
         if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
             xargs ctags --output-format=etags
-            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)" 1>&2
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(command -v ctags)" 1>&2
         elif [ -x "$ETAGS_USE_UCTAGS" ]; then
             xargs "$ETAGS_USE_UCTAGS" --output-format=etags
-            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS" 1>&2
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$ETAGS_USE_UCTAGS" 1>&2
         else
             printf -- "*** ERROR: %s: invalid ETAGS_USE_UCTAGS value\n" "${pgm_name}" 1>&2
             printf -- "***  ETAGS_USE_UCTAGS : %s\n" "$ETAGS_USE_UCTAGS" 1>&2
@@ -389,12 +389,12 @@ else
     case "$search_with" in
         find)
             printf -- "etags-c -- ETAGS_USE_FIND set to 1: forces the use of find!\n" 1>&2
-            printf --  "       -> Using %s\n" "$(which find)"                         1>&2
+            printf --  "       -> Using %s\n" "$(command -v find)"                         1>&2
             ;;
 
         fd)
             printf -- "etags-c -- Using sharkdp/fd fast find.\n" 1>&2
-            printf -- "        -> Using %s\n" "$(which "${fd_pgm}")" 1>&2
+            printf -- "        -> Using %s\n" "$(command -v "${fd_pgm}")" 1>&2
             printf -- " -> ☝️  Ignoring files identified in .gitignore, .ignore or .fdignore\n" 1>&2
             printf -- " -> ☝️  You may want to run a search with find once to detect broken symlinks\n" 1>&2
             ;;

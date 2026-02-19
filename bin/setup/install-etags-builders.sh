@@ -4,7 +4,7 @@
 # Purpose   : Install PEL etags builder scripts.
 # Created   : Thursday, June  6 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-12-05 13:52:23 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 18:09:02 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -61,7 +61,7 @@ install_file "etags-py"
 install_file "etags-rs"
 install_file "etags-tcl"
 
-if [ "$(which etags-c)" != "$HOME/bin/etags-c" ]; then
+if [ "$(command -v etags-c)" != "$HOME/bin/etags-c" ]; then
     printf -- "***NEXT STEP:\n"
     printf -- " Please add %s to your PATH.\n\n" "$HOME/bin"
     exit 1

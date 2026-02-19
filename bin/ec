@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the deamon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-08-30 15:50:25 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 18:25:48 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -229,7 +229,7 @@ case "${os_name}" in
         # Emacs daemon.
         emacs_pgm=emacs
         if [ "$use_gui" = "true" ]; then
-            if which emacs-lucid > /dev/null ; then
+            if command -v emacs-lucid > /dev/null ; then
                 emacs_pgm=emacs-lucid
             fi
         fi

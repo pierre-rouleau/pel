@@ -4,7 +4,7 @@
 # Purpose   : Filter out ANSI escape sequences.
 # Created   : Tuesday, February 17 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-17 23:11:08 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 18:14:43 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -26,11 +26,11 @@
 # ----
 #
 #
-if which perl >  /dev/null; then
+if command -v perl >  /dev/null; then
     perl -pe 's/\e\[[0-9;]*[a-zA-Z]//g'
-elif which gsed >  /dev/null; then
+elif command -v gsed >  /dev/null; then
     gsed -E "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mK]//g"
-elif which sed >  /dev/null; then
+elif command -v sed >  /dev/null; then
     sed -E "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mK]//g"
 else
     printf -- "***ERROR filter-ansi-seq: missing pre-requisites!\n"

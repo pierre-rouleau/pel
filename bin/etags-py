@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-09-03 14:29:07 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2026-02-18 18:17:20 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -132,7 +132,7 @@ run__etags__python()
     if [ -n "$ETAGS_USE_UCTAGS" ]; then
         if [ "$ETAGS_USE_UCTAGS" = "1" ]; then
             xargs ctags --output-format=etags
-            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(which ctags)" 1>&2
+            printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" "$(command -v ctags)" 1>&2
         elif [ -x "$ETAGS_USE_UCTAGS" ]; then
             xargs "$ETAGS_USE_UCTAGS" --output-format=etags
             printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n"  "$ETAGS_USE_UCTAGS" 1>&2
@@ -318,21 +318,21 @@ else
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         search_with='find'
         echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
-        echo "-> Using" "$(which find)"                 1>&2
+        echo "-> Using" "$(command -v find)"            1>&2
     else
         if [ -x "$(command -v fdfind)" ]; then
             search_with='fd'
             fd_pgm=fdfind
-            echo "-> Using" "$(which fdfind)" 1>&2
+            echo "-> Using" "$(command -v fdfind)" 1>&2
             echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
         elif [ -x "$(command -v fd)" ]; then
             search_with='fd'
             fd_pgm=fd
-            echo "-> Using" "$(which fd)" 1>&2
+            echo "-> Using" "$(command -v fd)" 1>&2
             echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
         else
             search_with='find'
-            echo "-> Using" "$(which find)" 1>&2
+            echo "-> Using" "$(command -v find)" 1>&2
         fi
     fi
 

@@ -4,7 +4,7 @@
 # Purpose   : Report if Emacs daemon is currently running or not.
 # Created   : Thursday, August  1 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2024-08-01 22:59:52 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 18:11:54 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -114,7 +114,7 @@ case "${os_name}" in
             fi
         fi
         if [ "$is_running" = "true" ]; then
-            if which emacs-lucid > /dev/null ; then
+            if command -v emacs-lucid > /dev/null ; then
                 if ps -ax | grep -- 'emacs-lucid --daemon' | grep -v grep > /dev/null; then
                     daemon_type_description=", GUI-capable,"
                 fi
