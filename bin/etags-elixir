@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags file for Elixir source code files.
 # Created   : Monday, October 27 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 18:23:02 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 22:54:33 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 #  Module Description
@@ -220,7 +220,8 @@ search_with_fd()
     ${fd_pgm} -L --type f -e .ex -e .exs -e .elixir \
               '' "$dirname" | tee -a "${etags_flist_fname}"
     ${fd_pgm} -L --type f 'mix.lock' \
-               "$dirname" | tee -a "${etags_flist_fname}"}
+               "$dirname" | tee -a "${etags_flist_fname}"
+}
 
 search()
 {
