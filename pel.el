@@ -5,7 +5,7 @@
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 ;; URL: https://github.com/pierre-rouleau/pel
 ;; Version: 0.4.1
-;; Package-Requires: ((emacs "26.1") (use-package "2.4"))
+;; Package-Requires: ((emacs "26.1"))
 ;; Keywords: convenience
 
 ;; This file is not part of GNU Emacs.
@@ -66,9 +66,6 @@
 ;; are used by that.  But they can also be used independently.  So if you
 ;; do not want to use PEL key bindings, you can just use some of the PEL
 ;; modules and provide you own bindings in your own Emacs init file.
-;;
-;; This is an early version of PEL.  It will grow with time, incorporating
-;; more Emacs packages to support more editing tasks.
 ;;
 ;; To use the PEL auto-loading of packages and key bindings, put the
 ;; following code inside your Emacs init.el file:
