@@ -4,7 +4,7 @@
 # Purpose   : Install the e, ge and ce scripts in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-08-21 16:23:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 18:10:20 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -67,7 +67,7 @@ ls -l "$HOME/bin/ge"
 ls -l "$HOME/bin/ec"
 ls -l "$HOME/bin/is-emacs-daemon-running"
 
-if [ "$(which e)" != "$HOME/bin/e" ]; then
+if [ "$(command -v e)" != "$HOME/bin/e" ]; then
     printf -- "***NEXT STEP:\n"
     printf -- " Please add %s to your PATH.\n\n" "$HOME/bin"
     exit 1

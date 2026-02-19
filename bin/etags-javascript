@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags file for Javascript source code files.
 # Created   : Monday, October 27 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-27 22:23:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 18:21:00 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 #  Module Description
@@ -136,7 +136,7 @@ fi
 # Check if ctags is the Universal Ctags program: that's the only one
 # that support the parsing of M4 and automake and autoconf files.
 
-if ! which ctags > /dev/null; then
+if ! command -v ctags > /dev/null; then
     printf -- "\
 *** ERROR: %s requires Universal Ctags.
 ***        There's no ctags accessible in PATH.
@@ -296,21 +296,21 @@ else
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         search_with='find'
         echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
-        echo "-> Using" "$(which find)"                 1>&2
+        echo "-> Using" "$(command -v find)"                 1>&2
     else
         if [ -x "$(command -v fdfind)" ]; then
             search_with='fd'
             fd_pgm=fdfind
-            echo "-> Using" "$(which fdfind)" 1>&2
+            echo "-> Using" "$(command -v fdfind)" 1>&2
             echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
         elif [ -x "$(command -v fd)" ]; then
             search_with='fd'
             fd_pgm=fd
-            echo "-> Using" "$(which fd)" 1>&2
+            echo "-> Using" "$(command -v fd)" 1>&2
             echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
         else
             search_with='find'
-            echo "-> Using" "$(which find)" 1>&2
+            echo "-> Using" "$(command -v find)" 1>&2
         fi
     fi
 

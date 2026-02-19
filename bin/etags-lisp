@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Lisp source code files.
 #  Created   : Tuesday, November 10 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-09-03 14:24:52 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2026-02-18 18:20:32 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -283,21 +283,21 @@ else
     if [ "$ETAGS_USE_FIND" = "1" ]; then
         search_with='find'
         echo "- ETAGS_USE_FIND forces the use of find!" 1>&2
-        echo "-> Using" "$(which find)"                 1>&2
+        echo "-> Using" "$(command -v find)"            1>&2
     else
         if [ -x "$(command -v fdfind)" ]; then
             search_with='fd'
             fd_pgm=fdfind
-            echo "-> Using" "$(which fdfind)" 1>&2
+            echo "-> Using" "$(command -v fdfind)" 1>&2
             echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
         elif [ -x "$(command -v fd)" ]; then
             search_with='fd'
             fd_pgm=fd
-            echo "-> Using" "$(which fd)" 1>&2
+            echo "-> Using" "$(command -v fd)" 1>&2
             echo "-> ☝️ Ignoring files identified in .gitignore, .ignore or .fdignore" 1>&2
         else
             search_with='find'
-            echo "-> Using" "$(which find)" 1>&2
+            echo "-> Using" "$(command -v find)" 1>&2
         fi
     fi
 

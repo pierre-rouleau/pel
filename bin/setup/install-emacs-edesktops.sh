@@ -4,7 +4,7 @@
 # Purpose   : Install the PEL edesktops scripts.
 # Created   : Tuesday, January  7 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-07 17:03:41 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 18:10:36 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -57,7 +57,7 @@ ls -l "$HOME/bin/edesktops"
 ls -l "$HOME/bin/edesktops-used"
 ls -l "$HOME/bin/edesktops--lockinfo-for"
 
-if [ "$(which edesktops)" != "$HOME/bin/edesktops" ]; then
+if [ "$(command -v edesktops)" != "$HOME/bin/edesktops" ]; then
     printf -- "***NEXT STEP:\n"
     printf -- " Please add %s to your PATH.\n\n" "$HOME/bin"
     exit 1

@@ -3,7 +3,7 @@
 # Purpose   : Install eslint Javascript linter.
 # Created   : Thursday, October 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-10-31 08:51:55 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-18 18:09:48 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -21,7 +21,7 @@
 # Dependencies
 # ------------
 #
-# - printf, which, ln
+# - printf, ln, command (shell built-in)
 
 # ----------------------------------------------------------------------------
 # Code
@@ -31,7 +31,7 @@
 pgm_name="$(basename "$0")"
 
 # -- Validate environment
-if ! which curl > /dev/null ; then
+if ! command -v curl > /dev/null ; then
     printf -- "***ERROR: %s requires curl on PATH. It's not. Is it installed?" "$pgm_name"
     exit 1
 fi
@@ -68,7 +68,7 @@ if [ -h "${bin_dir}/eslint"  ]; then
             exit 1
         else
             printf -- "***Warning: symlink %s already exists:\n" "$HOME/bin/eslint"
-            printf -- " %s\n" "$(ls -l "$(which eslint)")"
+            printf -- " %s\n" "$(ls -l "$(command -v eslint)")"
         fi
     else
         printf -- "***ERROR  : File %s already exists but links to: %s\n" "$HOME/bin/eslint" "${current_target}"

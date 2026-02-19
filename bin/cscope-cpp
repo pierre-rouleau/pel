@@ -4,7 +4,7 @@
 #  Purpose   : Build CScope database for C/C++ files in specified directories.
 #  Created   : Wednesday, November 11 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-11 17:12:02, updated by Pierre Rouleau>
+#  Time-stamp: <2026-02-18 22:26:26 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -72,7 +72,7 @@ show_usage() {
     printf "  ⚠️  When using find, invalid directory names are just ignored!\n"
     printf "• Echoes the path of the find program used and echoes when\n"
     printf "  repository ignore files are used.\n"
-    if [[ "$CSCOPE_USE_FIND" == "1" ]]; then
+    if [ "$CSCOPE_USE_FIND" = "1" ]; then
         printf "⚠️  Currently: CSCOPE_USE_FIND forces the use of find!\n"
         printf "   To prevent this, set it to 0 or remove that\n"
         printf "   environment variable.\n"
@@ -84,18 +84,18 @@ show_usage() {
 
 # --
 
-if [[ "$#" = 1 && "$1" = "-h" || "$1" = "--help" ]]; then
+if [ "$#" = "1" ] && [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     show_usage
-elif [[ "$#" = 0 ]]; then
+elif [ "$#" = "0" ]; then
     show_usage
 else
     # Find the files, store them in cscope.files
     # To find the files, try to use fd or fdfind if they exist,
     # otherwise use find.  Echo the actual program used to find files.
-    if [[ "$CSCOPE_USE_FIND" == "1" ]]; then
+    if [ "$CSCOPE_USE_FIND" = "1" ]; then
         echo "CSCOPE_USE_FIND forces the use of find!"
-        echo "Using " `which find`
-        find -f $* \
+        echo "Using " "$(command -v find)"
+        find -f "$@" \
              \(  -name "*.[ch]" \
              -or -name "*.[ch].in" \
              -or -name "*.[ch]++" \
@@ -115,8 +115,8 @@ else
              -or -name "*.pdb" \
              \)  -print > cscope.files
     else
-        if [[ -x "$(command -v fdfind)" ]]; then
-            echo "Using " `which fdfind`
+        if [ -x "$(command -v fdfind)" ]; then
+            echo "Using " "$(command -v fdfind)"
             echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
             fdfind --type f -e .c      \
                             -e .c.in   \
@@ -145,9 +145,9 @@ else
                             -e .inl    \
                             -e .M      \
                             -e .pdb    \
-                            . $* > cscope.files
-        elif [[ -x "$(command -v fd)" ]]; then
-            echo "Using " `which fd`
+                            . "$@"> cscope.files
+        elif [ -x "$(command -v fd)" ]; then
+            echo "Using " "$(command -v fd)"
             echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
             fd --type f -e .c      \
                         -e .c.in   \
@@ -176,10 +176,10 @@ else
                         -e .inl    \
                         -e .M      \
                         -e .pdb    \
-                        . $* > cscope.files
+                        . "$@" > cscope.files
         else
-            echo "Using " `which find`
-            find -f $* \
+            echo "Using " "$(command -v find)"
+            find -f "$@" \
                  \(  -name "*.[ch]" \
                  -or -name "*.[ch].in" \
                  -or -name "*.[ch]++" \
