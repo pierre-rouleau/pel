@@ -10292,28 +10292,34 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;; ----------------
 ;;** Git support
-(when pel-use-magit
-  (define-pel-global-prefix pel:vcs-magit (kbd "<f11> v g"))
+(if pel-use-magit
+    ;; Magit includes magit-section, so if pel-use-magit is turned on
+    ;; there's no point checking `pel-use-magit-section'.
+    (progn
+      (define-pel-global-prefix pel:vcs-magit (kbd "<f11> v g"))
 
-  ;; Magit delays its key bindings after Emacs initialization to avoid adding
-  ;; bindings to commands that already have one.  PEL circumvents this to add
-  ;; one key binding under pel:vcs so that familiar Magit key bindings are
-  ;; available while also providing a PEL VCS binding indicating that Magit is
-  ;; available: it also delays it using the after-init-hook *and* appends to
-  ;; ensure that this hook will be executed after Magit bind its keys.
-  (defun pel--cfg-magit-keys ()
-    "Delayed Magit configuration - add extra key bindings to Magit."
-    (define-key pel:vcs-magit "s" 'magit-status))
+      ;; Magit delays its key bindings after Emacs initialization to avoid adding
+      ;; bindings to commands that already have one.  PEL circumvents this to add
+      ;; one key binding under pel:vcs so that familiar Magit key bindings are
+      ;; available while also providing a PEL VCS binding indicating that Magit is
+      ;; available: it also delays it using the after-init-hook *and* appends to
+      ;; ensure that this hook will be executed after Magit bind its keys.
+      (defun pel--cfg-magit-keys ()
+        "Delayed Magit configuration - add extra key bindings to Magit."
+        (define-key pel:vcs-magit "s" 'magit-status))
 
-  (pel-ensure-package magit from: melpa)
-  (pel-autoload-file magit for:
-                     magit
-                     magit-status)
-  (add-hook 'after-init-hook 'pel--cfg-magit-keys :append)
+      (pel-ensure-package magit from: melpa)
+      (pel-autoload-file magit for:
+                         magit
+                         magit-status)
+      (add-hook 'after-init-hook 'pel--cfg-magit-keys :append)
 
-  ;;
-  (when pel-use-treemacs-magit
-    (pel-ensure-package treemacs-magit from: melpa)))
+      ;;
+      (when pel-use-treemacs-magit
+        (pel-ensure-package treemacs-magit from: melpa)))
+  ;; `pel-use-magit' is off: check `pel-use-magit-section'
+  (when pel-use-magit-section
+    (pel-ensure-package magit-section from: melpa)))
 
 (when pel-use-gitignore
   (pel-ensure-package git-modes from: melpa))
