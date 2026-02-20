@@ -273,6 +273,15 @@
 ;;
 ;; They are described below.
 
+;; [:todo 2026-02-20, by Pierre Rouleau: Verify the relationship of all
+;;                    pel-use-... user-options defined here and verify they
+;;                    all have the appropriate properties set to ensure they
+;;                    are removed correctly by the `pel-cleanup' command when
+;;                    that command is executed.
+;;                    Also verify that required automatic activation is
+;;                    correct and consistent.]
+
+
 ;; `:also-required-when'
 ;; --------------------
 ;;
