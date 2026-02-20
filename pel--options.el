@@ -2470,7 +2470,9 @@ A major mode."
   :safe #'booleanp)
 
 (defcustom pel-use-treemacs-magit nil
-  "Control whether PEL activates magit extension for treemacs."
+  "Control whether PEL activates magit extension for treemacs.
+Note that magit code is required by this, so PEL activates
+`pel-use-magit' when you turn this on."
   :group 'pel-pkg-for-file-browse
   :group 'pel-pkg-for-git
   :type 'boolean
@@ -14234,7 +14236,9 @@ Do not enter lambda expressions."
 
 (defcustom pel-use-nix nil
   "Control whether PEL activates support for the Nix package manager files.
-A major mode."
+A major mode.
+Note that magit-section is required by `nix-mode', so PEL activates
+`pel-use-magit-section' when you turn this on."
   :link '(url-link :tag "nix-mode @ GitHub"
                    "https://github.com/NixOS/nix-mode")
   :group 'pel-pkg-for-sw-build
@@ -14810,11 +14814,33 @@ turn this off."
   :group 'pel-pkg-for-vcs)
 
 (defcustom pel-use-magit nil
-  "Control whether PEL provides access to the Magit package."
+  "Control whether PEL provides access to the Magit package.
+Due to dependencies, it is automatically activated when any of the
+following user-options is turned on:
+- `pel-use-eopengrok',
+- `pel-use-treemacs-magit'.
+
+WARNING: be aware that activating the use of Magit (or just installing it)
+         activates the `auto-revert-mode' in buffers visiting files that are
+         part of Git repositories."
   :group 'pel-pkg-for-git
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-magit :also-required-when 'pel-use-treemacs-magit)
+(pel-put 'pel-use-magit :also-required-when '(or pel-use-eopengrok
+                                                 pel-use-treemacs-magit))
+
+(defcustom pel-use-magit-section nil
+  "Control whether PEL installs magit-section package.
+This package implements the main interface of Magit, the collapsible
+sections that makes up its buffers, and can be used by other packages
+that have nothing to do with Git.
+Due to dependencies, it is automatically activated when any of the
+following user-options is turned on:
+- `pel-use-nix'."
+  :group 'pel-pkg-for-git
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-magit-section :also-required-when 'pel-use-nix)
 
 (defcustom pel-use-gitignore nil
   "Control whether PEL provides access to the git-modes package.
@@ -15348,9 +15374,10 @@ This identifies how a multiple choice is shown."
 ;; -- opengrok
 (defcustom pel-use-eopengrok nil
   "Control whether PEL uses the eopengrok package.
-
 The eopengrok package provides access to the opengrok code
-indexing system."
+indexing system.
+Note that magit code is required by eopengrok, so PEL activates
+`pel-use-magit' when you turn this on."
   :link '(url-link :tag "eopengrok @ GitHub"
                    "https://github.com/youngker/eopengrok.el")
   :link '(url-link :tag "OpenGrok @ Wikipedia"
@@ -15550,7 +15577,10 @@ PEL uses my fork of this project."
           pel-use-flycheck-projectile)
   (setq pel-use-projectile t))
 
-(when pel-use-treemacs-magit
+(when pel-use-nix
+  (setq pel-use-magit-section t))
+(when (or pel-use-eopengrok
+          pel-use-treemacs-magit)
   (setq pel-use-magit t))
 
 (when (or (and pel-use-erlang
