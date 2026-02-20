@@ -14818,7 +14818,6 @@ turn this off."
 Due to dependencies, it is automatically activated when any of the
 following user-options is turned on:
 - `pel-use-eopengrok',
-- `pel-use-nix',
 - `pel-use-treemacs-magit'.
 
 WARNING: be aware that activating the use of Magit (or just installing it)
