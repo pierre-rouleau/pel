@@ -6221,6 +6221,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel--install-generic-skel pel:sh-skel 'pel-pkg-generic-code-style "sh")
     ;; Make M-<f12> same as <f12> for convenience.
     (pel-local-set-f12-M-f12 'pel:for-sh))
+  ;; [:todo 2026-02-19, by Pierre Rouleau: Update this logic to handle
+  ;;                    Emacs > 29 where Emacs handle Flymake-Shellcheck
+  ;;                    integration ]
   (cond
    ;; using flymake
    ((memq pel-use-shellcheck '(flymake-manual
