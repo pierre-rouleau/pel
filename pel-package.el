@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 22:43:47 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-20 22:33:20 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -155,6 +155,7 @@
 ;;                              ;      `pel-in-fast-startup-p'
 ;;                              ;      `pel-emacs-config-features-string'
 ;;                              ;      `pel-hardware-model-string'
+;;                              ;      `pel-insert-list-content'
 (require 'pel--options)         ; use: `pel-elpa-packages-to-keep'
 ;;                              ;      `pel-utils-packages-to-keep'
 ;;                              ;      `pel-elpa-obsolete-packages'
@@ -1384,10 +1385,12 @@ This command is *not* available when PEL operates in fast startup."
 Use pel-setup-normal to return to normal operation.")
     (when (or dry-run
               (y-or-n-p "Proceed with removal of non-required packages? "))
+      (message "%s" (propertize "Checking PEL user-options and packages..." 'face 'bold))
       (let* ((utils-results     (pel-clean-utils dry-run))
              (removed-el-files  (car utils-results))
              (removed-elc-files (cadr utils-results))
              (moved-elpa-dirs   (pel-clean-elpa dry-run)))
+        (message "")
         (pel-print-in-buffer
          "*pel-cleanup*"
          (if dry-run "Dry-run of PEL Cleanup"
@@ -1404,16 +1407,17 @@ Use pel-setup-normal to return to normal operation.")
                (setq verb-moved "moved"
                      verb-Moved "Moved"
                      verb-Removed "Removed"))
-             (insert (format "
+             (insert "
 The PEL cleanup removes packages that are not needed, based on
 the value of the `pel-use-' customization user-options.
 
 PEL does not remove packages that are dependencies of packages
 that are activated by the user-options or packages manually
 installed that have been identified in the following user-options:
-
-- `pel-elpa-packages-to-keep',
-- `pel-utils-packages-to-keep'.
+")
+             (pel-insert-list-content 'pel-elpa-packages-to-keep nil nil nil 'on-same-line)
+             (pel-insert-list-content 'pel-utils-packages-to-keep nil nil nil 'on-same-line)
+             (insert (format "
 
 ******************
 **IMPORTANT NOTE**
@@ -1424,8 +1428,6 @@ installed that have been identified in the following user-options:
   a `pel-cleanup' will remove them.
 - Also note that if a package is already present inside the attic
  directory the file in the utils or elpa directory is removed.
-
-
 
 PEL CLEANUP %s:
 **********************

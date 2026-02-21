@@ -357,13 +357,25 @@
 ;;    list of symbols representing the Elpa packages that are used.  The result
 ;;    must be a cons cell or a list of cons cell where the car is a symbol that
 ;;    identifies the packaging mechanism and the cdr is the package name
-;;    symbol.  The package mechanisms supported are 'elpa and 'utils.  The
-;;    'elpa symbol identifies a package that is downloaded and managed by the
-;;     Emacs package library and comes from an Elpa-compliant repository.  The
-;;     'utils symbol identifies a file that is downloaded from a web-site and
-;;     stored into PEL's utils directory.  See `pel-use-ripgrep' for an example.
-;;  - In the absence of the `:package-is' property, the name of the package is
-;;    extracted from the name of the `pel-use-' symbol.
+;;    symbol.
+;;    - The package mechanisms supported are 'elpa and 'utils.
+;;      - The 'elpa symbol identifies a package that is downloaded and managed
+;;        by the Emacs package library and comes from an Elpa-compliant
+;;        repository.
+;;      - The 'utils symbol identifies a file that is downloaded from a
+;;        web-site and stored into PEL's utils directory.
+;;
+;;  In the absence of the `:package-is' property, the name of the package is
+;;  extracted from the name of the `pel-use-' symbol.
+;;
+;;  Examples:
+;;    (pel-put 'pel-use-algol :package-is '(quote ((utils . a68-mode))))
+;;
+;;     (pel-put 'pel-use-ripgrep :package-is '(if pel-use-projectile
+;;                                               '((elpa . rg)
+;;                                                 (elpa . ripgrep))
+;;                                             '((elpa . rg))))
+;;
 
 ;; `:restricted-to'
 ;; ----------------
@@ -490,9 +502,14 @@ Return nil otherwise."
 ;; the arguments are correct.  This provides compilation time code checking
 ;; with no impact to load and run time.
 
-(defmacro pel-put (symbol propname value)
-  "Store SYMBOL's PROPNAME property with value VALUE.
+(defmacro pel-put (qsymbol propname value)
+  "Store QSYMBOL's PROPNAME property with value VALUE.
+QSYMBOL must be a quoted symbol.
 Validate at `byte-compile' time."
+  (unless (and (consp qsymbol)
+               (eq (car qsymbol) 'quote)
+               (symbolp (cadr  qsymbol)))
+    (byte-compile-warn "pel-put first argument not a quoted symbol: %s" qsymbol))
   (if (cond
        ((eq propname :also-required-when)
         (and (consp value)
@@ -520,9 +537,9 @@ Validate at `byte-compile' time."
         t)
 
        (t nil))
-      `(put ,symbol ,propname ,value)
-    `(error "Invalid %s property value %S for symbol %s"
-            ,propname ,value ,symbol)))
+      `(put ,qsymbol ,propname ,value)
+    `(error "Invalid %s property value %S for qsymbol %s"
+            ,propname ,value ,qsymbol)))
 ;; ---------------------------------------------------------------------------
 ;; File Path build utility
 ;; -----------------------
@@ -1872,7 +1889,7 @@ Activates a minor mode for viewing diffs."
   :group 'pel-pkg-for-dired
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-dired-lister :package-is :in-utils)
+(pel-put 'pel-use-dired-lister :package-is :in-utils)
 
 (defcustom pel-use-dired-sidebar nil
   "Control whether PEL activates the dired-sidebar."
@@ -2114,7 +2131,7 @@ This is only available on Emacs 29.1 and later."
           (const :tag "Use, activate later by command"  t)
           (const :tag "Use, activate globally when Emacs starts"
                  use-from-start)))
-(pel-put pel-use-marginalia :package-is :in-utils)
+(pel-put 'pel-use-marginalia :package-is :in-utils)
 (unless pel-emacs-29-or-later-p
   (setq pel-use-marginalia nil))
 
@@ -3169,7 +3186,7 @@ Note that when this is activated, PEL automatically turns
                    "https://melpa.org/#/smart-tabs-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-smart-tabs :package-is :in-utils)
+(pel-put 'pel-use-smart-tabs :package-is :in-utils)
 
 (defcustom pel-use-smart-shift nil
   "Whether PEL activates the smart-shift external package."
@@ -4529,11 +4546,10 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
                    "https://github.com/tbanel/uniline")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-uniline :requires '(:all pel-use-hydra
-                                    `     pel-use-ascii-art-to-unicode))
+(pel-put 'pel-use-uniline :requires '(:all pel-use-hydra
+                                           pel-use-ascii-art-to-unicode))
 (when pel-use-uniline
   (setq pel-use-ascii-art-to-unicode t))
-
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; GraphViz-Dot Support
@@ -6001,7 +6017,7 @@ Values in the [2, 8] range are accepted."
                    "https://git.sr.ht/~jemarch/a68-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-algol :package-is :in-utils)
+(pel-put 'pel-use-algol :package-is '(quote ((utils . a68-mode))))
 
 (defcustom pel-a68-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Algol buffers.
@@ -8963,7 +8979,7 @@ that will help with Common Lisp editing:
                  with-slime+)
           (const :tag "Use Common Lisp with Sly" with-sly)))
 ;; [:todo 2026-02-18, by Pierre Rouleau: add logic to track use of slime and sly]
-(pel-put pel-use-common-lisp :package-is :a-gate)
+(pel-put 'pel-use-common-lisp :package-is :a-gate)
 
 (defcustom pel-inferior-lisp-program nil
   "Name (with optional path) of the Common Lisp REPL to use.
@@ -11405,7 +11421,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-fortran
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-fortran :package-is :a-gate)
+(pel-put 'pel-use-fortran :package-is :a-gate)
 
 (defcustom pel-fortran-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Fortran buffers.
@@ -13217,7 +13233,7 @@ Emacs editing of PostgreSQL database."
   :type 'boolean
   :safe #'booleanp)
 (when pel-use-pgmacs (setq pel-use-pg t))
-(pel-put pel-use-pgmacs :requires 'pel-use-quelpa)
+(pel-put 'pel-use-pgmacs :requires 'pel-use-quelpa)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Tcl  Language Support
@@ -14529,7 +14545,7 @@ contributions that have not been integrated in the authors repo yet."
                    "https://discuss.ocaml.org/t/an-emacs-mode-for-cram-tests/11221")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-cram-mode :package-is :in-utils)
+(pel-put 'pel-use-cram-mode :package-is :in-utils)
 
 (defcustom pel-cram-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Cram buffers.
@@ -15200,7 +15216,7 @@ identify symbol in several programming languages."
                    "https://github.com/jacktasia/dumb-jump")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-dumb-jump :package-is :in-utils)
+(pel-put 'pel-use-dumb-jump :package-is :in-utils)
 
 (defcustom pel-modes-activating-dumb-jump nil
   "List of major modes that automatically activate dumb-jump.
@@ -15446,7 +15462,7 @@ PEL uses my fork until my PRs are merged in."
   :group 'pel-pkg-for-writing
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-artbollocks-mode :package-is :in-utils)
+(pel-put 'pel-use-artbollocks-mode :package-is :in-utils)
 
 (defcustom pel-use-pr-whisper nil
   "Control whether PEL uses the pr-whisper package.
@@ -15456,7 +15472,7 @@ PEL uses my fork of this project."
   :group 'pel-pkg-for-writing
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-pr-whisper :package-is :in-utils)
+(pel-put 'pel-use-pr-whisper :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; Incompatible selection Management
