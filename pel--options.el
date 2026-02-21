@@ -369,12 +369,30 @@
 ;;  extracted from the name of the `pel-use-' symbol.
 ;;
 ;;  Examples:
-;;     (pel-put pel-use-algol :package-is '(quote ((utils . a68-mode))))
+;;   - When the name of the file differs from the symbol:
+;;     here the file is a68-mode.el for pel-use-algol and installed in utils::
 ;;
-;;     (pel-put pel-use-ripgrep :package-is '(if pel-use-projectile
-;;                                               '((elpa . rg)
-;;                                                 (elpa . ripgrep))
-;;                                             '((elpa . rg))))
+;;       (pel-put pel-use-algol :package-is '(quote ((utils . a68-mode))))
+;;
+;;   - When one or package files are required depending on some conditions:
+;;
+;;       (pel-put pel-use-ripgrep :package-is '(if pel-use-projectile
+;;                                                 '((elpa . rg)
+;;                                                   (elpa . ripgrep))
+;;                                               '((elpa . rg))))
+;;
+;;    - The conditional code can be more complex and the selection can
+;;      specify either and/or utils packages:
+;;
+;;       (pel-put pel-use-goflymake :package-is
+;;                '(cond ((eq pel-use-goflymake 'with-flycheck)
+;;                        '((utils . go-flycheck)
+;;                          (elpa . flycheck)))
+;;                       ((eq pel-use-goflymake 'with-flymake)
+;;                        ;; flymake is part of Emacs
+;;                        '((utils . go-flymake)))))
+;;
+
 
 ;; `:restricted-to'
 ;; ----------------
@@ -1796,8 +1814,8 @@ PEL uses my fork of the project."
   :link '(url-link :tag "my fork @Github"
                    "https://github.com/pierre-rouleau/browse-kill-ring")
   :link '(url-link :tag "@Github"
-                   "https://github.com/browse-kill-ring/browse-kill-ring")
-  )
+                   "https://github.com/browse-kill-ring/browse-kill-ring"))
+(pel-put pel-use-browse-kill-ring :package-is :in-utils)
 
 (defcustom pel-kill-symbol-at-point-terminal-binding nil
   "Optional key binding in terminal mode for `pel-kill-symbol-at-point'.
@@ -2187,7 +2205,7 @@ A Major mode."
                    "https://github.com/delaanthonio/kconfig-mode#readme")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-kconfig :package-is :in-utils)
+(pel-put pel-use-kconfig :package-is '(quote ((utils . kconfig-mode))))
 
 ;; Docker Support
 ;; --------------
@@ -4618,7 +4636,7 @@ Major mode."
                    "https://github.com/thomsten/mscgen-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-mscgen :package-is :in-utils)
+(pel-put pel-use-mscgen :package-is '(quote ((utils . mscgen-mode))))
 
 (defcustom pel-mscgen-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Mscgen buffers.
@@ -5896,7 +5914,7 @@ See also: `pel-shell-script-extensions'."
                    ,(pel-pdf-file-url "pl-ada")))
 
 (defcustom pel-use-ada nil
-  "Control whether PEL supports the Ada Programming language.
+  "Control whether PEL supports the Ada programming language.
 
 This *must* be activated to allow any other package for Ada.
 When activating it you can select between the following values:
@@ -6007,7 +6025,7 @@ Values in the [2, 8] range are accepted."
                    ,(pel-pdf-file-url "pl-algol")))
 
 (defcustom pel-use-algol nil
-  "Control whether PEL supports the Algol Programming language."
+  "Control whether PEL supports the Algol programming language."
   :group 'pel-pkg-for-algol
   :link '(url-link :tag "algo68-mode @ sourcehut"
                    "https://git.sr.ht/~jemarch/a68-mode")
@@ -8923,6 +8941,7 @@ key."
   :group 'pel-pkg-for-lisp
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-lisp-docstring-toggle :package-is :in-utils)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Common Lisp Support
@@ -11413,7 +11432,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
                    ,(pel-pdf-file-url "pl-fortran")))
 
 (defcustom pel-use-fortran nil
-  "Control whether PEL supports the Fortran Programming language."
+  "Control whether PEL supports the Fortran programming language."
   :group 'pel-pkg-for-fortran
   :type 'boolean
   :safe #'booleanp)
@@ -12615,12 +12634,11 @@ Note: `pel-use-python' must be t for this to be effective."
 ;; - jedi           : https://github.com/tkf/emacs-jedi
 ;;   - company-jedi : https://github.com/emacsorphanage/company-jedi
 
-
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; REXX Support
 ;; ------------
 (defgroup pel-pkg-for-rexx nil
-  "PEL customization for REXX Programming language."
+  "PEL customization for REXX programming language."
   :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "REXX PDF" ,(pel-pdf-file-url "pl-rexx")))
 
@@ -14479,6 +14497,7 @@ contributions that have not been integrated in the authors repo yet."
                    "https://github.com/emacsorphanage/ert-expectations")
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-ert-expectations :package-is :in-utils)
 (pel-put pel-use-ert-expectations :also-required-when 'pel-use-coverage)
 
 (defcustom pel-use-coverage nil

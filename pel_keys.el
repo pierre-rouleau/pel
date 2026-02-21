@@ -810,8 +810,7 @@ Your version of Emacs does not support dynamic module.")))
 
 (when pel-use-dired-sidebar
   (pel-ensure-package dired-sidebar from: melpa)
-  (pel-autoload "dired-sidebar" for:
-    dired-sidebar-toggle-sidebar)
+  (pel-autoload "dired-sidebar" for: dired-sidebar-toggle-sidebar)
   (add-hook 'dired-sidebar-mode-hook
             (lambda ()
               "Auto-refresh dired-sidebar for local directory."
