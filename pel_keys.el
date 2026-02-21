@@ -2235,6 +2235,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;  6       - Xmake
 ;;  7       - Seed7           - Extensible language.  Syntax evolved from Pascal/Modula/Ada
 ;;  8       - Algol
+;;  9       - Rebol
 ;;  A       - Ada
 ;;  C       - C++
 ;;  D       - D
@@ -2991,6 +2992,35 @@ MODE must be a symbol."
   ;;    Schedule more configuration upon Algol feature loading
   (pel-eval-after-load a68-mode
     (pel-config-major-mode a68 pel:for-algol :no-ts)))
+
+;; ---------------------------------------------------------------------------
+;;** Rebol programming language
+;;   --------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC 9`` : Rebol
+(when pel-use-rebol
+  ;; 1- Install required packages for Rebol
+  (pel-install-file
+   "https://www.rebol.com/tools/rebol.el"
+   "rebol.el")
+  (pel-autoload-file rebol for: rebol-mode)
+
+  ;; 2- Associate files with Rebol mode
+  (add-to-list 'auto-mode-alist '("\\.r\\(eb\\)?\\'" . rebol-mode))
+
+  ;; 3- Speedbar support for Rebol
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '(".r" ".reb")))
+
+  ;; 4- Define Buffer keymap for Rebol
+  (define-pel-global-prefix pel:for-rebol (kbd "<f11> SPC 9"))
+  (define-key pel:for-rebol "?" 'pel-mode-setup-info)
+
+  ;; 5- Install optional packages for Rebol
+  ;;
+  ;; 6- Activate Rebol setup.
+  ;;    Schedule more configuration upon Rebol feature loading
+  (pel-eval-after-load rebol
+    (pel-config-major-mode rebol pel:for-rebol :no-ts)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** Awk Programming Language Support
