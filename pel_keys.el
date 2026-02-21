@@ -3005,7 +3005,9 @@ MODE must be a symbol."
   (pel-autoload-file rebol for: rebol-mode)
 
   ;; 2- Associate files with Rebol mode
-  (add-to-list 'auto-mode-alist '("\\.r\\(eb\\)?\\'" . rebol-mode))
+  (add-to-list 'auto-mode-alist '("\\.reb\\'" . rebol-mode))
+  ;; the .r extension clashes with the R language .r, place it at the end.
+  (add-to-list 'auto-mode-alist '("\\.r\\'" . rebol-mode) 'append)
 
   ;; 3- Speedbar support for Rebol
   (when pel-use-speedbar

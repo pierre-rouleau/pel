@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-21 16:06:35 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-21 16:37:49 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -325,7 +325,7 @@
                                                                  projectile-speedbar))
     ([f11 32 ?A]     "pl-ada"           pel-pkg-for-ada         (ada ada-ts))
     ([f11 32 ?8]     "pl-algol"         pel-pkg-for-algol       a68)
-    ([f11 32 ?9]     "pl-rebol"         pel-pkg-for-rebol       rebol) ; current implementation has no customization
+    ([f11 32 ?9]     "pl-rebol"         pel-pkg-for-rebol       nil) ; current implementation has no customization
     ([f11 32 ?F]     "pl-fortran"       pel-pkg-for-fortran     fortran)
     ([f11 32 ?W]     "pl-awk"           pel-pkg-for-awk         ,pel--awk-groups)
     ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         ,pel--c++-groups)
