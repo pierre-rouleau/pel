@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-20 22:21:16 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-20 22:33:20 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -155,6 +155,7 @@
 ;;                              ;      `pel-in-fast-startup-p'
 ;;                              ;      `pel-emacs-config-features-string'
 ;;                              ;      `pel-hardware-model-string'
+;;                              ;      `pel-insert-list-content'
 (require 'pel--options)         ; use: `pel-elpa-packages-to-keep'
 ;;                              ;      `pel-utils-packages-to-keep'
 ;;                              ;      `pel-elpa-obsolete-packages'
