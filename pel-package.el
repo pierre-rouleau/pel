@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-20 22:06:09 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-20 22:21:16 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1384,7 +1384,7 @@ This command is *not* available when PEL operates in fast startup."
 Use pel-setup-normal to return to normal operation.")
     (when (or dry-run
               (y-or-n-p "Proceed with removal of non-required packages? "))
-      (message (propertize "Checking PEL user-options and packages..." 'face 'bold))
+      (message "%s" (propertize "Checking PEL user-options and packages..." 'face 'bold))
       (let* ((utils-results     (pel-clean-utils dry-run))
              (removed-el-files  (car utils-results))
              (removed-elc-files (cadr utils-results))

@@ -4547,10 +4547,9 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-uniline :requires '(:all pel-use-hydra
-                                    `     pel-use-ascii-art-to-unicode))
+                                           pel-use-ascii-art-to-unicode))
 (when pel-use-uniline
   (setq pel-use-ascii-art-to-unicode t))
-
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; GraphViz-Dot Support
