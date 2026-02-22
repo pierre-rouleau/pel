@@ -1658,7 +1658,7 @@ describing detected problems.  Error descriptions can be padded if
 ;; ---------------------------------------------------------------------------
 ;; Lazy loading and package installation:
 ;;
-;; [:todo 2025-10-08, by Pierre Rouleau: Move tha set of function definitions
+;; [:todo 2025-10-08, by Pierre Rouleau: Move that set of function definitions
 ;; inside its own file.]
 ;;
 ;;  The first set is defined in pel--keys.macros.el:
@@ -1713,6 +1713,12 @@ describing detected problems.  Error descriptions can be padded if
 ;;         - `pel--package-install'
 ;;
 
+;; The fourth set of functions and macros provide logic to install
+;; packages via quelpa.  This allows installation of multi-file packages
+;; inside the elpa directory as if they were elpa-compliant.
+
+;; -> - `pel-quelpa-install'
+;;      - `pel--quelpa-install'
 
 ;; -------
 
@@ -2255,6 +2261,30 @@ However, when PEL operates in fast startup, the macro creates no code."
     (let* ((pin-site-name (when pinned-site (symbol-name pinned-site))))
       `(unless (pel-package-installed-p (quote ,pkg))
          (pel-ensure-pkg (quote ,pkg) ,pin-site-name)))))
+
+;; -------
+
+(defun pel--quelpa-install (package quelpa-specs)
+  "Install PACKAGE using specified QUELPA-SPECS.
+Don't install it if already installed."
+  (unless (package-installed-p package)
+    (if (fboundp 'quelpa)
+        (quelpa quelpa-specs)
+      (display-warning
+       'pel-quelpa-install
+       (format "Please activate pel-use-quelpa to install %S"
+               quelpa-specs)))))
+
+(defmacro pel-quelpa-install (quelpa-specs)
+  "Install PACKAGE using specified QUELPA-SPECS.
+PACKAGE is a unquoted-symbol.
+QUELPA-SPECS is an unquoted form.
+Don't install it if already installed."
+  (declare (indent 1))
+  (unless (listp quelpa-specs)
+    (byte-compile-warn "Invalid quelpa-specs: %S" quelpa-specs))
+  (let ((package (car quelpa-specs)))
+    `(pel--quelpa-install (quote ,package) (quote (,@quelpa-specs)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Delay activation of Modes after processing of command line arguments

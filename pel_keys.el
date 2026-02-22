@@ -661,11 +661,10 @@ Your version of Emacs does not support dynamic module.")))
 
   ;; Graphics packages.
   (when pel-use-el-easydraw
-    (unless (package-installed-p 'el-easydraw)
-      (when (fboundp 'quelpa)
-        (quelpa '(el-easydraw :fetcher git
-                              :url
-                              "https://github.com/misohena/el-easydraw.git"))))))
+    (pel-quelpa-install
+      (el-easydraw :fetcher git
+                   :url
+                   "https://github.com/misohena/el-easydraw.git"))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Visual Effect -- delight - control mode lighters
@@ -736,10 +735,10 @@ Your version of Emacs does not support dynamic module.")))
 ;;   -------------------------------------------
 (when pel-use-combobulate
   (unless (package-installed-p 'combobulate)
-    (when (fboundp 'quelpa)
-      (quelpa '(combobulate :fetcher git
-                            :url
-                            "https://github.com/mickeynp/combobulate.git")))))
+    (pel-quelpa-install
+        (combobulate :fetcher git
+                     :url
+                     "https://github.com/mickeynp/combobulate.git"))))
 
 ;;** Move to 2-spaces, empty-/lines
 ;;   ------------------------------
@@ -4010,9 +4009,8 @@ d-mode not added to ac-modes!"
   ;; Use enzuru fork when requested (quelpa should also be available),
   ;; otherwise use abo-abo original repo.
   (if (and (eq pel-use-lispy 'use-enzuru-lispy)
-           (not (package-installed-p 'lispy))
-           (fboundp 'quelpa))
-      (quelpa '(lispy :repo "enzuru/lispy" :fetcher github))
+           (not (package-installed-p 'lispy)))
+      (pel-quelpa-install (lispy :repo "enzuru/lispy" :fetcher github))
     (pel-ensure-package lispy from: melpa))
 
   (defun pel--activate-lispy ()
@@ -6293,9 +6291,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-pg
   (pel-ensure-package pg from: melpa)
   (when pel-use-pgmacs
-    (when (fboundp 'quelpa)
-      (quelpa '(pgmacs :fetcher git
-                       :url "https://github.com/emarsden/pgmacs.git")))))
+    (pel-quelpa-install
+        (pgmacs :fetcher git
+                :url "https://github.com/emarsden/pgmacs.git"))))
 
 ;; ---------------------------------------------------------------------------
 ;;** V Programming Language Support
