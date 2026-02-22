@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-21 16:37:49 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-22 10:20:13 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -402,6 +402,7 @@
                                                                  highlight-defined
                                                                  lisp
                                                                  lispy
+                                                                 lisp-docstring-toggle
                                                                  parinfer-rust-mode
                                                                  rainbow-delimiters
                                                                  suggest))

@@ -4059,8 +4059,6 @@ d-mode not added to ac-modes!"
                      lisp-docstring-toggle-at-point
                      lisp-docstring-toggle-debug-show-snippets))
 
-
-
 (defun pel--lisp-languages-map-for (prefix)
   "Map in the PEL keys for Lisp-like mode in the keymap for PREFIX."
   (define-key prefix (kbd "<down>")   'pel-elisp-beginning-of-next-form)
@@ -4111,7 +4109,10 @@ d-mode not added to ac-modes!"
     (define-key prefix "9"         'lispy-out-forward-newline)
     (define-key prefix (kbd "DEL") 'lispy-kill-at-point))
   (when pel-use-lisp-docstring-toggle
-    (define-key prefix (kbd "M-D") 'lisp-docstring-toggle-mode)))
+    (define-key prefix (kbd "' m") 'lisp-docstring-toggle-mode)
+    (define-key prefix (kbd "' '") 'lisp-docstring-toggle)
+    (define-key prefix (kbd "' .") 'lisp-docstring-toggle-at-point)
+    (define-key prefix (kbd "' d") 'lisp-docstring-toggle-debug-show-docstring-snippets)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Emacs Lisp Programming Language Support
@@ -4156,14 +4157,16 @@ d-mode not added to ac-modes!"
 (define-pel-global-prefix pel:for-elisp       (kbd "<f11> SPC l"))
 (define-pel-global-prefix pel:elisp-help      (kbd "<f11> SPC l ?"))
 (define-pel-global-prefix pel:elisp-highlight (kbd "<f11> SPC l h"))
+(define-pel-global-prefix pel:elisp-docstring (kbd "<f11> SPC l '"))
 (define-pel-global-prefix pel:elisp-setup     (kbd "<f11> SPC l <f4>"))
+(define-pel-global-prefix pel:elisp-loadpath  (kbd "<f11> SPC l <f4> l"))
 (define-pel-global-prefix pel:elisp-eldoc     (kbd "<f11> SPC l <f4> d"))
 (define-pel-global-prefix pel:elisp-skel      (kbd "<f11> SPC l <f12>"))
 (define-pel-global-prefix pel:ert             (kbd "<f11> SPC l C-t"))
 (define-pel-global-prefix pel:testcover       (kbd "<f11> SPC l C-t C-c"))
 
 (define-key pel:for-elisp "z"  'ielm)
-(define-key pel:for-elisp "D"  'pel-add-dir-to-loadpath)
+(define-key pel:elisp-loadpath "d"  'pel-add-dir-to-loadpath)
 (pel--lisp-languages-map-for pel:for-elisp)
 (define-key pel:for-elisp  (kbd "M-l")  'pel-toggle-lisp-modes)
 ;;
@@ -4370,8 +4373,6 @@ d-mode not added to ac-modes!"
     (pel-ensure-package sly from: melpa))
    )
 
-
-
   (pel-eval-after-load inf-lisp ; `inferior-lisp-program' is defined in `inf-lisp'
     (when (and pel-inferior-lisp-program
                (boundp 'inferior-lisp-program))
@@ -4390,6 +4391,8 @@ d-mode not added to ac-modes!"
 
   (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
   (define-pel-global-prefix pel:cl-analyze (kbd "<f11> SPC L a"))
+  (define-pel-global-prefix pel:cl-highlight (kbd "<f11> SPC L h"))
+  (define-pel-global-prefix pel:cl-docstring (kbd "<f11> SPC L '"))
   (define-pel-global-prefix pel:lisp-skel (kbd "<f11> SPC L <f12>"))
   ;; (define-pel-global-prefix pel:for-lisp-repl (kbd "<f11> SPC z L")) Future <f12> key right inside the REPL.
   (pel--lisp-languages-map-for pel:for-lisp)
