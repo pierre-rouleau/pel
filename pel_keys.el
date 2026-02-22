@@ -4057,7 +4057,7 @@ d-mode not added to ac-modes!"
                      lisp-docstring-toggle-mode
                      lisp-docstring-toggle
                      lisp-docstring-toggle-at-point
-                     lisp-docstring-toggle-debug-show-snippets))
+                     lisp-docstring-toggle-debug-show-docstring-snippets))
 
 (defun pel--lisp-languages-map-for (prefix)
   "Map in the PEL keys for Lisp-like mode in the keymap for PREFIX."

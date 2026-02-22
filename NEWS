@@ -144,7 +144,7 @@ PEL uses my fork of the project to eliminate most warnings.
   - Also add support for the ascii-art-to-unicode external package when either *pel-use-ascii-ast-to-unicode*
     or *pel-use-uniline* is activated.
 - Add support for lisp-docstring-toggle via *pel-use-doctring-toggle*.
-  When active the *lisp-docstring-toggle-mode* command is mapped to the ~<f12> '~ key prefix is available
+  When active the *lisp-docstring-toggle-mode* command is mapped under the ~<f12> '~ key prefix available
   for the lisp major modes (emacs lisp, common lisp, scheme...).
 - Add support for elisp-depmap in Emacs graphics mode via *pel-use-elisp-depmap*.
   When active its 3 commands are mapped under the ~<f11> a M-D~ key prefix.
