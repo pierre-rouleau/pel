@@ -12651,7 +12651,7 @@ Note: `pel-use-python' must be t for this to be effective."
 (pel-put pel-use-rebol :package-is :in-utils)
 
 (defcustom pel-rebol-activates-minor-modes nil
-  "List of *local* minor-modes automatically activated for REBOL buffers.
+  "List of *local* minor-modes automatically activated for rebol buffers.
 Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-rebol
