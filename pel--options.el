@@ -2451,7 +2451,7 @@ A major mode."
                    "https://github.com/pierre-rouleau/rpm-spec-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-rpm-spec :package-is :in-utils)
+(pel-put pel-use-rpm-spec :package-is '(quote ((utils . rpm-spec-mode))))
 (pel-put pel-use-rpm-spec :also-required-when 'pel-use-archive-rpm)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -3201,7 +3201,7 @@ Note that when this is activated, PEL automatically turns
                    "https://melpa.org/#/smart-tabs-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-smart-tabs :package-is :in-utils)
+(pel-put pel-use-smart-tabs :package-is '(quote ((utils . smart-tabs-mode))))
 
 (defcustom pel-use-smart-shift nil
   "Whether PEL activates the smart-shift external package."
@@ -4198,7 +4198,7 @@ A major mode."
                    "https://github.com/pierre-rouleau/strace-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-strace :package-is :in-utils)
+(pel-put pel-use-strace :package-is '(quote ((utils . strace-mode))))
 
 (defgroup pel-pkg-for-gnu-screen nil
   "GNU Screen log file support."
@@ -5395,6 +5395,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-verilog
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-veri-kompass :package-is :in-utils)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; VHDL Language Support
@@ -14339,7 +14340,7 @@ This automatically activates support for Lua."
                    "https://github.com/MiroYld/xmake-emacs")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-xmake-emacs :package-is :in-utils)
+(pel-put pel-use-xmake-emacs :package-is '(quote ((utils . xmake))))
 
 ;; ---------------------------------------------------------------------------
 ;; CMake file support
@@ -14569,7 +14570,7 @@ contributions that have not been integrated in the authors repo yet."
                    "https://codeberg.org/akib/emacs-testcover-mark-line")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-test-cover-mark :package-is :in-utils)
+(pel-put pel-use-test-cover-mark :package-is '(quote ((utils . testcover-mark-line))))
 
 (defcustom pel-use-buttercup nil
   "Whether PEL supports buttercup library."

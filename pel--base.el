@@ -1928,7 +1928,7 @@ expands to nil which will be optimized out by the byte compiler."
 
 (defun pel--install-gitlab-file (gitlab-user gitlab-project fname
                                              &optional refresh)
-  "Download & install FNAME from Gitlab user and project.
+  "Download & install FNAME from Gitlab user and project into PEL utils.
 GITLAB-USER is the name of Gitlab user.
 GITLAB-PROJECT is the name of Gitlab project.
 
@@ -1950,7 +1950,7 @@ This is normally called by the `pel-install-gitlab-files' macro."
 
 (defmacro pel-install-gitlab-file (gitlab-user gitlab-project fname
                                                &optional refresh)
-  "Download & install FNAME from Gitlab user and project.
+  "Download & install FNAME from Gitlab user and project into PEL utils.
 GITLAB-USER is the name of Gitlab user.
 GITLAB-PROJECT is the name of Gitlab project.
 REFRESH if required.
