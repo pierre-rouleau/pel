@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add early support for the Rebol programming language using an old rebol-mode
+  implementation I'm planning to update. Add an early PDF for Rebol.
 - Simplified user-options for Common Lisp, add linter command.
   - The *pel-use-common-lisp* user option now control whether a Common Lisp IDE
       (Slime or Sly) is used.  The *pel-use-slime* and *pel-use-sly* are no longer

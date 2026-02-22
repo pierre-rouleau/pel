@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-02-19 16:06:20 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-02-21 16:59:12 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -888,11 +888,19 @@ pel: $(ELC_FILES)
 
 # Remove pel_keys.elc and pel.elc and recompile: ensure we always run the very latest.
 # This is only done after successfully running all tests.
+ifeq ($(EMACS_NATIVE_COMP_AVAILABLE), yes)
 pel_keys.elc: pel_keys.el pel-ran-tests.tag
 	-rm pel_keys.elc pel.elc
-	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -f batch-byte-compile pel_keys.el
-	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -f batch-byte-compile pel.el
-
+	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile pel_keys.el
+	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-native-compile pel_keys.el
+	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile pel.el
+	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-native-compile pel.el
+else
+pel_keys.elc: pel_keys.el pel-ran-tests.tag
+	-rm pel_keys.elc pel.elc
+	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile pel_keys.el
+	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile pel.el
+endif
 # -----------------------------------------------------------------------------
 # Integration test rules
 #

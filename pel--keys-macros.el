@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 22:09:33 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-21 16:37:49 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -325,6 +325,7 @@
                                                                  projectile-speedbar))
     ([f11 32 ?A]     "pl-ada"           pel-pkg-for-ada         (ada ada-ts))
     ([f11 32 ?8]     "pl-algol"         pel-pkg-for-algol       a68)
+    ([f11 32 ?9]     "pl-rebol"         pel-pkg-for-rebol       nil) ; current implementation has no customization
     ([f11 32 ?F]     "pl-fortran"       pel-pkg-for-fortran     fortran)
     ([f11 32 ?W]     "pl-awk"           pel-pkg-for-awk         ,pel--awk-groups)
     ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         ,pel--c++-groups)
@@ -883,6 +884,7 @@ stored inside the doc/pdf directory.")
     ("plantuml"            [f11 32 27 ?u])
     ("python"              [f11 32 ?p])
     ("python-ts"           [f11 32 ?p])
+    ("rebol"               [f11 32 ?9])
     ("rexx"                [f11 32 ?R])
     ("rpm"                 [f11 32 27 ?R])
     ;; ("rpmspec"          [f11 32 27 ?S])
@@ -1176,6 +1178,7 @@ There should be no key binding!" keyseq))
     ("objective-c"      . "pl-objc")
     ("pike"             . "pl-pike")
     ("python"           . "pl-python")
+    ("rebol"            . "pl-rebol")
     ("rexx"             . "pl-rexx")
     ("ruby"             . "pl-ruby")
     ("rust"             . "pl-rust")

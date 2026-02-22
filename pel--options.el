@@ -182,6 +182,7 @@
 ;;           - pel-pkg-for-perl-cperl-mode
 ;;         - pel-pkg-for-pike
 ;;         - pel-pkg-for-python
+;;         - pel-pkg-for-rebol
 ;;         - pel-pkg-for-rexx
 ;;         - pel-pkg-for-ruby
 ;;         - pel-pkg-for-rust
@@ -12633,6 +12634,48 @@ Note: `pel-use-python' must be t for this to be effective."
 ;; - elpy           : complete the support
 ;; - jedi           : https://github.com/tkf/emacs-jedi
 ;;   - company-jedi : https://github.com/emacsorphanage/company-jedi
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Rebol Support
+;; -------------
+(defgroup pel-pkg-for-rebol nil
+  "PEL customization for Rebol programming language."
+  :group 'pel-pkg-for-software-programming-languages
+  :link `(url-link :tag "Rebol PDF" ,(pel-pdf-file-url "pl-rebol")))
+
+(defcustom pel-use-rebol nil
+  "Control whether PEL provides support for Rebol programming language."
+  :group 'pel-pkg-for-rebol
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put pel-use-rebol :package-is :in-utils)
+
+(defcustom pel-rebol-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for REBOL buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-rebol
+  :type '(repeat function))
+
+(defcustom pel-rebol-tab-width 2
+  "Column width display rendering of hard tab for rebol buffers.
+
+PEL stores this in `tab-width' when opening rebol buffers.
+
+This does *NOT* control the indentation in rebol
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
+  :group 'pel-pkg-for-rebol
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-rebol-use-tabs nil
+  "Value of `indent-tabs-mode' for editing rebol files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-rebol
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; REXX Support
