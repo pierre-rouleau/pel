@@ -2267,7 +2267,7 @@ However, when PEL operates in fast startup, the macro creates no code."
 (defun pel--quelpa-install (package quelpa-specs)
   "Install PACKAGE using specified QUELPA-SPECS.
 Don't install it if already installed."
-  (unless (package-installed-p package)
+  (unless (pel-package-installed-p package)
     (if (fboundp 'quelpa)
         (quelpa quelpa-specs)
       (display-warning
@@ -2281,10 +2281,11 @@ PACKAGE is a unquoted-symbol.
 QUELPA-SPECS is an unquoted form.
 Don't install it if already installed."
   (declare (indent 1))
-  (unless (listp quelpa-specs)
-    (byte-compile-warn "Invalid quelpa-specs: %S" quelpa-specs))
-  (let ((package (car quelpa-specs)))
-    `(pel--quelpa-install (quote ,package) (quote (,@quelpa-specs)))))
+  (if (listp quelpa-specs)
+      (let ((package (car quelpa-specs)))
+        `(pel--quelpa-install (quote ,package) (quote (,@quelpa-specs))))
+    (byte-compile-warn "Invalid quelpa-specs: %S" quelpa-specs)
+    nil))
 
 ;; ---------------------------------------------------------------------------
 ;; Delay activation of Modes after processing of command line arguments
