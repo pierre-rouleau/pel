@@ -4,7 +4,7 @@
 # Purpose   : Time Emacs startup.
 # Created   : Monday, February 23 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-23 17:48:55 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-23 18:31:33 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,6 +24,28 @@
 # ----
 #
 #
+
+# Set initial file path from $0
+TARGET="$0"
+
+# Handle symlinks to the script
+while [ -L "$TARGET" ]; do
+  # Get the link's target path
+  # Note: ls -ld is the standard POSIX way to see where a link points
+  LINK_TARGET=$(ls -ld "$TARGET" | sed 's/.*-> //')
+
+  case "$LINK_TARGET" in
+    /*) # Absolute link target
+        TARGET="$LINK_TARGET" ;;
+    *)  # Relative link target: resolve relative to the current link's directory
+        TARGET="$(dirname -- "$TARGET")/$LINK_TARGET" ;;
+  esac
+done
+SCRIPT_DIR=$(cd -P -- "$(dirname -- "$TARGET")" && pwd)
+
+# Now compute PEL_DIR, the directory where Makefile is located.
+PEL_DIR="$(realpath "${SCRIPT_DIR}/..")"
+
 
 printf -- "TESTING: -Q\n"
 printf -- "===========\n"
@@ -55,8 +77,7 @@ printf -- "\n\n"
 printf -- "TESTING: with PEL\n"
 printf -- "==================\n"
 printf -- "With "
-root_dir="$(cd "$(dirname "$0")/.." && pwd)"
-make -C "${root_dir}" stats 2>&1 | grep "# packages activated"
+make -C "${PEL_DIR}" stats 2>&1 | grep "# packages activated"
 printf -- "\n"
 printf -- "Terminal startup: emacs -nw --e kill-emacs :\n"
 time emacs -nw -e kill-emacs
