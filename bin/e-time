@@ -1,9 +1,10 @@
+#!/bin/sh
 # SH FILE: e-time.sh
 #
 # Purpose   : Time Emacs startup.
 # Created   : Monday, February 23 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-23 17:32:36 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-23 17:48:55 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -54,13 +55,12 @@ printf -- "\n\n"
 printf -- "TESTING: with PEL\n"
 printf -- "==================\n"
 printf -- "With "
-cd ..
-make stats 2>&1 | grep "# packages activated"
-cd  bin
+root_dir="$(cd "$(dirname "$0")/.." && pwd)"
+make -C "${root_dir}" stats 2>&1 | grep "# packages activated"
 printf -- "\n"
-printf -- "Terminal startup: emacs -nw -q --e kill-emacs :\n"
+printf -- "Terminal startup: emacs -nw --e kill-emacs :\n"
 time emacs -nw -e kill-emacs
-printf -- "Terminal startup: e -nw -q -e kill-emacs :\n"
+printf -- "Terminal startup: e -nw -e kill-emacs :\n"
 time e -nw -e kill-emacs
 printf -- "\n"
 # printf -- "Graphical startup: emacs -q -e kill-emacs :\n"
@@ -69,6 +69,5 @@ printf -- "\n"
 # time ge -e kill-emacs
 # printf -- "Note that the above times are invalid as ge is async\n"
 printf -- "------------ COMPLETE ---------------\n"
-
 
 # ----------------------------------------------------------------------------
