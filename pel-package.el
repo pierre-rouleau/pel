@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-20 22:33:20 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-23 17:28:33 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -796,13 +796,14 @@ The function does not support printing a full report on stdout."
          (user-options      (pel-user-options))
          (installable-pkgs  (pel-installable-packages))
          (upgradable-pkgs   (pel-package-upgradable))
-         (overview          (format "\
+         (overview
+          (format "\
 - custom-file                : %s
 - package-user-dir           : %s
 - %3d Elpa packages stored in: %s
 - %3d Utils files   stored in: %s
 - size of load-path          : %d directories
-- Number of PEL user-options : %3d (%d are active)
+- # pel-use-... user-options : %3d (%d are active)
 - # packages PEL can install : %d Elpa-compliant, %d others
 - PEL activated elpa packages: %s
 - PEL Activated utils files  : %s
@@ -818,40 +819,44 @@ The function does not support printing a full report on stdout."
 - Emacs version              : %s
 - Emacs config features      : %s
 - Hardware model, OS info    : %s"
-                                    custom-file
-                                    package-user-dir
-                                    (length
-                                     (pel-elpa-package-directories package-user-dir))
-                                    package-user-dir
-                                    (length (pel-el-files-in pel-utils-dirpath))
-                                    pel-utils-dirpath
-                                    (length load-path)
-                                    (length user-options)
-                                    (length (seq-filter
-                                             (lambda (x) (symbol-value x))
-                                             user-options))
-                                    ;; # package PEL can install
-                                    (length (car installable-pkgs))
-                                    (length (cadr installable-pkgs))
-                                    (pel--elpa-stats n-elpa-base n-elpa-deps
-                                                     n-elpa-locked)
-                                    (pel--elpa-stats n-utils-base n-utils-deps
-                                                     n-utils-locked)
-                                    (length load-history)
-                                    (length features)
-                                    (length package-alist)
-                                    (length package-activated-list)
-                                    (length package-selected-packages)
-                                    (length (pel-commands))
-                                    (length upgradable-pkgs)
-                                    (pel-doc-pdf-file-count)
-                                    (if (and (require 'time nil :no-error)
-                                             (fboundp 'emacs-init-time))
-                                        (emacs-init-time)
-                                      "?")
-                                    (emacs-version)
-                                    (pel-emacs-config-features-string)
-                                    (pel-hardware-model-string))))
+                  custom-file           ; customization  file
+                  package-user-dir      ; package directory
+                  (length               ; # elpa packages
+                   (pel-elpa-package-directories
+                    package-user-dir))
+                  package-user-dir      ; package directory
+                  (length               ; # packages in PEL utils
+                   (pel-el-files-in pel-utils-dirpath))
+                  pel-utils-dirpath     ; PEL utils directory}
+                  (length load-path)    ; load-path size
+                  (length user-options) ; total # user-options
+                  (length (seq-filter   ; # of non-nil user-options
+                           (lambda (x) (symbol-value x))
+                           user-options))
+                  ;; # package PEL can install
+                  (length (car installable-pkgs))  ; elpa compliant packages
+                  (length (cadr installable-pkgs)) ; other packages
+                  (pel--elpa-stats n-elpa-base ; PEL activated elpa packages
+                                   n-elpa-deps
+                                   n-elpa-locked)
+                  (pel--elpa-stats n-utils-base ; PEL activated utils files
+                                   n-utils-deps
+                                   n-utils-locked)
+                  (length load-history)              ; # loaded files
+                  (length features)                  ; # features
+                  (length package-alist)             ; # package-alist
+                  (length package-activated-list)    ; # packages activated
+                  (length package-selected-packages) ; # packages selected
+                  (length (pel-commands))            ; # PEL commands
+                  (length upgradable-pkgs) ; # upgradable PEL packages
+                  (pel-doc-pdf-file-count) ; # PEL PDF files
+                  (if (and (require 'time nil :no-error)
+                           (fboundp 'emacs-init-time))
+                      (emacs-init-time)
+                    "?")
+                  (emacs-version)
+                  (pel-emacs-config-features-string)
+                  (pel-hardware-model-string))))
     (when (pel-in-fast-startup-p)
       (user-error "PEL is running in fast-startup. \
  This is only available in normal mode!"))
