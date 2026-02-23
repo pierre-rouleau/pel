@@ -2279,13 +2279,14 @@ Don't install it if already installed."
   "Install PACKAGE using specified QUELPA-SPECS.
 PACKAGE is a unquoted-symbol.
 QUELPA-SPECS is an unquoted form.
-Don't install it if already installed."
+Don't install it if already installed or PEL in fast startup."
   (declare (indent 1))
-  (if (listp quelpa-specs)
-      (let ((package (car quelpa-specs)))
-        `(pel--quelpa-install (quote ,package) (quote (,@quelpa-specs))))
-    (byte-compile-warn "Invalid quelpa-specs: %S" quelpa-specs)
-    nil))
+  (unless (pel-in-fast-startup-p)
+    (if (listp quelpa-specs)
+        (let ((package (car quelpa-specs)))
+          `(pel--quelpa-install (quote ,package) (quote (,@quelpa-specs))))
+      (byte-compile-warn "Invalid quelpa-specs: %S" quelpa-specs)
+      nil)))
 
 ;; ---------------------------------------------------------------------------
 ;; Delay activation of Modes after processing of command line arguments
