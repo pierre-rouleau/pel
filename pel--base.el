@@ -2267,7 +2267,8 @@ However, when PEL operates in fast startup, the macro creates no code."
 (defun pel--quelpa-install (package quelpa-specs)
   "Install PACKAGE using specified QUELPA-SPECS.
 Don't install it if already installed."
-  (unless (pel-package-installed-p package)
+  (unless (or (pel-in-fast-startup-p)
+              (pel-package-installed-p package))
     (if (fboundp 'quelpa)
         (quelpa quelpa-specs)
       (display-warning
@@ -2284,7 +2285,11 @@ Don't install it if already installed or PEL in fast startup."
   (unless (pel-in-fast-startup-p)
     (if (listp quelpa-specs)
         (let ((package (car quelpa-specs)))
-          `(pel--quelpa-install (quote ,package) (quote (,@quelpa-specs))))
+          (if (symbolp package)
+              `(pel--quelpa-install (quote ,package) (quote (,@quelpa-specs)))
+            (byte-compile-warn
+             "Invalid quelpa-spec: first element not a symbol: %S"
+             package)))
       (byte-compile-warn "Invalid quelpa-specs: %S" quelpa-specs)
       nil)))
 
