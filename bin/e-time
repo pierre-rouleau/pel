@@ -1,0 +1,94 @@
+#!/bin/sh
+# SH FILE: e-time.sh
+#
+# Purpose   : Time Emacs startup.
+# Created   : Monday, February 23 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-02-23 18:31:33 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#  Measure Emacs startup time when started in various ways, without and with PEL
+#  initialization.  Compute and print the number of packages loaded by PEL
+#  since this has a significant impact on Emacs starup time.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - Emacs must be installed and PEL commands are used.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Set initial file path from $0
+TARGET="$0"
+
+# Handle symlinks to the script
+while [ -L "$TARGET" ]; do
+  # Get the link's target path
+  # Note: ls -ld is the standard POSIX way to see where a link points
+  LINK_TARGET=$(ls -ld "$TARGET" | sed 's/.*-> //')
+
+  case "$LINK_TARGET" in
+    /*) # Absolute link target
+        TARGET="$LINK_TARGET" ;;
+    *)  # Relative link target: resolve relative to the current link's directory
+        TARGET="$(dirname -- "$TARGET")/$LINK_TARGET" ;;
+  esac
+done
+SCRIPT_DIR=$(cd -P -- "$(dirname -- "$TARGET")" && pwd)
+
+# Now compute PEL_DIR, the directory where Makefile is located.
+PEL_DIR="$(realpath "${SCRIPT_DIR}/..")"
+
+
+printf -- "TESTING: -Q\n"
+printf -- "===========\n"
+printf -- "Terminal startup: emacs -nw -Q -e kill-emacs :\n"
+time emacs -nw -Q -e kill-emacs
+printf -- "Terminal startup: e -nw -Q -e kill-emacs :\n"
+time e -nw -Q -e kill-emacs
+# printf -- "\n"
+# printf -- "Graphical startup: emacs -Q -e kill-emacs :\n"
+# time emacs -Q -e kill-emacs
+# printf -- "Graphical startup: ge  -Q -e kill-emacs :\n"
+# time ge  -Q -e kill-emacs
+
+printf -- "\n\n"
+printf -- "TESTING: -q\n"
+printf -- "===========\n"
+printf -- "Terminal startup: emacs -nw -q -e kill-emacs :\n"
+time emacs -nw -q -e kill-emacs
+printf -- "Terminal startup: e -nw -q -e kill-emacs :\n"
+time e -nw -q -e kill-emacs
+# printf -- "\n"
+# printf -- "Graphical startup: emacs -q -e kill-emacs :\n"
+# time emacs -q -e kill-emacs
+# printf -- "Graphical startup: ge  -q -e kill-emacs :\n"
+# time ge  -q -e kill-emacs
+
+
+printf -- "\n\n"
+printf -- "TESTING: with PEL\n"
+printf -- "==================\n"
+printf -- "With "
+make -C "${PEL_DIR}" stats 2>&1 | grep "# packages activated"
+printf -- "\n"
+printf -- "Terminal startup: emacs -nw --e kill-emacs :\n"
+time emacs -nw -e kill-emacs
+printf -- "Terminal startup: e -nw -e kill-emacs :\n"
+time e -nw -e kill-emacs
+printf -- "\n"
+# printf -- "Graphical startup: emacs -q -e kill-emacs :\n"
+# time emacs -e kill-emacs
+# printf -- "Graphical startup: ge  -q -e kill-emacs :\n"
+# time ge -e kill-emacs
+# printf -- "Note that the above times are invalid as ge is async\n"
+printf -- "------------ COMPLETE ---------------\n"
+
+# ----------------------------------------------------------------------------
