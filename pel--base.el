@@ -2276,9 +2276,9 @@ Don't install it if already installed."
                quelpa-specs)))))
 
 (defmacro pel-quelpa-install (quelpa-specs)
-  "Install PACKAGE using specified QUELPA-SPECS.
-PACKAGE is a unquoted-symbol.
-QUELPA-SPECS is an unquoted form.
+  "Install the package identified by QUELPA-SPECS.
+QUELPA-SPECS is an unquoted form that identifies the package
+to install and how to install it.  See `quelpa' documentation.
 Don't install it if already installed or PEL in fast startup."
   (declare (indent 1))
   (unless (pel-in-fast-startup-p)
