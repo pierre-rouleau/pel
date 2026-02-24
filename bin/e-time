@@ -4,7 +4,7 @@
 # Purpose   : Time Emacs startup.
 # Created   : Monday, February 23 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-24 09:25:48 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-24 17:55:10 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -76,6 +76,10 @@ print_usage()
   The operation takes some time when detecting the number of packages used by
   PEL, so it prints a 'please wait' message while generating the report.
 
+  Note that the script uses the file ~/tmp/emacs-time.txt to store
+  information that is later added into the report.  The script
+  stop with  an error if the directory does not exist or the file is present.
+
 " "$pgm_name" "$pgm_name" "$pgm_name"
 }
 
@@ -117,6 +121,18 @@ if [ "$#" -eq 1 ] && [ "${1#-}" != "$1" ]; then
     printf -- "*** ERROR: unknown option: %s\n" "$1"
     printf -- "           Use -h to print help.\n"
     exit 1
+fi
+
+# --
+# Ensure the presence of ~/tmp directory
+# And the absence of ~/tmp/emacs-time.txt
+if [ ! -d "$HOME/tmp" ]; then
+    printf -- "*** ERROR: required ~/tmp directory is missing. Please create it!\n"
+    exit 2
+fi
+if [ -f "$HOME/tmp/emacs-time.txt" ]; then
+    printf -- "*** ERROR: Please rename or erase ~/tmp/emacs-time.txt.\n"
+    exit 2
 fi
 
 # --
@@ -177,6 +193,12 @@ printf -- "\nTerminal startup: emacs -nw -e kill-emacs :"          >> "$REPORT_F
 (time  emacs -nw -e kill-emacs)                                   2>> "$REPORT_FILE"
 printf -- "\nTerminal startup: e -e kill-emacs :"                  >> "$REPORT_FILE"
 (time  e -e kill-emacs)                                           2>> "$REPORT_FILE"
+printf -- "\nTerminal startup, using emacs-init-time:\n"           >> "$REPORT_FILE"
+(e --batch -l ~/.emacs.d/init.el  --eval '(progn (pel-init) (message "Emacs startup time (batch mode): %s" (emacs-init-time)))') 2>&1 | grep "Emacs startup time (batch mode):" >> "$REPORT_FILE"
+(e --eval '(progn (write-region (format "Emacs startup time (user mode) : %s\n" (emacs-init-time)) nil "~/tmp/emacs-time.txt"  t) (kill-emacs))')
+cat "$HOME/tmp/emacs-time.txt" >> "$REPORT_FILE"
+rm -f "$HOME/tmp/emacs-time.txt"
+
 if [ "$test_gui" = "yes" ]; then
     printf -- "\nGraphical startup: emacs -e kill-emacs :"         >> "$REPORT_FILE"
     (time  emacs -e kill-emacs)                                   2>> "$REPORT_FILE"
