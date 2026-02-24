@@ -4,7 +4,7 @@
 # Purpose   : Time Emacs startup.
 # Created   : Monday, February 23 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-23 22:14:11 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-24 08:19:16 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -24,6 +24,7 @@
 # ----
 #
 #
+# shellcheck disable=SC2129  # one redirection by line, no grouping: easier to see.
 
 # Identify program name.
 pgm_name="$(basename "$0")"
@@ -34,6 +35,7 @@ TARGET="$0"
 while [ -L "$TARGET" ]; do
   # Get the link's target path
   # Note: ls -ld is the standard POSIX way to see where a link points
+  # shellcheck disable=SC2012
   LINK_TARGET=$(ls -ld "$TARGET" | sed 's/.*-> //')
 
   case "$LINK_TARGET" in
@@ -91,13 +93,6 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 fi
 
 # --
-# This uses /usr/bin/time to use the -o option.  Check that it's available.
-if [ !  -x /usr/bin/time ]; then
-    printf -- "*** ERROR: /usr/bin/time not available!\n"
-    exit 1
-fi
-
-# --
 # Check -g options
 test_gui=no
 if [ "$1" = "-g" ] || [ "$1" = "--gui" ]; then
@@ -128,48 +123,49 @@ printf -- "On: %s\n\n" "$(uname -a)"                               >> "$REPORT_F
 printf -- "TESTING: -Q\n"                                          >> "$REPORT_FILE"
 printf -- "===========\n"                                          >> "$REPORT_FILE"
 printf -- "Terminal startup: emacs -nw -Q -e kill-emacs :\n"       >> "$REPORT_FILE"
-/usr/bin/time -a -o "$REPORT_FILE" emacs -nw -Q -e kill-emacs
+(time emacs -nw -Q -e kill-emacs)                                 2>> "$REPORT_FILE"
 printf -- "Terminal startup: e -nw -Q -e kill-emacs :\n"           >> "$REPORT_FILE"
-/usr/bin/time -a -o "$REPORT_FILE" e -nw -Q -e kill-emacs
+(time  e -nw -Q -e kill-emacs)                                    2>> "$REPORT_FILE"
 printf -- "\n"                                                     >> "$REPORT_FILE"
 if [ "$test_gui" = "yes" ]; then
     printf -- "Graphical startup: emacs -Q -e kill-emacs :\n"      >> "$REPORT_FILE"
-    /usr/bin/time -a -o "$REPORT_FILE" emacs -Q -e kill-emacs
+    (time  emacs -Q -e kill-emacs)                                2>> "$REPORT_FILE"
     printf -- "Graphical startup: ge  -Q -e kill-emacs :\n"        >> "$REPORT_FILE"
-    /usr/bin/time -a -o "$REPORT_FILE" ge  -Q -e kill-emacs
+    (time  ge  -Q -e kill-emacs)                                  2>> "$REPORT_FILE"
 fi
 
 printf -- "\n\n"                                                   >> "$REPORT_FILE"
 printf -- "TESTING: -q\n"                                          >> "$REPORT_FILE"
 printf -- "===========\n"                                          >> "$REPORT_FILE"
 printf -- "Terminal startup: emacs -nw -q -e kill-emacs :\n"       >> "$REPORT_FILE"
-/usr/bin/time -a -o "$REPORT_FILE" emacs -nw -q -e kill-emacs
+(time  emacs -nw -q -e kill-emacs)                                2>> "$REPORT_FILE"
 printf -- "Terminal startup: e -nw -q -e kill-emacs :\n"           >> "$REPORT_FILE"
-/usr/bin/time -a -o "$REPORT_FILE" e -nw -q -e kill-emacs
+(time  e -nw -q -e kill-emacs)                                    2>> "$REPORT_FILE"
 printf -- "\n"                                                     >> "$REPORT_FILE"
 if [ "$test_gui" = "yes" ]; then
     printf -- "Graphical startup: emacs -q -e kill-emacs :\n"      >> "$REPORT_FILE"
-    /usr/bin/time -a -o "$REPORT_FILE" emacs -q -e kill-emacs
+    (time  emacs -q -e kill-emacs)                                2>> "$REPORT_FILE"
     printf -- "Graphical startup: ge  -q -e kill-emacs :\n"        >> "$REPORT_FILE"
-    /usr/bin/time -a -o "$REPORT_FILE" ge  -q -e kill-emacs
+    (time  ge -q -e kill-emacs)                                   2>> "$REPORT_FILE"
 fi
 
 printf -- "\n\n"                                                   >> "$REPORT_FILE"
 printf -- "TESTING: with PEL\n"                                    >> "$REPORT_FILE"
 printf -- "==================\n"                                   >> "$REPORT_FILE"
 printf -- "With "                                                  >> "$REPORT_FILE"
-make -C "${PEL_DIR}" stats 2>&1 | grep "# packages activated"      >> "$REPORT_FILE"
+# remove the leading "- " printed by the make stats with sed.
+make -C "${PEL_DIR}" stats 2>&1 | grep "# packages activated" | sed 's/^- //' >> "$REPORT_FILE"
 printf -- "\n"                                                     >> "$REPORT_FILE"
 printf -- "Terminal startup: emacs -nw -e kill-emacs :\n"          >> "$REPORT_FILE"
-/usr/bin/time -a -o "$REPORT_FILE" emacs -nw -e kill-emacs
+(time  emacs -nw -e kill-emacs)                                   2>> "$REPORT_FILE"
 printf -- "Terminal startup: e -nw -e kill-emacs :\n"              >> "$REPORT_FILE"
-/usr/bin/time -a -o "$REPORT_FILE" e -nw -e kill-emacs
+(time  e -nw -e kill-emacs)                                       2>> "$REPORT_FILE"
 printf -- "\n"                                                     >> "$REPORT_FILE"
 if [ "$test_gui" = "yes" ]; then
     printf -- "Graphical startup: emacs -e kill-emacs :\n"         >> "$REPORT_FILE"
-    /usr/bin/time -a -o "$REPORT_FILE" emacs -e kill-emacs
+    (time  emacs -e kill-emacs)                                   2>> "$REPORT_FILE"
     printf -- "Graphical startup: ge  -e kill-emacs :\n"           >> "$REPORT_FILE"
-    /usr/bin/time -a -o "$REPORT_FILE" ge -e kill-emacs
+    (time  ge -e kill-emacs)                                      2>> "$REPORT_FILE"
     printf -- "Note that the above times are invalid as ge is async\n" >> "$REPORT_FILE"
 fi
 printf -- "------------ COMPLETE ---------------\n"                >> "$REPORT_FILE"
