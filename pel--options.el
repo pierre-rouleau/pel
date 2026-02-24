@@ -8728,9 +8728,9 @@ defcustom variable `pel-modes-activating-syntax-check'."
 ;; utility directory.
 (pel-put pel-use-goflymake :package-is
          '(cond ((eq pel-use-goflymake 'with-flycheck)
-                 '((utils . go-flycheck)
-                   (utils . go-flymake)
-                   (elpa . flycheck)))
+                 '((elpa . flycheck)
+                   (utils . go-flycheck)
+                   (utils . go-flymake)))
                 ((eq pel-use-goflymake 'with-flymake)
                  ;; flymake is part of Emacs
                  '((utils . go-flycheck)

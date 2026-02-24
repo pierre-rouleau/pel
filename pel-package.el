@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-23 17:28:33 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-24 14:18:38 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -461,7 +461,7 @@ Returns nil when:
       ;; Some `pel-use-' user-options are for packages that do not completely
       ;; identify their dependencies in their pkg-X.el file.  We complete it
       ;; with the :requires-package property.  Extract these specs and append
-      ;; them to the specs.
+      ;; them to the specs, but don't allow multiple instance.
       ;;
       ;; TODO: currently packages inserted like these and not explicitly
       ;; requested by a `pel-use-' user-option are not identified as
@@ -469,12 +469,11 @@ Returns nil when:
       ;; being requested via a dependency identified by PEL.
       (dolist (xtra-spec (pel-spec-for-symbol-attribute
                           symbol :requires-package))
-        (push xtra-spec specs))
+        (setq specs (append specs (list xtra-spec))))
       ;; return the complete list of specs
       specs)))
 
 ;; --
-
 (defun pel-packages-for (symbol &optional ignore-restriction)
   "Return availability specs for specified PEL user-option SYMBOL.
 
@@ -542,7 +541,7 @@ some PEL user-options have been turned off."
         (when spec
           (push spec pkg-spec-list))))
     ;; return the list of packages that should be present.
-    pkg-spec-list))
+    (nreverse pkg-spec-list)))
 
 ;; ----
 
@@ -1116,7 +1115,7 @@ Returns the list of removed file names."
                   (file-newer-than-file-p el-file elc-file))
         (push elc-file removed-files)
         (delete-file elc-file)))
-    removed-files))
+    (nreverse removed-files)))
 
 ;; --
 
@@ -1229,7 +1228,7 @@ removed."
           (if (file-exists-p new-location)
               (delete-directory dirpath :recursively)
             (pel-move-to-dir dirpath pel-elpa-attic-dirpath)))))
-    removed-dirpaths))
+    (nreverse removed-dirpaths)))
 
 ;; --
 
