@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-24 14:37:00 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-24 14:54:56 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -457,7 +457,8 @@ Returns nil when:
             (and (not ignore-restriction)
                  (pel-restricted-active-user-option-p symbol)))
     (let ((specs (pel-spec-for-symbol-attribute
-                  symbol :package-is :no-property-is-elpa)))
+                  symbol :package-is :no-property-is-elpa))
+          (xtra-specs nil))
       ;; Some `pel-use-' user-options are for packages that do not completely
       ;; identify their dependencies in their pkg-X.el file.  We complete it
       ;; with the :requires-package property.  Extract these specs and append
@@ -470,7 +471,8 @@ Returns nil when:
       (dolist (xtra-spec (pel-spec-for-symbol-attribute
                           symbol :requires-package))
         (unless (member xtra-spec specs)
-          (setq specs (append specs (list xtra-spec)))))
+          (push xtra-spec xtra-specs)))
+      (setq specs (nconc specs (nreverse xtra-specs)))
       ;; return the complete list of specs
       specs)))
 
