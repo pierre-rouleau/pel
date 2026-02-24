@@ -4,7 +4,7 @@
 # Purpose   : Time Emacs startup.
 # Created   : Monday, February 23 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-23 18:31:33 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-23 21:50:05 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -25,9 +25,11 @@
 #
 #
 
-# Set initial file path from $0
-TARGET="$0"
+# Identify program name.
+pgm_name="$(basename "$0")"
 
+# Identify path of the program
+TARGET="$0"
 # Handle symlinks to the script
 while [ -L "$TARGET" ]; do
   # Get the link's target path
@@ -47,48 +49,130 @@ SCRIPT_DIR=$(cd -P -- "$(dirname -- "$TARGET")" && pwd)
 PEL_DIR="$(realpath "${SCRIPT_DIR}/..")"
 
 
-printf -- "TESTING: -Q\n"
-printf -- "===========\n"
-printf -- "Terminal startup: emacs -nw -Q -e kill-emacs :\n"
-time emacs -nw -Q -e kill-emacs
-printf -- "Terminal startup: e -nw -Q -e kill-emacs :\n"
-time e -nw -Q -e kill-emacs
-# printf -- "\n"
-# printf -- "Graphical startup: emacs -Q -e kill-emacs :\n"
-# time emacs -Q -e kill-emacs
-# printf -- "Graphical startup: ge  -Q -e kill-emacs :\n"
-# time ge  -Q -e kill-emacs
 
-printf -- "\n\n"
-printf -- "TESTING: -q\n"
-printf -- "===========\n"
-printf -- "Terminal startup: emacs -nw -q -e kill-emacs :\n"
-time emacs -nw -q -e kill-emacs
-printf -- "Terminal startup: e -nw -q -e kill-emacs :\n"
-time e -nw -q -e kill-emacs
-# printf -- "\n"
-# printf -- "Graphical startup: emacs -q -e kill-emacs :\n"
-# time emacs -q -e kill-emacs
-# printf -- "Graphical startup: ge  -q -e kill-emacs :\n"
-# time ge  -q -e kill-emacs
+print_usage()
+{
+    printf -- "
+%s -- Check Emacs startup time under various conditions.
+
+ Usage: %s -h|--help
+
+  • Print this help information.
+
+ Usage: %s [-g|--gui] [REPORT_FILE]
+
+  • Measure Emacs startup time under various conditions and
+    generate a report which also identifies the number of packages
+    loaded by Emacs under PEL.
+  • By default only perform test on terminal-based Emacs
+    If the -g (or --gui) option is specified, also perform test on
+    GUI version of Emacs.
+  • If a REPORT_FILE is specified store the report in that file.
+    Otherwise generate a report in a temporary file and print
+    it on stdout.
+
+  The operation takes some time when detecting the number of packages used by
+  PEL, so it prints a 'please wait' message while generating the report.
+
+" "$pgm_name" "$pgm_name" "$pgm_name"
+}
+
+# --
+# Check validity of arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    if [ "$#" = "1" ]; then
+        # help requested explicitly with right amount of args: no error.
+        exit 0
+    else
+        exit  1
+    fi
+fi
+
+# --
+# This uses /usr/bin/time to use the -o option.  Check that it's available.
+if [ !  -x /usr/bin/time ]; then
+    printf -- "*** ERROR: /usr/bin/time not available!\n"
+    exit 1
+fi
+
+# --
+# Check -g options
+test_gui=no
+if [ "$1" = "-g" ] || [ "$1" = "--gui" ]; then
+    test_gui=yes
+    shift
+fi
+
+# --
+# If no report file specified, then use a temporary file.
+
+if [ -z "$1" ]; then
+    REPORT_FILE=$(mktemp) || exit 1
+    # Schedule erase of temp file on script termination.
+    # The 'trap' command registers a cleanup function to run when the script receives
+    # specific signals (0=EXIT, 2=SIGINT/Ctrl+C, 15=SIGTERM).
+    trap 'rm -f "$REPORT_FILE"' EXIT INT TERM
+else
+    REPORT_FILE="$1"
+fi
+
+# --
+# Proceed
+
+printf -- "Please wait while generating the report...\n"
+
+printf -- "--------- e-time report %s ------\n" "$(date +"%Y-%m-%d %T")" > "$REPORT_FILE"
+printf -- "On: %s\n\n" "$(uname -a)"                               >> "$REPORT_FILE"
+printf -- "TESTING: -Q\n"                                          >> "$REPORT_FILE"
+printf -- "===========\n"                                          >> "$REPORT_FILE"
+printf -- "Terminal startup: emacs -nw -Q -e kill-emacs :\n"       >> "$REPORT_FILE"
+/usr/bin/time -a -o "$REPORT_FILE" emacs -nw -Q -e kill-emacs
+printf -- "Terminal startup: e -nw -Q -e kill-emacs :\n"           >> "$REPORT_FILE"
+/usr/bin/time -a -o "$REPORT_FILE" e -nw -Q -e kill-emacs
+printf -- "\n"                                                     >> "$REPORT_FILE"
+if [ "$test_gui" = "yes" ]; then
+    printf -- "Graphical startup: emacs -Q -e kill-emacs :\n"      >> "$REPORT_FILE"
+    /usr/bin/time -a -o "$REPORT_FILE" emacs -Q -e kill-emacs
+    printf -- "Graphical startup: ge  -Q -e kill-emacs :\n"        >> "$REPORT_FILE"
+    /usr/bin/time -a -o "$REPORT_FILE" ge  -Q -e kill-emacs
+fi
+
+printf -- "\n\n"                                                   >> "$REPORT_FILE"
+printf -- "TESTING: -q\n"                                          >> "$REPORT_FILE"
+printf -- "===========\n"                                          >> "$REPORT_FILE"
+printf -- "Terminal startup: emacs -nw -q -e kill-emacs :\n"       >> "$REPORT_FILE"
+/usr/bin/time -a -o "$REPORT_FILE" emacs -nw -q -e kill-emacs
+printf -- "Terminal startup: e -nw -q -e kill-emacs :\n"           >> "$REPORT_FILE"
+/usr/bin/time -a -o "$REPORT_FILE" e -nw -q -e kill-emacs
+printf -- "\n"                                                     >> "$REPORT_FILE"
+printf -- "Graphical startup: emacs -q -e kill-emacs :\n"          >> "$REPORT_FILE"
+/usr/bin/time -a -o "$REPORT_FILE" emacs -q -e kill-emacs
+printf -- "Graphical startup: ge  -q -e kill-emacs :\n"            >> "$REPORT_FILE"
+/usr/bin/time -a -o "$REPORT_FILE" ge  -q -e kill-emacs
 
 
-printf -- "\n\n"
-printf -- "TESTING: with PEL\n"
-printf -- "==================\n"
-printf -- "With "
-make -C "${PEL_DIR}" stats 2>&1 | grep "# packages activated"
-printf -- "\n"
-printf -- "Terminal startup: emacs -nw --e kill-emacs :\n"
-time emacs -nw -e kill-emacs
-printf -- "Terminal startup: e -nw -e kill-emacs :\n"
-time e -nw -e kill-emacs
-printf -- "\n"
-# printf -- "Graphical startup: emacs -q -e kill-emacs :\n"
-# time emacs -e kill-emacs
-# printf -- "Graphical startup: ge  -q -e kill-emacs :\n"
-# time ge -e kill-emacs
-# printf -- "Note that the above times are invalid as ge is async\n"
-printf -- "------------ COMPLETE ---------------\n"
+printf -- "\n\n"                                                   >> "$REPORT_FILE"
+printf -- "TESTING: with PEL\n"                                    >> "$REPORT_FILE"
+printf -- "==================\n"                                   >> "$REPORT_FILE"
+printf -- "With "                                                  >> "$REPORT_FILE"
+make -C "${PEL_DIR}" stats 2>&1 | grep "# packages activated"      >> "$REPORT_FILE"
+printf -- "\n"                                                     >> "$REPORT_FILE"
+printf -- "Terminal startup: emacs -nw --e kill-emacs :\n"         >> "$REPORT_FILE"
+/usr/bin/time -a -o "$REPORT_FILE" emacs -nw -e kill-emacs
+printf -- "Terminal startup: e -nw -e kill-emacs :\n"              >> "$REPORT_FILE"
+/usr/bin/time -a -o "$REPORT_FILE" e -nw -e kill-emacs
+printf -- "\n"                                                     >> "$REPORT_FILE"
+if [ "$test_gui" = "yes" ]; then
+    printf -- "Graphical startup: emacs -q -e kill-emacs :\n"      >> "$REPORT_FILE"
+    /usr/bin/time -a -o "$REPORT_FILE" emacs -e kill-emacs
+    printf -- "Graphical startup: ge  -q -e kill-emacs :\n"        >> "$REPORT_FILE"
+    /usr/bin/time -a -o "$REPORT_FILE" ge -e kill-emacs
+    printf -- "Note that the above times are invalid as ge is async\n" >> "$REPORT_FILE"
+fi
+printf -- "------------ COMPLETE ---------------\n"                >> "$REPORT_FILE"
+
+cat "$REPORT_FILE"
 
 # ----------------------------------------------------------------------------
