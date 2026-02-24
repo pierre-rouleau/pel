@@ -4,7 +4,7 @@
 # Purpose   : Time Emacs startup.
 # Created   : Monday, February 23 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-23 21:50:05 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-23 22:14:11 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -68,8 +68,8 @@ print_usage()
     If the -g (or --gui) option is specified, also perform test on
     GUI version of Emacs.
   • If a REPORT_FILE is specified store the report in that file.
-    Otherwise generate a report in a temporary file and print
-    it on stdout.
+    Otherwise generate a report in a temporary file.
+    In both cases, print the generated report on stdout.
 
   The operation takes some time when detecting the number of packages used by
   PEL, so it prints a 'please wait' message while generating the report.
@@ -147,11 +147,12 @@ printf -- "Terminal startup: emacs -nw -q -e kill-emacs :\n"       >> "$REPORT_F
 printf -- "Terminal startup: e -nw -q -e kill-emacs :\n"           >> "$REPORT_FILE"
 /usr/bin/time -a -o "$REPORT_FILE" e -nw -q -e kill-emacs
 printf -- "\n"                                                     >> "$REPORT_FILE"
-printf -- "Graphical startup: emacs -q -e kill-emacs :\n"          >> "$REPORT_FILE"
-/usr/bin/time -a -o "$REPORT_FILE" emacs -q -e kill-emacs
-printf -- "Graphical startup: ge  -q -e kill-emacs :\n"            >> "$REPORT_FILE"
-/usr/bin/time -a -o "$REPORT_FILE" ge  -q -e kill-emacs
-
+if [ "$test_gui" = "yes" ]; then
+    printf -- "Graphical startup: emacs -q -e kill-emacs :\n"      >> "$REPORT_FILE"
+    /usr/bin/time -a -o "$REPORT_FILE" emacs -q -e kill-emacs
+    printf -- "Graphical startup: ge  -q -e kill-emacs :\n"        >> "$REPORT_FILE"
+    /usr/bin/time -a -o "$REPORT_FILE" ge  -q -e kill-emacs
+fi
 
 printf -- "\n\n"                                                   >> "$REPORT_FILE"
 printf -- "TESTING: with PEL\n"                                    >> "$REPORT_FILE"
@@ -159,15 +160,15 @@ printf -- "==================\n"                                   >> "$REPORT_F
 printf -- "With "                                                  >> "$REPORT_FILE"
 make -C "${PEL_DIR}" stats 2>&1 | grep "# packages activated"      >> "$REPORT_FILE"
 printf -- "\n"                                                     >> "$REPORT_FILE"
-printf -- "Terminal startup: emacs -nw --e kill-emacs :\n"         >> "$REPORT_FILE"
+printf -- "Terminal startup: emacs -nw -e kill-emacs :\n"          >> "$REPORT_FILE"
 /usr/bin/time -a -o "$REPORT_FILE" emacs -nw -e kill-emacs
 printf -- "Terminal startup: e -nw -e kill-emacs :\n"              >> "$REPORT_FILE"
 /usr/bin/time -a -o "$REPORT_FILE" e -nw -e kill-emacs
 printf -- "\n"                                                     >> "$REPORT_FILE"
 if [ "$test_gui" = "yes" ]; then
-    printf -- "Graphical startup: emacs -q -e kill-emacs :\n"      >> "$REPORT_FILE"
+    printf -- "Graphical startup: emacs -e kill-emacs :\n"         >> "$REPORT_FILE"
     /usr/bin/time -a -o "$REPORT_FILE" emacs -e kill-emacs
-    printf -- "Graphical startup: ge  -q -e kill-emacs :\n"        >> "$REPORT_FILE"
+    printf -- "Graphical startup: ge  -e kill-emacs :\n"           >> "$REPORT_FILE"
     /usr/bin/time -a -o "$REPORT_FILE" ge -e kill-emacs
     printf -- "Note that the above times are invalid as ge is async\n" >> "$REPORT_FILE"
 fi
