@@ -1109,6 +1109,7 @@ directory for whatever reason."
                                                   pel-use-combobulate
                                                   pel-use-el-easydraw
                                                   pel-use-pgmacs
+                                                  pel-use-pr-whisper
                                                   (eq pel-use-lispy
                                                       'use-enzuru-lispy)))
 
@@ -1851,6 +1852,7 @@ Requires Emacs 27.1 or later."
                    "https://elpa.gnu.org/packages/csv-mode.html")
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-csv :package-is '(quote ((elpa . csv-mode))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-diff-merge
@@ -2218,6 +2220,7 @@ A Major mode."
                    "https://github.com/spotify/dockerfile-mode")
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-dockerfile :package-is '(quote ((elpa . dockerfile-mode))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-face-font
@@ -2474,6 +2477,7 @@ A major mode."
   :safe #'booleanp
   :link '(url-link :tag "rfc-mode @ GitHub"
                    "https://github.com/galdor/rfc-mode"))
+(pel-put pel-use-rfc :package-is '(quote ((elpa . rfc-mode))))
 
 (defcustom pel-use-dir-treeview nil
   "Control whether PEL supports the `dir-treeview' package."
@@ -3534,12 +3538,17 @@ keep using it."
           (const :tag "Don't use" nil)
           (const :tag "Use emacsattic site files" t)
           (const :tag "Use parinfer-rust-mode" use-parinfer-rust-mode)))
-(pel-put pel-use-parinfer :package-is '(if (eq pel-use-parinfer
-                                               'use-pel-elpa-attic-copy)
-                                           '((elpa . parinfer))
-                                         '((utils . parinfer))))
 ;; parinfer is no longer available in MELPA.
-;; If you have it in an attic directory it will be used.
+;; You can still use the copy from the emacsattic directory, to honour
+;; the original PEL support.
+(pel-put pel-use-parinfer
+         :package-is '(cond
+                       ((eq pel-use-parinfer 'use-parinfer-rust-mode)
+                        '((elpa . parinfer-rust-mode)))
+                       ((memq pel-use-parinfer '(t use-pel-elpa-attic-copy))
+                        '((utils . pareinfer-mode)
+                          (utils . parinfer-toggle-mode)
+                          (utils . parinfer-diff)))))
 ;; The dependencies are no longer retrievable trough MELPA,
 ;; so they are identified here.
 (pel-put pel-use-parinfer :requires-package '(quote ((elpa . dash))))
@@ -4295,6 +4304,7 @@ This package allows easy editing of Intel HEX object files."
                    "https://github.com/mschuldt/intel-hex-mode")
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-intel-hex :package-is '(quote ((elpa . intel-hex-mode))))
 
 (defcustom pel-intel-hex-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for intel-hex buffers.
@@ -4302,7 +4312,6 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-object-file
   :type '(repeat function))
-
 
 (defcustom pel-use-elf-mode nil
   "Control whether ELF files are opened in elf-mode buffer showing symbols.
@@ -4365,6 +4374,7 @@ Provides several major modes."
                    "https://github.com/jobbflykt/x509-mode")
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-x509-modes :package-is '(quote ((elpa . x509-mode))))
 
 ;; ---------------------------------------------------------------------------
 ;; SELinux Policy Definition Files Support
@@ -5201,6 +5211,7 @@ A major mode."
                    "https://github.com/tom-tan/cwl-mode")
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-cwl :package-is '(quote ((elpa . cwl-mode))))
 
 (defcustom pel-cwl-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for CWL buffers.
@@ -7147,6 +7158,7 @@ taking over the default association with `c-mode'."
                    "https://github.com/Wilfred/bison-mode")
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-bison :package-is '(quote ((elpa . bison-mode))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; C++ Language Support
@@ -8527,7 +8539,14 @@ the js2 major or minor mode is used."
           (const :tag "Do not use js2-refactor" nil)
           (const :tag "Use js2-refactor" t)
           (const :tag "Use js2-refactor with discover-js2-refactor" with-discover)))
-
+(pel-put pel-use-js2-refactor
+         :package-is
+         '(cond
+           ((eq pel-use-js2-refactor t)
+            '((elpa . js2-refactor)))
+           ((eq pel-use-js2-refactor 'with-discover)
+            '((elpa . js2-refactor)
+              (elpa . discover-js2-refactor)))))
 
 (defcustom pel-use-js-comint nil
   "Control whether PEL use the js-comint package."
@@ -8700,13 +8719,22 @@ defcustom variable `pel-modes-activating-syntax-check'."
           (const :tag "Use with flycheck" with-flycheck)
           (const :tag "Use with flymake"  with-flymake)))
 (pel-put pel-use-goflymake :requires 'pel-use-go)
+;; goflymake is a mixed package:
+;; - it has the Go source: 'goflymake/main.go' that Go will compile into
+;;   the executable stored in a directory that should be on your PATH,
+;; - the emacs lisp go-flymake.el and go-flycheck.el files.
+;; To ensure the Emacs Lisp files are available to Emacs regardless of the
+;; Go project or workspace used, both Emacs Lisp files are stored in PEL
+;; utility directory.
 (pel-put pel-use-goflymake :package-is
          '(cond ((eq pel-use-goflymake 'with-flycheck)
-                 '((utils . go-flycheck)
-                   (elpa . flycheck)))
+                 '((elpa . flycheck)
+                   (utils . go-flycheck)
+                   (utils . go-flymake)))
                 ((eq pel-use-goflymake 'with-flymake)
                  ;; flymake is part of Emacs
-                 '((utils . go-flymake)))))
+                 '((utils . go-flycheck)
+                   (utils . go-flymake)))))
 
 (defcustom pel-use-gocode nil
   "Controls whether PEL use the gocode package."
@@ -8995,8 +9023,12 @@ that will help with Common Lisp editing:
           (const :tag "Use Common Lisp with Slime and extra contrib"
                  with-slime+)
           (const :tag "Use Common Lisp with Sly" with-sly)))
-;; [:todo 2026-02-18, by Pierre Rouleau: add logic to track use of slime and sly]
-(pel-put pel-use-common-lisp :package-is :a-gate)
+(pel-put pel-use-common-lisp
+         :package-is '(cond
+                       ((memq pel-use-common-lisp '(with-slime with-slime+))
+                        '((elpa . slime)))
+                       ((eq pel-use-common-lisp 'with-sly)
+                        '((elpa . sly)))))
 
 (defcustom pel-inferior-lisp-program nil
   "Name (with optional path) of the Common Lisp REPL to use.
@@ -13282,6 +13314,7 @@ Emacs Lisp network-level interface to the PostgreSQL RDBMS."
   :group 'pel-pkg-for-sql-emacs-lisp
   :type 'boolean
   :safe #'booleanp)
+
 (defcustom pel-use-pgmacs nil
   "Whether PEL supports the pgmacs package.
 Emacs editing of PostgreSQL database."
@@ -14055,6 +14088,7 @@ A major mode."
   :safe #'booleanp
   :link '(url-link :tag "asn1-mode @ GitHub"
                    "https://github.com/kawabata/asn1-mode"))
+(pel-put pel-use-asn1 :package-is '(quote ((elpa . asn1-mode))))
 
 (defcustom pel-asn1-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for ASN.1 buffers.
@@ -14363,6 +14397,7 @@ A major mode."
                    "https://melpa.org/#/cmake-mode")
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-cmake :package-is '(quote ((elpa . cmake-mode))))
 
 ;; ---------------------------------------------------------------------------
 ;; Make file Modes
@@ -14412,6 +14447,7 @@ A major mode."
   :group 'pel-pkg-for-meson
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-meson :package-is '(quote ((elpa . meson-mode))))
 
 (defcustom pel-meson-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for meson buffers.
@@ -14457,7 +14493,6 @@ Indentation in Meson build buffers controlled by `meson-indent-basic'."
   :group 'pel-pkg-for-ninja
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-ninja :package-is :in-utils)
 
 (defcustom pel-ninja-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for ninja buffers.
@@ -14812,6 +14847,7 @@ turns it off."
                    "https://github.com/lorniu/gt")
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-go-translate :package-is '(quote ((elpa . gt))))
 
 ;; ---------------------------------------------------------------------------
 ;; Undo Mechanism Management
@@ -14944,6 +14980,7 @@ A major mode."
   :group 'pel-pkg-for-mercurial
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-hgignore :package-is '(quote ((elpa . hgignore-mode))))
 
 (defcustom pel-use-monky nil
   "Control whether PEL provides access to the Monky package."
@@ -15531,7 +15568,7 @@ PEL uses my fork of this project."
   :group 'pel-pkg-for-writing
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-pr-whisper :package-is :in-utils)
+(pel-put pel-use-pr-whisper :requires 'pel-use-quelpa)
 
 ;; ---------------------------------------------------------------------------
 ;; Incompatible selection Management
@@ -15571,6 +15608,8 @@ PEL uses my fork of this project."
 ;; quelpa is used to install some packages. Identify them first.
 (when (or (and pel-use-tree-sitter pel-use-combobulate)
           (eq pel-use-lispy 'use-enzuru-lispy)
+          pel-use-pgmacs
+          pel-use-pr-whisper
           pel-use-el-easydraw)
   (setq pel-use-quelpa t))
 

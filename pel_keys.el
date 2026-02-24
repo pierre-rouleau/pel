@@ -2628,18 +2628,17 @@ can't bind negative-argument to C-_ and M-_"
                          (cons m '("harper-ls" "--stdio")))))))))
 
 (when pel-use-pr-whisper
-  (pel-install-github-files "pierre-rouleau/pr-whisper/master"
-                            '("pr-whisper.el"
-                              "pr-whisper-server.el"))
+  (pel-quelpa-install
+      (pr-whisper :repo "pierre-rouleau/pr-whisper" :fetcher github))
   (pel-autoload-file pr-whisper for:
-                     pr-whisper-mode
                      pr-whisper-stop-record
                      pr-whisper-toggle-recording
                      pr-whisper-transcribe-file
                      pr-whisper-insert-from-history)
-  (define-key pel:writing-tools "W" 'pr-whisper-mode)
-  (define-key pel:writing-tools "w" 'pr-whisper-transcribe-file))
-
+  (define-key pel:writing-tools "W" 'pr-whisper-toggle-recording)
+  (define-key pel:writing-tools "F" 'pr-whisper-transcribe-file)
+  (define-key pel:writing-tools "H" 'pr-whisper-insert-from-history)
+  (define-key pel:writing-tools "S" 'pr-whisper-stop-record))
 
 ;; ---------------------------------------------------------------------------
 ;;** M4 programming utilities
@@ -7193,7 +7192,6 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;;   -----
 (when pel-use-asn1
   (pel-ensure-package asn1-mode from: melpa))
-
 
 ;; ------------
 ;;** YANG

@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 24 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-10 16:16:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-24 14:27:46 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -90,43 +90,74 @@
 ;; The following test must provide all the let-bound variables invoked in the
 ;; verification of the logic.
 
-(ert-deftest ert-test-packages-for-goflymake ()
+;; (setq ert-batch-print-length nil)
+;; (setq ert-batch-print-level nil)
+
+(ert-deftest ert-test-packages-for-goflymake-1 ()
   "Test pel-use-goflymake."
   (let ((pel-use-go nil)
         (pel-use-goflymake nil))
     (should (equal (pel-packages-for 'pel-use-goflymake)
-                   nil))
+                   nil))))
 
-    ;; -- use `go-mode'
-    (setq pel-use-go t)
+(ert-deftest ert-test-packages-for-goflymake-2 ()
+  "Test pel-use-goflymake."
+  ;; -- use `go-mode'
+  (let ((pel-use-go t)
+        (pel-use-goflymake nil))
     (should (equal (pel-packages-for 'pel-use-goflymake)
-                   '((elpa . go-mode))))
+                   '((elpa . go-mode))))))
 
-    (let ((pel-use-goflymake 'with-flymake))
-      (should (equal (pel-packages-for 'pel-use-goflymake)
-                     '((utils . go-flymake)
-                       (elpa . go-mode)))))
-    (let ((pel-use-goflymake 'with-flycheck))
-      (should (equal (pel-packages-for 'pel-use-goflymake)
-                     '((elpa . flycheck)
+(ert-deftest ert-test-packages-for-goflymake-3 ()
+  "Test pel-use-goflymake."
+  ;; -- use `go-mode' with-flycheck
+  (let ((pel-use-go t)
+        (pel-use-goflymake 'with-flycheck))
+    (should (equal (pel-packages-for 'pel-use-goflymake)
+                     '((elpa . go-mode)
+                       (elpa . flycheck)
                        (utils . go-flycheck)
-                       (elpa . go-mode)))))
+                       (utils . go-flymake))))))
 
-    ;; -- use `go-ts-mode' (but also install `go-mode')
-    (setq pel-use-go 'with-tree-sitter)
+(ert-deftest ert-test-packages-for-goflymake-4 ()
+  "Test pel-use-goflymake."
+  ;; -- use `go-mode' with-flymake
+  (let ((pel-use-go t)
+        (pel-use-goflymake 'with-flymake))
     (should (equal (pel-packages-for 'pel-use-goflymake)
-                   '((elpa . go-mode))))
-    ;;
-    (setq pel-use-goflymake 'with-flymake)
+                     '((elpa . go-mode)
+                       (utils . go-flycheck)
+                       (utils . go-flymake))))))
+
+(ert-deftest ert-test-packages-for-goflymake-5 ()
+  "Test pel-use-goflymake."
+  ;; -- use `go-ts-mode' (but also install `go-mode')
+  (let ((pel-use-go 'with-tree-sitter)
+        (pel-use-goflymake nil))
     (should (equal (pel-packages-for 'pel-use-goflymake)
-                   '((utils . go-flymake)
-                     (elpa . go-mode))))
-    ;;
-    (setq pel-use-goflymake 'with-flycheck)
+                   '((elpa . go-mode))))))
+
+(ert-deftest ert-test-packages-for-goflymake-6 ()
+  "Test pel-use-goflymake."
+  ;; -- use `go-ts-mode' (but also install `go-mode')
+  (let ((pel-use-go 'with-tree-sitter)
+        (pel-use-goflymake 'with-flycheck))
     (should (equal (pel-packages-for 'pel-use-goflymake)
-                   '((elpa . flycheck)
+                   '((elpa . go-mode)
+                     (elpa . flycheck)
                      (utils . go-flycheck)
-                     (elpa . go-mode))))))
+                     (utils . go-flymake))))))
+
+(ert-deftest ert-test-packages-for-goflymake-7 ()
+  "Test pel-use-goflymake."
+  ;; -- use `go-ts-mode' (but also install `go-mode')
+  (let ((pel-use-go 'with-tree-sitter)
+        (pel-use-goflymake 'with-flymake))
+    (should (equal (pel-packages-for 'pel-use-goflymake)
+                   '((elpa . go-mode)
+                     (utils . go-flycheck)
+                     (utils . go-flymake))))))
+
 
 (ert-deftest ert-test-package-lice ()
   "Test pel-use-lice."
@@ -184,7 +215,7 @@
            '((elpa . lice)))))
 
 
-(ert-deftest ert-test-package-markdown ()
+(ert-deftest ert-test-package-markdown-1 ()
   "Test pel-use-markdown controlled packages."
   ;; Test when nothing is requested.
   ;; Markdown is used by cargo
@@ -196,8 +227,12 @@
              nil))
     (should (equal
              (pel-packages-for 'pel-use-markdown-mode)
-             nil)))
+             nil))))
 
+(ert-deftest ert-test-package-markdown-2 ()
+  "Test pel-use-markdown controlled packages."
+  ;; Test when nothing is requested.
+  ;; Markdown is used by cargo
   (let ((pel-use-markdown nil)
         (pel-use-markdown-mode nil)
         (pel-use-cargo t))
