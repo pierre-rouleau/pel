@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-24 14:18:38 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-24 14:37:00 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -469,7 +469,8 @@ Returns nil when:
       ;; being requested via a dependency identified by PEL.
       (dolist (xtra-spec (pel-spec-for-symbol-attribute
                           symbol :requires-package))
-        (setq specs (append specs (list xtra-spec))))
+        (unless (member xtra-spec specs)
+          (setq specs (append specs (list xtra-spec)))))
       ;; return the complete list of specs
       specs)))
 
