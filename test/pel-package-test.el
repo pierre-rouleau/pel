@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 24 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-10 16:16:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-24 11:19:19 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -105,10 +105,12 @@
     (let ((pel-use-goflymake 'with-flymake))
       (should (equal (pel-packages-for 'pel-use-goflymake)
                      '((utils . go-flymake)
+                       (utils . go-flycheck)
                        (elpa . go-mode)))))
     (let ((pel-use-goflymake 'with-flycheck))
       (should (equal (pel-packages-for 'pel-use-goflymake)
                      '((elpa . flycheck)
+                       (utils . go-flymake)
                        (utils . go-flycheck)
                        (elpa . go-mode)))))
 
@@ -120,11 +122,13 @@
     (setq pel-use-goflymake 'with-flymake)
     (should (equal (pel-packages-for 'pel-use-goflymake)
                    '((utils . go-flymake)
+                     (utils . go-flycheck)
                      (elpa . go-mode))))
     ;;
     (setq pel-use-goflymake 'with-flycheck)
     (should (equal (pel-packages-for 'pel-use-goflymake)
                    '((elpa . flycheck)
+                     (utils . go-flymake)
                      (utils . go-flycheck)
                      (elpa . go-mode))))))
 

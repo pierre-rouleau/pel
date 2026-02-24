@@ -3546,9 +3546,9 @@ keep using it."
                        ((eq pel-use-parinfer 'use-parinfer-rust-mode)
                         '((elpa . parinfer-rust-mode)))
                        ((memq pel-use-parinfer '(t use-pel-elpa-attic-copy))
-                        ((utils . pareinfer-mode)
-                         (utils . parinfer-toggle-mode)
-                         (utils . parinfer-diff)))))
+                        '((utils . pareinfer-mode)
+                          (utils . parinfer-toggle-mode)
+                          (utils . parinfer-diff)))))
 ;; The dependencies are no longer retrievable trough MELPA,
 ;; so they are identified here.
 (pel-put pel-use-parinfer :requires-package '(quote ((elpa . dash))))
@@ -8542,11 +8542,11 @@ the js2 major or minor mode is used."
 (pel-put pel-use-js2-refactor
          :package-is
          '(cond
-           ((eq pel-use-js2-refactor 'with-discover)
-            '((elpa . discover-js2-refactor)
-              (elpa . discover)))
            ((eq pel-use-js2-refactor t)
-            '((elpa . discover-js2-refactor)))))
+            '((elpa . js2-refactor)))
+           ((eq pel-use-js2-refactor 'with-discover)
+            '((elpa . js2-refactor)
+              (elpa . discover-js2-refactor)))))
 
 (defcustom pel-use-js-comint nil
   "Control whether PEL use the js-comint package."
