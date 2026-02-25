@@ -14363,6 +14363,7 @@ Note that magit-section is required by `nix-mode', so PEL activates
   :group 'pel-pkg-for-sw-build
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-nix :package-is '(quote ((elpa . nix-mode))))
 
 (defcustom pel-nix-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for nix buffers.
