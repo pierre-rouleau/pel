@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, June 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-13 09:07:35 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-25 14:12:04 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -154,6 +154,24 @@ group customize buffer."
   (interactive "P")
   (pel-toggle-and-show-user-option 'pel-update-copyright globally))
 
+
+(defun pel--skip-copyright-for (fname)
+  "Return non-nil if instructed not to update copyright for FNAME.
+FNAME is a file name with absolute path.  Return non-nil if this file
+name is identified in the `pel-skip-copyright-in' user-option."
+  (let* ((fpath (expand-file-name fname)))
+    (catch 'match
+      (dolist (to-skip pel-skip-copyright-in)
+        (let ((to-skip-abs (expand-file-name to-skip)))
+             (if (file-directory-p to-skip-abs)
+                 (when (string-match-p
+                        (format "^%s" (regexp-quote to-skip-abs))
+                        fpath)
+                   (throw 'match to-skip))
+               (when (string= to-skip-abs fpath)
+                 (throw 'match to-skip))))))))
+
+
 (defun pel--update-copyright (&optional arg interactivep)
   "Update time stamp if currently active.
 With prefix ARG, replace the years in the notice rather than adding
@@ -163,7 +181,8 @@ following the copyright are updated as well.
 If non-nil, INTERACTIVEP tells the function to behave as when it’s called
 interactively."
   (when pel-update-copyright
-    (copyright-update arg interactivep)))
+    (unless (pel--skip-copyright-for (pel-current-buffer-filename))
+      (copyright-update arg interactivep))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-timestamp)

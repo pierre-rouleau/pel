@@ -1,6 +1,6 @@
 ;;; pel--options.el --- PEL Customization Options -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -61,6 +61,7 @@
 ;;           - pel-pkg-for-neotree
 ;;           - pel-pkg-for-ztree
 ;;         - pel-pkg-for-web-browse
+;;       - pel-pkg-for-copyright
 ;;       - pel-pkg-for-ssh
 ;;       - pel-pkg-for-x509-file
 ;;     - pel-pkg-for-frame
@@ -2332,13 +2333,6 @@ to uniquely identify a text area inside the file to update."
   :type '(repeat
           (string :tag "regexp")))
 
-(defcustom pel-update-copyright t
-  "Controls whether copyright notice is updated automatically on file save.
-Update copyright notice automatically when non-nil, don't otherwise."
-  :group 'pel-pkg-for-filemng
-  :type 'boolean
-  :safe #'booleanp)
-
 (defcustom pel-make-script-executable t
   "Controls whether script files are automatically made executable when saved.
 make script files executable on save when non-nil, don't otherwise."
@@ -2430,6 +2424,36 @@ Select one of:
   :type 'boolean
   :safe #'booleanp)
 (pel-put pel-use-fzf :package-is :in-utils)
+
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-pkg-for-copyright nil
+  "File copyright control."
+  :group 'pel-pkg-for-filemng
+  :group 'pel-pkg-for-insertions)
+
+(defcustom pel-update-copyright t
+  "Controls whether copyright notice is updated automatically on file save.
+Update copyright notice automatically when non-nil, don't otherwise."
+  :group 'pel-pkg-for-copyright
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-skip-copyright-in nil
+  "List files and directory trees where automatic copyright update is not done.
+The automatic copyright update is not done for the files and directory
+trees identified in this list even when it is activated by
+`pel-update-copyright' being non-nil.
+
+Only enter absolute file names and directories.
+No automatic copyright update will be performed for identified files
+and any file in the identified directories or any of their sub-directories.
+Tilde is allowed in paths."
+  :group 'pel-pkg-for-copyright
+  :type '(repeat
+          (choice
+           (file      :tag "file"      :must-match t)
+           (directory :tag "directory" :must-match t))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-pkg-for-rpm nil

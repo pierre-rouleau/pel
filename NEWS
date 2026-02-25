@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-skip-copyright-in* user-option to identify files and directory trees
+  where automatic copyright updates are not performed when automatic copyright
+  updates are activated by the value of *pel-update-copyright*.
+  This way you can activate automatic copyright updating and disable it for
+  files and directories where it must not be done.
 - Add early support for the Rebol programming language using an old rebol-mode
   implementation I'm planning to update. Add an early PDF for Rebol.
 - Simplified user-options for Common Lisp, add linter command.
