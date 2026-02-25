@@ -14819,17 +14819,6 @@ Good candidates:
 (pel-put pel-use-timeclock-timelog :package-is '(quote ((utils . timelog))))
 (pel-put pel-use-timeclock-timelog :requires 'pel-use-timeclock)
 
-;; TODO: add chronometrist when it's stable enough and compiles cleanly.
-;; For now it does not identify the spark dependency, fails to compile
-;; cleanly, depends on tildegit.org which is difficult to register.
-;; (defcustom pel-use-chronometrist nil
-;;   "Control whether PEL activates the external chronometrist package for time tracking."
-;;   :group 'pel-pkg-for-time-tracking
-;;   :link '(url-link :tag "chronometrist @ tildegit"
-;;                    "https://tildegit.org/contrapunctus/chronometrist")
-;;   :type 'boolean
-;;   :safe #'booleanp)
-
 (defcustom pel-use-tzc nil
   "Control whether PEL activates the tzc time zone tool.
 

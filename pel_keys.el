@@ -164,10 +164,12 @@
   ;; - To ensure that the elpa signatures expiry becomes a problem
   ;;   install gnu-elpa-keyring-update.
   (pel-ensure-package gnu-elpa-keyring-update from: gnu)
+  (push 'gnu-elpa-keyring-update pel-elpa-packages-to-keep)
 
   ;; Install Emacs backward compatibility package if required
   (unless pel-emacs-29-or-later-p
-    (pel-ensure-package compat from: gnu)))
+    (pel-ensure-package compat from: gnu)
+    (push 'compat pel-elpa-packages-to-keep)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Setup GUI launched Emacs environment
