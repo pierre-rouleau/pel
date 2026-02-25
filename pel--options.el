@@ -2944,6 +2944,7 @@ PEL currently restricts it to Emacs 27 and later."
           (const :tag "Use, activate later by command"  t)
           (const :tag "Use, activate globally when Emacs starts"
                  use-from-start)))
+(pel-put pel-use-beacon-mode :package-is '(quote ((elpa . beacon))))
 
 (defcustom pel-use-fill-column-indicator nil
   "Control whether PEL uses fill-column-indicator package.
@@ -4178,7 +4179,7 @@ A major mode."
                    "https://github.com/emacs-pe/crontab-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-crontab :package-is :in-utils)
+(pel-put pel-use-crontab :package-is '(quote ((utils . crontab-mode))))
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-pkg-for-line nil
@@ -4323,6 +4324,7 @@ A minor mode."
   :group 'pel-pkg-for-object-file
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-elf-mode :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; SSH Support
