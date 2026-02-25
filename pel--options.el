@@ -1,6 +1,6 @@
 ;;; pel--options.el --- PEL Customization Options -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1044,8 +1044,12 @@ By default, PEL identifies the following packages:
   :group 'pel-package-use
   :type '(repeat symbol))
 
-(defcustom pel-utils-packages-to-keep '("benchmark-init-modes.el"
-                                        "benchmark-init.el")
+(defcustom pel-utils-packages-to-keep (if pel-emacs-28-or-later-p
+                                          '("benchmark-init-modes.el"
+                                            "benchmark-init.el")
+                                        '("benchmark-init-modes.el"
+                                          "benchmark-init.el"
+                                          "hierarchy.el"))
   "List of utils file names that should not be removed by `pel-cleanup'.
 
 If you manually install Emacs Lisp files in your utils directory, you should
@@ -15024,6 +15028,8 @@ The selection is made by what you select here:
           (const :tag "Use vc-p4.el"  vc-p4)
           (const :tag "Use p4.el"     p4)
           (const :tag "Use both"      both)))
+(pel-put pel-use-perforce :package-is '(quote ((utils . p4-lowlevel)
+                                               (utils . vc-p4))))
 
 ;; Subversion
 (defgroup pel-pkg-for-subversion nil
