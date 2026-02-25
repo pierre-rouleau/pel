@@ -304,8 +304,8 @@
 ;; subr (always loaded) ; use: called-interactively-p
 (require 'pel-comp)
 (eval-when-compile
-  (require 'subr-x)    ; use: `split-string', `string-join', `string-trim'
-  (require 'cl-macs))  ; use: `cl-eval-when'
+  (require 'subr-x))    ; use: `split-string', `string-join', `string-trim'
+
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -1838,10 +1838,9 @@ The macro generates code that runs only at load time.  However, when PEL
 operates in fast startup the macro creates no code and expands to nil
 which will be optimized out by the byte compiler."
   (unless (pel-in-fast-startup-p)
-    `(cl-eval-when 'load
-       (pel-install-file ,url-fname
-                         ,fname
-                         ,refresh))))
+    `(pel-install-file ,url-fname
+                       ,fname
+                       ,refresh)))
 
 ;; -------
 
@@ -1882,10 +1881,9 @@ This is done because PEL fast-startup mode does NOT install new
 code; to install new packages make sure PEL is running in normal
 startup mode."
   (unless (pel-in-fast-startup-p)
-    `(cl-eval-when 'load
-       (pel--install-github-files ,user-project-branch
-                                  ,fnames
-                                  ,refresh))))
+    `(pel--install-github-files ,user-project-branch
+                                ,fnames
+                                ,refresh)))
 
 ;; -------
 
@@ -1924,11 +1922,10 @@ The macro generates code that runs only at load time.  However,
 when PEL operates in fast startup the macro creates no code and
 expands to nil which will be optimized out by the byte compiler."
   (unless (pel-in-fast-startup-p)
-    `(cl-eval-when 'load
-       (pel--install-github-file ,user-project-branch
-                                 ,fname
-                                 ,url-fname
-                                 ,refresh))))
+    `(pel--install-github-file ,user-project-branch
+                               ,fname
+                               ,url-fname
+                               ,refresh)))
 
 ;; -------
 
@@ -1972,11 +1969,10 @@ The macro generates code that runs only at load time.  However,
 when PEL operates in fast startup the macro creates no code and
 expands to nil which will be optimized out by the byte compiler."
   (unless (pel-in-fast-startup-p)
-    `(cl-eval-when 'load
-       (pel--install-gitlab-file ,gitlab-user
-                                 ,gitlab-project
-                                 ,fname
-                                 ,refresh))))
+    `(pel--install-gitlab-file ,gitlab-user
+                               ,gitlab-project
+                               ,fname
+                               ,refresh)))
 
 
 ;; -------

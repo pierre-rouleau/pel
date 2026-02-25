@@ -415,7 +415,8 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;; -------------------------
   ;;
   ;; Do not display the splash screen.  Same as emacs -Q
-  (setq inhibit-startup-screen t)
+  (setq inhibit-startup-screen t
+        initial-scratch-message ";; scratch\n")
 
   ;; OPTION D: Don't display Emacs startup help message, at least for me.
   ;; This variable is treated specially.  Don't group its setting with others.

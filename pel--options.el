@@ -14493,6 +14493,7 @@ Indentation in Meson build buffers controlled by `meson-indent-basic'."
   :group 'pel-pkg-for-ninja
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-ninja :package-is '(quote ((elpa . ninja-mode))))
 
 (defcustom pel-ninja-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for ninja buffers.
