@@ -6475,7 +6475,7 @@ via the ``<f12> <f4> d c`` sequence."
   :link '(url-link :tag "my c-eldoc fork @ GitHub"
                    "https://github.com/nflath/c-eldoc"))
 (pel-put pel-use-c-eldoc :package-is :in-utils)
-(pel-put pel-use-c-eldoc :requires '(pel-use-c))
+(pel-put pel-use-c-eldoc :requires 'pel-use-c)
 
 
 (defcustom pel-awk-file-searched-extra-dir-trees nil
@@ -8095,9 +8095,9 @@ on."
           (const :tag "Use tree-sitter mode: dart-ts-mode . Preferred."
                  with-tree-sitter)))
 (pel-put pel-use-dart :package-is '(if pel-use-tree-sitter
-                                       (quote ((elpa . dart-mode)
-                                               (utils . dart-ts-mode)))
-                                     (quote ((elpa . dart-mode)))))
+                                       '((elpa . dart-mode)
+                                         (utils . dart-ts-mode))
+                                     '((elpa . dart-mode))))
 
 (defcustom pel-dart-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Dart buffers.
@@ -9558,7 +9558,7 @@ Activating this automatically turns `pel-use-janet' on."
                    "https://github.com/SerialDev/ijanet-mode")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-ijanet :package-is '(quote ((utils . ijanet))))
+(pel-put pel-use-ijanet :package-is :in-utils)
 (pel-put pel-use-ijanet :requires 'pel-use-janet)
 
 (defcustom pel-use-inf-janet nil
@@ -9699,6 +9699,10 @@ Provides auto-completion for Geiser using the `auto-complete-mode'."
 
   The user-option variable `pel-use-scheme' must be turned on to activate this."
   :group 'pel-pkg-for-scheme
+  :link '(url-link :tag "my fork of quack @ GitHub"
+                   "https://github.com/pierre-rouleau/quack")
+  :link '(url-link :tag "Authors' site"
+                   "https://www.neilvandyke.org/quack")
   :type 'boolean
   :safe #'booleanp)
 (pel-put pel-use-quack :requires 'pel-use-scheme)
@@ -14111,6 +14115,7 @@ A major mode."
   :safe #'booleanp
   :link '(url-link :tag "yang-mode @ GitHub"
                    "https://github.com/mbj4668/yang-mode"))
+(pel-put pel-use-yang :package-is '(quote ((elpa . yang-mode))))
 
 (defcustom pel-yang-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Yang buffers.
@@ -14372,6 +14377,7 @@ This automatically activates support for Lua."
   :group 'pel-pkg-for-sw-build
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-xmake :package-is :a-gate)
 
 (defcustom pel-use-xmake-emacs nil
   "Control whether PEL activates support for the xmake-emacs package."
