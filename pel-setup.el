@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-21 22:36:52 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-26 16:46:33 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@
 ;; This provides the ability to reduce the Emacs initialization startup time.
 ;; Depending on what is used the speedup can be quite noticeable.
 ;;
-;; For example, I have achieved a emacs-startup-time of about 0.15 seconds on
+;; For example, I have achieved an emacs-startup-time of about 0.15 seconds on
 ;; Emacs 26.3 running in terminal mode on macOS 2014 4 GHz Intel Core i7
 ;; computer with 240 installed external packages!
 ;;
@@ -69,11 +69,11 @@
 ;; builtin library.  The fast-startup operation mode improves startup speed
 ;; and does not prevent using package.el features to explicitly install
 ;; packages in the current environment.  However, these packages will not be
-;; known to PEL.  In fast-startup mode PEL disables its internal automatic
+;; known to PEL.  In fast-startup mode, PEL disables its internal automatic
 ;; package management facilities and does not download, install or remove
 ;; packages based on modification of the customization.
 ;;
-;; The strategy is to reduce the length of Emacs `load-path' to a minimum.
+;; This strategy is used to reduce the length of Emacs `load-path' to a minimum.
 ;; This can therefore be used in conjunction of the Emacs 27+
 ;; `package-quickstart' feature to reduce Emacs startup time further.
 ;;
@@ -112,7 +112,7 @@
 ;; sub-directories to store other files.  From what I have seen so far most
 ;; Emacs external packages use only one directory but not all.
 ;;
-;; Emacs Lisp, a Lisp-2, has only one namespace for variables and one
+;; Emacs Lisp, a Lisp-2, has one namespace for variables and one
 ;; namespace for functions.  Code in *all* packages, whether they're built-in
 ;; Emacs or external must all share these namespaces (and some other).  Most
 ;; package file names, if not all, reflect their package name and differ from
@@ -120,10 +120,10 @@
 ;; otherwise they risk clashing with each other.
 ;;
 ;; Because the file names of all package have a unique name it becomes
-;; possible to place them all inside the same directory (a bundle) and place
-;; that unique directory inside Emacs `load-path', therefore eliminating
-;; relatively slow Emacs startup processing that iterates through each
-;; directory in its `load-path'.
+;; possible to group them all inside the same directory (a bundle) and place
+;; that unique directory inside Emacs `load-path'.  This eliminates the
+;; relatively slow Emacs startup processing that must iterate through each
+;; directory identified in Emacs `load-path'.
 ;;
 ;; This can be done for the "one-level packages" but not the others, as their
 ;; code often relies on the relative position of their sub-directories.
@@ -131,7 +131,7 @@
 ;; packages are "one-level packages"; they use one or several Emacs Lisp files
 ;; all stored inside one directory.
 ;;
-;; At startup Emacs package.el logic prepares Emacs files loading and checks
+;; At startup, Emacs package.el logic prepares Emacs files loading and checks
 ;; for the presence of the dependencies of packages.  The package.el logic
 ;; populates the `package-alist' variable with package symbol name and its
 ;; corresponding package spec.  This information is later used to determine
@@ -142,13 +142,20 @@
 ;; the `package-alist' and their package spec identifies their corresponding
 ;; directory.
 ;;
-;; The code here re-organizes the location of the external packages, storing
+;; The code here re-organizes the location of the external packages: it stores
 ;; the code of "one-level packages" inside one directory (the "pel-bundle"
-;; package directory) and leaving the other packages inside their original
-;; locations.  The code also creates a pel-bundle-package.el and a
-;; pel-bundle-autoloads.el file stored inside the pel-bundle directory
-;; creating a Elpa-compliant pel-bundle package that includes all files of
-;; one-level packages.
+;; package directory) and leaves the other packages inside their original
+;; locations.
+;; - The code creates a pel-bundle package directory, with a name that
+;;   identifies the date and time of its creation, something like
+;;   pel-bundle-20260226.1011
+;; - Inside the pel-bundle directory, it creates 2 files that are required by
+;;   Emacs packages:
+;;   - pel-bundle-pkg.el
+;;   - pel-bundle-autoloads.el
+;; - Inside the pel-bundle directory, it also creates symbolic links that
+;;   point to their actual file counterparts located inside the elpa-complete
+;;   directory.
 ;;
 ;; Special code must be run by init.el or early-init.el to prevent the
 ;; package.el code from attempting to download the packages again.  The
@@ -179,20 +186,19 @@
 ;; executed to prepare Emacs for a fast startup.  Again, assuming that
 ;; `user-emacs-directory' is "~/.emacs.d" the PEL bundle directory is:
 ;;
-;; - "~/.emacs.d/elpa-reduced/pel-bundle-yyymmdd-hhmm": Simulates a fictitious
-;;                               Elpa-compliant pel-bundle package.  The
-;;                               directory holds symlinks to the .el and .elc
-;;                               files of all one-level packages that it
-;;                               replaces.  It is created by `pel-setup-fast'
-;;                               with the name tail set to its creation date.
-;;                               It also holds the 2 important package
-;;                               required files that are also created by the
-;;                               function `pel-setup-fast':
-;;                               - pel-bundle-autoloads.el
-;;                               - pel-bundle-pkg.el
+;; - "~/.emacs.d/elpa-reduced/pel-bundle-yyymmdd-hhmm":
+;;     - Simulates a fictitious Elpa-compliant pel-bundle package.
+;;     - The directory holds symlinks to the .el and .elc files of
+;;       all one-level packages that it replaces.
+;;     - It is created by `pel-setup-fast' with the name suffix set
+;;       to its creation date and time.
+;;     - It also holds the 2 important package required files also
+;;       created by the function `pel-setup-fast':
+;;       - pel-bundle-autoloads.el
+;;       - pel-bundle-pkg.el
 ;;
-;; PEL also converts the original elpa directory into a symbolic link that
-;; points to either the following directories:
+;; In not already done, PEL also converts the original elpa directory into a
+;; symbolic link that points to either the following directories:
 ;;
 ;; - elpa-complete (in normal startup mode),
 ;; - elpa-reduced  (in fast-startup mode).
@@ -203,16 +209,16 @@
 ;; graphics mode:
 ;;
 ;; - elpa-graphics symlink that points to one of the following directories:
-;; - elpa-complete-graphics (used in normal mode for the independent graphics
-;;   mode),
-;; - elpa-reduced-graphics (used in fast startup mode for the independent
-;;   graphics mode).
+;;   - elpa-complete-graphics (used in normal mode for the independent graphics
+;;     mode),
+;;   - elpa-reduced-graphics (used in fast startup mode for the independent
+;;     graphics mode).
 ;;
 ;; *************
 ;; **IMPORTANT**
 ;; *************
 ;;
-;; Again, for all of this to work properly you must instrument your init.el
+;; Again, for all of this to work properly you MUST instrument your init.el
 ;; and, if you use it, your early-init.el.  See the code sample examples
 ;; inside the following files:
 ;;
@@ -900,61 +906,70 @@ Return the pkg/version alist.\"
 ;; --
 
 (defun pel--prepare-main-elpa-dir (for-graphics)
-  "Transform elpa directory into a symlink to elpa-complete FOR-GRAPHICS.
+  "Transform elpa directory into a symlink to elpa-complete.
+
+If FOR-GRAPHICS is non-nil, do it for the graphics-specific directories,
+that PEL uses in dual-environment of operation for GUI Emacs.
+If it is nil, do it for the default directories used when dual-environment is
+not used or when used with terminal based Emacs.
 
 The elpa directory is identified by the `pel-package-user-dir-original'
-variable set by init.el before renaming the `package-user-dir' to control the
-content of the `load-path'.
-- If this identifies a directory:
+variable set by init.el before its renaming of the `package-user-dir' to
+control the content of the `load-path'.
+
+- If this already is a symlink, then do nothing.
+- Otherwise it identifies a directory and proceed:
   - If the name of that directory is already an elpa-complete directory,
     issue an error that explains the problem.
   - Otherwise, rename the directory to elpa-complete (or
     elpa-complete-graphics if FOR-GRAPHIC is non-nil) and then create a
     symlink that has the same name as the original directory and which points
     to the elpa-complete (or elpa-complete-graphics) directory.
-- If this already is a symlink, then do nothing.
 
 Return a list of performed action descriptions in reverse order."
-  (if (boundp 'pel-package-user-dir-original)
-      (let* ((elpa-dp       (pel-elpa-name pel-package-user-dir-original
-                                            for-graphics))
-             (elpa-dp-cmplt (pel-elpa-name (pel-sibling-dirpath
-                                             elpa-dp "elpa-complete")
-                                            for-graphics))
-             (actions nil))
-        (unless (or (file-symlink-p elpa-dp)
-                    (bound-and-true-p package-quickstart))
-          ;; the main elpa is a directory, not a symbolic link
-          ;; make sure it does not already use the elpa-complete name;
-          ;; Complain if it does.  However only perform this check when
-          ;; not using package quickstart because in package quickstart I have
-          ;; not found a way to identify the original package-user-dir which
-          ;; identifies the symlink when fast start is used and then elpa-dp
-          ;; ends up having the value of the symlink target.  TODO.
-          (when (pel-same-fname-p elpa-dp elpa-dp-cmplt)
-            (user-error "Invalid elpa directory in %s:
- The elpa directory name (%s) clash with PEL startup management strategy.
- PEL uses a symlink to points to either %s or %s.
- Please rename your elpa directory & update the package-user-dir user-option!"
-                        user-emacs-directory
-                        elpa-dp
-                        (pel-elpa-name "elpa-complete" for-graphics)
-                        (pel-elpa-name "elpa-reduced"  for-graphics)))
-          ;; all ok, rename and/or create symlink
-          (when (file-exists-p elpa-dp)
-            (rename-file (directory-file-name elpa-dp)
-                         (directory-file-name elpa-dp-cmplt))
-            (pel-push-fmt actions "Renamed %s to %s"
-              elpa-dp elpa-dp-cmplt))
-          (make-symbolic-link elpa-dp-cmplt elpa-dp)
-          (pel-push-fmt actions
-              "Created %s symlink that points to %s"
-            elpa-dp elpa-dp-cmplt))
-        actions)
+  ;; First ensure that init.el did set `pel-package-user-dir-original'
+  (unless (boundp 'pel-package-user-dir-original)
     (user-error "Invalid init.el file detected:
   The `pel-package-user-dir-original' symbol is unknown.
   PEL cannot safely manage Emacs startup mode.
-  Please update your init.el file; use pel/example/init/init.el template!")))
+  Please update your init.el file; use pel/example/init/init.el template!"))
+  ;;
+  ;; init.el is OK, proceed.
+  (let* ((elpa-dp       (pel-elpa-name pel-package-user-dir-original
+                                       for-graphics))
+         (elpa-dp-cmplt (pel-elpa-name (pel-sibling-dirpath
+                                        elpa-dp "elpa-complete")
+                                       for-graphics))
+         (actions nil))
+    (unless (or (file-symlink-p elpa-dp)
+                (bound-and-true-p package-quickstart))
+      ;; the main elpa is a directory, not a symbolic link
+      ;; make sure it does not already use the elpa-complete name;
+      ;; Complain if it does.  However only perform this check when
+      ;; not using package quickstart because in package quickstart I have
+      ;; not found a way to identify the original package-user-dir which
+      ;; identifies the symlink when fast start is used and then elpa-dp
+      ;; ends up having the value of the symlink target.  TODO.
+      (when (pel-same-fname-p elpa-dp elpa-dp-cmplt)
+        (user-error "Invalid elpa directory in %s:
+ The elpa directory name (%s) clash with PEL startup management strategy.
+ PEL uses a symlink to points to either %s or %s.
+ Please rename your elpa directory & update the package-user-dir user-option!"
+                    user-emacs-directory
+                    elpa-dp
+                    (pel-elpa-name "elpa-complete" for-graphics)
+                    (pel-elpa-name "elpa-reduced"  for-graphics)))
+      ;; all ok, rename and/or create symlink
+      (when (file-exists-p elpa-dp)
+        (rename-file (directory-file-name elpa-dp)
+                     (directory-file-name elpa-dp-cmplt))
+        (pel-push-fmt actions "Renamed %s to %s"
+          elpa-dp elpa-dp-cmplt))
+      (make-symbolic-link elpa-dp-cmplt elpa-dp)
+      (pel-push-fmt actions
+          "Created %s symlink that points to %s"
+        elpa-dp elpa-dp-cmplt))
+    actions))
 
 (defun pel--elpa-symlink-problems (elpa-dirpath for-graphics)
   "Check validity of ELPA_DIRPATH used FOR-GRAPHICS.
@@ -1082,12 +1097,13 @@ The Emacs directory (%s) is not compatible with PEL startup management."
 (defun pel--setup-fast (for-graphics)
   "Prepare the elpa directories and code to speedup Emacs startup.
 
+The function sets up the elpa directory to become a symlink to
 The FOR-GRAPHICS argument is t when changing the environment for the
 Emacs running in graphics mode and has a custom file that is independent from
 the file used by Emacs running in terminal (TTY) mode.  It is nil when there
 is only one or when its for the terminal (TTY) mode."
   (let (;; define closures used to reduce visual clutter
-        (adj          (lambda (fn) (pel-elpa-name fn for-graphics)))
+        (adj          (lambda (fn) (pel-elpa-name fn for-graphics))) ; adjust for graphics
         (elpa-sibling (lambda (dp) (pel-sibling-dirpath pel-elpa-dirpath dp)))
         (step-count 0)
         (cd-original default-directory))
