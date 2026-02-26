@@ -1,9 +1,9 @@
 # Makefile --- GNU Make to build the PEL distributable package  -*- mode: makefile-gmake; -*-
 #
-# Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025 by Pierre Rouleau
+# Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-02-21 16:59:12 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-02-26 08:03:14 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -311,9 +311,18 @@ OTHER_EL_FILES := pel_keys.el pel-pkg.el pel-autoloads.el
 OTHER_FILES := README
 
 # Emacs Regression Test files that uses ert, to test and include in tar file.
-# TODO: there is no rule yet to generate tests from $(TEST_FILES), they have to be
-#       added explicitly in the :test rules.
-TEST_FILES := pel-file-test.el pel-list-test.el pel-text-transform-test.el pel-package-test.el
+TEST_FILES := pel-file-test.el \
+	pel-list-test.el \
+	pel-timestamp-test.el \
+	pel-package-test.el
+
+# [:todo 2026-02-25, by Pierre Rouleau: Figure out why pel-text-transform-test.el
+#                    test fails when ran under Make but passes under Emacs.
+#                    For the moment just do not test it.]
+#
+
+CORE_TEST_FILES := pel-base-tests.el pel-elpa-test.el
+ALL_TEST_FILES := $(strip $(CORE_TEST_FILES) $(TEST_FILES))
 
 # Documentation PDF files to copy verbatim into the doc/pdfs
 PDF_FILES :=					\
@@ -595,6 +604,7 @@ help:
 	@printf " * make clean_tar   - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make clean_mypelpa - remove the directory $(PELPA_DIR)\n"
 	@printf " * make test        - Run the regression tests.\n"
+	@printf " * make clean-test  - remove test tag file to allow running test again.\n"
 	@printf " * make timeit      - Check startup time of Emacs with and without packages\n"
 	@printf " * make local-pkg   - build local PEL melpa archive: make pkg mypelpa.\n"
 	@printf " * make pkg         - Build the tar file inside directory: $(OUT_DIR).\n"
@@ -909,18 +919,18 @@ endif
 # completed execution of PEL tests and prevents running them again if they
 # were executed.
 
-.PHONY:	test stats
+.PHONY:	test clean-test  stats
 
 test:	pel-ran-tests.tag
-	@echo "To run tests again, remove the file pel-ran-tests.tag"
+	@echo "To run tests again, remove the file pel-ran-tests.tag or make clean-test test"
+
+clean-test:
+	-rm pel-ran-tests.tag
 
 pel-ran-tests.tag:
 	@printf "***** Running Integration tests\n"
-	$(EMACS) --batch -L . -l ert -l test/pel-base-tests.el -f ert-run-tests-batch-and-exit
-	$(EMACS) --batch -L . -l ert -l test/pel-elpa-test.el -f ert-run-tests-batch-and-exit
-	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
-	$(EMACS) --batch -L . -l ert -l test/pel-list-test.el -f ert-run-tests-batch-and-exit
-	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
+	@set -e; \
+	for tf in $(ALL_TEST_FILES); do bin/ert-test $$tf $(EMACS); done
 	touch pel-ran-tests.tag
 
 stats:
