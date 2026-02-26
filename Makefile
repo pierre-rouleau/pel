@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-02-25 23:15:07 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-02-26 08:03:14 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -930,7 +930,7 @@ clean-test:
 pel-ran-tests.tag:
 	@printf "***** Running Integration tests\n"
 	@set -e; \
-	for tf in $(ALL_TEST_FILES); do bin/ert-test $$tf; done
+	for tf in $(ALL_TEST_FILES); do bin/ert-test $$tf $(EMACS); done
 	touch pel-ran-tests.tag
 
 stats:
