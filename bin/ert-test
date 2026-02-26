@@ -1,0 +1,77 @@
+#!/bin/sh
+# SH FILE: ert-test
+#
+# Purpose   : Run an Ert test
+# Created   : Wednesday, February 25 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-02-25 23:17:57 EST, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Run an Ert test file specified on the command line argument.
+# Activate the maximum level of back trace capability I have found.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+# Identify program name.
+pgm_name="$(basename "$0")"
+
+print_usage()
+{
+    printf -- "
+%s -- Run the Emacs Ert test.
+
+ Usage: %s -h|--help
+
+  • Print this help information.
+
+ Usage: %s TEST-FILE
+
+  • Print the name of TEST-FILE and run the Emacs Ert test that is
+    the test/TEST_FILE.
+    Exit with 0 on success, 1 on error.
+
+"  "$pgm_name" "$pgm_name" "$pgm_name"
+}
+
+# --
+# Check validity of arguments
+
+if [ -z "$1" ]; then
+    print-usage
+    exit 1
+fi
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    if [ "$#" = "1" ]; then
+        # help requested explicitly with right amount of args: no error.
+        exit 0
+    else
+        exit  1
+    fi
+fi
+
+# --
+# Proceed.
+
+printf -- "---------------------------------------------------------------\n"
+printf -- "-- Testing %s:\n" "$1"
+if [ -f "test/$1" ]; then
+    # -L . : add current directory to load path to allow using the code.
+    # Attempt to prevent truncation of back-traces.
+    set -x
+    EMACS_TEST_VERBOSE=1 emacs -batch -L . -l ert -l "test/$1" \
+      --eval '(setq ert-batch-print-length nil ert-batch-print-level nil)' \
+      -f ert-run-tests-batch-and-exit
+else
+    printf -- "*** ERROR: file does not exists: test/%s\n" "$1"
+    exit 1
+fi
+
+# ----------------------------------------------------------------------------
