@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-26 16:46:33 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-26 16:59:16 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -927,49 +927,46 @@ control the content of the `load-path'.
     to the elpa-complete (or elpa-complete-graphics) directory.
 
 Return a list of performed action descriptions in reverse order."
-  ;; First ensure that init.el did set `pel-package-user-dir-original'
-  (unless (boundp 'pel-package-user-dir-original)
-    (user-error "Invalid init.el file detected:
-  The `pel-package-user-dir-original' symbol is unknown.
-  PEL cannot safely manage Emacs startup mode.
-  Please update your init.el file; use pel/example/init/init.el template!"))
-  ;;
-  ;; init.el is OK, proceed.
-  (let* ((elpa-dp       (pel-elpa-name pel-package-user-dir-original
-                                       for-graphics))
-         (elpa-dp-cmplt (pel-elpa-name (pel-sibling-dirpath
-                                        elpa-dp "elpa-complete")
-                                       for-graphics))
-         (actions nil))
-    (unless (or (file-symlink-p elpa-dp)
-                (bound-and-true-p package-quickstart))
-      ;; the main elpa is a directory, not a symbolic link
-      ;; make sure it does not already use the elpa-complete name;
-      ;; Complain if it does.  However only perform this check when
-      ;; not using package quickstart because in package quickstart I have
-      ;; not found a way to identify the original package-user-dir which
-      ;; identifies the symlink when fast start is used and then elpa-dp
-      ;; ends up having the value of the symlink target.  TODO.
-      (when (pel-same-fname-p elpa-dp elpa-dp-cmplt)
-        (user-error "Invalid elpa directory in %s:
+  (if (boundp 'pel-package-user-dir-original)
+      (let* ((elpa-dp       (pel-elpa-name pel-package-user-dir-original
+                                           for-graphics))
+             (elpa-dp-cmplt (pel-elpa-name (pel-sibling-dirpath
+                                            elpa-dp "elpa-complete")
+                                           for-graphics))
+             (actions nil))
+        (unless (or (file-symlink-p elpa-dp)
+                    (bound-and-true-p package-quickstart))
+          ;; the main elpa is a directory, not a symbolic link
+          ;; make sure it does not already use the elpa-complete name;
+          ;; Complain if it does.  However only perform this check when
+          ;; not using package quickstart because in package quickstart I have
+          ;; not found a way to identify the original package-user-dir which
+          ;; identifies the symlink when fast start is used and then elpa-dp
+          ;; ends up having the value of the symlink target.  TODO.
+          (when (pel-same-fname-p elpa-dp elpa-dp-cmplt)
+            (user-error "Invalid elpa directory in %s:
  The elpa directory name (%s) clash with PEL startup management strategy.
  PEL uses a symlink to points to either %s or %s.
  Please rename your elpa directory & update the package-user-dir user-option!"
-                    user-emacs-directory
-                    elpa-dp
-                    (pel-elpa-name "elpa-complete" for-graphics)
-                    (pel-elpa-name "elpa-reduced"  for-graphics)))
-      ;; all ok, rename and/or create symlink
-      (when (file-exists-p elpa-dp)
-        (rename-file (directory-file-name elpa-dp)
-                     (directory-file-name elpa-dp-cmplt))
-        (pel-push-fmt actions "Renamed %s to %s"
-          elpa-dp elpa-dp-cmplt))
-      (make-symbolic-link elpa-dp-cmplt elpa-dp)
-      (pel-push-fmt actions
-          "Created %s symlink that points to %s"
-        elpa-dp elpa-dp-cmplt))
-    actions))
+                        user-emacs-directory
+                        elpa-dp
+                        (pel-elpa-name "elpa-complete" for-graphics)
+                        (pel-elpa-name "elpa-reduced"  for-graphics)))
+          ;; all ok, rename and/or create symlink
+          (when (file-exists-p elpa-dp)
+            (rename-file (directory-file-name elpa-dp)
+                         (directory-file-name elpa-dp-cmplt))
+            (pel-push-fmt actions "Renamed %s to %s"
+              elpa-dp elpa-dp-cmplt))
+          (make-symbolic-link elpa-dp-cmplt elpa-dp)
+          (pel-push-fmt actions
+              "Created %s symlink that points to %s"
+            elpa-dp elpa-dp-cmplt))
+        actions)
+    (user-error "Invalid init.el file detected:
+  The `pel-package-user-dir-original' symbol is unknown.
+  PEL cannot safely manage Emacs startup mode.
+  Please update your init.el file; use pel/example/init/init.el template!")))
 
 (defun pel--elpa-symlink-problems (elpa-dirpath for-graphics)
   "Check validity of ELPA_DIRPATH used FOR-GRAPHICS.
