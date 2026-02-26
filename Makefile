@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-02-26 08:03:14 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-02-26 09:01:03 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -313,13 +313,9 @@ OTHER_FILES := README
 # Emacs Regression Test files that uses ert, to test and include in tar file.
 TEST_FILES := pel-file-test.el \
 	pel-list-test.el \
+	pel-text-transform-test.el \
 	pel-timestamp-test.el \
 	pel-package-test.el
-
-# [:todo 2026-02-25, by Pierre Rouleau: Figure out why pel-text-transform-test.el
-#                    test fails when ran under Make but passes under Emacs.
-#                    For the moment just do not test it.]
-#
 
 CORE_TEST_FILES := pel-base-tests.el pel-elpa-test.el
 ALL_TEST_FILES := $(strip $(CORE_TEST_FILES) $(TEST_FILES))

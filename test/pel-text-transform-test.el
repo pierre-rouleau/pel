@@ -481,7 +481,8 @@ The TEST-DATA is a list of list of list of two strings:
       (with-temp-buffer
         (insert original-string)
         (goto-char (point-min))
-        (set-mark-command nil)
+        (set-mark (point))
+        (activate-mark)
         (end-of-line)
         (funcall fct)
         (should (string= (buffer-string) expected-string))))))
