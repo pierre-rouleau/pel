@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-02-27 15:04:54 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-02-27 16:43:29 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -929,7 +929,7 @@ pel_keys.elc: $(ALL_TEST_PASSED) pel_keys.el $(ELC_FILES)
 # RULES: to execute ERT tests
 
 #  Pattern Rule: How to create a .el.test-passed file from a .el file
-test/pel-%-test.el.test-passed: test/pel-%-test.el
+test/pel-%-test.el.test-passed: test/pel-%-test.el bin/ert-test
 	bin/ert-test $<
 
 .PHONY:	test clean-test
@@ -1030,7 +1030,7 @@ mypelpa: $(PELPA_DIR)
 # if it is not present.
 # The rm -f option prevents complaints from rm when the file is not present.
 
-.PHONY: clean-tar clean-myelpa clean clean-build
+.PHONY: clean-tar clean-mypelpa clean clean-build
 
 clean-tar:
 	-rm -f $(OUT_DIR)/$(PEL_TAR_FILE)
