@@ -4,7 +4,7 @@
 # Purpose   : Run an Ert test
 # Created   : Wednesday, February 25 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-27 11:54:24 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-27 12:58:55 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -81,10 +81,12 @@ if [ -f "$1" ]; then
                             --eval '(setq ert-batch-print-length nil ert-batch-print-level nil)' \
                             -f ert-run-tests-batch-and-exit; then
         touch "$1.test-passed"
+    else
+        exit 1
     fi
 
 else
-    printf -- "*** ERROR: file does not exists: test/%s\n" "$1"
+    printf -- "*** ERROR: file does not exists: %s\n" "$1"
     exit 1
 fi
 

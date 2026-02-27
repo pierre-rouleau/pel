@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-02-27 11:48:07 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-02-27 13:04:05 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -556,6 +556,8 @@ PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 # 4: Install that tar file into the local Elpa-compliant directory,
 #    ready to be used by Emacs.
 
+.PHONY: all it local-pkg
+
 all: it
 
 it: pel pel_keys.elc test
@@ -566,6 +568,8 @@ local-pkg: pkg mypelpa
 # Build all normal PEL files, except pel_keys.el and pel.el for the very first
 # build.  PEL files hold the logic to install external package and does not
 # need any other tool to help for external package installation.
+
+.PHONY: first-build
 
 first-build: pel
 
@@ -596,13 +600,13 @@ help:
 	@printf " * make compile     - byte compile all files. Nothing else done.\n"
 	@printf " * make lint        - check .el files with elisp-lint.\n"
 	@printf " * make all-dirs    - create all output and temporary directories.\n"
-	@printf " * make clean       - remove $(PELPA_DIR) and all output files\n"
-	@printf "                      including $(PEL_TAR_FILE)\n"
+	@printf " * make clean       - remove $(PELPA_DIR),  all output files, all test tag files,\n"
+	@printf "                      and remove $(PEL_TAR_FILE)\n"
 	@printf " * make clean-build - make clean & make\n"
 	@printf " * make clean_tar   - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make clean_mypelpa - remove the directory $(PELPA_DIR)\n"
 	@printf " * make test        - Run the regression tests.\n"
-	@printf " * make clean-test  - remove test tag file to allow running test again.\n"
+	@printf " * make clean-test  - remove test tag file to allow running all tests again.\n"
 	@printf " * make timeit      - Check startup time of Emacs with and without packages\n"
 	@printf " * make local-pkg   - build local PEL melpa archive: make pkg mypelpa.\n"
 	@printf " * make pkg         - Build the tar file inside directory: $(OUT_DIR).\n"
@@ -931,9 +935,9 @@ endif
 test/pel-%-test.el.test-passed: test/pel-%-test.el
 	bin/ert-test $<
 
-test:	$(ALL_TEST_PASSED)
+.PHONY:	test clean-test
 
-.PHONY:	clean-test  stats
+test:	$(ALL_TEST_PASSED)
 
 clean-test:
 	-rm test/*.test-passed
@@ -942,7 +946,6 @@ clean-test:
 # PEL Statistics
 
 .PHONY:	stats
-
 stats:
 	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info-all
 
@@ -981,12 +984,6 @@ lint:
 a-copy: $(OUT_DIR) \
 	$(DEST_DIR) \
 	$(TARGET_SOURCE_FILES)
-
-
-#	$(DEST_TEST_DIR) \
-#	$(TARGET_TEST_FILES) \
-#	$(DEST_DOC_PDF_DIR)  \
-#	$(TARGET_PDF_FILES)
 
 # -----------------------------------------------------------------------------
 # Distribution tar package file creation rule
