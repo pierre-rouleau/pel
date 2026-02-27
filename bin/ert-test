@@ -4,7 +4,7 @@
 # Purpose   : Run an Ert test
 # Created   : Wednesday, February 25 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-27 12:58:55 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-27 17:07:19 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -70,9 +70,7 @@ fi
 
 # --
 # Proceed.
-
-printf -- "---------------------------------------------------------------\n"
-printf -- "-- Testing %s:\n" "$1"
+printf -- "----------------- Testing %s:\n" "$1"
 if [ -f "$1" ]; then
     # -L . : add current directory to load path to allow using the code.
     # Attempt to prevent truncation of back-traces.
@@ -80,8 +78,11 @@ if [ -f "$1" ]; then
     if EMACS_TEST_VERBOSE=1 "$EMACS_BIN" -batch -L . -l ert -l "$1" \
                             --eval '(setq ert-batch-print-length nil ert-batch-print-level nil)' \
                             -f ert-run-tests-batch-and-exit; then
+        { set +x; } 2>/dev/null
         touch "$1.test-passed"
+        printf -- "---------------------------------------------------------------\n"
     else
+        { set +x; } 2>/dev/null
         exit 1
     fi
 
