@@ -2,15 +2,14 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-03 12:09:45, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-27 17:19:42 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2026  Pierre Rouleau
 ;;
-;; This program is free software: you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
+;; This program is free software: you can redistribute it and/or modify;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
 ;;
@@ -25,11 +24,18 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;;
+;; The package-quickstart feature was introduced in Emacs 27. This feature
+;; allows Emacs to activate installed packages before the user's init.el
+;; file is loaded, which helps improve startup time.
+;;
+;; With Emacs 27 and later, calling (package-initialize) manually in your
+;; configuration is generally no longer required, as it is handled automatically
+;; at an earlier stage.
+
 ;; This file contains the pel-setup logic that is only available for Emacs 27
 ;; and later.  It is loaded by pel-setup.el when pel-setup detects Emacs 27 or
 ;; later.
-
-
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
