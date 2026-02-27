@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-26 23:09:57 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-26 23:29:12 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,6 +34,7 @@
 (require 'pel-filedir)                  ; tested file
 (require 'ert)
 
+(require 'subr-x)    ; use `string-join' (became autoloaded in Emacs 28.1)
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -47,7 +48,7 @@
 
   ;; With a list of sub-directories, they are concatenated to the parent
   (let ((sep (substring (file-name-as-directory "a") -1))) ; for Unix: "/"
-                                                           ; for Windows: "\\"
+                                        ; for Windows: "\\"
 
     (let ((root-dir (format "%sroot" sep)))
       ;; The end of the string is not a directory separator
