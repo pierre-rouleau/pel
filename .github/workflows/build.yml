@@ -3,7 +3,7 @@
 # Purpose   : Automated PEL build.
 # Created   : Sunday, January 11 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 12:12:31 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-27 10:06:54 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -32,11 +32,15 @@
 name: Build
 on:
   push:
+    branches:
+      - master # Run only on 'push' for the main branch.
     paths-ignore:
       - '**.pdf'
       - '**.rst'
       - '.gitignore'
   pull_request:
+    branches:
+      - '**' # Run 'pull-request' for all branches.
     paths-ignore:
       - '**.pdf'
       - '**.rst'
