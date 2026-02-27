@@ -151,6 +151,8 @@
 (eval-when-compile
   (require 'cl-macs))   ; use: `cl-eval-when'
 
+(defvar pel-filename-at-point-finders)  ; prevent warnings
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
@@ -8806,7 +8808,6 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:file "j"   'webjump)
 ;; By default, `pel-open-at-point' searches file in the current project
 ;; if it does not find the file from its name.
-(defvar pel-filename-at-point-finders)  ; defined as local in pel-file.el
 (setq pel-filename-at-point-finders '(pel-generic-find-file))
 
 ;;** Revert
