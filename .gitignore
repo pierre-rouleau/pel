@@ -38,6 +38,7 @@ test/data/*
 
 # PEL test tag
 pel-ran-tests.tag
+test/*.test-passed
 
 # PEL Test output directory
 test-result/*

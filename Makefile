@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-02-26 23:06:25 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-02-27 11:48:07 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -311,15 +311,20 @@ OTHER_EL_FILES := pel_keys.el pel-pkg.el pel-autoloads.el
 OTHER_FILES := README
 
 # Emacs Regression Test files that uses ert, to test and include in tar file.
-TEST_FILES := pel-file-test.el \
-	pel-filedir-test.el \
-	pel-list-test.el \
-	pel-text-transform-test.el \
-	pel-timestamp-test.el \
-	pel-package-test.el
+# - All test files are located inside the test sub-directory and have a name
+#   that matches: pel-*test.el.
+# - All ERT tests are performed by the bin/ert-test script.
+# - When a test passes bin/ert-test creates a file that has the same name
+#   as the file with the .test-passed suffix added to the file name.
+# - Those files are used as markers for make and prevent re-execution of
+#   the tests that have already passed.
 
-CORE_TEST_FILES := pel-base-tests.el pel-elpa-test.el
-ALL_TEST_FILES := $(strip $(CORE_TEST_FILES) $(TEST_FILES))
+ALL_TEST_FILES := $(wildcard test/pel-*-test.el)
+ALL_TEST_PASSED := $(ALL_TEST_FILES:.el=.el.test-passed)
+
+# $(info DEBUG: ALL_TEST_FILES is [$(ALL_TEST_FILES)])
+# $(info DEBUG: ALL_TEST_PASSED is [$(ALL_TEST_PASSED)])
+
 
 # Documentation PDF files to copy verbatim into the doc/pdfs
 PDF_FILES :=					\
@@ -531,11 +536,7 @@ TARGET_SOURCE_FILES := $(patsubst %,$(DEST_DIR)/%,$(SRC_FILES))
 #           Note: at the moment this is not used.
 # TARGET_PDF_FILES := $(patsubst %,$(DEST_DOC_PDF_DIR)/%,$(PDF_FILES))
 
-# TARGET_TEST_FILES lists the test files with a path identifying
-#           where they should be stored when those files are included
-#           in the PEL tar file.
-#           Note: at the moment this is not used.
-# TARGET_TEST_FILES := $(patsubst %,$(DEST_TEST_DIR)/%,$(TEST_FILES))
+
 
 # ELC_FILES list the PEL .elc files
 ELC_FILES := $(subst .el,.elc,$(EL_FILES))
@@ -557,7 +558,7 @@ PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 
 all: it
 
-it: pel pel_keys.elc
+it: pel pel_keys.elc test
 
 local-pkg: pkg mypelpa
 
@@ -858,8 +859,22 @@ pel__hydra.elc:         pel--base.elc pel--options.elc pel--key-macros.el pel-bu
 # depend on the source of pel__hydra: pel__hydra.el , *not* its .elc file!
 pel_keys.elc:           pel__hydra.el pel--base.elc pel--macros.elc pel--keys-macros.elc pel--options.elc pel-autoload.elc pel-cursor.elc pel-lispy.elc pel-key-chord.elc
 
+# Test code dependency:
+test/pel-base-test.el.test-passed:              pel--base.elc pel-ert.elc
+test/pel-elpa-test.el.test-passed:              pel-elpa.elc pel-filedir.elc
+test/pel-file-test.el.test-passed:              pel-file.elc pel-ert.elc
+test/pel-list-test.el.test-passed:              pel-list.elc pel-ert.elc
+test/pel-package-test.el.test-passed:           pel--base.elc pel--options.elc pel-package.elc pel-ert.elc
+test/pel-skel-c-test.el.test-passed:            pel--options.elc pel-ert.elc
+test/pel-skel-clisp-test.el.test-passed:        pel--options.elc pel-ert.elc
+test/pel-skel-erlang-test.el.test-passed:       pel--options.elc pel-ert.elc
+test/pel-skel-rst-test.el.test-passed:          pel--options.elc pel-ert.elc
+test/pel-skels-elisp-test.el.test-passed:       pel--options.elc pel-ert.elc
+test/pel-skels-generic-test.el.test-passed:     pel--options.elc pel-ert.elc
+test/pel-text-transform-test.el.test-passed:    pel-text-transform.elc
+
 # -----------------------------------------------------------------------------
-# Rules to byte-compile the Emacs-Lisp source code files
+# RULES:  to byte-compile the Emacs-Lisp source code files
 
 # Byte-compile all PEL files in a bare-bones Emacs (emacs -Q), one file at
 # a time.  Byte-compile all files except pel_keys.el, which is the key
@@ -896,39 +911,37 @@ pel: $(ELC_FILES)
 # Remove pel_keys.elc and pel.elc and recompile: ensure we always run the very latest.
 # This is only done after successfully running all tests.
 ifeq ($(EMACS_NATIVE_COMP_AVAILABLE), yes)
-pel_keys.elc: pel_keys.el pel-ran-tests.tag
+pel_keys.elc: pel_keys.el
 	-rm pel_keys.elc pel.elc
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile pel_keys.el
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-native-compile pel_keys.el
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile pel.el
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-native-compile pel.el
 else
-pel_keys.elc: pel_keys.el pel-ran-tests.tag
+pel_keys.elc: pel_keys.el
 	-rm pel_keys.elc pel.elc
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile pel_keys.el
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile pel.el
 endif
-# -----------------------------------------------------------------------------
-# Integration test rules
-#
-# PEL uses the ERT package to run tests.
-# The logic uses a 0-byte tag file, pel-ran-tests.tag, that remembers the
-# completed execution of PEL tests and prevents running them again if they
-# were executed.
 
-.PHONY:	test clean-test  stats
+# ----------------------------------------------------------------------------
+# RULES: to execute ERT tests
 
-test:	pel-ran-tests.tag
-	@echo "To run tests again, remove the file pel-ran-tests.tag or make clean-test test"
+#  Pattern Rule: How to create a .el.test-passed file from a .el file
+test/pel-%-test.el.test-passed: test/pel-%-test.el
+	bin/ert-test $<
+
+test:	$(ALL_TEST_PASSED)
+
+.PHONY:	clean-test  stats
 
 clean-test:
-	-rm pel-ran-tests.tag
+	-rm test/*.test-passed
 
-pel-ran-tests.tag:
-	@printf "***** Running Integration tests\n"
-	@set -e; \
-	for tf in $(ALL_TEST_FILES); do bin/ert-test $$tf $(EMACS); done
-	touch pel-ran-tests.tag
+# ----------------------------------------------------------------------------
+# PEL Statistics
+
+.PHONY:	stats
 
 stats:
 	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info-all
@@ -1036,9 +1049,8 @@ clean-tar:
 clean-mypelpa:
 	-rm -rf $(PELPA_DIR)
 
-clean: clean-tar clean-mypelpa
+clean: clean-tar clean-mypelpa clean-test
 	-rm *.elc
-	-rm pel-ran-tests.tag
 	-rm -rf $(OUT_DIR)
 	-rm -rf $(TMP_DIR)
 
