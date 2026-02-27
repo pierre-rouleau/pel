@@ -379,7 +379,7 @@ The non-nil value of the predicate is the `module-file-suffix'.")
 (defconst pel-emacs-with-native-comp-p (and
                                         (fboundp 'native-comp-available-p)
                                         (native-comp-available-p))
-  "Predicate: t if emacs supports native compilation.")
+  "Predicate: t if Emacs supports native compilation.")
 
 (defconst pel-os-lib-file-extension (cond
                                      (pel-system-is-macos-p "dylib")
@@ -2069,7 +2069,7 @@ FEATURE is a symbol.
 PACKAGE is specified (non-nil) and FEATURE is not loaded,
   try to install the specified package if it is not already available
   and try checking for the presence of FEATURE again, with the same
-  behaviour. It can be either:
+  behaviour.  It can be either:
   - The special symbol `:install-when-missing' to indicate that the
     package to install has the same name as the FEATURE.
   - Another symbol that identifies the name of the required package.
@@ -2077,7 +2077,7 @@ PACKAGE is specified (non-nil) and FEATURE is not loaded,
 If WITH-PEL-INSTALL is non-nil it should be a `pel-install-github-file'
 compliant USER-PROJECT-BRANCH argument; a GitHub usr/project/branch name
 path string identifying the project file to install and FNAME should be
-the name of the .el file installed in the PEL utils directory. The
+the name of the .el file installed in the PEL utils directory.  The
 URL-FNAME is also treated as it is by `pel-install-github-file' and
 required only when the web file name differs from what is needed
 locally.
@@ -2242,6 +2242,7 @@ However, when PEL operates in fast startup, nothing is done."
 (defmacro pel-ensure-package (pkg &optional from: pinned-site)
   "Install package named PKG, optionally from specified PINNED-SITE.
 PKG must be an unquoted symbol.
+FROM: is just a tag.
 When PINNED-SITE (a unquoted symbol) is specified use this as the Elpa
 repository, which must be listed in the variable `package-archives'.
 
@@ -3406,9 +3407,9 @@ instead."
   (let* ((current-buffer-name (buffer-name))
          (outbuf (get-buffer-create bufname))
          (top-line (format "----%s from %s --- %s -----\n"
-                       title
-                       current-buffer-name
-                       (format-time-string "%A, %B %d, %Y @ %T"))))
+                           title
+                           current-buffer-name
+                           (format-time-string "%A, %B %d, %Y @ %T"))))
     (with-current-buffer outbuf
       (when (and use-help-mode
                  (eq major-mode 'help-mode))
@@ -3610,9 +3611,9 @@ Returns nil when Emacs does not support tree-sitter."
 (defun pel-emacs-config-features-string ()
   "Print the names of all Emacs configured compilation features."
   (format "%s. With%s native compilation.%s" system-configuration-features
-           (if pel-emacs-with-native-comp-p "" "out")
-           (format
-            " With%s D-Bus support." (if  (featurep 'dbusbind) "" "out"))))
+          (if pel-emacs-with-native-comp-p "" "out")
+          (format
+           " With%s D-Bus support." (if  (featurep 'dbusbind) "" "out"))))
 
 (defun pel-hardware-model-string ()
   "Return a string describing the computer hardware model."

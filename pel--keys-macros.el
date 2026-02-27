@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-24 15:04:53 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-27 17:29:16 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -137,8 +137,8 @@
 
 ;; Unfortunately the group used by lua-ts-mode is not lua but lua-ts
 (defconst pel--lua-groups (if pel-use-tree-sitter
-                                 '(lua
-                                   lua-ts)
+                              '(lua
+                                lua-ts)
                             '(lua)))
 
 (defconst pel--highligh-groups (let ((items '(auto-highlight-symbol
@@ -185,11 +185,11 @@
                                quack
                                lispy))
 (defconst pel--spell-groups (if (version< emacs-version "27.1")
-                               '(ispell
-                                 flyspell)
-                             '(ispell
-                               flyspell
-                               go-translate)))
+                                '(ispell
+                                  flyspell)
+                              '(ispell
+                                flyspell
+                                go-translate)))
 ;; Shells
 (defconst pel--shell-launch-groups '(shell
                                      term
@@ -213,7 +213,7 @@
                                  ruby-ts
                                  electricity)
                              '(ruby
-                              electricity)))
+                               electricity)))
 
 (defconst pel--verilog-groups (let ((items (if (fboundp 'verilog-ts-mode)
                                                '(verilog-mode verilog-ts)
@@ -226,8 +226,8 @@
 
 ;; Unfortunately the group used by zig-ts-mode is not zig but zig-ts
 (defconst pel--zig-groups (if pel-use-tree-sitter
-                                 '(zig-mode
-                                   zig-ts)
+                              '(zig-mode
+                                zig-ts)
                             '(zig-mode)))
 
 
@@ -1600,7 +1600,7 @@ There should be no key binding!" keyseq))
           (pel--customize-group
            (pel-select-symbol-from "Select group" groups)
            other-window)
-       (error "Failed loading pel-prompt!")))))
+        (error "Failed loading pel-prompt!")))))
 
 ;;----------------------------------------------------------------------------
 
@@ -1952,7 +1952,7 @@ user-options variables.")
 
 (defun pel-treesit-remap-available-for (mode)
   "Return non-nil when treesit is available the ts MODE can use MODE.
-MODE is a symbol like \\='c or \\='lisp identifying the major mode."
+MODE is a symbol like \\='c or \\='rust identifying the major mode."
   (and pel-use-tree-sitter
        (pel-treesit-language-available-p mode)
        (boundp 'major-mode-remap-alist)))
