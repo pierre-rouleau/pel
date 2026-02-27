@@ -2463,11 +2463,10 @@ Tilde is allowed in paths."
   "List files & directory trees where auto copyright is done without prompting.
 
 By default automatic copyright prompts before updating the copyright notice.
-Identify files and directory trees where you want to prevent this prompting.
+Identify files and directory trees where you want to prevent this prompting
+when automatically updating a copyright notice.
 
 Only enter absolute file names and directories.
-No automatic copyright update will be performed for identified files
-and any file in the identified directories or any of their sub-directories.
 Tilde is allowed in paths."
   :group 'pel-pkg-for-copyright
   :type '(repeat

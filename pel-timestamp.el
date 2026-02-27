@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-27 09:03:18 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-27 09:53:10 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -169,7 +169,7 @@ following the copyright are updated as well.
 If non-nil, INTERACTIVEP tells the function to behave as when it’s called
 interactively."
   (let ((fn (pel-current-buffer-filename)))
-    (when pel-update-copyright
+    (when (and fn pel-update-copyright)
       (unless (pel-file-in fn pel-skip-copyright-in)
         ;; Update copyright when the file is not found matching any file or
         ;; directory identified in the `pel-skip-copyright-in' user-option.
