@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-25 14:48:35 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-27 09:53:10 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -142,6 +142,10 @@ otherwise you risk using a mix of what you want and what was already active.
 ;; ---------------------------------------------------------------------------
 ;;* Update Copyright Notice
 ;;  =======================
+;;
+;; Emacs copyright control code is in copyright.el
+;; Functions in this file are autoloaded.
+;;
 
 (defun pel-toggle-update-copyright-on-save (&optional globally)
   "Toggle copyright update on file save and display current state.
@@ -154,27 +158,7 @@ group customize buffer."
   (interactive "P")
   (pel-toggle-and-show-user-option 'pel-update-copyright globally))
 
-
-(defun pel--skip-copyright-for (fname)
-  "Return non-nil if instructed not to update copyright for FNAME.
-FNAME is a file name with absolute path.  Return non-nil if this file
-name is identified in the `pel-skip-copyright-in' user-option."
-  (let ((fpath (expand-file-name fname)))
-    (catch 'match
-      (dolist (to-skip pel-skip-copyright-in)
-        (let ((to-skip-abs (expand-file-name to-skip)))
-          (if (file-directory-p to-skip-abs)
-              ;; When checking if fname is the directory or in the tree
-              ;; ensure that both strings end with a directory separator
-              ;; to reject a fname that would have the same path name as
-              ;; the directory but would not have the trailing separator.
-              (when (string-match-p
-                     (format "^%s" (regexp-quote (file-name-as-directory to-skip-abs)))
-                     (file-name-as-directory fpath))
-                (throw 'match to-skip))
-              (when (string= to-skip-abs fpath)
-                (throw 'match to-skip))))))))
-
+(defvar copyright-query)     ; defined in copyright.el: prevent warning.
 
 (defun pel--update-copyright (&optional arg interactivep)
   "Update time stamp if currently active.
@@ -184,9 +168,16 @@ the current year after them.  If necessary, and
 following the copyright are updated as well.
 If non-nil, INTERACTIVEP tells the function to behave as when it’s called
 interactively."
-  (when pel-update-copyright
-    (unless (pel--skip-copyright-for (pel-current-buffer-filename))
-      (copyright-update arg interactivep))))
+  (let ((fn (pel-current-buffer-filename)))
+    (when (and fn pel-update-copyright)
+      (unless (pel-file-in fn pel-skip-copyright-in)
+        ;; Update copyright when the file is not found matching any file or
+        ;; directory identified in the `pel-skip-copyright-in' user-option.
+        ;; When updating prompt unless the current file is identified in the
+        ;; `pel-copyright-noprompt-in' user-option.
+        (let* ((silently (pel-file-in fn pel-copyright-noprompt-in))
+               (copyright-query (if silently nil 'function)))
+          (copyright-update arg (if silently t interactivep)))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-timestamp)

@@ -1,6 +1,6 @@
 ;;; pel--base.el --- PEL base utilities. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020-2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -251,6 +251,7 @@
 ;; - `pel-inside-code'
 ;;
 ;; File Path processing
+;; - `pel-file-in'
 ;; - `pel-is-subdir-of'
 ;;   - `pel-normalize-fname'
 ;; - `pel-parent-dirpath'
@@ -2981,6 +2982,32 @@ Note that this changes the search match data!"
 ;; ---------------------------------------------------------------------------
 ;; File Path processing
 ;; --------------------
+
+(defun pel-file-in (fname file-dir-list)
+  "Check if FNAME matches FILE-DIR-LIST, an inclusion list.
+
+The FILE-DIR-LIST is a list of file names and directory tree names, where
+each entry has a absolute path possibly with the tilde (~) to identify the
+home directory.  Check if FNAME is found in the list or is inside one of the
+specified directory tree, returning the file name or directory name where it
+is found.  Return nil if it is not found."
+  (let ((fpath (expand-file-name fname)))
+    (catch 'match
+      (dolist (found-in file-dir-list)
+        (let ((found-in-abs (expand-file-name found-in)))
+          (if (file-directory-p found-in-abs)
+              ;; When checking if fname is the directory or in the tree
+              ;; ensure that both strings end with a directory separator
+              ;; to reject a fname that would have the same path name as
+              ;; the directory but would not have the trailing separator.
+              (when (string-match-p
+                     (format "^%s"
+                             (regexp-quote (file-name-as-directory found-in-abs)))
+                     (file-name-as-directory fpath))
+                (throw 'match found-in))
+            (when (string= found-in-abs fpath)
+              (throw 'match found-in))))))))
+
 
 (defun pel-normalize-fname (name)
   "Normalize file (or directory) NAME.

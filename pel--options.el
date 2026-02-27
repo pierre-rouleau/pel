@@ -2459,6 +2459,21 @@ Tilde is allowed in paths."
            (file      :tag "file"      :must-match t)
            (directory :tag "directory" :must-match t))))
 
+(defcustom pel-copyright-noprompt-in nil
+  "List files & directory trees where auto copyright is done without prompting.
+
+By default automatic copyright prompts before updating the copyright notice.
+Identify files and directory trees where you want to prevent this prompting
+when automatically updating a copyright notice.
+
+Only enter absolute file names and directories.
+Tilde is allowed in paths."
+  :group 'pel-pkg-for-copyright
+  :type '(repeat
+          (choice
+           (file      :tag "file"      :must-match t)
+           (directory :tag "directory" :must-match t))))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-pkg-for-rpm nil
   "PEL Archive File Browsing and Management."
