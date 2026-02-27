@@ -7,6 +7,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   updates are activated by the value of *pel-update-copyright*.
   This way you can activate automatic copyright updating and disable it for
   files and directories where it must not be done.
+- Also add *pel-copyright-noprompt-in* user-option to identify files and
+  directory trees where automatic copyright update does not prompt before
+  updating the copyright notice.  The default list is empty.  Add entries
+  in this list to prevent the annoying prompt on file save in the files and
+  directories you want to keep copyright notices up to date without being prompted.
 - Add early support for the Rebol programming language using an old rebol-mode
   implementation I'm planning to update. Add an early PDF for Rebol.
 - Simplified user-options for Common Lisp, add linter command.

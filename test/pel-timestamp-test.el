@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, February 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-25 16:53:43 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-27 09:20:22 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -48,30 +48,30 @@
    (t (error "Invalid %s" path))))
 
 (ert-deftest pel-timestamp-test-skip-copyright-for-1 ()
-  "Test `pel--skip-copyright-for'."
-  (let ((pel-skip-copyright-in '("/a/" "/b/b.c" "/b/b1.c")))
+  "Test `pel-file-in'."
+  (let ((skip-copyright-in '("/a/" "/b/b.c" "/b/b1.c")))
     (cl-letf (((symbol-function 'file-directory-p)
                (lambda (fp) (pel-mocked-file-directory-p fp))))
       ;; Directory
       ;; anything in the directory /a should be skipped
-      (should (string=  (pel--skip-copyright-for "/a/") "/a/"))
-      (should (string=  (pel--skip-copyright-for "/a") "/a/"))
-      (should (string=  (pel--skip-copyright-for "/a/f.c") "/a/"))
-      (should (string=  (pel--skip-copyright-for "/a/b/f.c") "/a/"))
+      (should (string=  (pel-file-in "/a/" skip-copyright-in) "/a/"))
+      (should (string=  (pel-file-in "/a"  skip-copyright-in) "/a/"))
+      (should (string=  (pel-file-in "/a/f.c" skip-copyright-in) "/a/"))
+      (should (string=  (pel-file-in "/a/b/f.c" skip-copyright-in) "/a/"))
 
       ;; everything else should not be skipped
-      (should-not (pel--skip-copyright-for "/ab"))
-      (should-not (pel--skip-copyright-for "/ab/f.c"))
-      (should-not (pel--skip-copyright-for "/b/f.c"))
-      (should-not (pel--skip-copyright-for "~/my/project/file.el"))
+      (should-not (pel-file-in "/ab" skip-copyright-in))
+      (should-not (pel-file-in "/ab/f.c" skip-copyright-in))
+      (should-not (pel-file-in "/b/f.c" skip-copyright-in))
+      (should-not (pel-file-in "~/my/project/file.el" skip-copyright-in))
       ;;
       ;; File
-      (should (pel--skip-copyright-for "/a/b.c")) ; file inside /a
-      (should-not (pel--skip-copyright-for "/abc"))
-      (should (pel--skip-copyright-for "/b/b.c"))
-      (should (string=  (pel--skip-copyright-for "/b/b.c") "/b/b.c"))
-      (should (pel--skip-copyright-for "/b/b1.c"))
-      (should-not (pel--skip-copyright-for "/b/b1.c.txt")))))
+      (should (pel-file-in "/a/b.c" skip-copyright-in)) ; file inside /a
+      (should-not (pel-file-in "/abc" skip-copyright-in))
+      (should (pel-file-in "/b/b.c" skip-copyright-in))
+      (should (string=  (pel-file-in "/b/b.c" skip-copyright-in) "/b/b.c"))
+      (should (pel-file-in "/b/b1.c" skip-copyright-in))
+      (should-not (pel-file-in "/b/b1.c.txt" skip-copyright-in)))))
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
