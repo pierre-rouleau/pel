@@ -4,7 +4,7 @@
 # Purpose   : Run an Ert test
 # Created   : Wednesday, February 25 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-26 08:04:01 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-02-27 12:58:55 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -37,7 +37,11 @@ print_usage()
     the test/TEST_FILE.
   • If the EMACS-BIN argument is specified it identifies the name of
     the emacs executable.
-  • Exit with 0 on success, 1 on error.
+  • When the test passes, create a file with the same name and a
+    '.test-passed' suffix and exit with an exit code of 0.
+    These tag files are used by the Make file to identify tests that
+    do not need to be re-executed.
+  • Exit with 1 on error.
 
 "  "$pgm_name" "$pgm_name" "$pgm_name"
 }
@@ -69,15 +73,20 @@ fi
 
 printf -- "---------------------------------------------------------------\n"
 printf -- "-- Testing %s:\n" "$1"
-if [ -f "test/$1" ]; then
+if [ -f "$1" ]; then
     # -L . : add current directory to load path to allow using the code.
     # Attempt to prevent truncation of back-traces.
     set -x
-    EMACS_TEST_VERBOSE=1 "$EMACS_BIN" -batch -L . -l ert -l "test/$1" \
-      --eval '(setq ert-batch-print-length nil ert-batch-print-level nil)' \
-      -f ert-run-tests-batch-and-exit
+    if EMACS_TEST_VERBOSE=1 "$EMACS_BIN" -batch -L . -l ert -l "$1" \
+                            --eval '(setq ert-batch-print-length nil ert-batch-print-level nil)' \
+                            -f ert-run-tests-batch-and-exit; then
+        touch "$1.test-passed"
+    else
+        exit 1
+    fi
+
 else
-    printf -- "*** ERROR: file does not exists: test/%s\n" "$1"
+    printf -- "*** ERROR: file does not exists: %s\n" "$1"
     exit 1
 fi
 

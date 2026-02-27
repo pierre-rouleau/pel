@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2026-02-26 13:56:26 EST, updated by Pierre Rouleau.
+:Modified: 2026-02-27 14:28:15 EST, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025, 2026 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -7811,11 +7811,11 @@ The following commands are used to test the code, issued from PEL root directory
 
 .. code:: shell
 
-          make clean
-          make compile
-          make lint
-          make test
+          make clean all
 
+This will clean anything that should be cleaned, byte compile everything,
+native compile everything if your version of Emacs supports native
+compilation, and run all available tests.
 There should be no error, no warning and all tests should pass.
 
 .. _elint.el:                          https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/elint.el

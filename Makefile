@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-02-26 23:06:25 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-02-27 16:43:29 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -311,15 +311,20 @@ OTHER_EL_FILES := pel_keys.el pel-pkg.el pel-autoloads.el
 OTHER_FILES := README
 
 # Emacs Regression Test files that uses ert, to test and include in tar file.
-TEST_FILES := pel-file-test.el \
-	pel-filedir-test.el \
-	pel-list-test.el \
-	pel-text-transform-test.el \
-	pel-timestamp-test.el \
-	pel-package-test.el
+# - All test files are located inside the test sub-directory and have a name
+#   that matches: pel-*test.el.
+# - All ERT tests are performed by the bin/ert-test script.
+# - When a test passes bin/ert-test creates a file that has the same name
+#   as the file with the .test-passed suffix added to the file name.
+# - Those files are used as markers for make and prevent re-execution of
+#   the tests that have already passed.
 
-CORE_TEST_FILES := pel-base-tests.el pel-elpa-test.el
-ALL_TEST_FILES := $(strip $(CORE_TEST_FILES) $(TEST_FILES))
+ALL_TEST_FILES := $(wildcard test/pel-*-test.el)
+ALL_TEST_PASSED := $(ALL_TEST_FILES:.el=.el.test-passed)
+
+# $(info DEBUG: ALL_TEST_FILES is [$(ALL_TEST_FILES)])
+# $(info DEBUG: ALL_TEST_PASSED is [$(ALL_TEST_PASSED)])
+
 
 # Documentation PDF files to copy verbatim into the doc/pdfs
 PDF_FILES :=					\
@@ -531,11 +536,7 @@ TARGET_SOURCE_FILES := $(patsubst %,$(DEST_DIR)/%,$(SRC_FILES))
 #           Note: at the moment this is not used.
 # TARGET_PDF_FILES := $(patsubst %,$(DEST_DOC_PDF_DIR)/%,$(PDF_FILES))
 
-# TARGET_TEST_FILES lists the test files with a path identifying
-#           where they should be stored when those files are included
-#           in the PEL tar file.
-#           Note: at the moment this is not used.
-# TARGET_TEST_FILES := $(patsubst %,$(DEST_TEST_DIR)/%,$(TEST_FILES))
+
 
 # ELC_FILES list the PEL .elc files
 ELC_FILES := $(subst .el,.elc,$(EL_FILES))
@@ -555,9 +556,9 @@ PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 # 4: Install that tar file into the local Elpa-compliant directory,
 #    ready to be used by Emacs.
 
-all: it
+.PHONY: all local-pkg
 
-it: pel pel_keys.elc
+all: pel.elc pel_keys.elc test
 
 local-pkg: pkg mypelpa
 
@@ -566,7 +567,9 @@ local-pkg: pkg mypelpa
 # build.  PEL files hold the logic to install external package and does not
 # need any other tool to help for external package installation.
 
-first-build: pel
+.PHONY: first-build
+
+first-build: $(ELC_FILES)
 
 # -----------------------------------------------------------------------------
 # Self-desciptive rule: make help prints the info.
@@ -577,7 +580,8 @@ help:
 	@printf "\n"
 	@printf "Currently building PEL version $(PEL_VERSION).\n"
 	@printf "1) First byte-compile all Emacs Lisp files in required order.\n"
-	@printf "2) Then runs the regression tests\n"
+	@printf "   When Emacs supports native compilation: also native-compile files.\n"
+	@printf "2) Then runs the regression tests.\n"
 	@printf "3) Encapsulate all files for distribution into a compressed tar\n"
 	@printf "   file that is copied into the local Emacs package archive, $(PEL_TAR_FILE)\n"
 	@printf "   located in the $(OUT_DIR) directory.\n"
@@ -588,26 +592,27 @@ help:
 	@printf "\n"
 	@printf "Usage:\n"
 	@printf " * make             - same as 'make all': build everything as needed.\n"
-	@printf " * make first-build - first build done on a virgin system.\n"
-	@printf " * make all         - byte compile all files and run tests.\n"
-	@printf " * make it          - byte compile all files and run tests.\n"
-	@printf " * make pel         - byte compile all files except pel.el. Nothing else done.\n"
-	@printf " * make compile     - byte compile all files. Nothing else done.\n"
-	@printf " * make lint        - check .el files with elisp-lint.\n"
+	@printf " * make first-build - first build done on a virgin system:\n"
+	@printf "                       compile all files except pel_keys.el and pel.el.\n"
+	@printf "                       No tests are executed.\n"
+	@printf " * make all         - compile all files and run tests.\n"
+	@printf " * make pel         - compile all files except pel.el and run tests.\n"
+	@printf " * make lint        - check .el files with elisp-lint (it must be installed).\n"
 	@printf " * make all-dirs    - create all output and temporary directories.\n"
-	@printf " * make clean       - remove $(PELPA_DIR) and all output files\n"
-	@printf "                      including $(PEL_TAR_FILE)\n"
+	@printf " * make clean       - remove $(PELPA_DIR),  all output files, all test tag files,\n"
+	@printf "                      and remove $(PEL_TAR_FILE)\n"
 	@printf " * make clean-build - make clean & make\n"
 	@printf " * make clean_tar   - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make clean_mypelpa - remove the directory $(PELPA_DIR)\n"
 	@printf " * make test        - Run the regression tests.\n"
-	@printf " * make clean-test  - remove test tag file to allow running test again.\n"
-	@printf " * make timeit      - Check startup time of Emacs with and without packages\n"
+	@printf " * make clean-test  - remove test tag file to allow running all tests again.\n"
+	@printf " * make timeit      - Check startup time of Emacs with and without packages.\n"
 	@printf " * make local-pkg   - build local PEL melpa archive: make pkg mypelpa.\n"
 	@printf " * make pkg         - Build the tar file inside directory: $(OUT_DIR).\n"
 	@printf " * make mypelpa     - Copy the tar file into a local package archive.\n"
 	@printf "\n"
-	@printf " * make build-after-emacs-update - Recompile all elisp files after updating emacs.\n"
+	@printf " * make build-after-emacs-update - Recompile all installed elisp files.\n"
+	@printf "                                   Do this after updating Emacs!\n"
 	@printf "\n"
 	@printf "LIMITATIONS:\n"
 	@printf "  - To build a package, the package version number must be updated\n"
@@ -858,8 +863,24 @@ pel__hydra.elc:         pel--base.elc pel--options.elc pel--key-macros.el pel-bu
 # depend on the source of pel__hydra: pel__hydra.el , *not* its .elc file!
 pel_keys.elc:           pel__hydra.el pel--base.elc pel--macros.elc pel--keys-macros.elc pel--options.elc pel-autoload.elc pel-cursor.elc pel-lispy.elc pel-key-chord.elc
 
+# Test code dependency:
+test/pel-base-test.el.test-passed:              pel--base.elc pel-ert.elc
+test/pel-elpa-test.el.test-passed:              pel-elpa.elc pel-filedir.elc
+test/pel-file-test.el.test-passed:              pel-file.elc pel-ert.elc
+test/pel-filedir-test.el.test-passed:           pel-filedir.elc
+test/pel-list-test.el.test-passed:              pel-list.elc pel-ert.elc
+test/pel-package-test.el.test-passed:           pel--base.elc pel--options.elc pel-package.elc pel-ert.elc
+test/pel-skel-c-test.el.test-passed:            pel--options.elc pel-ert.elc
+test/pel-skel-clisp-test.el.test-passed:        pel--options.elc pel-ert.elc
+test/pel-skel-erlang-test.el.test-passed:       pel--options.elc pel-ert.elc
+test/pel-skel-rst-test.el.test-passed:          pel--options.elc pel-ert.elc
+test/pel-skels-elisp-test.el.test-passed:       pel--options.elc pel-ert.elc
+test/pel-skels-generic-test.el.test-passed:     pel--options.elc pel-ert.elc
+test/pel-text-transform-test.el.test-passed:    pel-text-transform.elc
+test/pel-timestamp-test.el.test-passed:         pel--base.elc pel-timestamp.elc
+
 # -----------------------------------------------------------------------------
-# Rules to byte-compile the Emacs-Lisp source code files
+# RULES:  to byte-compile the Emacs-Lisp source code files
 
 # Byte-compile all PEL files in a bare-bones Emacs (emacs -Q), one file at
 # a time.  Byte-compile all files except pel_keys.el, which is the key
@@ -883,53 +904,46 @@ else
 	$(EMACS) -Q --batch -L . --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile $<
 endif
 
-.PHONY:	compile pel
+.PHONY:	pel
 # Target to byte-compile all Emacs Lisp files inside one Emacs Session.
 # Compile all without any init configuration.
 # Compile pel_keys.el last, *with* init.el so it can find the external packages.
 # Note that pel_keys.el is a *canned* init.el that is byte-compiled to increase
 # its speed as much as possible and also checking as much as possible.
-compile: pel
-
-pel: $(ELC_FILES)
-
-# Remove pel_keys.elc and pel.elc and recompile: ensure we always run the very latest.
-# This is only done after successfully running all tests.
-ifeq ($(EMACS_NATIVE_COMP_AVAILABLE), yes)
-pel_keys.elc: pel_keys.el pel-ran-tests.tag
-	-rm pel_keys.elc pel.elc
-	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile pel_keys.el
-	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-native-compile pel_keys.el
-	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile pel.el
-	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-native-compile pel.el
-else
-pel_keys.elc: pel_keys.el pel-ran-tests.tag
-	-rm pel_keys.elc pel.elc
-	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile pel_keys.el
-	$(EMACS) -Q --batch -L . -l $(EMACS_INIT)  --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile pel.el
-endif
-# -----------------------------------------------------------------------------
-# Integration test rules
 #
-# PEL uses the ERT package to run tests.
-# The logic uses a 0-byte tag file, pel-ran-tests.tag, that remembers the
-# completed execution of PEL tests and prevents running them again if they
-# were executed.
+# The compilation order is:
+# - Byte compile all PEL files identified by $(EL_FILES) : this excludes pel_keys.el and pel.el
+# - While doing this, run the ERT test as soon as the required PEL files are byte compiled.
+# - When all EL_FILES are byte compiled and the ERT tests have run and succeeded, then:
+#   - byte compile pel_keys.el
+#   - byte compile pel.el
 
-.PHONY:	test clean-test  stats
 
-test:	pel-ran-tests.tag
-	@echo "To run tests again, remove the file pel-ran-tests.tag or make clean-test test"
+pel: pel_keys.elc $(ELC_FILES)
 
+pel.elc: pel.el pel_keys.elc
+
+pel_keys.elc: $(ALL_TEST_PASSED) pel_keys.el $(ELC_FILES)
+
+# ----------------------------------------------------------------------------
+# RULES: to execute ERT tests
+
+#  Pattern Rule: How to create a .el.test-passed file from a .el file
+test/pel-%-test.el.test-passed: test/pel-%-test.el bin/ert-test
+	bin/ert-test $<
+
+.PHONY:	test clean-test
+
+test:	$(ALL_TEST_PASSED)
+
+# The rm -f option prevents complaints from rm when the file is not present.
 clean-test:
-	-rm pel-ran-tests.tag
+	-rm -f test/*.test-passed
 
-pel-ran-tests.tag:
-	@printf "***** Running Integration tests\n"
-	@set -e; \
-	for tf in $(ALL_TEST_FILES); do bin/ert-test $$tf $(EMACS); done
-	touch pel-ran-tests.tag
+# ----------------------------------------------------------------------------
+# PEL Statistics
 
+.PHONY:	stats
 stats:
 	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info-all
 
@@ -969,18 +983,9 @@ a-copy: $(OUT_DIR) \
 	$(DEST_DIR) \
 	$(TARGET_SOURCE_FILES)
 
-
-#	$(DEST_TEST_DIR) \
-#	$(TARGET_TEST_FILES) \
-#	$(DEST_DOC_PDF_DIR)  \
-#	$(TARGET_PDF_FILES)
-
 # -----------------------------------------------------------------------------
 # Distribution tar package file creation rule
 
-# Create the out directory if it does not exist.
-# The pipe tests that the out pre-requisite is order only,
-# not depending on time stamp of directory or its files.
 # * Implementation Note:
 #   * on macOS: tar may include several files that have names that start with "./._".
 #
@@ -996,18 +1001,15 @@ a-copy: $(OUT_DIR) \
 #    I selected option 2, since it is compatible with older versions of macOS tar and is also
 #    likely not going to affect tar running on other OS.
 
-.PHONY: pkg
-pkg: 	export COPYFILE_DISABLE=1
-
-
-# Note: Removing the TMP_DIR tree after creating the tarball file,
-#       it's no longer needed.  If we leave it there Emacs will include
+# Note: Remove the TMP_DIR tree after creating the tarball file,
+#       as it's no longer needed.  If we leave it there Emacs will include
 #       these files in a ELisp cross reference search.
-pkg: | a-copy
+#       The rm -f option prevents complaints from rm when the file is not present.
+pkg:  $(ALL_TEST_PASSED) a-copy
 	@printf "***** Create the PEL package TAR file\n"
-	rm -f $(OUT_DIR)/$(PEL_TAR_FILE)
-	tar -C $(TMP_DIR) -cvf $(OUT_DIR)/$(PEL_TAR_FILE) pel-$(PEL_VERSION)/
-	rm -rf $(TMP_DIR)
+	-rm -f $(OUT_DIR)/$(PEL_TAR_FILE)
+	COPYFILE_DISABLE=1  tar -C $(TMP_DIR) -cvf $(OUT_DIR)/$(PEL_TAR_FILE) pel-$(PEL_VERSION)/
+	-rm -rf $(TMP_DIR)
 	ls -l $(OUT_DIR)/$(PEL_TAR_FILE)
 
 # -----------------------------------------------------------------------------
@@ -1026,9 +1028,9 @@ mypelpa: $(PELPA_DIR)
 
 # Remove the tar file from the local Emacs archive, without complaining
 # if it is not present.
-# The -f option prevents complaints from rm when the file is not present.
+# The rm -f option prevents complaints from rm when the file is not present.
 
-.PHONY: clean-tar
+.PHONY: clean-tar clean-mypelpa clean clean-build
 
 clean-tar:
 	-rm -f $(OUT_DIR)/$(PEL_TAR_FILE)
@@ -1036,9 +1038,8 @@ clean-tar:
 clean-mypelpa:
 	-rm -rf $(PELPA_DIR)
 
-clean: clean-tar clean-mypelpa
+clean: clean-tar clean-mypelpa clean-test
 	-rm *.elc
-	-rm pel-ran-tests.tag
 	-rm -rf $(OUT_DIR)
 	-rm -rf $(TMP_DIR)
 

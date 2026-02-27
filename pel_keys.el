@@ -151,6 +151,8 @@
 (eval-when-compile
   (require 'cl-macs))   ; use: `cl-eval-when'
 
+(defvar pel-filename-at-point-finders)  ; prevent warnings
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
@@ -490,12 +492,15 @@ Open GitHub file if OPEN-GITHUB-PAGE-P IS non-nil."
 ;; documentation at:
 ;;  https://github.com/quelpa/quelpa/blob/master/README.org#installation
 (when pel-use-quelpa
-  (unless (package-installed-p 'quelpa)
-    (with-temp-buffer
-      (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-      (eval-buffer)
-      (with-no-warnings
-        (quelpa-self-upgrade)))))
+  ;; Unfortunately package-installed-p is auto-loaded only on Emacs >= 29.1
+  (require 'package)
+  (when (fboundp 'package-installed-p)
+    (unless (package-installed-p 'quelpa)
+      (with-temp-buffer
+        (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+        (eval-buffer)
+        (with-no-warnings
+          (quelpa-self-upgrade))))))
 
 (when pel-use-package-lint
   (pel-ensure-package package-lint from: melpa))
@@ -736,11 +741,14 @@ Your version of Emacs does not support dynamic module.")))
 ;;** Combobulate -- Tree Sitter Based operations
 ;;   -------------------------------------------
 (when pel-use-combobulate
-  (unless (package-installed-p 'combobulate)
-    (pel-quelpa-install
-        (combobulate :fetcher git
-                     :url
-                     "https://github.com/mickeynp/combobulate.git"))))
+  ;; Unfortunately package-installed-p is auto-loaded only on Emacs >= 29.1
+  (require 'package)
+  (when (fboundp 'package-installed-p)
+    (unless (package-installed-p 'combobulate)
+      (pel-quelpa-install
+          (combobulate :fetcher git
+                       :url
+                       "https://github.com/mickeynp/combobulate.git")))))
 
 ;;** Move to 2-spaces, empty-/lines
 ;;   ------------------------------
@@ -4009,10 +4017,13 @@ d-mode not added to ac-modes!"
   ;; has created and maintains a fork which can be installed.
   ;; Use enzuru fork when requested (quelpa should also be available),
   ;; otherwise use abo-abo original repo.
-  (if (and (eq pel-use-lispy 'use-enzuru-lispy)
-           (not (package-installed-p 'lispy)))
-      (pel-quelpa-install (lispy :repo "enzuru/lispy" :fetcher github))
-    (pel-ensure-package lispy from: melpa))
+  ;; Unfortunately package-installed-p is auto-loaded only on Emacs >= 29.1
+  (require 'package)
+  (when (fboundp 'package-installed-p)
+    (if (and (eq pel-use-lispy 'use-enzuru-lispy)
+             (not (package-installed-p 'lispy)))
+        (pel-quelpa-install (lispy :repo "enzuru/lispy" :fetcher github))
+      (pel-ensure-package lispy from: melpa)))
 
   (defun pel--activate-lispy ()
     "Activate lispy lazily."
@@ -4289,8 +4300,8 @@ d-mode not added to ac-modes!"
 ;; activate the <f12> key binding for elisp-mode and other features.
 (pel-check-minor-modes-in pel-emacs-lisp-activates-minor-modes)
 (declare-function pel--install-elisp-skel "pel-skels-elisp")
-(pel--mode-hook-maybe-call
 
+(pel--mode-hook-maybe-call
  (lambda ()
    ;; Make M-<f12> same as <f12> for convenience.
    (pel-local-set-f12-M-f12 'pel:for-elisp)
@@ -4307,7 +4318,9 @@ d-mode not added to ac-modes!"
    ;; Activate syntax checkers if necessary
    (pel--auto-activate-fly)
    ;; Activate open-at-point for elisp files
-   (setq-local pel-filename-at-point-finders '(pel-elisp-find-file)))
+   (require 'pel-file)
+   (when (boundp 'pel-filename-at-point-finders)
+     (setq-local pel-filename-at-point-finders '(pel-elisp-find-file))))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
 
 (when pel-use-helpful
@@ -8804,7 +8817,6 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:file "j"   'webjump)
 ;; By default, `pel-open-at-point' searches file in the current project
 ;; if it does not find the file from its name.
-(defvar pel-filename-at-point-finders)  ; defined as local in pel-file.el
 (setq pel-filename-at-point-finders '(pel-generic-find-file))
 
 ;;** Revert
