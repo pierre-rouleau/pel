@@ -492,13 +492,15 @@ Open GitHub file if OPEN-GITHUB-PAGE-P IS non-nil."
 ;; documentation at:
 ;;  https://github.com/quelpa/quelpa/blob/master/README.org#installation
 (when pel-use-quelpa
+  ;; Unfortunately package-installed-p is auto-loaded only on Emacs >= 29.1
   (require 'package)
-  (unless (package-installed-p 'quelpa)
-    (with-temp-buffer
-      (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-      (eval-buffer)
-      (with-no-warnings
-        (quelpa-self-upgrade)))))
+  (when (fboundp 'package-installed-p)
+    (unless (package-installed-p 'quelpa)
+      (with-temp-buffer
+        (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+        (eval-buffer)
+        (with-no-warnings
+          (quelpa-self-upgrade))))))
 
 (when pel-use-package-lint
   (pel-ensure-package package-lint from: melpa))
@@ -739,11 +741,14 @@ Your version of Emacs does not support dynamic module.")))
 ;;** Combobulate -- Tree Sitter Based operations
 ;;   -------------------------------------------
 (when pel-use-combobulate
-  (unless (package-installed-p 'combobulate)
-    (pel-quelpa-install
-        (combobulate :fetcher git
-                     :url
-                     "https://github.com/mickeynp/combobulate.git"))))
+  ;; Unfortunately package-installed-p is auto-loaded only on Emacs >= 29.1
+  (require 'package)
+  (when (fboundp 'package-installed-p)
+    (unless (package-installed-p 'combobulate)
+      (pel-quelpa-install
+          (combobulate :fetcher git
+                       :url
+                       "https://github.com/mickeynp/combobulate.git")))))
 
 ;;** Move to 2-spaces, empty-/lines
 ;;   ------------------------------
@@ -4012,10 +4017,13 @@ d-mode not added to ac-modes!"
   ;; has created and maintains a fork which can be installed.
   ;; Use enzuru fork when requested (quelpa should also be available),
   ;; otherwise use abo-abo original repo.
-  (if (and (eq pel-use-lispy 'use-enzuru-lispy)
-           (not (package-installed-p 'lispy)))
-      (pel-quelpa-install (lispy :repo "enzuru/lispy" :fetcher github))
-    (pel-ensure-package lispy from: melpa))
+  ;; Unfortunately package-installed-p is auto-loaded only on Emacs >= 29.1
+  (require 'package)
+  (when (fboundp 'package-installed-p)
+    (if (and (eq pel-use-lispy 'use-enzuru-lispy)
+             (not (package-installed-p 'lispy)))
+        (pel-quelpa-install (lispy :repo "enzuru/lispy" :fetcher github))
+      (pel-ensure-package lispy from: melpa)))
 
   (defun pel--activate-lispy ()
     "Activate lispy lazily."
