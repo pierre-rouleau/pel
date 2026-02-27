@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-26 16:26:12 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-26 21:28:33 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,7 +31,7 @@
 ;;
 ;; The calling hierarchy of the provided functions follow:
 ;;
-;; - `pel-path-for'
+;; - `pel-dpath-of'
 ;; - `pel-file-in-dir'
 ;; - `pel-file-in-dir-upwards'
 ;;    - `pel-dir-is-root'
@@ -78,7 +78,7 @@
 (defun pel-dpath-of (parent-dir &rest subdirs)
   "Return the absolute path made of PARENT-DIR and all its SUBDIRS."
   (seq-reduce (lambda (parent subdir) (expand-file-name subdir parent))
-              subdirs parent-dir))
+              subdirs (expand-file-name parent-dir)))
 
 (defun pel-file-in-dir (filename dirpath)
   "Return t if FILENAME is present in directory DIRPATH, nil otherwise.

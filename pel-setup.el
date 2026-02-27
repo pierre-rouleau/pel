@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-26 16:59:16 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-26 21:42:07 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1094,11 +1094,22 @@ The Emacs directory (%s) is not compatible with PEL startup management."
 (defun pel--setup-fast (for-graphics)
   "Prepare the elpa directories and code to speedup Emacs startup.
 
-The function sets up the elpa directory to become a symlink to
-The FOR-GRAPHICS argument is t when changing the environment for the
-Emacs running in graphics mode and has a custom file that is independent from
-the file used by Emacs running in terminal (TTY) mode.  It is nil when there
-is only one or when its for the terminal (TTY) mode."
+The function sets up the elpa directory to become a symlink to the actual
+directory that stores the Elpa packages.  The name of that directory depends
+on whether PEL is running in normal or fast-startup mode and whether Emacs
+runs inside a terminal (TTY) or runs in GUI mode.
+
+It also depends on the value of the FOR-GRAPHICS argument, which must
+be set according to the following table:
+
+Emacs Mode  PEL Dual-mode   FOR-GRAPHICS
+----------  -------------   ------------
+TTY         No              nil
+TTY         Yes             nil
+GUI         No              nil
+GUI         Yes             t
+
+It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
   (let (;; define closures used to reduce visual clutter
         (adj          (lambda (fn) (pel-elpa-name fn for-graphics))) ; adjust for graphics
         (elpa-sibling (lambda (dp) (pel-sibling-dirpath pel-elpa-dirpath dp)))
