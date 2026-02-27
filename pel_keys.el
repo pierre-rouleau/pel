@@ -4291,7 +4291,6 @@ d-mode not added to ac-modes!"
 (declare-function pel--install-elisp-skel "pel-skels-elisp")
 
 (pel--mode-hook-maybe-call
-
  (lambda ()
    ;; Make M-<f12> same as <f12> for convenience.
    (pel-local-set-f12-M-f12 'pel:for-elisp)
@@ -4308,6 +4307,7 @@ d-mode not added to ac-modes!"
    ;; Activate syntax checkers if necessary
    (pel--auto-activate-fly)
    ;; Activate open-at-point for elisp files
+   (require 'pel-file)
    (when (boundp 'pel-filename-at-point-finders)
      (setq-local pel-filename-at-point-finders '(pel-elisp-find-file))))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
