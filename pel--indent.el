@@ -2,12 +2,12 @@
 
 ;; Created   : Wednesday, November  5 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-06 10:31:19 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-27 17:31:11 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -65,11 +65,11 @@ This variable can hold the following:
 - A list of (symbol . offset) cons cells.
 
 The symbols are the symbols of variables that must be set to the value
-of tab-width.  The offset from that value defaults to 0, but can also be
+of `tab-width'.  The offset from that value defaults to 0, but can also be
 specified by the offset integer value in cons cells.
 
 The `pel-set-tab-width' command sets each variable identified in this list
-to the following value:  (+ tab-width offset)")
+to the following value:  `(+ tab-width offset)`")
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--indent)

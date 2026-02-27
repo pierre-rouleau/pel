@@ -1536,6 +1536,12 @@ re-execute `pel-init' again to activate them.
 ;;; Generated autoloads from pel_keys.el
 
 (register-definition-prefixes "pel_keys" '("pel"))
+
+
+;;; Generated autoloads from pel--indent.el
+
+(register-definition-prefixes "pel--indent" '("pel-"))
+
 
 ;; Local Variables:
 ;; version-control: never
