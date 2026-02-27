@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-02-27 14:51:23 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-02-27 15:04:54 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -581,7 +581,7 @@ help:
 	@printf "Currently building PEL version $(PEL_VERSION).\n"
 	@printf "1) First byte-compile all Emacs Lisp files in required order.\n"
 	@printf "   When Emacs supports native compilation: also native-compile files.\n"
-	@printf "2) Then runs the regression tests.n"
+	@printf "2) Then runs the regression tests.\n"
 	@printf "3) Encapsulate all files for distribution into a compressed tar\n"
 	@printf "   file that is copied into the local Emacs package archive, $(PEL_TAR_FILE)\n"
 	@printf "   located in the $(OUT_DIR) directory.\n"
@@ -606,7 +606,7 @@ help:
 	@printf " * make clean_mypelpa - remove the directory $(PELPA_DIR)\n"
 	@printf " * make test        - Run the regression tests.\n"
 	@printf " * make clean-test  - remove test tag file to allow running all tests again.\n"
-	@printf " * make timeit      - Check startup time of Emacs with and without packages.n"
+	@printf " * make timeit      - Check startup time of Emacs with and without packages.\n"
 	@printf " * make local-pkg   - build local PEL melpa archive: make pkg mypelpa.\n"
 	@printf " * make pkg         - Build the tar file inside directory: $(OUT_DIR).\n"
 	@printf " * make mypelpa     - Copy the tar file into a local package archive.\n"

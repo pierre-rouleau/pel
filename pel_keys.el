@@ -492,6 +492,7 @@ Open GitHub file if OPEN-GITHUB-PAGE-P IS non-nil."
 ;; documentation at:
 ;;  https://github.com/quelpa/quelpa/blob/master/README.org#installation
 (when pel-use-quelpa
+  (require 'package)
   (unless (package-installed-p 'quelpa)
     (with-temp-buffer
       (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
