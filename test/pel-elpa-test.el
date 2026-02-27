@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, September  2 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-03 12:13:19, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-26 17:14:47 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,20 +25,23 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;;
+;; Test the pel-elpa code.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
 (require 'pel-elpa)
+(require 'pel-filedir)                  ; use `pel-dpath-of'
 (require 'ert)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+
 (ert-deftest test-pel-elpa-name ()
-  "Test pel-elpa-name."
+  "Test `pel-elpa-name'."
 
   (should (string= (pel-elpa-name "~/elpa-complete/" nil)        "~/elpa-complete/"))
   (should (string= (pel-elpa-name "~/elpa-complete" nil)         "~/elpa-complete"))
@@ -67,6 +70,19 @@
   (should (string= (pel-elpa-name "~/elpa-reduced-graphics" t)          "~/elpa-reduced-graphics"))
   (should (string= (pel-elpa-name "~/elpa-complete/file-graphics.el" t) "~/elpa-complete/file-graphics.el"))
   (should (string= (pel-elpa-name "~/elpa-reduced/file-graphics.elc" t) "~/elpa-reduced/file-graphics.elc")))
+
+
+
+(ert-deftest test-pel-el-file-in ()
+  "Test `pel-el-files-in'."
+  (let ((test-dir (pel-dpath-of (if (boundp 'pel-home-dirpath-name)
+                                    pel-home-dirpath-name
+                                  (expand-file-name "."))
+                                "test" "test-files" "el-files")))
+    ;; The test directory has 3 empty files pre-defined, stored in the Git repo.
+    (should (equal  (pel-el-files-in test-dir)
+                    '("file-a.el" "file-b.el" "file-c.el")))))
+
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elpa-test)

@@ -4,9 +4,9 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2025-11-20 15:28:36 EST, updated by Pierre Rouleau.
+:Modified: 2026-02-26 13:56:26 EST, updated by Pierre Rouleau.
 :License:
-    Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025 Pierre Rouleau <prouleau001@gmail.com>
+    Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025, 2026 Pierre Rouleau <prouleau001@gmail.com>
 
 
     You can redistribute this document and/or modify it under the terms of the GNU
@@ -2045,13 +2045,13 @@ otherwise) contains the files and directories list in the following table.
 ====================== =============================== =============================================
 For terminal/tty | all For graphics mode in dual mode  Description
 ====================== =============================== =============================================
-emacs-customization.el emacs-customization-graphics.el Customization data file
-elpa                   elpa-graphics                   Symlink to complete or reduced directory
-elpa-complete/         elpa-complete-graphics/         Stores all Elpa packages in normal startup
-elpa-reduced/          elpa-reduced-graphics/          Stores reduced and pel-bundle in fast startup
-elpa-attic/            elpa-attic-graphics/            Stores Elpa-packages removed by pel-cleanup
-utils/                 utils-graphics/                 Stores non-Elpa external Emacs Lisp files
-utils-attic/           utils-attic-graphics/           Stores non-Elpa files removed by pel-cleanup
+emacs-customization.el emacs-customization-graphics.el Customization data file (used by normal and fast modes).
+elpa                   elpa-graphics                   Symbolic links to complete or reduced directory.
+elpa-complete/         elpa-complete-graphics/         Stores all Elpa packages used in normal startup (the default).
+elpa-reduced/          elpa-reduced-graphics/          Stores reduced and pel-bundle used in fast startup.
+elpa-attic/            elpa-attic-graphics/            Stores Elpa-packages removed by pel-cleanup executed in normal mode.
+utils/                 utils-graphics/                 Stores non-Elpa external Emacs Lisp files.  Used in normal and fast modes.
+utils-attic/           utils-attic-graphics/           Stores non-Elpa files removed by pel-cleanup executed in normal mode.
 ====================== =============================== =============================================
 
 
