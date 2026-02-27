@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-26 21:28:33 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-02-26 23:24:22 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -69,14 +69,15 @@
 (require 'pel--base)    ; use pel-system-is-windows-p
 (require 'generator)    ; use `iter-defun', `iter-yield-from', `iter-yield',
 ;;                      ;     `iter-end-of-sequence'
-(eval-when-compile
-  (require 'seq))       ; use `seq-reduce' (autoloaded)
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
 (defun pel-dpath-of (parent-dir &rest subdirs)
   "Return the absolute path made of PARENT-DIR and all its SUBDIRS."
+  (unless pel-emacs-27-or-later-p
+    (require 'seq))         ; use `seq-reduce' (became autoloaded in Emacs 27.1)
   (seq-reduce (lambda (parent subdir) (expand-file-name subdir parent))
               subdirs (expand-file-name parent-dir)))
 
