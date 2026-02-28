@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-02-27 16:43:29 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-02-27 22:33:40 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -133,17 +133,21 @@ DEST_DOC_PDF_DIR := $(DEST_DIR)/doc/pdf
 #    - The first files the pel--base, pel--macros and pel--options,
 #    - This must exclude the file pel.el and pel_keys.el
 #    - The last two must be pel_keys followed by pel.
+#    - Also: pel__hydra.el must NOT be built by the Makefile.
+#      Instead it is byte compiled by the logic inside the end of pel_keys.el
 #    - The file names are selected to impose that order when files
-#      are byte compiled by a process that select files alphabetically.
+#      are byte compiled by a process that select files alphabetically,
+#      however the build order via this Makefile is controlled by the dependencies.
 EL_FILES := pel--base.el \
+		pel--syntax-macros.el \
 		pel--indent.el \
 		pel--keys-macros.el \
 		pel--macros.el \
 		pel--options.el \
 		pel-abbrev.el \
 		pel-ada.el \
-		pel-applescript.el \
 		pel-align.el \
+		pel-applescript.el \
 		pel-as.el \
 		pel-autocomplete.el \
 		pel-autoload.el \
@@ -154,17 +158,17 @@ EL_FILES := pel--base.el \
 		pel-c-comment.el \
 		pel-c-preproc.el \
 		pel-c-utils.el \
-		pel-cc.el \
+		pel-c3.el \
 		pel-cc-find.el \
 		pel-cc-linux-kernel.el \
 		pel-cc-navigate.el \
+		pel-cc.el \
 		pel-ccp.el \
-		pel-c3.el \
 		pel-comint.el \
-		pel-comment.el \
 		pel-comment-adorn.el \
-		pel-comp.el \
+		pel-comment.el \
 		pel-commonlisp.el \
+		pel-comp.el \
 		pel-completion.el \
 		pel-cpp.el \
 		pel-cua.el \
@@ -175,24 +179,23 @@ EL_FILES := pel--base.el \
 		pel-diff.el \
 		pel-dtreplace.el \
 		pel-eldoc.el \
-		pel-elisp.el \
-		pel-elisp-eval.el \
 		pel-elisp-analyze.el \
+		pel-elisp-eval.el \
+		pel-elisp.el \
 		pel-elixir.el \
-		pel-emacs.el \
-		pel-emacs-analyze.el \
 		pel-elpa.el \
+		pel-emacs-analyze.el \
+		pel-emacs.el \
 		pel-erlang.el \
-		pel-etags.el \
-		pel-skels-erlang.el \
 		pel-ert.el \
+		pel-etags.el \
 		pel-face-ut.el \
-		pel-ffind.el \
 		pel-ffind-inpath.el \
+		pel-ffind.el \
+		pel-file-recent.el \
 		pel-file.el \
 		pel-filedir.el \
 		pel-filex.el \
-		pel-file-recent.el \
 		pel-fill.el \
 		pel-fly.el \
 		pel-font.el \
@@ -206,23 +209,24 @@ EL_FILES := pel--base.el \
 		pel-hash.el \
 		pel-help.el \
 		pel-hex.el \
+		pel-hide-docstring.el \
 		pel-hideshow.el \
 		pel-hier-face.el \
 		pel-hier-modes.el \
-		pel-hide-docstring.el \
 		pel-highlight.el \
 		pel-ibuffer.el \
 		pel-ido.el \
+		pel-iedit-modes-support.el \
 		pel-iedit.el \
-		pel-imenu.el \
 		pel-imenu-dbg.el \
 		pel-imenu-ido.el \
-		pel-ini.el \
+		pel-imenu.el \
 		pel-indent.el \
+		pel-ini.el \
 		pel-itemize.el \
 		pel-js.el \
-		pel-key-chord.el \
 		pel-kbmacros.el \
+		pel-key-chord.el \
 		pel-lfe.el \
 		pel-line-control.el \
 		pel-lisp.el \
@@ -235,8 +239,8 @@ EL_FILES := pel--base.el \
 		pel-mark.el \
 		pel-modes.el \
 		pel-navigate.el \
-		pel-nim.el \
 		pel-net.el \
+		pel-nim.el \
 		pel-numkpad.el \
 		pel-open.el \
 		pel-outline.el \
@@ -251,8 +255,8 @@ EL_FILES := pel--base.el \
 		pel-psw.el \
 		pel-python.el \
 		pel-read.el \
-		pel-register.el \
 		pel-regexp.el \
+		pel-register.el \
 		pel-rpm-spec.el \
 		pel-rst.el \
 		pel-ruby.el \
@@ -260,38 +264,37 @@ EL_FILES := pel--base.el \
 		pel-scheme.el \
 		pel-screen.el \
 		pel-scroll.el \
-		pel-search.el \
 		pel-search-regexp.el \
+		pel-search.el \
 		pel-seed7.el \
 		pel-seq.el \
+		pel-server.el \
+		pel-setup-27.el \
 		pel-setup-base.el \
 		pel-setup.el \
-		pel-setup-27.el \
-		pel-server.el \
 		pel-sh.el \
 		pel-shell.el \
-		pel-iedit-modes-support.el \
-		pel-skels.el \
-		pel-skels-generic.el \
 		pel-skels-c.el \
-		pel-skels-cpp.el \
 		pel-skels-clisp.el \
+		pel-skels-cpp.el \
 		pel-skels-elisp.el \
+		pel-skels-erlang.el \
+		pel-skels-generic.el \
 		pel-skels-rst.el \
+		pel-skels.el \
 		pel-smartparens.el \
 		pel-speedbar.el \
-		pel-spell.el \
 		pel-spell-iedit.el \
-		pel-syntax.el \
+		pel-spell.el \
 		pel-sudo-edit.el \
+		pel-syntax.el \
 		pel-tcl.el \
-		pel-time.el \
-		pel-treesit.el \
-		pel-xref.el \
 		pel-tempo.el \
 		pel-text-insert.el \
 		pel-text-transform.el \
+		pel-time.el \
 		pel-timestamp.el \
+		pel-treesit.el \
 		pel-undo.el \
 		pel-uuid.el \
 		pel-vc.el \
@@ -299,6 +302,7 @@ EL_FILES := pel--base.el \
 		pel-whitespace.el \
 		pel-window.el \
 		pel-xr.el \
+		pel-xref.el \
 		pel-yang.el \
 		pel-zig.el
 
