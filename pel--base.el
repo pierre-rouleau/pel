@@ -2255,10 +2255,10 @@ is no longer present on the Elpa site.
 However, when PEL operates in fast startup, the macro creates no code."
   (declare (indent 1))
   (ignore from:)
-  (unless (pel-in-fast-startup-p)
-    (let* ((pin-site-name (when pinned-site (symbol-name pinned-site))))
-      `(unless (pel-package-installed-p (quote ,pkg))
-         (pel-ensure-pkg (quote ,pkg) ,pin-site-name)))))
+  (let ((pin-site-name (when pinned-site (symbol-name pinned-site))))
+    `(unless (or (pel-in-fast-startup-p)
+                 (pel-package-installed-p (quote ,pkg)))
+       (pel-ensure-pkg (quote ,pkg) ,pin-site-name))))
 
 ;; -------
 
