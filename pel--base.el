@@ -1796,25 +1796,33 @@ prompts for confirmation.
 
 Returns non-nil when file was downloaded, nil otherwise.
 Permission errors are raised."
-  (let* ((utils-dirname (expand-file-name "utils" user-emacs-directory))
+  (let* ((utils-dirname (file-name-as-directory
+                         (expand-file-name "utils" user-emacs-directory)))
          (target-fname (expand-file-name fname utils-dirname))
          (subdir (file-name-directory fname))
          (downloaded nil))
-    ;; create utils directory and sub-directory if required
-    (unless (file-exists-p utils-dirname)
-      (make-directory utils-dirname :make-parents-if-needed))
-    (when subdir
-      (setq subdir (expand-file-name subdir utils-dirname))
-      (unless (file-exists-p subdir)
-        (make-directory subdir :make-parents-if-needed)))
+    (if (file-in-directory-p target-fname utils-dirname)
+        (progn
+          ;; create utils directory and sub-directory if required
+          (unless (file-exists-p utils-dirname)
+            (make-directory utils-dirname :make-parents-if-needed))
+          (when subdir
+            (setq subdir (expand-file-name subdir utils-dirname))
+            (unless (file-exists-p subdir)
+              (make-directory subdir :make-parents-if-needed)))
 
-    (when (or (not (file-exists-p target-fname)) refresh)
-      (message "Downloading %s" url)
-      (setq downloaded (pel-url-copy-file url target-fname refresh))
-      (when (and downloaded
-                 (string= (file-name-extension target-fname) "el"))
-        (message "Byte compiling it to %s" target-fname)
-        (byte-compile-file target-fname)))
+          (when (or (not (file-exists-p target-fname)) refresh)
+            (message "Downloading %s" url)
+            (setq downloaded (pel-url-copy-file url target-fname refresh))
+            (when (and downloaded
+                       (string= (file-name-extension target-fname) "el"))
+              (message "Byte compiling it to %s" target-fname)
+              (byte-compile-file target-fname))))
+      (display-warning 'pel-install-file
+                       (format "\
+Cannot install %s inside PEL utils: it would be stored outside utils!\n\
+Fix the file specification in pel_keys.el!" fname)
+                       :error))
     downloaded))
 
 (defun pel-install-files (url-base fnames &optional refresh)
@@ -2116,8 +2124,10 @@ Archive '%S' requested for package '%S' is not listed in package-archives!"
 
 Packages in the Elpa archive sites are regularly updated and old
 versions purged.  Requesting an old version of a package may
-occur when our local list is outdated.  When a failure occurs,
-refresh the local list and try again."
+occur when our local list is outdated.
+
+When a failure occurs, refresh the local list and try again, also
+generate a warning that identifies the error."
   (declare-function package-install                   "package")
   (declare-function package-refresh-contents          "package")
   (declare-function package-read-all-archive-contents "package")
@@ -2137,13 +2147,13 @@ Refreshing package list and trying again." package err)
                         :error)))))
 
 (defun pel--package-ensure-elpa (package)
-  "Install specified Emacs Lisp PACKAGE.
-PACKAGE must be a symbol.
+  "Install specified Emacs Lisp PACKAGE (a symbol).
 
 DO NOT use this function directly inside your code.
-Instead, use the macro function `pel-ensure-package-elpa'.
+Use the macro `pel-ensure-package-elpa' instead.
 
-Issue an error when the installation fails."
+When a failure occurs, refresh the local list and try again, also
+generate a warning that identifies the error."
   (if (and (require 'package nil :no-error)
            (boundp 'package-archive-contents)
            (fboundp 'package-read-all-archive-contents))
@@ -2196,6 +2206,8 @@ The FROM: argument must be present.  It is cosmetics only.
 The package list is refreshed before attempting installation to
 prevent trying to install an obsolete version of a package that
 is no longer present on the Elpa site.
+When a failure occurs, refresh the local list and try again, also
+generate a warning that identifies the error.
 
 However, when PEL operates in fast startup, the macro creates no code."
   (declare (indent 1))
