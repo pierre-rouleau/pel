@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-01 13:05:05 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-01 15:25:00 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -765,9 +765,6 @@ Return the complete file path name of the file written."
 This byte-compiles the pel_keys.el file with a new behaviour for the following
 macros that control PEL's management of external package installation and
 loading:
-- `pel-install-github-files'
-- `pel-install-github-file'
-- `pel-ensure-pkg'
 - `pel-ensure-package-elpa'
 
 When ACTIVATE is non-nil, then the function `pel-in-fast-startup-p' returns t

@@ -93,7 +93,7 @@
 ;;** Package Installation
 ;;   --------------------
 ;;
-;; The code uses the following macros to control package installation:
+;; The code uses the following macros and functions  to control package installation:
 ;;
 ;; - `pel-ensure-package-elpa'  Installs an elpa-compliant package in the elpa
 ;;                              directory infra-structure when PEL is not
@@ -101,7 +101,7 @@
 ;;
 ;; - `pel-install-github-file'  Installs a file from source stored in Github.
 ;;                              Used to install a file that is not an elpa
-;;                              complaint package.  The file is stored in the
+;;                              compliant package.  The file is stored in the
 ;;                              PEL utils directory.
 ;;
 ;; - `pel-install-github-files' Installs multiple files from source stored in
@@ -1749,7 +1749,7 @@ can't bind negative-argument to C-_ and M-_"
   ;; install it's external mandatory dependencies
   (pel-ensure-package-elpa dash from: melpa)
   (pel-ensure-package-elpa popup from: melpa)
-  (pel-ensure-package-elpa flx-ido from melpa)
+  (pel-ensure-package-elpa flx-ido from: melpa)
   (pel-autoload-file popup-imenu for: popup-imenu))
 
 (when pel-use-popup-switcher
@@ -10311,7 +10311,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; ---------------------
 ;;** Time Management tools
 (when pel-use-tzc
-  (pel-ensure-package-elpa tzc from melpa))
+  (pel-ensure-package-elpa tzc from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;;* Tree-Sitter operations - <f11> C-t

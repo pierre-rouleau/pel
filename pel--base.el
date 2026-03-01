@@ -168,7 +168,7 @@
 ;;   - `pel-package-install'
 ;;
 ;; - `pel-ensure-package-elpa'
-;;   - `pel-ensure-pkg'
+;;   - `pel--ensure-pkg-elpa'
 ;;     - `pel--pin-package'
 ;;       - `pel-archive-exists'
 ;;    - `pel--package-ensure-elpa'
@@ -1709,7 +1709,7 @@ describing detected problems.  Error descriptions can be padded if
 ;;        `pel-install-github-file'
 
 ;; -> @ `pel-ensure-package-elpa'
-;;      - `pel-ensure-pkg'
+;;      - `pel--ensure-pkg-elpa'
 ;;        - `pel--pin-package'
 ;;          - `pel-archive-exists'
 ;;       - `pel--package-ensure-elpa'
@@ -1719,11 +1719,13 @@ describing detected problems.  Error descriptions can be padded if
 ;; The next set of functions and macros provide logic to install
 ;; packages via quelpa.  This allows installation of multi-file packages
 ;; inside the elpa directory as if they were elpa-compliant.
-
+;; However, they install nothing when PEL runs in fast-startup mode.
+;;
 ;; -> @ `pel-quelpa-install'
 ;;      - `pel--quelpa-install'
 
-;;  The next set is defined in pel--keys.macros.el:
+;;  The next set of macros, defined in pel--keys.macros.el, control the
+;;  loading and evaluation of features and code, mostly used in pel_keys.el
 ;;
 ;; @ `pel-require-at-load'
 ;;   - `pel--require-at-load'
@@ -2069,9 +2071,9 @@ Skipping rebuild of utils file: utils directory does not exist: %s"
 ;; - Does NOT install when PEL is operating in fast startup mode.
 ;; - Allow the selection of a Elpa site, just as the use-package :pin does.
 ;;
-;; The `pel-ensure-package-elpa' macro uses the `pel-ensure-pkg' function to
-;; reduce the amount of code generated and executed to the expense of one
-;; function call.
+;; The `pel-ensure-package-elpa' macro uses the `pel--ensure-pkg-elpa'
+;; function to reduce the amount of code generated and executed to the expense
+;; of one function call.
 ;;
 ;; Credit: the package installation code was influenced by the
 ;; use-package library found at https://github.com/jwiegley/use-package
@@ -2169,7 +2171,7 @@ Issue an error when the installation fails."
                       package)
                      :error)))
 
-(defun pel-ensure-pkg (pkg &optional elpa-site)
+(defun pel--ensure-pkg-elpa (pkg &optional elpa-site)
   "Install package PKG (a symbol) possibly from pinned ELPA-SITE.
 
 If ELPA-SITE is non-nil it should be a symbol or string holding the name
@@ -2201,7 +2203,7 @@ However, when PEL operates in fast startup, the macro creates no code."
   (let ((pin-site-name (when pinned-site (symbol-name pinned-site))))
     `(unless (or (pel-in-fast-startup-p)
                  (pel-package-installed-p (quote ,pkg)))
-       (pel-ensure-pkg (quote ,pkg) ,pin-site-name))))
+       (pel--ensure-pkg-elpa (quote ,pkg) ,pin-site-name))))
 
 ;; -------
 
