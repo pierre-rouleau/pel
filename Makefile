@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-01 11:26:39 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-01 11:52:01 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -604,8 +604,8 @@ help:
 	@printf -- " * make clean         - remove $(PELPA_DIR),  all output files, all test tag files,\n"
 	@printf -- "                        and remove $(PEL_TAR_FILE)\n"
 	@printf -- " * make clean-build   - make clean & make\n"
-	@printf -- " * make clean_tar     - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
-	@printf -- " * make clean_mypelpa - remove the directory $(PELPA_DIR)\n"
+	@printf -- " * make clean-tar     - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
+	@printf -- " * make clean-mypelpa - remove the directory $(PELPA_DIR)\n"
 	@printf -- " * make clean-test    - remove test tag file to allow running all tests again.\n"
 	@printf -- " * make test          - Run the regression tests.\n"
 	@printf -- " * make lint          - check .el files with elisp-lint (it must be installed).\n"

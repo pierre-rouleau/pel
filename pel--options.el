@@ -461,7 +461,7 @@
 ;; When writing support for a new package that is coming from and
 ;; Elpa-compliant repo:
 ;; - write the specification code here and the code calling
-;;   the `pel-ensure-package' inside pel_keys.el,
+;;   the `pel-ensure-package-elpa' inside pel_keys.el,
 ;; - turn the option on and execute `pel-init' to get PEL to install the new
 ;;   package.
 ;; - Inspect the source file(s) of the newly install package to identify its

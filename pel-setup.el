@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-26 21:42:07 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-01 13:05:05 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -768,7 +768,7 @@ loading:
 - `pel-install-github-files'
 - `pel-install-github-file'
 - `pel-ensure-pkg'
-- `pel-ensure-package'
+- `pel-ensure-package-elpa'
 
 When ACTIVATE is non-nil, then the function `pel-in-fast-startup-p' returns t
 which prevents these macros to emit code that check for presence of external
