@@ -157,7 +157,6 @@
 ;;
 ;; Lazy loading and package installation:
 ;; - `pel-install-github-file'
-;;   - `pel--install-github-file'
 ;; - `pel-install-github-files'
 ;;   - `pel--install-github-files'
 ;;     - `pel-install-files'
@@ -168,12 +167,12 @@
 ;;   - `pel-package-installed-p'
 ;;   - `pel-package-install'
 ;;
-;; - `pel-ensure-package'
-;;   - `pel-ensure-pkg'
+;; - `pel-ensure-package-elpa'
+;;   - `pel--ensure-pkg-elpa'
 ;;     - `pel--pin-package'
-;;       - `pel-archive-exists-p'
+;;       - `pel-archive-exists'
 ;;    - `pel--package-ensure-elpa'
-;;      - `pel--package-install'
+;;      - `pel--package-install-elpa'
 ;;
 ;; Tree-sitter major mode support
 ;; - `pel-major-mode-use-tree-sitter'
@@ -1657,12 +1656,76 @@ describing detected problems.  Error descriptions can be padded if
     issues))
 
 ;; ---------------------------------------------------------------------------
-;; Lazy loading and package installation:
+;;* Package and file installation and lazy loading
+;;  ==============================================
 ;;
 ;; [:todo 2025-10-08, by Pierre Rouleau: Move that set of function definitions
 ;; inside its own file.]
 ;;
-;;  The first set is defined in pel--keys.macros.el:
+;; The first set install files downloaded from the internet with a specific
+;; URL inside PEL utils directory.
+;; These functions do not depend on Emacs package facility.  Therefore they
+;; can be used any time, including when PEL operates in fast-startup mode.
+;;
+;; - `pel-install-file'  downloads and installs one file.
+;; - `pel-install-files' downloads and installs one or several files from the
+;;   same web site.
+;;
+;; -> `pel-install-files'
+;;    -> `pel-install-file'
+;;       - `pel-url-copy-file'
+
+;; The next set of functions does the same thing but provide logic
+;; specific to build GitHub or Gitlab URLs.
+;; They install the files inside PEL utils directory.
+;; These functions do not depend on Emacs package facility.  Therefore they
+;; can be used any time, including when PEL operates in fast-startup mode.
+;;
+;; - `pel-install-github-files' downloads and installs one or several files
+;;    from GitHub specified user project branch.
+;; - `pel-install-github-file' downloads and installs one file.  That file
+;;   may have a name that differs from the URL used to download it.  This is
+;;   mostly used when a file name has a character that cannot be part of a URL
+;;   and must be encoded differently.
+;; - `pel-install-gitlab-file' downloads, installs and compile one file from
+;;   Gitlab.
+;;
+;; -> `pel-install-github-file'
+;;     . `pel-install-file'
+;; -> `pel-install-github-files'
+;;     . `pel-install-files'
+;;       . `pel-install-file'
+;; -> `pel-install-gitlab-file'
+;;     . `pel-install-file'
+
+
+;; The next set of functions and macros provide logic to install Elpa
+;; compliant packages when PEL is not running in fast-startup mode
+;; and to require Emacs packages.
+;;
+;; -> - `pel-require'
+;;      - `pel-package-installed-p'
+;;      - `pel-package-install'
+;;        `pel-install-github-file'
+
+;; -> @ `pel-ensure-package-elpa'
+;;      - `pel--ensure-pkg-elpa'
+;;        - `pel--pin-package'
+;;          - `pel-archive-exists'
+;;       - `pel--package-ensure-elpa'
+;;         - `pel--package-install-elpa'
+;;
+
+;; The next set of functions and macros provide logic to install
+;; packages via quelpa.  This allows installation of multi-file packages
+;; inside the elpa directory as if they were elpa-compliant.
+;; However, they install nothing when PEL runs in fast-startup mode.
+;;
+;; -> @ `pel-quelpa-install'
+;;      - `pel--quelpa-install'
+
+;;  The next set of macros, defined in pel--keys.macros.el, control the
+;;  loading and evaluation of features and code, mostly used in pel_keys.el
 ;;
 ;; @ `pel-require-at-load'
 ;;   - `pel--require-at-load'
@@ -1673,55 +1736,6 @@ describing detected problems.  Error descriptions can be padded if
 ;; @ `pel-autoload-file'
 ;; @ `pel-declare-file'
 
-;; The second set of functions and macros in this group provide the logic to
-;; download and install Emacs Lisp files into PEL's "utils" utility directory
-;; stored in the directory identified by the variable `user-emacs-directory'.
-;; PEL uses these functions to get Emacs files not supported by Elpa compliant
-;; sites, but instead stored in secure and well established sites such as
-;; GitHub.
-;;
-;; - `pel-install-file'  downloads and installs one file.
-;; - `pel-install-files' downloads and installs one or several files from the
-;;   same web site.
-;; - `pel-install-github-files' downloads and installs one or several files
-;;    from GitHub specified user project branch.
-;; - `pel-install-github-file' downloads and installs one file.  That file
-;;   may have a name that differs from the URL used to download it.  This is
-;;   mostly used when a file name has a character that cannot be part of a URL
-;;   and must be encoded differently.
-
-;; -> - `pel-install-github-file'
-;;      - `pel--install-github-file'
-;;          `pel-install-file'
-;; -> - `pel-install-github-files'
-;;      - `pel--install-github-files'
-;;        - `pel-install-files'
-;;          - `pel-install-file'
-
-;; The third set of functions and macros provide logic ins install Elpa
-;; compliant packages and to require Emacs packages.
-;;
-;; -> - `pel-require'
-;;      - `pel-package-installed-p'
-;;      - `pel-package-install'
-;;        `pel-install-github-file'
-
-;; -> - `pel-ensure-package'
-;;      - `pel-ensure-pkg'
-;;        - `pel--pin-package'
-;;          - `pel-archive-exists-p'
-;;       - `pel--package-ensure-elpa'
-;;         - `pel--package-install'
-;;
-
-;; The fourth set of functions and macros provide logic to install
-;; packages via quelpa.  This allows installation of multi-file packages
-;; inside the elpa directory as if they were elpa-compliant.
-
-;; -> - `pel-quelpa-install'
-;;      - `pel--quelpa-install'
-
-;; -------
 
 (defun pel-url-copy-file (url newname &optional ok-if-already-exists)
   "Copy URL to NEWNAME.  Both arguments must be strings.
@@ -1780,23 +1794,36 @@ If the file already exists in the destination, no download
 is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
-The function returns t if the file was
-downloaded, nil otherwise.  Permission errors are raised."
-  (let ((utils-dirname (expand-file-name "utils" user-emacs-directory)))
-    (unless (file-exists-p utils-dirname)
-      (make-directory utils-dirname :make-parents-if-needed))
-    (let ((subdir (file-name-directory fname)))
-      (when subdir
-        (setq subdir (expand-file-name subdir utils-dirname))
-        (unless (file-exists-p subdir)
-          (make-directory subdir :make-parents-if-needed))))
-    (let ((target-fname (expand-file-name fname utils-dirname)))
-      (when (or (not (file-exists-p target-fname)) refresh)
-        (message "Downloading %s" url)
-        (when (and (pel-url-copy-file url target-fname refresh)
-                   (string= (file-name-extension target-fname) "el"))
-          (message "Byte compiling it to %s" target-fname)
-          (byte-compile-file target-fname))))))
+Returns non-nil when file was downloaded, nil otherwise.
+Permission errors are raised."
+  (let* ((utils-dirname (file-name-as-directory
+                         (expand-file-name "utils" user-emacs-directory)))
+         (target-fname (expand-file-name fname utils-dirname))
+         (subdir (file-name-directory fname))
+         (downloaded nil))
+    (if (file-in-directory-p target-fname utils-dirname)
+        (progn
+          ;; create utils directory and sub-directory if required
+          (unless (file-exists-p utils-dirname)
+            (make-directory utils-dirname :make-parents-if-needed))
+          (when subdir
+            (setq subdir (expand-file-name subdir utils-dirname))
+            (unless (file-exists-p subdir)
+              (make-directory subdir :make-parents-if-needed)))
+
+          (when (or (not (file-exists-p target-fname)) refresh)
+            (message "Downloading %s" url)
+            (setq downloaded (pel-url-copy-file url target-fname refresh))
+            (when (and downloaded
+                       (string= (file-name-extension target-fname) "el"))
+              (message "Byte compiling it to %s" target-fname)
+              (byte-compile-file target-fname))))
+      (display-warning 'pel-install-file
+                       (format "\
+Cannot install %s inside PEL utils: it would be stored outside utils!\n\
+Fix the file specification in pel_keys.el!" fname)
+                       :error))
+    downloaded))
 
 (defun pel-install-files (url-base fnames &optional refresh)
   "Download & install files identified by their URL-BASE and FNAMES.
@@ -1812,57 +1839,17 @@ If a file already exists in the destination, no download
 is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
-The function returns t if the file was
-downloaded, nil otherwise.  Permission errors are raised."
-  (let ((fnames (pel-list-of fnames)))
-    (dolist (fname fnames)
-      (pel-install-file (pel-url-join url-base fname)
-                        fname
-                        refresh))))
+On file download problem or permission, raise an error."
+  (dolist (fname (pel-list-of fnames))
+    (pel-install-file (pel-url-join url-base fname)
+                      fname
+                      refresh)))
 
 ;; -------
 
-(defmacro pel-install-web-file (url-fname fname
-                                          &optional refresh)
-  "Download & install FNAME from URL-FNAME into PEL\\='s utility directory.
-
-- URL-FNAME is the complete url of the file.
-- FNAME is the file name as it must appear locally.
-
-On success, byte compile that file and when Emacs use native compilation
-the also build the native-compiled .eln file for it.
-
-If a file already exists in the destination, no download is done unless
-REFRESH is non-nil, in which case the function prompts for confirmation.
-
-The macro generates code that runs only at load time.  However, when PEL
-operates in fast startup the macro creates no code and expands to nil
-which will be optimized out by the byte compiler."
-  (unless (pel-in-fast-startup-p)
-    `(pel-install-file ,url-fname
-                       ,fname
-                       ,refresh)))
-
-;; -------
-
-(defun pel--install-github-files (user-project-branch
-                                  fnames
-                                  &optional refresh)
-  "Download & install FNAMES from GitHub USER-PROJECT-BRANCH.
-REFRESH if required.
-
-The function returns t if the file was
-downloaded, nil otherwise.  Permission errors are raised.
-
-This is normally called by the `pel-install-github-files' macro."
-  (pel-install-files (pel-url-join "https://raw.githubusercontent.com"
-                                   user-project-branch)
-                     fnames
-                     refresh))
-
-(defmacro pel-install-github-files (user-project-branch
-                                    fnames
-                                    &optional refresh)
+(defun pel-install-github-files (user-project-branch
+                                 fnames
+                                 &optional refresh)
   "Download & install FNAMES from GitHub USER-PROJECT-BRANCH.
 
 - USER-PROJECT-BRANCH is a GitHub user/project/branch name path
@@ -1875,36 +1862,17 @@ If a file already exists in the destination, no download is done
 unless REFRESH is non-nil, in which case the function prompts for
 confirmation.
 
-The macro generates code that runs only at load time.  However,
-when PEL runs in fast startup the macro creates no code and
-expands to nil which will be optimized out by the byte compiler.
-This is done because PEL fast-startup mode does NOT install new
-code; to install new packages make sure PEL is running in normal
-startup mode."
-  (unless (pel-in-fast-startup-p)
-    `(pel--install-github-files ,user-project-branch
-                                ,fnames
-                                ,refresh)))
+On file download problem or permission, raise an error."
+  (pel-install-files (pel-url-join "https://raw.githubusercontent.com"
+                                   user-project-branch)
+                     fnames
+                     refresh))
 
-;; -------
 
-(defun pel--install-github-file (user-project-branch
-                                 fname
-                                 &optional url-fname refresh)
-  "Download & install FNAME from GitHub USER-PROJECT-BRANCH/URL-FNAME.
-REFRESH if required.
-The function returns t if the file was downloaded, nil otherwise.
-Permission errors are raised.
-This is normally called by the `pel-install-github-file' macro."
-  (pel-install-file (pel-url-join "https://raw.githubusercontent.com"
-                                  user-project-branch
-                                  (or url-fname fname))
-                    fname
-                    refresh))
 
-(defmacro pel-install-github-file (user-project-branch
-                                   fname
-                                   &optional url-fname refresh)
+(defun pel-install-github-file (user-project-branch
+                                fname
+                                &optional url-fname refresh)
   "Download & install FNAME from GitHub USER-PROJECT-BRANCH/URL-FNAME.
 
 - USER-PROJECT-BRANCH is a GitHub user/project/branch name path
@@ -1919,19 +1887,18 @@ If a file already exists in the destination, no download
 is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
-The macro generates code that runs only at load time.  However,
-when PEL operates in fast startup the macro creates no code and
-expands to nil which will be optimized out by the byte compiler."
-  (unless (pel-in-fast-startup-p)
-    `(pel--install-github-file ,user-project-branch
-                               ,fname
-                               ,url-fname
-                               ,refresh)))
+The function returns t if the file was downloaded, nil otherwise.
+On file download problem or permission, raise an error."
+  (pel-install-file (pel-url-join "https://raw.githubusercontent.com"
+                                  user-project-branch
+                                  (or url-fname fname))
+                    fname
+                    refresh))
 
-;; -------
+;; --
 
-(defun pel--install-gitlab-file (gitlab-user gitlab-project fname
-                                             &optional refresh)
+(defun pel-install-gitlab-file (gitlab-user gitlab-project fname
+                                            &optional refresh)
   "Download & install FNAME from Gitlab user and project into PEL utils.
 GITLAB-USER is the name of Gitlab user.
 GITLAB-PROJECT is the name of Gitlab project.
@@ -1941,51 +1908,13 @@ is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
 The function returns t if the file was
-downloaded, nil otherwise.  Permission errors are raised.
-
-This is normally called by the `pel-install-gitlab-files' macro."
+downloaded, nil otherwise.  Permission errors are raised."
   (pel-install-file (format "https://gitlab.com/%s/%s/-/raw/master/%s"
                             gitlab-user
                             gitlab-project
                             fname)
                     fname
                     refresh))
-
-
-(defmacro pel-install-gitlab-file (gitlab-user gitlab-project fname
-                                               &optional refresh)
-  "Download & install FNAME from Gitlab user and project into PEL utils.
-GITLAB-USER is the name of Gitlab user.
-GITLAB-PROJECT is the name of Gitlab project.
-REFRESH if required.
-
-The function returns t if the file was
-downloaded, nil otherwise.  Permission errors are raised.
-
-If a file already exists in the destination, no download
-is done unless REFRESH is non-nil, in which case the function
-prompts for confirmation.
-
-The macro generates code that runs only at load time.  However,
-when PEL operates in fast startup the macro creates no code and
-expands to nil which will be optimized out by the byte compiler."
-  (unless (pel-in-fast-startup-p)
-    `(pel--install-gitlab-file ,gitlab-user
-                               ,gitlab-project
-                               ,fname
-                               ,refresh)))
-
-
-;; -------
-(defun pel-rebuild-utils ()
-  "Byte compile all elisp files inside PEL utils directory."
-  (let ((utils-dirname (expand-file-name "utils" user-emacs-directory)))
-    ;; byte-recompile-directory got a 4th argument in Emacs 28.1 as result of
-    ;; fixing bug #10292.
-    (if pel-emacs-28-or-later-p
-        (with-no-warnings
-          (byte-recompile-directory utils-dirname 0 :force :follow-symlink))
-      (byte-recompile-directory utils-dirname 0 :force))))
 
 ;; -------
 (defun pel-package-install (pkg)
@@ -2093,7 +2022,7 @@ Otherwise return the loading state of the FEATURE."
             (if with-pel-install
                 (progn
                   ;; install using specified GitHub repository
-                  (pel--install-github-file with-pel-install fname url-fname
+                  (pel-install-github-file with-pel-install fname url-fname
                                             nil)
                   ;; try to load it again
                   (require feature nil :noerror))
@@ -2102,13 +2031,20 @@ Otherwise return the loading state of the FEATURE."
                                  feature
                                package)))
                 (unless (pel-package-installed-p package)
-                  (pel-package-install package)
-                  (require feature nil :noerror)
-                  (unless (featurep feature)
-                    (display-warning 'pel-require
-                                     (format "\
+                  (if (pel-in-fast-startup-p)
+                      (display-warning 'pel-require
+                                       (format "\
+Skipping installation of %s during fast startup."
+                                               package)
+                       :warning)
+                    ;; not in fast-startup, not installed: install it
+                    (pel-package-install package)
+                    (require feature nil :noerror)
+                    (unless (featurep feature)
+                      (display-warning 'pel-require
+                                       (format "\
 Failed loading %s even after installing package %s!"
-                                             feature package))))))
+                                             feature package)))))))
           (display-warning 'pel-require
                            (format "pel-require(%s) failed. No request to install."
                                    feature)
@@ -2116,46 +2052,65 @@ Failed loading %s even after installing package %s!"
   (featurep feature))
 
 ;; -------
+(defun pel-rebuild-utils ()
+  "Byte compile all elisp files inside PEL utils directory."
+  (let ((utils-dirname (expand-file-name "utils" user-emacs-directory)))
+    (if (file-directory-p utils-dirname)
+        ;; byte-recompile-directory got a 4th argument in Emacs 28.1 as result of
+        ;; fixing bug #10292.
+        (if pel-emacs-28-or-later-p
+            (with-no-warnings
+              (byte-recompile-directory utils-dirname 0 :force :follow-symlink))
+          (byte-recompile-directory utils-dirname 0 :force))
+      (display-warning 'pel-rebuild-utils
+                       (format "\
+Skipping rebuild of utils file: utils directory does not exist: %s"
+                               utils-dirname)
+                       :warning))))
+
+;; -------
 ;;
-;; The following code defines the `pel-ensure-package' macro that is
-;; used below as a replacement for the `use-package' ``:ensure t`` mechanism.
+;; The following code defines the `pel-ensure-package-elpa' macro that PEL uses
+;; to install Elpa-compliant packages.
 ;;
 ;; This is done to:
-;; - install a package when the appropriate pel-use variable is turned on,
-;; - but do NOT install it when byte-compiling the code, something the
-;;   use-package :ensure t does, unfortunately.
+;; - Install a package when the appropriate pel-use variable is turned on.
+;; - Does NOT install when byte-compiling the code.
+;; - Does NOT install when PEL is operating in fast startup mode.
 ;; - Allow the selection of a Elpa site, just as the use-package :pin does.
-;; - Prevent loading use-package when nothing needs to be installed.
 ;;
-;; The `pel-ensure-package' macro uses the `pel-ensure-pkg' function to
-;; reduce the amount of code generated and executed to the expense of one
-;; function call.
+;; The `pel-ensure-package-elpa' macro uses the `pel--ensure-pkg-elpa'
+;; function to reduce the amount of code generated and executed to the expense
+;; of one function call.
 ;;
-;; Credit: the package installation code is heavily influenced by the
-;; very popular use-package library found at
-;; https://github.com/jwiegley/use-package
+;; Credit: the package installation code was influenced by the
+;; use-package library found at https://github.com/jwiegley/use-package
+;; and now part of Emacs.
+;;
+;; PEL does not use the use-package library in attempt to reduce the overhead
+;; and the startup time further.
 
 
-(defun pel-archive-exists-p (archive)
-  "Return t if the specified package ARCHIVE is being used, nil otherwise.
-The ARCHIVE argument may be a string or a symbol."
-  (let ((archive (pel-as-string archive))
-        (found nil))
-    (if (boundp 'package-archives)
-        (dolist (pa-entry package-archives)
-          (when (string= archive (car pa-entry))
-            (setq found 't)))
-      (display-warning 'pel-archive-exists-p
-                       "package.el is not loaded: package-archives is void"
-                       :error))
-    found))
+(defun pel-archive-exists (archive)
+  "Return non-nil if specified package ARCHIVE is being used, nil otherwise.
+The ARCHIVE argument may be a string or a symbol.
+To get the URL of the existing package, take the cdr of the returned value."
+  (if (or (boundp 'package-archives)
+          (and (require 'package nil :no-error)
+               (boundp 'package-archives)))
+      (with-no-warnings ; Emacs 30 Byte compiler does not see protection...
+        (assoc (pel-as-string archive) package-archives))
+    (display-warning 'pel-archive-exists
+                     "package.el is not loaded: package-archives is void"
+                     :error)
+    nil))
 
 (defvar pel--pinned-packages nil
-  "List of packages that are associated with  a specific Elpa archive.")
+  "List of packages that are associated with a specific Elpa archive.")
 
 (defun pel--pin-package (package archive)
-  "Pin PACKAGE to ARCHIVE."
-  (if (pel-archive-exists-p archive)
+  "Pin PACKAGE (a symbol) to ARCHIVE (a symbol or string)."
+  (if (pel-archive-exists archive)
       (add-to-list 'pel--pinned-packages
                    (cons package (pel-as-string archive)))
     (error "\
@@ -2164,16 +2119,15 @@ Archive '%S' requested for package '%S' is not listed in package-archives!"
   (unless (bound-and-true-p package--initialized)
     (package-initialize t)))
 
-
-(defun pel--package-install (package)
-  "Install a PACKAGE.  On failure refresh ELPA content and try again.
+(defun pel--package-install-elpa (package)
+  "Install PACKAGE (a symbol).  On failure retry once and issue an error.
 
 Packages in the Elpa archive sites are regularly updated and old
 versions purged.  Requesting an old version of a package may
-occur when our local list is outdated.  When a failure occurs,
-refresh the local list and try again."
-  ;; this function is only called when package is loaded: prevent
-  ;; byte-compiler warnings.
+occur when our local list is outdated.
+
+When a failure occurs, refresh the local list and try again, also
+generate a warning that identifies the error."
   (declare-function package-install                   "package")
   (declare-function package-refresh-contents          "package")
   (declare-function package-read-all-archive-contents "package")
@@ -2193,13 +2147,13 @@ Refreshing package list and trying again." package err)
                         :error)))))
 
 (defun pel--package-ensure-elpa (package)
-  "Install specified Emacs Lisp PACKAGE.
-PACKAGE must be a symbol.
+  "Install specified Emacs Lisp PACKAGE (a symbol).
 
 DO NOT use this function directly inside your code.
-Instead, use the macro function `pel-ensure-package'.
+Use the macro `pel-ensure-package-elpa' instead.
 
-Issue an error when the installation fails."
+When a failure occurs, refresh the local list and try again, also
+generate a warning that identifies the error."
   (if (and (require 'package nil :no-error)
            (boundp 'package-archive-contents)
            (fboundp 'package-read-all-archive-contents))
@@ -2209,37 +2163,38 @@ Issue an error when the installation fails."
                                   pel--pinned-packages))
               (package-read-all-archive-contents))
             (if (assoc package package-archive-contents)
-                (pel--package-install package)
+                (pel--package-install-elpa package)
               (package-refresh-contents)
               (when (assoc package (bound-and-true-p
                                     pel--pinned-packages))
                 (package-read-all-archive-contents))
-              (pel--package-install package))
+              (pel--package-install-elpa package))
             t)
         (error
-         (display-warning 'pel-ensure-package
+         (display-warning 'pel-ensure-package-elpa
                           (format "Failed trying to install %s: %s"
                                   package (error-message-string err))
                           :error)))
-    (display-warning 'pel-ensure-package
+    (display-warning 'pel-ensure-package-elpa
                      (format
                       "Cannot install %s: package.el is not properly loaded."
                       package)
                      :error)))
 
-(defun pel-ensure-pkg (pkg &optional elpa-site)
-  "Install package PKG.
-PKG must be a symbol.
-If ELPA-SITE is non-nil it should be a string holding the name of one of the
-Elpa repositories identified in the variable `package-archives'.
+(defun pel--ensure-pkg-elpa (pkg &optional elpa-site)
+  "Install package PKG (a symbol) possibly from pinned ELPA-SITE.
 
-However, when PEL operates in fast startup, nothing is done."
+If ELPA-SITE is non-nil it should be a symbol or string holding the name
+of one of the Elpa repositories identified in the variable
+`package-archives'.
+
+When PEL operates in fast startup, nothing is done."
   (unless (pel-in-fast-startup-p)
     (when elpa-site
       (pel--pin-package pkg elpa-site))
     (pel--package-ensure-elpa pkg)))
 
-(defmacro pel-ensure-package (pkg &optional from: pinned-site)
+(defmacro pel-ensure-package-elpa (pkg &optional from: pinned-site)
   "Install package named PKG, optionally from specified PINNED-SITE.
 PKG must be an unquoted symbol.
 FROM: is just a tag.
@@ -2251,6 +2206,8 @@ The FROM: argument must be present.  It is cosmetics only.
 The package list is refreshed before attempting installation to
 prevent trying to install an obsolete version of a package that
 is no longer present on the Elpa site.
+When a failure occurs, refresh the local list and try again, also
+generate a warning that identifies the error.
 
 However, when PEL operates in fast startup, the macro creates no code."
   (declare (indent 1))
@@ -2258,7 +2215,7 @@ However, when PEL operates in fast startup, the macro creates no code."
   (let ((pin-site-name (when pinned-site (symbol-name pinned-site))))
     `(unless (or (pel-in-fast-startup-p)
                  (pel-package-installed-p (quote ,pkg)))
-       (pel-ensure-pkg (quote ,pkg) ,pin-site-name))))
+       (pel--ensure-pkg-elpa (quote ,pkg) ,pin-site-name))))
 
 ;; -------
 
@@ -2280,16 +2237,15 @@ QUELPA-SPECS is an unquoted form that identifies the package
 to install and how to install it.  See `quelpa' documentation.
 Don't install it if already installed or PEL in fast startup."
   (declare (indent 1))
-  (unless (pel-in-fast-startup-p)
-    (if (listp quelpa-specs)
-        (let ((package (car quelpa-specs)))
-          (if (symbolp package)
-              `(pel--quelpa-install (quote ,package) (quote (,@quelpa-specs)))
-            (byte-compile-warn
-             "Invalid quelpa-spec: first element not a symbol: %S"
-             package)))
-      (byte-compile-warn "Invalid quelpa-specs: %S" quelpa-specs)
-      nil)))
+  (if (listp quelpa-specs)
+      (let ((package (car quelpa-specs)))
+        (if (symbolp package)
+            `(pel--quelpa-install (quote ,package) (quote (,@quelpa-specs)))
+          (byte-compile-warn
+           "Invalid quelpa-spec: first element not a symbol: %S"
+           package)))
+    (byte-compile-warn "Invalid quelpa-specs: %S" quelpa-specs)
+    nil))
 
 ;; ---------------------------------------------------------------------------
 ;; Delay activation of Modes after processing of command line arguments

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-27 17:29:16 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-01 15:30:38 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1807,7 +1807,7 @@ FOR: separator must be present.  It is cosmetic only.
 REGEXPS is on or several regular expression strings."
   (declare (indent 0))
   (ignore for:)
-  (let ((forms '()))
+  (let ((forms ()))
     (setq forms
           (dolist (regxp regexps (nreverse forms))
             (push `(add-to-list 'auto-mode-alist
@@ -1830,7 +1830,7 @@ functions."
   (declare (indent 0))
   (ignore for:)
   (let ((fname     (if (stringp fname) fname (symbol-name fname)))
-        (decl-fcts '()))
+        (decl-fcts ()))
     (dolist (fct commands)
       (push `(declare-function ,fct ,fname) decl-fcts))
     (if (> (length commands) 1)
@@ -1852,7 +1852,7 @@ DEFINES: is a cosmetic only argument that must be present."
   (declare (indent 0))
   (ignore defines:)
   (let ((fname     (if (stringp fname) fname (symbol-name fname)))
-        (decl-fcts '()))
+        (decl-fcts ()))
     (dolist (fct commands)
       (push `(declare-function ,fct ,fname) decl-fcts))
     `(progn

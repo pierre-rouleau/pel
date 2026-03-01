@@ -93,13 +93,15 @@
 ;;** Package Installation
 ;;   --------------------
 ;;
-;; The code uses the following macros to control package installation:
+;; The code uses the following macros and functions  to control package installation:
 ;;
-;; - `pel-ensure-package'       Installs an elpa-compliant package.
+;; - `pel-ensure-package-elpa'  Installs an elpa-compliant package in the elpa
+;;                              directory infra-structure when PEL is not
+;;                              running in fast-startup mode.
 ;;
 ;; - `pel-install-github-file'  Installs a file from source stored in Github.
 ;;                              Used to install a file that is not an elpa
-;;                              complaint package.  The file is stored in the
+;;                              compliant package.  The file is stored in the
 ;;                              PEL utils directory.
 ;;
 ;; - `pel-install-github-files' Installs multiple files from source stored in
@@ -133,7 +135,7 @@
 ;;                      ;     pel-emacs-is-graphic-p
 ;;                      ;     pel-toggle
 ;;                      ;     pel-mode-toggle-arg
-;;                      ;     pel-ensure-package
+;;                      ;     pel-ensure-package-elpa
 ;;                      ;
 ;;                      ;
 ;;                      ;
@@ -165,12 +167,12 @@
 (when pel-future-proof
   ;; - To ensure that the elpa signatures expiry becomes a problem
   ;;   install gnu-elpa-keyring-update.
-  (pel-ensure-package gnu-elpa-keyring-update from: gnu)
+  (pel-ensure-package-elpa gnu-elpa-keyring-update from: gnu)
   (push 'gnu-elpa-keyring-update pel-elpa-packages-to-keep)
 
   ;; Install Emacs backward compatibility package if required
   (unless pel-emacs-29-or-later-p
-    (pel-ensure-package compat from: gnu)
+    (pel-ensure-package-elpa compat from: gnu)
     (push 'compat pel-elpa-packages-to-keep)))
 
 ;; ---------------------------------------------------------------------------
@@ -503,11 +505,11 @@ Open GitHub file if OPEN-GITHUB-PAGE-P IS non-nil."
           (quelpa-self-upgrade))))))
 
 (when pel-use-package-lint
-  (pel-ensure-package package-lint from: melpa))
+  (pel-ensure-package-elpa package-lint from: melpa))
 (when pel-use-flycheck-package
-  (pel-ensure-package flycheck-package from: melpa))
+  (pel-ensure-package-elpa flycheck-package from: melpa))
 (when pel-use-elx
-  (pel-ensure-package elx from: melpa))
+  (pel-ensure-package-elpa elx from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;;* Tree-Sitter Support
@@ -523,7 +525,7 @@ Open GitHub file if OPEN-GITHUB-PAGE-P IS non-nil."
            (treesit-available-p))
           (progn
             ;; Get language grammars
-            (pel-ensure-package tree-sitter-langs from: melpa)
+            (pel-ensure-package-elpa tree-sitter-langs from: melpa)
 
             ;; For some reason the treesit-extra-load-path variable is not always
             ;; set to the list of directories where tree sitter language dynamic
@@ -562,7 +564,7 @@ Your version of Emacs does not support dynamic module.")))
 (when pel-use-ini
   (pel-install-github-file "pierre-rouleau/ini.el/master" "ini.el"))
 (when pel-use-emacs-toml
-  (pel-ensure-package toml from: melpa)
+  (pel-ensure-package-elpa toml from: melpa)
   (unless pel-use-tomlparse
     (pel-major-mode-use-tree-sitter 'toml-mode 'toml-ts-mode)))
 (when pel-use-tomlparse
@@ -595,13 +597,13 @@ Your version of Emacs does not support dynamic module.")))
   (add-to-list 'auto-mode-alist '("\\Kconfig\\'" . kconfig-mode))
   (pel-autoload-file kconfig-mode for: kconfig-mode))
 (when pel-use-dockerfile
-  (pel-ensure-package dockerfile-mode from: melpa))
+  (pel-ensure-package-elpa dockerfile-mode from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;;* EditorConfig Support
 ;;  ====================
 (when pel-use-editor-config
-  (pel-ensure-package  editorconfig from: melpa)
+  (pel-ensure-package-elpa  editorconfig from: melpa)
   (pel-require-at-load editorconfig)
   (pel-eval-after-load editorconfig
     (if (fboundp 'editorconfig-mode)
@@ -624,22 +626,22 @@ Your version of Emacs does not support dynamic module.")))
             pel-use-all-the-icons-dired
             pel-use-all-the-icons-ivy
             pel-neotree-font-in-graphics)
-    (pel-ensure-package all-the-icons from: melpa))
+    (pel-ensure-package-elpa all-the-icons from: melpa))
 
   (when pel-use-all-the-icons-ibuffer
-    (pel-ensure-package  all-the-icons-ibuffer)
+    (pel-ensure-package-elpa  all-the-icons-ibuffer)
     (pel-require-at-load all-the-icons-ibuffer)
     (pel-autoload-file   all-the-icons-ibuffer for:
                          all-the-icons-ibuffer-mode)
     (all-the-icons-ibuffer-mode 1))
 
   (when pel-use-all-the-icons-dired
-    (pel-ensure-package  all-the-icons-dired)
+    (pel-ensure-package-elpa  all-the-icons-dired)
     (pel-require-at-load all-the-icons-dired)
     (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
   (when pel-use-all-the-icons-ivy
-    (pel-ensure-package  all-the-icons-ivy)
+    (pel-ensure-package-elpa  all-the-icons-ivy)
     (pel-require-at-load all-the-icons-ivy)
     (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
 
@@ -677,7 +679,7 @@ Your version of Emacs does not support dynamic module.")))
 ;;* Visual Effect -- delight - control mode lighters
 ;;  ================================================
 (when pel-use-delight
-  (pel-ensure-package delight from: melpa)
+  (pel-ensure-package-elpa delight from: melpa)
   (when (and pel-delight-specs
              (fboundp 'delight))
     (delight pel-delight-specs)))
@@ -698,7 +700,7 @@ Your version of Emacs does not support dynamic module.")))
 ;; See URL https://github.com/abo-abo/ace-link
 ;; Delay its loading 1.5 seconds since it's normally not needed right away.
 (when pel-use-ace-link
-  (pel-ensure-package     ace-link from: melpa)
+  (pel-ensure-package-elpa     ace-link from: melpa)
   (pel-require-after-init ace-link 1.5)
   (pel-eval-after-load    ace-link
     (if (fboundp 'ace-link-setup-default)
@@ -713,7 +715,7 @@ Your version of Emacs does not support dynamic module.")))
 ;; The avy package provides quick navigation inside any buffer and across
 ;; windows. See URL https://github.com/abo-abo/avy
 (when pel-use-avy
-  (pel-ensure-package avy from: melpa)
+  (pel-ensure-package-elpa avy from: melpa)
   (pel-autoload-file avy for:
                      avy-goto-char
                      avy-goto-char-2
@@ -768,7 +770,7 @@ Your version of Emacs does not support dynamic module.")))
 (define-key pel:cfg-goto "h" 'pel-select-goto-symbol-UI)
 
 (when pel-use-imenu-anywhere
-  (pel-ensure-package imenu-anywhere from: melpa)
+  (pel-ensure-package-elpa imenu-anywhere from: melpa)
   (global-set-key (kbd "M-g y")    'pel-goto-symbol-any-buffer)
   (global-set-key (kbd "M-g M-y")  'pel-goto-symbol-any-buffer)
   (define-key pel:cfg-goto "y" 'pel-select-goto-symbol-any-buffer-UI))
@@ -818,7 +820,7 @@ Your version of Emacs does not support dynamic module.")))
                      dired-lister-mode))
 
 (when pel-use-dired-sidebar
-  (pel-ensure-package dired-sidebar from: melpa)
+  (pel-ensure-package-elpa dired-sidebar from: melpa)
   (pel-autoload "dired-sidebar" for: dired-sidebar-toggle-sidebar)
   (add-hook 'dired-sidebar-mode-hook
             (lambda ()
@@ -835,7 +837,7 @@ Your version of Emacs does not support dynamic module.")))
 ;; Future, if I have time to fork and fix its code.
 ;;
 ;; (when pel-use-dired-toggle-sudo
-;;   (pel-ensure-package dired-toggle-sudo from: melpa)
+;;   (pel-ensure-package-elpa dired-toggle-sudo from: melpa)
 ;;   (with-eval-after-load 'dired
 ;;     (when (boundp 'dired-mode-map)
 ;;       (require 'dired-toggle-sudo)
@@ -852,7 +854,7 @@ Your version of Emacs does not support dynamic module.")))
 ;; commands.
 
 (when pel-use-dired-narrow
-  (pel-ensure-package dired-narrow from: melpa)
+  (pel-ensure-package-elpa dired-narrow from: melpa)
   (pel-autoload-file dired-narrow for:
                      dired-narrow
                      dired-narrow-regexp
@@ -863,13 +865,13 @@ Your version of Emacs does not support dynamic module.")))
   (define-key pel:for-dired "f" 'dired-narrow-fuzzy))
 
 (when pel-use-dired-hide-dotfiles
-  (pel-ensure-package dired-hide-dotfiles from: melpa)
+  (pel-ensure-package-elpa dired-hide-dotfiles from: melpa)
   (when (eq pel-use-dired-hide-dotfiles 'hide-dot-files-by-default)
     (declare-function dired-hide-dotfiles-mode "dired-hide-dotfiles")
     (add-hook 'dired-mode-hook (function dired-hide-dotfiles-mode))))
 
 (when pel-use-dired-git-info
-  (pel-ensure-package dired-git-info from: melpa)
+  (pel-ensure-package-elpa dired-git-info from: melpa)
   (when (eq pel-use-dired-git-info 'on-for-git-directories)
     (add-hook 'dired-after-readin-hook 'dired-git-info-auto-enable)))
 
@@ -1487,7 +1489,7 @@ Your version of Emacs does not support dynamic module.")))
 ;;   ------------------------------------------------
 
 (when pel-use-iedit
-  (pel-ensure-package iedit from: melpa)
+  (pel-ensure-package-elpa iedit from: melpa)
   (pel-autoload-file iedit for: iedit-mode)
   (define-key pel: "e" 'iedit-mode)
   (define-key ctl-x-r-map "\r" 'iedit-rectangle-mode)
@@ -1512,7 +1514,7 @@ Your version of Emacs does not support dynamic module.")))
 ;;** smart-dash
 ;;   ----------
 (when pel-use-smart-dash
-  (pel-ensure-package smart-dash from: melpa)
+  (pel-ensure-package-elpa smart-dash from: melpa)
   (pel-autoload-file smart-dash for: smart-dash-mode)
   (autoload 'smart-dash-insert-or-overwrite "smart-dash")
 
@@ -1552,7 +1554,7 @@ Your version of Emacs does not support dynamic module.")))
 ;;** Display of Regular Expression -- easy-escape
 ;;   --------------------------------------------
 (when pel-use-easy-escape
-  (pel-ensure-package easy-escape from: melpa)
+  (pel-ensure-package-elpa easy-escape from: melpa)
   (pel-autoload-file easy-escape for: easy-escape-minor-mode)
   (define-key pel: "\"" 'easy-escape-minor-mode)
   (pel-add-hook-for 'pel-modes-activating-easy-escape
@@ -1604,7 +1606,7 @@ Your version of Emacs does not support dynamic module.")))
       (define-key pel:undo    "u"      'pel-undo)
       (define-key pel:undo    "r"      'pel-redo)
 
-      (pel-ensure-package undo-tree from: gnu)
+      (pel-ensure-package-elpa undo-tree from: gnu)
       (pel-autoload-file undo-tree for:
                          undo-tree-mode
                          global-undo-tree-mode
@@ -1656,17 +1658,17 @@ can't bind negative-argument to C-_ and M-_"
   (define-key pel:undo    "r"      'undo-redo))
 
 (when pel-use-undo-propose
-  (pel-ensure-package undo-propose from: melpa)
+  (pel-ensure-package-elpa undo-propose from: melpa)
   (global-set-key (kbd "C-c u")  'undo-propose))
 
 (when pel-use-vundo
-  (pel-ensure-package vundo from: gnu)
+  (pel-ensure-package-elpa vundo from: gnu)
   (define-key pel:undo  "v"    'vundo))
 
 ;;*** Use goto-last-change
 ;;    --------------------
 (when pel-use-goto-last-change
-  (pel-ensure-package goto-last-change from: melpa)
+  (pel-ensure-package-elpa goto-last-change from: melpa)
   (pel-autoload-file goto-last-change for: goto-last-change)
   (define-key pel:undo "\\"          'goto-last-change)
   (define-key pel:f6   "\\"          'goto-last-change)
@@ -1736,7 +1738,7 @@ can't bind negative-argument to C-_ and M-_"
                            "imenu-extra.el"))
 
 (when pel-use-flimenu
-  (pel-ensure-package flimenu from: melpa)
+  (pel-ensure-package-elpa flimenu from: melpa)
   (define-key pel:menu "f" 'flimenu-mode)
   (define-key pel:menu "F" 'flimenu-global-mode))
 
@@ -1745,17 +1747,17 @@ can't bind negative-argument to C-_ and M-_"
   (pel-install-github-file "pierre-rouleau/popup-imenu/master"
                            "popup-imenu.el")
   ;; install it's external mandatory dependencies
-  (pel-ensure-package dash from: melpa)
-  (pel-ensure-package popup from: melpa)
-  (pel-ensure-package flx-ido from melpa)
+  (pel-ensure-package-elpa dash from: melpa)
+  (pel-ensure-package-elpa popup from: melpa)
+  (pel-ensure-package-elpa flx-ido from: melpa)
   (pel-autoload-file popup-imenu for: popup-imenu))
 
 (when pel-use-popup-switcher
   (pel-install-github-file "pierre-rouleau/popup-switcher/master"
                            "popup-switcher.el")
     ;; install it's mandatory external dependencies
-    (pel-ensure-package dash from: melpa)
-    (pel-ensure-package popup from: melpa)
+    (pel-ensure-package-elpa dash from: melpa)
+    (pel-ensure-package-elpa popup from: melpa)
   ;; autoload when installed in utils
   (pel-autoload-file popup-switcher for:
                      psw-switch-buffer
@@ -1863,8 +1865,8 @@ can't bind negative-argument to C-_ and M-_"
 ;;*** Helm
 ;;    ----
 (when pel-use-helm
-  (pel-ensure-package helm from: melpa)
-  (pel-ensure-package helm-core from: melpa)
+  (pel-ensure-package-elpa helm from: melpa)
+  (pel-ensure-package-elpa helm-core from: melpa)
   (pel-autoload-file helm for: helm-mode)
   (pel-eval-after-load helm
     (defvar helm-map)                   ; prevent byte-compiler warning
@@ -1873,7 +1875,7 @@ can't bind negative-argument to C-_ and M-_"
     (define-key helm-map (kbd "C-M-i") 'helm-execute-persistent-action)
     ;;
     (when pel-use-helm-lsp
-      (pel-ensure-package helm-lsp from: melpa))))
+      (pel-ensure-package-elpa helm-lsp from: melpa))))
 
 ;;*** Ido
 ;;    ---
@@ -1902,11 +1904,11 @@ can't bind negative-argument to C-_ and M-_"
     (define-key ido-buffer-completion-map (kbd "<f12>b") 'ido-bury-buffer-at-head))
 
   (when pel-use-idomenu
-    (pel-ensure-package idomenu from: melpa))
+    (pel-ensure-package-elpa idomenu from: melpa))
 
   (when pel-use-ido-ubiquitous
     (declare-function pel-set-ido-ubiquitous "pel-completion")
-    (pel-ensure-package ido-completing-read+ from: melpa)
+    (pel-ensure-package-elpa ido-completing-read+ from: melpa)
     ;; add autoloading control for it.  The actual loading is controlled
     ;; by the logic inside pel-completion.el
     (pel-autoload-file ido-completing-read+ for:
@@ -1915,7 +1917,7 @@ can't bind negative-argument to C-_ and M-_"
       (pel-set-ido-ubiquitous)))
 
   (when pel-use-ido-grid-mode
-    (pel-ensure-package ido-grid-mode from: melpa)
+    (pel-ensure-package-elpa ido-grid-mode from: melpa)
     (pel-autoload-file ido-grid-mode for:
                        ido-grid-mode))
 
@@ -1926,12 +1928,12 @@ can't bind negative-argument to C-_ and M-_"
                        ido-grid-disable))
 
   (when pel-use-ido-vertical-mode
-    (pel-ensure-package ido-vertical-mode from: melpa)
+    (pel-ensure-package-elpa ido-vertical-mode from: melpa)
     (pel-autoload-file ido-vertical-mode for:
                        ido-vertical-mode))
 
   (when pel-use-smex
-    (pel-ensure-package smex from: melpa)
+    (pel-ensure-package-elpa smex from: melpa)
     (pel-autoload-file smex for:
                        smex
                        smex-major-mode-commands)
@@ -1945,7 +1947,7 @@ can't bind negative-argument to C-_ and M-_"
   (defvar ivy-use-virtual-buffers)      ; prevent byte-compiler warning
   (defvar ivy-count-format)
   (defvar ivy-minibuffer-map)
-  (pel-ensure-package ivy from: melpa)
+  (pel-ensure-package-elpa ivy from: melpa)
   (pel-autoload-file ivy for: ivy-mode)
   (pel-eval-after-load ivy
     (setq ivy-use-virtual-buffers t
@@ -1958,25 +1960,25 @@ can't bind negative-argument to C-_ and M-_"
 
   ;; When ivy and avy are used, activate ivy-avy which integrate both.
   (when pel-use-avy
-    (pel-ensure-package ivy-avy from: melpa)
+    (pel-ensure-package-elpa ivy-avy from: melpa)
     (pel-autoload-file ivy-avy for: ivy-avy))
   ;;
   (when pel-use-counsel
-    (pel-ensure-package counsel from: melpa)
+    (pel-ensure-package-elpa counsel from: melpa)
     (pel-require-after-init counsel 1)
     (pel-eval-after-load counsel
       (when pel-system-is-linux-p
         (define-key pel: "A" 'counsel-linux-app)))
     (when (and pel-use-ivy-hydra pel-use-hydra)
-      (pel-ensure-package ivy-hydra from: melpa))
+      (pel-ensure-package-elpa ivy-hydra from: melpa))
     ;;
     (when (and pel-system-is-macos-p pel-use-counsel-osx-app)
-      (pel-ensure-package counsel-osx-app from: melpa)
+      (pel-ensure-package-elpa counsel-osx-app from: melpa)
       (pel-autoload-file counsel-osx-app for: counsel-osx-app)
       (define-key pel: "A" 'counsel-osx-app)))
 
   (when pel-use-lsp-ivy
-    (pel-ensure-package lsp-ivy from: melpa)
+    (pel-ensure-package-elpa lsp-ivy from: melpa)
     ;; TODO: create key bindings for:
     ;; lsp-ivy-workspace-symbol - workspace symbols for the current workspace
     ;; lsp-ivy-global-workspace-symbol - workspace symbols from all of the active workspaces.
@@ -1986,14 +1988,14 @@ can't bind negative-argument to C-_ and M-_"
 ;;    -------
 (when (and pel-use-flx
            (or pel-use-ido pel-use-ivy))
-  (pel-ensure-package flx-ido from: melpa)
+  (pel-ensure-package-elpa flx-ido from: melpa)
   ;; Note: flx-ido also explicitly requires the flx package
   (pel-autoload-file flx-ido for: flx-ido-mode))
 
 ;;*** Vertico
 ;;    -------
 (when pel-use-vertico
-  (pel-ensure-package vertico from: melpa))
+  (pel-ensure-package-elpa vertico from: melpa))
 
 ;;*** For all completion
 ;;    ------------------
@@ -2039,7 +2041,7 @@ can't bind negative-argument to C-_ and M-_"
              (fboundp 'pel--start-projectile))
     (run-with-idle-timer 1 nil (function pel--start-projectile)))
 
-  (pel-ensure-package projectile from: melpa)
+  (pel-ensure-package-elpa projectile from: melpa)
   (pel-autoload-file projectile for: projectile-mode)
   (defvar projectile-mode-map)          ; prevent byte-compiler warning
   (defvar projectile-command-map)
@@ -2069,7 +2071,7 @@ can't bind negative-argument to C-_ and M-_"
   (define-key pel:projectile (kbd "<f8>") 'projectile-mode)
   ;;
   (when pel-use-treemacs-projectile
-    (pel-ensure-package treemacs-projectile from: melpa))  )
+    (pel-ensure-package-elpa treemacs-projectile from: melpa))  )
 
 ;; ---------------------------------------------------------------------------
 ;;** Tempo skeleton - a powerful lisp-style templating system
@@ -2111,14 +2113,14 @@ can't bind negative-argument to C-_ and M-_"
   (define-key pel:yasnippet "v"          'yas-visit-snippet-file)
 
   (when pel-use-yasnippet-snippets
-    (pel-ensure-package yasnippet-snippets from: melpa)
+    (pel-ensure-package-elpa yasnippet-snippets from: melpa)
     (pel-autoload-file yasnippet-snippets for:
                        yas-global-mode
                        yas-minor-mode)
     (when (eq pel-use-yasnippet 'use-from-start)
       (run-with-idle-timer 4 nil (function pel--start-yasnippet-snippets))))
 
-  (pel-ensure-package yasnippet from: melpa)
+  (pel-ensure-package-elpa yasnippet from: melpa)
   (pel-autoload-file yasnippet for:
                      yas-global-mode
                      yas-minor-mode)
@@ -2363,7 +2365,7 @@ can't bind negative-argument to C-_ and M-_"
 (define-key pel:pgm-eldoc "d" 'eldoc-mode)
 (define-key pel:pgm-eldoc "?" 'pel-eldoc-setup-info)
 (when pel-use-eldoc-box
-  (pel-ensure-package eldoc-box from: melpa)
+  (pel-ensure-package-elpa eldoc-box from: melpa)
   (pel-autoload-file eldoc-box for:
                      eldoc-box-hover-mode
                      eldoc-box-hover-at-point-mode)
@@ -2383,13 +2385,13 @@ can't bind negative-argument to C-_ and M-_"
 ;;*** lsp-mode support
 ;;    ----------------
 (when pel-use-lsp-mode
-  (pel-ensure-package lsp-mode from: melpa))
+  (pel-ensure-package-elpa lsp-mode from: melpa))
 
 (when pel-use-lsp-ui
-  (pel-ensure-package lsp-ui from: melpa))
+  (pel-ensure-package-elpa lsp-ui from: melpa))
 
 (when pel-use-emacs-ccls
-  (pel-ensure-package ccls from: melpa))
+  (pel-ensure-package-elpa ccls from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;;** Flycheck/Flymake Syntax Checking - <f11> !
@@ -2402,7 +2404,7 @@ can't bind negative-argument to C-_ and M-_"
 (define-key pel:fly "?"  'pel-fly-show-setup-info)
 
 (when pel-use-flymake-collection
-  (pel-ensure-package flymake-collection from: melpa))
+  (pel-ensure-package-elpa flymake-collection from: melpa))
 
 (when pel-use-flycheck-eglot
   (pel-install-github-file "flycheck/flycheck-eglot/master"
@@ -2434,7 +2436,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; Syntax Check with Flycheck (if requested)
 ;; -----------------------------------------
 (when pel-use-flycheck
-  (pel-ensure-package flycheck from: melpa)
+  (pel-ensure-package-elpa flycheck from: melpa)
   (pel-autoload-file flycheck for:
                      flycheck-mode
                      flycheck-select-checker)
@@ -2450,7 +2452,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;*** CMake support
 ;;    -------------
 (when pel-use-cmake
-  (pel-ensure-package cmake-mode from: melpa)
+  (pel-ensure-package-elpa cmake-mode from: melpa)
   (if (and pel-use-tree-sitter
            pel-emacs-has-dynamic-module-support-p
            (pel-package-installed-p 'cmake-ts-mode))
@@ -2490,7 +2492,7 @@ can't bind negative-argument to C-_ and M-_"
 (when pel-use-meson
   (define-pel-global-prefix pel:for-meson (kbd "<f11> SPC 3"))
 
-  (pel-ensure-package meson-mode from: melpa)
+  (pel-ensure-package-elpa meson-mode from: melpa)
   (add-to-list 'auto-mode-alist
                '("/meson\\(\\.build\\|_options\\.txt\\|\\.options\\)\\'"
                  . meson-mode))
@@ -2502,7 +2504,7 @@ can't bind negative-argument to C-_ and M-_"
 (when pel-use-ninja
   (define-pel-global-prefix pel:for-ninja (kbd "<f11> SPC 5"))
 
-  (pel-ensure-package ninja-mode from: melpa)
+  (pel-ensure-package-elpa ninja-mode from: melpa)
   (add-to-list 'auto-mode-alist '("\\.ninja\\'" . ninja-mode))
   (pel-eval-after-load ninja-mode
     (require 'pel-iedit-modes-support)
@@ -2512,7 +2514,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;*** Nix Package Manager Support
 ;;    ---------------------------
 (when pel-use-nix
-  (pel-ensure-package nix-mode from: melpa)
+  (pel-ensure-package-elpa nix-mode from: melpa)
   (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
   (pel-eval-after-load nix-mode
     (defun pel-nix-help (&optional open-github-page-p)
@@ -2559,7 +2561,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;*** Intel-Hex object file format support
 ;;    ------------------------------------
 (when pel-use-intel-hex
-  (pel-ensure-package intel-hex-mode from: melpa)
+  (pel-ensure-package-elpa intel-hex-mode from: melpa)
   (add-to-list 'auto-mode-alist '("\\.hex\\'" . intel-hex-mode))
   (add-to-list 'auto-mode-alist '("\\.a90\\'" . intel-hex-mode))
   (add-to-list 'auto-mode-alist '("\\.a43\\'" . intel-hex-mode))
@@ -2586,7 +2588,7 @@ can't bind negative-argument to C-_ and M-_"
 (define-pel-global-prefix pel:writing-tools (kbd "<f11> W"))
 
 (when pel-use-artbollocks-mode
-  ;; (pel-ensure-package artbollocks-mode from: melpa)
+  ;; (pel-ensure-package-elpa artbollocks-mode from: melpa)
   (pel-install-github-file "pierre-rouleau/artbollocks-mode/master"
                            "artbollocks-mode.el")
   (pel-autoload-file artbollocks-mode for:
@@ -2596,17 +2598,17 @@ can't bind negative-argument to C-_ and M-_"
 ;; Text Translation
 (when (and pel-use-go-translate
            pel-emacs-27-or-later-p)
-  (pel-ensure-package gt from: melpa)
+  (pel-ensure-package-elpa gt from: melpa)
   (define-pel-global-prefix pel:go-translate (kbd "<f11> W T"))
   (define-key pel:writing-tools "T" 'gt-translate)
   )
 
 (when pel-use-wc-mode
-  (pel-ensure-package wc-mode from: melpa)
+  (pel-ensure-package-elpa wc-mode from: melpa)
   (define-key pel:writing-tools "c" 'wc-mode))
 
 (when pel-use-writegood-mode
-  (pel-ensure-package writegood-mode from: melpa)
+  (pel-ensure-package-elpa writegood-mode from: melpa)
   (define-pel-global-prefix pel:writegood (kbd "<f11> W g"))
   (define-key pel:writegood "g" 'writegood-mode)
   (define-key pel:writegood "v" 'writegood-version)
@@ -2614,7 +2616,7 @@ can't bind negative-argument to C-_ and M-_"
   (define-key pel:writegood "l" 'writegood-grade-level))
 
 (when pel-use-writeroom-mode
-  (pel-ensure-package writeroom-mode from: melpa)
+  (pel-ensure-package-elpa writeroom-mode from: melpa)
   (define-pel-global-prefix pel:writeroom (kbd "<f11> W r"))
   (define-key pel:writeroom "r" 'writeroom-mode)
   (define-key pel:writeroom "+" 'writeroom-increase-width)
@@ -2735,7 +2737,7 @@ can't bind negative-argument to C-_ and M-_"
   (add-to-list 'auto-mode-alist '("\\.h\\'" . pel-cc-mode))
 
   (when pel-use-call-graph
-    (pel-ensure-package call-graph from: melpa)
+    (pel-ensure-package-elpa call-graph from: melpa)
     (pel-autoload-file call-graph for:
                        call-graph)))
 
@@ -2949,10 +2951,10 @@ MODE must be a symbol."
 (when pel-use-ada
   ;; 1- Install required packages for Ada
   ;;    - Always install ada-mode when Ada is used.
-  (pel-ensure-package ada-mode from: gnu)
+  (pel-ensure-package-elpa ada-mode from: gnu)
   ;;    - Install ada-ts-mode when tree-sitter is used.
   (when pel-use-tree-sitter
-    (pel-ensure-package ada-ts-mode from: melpa))
+    (pel-ensure-package-elpa ada-ts-mode from: melpa))
 
   ;; 2- Associate files with Ada mode selector
   (add-to-list 'auto-mode-alist '("\\.ad[abs]\\'" . pel-ada-mode))
@@ -3116,7 +3118,7 @@ MODE must be a symbol."
     (define-key pel:for-c (kbd "M-g") 'call-graph))
 
   (when pel-use-bison
-    (pel-ensure-package bison-mode from: melpa)
+    (pel-ensure-package-elpa bison-mode from: melpa)
     ;; the bison-mode file associates: .y -> bison-mode
     ;;                                 .l -> flex-mode
     ;;                                 .jison -> jison-mode
@@ -3308,7 +3310,7 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:d-setup   (kbd "<f11> SPC D <f4>"))
   (define-pel-global-prefix pel:d-guess   (kbd "<f11> SPC D <f4> g"))
 
-  (pel-ensure-package d-mode from: melpa)
+  (pel-ensure-package-elpa d-mode from: melpa)
   (pel-autoload-file d-mode for: d-mode)
   ;; When opening a D source code file, load the d-mode feature.
   (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
@@ -3324,7 +3326,7 @@ MODE must be a symbol."
   ;; Configure auto-completion based on selection
   ;; There are 2 possibilities
   (when pel-use-d-ac-dcd
-    (pel-ensure-package ac-dcd from: melpa)
+    (pel-ensure-package-elpa ac-dcd from: melpa)
     (pel-autoload-file ac-dcd for: ac-dcd-setup)
     (pel-eval-after-load d-mode
       (if (and (require 'auto-complete nil :no-error)
@@ -3337,7 +3339,7 @@ d-mode not added to ac-modes!"
     (add-hook 'd-mode-hook 'ac-dcd-setup))
 
   (when pel-use-d-company-dcd
-    (pel-ensure-package company-dcd from: melpa)
+    (pel-ensure-package-elpa company-dcd from: melpa)
     (pel-autoload-file company-dcd for: company-dcd-mode)
     (add-hook 'd-mode-hook 'company-dcd-mode))
 
@@ -3391,7 +3393,7 @@ d-mode not added to ac-modes!"
   ;; (define-pel-global-prefix pel:objc-skel (kbd "<f11> SPC C-o <f12>"))
 
   (when pel-use-flycheck-objc-clang
-    (pel-ensure-package flycheck-objc-clang from: melpa)
+    (pel-ensure-package-elpa flycheck-objc-clang from: melpa)
     (when pel-use-flycheck
       (with-eval-after-load 'flycheck
         (when (fboundp 'flycheck-objc-clang-setup)
@@ -3595,7 +3597,7 @@ d-mode not added to ac-modes!"
 (when pel-use-dart
   ;; 1- Install required packages for Dart
   ;;    - Always install dart-mode when Dart is used.
-  (pel-ensure-package dart-mode from: melpa)
+  (pel-ensure-package-elpa dart-mode from: melpa)
   ;;    - Install dart-ts-mode when Dart and Tree-Sitter are supported
   (when pel-use-tree-sitter
     (pel-install-github-file "50ways2sayhard/dart-ts-mode/master"
@@ -3643,7 +3645,7 @@ d-mode not added to ac-modes!"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-f`` :
 ;; [:todo 2024-01-05, by Pierre Rouleau: complete/clean support]
 (when pel-use-factor
-  (pel-ensure-package fuel from: melpa)
+  (pel-ensure-package-elpa fuel from: melpa)
   (pel-autoload-file factor-mode for:
                      factor-mode)
   ;; the <f12> key provides access to help and customization
@@ -3673,7 +3675,7 @@ d-mode not added to ac-modes!"
   ;; 1- Install required packages for Forth
   ;;    - Always install forth-mode when Forth is used.
   ;;    - There is no tree-sitter mode available yet AFAIK.
-  (pel-ensure-package forth-mode from: melpa)
+  (pel-ensure-package-elpa forth-mode from: melpa)
   (pel-autoload-file forth-mode for:
                      forth-mode
                      forth-block-mode
@@ -3734,7 +3736,7 @@ d-mode not added to ac-modes!"
 (when pel-use-go
   ;; 1- Install required packages for Go
   ;;    - Always install go-mode when Go is used.
-  (pel-ensure-package go-mode from: melpa)
+  (pel-ensure-package-elpa go-mode from: melpa)
   (pel-autoload-file go-mode for: go-mode)
 
   ;; 2- Associate files with Go mode selector
@@ -3819,7 +3821,7 @@ d-mode not added to ac-modes!"
 (when pel-use-java
   (define-pel-global-prefix pel:for-java  (kbd "<f11> SPC J"))
   (when pel-use-lsp-java
-    (pel-ensure-package lsp-java from: melpa))
+    (pel-ensure-package-elpa lsp-java from: melpa))
 
   (defun pel--java-setup-with-lsp ()
     "Setup Java with language server capability."
@@ -3869,7 +3871,7 @@ d-mode not added to ac-modes!"
   ;; install js-comint if required, regardless of the mode used to support
   ;; Javascript.
   (when pel-use-js-comint
-    (pel-ensure-package js-comint from: melpa)
+    (pel-ensure-package-elpa js-comint from: melpa)
     (define-key pel:for-js "z" 'js-comint-repl))
 
   (when pel-js2-activates-development-mode
@@ -3880,7 +3882,7 @@ d-mode not added to ac-modes!"
   (cond
    ;; When using the external js3-mode
    ((eq pel-use-js 'js3-mode)
-    (pel-ensure-package js3-mode from: melpa)
+    (pel-ensure-package-elpa js3-mode from: melpa)
     (pel-autoload-file js3-mode for:
                        js3-mode)
     (add-to-list 'auto-mode-alist
@@ -3900,27 +3902,27 @@ d-mode not added to ac-modes!"
     (when (memq pel-use-js '(js2-mode
                              with-js2-minor
                              with-ts-js2-minor))
-      (pel-ensure-package js2-mode from: melpa)
+      (pel-ensure-package-elpa js2-mode from: melpa)
       (pel-autoload-file js2-mode for:
                          js2-mode
                          js2-minor-mode
                          js2-jsx-mode)
 
       (when pel-use-js2-closure
-        (pel-ensure-package js2-closure from: melpa)
+        (pel-ensure-package-elpa js2-closure from: melpa)
         (pel-autoload-file js2-closure for:
                            js2-closure-fix))
       (when pel-use-flow-js2-mode
-        (pel-ensure-package flow-js2-mode from: melpa)
+        (pel-ensure-package-elpa flow-js2-mode from: melpa)
         ;; (pel-autoload-file js2-closure for:
         ;;                    js2-closure-fix)
         )
       (when pel-use-js2-refactor
-        (pel-ensure-package js2-refactor from: melpa)
+        (pel-ensure-package-elpa js2-refactor from: melpa)
         (when (eq pel-use-js2-refactor 'with-discover)
-          (pel-ensure-package discover-js2-refactor from: melpa)))
+          (pel-ensure-package-elpa discover-js2-refactor from: melpa)))
       (when pel-use-xref-js2
-        (pel-ensure-package xref-js2 from: melpa))
+        (pel-ensure-package-elpa xref-js2 from: melpa))
 
       ;; Add js2 commands when the js2 major or minor mode is used
       (when pel-js2-activates-development-mode
@@ -3991,7 +3993,7 @@ d-mode not added to ac-modes!"
   ;; For Julia, the julia-snail package uses julia-mode and
   ;; other required package.
   ;; Note that it also requires the vterm package.
-  (pel-ensure-package julia-snail from: melpa)
+  (pel-ensure-package-elpa julia-snail from: melpa)
   (pel-autoload-file julia-snail for:
                      julia-mode
                      julia-snail
@@ -4023,7 +4025,7 @@ d-mode not added to ac-modes!"
     (if (and (eq pel-use-lispy 'use-enzuru-lispy)
              (not (package-installed-p 'lispy)))
         (pel-quelpa-install (lispy :repo "enzuru/lispy" :fetcher github))
-      (pel-ensure-package lispy from: melpa)))
+      (pel-ensure-package-elpa lispy from: melpa)))
 
   (defun pel--activate-lispy ()
     "Activate lispy lazily."
@@ -4136,10 +4138,10 @@ d-mode not added to ac-modes!"
    ;; use-pel-elpa-attic-copy used to support a local copy.
    ;; Now it means using the emacsattic version.
    ((memq pel-use-parinfer '(t use-pel-elpa-attic-copy))
-    (pel--install-github-files "emacsattic/parinfer/master"
-                               '("parinfer.el"
-                                 "parinferlib.el"
-                                 "parinfer-ext.el"))
+    (pel-install-github-files "emacsattic/parinfer/master"
+                              '("parinfer.el"
+                                "parinferlib.el"
+                                "parinfer-ext.el"))
     (pel-autoload-file parinfer for:
                        parinfer-mode
                        parinfer-toggle-mode
@@ -4147,12 +4149,12 @@ d-mode not added to ac-modes!"
                        parinfer-diff))
    ;; recommended: the rust implementation
    ((eq pel-use-parinfer 'use-parinfer-rust-mode)
-    (pel-ensure-package parinfer-rust-mode from: melpa))))
+    (pel-ensure-package-elpa parinfer-rust-mode from: melpa))))
 
 ;;*** Use rainbow-delimiters
 ;;    ----------------------
 (when pel-use-rainbow-delimiters
-  (pel-ensure-package rainbow-delimiters from: melpa)
+  (pel-ensure-package-elpa rainbow-delimiters from: melpa)
   (pel-autoload-file rainbow-delimiters for:
                      rainbow-delimiters-mode))
 
@@ -4252,39 +4254,39 @@ d-mode not added to ac-modes!"
 (define-key pel:elisp-lib "p" #'list-packages)
 
 (when pel-use-macrostep
-  (pel-ensure-package macrostep from: melpa)
+  (pel-ensure-package-elpa macrostep from: melpa)
   (pel-autoload-file macrostep for: macrostep-expand)
   (define-key pel:for-elisp  (kbd "M-m") #'macrostep-expand))
 
 (when pel-use-highlight-defined
-  (pel-ensure-package highlight-defined from: melpa)
+  (pel-ensure-package-elpa highlight-defined from: melpa)
   (pel-autoload-file highlight-defined for: highlight-defined-mode)
   (define-key pel:elisp-highlight "d" 'highlight-defined-mode))
 
 (when pel-use-eros
-  (pel-ensure-package eros from: melpa)
+  (pel-ensure-package-elpa eros from: melpa)
   (pel-autoload-file eros for: eros-mode)
   (define-key pel:for-elisp "E" 'eros-mode))
 
 (when pel-use-suggest
-  (pel-ensure-package suggest from: melpa)
+  (pel-ensure-package-elpa suggest from: melpa)
   (pel-autoload-file suggest for: suggest)
   (define-key pel:for-elisp "S" 'suggest))
 
 (when pel-use-noflet
   (pel-install-github-file "pierre-rouleau/emacs-noflet/master" "noflet.el"))
 (when pel-use-el-mock
-  (pel-ensure-package el-mock from: melpa))
+  (pel-ensure-package-elpa el-mock from: melpa))
 (when pel-use-el-spy
-  (pel-ensure-package el-spy from: melpa))
+  (pel-ensure-package-elpa el-spy from: melpa))
 (when pel-use-mocker
-  (pel-ensure-package mocker from: melpa))
+  (pel-ensure-package-elpa mocker from: melpa))
 (when pel-use-coverage
-  (pel-ensure-package coverage from: melpa))
+  (pel-ensure-package-elpa coverage from: melpa))
 (when pel-use-ert-expectations
   (pel-install-github-file "emacsorphanage/ert-expectations/master" "ert-expectations.el"))
 (when pel-use-coverlay
-  (pel-ensure-package coverlay from: melpa))
+  (pel-ensure-package-elpa coverlay from: melpa))
 (when pel-use-test-cover-mark
   (pel-install-file
    "https://codeberg.org/akib/emacs-testcover-mark-line/raw/branch/master/testcover-mark-line.el"
@@ -4293,9 +4295,9 @@ d-mode not added to ac-modes!"
                      testcover-mark-line-mode
                      testcover-mark-line-mark-all))
 (when pel-use-buttercup
-  (pel-ensure-package buttercup from: melpa))
+  (pel-ensure-package-elpa buttercup from: melpa))
 (when pel-use-ert-runner
-  (pel-ensure-package ert-runner from: melpa))
+  (pel-ensure-package-elpa ert-runner from: melpa))
 
 ;; activate the <f12> key binding for elisp-mode and other features.
 (pel-check-minor-modes-in pel-emacs-lisp-activates-minor-modes)
@@ -4324,7 +4326,7 @@ d-mode not added to ac-modes!"
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
 
 (when pel-use-helpful
-  (pel-ensure-package helpful from: melpa)
+  (pel-ensure-package-elpa helpful from: melpa)
   (define-pel-global-prefix pel:helpful (kbd "<f1> <f2>"))
   (define-key pel:helpful "a" 'helpful-callable)
   (define-key pel:helpful "f" 'helpful-function)
@@ -4349,7 +4351,7 @@ d-mode not added to ac-modes!"
   (define-key pel:elisp-refs "o" 'elisp-refs-symbol))
 
 (when pel-use-elisp-depend
-  (pel-ensure-package elisp-depend from: melpa)
+  (pel-ensure-package-elpa elisp-depend from: melpa)
   (define-pel-global-prefix pel:elisp-depend (kbd "<f11> SPC l a M-d"))
   (define-key pel:elisp-depend "d" 'elisp-depend-print-dependencies)
   (define-key pel:elisp-depend "r" 'elisp-depend-insert-require)
@@ -4357,7 +4359,7 @@ d-mode not added to ac-modes!"
 
 (when (and pel-use-elisp-depmap
            pel-emacs-is-graphic-p)
-  (pel-ensure-package elisp-depmap from: melpa)
+  (pel-ensure-package-elpa elisp-depmap from: melpa)
   (define-pel-global-prefix pel:elisp-depmap (kbd "<f11> SPC l a M-D"))
   (define-key pel:elisp-depmap "d" 'elisp-depmap-graphviz-digraph)
   (define-key pel:elisp-depmap "g" 'elisp-depmap-graphviz)
@@ -4373,7 +4375,7 @@ d-mode not added to ac-modes!"
   (cond
    ;; Using Slime
    ((memq pel-use-common-lisp '(with-slime with-slime+))
-    (pel-ensure-package slime from: melpa)
+    (pel-ensure-package-elpa slime from: melpa)
     ;; [:todo 2026-02-13, by Pierre Rouleau: should this be done when loading
     ;; a lisp-mode file or right away as done now?]
     ;; (load )
@@ -4382,7 +4384,7 @@ d-mode not added to ac-modes!"
 
    ;; Using SLY
    ((eq pel-use-common-lisp 'with-sly)
-    (pel-ensure-package sly from: melpa))
+    (pel-ensure-package-elpa sly from: melpa))
    )
 
   (pel-eval-after-load inf-lisp ; `inferior-lisp-program' is defined in `inf-lisp'
@@ -4496,7 +4498,7 @@ d-mode not added to ac-modes!"
 
   ;; Installation
   (when pel-use-janet-mode
-    ;; (pel-ensure-package janet-mode from: melpa)
+    ;; (pel-ensure-package-elpa janet-mode from: melpa)
     ;; Use my version of janet-mode: it's ahead of the MELPA available one.
     (pel-install-github-file "pierre-rouleau/janet-mode/master/"
                              "janet-mode.el")
@@ -4532,14 +4534,14 @@ d-mode not added to ac-modes!"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-j`` :
 (when pel-use-clojure
   ;; Installation
-  (pel-ensure-package clojure-mode from: melpa)
+  (pel-ensure-package-elpa clojure-mode from: melpa)
   (pel-autoload-file clojure-mode for: clojure-mode)
 
   (define-pel-global-prefix pel:for-clojure (kbd "<f11> SPC C-j"))
   (pel--lisp-languages-map-for pel:for-clojure)
 
   (when pel-use-cider
-    (pel-ensure-package cider from: melpa)
+    (pel-ensure-package-elpa cider from: melpa)
     (pel-autoload-file cider for:
                        cider-jack-in
                        cider-connect
@@ -4552,13 +4554,13 @@ d-mode not added to ac-modes!"
   ;; Load the package when Yasnippet starts.
   (when (and  pel-use-clojure-snippets
               pel-use-yasnippet)
-    (pel-ensure-package clojure-snippets from: melpa)
+    (pel-ensure-package-elpa clojure-snippets from: melpa)
     (pel-autoload-file clojure-snippets for:
                        yas-global-mode
                        yas-minor-mode))
 
   (when pel-use-clj-refactor
-    (pel-ensure-package clj-refactor from: melpa))
+    (pel-ensure-package-elpa clj-refactor from: melpa))
 
   ;; activate the <f12> key binding for clojure-mode
   (pel-config-major-mode clojure pel:for-clojure :no-ts
@@ -4609,13 +4611,13 @@ d-mode not added to ac-modes!"
 (when pel-use-scheme
   ;; Install requested Scheme Family options
   (when pel-use-geiser
-    (pel-ensure-package geiser from: melpa)
+    (pel-ensure-package-elpa geiser from: melpa)
     (pel-autoload-file geiser for:
                        geiser
                        geiser-mode)
     ;; Geiser extensions
     (when pel-use-macrostep-geiser
-      ;; (pel-ensure-package macrostep-geiser from: melpa)
+      ;; (pel-ensure-package-elpa macrostep-geiser from: melpa)
       ;; This has a bug for supporting Emacs prior to Emacs 27.  I submitted a
       ;; fix: https://github.com/nbfalcon/macrostep-geiser/pull/1
       ;; Using my implementation until author integrates my fix.
@@ -4639,7 +4641,7 @@ d-mode not added to ac-modes!"
           (display-warning 'pel-use-macrostep-geiser
                            "Can't load macrostep-geiser" :error))))
     (when pel-use-ac-geiser
-      (pel-ensure-package ac-geiser from: melpa)
+      (pel-ensure-package-elpa ac-geiser from: melpa)
       (add-hook 'geiser-mode-hook 'ac-geiser-setup)
       (add-hook 'geiser-repl-mode-hook 'ac-geiser-setup)
       (pel-eval-after-load auto-complete
@@ -4655,31 +4657,31 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                                      "not bound!")) :error))))
     ;; Geiser Scheme implementation extensions
     (when pel-use-geiser-chez
-      (pel-ensure-package geiser-chez from: melpa)
+      (pel-ensure-package-elpa geiser-chez from: melpa)
       (with-eval-after-load 'geiser-mode
         (require 'geiser-chez)))
     (when pel-use-geiser-chibi
-      (pel-ensure-package geiser-chibi from: melpa)
+      (pel-ensure-package-elpa geiser-chibi from: melpa)
       (with-eval-after-load 'geiser-mode
         (require 'geiser-chibi)))
     (when pel-use-geiser-chicken
-      (pel-ensure-package geiser-chicken from: melpa)
+      (pel-ensure-package-elpa geiser-chicken from: melpa)
       (with-eval-after-load 'geiser-mode
         (require 'geiser-chicken)))
     (when pel-use-geiser-gambit
-      (pel-ensure-package geiser-gambit from: melpa)
+      (pel-ensure-package-elpa geiser-gambit from: melpa)
       (with-eval-after-load 'geiser-mode
         (require 'geiser-gambit)))
     (when pel-use-geiser-guile
-      (pel-ensure-package geiser-guile from: melpa)
+      (pel-ensure-package-elpa geiser-guile from: melpa)
       (with-eval-after-load 'geiser-mode
         (require 'geiser-guile)))
     (when pel-use-geiser-mit
-      (pel-ensure-package geiser-mit from: melpa)
+      (pel-ensure-package-elpa geiser-mit from: melpa)
       (with-eval-after-load 'geiser-mode
         (require 'geiser-mit)))
     (when pel-use-geiser-racket
-      (pel-ensure-package geiser-racket from: melpa)
+      (pel-ensure-package-elpa geiser-racket from: melpa)
       (with-eval-after-load 'geiser-mode
         (require 'geiser-racket))))
 
@@ -4840,7 +4842,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   ;; IMPORTANT: This must be done *after* the processing of Scheme.  See note in
   ;; the Scheme section.
   (when pel-use-racket
-    (pel-ensure-package racket-mode from: melpa)
+    (pel-ensure-package-elpa racket-mode from: melpa)
     (pel-autoload-file racket-mode for: racket-mode)
 
     (define-pel-global-prefix pel:for-racket (kbd "<f11> SPC C-s C-r"))
@@ -4875,26 +4877,26 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 (when pel-use-erlang
   ;; 1- Install required packages for Erlang
   ;;    - Always install erlang-mode from erlang.el when Erlang is used.
-  (pel-ensure-package erlang from: melpa)
+  (pel-ensure-package-elpa erlang from: melpa)
   ;; (pel-autoload-file erlang for: erlang-mode)
   ;;    - Install erlang-ts-mode when Erlang and Tree-Sitter are supported
   (when pel-use-tree-sitter
-    (pel-ensure-package erlang-ts from: melpa))
+    (pel-ensure-package-elpa erlang-ts from: melpa))
 
   ;; 1.1- Install optional packages for Erlang
   (when pel-use-erlstack-mode
-    (pel-ensure-package erlstack-mode from: melpa))
+    (pel-ensure-package-elpa erlstack-mode from: melpa))
   (when pel-use-ivy-erlang-complete
-    (pel-ensure-package ivy-erlang-complete from: melpa)
+    (pel-ensure-package-elpa ivy-erlang-complete from: melpa)
     (when pel-use-company-erlang
-      (pel-ensure-package company-erlang from: melpa)))
+      (pel-ensure-package-elpa company-erlang from: melpa)))
   (when pel-use-edts
-    (pel-ensure-package edts from: melpa)
+    (pel-ensure-package-elpa edts from: melpa)
     (pel-autoload-file edts for: edts-mode))
   (when pel-use-erlang-ls
     ;; install lsp-mode clients
-    (pel-ensure-package lsp-mode from: melpa)
-    (pel-ensure-package lsp-ui from: melpa))
+    (pel-ensure-package-elpa lsp-mode from: melpa)
+    (pel-ensure-package-elpa lsp-ui from: melpa))
 
   ;; 2- Associate files with Erlang mode selector
   ;; Invocation control
@@ -5326,7 +5328,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; 1- Install required packages for Elixir
   ;;    - Always install elixir-mode when Elixir is used.
   ;;    - elixir-ts-mode is built-in Emacs.
-  (pel-ensure-package elixir-mode from: melpa)
+  (pel-ensure-package-elpa elixir-mode from: melpa)
   (pel-autoload-file elixir-mode for: elixir-mode)
 
   ;; 2- Associate files with Elixir mode selector
@@ -5351,13 +5353,13 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (when pel-use-plantuml
     (define-key pel:for-elixir "u" 'pel-render-commented-plantuml))
   (when pel-use-alchemist
-    (pel-ensure-package alchemist from: melpa)
+    (pel-ensure-package-elpa alchemist from: melpa)
     (pel-autoload-file alchemist for:
                        alchemist-iex-mode
                        alchemist-iex-run)
     (define-key pel:for-elixir "z"         #'alchemist-iex-run))
   (when pel-use-elixir-exunit
-    (pel-ensure-package exunit from: melpa)
+    (pel-ensure-package-elpa exunit from: melpa)
     (pel-autoload-file exunit for:
                        exunit-mode
                        exunit-rerun
@@ -5368,7 +5370,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                        exunit-toggle-file-and-test
                        exunit-toggle-file-and-test-other-window))
   (when pel-use-elixir-lsp
-    (pel-ensure-package lsp-elixir from: melpa)
+    (pel-ensure-package-elpa lsp-elixir from: melpa)
     (pel-autoload-file lsp-elixir for: elixir-mode)
     (add-hook 'elixir-mode-hook 'lsp))
 
@@ -5390,7 +5392,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` :
 ;; LFE := Lisp Flavoured Erlang
 (when pel-use-lfe
-  (pel-ensure-package lfe-mode from: melpa)
+  (pel-ensure-package-elpa lfe-mode from: melpa)
   (require 'lfe-start nil :no-error)    ; autoloads lfe commands
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".lfe"
@@ -5507,7 +5509,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-haskell
   (define-pel-global-prefix pel:for-haskell (kbd "<f11> SPC h"))
   (when pel-use-haskell-mode
-    (pel-ensure-package haskell-mode from: melpa)
+    (pel-ensure-package-elpa haskell-mode from: melpa)
     (declare-function run-haskell "inf-haskell")
     (define-key pel:for-haskell "z" #'run-haskell))
   (when pel-use-speedbar
@@ -5525,7 +5527,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   -------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-h`` : Hy
 (when pel-use-hy
-  (pel-ensure-package hy-mode from: melpa)
+  (pel-ensure-package-elpa hy-mode from: melpa)
   (pel-autoload-file hy-mode for: hy-mode)
 
   (define-pel-global-prefix pel:for-hy (kbd "<f11> SPC C-h"))
@@ -5541,7 +5543,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-nim
   ;; 1- Install required packages for Nim
   ;;    - Always install nim-mode when Nim is used.
-  (pel-ensure-package nim-mode from: melpa)
+  (pel-ensure-package-elpa nim-mode from: melpa)
 
   ;; 2- Associate files with Nim mode selector
   ;;   Not needed : there 's no nim-ts-mode yet.
@@ -5590,11 +5592,11 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                                   ".mli")))
   ;; note: All 3 next flags are turned on when `pel-use-ocaml' is on.
   (when pel-use-caml-mode
-    (pel-ensure-package caml from: melpa))
+    (pel-ensure-package-elpa caml from: melpa))
   (when pel-use-merlin
-    (pel-ensure-package merlin from: melpa))
+    (pel-ensure-package-elpa merlin from: melpa))
   (when pel-use-tuareg
-    (pel-ensure-package tuareg from: melpa))
+    (pel-ensure-package-elpa tuareg from: melpa))
   ;; the ocaml-mode is part of Emacs
   (pel-eval-after-load tuareg
     (pel-config-major-mode tuareg pel:for-ocaml :no-ts)))
@@ -5637,7 +5639,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;;        Look into the impact of tree-sitter on that logic for Emacs <30
   ;;        and >= 30: 2 possible behaviours. ]
   (when pel-use-elpy
-    (pel-ensure-package elpy from: melpa))
+    (pel-ensure-package-elpa elpy from: melpa))
   ;; TODO control start of elpy
 
   ;; Normally, (python-shell-prompt-detect) should evaluate to
@@ -5974,21 +5976,21 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (when pel-use-rust-mode
     ;; Important rust-mode user-options:
     ;; - rust-format-on-save
-    (pel-ensure-package rust-mode from: melpa)
+    (pel-ensure-package-elpa rust-mode from: melpa)
     (pel-autoload-file rust-mode for: rust-mode))
   (when pel-use-rustic
-    (pel-ensure-package rustic from: melpa)
+    (pel-ensure-package-elpa rustic from: melpa)
     (pel-autoload-file rustic for: rustic))
   (when pel-use-cargo
-    (pel-ensure-package cargo from: melpa)
+    (pel-ensure-package-elpa cargo from: melpa)
     (pel-autoload-file cargo for: cargo-minor-mode))
   (when pel-use-emacs-racer
-    (pel-ensure-package racer from: melpa)
+    (pel-ensure-package-elpa racer from: melpa)
     (pel-autoload-file racer for: racer-mode))
   ;; flycheck with rust-mode
   (when (and pel-use-rust-mode
              pel-use-flycheck-rust)
-    (pel-ensure-package flycheck-rust from: melpa)
+    (pel-ensure-package-elpa flycheck-rust from: melpa)
     (add-hook 'flycheck-mode-hook 'flycheck-rust-setup)
     (pel-eval-after-load flycheck
       (require 'flycheck-rust)))
@@ -6145,7 +6147,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-smalltalk
   (define-pel-global-prefix pel:for-smalltalk  (kbd "<f11> SPC s"))
 
-  (pel-ensure-package smalltalk-mode from: gnu)
+  (pel-ensure-package-elpa smalltalk-mode from: gnu)
 
   (pel-eval-after-load smalltalk-mode
     (pel-config-major-mode smalltalk pel:for-smalltalk :no-ts)))
@@ -6159,9 +6161,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-swift
   (define-pel-global-prefix pel:for-swift  (kbd "<f11> SPC s"))
 
-  (pel-ensure-package swift-mode from: melpa)
+  (pel-ensure-package-elpa swift-mode from: melpa)
   (when pel-use-tree-sitter
-    (pel-ensure-package swift-ts-mode from: melpa))
+    (pel-ensure-package-elpa swift-ts-mode from: melpa))
 
   (pel-eval-after-load swift-mode
     (pel-config-major-mode swift pel:for-swift :no-ts)))
@@ -6210,7 +6212,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-lua
   ;; 1- Install required packages for Lua
   ;;    - Always install lua-mode when Lua is used.
-  (pel-ensure-package lua-mode from: melpa)
+  (pel-ensure-package-elpa lua-mode from: melpa)
   ;;    - The lua-ts-mode is built-in Emacs.
 
   ;; 2- Associate files with Lua mode selector
@@ -6274,7 +6276,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
    ;; using flymake
    ((memq pel-use-shellcheck '(flymake-manual
                                flymake-automatic))
-    (pel-ensure-package flymake-shellcheck from: melpa)
+    (pel-ensure-package-elpa flymake-shellcheck from: melpa)
     (when (eq pel-use-shellcheck 'flymake-automatic)
       (add-hook 'sh-mode-hook 'flymake-shellcheck-load)))
    ;; using flycheck
@@ -6292,18 +6294,18 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
 ;;*** Emacs Lisp SQLite Support
 (when pel-use-emacsql
-  (pel-ensure-package emacsql from: melpa)
+  (pel-ensure-package-elpa emacsql from: melpa)
   (when pel-use-closql
-    (pel-ensure-package closql from: melpa)))
+    (pel-ensure-package-elpa closql from: melpa)))
 
 ;;*** Postgres support
 (when pel-use-emacs-db
-  (pel-ensure-package emacs-db from: melpa)
+  (pel-ensure-package-elpa emacs-db from: melpa)
   (when pel-use-db-pg
-    (pel-ensure-package db-pg from: melpa)))
+    (pel-ensure-package-elpa db-pg from: melpa)))
 
 (when pel-use-pg
-  (pel-ensure-package pg from: melpa)
+  (pel-ensure-package-elpa pg from: melpa)
   (when pel-use-pgmacs
     (pel-quelpa-install
         (pgmacs :fetcher git
@@ -6364,7 +6366,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
   (cond
    ((eq pel-use-v 'v-mode)
-    (pel-ensure-package v-mode from: melpa)
+    (pel-ensure-package-elpa v-mode from: melpa)
     (pel-autoload-file v-mode for: v-mode)
     (define-key pel:for-v (kbd "C-f") 'v-format-buffer)
     (define-key pel:for-v (kbd "<f10>") 'v-menu)
@@ -6402,7 +6404,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
   ;; Get the Emacs Lisp Tree sitter mode
   (when pel-use-tree-sitter
-    (pel-ensure-package verilog-ts-mode from: melpa)
+    (pel-ensure-package-elpa verilog-ts-mode from: melpa)
     ;; Once installed & loaded, use it to install the verilog grammar for it.
     (unless (pel-treesit-language-available-p 'systemverilog)
       (when (fboundp 'verilog-ts-install-grammar)
@@ -6411,10 +6413,10 @@ to identify a Verilog file.  Anything else is assumed being V."
 
   ;; Install/use other external package when requested.
   (when pel-use-verilog-ext
-    (pel-ensure-package verilog-ext from: melpa))
+    (pel-ensure-package-elpa verilog-ext from: melpa))
   (when pel-use-veri-kompass
     ;; Instead of using melpa, use my fork until my PR gets merged.
-    ;; (pel-ensure-package veri-kompass from: melpa)
+    ;; (pel-ensure-package-elpa veri-kompass from: melpa)
     (pel-install-gitlab-file "prouleau" "veri-kompass" "veri-kompass.el")
     (pel-autoload "veri-kompass" for: veri-kompass
                   veri-kompass-search-driver-at-point
@@ -6468,7 +6470,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
   (add-to-list 'auto-mode-alist '("\\.vhdl?\\'" . vhdl-mode))
   (when pel-use-tree-sitter
-    (pel-ensure-package vhdl-ts-mode from: melpa))
+    (pel-ensure-package-elpa vhdl-ts-mode from: melpa))
 
   (pel-eval-after-load vhdl-mode
     (pel-config-major-mode vhdl pel:for-vhdl :no-ts))
@@ -6482,10 +6484,10 @@ to identify a Verilog file.  Anything else is assumed being V."
 (when pel-use-zig
   ;; 1- Install required packages for Zig
   ;;    - Always install zig-mode when Zig is used.
-  (pel-ensure-package zig-mode from: melpa)
+  (pel-ensure-package-elpa zig-mode from: melpa)
   ;;    - Install zig-ts-mode when Zig and Tree-Sitter are supported
   (when pel-use-tree-sitter
-    (pel-ensure-package zig-ts-mode from: melpa))
+    (pel-ensure-package-elpa zig-ts-mode from: melpa))
 
   ;; 2- Associate files with Zig mode selector
   (add-to-list 'auto-mode-alist '("\\.zig\\'" . pel-zig-mode))
@@ -6609,7 +6611,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 ;; csv-mode
 (when pel-use-csv
-  (pel-ensure-package csv-mode from: gnu))
+  (pel-ensure-package-elpa csv-mode from: gnu))
 ;; ---------------------------------------------------------------------------
 ;;* Markup Language Support
 ;;  =======================
@@ -6618,7 +6620,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;;   ----------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-a`` : AsciiDoc
 (when pel-use-asciidoc
-  (pel-ensure-package adoc-mode from: melpa)
+  (pel-ensure-package-elpa adoc-mode from: melpa)
   (pel-autoload-file adoc-mode for: adoc-mode)
 
   (define-pel-global-prefix pel:for-asciidoc (kbd "<f11> SPC M-a"))
@@ -6784,7 +6786,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   (add-hook 'outline-minor-mode-hook (function pel--setup-outline-minor-mode)))
 
 (when pel-use-outshine
-  (pel-ensure-package outshine from: melpa))
+  (pel-ensure-package-elpa outshine from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;;** Org-Mode Support
@@ -6869,14 +6871,14 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;;   -----------
 (when pel-use-osx-plist
   ;; Early support - no major mode - TODO: investigate enhancement.
-  (pel-ensure-package osx-plist from: melpa))
+  (pel-ensure-package-elpa osx-plist from: melpa))
 ;; ---------------------------------------------------------------------------
 ;;** YAML Support
 ;;   ------------
 
 (when pel-use-yaml
   (define-pel-global-prefix pel:for-yaml (kbd "<f11> SPC M-y"))
-  (pel-ensure-package yaml-mode from: melpa)
+  (pel-ensure-package-elpa yaml-mode from: melpa)
   (pel-autoload-file yaml-mode for: yaml-mode)
   ;; .yml and .yaml for YAML
   ;; .eyaml for encrypted (see hiera, puppet)
@@ -6887,7 +6889,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 (when pel-use-cwl
   (define-pel-global-prefix pel:for-cwl (kbd "<f11> SPC M-c"))
-  (pel-ensure-package cwl-mode from: melpa)
+  (pel-ensure-package-elpa cwl-mode from: melpa)
   ;; .cwl files are associated with cwl-mode
   (pel-set-auto-mode cwl-mode for: "\\.cwl\\'")
   (pel-config-major-mode cwl pel:for-cwl :no-ts))
@@ -6901,19 +6903,19 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-pel-global-prefix pel:for-markdown-preview (kbd "<f11> SPC M-m M-p"))
 
   (when pel-use-edit-indirect
-    (pel-ensure-package edit-indirect from: melpa))
+    (pel-ensure-package-elpa edit-indirect from: melpa))
   (when pel-use-grip-mode
-    (pel-ensure-package grip-mode from: melpa)
+    (pel-ensure-package-elpa grip-mode from: melpa)
     (define-key pel:for-markdown-preview "g" 'grip-mode))
   (when pel-use-markdown-mode
-    (pel-ensure-package markdown-mode from: melpa))
+    (pel-ensure-package-elpa markdown-mode from: melpa))
   (when pel-use-impatient-showdown
-    (pel-ensure-package impatient-showdown from: melpa)
+    (pel-ensure-package-elpa impatient-showdown from: melpa)
     (define-key pel:for-markdown-preview "i" 'impatient-showdown-mode))
   (when pel-use-markdown-preview-eww
-    (pel-ensure-package markdown-preview-eww from: melpa))
+    (pel-ensure-package-elpa markdown-preview-eww from: melpa))
   (when pel-use-markdown-preview-mode
-    (pel-ensure-package markdown-preview-mode from: melpa)
+    (pel-ensure-package-elpa markdown-preview-mode from: melpa)
     (define-key pel:for-markdown-preview "p" 'markdown-preview-mode))
   (when pel-use-markdown-toc
     (pel-install-github-file "pierre-rouleau/markdown-toc/master" "markdown-toc.el")
@@ -6934,9 +6936,9 @@ to identify a Verilog file.  Anything else is assumed being V."
     (define-key pel:for-markdown-toc (kbd "M-f") 'markdown-toc-follow-link-at-point))
   (when pel-use-vmd-mode
     (define-key pel:for-markdown-preview "v" 'vmd-mode)
-    (pel-ensure-package vmd-mode from: melpa))
+    (pel-ensure-package-elpa vmd-mode from: melpa))
   (when pel-use-remark-mode
-    (pel-ensure-package remark-mode from: melpa)
+    (pel-ensure-package-elpa remark-mode from: melpa)
     (define-key pel:for-markdown-preview "r" 'remark-mode))
 
   (define-key pel:for-markdown (kbd "M--") 'pel-itemize-lines)
@@ -7092,7 +7094,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;;   ------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-g`` :
 (when pel-use-graphviz-dot
-  (pel-ensure-package graphviz-dot-mode from: melpa)
+  (pel-ensure-package-elpa graphviz-dot-mode from: melpa)
   (pel-autoload-file graphviz-dot-mode for: graphviz-dot-mode)
 
   ;; Global bindings for Graphviz-Dot
@@ -7137,13 +7139,13 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-u`` :
 (when pel-use-plantuml
 
-  (pel-ensure-package plantuml-mode from: melpa)
+  (pel-ensure-package-elpa plantuml-mode from: melpa)
   (pel-autoload-file plantuml-mode for:
                      plantuml-mode
                      plantuml-download-jar
                      plantuml-set-exec-mode)
   (when pel-use-flycheck-plantuml
-    (pel-ensure-package flycheck-plantuml from: melpa))
+    (pel-ensure-package-elpa flycheck-plantuml from: melpa))
 
   ;; keys inside pel:draw (see below)
   (define-pel-global-prefix pel:plantuml (kbd "<f11> D u"))
@@ -7206,7 +7208,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;;** ASN.1
 ;;   -----
 (when pel-use-asn1
-  (pel-ensure-package asn1-mode from: melpa))
+  (pel-ensure-package-elpa asn1-mode from: melpa))
 
 ;; ------------
 ;;** YANG
@@ -7215,7 +7217,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 (when pel-use-yang
   ;; Installation control
-  (pel-ensure-package yang-mode from: melpa)
+  (pel-ensure-package-elpa yang-mode from: melpa)
 
   (define-pel-global-prefix pel:for-yang (kbd "<f11> SPC M-Y"))
 
@@ -7353,13 +7355,13 @@ to identify a Verilog file.  Anything else is assumed being V."
            pel-emacs-is-graphic-p)
   ;; Note: pos-tip, required by popup-kill-ring is installed
   ;;       when popup-kill-ring is installed.
-  (pel-ensure-package popup-kill-ring from: melpa)
+  (pel-ensure-package-elpa popup-kill-ring from: melpa)
   (define-key pel: (kbd "M-y") 'popup-kill-ring))
 
 ;;** browse-kill-ring
 ;;   ----------------
 (when pel-use-browse-kill-ring
-  ;; (pel-ensure-package browse-kill-ring from: melpa)
+  ;; (pel-ensure-package-elpa browse-kill-ring from: melpa)
   (pel-install-github-file "pierre-rouleau/browse-kill-ring/master"
                            "browse-kill-ring.el")
   (pel-autoload-file browse-kill-ring for: browse-kill-ring
@@ -7373,38 +7375,38 @@ to identify a Verilog file.  Anything else is assumed being V."
 (define-pel-global-prefix pel:auto-completion (kbd "<f11> c"))
 
 (when pel-use-auto-complete
-  (pel-ensure-package auto-complete from: melpa)
+  (pel-ensure-package-elpa auto-complete from: melpa)
   (pel-autoload-file auto-complete for:
                      auto-complete-mode
                      global-auto-complete-mode))
 
 (when pel-use-company
-  (pel-ensure-package company from: melpa)
+  (pel-ensure-package-elpa company from: melpa)
   (pel-autoload-file company for:
                      company-mode
                      global-company-mode))
 
 (when pel-use-corfu
-  (pel-ensure-package corfu from: melpa)
+  (pel-ensure-package-elpa corfu from: melpa)
   (when pel-use-corfu-terminal
-    (pel-install-web-file
+    (pel-install-file
      "https://codeberg.org/akib/emacs-corfu-terminal/raw/branch/master/corfu-terminal.el"
      "corfu-terminal.el")
     (pel-autoload-file corfu-terminal for:
                        corfu-terminal-mode)))
 
 (when pel-use-orderless
-  (pel-ensure-package orderless from: melpa)
+  (pel-ensure-package-elpa orderless from: melpa)
   (require 'orderless))
 
 (when pel-use-prescient
-    (pel-ensure-package prescient from: melpa))
+    (pel-ensure-package-elpa prescient from: melpa))
 (when pel-use-corfu-prescient
-    (pel-ensure-package corfu-prescient from: melpa))
+    (pel-ensure-package-elpa corfu-prescient from: melpa))
 (when pel-use-company-prescient
-    (pel-ensure-package company-prescient from: melpa))
+    (pel-ensure-package-elpa company-prescient from: melpa))
 (when pel-use-ivy-prescient
-    (pel-ensure-package ivy-prescient from: melpa))
+    (pel-ensure-package-elpa ivy-prescient from: melpa))
 
 (define-key pel:auto-completion "=" 'pel-select-auto-complete-tool)
 (define-key pel:auto-completion "?" 'pel-completion-info)
@@ -7489,7 +7491,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 (global-set-key (kbd "M-S-<down>")     'pel-mark-line-down)
 
 (when pel-use-expand-region
-  (pel-ensure-package expand-region from: melpa)
+  (pel-ensure-package-elpa expand-region from: melpa)
   (pel-autoload-file expand-region for: er/expand-region)
   (define-key pel:mark     "="  'er/expand-region)
   (global-set-key   (kbd "M-=") 'er/expand-region))
@@ -7548,7 +7550,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 (define-key pel:hide-show "I" 'pel-toggle-hide-indent)
 
 (when pel-use-hide-lines
-  (pel-ensure-package hide-lines from: melpa)
+  (pel-ensure-package-elpa hide-lines from: melpa)
   (define-key pel:hide-show "0"         'pel-selective-display-unhide)
   (define-key pel:hide-show "1"         'pel-selective-display-at-1)
   (define-key pel:hide-show "h"         'hide-lines)
@@ -7570,7 +7572,7 @@ to identify a Verilog file.  Anything else is assumed being V."
                      global-origami-mode)
 
   (when pel-use-lsp-origami
-    (pel-ensure-package lsp-origami from:  melpa))
+    (pel-ensure-package-elpa lsp-origami from:  melpa))
 
   ;; TODO: find why using M-o for origami-mode prevents the <f11> M-/ F1, F2 and F3
   ;;       keys from working work properly.
@@ -7645,7 +7647,7 @@ to identify a Verilog file.  Anything else is assumed being V."
                    pel-show-major-mode)
 
 (when pel-use-ascii-table
-  (pel-ensure-package ascii-table from: melpa)
+  (pel-ensure-package-elpa ascii-table from: melpa)
   (pel-autoload-file ascii-table for: ascii-table)
   (define-key pel:help "A" 'ascii-table))
 
@@ -7669,7 +7671,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 (when pel-use-debbugs
   (define-pel-global-prefix pel:emacs-bugs (kbd "<f11> ? b"))
-  (pel-ensure-package debbugs from: gnu)
+  (pel-ensure-package-elpa debbugs from: gnu)
   (define-key pel:emacs-bugs "a" 'debbugs-gnu)
   (define-key pel:emacs-bugs "s" 'debbugs-gnu-search)
   (define-key pel:emacs-bugs "u" 'debbugs-gnu-usertags)
@@ -7767,7 +7769,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;; Profiling support: esup
 (when (and pel-use-esup
            pel-emacs-is-graphic-p)
-  (pel-ensure-package esup from: melpa)
+  (pel-ensure-package-elpa esup from: melpa)
   (pel-autoload-file esup for: esup)
   (define-key pel:emacs "P"  'esup))
 
@@ -7788,12 +7790,12 @@ to identify a Verilog file.  Anything else is assumed being V."
 (define-key pel:keys "m" #'describe-mode)
 
 (when pel-use-free-keys
-  (pel-ensure-package free-keys from: melpa)
+  (pel-ensure-package-elpa free-keys from: melpa)
   (pel-autoload-file free-keys for: free-keys)
   (define-key pel:keys "f" #'free-keys))
 
 (when pel-use-bind-key
-  (pel-ensure-package bind-key from: melpa)
+  (pel-ensure-package-elpa bind-key from: melpa)
   (pel-autoload-file bind-key for: describe-personal-keybindings)
   (define-key pel:keys "b" #'describe-personal-keybindings))
 
@@ -7805,7 +7807,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   ;; loading and ensure the key mode if it's not already loaded.
   (unless pel-emacs-30-or-later-p
     ;; which-key is part of Emacs since Emacs 30
-    (pel-ensure-package  which-key from: melpa))
+    (pel-ensure-package-elpa  which-key from: melpa))
   (pel-require-after-init which-key 1)
   (pel-autoload-file which-key for:
                      which-key-mode
@@ -7821,7 +7823,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 PEL CUSTOMIZATION WARNING: Please rename pel-use-helm_descbinds \
 to pel-use-helm-descbinds"))
 (when pel-use-helm-descbinds
-  (pel-ensure-package helm-descbinds from: melpa)
+  (pel-ensure-package-elpa helm-descbinds from: melpa)
   (when (eq pel-use-helm-descbinds 'bind-to-F1-b)
     (global-set-key (kbd "C-h b") 'helm-descbinds))
   (define-key pel:keys "B" 'helm-descbinds-mode))
@@ -7830,7 +7832,7 @@ to pel-use-helm-descbinds"))
 ;;*** Keycast and key logging - <f11? ? k a
 ;;    -----------------------
 (when pel-use-keycast
-  (pel-ensure-package keycast from: melpa)
+  (pel-ensure-package-elpa keycast from: melpa)
   (define-pel-global-prefix pel:keycast (kbd "<f11> ? k a"))
   (pel-autoload-file keycast for:
                      keycast-mode-line-mode
@@ -7860,7 +7862,7 @@ to pel-use-helm-descbinds"))
 
 (when pel-use-interaction-log-mode
   (define-pel-global-prefix pel:interaction-log (kbd "<f11> ? k i"))
-  (pel-ensure-package interaction-log from: melpa)
+  (pel-ensure-package-elpa interaction-log from: melpa)
   (defun pel-interaction-log-buffer ()
     "Show interaction log buffer."
     (interactive)
@@ -7881,7 +7883,7 @@ to pel-use-helm-descbinds"))
 ;; popup is used in Terminal mode for spell check menu,
 ;; and must be available when pel-spell-init is called.
 (when pel-emacs-is-a-tty-p
-  (pel-ensure-package popup from: melpa)
+  (pel-ensure-package-elpa popup from: melpa)
   (pel-autoload-file popup for: pel-spell-init))
 
 (define-pel-global-prefix pel:spell (kbd "<f11> $"))
@@ -7950,7 +7952,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;;    ------------------------
 ;; configure bm package to be loaded only on first use.
 (when pel-use-bm
-  (pel-ensure-package bm from: melpa)
+  (pel-ensure-package-elpa bm from: melpa)
   (pel-autoload-file bm for:
                      bm-next
                      bm-previous
@@ -8048,7 +8050,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;; -- dtrt-indent
 (when pel-use-dtrt-indent
-  (pel-ensure-package dtrt-indent from: melpa)
+  (pel-ensure-package-elpa dtrt-indent from: melpa)
   (when (boundp 'dtrt-indent-global-mode)
     (setq dtrt-indent-global-mode 'activated-by--pel-use-dtrt-indent))
   (define-pel-global-prefix pel:indent-dtrt (kbd "<f11> TAB d"))
@@ -8059,7 +8061,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;; -- indent-bars
 (when pel-use-indent-bars
-  (pel-ensure-package indent-bars from: gnu)
+  (pel-ensure-package-elpa indent-bars from: gnu)
   (define-pel-global-prefix pel:indent-bars (kbd "<f11> TAB b"))
   (define-key pel:indent-bars "b" 'indent-bars-mode)
   (define-key pel:indent-bars "r" 'indent-bars-reset)
@@ -8071,7 +8073,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (defvar pel--was-hydra-loaded-p (featurep 'pel__hydra)
     "Remember whether PEL support for Hydra was loaded.")
 
-  (pel-ensure-package indent-tools from: melpa)
+  (pel-ensure-package-elpa indent-tools from: melpa)
   (pel-autoload-file indent-tools for: indent-tools-hydra/body)
 
   (when (eq pel-indent-tools-key-bound 'globally)
@@ -8101,7 +8103,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;; -- smart-tabs
 (when pel-use-smart-tabs
-  ;; (pel-ensure-package smart-tabs-mode from: melpa)
+  ;; (pel-ensure-package-elpa smart-tabs-mode from: melpa)
   ;; Use my fork instead of the melpa registered project until the main
   ;; project integrates the fixes provided by many people.
   ;;
@@ -8117,7 +8119,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;; -- smart-shift
 (when pel-use-smart-shift
-  (pel-ensure-package smart-shift from: melpa)
+  (pel-ensure-package-elpa smart-shift from: melpa)
   (define-key pel:indent "s" 'smart-shift-mode)
   (define-key pel:indent "S" 'global-smart-shift-mode)
 
@@ -8187,7 +8189,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (define-key pel:scroll-bar "v"  'toggle-scroll-bar))
 
 (when pel-use-smooth-scrolling
-  (pel-ensure-package smooth-scrolling from: melpa)
+  (pel-ensure-package-elpa smooth-scrolling from: melpa)
   (pel-autoload-file smooth-scrolling for: smooth-scrolling-mode)
   (define-key pel:scroll "s" 'smooth-scrolling-mode)
   (pel-eval-after-load smooth-scrolling
@@ -8310,7 +8312,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (when pel-use-iflipb
   ;; All key bindings are inside the pel-∑buffer Hydra
-  (pel-ensure-package iflipb from: melpa)
+  (pel-ensure-package-elpa iflipb from: melpa)
   (define-key pel:buffer (kbd "C-n")  'iflipb-next-buffer)
   (define-key pel:buffer (kbd "C-p")  'iflipb-previous-buffer)
   (global-set-key (kbd "C-x k")       'iflipb-kill-buffer))
@@ -8361,7 +8363,7 @@ See `flyspell-auto-correct-previous-word' for more info."
  'ibuffer-mode 'ibuffer-mode-hook)
 
 (when pel-use-ibuffer-vc
-  (pel-ensure-package ibuffer-vc from: melpa)
+  (pel-ensure-package-elpa ibuffer-vc from: melpa)
   (define-key pel:for-ibuffer "v" 'ibuffer-vc-set-filter-groups-by-vc-root))
 (when pel-use-ibuffer-tramp
   (pel-install-github-file "pierre-rouleau/ibuffer-tramp/master"
@@ -8432,10 +8434,10 @@ See `flyspell-auto-correct-previous-word' for more info."
         (lsp-treemacs-sync-mode 1)))
     (declare-function pel--setup-treemacs "pel_keys")
 
-    (pel-ensure-package treemacs from: melpa)
+    (pel-ensure-package-elpa treemacs from: melpa)
     (pel-autoload-file treemacs for: treemacs)
     (when pel-use-lsp-treemacs
-      (pel-ensure-package lsp-treemacs from: melpa))
+      (pel-ensure-package-elpa lsp-treemacs from: melpa))
 
     (define-key pel:browse  "T" 'treemacs)
     (add-hook 'treemacs-mode-hook (function pel--setup-treemacs))
@@ -8446,15 +8448,15 @@ See `flyspell-auto-correct-previous-word' for more info."
     )
 
   (when pel-use-dir-treeview
-    (pel-ensure-package treeview from: melpa)
-    (pel-ensure-package dir-treeview from: melpa)
+    (pel-ensure-package-elpa treeview from: melpa)
+    (pel-ensure-package-elpa dir-treeview from: melpa)
 
     (define-key pel:browse  "D" 'dir-treeview)
     (define-key pel:browse  "d" 'dir-treeview-open))
 
   (when pel-use-neotree
     (define-pel-global-prefix pel:neotree (kbd "<f11> B N"))
-    (pel-ensure-package neotree from: melpa)
+    (pel-ensure-package-elpa neotree from: melpa)
     (pel-autoload-file neotree for:
                        neotree-dir
                        neotree-find
@@ -8479,7 +8481,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     ;; The ztree.el has no other code than requiring the other 2 files.
     ;; Therefore the code ensures the ztree is loaded for the commands,
     ;; which essentially gets both of these files loaded.
-    (pel-ensure-package ztree from: melpa)
+    (pel-ensure-package-elpa ztree from: melpa)
     (pel-autoload-file ztree for:
                        ztree-dir
                        ztree-diff)
@@ -8502,7 +8504,7 @@ See `flyspell-auto-correct-previous-word' for more info."
                     pel-ztree-dir-show-filtered-files)))
 
   (when pel-use-rfc
-    (pel-ensure-package rfc-mode from: melpa)
+    (pel-ensure-package-elpa rfc-mode from: melpa)
     (define-key pel:browse  "r" 'rfc-mode-read)
     (define-key pel:browse  "R" 'rfc-mode-browse)))
 
@@ -8536,7 +8538,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:diff "r"  'pel-ediff-revision)
 
 (when pel-use-diffview-mode
-  (pel-ensure-package diffview from: melpa)
+  (pel-ensure-package-elpa diffview from: melpa)
   (define-key pel:diff "|"          'diffview-current)
   (define-key pel:diff (kbd "M-|")  'diffview-region))
 
@@ -8663,12 +8665,12 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:draw "a"  'artist-mode)       ; toggle artist-mode
 (define-key pel:draw "p"  'picture-mode)      ; activate picture-mode
 (when pel-use-syntree
-  (pel-ensure-package syntree from: melpa)
+  (pel-ensure-package-elpa syntree from: melpa)
   (define-key pel:draw "s"  'syntree-new))
 (when pel-use-ascii-art-to-unicode
-  (pel-ensure-package ascii-art-to-unicode from: gnu))
+  (pel-ensure-package-elpa ascii-art-to-unicode from: gnu))
 (when pel-use-uniline
-  (pel-ensure-package uniline from: melpa)
+  (pel-ensure-package-elpa uniline from: melpa)
   ;; for reason I don't yet understand uniline-mode does not autoload
   ;; properly with the MELPA installation, so I explicitly autoload it here:
   (pel-autoload-file uniline for: uniline-mode)
@@ -8696,7 +8698,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (when pel-use-face-explorer
   (define-pel-global-prefix pel:face-explorer (kbd "<f11> C-f C-e"))
-  (pel-ensure-package face-explorer from: melpa)
+  (pel-ensure-package-elpa face-explorer from: melpa)
   (define-key pel:face-explorer (kbd "C-e") 'face-explorer-list-faces)
   (define-key pel:face-explorer (kbd "C-d") 'face-explorer-describe-face)
   (define-key pel:face-explorer (kbd "C-p") 'face-explorer-describe-face-prop)
@@ -8707,11 +8709,11 @@ See `flyspell-auto-correct-previous-word' for more info."
     (define-key pel:face-explorer (kbd "C-t") 'face-explorer-tooltip-mode))
   (define-key pel:face-explorer (kbd "C-s") 'face-explorer-simulate-display-mode))
 (when pel-use-faceup
-  (pel-ensure-package faceup from: melpa))
+  (pel-ensure-package-elpa faceup from: melpa))
 (when pel-use-font-lock-profiler
-  (pel-ensure-package font-lock-profiler from: melpa))
+  (pel-ensure-package-elpa font-lock-profiler from: melpa))
 (when pel-use-font-lock-studio
-  (pel-ensure-package font-lock-studio from: melpa)
+  (pel-ensure-package-elpa font-lock-studio from: melpa)
   (define-key pel:facefont (kbd "C-s") 'font-lock-studio))
 
 ;; ---------------------------------------------------------------------------
@@ -8908,7 +8910,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   ;; As soon as the archive-rpm package is installed it becomes possible to open
   ;; RPM or CPIO archive files and see their content, just as tarball or zip
   ;; files.
-  (pel-ensure-package archive-rpm from: melpa)
+  (pel-ensure-package-elpa archive-rpm from: melpa)
 
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-R`` : RPM archive-mode commands
   (define-pel-global-prefix pel:for-rpm  (kbd "<f11> SPC M-R"))
@@ -8955,7 +8957,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;;* X.509 support: Major mode for viewing  certificates, CRLs, keys,
 ;; DH-parameters and ASN.1 using OpenSSL
 (when pel-use-x509-modes
-  (pel-ensure-package x509-mode from: melpa)
+  (pel-ensure-package-elpa x509-mode from: melpa)
   (pel-autoload "x509-mode" for: x509-dwim x509-mode)
   ;; The following works only for direct files, not files inside a archive
   ;; container.  That's a limitation of the x509 mode code that should be
@@ -9079,15 +9081,15 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (when pel-use-log-support
   (when pel-use-logview
-    (pel-ensure-package logview from: melpa))
+    (pel-ensure-package-elpa logview from: melpa))
   (when pel-use-log4j
-    (pel-ensure-package log4j-mode from: melpa))
+    (pel-ensure-package-elpa log4j-mode from: melpa))
   (when pel-use-rails-log
-    (pel-ensure-package rails-log-mode from: melpa))
+    (pel-ensure-package-elpa rails-log-mode from: melpa))
   (when pel-use-syslog
-    (pel-ensure-package syslog-mode from: melpa))
+    (pel-ensure-package-elpa syslog-mode from: melpa))
   (when pel-use-vlf
-    (pel-ensure-package vlf from: melpa)))
+    (pel-ensure-package-elpa vlf from: melpa)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Frame operations - <f11> F
@@ -9128,7 +9130,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (when pel-use-wgrep
   ;; autoload wgrep-change-to-wgrep-mode in case its requested by ag-mode
   (autoload 'wgrep-change-to-wgrep-mode "wgrep" nil :interactive)
-  (pel-ensure-package wgrep from: melpa)
+  (pel-ensure-package-elpa wgrep from: melpa)
   (pel-eval-after-load grep
     (when (boundp 'grep-mode-map)
       (define-key grep-mode-map  (kbd "C-x C-q") 'wgrep-change-to-wgrep-mode)))
@@ -9142,7 +9144,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; Install rg.el and install ripgrep.el if projectile is used.
 (when  pel-use-ripgrep
   ;; rg.el
-  (pel-ensure-package rg from: melpa)
+  (pel-ensure-package-elpa rg from: melpa)
   (pel-autoload-file rg for:
                      rg
                      rg-literal
@@ -9163,7 +9165,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (when (and pel-use-projectile
              (boundp 'projectile-version)
              (version-list-< (version-to-list projectile-version) '(2 6)))
-    (pel-ensure-package ripgrep from: melpa)
+    (pel-ensure-package-elpa ripgrep from: melpa)
     (pel-autoload-file ripgrep for: ripgrep-regexp))
   ;; wgrep support
   (when pel-use-wgrep
@@ -9175,7 +9177,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;;   --
 
 (when pel-use-ag
-  (pel-ensure-package ag from: melpa)
+  (pel-ensure-package-elpa ag from: melpa)
   (pel-autoload-file ag for:
                      ag
                      ag-dired
@@ -9218,7 +9220,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (when pel-use-deadgrep
   (pel-install-github-file "pierre-rouleau/deadgrep/master" "deadgrep.el")
   (pel-autoload-file deadgrep for: deadgrep)
-  ;; (pel-ensure-package deadgrep from: melpa)
+  ;; (pel-ensure-package-elpa deadgrep from: melpa)
 
   (define-key pel:grep  "d"     'deadgrep)
   (pel-eval-after-load deadgrep
@@ -9250,14 +9252,14 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; M-c M-i
 
 (when pel-use-auto-highlight-symbol
-  (pel-ensure-package auto-highlight-symbol from: melpa)
+  (pel-ensure-package-elpa auto-highlight-symbol from: melpa)
   (pel-autoload-file auto-highlight-symbol for:
                      auto-highlight-symbol-mode
                      global-auto-highlight-symbol-mode)
   (define-key pel:highlight "a" 'auto-highlight-symbol-mode))
 
 (when pel-use-rainbow-mode
-  (pel-ensure-package rainbow-mode from: melpa)
+  (pel-ensure-package-elpa rainbow-mode from: melpa)
   (pel-autoload-file rainbow-mode for: rainbow-mode)
   (define-key pel:highlight (kbd "M-r") 'rainbow-mode))
 
@@ -9295,7 +9297,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;;
 (when (and pel-emacs-27-or-later-p pel-use-beacon-mode)
-  (pel-ensure-package beacon from: melpa)
+  (pel-ensure-package-elpa beacon from: melpa)
   (pel-autoload-file beacon for:
                      beacon-mode)
   (when (eq pel-use-beacon-mode 'use-from-start)
@@ -9305,7 +9307,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;;
 (when pel-use-highlight-indentation
-  (pel-ensure-package highlight-indentation from: melpa)
+  (pel-ensure-package-elpa highlight-indentation from: melpa)
   (pel-autoload-file highlight-indentation for:
                      highlight-indentation-mode
                      highlight-indentation-current-column-mode)
@@ -9326,7 +9328,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (when (and (version< emacs-version "27.1")
            pel-use-fill-column-indicator)
-  (pel-ensure-package fill-column-indicator from: melpa)
+  (pel-ensure-package-elpa fill-column-indicator from: melpa)
   (pel-autoload-file fill-column-indicator for: fci-mode)
   (define-key pel:highlight "\\" 'fci-mode)
   (define-key pel:mode      "\\"  'fci-mode)
@@ -9382,14 +9384,14 @@ See `flyspell-auto-correct-previous-word' for more info."
           (eq pel-clisp-skel-with-license t)
           (eq pel-elisp-skel-with-license t)
           (eq pel-erlang-skel-with-license t))
-  (pel-ensure-package lice from: melpa)
+  (pel-ensure-package-elpa lice from: melpa)
   (pel-autoload-file lice for: lice)
   (define-key pel:insert "L" 'lice)
   (define-key pel:f6 "L" 'lice))
 
 ;;** spdx
 (when pel-use-spdx
-  (pel-ensure-package spdx from: melpa)
+  (pel-ensure-package-elpa spdx from: melpa)
   (define-key prog-mode-map (kbd "C-c i l") 'spdx-insert-spdx)
   (define-key pel:insert (kbd "M-l") 'spdx-insert-spdx)
   (define-key pel:f6 (kbd "M-l") 'spdx-insert-spdx))
@@ -9400,7 +9402,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;;** smartparens
 (when pel-use-smartparens
-  (pel-ensure-package smartparens from: melpa)
+  (pel-ensure-package-elpa smartparens from: melpa)
   (define-pel-global-prefix pel:smartparens (kbd "<f11> ("))
 
   (define-key pel:smartparens "("         'smartparens-mode)
@@ -9577,7 +9579,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (when pel-use-elmacro
   (define-pel-global-prefix pel:elmacro (kbd "<f11> k l"))
-  (pel-ensure-package elmacro from: melpa)
+  (pel-ensure-package-elpa elmacro from: melpa)
   (pel-autoload-file elmacro for: elmacro-mode)
   (define-key pel:elmacro "l" 'elmacro-mode)
   (pel-eval-after-load elmacro
@@ -9621,7 +9623,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:linectrl "t"            #'toggle-truncate-lines)
 (define-key pel:linectrl "v"            #'visual-line-mode)
 (when pel-use-atl-long-lines
-  (pel-ensure-package atl-long-lines from: melpa)
+  (pel-ensure-package-elpa atl-long-lines from: melpa)
   (define-key pel:linectrl "a"           'atl-long-lines-mode))
 
 ;; ---------------------------------------------------------------------------
@@ -9632,7 +9634,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
   (define-pel-global-prefix pel:mcursors (kbd "<f11> m"))
   (define-pel-global-prefix pel:mcursors-insert (kbd "<f11> m i"))
-  (pel-ensure-package multiple-cursors from: melpa)
+  (pel-ensure-package-elpa multiple-cursors from: melpa)
   (pel-autoload-file multiple-cursors for:
                      mc/edit-lines
                      mc/mark-next-like-this
@@ -9820,19 +9822,19 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; Search done by C-s:
 ;;  - ISearch and anzu
 (when pel-use-anzu
-  (pel-ensure-package anzu from: melpa)
+  (pel-ensure-package-elpa anzu from: melpa)
   (pel-autoload-file anzu for: global-anzu-mode)
   (when (eq pel-initial-search-tool 'anzu)
     (pel-after-startup-do (global-anzu-mode +1))))
 ;;  - swiper
 (when pel-use-swiper
-  (pel-ensure-package swiper from: melpa)
+  (pel-ensure-package-elpa swiper from: melpa)
   (pel-autoload-file swiper for: swiper)
   (when (eq pel-initial-search-tool 'swiper)
     (global-set-key "\C-s" 'swiper)))
 
 (when pel-use-isearch-mb
-  (pel-ensure-package isearch-mb from: gnu)
+  (pel-ensure-package-elpa isearch-mb from: gnu)
   (pel-autoload-file isearch-mb for: isearch-mb-mode)
   (when (eq pel-use-isearch-mb 'use-from-start)
     (isearch-mb-mode 1))
@@ -9893,7 +9895,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     (interactive)
     (customize-option 'regex-tool-backend))
 
-  (pel-ensure-package regex-tool from: melpa)
+  (pel-ensure-package-elpa regex-tool from: melpa)
   (pel-autoload-file regex-tool for: regex-tool)
   (define-key pel:regexp "T" 'regex-tool)
   (pel-eval-after-load regex-tool
@@ -9903,7 +9905,7 @@ See `flyspell-auto-correct-previous-word' for more info."
         'pel-select-regex-tool-backend))))
 
 (when pel-use-pcre2el
-  (pel-ensure-package pcre2el from: melpa)
+  (pel-ensure-package-elpa pcre2el from: melpa)
   (pel-autoload-file pcre2el for:
                      rxt-mode
                      pcre-mode)
@@ -9911,7 +9913,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (define-key pel:regexp "P" 'pcre-mode))
 
 (when pel-use-visual-regexp
-  (pel-ensure-package visual-regexp from: melpa)
+  (pel-ensure-package-elpa visual-regexp from: melpa)
   (pel-autoload-file visual-regexp for:
                      vr/replace
                      vr/query-replace
@@ -9936,7 +9938,7 @@ See `flyspell-auto-correct-previous-word' for more info."
       (define-key global-map (kbd "C-c m") 'vr/mc-mark))))
 
 (when pel-use-visual-regexp-steroids
-  (pel-ensure-package visual-regexp-steroids from: melpa)
+  (pel-ensure-package-elpa visual-regexp-steroids from: melpa)
   (pel-autoload-file visual-regexp-steroids for:
                      vr/select-replace
                      vr/select-query-replace
@@ -9963,7 +9965,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; xr - Emacs regexp parser and analyzer
 
 (when pel-use-xr
-  (pel-ensure-package xr from: gnu)
+  (pel-ensure-package-elpa xr from: gnu)
   (pel-autoload-file xr for:
                      xr-pp
                      xr-lint)
@@ -9985,7 +9987,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (define-pel-global-prefix pel:regxp-lint (kbd "<f11> s x M-l"))
   (define-pel-global-prefix pel:elisp-regxp-lint (kbd "<f11> SPC l a l"))
 
-  (pel-ensure-package relint from: gnu)
+  (pel-ensure-package-elpa relint from: gnu)
   (pel-autoload-file relint for:
                      relint-current-buffer
                      relint-file
@@ -10045,7 +10047,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   ;;       the end of pel--options.el.
   (when pel-use-projectile-speedbar
     (defvar projectile-command-map)     ; prevent compiler warning
-    (pel-ensure-package projectile-speedbar from: melpa)
+    (pel-ensure-package-elpa projectile-speedbar from: melpa)
     (pel-autoload-file projectile-speedbar for:
                        projectile-speedbar-open-current-buffer-in-tree
                        projectile-speedbar-toggle)
@@ -10095,7 +10097,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;;       (message "Activating nhexl nibble mode"))))
 
 (when pel-use-nhexl-mode
-  (pel-ensure-package nhexl-mode from: gnu)
+  (pel-ensure-package-elpa nhexl-mode from: gnu)
   (pel-autoload-file nhexl-mode for:
                      nhexl-mode
                      nhexl-nibble-edit-mode
@@ -10304,12 +10306,12 @@ See `flyspell-auto-correct-previous-word' for more info."
     (define-key ctl-x-map "tlf" 'timelog-open-file)))
 
 ;; (when pel-use-chronometrist
-;;   (pel-ensure-package chronometrist from: melpa-stable))
+;;   (pel-ensure-package-elpa chronometrist from: melpa-stable))
 
 ;; ---------------------
 ;;** Time Management tools
 (when pel-use-tzc
-  (pel-ensure-package tzc from melpa))
+  (pel-ensure-package-elpa tzc from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;;* Tree-Sitter operations - <f11> C-t
@@ -10352,7 +10354,7 @@ See `flyspell-auto-correct-previous-word' for more info."
         "Delayed Magit configuration - add extra key bindings to Magit."
         (define-key pel:vcs-magit "s" 'magit-status))
 
-      (pel-ensure-package magit from: melpa)
+      (pel-ensure-package-elpa magit from: melpa)
       (pel-autoload-file magit for:
                          magit
                          magit-status)
@@ -10360,19 +10362,19 @@ See `flyspell-auto-correct-previous-word' for more info."
 
       ;;
       (when pel-use-treemacs-magit
-        (pel-ensure-package treemacs-magit from: melpa)))
+        (pel-ensure-package-elpa treemacs-magit from: melpa)))
   ;; `pel-use-magit' is off: check `pel-use-magit-section'
   (when pel-use-magit-section
-    (pel-ensure-package magit-section from: melpa)))
+    (pel-ensure-package-elpa magit-section from: melpa)))
 
 (when pel-use-gitignore
-  (pel-ensure-package git-modes from: melpa))
+  (pel-ensure-package-elpa git-modes from: melpa))
 
 ;; ----------------
 ;;** Mercurial Support
 (when pel-use-monky
   (define-pel-global-prefix pel:vcs-monky (kbd "<f11> v m"))
-  (pel-ensure-package monky from: melpa)
+  (pel-ensure-package-elpa monky from: melpa)
   (pel-autoload-file monky for: monky-status)
   (define-key pel:vcs-monky "s"  'monky-status)
   (define-key pel:vcs-monky "b"  'monky-blame-current-file))
@@ -10381,7 +10383,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   ;; Install & compile hgignore-mode if requested.  No key assignment;
   ;; the package installation will activate the file name association
   ;; and the auto-loading.
-  (pel-ensure-package hgignore-mode from: melpa))
+  (pel-ensure-package-elpa hgignore-mode from: melpa))
 
 ;; ----------------
 ;;** Perforce Support
@@ -10397,7 +10399,7 @@ See `flyspell-auto-correct-previous-word' for more info."
      "vc-p4.el")
     (require 'vc-p4))
   (when (memq pel-use-perforce '(both p4))
-    (pel-ensure-package p4 from: melpa)
+    (pel-ensure-package-elpa p4 from: melpa)
     (require 'p4))
   (when (and (eq pel-use-perforce 'both)
              (boundp 'p4-do-find-file))
@@ -10406,7 +10408,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; ----------------
 ;;** Subversion Support
 (when pel-use-dsvn
-  (pel-ensure-package dsvn from: melpa))
+  (pel-ensure-package-elpa dsvn from: melpa))
 
 (when pel-use-psvn
   (pel-install-file
@@ -10567,7 +10569,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (define-key pel:tab (kbd "M-p")   'tab-bar-history-back))
 
 (when pel-use-transpose-frame
-  (pel-ensure-package transpose-frame from: melpa)
+  (pel-ensure-package-elpa transpose-frame from: melpa)
   (pel-autoload-file transpose-frame for:
                      transpose-frame
                      flip-frame
@@ -10611,7 +10613,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;; --
 (when pel-use-golden-ratio
-  (pel-ensure-package golden-ratio from: melpa)
+  (pel-ensure-package-elpa golden-ratio from: melpa)
   (pel-autoload-file golden-ratio for:
                      golden-ratio-mode)
   (define-key pel:window  "G"  'golden-ratio-mode)
@@ -10619,7 +10621,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     (golden-ratio-mode 1)))
 ;; --
 (when pel-use-ace-window
-  (pel-ensure-package ace-window from: melpa)
+  (pel-ensure-package-elpa ace-window from: melpa)
   (pel-autoload-file ace-window for:
                      ace-window
                      ace-swap-window
@@ -10654,7 +10656,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;; --
 (when pel-use-winum
-  (pel-ensure-package winum from: melpa)
+  (pel-ensure-package-elpa winum from: melpa)
   (pel-autoload-file winum for:
                      winum-mode
                      winum-select-window-by-number
@@ -10685,7 +10687,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     (winum-mode 1)))
 ;; --
 (when pel-use-window-purpose
-  (pel-ensure-package window-purpose from: melpa)
+  (pel-ensure-package-elpa window-purpose from: melpa)
   (pel-autoload-file window-purpose for:
                      purpose-mode
                      switch-buffer-without-purpose)
@@ -10751,7 +10753,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     (winner-mode t)))
 
 (when pel-use-windresize
-  (pel-ensure-package windresize from: gnu)
+  (pel-ensure-package-elpa windresize from: gnu)
   (pel-autoload-file windresize for: windresize)
   (define-key pel:window "r" 'windresize))
 
@@ -10873,7 +10875,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     (when (eq pel-use-desktop 'with-desktop-registry-automatic)
       (desktop-save-mode 1))
     (define-pel-global-prefix pel:session-registry (kbd "<f11> S R"))
-    (pel-ensure-package desktop-registry from: melpa)
+    (pel-ensure-package-elpa desktop-registry from: melpa)
     (pel-autoload-file desktop-registry for:
                        desktop-registry-change-desktop
                        desktop-registry-remove-desktop
@@ -10889,7 +10891,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     (define-key pel:session-registry "A" 'desktop-registry-add-current-desktop))
    ;; -- Using desktop+
    ((eq pel-use-desktop 'with-desktop+)
-    (pel-ensure-package desktop+ from: melpa)
+    (pel-ensure-package-elpa desktop+ from: melpa)
     (pel-autoload-file desktop+ for:
                        desktop+-create
                        desktop+-load
@@ -10931,7 +10933,7 @@ See `flyspell-auto-correct-previous-word' for more info."
                 (setq term-prompt-regexp pel-shell-prompt-line-regexp)))))
 ;; support for the extremely fast/nice libvterm-based vterm shell.
 (when pel-use-vterm
-  (pel-ensure-package vterm from: melpa)
+  (pel-ensure-package-elpa vterm from: melpa)
   (pel-autoload-file vterm for: vterm)
   (define-key pel:execute "v" 'vterm))
 
@@ -10978,8 +10980,8 @@ See `flyspell-auto-correct-previous-word' for more info."
 (when pel-use-emacs-eat
   (unless pel-emacs-29-or-later-p
     ;; eat requires compat for Emacs < 29
-    (pel-ensure-package compat from: gnu))
-  (pel-ensure-package eat from: nongnu)
+    (pel-ensure-package-elpa compat from: gnu))
+  (pel-ensure-package-elpa eat from: nongnu)
   (pel-autoload-file eat for: eat)
   (define-pel-global-prefix pel:for-eat   (kbd "<f11> SPC z f"))
   (define-key pel:execute "f" 'eat)
@@ -11036,7 +11038,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;;** ggtags
 (when pel-use-ggtags
-  (pel-ensure-package ggtags from: melpa)
+  (pel-ensure-package-elpa ggtags from: melpa)
   (pel-autoload-file ggtags for: ggtags-mode)
 
   ;; Provide a key to quickly enable or disable ggtags-mode.
@@ -11066,14 +11068,14 @@ See `flyspell-auto-correct-previous-word' for more info."
   (define-pel-global-prefix pel:cscope (kbd "<f11> X C"))
 
   (when pel-use-xcscope
-    (pel-ensure-package xcscope from: melpa)
+    (pel-ensure-package-elpa xcscope from: melpa)
     (pel-autoload-file xcscope for: cscope-minor-mode)
     (define-key pel:cscope "C" 'cscope-minor-mode)
     ;; schedule activation of cscope minor mode for selected ones
     (pel-add-hook-for 'pel-modes-activating-cscope
                       'cscope-minor-mode))
   (when pel-use-helm-cscope
-    (pel-ensure-package helm-cscope from: melpa)
+    (pel-ensure-package-elpa helm-cscope from: melpa)
     (pel-autoload-file helm-cscope for: helm-cscope-mode)
     (define-key pel:cscope "H" 'pel-toggle-helm-cscope)
     (add-hook 'helm-cscope-mode-hook 'pel-activate-helm-cscope)
@@ -11122,7 +11124,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;;** gxref
 (when pel-use-gxref
-  (pel-ensure-package gxref from: melpa)
+  (pel-ensure-package-elpa gxref from: melpa)
   (pel-autoload-file gxref for: xref-show-xrefs-function)
   (define-key pel:xref-backend "g" 'pel-xref-toggle-gxref)
   (pel-add-hook-for 'pel-modes-activating-gxref
@@ -11130,12 +11132,12 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;;** jtags
 (when pel-use-jtags
-  (pel-ensure-package jtags from: melpa))
+  (pel-ensure-package-elpa jtags from: melpa))
 
 ;;** rtags
 (when pel-use-rtags-xref
   (declare-function pel-xref-rtags-activate  "pel-xref")
-  (pel-ensure-package rtags-xref from: melpa)
+  (pel-ensure-package-elpa rtags-xref from: melpa)
   (pel-autoload-file rtags-xref for: rtags-xref-enable)
   (define-key pel:xref-backend "R" 'pel-xref-toggle-rtags)
   (when (eq pel-use-rtags-xref 'use-from-start)
@@ -11143,12 +11145,12 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;;** ivy-xref
 (when pel-use-ivy-xref
-  (pel-ensure-package ivy-xref from: melpa)
+  (pel-ensure-package-elpa ivy-xref from: melpa)
   (pel-autoload-file ivy-xref for: ivy-xref-show-xrefs))
 
 ;;** helm-xref
 (when pel-use-helm-xref
-  (pel-ensure-package helm-xref from: melpa)
+  (pel-ensure-package-elpa helm-xref from: melpa)
   (if pel-emacs-27-or-later-p
       (pel-autoload-file helm-xref for:
                          helm-xref-show-xrefs-27
@@ -11164,7 +11166,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;;** eopengrok
 (when pel-use-eopengrok
-  (pel-ensure-package eopengrok from: melpa)
+  (pel-ensure-package-elpa eopengrok from: melpa)
   (pel-autoload-file eopengrok for:
                         eopengrok-mode
                         eopengrok-create-index
@@ -11234,9 +11236,9 @@ See `flyspell-auto-correct-previous-word' for more info."
   ;; Both must be active for key-seq to be used.  When both are
   ;; set PEL gives priority to key-seq.
   (when pel-use-key-seq
-    (pel-ensure-package key-seq from: melpa))
+    (pel-ensure-package-elpa key-seq from: melpa))
 
-  (pel-ensure-package key-chord from: melpa)
+  (pel-ensure-package-elpa key-chord from: melpa)
   (pel-autoload-file key-chord for: key-chord-mode)
   (define-key pel:mode-key-chord "k" 'key-chord-mode)
   (pel-eval-after-load key-chord
@@ -11357,7 +11359,7 @@ This call simulates a F7 prefix key unless DONT-SIMULATE is non-nil."
   ;; --
   ;; Install the hydra external package if it is not already installed.
   ;; Then provide some auto-loading.
-  (pel-ensure-package hydra from: melpa)
+  (pel-ensure-package-elpa hydra from: melpa)
   (pel-autoload-file hydra for: defhydra)
 
   ;; Byte-compile pel__hydra.el if needed

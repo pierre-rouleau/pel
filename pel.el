@@ -1,6 +1,6 @@
 ;;; pel.el --- Pragmatic Emacs Library -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 ;; URL: https://github.com/pierre-rouleau/pel
@@ -112,6 +112,7 @@ re-execute `pel-init' again to activate them."
   (setq pel--cached-abbrev-file-name  cached-abbrev-file-name)
   ;; Note that pel_keys.el has a file name that ensures that packages
   ;; controlled byte-compilation compiles it *before* compiling pel.el
+  ;; The Makefile rules also ensure that pel_keys.el is compiled before pel.el.
   (load-library "pel_keys"))
 
 ;; -----------------------------------------------------------------------------

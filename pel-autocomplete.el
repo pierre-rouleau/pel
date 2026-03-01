@@ -1,6 +1,6 @@
 ;;; pel-autocomplete.el --- PEL auto-completion support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -122,7 +122,7 @@ Return nil otherwise."
         (require 'auto-complete nil :noerror)
         (pel-when-fbound 'ac-config-default
           (ac-config-default)))
-    (display-warning 'pel-ensure-package "\
+    (display-warning 'pel--setup-auto-complete "\
 Trying to use auto-complete while pel-use-auto-complete user-option is off."
                      :error)))
 
@@ -199,7 +199,7 @@ Activate when ARG is nil, t or positive, deactivate when it is negative."
               (setq company-tooltip-align-annotations t)
               (setq company-show-numbers t))
           (error "Package company not loaded")))
-    (display-warning 'pel-ensure-package "\
+    (display-warning 'pel--setup-company "\
 Trying to use company while pel-use-company user-option is off." :error)))
 
 (defun pel--global-company-mode-on ()
@@ -290,7 +290,7 @@ On systems that must also use `corfu-terminal-mode' also check if it is on."
         (when (and pel-use-corfu-terminal
                    (not pel-emacs-is-graphic-p))
           (require 'corfu-terminal nil :noerror)))
-    (display-warning 'pel-ensure-package "\
+    (display-warning 'pel--setup-corfu "\
 Trying to use corfu while pel-use-corfu user-option is off." :error)))
 
 (defun pel--set-corfu-features ()

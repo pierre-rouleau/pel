@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, September 14 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-18 12:33:18 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-01 13:06:30 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -88,13 +88,13 @@ Return t when lispy is loaded, nil otherwise"
     ;; The hydra system is not yet loaded.
     ;; Prevent the possibility that the external `hydra' package is missing:
     ;; install it if it is missing.
-    (pel-ensure-package hydra from: melpa)
+    (pel-ensure-package-elpa hydra from: melpa)
     ;; If PEL is configured to use the Hydra package, set it up.
     (when (fboundp 'pel--load-hydra)
       (pel--load-hydra :dont-simulate-the-f7-key)))
 
   ;; Now ensure lispy is installed and loaded.
-  (pel-ensure-package lispy from: melpa)
+  (pel-ensure-package-elpa lispy from: melpa)
   (require 'lispy nil :no-error))
 
 (defun pel-set-lispy-mode-to (new-value)
@@ -155,7 +155,7 @@ Try again or restart Emacs."))
 Return t when lpy is loaded, nil otherwise"
   (when (pel--get-hydra-and-lispy)
     ;; ensure that the lpy package is installed and loaded
-    (pel-ensure-package lpy from: melpa)
+    (pel-ensure-package-elpa lpy from: melpa)
     (require 'lpy nil :no-error)))
 
 (defun pel-lpy-mode ()

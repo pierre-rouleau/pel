@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-24 14:54:56 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-01 13:21:42 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -290,8 +290,8 @@ EXPR is not an expression."
 ;; --
 
 (defconst pel--regxp-pel-ensure
-  "^ *(pel-ensure-package +\\(\\(\\s_\\|\\sw\\)+\\)"
-  "Regexp to find & extract package name installed by `pel-ensure-package'.")
+  "^ *(pel-ensure-package-elpa +\\(\\(\\s_\\|\\sw\\)+\\)"
+  "Regexp to find & extract package name installed by `pel-ensure-package-elpa'.")
 
 (defconst pel--regxp-from-github
   "^ *(pel-install-github-files* +\\(?:\\\"\\([-[:alnum:]\\./]+\\)\\\"\\)"
