@@ -4136,10 +4136,10 @@ d-mode not added to ac-modes!"
    ;; use-pel-elpa-attic-copy used to support a local copy.
    ;; Now it means using the emacsattic version.
    ((memq pel-use-parinfer '(t use-pel-elpa-attic-copy))
-    (pel--install-github-files "emacsattic/parinfer/master"
-                               '("parinfer.el"
-                                 "parinferlib.el"
-                                 "parinfer-ext.el"))
+    (pel-install-github-files "emacsattic/parinfer/master"
+                              '("parinfer.el"
+                                "parinferlib.el"
+                                "parinfer-ext.el"))
     (pel-autoload-file parinfer for:
                        parinfer-mode
                        parinfer-toggle-mode
@@ -7387,7 +7387,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 (when pel-use-corfu
   (pel-ensure-package corfu from: melpa)
   (when pel-use-corfu-terminal
-    (pel-install-web-file
+    (pel-install-file
      "https://codeberg.org/akib/emacs-corfu-terminal/raw/branch/master/corfu-terminal.el"
      "corfu-terminal.el")
     (pel-autoload-file corfu-terminal for:
