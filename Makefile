@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-02 14:38:25 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-02 14:51:33 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -727,8 +727,8 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 # byte-compilation but also on the very first compilation: it alters the order of
 # byte-compilation for the pel- files.
 
-# TODO: find a way to generate the dependency list automatically by code scanning.
-
+# Note: pel--options.el lazily requires some other pel files but they are NOT
+#       included in the dependency as it would create a circular make dependency.
 pel--base.elc:            pel-comp.elc
 pel--keys-macros.elc:     pel--base.elc pel--indent.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-browse.elc
 pel--options.elc:         pel--base.elc
@@ -871,11 +871,13 @@ pel-yang.elc:             pel--base.elc
 pel-zig.elc:              pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel__hydra.elc:           pel--base.elc pel--options.elc pel--keys-macros.elc pel-buffer.elc pel-frame-control.elc pel-hideshow.elc pel-pp.elc pel-scroll.elc pel-window.elc
 pel_keys.elc:             pel-etags.elc pel--base.elc pel--indent.elc pel--macros.elc pel--keys-macros.elc pel--options.elc pel-process.elc pel-autoload.elc pel-setup.elc pel-cursor.elc pel-iedit-modes-support.elc pel-lispy.elc pel-file.elc pel-ibuffer.elc pel-key-chord.elc
-
 # Note that pel__hydra.el is byte-compiled by the code of pel_keys.el
 # when pel_keys is loading. Therefore, if pel__hydra.el is modified
 # then pel_keys.el must also be built.  The pel_keys.elc therefore
 # depend on the source of pel__hydra: pel__hydra.el , *not* its .elc file!
+pel_keys.elc:             pel__hydra.el
+
+
 
 # Test code dependency:
 test/pel-base-test.el.test-passed:              pel--base.elc pel-ert.elc
