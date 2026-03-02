@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March  2 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-02 14:12:00 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-02 14:15:01 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,9 +34,8 @@
 ;;
 ;;
 (require 'pel--base)  ; use `pel-inside-code'
-(eval-when-compile    ; the following are autoloaded:
-  (require 'cl-lib)     ; use `cl-union'
-  (require 'subr-x))    ; use `string-join'
+(require 'cl-lib)     ; use `cl-union'
+(require 'subr-x)     ; use `string-join'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
