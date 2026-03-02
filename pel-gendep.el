@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March  2 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-02 14:15:01 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-02 14:28:39 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,15 +42,15 @@
 ;;
 
 (defconst pel-gendep-require-re
-  "[[:blank:]]*(require[[:blank:]]'\\(\\S_[[:alnum:]-]+\\) ?"
+  "[[:blank:]]*(require[[:blank:]]'\\(\\S_[[:alnum:]_-]+\\) ?"
   "Regular expression that extracts feature required by file in group 1.")
 
 (defconst pel-gendep-load-re
-  "[[:blank:]]*(load\\(?:-library\\)? \"\\([[:alnum:]-]+\\)\""
+  "[[:blank:]]*(load\\(?:-library\\)? \"\\([[:alnum:]_-]+\\)\""
   "Regular expression that extracts feature loaded by file in group 1.")
 
 (defconst pel-gendep-provide-re
-  "^[[:blank:]]*(provide[[:blank:]]'\\(\\S_[[:alnum:]-]+\\)"
+  "^[[:blank:]]*(provide[[:blank:]]'\\(\\S_[[:alnum:]_-]+\\)"
   "Regular expression that extracts feature provided by file in group 1.")
 
 
