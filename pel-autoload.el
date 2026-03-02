@@ -1,6 +1,6 @@
 ;;; pel-autoload.el --- Autoloads PEL -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -524,6 +524,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-go-dot-mod-insert-tab-info
     pel-go-gofmt-on-buffer-save)
 
+  ;; --
+  (pel-autoload "pel-gendep" for:
+    pel-gendep-insert-make-elisp-dependencies-for-pel)
   ;; --
   (pel-autoload "pel-graphviz-dot" for:
     pel-render-commented-graphviz-dot)
