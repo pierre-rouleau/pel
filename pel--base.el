@@ -2931,8 +2931,7 @@ current major mode."
 (defun pel-inside-code (&optional pos)
   "Return non-nil when point or POS is in code, nil if in comment or string.
 Note that this changes the search match data!"
-  (let* ((pos (or pos (point)))
-         (syntax (syntax-ppss pos)))
+  (let ((syntax (syntax-ppss (or pos (point)))))
     (and (not (nth 3 syntax))
          (not (nth 4 syntax)))))
 

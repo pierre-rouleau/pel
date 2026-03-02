@@ -1,8 +1,8 @@
-;;; pel-generate-dependencies.el --- Generate list of Emacs Lisp dependencies.  -*- lexical-binding: t; -*-
+;;; pel-gendep.el --- Generate list of Emacs Lisp dependencies.  -*- lexical-binding: t; -*-
 
 ;; Created   : Monday, March  2 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-02 09:22:39 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-02 10:43:31 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,6 +33,7 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--base)  ; use `pel-inside-code'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -50,9 +51,10 @@
   "^[[:blank:]]*(provide[[:blank:]]'\\(\\S_[[:alnum:]-]+\\)"
   "Regular expression that extracts feature provided by file in group 1.")
 
+
 (defun pel-generate-elisp-dependencies (file)
   "Identifies and return dependencies of Emacs Lisp FILE.
-Return an association list with:
+Return a property list with:
 - :requires : list of strings: name of required library.
 - :loads    : list of strings: name of loaded files.
 - :provides : list of provided feature(s)."
@@ -63,28 +65,34 @@ Return an association list with:
     (with-temp-buffer
       (insert-file-contents file)
       (goto-char (point-min))
+      ;; Identify the major mode to allow syntax checking
+      ;; and discriminate code from comments and strings.
+      (call-interactively (function emacs-lisp-mode))
       ;; Find 'require' dependencies
       (while (re-search-forward pel-gendep-require-re nil t)
-        (setq feature (match-string 1))
-        (unless (member feature dependencies)
-          (push feature dependencies)))
+        (when (pel-inside-code (point))
+          (setq feature (match-string 1))
+          (unless (member feature dependencies)
+            (push feature dependencies))))
       ;; Find loaded dependencies
       (goto-char (point-min))
       (while (re-search-forward pel-gendep-load-re nil t)
-        (setq feature (match-string 1))
-        (unless (member feature loaded)
-          (push feature loaded)))
+        (when (pel-inside-code)
+          (setq feature (match-string 1))
+          (unless (member feature loaded)
+            (push feature loaded))))
       ;; Find 'provide'
       (goto-char (point-min))
       (while (re-search-forward pel-gendep-provide-re nil t)
-        (setq feature (match-string 1))
-        (unless (member feature provides)
-          (push feature provides))))
+        (when (pel-inside-code)
+          (setq feature (match-string 1))
+          (unless (member feature provides)
+            (push feature provides)))))
     (list :requires (nreverse dependencies)
-             :loads (nreverse loaded)
-             :provides (nreverse provides))))
+          :loads (nreverse loaded)
+          :provides (nreverse provides))))
 
 ;;; --------------------------------------------------------------------------
-(provide 'pel-generate-dependencies)
+(provide 'pel-gendep)
 
-;;; pel-generate-dependencies.el ends here
+;;; pel-gendep.el ends here
