@@ -18,7 +18,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Package Quickstart
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/PEL_Managed_Packages-371-teal
+.. image:: https://img.shields.io/badge/PEL_Managed_Packages-372-teal
    :alt: Managed Packages
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
@@ -64,7 +64,7 @@ Essentially PEL:
 - extends Emacs,
 - adds a large number (723) of convenient commands and provides glue logic to
   increase feature cohesion and simplify their use,
-- provides the ability to easily install, update a large set (371) of external
+- provides the ability to easily install, update a large set (372) of external
   packages from multiple sources:
 
   - elpa compliant sites: GNU elpa, MELPA,
@@ -334,7 +334,7 @@ packages, etc...
 -----------------------------------------------------------------
 
 - In normal mode, PEL controls the download, installation, configuration and
-  activation of **371** *top-level* [#externp]_ external packages through the
+  activation of **372** *top-level* [#externp]_ external packages through the
   use of easy-to-setup customization user-options that have a name that start
   with the "``pel-use-``" prefix.
 
@@ -514,7 +514,7 @@ Notes
 
 
 .. [#externp] An external package may have dependencies.  The dependencies are also
-              installed. PEL currently provides access to 371 top-level external packages.
+              installed. PEL currently provides access to 372 top-level external packages.
               The actual number of packages is larger when counting their
               dependencies (currently 48 extra packages installed as dependencies).
               From within PEL execute the **pel-package-info**
