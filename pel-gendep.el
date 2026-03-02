@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March  2 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-02 14:07:48 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-02 14:12:00 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -100,8 +100,7 @@ Return a property list with:
 (defun pel-gendep-elisp-dependencies-in-dir (directory)
   "Return a list of dependencies of all Emacs Lisp files in DIRECTORY."
   (let ((files-dep ()))
-    (dolist (fn (sort (directory-files directory t "\\.el$" t)
-                      :lessp #'string< )
+    (dolist (fn (sort (directory-files directory t "\\.el$" t) #'string< )
                 (nreverse files-dep))
       (push (pel-gendep-elisp-file-dependencies fn) files-dep))))
 
