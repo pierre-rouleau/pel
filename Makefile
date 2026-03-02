@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-01 15:13:08 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-02 09:19:40 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -202,6 +202,7 @@ EL_FILES := pel--base.el \
 		pel-forth.el \
 		pel-frame-control.el \
 		pel-fs.el \
+		pel-gendep.el \
 		pel-gleam.el \
 		pel-go.el \
 		pel-goto-addr.el \
