@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March  2 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-02 12:47:08 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-02 13:52:54 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,6 +34,7 @@
 ;;
 ;;
 (require 'pel--base)  ; use `pel-inside-code'
+(require 'cl-lib)     ; use `cl-union'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -97,7 +98,9 @@ Return a property list with:
 (defun pel-gendep-elisp-dependencies-in-dir (directory)
   "Return a list of dependencies of all Emacs Lisp files in DIRECTORY."
   (let ((files-dep ()))
-    (dolist (fn (sort (directory-files directory t "\\.el$" t)) (nreverse files-dep))
+    (dolist (fn (sort (directory-files directory t "\\.el$" t)
+                      :lessp #'string< )
+                (nreverse files-dep))
       (push (pel-gendep-elisp-file-dependencies fn) files-dep))))
 
 (defun pel-string-starts-with-any-of (text prefixes)
@@ -117,7 +120,7 @@ identifies the prefix that identifies files that must be retained in the
 dependency lists."
   (dolist (dep (pel-gendep-elisp-dependencies-in-dir directory))
     (let ((fname (file-name-nondirectory (plist-get dep :file)))
-          (reqs  (cl-union (plist-get dep :requires) (plist-get dep :requires)
+          (reqs  (cl-union (plist-get dep :requires) (plist-get dep :loads)
                            :test #'string= )))
       (when local-prefix
         (setq reqs (seq-filter (lambda (fn)
@@ -141,7 +144,7 @@ dependency lists."
   (if (boundp 'pel-home-dirpath-name)
       (pel-gendep-insert-make-elisp-dependencies pel-home-dirpath-name
                                                  '("pel-" "pel_"))
-    (message "PLease update your init.el to define `pel-home-dirpath-name'!")))
+    (message "Please update your init.el to define `pel-home-dirpath-name'!")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-gendep)

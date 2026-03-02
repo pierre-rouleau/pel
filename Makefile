@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-02 12:37:23 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-02 13:57:14 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -870,7 +870,7 @@ pel-xref.elc:             pel--base.elc pel--options.elc pel-prompt.elc pel-read
 pel-yang.elc:             pel--base.elc
 pel-zig.elc:              pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel__hydra.elc:           pel--base.elc pel--options.elc pel--keys-macros.elc pel-buffer.elc pel-frame-control.elc pel-hideshow.elc pel-pp.elc pel-scroll.elc pel-window.elc
-pel_keys.elc:             pel--base.elc pel--indent.elc pel--macros.elc pel--keys-macros.elc pel--options.elc pel-process.elc pel-autoload.elc pel-setup.elc pel-cursor.elc pel-iedit-modes-support.elc pel-lispy.elc pel-file.elc pel-ibuffer.elc pel-key-chord.elc
+pel_keys.elc:             pel-etags.elc pel--base.elc pel--indent.elc pel--macros.elc pel--keys-macros.elc pel--options.elc pel-process.elc pel-autoload.elc pel-setup.elc pel-cursor.elc pel-iedit-modes-support.elc pel-lispy.elc pel-file.elc pel-ibuffer.elc pel-key-chord.elc
 
 # Note that pel__hydra.el is byte-compiled by the code of pel_keys.el
 # when pel_keys is loading. Therefore, if pel__hydra.el is modified
