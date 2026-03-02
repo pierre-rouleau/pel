@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-01 15:13:08 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-02 14:51:33 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -202,6 +202,7 @@ EL_FILES := pel--base.el \
 		pel-forth.el \
 		pel-frame-control.el \
 		pel-fs.el \
+		pel-gendep.el \
 		pel-gleam.el \
 		pel-go.el \
 		pel-goto-addr.el \
@@ -726,151 +727,157 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 # byte-compilation but also on the very first compilation: it alters the order of
 # byte-compilation for the pel- files.
 
-# TODO: find a way to generate the dependency list automatically by code scanning.
-
-pel--base.elc:          pel-comp.elc
-pel--keys-macros.elc:   pel--base.elc pel--indent.elc pel--macros.elc pel--options.elc
-pel--options.elc:       pel--base.elc
-pel-abbrev.elc:         pel--base.elc
-pel-ada.elc:            pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
-pel-align.elc:          pel--base.elc pel-hash.elc
-pel-applescript.elc:    pel--base.elc pel--options.elc pel-read.elc
-pel-as.elc:             pel-d.elc pel-lua.elc pel-nim.elc pel-perl.elc pel-prompt.elc pel-pike.elc pel-python.elc pel-ruby.elc pel-tcl.elc
-pel-autocomplete.elc:   pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc
-pel-autoload.elc:       pel--options.elc
-pel-benchmark.elc:      pel--base.elc pel-window.elc pel-setup.elc
-pel-bookmark.elc:       pel--base.elc
-pel-browse.elc:         pel--base.elc pel--options.elc
-pel-buffer.elc:         pel--base.elc pel-list.elc
-pel-c-comment.elc:      pel--base.elc pel--options.elc pel-comment.elc
-pel-c-preproc.elc:      pel-syntax.elc
-pel-c-utils.elc:        pel--base.elc pel--syntax-macros.elc
-pel-cc.elc:             pel--base.elc pel--options.elc pel-ffind.elc
-pel-cc-find.elc:        pel--base.elc pel--options.elc pel-file.elc pel-ffind.elc pel-ffind-inpath.elc pel-ini.elc
-pel-cc-linux-kernel.elc: pel--options.elc
-pel-cc-navigate.elc:    pel--syntax-macros.elc
-pel-ccp.elc:            pel--base.elc pel--options.elc pel-navigate.elc
-pel-c3.elc:             pel--base.elc pel-modes.elc pel-prompt.elc
-pel-comint.elc:         pel--base.elc
-pel-comment-adorn.elc:  pel-rst.elc pel-comment.elc pel-mark.elc
-pel-comment.elc:        pel--base.elc pel-ccp.elc pel-prompt.elc
-pel-commonlisp.elc:     pel--base.elc pel--options.elc pel-browse.elc pel-prompt.elc pel-window.elc
-pel-completion.elc:     pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-seq.elc pel-ido.elc
-pel-cpp.elc:            pel--base.elc
-pel-cursor.elc:         pel--options.elc
-pel-custom.elc:         pel--base.elc
-pel-d.elc:              pel--base.elc pel--options.elc pel-ccp.elc
-pel-dart.elc:           pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
-pel-diff.elc:           pel--base.elc pel-window.elc pel--keys-macros.elc
-pel-dtreplace.elc:      pel--base.elc pel--options.elc
-pel-eldoc.elc:          pel--base.elc
-pel-elisp-analyze.elc:  pel-lisp.elc
-pel-elisp.elc:          pel--base.elc pel--options.elc pel-prompt.elc pel-navigate.elc
-pel-elixir.elc:         pel--base.elc pel--options.elc pel-indent.el pel-modes.elc
-pel-elpa.elc:           pel-filedir.elc
-pel-emacs.elc:          pel--base.elc pel--options.elc pel-prompt.elc pel-setup-base.elc
-pel-emacs-analyze.elc:  pel--base.elc
-pel-erlang.elc:         pel--base.elc pel--options.elc pel-fly.elc pel-ffind.elc pel-fs.elc pel-indent.elc pel-modes.elc pel-syntax.elc pel-xref.elc pel-comment.elc
-pel-ffind.elc:          pel--options.elc
-pel-file-recent.elc:    pel--options.elc pel-prompt.elc
-pel-file.elc:           pel--base.elc pel-prompt.elc pel-read.elc pel-window.elc pel-prompt.elc pel-filex.elc
-pel-filedir.elc:        pel--base.elc
-pel-filex.elc:          pel--base.elc
-pel-fill.elc:           pel--base.elc
-pel-fly.elc:            pel--base.elc pel--options.elc
-pel-forth.elc:          pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
-pel-frame-control.elc:  pel--base.elc
-pel-gleam.elc:          pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
-pel-go.elc:             pel--base.elc pel--options.elc pel-fly.elc pel-indent.elc pel-modes.elc
-pel-graphviz-dot.elc:   pel--base.elc pel-ccp.elc
-pel-help.elc:           pel--base.elc pel-modes.elc
-pel-hide-docstring.elc: pel-navigate.elc pel-face-ut.elc
-pel-hideshow.elc:       pel--base.elc
-pel-hier-face.elc:      pel--base.elc
-pel-hier-modes.elc:     pel--base.elc
-pel-highlight.elc:      pel--base.elc pel-prompt.elc
-pel-ido.elc:            pel-prompt.elc
-pel-iedit.elc:          pel--options.elc
-pel-imenu-dbg.elc:      pel--base.elc
-pel-imenu-ido.elc:      pel--base.elc pel--options.elc pel-prompt.elc pel-completion.elc
-pel-imenu.elc:          pel--base.elc pel--options.elc
-pel-ini.elc:		pel--base.elc
-pel-indent.elc:         pel--base.elc pel--indent.elc pel--options.elc
-pel-js.elc:             pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
-pel-kbmacros.elc:       pel--options.elc pel-list.elc
-pel-key-chord.elc:      pel--base.elc pel--options.elc
-pel-lisp.elc:           pel--base.elc
-pel-lispy.elc:          pel--base.elc pel--options.elc
-pel-list.elc:           pel--base.elc
-pel-lsp.elc:		pel--base.elc
-pel-lua.elc:            pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
-pel-make.elc:           pel--base.elc pel-syntax.elc
-pel-man.elc:            pel--base.elc
-pel-mark.elc:           pel--base.elc
-pel-modes.elc:		pel--base.elc pel--options.elc pel-indent.elc
-pel-navigate.elc:       pel--base.elc pel-scroll.elc
-pel-nim.elc:            pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
-pel-numkpad.elc:        pel--base.elc pel-ccp.elc pel-navigate.elc pel-scroll.elc
-pel-open.elc:           pel--base.elc pel--options.elc pel-ido.elc pel-prompt.elc pel-ffind.elc pel-file.elc pel-rst.elc
-pel-outline.elc:        pel--base.elc
-pel-package.elc:        pel--base.elc pel--options.elc pel-navigate.elc pel-elpa.elc
-pel-pathmng.elc:        pel--base.elc pel-window.elc
-pel-perl.elc:		pel--base.elc pel--options.elc pel-ccp.elc pel-ffind.elc
-pel-pike.elc:           pel--base.elc pel--options.elc pel-ccp.elc
-pel-plantuml.elc:       pel--base.elc
-pel-pp.elc:             pel--base.elc
-pel-ppindent.elc:       pel--base.elc pel-prompt.elc
-pel-prompt.elc:         pel--base.elc pel--options.elc
-pel-read.elc:           pel-navigate.elc
-pel-rst.elc:            pel--base.elc pel--options.elc pel-whitespace.elc pel--macros.elc pel-ccp.elc pel-bookmark.elc pel-file.elc
-pel-ruby.elc:           pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
-pel-rust.elc:           pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
-pel-sh.elc:             pel--base.elc
-pel-shell.elc:          pel--options.elc
-pel-scheme.elc:         pel-comint.elc pel-window.elc
-pel-screen.elc:         pel--options.elc pel-whitespace.elc
-pel-scroll.elc:         pel-window.elc
-pel-search-regexp.elc:  pel--options.elc
-pel-search.elc:         pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-search-regexp.elc pel-window.elc pel--syntax-macros.elc
-pel-seed7.elc:          pel--base.elc pel--options.elc pel-ccp.elc
-pel-seq.elc:            pel--base.elc
-pel-setup-base.elc:     pel--base.elc pel--options.elc pel-ccp.elc pel-custom.elc pel-elpa.elc pel-package.elc
-pel-setup.elc:          pel--base.elc pel--options.elc pel-custom.elc pel-elpa.elc pel-list.elc pel-package.elc pel-setup-base.elc pel-setup-27.elc
-pel-setup-27.elc:       pel--options.elc pel-elpa.elc pel-setup-base.elc
-pel-skels-c.elc:        pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-list.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc pel-uuid.elc
-pel-skels-cpp.elc:      pel--base.elc pel--options.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc pel-uuid.elc pel-skels-c.elc
-pel-skels-clisp.elc:    pel--options.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
-pel-skels-elisp.elc:    pel--base.elc pel--options.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
-pel-skels-erlang.elc:   pel--base.elc pel--options.elc pel--macros.elc pel-list.elc pel-tempo.elc pel-skels.elc
-pel-skels-generic.elc:  pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
-pel-skels-rst.elc:      pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
-pel-skels.elc:          pel--base.elc pel--options.elc pel-prompt.elc
-pel-smartparens.elc:    pel--base.elc pel-syntax.elc
-pel-speedbar.elc:       pel--base.elc pel--macros.elc pel--options.elc
-pel-spell.elc:          pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc
-pel-syntax.elc:         pel--base.elc pel--options.elc pel--syntax-macros.elc
-pel-tcl.elc:            pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
-pel-tempo.elc:          pel--keys-macros.elc
-pel-text-insert.elc:    pel--base.elc pel--macros.elc pel-window.elc pel-syntax.elc
-pel-text-transform.elc: pel--base.elc pel--options.elc
-pel-time.elc:           pel--base.elc
-pel-timestamp.elc:      pel--base.elc pel--options.elc
-pel-treesit.elc:        pel--base.elc pel--keys-macros.elc pel-prompt.elc
-pel-undo.elc:           pel--options.elc
-pel-vc.elc:             pel--options.elc
-pel-vcs.elc:            pel--base.elc pel-filedir.elc pel-prompt.elc
-pel-whitespace.elc:     pel--base.elc pel--options.elc
-pel-window.elc:         pel--base.elc pel--options.elc  pel-prompt.elc
-pel-xr.elc:             pel--base.elc pel-read.elc
-pel-xref.elc:           pel--base.elc pel--options.elc pel-prompt.elc pel-read.elc pel-text-transform.elc pel-pathmng.elc
-pel-yang.elc:           pel--base.elc
-pel-zig.elc:            pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
-pel__hydra.elc:         pel--base.elc pel--options.elc pel--key-macros.el pel-buffer.elc pel-frame-control.elc pel-hideshow.elc pel-pp.elc pel-scroll.elc pel-window.elc pel-pp.el
+# Note: pel--options.el lazily requires some other pel files but they are NOT
+#       included in the dependency as it would create a circular make dependency.
+pel--base.elc:            pel-comp.elc
+pel--keys-macros.elc:     pel--base.elc pel--indent.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-browse.elc
+pel--options.elc:         pel--base.elc
+pel-abbrev.elc:           pel--base.elc
+pel-ada.elc:              pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
+pel-align.elc:            pel-hash.elc pel--base.elc
+pel-applescript.elc:      pel-read.elc pel--options.elc pel--base.elc
+pel-as.elc:               pel-prompt.elc pel-d.elc pel-tcl.elc pel-lua.elc pel-nim.elc pel-perl.elc pel-pike.elc pel-python.elc pel-ruby.elc pel-seed7.elc
+pel-autocomplete.elc:     pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc
+pel-autoload.elc:         pel--options.elc
+pel-benchmark.elc:        pel--base.elc pel-window.elc pel-setup.elc
+pel-bookmark.elc:         pel--base.elc
+pel-browse.elc:           pel--base.elc pel--options.elc
+pel-buffer.elc:           pel--base.elc pel-list.elc
+pel-c-comment.elc:        pel--base.elc pel--options.elc pel-comment.elc
+pel-c-preproc.elc:        pel-syntax.elc
+pel-c-utils.elc:          pel--base.elc pel--syntax-macros.elc
+pel-c3.elc:               pel--base.elc pel-modes.elc pel-prompt.elc
+pel-cc-find.elc:          pel--base.elc pel--options.elc pel-file.elc pel-ffind.elc pel-ffind-inpath.elc pel-ini.elc
+pel-cc-linux-kernel.elc:  pel--options.elc
+pel-cc-navigate.elc:      pel--syntax-macros.elc
+pel-cc.elc:               pel--base.elc pel--options.elc pel-ffind.elc
+pel-ccp.elc:              pel--base.elc pel--options.elc pel-navigate.elc
+pel-comint.elc:           pel--base.elc
+pel-comment-adorn.elc:    pel-rst.elc pel-comment.elc pel-mark.elc
+pel-comment.elc:          pel--base.elc pel-ccp.elc pel-prompt.elc
+pel-commonlisp.elc:       pel--base.elc pel--options.elc pel-browse.elc pel-prompt.elc pel-window.elc
+pel-completion.elc:       pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-seq.elc pel-ido.elc
+pel-cpp.elc:              pel--base.elc
+pel-cursor.elc:           pel--options.elc
+pel-custom.elc:           pel--base.elc
+pel-d.elc:                pel--base.elc pel--options.elc pel-ccp.elc
+pel-dart.elc:             pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
+pel-diff.elc:             pel--base.elc pel-window.elc pel--keys-macros.elc
+pel-dtreplace.elc:        pel--base.elc pel--options.elc
+pel-eldoc.elc:            pel--base.elc
+pel-elisp-analyze.elc:    pel-lisp.elc
+pel-elisp.elc:            pel--base.elc pel--options.elc pel-prompt.elc pel-navigate.elc
+pel-elixir.elc:           pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
+pel-elpa.elc:             pel-filedir.elc
+pel-emacs-analyze.elc:    pel--base.elc
+pel-emacs.elc:            pel--base.elc pel--options.elc pel-prompt.elc pel-setup-base.elc
+pel-erlang.elc:           pel--base.elc pel--options.elc pel-ffind.elc pel-fs.elc pel-indent.elc pel-modes.elc pel-syntax.elc pel-xref.elc pel-comment.elc
+pel-ffind.elc:            pel--base.elc pel--options.elc
+pel-file-recent.elc:      pel--options.elc pel-prompt.elc
+pel-file.elc:             pel--base.elc pel-prompt.elc pel-read.elc pel-window.elc pel-filex.elc
+pel-filedir.elc:          pel--base.elc
+pel-filex.elc:            pel--base.elc
+pel-fill.elc:             pel--base.elc
+pel-fly.elc:              pel--base.elc pel--options.elc
+pel-forth.elc:            pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
+pel-frame-control.elc:    pel--base.elc
+pel-gendep.elc:           pel--base.elc
+pel-gleam.elc:            pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
+pel-go.elc:               pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
+pel-graphviz-dot.elc:     pel--base.elc pel-ccp.elc
+pel-help.elc:             pel--base.elc pel-modes.elc
+pel-hide-docstring.elc:   pel-navigate.elc pel-face-ut.elc
+pel-hideshow.elc:         pel--base.elc
+pel-hier-face.elc:        pel--base.elc
+pel-hier-modes.elc:       pel--base.elc
+pel-highlight.elc:        pel--base.elc pel-prompt.elc
+pel-ido.elc:              pel-prompt.elc
+pel-iedit.elc:            pel--options.elc
+pel-imenu-dbg.elc:        pel--base.elc
+pel-imenu-ido.elc:        pel--base.elc pel--options.elc pel-prompt.elc pel-completion.elc
+pel-imenu.elc:            pel--base.elc pel--options.elc
+pel-indent.elc:           pel--base.elc pel--indent.elc pel--options.elc pel-ccp.elc pel-mark.elc
+pel-ini.elc:              pel--base.elc
+pel-js.elc:               pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
+pel-kbmacros.elc:         pel--options.elc pel-list.elc
+pel-key-chord.elc:        pel--base.elc pel--options.elc
+pel-lfe.elc:              pel-comment.elc
+pel-lisp.elc:             pel--base.elc
+pel-lispy.elc:            pel--base.elc pel--options.elc
+pel-list.elc:             pel--base.elc
+pel-lsp.elc:              pel--base.elc
+pel-lua.elc:              pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
+pel-make.elc:             pel--base.elc pel-syntax.elc
+pel-man.elc:              pel--base.elc
+pel-mark.elc:             pel--base.elc
+pel-modes.elc:            pel--base.elc pel--options.elc pel-indent.elc
+pel-navigate.elc:         pel--base.elc pel-scroll.elc
+pel-nim.elc:              pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
+pel-numkpad.elc:          pel--base.elc pel-scroll.elc pel-ccp.elc pel-navigate.elc
+pel-open.elc:             pel--base.elc pel--options.elc pel-prompt.elc pel-ido.elc pel-ffind.elc pel-rst.elc pel-file.elc
+pel-outline.elc:          pel--base.elc
+pel-package.elc:          pel--base.elc pel--options.elc pel-navigate.elc pel-elpa.elc
+pel-pathmng.elc:          pel--base.elc pel-window.elc
+pel-perl.elc:             pel--base.elc pel--options.elc pel-ccp.elc pel-ffind.elc
+pel-pike.elc:             pel--base.elc pel--options.elc pel-ccp.elc
+pel-plantuml.elc:         pel--base.elc
+pel-pp.elc:               pel--base.elc
+pel-prompt.elc:           pel--base.elc pel--options.elc
+pel-python.elc:           pel--base.elc pel--options.elc pel-ccp.elc
+pel-read.elc:             pel-navigate.elc
+pel-register.elc:         pel--base.elc
+pel-rst.elc:              pel--base.elc pel--options.elc pel-whitespace.elc pel-ccp.elc pel--macros.elc pel-bookmark.elc pel-file.elc
+pel-ruby.elc:             pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
+pel-rust.elc:             pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
+pel-scheme.elc:           pel--base.elc pel-comint.elc pel-window.elc
+pel-screen.elc:           pel--options.elc pel-whitespace.elc
+pel-scroll.elc:           pel-window.elc
+pel-search-regexp.elc:    pel--options.elc
+pel-search.elc:           pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-search-regexp.elc pel-window.elc pel--syntax-macros.elc
+pel-seed7.elc:            pel--base.elc pel--options.elc pel-ccp.elc
+pel-seq.elc:              pel--base.elc
+pel-setup-27.elc:         pel--options.elc pel-elpa.elc pel-setup-base.elc
+pel-setup-base.elc:       pel--base.elc pel--options.elc pel-ccp.elc pel-custom.elc pel-elpa.elc pel-package.elc
+pel-setup.elc:            pel--base.elc pel--options.elc pel-custom.elc pel-list.elc pel-package.elc pel-elpa.elc pel-setup-base.elc pel-setup-27.elc
+pel-sh.elc:               pel--base.elc
+pel-shell.elc:            pel--options.elc
+pel-skels-c.elc:          pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-list.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc pel-uuid.elc
+pel-skels-clisp.elc:      pel--options.elc pel-text-insert.elc pel-prompt.elc pel-tempo.elc pel-skels.elc
+pel-skels-cpp.elc:        pel--base.elc pel--options.elc pel-prompt.elc pel-text-insert.elc pel-uuid.elc pel-tempo.elc pel-skels.elc pel-skels-c.elc
+pel-skels-elisp.elc:      pel--base.elc pel--options.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
+pel-skels-erlang.elc:     pel--base.elc pel--options.elc pel--macros.elc pel-list.elc pel-tempo.elc pel-skels.elc
+pel-skels-generic.elc:    pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
+pel-skels-rst.elc:        pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
+pel-skels.elc:            pel--base.elc pel--options.elc pel-prompt.elc
+pel-smartparens.elc:      pel--base.elc pel-syntax.elc
+pel-speedbar.elc:         pel--base.elc pel--macros.elc pel--options.elc
+pel-spell.elc:            pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc
+pel-syntax.elc:           pel--base.elc pel--options.elc pel--syntax-macros.elc
+pel-tcl.elc:              pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
+pel-tempo.elc:            pel--keys-macros.elc pel-prompt.elc
+pel-text-insert.elc:      pel--base.elc pel--macros.elc pel-window.elc pel-syntax.elc
+pel-text-transform.elc:   pel--base.elc pel--options.elc
+pel-time.elc:             pel--base.elc
+pel-timestamp.elc:        pel--base.elc pel--options.elc
+pel-treesit.elc:          pel--base.elc pel--keys-macros.elc pel-prompt.elc
+pel-undo.elc:             pel--options.elc
+pel-vc.elc:               pel--options.elc
+pel-vcs.elc:              pel--base.elc pel-filedir.elc pel-prompt.elc
+pel-whitespace.elc:       pel--base.elc pel--options.elc
+pel-window.elc:           pel--base.elc pel--options.elc pel-prompt.elc
+pel-xr.elc:               pel--base.elc pel-read.elc
+pel-xref.elc:             pel--base.elc pel--options.elc pel-prompt.elc pel-read.elc pel-text-transform.elc pel-pathmng.elc
+pel-yang.elc:             pel--base.elc
+pel-zig.elc:              pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
+pel__hydra.elc:           pel--base.elc pel--options.elc pel--keys-macros.elc pel-buffer.elc pel-frame-control.elc pel-hideshow.elc pel-pp.elc pel-scroll.elc pel-window.elc
+pel_keys.elc:             pel-etags.elc pel--base.elc pel--indent.elc pel--macros.elc pel--keys-macros.elc pel--options.elc pel-process.elc pel-autoload.elc pel-setup.elc pel-cursor.elc pel-iedit-modes-support.elc pel-lispy.elc pel-file.elc pel-ibuffer.elc pel-key-chord.elc
 # Note that pel__hydra.el is byte-compiled by the code of pel_keys.el
 # when pel_keys is loading. Therefore, if pel__hydra.el is modified
 # then pel_keys.el must also be built.  The pel_keys.elc therefore
 # depend on the source of pel__hydra: pel__hydra.el , *not* its .elc file!
-pel_keys.elc:           pel__hydra.el pel--base.elc pel--macros.elc pel--keys-macros.elc pel--options.elc pel-autoload.elc pel-cursor.elc pel-lispy.elc pel-key-chord.elc
+pel_keys.elc:             pel__hydra.el
+
+
 
 # Test code dependency:
 test/pel-base-test.el.test-passed:              pel--base.elc pel-ert.elc
