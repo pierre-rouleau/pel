@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-03 09:37:57 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-03 09:53:18 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -535,6 +535,11 @@ describing detected problems.  Error descriptions can be padded if
         (unless (file-symlink-p lname)
           (pel-push-fmt issues (pel--problem-format "Is not a symlink") lname))
       (pel-push-fmt issues
+          ;; Generates one of (where '{target-type-name}' replaced by its value):
+          ;; - {target-type-name} symlink target is missing
+          ;; - {target-type-name} symlink missing
+          ;; - Symlink target is missing
+          ;; - Symlink missing
           (pel--problem-format
            (format "%symlink %s"
                    (if target-type-name
@@ -543,7 +548,7 @@ describing detected problems.  Error descriptions can be padded if
                    (if (file-symlink-p lname)
                        "target is missing"
                      "missing")))
-        lname))
+          lname))
     issues))
 
 ;;; --------------------------------------------------------------------------
