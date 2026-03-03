@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-02 22:51:39 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-03 10:15:21 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,25 +32,26 @@
 ;;
 ;; - The ability to setup Emacs to support two independents environments: one
 ;;   for Emacs running in terminal (TTY) mode and another for Emacs running in
-;;   graphics mode.  Each of them have their own customization file, their
+;;   graphics mode.  Each of them have their own customization file and their
 ;;   own set of Elpa directories to store the external Elpa-compliant
 ;;   packages.  This  allows taking advantage of the strengths of the
 ;;   terminal-based and graphics-based Emacs by customizing each environment
-;;   with the packages that are used in each.
+;;   with the packages used in each.
 ;;
-;;   - The command `pel-setup-dual-environment' sets up the required files
-;;     inside the `user-emacs-directory' if they are not already present.
-;;     This must be done once.
+;; - The command `pel-setup-dual-environment' sets up the required files
+;;   inside the `user-emacs-directory' if they are not already present.
+;;   Users must do it once to activate the dual environment operation mode.
 ;;
-;; This is quite useful on OS, like macOS, where the graphics Emacs is
-;; noticeably slower than its terminal counterpart.
+;; - This mode of operation is useful on OS, like macOS, where the graphics
+;;   version of Emacs is noticeably slower than its terminal counterpart and
+;;   you end up using each mode for their respective abilities.
 ;;
 ;;
 ;; Dynamic control to switch to a fast-startup operation mode
 ;; ----------------------------------------------------------
 ;;
 ;; This provides the ability to reduce the Emacs initialization startup time.
-;; Depending on what is used the speedup can be quite noticeable.
+;; Depending on what is used the speedup can be noticeable.
 ;;
 ;; For example, I have achieved an emacs-startup-time of about 0.15 seconds on
 ;; Emacs 26.3 running in terminal mode on macOS 2014 4 GHz Intel Core i7
@@ -71,7 +72,7 @@
 ;; packages in the current environment.  However, these packages will not be
 ;; known to PEL.  In fast-startup mode, PEL disables its internal automatic
 ;; package management facilities and does not download, install or remove
-;; packages based on modification of the customization.
+;; Elpa packages based on modification of the customization.
 ;;
 ;; This strategy is used to reduce the length of Emacs `load-path' to a minimum.
 ;; This can therefore be used in conjunction of the Emacs 27+
@@ -121,9 +122,9 @@
 ;;
 ;; Because the file names of all package have a unique name it becomes
 ;; possible to group them all inside the same directory (a bundle) and place
-;; that unique directory inside Emacs `load-path'.  This eliminates the
-;; relatively slow Emacs startup processing that must iterate through each
-;; directory identified in Emacs `load-path'.
+;; that unique directory inside Emacs `load-path'.  This speeds up Emacs
+;; startup processing since it must iterate through each directory identified
+;; in Emacs `load-path'.
 ;;
 ;; This can be done for the "one-level packages" but not the others, as their
 ;; code often relies on the relative position of their sub-directories.
@@ -256,6 +257,7 @@
 ;;                             ;      `pel--fast-setup-met-criteria'
 ;;                             ;      `pel--startup-mode'
 ;;                             ;      `pel--prompt-with-quickstart-state'
+;;                             ;      `pel-push-fmt'
 
 ;; Then following functions are defined in pel-setup-27, which is
 ;; only used in Emacs >= 27.
@@ -349,41 +351,29 @@ non-nil, to nil otherwise.  Byte compile the result file if the
    pel-compile-emacs-init))
 
 ;; ---------------------------------------------------------------------------
-;; Support for dual environments
-;; -----------------------------
+;;* Support for dual environments
+;;  =============================
 ;;
 ;; PEL supports a dual environment where the terminal/TTY mode uses one
 ;; customization file and a set of package directories and the graphics mode
-;; use another, independent customization file and package directories.
+;; uses another, independent customization file and package directories.
 ;;
 ;; By default this mode is not activated.  The user can activate it by
-;; executing the `pel-setup-dual-environment' command.  That function creates
-;; all the necessary files and directories.
-;; - It also updates the init.el and the early-init.el (in Emacs 27 and later)
-;;    by setting the `pel-init-support-dual-environment-p' constant to t,
-;;    allowing logic in those initialization files to force Emacs to use the
-;;    graphic specific environment when Emacs is running in graphics mode.
-;; - It also updates the `pel-support-dual-environment' user-option in both
+;; executing the `pel-setup-dual-environment' command.  That function:
+;; - creates all the necessary files and directories,
+;; - updates the code of init.el and the early-init.el (in Emacs 27 and later)
+;;   by setting the `pel-init-support-dual-environment-p' constant to t,
+;;   allowing logic in those initialization files to force Emacs to use the
+;;   graphic specific environment when Emacs is running in graphics mode,
+;; - and updates the `pel-support-dual-environment' user-option in both
 ;;   customization files.
 ;;
 ;; Later when Emacs starts, the code inside pel_keys.el executed by `pel-init'
-;; schedule the execution of `pel-setup-check-dual-environment' to check if
-;; everything is consistent, tries to fix the issues and report remaining
-;; issues to the user in case of inconsistencies.  This operation is delayed a
+;; schedule the execution of `pel-setup-check-dual-environment'. That checks if
+;; everything is consistent, trying to fix identified issues and report remaining
+;; ones to the user in case of inconsistencies.  This operation is delayed a
 ;; little to ensure it does not slow the startup.
 ;;
-;; * `pel-setup-check-dual-environment'
-;;
-;; * `pel-setup-dual-environment'
-;;   - `pel--create-dir'
-;;     - `pel--dir-exists-p'
-;;   - `pel-dual-environment-problems'
-;;   - `pel--other-mode-custom-filename'
-;;
-;; * `pel-setup-info-dual-environment'
-;;   - `pel-dual-environment-problems'
-;;
-
 ;; If you need independent customization for Emacs running in terminal (TTY)
 ;; mode and in graphics mode, then do the following:
 ;;
@@ -393,6 +383,27 @@ non-nil, to nil otherwise.  Byte compile the result file if the
 ;;   early-init.el (on Emacs 27 and later) optionally byte compiling them if
 ;;   requested by the current user options.
 ;; - Restart Emacs.
+;;
+;;
+;; The `pel-setup-info-dual-environment' command displays the state of dual
+;; environments.
+
+;; Show whether PEL dual-environments is supported.
+;; * `pel-setup-info-dual-environment'
+;;   - `pel-dual-environment-problems'
+;;
+
+;; * `pel-setup-check-dual-environment'
+;;
+;; * `pel-setup-dual-environment'
+;;   - `pel--create-dir'
+;;     - `pel--dir-exists-p'
+;;   - `pel-dual-environment-problems'
+;;   - `pel--other-mode-custom-filename'
+;;
+
+;;** Display dual environment support status
+;;   ---------------------------------------
 
 (defun pel-dual-environment-problems ()
   "Return list of string describing problems found in dual custom environment.

@@ -138,7 +138,6 @@
 ;;
 ;; Operations on sequences:
 ;; - `pel-concat-strings-in-list'
-;; - `pel-push-fmt'
 ;; - `pel-prepend'
 ;; - `pel-cons-alist-at'
 ;; - `pel-nth-elt'
@@ -148,12 +147,6 @@
 ;;
 ;; Operation on auto-mode-alist
 ;;  - `pel-delete-from-auto-mode-alist'
-;;
-;; File System Checks
-;; - `pel-file-problems'
-;; - `pel-dir-problems'
-;; - `pel-symlink-problems'
-;;   - `pel--problem-format'
 ;;
 ;; Lazy loading and package installation:
 ;; - `pel-install-github-file'
@@ -1443,12 +1436,6 @@ And with transformation functions:
       (setq acc (concat acc elem)))
     acc))
 
-;; [:todo 2025-10-05, by Pierre Rouleau: Move the macros to pel--macros.el?]
-(defmacro pel-push-fmt (lst fmt &rest args)
-  "Push string FMT formatted with ARGS to the list LST."
-  (declare (indent 2))
-  `(push (format ,fmt ,@args) ,lst))
-
 (defmacro pel-prepend-to (lst elems)
   "Prepend ELEMS to the beginning of LST."
   `(setq ,lst (append ,elems ,lst)))
@@ -1575,85 +1562,6 @@ Modifies `auto-mode-alist'."
     (setq auto-mode-alist
           (assq-delete-all (car (rassoc mode auto-mode-alist))
                            auto-mode-alist))))
-
-;; ---------------------------------------------------------------------------
-;; File System Checks
-;; ------------------
-;;
-;; The following functions check validity of file, directory or symlink.  They
-;; return a list of the string describing the problems discovered or nil if
-;; all is OK.  Problem description message are padded with the format padding
-;; integer identified by the variable `pel-problems-text-length' if non-nil.
-;; To impose the same padding to all problems checking function let-bind that
-;; variable to the padding value required and call the functions inside the
-;; scope of the let-bound value.
-;;
-;; - `pel-file-problems'
-;; - `pel-dir-problems'
-;; - `pel-symlink-problems'
-;;   - `pel--problem-format'
-
-(defvar pel-problems-text-length nil
-  "If non-nil it must be the minimum length of problem message.
-
-Used by `pel-file-problems', `pel-dir-problems' and `pel-symlink-problems'
-to align the messages they generate.")
-
-(defun pel--problem-format (msg)
-  "Return a format string for MSG filled by `pel-problems-text-length'."
-  (when pel-problems-text-length
-    (let ((fmt (format "%%%ds" pel-problems-text-length)))
-      (setq msg (format fmt msg))))
-  (format "%s : %%s" msg))
-
-(defun pel-file-problems (fname)
-  "Check for the presence of the file FNAME.
-
-Return nil if all OK, otherwise return a list of strings describing
-detected problems.  Error descriptions can be padded if
-`pel-problems-text-length' is set."
-  (let ((issues nil))
-    (unless (file-exists-p fname)
-      (pel-push-fmt issues (pel--problem-format "File missing") fname))
-    issues))
-
-(defun pel-dir-problems (dname)
-  "Check for presence of DNAME directory, and that it is a directory.
-
-Return nil if all OK, otherwise return a list of strings describing
-detected problems.  Error descriptions can be padded if
-`pel-problems-text-length' is set."
-  (let ((issues nil))
-    (if (file-exists-p dname)
-        (unless (file-directory-p dname)
-          (pel-push-fmt issues (pel--problem-format "Is not a directory") dname))
-      (pel-push-fmt issues (pel--problem-format "Directory missing") dname))
-    issues))
-
-(defun pel-symlink-problems (lname &optional target-type-name)
-  "Check for presence of symlink LNAME and its target.
-
-If TARGET-TYPE-NAME is specified it must be a string that
-describes the target of the expected symlink target.
-
-Return nil if all OK, otherwise return a list of strings
-describing detected problems.  Error descriptions can be padded if
-`pel-problems-text-length' is set."
-  (let ((issues nil))
-    (if (file-exists-p lname)
-        (unless (file-symlink-p lname)
-          (pel-push-fmt issues (pel--problem-format "Is not a symlink") lname))
-      (pel-push-fmt issues
-          (pel--problem-format
-           (format "%symlink %s"
-                   (if target-type-name
-                       (format "%s s" target-type-name)
-                     "S")
-                   (if (file-symlink-p lname)
-                       "target is missing"
-                     "missing")))
-        lname))
-    issues))
 
 ;; ---------------------------------------------------------------------------
 ;;* Package and file installation and lazy loading

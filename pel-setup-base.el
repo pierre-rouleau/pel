@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-02 22:42:03 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-03 10:15:16 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -52,6 +52,12 @@
 ;; - `pel-set-user-option-persistently'
 ;;   - `pel--other-mode-custom-filename'
 
+;; File System Checks
+;; - `pel-file-problems'
+;; - `pel-dir-problems'
+;; - `pel-symlink-problems'
+;;   - `pel--problem-format'
+
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
@@ -84,8 +90,17 @@ early-init.el file (on Emacs >= 27).
 In the current code this is only done by `pel--setup-dual-environment'")
 
 ;; ---------------------------------------------------------------------------
-;; Emacs Initialisation file validation
-;; ------------------------------------
+;;*  Utility Macros
+;;   ==============
+
+(defmacro pel-push-fmt (lst fmt &rest args)
+  "Push string FMT formatted with ARGS to the list LST."
+  (declare (indent 2))
+  `(push (format ,fmt ,@args) ,lst))
+
+;; ---------------------------------------------------------------------------
+;;* Emacs Initialisation file validation
+;;  ====================================
 
 (defconst pel--expected-init-file-version "0.3"
   "Must match what is in the example/init/init.el.")
@@ -179,8 +194,8 @@ Raise error describing the problem if there is one."
         user-emacs-directory)))))
 
 ;; ---------------------------------------------------------------------------
-;; Package Quickstart Support
-;; --------------------------
+;;* Package Quickstart Support
+;;  ==========================
 
 (defun pel--with-package-quickstart-p ()
   "Return t when package quickstart is currently used, nil otherwise."
@@ -220,8 +235,8 @@ Raise error describing the problem if there is one."
       prompt)))
 
 ;; ---------------------------------------------------------------------------
-;; Fast-Startup Support
-;; --------------------
+;;* Fast-Startup Support
+;;  ===================
 
 (defconst pel-fast-startup-init-fname (expand-file-name
                                        "pel-fast-startup-init.el"
@@ -233,8 +248,8 @@ When fast startup is not activated, this file must be deleted.")
   "Identifies that PEL setup has changed.
 Only set by `pel-setup-fast' or `pel-setup-normal'.  Never cleared.")
 
-;;* PEL Fast-Startup status extraction and print
-;;  ============================================
+;;** PEL Fast-Startup status extraction and print
+;;   --------------------------------------------
 
 (defun pel--setup-mode-description (for-graphics)
   "Describe the mode context of a setup.
@@ -451,6 +466,91 @@ PEL customization files:
   (when pel--detected-dual-environment-in-init-p
     ;; store in the custom file of the other mode
     (pel-customize-save user-option value (pel--other-mode-custom-filename))))
+
+;; ---------------------------------------------------------------------------
+;;* File System Checks
+;;  =================
+;;
+;; The following functions check validity of file, directory or symlink.  They
+;; return a list of the string describing the problems discovered or nil if
+;; all is OK.  Problem description message are padded with the format padding
+;; integer identified by the variable `pel-problems-text-length' if non-nil.
+;; To impose the same padding to all problems checking function let-bind that
+;; variable to the padding value required and call the functions inside the
+;; scope of the let-bound value.
+;;
+;; - `pel-file-problems'
+;; - `pel-dir-problems'
+;; - `pel-symlink-problems'
+;;   - `pel--problem-format'
+
+(defvar pel-problems-text-length nil
+  "If non-nil, an integer identifying the width of the problem message.
+Use negative integer to impose right padding.
+
+Used by `pel-file-problems', `pel-dir-problems' and `pel-symlink-problems'
+to align the messages they generate.")
+
+(defun pel--problem-format (msg)
+  "Return a format string for MSG filled by `pel-problems-text-length'."
+  (when (integerp pel-problems-text-length)
+    (let ((fmt (format "%%%ds" pel-problems-text-length)))
+      (setq msg (format fmt msg))))
+  (format "%s : %%s" msg))
+
+(defun pel-file-problems (fname)
+  "Check for the presence of the file FNAME.
+
+Return nil if all OK, otherwise return a list of strings describing
+detected problems.  Error descriptions can be padded if
+`pel-problems-text-length' is set."
+  (let ((issues nil))
+    (unless (file-exists-p fname)
+      (pel-push-fmt issues (pel--problem-format "File missing") fname))
+    issues))
+
+(defun pel-dir-problems (dname)
+  "Check for presence of DNAME directory, and that it is a directory.
+
+Return nil if all OK, otherwise return a list of strings describing
+detected problems.  Error descriptions can be padded if
+`pel-problems-text-length' is set."
+  (let ((issues nil))
+    (if (file-exists-p dname)
+        (unless (file-directory-p dname)
+          (pel-push-fmt issues (pel--problem-format "Is not a directory") dname))
+      (pel-push-fmt issues (pel--problem-format "Directory missing") dname))
+    issues))
+
+(defun pel-symlink-problems (lname &optional target-type-name)
+  "Check for presence of symlink LNAME and its target.
+
+If TARGET-TYPE-NAME is specified it must be a string that
+describes the target of the expected symlink target.
+
+Return nil if all OK, otherwise return a list of strings
+describing detected problems.  Error descriptions can be padded if
+`pel-problems-text-length' is set."
+  (let ((issues nil))
+    (if (file-exists-p lname)
+        (unless (file-symlink-p lname)
+          (pel-push-fmt issues (pel--problem-format "Is not a symlink") lname))
+      (pel-push-fmt issues
+          ;; Generates one of (where '{target-type-name}' replaced by its value):
+          ;; - {target-type-name} symlink target is missing
+          ;; - {target-type-name} symlink missing
+          ;; - Symlink target is missing
+          ;; - Symlink missing
+          (pel--problem-format
+           (format "%symlink %s"
+                   (if target-type-name
+                       (format "%s s" target-type-name)
+                     "S")
+                   (if (file-symlink-p lname)
+                       "target is missing"
+                     "missing")))
+          lname))
+    issues))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-setup-base)
