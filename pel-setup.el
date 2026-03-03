@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-03 10:15:21 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-03 16:28:59 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,7 +64,9 @@
 ;;
 ;; When running multiple Emacs processes on a computer, switching to
 ;; fast-startup or back to normal-startup mode from one Emacs instance does
-;; not affect the other instances because files are not deleted.
+;; not affect the other instances because files are not deleted when changing
+;; operation mode so the other processes can continue to use their unaffected
+;; files as if nothing happened.
 ;;
 ;; PEL uses the built-in Emacs package management provided by the package.el
 ;; builtin library.  The fast-startup operation mode improves startup speed
@@ -90,7 +92,7 @@
 ;; the package specification structure stored inside a Emacs Lisp file named
 ;; after the package with the suffix "-pkg".  For example the package
 ;; specification file for the ace-link package described above would be the
-;; following file: "~/.emacs.d/elpa/ace-link-20210121.923/ace-link-pkg.el".
+;; "~/.emacs.d/elpa/ace-link-20210121.923/ace-link-pkg.el" file.
 ;;
 ;; That file contains the data package-spec `cl-defstruct'-defined data
 ;; structure.  Something like this:
@@ -110,8 +112,8 @@
 ;; A large number of Emacs packages, like ace-link, store all their files
 ;; inside one directory; they have no sub-directories.  I call those "one-level
 ;; packages" in opposition of the other Emacs Lisp packages that use
-;; sub-directories to store other files.  From what I have seen so far most
-;; Emacs external packages use only one directory but not all.
+;; sub-directories to store other files.  From what I have seen a lot of
+;; Emacs external packages use only one directory, but not all.
 ;;
 ;; Emacs Lisp, a Lisp-2, has one namespace for variables and one
 ;; namespace for functions.  Code in *all* packages, whether they're built-in
@@ -126,11 +128,11 @@
 ;; startup processing since it must iterate through each directory identified
 ;; in Emacs `load-path'.
 ;;
-;; This can be done for the "one-level packages" but not the others, as their
+;; PEL can group "one-level packages" but not the others, as their
 ;; code often relies on the relative position of their sub-directories.
 ;; Fortunately, as said previously, a large majority of Emacs external
-;; packages are "one-level packages"; they use one or several Emacs Lisp files
-;; all stored inside one directory.
+;; packages are "one-level packages"; they use one or more Emacs Lisp files
+;; all stored inside the same directory.
 ;;
 ;; At startup, Emacs package.el logic prepares Emacs files loading and checks
 ;; for the presence of the dependencies of packages.  The package.el logic
@@ -158,9 +160,9 @@
 ;;   point to their actual file counterparts located inside the elpa-complete
 ;;   directory.
 ;;
-;; Special code must be run by init.el or early-init.el to prevent the
-;; package.el code from attempting to download the packages again.  The
-;; required code is described inside the following files:
+;; Special code in init.el or early-init.el must prevent the package.el code
+;; from attempting to download the packages again.  The required code is
+;; described inside the following files:
 ;;
 ;; - example/init/init.el and
 ;; - example/init/early-init.el
@@ -231,6 +233,16 @@
 ;; the init.el and early-init.el: they set the value of defcustom forms which
 ;; control the Emacs package.el behaviour at startup.
 
+;;
+;; =================
+;; Code Organization
+;; =================
+
+;;  Local Utilities:
+;;  - `pel-copy-directory'
+;;    - `pel-copy-only-file'
+
+
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
@@ -248,6 +260,7 @@
 ;;                             ;      `pel-elpa-disable-pkg-deps-in'
 ;;                             ;      `pel-elpa-name'
 (require 'pel-setup-base)      ; use: `pel--detected-dual-environment-in-init-p'
+;;                             ;      `pel-set-dual-environment-in-emacs-init'
 ;;                             ;      `pel--other-mode-custom-filename'
 ;;                             ;      `pel-remove-no-byte-compile-in'
 ;;                             ;      `pel-update-emacs-user-init-file'
@@ -280,13 +293,13 @@
   "Set when pel--detected-dual-environment-in-init-p is modified by code.")
 
 ;; ---------------------------------------------------------------------------
-;; Local utilities
-;; ---------------
+;;* Local Utilities
+;;  ===============
 
 
 ;; ---------------------------------------------------------------------------
-;; pel-copy-directory : copies a directory, skipping Unix socket files
-;; -------------------------------------------------------------------
+;;** pel-copy-directory : copies a directory, skipping Unix socket files
+;;   -------------------------------------------------------------------
 
 (defun pel-copy-only-file (copy-file-fun file &rest args)
   "Copy FILE with COPY-FILE-FUN with ARGS unless it is a Unix socket."
@@ -311,8 +324,8 @@ slash) or in file name (without the terminating slash) format."
     (advice-remove 'copy-file #'pel-copy-only-file)))
 
 ;; ---------------------------------------------------------------------------
-;; Utilities to edit Emacs init.el and early-init.el files
-;; -------------------------------------------------------
+;;** Modification of init.el and early-init.el files
+;;   -----------------------------------------------
 ;;
 ;; This code can update Emacs init.el file that has the content specified
 ;; by the example/init/init.el file.  You can write more logic inside your
@@ -324,7 +337,7 @@ slash) or in file name (without the terminating slash) format."
 ;;
 ;; The following functions are used to edit it.
 
-;; - `pel--set-dual-environment-in-emacs-init'
+;; - `pel-set-dual-environment-in-emacs-init'          (in pel-setup-base)
 ;;   - `pel-update-emacs-user-init-file'               (in pel-setup-base)
 ;;
 ;; - `pel--set-dual-environment-in-emacs-early-init'   (in pel-setup-27)
@@ -336,19 +349,6 @@ slash) or in file name (without the terminating slash) format."
 ;;
 ;; - `pel--setup-early-init'                           (in pel-setup-27)
 ;;   - `pel-update-emacs-user-init-file'               (in pel-setup-base)
-
-
-(defun pel--set-dual-environment-in-emacs-init (use)
-  "Update Emacs user init.el for dual environment when USE is non-nil.
-
-Set `pel-init-support-dual-environment-p' to t when use is
-non-nil, to nil otherwise.  Byte compile the result file if the
-`pel-compile-emacs-init' user-option is turned on."
-  (pel-update-emacs-user-init-file
-   "init.el"
-   (list
-    (list 'pel-init-support-dual-environment-p (not (null use))))
-   pel-compile-emacs-init))
 
 ;; ---------------------------------------------------------------------------
 ;;* Support for dual environments
@@ -560,7 +560,7 @@ Utility function.  If REASON-MSG is specified include that message on error."
     ;; Set pel--detected-dual-environment-in-init-p to remember it locally.
     (condition-case err
         (progn
-          (pel--set-dual-environment-in-emacs-init t)
+          (pel-set-dual-environment-in-emacs-init t)
           (when pel-emacs-27-or-later-p
             (declare-function pel--set-dual-environment-in-emacs-early-init
                               "pel-setup-27")

@@ -5,9 +5,9 @@
 ;;
 ;;   Abstract:         Emacs Initialization
 ;;
-;;   Time-stamp: <2026-01-11 09:45:39 EST, updated by Pierre Rouleau>
+;;   Time-stamp: <2026-03-03 16:27:16 EST, updated by Pierre Rouleau>
 ;;
-;;   Copyright (c) 2018-2021, 2023, 2024, 2025, Pierre Rouleau. All rights reserved.
+;;   Copyright (c) 2018-2021, 2023, 2024, 2025, 2026, Pierre Rouleau. All rights reserved.
 ;;
 ;;  Update history:
 ;;
@@ -72,7 +72,7 @@
 ;; ==========================================
 ;;
 ;; Option a: PEL controlled value -- updated by the function
-;;           `pel--set-dual-environment-in-emacs-init'.
+;;           `pel-set-dual-environment-in-emacs-init'.
 ;;           Support for dual environment with Independent customization and
 ;;           package directories for Emacs running in terminal/TTY and graphic
 ;;           mode.
