@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 22:46:21 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-02 22:42:03 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2021, 2024, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,7 +25,32 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;; This file provides a set of utilities used in the management of PEL
+;; normal and fast-startup modes.
+
+;; PEL Fast-Startup status extraction and print.
+;; * `pel-setup-info'
+;;   - `pel--startup-mode'
+;;     - `pel--fast-setup-met-criteria'
+;;       - `pel--setup-mode-description'
+;;   - `pel-setup-validate-init-files'
+;;     - `pel--setup-init-file-problems'
 ;;
+
+;; Remove the no-byte-compile assignment from file.
+;; - `pel-remove-no-byte-compile-in'
+
+;; Create early-init.el if missing
+;; - `pel-create-early-init-if-missing'
+
+;; Update PEL constant values in init.el or early-init.el
+;; - `pel-update-emacs-user-init-file'
+;;   - `pel--compile-file-if'
+
+;; Modify value of user-option and save it in all necessary customization
+;; files used by PEL.
+;; - `pel-set-user-option-persistently'
+;;   - `pel--other-mode-custom-filename'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -91,8 +116,7 @@ Return nil if all is OK."
       (pel-push-fmt problems
           "Invalid init.el file (%s): not ready for PEL startup management.
    Use the pel/example/init/init.el as template." user-init-file))
-
-
+    ;;
     (when pel-emacs-27-or-later-p
       (if (file-exists-p (locate-user-emacs-file "early-init.el"))
           (if (boundp 'pel-early-init-file-version)
@@ -141,7 +165,7 @@ Return nil if all is OK."
 
 
 (defun pel-setup-validate-init-files (&optional early-init-must-exist)
-  "Validate Emacs initialization files.
+  "Validate Emacs initialization files.  Return nil if all OK.
 
 If EARLY-INIT-MUST-EXIST is non-nil the early-init.el file must exist for
 Emacs >= 27, otherwise it's not a hard requirement.
@@ -209,8 +233,8 @@ When fast startup is not activated, this file must be deleted.")
   "Identifies that PEL setup has changed.
 Only set by `pel-setup-fast' or `pel-setup-normal'.  Never cleared.")
 
-;; PEL Fast-Startup status extraction
-;; ----------------------------------
+;;* PEL Fast-Startup status extraction and print
+;;  ============================================
 
 (defun pel--setup-mode-description (for-graphics)
   "Describe the mode context of a setup.
@@ -334,10 +358,11 @@ Optional arguments:
                            user-emacs-directory)))))))
 
 ;; ---------------------------------------------------------------------------
-
+;;* Remove the no-byte-compile assignment from file.
+;;  ================================================
 
 (defun pel-remove-no-byte-compile-in (filename)
-  "Remove the `no-byte-compile' file variable from FILENAME.
+  "Remove the `no-byte-compile' file variable assignment from FILENAME.
 Return t when done, nil otherwise."
   (with-temp-file filename
     (auto-fill-mode -1)
@@ -348,11 +373,19 @@ Return t when done, nil otherwise."
       (pel-delete-whole-line)
       t)))
 
-(defun pel--create-early-init-if-missing ()
+;; ---------------------------------------------------------------------------
+;;* Create early-init.el if missing
+;;  ===============================
+
+(defun pel-create-early-init-if-missing ()
   "Check if the early-init file is present, if not create one."
   (let ((early-init-fname (locate-user-emacs-file "early-init.el")))
     (unless (file-exists-p early-init-fname)
       (copy-file pel-early-init-template early-init-fname))))
+
+;; ---------------------------------------------------------------------------
+;;* Update PEL constant values in init.el or early-init.el
+;; =======================================================
 
 (defun pel--compile-file-if (el-fname byte-compile-it)
   "Byte compile file EL-FNAME if BYTE-COMPILE-IT is set.
@@ -364,17 +397,22 @@ Otherwise delete the .elc file if it exists."
       (when (file-exists-p elc-fname)
         (delete-file elc-fname)))))
 
-(defun pel--update-emacs-user-file (fname symbol-values
-                                          &optional byte-compile-it)
+(defun pel-update-emacs-user-init-file (fname symbol-values
+                                              &optional byte-compile-it)
   "Update FNAME file: set symbol to value from the SYMBOL-VALUES alist.
 
 - FNAME: string.  Name of a file assumed to be located inside the user
-  Emacs directory.  FNAME can be \"init.el\" or \"early-init.el\" and
-  must define the symbols inside defconst forms.
+  Emacs directory.  For normal code FNAME should be \"init.el\" or
+  \"early-init.el\".
+  That file is expected to define the symbols inside defconst forms,
+  as it's the case for PEL specified init.el and early-init.el supported
+  files.
+- SYMBOL-VALUES: a list of symbol value pairs.
 - BYTE-COMPILE-IT: boolean.  If non-nil, byte compile resulting FNAME.
 
-Raise an error if the function does not find the `defconst' form
-defining a specified symbol."
+Raise an error if the function does not find the file or the `defconst'
+form defining a specified symbol inside the file.  The error describes
+what was not found."
   (let ((fname (locate-user-emacs-file fname))
         varname
         new-value
@@ -393,19 +431,26 @@ defining a specified symbol."
           (user-error "Can't find regexp %s in '%s'" re-pattern fname))))
     (pel--compile-file-if fname byte-compile-it)))
 
-(defun pel--other-custom-file ()
+;; ---------------------------------------------------------------------------
+;;* Save user-option persistently
+;;  =============================
+
+(defun pel--other-mode-custom-filename ()
   "Return the name of the customization file used by the other mode."
   (pel-elpa-name custom-file (not pel-emacs-is-graphic-p)))
 
-(defun pel--set-user-option (user-option value)
-  "Set USER-OPTION symbol to specified VALUE.
+(defun pel-set-user-option-persistently (user-option value)
+  "Set USER-OPTION symbol to specified VALUE in all PEL customization files.
 
-Update the global variable and all used custom files."
+Set USER-OPTION global variable and the persistent value in the single or both
+PEL customization files:
+- the default customization file, and
+- if the PEL dual-mode is active, the customization file used for graphics mode."
   (set user-option value)
   (pel-customize-save user-option value)
   (when pel--detected-dual-environment-in-init-p
     ;; store in the custom file of the other mode
-    (pel-customize-save user-option value (pel--other-custom-file))))
+    (pel-customize-save user-option value (pel--other-mode-custom-filename))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-setup-base)
