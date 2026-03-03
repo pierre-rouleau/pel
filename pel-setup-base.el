@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-03 08:53:04 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-03 09:37:57 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -90,8 +90,17 @@ early-init.el file (on Emacs >= 27).
 In the current code this is only done by `pel--setup-dual-environment'")
 
 ;; ---------------------------------------------------------------------------
-;; Emacs Initialisation file validation
-;; ------------------------------------
+;;*  Utility Macros
+;;   ==============
+
+(defmacro pel-push-fmt (lst fmt &rest args)
+  "Push string FMT formatted with ARGS to the list LST."
+  (declare (indent 2))
+  `(push (format ,fmt ,@args) ,lst))
+
+;; ---------------------------------------------------------------------------
+;;* Emacs Initialisation file validation
+;;  ====================================
 
 (defconst pel--expected-init-file-version "0.3"
   "Must match what is in the example/init/init.el.")
@@ -185,8 +194,8 @@ Raise error describing the problem if there is one."
         user-emacs-directory)))))
 
 ;; ---------------------------------------------------------------------------
-;; Package Quickstart Support
-;; --------------------------
+;;* Package Quickstart Support
+;;  ==========================
 
 (defun pel--with-package-quickstart-p ()
   "Return t when package quickstart is currently used, nil otherwise."
@@ -226,8 +235,8 @@ Raise error describing the problem if there is one."
       prompt)))
 
 ;; ---------------------------------------------------------------------------
-;; Fast-Startup Support
-;; --------------------
+;;* Fast-Startup Support
+;;  ===================
 
 (defconst pel-fast-startup-init-fname (expand-file-name
                                        "pel-fast-startup-init.el"
@@ -239,8 +248,8 @@ When fast startup is not activated, this file must be deleted.")
   "Identifies that PEL setup has changed.
 Only set by `pel-setup-fast' or `pel-setup-normal'.  Never cleared.")
 
-;;* PEL Fast-Startup status extraction and print
-;;  ============================================
+;;** PEL Fast-Startup status extraction and print
+;;   --------------------------------------------
 
 (defun pel--setup-mode-description (for-graphics)
   "Describe the mode context of a setup.
@@ -459,8 +468,8 @@ PEL customization files:
     (pel-customize-save user-option value (pel--other-mode-custom-filename))))
 
 ;; ---------------------------------------------------------------------------
-;; File System Checks
-;; ------------------
+;;* File System Checks
+;;  =================
 ;;
 ;; The following functions check validity of file, directory or symlink.  They
 ;; return a list of the string describing the problems discovered or nil if

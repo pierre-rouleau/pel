@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-03 08:53:28 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-03 09:34:03 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -256,6 +256,7 @@
 ;;                             ;      `pel--fast-setup-met-criteria'
 ;;                             ;      `pel--startup-mode'
 ;;                             ;      `pel--prompt-with-quickstart-state'
+;;                             ;      `pel-push-fmt'
 
 ;; Then following functions are defined in pel-setup-27, which is
 ;; only used in Emacs >= 27.

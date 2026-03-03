@@ -138,7 +138,6 @@
 ;;
 ;; Operations on sequences:
 ;; - `pel-concat-strings-in-list'
-;; - `pel-push-fmt'
 ;; - `pel-prepend'
 ;; - `pel-cons-alist-at'
 ;; - `pel-nth-elt'
@@ -1436,12 +1435,6 @@ And with transformation functions:
       (setq list (cdr list))
       (setq acc (concat acc elem)))
     acc))
-
-;; [:todo 2025-10-05, by Pierre Rouleau: Move the macros to pel--macros.el?]
-(defmacro pel-push-fmt (lst fmt &rest args)
-  "Push string FMT formatted with ARGS to the list LST."
-  (declare (indent 2))
-  `(push (format ,fmt ,@args) ,lst))
 
 (defmacro pel-prepend-to (lst elems)
   "Prepend ELEMS to the beginning of LST."
