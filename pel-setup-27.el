@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-27 17:19:42 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-02 22:29:42 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -47,10 +47,10 @@
 (require 'pel-elpa)                   ; use: `pel-elpa-package-alist-of-dir'
 ;;                                    ;      `pel-elpa-name'
 
-(require 'pel-setup-base)             ; use: `pel--set-user-option'
+(require 'pel-setup-base)             ; use: `pel-set-user-option-persistently'
 ;;                                    ;      `pel--compile-file-if'
 ;;                                    ;      `pel-remove-no-byte-compile-in'
-;;                                    ;      `pel--update-emacs-user-file'
+;;                                    ;      `pel-update-emacs-user-init-file'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -77,7 +77,7 @@
 
 ;; * `pel-setup-with-quickstart'
 ;;   - `pel--set-package-quickstart-in-early-init'
-;;     - `pel--update-emacs-user-file'
+;;     - `pel-update-emacs-user-init-file'
 ;;   - `pel--create-package-quickstart'
 ;;   - `pel--store-with-package-quickstart'
 ;;
@@ -85,7 +85,7 @@
 ;;   - `pel--remove-package-quickstart-files'
 ;;   - `pel--store-with-package-quickstart'
 ;;   - `pel--set-package-quickstart-in-early-init'
-;;     - `pel--update-emacs-user-file'
+;;     - `pel-update-emacs-user-init-file'
 
 ;; - Execute the `pel-setup-with-quickstart' command to set everything up: it
 ;;   sets the user-option in the custom file(s) and edit the init.el and
@@ -94,8 +94,8 @@
 
 (defun pel--set-dual-environment-in-emacs-early-init (use)
   "Update Emacs user early-init.el for dual environment when USE is non-nil."
-  (pel--create-early-init-if-missing)
-  (pel--update-emacs-user-file
+  (pel-create-early-init-if-missing)
+  (pel-update-emacs-user-init-file
    "early-init.el"
    (list
     (list 'pel-early-init-support-dual-environment-p (not (null use))))
@@ -133,8 +133,8 @@ FOR-GRAPHICS is:
 
 (defun pel--set-package-quickstart-in-early-init (use)
   "Update Emacs early-init.el file package quickstart setting to USE."
-  (pel--create-early-init-if-missing)
-  (pel--update-emacs-user-file
+  (pel-create-early-init-if-missing)
+  (pel-update-emacs-user-init-file
    "early-init.el"
    (list
     (list 'pel-early-init-support-package-quickstart-p use))
@@ -150,8 +150,8 @@ The behaviour is controlled by:
   mode or just a single one as usual for Emacs.
 - The value of `pel-shell-detection-envvar' user-option determines what
   environment variable absence is used to detect GUI launched Emacs."
-  (pel--create-early-init-if-missing)
-  (pel--update-emacs-user-file
+  (pel-create-early-init-if-missing)
+  (pel-update-emacs-user-init-file
    "early-init.el"
    (list
     (list 'pel-early-init-support-package-quickstart-p pkg-quickstart)
@@ -166,8 +166,8 @@ The behaviour is controlled by:
 
 Also set `package-quickstart' to VALUE.
 Store the updated values in all relevant custom file(s)."
-  (pel--set-user-option 'pel-support-package-quickstart value)
-  (pel--set-user-option 'package-quickstart value))
+  (pel-set-user-option-persistently 'pel-support-package-quickstart value)
+  (pel-set-user-option-persistently 'package-quickstart value))
 
 ;;-pel-autoload
 (defun pel-setup-with-quickstart ()

@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-01 15:25:00 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-02 22:29:15 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -226,7 +226,7 @@
 ;; - example/init/early-init.el
 ;;
 ;; The code in pel-setup, specifically the function
-;; `pel--update-emacs-user-file' (in pel-setup-base.el) and its callers edit
+;; `pel-update-emacs-user-init-file' (in pel-setup-base.el) and its callers edit
 ;; the init.el and early-init.el: they set the value of defcustom forms which
 ;; control the Emacs package.el behaviour at startup.
 
@@ -247,11 +247,9 @@
 ;;                             ;      `pel-elpa-disable-pkg-deps-in'
 ;;                             ;      `pel-elpa-name'
 (require 'pel-setup-base)      ; use: `pel--detected-dual-environment-in-init-p'
-;;                             ;      `pel--other-custom-file'
-;;                             ;      `pel--set-user-option'
+;;                             ;      `pel--other-mode-custom-filename'
 ;;                             ;      `pel-remove-no-byte-compile-in'
-;;                             ;      `pel--update-emacs-user-file'
-;;                             ;      `pel--create-early-init-if-missing'
+;;                             ;      `pel-update-emacs-user-init-file'
 ;;                             ;      `pel-fast-startup-init-fname'
 ;;                             ;      `pel--fast-startup-setup-changed'
 ;;                             ;      `pel--setup-mode-description'
@@ -325,17 +323,17 @@ slash) or in file name (without the terminating slash) format."
 ;; The following functions are used to edit it.
 
 ;; - `pel--set-dual-environment-in-emacs-init'
-;;   - `pel--update-emacs-user-file'                   (in pel-setup-base)
+;;   - `pel-update-emacs-user-init-file'               (in pel-setup-base)
 ;;
 ;; - `pel--set-dual-environment-in-emacs-early-init'   (in pel-setup-27)
-;;   - `pel--update-emacs-user-file'                   (in pel-setup-base)
+;;   - `pel-update-emacs-user-init-file'               (in pel-setup-base)
 ;;
 ;; Package quickstart management, available for supporting Emacs 27 and later
 ;; also use the low level function to setup the early-init file in a code
 ;; section below.
 ;;
 ;; - `pel--setup-early-init'                           (in pel-setup-27)
-;;   - `pel--update-emacs-user-file'                   (in pel-setup-base)
+;;   - `pel-update-emacs-user-init-file'               (in pel-setup-base)
 
 
 (defun pel--set-dual-environment-in-emacs-init (use)
@@ -344,7 +342,7 @@ slash) or in file name (without the terminating slash) format."
 Set `pel-init-support-dual-environment-p' to t when use is
 non-nil, to nil otherwise.  Byte compile the result file if the
 `pel-compile-emacs-init' user-option is turned on."
-  (pel--update-emacs-user-file
+  (pel-update-emacs-user-init-file
    "init.el"
    (list
     (list 'pel-init-support-dual-environment-p (not (null use))))
@@ -380,7 +378,7 @@ non-nil, to nil otherwise.  Byte compile the result file if the
 ;;   - `pel--create-dir'
 ;;     - `pel--dir-exists-p'
 ;;   - `pel-dual-environment-problems'
-;;   - `pel--other-custom-file'
+;;   - `pel--other-mode-custom-filename'
 ;;
 ;; * `pel-setup-info-dual-environment'
 ;;   - `pel-dual-environment-problems'
@@ -570,7 +568,7 @@ Utility function.  If REASON-MSG is specified include that message on error."
     ;; Remember this setting inside customization files
     (pel-customize-save 'pel-support-dual-environment t)
     (pel-customize-save 'pel-support-dual-envionment t
-                        (pel--other-custom-file))
+                        (pel--other-mode-custom-filename))
     (setq pel-support-dual-environment t)
     ;; Display performed actions.
     (let ((remaining-problems (pel-dual-environment-problems))
