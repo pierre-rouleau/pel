@@ -56,7 +56,7 @@
 ;; ==========================================
 ;;
 ;; Option a: PEL controlled value -- updated by the function
-;;           `pel--set-dual-environment-in-emacs-init'.
+;;           `pel-set-dual-environment-in-emacs-init'.
 ;;           Support for dual environment with Independent customization and
 ;;           package directories for Emacs running in terminal/TTY and graphic
 ;;           mode.
@@ -192,12 +192,14 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;;            comment this code after your investigation and want to start
   ;;            a little faster.
   ;;
-  ;; To use, un-comment the following 5 lines of code:
-  ;; (require 'benchmark-init
-  ;;          (expand-file-name "~/.emacs.d/utils/benchmark-init"))
-  ;; (require 'benchmark-init-modes
-  ;;          (expand-file-name "~/.emacs.d/utils/benchmark-init-modes"))
-  ;; (add-hook 'after-init-hook 'benchmark-init/deactivate)
+  ;; To use, un-comment the following 6 lines of code and set PEL_BENCHMARK
+  ;; environment variable in your environment:
+  ;; (when (getenv "PEL_BENCHMARK")
+  ;;   (require 'benchmark-init
+  ;;            (expand-file-name "~/.emacs.d/utils/benchmark-init"))
+  ;;   (require 'benchmark-init-modes
+  ;;            (expand-file-name "~/.emacs.d/utils/benchmark-init-modes"))
+  ;;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
   ;; Define function to activate package.el Elpa-compliant Package Management
   ;; ------------------------------------------------------------------------
@@ -213,7 +215,9 @@ Also expands to the file true name, replacing symlinks by what they point to."
     ;; separate Emacs process running PEL.
     ;;
     (unless pel-package-user-dir-original
-      (setq pel-package-user-dir-original package-user-dir))
+      (if (boundp 'package-user-dir)
+          (setq pel-package-user-dir-original package-user-dir)
+        (message "PEL init.el problem 1: package-user-dir is not bound.")))
 
     ;;
     ;; In the code that follows, as well as inside early-init.el, PEL also
@@ -339,9 +343,11 @@ Also expands to the file true name, replacing symlinks by what they point to."
         ;;    directories; expand potential symlinks to their target to
         ;;    guarantee their validity if another Emacs/PEL process switches
         ;;    the startup mode and modifies the target of the symlink.
-        (progn
-          (setq package-user-dir (file-truename package-user-dir))
-          (package-initialize)))))
+        (if (boundp 'package-user-dir)
+            (progn
+              (setq package-user-dir (file-truename package-user-dir))
+              (package-initialize))
+          (message "PEL init.el problem 2: package-user-dir is not bound.")))))
   (declare-function pel--init-package-support "init")
 
   ;; Schedule restoration of garbage collector normal values once Emacs
@@ -370,7 +376,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;; packages requested by PEL user options.  That call is done right before
   ;; `pel-init' below, after loading the customization file.
   ;;
-  ;; NOTE: remove the :nomessage argument to load to help debug a startup
+  ;; NOTE: remove the :nomessage argument to load to help debug at startup
   ;; problem if one occurs.
   ;;
   (defvar package-quickstart) ; declared only to prevent byte-compiler warning.
@@ -529,7 +535,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;; which will process all local packages and will grow the `load-path'
   ;; accordingly.
   ;;
-  (with-no-warnings ; don't complain about pel--init-package-support
+  (with-no-warnings           ; don't complain about pel--init-package-support
     (unless pel-running-in-fast-startup-p
       (pel--init-package-support)))
 

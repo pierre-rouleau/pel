@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-03 10:15:16 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-03 16:40:11 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -44,8 +44,9 @@
 ;; - `pel-create-early-init-if-missing'
 
 ;; Update PEL constant values in init.el or early-init.el
-;; - `pel-update-emacs-user-init-file'
-;;   - `pel--compile-file-if'
+;; - `pel-set-dual-environment-in-emacs-init'
+;;   - `pel-update-emacs-user-init-file'
+;;     - `pel--compile-file-if'
 
 ;; Modify value of user-option and save it in all necessary customization
 ;; files used by PEL.
@@ -445,6 +446,20 @@ what was not found."
             (replace-match new-value :fixedcase :literal nil 1)
           (user-error "Can't find regexp %s in '%s'" re-pattern fname))))
     (pel--compile-file-if fname byte-compile-it)))
+
+(defun pel-set-dual-environment-in-emacs-init (use)
+  "Update Emacs user init.el to USE (or not) dual environment.
+
+Update init.el for dual environment when USE is non-nil, otherwise
+prevent it from using it.
+Set `pel-init-support-dual-environment-p' to t when use is
+non-nil, to nil otherwise.  Byte compile the result file if the
+`pel-compile-emacs-init' user-option is turned on."
+  (pel-update-emacs-user-init-file
+   "init.el"
+   (list
+    (list 'pel-init-support-dual-environment-p (not (null use))))
+   pel-compile-emacs-init))
 
 ;; ---------------------------------------------------------------------------
 ;;* Save user-option persistently
