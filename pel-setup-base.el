@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-02 22:42:03 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-03 08:53:04 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -51,6 +51,12 @@
 ;; files used by PEL.
 ;; - `pel-set-user-option-persistently'
 ;;   - `pel--other-mode-custom-filename'
+
+;; File System Checks
+;; - `pel-file-problems'
+;; - `pel-dir-problems'
+;; - `pel-symlink-problems'
+;;   - `pel--problem-format'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -451,6 +457,85 @@ PEL customization files:
   (when pel--detected-dual-environment-in-init-p
     ;; store in the custom file of the other mode
     (pel-customize-save user-option value (pel--other-mode-custom-filename))))
+
+;; ---------------------------------------------------------------------------
+;; File System Checks
+;; ------------------
+;;
+;; The following functions check validity of file, directory or symlink.  They
+;; return a list of the string describing the problems discovered or nil if
+;; all is OK.  Problem description message are padded with the format padding
+;; integer identified by the variable `pel-problems-text-length' if non-nil.
+;; To impose the same padding to all problems checking function let-bind that
+;; variable to the padding value required and call the functions inside the
+;; scope of the let-bound value.
+;;
+;; - `pel-file-problems'
+;; - `pel-dir-problems'
+;; - `pel-symlink-problems'
+;;   - `pel--problem-format'
+
+(defvar pel-problems-text-length nil
+  "If non-nil it must be the minimum length of problem message.
+
+Used by `pel-file-problems', `pel-dir-problems' and `pel-symlink-problems'
+to align the messages they generate.")
+
+(defun pel--problem-format (msg)
+  "Return a format string for MSG filled by `pel-problems-text-length'."
+  (when pel-problems-text-length
+    (let ((fmt (format "%%%ds" pel-problems-text-length)))
+      (setq msg (format fmt msg))))
+  (format "%s : %%s" msg))
+
+(defun pel-file-problems (fname)
+  "Check for the presence of the file FNAME.
+
+Return nil if all OK, otherwise return a list of strings describing
+detected problems.  Error descriptions can be padded if
+`pel-problems-text-length' is set."
+  (let ((issues nil))
+    (unless (file-exists-p fname)
+      (pel-push-fmt issues (pel--problem-format "File missing") fname))
+    issues))
+
+(defun pel-dir-problems (dname)
+  "Check for presence of DNAME directory, and that it is a directory.
+
+Return nil if all OK, otherwise return a list of strings describing
+detected problems.  Error descriptions can be padded if
+`pel-problems-text-length' is set."
+  (let ((issues nil))
+    (if (file-exists-p dname)
+        (unless (file-directory-p dname)
+          (pel-push-fmt issues (pel--problem-format "Is not a directory") dname))
+      (pel-push-fmt issues (pel--problem-format "Directory missing") dname))
+    issues))
+
+(defun pel-symlink-problems (lname &optional target-type-name)
+  "Check for presence of symlink LNAME and its target.
+
+If TARGET-TYPE-NAME is specified it must be a string that
+describes the target of the expected symlink target.
+
+Return nil if all OK, otherwise return a list of strings
+describing detected problems.  Error descriptions can be padded if
+`pel-problems-text-length' is set."
+  (let ((issues nil))
+    (if (file-exists-p lname)
+        (unless (file-symlink-p lname)
+          (pel-push-fmt issues (pel--problem-format "Is not a symlink") lname))
+      (pel-push-fmt issues
+          (pel--problem-format
+           (format "%symlink %s"
+                   (if target-type-name
+                       (format "%s s" target-type-name)
+                     "S")
+                   (if (file-symlink-p lname)
+                       "target is missing"
+                     "missing")))
+        lname))
+    issues))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-setup-base)

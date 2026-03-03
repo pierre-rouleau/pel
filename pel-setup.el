@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-02 22:51:39 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-03 08:53:28 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -349,41 +349,29 @@ non-nil, to nil otherwise.  Byte compile the result file if the
    pel-compile-emacs-init))
 
 ;; ---------------------------------------------------------------------------
-;; Support for dual environments
-;; -----------------------------
+;;* Support for dual environments
+;;  =============================
 ;;
 ;; PEL supports a dual environment where the terminal/TTY mode uses one
 ;; customization file and a set of package directories and the graphics mode
-;; use another, independent customization file and package directories.
+;; uses another, independent customization file and package directories.
 ;;
 ;; By default this mode is not activated.  The user can activate it by
-;; executing the `pel-setup-dual-environment' command.  That function creates
-;; all the necessary files and directories.
-;; - It also updates the init.el and the early-init.el (in Emacs 27 and later)
-;;    by setting the `pel-init-support-dual-environment-p' constant to t,
-;;    allowing logic in those initialization files to force Emacs to use the
-;;    graphic specific environment when Emacs is running in graphics mode.
-;; - It also updates the `pel-support-dual-environment' user-option in both
+;; executing the `pel-setup-dual-environment' command.  That function:
+;; - creates all the necessary files and directories,
+;; - updates the code of init.el and the early-init.el (in Emacs 27 and later)
+;;   by setting the `pel-init-support-dual-environment-p' constant to t,
+;;   allowing logic in those initialization files to force Emacs to use the
+;;   graphic specific environment when Emacs is running in graphics mode,
+;; - and updates the `pel-support-dual-environment' user-option in both
 ;;   customization files.
 ;;
 ;; Later when Emacs starts, the code inside pel_keys.el executed by `pel-init'
-;; schedule the execution of `pel-setup-check-dual-environment' to check if
-;; everything is consistent, tries to fix the issues and report remaining
-;; issues to the user in case of inconsistencies.  This operation is delayed a
+;; schedule the execution of `pel-setup-check-dual-environment'. That checks if
+;; everything is consistent, trying to fix identified issues and report remaining
+;; ones to the user in case of inconsistencies.  This operation is delayed a
 ;; little to ensure it does not slow the startup.
 ;;
-;; * `pel-setup-check-dual-environment'
-;;
-;; * `pel-setup-dual-environment'
-;;   - `pel--create-dir'
-;;     - `pel--dir-exists-p'
-;;   - `pel-dual-environment-problems'
-;;   - `pel--other-mode-custom-filename'
-;;
-;; * `pel-setup-info-dual-environment'
-;;   - `pel-dual-environment-problems'
-;;
-
 ;; If you need independent customization for Emacs running in terminal (TTY)
 ;; mode and in graphics mode, then do the following:
 ;;
@@ -393,6 +381,27 @@ non-nil, to nil otherwise.  Byte compile the result file if the
 ;;   early-init.el (on Emacs 27 and later) optionally byte compiling them if
 ;;   requested by the current user options.
 ;; - Restart Emacs.
+;;
+;;
+;; The `pel-setup-info-dual-environment' command displays the state of dual
+;; environments.
+
+;; Show whether PEL dual-environments is supported.
+;; * `pel-setup-info-dual-environment'
+;;   - `pel-dual-environment-problems'
+;;
+
+;; * `pel-setup-check-dual-environment'
+;;
+;; * `pel-setup-dual-environment'
+;;   - `pel--create-dir'
+;;     - `pel--dir-exists-p'
+;;   - `pel-dual-environment-problems'
+;;   - `pel--other-mode-custom-filename'
+;;
+
+;;** Display dual environment support status
+;;   ---------------------------------------
 
 (defun pel-dual-environment-problems ()
   "Return list of string describing problems found in dual custom environment.
