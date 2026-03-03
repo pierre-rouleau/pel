@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-02 22:29:15 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-02 22:51:39 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -567,7 +567,7 @@ Utility function.  If REASON-MSG is specified include that message on error."
     ;; 8:
     ;; Remember this setting inside customization files
     (pel-customize-save 'pel-support-dual-environment t)
-    (pel-customize-save 'pel-support-dual-envionment t
+    (pel-customize-save 'pel-support-dual-environment t
                         (pel--other-mode-custom-filename))
     (setq pel-support-dual-environment t)
     ;; Display performed actions.
