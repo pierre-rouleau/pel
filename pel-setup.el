@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-03 09:34:03 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-03 10:15:21 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,25 +32,26 @@
 ;;
 ;; - The ability to setup Emacs to support two independents environments: one
 ;;   for Emacs running in terminal (TTY) mode and another for Emacs running in
-;;   graphics mode.  Each of them have their own customization file, their
+;;   graphics mode.  Each of them have their own customization file and their
 ;;   own set of Elpa directories to store the external Elpa-compliant
 ;;   packages.  This  allows taking advantage of the strengths of the
 ;;   terminal-based and graphics-based Emacs by customizing each environment
-;;   with the packages that are used in each.
+;;   with the packages used in each.
 ;;
-;;   - The command `pel-setup-dual-environment' sets up the required files
-;;     inside the `user-emacs-directory' if they are not already present.
-;;     This must be done once.
+;; - The command `pel-setup-dual-environment' sets up the required files
+;;   inside the `user-emacs-directory' if they are not already present.
+;;   Users must do it once to activate the dual environment operation mode.
 ;;
-;; This is quite useful on OS, like macOS, where the graphics Emacs is
-;; noticeably slower than its terminal counterpart.
+;; - This mode of operation is useful on OS, like macOS, where the graphics
+;;   version of Emacs is noticeably slower than its terminal counterpart and
+;;   you end up using each mode for their respective abilities.
 ;;
 ;;
 ;; Dynamic control to switch to a fast-startup operation mode
 ;; ----------------------------------------------------------
 ;;
 ;; This provides the ability to reduce the Emacs initialization startup time.
-;; Depending on what is used the speedup can be quite noticeable.
+;; Depending on what is used the speedup can be noticeable.
 ;;
 ;; For example, I have achieved an emacs-startup-time of about 0.15 seconds on
 ;; Emacs 26.3 running in terminal mode on macOS 2014 4 GHz Intel Core i7
@@ -71,7 +72,7 @@
 ;; packages in the current environment.  However, these packages will not be
 ;; known to PEL.  In fast-startup mode, PEL disables its internal automatic
 ;; package management facilities and does not download, install or remove
-;; packages based on modification of the customization.
+;; Elpa packages based on modification of the customization.
 ;;
 ;; This strategy is used to reduce the length of Emacs `load-path' to a minimum.
 ;; This can therefore be used in conjunction of the Emacs 27+
@@ -121,9 +122,9 @@
 ;;
 ;; Because the file names of all package have a unique name it becomes
 ;; possible to group them all inside the same directory (a bundle) and place
-;; that unique directory inside Emacs `load-path'.  This eliminates the
-;; relatively slow Emacs startup processing that must iterate through each
-;; directory identified in Emacs `load-path'.
+;; that unique directory inside Emacs `load-path'.  This speeds up Emacs
+;; startup processing since it must iterate through each directory identified
+;; in Emacs `load-path'.
 ;;
 ;; This can be done for the "one-level packages" but not the others, as their
 ;; code often relies on the relative position of their sub-directories.

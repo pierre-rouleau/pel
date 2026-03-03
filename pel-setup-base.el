@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-03 09:53:18 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-03 10:15:16 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -485,14 +485,15 @@ PEL customization files:
 ;;   - `pel--problem-format'
 
 (defvar pel-problems-text-length nil
-  "If non-nil it must be the minimum length of problem message.
+  "If non-nil, an integer identifying the width of the problem message.
+Use negative integer to impose right padding.
 
 Used by `pel-file-problems', `pel-dir-problems' and `pel-symlink-problems'
 to align the messages they generate.")
 
 (defun pel--problem-format (msg)
   "Return a format string for MSG filled by `pel-problems-text-length'."
-  (when pel-problems-text-length
+  (when (integerp pel-problems-text-length)
     (let ((fmt (format "%%%ds" pel-problems-text-length)))
       (setq msg (format fmt msg))))
   (format "%s : %%s" msg))
