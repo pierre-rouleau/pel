@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-07 11:36:21 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-07 13:59:39 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -49,6 +49,7 @@
 
 (require 'pel-setup-base)             ; use: `pel-set-user-option-persistently'
 ;;                                    ;      `pel-compile-file-if'
+;;                                    ;      `pel-startup-mode'
 ;;                                    ;      `pel-remove-no-byte-compile-in'
 ;;                                    ;      `pel-update-emacs-user-init-file'
 ;;; --------------------------------------------------------------------------
@@ -185,7 +186,7 @@ Available for Emacs 27 and later only."
   (interactive)
   (pel-setup-validate-init-files :early-init-must-exist)
   (when (y-or-n-p "Activate Emacs package quickstart?")
-    (let ((startup-mode (pel--startup-mode)))
+    (let ((startup-mode (pel-startup-mode)))
       (when (eq startup-mode 'inconsistent)
         (user-error "PEL startup mode is inconsistent.
   Please check and fix before activating the package quickstart!"))

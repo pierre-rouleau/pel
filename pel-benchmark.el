@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-07 10:44:02 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-07 14:05:21 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -35,7 +35,8 @@
 
 (require 'pel--base)
 (require 'pel-window)
-(require 'pel-setup)
+(require 'pel-setup)                    ; use: `pel-startup-mode',
+;;                                      ;      `pel-fast-setup-met-criteria'
 (eval-when-compile (require 'subr-x))   ; use: `string-join'
 
 ;;; ----------------------------------------------------------------------------
@@ -88,7 +89,7 @@ prints the Emacs init time on the echo area."
   (if log-it
       (let ((filename (expand-file-name "pel-startup-time.log.txt"
                                         user-emacs-directory))
-            (pel-operation-mode (pel--startup-mode)))
+            (pel-operation-mode (pel-startup-mode)))
         (with-temp-file filename
           (auto-fill-mode -1)
           (when (file-exists-p filename)
@@ -107,7 +108,7 @@ prints the Emacs init time on the echo area."
                           system-type))
           (when (eq pel-operation-mode 'inconsistent)
             (insert (format "- %s\n"
-                            (string-join (nth 2 (pel--fast-setup-met-criteria))
+                            (string-join (nth 2 (pel-fast-setup-met-criteria))
                                          "\n- "))))))
 
     (when (and (fboundp 'benchmark-init/show-durations-tree)

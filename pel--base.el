@@ -1274,7 +1274,7 @@ Otherwise return nil."
 
 (defun pel-string-when (condition &optional text)
   "Return TEXT (or CONDITION) when CONDITION is non-nil, empty string otherwise.
-TEXT is optional, if its nil CONDITION must be a string or nil."
+TEXT is optional, if it's nil CONDITION must be a string or nil."
   (if condition (or text condition) ""))
 
 (defun pel-string-spread (string &optional separator)
