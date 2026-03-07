@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-07 14:08:33 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-07 14:43:53 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -29,6 +29,13 @@
 ;; normal and fast-startup modes implemented in the files pel-setup.el and
 ;; pel-setup-27.el.
 
+;; Emacs Initialisation file validation
+;; - `pel-setup-validate-init-files'
+;;   - `pel--setup-init-file-problems'
+
+;; Package Quickstart Support
+;; - `pel-prompt-with-quickstart-state'
+;;   - `pel-with-package-quickstart-p'
 
 ;; PEL Fast-Startup status extraction and print.
 ;; * `pel-setup-info'
@@ -77,7 +84,7 @@
 ;;; Code:
 ;;
 
-(defconst pel--detected-dual-environment-in-init-p
+(defconst pel-detected-dual-environment-in-init-p
   (bound-and-true-p pel-init-support-dual-environment-p)
   "Identifies whether PEL uses dual environment -- as detected by init.el.
 
@@ -100,7 +107,7 @@ In the current code this is only done by `pel--setup-dual-environment'")
   `(push (format ,fmt ,@args) ,lst))
 
 ;; ---------------------------------------------------------------------------
-;;* Emacs Initialisation file validation
+;;* `Emacs Initialisation file validation
 ;;  ====================================
 
 (defconst pel--expected-init-file-version "0.3"
@@ -198,7 +205,7 @@ Raise error describing the problem if there is one."
 ;;* Package Quickstart Support
 ;;  ==========================
 
-(defun pel--with-package-quickstart-p ()
+(defun pel-with-package-quickstart-p ()
   "Return t when package quickstart is currently used, nil otherwise."
   (and (require 'package nil :no-error)
        (boundp 'package-quickstart)
@@ -208,12 +215,12 @@ Raise error describing the problem if there is one."
         (locate-user-emacs-file
          (pel-elpa-name
           "package-quickstart.el"
-          (and pel--detected-dual-environment-in-init-p
+          (and pel-detected-dual-environment-in-init-p
                pel-emacs-is-graphic-p))))))
 
-(defun pel--prompt-with-quickstart-state (prompt
-                                          &optional show-requested-status
-                                          just-changed)
+(defun pel-prompt-with-quickstart-state (prompt
+                                         &optional show-requested-status
+                                         just-changed)
   "Prompt with augmented PROMPT to ask about package-quickstart if necessary.
 
 - PROMPT: string, the default prompt to which some information might be added.
@@ -223,7 +230,7 @@ Raise error describing the problem if there is one."
   quickstart."
   (let ((current-quickstart-status (if show-requested-status
                                        pel-support-package-quickstart
-                                     (pel--with-package-quickstart-p))))
+                                     (pel-with-package-quickstart-p))))
     (if pel-emacs-27-or-later-p
         (format "%s %s package quickstart support%s"
                 prompt
@@ -245,7 +252,7 @@ Raise error describing the problem if there is one."
   "Name of code file that must be executed by fast-startup in init/early-init.
 When fast startup is not activated, this file must be deleted.")
 
-(defvar pel--fast-startup-setup-changed nil
+(defvar pel-fast-startup-setup-changed nil
   "Identifies that PEL setup has changed.
 Only set by `pel-setup-fast' or `pel-setup-normal'.  Never cleared.")
 
@@ -257,7 +264,7 @@ Only set by `pel-setup-fast' or `pel-setup-normal'.  Never cleared.")
 The FOR-GRAPHICS argument identifies the setup forced for independent graphics."
   (if for-graphics
       "dual-environment graphics mode"
-    (if pel--detected-dual-environment-in-init-p
+    (if pel-detected-dual-environment-in-init-p
         "dual-environment terminal/tty mode"
       "single custom-file modes")))
 
@@ -290,7 +297,7 @@ startup if all tests pass."
       (pel-push-fmt issues "The file %s indicating fast startup not found."
         pel-fast-startup-init-fname))
     ;;
-    (dolist (for-graphic (if pel--detected-dual-environment-in-init-p
+    (dolist (for-graphic (if pel-detected-dual-environment-in-init-p
                              '(nil t)
                            '(nil)))
       (let* ((mode-description (pel-setup-mode-description for-graphic))
@@ -332,7 +339,7 @@ Optional arguments:
   (pel-setup-validate-init-files)
   (let ((mode (pel-startup-mode))
         (now-msg (if with-now "now " "")))
-    (if pel--fast-startup-setup-changed
+    (if pel-fast-startup-setup-changed
         (message "You already changed the setup to %s but did not stop Emacs!
  You may experience inconsistent Emacs behaviour.  It's best to restart Emacs!"
                  mode)
@@ -343,7 +350,7 @@ Optional arguments:
  However, in this setup mode, PEL is not able to install any external package.
  To install new package return to normal mode by executing pel-setup-normal."
                       now-msg
-                      (pel--prompt-with-quickstart-state "" nil pq-just-modified)
+                      (pel-prompt-with-quickstart-state "" nil pq-just-modified)
                       user-emacs-directory))
             ((eq mode 'normal)
              (message "PEL/Emacs %soperates in normal mode%s.
@@ -354,7 +361,7 @@ Optional arguments:
  because of the larger number of directories inside %selpa
  If you want to speed up Emacs startup execute pel-setup-fast."
                       now-msg
-                      (pel--prompt-with-quickstart-state "" nil pq-just-modified)
+                      (pel-prompt-with-quickstart-state "" nil pq-just-modified)
                       user-emacs-directory))
             (t
              (let* ((tc.met-criteria.problems (pel-fast-setup-met-criteria))
@@ -481,7 +488,7 @@ and the persistent value in the customization files:
   active or AND-GRAPHICS is non-nil."
   (set user-option value)
   (pel-customize-save user-option value)
-  (when (or pel--detected-dual-environment-in-init-p and-graphics)
+  (when (or pel-detected-dual-environment-in-init-p and-graphics)
     ;; store in the custom file of the other mode
     (pel-customize-save user-option value (pel--other-mode-custom-filename))))
 

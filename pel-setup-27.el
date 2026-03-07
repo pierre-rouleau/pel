@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-07 13:59:39 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-07 14:25:31 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -52,6 +52,7 @@
 ;;                                    ;      `pel-startup-mode'
 ;;                                    ;      `pel-remove-no-byte-compile-in'
 ;;                                    ;      `pel-update-emacs-user-init-file'
+;;                                    ;      `pel-detected-dual-environment-in-init-p'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -146,7 +147,7 @@ FOR-GRAPHICS is:
 
 The behaviour is controlled by:
 - PKG-QUICKSTART: t to activate package quickstart, nil to disable it.
-- The value of `pel--detected-dual-environment-in-init-p' determines
+- The value of `pel-detected-dual-environment-in-init-p' determines
   whether PEL is used with a dual environment for terminal/TTY and graphics
   mode or just a single one as usual for Emacs.
 - The value of `pel-shell-detection-envvar' user-option determines what
@@ -157,7 +158,7 @@ The behaviour is controlled by:
    (list
     (list 'pel-early-init-support-package-quickstart-p pkg-quickstart)
     (list 'pel-early-init-support-dual-environment-p
-          pel--detected-dual-environment-in-init-p)
+          pel-detected-dual-environment-in-init-p)
     (list 'pel-early-init-shell-detection-envvar
           pel-shell-detection-envvar))
    pel-compile-emacs-early-init))
@@ -201,7 +202,7 @@ Available for Emacs 27 and later only."
                                "elpa-complete"
                              "elpa")))))
         (pel--create-package-quickstart elpa-dpath nil)
-        (when pel--detected-dual-environment-in-init-p
+        (when pel-detected-dual-environment-in-init-p
           (pel--create-package-quickstart elpa-dpath t)))
       ;; Remember user setting: in pel-support-package-quickstart user-option
       (pel--store-with-package-quickstart t))
