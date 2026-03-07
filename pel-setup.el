@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-03 16:28:59 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-07 11:00:32 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -261,7 +261,6 @@
 ;;                             ;      `pel-elpa-name'
 (require 'pel-setup-base)      ; use: `pel--detected-dual-environment-in-init-p'
 ;;                             ;      `pel-set-dual-environment-in-emacs-init'
-;;                             ;      `pel--other-mode-custom-filename'
 ;;                             ;      `pel-remove-no-byte-compile-in'
 ;;                             ;      `pel-update-emacs-user-init-file'
 ;;                             ;      `pel-fast-startup-init-fname'
@@ -399,7 +398,6 @@ slash) or in file name (without the terminating slash) format."
 ;;   - `pel--create-dir'
 ;;     - `pel--dir-exists-p'
 ;;   - `pel-dual-environment-problems'
-;;   - `pel--other-mode-custom-filename'
 ;;
 
 ;;** Display dual environment support status
@@ -407,7 +405,7 @@ slash) or in file name (without the terminating slash) format."
 
 (defun pel-dual-environment-problems ()
   "Return list of string describing problems found in dual custom environment.
-Return nil if no problems were found and all is OK, ready to use Emacs in
+Return nil if no problems found: all is OK, ready to use Emacs in
 independent environments for terminal and graphics mode."
   (require 'cus-edit)                   ; use: `custom-file'`
   (let* ((custom-fname    (pel-elpa-name custom-file nil))
@@ -512,9 +510,9 @@ Utility function.  If REASON-MSG is specified include that message on error."
          (elpa-cmplt-dn   (pel-sibling-dirname pel-elpa-dirpath "elpa-complete"))
          (elpa-cmplt-dn-g (pel-elpa-name elpa-cmplt-dn :for-graphics))
          (utils-dn        (pel-elpa-name (directory-file-name pel-utils-dirpath)
-                                          nil))
+                                         nil))
          (utils-dn-g      (pel-elpa-name (directory-file-name pel-utils-dirpath)
-                                          :for-graphics))
+                                         :for-graphics))
          (actions nil))
     ;; 1:
     ;; Create a custom-file for graphics mode unless it already exists.
@@ -577,10 +575,8 @@ Utility function.  If REASON-MSG is specified include that message on error."
           :error))))
     ;; 8:
     ;; Remember this setting inside customization files
-    (pel-customize-save 'pel-support-dual-environment t)
-    (pel-customize-save 'pel-support-dual-environment t
-                        (pel--other-mode-custom-filename))
-    (setq pel-support-dual-environment t)
+    (pel-set-user-option-persistently 'pel-support-dual-environment t t)
+
     ;; Display performed actions.
     (let ((remaining-problems (pel-dual-environment-problems))
           (done-text (when actions

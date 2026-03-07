@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-03 08:53:30 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-07 11:36:21 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -48,7 +48,7 @@
 ;;                                    ;      `pel-elpa-name'
 
 (require 'pel-setup-base)             ; use: `pel-set-user-option-persistently'
-;;                                    ;      `pel--compile-file-if'
+;;                                    ;      `pel-compile-file-if'
 ;;                                    ;      `pel-remove-no-byte-compile-in'
 ;;                                    ;      `pel-update-emacs-user-init-file'
 ;;; --------------------------------------------------------------------------
@@ -124,10 +124,10 @@ FOR-GRAPHICS is:
              (package-alist           (pel-elpa-package-alist-of-dir package-user-dir)))
         (package-quickstart-refresh)
         ;; Byte-compile it if requested, otherwise remove its .elc
-        (pel--compile-file-if package-quickstart-file
-                              (and pel-compile-package-quickstart
-                                   (pel-remove-no-byte-compile-in
-                                    package-quickstart-file))))
+        (pel-compile-file-if package-quickstart-file
+                             (and pel-compile-package-quickstart
+                                  (pel-remove-no-byte-compile-in
+                                   package-quickstart-file))))
     ;; report any error
     (error "Failed accessing package-quickstart")))
 
