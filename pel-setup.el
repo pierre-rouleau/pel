@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-07 14:07:21 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-07 14:37:46 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -259,15 +259,15 @@
 (require 'pel-elpa)            ; use: `pel-elpa-create-copies'
 ;;                             ;      `pel-elpa-disable-pkg-deps-in'
 ;;                             ;      `pel-elpa-name'
-(require 'pel-setup-base)      ; use: `pel--detected-dual-environment-in-init-p'
+(require 'pel-setup-base)      ; use: `pel-detected-dual-environment-in-init-p'
 ;;                             ;      `pel-set-dual-environment-in-emacs-init'
 ;;                             ;      `pel-remove-no-byte-compile-in'
 ;;                             ;      `pel-update-emacs-user-init-file'
 ;;                             ;      `pel-fast-startup-init-fname'
-;;                             ;      `pel--fast-startup-setup-changed'
+;;                             ;      `pel-fast-startup-setup-changed'
 ;;                             ;      `pel-setup-mode-description'
 ;;                             ;      `pel-startup-mode'
-;;                             ;      `pel--prompt-with-quickstart-state'
+;;                             ;      `pel-prompt-with-quickstart-state'
 ;;                             ;      `pel-push-fmt'
 
 ;; Then following functions are defined in pel-setup-27, which is
@@ -288,7 +288,7 @@
 ;;
 
 (defvar pel--detected-dual-environment-in-init-changed-p nil
-  "Set when pel--detected-dual-environment-in-init-p is modified by code.")
+  "Set when pel-detected-dual-environment-in-init-p is modified by code.")
 
 ;; ---------------------------------------------------------------------------
 ;;* Local Utilities
@@ -449,7 +449,7 @@ current setup."
   (interactive)
   (require 'cus-edit)                   ; use: `custom-file'`
   (pel-setup-validate-init-files)
-  (if pel--detected-dual-environment-in-init-p
+  (if pel-detected-dual-environment-in-init-p
       (let ((problems (pel-dual-environment-problems)))
         (when pel--detected-dual-environment-in-init-changed-p
           (pel-push-fmt problems
@@ -554,7 +554,7 @@ Utility function.  If REASON-MSG is specified include that message on error."
     ;; 7:
     ;; Update init.el: turn pel-init-support-dual-environment-p
     ;; inside init.el and early-init.el.
-    ;; Set pel--detected-dual-environment-in-init-p to remember it locally.
+    ;; Set pel-detected-dual-environment-in-init-p to remember it locally.
     (condition-case err
         (progn
           (pel-set-dual-environment-in-emacs-init t)
@@ -562,7 +562,7 @@ Utility function.  If REASON-MSG is specified include that message on error."
             (declare-function pel--set-dual-environment-in-emacs-early-init
                               "pel-setup-27")
             (pel--set-dual-environment-in-emacs-early-init t))
-          (setq pel--detected-dual-environment-in-init-p t)
+          (setq pel-detected-dual-environment-in-init-p t)
           (setq pel--detected-dual-environment-in-init-changed-p t)
           (pel-push-fmt actions "Updated init.el%s. Please restart Emacs!"
             (pel-string-when pel-emacs-27-or-later-p " and early-init.el")))
@@ -1277,7 +1277,7 @@ Failed fast startup setup for %s after %d of %d steps: %s
   "Print delayed message after switching Emacs to fast start."
   (message "Restart Emacs to complete switching to fast startup mode!%s"
                (pel-string-when
-                pel--detected-dual-environment-in-init-p
+                pel-detected-dual-environment-in-init-p
                 "\n Affects Emacs running in terminal and graphics mode!")))
 
 ;; [:todo 2026-02-21, by Pierre Rouleau: Fix pel-setup-fast on Emacs 30
@@ -1310,7 +1310,7 @@ Failed fast startup setup for %s after %d of %d steps: %s
   Sorry for the inconvenience"))
    ;;
    (t
-    (when (y-or-n-p (pel--prompt-with-quickstart-state
+    (when (y-or-n-p (pel-prompt-with-quickstart-state
                      "Change to fast startup mode"
                      :show-requested-quickstart))
       ;; First setup the environment used by terminal (TTY) and graphics mode
@@ -1319,11 +1319,11 @@ Failed fast startup setup for %s after %d of %d steps: %s
       ;; When graphics mode Emacs has its own customization, then also setup
       ;; the second environment; the one specific to Emacs running in graphics
       ;; mode.
-      (when pel--detected-dual-environment-in-init-p
+      (when pel-detected-dual-environment-in-init-p
         (pel--setup-fast t))
       ;; inform user, possibly after a deprecated warning
       (run-with-idle-timer 1 nil (function pel--setup-fast-message))
-      (setq pel--fast-startup-setup-changed t)))))
+      (setq pel-fast-startup-setup-changed t)))))
 
 ;; --
 (defun pel--setup-normal (for-graphics)
@@ -1368,7 +1368,7 @@ is only one or when its for the terminal (TTY) mode."
   to execute this command.
   Sorry for the inconvenience"))
    (t
-    (when (y-or-n-p (pel--prompt-with-quickstart-state
+    (when (y-or-n-p (pel-prompt-with-quickstart-state
                      "Restore normal startup mode"
                      :show-requested-quickstart))
       ;; First setup the environment used by terminal (TTY) and graphics mode
@@ -1377,14 +1377,14 @@ is only one or when its for the terminal (TTY) mode."
       ;; When graphics mode Emacs has its own customization, then also setup
       ;; the second environment; the one specific to Emacs running in graphics
       ;; mode.
-      (when pel--detected-dual-environment-in-init-p
+      (when pel-detected-dual-environment-in-init-p
         (pel--setup-normal t))
       ;; inform user
       (message "Restart Emacs to complete switching back to normal startup mode!%s"
                (pel-string-when
-                pel--detected-dual-environment-in-init-p
+                pel-detected-dual-environment-in-init-p
                 "\n Affects Emacs running in terminal and graphics mode!"))
-      (setq pel--fast-startup-setup-changed t)))))
+      (setq pel-fast-startup-setup-changed t)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-setup)

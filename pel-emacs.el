@@ -56,7 +56,7 @@
 (require 'pel--base)                    ; use: `pel-print-in-buffer', `pel-emacs-27-or-later-p'
 (require 'pel--options)
 (require 'pel-prompt)                   ; use: `pel-prompt'
-(require 'pel-setup-base)               ; use: `pel-startup-mode', `pel--with-package-quickstart-p'
+(require 'pel-setup-base)               ; use: `pel-startup-mode', `pel-with-package-quickstart-p'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -151,7 +151,7 @@ Emacs %-4s startup time: %s   (in %s mode%s)
                      (if pel-emacs-27-or-later-p
                          (format
                           ", with%s package quickstart, with%s native compilation, %s."
-                          (if (pel--with-package-quickstart-p)
+                          (if (pel-with-package-quickstart-p)
                               ""
                             "out")
                           (if (and pel-emacs-28-or-later-p (featurep
