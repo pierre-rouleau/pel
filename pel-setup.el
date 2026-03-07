@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-07 11:00:32 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-07 14:07:21 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -265,9 +265,8 @@
 ;;                             ;      `pel-update-emacs-user-init-file'
 ;;                             ;      `pel-fast-startup-init-fname'
 ;;                             ;      `pel--fast-startup-setup-changed'
-;;                             ;      `pel--setup-mode-description'
-;;                             ;      `pel--fast-setup-met-criteria'
-;;                             ;      `pel--startup-mode'
+;;                             ;      `pel-setup-mode-description'
+;;                             ;      `pel-startup-mode'
 ;;                             ;      `pel--prompt-with-quickstart-state'
 ;;                             ;      `pel-push-fmt'
 
@@ -1266,7 +1265,7 @@ Failed fast startup setup for %s after %d of %d steps: %s
  Please inspect the %s directory to restore a valid setup.
  See pel-setup.el commentary for further information.
  Please also report the problem as a bug in the PEL Github project."
-                                (pel--setup-mode-description for-graphics)
+                                (pel-setup-mode-description for-graphics)
                                 step-count
                                 (if pel-emacs-27-or-later-p 19 17)
                                 err
@@ -1298,7 +1297,7 @@ Failed fast startup setup for %s after %d of %d steps: %s
     (user-error "PEL Fast startup is not yet working in Emacs >= 30!"))
   (cond
    ;;
-   ((eq (pel--startup-mode) 'fast)
+   ((eq (pel-startup-mode) 'fast)
     (user-error "PEL/Emacs is already setup for fast startup!"))
    ;;
    ((and (bound-and-true-p package-quickstart)
@@ -1359,7 +1358,7 @@ is only one or when its for the terminal (TTY) mode."
     (user-error "PEL Fast startup is not yet working in Emacs >= 30!"))
   (pel-setup-validate-init-files)
   (cond
-   ((eq (pel--startup-mode) 'normal)
+   ((eq (pel-startup-mode) 'normal)
     (user-error "PEL/Emacs is already using the normal setup!"))
    ((and (bound-and-true-p package-quickstart)
          pel-emacs-is-graphic-p)

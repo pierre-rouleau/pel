@@ -1,6 +1,6 @@
 ;;; pel-emacs.el --- Emacs stats utilities -*- lexical-binding: t -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -56,7 +56,7 @@
 (require 'pel--base)                    ; use: `pel-print-in-buffer', `pel-emacs-27-or-later-p'
 (require 'pel--options)
 (require 'pel-prompt)                   ; use: `pel-prompt'
-(require 'pel-setup-base)               ; use: `pel--startup-mode', `pel--with-package-quickstart-p'
+(require 'pel-setup-base)               ; use: `pel-startup-mode', `pel--with-package-quickstart-p'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -147,7 +147,7 @@ Emacs %-4s startup time: %s   (in %s mode%s)
 # packages selected    : %d"
                      emacs-version
                      (emacs-init-time)
-                     (pel--startup-mode)
+                     (pel-startup-mode)
                      (if pel-emacs-27-or-later-p
                          (format
                           ", with%s package quickstart, with%s native compilation, %s."

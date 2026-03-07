@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-07 11:48:01 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-07 14:08:33 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -26,16 +26,17 @@
 ;;; Commentary:
 ;;
 ;; This file provides a set of utilities used in the management of PEL
-;; normal and fast-startup modes.
+;; normal and fast-startup modes implemented in the files pel-setup.el and
+;; pel-setup-27.el.
+
 
 ;; PEL Fast-Startup status extraction and print.
 ;; * `pel-setup-info'
-;;   - `pel--startup-mode'
-;;     - `pel--fast-setup-met-criteria'
-;;       - `pel--setup-mode-description'
+;;   - `pel-startup-mode'
+;;     - `pel-fast-setup-met-criteria'
+;;       - `pel-setup-mode-description'
 ;;   - `pel-setup-validate-init-files'
 ;;     - `pel--setup-init-file-problems'
-;;
 
 ;; Remove the no-byte-compile assignment from file.
 ;; - `pel-remove-no-byte-compile-in'
@@ -251,7 +252,7 @@ Only set by `pel-setup-fast' or `pel-setup-normal'.  Never cleared.")
 ;;** PEL Fast-Startup status extraction and print
 ;;   --------------------------------------------
 
-(defun pel--setup-mode-description (for-graphics)
+(defun pel-setup-mode-description (for-graphics)
   "Describe the mode context of a setup.
 The FOR-GRAPHICS argument identifies the setup forced for independent graphics."
   (if for-graphics
@@ -260,7 +261,7 @@ The FOR-GRAPHICS argument identifies the setup forced for independent graphics."
         "dual-environment terminal/tty mode"
       "single custom-file modes")))
 
-(defun pel--fast-setup-met-criteria ()
+(defun pel-fast-setup-met-criteria ()
   "Check if the setup meets fast startup settings.
 
 Return a list of 3 elements:
@@ -292,7 +293,7 @@ startup if all tests pass."
     (dolist (for-graphic (if pel--detected-dual-environment-in-init-p
                              '(nil t)
                            '(nil)))
-      (let* ((mode-description (pel--setup-mode-description for-graphic))
+      (let* ((mode-description (pel-setup-mode-description for-graphic))
              (elpa-dirpath (pel-elpa-name pel-elpa-dirpath for-graphic))
              (elpa-reduced-dirpath (pel-elpa-name (pel-sibling-dirpath
                                                          elpa-dirpath "elpa-reduced")
@@ -307,10 +308,10 @@ startup if all tests pass."
             mode-description elpa-dirpath elpa-reduced-dirpath))))
     (list test-count (reverse met-criteria) (reverse issues))))
 
-(defun pel--startup-mode ()
+(defun pel-startup-mode ()
   "Return whether PEL/Emacs operates in fast startup mode.
 Returns: \\='normal, \\='fast or \\='inconsistent."
-  (let* ((tc.met-criteria.issues (pel--fast-setup-met-criteria))
+  (let* ((tc.met-criteria.issues (pel-fast-setup-met-criteria))
          (test-count   (nth 0 tc.met-criteria.issues))
          (met-criteria (length (nth 1 tc.met-criteria.issues)))
          (issues       (length (nth 2 tc.met-criteria.issues))))
@@ -329,7 +330,7 @@ Optional arguments:
                     modified in the Emacs session."
   (interactive)
   (pel-setup-validate-init-files)
-  (let ((mode (pel--startup-mode))
+  (let ((mode (pel-startup-mode))
         (now-msg (if with-now "now " "")))
     (if pel--fast-startup-setup-changed
         (message "You already changed the setup to %s but did not stop Emacs!
@@ -356,7 +357,7 @@ Optional arguments:
                       (pel--prompt-with-quickstart-state "" nil pq-just-modified)
                       user-emacs-directory))
             (t
-             (let* ((tc.met-criteria.problems (pel--fast-setup-met-criteria))
+             (let* ((tc.met-criteria.problems (pel-fast-setup-met-criteria))
                     (met-criteria (nth 1 tc.met-criteria.problems))
                     (problems (nth 2  tc.met-criteria.problems)))
                (user-error "The PEL/Emacs startup mode is inconsistent!
