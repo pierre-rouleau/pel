@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-03 16:40:11 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-07 11:48:01 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -46,10 +46,9 @@
 ;; Update PEL constant values in init.el or early-init.el
 ;; - `pel-set-dual-environment-in-emacs-init'
 ;;   - `pel-update-emacs-user-init-file'
-;;     - `pel--compile-file-if'
+;;     - `pel-compile-file-if'
 
-;; Modify value of user-option and save it in all necessary customization
-;; files used by PEL.
+;; Save user option persistently
 ;; - `pel-set-user-option-persistently'
 ;;   - `pel--other-mode-custom-filename'
 
@@ -403,7 +402,7 @@ Return t when done, nil otherwise."
 ;;* Update PEL constant values in init.el or early-init.el
 ;; =======================================================
 
-(defun pel--compile-file-if (el-fname byte-compile-it)
+(defun pel-compile-file-if (el-fname byte-compile-it)
   "Byte compile file EL-FNAME if BYTE-COMPILE-IT is set.
 Otherwise delete the .elc file if it exists."
   (if byte-compile-it
@@ -445,46 +444,49 @@ what was not found."
         (if (re-search-forward re-pattern nil :noerror)
             (replace-match new-value :fixedcase :literal nil 1)
           (user-error "Can't find regexp %s in '%s'" re-pattern fname))))
-    (pel--compile-file-if fname byte-compile-it)))
+    (pel-compile-file-if fname byte-compile-it)))
 
-(defun pel-set-dual-environment-in-emacs-init (use)
-  "Update Emacs user init.el to USE (or not) dual environment.
+(defun pel-set-dual-environment-in-emacs-init (use-dual-environment)
+  "Update Emacs user init.el to USE-DUAL-ENVIRONMENT or not.
 
-Update init.el for dual environment when USE is non-nil, otherwise
-prevent it from using it.
-Set `pel-init-support-dual-environment-p' to t when use is
+Update init.el for dual environment when USE-DUAL-ENVIRONMENT is
+non-nil, otherwise prevent it from using it.  Set
+`pel-init-support-dual-environment-p' to t when USE-DUAL-ENVIRONMENT is
 non-nil, to nil otherwise.  Byte compile the result file if the
 `pel-compile-emacs-init' user-option is turned on."
   (pel-update-emacs-user-init-file
    "init.el"
    (list
-    (list 'pel-init-support-dual-environment-p (not (null use))))
+    (list 'pel-init-support-dual-environment-p (not (null use-dual-environment))))
    pel-compile-emacs-init))
 
 ;; ---------------------------------------------------------------------------
 ;;* Save user-option persistently
 ;;  =============================
+;;
+;; Modify value of user-option and save it in all PEL customization files.
 
 (defun pel--other-mode-custom-filename ()
   "Return the name of the customization file used by the other mode."
   (pel-elpa-name custom-file (not pel-emacs-is-graphic-p)))
 
-(defun pel-set-user-option-persistently (user-option value)
+(defun pel-set-user-option-persistently (user-option value &optional and-graphics)
   "Set USER-OPTION symbol to specified VALUE in all PEL customization files.
 
-Set USER-OPTION global variable and the persistent value in the single or both
-PEL customization files:
+Set the global variable identified by the USER-OPTION quoted symbol
+and the persistent value in the customization files:
 - the default customization file, and
-- if the PEL dual-mode is active, the customization file used for graphics mode."
+- the customization file used for graphics mode, if the PEL dual-mode is
+  active or AND-GRAPHICS is non-nil."
   (set user-option value)
   (pel-customize-save user-option value)
-  (when pel--detected-dual-environment-in-init-p
+  (when (or pel--detected-dual-environment-in-init-p and-graphics)
     ;; store in the custom file of the other mode
     (pel-customize-save user-option value (pel--other-mode-custom-filename))))
 
 ;; ---------------------------------------------------------------------------
 ;;* File System Checks
-;;  =================
+;;  ==================
 ;;
 ;; The following functions check validity of file, directory or symlink.  They
 ;; return a list of the string describing the problems discovered or nil if
