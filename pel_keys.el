@@ -494,15 +494,21 @@ Open GitHub file if OPEN-GITHUB-PAGE-P IS non-nil."
 ;; documentation at:
 ;;  https://github.com/quelpa/quelpa/blob/master/README.org#installation
 (when pel-use-quelpa
-  ;; Unfortunately package-installed-p is auto-loaded only on Emacs >= 29.1
   (require 'package)
   (when (fboundp 'package-installed-p)
     (unless (package-installed-p 'quelpa)
-      (with-temp-buffer
-        (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-        (eval-buffer)
-        (with-no-warnings
-          (quelpa-self-upgrade))))))
+      (condition-case err
+          (with-temp-buffer
+            (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+            (eval-buffer)
+            (with-no-warnings
+              (quelpa-self-upgrade)))
+        (error
+         (display-warning 'pel-quelpa
+                          (format "Error in quelpa installation: skipping quelpa bootstrap: %s" err)))))))
+
+
+
 
 (when pel-use-package-lint
   (pel-ensure-package-elpa package-lint from: melpa))
