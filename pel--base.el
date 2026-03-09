@@ -1644,6 +1644,19 @@ Modifies `auto-mode-alist'."
 ;; @ `pel-autoload-file'
 ;; @ `pel-declare-file'
 
+;; [:todo 2026-03-09, by Pierre Rouleau: Modify all functions that download
+;;                    and install files to return non-nil on success, nil on error to allow
+;;                    pel_keys.el code to proceed only when the file is either present or just
+;;                    downloaded.  Ideally the functions would return 'present or 'downloaded and
+;;                    the pel_keys.el code would not map commands when the command failed and the
+;;                    file is not installed locally.  There would not be any exception from
+;;                    failing installation just error warnings displayed describing what went
+;;                    wrong.  This way problems would not stop Emacs initialization.  For the
+;;                    moment coding issues or permission failures may stop the
+;;                    initialization.
+;;                    However do this only once the fast startup works on all
+;;                    version of Emacs as the extra code will slow down
+;;                    startup a little.]
 
 (defun pel-url-copy-file (url newname &optional ok-if-already-exists)
   "Copy URL to NEWNAME.  Both arguments must be strings.

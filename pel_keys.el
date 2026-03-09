@@ -10796,7 +10796,6 @@ See `flyspell-auto-correct-previous-word' for more info."
     (define-key pel:window-layout  "r"  'layout-restore)
     (define-key pel:window-layout  "d"  'layout-delete-current)))
 
-
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** Window Size Operations - <f11> w s
 ;; - Function Keys - <f11> - Prefix ``<f11> w s`` :
