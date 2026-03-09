@@ -15238,11 +15238,14 @@ If it set to nil, no such assumptions are made."
 
 (defcustom pel-use-windresize nil
   "Control whether PEL provides the windresize external package."
+  :link '(url-link :tag "My windresize fork @ Github"
+                   "https://github.com/pierre-rouleau/windresize")
   :link '(url-link :tag "windresize @ Elpa"
                    "https://elpa.gnu.org/packages/windresize.html")
   :group 'pel-pkg-for-window
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-windresize :package-is :in-utils)
 
 
 (defcustom pel-use-layout-restore nil

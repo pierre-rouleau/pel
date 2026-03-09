@@ -10753,7 +10753,9 @@ See `flyspell-auto-correct-previous-word' for more info."
     (winner-mode t)))
 
 (when pel-use-windresize
-  (pel-ensure-package-elpa windresize from: gnu)
+  ;; Use my fork instead of GNU official package: my fork fixes warnings.
+  (pel-install-github-file "pierre-rouleau/windresize/master"
+                           "windresize.el")
   (pel-autoload-file windresize for: windresize)
   (define-key pel:window "r" 'windresize))
 
