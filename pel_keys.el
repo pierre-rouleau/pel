@@ -3831,17 +3831,20 @@ d-mode not added to ac-modes!"
 
   (defun pel--java-setup-with-lsp ()
     "Setup Java with language server capability."
-    (require 'lsp-java)
-    (when (fboundp 'lsp)
-      (lsp)))
+    (if (require 'lsp-java nil 'noerror)
+        (when (fboundp 'lsp)
+          (lsp))
+      (display-warning
+       'pel-use-java
+       "lsp-java not available; skipping Java LSP activation." :error)))
+  (declare-function pel--java-setup-with-lsp "pel_keys" ())
 
   ;; java-mode is implemented in the cc-mode.el
   (pel-eval-after-load cc-mode
     (pel-config-major-mode java pel:for-java :same-for-ts)
     (when pel-use-lsp-java
       ;; don't load lsp on cc-mode loaded; wait until user opens a Java file.
-      (when (fboundp 'pel--java-setup-with-lsp)
-        (add-hook 'java-mode-hook (function pel--java-setup-with-lsp))))))
+      (add-hook 'java-mode-hook (function pel--java-setup-with-lsp)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Javascript Programming Language Support
@@ -4326,10 +4329,14 @@ d-mode not added to ac-modes!"
    ;; Activate syntax checkers if necessary
    (pel--auto-activate-fly)
    ;; Activate open-at-point for elisp files
-   (require 'pel-file)
-   (when (boundp 'pel-filename-at-point-finders)
-     (setq-local pel-filename-at-point-finders '(pel-elisp-find-file))))
+   (if (require 'pel-file nil 'noerror)
+       (when (boundp 'pel-filename-at-point-finders)
+         (setq-local pel-filename-at-point-finders '(pel-elisp-find-file)))
+     (display-warning
+      'pel-file
+      "pel-file.el not found; file-at-point openers not activated.")))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
+
 
 (when pel-use-helpful
   (pel-ensure-package-elpa helpful from: melpa)
@@ -4660,36 +4667,45 @@ d-mode not added to ac-modes!"
 Can't load ac-geiser: geiser-repl-mode: %S"
                                    (if (fboundp 'geiser-repl-mode)
                                        "bound"
-                                     "not bound!")) :error))))
+                                     "not bound!"))
+                           :error))))
     ;; Geiser Scheme implementation extensions
     (when pel-use-geiser-chez
       (pel-ensure-package-elpa geiser-chez from: melpa)
       (with-eval-after-load 'geiser-mode
-        (require 'geiser-chez)))
+        (unless (require 'geiser-chez nil 'noerror)
+          (display-warning
+           'pel-use-geiser-chez "Can't load geiser-chez; skipping."
+           :error))))
+
     (when pel-use-geiser-chibi
       (pel-ensure-package-elpa geiser-chibi from: melpa)
       (with-eval-after-load 'geiser-mode
-        (require 'geiser-chibi)))
+        (pel-soft-require-or-warn geiser-chibi)))
+
     (when pel-use-geiser-chicken
       (pel-ensure-package-elpa geiser-chicken from: melpa)
       (with-eval-after-load 'geiser-mode
-        (require 'geiser-chicken)))
+        (pel-soft-require-or-warn geiser-chicken)))
+
     (when pel-use-geiser-gambit
       (pel-ensure-package-elpa geiser-gambit from: melpa)
       (with-eval-after-load 'geiser-mode
-        (require 'geiser-gambit)))
+        (pel-soft-require-or-warn geiser-gambit)))
+
     (when pel-use-geiser-guile
       (pel-ensure-package-elpa geiser-guile from: melpa)
       (with-eval-after-load 'geiser-mode
-        (require 'geiser-guile)))
+        (pel-soft-require-or-warn geiser-guile)))
+
     (when pel-use-geiser-mit
       (pel-ensure-package-elpa geiser-mit from: melpa)
       (with-eval-after-load 'geiser-mode
-        (require 'geiser-mit)))
+        (pel-soft-require-or-warn geiser-mit)))
+
     (when pel-use-geiser-racket
       (pel-ensure-package-elpa geiser-racket from: melpa)
-      (with-eval-after-load 'geiser-mode
-        (require 'geiser-racket))))
+      (pel-soft-require-or-warn geiser-racket)))
 
   (when pel-use-quack
     ;; I have fixed byte-compiler warnings in quack in a fork of emacsmirror/quack
@@ -5000,7 +5016,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (add-hook 'erlang-shell-mode-hook 'pel-erlang-shell-mode-init))
 
     ;;
-    (require 'erlang-start)
+    (pel-soft-require-or-warn erlang-start)
     (defvar erlang-mode-map) ; declare dynamic: prevent byte-compiler warnings
 
     (pel-config-major-mode erlang pel:for-erlang :same-for-ts
@@ -5066,7 +5082,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (define-key pel:for-erlang (kbd "<M-right>") 'erlang-end-of-clause)
       (define-key pel:erlang-function "m"         'erlang-mark-function)
       (define-key pel:erlang-clause   "m"         'erlang-mark-clause)
-      (define-key pel:erlang-statement "a"        'bsckward-sentence)
+      (define-key pel:erlang-statement "a"        'backward-sentence)
       (define-key pel:erlang-statement "e"        'forward-sentence)
       (define-key pel:for-erlang (kbd "M-p")     #'superword-mode)
       (define-key pel:for-erlang (kbd "M-c")      'erlang-compile)
@@ -5202,12 +5218,12 @@ Can't load ac-geiser: geiser-repl-mode: %S"
         (define-pel-global-prefix pel:erlang-edts  (kbd "<f11> SPC e M-E"))
         (define-key pel:erlang-edts (kbd "M-E")   'edts-mode)
         (when (eq pel-use-edts 'start-automatically)
-          (require 'edts-start))
+          (pel-soft-require-or-warn edts-start))
         (pel-eval-after-load edts
           (add-to-list 'desktop-minor-mode-handlers
                        '(edts-mode . edts-mode-desktop-restore))
           (unless (eq pel-use-edts 'start-automatically)
-            (require 'edts-start))
+            (pel-soft-require-or-warn edts-start))
           ;; EDTS keys
           ;; The following do not seem to do anything special in Erlang.
           ;; (define-key pel:for-erlang      ">"     'ahs-forward-definition)
@@ -5399,7 +5415,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; LFE := Lisp Flavoured Erlang
 (when pel-use-lfe
   (pel-ensure-package-elpa lfe-mode from: melpa)
-  (require 'lfe-start nil :no-error)    ; autoloads lfe commands
+  (pel-soft-require-or-warn lfe-start) ; autoloads lfe commands
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".lfe"
                                   ".lfes"
@@ -7443,7 +7459,7 @@ to identify a Verilog file.  Anything else is assumed being V."
       (keymap-set completion-preview-active-mode-map "M-p" 'completion-preview-prev-candidate))))
 
 (when pel-use-marginalia
-  (pel-install-github-file "/minad/marginalia/master"
+  (pel-install-github-file "minad/marginalia/master"
                            "marginalia.el")
   (pel-autoload-file marginalia for:
                      marginalia-mode
@@ -8346,9 +8362,12 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;;
 ;; - Add useful ibuffer filters
 (pel-eval-after-load ibuffer
-  (declare-function pel-map-ibuffer-mode-filters "pel-ibuffer")
-  (require 'pel-ibuffer)
-  (pel-map-ibuffer-mode-filters))
+  (declare-function pel-map-ibuffer-mode-filters "pel-ibuffer" ())
+  (if (require 'pel-ibuffer nil 'noerror)
+      (pel-map-ibuffer-mode-filters)
+    (display-warning
+     'pel-ibuffer
+     "pel-ibuffer.el not found; ibuffer filters not installed.")))
 
 ;; - Provide <f12> <f1>, <f12><f2> and <f12><f3> in ibuffer-mode
 (define-pel-global-prefix pel:for-ibuffer (kbd "<f11> SPC SPC b"))

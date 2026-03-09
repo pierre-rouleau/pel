@@ -1703,7 +1703,8 @@ is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
 Returns non-nil when file was downloaded, nil otherwise.
-Permission errors are raised."
+Permission errors are raised but install failures are just reported
+by warning to prevent init from failing."
   (let* ((utils-dirname (file-name-as-directory
                          (expand-file-name "utils" user-emacs-directory)))
          (target-fname (expand-file-name fname utils-dirname))
@@ -1747,7 +1748,8 @@ If a file already exists in the destination, no download
 is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
-On file download problem or permission, raise an error."
+Permission errors are raised but install failures are just reported
+by warning to prevent init from failing."
   (dolist (fname (pel-list-of fnames))
     (pel-install-file (pel-url-join url-base fname)
                       fname
@@ -1897,6 +1899,15 @@ Load the package library if that's not already done."
                      :error)
     nil))
 
+(defmacro pel-soft-require-or-warn (feature)
+  "Soft require FEATURE (unquoted symbol), display warning on failure."
+  (let ((warning-name (intern (format "pel-use-%s" feature)))
+        (warning-text (format "Can't load %s; skipping." feature)))
+    `(unless (require (quote ,feature) nil 'noerror)
+       (display-warning (quote ,warning-name)
+                        ,warning-text
+                        :error))))
+
 (defun pel-require (feature &optional package with-pel-install fname
                             url-fname)
   "Load FEATURE if not already loaded, optionally try to install PACKAGE.
@@ -1931,7 +1942,7 @@ Otherwise return the loading state of the FEATURE."
                 (progn
                   ;; install using specified GitHub repository
                   (pel-install-github-file with-pel-install fname url-fname
-                                            nil)
+                                           nil)
                   ;; try to load it again
                   (require feature nil :noerror))
               ;; install using Elpa package system
@@ -1944,7 +1955,7 @@ Otherwise return the loading state of the FEATURE."
                                        (format "\
 Skipping installation of %s during fast startup."
                                                package)
-                       :warning)
+                                       :warning)
                     ;; not in fast-startup, not installed: install it
                     (pel-package-install package)
                     (require feature nil :noerror)
@@ -1952,7 +1963,7 @@ Skipping installation of %s during fast startup."
                       (display-warning 'pel-require
                                        (format "\
 Failed loading %s even after installing package %s!"
-                                             feature package)))))))
+                                               feature package)))))))
           (display-warning 'pel-require
                            (format "pel-require(%s) failed. No request to install."
                                    feature)
