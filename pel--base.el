@@ -1772,7 +1772,8 @@ If a file already exists in the destination, no download is done
 unless REFRESH is non-nil, in which case the function prompts for
 confirmation.
 
-On file download problem or permission, raise an error."
+Permission errors are raised but install failures are just reported
+by warning to prevent init from failing."
   (pel-install-files (pel-url-join "https://raw.githubusercontent.com"
                                    user-project-branch)
                      fnames
@@ -1798,7 +1799,8 @@ is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
 The function returns t if the file was downloaded, nil otherwise.
-On file download problem or permission, raise an error."
+Permission errors are raised but install failures are just reported
+by warning to prevent init from failing."
   (pel-install-file (pel-url-join "https://raw.githubusercontent.com"
                                   user-project-branch
                                   (or url-fname fname))
@@ -1817,8 +1819,9 @@ If a file already exists in the destination, no download
 is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
-The function returns t if the file was
-downloaded, nil otherwise.  Permission errors are raised."
+The function returns t if the file was downloaded, nil otherwise.
+Permission errors are raised but install failures are just reported
+by warning to prevent init from failing."
   (pel-install-file (format "https://gitlab.com/%s/%s/-/raw/master/%s"
                             gitlab-user
                             gitlab-project
