@@ -3844,7 +3844,8 @@ d-mode not added to ac-modes!"
     (pel-config-major-mode java pel:for-java :same-for-ts)
     (when pel-use-lsp-java
       ;; don't load lsp on cc-mode loaded; wait until user opens a Java file.
-      (add-hook 'java-mode-hook (function pel--java-setup-with-lsp)))))
+      (add-hook 'java-mode-hook #'pel--java-setup-with-lsp)
+      (add-hook 'java-ts-mode-hook #'pel--java-setup-with-lsp))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Javascript Programming Language Support
@@ -4705,7 +4706,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
     (when pel-use-geiser-racket
       (pel-ensure-package-elpa geiser-racket from: melpa)
-      (pel-soft-require-or-warn geiser-racket)))
+      (with-eval-after-load 'geiser-mode
+        (pel-soft-require-or-warn geiser-racket))))
 
   (when pel-use-quack
     ;; I have fixed byte-compiler warnings in quack in a fork of emacsmirror/quack

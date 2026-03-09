@@ -1696,11 +1696,17 @@ Returns t if all is OK."
             ;;   (signal (car err) (cdr err))
             (setq err-car (car err))
             (setq err-cdr (cdr err))
-            (signal err-car err-cdr)))
-        (if error-msg
-            (error error-msg)
+            (display-warning 'pel-url-copy-file
+                             (format "\
+Error installing URL %s to %s:\n%s %s\n%s"
+                                     url newname
+                                     err-car err-cdr
+                                     (pel-string-for error-msg)))))
+        (if (or error-msg err-car err-cdr)
+            nil
           t))
-    (error "The url-handlers file is not loaded!")))
+    (display-warning 'pel-url-copy-file
+                     "The url-handlers.el file is not loaded: can't install anything!")))
 
 (defun pel-install-file (url fname &optional refresh)
   "Download, install a file FNAME from URL into PEL\\='s utility directory.
