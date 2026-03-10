@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-01 13:21:42 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-09 14:03:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1469,7 +1469,9 @@ to  : %s
                  (setq n (1+ n ))
                  (insert (format "- %3d: %s\n" n fn))))
              (when moved-elpa-dirs
-               (insert (format "\n\nElpa packages %s,
+               (when (or removed-el-files removed-elc-files)
+                 (insert "\n\n"))
+               (insert (format "Elpa packages %s,
 from: %s
 to  : %s :\n\n"
                                verb-moved
