@@ -761,6 +761,7 @@ NOTES: - PEL only supports tree-sitter for Emacs 30.1 and later and
   :type 'boolean
   :safe #'booleanp)
 (unless pel-emacs-30-or-later-p (setq pel-use-tree-sitter nil))
+(pel-put pel-use-tree-sitter :package-is '(quote ((elpa . tree-sitter-langs))))
 
 (defcustom pel-treesit-load-path nil
   "List of directories to look for tree-sitter language definition.
@@ -828,9 +829,10 @@ NOTES: - PEL only supports tree-sitter for Emacs 30.1 and later and
   :type 'boolean
   :safe #'booleanp)
 ;; combobulate uses Tree-Sitter technology and is installed with quelpa
+;; therefore disable combobulate if Tree Sitter support is not available.
 (pel-put pel-use-combobulate :requires '(:all pel-use-tree-sitter
                                               pel-use-quelpa))
-(unless pel-use-tree-sitter  (setq pel-use-tree-sitter nil))
+(unless pel-use-tree-sitter  (setq pel-use-combobulate nil))
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-syntax-tools nil
@@ -2181,7 +2183,7 @@ This is only available on Emacs 29.1 and later."
 (defcustom pel-use-emacs-toml nil
   "Whether PEL supports the emacs-toml to read/write .toml files.
 
-Note that is `pel-use-tomlparse' is t, `pel-use-tree-sitter' is t and
+Note that if `pel-use-tomlparse' is t, `pel-use-tree-sitter' is t and
 tree-sitter is available, then tomlparse is used instead of emacs-toml."
   :group 'pel-pkg-for-conf-file
   :link '(url-link :tag "emacs-toml @ GitHub"
@@ -2192,7 +2194,6 @@ tree-sitter is available, then tomlparse is used instead of emacs-toml."
                    "https://toml.io/en/")
   :type 'boolean
   :safe #'booleanp)
-(pel-put pel-use-tree-sitter :package-is '(quote ((elpa . tree-sitter-langs))))
 
 (defcustom pel-use-tomlparse nil
   "Whether PEL supports tomlparse when tree-sitter is available.
@@ -4424,13 +4425,13 @@ Provides several major modes."
 ;; ---------------------------------------------------------------------------
 ;; SELinux Policy Definition Files Support
 ;; ---------------------------------------
-(defgroup pel-pkg_for-selinux nil
+(defgroup pel-pkg-for-selinux nil
   "Packages supporting SELinux policy development."
   :group 'pel-pkg-for-filemng)
 
 (defcustom pel-use-selinux-policy nil
   "Control whether PEL uses the selinux-policy package."
-  :group 'pel-pkg_for-selinux
+  :group 'pel-pkg-for-selinux
   :link '(url-link :tag "selinux-policy @ GitHub"
                    "https://github.com/pierre-rouleau/selinux-policy")
   :type 'boolean
@@ -5188,7 +5189,7 @@ itself is not available."
 
 (defcustom pel-use-osx-plist nil
   "Control whether PEL activates the osx-plist file to parse macOS plist files."
-  :group 'pel-pkg-fox-xml
+  :group 'pel-pkg-for-xml
   :link '(url-link :tag "mac osxPlist @ Emacs Wiki"
                    "https://www.emacswiki.org/emacs/MacOSXPlist")
   :link '(url-link :tag "osx-plist @ GitHub"
@@ -15238,11 +15239,14 @@ If it set to nil, no such assumptions are made."
 
 (defcustom pel-use-windresize nil
   "Control whether PEL provides the windresize external package."
+  :link '(url-link :tag "My windresize fork @ Github"
+                   "https://github.com/pierre-rouleau/windresize")
   :link '(url-link :tag "windresize @ Elpa"
                    "https://elpa.gnu.org/packages/windresize.html")
   :group 'pel-pkg-for-window
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-windresize :package-is :in-utils)
 
 
 (defcustom pel-use-layout-restore nil

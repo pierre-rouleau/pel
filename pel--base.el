@@ -958,7 +958,7 @@ non-nil, just return nil when SYMBOL is not bound."
 
 (defun pel-symbol-at-point ()
   "Return symbol at point; return nil if there are none."
-  (if (and (require 'thingatpt nil :noerror)
+  (if (and (require 'thingatpt nil 'noerror)
            (fboundp 'thing-at-point))
       (thing-at-point 'symbol :no-properties)
     (error "Function thing-at-point not loaded!")))
@@ -1644,6 +1644,19 @@ Modifies `auto-mode-alist'."
 ;; @ `pel-autoload-file'
 ;; @ `pel-declare-file'
 
+;; [:todo 2026-03-09, by Pierre Rouleau: Modify all functions that download
+;;                    and install files to return non-nil on success, nil on error to allow
+;;                    pel_keys.el code to proceed only when the file is either present or just
+;;                    downloaded.  Ideally the functions would return 'present or 'downloaded and
+;;                    the pel_keys.el code would not map commands when the command failed and the
+;;                    file is not installed locally.  There would not be any exception from
+;;                    failing installation just error warnings displayed describing what went
+;;                    wrong.  This way problems would not stop Emacs initialization.  For the
+;;                    moment coding issues or permission failures may stop the
+;;                    initialization.
+;;                    However do this only once the fast startup works on all
+;;                    version of Emacs as the extra code will slow down
+;;                    startup a little.]
 
 (defun pel-url-copy-file (url newname &optional ok-if-already-exists)
   "Copy URL to NEWNAME.  Both arguments must be strings.
@@ -1656,7 +1669,7 @@ confirmation if NEWNAME already exists.
 Same as `url-copy-file' but detects URL to non-existing file.
 Raise an error if the request generates a HTTP 404 error.
 Returns t if all is OK."
-  (require 'url-handlers nil :no-error)
+  (require 'url-handlers nil 'noerror)
   (if (fboundp 'url-copy-file)
       ;; Try to download the file identified by the URL.
       ;; That function does not detect invalid URLS so we could get a "404:
@@ -1683,11 +1696,17 @@ Returns t if all is OK."
             ;;   (signal (car err) (cdr err))
             (setq err-car (car err))
             (setq err-cdr (cdr err))
-            (signal err-car err-cdr)))
-        (if error-msg
-            (error error-msg)
+            (display-warning 'pel-url-copy-file
+                             (format "\
+Error installing URL %s to %s:\n%s %s\n%s"
+                                     url newname
+                                     err-car err-cdr
+                                     (pel-string-for error-msg)))))
+        (if (or error-msg err-car err-cdr)
+            nil
           t))
-    (error "The url-handlers file is not loaded!")))
+    (display-warning 'pel-url-copy-file
+                     "The url-handlers.el file is not loaded: can't install anything!")))
 
 (defun pel-install-file (url fname &optional refresh)
   "Download, install a file FNAME from URL into PEL\\='s utility directory.
@@ -1703,7 +1722,8 @@ is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
 Returns non-nil when file was downloaded, nil otherwise.
-Permission errors are raised."
+Permission errors are raised but install failures are just reported
+by warning to prevent init from failing."
   (let* ((utils-dirname (file-name-as-directory
                          (expand-file-name "utils" user-emacs-directory)))
          (target-fname (expand-file-name fname utils-dirname))
@@ -1747,7 +1767,8 @@ If a file already exists in the destination, no download
 is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
-On file download problem or permission, raise an error."
+Permission errors are raised but install failures are just reported
+by warning to prevent init from failing."
   (dolist (fname (pel-list-of fnames))
     (pel-install-file (pel-url-join url-base fname)
                       fname
@@ -1770,7 +1791,8 @@ If a file already exists in the destination, no download is done
 unless REFRESH is non-nil, in which case the function prompts for
 confirmation.
 
-On file download problem or permission, raise an error."
+Permission errors are raised but install failures are just reported
+by warning to prevent init from failing."
   (pel-install-files (pel-url-join "https://raw.githubusercontent.com"
                                    user-project-branch)
                      fnames
@@ -1796,7 +1818,8 @@ is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
 The function returns t if the file was downloaded, nil otherwise.
-On file download problem or permission, raise an error."
+Permission errors are raised but install failures are just reported
+by warning to prevent init from failing."
   (pel-install-file (pel-url-join "https://raw.githubusercontent.com"
                                   user-project-branch
                                   (or url-fname fname))
@@ -1815,8 +1838,9 @@ If a file already exists in the destination, no download
 is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
-The function returns t if the file was
-downloaded, nil otherwise.  Permission errors are raised."
+The function returns t if the file was downloaded, nil otherwise.
+Permission errors are raised but install failures are just reported
+by warning to prevent init from failing."
   (pel-install-file (format "https://gitlab.com/%s/%s/-/raw/master/%s"
                             gitlab-user
                             gitlab-project
@@ -1842,7 +1866,7 @@ and the function returns nil"
   ;; Load it lazily and check if the required functions are bounded
   ;; to prevent byte-compiler warnings.
   (let ((package-was-installed nil))
-    (if (and (require 'package nil :no-error)
+    (if (and (require 'package nil 'noerror)
              (fboundp 'package-install))
         (condition-case-unless-debug err
             (progn
@@ -1889,13 +1913,31 @@ Please verify the validity of your package-archives setup!"
 (defun pel-package-installed-p (feature)
   "Return t if FEATURE is installed, nil otherwise.
 Load the package library if that's not already done."
-  (if (and (require 'package nil :no-error)
+  (if (and (require 'package nil 'noerror)
            (fboundp 'package-installed-p))
       (package-installed-p feature)
     (display-warning 'pel--package-installed-p
                      "Failed loading package.el to use package-installed-p!"
                      :error)
     nil))
+
+(defmacro pel-soft-require-or-warn (feature &rest body )
+  "Soft require FEATURE (unquoted symbol), display warning on failure.
+if BODY is specified, execute it on success."
+  (declare (indent 1))
+  (let ((warning-name (intern (format "pel-use-%s" feature)))
+        (warning-text (format "Can't load %s; skipping." feature)))
+    (if body
+        `(if (require (quote ,feature) nil 'noerror)
+             (progn
+               ,@body)
+           (display-warning (quote ,warning-name)
+                          ,warning-text
+                          :error))
+      `(unless (require (quote ,feature) nil 'noerror)
+         (display-warning (quote ,warning-name)
+                          ,warning-text
+                          :error)))))
 
 (defun pel-require (feature &optional package with-pel-install fname
                             url-fname)
@@ -1922,7 +1964,7 @@ locally.
 Generate a warning when failing to load the FEATURE.
 Otherwise return the loading state of the FEATURE."
   (unless (featurep feature)
-    (let ((feature-is-loaded (require feature nil :noerror)))
+    (let ((feature-is-loaded (require feature nil 'noerror)))
       (unless feature-is-loaded
         ;; required failed - if package specified try installing it
         ;; when not already present
@@ -1931,9 +1973,9 @@ Otherwise return the loading state of the FEATURE."
                 (progn
                   ;; install using specified GitHub repository
                   (pel-install-github-file with-pel-install fname url-fname
-                                            nil)
+                                           nil)
                   ;; try to load it again
-                  (require feature nil :noerror))
+                  (require feature nil 'noerror))
               ;; install using Elpa package system
               (let ((package (if (eq package :install-when-missing)
                                  feature
@@ -1944,15 +1986,15 @@ Otherwise return the loading state of the FEATURE."
                                        (format "\
 Skipping installation of %s during fast startup."
                                                package)
-                       :warning)
+                                       :warning)
                     ;; not in fast-startup, not installed: install it
                     (pel-package-install package)
-                    (require feature nil :noerror)
+                    (require feature nil 'noerror)
                     (unless (featurep feature)
                       (display-warning 'pel-require
                                        (format "\
 Failed loading %s even after installing package %s!"
-                                             feature package)))))))
+                                               feature package)))))))
           (display-warning 'pel-require
                            (format "pel-require(%s) failed. No request to install."
                                    feature)
@@ -2004,7 +2046,7 @@ Skipping rebuild of utils file: utils directory does not exist: %s"
 The ARCHIVE argument may be a string or a symbol.
 To get the URL of the existing package, take the cdr of the returned value."
   (if (or (boundp 'package-archives)
-          (and (require 'package nil :no-error)
+          (and (require 'package nil 'noerror)
                (boundp 'package-archives)))
       (with-no-warnings ; Emacs 30 Byte compiler does not see protection...
         (assoc (pel-as-string archive) package-archives))
@@ -2062,7 +2104,7 @@ Use the macro `pel-ensure-package-elpa' instead.
 
 When a failure occurs, refresh the local list and try again, also
 generate a warning that identifies the error."
-  (if (and (require 'package nil :no-error)
+  (if (and (require 'package nil 'noerror)
            (boundp 'package-archive-contents)
            (fboundp 'package-read-all-archive-contents))
       (condition-case-unless-debug err
@@ -2211,7 +2253,7 @@ tree-sitter is ready, return non-nil.  If QUIET is t, don't emit a
 warning in either case; if quiet is `message', display a message instead
 of emitting a warning."
   (if (and pel-emacs-30-or-later-p
-           (require 'treesit nil :noerror)
+           (require 'treesit nil 'noerror)
            (fboundp 'treesit-ready-p))
       (treesit-ready-p language quiet)
     (unless quiet
@@ -2781,10 +2823,10 @@ Return a (start . end) cons cell if found, otherwise return nil."
   (setq pos (or pos (point)))
   (save-excursion
     (let (beg end)
-      (when (search-backward start-str nil :noerror)
+      (when (search-backward start-str nil 'noerror)
         (beginning-of-line 1)
         (setq beg (point))
-        (when (search-forward end-str nil :noerror)
+        (when (search-forward end-str nil 'noerror)
           (end-of-line 1)
           (setq end (point))
           (cons beg end))))))
@@ -3034,7 +3076,7 @@ This function handles both."
 
 If EXTRA-TEXT is non-nil it should be a string and is inserted after the
 button."
-  (if (and (require 'button nil :no-error)
+  (if (and (require 'button nil 'noerror)
            (fboundp 'insert-button)
            (fboundp 'browse-url)
            (fboundp 'button-get))
@@ -3052,7 +3094,7 @@ Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
   (let ((name (symbol-name symbol)))
     (if no-button
         (insert name)
-      (if (and (require 'button nil :no-error)
+      (if (and (require 'button nil 'noerror)
                (fboundp 'insert-button))
           ;; When a button is required, ensure that it describes the variable
           ;; in the context of the original buffer, not the info buffer.
@@ -3150,7 +3192,7 @@ If EXTRA-TEXT is non-nil, it can be a string or a function:
 
 A non-nil PREFIX should a be a string that is inserted before the
 OBJECT."
-  (if (and (require 'pp nil :no-error)
+  (if (and (require 'pp nil 'noerror)
            (fboundp 'pp-to-string))
       (let ((text (string-trim (pp-to-string object))))
         (princ (pel-line-prefixed-with text (or prefix ""))
