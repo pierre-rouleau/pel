@@ -1921,14 +1921,23 @@ Load the package library if that's not already done."
                      :error)
     nil))
 
-(defmacro pel-soft-require-or-warn (feature)
-  "Soft require FEATURE (unquoted symbol), display warning on failure."
+(defmacro pel-soft-require-or-warn (feature &rest body )
+  "Soft require FEATURE (unquoted symbol), display warning on failure.
+if BODY is specified, execute it on success."
+  (declare (indent 1))
   (let ((warning-name (intern (format "pel-use-%s" feature)))
         (warning-text (format "Can't load %s; skipping." feature)))
-    `(unless (require (quote ,feature) nil 'noerror)
-       (display-warning (quote ,warning-name)
-                        ,warning-text
-                        :error))))
+    (if body
+        `(if (require (quote ,feature) nil 'noerror)
+             (progn
+               ,@body)
+           (display-warning (quote ,warning-name)
+                          ,warning-text
+                          :error))
+      `(unless (require (quote ,feature) nil 'noerror)
+         (display-warning (quote ,warning-name)
+                          ,warning-text
+                          :error)))))
 
 (defun pel-require (feature &optional package with-pel-install fname
                             url-fname)

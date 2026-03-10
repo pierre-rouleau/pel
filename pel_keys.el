@@ -184,7 +184,7 @@
 (unless pel--init-called-once
   (unless (getenv pel-shell-detection-envvar)
     ;; A GUI Emacs is running! Set up its process environment from user-option.
-    (when (and (require 'pel-process nil :no-error)
+    (when (and (require 'pel-process nil 'noerror)
                (fboundp 'pel-process-update-environment-from))
       (pel-process-update-environment-from pel-gui-process-environment)))
     (setq pel--init-called-once t))
@@ -220,7 +220,7 @@
            (or pel-support-dual-environment
                (bound-and-true-p pel-init-support-dual-environment-p)
                (bound-and-true-p pel-early-init-support-dual-environment-p))
-           (require 'pel-setup nil :no-error)
+           (require 'pel-setup nil 'noerror)
            (fboundp 'pel-setup-check-dual-environment))
   (run-at-time "3 sec" nil (function pel-setup-check-dual-environment)))
 
@@ -900,7 +900,7 @@ Your version of Emacs does not support dynamic module.")))
 
   (when pel-use-dired-x
     ;; Activate extra Dired-x features when requested.
-    (load "dired-x" :noerror :nomessage))
+    (load "dired-x" 'noerror 'nomessage))
 
   (when pel-use-undo-tree
     ;; Ensure that `dired-undo' is available in Dired buffer.
@@ -967,8 +967,8 @@ Your version of Emacs does not support dynamic module.")))
   ;; In graphics mode provide control over cursor color and type (shape): the
   ;; logic is in the pel-cursor.el file.
   ;; Don't delay loading: it's small enough.
-  (require 'pel-cursor)
-  (define-key pel: (kbd  "C-c")     'pel-set-cursor-color)
+  (pel-soft-require-or-warn pel-cursor
+    (define-key pel: (kbd  "C-c")     'pel-set-cursor-color))
 
   ;; Add key cursor bindings for windmove when Emacs runs in graphics mode.
   ;; The windmove package is autoloaded via the pel-window file.  It's not
@@ -1513,8 +1513,8 @@ Your version of Emacs does not support dynamic module.")))
     ;; (add-hook 'sh-mode-hook 'pel-iedit-enhance-sh)
     )
   (pel-eval-after-load tcl
-    (require 'pel-iedit-modes-support)
-    (add-hook 'tcl-mode-hook 'pel-iedit-enhance-tcl)))
+    (pel-soft-require-or-warn pel-iedit-modes-support
+      (add-hook 'tcl-mode-hook 'pel-iedit-enhance-tcl))))
 
 ;; ---------------------------------------------------------------------------
 ;;** smart-dash
@@ -2513,9 +2513,9 @@ can't bind negative-argument to C-_ and M-_"
   (pel-ensure-package-elpa ninja-mode from: melpa)
   (add-to-list 'auto-mode-alist '("\\.ninja\\'" . ninja-mode))
   (pel-eval-after-load ninja-mode
-    (require 'pel-iedit-modes-support)
-    (add-hook 'ninja-mode-hook 'pel-iedit-enhance-ninja)
-    (pel-config-major-mode ninja pel:for-ninja :no-ts)))
+    (pel-soft-require-or-warn pel-iedit-modes-support
+      (add-hook 'ninja-mode-hook 'pel-iedit-enhance-ninja)
+      (pel-config-major-mode ninja pel:for-ninja :no-ts))))
 
 ;;*** Nix Package Manager Support
 ;;    ---------------------------
@@ -2927,7 +2927,7 @@ bind it again after this call."
   (defun pel--set-cc-style (mode bracket-style newline-mode)
     "Set the BRACKET-STYLE and NEWLINE-MODE for MODE.
 MODE must be a symbol."
-    (if (and (require 'cc-vars nil :no-error)
+    (if (and (require 'cc-vars nil 'noerror)
              (boundp 'c-default-style))
         (progn
           (let* ((used-style  (assoc mode c-default-style))
@@ -3335,7 +3335,7 @@ MODE must be a symbol."
     (pel-ensure-package-elpa ac-dcd from: melpa)
     (pel-autoload-file ac-dcd for: ac-dcd-setup)
     (pel-eval-after-load d-mode
-      (if (and (require 'auto-complete nil :no-error)
+      (if (and (require 'auto-complete nil 'noerror)
                (boundp 'ac-modes))
           (add-to-list 'ac-modes 'd-mode)
         (display-warning 'pel-use-d-ac-dcd
@@ -4039,7 +4039,7 @@ d-mode not added to ac-modes!"
 
   (defun pel--activate-lispy ()
     "Activate lispy lazily."
-    (if (and (require 'pel-lispy nil :no-error)
+    (if (and (require 'pel-lispy nil 'noerror)
              (fboundp 'pel-lispy-mode))
         (pel-lispy-mode)
       (display-warning
@@ -4642,13 +4642,13 @@ d-mode not added to ac-modes!"
                          macrostep-geiser-setup)
       ;;
       (pel-eval-after-load geiser-mode
-        (if (and (require 'macrostep-geiser nil :no-error)
+        (if (and (require 'macrostep-geiser nil 'noerror)
                  (fboundp 'macrostep-geiser-setup))
             (add-hook 'geiser-mode-hook (function macrostep-geiser-setup))
           (display-warning 'pel-use-macrostep-geiser
                            "Can't load macrostep-geiser" :error)))
       (pel-eval-after-load geiser-repl
-        (if (and (require 'macrostep-geiser nil :no-error)
+        (if (and (require 'macrostep-geiser nil 'noerror)
                  (fboundp 'macrostep-geiser-setup))
             (add-hook 'geiser-repl-mode-hook (function
                                               macrostep-geiser-setup))
@@ -4659,7 +4659,7 @@ d-mode not added to ac-modes!"
       (add-hook 'geiser-mode-hook 'ac-geiser-setup)
       (add-hook 'geiser-repl-mode-hook 'ac-geiser-setup)
       (pel-eval-after-load auto-complete
-        (if (and (require 'geiser nil :no-error)
+        (if (and (require 'geiser nil 'noerror)
                  (fboundp 'geiser-repl-mode)
                  (boundp 'ac-modes))
             (add-to-list 'ac-modes (function geiser-repl-mode))
@@ -4674,10 +4674,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (when pel-use-geiser-chez
       (pel-ensure-package-elpa geiser-chez from: melpa)
       (with-eval-after-load 'geiser-mode
-        (unless (require 'geiser-chez nil 'noerror)
-          (display-warning
-           'pel-use-geiser-chez "Can't load geiser-chez; skipping."
-           :error))))
+        (pel-soft-require-or-warn geiser-chez)))
 
     (when pel-use-geiser-chibi
       (pel-ensure-package-elpa geiser-chibi from: melpa)
@@ -5417,7 +5414,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; LFE := Lisp Flavoured Erlang
 (when pel-use-lfe
   (pel-ensure-package-elpa lfe-mode from: melpa)
-  (pel-soft-require-or-warn lfe-start) ; autoloads lfe commands
+  ;; the elpa-compliant package autoload handles all auto-loading.
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".lfe"
                                   ".lfes"
@@ -5848,8 +5845,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;; Enhance iedit-mode for cperl-mode
     (when pel-use-iedit
       (pel-eval-after-load cperl-mode
-        (require 'pel-iedit-modes-support)
-        (add-hook 'cperl-mode-hook 'pel-iedit-enhance-cperl)))
+        (pel-soft-require-or-warn pel-iedit-modes-support
+          (add-hook 'cperl-mode-hook 'pel-iedit-enhance-cperl))))
 
     (when pel-use-perl-live-coding
       (pel-install-github-files "pierre-rouleau/perl-live/master"
@@ -6017,7 +6014,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-ensure-package-elpa flycheck-rust from: melpa)
     (add-hook 'flycheck-mode-hook 'flycheck-rust-setup)
     (pel-eval-after-load flycheck
-      (require 'flycheck-rust)))
+      (pel-soft-require-or-warn flycheck-rust)))
 
   ;; 2- Associate files with Rust major mode selector
   (add-to-list 'auto-mode-alist '("\\.rs\\'" . pel-rust-mode))
@@ -7017,7 +7014,7 @@ to identify a Verilog file.  Anything else is assumed being V."
     (when (eq pel-use-markdown-toc 'update-toc-on-save)
       (defun pel-markdown-toc-refresh ()
         "Update the table of content if present."
-        (if (and (require 'markdown-toc nil :no-error)
+        (if (and (require 'markdown-toc nil 'noerror)
                  (fboundp 'markdown-toc--toc-already-present-p)
                  (fboundp 'markdown-toc-generate-toc))
             (when (markdown-toc--toc-already-present-p)
@@ -7200,9 +7197,9 @@ to identify a Verilog file.  Anything else is assumed being V."
                        "Unbound plantuml-default-exec-mode!"
                        :error))
     (pel-eval-after-load flycheck
-      (require 'flycheck-plantuml)
-      (declare-function flycheck-plantuml-setup "flycheck-plantuml")
-      (flycheck-plantuml-setup))))
+      (pel-soft-require-or-warn flycheck-plantuml
+        (declare-function flycheck-plantuml-setup "flycheck-plantuml" ())
+        (flycheck-plantuml-setup)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Testing Control Files - Cram Test Files
@@ -7421,7 +7418,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 (when pel-use-orderless
   (pel-ensure-package-elpa orderless from: melpa)
-  (require 'orderless))
+  (pel-soft-require-or-warn orderless))
 
 (when pel-use-prescient
     (pel-ensure-package-elpa prescient from: melpa))
@@ -7478,14 +7475,13 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:marginalia "c"  'marginalia-cycle)
   (define-key pel:marginalia "s"  'pel-marginalia-symbols)
 
-  (with-eval-after-load 'marginalia-mode
+  (with-eval-after-load 'marginalia
     (keymap-set minibuffer-local-map     "M-A" 'marginalia-cycle)
     (keymap-set completion-list-mode-map "M-A" 'marginalia-cycle))
 
   (when (and (eq pel-use-marginalia 'use-from-start)
              (fboundp 'marginalia-mode))
     (marginalia-mode)))
-
 
 ;; ---------------------------------------------------------------------------
 ;;* mark commands - <f11> .
@@ -9136,8 +9132,8 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:frame "p"   'pel-previous-frame)
 (define-key pel:frame "r"  #'find-file-read-only-other-frame)
 (when pel-emacs-is-graphic-p
-  (require 'menu-bar nil :noerror) ; feature loaded in emacs -Q
-  (define-key pel:frame "F" 'menu-set-font))
+  (pel-soft-require-or-warn menu-bar ; feature loaded in emacs -Q
+    (define-key pel:frame "F" 'menu-set-font)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Grep operations - <f11> g
@@ -10424,10 +10420,10 @@ See `flyspell-auto-correct-previous-word' for more info."
     (pel-install-file
      "https://swarm.workshop.perforce.com/downloads/guest/magnus_henoch/vc-p4/vc-p4.el"
      "vc-p4.el")
-    (require 'vc-p4))
+    (pel-soft-require-or-warn vc-p4))
   (when (memq pel-use-perforce '(both p4))
     (pel-ensure-package-elpa p4 from: melpa)
-    (require 'p4))
+    (pel-soft-require-or-warn p4))
   (when (and (eq pel-use-perforce 'both)
              (boundp 'p4-do-find-file))
     (setq p4-do-find-file nil)))
