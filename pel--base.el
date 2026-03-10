@@ -1669,7 +1669,7 @@ confirmation if NEWNAME already exists.
 Same as `url-copy-file' but detects URL to non-existing file.
 Raise an error if the request generates a HTTP 404 error.
 Returns t if all is OK."
-  (require 'url-handlers nil :no-error)
+  (require 'url-handlers nil 'noerror)
   (if (fboundp 'url-copy-file)
       ;; Try to download the file identified by the URL.
       ;; That function does not detect invalid URLS so we could get a "404:
@@ -1866,7 +1866,7 @@ and the function returns nil"
   ;; Load it lazily and check if the required functions are bounded
   ;; to prevent byte-compiler warnings.
   (let ((package-was-installed nil))
-    (if (and (require 'package nil :no-error)
+    (if (and (require 'package nil 'noerror)
              (fboundp 'package-install))
         (condition-case-unless-debug err
             (progn
@@ -2046,7 +2046,7 @@ Skipping rebuild of utils file: utils directory does not exist: %s"
 The ARCHIVE argument may be a string or a symbol.
 To get the URL of the existing package, take the cdr of the returned value."
   (if (or (boundp 'package-archives)
-          (and (require 'package nil :no-error)
+          (and (require 'package nil 'noerror)
                (boundp 'package-archives)))
       (with-no-warnings ; Emacs 30 Byte compiler does not see protection...
         (assoc (pel-as-string archive) package-archives))
@@ -2104,7 +2104,7 @@ Use the macro `pel-ensure-package-elpa' instead.
 
 When a failure occurs, refresh the local list and try again, also
 generate a warning that identifies the error."
-  (if (and (require 'package nil :no-error)
+  (if (and (require 'package nil 'noerror)
            (boundp 'package-archive-contents)
            (fboundp 'package-read-all-archive-contents))
       (condition-case-unless-debug err
@@ -3076,7 +3076,7 @@ This function handles both."
 
 If EXTRA-TEXT is non-nil it should be a string and is inserted after the
 button."
-  (if (and (require 'button nil :no-error)
+  (if (and (require 'button nil 'noerror)
            (fboundp 'insert-button)
            (fboundp 'browse-url)
            (fboundp 'button-get))
@@ -3094,7 +3094,7 @@ Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
   (let ((name (symbol-name symbol)))
     (if no-button
         (insert name)
-      (if (and (require 'button nil :no-error)
+      (if (and (require 'button nil 'noerror)
                (fboundp 'insert-button))
           ;; When a button is required, ensure that it describes the variable
           ;; in the context of the original buffer, not the info buffer.
@@ -3192,7 +3192,7 @@ If EXTRA-TEXT is non-nil, it can be a string or a function:
 
 A non-nil PREFIX should a be a string that is inserted before the
 OBJECT."
-  (if (and (require 'pp nil :no-error)
+  (if (and (require 'pp nil 'noerror)
            (fboundp 'pp-to-string))
       (let ((text (string-trim (pp-to-string object))))
         (princ (pel-line-prefixed-with text (or prefix ""))
