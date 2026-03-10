@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-09 14:03:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-10 15:48:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -44,9 +44,9 @@
 ;;  doing this for all `pel-use-' user option we accumulate the list of
 ;;  packages that should be available.  Then by looking into the directories
 ;;  we can remove or disable the exceeding package (by moving the package into
-;;  an *attic* directory). For elpa package the package name is removed-files
-;;  from the `package-selected-packages' variable and the active customization
-;;  file is updated.
+;;  an *attic* directory).  For elpa package the package name is removed from
+;;  the `package-selected-packages' variable and the active customization file
+;;  is updated.
 ;;
 ;;  Removing packages that are not used improves Emacs speed: it reduces the
 ;;  length of the load path that tends to grow rapidly with new packages
@@ -255,17 +255,17 @@ when it is requested as specified by the presence of
   "Return a list of PEL command symbols."
   (let ((symbols '())
         (cmd-name nil))
-  (mapatoms
-   (lambda (symbol)
-     (when (and (commandp symbol)
-                (progn
-                  (setq cmd-name (symbol-name symbol))
-                  (and (eq t (compare-strings "pel-" nil nil
-                                              cmd-name 0 4))
-                       (not (pel-string-starts-with-p cmd-name "pel-∑"))
-                       (not (pel-string-starts-with-p cmd-name "pel-⅀")))))
-       (push symbol symbols))))
-  (nreverse symbols)))
+    (mapatoms
+     (lambda (symbol)
+       (when (and (commandp symbol)
+                  (progn
+                    (setq cmd-name (symbol-name symbol))
+                    (and (eq t (compare-strings "pel-" nil nil
+                                                cmd-name 0 4))
+                         (not (pel-string-starts-with-p cmd-name "pel-∑"))
+                         (not (pel-string-starts-with-p cmd-name "pel-⅀")))))
+         (push symbol symbols))))
+    (nreverse symbols)))
 
 (defun pel--assert-valid-user-option  (symbol)
   "Assert that the SYMBOL argument is a valid PEL user-option symbol.
@@ -757,7 +757,7 @@ a string that says so."
     ;; return a list of all keys; the names of packages that could be upgraded.
     (mapcar 'car upgradables)))
 
-;; pel-autoload
+;;-pel-autoload
 (defun pel-package-info (&optional full-report on-stdout)
   "Display information about packages required by PEL.
 
@@ -1256,7 +1256,6 @@ Return the number of symbols that were removed from the
 `package-selected-package' form."
   (let ((edited-filepath (or filepath custom-file))
         (pkgs (if (listp pkgs) pkgs (list pkgs)))
-        ;; (buffer-save-without-query t)
         (remove-count 0))
     (with-temp-file edited-filepath
       (insert-file-contents edited-filepath)

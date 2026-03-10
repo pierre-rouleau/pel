@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-09 10:21:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-10 16:00:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,7 +25,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;;  A set of utilities to deal with the ~/.emacs./elpa directory.
+;;  A set of utilities to deal with the ~/.emacs.d/elpa directory.
 ;;  The functions here are used by code that manage Elpa-compliant packages as
 ;;  well as re-organize the Emacs directory to speed-up Emacs start-up time.
 ;;
@@ -66,9 +66,14 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+(defvar pel-elpa-debug-tracing-p nil
+  "Set it to non-nil to activate debug tracing.")
 
 ;;* Utilities
 ;;  =========
+;;
+;;  - `pel-elpa-name'
+;;  - `pel-el-files-in'
 
 (defun pel-elpa-name (name for-graphics)
   "Return NAME with \"-graphics\" appended if FOR-GRAPHICS is non-nil.
@@ -186,25 +191,31 @@ The DIRSPEC is the data structure returned by the function
       dirname)))
 
 (defun pel-elpa-package-directories (elpa-dirpath)
-  "Return a list of package directories inside the ELPA-DIRPATH directory."
+  "Return a list of package directories inside the ELPA-DIRPATH directory.
+Each entry in the list is an elpa-compliant directory name,
+something like \"ztree-20250209.1933\"."
   (mapcar #'car
           (seq-filter (function pel-elpa-package-dirspec-p)
                       (directory-files-and-attributes elpa-dirpath))))
 
 ;; --
 
-(defun pel-elpa-one-level-packages (elpa-dirpath)
-  "Return a list of directories in ELPA-DIRPATH that have no sub-directories."
-  (let ((elpa-dirnames (pel-elpa-package-directories elpa-dirpath)))
-    (seq-filter
-     (lambda (dn)
-       (when (eq (pel-subdir-count (expand-file-name dn elpa-dirpath)) 0)
-         dn))
-     elpa-dirnames)))
-
 (defun pel-elpa-pkg-filename (dir &optional with-path)
   "Return the name of the -pkg.el file present in DIR, nil if none found.
-The returned file name has no path, unless WITH-PATH is non-nil."
+Return an absolute, normalized path name if WITH-PATH is non-nil,
+otherwise return a file name.
+
+Example:
+  ELISP> (abbreviate-file-name
+            (pel-elpa-pkg-filename
+              \"~/.emacs.d/elpa/ace-link-20241101.1344\"
+              t))
+  \"~/.emacs.d/elpa/ace-link-20241101.1344/ace-link-pkg.el\"
+
+  ELISP> (abbreviate-file-name
+           (pel-elpa-pkg-filename
+             \"~/.emacs.d/elpa/ace-link-20241101.1344\"))
+  \"ace-link-pkg.el\""
   (let ((fname
          (car (seq-filter (lambda (fn)
                             (and (pel-string-ends-with-p fn "-pkg.el")
@@ -216,16 +227,26 @@ The returned file name has no path, unless WITH-PATH is non-nil."
           (expand-file-name fname dir))
       fname)))
 
+(defun pel-elpa-one-level-packages (elpa-dirpath)
+  "Return a list of directories in ELPA-DIRPATH that have no sub-directories."
+  (let ((elpa-dirnames (pel-elpa-package-directories elpa-dirpath)))
+    (seq-filter
+     (lambda (dn)
+       (when (eq (pel-subdir-count (expand-file-name dn elpa-dirpath)) 0)
+         dn))
+     elpa-dirnames)))
+
 (defun pel-elpa-one-level-package-files (elpa-dirpath)
-  "Return all file path-names of one level package -pkg files in ELPA-DIRPATH."
+  "Return the path-names of the one-level package -pkg files in ELPA-DIRPATH."
   ;; first compute a preliminary list that may contain nil entries if non
   ;; package directories where inside ELPA-DIRPATH.
   (let ((prelim-list
          (mapcar (lambda (dn)
-                   (message "Processing %s" dn)
+                   (when pel-elpa-debug-tracing-p
+                     (message "Processing %s" dn))
                    (pel-elpa-pkg-filename (expand-file-name dn elpa-dirpath)
-                                          :with-path))
-                 (pel-elpa-one-level-packages "~/.emacs.d/elpa"))))
+                                          'with-path))
+                 (pel-elpa-one-level-packages elpa-dirpath))))
     ;; Return list with all nil removed
     (seq-remove (function not) prelim-list)))
 
@@ -238,7 +259,24 @@ The returned file name has no path, unless WITH-PATH is non-nil."
 - PKG-DIR. Optional string. If specified, set the dir slot of the returned
   package descriptor to that directory.
 - RESULT-ALIST-SYMBOL: Optional symbol. If specified, set the value of that
-  symbol to the value of the result alist."
+  symbol to the value of the result alist.
+
+Example:
+  ELISP> (pel-elpa-load-pkg-descriptor
+           \"~/.emacs.d/elpa/xref-js2-20240504.1449/xref-js2-pkg.el\")
+  #s(package-desc :name xref-js2 :version (20240504 1449) :summary
+                  \"Jump to references/definitions using ag & js2-mode's AST.\"
+                  :reqs ((emacs (25 1)) (js2-mode (20150909))) :kind nil
+                  :archive nil :dir nil :extras
+                  ((:maintainers (\"Nicolas Petton\" . \"nicolas@petton.fr\"))
+                   (:authors (\"Nicolas Petton\" . \"nicolas@petton.fr\"))
+                   (:keywords \"javascript\" \"convenience\" \"tools\")
+                   (:revdesc . \"e215af9eedac\")
+                   (:commit . \"e215af9eedac69b40942fff9d5514704f9f4d43e\")
+                   (:url . \"https://github.com/NicolasPetton/xref-js2\"))
+                  :signed nil)
+
+Note that the :dir slot is nil."
   ;; prevent package-process-define-package from updating package-alist
   (let (package-alist)
     (with-temp-buffer
@@ -276,14 +314,18 @@ This function does not modify the file system."
 Return a list of all -pkg.el files inside each of the Elpa package directories
 of DIRPATH.  Each listed file name has the complete path based on DIRPATH."
   (mapcar (lambda (dn)
-            (pel-elpa-pkg-filename (expand-file-name dn dirpath) :with-path))
+            (pel-elpa-pkg-filename (expand-file-name dn dirpath) 'with-path))
           (pel-elpa-package-directories dirpath)))
 
 (defun pel-elpa-disable-pkg-deps-in (dirpath &optional dont-update-file)
   "Disable the dependencies of all -pkg.el files of packages in DIRPATH.
+
 Return an alist of (package versions) that should be added to the
 variable `package--builtin-versions'.  This corresponds to all packages
-dependencies that are not already part of the `package--builtin-versions'."
+dependencies that are not already part of the `package--builtin-versions'.
+
+For each package, re-create the -pkg.el file for the package with the updated
+information unless DONT-UPDATE-FILE is non-nil."
   ;; The package descriptor data structure is a cl-defstruct of type
   ;; `package-desc' defined in the package.el library file.
   ;; The slot `reqs' is what interests us here.
@@ -387,31 +429,46 @@ The DIRNAME is expected to be a package-name.-version string.
 This only perform a string manipulation to extract the package name.
 
 Example:
-ELISP> (pel-elpa-package-name-for \"ztree-20250209.1933\")
-\"ztree\"
+  ELISP> (pel-elpa-package-name-for \"ztree-20250209.1933\")
+  \"ztree\"
 
-ELISP> (pel-elpa-package-name-for \"~/.emacs.d/elpa/ztree-20250209.1933\")
-\"ztree\""
-  (when (string-match "\\([a-zA-Z0-9-+_]+\\)-[0-9.]+" dirname)
-    (match-string 1 dirname)))
+  ELISP> (pel-elpa-package-name-for \"~/.emacs.d/elpa/ztree-20250209.1933\")
+  \"ztree\"
+
+  ELISP> (pel-elpa-package-name-for
+           \"~/.emacs.d/elpa-1.2/ace-link-20241101.1344\")
+  \"ace-link\"
+
+Note that the code supports versions inside the name of the elpa directory."
+  (let ((basename (file-name-nondirectory (directory-file-name dirname))))
+    (when (string-match "\\`\\([-[:alnum:]+_]+\\)-[0-9.]+\\'" basename)
+      (match-string 1 basename))))
 
 (defun pel-elpa-package-alist-of-dir (dirpath)
   "Return a package-alist format alist of packages inside DIRPATH.
-DIRPATH must be the root directory of an elpa-compliant package directory."
+DIRPATH must be the root directory of an elpa-compliant package directory,
+something like \"~/.emacs.d/elpa\".
+The returned alist has the same order as the directories."
   (let (pkg-alist
         pkg-name
         pkg-fname
         pkg-pathname
         pkg-desc)
-    (dolist (pkg-dirname (pel-elpa-package-directories dirpath) pkg-alist)
+    (dolist (pkg-dirname (pel-elpa-package-directories dirpath)
+                         (nreverse pkg-alist))
       (setq pkg-name (pel-elpa-package-name-for pkg-dirname))
-      (setq pkg-pathname (expand-file-name pkg-dirname dirpath))
-      (setq pkg-fname (expand-file-name (format "%s-pkg.el" pkg-name)
-                                        pkg-pathname))
-      (setq pkg-desc (pel-elpa-load-pkg-descriptor pkg-fname))
-      ;; the loaded value does not set the directory; set it here
-      (setf (package-desc-dir pkg-desc) pkg-pathname)
-      (push (list (intern pkg-name) pkg-desc) pkg-alist))))
+      (if pkg-name
+          (progn
+            (setq pkg-pathname (expand-file-name pkg-dirname dirpath))
+            (setq pkg-fname (expand-file-name (format "%s-pkg.el" pkg-name)
+                                              pkg-pathname))
+            (setq pkg-desc (pel-elpa-load-pkg-descriptor pkg-fname))
+            ;; The :dir slot in pkg-desc is nil; set it to pkg-pathname.
+            (setf (package-desc-dir pkg-desc) pkg-pathname)
+            (push (list (intern pkg-name) pkg-desc) pkg-alist))
+        (display-warning 'pel-elpa-package-alist-of-dir
+                         (format "Unexpected nil pkg-name for %s" pkg-dirname)
+                         :error)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elpa)

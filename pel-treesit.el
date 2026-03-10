@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, October  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-28 16:04:22 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-10 15:46:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@
 ;;* PEL F12 Commands
 ;;  ----------------
 
-;; pel-autoload
+;;-pel-autoload
 (defun pel-treesit-help (&optional open-github-page-p)
   "Open the local PEL Tree-Sitter PDF.
 If OPEN-GITHUB-PAGE-P is non nil, open the corresponding GitHub web page
@@ -80,13 +80,13 @@ instead."
   (interactive "P")
   (pel-help-open-pdf "treesit" open-github-page-p))
 
-;; pel-autoload
+;;-pel-autoload
 (defun pel-treesit-customize (&optional other-window)
   "Open the treesit customize group in current or OTHER_WINDOW."
   (interactive "P")
   (pel--customize-group 'pel-pkg-for-tree-sitter other-window))
 
-;; pel-autoload
+;;-pel-autoload
 (defun pel-treesit-emacs-customize (&optional other-window)
   "Open the treesit customize group in current or OTHER_WINDOW."
   (interactive "P")
@@ -118,7 +118,7 @@ instead."
       (when (fboundp alternate-mode)
         alternate-mode))))
 
-;; pel-autoload
+;;-pel-autoload
 (defun pel-treesit-toggle-mode ()
   "Toggle the major mode between classic mode and tree-sitter based mode.
 Signals a user-error if the other mode is not available."

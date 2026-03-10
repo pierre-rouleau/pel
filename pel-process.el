@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, August 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-05-09 08:01:38 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-10 15:45:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2024, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -110,7 +110,7 @@ Invalid action in PEL environment control list for variable %s"
 ;; last entry of that list would be the currently running process info.
 ;; Currently pel-process-tree only prints the output of pstree.]
 
-;; pel-autoload
+;;-pel-autoload
 (defun pel-process-tree ()
   "Print process tree.
 
