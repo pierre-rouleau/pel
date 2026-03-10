@@ -2040,7 +2040,7 @@ can't bind negative-argument to C-_ and M-_"
 
   (defun pel--start-projectile ()
     "Activate projectile-mode."
-    (when (require 'projectile nil :noerror)
+    (when (require 'projectile nil 'noerror)
       (projectile-mode +1)))
 
   (when (and (eq pel-use-projectile 'use-from-start)
@@ -2098,7 +2098,7 @@ can't bind negative-argument to C-_ and M-_"
 
   (defun pel--start-yasnippet ()
     "Activate yasnippet globally."
-    (when (and (require 'yasnippet nil :noerror)
+    (when (and (require 'yasnippet nil 'noerror)
                (fboundp 'yas-global-mode))
       (yas-global-mode 1)))
   (declare-function pel--start-yasnippet "pel_keys") ; prevent warning
@@ -5026,7 +5026,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (when pel-erlang-fill-column
         (setq-local fill-column pel-erlang-fill-column))
       ;;
-      (when (require 'pel-file nil :noerror)
+      (when (require 'pel-file nil 'noerror)
         (setq-local pel-filename-at-point-finders '(pel-erlang-find-file)))
       ;;
       ;; setup the Erlang-specific key bindings
@@ -5093,7 +5093,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
         (define-key pel:erlang-highlight ")" 'rainbow-delimiters-mode))
 
       (when pel-use-ivy-erlang-complete
-        (if (and (require 'ivy-erlang-complete nil :noerror)
+        (if (and (require 'ivy-erlang-complete nil 'noerror)
                  (fboundp 'ivy-erlang-complete-init))
             (progn
               (ivy-erlang-complete-init)
@@ -5127,7 +5127,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                            "Failed loading ivy-erlang-complete"
                            :error))
         (when (and pel-use-company-erlang
-                   (require 'company-erlang nil :noerror)
+                   (require 'company-erlang nil 'noerror)
                    (fboundp 'company-erlang-init))
           (company-erlang-init)))
 
@@ -5719,7 +5719,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (setq-local py-indent-offset pel-python-indent-width))
     (when (and pel-use-indent-tools
                (eq pel-indent-tools-key-bound 'python)
-               (require 'indent-tools nil :noerror)
+               (require 'indent-tools nil 'noerror)
                (boundp 'indent-tools-keymap-prefix)
                (boundp 'python-mode-map))
       (define-key python-mode-map indent-tools-keymap-prefix
@@ -5801,7 +5801,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   (defun pel--perl-activate-file-search ()
     "Utility setup: activate file search in Perl."
-    (when (require 'pel-file nil :noerror)
+    (when (require 'pel-file nil 'noerror)
       (setq-local pel-filename-at-point-finders '(pel-perl-find-file))))
   (declare-function pel--perl-activate-file-search  "pel_keys")
 
@@ -6350,16 +6350,16 @@ to identify a Verilog file.  Anything else is assumed being V."
            (or
             (and
              (or (eq (buffer-size) 0)
-                 (not (search-forward-regexp "[^ \t\n\r]" nil :noerror)))
+                 (not (search-forward-regexp "[^ \t\n\r]" nil 'noerror)))
              (y-or-n-p "Create a Verilog (y) or V (n) file?"))
             (save-excursion
               (goto-char (point-min))
               (search-forward-regexp "\\-\\*\\- [Mm]ode: [Vv]erilog[; ]"
-                                     nil :noerror))
+                                     nil 'noerror))
             (save-excursion
               (goto-char (point-min))
               (search-forward-regexp "\\<endmodule\\>"
-                                     nil :noerror)))))
+                                     nil 'noerror)))))
       (if is-verilog
           (if (and
                (pel-treesit-language-available-p 'verilog)
@@ -8103,7 +8103,7 @@ See `flyspell-auto-correct-previous-word' for more info."
      1 nil
      (lambda ()
        (when (and
-              (require 'indent-tools nil :noerror)
+              (require 'indent-tools nil 'noerror)
               (boundp 'indent-tools-keymap-prefix))
          (global-set-key indent-tools-keymap-prefix 'indent-tools-hydra/body)
          (define-key pel:indent (kbd "<f7>") 'indent-tools-hydra/body)
@@ -11249,7 +11249,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (when pel-use-key-chord
   (defun pel--start-key-chord-mode ()
     "Activate key-chord mode if it can be loaded."
-    (when (require 'key-chord nil :noerror)
+    (when (require 'key-chord nil 'noerror)
       (key-chord-mode 1)))
   (declare-function pel--start-key-chord-mode "pel_keys")
 
@@ -11266,10 +11266,10 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-autoload-file key-chord for: key-chord-mode)
   (define-key pel:mode-key-chord "k" 'key-chord-mode)
   (pel-eval-after-load key-chord
-    (when (and (require 'pel-key-chord nil :noerror)
+    (when (and (require 'pel-key-chord nil 'noerror)
                (fboundp 'pel-activate-all-key-chords))
       (when pel-use-key-seq
-        (require 'key-seq nil :noerror))
+        (require 'key-seq nil 'noerror))
       (pel-activate-all-key-chords)))
 
   (when (eq pel-use-key-chord 'use-from-start)

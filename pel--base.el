@@ -958,7 +958,7 @@ non-nil, just return nil when SYMBOL is not bound."
 
 (defun pel-symbol-at-point ()
   "Return symbol at point; return nil if there are none."
-  (if (and (require 'thingatpt nil :noerror)
+  (if (and (require 'thingatpt nil 'noerror)
            (fboundp 'thing-at-point))
       (thing-at-point 'symbol :no-properties)
     (error "Function thing-at-point not loaded!")))
@@ -1913,7 +1913,7 @@ Please verify the validity of your package-archives setup!"
 (defun pel-package-installed-p (feature)
   "Return t if FEATURE is installed, nil otherwise.
 Load the package library if that's not already done."
-  (if (and (require 'package nil :no-error)
+  (if (and (require 'package nil 'noerror)
            (fboundp 'package-installed-p))
       (package-installed-p feature)
     (display-warning 'pel--package-installed-p
@@ -1964,7 +1964,7 @@ locally.
 Generate a warning when failing to load the FEATURE.
 Otherwise return the loading state of the FEATURE."
   (unless (featurep feature)
-    (let ((feature-is-loaded (require feature nil :noerror)))
+    (let ((feature-is-loaded (require feature nil 'noerror)))
       (unless feature-is-loaded
         ;; required failed - if package specified try installing it
         ;; when not already present
@@ -1975,7 +1975,7 @@ Otherwise return the loading state of the FEATURE."
                   (pel-install-github-file with-pel-install fname url-fname
                                            nil)
                   ;; try to load it again
-                  (require feature nil :noerror))
+                  (require feature nil 'noerror))
               ;; install using Elpa package system
               (let ((package (if (eq package :install-when-missing)
                                  feature
@@ -1989,7 +1989,7 @@ Skipping installation of %s during fast startup."
                                        :warning)
                     ;; not in fast-startup, not installed: install it
                     (pel-package-install package)
-                    (require feature nil :noerror)
+                    (require feature nil 'noerror)
                     (unless (featurep feature)
                       (display-warning 'pel-require
                                        (format "\
@@ -2253,7 +2253,7 @@ tree-sitter is ready, return non-nil.  If QUIET is t, don't emit a
 warning in either case; if quiet is `message', display a message instead
 of emitting a warning."
   (if (and pel-emacs-30-or-later-p
-           (require 'treesit nil :noerror)
+           (require 'treesit nil 'noerror)
            (fboundp 'treesit-ready-p))
       (treesit-ready-p language quiet)
     (unless quiet
@@ -2823,10 +2823,10 @@ Return a (start . end) cons cell if found, otherwise return nil."
   (setq pos (or pos (point)))
   (save-excursion
     (let (beg end)
-      (when (search-backward start-str nil :noerror)
+      (when (search-backward start-str nil 'noerror)
         (beginning-of-line 1)
         (setq beg (point))
-        (when (search-forward end-str nil :noerror)
+        (when (search-forward end-str nil 'noerror)
           (end-of-line 1)
           (setq end (point))
           (cons beg end))))))
