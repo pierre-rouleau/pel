@@ -41,10 +41,12 @@
 ;;  - `pel-transpose-alist'
 ;;
 ;; Environment Querying functions:
+;;  - `pel-in-fast-startup-p'
+;;
+;; Functions checking Major Mode:
 ;;  - `pel-major-mode-must-be'
 ;;  - `pel-derived-mode-p'
 ;;  - `pel-dired-buffer-p'
-;;  - `pel-in-fast-startup-p'
 ;;  - `pel-string-with-major-mode'
 ;;    - `pel-file-type-for'
 ;;    - `pel-major-mode-of'
@@ -463,7 +465,7 @@ Other uses risk returning non-nil value that point to the wrong file."
     (list val)))
 
 (defun pel-transpose-alist (alist)
-  "Transpose the (a . b) ALIST into a (b . a) alist."
+  "Transpose the (a . b) ALIST into the (b . a) alist."
   (mapcar (lambda (pair)
             (cons (cdr pair) (car pair)))
           alist))
@@ -478,7 +480,6 @@ Other uses risk returning non-nil value that point to the wrong file."
   (defun pel-in-fast-startup-p ()
     "Return non-nil when PEL runs in fast startup operation."
     (bound-and-true-p pel-running-in-fast-startup-p)))
-
 
 ;; ---------------------------------------------------------------------------
 ;; Functions checking Major Mode
