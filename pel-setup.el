@@ -1,8 +1,8 @@
-;;; pel-setup.el --- Control PEL Emacs switch from normal to fast-startup mode and back.  -*- lexical-binding: t; -*-
+;;; pel-setup.el --- Control PEL Emacs switch from normal to fast-startup mode and back  -*- lexical-binding: t; -*-
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 17:52:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 18:31:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
