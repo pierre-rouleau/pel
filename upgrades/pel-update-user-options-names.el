@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October 28 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 12:27:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 13:03:52 EDT, updated by Pierre Rouleau>
 
 ;; This file-path is part of the PEL package.
 ;; This file-path is not part of GNU Emacs.
@@ -39,12 +39,6 @@
 ;; eases the invocation of the Emacs script.
 
 ;;; --------------------------------------------------------------------------
-;;; Dependencies:
-;;
-;;
-(require 'pel--base)                      ; use: `pel+='
-
-;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
@@ -55,7 +49,7 @@ Return change count."
         (change-count 0))
     (goto-char (point-min))
     (while (re-search-forward word-regexp nil t)
-      (pel+= change-count 1)
+      (setq change-count (1+ change-count))
       (replace-match new nil t))
     change-count))
 

@@ -56,10 +56,15 @@
 ;;   - pel--docstring-positions
 ;;
 
-;;; Code:
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
 ;;
+(require 'pel--base)
 (require 'pel-navigate)
 (require 'pel-face-ut)
+
+;; ---------------------------------------------------------------------------
+;;; Code:
 
 (defconst pel-regexp-python-beg
   "^ +\\(\\([uU]\\)?\\|\\([rRfF]\\)?\\|\\([rRfF][rRfF]\\)?\\)['\\\"]\\{3\\}"
