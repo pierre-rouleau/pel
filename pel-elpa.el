@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-10 16:00:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 10:41:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -104,9 +104,11 @@ See examples in: test/pel-elpa-test.el"
 
 
 (defun pel-el-files-in (dir-path)
-  "Return the Emacs Lisp file names inside DIR-PATH."
+  "Return the Emacs Lisp file names inside DIR-PATH.  Exclude directories."
   (seq-filter (lambda (fn)
-                (string= (file-name-extension fn) "el"))
+                (and
+                 (string= (file-name-extension fn) "el")
+                 (not (file-directory-p (expand-file-name fn dir-path)))))
               (directory-files dir-path)))
 
 ;; ---------------------------------------------------------------------------
@@ -276,7 +278,7 @@ Example:
                    (:url . \"https://github.com/NicolasPetton/xref-js2\"))
                   :signed nil)
 
-Note that the :dir slot is nil."
+Note that the dir slot is nil."
   ;; prevent package-process-define-package from updating package-alist
   (let (package-alist)
     (with-temp-buffer
@@ -462,10 +464,14 @@ The returned alist has the same order as the directories."
             (setq pkg-pathname (expand-file-name pkg-dirname dirpath))
             (setq pkg-fname (expand-file-name (format "%s-pkg.el" pkg-name)
                                               pkg-pathname))
-            (setq pkg-desc (pel-elpa-load-pkg-descriptor pkg-fname))
-            ;; The :dir slot in pkg-desc is nil; set it to pkg-pathname.
-            (setf (package-desc-dir pkg-desc) pkg-pathname)
-            (push (list (intern pkg-name) pkg-desc) pkg-alist))
+            (if (file-exists-p pkg-fname)
+                (progn
+                  ;; The dir slot in pkg-desc is nil; set it to pkg-pathname.
+                  (setq pkg-desc (pel-elpa-load-pkg-descriptor pkg-fname pkg-pathname))
+                  (push (list (intern pkg-name) pkg-desc) pkg-alist))
+              (display-warning 'pel-elpa-package-alist-of-dir
+                               (format "Missing pkg file: %s" pkg-fname)
+                               :warning)))
         (display-warning 'pel-elpa-package-alist-of-dir
                          (format "Unexpected nil pkg-name for %s" pkg-dirname)
                          :error)))))
