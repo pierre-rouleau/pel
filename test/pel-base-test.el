@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, February 16 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 16:42:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 16:57:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -76,13 +76,21 @@
   (should (equal (pel-transpose-alist '((1 . a) (2 . b) (3 . c)))
                  '((a . 1) (b . 2) (c . 3)))))
 
+(eval-and-compile
+  (defvar pel--is-in-fast-startup-mode (bound-and-true-p pel-running-in-fast-startup-p))
+  "Detect if PEL environment is in fast startup or not.")
+
 (ert-deftest ert-test-fast-startup-p ()
   "Test `pel-in-fast-startup-p'."
-  ;; Simulate what is being initialized in a special file used in fast startup mode.
+  (should (eq (pel-in-fast-startup-p) pel--is-in-fast-startup-mode))
+
+  ;; Show that attempt to simulate PEL being in fast startup does not work.
   (let ((pel-running-in-fast-startup-p nil))
-    (should-not (pel-in-fast-startup-p)))
+    (should (eq (pel-in-fast-startup-p) pel--is-in-fast-startup-mode)))
+
+  ;; Note: this next test will pass when run from the shell but not executed from with Emacs
   (let ((pel-running-in-fast-startup-p t))
-    (should (pel-in-fast-startup-p))))
+    (should (eq (pel-in-fast-startup-p) pel--is-in-fast-startup-mode))))
 
 (ert-deftest ert-test-pel-base-action-for ()
   "Test pel-action-for."
