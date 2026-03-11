@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 22:45:15 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-10 15:45:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2024, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -246,7 +246,7 @@ value is not part of the SELECTION."
                      selection
                      ", ")))
 
-;; pel-autoload
+;;-pel-autoload
 (defun pel-select-from (title selection
                               &optional current-value
                               action nil-value

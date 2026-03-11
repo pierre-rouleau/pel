@@ -1,6 +1,6 @@
 ;;; pel-highlight.el --- PEL highlight support. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2022, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2022, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -162,10 +162,10 @@ The prompt has a buffer-specific history and supports tab completion."
   (if (pel--find-overlays-specifying
        'line-highlight-overlay-marker
        (line-beginning-position))
-      (remove-overlays (line-beginning-position) (+ 1 (line-end-position)))
+      (remove-overlays (line-beginning-position) (1+ (line-end-position)))
     (let ((overlay-highlight (make-overlay
                               (line-beginning-position)
-                              (+ 1 (line-end-position)))))
+                              (1+ (line-end-position)))))
       (overlay-put overlay-highlight 'face (list :background pel--highlight-color))
       (overlay-put overlay-highlight 'line-highlight-overlay-marker t))))
 

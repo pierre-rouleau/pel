@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-01 13:21:42 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 11:08:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -44,9 +44,9 @@
 ;;  doing this for all `pel-use-' user option we accumulate the list of
 ;;  packages that should be available.  Then by looking into the directories
 ;;  we can remove or disable the exceeding package (by moving the package into
-;;  an *attic* directory). For elpa package the package name is removed-files
-;;  from the `package-selected-packages' variable and the active customization
-;;  file is updated.
+;;  an *attic* directory).  For elpa package the package name is removed from
+;;  the `package-selected-packages' variable and the active customization file
+;;  is updated.
 ;;
 ;;  Removing packages that are not used improves Emacs speed: it reduces the
 ;;  length of the load path that tends to grow rapidly with new packages
@@ -255,17 +255,17 @@ when it is requested as specified by the presence of
   "Return a list of PEL command symbols."
   (let ((symbols '())
         (cmd-name nil))
-  (mapatoms
-   (lambda (symbol)
-     (when (and (commandp symbol)
-                (progn
-                  (setq cmd-name (symbol-name symbol))
-                  (and (eq t (compare-strings "pel-" nil nil
-                                              cmd-name 0 4))
-                       (not (pel-string-starts-with-p cmd-name "pel-∑"))
-                       (not (pel-string-starts-with-p cmd-name "pel-⅀")))))
-       (push symbol symbols))))
-  (nreverse symbols)))
+    (mapatoms
+     (lambda (symbol)
+       (when (and (commandp symbol)
+                  (progn
+                    (setq cmd-name (symbol-name symbol))
+                    (and (eq t (compare-strings "pel-" nil nil
+                                                cmd-name 0 4))
+                         (not (pel-string-starts-with-p cmd-name "pel-∑"))
+                         (not (pel-string-starts-with-p cmd-name "pel-⅀")))))
+         (push symbol symbols))))
+    (nreverse symbols)))
 
 (defun pel--assert-valid-user-option  (symbol)
   "Assert that the SYMBOL argument is a valid PEL user-option symbol.
@@ -757,7 +757,7 @@ a string that says so."
     ;; return a list of all keys; the names of packages that could be upgraded.
     (mapcar 'car upgradables)))
 
-;; pel-autoload
+;;-pel-autoload
 (defun pel-package-info (&optional full-report on-stdout)
   "Display information about packages required by PEL.
 
@@ -1104,9 +1104,9 @@ Use only for computing statistics!! It loads all of PEL."
   "Return the .el filepath of an .elc FILEPATH."
   (format "%s.el" (file-name-sans-extension filepath)))
 
-(defun pel-remove-invalid-elc (directory)
-  "Remove the old and the orphaned elc files in DIRECTORY.
-
+(defun pel-remove-invalid-elc (directory &optional dry-run)
+  "Identify the old and the orphaned elc files in DIRECTORY.
+Delete them unless DRY-RUN is non-nil.
 DIRECTORY must be a directory path string.
 Returns the list of removed file names."
   (let ((removed-files '())
@@ -1117,7 +1117,8 @@ Returns the list of removed file names."
       (unless (or (file-exists-p el-file)
                   (file-newer-than-file-p el-file elc-file))
         (push elc-file removed-files)
-        (delete-file elc-file)))
+        (unless dry-run
+          (delete-file elc-file))))
     (nreverse removed-files)))
 
 ;; --
@@ -1156,11 +1157,13 @@ order.
 Byte-compile all Emacs Lisp files in the utils directory.
 Remove orphaned elc files from the utils directory.
 Don't execute when DRY-RUN is non-nil.
-Return the a list of 2 lists:
+Return the a cons of 2 lists:
 - a list of .el files that have been or would have been removed,
 - a list of the .elc orphaned files that were also removed."
   (let ((unrequired-files (pel-utils-unrequired))
-        (removed-elc-files '()))
+        ;; get list of orphaned .elc (a .elc without a .el file). Delete them
+        ;; when no dry-run.
+        (removed-elc-files (pel-remove-invalid-elc pel-utils-dirpath dry-run)))
     (unless dry-run
       (when unrequired-files
         (unless (file-exists-p pel-utils-attic-dirpath)
@@ -1174,10 +1177,8 @@ Return the a list of 2 lists:
               (rename-file utils-filename pel-utils-attic-dirpath))))
         ;; byte recompile all .el files newer than .elc or when the .elc is
         ;; missing.
-        (byte-recompile-directory pel-utils-dirpath 0)
-        ;; remove any orphaned .elc (a .elc without a .el file)
-        (setq removed-elc-files (pel-remove-invalid-elc pel-utils-dirpath))))
-    (list unrequired-files removed-elc-files)))
+        (byte-recompile-directory pel-utils-dirpath 0)))
+    (cons unrequired-files removed-elc-files)))
 
 ;; --
 
@@ -1256,7 +1257,6 @@ Return the number of symbols that were removed from the
 `package-selected-package' form."
   (let ((edited-filepath (or filepath custom-file))
         (pkgs (if (listp pkgs) pkgs (list pkgs)))
-        ;; (buffer-save-without-query t)
         (remove-count 0))
     (with-temp-file edited-filepath
       (insert-file-contents edited-filepath)
@@ -1395,7 +1395,7 @@ Use pel-setup-normal to return to normal operation.")
       (message "%s" (propertize "Checking PEL user-options and packages..." 'face 'bold))
       (let* ((utils-results     (pel-clean-utils dry-run))
              (removed-el-files  (car utils-results))
-             (removed-elc-files (cadr utils-results))
+             (removed-elc-files (cdr utils-results))
              (moved-elpa-dirs   (pel-clean-elpa dry-run)))
         (message "")
         (pel-print-in-buffer
@@ -1450,26 +1450,24 @@ you elected to perform a real cleanup by issuing the
 intention by typing 'y' to its prompt.
 
 "))
-             (when (or removed-el-files removed-elc-files)
-               (insert (format "%s %d files,
-from: %s
-to  : %s
-%sThe files %s to utils-attic are:\n\n"
+             (when removed-elc-files
+                 (insert (format "%s %d orphaned .elc files.\n"
+                                 verb-Removed (length removed-elc-files))))
+             (when removed-el-files
+               (insert (format "%s %d files,\nfrom: %s\nto  : %s\n"
                                verb-Moved
                                (length removed-el-files)
                                pel-utils-dirpath
-                               pel-utils-attic-dirpath
-                               (if removed-elc-files
-                                   (format "%s %d orphaned .elc files.\n"
-                                           verb-Removed
-                                           (length removed-elc-files))
-                                 "")
+                               pel-utils-attic-dirpath))
+               (insert (format "The files %s to utils-attic are:\n\n"
                                verb-moved))
                (dolist (fn removed-el-files)
                  (setq n (1+ n ))
                  (insert (format "- %3d: %s\n" n fn))))
              (when moved-elpa-dirs
-               (insert (format "\n\nElpa packages %s,
+               (when (or removed-el-files removed-elc-files)
+                 (insert "\n\n"))
+               (insert (format "Elpa packages %s,
 from: %s
 to  : %s :\n\n"
                                verb-moved

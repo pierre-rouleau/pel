@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 22:13:38 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-10 15:45:06 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2022, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ the statements on the current line with the above contiguous lines."
       (align-newline-and-indent)
   (newline-and-indent)))
 
-;; pel-autoload
+;;-pel-autoload
 (defun pel-align-info (&optional append)
   "Display current buffer's vertical alignment behaviour.
 
@@ -115,7 +115,7 @@ in which case it appends to the previous report."
      (unless append :clear-buffer)
      :use-help-mode)))
 
-;; pel-autoload
+;;-pel-autoload
 (defun pel-toggle-newline-indent-align ()
   "Toggle variable `pel-newline-does-align'.
 This toggles the way function `pel-newline-and-indent-below'
@@ -124,7 +124,7 @@ operates."
   (pel-toggle-and-show 'pel-newline-does-align))
 
 ;; ---------------------------------------------------------------------------
-;; pel-autoload
+;;-pel-autoload
 (defun pel-multi-align-regexp ()
   "Align marked area with consecutive regexp.
 
@@ -157,7 +157,7 @@ text."
                       1 1 nil)))))
 
 ;; ---------------------------------------------------------------------------
-;; pel-autoload
+;;-pel-autoload
 (defun pel-align-words-vertically ()
   "Align the words of multiple lines in area in vertically aligned columns."
   (interactive "*")
