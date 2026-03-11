@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, February 16 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 14:12:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 16:17:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -60,6 +60,25 @@
     (should (eq 3 (pel+= val 2)))
     (should (eq 0 (pel-= val 3)))
     (should (eq -1 (pel-= val 1)))))
+
+
+(ert-deftest ert-test-list-of ()
+  "Test `pel-list-of'."
+  (should (equal (pel-list-of 1) '(1)))
+  (should (equal (pel-list-of '(1)) '(1))))
+
+(ert-deftest ert-test-transpose-alist ()
+  "Test `pel-transpose-alist'."
+  (should (equal (pel-transpose-alist '((1 . a)))
+                 '((a . 1))))
+  (should (equal (pel-transpose-alist '((1 . a) (2 . b)))
+                 '((a . 1) (b . 2))))
+  (should (equal (pel-transpose-alist '((1 . a) (2 . b) (3 . c)))
+                 '((a . 1) (b . 2) (c . 3)))))
+
+(ert-deftest ert-test-fast-startup-p ()
+  "Test `pel-in-fast-startup-p'."
+  (should (not (pel-in-fast-startup-p))))
 
 (ert-deftest ert-test-pel-base-action-for ()
   "Test pel-action-for."
