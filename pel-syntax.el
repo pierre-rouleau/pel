@@ -2,12 +2,12 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 22:50:20 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 11:15:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -223,12 +223,12 @@ Return the new position"
   "Return text of block at POS or current point.
 Return a list of (open-position close-position text)."
   (setq pos (or pos (point)))
-  (let* ((syntax       (syntax-ppss pos))
+  (let* ((syntax      (syntax-ppss pos))
          (open-p-pos  (car (pel--open-parens-pos syntax)))
          (close-p-pos (pel-syntax-matching-parens-position open-p-pos)))
     (list open-p-pos
           close-p-pos
-          (buffer-substring-no-properties open-p-pos (+ 1 close-p-pos)))))
+          (buffer-substring-no-properties open-p-pos (1+ close-p-pos)))))
 
 (defun pel---replace-with (from replacer)
   "Replace text in current buffer.

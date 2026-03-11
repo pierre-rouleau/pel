@@ -1,6 +1,6 @@
 ;;; pel-list.el --- List utilities  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -105,11 +105,11 @@ list or at the first element of the second list, respectively."
     (if split-idx
         (list
          (seq-subseq list 0 (if (eq include-object :in-first)
-                                (+ 1 split-idx)
+                                (1+ split-idx)
                               split-idx))
          (seq-subseq list (if (eq include-object :in-last)
                               split-idx
-                            (+ 1 split-idx))))
+                            (1+ split-idx))))
       (list list nil))))
 
 (defun pel-mapmapcar (func list-of-list)

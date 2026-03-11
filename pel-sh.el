@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, June  7 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-24 17:48:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 11:18:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2022, 2024, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -121,7 +121,7 @@ is included in the return value."
             (end-pos (region-end)))
         (goto-char begin-pos)
         (insert quote-char)
-        (goto-char (+ end-pos 1))
+        (goto-char (1+ end-pos))
         (insert quote-char))
     (insert quote-char)
     (forward-word)

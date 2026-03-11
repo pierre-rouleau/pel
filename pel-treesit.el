@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-10 15:46:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 11:27:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -88,7 +88,7 @@ instead."
 
 ;;-pel-autoload
 (defun pel-treesit-emacs-customize (&optional other-window)
-  "Open the treesit customize group in current or OTHER_WINDOW."
+  "Open selected treesit supporting customize group in current or OTHER_WINDOW."
   (interactive "P")
   (pel--customize-group
    (pel-select-symbol-from "Select group" '(treesit
@@ -236,16 +236,17 @@ Return 1 if error, 0 if OK."
   (interactive)
   (if (boundp 'treesit-extra-load-path)
       (let ((err-count 0))
-        (dolist (dpath (append treesit-extra-load-path
-                               (list (concat user-emacs-directory "tree-sitter"))))
-          (setq err-count (+ err-count ))
+        (dolist (dpath
+                 (append treesit-extra-load-path
+                         (list (concat user-emacs-directory "tree-sitter"))))
           (if (eq (pel--check-dpath dpath) 0)
               ;; valid dpath: check it's content.
-              (dolist (fname (directory-files dpath :full-names
-                                              (format "\\.%s\\'" pel-os-lib-file-extension)))
+              (dolist (fname (directory-files
+                              dpath :full-names
+                              (format "\\.%s\\'" pel-os-lib-file-extension)))
                 (setq err-count (+ err-count (pel--check-fname fname))))
             ;; invalid dpath
-            (setq err-count (1+ err-count ))))
+            (setq err-count (1+ err-count))))
         (if (eq err-count 0)
             (message "Tree-Sitter directory settings appears OK")
           (message "Detected %d errors in Tree-Sitter directory settings!"

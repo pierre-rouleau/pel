@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 10:30:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 11:08:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1454,7 +1454,7 @@ intention by typing 'y' to its prompt.
                  (insert (format "%s %d orphaned .elc files.\n"
                                  verb-Removed (length removed-elc-files))))
              (when removed-el-files
-               (insert (format "%s %d files,\nfrom: %s\nto  : %s"
+               (insert (format "%s %d files,\nfrom: %s\nto  : %s\n"
                                verb-Moved
                                (length removed-el-files)
                                pel-utils-dirpath
