@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 18:31:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 18:59:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -51,7 +51,7 @@
 ;; ----------------------------------------------------------
 ;;
 ;; This provides the ability to reduce the Emacs initialization startup time.
-;; Depending on what is used the speedup can be noticeable.
+;; Depending on what is used the speed up can be noticeable.
 ;;
 ;; For example, I have achieved an emacs-startup-time of about 0.15 seconds on
 ;; Emacs 26.3 running in terminal mode on macOS 2014 4 GHz Intel Core i7
@@ -309,7 +309,7 @@
 (defun pel-copy-directory (source dest)
   "Copy SOURCE directory into DEST directory.  Skip socket files.
 
-Both SOURCE and DIRECTORY may be in the directory name (with a terminating
+Both SOURCE and DEST may be in the directory name (with a terminating
 slash) or in file name (without the terminating slash) format."
   ;; - Normally, copy-directory would fail when attempting to copy
   ;;   a Unix socket file, like those in elpa/gnupg.  To prevent
@@ -681,9 +681,10 @@ There are inconsistencies in the PEL dual environment setup.
 ;;  - - - - - - - - - -
 
 (defun pel--switch-to-elpa (name for-graphics)
-  "Change elpa symlink to the elpa-NAME sub-directory.
+  "Change elpa symlink to the NAME sub-directory.
 
-- NAME: string: the suffix to use for the new elpa-X target directory.
+- NAME: string: the name to use for the new elpa-X target directory, something
+                like \"elpa-complete\" or \"elpa-reduced\".
 - FOR-GRAPHICS: non-nil when dual environment is set and Emacs runs in
 graphic mode."
   (let ((adj (lambda (fn) (pel-elpa-name fn for-graphics))))
@@ -723,7 +724,7 @@ Return the complete name of the generated autoload file."
                     (make-directory-autoloads dir generated-autoload-file)
                   (if (fboundp 'update-directory-autoloads)
                       (update-directory-autoloads dir)
-                    (error "update-directory-autoloads not bounded!")))
+                    (error "update-directory-autoloads not bound!")))
                 (setq generated-fname generated-autoload-file)
                 (kill-buffer "pel-bundle-autoloads.el"))
             (error
@@ -982,7 +983,6 @@ Return a list of performed action descriptions in reverse order."
 
 The function verifies all that and return a list of problems detected if any
 problem were detected.  Return nil if all is OK."
-  ;; (message "🚧 pel--elpa-symlink-problems:  elpa-dirpath=%s for-graphics=%s" elpa-dirpath for-graphics)
   (require 'cus-edit)                   ; use: `custom-file'`
   (let* ((problems nil)
          (original-elpa-dirpath (pel-locate-elpa))
@@ -1065,7 +1065,7 @@ The elpa symlink target format does not use a directory name format:
 (defun pel--validate-elpa-symlink (elpa-dirpath for-graphics )
   "Check validity of ELPA-DIRPATH used FOR-GRAPHICS.
 
-The function raises en error describing detected errors if any.
+The function raises an error describing detected errors if any.
 If all is OK, it just returns nil."
   (let ((problems (pel--elpa-symlink-problems elpa-dirpath for-graphics)))
     (when problems
@@ -1077,7 +1077,9 @@ The Emacs directory (%s) is not compatible with PEL startup management."
         user-emacs-directory)))))
 
 (defun pel--create-pel-setup-fast-startup-init (deps-pkg-versions-alist new-bundle-dp)
-  ""
+  "Write Emacs Lisp code to add the DEPS-PKG-VERSIONS-ALIST to Emacs with a bundle.
+
+NEW-BUNDLED-DP is the name of the new Elpa bundle directory."
   (pel-setup-fast-startup-init
    pel-fast-startup-init-fname
    deps-pkg-versions-alist
@@ -1093,7 +1095,7 @@ The Emacs directory (%s) is not compatible with PEL startup management."
                              new-bundle-dp)))))
 
 (defun pel--setup-fast (for-graphics)
-  "Prepare the elpa directories and code to speedup Emacs startup.
+  "Prepare the elpa directories and code to speed up Emacs startup.
 
 The function sets up the elpa directory to become a symlink to the actual
 directory that stores the Elpa packages.  The name of that directory depends
@@ -1288,7 +1290,7 @@ Failed fast startup setup for %s after %d of %d steps: %s
 ;; ]
 ;;-pel-autoload
 (defun pel-setup-fast ()
-  "Prepare the elpa directories and code to speedup Emacs startup."
+  "Prepare the elpa directories and code to speed up Emacs startup."
   (interactive)
   ;; Validate Emacs initialization file -- issue error on any problem
   (pel-setup-validate-init-files)
@@ -1355,7 +1357,7 @@ is only one or when its for the terminal (TTY) mode."
   "Restore normal PEL/Emacs operation mode."
   (interactive)
   (when pel-emacs-30-or-later-p
-    (user-error "PEL Fast startup is not yet working in Emacs >= 30!"))
+    (user-error "PEL Fast startup restoration is not yet working in Emacs >= 30!"))
   (pel-setup-validate-init-files)
   (cond
    ((eq (pel-startup-mode) 'normal)

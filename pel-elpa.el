@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 18:30:50 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 18:45:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -39,9 +39,9 @@
 ;;    - `pel-elpa-load-pkg-descriptor'
 ;;    - `pel-elpa-one-level-package-files'
 ;;      - `pel-elpa-pkg-filename'
-;;        - `pel-elpa-one-level-packages'
-;;          - `pel-elpa-package-directories'
-;;            - `pel-elpa-package-dirspec-p'
+;;      - `pel-elpa-one-level-packages'
+;;        - `pel-elpa-package-directories'
+;;          - `pel-elpa-package-dirspec-p'
 
 ;; Disable dependencies of elpa packages
 ;;  - `pel-elpa-disable-pkg-deps-in'
@@ -187,16 +187,15 @@ See examples in: test/pel-elpa-test.el"
 ;; It saved me some time in searching for it inside package.el.
 
 (defun pel-elpa-package-dirspec-p (dirspec)
-  "Return dirname when DIRSPEC is for a Elpa package directory, nil
-otherwise.
+  "Return dirname when DIRSPEC is for an Elpa package directory, nil otherwise.
 The DIRSPEC is the data structure returned by the function
 `directory-files-and-attributes'."
   (let (dirname)
-    (when (and (cadr dirspec)           ; is a directory ...
-                                        ; ... that has a name that does not
-                                        ; start with a period
+    (when (and (cadr dirspec) ; is a directory ...
+                              ; ... with a name that does not start with '.'
                (not (eq (string-to-char (setq dirname (car dirspec)))
-                        ?.))            ; and is not the archives directory
+                        ?.))
+               ;; ...and is not the archives directory.
                (not (member dirname '("archives" "gnupg"))))
       dirname)))
 
@@ -458,7 +457,7 @@ have no sub-directories."
   "Return the package name for the specific DIRNAME, return nil on error.
 
 The DIRNAME is expected to be a package-name.-version string.
-This only perform a string manipulation to extract the package name.
+This only performs a string manipulation to extract the package name.
 
 Example:
   ELISP> (pel-elpa-package-name-for \"ztree-20250209.1933\")
