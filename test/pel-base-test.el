@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, February 16 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 13:46:41 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 14:12:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -40,6 +40,21 @@
 
 (ert-deftest ert-test-increment-decrement ()
   "Test the `pel+=' and `pel-=' macros."
+  ;; First test the macro expansions
+  ;; - The macro optimizes when the offset is 1:
+  (should (equal (macroexpand-1 '(pel+= val 1))
+                 '(setq val (1+ val))))
+  (should (equal (macroexpand-1 '(pel-= val 1))
+                 '(setq val (1- val))))
+
+  ;; - Otherwise, when the offset is something else the standard arithmetic
+  ;;   function is used.
+  (should (equal (macroexpand-1 '(pel+= val 3))
+                 '(setq val (+ val 3))))
+  (should (equal (macroexpand-1 '(pel-= val 3))
+                 '(setq val (- val 3))))
+
+  ;; Then check the effects of the macros
   (let ((val 0))
     (should (eq 1 (pel+= val 1)))
     (should (eq 3 (pel+= val 2)))
