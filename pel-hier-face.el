@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, November 22 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-11-24 17:12:47 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 11:56:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@
          (found nil))
     (while (and (not found)
                 (< n max-n))
-      (setq n (1+ n))
+      (pel+= n 1)
       (setq end-pos (+ begin-pos (car word-len)))
       (setq word-len (cdr word-len))
       (when (<= begin-pos column end-pos)

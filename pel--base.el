@@ -32,6 +32,10 @@
 ;; PEL version:
 ;; * `pel-version'
 ;;
+;; Assignment operator macros:
+;; - `pel+='
+;; - `pel-='
+;;
 ;; List Handling:
 ;;  - `pel-list-of'
 ;;  - `pel-transpose-alist'
@@ -205,10 +209,6 @@
 ;; Iteration helpers:
 ;; - `pel-dec'
 ;; - `pel-inc'
-;;
-;; Assignment operators:
-;; - `pel+='
-;; - `pel-='
 ;;
 ;; Swap 2 values:
 ;; - `pel-swap'
@@ -431,6 +431,26 @@ Other uses risk returning non-nil value that point to the wrong file."
 ;; (declare-function macroexp-file-name (if (version< emacs-version "28")
 ;;                                          "pel--base"
 ;;                                        "macroexp"))
+
+;; ---------------------------------------------------------------------------
+;; Assignment operator macros
+;; --------------------------
+;;
+;; Just the 2 mostly used ones.  May add the others on need basis.
+
+(defmacro pel+= (var value)
+  "Increment variable VAR by VALUE.  Return VAR new content."
+  (if (eq value 1)
+      `(setq ,var (1+ ,var))
+    `(setq ,var
+           (+ ,var ,value))))
+
+(defmacro pel-= (var value)
+  "Decrement variable VAR by VALUE.  Return VAR new content."
+  (if (eq value 1)
+      `(setq ,var (1- ,var))
+    `(setq ,var
+           (- ,var ,value))))
 
 ;; ---------------------------------------------------------------------------
 ;; List Handling
@@ -1523,7 +1543,7 @@ Usage Example:
     (catch 'nth-elt
       (dolist (x elements)
         (when (equal element x) (throw 'nth-elt idx))
-        (setq idx (1+ idx)))
+        (pel+= idx 1))
       nil)))
 
 ;; (credit to Metamorphic to the following 3 functions)
@@ -2520,7 +2540,7 @@ mode switching symbol."
       (unless (and (symbolp minor-mode)
                    (fboundp minor-mode)
                    (commandp minor-mode))
-        (setq error-count (1+ error-count))
+        (pel+= error-count 1)
         (display-warning 'pel-invalid-mode-symbol
                          (format "Invalid mode symbol in %s: %S"
                                  list-var minor-mode)
@@ -2649,22 +2669,6 @@ Return nil if symbol N value is CEILING or larger."
   (let ((oldvalue (eval n)))
     (if (< oldvalue (or ceiling most-positive-fixnum))
         (set n (1+ oldvalue)))))
-
-;; ---------------------------------------------------------------------------
-;; Assignment operators
-;; --------------------
-;;
-;; Just the 2 mostly used ones.  May add the others on need basis.
-
-(defmacro pel+= (var value)
-  "Increment variable VAR by VALUE."
-  `(setq ,var
-         (+ ,var ,value)))
-
-(defmacro pel-= (var value)
-  "Decrement variable VAR by VALUE."
-  `(setq ,var
-         (- ,var ,value)))
 
 ;; ---------------------------------------------------------------------------
 ;; Swap 2 values
@@ -3212,7 +3216,7 @@ OBJECT."
   (insert (format "\n- %s: " list-name))
   (let ((idx 0))
     (dolist (elem list-value)
-      (setq idx (1+ idx))
+      (pel+= idx 1)
       (unless without-index
         (insert (format "\n%3d -%s" idx (if on-same-line "" "\n"))))
       (pel--pp elem (current-buffer) "   "))))
@@ -3266,7 +3270,7 @@ ON-SAME-LINE is non-nil"
       (insert ":")
       (let ((idx 0))
         (dolist (elem list-value)
-          (setq idx (1+ idx))
+          (pel+= idx 1)
           (unless without-index
             (insert (format "\n%3d -%s" idx (if on-same-line "" "\n"))))
           (if (and (symbolp elem)

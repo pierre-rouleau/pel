@@ -1,6 +1,6 @@
 ;;; pel-navigate.el --- PEL Navigation Support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2023, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -135,7 +135,7 @@ and `back-to-indentation' with a more logical meaning for N."
         (progn
           (move-end-of-line (1+ n))
           (setq n 1))
-      (setq n (1+ n)))
+      (pel+= n 1))
     (if (and (eq n 1)
              (bolp))
         (back-to-indentation)
@@ -162,7 +162,7 @@ If N < 0:  move to the end of (abs N) lines backward."
         (progn
           (move-end-of-line (1+ n))
           (setq n 1))
-      (setq n (1+ n)))
+      (pel+= n 1))
     (if (and (eq n 1)
              (eolp))
         (progn
@@ -739,7 +739,7 @@ KNOWN LIMITATIONS:
          found)
     (save-excursion
       (while (and searching (< attempt-cnt 3))
-        (setq attempt-cnt (1+ attempt-cnt))
+        (pel+= attempt-cnt 1)
         (save-excursion
           (beginning-of-defun attempt-cnt)
           (end-of-defun)

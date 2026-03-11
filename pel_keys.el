@@ -1865,7 +1865,7 @@ can't bind negative-argument to C-_ and M-_"
                       pel-use-counsel
                       pel-use-helm))
       (when (eval option)
-        (setq count (1+ count))))
+        (pel+= count 1)))
     count))
 
 ;;*** Helm
@@ -9877,7 +9877,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     (dolist (option '(pel-use-anzu
                       pel-use-swiper))
       (when (eval option)
-        (setq count (1+ count))))
+        (pel+= count 1)))
     count))
 
 (when (> (pel-number-of-available-search-tools) 1)

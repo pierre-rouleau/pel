@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-10 15:45:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 11:59:39 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -298,7 +298,7 @@ SYMBOLS := a list of symbols."
                            (symbol-name symbol) ; a descriptive string
                            symbol)              ; the value to return
                           choices)
-                    (setq idx (1+ idx))))))
+                    (pel+= idx 1)))))
     ;; clear echo area and return choice
     (message nil)
     choice))
@@ -320,7 +320,7 @@ STRINGS := a list of strings."
                             string               ; a descriptive string
                             string)              ; the value to return
                            choices)
-                     (setq idx (1+ idx)))
+                     (pel+= idx 1))
                    :no-current-value)))
     ;; clear echo area and return choice
     (message nil)

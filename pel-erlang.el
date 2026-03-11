@@ -1,6 +1,6 @@
 ;;; pel-erlang.el --- Erlang programming Language support  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -504,7 +504,7 @@ Push current position on the mark ring."
       (let ((direction (if forward -1 nil)))
         (push-mark)
         (while (> n 0)
-          (setq n (1- n))
+          (pel-= n 1)
           (erlang-beginning-of-function direction)
           ;; erlang-beginning-of-function stops on directive but
           ;; erlang-get-function-name returns nil for them.
@@ -581,9 +581,9 @@ Stop at end of buffer."
               (when found-pos
                 (cond
                  ((nth 3 saved-match-data) ; found <<
-                  (setq nesting-level (1+ nesting-level)))
+                  (pel+= nesting-level 1))
                  ((nth 5 saved-match-data) ; found >>
-                  (setq nesting-level (1- nesting-level)))
+                  (pel-= nesting-level 1))
                  (t
                   (error "logic error"))))
               (and found-pos
@@ -617,9 +617,9 @@ Stop at end of buffer."
               (when found-pos
                 (cond
                  ((nth 3 saved-match-data) ; found <<
-                  (setq nesting-level (1- nesting-level)))
+                  (pel-= nesting-level 1))
                  ((nth 5 saved-match-data) ; found >>
-                  (setq nesting-level (1+ nesting-level)))
+                  (pel+= nesting-level 1))
                  (t
                   (error "logic error"))))
               (and found-pos

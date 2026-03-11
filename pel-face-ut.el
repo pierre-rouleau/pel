@@ -1,6 +1,6 @@
 ;;; pel-face-ut.el --- Face Management Utilities  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -20,10 +20,16 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;; ---------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; Face management utilities.
 
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+(require 'pel--base)                      ; use: `pel+='
+
+;; ---------------------------------------------------------------------------
 ;;; Code:
 ;;
 
@@ -61,7 +67,7 @@ If none is found return nil."
     (while (and (not found) (< start end))
       (if  (pel-face-at-pos-is start face)
           (setq found t)
-        (setq start (1+ start))))
+        (pel+= start 1)))
     (and found start)))
 
 ;; -----------------------------------------------------------------------------

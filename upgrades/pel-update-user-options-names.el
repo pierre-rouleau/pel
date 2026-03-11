@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, October 28 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-29 13:44:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 13:03:52 EDT, updated by Pierre Rouleau>
 
 ;; This file-path is part of the PEL package.
 ;; This file-path is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -39,11 +39,6 @@
 ;; eases the invocation of the Emacs script.
 
 ;;; --------------------------------------------------------------------------
-;;; Dependencies:
-;;
-;;
-
-;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
@@ -54,7 +49,7 @@ Return change count."
         (change-count 0))
     (goto-char (point-min))
     (while (re-search-forward word-regexp nil t)
-      (setq change-count  (1+ change-count))
+      (setq change-count (1+ change-count))
       (replace-match new nil t))
     change-count))
 

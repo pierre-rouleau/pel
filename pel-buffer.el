@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, May 27 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-05-09 10:23:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 11:51:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2021, 2023, 2024, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -259,7 +259,7 @@ On index 0 refresh the list to handle buffer deletions and additions.
 Return new idx value."
   (when (= pel--smb-list-idx 0)
     (pel--smb-capture))
-  (setq pel--smb-list-idx (1+ pel--smb-list-idx))
+  (pel+= pel--smb-list-idx 1)
   (when (>= pel--smb-list-idx pel--smb-list-size)
     (setq pel--smb-list-idx 0))
   pel--smb-list-idx)

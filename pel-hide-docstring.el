@@ -1,6 +1,6 @@
 ;;; pel-hide-docstring.el --- Hide docstrings.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2023, 2024, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -56,10 +56,15 @@
 ;;   - pel--docstring-positions
 ;;
 
-;;; Code:
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
 ;;
+(require 'pel--base)
 (require 'pel-navigate)
 (require 'pel-face-ut)
+
+;; ---------------------------------------------------------------------------
+;;; Code:
 
 (defconst pel-regexp-python-beg
   "^ +\\(\\([uU]\\)?\\|\\([rRfF]\\)?\\|\\([rRfF][rRfF]\\)?\\)['\\\"]\\{3\\}"
@@ -188,8 +193,8 @@ Return cons cell of (start . end) positions if found, nil otherwise."
           ;; request to hide docstring
           (if (> (- end beg) 5)
               (progn
-                (setq beg (+ beg 4))
-                (setq end (1- end))
+                (pel+= beg 4)
+                (pel-= end 1)
                 ;; hide docstring, leave the quotes and 4 characters visible
                 (pel--hs-docstring-chars beg end nil))
             (user-error "The docstring at %d,%d is too small (%s), kept visible"
@@ -237,8 +242,8 @@ the NEXT argument is non-nil then check the docstring of the next definition."
          (hide-count 0))
     (while (< beg end)
       (when (pel--docstring-char-invisible-p beg)
-        (setq hide-count (1+ hide-count)))
-      (setq beg (1+ beg)))
+        (pel+= hide-count 1))
+      (pel+= beg 1))
     (= hide-count 0)))
 
 ;;-pel-autoload
@@ -275,7 +280,7 @@ The visibility of docstring is affected, but the buffer content is unchanged."
         (goto-char (point-min))
         (while (progn
                  (when (pel-hide/show-docstring show :silent)
-                   (setq docstring-count (1+ docstring-count)))
+                   (pel+= docstring-count 1))
                  (pel-beginning-of-next-defun :silent :dont-push-mark)))
         (if (> docstring-count 0)
             (message "%s now %s."
@@ -298,7 +303,7 @@ The visibility of docstring is affected, but the buffer content is unchanged."
         (goto-char (point-min))
         (while (progn
                  (when (pel-toggle-docstring nil :silent)
-                   (setq docstring-count (1+ docstring-count)))
+                   (pel+= docstring-count 1))
                  (pel-beginning-of-next-defun :silent :dont-push-mark)))
         (if (> docstring-count 0)
             (message "Toggled visibility of %s."

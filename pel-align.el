@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-10 15:45:06 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 11:51:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -187,15 +187,15 @@ text."
                      (pel-addto-hash-of-lists words-per-line line word))
                    (dolist (word words)
                      (pel-addto-hash-of-lists words-per-column column word)
-                     (setq column (1+ column)))
+                     (pel+= column 1))
                    (forward-line 1)
-                   (setq line (1+ line)))
+                   (pel+= line 1))
                  (not (eobp)))))
       ;; Compute the maximum word length for each column
       (let ((column -1)
             (words-in-column nil))
         (while (progn
-                 (setq column (1+ column))
+                 (pel+= column 1)
                  (setq words-in-column
                        (pel-get-list-from-hash-of-lists-for
                         words-per-column
@@ -216,7 +216,7 @@ text."
             (line -1)
             (line-indentation (make-string original-indentation ?\s)))
         (while (progn
-                 (setq line (1+ line))
+                 (pel+= line 1)
                  (setq words (pel-get-list-from-hash-of-lists-for
                               words-per-line
                               line))
@@ -224,7 +224,7 @@ text."
                    (let ((column -1))
                      (insert line-indentation)
                      (dolist (word words)
-                       (setq column (1+ column))
+                       (pel+= column 1)
                        (insert (format
                                 (format "%%-%ds " (nth column column-widths))
                                 word)))

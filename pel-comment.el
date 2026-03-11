@@ -1,6 +1,6 @@
 ;;; pel-comment.el --- PEL Comments Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -96,7 +96,7 @@
         (idx -1))
     (nreverse
      (dolist (style comment-styles st)
-       (setq idx (1+ idx))
+       (pel+= idx 1)
        (setq st (cons
                  (list (string-to-char (format "%d" idx))
                        (nth 0 style)
