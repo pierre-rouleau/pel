@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 12:08:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 17:52:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1164,7 +1164,7 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
           ;; the elpa directory because elpa-reduced is not created yet.
           (make-directory bundle-dp)
           (pel+= step-count 1) ; STEP 5
-          (pel-elpa-create-copies elpa-complete-dp-adj bundle-dp :with-symlinks)
+          (pel-elpa-create-copies elpa-complete-dp-adj bundle-dp 'with-symlinks)
           (pel+= step-count 1) ; STEP 6
           ;; Create the pel-bundle-pkg.el file inside it.
           (pel-create-bundle-pkg-file bundle-dp time-stamp)

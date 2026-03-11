@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 10:41:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 18:13:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -39,15 +39,23 @@
 ;;    - `pel-elpa-load-pkg-descriptor'
 ;;    - `pel-elpa-one-level-package-files'
 ;;      - `pel-elpa-pkg-filename'
-;;        . `pel-elpa-one-level-packages'
-;;          . `pel-elpa-package-directories'
-;;            . `pel-elpa-package-dirspec-p'
+;;        - `pel-elpa-one-level-packages'
+;;          - `pel-elpa-package-directories'
+;;            - `pel-elpa-package-dirspec-p'
 
-;;  - `pel-elpa-remove-pure-subdirs'
+;; Disable dependencies of elpa packages
+;;  - `pel-elpa-disable-pkg-deps-in'
+;;    - `pel-elpa-pkg-files-in'
+
+;; Copy the Emacs Lisp files of all one-level Elpa packages into a directory
 ;;  - `pel-elpa-create-copies'
-;;    - `pel-elpa-one-level-packages'
-;;      - `pel-elpa-package-directories'
-;;        - `pel-elpa-package-dirspec-p'
+;;    . `pel-elpa-one-level-packages'
+;;      . `pel-elpa-package-directories'
+;;        . `pel-elpa-package-dirspec-p'
+
+;; Remove all one-level elpa packages directories
+;;  - `pel-elpa-remove-pure-subdirs'
+;;    . `pel-elpa-one-level-packages'
 
 ;; Build a package-alist assoc list of packages in a elpa-compliant directory
 ;; - `pel-elpa-package-alist-of-dir'
@@ -311,10 +319,13 @@ This function does not modify the file system."
       (push (list (package-desc-name desc) desc) alist))
     alist))
 
+;; ---------------------------------------------------------------------------
+;;* Disable dependencies of elpa packages
+;;  =====================================
+
 (defun pel-elpa-pkg-files-in (dirpath)
-  "Return the -pkg.el filenames of all Elpa packages in DIRPATH.
-Return a list of all -pkg.el files inside each of the Elpa package directories
-of DIRPATH.  Each listed file name has the complete path based on DIRPATH."
+  "Return list of all -pkg.el filenames in all Elpa packages in DIRPATH.
+Each listed file name has the complete path based on DIRPATH."
   (mapcar (lambda (dn)
             (pel-elpa-pkg-filename (expand-file-name dn dirpath) 'with-path))
           (pel-elpa-package-directories dirpath)))
@@ -354,58 +365,77 @@ information unless DONT-UPDATE-FILE is non-nil."
     pkg-deps-versions))
 
 ;; ---------------------------------------------------------------------------
-
+;;* Copy the Emacs Lisp files of all one-level Elpa packages into a directory
+;;  =========================================================================
 
 (defun pel-elpa-create-copies (elpa-dir-path
                                dest-dir-path
                                &optional with-symlinks)
-  "Copy all .el files of one-level Elpa packages into a single directory.
+  "Copy code .el[c] files of one-level Elpa packages into a single directory.
 
-The single directory is DEST-DIR-PATH.  This directory must
-already exist.  If WITH-SYMLINKS is non-nil, ELPA-DIR-PATH files
-are not copied to DEST-DIR-PATH: instead the function creates
-symlinks in DEST-DIR-PATH to files inside ELPA-DIR-PATH.
+The files are taken from the Elpa directories in ELPA-DIR-PATH.
+They are copied into the DEST-DIR-PATH directory, which must
+already exist.
 
-The function only copies .el and .elc files from the Elpa
-packages that have no sub-directories (called one-level packages)
-and therefore have all their files inside one directory.  It does
-*not* copy the *-pkg.el? files nor any file that have a name that
-starts with a period of a # sign.
+If WITH-SYMLINKS is non-nil, ELPA-DIR-PATH files are not copied to
+DEST-DIR-PATH: instead the function creates symlinks in DEST-DIR-PATH to
+files inside ELPA-DIR-PATH.
+
+The function only copies .el and .elc files from the Elpa packages that
+have no sub-directories (called one-level packages) and therefore have
+all their files inside one directory.  It does *not* copy the *-pkg.el?
+files nor any file that have a name that starts with a period of a #
+sign.
+
+When duplicates are found the function prints warnings.
 
 When WITH-SYMLINK is non-nil, the function returns a list of
 (file-path-1 . file-path-2) cons cells that identify the duplicated file
 names, or nil if there are no duplicate. When WITH-SYMLINKS is nil the
 function does not attempt to detect duplicate and returns nil."
-  (let ((duplicates nil)
-        (elpa-pure-dirnames (pel-elpa-one-level-packages elpa-dir-path))
+  (let ((duplicates ())
         source-dir-path-name
-        source-fn
-        destination-fn)
-    (dolist (dirname elpa-pure-dirnames)
-      (setq source-dir-path-name (expand-file-name
-                                  dirname
-                                  (file-truename elpa-dir-path)))
-      (dolist (file-name (directory-files source-dir-path-name))
-        (when (and (not (member (substring file-name 0 1) '("." "#")))
-                   (member (file-name-extension file-name) '("el" "elc"))
+        src-fn
+        dst-fn)
+    (setq elpa-dir-path (file-truename elpa-dir-path))
+    ;; Identify and process each one-level Elpa package.
+    (dolist (dname (pel-elpa-one-level-packages elpa-dir-path))
+      (setq source-dir-path-name (expand-file-name dname elpa-dir-path))
+      (dolist (fname (directory-files source-dir-path-name))
+        (when (and (not (member (substring fname 0 1) '("." "#")))
+                   (member (file-name-extension fname) '("el" "elc"))
                    (not (pel-string-ends-with-p (file-name-sans-extension
-                                                 file-name)
+                                                 fname)
                                                 "-pkg")))
-          (setq source-fn (expand-file-name file-name source-dir-path-name))
-          (setq destination-fn (expand-file-name file-name dest-dir-path))
-          (if (file-exists-p destination-fn)
+          (setq src-fn (expand-file-name fname source-dir-path-name))
+          (setq dst-fn (expand-file-name fname dest-dir-path))
+          (if (file-exists-p dst-fn)
               ;; note: the destination will hold the name of the other
-              ;; file when with-symlinks is non-nil
-              (push (cons source-fn (file-truename destination-fn))
-                    duplicates)
+              ;;       file when with-symlinks true.  But report the issue
+              ;;       as a warning.
+              (progn
+                (push (cons src-fn (file-truename dst-fn))
+                      duplicates)
+                (display-warning
+                 'pel-elpa-create-copies
+                 (format "Duplicate file: %s" (car duplicates))
+                 :warning))
+            ;; destination does not exist (normal case):
+            ;;   copy file or create symlink
             (if with-symlinks
-                (make-symbolic-link source-fn destination-fn)
-              (copy-file source-fn destination-fn))))))
+                (make-symbolic-link src-fn dst-fn)
+              (copy-file src-fn dst-fn))))))
     (when with-symlinks
       duplicates)))
 
+;; ---------------------------------------------------------------------------
+;;* Remove all one-level elpa packages directories
+;;  ==============================================
+
 (defun pel-elpa-remove-pure-subdirs (elpa-dir-path)
-  "Remove all sub-directories of ELPA-DIR-PATH that only hold files."
+  "Remove all one-level packages sub-directories from ELPA-DIR-PATH directory.
+These are the elpa-compliant packages that only hold files in one level and
+have no sub-directories."
   (let ((elpa-pure-dir-names (pel-elpa-one-level-packages elpa-dir-path)))
     (dolist (dn elpa-pure-dir-names)
       (delete-directory (expand-file-name dn elpa-dir-path) :recurse))))
