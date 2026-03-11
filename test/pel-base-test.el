@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, February 16 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 16:17:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 16:42:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -78,7 +78,11 @@
 
 (ert-deftest ert-test-fast-startup-p ()
   "Test `pel-in-fast-startup-p'."
-  (should (not (pel-in-fast-startup-p))))
+  ;; Simulate what is being initialized in a special file used in fast startup mode.
+  (let ((pel-running-in-fast-startup-p nil))
+    (should-not (pel-in-fast-startup-p)))
+  (let ((pel-running-in-fast-startup-p t))
+    (should (pel-in-fast-startup-p))))
 
 (ert-deftest ert-test-pel-base-action-for ()
   "Test pel-action-for."
