@@ -74,8 +74,8 @@ on a separate line; for that set MAX-PER-LINE to 1."
         (rem-count (length elems))
         (done-count 0))
     (dolist (elem elems text)
-      (setq rem-count (1- rem-count))
-      (setq done-count (1+ done-count))
+      (pel-= rem-count 1)
+      (pel+= done-count 1)
       (setq text (concat text
                          elem
                          (if (> rem-count 0)
@@ -89,7 +89,7 @@ on a separate line; for that set MAX-PER-LINE to 1."
   "Return index of first OBJECT found inside LIST, nil if not present."
   (let ((index -1))
     (cl-dolist (elt list)
-      (setq index (1+ index))
+      (pel+= index 1)
       (when (equal elt object)
         (cl-return index)))))
 

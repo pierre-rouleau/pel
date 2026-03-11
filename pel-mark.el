@@ -1,6 +1,6 @@
 ;;; pel-mark.el --- PEL Mark Management Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -119,7 +119,7 @@ When mark is already active extend the region one more line up."
     (if mark-active
         ;; when mark is active issuing the command means moving 1 line up
         ;; otherwise it means to mark current line.
-        (setq n (1+ n))
+        (pel+= n 1)
       ;; set mark only if it was not already active
       (set-mark (line-end-position)))
     (forward-line (-  1 (abs n)))))
@@ -134,7 +134,7 @@ When mark is already active extend the region one more line down."
     (if mark-active
         ;; when mark is active issuing the command means moving 1 line down
         ;; otherwise it means to mark current line.
-        (setq n (1+ n))
+        (pel+= n 1)
       ;; set mark only if it was not already active
       (set-mark (line-beginning-position)))
     (end-of-line (abs n))))

@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 11:15:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 12:19:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -163,7 +163,7 @@ reducing the need to create a new one."
   (while (and (pel--inside-string-p syntax)
               (not (eobp)))
     (forward-char)
-    (setq pos (1+ pos))
+    (pel+= pos 1)
     (setq syntax (syntax-ppss pos))))
 
 (defun pel-syntax-skip-string-backward (&optional pos syntax)
@@ -177,7 +177,7 @@ reducing the need to create a new one."
   (while (and (pel--inside-string-p syntax)
               (not (bobp)))
     (backward-char)
-    (setq pos (1- pos))
+    (pel-= pos 1)
     (setq syntax (syntax-ppss pos))))
 
 (defun pel-syntax-skip-string-and-comment-forward (&optional pos syntax)
@@ -193,7 +193,7 @@ Return the new position."
                   (pel--inside-comment-p syntax))
               (not (eobp)))
     (forward-char)
-    (setq pos (1+ pos))
+    (pel+= pos 1)
     (setq syntax (syntax-ppss pos)))
   pos)
 
@@ -210,7 +210,7 @@ Return the new position"
                   (pel--inside-comment-p syntax))
               (not (bobp)))
     (backward-char)
-    (setq pos (1- pos))
+    (pel-= pos 1)
     (setq syntax (syntax-ppss pos)))
   pos)
 
@@ -256,7 +256,7 @@ The function returns the number of replacements done."
             (setq found-pos (re-search-forward from nil :noerror)))
           (when found-pos
             (replace-match (funcall replacer) :fixedcase :literal)
-            (setq change-count (1+ change-count))
+            (pel+= change-count 1)
             t)))
     change-count))
 

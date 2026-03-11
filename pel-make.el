@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-31 10:10:16 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 11:57:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2023, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ The command support shift-marking."
             (dotimes (_ n)
               (end-of-line) ; don't stay on current definition line if cursor is at bol
               (re-search-forward pel-make-macro-regxp)
-              (setq count (1+ count)))
+              (pel+= count 1))
             (back-to-indentation)
             (unless dont-push-mark
                 (push-mark start-pos))
@@ -117,7 +117,7 @@ The command support shift-marking."
           (progn
             (dotimes (_ n)
               (re-search-backward pel-make-macro-regxp)
-              (setq count (1+ count)))
+              (pel+= count 1))
             (back-to-indentation)
             (unless dont-push-mark
                 (push-mark start-pos))

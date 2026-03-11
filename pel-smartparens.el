@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, September 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-03-20 11:56:46, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 12:19:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -179,7 +179,7 @@
                (sp-forward-symbol 1)
                (and (not (eobp))
                     (pel-inside-comment-p))))
-      (setq n (1- n)))))
+      (pel-= n 1))))
 
 ;;-pel-autoload
 (defun pel-sp-backward-symbol (&optional n)
@@ -193,7 +193,7 @@
                (sp-backward-symbol 1)
                (and (not (bobp))
                     (pel-inside-comment-p))))
-      (setq n (1- n)))))
+      (pel-= n 1))))
 
 ;; ---------------------------------------------------------------------------
 ;; Fix for sp-add-to-previous-sexp

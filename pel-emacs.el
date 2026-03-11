@@ -257,7 +257,7 @@ Return nil if there is no binding."
      (when (and (commandp symbol)
                 (or (null predicate)
                     (funcall predicate symbol)))
-       (setq command-count (1+ command-count)))))
+       (pel+= command-count 1))))
   command-count))
 
 ;;-pel-autoload

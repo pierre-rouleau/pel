@@ -1,6 +1,6 @@
 ;;; pel-rst.el --- PEL reStructuredText support -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -435,7 +435,7 @@ Ignore the title level."
         (let ((adorn-char (car adorn-level)))
           (if (eq adorn-char char)
               (setq level-detected level-number)
-            (setq level-number (1+ level-number))))))
+            (pel+= level-number 1)))))
     level-detected))
 
 (defun pel--rst-delete-whole-line ()
@@ -915,18 +915,18 @@ represents."
             (ref-type nil))
         (while (and (pel-at-rst-reference-p (1- beg))
                     (pel-at-rst-valid-ref-char-p (1- beg)))
-          (setq beg (1- beg)))
+          (pel-= beg 1))
         (when (equal (char-after beg) ?`)
-          (setq beg (1+ beg)))
+          (pel+= beg 1))
         (while (and (pel-at-rst-reference-p (1+ end))
                     (pel-at-rst-valid-ref-char-p (1+ end)))
-          (setq end (1+ end)))
+          (pel+= end 1))
         (cond
          ((equal (char-before end) ?`)
-          (setq end (1- end))
+          (pel-= end 1)
           (setq ref-type 'target))
          ((equal (char-after (1+ end)) ?>)
-          (setq end (1+ end))
+          (pel+= end 1)
           (setq ref-type 'path)))
         (cons ref-type
               (buffer-substring-no-properties beg end)))

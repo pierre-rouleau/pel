@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-07 14:37:46 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 12:08:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1133,10 +1133,10 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
           ;; This will likely need to be done the very first time PEL fast
           ;; startup mode is activated.
           (pel-prepend-to actions (pel--prepare-main-elpa-dir for-graphics))
-          (setq step-count (1+ step-count)) ; STEP 1
+          (pel+= step-count 1) ; STEP 1
           ;;
           (pel--validate-elpa-symlink pel-elpa-dirpath for-graphics)
-          (setq step-count (1+ step-count)) ; STEP 2
+          (pel+= step-count 1) ; STEP 2
           ;;
           ;; The pel-bundle directory should not exists.  That's a
           ;; temporary directory where all one-level package files are
@@ -1148,7 +1148,7 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
             (delete-directory bundle-dp :recursive)
             (pel-push-fmt actions "Directory %s existed already; deleted it."
               bundle-dp))
-          (setq step-count (1+ step-count)) ; STEP 3
+          (pel+= step-count 1) ; STEP 3
           ;;
           ;; Delete old elpa-reduced if it exists: it contains the old
           ;; pel-bundle and the multi-level packages that could not be
@@ -1156,42 +1156,42 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
           (when (file-exists-p elpa-reduced-dp)
             (delete-directory elpa-reduced-dp :recursive)
             (pel-push-fmt actions "Deleted old directory %s" elpa-reduced-dp))
-          (setq step-count (1+ step-count)) ; STEP 4
+          (pel+= step-count 1) ; STEP 4
           ;;
           ;; Create pel-bundle temporary directory to hold symlinks to all
           ;; one-level package .el[c] files located in the elpa complete
           ;; directory.  At first create the directory as a sibling of
           ;; the elpa directory because elpa-reduced is not created yet.
           (make-directory bundle-dp)
-          (setq step-count (1+ step-count)) ; STEP 5
+          (pel+= step-count 1) ; STEP 5
           (pel-elpa-create-copies elpa-complete-dp-adj bundle-dp :with-symlinks)
-          (setq step-count (1+ step-count)) ; STEP 6
+          (pel+= step-count 1) ; STEP 6
           ;; Create the pel-bundle-pkg.el file inside it.
           (pel-create-bundle-pkg-file bundle-dp time-stamp)
-          (setq step-count (1+ step-count)) ; STEP 7
+          (pel+= step-count 1) ; STEP 7
           ;; Create the pel-bundle-autoloads.el file inside it.
           (cd bundle-dp)
-          (setq step-count (1+ step-count)) ; STEP 8
+          (pel+= step-count 1) ; STEP 8
           ;; Make the autoloads file byte-compilable (by removing restriction)
           ;; and then byte-compile it.
           (let ((autoload-fname (pel-generate-autoload-file-for bundle-dp)))
-            (setq step-count (1+ step-count)) ; STEP 9
+            (pel+= step-count 1) ; STEP 9
             (when (and pel-compile-pel-bundle-autoload
                        (pel-remove-no-byte-compile-in autoload-fname))
               (byte-compile-file autoload-fname)))
-          (setq step-count (1+ step-count)) ; STEP 10
+          (pel+= step-count 1) ; STEP 10
           ;;
           (cd elpa-dp-adj)
-          (setq step-count (1+ step-count)) ; STEP 11
+          (pel+= step-count 1) ; STEP 11
           ;;
           ;; Duplicate elpa-complete inside elpa-reduced then remove the
           ;; one-level packages from elpa-reduced: they have been placed inside
           ;; the pel-bundle directory before.  Just leave the multi-directory
           ;; package directories inside the elpa-reduced directory.
           (pel-copy-directory elpa-dp-adj elpa-reduced-dp)
-          (setq step-count (1+ step-count)) ; STEP 12
+          (pel+= step-count 1) ; STEP 12
           (pel-elpa-remove-pure-subdirs elpa-reduced-dp)
-          (setq step-count (1+ step-count)) ; STEP 13
+          (pel+= step-count 1) ; STEP 13
           ;;
           ;; Disable the dependencies of all (multi-directory) packages
           ;; left in the elpa-reduced directory, by calling the function
@@ -1224,7 +1224,7 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
             (pel--create-pel-setup-fast-startup-init
              (pel-elpa-disable-pkg-deps-in elpa-reduced-dp)
              new-bundle-dp))
-          (setq step-count (1+ step-count)) ; STEP 14
+          (pel+= step-count 1) ; STEP 14
           ;;
           ;; Move the pel-bundle directory inside the elpa-reduced
           ;; directory: effectively creating a pel-bundle package
@@ -1233,18 +1233,18 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
           ;; (the elpa-complete directory).  Give the pel-bundle directory
           ;; a version number corresponding to today's date.
           (rename-file (directory-file-name bundle-dp) new-bundle-dp)
-          (setq step-count (1+ step-count)) ; STEP 15
+          (pel+= step-count 1) ; STEP 15
           ;;
           ;; If there is a elpa symlink remove it and create a new one
           ;; that points to elpa-reduced
           (pel-switch-to-elpa-reduced for-graphics)
-          (setq step-count (1+ step-count)) ; STEP 16
+          (pel+= step-count 1) ; STEP 16
           ;; Re-compile pel_keys.el with
           ;; `pel-running-in-fast-startup-p' bound to t to prevent PEL
           ;; from downloading and installing external packages while PEL
           ;; runs in PEL bundled mode.
           (pel-bundled-mode t)
-          (setq step-count (1+ step-count)) ; STEP 17
+          (pel+= step-count 1) ; STEP 17
           ;;
           ;; handle package quickstart when running Emacs ≥ 27
           (when pel-emacs-27-or-later-p
@@ -1252,11 +1252,11 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
             (declare-function pel--create-package-quickstart "pel-setup-27")
             (declare-function pel--remove-package-quickstart-files "pel-setup-27")
             (pel--setup-early-init pel-support-package-quickstart)
-            (setq step-count (1+ step-count)) ; STEP 18 (Emacs >= 27)
+            (pel+= step-count 1) ; STEP 18 (Emacs >= 27)
             (if pel-support-package-quickstart
                 (pel--create-package-quickstart elpa-reduced-dp for-graphics)
               (pel--remove-package-quickstart-files for-graphics))
-            (setq step-count (1+ step-count))) ; STEP 19 (Emacs >= 27)
+            (pel+= step-count 1)) ; STEP 19 (Emacs >= 27)
           (pel-message-for "Completed:" actions))
       (error
        (display-warning 'pel-setup-fast

@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-01-20 13:36:13 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 11:53:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; Package-Requires: ((emacs "26.1") (spinner "1.7.3"))
 
@@ -172,7 +172,7 @@ prints a message showing how many instances were replaced."
         (replace-match new-text
                        pel-dirtree-replace-file-newtext-is-fixedcase
                        pel-dirtree-replace-file-newtext-is-literal)
-        (setq mods (1+ mods)))
+        (pel+= mods 1))
       (unless (eq mods 0)
         (when pel-dirtree-replace-file-backup-suffix
           (setq backup-fname (format "%s%s" fname

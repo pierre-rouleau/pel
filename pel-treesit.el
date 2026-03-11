@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 11:27:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 12:11:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -246,7 +246,7 @@ Return 1 if error, 0 if OK."
                               (format "\\.%s\\'" pel-os-lib-file-extension)))
                 (setq err-count (+ err-count (pel--check-fname fname))))
             ;; invalid dpath
-            (setq err-count (1+ err-count))))
+            (pel+= err-count 1)))
         (if (eq err-count 0)
             (message "Tree-Sitter directory settings appears OK")
           (message "Detected %d errors in Tree-Sitter directory settings!"

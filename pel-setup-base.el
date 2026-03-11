@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-07 14:43:53 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 12:06:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -284,13 +284,13 @@ startup if all tests pass."
         (issues nil)
         (test-count 0))
     ;;
-    (setq test-count (1+ test-count))
+    (pel+= test-count 1)
     (if (pel-in-fast-startup-p)
         (pel-push-fmt met-criteria
             "Identified as fast startup by function `pel-in-fast-startup'")
       (pel-push-fmt issues "The `pel-in-fast-startup' is not set."))
     ;;
-    (setq test-count (1+ test-count))
+    (pel+= test-count 1)
     (if (file-exists-p pel-fast-startup-init-fname)
         (pel-push-fmt met-criteria "Fast startup setup file is present: %s"
           pel-fast-startup-init-fname)
@@ -305,7 +305,7 @@ startup if all tests pass."
              (elpa-reduced-dirpath (pel-elpa-name (pel-sibling-dirpath
                                                          elpa-dirpath "elpa-reduced")
                                                         for-graphic)))
-        (setq test-count (1+ test-count))
+        (pel+= test-count 1)
         (if (pel-same-fname-p (directory-file-name elpa-dirpath)
                               elpa-reduced-dirpath)
             (pel-push-fmt met-criteria "%s elpa is using elpa-reduced"

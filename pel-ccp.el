@@ -1,6 +1,6 @@
 ;;; pel-ccp.el --- PEL cut & paste, etc... -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -966,7 +966,7 @@ Nothing is copied to the kill ring."
                      "\n")
              (forward-line -1)
              (right-char (- original-pos original-bol))
-             (> (setq n (1- n)) 0)))
+             (> (pel-= n 1) 0)))
     (when keep-original-position
       (goto-char original-pos))))
 

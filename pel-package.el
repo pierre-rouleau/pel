@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 11:08:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 11:59:11 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -668,7 +668,7 @@ TITLE is the text that must be printed before the list."
   (let ((n 0))
     (insert title)
     (dolist (pkg pkgs)
-      (setq n (1+ n))
+      (pel+= n 1)
       (insert (format "- %3d: %s\n" n pkg)))))
 
 (defun pel--show-pkgs-for (group-name all-pkgs pkgs+lock pkgs+deps to-keep)
@@ -689,7 +689,7 @@ TO-KEEP:      List of package symbols or file name strings that are installed
                           (memq pkg pkgs+deps)))
             (isa-lck (and (not (memq pkg pkgs+deps))
                           (memq pkg pkgs+lock))))
-        (setq n (1+ n))
+        (pel+= n 1)
         (insert (format "- %3d: %-40s%s%s\n"
                         n
                         pkg
@@ -1291,7 +1291,7 @@ Return the number of symbols that were removed from the
                 (left-char)
                 (when (eq 32 (char-after))
                   (delete-char 1)))
-              (setq remove-count (1+ remove-count)))))
+              (pel+= remove-count 1))))
         (widen)
         remove-count))))
 
@@ -1462,7 +1462,7 @@ intention by typing 'y' to its prompt.
                (insert (format "The files %s to utils-attic are:\n\n"
                                verb-moved))
                (dolist (fn removed-el-files)
-                 (setq n (1+ n ))
+                 (pel+= n 1)
                  (insert (format "- %3d: %s\n" n fn))))
              (when moved-elpa-dirs
                (when (or removed-el-files removed-elc-files)
@@ -1475,7 +1475,7 @@ to  : %s :\n\n"
                                pel-elpa-attic-dirpath))
                (setq n 0)
                (dolist (pkgdir moved-elpa-dirs)
-                 (setq n (1+ n))
+                 (pel+= n 1)
                  (insert (format "- %3d: %s\n" n pkgdir))))
              (unless (or removed-el-files
                          removed-elc-files

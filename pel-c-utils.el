@@ -2,12 +2,12 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-01-05 20:36:08 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 11:52:11 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022, 2024  Pierre Rouleau
+;; Copyright (C) 2022, 2024, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -148,7 +148,7 @@ Return number of changes."
         (when (re-search-forward regexp
                                  nil :noerror)
           (replace-match rep-regexp :fixedcase)
-          (setq change-count (1+ change-count)))))
+          (pel+= change-count 1))))
     change-count))
 
 (defun pel--c-replace (keywords format-regexp rep-regexp)
@@ -209,7 +209,7 @@ object code file to generate the assembler file."
                (re-search-forward "\\(NULL[[:blank:]]*!=[[:blank:]]*\\)\\|\\([[:blank:]]*!=[[:blank:]]*NULL\\)"
                                   nil :noerror))
         (replace-match "" nil :literal)
-        (setq not-equal-NULL-count (1+ not-equal-NULL-count)))
+        (pel+= not-equal-NULL-count 1))
       ;; 2 ------------------------------------------------
       ;; Replace `if (ptr == NULL)' by `if (!ptr)'
       (setq equal-NULL-count
