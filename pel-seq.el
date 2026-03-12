@@ -1,6 +1,6 @@
 ;;; pel-seq.el --- Sequence manipulation utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -32,12 +32,13 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--base)                      ; use: `pel-require'
+(require 'pel--install)                   ; use: `pel-require'
 (pel-require 'seq :install-when-missing)  ; use: `seq-reduce'
 (declare-function seq-reduce "seq")
 
 ;; ---------------------------------------------------------------------------
 ;;; Code:
+
 ;;-pel-autoload
 (defun pel-all-fboundp (&rest funs)
   "Return t if all function symbols in FUNS list are bounded, nil otherwise."

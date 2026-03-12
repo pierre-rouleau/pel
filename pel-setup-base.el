@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 12:06:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-12 09:26:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -401,7 +401,9 @@ Return t when done, nil otherwise."
 ;;  ===============================
 
 (defun pel-create-early-init-if-missing ()
-  "Check if the early-init file is present, if not create one."
+  "Check if the Emacs early-init file is present, if not create one.
+The early-init.el file is created inside the directory identified by the
+`user-emacs-directory' global variable. "
   (let ((early-init-fname (locate-user-emacs-file "early-init.el")))
     (unless (file-exists-p early-init-fname)
       (copy-file pel-early-init-template early-init-fname))))
@@ -425,17 +427,18 @@ Otherwise delete the .elc file if it exists."
   "Update FNAME file: set symbol to value from the SYMBOL-VALUES alist.
 
 - FNAME: string.  Name of a file assumed to be located inside the user
-  Emacs directory.  For normal code FNAME should be \"init.el\" or
-  \"early-init.el\".
-  That file is expected to define the symbols inside defconst forms,
-  as it's the case for PEL specified init.el and early-init.el supported
-  files.
-- SYMBOL-VALUES: a list of symbol value pairs.
+  Emacs directory identified by the value of `user-emacs-directory'.
+  For normal code FNAME should be \"init.el\" or \"early-init.el\".
+  - That file is expected to define specific PEL symbols inside defconst
+    forms, as it's the case for PEL specified init.el and early-init.el
+    supported files.
+- SYMBOL-VALUES: a list of symbol-value pairs.  The symbol is the name of
+  the variable to update to the specified value.
 - BYTE-COMPILE-IT: boolean.  If non-nil, byte compile resulting FNAME.
 
-Raise an error if the function does not find the file or the `defconst'
-form defining a specified symbol inside the file.  The error describes
-what was not found."
+Raise a user error if the function does not find the file or the
+`defconst' form defining a specified symbol inside the file.  The error
+describes what was not found, requesting the user to fix it."
   (let ((fname (locate-user-emacs-file fname))
         varname
         new-value
@@ -451,7 +454,7 @@ what was not found."
         (setq re-pattern (format "^(defconst +%s +\\(.+\\) *$" varname))
         (if (re-search-forward re-pattern nil :noerror)
             (replace-match new-value :fixedcase :literal nil 1)
-          (user-error "Can't find regexp %s in '%s'" re-pattern fname))))
+          (user-error "Can't find regexp %s in '%s'. Please fix." re-pattern fname))))
     (pel-compile-file-if fname byte-compile-it)))
 
 (defun pel-set-dual-environment-in-emacs-init (use-dual-environment)

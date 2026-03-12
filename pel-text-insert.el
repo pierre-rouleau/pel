@@ -1,6 +1,6 @@
 ;;; pel-text-insert.el --- PEL Text Insertion Utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -53,8 +53,7 @@
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--base)       ; use: pel-require
-;;                         ;      pel-current-buffer-filename
+(require 'pel--base)       ; use: pel-current-buffer-filename
 ;;                         ;      pel-string-starts-with-p
 ;;                         ;      pel-ends-with-space-p
 ;;                         ;      pel-comment-prefix
@@ -74,7 +73,7 @@ the second element is nil."
   ;; because there's no reason to change it as far as I can tell with the
   ;; currently supported modes.  It returns it anyway in case I find some
   ;; condition to modify it.
-  (pel-require 'newcomment)
+  (require 'newcomment)
   (comment-normalize-vars)
   (let* ((point-column         (current-column))
          (point-at-line-start  (or (= point-column 0)

@@ -1,6 +1,6 @@
 ;;; pel-xref.el --- xref cross referencing utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -92,6 +92,7 @@
 ;;; Code:
 
 (require 'pel--base)
+(require 'pel--install)                 ; use `pel-require'
 (require 'pel--options)
 (require 'pel-prompt)                   ; use `pel-select-from'
 (require 'pel-read)                     ; use `pel-customize-symbol-at-line'
@@ -131,7 +132,7 @@ identifier can be found at point. It calls `xref-find-definitions'."
 ;;-pel-autoload
 (defun pel-xref-dumb-jump-activate-locally ()
   "Activate dumb-jump for the current buffer."
-  (pel-require 'xref)
+  (require 'xref)
   (pel-require 'dumb-jump)
   ;; Activate xref dumb-jump locally: for the current buffer only.
   (add-hook 'xref-backend-functions
@@ -172,13 +173,13 @@ If MODE is nil, use the current major-mode."
 
 (defun pel-xref-dumb-jump-active-p ()
   "Return non-nil when dumb-jump is active, nil otherwise."
-  (pel-require 'xref)
+  (require 'xref)
   (and (featurep 'dumb-jump)
        (memq 'dumb-jump-xref-activate xref-backend-functions)))
 
 (defun pel-xref-dumb-jump-mode-state-str ()
   "Return a string describing the dumb-jump mode status."
-  (pel-require 'xref)
+  (require 'xref)
   (let ((state-str
          (if pel-use-dumb-jump
              (if (featurep 'dumb-jump)
@@ -206,7 +207,7 @@ major mode by adding (or removing) dumb-jump activation in the
 specific `major-mode' hook. However, when argument is specified,
 only apply the change for the current buffer only."
   (interactive "P")
-  (pel-require 'xref)
+  (require 'xref)
   (if (pel-xref-dumb-jump-active-p)
       (pel-xref-dumb-jump-deactivate locally)
     (pel-xref-dumb-jump-activate locally))
@@ -219,7 +220,7 @@ only apply the change for the current buffer only."
 ;;-pel-autoload
 (defun pel-xref-gxref-activate ()
   "Activate the gxref xref back-end for the current major mode."
-  (pel-require 'xref)
+  (require 'xref)
   (pel-require 'gxref)
   (add-hook 'xref-backend-functions
             'gxref-xref-backend
@@ -228,14 +229,14 @@ only apply the change for the current buffer only."
 
 (defun pel-xref-gxref-active-p ()
   "Return non-nil when gxref back-end is active, nil otherwise."
-  (pel-require 'xref)
+  (require 'xref)
   (and (featurep 'gxref)
        (memq 'gxref-xref-backend xref-backend-functions)))
 
 
 (defun pel-xref-gxref-state-str ()
   "Return a string describing the gxref xref back-end use."
-  (pel-require 'xref)
+  (require 'xref)
   (let ((state-str   (if (featurep 'gxref)
                          (pel-on-off-string (pel-xref-gxref-active-p))
                        (if pel-use-gxref
@@ -251,7 +252,7 @@ only apply the change for the current buffer only."
 
 Print a message unless QUIET is requested."
   (interactive)
-  (pel-require 'xref)
+  (require 'xref)
   (if (pel-xref-gxref-active-p)
       (remove-hook 'xref-backend-functions
                    'gxref-xref-backend
@@ -275,7 +276,7 @@ Print a message unless QUIET is requested."
 
 (defun pel-xref-rtags-active-p ()
   "Return non-nil when rtags-xref is active, nil otherwise."
-  (pel-require 'xref)
+  (require 'xref)
   (and (featurep 'rtags-xref)
        (memq 'rtags-xref-enable c-mode-common-hook)))
 
@@ -637,7 +638,7 @@ If APPEND is non-nil, append to the buffer."
   "Move point to SYMBOL variable definition using elisp xref-backend.
 
 Always use Elisp backend, regardless of currently active xref-backend."
-  (pel-require 'xref)
+  (require 'xref)
   (if (fboundp 'xref-push-marker-stack)
       (progn
         (xref-push-marker-stack)

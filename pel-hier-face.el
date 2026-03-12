@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, November 22 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 11:56:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-12 14:52:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,7 +33,8 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)
+(require 'pel--base)            ; use `pel-string-starts-with-p'
+(require 'pel--install)         ; use `pel-require'
 (pel-require 'hierarchy :install-when-missing
              "DamienCassou/hierarchy/refs/heads/master"
              "hierarchy.el")
@@ -60,7 +61,6 @@
 
 (defun pel-hier-face-parent (f &optional frame)
   "Return the face(s) that FACE-NAME inherits from, or nil if none."
-  ;; (message "(pel-hier-face-parent %S)" f)
   (let ((parent-face (if (eq f 'root)
                          'root
                        (condition-case nil

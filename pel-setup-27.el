@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-07 14:25:31 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-12 14:30:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -94,13 +94,13 @@
 ;;   early-init.el files.
 ;; - Restart Emacs.
 
-(defun pel--set-dual-environment-in-emacs-early-init (use)
-  "Update Emacs user early-init.el for dual environment when USE is non-nil."
+(defun pel--set-dual-environment-in-emacs-early-init (use-dual-environment)
+  "Update Emacs user early-init.el to USE-DUAL-ENVIRONMENT or not."
   (pel-create-early-init-if-missing)
   (pel-update-emacs-user-init-file
    "early-init.el"
    (list
-    (list 'pel-early-init-support-dual-environment-p (not (null use))))
+    (list 'pel-early-init-support-dual-environment-p (not (null use-dual-environment))))
    pel-compile-emacs-early-init))
 
 ;; ---------------------------------------------------------------------------
@@ -133,13 +133,14 @@ FOR-GRAPHICS is:
     ;; report any error
     (error "Failed accessing package-quickstart")))
 
-(defun pel--set-package-quickstart-in-early-init (use)
-  "Update Emacs early-init.el file package quickstart setting to USE."
+(defun pel--set-package-quickstart-in-early-init (use-dual-environment)
+  "Update Emacs early-init.el file package quickstart setting.
+Set it according to the USE-DUAL-ENVIRONMENT argument."
   (pel-create-early-init-if-missing)
   (pel-update-emacs-user-init-file
    "early-init.el"
    (list
-    (list 'pel-early-init-support-package-quickstart-p use))
+    (list 'pel-early-init-support-package-quickstart-p use-dual-environment))
    pel-compile-emacs-early-init))
 
 (defun pel--setup-early-init (pkg-quickstart)

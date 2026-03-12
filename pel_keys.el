@@ -135,11 +135,13 @@
 ;;                      ;     pel-emacs-is-graphic-p
 ;;                      ;     pel-toggle
 ;;                      ;     pel-mode-toggle-arg
-;;                      ;     pel-ensure-package-elpa
+
+(require 'pel--install) ; use pel-ensure-package-elpa
 ;;                      ;
 ;;                      ;
 ;;                      ;
 ;;                      ;
+
 (require 'pel--indent)  ; use: `pel-indentation-width-control-variables',
 ;;                      ;      `pel-indentation-other-control-variables',
 ;;                      ;      `pel-tab-width-control-variables'.
