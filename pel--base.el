@@ -47,8 +47,9 @@
 ;; Set variable conditionally
 ;;  - `pel-set-if-non-nil'
 ;;
-;; Check for Zero:
+;; Basic value checks:
 ;;  - `pel-!0'
+;;  - `pel-as-boolean'
 ;;
 ;; Bitwise Operations:
 ;;  - `pel-all-bitset-p'
@@ -513,6 +514,10 @@ If VALUE is nil do nothing."
 (defsubst pel-!0 (number)
   "Return nil if NUMBER is 0, t otherwise."
   (not (zerop number)))
+
+(defun pel-as-boolean (value)
+  "Return t for non-nil VALUE, nil otherwise."
+  (not (null value)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Bitwise Operations

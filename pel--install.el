@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-12 14:04:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-12 17:11:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -156,52 +156,67 @@
 (defun pel-url-copy-file (url newname &optional ok-if-already-exists)
   "Copy URL to NEWNAME.  Both arguments must be strings.
 
-Signal a `file-already-exists' error if file NEWNAME already
-exists, unless a third argument OK-IF-ALREADY-EXISTS is supplied
-and non-nil.  An integer as third argument means request
-confirmation if NEWNAME already exists.
+Same as `url-copy-file' but detects URL to non-existing file reported as a
+HTTP 404 error by the server.
 
-Same as `url-copy-file' but detects URL to non-existing file.
-Raise an error if the request generates a HTTP 404 error.
-Returns t if all is OK."
+If the NEWNAME file already exists, download it again when
+OK-IF-ALREADY-EXISTS is non-nil otherwise treats this as an error.
+
+On success return NEWNAME, the name of the created file.
+On operation error, display a descriptive :error warning message and return
+nil.  Raise an error if the `url-copy-file' is not bound.
+That should never happen if Emacs is installed properly."
   (require 'url-handlers nil 'noerror)
   (if (fboundp 'url-copy-file)
       ;; Try to download the file identified by the URL.
       ;; That function does not detect invalid URLS so we could get a "404:
       ;; Not Found"
       (let ((tmp-fname (make-temp-file "pel-url-copy-file"))
-            (error-msg nil)
-            (err-car nil)
-            (err-cdr nil))
+            (error-msg nil))
         (condition-case err
-            (when (url-copy-file url tmp-fname t)
-              ;; Check that the file was properly downloaded.downloaded file
-              ;; url-copy-file places "404: Not Found" in the file when the
-              ;; URL pointed to an invalid location of a valid server.
-              (with-temp-buffer
-                (insert-file-contents tmp-fname)
-                (when (string= (buffer-substring-no-properties 1 4) "404")
-                  (setq error-msg (format "Requested URL does not exist: %s"
-                                          url))))
-              (unless error-msg
-                (copy-file tmp-fname newname ok-if-already-exists))
-              (delete-file tmp-fname))
-          (progn
-            ;; this block is here to prevent byte compiler warning on
-            ;;   (signal (car err) (cdr err))
-            (setq err-car (car err))
-            (setq err-cdr (cdr err))
-            (display-warning 'pel-url-copy-file
-                             (format "\
-Error installing URL %s to %s:\n%s %s\n%s"
-                                     url newname
-                                     err-car err-cdr
-                                     (pel-string-for error-msg)))))
-        (if (or error-msg err-car err-cdr)
-            nil
-          t))
-    (display-warning 'pel-url-copy-file
-                     "The url-handlers.el file is not loaded: can't install anything!")))
+            ;; `url-copy-file' does not complain when the server replies with
+            ;; a "404: Not Found"; it simply stores it inside the created
+            ;; file.
+            (if (url-copy-file url tmp-fname t)
+                ;; Check that the file was properly downloaded by checking if
+                ;; its content is "404: Not Found".  If it is: set error-msg
+                ;; with a descriptive problem.
+                (progn
+                  (with-temp-buffer
+                    (insert-file-contents tmp-fname)
+                    (when (string= (buffer-substring-no-properties 1 4) "404")
+                      (setq error-msg
+                            (format "Received 404 error for requested URL: %s"
+                                    url))))
+                  (unless error-msg
+                    (copy-file tmp-fname newname
+                               ;; Prevent prompt if `ok-if-already-exists' was
+                               ;; passed a number.
+                               (pel-as-boolean ok-if-already-exists)))
+                  (delete-file tmp-fname))
+              (setq error-msg (format "Nothing received for URL: %s" url)))
+          (error
+           (setq error-msg
+                 (format "Exception detected in url-copy-file: %s %s"
+                         (car err)
+                         (cdr err)))))
+        ;; After operation check if there was any error reported.
+        ;; On success return the name of the created file.
+        ;; On error: display an :error warning and return nil.
+        (if error-msg
+            (progn
+              (display-warning 'pel-url-copy-file
+                               (format "Error installing URL %s to %s:\n%s"
+                                       url newname
+                                       error-msg)
+                               :error)
+              nil)
+          ;; success: return name of created file.
+          newname))
+    ;; url-copy-file is not bound
+    (error "\
+url-handlers.el `url-copy-file' not bound in pel-url-copy-file.\
+  Can't install anything!")))
 
 (defun pel-install-file (url fname &optional refresh)
   "Download, install a file FNAME from URL into PEL\\='s utility directory.
@@ -368,7 +383,7 @@ and the function returns nil"
               (package-install pkg)
               (setq package-was-installed t))
           (error
-           (if (and (fboundp 'package-refresh-content)
+           (if (and (fboundp 'package-refresh-contents)
                     (fboundp 'package-read-all-archive-contents)
                     (boundp  'package-pinned-packages))
                (progn
@@ -376,7 +391,7 @@ and the function returns nil"
   Refreshing package list and re-trying..."
                                   pkg
                                   (error-message-string err)))
-                 (package-refresh-content)
+                 (package-refresh-contents)
                  (when (assoc pkg (bound-and-true-p package-pinned-packages))
                    (condition-case-unless-debug err
                        (progn
@@ -411,7 +426,7 @@ Load the package library if that's not already done."
   (if (and (require 'package nil 'noerror)
            (fboundp 'package-installed-p))
       (package-installed-p feature)
-    (display-warning 'pel--package-installed-p
+    (display-warning 'pel-package-installed-p
                      "Failed loading package.el to use package-installed-p!"
                      :error)
     nil))
@@ -702,7 +717,7 @@ Each string is either:
 `pel-add-speedbar-extension' is a direct proxy to
 `speedbar-add-supported-extension' with the ability to load the
 speedbar file."
-  (pel-require 'speedbar)
+  (require 'speedbar)
   (declare-function speedbar-add-supported-extension "speedbar")
   (speedbar-add-supported-extension extension))
 

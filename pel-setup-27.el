@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-12 14:30:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-12 17:16:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -133,14 +133,14 @@ FOR-GRAPHICS is:
     ;; report any error
     (error "Failed accessing package-quickstart")))
 
-(defun pel--set-package-quickstart-in-early-init (use-dual-environment)
+(defun pel--set-package-quickstart-in-early-init (use-package-quickstart)
   "Update Emacs early-init.el file package quickstart setting.
-Set it according to the USE-DUAL-ENVIRONMENT argument."
+Set it according to the USE-PACKAGE-QUICKSTART argument."
   (pel-create-early-init-if-missing)
   (pel-update-emacs-user-init-file
    "early-init.el"
    (list
-    (list 'pel-early-init-support-package-quickstart-p use-dual-environment))
+    (list 'pel-early-init-support-package-quickstart-p use-package-quickstart))
    pel-compile-emacs-early-init))
 
 (defun pel--setup-early-init (pkg-quickstart)
