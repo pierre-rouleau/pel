@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 18:59:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-11 19:50:12 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -726,7 +726,8 @@ Return the complete name of the generated autoload file."
                       (update-directory-autoloads dir)
                     (error "update-directory-autoloads not bound!")))
                 (setq generated-fname generated-autoload-file)
-                (kill-buffer "pel-bundle-autoloads.el"))
+                (when (get-buffer "pel-bundle-autoloads.el")
+                  (kill-buffer "pel-bundle-autoloads.el")))
             (error
              (display-warning
               'pel-generate-autoload-file-for
@@ -734,7 +735,7 @@ Return the complete name of the generated autoload file."
                       dir err)
               :error)))
           (setq generated-autoload-file original-generated-autoload-file))
-      (error "The autoload.el variable generated-autoload-file isn't bounded!"))
+      (error "The autoload.el variable `generated-autoload-file' is not bound!"))
     generated-fname))
 
 
@@ -1122,7 +1123,6 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
         (let* ((elpa-dp-adj      (λc adj pel-elpa-dirpath))
                (elpa-reduced-dp  (λc adj (λc elpa-sibling "elpa-reduced")))
                (elpa-complete-dp (λc adj (λc elpa-sibling "elpa-complete")))
-               (elpa-complete-dp-adj (λc adj elpa-complete-dp))
                (bundle-dp        (λc elpa-sibling "pel-bundle"))
                (time-stamp       (format-time-string "%Y%m%d.%H%M"))
                (new-bundle-dp    (expand-file-name
@@ -1166,7 +1166,7 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
           ;; the elpa directory because elpa-reduced is not created yet.
           (make-directory bundle-dp)
           (pel+= step-count 1) ; STEP 5
-          (pel-elpa-create-copies elpa-complete-dp-adj bundle-dp 'with-symlinks)
+          (pel-elpa-create-copies elpa-complete-dp bundle-dp 'with-symlinks)
           (pel+= step-count 1) ; STEP 6
           ;; Create the pel-bundle-pkg.el file inside it.
           (pel-create-bundle-pkg-file bundle-dp time-stamp)
@@ -1364,7 +1364,7 @@ is only one or when its for the terminal (TTY) mode."
     (user-error "PEL/Emacs is already using the normal setup!"))
    ((and (bound-and-true-p package-quickstart)
          pel-emacs-is-graphic-p)
-    (user-error "PEL currently is not able to switch to fast startup mode when
+    (user-error "PEL currently is not able to restore from fast startup mode when
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off
   to execute this command.
