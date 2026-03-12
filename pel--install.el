@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-12 17:11:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-12 18:33:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -173,33 +173,37 @@ That should never happen if Emacs is installed properly."
       ;; Not Found"
       (let ((tmp-fname (make-temp-file "pel-url-copy-file"))
             (error-msg nil))
-        (condition-case err
-            ;; `url-copy-file' does not complain when the server replies with
-            ;; a "404: Not Found"; it simply stores it inside the created
-            ;; file.
-            (if (url-copy-file url tmp-fname t)
-                ;; Check that the file was properly downloaded by checking if
-                ;; its content is "404: Not Found".  If it is: set error-msg
-                ;; with a descriptive problem.
-                (progn
-                  (with-temp-buffer
-                    (insert-file-contents tmp-fname)
-                    (when (string= (buffer-substring-no-properties 1 4) "404")
-                      (setq error-msg
-                            (format "Received 404 error for requested URL: %s"
-                                    url))))
-                  (unless error-msg
-                    (copy-file tmp-fname newname
-                               ;; Prevent prompt if `ok-if-already-exists' was
-                               ;; passed a number.
-                               (pel-as-boolean ok-if-already-exists)))
-                  (delete-file tmp-fname))
-              (setq error-msg (format "Nothing received for URL: %s" url)))
-          (error
-           (setq error-msg
-                 (format "Exception detected in url-copy-file: %s %s"
-                         (car err)
-                         (cdr err)))))
+        (unwind-protect
+            (condition-case err
+                ;; `url-copy-file' does not complain when the server replies
+                ;; with a "404: Not Found"; it simply stores it inside the
+                ;; created file.
+                (if (url-copy-file url tmp-fname t)
+                    ;; Check that the file was properly downloaded by checking
+                    ;; if its content is "404: Not Found".  If it is: set
+                    ;; error-msg with a descriptive problem.
+                    (progn
+                      (with-temp-buffer
+                        (insert-file-contents tmp-fname)
+                        (when (string= (buffer-substring-no-properties 1 4)
+                                       "404")
+                          (setq error-msg
+                                (format
+                                 "Received 404 error for requested URL: %s"
+                                 url))))
+                      (unless error-msg
+                        (copy-file tmp-fname newname
+                                   ;; Prevent prompt if `ok-if-already-exists'
+                                   ;; was passed a number.
+                                   (pel-as-boolean ok-if-already-exists))))
+                  (setq error-msg (format "Nothing received for URL: %s" url)))
+              (error
+               (setq error-msg
+                     (format "Exception detected in url-copy-file: %s %s"
+                             (car err)
+                             (cdr err)))))
+          (when (file-exists-p tmp-fname)
+            (delete-file tmp-fname)))
         ;; After operation check if there was any error reported.
         ;; On success return the name of the created file.
         ;; On error: display an :error warning and return nil.
@@ -255,7 +259,11 @@ by warning to prevent init from failing."
             (when (and downloaded
                        (string= (file-name-extension target-fname) "el"))
               (message "Byte compiling it to %s" target-fname)
-              (byte-compile-file target-fname))))
+              (byte-compile-file target-fname)
+              (when (and (fboundp 'native-comp-available-p)
+                         (fboundp 'native-compile-async)
+                         (native-comp-available-p))
+                (native-compile-async target-fname)))))
       (display-warning 'pel-install-file
                        (format "\
 Cannot install %s inside PEL utils: it would be stored outside utils!\n\
@@ -392,19 +400,20 @@ and the function returns nil"
                                   pkg
                                   (error-message-string err)))
                  (package-refresh-contents)
-                 (when (assoc pkg (bound-and-true-p package-pinned-packages))
-                   (condition-case-unless-debug err
-                       (progn
-                         (package-read-all-archive-contents)
-                         (package-install pkg)
-                         (setq package-was-installed t))
-                     (error
-                      (display-warning
-                       'pel-package-install
-                       (format "After refresh, failed to install %s: %s"
-                               pkg
-                               (error-message-string err))
-                       :error)))))
+                 (condition-case-unless-debug err
+                     (progn
+                       (when (assoc pkg
+                                    (bound-and-true-p package-pinned-packages))
+                         (package-read-all-archive-contents))
+                       (package-install pkg)
+                       (setq package-was-installed t))
+                   (error
+                    (display-warning
+                     'pel-package-install
+                     (format "After refresh, failed to install %s: %s"
+                             pkg
+                             (error-message-string err))
+                     :error))))
              (display-warning
               'pel-package-install
               (format "The package.el is not loaded properly.

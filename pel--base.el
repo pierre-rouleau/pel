@@ -1657,7 +1657,7 @@ The original LST is untouched."
 
 (defun pel-delete-from-auto-mode-alist (mode)
   "Delete MODE specific entries from `auto-mode-alist'.
-Modifies `auto-mode-alist' and return its new value."
+Modifies `auto-mode-alist'."
   (while (rassoc mode auto-mode-alist)
     (setq auto-mode-alist
           (assq-delete-all (car (rassoc mode auto-mode-alist))
