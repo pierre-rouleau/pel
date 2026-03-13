@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-12 14:37:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 11:43:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -124,7 +124,7 @@ Display and return the new value of the mode."
   (local-key-binding key))
 
 (defun pel-cc-filter-electric-key (char)
-  "Return CHAR if it is electric, space otherwise."
+  "Return CHAR if it is electric, nil otherwise."
   (if (pel-cc-key-electric-p (kbd char))
       char
     nil))

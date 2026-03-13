@@ -96,7 +96,7 @@
 ;;
 ;; File System Type
 ;;  - `pel-unix-socket-p'
-;;  - `pel-file-type'
+;;  - `pel-file-type-str'
 ;;
 ;; String predicates
 ;;  - `pel-whitespace-in-str-p'
@@ -364,7 +364,7 @@ The non-nil value of the predicate is the `module-file-suffix'.")
   "Predicate: t when Emacs version 30 or later is running, nil otherwise.")
 
 (defconst pel-emacs-31-or-later-p (>= emacs-major-version 31)
-  "Predicate: t when Emacs version 30 or later is running, nil otherwise.")
+  "Predicate: t when Emacs version 31 or later is running, nil otherwise.")
 
 (defconst pel-filesep (if pel-system-is-windows-p "\\" "/")
   "String directory/file separator character for this OS.")
@@ -1272,7 +1272,7 @@ by BUFFER or `pel-insert-symbol-content-context-buffer'."
 
 (defun pel-as-string (val)
   "Return a string for the simple object value VAL.
-VAL may a string, as symbol, a number or a character.
+VAL may a string, a symbol, a number or a character.
 Otherwise an error is raised."
   (cond
    ((stringp val) val)
@@ -1364,7 +1364,7 @@ ELISP>"
 (defun pel-grp-regex (text &optional tail)
   "Return string with TEXT inside regexp group.
 
-For STR, the returned string is \"\\\\(STR\\\\)\",
+For TEXT, the returned string is \"\\\\(TEXT\\\\)\",
 unless TAIL is specified, in which case tail is appended
 after the closing parenthesis."
   (let ((str (format "\\(%s\\)" text)))
@@ -1389,7 +1389,26 @@ The function returns the formatted string.
 
 Don't use this function directly; use the
 `pel-format-problem-messages' macro instead: it simplifies
-caller's code."
+caller's code.
+
+Example:
+
+  ELISP> (pel--format-problem-messages \\='(\"problem 1\" \"problem 2\")
+                                       \"System Test Report:\")
+  \"System Test Report:
+    The following 2 problems remain:
+    - problem 1
+    - problem 2\"
+
+  ELISP> (pel--format-problem-messages \\='(\"problem 1\" \"problem 2\")
+                                       \"System Test Report:\"
+                                       \"The final report is that\")
+  \"System Test Report:
+    The final report is that the following 2 problems remain:
+    - problem 1
+    - problem 2\"
+
+The second example show where the EXTRA-INFO text is placed."
   (let ((problem-count (length problems)))
     (format "%s\n %she following %s %s:\n - %s"
             intro
@@ -2022,7 +2041,7 @@ MINOR-MODES must be a symbol.  In PEL that should be
 `pel-activates-global-minor-modes'.
 
 The function generates a warning describing the problem if a
-local minor mode is specified instead of a local minor mode."
+local minor mode is specified instead of a global minor mode."
   (dolist (minor-mode (symbol-value minor-modes))
     (when (and (boundp minor-mode)
                (local-variable-if-set-p minor-mode))
@@ -2249,11 +2268,10 @@ Return nil."
 
 (defun pel-goto-position (line &optional column)
   "Move point to specified LINE, COLUMN.  Any can be nil."
-  (progn
-    (if line
-        (pel-goto-line line))
-    (if column
-        (move-to-column column))))
+  (if line
+      (pel-goto-line line))
+  (if column
+      (move-to-column column)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Line position
@@ -2296,7 +2314,7 @@ Return a (start . end) cons cell if found, otherwise return nil."
 
 (defun pel-insert-or-overwrite (text)
   "Insert or overwrite TEXT depending of variable `overwrite-mode' status.
-TEST can be a single character or a string.
+TEXT can be a single character or a string.
 Multi-byte characters are handled properly."
   (when overwrite-mode
     (if (stringp text)

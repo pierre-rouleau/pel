@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 10:18:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 12:32:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -151,6 +151,23 @@
 ;;                    version of Emacs as the extra code will slow down
 ;;                    startup a little.]
 
+
+(defun pel-isa-http-404-error-p (&optional buffer)
+  "Return t if the BUFFER content is a 404 HTTP status error, nil otherwise."
+  (with-current-buffer (or buffer (current-buffer))
+      (save-excursion
+        (goto-char (point-min))
+        (forward-line 4)
+        (let ((limit (point)))
+          (goto-char (point-min))
+          (pel-as-boolean
+           (re-search-forward
+            "\
+\\b404\\b\\(?:\\.[[:digit:]][[:digit:]]?\\)?[[:space:]]?\
+\\(?::?[[:space:]]*Not Found\\b\\)"
+            limit
+            'noerror))))))
+
 (defun pel-url-copy-file (url newname &optional ok-if-already-exists)
   "Copy URL to NEWNAME.  Both arguments must be strings.
 
@@ -183,8 +200,7 @@ That should never happen if Emacs is installed properly."
                     (progn
                       (with-temp-buffer
                         (insert-file-contents tmp-fname)
-                        (when (string= (buffer-substring-no-properties 1 4)
-                                       "404")
+                        (when (pel-isa-http-404-error-p (current-buffer))
                           (setq error-msg
                                 (format
                                  "Received 404 error for requested URL: %s"
@@ -244,11 +260,11 @@ by warning to prevent init from failing."
         (progn
           ;; create utils directory and sub-directory if required
           (unless (file-exists-p utils-dirname)
-            (make-directory utils-dirname :make-parents-if-needed))
+            (make-directory utils-dirname 'make-parents-if-needed))
           (when subdir
             (setq subdir (expand-file-name subdir utils-dirname))
             (unless (file-exists-p subdir)
-              (make-directory subdir :make-parents-if-needed)))
+              (make-directory subdir 'make-parents-if-needed)))
 
           (when (or (not (file-exists-p target-fname))
                     refresh)
@@ -342,10 +358,13 @@ by warning to prevent init from failing."
 ;; --
 
 (defun pel-install-gitlab-file (gitlab-user gitlab-project fname
-                                            &optional refresh)
+                                            &optional branch refresh)
   "Download & install FNAME from Gitlab user and project into PEL utils.
+
 GITLAB-USER is the name of Gitlab user.
 GITLAB-PROJECT is the name of Gitlab project.
+BRANCH is optional: it identifies the repo branch, and is \"master\" if not
+specified.
 
 If a file already exists in the destination, no download
 is done unless REFRESH is non-nil.
@@ -353,9 +372,10 @@ is done unless REFRESH is non-nil.
 The function returns t if the file was downloaded, nil otherwise.
 Permission errors are raised but install failures are just reported
 by warning to prevent init from failing."
-  (pel-install-file (format "https://gitlab.com/%s/%s/-/raw/master/%s"
+  (pel-install-file (format "https://gitlab.com/%s/%s/-/raw/%s/%s"
                             gitlab-user
                             gitlab-project
+                            (or branch "master")
                             fname)
                     fname
                     refresh))
@@ -474,7 +494,7 @@ PACKAGE: one of the following:
                             package with the PACKAGE name.
 
 WITH-PEL-INSTALL: describe how to install the package:
-- nil:       Install PACKAGE with `pel-install-package'.
+- nil:       Install PACKAGE with `pel-package-install'.
 - a string:  Install PACKAGE with `pel-install-github-file'.  In that case,
              WITH-PEL-INSTALL must be the USER-PROJECT_BRANCH, and
              the FNAME is the name of the .el file and URL-FNAME is the
