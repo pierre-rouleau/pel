@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Go source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2026-03-13 14:18:48 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2026-03-13 15:53:03 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -176,7 +176,7 @@ if [ "$1" = "-n" ]; then
 fi
 
 # --
-#  Check --list option to extract list of Rust files.
+#  Check --list option to extract list of Go files.
 
 case "$1" in
     --list=*)
@@ -251,10 +251,10 @@ search()
 
 if [ -n "${etags_flist_envvar_fname}" ]; then
     # If the ETAGS_FILE_LIST_FOR_GO environment variable was set in the shell
-    # invoking etags-py then use that if possible: that variable should
+    # invoking etags-go then use that if possible: that variable should
     # identify a file name different than what we use internally.
     if [ "${etags_flist_envvar_fname}" = "${etags_flist_fname}" ]; then
-        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_GO to %s\n" "${pgm_name}" "${etags_flist_fname}"1>&2
+        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_GO to %s\n" "${pgm_name}" "${etags_flist_fname}" 1>&2
         printf -- "           Use a different file name!\n" 1>&2
         exit 1
     fi

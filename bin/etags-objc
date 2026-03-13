@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags files for Objective-C code files.
 # Created   : Friday, December  5 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-03-13 14:18:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-03-13 15:52:24 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -292,11 +292,11 @@ if [ -n "${etags_flist_envvar_fname}" ]; then
     # invoking etags-c then use that if possible: that variable should
     # identify a file name different than what we use internally.
     if [ "${etags_flist_envvar_fname}" = "${etags_flist_fname}" ]; then
-        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_OBJC to %s\n" "${pgm_name}" "${etags_flist_fname}"1>&2
+        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_OBJC to %s\n" "${pgm_name}" "${etags_flist_fname}" 1>&2
         printf -- "           Use a different file name!\n" 1>&2
         exit 1
     fi
-    printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_C: %s\n" "${etags_flist_envvar_fname}" 1>&2
+    printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_OBJC: %s\n" "${etags_flist_envvar_fname}" 1>&2
     cp "${etags_flist_envvar_fname}" "${etags_flist_fname}"
     printf -- "Generating TAGS ...\n" 1>&2
     run__etags__objc < "${etags_flist_envvar_fname}"
@@ -375,7 +375,7 @@ else
             exit 1
             ;;
     esac
-    printf --  "No list of files identified by ETAGS_FILE_LIST_FOR_C.\n" 1>&2
+    printf --  "No list of files identified by ETAGS_FILE_LIST_FOR_OBJC.\n" 1>&2
     printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
 
     # -- proceed

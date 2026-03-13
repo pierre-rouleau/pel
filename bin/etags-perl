@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags file for Perl source code files.
 # Created   : Tuesday, October  8 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-03-13 14:18:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-03-13 15:48:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -304,7 +304,7 @@ if [ -n "${etags_flist_envvar_fname}" ]; then
     # invoking etags-perl then use that if possible: that variable should
     # identify a file name different than what we use internally.
     if [ "${etags_flist_envvar_fname}" = "${etags_flist_fname}" ]; then
-        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_PERL to %s\n" "${pgm_name}" "${etags_flist_fname}"1>&2
+        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_PERL to %s\n" "${pgm_name}" "${etags_flist_fname}" 1>&2
         printf -- "           Use a different file name!\n" 1>&2
         exit 1
     fi

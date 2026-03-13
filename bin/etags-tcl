@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags file for Tcl source code files.
 # Created   : Monday, October 27 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-03-13 14:18:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-03-13 15:58:52 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 #  Module Description
@@ -15,7 +15,7 @@
 # - .itk
 # - .itcl
 # - .tcl
-# - mix.lock
+# - .exp
 
 # ----------------------------------------------------------------------------
 #  Dependencies
@@ -219,6 +219,7 @@ search_with_fd()
     #       it will take the directory name as a regexp...
     ${fd_pgm} -L --type f -e .itk -e .itcl -e .tcl  -e .exp\
               '' "$dirname" | tee -a "${etags_flist_fname}"
+}
 
 search()
 {
@@ -243,11 +244,11 @@ if [ -n "${etags_flist_envvar_fname}" ]; then
     # invoking etags-tcl then use that if possible: that variable should
     # identify a file name different than what we use internally.
     if [ "${etags_flist_envvar_fname}" = "${etags_flist_fname}" ]; then
-        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_TCL to %s\n" "${pgm_name}" "${etags_flist_fname}"1>&2
+        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_TCL to %s\n" "${pgm_name}" "${etags_flist_fname}" 1>&2
         printf -- "           Use a different file name!\n" 1>&2
         exit 1
     fi
-    printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_AUTOTOOLS: %s\n" "${etags_flist_envvar_fname}" 1>&2
+    printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_TCL: %s\n" "${etags_flist_envvar_fname}" 1>&2
     cp "${etags_flist_envvar_fname}" "${etags_flist_fname}"
     printf -- "Generating TAGS ...\n" 1>&2
     run__etags__tcl < "${etags_flist_envvar_fname}"
@@ -314,7 +315,7 @@ else
         fi
     fi
 
-    printf -- "No list of files identified by ETAGS_FILE_LIST_FOR_AUTOTOOLS.\n" 1>&2
+    printf -- "No list of files identified by ETAGS_FILE_LIST_FOR_TCL.\n" 1>&2
     printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
 
     # -- proceed

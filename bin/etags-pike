@@ -1,12 +1,10 @@
 #!/bin/sh
-#  SH FILE: etags-rs
-#
 #  SH FILE: etags-pike
 #
 #  Purpose   : Build Emacs Tags file for Pike & C/C++ source code files.
 #  Created   : Friday, March 21 2025.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2025-03-21 21:43:38 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2026-03-13 15:57:32 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -80,7 +78,7 @@ print_usage()
   • Overwrites any TAGS file in the current directory.
   • Inspects content of C, Pike and extension-less pike script files.
   • Stores the names of inspected files in the file named
-    .etags-rs-files.txt in the current directory.
+    .etags-pike-files.txt in the current directory.
   • Uses fast 'fdfind' or 'fd' if available, 'find' otherwise.
     - The 'fd' utility is from: https://github.com/sharkdp/fd
     - In some Linux distros, 'fd' is renamed 'fdfind'.
@@ -162,16 +160,11 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     else
         exit  1
     fi
-elif [ "$1" = "-n" ]; then
-    build_tags=false
-    shift
-fi
-if [ "$1" = "-n" ]; then
-    build_tags=false
-    shift
 fi
 
 # Check -u option to force use of universal ctags
+# Check -n option: if specified do not build TAGS file and append to .etags-pike-files.txt
+# Note that we can have -u -n, -u, or -n: so handle all possible cases.
 if [ "$1" = "-u" ]; then
     if [ -z "$ETAGS_USE_UCTAGS" ]; then
         printf -- "%s: -u option requests use of Universal Ctags.\n" "${pgm_name}" 1>&2
@@ -180,6 +173,13 @@ if [ "$1" = "-u" ]; then
         printf -- "%s: -u option not necessary (but does no harm).\n" "${pgm_name}" 1>&2
         printf -- " ETAGS_USE_UCTAGS is already set to: %s\n" "$ETAGS_USE_UCTAGS" 1>&2
     fi
+    shift
+elif [ "$1" = "-n" ]; then
+    build_tags=false
+    shift
+fi
+if [ "$1" = "-n" ]; then
+    build_tags=false
     shift
 fi
 
@@ -205,7 +205,7 @@ esac
 # ----------------------------------------------------------------------------
 # Define a function that searches into 1 directory
 # and accumulates the list of found files into the
-# file '.etags-rs-files.txt'.
+# file '.etags-pike-files.txt'.
 
 # Identify options
 case $(uname) in
@@ -314,7 +314,7 @@ if [ -n "${etags_flist_envvar_fname}" ]; then
     # invoking etags-pike then use that if possible: that variable should
     # identify a file name different than what we use internally.
     if [ "${etags_flist_envvar_fname}" = "${etags_flist_fname}" ]; then
-        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_PIKE to %s\n" "${pgm_name}" "${etags_flist_fname}"1>&2
+        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_PIKE to %s\n" "${pgm_name}" "${etags_flist_fname}" 1>&2
         printf -- "           Use a different file name!\n" 1>&2
         exit 1
     fi
@@ -397,7 +397,7 @@ else
     fi
 
     # Search in all specified directory to build the list of
-    # files in the file '.etags-rs-files.txt'.
+    # files in the file '.etags-pike-files.txt'.
     if [ -z "$1" ]; then
         dirname="."
         search
