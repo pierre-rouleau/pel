@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, December 23 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-29 17:32:01 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 18:52:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -159,6 +159,6 @@ following user-options:")
            t))
 
 ;;; --------------------------------------------------------------------------
-  (provide 'pel-c3)
+(provide 'pel-c3)
 
 ;;; pel-c3.el ends here
