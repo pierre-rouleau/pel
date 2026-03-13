@@ -4,7 +4,7 @@
 #  Purpose   : Setup Pygments/universal-ctags parser plugin for GNU Global gtags.
 #  Created   : Thursday, October  8 2020.
 #  Author    : Pierre Rouleau
-#  Time-stamp: <2021-10-13 17:55:48, updated by Pierre Rouleau>
+#  Time-stamp: <2026-03-13 17:12:47 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -23,7 +23,7 @@
 #  Code
 #  ----
 
-export GTAGSCONF=/usr/local/Cellar/global/6.6.7_1/share/gtags/gtags.conf
+export GTAGSCONF="$(brew --prefix global)/share/gtags/gtags.conf"
 export GTAGSLABEL=pygments
 
 echo GNU Global gtags - Pygments/Universal-CTags pluging installed.

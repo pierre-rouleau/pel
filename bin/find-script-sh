@@ -4,7 +4,7 @@
 # Purpose   : Find Posix shell script files (file with shebang for /bin/sh).
 # Created   : Wednesday, April 30 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-04-30 18:55:28 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-03-13 17:06:01 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -28,7 +28,7 @@ print_usage()
 {
     printf -- "
 %s: Find and print the name of every POSIX shell script file found in directory tree.
-           Search for extension-less files with shebang line indicating 'perl'.
+           Search for extension-less files with shebang line indicating '/bin/sh'.
 
  Usage: %s -h|--help
 

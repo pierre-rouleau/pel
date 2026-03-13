@@ -4,7 +4,7 @@
 # Purpose   : Byte compile an Emacs Lisp file in isolation.
 # Created   : Tuesday, December  2 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-01-23 09:26:01 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-03-13 17:12:02 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -72,7 +72,7 @@ while [ "$options" -ge 1 ]; do
 
         --)
             shift
-            continue
+            break
             ;;
 
         -*)

@@ -4,7 +4,7 @@
 # Purpose   : Print process and process info for Emacs desktop lok file.
 # Created   : Tuesday, January  7 2025.
 # Author    : Pierre Rouleau
-# Time-stamp: <2025-04-24 15:28:26 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-03-13 17:06:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -36,4 +36,6 @@ printf -- "%s
 " "$fname" "$(ps aux | grep -v grep | grep "$pid")"
 
 # ----------------------------------------------------------------------------
-#!/bin/sh
+# Local Variables:
+# sh-shell: /bin/sh
+# End:
