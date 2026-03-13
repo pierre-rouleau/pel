@@ -310,7 +310,7 @@ where: nil := Emacs xref default (not initialized).")
 
 ;; forward references to prevent warnings
 (defvar xref-show-xrefs-function)
-(defvar xref-show-definitions-function) ;only in Emacs >= 2
+(defvar xref-show-definitions-function) ;only in Emacs >= 27
 
 (defun pel-xref-ivy-xref-state-str ()
   "Return the ivy-xref state representation string."
@@ -430,7 +430,7 @@ Used as a protection to what seems to be a bug in helm-cscope-mode.")
   (setq pel--helm-cscope-keys-active t))
 
 (defun pel-deactivate-helm-cscope-keys ()
-  "Activates helm-cscope keys for current buffer."
+  "Deactivates helm-cscope keys for current buffer."
   (local-unset-key (kbd "M-."))
   (local-unset-key (kbd "M-@"))
   (local-unset-key (kbd "M-s"))
@@ -443,7 +443,7 @@ Used as a protection to what seems to be a bug in helm-cscope-mode.")
 Don't do anything if pel--toggling-helm-cscope is t.
 Done to prevent call to `pel-activate-helm-cscope-keys' when
 trying to turn the mode off.
-That is required by a strange behaviour by helm-scope-mode which
+That is required by a strange behaviour by `helm-cscope-mode' which
 calls the hook function even when trying to disable the mode."
   (unless pel--helm-cscope-toggling-mode
     (pel-activate-helm-cscope-keys)))
@@ -494,7 +494,7 @@ Store the TAGS file in the PEL directory."
                                              pel-home-dirpath-name
                                            (car load-path))))
                  (pel-emacs-roots-in-loadpath)))
-  (message "Done. See info is in *scratch*"))
+  (message "Done. See info in *scratch*"))
 
 (defun pel--tags-case-fold-search-string (value)
   "Return description of `tags-case-fold-search' VALUE"
