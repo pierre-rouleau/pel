@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-12 18:33:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-12 22:04:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -232,8 +232,7 @@ directory identified by the Emacs variable `user-emacs-directory'.
 If this directory does not exist, the function creates it.
 
 If the file already exists in the destination, no download
-is done unless REFRESH is non-nil, in which case the function
-prompts for confirmation.
+is done unless REFRESH is non-nil.
 
 Returns non-nil when file was downloaded, nil otherwise.
 Permission errors are raised but install failures are just reported
@@ -253,7 +252,8 @@ by warning to prevent init from failing."
             (unless (file-exists-p subdir)
               (make-directory subdir :make-parents-if-needed)))
 
-          (when (or (not (file-exists-p target-fname)) refresh)
+          (when (or (not (file-exists-p target-fname))
+                    refresh)
             (message "Downloading %s" url)
             (setq downloaded (pel-url-copy-file url target-fname refresh))
             (when (and downloaded
@@ -458,73 +458,77 @@ if BODY is specified, execute it on success."
                           ,warning-text
                           :error)))))
 
-(defun pel-require (feature &optional package with-pel-install fname
-                            url-fname)
+(defun pel-require (feature &optional package with-pel-install
+                            fname url-fname)
   "Load FEATURE if not already loaded, optionally try to install PACKAGE.
 
-FEATURE is a symbol.
+If the FEATURE is not already loaded, require it.  If that fails,
+then attempt to install the package if requested by the arguments and try
+require the feature again.
 
-PACKAGE is specified (non-nil) and FEATURE is not loaded,
-  try to install the specified package if it is not already available
-  and try checking for the presence of FEATURE again, with the same
-  behaviour.  It can be either:
-  - The special symbol `:install-when-missing' to indicate that the
-    package to install has the same name as the FEATURE.
-  - Another symbol that identifies the name of the required package.
+FEATURE: a symbol, the feature to load if not already loaded.
+PACKAGE: one of the following:
+- nil:                      If not loaded, don't attempt to install; simply
+                            display a warning that the feature is not loaded.
+- `:install-when-missing':  If not loaded attempt to install a package with
+                            the same name as the feature.
+- any other symbol:         If FEATURE is not loaded,  attempt to install the
+                            package with the PACKAGE name.
 
-If WITH-PEL-INSTALL is non-nil it should be a `pel-install-github-file'
-compliant USER-PROJECT-BRANCH argument; a GitHub usr/project/branch name
-path string identifying the project file to install and FNAME should be
-the name of the .el file installed in the PEL utils directory.  The
-URL-FNAME is also treated as it is by `pel-install-github-file' and
-required only when the web file name differs from what is needed
-locally.
+WITH-PEL-INSTALL: describe how to install the package:
+- nil:       Install PACKAGE with `pel-install-package'.
+- a string:  Install PACKAGE with `pel-install-github-file'.  In that case,
+             WITH-PEL-INSTALL must be the USER-PROJECT_BRANCH, and
+             the FNAME is the name of the .el file and URL-FNAME is the
+             explicit file URL if needed.
+             All 3 are passed to `pel-install-github-file'.
 
-Generate a warning when failing to load the FEATURE.
-Otherwise return the loading state of the FEATURE."
+Generate a warning when failing to load the FEATURE, skipping requested
+installation due to running in fast startup mode or failing to install
+package.
+
+Return the loading state of the FEATURE."
   (unless (featurep feature)
-    (let ((feature-is-loaded (require feature nil 'noerror)))
+    (let ((feature-is-loaded (require feature nil 'noerror))
+          (try-final-load t))
       (unless feature-is-loaded
-        ;; required failed - if package specified try installing it
-        ;; when not already present
-        (if package
-            (if with-pel-install
-                (progn
+        ;; required failed
+        (if (pel-in-fast-startup-p)
+            ;; in fast startup don't attempt to install anything.
+            (display-warning
+             'pel-require
+             (format
+              "%s not loaded, but skip installing %s during fast startup."
+              feature package)
+             :warning)
+          ;; in normal mode attempt to install package if requested
+          (if package
+              (if with-pel-install
                   ;; install using specified GitHub repository
-                  (pel-install-github-file with-pel-install fname url-fname
-                                           nil)
-                  ;; try to load it again
-                  (require feature nil 'noerror))
-              ;; install using Elpa package system
-              (let ((package (if (eq package :install-when-missing)
-                                 feature
-                               package)))
-                (unless (pel-package-installed-p package)
-                  (if (pel-in-fast-startup-p)
-                      (display-warning 'pel-require
-                                       (format "\
-Skipping installation of %s during fast startup."
-                                               package)
-                                       :warning)
-                    ;; not in fast-startup, not installed: install it
-                    (pel-package-install package)
-                    (require feature nil 'noerror)
-                    (unless (featurep feature)
-                      (display-warning 'pel-require
-                                       (format "\
-Failed loading %s even after installing package %s!"
-                                               feature package)))))))
-          (display-warning 'pel-require
-                           (format "pel-require(%s) failed. No request to install."
-                                   feature)
-                           :error)))))
+                  (pel-install-github-file with-pel-install fname url-fname)
+                ;; install an elpa-compliant package if not already present
+                (if (package-installed-p package)
+                    (progn
+                      (display-warning
+                       'pel-require
+                       (format "Failed loading %s (package %s is installed!)"
+                               feature package))
+                      (setq try-final-load nil))
+                  (pel-package-install package))))
+          (when try-final-load
+            (require feature nil 'noerror)
+            (unless (featurep feature)
+              (display-warning
+               'pel-require
+               (format "Failed loading %s even after installing package %s!"
+                       feature package))))))))
   (featurep feature))
 
 
-;; -------
+;; ---------------------------------------------------------------------------
 ;;
-;; The following code defines the `pel-ensure-package-elpa' macro that PEL uses
-;; to install Elpa-compliant packages.
+;; The following code defines the `pel-ensure-package-elpa' macro that PEL
+;; uses to install Elpa-compliant packages.
 ;;
 ;; This is done to:
 ;; - Install a package when the appropriate pel-use variable is turned on.
