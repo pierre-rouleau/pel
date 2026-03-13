@@ -5675,7 +5675,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;;
   ;; There is another, remaining problem: the "native" python completion does
   ;; not work on Windows because of its lack of proper PTY (pseudo terminal).
-  ;; Therefore, in Windows, "python" should be added to the list bounded to
+  ;; Therefore, in Windows, "python" should be added to the list bound to
   ;; python-shell-completion-native-disabled-interpreters.
   ;;
   ;; The code below does both for Windows.

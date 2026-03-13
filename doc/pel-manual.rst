@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2026-02-27 14:28:15 EST, updated by Pierre Rouleau.
+:Modified: 2026-03-12 23:39:44 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025, 2026 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3854,7 +3854,7 @@ and where their `external hyperlink targets`_ are located:
   and enters the first portion of the hyperlink markup.
   You can then type or yank/paste the required URI to complete the statement.
   After that you  can use ``pel-jump-to-mark``
-  (normally bounded to ``M-```) to jump back to where you were typing the text.
+  (normally bound to ``M-```) to jump back to where you were typing the text.
 - The ``pel-rst-goto-ref-bookmark`` moves point to where the external hyperlink
   target references are located.
 
@@ -4339,7 +4339,7 @@ However, configuration  of important editor behaviour such as the
 indentation/bracket style and the indentation is completely controlled by user
 options listed above and can easily be changed using Emacs customize system.
 PEL also provides easy access to commands that can change the CC Mode behaviour
-on which the c-mode is based via the **pel:for-c** key-map, bounded to the
+on which the c-mode is based via the **pel:for-c** key-map, bound to the
 **F12** key for each buffer in c-mode.
 
 .. _C Programming Language: https://en.wikipedia.org/wiki/C_(programming_language)
@@ -5303,7 +5303,7 @@ However, configuration  of important editor behaviour such as the
 indentation/bracket style and the indentation is completely controlled by user
 options listed above and can easily be changed using Emacs customize system.
 PEL also provides easy access to commands that can change the CC Mode behaviour
-on which the c++-mode is based via the **pel:for-c++** key-map, bounded to the
+on which the c++-mode is based via the **pel:for-c++** key-map, bound to the
 **F12** key for each buffer in c++-mode.
 
 
@@ -5376,7 +5376,7 @@ options.  The defaults are adapted to what is proposed by the `D Style code
 guideline`_ and can easily be changed using Emacs customize system.
 More information is available in the `PEL PDF document for D`_ .
 PEL also provides easy access to commands that can change the CC Mode behaviour
-on which the d-mode is based via the **pel:for-d** key-map, bounded to the
+on which the d-mode is based via the **pel:for-d** key-map, bound to the
 **F12** key for each buffer in d-mode.
 
 .. _D Programming Language: https://en.wikipedia.org/wiki/D_(programming_language)

@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-12 22:52:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-12 23:39:06 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -61,9 +61,6 @@
 
 ;;* Package and file installation and lazy loading
 ;;  ==============================================
-;;
-;; [:todo 2025-10-08, by Pierre Rouleau: Move that set of function definitions
-;; inside its own file.]
 ;;
 ;; The first set install files downloaded from the internet with a specific
 ;; URL inside PEL utils directory.
@@ -225,7 +222,7 @@ url-handlers.el `url-copy-file' not bound in pel-url-copy-file.\
 (defun pel-install-file (url fname &optional refresh)
   "Download, install a file FNAME from URL into PEL\\='s utility directory.
 On success, byte compile that file and when Emacs use native compilation
-the also build the native-compiled .eln file for it.
+then also build the native-compiled .eln file for it.
 
 The utility directory is the \\='utils\\=' sub-directory of the Emacs
 directory identified by the Emacs variable `user-emacs-directory'.
@@ -377,7 +374,7 @@ obsolete version no longer supported by the Elpa archive site.
 If the second attempt fails, then a error-level warning is logged
 and the function returns nil"
   ;; package.el is part of Emacs but it's not loaded until required.
-  ;; Load it lazily and check if the required functions are bounded
+  ;; Load it lazily and check if the required functions are bound
   ;; to prevent byte-compiler warnings.
   (let ((package-was-installed nil))
     (if (and (require 'package nil 'noerror)

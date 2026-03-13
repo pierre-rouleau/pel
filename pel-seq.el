@@ -27,7 +27,7 @@
 ;; utility functions.
 ;;
 ;; - `pel-all-fboundp' checks that all function symbols passed as argument are
-;;   bounded.
+;;   bound.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -41,7 +41,7 @@
 
 ;;-pel-autoload
 (defun pel-all-fboundp (&rest funs)
-  "Return t if all function symbols in FUNS list are bounded, nil otherwise."
+  "Return t if all function symbols in FUNS list are bound, nil otherwise."
   (seq-reduce (lambda (b1 b2) (and b1 b2))
               (mapcar #'fboundp funs)
               t))

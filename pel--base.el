@@ -854,7 +854,7 @@ Return non-nil if it was added, nil otherwise."
                (if (= new-length original-length)
                    " already in the list, nothing new added!"
                  "added.")))
-    (= new-length original-length)))
+    (/= new-length original-length)))
 
 ;; ---------------------------------------------------------------------------
 ;;* File System Type
@@ -1065,14 +1065,14 @@ If SYMBOL is not defined, show VOID-STRING if defined, \"void\" otherwise."
 
 ;; --
 
-(defun pel-value-on-off-text (name value &optional on-string off-string)
-  "Return a string describing NAME boolean VALUE.
-If VALUE is t  : show ON-STRING if defined, \"on\" otherwise.
-If VALUE is nil: show OFF-STRING if defined, \"off\" otherwise."
+(defun pel-value-on-off-text (symbol &optional on-string off-string)
+  "Return a string describing SYMBOL as a boolean value.
+If SYMBOL value if non-nil: show ON-STRING if defined, \"on\" otherwise.
+If SYMBOL value  is nil   : show OFF-STRING if defined, \"off\" otherwise."
   (format "%s is now%s %s"
-          name
+          (symbol-name symbol)
           pel--prompt-separator
-          (pel-symbol-on-off-string value on-string off-string)))
+          (pel-symbol-on-off-string symbol on-string off-string)))
 
 ;; --
 

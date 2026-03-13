@@ -1,6 +1,6 @@
 ;;; pel-key-chord.el --- PEL Key-Chord Support. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -165,7 +165,7 @@ The list element are:
    if the mode is not bound when the function is called.
    This may also be an empty string, in which case the key-cord/key-seq
    is defined when Emacs starts as long as the symbol identifies an already
-   loaded and bounded mode.
+   loaded and bound mode.
    This is ignored for global key-chord and key-seq.
 3. A key-type symbol, identifying either key-chord or key-seq.
    - When key-type is key-chord the key map is updated with
@@ -185,7 +185,7 @@ Return one of:
 - t if a global or bound mode key-chord/key-seq definition
   succeeded.
 - A list with the same values as the key-chord-spec argument, untouched.
-  This means that the mode is currently not bounded and the definition must
+  This means that the mode is currently not bound and the definition must
   be deferred."
   (let ((kc-mode  (car key-chord-spec))
         (kc-type  (nth 2 key-chord-spec))
