@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-12 22:17:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-12 22:52:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -257,7 +257,7 @@ by warning to prevent init from failing."
             (message "Downloading %s" url)
             (setq downloaded (pel-url-copy-file url target-fname refresh))
             (when (and downloaded
-                       (string= (file-name-extension target-fname) "el"))
+                       (equal (file-name-extension target-fname) "el"))
               (message "Byte compiling it to %s" target-fname)
               (byte-compile-file target-fname)
               (when (and (fboundp 'native-comp-available-p)
@@ -282,8 +282,7 @@ also the name of the file save locally into the PEL Emacs \\='utils\\='
 directory.  See `pel-install-file' for more info.
 
 If a file already exists in the destination, no download
-is done unless REFRESH is non-nil, in which case the function
-prompts for confirmation.
+is done unless REFRESH is non-nil.
 
 Permission errors are raised but install failures are just reported
 by warning to prevent init from failing."
@@ -306,8 +305,7 @@ by warning to prevent init from failing."
 - FNAMES is a file name string or list of file names.
 
 If a file already exists in the destination, no download is done
-unless REFRESH is non-nil, in which case the function prompts for
-confirmation.
+unless REFRESH is non-nil.
 
 Permission errors are raised but install failures are just reported
 by warning to prevent init from failing."
@@ -332,8 +330,7 @@ by warning to prevent init from failing."
   URL. This argument is only required when it differs from FNAME.
 
 If a file already exists in the destination, no download
-is done unless REFRESH is non-nil, in which case the function
-prompts for confirmation.
+is done unless REFRESH is non-nil.
 
 The function returns t if the file was downloaded, nil otherwise.
 Permission errors are raised but install failures are just reported
@@ -353,8 +350,7 @@ GITLAB-USER is the name of Gitlab user.
 GITLAB-PROJECT is the name of Gitlab project.
 
 If a file already exists in the destination, no download
-is done unless REFRESH is non-nil, in which case the function
-prompts for confirmation.
+is done unless REFRESH is non-nil.
 
 The function returns t if the file was downloaded, nil otherwise.
 Permission errors are raised but install failures are just reported
@@ -490,7 +486,7 @@ package.
 Return the loading state of the FEATURE."
   (unless (featurep feature)
     (let ((feature-is-loaded (require feature nil 'noerror))
-          (try-final-load t))
+          (try-final-load nil))
       (unless feature-is-loaded
         ;; required failed
         (if (pel-in-fast-startup-p)
@@ -503,27 +499,38 @@ Return the loading state of the FEATURE."
              :warning)
           ;; in normal mode attempt to install package if requested
           (if package
-              (if with-pel-install
-                  ;; install using specified GitHub repository
-                  (pel-install-github-file with-pel-install fname url-fname)
-                ;; install an elpa-compliant package if not already present
-                (if (pel-package-installed-p package)
+              (let ((package-to-install (if (eq package :install-when-missing)
+                                            feature
+                                          package)))
+                (if with-pel-install
+                    ;; install using specified GitHub repository
                     (progn
-                      (display-warning
-                       'pel-require
-                       (format "Failed loading %s (package %s is installed!)"
-                               feature package))
-                      (setq try-final-load nil))
-                  (pel-package-install package))))
-          (when try-final-load
-            (require feature nil 'noerror)
-            (unless (featurep feature)
-              (display-warning
-               'pel-require
-               (format "Failed loading %s even after installing package %s!"
-                       feature package))))))))
+                      (pel-install-github-file with-pel-install fname url-fname)
+                      (setq try-final-load t))
+                  ;; install an elpa-compliant package if not already present
+                  (if (pel-package-installed-p package-to-install)
+                      (progn
+                        (display-warning
+                         'pel-require
+                         (format
+                          "Failed loading %s (but package %s is installed!)"
+                          feature package-to-install)))
+                    (pel-package-install package-to-install)
+                    (setq try-final-load t)))
+                (when try-final-load
+                  (require feature nil 'noerror)
+                  (unless (featurep feature)
+                    (display-warning
+                     'pel-require
+                     (format
+                      "Failed loading %s even after installing package %s!"
+                      feature package-to-install)
+                     :warning))))
+            (display-warning
+             'pel-require
+             (format "Failed loading %s.  No install requested." feature)
+             :warning))))))
   (featurep feature))
-
 
 ;; ---------------------------------------------------------------------------
 ;;

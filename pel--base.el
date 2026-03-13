@@ -1227,8 +1227,9 @@ nil or the value specified by NIL-RETURN if it is specified."
 (defun pel-activated-in-str (activated-in)
   "Return a string describing ACTIVATED-IN list, empty string if it is nil.
 
-When ACTIVATED_IN is not nil return a string starts with \" Auto-loaded in: \"
-followed by the elements of ACTIVATED-IN separated by commas."
+When ACTIVATED_IN is not nil return a string that starts with
+\" Auto-loaded in: \" followed by the elements of ACTIVATED-IN separated by
+commas."
   (if activated-in
       (format " Auto-loaded in: %s"
               (pel-list-str activated-in))
