@@ -6,8 +6,8 @@ Speeding Up Emacs Startup
 :Project:
 :Created:  Friday, July  2 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2021-07-06 09:48:35, updated by Pierre Rouleau.
-:Copyright: © 2021, Pierre Rouleau
+:Modified: 2026-02-26 13:59:24 EST, updated by Pierre Rouleau.
+:Copyright: © 2021, 2026, Pierre Rouleau
 
 This document will contain information on speeding up Emacs startup further
 than what is currently done by PEL. This is work in progress. 🚧
@@ -24,7 +24,7 @@ Speeding up Emacs startup is a controversial topic in the Emacs development
 community. The reasons are varied but are often rooted to the facilities
 provided by Emacs to work-around a slow Emacs startup.  These include:
 
-- using Emacs as a daemon
+- using Emacs as a daemon,
 - building an Emacs image with a large amount of often used packages,
 - Emacs 27 and later package-quickstart mechanism.
 
@@ -34,8 +34,10 @@ start editing files very quickly, they appeal to a set of use case scenarios,
 but not all of them.
 
 I often use multiple instances of Emacs for doing various, unrelated tasks and
-want to keep each one a single entity with its own history and context.  I
-also want to develop Emacs Lisp code and try it inside on or several Emacs
+want to keep each one a single entity with its own history and context.  These
+may be done in specialized shells that have tools activated in the PATH not
+available in the system PATH for instance.
+I also want to develop Emacs Lisp code and try it inside on or several Emacs
 instances without affecting some already running Emacs sessions.  Because of
 that I end up launching Emacs sessions relatively often, at least the ones
 that are short-lived. And I want my Emacs sessions to start quickly, ideally
@@ -73,14 +75,15 @@ Currently PEL uses:
 - a separate directory, the PEL Utils directory (normally in
   ``~/.emacs.d/utils``) that stores Emacs Lisp files that are not Elpa
   packages
-- **pel-init** that controls installation and checks what must be activated as
-  requested by the set of ``pel-use-`` user-options,
+- the **pel-init** function that controls installation and checks what must be
+  activated as requested by the set of ``pel-use-`` user-options,
 
   - the PEL installation and activation logic attempts to delay activation as
     late as possible to ensure that the user pays in time for a feature only
     when that feature is first required.
 
-- **pel-cleanup** that removes what is currently not used but installed.
+- the **pel-cleanup** command that removes what is currently not used but
+  installed, only keeping what is absolutely necessary.
 
 
 I originally started measuring the startup with the benchmark-init package. As
@@ -466,7 +469,7 @@ is in the load-path.
 I tried that and Emacs **fails**!  Hum...
 
 Now instead of of using symlinks inside the ``~/.emacs.d/elpa-copy-link``
-directory I store a **copy** of the Emacs Lisp and their byte-compiled files
+directory I store a **copy** of the Emacs Lisp files and their byte-compiled files
 inside ``~/.emacs.d/elpa-copy-link``.
 
 Now Emacs runs file and the speedup is

@@ -8,7 +8,7 @@ Using tree-sitter with Emacs and PEL
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-10-24 09:23:02 EDT, updated by Pierre Rouleau.
-:Copyright: © 2025, Pierre Rouleau
+:Copyright: © 2025, 2026, Pierre Rouleau
 
 
 .. contents::  **Table of Contents**
@@ -159,7 +159,7 @@ Setting up Emacs Tree-Sitter Environment for PEL
      new directory with a different data and version, just update the symbolic
      link to the new one.
 
-#. Create the ``~/.emacs.d/libtree-sitter`` directory if it does not exists.
+#. Create the ``~/.emacs.d/libtree-sitter`` directory if it does not exist.
 
    - Inside this directory create one symbolic link with the libtree-sitter-\*lang.ext*
      conventional name to point to each of the language grammar dynamic library

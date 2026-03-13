@@ -331,7 +331,7 @@ else
     dpaths=
     for dname in "$@"; do
         if [ ! -d "${dname}" ]; then
-            printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2
+            printf -- "Specified directory does not exist: %s\n" "${dname}" 1>&2
             exit 2
         fi
         dpath="$(realpath "${dname}")"

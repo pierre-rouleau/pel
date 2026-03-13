@@ -6,7 +6,7 @@ Manipulating files and directories with Emacs Lisp
 :Project:
 :Created:  Monday, January 19 2026.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-01-19 10:43:48, by Pierre Rouleau.
+:Modified: 2026-03-13 14:17:13 EDT, updated by Pierre Rouleau.
 :Copyright: © 2026, Pierre Rouleau
 
 
@@ -21,7 +21,7 @@ Copying Files
 :function: ``(copy-file FILE NEWNAME &optional OK-IF-ALREADY-EXISTS KEEP-TIME PRESERVE-UID-GID PRESERVE-PERMISSIONS)``
 
 By default copying a file with ``copy-file`` and passing only required
-arguments copies a file to a new file that does not exists.  The new file has
+arguments copies a file to a new file that does not exist.  The new file has
 a new time stamp, a new UID-GID and permission flags.
 
 - To allow copying a file over an existing file to replace it, the optional

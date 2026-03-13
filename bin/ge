@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent, detached, GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 18:14:05 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-03-13 14:18:46 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -72,7 +72,7 @@ fi
 #     based Emacs might use a different directory (most often the home directory)
 #     and if you specify files that are not in that directory they
 #     will not be opened, another file file open which will most likely be
-#     in an empty buffer (if the file does not exists in the home directory).
+#     in an empty buffer (if the file does not exist in the home directory).
 #
 # Emacs 27+ support for PEL:
 #    - To allow Emacs early-init.el code to distinguish whether Emacs is

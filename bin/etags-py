@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2026-02-18 18:17:20 EST, updated by Pierre Rouleau>
+#  Time-stamp: <2026-03-13 14:18:47 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -282,7 +282,7 @@ else
     dpaths=
     for dname in "$@"; do
         if [ ! -d "${dname}" ]; then
-            printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2
+            printf -- "Specified directory does not exist: %s\n" "${dname}" 1>&2
             exit 2
         fi
         dpath="$(realpath "${dname}")"
