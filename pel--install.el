@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-12 23:39:06 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 10:18:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -38,6 +38,7 @@
 ;; - `pel-require'
 ;;   - `pel-package-installed-p'
 ;;   - `pel-package-install'
+;;   - `pel--require-warn'
 ;;
 ;; - `pel-ensure-package-elpa'
 ;;   - `pel--ensure-pkg-elpa'
@@ -53,8 +54,8 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-;;
 (require 'pel--base)
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -451,6 +452,10 @@ if BODY is specified, execute it on success."
                           ,warning-text
                           :error)))))
 
+(defun pel--require-warn (message)
+  "Utility - display warning with MESSAGE in `pel-require'."
+  (display-warning 'pel-require message :warning))
+
 (defun pel-require (feature &optional package with-pel-install
                             fname url-fname)
   "Load FEATURE if not already loaded, optionally try to install PACKAGE.
@@ -483,50 +488,51 @@ package.
 Return the loading state of the FEATURE."
   (unless (featurep feature)
     (let ((feature-is-loaded (require feature nil 'noerror))
-          (try-final-load nil))
+          (try-final-load nil)
+          (install-failed nil))
       (unless feature-is-loaded
         ;; required failed
-        (if (pel-in-fast-startup-p)
-            ;; in fast startup don't attempt to install anything.
-            (display-warning
-             'pel-require
-             (format
-              "%s not loaded, but skip installing %s during fast startup."
-              feature package)
-             :warning)
-          ;; in normal mode attempt to install package if requested
-          (if package
+        (if package
+            (if (pel-in-fast-startup-p)
+                ;; in fast startup don't attempt to install anything.
+                (pel--require-warn
+                 (format
+                  "%s not loaded, but skip installing %s during fast startup."
+                  feature package))
+              ;; in normal mode attempt to install package if requested
               (let ((package-to-install (if (eq package :install-when-missing)
                                             feature
                                           package)))
                 (if with-pel-install
                     ;; install using specified GitHub repository
                     (progn
-                      (pel-install-github-file with-pel-install fname url-fname)
-                      (setq try-final-load t))
+                      (if (pel-install-github-file with-pel-install
+                                                   fname url-fname)
+                          (setq try-final-load t)
+                        (setq install-failed t)))
                   ;; install an elpa-compliant package if not already present
                   (if (pel-package-installed-p package-to-install)
                       (progn
-                        (display-warning
-                         'pel-require
+                        (pel--require-warn
                          (format
                           "Failed loading %s (but package %s is installed!)"
                           feature package-to-install)))
-                    (pel-package-install package-to-install)
-                    (setq try-final-load t)))
+                    (if (pel-package-install package-to-install)
+                        (setq try-final-load t)
+                      (setq install-failed t))))
+                (when install-failed
+                  (pel--require-warn
+                   (format "%s load failed. Tried installing %s also failed."
+                           feature package-to-install)))
                 (when try-final-load
                   (require feature nil 'noerror)
                   (unless (featurep feature)
-                    (display-warning
-                     'pel-require
+                    (pel--require-warn
                      (format
                       "Failed loading %s even after installing package %s!"
-                      feature package-to-install)
-                     :warning))))
-            (display-warning
-             'pel-require
-             (format "Failed loading %s.  No install requested." feature)
-             :warning))))))
+                      feature package-to-install))))))
+          (pel--require-warn
+           (format "Failed loading %s.  No install requested." feature))))))
   (featurep feature))
 
 ;; ---------------------------------------------------------------------------
@@ -568,15 +574,20 @@ To get the URL of the existing package, take the cdr of the returned value."
 
 (defvar pel--pinned-packages nil
   "List of packages that are associated with a specific Elpa archive.")
+(defvar package-pinned-packages) ; prevent warning when accessing package var.
 
 (defun pel--pin-package (package archive)
   "Pin PACKAGE (a symbol) to ARCHIVE (a symbol or string)."
-  (if (pel-archive-exists archive)
-      (add-to-list 'pel--pinned-packages
-                   (cons package (pel-as-string archive)))
-    (error "\
+  (let ((archive-name (pel-as-string archive)))
+    (if (pel-archive-exists archive-name)
+        (progn
+          (add-to-list 'pel--pinned-packages
+                       (cons package (pel-as-string archive)))
+          (add-to-list 'package-pinned-packages
+                       (cons package (pel-as-string archive))))
+      (error "\
 Archive '%S' requested for package '%S' is not listed in package-archives!"
-           archive package))
+             archive package)))
   (unless (bound-and-true-p package--initialized)
     (package-initialize t)))
 

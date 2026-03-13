@@ -160,7 +160,7 @@
 ;;
 ;; Operations on sequences:
 ;;  - `pel-concat-strings-in-list'
-;;  - `pel-prepend'
+;;  - `pel-prepend-to'
 ;;  - `pel-cons-alist-at'
 ;;  - `pel-nth-elt'
 ;;  - `pel-list-insert-before'
