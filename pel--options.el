@@ -898,7 +898,7 @@ flexibility use a shell launched Emacs as both terminal and
 graphics modes can be launched by shell scripts.
 
 For each variable you can use to use the variable as specified,
-which is always done when the variable does not exists.  But for
+which is always done when the variable does not exist.  But for
 some variables like PATH, MANPATH, LIBPATH and others you may
 want to replace, append or prepend the value to any existing
 value.  In that case, change the action specified for the

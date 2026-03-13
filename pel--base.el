@@ -721,7 +721,7 @@ The BUFFER argument value takes precedence to the value of the variable
 value is read from the context of the current buffer, which may be a
 local or global.
 
-If the symbol name does not exists for the specified SYMBOL-FORMAT-STRING
+If the symbol name does not exist for the specified SYMBOL-FORMAT-STRING
 for the current major mode, then return the specified DEFAULT-VALUE."
   (condition-case nil
       (pel-major-mode-symbol-value
@@ -833,7 +833,7 @@ SILENT is non-nil (can be requested by prefix argument)."
   "Return the absolute/canonical path of FNAME inside Emacs user directory.
 
 The directory is identified by `user-emacs-directory'.
-If the directory does not exists the function creates it.
+If the directory does not exist the function creates it.
 This is the same as `locate-user-emacs-file' with the path made absolute and
 canonized."
   (expand-file-name (locate-user-emacs-file fname)))
@@ -874,7 +874,7 @@ error is raised."
    ((file-symlink-p path)    "symbolic link")
    ((file-directory-p path)  "directory")
    ((file-regular-p path)    "file")
-   ((not (file-exists-p path)) (error "%s does not exists" path))
+   ((not (file-exists-p path)) (error "%s does not exist" path))
    ((pel-unix-socket-p path) "UNIX socket")
    (t "unknown file system object")))
 
@@ -1272,7 +1272,7 @@ by BUFFER or `pel-insert-symbol-content-context-buffer'."
 
 (defun pel-as-string (val)
   "Return a string for the simple object value VAL.
-VAL may a string, a symbol, a number or a character.
+VAL may be a string, a symbol, a number or a character.
 Otherwise an error is raised."
   (cond
    ((stringp val) val)
@@ -1408,7 +1408,7 @@ Example:
     - problem 1
     - problem 2\"
 
-The second example show where the EXTRA-INFO text is placed."
+The second example shows where the EXTRA-INFO text is placed."
   (let ((problem-count (length problems)))
     (format "%s\n %she following %s %s:\n - %s"
             intro
@@ -1759,7 +1759,7 @@ of emitting a warning."
   "Return the full path of the Tree-Sitter grammar file for MODE.
 
 MODE must be a symbol that does NOT end with -mode.
-Return nil of none found, or when tree-sitter is not supported."
+Return nil if none found, or when tree-sitter is not supported."
   (let* ((fname (format "libtree-sitter-%s.%s" mode pel-os-lib-file-extension))
          (found-path nil)
          (ts-dirpath (when (boundp 'treesit-extra-load-path)
@@ -2859,7 +2859,7 @@ include the .el extension.  The name of the file may be relative
 or absolute.
 The file is byte compiled if it is newer than its byte-compiled
 output file (a file with the .elc extension) or if the .elc file
-does not exists.
+does not exist.
 It is also possible to pass OTHER-DEPENDENCIES, that are name of files that
 if newer than the EL-FILENAME, force byte-compilation of the EL-FILENAME."
   (let ((elc-filename (concat el-filename "c"))

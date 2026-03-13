@@ -1,6 +1,6 @@
 ;;; pel-numkpad.el --- PEL Numeric Keypad Key Control -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2024, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -53,7 +53,7 @@ This is valid for:
  - macOS when Emacs is running in graphics mode,
  - Other OS that support a NumLock key.
 When using terminal Emacs under macOS, or Linux under a macOS hosted VM,
-the NumLock key does not exists.  Terminal.app can be configured to
+the NumLock key does not exist.  Terminal.app can be configured to
 map the <clear> key to NumLock but Emacs only sees the impact to the
 keypad keys; it does not see the <clear> key events.
 

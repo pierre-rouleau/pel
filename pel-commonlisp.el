@@ -1,6 +1,6 @@
 ;;; pel-commonlisp.el --- PEL Common Lisp Support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2024, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -249,7 +249,7 @@ following rules:
   customize the user-option.
 - If `pel-clisp-quickref-pdf-fname' is set then the command checks if the
   identified file exists.
-  - If it does not exists it issues an error.
+  - If it does not exist it issues an error.
   - If the file exists, and both the OPEN-WEB-PAGE and `pel-flip-help-pdf-arg'
     are nil the command opens the local file.
   - If the local file exists but OPEN-WEB-PAGE or `pel-flip-help-pdf-arg' is
@@ -266,7 +266,7 @@ following rules:
                                         pel-clisp-quickref-pdf-fname))
               ;; Open remote PDF A4 file, without prompting
               (pel-browse-url (concat remote-url "clqr-a4-consec.pdf")))
-          ;; Specified file does not exists!
+          ;; Specified file does not exist!
           (user-error "\
 Invalid pel-clisp-quickref-pdf-fname: file does not exist: %s"
                       pel-clisp-quickref-pdf-fname))

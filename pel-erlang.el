@@ -779,7 +779,7 @@ Return nil if it is not defined."
        ;; all is OK: return a cell with only the dirpath
        ((file-exists-p dirpath)
         (list dirpath))
-       ;; directory does not exists
+       ;; directory does not exist
        (t (cons dirpath
                 (format "Directory %s, specified by %s, does not exist"
                         dirpath

@@ -655,7 +655,7 @@ Your version of Emacs does not support dynamic module.")))
 
   ;; On macOS, the keys used by the OS are the same as selected here, both in
   ;; GUI mode and in terminal (TTY) mode:
-  ;; - In terminal mode: the Terminal.app uses the ⌘ command keys for fond size
+  ;; - In terminal mode: the Terminal.app uses the ⌘ command keys for font size
   ;;   control (it's not Emacs that acts on them, its the Terminal.app)
   ;; - In graphics mode the same keys handled by Emacs: the Super modifier is
   ;;   assigned to the ⌘ Command key.
@@ -1039,7 +1039,7 @@ Your version of Emacs does not support dynamic module.")))
 ;;** Numeric Keypad Keys
 ;;   -------------------
 ;;
-;; The nummeric keypad has 18 keys. They are shown here:
+;; The numeric keypad has 18 keys. They are shown here:
 ;;
 ;;     +==========================+
 ;;     |Numlock  =     /    *     |

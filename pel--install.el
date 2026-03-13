@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 12:32:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 14:11:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -493,7 +493,8 @@ PACKAGE: one of the following:
 - any other symbol:         If FEATURE is not loaded,  attempt to install the
                             package with the PACKAGE name.
 
-WITH-PEL-INSTALL: describe how to install the package:
+If FEATURE is not loaded and a package must be installed (as specified by
+PACKAGE argument), WITH-PEL-INSTALL describes how to install the package:
 - nil:       Install PACKAGE with `pel-package-install'.
 - a string:  Install PACKAGE with `pel-install-github-file'.  In that case,
              WITH-PEL-INSTALL must be the USER-PROJECT_BRANCH, and

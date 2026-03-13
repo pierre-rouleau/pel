@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, October  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 12:11:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 14:16:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -196,7 +196,7 @@ Return 1 if error, 0 if OK."
                                  fpath
                                  (file-symlink-p fpath)))
       (display-warning 'tree-sitter-setup
-                       (format "%s%s: does not exists!"
+                       (format "%s%s: does not exist!"
                                (if parent
                                    (format "Inside %s: " parent)
                                  "")
@@ -211,7 +211,7 @@ Return 1 if error, 0 if OK."
   (if (file-directory-p dpath)
       0
     (display-warning 'tree-sitter-setup
-                     (format "%s%s: does not exists!"
+                     (format "%s%s: does not exist!"
                              (if parent
                                  (format "Inside %s: " parent)
                                "")
