@@ -672,7 +672,7 @@ negative arg -N means delete forward to Nth end of paragraph."
   (interactive "*P")
   (let (kill-ring
         (pel--isa-delete-operation t))
-    (pel-require 'paragraphs)
+    (require 'paragraphs)
     (when (fboundp 'backward-kill-paragraph)
       (backward-kill-paragraph n))))
 
@@ -684,7 +684,7 @@ negative arg -N means delete backward to Nth start of paragraph."
   (interactive "*P")
   (let (kill-ring
         (pel--isa-delete-operation t))
-    (pel-require 'paragraphs)
+    (require 'paragraphs)
     (when (fboundp 'kill-paragraph)
       (kill-paragraph n))))
 
@@ -697,7 +697,7 @@ With negative sign: delete the previous sexp (the sexp backward)."
   (interactive "*P")
   (let (kill-ring
         (pel--isa-delete-operation t))
-    (pel-require 'lisp)
+    (require 'lisp)
     (when (fboundp 'kill-sexp)
       (kill-sexp n))))
 
@@ -710,7 +710,7 @@ This command assumes point is not in a string or comment."
   (interactive "*P")
   (let (kill-ring
         (pel--isa-delete-operation t))
-    (pel-require 'lisp)
+    (require 'lisp)
     (when (fboundp 'backward-kill-sexp)
       (backward-kill-sexp n))))
 
@@ -720,7 +720,7 @@ This command assumes point is not in a string or comment."
   (interactive "*r")
   (let (kill-ring
         (pel--isa-delete-operation t))
-    (pel-require 'rect)
+    (require 'rect)
     (when (fboundp 'kill-rectangle)
       (kill-rectangle start end nil))))
 

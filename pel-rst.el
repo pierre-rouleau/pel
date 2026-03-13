@@ -674,8 +674,8 @@ located."
       (progn
         (push-mark)
         (bookmark-jump (pel-rst-ref-bookmark-name)))
-    (user-error "The bookmark does not exists yet.  \
-Use pel-set-ref-bookmark to create it!")))
+    (user-error "The bookmark does not exist yet.  \
+Use `pel-rst-set-ref-bookmark' to create it!")))
 
 ;; --
 

@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 22:29:01 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 11:43:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -63,8 +63,8 @@ different then expected if the function it should call is not
 loaded. That would only occur if this function is called from a
 mode not fully supported."
   (interactive "*P")
-  (pel-require 'align)
-  (pel-require 'pel-align)
+  (require 'align)
+  (require 'pel-align)
   (let ((separate (or (when (boundp 'align-region-separate)
                         (if (and (symbolp align-region-separate)
                                  (boundp align-region-separate))
@@ -124,7 +124,7 @@ Display and return the new value of the mode."
   (local-key-binding key))
 
 (defun pel-cc-filter-electric-key (char)
-  "Return CHAR if it is electric, space otherwise."
+  "Return CHAR if it is electric, nil otherwise."
   (if (pel-cc-key-electric-p (kbd char))
       char
     nil))

@@ -1,6 +1,6 @@
 ;;; pel-text-insert.el --- PEL Text Insertion Utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -53,8 +53,7 @@
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--base)       ; use: pel-require
-;;                         ;      pel-current-buffer-filename
+(require 'pel--base)       ; use: pel-current-buffer-filename
 ;;                         ;      pel-string-starts-with-p
 ;;                         ;      pel-ends-with-space-p
 ;;                         ;      pel-comment-prefix
@@ -74,7 +73,7 @@ the second element is nil."
   ;; because there's no reason to change it as far as I can tell with the
   ;; currently supported modes.  It returns it anyway in case I find some
   ;; condition to modify it.
-  (pel-require 'newcomment)
+  (require 'newcomment)
   (comment-normalize-vars)
   (let* ((point-column         (current-column))
          (point-at-line-start  (or (= point-column 0)
@@ -116,7 +115,7 @@ If point is already inside a comment, just insert TEXT and return point."
 ;; ---------------------------------------------------------------------------
 ;; Separator line
 
-;;-pel-auto load
+;;-pel-autoload
 (defun pel-separator-line (&optional linelen char comment-prefix)
   "Return a (commented) line string.
 The number of characters is identified by LINELEN.
@@ -135,8 +134,8 @@ The string does not end with a newline."
          (cmt-start (car comment-start.comment-end))
          (cmt-end   (cdr comment-start.comment-end))
          (len-comment-start (length cmt-start))
-         (len-comment-end (length cmt-end))
-         (has-comment-end (>= len-comment-end 1))
+         (len-comment-end (length (or cmt-end "")))
+         (has-comment-end (and (stringp cmt-end) (> len-comment-end 0)))
          (comment-start-ends-with-space (pel-ends-with-space-p cmt-start))
          (line cmt-start))
     (unless comment-start-ends-with-space
@@ -150,7 +149,7 @@ The string does not end with a newline."
     line))
 
 
-;;-pel-auto load
+;;-pel-autoload
 (defun pel-insert-line (&optional linelen char)
   "Insert a (commented) line before/at current line.
 - If point is at the beginning of the line insert it there.
@@ -238,7 +237,7 @@ If USE-TILDE, the user home address is replaced by the single
 character ~.  If DIR-ONLY, only insert the directory (negative
 argument has no impact when DIR-ONLY is non nil).
 
-If WITH_LINE_NUMBER is non-nil, the line number is inserted after
+If WITH-LINE-NUMBER is non-nil, the line number is inserted after
 the file name, prefixed with a separating colon."
   (interactive "*p")
   (let ((no-path (and (< n 0) (not dir-only)))

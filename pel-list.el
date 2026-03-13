@@ -36,7 +36,8 @@
 ;;; Dependencies:
 (eval-when-compile
   (require 'cl-macs))                      ; use: cl-dolist and cl-return
-(require 'pel--base)                      ; use: `pel-require'
+(require 'pel--base)                       ; use `pel-=', `pel+='
+(require 'pel--install)                    ; use: `pel-require'
 (pel-require 'seq :install-when-missing)   ; use: seq-subseq
 (declare-function seq-subseq "seq")
 ;; ---------------------------------------------------------------------------

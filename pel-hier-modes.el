@@ -1,6 +1,6 @@
 ;;; pel-hier-modes.el --- Represent how major-modes inherit from each other  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019  Damien Cassou
+;; Copyright (C) 2019, 2026  Damien Cassou
 
 ;; Author: Damien Cassou <damien@cassou.me>
 ;; Adapted to PEL by: Pierre Rouleau <prouleau001@gmail.com>
@@ -41,7 +41,7 @@
 ;; compiler which would report its functions as unknown.  Explicitly declare
 ;; them after to prevent the byte compiler warnings.
 
-(require 'pel--base)
+(require 'pel--install)         ; use `pel-require'
 (pel-require 'hierarchy :install-when-missing
              "DamienCassou/hierarchy/refs/heads/master"
              "hierarchy.el")

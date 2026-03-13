@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 19:50:12 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 14:16:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -471,7 +471,7 @@ current setup."
 ;; --
 
 (defun pel--dir-exists-p (dname)
-  "Return t if DNAME exists and is a directory, nil if it does not exists.
+  "Return t if DNAME exists and is a directory, nil if it does not exist.
 Raise a user-error if DNAME exists but is not a directory."
   (when (file-exists-p dname)
     (unless (file-directory-p dname)
@@ -520,7 +520,7 @@ Utility function.  If REASON-MSG is specified include that message on error."
           (progn
             (copy-file custom-fn custom-fn-g)
             (pel-push-fmt actions "Copied %s to %s " custom-fn custom-fn-g))
-        (user-error "Expected customization file %s does not exists!"
+        (user-error "Expected customization file %s does not exist!"
                     custom-fn)))
     ;; 2:
     ;; Create a elpa directory for graphics mode unless it already exists.

@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-11 13:06:24 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-12 14:53:05 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -130,7 +130,9 @@ DEST_DOC_PDF_DIR := $(DEST_DIR)/doc/pdf
 
 # The Emacs Lisp files that must be byte-compiled to check their validity.
 # IMPORTANT:
-#    - The first files the pel--base, pel--macros and pel--options,
+#    - The first files are: pel--base, pel--install, pel--sytax-macros,
+#                           pel--indent, pel--key-macros, pel--macros
+#                           and pel--options,
 #    - This must exclude the file pel.el and pel_keys.el
 #    - The last two must be pel_keys followed by pel.
 #    - Also: pel__hydra.el must NOT be built by the Makefile.
@@ -139,6 +141,7 @@ DEST_DOC_PDF_DIR := $(DEST_DIR)/doc/pdf
 #      are byte compiled by a process that select files alphabetically,
 #      however the build order via this Makefile is controlled by the dependencies.
 EL_FILES := pel--base.el \
+		pel--install.el \
 		pel--syntax-macros.el \
 		pel--indent.el \
 		pel--keys-macros.el \
@@ -730,6 +733,7 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 # Note: pel--options.el lazily requires some other pel files but they are NOT
 #       included in the dependency as it would create a circular make dependency.
 pel--base.elc:            pel-comp.elc
+pel--install.elc:         pel--base.elc
 pel--keys-macros.elc:     pel--base.elc pel--indent.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-browse.elc
 pel--options.elc:         pel--base.elc
 pel-abbrev.elc:           pel--base.elc
@@ -789,8 +793,8 @@ pel-graphviz-dot.elc:     pel--base.elc pel-ccp.elc
 pel-help.elc:             pel--base.elc pel-modes.elc
 pel-hide-docstring.elc:   pel--base.elc pel-navigate.elc pel-face-ut.elc
 pel-hideshow.elc:         pel--base.elc
-pel-hier-face.elc:        pel--base.elc
-pel-hier-modes.elc:       pel--base.elc
+pel-hier-face.elc:        pel--base.elc pel--install.elc
+pel-hier-modes.elc:       pel--install.elc
 pel-highlight.elc:        pel--base.elc pel-prompt.elc
 pel-ido.elc:              pel-prompt.elc
 pel-iedit.elc:            pel--options.elc
@@ -798,14 +802,14 @@ pel-imenu-dbg.elc:        pel--base.elc
 pel-imenu-ido.elc:        pel--base.elc pel--options.elc pel-prompt.elc pel-completion.elc
 pel-imenu.elc:            pel--base.elc pel--options.elc
 pel-indent.elc:           pel--base.elc pel--indent.elc pel--options.elc pel-ccp.elc pel-mark.elc
-pel-ini.elc:              pel--base.elc
+pel-ini.elc:              pel--install.elc
 pel-js.elc:               pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel-kbmacros.elc:         pel--options.elc pel-list.elc
 pel-key-chord.elc:        pel--base.elc pel--options.elc
 pel-lfe.elc:              pel-comment.elc
 pel-lisp.elc:             pel--base.elc
-pel-lispy.elc:            pel--base.elc pel--options.elc
-pel-list.elc:             pel--base.elc
+pel-lispy.elc:            pel--base.elc pel--install.elc pel--options.elc
+pel-list.elc:             pel--base.elc pel--install.elc
 pel-lsp.elc:              pel--base.elc
 pel-lua.elc:              pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
 pel-make.elc:             pel--base.elc pel-syntax.elc
@@ -836,7 +840,7 @@ pel-scroll.elc:           pel-window.elc
 pel-search-regexp.elc:    pel--options.elc
 pel-search.elc:           pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-search-regexp.elc pel-window.elc pel--syntax-macros.elc
 pel-seed7.elc:            pel--base.elc pel--options.elc pel-ccp.elc
-pel-seq.elc:              pel--base.elc
+pel-seq.elc:              pel--install.elc
 pel-setup-27.elc:         pel--options.elc pel-elpa.elc pel-setup-base.elc
 pel-setup-base.elc:       pel--base.elc pel--options.elc pel-ccp.elc pel-custom.elc pel-elpa.elc pel-package.elc
 pel-setup.elc:            pel--base.elc pel--options.elc pel-custom.elc pel-list.elc pel-package.elc pel-elpa.elc pel-setup-base.elc pel-setup-27.elc
@@ -867,7 +871,7 @@ pel-vcs.elc:              pel--base.elc pel-filedir.elc pel-prompt.elc
 pel-whitespace.elc:       pel--base.elc pel--options.elc
 pel-window.elc:           pel--base.elc pel--options.elc pel-prompt.elc
 pel-xr.elc:               pel--base.elc pel-read.elc
-pel-xref.elc:             pel--base.elc pel--options.elc pel-prompt.elc pel-read.elc pel-text-transform.elc pel-pathmng.elc
+pel-xref.elc:             pel--base.elc pel--install.elc pel--options.elc pel-prompt.elc pel-read.elc pel-text-transform.elc pel-pathmng.elc
 pel-yang.elc:             pel--base.elc
 pel-zig.elc:              pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel__hydra.elc:           pel--base.elc pel--options.elc pel--keys-macros.elc pel-buffer.elc pel-frame-control.elc pel-hideshow.elc pel-pp.elc pel-scroll.elc pel-window.elc

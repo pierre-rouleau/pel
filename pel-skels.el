@@ -1,6 +1,6 @@
 ;;; pel-skels.el --- Base code skeleton utilities  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -420,7 +420,7 @@ function returns:
 "
   ;; ensure that comments for the current buffer mode are identified.
   ;; if they are not, prompt the user.
-  (pel-require 'newcomment)
+  (require 'newcomment)
   (comment-normalize-vars)
   (let* ((c-style   (and (boundp 'c-block-comment-flag)
                          c-block-comment-flag))

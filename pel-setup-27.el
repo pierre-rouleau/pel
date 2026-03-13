@@ -2,14 +2,15 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-07 14:25:31 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 14:36:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
 ;; Copyright (C) 2021, 2026  Pierre Rouleau
 ;;
-;; This program is free software: you can redistribute it and/or modify;; it under the terms of the GNU General Public License as published by
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
 ;;
@@ -94,13 +95,13 @@
 ;;   early-init.el files.
 ;; - Restart Emacs.
 
-(defun pel--set-dual-environment-in-emacs-early-init (use)
-  "Update Emacs user early-init.el for dual environment when USE is non-nil."
+(defun pel--set-dual-environment-in-emacs-early-init (use-dual-environment)
+  "Update Emacs user early-init.el to USE-DUAL-ENVIRONMENT or not."
   (pel-create-early-init-if-missing)
   (pel-update-emacs-user-init-file
    "early-init.el"
    (list
-    (list 'pel-early-init-support-dual-environment-p (not (null use))))
+    (list 'pel-early-init-support-dual-environment-p (not (null use-dual-environment))))
    pel-compile-emacs-early-init))
 
 ;; ---------------------------------------------------------------------------
@@ -133,13 +134,14 @@ FOR-GRAPHICS is:
     ;; report any error
     (error "Failed accessing package-quickstart")))
 
-(defun pel--set-package-quickstart-in-early-init (use)
-  "Update Emacs early-init.el file package quickstart setting to USE."
+(defun pel--set-package-quickstart-in-early-init (use-package-quickstart)
+  "Update Emacs early-init.el file package quickstart setting.
+Set it according to the USE-PACKAGE-QUICKSTART argument."
   (pel-create-early-init-if-missing)
   (pel-update-emacs-user-init-file
    "early-init.el"
    (list
-    (list 'pel-early-init-support-package-quickstart-p use))
+    (list 'pel-early-init-support-package-quickstart-p use-package-quickstart))
    pel-compile-emacs-early-init))
 
 (defun pel--setup-early-init (pkg-quickstart)

@@ -1,6 +1,6 @@
 ;;; pel-speedbar.el --- PEL (Sr-)Speedbar support -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2024, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -79,7 +79,7 @@
 ;;
 ;; The 2014 version of the sr-speedbar.el file attempts to access the
 ;; `helm-alive-p' variable, but does not require helm nor check if that
-;; variable is bounded, causing byte-compilation warnings in pel.el or here.
+;; variable is bound, causing byte-compilation warnings in pel.el or here.
 ;; The 2016 version of sr-speedbar fixes this problem.
 ;;
 ;; If you get this warning while byte compiling any of the PEL code, make sure

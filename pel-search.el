@@ -2,12 +2,12 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 22:45:55 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 14:27:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau with some code derived
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau with some code derived
 ;;                                 from Mickey Petersen's work
 ;;                                 (see CREDITS below).
 ;;
@@ -568,9 +568,9 @@ A nil value corresponds to Emacs default."
 (defun pel--search-tools-selection ()
   "Return a list of (char prompt symbol) of available search tool choices."
   (let ((selection '((?e "iSearch (default)" nil))))
-    (when pel-use-anzu   (push '(?a "iSearch & Anzu" anzu) selection))
     (when pel-use-swiper (push '(?s "Swiper" swiper) selection))
-    (nreverse selection)))
+    (when pel-use-anzu   (push '(?a "iSearch & Anzu" anzu) selection))
+    selection))
 
 ;;-pel-autoload
 (defun pel-select-search-tool ()

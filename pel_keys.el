@@ -135,11 +135,13 @@
 ;;                      ;     pel-emacs-is-graphic-p
 ;;                      ;     pel-toggle
 ;;                      ;     pel-mode-toggle-arg
-;;                      ;     pel-ensure-package-elpa
+
+(require 'pel--install) ; use pel-ensure-package-elpa
 ;;                      ;
 ;;                      ;
 ;;                      ;
 ;;                      ;
+
 (require 'pel--indent)  ; use: `pel-indentation-width-control-variables',
 ;;                      ;      `pel-indentation-other-control-variables',
 ;;                      ;      `pel-tab-width-control-variables'.
@@ -653,7 +655,7 @@ Your version of Emacs does not support dynamic module.")))
 
   ;; On macOS, the keys used by the OS are the same as selected here, both in
   ;; GUI mode and in terminal (TTY) mode:
-  ;; - In terminal mode: the Terminal.app uses the ⌘ command keys for fond size
+  ;; - In terminal mode: the Terminal.app uses the ⌘ command keys for font size
   ;;   control (it's not Emacs that acts on them, its the Terminal.app)
   ;; - In graphics mode the same keys handled by Emacs: the Super modifier is
   ;;   assigned to the ⌘ Command key.
@@ -1037,7 +1039,7 @@ Your version of Emacs does not support dynamic module.")))
 ;;** Numeric Keypad Keys
 ;;   -------------------
 ;;
-;; The nummeric keypad has 18 keys. They are shown here:
+;; The numeric keypad has 18 keys. They are shown here:
 ;;
 ;;     +==========================+
 ;;     |Numlock  =     /    *     |
@@ -5673,7 +5675,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;;
   ;; There is another, remaining problem: the "native" python completion does
   ;; not work on Windows because of its lack of proper PTY (pseudo terminal).
-  ;; Therefore, in Windows, "python" should be added to the list bounded to
+  ;; Therefore, in Windows, "python" should be added to the list bound to
   ;; python-shell-completion-native-disabled-interpreters.
   ;;
   ;; The code below does both for Windows.

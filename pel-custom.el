@@ -2,12 +2,12 @@
 
 ;; Created   : Wednesday, October 21 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-02 15:07:40 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-12 14:23:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -42,6 +42,9 @@
 ;;
 ;;
 (require 'pel--base)
+(require 'cus-edit)           ; use: `customize-browse', `custom-file',
+                              ; `customize-group', `customize-save-variable'
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -50,23 +53,12 @@
 (defun pel-browse-pel ()
   "Browse the PEL customization group."
   (interactive)
-  (pel-require 'cus-edit)
   (customize-browse 'pel))
-
-
-(defun pel--read-group ()
-  "Read and return a group name.
-Lazily load file `cus-edit' if needed."
-  (pel-require 'cus-edit)
-  (if (fboundp 'customize-read-group)
-      (customize-read-group)
-    (user-error "Cannot load cus-edit!")))
 
 ;;-pel-autoload
 (defun pel-browse-group (group)
   "Browse the customization tree from a specific GROUP node."
-  (interactive (list (pel--read-group)))
-  (pel-require 'cus-edit)
+  (interactive (list (customize-read-group)))
   (when (stringp group)
     (if (string-equal "" group)
         (setq group 'emacs)
@@ -84,7 +76,6 @@ Lazily load file `cus-edit' if needed."
   "Save the VALUE of USER-OPTION-SYMBOL in customize file.
 If FILE is specified force saving to specified customization FILE
 otherwise save to the current custom-file."
-  (require 'cus-edit)                     ; use: `customize-save-variable`, `custom-file'
   (let ((custom-file (or file custom-file)))
     (customize-save-variable user-option-symbol value)))
 

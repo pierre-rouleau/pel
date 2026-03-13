@@ -27,23 +27,41 @@
 ;; which exist simply to simplify the PEL code.
 ;;
 ;; The following is a list of available commands (*) and functions (-) listed
-;; in hierarchical calling order.
+;; in hierarchical calling order.  Functions defined elsewhere and repeated in
+;; the hierarchy are preceded by a '.' instead of '-'.
 ;;
-;; PEL version:
-;; * `pel-version'
+;; PEL version
+;;  * `pel-version'
 ;;
-;; Assignment operator macros:
-;; - `pel+='
-;; - `pel-='
+;; Assignment operator macros
+;;  - `pel+='
+;;  - `pel-='
+;;
+;; Function alias macro
+;;  - `λc'
+;;
+;; Base predicates:
+;;  - `pel-expression-p'
+;;  - `pel-user-option-p'
+;;
+;; Set variable conditionally
+;;  - `pel-set-if-non-nil'
+;;
+;; Basic value checks:
+;;  - `pel-!0'
+;;  - `pel-as-boolean'
+;;
+;; Bitwise Operations:
+;;  - `pel-all-bitset-p'
 ;;
 ;; List Handling:
 ;;  - `pel-list-of'
 ;;  - `pel-transpose-alist'
 ;;
-;; Environment Querying functions:
+;; Environment Querying functions
 ;;  - `pel-in-fast-startup-p'
 ;;
-;; Functions checking Major Mode:
+;; Checking Major Mode
 ;;  - `pel-major-mode-must-be'
 ;;  - `pel-derived-mode-p'
 ;;  - `pel-dired-buffer-p'
@@ -52,44 +70,35 @@
 ;;    - `pel-major-mode-of'
 ;;  - `pel-buffers-in-mode'
 ;;    - `pel-major-mode-of'
-;;  - `pel-current-buffer-filename'
-;;  - `pel-current-buffer-file-extension'
-;;  - `pel-current-buffer-eol-type'
-;;  - `pel-running-under-ssh-p'
-;;  - `pel-cd-to-current'
 ;;
-;; Read state of minor mode:
-;; - `pel-minor-mode-state'
-;;
-;; Read/Set variable with a formatted name derived from major mode:
+;; Minor and Major Mode Utilities
+;;  - `pel-minor-mode-state'
 ;;  - `pel-major-mode-symbol-value-or'
 ;;    - `pel-major-mode-symbol-value'
 ;;      - `pel-major-mode-symbol-for'
 ;;  - `pel-set-major-mode-symbol'
 ;;
-;; Function alias
-;; - `λc'
+;; Buffer Information
+;;  - `pel-current-buffer-filename'
+;;  - `pel-current-buffer-file-extension'
+;;  - `pel-current-buffer-eol-type'
 ;;
-;; Emacs Lisp Development support:
-;; - `pel-add-dir-to-loadpath'
+;; Current Directory
+;;  * `pel-cd-to-current'
 ;;
-;; Base predicates:
-;; - `pel-expression-p'
+;; OS Environment Utilities
+;;  - `pel-terminal-is-macos-terminal-p'
+;;  - `pel-running-under-ssh-p'
 ;;
-;; Conditional variable set:
-;; - `pel-set-if-non-nil'
+;; Emacs Environment Utilities
+;;  - `pel-locate-user-emacs-file'
+;;  * `pel-add-dir-to-loadpath'
 ;;
-;; Check for Zero:
-;;  - `pel-!0'
-;;
-;; Bitwise Operations:
-;;  - `pel-all-bitset-p'
-;;
-;; File System Type:
+;; File System Type
 ;;  - `pel-unix-socket-p'
-;;  - `pel-file-type'
+;;  - `pel-file-type-str'
 ;;
-;; String predicates:
+;; String predicates
 ;;  - `pel-whitespace-in-str-p'
 ;;  - `pel-ends-with-space-p'
 ;;  - `pel-starts-with-space-p'
@@ -97,97 +106,89 @@
 ;;  - `pel-string-starts-with-p'
 ;;  - `pel-lowercase-p'
 ;;  - `pel-uppercase-p'
+;;  - `pel-alnum-p'
 ;;
-;; Pluralizer:
+;; Pluralizer
 ;;  - `pel-count-string'
 ;;  - `pel-pluralize'
 ;;    - `pel-plural-of'
 ;;
 ;; Symbol value extraction
-;; - `pel-symbol-value'
-;; - `pel-as-symbol'
+;;  - `pel-symbol-value'
+;;    - `pel--symbol-value'
+;;  - `pel-as-symbol'
 ;;
 ;; Symbol at point
-;; - `pel-symbol-at-point'
+;;  - `pel-symbol-at-point'
 ;;
 ;; String generation utilities:
-;;  - `pel-option-mode-state'
-;;    - `pel-activated-in-str'
-;;  - `pel-symbol-value-or'
-;;  - `pel-value-on-off-text'
 ;;  - `pel-symbol-text'
 ;;    - `pel-symbol-on-off-string'
 ;;      - `pel-on-off-string'
+;;  - `pel-value-on-off-text'
+;;    . `pel-symbol-on-off-string'
+;;  - `pel-symbol-value-or'
 ;;  - `pel-yes-no-string'
 ;;
-;; String transformation utilities:
-;; - `pel-as-string'
-;; - `pel-capitalize-first-letter'
-;; - `pel-end-text-with-period'
-;; - `pel-hastext'
-;; - `pel-when-text-in'
-;; - `pel-string-or-nil'
-;; - `pel-string-for'
-;; - `pel-string-when'
-;; - `pel-string-spread'
-;; - `pel-list-str'
-;; - `pel-title-case-to-dash-separated'
-;; - `pel-grp-regex'
+;; Automated Mode Activation Check
+;;  - `pel-minor-mode-auto-activated-by'
+;;    - `pel-modes-activating-symbol-name-for'
+;;  - `pel-option-mode-state'
+;;    - `pel-activated-in-str'
+;;
+;; String transformation utilities
+;;  - `pel-as-string'
+;;  - `pel-capitalize-first-letter'
+;;  - `pel-end-text-with-period'
+;;  - `pel-hastext'
+;;  - `pel-when-text-in'
+;;  - `pel-string-or-nil'
+;;  - `pel-string-for'
+;;  - `pel-string-when'
+;;  - `pel-string-spread'
+;;  - `pel-list-str'
+;;  - `pel-title-case-to-dash-separated'
+;;  - `pel-grp-regex'
 ;;
 ;; Message List formatting
-;; - `pel-format-problem-messages'
-;;   - `pel--format-problem-messages'
-;; - `pel-message-for'
+;;  - `pel-format-problem-messages'
+;;    - `pel--format-problem-messages'
+;;  - `pel-message-for'
 ;;
 ;; Value check:
-;; - `pel-use-or'
+;;  - `pel-use-or'
 ;;
 ;; Operations on sequences:
-;; - `pel-concat-strings-in-list'
-;; - `pel-prepend'
-;; - `pel-cons-alist-at'
-;; - `pel-nth-elt'
-;; - `pel-list-insert-before'
-;; - `pel-list-prepend-nth'
-;; - `pel-list-insert-car-at'
+;;  - `pel-concat-strings-in-list'
+;;  - `pel-prepend-to'
+;;  - `pel-cons-alist-at'
+;;  - `pel-nth-elt'
+;;  - `pel-list-insert-before'
+;;  - `pel-list-prepend-nth'
+;;  - `pel-list-insert-car-at'
 ;;
 ;; Operation on auto-mode-alist
 ;;  - `pel-delete-from-auto-mode-alist'
 ;;
-;; Lazy loading and package installation:
-;; - `pel-install-github-file'
-;; - `pel-install-github-files'
-;;   - `pel--install-github-files'
-;;     - `pel-install-files'
-;;       - `pel-install-file'
-;;         - `pel-url-copy-file'
-;;
-;; - `pel-require'
-;;   - `pel-package-installed-p'
-;;   - `pel-package-install'
-;;
-;; - `pel-ensure-package-elpa'
-;;   - `pel--ensure-pkg-elpa'
-;;     - `pel--pin-package'
-;;       - `pel-archive-exists'
-;;    - `pel--package-ensure-elpa'
-;;      - `pel--package-install-elpa'
+;; PEL utils rebuild
+;;  - `pel-rebuild-utils'
 ;;
 ;; Tree-sitter major mode support
-;; - `pel-major-mode-use-tree-sitter'
-;; - `pel-major-ts-mode-supported-p'
-;; - `pel-ts-language-grammar-status-for'
-;;   - `pel-treesit-ready-p'
-;;   - `pel-ts-language-grammar-filename-for'
-
+;;  - `pel-major-mode-use-tree-sitter'
+;;  - `pel-major-ts-mode-supported-p'
+;;  - `pel-ts-language-grammar-status-for'
+;;    - `pel-file-md5'
+;;    - `pel-treesit-ready-p'
+;;    - `pel-ts-language-grammar-filename-for'
+;;
 ;; Mode argument interpretation
-;; -  `pel-action-for'
+;;  - `pel-action-for'
 ;;
 ;; Toggle a local mode:
 ;;  - `pel-toggle-mode-and-show'
 ;;    - `pel-toggle-mode'
 ;;
-;; Basic functions working with values and variables:
+;; Toggle of values and variables
 ;;  - `pel-toggle-and-show-user-option'
 ;;    - `pel-toggle-and-show'
 ;;      - `pel-toggle'
@@ -205,15 +206,16 @@
 ;;    - `pel--check-minor-modes-in'
 ;;  - `pel-turn-on-global-minor-modes-in'
 ;;  - `pel-turn-on-local-minor-modes-in'
+;;
 ;; Argument converter:
-;;  - `pel-multiplier'
+;;  - `pel-multiplier' and `pel-mode-toggle-arg'
 ;;
 ;; Iteration helpers:
-;; - `pel-dec'
-;; - `pel-inc'
+;;  - `pel-dec'
+;;  - `pel-inc'
 ;;
 ;; Swap 2 values:
-;; - `pel-swap'
+;;  - `pel-swap'
 ;;
 ;; Text at point:
 ;;  - `pel-at-lowercase-p'
@@ -222,77 +224,78 @@
 ;;  - `pel-chars-at-point'
 ;;
 ;; Calling functions:
-;; - `pel-n-funcall-to'
+;;  - `pel-n-funcall-to'
 ;;
 ;;  Moving Point:
-;;  - `pel-goto-position'
-;;  - `pel-goto-line'
+;;   - `pel-goto-position'
+;;   - `pel-goto-line'
 ;;
 ;; Line position:
-;; - `pel-same-line-p'
+;;  - `pel-same-line-p'
 ;;
 ;; Identifying region:
-;; - `pel-region-for'
+;;  - `pel-region-for'
 ;;
 ;; Insert or overwrite text
-;; - `pel-insert-or-overwrite'
+;;  - `pel-insert-or-overwrite'
 ;;
 ;; Extract text from buffer
-;; - `pel-text-from-beginning-of-line'
+;;  - `pel-text-from-beginning-of-line'
 ;;
-;; Check text from buffer
-;; - `pel-line-has-only-whitespace-p'
-;; - `pel-inside-code'
+;; Check text in buffer
+;;  - `pel-line-has-only-whitespace-p'
+;;  - `pel-inside-code'
+;;  - `pel-has-shebang-line'
 ;;
 ;; File Path processing
-;; - `pel-file-in'
-;; - `pel-is-subdir-of'
-;;   - `pel-normalize-fname'
-;; - `pel-parent-dirpath'
-;;   - `pel-normalize-fname'
-;; - `pel-sibling-dirpath'
-;; - `pel-expand-url-file-name'
-;; - `pel-path-strip'
-;; - `pel-url-join'
-;; - `pel-url-location'
-;; - `pel-same-fname-p'
-;;   - `pel-normalize-fname'
-;; - `pel-point-symlink-to'
-;; - `pel-symlink-points-to-p'
+;;  - `pel-file-in'
+;;  - `pel-is-subdir-of'
+;;    - `pel-normalize-fname'
+;;  - `pel-parent-dirpath'
+;;    - `pel-normalize-fname'
+;;  - `pel-sibling-dirpath'
+;;  - `pel-expand-url-file-name'
+;;  - `pel-path-strip'
+;;  - `pel-url-join'
+;;  - `pel-url-location'
+;;  - `pel-same-fname-p'
+;;    - `pel-normalize-fname'
+;;  - `pel-point-symlink-to'
+;;  - `pel-symlink-points-to-p'
 ;;
 ;; Insertion of text in current buffer
-;; - `pel-insert-bold'
-;; - `pel-insert-url-link'
-;; - `pel-insert-symbol-content-line'
-;;   - `pel-insert-symbol-content'
-;;     - `pel-insert-symbol'
-;; - `pel-insert-list-value'
-;; - `pel-insert-list-content'
-;;   - `pel--pp'
-;;     - `pel-line-prefixed-with'
+;;  - `pel-insert-bold'
+;;  - `pel-insert-url-link'
+;;  - `pel-insert-symbol-content-line'
+;;    - `pel-insert-symbol-content'
+;;      - `pel-insert-symbol'
+;;  - `pel-insert-list-value'
+;;  - `pel-insert-list-content'
+;;    - `pel--pp'
+;;      - `pel-line-prefixed-with'
 ;;
 ;; Print in dedicated buffer
-;; - `pel-print-in-buffer'
+;;  - `pel-print-in-buffer'
 ;;
 ;; Code parsing support
-;; - `pel-point-in-comment-or-docstring'
-;;
-;; Speedbar Support
-;; - `pel-add-speedbar-extension'
+;;  - `pel-point-in-comment-or-docstring'
 ;;
 ;; Byte Compilation
-;; - `pel-byte-compile-if-needed'
-;;   - `pel-modtime-of'
+;;  - `pel-byte-compile-if-needed'
+;;    - `pel-modtime-of'
 ;;
 ;; Imenu Utilities
-;; - `pel-add-imenu-sections-to'
+;;  - `pel-add-imenu-sections-to'
 ;;
 ;; Tags support
-;; - `pel-visit-tags'
+;;  - `pel-visit-tags'
 ;;
-;; Buffer Content Checks
-;; - `pel-has-shebang-line'
-;;
+;; Portability
+;;  - `pel-executable-find'
+;;  - `pel-treesit-language-available-p'
+;;  - `pel-emacs-config-features-string'
+;;  - `pel-hardware-model-string'
+;;  - `pel-eglot-active-p'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -306,8 +309,8 @@
 ;;; Code:
 
 ;; ---------------------------------------------------------------------------
-;; Constants
-;; ---------
+;;* Environment Constants
+;;  =====================
 ;;
 ;; Note: The following symbols have nothing to do with PEL and could
 ;;       have a name that starts with 'system' but I'm not doing it
@@ -317,10 +320,6 @@
 (defconst pel-system-is-macos-p
   (eq system-type 'darwin)
   "Predicate: t if running under a macOS Operating System, nil otherwise.")
-
-(defconst pel-terminal-is-macos-terminal-p
-  (string-equal (getenv "TERM_PROGRAM") "Apple_Terminal")
-  "Predicate: t if Emacs is running under the macOS Terminal.app, else nil.")
 
 (defconst pel-system-is-linux-p
   (eq system-type 'gnu/linux)
@@ -365,7 +364,7 @@ The non-nil value of the predicate is the `module-file-suffix'.")
   "Predicate: t when Emacs version 30 or later is running, nil otherwise.")
 
 (defconst pel-emacs-31-or-later-p (>= emacs-major-version 31)
-  "Predicate: t when Emacs version 30 or later is running, nil otherwise.")
+  "Predicate: t when Emacs version 31 or later is running, nil otherwise.")
 
 (defconst pel-filesep (if pel-system-is-windows-p "\\" "/")
   "String directory/file separator character for this OS.")
@@ -381,8 +380,8 @@ The non-nil value of the predicate is the `module-file-suffix'.")
                                      (t "so"))
   "File extension (without leading period) of OS library files.")
 
-;; Variables
-;; ---------
+;;* Variables
+;;  =========
 (defvar pel-uses-tree-sitter nil
   "Set to t when PEL currently uses tree-sitter, nil otherwise.
 
@@ -390,15 +389,15 @@ It is set to t only by the logic of pel_keys.el which is
 executed by `pel-init' on startup.")
 
 ;; ---------------------------------------------------------------------------
-;; Code Style Buffer Local Variables
-;; ---------------------------------
+;;* Code Style Buffer Local Variables
+;;  =================================
 
 (defvar-local pel-comment-prefix nil
   "String identifying the comment start; set by specific modes only.")
 
 ;; ---------------------------------------------------------------------------
-;; PEL version
-;; ===========
+;;* PEL version
+;;  ===========
 
 (defun pel-version (&optional insert)
   "Display and return PEL package version string.
@@ -411,8 +410,8 @@ Optionally insert it at point if INSERT is non-nil."
     version))
 
 ;; ---------------------------------------------------------------------------
-;; Support for future Emacs versions
-;; ---------------------------------
+;;* Support for future Emacs versions
+;;  =================================
 
 (when (version< emacs-version "28")
   ;; the following function is available in Emacs 28, as part of macroexp
@@ -435,8 +434,8 @@ Other uses risk returning non-nil value that point to the wrong file."
 ;;                                        "macroexp"))
 
 ;; ---------------------------------------------------------------------------
-;; Assignment operator macros
-;; --------------------------
+;;* Assignment operator macros
+;;  ==========================
 ;;
 ;; Just the 2 mostly used ones.  May add the others on need basis.
 
@@ -455,8 +454,85 @@ Other uses risk returning non-nil value that point to the wrong file."
            (- ,var ,value))))
 
 ;; ---------------------------------------------------------------------------
-;; List Handling
-;; -------------
+;;* Function alias macro
+;; =====================
+
+(defmacro λc (fct &rest args)
+  "Funcall lambda function FCT with ARGS.
+This is a short alias for `funcall'.
+
+Caution: this, so far, is the *only* PEL symbol whose name does not
+         start with the \\='pel\\=' prefix.
+
+If this clashes with something you use, please accept my apologies and
+please let me know.  Hopefully the use of a Unicode symbol in the name
+will reduce this possibility."
+  `(funcall ,fct ,@args))
+
+;; ---------------------------------------------------------------------------
+;;* Base predicates
+;;  ===============
+;;
+;; I looked for the following predicate function and did not find it.
+;; If there is something like this already, let me know.
+
+(defun pel-expression-p (val)
+  "Return non-nil if VAL is an expression, nil if it is a value.
+Return nil for t and nil.
+Return t for \\='some-symbols or \\='(some expressions), nothing else.
+Meant to be used to identify code that is quoted (for delayed
+code execution)."
+  (and (not (eq val t))
+       (not (eq val nil))
+       (or (symbolp val)
+           (consp val))))
+
+(defun pel-user-option-p (symbol)
+  "Return t when SYMBOL is a valid PEL user-option, nil otherwise."
+  (and (custom-variable-p symbol)
+       (eq t (compare-strings "pel-use-" nil nil
+                              (symbol-name symbol) 0 8))))
+
+;; ---------------------------------------------------------------------------
+;;* Set variable conditionally
+;;  ==========================
+
+(defun pel-set-if-non-nil (symbol value)
+  "Set SYMBOL to VALUE only if VALUE is non-nil.
+
+If VALUE is nil do nothing."
+  (when value
+    (set symbol value)))
+
+;; ---------------------------------------------------------------------------
+;;* Check for Zero
+;;  ==============
+;;
+;; In Lisp, nil is the only \\='false\\=' value.  Even 0 is an equivalent to
+;; \\='true\\='.  The following inline help checking for a zero-value result.
+
+(defsubst pel-!0 (number)
+  "Return nil if NUMBER is 0, t otherwise."
+  (not (zerop number)))
+
+(defun pel-as-boolean (value)
+  "Return t for non-nil VALUE, nil otherwise."
+  (not (null value)))
+
+;; ---------------------------------------------------------------------------
+;;* Bitwise Operations
+;;  ==================
+
+(defun pel-all-bitset-p (value &rest bits)
+  "Return t when all and only those BITS are set in VALUE, nil otherwise."
+  (let ((bitmask 0))
+    (dolist (bit bits bitmask)
+      (setq bitmask (logior bitmask bit)))
+    (equal 0 (logxor value bitmask))))
+
+;; ---------------------------------------------------------------------------
+;;* List Handling
+;;  =============
 
 (defun pel-list-of (val)
   "Return VAL if it is a list, (list val) otherwise."
@@ -471,8 +547,8 @@ Other uses risk returning non-nil value that point to the wrong file."
           alist))
 
 ;; ---------------------------------------------------------------------------
-;; Environment Querying functions:
-;; ------------------------------
+;;* Environment Querying functions
+;;  ==============================
 ;;
 ;; The following functions provide information about the Emacs environment.
 
@@ -482,8 +558,8 @@ Other uses risk returning non-nil value that point to the wrong file."
     (bound-and-true-p pel-running-in-fast-startup-p)))
 
 ;; ---------------------------------------------------------------------------
-;; Functions checking Major Mode
-;; -----------------------------
+;;* Checking Major Mode
+;;  ===================
 
 (defun pel-major-mode-must-be (modes)
   "Check that the current buffer major mode is one of MODES.
@@ -557,6 +633,119 @@ WANTED-MODE is a symbol; something like \\='emacs-lisp-mode"
         (when (eq major-mode wanted-major-mode)
           (push buffer buffers-in-wanted-mode))))))
 
+;; ---------------------------------------------------------------------------
+;;* Minor and Major Mode Utilities
+;;  ==============================
+
+(defvar pel-insert-symbol-content-context-buffer nil
+  "Contextual value for the buffer argument of `pel-insert-symbol-content'.
+
+Let-bind this variable in functions that need to call
+`pel-insert-symbol-content' repetitively always passing the same value
+for its buffer argument.")
+
+(defun pel-minor-mode-state (minor-mode &optional activator-symbol buffer)
+  "Return a string describing the state of the MINOR-MODE, a symbol.
+
+If ACTIVATOR-SYMBOL is nil, this is a built-in minor mode, otherwise
+ACTIVATOR-SYMBOL is the symbol that activates the installation and use
+of that MINOR-MODE.
+
+The returned value is the state of the mode in the buffer identified
+by BUFFER or `pel-insert-symbol-content-context-buffer'."
+  (with-current-buffer (or buffer
+                           pel-insert-symbol-content-context-buffer
+                           (current-buffer))
+    (pel-symbol-on-off-string
+     minor-mode nil nil
+     (if activator-symbol
+         (if (symbol-value activator-symbol)
+             (format "Activated by %s." activator-symbol)
+           (format "Not loaded. Activate it by turning %s on then restart."
+                   activator-symbol))
+       "Built-in but not loaded, use a command to load it"))))
+
+;;** Read/Set variable with a formatted name derived from major mode
+
+(defun pel-major-mode-symbol-for (symbol-format-string
+                                  &optional buffer-or-name)
+  "Return the major-mode specific symbol for specified buffer.
+
+The symbol name is identified by the SYMBOL-FORMAT-STRING which must
+contain one \"%s\" that is replaced by the prefix string before the
+\"-mode\" (or \"-ts-mode\") of the major mode of the current buffer
+or of the buffer specified by the BUFFER-OR-NAME argument or the variable
+`pel-insert-symbol-content-context-buffer'.
+
+The BUFFER argument value takes precedence to the value of the variable
+`pel-insert-symbol-content-context-buffer'. If both are nil, then the
+value is read from the context of the current buffer, which may be a
+local or global."
+  (intern
+   (pel-string-with-major-mode symbol-format-string
+                               (or buffer-or-name
+                                   pel-insert-symbol-content-context-buffer))))
+
+(defun pel-major-mode-symbol-value (symbol-format-string
+                                    &optional buffer-or-name)
+  "Return the value of major-mode specific symbol for specified buffer.
+
+The symbol name is identified by the SYMBOL-FORMAT-STRING which must
+contain one \"%s\" that is replaced by the prefix string before the
+\"-mode\" (or \"-ts-mode\") of the major mode of the current buffer
+or of the buffer specified by the BUFFER-OR-NAME argument or the variable
+`pel-insert-symbol-content-context-buffer'.
+
+The BUFFER argument value takes precedence to the value of the variable
+`pel-insert-symbol-content-context-buffer'. If both are nil, then the
+value is read from the context of the current buffer, which may be a
+local or global."
+  (symbol-value
+   (pel-major-mode-symbol-for
+    symbol-format-string
+    (or buffer-or-name pel-insert-symbol-content-context-buffer))))
+
+(defun pel-major-mode-symbol-value-or (symbol-format-string
+                                       default-value
+                                       &optional buffer-or-name)
+  "Return value or default of major-mode specific symbol for specified buffer.
+
+The symbol name is identified by the SYMBOL-FORMAT-STRING which must
+contain one \"%s\" that is replaced by the prefix string before the
+\"-mode\" (or \"-ts-mode\") of the major mode of the current buffer
+or of the buffer specified by the BUFFER-OR-NAME argument or the variable
+`pel-insert-symbol-content-context-buffer'.
+
+The BUFFER argument value takes precedence to the value of the variable
+`pel-insert-symbol-content-context-buffer'. If both are nil, then the
+value is read from the context of the current buffer, which may be a
+local or global.
+
+If the symbol name does not exist for the specified SYMBOL-FORMAT-STRING
+for the current major mode, then return the specified DEFAULT-VALUE."
+  (condition-case nil
+      (pel-major-mode-symbol-value
+       symbol-format-string
+       (or buffer-or-name pel-insert-symbol-content-context-buffer))
+    (error default-value)))
+
+(defun pel-set-major-mode-symbol (symbol-format-string
+                                  value
+                                  &optional buffer-or-name)
+  "Set symbol identified by SYMBOL-FORMAT-STRING to specified VALUE.
+
+The symbol name is identified by the SYMBOL-FORMAT-STRING.  The \"%s\"
+in the SYMBOL-FORMAT-STRING is replaced by the name of the major-mode.
+That's the prefix string before the \"-mode\" portion of the major mode
+name of the current buffer or the one specified by BUFFER-OR-NAME."
+  (let ((symbol (intern (pel-string-with-major-mode symbol-format-string
+                                                    buffer-or-name))))
+    (set symbol value)))
+
+;; ---------------------------------------------------------------------------
+;;* Buffer Information
+;;  ==================
+
 (defun pel-current-buffer-filename (&optional sans-directory
                                               sans-extension
                                               no-error)
@@ -607,10 +796,9 @@ The nil value means that the type is unknown."
       (setq eol-type (coding-system-eol-type (aref eol-type 0))))
     (cdr (assoc eol-type pel-eol-mode-name))))
 
-(defun pel-running-under-ssh-p ()
-  "Return t if Emacs is invoked through SSH, nil otherwise."
-  (when (getenv "SSH_CLIENT")
-    t))
+;; ---------------------------------------------------------------------------
+;;* Current Directory
+;;  =================
 
 (defun pel-cd-to-current (&optional silent)
   "Change current directory to the directory holding visited file.
@@ -625,128 +813,30 @@ SILENT is non-nil (can be requested by prefix argument)."
         (message "Current directory back to: %s" new-cwd)))))
 
 ;; ---------------------------------------------------------------------------
-;; Read/Set variable with a formatted name derived from major mode
-;; ---------------------------------------------------------------
-(defvar pel-insert-symbol-content-context-buffer nil
-  "Contextual value for the buffer argument of `pel-insert-symbol-content'.
+;;* OS Environment Utilities
+;;  ========================
 
-Let-bind this variable in functions that need to call
-`pel-insert-symbol-content' repetitively always passing the same value for its
-buffer argument.")
+(defun pel-terminal-is-macos-terminal-p ()
+  "Return t if Emacs is running under the macOS Terminal.app, else nil."
+  (string-equal (getenv "TERM_PROGRAM") "Apple_Terminal"))
 
-(defun pel-minor-mode-state (minor-mode &optional activator-symbol buffer)
-  "Return a string describing the state of the MINOR-MODE, a symbol.
-
-If ACTIVATOR-SYMBOL is nil, this is a built-in minor mode, otherwise
-ACTIVATOR-SYMBOL is the symbol that activates the installation and use
-of that MINOR-MODE.
-
-The returned value is the state of the mode in the buffer identified
-by BUFFER or `pel-insert-symbol-content-context-buffer'."
-  (with-current-buffer (or buffer
-                           pel-insert-symbol-content-context-buffer
-                           (current-buffer))
-    (pel-symbol-on-off-string minor-mode nil nil
-                              (if activator-symbol
-                                  (if (symbol-value activator-symbol)
-                                      (format "Activated by %s." activator-symbol)
-                                    (format "Not loaded. Activate it by turning %s on then restart." activator-symbol))
-                                "Built-in but not loaded, use a command to load it"))))
-
-
-(defun pel-major-mode-symbol-for (symbol-format-string
-                                  &optional buffer-or-name)
-  "Return the major-mode specific symbol for specified buffer.
-
-The symbol name is identified by the SYMBOL-FORMAT-STRING which must
-contain one \"%s\" that is replaced by the prefix string before the
-\"-mode\" (or \"-ts-mode\") of the major mode of the current buffer
-or of the buffer specified by the BUFFER-OR-NAME argument or the variable
-`pel-insert-symbol-content-context-buffer'.
-
-The BUFFER argument value takes precedence to the value of the variable
-`pel-insert-symbol-content-context-buffer'. If both are nil, then the
-value is read from the context of the current buffer, which may be a
-local or global."
-  (intern
-   (pel-string-with-major-mode symbol-format-string
-                               (or buffer-or-name pel-insert-symbol-content-context-buffer))))
-
-(defun pel-major-mode-symbol-value (symbol-format-string
-                                    &optional buffer-or-name)
-  "Return the value of major-mode specific symbol for specified buffer.
-
-The symbol name is identified by the SYMBOL-FORMAT-STRING which must
-contain one \"%s\" that is replaced by the prefix string before the
-\"-mode\" (or \"-ts-mode\") of the major mode of the current buffer
-or of the buffer specified by the BUFFER-OR-NAME argument or the variable
-`pel-insert-symbol-content-context-buffer'.
-
-The BUFFER argument value takes precedence to the value of the variable
-`pel-insert-symbol-content-context-buffer'. If both are nil, then the
-value is read from the context of the current buffer, which may be a
-local or global."
-  (symbol-value
-   (pel-major-mode-symbol-for
-    symbol-format-string
-    (or buffer-or-name pel-insert-symbol-content-context-buffer))))
-
-(defun pel-major-mode-symbol-value-or (symbol-format-string
-                                       default-value
-                                       &optional buffer-or-name)
-  "Return the value or default of major-mode specific symbol for specified buffer.
-
-The symbol name is identified by the SYMBOL-FORMAT-STRING which must
-contain one \"%s\" that is replaced by the prefix string before the
-\"-mode\" (or \"-ts-mode\") of the major mode of the current buffer
-or of the buffer specified by the BUFFER-OR-NAME argument or the variable
-`pel-insert-symbol-content-context-buffer'.
-
-The BUFFER argument value takes precedence to the value of the variable
-`pel-insert-symbol-content-context-buffer'. If both are nil, then the
-value is read from the context of the current buffer, which may be a
-local or global.
-
-If the symbol name does not exists for the specified SYMBOL-FORMAT-STRING
-for the current major mode, then return the specified DEFAULT-VALUE."
-  (condition-case nil
-      (pel-major-mode-symbol-value
-       symbol-format-string
-       (or buffer-or-name pel-insert-symbol-content-context-buffer))
-    (error default-value)))
-
-(defun pel-set-major-mode-symbol (symbol-format-string
-                                  value
-                                  &optional buffer-or-name)
-  "Set symbol identified by SYMBOL-FORMAT-STRING to specified VALUE.
-
-The symbol name is identified by the SYMBOL-FORMAT-STRING.  The \"%s\"
-in the SYMBOL-FORMAT-STRING is replaced by the name of the major-mode.
-That's the prefix string before the \"-mode\" portion of the major mode
-name of the current buffer or the one specified by BUFFER-OR-NAME."
-  (let ((symbol (intern (pel-string-with-major-mode symbol-format-string
-                                                    buffer-or-name))))
-    (set symbol value)))
+(defun pel-running-under-ssh-p ()
+  "Return t if Emacs is invoked through SSH, nil otherwise."
+  (when (getenv "SSH_CLIENT")
+    t))
 
 ;; ---------------------------------------------------------------------------
-;; Function alias
-;; --------------
-;; - `λc'
-;;
+;;* Emacs Environment Utilities
+;;  ===========================
 
-(defmacro λc (fct &rest args)
-  "Funcall lambda function FCT with ARGS.
-This is an alias for `funcall'.
+(defun pel-locate-user-emacs-file (fname)
+  "Return the absolute/canonical path of FNAME inside Emacs user directory.
 
-Note: this, so far, is the *only* PEL symbol whose name does not start with
-      the \\='pel\\=' prefix.  If this clashes with something you use, please
-      accept my apologies and please let me know.  Hopefully the use of
-      a Unicode symbol in the name will reduce this possibility."
-  `(funcall ,fct ,@args))
-
-;; ---------------------------------------------------------------------------
-;; Emacs Lisp Development Support
-;; ------------------------------
+The directory is identified by `user-emacs-directory'.
+If the directory does not exist the function creates it.
+This is the same as `locate-user-emacs-file' with the path made absolute and
+canonized."
+  (expand-file-name (locate-user-emacs-file fname)))
 
 (defun pel-add-dir-to-loadpath (dir)
   "Add directory DIR to Emacs variable `load-path' if not already in the list.
@@ -764,65 +854,11 @@ Return non-nil if it was added, nil otherwise."
                (if (= new-length original-length)
                    " already in the list, nothing new added!"
                  "added.")))
-    (= new-length original-length)))
+    (/= new-length original-length)))
 
 ;; ---------------------------------------------------------------------------
-;; Base predicates
-;; ---------------
-;;
-;; I looked for the following predicate function and did not find it.
-;; If there is something like this already, let me know.
-
-(defun pel-expression-p (val)
-  "Return non-nil if VAL is an expression, nil if it is a value.
-Return nil for t and nil.
-Return t for \\='some-symbols or \\='(some expressions), nothing else.
-Meant to be used to identify code that is quoted (for delayed
-code execution)."
-  (and (not (eq val t))
-       (not (eq val nil))
-       (or (symbolp val)
-           (consp val))))
-
-(defun pel-user-option-p (symbol)
-  "Return t when SYMBOL is a valid PEL user-option, nil otherwise."
-  (and (custom-variable-p symbol)
-       (eq t (compare-strings "pel-use-" nil nil
-                              (symbol-name symbol) 0 8))))
-
-;; ---------------------------------------------------------------------------
-;; Conditional variable set
-;; ------------------------
-(defun pel-set-if-non-nil (symbol value)
-  "Set SYMBOL to VALUE only if VALUE is non-nil.
-
-If VALUE is nil do nothing."
-  (when value
-    (set symbol value)))
-
-;; ---------------------------------------------------------------------------
-;; Check for Zero
-;; --------------
-;; In Lisp, nil is the only \\='false\\=' value.  Even 0 is an equivalent to \\='true\\='.
-;; The following inline help checking for a zero-value result.
-;; If I find something similar native in Emacs I\\='ll use and remove this one.
-(defsubst pel-!0 (v)
-  "Return nil if V is 0, t otherwise."
-  (not (zerop v)))
-
-;; ---------------------------------------------------------------------------
-;; Bitwise Operations
-;; ------------------
-(defun pel-all-bitset-p (value &rest bits)
-  "Return t when all and only those BITS are set in VALUE, nil otherwise."
-  (let ((bitmask 0))
-    (dolist (bit bits bitmask)
-      (setq bitmask (logior bitmask bit)))
-    (equal 0 (logxor value bitmask))))
-
-;; ---------------------------------------------------------------------------
-;; File System Type
-;; ----------------
+;;* File System Type
+;;  ================
 
 (defun pel-unix-socket-p (fname)
   "Return t if FNAME is a Unix Socket, nil otherwise.
@@ -838,13 +874,13 @@ error is raised."
    ((file-symlink-p path)    "symbolic link")
    ((file-directory-p path)  "directory")
    ((file-regular-p path)    "file")
-   ((not (file-exists-p path)) (error "%s does not exists" path))
+   ((not (file-exists-p path)) (error "%s does not exist" path))
    ((pel-unix-socket-p path) "UNIX socket")
    (t "unknown file system object")))
 
 ;; ---------------------------------------------------------------------------
-;; String predicates
-;; -----------------
+;;* String predicates
+;;  =================
 
 (defun pel-whitespace-in-str-p (text)
   "Return non-nil if any whitespace character is inside TEXT, nil otherwise.
@@ -897,8 +933,8 @@ Ignore case differences if IGNORE-CASE is non-nil."
          (not (string-match-p "[[:cntrl:]]" string)))))
 
 ;; ---------------------------------------------------------------------------
-;; - Pluralizer
-;; ------------
+;;* Pluralizer
+;;  ==========
 
 (defun pel-plural-of (word)
   "Return the plural of the specified WORD.
@@ -947,8 +983,8 @@ in which case return PLURAL."
     singular))
 
 ;; ---------------------------------------------------------------------------
-;; Symbol value extraction
-;; -----------------------
+;;* Symbol value extraction
+;;  =======================
 
 (defun pel--symbol-value (symbol &optional quiet)
   "Return SYMBOL value if it is bound.
@@ -975,7 +1011,8 @@ non-nil, just return nil when SYMBOL is not bound."
     (intern s)))
 
 ;; ---------------------------------------------------------------------------
-;; Symbol at point
+;;* Symbol at point
+;;  ===============
 
 (defun pel-symbol-at-point ()
   "Return symbol at point; return nil if there are none."
@@ -985,18 +1022,8 @@ non-nil, just return nil when SYMBOL is not bound."
     (error "Function thing-at-point not loaded!")))
 
 ;; ---------------------------------------------------------------------------
-;; String generation utilities
-;; ---------------------------
-;;
-;; Call hierarchy:
-;;  - `pel-option-mode-state'
-;;    - `pel-activated-in-str'
-;;  - `pel-symbol-value-or'
-;;  - `pel-value-on-off-text'
-;;  - `pel-symbol-text'
-;;    - `pel-symbol-on-off-string'
-;;      - `pel-on-off-string'
-;;  - `pel-yes-no-string'
+;;* String generation utilities
+;;  ===========================
 
 (defun pel-on-off-string (boolean &optional on-string off-string)
   "Return \"off\" for nil, \"on\" for non-nil BOOLEAN argument.
@@ -1036,14 +1063,18 @@ If SYMBOL is not defined, show VOID-STRING if defined, \"void\" otherwise."
           pel--prompt-separator
           (pel-symbol-on-off-string symbol on-string off-string void-string)))
 
-(defun pel-value-on-off-text (name value &optional on-string off-string)
-  "Return a string describing NAME boolean VALUE.
-If VALUE is t  : show ON-STRING if defined, \"on\" otherwise.
-If VALUE is nil: show OFF-STRING if defined, \"off\" otherwise."
+;; --
+
+(defun pel-value-on-off-text (symbol &optional on-string off-string)
+  "Return a string describing SYMBOL as a boolean value.
+If SYMBOL value if non-nil: show ON-STRING if defined, \"on\" otherwise.
+If SYMBOL value  is nil   : show OFF-STRING if defined, \"off\" otherwise."
   (format "%s is now%s %s"
-          name
+          (symbol-name symbol)
           pel--prompt-separator
-          (pel-symbol-on-off-string value on-string off-string)))
+          (pel-symbol-on-off-string symbol on-string off-string)))
+
+;; --
 
 (defun pel-symbol-value-or (symbol &optional replacement formatter buffer)
   "Return SYMBOL value if non void, otherwise its REPLACEMENT.
@@ -1069,6 +1100,8 @@ by BUFFER or `pel-insert-symbol-content-context-buffer'."
             replacement)
         (format "unknown - `%S' is not bound!" symbol)))))
 
+;; --
+
 (defun pel-yes-no-string (test &optional true-string false-string)
   "Return TRUE-STRING when boolean TEST is non-nil, otherwise FALSE_STRING.
 By default or when these arguments are nil:
@@ -1079,19 +1112,8 @@ By default or when these arguments are nil:
     (or false-string "no")))
 
 ;; ---------------------------------------------------------------------------
-;; Automated Mode Activation Check functions
-;; -----------------------------------------
-
-(defun pel-activated-in-str (activated-in)
-  "Return a string describing ACTIVATED-IN list.
-Return an empty string if ACTIVATED-IN is nil.
-Otherwise return a string start starts with \" Auto-loaded in: \"
-followed by the elements of ACTIVATED-IN separated by commas."
-  (if activated-in
-      (format " Auto-loaded in: %s"
-              (pel-list-str activated-in))
-    ""))
-
+;;* Automated Mode Activation Check
+;;  ===============================
 
 (defun pel-modes-activating-symbol-name-for (minor-mode)
   "Return user-option symbol that set which major mode activates MINOR-MODE.
@@ -1200,6 +1222,19 @@ nil or the value specified by NIL-RETURN if it is specified."
           description)
         nil-return)))
 
+;; --
+
+(defun pel-activated-in-str (activated-in)
+  "Return a string describing ACTIVATED-IN list, empty string if it is nil.
+
+When ACTIVATED_IN is not nil return a string that starts with
+\" Auto-loaded in: \" followed by the elements of ACTIVATED-IN separated by
+commas."
+  (if activated-in
+      (format " Auto-loaded in: %s"
+              (pel-list-str activated-in))
+    ""))
+
 (defun pel-option-mode-state (mode user-option &optional activated-in buffer)
   "Return description of MODE status controlled by USER_OPTION.
 USER-OPTION is a symbol.  A non-nil value of that symbol
@@ -1232,23 +1267,12 @@ by BUFFER or `pel-insert-symbol-content-context-buffer'."
         (format "%s symbol unknown" (symbol-name user-option))))))
 
 ;; ---------------------------------------------------------------------------
-;; String transformation utilities:
-;; - `pel-as-string'
-;; - `pel-capitalize-first-letter'
-;; - `pel-end-text-with-period'
-;; - `pel-hastext'
-;; - `pel-when-text-in'
-;; - `pel-string-or-nil'
-;; - `pel-string-for'
-;; - `pel-string-when'
-;; - `pel-string-spread'
-;; - `pel-list-str'
-;; - `pel-title-case-to-dash-separated'
-;; - `pel-grp-regex'
+;;* String transformation utilities
+;;  ===============================
 
 (defun pel-as-string (val)
   "Return a string for the simple object value VAL.
-VAL may a string, as symbol, a number or a character.
+VAL may be a string, a symbol, a number or a character.
 Otherwise an error is raised."
   (cond
    ((stringp val) val)
@@ -1340,7 +1364,7 @@ ELISP>"
 (defun pel-grp-regex (text &optional tail)
   "Return string with TEXT inside regexp group.
 
-For STR, the returned string is \"\\\\(STR\\\\)\",
+For TEXT, the returned string is \"\\\\(TEXT\\\\)\",
 unless TAIL is specified, in which case tail is appended
 after the closing parenthesis."
   (let ((str (format "\\(%s\\)" text)))
@@ -1350,13 +1374,8 @@ after the closing parenthesis."
 
 
 ;; ---------------------------------------------------------------------------
-;; Message List formatting
-;; -----------------------
-;;
-;; - `pel-format-problem-messages'
-;;   - `pel--format-problem-messages'
-;; - `pel-message-for'
-;;
+;;* Message List formatting
+;;  =======================
 
 (defun pel--format-problem-messages (problems intro &optional extra-intro)
   "Return string describing PROBLEMS for INTRO.
@@ -1370,7 +1389,26 @@ The function returns the formatted string.
 
 Don't use this function directly; use the
 `pel-format-problem-messages' macro instead: it simplifies
-caller's code."
+caller's code.
+
+Example:
+
+  ELISP> (pel--format-problem-messages \\='(\"problem 1\" \"problem 2\")
+                                       \"System Test Report:\")
+  \"System Test Report:
+    The following 2 problems remain:
+    - problem 1
+    - problem 2\"
+
+  ELISP> (pel--format-problem-messages \\='(\"problem 1\" \"problem 2\")
+                                       \"System Test Report:\"
+                                       \"The final report is that\")
+  \"System Test Report:
+    The final report is that the following 2 problems remain:
+    - problem 1
+    - problem 2\"
+
+The second example shows where the EXTRA-INFO text is placed."
   (let ((problem-count (length problems)))
     (format "%s\n %she following %s %s:\n - %s"
             intro
@@ -1407,13 +1445,15 @@ separator is specified by the SEPARATOR argument."
              (string-join messages separator))))
 
 ;; ---------------------------------------------------------------------------
-;; Value check
-;; -----------
+;;* Value check
+;;  ===========
 
 (defun pel-use-or (value check-function alternative &rest transform-functions)
   "Return VALUE if (CHECK-FUNCTION VALUE) is non-nil, else return ALTERNATIVE.
-If there are any TRANSFORM-FUNCTIONS return a transformed VALUE by calling the
-first function with VALUE as argument and then the second, etc...
+
+If there are any TRANSFORM-FUNCTIONS return a transformed VALUE by
+calling the first function with VALUE as argument and then the second, etc...
+
 For example, if t1, t2 and t3 are specified, the returned value is the result
 of the following call sequence:
 
@@ -1444,8 +1484,8 @@ And with transformation functions:
     alternative))
 
 ;; ---------------------------------------------------------------------------
-;; Operations on sequences
-;; -----------------------
+;;* Operations on sequences
+;;  =======================
 
 (defun pel-concat-strings-in-list (list)
   "Return the concatenation of all strings in the LIST of strings."
@@ -1458,7 +1498,18 @@ And with transformation functions:
     acc))
 
 (defmacro pel-prepend-to (lst elems)
-  "Prepend ELEMS to the beginning of LST."
+  "Prepend ELEMS to the beginning of LST.
+
+Example:
+
+  ELISP> (setq my-list \\='(1 2 3 4))
+  (1 2 3 4)
+
+  ELISP> (pel-prepend-to  my-list \\='(22))
+  (22 1 2 3 4)
+
+  ELISP> (pel-prepend-to  my-list \\='(33 44 55))
+  (33 44 55 22 1 2 3 4)"
   `(setq ,lst (append ,elems ,lst)))
 
 (defun pel-cons-alist-at (alist key val)
@@ -1539,7 +1590,11 @@ Usage Example:
 
 ;; (credit to Drew Adams for this one)
 (defun pel-nth-elt (element elements)
-  "Return zero-indexed position of ELEMENT in ELEMENTS list, or nil if absent."
+  "Return zero-indexed position of ELEMENT in ELEMENTS list, or nil if absent.
+
+Example:
+  ELISP> (pel-nth-elt \\='b \\='(a b c d))
+  1"
   (let ((idx  0))
     (catch 'nth-elt
       (dolist (x elements)
@@ -1549,7 +1604,26 @@ Usage Example:
 
 ;; (credit to Metamorphic to the following 3 functions)
 (defun pel-list-insert-before (lst idx item)
-  "Return new list with ITEM before 0-base position index IDX of list LST."
+  "Return new list with ITEM before 0-base position index IDX of list LST.
+
+Example:
+  ELISP> (setq my-list \\='(a b c d))
+  (a b c d)
+
+  ELISP> (pel-list-insert-before my-list 1 \\='new)
+  (a new b c d)
+
+  ELISP> my-list
+  (a b c d)
+
+  ELISP> (pel-list-insert-before my-list -10 \\='other)
+  (other a b c d)
+
+  ELISP> (pel-list-insert-before my-list 0 \\='other)
+  (other a b c d)
+
+Note that with IDX 0 or smaller the item is placed at the beginning of the
+list. The original LST is untouched."
   (if (>= idx (length lst))
       (error "Out-of-range index: idx:%d >= length(lst):%s" idx (length lst))
     (if (<= idx 0)
@@ -1558,7 +1632,19 @@ Usage Example:
             (pel-list-insert-before (cdr lst) (- idx 1) item)))))
 
 (defun pel-list-prepend-nth (lst idx)
-  "Return list LST with ITEM at 0-base position IDX as first element."
+  "Return list LST with item at 0-base position IDX as first element.
+
+Example:
+   ELISP> (setq my-list \\='(a b c d))
+   (a b c d)
+
+   ELISP> (pel-list-prepend-nth my-list 2)
+   (c a b d)
+
+   ELISP> my-list
+   (a b c d)
+
+The original LST is untouched."
   (if (>= idx (length lst))
       (error "Out-of-range index: idx:%d >= length(lst):%s" idx (length lst))
     (if (<= idx 0)
@@ -1569,12 +1655,24 @@ Usage Example:
                     (cdr lx)))))))
 
 (defun pel-list-insert-car-at (lst idx)
-  "Return list LST with first element moved to the 0-base position IDX."
+  "Return list LST with first element moved to the 0-base position IDX.
+
+Example:
+  ELISP> (setq my-list \\='(a b c d))
+  (a b c d)
+
+  ELISP> (pel-list-insert-car-at my-list 2)
+  (b c a d)
+
+  ELISP> my-list
+  (a b c d)
+
+The original LST is untouched."
   (pel-list-insert-before (cdr lst) idx (car lst)))
 
 ;; ---------------------------------------------------------------------------
-;; Operation on auto-mode-alist
-;; ----------------------------
+;;* Operation on auto-mode-alist
+;;  ============================
 
 (defun pel-delete-from-auto-mode-alist (mode)
   "Delete MODE specific entries from `auto-mode-alist'.
@@ -1585,444 +1683,9 @@ Modifies `auto-mode-alist'."
                            auto-mode-alist))))
 
 ;; ---------------------------------------------------------------------------
-;;* Package and file installation and lazy loading
-;;  ==============================================
-;;
-;; [:todo 2025-10-08, by Pierre Rouleau: Move that set of function definitions
-;; inside its own file.]
-;;
-;; The first set install files downloaded from the internet with a specific
-;; URL inside PEL utils directory.
-;; These functions do not depend on Emacs package facility.  Therefore they
-;; can be used any time, including when PEL operates in fast-startup mode.
-;;
-;; - `pel-install-file'  downloads and installs one file.
-;; - `pel-install-files' downloads and installs one or several files from the
-;;   same web site.
-;;
-;; -> `pel-install-files'
-;;    -> `pel-install-file'
-;;       - `pel-url-copy-file'
+;;* PEL utils rebuild
+;;  =================
 
-;; The next set of functions does the same thing but provide logic
-;; specific to build GitHub or Gitlab URLs.
-;; They install the files inside PEL utils directory.
-;; These functions do not depend on Emacs package facility.  Therefore they
-;; can be used any time, including when PEL operates in fast-startup mode.
-;;
-;; - `pel-install-github-files' downloads and installs one or several files
-;;    from GitHub specified user project branch.
-;; - `pel-install-github-file' downloads and installs one file.  That file
-;;   may have a name that differs from the URL used to download it.  This is
-;;   mostly used when a file name has a character that cannot be part of a URL
-;;   and must be encoded differently.
-;; - `pel-install-gitlab-file' downloads, installs and compile one file from
-;;   Gitlab.
-;;
-;; -> `pel-install-github-file'
-;;     . `pel-install-file'
-;; -> `pel-install-github-files'
-;;     . `pel-install-files'
-;;       . `pel-install-file'
-;; -> `pel-install-gitlab-file'
-;;     . `pel-install-file'
-
-
-;; The next set of functions and macros provide logic to install Elpa
-;; compliant packages when PEL is not running in fast-startup mode
-;; and to require Emacs packages.
-;;
-;; -> - `pel-require'
-;;      - `pel-package-installed-p'
-;;      - `pel-package-install'
-;;        `pel-install-github-file'
-
-;; -> @ `pel-ensure-package-elpa'
-;;      - `pel--ensure-pkg-elpa'
-;;        - `pel--pin-package'
-;;          - `pel-archive-exists'
-;;       - `pel--package-ensure-elpa'
-;;         - `pel--package-install-elpa'
-;;
-
-;; The next set of functions and macros provide logic to install
-;; packages via quelpa.  This allows installation of multi-file packages
-;; inside the elpa directory as if they were elpa-compliant.
-;; However, they install nothing when PEL runs in fast-startup mode.
-;;
-;; -> @ `pel-quelpa-install'
-;;      - `pel--quelpa-install'
-
-;;  The next set of macros, defined in pel--keys.macros.el, control the
-;;  loading and evaluation of features and code, mostly used in pel_keys.el
-;;
-;; @ `pel-require-at-load'
-;;   - `pel--require-at-load'
-;; @ `pel-require-after-init'
-;;   - `pel--require-after-init'
-;; @ `pel-eval-after-load'
-;; @ `pel-set-auto-mode'
-;; @ `pel-autoload-file'
-;; @ `pel-declare-file'
-
-;; [:todo 2026-03-09, by Pierre Rouleau: Modify all functions that download
-;;                    and install files to return non-nil on success, nil on error to allow
-;;                    pel_keys.el code to proceed only when the file is either present or just
-;;                    downloaded.  Ideally the functions would return 'present or 'downloaded and
-;;                    the pel_keys.el code would not map commands when the command failed and the
-;;                    file is not installed locally.  There would not be any exception from
-;;                    failing installation just error warnings displayed describing what went
-;;                    wrong.  This way problems would not stop Emacs initialization.  For the
-;;                    moment coding issues or permission failures may stop the
-;;                    initialization.
-;;                    However do this only once the fast startup works on all
-;;                    version of Emacs as the extra code will slow down
-;;                    startup a little.]
-
-(defun pel-url-copy-file (url newname &optional ok-if-already-exists)
-  "Copy URL to NEWNAME.  Both arguments must be strings.
-
-Signal a `file-already-exists' error if file NEWNAME already
-exists, unless a third argument OK-IF-ALREADY-EXISTS is supplied
-and non-nil.  An integer as third argument means request
-confirmation if NEWNAME already exists.
-
-Same as `url-copy-file' but detects URL to non-existing file.
-Raise an error if the request generates a HTTP 404 error.
-Returns t if all is OK."
-  (require 'url-handlers nil 'noerror)
-  (if (fboundp 'url-copy-file)
-      ;; Try to download the file identified by the URL.
-      ;; That function does not detect invalid URLS so we could get a "404:
-      ;; Not Found"
-      (let ((tmp-fname (make-temp-file "pel-url-copy-file"))
-            (error-msg nil)
-            (err-car nil)
-            (err-cdr nil))
-        (condition-case err
-            (when (url-copy-file url tmp-fname t)
-              ;; Check that the file was properly downloaded.downloaded file
-              ;; url-copy-file places "404: Not Found" in the file when the
-              ;; URL pointed to an invalid location of a valid server.
-              (with-temp-buffer
-                (insert-file-contents tmp-fname)
-                (when (string= (buffer-substring-no-properties 1 4) "404")
-                  (setq error-msg (format "Requested URL does not exist: %s"
-                                          url))))
-              (unless error-msg
-                (copy-file tmp-fname newname ok-if-already-exists))
-              (delete-file tmp-fname))
-          (progn
-            ;; this block is here to prevent byte compiler warning on
-            ;;   (signal (car err) (cdr err))
-            (setq err-car (car err))
-            (setq err-cdr (cdr err))
-            (display-warning 'pel-url-copy-file
-                             (format "\
-Error installing URL %s to %s:\n%s %s\n%s"
-                                     url newname
-                                     err-car err-cdr
-                                     (pel-string-for error-msg)))))
-        (if (or error-msg err-car err-cdr)
-            nil
-          t))
-    (display-warning 'pel-url-copy-file
-                     "The url-handlers.el file is not loaded: can't install anything!")))
-
-(defun pel-install-file (url fname &optional refresh)
-  "Download, install a file FNAME from URL into PEL\\='s utility directory.
-On success, byte compile that file and when Emacs use native compilation
-the also build the native-compiled .eln file for it.
-
-The utility directory is the \\='utils\\=' sub-directory of the Emacs
-directory identified by the Emacs variable `user-emacs-directory'.
-If this directory does not exist, the function creates it.
-
-If the file already exists in the destination, no download
-is done unless REFRESH is non-nil, in which case the function
-prompts for confirmation.
-
-Returns non-nil when file was downloaded, nil otherwise.
-Permission errors are raised but install failures are just reported
-by warning to prevent init from failing."
-  (let* ((utils-dirname (file-name-as-directory
-                         (expand-file-name "utils" user-emacs-directory)))
-         (target-fname (expand-file-name fname utils-dirname))
-         (subdir (file-name-directory fname))
-         (downloaded nil))
-    (if (file-in-directory-p target-fname utils-dirname)
-        (progn
-          ;; create utils directory and sub-directory if required
-          (unless (file-exists-p utils-dirname)
-            (make-directory utils-dirname :make-parents-if-needed))
-          (when subdir
-            (setq subdir (expand-file-name subdir utils-dirname))
-            (unless (file-exists-p subdir)
-              (make-directory subdir :make-parents-if-needed)))
-
-          (when (or (not (file-exists-p target-fname)) refresh)
-            (message "Downloading %s" url)
-            (setq downloaded (pel-url-copy-file url target-fname refresh))
-            (when (and downloaded
-                       (string= (file-name-extension target-fname) "el"))
-              (message "Byte compiling it to %s" target-fname)
-              (byte-compile-file target-fname))))
-      (display-warning 'pel-install-file
-                       (format "\
-Cannot install %s inside PEL utils: it would be stored outside utils!\n\
-Fix the file specification in pel_keys.el!" fname)
-                       :error))
-    downloaded))
-
-(defun pel-install-files (url-base fnames &optional refresh)
-  "Download & install files identified by their URL-BASE and FNAMES.
-
-The URL-BASE is the common URL for the location of all files.
-
-The FNAMES is a file name string or list of file name strings
-identifying the name of the file located at that URL-BASE and
-also the name of the file save locally into the PEL Emacs \\='utils\\='
-directory.  See `pel-install-file' for more info.
-
-If a file already exists in the destination, no download
-is done unless REFRESH is non-nil, in which case the function
-prompts for confirmation.
-
-Permission errors are raised but install failures are just reported
-by warning to prevent init from failing."
-  (dolist (fname (pel-list-of fnames))
-    (pel-install-file (pel-url-join url-base fname)
-                      fname
-                      refresh)))
-
-;; -------
-
-(defun pel-install-github-files (user-project-branch
-                                 fnames
-                                 &optional refresh)
-  "Download & install FNAMES from GitHub USER-PROJECT-BRANCH.
-
-- USER-PROJECT-BRANCH is a GitHub user/project/branch name path
-  string.  Something like \"pierre-rouleau/pel/master\".
-  If a depot file is stored in a depot sub-directory, include the
-  path of depot directory inside USER-PROJECT-BRANCH.
-- FNAMES is a file name string or list of file names.
-
-If a file already exists in the destination, no download is done
-unless REFRESH is non-nil, in which case the function prompts for
-confirmation.
-
-Permission errors are raised but install failures are just reported
-by warning to prevent init from failing."
-  (pel-install-files (pel-url-join "https://raw.githubusercontent.com"
-                                   user-project-branch)
-                     fnames
-                     refresh))
-
-
-
-(defun pel-install-github-file (user-project-branch
-                                fname
-                                &optional url-fname refresh)
-  "Download & install FNAME from GitHub USER-PROJECT-BRANCH/URL-FNAME.
-
-- USER-PROJECT-BRANCH is a GitHub user/project/branch name path
-  string.  Something like \"pierre-rouleau/pel/master\".
-  If a depot file is stored in a depot sub-directory, include the
-  path of depot directory inside USER-PROJECT-BRANCH.
-- FNAME is the name of the file, with its .el extension.
-- URL-FNAME is the name of the file as it appears in the
-  URL. This argument is only required when it differs from FNAME.
-
-If a file already exists in the destination, no download
-is done unless REFRESH is non-nil, in which case the function
-prompts for confirmation.
-
-The function returns t if the file was downloaded, nil otherwise.
-Permission errors are raised but install failures are just reported
-by warning to prevent init from failing."
-  (pel-install-file (pel-url-join "https://raw.githubusercontent.com"
-                                  user-project-branch
-                                  (or url-fname fname))
-                    fname
-                    refresh))
-
-;; --
-
-(defun pel-install-gitlab-file (gitlab-user gitlab-project fname
-                                            &optional refresh)
-  "Download & install FNAME from Gitlab user and project into PEL utils.
-GITLAB-USER is the name of Gitlab user.
-GITLAB-PROJECT is the name of Gitlab project.
-
-If a file already exists in the destination, no download
-is done unless REFRESH is non-nil, in which case the function
-prompts for confirmation.
-
-The function returns t if the file was downloaded, nil otherwise.
-Permission errors are raised but install failures are just reported
-by warning to prevent init from failing."
-  (pel-install-file (format "https://gitlab.com/%s/%s/-/raw/master/%s"
-                            gitlab-user
-                            gitlab-project
-                            fname)
-                    fname
-                    refresh))
-
-;; -------
-(defun pel-package-install (pkg)
-  "Install package PKG, return t on success, nil otherwise.
-
-PKG must be a symbol naming one of the available packages in one
-of the archives listed in variable `package-archives'.
-
-If the first attempt fails, the function refreshes the package
-list and tries again.  This prevents failing to install a package
-when its version identified in the package list identifies an
-obsolete version no longer supported by the Elpa archive site.
-
-If the second attempt fails, then a error-level warning is logged
-and the function returns nil"
-  ;; package.el is part of Emacs but it's not loaded until required.
-  ;; Load it lazily and check if the required functions are bounded
-  ;; to prevent byte-compiler warnings.
-  (let ((package-was-installed nil))
-    (if (and (require 'package nil 'noerror)
-             (fboundp 'package-install))
-        (condition-case-unless-debug err
-            (progn
-              (package-install pkg)
-              (setq package-was-installed t))
-          (error
-           (if (and (fboundp 'package-refresh-content)
-                    (fboundp 'package-read-all-archive-contents)
-                    (boundp  'package-pinned-packages))
-               (progn
-                 (message (format "Failed to install %s: %s
-  Refreshing package list and re-trying..."
-                                  pkg
-                                  (error-message-string err)))
-                 (package-refresh-content)
-                 (when (assoc pkg (bound-and-true-p package-pinned-packages))
-                   (condition-case-unless-debug err
-                       (progn
-                         (package-read-all-archive-contents)
-                         (package-install pkg)
-                         (setq package-was-installed t))
-                     (error
-                      (display-warning
-                       'pel-package-install
-                       (format "After refresh, failed to install %s: %s"
-                               pkg
-                               (error-message-string err))
-                       :error)))))
-             (display-warning
-              'pel-package-install
-              (format "The package.el is not loaded properly.
-Failed installation of %s.
-Please verify the validity of your package-archives setup!"
-                      pkg)
-              :error))))
-      (display-warning
-       'pel-package-install
-       (format  "package-install is void. Can't install %s!
-Please verify the validity of your package-archives setup!"
-                pkg)
-       :error))
-    package-was-installed))
-
-(defun pel-package-installed-p (feature)
-  "Return t if FEATURE is installed, nil otherwise.
-Load the package library if that's not already done."
-  (if (and (require 'package nil 'noerror)
-           (fboundp 'package-installed-p))
-      (package-installed-p feature)
-    (display-warning 'pel--package-installed-p
-                     "Failed loading package.el to use package-installed-p!"
-                     :error)
-    nil))
-
-(defmacro pel-soft-require-or-warn (feature &rest body )
-  "Soft require FEATURE (unquoted symbol), display warning on failure.
-if BODY is specified, execute it on success."
-  (declare (indent 1))
-  (let ((warning-name (intern (format "pel-use-%s" feature)))
-        (warning-text (format "Can't load %s; skipping." feature)))
-    (if body
-        `(if (require (quote ,feature) nil 'noerror)
-             (progn
-               ,@body)
-           (display-warning (quote ,warning-name)
-                          ,warning-text
-                          :error))
-      `(unless (require (quote ,feature) nil 'noerror)
-         (display-warning (quote ,warning-name)
-                          ,warning-text
-                          :error)))))
-
-(defun pel-require (feature &optional package with-pel-install fname
-                            url-fname)
-  "Load FEATURE if not already loaded, optionally try to install PACKAGE.
-
-FEATURE is a symbol.
-
-PACKAGE is specified (non-nil) and FEATURE is not loaded,
-  try to install the specified package if it is not already available
-  and try checking for the presence of FEATURE again, with the same
-  behaviour.  It can be either:
-  - The special symbol `:install-when-missing' to indicate that the
-    package to install has the same name as the FEATURE.
-  - Another symbol that identifies the name of the required package.
-
-If WITH-PEL-INSTALL is non-nil it should be a `pel-install-github-file'
-compliant USER-PROJECT-BRANCH argument; a GitHub usr/project/branch name
-path string identifying the project file to install and FNAME should be
-the name of the .el file installed in the PEL utils directory.  The
-URL-FNAME is also treated as it is by `pel-install-github-file' and
-required only when the web file name differs from what is needed
-locally.
-
-Generate a warning when failing to load the FEATURE.
-Otherwise return the loading state of the FEATURE."
-  (unless (featurep feature)
-    (let ((feature-is-loaded (require feature nil 'noerror)))
-      (unless feature-is-loaded
-        ;; required failed - if package specified try installing it
-        ;; when not already present
-        (if package
-            (if with-pel-install
-                (progn
-                  ;; install using specified GitHub repository
-                  (pel-install-github-file with-pel-install fname url-fname
-                                           nil)
-                  ;; try to load it again
-                  (require feature nil 'noerror))
-              ;; install using Elpa package system
-              (let ((package (if (eq package :install-when-missing)
-                                 feature
-                               package)))
-                (unless (pel-package-installed-p package)
-                  (if (pel-in-fast-startup-p)
-                      (display-warning 'pel-require
-                                       (format "\
-Skipping installation of %s during fast startup."
-                                               package)
-                                       :warning)
-                    ;; not in fast-startup, not installed: install it
-                    (pel-package-install package)
-                    (require feature nil 'noerror)
-                    (unless (featurep feature)
-                      (display-warning 'pel-require
-                                       (format "\
-Failed loading %s even after installing package %s!"
-                                               feature package)))))))
-          (display-warning 'pel-require
-                           (format "pel-require(%s) failed. No request to install."
-                                   feature)
-                           :error)))))
-  (featurep feature))
-
-;; -------
 (defun pel-rebuild-utils ()
   "Byte compile all elisp files inside PEL utils directory."
   (let ((utils-dirname (expand-file-name "utils" user-emacs-directory)))
@@ -2039,199 +1702,9 @@ Skipping rebuild of utils file: utils directory does not exist: %s"
                                utils-dirname)
                        :warning))))
 
-;; -------
-;;
-;; The following code defines the `pel-ensure-package-elpa' macro that PEL uses
-;; to install Elpa-compliant packages.
-;;
-;; This is done to:
-;; - Install a package when the appropriate pel-use variable is turned on.
-;; - Does NOT install when byte-compiling the code.
-;; - Does NOT install when PEL is operating in fast startup mode.
-;; - Allow the selection of a Elpa site, just as the use-package :pin does.
-;;
-;; The `pel-ensure-package-elpa' macro uses the `pel--ensure-pkg-elpa'
-;; function to reduce the amount of code generated and executed to the expense
-;; of one function call.
-;;
-;; Credit: the package installation code was influenced by the
-;; use-package library found at https://github.com/jwiegley/use-package
-;; and now part of Emacs.
-;;
-;; PEL does not use the use-package library in attempt to reduce the overhead
-;; and the startup time further.
-
-
-(defun pel-archive-exists (archive)
-  "Return non-nil if specified package ARCHIVE is being used, nil otherwise.
-The ARCHIVE argument may be a string or a symbol.
-To get the URL of the existing package, take the cdr of the returned value."
-  (if (or (boundp 'package-archives)
-          (and (require 'package nil 'noerror)
-               (boundp 'package-archives)))
-      (with-no-warnings ; Emacs 30 Byte compiler does not see protection...
-        (assoc (pel-as-string archive) package-archives))
-    (display-warning 'pel-archive-exists
-                     "package.el is not loaded: package-archives is void"
-                     :error)
-    nil))
-
-(defvar pel--pinned-packages nil
-  "List of packages that are associated with a specific Elpa archive.")
-
-(defun pel--pin-package (package archive)
-  "Pin PACKAGE (a symbol) to ARCHIVE (a symbol or string)."
-  (if (pel-archive-exists archive)
-      (add-to-list 'pel--pinned-packages
-                   (cons package (pel-as-string archive)))
-    (error "\
-Archive '%S' requested for package '%S' is not listed in package-archives!"
-           archive package))
-  (unless (bound-and-true-p package--initialized)
-    (package-initialize t)))
-
-(defun pel--package-install-elpa (package)
-  "Install PACKAGE (a symbol).  On failure retry once and issue an error.
-
-Packages in the Elpa archive sites are regularly updated and old
-versions purged.  Requesting an old version of a package may
-occur when our local list is outdated.
-
-When a failure occurs, refresh the local list and try again, also
-generate a warning that identifies the error."
-  (declare-function package-install                   "package")
-  (declare-function package-refresh-contents          "package")
-  (declare-function package-read-all-archive-contents "package")
-  (defvar package-archive-contents)
-  ;;
-  (condition-case-unless-debug err
-      (package-install package)
-    (error
-     (message "Error trying to install %s : %s.  \
-Refreshing package list and trying again." package err)
-     (package-refresh-contents)
-     (package-read-all-archive-contents)
-     (if (assoc package package-archive-contents)
-         (package-install package)
-       (display-warning 'pel--install-package
-                        (format "Failed locating package %s" package)
-                        :error)))))
-
-(defun pel--package-ensure-elpa (package)
-  "Install specified Emacs Lisp PACKAGE (a symbol).
-
-DO NOT use this function directly inside your code.
-Use the macro `pel-ensure-package-elpa' instead.
-
-When a failure occurs, refresh the local list and try again, also
-generate a warning that identifies the error."
-  (if (and (require 'package nil 'noerror)
-           (boundp 'package-archive-contents)
-           (fboundp 'package-read-all-archive-contents))
-      (condition-case-unless-debug err
-          (progn
-            (when (assoc package (bound-and-true-p
-                                  pel--pinned-packages))
-              (package-read-all-archive-contents))
-            (if (assoc package package-archive-contents)
-                (pel--package-install-elpa package)
-              (package-refresh-contents)
-              (when (assoc package (bound-and-true-p
-                                    pel--pinned-packages))
-                (package-read-all-archive-contents))
-              (pel--package-install-elpa package))
-            t)
-        (error
-         (display-warning 'pel-ensure-package-elpa
-                          (format "Failed trying to install %s: %s"
-                                  package (error-message-string err))
-                          :error)))
-    (display-warning 'pel-ensure-package-elpa
-                     (format
-                      "Cannot install %s: package.el is not properly loaded."
-                      package)
-                     :error)))
-
-(defun pel--ensure-pkg-elpa (pkg &optional elpa-site)
-  "Install package PKG (a symbol) possibly from pinned ELPA-SITE.
-
-If ELPA-SITE is non-nil it should be a symbol or string holding the name
-of one of the Elpa repositories identified in the variable
-`package-archives'.
-
-When PEL operates in fast startup, nothing is done."
-  (unless (pel-in-fast-startup-p)
-    (when elpa-site
-      (pel--pin-package pkg elpa-site))
-    (pel--package-ensure-elpa pkg)))
-
-(defmacro pel-ensure-package-elpa (pkg &optional from: pinned-site)
-  "Install package named PKG, optionally from specified PINNED-SITE.
-PKG must be an unquoted symbol.
-FROM: is just a tag.
-When PINNED-SITE (a unquoted symbol) is specified use this as the Elpa
-repository, which must be listed in the variable `package-archives'.
-
-The FROM: argument must be present.  It is cosmetics only.
-
-The package list is refreshed before attempting installation to
-prevent trying to install an obsolete version of a package that
-is no longer present on the Elpa site.
-When a failure occurs, refresh the local list and try again, also
-generate a warning that identifies the error.
-
-However, when PEL operates in fast startup, the macro creates no code."
-  (declare (indent 1))
-  (ignore from:)
-  (let ((pin-site-name (when pinned-site (symbol-name pinned-site))))
-    `(unless (or (pel-in-fast-startup-p)
-                 (pel-package-installed-p (quote ,pkg)))
-       (pel--ensure-pkg-elpa (quote ,pkg) ,pin-site-name))))
-
-;; -------
-
-(defun pel--quelpa-install (package quelpa-specs)
-  "Install PACKAGE using specified QUELPA-SPECS.
-Don't install it if already installed."
-  (unless (or (pel-in-fast-startup-p)
-              (pel-package-installed-p package))
-    (if (fboundp 'quelpa)
-        (quelpa quelpa-specs)
-      (display-warning
-       'pel-quelpa-install
-       (format "Please activate pel-use-quelpa to install %S"
-               quelpa-specs)))))
-
-(defmacro pel-quelpa-install (quelpa-specs)
-  "Install the package identified by QUELPA-SPECS.
-QUELPA-SPECS is an unquoted form that identifies the package
-to install and how to install it.  See `quelpa' documentation.
-Don't install it if already installed or PEL in fast startup."
-  (declare (indent 1))
-  (if (listp quelpa-specs)
-      (let ((package (car quelpa-specs)))
-        (if (symbolp package)
-            `(pel--quelpa-install (quote ,package) (quote (,@quelpa-specs)))
-          (byte-compile-warn
-           "Invalid quelpa-spec: first element not a symbol: %S"
-           package)))
-    (byte-compile-warn "Invalid quelpa-specs: %S" quelpa-specs)
-    nil))
-
 ;; ---------------------------------------------------------------------------
-;; Delay activation of Modes after processing of command line arguments
-;; --------------------------------------------------------------------
-(eval-and-compile
-  (defmacro pel-after-startup-do (&rest body)
-    "Schedule BODY execution after processing of command line arguments."
-    `(add-hook 'emacs-startup-hook
-               (lambda ()
-                 ,@body)
-               :append)))
-
-;; ---------------------------------------------------------------------------
-;; Tree-sitter major mode support
-;; ------------------------------
+;;* Tree-sitter major mode support
+;;  ==============================
 
 (defun pel-major-mode-use-tree-sitter (mode ts-mode)
   "Activate replacement of a MODE by a TS-MODE when tree-sitter is used.
@@ -2286,7 +1759,7 @@ of emitting a warning."
   "Return the full path of the Tree-Sitter grammar file for MODE.
 
 MODE must be a symbol that does NOT end with -mode.
-Return nil of none found, or when tree-sitter is not supported."
+Return nil if none found, or when tree-sitter is not supported."
   (let* ((fname (format "libtree-sitter-%s.%s" mode pel-os-lib-file-extension))
          (found-path nil)
          (ts-dirpath (when (boundp 'treesit-extra-load-path)
@@ -2349,8 +1822,8 @@ following that line separator."
     (format "Tree-Sitter language grammar is NOT available for %s." mode)))
 
 ;; ---------------------------------------------------------------------------
-;; Mode argument interpretation
-;; ----------------------------
+;;* Mode argument interpretation
+;;  ============================
 
 (defun pel-action-for (action current-state)
   "Return \\='activate, \\='deactivate, nil for requested ACTION on CURRENT-STATE.
@@ -2386,8 +1859,8 @@ The returned value is:
     (if current-state 'deactivate nil))))
 
 ;; ---------------------------------------------------------------------------
-;; Toggle a local mode
-;; -------------------
+;;* Toggle a local mode
+;;  ===================
 
 (defun pel-toggle-mode (mode)
   "Toggle the specified MODE (a symbol).
@@ -2417,8 +1890,8 @@ The function issue an error if the argument is not a symbol."
   (message (pel-symbol-text mode on-string off-string)))
 
 ;; ---------------------------------------------------------------------------
-;; Basic functions working with values and variables
-;; -------------------------------------------------
+;;* Toggle of values and variables
+;;  ==============================
 ;;
 ;; To toggle the value of variable that would have
 ;; the hypothetical name is-acceptable we can use
@@ -2483,8 +1956,8 @@ Use NAME instead symbol name in the message if specified."
   (or val default))
 
 ;; ---------------------------------------------------------------------------
-;; Symbol processing
-;; -----------------
+;;* Symbol processing
+;;  =================
 
 (defun pel-hook-symbol-for (mode)
   "Return the hook symbol for the specified MODE symbol."
@@ -2496,8 +1969,8 @@ Use NAME instead symbol name in the message if specified."
   (intern (format "%s-map" (symbol-name mode))))
 
 ;; ---------------------------------------------------------------------------
-;; Hook control
-;; ------------
+;;* Hook control
+;;  ============
 
 (defun pel-add-hook-for (modes-list-symbol func &optional allowed-modes)
   "Add the FUNC hook to all modes listed in the MODES-LIST-SYMBOL.
@@ -2527,8 +2000,8 @@ You can do it with \\='M-x customize %s\\='."
        :error))))
 
 ;; ---------------------------------------------------------------------------
-;; Minor mode activation
-;; ---------------------
+;;* Minor mode activation
+;;  =====================
 
 (defun pel--check-minor-modes-in (list-var minor-modes)
   "Check validity of all MINOR-MODES specified in the LIST-VAR.
@@ -2568,7 +2041,7 @@ MINOR-MODES must be a symbol.  In PEL that should be
 `pel-activates-global-minor-modes'.
 
 The function generates a warning describing the problem if a
-local minor mode is specified instead of a local minor mode."
+local minor mode is specified instead of a global minor mode."
   (dolist (minor-mode (symbol-value minor-modes))
     (when (and (boundp minor-mode)
                (local-variable-if-set-p minor-mode))
@@ -2613,8 +2086,8 @@ global minor mode is specified instead of a local minor mode."
     (funcall minor-mode 1)))
 
 ;; ---------------------------------------------------------------------------
-;; Argument converter
-;; ------------------
+;;* Argument converter
+;;  ==================
 
 (defun pel-multiplier (positive)
   "Return a positive value 1 if POSITIVE is non-nil, -1 otherwise."
@@ -2624,8 +2097,8 @@ global minor mode is specified instead of a local minor mode."
   "Convert a boolean value to the value required by mode toggling functions.")
 
 ;; ---------------------------------------------------------------------------
-;; Iteration helpers
-;; -----------------
+;;* Iteration helpers
+;;  =================
 ;;
 ;; The following 2 functions can be used as the while loop test form, both to
 ;; decrement or increment a loop variable and to control termination of the
@@ -2672,16 +2145,16 @@ Return nil if symbol N value is CEILING or larger."
         (set n (1+ oldvalue)))))
 
 ;; ---------------------------------------------------------------------------
-;; Swap 2 values
-;; -------------
+;;* Swap 2 values
+;;  =============
 
 (defmacro pel-swap (var-a var-b)
   "Swap the content of VAR-A and VAR-B.  Return value of VAR-A."
   `(setq ,var-a (prog1 ,var-b (setq ,var-b ,var-a))))
 
 ;; ---------------------------------------------------------------------------
-;; Text at point
-;; -------------
+;;* Text at point
+;;  =============
 ;;
 ;; The following functions extract string information from the text at point.
 ;; The hierarchy of these function is show here:
@@ -2764,8 +2237,8 @@ instead."
     all-upper))
 
 ;; ---------------------------------------------------------------------------
-;; Calling functions
-;; -----------------
+;;* Calling functions
+;;  =================
 
 (defun pel-n-funcall-to (n pos-fct neg-fct)
   "Call one of arity-0 functions (abs N) times.
@@ -2779,8 +2252,8 @@ Return nil."
       (funcall neg-fct))))
 
 ;; ---------------------------------------------------------------------------
-;; Moving Point
-;; ------------
+;;* Moving Point
+;;  ============
 ;;
 ;; - `pel-goto-position'
 ;;   - `pel-goto-line'
@@ -2795,14 +2268,14 @@ Return nil."
 
 (defun pel-goto-position (line &optional column)
   "Move point to specified LINE, COLUMN.  Any can be nil."
-  (progn
-    (if line
-        (pel-goto-line line))
-    (if column
-        (move-to-column column))))
+  (if line
+      (pel-goto-line line))
+  (if column
+      (move-to-column column)))
 
 ;; ---------------------------------------------------------------------------
-;; Line position
+;;* Line position
+;;  =============
 
 (defun  pel-same-line-p (p1 p2)
   "Return t if P1 and P2 positions are on the same line, nil otherwise."
@@ -2815,9 +2288,8 @@ Return nil."
                (point)))))
 
 ;; ---------------------------------------------------------------------------
-;; Identifying region:
-;; - `pel-region-for'
-;;
+;;* Identifying region
+;;  ==================
 
 (defun pel-region-for (start-str end-str &optional pos)
   "Return the position of the beginning of delimited region.
@@ -2837,13 +2309,12 @@ Return a (start . end) cons cell if found, otherwise return nil."
           (cons beg end))))))
 
 ;; ---------------------------------------------------------------------------
-;; Insert or overwrite text
-;; - `pel-insert-or-overwrite'
-;;
+;;* Insert or overwrite text
+;;  ========================
 
 (defun pel-insert-or-overwrite (text)
   "Insert or overwrite TEXT depending of variable `overwrite-mode' status.
-TEST can be a single character or a string.
+TEXT can be a single character or a string.
 Multi-byte characters are handled properly."
   (when overwrite-mode
     (if (stringp text)
@@ -2852,8 +2323,8 @@ Multi-byte characters are handled properly."
   (insert text))
 
 ;; ---------------------------------------------------------------------------
-;; Extract text from buffer
-;; - `pel-text-from-beginning-of-line'
+;;* Extract text from buffer
+;;  ========================
 
 (defun pel-text-from-beginning-of-line (&optional with-properties)
   "Return text string between beginning of line and point.
@@ -2867,8 +2338,8 @@ otherwise it does not."
 
 
 ;; ---------------------------------------------------------------------------
-;; Check text from buffer
-;; - `pel-line-has-only-whitespace-p'
+;;* Check text in buffer
+;;  ====================
 
 (defun pel-line-has-only-whitespace-p (&optional pos)
   "Return non-nil if current line (or line at POS) contain only whitespace.
@@ -2890,9 +2361,16 @@ Note that this changes the search match data!"
     (and (not (nth 3 syntax))
          (not (nth 4 syntax)))))
 
+(defun pel-has-shebang-line ()
+  "Return t if buffer has shebang line, nil if it has none."
+  ;; Simply check if the first 2 characters in the buffer are "#!"
+  (save-excursion
+    (goto-char (point-min))
+    (looking-at "#!")))
+
 ;; ---------------------------------------------------------------------------
-;; File Path processing
-;; --------------------
+;;* File Path processing
+;;  ====================
 
 (defun pel-file-in (fname file-dir-list)
   "Check if FNAME matches FILE-DIR-LIST, an inclusion list.
@@ -3069,8 +2547,8 @@ This function handles both."
                            (file-name-directory symlink)))))))
 
 ;; ---------------------------------------------------------------------------
-;; Insertion of text in current buffer
-;; -----------------------------------
+;;* Insertion of text in current buffer
+;;  ===================================
 
 (defun pel-insert-bold (text)
   "Insert bold TEXT at point."
@@ -3285,8 +2763,8 @@ ON-SAME-LINE is non-nil"
             (pel--pp elem (current-buffer) "   ")))))))
 
 ;; ---------------------------------------------------------------------------
-;; Print in dedicated buffer
-;; -------------------------
+;;* Print in dedicated buffer
+;;  =========================
 
 (defun pel-print-in-buffer (bufname
                             title
@@ -3352,8 +2830,8 @@ instead."
         (recenter-top-bottom 0)))))
 
 ;; ---------------------------------------------------------------------------
-;; Code Parsing Support
-;; --------------------
+;;* Code Parsing Support
+;;  ====================
 
 (defun pel-point-in-comment-or-docstring (&optional move-fct)
   "Return position of start of comment or docstring surrounding point.
@@ -3365,28 +2843,10 @@ of point."
       (funcall move-fct))
     (nth 8 (parse-partial-sexp (point-min) (point)))))
 
-;; ---------------------------------------------------------------------------
-;; Speedbar Support
-;; ----------------
-
-(defun pel-add-speedbar-extension (extension)
-  "Add Speedbar support for the specified file EXTENSION.
-EXTENSION is either a string or a list of strings.
-Each string is either:
-- a complete filename,
-- a the file extension starting with a (non-quoted) period,
-- a regular expression to express the above.
-
-`pel-add-speedbar-extension' is a direct proxy to
-`speedbar-add-supported-extension' with the ability to load the
-speedbar file."
-  (pel-require 'speedbar)
-  (declare-function speedbar-add-supported-extension "speedbar")
-  (speedbar-add-supported-extension extension))
 
 ;; ---------------------------------------------------------------------------
-;; Byte-compilation
-;; ----------------
+;;* Byte-compilation
+;;  ================
 
 (defun pel-modtime-of (filename)
   "Return the modification time of FILENAME."
@@ -3399,7 +2859,7 @@ include the .el extension.  The name of the file may be relative
 or absolute.
 The file is byte compiled if it is newer than its byte-compiled
 output file (a file with the .elc extension) or if the .elc file
-does not exists.
+does not exist.
 It is also possible to pass OTHER-DEPENDENCIES, that are name of files that
 if newer than the EL-FILENAME, force byte-compilation of the EL-FILENAME."
   (let ((elc-filename (concat el-filename "c"))
@@ -3415,8 +2875,8 @@ if newer than the EL-FILENAME, force byte-compilation of the EL-FILENAME."
       (byte-compile-file el-filename))))
 
 ;; ---------------------------------------------------------------------------
-;; Imenu Utilities
-;; ---------------
+;;* Imenu Utilities
+;;  ===============
 
 (defun pel-add-imenu-sections-to (title-rule-keywords list-var)
   "Add rules to extract imenu indices to the specified LIST-VAR.
@@ -3463,8 +2923,8 @@ Return the new value of LIST-VAR."
   (symbol-value list-var))
 
 ;; ---------------------------------------------------------------------------
-;; Tags support
-;; ------------
+;;* Tags support
+;;  ============
 
 (defun pel-visit-tags (tags-files)
   "Visit the TAGS files identified in the TAGS-FILES list and the local one."
@@ -3476,19 +2936,8 @@ Return the new value of LIST-VAR."
       (visit-tags-table fname))))
 
 ;; ---------------------------------------------------------------------------
-;; Buffer Content Checks
-;; ---------------------
-
-(defun pel-has-shebang-line ()
-  "Return t if buffer has shebang line, nil if it has none."
-  ;; Simply check if the first 2 characters in the buffer are "#!"
-  (save-excursion
-    (goto-char (point-min))
-    (looking-at "#!")))
-
-;; ---------------------------------------------------------------------------
-;; Portability
-;; -----------
+;;* Portability
+;;  ===========
 ;;
 ;; Use the following functions to prevent warnings.
 ;; Select one that supports all required versions:
@@ -3549,8 +2998,6 @@ Returns nil when Emacs does not support tree-sitter."
    ;; No other support yet
    (t
     (format "Hardware model retrieval not yet supported for %s." system-type))))
-
-;; ---------------------------------------------------------------------------
 
 (defun pel-eglot-active-p ()
   "Return t if `eglot' is used in the current buffer, nil otherwise."
