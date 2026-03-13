@@ -4,7 +4,7 @@
 # Purpose   : Run an Ert test
 # Created   : Wednesday, February 25 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-27 17:07:19 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-03-13 14:18:46 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -87,7 +87,7 @@ if [ -f "$1" ]; then
     fi
 
 else
-    printf -- "*** ERROR: file does not exists: %s\n" "$1"
+    printf -- "*** ERROR: file does not exist: %s\n" "$1"
     exit 1
 fi
 

@@ -4,7 +4,7 @@
 # Purpose   : Build Emacs Tags files for Objective-C code files.
 # Created   : Friday, December  5 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 18:19:06 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-03-13 16:49:50 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -61,7 +61,7 @@ build_tags=true
 print_usage()
 {
     printf -- "
-%s: build a etags-compliant TAGS file in the current directory
+%s: build a etags-objc compliant TAGS file in the current directory
          for all Objective-C source code files in the directory trees
          specified on the command line.
 
@@ -72,7 +72,7 @@ print_usage()
  Usage: %s [-u] [-n] [DIRPATH ...]
         %s [-u] [--list=FILENAME]
 
-  • [Re]build an etags-compliant TAGS file in current directory
+  • [Re]build an etags-objc compliant TAGS file in current directory
     for the Objective-C code & header files found:
     - in the DIRPATH directory tree(s) identified on the command line, or
       the current directory if none is specified,
@@ -106,14 +106,14 @@ print_usage()
         by the .gitignore, .ignore or .fdignore files are ignored.
         You may want to check if some Objective-C files are identified
         in those files, then manually add them to .etags-objc-files.txt
-        and re-run etags-c with --list specified.
+        and re-run etags-objc with --list specified.
   • Stores the names of inspected files in the file named
     .etags-objc-files.txt stored in the same directory as TAGS.
   • -n : do not create TAGS file, just add names of Objective-C
          source code files into the .etags-objc-files.txt
          file.  Use this option to create the list of source
          files in multiple commands and then later the
-         etags-c --list to create the TAGS file.
+         etags-objc --list to create the TAGS file.
   • Uses etags to build the TAGS file by default.
     • Set ETAGS_USE_UCTAGS to 1 or to the absolute path of Universal
       Ctags executable file to force using Universal Ctags instead.
@@ -185,6 +185,7 @@ fi
 # Check -u option to force use of universal ctags
 # Check -n option: if specified do not build TAGS file and append to .etags-objc-files.txt
 # Note that we can have -u -n, -u, or -n: so handle all possible cases.
+# Also note that the -n -u option order is NOT permitted (as described by the help).
 if [ "$1" = "-u" ]; then
     if [ -z "$ETAGS_USE_UCTAGS" ]; then
         printf -- "%s: -u option requests use of Universal Ctags.\n" "${pgm_name}" 1>&2
@@ -202,9 +203,11 @@ if [ "$1" = "-n" ]; then
     build_tags=false
     shift
 fi
-
-# --
-
+if [ "$1" = "-u" ]; then
+    printf -- "\
+*** ERROR: Misplaced option -u. Use -h for more info.\n" 1>&2
+    exit 1
+fi
 
 # --
 #  Check --list option to extract list of Objective-C files.
@@ -289,14 +292,14 @@ search()
 
 if [ -n "${etags_flist_envvar_fname}" ]; then
     # If the ETAGS_FILE_LIST_FOR_OBJC environment variable was set in the shell
-    # invoking etags-c then use that if possible: that variable should
+    # invoking etags-objc then use that if possible: that variable should
     # identify a file name different than what we use internally.
     if [ "${etags_flist_envvar_fname}" = "${etags_flist_fname}" ]; then
-        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_OBJC to %s\n" "${pgm_name}" "${etags_flist_fname}"1>&2
+        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_OBJC to %s\n" "${pgm_name}" "${etags_flist_fname}" 1>&2
         printf -- "           Use a different file name!\n" 1>&2
         exit 1
     fi
-    printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_C: %s\n" "${etags_flist_envvar_fname}" 1>&2
+    printf -- "Using the file list identified by ETAGS_FILE_LIST_FOR_OBJC: %s\n" "${etags_flist_envvar_fname}" 1>&2
     cp "${etags_flist_envvar_fname}" "${etags_flist_fname}"
     printf -- "Generating TAGS ...\n" 1>&2
     run__etags__objc < "${etags_flist_envvar_fname}"
@@ -309,7 +312,7 @@ else
     dpaths=
     for dname in "$@"; do
         if [ ! -d "${dname}" ]; then
-            printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2
+            printf -- "Specified directory does not exist: %s\n" "${dname}" 1>&2
             exit 2
         fi
         dpath="$(realpath "${dname}")"
@@ -359,23 +362,23 @@ else
     # Print operating information on stderr.
     case "$search_with" in
         find)
-            printf -- "etags-c -- ETAGS_USE_FIND set to 1: forces the use of find!\n" 1>&2
+            printf -- "etags-objc -- ETAGS_USE_FIND set to 1: forces the use of find!\n" 1>&2
             printf --  "       -> Using %s\n" "$(command -v find)"                    1>&2
             ;;
 
         fd)
-            printf -- "etags-c -- Using sharkdp/fd fast find.\n" 1>&2
+            printf -- "etags-objc -- Using sharkdp/fd fast find.\n" 1>&2
             printf -- "        -> Using %s\n" "$(command -v "${fd_pgm}")" 1>&2
             printf -- " -> ☝️  Ignoring files identified in .gitignore, .ignore or .fdignore\n" 1>&2
             printf -- " -> ☝️  You may want to run a search with find once to detect broken symlinks\n" 1>&2
             ;;
 
         *)
-            printf -- "etags-c ** Error: cannot identify find program!\n" 1>&2
+            printf -- "etags-objc ** Error: cannot identify find program!\n" 1>&2
             exit 1
             ;;
     esac
-    printf --  "No list of files identified by ETAGS_FILE_LIST_FOR_C.\n" 1>&2
+    printf --  "No list of files identified by ETAGS_FILE_LIST_FOR_OBJC.\n" 1>&2
     printf -- "Files found printed in found order (not necessarily in sorted order)\n" 1>&2
 
     # -- proceed

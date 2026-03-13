@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Make source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2026-02-18 18:19:46 EST, updated by Pierre Rouleau>
+#  Time-stamp: <2026-03-13 16:49:43 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -157,6 +157,7 @@ fi
 # Check -u option to force use of universal ctags
 # Check -n option: if specified do not build TAGS file and append to .etags-make-files.txt
 # Note that we can have -u -n, -u, or -n: so handle all possible cases.
+# Also note that the -n -u option order is NOT permitted (as described by the help).
 if [ "$1" = "-u" ]; then
     if [ -z "$ETAGS_USE_UCTAGS" ]; then
         printf -- "%s: -u option requests use of Universal Ctags.\n" "${pgm_name}" 1>&2
@@ -173,6 +174,11 @@ fi
 if [ "$1" = "-n" ]; then
     build_tags=false
     shift
+fi
+if [ "$1" = "-u" ]; then
+    printf -- "\
+*** ERROR: Misplaced option -u. Use -h for more info.\n" 1>&2
+    exit 1
 fi
 
 # --
@@ -265,7 +271,7 @@ if [ -n "${etags_flist_envvar_fname}" ]; then
     # invoking etags-make then use that if possible: that variable should
     # identify a file name different than what we use internally.
     if [ "${etags_flist_envvar_fname}" = "${etags_flist_fname}" ]; then
-        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_MAKE to %s\n" "${pgm_name}" "${etags_flist_fname}"1>&2
+        printf -- "*** ERROR: %s: Do NOT set ETAGS_FILE_LIST_FOR_MAKE to %s\n" "${pgm_name}" "${etags_flist_fname}" 1>&2
         printf -- "           Use a different file name!\n" 1>&2
        exit 1
     fi
@@ -282,7 +288,7 @@ else
     dpaths=
     for dname in "$@"; do
         if [ ! -d "${dname}" ]; then
-            printf -- "Specified directory does not exists: %s\n" "${dname}" 1>&2
+            printf -- "Specified directory does not exist: %s\n" "${dname}" 1>&2
             exit 2
         fi
         dpath="$(realpath "${dname}")"
