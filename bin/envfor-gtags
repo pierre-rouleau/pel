@@ -1,15 +1,15 @@
-#!/bin/sh
-#  SH FILE: envfor-gtags
+# Sourced script: envfor-gtags  -*- mode: sh; -*-
 #
 #  Purpose   : Setup Pygments/universal-ctags parser plugin for GNU Global gtags.
 #  Created   : Thursday, October  8 2020.
 #  Author    : Pierre Rouleau
-#  Time-stamp: <2026-03-13 17:12:47 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2026-03-13 17:28:36 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
 #
-# Usage: source envfor-gtags
+# Usage: - source envfor-gtags
+#        - or create an alias use-gtags for it and use-gtags to run it.
 #
 # Install the Pygments / Universal Ctags plugin of GNU Global according to the
 # instructions found inside the file
@@ -23,8 +23,20 @@
 #  Code
 #  ----
 
-export GTAGSCONF="$(brew --prefix global)/share/gtags/gtags.conf"
-export GTAGSLABEL=pygments
+if command -v brew >/dev/null 2>&1 && brew --prefix global >/dev/null 2>&1; then
+    GTAGSCONF="$(brew --prefix global)/share/gtags/gtags.conf"
+    export GTAGSCONF
 
-echo GNU Global gtags - Pygments/Universal-CTags pluging installed.
+    GTAGSLABEL=pygments
+    export GTAGSLABEL
+
+    echo "GNU Global gtags - Pygments/Universal-CTags plugin installed."
+else
+    printf -- "*** ERROR: Homebrew formula 'global' is required to set GTAGSCONF.\n" 1>&2
+    return 1
+fi
+
 # ----------------------------------------------------------------------------
+#  Local Variables:
+#  sh-shell: sh
+#  End:
