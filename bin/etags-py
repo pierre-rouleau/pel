@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2026-03-13 16:22:38 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2026-03-13 16:50:21 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -183,7 +183,7 @@ if [ "$1" = "-n" ]; then
 fi
 if [ "$1" = "-u" ]; then
     printf -- "\
-*** ERROR: Misplaced option -u. Use -h for more info.\n"
+*** ERROR: Misplaced option -u. Use -h for more info.\n" 1>&2
     exit 1
 fi
 

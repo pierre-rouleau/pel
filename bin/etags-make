@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Make source code files.
 #  Created   : Thursday, June 6, 2024
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2026-03-13 16:20:08 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2026-03-13 16:49:43 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -177,7 +177,7 @@ if [ "$1" = "-n" ]; then
 fi
 if [ "$1" = "-u" ]; then
     printf -- "\
-*** ERROR: Misplaced option -u. Use -h for more info.\n"
+*** ERROR: Misplaced option -u. Use -h for more info.\n" 1>&2
     exit 1
 fi
 
