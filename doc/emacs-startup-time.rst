@@ -6,7 +6,7 @@ Speeding Up Emacs Startup
 :Project:
 :Created:  Friday, July  2 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-02-26 13:59:24 EST, updated by Pierre Rouleau.
+:Modified: 2026-03-13 15:29:42 EDT, updated by Pierre Rouleau.
 :Copyright: © 2021, 2026, Pierre Rouleau
 
 This document will contain information on speeding up Emacs startup further
@@ -37,7 +37,7 @@ I often use multiple instances of Emacs for doing various, unrelated tasks and
 want to keep each one a single entity with its own history and context.  These
 may be done in specialized shells that have tools activated in the PATH not
 available in the system PATH for instance.
-I also want to develop Emacs Lisp code and try it inside on or several Emacs
+I also want to develop Emacs Lisp code and try it inside one or several Emacs
 instances without affecting some already running Emacs sessions.  Because of
 that I end up launching Emacs sessions relatively often, at least the ones
 that are short-lived. And I want my Emacs sessions to start quickly, ideally
