@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2026-03-13 15:48:11 EDT, updated by Pierre Rouleau>
+#  Time-stamp: <2026-03-13 16:18:49 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -176,6 +176,7 @@ fi
 # Check -u option to force use of universal ctags
 # Check -n option: if specified do not build TAGS file and append to .etags-c-files.txt
 # Note that we can have -u -n, -u, or -n: so handle all possible cases.
+# Also note that the -n -u option order is NOT permitted (as described by the help).
 if [ "$1" = "-u" ]; then
     if [ -z "$ETAGS_USE_UCTAGS" ]; then
         printf -- "%s: -u option requests use of Universal Ctags.\n" "${pgm_name}" 1>&2
@@ -193,9 +194,11 @@ if [ "$1" = "-n" ]; then
     build_tags=false
     shift
 fi
-
-# --
-
+if [ "$1" = "-u" ]; then
+    printf -- "\
+*** ERROR: Misplaced option -u. Use -h for more info.\n"
+    exit 1
+fi
 
 # --
 #  Check --list option to extract list of C/C++ files.
