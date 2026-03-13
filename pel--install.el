@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-12 22:04:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-12 22:17:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -507,7 +507,7 @@ Return the loading state of the FEATURE."
                   ;; install using specified GitHub repository
                   (pel-install-github-file with-pel-install fname url-fname)
                 ;; install an elpa-compliant package if not already present
-                (if (package-installed-p package)
+                (if (pel-package-installed-p package)
                     (progn
                       (display-warning
                        'pel-require
