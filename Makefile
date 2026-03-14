@@ -1,9 +1,9 @@
 # Makefile --- GNU Make to build the PEL distributable package  -*- mode: makefile-gmake; -*-
 #
-# Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026 by Pierre Rouleau
+# Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-12 14:53:05 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-13 23:16:25 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -827,7 +827,7 @@ pel-perl.elc:             pel--base.elc pel--options.elc pel-ccp.elc pel-ffind.e
 pel-pike.elc:             pel--base.elc pel--options.elc pel-ccp.elc
 pel-plantuml.elc:         pel--base.elc
 pel-pp.elc:               pel--base.elc
-pel-prompt.elc:           pel--base.elc pel--options.elc
+pel-prompt.elc:           pel--base.elc pel--options.elc pel-text-transform.elc
 pel-python.elc:           pel--base.elc pel--options.elc pel-ccp.elc
 pel-read.elc:             pel-navigate.elc
 pel-register.elc:         pel--base.elc
@@ -838,7 +838,7 @@ pel-scheme.elc:           pel--base.elc pel-comint.elc pel-window.elc
 pel-screen.elc:           pel--options.elc pel-whitespace.elc
 pel-scroll.elc:           pel-window.elc
 pel-search-regexp.elc:    pel--options.elc
-pel-search.elc:           pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-search-regexp.elc pel-window.elc pel--syntax-macros.elc
+pel-search.elc:           pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-search-regexp.elc pel-text-transform.elc pel-window.elc pel--syntax-macros.elc
 pel-seed7.elc:            pel--base.elc pel--options.elc pel-ccp.elc
 pel-seq.elc:              pel--install.elc
 pel-setup-27.elc:         pel--options.elc pel-elpa.elc pel-setup-base.elc

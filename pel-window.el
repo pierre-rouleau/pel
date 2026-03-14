@@ -1,6 +1,6 @@
 ;;; pel-window.el --- PEL Window Management Utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2024, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -798,7 +798,7 @@ If specified use 2,4,6 or 8" n)))))
 ;; Window Split behaviour control
 
 (defun pel-toggle-split-window-keep-point ()
-  "Toggle the value of `split-window-keep-point'"
+  "Toggle the value of `split-window-keep-point'."
   (interactive)
   (pel-toggle-and-show 'split-window-keep-point
                        "Preserve point in new window"

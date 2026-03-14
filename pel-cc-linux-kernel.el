@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, August 13 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-08-13 21:54:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-14 15:58:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2024  Pierre Rouleau
+;; Copyright (C) 2024, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -127,8 +127,8 @@
 ;;-pel-autoload
 (defun pel-linux-kernel-code-style-setup ()
   "Activate the Linux Kernel Code Style for C."
-  (add-hook 'c-mode-common-hook (function pel--lks-add-c-style))
-  (add-hook 'c-mode-hook 'pel--lkcs-maybe-activate))
+  (add-hook 'c-mode-common-hook #'pel--lks-add-c-style)
+  (add-hook 'c-mode-hook #'pel--lkcs-maybe-activate))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-cc-linux-kernel)

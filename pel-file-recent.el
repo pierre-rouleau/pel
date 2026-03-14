@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, April  2 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 22:38:39 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 23:33:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@
 ;; https://www.masteringemacs.org/article/find-files-faster-recent-files-package
 
 (defun ido-recentf-open ()
-  "Use `ido-completing-read' to \\[find-file] a recent file"
+  "Use `ido-completing-read' to \\[find-file] a recent file."
   (interactive)
   (if (find-file (ido-completing-read "Find recent file: " recentf-list))
       (message "Opening file...")

@@ -199,7 +199,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;;            (expand-file-name "~/.emacs.d/utils/benchmark-init"))
   ;;   (require 'benchmark-init-modes
   ;;            (expand-file-name "~/.emacs.d/utils/benchmark-init-modes"))
-  ;;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
+  ;;   (add-hook 'after-init-hook #'benchmark-init/deactivate))
 
   ;; Define function to activate package.el Elpa-compliant Package Management
   ;; ------------------------------------------------------------------------

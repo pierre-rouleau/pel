@@ -1,6 +1,6 @@
 ;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
+;; Copyright (C) 2020-2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -646,12 +646,14 @@ Your version of Emacs does not support dynamic module.")))
   (when pel-use-all-the-icons-dired
     (pel-ensure-package-elpa  all-the-icons-dired)
     (pel-require-at-load all-the-icons-dired)
-    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+    (declare-function all-the-icons-dired-mode "all-the-icons-dired")
+    (add-hook 'dired-mode-hook #'all-the-icons-dired-mode))
 
   (when pel-use-all-the-icons-ivy
     (pel-ensure-package-elpa  all-the-icons-ivy)
     (pel-require-at-load all-the-icons-ivy)
-    (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
+    (declare-function all-the-icons-ivy-setup "all-the-icons-ivy")
+    (add-hook 'after-init-hook #'all-the-icons-ivy-setup))
 
   ;; On macOS, the keys used by the OS are the same as selected here, both in
   ;; GUI mode and in terminal (TTY) mode:
@@ -881,7 +883,8 @@ Your version of Emacs does not support dynamic module.")))
 (when pel-use-dired-git-info
   (pel-ensure-package-elpa dired-git-info from: melpa)
   (when (eq pel-use-dired-git-info 'on-for-git-directories)
-    (add-hook 'dired-after-readin-hook 'dired-git-info-auto-enable)))
+    (declare-function dired-git-info-auto-enable "dired-git-info")
+    (add-hook 'dired-after-readin-hook #'dired-git-info-auto-enable)))
 
 ;; Bind extra keys to dired mode map
 (pel-eval-after-load dired
@@ -1470,27 +1473,32 @@ Your version of Emacs does not support dynamic module.")))
 
 (when pel-delete-trailing-whitespace
   ;; - Remove trailing whitespaces on file save
-  (add-hook 'before-save-hook  'pel-delete-trailing-whitespace-if-activated))
+  (declare-function pel-delete-trailing-whitespace-if-activated "pel-whitespace")
+  (add-hook 'before-save-hook  #'pel-delete-trailing-whitespace-if-activated))
 (define-key pel: (kbd "M-W") 'pel-toggle-delete-trailing-space-on-save)
 
 (when pel-update-time-stamp
   ;; - Update file timestamp on file same (if any)
-  (add-hook 'before-save-hook  'pel--update-time-stamp))
+  (declare-function pel--update-time-stamp "pel-timestamp" ())
+  (add-hook 'before-save-hook  #'pel--update-time-stamp))
 (with-eval-after-load 'time-stamp
   (when (boundp 'time-stamp-active)
     (setq time-stamp-active pel-update-time-stamp)))
 
 (when pel-update-copyright
   ;; Update the copyright notice present in a file
-  (add-hook 'before-save-hook  'pel--update-copyright)
+  (declare-function pel--update-copyright "pel-timestamp" (&optional arg interactivep))
+  (add-hook 'before-save-hook  #'pel--update-copyright)
   (define-key pel: (kbd "M-@") 'pel-toggle-update-copyright-on-save))
 
 ;; -- make script executable
 
 (when pel-make-script-executable
   ;; - Make script file executable on file save
+  (declare-function executable-make-buffer-file-executable-if-script-p
+                    "executable" ())
   (add-hook 'after-save-hook
-            'executable-make-buffer-file-executable-if-script-p))
+            #'executable-make-buffer-file-executable-if-script-p))
 
 ;; ---------------------------------------------------------------------------
 ;;** iedit - Powerful editing of multiple instances
@@ -1512,11 +1520,12 @@ Your version of Emacs does not support dynamic module.")))
     ;; iedit seems to work fine in sh-mode now.
     ;; [:todo 2025-09-25, by Pierre Rouleau: remove after longer test period]
     ;; (require 'pel-iedit-modes-support)
-    ;; (add-hook 'sh-mode-hook 'pel-iedit-enhance-sh)
+    ;; (add-hook 'sh-mode-hook #'pel-iedit-enhance-sh)
     )
   (pel-eval-after-load tcl
     (pel-soft-require-or-warn pel-iedit-modes-support
-      (add-hook 'tcl-mode-hook 'pel-iedit-enhance-tcl))))
+      (declare-function pel-iedit-enhance-tcl "pel-iedit-modes-support" ())
+      (add-hook 'tcl-mode-hook #'pel-iedit-enhance-tcl))))
 
 ;; ---------------------------------------------------------------------------
 ;;** smart-dash
@@ -1731,8 +1740,8 @@ can't bind negative-argument to C-_ and M-_"
   (declare-function pel--setup-imenu+ "pel_keys")
 
   (when (fboundp 'imenup-add-defs-to-menubar)
-    (add-hook 'prog-mode-hook 'pel--setup-imenu+)
-    (add-hook 'text-mode-hook 'pel--setup-imenu+)))
+    (add-hook 'prog-mode-hook #'pel--setup-imenu+)
+    (add-hook 'text-mode-hook #'pel--setup-imenu+)))
 
 ;; Although imenu-extra is available through MELPA, that package just provide
 ;; tools that may be used by other PEL code to incorporate symbol generated
@@ -1826,7 +1835,8 @@ can't bind negative-argument to C-_ and M-_"
   (when pel-bind-m-dot-to-xref-find-custom-definition
     (local-set-key (kbd "M-.") 'pel-xref-find-custom-definition-at-line))
   (local-set-key (kbd "<f11> X .") 'pel-xref-find-custom-definition-at-line))
-(add-hook 'Custom-mode-hook 'pel--setup-for-custom)
+(declare-function pel--setup-for-custom "pel_keys" ())
+(add-hook 'Custom-mode-hook #'pel--setup-for-custom)
 
 ;; ---------------------------------------------------------------------------
 ;;** Function Keys - <f11> - Prefix ``<f11> M-S`` : Startup Operation Mode
@@ -2516,7 +2526,8 @@ can't bind negative-argument to C-_ and M-_"
   (add-to-list 'auto-mode-alist '("\\.ninja\\'" . ninja-mode))
   (pel-eval-after-load ninja-mode
     (pel-soft-require-or-warn pel-iedit-modes-support
-      (add-hook 'ninja-mode-hook 'pel-iedit-enhance-ninja)
+      (declare-function pel-iedit-enhance-ninja "pel-iedit-modes-support" ())
+      (add-hook 'ninja-mode-hook #'pel-iedit-enhance-ninja)
       (pel-config-major-mode ninja pel:for-ninja :no-ts))))
 
 ;;*** Nix Package Manager Support
@@ -3111,7 +3122,8 @@ MODE must be a symbol."
     (pel-install-github-file "nflath/c-eldoc/master" "c-eldoc.el")
     (pel-autoload-file c-eldoc for: c-turn-on-eldoc-mode)
     (when (eq pel-use-c-eldoc 'use-from-start)
-      (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode))
+      (declare-function c-turn-on-eldoc-mode "c-eldoc")
+      (add-hook 'c-mode-hook #'c-turn-on-eldoc-mode))
     (define-key pel:c-eldoc "c" 'pel-toggle-c-eldoc-mode))
 
   ;; Add extra key bindings specific to the C mode
@@ -3344,12 +3356,14 @@ MODE must be a symbol."
                          "Failed loading auto-complete: \
 d-mode not added to ac-modes!"
                          :error)))
-    (add-hook 'd-mode-hook 'ac-dcd-setup))
+    (declare-function ac-dcd-setup "ac-dcd")
+    (add-hook 'd-mode-hook #'ac-dcd-setup))
 
   (when pel-use-d-company-dcd
     (pel-ensure-package-elpa company-dcd from: melpa)
     (pel-autoload-file company-dcd for: company-dcd-mode)
-    (add-hook 'd-mode-hook 'company-dcd-mode))
+    (declare-function company-dcd-mode "company-dcd")
+    (add-hook 'd-mode-hook #'company-dcd-mode))
 
   (pel-eval-after-load d-mode
 
@@ -3792,7 +3806,8 @@ d-mode not added to ac-modes!"
       ;; ensure gofmt is executed before saving file if
       ;; configured to do so
       (when pel-go-run-gofmt-on-buffer-save
-        (add-hook 'before-save-hook  'pel-go-gofmt-on-buffer-save))
+        (declare-function pel-go-gofmt-on-buffer-save "pel-go" ())
+        (add-hook 'before-save-hook  #'pel-go-gofmt-on-buffer-save))
       ;; Set the display width of hard tabs used in Go source
       ;; as controlled by PEL user-option
       (setq-local tab-width pel-go-tab-width)
@@ -3964,7 +3979,8 @@ d-mode not added to ac-modes!"
               (add-to-list 'auto-mode-alist (cons pel--js-files-regexp 'js2-jsx-mode))
               (add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode)))
           (add-to-list 'auto-mode-alist (cons pel--js-files-regexp 'js2-mode))
-          (add-hook 'js-mode-hook 'js2-minor-mode))
+          (declare-function js2-minor-mode "js2-mode")
+          (add-hook 'js-mode-hook #'js2-minor-mode))
         (pel-eval-after-load js2-mode
           (pel-config-major-mode js2 pel:for-js :no-ts
             (when (and pel-use-js2-closure
@@ -4658,8 +4674,9 @@ d-mode not added to ac-modes!"
                            "Can't load macrostep-geiser" :error))))
     (when pel-use-ac-geiser
       (pel-ensure-package-elpa ac-geiser from: melpa)
-      (add-hook 'geiser-mode-hook 'ac-geiser-setup)
-      (add-hook 'geiser-repl-mode-hook 'ac-geiser-setup)
+      (declare-function ac-geiser-setup "ac-geiser")
+      (add-hook 'geiser-mode-hook #'ac-geiser-setup)
+      (add-hook 'geiser-repl-mode-hook #'ac-geiser-setup)
       (pel-eval-after-load auto-complete
         (if (and (require 'geiser nil 'noerror)
                  (fboundp 'geiser-repl-mode)
@@ -4816,11 +4833,11 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (declare-function pel--set-scheme-repl "pel_keys")
     ;; No package made for this.  Take the code directly from Github
     (pel-install-github-file "vyzo/gerbil/master/etc/" "gerbil-mode.el")
+    (declare-function gambit-inferior-mode "gambit")
     (pel-autoload-file gerbil-mode for: gerbil-mode)
     ;; In pel--options the code forces pel-use-gambit on when pel-use-gerbil
     ;; is on.
-
-    (add-hook 'inferior-scheme-mode-hook 'gambit-inferior-mode )
+    (add-hook 'inferior-scheme-mode-hook #'gambit-inferior-mode )
     ;; Gerbil files use the same file extension as Scheme: .ss
     ;; Use Emacs file variable to activate the Gerbil mode: place the following
     ;; text on the first line:  ;; -*- Gerbil -*-
@@ -5014,7 +5031,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
     ;; Prevent erlang shell to echo back commands on request.
     (when pel-erlang-shell-prevent-echo
-      (add-hook 'erlang-shell-mode-hook 'pel-erlang-shell-mode-init))
+      (declare-function pel-erlang-shell-mode-init "pel-erlang" ())
+      (add-hook 'erlang-shell-mode-hook #'pel-erlang-shell-mode-init))
 
     ;;
     (pel-soft-require-or-warn erlang-start)
@@ -5108,7 +5126,9 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                                  "Can't access ivy-erlang-complete-erlang-root"
                                  :error))
               ;; automatic update completion data after save
-              (add-hook 'after-save-hook 'ivy-erlang-complete-reparse)
+              (declare-function ivy-erlang-complete-reparse "ivy-erlang-complete")
+              ;; buffer local hook
+              (add-hook 'after-save-hook #'ivy-erlang-complete-reparse nil t)
               ;; Extra key bindings
               (define-key pel:for-erlang "."          'ivy-erlang-complete)
               (define-key pel:for-erlang (kbd "M-h")  'ivy-erlang-complete-show-doc-at-point)
@@ -5303,8 +5323,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
         ;; TODO: this is not Erlang specific but LSP specific: move
         ;;       it to a LSP section once I have set one up.
         (when pel-use-lsp-origami
-          (add-hook 'lsp-after-open-hook 'lsp-origami-try-enable)
-          (add-hook 'origami-mode-hook 'lsp-origami-mode))
+          (declare-function lsp-origami-try-enable "lsp-origami")
+          (declare-function lsp-origami-mode "lsp-origami")
+          (add-hook 'lsp-after-open-hook #'lsp-origami-try-enable)
+          (add-hook 'origami-mode-hook #'lsp-origami-mode))
         ;; TODO (when pel-use-helm
         ;;   ;; Provide commands to list workspace symbols:
         ;;   ;; - helm-lsp-workspace-symbol
@@ -5395,7 +5417,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (when pel-use-elixir-lsp
     (pel-ensure-package-elpa lsp-elixir from: melpa)
     (pel-autoload-file lsp-elixir for: elixir-mode)
-    (add-hook 'elixir-mode-hook 'lsp))
+    (declare-function lsp "lsp-mode" (&optional arg))
+    (add-hook 'elixir-mode-hook #'lsp))
 
   ;; 6- Activate Elixir setup.
   ;;    Schedule more configuration upon Elixir feature loading
@@ -5543,7 +5566,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-config-major-mode haskell pel:for-haskell :no-ts))
 
 ;; Using Intero to support Haskell programming language.
-;; (add-hook 'haskell-mode-hook 'intero-mode)
+;; (add-hook 'haskell-mode-hook #'intero-mode)
 
 ;; ---------------------------------------------------------------------------
 ;;** Hy Programming Language Support -- Hy, A Lisp in Python
@@ -5730,8 +5753,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; (use-package jedi
   ;;   :ensure t
   ;;   :init
-  ;;   (add-hook 'python-mode-hook 'jedi:setup)
-  ;;   (add-hook 'python-mode-hook 'jedi:ac-setup))
+  ;;   (add-hook 'python-mode-hook #'jedi:setup)
+  ;;   (add-hook 'python-mode-hook #'jedi:ac-setup))
 
   ;; NOTE: Jedi requires the installation of the backend server with
   ;; M-x jedi:install-server
@@ -5846,9 +5869,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (define-key pel:for-perl "t"  'perl-tidy-ediff-sub))
     ;; Enhance iedit-mode for cperl-mode
     (when pel-use-iedit
+      (declare-function pel-iedit-enhance-cperl "pel-iedit-modes-support" ())
       (pel-eval-after-load cperl-mode
         (pel-soft-require-or-warn pel-iedit-modes-support
-          (add-hook 'cperl-mode-hook 'pel-iedit-enhance-cperl))))
+          (add-hook 'cperl-mode-hook #'pel-iedit-enhance-cperl))))
 
     (when pel-use-perl-live-coding
       (pel-install-github-files "pierre-rouleau/perl-live/master"
@@ -6014,7 +6038,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (when (and pel-use-rust-mode
              pel-use-flycheck-rust)
     (pel-ensure-package-elpa flycheck-rust from: melpa)
-    (add-hook 'flycheck-mode-hook 'flycheck-rust-setup)
+    (declare-function flycheck-rust-setup "flycheck-rust")
+    (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
     (pel-eval-after-load flycheck
       (pel-soft-require-or-warn flycheck-rust)))
 
@@ -6039,11 +6064,12 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       ;; [:todo 2025-10-13, by Pierre Rouleau:
       ;;                should these also be used with rust-ts-mode?]
       ;; M-x package-install company
-      (add-hook 'rust-mode-hook 'cargo-minor-mode)
-      (add-hook 'rust-mode-hook 'racer-mode)
-      (add-hook 'racer-mode-hook 'eldoc-mode)
+      (add-hook 'rust-mode-hook #'cargo-minor-mode)
+      (when pel-use-emacs-racer
+        (add-hook 'rust-mode-hook #'racer-mode)
+        (add-hook 'racer-mode-hook #'eldoc-mode))
       (when pel-use-company
-        (add-hook 'racer-mode-hook 'company-mode))))
+        (add-hook 'racer-mode-hook #'company-mode))))
   ;;
   ;;  - 5.2 Schedule major mode configuration
   ;;    Do it for both rust-mode and tree-sitter aware rust-ts-mode
@@ -6301,12 +6327,13 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                                flymake-automatic))
     (pel-ensure-package-elpa flymake-shellcheck from: melpa)
     (when (eq pel-use-shellcheck 'flymake-automatic)
-      (add-hook 'sh-mode-hook 'flymake-shellcheck-load)))
+      (declare-function flymake-shellcheck-load "flymake-shellcheck")
+      (add-hook 'sh-mode-hook #'flymake-shellcheck-load)))
    ;; using flycheck
    ;; - flycheck support is already extended by default.
    ;; - start it automatically if it was requested by user-option
    ((eq pel-use-shellcheck 'flycheck-automatic)
-    (add-hook 'sh-mode-hook 'flycheck-mode))))
+    (add-hook 'sh-mode-hook #'flycheck-mode))))
 
 ;; ---------------------------------------------------------------------------
 ;;** SQL Programming Language Support
@@ -7440,7 +7467,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   ;;       re-install the binding that was present
   ;;       at the moment it was turned-on.
   (global-set-key (kbd "M-l") 'pel-complete))
-;; (add-hook 'after-init-hook 'global-company-mode)
+;; (add-hook 'after-init-hook #'global-company-mode)
 
 (declare-function keymap-set "keymap") ; introduced in Emacs 29.1.  Prevent
                                        ; warning when compiling with earlier
@@ -8004,10 +8031,11 @@ See `flyspell-auto-correct-previous-word' for more info."
     (pel-setq-default bm-buffer-persistence t)
 
     ;; Loading the repository from file when on start up.
-    (add-hook 'after-init-hook 'bm-repository-load)
+    (declare-function bm-repository-load "bm" (&optional file))
+    (add-hook 'after-init-hook #'bm-repository-load)
 
     ;; Saving bookmarks
-    (add-hook 'kill-buffer-hook 'bm-buffer-save)
+    (add-hook 'kill-buffer-hook #'bm-buffer-save)
 
     ;; Saving the repository to file on exit.
     ;; kill-buffer-hook is not called when Emacs is killed, so we
@@ -8022,11 +8050,11 @@ See `flyspell-auto-correct-previous-word' for more info."
     ;; The `after-save-hook' is not necessary to use to achieve persistence,
     ;; but it makes the bookmark data in repository more in sync with the file
     ;; state.
-    (add-hook 'after-save-hook 'bm-buffer-save)
+    (add-hook 'after-save-hook #'bm-buffer-save)
 
     ;; Restoring bookmarks
-    (add-hook 'find-file-hook    'bm-buffer-restore)
-    (add-hook 'after-revert-hook 'bm-buffer-restore)
+    (add-hook 'find-file-hook    #'bm-buffer-restore)
+    (add-hook 'after-revert-hook #'bm-buffer-restore)
 
     ;; The `after-revert-hook' is not necessary to use to achieve persistence,
     ;; but it makes the bookmark data in repository more in sync with the file
@@ -8036,7 +8064,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     ;; called before the buffer is reverted (like `vc-before-checkin-hook').
     ;; Then new bookmarks can be saved before the buffer is reverted.
     ;; Make sure bookmarks is saved before check-in (and revert-buffer)
-    (add-hook 'vc-before-checkin-hook 'bm-buffer-save)))
+    (add-hook 'vc-before-checkin-hook #'bm-buffer-save)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Indentation - <f11> tab
@@ -8236,7 +8264,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   "Activate `abbrev-mode'."
   (define-key pel:abbrev "a" #'abbrev-mode)
 
-  (pel-add-hook-for 'pel-modes-activating-abbrev-mode 'abbrev-mode)
+  (pel-add-hook-for 'pel-modes-activating-abbrev-mode #'abbrev-mode)
   (when (bound-and-true-p pel--cached-abbrev-file-name)
     (setq abbrev-file-name pel--cached-abbrev-file-name)
     (quietly-read-abbrev-file nil))
@@ -8323,7 +8351,8 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:text-to "f"  #'append-to-file)
 
 ;; Add key bindings inside the Buffer Selection Mode.
-(add-hook 'bs-mode-hook 'pel-bs-init)
+(declare-function pel-bs-init "pel-buffer" ())
+(add-hook 'bs-mode-hook #'pel-bs-init)
 
 (when pel-use-popup-switcher
   (define-key pel:buffer "b" 'psw-switch-buffer))
@@ -8660,9 +8689,10 @@ See `flyspell-auto-correct-previous-word' for more info."
         (define-key map (kbd "<f6> s r")    'smerge-resolve)
         (define-key map (kbd "<f6> s M-r")  'smerge-resolve-all)
         (define-key map (kbd "<f6> s M-s")  'smerge-swap))))
+  (declare-function pel--smerge-setup "pel_keys" ())
 
   ;; Activate PEL smerge setup when smerge-mode starts on a buffer.
-  (add-hook 'smerge-mode-hook 'pel--smerge-setup)
+  (add-hook 'smerge-mode-hook #'pel--smerge-setup)
 
   (when (eq pel-use-smerge 'auto)
     ;; Following function originally taken from smerge-mode.el
@@ -8673,7 +8703,8 @@ See `flyspell-auto-correct-previous-word' for more info."
         (goto-char (point-min))
         (when (re-search-forward "^<<<<<<< " nil t)
           (smerge-mode 1))))
-    (add-hook 'find-file-hook 'sm-try-smerge t)))
+    (declare-function sm-try-smerge "pel_keys" ())
+    (add-hook 'find-file-hook #'sm-try-smerge t)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** patch Commands - <f11> d p
@@ -9620,7 +9651,7 @@ See `flyspell-auto-correct-previous-word' for more info."
                      emacros-show-macros
                      emacros-show-macro-names
                      emacros-name-last-kbd-macro-add)
-  (add-hook 'find-file-hook 'emacros-load-macros)
+  (add-hook 'find-file-hook #'emacros-load-macros)
   (define-key pel:emacros "L" 'emacros-load-macros)
   (define-key pel:emacros "?" 'emacros-show-macros)
   (define-key pel:emacros "/" 'emacros-show-macro-names)
@@ -9892,7 +9923,8 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;;** Regular Expression Builder (part of Emacs).
 
 ;; Enhance the regular expression builder mode with useful key bound commands.
-(add-hook 'reb-mode-hook 'pel-reb-enhance)
+(declare-function pel-reb-enhance "pel-search" ())
+(add-hook 'reb-mode-hook #'pel-reb-enhance)
 
 (define-pel-global-prefix pel:regexp (kbd "<f11> s x"))
 (define-key pel:regexp      " "   'pel-insert-regexp)
@@ -10054,14 +10086,19 @@ See `flyspell-auto-correct-previous-word' for more info."
   (defun pel--sr-speedbar-setup()
     "Setup the sr-speedbar hooks."
     ;; Remove sr-speedbar hooks that switch back to the speedbar buffer
-    (remove-hook 'speedbar-before-visiting-file-hook 'sr-speedbar-before-visiting-file-hook)
-    (remove-hook 'speedbar-before-visiting-tag-hook  'sr-speedbar-before-visiting-tag-hook)
-    (remove-hook 'speedbar-visiting-file-hook        'sr-speedbar-visiting-file-hook)
-    (remove-hook 'speedbar-visiting-tag-hook         'sr-speedbar-visiting-tag-hook)
+    (declare-function sr-speedbar-before-visiting-file-hook "sr-speedbar")
+    (declare-function sr-speedbar-before-visiting-tag-hook  "sr-speedbar")
+    (declare-function sr-speedbar-visiting-file-hook        "sr-speedbar")
+    (declare-function sr-speedbar-visiting-tag-hook         "sr-speedbar")
+    (remove-hook 'speedbar-before-visiting-file-hook #'sr-speedbar-before-visiting-file-hook)
+    (remove-hook 'speedbar-before-visiting-tag-hook  #'sr-speedbar-before-visiting-tag-hook)
+    (remove-hook 'speedbar-visiting-file-hook        #'sr-speedbar-visiting-file-hook)
+    (remove-hook 'speedbar-visiting-tag-hook         #'sr-speedbar-visiting-tag-hook)
     ;; Instead add hooks to a command can controls the behaviour
-    (add-hook 'speedbar-visiting-file-hook         'pel-sr-speedbar-visiting-control t)
+    (declare-function pel-sr-speedbar-visiting-control "pel-speedbar" ())
+    (add-hook 'speedbar-visiting-file-hook         #'pel-sr-speedbar-visiting-control t)
     (add-hook 'speedbar-visiting-tag-hook
-              'pel-sr-speedbar-visiting-control t))
+              #'pel-sr-speedbar-visiting-control t))
   (declare-function pel--sr-speedbar-setup "pel_keys")
 
   (pel-eval-after-load sr-speedbar
@@ -10378,12 +10415,13 @@ See `flyspell-auto-correct-previous-word' for more info."
       (defun pel--cfg-magit-keys ()
         "Delayed Magit configuration - add extra key bindings to Magit."
         (define-key pel:vcs-magit "s" 'magit-status))
+      (declare-function pel--cfg-magit-keys "pel_keys" ())
 
       (pel-ensure-package-elpa magit from: melpa)
       (pel-autoload-file magit for:
                          magit
                          magit-status)
-      (add-hook 'after-init-hook 'pel--cfg-magit-keys :append)
+      (add-hook 'after-init-hook #'pel--cfg-magit-keys :append)
 
       ;;
       (when pel-use-treemacs-magit
@@ -11099,14 +11137,15 @@ See `flyspell-auto-correct-previous-word' for more info."
     (define-key pel:cscope "C" 'cscope-minor-mode)
     ;; schedule activation of cscope minor mode for selected ones
     (pel-add-hook-for 'pel-modes-activating-cscope
-                      'cscope-minor-mode))
+                      #'cscope-minor-mode))
   (when pel-use-helm-cscope
     (pel-ensure-package-elpa helm-cscope from: melpa)
     (pel-autoload-file helm-cscope for: helm-cscope-mode)
     (define-key pel:cscope "H" 'pel-toggle-helm-cscope)
-    (add-hook 'helm-cscope-mode-hook 'pel-activate-helm-cscope)
+    (declare-function pel-activate-helm-cscope "pel-xref" ())
+    (add-hook 'helm-cscope-mode-hook #'pel-activate-helm-cscope)
     (pel-add-hook-for 'pel-modes-activating-helm-cscope
-                      'pel-activate-helm-cscope)))
+                      #'pel-activate-helm-cscope)))
 
 
 ;;** dumb-jump
@@ -11132,8 +11171,9 @@ See `flyspell-auto-correct-previous-word' for more info."
   ;; to use dumb-jump as the backend for xref, and use its key bindings.
   (define-key pel:xref-backend "D" 'pel-xref-toggle-dumb-jump-mode)
   ;; schedule activation for requested major modes.
+  (declare-function pel-xref-dumb-jump-activate-locally "pel-xref" ())
   (pel-add-hook-for 'pel-modes-activating-dumb-jump
-                    'pel-xref-dumb-jump-activate-locally)
+                    #'pel-xref-dumb-jump-activate-locally)
   ;; The old dumb-jump functions are useful and bound in PEL; prevent getting
   ;; warned about them being obsolete!
   (pel-eval-after-load dumb-jump
@@ -11153,8 +11193,9 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-ensure-package-elpa gxref from: melpa)
   (pel-autoload-file gxref for: xref-show-xrefs-function)
   (define-key pel:xref-backend "g" 'pel-xref-toggle-gxref)
+  (declare-function pel-xref-gxref-activate "pel-xref" ())
   (pel-add-hook-for 'pel-modes-activating-gxref
-                    'pel-xref-gxref-activate))
+                    #'pel-xref-gxref-activate))
 
 ;;** jtags
 (when pel-use-jtags
@@ -11307,7 +11348,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-check-minor-modes-in           pel-activates-global-minor-modes)
   (pel-turn-on-global-minor-modes-in 'pel-activates-global-minor-modes))
 
-(add-hook 'after-init-hook 'pel--cfg-global-minor-modes :append)
+(add-hook 'after-init-hook #'pel--cfg-global-minor-modes :append)
 
 ;; ---------------------------------------------------------------------------
 ;;* PEL Hydras Control

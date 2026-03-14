@@ -1,6 +1,6 @@
 ;;; pel-xref.el --- xref cross referencing utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
+;; Copyright (C) 2020-2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -134,9 +134,10 @@ identifier can be found at point. It calls `xref-find-definitions'."
   "Activate dumb-jump for the current buffer."
   (require 'xref)
   (pel-require 'dumb-jump)
+  (declare-function dumb-jump-xref-activate "dumb-jump" ())
   ;; Activate xref dumb-jump locally: for the current buffer only.
   (add-hook 'xref-backend-functions
-            'dumb-jump-xref-activate
+            #'dumb-jump-xref-activate
             nil
             t))
 
@@ -153,7 +154,7 @@ identifier can be found at point. It calls `xref-find-definitions'."
 (defun pel-xref-dumb-jump--deactivate-locally ()
   "Deactivate dumb-jump for the current buffer."
   (remove-hook 'xref-backend-functions
-               'dumb-jump-xref-activate
+               #'dumb-jump-xref-activate
                t))
 
 (defun pel-xref-dumb-jump-deactivate (locally)
@@ -161,7 +162,7 @@ identifier can be found at point. It calls `xref-find-definitions'."
   (pel-xref-dumb-jump--deactivate-locally)
   (unless locally
     (remove-hook (pel-hook-symbol-for major-mode)
-                 (function pel-xref-dumb-jump-activate-locally))))
+                 #'pel-xref-dumb-jump-activate-locally)))
 
 (defun pel-xref-dumb-jump-activated-in (&optional mode)
   "Return t if dumb-jump is locally activated for specific major MODE.
@@ -222,8 +223,9 @@ only apply the change for the current buffer only."
   "Activate the gxref xref back-end for the current major mode."
   (require 'xref)
   (pel-require 'gxref)
+  (declare-function gxref-xref-backend "gxref" ())
   (add-hook 'xref-backend-functions
-            'gxref-xref-backend
+            #'gxref-xref-backend
             nil
             (pel-xref-function-hook-local-p xref-backend-functions)))
 
@@ -255,7 +257,7 @@ Print a message unless QUIET is requested."
   (require 'xref)
   (if (pel-xref-gxref-active-p)
       (remove-hook 'xref-backend-functions
-                   'gxref-xref-backend
+                   #'gxref-xref-backend
                    (pel-xref-function-hook-local-p xref-backend-functions))
     (pel-xref-gxref-activate))
   (unless quiet
@@ -272,7 +274,8 @@ Print a message unless QUIET is requested."
 (defun pel-xref-rtags-activate ()
   "Activate the rtags-xref xref back-end for C modes."
   (pel-require 'rtags-xref)
-  (add-hook 'c-mode-common-hook 'rtags-xref-enable))
+  (declare-function rtags-xref-enable "rtags-xref" ())
+  (add-hook 'c-mode-common-hook #'rtags-xref-enable))
 
 (defun pel-xref-rtags-active-p ()
   "Return non-nil when rtags-xref is active, nil otherwise."
@@ -295,7 +298,7 @@ Print a message unless QUIET is requested."
   (interactive)
   (if (pel-xref-rtags-active-p)
       (remove-hook 'c-mode-common-hook
-                   'rtags-xref-enable)
+                   #'rtags-xref-enable)
     (pel-xref-rtags-activate))
   (message "rtags xref back-end now: %s" (pel-xref-rtags-state-str)))
 

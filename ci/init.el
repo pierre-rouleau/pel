@@ -5,7 +5,7 @@
 ;;
 ;;   Abstract:         Emacs Initialization
 ;;
-;;   Time-stamp: <2026-03-03 16:27:16 EST, updated by Pierre Rouleau>
+;;   Time-stamp: <2026-03-13 23:39:26 EDT, updated by Pierre Rouleau>
 ;;
 ;;   Copyright (c) 2018-2021, 2023, 2024, 2025, 2026, Pierre Rouleau. All rights reserved.
 ;;
@@ -214,7 +214,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;;          (expand-file-name "~/.emacs.d/utils/benchmark-init"))
   ;; (require 'benchmark-init-modes
   ;;          (expand-file-name "~/.emacs.d/utils/benchmark-init-modes"))
-  ;; (add-hook 'after-init-hook 'benchmark-init/deactivate)
+  ;; (add-hook 'after-init-hook #'benchmark-init/deactivate)
 
   ;; Define function to activate package.el Elpa-compliant Package Management
   ;; ------------------------------------------------------------------------

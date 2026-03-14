@@ -1,6 +1,6 @@
 ;;; pel-cursor.el --- PEL cursor control  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -116,14 +116,17 @@ To make the color change persist, modify the `cursor' or the
   "Default cursor type.")
 
 (defun pel--set-cursor-type-when-mark ()
+  "Activate the cursor type selected by the PEL customization for mark.
+The value is set by the `pel-cursor-type-when-mark' user-option."
   (when pel-cursor-type-when-mark
     (setq cursor-type pel-cursor-type-when-mark)))
 
 (defun pel--set-cursor-type-non-marked ()
+  "Restore Emacs default non-marked cursor type."
   (setq cursor-type pel--default-cursor-type))
 
-(add-hook 'activate-mark-hook   'pel--set-cursor-type-when-mark)
-(add-hook 'deactivate-mark-hook 'pel--set-cursor-type-non-marked)
+(add-hook 'activate-mark-hook   #'pel--set-cursor-type-when-mark)
+(add-hook 'deactivate-mark-hook #'pel--set-cursor-type-non-marked)
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-cursor)

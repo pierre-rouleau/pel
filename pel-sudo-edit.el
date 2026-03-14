@@ -2,12 +2,12 @@
 
 ;; Created   : Wednesday, April 20 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-09-18 14:24:38 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-14 15:01:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022  Pierre Rouleau
+;; Copyright (C) 2022, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -80,6 +80,6 @@ then edit currently visited file as root."
       (setq vc-handled-backends original-vc-handled-backends))))
 
 ;;; --------------------------------------------------------------------------
-(provide 'pel-edit-as-root)
+(provide 'pel-sudo-edit)
 
 ;;; pel-sudo-edit.el ends here

@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 11:52:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 23:31:11 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -43,17 +43,17 @@
 ;;
 
 (defun pel-c-search-equal-NULL ()
-  "Search for code comparing '== NULL'"
+  "Search for code comparing '== NULL'."
   (interactive)
   (re-search-forward "\\(NULL[[:blank:]]*==\\)\\|\\(==[[:blank:]]*NULL\\)"))
 
 (defun pel-c-search-not-equal-NULL ()
-  "Search for code comparing '!= NULL'"
+  "Search for code comparing '!= NULL'."
   (interactive)
   (re-search-forward "\\(NULL[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*NULL\\)"))
 
 (defun pel-c-search-equal-true ()
-  "Search for code comparing '== true'"
+  "Search for code comparing '== true'."
   (interactive)
   (re-search-forward
    (string-join '("\\(true[[:blank:]]*==\\)\\|\\(==[[:blank:]]*true\\)"
@@ -61,7 +61,7 @@
                 "\\|")))
 
 (defun pel-c-search-not-equal-true ()
-  "Search for code comparing '!= true'"
+  "Search for code comparing '!= true'."
   (interactive)
   (re-search-forward
    (string-join '("\\(true[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*true\\)"
@@ -69,7 +69,7 @@
                 "\\|")))
 
 (defun pel-c-search-equal-false ()
-  "Search for code comparing '== false'"
+  "Search for code comparing '== false'."
   (interactive)
   (re-search-forward
    (string-join '("\\(false[[:blank:]]*==\\)\\|\\(==[[:blank:]]*false\\)"
@@ -77,7 +77,7 @@
                 "\\|")))
 
 (defun pel-c-search-not-equal-false ()
-  "Search for code comparing '!= false'"
+  "Search for code comparing '!= false'."
   (interactive)
   (re-search-forward
    (string-join '("\\(false[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*false\\)"

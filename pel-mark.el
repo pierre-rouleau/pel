@@ -70,8 +70,9 @@
 
 ;;-pel-autoload
 (defun pel-mark-ring-stats ()
-  "Show info about global and buffer local mark and mark rings;
-their current and maximum size, buffer and positions for each
+  "Show info about global and buffer local mark and mark rings.
+
+Print their current and maximum size, buffer and positions for each
 mark ring entry.
 This function can be used to help understand the behaviour and impact
 of commands on the mark and mark rings."
@@ -155,7 +156,7 @@ Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled."
 
 ;;-pel-autoload
 (defun pel-jump-to-mark ()
-  "Jump to the next mark in the buffer's `mark-ring', and then rotate the ring.
+  "Jump to the next mark in the buffer's `mark-ring', then rotate the ring.
 This is the same as using the `set-mark-command' via \\[set-mark-command] with
 the prefix argument (but easier to type.)"
   (interactive)

@@ -211,14 +211,14 @@ to allow the flyspell pop-up menu to work in terminal mode."
   ;; control of PEL: `text-mode-hook' normally includes `turn-on-flyspell'
   ;; which activates flyspell in all modes derived from text-mode.  Remove
   ;; that and replace it by `pel-spell-maybe-activate-flyspell' instead.
-  (remove-hook 'text-mode-hook 'turn-on-flyspell)
-  (add-hook    'text-mode-hook 'pel-spell-maybe-activate-flyspell)
+  (remove-hook 'text-mode-hook #'turn-on-flyspell)
+  (add-hook    'text-mode-hook #'pel-spell-maybe-activate-flyspell)
   ;; Same thing for programming modes: Activate spell-checking in comments of
   ;; programming modes but keep control using
   ;; `pel-spell-maybe-activate-flyspell-prog' instead of using
   ;; `flyspell-prog-mode' directory as prog-mode.el does.
-  (remove-hook 'text-mode-hook 'flyspell-prog-mode)
-  (add-hook 'prog-mode-hook 'pel-spell-maybe-activate-flyspell-prog)
+  (remove-hook 'prog-mode-hook #'flyspell-prog-mode)
+  (add-hook    'prog-mode-hook #'pel-spell-maybe-activate-flyspell-prog)
   ;;
   ;; In Terminal mode, Flyspell pop-up menu does not work.
   ;; The following code make it work, but only if the popup
