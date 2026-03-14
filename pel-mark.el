@@ -156,7 +156,7 @@ Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled."
 
 ;;-pel-autoload
 (defun pel-jump-to-mark ()
-  "Jump to the next mark in the buffer's `mark-ring', and then rotate the ring.
+  "Jump to the next mark in the buffer's `mark-ring', then rotate the ring.
 This is the same as using the `set-mark-command' via \\[set-mark-command] with
 the prefix argument (but easier to type.)"
   (interactive)

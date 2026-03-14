@@ -10084,10 +10084,14 @@ See `flyspell-auto-correct-previous-word' for more info."
   (defun pel--sr-speedbar-setup()
     "Setup the sr-speedbar hooks."
     ;; Remove sr-speedbar hooks that switch back to the speedbar buffer
-    (remove-hook 'speedbar-before-visiting-file-hook 'sr-speedbar-before-visiting-file-hook)
-    (remove-hook 'speedbar-before-visiting-tag-hook  'sr-speedbar-before-visiting-tag-hook)
-    (remove-hook 'speedbar-visiting-file-hook        'sr-speedbar-visiting-file-hook)
-    (remove-hook 'speedbar-visiting-tag-hook         'sr-speedbar-visiting-tag-hook)
+    (declare-function sr-speedbar-before-visiting-file-hook "sr-speedbar")
+    (declare-function sr-speedbar-before-visiting-tag-hook  "sr-speedbar")
+    (declare-function sr-speedbar-visiting-file-hook        "sr-speedbar")
+    (declare-function sr-speedbar-visiting-tag-hook         "sr-speedbar")
+    (remove-hook 'speedbar-before-visiting-file-hook #'sr-speedbar-before-visiting-file-hook)
+    (remove-hook 'speedbar-before-visiting-tag-hook  #'sr-speedbar-before-visiting-tag-hook)
+    (remove-hook 'speedbar-visiting-file-hook        #'sr-speedbar-visiting-file-hook)
+    (remove-hook 'speedbar-visiting-tag-hook         #'sr-speedbar-visiting-tag-hook)
     ;; Instead add hooks to a command can controls the behaviour
     (declare-function pel-sr-speedbar-visiting-control "pel-speedbar" ())
     (add-hook 'speedbar-visiting-file-hook         #'pel-sr-speedbar-visiting-control t)

@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  9 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 23:43:33 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-14 15:05:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -124,7 +124,7 @@ It is created on the first VC event."
     (if (and vc-post-command-functions
              (member 'pel--vcs-log-vc vc-post-command-functions))
         (progn
-          (remove-hook 'vc-post-command-functions 'pel--vcs-log-vc)
+          (remove-hook 'vc-post-command-functions #'pel--vcs-log-vc)
           (message "VC Logging stopped."))
       (add-hook 'vc-post-command-functions #'pel--vcs-log-vc)
       (message "Start VC logging in the *pel-vc-log* buffer."))))

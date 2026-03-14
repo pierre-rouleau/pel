@@ -154,7 +154,7 @@ identifier can be found at point. It calls `xref-find-definitions'."
 (defun pel-xref-dumb-jump--deactivate-locally ()
   "Deactivate dumb-jump for the current buffer."
   (remove-hook 'xref-backend-functions
-               'dumb-jump-xref-activate
+               #'dumb-jump-xref-activate
                t))
 
 (defun pel-xref-dumb-jump-deactivate (locally)
@@ -162,7 +162,7 @@ identifier can be found at point. It calls `xref-find-definitions'."
   (pel-xref-dumb-jump--deactivate-locally)
   (unless locally
     (remove-hook (pel-hook-symbol-for major-mode)
-                 (function pel-xref-dumb-jump-activate-locally))))
+                 #'pel-xref-dumb-jump-activate-locally)))
 
 (defun pel-xref-dumb-jump-activated-in (&optional mode)
   "Return t if dumb-jump is locally activated for specific major MODE.
@@ -257,7 +257,7 @@ Print a message unless QUIET is requested."
   (require 'xref)
   (if (pel-xref-gxref-active-p)
       (remove-hook 'xref-backend-functions
-                   'gxref-xref-backend
+                   #'gxref-xref-backend
                    (pel-xref-function-hook-local-p xref-backend-functions))
     (pel-xref-gxref-activate))
   (unless quiet
@@ -298,7 +298,7 @@ Print a message unless QUIET is requested."
   (interactive)
   (if (pel-xref-rtags-active-p)
       (remove-hook 'c-mode-common-hook
-                   'rtags-xref-enable)
+                   #'rtags-xref-enable)
     (pel-xref-rtags-activate))
   (message "rtags xref back-end now: %s" (pel-xref-rtags-state-str)))
 
