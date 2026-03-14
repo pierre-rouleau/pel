@@ -5127,7 +5127,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                                  :error))
               ;; automatic update completion data after save
               (declare-function ivy-erlang-complete-reparse "ivy-erlang-complete")
-              (add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
+              ;; buffer local hook
+              (add-hook 'after-save-hook #'ivy-erlang-complete-reparse nil t)
               ;; Extra key bindings
               (define-key pel:for-erlang "."          'ivy-erlang-complete)
               (define-key pel:for-erlang (kbd "M-h")  'ivy-erlang-complete-show-doc-at-point)
@@ -6064,8 +6065,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       ;;                should these also be used with rust-ts-mode?]
       ;; M-x package-install company
       (add-hook 'rust-mode-hook #'cargo-minor-mode)
-      (add-hook 'rust-mode-hook #'racer-mode)
-      (add-hook 'racer-mode-hook #'eldoc-mode)
+      (when pel-use-emacs-racer
+        (add-hook 'rust-mode-hook #'racer-mode)
+        (add-hook 'racer-mode-hook #'eldoc-mode))
       (when pel-use-company
         (add-hook 'racer-mode-hook #'company-mode))))
   ;;

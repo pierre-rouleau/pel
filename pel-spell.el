@@ -217,8 +217,8 @@ to allow the flyspell pop-up menu to work in terminal mode."
   ;; programming modes but keep control using
   ;; `pel-spell-maybe-activate-flyspell-prog' instead of using
   ;; `flyspell-prog-mode' directory as prog-mode.el does.
-  (remove-hook 'text-mode-hook #'flyspell-prog-mode)
-  (add-hook 'prog-mode-hook #'pel-spell-maybe-activate-flyspell-prog)
+  (remove-hook 'prog-mode-hook #'flyspell-prog-mode)
+  (add-hook    'prog-mode-hook #'pel-spell-maybe-activate-flyspell-prog)
   ;;
   ;; In Terminal mode, Flyspell pop-up menu does not work.
   ;; The following code make it work, but only if the popup
