@@ -641,7 +641,8 @@ Your version of Emacs does not support dynamic module.")))
     (pel-require-after-init all-the-icons-ibuffer 1)
     (pel-autoload-file   all-the-icons-ibuffer for:
                          all-the-icons-ibuffer-mode)
-    (all-the-icons-ibuffer-mode 1))
+    (pel-eval-after-load all-the-icons-ibuffer
+      (all-the-icons-ibuffer-mode 1)))
 
   (when pel-use-all-the-icons-dired
     (pel-ensure-package-elpa  all-the-icons-dired)
@@ -8813,7 +8814,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     (define-key pel:recent-file (kbd "M-r") 'pel-find-recent-file)
     (define-key pel:recent-file (kbd "M-?") 'pel-show-recentf-function)
     (define-key pel:recent-file (kbd "M-R") 'pel-select-recentf-function))
-  (pel-require-after-init recentf 1))
+  (pel-require-at-load recentf))
 
 ;;** Open file at point
 ;; --------------------

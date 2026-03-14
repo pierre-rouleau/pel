@@ -86,7 +86,7 @@
 If non-nil must be a string: it will then be
 used by pel_keys to reload silently the abbreviation file.")
 
-(defvar pel--abbrev-file-name)          ; defined inside init.el
+(defvar pel--abbrev-file-name) ; prevent warning: defined inside init.el to
 
 ;;;###autoload
 (defun pel-init (&optional cached-abbrev-file-name)

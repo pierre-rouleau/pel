@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-14 18:09:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-14 19:19:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -856,6 +856,10 @@ Customize pel-use-vline to t!")))
   ;; Note pel_keys.el activates indent-tools when required but
   ;; does not bind the command to the key; it's done here once the hydra
   ;; system is installed and loaded.
+  (pel-autoload-file indent-tools-hydra for:
+                     indent-tools-hydra/body)
+  (pel-declare-file indent-tools-hydra defines:
+                    indent-tools-hydra/body)
   (global-set-key (kbd "<f7> TAB") 'indent-tools-hydra/body))
 
 ;;; --------------------------------------------------------------------------
