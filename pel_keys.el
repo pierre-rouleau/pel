@@ -612,7 +612,7 @@ Your version of Emacs does not support dynamic module.")))
 ;;  ====================
 (when pel-use-editor-config
   (pel-ensure-package-elpa  editorconfig from: melpa)
-  (pel-require-at-load editorconfig)
+  (pel-require-after-init editorconfig 1)
   (pel-eval-after-load editorconfig
     (if (fboundp 'editorconfig-mode)
         (editorconfig-mode 1)
@@ -638,20 +638,20 @@ Your version of Emacs does not support dynamic module.")))
 
   (when pel-use-all-the-icons-ibuffer
     (pel-ensure-package-elpa  all-the-icons-ibuffer)
-    (pel-require-at-load all-the-icons-ibuffer)
+    (pel-require-after-init all-the-icons-ibuffer 1)
     (pel-autoload-file   all-the-icons-ibuffer for:
                          all-the-icons-ibuffer-mode)
     (all-the-icons-ibuffer-mode 1))
 
   (when pel-use-all-the-icons-dired
     (pel-ensure-package-elpa  all-the-icons-dired)
-    (pel-require-at-load all-the-icons-dired)
+    (pel-require-after-init all-the-icons-dired 1)
     (declare-function all-the-icons-dired-mode "all-the-icons-dired")
     (add-hook 'dired-mode-hook #'all-the-icons-dired-mode))
 
   (when pel-use-all-the-icons-ivy
     (pel-ensure-package-elpa  all-the-icons-ivy)
-    (pel-require-at-load all-the-icons-ivy)
+    (pel-require-after-init all-the-icons-ivy 1)
     (declare-function all-the-icons-ivy-setup "all-the-icons-ivy")
     (add-hook 'after-init-hook #'all-the-icons-ivy-setup))
 
@@ -1026,7 +1026,7 @@ Your version of Emacs does not support dynamic module.")))
 ;; https://github.com/bbatsov/prelude.
 ;; uniquify is now part of Emacs distribution.
 (when pel-use-uniquify
-  (pel-require-at-load uniquify)
+  (pel-require-after-init uniquify 1)
   (pel-eval-after-load uniquify
     (pel-setq uniquify-buffer-name-style 'post-forward)
     ;; rationalize buffer after killing uniquified buffer
@@ -2723,26 +2723,7 @@ can't bind negative-argument to C-_ and M-_"
 
    (lambda ()
      (pel-local-set-f12 'pel:for-applescript))
-   'apples-mode 'apples-mode-hook)
-
-
-;;*** Text narration on macOS
-;;    -----------------------
-  ;; HYDRA: pel-∑narrate is at the bottom of this file with all other PEL hydras.
-  (when pel-system-is-macos-p
-    (pel-autoload-file pel-applescript for:
-                       pel-say
-                       pel-say-word
-                       pel-say-sentence
-                       pel-say-paragraph
-                       pel-say-region)
-    (when (not pel-use-hydra)
-      (define-pel-global-prefix pel:narrate (kbd "<f7> <f8>"))
-      (define-key pel:narrate "t" 'pel-say)
-      (define-key pel:narrate "R" 'pel-say-region)
-      (define-key pel:narrate "w" 'pel-say-word)
-      (define-key pel:narrate "s" 'pel-say-sentence)
-      (define-key pel:narrate "p" 'pel-say-paragraph))))
+   'apples-mode 'apples-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;;** C-like programming languages: C, C++, Objective-C, Pike
@@ -8119,37 +8100,10 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;; -- indent-tools
 (when pel-use-indent-tools
-
-  (defvar pel--was-hydra-loaded-p (featurep 'pel__hydra)
-    "Remember whether PEL support for Hydra was loaded.")
-
+  ;; Note: `indent-tools-hydra/body' is bound to <f7> TAB inside
+  ;;       the pel__hydra.el: only when pel-use-hydra is active.
   (pel-ensure-package-elpa indent-tools from: melpa)
-  (pel-autoload-file indent-tools for: indent-tools-hydra/body)
-
-  (when (eq pel-indent-tools-key-bound 'globally)
-    ;; load indent-tools to map its key globally.  Delay it because we need
-    ;; it loaded to read the key prefix identified by customization.
-    (run-with-idle-timer
-     1 nil
-     (lambda ()
-       (when (and
-              (require 'indent-tools nil 'noerror)
-              (boundp 'indent-tools-keymap-prefix))
-         (global-set-key indent-tools-keymap-prefix 'indent-tools-hydra/body)
-         (define-key pel:indent (kbd "<f7>") 'indent-tools-hydra/body)
-         (if pel--was-hydra-loaded-p
-             ;; On a re-execution of pel-init, after was first pel__hydra
-             ;; byte compiled, just re-load it but first install the F7 keys
-             ;; before turning F7 into a prefix again.
-             (progn
-               (global-unset-key (kbd "<f7>"))
-               (global-set-key (kbd "<f7> TAB") 'indent-tools-hydra/body)
-               (load-library "pel__hydra"))
-           ;; When Emacs starts for the first time, just install the F7 keys
-           ;; because pel__hydra has not yet been byte compiled, loaded and the
-           ;; F7 is not yet a prefix.
-           (global-set-key (kbd "<f7> TAB") 'indent-tools-hydra/body))
-         (setq pel--was-hydra-loaded-p t ))))))
+  (pel-autoload-file indent-tools for: indent-tools-hydra/body))
 
 ;; -- smart-tabs
 (when pel-use-smart-tabs
@@ -8859,7 +8813,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     (define-key pel:recent-file (kbd "M-r") 'pel-find-recent-file)
     (define-key pel:recent-file (kbd "M-?") 'pel-show-recentf-function)
     (define-key pel:recent-file (kbd "M-R") 'pel-select-recentf-function))
-  (pel-require-at-load recentf))
+  (pel-require-after-init recentf 1))
 
 ;;** Open file at point
 ;; --------------------

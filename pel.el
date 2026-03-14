@@ -86,6 +86,8 @@
 If non-nil must be a string: it will then be
 used by pel_keys to reload silently the abbreviation file.")
 
+(defvar pel--abbrev-file-name)          ; defined inside init.el
+
 ;;;###autoload
 (defun pel-init (&optional cached-abbrev-file-name)
   "Initialize PEL, map its keys, autoload its functions.
@@ -109,7 +111,8 @@ After a customization change its best to restart Emacs, however if your
 modifications simply activate new features, you may be able to simply
 re-execute `pel-init' again to activate them."
   (interactive)
-  (setq pel--cached-abbrev-file-name  cached-abbrev-file-name)
+
+  (setq pel--cached-abbrev-file-name  (or cached-abbrev-file-name pel--abbrev-file-name))
   ;; Note that pel_keys.el has a file name that ensures that packages
   ;; controlled byte-compilation compiles it *before* compiling pel.el
   ;; The Makefile rules also ensure that pel_keys.el is compiled before pel.el.

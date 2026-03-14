@@ -574,16 +574,19 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;; -------------------------------------------------------------------------
   ;; Section 9: Start PEL
   ;; ====================
-  ;; - Perform PEL initialization.
+  ;; - Perform PEL initialization: done by pel-init loading pel_keys.el
   ;;   Set PEL key bindings. In normal operation mode it will also install
   ;;   and configure the external packages that have been selected by the PEL
   ;;   user-options.  They all have a name that start with `pel-use-'.
   ;; - Since PEL user-option variables are stored in the customization data
   ;;   in the (custom-set-variables) form, this code *must* be done after the
   ;;   identification of the `custom-file' and after the loading of that file.
+  ;; - Instead of calling pel-init directly, defer its execution after Emacs
+  ;;   initialization is complete and before command-line argument processing
+  ;;   by adding it to the `emacs-startup-hook'.
+
   (require 'pel)
-  (with-no-warnings
-    (pel-init pel--abbrev-file-name))
+  (add-hook 'emacs-startup-hook #'pel-init)
 
   ;; -------------------------------------------------------------------------
   ;; Section 10: Activate some of the *confusing* commands
@@ -618,3 +621,5 @@ Also expands to the file true name, replacing symlinks by what they point to."
   )
 
 ;;; ---- end of init.el ------------------------------------------------------
+
+;;  LocalWords:  Dired

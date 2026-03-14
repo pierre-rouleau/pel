@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 23:36:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-14 18:09:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -260,14 +260,20 @@
   (global-set-key (kbd "<f7> G") 'pel-∑greek/body))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; PEL HYDRA: Narrate : activated with <f7> <f8>
+;; PEL HYDRA: Narrate (Say): activated with <f7> S
 (when (and pel-use-applescript pel-system-is-macos-p)
+  (pel-autoload-file pel-applescript for:
+                       pel-say
+                       pel-say-word
+                       pel-say-sentence
+                       pel-say-paragraph
+                       pel-say-region)
   (pel-declare-file pel-applescript defines:
+                    pel-say
                     pel-say-word
                     pel-say-sentence
                     pel-say-paragraph
-                    pel-say-region
-                    pel-say)
+                    pel-say-region)
   (pel-declare-file pel-navigate defines: pel-forward-word-start)
 
   (defun pel-say-last-word ()
@@ -842,6 +848,15 @@ Customize pel-use-vline to t!")))
     ("?"    pel-toggle-hydra-hint           "hint"                 :column "Other")
     ("<f7>" nil                             "cancel"               :column "Other"))
   (global-set-key (kbd "<f7> j") 'pel-∑dumb-jump/body))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; -- indent-tools
+
+(when pel-use-indent-tools
+  ;; Note pel_keys.el activates indent-tools when required but
+  ;; does not bind the command to the key; it's done here once the hydra
+  ;; system is installed and loaded.
+  (global-set-key (kbd "<f7> TAB") 'indent-tools-hydra/body))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel__hydra)
