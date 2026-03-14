@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, October  7 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-08 08:12:18, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 23:35:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@
   (outline-show-children))
 
 (defun pel-yang-outline-bindings ()
-  "sets shortcut bindings for outline minor mode"
+  "Set shortcut bindings for outline minor mode."
   (interactive)
 
   ;; binding available in terminal mode and in graphics mode

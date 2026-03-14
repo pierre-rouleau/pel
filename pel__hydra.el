@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 11:43:20 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 23:36:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -385,7 +385,7 @@
   (declare-function ace-swap-window "pel__hydra"))
 
 (defun pel--goldratio ()
-  "Toggle `golden-ratio-mode' when available"
+  "Toggle `golden-ratio-mode' when available."
   (interactive)
   (if (and (fboundp 'golden-ratio-mode))
       (golden-ratio-mode 'toggle)
@@ -612,7 +612,7 @@ CAUTION: the hydra is still active!"
     (user-error "Please activate pel-use-window-purpose first!")))
 
 (defun pel--twd ()
-  "Toggle window dedicated and print window info"
+  "Toggle window dedicated and print window info."
   (interactive)
   (pel-toggle-window-dedicated)
   (pel-show-window-info))

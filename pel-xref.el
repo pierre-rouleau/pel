@@ -1,6 +1,6 @@
 ;;; pel-xref.el --- xref cross referencing utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
+;; Copyright (C) 2020-2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -134,9 +134,10 @@ identifier can be found at point. It calls `xref-find-definitions'."
   "Activate dumb-jump for the current buffer."
   (require 'xref)
   (pel-require 'dumb-jump)
+  (declare-function dumb-jump-xref-activate "dumb-jump" ())
   ;; Activate xref dumb-jump locally: for the current buffer only.
   (add-hook 'xref-backend-functions
-            'dumb-jump-xref-activate
+            #'dumb-jump-xref-activate
             nil
             t))
 
@@ -222,8 +223,9 @@ only apply the change for the current buffer only."
   "Activate the gxref xref back-end for the current major mode."
   (require 'xref)
   (pel-require 'gxref)
+  (declare-function gxref-xref-backend "gxref" ())
   (add-hook 'xref-backend-functions
-            'gxref-xref-backend
+            #'gxref-xref-backend
             nil
             (pel-xref-function-hook-local-p xref-backend-functions)))
 
@@ -272,7 +274,8 @@ Print a message unless QUIET is requested."
 (defun pel-xref-rtags-activate ()
   "Activate the rtags-xref xref back-end for C modes."
   (pel-require 'rtags-xref)
-  (add-hook 'c-mode-common-hook 'rtags-xref-enable))
+  (declare-function rtags-xref-enable "rtags-xref" ())
+  (add-hook 'c-mode-common-hook #'rtags-xref-enable))
 
 (defun pel-xref-rtags-active-p ()
   "Return non-nil when rtags-xref is active, nil otherwise."

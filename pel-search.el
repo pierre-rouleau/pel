@@ -2,12 +2,12 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 14:27:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 23:34:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau with some code derived
+;; Copyright (C) 2020-2026  Pierre Rouleau with some code derived
 ;;                                 from Mickey Petersen's work
 ;;                                 (see CREDITS below).
 ;;
@@ -86,18 +86,18 @@
 ;;                       ; isearch is part of standard Emacs distribution and
 ;;                       ; is loaded even by emacs -Q (in emacs 26).
 (require 'pel--base)     ; use: `pel-symbol-on-off-string'
-;;                       ;      `pel-capitalize-first-letter'
 (require 'pel--options)  ; use: `pel-use-ansu' `pel-use-swiper'
 ;;                       ;      `pel-initial-search-tool'
 (require 'pel--macros)
 (require 'pel-prompt)
-(require 'pel-read)      ; use: `pel-word-at-point'
+(require 'pel-read)           ; use: `pel-word-at-point'
 (require 'pel-search-regexp)  ; use: `pel-active-search-regexp-engine'
 ;;                            ;      `pel--search-regexp-initialized'
 ;;                            ;      `pel-set-search-regexp-engine'
-(require 'pel-window)    ; use: `pel-window-direction-for'
-;;                       ;      `pel-count-non-dedicated-windows'
-(require 'pel--syntax-macros)           ; use: `pel-inside-code-p'
+(require 'pel-text-transform) ; use: `pel-capitalize-first-letter'
+(require 'pel-window)         ; use: `pel-window-direction-for'
+;;                            ;      `pel-count-non-dedicated-windows'
+(require 'pel--syntax-macros) ; use: `pel-inside-code-p'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
@@ -656,7 +656,7 @@ Display:
 ;; Source: https://www.masteringemacs.org/article/searching-buffers-occur-mode
 
 (defun pel-buffers-matching-mode (mode)
-  "Returns a list of buffers where their major-mode is equal to MODE"
+  "Returns a list of buffers where their major-mode is equal to MODE."
   (let ((buffer-mode-matches '()))
     (dolist (buf (buffer-list))
       (with-current-buffer buf

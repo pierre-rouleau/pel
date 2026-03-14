@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-07 14:05:21 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 23:41:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -79,7 +79,7 @@ close as possible to the top of the file:
   ;;
   (require \\='benchmark-init
            (expand-file-name \"~/.emacs.d/utils/benchmark-init\"))
-  (add-hook \\='after-init-hook \\='benchmark-init/deactivate)
+  (add-hook \\='after-init-hook #\\='benchmark-init/deactivate)
 
 Update the path if necessary.
 

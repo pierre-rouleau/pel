@@ -138,7 +138,6 @@
 ;;
 ;; String transformation utilities
 ;;  - `pel-as-string'
-;;  - `pel-capitalize-first-letter'
 ;;  - `pel-end-text-with-period'
 ;;  - `pel-hastext'
 ;;  - `pel-when-text-in'
@@ -1280,13 +1279,6 @@ Otherwise an error is raised."
    ((numberp val) (number-to-string val))
    ((characterp val) (char-to-string val))
    (t (error "The pel-as-string does not support type of specified argument: %S" val))))
-
-(defun pel-capitalize-first-letter (text)
-  "Return TEXT with first character up-cased, all other unchanged.
-Return empty string if no input string."
-  (if (> (length text) 0)
-      (concat (upcase (substring text 0 1)) (substring text 1))
-    ""))
 
 (defun pel-end-text-with-period (text)
   "Append a period character to TEXT if none is present.

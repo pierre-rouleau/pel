@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-27 09:53:10 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 23:43:22 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -60,7 +60,7 @@ This also update the value of `time-stamp-active'."
     (setq-local time-stamp-active pel-update-time-stamp))
   (when pel-update-time-stamp
     (unless (memq 'pel--update-time-stamp before-save-hook)
-      (add-hook 'before-save-hook  'pel--update-time-stamp))))
+      (add-hook 'before-save-hook #'pel--update-time-stamp))))
 
 
 (defun pel-update-time-stamp-patterns ()

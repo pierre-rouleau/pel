@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 11:59:39 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 23:14:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -73,11 +73,11 @@
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies
-(require 'pel--base)                  ; use: `pel-capitalize-first-letter'
-;;                                    ;      `pel-end-text-with-period'
-(require 'pel--options)               ; use `pel-prompt-read-method'
-(eval-when-compile (require 'subr-x)) ; use: `string-trim'
+(require 'pel--base)                  ; use:`pel-end-text-with-period'
+(require 'pel--options)               ; use: `pel-prompt-read-method'
+(require 'pel-text-transform)         ; use: `pel-capitalize-first-letter'
 (eval-when-compile
+  (require 'subr-x)                   ; use: `string-trim'
   (require 'cl-lib)                   ; use: `cl-dolist' and `cl-return'
   (require 'cl-macs))                 ; use: `cl-case'.
 

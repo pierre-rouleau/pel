@@ -6,7 +6,7 @@ Speeding Up Emacs Startup
 :Project:
 :Created:  Friday, July  2 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-03-13 15:29:42 EDT, updated by Pierre Rouleau.
+:Modified: 2026-03-13 23:39:43 EDT, updated by Pierre Rouleau.
 :Copyright: © 2021, 2026, Pierre Rouleau
 
 This document will contain information on speeding up Emacs startup further
@@ -242,7 +242,7 @@ I disabled the following lines in my init.el file that activate the benchmark-in
   (require 'benchmark-init
            (expand-file-name
             "~/.emacs.d/elpa/benchmark-init-20150905.938/benchmark-init"))
-  (add-hook 'after-init-hook 'benchmark-init/deactivate)
+  (add-hook 'after-init-hook #'benchmark-init/deactivate)
 
 
 And then, running ``make timeit`` again, I get a little faster startup of

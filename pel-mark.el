@@ -70,8 +70,9 @@
 
 ;;-pel-autoload
 (defun pel-mark-ring-stats ()
-  "Show info about global and buffer local mark and mark rings;
-their current and maximum size, buffer and positions for each
+  "Show info about global and buffer local mark and mark rings.
+
+Print their current and maximum size, buffer and positions for each
 mark ring entry.
 This function can be used to help understand the behaviour and impact
 of commands on the mark and mark rings."

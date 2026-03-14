@@ -1,6 +1,6 @@
 ;;; pel--options.el --- PEL Customization Options -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
+;; Copyright (C) 2020-2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -11644,8 +11644,9 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 This *must* be activated to allow any other package for Lua.
 When activating it you can select between the following values:
-- t                : use `go-mode' provided by the go-mode.el external package.
-- with-tree-sitter : use `go-ts-mode' which is built-in Emacs."
+- t                : use `lua-mode' provided by the lua-mode.el
+                     external package.
+- with-tree-sitter : use `lua-ts-mode' which is built-in Emacs."
   :group 'pel-pkg-for-lua
   :type '(choice
           (const :tag "Do not use Lua" nil)
@@ -12857,18 +12858,19 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :link `(url-link :tag "Ruby PDF" ,(pel-pdf-file-url "pl-ruby")))
 
 (defcustom pel-use-ruby nil
-  "Control whether PEL supports the Ruby programming language.
+"Control whether PEL supports the Ruby programming language.
 
 This *must* be activated to allow any other package for Ruby.
 When activating it you can select between the following values:
-- t                : use `go-mode' provided by the go-mode.el external package.
-- with-tree-sitter : use `go-ts-mode' which is built-in Emacs.
+- t                : use `ruby-mode' provided by the ruby-mode.el
+                     external package.
+- with-tree-sitter : use `ruby-ts-mode' which is built-in Emacs.
 When turned on the Ruby Mode is associated with the PEL ``<f12>`` key."
-  :group 'pel-pkg-for-ruby
-  :type '(choice
-          (const :tag "Do not use Ruby" nil)
-          (const :tag "Use classic mode: ruby-mode" t)
-          (const :tag "Use tree-sitter mode: ruby-ts-mode" with-tree-sitter)))
+:group 'pel-pkg-for-ruby
+:type '(choice
+        (const :tag "Do not use Ruby" nil)
+        (const :tag "Use classic mode: ruby-mode" t)
+        (const :tag "Use tree-sitter mode: ruby-ts-mode" with-tree-sitter)))
 (pel-put pel-use-ruby :package-is :a-gate)
 
 ;; Define a list of Ruby indentation control variables that could be tied to

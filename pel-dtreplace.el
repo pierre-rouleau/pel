@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 11:53:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 23:36:41 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -81,7 +81,7 @@
 (defcustom pel-dirtree-replace-file-newtext-is-fixedcase t
   "Whether the new text replacement string is fixed case or not.
 
-If it is non-nil, `pel-dirtree-replace-file'  not alter the case of
+If it is non-nil, `pel-dirtree-replace-file' does not alter the case of
 the replacement text.  Otherwise, maybe capitalize the whole text, or
 maybe just word initials, based on the replaced text.  If the replaced
 text has only capital letters and has at least one multiletter word,

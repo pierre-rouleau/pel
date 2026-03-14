@@ -137,6 +137,7 @@ Beep on each change to warn user of the change and display new value."
 (defvar pel--highlight-color pel-highlight-color-default)
 
 (defun pel--find-overlays-specifying (prop pos)
+  "Return non-nil if the PROP overlay is used at position POS."
   (let ((overlays (overlays-at pos))
         found)
     (while overlays

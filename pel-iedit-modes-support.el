@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, April 18 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-25 15:42:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-13 23:42:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2022, 2024, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@
 ;;
 ;; For example, for cperl you could add the function to the cperl mode hook
 ;; with:
-;;        (add-hook 'cperl-mode-hook 'pel-iedit-enhance-cperl)
+;;        (add-hook 'cperl-mode-hook #'pel-iedit-enhance-cperl)
 ;;
 
 ;;; --------------------------------------------------------------------------

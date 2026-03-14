@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2026-03-12 23:39:44 EDT, updated by Pierre Rouleau.
+:Modified: 2026-03-13 23:40:13 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025, 2026 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2204,7 +2204,7 @@ Then add the following code as close as possible to the top of your init.el file
 
   (require 'benchmark-init
            (expand-file-name "~/.emacs.d/utils/benchmark-init"))
-  (add-hook 'after-init-hook 'benchmark-init/deactivate)
+  (add-hook 'after-init-hook #'benchmark-init/deactivate)
 
 This code is present but commented out inside the file
 `example/init/init.el`_.
