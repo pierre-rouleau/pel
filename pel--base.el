@@ -1453,6 +1453,9 @@ of the following call sequence:
 
 Example:
 
+    ELISP> (require \\='pel-text-transform)
+    pel-text-transform
+
     ELISP> (pel-use-or \"abc\" (function pel-hastext) \"empty!\")
     \"abc\"
     ELISP> (pel-use-or \"\" (function pel-hastext) \"empty!\")
