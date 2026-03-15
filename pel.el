@@ -123,7 +123,12 @@ re-execute `pel-init' again to activate them."
   ;; `pel--cached-abbrev-file-name'.  It will be used inside pel_keys.el when
   ;; it gets loaded.
   (setq pel--cached-abbrev-file-name  (or cached-abbrev-file-name
-                                          pel--abbrev-file-name))
+                                          pel--abbrev-file-name
+                                          ;; In case pel-init is called later
+                                          ;; with no arg and the
+                                          ;; pel--abbrev-file-name
+                                          ;; was cleared.
+                                          pel--cached-abbrev-file-name))
 
   (if after-init-time
       ;; If invoked after initialization, execute it right away.
