@@ -12,7 +12,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Emacs startup time improvements:
     - On a macStudio macOS system, Emacs 30.2.50 supporting native compilation,
        with 337 activated packages, that reduced
-      Emacs 30.2 first startup after build from 3.1 second to 1.2 second.
+      Emacs 30.2 first startup after build from 3.1 second to 1.12 second.
       Subsequent startups were also reduced from 1.5 second to about 1.15.
     - On an 2014 iMac running Emacs 26.3 with 223 packages activated the startup time
       - prior to the change were:

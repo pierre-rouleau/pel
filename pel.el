@@ -125,9 +125,12 @@ re-execute `pel-init' again to activate them."
   (setq pel--cached-abbrev-file-name  (or cached-abbrev-file-name
                                           pel--abbrev-file-name))
 
-  ;; Defer the loading of pel_keys.el after Emacs init completion
-  ;; (and the extra processing done then).
-  (add-hook 'after-init-hook #'pel--complete-init :append))
+  (if after-init-time
+      ;; If invoked after initialization, execute it right away.
+      (pel--complete-init)
+    ;; Otherwise defer the loading of pel_keys.el after Emacs init completion
+    ;; (and the extra processing done then).
+    (add-hook 'after-init-hook #'pel--complete-init :append)))
 
 
 
