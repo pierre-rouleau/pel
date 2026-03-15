@@ -2,6 +2,16 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Reduced Emacs startup time when PEL is in normal mode (the default) by deferring
+  loading of pel_keys to the latest possible.
+  Also simplified the loading of hydra related commands which also improves speed.
+  Also deferred the loading of 6 external libraries that were not deferred.
+  On a macOS system with 372 activated packages, that reduced Emacs 30.2 first startup
+  after build from 3.1 second to 1.2 second.  Subsequent startups were also reduced
+  from 1.5 second to about 1.15.
+  The modification of hydra loading logic also eliminates the possibility of
+  race condition of the ~<f7>~ key being used as non-prefix on the first startup
+  after a PEL build.
 - Add *pel-skip-copyright-in* user-option to identify files and directory trees
   where automatic copyright updates are not performed when automatic copyright
   updates are activated by the value of *pel-update-copyright*.

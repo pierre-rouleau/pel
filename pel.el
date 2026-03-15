@@ -88,6 +88,13 @@ used by pel_keys to reload silently the abbreviation file.")
 
 (defvar pel--abbrev-file-name) ; prevent warning: defined inside init.el to
 
+(defun pel--complete-init ()
+  "Complete PEL initialization by loading pel_keys.el."
+  ;; Note that pel_keys.el has a file name that ensures that packages
+  ;; controlled byte-compilation compiles it *before* compiling pel.el
+  ;; The Makefile rules also ensure that pel_keys.el is compiled before pel.el.
+  (load-library "pel_keys"))
+
 ;;;###autoload
 (defun pel-init (&optional cached-abbrev-file-name)
   "Initialize PEL, map its keys, autoload its functions.
@@ -112,11 +119,20 @@ modifications simply activate new features, you may be able to simply
 re-execute `pel-init' again to activate them."
   (interactive)
 
-  (setq pel--cached-abbrev-file-name  (or cached-abbrev-file-name pel--abbrev-file-name))
-  ;; Note that pel_keys.el has a file name that ensures that packages
-  ;; controlled byte-compilation compiles it *before* compiling pel.el
-  ;; The Makefile rules also ensure that pel_keys.el is compiled before pel.el.
-  (load-library "pel_keys"))
+  ;; Remember the real value of `abbrev-file-name' inside
+  ;; `pel--cached-abbrev-file-name'.  It will be used inside pel_keys.el when
+  ;; it gets loaded.
+  (setq pel--cached-abbrev-file-name  (or cached-abbrev-file-name
+                                          pel--abbrev-file-name))
+
+  ;; Defer the loading of pel_keys.el after Emacs init completion
+  ;; (and the extra processing done then).
+  (add-hook 'after-init-hook #'pel--complete-init :append))
+
+
+
+
+
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel)

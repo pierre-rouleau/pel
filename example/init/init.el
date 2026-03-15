@@ -586,7 +586,8 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;;   by adding it to the `emacs-startup-hook'.
 
   (require 'pel)
-  (add-hook 'emacs-startup-hook #'pel-init)
+  (with-no-warnings
+    (pel-init pel--abbrev-file-name))
 
   ;; -------------------------------------------------------------------------
   ;; Section 10: Activate some of the *confusing* commands
