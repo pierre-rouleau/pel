@@ -11117,8 +11117,8 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=44494
 (defun pel--load-pel-etags ()
   "Load pel-etags once."
-  (unless (featurep 'pel-etags))
-  (load "pel-etags" :no-error))
+  (unless (featurep 'pel-etags)
+    (load "pel-etags" :no-error)))
 
 (unless pel-emacs-30-or-later-p
   ;; The bug fix was incorporated in Emacs 30 stream
