@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2026-03-13 23:40:13 EDT, updated by Pierre Rouleau.
+:Modified: 2026-03-15 17:40:33 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025, 2026 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -163,7 +163,7 @@ users and will require a time investment you may not be willing to make.
 
 Instead of having to write Emacs Lisp code inside an Emacs init file for each
 new package you want to use, you can use PEL, select the features you want
-via `PEL Customization`_ and then execute ``pel-init`` to activate them.
+via `PEL Customization`_ and then exit Emacs and restart it to activate them.
 PEL has the logic for configuring the packages it supports.  In
 some cases it also contains the logic to install the package if it is not
 already installed.
@@ -733,8 +733,8 @@ To quickly gain access to the customization buffer for the
 ``pel-pkg-for-spelling`` group where that user option is located type
 the ``<f11> <f2> $`` key sequence.
 
-For the changes to take effect, save the changes and execute pel-init
-(with ``M-x pel-init``) or restart Emacs.
+For the changes to take effect, save the changes
+then exit Emacs (with ``C-x C-c``) and restart it.
 
 More information on PEL support of spell checking is available
 in the `PEL Spell Checking Support`_ section and the `Spell Checking`_ PDF sheet.
@@ -1406,7 +1406,7 @@ restart Emacs.
 
 The following show a lot of options **on**.  Most of them are turned off by
 default when you first get PEL.  Turn them on, save the customization and
-execute ``pel-init`` or restart Emacs to activate them.  When you restart
+restart Emacs to activate them.  When you restart
 Emacs, some more packages might be automatically downloaded when required.
 
 Note:  In Emacs Lisp the value ``t``, is the symbol for truth and **nil** is
@@ -1600,9 +1600,8 @@ If the which-key_ package is not enabled, you can enable it by setting the
 ``pel-use-which-key`` user-option to ``t``.  You can access it by opening the
 customization buffer for help by typing the ``<f11> ? <f2>`` key sequence.
 
-Once set, it must be activated: execute ``pel-init`` by typing ``M-x pel-init
-RET`` to re-initialize PEL.
-
+Once set, exit Emacs (with ``C-x C-c``) and restart it.
+PEL will download and install the `which-key`_ package and will activate it.
 
 **Displaying keys without the which-keys package**
 
@@ -1866,10 +1865,9 @@ identified by the activated `PEL use variable`_ .
 
 With PEL you add a supported package by setting the corresponding `PEL use variable`_
 user-option customize variable, making sure the new value(s) is stored in the
-customization file, and then either:
+customization file, and then:
 
-- execute ``pel-init`` by typing ``M-x pel-init RET``, or
-- restart Emacs.
+- exit Emacs (with ``C-x C-c``) and restart it.
 
 For more information on customization see:
 
@@ -1907,11 +1905,11 @@ When you're OK with what is going to be remove, execute the real thing with
 
 Remember: no file is deleted, ``pel-cleanup`` moves them into the attic
 directory.  Later, you can copy them back into the elpa directory manually
-before re-activating the corresponding `PEL use variable`_ and run
-``pel-init`` to activate them again.  Or just activate the `PEL use variable`_
-and run ``pel-init`` again to download a new copy.  This way you
-keep a copy of the old version of the package in the attic directory.  If
-something got broken you have the old one handy!
+before re-activating the corresponding `PEL use variable`_ then force PEL to
+activate them back by exiting Emacs (with ``C-x C-c``) and restart it.
+
+This way you keep a copy of the old version of the package in the attic
+directory.  If something got broken you have the old one handy!
 
 When using the dual independent customization then you can reduce the number
 of packages used in terminal or graphics mode by identifying the ones used in
@@ -2532,8 +2530,8 @@ before issuing the ``make`` command.
 
 To use a new feature that was introduced in the new PEL code, set the
 corresponding PEL activation user-option variable through the relevant Emacs
-customization buffer, save the new customization data and run pel-init by
-using ``M-x pel-init`` or by restarting Emacs.
+customization buffer, save the new customization data.
+Then exit Emacs (with ``C-x C-c``) and restart it.
 
 As usual with PEL if new packages are identified by your new configuration
 they will be downloaded, installed, byte-compiled and configured automatically.
@@ -2820,8 +2818,10 @@ will open the PEL customization group for configuring C++ editing.  If point is
 already inside a buffer in C++ mode, then ``<f12> <f2>`` does the same.
 
 After customizing something, you can type the ``q`` key to close  the
-customization buffer and come back where you were.  And to activate your changes
-then run ``pel-init`` by issuing the ``M-x pel-init`` command.
+customization buffer and come back where you were.
+Then exit Emacs (with ``C-x C-c``) and restart it.
+PEL will download and install anything necessary, will activate it using the
+required settings.
 
 Use Emacs customize data browser to see the customize data in a tree form.
 Type ``<f11> <f2> M-1`` to browse PEL's customize data tree.  Here's a snapshot
@@ -3475,9 +3475,9 @@ key when `which-key`_ is installed and activated:
 
 To install and activate it, you must set the ``pel-use-which-key`` customize
 variable to ``t``.  Use the ``M-x customize`` command and search
-for ``pel-use-which-key``.  Set it to ``t``.  The restart PEL by using
-``M-x pel-init``.  PEL will download and install the `which-key`_ package
-and will activate it.
+for ``pel-use-which-key``.  Set it to ``t``.
+Then exit Emacs (with ``C-x C-c``) and restart it.
+PEL will download and install the `which-key`_ package and will activate it.
 
 .. _Hydra keys: https://github.com/abo-abo/hydra#readme
 
@@ -7548,7 +7548,7 @@ The PEL Emacs Lisp files types are the following:
 #. PEL top level file: `pel.el`_.
 
    - This file holds the ``pel-init`` command.  That loads the `pel_keys.el`_
-     file, in a similar manner that a init.el file would be loaded.
+     file once (when Emacs starts).
    - This is the only file auto-loaded by the standard package auto-load
      control file: `pel-autoloads.el`_.
 
@@ -7570,7 +7570,7 @@ package.el autoload cookies to do so because it does not support automatic
 installation.  Instead it provides auto-loading declarations inside the
 `pel_keys.el`_ and inside `pel-autoload.el`_
 
-- The ``pel-init`` command loads `pel_keys.el`_ explicitly.
+- The ``pel-init`` command loads `pel_keys.el`_ once explicitly when Emacs starts.
 - The `pel_keys.el`_ code loads `pel-autoload.el`_ and then calls ``pel--autoload-init``.
   That function defines the auto-loading of all ``pel-``
   files, the PEL feature which are mostly independent from each other.

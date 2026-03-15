@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 23:36:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-15 16:02:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -73,9 +73,14 @@
 ;; - pel-∑winInfo      : Window/Buffer purpose  :  <f7> W
 ;; - pel-∑window       : Window management Hydra:  <f7> w
 ;;
+;; Other hydras:
+;; - indent-tools-hydra/body                    : <f7> TAB
+;;
 ;; Mode specific Hydras:
 ;; - pel-∑c       : C code management      :  <f12> <f7> - in C/C++ buffers
 ;;
+
+
 ;; Byte-compilation
 ;; ----------------
 ;;
@@ -260,14 +265,20 @@
   (global-set-key (kbd "<f7> G") 'pel-∑greek/body))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; PEL HYDRA: Narrate : activated with <f7> <f8>
+;; PEL HYDRA: Narrate (Say): activated with <f7> S
 (when (and pel-use-applescript pel-system-is-macos-p)
+  (pel-autoload-file pel-applescript for:
+                       pel-say
+                       pel-say-word
+                       pel-say-sentence
+                       pel-say-paragraph
+                       pel-say-region)
   (pel-declare-file pel-applescript defines:
+                    pel-say
                     pel-say-word
                     pel-say-sentence
                     pel-say-paragraph
-                    pel-say-region
-                    pel-say)
+                    pel-say-region)
   (pel-declare-file pel-navigate defines: pel-forward-word-start)
 
   (defun pel-say-last-word ()
@@ -842,6 +853,19 @@ Customize pel-use-vline to t!")))
     ("?"    pel-toggle-hydra-hint           "hint"                 :column "Other")
     ("<f7>" nil                             "cancel"               :column "Other"))
   (global-set-key (kbd "<f7> j") 'pel-∑dumb-jump/body))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; -- indent-tools
+
+(when pel-use-indent-tools
+  ;; Note pel_keys.el activates indent-tools when required but
+  ;; does not bind the command to the key; it's done here once the hydra
+  ;; system is installed and loaded.
+  (pel-autoload-file indent-tools-hydra for:
+                     indent-tools-hydra/body)
+  (pel-declare-file indent-tools-hydra defines:
+                    indent-tools-hydra/body)
+  (global-set-key (kbd "<f7> TAB") 'indent-tools-hydra/body))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel__hydra)

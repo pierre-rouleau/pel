@@ -574,13 +574,17 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;; -------------------------------------------------------------------------
   ;; Section 9: Start PEL
   ;; ====================
-  ;; - Perform PEL initialization.
+  ;; - Perform PEL initialization: done by pel-init loading pel_keys.el
   ;;   Set PEL key bindings. In normal operation mode it will also install
   ;;   and configure the external packages that have been selected by the PEL
   ;;   user-options.  They all have a name that start with `pel-use-'.
   ;; - Since PEL user-option variables are stored in the customization data
   ;;   in the (custom-set-variables) form, this code *must* be done after the
   ;;   identification of the `custom-file' and after the loading of that file.
+  ;; - Call `pel-init' here. When invoked during init, `pel-init' defers
+  ;;   completion to `after-init-hook`, which runs before command-line file
+  ;;   visiting.
+
   (require 'pel)
   (with-no-warnings
     (pel-init pel--abbrev-file-name))
@@ -618,3 +622,5 @@ Also expands to the file true name, replacing symlinks by what they point to."
   )
 
 ;;; ---- end of init.el ------------------------------------------------------
+
+;;  LocalWords:  Dired

@@ -1970,6 +1970,9 @@ Use NAME instead symbol name in the message if specified."
 (defun pel-add-hook-for (modes-list-symbol func &optional allowed-modes)
   "Add the FUNC hook to all modes listed in the MODES-LIST-SYMBOL.
 
+Do not use a lambda for FUNC as `add-hook' won't be able to prevent duplicate
+entries of lambda inside the hook list.
+
 When ALLOWED-MODES is specified the accepted mode list symbols in
 MODES-LIST-SYMBOL is restricted to the ones in ALLOWED-MODES.
 If another mode is included in MODES-LIST-SYMBOL a warning is issued."

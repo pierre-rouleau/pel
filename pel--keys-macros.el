@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 18:57:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-14 17:39:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -251,7 +251,6 @@
                                                                 popup-switcher))
 
     ([f6]            "inserting-text"   pel-pkg-generic-code-style)
-    ([f7 f8]         "pl-applescript"   pel-pkg-for-applescript)
     ([f8]            "projectile"       pel-pkg-for-project-mng (projectile
                                                                  projectile-speedbar))
     ([f11]           "-index"       nil)

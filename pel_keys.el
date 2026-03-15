@@ -192,6 +192,31 @@
     (setq pel--init-called-once t))
 
 ;; ---------------------------------------------------------------------------
+;;* Activation Macro
+;;  ================
+
+(defmacro pel-defer-run (fun &optional after-load: feature)
+  "Defer execution of FUN, optionally executing it when FEATURE loads."
+  (declare (indent 2))
+  (ignore after-load:)
+  (if feature
+      ;; if a feature is identified defer execution of FUN when the feature
+      ;; loads.
+      `(if after-init-time
+           (pel-eval-after-load ,feature
+             (,fun))
+         (add-hook 'after-init-hook
+                   (lambda ()
+                     (pel-eval-after-load ,feature
+                         (,fun)))
+                   :append))
+    ;; If no feature is identified, execute function directly.
+    `(if after-init-time
+         (,fun)
+       (add-hook 'after-init-hook (function ,fun) :append))))
+
+
+;; ---------------------------------------------------------------------------
 ;;* Configure PEL-level autoloading
 ;;  ===============================
 
@@ -612,7 +637,7 @@ Your version of Emacs does not support dynamic module.")))
 ;;  ====================
 (when pel-use-editor-config
   (pel-ensure-package-elpa  editorconfig from: melpa)
-  (pel-require-at-load editorconfig)
+  (pel-require-after-init editorconfig 1)
   (pel-eval-after-load editorconfig
     (if (fboundp 'editorconfig-mode)
         (editorconfig-mode 1)
@@ -638,22 +663,23 @@ Your version of Emacs does not support dynamic module.")))
 
   (when pel-use-all-the-icons-ibuffer
     (pel-ensure-package-elpa  all-the-icons-ibuffer)
-    (pel-require-at-load all-the-icons-ibuffer)
+    (pel-require-after-init all-the-icons-ibuffer 1)
     (pel-autoload-file   all-the-icons-ibuffer for:
                          all-the-icons-ibuffer-mode)
-    (all-the-icons-ibuffer-mode 1))
+    (pel-eval-after-load all-the-icons-ibuffer
+      (all-the-icons-ibuffer-mode 1)))
 
   (when pel-use-all-the-icons-dired
     (pel-ensure-package-elpa  all-the-icons-dired)
-    (pel-require-at-load all-the-icons-dired)
+    (pel-require-after-init all-the-icons-dired 1)
     (declare-function all-the-icons-dired-mode "all-the-icons-dired")
     (add-hook 'dired-mode-hook #'all-the-icons-dired-mode))
 
   (when pel-use-all-the-icons-ivy
     (pel-ensure-package-elpa  all-the-icons-ivy)
-    (pel-require-at-load all-the-icons-ivy)
+    (pel-require-after-init all-the-icons-ivy 1)
     (declare-function all-the-icons-ivy-setup "all-the-icons-ivy")
-    (add-hook 'after-init-hook #'all-the-icons-ivy-setup))
+    (pel-defer-run all-the-icons-ivy-setup after-load: all-the-icons-ivy))
 
   ;; On macOS, the keys used by the OS are the same as selected here, both in
   ;; GUI mode and in terminal (TTY) mode:
@@ -832,11 +858,13 @@ Your version of Emacs does not support dynamic module.")))
 (when pel-use-dired-sidebar
   (pel-ensure-package-elpa dired-sidebar from: melpa)
   (pel-autoload "dired-sidebar" for: dired-sidebar-toggle-sidebar)
-  (add-hook 'dired-sidebar-mode-hook
-            (lambda ()
-              "Auto-refresh dired-sidebar for local directory."
-              (unless (file-remote-p default-directory)
-                (auto-revert-mode 1))))
+
+  (defun pel--auto-refresh-dired-sidebar ()
+    "Auto-refresh dired-sidebar for local directory."
+    (unless (file-remote-p default-directory)
+      (auto-revert-mode 1)))
+  (declare-function pel--auto-refresh-dired-sidebar "pel_keys" ())
+  (add-hook 'dired-sidebar-mode-hook #'pel--auto-refresh-dired-sidebar)
 
   (define-key pel: (kbd "C-d") 'dired-sidebar-toggle-sidebar)
   (define-key pel:for-dired (kbd "C-d") 'dired-sidebar-toggle-sidebar))
@@ -878,7 +906,7 @@ Your version of Emacs does not support dynamic module.")))
   (pel-ensure-package-elpa dired-hide-dotfiles from: melpa)
   (when (eq pel-use-dired-hide-dotfiles 'hide-dot-files-by-default)
     (declare-function dired-hide-dotfiles-mode "dired-hide-dotfiles")
-    (add-hook 'dired-mode-hook (function dired-hide-dotfiles-mode))))
+    (add-hook 'dired-mode-hook #'dired-hide-dotfiles-mode)))
 
 (when pel-use-dired-git-info
   (pel-ensure-package-elpa dired-git-info from: melpa)
@@ -1026,7 +1054,7 @@ Your version of Emacs does not support dynamic module.")))
 ;; https://github.com/bbatsov/prelude.
 ;; uniquify is now part of Emacs distribution.
 (when pel-use-uniquify
-  (pel-require-at-load uniquify)
+  (pel-require-after-init uniquify 1)
   (pel-eval-after-load uniquify
     (pel-setq uniquify-buffer-name-style 'post-forward)
     ;; rationalize buffer after killing uniquified buffer
@@ -1559,13 +1587,16 @@ Your version of Emacs does not support dynamic module.")))
              (propertize "-" 'font-lock-face '(:foreground "green"))
              "smart-dash"))
 
+  (defun pel--activate-smart-dash-mode ()
+    "Activate smart dash mode with check for keypad key."
+    (smart-dash-mode 1)
+    ;; ensure that the keypad dash is used as
+    ;; pel-kp-subtract which either cuts current line or
+    ;; inserts a normal dash.
+    (fset 'smart-dash-insert-dash 'pel-kp-subtract))
+  (declare-function pel--activate-smart-dash-mode "pel_keys" ())
   (pel-add-hook-for 'pel-modes-activating-smart-dash-mode
-                    (lambda ()
-                      (smart-dash-mode 1)
-                      ;; ensure that the keypad dash is used as
-                      ;; pel-kp-subtract which either cuts current line or
-                      ;; inserts a normal dash.
-                      (fset 'smart-dash-insert-dash 'pel-kp-subtract))))
+                    #'pel--activate-smart-dash-mode))
 
 ;; ---------------------------------------------------------------------------
 ;;** Display of Regular Expression -- easy-escape
@@ -1574,9 +1605,13 @@ Your version of Emacs does not support dynamic module.")))
   (pel-ensure-package-elpa easy-escape from: melpa)
   (pel-autoload-file easy-escape for: easy-escape-minor-mode)
   (define-key pel: "\"" 'easy-escape-minor-mode)
+
+  (defun pel--activate-easy-escape ()
+    "Activate easy escape."
+    (easy-escape-minor-mode 1))
+  (declare-function pel--activate-easy-escape "pel_keys" ())
   (pel-add-hook-for 'pel-modes-activating-easy-escape
-                    (lambda ()
-                      (easy-escape-minor-mode 1))))
+                    #'pel--activate-easy-escape))
 
 ;; ---------------------------------------------------------------------------
 ;;** Use undo-tree - <f11> u
@@ -2723,26 +2758,7 @@ can't bind negative-argument to C-_ and M-_"
 
    (lambda ()
      (pel-local-set-f12 'pel:for-applescript))
-   'apples-mode 'apples-mode-hook)
-
-
-;;*** Text narration on macOS
-;;    -----------------------
-  ;; HYDRA: pel-∑narrate is at the bottom of this file with all other PEL hydras.
-  (when pel-system-is-macos-p
-    (pel-autoload-file pel-applescript for:
-                       pel-say
-                       pel-say-word
-                       pel-say-sentence
-                       pel-say-paragraph
-                       pel-say-region)
-    (when (not pel-use-hydra)
-      (define-pel-global-prefix pel:narrate (kbd "<f7> <f8>"))
-      (define-key pel:narrate "t" 'pel-say)
-      (define-key pel:narrate "R" 'pel-say-region)
-      (define-key pel:narrate "w" 'pel-say-word)
-      (define-key pel:narrate "s" 'pel-say-sentence)
-      (define-key pel:narrate "p" 'pel-say-paragraph))))
+   'apples-mode 'apples-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;;** C-like programming languages: C, C++, Objective-C, Pike
@@ -4662,14 +4678,13 @@ d-mode not added to ac-modes!"
       (pel-eval-after-load geiser-mode
         (if (and (require 'macrostep-geiser nil 'noerror)
                  (fboundp 'macrostep-geiser-setup))
-            (add-hook 'geiser-mode-hook (function macrostep-geiser-setup))
+            (add-hook 'geiser-mode-hook #'macrostep-geiser-setup)
           (display-warning 'pel-use-macrostep-geiser
                            "Can't load macrostep-geiser" :error)))
       (pel-eval-after-load geiser-repl
         (if (and (require 'macrostep-geiser nil 'noerror)
                  (fboundp 'macrostep-geiser-setup))
-            (add-hook 'geiser-repl-mode-hook (function
-                                              macrostep-geiser-setup))
+            (add-hook 'geiser-repl-mode-hook #'macrostep-geiser-setup)
           (display-warning 'pel-use-macrostep-geiser
                            "Can't load macrostep-geiser" :error))))
     (when pel-use-ac-geiser
@@ -5209,7 +5224,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
           (define-key edts-mode-map (kbd "C-c C-d M-.") 'edts-find-source-under-point)
           (define-key edts-mode-map (kbd "C-c C-d M-,") 'edts-find-source-unwind))
         (declare-function pel--setup-edts "pel_keys")
-        (add-hook 'edts-mode-hook (function pel--setup-edts))
+        (add-hook 'edts-mode-hook #'pel--setup-edts)
 
         (defun edts-mode-desktop-restore  (&rest args)
           "Restore EDTS mode desktop with specified ARGS.
@@ -6833,7 +6848,7 @@ to identify a Verilog file.  Anything else is assumed being V."
     (define-key outline-minor-mode-map (kbd "<f2> ]") 'outline-demote))
   (declare-function pel--setup-outline-minor-mode "pel_keys")
 
-  (add-hook 'outline-minor-mode-hook (function pel--setup-outline-minor-mode)))
+  (add-hook 'outline-minor-mode-hook #'pel--setup-outline-minor-mode))
 
 (when pel-use-outshine
   (pel-ensure-package-elpa outshine from: melpa))
@@ -7053,9 +7068,7 @@ to identify a Verilog file.  Anything else is assumed being V."
                            :error)))
       (declare-function pel-markdown-toc-refresh "pel_keys")
       ;; hook just for the markdown buffers
-      (add-hook 'before-save-hook
-                (function pel-markdown-toc-refresh)
-                nil :local))))
+      (add-hook 'before-save-hook #'pel-markdown-toc-refresh nil :local))))
 
 ;; ---------------------------------------------------------------------------
 ;;** reSTucturedText
@@ -7467,7 +7480,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   ;;       re-install the binding that was present
   ;;       at the moment it was turned-on.
   (global-set-key (kbd "M-l") 'pel-complete))
-;; (add-hook 'after-init-hook #'global-company-mode)
+;; (pel-defer-run global-company-mode after-load: company)
 
 (declare-function keymap-set "keymap") ; introduced in Emacs 29.1.  Prevent
                                        ; warning when compiling with earlier
@@ -7658,7 +7671,7 @@ to identify a Verilog file.  Anything else is assumed being V."
       (define-key origami-mode-map (kbd "M-/ M-D")   'pel-toggle-all-docstrings))
     (declare-function pel--activate-origami "pel_keys"))
 
-  (add-hook 'origami-mode-hook (function pel--activate-origami)))
+  (add-hook 'origami-mode-hook #'pel--activate-origami))
 
 ;; ---------------------------------------------------------------------------
 ;;* Help /apropos/info commands - <f11> ?
@@ -7970,11 +7983,11 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;;
 (declare-function pel-spell-maybe-activate-flyspell "pel-spell")
 (pel-add-hook-for 'pel-modes-activating-flyspell-mode
-                  (function pel-spell-maybe-activate-flyspell))
+                  #'pel-spell-maybe-activate-flyspell)
 
 (declare-function pel-spell-maybe-activate-flyspell-prog "pel-spell")
 (pel-add-hook-for 'pel-modes-activating-flyspell-prog-mode
-                  (function pel-spell-maybe-activate-flyspell-prog))
+                  #'pel-spell-maybe-activate-flyspell-prog)
 
 ;; ---------------------------------------------------------------------------
 ;;* bookmark commands - <f11> '
@@ -8032,7 +8045,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
     ;; Loading the repository from file when on start up.
     (declare-function bm-repository-load "bm" (&optional file))
-    (add-hook 'after-init-hook #'bm-repository-load)
+    (pel-defer-run bm-repository-load)
 
     ;; Saving bookmarks
     (add-hook 'kill-buffer-hook #'bm-buffer-save)
@@ -8040,12 +8053,14 @@ See `flyspell-auto-correct-previous-word' for more info."
     ;; Saving the repository to file on exit.
     ;; kill-buffer-hook is not called when Emacs is killed, so we
     ;; must save all bookmarks first.
-    (add-hook 'kill-emacs-hook
-              (lambda nil
-                (when (and (fboundp 'bm-buffer-save-all)
-                           (fboundp 'bm-repository-save))
-                  (bm-buffer-save-all)
-                  (bm-repository-save))))
+    (defun pel--activate-saving-bookmarks ()
+      "Save all bookmarks."
+      (when (and (fboundp 'bm-buffer-save-all)
+                 (fboundp 'bm-repository-save))
+        (bm-buffer-save-all)
+        (bm-repository-save)))
+    (declare-function pel--activate-saving-bookmarks "pel_keys")
+    (add-hook 'kill-emacs-hook #'pel--activate-saving-bookmarks)
 
     ;; The `after-save-hook' is not necessary to use to achieve persistence,
     ;; but it makes the bookmark data in repository more in sync with the file
@@ -8119,37 +8134,10 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;; -- indent-tools
 (when pel-use-indent-tools
-
-  (defvar pel--was-hydra-loaded-p (featurep 'pel__hydra)
-    "Remember whether PEL support for Hydra was loaded.")
-
+  ;; Note: `indent-tools-hydra/body' is bound to <f7> TAB inside
+  ;;       the pel__hydra.el: only when pel-use-hydra is active.
   (pel-ensure-package-elpa indent-tools from: melpa)
-  (pel-autoload-file indent-tools for: indent-tools-hydra/body)
-
-  (when (eq pel-indent-tools-key-bound 'globally)
-    ;; load indent-tools to map its key globally.  Delay it because we need
-    ;; it loaded to read the key prefix identified by customization.
-    (run-with-idle-timer
-     1 nil
-     (lambda ()
-       (when (and
-              (require 'indent-tools nil 'noerror)
-              (boundp 'indent-tools-keymap-prefix))
-         (global-set-key indent-tools-keymap-prefix 'indent-tools-hydra/body)
-         (define-key pel:indent (kbd "<f7>") 'indent-tools-hydra/body)
-         (if pel--was-hydra-loaded-p
-             ;; On a re-execution of pel-init, after was first pel__hydra
-             ;; byte compiled, just re-load it but first install the F7 keys
-             ;; before turning F7 into a prefix again.
-             (progn
-               (global-unset-key (kbd "<f7>"))
-               (global-set-key (kbd "<f7> TAB") 'indent-tools-hydra/body)
-               (load-library "pel__hydra"))
-           ;; When Emacs starts for the first time, just install the F7 keys
-           ;; because pel__hydra has not yet been byte compiled, loaded and the
-           ;; F7 is not yet a prefix.
-           (global-set-key (kbd "<f7> TAB") 'indent-tools-hydra/body))
-         (setq pel--was-hydra-loaded-p t ))))))
+  (pel-autoload-file indent-tools for: indent-tools-hydra/body))
 
 ;; -- smart-tabs
 (when pel-use-smart-tabs
@@ -8191,7 +8179,7 @@ See `flyspell-auto-correct-previous-word' for more info."
           (define-key map (kbd "<f9> <down>") 'smart-shift-down))))))
   (declare-function pel--setup-smart-shift "pel_keys")
 
-  (add-hook 'smart-shift-mode-hook (function pel--setup-smart-shift)))
+  (add-hook 'smart-shift-mode-hook #'pel--setup-smart-shift))
 
 ;; ---------------------------------------------------------------------------
 ;;* Windows scroll commands - <f11> |
@@ -8494,7 +8482,7 @@ See `flyspell-auto-correct-previous-word' for more info."
       (pel-ensure-package-elpa lsp-treemacs from: melpa))
 
     (define-key pel:browse  "T" 'treemacs)
-    (add-hook 'treemacs-mode-hook (function pel--setup-treemacs))
+    (add-hook 'treemacs-mode-hook #'pel--setup-treemacs)
     ;; TODO: either drop the following or provide support for emacs-winum
     ;; (with-eval-after-load 'winum
     ;;   (when (boundp 'winum-keymap)
@@ -10096,9 +10084,8 @@ See `flyspell-auto-correct-previous-word' for more info."
     (remove-hook 'speedbar-visiting-tag-hook         #'sr-speedbar-visiting-tag-hook)
     ;; Instead add hooks to a command can controls the behaviour
     (declare-function pel-sr-speedbar-visiting-control "pel-speedbar" ())
-    (add-hook 'speedbar-visiting-file-hook         #'pel-sr-speedbar-visiting-control t)
-    (add-hook 'speedbar-visiting-tag-hook
-              #'pel-sr-speedbar-visiting-control t))
+    (add-hook 'speedbar-visiting-file-hook #'pel-sr-speedbar-visiting-control t)
+    (add-hook 'speedbar-visiting-tag-hook  #'pel-sr-speedbar-visiting-control t))
   (declare-function pel--sr-speedbar-setup "pel_keys")
 
   (pel-eval-after-load sr-speedbar
@@ -10221,10 +10208,14 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; Use M-x ar to align a region with a regular expression.
 (defalias 'ar #'align-regexp)
 
+(defun pel--activate-align-on-return ()
+  "Activate aligning on return."
+  (defvar pel-newline-does-align) ;forward declare: prevent warnings.
+  (setq pel-newline-does-align t))
+(declare-function pel--activate-align-on-return "pel_keys")
+
 (pel-add-hook-for 'pel-modes-activating-align-on-return
-                  (lambda ()
-                    (defvar pel-newline-does-align)      ;forward declare
-                    (setq pel-newline-does-align t)))
+                  #'pel--activate-align-on-return)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;* Enriched Text - <f11> t e
@@ -10279,24 +10270,47 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:textmodes "e" #'enriched-mode)
 (define-key pel:textmodes "y" #'prettify-symbols-mode)
 
+(defun pel--activate-superword-mode ()
+    "Activate superword mode."
+  (superword-mode 1))
+(declare-function pel--activate-superword-mode "pel_keys")
 (pel-add-hook-for 'pel-modes-activating-superword-mode
-                  (lambda ()
-                    (superword-mode 1)))
+                  #'pel--activate-superword-mode)
+
+(defun pel--activate-subword-mode ()
+    "Activate subword mode."
+  (subword-mode 1))
+(declare-function pel--activate-subword-mode "pel_keys")
 (pel-add-hook-for 'pel-modes-activating-subword-mode
-                  (lambda ()
-                    (subword-mode 1)))
+                  #'pel--activate-subword-mode)
+
+(defun pel--activate-glasses-mode ()
+    "Activate glasses mode."
+  (glasses-mode 1))
+(declare-function pel--activate-glasses-mode "pel_keys")
 (pel-add-hook-for 'pel-modes-activating-glasses-mode
-                  (lambda ()
-                    (glasses-mode 1)))
+                  #'pel--activate-glasses-mode)
+
+(defun pel--activate-auto-fill-mode ()
+    "Activate auto-fill mode."
+  (auto-fill-mode 1))
+(declare-function pel--activate-auto-fill-mode "pel_keys")
 (pel-add-hook-for 'pel-modes-activating-auto-fill-mode
-                  (lambda ()
-                    (auto-fill-mode 1)))
+                  #'pel--activate-auto-fill-mode)
+
+(defun pel--activate-whitespace-mode ()
+    "Activate whitespace mode."
+  (whitespace-mode 1))
+(declare-function pel--activate-whitespace-mode "pel_keys")
 (pel-add-hook-for 'pel-modes-activating-whitespace-mode
-                  (lambda ()
-                    (whitespace-mode 1)))
+                  #'pel--activate-whitespace-mode)
+
+(defun pel--activate-electric-quote-local-mode ()
+    "Activate quote-local mode."
+  (electric-quote-local-mode 1))
+(declare-function pel--activate-electric-quote-local-mode "pel_keys")
 (pel-add-hook-for 'pel-modes-activating-electric-quote-local-mode
-                  (lambda ()
-                    (electric-quote-local-mode 1)))
+                  #'pel--activate-electric-quote-local-mode)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;* Text Transpose Commands - <f11> t t
@@ -10421,8 +10435,7 @@ See `flyspell-auto-correct-previous-word' for more info."
       (pel-autoload-file magit for:
                          magit
                          magit-status)
-      (add-hook 'after-init-hook #'pel--cfg-magit-keys :append)
-
+      (pel-defer-run pel--cfg-magit-keys)
       ;;
       (when pel-use-treemacs-magit
         (pel-ensure-package-elpa treemacs-magit from: melpa)))
@@ -10905,15 +10918,18 @@ See `flyspell-auto-correct-previous-word' for more info."
   (defvar desktop-saved-frameset)       ; prevent byte-compiler warning
   (defvar desktop-restore-reuses-frames)
   (defvar desktop-restore-in-current-display)
+
   (when pel-emacs-is-a-tty-p
-    (add-hook 'desktop-after-read-hook
-              (lambda ()
-                (frameset-restore
-                 desktop-saved-frameset
-                 :reuse-frames (eq desktop-restore-reuses-frames t)
-                 :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
-                 :force-display desktop-restore-in-current-display
-                 :force-onscreen nil))))
+    (defun pel--activate-frameset-restore ()
+        "Activate frameset-restore."
+      (frameset-restore
+       desktop-saved-frameset
+       :reuse-frames (eq desktop-restore-reuses-frames t)
+       :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
+       :force-display desktop-restore-in-current-display
+       :force-onscreen nil))
+    (declare-function pel--activate-frameset-restore "pel_keys")
+    (add-hook 'desktop-after-read-hook #'pel--activate-frameset-restore))
 
   (unless (eq pel-use-desktop 'with-desktop+)
     ;; desktop+ autoloaded logic advices of the desktop functions.
@@ -10989,12 +11005,16 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:execute    "t" #'term)
 (define-key pel:execute    "l" #'ielm)
 (when pel-term-use-shell-prompt-line-regexp
-  ;; [:todo 2025-09-17, by Pierre Rouleau: See term.el and possibly add more
-  ;;                       logic in the hooked function.]
-  (add-hook 'term-mode-hook
-            (lambda ()
-              (when (boundp 'term-prompt-regexp)
-                (setq term-prompt-regexp pel-shell-prompt-line-regexp)))))
+
+  (defun pel--activate-term-prompt ()
+      "Activate terminal prompt."
+    ;; [:todo 2025-09-17, by Pierre Rouleau: See term.el and possibly add more
+    ;;                       logic in the hooked function.]
+    (when (boundp 'term-prompt-regexp)
+      (setq term-prompt-regexp pel-shell-prompt-line-regexp)))
+  (declare-function pel--activate-term-prompt "pel_keys")
+  (add-hook 'term-mode-hook #'pel--activate-term-prompt))
+
 ;; support for the extremely fast/nice libvterm-based vterm shell.
 (when pel-use-vterm
   (pel-ensure-package-elpa vterm from: melpa)
@@ -11095,10 +11115,14 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;; Installation of work around for Emacs bug 44494
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=44494
+(defun pel--load-pel-etags ()
+  "Load pel-etags once."
+  (unless (featurep 'pel-etags)
+    (load "pel-etags" :no-error)))
+
 (unless pel-emacs-30-or-later-p
   ;; The bug fix was incorporated in Emacs 30 stream
-  (add-hook 'xref-etags-mode-hook (function
-                                   (lambda () (load "pel-etags" :no-error)))))
+  (add-hook 'xref-etags-mode-hook #'pel--load-pel-etags))
 
 ;;** ggtags
 (when pel-use-ggtags
@@ -11117,14 +11141,16 @@ See `flyspell-auto-correct-previous-word' for more info."
 
   ;; Activate PEL ggtags setup when ggatgs-mode starts on a buffer.
   (declare-function pel--ggtags-setup "pel_keys") ; prevent compiler warning
-  (add-hook 'ggtags-mode-hook
-            (function pel--ggtags-setup))
+  (add-hook 'ggtags-mode-hook #'pel--ggtags-setup)
 
   ;; Activate ggtags mode automatically on modes requested by user
   ;; customization
+  (defun pel--activate-ggtags-mode ()
+    "Activate ggtags mode."
+    (ggtags-mode 1))
+  (declare-function pel--activate-ggtags-mode "pel_keys")
   (pel-add-hook-for 'pel-modes-activating-ggtags
-                    (lambda ()
-                      (ggtags-mode 1))))
+                    #'pel--activate-ggtags-mode))
 
 ;;** cscope
 (when (or  pel-use-xcscope
@@ -11136,8 +11162,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     (pel-autoload-file xcscope for: cscope-minor-mode)
     (define-key pel:cscope "C" 'cscope-minor-mode)
     ;; schedule activation of cscope minor mode for selected ones
-    (pel-add-hook-for 'pel-modes-activating-cscope
-                      #'cscope-minor-mode))
+    (pel-add-hook-for 'pel-modes-activating-cscope #'cscope-minor-mode))
   (when pel-use-helm-cscope
     (pel-ensure-package-elpa helm-cscope from: melpa)
     (pel-autoload-file helm-cscope for: helm-cscope-mode)
@@ -11194,8 +11219,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-autoload-file gxref for: xref-show-xrefs-function)
   (define-key pel:xref-backend "g" 'pel-xref-toggle-gxref)
   (declare-function pel-xref-gxref-activate "pel-xref" ())
-  (pel-add-hook-for 'pel-modes-activating-gxref
-                    #'pel-xref-gxref-activate))
+  (pel-add-hook-for 'pel-modes-activating-gxref #'pel-xref-gxref-activate))
 
 ;;** jtags
 (when pel-use-jtags
@@ -11348,7 +11372,8 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-check-minor-modes-in           pel-activates-global-minor-modes)
   (pel-turn-on-global-minor-modes-in 'pel-activates-global-minor-modes))
 
-(add-hook 'after-init-hook #'pel--cfg-global-minor-modes :append)
+(pel-defer-run pel--cfg-global-minor-modes)
+
 
 ;; ---------------------------------------------------------------------------
 ;;* PEL Hydras Control

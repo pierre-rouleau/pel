@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 11:59:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-15 09:08:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1084,6 +1084,7 @@ Use this to compute statistics."
 
 Use only for computing statistics!! It loads all of PEL."
   (interactive)
+  (load-library "pel_keys")
   (pel-load-all)
   (pel-package-info-message))
 

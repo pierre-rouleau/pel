@@ -2,6 +2,35 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Reduced Emacs startup time when PEL is in normal mode (the default) by deferring
+  loading of pel_keys to after Emacs initialization (`after-init-hook`), while
+  still loading it before command-line file visiting.
+  Also simplified the loading of hydra related commands which also improves speed.
+  Also deferred loading of 6 external libraries that were previously loaded during startup.
+  The modification of hydra loading logic also eliminates the possibility of
+  race condition of the ~<f7>~ key being used as non-prefix on the first startup
+  after a PEL build.
+  - Emacs startup time improvements:
+    - On a Mac Studio macOS system, Emacs 30.2.50 with native compilation,
+       with 337 activated packages, Emacs first startup after build
+       dropped from 3.1 seconds to 1.12 seconds.
+      Subsequent startups also dropped from 1.5 seconds to about 1.15 seconds.
+    - On an 2014 iMac running Emacs 26.3 with 223 activated packages, startup time
+      - prior to the change were:
+        - 1.3 seconds on first startup after building PEL (via ~make clean all~) in normal mode.
+        - 0.8 and 0.9 seconds on subsequent startups in normal mode.
+        - 0.2 seconds in fast startup mode.
+      - with the new code:
+        - 0.5 seconds in normal mode.
+        - 0.1 seconds in fast startup mode.
+- Modified the way *pel-init* is treated: it only loads pel_keys.el once, at startup
+  of an Emacs session.
+  Executing it manually later does not reload pel_keys.el and some startup-bound
+  operations required by the change still require an Emacs restart.
+  This is done to protect against surprising side effects caused by duplication
+  in hooks or re-execution of startup logic.
+  This means that when updating PEL user-options to install new packages, you must
+  restart Emacs for the changes to take effect.
 - Add *pel-skip-copyright-in* user-option to identify files and directory trees
   where automatic copyright updates are not performed when automatic copyright
   updates are activated by the value of *pel-update-copyright*.
