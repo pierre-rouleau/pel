@@ -187,8 +187,10 @@ Again any feedback is welcome. Thanks!
   of activated package is easily achieved, even on old computers.  Take a look
   at some screen shots in the startup directory:
 
-  - `On a 2014 iMac running Emacs 26.3 terminal`_ (in normal mode)
-  - `On a 2014 iMac running Emacs 26.3 terminal in fast-startup mode`_
+  - A 0.5 seconds startup with 223 packages by PEL
+    `on a 2014 imac running Emacs 26.3 terminal`_ (in normal mode),
+  - And a 0.1 seconds startup with the same settings
+    `on a 2014 imac running Emacs 26.3 terminal in fast-startup mode`_,
   - `On Emacs 30.1 in terminal mode under Rocky Linux 8.10 VM running in a 2014 iMac`_,
     accessed via ssh with a GNU screen session.
     Note this one: it has 412 loaded features, yet the Emacs startup time is 0.5 seconds
@@ -680,8 +682,8 @@ Notes
 .. _run Emacs daemon(s) with text and graphics clients: doc/emacs-daemon.rst.txt
 .. _feedback in the discussion: https://github.com/pierre-rouleau/pel/discussions
 .. _Emacs < 30: https://github.com/pierre-rouleau/pel/issues/33
-.. _On a 2014 iMac running Emacs 26.3 terminal: doc/res/startup/startup-imac-2014-terminal.png
-.. _On a 2014 iMac running Emacs 26.3 terminal in fast-startup mode: doc/res/startup/startup-imac-2014-terminal-fast-startup.png
+.. _on a 2014 imac running Emacs 26.3 terminal: doc/res/startup/startup-imac-2014-terminal.png
+.. _on a 2014 imac running Emacs 26.3 terminal in fast-startup mode: doc/res/startup/startup-imac-2014-terminal-fast-startup.png
 .. _On Emacs 30.1 in terminal mode under Rocky Linux 8.10 VM running in a 2014 iMac: doc/res/startup/startup-imac-rockylinux-terminal.png
 .. _On a 2023 macStudio running Emacs 30.1 in terminal: doc/res/startup/startup-macstudio-terminal-01.png
 .. _On a 2023 macStudio running Emacs 30.1 in Graphics mode: doc/res/startup/startup-macstudio-gui-01.png
