@@ -26,7 +26,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Modified the way *pel-init* is treated: it only loads pel_keys.el once, at startup
   of an Emacs session.
   Executing it manually later has no effect.
-  This is done Emacs to protect against surprising side effects caused by duplication
+  This is done to protect against surprising side effects caused by duplication
   in hooks or re-execution of startup logic.
   This means that when updating PEL user-options to install new packages, you must
   restart Emacs for the changes to take effect.

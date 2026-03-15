@@ -1,6 +1,6 @@
 ;;; pel-search-regexp.el --- Search regxp selection control  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2022, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -190,7 +190,7 @@ Return the new value if changed, nil if not changed."
     - vr/python
     - vr/custom
   Change the values of the pel-use-visual-regexp... user option variables
-  than execute pel-init to activate or deactivate them."
+  to activate or deactivate them. Then exit Emacs and re-start it."
                                           pel-use-visual-regexp
                                           pel-use-visual-regexp-steroids)
                                 ""))))
