@@ -25,7 +25,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
         - 0.1 seconds in fast startup mode.
 - Modified the way *pel-init* is treated: it only loads pel_keys.el once, at startup
   of an Emacs session.
-  Executing it manually later has no effect.
+  Executing it manually later does not reload pel_keys.el and some startup-bound
+  operations required by the change still require an Emacs restart.
   This is done to protect against surprising side effects caused by duplication
   in hooks or re-execution of startup logic.
   This means that when updating PEL user-options to install new packages, you must
