@@ -192,6 +192,27 @@
     (setq pel--init-called-once t))
 
 ;; ---------------------------------------------------------------------------
+;;* Activation Macro
+;;  ================
+
+(defmacro pel-defer-run (fun &optional after-load: feature)
+  "Defer execution of FUN, optionally executing it when FEATURE loads."
+  (declare (indent 2))
+  (ignore after-load:)
+  (if feature
+      ;; if a feature is identified defer execution of FUN when the feature
+      ;; loads.
+      `(if after-init-time
+           (pel-eval-after-load ,feature
+             (,fun))
+         (add-hook 'after-init-hook (function ,fun) :append))
+    ;; If no feature is identified, execute function directly.
+    `(if after-init-time
+         (,fun)
+       (add-hook 'after-init-hook (function ,fun) :append))))
+
+
+;; ---------------------------------------------------------------------------
 ;;* Configure PEL-level autoloading
 ;;  ===============================
 
@@ -654,7 +675,7 @@ Your version of Emacs does not support dynamic module.")))
     (pel-ensure-package-elpa  all-the-icons-ivy)
     (pel-require-after-init all-the-icons-ivy 1)
     (declare-function all-the-icons-ivy-setup "all-the-icons-ivy")
-    (add-hook 'after-init-hook #'all-the-icons-ivy-setup))
+    (pel-defer-run all-the-icons-ivy-setup after-load: all-the-icons-ivy))
 
   ;; On macOS, the keys used by the OS are the same as selected here, both in
   ;; GUI mode and in terminal (TTY) mode:
@@ -7449,7 +7470,7 @@ to identify a Verilog file.  Anything else is assumed being V."
   ;;       re-install the binding that was present
   ;;       at the moment it was turned-on.
   (global-set-key (kbd "M-l") 'pel-complete))
-;; (add-hook 'after-init-hook #'global-company-mode)
+;; (pel-defer-run global-company-mode after-load: company)
 
 (declare-function keymap-set "keymap") ; introduced in Emacs 29.1.  Prevent
                                        ; warning when compiling with earlier
@@ -8014,7 +8035,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
     ;; Loading the repository from file when on start up.
     (declare-function bm-repository-load "bm" (&optional file))
-    (add-hook 'after-init-hook #'bm-repository-load)
+    (pel-defer-run bm-repository-load)
 
     ;; Saving bookmarks
     (add-hook 'kill-buffer-hook #'bm-buffer-save)
@@ -10376,8 +10397,7 @@ See `flyspell-auto-correct-previous-word' for more info."
       (pel-autoload-file magit for:
                          magit
                          magit-status)
-      (add-hook 'after-init-hook #'pel--cfg-magit-keys :append)
-
+      (pel-defer-run pel--cfg-magit-keys)
       ;;
       (when pel-use-treemacs-magit
         (pel-ensure-package-elpa treemacs-magit from: melpa)))
@@ -11303,7 +11323,8 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-check-minor-modes-in           pel-activates-global-minor-modes)
   (pel-turn-on-global-minor-modes-in 'pel-activates-global-minor-modes))
 
-(add-hook 'after-init-hook #'pel--cfg-global-minor-modes :append)
+(pel-defer-run pel--cfg-global-minor-modes)
+
 
 ;; ---------------------------------------------------------------------------
 ;;* PEL Hydras Control

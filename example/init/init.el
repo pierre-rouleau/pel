@@ -581,9 +581,9 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;; - Since PEL user-option variables are stored in the customization data
   ;;   in the (custom-set-variables) form, this code *must* be done after the
   ;;   identification of the `custom-file' and after the loading of that file.
-  ;; - Instead of calling pel-init directly, defer its execution after Emacs
-  ;;   initialization is complete and before command-line argument processing
-  ;;   by adding it to the `emacs-startup-hook'.
+  ;; - Call `pel-init' here. When invoked during init, `pel-init' defers
+  ;;   completion to `after-init-hook`, which runs before command-line file
+  ;;   visiting.
 
   (require 'pel)
   (with-no-warnings
