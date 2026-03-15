@@ -86,14 +86,19 @@
 If non-nil must be a string: it will then be
 used by pel_keys to reload silently the abbreviation file.")
 
-(defvar pel--abbrev-file-name) ; prevent warning: defined inside init.el to
+(defvar pel--abbrev-file-name) ; prevent warning: defined inside init.el
 
 (defun pel--complete-init ()
-  "Complete PEL initialization by loading pel_keys.el."
+  "Complete PEL initialization by loading pel_keys.el once."
   ;; Note that pel_keys.el has a file name that ensures that packages
   ;; controlled byte-compilation compiles it *before* compiling pel.el
-  ;; The Makefile rules also ensure that pel_keys.el is compiled before pel.el.
-  (load-library "pel_keys"))
+  ;; The Makefile rules also ensure that pel_keys.el is compiled before
+  ;; pel.el.
+
+  ;; Load pel_keys once inside an Emacs session.
+  ;; Preventing multiple loading is done to protect against duplicate side
+  ;; effects.
+  (require 'pel_keys nil 'noerror))
 
 ;;;###autoload
 (defun pel-init (&optional cached-abbrev-file-name)
@@ -136,11 +141,6 @@ re-execute `pel-init' again to activate them."
     ;; Otherwise defer the loading of pel_keys.el after Emacs init completion
     ;; (and the extra processing done then).
     (add-hook 'after-init-hook #'pel--complete-init :append)))
-
-
-
-
-
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel)

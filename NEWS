@@ -6,7 +6,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   loading of pel_keys to after Emacs initialization (`after-init-hook`), while
   still loading it before command-line file visiting.
   Also simplified the loading of hydra related commands which also improves speed.
-  Also deferred the loading of 6 external libraries that were not deferred.
+  Also deferred loading of 6 external libraries that were previously loaded during startup.
   The modification of hydra loading logic also eliminates the possibility of
   race condition of the ~<f7>~ key being used as non-prefix on the first startup
   after a PEL build.
@@ -23,6 +23,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       - with the new code:
         - 0.5 seconds in normal mode
         - 0.1 seconds in fast startup mode.
+- Modified the way *pel-init* is treated: it can only be loaded once during an Emacs
+  session to protect against surprising side effects caused by duplication in hooks
+  or re-execution of startup logic.
+  This means that when updating PEL user-options to install new packages, you must
+  restart Emacs for the changes to take effect.
 - Add *pel-skip-copyright-in* user-option to identify files and directory trees
   where automatic copyright updates are not performed when automatic copyright
   updates are activated by the value of *pel-update-copyright*.

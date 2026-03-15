@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-14 19:19:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-15 16:02:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -73,9 +73,14 @@
 ;; - pel-∑winInfo      : Window/Buffer purpose  :  <f7> W
 ;; - pel-∑window       : Window management Hydra:  <f7> w
 ;;
+;; Other hydras:
+;; - indent-tools-hydra/body                    : <f7> TAB
+;;
 ;; Mode specific Hydras:
 ;; - pel-∑c       : C code management      :  <f12> <f7> - in C/C++ buffers
 ;;
+
+
 ;; Byte-compilation
 ;; ----------------
 ;;

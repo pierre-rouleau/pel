@@ -205,7 +205,11 @@
       `(if after-init-time
            (pel-eval-after-load ,feature
              (,fun))
-         (add-hook 'after-init-hook (function ,fun) :append))
+         (add-hook 'after-init-hook
+                   (lambda ()
+                     (pel-eval-after-load ,feature
+                         (,fun)))
+                   :append))
     ;; If no feature is identified, execute function directly.
     `(if after-init-time
          (,fun)
@@ -11112,7 +11116,8 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; Installation of work around for Emacs bug 44494
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=44494
 (defun pel--load-pel-etags ()
-  "Load pel-etags."
+  "Load pel-etags once."
+  (unless (featurep 'pel-etags))
   (load "pel-etags" :no-error))
 
 (unless pel-emacs-30-or-later-p
