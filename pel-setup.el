@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-16 09:30:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-16 10:01:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1250,9 +1250,9 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
           ;;
           ;; handle package quickstart when running Emacs ≥ 27
           (when pel-emacs-27-or-later-p
-            (declare-function pel--setup-early-init "pel-setup-27")
-            (declare-function pel--create-package-quickstart "pel-setup-27")
-            (declare-function pel--remove-package-quickstart-files "pel-setup-27")
+            (declare-function pel--setup-early-init "pel-setup-27" (pkg-quickstart))
+            (declare-function pel--create-package-quickstart "pel-setup-27" (dirpath for-graphics))
+            (declare-function pel--remove-package-quickstart-files "pel-setup-27" (for-graphics))
             (pel--setup-early-init pel-support-package-quickstart)
             (pel+= step-count 1) ; STEP 18 (Emacs >= 27)
             (if pel-support-package-quickstart

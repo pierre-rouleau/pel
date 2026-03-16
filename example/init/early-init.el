@@ -220,10 +220,17 @@ For debugging and to quiet byte-compiler warning.")
 (let ((fast-startup-setup-fname (expand-file-name "pel-fast-startup-init.el"
                                                   user-emacs-directory)))
   (when (file-exists-p fast-startup-setup-fname)
-    (load (file-name-sans-extension fast-startup-setup-fname) :noerror :nomessage)
-    (pel-fast-startup-init pel-force-graphic-specific-custom-file-p
-                           pel-early-init-support-package-quickstart-p)
-    ;; Remember Emacs is running in PEL's fast startup mode.
-    (setq pel-running-in-fast-startup-p t)))
+    ;; Attempt to load the 'pel-fast-startup-init.el' file that was built
+    ;; dynamically by PEL.  Identify running in fast startup mode only on
+    ;; success.
+    (when (load (file-name-sans-extension fast-startup-setup-fname)
+                :noerror :nomessage)
+      (declare-function pel-fast-startup-init "pel-fast-startup-init"
+                        (&optional force-graphics using-package-quickstart))
+
+      (pel-fast-startup-init pel-force-graphic-specific-custom-file-p
+                             pel-early-init-support-package-quickstart-p)
+      ;; Remember Emacs is running in PEL's fast startup mode.
+      (setq pel-running-in-fast-startup-p t))))
 
 ;;; --------------------------------------------------------------------------
