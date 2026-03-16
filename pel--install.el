@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 14:11:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-15 19:31:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -47,6 +47,22 @@
 ;;    - `pel--package-ensure-elpa'
 ;;      - `pel--package-install-elpa'
 ;;
+
+;; Lazy loading and package installation:
+;;
+;; The first set of functions and macros provide mechanism to require, load,
+;; autoload and byte-compiler declaration facilities.
+;;
+;;
+;; @ `pel-require-at-load'
+;;   - `pel--require-at-load'
+;; @ `pel-require-after-init'
+;;   - `pel--require-after-init'
+;; @ `pel-eval-after-load'
+;; @ `pel-set-auto-mode'
+;; @ `pel-autoload-file'
+;; @ `pel-declare-file'
+
 ;; Speedbar Support
 ;; - `pel-add-speedbar-extension'
 ;;
@@ -55,6 +71,8 @@
 ;;; Dependencies:
 ;;
 (require 'pel--base)
+(eval-when-compile
+  (require 'pel--macros))        ; use `pel-append-to' to generate code.
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -155,18 +173,18 @@
 (defun pel-isa-http-404-error-p (&optional buffer)
   "Return t if the BUFFER content is a 404 HTTP status error, nil otherwise."
   (with-current-buffer (or buffer (current-buffer))
-      (save-excursion
+    (save-excursion
+      (goto-char (point-min))
+      (forward-line 4)
+      (let ((limit (point)))
         (goto-char (point-min))
-        (forward-line 4)
-        (let ((limit (point)))
-          (goto-char (point-min))
-          (pel-as-boolean
-           (re-search-forward
-            "\
+        (pel-as-boolean
+         (re-search-forward
+          "\
 \\b404\\b\\(?:\\.[[:digit:]][[:digit:]]?\\)?[[:space:]]?\
 \\(?::?[[:space:]]*Not Found\\b\\)"
-            limit
-            'noerror))))))
+          limit
+          'noerror))))))
 
 (defun pel-url-copy-file (url newname &optional ok-if-already-exists)
   "Copy URL to NEWNAME.  Both arguments must be strings.
@@ -750,7 +768,158 @@ Don't install it if already installed or PEL in fast startup."
                (lambda ()
                  ,@body)
                :append)))
+;; ---------------------------------------------------------------------------
+(defun pel--require-at-load (feature)
+  "Require specified FEATURE when loading only, not when compiling.
+FEATURE must be a quoted symbol.
+This is normally used by the macro `pel-require-at-load'."
+  (unless (require feature nil :no-error)
+    (display-warning 'pel-require-at-load
+                     (format "Failed loading %s" feature)
+                     :error)))
 
+(defmacro pel-require-at-load (feature)
+  "Require specified FEATURE when loading only, not when compiling.
+
+FEATURE must be an unquoted symbol representing the required
+feature."
+  `(cl-eval-when 'load
+     (pel--require-at-load (quote ,feature))))
+
+;; --
+(defun pel--require-after-init (feature secs)
+  "Require specified FEATURE some SECS after initializing Emacs.
+FEATURE must be a quoted symbol.
+This is normally used by the macro `pel-require-after-init'."
+  (run-with-idle-timer secs nil
+                       (function require)
+                       feature nil :no-error))
+
+(defmacro pel-require-after-init (feature secs)
+  "Require specified FEATURE some SECS after initializing Emacs.
+
+Don't require the feature when compiling.
+FEATURE must be an unquoted symbol representing the required
+feature.
+SECS may be an integer, a floating point number, or the internal
+time format returned by, e.g., ‘current-idle-time’."
+  `(cl-eval-when 'load
+     (pel--require-after-init (quote ,feature) ,secs)))
+
+
+;; --
+(defmacro pel-set-auto-mode (mode for: &rest regexps)
+  "Activate automatic MODE for the list of file REGXEPS.
+The FOR: argument is a cosmetic separator.
+MODE must be an un-quoted symbol.
+FOR: separator must be present.  It is cosmetic only.
+REGEXPS is on or several regular expression strings."
+  (declare (indent 0))
+  (ignore for:)
+  (let ((forms ()))
+    (setq forms
+          (dolist (regxp regexps (nreverse forms))
+            (push `(add-to-list 'auto-mode-alist
+                                (quote (,regxp . ,mode)))
+                  forms)))
+    `(progn
+       ,@forms)))
+
+;; --
+
+(defmacro pel-autoload-file (fname for: &rest commands)
+  "Schedule the autoloading of FNAME for specified COMMANDS.
+FNAME is either a string or an unquoted symbol.
+The autoload is generated only when the command is not already bound.
+Argument FOR: just a required separator keyword to make code look better.
+
+The macro also generates a `declare-function' for each function in
+COMMANDS preventing byte-compiler warnings on code referencing these
+functions."
+  (declare (indent 0))
+  (ignore for:)
+  (let ((fname     (if (stringp fname) fname (symbol-name fname)))
+        (decl-fcts ()))
+    (dolist (fct commands)
+      (push `(declare-function ,fct ,fname) decl-fcts))
+    (if (> (length commands) 1)
+        `(progn
+           (dolist (fct (quote (,@commands)))
+             (unless (fboundp fct)
+               (autoload fct ,fname nil :interactive)))
+           ,@decl-fcts)
+      `(progn
+         (unless (fboundp (quote ,@commands))
+           (autoload (quote ,@commands) ,fname nil :interactive))
+         ,@decl-fcts))))
+
+;; --
+(defmacro pel-declare-file (fname defines: &rest commands)
+  "Declare one or several COMMANDS to be defined in specified FNAME.
+This does not generate any code.  It prevents byte-compiler warnings.
+DEFINES: is a cosmetic only argument that must be present."
+  (declare (indent 0))
+  (ignore defines:)
+  (let ((fname     (if (stringp fname) fname (symbol-name fname)))
+        (decl-fcts ()))
+    (dolist (fct commands)
+      (push `(declare-function ,fct ,fname) decl-fcts))
+    `(progn
+       ,@decl-fcts)))
+
+;; --
+
+(defun pel--eval-after-load-error (feature error)
+  "Display warning for FEATURE loaded by `pel-eval-after-load'.
+The ERROR argument is the caught error."
+  (display-warning 'pel-eval-after-load
+                   (format "Failed configuring %s: %s"
+                           feature
+                           error)
+                   :error))
+
+(defconst pel--ts-mode-with-fixer '(ada-ts-mode
+                                    dart-ts-mode
+                                    elixir-ts-mode
+                                    erlang-ts-mode
+                                    go-ts-mode
+                                    js-ts-mode
+                                    rust-ts-mode
+                                    zig-ts-mode)
+  "List of Tree Sitter modes that require execution of a mode fixer function.
+
+The fixer mode function has a name that has a format like
+pel--MODE-fixer with where MODE corresponds to the name of the mode
+taken from this list.")
+
+(defmacro pel-eval-after-load (features &rest body)
+  "Evaluate BODY after the FEATURES has been loaded.
+FEATURE is either a feature symbol or a list of feature symbols.
+Both must be unquoted.
+A list of feature symbol is useful, for example, when the tree-sitter
+mode is provided by a different file them the classic major mode,
+and the tree-sitter mode file does not load the classic mode file."
+  (declare (indent 1))
+  (let ((code nil)
+        (feature-body nil))
+    (dolist (the-feature (if (listp features) features (list features)))
+      (setq feature-body nil)
+      (when (memq the-feature pel--ts-mode-with-fixer)
+        (let ((fixer-fct (intern (format "pel--%s-fixer" the-feature))))
+          (pel-append-to feature-body
+            `((when (fboundp (quote ,fixer-fct))
+                (,fixer-fct))))))
+      (pel-append-to feature-body
+        `((condition-case-unless-debug err
+              (progn ,@body)
+            (error (pel--eval-after-load-error (quote ,the-feature)
+                                               err)))))
+      (pel-append-to code
+        `((with-eval-after-load (quote ,the-feature)
+            ,@feature-body))))
+    ;; Return the generated code for all features.
+    `(progn
+       ,@code)))
 ;; ---------------------------------------------------------------------------
 ;; Speedbar Support
 ;; ----------------
