@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-16 09:20:06 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-16 09:30:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1282,12 +1282,6 @@ Failed fast startup setup for %s after %d of %d steps: %s
                 pel-detected-dual-environment-in-init-p
                 "\n Affects Emacs running in terminal and graphics mode!")))
 
-;; [:todo 2026-02-21, by Pierre Rouleau: Fix pel-setup-fast on Emacs 30
-;;                    where it does not work.  Identify what changed
-;;                    in Emacs that prevents it to work.
-;;                    Also add ability to handle the native compilation mode,
-;;                    the cached .eln files that are now supported in Emacs.
-;; ]
 ;;-pel-autoload
 (defun pel-setup-fast ()
   "Prepare the elpa directories and code to speed up Emacs startup."
