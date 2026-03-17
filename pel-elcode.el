@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-17 16:56:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-17 17:12:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -81,7 +81,8 @@ Return nil for anything but a list (like numbers, strings or symbols)."
      ;; If it's a list but the head isn't a symbol (e.g. ((lambda...) args))
      ((listp exp)
       (dolist (item exp)
-        (setq symbols (append (pel-elcode-operators-in item) symbols)))))
+        (setq symbols (append (reverse (pel-elcode-operators-in item))
+                              symbols)))))
 
     (reverse                            ; keep original code order
      (seq-filter #'identity             ; remove nil if an empty list is found
@@ -118,21 +119,21 @@ Return nil for anything but a list (like numbers, strings or symbols)."
   "List of operators that have no impact on purity or side-effect.")
 
 (defun pel-elcode-properties-of-sexp-at-point (&optional pos)
-  "Return a property declare form for sext at POS or at point.
+  "Return a property declare form for sexp at POS or at point.
 The declare form identifies whether the sexp is pure, side-effect-free and/or
 error-free."
   (let ((operators (pel-elcode-symbols-of-sexp-at-point pos)))
-    ;; Some flow control/iteration special form/functions have
-    ;; no impact on whether the defun is pure or side-effect-free,
-    ;; so remove them from the inspected list of operators.
-    (setq operators (pel-delqs pel-elcode-non-impacting-operators
-                               operators))
-    ;;
-    ;; If the first symbol is defun, remove it from the list.
-    (when (memq (car-safe operators) '(defun defsubst))
-      (setq operators (cdr operators)))
-    ;;
     (when operators
+      ;; Some flow control/iteration special form/functions have
+      ;; no impact on whether the defun is pure or side-effect-free,
+      ;; so remove them from the inspected list of operators.
+      (setq operators (pel-delqs pel-elcode-non-impacting-operators
+                                 operators))
+      ;;
+      ;; If the first symbol is defun, remove it from the list.
+      (when (memq (car-safe operators) '(defun defsubst))
+        (setq operators (cdr operators)))
+      ;;
       ;; Inspect the remaining operators.
       ;; If one has does not have a property, the defun at point does not
       ;; have that property: so remove it from the defun-props.

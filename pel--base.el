@@ -2099,6 +2099,7 @@ global minor mode is specified instead of a local minor mode."
 
 (defun pel-multiplier (positive)
   "Return a positive value 1 if POSITIVE is non-nil, -1 otherwise."
+  (declare (pure t) (side-effect-free error-free))
   (if positive 1 -1))
 
 (defalias 'pel-mode-toggle-arg 'pel-multiplier
@@ -2186,6 +2187,7 @@ Return nil if symbol N value is CEILING or larger."
 (defun pel-at-letter-p ()
   "Return non-nil if point is located over a letter character, nil otherwise.
 Letters include all characters considered as letters by [[:alpha:]]"
+  (declare (side-effect-free t))
   (looking-at-p "[[:alpha:]]"))
 
 (defun pel-at-lowercase-p (&optional exact pos byword backward)
@@ -2338,12 +2340,12 @@ Multi-byte characters are handled properly."
   "Return text string between beginning of line and point.
 If WITH-PROPERTIES is non-nil the returned value includes the text properties,
 otherwise it does not."
+  (declare (side-effect-free t))
   (let ((begin (line-beginning-position))
         (end   (point)))
     (if with-properties
         (buffer-substring begin end)
       (buffer-substring-no-properties begin end))))
-
 
 ;; ---------------------------------------------------------------------------
 ;;* Check text in buffer
@@ -2365,6 +2367,7 @@ current major mode."
 (defun pel-inside-code (&optional pos)
   "Return non-nil when point or POS is in code, nil if in comment or string.
 Note that this changes the search match data!"
+  (declare (pure t) (side-effect-free t))
   (let ((syntax (syntax-ppss (or pos (point)))))
     (and (not (nth 3 syntax))
          (not (nth 4 syntax)))))
@@ -2418,6 +2421,7 @@ environment variables that may be in the string."
 
 (defun pel-is-subdir-of (path1 path2)
   "Return t if PATH1 is a sub-directory of PATH2."
+  (declare (side-effect-free t))
   (let ((npath1 (pel-normalize-fname path1))
         (npath2 (pel-normalize-fname path2)))
     (when (string-match-p (regexp-quote npath2) npath1)
@@ -2725,7 +2729,6 @@ The list of symbol is in SYMBOL-LIST and the maximum line width is LINE-WIDTH."
       (when (>= w line-width)
         (setq w 1)
         (insert "\n ")))))
-
 (defun pel-insert-list-content (symbol &optional
                                        buffer without-index
                                        no-button on-same-line)
