@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-17 16:06:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-17 16:56:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -101,6 +101,14 @@ Return nil for anything but a list (like numbers, strings or symbols)."
 (defconst pel-elcode-non-impacting-operators
   '(and
     or
+    if
+    when
+    unless
+    cond
+    progn
+    prog1
+    let
+    let*
     while
     dolist
     ;; also ignore current declarations in case code changed
@@ -136,9 +144,10 @@ error-free."
             (pcase (function-get op 'side-effect-free)
               ('error-free)
               ('t (setq defun-props (delq 'error-free defun-props)))
-              (_  (setq defun-props (delq 'side-effect-free defun-props))))
+              (_  (setq defun-props (pel-delqs '(side-effect-free error-free)
+                                               defun-props))))
             ;; Stop once there's no properties left.
-            (unless operators
+            (unless defun-props
               (throw 'break nil))))
         ;; Return the properties that remain for the defun.
         ;; But first reformat it into a proper declare argument.
