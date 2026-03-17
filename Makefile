@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-15 19:37:45 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-17 16:07:07 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -181,6 +181,7 @@ EL_FILES := pel--base.el \
 		pel-dart.el \
 		pel-diff.el \
 		pel-dtreplace.el \
+		pel-elcode.el \
 		pel-eldoc.el \
 		pel-elisp-analyze.el \
 		pel-elisp-eval.el \
@@ -768,6 +769,7 @@ pel-d.elc:                pel--base.elc pel--options.elc pel-ccp.elc
 pel-dart.elc:             pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel-diff.elc:             pel--base.elc pel-window.elc pel--keys-macros.elc
 pel-dtreplace.elc:        pel--base.elc pel--options.elc
+pel-elcode.elc:           pel--base.elc
 pel-eldoc.elc:            pel--base.elc
 pel-elisp-analyze.elc:    pel-lisp.elc
 pel-elisp.elc:            pel--base.elc pel--options.elc pel-prompt.elc pel-navigate.elc
@@ -886,6 +888,7 @@ pel_keys.elc:             pel__hydra.el
 
 # Test code dependency:
 test/pel-base-test.el.test-passed:              pel--base.elc pel-ert.elc
+test/pel-elcode-test.el.test-passed:            pel-elcode.elc pel-ert.elc
 test/pel-elpa-test.el.test-passed:              pel-elpa.elc pel-filedir.elc
 test/pel-file-test.el.test-passed:              pel-file.elc pel-ert.elc
 test/pel-filedir-test.el.test-passed:           pel-filedir.elc

@@ -165,6 +165,7 @@
 ;;  - `pel-list-insert-before'
 ;;  - `pel-list-prepend-nth'
 ;;  - `pel-list-insert-car-at'
+;;  - `pel-delqs'
 ;;
 ;; Operation on auto-mode-alist
 ;;  - `pel-delete-from-auto-mode-alist'
@@ -481,6 +482,7 @@ Return nil for t and nil.
 Return t for \\='some-symbols or \\='(some expressions), nothing else.
 Meant to be used to identify code that is quoted (for delayed
 code execution)."
+  (declare (pure t) (side-effect-free error-free))
   (and (not (eq val t))
        (not (eq val nil))
        (or (symbolp val)
@@ -488,6 +490,7 @@ code execution)."
 
 (defun pel-user-option-p (symbol)
   "Return t when SYMBOL is a valid PEL user-option, nil otherwise."
+  (declare (side-effect-free t))
   (and (custom-variable-p symbol)
        (eq t (compare-strings "pel-use-" nil nil
                               (symbol-name symbol) 0 8))))
@@ -512,11 +515,13 @@ If VALUE is nil do nothing."
 
 (defsubst pel-!0 (number)
   "Return nil if NUMBER is 0, t otherwise."
-  (not (zerop number)))
+  (declare (pure t) (side-effect-free t))
+  (null (zerop number)))
 
 (defun pel-as-boolean (value)
   "Return t for non-nil VALUE, nil otherwise."
-  (not (null value)))
+  (declare (pure t) (side-effect-free error-free))
+  (null (null value)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Bitwise Operations
@@ -1664,6 +1669,11 @@ Example:
 
 The original LST is untouched."
   (pel-list-insert-before (cdr lst) idx (car lst)))
+
+(defun pel-delqs (symbols seq)
+  "Delete all SYMBOLS from SEQ, return modified SEQ."
+  (dolist (s symbols seq)
+    (setq seq (delq s seq))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Operation on auto-mode-alist
