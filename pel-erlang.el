@@ -718,36 +718,36 @@ Stored by `pel-read-available-erlang-man-versions'.")
 (defun pel-read-available-erlang-man-versions (&optional force-download)
   "Return a list of strings: the official versions of Erlang Man pages.
 
-Extract the list from the official Erlang.org web page listing
-the MD5 of all official Erlang tarball files for download.  Store
-the list in the variable `pel--downloaded-erlang-man-versions'
-and return that in following calls unless the FORCE-DOWNLOAD
-argument is set to non-nil.
+Extract the list from the official Erlang.org web page listing the MD5
+of all official Erlang tarball files for download.
 
-If the function fails to read or extract the version numbers it
-displays a warning and returns the list from the variable
+Store the list in the variable `pel--downloaded-erlang-man-versions' and
+return that in following calls unless the FORCE-DOWNLOAD argument is set
+to non-nil.
+
+If the function fails to read or extract the version numbers it displays
+a warning and returns the list from the variable
 `pel--hard-coded-erlang-man-versions'."
   (if (or force-download
           (null pel--downloaded-erlang-man-versions))
       (let ((temp-buffer (url-retrieve-synchronously pel--erlang-md5-url))
             (versions ()))
         (unwind-protect
-            (with-current-buffer temp-buffer
-              (progn
+            (when (buffer-live-p temp-buffer)
+              (with-current-buffer temp-buffer
                 (goto-char (point-min))
                 (while (re-search-forward "otp_doc_man_\\(.+\\).tar.gz" nil t)
-                  (setq versions (cons (match-string 1) versions)))))
-          (and (buffer-name temp-buffer)
-               (kill-buffer temp-buffer)))
+                  (push (match-string 1) versions))))
+          (when (buffer-live-p temp-buffer)
+            (kill-buffer temp-buffer)))
         (unless versions
           (display-warning 'pel-read-availableerlang-man-versions
                            "Failed reading Erlang man versions from OTP site!
 Returning the values stored locally which may be out-of date!"
                            :warning)
           (setq versions pel--hard-coded-erlang-man-versions))
-        versions)
+        (setq pel--downloaded-erlang-man-versions versions))
     pel--downloaded-erlang-man-versions))
-
 
 ;; ---------------------------------------------------------------------------
 ;; Extract value of pel-erlang-man-parent-rootdir
