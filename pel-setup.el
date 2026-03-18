@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-16 12:29:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-16 10:01:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1250,9 +1250,9 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
           ;;
           ;; handle package quickstart when running Emacs ≥ 27
           (when pel-emacs-27-or-later-p
-            (declare-function pel--setup-early-init "pel-setup-27")
-            (declare-function pel--create-package-quickstart "pel-setup-27")
-            (declare-function pel--remove-package-quickstart-files "pel-setup-27")
+            (declare-function pel--setup-early-init "pel-setup-27" (pkg-quickstart))
+            (declare-function pel--create-package-quickstart "pel-setup-27" (dirpath for-graphics))
+            (declare-function pel--remove-package-quickstart-files "pel-setup-27" (for-graphics))
             (pel--setup-early-init pel-support-package-quickstart)
             (pel+= step-count 1) ; STEP 18 (Emacs >= 27)
             (if pel-support-package-quickstart
@@ -1282,12 +1282,6 @@ Failed fast startup setup for %s after %d of %d steps: %s
                 pel-detected-dual-environment-in-init-p
                 "\n Affects Emacs running in terminal and graphics mode!")))
 
-;; [:todo 2026-02-21, by Pierre Rouleau: Fix pel-setup-fast on Emacs >= 29
-;;                    where it does not work.  Identify what changed
-;;                    in Emacs that prevents it to work.
-;;                    Also add ability to handle the native compilation mode,
-;;                    the cached .eln files that are now supported in Emacs.
-;; ]
 ;;-pel-autoload
 (defun pel-setup-fast ()
   "Prepare the elpa directories and code to speed up Emacs startup."
@@ -1295,8 +1289,6 @@ Failed fast startup setup for %s after %d of %d steps: %s
   ;; Validate Emacs initialization file -- issue error on any problem
   (pel-setup-validate-init-files)
   ;; When Emacs init is OK, check further
-  (when pel-emacs-29-or-later-p
-    (user-error "PEL Fast startup is not yet working in Emacs >= 29!"))
   (cond
    ;;
    ((eq (pel-startup-mode) 'fast)
@@ -1356,8 +1348,6 @@ is only one or when its for the terminal (TTY) mode."
 (defun pel-setup-normal ()
   "Restore normal PEL/Emacs operation mode."
   (interactive)
-  (when pel-emacs-29-or-later-p
-    (user-error "PEL Fast startup restoration is not yet working in Emacs >= 29!"))
   (pel-setup-validate-init-files)
   (cond
    ((eq (pel-startup-mode) 'normal)
