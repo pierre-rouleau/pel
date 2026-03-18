@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 09:24:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 10:13:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -118,23 +118,20 @@ Note that this changes the search match data!"
                                            (symbol-name symbol) 0 8)))))
            '(declare (side-effect-free t))))
 
-  ;; (should (equal
-  ;;            (pel-elcode-properties-of-sexp
-  ;;             '(defun pel-expression-p (val)
-  ;;                "Return non-nil if VAL is an expression, nil if it is a value.
-  ;; Return nil for t and nil.
-  ;; Return t for \\='some-symbols or \\='(some expressions), nothing else.
-  ;; Meant to be used to identify code that is quoted (for delayed
-  ;; code execution)."
-  ;;                (declare (pure t) (side-effect-free error-free))
-  ;;                (and (not (eq val t))
-  ;;                     (not (eq val nil))
-  ;;                     (or (symbolp val)
-  ;;                         (consp val)))))
-  ;;            '(declare (pure t) (side-effect-free error-free))))
-
-
-  )
+  (should (equal
+             (pel-elcode-properties-of-sexp
+              '(defun pel-expression-p (val)
+                 "Return non-nil if VAL is an expression, nil if it is a value.
+  Return nil for t and nil.
+  Return t for \\='some-symbols or \\='(some expressions), nothing else.
+  Meant to be used to identify code that is quoted (for delayed
+  code execution)."
+                 (declare (pure t) (side-effect-free error-free))
+                 (and (not (eq val t))
+                      (not (eq val nil))
+                      (or (symbolp val)
+                          (consp val)))))
+             '(declare (pure t) (side-effect-free error-free)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elcode-test)

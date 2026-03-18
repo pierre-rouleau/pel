@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 09:30:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 10:12:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -52,7 +52,7 @@
 (defun pel-elcode-operators-in (exp)
   "Recursively extract operator symbols from EXP, ignoring variable names.
 Return nil for anything but a list (like numbers, strings or symbols)."
-  (let ((symbols '()))
+  (let ((symbols ()))
     (cond
      ((and (listp exp) (symbolp (car exp)))
       (let ((head (car exp))
@@ -143,8 +143,8 @@ error-free."
       ;; Inspect the remaining operators.
       ;; If one has does not have a property, the defun at point does not
       ;; have that property: so remove it from the defun-props.
-      (let ((defun-props '(pure side-effect-free error-free)))
-        (catch 'break
+      (let ((defun-props (list 'pure 'side-effect-free 'error-free)))
+        (catch 'pel-elcode-break
           (dolist (op operators)
             (unless (function-get op 'pure)
               (setq defun-props (delq 'pure defun-props)))
@@ -155,7 +155,7 @@ error-free."
                                                defun-props))))
             ;; Stop once there's no properties left.
             (unless defun-props
-              (throw 'break nil))))
+              (throw 'pel-elcode-break nil))))
         ;; Return the properties that remain for the defun.
         ;; But first reformat it into a proper declare argument.
         (let ((expr ()))
