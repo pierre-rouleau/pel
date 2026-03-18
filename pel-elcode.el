@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 00:04:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 09:03:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -35,7 +35,7 @@
 ;;
 ;;  * `pel-elcode-print-properties-of-sexp-at-point'
 ;;    - `pel-elcode-properties-of-sexp-at-point'
-;;      - `pel-elcode-symbols-of-sexp-at-point'
+;;      - `pel-elcode-properties-of-sexp'
 ;;        - `pel-elcode-operators-in'
 
 ;;; --------------------------------------------------------------------------
@@ -79,6 +79,12 @@ Return nil for anything but a list (like numbers, strings or symbols)."
                 ;; (lambda (args) body...)  -> skip (args), process body...
                 ((eq head 'lambda) (cdr body))
                 ;;
+                ;; (declare ....) -> skip declare forms
+                ;; and remove the declare just pushed.
+                ((eq head 'declare) (progn
+                                      (setq symbols (cdr symbols))
+                                      nil))
+                ;;
                 ;; Standard call: process everything in the body
                 (t body))))
 
@@ -99,14 +105,6 @@ Return nil for anything but a list (like numbers, strings or symbols)."
                  (delete-dups           ; no duplicates
                   symbols)))))
 
-
-(defun pel-elcode-symbols-of-sexp-at-point (&optional pos)
-  "Return the list of symbols for the defun at point."
-  (save-excursion
-    (when pos
-      (goto-char pos))
-    (pel-elcode-operators-in (sexp-at-point))))
-
 ;; --
 
 (defconst pel-elcode-non-impacting-operators
@@ -121,18 +119,14 @@ Return nil for anything but a list (like numbers, strings or symbols)."
     let
     let*
     while
-    dolist
-    ;; also ignore current declarations in case code changed
-    declare
-    pure
-    side-effect-free)
+    dolist)
   "List of operators that have no impact on purity or side-effect.")
 
-(defun pel-elcode-properties-of-sexp-at-point (&optional pos)
-  "Return a property declare form for sexp at POS or at point.
+(defun pel-elcode-properties-of-sexp (sexp)
+  "Return a property declare form for specified SEXP.
 The declare form identifies whether the sexp is pure, side-effect-free and/or
 error-free."
-  (let ((operators (pel-elcode-symbols-of-sexp-at-point pos)))
+  (let ((operators (pel-elcode-operators-in sexp)))
     (when operators
       ;; Some flow control/iteration special form/functions have
       ;; no impact on whether the defun is pure or side-effect-free,
@@ -172,6 +166,15 @@ error-free."
           (when expr
             (push 'declare expr))
           expr)))))
+
+(defun pel-elcode-properties-of-sexp-at-point (&optional pos)
+  "Return a property declare form for sexp at POS or at point.
+The declare form identifies whether the sexp is pure, side-effect-free and/or
+error-free."
+  (save-excursion
+    (when pos
+      (goto-char pos))
+    (pel-elcode-properties-of-sexp (sexp-at-point))))
 
 (defun pel-elcode-print-properties-of-sexp-at-point ()
   "Print whether sexp at point is pure, side-effect-free and/or error-free.
