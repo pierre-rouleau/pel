@@ -4256,6 +4256,7 @@ d-mode not added to ac-modes!"
 (define-key pel:elisp-analyze   "b"  'pel-lint-elisp-file)
 (define-key pel:elisp-analyze   "d" #'checkdoc)
 (define-key pel:elisp-analyze   "f" #'elint-file)
+(define-key pel:elisp-analyze   "s"  'pel-elcode-print-properties-of-sexp-at-point)
 (when pel-use-package-lint
   (define-pel-global-prefix pel:lint-package (kbd "<f11> SPC l a p"))
   (define-key pel:lint-package  "p"  'package-lint-current-buffer)
