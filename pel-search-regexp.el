@@ -109,7 +109,7 @@ The names that can be in the return list, and their meanings are:
 - vr/pcre2el     : visual-regexp-steroids pcre2el
 - vr/python      : visual-regexp-steroids python
 - vr/custom      : visual-regexp-steroids custom"
-  (let ((choices '(emacs)))
+  (let ((choices (list 'emacs)))
     (when (and pel-use-visual-regexp-steroids
              (require 'visual-regexp-steroids nil :noerror))
         (setq choices (append choices (pel--vr-engines))))

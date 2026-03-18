@@ -336,7 +336,7 @@ where: nil := Emacs xref default (not initialized).")
 
 (defun pel--xref-front-end-selection ()
   "Return a list of (char prompt symbol) of available xref back-ends."
-  (let ((selection '((?x "xref buffer" xref))))
+  (let ((selection (list '(?x "xref buffer" xref))))
     (when pel-use-ivy-xref   (push '(?i "ivy-xref"  ivy-xref)  selection))
     (when pel-use-helm-xref  (push '(?h "helm-xref" helm-xref) selection))
     (nreverse selection)))

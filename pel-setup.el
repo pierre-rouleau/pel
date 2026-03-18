@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-16 12:29:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 11:28:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -645,7 +645,7 @@ Returns t if all is ok, nil otherwise."
   ;; - pel-init-support-dual-environment-p : in init.el  - all Emacs  versions
   ;; - pel-early-init-support-dual-environment-p : in early-init.el on Emacs >= 27
   ;; They should all have the same value (unless Emacs < 27)
-  (let ((symbols '(pel-init-support-dual-environment-p))
+  (let ((symbols (list 'pel-init-support-dual-environment-p))
         (is-ok t))
     (when pel-emacs-27-or-later-p
       (push 'pel-early-init-support-dual-environment-p symbols))

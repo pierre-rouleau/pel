@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, April  2 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 23:33:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 11:25:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -86,7 +86,7 @@ If AFTER_SELECTION-P is non-nil the message is issued after changing it."
 
 (defun pel--recentf-selection ()
   "Return a list of (char prompt symbol) of available recent file functions."
-  (let ((selection '((?d "Ido" ido-recentf-open))))
+  (let ((selection (list '(?d "Ido" ido-recentf-open))))
     (when pel-use-counsel
       (setq selection (append selection '((?c "Ivy/Counsel" counsel-recentf)))))
     (when pel-use-popup-switcher
