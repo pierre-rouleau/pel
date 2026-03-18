@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 09:24:38 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 09:30:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,7 +42,9 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)                    ; `pel-delqs'
+(require 'pel--base)    ; use: `pel-delqs'
+(require 'seq)          ; use: `seq-filter' (not autoloaded in Emacs 26)
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
