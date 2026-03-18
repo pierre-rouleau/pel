@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 10:44:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 10:58:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -43,7 +43,7 @@
   "Test `pel-symbols-in-code'."
 
   ;; If sexp is empty nothing gets returned
-  (should-not (pel-elcode-operators-in '()))
+  (should-not (pel-elcode-operators-in ()))
 
   ;; A simple defun
   (should (equal
@@ -137,6 +137,34 @@ Note that this changes the search match data!"
            (if pel-emacs-28-or-later-p
                '(declare (pure t) (side-effect-free error-free))
              '(declare (side-effect-free error-free))))))
+
+(ert-deftest ert-test-pel-elcode-properties-of-sexp-stability ()
+  "Regression: repeated extraction should remain stable."
+  (let* ((sexp '(defun pel-expression-p (val)
+                  (declare (pure t) (side-effect-free error-free))
+                  (and (not (eq val t))
+                       (not (eq val nil))
+                       (or (symbolp val) (consp val)))))
+         (expected (if pel-emacs-28-or-later-p
+                       '(declare (pure t) (side-effect-free error-free))
+                     '(declare (side-effect-free error-free)))))
+    (dotimes (_ 200)
+      (should (equal (pel-elcode-properties-of-sexp sexp) expected)))))
+
+(ert-deftest ert-test-pel-elcode-properties-of-sexp-at-point ()
+  "Ensure at-point API delegates consistently."
+  (with-temp-buffer
+    (emacs-lisp-mode)
+    (insert "(defun pel-expression-p (val)\n"
+            "  (declare (pure t) (side-effect-free error-free))\n"
+            "  (and (not (eq val t))\n"
+            "       (not (eq val nil))\n"
+            "       (or (symbolp val) (consp val))))")
+    (goto-char (point-min))
+    (let ((expected (if pel-emacs-28-or-later-p
+                        '(declare (pure t) (side-effect-free error-free))
+                      '(declare (side-effect-free error-free)))))
+      (should (equal (pel-elcode-properties-of-sexp-at-point) expected)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elcode-test)

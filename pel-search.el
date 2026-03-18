@@ -2,7 +2,7 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 23:34:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 10:58:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -657,7 +657,7 @@ Display:
 
 (defun pel-buffers-matching-mode (mode)
   "Returns a list of buffers where their major-mode is equal to MODE."
-  (let ((buffer-mode-matches '()))
+  (let ((buffer-mode-matches ()))
     (dolist (buf (buffer-list))
       (with-current-buffer buf
         (when (eq mode major-mode)

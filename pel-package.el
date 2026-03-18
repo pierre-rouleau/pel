@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-15 09:08:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 10:58:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -244,7 +244,7 @@ when it is requested as specified by the presence of
 
 (defun pel-user-options ()
   "Return a list of all pel-use- user-option symbols."
-  (let ((symbols '()))
+  (let ((symbols ()))
     (mapatoms
      (lambda (symbol)
        (when (pel-user-option-p symbol)
@@ -253,7 +253,7 @@ when it is requested as specified by the presence of
 
 (defun pel-commands ()
   "Return a list of PEL command symbols."
-  (let ((symbols '())
+  (let ((symbols ())
         (cmd-name nil))
     (mapatoms
      (lambda (symbol)
@@ -500,7 +500,7 @@ remain in the local elpa and PEL utils when a PEL cleanup is requested after
 some PEL user-options have been turned off."
   (pel--assert-valid-user-option symbol)
   (let ((parent-user-options (get symbol :requires))
-        (pkg-spec-list '())
+        (pkg-spec-list ())
         (a-parent-is-disabled nil)
         (a-parent-is-enabled nil)
         (requires-all-parents nil))
@@ -564,7 +564,7 @@ PKG may be a symbol or a string."
              (fboundp 'package--get-deps))
         (condition-case err
             (let ((pkg-arg      pkg)
-                  (dependencies '()))
+                  (dependencies ()))
               ;; package--get-deps was modified on the October 6th 2019.
               ;; The argument for the new version is a list.
               (when pel-emacs-27-or-later-p
@@ -619,8 +619,8 @@ Return a list of 2 lists:
 
 The elements of each list are sorted by alphabetical order of
 their names."
-  (let ((elpa-list '())
-        (utils-list '())
+  (let ((elpa-list ())
+        (utils-list ())
         (error-list nil))
     (condition-case err
         (dolist (user-option (pel-user-options))
@@ -1110,7 +1110,7 @@ Use only for computing statistics!! It loads all of PEL."
 Delete them unless DRY-RUN is non-nil.
 DIRECTORY must be a directory path string.
 Returns the list of removed file names."
-  (let ((removed-files '())
+  (let ((removed-files ())
         (elc-files (directory-files directory :full-path "\\.elc\\'"))
         (el-file nil))
     (dolist (elc-file elc-files)
@@ -1134,8 +1134,8 @@ order.
 - The second list identifies the files that are currently not used by the PEL
   user options."
   (let ((utils-el-files (directory-files pel-utils-dirpath nil "\\.el\\'"))
-        (active-utils-files '())
-        (excess-utils-files '()))
+        (active-utils-files ())
+        (excess-utils-files ()))
     (dolist (utils-symbol (cadr (pel-activated-packages)))
       (push (format "%s.el" utils-symbol) active-utils-files))
     ;; Some packages are identified by the user as used, even though PEL may
@@ -1223,7 +1223,7 @@ the elpa package directory is only deleted.
 If DRY-RUN is non-nil don't move, don't delete.
 In all cases, return a list of directories that have or would have been
 removed."
-  (let ((removed-dirpaths '()))
+  (let ((removed-dirpaths ()))
     (dolist (dirpath (pel-elpa-dirs-for pkg))
       (push dirpath removed-dirpaths)
       (unless dry-run
@@ -1309,7 +1309,7 @@ version of that package.
 The list of package symbols is sorted by symbol names."
   (let ((elpa-pkg-dir-names  (directory-files
                               pel-elpa-dirpath nil ".+[0-9-.]+\\'"))
-        (elpa-pkg-names '()))
+        (elpa-pkg-names ()))
     (dolist (dir-name elpa-pkg-dir-names)
       (when (eq 0 (string-match "\\`\\([^ ]+\\)-[0-9-.]+\\'" dir-name))
         (let ((pkg-name  (intern (match-string 1 dir-name))))
@@ -1325,7 +1325,7 @@ The returned list contains symbols, each symbol is the name (without any
 version numbering) of the elpa package.  The list is sorted."
   (let ((activated-elpa (car (pel-activated-packages)))
         (available-elpa (pel-elpa-packages-in-dir))
-        (excess-elpa    '()))
+        (excess-elpa    ()))
     ;; Some packages are identified by the user as used, even though PEL may
     ;; not requests it via user-options; make sure to not identify these
     ;; packages as elpa packages in excess.
@@ -1357,7 +1357,7 @@ Perform the following:
 Don't execute when DRY-RUN is non-nil.
 Return a list of elpa directories moved or deleted."
   (let ((unrequired-elpa (pel-elpa-unrequired))
-        (moved-elpa-dirs '()))
+        (moved-elpa-dirs ()))
     (when unrequired-elpa
       ;; If any Elpa package is in excess, move it in the elpa-attic
       ;; unless this is a dry-run (in which case just accumulate the directory

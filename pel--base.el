@@ -304,7 +304,6 @@
 (eval-when-compile
   (require 'subr-x))    ; use: `split-string', `string-join', `string-trim'
 
-
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
@@ -632,7 +631,7 @@ BUFFER-OR-NAME."
 (defun pel-buffers-in-mode (wanted-major-mode)
   "Return a list of buffers with specified WANTED-MAJOR-MODE, nil if none open.
 WANTED-MODE is a symbol; something like \\='emacs-lisp-mode"
-  (let ((buffers-in-wanted-mode '()))
+  (let ((buffers-in-wanted-mode ()))
     (dolist (buffer (buffer-list) (nreverse buffers-in-wanted-mode))
       (with-current-buffer buffer
         (when (eq major-mode wanted-major-mode)

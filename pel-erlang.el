@@ -730,7 +730,7 @@ displays a warning and returns the list from the variable
   (if (or force-download
           (null pel--downloaded-erlang-man-versions))
       (let ((temp-buffer (url-retrieve-synchronously pel--erlang-md5-url))
-            (versions '()))
+            (versions ()))
         (unwind-protect
             (with-current-buffer temp-buffer
               (progn

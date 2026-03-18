@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, December 23 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-12-23 18:39:29 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 10:57:11 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2024  Pierre Rouleau
+;; Copyright (C) 2024, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ User-supplied test and hash functions can be specified via
 
 Return the value of the updated list.
 The elements in that list are last entered first."
-  (puthash key (cons element (gethash key hash-table '())) hash-table))
+  (puthash key (cons element (gethash key hash-table ())) hash-table))
 
 (defun pel-get-list-from-hash-of-lists-for (hash-table key)
   "Return the list of element associated to the KEY from the HASH-TABLE.
@@ -73,7 +73,7 @@ The elements in that list are last entered first."
 The returned list holds elements in the same order as they were
 entered: the first element entered in the list is the first
 element in the returned list."
-  (reverse (gethash key hash-table '())))
+  (reverse (gethash key hash-table ())))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-hash)

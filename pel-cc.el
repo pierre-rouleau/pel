@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 22:02:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 10:56:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -140,7 +140,7 @@ Return a list of style strings in order of entry in the
 variable `c-default-style' if bound.  If it is unbound
 return \"void\"."
   (if (boundp 'c-default-style)
-      (let ((styles '()))
+      (let ((styles ()))
         (dolist (mode.style c-default-style (nreverse styles))
           (if (eq (car mode.style) mode)
               (push (cdr mode.style) styles))))
