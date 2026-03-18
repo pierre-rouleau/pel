@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, June  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-18 10:53:02 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 16:56:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2023  Pierre Rouleau
+;; Copyright (C) 2021, 2023, 2026  Pierre Rouleau
 ;;
 ;; Credits: The content of this file is heavily based on © work
 ;;          by Artur Malabarba, available at the following location:
@@ -31,10 +31,10 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-;;
 
 (require 'pel--base)
 (require 'ispell)                       ; use: ispell-get-word, ispell-word
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -42,9 +42,13 @@
 (defun pel-current-or-previous--word ()
   "Return word at point or word before.
 Return the word at point if point is on a word.
-If word is between two words, return the previous word before point."
-  (car-safe (save-excursion (ispell-get-word nil))))
-
+If word is between two words, return the previous word before point.
+If inside an empty buffer, return nil."
+  (condition-case err
+      (car-safe (save-excursion (ispell-get-word nil)))
+    (user-error
+     (message "pel-current-or-previous--word error: %s" (error-message-string err))
+     nil)))
 
 ;;-pel-autoload
 (defun pel-ispell-word-then-abbrev (&optional locally)
