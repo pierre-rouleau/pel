@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 11:23:38 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 12:03:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -266,7 +266,7 @@ This assumes that Ido mode is currently activated."
 
 (defun pel--ido-geometry-selection ()
   "Return a list of (char prompt symbol) of available Ido geometry choices."
-  (let ((selection '((?e "Emacs default - linear" emacs-default))))
+  (let ((selection (list '(?e "Emacs default - linear" emacs-default))))
     (when pel-use-ido-grid
       (push '(?g "ido-grid" ido-grid) selection))
     (when pel-use-ido-grid-mode
