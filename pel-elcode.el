@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 10:12:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 11:06:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -58,7 +58,8 @@ Return nil for anything but a list (like numbers, strings or symbols)."
       (let ((head (car exp))
             (body (cdr exp)))
         ;; 1. Add the current function symbol (the head)
-        (push head symbols)
+        (unless (eq head 'declare)
+          (push head symbols))
 
         ;; 2. Determine which parts of the body to skip (variable lists)
         (let ((to-process
@@ -83,9 +84,7 @@ Return nil for anything but a list (like numbers, strings or symbols)."
                 ;;
                 ;; (declare ....) -> skip declare forms
                 ;; and remove the declare just pushed.
-                ((eq head 'declare) (progn
-                                      (setq symbols (cdr symbols))
-                                      nil))
+                ((eq head 'declare) nil)
                 ;;
                 ;; Standard call: process everything in the body
                 (t body))))
