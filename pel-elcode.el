@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-17 23:25:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-17 23:46:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -77,7 +77,7 @@ Return nil for anything but a list (like numbers, strings or symbols)."
                    (append binding-vals (cdr body))))
                 ;;
                 ;; (lambda (args) body...)  -> skip (args), process body...
-                ((memq head '(lambda let let*)) (cdr body))
+                ((eq head 'lambda) (cdr body))
                 ;;
                 ;; Standard call: process everything in the body
                 (t body))))
