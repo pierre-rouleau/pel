@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-17 23:46:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 00:04:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -175,8 +175,10 @@ error-free."
 
 (defun pel-elcode-print-properties-of-sexp-at-point ()
   "Print whether sexp at point is pure, side-effect-free and/or error-free.
-Print a properly formatted declare form if the sexp at point has some of these
-properties.  Print nil otherwise."
+When a pure, side-effect-free or error-free property can be applied to the
+sexp the `declare' form is copied in the kill ring for later insertion in code
+and also printed in a message.  If no property applied the function just print
+a \"nil\" message."
   (interactive)
   (let ((props (pel-elcode-properties-of-sexp-at-point)))
     (when props
