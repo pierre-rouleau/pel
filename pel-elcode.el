@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 11:06:13 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 14:27:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,7 +25,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This file defines a the `pel-elcode-print-properties-of-sexp-at-point'
+;; This file defines the `pel-elcode-print-properties-of-sexp-at-point'
 ;; command that displays a declare for that identifies whether the sexp at
 ;; point is pure, side-effect-free and/or error-free.  Use this to improve the
 ;; declaration of your low-level code to allow the compiler to generate more
@@ -51,7 +51,10 @@
 
 (defun pel-elcode-operators-in (exp)
   "Recursively extract operator symbols from EXP, ignoring variable names.
-Return nil for anything but a list (like numbers, strings or symbols)."
+
+Return a list of operator symbols found in EXP in the order of their first
+appearance, with all duplicates removed.  Return nil if no operator are
+found."
   (let ((symbols ()))
     (cond
      ((and (listp exp) (symbolp (car exp)))
@@ -98,7 +101,7 @@ Return nil for anything but a list (like numbers, strings or symbols)."
      ;; If it's a list but the head isn't a symbol (e.g. ((lambda...) args))
      ((listp exp)
       (dolist (item exp)
-        (setq symbols (append (reverse (pel-elcode-operators-in item))
+        (setq symbols (append (pel-elcode-operators-in item)
                               symbols)))))
 
     (reverse                            ; keep original code order
@@ -140,7 +143,7 @@ error-free."
         (setq operators (cdr operators)))
       ;;
       ;; Inspect the remaining operators.
-      ;; If one has does not have a property, the defun at point does not
+      ;; If one does not have a property, the defun at point does not
       ;; have that property: so remove it from the defun-props.
       (let ((defun-props (list 'pure 'side-effect-free 'error-free)))
         (catch 'pel-elcode-break

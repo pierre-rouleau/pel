@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 13:20:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 13:37:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,7 +25,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;;
+;; Test the pel-elcode.el file.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
