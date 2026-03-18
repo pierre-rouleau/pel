@@ -354,6 +354,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-dirtree-replace-undo)
 
   ;; --
+  (pel-autoload "pel-elcode" for:
+    pel-elcode-print-properties-of-sexp-at-point)
+  ;; --
   (pel-autoload "pel-eldoc" for:
     pel-eldoc-setup-info)
 

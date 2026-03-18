@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add the *pel-elcode-print-properties-of-sexp-at-point* command, bound to ~<f12> a s~ in emacs lisp buffers,
+  inside a new file: pel-elcode.el.
+  That command analyzes the sexp at point and prints an appropriate declare form
+  if the sexp is pure, side-effect-free and/or error-free.
+  You can then place the declare form after the docstring of a defun or defsubst
+  before its body as hint for the compiler.
 - Reduced Emacs startup time when PEL is in normal mode (the default) by deferring
   loading of pel_keys to after Emacs initialization (`after-init-hook`), while
   still loading it before command-line file visiting.
@@ -3627,5 +3633,5 @@ PEL uses my fork of the project to eliminate most warnings.
   - PEL is not yet distributed via sites like MELPA but
     [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#how-to-install-pel][PEL's installation instructions]] should alleviate this problem.
 
-#  LocalWords:  Pygments speedbar gxref rtags ggtags RTags eopengrok
+#  LocalWords:  Pygments speedbar gxref rtags ggtags RTags eopengrok sexp
 #  LocalWords:  combobulate
