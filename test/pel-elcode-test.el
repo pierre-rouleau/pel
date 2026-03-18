@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 11:08:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 13:20:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -39,7 +39,7 @@
 ;;; Code:
 ;;
 
-(ert-deftest ert-test-pel-symbols-in-code ()
+(ert-deftest ert-test-pel-elcode-operators-in ()
   "Test `pel-elcode-operators-in'."
 
   ;; If sexp is empty nothing gets returned
