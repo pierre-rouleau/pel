@@ -540,6 +540,7 @@ If VALUE is nil do nothing."
 
 (defun pel-list-of (val)
   "Return VAL if it is a list, (list val) otherwise."
+  (declare (side-effect-free error-free))
   (if (listp val)
       val
     (list val)))
@@ -822,10 +823,12 @@ SILENT is non-nil (can be requested by prefix argument)."
 
 (defun pel-terminal-is-macos-terminal-p ()
   "Return t if Emacs is running under the macOS Terminal.app, else nil."
+  (declare (side-effect-free t))
   (string-equal (getenv "TERM_PROGRAM") "Apple_Terminal"))
 
 (defun pel-running-under-ssh-p ()
   "Return t if Emacs is invoked through SSH, nil otherwise."
+  (declare (side-effect-free t))
   (when (getenv "SSH_CLIENT")
     t))
 
@@ -893,18 +896,21 @@ The index of the first whitespace character is returned when one is present."
 
 (defun pel-ends-with-space-p (text)
   "Return t if TEXT ends with a space character, nil otherwise."
+  (declare (side-effect-free t))
   (let ((len (length text)))
     (when (> len 0)
       (string= (substring text (- len 1) len) " "))))
 
 (defun pel-starts-with-space-p (text)
   "Return t if TEXT has space character(s) at beginning, nil otherwise."
+  (declare (side-effect-free t))
   (when (> (length text) 0)
     (string= (substring text 0 1) " ")))
 
 (defun pel-string-ends-with-p (text suffix &optional ignore-case)
   "Return t if TEXT string does end with SUFFIX string, nil otherwise.
 Ignore case differences if IGNORE-CASE is non-nil."
+  (declare (side-effect-free t))
   (let ((text-len (length text))
         (suffix-len (length suffix)))
     (and (>= text-len suffix-len)
@@ -915,22 +921,26 @@ Ignore case differences if IGNORE-CASE is non-nil."
 (defun pel-string-starts-with-p (text prefix &optional ignore-case)
   "Return t if TEXT string does start with PREFIX string, nil otherwise.
 Ignore case differences if IGNORE-CASE is non-nil."
+  (declare (side-effect-free t))
   (eq t (compare-strings prefix nil nil
                          text nil (length prefix)
                          ignore-case)))
 
 (defun pel-lowercase-p (string)
   "Return t if all characters in STRING are lowercase, nil otherwise."
+  (declare (side-effect-free t))
   (let ((case-fold-search nil))
     (not (string-match-p "[[:upper:]]" string))))
 
 (defun pel-uppercase-p (string)
   "Return t if all characters in STRING are uppercase, nil otherwise."
+  (declare (side-effect-free t))
   (let ((case-fold-search nil))
     (not (string-match-p "[[:lower:]]" string))))
 
 (defun pel-alnum-p (string)
   "Return t if all characters in STRING are letters or digits, nil otherwise."
+  (declare (side-effect-free t))
   (let ((case-fold-search nil))
     (and (not (string-match-p "[[:punct:]]" string))
          (not (string-match-p "[[:space:]]" string))
@@ -996,6 +1006,7 @@ in which case return PLURAL."
 If it is not bound, then return a list with the symbol and a
 string describing that it is not bound, unless QUIET is non-nil.  If QUIET is
 non-nil, just return nil when SYMBOL is not bound."
+  (declare (side-effect-free t))
   (if (boundp symbol)
       (symbol-value symbol)
     (unless quiet
@@ -1033,6 +1044,7 @@ non-nil, just return nil when SYMBOL is not bound."
   "Return \"off\" for nil, \"on\" for non-nil BOOLEAN argument.
 If ON-STRING and OFF-STRING arguments are specified use them as the
 on/off value, otherwise use \"on\" and \"off\"."
+  (declare (pure t) (side-effect-free t))
   (if boolean
       (or on-string "on")
     (or off-string "off")))
@@ -1111,6 +1123,7 @@ by BUFFER or `pel-insert-symbol-content-context-buffer'."
 By default or when these arguments are nil:
 - TRUE_STRING is \"yes\" and
 - FALSE_STRING is \"no\"."
+  (declare (pure t) (side-effect-free error-free))
   (if test
       (or true-string "yes")
     (or false-string "no")))
@@ -1288,6 +1301,7 @@ Otherwise an error is raised."
 (defun pel-end-text-with-period (text)
   "Append a period character to TEXT if none is present.
 Return empty string if TEXT is the empty string."
+  (declare (side-effect-free t))
   (if (> (length text) 0)
       (if (string= (substring text -1) ".")
           text
@@ -1296,27 +1310,32 @@ Return empty string if TEXT is the empty string."
 
 (defun pel-hastext (string)
   "Return t if STRING hold text, nil otherwise."
+  (declare (pure t) (side-effect-free t))
   (not (string= string "")))
 
 (defun pel-when-text-in (string value)
   "Return VALUE if STRING is a non-empty string.
 Otherwise return nil."
+  (declare (pure t) (side-effect-free t))
   (unless (string= string "")
     value))
 
 (defun pel-string-or-nil (string)
   "Return a non-empty STRING unchanged, nil if string is empty."
+  (declare (pure t) (side-effect-free t))
   (if (string= string "")
       nil
     string))
 
 (defun pel-string-for (text)
   "Return TEXT if it's a string.  If nil return empty string."
+  (declare (pure t) (side-effect-free t))
   (if text text ""))
 
 (defun pel-string-when (condition &optional text)
   "Return TEXT (or CONDITION) when CONDITION is non-nil, empty string otherwise.
 TEXT is optional, if it's nil CONDITION must be a string or nil."
+  (declare (pure t) (side-effect-free t))
   (if condition (or text condition) ""))
 
 (defun pel-string-spread (string &optional separator)
@@ -1364,6 +1383,7 @@ ELISP>"
 For TEXT, the returned string is \"\\\\(TEXT\\\\)\",
 unless TAIL is specified, in which case tail is appended
 after the closing parenthesis."
+  (declare (side-effect-free t))
   (let ((str (format "\\(%s\\)" text)))
     (if tail
         (concat str tail)
@@ -1958,6 +1978,7 @@ Use NAME instead symbol name in the message if specified."
 
 (defun pel-val-or-default (val default)
   "Return VAL if not nil otherwise return DEFAULT."
+  (declare (pure t) (side-effect-free t))
   (or val default))
 
 ;; ---------------------------------------------------------------------------
@@ -2367,7 +2388,6 @@ current major mode."
 (defun pel-inside-code (&optional pos)
   "Return non-nil when point or POS is in code, nil if in comment or string.
 Note that this changes the search match data!"
-  (declare (pure t) (side-effect-free t))
   (let ((syntax (syntax-ppss (or pos (point)))))
     (and (not (nth 3 syntax))
          (not (nth 4 syntax)))))
@@ -2421,7 +2441,6 @@ environment variables that may be in the string."
 
 (defun pel-is-subdir-of (path1 path2)
   "Return t if PATH1 is a sub-directory of PATH2."
-  (declare (side-effect-free t))
   (let ((npath1 (pel-normalize-fname path1))
         (npath2 (pel-normalize-fname path2)))
     (when (string-match-p (regexp-quote npath2) npath1)
@@ -2469,6 +2488,7 @@ Example:
 (defun pel-url-location (url)
   "Return a description string for the URL.
 Either \"Local\" or \"Remote\"."
+  (declare (side-effect-free t))
   (if (pel-string-starts-with-p url "file:")
       "Local"
     "Remote"))

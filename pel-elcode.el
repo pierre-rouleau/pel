@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-17 17:12:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-17 23:25:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -65,8 +65,18 @@ Return nil for anything but a list (like numbers, strings or symbols)."
                 ;; same for defsubst
                 ((memq head '(defun defsubst)) (cddr body))
                 ;;
-                ;; (lambda (args) body...) or (let ((vars)) body...)
-                ;;    -> skip (args)/(vars)
+                ;; (let ((var1 (def1 ...)) (var2 (def2 ...)) body...)
+                ;;    -> skip var1, var2, process (def1 ...), (def2 ...) and body...
+                ((memq head '(let let*))
+                 (let* ((bindings (car body))
+                        (binding-vals
+                         (delq nil (mapcar (lambda (b)
+                                             (when (consp b)
+                                               (cadr b)))
+                                           bindings))))
+                   (append binding-vals (cdr body))))
+                ;;
+                ;; (lambda (args) body...)  -> skip (args), process body...
                 ((memq head '(lambda let let*)) (cdr body))
                 ;;
                 ;; Standard call: process everything in the body
@@ -169,6 +179,8 @@ Print a properly formatted declare form if the sexp at point has some of these
 properties.  Print nil otherwise."
   (interactive)
   (let ((props (pel-elcode-properties-of-sexp-at-point)))
+    (when props
+      (kill-new (format "%S" props)))
     (message "%S" props)))
 
 ;;; --------------------------------------------------------------------------
