@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 00:04:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 14:27:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,7 +25,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This file defines a the `pel-elcode-print-properties-of-sexp-at-point'
+;; This file defines the `pel-elcode-print-properties-of-sexp-at-point'
 ;; command that displays a declare for that identifies whether the sexp at
 ;; point is pure, side-effect-free and/or error-free.  Use this to improve the
 ;; declaration of your low-level code to allow the compiler to generate more
@@ -35,28 +35,34 @@
 ;;
 ;;  * `pel-elcode-print-properties-of-sexp-at-point'
 ;;    - `pel-elcode-properties-of-sexp-at-point'
-;;      - `pel-elcode-symbols-of-sexp-at-point'
+;;      - `pel-elcode-properties-of-sexp'
 ;;        - `pel-elcode-operators-in'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)                    ; `pel-delqs'
+(require 'pel--base)    ; use: `pel-delqs'
+(require 'seq)          ; use: `seq-filter' (not autoloaded in Emacs 26)
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
 (defun pel-elcode-operators-in (exp)
   "Recursively extract operator symbols from EXP, ignoring variable names.
-Return nil for anything but a list (like numbers, strings or symbols)."
-  (let ((symbols '()))
+
+Return a list of operator symbols found in EXP in the order of their first
+appearance, with all duplicates removed.  Return nil if no operator are
+found."
+  (let ((symbols ()))
     (cond
      ((and (listp exp) (symbolp (car exp)))
       (let ((head (car exp))
             (body (cdr exp)))
         ;; 1. Add the current function symbol (the head)
-        (push head symbols)
+        (unless (eq head 'declare)
+          (push head symbols))
 
         ;; 2. Determine which parts of the body to skip (variable lists)
         (let ((to-process
@@ -79,6 +85,10 @@ Return nil for anything but a list (like numbers, strings or symbols)."
                 ;; (lambda (args) body...)  -> skip (args), process body...
                 ((eq head 'lambda) (cdr body))
                 ;;
+                ;; (declare ....) -> skip declare forms
+                ;; and remove the declare just pushed.
+                ((eq head 'declare) nil)
+                ;;
                 ;; Standard call: process everything in the body
                 (t body))))
 
@@ -91,21 +101,13 @@ Return nil for anything but a list (like numbers, strings or symbols)."
      ;; If it's a list but the head isn't a symbol (e.g. ((lambda...) args))
      ((listp exp)
       (dolist (item exp)
-        (setq symbols (append (reverse (pel-elcode-operators-in item))
+        (setq symbols (append (pel-elcode-operators-in item)
                               symbols)))))
 
     (reverse                            ; keep original code order
      (seq-filter #'identity             ; remove nil if an empty list is found
                  (delete-dups           ; no duplicates
                   symbols)))))
-
-
-(defun pel-elcode-symbols-of-sexp-at-point (&optional pos)
-  "Return the list of symbols for the defun at point."
-  (save-excursion
-    (when pos
-      (goto-char pos))
-    (pel-elcode-operators-in (sexp-at-point))))
 
 ;; --
 
@@ -121,18 +123,14 @@ Return nil for anything but a list (like numbers, strings or symbols)."
     let
     let*
     while
-    dolist
-    ;; also ignore current declarations in case code changed
-    declare
-    pure
-    side-effect-free)
+    dolist)
   "List of operators that have no impact on purity or side-effect.")
 
-(defun pel-elcode-properties-of-sexp-at-point (&optional pos)
-  "Return a property declare form for sexp at POS or at point.
+(defun pel-elcode-properties-of-sexp (sexp)
+  "Return a property declare form for specified SEXP.
 The declare form identifies whether the sexp is pure, side-effect-free and/or
 error-free."
-  (let ((operators (pel-elcode-symbols-of-sexp-at-point pos)))
+  (let ((operators (pel-elcode-operators-in sexp)))
     (when operators
       ;; Some flow control/iteration special form/functions have
       ;; no impact on whether the defun is pure or side-effect-free,
@@ -145,10 +143,10 @@ error-free."
         (setq operators (cdr operators)))
       ;;
       ;; Inspect the remaining operators.
-      ;; If one has does not have a property, the defun at point does not
+      ;; If one does not have a property, the defun at point does not
       ;; have that property: so remove it from the defun-props.
-      (let ((defun-props '(pure side-effect-free error-free)))
-        (catch 'break
+      (let ((defun-props (list 'pure 'side-effect-free 'error-free)))
+        (catch 'pel-elcode-break
           (dolist (op operators)
             (unless (function-get op 'pure)
               (setq defun-props (delq 'pure defun-props)))
@@ -159,7 +157,7 @@ error-free."
                                                defun-props))))
             ;; Stop once there's no properties left.
             (unless defun-props
-              (throw 'break nil))))
+              (throw 'pel-elcode-break nil))))
         ;; Return the properties that remain for the defun.
         ;; But first reformat it into a proper declare argument.
         (let ((expr ()))
@@ -172,6 +170,15 @@ error-free."
           (when expr
             (push 'declare expr))
           expr)))))
+
+(defun pel-elcode-properties-of-sexp-at-point (&optional pos)
+  "Return a property declare form for sexp at POS or at point.
+The declare form identifies whether the sexp is pure, side-effect-free and/or
+error-free."
+  (save-excursion
+    (when pos
+      (goto-char pos))
+    (pel-elcode-properties-of-sexp (sexp-at-point))))
 
 (defun pel-elcode-print-properties-of-sexp-at-point ()
   "Print whether sexp at point is pure, side-effect-free and/or error-free.

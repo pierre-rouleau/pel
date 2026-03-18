@@ -2,12 +2,12 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 22:37:02 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 12:03:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2024, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -266,7 +266,7 @@ This assumes that Ido mode is currently activated."
 
 (defun pel--ido-geometry-selection ()
   "Return a list of (char prompt symbol) of available Ido geometry choices."
-  (let ((selection '((?e "Emacs default - linear" emacs-default))))
+  (let ((selection (list '(?e "Emacs default - linear" emacs-default))))
     (when pel-use-ido-grid
       (push '(?g "ido-grid" ido-grid) selection))
     (when pel-use-ido-grid-mode
@@ -755,7 +755,7 @@ Print message describing active mode unless SILENT argument is non-nil."
 
 (defun pel--completion-mode-selection ()
   "Return a list of (char prompt symbol) of available completion choices."
-  (let ((selection '((?e "Emacs Default" emacs-default))))
+  (let ((selection (list '(?e "Emacs Default" emacs-default))))
     (when pel-use-helm    (push '(?h "Helm" helm)
                                 selection))
     (when pel-use-ido     (push '(?d "Ido" ido)

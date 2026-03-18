@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-14 10:06:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 10:58:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -288,7 +288,7 @@ FIRST-IDX is provided: a character.
 Return the selected symbol.
 TITLE   := a prompt string.  It should end with a space.
 SYMBOLS := a list of symbols."
-  (let* ((choices '())
+  (let* ((choices ())
          (idx     (or first-idx ?1))
          (choice (pel-select-from
                   title
@@ -310,7 +310,7 @@ FIRST-IDX is provided: a character.
 Return the selected symbol.
 TITLE   := a prompt string.  It should end with a space.
 STRINGS := a list of strings."
-  (let* ((choices '())
+  (let* ((choices ())
          (idx     (or first-idx ?1))
          (choice  (pel-select-from
                    title

@@ -578,7 +578,7 @@ Issues an error if there are any state inconsistency."
 
 (defun pel--autocompletion-tools-selection ()
   "Return a list of (char prompt symbol) for available auto-completion tools."
-  (let ((selection '((?e "Emacs built-in" emacs-builtin))))
+  (let ((selection (list '(?e "Emacs built-in" emacs-builtin))))
     (when pel-use-auto-complete
       (push '(?a "Auto-complete" auto-complete) selection))
     (when pel-use-company

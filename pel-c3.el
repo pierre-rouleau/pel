@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, December 23 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 18:52:13 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 11:13:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -70,9 +70,9 @@ Select from the following C3 comment styles:
 - /* */
 - <* *>"
   (interactive)
-  (let ((selection '((?/ "//" slash)
-                     (?* "/* */" star)
-                     (?< "<* *>" docstring))))
+  (let ((selection (list '(?/ "//" slash)
+                         '(?* "/* */" star)
+                         '(?< "<* *>" docstring))))
     (pel-select-from "C3 comment style"
                      selection
                      pel-c3-comment-style

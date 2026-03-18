@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-15 19:38:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 13:56:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -77,144 +77,163 @@
 ;; `pel--prefix-to-topic-alist' below.  Specially those that have duplicated
 ;; entries.
 
-(defconst pel--c-groups (let ((items '(c
-                                       c-macro
-                                       bison-mode
-                                       electricity)))
+(defconst pel--c-groups (let ((items (list 'c
+                                           'c-macro
+                                           'bison-mode
+                                           'electricity)))
                           (when pel-use-call-graph
-                            (append items '(call-graph)))))
+                            (append items '(call-graph))))
+  "List of groups for C.")
 
-(defconst pel--c++-groups (let ((items '(cpp
-                                         c-macro
-                                         electricity)))
+(defconst pel--c++-groups (let ((items (list 'cpp
+                                             'c-macro
+                                             'electricity)))
                             (when pel-use-call-graph
-                              (append items '(call-graph)))))
+                              (append items '(call-graph))))
+  "List of groups for C++.")
 
-(defconst pel--objc-groups (let ((items '(c
-                                          c-macro
-                                          electricity
-                                          objc-font-lock)))
+(defconst pel--objc-groups (let ((items (list 'c
+                                              'c-macro
+                                              'electricity
+                                              'objc-font-lock)))
                              (when pel-use-call-graph
-                               (append items '(call-graph)))))
+                               (append items '(call-graph))))
+  "List of groups for Objective-C")
 
-(defconst pel--awk-groups '(c
-                            electricity))
+(defconst pel--awk-groups (list 'c
+                                'electricity)
+  "List of groups for Awk.")
 
-(defconst pel--dired-groups '(dired
-                              dired-git-info
-                              dired-hide-dotfiles
-                              dired-lister
-                              dired-narrow
-                              dired-sidebar
-                              dired-x
-                              files
-                              ls-lisp
-                              wdired)
+(defconst pel--dired-groups (list 'dired
+                                  'dired-git-info
+                                  'dired-hide-dotfiles
+                                  'dired-lister
+                                  'dired-narrow
+                                  'dired-sidebar
+                                  'dired-x
+                                  'files
+                                  'ls-lisp
+                                  'wdired)
   "List of groups used related to Dired.")
 
 ;; Unfortunately the group used by elixir-ts-mode is not elixir but `elixir-ts'
 (defconst pel--elixir-groups (if pel-use-tree-sitter
-                                 '(elixir
-                                   elixir-ts
-                                   electricity)
-                               '(elixir
-                                 electricity))
+                                 (list 'elixir
+                                       'elixir-ts
+                                       'electricity)
+                               (list 'elixir
+                                     'electricity))
   "List of groups related to Elixir.")
 
 ;; Unfortunately the group used by lua-ts-mode is not lua but lua-ts
 (defconst pel--lua-groups (if pel-use-tree-sitter
-                              '(lua
-                                lua-ts)
-                            '(lua)))
+                              (list 'lua
+                                    'lua-ts)
+                            (list 'lua))
+  "List of groups for Lua.")
 
-(defconst pel--highligh-groups (let ((items '(auto-highlight-symbol
-                                              electricity
-                                              iedit
-                                              highlight-indentation
-                                              hl-line
-                                              paren-showing
-                                              rainbow
-                                              rainbow-delimiters
-                                              smartparens
-                                              vline)))
+(defconst pel--highligh-groups (let ((items (list 'auto-highlight-symbol
+                                                  'electricity
+                                                  'iedit
+                                                  'highlight-indentation
+                                                  'hl-line
+                                                  'paren-showing
+                                                  'rainbow
+                                                  'rainbow-delimiters
+                                                  'smartparens
+                                                  'vline)))
                                  (if (version< emacs-version "27.1")
                                      (append items '(fill-column-indicator))
-                                   (append items '(beacon)))))
+                                   (append items '(beacon))))
+  "List of groups for highlighting.")
 
-(defconst pel--markdown-groups '(markdown
-                                 grip
-                                 impatient-showdown
-                                 markdown-preview
-                                 markdown-toc
-                                 vmd
-                                 edit-indirect
-                                 htmlize
-                                 simple-httpd)
+(defconst pel--markdown-groups (list 'markdown
+                                     'grip
+                                     'impatient-showdown
+                                     'markdown-preview
+                                     'markdown-toc
+                                     'vmd
+                                     'edit-indirect
+                                     'htmlize
+                                     'simple-httpd)
   "List of groups for packages used by markdown.")
 
-(defconst pel--yaml-groups '(yaml
-                             flycheck
-                             indent-tools
-                             smartparens)
+(defconst pel--yaml-groups (list 'yaml
+                                 'flycheck
+                                 'indent-tools
+                                 'smartparens)
   "List of groups for YAML and CWL.")
 
-(defconst pel--lsp-groups '(lsp-mode
-                            lsp-ui
-                            helm-lsp
-                            lsp-ivy
-                            lsp-origami
-                            lsp-treemacs))
+(defconst pel--lsp-groups (list 'lsp-mode
+                                'lsp-ui
+                                'helm-lsp
+                                'lsp-ivy
+                                'lsp-origami
+                                'lsp-treemacs)
+  "List of groups for LSP.")
 
-(defconst pel--scheme-groups '(scheme
-                               geiser
-                               macrostep-geiser
-                               quack
-                               lispy))
+(defconst pel--scheme-groups (list 'scheme
+                                   'geiser
+                                   'macrostep-geiser
+                                   'quack
+                                   'lispy)
+  "List of groups for Scheme")
+
 (defconst pel--spell-groups (if (version< emacs-version "27.1")
-                                '(ispell
-                                  flyspell)
-                              '(ispell
-                                flyspell
-                                go-translate)))
+                                (list 'ispell
+                                      'flyspell)
+                              (list 'ispell
+                                    'flyspell
+                                    'go-translate))
+  "List of groups for spell control.")
+
 ;; Shells
-(defconst pel--shell-launch-groups '(shell
-                                     term
-                                     terminals
-                                     vterm))
-(defconst pel--sh-scripting-groups '(sh
-                                     sh-script
-                                     sh-indentation
-                                     electricity))
+(defconst pel--shell-launch-groups (list 'shell
+                                         'term
+                                         'terminals
+                                         'vterm)
+  "List of groups for shells.")
+
+(defconst pel--sh-scripting-groups (list 'sh
+                                         'sh-script
+                                         'sh-indentation
+                                         'electricity)
+  "List of groups for shell scripting modes.")
 
 
-(defconst pel--undo-groups (let ((items '(undo
-                                          undo-propose
-                                          undo-tree)))
+(defconst pel--undo-groups (let ((items (list 'undo
+                                              'undo-propose
+                                              'undo-tree)))
                              (when pel-emacs-28-or-later-p
                                (setq items (append items '(vundo))))
-                             items))
+                             items)
+  "List of groups for undo.")
 
 (defconst pel--ruby-groups (if pel-use-tree-sitter
-                               '(ruby
-                                 ruby-ts
-                                 electricity)
-                             '(ruby
-                               electricity)))
+                               (list 'ruby
+                                     'ruby-ts
+                                     'electricity)
+                             (list 'ruby
+                                   'electricity))
+  "List of groups for Ruby.")
 
 (defconst pel--verilog-groups (let ((items (if (fboundp 'verilog-ts-mode)
-                                               '(verilog-mode verilog-ts)
-                                             '(verilog-mode))))
+                                               (list 'verilog-mode
+                                                     'verilog-ts)
+                                             (list 'verilog-mode))))
                                 (when pel-use-verilog-ext
                                   (setq items (append items '(verilog-ext))))
                                 (when pel-use-veri-kompass
                                   (setq items (append items '(veri-kompass))))
-                                items))
+                                items)
+  "List of groups for Verilog.")
 
 ;; Unfortunately the group used by zig-ts-mode is not zig but zig-ts
 (defconst pel--zig-groups (if pel-use-tree-sitter
-                              '(zig-mode
-                                zig-ts)
-                            '(zig-mode)))
+                              (list 'zig-mode
+                                    'zig-ts)
+                            (list 'zig-mode))
+  "List of groups for Zig.")
 
 
 

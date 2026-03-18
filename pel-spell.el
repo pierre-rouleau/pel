@@ -238,7 +238,7 @@ to allow the flyspell pop-up menu to work in terminal mode."
                            (mapcar (lambda (correct)
                                      (list correct correct))
                                    corrects)
-                         '()))
+                         ()))
              (affix (car (cdr (cdr (cdr poss)))))
              (show-affix-info nil)
              (base-menu  (let ((save (if (and (consp affix) show-affix-info)

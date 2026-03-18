@@ -304,7 +304,6 @@
 (eval-when-compile
   (require 'subr-x))    ; use: `split-string', `string-join', `string-trim'
 
-
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
@@ -632,7 +631,7 @@ BUFFER-OR-NAME."
 (defun pel-buffers-in-mode (wanted-major-mode)
   "Return a list of buffers with specified WANTED-MAJOR-MODE, nil if none open.
 WANTED-MODE is a symbol; something like \\='emacs-lisp-mode"
-  (let ((buffers-in-wanted-mode '()))
+  (let ((buffers-in-wanted-mode ()))
     (dolist (buffer (buffer-list) (nreverse buffers-in-wanted-mode))
       (with-current-buffer buffer
         (when (eq major-mode wanted-major-mode)
@@ -941,10 +940,12 @@ Ignore case differences if IGNORE-CASE is non-nil."
 (defun pel-alnum-p (string)
   "Return t if all characters in STRING are letters or digits, nil otherwise."
   (declare (side-effect-free t))
-  (let ((case-fold-search nil))
-    (and (not (string-match-p "[[:punct:]]" string))
-         (not (string-match-p "[[:space:]]" string))
-         (not (string-match-p "[[:cntrl:]]" string)))))
+  (when (and (stringp string)
+             (not (equal string "")))
+    (let ((case-fold-search nil))
+      (and (not (string-match-p "[[:punct:]]" string))
+           (not (string-match-p "[[:space:]]" string))
+           (not (string-match-p "[[:cntrl:]]" string))))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Pluralizer
@@ -1287,19 +1288,30 @@ by BUFFER or `pel-insert-symbol-content-context-buffer'."
 ;;* String transformation utilities
 ;;  ===============================
 
-(defun pel-as-string (val)
+(defun pel-as-string (val &optional as-character)
   "Return a string for the simple object value VAL.
 VAL may be a string, a symbol, a number or a character.
-Otherwise an error is raised."
+
+Note: by default (pel-as-string ?A) returns \"65\", the character value
+      because characters are numbers in Emacs Lisp.
+      (pel-as-string ?A t) returns \"A\".
+
+Signal an error if val is an object of another type."
   (cond
    ((stringp val) val)
    ((symbolp val) (symbol-name val))
+   ((characterp val)
+    ;; In Emacs Lisp characters are implemented as numbers.
+    ;; (characterp ?a) and (numberp ?A) are both t.
+    ;; User must set as-character to non-nil to get the character implementation.
+    (if as-character
+        (char-to-string val)
+      (number-to-string val)))
    ((numberp val) (number-to-string val))
-   ((characterp val) (char-to-string val))
    (t (error "The pel-as-string does not support type of specified argument: %S" val))))
 
 (defun pel-end-text-with-period (text)
-  "Append a period character to TEXT if none is present.
+  "Append a period character to TEXT if none is present at end of TEXT.
 Return empty string if TEXT is the empty string."
   (declare (side-effect-free t))
   (if (> (length text) 0)
@@ -1891,7 +1903,9 @@ The returned value is:
   "Toggle the specified MODE (a symbol).
 Return the new state of the mode: t if active, nil otherwise.
 If the mode function is an autoload and not yet loaded the file
-is loaded and the mode activated."
+is loaded and the mode activated.
+Note that MODE must NOT be a symbol of a lexical bound variable,
+it must be a global mode symbol."
   (unless (symbolp mode)
     (error "Nothing done: pel-toggle-mode expects a symbol as argument"))
   ;; Some modes define their state variables only when they are first ran.

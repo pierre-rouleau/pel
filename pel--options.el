@@ -13452,18 +13452,6 @@ ensure consistency:
   :type 'integer
   :safe 'pel-indent-valid-p)
 
-(defcustom pel-tcl-indent-width 4
-  "Number of columns for Tcl source code indentation.
-Values in the [2, 8] range are accepted.
-
-PEL stores this value inside the following Tcl modes user-options to
-ensure consistency:
-
-- `tcl-indent-level'."
-  :group 'pel-pkg-for-tcl
-  :type 'integer
-  :safe 'pel-indent-valid-p)
-
 (defcustom pel-tcl-tab-width 4
   "Column width display rendering of hard tab for Tcl buffers.
 

@@ -1,6 +1,6 @@
 ;;; pel-pathmng.el --- Path management utilities. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2024, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -96,7 +96,7 @@ directory path (does not end with path separator).
 Return nil if no parent in common."
   (let* ((dirs-a (split-string dir-a pel-filesep))
          (dirs-b (split-string dir-b pel-filesep))
-         (common '())
+         (common ())
          (skip    nil)
          (dirb    nil)
          (common-paths (dolist (dira dirs-a (nreverse common))

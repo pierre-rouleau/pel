@@ -159,9 +159,9 @@ If the ONLY-USER-OPTIONS argument is non-nil, include only user option
 variables."
   (interactive "P")
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
-        (comment-symbols '())
+        (comment-symbols ())
         (max-length 0)
-        (local-values-alist '()))     ; maps symbol to it's buffer local value
+        (local-values-alist ()))     ; maps symbol to it's buffer local value
     ;; Accumulate names of `comment-' variables and their values.
     (mapatoms (lambda (symbol)
                 (when (and (boundp symbol)
