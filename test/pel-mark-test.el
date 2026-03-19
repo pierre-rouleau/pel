@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 18 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 20:06:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 21:46:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -253,7 +253,7 @@ Point starts at the beginning of line two (position 10)."
       (should (= 10 (point))))))     ; \"line two\" starts at position 10
 
 (ert-deftest ert-test-pel-mark-line-up/does-activate-mark ()
-  "pel-mark-line-up never activates the mark (transient-mark-mode semantics)."
+  "pel-mark-line-up activates the mark."
   (pel-mark-test--with-3-line-buffer
     (setq mark-active nil)
     (pel-mark-line-up)
