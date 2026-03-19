@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 18 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 23:22:06 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 23:38:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -386,15 +386,16 @@ Point starts at the beginning of line two (position 10)."
     ;; New mark is old point position.
     (should (= 3 (mark)))))
 
-;; (ert-deftest ert-test-pel-exchange-point-and-mark-no-activate/deactivates-mark ()
-;;   "The region must not be active after the swap."
-;;   (with-temp-buffer
-;;     (insert "hello world")
-;;     (goto-char 2)
-;;     (set-mark 9)
-;;     (setq mark-active t)
-;;     (pel-exchange-point-and-mark-no-activate)
-;;     (should-not mark-active)))
+(ert-deftest ert-test-pel-exchange-point-and-mark-no-activate/deactivates-mark ()
+  "The region must not be active after the swap."
+    (ert-skip "Temporary disabled: mark-ring affected???")
+  (with-temp-buffer
+    (insert "hello world")
+    (goto-char 2)
+    (set-mark 9)
+    (setq mark-active t)
+    (pel-exchange-point-and-mark-no-activate)
+    (should-not mark-active)))
 
 (ert-deftest ert-test-pel-exchange-point-and-mark-no-activate/idempotent ()
   "Calling the function twice restores the original point and mark."
