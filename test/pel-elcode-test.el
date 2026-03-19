@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-19 17:19:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-19 17:45:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -328,22 +328,6 @@ Note that this changes the search match data!"
     (dotimes (_ 200)
       (should (equal (pel-elcode-properties-of-sexp sexp) expected)))))
 
-(ert-deftest ert-test-pel-elcode-properties-of-sexp-at-point ()
-  "Ensure at-point API delegates consistently."
-  (with-temp-buffer
-    (emacs-lisp-mode)
-    (insert "(defun pel-expression-p (val)\n"
-            "  (declare (pure t) (side-effect-free error-free))\n"
-            "  (and (not (eq val t))\n"
-            "       (not (eq val nil))\n"
-            "       (or (symbolp val) (consp val))))")
-    (goto-char (point-min))
-    (let ((expected (if pel-emacs-28-or-later-p
-                        '(declare (pure t) (side-effect-free error-free))
-                      '(declare (side-effect-free error-free)))))
-      (should (equal (pel-elcode-properties-of-sexp-at-point) expected)))))
-
-
 (ert-deftest ert-test-pel-elcode-properties-of-sexp--nil-input ()
   "Empty / nil input returns nil."
   (should-not (pel-elcode-properties-of-sexp ()))
@@ -451,20 +435,6 @@ and pure predicates must yield a full pure+side-effect-free result."
                    (or (eq x y) (eq x nil))
                  nil)))
            '(declare (pure t) (side-effect-free error-free)))))
-
-(ert-deftest ert-test-pel-elcode-properties-of-sexp-stability ()
-  "Regression: repeated extraction must remain stable."
-  (let* ((sexp '(defun pel-expression-p (val)
-                  (declare (pure t) (side-effect-free error-free))
-                  (and (not (eq val t))
-                       (not (eq val nil))
-                       (or (symbolp val) (consp val)))))
-         (expected (if pel-emacs-28-or-later-p
-                       '(declare (pure t) (side-effect-free error-free))
-                     '(declare (side-effect-free error-free)))))
-    (dotimes (_ 200)
-      (should (equal (pel-elcode-properties-of-sexp sexp) expected)))))
-
 
 ;; ---------------------------------------------------------------------------
 ;;* `pel-elcode-properties-of-sexp-at-point'
