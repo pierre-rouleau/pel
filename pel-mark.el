@@ -20,34 +20,37 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This file holds a collection of functions used to inspect, manipulate and set
-;; the mark for various uses.  The file holds the following commands (the ones
-;; with a * in the list below) and functions.
+;; This file holds a collection of functions used to inspect, manipulate and
+;; set the mark for various uses.  The file holds the following commands (the
+;; ones with a * in the list below) and functions.
 ;;
 ;;
-;; * pel-mark-ring-stats
-;;   - pel-global-mark-buffer-positions
-;;   - pel-mark-ring-positions
+;; * `pel-mark-ring-stats'
+;;   - `pel-global-mark-buffer-positions'
+;;   - `pel-mark-ring-positions'
 ;;
-;; * pel-popoff-mark-ring
-;; * pel-mark-line-up
-;; * pel-mark-line-down
+;; * `pel-popoff-mark-ring'
+;; * `pel-mark-line-up'
+;; * `pel-mark-line-down'
 ;;
-;; * pel-push-mark-no-activate
-;; * pel-jump-to-mark
-;; * pel-exchange-point-and-mark-no-activate
+;; * `pel-push-mark-no-activate'
+;; * `pel-jump-to-mark'
+;; * `pel-exchange-point-and-mark-no-activate'
 
-;;
+;; Credits:
 ;; The last 3 functions are copies/adaptation of code written by Mickey
 ;; Petersen.  See the complete attribution note below, just above the code of
 ;; these 3 functions.
 
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+(require 'pel--base)   ; use: `pel-yes-no-string', `pel-symbol-on-off-string'
 
+;;; --------------------------------------------------------------------------
 ;;; Code:
-(require 'pel--base)                    ; use: pel-yes-no-string
 
 ;; From simple.el (which is loaded even by emacs -Q)
 ;; The following is to prevent lint warnings.
@@ -78,19 +81,19 @@ This function can be used to help understand the behaviour and impact
 of commands on the mark and mark rings."
   (interactive)
   (message "\
-Point, Mark          : %S, %S
-Transient mark mode  : %s
-Delete selection mode: %s
-%s: region=%s
+%-40s %-24s  %s
 %s: mark-ring size=%d/%d: %S
-Global mark-ring size: %d/%d
-Global mark ring: %S"
-           (point) (mark :force)
-           (pel-symbol-on-off-string 'transient-mark-mode)
-           (pel-symbol-on-off-string 'delete-selection-mode)
+Global mark-ring size=%d/%d: %S"
+           (format "Point, Mark: %S, %S.  Region:%s. "
+                   (point) (mark :force)
+                   (pel-yes-no-string mark-active "active" "inactive"))
+           (format "Transient mark mode: %s."
+                   (pel-symbol-on-off-string 'transient-mark-mode))
+           (format "Delete selection mode: %s."
+                   (pel-symbol-on-off-string 'delete-selection-mode))
            ;; local
-           (buffer-name) (pel-yes-no-string mark-active "active" "inactive")
-           (buffer-name) (length mark-ring) mark-ring-max (pel-mark-ring-positions)
+           (buffer-name)
+           (length mark-ring) mark-ring-max (pel-mark-ring-positions)
            ;; global
            (length global-mark-ring) global-mark-ring-max
            (pel-global-mark-buffer-positions)))
@@ -136,7 +139,7 @@ When mark is already active extend the region one more line down."
       (set-mark (line-beginning-position)))
     (end-of-line (abs n))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Attribution Notice for the code below:
 ;;   Code taken from the Mickey Petersen's great website at
 ;;   https://www.masteringemacs.org\
@@ -173,7 +176,7 @@ local buffer's mark ring"
   (exchange-point-and-mark)
   (deactivate-mark nil))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 (provide 'pel-mark)
 
 ;;; pel-mark.el ends here
