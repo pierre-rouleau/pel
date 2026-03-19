@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-19 18:06:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-19 18:15:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -380,7 +380,9 @@ This is the key regression protected by the PR that adds `quote' and
             '(defun check-text-mode (mode)
                "Return t when MODE is text-mode."
                (eq mode 'text-mode)))
-           '(declare (pure t) (side-effect-free error-free))))
+           (if pel-emacs-28-or-later-p
+               '(declare (pure t) (side-effect-free error-free))
+             '(declare (side-effect-free error-free)))))
 
   ;; Multiple quoted atoms — still pure
   (should (equal
@@ -555,8 +557,8 @@ and pure predicates must yield a full pure+side-effect-free result."
           (pel-elcode-print-properties-of-sexp-at-point))
         (should (equal (car kill-ring)
                        (if pel-emacs-28-or-later-p
-                           "(declare (side-effect-free error-free))"
-                         "(declare (pure t) (side-effect-free error-free))")))))))
+                           "(declare (pure t) (side-effect-free error-free))"
+                         "(declare (side-effect-free error-free))")))))))
 
 (ert-deftest ert-test-pel-elcode-print-properties-of-sexp-at-point--side-effect-free-only ()
   "A side-effect-free (non-error-free) defun: correct kill-ring content."
