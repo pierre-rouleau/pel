@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 18 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 21:56:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-18 23:22:06 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -46,10 +46,6 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
-;; Set transient-mark-mode for the tests, then print the state.
-(transient-mark-mode 1)
-(pel-mark-ring-stats)
-
 ;; ---------------------------------------------------------------------------
 ;;; Helpers
 ;; ---------------------------------------------------------------------------
@@ -69,6 +65,17 @@ Point starts at the beginning of line two (position 10)."
      (forward-line 1)
      (setq mark-active nil)
      ,@body))
+
+(defmacro pel-mark-test--with-transient-mark-mode-on (&rest body)
+  "Run BODY with deterministic mark-related state."
+  (declare (indent 0) (debug t))
+  `(let ((saved-transient-mark-mode transient-mark-mode)
+         (inhibit-message t))
+     (unwind-protect
+         (progn
+           (transient-mark-mode 1)
+           ,@body)
+       (transient-mark-mode (if saved-transient-mark-mode 1 -1)))))
 
 ;; ---------------------------------------------------------------------------
 ;;; pel-global-mark-buffer-positions
@@ -93,8 +100,8 @@ Point starts at the beginning of line two (position 10)."
 
 (ert-deftest ert-test-pel-global-mark-buffer-positions/multiple-entries ()
   "Return a cons cell per marker, preserving order."
-  (let* ((buf1 (get-buffer-create " *pel-gmbp-1*"))
-         (buf2 (get-buffer-create " *pel-gmbp-2*")))
+  (let* ((buf1 (generate-new-buffer " *pel-gmbp-1*"))
+         (buf2 (generate-new-buffer " *pel-gmbp-2*")))
     (unwind-protect
         (let (m1 m2)
           (with-current-buffer buf1
@@ -331,12 +338,13 @@ Point starts at the beginning of line two (position 10)."
 
 (ert-deftest ert-test-pel-push-mark-no-activate/does-not-activate-region ()
   "Pushing the mark must not activate the region."
-  (with-temp-buffer
-    (insert "hello")
-    (goto-char 3)
-    (setq mark-active nil)
-    (pel-push-mark-no-activate)
-    (should-not mark-active)))
+  (pel-mark-test--with-transient-mark-mode-on
+   (with-temp-buffer
+     (insert "hello")
+     (goto-char 3)
+     (setq mark-active nil)
+     (pel-push-mark-no-activate)
+     (should-not mark-active))))
 
 (ert-deftest ert-test-pel-push-mark-no-activate/preserves-point ()
   "Point must not move after pushing the mark."
