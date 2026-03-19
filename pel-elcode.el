@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 14:27:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-19 14:15:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -123,11 +123,14 @@ found."
     let
     let*
     while
-    dolist)
+    dolist
+    ;; The following special forms operators have no impact
+    quote
+    function)
   "List of operators that have no impact on purity or side-effect.")
 
 (defun pel-elcode-properties-of-sexp (sexp)
-  "Return a property declare form for specified SEXP.
+   "Return a property declare form for specified SEXP.
 The declare form identifies whether the sexp is pure, side-effect-free and/or
 error-free."
   (let ((operators (pel-elcode-operators-in sexp)))
