@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-19 14:15:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-19 17:32:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -60,6 +60,7 @@ found."
      ((and (listp exp) (symbolp (car exp)))
       (let ((head (car exp))
             (body (cdr exp)))
+
         ;; 1. Add the current function symbol (the head)
         (unless (eq head 'declare)
           (push head symbols))
@@ -85,6 +86,16 @@ found."
                 ;; (lambda (args) body...)  -> skip (args), process body...
                 ((eq head 'lambda) (cdr body))
                 ;;
+                ;; For dolist/dotimes clause:
+                ((memq head '(dolist dotimes))
+                 ;; (dolist (VAR LIST [RESULT]) BODY...)
+                 ;; Skip VAR; recurse into LIST, RESULT, and BODY.
+                 (let* ((var-spec (car body))        ; (VAR LIST [RESULT])
+                        (list-form (cadr var-spec))  ; LIST expression
+                        (result-form (cddr var-spec)); RESULT form, if present
+                        (body-forms (cdr body)))     ; actual body
+                   (append (list list-form) result-form body-forms)))
+                ;;
                 ;; (declare ....) -> skip declare forms
                 ;; and remove the declare just pushed.
                 ((eq head 'declare) nil)
@@ -101,13 +112,21 @@ found."
      ;; If it's a list but the head isn't a symbol (e.g. ((lambda...) args))
      ((listp exp)
       (dolist (item exp)
-        (setq symbols (append (pel-elcode-operators-in item)
-                              symbols)))))
+        (setq symbols (append
+                       (reverse (pel-elcode-operators-in item))
+                       symbols)))))
 
-    (reverse                            ; keep original code order
-     (seq-filter #'identity             ; remove nil if an empty list is found
-                 (delete-dups           ; no duplicates
+    (reverse                          ; keep original code order
+     (seq-filter #'identity           ; remove nil if an empty list is found
+                 (delete-dups         ; no duplicates
                   symbols)))))
+
+(defun pel-elcode-operators-in-sexp-at-point (&optional pos)
+  "Return operators in the SEXP at POS or at point."
+  (save-excursion
+    (when pos
+      (goto-char pos))
+    (pel-elcode-operators-in (sexp-at-point))))
 
 ;; --
 
@@ -124,6 +143,7 @@ found."
     let*
     while
     dolist
+    dotimes
     ;; The following special forms operators have no impact
     quote
     function)
