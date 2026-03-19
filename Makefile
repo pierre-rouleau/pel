@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-18 10:48:07 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-18 20:06:56 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -885,14 +885,15 @@ pel_keys.elc:             pel-etags.elc pel--base.elc pel--indent.elc pel--macro
 pel_keys.elc:             pel__hydra.el
 
 
-
 # Test code dependency:
+test/pel-abbrev-test.el.test-passed:            pel--base.elc pel-abbrev.elc pel-ert.elc
 test/pel-base-test.el.test-passed:              pel--base.elc pel-ert.elc
 test/pel-elcode-test.el.test-passed:            pel--base.elc pel-elcode.elc pel-ert.elc
 test/pel-elpa-test.el.test-passed:              pel-elpa.elc pel-filedir.elc
 test/pel-file-test.el.test-passed:              pel-file.elc pel-ert.elc
 test/pel-filedir-test.el.test-passed:           pel-filedir.elc
 test/pel-list-test.el.test-passed:              pel-list.elc pel-ert.elc
+test/pel-mark-test.el.test-passed:              pel--base.elc pel-mark.elc pel-ert.elc
 test/pel-package-test.el.test-passed:           pel--base.elc pel--options.elc pel-package.elc pel-ert.elc
 test/pel-skel-c-test.el.test-passed:            pel--options.elc pel-ert.elc
 test/pel-skel-clisp-test.el.test-passed:        pel--options.elc pel-ert.elc

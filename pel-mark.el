@@ -79,24 +79,20 @@ of commands on the mark and mark rings."
   (interactive)
   (message "\
 Point, Mark          : %S, %S
-Delete selection Mode: %s
+Transient mark mode  : %s
+Delete selection mode: %s
 %s: region=%s
 %s: mark-ring size=%d/%d: %S
 Global mark-ring size: %d/%d
 Global mark ring: %S"
-           (point)
-           (mark :force)
+           (point) (mark :force)
+           (pel-symbol-on-off-string 'transient-mark-mode)
            (pel-symbol-on-off-string 'delete-selection-mode)
            ;; local
-           (buffer-name)
-           (pel-yes-no-string mark-active "active" "inactive")
-           (buffer-name)
-           (length mark-ring)
-           mark-ring-max
-           (pel-mark-ring-positions)
+           (buffer-name) (pel-yes-no-string mark-active "active" "inactive")
+           (buffer-name) (length mark-ring) mark-ring-max (pel-mark-ring-positions)
            ;; global
-           (length global-mark-ring)
-           global-mark-ring-max
+           (length global-mark-ring) global-mark-ring-max
            (pel-global-mark-buffer-positions)))
 
 ;; --
