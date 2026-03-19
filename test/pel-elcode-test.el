@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-19 17:45:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-19 18:06:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -387,7 +387,9 @@ This is the key regression protected by the PR that adds `quote' and
            (pel-elcode-properties-of-sexp
             '(defun one-of-three (x)
                (or (eq x 'a) (eq x 'b) (eq x 'c))))
-           '(declare (pure t) (side-effect-free error-free)))))
+           (if pel-emacs-28-or-later-p
+               '(declare (pure t) (side-effect-free error-free))
+             '(declare (side-effect-free error-free))))))
 
 (ert-deftest ert-test-pel-elcode-properties-of-sexp--function-non-impacting ()
   "A defun that uses #\\='fn (i.e. the `function' special form) to pass a
@@ -434,7 +436,9 @@ and pure predicates must yield a full pure+side-effect-free result."
                (if (and (symbolp x) (symbolp y))
                    (or (eq x y) (eq x nil))
                  nil)))
-           '(declare (pure t) (side-effect-free error-free)))))
+           (if pel-emacs-28-or-later-p
+               '(declare (pure t) (side-effect-free error-free))
+             '(declare (side-effect-free error-free))))))
 
 ;; ---------------------------------------------------------------------------
 ;;* `pel-elcode-properties-of-sexp-at-point'
@@ -468,7 +472,9 @@ and pure predicates must yield a full pure+side-effect-free result."
     (let ((pos (point)))
       (goto-char (point-min))           ; move away from target
       (should (equal (pel-elcode-properties-of-sexp-at-point pos)
-                     '(declare (pure t) (side-effect-free error-free)))))))
+                     (if pel-emacs-28-or-later-p
+                         '(declare (pure t) (side-effect-free error-free))
+                       '(declare (side-effect-free error-free))))))))
 
 (ert-deftest ert-test-pel-elcode-properties-of-sexp-at-point--impure ()
   "At-point correctly returns nil for a side-effecting defun."
@@ -485,7 +491,9 @@ and pure predicates must yield a full pure+side-effect-free result."
     (insert "(defun check-mode (mode) (eq mode 'text-mode))")
     (goto-char (point-min))
     (should (equal (pel-elcode-properties-of-sexp-at-point)
-                   '(declare (pure t) (side-effect-free error-free))))))
+                   (if pel-emacs-28-or-later-p
+                       '(declare (pure t) (side-effect-free error-free))
+                     '(declare (side-effect-free error-free)))))))
 
 ;; ---------------------------------------------------------------------------
 ;;* `pel-elcode-print-properties-of-sexp-at-point'
@@ -546,7 +554,9 @@ and pure predicates must yield a full pure+side-effect-free result."
                      (setq captured-message (apply #'format fmt args)))))
           (pel-elcode-print-properties-of-sexp-at-point))
         (should (equal (car kill-ring)
-                       "(declare (pure t) (side-effect-free error-free))"))))))
+                       (if pel-emacs-28-or-later-p
+                           "(declare (side-effect-free error-free))"
+                         "(declare (pure t) (side-effect-free error-free))")))))))
 
 (ert-deftest ert-test-pel-elcode-print-properties-of-sexp-at-point--side-effect-free-only ()
   "A side-effect-free (non-error-free) defun: correct kill-ring content."
