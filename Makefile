@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-18 20:06:56 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-20 15:19:31 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -612,6 +612,7 @@ help:
 	@printf " * make clean-tar     - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make clean-mypelpa - remove the directory $(PELPA_DIR)\n"
 	@printf " * make clean-test    - remove test tag file to allow running all tests again.\n"
+	@printf " * make compile       - Compile all Emacs Lisp file. Do not run tests.\n"
 	@printf " * make test          - Run the regression tests.\n"
 	@printf " * make lint          - check .el files with elisp-lint (it must be installed).\n"
 	@printf " * make timeit        - Check startup time of Emacs with and without packages.\n"
