@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-20 12:09:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-20 12:28:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -100,7 +100,7 @@ Take NEW-LOCAL-VARS local variables into account."
 (defmacro pel-elcode--add-ops-from-lists (body var new-local-vars)
   "Add operators present in BODY list to the VAR accumulator list.
 Take NEW-LOCAL-VARS local variables into account."
-  `(dolist (item (,@body))
+  `(dolist (item ,body)
      (pel-elcode--add-ops-from-list item ,var ,new-local-vars)))
 
 (defun pel-elcode-operators-in (exp &optional local-vars)
