@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-20 13:28:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-20 14:28:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -38,6 +38,9 @@
 ;;      - `pel-elcode-properties-of-sexp'
 ;;        - `pel-elcode-operators-in'
 ;;          - `pel-elcode--args-in'
+;;      - `pel-elcode-operators-in-sexp-at-point'
+;;        . `pel-elcode-operators-in'
+;;          . `pel-elcode--args-in'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -76,8 +79,7 @@
      declare
      ;; non macros
      let let*
-     quote function
-     setq)
+     quote function)
   "List of structural forms.  First 6 are macros that must not be expanded.")
 
 (defun pel-elcode--args-in (arglist)
@@ -143,7 +145,9 @@ operator are found."
                     body (cdr-safe exp)))))
 
         ;; -- Push operator `head' unless it is declare form -----------------
-        (unless (eq head 'declare)
+        (unless (or (eq head 'declare)
+                    ;; skip non-symbol heads due to bad macro expansion
+                    (not (symbolp head)))
           (push head symbols))
 
         ;; -- Structural dispatch --------------------------------------------
