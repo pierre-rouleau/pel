@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-20 17:06:15 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-20 17:12:14 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -559,7 +559,7 @@ PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 # -----------------------------------------------------------------------------
 # First rule, allows 'make' command to build everything that needs updating
 
-.PHONY: all compile-only first-build pel-top local-pkg
+.PHONY: all compile-only first-build pel-top
 
 # Target all (the default target):
 # - First build the .elc files to check for errors, running tests
@@ -600,22 +600,22 @@ help:
 	@printf "NOTE: - Issue all make commands from PEL root (where Makefile is located).\n"
 	@printf "      - For faster build use parallel make: see 'make -j [N]' \n"
 	@printf "Usage:\n"
-	@printf " * make               - same as 'make all': build everything as needed.\n"
-	@printf " * make all           - compile all files and run tests.\n"
+	@printf " * make               - Same as 'make all': build everything as needed.\n"
+	@printf " * make all           - Compile all files and run tests.\n"
 	@printf " * make compile-only  - Compile all Emacs Lisp files. Do not run tests.\n"
-	@printf " * make pel           - compile all files except pel.el. Do not run tests.\n"
-	@printf " * make first-build   - first build done on a virgin system:\n"
+	@printf " * make pel           - Compile all files except pel.el. Do not run tests.\n"
+	@printf " * make first-build   - First build done on a virgin system:\n"
 	@printf "                         compile all files except pel_keys.el and pel.el.\n"
 	@printf "                         No external file or package gets loaded.\n"
 	@printf "                         No tests are executed.\n"
 	@printf " * make test          - Run the regression tests.\n"
-	@printf " * make clean         - remove $(PELPA_DIR),  all output files, all test tag files,\n"
+	@printf " * make clean         - Remove $(PELPA_DIR),  all output files, all test tag files,\n"
 	@printf "                        and remove $(PEL_TAR_FILE)\n"
-	@printf " * make clean-build   - make clean & make\n"
-	@printf " * make clean-tar     - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
-	@printf " * make clean-mypelpa - remove the directory $(PELPA_DIR)\n"
-	@printf " * make clean-test    - remove test tag file to allow running all tests again.\n"
-	@printf " * make lint          - check .el files with elisp-lint (it must be installed).\n"
+	@printf " * make clean-build   - Make clean & make\n"
+	@printf " * make clean-tar     - Remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
+	@printf " * make clean-mypelpa - Remove the directory $(PELPA_DIR)\n"
+	@printf " * make clean-test    - Remove test tag file to allow running all tests again.\n"
+	@printf " * make lint          - Check .el files with elisp-lint (it must be installed).\n"
 	@printf " * make timeit        - Check startup time of Emacs with and without packages.\n"
 	@printf " * make stats         - Load all PEL files & compute PEL statistics.  Also installs\n"
 	@printf "                        missing files/packages specified by pel-use.. user-options.\n"
@@ -1009,6 +1009,8 @@ a-copy: $(OUT_DIR) \
 # -----------------------------------------------------------------------------
 # Distribution tar package file creation rule
 
+.PHONY:	pkg local-pkg
+
 # * Implementation Note:
 #   * on macOS: tar may include several files that have names that start with "./._".
 #
@@ -1036,6 +1038,7 @@ pkg:  all a-copy
 	ls -l $(OUT_DIR)/$(PEL_TAR_FILE)
 
 # Target local-pkg
+
 local-pkg: pkg mypelpa
 
 # -----------------------------------------------------------------------------

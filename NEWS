@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Makefile supports a compile-only target to only compile, not test.  Parallel builds are supported.
 - Add the *pel-elcode-print-properties-of-sexp-at-point* command, bound to ~<f12> a s~ in emacs lisp buffers,
   inside a new file: pel-elcode.el.
   That command analyzes the sexp at point and prints an appropriate declare form
