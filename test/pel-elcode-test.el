@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-19 18:15:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-19 20:46:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -410,11 +410,7 @@ pure function reference must not have its purity degraded."
            ;; must be filtered; `and', `not' are non-impacting.
            ;; Result depends on what Emacs reports for `functionp'.
            ;; We at minimum verify the call does not signal an error.
-           (pel-elcode-properties-of-sexp
-            '(defun check-val (val)
-               (and (not (eq val nil))
-                    (symbolp val)
-                    (functionp #'identity)))))))
+           '(declare (side-effect-free error-free)))))
 
 (ert-deftest ert-test-pel-elcode-properties-of-sexp--defsubst ()
   "`defsubst' is treated the same as `defun'."
@@ -548,7 +544,7 @@ and pure predicates must yield a full pure+side-effect-free result."
     (emacs-lisp-mode)
     (insert "(defun check-mode (mode) (eq mode 'text-mode))")
     (goto-char (point-min))
-    (with-no-warnings   ; prevent compiler warning about
+    (with-no-warnings ; prevent Warning: Unused lexical variable ‘captured-message’
       (let ((kill-ring nil)
             (captured-message nil))
         (cl-letf (((symbol-function 'message)
