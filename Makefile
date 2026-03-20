@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-20 16:31:02 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-20 16:43:39 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -331,7 +331,7 @@ OTHER_FILES := README
 ALL_TEST_FILES := $(wildcard test/pel-*-test.el)
 ALL_TEST_PASSED := $(ALL_TEST_FILES:.el=.el.test-passed)
 
-$(info DEBUG: ALL_TEST_FILES is [$(ALL_TEST_FILES)])
+# $(info DEBUG: ALL_TEST_FILES is [$(ALL_TEST_FILES)])
 # $(info DEBUG: ALL_TEST_PASSED is [$(ALL_TEST_PASSED)])
 
 
@@ -883,7 +883,7 @@ pel__hydra.elc:           pel--base.elc pel--options.elc pel--keys-macros.elc pe
 # when pel_keys is loading. Therefore, if pel__hydra.el is modified
 # then pel_keys.el must also be built.  The pel_keys.elc therefore
 # depend on the source of pel__hydra: pel__hydra.el , *not* its .elc file!
-pel_keys.elc:             pel-etags.elc pel--base.elc pel--indent.elc pel--macros.elc pel--keys-macros.elc pel--options.elc pel-process.elc pel-autoload.elc pel-setup.elc pel-cursor.elc pel-iedit-modes-support.elc pel-lispy.elc pel-file.elc pel-ibuffer.elc pel-key-chord.elc pel__hydra.el
+pel_keys.elc:             pel_keys.el pel--base.elc pel--install.elc pel--indent.elc pel--macros.elc pel--keys-macros.elc pel--options.elc pel__hydra.el
 
 
 # Test code dependency:
