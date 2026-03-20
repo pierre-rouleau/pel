@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-19 22:10:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-19 22:15:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -400,7 +400,6 @@ pure function reference must not have its purity degraded."
   ;; Note: mapcar itself is not pure/sef-free in standard Emacs Lisp,
   ;; so this test confirms `function' is filtered before properties are computed.
   ;; We use only pure operators so the result depends solely on them.
-  (ert--skip-unless  pel-emacs-29-or-later-p)
   (should (equal
            (pel-elcode-properties-of-sexp
             '(defun check-val (val)
@@ -411,7 +410,10 @@ pure function reference must not have its purity degraded."
            ;; must be filtered; `and', `not' are non-impacting.
            ;; Result depends on what Emacs reports for `functionp'.
            ;; We at minimum verify the call does not signal an error.
-           '(declare (side-effect-free error-free)))))
+           (if pel-emacs-30-or-later-p
+               '(declare (side-effect-free error-free))
+             ;; Prior to Emacs 30, functionp was not declared pure nor side-effect-free
+             nil))))
 
 (ert-deftest ert-test-pel-elcode-properties-of-sexp--defsubst ()
   "`defsubst' is treated the same as `defun'."
@@ -442,6 +444,7 @@ and pure predicates must yield a full pure+side-effect-free result."
 ;; ---------------------------------------------------------------------------
 ;;* `pel-elcode-properties-of-sexp-at-point'
 ;;  ========================================
+
 
 (ert-deftest ert-test-pel-elcode-properties-of-sexp-at-point ()
   "Ensure at-point API delegates consistently to `pel-elcode-properties-of-sexp'."
