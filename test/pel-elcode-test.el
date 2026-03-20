@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-19 22:15:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-20 08:41:11 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -501,6 +501,23 @@ and pure predicates must yield a full pure+side-effect-free result."
 ;;* `pel-elcode-print-properties-of-sexp-at-point'
 ;;  ==============================================
 
+(ert-deftest ert-test-pel-elcode-print-properties-of-sexp-at-point--nil ()
+  "When no properties apply: kill-ring is unchanged and message shows nil."
+  (with-temp-buffer
+    (emacs-lisp-mode)
+    (insert "(defun f () (message \"hi\"))")
+    (goto-char (point-min))
+    (let ((kill-ring nil)
+          (captured-message nil))
+      (cl-letf (((symbol-function 'message)
+                 (lambda (fmt &rest args)
+                   (setq captured-message (apply #'format fmt args)))))
+        (pel-elcode-print-properties-of-sexp-at-point))
+      ;; `kill-new' must NOT have been called when props is nil
+      (should-not kill-ring)
+      ;; But message must still be called with "nil"
+      (should (equal captured-message "nil")))))
+
 (ert-deftest ert-test-pel-elcode-print-properties-of-sexp-at-point--pure ()
   "When properties exist: result is pushed to kill-ring and shown via message."
   (with-temp-buffer
@@ -524,23 +541,6 @@ and pure predicates must yield a full pure+side-effect-free result."
         (should (equal (car kill-ring) (format "%S" expected)))
         ;; And displayed via message
         (should (equal captured-message (format "%S" expected)))))))
-
-(ert-deftest ert-test-pel-elcode-print-properties-of-sexp-at-point--nil ()
-  "When no properties apply: kill-ring is unchanged and message shows nil."
-  (with-temp-buffer
-    (emacs-lisp-mode)
-    (insert "(defun f () (message \"hi\"))")
-    (goto-char (point-min))
-    (let ((kill-ring nil)
-          (captured-message nil))
-      (cl-letf (((symbol-function 'message)
-                 (lambda (fmt &rest args)
-                   (setq captured-message (apply #'format fmt args)))))
-        (pel-elcode-print-properties-of-sexp-at-point))
-      ;; `kill-new' must NOT have been called when props is nil
-      (should-not kill-ring)
-      ;; But message must still be called with "nil"
-      (should (equal captured-message "nil")))))
 
 (ert-deftest ert-test-pel-elcode-print-properties-of-sexp-at-point--quote ()
   "PR regression: `quote' forms must not degrade purity in the printed output."

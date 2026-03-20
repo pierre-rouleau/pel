@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-19 17:32:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-20 09:10:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -37,6 +37,7 @@
 ;;    - `pel-elcode-properties-of-sexp-at-point'
 ;;      - `pel-elcode-properties-of-sexp'
 ;;        - `pel-elcode-operators-in'
+;;          - `pel-elcode--args-from-list'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -48,6 +49,46 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+(defconst pel-elcode-non-impacting-operators
+  '(and
+    or
+    if
+    when
+    unless
+    cond
+    progn
+    prog1
+    let
+    let*
+    while
+    dolist
+    dotimes
+    ;; The following special forms operators have no impact
+    quote
+    function)
+  "List of operators that have no impact on purity or side-effect.")
+
+(defconst pel-elcode-structural-forms
+  '(defun defsubst lambda
+     dolist dotimes
+     declare
+     ;; non macros
+     let let*
+     quote function
+     setq)
+  "List of structural forms.  First 6 are macros that must not be expanded.")
+
+(defun pel-elcode--args-from-list (arglist)
+  "Return the plain variable symbols from a lambda/defun ARGLIST.
+Strips lambda-list keywords:
+`&optional', `&rest', `&key', `&allow-other-keys'."
+  (seq-filter (lambda (s)
+                (and (symbolp s)
+                     (not (memq s '(&optional &rest &key
+                                              &allow-other-keys)))))
+              arglist))
+
 
 (defun pel-elcode-operators-in (exp)
   "Recursively extract operator symbols from EXP, ignoring variable names.
@@ -61,11 +102,27 @@ found."
       (let ((head (car exp))
             (body (cdr exp)))
 
-        ;; 1. Add the current function symbol (the head)
+        ;; -- Macro expansion for unknown macros
+        ;; -------------------------------------------------------------------
+        ;; Structural forms and operators in
+        ;; `pel-elcode-non-impacting-operators' are handled explicitly below
+        ;; and must NOT be expanded: expanding e.g. `dolist' would expose
+        ;; internal implementation operators (`car', `cdr', a second `setq')
+        ;; that falsely degrade purity.
+        (when (and (macrop head)
+                   (not (memq head pel-elcode-structural-forms))
+                   (not (memq head pel-elcode-non-impacting-operators)))
+          (let ((expanded (macroexpand-1 exp)))
+            (unless (equal expanded exp)
+              (setq exp expanded
+                    head (car-safe exp)
+                    body (cdr-safe exp)))))
+
+        ;; -- Push operator `head' unless it is declare form -----------------
         (unless (eq head 'declare)
           (push head symbols))
 
-        ;; 2. Determine which parts of the body to skip (variable lists)
+        ;; -- Structural dispatch --------------------------------------------
         (let ((to-process
                (cond
                 ;; (defun name (args) body...) -> skip name and (args)
@@ -87,13 +144,15 @@ found."
                 ((eq head 'lambda) (cdr body))
                 ;;
                 ;; For dolist/dotimes clause:
+                ;; (dolist  (VAR LIST  [RESULT]) BODY...)
+                ;; (dotimes (VAR COUNT [RESULT]) BODY...)
+                ;; [-head--][---------- body -----------]
+                ;;  -> skip VAR; recurse into LIST, RESULT, and BODY.
                 ((memq head '(dolist dotimes))
-                 ;; (dolist (VAR LIST [RESULT]) BODY...)
-                 ;; Skip VAR; recurse into LIST, RESULT, and BODY.
-                 (let* ((var-spec (car body))        ; (VAR LIST [RESULT])
-                        (list-form (cadr var-spec))  ; LIST expression
-                        (result-form (cddr var-spec)); RESULT form, if present
-                        (body-forms (cdr body)))     ; actual body
+                 (let* ((var-spec (car body))         ; (VAR LIST [RESULT])
+                        (list-form (cadr var-spec))   ; LIST expression
+                        (result-form (cddr var-spec)) ; RESULT form, if present
+                        (body-forms (cdr body)))      ; actual body
                    (append (list list-form) result-form body-forms)))
                 ;;
                 ;; (declare ....) -> skip declare forms
@@ -116,9 +175,9 @@ found."
                        (reverse (pel-elcode-operators-in item))
                        symbols)))))
 
-    (reverse                          ; keep original code order
-     (seq-filter #'identity           ; remove nil if an empty list is found
-                 (delete-dups         ; no duplicates
+    (reverse                            ; keep original code order
+     (seq-filter #'identity             ; remove nil if an empty list is found
+                 (delete-dups           ; no duplicates
                   symbols)))))
 
 (defun pel-elcode-operators-in-sexp-at-point (&optional pos)
@@ -130,24 +189,7 @@ found."
 
 ;; --
 
-(defconst pel-elcode-non-impacting-operators
-  '(and
-    or
-    if
-    when
-    unless
-    cond
-    progn
-    prog1
-    let
-    let*
-    while
-    dolist
-    dotimes
-    ;; The following special forms operators have no impact
-    quote
-    function)
-  "List of operators that have no impact on purity or side-effect.")
+
 
 (defun pel-elcode-properties-of-sexp (sexp)
    "Return a property declare form for specified SEXP.
