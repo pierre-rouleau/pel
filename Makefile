@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-20 17:04:32 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-20 17:06:15 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -603,7 +603,7 @@ help:
 	@printf " * make               - same as 'make all': build everything as needed.\n"
 	@printf " * make all           - compile all files and run tests.\n"
 	@printf " * make compile-only  - Compile all Emacs Lisp files. Do not run tests.\n"
-	@printf " * make pel           - compile all files except pel.el. Do not run tests.n"
+	@printf " * make pel           - compile all files except pel.el. Do not run tests.\n"
 	@printf " * make first-build   - first build done on a virgin system:\n"
 	@printf "                         compile all files except pel_keys.el and pel.el.\n"
 	@printf "                         No external file or package gets loaded.\n"
