@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-20 16:53:57 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-20 17:04:32 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -597,8 +597,8 @@ help:
 	@printf "   located in the $(OUT_DIR) directory.\n"
 	@printf "4) Copy the PEL package tar file into a local package archive for testing.\n"
 	@printf "\n"
-	@printf "NOTE: Issue all make commands from PEL root (where Makefile is located).\n"
-	@printf "\n"
+	@printf "NOTE: - Issue all make commands from PEL root (where Makefile is located).\n"
+	@printf "      - For faster build use parallel make: see 'make -j [N]' \n"
 	@printf "Usage:\n"
 	@printf " * make               - same as 'make all': build everything as needed.\n"
 	@printf " * make all           - compile all files and run tests.\n"
