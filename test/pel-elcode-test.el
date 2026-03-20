@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-19 20:55:39 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-19 22:07:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -393,24 +393,25 @@ This is the key regression protected by the PR that adds `quote' and
                '(declare (pure t) (side-effect-free error-free))
              '(declare (side-effect-free error-free))))))
 
-;; (ert-deftest ert-test-pel-elcode-properties-of-sexp--function-non-impacting ()
-;;   "A defun that uses #\\='fn (i.e. the `function' special form) to pass a
-;; pure function reference must not have its purity degraded."
-;;   ;; mapcar with a pure function reference
-;;   ;; Note: mapcar itself is not pure/sef-free in standard Emacs Lisp,
-;;   ;; so this test confirms `function' is filtered before properties are computed.
-;;   ;; We use only pure operators so the result depends solely on them.
-;;   (should (equal
-;;            (pel-elcode-properties-of-sexp
-;;             '(defun check-val (val)
-;;                (and (not (eq val nil))
-;;                     (symbolp val)
-;;                     (functionp #'identity))))
-;;            ;; functionp is side-effect-free; #'identity adds `function' which
-;;            ;; must be filtered; `and', `not' are non-impacting.
-;;            ;; Result depends on what Emacs reports for `functionp'.
-;;            ;; We at minimum verify the call does not signal an error.
-;;            '(declare (side-effect-free error-free)))))
+(ert-deftest ert-test-pel-elcode-properties-of-sexp--function-non-impacting ()
+  "A defun that uses #\\='fn (i.e. the `function' special form) to pass a
+pure function reference must not have its purity degraded."
+  ;; mapcar with a pure function reference
+  ;; Note: mapcar itself is not pure/sef-free in standard Emacs Lisp,
+  ;; so this test confirms `function' is filtered before properties are computed.
+  ;; We use only pure operators so the result depends solely on them.
+  (ert--skip-unless  pel-emacs-30-or-later-p)
+  (should (equal
+           (pel-elcode-properties-of-sexp
+            '(defun check-val (val)
+               (and (not (eq val nil))
+                    (symbolp val)
+                    (functionp #'identity))))
+           ;; functionp is side-effect-free; #'identity adds `function' which
+           ;; must be filtered; `and', `not' are non-impacting.
+           ;; Result depends on what Emacs reports for `functionp'.
+           ;; We at minimum verify the call does not signal an error.
+           '(declare (side-effect-free error-free)))))
 
 (ert-deftest ert-test-pel-elcode-properties-of-sexp--defsubst ()
   "`defsubst' is treated the same as `defun'."
@@ -544,17 +545,20 @@ and pure predicates must yield a full pure+side-effect-free result."
     (emacs-lisp-mode)
     (insert "(defun check-mode (mode) (eq mode 'text-mode))")
     (goto-char (point-min))
-    (with-no-warnings ; prevent Warning: Unused lexical variable ‘captured-message’
-      (let ((kill-ring nil)
-            (captured-message nil))
-        (cl-letf (((symbol-function 'message)
-                   (lambda (fmt &rest args)
-                     (setq captured-message (apply #'format fmt args)))))
-          (pel-elcode-print-properties-of-sexp-at-point))
-        (should (equal (car kill-ring)
-                       (if pel-emacs-28-or-later-p
-                           "(declare (pure t) (side-effect-free error-free))"
-                         "(declare (side-effect-free error-free))")))))))
+    (let ((kill-ring nil)
+          (captured-message nil))
+      (cl-letf (((symbol-function 'message)
+                 (lambda (fmt &rest args)
+                   (setq captured-message (apply #'format fmt args)))))
+        (pel-elcode-print-properties-of-sexp-at-point))
+      ;; The printed message should be in kill ring
+      (should (equal captured-message
+                     (car kill-ring)))
+      ;; and should be the following:
+      (should (equal (car kill-ring)
+                     (if pel-emacs-28-or-later-p
+                         "(declare (pure t) (side-effect-free error-free))"
+                       "(declare (side-effect-free error-free))"))))))
 
 (ert-deftest ert-test-pel-elcode-print-properties-of-sexp-at-point--side-effect-free-only ()
   "A side-effect-free (non-error-free) defun: correct kill-ring content."
