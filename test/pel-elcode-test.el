@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-20 08:41:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-20 12:10:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -269,7 +269,7 @@ are all captured (they get filtered later in `pel-elcode-properties-of-sexp')."
                (let ((acc 0))
                  (dolist (x lst acc)
                    (setq acc (+ acc x))))))
-           '(defun let dolist setq +))))
+           '(defun let dolist +))))
 
 ;; ---------------------------------------------------------------------------
 ;;* `pel-elcode-properties-of-sexp'

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-20 09:10:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-20 12:09:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -37,7 +37,7 @@
 ;;    - `pel-elcode-properties-of-sexp-at-point'
 ;;      - `pel-elcode-properties-of-sexp'
 ;;        - `pel-elcode-operators-in'
-;;          - `pel-elcode--args-from-list'
+;;          - `pel-elcode--args-in'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -45,6 +45,7 @@
 ;;
 (require 'pel--base)    ; use: `pel-delqs'
 (require 'seq)          ; use: `seq-filter' (not autoloaded in Emacs 26)
+;;                             `seq-partition', `seq-every-p'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -79,7 +80,7 @@
      setq)
   "List of structural forms.  First 6 are macros that must not be expanded.")
 
-(defun pel-elcode--args-from-list (arglist)
+(defun pel-elcode--args-in (arglist)
   "Return the plain variable symbols from a lambda/defun ARGLIST.
 Strips lambda-list keywords:
 `&optional', `&rest', `&key', `&allow-other-keys'."
@@ -89,13 +90,35 @@ Strips lambda-list keywords:
                                               &allow-other-keys)))))
               arglist))
 
+(defmacro pel-elcode--add-ops-from-list (items var new-local-vars)
+  "Add operators present in ITEMS list to the VAR accumulator list.
+Take NEW-LOCAL-VARS local variables into account."
+  `(setq ,var
+         (append (reverse (pel-elcode-operators-in ,items ,new-local-vars))
+                 ,var)))
 
-(defun pel-elcode-operators-in (exp)
+(defmacro pel-elcode--add-ops-from-lists (body var new-local-vars)
+  "Add operators present in BODY list to the VAR accumulator list.
+Take NEW-LOCAL-VARS local variables into account."
+  `(dolist (item (,@body))
+     (pel-elcode--add-ops-from-list item ,var ,new-local-vars)))
+
+(defun pel-elcode-operators-in (exp &optional local-vars)
   "Recursively extract operator symbols from EXP, ignoring variable names.
 
-Return a list of operator symbols found in EXP in the order of their first
-appearance, with all duplicates removed.  Return nil if no operator are
-found."
+LOCAL-VARS is a list of symbols that are locally bound in the current
+lexical scope.  A `setq' form whose every target variable is in
+LOCAL-VARS is treated as non-impacting: the `setq' symbol is excluded
+from the result and only its value sub-expressions are recursed into.
+
+Unknown macro forms, not listed in `pel-elcode-structural-forms' and
+`pel-elcode-non-impacting-operators', are expanded once with
+`macroexpand-1' before analysis, so the real operators they hide are
+made visible.
+
+Return a list of operator symbols found in EXP in the order of their
+first appearance, with all duplicates removed.  Return nil if no
+operator are found."
   (let ((symbols ()))
     (cond
      ((and (listp exp) (symbolp (car exp)))
@@ -123,57 +146,118 @@ found."
           (push head symbols))
 
         ;; -- Structural dispatch --------------------------------------------
-        (let ((to-process
-               (cond
-                ;; (defun name (args) body...) -> skip name and (args)
-                ;; same for defsubst
-                ((memq head '(defun defsubst)) (cddr body))
-                ;;
-                ;; (let ((var1 (def1 ...)) (var2 (def2 ...)) body...)
-                ;;    -> skip var1, var2, process (def1 ...), (def2 ...) and body...
-                ((memq head '(let let*))
-                 (let* ((bindings (car body))
-                        (binding-vals
-                         (delq nil (mapcar (lambda (b)
-                                             (when (consp b)
-                                               (cadr b)))
-                                           bindings))))
-                   (append binding-vals (cdr body))))
-                ;;
-                ;; (lambda (args) body...)  -> skip (args), process body...
-                ((eq head 'lambda) (cdr body))
-                ;;
-                ;; For dolist/dotimes clause:
-                ;; (dolist  (VAR LIST  [RESULT]) BODY...)
-                ;; (dotimes (VAR COUNT [RESULT]) BODY...)
-                ;; [-head--][---------- body -----------]
-                ;;  -> skip VAR; recurse into LIST, RESULT, and BODY.
-                ((memq head '(dolist dotimes))
-                 (let* ((var-spec (car body))         ; (VAR LIST [RESULT])
-                        (list-form (cadr var-spec))   ; LIST expression
-                        (result-form (cddr var-spec)) ; RESULT form, if present
-                        (body-forms (cdr body)))      ; actual body
-                   (append (list list-form) result-form body-forms)))
-                ;;
-                ;; (declare ....) -> skip declare forms
-                ;; and remove the declare just pushed.
-                ((eq head 'declare) nil)
-                ;;
-                ;; Standard call: process everything in the body
-                (t body))))
+        ;; Extract operators from each type of form; add them to symbols in
+        ;; order of appearance.
+        (cond
 
-          ;; 3. Recurse into the valid body parts
-          (dolist (item to-process)
-            (setq symbols
-                  (append (reverse (pel-elcode-operators-in item))
-                          symbols))))))
+         ;; (defun    NAME (ARGS) [DOCSTRING] BODY...)
+         ;; (defsubst NAME (ARGS) [DOCSTRING] BODY...)
+         ;; [-head--][------------ body -------------]
+         ;;   Skip NAME; add ARGS to local-vars for BODY.
+         ((memq head '(defun defsubst))
+          (let ((locvars (append (pel-elcode--args-in (cadr body))
+                                 local-vars)))
+            (pel-elcode--add-ops-from-lists (cddr body) symbols locvars)))
+
+         ;; (lambda (ARGS) BODY...)
+         ;;   Skip ARGS; add them to local-vars for BODY.
+         ((eq head 'lambda)
+          (let ((locvars (append (pel-elcode--args-in (car body))
+                                 local-vars)))
+            (pel-elcode--add-ops-from-lists (cdr body) symbols locvars)))
+
+         ;; (let ((VAR VAL) ...) BODY...)
+         ;;      [--------- body -------]
+         ;;   Parallel binding: VAL forms see current local-vars;
+         ;;   BODY sees current local-vars + all VARs.
+         ((eq head 'let)
+          (let* ((bindings  (car body))
+                 (vars      (delq nil (mapcar (lambda (b)
+                                                (if (consp b) (car b) b))
+                                              bindings)))
+                 (vals      (delq nil (mapcar (lambda (b)
+                                                (when (consp b) (cadr b)))
+                                              bindings)))
+                 (locals (append vars local-vars)))
+            (pel-elcode--add-ops-from-lists vals       symbols local-vars)
+            (pel-elcode--add-ops-from-lists (cdr body) symbols locals)))
+
+         ;; (let* ((VAR VAL) ...) BODY...)
+         ;;       [------- body ---------]
+         ;;   Sequential binding: each VAR is in scope for subsequent VALs
+         ;;   and for BODY.
+         ((eq head 'let*)
+          (let ((running-locals local-vars))
+            (dolist (binding (car body))
+              (when (consp binding)
+                (setq symbols
+                      (append (reverse (pel-elcode-operators-in
+                                        (cadr binding) running-locals))
+                              symbols))
+                (push (car binding) running-locals)))
+            (pel-elcode--add-ops-from-lists (cdr body) symbols running-locals)))
+
+         ;; (dolist (VAR LIST [RESULT]) BODY...)
+         ;; [-head-][---------- body ----------]
+         ;;   VAR is local inside BODY (and RESULT, if present).
+         ;;   LIST is evaluated in the outer scope.
+         ((eq head 'dolist)
+          (let* ((var-spec   (car body)) ; (VAR LIST [RESULT])
+                 (var        (car var-spec))
+                 (list-form  (cadr var-spec))
+                 (result-form (cddr var-spec)) ; nil or (RESULT)
+                 (body-forms (cdr body))
+                 (locals  (cons var local-vars)))
+            ;; LIST is in the outer scope
+            (pel-elcode--add-ops-from-list list-form symbols local-vars)
+            ;; RESULT and BODY see VAR as local
+            (pel-elcode--add-ops-from-lists result-form symbols locals)
+            (pel-elcode--add-ops-from-lists body-forms  symbols locals)))
+
+         ;; (dotimes (VAR COUNT [RESULT]) BODY...)
+         ;; [-head-] [----------- body ----------]
+         ;;   VAR is local inside BODY (and RESULT, if present).
+         ;;   COUNT is evaluated in the outer scope.
+         ((eq head 'dotimes)
+          (let* ((var-spec    (car body))
+                 (var         (car var-spec))
+                 (count-form  (cadr var-spec))
+                 (result-form (cddr var-spec))
+                 (body-forms  (cdr body))
+                 (locals   (cons var local-vars)))
+            (pel-elcode--add-ops-from-list count-form symbols local-vars)
+            (pel-elcode--add-ops-from-lists result-form symbols locals)
+            (pel-elcode--add-ops-from-lists body-forms symbols locals)))
+
+         ;; (setq VAR1 VAL1 VAR2 VAL2 ...)
+         ;;   If EVERY target variable is locally bound, setq is non-impacting:
+         ;;   remove the `setq' symbol already pushed and skip it.
+         ;;   In either case, recurse into the value sub-expressions.
+         ((eq head 'setq)
+          (let* ((pairs       (seq-partition body 2))
+                 (target-vars (mapcar #'car  pairs))
+                 (val-forms   (mapcar #'cadr pairs)))
+            ;; remove the `setq' just pushed as head if that setq only sets
+            ;; the value of local variables.
+            (when (seq-every-p (lambda (v) (memq v local-vars))
+                               target-vars)
+              (pop symbols))
+            ;;
+            (pel-elcode--add-ops-from-lists val-forms symbols local-vars)))
+
+         ;; (quote X) / (function X)  → nothing to recurse into
+         ((memq head '(quote function)))
+
+         ;; (declare ...) → already excluded from symbols above; skip body
+         ((eq head 'declare))
+
+         ;; Standard function/macro call: recurse into all arguments
+         (t
+          (pel-elcode--add-ops-from-lists body symbols local-vars)))))
 
      ;; If it's a list but the head isn't a symbol (e.g. ((lambda...) args))
      ((listp exp)
-      (dolist (item exp)
-        (setq symbols (append
-                       (reverse (pel-elcode-operators-in item))
-                       symbols)))))
+      (pel-elcode--add-ops-from-lists exp symbols local-vars)))
 
     (reverse                            ; keep original code order
      (seq-filter #'identity             ; remove nil if an empty list is found
