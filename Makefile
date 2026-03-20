@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-20 16:43:39 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-20 16:53:57 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -603,18 +603,18 @@ help:
 	@printf " * make               - same as 'make all': build everything as needed.\n"
 	@printf " * make all           - compile all files and run tests.\n"
 	@printf " * make compile-only  - Compile all Emacs Lisp files. Do not run tests.\n"
-	@printf " * make pel           - compile all files except pel.el and run tests.\n"
+	@printf " * make pel           - compile all files except pel.el. Do not run tests.n"
 	@printf " * make first-build   - first build done on a virgin system:\n"
 	@printf "                         compile all files except pel_keys.el and pel.el.\n"
 	@printf "                         No external file or package gets loaded.\n"
 	@printf "                         No tests are executed.\n"
+	@printf " * make test          - Run the regression tests.\n"
 	@printf " * make clean         - remove $(PELPA_DIR),  all output files, all test tag files,\n"
 	@printf "                        and remove $(PEL_TAR_FILE)\n"
 	@printf " * make clean-build   - make clean & make\n"
 	@printf " * make clean-tar     - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make clean-mypelpa - remove the directory $(PELPA_DIR)\n"
 	@printf " * make clean-test    - remove test tag file to allow running all tests again.\n"
-	@printf " * make test          - Run the regression tests.\n"
 	@printf " * make lint          - check .el files with elisp-lint (it must be installed).\n"
 	@printf " * make timeit        - Check startup time of Emacs with and without packages.\n"
 	@printf " * make stats         - Load all PEL files & compute PEL statistics.  Also installs\n"
@@ -946,7 +946,7 @@ endif
 
 pel: $(ELC_FILES) pel_keys.elc
 
-pel.elc: pel.el pel_keys.el
+pel.elc: pel.el pel_keys.elc
 
 # ----------------------------------------------------------------------------
 # RULES: to execute ERT tests
