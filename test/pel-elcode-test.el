@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-20 12:32:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-20 13:34:39 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -786,7 +786,9 @@ This is the key end-to-end regression test for the new local-var tracking."
                (let ((acc 0))
                  (dolist (x lst acc)
                    (setq acc (+ acc (* x x)))))))
-           '(declare (pure t) (side-effect-free t)))))
+           (if pel-emacs-28-or-later-p
+               '(declare (pure t) (side-effect-free t))
+             '(declare (side-effect-free t))))))
 
 (ert-deftest ert-test-pel-elcode-properties-of-sexp--dotimes-accumulator-pure ()
   "Same pattern using `dotimes': local setq is filtered → pure+sef-free."
@@ -797,7 +799,9 @@ This is the key end-to-end regression test for the new local-var tracking."
                (let ((acc 0))
                  (dotimes (i n acc)
                    (setq acc (+ acc (* i i)))))))
-           '(declare (pure t) (side-effect-free t)))))
+           (if pel-emacs-28-or-later-p
+               '(declare (pure t) (side-effect-free t))
+             '(declare (side-effect-free t))))))
 
 (ert-deftest ert-test-pel-elcode-properties-of-sexp--global-setq-impure ()
   "A defun that uses `setq' on a non-local binding must NOT be rated pure."
@@ -814,7 +818,9 @@ This is the key end-to-end regression test for the new local-var tracking."
             '(defun normalize (x)
                (setq x (abs x))
                x))
-           '(declare (pure t) (side-effect-free t)))))
+           (if pel-emacs-28-or-later-p
+               '(declare (pure t) (side-effect-free t))
+             '(declare (side-effect-free t))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elcode-test)

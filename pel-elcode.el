@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-20 12:28:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-20 13:28:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -83,11 +83,12 @@
 (defun pel-elcode--args-in (arglist)
   "Return the plain variable symbols from a lambda/defun ARGLIST.
 Strips lambda-list keywords:
-`&optional', `&rest', `&key', `&allow-other-keys'."
+`&optional', `&rest', `&key', `&allow-other-keys', `&aux'."
   (seq-filter (lambda (s)
                 (and (symbolp s)
                      (not (memq s '(&optional &rest &key
-                                              &allow-other-keys)))))
+                                              &allow-other-keys
+                                              &aux)))))
               arglist))
 
 (defmacro pel-elcode--add-ops-from-list (items var new-local-vars)
@@ -189,12 +190,15 @@ operator are found."
          ((eq head 'let*)
           (let ((running-locals local-vars))
             (dolist (binding (car body))
-              (when (consp binding)
-                (setq symbols
-                      (append (reverse (pel-elcode-operators-in
-                                        (cadr binding) running-locals))
-                              symbols))
-                (push (car binding) running-locals)))
+              (if (consp binding)
+                  (progn
+                    (setq symbols
+                          (append (reverse (pel-elcode-operators-in
+                                            (cadr binding) running-locals))
+                                  symbols))
+                    (push (car binding) running-locals))
+                ;; bare symbol binding (that has no explicit initial value)
+                (push binding running-locals)))
             (pel-elcode--add-ops-from-lists (cdr body) symbols running-locals)))
 
          ;; (dolist (VAR LIST [RESULT]) BODY...)
