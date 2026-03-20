@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-20 13:34:39 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-20 14:00:22 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -821,6 +821,290 @@ This is the key end-to-end regression test for the new local-var tracking."
            (if pel-emacs-28-or-later-p
                '(declare (pure t) (side-effect-free t))
              '(declare (side-effect-free t))))))
+
+;; ---------------------------------------------------------------------------
+;;* Test macros — all operators are side-effect-free since Emacs 26.1
+;;  =================================================================
+;;
+;; Arithmetic operators (*, +, abs, …) are NOT declared pure or
+;; side-effect-free until Emacs 28 and are therefore intentionally avoided.
+;; Only the predicate/logical operators already validated by the existing
+;; passing tests are used here: symbolp, consp, not, null, eq, and, or.
+;;
+
+;; Pure, side-effect-free macro — single arg
+(defmacro pel-test--check-symbol (x)
+  "Test macro: expands to (symbolp X).  Side-effect-free in all versions."
+  `(symbolp ,x))
+
+;; Pure, side-effect-free macro — two args
+(defmacro pel-test--either-symbol (x y)
+  "Test macro: expands to (or (symbolp X) (symbolp Y)).  All versions."
+  `(or (symbolp ,x) (symbolp ,y)))
+
+;; Macro with let + setq targeting ONLY a local variable.
+;; Value expression uses only side-effect-free operators.
+(defmacro pel-test--local-pred (x)
+  "Test macro: let + local setq; value expression is pure in all versions."
+  `(let ((tmp ,x))
+     (setq tmp (symbolp tmp))
+     tmp))
+
+;; Nested pure macros (all-predicate chain):
+;;   pel-test--outer-pure → (and (consp X) (pel-test--inner-pure X))
+;;   pel-test--inner-pure → (symbolp X)
+;;   Full expansion:         (and (consp X) (symbolp X))
+(defmacro pel-test--inner-pure (x)
+  "Inner test macro: expands to (symbolp X).  Side-effect-free, all versions."
+  `(symbolp ,x))
+
+(defmacro pel-test--outer-pure (x)
+  "Outer test macro: wraps pel-test--inner-pure as a sub-expression."
+  `(and (consp ,x) (pel-test--inner-pure ,x)))
+
+;; Impure macro: introduces message (side-effecting in every Emacs version)
+(defmacro pel-test--log-value (x)
+  "Test macro: expands to (progn (message …) X).  Always impure."
+  `(progn (message "value: %S" ,x) ,x))
+
+;; Nested macro whose INNER macro is impure:
+;;   pel-test--outer-impure → (and t (pel-test--log-value X))
+;;   pel-test--log-value    → (progn (message …) X)
+(defmacro pel-test--outer-impure (x)
+  "Outer test macro: wraps impure pel-test--log-value as a sub-expression."
+  `(and t (pel-test--log-value ,x)))
+
+;; Macro that performs a non-local setq
+(defmacro pel-test--set-global (val)
+  "Test macro: expands to (setq pel-test--global-state VAL).  Always impure."
+  `(setq pel-test--global-state ,val))
+
+;; Nested macro whose INNER macro sets a global:
+;;   pel-test--outer-global-set → (progn (pel-test--set-global X) X)
+;;   pel-test--set-global       → (setq pel-test--global-state X)
+(defmacro pel-test--outer-global-set (x)
+  "Outer test macro: sub-expression calls pel-test--set-global."
+  `(progn (pel-test--set-global ,x) ,x))
+
+;; ---------------------------------------------------------------------------
+;;** Test User-defined macro expansion — `pel-elcode-operators-in'
+;;  --------------------------------------------------------------
+
+(ert-deftest ert-test-pel-elcode-operators-in--defmacro-simple-pure ()
+  "`pel-test--check-symbol' expands to (symbolp X).
+The macro name must vanish; `symbolp' must appear."
+  (let ((ops (pel-elcode-operators-in
+              '(defun classify (x)
+                 (pel-test--check-symbol x)))))
+    (should (memq 'defun   ops))
+    (should (memq 'symbolp ops))
+    (should-not (memq 'pel-test--check-symbol ops))))
+
+(ert-deftest ert-test-pel-elcode-operators-in--defmacro-multi-arg-pure ()
+  "`pel-test--either-symbol' expands to (or (symbolp X) (symbolp Y)).
+Operators: or symbolp."
+  (let ((ops (pel-elcode-operators-in
+              '(defun one-of-two (a b)
+                 (pel-test--either-symbol a b)))))
+    (should (memq 'defun   ops))
+    (should (memq 'or      ops))
+    (should (memq 'symbolp ops))
+    (should-not (memq 'pel-test--either-symbol ops))))
+
+(ert-deftest ert-test-pel-elcode-operators-in--defmacro-local-setq ()
+  "`pel-test--local-pred' expands to (let ((tmp X)) (setq tmp (symbolp tmp)) tmp).
+`tmp' is let-bound → `setq' filtered.  Surviving ops: let, symbolp."
+  (let ((ops (pel-elcode-operators-in
+              '(defun check-truthy (n)
+                 (pel-test--local-pred n)))))
+    (should (memq 'defun   ops))
+    (should (memq 'let     ops))
+    (should (memq 'symbolp ops))
+    ;; setq must be filtered: its only target `tmp' is let-bound
+    (should-not (memq 'setq ops))
+    ;; macro name must not appear
+    (should-not (memq 'pel-test--local-pred ops))))
+
+(ert-deftest ert-test-pel-elcode-operators-in--defmacro-impure ()
+  "`pel-test--log-value' expands to (progn (message …) X).
+`message' must be visible in the operator list."
+  (let ((ops (pel-elcode-operators-in
+              '(defun report (x)
+                 (pel-test--log-value x)))))
+    (should (memq 'defun   ops))
+    (should (memq 'progn   ops))
+    (should (memq 'message ops))
+    (should-not (memq 'pel-test--log-value ops))))
+
+(ert-deftest ert-test-pel-elcode-operators-in--defmacro-global-setq ()
+  "`pel-test--set-global' expands to (setq pel-test--global-state VAL).
+`pel-test--global-state' is not locally bound → `setq' must be kept."
+  (let ((ops (pel-elcode-operators-in
+              '(defun record! (v)
+                 (pel-test--set-global v)))))
+    (should (memq 'defun ops))
+    (should (memq 'setq  ops))
+    (should-not (memq 'pel-test--set-global ops))))
+
+;; ---------------------------------------------------------------------------
+;;** Nested macro expansion — `pel-elcode-operators-in'
+;;   -------------------------------------------------
+
+(ert-deftest ert-test-pel-elcode-operators-in--nested-macros-both-pure ()
+  "Outer → (and (consp X) (pel-test--inner-pure X))
+Inner → (symbolp X)
+Full chain: (and (consp X) (symbolp X))
+Operators: and consp symbolp.  Neither macro name appears."
+  (let ((ops (pel-elcode-operators-in
+              '(defun pure-check (n)
+                 (pel-test--outer-pure n)))))
+    (should (memq 'defun   ops))
+    (should (memq 'and     ops))
+    (should (memq 'consp   ops))
+    (should (memq 'symbolp ops))
+    (should-not (memq 'pel-test--outer-pure ops))
+    (should-not (memq 'pel-test--inner-pure ops))))
+
+(ert-deftest ert-test-pel-elcode-operators-in--nested-macros-inner-impure ()
+  "Outer → (and t (pel-test--log-value X))
+Inner → (progn (message …) X)
+`message' must surface through both expansion steps."
+  (let ((ops (pel-elcode-operators-in
+              '(defun check-with-log (n)
+                 (pel-test--outer-impure n)))))
+    (should (memq 'defun   ops))
+    (should (memq 'and     ops))
+    (should (memq 'message ops))
+    (should-not (memq 'pel-test--outer-impure ops))
+    (should-not (memq 'pel-test--log-value    ops))))
+
+(ert-deftest ert-test-pel-elcode-operators-in--nested-macros-inner-global-setq ()
+  "Outer → (progn (pel-test--set-global X) X)
+Inner → (setq pel-test--global-state X)
+Non-local `setq' must surface through both expansion steps."
+  (let ((ops (pel-elcode-operators-in
+              '(defun record-outer! (v)
+                 (pel-test--outer-global-set v)))))
+    (should (memq 'defun ops))
+    (should (memq 'setq  ops))
+    (should-not (memq 'pel-test--outer-global-set ops))
+    (should-not (memq 'pel-test--set-global       ops))))
+
+(ert-deftest ert-test-pel-elcode-operators-in--nested-macros-only-local-setq ()
+  "(and t (pel-test--local-pred n)) — outer `and' is a special form;
+pel-test--local-pred expands to (let ((tmp n)) (setq tmp (symbolp tmp)) tmp).
+`tmp' is let-bound inside the expansion → `setq' filtered.
+Surviving ops: and let symbolp."
+  (let ((ops (pel-elcode-operators-in
+              '(defun f (n)
+                 (and t (pel-test--local-pred n))))))
+    (should (memq 'defun   ops))
+    (should (memq 'and     ops))
+    (should (memq 'let     ops))
+    (should (memq 'symbolp ops))
+    ;; setq filtered: `tmp' is let-bound inside the macro expansion
+    (should-not (memq 'setq ops))
+    (should-not (memq 'pel-test--local-pred ops))))
+
+;; ---------------------------------------------------------------------------
+;;** Macro expansion — `pel-elcode-properties-of-sexp' (end-to-end)
+;;   --------------------------------------------------------------
+;;
+;; All `properties-of-sexp' tests use the `pel-emacs-28-or-later-p' guard
+;; because `(pure t)' in the declare form requires Emacs 28+.
+
+(ert-deftest ert-test-pel-elcode-properties-of-sexp--macro-pure ()
+  "`pel-test--check-symbol' → (symbolp X).
+`symbolp' is side-effect-free in all versions → rated sef-free (pure on 28+)."
+  (should (equal
+           (pel-elcode-properties-of-sexp
+            '(defun classify (x)
+               "Return non-nil if X is a symbol."
+               (pel-test--check-symbol x)))
+           (if pel-emacs-28-or-later-p
+               '(declare (pure t) (side-effect-free error-free))
+             '(declare (side-effect-free error-free))))))
+
+(ert-deftest ert-test-pel-elcode-properties-of-sexp--macro-multi-arg-pure ()
+  "`pel-test--either-symbol' → (or (symbolp X) (symbolp Y)).
+`or' filtered as non-impacting; `symbolp' is sef-free in all versions."
+  (should (equal
+           (pel-elcode-properties-of-sexp
+            '(defun one-of-two (a b)
+               "Return non-nil if A or B is a symbol."
+               (pel-test--either-symbol a b)))
+           (if pel-emacs-28-or-later-p
+               '(declare (pure t) (side-effect-free error-free))
+             '(declare (side-effect-free error-free))))))
+
+(ert-deftest ert-test-pel-elcode-properties-of-sexp--macro-local-setq-pure ()
+  "`pel-test--local-pred' expands to let + local setq.
+After setq filtering the surviving non-structural op is `symbolp' (sef-free)."
+  (should (equal
+           (pel-elcode-properties-of-sexp
+            '(defun check-truthy (n)
+               "Return non-nil when N is truthy via local-setq macro."
+               (pel-test--local-pred n)))
+           (if pel-emacs-28-or-later-p
+               '(declare (pure t) (side-effect-free error-free))
+             '(declare (side-effect-free error-free))))))
+
+(ert-deftest ert-test-pel-elcode-properties-of-sexp--macro-impure ()
+  "`pel-test--log-value' expands to (progn (message …) X).
+`message' is side-effecting → no properties returned."
+  (should-not
+   (pel-elcode-properties-of-sexp
+    '(defun report (x)
+       "Report X and return it."
+       (pel-test--log-value x)))))
+
+(ert-deftest ert-test-pel-elcode-properties-of-sexp--macro-global-setq-impure ()
+  "`pel-test--set-global' expands to a non-local setq → impure."
+  (should-not
+   (pel-elcode-properties-of-sexp
+    '(defun record! (v)
+       "Record V into the global state."
+       (pel-test--set-global v)))))
+
+(ert-deftest ert-test-pel-elcode-properties-of-sexp--nested-macros-pure ()
+  "Full chain: (and (consp N) (symbolp N)).
+`and' filtered as non-impacting; `consp' and `symbolp' are sef-free in all versions."
+  (should (equal
+           (pel-elcode-properties-of-sexp
+            '(defun pure-check (n)
+               "Pure structural check via nested macro."
+               (pel-test--outer-pure n)))
+           (if pel-emacs-28-or-later-p
+               '(declare (pure t) (side-effect-free error-free))
+             '(declare (side-effect-free error-free))))))
+
+(ert-deftest ert-test-pel-elcode-properties-of-sexp--nested-macros-impure ()
+  "Nested macro chain exposes `message' → impure."
+  (should-not
+   (pel-elcode-properties-of-sexp
+    '(defun check-with-log (n)
+       "Check n but log it — impure."
+       (pel-test--outer-impure n)))))
+
+(ert-deftest ert-test-pel-elcode-properties-of-sexp--nested-macros-global-setq-impure ()
+  "Nested macro chain exposes non-local setq → impure."
+  (should-not
+   (pel-elcode-properties-of-sexp
+    '(defun record-outer! (v)
+       "Record v through nested macro — impure."
+       (pel-test--outer-global-set v)))))
+
+(ert-deftest ert-test-pel-elcode-properties-of-sexp--nested-macros-local-setq-pure ()
+  "(and t (pel-test--local-pred n)) — after expansion and setq filtering
+the only surviving non-structural op is `symbolp', which is sef-free in all versions."
+  (should (equal
+           (pel-elcode-properties-of-sexp
+            '(defun f (n)
+               "Truthy check via nested local-setq macro."
+               (and t (pel-test--local-pred n))))
+           (if pel-emacs-28-or-later-p
+               '(declare (pure t) (side-effect-free error-free))
+             '(declare (side-effect-free error-free))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elcode-test)
