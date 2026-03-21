@@ -61,12 +61,15 @@
 
 (defun pel-global-mark-buffer-positions ()
   "Return a list of (buffer position) cons cells of the `global-mark-ring'.
-If a buffer identified in the list has been killed, the entry cons cell will
-be (nil . position) cons cell."
+If a buffer identified in the list has been killed, the entry cons cell is
+modified to be ((buffer \\='deleted!) position)."
   (mapcar (lambda (m)
-            (cons (buffer-name
-                   (marker-buffer m))
-                  (marker-position m)))
+            (let ((buf (marker-buffer m))
+                  (bname (buffer-name (marker-buffer m)))
+                  (pos (marker-position m)))
+              (if (and buf (buffer-live-p buf))
+                  (cons bname pos)
+                (cons (cons bname 'deleted!) pos))))
           global-mark-ring))
 
 (defun pel-mark-ring-positions ()
