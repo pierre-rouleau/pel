@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, March 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 13:49:41 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 16:10:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -59,7 +59,6 @@
   ;; Defining comp-el-to-eln-rel-filename via cl-letf makes fboundp return t
   ;; for it naturally.  let-binding comp-native-version-dir makes boundp
   ;; return t for it naturally.
-  (ert-skip "Temporary disable failing test.")
   (let ((user-emacs-directory pel-comp-test--fake-emacs-dir)
         (comp-native-version-dir pel-comp-test--fake-version-dir))
     (cl-letf (((symbol-function 'comp-el-to-eln-rel-filename)
@@ -75,7 +74,6 @@
 
 (ert-deftest pel-comp-eln-file-for-util-test--path-uses-utils-subdir ()
   "The path passed to comp-el-to-eln-rel-filename must include the utils subdir."
-  (ert-skip "Temporary disable failing test.")
   (let ((user-emacs-directory pel-comp-test--fake-emacs-dir)
         (comp-native-version-dir pel-comp-test--fake-version-dir)
         captured-el-path)
@@ -90,7 +88,6 @@
 
 (ert-deftest pel-comp-eln-file-for-util-test--eln-dir-uses-eln-cache-subdir ()
   "The returned path must be rooted under <user-emacs-directory>/eln-cache."
-  (ert-skip "Temporary disable failing test.")
   (let ((user-emacs-directory pel-comp-test--fake-emacs-dir)
         (comp-native-version-dir pel-comp-test--fake-version-dir))
     (cl-letf (((symbol-function 'comp-el-to-eln-rel-filename)
@@ -111,7 +108,7 @@
                      nil
                    (funcall orig-fboundp sym)))))
       (should-error (pel-comp-eln-file-for-util "my-util.el")
-                    :type 'error))))
+                    :type 'user-error))))
 
 (ert-deftest pel-comp-eln-file-for-util-test--error-when-var-absent ()
   "Signal error when comp-native-version-dir is not boundp."
@@ -130,7 +127,7 @@
                      nil
                    (funcall orig-boundp sym)))))
       (should-error (pel-comp-eln-file-for-util "my-util.el")
-                    :type 'error))))
+                    :type 'user-error))))
 
 (ert-deftest pel-comp-eln-file-for-util-test--error-when-both-absent ()
   "Signal error when both comp-el-to-eln-rel-filename and comp-native-version-dir are absent."
@@ -147,7 +144,7 @@
                      nil
                    (funcall orig-boundp sym)))))
       (should-error (pel-comp-eln-file-for-util "my-util.el")
-                    :type 'error))))
+                    :type 'user-error))))
 
 ;; --------------------------------------------------------------------------
 ;; Tests for `pel-native-compile-util'
@@ -157,24 +154,24 @@
 
 (ert-deftest pel-native-compile-util-test--eln-already-present ()
   "Return \\='eln-present when the .eln file already exists."
-  (ert-skip "Temporary disable failing test.")
   (cl-letf (((symbol-function 'pel-comp-eln-file-for-util)
              (lambda (_fname) "/fake/eln-cache/28.2/my-util.eln"))
             ((symbol-function 'file-exists-p)
-             (lambda (_path) t)))
+             (lambda (_path) t))
+            ((symbol-function 'file-newer-than-file-p)
+               (lambda (_newer _older) t)))
     (should (eq 'eln-present
                 (pel-native-compile-util "my-util.el")))))
 
 (ert-deftest pel-native-compile-util-test--compiles-when-eln-absent ()
   "Initiate compilation and return t when .eln absent and native-compile present."
-  (ert-skip "Temporary disable failing test.")
   (let ((orig-featurep (symbol-function 'featurep))
         (orig-fboundp  (symbol-function 'fboundp))
         (compile-called-with nil))
     (cl-letf (((symbol-function 'pel-comp-eln-file-for-util)
                (lambda (_fname) "/fake/eln-cache/28.2/my-util.eln"))
               ((symbol-function 'file-exists-p)
-               (lambda (_path) nil))
+               (lambda (path) (string-suffix-p ".el" path)))
               ((symbol-function 'featurep)
                (lambda (feature &optional _subfeature)
                  (if (eq feature 'native-compile)
@@ -190,6 +187,8 @@
                  ;; No-op for comp-run; forward anything else.
                  (unless (eq feature 'comp-run)
                    (require feature))))
+              ((symbol-function 'file-newer-than-file-p)
+               (lambda (_newer _older) t))
               ((symbol-function 'native-compile-async)
                (lambda (path &rest _)
                  (setq compile-called-with path))))
@@ -199,16 +198,13 @@
       (should (string-match-p "my-util\\.el" compile-called-with)))))
 
 (ert-deftest pel-native-compile-util-test--returns-t-when-async-absent ()
-  "Return t even when native-compile-async is not bound (compilation skipped)."
-  ;; The `when (fboundp 'native-compile-async)' guard means the call is
-  ;; silently skipped; the function must still return t.
-  (ert-skip "Temporary disable failing test.")
+  "Return nil when native-compile-async is not bound (compilation skipped)."
   (let ((orig-featurep (symbol-function 'featurep))
         (orig-fboundp  (symbol-function 'fboundp)))
     (cl-letf (((symbol-function 'pel-comp-eln-file-for-util)
                (lambda (_fname) "/fake/eln-cache/28.2/my-util.eln"))
               ((symbol-function 'file-exists-p)
-               (lambda (_path) nil))
+               (lambda (path) (string-suffix-p ".el" path)))
               ((symbol-function 'featurep)
                (lambda (feature &optional _subfeature)
                  (if (eq feature 'native-compile)
@@ -222,12 +218,13 @@
               ((symbol-function 'require)
                (lambda (feature &rest _)
                  (unless (eq feature 'comp-run)
-                   (require feature)))))
-      (should (eq t (pel-native-compile-util "my-util.el"))))))
+                   (require feature))))
+              ((symbol-function 'file-newer-than-file-p)
+               (lambda (_newer _older) t)))
+      (should (eq nil (pel-native-compile-util "my-util.el"))))))
 
 (ert-deftest pel-native-compile-util-test--user-error-when-no-native-compile ()
   "Signal user-error when native-compile feature is absent."
-  (ert-skip "Temporary disable failing test.")
   (let ((orig-featurep (symbol-function 'featurep)))
     (cl-letf (((symbol-function 'pel-comp-eln-file-for-util)
                (lambda (_fname) "/fake/eln-cache/28.2/my-util.eln"))
