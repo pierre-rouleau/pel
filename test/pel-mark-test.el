@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 18 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 10:12:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 10:32:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -41,7 +41,6 @@
 (require 'cl-lib)
 (require 'pel--base)
 (require 'pel-mark)
-(require 'pel-ert)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -266,10 +265,11 @@ Point starts at the beginning of line two (position 10)."
 
 (ert-deftest ert-test-pel-mark-line-up/does-activate-mark ()
   "pel-mark-line-up activates the mark."
-  (pel-mark-test--with-3-line-buffer
-    (setq mark-active nil)
-    (pel-mark-line-up)
-    (should mark-active)))
+  (pel-mark-test--with-transient-mark-mode-on
+    (pel-mark-test--with-3-line-buffer
+      (setq mark-active nil)
+      (pel-mark-line-up)
+      (should mark-active))))
 
 
 (ert-deftest ert-test-pel-mark-line-up/extends-region-with-prefix-2 ()
@@ -331,10 +331,11 @@ Point starts at the beginning of line two (position 10)."
 
 (ert-deftest ert-test-pel-mark-line-down/does-activate-mark ()
   "pel-mark-line-down activates the mark."
-  (pel-mark-test--with-3-line-buffer
-    (setq mark-active nil)
-    (pel-mark-line-down)
-    (should mark-active)))
+  (pel-mark-test--with-transient-mark-mode-on
+    (pel-mark-test--with-3-line-buffer
+      (setq mark-active nil)
+      (pel-mark-line-down)
+      (should mark-active))))
 
 ;; ---------------------------------------------------------------------------
 ;;; pel-push-mark-no-activate
@@ -347,7 +348,9 @@ Point starts at the beginning of line two (position 10)."
     (goto-char 6)
     (setq mark-ring nil)
     (pel-push-mark-no-activate)
-    ;; First push: no old mark → ring stays empty; mark is now at 6
+    ;; First push: no old mark → ring stays empty; mark is now at 6.
+    ;; - push-mark only pushes the previous mark to mark-ring; in a fresh buffer
+    ;;   with no prior mark the ring stays empty.
     (should (= 0 (length mark-ring)))
     (should (= 6 (marker-position (mark-marker))))))
 

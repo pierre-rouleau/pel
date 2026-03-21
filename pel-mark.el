@@ -60,7 +60,9 @@
 ;; --
 
 (defun pel-global-mark-buffer-positions ()
-  "Return a list of (buffer position) cons cells of the `global-mark-ring'."
+  "Return a list of (buffer position) cons cells of the `global-mark-ring'.
+If a buffer identified in the list has been killed, the entry cons cell will
+be (nil . position) cons cell."
   (mapcar (lambda (m)
             (cons (buffer-name
                    (marker-buffer m))
@@ -104,10 +106,9 @@ Global mark-ring size=%d/%d: %S"
 (defun pel-popoff-mark-ring ()
   "Remove the top entry from the buffer's mark ring."
   (interactive)
-  (if mark-ring
-      (progn
-        (setq mark-ring (cdr mark-ring))
-        (message "Mark-ring now has %d markers." (length mark-ring)))))
+  (when mark-ring
+    (setq mark-ring (cdr mark-ring))
+    (message "Mark-ring now has %d markers." (length mark-ring))))
 
 ;;-pel-autoload
 (defun pel-mark-line-up (&optional n)
@@ -118,7 +119,7 @@ When mark is inactive:
  - With argument N: mark current line and n-1 lines above.
 When mark is active:  Change one end of the region to N+1 lines up.
 
-Does nothing when N is 0.
+Does nothing when N is 0.  The absolute value of N is used.
 
 Mostly useful when mark is off to mark the current line or current set of
 lines and allowing extension of the created region using navigation keys
@@ -132,15 +133,15 @@ without the need to use shift select."
           (pel+= n 1)
         ;; set mark only if it was not already active
         (set-mark (line-end-position)))
-      (forward-line (-  1 (abs n))))))
+      (forward-line (- 1 (abs n))))))
 
 ;;-pel-autoload
 (defun pel-mark-line-down (&optional n)
-  "Mark current line or N lines forward for going down.
+  "Mark current line or N lines forward.
 Set mark at beginning of line, move point to line end.
 When mark is already active extend the region one more line down.
 
-Does nothing when N is 0.
+Does nothing when N is 0.  The absolute value of N is used.
 
 Mostly useful when mark is off to mark the current line or current set of
 lines and allowing extension of the created region using navigation keys
