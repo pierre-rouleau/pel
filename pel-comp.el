@@ -1,13 +1,13 @@
-;;; pel-comp.el --- Native Compilation support.  -*- lexical-binding: t; -*-
+;;; pel-comp.el --- Native compilation support  -*- lexical-binding: t; -*-
 
 ;; Created   : Wednesday, September 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-18 23:15:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 13:13:41 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
