@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, March 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 16:10:33 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 16:33:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -146,6 +146,17 @@
       (should-error (pel-comp-eln-file-for-util "my-util.el")
                     :type 'user-error))))
 
+(ert-deftest pel-comp-eln-file-for-util-test--user-error-when-no-el-extension ()
+  "Signal user-error when FNAME does not end with \".el\"."
+  (let ((user-emacs-directory pel-comp-test--fake-emacs-dir)
+        (comp-native-version-dir pel-comp-test--fake-version-dir))
+    (cl-letf (((symbol-function 'comp-el-to-eln-rel-filename)
+               (lambda (path) (concat (file-name-base path) ".eln"))))
+      (should-error (pel-comp-eln-file-for-util "my-util")   ; no .el
+                    :type 'user-error)
+      (should-error (pel-comp-eln-file-for-util "my-util.elc") ; wrong ext
+                    :type 'user-error))))
+
 ;; --------------------------------------------------------------------------
 ;; Tests for `pel-native-compile-util'
 ;;
@@ -153,13 +164,13 @@
 ;; tests remain independent of native-compile availability in the host Emacs.
 
 (ert-deftest pel-native-compile-util-test--eln-already-present ()
-  "Return \\='eln-present when the .eln file already exists."
+  "Return \\='eln-present when the .eln file already exists and is newer than the .el source."
   (cl-letf (((symbol-function 'pel-comp-eln-file-for-util)
              (lambda (_fname) "/fake/eln-cache/28.2/my-util.eln"))
             ((symbol-function 'file-exists-p)
              (lambda (_path) t))
             ((symbol-function 'file-newer-than-file-p)
-               (lambda (_newer _older) t)))
+             (lambda (_newer _older) t)))
     (should (eq 'eln-present
                 (pel-native-compile-util "my-util.el")))))
 
@@ -197,7 +208,7 @@
       (should (stringp compile-called-with))
       (should (string-match-p "my-util\\.el" compile-called-with)))))
 
-(ert-deftest pel-native-compile-util-test--returns-t-when-async-absent ()
+(ert-deftest pel-native-compile-util-test--returns-nil-when-async-absent ()
   "Return nil when native-compile-async is not bound (compilation skipped)."
   (let ((orig-featurep (symbol-function 'featurep))
         (orig-fboundp  (symbol-function 'fboundp)))
@@ -229,7 +240,7 @@
     (cl-letf (((symbol-function 'pel-comp-eln-file-for-util)
                (lambda (_fname) "/fake/eln-cache/28.2/my-util.eln"))
               ((symbol-function 'file-exists-p)
-               (lambda (_path) nil))
+               (lambda (_path) t))
               ((symbol-function 'featurep)
                (lambda (feature &optional _subfeature)
                  (if (eq feature 'native-compile)

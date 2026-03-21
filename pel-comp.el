@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 15:24:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 16:28:12 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -48,7 +48,9 @@
 
 (defun pel-comp-eln-file-for-util (fname)
   "Return the full path of the .eln file for .el util FNAME.
-FNAME must be a file base name with the .el extension."
+FNAME must be a file base name with the .el extension.
+It signals a `user-error' when native compilation is not available on this
+instance of Emacs."
   (if (and (fboundp 'comp-el-to-eln-rel-filename)
            (boundp  'comp-native-version-dir))
       (progn
@@ -76,24 +78,24 @@ This returns:
   than the timestamp of the .el file.
 It signals a `user-error' when native compilation is not available on this
 instance of Emacs."
-  (let* ((util-dpathname (expand-file-name "utils" user-emacs-directory))
-         (el-fpathname (expand-file-name fname util-dpathname))
-         (eln-fpathname (pel-comp-eln-file-for-util fname)))
+  (if (featurep 'native-compile)
+      (let* ((util-dpathname (expand-file-name "utils" user-emacs-directory))
+             (el-fpathname (expand-file-name fname util-dpathname))
+             (eln-fpathname (pel-comp-eln-file-for-util fname)))
 
-    (unless (file-exists-p el-fpathname)
-      (user-error "Source file not found: %s" el-fpathname))
+        (unless (file-exists-p el-fpathname)
+          (user-error "Source file not found: %s" el-fpathname))
 
-    (if (and (file-exists-p eln-fpathname)
-             (file-newer-than-file-p eln-fpathname el-fpathname))
-        'eln-present
-      (if (featurep 'native-compile)
+        (if (and (file-exists-p eln-fpathname)
+                 (file-newer-than-file-p eln-fpathname el-fpathname))
+            'eln-present
           (progn
             (require 'comp-run)
             (when (fboundp 'native-compile-async)
               (message "Native compile %s --> %s" el-fpathname eln-fpathname)
               (native-compile-async el-fpathname)
-              t))
-        (user-error "This Emacs is not built with native-compile support")))))
+              t))))
+    (user-error "This Emacs is not built with native-compile support")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-comp)
