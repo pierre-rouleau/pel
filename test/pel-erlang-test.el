@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 19:36:24 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 19:44:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -318,9 +318,11 @@ Cleaned up in the test's unwind form.")
 
   ;; String that points to a non-existent directory:
   ;; result is a cons (dirpath . error-message).
-  (let* ((bad-dir "/this-directory-must-not-exist-pel-test-xyz")
-         (pel-erlang-man-parent-rootdir bad-dir)
+  (let* ((bad-dir (make-temp-name
+                   (expand-file-name "pel-erlang-missing-dir-"
+                                     temporary-file-directory)))
          (result (pel--erlang-dirpath bad-dir)))
+    (should-not (file-exists-p bad-dir))
     (should (consp result))
     (should (pel-string= (car result) bad-dir bad-dir))
     (should (stringp (cdr result)))
@@ -340,12 +342,16 @@ Cleaned up in the test's unwind form.")
   ;; When the environment variable is absent the function returns
   ;;   (cons nil "Defined by absent environment variable VARNAME").
   (let* ((fake-envvar "PEL_TEST_ERLANG_NONEXISTENT_VAR_XYZ")
-         (pel-erlang-man-parent-rootdir (cons nil fake-envvar))
-         (result (pel--erlang-dirpath pel-erlang-man-parent-rootdir)))
-    (should (consp result))
-    (should (eq nil (car result)))
-    (should (stringp (cdr result)))
-    (should (string-match-p (regexp-quote fake-envvar) (cdr result)))))
+         (previous-value (getenv fake-envvar)))
+    (unwind-protect
+        (progn
+          (setenv fake-envvar nil)
+          (let* ((result (pel--erlang-dirpath (cons nil fake-envvar))))
+            (should (consp result))
+            (should (eq nil (car result)))
+            (should (stringp (cdr result)))
+            (should (string-match-p (regexp-quote fake-envvar) (cdr result)))))
+      (setenv fake-envvar previous-value)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-erlang-test)
