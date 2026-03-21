@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-18 20:06:56 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-20 23:26:44 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -559,26 +559,27 @@ PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 # -----------------------------------------------------------------------------
 # First rule, allows 'make' command to build everything that needs updating
 
-# 1: First build the .elc files to check for errors.
-# 2: Then run the integration tests.
-# 3: If all is OK, create the PEL Emacs package tar file
-# 4: Install that tar file into the local Elpa-compliant directory,
-#    ready to be used by Emacs.
+.PHONY: all compile-only first-build pel-top
 
-.PHONY: all local-pkg
+# Target all (the default target):
+# - First build the .elc files to check for errors, running tests
+#   as soon as its dependencies have been compiled.
+# - Compile pel_keys.el and pel.el at the end.
 
-all: pel.elc pel_keys.elc test
+all: pel-top pel_keys.elc pel.elc
 
-local-pkg: pkg mypelpa
+pel-top: $(ALL_TEST_PASSED) $(ELC_FILES)
 
-# ------------------------------------------------------------------------------
-# Build all normal PEL files, except pel_keys.el and pel.el for the very first
-# build.  PEL files hold the logic to install external package and does not
-# need any other tool to help for external package installation.
-
-.PHONY: first-build
+# Target first-build:
+# - Compile all .el files except pel_keys.el and pel.el
+#   PEL files hold the logic to install external package and does not
+#   need any other tool to help for external package installation.
 
 first-build: $(ELC_FILES)
+
+# Target compile-only:
+# - Compile all .el files (including pel_keys.el and pel.el, done at the end).
+compile-only: $(ELC_FILES) pel_keys.elc pel.elc
 
 # -----------------------------------------------------------------------------
 # Self-desciptive rule: make help prints the info.
@@ -596,24 +597,25 @@ help:
 	@printf "   located in the $(OUT_DIR) directory.\n"
 	@printf "4) Copy the PEL package tar file into a local package archive for testing.\n"
 	@printf "\n"
-	@printf "NOTE: Issue all make commands from PEL root (where Makefile is located).\n"
-	@printf "\n"
+	@printf "NOTE: - Issue all make commands from PEL root (where Makefile is located).\n"
+	@printf "      - For faster build use parallel make: see 'make -j [N]' \n"
 	@printf "Usage:\n"
-	@printf " * make               - same as 'make all': build everything as needed.\n"
-	@printf " * make all           - compile all files and run tests.\n"
-	@printf " * make pel           - compile all files except pel.el and run tests.\n"
-	@printf " * make first-build   - first build done on a virgin system:\n"
+	@printf " * make               - Same as 'make all': build everything as needed.\n"
+	@printf " * make all           - Compile all files and run tests.\n"
+	@printf " * make compile-only  - Compile all Emacs Lisp files. Do not run tests.\n"
+	@printf " * make pel           - Compile all files except pel.el. Do not run tests.\n"
+	@printf " * make first-build   - First build done on a virgin system:\n"
 	@printf "                         compile all files except pel_keys.el and pel.el.\n"
 	@printf "                         No external file or package gets loaded.\n"
 	@printf "                         No tests are executed.\n"
-	@printf " * make clean         - remove $(PELPA_DIR),  all output files, all test tag files,\n"
-	@printf "                        and remove $(PEL_TAR_FILE)\n"
-	@printf " * make clean-build   - make clean & make\n"
-	@printf " * make clean-tar     - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
-	@printf " * make clean-mypelpa - remove the directory $(PELPA_DIR)\n"
-	@printf " * make clean-test    - remove test tag file to allow running all tests again.\n"
 	@printf " * make test          - Run the regression tests.\n"
-	@printf " * make lint          - check .el files with elisp-lint (it must be installed).\n"
+	@printf " * make clean         - Remove $(PELPA_DIR),  all output files, all test tag files,\n"
+	@printf "                        and remove $(PEL_TAR_FILE)\n"
+	@printf " * make clean-build   - Make clean & make\n"
+	@printf " * make clean-tar     - Remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
+	@printf " * make clean-mypelpa - Remove the directory $(PELPA_DIR)\n"
+	@printf " * make clean-test    - Remove test tag file to allow running all tests again.\n"
+	@printf " * make lint          - Check .el files with elisp-lint (it must be installed).\n"
 	@printf " * make timeit        - Check startup time of Emacs with and without packages.\n"
 	@printf " * make stats         - Load all PEL files & compute PEL statistics.  Also installs\n"
 	@printf "                        missing files/packages specified by pel-use.. user-options.\n"
@@ -624,9 +626,9 @@ help:
 	@printf "\n"
 	@printf " ** Package Management commands (experimental):\n"
 	@printf " * make all-dirs      - create all output and temporary directories.\n"
-	@printf " * make local-pkg     - build local PEL melpa archive: make pkg mypelpa.\n"
 	@printf " * make pkg           - Build the tar file inside directory: $(OUT_DIR).\n"
 	@printf " * make mypelpa       - Copy the tar file into a local package archive.\n"
+	@printf " * make local-pkg     - build local PEL melpa archive: make pkg mypelpa.\n"
 	@printf " ** LIMITATIONS:\n"
 	@printf "  - To build a package, the package version number must be updated\n"
 	@printf "    inside several files:\n"
@@ -877,12 +879,14 @@ pel-xref.elc:             pel--base.elc pel--install.elc pel--options.elc pel-pr
 pel-yang.elc:             pel--base.elc
 pel-zig.elc:              pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel__hydra.elc:           pel--base.elc pel--options.elc pel--keys-macros.elc pel-buffer.elc pel-frame-control.elc pel-hideshow.elc pel-pp.elc pel-scroll.elc pel-window.elc
-pel_keys.elc:             pel-etags.elc pel--base.elc pel--indent.elc pel--macros.elc pel--keys-macros.elc pel--options.elc pel-process.elc pel-autoload.elc pel-setup.elc pel-cursor.elc pel-iedit-modes-support.elc pel-lispy.elc pel-file.elc pel-ibuffer.elc pel-key-chord.elc
 # Note that pel__hydra.el is byte-compiled by the code of pel_keys.el
 # when pel_keys is loading. Therefore, if pel__hydra.el is modified
 # then pel_keys.el must also be built.  The pel_keys.elc therefore
 # depend on the source of pel__hydra: pel__hydra.el , *not* its .elc file!
-pel_keys.elc:             pel__hydra.el
+# The | pel-top ensures tests always complete before pel_keys.elc compiles,
+# without affecting timestamp-based staleness checks.
+# This ensures tests are all done before pel_keys.elc is built in parallel builds.
+pel_keys.elc:             pel_keys.el pel__hydra.el $(ELC_FILES) | pel-top
 
 
 # Test code dependency:
@@ -943,12 +947,9 @@ endif
 #   - byte compile pel_keys.el
 #   - byte compile pel.el
 
-
-pel: pel_keys.elc $(ELC_FILES)
+pel: $(ELC_FILES) pel_keys.elc
 
 pel.elc: pel.el pel_keys.elc
-
-pel_keys.elc: $(ALL_TEST_PASSED) pel_keys.el $(ELC_FILES)
 
 # ----------------------------------------------------------------------------
 # RULES: to execute ERT tests
@@ -1011,6 +1012,8 @@ a-copy: $(OUT_DIR) \
 # -----------------------------------------------------------------------------
 # Distribution tar package file creation rule
 
+.PHONY:	pkg local-pkg
+
 # * Implementation Note:
 #   * on macOS: tar may include several files that have names that start with "./._".
 #
@@ -1030,12 +1033,16 @@ a-copy: $(OUT_DIR) \
 #       as it's no longer needed.  If we leave it there Emacs will include
 #       these files in a ELisp cross reference search.
 #       The rm -f option prevents complaints from rm when the file is not present.
-pkg:  $(ALL_TEST_PASSED) a-copy
+pkg:  all a-copy
 	@printf "***** Create the PEL package TAR file\n"
 	-rm -f $(OUT_DIR)/$(PEL_TAR_FILE)
 	COPYFILE_DISABLE=1  tar -C $(TMP_DIR) -cvf $(OUT_DIR)/$(PEL_TAR_FILE) pel-$(PEL_VERSION)/
 	-rm -rf $(TMP_DIR)
 	ls -l $(OUT_DIR)/$(PEL_TAR_FILE)
+
+# Target local-pkg
+
+local-pkg: pkg mypelpa
 
 # -----------------------------------------------------------------------------
 # Installation of package Tar inside the local package archive
