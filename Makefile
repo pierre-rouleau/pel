@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-21 13:22:59 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-21 14:13:20 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -908,6 +908,14 @@ test/pel-skels-elisp-test.el.test-passed:       pel--options.elc pel-ert.elc
 test/pel-skels-generic-test.el.test-passed:     pel--options.elc pel-ert.elc
 test/pel-text-transform-test.el.test-passed:    pel-text-transform.elc
 test/pel-timestamp-test.el.test-passed:         pel--base.elc pel-timestamp.elc
+
+# When Emacs does not support native compilation, skip the pel-comp-test
+# by overriding the pattern rule with a no-op that just creates the marker file.
+ifneq ($(EMACS_NATIVE_COMP_AVAILABLE), yes)
+test/pel-comp-test.el.test-passed: test/pel-comp-test.el pel-comp.elc
+	@printf "  SKIP  test/pel-comp-test.el (native compilation not available in this Emacs)\n"
+	@touch $@
+endif
 
 # -----------------------------------------------------------------------------
 # RULES:  to byte-compile the Emacs-Lisp source code files
