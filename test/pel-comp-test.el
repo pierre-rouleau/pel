@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, March 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 17:16:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 17:53:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -60,8 +60,14 @@
   ;; for it naturally.  let-binding comp-native-version-dir makes boundp
   ;; return t for it naturally.
   (let ((user-emacs-directory pel-comp-test--fake-emacs-dir)
-        (comp-native-version-dir pel-comp-test--fake-version-dir))
-    (cl-letf (((symbol-function 'comp-el-to-eln-rel-filename)
+        (comp-native-version-dir pel-comp-test--fake-version-dir)
+        (orig-featurep (symbol-function 'featurep)))
+    (cl-letf (((symbol-function 'featurep)
+               (lambda (feature &optional _sub)
+                 (if (eq feature 'native-compile)
+                     t
+                   (funcall orig-featurep feature))))
+              ((symbol-function 'comp-el-to-eln-rel-filename)
                (lambda (path)
                  ;; Simulate the real function: return "<base>.eln"
                  (concat (file-name-base path) ".eln"))))
@@ -76,8 +82,14 @@
   "The path passed to comp-el-to-eln-rel-filename must include the utils subdir."
   (let ((user-emacs-directory pel-comp-test--fake-emacs-dir)
         (comp-native-version-dir pel-comp-test--fake-version-dir)
+        (orig-featurep (symbol-function 'featurep))
         captured-el-path)
-    (cl-letf (((symbol-function 'comp-el-to-eln-rel-filename)
+    (cl-letf (((symbol-function 'featurep)
+               (lambda (feature &optional _sub)
+                 (if (eq feature 'native-compile)
+                     t
+                   (funcall orig-featurep feature))))
+              ((symbol-function 'comp-el-to-eln-rel-filename)
                (lambda (path)
                  (setq captured-el-path path)
                  "my-util.eln")))
@@ -89,8 +101,14 @@
 (ert-deftest pel-comp-eln-file-for-util-test--eln-dir-uses-eln-cache-subdir ()
   "The returned path must be rooted under <user-emacs-directory>/eln-cache."
   (let ((user-emacs-directory pel-comp-test--fake-emacs-dir)
-        (comp-native-version-dir pel-comp-test--fake-version-dir))
-    (cl-letf (((symbol-function 'comp-el-to-eln-rel-filename)
+        (comp-native-version-dir pel-comp-test--fake-version-dir)
+        (orig-featurep (symbol-function 'featurep)))
+    (cl-letf (((symbol-function 'featurep)
+               (lambda (feature &optional _sub)
+                 (if (eq feature 'native-compile)
+                     t
+                   (funcall orig-featurep feature))))
+              ((symbol-function 'comp-el-to-eln-rel-filename)
                (lambda (_path) "my-util.eln")))
       (let ((result (pel-comp-eln-file-for-util "my-util.el")))
         (should (string-prefix-p
@@ -101,8 +119,14 @@
   "Signal error when comp-el-to-eln-rel-filename is not fboundp."
   ;; Save original fboundp so we can delegate to it for all other symbols,
   ;; preventing infinite recursion inside the mock closure.
-  (let ((orig-fboundp (symbol-function 'fboundp)))
-    (cl-letf (((symbol-function 'fboundp)
+  (let ((orig-fboundp (symbol-function 'fboundp))
+        (orig-featurep (symbol-function 'featurep)))
+    (cl-letf (((symbol-function 'featurep)
+               (lambda (feature &optional _sub)
+                 (if (eq feature 'native-compile)
+                     t
+                   (funcall orig-featurep feature))))
+              ((symbol-function 'fboundp)
                (lambda (sym)
                  (if (eq sym 'comp-el-to-eln-rel-filename)
                      nil
@@ -115,8 +139,14 @@
   ;; fboundp must return t for the function so the (and …) proceeds to check
   ;; boundp; then boundp returns nil for the variable to trigger the error.
   (let ((orig-fboundp (symbol-function 'fboundp))
-        (orig-boundp  (symbol-function 'boundp)))
-    (cl-letf (((symbol-function 'fboundp)
+        (orig-boundp  (symbol-function 'boundp))
+        (orig-featurep (symbol-function 'featurep)))
+    (cl-letf (((symbol-function 'featurep)
+               (lambda (feature &optional _sub)
+                 (if (eq feature 'native-compile)
+                     t
+                   (funcall orig-featurep feature))))
+              ((symbol-function 'fboundp)
                (lambda (sym)
                  (if (eq sym 'comp-el-to-eln-rel-filename)
                      t
@@ -132,8 +162,14 @@
 (ert-deftest pel-comp-eln-file-for-util-test--error-when-both-absent ()
   "Signal error when both comp-el-to-eln-rel-filename and comp-native-version-dir are absent."
   (let ((orig-fboundp (symbol-function 'fboundp))
-        (orig-boundp  (symbol-function 'boundp)))
-    (cl-letf (((symbol-function 'fboundp)
+        (orig-boundp  (symbol-function 'boundp))
+        (orig-featurep (symbol-function 'featurep)))
+    (cl-letf (((symbol-function 'featurep)
+               (lambda (feature &optional _sub)
+                 (if (eq feature 'native-compile)
+                     t
+                   (funcall orig-featurep feature))))
+              ((symbol-function 'fboundp)
                (lambda (sym)
                  (if (eq sym 'comp-el-to-eln-rel-filename)
                      nil
@@ -149,8 +185,14 @@
 (ert-deftest pel-comp-eln-file-for-util-test--user-error-when-no-el-extension ()
   "Signal user-error when FNAME does not end with \".el\"."
   (let ((user-emacs-directory pel-comp-test--fake-emacs-dir)
-        (comp-native-version-dir pel-comp-test--fake-version-dir))
-    (cl-letf (((symbol-function 'comp-el-to-eln-rel-filename)
+        (comp-native-version-dir pel-comp-test--fake-version-dir)
+        (orig-featurep (symbol-function 'featurep)))
+    (cl-letf (((symbol-function 'featurep)
+               (lambda (feature &optional _sub)
+                 (if (eq feature 'native-compile)
+                     t
+                   (funcall orig-featurep feature))))
+              ((symbol-function 'comp-el-to-eln-rel-filename)
                (lambda (path) (concat (file-name-base path) ".eln"))))
       (should-error (pel-comp-eln-file-for-util "my-util")   ; no .el
                     :type 'user-error)
