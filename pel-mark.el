@@ -30,6 +30,7 @@
 ;;
 ;; * `pel-mark-ring-stats'
 ;;   - `pel-global-mark-buffer-positions'
+;;     - `pel--mark-buffer-positions'
 ;;   - `pel-mark-ring-positions'
 ;;
 ;; * `pel-popoff-mark-ring'
@@ -59,16 +60,29 @@
 
 ;; --
 
-(defun pel-global-mark-buffer-positions ()
-  "Return a list of (buffer position) cons cells of the `global-mark-ring'."
+(defun pel--mark-buffer-positions (m-ring)
+  "Return a list of (buffer position) cons cells for the specified M-RING.
+M-RING should be `global-mark-ring' or `mark-ring'.
+If a buffer identified in the list has been killed, the entry cons cell is
+modified to be ((buffer \\='deleted!) position)."
   (mapcar (lambda (m)
-            (cons (buffer-name
-                   (marker-buffer m))
-                  (marker-position m)))
-          global-mark-ring))
+            (let* ((buf (marker-buffer m))
+                   (bname (buffer-name buf))
+                   (pos (marker-position m)))
+              ;; Note that (marker-buffer a-mark) can return a non-nil value
+              ;; that is a buffer that has been killed.
+              (if (and buf (buffer-live-p buf))
+                  (cons bname pos)
+                (cons (cons bname 'deleted!) pos))))
+          m-ring))
+
+(defun pel-global-mark-buffer-positions ()
+  "Return a list of (buffer position) cons cells for local `global-mark-ring'.
+See `pel--mark-buffer-positions' for more info."
+  (pel--mark-buffer-positions global-mark-ring))
 
 (defun pel-mark-ring-positions ()
-  "Return a list of position integers corresponding to the `mark-ring' markers."
+  "Return a list of positions for local `mark-ring'."
   (mapcar 'marker-position mark-ring))
 
 ;;-pel-autoload
@@ -85,7 +99,7 @@ of commands on the mark and mark rings."
 %s: mark-ring size=%d/%d: %S
 Global mark-ring size=%d/%d: %S"
            (format "Point, Mark: %S, %S.  Region:%s. "
-                   (point) (mark :force)
+                   (point) (mark 'force)
                    (pel-yes-no-string mark-active "active" "inactive"))
            (format "Transient mark mode: %s."
                    (pel-symbol-on-off-string 'transient-mark-mode))
@@ -104,60 +118,86 @@ Global mark-ring size=%d/%d: %S"
 (defun pel-popoff-mark-ring ()
   "Remove the top entry from the buffer's mark ring."
   (interactive)
-  (if mark-ring
-      (progn
-        (setq mark-ring (cdr mark-ring))
-        (message "Mark-ring now has %d markers." (length mark-ring)))))
+  (when mark-ring
+    (setq mark-ring (cdr mark-ring))
+    (message "Mark-ring now has %d markers." (length mark-ring))))
 
 ;;-pel-autoload
 (defun pel-mark-line-up (&optional n)
   "Mark current line or N previous lines for going up.
-Move point to start of line, set mark at end of line.
-When mark is already active extend the region one more line up."
+
+When mark is inactive:
+ - No argument (or N=1): mark current line.
+ - With argument N: mark current line and n-1 lines above.
+When mark is active: change one end of the region to N+1 lines up.
+
+Does nothing when N is 0.  The absolute value of N is used.
+
+Mostly useful when mark is off to mark the current line or current set of
+lines and allowing extension of the created region using navigation keys
+without the need to use shift select."
   (interactive "P")
-  (let ((n (prefix-numeric-value n)))
-    (if mark-active
-        ;; when mark is active issuing the command means moving 1 line up
-        ;; otherwise it means to mark current line.
-        (pel+= n 1)
-      ;; set mark only if it was not already active
-      (set-mark (line-end-position)))
-    (forward-line (-  1 (abs n)))))
+  (let ((n (abs (prefix-numeric-value n))))
+    (unless (= n 0)
+      (if mark-active
+          ;; when mark is active, move 1 more line that identified by n;
+          ;; otherwise the command would just re-mark the current line.
+          (pel+= n 1)
+        ;; set mark only if it was not already active
+        (set-mark (line-end-position)))
+      (forward-line (- 1 n)))))
 
 ;;-pel-autoload
 (defun pel-mark-line-down (&optional n)
-  "Mark current line or N line forward for going down.
+  "Mark current line or N lines forward.
 Set mark at beginning of line, move point to line end.
-When mark is already active extend the region one more line down."
+When mark is already active extend the region one more line down.
+
+Does nothing when N is 0.  The absolute value of N is used.
+
+Mostly useful when mark is off to mark the current line or current set of
+lines and allowing extension of the created region using navigation keys
+without the need to use shift select."
   (interactive "P")
-  (let ((n (prefix-numeric-value n)))
-    (if mark-active
-        ;; when mark is active issuing the command means moving 1 line down
-        ;; otherwise it means to mark current line.
-        (pel+= n 1)
-      ;; set mark only if it was not already active
-      (set-mark (line-beginning-position)))
-    (end-of-line (abs n))))
+  (let ((n (abs (prefix-numeric-value n))))
+    (unless (= n 0)
+      (if mark-active
+          ;; when mark is active, move 1 more line down than identified by N;
+          ;; otherwise mark the current line.
+          (pel+= n 1)
+        ;; set mark only if it was not already active
+        (set-mark (line-beginning-position)))
+      (end-of-line n))))
 
 ;; ---------------------------------------------------------------------------
 ;; Attribution Notice for the code below:
-;;   Code taken from the Mickey Petersen's great website at
+;;   Code idea taken from the Mickey Petersen's great website at
 ;;   https://www.masteringemacs.org\
 ;;   /article/fixing-mark-commands-transient-mark-mode
 
 ;;-pel-autoload
 (defun pel-push-mark-no-activate ()
   "Push `point' to the buffer's `mark-ring' without activating the region.
-Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled."
+Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled.
+
+Note that `push-mark' sets the mark at point but only pushes the
+previous mark to the ring. With no prior mark, the ring stays empty."
   (interactive)
-  (push-mark (point) t nil)
-  (message "Pushed mark to local mark ring"))
+  (let ((current-mark (mark 'force)))
+    (push-mark (point) t nil)
+    (if current-mark
+        (message "Set mark to point (%d). Pushed old mark (%d) to local mark ring."
+                 (point) current-mark)
+      (message "Set mark to point (%d). No old mark to push to mark ring."
+               (point)))))
 
 ;;-pel-autoload
 (defun pel-jump-to-mark ()
   "Jump to the next mark in the buffer's `mark-ring', then rotate the ring.
 This is the same as using the `set-mark-command' via \\[set-mark-command] with
-the prefix argument (but easier to type.)"
+the prefix argument (but easier to type.)
+When the `mark-ring' is empty, the function signals \"No mark set in this
+buffer\"."
   (interactive)
   (set-mark-command 1)
   ;; replace the misleading "Mark popped" message by something
