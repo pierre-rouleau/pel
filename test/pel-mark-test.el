@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 18 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 09:21:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 10:12:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -223,17 +223,18 @@ Point starts at the beginning of line two (position 10)."
 
 (ert-deftest ert-test-pel-mark-line-up/marks-current-line ()
   "Without active mark: mark set at end of line, point moved to line start."
-  (pel-mark-test--with-3-line-buffer
-    ;; Point is at beginning of \"line two\" (column 0).
-    (let ((bol (line-beginning-position))
-          (eol (line-end-position)))
-      (pel-mark-line-up)
-      ;; mark at end of line
-      (should (= eol (mark)))
-      ;; point at beginning of line (forward-line 0)
-      (should (= bol (point)))
-      ;; mark must be active
-      (should mark-active))))
+  (pel-mark-test--with-transient-mark-mode-on
+    (pel-mark-test--with-3-line-buffer
+      ;; Point is at beginning of \"line two\" (column 0).
+      (let ((bol (line-beginning-position))
+            (eol (line-end-position)))
+        (pel-mark-line-up)
+        ;; mark at end of line
+        (should (= eol (mark)))
+        ;; point at beginning of line (forward-line 0)
+        (should (= bol (point)))
+        ;; mark must be active
+        (should mark-active)))))
 
 (ert-deftest ert-test-pel-mark-line-up/extends-region-when-active ()
   "With active mark: point moves one additional line upward."
@@ -270,23 +271,37 @@ Point starts at the beginning of line two (position 10)."
     (pel-mark-line-up)
     (should mark-active)))
 
+
+(ert-deftest ert-test-pel-mark-line-up/extends-region-with-prefix-2 ()
+  "With active mark and n=2: point moves two lines upward."
+  (pel-mark-test--with-3-line-buffer
+    (forward-line 1)                        ; on \"line three\"
+    (set-mark (line-end-position))
+    (setq mark-active t)
+    (let ((point-before (point)))
+      (pel-mark-line-up 2)
+      ;; n=2 + 1 = 3, forward-line (- 1 3) = -2 → two lines up
+      (should (< (point) point-before))
+      (should (= (point) (point-min))))))   ; back to start of \"line one\"
+
 ;; ---------------------------------------------------------------------------
 ;;; pel-mark-line-down
 ;; ---------------------------------------------------------------------------
 
 (ert-deftest ert-test-pel-mark-line-down/marks-current-line ()
   "Without active mark: mark set at beginning of line, point at line end."
-  (pel-mark-test--with-3-line-buffer
-    ;; Point is at beginning of \"line two\".
-    (let ((bol (line-beginning-position))
-          (eol (line-end-position)))
-      (pel-mark-line-down)
-      ;; mark at beginning of line
-      (should (= bol (mark)))
-      ;; point at end of line (end-of-line 1)
-      (should (= eol (point)))
-      ;; mark must be active
-      (should mark-active))))
+  (pel-mark-test--with-transient-mark-mode-on
+    (pel-mark-test--with-3-line-buffer
+      ;; Point is at beginning of \"line two\".
+      (let ((bol (line-beginning-position))
+            (eol (line-end-position)))
+        (pel-mark-line-down)
+        ;; mark at beginning of line
+        (should (= bol (mark)))
+        ;; point at end of line (end-of-line 1)
+        (should (= eol (point)))
+        ;; mark must be active
+        (should mark-active)))))
 
 (ert-deftest ert-test-pel-mark-line-down/extends-region-when-active ()
   "With active mark: point moves to end of the next line."
@@ -334,7 +349,7 @@ Point starts at the beginning of line two (position 10)."
     (pel-push-mark-no-activate)
     ;; First push: no old mark → ring stays empty; mark is now at 6
     (should (= 0 (length mark-ring)))
-    (should (= 6 (marker-position (mark-marker))))    ))
+    (should (= 6 (marker-position (mark-marker))))))
 
 (ert-deftest ert-test-pel-push-mark-no-activate/does-not-activate-region ()
   "Pushing the mark must not activate the region."
@@ -411,6 +426,13 @@ Point starts at the beginning of line two (position 10)."
 ;; ---------------------------------------------------------------------------
 ;;; pel-jump-to-mark — smoke test
 ;; ---------------------------------------------------------------------------
+
+(ert-deftest ert-test-pel-jump-to-mark/empty-ring-signals-error ()
+  "Calling on an empty mark-ring signals a user-error."
+  (with-temp-buffer
+    (insert "abc")
+    (setq mark-ring nil)
+    (should-error (pel-jump-to-mark))))
 
 (ert-deftest ert-test-pel-jump-to-mark/cycles-mark-ring ()
   "Jump to the top mark and rotate the ring; verify point moves."
