@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 18 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 23:38:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 09:21:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -327,14 +327,14 @@ Point starts at the beginning of line two (position 10)."
 
 (ert-deftest ert-test-pel-push-mark-no-activate/pushes-point ()
   "Current point position is pushed onto `mark-ring'."
-  (ert-skip "Temporary disabled: mark-ring affected???")
   (with-temp-buffer
     (insert "hello world")
     (goto-char 6)
     (setq mark-ring nil)
     (pel-push-mark-no-activate)
-    (should (= 1 (length mark-ring)))
-    (should (= 6 (marker-position (car mark-ring))))))
+    ;; First push: no old mark → ring stays empty; mark is now at 6
+    (should (= 0 (length mark-ring)))
+    (should (= 6 (marker-position (mark-marker))))    ))
 
 (ert-deftest ert-test-pel-push-mark-no-activate/does-not-activate-region ()
   "Pushing the mark must not activate the region."
@@ -356,18 +356,17 @@ Point starts at the beginning of line two (position 10)."
 
 (ert-deftest ert-test-pel-push-mark-no-activate/multiple-pushes ()
   "Each push adds one entry to `mark-ring'; order is newest first."
-  (ert-skip "Temporary disabled: mark-ring affected???")
   (with-temp-buffer
     (insert "abcdefghij")
     (setq mark-ring nil)
-    (goto-char 2) (pel-push-mark-no-activate)
-    (goto-char 5) (pel-push-mark-no-activate)
-    (goto-char 9) (pel-push-mark-no-activate)
-    ;; mark-ring is newest-first
-    (should (= 3 (length mark-ring)))
-    (should (= 9 (marker-position (nth 0 mark-ring))))
-    (should (= 5 (marker-position (nth 1 mark-ring))))
-    (should (= 2 (marker-position (nth 2 mark-ring))))))
+    (goto-char 2) (pel-push-mark-no-activate) ; mark=2,  ring=()
+    (goto-char 5) (pel-push-mark-no-activate) ; mark=5,  ring=(2)
+    (goto-char 9) (pel-push-mark-no-activate) ; mark=9,  ring=(5 2)
+    ;; Current mark is 9 (not in mark-ring); ring holds the previous marks
+    (should (= 9 (marker-position (mark-marker))))
+    (should (= 2 (length mark-ring)))
+    (should (= 5 (marker-position (nth 0 mark-ring))))
+    (should (= 2 (marker-position (nth 1 mark-ring))))))
 
 ;; ---------------------------------------------------------------------------
 ;;; pel-exchange-point-and-mark-no-activate
@@ -388,14 +387,14 @@ Point starts at the beginning of line two (position 10)."
 
 (ert-deftest ert-test-pel-exchange-point-and-mark-no-activate/deactivates-mark ()
   "The region must not be active after the swap."
-    (ert-skip "Temporary disabled: mark-ring affected???")
-  (with-temp-buffer
-    (insert "hello world")
-    (goto-char 2)
-    (set-mark 9)
-    (setq mark-active t)
-    (pel-exchange-point-and-mark-no-activate)
-    (should-not mark-active)))
+  (pel-mark-test--with-transient-mark-mode-on
+    (with-temp-buffer
+      (insert "hello world")
+      (goto-char 2)
+      (set-mark 9)
+      (setq mark-active t)
+      (pel-exchange-point-and-mark-no-activate)
+      (should-not mark-active))))
 
 (ert-deftest ert-test-pel-exchange-point-and-mark-no-activate/idempotent ()
   "Calling the function twice restores the original point and mark."
