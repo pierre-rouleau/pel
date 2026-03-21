@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 19:44:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 19:48:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -69,7 +69,7 @@
 (ert-deftest ert-test-pel-erlang-mode-used-text ()
   "Test `pel-erlang-mode-used-text'."
   ;; Known valid values.
-(should (pel-string= (pel-erlang-mode-used-text t)
+  (should (pel-string= (pel-erlang-mode-used-text t)
                        "use erlang-mode from erlang-mode.el."
                        't))
   (should (pel-string= (pel-erlang-mode-used-text 'with-tree-sitter)

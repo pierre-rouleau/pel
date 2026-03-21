@@ -541,10 +541,10 @@ Stop at end of buffer."
 (defun pel-erlang-before-binary (&optional pos)
   "Return non-nil if POS or point is just before \"<<\", nil otherwise."
   (or pos (setq pos (point)))
-  (goto-char pos)
-  (unless (eobp)
-    (and (eq (char-after pos) ?<)
-         (save-excursion
+  (save-excursion
+    (goto-char pos)
+    (unless (eobp)
+      (and (eq (char-after pos) ?<)
            (forward-char)
            (eq (char-after (point)) ?<)))))
 
@@ -553,7 +553,7 @@ Stop at end of buffer."
   (or pos (setq pos (point)))
   (save-excursion
     (goto-char pos)
-    (unless (bolp)
+    (unless (bobp)
       (backward-char)
       (and (eq (char-after (point)) ?>)
            (not (bolp))
