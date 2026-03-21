@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-21 10:22:40 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-21 13:22:59 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -892,6 +892,7 @@ pel_keys.elc:             pel_keys.el pel__hydra.el $(ELC_FILES) | pel-top
 # Test code dependency:
 test/pel-abbrev-test.el.test-passed:            pel--base.elc pel-abbrev.elc pel-ert.elc
 test/pel-base-test.el.test-passed:              pel--base.elc pel-ert.elc
+test/pel-comp-test.el.test-passed:              pel-comp.elc
 test/pel-elcode-test.el.test-passed:            pel--base.elc pel-elcode.elc pel-ert.elc
 test/pel-elpa-test.el.test-passed:              pel-elpa.elc pel-filedir.elc
 test/pel-file-test.el.test-passed:              pel-file.elc pel-ert.elc
