@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-21 17:54:21 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-21 17:57:09 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -901,7 +901,6 @@ pel_keys.elc:             pel_keys.el pel__hydra.el $(ELC_FILES) | pel-top
 # Test code dependency:
 test/pel-abbrev-test.el.test-passed:            pel--base.elc pel-abbrev.elc pel-ert.elc
 test/pel-base-test.el.test-passed:              pel--base.elc pel-ert.elc
-test/pel-comp-test.el.test-passed:              pel-comp.elc
 test/pel-elcode-test.el.test-passed:            pel--base.elc pel-elcode.elc pel-ert.elc
 test/pel-elpa-test.el.test-passed:              pel-elpa.elc pel-filedir.elc
 test/pel-file-test.el.test-passed:              pel-file.elc pel-ert.elc
@@ -917,6 +916,15 @@ test/pel-skels-elisp-test.el.test-passed:       pel--options.elc pel-ert.elc
 test/pel-skels-generic-test.el.test-passed:     pel--options.elc pel-ert.elc
 test/pel-text-transform-test.el.test-passed:    pel-text-transform.elc
 test/pel-timestamp-test.el.test-passed:         pel--base.elc pel-timestamp.elc
+
+# When Emacs does not support native compilation, skip the pel-comp-test
+ifeq ($(EMACS_NATIVE_COMP_AVAILABLE), yes)
+test/pel-comp-test.el.test-passed:              pel-comp.elc
+else
+test/pel-comp-test.el.test-passed: test/pel-comp-test.el pel-comp.elc
+	@printf "  SKIP  test/pel-comp-test.el (native compilation not available in this Emacs)\n"
+	@touch $@
+endif
 
 # -----------------------------------------------------------------------------
 # RULES:  to byte-compile the Emacs-Lisp source code files
