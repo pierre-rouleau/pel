@@ -125,7 +125,7 @@ Mostly useful when mark is off to mark the current line or current set of
 lines and allowing extension of the created region using navigation keys
 without the need to use shift select."
   (interactive "P")
-  (let ((n (prefix-numeric-value n)))
+  (let ((n (abs (prefix-numeric-value n))))
     (unless (= n 0)
       (if mark-active
           ;; when mark is active issuing the command means moving 1 line up
@@ -133,7 +133,7 @@ without the need to use shift select."
           (pel+= n 1)
         ;; set mark only if it was not already active
         (set-mark (line-end-position)))
-      (forward-line (- 1 (abs n))))))
+      (forward-line (- 1 n)))))
 
 ;;-pel-autoload
 (defun pel-mark-line-down (&optional n)
@@ -147,7 +147,7 @@ Mostly useful when mark is off to mark the current line or current set of
 lines and allowing extension of the created region using navigation keys
 without the need to use shift select."
   (interactive "P")
-  (let ((n (prefix-numeric-value n)))
+  (let ((n (abs (prefix-numeric-value n))))
     (unless (= n 0)
       (if mark-active
           ;; when mark is active issuing the command means moving 1 line down
@@ -155,11 +155,11 @@ without the need to use shift select."
           (pel+= n 1)
         ;; set mark only if it was not already active
         (set-mark (line-beginning-position)))
-      (end-of-line (abs n)))))
+      (end-of-line n))))
 
 ;; ---------------------------------------------------------------------------
 ;; Attribution Notice for the code below:
-;;   Code taken from the Mickey Petersen's great website at
+;;   Code idea taken from the Mickey Petersen's great website at
 ;;   https://www.masteringemacs.org\
 ;;   /article/fixing-mark-commands-transient-mark-mode
 
@@ -171,7 +171,7 @@ Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled.
 Note that `push-mark' sets the mark at point but only pushes the
 previous mark to the ring. With no prior mark, the ring stays empty."
   (interactive)
-  (let ((current-mark (mark)))
+  (let ((current-mark (mark 'force)))
     (push-mark (point) t nil)
     (if current-mark
         (message "Set mark to point (%d). Pushed old mark (%d) to local mark ring."
