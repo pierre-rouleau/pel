@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-21 10:22:40 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-21 17:57:09 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -72,6 +72,15 @@ ifeq ($(GITHUB_WORKSPACE),)
 else
 	EMACS_INIT = "$(GITHUB_WORKSPACE)/ci/init.el"
 endif
+
+# ----------------------------------------------------------------------------
+# Define abilities of Emacs - native compilation.
+
+EMACS_NATIVE_COMP_AVAILABLE := $(shell $(EMACS) --batch --eval '(when \
+                                                                  (and (fboundp (quote native-comp-available-p)) \
+                                                                       (native-comp-available-p)) \
+                                                                    (princ "yes"))')
+
 
 # -----------------------------------------------------------------------------
 # PEL Package Version - will increase this number on each release
@@ -908,6 +917,15 @@ test/pel-skels-generic-test.el.test-passed:     pel--options.elc pel-ert.elc
 test/pel-text-transform-test.el.test-passed:    pel-text-transform.elc
 test/pel-timestamp-test.el.test-passed:         pel--base.elc pel-timestamp.elc
 
+# When Emacs does not support native compilation, skip the pel-comp-test
+ifeq ($(EMACS_NATIVE_COMP_AVAILABLE), yes)
+test/pel-comp-test.el.test-passed:              pel-comp.elc
+else
+test/pel-comp-test.el.test-passed: test/pel-comp-test.el pel-comp.elc
+	@printf "  SKIP  test/pel-comp-test.el (native compilation not available in this Emacs)\n"
+	@touch $@
+endif
+
 # -----------------------------------------------------------------------------
 # RULES:  to byte-compile the Emacs-Lisp source code files
 
@@ -915,11 +933,6 @@ test/pel-timestamp-test.el.test-passed:         pel--base.elc pel-timestamp.elc
 # a time.  Byte-compile all files except pel_keys.el, which is the key
 # bindings with use-package forms.
 # Compiling pel_keys.el would cause installation of external packages.
-
-EMACS_NATIVE_COMP_AVAILABLE := $(shell $(EMACS) --batch --eval '(when \
-                                                                  (and (fboundp (quote native-comp-available-p)) \
-                                                                       (native-comp-available-p)) \
-                                                                    (princ "yes"))')
 
 # Single .el file byte-compile to .elc rule
 .SUFFIXES: .el .elc
