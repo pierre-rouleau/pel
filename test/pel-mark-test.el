@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 18 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 12:23:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 12:36:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -278,16 +278,16 @@ and marker-position is nil — so the entry is ((nil . deleted!) . nil)."
 (ert-deftest ert-test-pel-mark-line-up/with-prefix-2 ()
   "With n=2 and no active mark: point moves to the line two above."
   (pel-mark-test--with-3-line-buffer
-    ;; Point is at beginning of \"line two\".
+    ;; Point is at beginning of "line two".
     ;; With n=2: set-mark at eol, forward-line (- 1 2) = forward-line -1.
-    ;; Advance to line three first so we have room to move up two.
-    (forward-line 1)                  ; now on \"line three\"
+    ;; Advance to line three so we have one line of room above "line two".
+    (forward-line 1)                  ; now on "line three"
     (let ((eol3 (line-end-position)))
       (pel-mark-line-up 2)
       (should (= eol3 (mark)))
-      ;; forward-line (- 1 2) = -1 → back one line from \"line three\"
-      ;; → point is at beginning of \"line two\"
-      (should (= 10 (point))))))     ; \"line two\" starts at position 10
+      ;; forward-line (- 1 2) = -1 → back one line from "line three"
+      ;; → point is at beginning of "line two"
+      (should (= 10 (point))))))     ; "line two" starts at position 10
 
 (ert-deftest ert-test-pel-mark-line-up/does-activate-mark ()
   "pel-mark-line-up activates the mark."

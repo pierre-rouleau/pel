@@ -140,7 +140,7 @@ without the need to use shift select."
   (let ((n (abs (prefix-numeric-value n))))
     (unless (= n 0)
       (if mark-active
-          ;; when mark is active, move 1 line up that identified by n;
+          ;; when mark is active, move 1 more line that identified by n;
           ;; otherwise the command would just re-mark the current line.
           (pel+= n 1)
         ;; set mark only if it was not already active
