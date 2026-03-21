@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, March 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 16:33:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 16:35:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -198,8 +198,6 @@
                  ;; No-op for comp-run; forward anything else.
                  (unless (eq feature 'comp-run)
                    (require feature))))
-              ((symbol-function 'file-newer-than-file-p)
-               (lambda (_newer _older) t))
               ((symbol-function 'native-compile-async)
                (lambda (path &rest _)
                  (setq compile-called-with path))))
