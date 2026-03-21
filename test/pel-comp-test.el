@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, March 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 17:00:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 17:16:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -246,6 +246,55 @@
                    (funcall orig-featurep feature)))))
       (should-error (pel-native-compile-util "my-util.el")
                     :type 'user-error))))
+
+(ert-deftest pel-native-compile-util-test--user-error-when-source-absent ()
+  "Signal user-error when the source .el file does not exist."
+  (let ((orig-featurep (symbol-function 'featurep)))
+    (cl-letf (((symbol-function 'pel-comp-eln-file-for-util)
+               (lambda (_fname) "/fake/eln-cache/28.2/my-util.eln"))
+              ((symbol-function 'featurep)
+               (lambda (feature &optional _subfeature)
+                 (if (eq feature 'native-compile)
+                     t
+                   (funcall orig-featurep feature))))
+              ;; All paths appear absent — the source .el guard fires first.
+              ((symbol-function 'file-exists-p)
+               (lambda (_path) nil)))
+      (should-error (pel-native-compile-util "my-util.el")
+                    :type 'user-error))))
+
+(ert-deftest pel-native-compile-util-test--compiles-when-eln-stale ()
+  "Initiate compilation and return t when .eln exists but is older than .el."
+  (let ((orig-featurep (symbol-function 'featurep))
+        (orig-fboundp  (symbol-function 'fboundp))
+        (compile-called-with nil))
+    (cl-letf (((symbol-function 'pel-comp-eln-file-for-util)
+               (lambda (_fname) "/fake/eln-cache/28.2/my-util.eln"))
+              ;; Both source .el and .eln appear to exist …
+              ((symbol-function 'file-exists-p)
+               (lambda (_path) t))
+              ;; … but .eln is older, so recompilation is needed.
+              ((symbol-function 'file-newer-than-file-p)
+               (lambda (_newer _older) nil))
+              ((symbol-function 'featurep)
+               (lambda (feature &optional _subfeature)
+                 (if (eq feature 'native-compile)
+                     t
+                   (funcall orig-featurep feature))))
+              ((symbol-function 'fboundp)
+               (lambda (sym)
+                 (if (eq sym 'native-compile-async)
+                     t
+                   (funcall orig-fboundp sym))))
+              ((symbol-function 'require)
+               (lambda (feature &rest _)
+                 (unless (eq feature 'comp-run)
+                   (require feature))))
+              ((symbol-function 'native-compile-async)
+               (lambda (path &rest _)
+                 (setq compile-called-with path))))
+      (should (eq t (pel-native-compile-util "my-util.el")))
+      (should (string-match-p "my-util\\.el" compile-called-with)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-comp-test)

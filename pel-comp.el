@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 16:47:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 17:17:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -78,7 +78,7 @@ This returns:
 - \\='eln-present if it was already present and its time stamp is newer
   than the timestamp of the .el file.
 It signals a `user-error' when native compilation is not available on this
-instance of Emacs."
+instance of Emacs, or when FNAME does not end with \".el\"."
   (if (featurep 'native-compile)
       (let* ((util-dpathname (expand-file-name "utils" user-emacs-directory))
              (el-fpathname (expand-file-name fname util-dpathname))
