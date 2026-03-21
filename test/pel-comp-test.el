@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, March 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 16:35:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 16:50:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -227,9 +227,7 @@
               ((symbol-function 'require)
                (lambda (feature &rest _)
                  (unless (eq feature 'comp-run)
-                   (require feature))))
-              ((symbol-function 'file-newer-than-file-p)
-               (lambda (_newer _older) t)))
+                   (require feature)))))
       (should (eq nil (pel-native-compile-util "my-util.el"))))))
 
 (ert-deftest pel-native-compile-util-test--user-error-when-no-native-compile ()
@@ -238,7 +236,7 @@
     (cl-letf (((symbol-function 'pel-comp-eln-file-for-util)
                (lambda (_fname) "/fake/eln-cache/28.2/my-util.eln"))
               ((symbol-function 'file-exists-p)
-               (lambda (_path) t))
+               (lambda (path) (string-suffix-p ".el" path)))
               ((symbol-function 'featurep)
                (lambda (feature &optional _subfeature)
                  (if (eq feature 'native-compile)

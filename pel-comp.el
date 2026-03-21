@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 16:28:12 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 16:47:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -49,10 +49,11 @@
 (defun pel-comp-eln-file-for-util (fname)
   "Return the full path of the .eln file for .el util FNAME.
 FNAME must be a file base name with the .el extension.
-It signals a `user-error' when native compilation is not available on this
-instance of Emacs."
-  (if (and (fboundp 'comp-el-to-eln-rel-filename)
-           (boundp  'comp-native-version-dir))
+Signals a `user-error' if FNAME does not end with \".el\",
+or if this Emacs is not built with native-compile support."
+  (if (and (featurep 'native-compile)
+           (fboundp 'comp-el-to-eln-rel-filename) ; prevent compiler warning
+           (boundp  'comp-native-version-dir))    ; prevent compiler warning
       (progn
         (unless (string-suffix-p ".el" fname)
           (user-error "File must have the .el extension: %s" fname))
@@ -91,7 +92,7 @@ instance of Emacs."
             'eln-present
           (progn
             (require 'comp-run)
-            (when (fboundp 'native-compile-async)
+            (when (fboundp 'native-compile-async) ; prevent compiler warning
               (message "Native compile %s --> %s" el-fpathname eln-fpathname)
               (native-compile-async el-fpathname)
               t))))
