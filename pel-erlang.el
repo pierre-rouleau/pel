@@ -432,7 +432,9 @@ The following options are observed:
 ;; non-electric behaviour of the > key indirectly but easily.
 
 (defun pel--after-dash ()
-  "Return the true if point is after a dash and not after $- characters."
+  "Return the true if point is after a dash and not after $- characters.
+Return nil if the dash character is the very first character of the buffer,
+but that is fine because no electric behaviour is required at that location."
   (and (>= (point) 3)
        (save-excursion
          ;; (backward-char 2)
@@ -539,20 +541,25 @@ Stop at end of buffer."
 (defun pel-erlang-before-binary (&optional pos)
   "Return non-nil if POS or point is just before \"<<\", nil otherwise."
   (or pos (setq pos (point)))
-  (and (eq (char-after (point)) ?<)
-       (save-excursion
-         (forward-char)
-         (eq (char-after (point)) ?<))))
+  (goto-char pos)
+  (unless (eobp)
+    (and (eq (char-after pos) ?<)
+         (save-excursion
+           (forward-char)
+           (eq (char-after (point)) ?<)))))
 
 (defun pel-erlang-after-binary (&optional pos)
   "Return non-nil if POS or point is just after \">>\", nil otherwise."
   (or pos (setq pos (point)))
   (save-excursion
-    (backward-char)
-    (and (eq (char-after (point)) ?>)
-         (progn
-          (backward-char)
-          (eq (char-after (point)) ?>)))))
+    (goto-char pos)
+    (unless (bolp)
+      (backward-char)
+      (and (eq (char-after (point)) ?>)
+           (not (bolp))
+           (progn
+             (backward-char)
+             (eq (char-after (point)) ?>))))))
 
 (defun pel-erlang-forward-binary (&optional pos)
   "Move forward to match closing >> binary block."
@@ -762,11 +769,11 @@ Return nil if it is not defined."
     (let (dirpath source envvar)
       (cond
        ((stringp dirpath-user-option)
-        (setq dirpath pel-erlang-man-parent-rootdir)
+        (setq dirpath dirpath-user-option)
         (setq source 'user-option))
        ;;
        ((consp dirpath-user-option)
-        (setq envvar (cdr pel-erlang-man-parent-rootdir))
+        (setq envvar (cdr dirpath-user-option))
         (setq dirpath (getenv envvar))
         (setq source 'envvar)))
       ;; return result
