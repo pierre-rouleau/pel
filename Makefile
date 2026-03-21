@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-20 17:12:14 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-20 20:41:57 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -883,7 +883,7 @@ pel__hydra.elc:           pel--base.elc pel--options.elc pel--keys-macros.elc pe
 # when pel_keys is loading. Therefore, if pel__hydra.el is modified
 # then pel_keys.el must also be built.  The pel_keys.elc therefore
 # depend on the source of pel__hydra: pel__hydra.el , *not* its .elc file!
-pel_keys.elc:             pel_keys.el pel--base.elc pel--install.elc pel--indent.elc pel--macros.elc pel--keys-macros.elc pel--options.elc pel__hydra.el
+pel_keys.elc:             pel_keys.el pel__hydra.el $(ELC_FILES)
 
 
 # Test code dependency:
