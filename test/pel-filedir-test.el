@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 16:04:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 16:24:39 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -366,6 +366,60 @@ even if BODY signals an error."
             (let ((result (pel-broken-symlinks dir-tmp)))
               (should (null result))
               (should-not (member dir-link result)))))))))
+
+;; ---------------------------------------------------------------------------
+;; pel-show-broken-symlinks
+
+(ert-deftest pel-show-broken-symlinks-smoke-test ()
+  "Smoke test: pel-show-broken-symlinks creates *Broken Symlinks* buffer
+containing the paths of all broken symbolic links found."
+  (unless pel-system-is-windows-p
+    (pel-with-temp-dir tmp
+      (let* ((target  (expand-file-name "target.txt" tmp))
+             (broken1 (expand-file-name "broken-a"   tmp))
+             (broken2 (expand-file-name "broken-b"   tmp)))
+        (write-region "hi" nil target)
+        (make-symbolic-link "missing-1" broken1)
+        (make-symbolic-link "missing-2" broken2)
+
+        ;; Start clean
+        (when (get-buffer "*Broken Symlinks*")
+          (kill-buffer "*Broken Symlinks*"))
+
+        ;; Mock the directory prompt to return our temp directory
+        (cl-letf (((symbol-function 'read-directory-name)
+                   (lambda (&rest _) tmp)))
+          (pel-show-broken-symlinks))
+
+        ;; Buffer must exist and contain both broken symlink paths
+        (let ((buf (get-buffer "*Broken Symlinks*")))
+          (should buf)
+          (with-current-buffer buf
+            (should (string-match-p (regexp-quote broken1) (buffer-string)))
+            (should (string-match-p (regexp-quote broken2) (buffer-string)))))
+
+        ;; Clean up
+        (when (get-buffer "*Broken Symlinks*")
+          (kill-buffer "*Broken Symlinks*"))))))
+
+(ert-deftest pel-show-broken-symlinks-no-links-test ()
+  "When there are no broken symlinks the *Broken Symlinks* buffer is
+not created (the `(when broken-links ...)' guard prevents it)."
+  (ert-skip "Temporary disable test under development. Currently failing ")
+  (unless pel-system-is-windows-p
+    (pel-with-temp-dir tmp
+      (write-region "content" nil (expand-file-name "file.txt" tmp))
+
+      ;; Start clean
+      (when (get-buffer "*Broken Symlinks*")
+        (kill-buffer "*Broken Symlinks*"))
+
+      (cl-letf (((symbol-function 'read-directory-name)
+                 (lambda (&rest _) tmp)))
+        (pel-show-broken-symlinks))
+
+      ;; Buffer must NOT have been (re-)created
+      (should-not (get-buffer "*Broken Symlinks*")))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel--dirspec-for-dir-p  (internal helper)

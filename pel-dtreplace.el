@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 11:40:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 15:38:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -168,7 +168,7 @@ things:
   "Root directory used in last `pel-dirtree-find-replace' command.")
 
 (defun pel-find-replace (fname text-re new-text)
-  "Replace TEXT with NEW-TEXT inside FNAME file.
+  "Replace TEXT-RE (regexp) with NEW-TEXT inside FNAME file.
 When `pel-dirtree-replace-files-is-verbose' is non-nil, it
 prints a message showing how many instances were replaced."
   (let ((mods 0)
@@ -221,12 +221,15 @@ prints a message showing how many instances were replaced."
      ;; newer function from the files.el of a later version of Emacs.
      (if pel--dirtree-allow-operation-in-forbidden-directories
          (unless pel--dt-old-version-warning-done
-           (message "\
+           ;; Issue the warning ONCE to prevent flooding but use
+           ;; display-warning to make it stick.
+           (display-warning 'pel--dt   "\
 WARNING: this version of Emacs does not skip forbidden directories
          identified by `pel-dirtree-replace-file-forbidden-dir-re'.
          Get a newer version of Emacs or get a copy of
          `directory-files-recursively' from the files.el from a
-         later version of Emacs.")
+         later version of Emacs."
+                            :warning)
            (setq pel--dt-old-version-warning-done t)
            (with-no-warnings
              (directory-files-recursively root-dir fn-re nil)))
