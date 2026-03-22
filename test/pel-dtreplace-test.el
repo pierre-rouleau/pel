@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, March 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 10:15:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 10:24:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,7 +36,8 @@
 ;; Interactive commands that require a live minibuffer
 ;; (pel-dirtree-find-replace, pel-dt-fr-set-backup-suffix,
 ;;  pel-dt-fr-toggle-fixedcase, pel-dt-fr-toggle-literal)
-;; are not covered by unit tests here.
+;; are not covered by unit tests here, as they cannot be meaningfully
+;; exercised without a live minibuffer.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
