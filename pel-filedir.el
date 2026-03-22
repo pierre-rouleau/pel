@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 12:18:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 15:32:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -223,6 +223,8 @@ Prompts for a directory and list found broken symlinks in the special
 Reproduce the symbolic links in the copy: if the original symlinks are
 relative, the symlinks in the copied directory are also relative (to the
 copy).
+
+Symbolic links to directories (not regular files) are silently skipped.
 
 - KEEP-TIME non-nil means give the destination files have the same
   last-modified time as the original ones.  (This works on only some systems.)

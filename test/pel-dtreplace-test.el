@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, March 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 12:32:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 15:22:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -122,7 +122,8 @@ Prevents cross-test contamination of `pel-dirtree-replaced-files',
         (pel-find-replace fname "a" "b")
         (with-temp-buffer
           (insert-file-contents fname)
-          (should (string= (buffer-string) "b b b b")))))))
+          (should (string= (buffer-string) "b b b b")))
+        (should (member fname pel-dirtree-replaced-files))))))
 
 (ert-deftest pel-find-replace-backup-created-test ()
   "pel-find-replace creates a backup file when backup suffix is set."
@@ -433,7 +434,7 @@ passed to `dired' must be in ascending string order."
         (cl-letf (((symbol-function 'dired)
                    (lambda (arg) (setq captured arg))))
           (pel-dt-fr-changed-files-in-dired))
-
+        (should (consp captured))
         (let ((file-list (cdr captured)))
           (should (listp file-list))
           (should (equal file-list
@@ -510,6 +511,7 @@ passed to `dired' must be in ascending string order."
 
         ;; Step 2: undo
         (pel-dirtree-replace-undo :no-prompt)
+        (should-not (file-exists-p (format "%s%s" fname suffix)))
         (with-temp-buffer
           (insert-file-contents fname)
           (should (string= (buffer-string) "original content")))

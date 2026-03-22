@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 12:25:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 15:27:02 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -137,11 +137,10 @@ even if BODY signals an error."
     (if pel-system-is-macos-p
         ;; On macOS /tmp → /private/tmp, so /tmp's true parent is /private/,
         ;; not /.  Assert that the parent of /private/ is the root instead.
-        (progn
-          (let* ((real-tmp    (file-truename "/tmp"))
-                 (real-parent (pel-parent-directory real-tmp)))
-            (should (pel-dir-is-root (pel-parent-directory (directory-file-name
-                                                            real-parent))))))
+        (let* ((real-tmp    (file-truename "/tmp"))
+               (real-parent (pel-parent-directory real-tmp)))
+          (should (pel-dir-is-root (pel-parent-directory (directory-file-name
+                                                          real-parent)))))
       ;; on other Unix systems
       (should (string= (pel-parent-directory "/tmp") "/")))
 
@@ -165,28 +164,35 @@ even if BODY signals an error."
   "Test `pel-file-in-dir-upwards'."
   (pel-with-temp-dir tmp
     ;; Structure: tmp/a/b/c/
-    (let* ((dir-a    (expand-file-name "a"   tmp))
+    (let* ((tmpdir   (file-truename tmp))
+           (dir-a    (expand-file-name "a"   tmpdir))
            (dir-b    (expand-file-name "b"   dir-a))
            (dir-c    (expand-file-name "c"   dir-b))
-           (marker   "MARKER.txt"))
+           (marker   "MARKER.txt")
+           (marker-fpath  (expand-file-name marker tmpdir)))
+
       (make-directory dir-c t)
       ;; Place marker only at tmp level
-      (write-region "marker" nil (expand-file-name marker tmp))
+      (write-region "marker" nil (expand-file-name marker tmpdir))
 
       ;; Found when starting from dir-c (must walk up three levels)
       (let ((found (pel-file-in-dir-upwards marker dir-c)))
         (should (stringp found))
-        (should (file-exists-p found)))
+        (should (file-exists-p found))
+        (should (string= found marker-fpath)))
 
       ;; Found when starting from dir-a (one level up)
       (let ((found (pel-file-in-dir-upwards marker dir-a)))
         (should (stringp found))
-        (should (file-exists-p found)))
+        (should (file-regular-p found))
+        (should (file-exists-p found))
+        (should (string= found marker-fpath)))
 
       ;; Found when starting from the containing directory itself
-      (let ((found (pel-file-in-dir-upwards marker tmp)))
+      (let ((found (pel-file-in-dir-upwards marker tmpdir)))
         (should (stringp found))
-        (should (file-exists-p found)))
+        (should (file-exists-p found))
+        (should (string= found marker-fpath)))
 
       ;; Not found when file simply does not exist anywhere
       (should-not (pel-file-in-dir-upwards "DOES_NOT_EXIST" dir-c))
@@ -199,6 +205,8 @@ even if BODY signals an error."
       (write-region "inner" nil (expand-file-name marker dir-b))
       (let ((found (pel-file-in-dir-upwards marker dir-c dir-a)))
         (should (stringp found))
+        (should (file-regular-p found))
+        (should (string= found (expand-file-name marker dir-b)))
         (should (file-exists-p found))))))
 
 ;; ---------------------------------------------------------------------------
@@ -268,10 +276,10 @@ even if BODY signals an error."
     ;;     file2.el
     ;;     sub/
     ;;       file3.txt
-    (let* ((file1  (expand-file-name "file1.txt" tmp))
-           (file2  (expand-file-name "file2.el"  tmp))
+    (let* ((file1  (expand-file-name "zebra.txt" tmp))
+           (file2  (expand-file-name "alpha.el"  tmp))
            (sub    (expand-file-name "sub"        tmp))
-           (file3  (expand-file-name "file3.txt"  sub))
+           (file3  (expand-file-name "mango.txt"  sub))
            (collect (lambda (it)
                       (let (acc)
                         (condition-case nil
@@ -311,7 +319,8 @@ even if BODY signals an error."
       (let ((results (funcall collect
                               (pel-iter-directory-files tmp nil nil t))))
         ;; check that result is already sorted
-        (should (equal results (sort (copy-sequence results) #'string<))))
+        (should (equal results
+                       (sort (list file1 file2 file3) #'string<))))
 
       ;; Empty directory yields no files
       (pel-with-temp-dir empty-tmp
@@ -395,7 +404,17 @@ DIRSPEC elements mirror the structure returned by
 
     ;; Add one more visible sub-directory
     (make-directory (expand-file-name "gamma" tmp))
-    (should (= 3 (pel-subdir-count tmp)))))
+    (should (= 3 (pel-subdir-count tmp)))
+
+    ;; Symlink to a directory: behaviour depends on whether it is counted
+    ;; On most systems directory-files-and-attributes follows the symlink
+    ;; so a symlink to a dir is counted as a directory.
+    (unless pel-system-is-windows-p
+      (let ((link-target (expand-file-name "gamma" tmp)) ; already created above
+            (dir-link    (expand-file-name "link-to-gamma" tmp)))
+        (make-symbolic-link link-target dir-link)
+        ;; A symlink to a visible directory is counted as one more subdir
+        (should (= 4 (pel-subdir-count tmp)))))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-duplicate-dir
@@ -455,8 +474,12 @@ DIRSPEC elements mirror the structure returned by
                (dst3 (expand-file-name "dest3"   tmp)))
           (make-directory src2)
           (make-symbolic-link "no-target" (expand-file-name "broken" src2))
-          (pel-duplicate-dir src2 dst3)
-          (should-not (file-exists-p (expand-file-name "broken" dst3))))))))
+          (let ((broken-copy (expand-file-name "broken" dst3)))
+            (pel-duplicate-dir src2 dst3)
+            (should (file-directory-p dst3))
+            (should-not (file-symlink-p broken-copy))
+            (should-not (file-exists-p broken-copy))))))))
+
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-filedir-test)
