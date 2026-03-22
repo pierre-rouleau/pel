@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 10:59:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 11:13:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -79,6 +79,7 @@
 ;; Backward Compatibility code : code from Emacs 30 files.el
 
 (unless pel-emacs-27-or-later-p
+  (require 'files)       ; declare other required functions
   (defun pel-directory-files-recursively (dir regexp
                                               &optional include-directories predicate
                                               follow-symlinks)
