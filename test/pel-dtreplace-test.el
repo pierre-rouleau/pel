@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, March 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 10:24:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 11:06:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,7 +45,7 @@
 (require 'pel-dtreplace)
 (require 'ert)
 (require 'cl-lib)
-
+(require 'seq)     ; use: `seq-filter' (not autoloaded in Emacs 26)
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
