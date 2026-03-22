@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-21 17:57:09 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-21 22:20:23 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -575,7 +575,7 @@ PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 #   as soon as its dependencies have been compiled.
 # - Compile pel_keys.el and pel.el at the end.
 
-all: pel-top pel_keys.elc pel.elc
+all: pel-top $(ALL_TEST_PASSED) pel_keys.elc pel.elc
 
 pel-top: $(ALL_TEST_PASSED) $(ELC_FILES)
 
@@ -610,7 +610,7 @@ help:
 	@printf "      - For faster build use parallel make: see 'make -j [N]' \n"
 	@printf "Usage:\n"
 	@printf " * make               - Same as 'make all': build everything as needed.\n"
-	@printf " * make all           - Compile all files and run tests.\n"
+	@printf " * make all           - Compile all files and run tests as soon as possible.\n"
 	@printf " * make compile-only  - Compile all Emacs Lisp files. Do not run tests.\n"
 	@printf " * make pel           - Compile all files except pel.el. Do not run tests.\n"
 	@printf " * make first-build   - First build done on a virgin system:\n"
@@ -895,7 +895,7 @@ pel__hydra.elc:           pel--base.elc pel--options.elc pel--keys-macros.elc pe
 # The | pel-top ensures tests always complete before pel_keys.elc compiles,
 # without affecting timestamp-based staleness checks.
 # This ensures tests are all done before pel_keys.elc is built in parallel builds.
-pel_keys.elc:             pel_keys.el pel__hydra.el $(ELC_FILES) | pel-top
+pel_keys.elc:             pel_keys.el pel__hydra.el $(ELC_FILES)
 
 
 # Test code dependency:
@@ -903,6 +903,8 @@ test/pel-abbrev-test.el.test-passed:            pel--base.elc pel-abbrev.elc pel
 test/pel-base-test.el.test-passed:              pel--base.elc pel-ert.elc
 test/pel-elcode-test.el.test-passed:            pel--base.elc pel-elcode.elc pel-ert.elc
 test/pel-elpa-test.el.test-passed:              pel-elpa.elc pel-filedir.elc
+test/pel-erlang-test.el.test-passed:            pel-ert.elc pel-erlang.elc
+test/pel-ert-test.el.test-passed:               pel-ert.elc
 test/pel-file-test.el.test-passed:              pel-file.elc pel-ert.elc
 test/pel-filedir-test.el.test-passed:           pel-filedir.elc
 test/pel-list-test.el.test-passed:              pel-list.elc pel-ert.elc
