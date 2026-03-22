@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 22:47:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 09:36:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,6 +33,7 @@
 ;;
 ;;
 (require 'pel-filedir)                  ; tested file
+(require 'pel--base)                    ; use `pel-system-is-macos-p'
 (require 'ert)
 (require 'subr-x)    ; use `string-join' (became autoloaded in Emacs 28.1)
 
@@ -128,13 +129,20 @@ even if BODY signals an error."
 
 (ert-deftest pel-parent-directory-test ()
   "Test `pel-parent-directory'."
-  (ert-skip "Temporary skip test under development.")
   (unless pel-system-is-windows-p
     ;; Root has no parent
     (should-not (pel-parent-directory "/"))
 
-    ;; /tmp's parent is /
-    (should (string= (pel-parent-directory "/tmp") "/"))
+    ;; /tmp's parent is the root
+    (if pel-system-is-macos-p
+        ;; In macOS /tmp → /private/tmp symlink
+        (progn
+          (let* ((real-tmp    (file-truename "/tmp"))
+                 (real-parent (pel-parent-directory real-tmp)))
+            (should (pel-dir-is-root (pel-parent-directory (directory-file-name
+                                                            real-parent))))))
+      ;; on other Unix systems
+      (should (string= (pel-parent-directory "/tmp") "/")))
 
     ;; Result always ends with a slash (Emacs directory-name convention)
     (pel-with-temp-dir tmp
@@ -252,7 +260,6 @@ even if BODY signals an error."
 
 (ert-deftest pel-iter-directory-files-test ()
   "Test `pel-iter-directory-files' generator."
-  (ert-skip "Temporary skip test under development.")
   (pel-with-temp-dir tmp
     ;; Structure:
     ;;   tmp/
@@ -269,7 +276,7 @@ even if BODY signals an error."
                         (condition-case nil
                             (while t (push (iter-next it) acc))
                           (iter-end-of-sequence nil))
-                        acc))))
+                        (reverse acc)))))
       (write-region "a" nil file1)
       (write-region "b" nil file2)
       (make-directory sub)
@@ -284,7 +291,7 @@ even if BODY signals an error."
 
       ;; Regexp filter: only .txt files (2 hits)
       (let ((results (funcall collect
-                               (pel-iter-directory-files tmp "\\.txt\\'"))))
+                              (pel-iter-directory-files tmp "\\.txt\\'"))))
         (should (= 2 (length results)))
         (should (member file1 results))
         (should (member file3 results))
@@ -292,22 +299,24 @@ even if BODY signals an error."
 
       ;; Predicate filter: only .el files
       (let ((results (funcall collect
-                               (pel-iter-directory-files
-                                tmp nil
-                                (lambda (f)
-                                  (string= (file-name-extension f) "el"))))))
+                              (pel-iter-directory-files
+                               tmp nil
+                               (lambda (f)
+                                 (string= (file-name-extension f) "el"))))))
         (should (= 1 (length results)))
         (should (member file2 results)))
 
+      ;; Sorted flag: results are yielded in ascending order
       ;; Sorted flag: results are in ascending string order
       (let ((results (funcall collect
-                               (pel-iter-directory-files tmp nil nil t))))
+                              (pel-iter-directory-files tmp nil nil t))))
+        ;; check that result is already sorted
         (should (equal results (sort (copy-sequence results) #'string<))))
 
-      ;; Empty directory yields no files
-      (pel-with-temp-dir empty-tmp
-        (let ((results (funcall collect (pel-iter-directory-files empty-tmp))))
-          (should (null results)))))))
+         ;; Empty directory yields no files
+         (pel-with-temp-dir empty-tmp
+           (let ((results (funcall collect (pel-iter-directory-files empty-tmp))))
+             (should (null results)))))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-broken-symlinks
@@ -393,7 +402,6 @@ DIRSPEC elements mirror the structure returned by
 
 (ert-deftest pel-duplicate-dir-test ()
   "Test `pel-duplicate-dir'."
-  (ert-skip "Temporary skip test under development.")
   (unless pel-system-is-windows-p
     (pel-with-temp-dir tmp
       (let* ((src      (expand-file-name "source" tmp))
@@ -426,8 +434,9 @@ DIRSPEC elements mirror the structure returned by
 
         ;; Emacs temp files (#...) are skipped
         (write-region "tmp" nil (expand-file-name "#auto-save#" src))
-        (pel-duplicate-dir src dst)
-        (should-not (file-exists-p (expand-file-name "#auto-save#" dst)))
+        (let ((dst2 (expand-file-name "dest2" tmp))) ; ← fresh destination
+          (pel-duplicate-dir src dst2)
+          (should-not (file-exists-p (expand-file-name "#auto-save#" dst2))))
 
         ;; ── error: destination is an existing symlink ───────────────────
         (let ((sym-dst (expand-file-name "sym-dst" tmp)))

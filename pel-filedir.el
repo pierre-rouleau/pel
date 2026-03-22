@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-26 23:24:22 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 09:35:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -161,7 +161,8 @@ the file must be included.
 If SORTED is non-nil the files in each directory are given in sorting order."
   (let ((fpaths (directory-files directory t nil t))) ; Get absolute names
     (when sorted
-      (sort fpaths #'string<))    ; Sort in place, support Emacs 26 and later.
+      ;; do not sort in place as it's destructive and may cause issue below.
+      (setq fpaths (sort fpaths #'string<)))
     (dolist (fpath fpaths)
       (let ((base (file-name-nondirectory fpath)))
         (unless (member base '("." ".."))
