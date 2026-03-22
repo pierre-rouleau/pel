@@ -1,8 +1,8 @@
-;;; pel-filedir-test.el --- Test pel-filedir.  -*- lexical-binding: t; -*-
+;;; pel-filedir-test.el --- Test pel-filedir  -*- lexical-binding: t; -*-
 
 ;; Created   : Thursday, February 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-26 23:29:12 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 22:30:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
