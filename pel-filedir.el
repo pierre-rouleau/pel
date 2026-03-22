@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 16:33:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 19:27:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -60,7 +60,7 @@
 ;; - dirpath   : Directory relative or absolute path.
 ;;               Optionally ends with slash.
 ;;               May use special symbols like "~", "." and ".."
-;; - dirname   : Emacs conventional directory name that ends wit ha slash.
+;; - dirname   : Emacs conventional directory name that ends with a slash.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -69,6 +69,9 @@
 (require 'pel--base)    ; use pel-system-is-windows-p
 (require 'generator)    ; use `iter-defun', `iter-yield-from', `iter-yield',
 ;;                      ;     `iter-end-of-sequence'
+(unless pel-emacs-27-or-later-p
+    (require 'seq))         ; use `seq-reduce' (became autoloaded in Emacs 27.1)
+;;                          ; use `seq-filter'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -76,8 +79,6 @@
 
 (defun pel-dpath-of (parent-dir &rest subdirs)
   "Return the absolute path made of PARENT-DIR and all its SUBDIRS."
-  (unless pel-emacs-27-or-later-p
-    (require 'seq))         ; use `seq-reduce' (became autoloaded in Emacs 27.1)
   (seq-reduce (lambda (parent subdir) (expand-file-name subdir parent))
               subdirs (expand-file-name parent-dir)))
 
@@ -88,7 +89,7 @@ or a dirpath file name (not ending with separator)."
   (file-exists-p (expand-file-name filename dirpath)))
 
 (defun pel-dir-is-root (dirpath)
-  "Return t is DIRPATH is the root of the file-system."
+  "Return t is DIRPATH is the root of the file-system, nil otherwise."
   (if pel-system-is-windows-p
       (not (null (string-match "\\([a-zA-Z]:\\)?[/\\]\\'"  dirpath)))
     (string= dirpath "/")))
@@ -242,10 +243,10 @@ Symbolic links to directories (not regular files) are silently skipped.
       (cond
        ((and (file-exists-p destination-fn)
              (file-symlink-p destination-fn))
-        (error "A destination target but is a symlink: %s" destination-fn))
+        (error "Destination exists but is a symlink: %s" destination-fn))
        ((and (file-exists-p destination-fn)
              (not (file-directory-p destination-fn)))
-        (error "A destination target but is a file: %s" destination-fn))
+        (error "Destination exists but is a file: %s" destination-fn))
        ((not (file-exists-p destination-fn))
         (make-directory destination-fn))))
 

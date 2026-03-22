@@ -1,8 +1,8 @@
-;;; pel-text-transform-test.el --- PEL text transformation test -*-lexical-binding: t-*-
+;;; pel-text-transform-test.el --- PEL text transformation test -*-lexical-binding: t; -*-
 
 ;; Created   : Sunday, April 19 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 19:05:22 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 19:32:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -30,6 +30,7 @@
 ;;; Dependencies:
 ;;
 (require 'pel-text-transform)
+(require 'cl-lib)
 (require 'ert)
 
 ;;; --------------------------------------------------------------------------
