@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 19:48:38 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-21 22:08:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -351,7 +351,7 @@ Cleaned up in the test's unwind form.")
             (should (eq nil (car result)))
             (should (stringp (cdr result)))
             (should (string-match-p (regexp-quote fake-envvar) (cdr result)))))
-      (setenv fake-envvar previous-value)))))
+      (setenv fake-envvar previous-value))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-erlang-test)

@@ -544,9 +544,10 @@ Stop at end of buffer."
   (save-excursion
     (goto-char pos)
     (unless (eobp)
-      (and (eq (char-after pos) ?<)
-           (forward-char)
-           (eq (char-after (point)) ?<)))))
+      (and (eq (char-after (point)) ?<)
+           (progn
+             (forward-char)
+             (eq (char-after (point)) ?<))))))
 
 (defun pel-erlang-after-binary (&optional pos)
   "Return non-nil if POS or point is just after \">>\", nil otherwise."
