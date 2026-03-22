@@ -1,12 +1,39 @@
-;;; pel-text-transform-test.el --- PEL text transformation test -*-lexical-binding: t-*-
+;;; pel-text-transform-test.el --- PEL text transformation test -*-lexical-binding: t; -*-
 
+;; Created   : Sunday, April 19 2020.
+;; Author    : Pierre Rouleau <prouleau001@gmail.com>
+;; Time-stamp: <2026-03-22 19:32:09 EDT, updated by Pierre Rouleau>
+
+;; This file is part of the PEL package.
+;; This file is not part of GNU Emacs.
+
+;; Copyright (C) 2021, 2026  Pierre Rouleau
+;;
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 
-
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+;;
 (require 'pel-text-transform)
+(require 'cl-lib)
 (require 'ert)
 
+;;; --------------------------------------------------------------------------
 ;;; Code:
 
 ;; -----------------------------------------------------------------------------
@@ -492,6 +519,168 @@ The TEST-DATA is a list of list of list of two strings:
   (pel--tt-region-test 'pel-downcase-word-or-region   pel--tt-downcase-with-regions)
   (pel--tt-region-test 'pel-upcase-word-or-region     pel--tt-upcase-with-regions)
   (pel--tt-region-test 'pel-capitalize-word-or-region pel--tt-capitalize-with-regions))
+
+;;; --------------------------------------------------------------------------
+;;; Extra unit tests for pel-text-transform.el
+;;; --------------------------------------------------------------------------
+
+(ert-deftest pel-capitalize-first-letter-test ()
+  (should (string= (pel-capitalize-first-letter "") ""))
+  (should (string= (pel-capitalize-first-letter "a") "A"))
+  (should (string= (pel-capitalize-first-letter "hello") "Hello"))
+  ;; Unicode initial
+  (should (string= (pel-capitalize-first-letter "éclair") "Éclair")))
+
+(ert-deftest pel-upcase-letter-tests ()
+  "Test `pel-upcase-letter'."
+  ;; default N=1, no region: upcase 1 char at point
+  (with-temp-buffer
+    (insert "ab")
+    (goto-char (point-min))    ; pos 1, before 'a'
+    (pel-upcase-letter)
+    (should (string= (buffer-string) "Ab")))
+
+  ;; explicit N=2: upcase 2 chars starting at point
+  (with-temp-buffer
+    (insert "abcd")
+    (goto-char (point-min))    ; pos 1
+    (pel-upcase-letter 2)
+    (should (string= (buffer-string) "ABcd")))
+
+  ;; negative N=-1: upcase 1 char before point
+  ;; beg=2, right-char(-1) → point=1; upcase-region(2,1) ≡ upcase-region(1,2) = 'a'→'A'
+  (with-temp-buffer
+    (insert "abcd")
+    (goto-char 2)              ; between 'a' and 'b'
+    (pel-upcase-letter -1)
+    (should (string= (buffer-string) "Abcd")))
+
+  ;; region path: requires transient-mark-mode to make use-region-p return t.
+  ;; mark=2 (between 'a' and 'b'), point=4 (between 'c' and 'd')
+  ;; region covers chars at pos 2,3 = 'b','c' → 'B','C'
+  (with-temp-buffer
+    (insert "abcd")
+    (let ((transient-mark-mode t))
+      (goto-char 2)
+      (set-mark (point))       ; mark at pos 2
+      (goto-char 4)            ; point at pos 4
+      (pel-upcase-letter)
+      (should (string= (buffer-string) "aBCd")))))   ; corrected: was "abCD"
+
+(ert-deftest pel-downcase-letter-tests ()
+  "Test `pel-downcase-letter'."
+  ;; default N=1, no region: downcase 1 char at point
+  (with-temp-buffer
+    (insert "AB")
+    (goto-char (point-min))    ; pos 1, before 'A'
+    (pel-downcase-letter)
+    (should (string= (buffer-string) "aB")))
+
+  ;; explicit N=2: downcase 2 chars
+  (with-temp-buffer
+    (insert "ABCD")
+    (goto-char (point-min))
+    (pel-downcase-letter 2)
+    (should (string= (buffer-string) "abCD")))
+
+  ;; negative N=-2: downcase 2 chars before point
+  ;; beg=3, right-char(-2) → point=1; downcase-region(3,1) ≡ downcase-region(1,3) = 'A','B'→'a','b'
+  (with-temp-buffer
+    (insert "ABCD")
+    (goto-char 3)              ; between 'B' and 'C'
+    (pel-downcase-letter -2)
+    (should (string= (buffer-string) "abCD")))
+
+  ;; region path: requires transient-mark-mode to make use-region-p return t.
+  ;; mark=2 (between 'A' and 'B'), point=4 (between 'C' and 'D')
+  ;; region covers chars at pos 2,3 = 'B','C' → 'b','c'
+  (with-temp-buffer
+    (insert "ABCD")
+    (let ((transient-mark-mode t))
+      (goto-char 2)
+      (set-mark (point))       ; mark at pos 2
+      (goto-char 4)            ; point at pos 4
+      (pel-downcase-letter)
+      (should (string= (buffer-string) "AbcD")))))   ; corrected: was "Abcd"
+
+(ert-deftest pel-sentence-end-description-and-toggle-tests ()
+  ;; description
+  (let ((sentence-end-double-space nil))
+    (should (string= (pel--sentence-end-description) "1 space character")))
+  (let ((sentence-end-double-space t))
+    (should (string= (pel--sentence-end-description) "2 space characters")))
+  ;; toggle + message
+  (let ((sentence-end-double-space nil)
+        (captured nil))
+    (cl-letf (((symbol-function 'message)
+               (lambda (fmt &rest args)
+                 (setq captured (apply #'format fmt args)))))
+      (pel-toggle-sentence-end)
+      (should sentence-end-double-space)
+      (should (string-match-p "2 space characters" captured))
+      (pel-toggle-sentence-end)
+      (should-not sentence-end-double-space))))
+
+(ert-deftest pel-capitalize-word-or-region-word-mode-tests ()
+  "Test `pel-capitalize-word-or-region'."
+  ;; N = nil (no arg) → (prefix-numeric-value nil) = 1 → capitalize-word 1
+  ;; from beginning of word: capitalizes the full word.
+  (with-temp-buffer
+    (insert "one two three")
+    (goto-char (point-min))
+    (pel-capitalize-word-or-region)
+    (should (string= (buffer-string) "One two three")))
+
+  ;; N = nil from mid-word: capitalize-word 1 starts at point, NOT at word
+  ;; start.  Point is at pos 2 (after 'o', before 'n'), so 'n' is
+  ;; capitalized and 'o' is left as-is.  Use N=0 to capitalize from the
+  ;; word's beginning.
+  (with-temp-buffer
+    (insert "one two three")
+    (goto-char 2)
+    (pel-capitalize-word-or-region)
+    (should (string= (buffer-string) "oNe two three")))   ; ← was "One two three"
+
+  ;; N = 0: pel-casechg-word-or-region moves to beginning of current word
+  ;; before capitalizing → the whole word is capitalized even from mid-word.
+  (with-temp-buffer
+    (insert "one two three")
+    (goto-char 2)
+    (pel-capitalize-word-or-region 0)
+    (should (string= (buffer-string) "One two three")))
+
+  ;; N > 0: capitalize two words starting at point-min.
+  (with-temp-buffer
+    (insert "one two three")
+    (goto-char (point-min))
+    (pel-capitalize-word-or-region 2)
+    (should (string= (buffer-string) "One Two three")))
+
+  ;; N < 0: capitalize-word -1 capitalizes the previous word.
+  ;; search-forward "two" leaves point after "two" (position 8).
+  (with-temp-buffer
+    (insert "one two three")
+    (goto-char (point-min))
+    (search-forward "two")
+    (pel-capitalize-word-or-region -1)
+    (should (string= (buffer-string) "one Two three"))))
+
+(ert-deftest pel-show-text-modes-smoke-test ()
+  "Just verify that the function emits a multi-line status and reflects sentence spacing."
+  (with-temp-buffer
+    (let ((tab-width 8)
+          (indent-tabs-mode nil)
+          (sentence-end-double-space t)
+          (pel-modes-activating-align-on-return nil)
+          (captured nil))
+      (cl-letf (((symbol-function 'message)
+                 (lambda (fmt &rest args)
+                   (setq captured (apply #'format fmt args)))))
+        (pel-show-text-modes)
+        (should (stringp captured))
+        (should (string-match-p "\\`Text Modes Status:" captured))
+        (should (string-match-p "Sentences end with 2 space characters."
+                                captured))))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-text-transform-test)

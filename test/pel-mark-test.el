@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 18 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 12:36:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 12:45:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -38,9 +38,9 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-(require 'cl-lib)
-(require 'pel--base)
 (require 'pel-mark)
+(require 'pel--base)
+(require 'cl-lib)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:

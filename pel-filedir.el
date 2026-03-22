@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-26 23:24:22 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 19:27:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -60,7 +60,7 @@
 ;; - dirpath   : Directory relative or absolute path.
 ;;               Optionally ends with slash.
 ;;               May use special symbols like "~", "." and ".."
-;; - dirname   : Emacs conventional directory name that ends wit ha slash.
+;; - dirname   : Emacs conventional directory name that ends with a slash.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -69,6 +69,9 @@
 (require 'pel--base)    ; use pel-system-is-windows-p
 (require 'generator)    ; use `iter-defun', `iter-yield-from', `iter-yield',
 ;;                      ;     `iter-end-of-sequence'
+(unless pel-emacs-27-or-later-p
+    (require 'seq))         ; use `seq-reduce' (became autoloaded in Emacs 27.1)
+;;                          ; use `seq-filter'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -76,8 +79,6 @@
 
 (defun pel-dpath-of (parent-dir &rest subdirs)
   "Return the absolute path made of PARENT-DIR and all its SUBDIRS."
-  (unless pel-emacs-27-or-later-p
-    (require 'seq))         ; use `seq-reduce' (became autoloaded in Emacs 27.1)
   (seq-reduce (lambda (parent subdir) (expand-file-name subdir parent))
               subdirs (expand-file-name parent-dir)))
 
@@ -88,7 +89,7 @@ or a dirpath file name (not ending with separator)."
   (file-exists-p (expand-file-name filename dirpath)))
 
 (defun pel-dir-is-root (dirpath)
-  "Return t is DIRPATH is the root of the file-system."
+  "Return t is DIRPATH is the root of the file-system, nil otherwise."
   (if pel-system-is-windows-p
       (not (null (string-match "\\([a-zA-Z]:\\)?[/\\]\\'"  dirpath)))
     (string= dirpath "/")))
@@ -161,7 +162,10 @@ the file must be included.
 If SORTED is non-nil the files in each directory are given in sorting order."
   (let ((fpaths (directory-files directory t nil t))) ; Get absolute names
     (when sorted
-      (sort fpaths #'string<))    ; Sort in place, support Emacs 26 and later.
+      ;; Do not sort in place:
+      ;;  `sort' may return a different cons cell as the new list head;
+      ;;  capture the return value to ensure fpaths points to the sorted list.
+      (setq fpaths (sort fpaths #'string<)))
     (dolist (fpath fpaths)
       (let ((base (file-name-nondirectory fpath)))
         (unless (member base '("." ".."))
@@ -196,20 +200,20 @@ Prompts for a directory and list found broken symlinks in the special
                                        nil
                                        t
                                        nil))
-         (buffer (get-buffer-create "*Broken Symlinks*"))
          (broken-links (pel-broken-symlinks dirpath))
          (title (pel-count-string (length broken-links) "broken symlink")))
     (when broken-links
-      (with-current-buffer buffer
-        (erase-buffer)
-        (pel-insert-bold
-         (format "At %s, found %s in %s:\n"
-                 (format-time-string "%Y-%m-%d %H:%M:%S" (current-time))
-                 title
-                 (expand-file-name dirpath)))
-        (dolist (fname (nreverse broken-links))
-          (insert (format "%s\t-> %s\n" fname (file-symlink-p fname))))
-        (display-buffer buffer)))
+      (let ((buffer (get-buffer-create "*Broken Symlinks*")))
+        (with-current-buffer buffer
+          (erase-buffer)
+          (pel-insert-bold
+           (format "At %s, found %s in %s:\n"
+                   (format-time-string "%Y-%m-%d %H:%M:%S" (current-time))
+                   title
+                   (expand-file-name dirpath)))
+          (dolist (fname broken-links)
+            (insert (format "%s\t-> %s\n" fname (file-symlink-p fname))))
+          (display-buffer buffer))))
     (message "Found %s." title)))
 
 
@@ -220,6 +224,8 @@ Prompts for a directory and list found broken symlinks in the special
 Reproduce the symbolic links in the copy: if the original symlinks are
 relative, the symlinks in the copied directory are also relative (to the
 copy).
+
+Symbolic links to directories (not regular files) are silently skipped.
 
 - KEEP-TIME non-nil means give the destination files have the same
   last-modified time as the original ones.  (This works on only some systems.)
@@ -237,10 +243,10 @@ copy).
       (cond
        ((and (file-exists-p destination-fn)
              (file-symlink-p destination-fn))
-        (error "A destination target but is a symlink: %s" destination-fn))
+        (error "Destination exists but is a symlink: %s" destination-fn))
        ((and (file-exists-p destination-fn)
              (not (file-directory-p destination-fn)))
-        (error "A destination target but is a file: %s" destination-fn))
+        (error "Destination exists but is a file: %s" destination-fn))
        ((not (file-exists-p destination-fn))
         (make-directory destination-fn))))
 
@@ -281,9 +287,9 @@ copy).
 ;; --
 
 (defun pel--dirspec-for-dir-p (dirspec)
-  "Return dirname when DIRSPEC is for a Elpa package directory, nil otherwise.
+  "Return dirname when DIRSPEC represents a visible sub-directory, nil otherwise.
 DIRSPEC is the data structure returned by `directory-files-and-attributes'.
-Exclude the directory entries that start with a period."
+Exclude entries that start with a period (hidden/dot directories)."
   (when (and (cadr dirspec)                          ; is a directory that
              (not (eq (string-to-char (car dirspec)) ; doesn't start with '.'
                       ?.)))

@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 23:36:41 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 15:38:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -48,6 +48,14 @@
 ;; * `pel-dt-fr-toggle-literal'
 ;; * `pel-dt-fr-changed-files-in-dired'
 
+;; Note: The `pel--dt' utility function does not support Emacs 26 due to a
+;;       missing feature in Emacs 26.  This causes `pel-dirtree-find-replace'
+;;       to signal an error unless the PEL user-option
+;;       `pel--dirtree-allow-operation-in-forbidden-directories' is set to t.
+;;       But this simply allow the code to recurse into forbidden directories!
+;;       By default the user-option is not set to t.
+;;       Only set it when using the function on safe directories!!
+;;
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
@@ -160,7 +168,7 @@ things:
   "Root directory used in last `pel-dirtree-find-replace' command.")
 
 (defun pel-find-replace (fname text-re new-text)
-  "Replace TEXT with NEW-TEXT inside FNAME file.
+  "Replace TEXT-RE (regexp) with NEW-TEXT inside FNAME file.
 When `pel-dirtree-replace-files-is-verbose' is non-nil, it
 prints a message showing how many instances were replaced."
   (let ((mods 0)
@@ -213,12 +221,15 @@ prints a message showing how many instances were replaced."
      ;; newer function from the files.el of a later version of Emacs.
      (if pel--dirtree-allow-operation-in-forbidden-directories
          (unless pel--dt-old-version-warning-done
-           (message "\
+           ;; Issue the warning ONCE to prevent flooding but use
+           ;; display-warning to make it stick.
+           (display-warning 'pel--dt   "\
 WARNING: this version of Emacs does not skip forbidden directories
          identified by `pel-dirtree-replace-file-forbidden-dir-re'.
          Get a newer version of Emacs or get a copy of
          `directory-files-recursively' from the files.el from a
-         later version of Emacs.")
+         later version of Emacs."
+                            :warning)
            (setq pel--dt-old-version-warning-done t)
            (with-no-warnings
              (directory-files-recursively root-dir fn-re nil)))
@@ -270,7 +281,15 @@ The following user-options control various aspects of the operation:
 
 The function remembers a list of modified files.
 Use the command `pel-dt-fr-changed-files-in-dired' to open a Dired
-buffer with this list of files."
+buffer with this list of files.
+
+NOTE: this command is not fully supported under Emacs 26 or earlier!
+      See `pel--dirtree-allow-operation-in-forbidden-directories' for
+      a mitigation mechanism that will activate partial support at the
+      expense of allowing recursion into forbidden directories.
+      This is disabled by default.    Only activate it with care!
+      The message describe another way to add support under Emacs 26.
+      Ideally migrate to a more recent version of Emacs!"
   (interactive
    (let* ((from (pel--dt-prompt "Text regexp" 'text-re))
           (to-prompt (format "%s%s%s case replace%s"
@@ -378,7 +397,7 @@ pel-dirtree-find-replace new-text is an Emacs regexp in using string syntax:
             (push (format "%s%s" fn pel-dirtree-replace-file-backup-suffix)
                   mod-fnames))
           (setq fnames (append fnames mod-fnames)))
-        (sort fnames #'string<) ; sort in place: support Emacs 26
+        (setq fnames (sort fnames #'string<))
         (dired (cons (format "%s (modified files)" pel-dirtree-rootdir)
                      fnames)))
     (user-error

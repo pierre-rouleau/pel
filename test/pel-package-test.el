@@ -2,12 +2,12 @@
 
 ;; Created   : Wednesday, March 24 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-24 14:27:46 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 12:49:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2025  Pierre Rouleau
+;; Copyright (C) 2021, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -32,10 +32,10 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel-package)
 (require 'pel--base)
 (require 'pel--options)
-(require 'pel-package)
-(require 'pel-ert)
+(require 'ert)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
