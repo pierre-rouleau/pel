@@ -349,31 +349,41 @@
 
 (ert-deftest pel-shell-command-on-current-file-smoke-test ()
   "pel-shell-command-on-current-file formats the command and passes it to
-`shell-command' with the current buffer's filename substituted for %s."
-  (ert-skip "Temporary disable failing test.")
-  (let (captured-cmd)
-    (cl-letf (((symbol-function 'shell-command)
-               (lambda (cmd) (setq captured-cmd cmd))))
-      (with-temp-buffer
-        ;; Give the buffer a name that simulate a real file
-        (let ((buffer-file-name "/tmp/test-file.txt"))
-          (pel-shell-command-on-current-file "wc -l %s")
-          (should (string= captured-cmd "wc -l /tmp/test-file.txt"))
+`shell-command' with the current buffer's filename substituted for %s.
 
-          (pel-shell-command-on-current-file "echo %s")
-          (should (string= captured-cmd "echo /tmp/test-file.txt")))))))
+Note: the function calls `pel-current-buffer-filename' internally (not
+`buffer-file-name' directly), so that helper must be mocked.
+`tramp-tramp-file-p' and `find-file-name-handler' are also mocked so
+the test does not depend on Tramp being loaded."
+  (let (captured-cmd)
+    (cl-letf (((symbol-function 'pel-current-buffer-filename)
+               (lambda (&rest _) "/tmp/test-file.txt"))
+              ((symbol-function 'find-file-name-handler)
+               (lambda (&rest _) nil))
+              ((symbol-function 'tramp-tramp-file-p)
+               (lambda (&rest _) nil))
+              ((symbol-function 'shell-command)
+               (lambda (cmd) (setq captured-cmd cmd))))
+      (pel-shell-command-on-current-file "wc -l %s")
+      (should (string= captured-cmd "wc -l /tmp/test-file.txt"))
+
+      (pel-shell-command-on-current-file "echo %s")
+      (should (string= captured-cmd "echo /tmp/test-file.txt")))))
 
 (ert-deftest pel-shell-command-on-current-file-format-test ()
   "The %s in COMMAND-FORMAT is substituted with the full file path."
-  (ert-skip "Temporary disable failing test.")
   (let (captured-cmd)
-    (cl-letf (((symbol-function 'shell-command)
+    (cl-letf (((symbol-function 'pel-current-buffer-filename)
+               (lambda (&rest _) "/usr/local/src/myproject/hello.py"))
+              ((symbol-function 'find-file-name-handler)
+               (lambda (&rest _) nil))
+              ((symbol-function 'tramp-tramp-file-p)
+               (lambda (&rest _) nil))
+              ((symbol-function 'shell-command)
                (lambda (cmd) (setq captured-cmd cmd))))
-      (with-temp-buffer
-        (let ((buffer-file-name "/usr/local/src/myproject/hello.py"))
-          (pel-shell-command-on-current-file "python3 -m py_compile %s")
-          (should (string= captured-cmd
-                           "python3 -m py_compile /usr/local/src/myproject/hello.py")))))))
+      (pel-shell-command-on-current-file "python3 -m py_compile %s")
+      (should (string= captured-cmd
+                       "python3 -m py_compile /usr/local/src/myproject/hello.py")))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-file-test)
