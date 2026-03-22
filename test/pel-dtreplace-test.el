@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, March 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 16:26:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 16:37:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -259,7 +259,8 @@ Prevents cross-test contamination of `pel-dirtree-replaced-files',
 and passes the correct history variable to `read-from-minibuffer'."
   (let (captured-prompt captured-read-syntax captured-history)
     (cl-letf (((symbol-function 'read-from-minibuffer)
-               (lambda (prompt _init read-syntax _keymap history &rest _)
+               (lambda (prompt _init _keymap read-syntax history &rest _)
+               ;;                      ↑ arg3=keymap  ↑ arg4=READ  ↑ arg5=HIST
                  (setq captured-prompt      prompt
                        captured-read-syntax read-syntax
                        captured-history     history)
@@ -267,10 +268,8 @@ and passes the correct history variable to `read-from-minibuffer'."
       (let ((pel-dirtree-replace-file-newtext-is-literal t))
         (let ((result (pel--dt-prompt "Enter value" 'new-suffix)))
           (should (string= result "typed-result"))
-          ;; Prompt ends with ": " and contains no read-syntax marker
           (should (string= captured-prompt "Enter value: "))
           (should-not captured-read-syntax)
-          ;; History variable is pel-dt-fr-new-suffix
           (should (eq captured-history 'pel-dt-fr-new-suffix)))))))
 
 (ert-deftest pel--dt-prompt-new-text-literal-test ()
@@ -289,10 +288,10 @@ and passes the correct history variable to `read-from-minibuffer'."
 (ert-deftest pel--dt-prompt-new-text-regexp-test ()
   "scope=new-text with literal=nil adds the read-syntax marker to the prompt
 and passes read-syntax=t to `read-from-minibuffer'."
-  (ert-skip "Temporary disabled test under development; failing test")
   (let (captured-prompt captured-read-syntax)
     (cl-letf (((symbol-function 'read-from-minibuffer)
-               (lambda (prompt _init read-syntax &rest _)
+               (lambda (prompt _init _keymap read-syntax &rest _)
+               ;;                      ↑ skip arg3 (keymap) to reach arg4 (READ)
                  (setq captured-prompt      prompt
                        captured-read-syntax read-syntax)
                  "result")))
@@ -300,7 +299,7 @@ and passes read-syntax=t to `read-from-minibuffer'."
         (pel--dt-prompt "New text" 'new-text)
         ;; Prompt must include the read-syntax annotation
         (should (string-match-p "string in read syntax" captured-prompt))
-        ;; read-from-minibuffer must receive read-syntax = t
+        ;; read-from-minibuffer must receive read-syntax = t (arg4)
         (should captured-read-syntax)))))
 
 (ert-deftest pel--dt-prompt-history-variable-test ()

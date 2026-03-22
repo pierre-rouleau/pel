@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 16:24:39 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 16:35:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -405,7 +405,6 @@ containing the paths of all broken symbolic links found."
 (ert-deftest pel-show-broken-symlinks-no-links-test ()
   "When there are no broken symlinks the *Broken Symlinks* buffer is
 not created (the `(when broken-links ...)' guard prevents it)."
-  (ert-skip "Temporary disable test under development. Currently failing ")
   (unless pel-system-is-windows-p
     (pel-with-temp-dir tmp
       (write-region "content" nil (expand-file-name "file.txt" tmp))
