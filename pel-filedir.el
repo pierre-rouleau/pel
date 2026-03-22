@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 09:35:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 12:18:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -161,7 +161,9 @@ the file must be included.
 If SORTED is non-nil the files in each directory are given in sorting order."
   (let ((fpaths (directory-files directory t nil t))) ; Get absolute names
     (when sorted
-      ;; do not sort in place as it's destructive and may cause issue below.
+      ;; Do not sort in place:
+      ;;  `sort' may return a different cons cell as the new list head;
+      ;;  capture the return value to ensure fpaths points to the sorted list.
       (setq fpaths (sort fpaths #'string<)))
     (dolist (fpath fpaths)
       (let ((base (file-name-nondirectory fpath)))
@@ -208,7 +210,7 @@ Prompts for a directory and list found broken symlinks in the special
                  (format-time-string "%Y-%m-%d %H:%M:%S" (current-time))
                  title
                  (expand-file-name dirpath)))
-        (dolist (fname (nreverse broken-links))
+        (dolist (fname broken-links)
           (insert (format "%s\t-> %s\n" fname (file-symlink-p fname))))
         (display-buffer buffer)))
     (message "Found %s." title)))
@@ -282,9 +284,9 @@ copy).
 ;; --
 
 (defun pel--dirspec-for-dir-p (dirspec)
-  "Return dirname when DIRSPEC is for a Elpa package directory, nil otherwise.
+  "Return dirname when DIRSPEC represents a visible sub-directory, nil otherwise.
 DIRSPEC is the data structure returned by `directory-files-and-attributes'.
-Exclude the directory entries that start with a period."
+Exclude entries that start with a period (hidden/dot directories)."
   (when (and (cadr dirspec)                          ; is a directory that
              (not (eq (string-to-char (car dirspec)) ; doesn't start with '.'
                       ?.)))

@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, February 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-27 09:20:22 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 12:59:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,11 +32,13 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)    ; use `pel-string-starts-with-p'
 (require 'pel-timestamp)
+(require 'pel--base)    ; use `pel-string-starts-with-p'
 ;; (require 'pel-ert)
 (require 'cl-lib)       ; use `cl-letf' used for mocking
 
+;;; --------------------------------------------------------------------------
+;;; Code:
 
 (defun pel-mocked-file-directory-p  (path)
   "Mocked `file-directory-p' for PATH."

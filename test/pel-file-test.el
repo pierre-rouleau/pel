@@ -1,6 +1,6 @@
 ;;; pel-file-test.el --- pel-file Emacs Regression Test -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -30,6 +30,7 @@
 (require 'pel-file)                     ; tested code file.
 (require 'pel-ert)
 
+;;; --------------------------------------------------------------------------
 ;;; Code:
 
 (defconst ok-url-strings '( "https://www.gnu.org/"

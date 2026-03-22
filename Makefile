@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-22 10:19:14 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-22 12:59:12 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -899,26 +899,26 @@ pel_keys.elc:             pel_keys.el pel__hydra.el $(ELC_FILES)
 
 
 # Test code dependency:
-test/pel-abbrev-test.el.test-passed:            pel--base.elc pel-abbrev.elc pel-ert.elc
-test/pel-base-test.el.test-passed:              pel--base.elc pel-ert.elc
-test/pel-dtreplace-test.el.test-passed:         pel--base.elc pel--options.elc
-test/pel-elcode-test.el.test-passed:            pel--base.elc pel-elcode.elc pel-ert.elc
+test/pel-abbrev-test.el.test-passed:            pel-abbrev.elc pel--base.elc
+test/pel-base-test.el.test-passed:              pel--base.elc
+test/pel-dtreplace-test.el.test-passed:         pel-dtreplace.elc
+test/pel-elcode-test.el.test-passed:            pel-elcode.elc pel--base.elc
 test/pel-elpa-test.el.test-passed:              pel-elpa.elc pel-filedir.elc
-test/pel-erlang-test.el.test-passed:            pel-ert.elc pel-erlang.elc
+test/pel-erlang-test.el.test-passed:            pel-erlang.elc pel-ert.elc
 test/pel-ert-test.el.test-passed:               pel-ert.elc
 test/pel-file-test.el.test-passed:              pel-file.elc pel-ert.elc
-test/pel-filedir-test.el.test-passed:           pel-filedir.elc
-test/pel-list-test.el.test-passed:              pel-list.elc pel-ert.elc
-test/pel-mark-test.el.test-passed:              pel--base.elc pel-mark.elc
-test/pel-package-test.el.test-passed:           pel--base.elc pel--options.elc pel-package.elc pel-ert.elc
-test/pel-skel-c-test.el.test-passed:            pel--options.elc pel-ert.elc
-test/pel-skel-clisp-test.el.test-passed:        pel--options.elc pel-ert.elc
-test/pel-skel-erlang-test.el.test-passed:       pel--options.elc pel-ert.elc
-test/pel-skel-rst-test.el.test-passed:          pel--options.elc pel-ert.elc
-test/pel-skels-elisp-test.el.test-passed:       pel--options.elc pel-ert.elc
-test/pel-skels-generic-test.el.test-passed:     pel--options.elc pel-ert.elc
+test/pel-filedir-test.el.test-passed:           pel-filedir.elc pel--base.elc
+test/pel-list-test.el.test-passed:              pel-list.elc
+test/pel-mark-test.el.test-passed:              pel-mark.elc pel--base.elc
+test/pel-package-test.el.test-passed:           pel-package.elc pel--base.elc pel--options.elc
+test/pel-skel-c-test.el.test-passed:            pel--options.elc
+test/pel-skel-clisp-test.el.test-passed:        pel--options.elc
+test/pel-skel-erlang-test.el.test-passed:       pel--options.elc
+test/pel-skel-rst-test.el.test-passed:          pel--options.elc
+test/pel-skels-elisp-test.el.test-passed:       pel--options.elc
+test/pel-skels-generic-test.el.test-passed:     pel--options.elc
 test/pel-text-transform-test.el.test-passed:    pel-text-transform.elc
-test/pel-timestamp-test.el.test-passed:         pel--base.elc pel-timestamp.elc
+test/pel-timestamp-test.el.test-passed:         pel-timestamp.elc pel--base.elc
 
 # When Emacs does not support native compilation, skip the pel-comp-test
 ifeq ($(EMACS_NATIVE_COMP_AVAILABLE), yes)

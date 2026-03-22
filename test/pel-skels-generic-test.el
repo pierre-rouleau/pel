@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, May 24 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-25 14:44:17, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 12:55:12 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -31,13 +31,12 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--options)
+(require 'cl-lib)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
-(require 'pel--options)
-(require 'pel-ert)
-(require 'cl-lib)
 
 (defun pel--generic-all-sk-file-header (directory file-base-name extension mode &optional license-name)
   "Generate all supported layouts of the Emacs  templates in DIRECTORY.

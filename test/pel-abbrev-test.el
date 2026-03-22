@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 18 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 16:50:22 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 12:42:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -38,12 +38,13 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
+(require 'pel-abbrev)
+(require 'pel--base)
+
 (require 'cl-lib)
 (require 'abbrev)
 (require 'ispell)
-(require 'pel--base)
-(require 'pel-abbrev)
-(require 'pel-ert)
+(require 'ert)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:

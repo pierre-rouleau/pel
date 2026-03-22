@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, February 16 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 16:25:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 12:43:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,7 +32,7 @@
 ;;
 ;;
 (require 'pel--base)
-(require 'pel-ert)
+(require 'ert)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:

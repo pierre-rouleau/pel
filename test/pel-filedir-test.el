@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 09:36:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 12:25:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -135,7 +135,8 @@ even if BODY signals an error."
 
     ;; /tmp's parent is the root
     (if pel-system-is-macos-p
-        ;; In macOS /tmp → /private/tmp symlink
+        ;; On macOS /tmp → /private/tmp, so /tmp's true parent is /private/,
+        ;; not /.  Assert that the parent of /private/ is the root instead.
         (progn
           (let* ((real-tmp    (file-truename "/tmp"))
                  (real-parent (pel-parent-directory real-tmp)))
@@ -307,16 +308,15 @@ even if BODY signals an error."
         (should (member file2 results)))
 
       ;; Sorted flag: results are yielded in ascending order
-      ;; Sorted flag: results are in ascending string order
       (let ((results (funcall collect
                               (pel-iter-directory-files tmp nil nil t))))
         ;; check that result is already sorted
         (should (equal results (sort (copy-sequence results) #'string<))))
 
-         ;; Empty directory yields no files
-         (pel-with-temp-dir empty-tmp
-           (let ((results (funcall collect (pel-iter-directory-files empty-tmp))))
-             (should (null results)))))))
+      ;; Empty directory yields no files
+      (pel-with-temp-dir empty-tmp
+        (let ((results (funcall collect (pel-iter-directory-files empty-tmp))))
+          (should (null results)))))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-broken-symlinks
@@ -426,6 +426,8 @@ DIRSPEC elements mirror the structure returned by
         (should (file-exists-p (expand-file-name "file2.txt" dst)))
         (should (file-directory-p (expand-file-name "sub" dst)))
         (should (file-exists-p (expand-file-name "sub/deep.txt" dst)))
+        ;; confirm it actually resolves to an existing file from within dst
+        (should (file-exists-p (file-truename (expand-file-name "rel-link" dst))))
 
         ;; Relative symlink must be preserved as relative
         (let ((dst-link (expand-file-name "rel-link" dst)))
@@ -446,7 +448,15 @@ DIRSPEC elements mirror the structure returned by
         ;; ── error: destination is an existing regular file ──────────────
         (let ((file-dst (expand-file-name "file-dst" tmp)))
           (write-region "x" nil file-dst)
-          (should-error (pel-duplicate-dir src file-dst)))))))
+          (should-error (pel-duplicate-dir src file-dst)))
+
+        ;; Broken symlink in source is silently skipped (target missing)
+        (let* ((src2 (expand-file-name "source2" tmp))
+               (dst3 (expand-file-name "dest3"   tmp)))
+          (make-directory src2)
+          (make-symbolic-link "no-target" (expand-file-name "broken" src2))
+          (pel-duplicate-dir src2 dst3)
+          (should-not (file-exists-p (expand-file-name "broken" dst3))))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-filedir-test)

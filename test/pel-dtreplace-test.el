@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, March 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 11:30:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 12:32:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -97,6 +97,8 @@ Prevents cross-test contamination of `pel-dirtree-replaced-files',
     (pel-dtr-with-clean-state
       (let* ((fname (expand-file-name "test.txt" tmp))
              (original "hello world\n")
+             (pel-dirtree-replace-file-newtext-is-fixedcase t)
+             (pel-dirtree-replace-file-newtext-is-literal   t)
              (pel-dirtree-replace-files-is-verbose nil)
              (pel-dirtree-replace-file-backup-suffix nil))
         (write-region original nil fname)
@@ -190,7 +192,8 @@ Prevents cross-test contamination of `pel-dirtree-replaced-files',
         (pel-find-replace fname "HELLO" "goodbye")
         (with-temp-buffer
           (insert-file-contents fname)
-          ;; Emacs replace-match with fixedcase=nil upcases "GOODBYE"
+          ;; Emacs replace-match with fixedcase=nil and all-caps match
+          ;; upcases the replacement text ("goodbye" → "GOODBYE").
           (should (string= (buffer-string) "GOODBYE world")))))))
 
 (ert-deftest pel-find-replace-accumulates-replaced-files-test ()
@@ -330,69 +333,72 @@ Prevents cross-test contamination of `pel-dirtree-replaced-files',
 (ert-deftest pel-dirtree-replace-undo-restores-single-file-test ()
   "Undo restores a single file from its backup and clears the replaced list."
   (pel-dtr-with-temp-dir tmp
-    (let* ((fname  (expand-file-name "data.txt" tmp))
-           (suffix ".original")
-           (bkp    (format "%s%s" fname suffix))
-           (pel-dirtree-replace-file-backup-suffix suffix)
-           (pel-dirtree-replace-files-is-verbose nil))
-      ;; Simulate a prior find-replace: modified file + backup
-      (write-region "new content" nil fname)
-      (write-region "old content" nil bkp)
-      (setq pel-dirtree-replaced-files (list fname))
+    (pel-dtr-with-clean-state
+      (let* ((fname  (expand-file-name "data.txt" tmp))
+             (suffix ".original")
+             (bkp    (format "%s%s" fname suffix))
+             (pel-dirtree-replace-file-backup-suffix suffix)
+             (pel-dirtree-replace-files-is-verbose nil))
+        ;; Simulate a prior find-replace: modified file + backup
+        (write-region "new content" nil fname)
+        (write-region "old content" nil bkp)
+        (setq pel-dirtree-replaced-files (list fname))
 
-      (let ((result (pel-dirtree-replace-undo :no-prompt)))
-        (should (listp result))
-        (should (= 1 (car result)))
-        (should (null (cadr result))))
+        (let ((result (pel-dirtree-replace-undo :no-prompt)))
+          (should (listp result))
+          (should (= 1 (car result)))
+          (should (null (cadr result))))
 
-      ;; File must now contain the original content
-      (with-temp-buffer
-        (insert-file-contents fname)
-        (should (string= (buffer-string) "old content")))
+        ;; File must now contain the original content
+        (with-temp-buffer
+          (insert-file-contents fname)
+          (should (string= (buffer-string) "old content")))
 
-      ;; Intermediate --backup temp must be gone
-      (should-not (file-exists-p (format "%s--backup" fname)))
+        ;; Intermediate --backup temp must be gone
+        (should-not (file-exists-p (format "%s--backup" fname)))
 
-      ;; State must be cleared
-      (should (null pel-dirtree-replaced-files)))))
+        ;; State must be cleared
+        (should (null pel-dirtree-replaced-files))))))
 
 (ert-deftest pel-dirtree-replace-undo-multiple-files-test ()
   "Undo restores multiple files and returns the correct count."
   (pel-dtr-with-temp-dir tmp
-    (let* ((suffix ".bak")
-           (pel-dirtree-replace-file-backup-suffix suffix)
-           (pel-dirtree-replace-files-is-verbose nil)
-           (files (mapcar (lambda (n)
-                            (expand-file-name (format "file%d.txt" n) tmp))
-                          '(1 2 3))))
-      (dolist (f files)
-        (write-region "new" nil f)
-        (write-region "old" nil (format "%s%s" f suffix)))
-      (setq pel-dirtree-replaced-files (copy-sequence files))
+    (pel-dtr-with-clean-state
+      (let* ((suffix ".bak")
+             (pel-dirtree-replace-file-backup-suffix suffix)
+             (pel-dirtree-replace-files-is-verbose nil)
+             (files (mapcar (lambda (n)
+                              (expand-file-name (format "file%d.txt" n) tmp))
+                            '(1 2 3))))
+        (dolist (f files)
+          (write-region "new" nil f)
+          (write-region "old" nil (format "%s%s" f suffix)))
+        (setq pel-dirtree-replaced-files (copy-sequence files))
 
-      (let ((result (pel-dirtree-replace-undo :no-prompt)))
-        (should (= 3 (car result)))
-        (should (null (cadr result))))
+        (let ((result (pel-dirtree-replace-undo :no-prompt)))
+          (should (= 3 (car result)))
+          (should (null (cadr result))))
 
-      (dolist (f files)
-        (with-temp-buffer
-          (insert-file-contents f)
-          (should (string= (buffer-string) "old"))))
+        (dolist (f files)
+          (with-temp-buffer
+            (insert-file-contents f)
+            (should (string= (buffer-string) "old"))))
 
-      (should (null pel-dirtree-replaced-files)))))
+        (should (null pel-dirtree-replaced-files))))))
 
 (ert-deftest pel-dirtree-replace-undo-missing-backup-test ()
   "Signals user-error and reports files whose backup is absent."
   (pel-dtr-with-temp-dir tmp
-    (let* ((fname  (expand-file-name "nobackup.txt" tmp))
-           (suffix ".bak")
-           (pel-dirtree-replace-file-backup-suffix suffix)
-           (pel-dirtree-replace-files-is-verbose nil))
-      ;; Modified file exists but backup does NOT
-      (write-region "modified" nil fname)
-      (setq pel-dirtree-replaced-files (list fname))
-      (should-error (pel-dirtree-replace-undo :no-prompt)
-                    :type 'user-error))))
+    (pel-dtr-with-clean-state
+      (let* ((fname  (expand-file-name "nobackup.txt" tmp))
+             (suffix ".bak")
+             (pel-dirtree-replace-file-backup-suffix suffix)
+             (pel-dirtree-replace-files-is-verbose nil))
+        ;; Modified file exists but backup does NOT
+        (write-region "modified" nil fname)
+        (setq pel-dirtree-replaced-files (list fname))
+        (should-error (pel-dirtree-replace-undo :no-prompt)
+                      :type 'user-error)))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-dt-fr-changed-files-in-dired
@@ -411,71 +417,74 @@ capturing the return value, so `fnames' remained unsorted.
 After the fix (`(setq fnames (sort fnames #'string<))') the list
 passed to `dired' must be in ascending string order."
   (pel-dtr-with-temp-dir tmp
-    (let* ((f1 (expand-file-name "zebra.txt" tmp))
-           (f2 (expand-file-name "alpha.txt" tmp))
-           (f3 (expand-file-name "mango.txt" tmp))
-           (pel-dirtree-rootdir tmp)
-           (pel-dirtree-replace-file-backup-suffix nil)
-           (captured nil))
-      (dolist (f (list f1 f2 f3))
-        (write-region "x" nil f))
-      ;; Intentionally unsorted order to expose the bug
-      (setq pel-dirtree-replaced-files (list f1 f2 f3))
+    (pel-dtr-with-clean-state
+      (let* ((f1 (expand-file-name "zebra.txt" tmp))
+             (f2 (expand-file-name "alpha.txt" tmp))
+             (f3 (expand-file-name "mango.txt" tmp))
+             (pel-dirtree-rootdir tmp)
+             (pel-dirtree-replace-file-backup-suffix nil)
+             (captured nil))
+        (dolist (f (list f1 f2 f3))
+          (write-region "x" nil f))
+        ;; Intentionally unsorted order to expose the bug
+        (setq pel-dirtree-replaced-files (list f1 f2 f3))
 
-      ;; Intercept the `dired' call to inspect its argument
-      (cl-letf (((symbol-function 'dired)
-                 (lambda (arg) (setq captured arg))))
-        (pel-dt-fr-changed-files-in-dired))
+        ;; Intercept the `dired' call to inspect its argument
+        (cl-letf (((symbol-function 'dired)
+                   (lambda (arg) (setq captured arg))))
+          (pel-dt-fr-changed-files-in-dired))
 
-      (let ((file-list (cdr captured)))
-        (should (listp file-list))
-        (should (equal file-list
-                       (sort (copy-sequence file-list) #'string<)))))))
+        (let ((file-list (cdr captured)))
+          (should (listp file-list))
+          (should (equal file-list
+                         (sort (copy-sequence file-list) #'string<))))))))
 
 (ert-deftest pel-dt-fr-changed-files-in-dired-with-backups-test ()
   "Backup filenames are appended and the combined list is sorted."
   (pel-dtr-with-temp-dir tmp
-    (let* ((f1     (expand-file-name "a.txt" tmp))
-           (f2     (expand-file-name "b.txt" tmp))
-           (suffix ".original")
-           (pel-dirtree-rootdir tmp)
-           (pel-dirtree-replace-file-backup-suffix suffix)
-           (captured nil))
-      (dolist (f (list f1 f2))
-        (write-region "data" nil f)
-        (write-region "orig" nil (format "%s%s" f suffix)))
-      (setq pel-dirtree-replaced-files (list f1 f2))
+    (pel-dtr-with-clean-state
+      (let* ((f1     (expand-file-name "a.txt" tmp))
+             (f2     (expand-file-name "b.txt" tmp))
+             (suffix ".original")
+             (pel-dirtree-rootdir tmp)
+             (pel-dirtree-replace-file-backup-suffix suffix)
+             (captured nil))
+        (dolist (f (list f1 f2))
+          (write-region "data" nil f)
+          (write-region "orig" nil (format "%s%s" f suffix)))
+        (setq pel-dirtree-replaced-files (list f1 f2))
 
-      (cl-letf (((symbol-function 'dired)
-                 (lambda (arg) (setq captured arg))))
-        (pel-dt-fr-changed-files-in-dired))
+        (cl-letf (((symbol-function 'dired)
+                   (lambda (arg) (setq captured arg))))
+          (pel-dt-fr-changed-files-in-dired))
 
-      (let ((file-list (cdr captured)))
-        ;; 2 original files + 2 backup files = 4 entries
-        (should (= 4 (length file-list)))
-        (should (member f1 file-list))
-        (should (member f2 file-list))
-        (should (member (format "%s%s" f1 suffix) file-list))
-        (should (member (format "%s%s" f2 suffix) file-list))
-        ;; Must be sorted
-        (should (equal file-list
-                       (sort (copy-sequence file-list) #'string<)))))))
+        (let ((file-list (cdr captured)))
+          ;; 2 original files + 2 backup files = 4 entries
+          (should (= 4 (length file-list)))
+          (should (member f1 file-list))
+          (should (member f2 file-list))
+          (should (member (format "%s%s" f1 suffix) file-list))
+          (should (member (format "%s%s" f2 suffix) file-list))
+          ;; Must be sorted
+          (should (equal file-list
+                         (sort (copy-sequence file-list) #'string<))))))))
 
 (ert-deftest pel-dt-fr-changed-files-in-dired-dired-buffer-title-test ()
   "The dired buffer title includes the root directory name."
   (pel-dtr-with-temp-dir tmp
-    (let* ((fname (expand-file-name "file.txt" tmp))
-           (pel-dirtree-rootdir tmp)
-           (pel-dirtree-replace-file-backup-suffix nil)
-           (captured nil))
-      (write-region "x" nil fname)
-      (setq pel-dirtree-replaced-files (list fname))
-      (cl-letf (((symbol-function 'dired)
-                 (lambda (arg) (setq captured arg))))
-        (pel-dt-fr-changed-files-in-dired))
-      ;; car of the cons is the buffer title string
-      (should (stringp (car captured)))
-      (should (string-match-p (regexp-quote tmp) (car captured))))))
+    (pel-dtr-with-clean-state
+      (let* ((fname (expand-file-name "file.txt" tmp))
+             (pel-dirtree-rootdir tmp)
+             (pel-dirtree-replace-file-backup-suffix nil)
+             (captured nil))
+        (write-region "x" nil fname)
+        (setq pel-dirtree-replaced-files (list fname))
+        (cl-letf (((symbol-function 'dired)
+                   (lambda (arg) (setq captured arg))))
+          (pel-dt-fr-changed-files-in-dired))
+        ;; car of the cons is the buffer title string
+        (should (stringp (car captured)))
+        (should (string-match-p (regexp-quote tmp) (car captured)))))))
 
 ;; ---------------------------------------------------------------------------
 ;; Integration: pel-find-replace + pel-dirtree-replace-undo roundtrip
