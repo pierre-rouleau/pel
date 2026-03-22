@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, April 19 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 18:02:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 18:17:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -531,60 +531,76 @@ The TEST-DATA is a list of list of list of two strings:
   (should (string= (pel-capitalize-first-letter "éclair") "Éclair")))
 
 (ert-deftest pel-upcase-letter-tests ()
-  "Test 'pel-upcase-letter'."
-  (ert-skip "Temporary skipping failing test.")
-  ;; default N=1, no region
+  "Test `pel-upcase-letter'."
+  ;; default N=1, no region: upcase 1 char at point
   (with-temp-buffer
     (insert "ab")
-    (goto-char (point-min))
+    (goto-char (point-min))    ; pos 1, before 'a'
     (pel-upcase-letter)
     (should (string= (buffer-string) "Ab")))
-  ;; explicit N>1
+
+  ;; explicit N=2: upcase 2 chars starting at point
   (with-temp-buffer
     (insert "abcd")
-    (goto-char (point-min))
+    (goto-char (point-min))    ; pos 1
     (pel-upcase-letter 2)
     (should (string= (buffer-string) "ABcd")))
-  ;; negative N = upcase before point
+
+  ;; negative N=-1: upcase 1 char before point
+  ;; beg=2, right-char(-1) → point=1; upcase-region(2,1) ≡ upcase-region(1,2) = 'a'→'A'
   (with-temp-buffer
     (insert "abcd")
-    (goto-char 2)          ;; just after 'a'
-    (pel-upcase-letter -1) ;; upcase 1 char before point
+    (goto-char 2)              ; between 'a' and 'b'
+    (pel-upcase-letter -1)
     (should (string= (buffer-string) "Abcd")))
-  ;; region path
+
+  ;; region path: requires transient-mark-mode to make use-region-p return t.
+  ;; mark=2 (between 'a' and 'b'), point=4 (between 'c' and 'd')
+  ;; region covers chars at pos 2,3 = 'b','c' → 'B','C'
   (with-temp-buffer
     (insert "abcd")
-    (goto-char 2) (set-mark (point)) (goto-char 4) (activate-mark)
-    (pel-upcase-letter)
-    (should (string= (buffer-string) "abCD"))))
+    (let ((transient-mark-mode t))
+      (goto-char 2)
+      (set-mark (point))       ; mark at pos 2
+      (goto-char 4)            ; point at pos 4
+      (pel-upcase-letter)
+      (should (string= (buffer-string) "aBCd")))))   ; corrected: was "abCD"
 
 (ert-deftest pel-downcase-letter-tests ()
-  "Test`pel-downcase-letter'."
-  (ert-skip "Temporary skipping failing test.")
-  ;; default N=1, no region
+  "Test `pel-downcase-letter'."
+  ;; default N=1, no region: downcase 1 char at point
   (with-temp-buffer
     (insert "AB")
-    (goto-char (point-min))
+    (goto-char (point-min))    ; pos 1, before 'A'
     (pel-downcase-letter)
     (should (string= (buffer-string) "aB")))
-  ;; explicit N>1
+
+  ;; explicit N=2: downcase 2 chars
   (with-temp-buffer
     (insert "ABCD")
     (goto-char (point-min))
     (pel-downcase-letter 2)
     (should (string= (buffer-string) "abCD")))
-  ;; negative N = downcase before point
+
+  ;; negative N=-2: downcase 2 chars before point
+  ;; beg=3, right-char(-2) → point=1; downcase-region(3,1) ≡ downcase-region(1,3) = 'A','B'→'a','b'
   (with-temp-buffer
     (insert "ABCD")
-    (goto-char 3)            ;; just after 'B'
-    (pel-downcase-letter -2) ;; downcase 'A' 'B'
+    (goto-char 3)              ; between 'B' and 'C'
+    (pel-downcase-letter -2)
     (should (string= (buffer-string) "abCD")))
-  ;; region path
+
+  ;; region path: requires transient-mark-mode to make use-region-p return t.
+  ;; mark=2 (between 'A' and 'B'), point=4 (between 'C' and 'D')
+  ;; region covers chars at pos 2,3 = 'B','C' → 'b','c'
   (with-temp-buffer
     (insert "ABCD")
-    (goto-char 2) (set-mark (point)) (goto-char 4) (activate-mark)
-    (pel-downcase-letter)
-    (should (string= (buffer-string) "Abcd"))))
+    (let ((transient-mark-mode t))
+      (goto-char 2)
+      (set-mark (point))       ; mark at pos 2
+      (goto-char 4)            ; point at pos 4
+      (pel-downcase-letter)
+      (should (string= (buffer-string) "AbcD")))))   ; corrected: was "Abcd"
 
 (ert-deftest pel-sentence-end-description-and-toggle-tests ()
   ;; description
