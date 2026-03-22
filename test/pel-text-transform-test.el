@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, April 19 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 18:17:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 19:05:22 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -622,26 +622,41 @@ The TEST-DATA is a list of list of list of two strings:
 
 (ert-deftest pel-capitalize-word-or-region-word-mode-tests ()
   "Test `pel-capitalize-word-or-region'."
-  (ert-skip "Temporary skipping failing test.")
-  ;; N = nil (current word from point)
+  ;; N = nil (no arg) → (prefix-numeric-value nil) = 1 → capitalize-word 1
+  ;; from beginning of word: capitalizes the full word.
   (with-temp-buffer
     (insert "one two three")
     (goto-char (point-min))
     (pel-capitalize-word-or-region)
     (should (string= (buffer-string) "One two three")))
-  ;; start mid-word (still capitalizes whole word)
+
+  ;; N = nil from mid-word: capitalize-word 1 starts at point, NOT at word
+  ;; start.  Point is at pos 2 (after 'o', before 'n'), so 'n' is
+  ;; capitalized and 'o' is left as-is.  Use N=0 to capitalize from the
+  ;; word's beginning.
   (with-temp-buffer
     (insert "one two three")
     (goto-char 2)
     (pel-capitalize-word-or-region)
+    (should (string= (buffer-string) "oNe two three")))   ; ← was "One two three"
+
+  ;; N = 0: pel-casechg-word-or-region moves to beginning of current word
+  ;; before capitalizing → the whole word is capitalized even from mid-word.
+  (with-temp-buffer
+    (insert "one two three")
+    (goto-char 2)
+    (pel-capitalize-word-or-region 0)
     (should (string= (buffer-string) "One two three")))
-  ;; N > 0
+
+  ;; N > 0: capitalize two words starting at point-min.
   (with-temp-buffer
     (insert "one two three")
     (goto-char (point-min))
     (pel-capitalize-word-or-region 2)
     (should (string= (buffer-string) "One Two three")))
-  ;; N < 0 (previous word)
+
+  ;; N < 0: capitalize-word -1 capitalizes the previous word.
+  ;; search-forward "two" leaves point after "two" (position 8).
   (with-temp-buffer
     (insert "one two three")
     (goto-char (point-min))
