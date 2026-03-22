@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, March 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 15:22:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 16:07:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -326,7 +326,8 @@ Prevents cross-test contamination of `pel-dirtree-replaced-files',
   (pel-dtr-with-temp-dir tmp
     (let* ((fname (expand-file-name "file.txt" tmp))
            (pel-dirtree-replaced-files (list fname))
-           (pel-dirtree-replace-file-backup-suffix nil))
+           (pel-dirtree-replace-file-backup-suffix nil)
+           (pel-dirtree-replace-files-is-verbose nil))
       (write-region "content" nil fname)
       (should-error (pel-dirtree-replace-undo :no-prompt)
                     :type 'user-error))))
@@ -400,6 +401,37 @@ Prevents cross-test contamination of `pel-dirtree-replaced-files',
         (setq pel-dirtree-replaced-files (list fname))
         (should-error (pel-dirtree-replace-undo :no-prompt)
                       :type 'user-error)))))
+
+(ert-deftest pel-dirtree-replace-undo-user-declines-test ()
+  "When the user answers no to the prompt, undo does nothing and returns nil.
+Both the file content and `pel-dirtree-replaced-files' must be left unchanged."
+  (pel-dtr-with-temp-dir tmp
+    (pel-dtr-with-clean-state
+      (let* ((fname  (expand-file-name "data.txt" tmp))
+             (suffix ".bak")
+             (bkp    (format "%s%s" fname suffix))
+             (pel-dirtree-replace-file-backup-suffix suffix)
+             (pel-dirtree-replace-files-is-verbose nil))
+        (write-region "modified content" nil fname)
+        (write-region "original content" nil bkp)
+        (setq pel-dirtree-replaced-files (list fname))
+
+        ;; Simulate the user pressing "n" at the prompt
+        (cl-letf (((symbol-function 'y-or-n-p)
+                   (lambda (_prompt) nil)))
+          (let ((result (pel-dirtree-replace-undo nil)))
+            (should (null result))))
+
+        ;; File must remain unchanged
+        (with-temp-buffer
+          (insert-file-contents fname)
+          (should (string= (buffer-string) "modified content")))
+
+        ;; Backup must still exist
+        (should (file-exists-p bkp))
+
+        ;; State must remain unchanged
+        (should (equal pel-dirtree-replaced-files (list fname)))))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-dt-fr-changed-files-in-dired

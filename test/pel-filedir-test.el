@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 15:27:02 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 16:04:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -355,7 +355,17 @@ even if BODY signals an error."
         ;; Directory with no broken symlinks
         (pel-with-temp-dir clean-tmp
           (write-region "x" nil (expand-file-name "plain.txt" clean-tmp))
-          (should (null (pel-broken-symlinks clean-tmp))))))))
+          (should (null (pel-broken-symlinks clean-tmp))))
+
+        ;; Symlink to an existing directory must not be reported as broken
+        (pel-with-temp-dir dir-tmp
+          (let* ((dir-target (expand-file-name "realdir"   dir-tmp))
+                 (dir-link   (expand-file-name "link-to-dir" dir-tmp)))
+            (make-directory dir-target)
+            (make-symbolic-link dir-target dir-link)
+            (let ((result (pel-broken-symlinks dir-tmp)))
+              (should (null result))
+              (should-not (member dir-link result)))))))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel--dirspec-for-dir-p  (internal helper)
