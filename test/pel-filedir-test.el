@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 16:35:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 16:55:06 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -373,6 +373,9 @@ even if BODY signals an error."
 (ert-deftest pel-show-broken-symlinks-smoke-test ()
   "Smoke test: pel-show-broken-symlinks creates *Broken Symlinks* buffer
 containing the paths of all broken symbolic links found."
+  ;; cl-letf on interactive fns unreliable in Emacs 26
+  (skip-unless (and (not pel-system-is-windows-p)
+                    (>= emacs-major-version 27)))
   (unless pel-system-is-windows-p
     (pel-with-temp-dir tmp
       (let* ((target  (expand-file-name "target.txt" tmp))
@@ -405,6 +408,9 @@ containing the paths of all broken symbolic links found."
 (ert-deftest pel-show-broken-symlinks-no-links-test ()
   "When there are no broken symlinks the *Broken Symlinks* buffer is
 not created (the `(when broken-links ...)' guard prevents it)."
+  ;; cl-letf on interactive fns unreliable in Emacs 26
+  (skip-unless (and (not pel-system-is-windows-p)
+                    (>= emacs-major-version 27)))
   (unless pel-system-is-windows-p
     (pel-with-temp-dir tmp
       (write-region "content" nil (expand-file-name "file.txt" tmp))

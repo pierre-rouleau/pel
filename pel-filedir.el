@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 15:32:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 16:33:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -199,20 +199,20 @@ Prompts for a directory and list found broken symlinks in the special
                                        nil
                                        t
                                        nil))
-         (buffer (get-buffer-create "*Broken Symlinks*"))
          (broken-links (pel-broken-symlinks dirpath))
          (title (pel-count-string (length broken-links) "broken symlink")))
     (when broken-links
-      (with-current-buffer buffer
-        (erase-buffer)
-        (pel-insert-bold
-         (format "At %s, found %s in %s:\n"
-                 (format-time-string "%Y-%m-%d %H:%M:%S" (current-time))
-                 title
-                 (expand-file-name dirpath)))
-        (dolist (fname broken-links)
-          (insert (format "%s\t-> %s\n" fname (file-symlink-p fname))))
-        (display-buffer buffer)))
+      (let ((buffer (get-buffer-create "*Broken Symlinks*")))
+        (with-current-buffer buffer
+          (erase-buffer)
+          (pel-insert-bold
+           (format "At %s, found %s in %s:\n"
+                   (format-time-string "%Y-%m-%d %H:%M:%S" (current-time))
+                   title
+                   (expand-file-name dirpath)))
+          (dolist (fname broken-links)
+            (insert (format "%s\t-> %s\n" fname (file-symlink-p fname))))
+          (display-buffer buffer))))
     (message "Found %s." title)))
 
 
