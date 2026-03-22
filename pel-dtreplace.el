@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 11:13:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 11:40:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -48,14 +48,14 @@
 ;; * `pel-dt-fr-toggle-literal'
 ;; * `pel-dt-fr-changed-files-in-dired'
 
-;; NOTE: under Emacs 26, `directory-files-recursively' accepts only 3 arguments.
-;;       The 4th argument is needed in the implementation of `pel--dt'.
-;;       Since PEL provides support to Emacs 26, this file contains a copy
-;;       of `directory-files-recursively' from Emacs 30 source tree from the
-;;       files.el file, which is provided under the same GNU license.
-;;       To prevent name space pollution issues on Emacs 26, that function
-;;       is named `pel-directory-files-recursively' under Emacs 26.
-
+;; Note: The `pel--dt' utility function does not support Emacs 26 due to a
+;;       missing feature in Emacs 26.  This causes `pel-dirtree-find-replace'
+;;       to signal an error unless the PEL user-option
+;;       `pel--dirtree-allow-operation-in-forbidden-directories' is set to t.
+;;       But this simply allow the code to recurse into forbidden directories!
+;;       By default the user-option is not set to t.
+;;       Only set it when using the function on safe directories!!
+;;
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
@@ -75,77 +75,6 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
-
-;; Backward Compatibility code : code from Emacs 30 files.el
-
-(unless pel-emacs-27-or-later-p
-  (require 'files)       ; declare other required functions
-  (defun pel-directory-files-recursively (dir regexp
-                                              &optional include-directories predicate
-                                              follow-symlinks)
-    "Return list of all files under directory DIR whose names match REGEXP.
-This function works recursively.  Files are returned in \"depth
-first\" order, and files from each directory are sorted in
-alphabetical order.  Each file name appears in the returned list
-in its absolute form.
-
-By default, the returned list excludes directories, but if
-optional argument INCLUDE-DIRECTORIES is non-nil, they are
-included.
-
-PREDICATE can be either nil (which means that all subdirectories
-of DIR are descended into), t (which means that subdirectories that
-can't be read are ignored), or a function (which is called with
-the name of each subdirectory, and should return non-nil if the
-subdirectory is to be descended into).
-
-If FOLLOW-SYMLINKS is non-nil, symbolic links that point to
-directories are followed.  Note that this can lead to infinite
-recursion."
-    (let* ((result nil)
-	   (files nil)
-           (dir (directory-file-name dir))
-	   ;; When DIR is "/", remote file names like "/method:" could
-	   ;; also be offered.  We shall suppress them.
-	   (tramp-mode (and tramp-mode (file-remote-p (expand-file-name dir)))))
-      (dolist (file (sort (file-name-all-completions "" dir)
-			  'string<))
-        (unless (member file '("./" "../"))
-	  (if (directory-name-p file)
-	      (let* ((leaf (substring file 0 (1- (length file))))
-		     (full-file (concat dir "/" leaf)))
-	        ;; Don't follow symlinks to other directories.
-	        (when (and (or (not (file-symlink-p full-file))
-                               (and (file-symlink-p full-file)
-                                    follow-symlinks))
-                           ;; Allow filtering subdirectories.
-                           (or (eq predicate nil)
-                               (eq predicate t)
-                               (funcall predicate full-file)))
-                  (let ((sub-files
-                         (if (eq predicate t)
-                             (ignore-error file-error
-                               (pel-directory-files-recursively
-			        full-file regexp include-directories
-                                predicate follow-symlinks))
-                           (pel-directory-files-recursively
-			    full-file regexp include-directories
-                            predicate follow-symlinks))))
-		    (setq result (nconc result sub-files))))
-	        (when (and include-directories
-			   (string-match regexp leaf))
-		  (setq result (nconc result (list full-file)))))
-	    (when (string-match regexp file)
-	      (push (concat dir "/" file) files)))))
-      (nconc result (nreverse files))))
-  (declare-function pel-directory-files-recursively
-                    "pel-dtreplace" (dir regexp
-                                         &optional include-directories predicate
-                                         follow-symlinks)))
-
-;; ---------------------------------------------------------------------------
-;; pel-dtreplace code
-;; ==================
 
 (defgroup pel-dirtree-replace nil
   "Customization of the pel-dirtree-replace commands."
@@ -205,6 +134,33 @@ name with the string is appended."
   :type '(repeat
           (string :tag "Base name regexp of directory to ignore")))
 
+(defcustom pel--dirtree-allow-operation-in-forbidden-directories nil
+  "Allow search/replace in forbidden directories on old versions of Emacs.
+
+In old versions of Emacs, such as Emacs 26, the `directory-files-recursively'
+only accepts 3 arguments and does not use a function that can be used to
+prevent processing of files in forbidden directories.
+
+In those versions of Emacs the function `pel--dt' detects the problem and
+prevents the operation warning the user.  At this point you can do several
+things:
+
+- Upgrade Emacs to a later version where the `directory-files-recursively'
+  function accepts 4 arguments.
+- Keep using the same old version of Emacs but get the source code of the
+  `directory-files-recursively' function from the files.el from a newer
+  version of Emacs and use that.
+- Keep using the same old version of Emacs, change nothing and accept the fact
+  that the `pel-dirtree-find-replace' may change the content of files in the
+  forbidden directories by setting
+  `pel--dirtree-allow-operation-in-forbidden-directories' to t.
+
+  - In that case, you can mitigate the issue by identifying the file names
+    more carefully."
+  :group 'pel-dirtree-replace
+  :type 'boolean
+  :safe #'booleanp)
+
 (defvar pel-dirtree-replaced-files nil
   "List of files replaced by last `pel-dirtree-find-replace' command.")
 
@@ -252,19 +208,32 @@ prints a message showing how many instances were replaced."
 (defvar pel--dt-old-version-warning-done nil)
 
 (defun pel--dt (root-dir fn-re)
-  "Return a list of files with names matching FN-RE under ROOT-DIR.
-Support Emacs 26 and later."
-  (if pel-emacs-27-or-later-p
-      (directory-files-recursively root-dir
-                                   fn-re
-                                   nil
-                                   (function pel--allow-descent-in))
-    ;; For Emacs 26: use the Emacs 30 implementation of the function
-    ;; implemented inside this file.
-    (pel-directory-files-recursively root-dir
+  "Return a list of files with names matching FN-RE under ROOT-DIR."
+  (condition-case nil
+      (with-no-warnings    ; prevent byte-compiler warnings in Emacs 26
+        (directory-files-recursively root-dir
                                      fn-re
                                      nil
-                                     (function pel--allow-descent-in))))
+                                     (function pel--allow-descent-in)))
+    (wrong-number-of-arguments
+     ;; in Emacs 26 at least, `directory-files-recursively'
+     ;; has only 3 arguments: either upgrade Emacs or get a copy of the
+     ;; newer function from the files.el of a later version of Emacs.
+     (if pel--dirtree-allow-operation-in-forbidden-directories
+         (unless pel--dt-old-version-warning-done
+           (message "\
+WARNING: this version of Emacs does not skip forbidden directories
+         identified by `pel-dirtree-replace-file-forbidden-dir-re'.
+         Get a newer version of Emacs or get a copy of
+         `directory-files-recursively' from the files.el from a
+         later version of Emacs.")
+           (setq pel--dt-old-version-warning-done t)
+           (with-no-warnings
+             (directory-files-recursively root-dir fn-re nil)))
+       (user-error "\
+In this version of Emacs, directory-files-recursively cannot skip
+forbidden directories: Upgrade Emacs, update files.el or allow this
+by setting `pel--dirtree-allow-operation-in-forbidden-directories' to t")))))
 
 (defun pel--dt-prompt  (prompt scope)
   "Print PROMPT formatted, read minibuffer with SCOPE history."
@@ -309,7 +278,15 @@ The following user-options control various aspects of the operation:
 
 The function remembers a list of modified files.
 Use the command `pel-dt-fr-changed-files-in-dired' to open a Dired
-buffer with this list of files."
+buffer with this list of files.
+
+NOTE: this command is not fully supported under Emacs 26 or earlier!
+      See `pel--dirtree-allow-operation-in-forbidden-directories' for
+      a mitigation mechanism that will activate partial support at the
+      expense of allowing recursion into forbidden directories.
+      This is disabled by default.    Only activate it with care!
+      The message describe another way to add support under Emacs 26.
+      Ideally migrate to a more recent version of Emacs!"
   (interactive
    (let* ((from (pel--dt-prompt "Text regexp" 'text-re))
           (to-prompt (format "%s%s%s case replace%s"

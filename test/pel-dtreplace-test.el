@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, March 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 11:06:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 11:30:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -252,6 +252,7 @@ Prevents cross-test contamination of `pel-dirtree-replaced-files',
 
 (ert-deftest pel--dt-finds-matching-files-test ()
   "pel--dt returns files whose names match FN-RE anywhere under ROOT-DIR."
+  (skip-unless (>= emacs-major-version 27)) ; 'pel--dt' does not support Emacs 26.
   (pel-dtr-with-temp-dir tmp
     (let ((pel-dirtree-replace-file-forbidden-dir-re '("/\\."))
           (pel--dirtree-allow-operation-in-forbidden-directories nil))
@@ -282,6 +283,7 @@ Prevents cross-test contamination of `pel-dirtree-replaced-files',
 
 (ert-deftest pel--dt-respects-forbidden-dirs-test ()
   "pel--dt does not recurse into directories matched by the forbidden regexp."
+  (skip-unless (>= emacs-major-version 27)) ; 'pel--dt' does not support Emacs 26.
   (pel-dtr-with-temp-dir tmp
     (let ((pel-dirtree-replace-file-forbidden-dir-re '("/\\."))
           (pel--dirtree-allow-operation-in-forbidden-directories nil))
@@ -300,6 +302,7 @@ Prevents cross-test contamination of `pel-dirtree-replaced-files',
 
 (ert-deftest pel--dt-empty-directory-test ()
   "pel--dt returns nil for a directory with no matching files."
+  (skip-unless (>= emacs-major-version 27)) ; 'pel--dt' does not support Emacs 26.
   (pel-dtr-with-temp-dir tmp
     (let ((pel-dirtree-replace-file-forbidden-dir-re '("/\\.")))
       (should (null (pel--dt tmp "\\.txt\\'"))))))
@@ -505,6 +508,7 @@ passed to `dired' must be in ascending string order."
 
 (ert-deftest pel-find-replace-tree-then-undo-test ()
   "Roundtrip across multiple files discovered by pel--dt."
+  (skip-unless (>= emacs-major-version 27)) ; 'pel--dt' does not support Emacs 26.
   (pel-dtr-with-temp-dir tmp
     (pel-dtr-with-clean-state
       (let* ((sub    (expand-file-name "sub" tmp))
