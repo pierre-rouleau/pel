@@ -1,4 +1,4 @@
-;;; pel-seq.el --- Sequence manipulation utilities -*-lexical-binding: t; -*-
+;;; pel-seq.el --- Sequence manipulation utilities  -*-lexical-binding: t; -*-
 
 ;; Copyright (C) 2020-2022, 2026  Pierre Rouleau
 
@@ -33,19 +33,22 @@
 ;;; Dependencies:
 
 (require 'pel--install)   ; use: `pel-require'
-(require 'seq)            ; use: `seq-reduce'
+;; On Emacs 26 seq was not part of Emacs.
+(pel-require 'seq :install-when-missing)  ; use: `seq-reduce'
+(declare-function seq-reduce "seq")
 
-;; ---------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Code:
 
 ;;-pel-autoload
 (defun pel-all-fboundp (&rest funs)
-  "Return t if all function symbols in FUNS list are bound, nil otherwise."
+  "Return t if all symbols in FUNS are `fboundp', nil otherwise.
+FUNS are individual function symbols passed as separate arguments."
   (seq-reduce (lambda (b1 b2) (and b1 b2))
               (mapcar #'fboundp funs)
               t))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 (provide 'pel-seq)
 
 ;;; pel-seq.el ends here

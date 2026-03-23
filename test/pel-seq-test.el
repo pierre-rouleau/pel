@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 10:36:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 10:50:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -60,8 +60,8 @@
 ;; ---------------------------------------------------------------------------
 
 (ert-deftest pel-seq-test/all-fboundp/no-args ()
-  "With no arguments `pel-all-fboundp' returns t (vacuous truth).
-`seq-reduce' over an empty sequence returns its initial value, which is t."
+  "With no arguments `pel-all-fboundp' returns t.
+There are no symbols to check, so the result is vacuously true."
   (should (eq t (pel-all-fboundp))))
 
 ;; ---------------------------------------------------------------------------
