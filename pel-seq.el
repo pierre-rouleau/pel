@@ -1,6 +1,6 @@
 ;;; pel-seq.el --- Sequence manipulation utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2026  Pierre Rouleau
+;; Copyright (C) 2020-2022, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -32,9 +32,8 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--install)                   ; use: `pel-require'
-(pel-require 'seq :install-when-missing)  ; use: `seq-reduce'
-(declare-function seq-reduce "seq")
+(require 'pel--install)   ; use: `pel-require'
+(require 'seq)            ; use: `seq-reduce'
 
 ;; ---------------------------------------------------------------------------
 ;;; Code:
