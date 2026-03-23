@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 12:50:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 13:43:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -85,8 +85,9 @@
 (ert-deftest pel-text-insert-test/tilde-file-name/path-outside-home ()
   "A path outside the home directory is returned unchanged."
   (let ((path "/tmp/somefile.txt"))
-    ;; Only check when /tmp actually is outside home (always true in practice).
-    (unless (string-prefix-p (expand-file-name "~") path)
+    ;; Skip the test explicitly if assumption doesn't hold
+    (if (string-prefix-p (expand-file-name "~") path)
+        (ert-skip "Test assumes /tmp is outside home directory")
       (should (string= (pel-tilde-file-name path) path)))))
 
 (ert-deftest pel-text-insert-test/tilde-file-name/root-path ()

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 12:49:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 13:42:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -41,7 +41,7 @@
 ;;   pel-c-search-preproc-if          - search for bare '#if VAR'
 ;;   pel-c-search-preproc-if-set      - search for '#if VAR == 0/1'
 ;;   pel-c-fix-comparison-problems    - fix all comparison anti-patterns
-;;   pel-c-fix-preproc-if-problems    - fix preprocessor `#if` anti-patterns
+;;   pel-c-fix-preproc-if-problems    - fix preprocessor #if anti-patterns
 ;;
 ;; Items intentionally NOT covered:
 ;;   - C++ class-qualifier path (requires c++-mode)
@@ -91,9 +91,8 @@ Point is left at the beginning of the buffer."
 
 (ert-deftest pel-c-utils-test/constants/preproc-if-regexp-matches-bare-if ()
   "`pel-preproc-if-regexp' matches a bare `#if VAR' line."
-  (ert-skip "Temporary skip failing test under development.")
   (should (string-match pel-preproc-if-regexp "#if MY_FLAG"))
-  (should (string-match pel-preproc-if-regexp "  `#if` MY_FLAG"))
+  (should (string-match pel-preproc-if-regexp "  #if MY_FLAG"))
   (should (string-match pel-preproc-if-regexp "#  if MY_FLAG")))
 
 (ert-deftest pel-c-utils-test/constants/preproc-if-regexp-rejects-if-eq ()
@@ -440,7 +439,7 @@ Verify EXPECTED-TEXT and COUNTS."
        (should (equal counts ,expected-counts)))))
 
 ;; ---------------------------------------------------------------------------
-;; `#if` VAR  →  `#if` (defined(VAR) && (VAR != 0))
+;; #if VAR  →  #if (defined(VAR) && (VAR != 0))
 ;; ---------------------------------------------------------------------------
 
 (ert-deftest pel-c-utils-test/fix-preproc-if/bare-if-var ()
@@ -452,10 +451,9 @@ Verify EXPECTED-TEXT and COUNTS."
 
 (ert-deftest pel-c-utils-test/fix-preproc-if/bare-if-var-with-indent ()
   "A bare `#if VAR' with leading blanks preserves indentation."
-  (ert-skip "Temporary skip failing test under development.")
   (pel-c-utils-test--fix-preproc
-   "  `#if` MY_FLAG\n"
-   "  `#if` (defined(MY_FLAG) && (MY_FLAG != 0))\n"
+   "  #if MY_FLAG\n"
+   "  #if (defined(MY_FLAG) && (MY_FLAG != 0))\n"
    '(1 0)))
 
 (ert-deftest pel-c-utils-test/fix-preproc-if/bare-if-var-hash-space ()
@@ -466,7 +464,7 @@ Verify EXPECTED-TEXT and COUNTS."
    '(1 0)))
 
 ;; ---------------------------------------------------------------------------
-;; `#if` VAR == 0  →  `#if` (!defined(VAR) || (VAR == 0))
+;; #if VAR == 0  →  #if (!defined(VAR) || (VAR == 0))
 ;; ---------------------------------------------------------------------------
 
 (ert-deftest pel-c-utils-test/fix-preproc-if/if-var-eq-zero ()
@@ -484,7 +482,7 @@ Verify EXPECTED-TEXT and COUNTS."
    '(0 1)))
 
 ;; ---------------------------------------------------------------------------
-;; `#if` VAR == 1  →  `#if` (defined(VAR) && (VAR == 1))
+;; #if VAR == 1  →  #if (defined(VAR) && (VAR == 1))
 ;; ---------------------------------------------------------------------------
 
 (ert-deftest pel-c-utils-test/fix-preproc-if/if-var-eq-one ()
