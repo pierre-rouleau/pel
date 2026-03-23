@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 23:00:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 07:57:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,7 +64,7 @@ Caller is responsible for killing the buffer."
     (with-current-buffer buf
       (insert text)
       (goto-char (point-min))
-      (push-mark (point-max) nil t)   ; set mark at end, activate region
+      (push-mark (point-max) nil t)     ; set mark at end, activate region
       (setq mark-active t))
     buf))
 
@@ -190,6 +190,26 @@ Caller is responsible for killing the buffer."
 ;; ===========================================================================
 ;; pel-align-words-vertically
 ;;
+;; (let ((transient-mark-mode t)) ...) only lexically rebinds the variable. In
+;; Emacs 26, transient-mark-mode is a minor mode and its mode-machinery must be
+;; activated via (transient-mark-mode 1) as a function call. Without that,
+;; (region-active-p) → (and transient-mark-mode mark-active) still evaluates to
+;; nil in Emacs 26 batch, regardless of the let binding. Additionally, push-mark
+;; with ACTIVATE=t does not reliably set mark-active in Emacs 26 batch — it must
+;; be set explicitly.
+(defmacro pel-align-test--with-active-region (beg end &rest body)
+  "Enable transient-mark-mode, activate region BEG..END, run BODY, then restore.
+Works in both interactive and batch mode, including Emacs 26."
+  (declare (indent 2))
+  `(let ((pel-align-test--saved-tmm transient-mark-mode))
+     (transient-mark-mode 1)           ; call the mode function, not just bind
+     (goto-char ,beg)
+     (push-mark ,end nil t)
+     (setq mark-active t)               ; explicit set for Emacs 26 batch
+     (unwind-protect
+         (progn ,@body)
+       (transient-mark-mode (if pel-align-test--saved-tmm 1 -1)))))
+
 ;; Algorithm summary
 ;; -----------------
 ;;   1. Collects every word (split-string) from every line in the region.
@@ -230,16 +250,13 @@ Caller is responsible for killing the buffer."
 ;; Result: "aaa b  \nc   ddd\n"
 ;; ---------------------------------------------------------------------------
 
-
 (ert-deftest pel-align-test/align-words-vertically/two-columns-no-indent ()
   "Two-column alignment with no leading indentation."
   (let ((input    "aaa b\nc ddd\n")
         (expected "aaa b  \nc   ddd\n"))
     (with-temp-buffer
       (insert input)
-      (let ((transient-mark-mode t))
-        (goto-char (point-min))
-        (push-mark (point-max) nil t)   ; t = activate mark
+      (pel-align-test--with-active-region (point-min) (point-max)
         (pel-align-words-vertically))
       (should (string= (buffer-string) expected)))))
 
@@ -268,9 +285,7 @@ Caller is responsible for killing the buffer."
         (expected "one  two  three\nfour five six  \n"))
     (with-temp-buffer
       (insert input)
-      (let ((transient-mark-mode t))
-        (goto-char (point-min))
-        (push-mark (point-max) nil t)
+      (pel-align-test--with-active-region (point-min) (point-max)
         (pel-align-words-vertically))
       (should (string= (buffer-string) expected)))))
 
@@ -298,9 +313,7 @@ Caller is responsible for killing the buffer."
         (expected "  x   bar\n  foo y  \n"))
     (with-temp-buffer
       (insert input)
-      (let ((transient-mark-mode t))
-        (goto-char (point-min))
-        (push-mark (point-max) nil t)
+      (pel-align-test--with-active-region (point-min) (point-max)
         (pel-align-words-vertically))
       (should (string= (buffer-string) expected)))))
 
@@ -317,15 +330,11 @@ Caller is responsible for killing the buffer."
     (with-temp-buffer
       (insert input)
       ;; First call
-      (let ((transient-mark-mode t))
-        (goto-char (point-min))
-        (push-mark (point-max) nil t)
+      (pel-align-test--with-active-region (point-min) (point-max)
         (pel-align-words-vertically))
       (let ((after-first (buffer-string)))
         ;; Second call
-        (let ((transient-mark-mode t))
-          (goto-char (point-min))
-          (push-mark (point-max) nil t)
+        (pel-align-test--with-active-region (point-min) (point-max)
           (pel-align-words-vertically))
         (should (string= (buffer-string) after-first))))))
 
@@ -352,9 +361,7 @@ Caller is responsible for killing the buffer."
         (expected "hello world\n"))
     (with-temp-buffer
       (insert input)
-      (let ((transient-mark-mode t))
-        (goto-char (point-min))
-        (push-mark (point-max) nil t)
+      (pel-align-test--with-active-region (point-min) (point-max)
         (pel-align-words-vertically))
       (should (string= (buffer-string) expected)))))
 

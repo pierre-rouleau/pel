@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 11:51:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 07:46:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -48,8 +48,9 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel-hash)
-(require 'pel--base)                     ; used in pel-align-words-vertically
+(require 'pel-hash)    ; use `pel-make-hash-of-lists'
+(require 'pel--base)   ; use `pel+='
+(require 'seq)         ; use `seq-reduce' (not autoloaded in Emacs 26)
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -232,7 +233,6 @@ text."
                      (delete-char -1)
                      (insert "\n")
                      t))))))))
-
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-align)
