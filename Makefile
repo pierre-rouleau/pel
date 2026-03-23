@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-22 12:59:12 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-22 23:04:56 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -595,7 +595,7 @@ compile-only: $(ELC_FILES) pel_keys.elc pel.elc
 
 .PHONY: help
 help:
-	@printf "\nBuild the Emacs PEL package file for distribution.\n"
+	@printf "\nBuild Emacs PEL for use and distribution.\n"
 	@printf "\n"
 	@printf "Currently building PEL version $(PEL_VERSION).\n"
 	@printf "1) First byte-compile all Emacs Lisp files in required order.\n"
@@ -899,7 +899,10 @@ pel_keys.elc:             pel_keys.el pel__hydra.el $(ELC_FILES)
 
 
 # Test code dependency:
+test/pel--macros-test.el.test-passed:           pel--macros.elc
+test/pel--indent-test.el.test-passed:           pel--indent.elc
 test/pel-abbrev-test.el.test-passed:            pel-abbrev.elc pel--base.elc
+test/pel-align-test.el.test-passed:             pel-align.elc
 test/pel-base-test.el.test-passed:              pel--base.elc
 test/pel-dtreplace-test.el.test-passed:         pel-dtreplace.elc
 test/pel-elcode-test.el.test-passed:            pel-elcode.elc pel--base.elc
