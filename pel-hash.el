@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, December 23 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 09:26:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 09:35:11 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -55,7 +55,7 @@ The possible TEST predicates include the same predefined
 predicates as `make-hash-table', with a different default:
 - eq   : for symbol and integer keys.  This is the default.
 - eql  : like eq but also for floats.
-- equal: like eql but also for strings.
+- equal: like eql but also for strings, vectors and other sequences.
 
 User-supplied test and hash functions can be specified via
 `define-hash-table-test’."

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 09:28:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 09:33:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -79,13 +79,6 @@
 ;; ---------------------------------------------------------------------------
 ;; pel-addto-hash-of-lists
 
-(ert-deftest test-pel-addto-hash-of-lists/nil-element ()
-  "nil is a valid element value."
-  (let ((h (pel-make-hash-of-lists)))
-    (pel-addto-hash-of-lists h 'k nil)
-    (should (equal (gethash 'k h) '(nil)))
-    (should (equal (pel-get-list-from-hash-of-lists-for h 'k) '(nil)))))
-
 (ert-deftest test-pel-addto-hash-of-lists/single-element ()
   "Adding a single element creates a one-element list under the key."
   (let ((h (pel-make-hash-of-lists)))
@@ -93,6 +86,13 @@
     (should (equal (pel-addto-hash-of-lists h 'key 'a) '(a)))
     ;; The hash table now has exactly one key.
     (should (= (hash-table-count h) 1))))
+
+(ert-deftest test-pel-addto-hash-of-lists/nil-element ()
+  "nil is a valid element value."
+  (let ((h (pel-make-hash-of-lists)))
+    (pel-addto-hash-of-lists h 'k nil)
+    (should (equal (gethash 'k h) '(nil)))
+    (should (equal (pel-get-list-from-hash-of-lists-for h 'k) '(nil)))))
 
 (ert-deftest test-pel-addto-hash-of-lists/duplicate-elements ()
   "The same element can be added multiple times; each occurrence is retained."
@@ -143,7 +143,9 @@ Internally the list is stored in reverse insertion order (cons prepends)."
     (pel-addto-hash-of-lists h 1.5 'c)
     (should (= (hash-table-count h) 2))
     (should (equal (gethash 1.5 h) '(c a)))
-    (should (equal (gethash 2.5 h) '(b)))))
+    (should (equal (gethash 2.5 h) '(b)))
+    (should (equal (pel-get-list-from-hash-of-lists-for h 1.5) '(a c)))
+    (should (equal (pel-get-list-from-hash-of-lists-for h 2.5) '(b)))))
 
 (ert-deftest test-pel-addto-hash-of-lists/string-keys ()
   "String keys require the equal test predicate."
