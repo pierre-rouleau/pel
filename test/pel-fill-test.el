@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 18:07:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 18:25:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -205,7 +205,7 @@
         (should (memq 'emacs-lisp-docstring-fill-column inserted-syms))))))
 
 (ert-deftest pel-fill-test/show-fill-columns/detects-lisp-mode ()
-  "In `emacs-lisp-mode' the printer inserts `emacs-lisp-docstring-fill-column'."
+  "In `lisp-mode' the printer inserts `emacs-lisp-docstring-fill-column'."
   (let ((inserted-syms '()))
     (cl-letf (((symbol-function 'pel-print-in-buffer)
                (lambda (_buf _title printer &rest _rest)
@@ -221,7 +221,7 @@
         (should (memq 'emacs-lisp-docstring-fill-column inserted-syms))))))
 
 (ert-deftest pel-fill-test/show-fill-columns/detects-lisp-interaction-mode ()
-  "In `emacs-lisp-mode' the printer inserts `emacs-lisp-docstring-fill-column'."
+  "In `lisp-interaction-mode' the printer inserts `emacs-lisp-docstring-fill-column'."
   (let ((inserted-syms '()))
     (cl-letf (((symbol-function 'pel-print-in-buffer)
                (lambda (_buf _title printer &rest _rest)
