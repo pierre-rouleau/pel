@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 14:37:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 15:07:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -328,7 +328,8 @@ object code file to generate the assembler file."
   (re-search-forward (format pel-preproc-if-eq-regexp-format "[01]")))
 
 (defun pel-c-fix-preproc-if-problems ()
-  "Fix the C/C++ pre-processor #if statements not checking for defined var."
+  "Fix the C/C++ pre-processor #if statements not checking for defined var.
+Return a list of changed if-counts and count-if-set."
   (interactive "*")
   (message "Reformatting C/C++ C-pre-processing code...")
   (save-excursion

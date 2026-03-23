@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 13:42:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 15:13:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -339,6 +339,15 @@ Verify EXPECTED-TEXT and COUNTS."
    "if (!ptr)\n"
    '(1 0 0 0 0 0)))
 
+;; test the Yoda condition form - sometimes used for defensive programming
+;; See; https://en.wikipedia.org/wiki/Yoda_conditions
+(ert-deftest pel-c-utils-test/fix-comparison/negate-NULL-eq ()
+  "`NULL == ptr' (Yoda form) is replaced by `!ptr'."
+  (pel-c-utils-test--fix-comparison
+   "if (NULL == ptr)\n"
+   "if (!ptr)\n"
+   '(1 0 0 0 0 0)))
+
 ;; ---------------------------------------------------------------------------
 ;; != false  →  keep the boolean, drop the comparison
 ;; ---------------------------------------------------------------------------
@@ -459,8 +468,8 @@ Verify EXPECTED-TEXT and COUNTS."
 (ert-deftest pel-c-utils-test/fix-preproc-if/bare-if-var-hash-space ()
   "A bare `# if VAR' (space after #) preserves that style."
   (pel-c-utils-test--fix-preproc
-   "#  if MY_FLAG\n"
-   "#  if (defined(MY_FLAG) && (MY_FLAG != 0))\n"
+   "# if MY_FLAG\n"
+   "# if (defined(MY_FLAG) && (MY_FLAG != 0))\n"
    '(1 0)))
 
 ;; ---------------------------------------------------------------------------

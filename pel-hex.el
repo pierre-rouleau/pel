@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 17 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 14:08:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 15:01:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -40,13 +40,13 @@
 
 (defun pel-bibyte (number)
   "Convert NUMBER to a (gibibyte, mebibyte, kibibyte, byte) counts."
-  (let* ((geb    (/ number 1073741824))
-         (number (- number (* geb 1073741824)))
+  (let* ((gib    (/ number 1073741824))
+         (number (- number (* gib 1073741824)))
          (meb    (/ number 1048576))
          (number (- number (* meb 1048576)))
-         (keb    (/ number 1024))
-         (number (- number (* keb 1024))))
-    (list geb meb keb number)))
+         (kib    (/ number 1024))
+         (number (- number (* kib 1024))))
+    (list gib meb kib number)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-hex)
