@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 17:10:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 17:44:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -97,18 +97,15 @@
 
 (ert-deftest pel-fill-test/auto-fill-only-comments/buffer-isolation ()
   "Toggle in one buffer does not affect a different buffer."
-  (let (other-value)
+  (let ((default-before (default-value 'comment-auto-fill-only-comments)))
     (with-temp-buffer
       (setq-local comment-auto-fill-only-comments nil)
       (pel-auto-fill-only-comments)
-      ;; Value in this buffer is now t.
       (should (eq comment-auto-fill-only-comments t)))
-    ;; In the caller buffer the variable must not have been set to t.
-    (setq other-value
-          (if (local-variable-p 'comment-auto-fill-only-comments)
-              comment-auto-fill-only-comments
-            :unbound))
-    (should-not (eq other-value t))))
+    (should (eq (default-value 'comment-auto-fill-only-comments)
+                default-before))
+    (with-temp-buffer
+      (should (eq comment-auto-fill-only-comments default-before)))))
 
 ;; ===========================================================================
 ;; pel-show-fill-columns
@@ -229,41 +226,50 @@
 ;; ---------------------------------------------------------------------------
 
 (ert-deftest pel-fill-test/show-fill-columns/bound-pel-fill-column-symbol ()
-  "No error when the PEL fill-column symbol for the current mode is bound."
-  ;; Bind the symbol that pel-major-mode-symbol-for would return for text-mode,
-  ;; i.e. `pel-text-fill-column', and ensure the function handles it without error.
-  (cl-letf (((symbol-function 'pel-print-in-buffer)
-             (lambda (_buf _title printer &rest _rest)
-               (ignore-errors (funcall printer))))
-            ((symbol-function 'pel-insert-symbol-content-line)
-             (lambda (&rest _) nil))
-            ((symbol-function 'pel-insert-list-content)
-             (lambda (&rest _) nil)))
-    (with-temp-buffer
-      (text-mode)
-      ;; Temporarily bind pel-text-fill-column to a realistic value.
-      (let ((pel-text-fill-column 80))
+  "No error when the PEL fill-column symbol for the current mode is bound.
+`pel-major-mode-symbol-for' is stubbed to return a fresh uninterned symbol
+created with `make-symbol' and then set to 80 via `set', making
+\(boundp ...) return t without touching any real PEL customisation variable."
+  (let ((bound-sym (make-symbol "pel-fill-test-bound-fill-column")))
+    ;; Give the uninterned symbol a value so (boundp bound-sym) → t.
+    (set bound-sym 80)
+    (cl-letf (((symbol-function 'pel-print-in-buffer)
+               (lambda (_buf _title printer &rest _rest)
+                 (ignore-errors (funcall printer))))
+              ((symbol-function 'pel-insert-symbol-content-line)
+               (lambda (&rest _) nil))
+              ((symbol-function 'pel-insert-list-content)
+               (lambda (&rest _) nil))
+              ((symbol-function 'pel-major-mode-symbol-for)
+               (lambda (&rest _) bound-sym)))
+      (with-temp-buffer
+        (text-mode)
         (should-not (condition-case err
                         (progn (pel-show-fill-columns) nil)
                       (error (format "Unexpected error: %S" err))))))))
 
+
 (ert-deftest pel-fill-test/show-fill-columns/unbound-pel-fill-column-symbol ()
-  "No error when the PEL fill-column symbol for the current mode is unbound."
-  (cl-letf (((symbol-function 'pel-print-in-buffer)
-             (lambda (_buf _title printer &rest _rest)
-               (ignore-errors (funcall printer))))
-            ((symbol-function 'pel-insert-symbol-content-line)
-             (lambda (&rest _) nil))
-            ((symbol-function 'pel-insert-list-content)
-             (lambda (&rest _) nil)))
-    (with-temp-buffer
-      (text-mode)
-      ;; Ensure pel-text-fill-column is not bound.
-      (when (boundp 'pel-text-fill-column)
-        (makunbound 'pel-text-fill-column))
-      (should-not (condition-case err
-                      (progn (pel-show-fill-columns) nil)
-                    (error (format "Unexpected error: %S" err)))))))
+  "No error when the PEL fill-column symbol for the current mode is unbound.
+`pel-major-mode-symbol-for' is stubbed to return a fresh uninterned symbol
+created with `make-symbol'.  An uninterned symbol is always unbound and
+the stub does not touch any real PEL customisation variable."
+  (let ((unbound-sym (make-symbol "pel-fill-test-unbound")))
+    ;; unbound-sym is an uninterned symbol: (boundp unbound-sym) is always nil.
+    (cl-letf (((symbol-function 'pel-print-in-buffer)
+               (lambda (_buf _title printer &rest _rest)
+                 (ignore-errors (funcall printer))))
+              ((symbol-function 'pel-insert-symbol-content-line)
+               (lambda (&rest _) nil))
+              ((symbol-function 'pel-insert-list-content)
+               (lambda (&rest _) nil))
+              ((symbol-function 'pel-major-mode-symbol-for)
+               (lambda (&rest _) unbound-sym)))
+      (with-temp-buffer
+        (text-mode)
+        (should-not (condition-case err
+                        (progn (pel-show-fill-columns) nil)
+                      (error (format "Unexpected error: %S" err))))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-fill-test)
