@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, December 23 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 09:14:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 09:26:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -65,13 +65,13 @@ User-supplied test and hash functions can be specified via
   "Add ELEMENT to the list associated with the KEY of the HASH-TABLE.
 
 Return the value of the updated list.
-The elements in that list are last entered first.
+The list returned stores elements last entered first.
 Use `pel-get-list-from-hash-of-lists-for' to retrieve elements in their
 original insertion order."
   (puthash key (cons element (gethash key hash-table ())) hash-table))
 
 (defun pel-get-list-from-hash-of-lists-for (hash-table key)
-  "Return the list of element associated with the KEY from the HASH-TABLE.
+  "Return the list of elements associated with the KEY from the HASH-TABLE.
 
 The returned list holds elements in the same order as they were
 entered: the first element entered in the list is the first
