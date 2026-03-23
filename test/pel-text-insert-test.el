@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 14:15:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 14:31:41 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -246,8 +246,9 @@ double-tilded — only the home directory *expansion* is matched."
     (should (string-prefix-p ";;" (buffer-substring-no-properties
                                    (line-beginning-position)
                                    (line-end-position))))
-    ;; A newline must separate the separator from the original text.
-    (should (string-match-p "\n" (buffer-string)))))
+    ;; The separator line is followed by a newline, then original text.
+    (forward-line 1)
+    (should (looking-at "existing content"))))
 
 (ert-deftest pel-text-insert-test/insert-line/original-content-preserved ()
   "Original buffer content is still present after the inserted separator."
