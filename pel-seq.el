@@ -4,7 +4,7 @@
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
-;; This file is part of the PEL package
+;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 
 ;; This file holds (a currently very small) collection of sequence processing
@@ -48,7 +48,7 @@ FUNS are individual function symbols passed as separate arguments."
               (mapcar #'fboundp funs)
               t))
 
-;; ---------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-seq)
 
 ;;; pel-seq.el ends here

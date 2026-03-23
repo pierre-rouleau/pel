@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 10:58:24 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 11:49:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -382,10 +382,10 @@ value is not part of the SELECTION."
 ;; ---------------------------------------------------------------------------
 ;; Prompt for purpose and function names
 
-(defun pel-prompt-purpose-for (item &optional default)
+(defun pel-prompt-purpose-for (item &optional default no-ending-period)
   "Prompt for ITEM purpose and return adjusted user input string.
-The returned string is trimmed, its first letter is capitalized
-and is terminated by a period.
+The returned string is trimmed, its first letter is capitalized.
+It is terminated by a period by default unless NO-ENDING-PERIOD is non-nil.
 Holds an independent prompt history for each ITEM.
 If the user hit returns and does not enter anything at the prompt
 the function returns an empty string if DEFAULT is nil, otherwise it
@@ -400,7 +400,10 @@ returns DEFAULT"
      (function pel-hastext)
      default
      (function pel-capitalize-first-letter)
-     (function pel-end-text-with-period))))
+     (lambda (v)
+       (if no-ending-period
+           v
+         (pel-end-text-with-period v))))))
 
 (defun pel-prompt-class (&optional transform-class)
   "Prompt for class and return potentially transformed input string.
