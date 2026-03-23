@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 14:17:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 14:37:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -117,7 +117,7 @@ Also reformat:
                       ("for("   "for (")))
         (beginning-of-line)
         (when (re-search-forward (car pair) nil :noerror)
-          (replace-match (cadr pair) :fixedcase :literally)))
+          (replace-match (cadr pair) :fixedcase :literal)))
       (widen))))
 
 
@@ -272,7 +272,7 @@ object code file to generate the assembler file."
                              (pel--c-adjusted
                               "%%s[[:blank:]]*!=[[:blank:]]*\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(\\s(.*?\\s)\\)*\\)")
                              "!\\1"))
-      ;; 10------------------------------------------------
+      ;; 10 -----------------------------------------------
       ;; Replace `if (boolean == true)' by `if (boolean)'
       ;; Replace `if (boolean == TRUE)' by `if (boolean)'
       (setq equal-true-count
@@ -280,7 +280,7 @@ object code file to generate the assembler file."
                             (pel--c-adjusted
                              "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(\\s(.*?\\s)\\)*?\\)[[:blank:]]*==[[:blank:]]*%%s")
                             "\\1"))
-      ;; 11------------------------------------------------
+      ;; 11 -----------------------------------------------
       ;; Replace `if (true == boolean)' by `if (boolean)'
       ;; Replace `if (TRUE == boolean)' by `if (boolean)'
       (pel+= equal-true-count
@@ -315,7 +315,7 @@ object code file to generate the assembler file."
 (defconst pel-preproc-if-eq-regexp-format
   ;;  1                  2                               3    <<-- group numbers
   "^\\([[:blank:]]*\\)#\\([[:blank:]]*\\)if[[:blank:]]+\\([[:alpha:]_][[:alnum:]_]+\\)[[:blank:]]*\\(==\\)[[:blank:]]*\\(%s\\)[[:blank:]]*$"
-  "Regexp to locate '#if VAR == 0', '#if VAR == 1'")
+  "Regexp to locate '#if VAR == 0', '#if VAR == 1'.")
 
 (defun pel-c-search-preproc-if ()
   "Search for pre-processor '#if VAR' statement."
@@ -323,7 +323,7 @@ object code file to generate the assembler file."
   (re-search-forward pel-preproc-if-regexp))
 
 (defun pel-c-search-preproc-if-set ()
-  "Search for pre-processor '#if VAR == 0', '#if VAR ==1' or '!' equivalent."
+  "Search for pre-processor '#if VAR == 0', '#if VAR == 1' or '!' equivalent."
   (interactive)
   (re-search-forward (format pel-preproc-if-eq-regexp-format "[01]")))
 
