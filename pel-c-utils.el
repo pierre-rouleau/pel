@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 16:21:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 16:50:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -203,7 +203,7 @@ object code file to generate the assembler file."
       ;; 1a - not-equal-null ------------------------------
       ;; Replace `if (ptr != NULL)' by `if (ptr)'
       (setq not-equal-NULL-count
-            (pel--c-replace '("NULL")
+            (pel---c-replace
              "\\(NULL[[:blank:]]*!=[[:blank:]]*\\)\\|\\([[:blank:]]*!=[[:blank:]]*NULL\\)"
              ""))
       ;; 2a - equal-NULL-count ----------------------------
@@ -319,7 +319,7 @@ object code file to generate the assembler file."
   (re-search-forward pel-preproc-if-regexp))
 
 (defun pel-c-search-preproc-if-set ()
-  "Search for pre-processor '#if VAR == 0', '#if VAR == 1' or '!' equivalent."
+  "Search for pre-processor '#if VAR == 0', '#if VAR == 1'."
   (interactive)
   (re-search-forward (format pel-preproc-if-eq-regexp-format "[01]")))
 

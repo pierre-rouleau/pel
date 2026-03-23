@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 16:39:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 16:52:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -53,9 +53,9 @@
 ;;   - `pel--c-reformat-cond' (private; tested indirectly)
 ;;
 ;; Notes on test isolation:
-;;   - Tests run in `fundamental-mode' (the default for temp buffers).
-;;   - In that mode `pel--c-adjusted' substitutes "" for the C++ class
-;;     qualifier placeholder, which is the same behaviour as `c-mode'.
+;;   - Most tests run in `fundamental-mode' (the default for temp buffers).
+;;   - Tests for string/comment protection activate `c-mode' so that
+;;     `syntax-ppss' can correctly classify /* */, //, and "..." syntax.
 ;;
 
 ;;; --------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 17 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 15:01:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 16:44:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,11 +42,11 @@
   "Convert NUMBER to a (gibibyte, mebibyte, kibibyte, byte) counts."
   (let* ((gib    (/ number 1073741824))
          (number (- number (* gib 1073741824)))
-         (meb    (/ number 1048576))
-         (number (- number (* meb 1048576)))
+         (mib    (/ number 1048576))
+         (number (- number (* mib 1048576)))
          (kib    (/ number 1024))
          (number (- number (* kib 1024))))
-    (list gib meb kib number)))
+    (list gib mib kib number)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-hex)
