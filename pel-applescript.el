@@ -1,6 +1,6 @@
-;;; pel-applescript.el --- PEL AppleScript support -*-lexical-binding: t-*-
+;;; pel-applescript.el --- PEL AppleScript support -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2024, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 

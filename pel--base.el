@@ -1,4 +1,4 @@
-;;; pel--base.el --- PEL base utilities. -*-lexical-binding: t-*-
+;;; pel--base.el --- PEL base utilities. -*-lexical-binding: t; -*-
 
 ;; Copyright (C) 2020-2026  Pierre Rouleau
 

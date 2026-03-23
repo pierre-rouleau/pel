@@ -1,6 +1,6 @@
-;;; pel-imenu.el --- PEL imenu extensions. -*-lexical-binding: t-*-
+;;; pel-imenu.el --- PEL imenu extensions -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 

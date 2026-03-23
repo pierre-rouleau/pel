@@ -1,4 +1,4 @@
-;;; pel-highlight.el --- PEL highlight support. -*-lexical-binding: t-*-
+;;; pel-highlight.el --- PEL highlight support -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2022, 2024, 2025, 2026  Pierre Rouleau
 

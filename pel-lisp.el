@@ -1,6 +1,6 @@
-;;; pel-lisp.el --- PEL Lisp Editing Utilities -*-lexical-binding: t-*-
+;;; pel-lisp.el --- PEL Lisp Editing Utilities -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2023, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2023, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
