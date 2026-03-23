@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 15:07:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 16:21:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -134,7 +134,7 @@ Return number of changes."
              (re-search-forward regexp
                                 nil :noerror))
       ;; Re-write found expression unless it's in comment or string
-      (if (progn
+      (if (save-match-data
             (setq syntax (syntax-ppss))
             (or (pel--inside-string-p syntax)
                 (pel--inside-comment-p syntax)))
@@ -153,9 +153,7 @@ Return number of changes."
 
 (defun pel--c-replace (keywords format-regexp rep-regexp)
   "Replace text identified by FORMAT-REGEXP by REP-REGEXP for all KEYWORDS.
-
 Return number of expression replaced."
-
   (let ((change-count 0))
     (dolist (keyword keywords)
       (pel+= change-count
@@ -196,43 +194,41 @@ object code file to generate the assembler file."
   ;; keywords
   (message "Reformatting C/C++ code...")
   (save-excursion
-    (let ((equal-NULL-count 0)
-          (not-equal-NULL-count 0)
+    (let ((not-equal-NULL-count 0)
+          (equal-NULL-count 0)
           (equal-false-count 0)
           (not-equal-false-count 0)
           (equal-true-count 0)
           (not-equal-true-count 0))
-      ;; 1 ------------------------------------------------
+      ;; 1a - not-equal-null ------------------------------
       ;; Replace `if (ptr != NULL)' by `if (ptr)'
-      (while (progn
-               (goto-char (point-min))
-               (re-search-forward "\\(NULL[[:blank:]]*!=[[:blank:]]*\\)\\|\\([[:blank:]]*!=[[:blank:]]*NULL\\)"
-                                  nil :noerror))
-        (replace-match "" nil :literal)
-        (pel+= not-equal-NULL-count 1))
-      ;; 2 ------------------------------------------------
+      (setq not-equal-NULL-count
+            (pel--c-replace '("NULL")
+             "\\(NULL[[:blank:]]*!=[[:blank:]]*\\)\\|\\([[:blank:]]*!=[[:blank:]]*NULL\\)"
+             ""))
+      ;; 2a - equal-NULL-count ----------------------------
       ;; Replace `if (ptr == NULL)' by `if (!ptr)'
       (setq equal-NULL-count
             (pel--c-replace '("NULL")
                             (pel--c-adjusted
                              "\\(%s[_[:alpha:]][_[:alnum:]+*/>.-]*\\(\\s(.*?\\s)\\)*?\\)[[:blank:]]*==[[:blank:]]*NULL")
                             "!\\1"))
-      ;; 3 ------------------------------------------------
+      ;; 2b - equal-NULL-count ----------------------------
       ;; Replace `if (NULL == ptr)' by `if (!ptr)'
       (pel+= equal-NULL-count
              (pel--c-replace '("NULL")
                              (pel--c-adjusted
                               "%%s[[:blank:]]*==[[:blank:]]*\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(\\s(.*?\\s)\\)*\\)")
                              "!\\1"))
-      ;; 4 ------------------------------------------------
+      ;; 3a - not-equal-false-count -----------------------
       ;; Replace `if (boolean != false)' by `if (boolean)'
-      ;; Replace `if (boolean != False)' by `if (boolean)'
+      ;; Replace `if (boolean != FALSE)' by `if (boolean)'
       (setq not-equal-false-count
             (pel--c-replace '("false" "FALSE")
                             (pel--c-adjusted
                              "\\(%s[_[:alpha:]][_[:alnum:]+*/>.-]*\\(\\s(.*?\\s)\\)*?\\)[[:blank:]]*!=[[:blank:]]*%%s")
                             "\\1"))
-      ;; 5 ------------------------------------------------
+      ;; 3b - not-equal-false-count -----------------------
       ;; Replace `if (false != boolean)' by `if (boolean)'
       ;; Replace `if (FALSE != boolean)' by `if (boolean)'
       (pel+= not-equal-false-count
@@ -240,7 +236,7 @@ object code file to generate the assembler file."
                              (pel--c-adjusted
                               "%%s[[:blank:]]*!=[[:blank:]]*\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(\\s(.*?\\s)\\)*\\)")
                              "\\1"))
-      ;; 6 ------------------------------------------------
+      ;; 4a - equal-false-count ---------------------------
       ;; Replace `if (boolean == false)' by `if (!boolean)'
       ;; Replace `if (boolean == FALSE)' by `if (!boolean)'
       (setq equal-false-count
@@ -248,7 +244,7 @@ object code file to generate the assembler file."
                             (pel--c-adjusted
                              "\\(%s[_[:alpha:]][_[:alnum:]+*/>.-]*\\(\\s(.*?\\s)\\)*?\\)[[:blank:]]*==[[:blank:]]*%%s")
                             "!\\1"))
-      ;; 7 ------------------------------------------------
+      ;; 4b - equal-false-count ---------------------------
       ;; Replace `if (false == boolean)' by `if (!boolean)'
       ;; Replace `if (FALSE == boolean)' by `if (!boolean)'
       (pel+= equal-false-count
@@ -256,7 +252,7 @@ object code file to generate the assembler file."
                              (pel--c-adjusted
                               "%%s[[:blank:]]*==[[:blank:]]*\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(\\s(.*?\\s)\\)*\\)")
                              "!\\1"))
-      ;; 8  ------------------------------------------------
+      ;; 5a - not-equal-true-count -------------------------
       ;; Replace `if (boolean != true)' by `if (!boolean)'
       ;; Replace `if (boolean != TRUE)' by `if (!boolean)'
       (setq not-equal-true-count
@@ -264,7 +260,7 @@ object code file to generate the assembler file."
                             (pel--c-adjusted
                              "\\(%s[_[:alpha:]][_[:alnum:]+*/>.-]*\\(\\s(.*?\\s)\\)*?\\)[[:blank:]]*!=[[:blank:]]*%%s")
                             "!\\1"))
-      ;; 9 ------------------------------------------------
+      ;; 5b - not-equal-true-count ------------------------
       ;; Replace `if (true != boolean)' by `if (!boolean)'
       ;; Replace `if (TRUE != boolean)' by `if (!boolean)'
       (pel+= not-equal-true-count
@@ -272,7 +268,7 @@ object code file to generate the assembler file."
                              (pel--c-adjusted
                               "%%s[[:blank:]]*!=[[:blank:]]*\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(\\s(.*?\\s)\\)*\\)")
                              "!\\1"))
-      ;; 10 -----------------------------------------------
+      ;; 6a - equal-true-count ----------------------------
       ;; Replace `if (boolean == true)' by `if (boolean)'
       ;; Replace `if (boolean == TRUE)' by `if (boolean)'
       (setq equal-true-count
@@ -280,7 +276,7 @@ object code file to generate the assembler file."
                             (pel--c-adjusted
                              "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(\\s(.*?\\s)\\)*?\\)[[:blank:]]*==[[:blank:]]*%%s")
                             "\\1"))
-      ;; 11 -----------------------------------------------
+      ;; 6b - equal-true-count ----------------------------
       ;; Replace `if (true == boolean)' by `if (boolean)'
       ;; Replace `if (TRUE == boolean)' by `if (boolean)'
       (pel+= equal-true-count
