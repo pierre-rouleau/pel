@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 15:13:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 16:39:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -41,12 +41,13 @@
 ;;   pel-c-search-preproc-if          - search for bare '#if VAR'
 ;;   pel-c-search-preproc-if-set      - search for '#if VAR == 0/1'
 ;;   pel-c-fix-comparison-problems    - fix all comparison anti-patterns
+;;     (incl. verifying that text inside C comments and string literals
+;;      is left untouched — these tests activate `c-mode' to provide a
+;;      proper C syntax table to `syntax-ppss')
 ;;   pel-c-fix-preproc-if-problems    - fix preprocessor #if anti-patterns
 ;;
 ;; Items intentionally NOT covered:
 ;;   - C++ class-qualifier path (requires c++-mode)
-;;   - Skipping of replacements inside strings or comments
-;;     (requires a C-mode syntax table to be active)
 ;;   - Complex nested pointer/function-call expressions
 ;;   - `pel--c-adjusted' (private; tested indirectly via fix functions)
 ;;   - `pel--c-reformat-cond' (private; tested indirectly)
@@ -419,6 +420,134 @@ Verify EXPECTED-TEXT and COUNTS."
    "if (flag == TRUE)\n"
    "if (flag)\n"
    '(0 0 0 0 1 0)))
+
+;; ---------------------------------------------------------------------------
+;; Helper for tests that need a real C syntax table.
+;;
+;; `syntax-ppss' classifies /* */, //, and "..." correctly only when the
+;; buffer's syntax table knows about C comment/string syntax.  All tests
+;; in this subsection therefore activate `c-mode'.
+;; ---------------------------------------------------------------------------
+
+(defmacro pel-c-utils-test--with-c-code (code &rest body)
+  "Execute BODY in a `c-mode' temp buffer pre-loaded with CODE.
+Point is left at the beginning of the buffer."
+  (declare (indent 1))
+  `(with-temp-buffer
+     (c-mode)
+     (insert ,code)
+     (goto-char (point-min))
+     ,@body))
+
+;; ---------------------------------------------------------------------------
+;; Step 1 (!=NULL / NULL!=): text inside C block comments must NOT be mutated
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-c-utils-test/fix-comparison/ne-NULL-in-block-comment-unchanged ()
+  "`!= NULL' inside a C block comment is left untouched."
+  (pel-c-utils-test--with-c-code
+      "/* if (ptr != NULL) do something */\n"
+    (let ((counts (pel-c-fix-comparison-problems)))
+      (should (string= (buffer-string)
+                       "/* if (ptr != NULL) do something */\n"))
+      (should (equal counts '(0 0 0 0 0 0))))))
+
+(ert-deftest pel-c-utils-test/fix-comparison/NULL-ne-in-block-comment-unchanged ()
+  "`NULL !=' (Yoda) inside a C block comment is left untouched."
+  (pel-c-utils-test--with-c-code
+      "/* if (NULL != ptr) do something */\n"
+    (let ((counts (pel-c-fix-comparison-problems)))
+      (should (string= (buffer-string)
+                       "/* if (NULL != ptr) do something */\n"))
+      (should (equal counts '(0 0 0 0 0 0))))))
+
+(ert-deftest pel-c-utils-test/fix-comparison/ne-NULL-in-line-comment-unchanged ()
+  "`!= NULL' inside a C++ line comment is left untouched."
+  (pel-c-utils-test--with-c-code
+      "// if (ptr != NULL) then handle it\n"
+    (let ((counts (pel-c-fix-comparison-problems)))
+      (should (string= (buffer-string)
+                       "// if (ptr != NULL) then handle it\n"))
+      (should (equal counts '(0 0 0 0 0 0))))))
+
+;; ---------------------------------------------------------------------------
+;; Step 1: text inside C string literals must NOT be mutated
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-c-utils-test/fix-comparison/ne-NULL-in-string-unchanged ()
+  "`!= NULL' inside a C string literal is left untouched."
+  (pel-c-utils-test--with-c-code
+      "const char *msg = \"ptr != NULL means valid\";\n"
+    (let ((counts (pel-c-fix-comparison-problems)))
+      (should (string= (buffer-string)
+                       "const char *msg = \"ptr != NULL means valid\";\n"))
+      (should (equal counts '(0 0 0 0 0 0))))))
+
+(ert-deftest pel-c-utils-test/fix-comparison/NULL-ne-in-string-unchanged ()
+  "`NULL !=' inside a C string literal is left untouched."
+  (pel-c-utils-test--with-c-code
+      "const char *msg = \"NULL != ptr check\";\n"
+    (let ((counts (pel-c-fix-comparison-problems)))
+      (should (string= (buffer-string)
+                       "const char *msg = \"NULL != ptr check\";\n"))
+      (should (equal counts '(0 0 0 0 0 0))))))
+
+;; ---------------------------------------------------------------------------
+;; Step 1: mixed — real anti-pattern in code AND identical text in a comment.
+;; Only the code occurrence must be fixed; the comment must be preserved.
+;; This is the key regression test for the syntax-ppss guard.
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-c-utils-test/fix-comparison/ne-NULL-code-fixed-comment-preserved ()
+  "Real `!= NULL' in code is fixed; identical text in a comment is preserved."
+  (pel-c-utils-test--with-c-code
+      "if (ptr != NULL)  /* ptr != NULL should stay */\n"
+    (let ((counts (pel-c-fix-comparison-problems)))
+      (should (string= (buffer-string)
+                       "if (ptr)  /* ptr != NULL should stay */\n"))
+      (should (equal counts '(0 1 0 0 0 0))))))
+
+(ert-deftest pel-c-utils-test/fix-comparison/ne-NULL-code-fixed-string-preserved ()
+  "Real `!= NULL' in code is fixed; identical text in a string is preserved."
+  (pel-c-utils-test--with-c-code
+      "if (ptr != NULL) log(\"ptr != NULL\");\n"
+    (let ((counts (pel-c-fix-comparison-problems)))
+      (should (string= (buffer-string)
+                       "if (ptr) log(\"ptr != NULL\");\n"))
+      (should (equal counts '(0 1 0 0 0 0))))))
+
+;; ---------------------------------------------------------------------------
+;; Steps 2–11 (== NULL, == false, etc.): uniform comment/string protection.
+;; These steps were already guarded before the current fix; the tests below
+;; document the expected invariant across all fix steps.
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-c-utils-test/fix-comparison/eq-NULL-in-comment-unchanged ()
+  "`== NULL' inside a C block comment is left untouched."
+  (pel-c-utils-test--with-c-code
+      "/* ptr == NULL in old code */\n"
+    (let ((counts (pel-c-fix-comparison-problems)))
+      (should (string= (buffer-string)
+                       "/* ptr == NULL in old code */\n"))
+      (should (equal counts '(0 0 0 0 0 0))))))
+
+(ert-deftest pel-c-utils-test/fix-comparison/eq-false-in-string-unchanged ()
+  "`== false' inside a C string literal is left untouched."
+  (pel-c-utils-test--with-c-code
+      "puts(\"flag == false means off\");\n"
+    (let ((counts (pel-c-fix-comparison-problems)))
+      (should (string= (buffer-string)
+                       "puts(\"flag == false means off\");\n"))
+      (should (equal counts '(0 0 0 0 0 0))))))
+
+(ert-deftest pel-c-utils-test/fix-comparison/ne-true-in-comment-unchanged ()
+  "`!= true' inside a C line comment is left untouched."
+  (pel-c-utils-test--with-c-code
+      "// if (flag != true) then ...\n"
+    (let ((counts (pel-c-fix-comparison-problems)))
+      (should (string= (buffer-string)
+                       "// if (flag != true) then ...\n"))
+      (should (equal counts '(0 0 0 0 0 0))))))
 
 ;; ---------------------------------------------------------------------------
 ;; Clean buffer: no changes expected
