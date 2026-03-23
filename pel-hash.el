@@ -1,8 +1,8 @@
-;;; pel-hash.el --- Hash utilities.  -*- lexical-binding: t; -*-
+;;; pel-hash.el --- Hashing utilities  -*- lexical-binding: t; -*-
 
 ;; Created   : Monday, December 23 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 10:57:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 08:48:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
