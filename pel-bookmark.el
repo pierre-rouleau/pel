@@ -1,6 +1,6 @@
-;;; pel-bookmark.el --- PEL bookmark utilities -*-lexical-binding: t-*-
+;;; pel-bookmark.el --- PEL bookmark utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2023, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2023, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 

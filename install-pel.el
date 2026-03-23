@@ -1,4 +1,4 @@
-;;; install-pel.el --- Install PEL locally -*-lexical-binding: t-*-
+;;; install-pel.el --- Install PEL locally -*-lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

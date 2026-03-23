@@ -1,4 +1,4 @@
-;;; pel-navigate.el --- PEL Navigation Support -*-lexical-binding: t-*-
+;;; pel-navigate.el --- PEL Navigation Support -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2023, 2024, 2025, 2026  Pierre Rouleau
 

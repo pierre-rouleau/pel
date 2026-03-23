@@ -1,4 +1,4 @@
-;;; pel-ccp.el --- PEL cut & paste, etc... -*-lexical-binding: t-*-
+;;; pel-ccp.el --- PEL cut & paste, etc... -*-lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2021, 2023, 2024, 2025, 2026  Pierre Rouleau
 

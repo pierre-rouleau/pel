@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-23 12:43:55 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-23 18:19:22 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -596,6 +596,7 @@ compile-only: $(ELC_FILES) pel_keys.elc pel.elc
 .PHONY: help
 help:
 	@printf "\nBuild Emacs PEL for use and distribution.\n"
+	@printf "\nStops on the first error (or compiler warning).\n"
 	@printf "\n"
 	@printf "Currently building PEL version $(PEL_VERSION).\n"
 	@printf "1) First byte-compile all Emacs Lisp files in required order.\n"
@@ -911,6 +912,7 @@ test/pel-elpa-test.el.test-passed:              pel-elpa.elc pel-filedir.elc
 test/pel-erlang-test.el.test-passed:            pel-erlang.elc pel-ert.elc
 test/pel-ert-test.el.test-passed:               pel-ert.elc
 test/pel-file-test.el.test-passed:              pel-file.elc pel-ert.elc
+test/pel-fill-test.el.test-passed:              pel-fill.elc pel--base.elc
 test/pel-filedir-test.el.test-passed:           pel-filedir.elc pel--base.elc
 test/pel-hash-test.el.test-passed:              pel-hash.elc
 test/pel-hex-test.el.test-passed:               pel-hex.elc

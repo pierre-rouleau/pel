@@ -1,4 +1,4 @@
-;;; pel-pathmng.el --- Path management utilities. -*-lexical-binding: t-*-
+;;; pel-pathmng.el --- Path management utilities -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2024, 2026  Pierre Rouleau
 

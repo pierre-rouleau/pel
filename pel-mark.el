@@ -1,4 +1,4 @@
-;;; pel-mark.el --- PEL Mark Management Utilities -*-lexical-binding: t-*-
+;;; pel-mark.el --- PEL Mark Management Utilities -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2026  Pierre Rouleau
 

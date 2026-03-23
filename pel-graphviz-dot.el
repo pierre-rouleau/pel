@@ -1,6 +1,6 @@
-;;; pel-graphviz-dot.el --- Graphviz Dot utilities. -*-lexical-binding: t-*-
+;;; pel-graphviz-dot.el --- Graphviz Dot utilities -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 

@@ -1,8 +1,8 @@
-;;; pel--macros.el --- PEL utility macros -*-lexical-binding: t-*-
+;;; pel--macros.el --- PEL utility macros -*-lexical-binding: t; -*-
 
 ;; Created   : Monday, March 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 23:04:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 18:09:41 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.

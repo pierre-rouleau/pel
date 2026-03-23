@@ -1,8 +1,8 @@
-;;; pel-imenu-ido.el --- Navigation over imenu symbols with Ido prompting.  -*-lexical-binding: t-*-
+;;; pel-imenu-ido.el --- Navigation over imenu symbols with Ido prompting  -*- lexical-binding: t; -*-
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2026-03-18 10:57:24 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 18:15:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14

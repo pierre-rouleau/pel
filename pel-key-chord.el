@@ -1,4 +1,4 @@
-;;; pel-key-chord.el --- PEL Key-Chord Support. -*-lexical-binding: t-*-
+;;; pel-key-chord.el --- PEL Key-Chord Support -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2021, 2023, 2024, 2026  Pierre Rouleau
 

@@ -1,6 +1,6 @@
-;;; pel-cua.el --- PEL CUA Mode Additions -*-lexical-binding: t-*-
+;;; pel-cua.el --- PEL CUA Mode Additions -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
