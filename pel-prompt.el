@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 11:49:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 12:07:50 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -383,13 +383,13 @@ value is not part of the SELECTION."
 ;; Prompt for purpose and function names
 
 (defun pel-prompt-purpose-for (item &optional default no-ending-period)
-  "Prompt for ITEM purpose and return adjusted user input string.
+  "Prompt for ITEM purpose and return an adjusted user input string.
 The returned string is trimmed, its first letter is capitalized.
 It is terminated by a period by default unless NO-ENDING-PERIOD is non-nil.
 Holds an independent prompt history for each ITEM.
-If the user hit returns and does not enter anything at the prompt
+If the user hits return and does not enter anything at the prompt
 the function returns an empty string if DEFAULT is nil, otherwise it
-returns DEFAULT"
+returns DEFAULT."
   (let ((history-symbol (intern
                          (format
                           "pel-prompt-history-for-purpose-%s" item)))
