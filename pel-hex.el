@@ -1,13 +1,13 @@
-;;; pel-hex.el --- Hexadecimal utilities.  -*- lexical-binding: t; -*-
+;;; pel-hex.el --- Hexadecimal utilities  -*- lexical-binding: t; -*-
 
 ;; Created   : Tuesday, May 17 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-05-17 15:47:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 12:19:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022  Pierre Rouleau
+;; Copyright (C) 2022, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

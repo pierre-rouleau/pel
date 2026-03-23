@@ -1,8 +1,8 @@
-;;; pel-c-utils.el --- C/C++ Code Correction Utilities.  -*- lexical-binding: t; -*-
+;;; pel-c-utils.el --- C/C++ Code Correction Utilities  -*- lexical-binding: t; -*-
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 23:31:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 12:19:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
