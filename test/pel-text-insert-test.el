@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 13:43:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 13:52:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -128,13 +128,14 @@ double-tilded — only the home directory *expansion* is matched."
                   (string= (cdr specs) ""))))))
 
 (ert-deftest pel-text-insert-test/comment-specs/emacs-lisp-mid-line ()
-  "In emacs-lisp-mode at a non-zero column, the start remains \";\"."
-  (ert-skip "Temporary skip failing test under development.")
+  "In emacs-lisp-mode past non-whitespace text, the start is a single \";\"."
   (with-temp-buffer
     (emacs-lisp-mode)
-    (insert "   ")                      ; move to column 3
+    ;; Insert real content so current-column (5) ≠ current-indentation (0).
+    ;; Using spaces-only would make them equal, triggering the BOL heuristic.
+    (insert "(foo)")                    ; column 5, indentation 0
     (let ((specs (pel-comment-specs)))
-      ;; Not at BOL → single \";\"
+      ;; Not at BOL or indentation → single ";"
       (should (string= (car specs) ";")))))
 
 (ert-deftest pel-text-insert-test/comment-specs/explicit-prefix-overrides-mode ()
