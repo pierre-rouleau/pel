@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, March 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 17:53:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 14:19:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -27,9 +27,6 @@
 ;;
 ;; ERT tests for pel-comp.el.
 ;;
-;; Run interactively : M-x ert RET "^pel-comp" RET
-;; Run in batch      : emacs -batch -l ert -l pel-comp.el \
-;;                       -l test/pel-comp-test.el -f ert-run-tests-batch-and-exit
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:

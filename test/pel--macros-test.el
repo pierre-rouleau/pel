@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 23:16:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 14:19:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,9 +42,6 @@
 ;;   pel-turn-mode-on-when-off      - turn a mode on only when it is currently off
 ;;   pel-turn-mode-off-when-on      - turn a mode off only when it is currently on
 ;;
-;; Run interactively : M-x ert RET "^pel--macros-test" RET
-;; Run in batch      : emacs -batch -l ert -l pel--macros.el \
-;;                       -l test/pel--macros-test.el -f ert-run-tests-batch-and-exit
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:

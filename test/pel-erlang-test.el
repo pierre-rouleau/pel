@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 22:08:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 13:43:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -142,7 +142,6 @@
 (ert-deftest ert-test-pel-erlang-after-binary ()
   "Test `pel-erlang-after-binary': non-nil iff point is just after >>."
   ;; Point immediately after ">>".
-  ;; (ert-skip "Temporary skip test under development.")
   (with-temp-buffer
     (insert ">>")
     (goto-char (point-max))
