@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 22:35:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 23:04:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -255,7 +255,8 @@ any existing buffers that have not explicitly overridden the value of SYM."
 ;; ------------------
 
 (defmacro while-n (count cond &rest body)
-  "Bounded while: execute BODY a maximum of COUNT times, while COND is true."
+  "Bounded while: execute BODY a maximum of COUNT times, while COND is true.
+This requires cl-lib."
   (declare (indent 1))
   (let ((tmpvar (make-symbol "i")))
     `(let ((,tmpvar ,count))

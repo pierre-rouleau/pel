@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 22:51:41 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-22 23:00:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -230,17 +230,17 @@ Caller is responsible for killing the buffer."
 ;; Result: "aaa b  \nc   ddd\n"
 ;; ---------------------------------------------------------------------------
 
+
 (ert-deftest pel-align-test/align-words-vertically/two-columns-no-indent ()
   "Two-column alignment with no leading indentation."
-  (ert-skip "Temporary skipping unnder development failing test.")
   (let ((input    "aaa b\nc ddd\n")
         (expected "aaa b  \nc   ddd\n"))
     (with-temp-buffer
       (insert input)
-      (goto-char (point-min))
-      (push-mark (point-max) nil t)
-      (setq mark-active t)
-      (pel-align-words-vertically)
+      (let ((transient-mark-mode t))
+        (goto-char (point-min))
+        (push-mark (point-max) nil t)   ; t = activate mark
+        (pel-align-words-vertically))
       (should (string= (buffer-string) expected)))))
 
 ;; ---------------------------------------------------------------------------
@@ -264,15 +264,14 @@ Caller is responsible for killing the buffer."
 
 (ert-deftest pel-align-test/align-words-vertically/three-columns-no-indent ()
   "Three-column alignment with no leading indentation."
-  (ert-skip "Temporary skipping under development failing test.")
   (let ((input    "one two three\nfour five six\n")
         (expected "one  two  three\nfour five six  \n"))
     (with-temp-buffer
       (insert input)
-      (goto-char (point-min))
-      (push-mark (point-max) nil t)
-      (setq mark-active t)
-      (pel-align-words-vertically)
+      (let ((transient-mark-mode t))
+        (goto-char (point-min))
+        (push-mark (point-max) nil t)
+        (pel-align-words-vertically))
       (should (string= (buffer-string) expected)))))
 
 ;; ---------------------------------------------------------------------------
@@ -295,15 +294,14 @@ Caller is responsible for killing the buffer."
 
 (ert-deftest pel-align-test/align-words-vertically/two-columns-with-indent ()
   "Two-column alignment preserves original leading indentation."
-  (ert-skip "Temporary skipping unnder development failing test.")
   (let ((input    "  x   bar\n  foo y\n")
         (expected "  x   bar\n  foo y  \n"))
     (with-temp-buffer
       (insert input)
-      (goto-char (point-min))
-      (push-mark (point-max) nil t)
-      (setq mark-active t)
-      (pel-align-words-vertically)
+      (let ((transient-mark-mode t))
+        (goto-char (point-min))
+        (push-mark (point-max) nil t)
+        (pel-align-words-vertically))
       (should (string= (buffer-string) expected)))))
 
 ;; ---------------------------------------------------------------------------
@@ -315,21 +313,20 @@ Caller is responsible for killing the buffer."
 
 (ert-deftest pel-align-test/align-words-vertically/idempotent ()
   "Calling pel-align-words-vertically twice yields the same result."
-  (ert-skip "Temporary skipping under development failing test.")
   (let ((input "aaa b  \nc   ddd\n"))
     (with-temp-buffer
       (insert input)
       ;; First call
-      (goto-char (point-min))
-      (push-mark (point-max) nil t)
-      (setq mark-active t)
-      (pel-align-words-vertically)
-      (let ((after-first (buffer-string)))
-        ;; Second call
+      (let ((transient-mark-mode t))
         (goto-char (point-min))
         (push-mark (point-max) nil t)
-        (setq mark-active t)
-        (pel-align-words-vertically)
+        (pel-align-words-vertically))
+      (let ((after-first (buffer-string)))
+        ;; Second call
+        (let ((transient-mark-mode t))
+          (goto-char (point-min))
+          (push-mark (point-max) nil t)
+          (pel-align-words-vertically))
         (should (string= (buffer-string) after-first))))))
 
 ;; ---------------------------------------------------------------------------
@@ -351,15 +348,14 @@ Caller is responsible for killing the buffer."
 
 (ert-deftest pel-align-test/align-words-vertically/single-line ()
   "A single-line region is reformatted with words separated by one space."
-  (ert-skip "Temporary skipping under development failing test.")
   (let ((input    "hello   world\n")
         (expected "hello world\n"))
     (with-temp-buffer
       (insert input)
-      (goto-char (point-min))
-      (push-mark (point-max) nil t)
-      (setq mark-active t)
-      (pel-align-words-vertically)
+      (let ((transient-mark-mode t))
+        (goto-char (point-min))
+        (push-mark (point-max) nil t)
+        (pel-align-words-vertically))
       (should (string= (buffer-string) expected)))))
 
 ;; ---------------------------------------------------------------------------
