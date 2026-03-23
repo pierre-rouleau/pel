@@ -1,6 +1,6 @@
-;;; pel-fill.el --- PEL Source code management -*-lexical-binding: t-*-
+;;; pel-fill.el --- PEL Source code management  -*- lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022, 2025  Pierre Rouleau
+;; Copyright (C) 2020-2022, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -20,12 +20,17 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; Loose collection of commands and functions that deal with text fill.
 
-(require 'pel--base)                 ; use: pel-major-mode-of, pel-toggle
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+;;
+(require 'pel--base) ; use: `pel-major-mode-of', `pel-toggle'
+
+;;; --------------------------------------------------------------------------
 ;;; Code:
 
 ;; The following 2 declarations of global variables from other files
@@ -82,8 +87,7 @@ in which case it appends to the previous report."
      (unless append :clear-buffer)
      :use-help-mode)))
 
-
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-fill)
 
 ;;; pel-fill.el ends here
