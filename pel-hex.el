@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 17 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 12:19:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 14:08:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -27,7 +27,7 @@
 ;;
 ;; For now this only holds the `pel-bibyte' function that converts a number
 ;; of any radix base to a value in gibibyte, mebibyte, kibibyte and byte.
-;;  A kibibyte is 1024, mebibyte is 1024 kibibyte, gebibyte is 1024 mebibyte.
+;;  A kibibyte is 1024, mebibyte is 1024 kibibyte, gibibyte is 1024 mebibyte.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:

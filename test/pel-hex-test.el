@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 12:42:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 14:07:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -40,6 +40,7 @@
 ;;
 (require 'pel-hex)
 (require 'ert)
+(require 'cl-lib)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:

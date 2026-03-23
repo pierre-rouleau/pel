@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 13:52:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 14:15:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -104,7 +104,7 @@ double-tilded — only the home directory *expansion* is matched."
   (let ((path "~/something"))
     ;; The function compares against (expand-file-name \"~\"), which
     ;; does NOT start with \"~/something\", so the path passes through.
-    (should (stringp (pel-tilde-file-name path)))))
+    (should (string= (pel-tilde-file-name path) path))))
 
 ;; ===========================================================================
 ;; pel-comment-specs
@@ -309,9 +309,7 @@ when point starts in the middle."
   (with-temp-buffer
     (emacs-lisp-mode)
     (goto-char (point-min))
-    (let* ((ret (pel-insert-commented "HELLO"))
-           ;; (content (buffer-string))
-           )
+    (let* ((ret (pel-insert-commented "HELLO")))
       ;; ret must be a valid buffer position
       (should (integerp ret))
       (should (<= ret (point-max)))

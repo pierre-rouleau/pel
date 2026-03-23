@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 23:02:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 14:19:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,9 +42,6 @@
 ;;      a different buffer (isolation).
 ;;   4. It accepts every value shape described in its docstring.
 ;;
-;; Run interactively : M-x ert RET "^pel--indent-test" RET
-;; Run in batch      : emacs -batch -l ert -l pel--indent.el \
-;;                       -l test/pel--indent-test.el -f ert-run-tests-batch-and-exit
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:

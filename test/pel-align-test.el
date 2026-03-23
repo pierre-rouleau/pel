@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 08:12:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 14:19:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -38,10 +38,6 @@
 ;;   pel-align-info        - displays formatted text in a help buffer
 ;;   pel-multi-align-regexp - uses `read-string' for interactive regexp input
 ;;
-;; Run interactively : M-x ert RET "^pel-align-test" RET
-;; Run in batch      : emacs -batch -l ert \
-;;                       -l pel-hash.el -l pel--base.el -l pel-align.el \
-;;                       -l test/pel-align-test.el -f ert-run-tests-batch-and-exit
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
