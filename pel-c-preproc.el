@@ -1,13 +1,13 @@
-;;; pel-c-preproc.el --- C Pre-processor specific support.  -*- lexical-binding: t; -*-
+;;; pel-c-preproc.el --- C Pre-processor specific support  -*- lexical-binding: t; -*-
 
 ;; Created   : Monday, October 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-31 12:23:36 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 18:33:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2022, 2023, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
