@@ -1,10 +1,10 @@
-;;; pel-seq.el --- Sequence manipulation utilities -*-lexical-binding: t; -*-
+;;; pel-seq.el --- Sequence manipulation utilities  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2026  Pierre Rouleau
+;; Copyright (C) 2020-2022, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
-;; This file is part of the PEL package
+;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 
 ;; This file holds (a currently very small) collection of sequence processing
@@ -32,21 +32,23 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--install)                   ; use: `pel-require'
+(require 'pel--install)   ; use: `pel-require'
+;; On Emacs 26 seq was not part of Emacs.
 (pel-require 'seq :install-when-missing)  ; use: `seq-reduce'
 (declare-function seq-reduce "seq")
 
-;; ---------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Code:
 
 ;;-pel-autoload
 (defun pel-all-fboundp (&rest funs)
-  "Return t if all function symbols in FUNS list are bound, nil otherwise."
+  "Return t if all symbols in FUNS are `fboundp', nil otherwise.
+FUNS are individual function symbols passed as separate arguments."
   (seq-reduce (lambda (b1 b2) (and b1 b2))
               (mapcar #'fboundp funs)
               t))
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-seq)
 
 ;;; pel-seq.el ends here

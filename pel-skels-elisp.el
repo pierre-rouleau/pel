@@ -1,12 +1,12 @@
 ;;; pel-skels-elisp.el --- Tempo skeleton for Emacs Lisp.  -*- lexical-binding: t; -*-
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-17 14:04:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 11:50:50 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 ;;
-;; Copyright (C) 2020, 2021, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@ The returned string is made of:
 
 (defun pel-skels-elisp-file-header-block ()
   "Return a tempo list for a Emacs Lisp file header block."
-  (let ((purpose (pel-prompt-purpose-for "File" 'p))
+  (let ((purpose (pel-prompt-purpose-for "File" 'p 'no-ending-period))
         (fname   (pel-current-buffer-filename :sans-directory))
         (libname (pel-current-buffer-filename :sans-directory :sans-extension)))
     (goto-char (point-min)) ; TODO: del this but mod skels to force entry at top.
