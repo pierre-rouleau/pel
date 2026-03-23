@@ -1,4 +1,4 @@
-;;; pel-seq.el --- Sequence manipulation utilities  -*-lexical-binding: t; -*-
+;;; pel-seq.el --- Sequence manipulation utilities  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020-2022, 2026  Pierre Rouleau
 

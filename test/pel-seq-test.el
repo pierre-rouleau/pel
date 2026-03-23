@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 10:50:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 11:00:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,15 +32,11 @@
 ;; `pel-all-fboundp' returns t if every symbol in its argument list is
 ;; `fboundp', and nil otherwise.  Key behavioural properties tested here:
 ;;
-;;   1. No arguments  → t  (vacuous truth: seq-reduce returns initial value t)
+;;   1. No arguments  → t  (vacuous truth: no symbols to check)
 ;;   2. All bound     → t
 ;;   3. Any unbound   → nil
 ;;   4. Return value is exactly t / nil (not merely truthy / falsy)
 ;;
-;; Run interactively : M-x ert RET "^pel-seq-test" RET
-;; Run in batch      :
-;;   emacs -batch -l ert -l pel-seq.el \
-;;         -l test/pel-seq-test.el -f ert-run-tests-batch-and-exit
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
