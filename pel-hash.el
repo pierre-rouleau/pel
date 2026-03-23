@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, December 23 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 08:48:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 09:14:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -26,7 +26,8 @@
 ;;; Commentary:
 ;;
 ;; This module supports creation and operations on a hash of lists.
-;; The key can be any object type, but the type must support comparison.
+;; The key can be any object type, but it must be compatible with the test
+;; predicate used to compare keys.
 ;;
 ;; The creation function, `pel-make-hash-of-lists' specifies the function used
 ;; to compare the keys.
@@ -51,7 +52,7 @@
 The optional TEST argument identifies the test function used to
 compare keys.
 The possible TEST predicates include the same predefined
-as `make-hash-table', with  a different default:
+predicates as `make-hash-table', with a different default:
 - eq   : for symbol and integer keys.  This is the default.
 - eql  : like eq but also for floats.
 - equal: like eql but also for strings.
@@ -61,14 +62,16 @@ User-supplied test and hash functions can be specified via
   (make-hash-table :test (or test 'eq)))
 
 (defun pel-addto-hash-of-lists (hash-table key element)
-  "Add ELEMENT to the list associated to the KEY of the HASH-TABLE.
+  "Add ELEMENT to the list associated with the KEY of the HASH-TABLE.
 
 Return the value of the updated list.
-The elements in that list are last entered first."
+The elements in that list are last entered first.
+Use `pel-get-list-from-hash-of-lists-for' to retrieve elements in their
+original insertion order."
   (puthash key (cons element (gethash key hash-table ())) hash-table))
 
 (defun pel-get-list-from-hash-of-lists-for (hash-table key)
-  "Return the list of element associated to the KEY from the HASH-TABLE.
+  "Return the list of element associated with the KEY from the HASH-TABLE.
 
 The returned list holds elements in the same order as they were
 entered: the first element entered in the list is the first

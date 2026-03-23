@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 08:54:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 09:17:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -46,7 +46,7 @@
 ;;; Dependencies:
 ;;
 (require 'pel-hash)
-(require 'pel-ert)
+(require 'ert)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -71,6 +71,34 @@
     (should-not (eq h1 h2)))
   ;; Freshly created table is empty.
   (should      (zerop (hash-table-count (pel-make-hash-of-lists)))))
+
+(ert-deftest test-pel-make-hash-of-lists/nil-arg ()
+  "Passing nil explicitly still defaults to the eq predicate."
+  (should (eq (hash-table-test (pel-make-hash-of-lists nil)) 'eq)))
+
+(ert-deftest test-pel-addto-hash-of-lists/float-keys ()
+  "Float keys require the eql test predicate."
+  (let ((h (pel-make-hash-of-lists 'eql)))
+    (pel-addto-hash-of-lists h 1.5 'a)
+    (pel-addto-hash-of-lists h 2.5 'b)
+    (pel-addto-hash-of-lists h 1.5 'c)
+    (should (= (hash-table-count h) 2))
+    (should (equal (gethash 1.5 h) '(c a)))
+    (should (equal (gethash 2.5 h) '(b)))))
+
+(ert-deftest test-pel-addto-hash-of-lists/nil-element ()
+  "nil is a valid element value."
+  (let ((h (pel-make-hash-of-lists)))
+    (pel-addto-hash-of-lists h 'k nil)
+    (should (equal (gethash 'k h) '(nil)))
+    (should (equal (pel-get-list-from-hash-of-lists-for h 'k) '(nil)))))
+
+(ert-deftest test-pel-addto-hash-of-lists/duplicate-elements ()
+  "The same element can be added multiple times; each occurrence is retained."
+  (let ((h (pel-make-hash-of-lists)))
+    (pel-addto-hash-of-lists h 'k 'x)
+    (pel-addto-hash-of-lists h 'k 'x)
+    (should (equal (pel-get-list-from-hash-of-lists-for h 'k) '(x x)))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-addto-hash-of-lists
