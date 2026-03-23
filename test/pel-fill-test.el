@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 17:44:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 18:07:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -189,22 +189,52 @@
 ;; ---------------------------------------------------------------------------
 
 (ert-deftest pel-fill-test/show-fill-columns/detects-emacs-lisp-mode ()
-  "In `emacs-lisp-mode' the function recognises the buffer as a Lisp buffer."
-  ;; We verify indirectly: pel-print-in-buffer receives a printer lambda;
-  ;; we execute that lambda and confirm no error is raised for a Lisp buffer.
-  (cl-letf (((symbol-function 'pel-print-in-buffer)
-             (lambda (_buf _title printer &rest _rest)
-               ;; Execute the printer to exercise the isa-lisp-mode branch.
-               (ignore-errors (funcall printer))))
-            ((symbol-function 'pel-insert-symbol-content-line)
-             (lambda (&rest _) nil))
-            ((symbol-function 'pel-insert-list-content)
-             (lambda (&rest _) nil)))
-    (with-temp-buffer
-      (emacs-lisp-mode)
-      (should-not (condition-case err
-                      (progn (pel-show-fill-columns) nil)
-                    (error (format "Unexpected error: %S" err)))))))
+  "In `emacs-lisp-mode' the printer inserts `emacs-lisp-docstring-fill-column'."
+  (let ((inserted-syms '()))
+    (cl-letf (((symbol-function 'pel-print-in-buffer)
+               (lambda (_buf _title printer &rest _rest)
+                 (ignore-errors (funcall printer))))
+              ((symbol-function 'pel-insert-symbol-content-line)
+               (lambda (sym &rest _)
+                 (push sym inserted-syms)))
+              ((symbol-function 'pel-insert-list-content)
+               (lambda (&rest _) nil)))
+      (with-temp-buffer
+        (emacs-lisp-mode)
+        (pel-show-fill-columns)
+        (should (memq 'emacs-lisp-docstring-fill-column inserted-syms))))))
+
+(ert-deftest pel-fill-test/show-fill-columns/detects-lisp-mode ()
+  "In `emacs-lisp-mode' the printer inserts `emacs-lisp-docstring-fill-column'."
+  (let ((inserted-syms '()))
+    (cl-letf (((symbol-function 'pel-print-in-buffer)
+               (lambda (_buf _title printer &rest _rest)
+                 (ignore-errors (funcall printer))))
+              ((symbol-function 'pel-insert-symbol-content-line)
+               (lambda (sym &rest _)
+                 (push sym inserted-syms)))
+              ((symbol-function 'pel-insert-list-content)
+               (lambda (&rest _) nil)))
+      (with-temp-buffer
+        (lisp-mode)
+        (pel-show-fill-columns)
+        (should (memq 'emacs-lisp-docstring-fill-column inserted-syms))))))
+
+(ert-deftest pel-fill-test/show-fill-columns/detects-lisp-interaction-mode ()
+  "In `emacs-lisp-mode' the printer inserts `emacs-lisp-docstring-fill-column'."
+  (let ((inserted-syms '()))
+    (cl-letf (((symbol-function 'pel-print-in-buffer)
+               (lambda (_buf _title printer &rest _rest)
+                 (ignore-errors (funcall printer))))
+              ((symbol-function 'pel-insert-symbol-content-line)
+               (lambda (sym &rest _)
+                 (push sym inserted-syms)))
+              ((symbol-function 'pel-insert-list-content)
+               (lambda (&rest _) nil)))
+      (with-temp-buffer
+        (lisp-interaction-mode)
+        (pel-show-fill-columns)
+        (should (memq 'emacs-lisp-docstring-fill-column inserted-syms))))))
 
 (ert-deftest pel-fill-test/show-fill-columns/non-lisp-mode-no-error ()
   "In a non-Lisp mode (text-mode) no error is raised."

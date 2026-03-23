@@ -1,4 +1,4 @@
-;;; pel-fill.el --- PEL Source code management  -*- lexical-binding: t-*-
+;;; pel-fill.el --- PEL Source code management  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020-2022, 2025, 2026  Pierre Rouleau
 
@@ -53,13 +53,13 @@ Clear previous buffer content unless optional APPEND argument is non-nil,
 in which case it appends to the previous report."
   (interactive "P")
   (let* ((fill-column-symbol (pel-major-mode-symbol-for "pel-%s-fill-column"))
-        (fill-column-symbol-is-bound (boundp fill-column-symbol))
-        (text-fill-column (current-fill-column))
-        (isa-lisp-mode (memq (pel-major-mode-of)
-                             '(emacs-lisp-mode
-                               lisp-interaction-mode
-                               lisp-mode)))
-        (pel-insert-symbol-content-context-buffer (current-buffer)))
+         (fill-column-symbol-is-bound (boundp fill-column-symbol))
+         (text-fill-column (current-fill-column))
+         (isa-lisp-mode (memq (pel-major-mode-of)
+                              '(emacs-lisp-mode
+                                lisp-interaction-mode
+                                lisp-mode)))
+         (pel-insert-symbol-content-context-buffer (current-buffer)))
     (pel-print-in-buffer
      "*pel-fill-info*"
      "Fill Control"
@@ -84,7 +84,7 @@ in which case it appends to the previous report."
        (pel-insert-symbol-content-line 'comment-fill-column)
        (pel-insert-symbol-content-line 'display-fill-column-indicator)
        (pel-insert-list-content  'global-display-fill-column-indicator-modes))
-     (unless append :clear-buffer)
+     (unless append :clear-buffer)  ; pass :clear-buffer when not appending
      :use-help-mode)))
 
 ;;; --------------------------------------------------------------------------
