@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-23 21:57:17 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-24 11:00:53 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -871,7 +871,7 @@ pel-skels.elc:            pel--base.elc pel--options.elc pel-prompt.elc
 pel-smartparens.elc:      pel--base.elc pel-syntax.elc
 pel-speedbar.elc:         pel--base.elc pel--macros.elc pel--options.elc
 pel-spell.elc:            pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc
-pel-syntax.elc:           pel--base.elc pel--options.elc pel--syntax-macros.elc
+pel-syntax.elc:           pel--base.elc pel--options.elc pel--syntax-macros.elc pel--macros.elc
 pel-tcl.elc:              pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
 pel-tempo.elc:            pel--keys-macros.elc pel-prompt.elc
 pel-text-insert.elc:      pel--base.elc pel--macros.elc pel-window.elc pel-syntax.elc
@@ -931,6 +931,7 @@ test/pel-skel-rst-test.el.test-passed:          pel--options.elc
 test/pel-skels-elisp-test.el.test-passed:       pel--options.elc
 test/pel-skels-generic-test.el.test-passed:     pel--options.elc
 test/pel-text-insert-test.el.test-passed:       pel-text-insert.elc
+test/pel-syntax-test.el.test-passed:            pel-syntax.elc
 test/pel-text-transform-test.el.test-passed:    pel-text-transform.elc
 test/pel-timestamp-test.el.test-passed:         pel-timestamp.elc pel--base.elc
 

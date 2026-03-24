@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 18:09:41 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 11:14:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -39,7 +39,12 @@
 ;;  bound, otherwise the compiler generates warnings and the code may fail
 ;;  inside a PEL function.
 ;;
-;;  This file provides a set of macros that simplify writing the needed symbol
+;;  The file provide a way to place tracing message used only for debugging
+;;  and removed from production code, as controlled by a condition variable:
+;;
+;;  - `pel-debug-trace'
+;;
+;;  It also provides a set of macros that simplify writing the needed symbol
 ;;  bound check code as well as the lazy library require calls.  These are:
 ;;
 ;;   - `pel-when-fbound'
@@ -84,6 +89,28 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
+(defmacro pel-debug-trace (format-string &rest args)
+  "Display `message' with FORMAT-STRING and ARGS if `pel--debug' is non-nil.
+
+The `pel--debug' local defconst must be set to non-nil during compilation
+to generate the message call during expansion.  The macro generates no code
+otherwise.
+
+Inside files where this is used you can control the generation of these
+message calls by defining a defconst at compile time with code like the
+following:
+
+(eval-when-compile
+  (defconst pel--debug t))
+
+And using:
+
+(pel-debug-trace pel--debug \"debug message #%d\" 1)
+
+The message call is only generated when the pel--debug defconst is non-nil.
+Otherwise no code is generated for the macro."
+  (when pel--debug             ; This conditional runs at macro expansion time
+    `(message ,format-string ,@args)))
 
 ;; Symbol Bound Checks
 ;; -------------------

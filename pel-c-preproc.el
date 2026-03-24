@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 18:33:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 08:54:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -44,11 +44,18 @@
 ;;; Code:
 ;;
 
+(defconst pel--c-preproc-debugging t
+  "Set to t to activate debug tracing development facilities.")
+
 ;; Navigate across #if|#ifdef|#ifndef  / #elif| #else  / #endif
 ;; ------------------------------------------------------------
 
 (defconst pel--c-preproc-conditional-regexp
   "^[[:blank:]]*#[[:blank:]]*\\(\\(if\\(\\(def\\)\\|\\(ndef\\)\\)*\\)\\|\\(el\\(se\\|if\\)\\)\\|\\(endif\\)\\)"
+  ;; G                                    (- 4--)     (- 5 --)
+  ;; G                                 (---------- 3 -----------)              (--- 7 ---)        (-- 8 --)
+  ;; G                            (--------------- 2 ---------------)     (------- 6 -------)
+  ;; G                         (------------------------------------- 1 -------------------------------------)
   "Regexp to find C preprocessor conditionals.")
 
 (defconst pel--c-preproc-conditional-group-if 2
@@ -63,7 +70,7 @@
 ;; -----
 (defun pel--c-preproc-token-from-match (match-result)
   "Return a if, else, end token from search MATCH-RESULT."
-  ;; Result seen by using roup test function below.
+  ;; Result seen by using `pel--c-preproc-check' command.
   ;; #if:     [0-5] all are set: use 5.
   ;;
   ;; #ifdef:  [0-9] all are set: use 5 to identify an if beginning,
@@ -92,19 +99,20 @@
           ((nth 15 match-result)  (nth 15 match-result)) ; #else | #elif
           ((nth 17 match-result)  (nth 17 match-result)) ; #endif
           (t (error "Invalid search result")))))
-    (message "==> %S from %S" pos match-result)
+    (when pel--c-preproc-debugging
+     (message "==> %S from %S" pos match-result))
     pos))
 
-;; (defun roup ()
-;;   "Test for development"
-;;   (interactive)
-;;   (let ((msg-data nil))
-;;     (re-search-forward pel--c-preproc-conditional-regexp nil :noerror)
-;;     (setq msg-data (match-data))
-;;     (message "%s at %S"
-;;              (pel--c-preproc-token-from-match msg-data)
-;;              msg-data)))
-
+(when pel--c-preproc-debugging
+  (defun pel--c-preproc-check ()
+    "Debugging search in C code using regexp. Print match data."
+    (interactive)
+    (let ((msg-data nil))
+      (re-search-forward pel--c-preproc-conditional-regexp nil :noerror)
+      (setq msg-data (match-data))
+      (message "%s at %S"
+               (pel--c-preproc-token-from-match msg-data)
+               msg-data))))
 
 ;; -------
 

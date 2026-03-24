@@ -1,8 +1,8 @@
-;;; pel-syntax.el --- Syntax processing helper functions.  -*- lexical-binding: t; -*-
+;;; pel-syntax.el --- Syntax processing helper functions  -*- lexical-binding: t; -*-
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 12:19:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 11:32:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -68,13 +68,18 @@
 ;;                                 ;      `pel-string-ends-with-p'
 (require 'pel--options)            ; use: `pel-syntax-text-properties'
 (require 'pel--syntax-macros)
-(require 'syntax)     ; syntax always available, even in emacs -Q
-(eval-when-compile (require 'subr-x))   ; use: `string-join'
+(require 'syntax)                  ; syntax always available, even in emacs -Q
+(eval-when-compile
+  (require 'pel--macros)    ; use: `pel-message-when'
+  (require 'subr-x))        ; use: `string-join'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
+(eval-when-compile
+  (defconst pel--debug nil
+    "Set to t activate `message' calls via `pel-debug-trace' expansion."))
 
 ;; Development Tools
 ;; -----------------
@@ -88,7 +93,7 @@
   (get-text-property (or pos (point)) 'syntax-table))
 
 (defun pel-get-face (&optional pos)
-  "Return syntax property of character at POS of point."
+  "Return face property of character at POS of point."
   (get-text-property (or pos (point)) 'face))
 
 ;;-pel-autoload
@@ -114,7 +119,9 @@ otherwise list only the ones specified by it."
 ;; ----------------
 
 (defun pel-syntax-at (&optional pos)
-  "Return the syntax information for the character at POS or point."
+  "Return the syntax information for the character at POS or point.
+Returns a list of two elements: the syntax-class string (from
+`char-syntax') and the raw syntax descriptor (from `syntax-after')."
   (list
    (char-to-string (char-syntax (char-after (or pos (point)))))
    (syntax-after (or pos (point)))))
@@ -283,10 +290,11 @@ Returns the number of text modifications performed."
              (close-pos (nth 1 open.close.text))
              (total-changes 0)
              (changes 1))
-        ;; TODO: I'm not sure I need the multi checks loop, for the moment
-        ;;       it's there for safety but it might not be needed and will
-        ;;       only slow down operation.
-        ;; (message "%d, %d: %s" open-pos close-pos  (nth 2 open.close.text))
+        ;; [:todo 2026-03-24, by Pierre Rouleau: @coderabbitai : please investigate:
+        ;;                    I'm not sure I need the multi checks loop, for the moment
+        ;;                    it's there for safety but it might not be needed and will
+        ;;                    only slow down operation. ]
+        (pel-debug-trace "%d, %d: %s" open-pos close-pos  (nth 2 open.close.text))
         (narrow-to-region open-pos (1+ close-pos))
         (while (> changes 0)
           (setq changes 0)
@@ -332,7 +340,7 @@ Returns the number of text modifications performed."
                                         (format "%s." (match-string 1)))))
           ;;
           (pel+= total-changes changes)
-          ;; (message "%d changes" changes)
+          (pel-debug-trace "%d changes" changes)
           )
         total-changes))))
 
@@ -385,16 +393,16 @@ return the new position. On error, issue user error on mismatch."
         (token nil)
         (searching t)
         (original-pos (point)))
-    ;; (message "===================pel-syntax-conditional-forward %s: point=%S ================" to-else (point))
+    (pel-debug-trace "===================pel-syntax-conditional-forward %s: point=%S ================" to-else (point))
     (when (< nesting-level 0)
       (error "Invalid current-nesting value of %d specified" current-nesting))
     (while
         (progn
-          ;; (message "-----At: %S --------------" (point))
+          (pel-debug-trace "-----At: %S --------------" (point))
           (setq found-pos
                 (re-search-forward regexp nil t))
           (setq mdata (match-data))
-          ;; (message "-----Searching: nesting=%d, found-pos=%S, point=%S" nesting-level found-pos (point))
+          (pel-debug-trace "-----Searching: nesting=%d, found-pos=%S, point=%S" nesting-level found-pos (point))
           (if found-pos
               ;; get syntax of the beginning of the token found
               (if (progn
@@ -406,7 +414,7 @@ return the new position. On error, issue user error on mismatch."
                                    found-pos syntax))
                 ;; not in string or comment: process token
                 (setq token (funcall match-to-token-f mdata))
-                ;; (message "%s found at %s" token found-pos)
+                (pel-debug-trace "%s found at %s" token found-pos)
                 (cond
                  ((eq token 'if)
                   (pel+= nesting-level 1))
@@ -432,7 +440,6 @@ missing %d nested levels" conditional nesting-level))
         (left-char 1)
         (push-mark original-pos)))
     found-pos))
-
 
 (defun pel-syntax-conditional-backward (regexp
                                         match-to-token-f
@@ -475,18 +482,18 @@ return the new position. On error, issue user error on mismatch."
         (token nil)
         (searching t)
         (original-pos (point)))
-    ;; (message "<<<<<<--pel-syntax-conditional-backward %s---------------" to-else)
+    (pel-debug-trace "<<<<<<--pel-syntax-conditional-backward %s---------------" to-else)
     (when (< nesting-level 0)
       (error "Invalid current-nesting value of %d specified" current-nesting))
     (when (pel-string-ends-with-p regexp "$")
       (end-of-line nil))
     (while
         (progn
-          ;; (message "-----At: %S --------------" (point))
+          (pel-debug-trace "-----At: %S --------------" (point))
           (setq found-pos
                 (re-search-backward regexp nil t))
           (setq mdata (match-data))
-          ;; (message "-----Searching: nesting=%d, found-pos=%S" nesting-level found-pos)
+          (pel-debug-trace "-----Searching: nesting=%d, found-pos=%S" nesting-level found-pos)
           (if found-pos
               ;; get syntax of the beginning of the token found
               (if (progn
@@ -498,7 +505,7 @@ return the new position. On error, issue user error on mismatch."
                                    found-pos syntax))
                 ;; not in string or comment: process token
                 (setq token (funcall match-to-token-f mdata))
-                ;; (message "%s found at %s" token found-pos)
+                (pel-debug-trace "%s found at %s" token found-pos)
                 (cond
                  ((eq token 'if)
                   (pel-= nesting-level 1)
