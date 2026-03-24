@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 14:26:41 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 16:46:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -142,8 +142,7 @@ command you have 2 choices:
       (declare-function pel-tcl-expect-insert-shebang-line "pel-tcl")
       (if (equal mode "tcl")
           (pel-tcl-insert-shebang-line)
-        (pel-tcl-expect-insert-shebang-line))
-      )
+        (pel-tcl-expect-insert-shebang-line)))
 
      ((equal mode "lua")
       (require 'lua-mode)
@@ -192,7 +191,7 @@ command you have 2 choices:
       (pel-ruby-insert-shebang-line))
 
      ((equal mode "seed7")
-      (require 'seed7-model)
+      (require 'seed7-mode)
       (declare-function seed7-mode "seed7-mode")
       (seed7-mode)
       (require 'pel-seed7)

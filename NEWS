@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- pel--macros.el no longer defines *bound-and-true-p*.
+- Improve ability to activate company-mode dynamically: better support for various versions.
 - Improve ability to comment C code, specially at end of buffer: the internal function pel--c-comment-marked
   now deals with end of buffer properly.
 - Add new utility function in pel--base to help move cursor right past end of line or buffer: *pel-move-right-by*.

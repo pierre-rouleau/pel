@@ -58,15 +58,19 @@
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
-(require 'pel--base)       ; use: pel-symbol-text
-;;                         ;      pel-option-mode-state
-;;                         ;      pel-symbol-on-off-string
-(require 'pel--macros)     ; use: pel-when-bound, pel-when-fbound
+(require 'pel--base)       ; use: `pel-symbol-text'
+;;                         ;      `pel-option-mode-state'
+;;                         ;      `pel-symbol-on-off-string'
+(require 'pel--macros)     ; use: `pel-when-bound', `pel-when-fbound'
 (require 'pel--options)
 (require 'pel-prompt)      ; use: `pel-select-from'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
+
+(eval-when-compile
+  (defconst pel--debug nil
+    "Set to t build to have ‘pel-debug-trace’ display messages."))
 
 ;; -----------------------------------------------------------------------------
 ;;* Auto-Complete Support
@@ -193,12 +197,13 @@ Activate when ARG is nil, t or positive, deactivate when it is negative."
   (if pel-use-company
       (progn
         (require 'company nil :noerror)
-        (if (and (boundp 'company-tooltip-align-annotations)
-                 (boundp 'company-show-numbers))
+        (if (featurep 'company)
             (progn
-              (setq company-tooltip-align-annotations t)
-              (setq company-show-numbers t))
-          (error "Package company not loaded")))
+              (when (boundp 'company-tooltip-align-annotations)
+                (setq company-tooltip-align-annotations t))
+              (when (boundp 'company-show-numbers)
+                (setq company-show-numbers t)))
+          (user-error "Package company not loaded.  Is it installed?")))
     (display-warning 'pel--setup-company "\
 Trying to use company while pel-use-company user-option is off." :error)))
 
@@ -336,11 +341,11 @@ On first call, also configure it."
   "Activate or deactivate corfu completion engine in buffer.
 Activate when ARG is t or positive, deactivate when it is negative."
   (interactive "P")
-  (message "pel-corfu-mode %S" arg)
+  (pel-debug-trace "pel-corfu-mode %S" arg)
   (cond
    ((or (eq arg t)
         (> (prefix-numeric-value arg) 0))
-    (message "--> select corfu")
+    (pel-debug-trace "--> select corfu")
     (pel-select-auto-completion 'corfu))
    ((< (prefix-numeric-value arg) 0)
     (pel-autocomplete--disable)

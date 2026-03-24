@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 12:46:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 17:12:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -29,11 +29,10 @@
 ;;  which may be used to enhance features such as electric behaviour of keys.
 
 
-;; Development Tools
+;; Development Tools:
 ;; - `pel-get-text-property'
 ;; - `pel-get-syntax-prop'
 ;; - `pel-get-face'
-;;
 ;; * `pel-syntax-at-point'
 
 ;; Syntax Utilities:
@@ -70,7 +69,7 @@
 (require 'pel--syntax-macros)
 (require 'syntax)                  ; syntax always available, even in emacs -Q
 (eval-when-compile
-  (require 'pel--macros)    ; use: `pel-message-when'
+  (require 'pel--macros)    ; use: `pel-debug-trace'
   (require 'subr-x))        ; use: `string-join'
 
 ;;; --------------------------------------------------------------------------
@@ -79,10 +78,13 @@
 
 (eval-when-compile
   (defconst pel--debug nil
-    "Set to t activate `message' calls via `pel-debug-trace' expansion."))
+    "Set to t build to have `pel-debug-trace' display messages."))
 
 ;; Development Tools
 ;; -----------------
+;;
+;; Use the following functions and command to get syntax information
+;; about the current location.
 
 (defun pel-get-text-property (property &optional pos)
   "Return specific text PROPERTY of character at POS or point."

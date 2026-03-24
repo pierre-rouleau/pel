@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, November 10 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 16:33:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 17:00:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -105,7 +105,7 @@ Utility : meant to be used in narrowed region."
       (insert " */\n"))))
 
 (defun pel-c-comment-in-comment-p (pos)
-  "Return t if point is in a comment, nil otherwise."
+  "Return t if POS (if specified, point otherwise) is in comment, nil otherwise."
   (save-excursion
     (goto-char pos)
     (nth 4 (syntax-ppss))))

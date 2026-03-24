@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 08:54:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 17:10:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -37,6 +37,7 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--macros)   ; use: `pel-debug-trace'
 (require 'pel-syntax)    ; use: `pel-syntax-conditional-forward'
 ;;                       ;      `pel-syntax-conditional-backward'
 
@@ -44,8 +45,9 @@
 ;;; Code:
 ;;
 
-(defconst pel--c-preproc-debugging t
-  "Set to t to activate debug tracing development facilities.")
+(eval-when-compile
+  (defconst pel--debug nil
+  "Set to t build to have ‘pel-debug-trace’ display messages."))
 
 ;; Navigate across #if|#ifdef|#ifndef  / #elif| #else  / #endif
 ;; ------------------------------------------------------------
@@ -99,20 +101,20 @@
           ((nth 15 match-result)  (nth 15 match-result)) ; #else | #elif
           ((nth 17 match-result)  (nth 17 match-result)) ; #endif
           (t (error "Invalid search result")))))
-    (when pel--c-preproc-debugging
-     (message "==> %S from %S" pos match-result))
+    (pel-debug-trace "==> %S from %S" pos match-result)
     pos))
 
-(when pel--c-preproc-debugging
-  (defun pel--c-preproc-check ()
-    "Debugging search in C code using regexp. Print match data."
-    (interactive)
-    (let ((msg-data nil))
-      (re-search-forward pel--c-preproc-conditional-regexp nil :noerror)
-      (setq msg-data (match-data))
-      (message "%s at %S"
-               (pel--c-preproc-token-from-match msg-data)
-               msg-data))))
+(eval-when-compile
+  (when (bound-and-true-p pel--debug)
+    (defun pel--c-preproc-check ()
+      "Debugging search in C code using regexp. Print match data."
+      (interactive)
+      (let ((msg-data nil))
+        (re-search-forward pel--c-preproc-conditional-regexp nil :noerror)
+        (setq msg-data (match-data))
+        (message "%s at %S"
+                 (pel--c-preproc-token-from-match msg-data)
+                 msg-data)))))
 
 ;; -------
 

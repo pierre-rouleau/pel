@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 11:55:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 17:15:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -101,7 +101,8 @@ message calls by defining a defconst at compile time with code like the
 following:
 
 (eval-when-compile
-  (defconst pel--debug t))
+  (defconst pel--debug nil
+  \"Set to t build to have `pel-debug-trace' display messages.\"))
 
 And using:
 
@@ -109,7 +110,7 @@ And using:
 
 The message call is only generated when the pel--debug defconst is non-nil.
 Otherwise no code is generated for the macro."
-  (when (bound-and-true-p pel--debug)             ; This conditional runs at macro expansion time
+  (when (bound-and-true-p pel--debug) ; This conditional runs at macro expansion time
     `(message ,format-string ,@args)))
 
 ;; Symbol Bound Checks
@@ -175,10 +176,6 @@ VARIABLES := list of variable symbol(s) or nil
          (progn
            ,@body)
        (error "Failed loading required resources!")))))
-
-(defmacro bound-and-true-p (var)
-  "Return the value of symbol VAR if it is bound, else nil."
-  `(and (boundp (quote ,var)) ,var))
 
 ;; ---------------------------------------------------------------------------
 ;; Set mode state
