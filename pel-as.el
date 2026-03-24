@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 18:32:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 19:41:22 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -44,10 +44,14 @@
 ;;; Code:
 ;;
 
-(defconst pel--sh-modes (append (mapcar (lambda (e) (car e))
-                                        sh-ancestor-alist)
-                                (when (eq system-type 'gnu/linux)
-                                  '(csh ksh)))
+(defconst pel--sh-modes (let ((modes ()))
+                          (dolist (parent.child sh-ancestor-alist)
+                            (push (car parent.child) modes)
+                            (push (cdr parent.child) modes))
+                          (when (eq system-type 'gnu/linux)
+                            (push 'csh modes)
+                            (push 'ksh modes))
+                          (delete-dups modes))
   "List of potential shells script modes.")
 
 ;; [:todo 2025-03-17, by Pierre Rouleau: Tie this to pel-skels-generic-first-line]
