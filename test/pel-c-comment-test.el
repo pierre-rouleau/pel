@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 19:44:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 22:33:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -55,6 +55,18 @@
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
+
+;;; --------------------------------------------------------------------------
+;;; Compatibility:
+;;
+;; `string-search' was introduced in Emacs 28.  Provide a fallback so the
+;; test suite runs on Emacs 26 and 27 as well.
+(unless (fboundp 'string-search)
+  (defun string-search (needle haystack &optional start-pos)
+    "Return position of first occurrence of NEEDLE in HAYSTACK, or nil.
+Optional START-POS (default 0) causes the search to begin at that index.
+This is a compatibility shim for Emacs < 28."
+    (string-match (regexp-quote needle) haystack start-pos)))
 
 ;; ===========================================================================
 ;; Helpers
@@ -208,7 +220,6 @@ Point is left at `point-min'."
 
 (ert-deftest pel-c-comment-test/marked/column-offset/two-lines-indented ()
   "With column=2 the comment opener aligns with 2-space-indented code."
-  (ert-skip "Temporary skip failing test that fails with end-of-buffer error")
   (let ((pel-c-multiline-comments 1))
     ;; The buffer is expected to start at column 2 (i.e. the code was already
     ;; indented).  `pel--c-comment-marked' inserts "/* " at point-min and

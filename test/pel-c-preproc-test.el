@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 22:11:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 22:31:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -78,7 +78,7 @@
     (insert code)
     (goto-char (point-min))
     (when (re-search-forward pel--c-preproc-conditional-regexp nil t)
-      (match-data))))
+      (match-data t))))
 
 ;; ===========================================================================
 ;; pel--c-preproc-conditional-regexp  —  string properties
@@ -205,7 +205,6 @@
 
 (ert-deftest pel-c-preproc-test/token-pos-from-match/returns-integer-for-if ()
   "`pel--c-preproc-token-pos-from-match' returns an integer position for #if."
-  (ert-skip "Temporary skip failing test.")
   (let ((md (pel-c-preproc-test--search "#if FOO\n")))
     (should md)
     (let ((pos (pel--c-preproc-token-pos-from-match md)))
@@ -214,7 +213,6 @@
 
 (ert-deftest pel-c-preproc-test/token-pos-from-match/returns-integer-for-else ()
   "`pel--c-preproc-token-pos-from-match' returns an integer position for #else."
-  (ert-skip "Temporary skip failing test.")
   (let ((md (pel-c-preproc-test--search "#else\n")))
     (should md)
     (let ((pos (pel--c-preproc-token-pos-from-match md)))
@@ -223,7 +221,6 @@
 
 (ert-deftest pel-c-preproc-test/token-pos-from-match/returns-integer-for-endif ()
   "`pel--c-preproc-token-pos-from-match' returns an integer position for #endif."
-  (ert-skip "Temporary skip failing test.")
   (let ((md (pel-c-preproc-test--search "#endif\n")))
     (should md)
     (let ((pos (pel--c-preproc-token-pos-from-match md)))
@@ -234,7 +231,7 @@
   "For #if, the returned position equals the start of the whole match."
   (pel-c-preproc-test--with-code "#if FOO\n"
     (re-search-forward pel--c-preproc-conditional-regexp nil t)
-    (let* ((md (match-data))
+    (let* ((md (match-data t))
            (pos (pel--c-preproc-token-pos-from-match md)))
       ;; The whole-match start is (nth 0 md); for #if the function returns that.
       (should (= pos (nth 0 md))))))

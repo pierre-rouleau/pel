@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 22:09:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 22:25:22 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -62,8 +62,18 @@
 ;;
 (require 'pel-autocomplete)
 (require 'ert)
-;; (require 'auto-complete)
-;; (require 'company)
+
+;; Declare variables from external packages as special/dynamic variables so
+;; that `let' bindings are visible to `bound-and-true-p' even when the
+;; packages (auto-complete, company, corfu, corfu-terminal) are not installed
+;; in the test environment.
+(defvar auto-complete-mode        nil)
+(defvar global-auto-complete-mode nil)
+(defvar company-mode              nil)
+(defvar global-company-mode       nil)
+(defvar corfu-mode                nil)
+(defvar global-corfu-mode         nil)
+(defvar corfu-terminal-mode       nil)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -79,7 +89,6 @@
 
 (ert-deftest pel-autocomplete-test/auto-complete-mode-p/on-when-t ()
   "`pel--auto-complete-mode-p' returns non-nil when `auto-complete-mode' is t."
-  (ert-skip "Temporary skip failing test.")
   (let ((auto-complete-mode t))
     (should (pel--auto-complete-mode-p))))
 
@@ -94,7 +103,6 @@
 
 (ert-deftest pel-autocomplete-test/global-auto-complete-mode-p/on-when-t ()
   "`pel--global-auto-complete-mode-p' returns non-nil when the global mode is t."
-  (ert-skip "Temporary skip failing test.")
   (let ((global-auto-complete-mode t))
     (should (pel--global-auto-complete-mode-p))))
 
@@ -109,7 +117,6 @@
 
 (ert-deftest pel-autocomplete-test/company-mode-p/on-when-t ()
   "`pel--company-mode-p' returns non-nil when `company-mode' is t."
-  (ert-skip "Temporary skip failing test.")
   (let ((company-mode t))
     (should (pel--company-mode-p))))
 
@@ -124,7 +131,6 @@
 
 (ert-deftest pel-autocomplete-test/global-company-mode-p/on-when-t ()
   "`pel--global-company-mode-p' returns non-nil when `global-company-mode' is t."
-  (ert-skip "Temporary skip failing test.")
   (let ((global-company-mode t))
     (should (pel--global-company-mode-p))))
 
@@ -135,8 +141,6 @@
 ;; corfu-terminal-mode and corfu-mode must be on.
 ;; ===========================================================================
 
-(defvar corfu-mode)                     ;prevent warning
-(defvar corfu-terminal-mode)            ;prevent warning
 (ert-deftest pel-autocomplete-test/corfu-mode-p/graphic-off-when-nil ()
   "`pel--corfu-mode-p' returns nil on graphic display when `corfu-mode' is nil."
   (let ((corfu-mode nil)
@@ -181,7 +185,6 @@
 
 (ert-deftest pel-autocomplete-test/global-corfu-mode-p/graphic-on-when-t ()
   "`pel--global-corfu-mode-p' returns non-nil on graphic display when mode is t."
-  (ert-skip "Temporary skip failing test.")
   (let ((global-corfu-mode t)
         (pel-use-corfu-terminal nil)
         (pel-emacs-is-graphic-p t))

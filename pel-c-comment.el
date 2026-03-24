@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, November 10 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 18:33:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-23 22:39:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -91,14 +91,16 @@ Utility : meant to be used in narrowed region."
     (insert "/* ")
     (left-char 3)
     (forward-line 1)
-    (right-char column)
+    (unless (eobp)
+      (right-char column))
     (while (not (eobp))
       (if (eq pel-c-multiline-comments 2)
           (insert "** ")
         (insert " * "))
       (left-char 3)
       (forward-line 1)
-      (right-char column))
+      (unless (eobp)
+        (right-char column)))
     (if (eq pel-c-multiline-comments 2)
         (insert "*/\n")
       (insert " */\n"))))
