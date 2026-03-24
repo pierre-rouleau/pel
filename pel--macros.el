@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 11:39:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 11:55:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -105,7 +105,7 @@ following:
 
 And using:
 
-(pel-debug-trace pel--debug \"debug message #%d\" 1)
+(pel-debug-trace \"debug message #%d\" 1)
 
 The message call is only generated when the pel--debug defconst is non-nil.
 Otherwise no code is generated for the macro."
