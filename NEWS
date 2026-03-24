@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add new utility function in pel--base to help move cursor right past end of line or buffer: *pel-move-right-by*.
 - Add the *pel-debug-trace* macro in pel--macros.el, this is
   a replacement for the message calls that must only be used during development
   for debugging purpose: the *pel-debug-trace* macro takes the same arguments

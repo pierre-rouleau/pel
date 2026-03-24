@@ -274,6 +274,9 @@
 ;;    - `pel--pp'
 ;;      - `pel-line-prefixed-with'
 ;;
+;; Move point right, optionally inserting spaces
+;;  - `pel-move-right-by'
+;;
 ;; Print in dedicated buffer
 ;;  - `pel-print-in-buffer'
 ;;
@@ -2806,6 +2809,33 @@ ON-SAME-LINE is non-nil"
                 (insert "   ")
                 (pel-insert-symbol elem no-button))
             (pel--pp elem (current-buffer) "   ")))))))
+
+;; ---------------------------------------------------------------------------
+;;* Move point right, optionally inserting spaces
+;;  =============================================
+
+(defun pel-move-right-by (n)
+  "Move point N columns to the right, inserting spaces if needed.
+The spaces are inserted when current line is not long enough.
+At the end of buffer, a newline and spaces are inserted to reach
+the relatively specified column."
+  (let* ((current-col (current-column))
+         (target-col (+ current-col n))
+         (end-of-buffer-p (eobp)))
+    (save-excursion
+      ;; Ensure the line is long enough or extend with spaces
+      (move-to-column target-col t)
+      (let ((actual-col (current-column)))
+        ;; If we are still not at the target column, or if we were at the EOB
+        ;; and need to move further, insert more spaces and newlines if necessary.
+        (when (< actual-col target-col)
+          (let ((spaces-to-insert (- target-col actual-col)))
+            (when end-of-buffer-p
+              ;; Insert a newline if it's the very end of the buffer to start a new line
+              (insert "\n"))
+            (insert (make-string spaces-to-insert ?\s))))))
+    ;; Finally, move the cursor to the target column
+    (move-to-column target-col t)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Print in dedicated buffer
