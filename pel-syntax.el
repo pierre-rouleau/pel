@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 11:32:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 12:46:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -519,7 +519,7 @@ return the new position. On error, issue user error on mismatch."
                     (setq searching nil)))
                  ((eq token 'end)
                   (pel+= nesting-level 1)))
-                (left-char 1))
+                (unless (bobp) (left-char 1)))
             (setq searching nil))
           (and searching found-pos (> nesting-level 0))))
     (if (> nesting-level 0)
