@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 12:45:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 13:58:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -549,6 +549,85 @@ does not move it."
   ;; Leading newline: END is at pos 2, left-char moves to pos 1 (valid),
   ;; then re-search-backward finds nothing → user-error fires correctly.
   (pel-syntax-test--with-code "\nEND\n"
+    (goto-char (point-max))
+    (should-error
+     (pel-syntax-conditional-backward
+      pel-syntax-test--cond-re
+      #'pel-syntax-test--cond-token
+      #'pel-syntax-test--cond-pos
+      0 nil "IF")
+     :type 'user-error)))
+
+;; ---------------------------------------------------------------------------
+;; ===========================================================================
+;; pel-syntax-conditional-backward — edge cases: token at (point-min)
+;;
+;; These tests have NO leading newline so the relevant token is at buffer
+;; position 1 = (point-min).  They validate the (unless (bobp) (left-char 1))
+;; guard introduced at line 522 of pel-syntax.el; without the guard each test
+;; would raise (beginning-of-buffer).
+;; ===========================================================================
+
+;; The fourth test is especially important: it proves the guard doesn't silently
+;; swallow a legitimate user-error — it only suppresses the spurious
+;; beginning-of-buffer signal.
+
+(ert-deftest pel-syntax-test/cond-backward/no-error-when-if-at-bobp ()
+  "No `beginning-of-buffer' when the matching IF is at `point-min'."
+  ;; IF is at position 1.  The bobp guard must prevent the signal.
+  (pel-syntax-test--with-code "IF x\nEND\n"
+    (goto-char (point-max))
+    (let (got-bobp-error result)
+      (condition-case _
+          (setq result (pel-syntax-conditional-backward
+                        pel-syntax-test--cond-re
+                        #'pel-syntax-test--cond-token
+                        #'pel-syntax-test--cond-pos
+                        0 nil "IF"))
+        (beginning-of-buffer (setq got-bobp-error t)))
+      ;; The guard must suppress the beginning-of-buffer signal.
+      (should-not got-bobp-error)
+      ;; The function must have returned a valid (integer) position.
+      (should result)
+      (should (integerp result)))))
+
+(ert-deftest pel-syntax-test/cond-backward/point-near-bobp-after-match ()
+  "Point lands at position 2 (just after IF at position 1) after the search."
+  ;; After finding IF at 1, the epilogue `(right-char 1)' moves point to 2.
+  (pel-syntax-test--with-code "IF x\nEND\n"
+    (goto-char (point-max))
+    (pel-syntax-conditional-backward
+     pel-syntax-test--cond-re
+     #'pel-syntax-test--cond-token
+     #'pel-syntax-test--cond-pos
+     0 nil "IF")
+    (should (<= (point) 3))))
+
+(ert-deftest pel-syntax-test/cond-backward/no-error-nested-if-at-bobp ()
+  "No `beginning-of-buffer' when outer IF of a nested block is at `point-min'."
+  ;; outer IF at position 1; inner IF/END pair is processed first (nesting++),
+  ;; then outer IF is found at bobp — guard fires on the final iteration.
+  (pel-syntax-test--with-code "IF outer\nIF inner\nEND\nEND\n"
+    (goto-char (point-max))
+    (let (got-bobp-error result)
+      (condition-case _
+          (setq result (pel-syntax-conditional-backward
+                        pel-syntax-test--cond-re
+                        #'pel-syntax-test--cond-token
+                        #'pel-syntax-test--cond-pos
+                        0 nil "IF"))
+        (beginning-of-buffer (setq got-bobp-error t)))
+      (should-not got-bobp-error)
+      (should result)
+      ;; Point should have retreated to near the outer IF (position 1).
+      (should (<= (point) 3)))))
+
+(ert-deftest pel-syntax-test/cond-backward/user-error-not-bobp-for-unmatched-end-at-bobp ()
+  "Unmatched END at `point-min' raises `user-error', not `beginning-of-buffer'."
+  ;; END is at position 1.  After matching it (nesting → 1), the bobp guard
+  ;; skips left-char; re-search-backward from bobp returns nil; nesting > 0
+  ;; so the function signals user-error — not beginning-of-buffer.
+  (pel-syntax-test--with-code "END\n"
     (goto-char (point-max))
     (should-error
      (pel-syntax-conditional-backward
