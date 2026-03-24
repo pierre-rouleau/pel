@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 22:25:22 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 16:41:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -309,7 +309,7 @@
 
 (ert-deftest pel-autocomplete-test/used-tool/defaults-to-nil-in-new-buffer ()
   "`pel--used-auto-completion-tool' is nil in a freshly created buffer."
-  (let ((buf (get-buffer-create " *pel-autocomplete-test-fresh*")))
+  (let ((buf (generate-new-buffer " *pel-autocomplete-test-fresh*")))
     (unwind-protect
         (with-current-buffer buf
           (should (eq nil pel--used-auto-completion-tool)))

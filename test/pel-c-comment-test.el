@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 22:33:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 15:00:02 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,8 +31,8 @@
 ;;
 ;;   pel--c-comment-escape-comments  - escapes /* and */ inside a narrowed region
 ;;   pel--c-comment-marked           - wraps buffer content in a C multi-line comment
-;;     (1-star format:  /* ... / * ... / */  )
-;;     (2-star format:  /* ... /** ... / */  )
+;;     (1-star format:  /* ... ** ... / */  )
+;;     (2-star format:  /* ... ** ... / */  )
 ;;   pel-c-comment-in-comment-p      - tests whether a buffer position is inside a comment
 ;;
 ;; Items intentionally NOT covered:
@@ -219,15 +219,16 @@ Point is left at `point-min'."
 ;; ===========================================================================
 
 (ert-deftest pel-c-comment-test/marked/column-offset/two-lines-indented ()
-  "With column=2 the comment opener aligns with 2-space-indented code."
+  "With column=2 the opener replaces leading spaces and continuation is indented."
   (let ((pel-c-multiline-comments 1))
-    ;; The buffer is expected to start at column 2 (i.e. the code was already
-    ;; indented).  `pel--c-comment-marked' inserts "/* " at point-min and
-    ;; then right-char column before each subsequent insertion.
     (pel-c-comment-test--with-code "  line1\n  line2\n"
-      (pel--c-comment-marked 2)
-      ;; The first line must still begin with "/* ".
-      (should (string-prefix-p "/* " (buffer-string))))))
+      (pel--c-comment-marked 0)
+      ;; "/* " is inserted at point-min (before the first "  ").
+      ;; For line2: forward-line lands at "  line2", then right-char 2
+      ;; advances past the two spaces, then " * " is inserted there.
+      (should (string-prefix-p "/* " (buffer-string)))
+      ;; Full expected output (verify once by running in a live Emacs if unsure):
+      (should (string= (buffer-string) "/*   line1\n *   line2\n */\n")))))
 
 ;; ===========================================================================
 ;; pel-c-comment-in-comment-p

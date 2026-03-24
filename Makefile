@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-24 11:00:53 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-24 15:39:27 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -753,7 +753,7 @@ pel-abbrev.elc:           pel--base.elc
 pel-ada.elc:              pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel-align.elc:            pel-hash.elc pel--base.elc
 pel-applescript.elc:      pel-read.elc pel--options.elc pel--base.elc
-pel-as.elc:               pel-prompt.elc pel-d.elc pel-tcl.elc pel-lua.elc pel-nim.elc pel-perl.elc pel-pike.elc pel-python.elc pel-ruby.elc pel-seed7.elc
+pel-as.elc:               pel--base.elc pel--options.elc pel-prompt.elc pel-d.elc pel-tcl.elc pel-lua.elc pel-nim.elc pel-perl.elc pel-pike.elc pel-python.elc pel-ruby.elc pel-seed7.elc
 pel-autocomplete.elc:     pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc
 pel-autoload.elc:         pel--options.elc
 pel-benchmark.elc:        pel--base.elc pel-window.elc pel-setup.elc
@@ -900,8 +900,10 @@ pel_keys.elc:             pel_keys.el pel__hydra.el $(ELC_FILES)
 
 
 # Test code dependency:
+test/pel--base-test.el.test-passed:             pel--base.elc
 test/pel--macros-test.el.test-passed:           pel--macros.elc
 test/pel--indent-test.el.test-passed:           pel--indent.elc
+test/pel--syntax-macros-test.el.test-passed:    pel--syntax-macros.elc
 test/pel-abbrev-test.el.test-passed:            pel-abbrev.elc pel--base.elc
 test/pel-align-test.el.test-passed:             pel-align.elc
 test/pel-as-test.el.test-passed:                pel-as.elc

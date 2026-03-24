@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, November 10 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 22:39:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 16:33:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,7 +64,8 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)                    ; use: `pel-same-line-p'
+(require 'pel--base)                    ; use: `pel-same-line-p',
+;;                                      ;      `pel-move-right-by'
 (require 'pel--options)                 ; use: `pel-c-multiline-comments'
 (require 'pel-comment)                  ; use: `pel-comment-dwim'
 ;;; --------------------------------------------------------------------------
@@ -91,16 +92,14 @@ Utility : meant to be used in narrowed region."
     (insert "/* ")
     (left-char 3)
     (forward-line 1)
-    (unless (eobp)
-      (right-char column))
+    (pel-move-right-by column)
     (while (not (eobp))
       (if (eq pel-c-multiline-comments 2)
           (insert "** ")
         (insert " * "))
       (left-char 3)
       (forward-line 1)
-      (unless (eobp)
-        (right-char column)))
+      (pel-move-right-by column))
     (if (eq pel-c-multiline-comments 2)
         (insert "*/\n")
       (insert " */\n"))))

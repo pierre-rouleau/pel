@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 22:31:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 16:40:22 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -247,7 +247,7 @@
     (let ((expected '(if else else end))
           (tokens   '()))
       (while (re-search-forward pel--c-preproc-conditional-regexp nil t)
-        (push (pel--c-preproc-token-from-match (match-data)) tokens))
+        (push (pel--c-preproc-token-from-match (match-data t)) tokens))
       (should (equal (nreverse tokens) expected)))))
 
 ;;; --------------------------------------------------------------------------

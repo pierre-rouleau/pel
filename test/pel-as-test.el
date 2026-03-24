@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 19:09:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 16:37:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -84,58 +84,58 @@
 
 (ert-deftest pel-as-test/all-modes/contains-config ()
   "`pel--all-modes' must contain the `config' mode."
-  (should (member 'config pel--all-modes)))
+  (should (memq 'config pel--all-modes)))
 
 (ert-deftest pel-as-test/all-modes/contains-d ()
   "`pel--all-modes' must contain the `d' mode."
-  (should (member 'd pel--all-modes)))
+  (should (memq 'd pel--all-modes)))
 
 (ert-deftest pel-as-test/all-modes/contains-lua ()
   "`pel--all-modes' must contain `lua'."
-  (should (member 'lua pel--all-modes)))
+  (should (memq 'lua pel--all-modes)))
 
 (ert-deftest pel-as-test/all-modes/contains-nim ()
   "`pel--all-modes' must contain `nim'."
-  (should (member 'nim pel--all-modes)))
+  (should (memq 'nim pel--all-modes)))
 
 (ert-deftest pel-as-test/all-modes/contains-perl ()
   "`pel--all-modes' must contain `perl'."
-  (should (member 'perl pel--all-modes)))
+  (should (memq 'perl pel--all-modes)))
 
 (ert-deftest pel-as-test/all-modes/contains-pike ()
   "`pel--all-modes' must contain `pike'."
-  (should (member 'pike pel--all-modes)))
+  (should (memq 'pike pel--all-modes)))
 
 (ert-deftest pel-as-test/all-modes/contains-python ()
   "`pel--all-modes' must contain `python'."
-  (should (member 'python pel--all-modes)))
+  (should (memq 'python pel--all-modes)))
 
 (ert-deftest pel-as-test/all-modes/contains-ruby ()
   "`pel--all-modes' must contain `ruby'."
-  (should (member 'ruby pel--all-modes)))
+  (should (memq 'ruby pel--all-modes)))
 
 (ert-deftest pel-as-test/all-modes/contains-seed7 ()
   "`pel--all-modes' must contain `seed7'."
-  (should (member 'seed7 pel--all-modes)))
+  (should (memq 'seed7 pel--all-modes)))
 
 (ert-deftest pel-as-test/all-modes/contains-expect ()
   "`pel--all-modes' must contain `expect'."
-  (should (member 'expect pel--all-modes)))
+  (should (memq 'expect pel--all-modes)))
 
 (ert-deftest pel-as-test/all-modes/contains-tcl ()
   "`pel--all-modes' must contain `tcl'."
-  (should (member 'tcl pel--all-modes)))
+  (should (memq 'tcl pel--all-modes)))
 
 (ert-deftest pel-as-test/all-modes/is-superset-of-sh-modes ()
   "Every mode in `pel--sh-modes' must also appear in `pel--all-modes'."
   (dolist (mode pel--sh-modes)
-    (should (member mode pel--all-modes))))
+    (should (memq mode pel--all-modes))))
 
 (ert-deftest pel-as-test/all-modes/no-duplicates ()
   "`pel--all-modes' must contain no duplicate entries."
   (let ((seen '()))
     (dolist (mode pel--all-modes)
-      (should-not (member mode seen))
+      (should-not (memq mode seen))
       (push mode seen))))
 
 ;;; --------------------------------------------------------------------------

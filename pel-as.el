@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 19:41:22 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 14:26:41 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,6 +36,9 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--base)        ; use `pel-major-mode-symbol-for',
+;;                          ;     `pel-major-mode-symbol-value-or'
+(require 'pel--options)     ; use `pel-use-tree-sitter'
 (require 'pel-prompt)       ; use: `pel-prompt-with-completion'
 (require 'sh-script)        ; use: `shell-script-mode', `sh-set-shell',
 ;;                          ;      `sh-ancestor-alist'
