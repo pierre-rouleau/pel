@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 20:15:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 22:55:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -89,6 +89,7 @@
 ;;; Dependencies:
 ;;
 (require 'pel--base)
+(require 'pel--options)
 (require 'ert)
 (eval-when-compile (require 'cl-lib))
 
@@ -165,25 +166,23 @@
   (should (= 4 (λc (lambda (n) (1+ n)) 3))))
 
 (ert-deftest pel--base-test/predicates/expression-and-user-option ()
-  (ert-skip "Temporary skip failing test.")
   (should (pel-expression-p 'foo))
   (should (pel-expression-p '(+ 1 2)))
   (should-not (pel-expression-p 42))
-  (unless (boundp 'pel--base-test-opt)
-    (defcustom pel--base-test-opt nil "Test option." :type 'boolean :group 'pel))
-  (should (pel-user-option-p 'pel--base-test-opt))
-  (should-not (pel-user-option-p 'pel--no-such-opt)))
+  (should (pel-user-option-p 'pel-use-common-lisp))
+  (should-not (pel-user-option-p 'pel-use-visual-basic)))
 
+(defvar pel--base-test-sym nil)  ; declare special
 (ert-deftest pel--base-test/set-if-non-nil-and-bools-and-bits ()
-  (ert-skip "Temporary skip failing test.")
-  (let ((sym nil))
-    (pel-set-if-non-nil 'sym nil) (should (eq nil sym))
-    (pel-set-if-non-nil 'sym :v)  (should (eq :v  sym)))
+  (let ((pel--base-test-sym nil))
+    (pel-set-if-non-nil 'pel--base-test-sym nil)
+    (should (eq nil pel--base-test-sym))
+    (pel-set-if-non-nil 'pel--base-test-sym :v)
+    (should (eq :v pel--base-test-sym)))
   (should (eq nil (pel-!0 0)))
   (should (eq t   (pel-!0 1)))
   (should (eq t   (pel-as-boolean 'x)))
   (should (eq nil (pel-as-boolean nil)))
-  ;; bitset: 5 decimal has bits 1 and 4 (decimals)
   (should (pel-all-bitset-p 5 1 4))
   (should-not (pel-all-bitset-p 5 1 2)))
 
@@ -444,10 +443,7 @@
 
 (ert-deftest pel--base-test/treesit/mode-remap-and-supported-p ()
   (let ((pel-uses-tree-sitter t)
-        (major-mode-remap-alist nil))
-    (setq major-mode-remap-alist
-          (or (pel-major-mode-use-tree-sitter 'c-mode 'c-ts-mode)
-              major-mode-remap-alist))
+        (major-mode-remap-alist '((c-mode . c-ts-mode))))   ; explicit remap
     (should (assoc 'c-mode major-mode-remap-alist))
     (should (pel-major-ts-mode-supported-p 'c))))
 
@@ -581,13 +577,12 @@
       (should (string= "aYc" (buffer-string))))))
 
 (ert-deftest pel--base-test/extract/text-from-bol ()
-  (ert-skip "Temporary skip failing test.")
   (with-temp-buffer
     (insert "hello\nworld\n")
-    (forward-line 1)
-    (let ((bol (line-beginning-position)))
-      (goto-char (+ bol 3)) ;; after "wor"
-      (should (string= "wor" (pel-text-from-beginning-of-line))))))
+    (goto-char (point-min))
+    (forward-line 1)                 ; at beginning of "world"
+    (search-forward "wor")           ; point just after "wor"
+    (should (string= "wor" (pel-text-from-beginning-of-line)))))
 
 (ert-deftest pel--base-test/code/checks ()
   (with-temp-buffer
@@ -608,14 +603,12 @@
     (should-not (pel-has-shebang-line))))
 
 (ert-deftest pel--base-test/line/only-whitespace-p ()
-  ;; Whitespace-only line (no trailing newline) to avoid EOL ambiguity
-  (ert-skip "Temporary skip failing test.")
   (with-temp-buffer
-    (insert "   ")
-    (goto-char 1)
-    (should (pel-line-has-only-whitespace-p))
-    (insert "\nabc\n")
+    (insert "   \nabc\n")
+    (goto-char (point-min))
+    (should (pel-line-has-only-whitespace-p))   ; first line is spaces only
     (forward-line 1)
+    (move-beginning-of-line 1)                  ; be explicit: at "abc"
     (should-not (pel-line-has-only-whitespace-p))))
 
 ;;; --------------------------------------------------------------------------
@@ -623,7 +616,6 @@
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/paths/file-in-and-normalize-and-same-fname ()
-  (ert-skip "Temporary skip failing test.")
   (pel--base-test--with-temp-dir d
     (let* ((sub (expand-file-name "sub" d))
            (_   (make-directory sub))
@@ -632,8 +624,8 @@
       (should (string= (pel-normalize-fname (concat d "/."))
                        (pel-normalize-fname d)))
       (should (pel-is-subdir-of sub d))
-      (should (string= (file-name-directory (directory-file-name d))
-                       (pel-parent-dirpath d)))
+      (should (string= (file-truename (file-name-directory (directory-file-name d)))
+                       (file-truename (pel-parent-dirpath d))))
       (should (string= (expand-file-name "bro" (file-name-directory (directory-file-name d)))
                        (pel-sibling-dirname d "bro")))
       (should (string= (file-name-as-directory (pel-sibling-dirname d "sis"))

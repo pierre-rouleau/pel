@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix *pel-line-has-only-whitespace-p*.
 - pel--macros.el no longer defines *bound-and-true-p*.
 - Improve ability to activate company-mode dynamically: better support for various versions.
 - Improve ability to comment C code, specially at end of buffer: the internal function pel--c-comment-marked

@@ -2390,17 +2390,16 @@ otherwise it does not."
 ;;  ====================
 
 (defun pel-line-has-only-whitespace-p (&optional pos)
-  "Return non-nil if current line (or line at POS) contain only whitespace.
+  "Return t if current line (or line at POS) contain only whitespace.
 Return nil otherwise.
 Whitespace characters are specified by the syntax table of the
 current major mode."
   (save-excursion
-    (goto-char (or pos (point)))
+    (when pos (goto-char pos))
     (beginning-of-line)
-    (= (progn
-         (skip-syntax-forward " ")
-         (point))
-       (line-end-position))))
+    (let ((eol (save-excursion (progn (end-of-line)
+                                      (point)))))
+      (not (re-search-forward "[^ \t]" eol t)))))
 
 (defun pel-inside-code (&optional pos)
   "Return non-nil when point or POS is in code, nil if in comment or string.
