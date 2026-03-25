@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 17:12:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 07:30:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -91,11 +91,11 @@
   (get-text-property (or pos (point)) property))
 
 (defun pel-get-syntax-prop (&optional pos)
-  "Return syntax property of character at POS of point."
+  "Return syntax property of character at POS or point."
   (get-text-property (or pos (point)) 'syntax-table))
 
 (defun pel-get-face (&optional pos)
-  "Return face property of character at POS of point."
+  "Return face property of character at POS or point."
   (get-text-property (or pos (point)) 'face))
 
 ;;-pel-autoload
@@ -122,8 +122,8 @@ otherwise list only the ones specified by it."
 
 (defun pel-syntax-at (&optional pos)
   "Return the syntax information for the character at POS or point.
-Returns a list of two elements: the syntax-class string (from
-`char-syntax') and the raw syntax descriptor (from `syntax-after')."
+Returns a list of two elements: first element is a one-character
+class string; second is the raw descriptor from `syntax-after'."
   (list
    (char-to-string (char-syntax (char-after (or pos (point)))))
    (syntax-after (or pos (point)))))

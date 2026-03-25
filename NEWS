@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improve *pel-inside-block-p* : a new optional argument allows checking if point is inside a block located inside a string.
 - Fix *pel-line-has-only-whitespace-p*.
 - pel--macros.el no longer defines *bound-and-true-p*.
 - Improve ability to activate company-mode dynamically: better support for various versions.

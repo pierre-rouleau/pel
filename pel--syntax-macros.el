@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 15 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 14:37:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 07:57:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -75,19 +75,19 @@ starting with the outermost one.  Return nil if not outside parens."
 ;; Predicate utilities
 ;; -------------------
 
-(defun pel-inside-block-p (&optional pos)
+(defun pel-inside-block-p (&optional pos check-in-string)
   "Return non-nil if POS, or point, is between a code matched-pair block.
 
 Return nil otherwise.  Return nil when point is inside string or comment.
+By default, returns nil inside string as string takes precedence over depth.
+It returns nil if point is at the character \\='f\\=' inside (setq x \"(foo)\")).
 
-IMPORTANT: `pel-inside-block-p' returns nil when inside a string, even
-when the paren depth is > 0 e.g., position inside \"(foo)\" that is
-itself inside (setq x \"(foo)\")).
-
-This means that when using it you must ensure that you are not inside a
-string."
+To check if point is inside a matched-pair block located inside a string, set
+CHECK-IN-STRING to nil-nil."
   (let ((syntax (syntax-ppss pos)))
-    (unless (pel--inside-string-p syntax)
+    (unless (and
+             (not check-in-string)
+             (pel--inside-string-p syntax))
       (pel--inside-block-p syntax))))
 
 (defun pel-inside-comment-p (&optional pos)
