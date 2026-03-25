@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 11:24:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 11:39:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -346,7 +346,8 @@ This is the documented special case: string takes precedence over block depth."
     (should-not (pel-inside-block-p 11))))
 
 (ert-deftest pel--syntax-macros-test/public/inside-block-p/inside-comment ()
-  "`pel-inside-block-p' returns non-nil when inside a Lisp comment.  Special case!"
+  "`pel-inside-block-p' return nil when inside a Lisp comment by default.
+It can check outside code when the second argument is non-nil."
   (pel--syntax-macros-test--with-elisp "(+ 1 ; comment\n   2)\n"
     ;; The '; comment' text is at position 7.  Even though we are still
     ;; syntactically inside the '(+ ...)' form, being in a comment means
@@ -377,7 +378,7 @@ This is the documented special case: string takes precedence over block depth."
                 (pel-inside-block-p 2)))))
 
 ;; ===========================================================================
-;; pel-inside-block-p  — CHECK-IN-STRING argument (new capability)
+;; pel-inside-block-p  — CAN-BE-OUTSIDE-CODE  argument (new capability)
 ;; ===========================================================================
 ;;
 ;; Five scenarios are tested, each with and without check-in-string:
@@ -412,17 +413,17 @@ This is the documented special case: string takes precedence over block depth."
 ;;          pos 3 = 'f'; inside-string=t, depth=0.
 
 ;; ---------------------------------------------------------------------------
-;; A. Plain code — CHECK-IN-STRING does not change behavior
+;; A. Plain code — CAN-BE-OUTSIDE-CODE does not change behavior
 
 (ert-deftest pel--syntax-macros-test/public/inside-block-p/plain-code-unaffected-by-check-nil ()
-  "`pel-inside-block-p' returns non-nil in plain code inside a block with CHECK-IN-STRING nil."
+  "`pel-inside-block-p' returns non-nil in plain code inside a block with CAN-BE-OUTSIDE-CODE nil."
   (pel--syntax-macros-test--with-elisp "(setq x 1)\n"
     ;; pos 2 = 's' of setq — plain code, depth = 1.
     (should (pel-inside-block-p 2 nil))))
 
 (ert-deftest pel--syntax-macros-test/public/inside-block-p/plain-code-unaffected-by-check-t ()
-  "`pel-inside-block-p' returns non-nil in plain code inside a block with CHECK-IN-STRING t.
-CHECK-IN-STRING has no effect when not inside a string."
+  "`pel-inside-block-p' returns non-nil in plain code inside a block with CAN-BE-OUTSIDE-CODE t.
+CAN-BE-OUTSIDE-CODE has no effect when not inside a string."
   (pel--syntax-macros-test--with-elisp "(setq x 1)\n"
     (should (pel-inside-block-p 2 t))))
 
@@ -430,19 +431,19 @@ CHECK-IN-STRING has no effect when not inside a string."
 ;; B. Inside a string inside a block — the core new capability
 
 (ert-deftest pel--syntax-macros-test/public/inside-block-p/in-string-in-block-default-nil ()
-  "`pel-inside-block-p' returns nil inside a string by default (CHECK-IN-STRING omitted).
+  "`pel-inside-block-p' returns nil inside a string by default (CAN-BE-OUTSIDE-CODE omitted).
 The outer (setq …) block has depth 1, but string classification takes precedence."
   (pel--syntax-macros-test--with-elisp "(setq x \"(foo)\")\n"
     ;; pos 11 = 'f' inside \"(foo)\"; inside-string=t, depth=1.
     (should-not (pel-inside-block-p 11))))
 
 (ert-deftest pel--syntax-macros-test/public/inside-block-p/in-string-in-block-explicit-nil ()
-  "`pel-inside-block-p' returns nil inside a string when CHECK-IN-STRING is explicitly nil."
+  "`pel-inside-block-p' returns nil inside a string when CAN-BE-OUTSIDE-CODE is explicitly nil."
   (pel--syntax-macros-test--with-elisp "(setq x \"(foo)\")\n"
     (should-not (pel-inside-block-p 11 nil))))
 
 (ert-deftest pel--syntax-macros-test/public/inside-block-p/in-string-in-block-check-t ()
-  "`pel-inside-block-p' returns non-nil inside a string when CHECK-IN-STRING is non-nil.
+  "`pel-inside-block-p' returns non-nil inside a string when CAN-BE-OUTSIDE-CODE is non-nil.
 This is the new capability: the string guard is bypassed, exposing the outer paren depth."
   (pel--syntax-macros-test--with-elisp "(setq x \"(foo)\")\n"
     ;; pos 11 = 'f' inside \"(foo)\"; outer depth=1.  check-in-string bypasses the guard.
@@ -459,8 +460,8 @@ The semicolon is NOT a real comment; the position is still inside-string."
     (should-not (pel-inside-block-p 12))))
 
 (ert-deftest pel--syntax-macros-test/public/inside-block-p/comment-in-string-check-t ()
-  "`pel-inside-block-p' returns non-nil inside a string with a semicolon when CHECK-IN-STRING is t.
-Confirms that with CHECK-IN-STRING the outer block depth is respected."
+  "`pel-inside-block-p' returns non-nil inside a string with a semicolon when CAN-BE-OUTSIDE-CODE is t.
+Confirms that with CAN-BE-OUTSIDE-CODE the outer block depth is respected."
   (pel--syntax-macros-test--with-elisp "(setq x \"; not a comment\")\n"
     ;; pos 12 = 'n'; inside-string=t, depth=1.  check-in-string bypasses the guard.
     (should (pel-inside-block-p 12 t))))
@@ -469,17 +470,17 @@ Confirms that with CHECK-IN-STRING the outer block depth is respected."
 ;; D. String-like text (double-quote) inside a real comment inside a block
 
 (ert-deftest pel--syntax-macros-test/public/inside-block-p/string-in-comment-default ()
-  "`pel-inside-block-p' returns non-nil inside a comment that contains double-quotes.
-The double-quote does NOT open a real string; inside-string is nil, so depth is returned."
+  "`pel-inside-block-p' returns nil inside a comment by default.
+It can also check in a comment when the second argument is non-nil."
   (pel--syntax-macros-test--with-elisp "(foo ; \"bar\"\n  x)\n"
     ;; pos 9 = 'b' of \"bar\" text; inside-comment=t, inside-string=nil, depth=1.
     (should-not (pel-inside-block-p 9))
     (should     (pel-inside-block-p 9 t))))
 
 (ert-deftest pel--syntax-macros-test/public/inside-block-p/string-in-comment-check-t ()
-  "`pel-inside-block-p' behaves identically with CHECK-IN-STRING t inside a comment.
+  "`pel-inside-block-p' behaves identically with CAN-BE-OUTSIDE-CODE t inside a comment.
 Since inside-string is nil (the '\"' is in a comment, not a real string),
-CHECK-IN-STRING has no additional effect."
+CAN-BE-OUTSIDE-CODE has no additional effect."
   (pel--syntax-macros-test--with-elisp "(foo ; \"bar\"\n  x)\n"
     ;; pos 9 = 'b'; same result as without check-in-string.
     (should (pel-inside-block-p 9 t))))
@@ -494,7 +495,7 @@ CHECK-IN-STRING has no additional effect."
     (should-not (pel-inside-block-p 3))))
 
 (ert-deftest pel--syntax-macros-test/public/inside-block-p/top-level-string-check-t-nil ()
-  "`pel-inside-block-p' returns nil inside a top-level string even with CHECK-IN-STRING t.
+  "`pel-inside-block-p' returns nil inside a top-level string even with CAN-BE-OUTSIDE-CODE t.
 No enclosing paren block exists; depth is 0 regardless of the flag."
   (pel--syntax-macros-test--with-elisp "\"(foo)\"\n"
     ;; pos 3 = 'f'; depth=0 — check-in-string cannot create depth.

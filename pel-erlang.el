@@ -404,7 +404,7 @@ Affects current erlang buffer unless GLOBALLY is set."
                                    globally nil nil "Spaces after comma in blocks"))
 
 (defun pel--enhanced-electric-comma (&rest _args)
-  "Post handler for electric-comma: insert space inside parens blocks."
+  "Post handler for electric-comma: insert space inside parens blocks inside code."
   (when (and (memq 'erlang-electric-comma erlang-electric-commands)
              pel--erlang-space-after-comma-in-blocks
              (not current-prefix-arg))
@@ -416,7 +416,7 @@ Affects current erlang buffer unless GLOBALLY is set."
 
 The following options are observed:
 - `pel-erlang-space-after-comma-in-blocks': when set the
-  `erlang-electric-comma' inserts a space after the comma inside blocks."
+  `erlang-electric-comma' inserts a space after the comma inside blocks in code."
   (when pel-erlang-space-after-comma-in-blocks
     (advice-add 'erlang-electric-comma
                 :after (function pel--enhanced-electric-comma))))

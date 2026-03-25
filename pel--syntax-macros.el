@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 15 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 11:19:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 11:31:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -85,7 +85,7 @@ comment (or both).
 
 Example:
  - returns nil if point is at the \\='f\\=' inside (setq x \"(foo)\").
- - bit returns t when CAN-BE-OUTSIDE-CODE is non-nil."
+ - but returns t when CAN-BE-OUTSIDE-CODE is non-nil."
   (let ((syntax (syntax-ppss pos)))
     (if can-be-outside-code
         (pel--inside-block-p syntax)

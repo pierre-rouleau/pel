@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 10:53:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 11:32:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -153,7 +153,7 @@ current major mode properly."
 ;; --------------------
 
 (defun pel-insert-space-in-enclosing-block ()
-  "Insert a space if point is in between a block pair."
+  "Insert a space if point is in between a block pair inside code."
   (when (pel-inside-block-p)
     (insert " ")))
 
