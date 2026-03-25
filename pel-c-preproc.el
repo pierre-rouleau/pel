@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 09:47:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 11:00:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -47,7 +47,9 @@
 
 ;; Debugging Control
 (defconst pel--c-preproc-debug nil
-  "Set to t to activate `pel-c-preproc-check' to debug C pre-processing.")
+  "Set to t to activate `pel-c-preproc-check' to debug C pre-processing.
+Also set the compile-time `pel--debug' to t and recompile to enable
+`pel-debug-trace' output in `pel--c-preproc-token-pos-from-match'.")
 
 (eval-when-compile
   (defconst pel--debug nil

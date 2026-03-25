@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 23:21:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 11:03:22 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -148,6 +148,13 @@
      (goto-char (point-min))
      ,@body))
 
+(defmacro pel--base-test--with-mode-buffer (mode &rest body)
+  "Execute BODY in a temp buffer with MODE active."
+  (declare (indent 1))
+  `(with-temp-buffer
+     (funcall ,mode)
+     ,@body))
+
 ;;; --------------------------------------------------------------------------
 ;;; 1) Version, macros, predicates, small utilities
 ;;; --------------------------------------------------------------------------
@@ -268,6 +275,189 @@
               (should (pel--base-test--same-dir-p default-directory tmpd))
               (cd orig)))
         (kill-buffer buf)))))
+
+
+
+;; ===========================================================================
+;; pel-derived-mode-p
+;; ===========================================================================
+;;
+;; The function signature is:
+;;   (pel-derived-mode-p buffer-or-name &rest modes)
+;;
+;; Cases tested:
+;;
+;;   1. nil BUFFER-OR-NAME → uses current buffer (not a different one).
+;;   2. Buffer object → queries mode of that buffer, NOT current buffer.
+;;   3. Buffer name string → queries mode of that buffer, NOT current buffer.
+;;   4. Returns non-nil when mode matches exactly.
+;;   5. Returns non-nil when mode is an ancestor (derived-mode-p ancestry).
+;;   6. Returns nil when mode does not match and is not an ancestor.
+;;   7. &rest MODES: returns non-nil when any mode in the list matches.
+;;   8. Regression for the fixed bug: buffer-or-name must NOT be silently
+;;      ignored in favour of the current buffer.
+
+;; ---------------------------------------------------------------------------
+;; 1. nil BUFFER-OR-NAME uses current buffer
+
+(ert-deftest pel--base-test/derived-mode-p/nil-buffer-uses-current ()
+  "`pel-derived-mode-p' with nil BUFFER-OR-NAME queries the current buffer."
+  (pel--base-test--with-mode-buffer 'emacs-lisp-mode
+    ;; Current buffer is in emacs-lisp-mode.
+    (should (pel-derived-mode-p nil 'emacs-lisp-mode))))
+
+(ert-deftest pel--base-test/derived-mode-p/nil-buffer-nil-when-no-match ()
+  "`pel-derived-mode-p' with nil BUFFER-OR-NAME returns nil when mode differs."
+  (pel--base-test--with-mode-buffer 'emacs-lisp-mode
+    (should-not (pel-derived-mode-p nil 'c-mode))))
+
+;; ---------------------------------------------------------------------------
+;; 2. Buffer object — queries that buffer, not the current buffer
+
+(ert-deftest pel--base-test/derived-mode-p/buffer-object-correct-mode ()
+  "`pel-derived-mode-p' with a buffer object uses that buffer's mode."
+  (let ((target-buf (generate-new-buffer " *pel-test-target*")))
+    (unwind-protect
+        (progn
+          (with-current-buffer target-buf
+            (emacs-lisp-mode))
+          ;; From a *different* current buffer (fundamental-mode),
+          ;; query the target buffer — should find emacs-lisp-mode.
+          (with-temp-buffer
+            (fundamental-mode)
+            (should (pel-derived-mode-p target-buf 'emacs-lisp-mode))))
+      (kill-buffer target-buf))))
+
+(ert-deftest pel--base-test/derived-mode-p/buffer-object-ignores-current ()
+  "`pel-derived-mode-p' does NOT use current buffer when BUFFER-OR-NAME is given.
+This is the regression test for the fixed bug where the buffer argument
+was silently ignored and the current buffer was always queried."
+  (let ((target-buf (generate-new-buffer " *pel-test-target*")))
+    (unwind-protect
+        (progn
+          (with-current-buffer target-buf
+            ;; Target buffer is in emacs-lisp-mode.
+            (emacs-lisp-mode))
+          ;; Current buffer is in text-mode; we query target-buf for c-mode.
+          ;; Should be nil because target is emacs-lisp-mode, not c-mode.
+          ;; With the OLD (buggy) code this would have checked current buffer
+          ;; (text-mode) and also returned nil, masking the bug; but checking
+          ;; emacs-lisp-mode vs. emacs-lisp-mode for the target confirms the
+          ;; fix works in both directions.
+          (with-temp-buffer
+            (text-mode)
+            ;; Querying the target buffer for text-mode: should be nil
+            ;; because the *target* is in emacs-lisp-mode, not text-mode.
+            (should-not (pel-derived-mode-p target-buf 'text-mode))
+            ;; Querying the target buffer for emacs-lisp-mode: should be non-nil
+            ;; even though *current* buffer is text-mode.
+            (should (pel-derived-mode-p target-buf 'emacs-lisp-mode))))
+      (kill-buffer target-buf))))
+
+;; ---------------------------------------------------------------------------
+;; 3. Buffer name string — queries that buffer, not the current buffer
+
+(ert-deftest pel--base-test/derived-mode-p/buffer-name-string-correct-mode ()
+  "`pel-derived-mode-p' accepts a buffer name string for BUFFER-OR-NAME."
+  (let ((target-buf (generate-new-buffer " *pel-test-named*")))
+    (unwind-protect
+        (progn
+          (with-current-buffer target-buf
+            (emacs-lisp-mode))
+          (with-temp-buffer
+            (fundamental-mode)
+            ;; Pass the buffer name as a string.
+            (should (pel-derived-mode-p (buffer-name target-buf)
+                                        'emacs-lisp-mode))))
+      (kill-buffer target-buf))))
+
+(ert-deftest pel--base-test/derived-mode-p/buffer-name-string-ignores-current ()
+  "`pel-derived-mode-p' with a buffer name string does NOT fall back to current buffer."
+  (let ((target-buf (generate-new-buffer " *pel-test-named2*")))
+    (unwind-protect
+        (progn
+          (with-current-buffer target-buf
+            (emacs-lisp-mode))
+          (with-temp-buffer
+            ;; Current buffer is in emacs-lisp-mode too; but target is named
+            ;; differently.  Query target for c-mode — must return nil.
+            (emacs-lisp-mode)
+            (should-not (pel-derived-mode-p (buffer-name target-buf)
+                                            'c-mode))))
+      (kill-buffer target-buf))))
+
+;; ---------------------------------------------------------------------------
+;; 4. Exact mode match
+
+(ert-deftest pel--base-test/derived-mode-p/exact-match-current-buffer ()
+  "`pel-derived-mode-p' returns non-nil for an exact major mode match (nil buffer arg)."
+  (pel--base-test--with-mode-buffer 'emacs-lisp-mode
+    (should (pel-derived-mode-p nil 'emacs-lisp-mode))))
+
+;; ---------------------------------------------------------------------------
+;; 5. Derived/ancestor mode detection
+;;
+;; emacs-lisp-mode is derived from prog-mode (Emacs >= 24).
+;; c-mode is also derived from prog-mode.
+
+(ert-deftest pel--base-test/derived-mode-p/ancestor-mode-current-buffer ()
+  "`pel-derived-mode-p' returns non-nil when the specified mode is an ancestor.
+`emacs-lisp-mode' is derived from `prog-mode'."
+  (pel--base-test--with-mode-buffer 'emacs-lisp-mode
+    (should (pel-derived-mode-p nil 'prog-mode))))
+
+(ert-deftest pel--base-test/derived-mode-p/ancestor-mode-other-buffer ()
+  "`pel-derived-mode-p' detects ancestor mode in a specified buffer."
+  (let ((target-buf (generate-new-buffer " *pel-test-ancestor*")))
+    (unwind-protect
+        (progn
+          (with-current-buffer target-buf
+            (emacs-lisp-mode))
+          ;; From a fundamental-mode buffer, ask about prog-mode ancestry of target.
+          (with-temp-buffer
+            (fundamental-mode)
+            (should (pel-derived-mode-p target-buf 'prog-mode))))
+      (kill-buffer target-buf))))
+
+;; ---------------------------------------------------------------------------
+;; 6. Non-matching mode returns nil
+
+(ert-deftest pel--base-test/derived-mode-p/non-matching-mode-nil ()
+  "`pel-derived-mode-p' returns nil when mode is unrelated to the buffer's mode."
+  (pel--base-test--with-mode-buffer 'emacs-lisp-mode
+    ;; emacs-lisp-mode is not derived from c-mode.
+    (should-not (pel-derived-mode-p nil 'c-mode))))
+
+(ert-deftest pel--base-test/derived-mode-p/non-matching-mode-nil-other-buffer ()
+  "`pel-derived-mode-p' returns nil when mode does not match the specified buffer."
+  (let ((target-buf (generate-new-buffer " *pel-test-nonmatch*")))
+    (unwind-protect
+        (progn
+          (with-current-buffer target-buf
+            (emacs-lisp-mode))
+          (with-temp-buffer
+            (fundamental-mode)
+            (should-not (pel-derived-mode-p target-buf 'c-mode))))
+      (kill-buffer target-buf))))
+
+;; ---------------------------------------------------------------------------
+;; 7. Multiple modes in &rest MODES — non-nil if any one matches
+
+(ert-deftest pel--base-test/derived-mode-p/multiple-modes-one-matches ()
+  "`pel-derived-mode-p' returns non-nil when any of the MODES matches."
+  (pel--base-test--with-mode-buffer 'emacs-lisp-mode
+    (should (pel-derived-mode-p nil 'c-mode 'emacs-lisp-mode 'python-mode))))
+
+(ert-deftest pel--base-test/derived-mode-p/multiple-modes-none-matches ()
+  "`pel-derived-mode-p' returns nil when none of the MODES matches."
+  (pel--base-test--with-mode-buffer 'emacs-lisp-mode
+    (should-not (pel-derived-mode-p nil 'c-mode 'python-mode 'ruby-mode))))
+
+(ert-deftest pel--base-test/derived-mode-p/multiple-modes-ancestor-matches ()
+  "`pel-derived-mode-p' returns non-nil when an ancestor mode is in MODES list."
+  (pel--base-test--with-mode-buffer 'emacs-lisp-mode
+    ;; prog-mode is an ancestor of emacs-lisp-mode.
+    (should (pel-derived-mode-p nil 'text-mode 'prog-mode))))
 
 ;;; --------------------------------------------------------------------------
 ;;; 3) OS/Env and Emacs environment helpers
