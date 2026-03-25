@@ -1,4 +1,4 @@
-;;; pel-ccp.el --- PEL cut & paste, etc... -*-lexical-binding: t; -*-
+;;; pel-ccp.el --- PEL cut, paste & kill  -*-lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2021, 2023, 2024, 2025, 2026  Pierre Rouleau
 
@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; ---------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; A collection of small but useful copy, kill and delete functions targeting
@@ -180,8 +180,10 @@
 (require 'pel--options)
 (require 'cl-seq)                       ; use'cl-delete-duplicates'
 
-;;; Code:
 ;; ---------------------------------------------------------------------------
+;;; Code:
+;;
+
 ;;* Utility
 ;;  =======
 (defun pel--ccp-require-thingatpt ()
