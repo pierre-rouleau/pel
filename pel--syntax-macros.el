@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 15 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 07:57:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 08:25:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -83,7 +83,7 @@ By default, returns nil inside string as string takes precedence over depth.
 It returns nil if point is at the character \\='f\\=' inside (setq x \"(foo)\")).
 
 To check if point is inside a matched-pair block located inside a string, set
-CHECK-IN-STRING to nil-nil."
+CHECK-IN-STRING to non-nil."
   (let ((syntax (syntax-ppss pos)))
     (unless (and
              (not check-in-string)
