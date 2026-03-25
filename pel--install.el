@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-15 19:31:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 10:16:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -802,7 +802,7 @@ Don't require the feature when compiling.
 FEATURE must be an unquoted symbol representing the required
 feature.
 SECS may be an integer, a floating point number, or the internal
-time format returned by, e.g., ‘current-idle-time’."
+time format returned by, e.g., `current-idle-time’."
   `(cl-eval-when 'load
      (pel--require-after-init (quote ,feature) ,secs)))
 

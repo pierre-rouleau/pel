@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 08:55:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 10:13:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -284,6 +284,12 @@ by the function `re-search-forward'."
 Does not transform text inside any string located inside the matched-pair
 block, but it may transform other text.
 
+Example:  transforms \"(a  b,,  c)\" into \"(a, b, c)\".
+
+The code preform multiple iterations but limits their number to prevent
+infinite loops.  It displays a warning when the maximum number of iterations
+is reached to request an increase to that limit.
+
 Returns the number of text modifications performed."
   (save-excursion
     (save-restriction
@@ -291,14 +297,15 @@ Returns the number of text modifications performed."
              (open-pos  (nth 0 open.close.text))
              (close-pos (nth 1 open.close.text))
              (total-changes 0)
-             (changes 1))
-        ;; [:todo 2026-03-24, by Pierre Rouleau: @coderabbitai : please investigate:
-        ;;                    I'm not sure I need the multi checks loop, for the moment
-        ;;                    it's there for safety but it might not be needed and will
-        ;;                    only slow down operation. ]
-        (pel-debug-trace "%d, %d: %s" open-pos close-pos  (nth 2 open.close.text))
+             (changes 1)
+             (max-iters 50)
+             (iters 0))
+        (pel-debug-trace "%d, %d: %s"
+                         open-pos close-pos (nth 2 open.close.text))
         (narrow-to-region open-pos (1+ close-pos))
-        (while (> changes 0)
+        (while (and (> changes 0)
+                    (< iters max-iters))
+          (pel+= iters 1)
           (setq changes 0)
           ;;
           ;; -> ensure one space between comma and next element.
@@ -342,8 +349,11 @@ Returns the number of text modifications performed."
                                         (format "%s." (match-string 1)))))
           ;;
           (pel+= total-changes changes)
-          (pel-debug-trace "%d changes" changes)
-          )
+          (pel-debug-trace "%d changes" changes))
+        (when (= iters max-iters)
+          (display-warning 'pel-syntax-fix-block-content "\
+`pel-syntax-fix-block-content' reached iteration limit (%d).  Increase it?"
+                           :warning))
         total-changes))))
 
 ;; ---------------------------------------------------------------------------
