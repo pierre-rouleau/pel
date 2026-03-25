@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 15 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 11:31:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 11:43:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -78,7 +78,7 @@ starting with the outermost one.  Return nil if not outside parens."
 (defun pel-inside-block-p (&optional pos can-be-outside-code)
   "Return non-nil if POS, or point, is between a code matched-pair block.
 
-Return nil otherwise: explicitly Return nil when point is inside string or
+Return nil otherwise: explicitly returns nil when point is inside string or
 comment, even if it is inside a block pair inside a string or a comment.
 Set CAN-BE-OUTSIDE-CODE to non-nil to allow checking inside a string or a
 comment (or both).
