@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 07:30:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 08:55:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -378,7 +378,7 @@ of the following symbols that identifies the token found: if,
 else or end.
 
 The MATCH-TO-POS-F argument must be a function that takes the
-match -data result of a successful REGEXP search and returns the
+match-data result of a successful REGEXP search and returns the
 position of the beginning of the token found.
 
 Search for end statement unless TO-ELSE is non-nil: in that case search for
@@ -467,7 +467,7 @@ of the following symbols that identifies the token found: if,
 else or end.
 
 The MATCH-TO-POS-F argument must be a function that takes the
-match -data result of a successful REGEXP search and returns the
+match-data result of a successful REGEXP search and returns the
 position of the beginning of the token found.
 
 Search for end statement unless TO-ELSE is non-nil: in that case search for
