@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 10:50:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 10:53:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -350,7 +350,8 @@ Returns the number of text modifications performed."
           ;;
           (pel+= total-changes changes)
           (pel-debug-trace "%d changes" changes))
-        (when (= iters max-iters)
+        (when (and (= iters max-iters)
+                   (> changes 0))
           (display-warning 'pel-syntax-fix-block-content
                            (format "\
 `pel-syntax-fix-block-content' reached iteration limit (%d).  Increase it?"
