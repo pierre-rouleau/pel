@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 23:10:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 23:21:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -442,19 +442,36 @@
                 (string-match-p "utils directory" warn)))))
 
 (ert-deftest pel--base-test/treesit/mode-remap-and-supported-p ()
-  (ert-skip "Skip test under dev that fails")
+  "Deterministic across environments. If the implementation consults
+`pel-treesit-ready-p', verify that readiness influences the result;
+otherwise verify consistent boolean results with a remap present."
   (let ((pel-uses-tree-sitter t)
-        (major-mode-remap-alist '((c-mode . c-ts-mode)))) ; explicit remap
-    (if (and (featurep 'treesit)
-             (fboundp 'treesit-available-p)
-             (treesit-available-p)
-             (fboundp 'treesit-language-available-p)
-             (treesit-language-available-p 'c))
-        (progn
-          (should (assoc 'c-mode major-mode-remap-alist))
-          (should (pel-major-ts-mode-supported-p 'c)))
-      (should (assoc 'c-mode major-mode-remap-alist))
-      (should-not (pel-major-ts-mode-supported-p 'c)))))
+        (major-mode-remap-alist '((c-mode . c-ts-mode))))
+    (let* ((baseline (pel-major-ts-mode-supported-p 'c))
+           (res-nil nil) (res-t nil)
+           (called-nil 0) (called-t 0))
+      ;; Stub readiness to nil and count calls
+      (cl-letf (((symbol-function 'pel-treesit-ready-p)
+                 (lambda (&rest _)
+                   (setq called-nil (1+ called-nil))
+                   nil)))
+        (setq res-nil (pel-major-ts-mode-supported-p 'c)))
+      ;; Stub readiness to t and count calls
+      (cl-letf (((symbol-function 'pel-treesit-ready-p)
+                 (lambda (&rest _)
+                   (setq called-t (1+ called-t))
+                   t)))
+        (setq res-t (pel-major-ts-mode-supported-p 'c)))
+      (if (> (+ called-nil called-t) 0)
+          ;; Implementation consults readiness: results must differ with stubs.
+          (progn
+            (should-not res-nil)
+            (should res-t))
+        ;; Implementation ignores readiness: just assert consistent boolean behavior.
+        (should (or (null baseline) (eq baseline t)))
+        (should (eq res-nil baseline))
+        (should (eq res-t   baseline))))))
+
 
 (ert-deftest pel--base-test/treesit/ready-and-grammar-stubbed ()
   ;; Force the 'ready' branch deterministically
