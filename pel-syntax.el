@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 10:34:41 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 10:50:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -286,7 +286,7 @@ block, but it may transform other text.
 
 Example:  transforms \"(a  b,,  c)\" into \"(a, b, c)\".
 
-The code preform multiple iterations but limits their number to prevent
+The code performs multiple iterations but limits their number to prevent
 infinite loops.  It displays a warning when the maximum number of iterations
 is reached to request an increase to that limit.
 
