@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 08:36:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 09:33:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -345,8 +345,8 @@ This is the documented special case: string takes precedence over block depth."
     ;; Position 11 = 'e' of "(embedded)" inside the string.
     (should-not (pel-inside-block-p 11))))
 
-(ert-deftest pel--syntax-macros-test/public/inside-block-p/nil-inside-comment ()
-  "`pel-inside-block-p' returns nil when inside a Lisp comment."
+(ert-deftest pel--syntax-macros-test/public/inside-block-p/non-nil-inside-comment ()
+  "`pel-inside-block-p' returns non-nil when inside a Lisp comment.  Special case!"
   (pel--syntax-macros-test--with-elisp "(+ 1 ; comment\n   2)\n"
     ;; The '; comment' text is at position 7.  Even though we are still
     ;; syntactically inside the '(+ ...)' form, being in a comment means
