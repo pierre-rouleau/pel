@@ -1,8 +1,8 @@
-;;; pel-cc.el --- PEL support for CC modes.  -*- lexical-binding: t; -*-
+;;; pel-cc.el --- PEL support for CC modes  -*- lexical-binding: t; -*-
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 10:56:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 14:06:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.

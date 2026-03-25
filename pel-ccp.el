@@ -1,4 +1,4 @@
-;;; pel-ccp.el --- PEL cut & paste, etc... -*-lexical-binding: t; -*-
+;;; pel-ccp.el --- PEL cut, paste & kill  -*-lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2021, 2023, 2024, 2025, 2026  Pierre Rouleau
 
@@ -20,14 +20,15 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; ---------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; A collection of small but useful copy, kill and delete functions targeting
-;; specific syntax entities, with the implementation of a flexible function
-;; that can kill or delete the current line, multiple lines or the marked
-;; region: `pel-kill-or-delete-marked-or-whole-line'.  The file also provides
-;; other interactive functions to copy, kill or delete specific entities.
+;; A collection of small but useful copy, kill and delete functions and
+;; commands targeting specific syntax entities, with the implementation of a
+;; flexible function that can kill or delete the current line, multiple lines
+;; or the marked region: `pel-kill-or-delete-marked-or-whole-line'.  The file
+;; also provides other interactive functions to copy, kill or delete specific
+;; entities.
 ;;
 ;; Also includes specialized yank function.
 ;;
@@ -180,8 +181,10 @@
 (require 'pel--options)
 (require 'cl-seq)                       ; use'cl-delete-duplicates'
 
-;;; Code:
 ;; ---------------------------------------------------------------------------
+;;; Code:
+;;
+
 ;;* Utility
 ;;  =======
 (defun pel--ccp-require-thingatpt ()

@@ -1,13 +1,13 @@
-;;; pel-cc-find.el --- CC modes find file.  -*- lexical-binding: t; -*-
+;;; pel-cc-find.el --- CC modes find file  -*- lexical-binding: t; -*-
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 22:27:31 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 14:07:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2024  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2024, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
