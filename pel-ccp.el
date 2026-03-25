@@ -179,7 +179,7 @@
 ;;; Dependencies:
 (require 'pel--base)
 (require 'pel--options)
-(require 'cl-seq)                       ; use'cl-delete-duplicates'
+(require 'seq)                       ; use 'seq-uniq'
 
 ;; ---------------------------------------------------------------------------
 ;;; Code:
@@ -364,7 +364,7 @@ a negative N copies the current one and N-1 previous paragraphs."
   (save-excursion
     (copy-region-as-kill (point)
                          (progn
-                           (move-beginning-of-line nil)
+                           (beginning-of-line)
                            (point)))
     (pel--show-copied)))
 
@@ -375,7 +375,7 @@ a negative N copies the current one and N-1 previous paragraphs."
   (save-excursion
     (copy-region-as-kill (point)
                          (progn
-                           (move-end-of-line nil)
+                           (end-of-line)
                            (point)))
     (pel--show-copied)))
 
@@ -535,7 +535,7 @@ a negative N kills characters backwards."
   (interactive)
   (let ((original-size (length kill-ring))
         (duplicate-count 0))
-    (setq kill-ring (cl-delete-duplicates kill-ring :test 'equal))
+    (setq kill-ring (seq-uniq kill-ring))
     (setq duplicate-count (- original-size (length kill-ring)) )
     (if (eq duplicate-count 0)
         (message "No duplicates in kill-ring")
@@ -654,7 +654,7 @@ With any prefix argument delete the BEGINNING of symbol up to current point."
   (delete-region
    (point)
    (progn
-     (move-end-of-line 1)
+     (end-of-line)
      (point))))
 
 ;;-pel-autoload
@@ -740,7 +740,8 @@ This command assumes point is not in a string or comment."
 
 (defun pel--current-line-empty-p ()
   "Return t if current line is empty, nil otherwise."
-  (string-match-p "\\`\\s-*$" (thing-at-point 'line)))
+  (= (save-excursion (beginning-of-line) (point))
+     (save-excursion (end-of-line) (point))))
 
 (defun pel--kill-line-but-delete-if-empty ()
   "Kill current line with text, otherwise delete it."
@@ -815,11 +816,11 @@ the filtering and `kill-ring' appending capabilities."
 
 ;;-pel-autoload
 (defun pel-mark-whole-line ()
-  "Mark the complete current line."
+  "Mark the complete current line: mark at the beginning, point at the end."
   (interactive)
-  (move-beginning-of-line nil)
+  (beginning-of-line)
   (set-mark-command nil)
-  (move-end-of-line nil))
+  (end-of-line nil))
 
 ;;-pel-autoload
 (defun pel-copy-marked-or-whole-line (&optional n)

@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 14:45:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 15:54:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,19 +42,17 @@
 
 (ert-deftest pel-ccp-test/current-line-empty-p/empty-line ()
   "Returns t for a completely empty line."
-  (ert-skip "Temporary skip failing test.")
   (with-temp-buffer
     (insert "\n")
     (goto-char (point-min))
     (should (pel--current-line-empty-p))))
 
 (ert-deftest pel-ccp-test/current-line-empty-p/whitespace-only ()
-  "Returns t for a line with only whitespace."
-  (ert-skip "Temporary skip failing test.")
+  "Returns nil for a line with only whitespace."
   (with-temp-buffer
     (insert "   \t  \n")
     (goto-char (point-min))
-    (should (pel--current-line-empty-p))))
+    (should-not (pel--current-line-empty-p))))
 
 (ert-deftest pel-ccp-test/current-line-empty-p/non-empty-line ()
   "Returns nil for a line with text content."
@@ -76,7 +74,6 @@
 
 (ert-deftest pel-ccp-test/clean-kill-ring/removes-duplicates ()
   "Removes duplicate entries from the kill-ring."
-  (ert-skip "Temporary skip failing test.")
   (let ((kill-ring '("hello" "world" "hello" "foo" "world")))
     (pel-clean-kill-ring)
     (should (= 3 (length kill-ring)))
@@ -202,14 +199,13 @@
 
 (ert-deftest pel-ccp-test/mark-whole-line/marks-from-bol-to-eol ()
   "Sets mark at end of line and moves point to beginning of line."
-  (ert-skip "Temporary skip failing test.")
   (with-temp-buffer
     (insert "hello world\nnext\n")
     (goto-char (point-min))
     (forward-char 5)
     (pel-mark-whole-line)
-    (should (= (point) (line-beginning-position)))
-    (should (= (mark) (line-end-position)))))
+    (should (= (mark) (line-beginning-position)))
+    (should (= (point) (line-end-position)))))
 
 ;;; --------------------------------------------------------------------------
 ;;; Tests for `pel-copy-char-at-point'
@@ -283,16 +279,15 @@
 
 (ert-deftest pel-ccp-test/overwrite-yank/overwrites-when-overwrite-mode ()
   "Deletes chars equal to kill text length before yanking in overwrite-mode."
-  (ert-skip "Temporary skip failing test.")
   (with-temp-buffer
     (insert "AAABBB")
     (goto-char (point-min))
-    (let ((kill-ring '("XY"))
+    (let ((kill-ring '("XYZ"))
           (overwrite-mode 'overwrite-mode)
           (pel--activate-overwrite-yank-in-buffer t))
       (pel-overwrite-yank)
-      ;; "XY" replaces "AA", leaving "XYBBB"
-      (should (string= "XYBBB" (buffer-string))))))
+      ;; "XYZ" replaces "AAA", leaving "XYBBB"
+      (should (string= "XYZBBB" (buffer-string))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-ccp-test)

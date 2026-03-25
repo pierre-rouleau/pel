@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 14:41:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 16:10:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -80,33 +80,36 @@
 ;;; Tests for `pel-cc-c-default-style-for'
 ;;; --------------------------------------------------------------------------
 
+;; Declare c-default-style as a special (dynamically-scoped) variable so
+;; that let-bindings below are dynamic even under lexical-binding.
+;; Do NOT provide a default value — the symbol must remain unbound until
+;; CC mode is loaded or a let binding wraps it.
+(defvar c-default-style)
+
 (ert-deftest pel-cc-test/c-default-style-for/returns-void-when-unbound ()
   "Returns the string \"void\" when c-default-style is not bound."
-  (ert-skip "Temporary skip failing test.")
-  (let ((c-default-style nil))
-    ;; Simulate c-default-style being unbound
-    (cl-letf (((symbol-value 'c-default-style) nil))
-      ;; When unbound we expect "void"; we test the bound path below
-      ;; so just verify the function is callable and returns a list or "void"
-      (should (or (listp (pel-cc-c-default-style-for 'c-mode))
-                  (stringp (pel-cc-c-default-style-for 'c-mode)))))))
+  (let ((was-bound (boundp 'c-default-style))
+        (saved     (when (boundp 'c-default-style) (symbol-value 'c-default-style))))
+    (unwind-protect
+        (progn
+          (makunbound 'c-default-style)
+          (should (string= "void" (pel-cc-c-default-style-for 'c-mode))))
+      (when was-bound
+        (set 'c-default-style saved)))))
 
 (ert-deftest pel-cc-test/c-default-style-for/finds-mode-style ()
   "Returns the style string for the requested mode."
-  (ert-skip "Temporary skip failing test.")
   (let ((c-default-style '((c-mode . "bsd") (c++-mode . "stroustrup"))))
     (should (equal '("bsd") (pel-cc-c-default-style-for 'c-mode)))
     (should (equal '("stroustrup") (pel-cc-c-default-style-for 'c++-mode)))))
 
 (ert-deftest pel-cc-test/c-default-style-for/returns-empty-for-unknown-mode ()
   "Returns an empty list when the mode is not in c-default-style."
-  (ert-skip "Temporary skip failing test.")
   (let ((c-default-style '((c-mode . "bsd"))))
     (should (equal nil (pel-cc-c-default-style-for 'java-mode)))))
 
 (ert-deftest pel-cc-test/c-default-style-for/multiple-entries-same-mode ()
   "Returns multiple style strings when mode appears more than once."
-  (ert-skip "Temporary skip failing test.")
   (let ((c-default-style '((c-mode . "bsd") (c-mode . "linux"))))
     (should (equal '("bsd" "linux") (pel-cc-c-default-style-for 'c-mode)))))
 
