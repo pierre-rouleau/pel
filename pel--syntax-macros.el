@@ -1,13 +1,13 @@
-;;; pel--syntax-macros.el --- Syntax helper macros.  -*- lexical-binding: t; -*-
+;;; pel--syntax-macros.el --- Syntax helper macros  -*- lexical-binding: t; -*-
 
 ;; Created   : Saturday, October 15 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-09-23 23:43:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 14:37:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022, 2023, 2025  Pierre Rouleau
+;; Copyright (C) 2022, 2023, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -42,7 +42,6 @@
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
-;;
 ;;
 
 ;;; --------------------------------------------------------------------------
@@ -79,7 +78,14 @@ starting with the outermost one.  Return nil if not outside parens."
 (defun pel-inside-block-p (&optional pos)
   "Return non-nil if POS, or point, is between a code matched-pair block.
 
-Return nil otherwise.  Return nil when point is inside string or comment."
+Return nil otherwise.  Return nil when point is inside string or comment.
+
+IMPORTANT: `pel-inside-block-p' returns nil when inside a string, even
+when the paren depth is > 0 e.g., position inside \"(foo)\" that is
+itself inside (setq x \"(foo)\")).
+
+This means that when using it you must ensure that you are not inside a
+string."
   (let ((syntax (syntax-ppss pos)))
     (unless (pel--inside-string-p syntax)
       (pel--inside-block-p syntax))))

@@ -1,13 +1,13 @@
-;;; pel-c-preproc.el --- C Pre-processor specific support.  -*- lexical-binding: t; -*-
+;;; pel-c-preproc.el --- C Pre-processor specific support  -*- lexical-binding: t; -*-
 
 ;; Created   : Monday, October 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-31 12:23:36 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 17:10:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2022, 2023, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--macros)   ; use: `pel-debug-trace'
 (require 'pel-syntax)    ; use: `pel-syntax-conditional-forward'
 ;;                       ;      `pel-syntax-conditional-backward'
 
@@ -44,11 +45,19 @@
 ;;; Code:
 ;;
 
+(eval-when-compile
+  (defconst pel--debug nil
+  "Set to t build to have ‘pel-debug-trace’ display messages."))
+
 ;; Navigate across #if|#ifdef|#ifndef  / #elif| #else  / #endif
 ;; ------------------------------------------------------------
 
 (defconst pel--c-preproc-conditional-regexp
   "^[[:blank:]]*#[[:blank:]]*\\(\\(if\\(\\(def\\)\\|\\(ndef\\)\\)*\\)\\|\\(el\\(se\\|if\\)\\)\\|\\(endif\\)\\)"
+  ;; G                                    (- 4--)     (- 5 --)
+  ;; G                                 (---------- 3 -----------)              (--- 7 ---)        (-- 8 --)
+  ;; G                            (--------------- 2 ---------------)     (------- 6 -------)
+  ;; G                         (------------------------------------- 1 -------------------------------------)
   "Regexp to find C preprocessor conditionals.")
 
 (defconst pel--c-preproc-conditional-group-if 2
@@ -63,7 +72,7 @@
 ;; -----
 (defun pel--c-preproc-token-from-match (match-result)
   "Return a if, else, end token from search MATCH-RESULT."
-  ;; Result seen by using roup test function below.
+  ;; Result seen by using `pel--c-preproc-check' command.
   ;; #if:     [0-5] all are set: use 5.
   ;;
   ;; #ifdef:  [0-9] all are set: use 5 to identify an if beginning,
@@ -92,19 +101,20 @@
           ((nth 15 match-result)  (nth 15 match-result)) ; #else | #elif
           ((nth 17 match-result)  (nth 17 match-result)) ; #endif
           (t (error "Invalid search result")))))
-    (message "==> %S from %S" pos match-result)
+    (pel-debug-trace "==> %S from %S" pos match-result)
     pos))
 
-;; (defun roup ()
-;;   "Test for development"
-;;   (interactive)
-;;   (let ((msg-data nil))
-;;     (re-search-forward pel--c-preproc-conditional-regexp nil :noerror)
-;;     (setq msg-data (match-data))
-;;     (message "%s at %S"
-;;              (pel--c-preproc-token-from-match msg-data)
-;;              msg-data)))
-
+(eval-when-compile
+  (when (bound-and-true-p pel--debug)
+    (defun pel--c-preproc-check ()
+      "Debugging search in C code using regexp. Print match data."
+      (interactive)
+      (let ((msg-data nil))
+        (re-search-forward pel--c-preproc-conditional-regexp nil :noerror)
+        (setq msg-data (match-data))
+        (message "%s at %S"
+                 (pel--c-preproc-token-from-match msg-data)
+                 msg-data)))))
 
 ;; -------
 

@@ -1,13 +1,13 @@
-;;; pel-as.el --- Set mode of fundamental-mode buffer.  -*- lexical-binding: t; -*-
+;;; pel-as.el --- Set mode of fundamental-mode buffer  -*- lexical-binding: t; -*-
 
 ;; Created   : Friday, March 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-10-12 13:10:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 16:46:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -36,6 +36,9 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--base)        ; use `pel-major-mode-symbol-for',
+;;                          ;     `pel-major-mode-symbol-value-or'
+(require 'pel--options)     ; use `pel-use-tree-sitter'
 (require 'pel-prompt)       ; use: `pel-prompt-with-completion'
 (require 'sh-script)        ; use: `shell-script-mode', `sh-set-shell',
 ;;                          ;      `sh-ancestor-alist'
@@ -44,10 +47,14 @@
 ;;; Code:
 ;;
 
-(defconst pel--sh-modes (append (mapcar (lambda (e) (car e))
-                                        sh-ancestor-alist)
-                                (when (eq system-type 'gnu/linux)
-                                  '(csh ksh)))
+(defconst pel--sh-modes (let ((modes ()))
+                          (dolist (parent.child sh-ancestor-alist)
+                            (push (car parent.child) modes)
+                            (push (cdr parent.child) modes))
+                          (when (eq system-type 'gnu/linux)
+                            (push 'csh modes)
+                            (push 'ksh modes))
+                          (delete-dups modes))
   "List of potential shells script modes.")
 
 ;; [:todo 2025-03-17, by Pierre Rouleau: Tie this to pel-skels-generic-first-line]
@@ -135,8 +142,7 @@ command you have 2 choices:
       (declare-function pel-tcl-expect-insert-shebang-line "pel-tcl")
       (if (equal mode "tcl")
           (pel-tcl-insert-shebang-line)
-        (pel-tcl-expect-insert-shebang-line))
-      )
+        (pel-tcl-expect-insert-shebang-line)))
 
      ((equal mode "lua")
       (require 'lua-mode)
@@ -185,7 +191,7 @@ command you have 2 choices:
       (pel-ruby-insert-shebang-line))
 
      ((equal mode "seed7")
-      (require 'seed7-model)
+      (require 'seed7-mode)
       (declare-function seed7-mode "seed7-mode")
       (seed7-mode)
       (require 'pel-seed7)

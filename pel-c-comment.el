@@ -1,13 +1,13 @@
-;;; pel-c-comment.el --- PEL C comment extension.  -*- lexical-binding: t; -*-
+;;; pel-c-comment.el --- PEL C comment extension  -*- lexical-binding: t; -*-
 
 ;; Created   : Wednesday, November 10 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-06-14 10:44:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-24 17:00:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2025  Pierre Rouleau
+;; Copyright (C) 2021, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -64,7 +64,8 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)                    ; use: `pel-same-line-p'
+(require 'pel--base)                    ; use: `pel-same-line-p',
+;;                                      ;      `pel-move-right-by'
 (require 'pel--options)                 ; use: `pel-c-multiline-comments'
 (require 'pel-comment)                  ; use: `pel-comment-dwim'
 ;;; --------------------------------------------------------------------------
@@ -91,20 +92,20 @@ Utility : meant to be used in narrowed region."
     (insert "/* ")
     (left-char 3)
     (forward-line 1)
-    (right-char column)
+    (pel-move-right-by column)
     (while (not (eobp))
       (if (eq pel-c-multiline-comments 2)
           (insert "** ")
         (insert " * "))
       (left-char 3)
       (forward-line 1)
-      (right-char column))
+      (pel-move-right-by column))
     (if (eq pel-c-multiline-comments 2)
         (insert "*/\n")
       (insert " */\n"))))
 
 (defun pel-c-comment-in-comment-p (pos)
-  "Return t if point is in a comment, nil otherwise."
+  "Return t if POS (if specified, point otherwise) is in comment, nil otherwise."
   (save-excursion
     (goto-char pos)
     (nth 4 (syntax-ppss))))
