@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 09:33:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 11:24:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -345,7 +345,7 @@ This is the documented special case: string takes precedence over block depth."
     ;; Position 11 = 'e' of "(embedded)" inside the string.
     (should-not (pel-inside-block-p 11))))
 
-(ert-deftest pel--syntax-macros-test/public/inside-block-p/non-nil-inside-comment ()
+(ert-deftest pel--syntax-macros-test/public/inside-block-p/inside-comment ()
   "`pel-inside-block-p' returns non-nil when inside a Lisp comment.  Special case!"
   (pel--syntax-macros-test--with-elisp "(+ 1 ; comment\n   2)\n"
     ;; The '; comment' text is at position 7.  Even though we are still
@@ -357,10 +357,11 @@ This is the documented special case: string takes precedence over block depth."
     ;; (the block depth still counts).
     ;; This test documents the actual behavior.
     ;; '7' = ';' of the comment, still inside the paren block.
-    (let ((result (pel-inside-block-p 9)))
-      ;; Inside '; comment' at depth 1 — the paren block is still open.
-      ;; pel-inside-block-p does NOT filter comments, only strings.
-      (should result))))
+
+    ;; By default it returns nil inside comment
+    (should-not (pel-inside-block-p 9))
+    ;; But returns t if we allow searching outside code
+    (should     (pel-inside-block-p 9 t))))
 
 (ert-deftest pel--syntax-macros-test/public/inside-block-p/non-nil-nested-block ()
   "`pel-inside-block-p' returns non-nil when inside nested parens."
@@ -472,8 +473,8 @@ Confirms that with CHECK-IN-STRING the outer block depth is respected."
 The double-quote does NOT open a real string; inside-string is nil, so depth is returned."
   (pel--syntax-macros-test--with-elisp "(foo ; \"bar\"\n  x)\n"
     ;; pos 9 = 'b' of \"bar\" text; inside-comment=t, inside-string=nil, depth=1.
-    ;; pel-inside-block-p does NOT filter on comment — only on string.
-    (should (pel-inside-block-p 9))))
+    (should-not (pel-inside-block-p 9))
+    (should     (pel-inside-block-p 9 t))))
 
 (ert-deftest pel--syntax-macros-test/public/inside-block-p/string-in-comment-check-t ()
   "`pel-inside-block-p' behaves identically with CHECK-IN-STRING t inside a comment.

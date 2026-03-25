@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 15 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 09:46:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 11:19:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -75,20 +75,23 @@ starting with the outermost one.  Return nil if not outside parens."
 ;; Predicate utilities
 ;; -------------------
 
-(defun pel-inside-block-p (&optional pos check-in-string)
+(defun pel-inside-block-p (&optional pos can-be-outside-code)
   "Return non-nil if POS, or point, is between a code matched-pair block.
 
-Return nil otherwise.  Return nil when point is inside string or comment.
-By default, returns nil inside string as string takes precedence over depth.
-It returns nil if point is at the character \\='f\\=' inside (setq x \"(foo)\").
+Return nil otherwise: explicitly Return nil when point is inside string or
+comment, even if it is inside a block pair inside a string or a comment.
+Set CAN-BE-OUTSIDE-CODE to non-nil to allow checking inside a string or a
+comment (or both).
 
-To check if point is inside a matched-pair block located inside a string, set
-CHECK-IN-STRING to non-nil."
+Example:
+ - returns nil if point is at the \\='f\\=' inside (setq x \"(foo)\").
+ - bit returns t when CAN-BE-OUTSIDE-CODE is non-nil."
   (let ((syntax (syntax-ppss pos)))
-    (unless (and
-             (not check-in-string)
-             (pel--inside-string-p syntax))
-      (pel--inside-block-p syntax))))
+    (if can-be-outside-code
+        (pel--inside-block-p syntax)
+      (and (pel--inside-block-p syntax)
+           (not (pel--inside-string-p syntax))
+           (not (pel--inside-comment-p syntax))))))
 
 (defun pel-inside-comment-p (&optional pos)
   "Return non-nil if POS, or point, is inside a comment, nil otherwise.
