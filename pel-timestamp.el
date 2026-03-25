@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 23:43:22 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 10:18:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -164,7 +164,7 @@ group customize buffer."
   "Update time stamp if currently active.
 With prefix ARG, replace the years in the notice rather than adding
 the current year after them.  If necessary, and
-‘copyright-current-gpl-version’ is set, any copying permissions
+`copyright-current-gpl-version’ is set, any copying permissions
 following the copyright are updated as well.
 If non-nil, INTERACTIVEP tells the function to behave as when it’s called
 interactively."

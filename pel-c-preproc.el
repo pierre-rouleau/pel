@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 17:10:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 11:00:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,9 +45,15 @@
 ;;; Code:
 ;;
 
+;; Debugging Control
+(defconst pel--c-preproc-debug nil
+  "Set to t to activate `pel-c-preproc-check' to debug C pre-processing.
+Also set the compile-time `pel--debug' to t and recompile to enable
+`pel-debug-trace' output in `pel--c-preproc-token-pos-from-match'.")
+
 (eval-when-compile
   (defconst pel--debug nil
-  "Set to t build to have ‘pel-debug-trace’ display messages."))
+    "Set to t build to have `pel-debug-trace’ display messages."))
 
 ;; Navigate across #if|#ifdef|#ifndef  / #elif| #else  / #endif
 ;; ------------------------------------------------------------
@@ -60,19 +66,10 @@
   ;; G                         (------------------------------------- 1 -------------------------------------)
   "Regexp to find C preprocessor conditionals.")
 
-(defconst pel--c-preproc-conditional-group-if 2
-  "Significant matching group when searching beginning of #if|#ifdef|#ifndef.")
-
-(defconst pel--c-preproc-conditional-else 6
-  "Significant matching group when searching #else|#elif conditional.")
-
-(defconst pel--c-preproc-conditional-end 8
-  "Significant matching group when searching #endif conditional.")
-
 ;; -----
 (defun pel--c-preproc-token-from-match (match-result)
   "Return a if, else, end token from search MATCH-RESULT."
-  ;; Result seen by using `pel--c-preproc-check' command.
+  ;; Result seen by using `pel-c-preproc-check' command.
   ;; #if:     [0-5] all are set: use 5.
   ;;
   ;; #ifdef:  [0-9] all are set: use 5 to identify an if beginning,
@@ -104,17 +101,19 @@
     (pel-debug-trace "==> %S from %S" pos match-result)
     pos))
 
-(eval-when-compile
-  (when (bound-and-true-p pel--debug)
-    (defun pel--c-preproc-check ()
-      "Debugging search in C code using regexp. Print match data."
-      (interactive)
-      (let ((msg-data nil))
-        (re-search-forward pel--c-preproc-conditional-regexp nil :noerror)
-        (setq msg-data (match-data))
-        (message "%s at %S"
-                 (pel--c-preproc-token-from-match msg-data)
-                 msg-data)))))
+;; For debugging only: after setting `pel--c-preproc-debug' to t, compile the
+;; file.  The `pel-c-preproc-check' is not autoloaded, so you need to
+;; explicitly load this file to be able to use the command.
+(when pel--c-preproc-debug
+  (defun pel-c-preproc-check ()
+    "Debugging search in C code using regexp. Print match data."
+    (interactive)
+    (let ((msg-data nil))
+      (re-search-forward pel--c-preproc-conditional-regexp nil :noerror)
+      (setq msg-data (match-data))
+      (message "%s at %S"
+               (pel--c-preproc-token-from-match msg-data)
+               msg-data))))
 
 ;; -------
 

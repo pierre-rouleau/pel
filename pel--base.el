@@ -402,7 +402,7 @@ executed by `pel-init' on startup.")
 ;;  ===========
 
 (defun pel-version (&optional insert)
-  "Display and return PEL package version string.
+  "Return PEL package version string and also echoes it.
 Optionally insert it at point if INSERT is non-nil."
   (interactive "P")
   (let ((version "0.4.1"))
@@ -583,8 +583,8 @@ the message state that the current command is not appropriate."
 If BUFFER-OR-NAME is nil, use current buffer."
   (if buffer-or-name
       (with-current-buffer buffer-or-name
-        (apply (function derived-mode-p) modes)))
-  (apply (function derived-mode-p) modes))
+        (apply (function derived-mode-p) modes))
+    (apply (function derived-mode-p) modes)))
 
 (defun pel-dired-buffer-p (&optional buffer-or-name strict)
   "Return mode if mode of BUFFER-OR-NAME is a Dired buffer, nil otherwise.
@@ -849,9 +849,9 @@ canonized."
 
 (defun pel-add-dir-to-loadpath (dir)
   "Add directory DIR to Emacs variable `load-path' if not already in the list.
-Interactively display the number of directories in the list and whether
-the operation succeeded or not.
-Return non-nil if it was added, nil otherwise."
+When called interactively, it also displays the number of directories in the
+list and whether the operation succeeded or not.
+Return non-nil on success when it was added, nil otherwise."
   (interactive "DDir: ")
   (let* ((original-length (length load-path))
          (new-dir         (directory-file-name (expand-file-name dir)))
