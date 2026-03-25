@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 14:22:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 17:22:41 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -69,7 +69,7 @@
   "Handle a trailing dollar sign with no name after it gracefully."
   ;; A bare '$' at the end matches with an empty name string.
   (let ((result (pel-envar-in-string "path/$")))
-    (should (listp result))))
+    (should (equal result nil))))
 
 ;;; --------------------------------------------------------------------------
 ;;; Tests for `pel-substitute-in-file-name'

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, January  2 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 14:07:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 17:10:11 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -68,25 +68,25 @@
 
 (defconst pel-cc--switch-regexp
   "\\(^\\|;\\)\\s-*switch\\s-*("
-  "Regex to find start paren of switch statement")
+  "Regex to find start paren of switch statement.")
 
 ;; [:todo 2024-01-04: add ability to select the regexp via user-options ]
 ;; [:todo 2024-01-04: add support for C++11 attribute specifier]
 (defconst pel-cc--class-regexp
   "\\(^\\|;\\)\\s-*\\(\\(class\\)\\|\\(struct\\)\\)\\s-"
-  "Regex to find start of C++ class or struct statement")
+  "Regex to find start of C++ class or struct statement.")
 
 (defconst pel-cc--struct-regexp
   "\\(^\\|;\\)\\(\\s-*typedef\\s-*\\)*\\s-*struct\\s-"
-  "Regex to find start of C/C++ class or struct statement")
+  "Regex to find start of C/C++ struct statement.")
 
 (defconst pel-cc--union-regexp
   "\\(^\\|;\\)\\(\\s-*typedef\\s-*\\)*\\s-*union\\s-"
-  "Regex to find start of C/C++ union statement")
+  "Regex to find start of C/C++ union statement.")
 
 (defconst pel-cc--enum-regexp
   "\\(^\\|;\\)\\(\\s-*typedef\\s-*\\)*\\s-*enum\\(\\(\\s-+\\(class\\s-*\\)?\\)\\|$\\)"
-  "Regex to find start of C/C++ enum or C++ enum class statement")
+  "Regex to find start of C/C++ enum or C++ enum class statement.")
 
 
 (defun pel-cc--inside-function-p ()
@@ -100,7 +100,6 @@ block (or any block).  Use only when appropriate."
           (backward-up-list)
           t)
       (error nil))))
-
 
 (defun pel-cc-elem-boundaries (elem-regexp)
   "Return the position boundaries for element surrounding point.
@@ -123,7 +122,7 @@ is one, nil otherwise."
             (setq end-pos (point))
             ;; move right after current block start brace, to detect nested
             ;; ones.
-            (goto-char (+ begin-pos 1))
+            (goto-char (1+ begin-pos))
             (when (and (< begin-pos current-position)
                        (> end-pos   current-position))
               (setq found-boundary
@@ -139,8 +138,8 @@ is one, nil otherwise."
 - POSITIONS is a list of (begin end) positions or nil if none found
   by the caller.
 - N must be 0 to move to the beginning of the block, 1 to move to the end.
-- The ELEM-STR must be the name of the syntactic
-  element (such as \\='string\\=' or \\='enum\\=')."
+- The ELEM-STR must be a representative name of the syntactic
+  element, such as \"switch statement\", \"enum\", \"union\" ."
   (if positions
       (progn
         (push-mark)
@@ -209,7 +208,7 @@ error."
 
 If point is inside one, mark position before moving point,
 allowing moving the point back by using \\[pel-jump-to-mark].
-If point is not inside an union definition block, issue a user
+If point is not inside a union definition block, issue a user
 error."
   (interactive)
   (pel--cc-move-to
@@ -222,7 +221,7 @@ error."
 
 If point is inside one, mark position before moving point,
 allowing moving the point back by using \\[pel-jump-to-mark].
-If point is not inside an union definition block, issue a user
+If point is not inside a union definition block, issue a user
 error."
   (interactive)
   (pel--cc-move-to
@@ -235,7 +234,7 @@ error."
 
 If point is inside one, mark position before moving point,
 allowing moving the point back by using \\[pel-jump-to-mark].
-If point is not inside an struct (or class) definition block,
+If point is not inside a struct (or class) definition block,
 issue a user error."
   (interactive)
   (pel--cc-move-to
@@ -260,7 +259,7 @@ Same as `pel-cc-to-struct-begin'"
 
 If point is inside one, mark position before moving point,
 allowing moving the point back by using \\[pel-jump-to-mark].
-If point is not inside an struct (or class) definition block,
+If point is not inside a struct (or class) definition block,
 issue a user error."
   (interactive)
   (pel--cc-move-to

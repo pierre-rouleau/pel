@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 15:54:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 17:32:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -198,7 +198,7 @@
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest pel-ccp-test/mark-whole-line/marks-from-bol-to-eol ()
-  "Sets mark at end of line and moves point to beginning of line."
+  "Sets mark at beginning of line and moves point to end of line."
   (with-temp-buffer
     (insert "hello world\nnext\n")
     (goto-char (point-min))

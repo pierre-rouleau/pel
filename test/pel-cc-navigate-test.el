@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 14:23:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 17:29:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -47,6 +47,7 @@
   "switch-regexp matches switch after a semicolon."
   (should (string-match pel-cc--switch-regexp "; switch (x)")))
 
+;; [:todo 2026-03-25, by Pierre Rouleau: Fix this test: it needs to use c-mode]
 (ert-deftest pel-cc-navigate-test/switch-regexp/no-match-in-comment ()
   "switch-regexp does not specially exclude comments (regexp only check)."
   ;; The regexp itself will match; comment exclusion is done by pel-inside-code-p

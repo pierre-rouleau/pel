@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 14:07:38 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-25 17:26:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -124,7 +124,6 @@ This is only supported for the following file types: %s"
 
 The variables must be prefixed with a '$' character and must end
 with a non alphanumeric or underscore character."
-
   (let ((varnames nil)
         (idx 0)
         (new-idx nil)
@@ -133,15 +132,16 @@ with a non alphanumeric or underscore character."
                  (string-match "\\$\\([[:alnum:]_]*\\)"
                                (substring string idx)))
       (setq varname (match-string 1 (substring string idx)))
-      (push varname varnames)
+      (unless (string= varname "")
+        (push varname varnames))
       (setq idx (+ idx new-idx 1 (length varname))))
     (nreverse varnames)))
 
 (defun pel-substitute-in-file-name (filename)
   "Substitute environment variables referred to in FILENAME.
 
-Does the same as `substitute-in-file-name' but when an environment variable is
-unknown"
+Does the same as `substitute-in-file-name' but signals a user-error when
+an environment variable referenced in FILENAME is unknown."
   ;; First check and raise a user error if there is any unknown environment
   ;; variable inside the filename string
   (dolist (varname (pel-envar-in-string filename))
@@ -226,7 +226,7 @@ cannot find location of %s using include path spec identified in:
                             (cadr err)))))))))
 
 ;;-pel-autoload
-(defun pel-cc-find-activate-finder-method (&optional file-finder-method extra-seached-directory-trees)
+(defun pel-cc-find-activate-finder-method (&optional file-finder-method extra-searched-directory-trees)
   "Activate the file finder method for buffers of current major-mode.
 
 Set the search method to FILE-FINDER-METHOD if specified,
@@ -234,7 +234,7 @@ otherwise set it to the value held by the user-option that has a
 name \\='pel-MODE-file-finder-method\\=' where MODE is replaced by the
 major mode name (c, c++, d, etc...).
 
-If EXTRA-SEACHED-DIRECTORY-TREES is non-nil the finder is set to also search
+If EXTRA-SEARCHED-DIRECTORY-TREES is non-nil the finder is set to also search
 in the list of directory trees identified by the list."
   (unless file-finder-method
     (setq file-finder-method
@@ -273,15 +273,16 @@ in the list of directory trees identified by the list."
    (t (error (format "invalid file-finder-method: %S for %s"
                      file-finder-method
                      major-mode))))
-  (when extra-seached-directory-trees
+  (when extra-searched-directory-trees
     ;; Append a function that searches into all extra directory trees.
     (setq pel-filename-at-point-finders
           (reverse
            (cons (lambda (fn)
-                   (pel-generic-find-file fn extra-seached-directory-trees))
+                   (pel-generic-find-file fn extra-searched-directory-trees))
                  (reverse pel-filename-at-point-finders))))))
 
-(defun pel--cc-find_info-msg (varname-suffix)
+;; [:todo 2026-03-25, by Pierre Rouleau: is pel--cc-find-info-msg needed somewhere?]
+(defun pel--cc-find-info-msg (varname-suffix)
   "Build and return a string describing information for VARNAME-SUFFIX.
 
 The string has 2 lines;
