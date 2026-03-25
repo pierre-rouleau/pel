@@ -583,8 +583,8 @@ the message state that the current command is not appropriate."
 If BUFFER-OR-NAME is nil, use current buffer."
   (if buffer-or-name
       (with-current-buffer buffer-or-name
-        (apply (function derived-mode-p) modes)))
-  (apply (function derived-mode-p) modes))
+        (apply (function derived-mode-p) modes))
+    (apply (function derived-mode-p) modes)))
 
 (defun pel-dired-buffer-p (&optional buffer-or-name strict)
   "Return mode if mode of BUFFER-OR-NAME is a Dired buffer, nil otherwise.
