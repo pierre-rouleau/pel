@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 14:01:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 14:38:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -137,7 +137,7 @@ Display and return the new value of the mode."
 - Return \"unbound, not loaded\" if `c-default-style' is not bound.
 - Return a list of style strings in order of entry in `c-default-style' if
   it holds something for the MODE.
-- Return \"no style associated with mode\"  if `c-default-style' has no
+- Return \"no style associated with mode\" if `c-default-style' has no
   association for the MODE."
   (if (boundp 'c-default-style)
       (let ((styles ()))
@@ -174,7 +174,7 @@ of the last report."
          (info
           (format
            "%s state:
-- active style        : %s. c-default-style: %s
+- active style        : %s. This c-default-style is %s.
 - Electric characters : %s
 - RET mode            : %S%s
                         Toggle indent on RET with `pel-toggle-newline-indent-align' with %s.
@@ -198,7 +198,7 @@ of the last report."
              "Unknown - c-default-style not loaded")
            ;; Electric characters
            (pel-symbol-on-off-string 'c-electric-flag ; 3
-                                     (format "active on: %s"
+                                     (format "active on: %s characters"
                                              (pel-concat-strings-in-list
                                               (pel-cc-electric-keys)))
                                      "inactive"

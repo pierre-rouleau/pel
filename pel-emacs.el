@@ -1,4 +1,4 @@
-;;; pel-emacs.el --- Emacs stats utilities -*- lexical-binding: t -*-
+;;; pel-emacs.el --- Emacs stats utilities  -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2020, 2021, 2022, 2024, 2025, 2026  Pierre Rouleau
 

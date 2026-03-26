@@ -153,7 +153,6 @@
 ;;   * `pel-replace-line-with-kill'
 ;;     * `pel-kill-or-delete-marked-or-whole-line'
 ;;       . `pel--kill-line-but-delete-if-empty'
-;;         . `pel--current-line-empty-p'
 ;;       . `pel--delete-whole-lines'
 ;;         * `pel-delete-whole-line'
 ;; - Copy current marked region or whole current line

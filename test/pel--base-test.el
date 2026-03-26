@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 08:19:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 15:05:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -839,7 +839,7 @@ otherwise verify consistent boolean results with a remap present."
     (should (pel-line-has-only-whitespace-p))))
 
 (ert-deftest pel--base-test/line-has-only-whitespace-p/whitespace-only ()
-  "Returns nil for a line with only whitespace."
+  "Returns non-nil for a line with only whitespace."
   (with-temp-buffer
     (insert "   \t  \n")
     (goto-char (point-min))

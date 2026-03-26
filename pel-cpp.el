@@ -1,13 +1,13 @@
-;;; pel-cpp.el --- PEL support for C++ mode.  -*- lexical-binding: t; -*-
+;;; pel-cpp.el --- PEL support for C++ mode  -*- lexical-binding: t; -*-
 
 ;; Created   : Tuesday, November  7 2023.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-11-07 13:23:34 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 14:40:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2023  Pierre Rouleau
+;; Copyright (C) 2023, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

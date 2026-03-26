@@ -1,8 +1,8 @@
-;;; pel-timestamp.el --- File time-stamps management.  -*- lexical-binding: t; -*-
+;;; pel-timestamp.el --- File time-stamps management  -*- lexical-binding: t; -*-
 
 ;; Created   : Tuesday, June 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 10:18:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 14:42:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.

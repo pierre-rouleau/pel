@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 17:22:41 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 15:06:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -67,7 +67,8 @@
 
 (ert-deftest pel-cc-find-test/envar-in-string/dollar-at-end ()
   "Handle a trailing dollar sign with no name after it gracefully."
-  ;; A bare '$' at the end matches with an empty name string.
+  ;; A bare '$' with no following alphanumeric/underscore chars produces
+  ;; an empty name, which is filtered out; result is nil.
   (let ((result (pel-envar-in-string "path/$")))
     (should (equal result nil))))
 
