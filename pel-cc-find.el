@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 10:08:22 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 16:18:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -328,12 +328,9 @@ where X is the major mode name and Y is the varname-suffix."
         (format "\n\n\nUSER OPTIONS.\n  Default values for all %s buffers:\n"
                 user-buffer-major-mode))
 
-       (pel-insert-symbol-content-line
-        (pel-major-mode-symbol-for "pel-%s-file-finder-method"))
-       (pel-insert-symbol-content-line
-        (pel-major-mode-symbol-for "pel-%s-file-searched-extra-dir-trees"))
-       (pel-insert-symbol-content-line
-        (pel-major-mode-symbol-for "pel-%s-file-finder-ini-tool-name"))
+       (pel-insert-mode-symbol-content-line "pel-%s-file-finder-method")
+       (pel-insert-mode-symbol-content-line "pel-%s-file-searched-extra-dir-trees")
+       (pel-insert-mode-symbol-content-line "pel-%s-file-finder-ini-tool-name")
 
        (insert
         (format "\n\n\nACTUAL USED VALUE.
@@ -345,8 +342,7 @@ where X is the major mode name and Y is the varname-suffix."
   Value used inside all %s and all %s buffers:\n"
                 user-buffer user-buffer-major-mode))
 
-       (pel-insert-symbol-content-line
-        (pel-major-mode-symbol-for "pel--%s-file-finder-ini-tool-name")))
+       (pel-insert-mode-symbol-content-line "pel--%s-file-finder-ini-tool-name"))
      (unless append :clear-buffer)
      :use-help-mode)))
 
