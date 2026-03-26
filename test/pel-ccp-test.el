@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 08:19:38 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 15:21:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -254,7 +254,7 @@
           (overwrite-mode 'overwrite-mode)
           (pel--activate-overwrite-yank-in-buffer t))
       (pel-overwrite-yank)
-      ;; "XYZ" replaces "AAA", leaving "XYBBB"
+      ;; "XYZ" replaces "AAA", leaving "XYZBBB"
       (should (string= "XYZBBB" (buffer-string))))))
 
 ;;; --------------------------------------------------------------------------

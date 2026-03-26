@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 10:46:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 15:24:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,8 +32,9 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
-(require 'ert)
+(require 'pel--options)    ; refers to `pel-c-bracket-style'
 (require 'pel-cc)
+(require 'ert)
 
 ;;; --------------------------------------------------------------------------
 ;;; Tests for `pel-cc-change-newline-mode'

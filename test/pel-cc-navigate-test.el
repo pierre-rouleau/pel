@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 17:29:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 15:19:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -47,11 +47,32 @@
   "switch-regexp matches switch after a semicolon."
   (should (string-match pel-cc--switch-regexp "; switch (x)")))
 
-;; [:todo 2026-03-25, by Pierre Rouleau: Fix this test: it needs to use c-mode]
-(ert-deftest pel-cc-navigate-test/switch-regexp/no-match-in-comment ()
-  "switch-regexp does not specially exclude comments (regexp only check)."
-  ;; The regexp itself will match; comment exclusion is done by pel-inside-code-p
-  (should (string-match pel-cc--switch-regexp "switch (y)")))
+(ert-deftest pel-cc-navigate-test/switch-regexp/no-match-in-block-comment ()
+  "pel-cc-elem-boundaries returns nil when switch is inside a C block comment.
+Uses a real c-mode buffer so syntax-ppss correctly identifies comment context.
+Comment exclusion is performed by pel-inside-code-p inside pel-cc-elem-boundaries."
+  (skip-unless (fboundp 'c-mode))
+  (with-temp-buffer
+    (c-mode)
+    ;; 'switch' appears only inside a block comment — not in executable code
+    (insert "/* switch (x) {\n   case 0: break;\n} */\nint y = 1;\n")
+    ;; Move point to the 'switch' keyword inside the comment
+    (goto-char (point-min))
+    (search-forward "switch")
+    ;; Boundaries must be nil: pel-inside-code-p rejects the comment position
+    (should (null (pel-cc-elem-boundaries pel-cc--switch-regexp)))))
+
+(ert-deftest pel-cc-navigate-test/switch-regexp/no-match-in-line-comment ()
+  "pel-cc-elem-boundaries returns nil when switch is inside a C++ line comment.
+Uses a real c-mode buffer so syntax-ppss correctly identifies comment context."
+  (skip-unless (fboundp 'c-mode))
+  (with-temp-buffer
+    (c-mode)
+    ;; 'switch' appears only on a // comment line
+    (insert "// switch (x) { case 0: break; }\nint y = 1;\n")
+    (goto-char (point-min))
+    (search-forward "switch")
+    (should (null (pel-cc-elem-boundaries pel-cc--switch-regexp)))))
 
 (ert-deftest pel-cc-navigate-test/enum-regexp/matches-basic-enum ()
   "enum-regexp matches a basic enum declaration."
