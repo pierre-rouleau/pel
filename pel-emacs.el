@@ -53,7 +53,10 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-(require 'pel--base)                    ; use: `pel-print-in-buffer', `pel-emacs-27-or-later-p'
+(require 'pel--base)                    ; use: `pel-print-in-buffer',
+                                        ;      `pel-emacs-27-or-later-p',
+                                        ;      `pel-key-binding-string'
+
 (require 'pel--options)
 (require 'pel-prompt)                   ; use: `pel-prompt'
 (require 'pel-setup-base)               ; use: `pel-startup-mode', `pel-with-package-quickstart-p'
@@ -244,7 +247,7 @@ On %s:
 COMMAND must be a symbol.
 Return a key binding string if there is a binding.
 Return nil if there is no binding."
-  (let ((key-description (substitute-command-keys (format "\\[%s]" command)))
+  (let ((key-description (pel-key-binding-string command))
         (m-x-sequence    (format "M-x %s" command)))
     (unless (string= key-description m-x-sequence)
       key-description)))

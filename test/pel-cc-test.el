@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 16:10:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 10:46:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -93,7 +93,7 @@
     (unwind-protect
         (progn
           (makunbound 'c-default-style)
-          (should (string= "void" (pel-cc-c-default-style-for 'c-mode))))
+          (should (string= "unbound, not loaded" (pel-cc-c-default-style-for 'c-mode))))
       (when was-bound
         (set 'c-default-style saved)))))
 
@@ -106,7 +106,7 @@
 (ert-deftest pel-cc-test/c-default-style-for/returns-empty-for-unknown-mode ()
   "Returns an empty list when the mode is not in c-default-style."
   (let ((c-default-style '((c-mode . "bsd"))))
-    (should (equal nil (pel-cc-c-default-style-for 'java-mode)))))
+    (should (string= "no style associated with java-mode" (pel-cc-c-default-style-for 'java-mode)))))
 
 (ert-deftest pel-cc-test/c-default-style-for/multiple-entries-same-mode ()
   "Returns multiple style strings when mode appears more than once."

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, January  2 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 17:10:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 10:23:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -139,7 +139,7 @@ is one, nil otherwise."
   by the caller.
 - N must be 0 to move to the beginning of the block, 1 to move to the end.
 - The ELEM-STR must be a representative name of the syntactic
-  element, such as \"switch statement\", \"enum\", \"union\" ."
+  element, such as \"switch statement\", \"enum\", \"union\"."
   (if positions
       (progn
         (push-mark)
