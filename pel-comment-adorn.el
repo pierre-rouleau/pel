@@ -1,6 +1,6 @@
 ;;; pel-comment-adorn.el --- PEL Commented Adornment  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; This file holds a collection of commands that insert commented text inside
@@ -38,26 +38,27 @@
 ;; all commands.
 ;; The following commands and functions are provided:
 ;;
-;;  * pel-commented-adorn-1
-;;  * pel-commented-adorn-2
-;;  * pel-commented-adorn-3
-;;  * pel-commented-adorn-4
-;;  * pel-commented-adorn-5
-;;  * pel-commented-adorn-6
-;;  * pel-commented-adorn-7
-;;  * pel-commented-adorn-8
-;;  * pel-commented-adorn-9
-;;  * pel-commented-adorn-10
-;;    - pel-commented-adorn
+;;  * `pel-commented-adorn-1'
+;;  * `pel-commented-adorn-2'
+;;  * `pel-commented-adorn-3'
+;;  * `pel-commented-adorn-4'
+;;  * `pel-commented-adorn-5'
+;;  * `pel-commented-adorn-6'
+;;  * `pel-commented-adorn-7'
+;;  * `pel-commented-adorn-8'
+;;  * `pel-commented-adorn-9'
+;;  * `pel-commented-adorn-10'
+;;    - `pel-commented-adorn'
 
-
-;;; Code:
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+;;
 
 (require 'pel-rst)
 (require 'pel-comment)
 (require 'pel-mark)
-
-;; --
+;;; --------------------------------------------------------------------------
+;;; Code:
 
 (defun pel-commented-adorn (level)
   "Adorn a line of text with specified adornment LEVEL and comment it.
@@ -97,7 +98,7 @@ Use the current buffer comment style."
 (pel--mk-adorn-cmd 9)
 (pel--mk-adorn-cmd 10)
 
-; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-comment-adorn)
 
 ;;; pel-comment-adorn.el ends here

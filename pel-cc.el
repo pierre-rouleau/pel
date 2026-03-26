@@ -1,8 +1,8 @@
-;;; pel-cc.el --- PEL support for CC modes.  -*- lexical-binding: t; -*-
+;;; pel-cc.el --- PEL support for CC modes  -*- lexical-binding: t; -*-
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 10:56:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 14:38:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,7 +33,7 @@
 ;;
 (require 'pel--base)
 (require 'pel--options)
-(require 'pel-ffind)                    ; use: `pel-ffind-project-directory'
+(require 'pel-ffind)         ; use: `pel-ffind-project-directory'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -55,13 +55,7 @@ For newline insertion, operate according to the value of the
 variable `pel-cc-newline-mode'.
 
 If the variable `pel-newline-does-align' is t, then perform the
-text alignment done by the function `align'.
-
-For Emacs Lisp code: return value of effective variable
-`pel-cc-newline-mode' used.  The function may use something
-different then expected if the function it should call is not
-loaded. That would only occur if this function is called from a
-mode not fully supported."
+text alignment done by the function `align'."
   (interactive "*P")
   (require 'align)
   (require 'pel-align)
@@ -73,18 +67,21 @@ mode not fully supported."
 		      'entire))
 	(end      (point))
         (mode-used
-         (cond ((and (eq pel-cc-newline-mode 'context-newline)
-                     (fboundp 'c-context-line-break))
-                (dotimes (_i (prefix-numeric-value n))
-                  (c-context-line-break))
-                'context-newline)
-               ((and (eq pel-cc-newline-mode 'just-newline-no-indent)
-                     (fboundp 'electric-indent-just-newline))
-                (electric-indent-just-newline n)
-                'just-newline-no-indent)
-               (t ; simple.el is always loaded so default to newline
-                (newline n :interactive)
-                'newline))))
+         (cond
+          ((and (eq pel-cc-newline-mode 'context-newline)
+                (fboundp 'c-context-line-break))
+           (dotimes (_i (prefix-numeric-value n))
+             (c-context-line-break))
+           'context-newline)
+          ;;
+          ((and (eq pel-cc-newline-mode 'just-newline-no-indent)
+                (fboundp 'electric-indent-just-newline))
+           (electric-indent-just-newline n)
+           'just-newline-no-indent)
+          ;;
+          (t ; simple.el is always loaded so default to newline
+           (newline n :interactive)
+           'newline))))
     (when (and (boundp 'pel-newline-does-align)
                pel-newline-does-align
                (fboundp 'align-new-section-p)
@@ -108,12 +105,13 @@ Changes the mode to the next mode with the following order:
 Display and return the new value of the mode."
   (interactive)
   (prog1
-      (setq pel-cc-newline-mode (cond ((eq pel-cc-newline-mode 'context-newline)
-                                       'newline-and-indent)
-                                      ((eq pel-cc-newline-mode 'newline-and-indent)
-                                       'just-newline-no-indent)
-                                      (t
-                                       'context-newline)))
+      (setq pel-cc-newline-mode
+            (cond ((eq pel-cc-newline-mode 'context-newline)
+                   'newline-and-indent)
+                  ((eq pel-cc-newline-mode 'newline-and-indent)
+                   'just-newline-no-indent)
+                  (t
+                   'context-newline)))
     (message "Return key now does: %S" pel-cc-newline-mode)))
 
 ;; --
@@ -136,19 +134,25 @@ Display and return the new value of the mode."
 
 (defun pel-cc-c-default-style-for (mode)
   "Return styles identified in variable `c-default-style' for MODE.
-Return a list of style strings in order of entry in the
-variable `c-default-style' if bound.  If it is unbound
-return \"void\"."
+- Return \"unbound, not loaded\" if `c-default-style' is not bound.
+- Return a list of style strings in order of entry in `c-default-style' if
+  it holds something for the MODE.
+- Return \"no style associated with mode\" if `c-default-style' has no
+  association for the MODE."
   (if (boundp 'c-default-style)
       (let ((styles ()))
-        (dolist (mode.style c-default-style (nreverse styles))
+        (dolist (mode.style c-default-style)
           (if (eq (car mode.style) mode)
-              (push (cdr mode.style) styles))))
-    "void"))
+              (push (cdr mode.style) styles)))
+        (if styles
+            (nreverse styles)
+          (format "no style associated with %s" mode)))
+    "unbound, not loaded"))
 
 (defun pel-cc-bracket-style-for (mode)
   "Return the name of the PEL requested bracket style for MODE."
-  (let* ((mode-str (substring (symbol-name mode) 0 -5)) ; strip trailing "-mode"
+  ;; Strip trailing "-mode" suffix (5 chars): c-mode -> c, c++-mode -> c++
+  (let* ((mode-str (substring (symbol-name mode) 0 -5))
          (symbol-name (intern (format "pel-%s-bracket-style" mode-str))))
     (if (boundp symbol-name)
         (symbol-value symbol-name)
@@ -170,9 +174,10 @@ of the last report."
          (info
           (format
            "%s state:
-- active style        : %s. c-default-style: %s
-- RET mode            : %S%s
+- active style        : %s. This c-default-style is %s.
 - Electric characters : %s
+- RET mode            : %S%s
+                        Toggle indent on RET with `pel-toggle-newline-indent-align' with %s.
 - Auto newline        : %s
 - fill column         : %s%s
 - Tab width           : %-19s Set via: %s(%s)    ==> tab-width(%s)          when %s buffer is opened.
@@ -180,7 +185,7 @@ of the last report."
 - Indent width        : %-19s Set via: %s
 - Syntactic indent    : %s
 - c-indentation-style : %s
-- PEL Bracket style   : %s
+- PEL bracket style   : %s
 - Comment style       : %s
 - Hungry delete       : %s
 - Project root        : %s
@@ -191,20 +196,23 @@ of the last report."
            (if (boundp 'c-default-style) ; 2
                (alist-get major-mode c-default-style)
              "Unknown - c-default-style not loaded")
-           (pel-cc-c-default-style-for major-mode) ; 3
-           pel-cc-newline-mode                     ; 4
-           (pel-symbol-on-off-string 'pel-newline-does-align
-                                     ", and aligns (comments, assignments, etc...)"
-                                     ""
-                                     "")              ; 5
-           (pel-symbol-on-off-string 'c-electric-flag ; 6
-                                     (format "active on: %s"
+           ;; Electric characters
+           (pel-symbol-on-off-string 'c-electric-flag ; 3
+                                     (format "active on: %s characters"
                                              (pel-concat-strings-in-list
                                               (pel-cc-electric-keys)))
                                      "inactive"
                                      not-avail-msg)
-           (pel-symbol-on-off-string 'c-auto-newline nil nil not-avail-msg) ; 7
-           fill-column                  ; 8
+           (pel-cc-c-default-style-for major-mode) ; 4
+           pel-cc-newline-mode                     ; 5
+           (pel-symbol-on-off-string 'pel-newline-does-align
+                                     ", and aligns (comments, assignments, etc...)"
+                                     ", and does not align"
+                                     "")                             ; 6
+           (pel-key-binding-string 'pel-toggle-newline-indent-align) ; 7
+           ;; Auto newline
+           (pel-symbol-on-off-string 'c-auto-newline nil nil not-avail-msg) ; 8
+           fill-column                  ; 9
            (pel-symbol-value-or 'auto-fill-function
                                 ""
                                 (lambda (aff-symbol)
@@ -213,25 +221,24 @@ of the last report."
                                         (format ", auto-fill active: done by %S."
                                                 auto-filling)
                                       ", auto-filling: off."))))
-           ;; --
-           tab-width                                       ; 10
-           (pel-string-with-major-mode "pel-%s-tab-width") ; 11
-           (pel-symbol-value-or 'pel-c-tab-width)          ; 12
-           (pel-symbol-value-or 'tab-width)                ; 13
-           major-mode                                      ; 14
-           ;; --
-           (pel-on-off-string indent-tabs-mode ; 15
+           ;; Tab width
+           tab-width                                       ; 11
+           (pel-string-with-major-mode "pel-%s-tab-width") ; 12
+           (pel-symbol-value-or 'pel-c-tab-width)          ; 13
+           (pel-symbol-value-or 'tab-width)                ; 14
+           major-mode                                      ; 15
+           ;; Indentation chars
+           (pel-on-off-string indent-tabs-mode ; 16
                               "hard-tabs & spaces"
                               "spaces only")
-           (pel-string-with-major-mode "pel-%s-use-tabs") ; 16
-           (pel-symbol-value-or 'pel-c-use-tabs)          ; 17
-           (pel-symbol-value-or 'indent-tabs-mode)        ; 18
-           major-mode                                     ; 19
-           ;; --
-           (pel-symbol-value-or 'c-basic-offset) ; 20
-           ;; --
+           (pel-string-with-major-mode "pel-%s-use-tabs") ; 17
+           (pel-symbol-value-or 'pel-c-use-tabs)          ; 18
+           (pel-symbol-value-or 'indent-tabs-mode)        ; 19
+           major-mode                                     ; 20
+           ;; Indent width
+           (pel-symbol-value-or 'c-basic-offset) ; 21
            (if (eq (pel-major-mode-symbol-value "pel-%s-indent-width")
-                   (pel-symbol-value-or 'c-basic-offset)) ; 21
+                   (pel-symbol-value-or 'c-basic-offset)) ; 22
                (format "%s(%s) ==> c-basic-offset(%s)     when %s buffer is opened."
                        (pel-string-with-major-mode "pel-%s-indent-width")
                        (pel-major-mode-symbol-value "pel-%s-indent-width")
@@ -240,12 +247,15 @@ of the last report."
              (format
               "c-basic-offset(%s) overridden in buffer (by pel-cc-set-indent-width ?)."
               (pel-symbol-value-or 'c-basic-offset)))
-           ;; --
-           (pel-symbol-on-off-string    ; 22
+           ;; Syntactic indent
+           (pel-symbol-on-off-string    ; 23
             'c-syntactic-indentation nil nil not-avail-msg)
-           (pel-symbol-value-or 'c-indentation-style) ; 23
-           (pel-cc-bracket-style-for major-mode)      ; 24
-           (if (and (boundp 'c-block-comment-flag)    ; 25
+           ;; c-indentation-style
+           (pel-symbol-value-or 'c-indentation-style) ; 24
+           ;; PEL bracket style
+           (pel-cc-bracket-style-for major-mode)   ; 25
+           ;; Comment style
+           (if (and (boundp 'c-block-comment-flag) ; 26
                     (boundp 'c-block-comment-starter)
                     (boundp 'c-block-comment-ender)
                     (boundp 'c-block-comment-prefix))
@@ -258,18 +268,19 @@ of the last report."
                  (format "Line (C++-style) comments: %s" (pel-symbol-value-or
                                                           'c-line-comment-starter)))
              not-avail-msg)
-           (pel-symbol-on-off-string 'c-hungry-delete-key ; 26
+           ;; Hungry delete
+           (pel-symbol-on-off-string 'c-hungry-delete-key ; 27
                                      nil
-                                     "off, but the \
-F11-⌦  and F11-⌫  keys are available."
+                                     (substitute-command-keys "\
+off, but the \\[c-hungry-delete-forward] and \\[c-hungry-delete-backwards] keys and their <f11> bindings are available.")
                                      not-avail-msg)
            ;; TODO: move following code close to file finder logic
-           (or (pel-ffind-project-directory) ; 27
+           (or (pel-ffind-project-directory) ; 28
                (format
                 "None found, searching for files identified in pel-project-root-identifiers: %s"
                 pel-project-root-identifiers))
-           file-finder-method           ; 28
-           (cond                        ; 29
+           file-finder-method           ; 29
+           (cond                        ; 30
             ((eq file-finder-method 'generic)
              (format "%-20s: %s"
                      " pel-ffind-executable"
@@ -299,24 +310,18 @@ F11-⌦  and F11-⌫  keys are available."
        (insert info)
        ;; provide control access
        (insert "\n")
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for
-                                        "pel-%s-activates-minor-modes"))
+       (pel-insert-mode-symbol-content-line "pel-%s-activates-minor-modes")
        (pel-insert-symbol-content-line 'pel-cc-newline-mode)
        (pel-insert-symbol-content-line 'pel-modes-activating-align-on-return)
        ;; (pel-insert-symbol-content-line 'pel-newline-does-align)
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for
-                                        "pel-%s-indent-width"))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for
-                                        "pel-%s-tab-width"))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for
-                                        "pel-%s-use-tabs"))
+       (pel-insert-mode-symbol-content-line "pel-%s-indent-width")
+       (pel-insert-mode-symbol-content-line-when-bound "pel-%s-multiline-comments")
+       (pel-insert-mode-symbol-content-line "pel-%s-tab-width")
+       (pel-insert-mode-symbol-content-line "pel-%s-use-tabs")
        (unless (string= file-finder-method "(not supported)")
-         (pel-insert-symbol-content-line (pel-major-mode-symbol-for
-                                          "pel-%s-file-finder-method")))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for
-                                        "pel--%s-file-finder-ini-tool-name"))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for
-                                        "pel-%s-file-searched-extra-dir-trees"))
+         (pel-insert-mode-symbol-content-line "pel-%s-file-finder-method"))
+       (pel-insert-mode-symbol-content-line "pel--%s-file-finder-ini-tool-name")
+       (pel-insert-mode-symbol-content-line "pel-%s-file-searched-extra-dir-trees")
        (pel-insert-symbol-content-line 'pel-ffind-executable)
        (pel-insert-symbol-content-line 'pel-use-smart-dash)
 
@@ -347,23 +352,25 @@ F11-⌦  and F11-⌫  keys are available."
        (insert "\n\n*File extension association:")
        (pel-insert-symbol-content-line 'pel-auto-mode-alist)
        (insert "\n\n*File skeleton control:")
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-use-separators"))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-insert-file-timestamp"))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-with-license"))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for (format
-                                                                   "pel-%%s-skel-c%sfile-section-titles"
-                                                                   (if is-c "" "pp"))))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for (format
-                                                                   "pel-%%s-skel-h%sfile-section-titles"
-                                                                   (if is-c "" "pp"))))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-doc-markup"))
+       (pel-insert-mode-symbol-content-line "pel-%s-skel-use-separators")
+       (pel-insert-mode-symbol-content-line "pel-%s-skel-insert-file-timestamp")
+       (pel-insert-mode-symbol-content-line "pel-%s-skel-with-license")
+       (pel-insert-symbol-content-line
+        (pel-major-mode-symbol-for (format
+                                    "pel-%%s-skel-c%sfile-section-titles"
+                                    (if is-c "" "pp"))))
+       (pel-insert-symbol-content-line
+        (pel-major-mode-symbol-for (format
+                                    "pel-%%s-skel-h%sfile-section-titles"
+                                    (if is-c "" "pp"))))
+       (pel-insert-mode-symbol-content-line "pel-%s-skel-doc-markup")
        (when is-c (pel-insert-symbol-content-line 'pel-c-skel-comment-with-2stars))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-use-include-guards"))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-module-header-block-style"))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-insert-function-sections"))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-function-section-titles"))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-function-define-style"))
-       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-function-name-on-first-column"))
+       (pel-insert-mode-symbol-content-line "pel-%s-skel-use-include-guards")
+       (pel-insert-mode-symbol-content-line "pel-%s-skel-module-header-block-style")
+       (pel-insert-mode-symbol-content-line "pel-%s-skel-insert-function-sections")
+       (pel-insert-mode-symbol-content-line "pel-%s-skel-function-section-titles")
+       (pel-insert-mode-symbol-content-line "pel-%s-skel-function-define-style")
+       (pel-insert-mode-symbol-content-line "pel-%s-skel-function-name-on-first-column")
        (unless is-c
          (pel-insert-symbol-content-line 'pel-c++-class-has-doc-block)
          (pel-insert-symbol-content-line 'pel-c++-class-doc-section-titles)

@@ -1,13 +1,13 @@
-;;; pel-ffind.el --- PEL file find utilities.  -*- lexical-binding: t; -*-
+;;; pel-ffind.el --- PEL file find utilities  -*- lexical-binding: t; -*-
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-02 10:07:36 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 14:58:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2024, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

@@ -106,6 +106,11 @@ Essentially PEL:
     implement, you can add it to your copy of that init.el file, otherwise
     PEL logic controls it via customizable user-options.
 
+- has a GNU make-driven build system that byte-compiles all Emacs Lisp files,
+  native-compiles when Emacs supports native compilation and treats warnings
+  as error on all supported Emacs versions,  There's also a growing number of
+  ERT-driven test files to check code validity on all supported Emacs versions
+  ran locally and under Github,
 - provides integrated features between built-in Emacs and
   external packages, increasing cohesion between those features in ways that
   external packages can't do alone (and would require more programming on your

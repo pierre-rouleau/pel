@@ -1,4 +1,4 @@
-;;; pel-ccp.el --- PEL cut & paste, etc... -*-lexical-binding: t; -*-
+;;; pel-ccp.el --- PEL cut, paste & kill  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2021, 2023, 2024, 2025, 2026  Pierre Rouleau
 
@@ -20,14 +20,15 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; ---------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; A collection of small but useful copy, kill and delete functions targeting
-;; specific syntax entities, with the implementation of a flexible function
-;; that can kill or delete the current line, multiple lines or the marked
-;; region: `pel-kill-or-delete-marked-or-whole-line'.  The file also provides
-;; other interactive functions to copy, kill or delete specific entities.
+;; A collection of small but useful copy, kill and delete functions and
+;; commands targeting specific syntax entities, with the implementation of a
+;; flexible function that can kill or delete the current line, multiple lines
+;; or the marked region: `pel-kill-or-delete-marked-or-whole-line'.  The file
+;; also provides other interactive functions to copy, kill or delete specific
+;; entities.
 ;;
 ;; Also includes specialized yank function.
 ;;
@@ -152,7 +153,6 @@
 ;;   * `pel-replace-line-with-kill'
 ;;     * `pel-kill-or-delete-marked-or-whole-line'
 ;;       . `pel--kill-line-but-delete-if-empty'
-;;         . `pel--current-line-empty-p'
 ;;       . `pel--delete-whole-lines'
 ;;         * `pel-delete-whole-line'
 ;; - Copy current marked region or whole current line
@@ -178,10 +178,12 @@
 ;;; Dependencies:
 (require 'pel--base)
 (require 'pel--options)
-(require 'cl-seq)                       ; use'cl-delete-duplicates'
+(require 'seq)                       ; use 'seq-uniq'
 
-;;; Code:
 ;; ---------------------------------------------------------------------------
+;;; Code:
+;;
+
 ;;* Utility
 ;;  =======
 (defun pel--ccp-require-thingatpt ()
@@ -361,7 +363,7 @@ a negative N copies the current one and N-1 previous paragraphs."
   (save-excursion
     (copy-region-as-kill (point)
                          (progn
-                           (move-beginning-of-line nil)
+                           (beginning-of-line)
                            (point)))
     (pel--show-copied)))
 
@@ -372,7 +374,7 @@ a negative N copies the current one and N-1 previous paragraphs."
   (save-excursion
     (copy-region-as-kill (point)
                          (progn
-                           (move-end-of-line nil)
+                           (end-of-line)
                            (point)))
     (pel--show-copied)))
 
@@ -532,7 +534,7 @@ a negative N kills characters backwards."
   (interactive)
   (let ((original-size (length kill-ring))
         (duplicate-count 0))
-    (setq kill-ring (cl-delete-duplicates kill-ring :test 'equal))
+    (setq kill-ring (seq-uniq kill-ring))
     (setq duplicate-count (- original-size (length kill-ring)) )
     (if (eq duplicate-count 0)
         (message "No duplicates in kill-ring")
@@ -651,7 +653,7 @@ With any prefix argument delete the BEGINNING of symbol up to current point."
   (delete-region
    (point)
    (progn
-     (move-end-of-line 1)
+     (end-of-line)
      (point))))
 
 ;;-pel-autoload
@@ -735,13 +737,9 @@ This command assumes point is not in a string or comment."
   (delete-region (line-beginning-position)
                  (min (point-max) (1+ (line-end-position)))))
 
-(defun pel--current-line-empty-p ()
-  "Return t if current line is empty, nil otherwise."
-  (string-match-p "\\`\\s-*$" (thing-at-point 'line)))
-
 (defun pel--kill-line-but-delete-if-empty ()
   "Kill current line with text, otherwise delete it."
-  (if (pel--current-line-empty-p)
+  (if (pel-line-has-only-whitespace-p)
       (pel-delete-whole-line)
     (kill-whole-line 1)))
 
@@ -812,11 +810,11 @@ the filtering and `kill-ring' appending capabilities."
 
 ;;-pel-autoload
 (defun pel-mark-whole-line ()
-  "Mark the complete current line."
+  "Mark the complete current line: mark at the beginning, point at the end."
   (interactive)
-  (move-beginning-of-line nil)
+  (beginning-of-line)
   (set-mark-command nil)
-  (move-end-of-line nil))
+  (end-of-line nil))
 
 ;;-pel-autoload
 (defun pel-copy-marked-or-whole-line (&optional n)

@@ -1,4 +1,4 @@
-;;; pel--base.el --- PEL base utilities. -*-lexical-binding: t; -*-
+;;; pel--base.el --- PEL base utilities  -*-lexical-binding: t; -*-
 
 ;; Copyright (C) 2020-2026  Pierre Rouleau
 
@@ -129,6 +129,7 @@
 ;;    . `pel-symbol-on-off-string'
 ;;  - `pel-symbol-value-or'
 ;;  - `pel-yes-no-string'
+;;  - `pel-key-binding-string'
 ;;
 ;; Automated Mode Activation Check
 ;;  - `pel-minor-mode-auto-activated-by'
@@ -243,6 +244,7 @@
 ;;  - `pel-text-from-beginning-of-line'
 ;;
 ;; Check text in buffer
+;;  - `pel-line-has-only-newline-p'
 ;;  - `pel-line-has-only-whitespace-p'
 ;;  - `pel-inside-code'
 ;;  - `pel-has-shebang-line'
@@ -266,9 +268,11 @@
 ;; Insertion of text in current buffer
 ;;  - `pel-insert-bold'
 ;;  - `pel-insert-url-link'
-;;  - `pel-insert-symbol-content-line'
-;;    - `pel-insert-symbol-content'
-;;      - `pel-insert-symbol'
+;;  - `pel-insert-mode-symbol-content-line-when-bound'
+;;  - `pel-insert-mode-symbol-content-line'
+;;    - `pel-insert-symbol-content-line'
+;;      - `pel-insert-symbol-content'
+;;        - `pel-insert-symbol'
 ;;  - `pel-insert-list-value'
 ;;  - `pel-insert-list-content'
 ;;    - `pel--pp'
@@ -1131,6 +1135,13 @@ By default or when these arguments are nil:
   (if test
       (or true-string "yes")
     (or false-string "no")))
+
+;; --
+
+(defun pel-key-binding-string (command)
+  "Return a string describing the key binding for COMMAND."
+  (require 'help)
+  (substitute-command-keys (format "\\[%s]" command)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Automated Mode Activation Check
@@ -2389,6 +2400,13 @@ otherwise it does not."
 ;;* Check text in buffer
 ;;  ====================
 
+(defun pel-line-has-only-newline-p (&optional pos)
+  "Return t if current line (or line at POS) is empty, nil otherwise."
+  (save-excursion
+    (when pos (goto-char pos))
+    (= (progn (beginning-of-line) (point))
+       (progn (end-of-line) (point)))))
+
 (defun pel-line-has-only-whitespace-p (&optional pos)
   "Return t if current line (or line at POS) contain only whitespace.
 Return nil otherwise.
@@ -2711,6 +2729,32 @@ If EXTRA-TEXT is non-nil, it can be a string or a function:
                       symbol
                       (or buffer pel-insert-symbol-content-context-buffer)))))
         (insert (funcall extra-text symbol))))))
+
+(defun pel-insert-mode-symbol-content-line (symbol-format-string)
+  "Insert the name and value of a major mode specific symbol.
+
+Create a major mode specific symbol using SYMBOL-FORMAT-STRING string.
+That symbol is assumed bound in the current major mode.
+The SYMBOL-FORMAT-STRING string must contain one \"%s\" format specifier
+and is used by a call to `pel-major-mode-symbol-for' to build the major
+mode symbol.
+The inferred mode-specific symbol is assumed bound in the current major mode.
+If it is not bound, the use of this function will signal a symbol unbound
+error."
+  (let ((mode-symbol (pel-major-mode-symbol-for symbol-format-string)))
+    (pel-insert-symbol-content-line mode-symbol)))
+
+(defun pel-insert-mode-symbol-content-line-when-bound (symbol-format-string)
+  "Insert the name and value of a major mode specific symbol if it is bound.
+
+Create a major mode specific symbol using SYMBOL-FORMAT-STRING string.
+The SYMBOL-FORMAT-STRING string must contain one \"%s\" format specifier
+and is used by a call to `pel-major-mode-symbol-for' to build the major
+mode symbol.  If that symbol is bound: insert a line showing the name
+and its value.  If that symbol is not bound, do nothing."
+  (let ((mode-symbol (pel-major-mode-symbol-for symbol-format-string)))
+    (when (boundp mode-symbol)
+      (pel-insert-symbol-content-line mode-symbol))))
 
 (defun pel-line-prefixed-with (text prefix)
   "Return TEXT with each line prefixed with PREFIX string."

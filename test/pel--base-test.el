@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 11:03:22 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 15:05:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -828,25 +828,57 @@ otherwise verify consistent boolean results with a remap present."
     (should-not (pel-line-has-only-whitespace-p))))
 
 ;;; --------------------------------------------------------------------------
+;;; Tests for `pel-line-has-only-whitespace-p'
+;;; --------------------------------------------------------------------------
+
+(ert-deftest pel--base-test/line-has-only-whitespace-p/empty-line ()
+  "Returns t for a completely empty line."
+  (with-temp-buffer
+    (insert "\n")
+    (goto-char (point-min))
+    (should (pel-line-has-only-whitespace-p))))
+
+(ert-deftest pel--base-test/line-has-only-whitespace-p/whitespace-only ()
+  "Returns non-nil for a line with only whitespace."
+  (with-temp-buffer
+    (insert "   \t  \n")
+    (goto-char (point-min))
+    (should (pel-line-has-only-whitespace-p))))
+
+(ert-deftest pel--base-test/line-has-only-whitespace-p/non-empty-line ()
+  "Returns nil for a line with text content."
+  (with-temp-buffer
+    (insert "hello world\n")
+    (goto-char (point-min))
+    (should-not (pel-line-has-only-whitespace-p))))
+
+(ert-deftest pel--base-test/line-has-only-whitespace-p/leading-whitespace-then-text ()
+  "Returns nil for a line with leading whitespace followed by text."
+  (with-temp-buffer
+    (insert "   int x = 0;\n")
+    (goto-char (point-min))
+    (should-not (pel-line-has-only-whitespace-p))))
+
+;;; --------------------------------------------------------------------------
 ;;; 12) File paths and URLs
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/paths/file-in-and-normalize-and-same-fname ()
   (pel--base-test--with-temp-dir d
-    (let* ((sub (expand-file-name "sub" d))
-           (_   (make-directory sub))
-           (f   (pel--base-test--write-file sub "z.c" "x")))
-      (should (equal sub (pel-file-in f (list sub d))))
-      (should (string= (pel-normalize-fname (concat d "/."))
-                       (pel-normalize-fname d)))
-      (should (pel-is-subdir-of sub d))
-      (should (string= (file-truename (file-name-directory (directory-file-name d)))
-                       (file-truename (pel-parent-dirpath d))))
-      (should (string= (expand-file-name "bro" (file-name-directory (directory-file-name d)))
-                       (pel-sibling-dirname d "bro")))
-      (should (string= (file-name-as-directory (pel-sibling-dirname d "sis"))
-                       (pel-sibling-dirpath d "sis")))
-      (should (pel-same-fname-p (concat d "/a/..") (directory-file-name d))))))
+                                 (let* ((sub (expand-file-name "sub" d))
+                                        (_   (make-directory sub))
+                                        (f   (pel--base-test--write-file sub "z.c" "x")))
+                                   (should (equal sub (pel-file-in f (list sub d))))
+                                   (should (string= (pel-normalize-fname (concat d "/."))
+                                                    (pel-normalize-fname d)))
+                                   (should (pel-is-subdir-of sub d))
+                                   (should (string= (file-truename (file-name-directory (directory-file-name d)))
+                                                    (file-truename (pel-parent-dirpath d))))
+                                   (should (string= (expand-file-name "bro" (file-name-directory (directory-file-name d)))
+                                                    (pel-sibling-dirname d "bro")))
+                                   (should (string= (file-name-as-directory (pel-sibling-dirname d "sis"))
+                                                    (pel-sibling-dirpath d "sis")))
+                                   (should (pel-same-fname-p (concat d "/a/..") (directory-file-name d))))))
 
 (ert-deftest pel--base-test/urls/expand-join-location ()
   (let* ((h (or (getenv "HOME") "~"))

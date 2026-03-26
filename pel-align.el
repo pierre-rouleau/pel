@@ -1,8 +1,8 @@
-;;; pel-align.el --- Text alignment utilities.  -*- lexical-binding: t; -*-
+;;; pel-align.el --- Text alignment utilities  -*- lexical-binding: t; -*-
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 07:46:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 14:42:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.

@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improve *pel-cc-mode-info*: shows useful key bindings related to RET mode and hungry delete commands and
+  shows the value of *pel-c-multiline-comments* for c-mode buffers.
+- Add report formatting utilities: *pel-insert-mode-symbol-content-line*, *pel-insert-mode-symbol-content-line-when-bound*.
+- Add utilities: *pel-line-has-only-newline-p* , *pel-key-binding-string*.
+- Improve *pel-envar-in-string* : it no longer accepts a trailing =$= at the end of string as an unnamed environment variable.
+- Improve *pel-clean-kill-ring* : it no longer modifies the kill ring element order.
 - Improve *pel-inside-block-p* : a new optional argument allows checking if point is inside a block located inside a string or comment.
 - Fix *pel-line-has-only-whitespace-p* and *pel-derived-mode-p* which was always using the current buffer.
 - pel--macros.el no longer defines *bound-and-true-p*.
