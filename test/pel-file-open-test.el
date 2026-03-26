@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 17:26:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 18:38:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -112,8 +112,8 @@
   "A Windows-style path returns fname-w-ddrv type."
   (pel-file-test/with-point-on-string "C:\\Users\\foo\\bar.txt"
     (let ((parts (pel-filename-parts-at-point)))
-      (when parts
-        (should (eq (nth 0 parts) 'fname-w-ddrv))))))
+      (should parts)
+      (should (eq (nth 0 parts) 'fname-w-ddrv)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Tests for `pel--find-by-finders'

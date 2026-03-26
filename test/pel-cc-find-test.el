@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 17:45:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 18:48:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -76,40 +76,6 @@
   (let ((result (pel-envar-in-string "path/$")))
     (should (equal result nil))))
 
-(ert-deftest pel-cc-find-test/envar-none ()
-  "Returns nil when no environment variable references are present."
-  (should (null (pel-envar-in-string "/usr/include/stdio.h"))))
-
-(ert-deftest pel-cc-find-test/envar-single ()
-  "Extracts a single environment variable name."
-  (should (equal (pel-envar-in-string "$HOME/foo") '("HOME"))))
-
-(ert-deftest pel-cc-find-test/envar-multiple ()
-  "Extracts multiple distinct environment variable names."
-  (let ((result (pel-envar-in-string "$PROJ_ROOT/src:$TOOLCHAIN/include")))
-    (should (member "PROJ_ROOT" result))
-    (should (member "TOOLCHAIN" result))
-    (should (= (length result) 2))))
-
-(ert-deftest pel-cc-find-test/envar-empty-dollar ()
-  "A bare '$' with no following name is not extracted."
-  (should (null (pel-envar-in-string "foo$"))))
-
-(ert-deftest pel-cc-find-test/envar-at-end ()
-  "Variable at end of string without trailing separator is extracted."
-  (should (equal (pel-envar-in-string "/base/$MYVAR") '("MYVAR"))))
-
-(ert-deftest pel-cc-find-test/envar-with-underscore ()
-  "Variable names with underscores are extracted correctly."
-  (should (equal (pel-envar-in-string "$MY_VAR_NAME/path") '("MY_VAR_NAME"))))
-
-(ert-deftest pel-cc-find-test/envar-duplicate ()
-  "Duplicate variable references appear as separate entries (not deduped here)."
-  ;; pel-envar-in-string doesn't deduplicate — it just extracts all occurrences
-  (let ((result (pel-envar-in-string "$FOO/a/$FOO/b")))
-    (should (= (length result) 2))
-    (should (equal result '("FOO" "FOO")))))
-
 ;;; --------------------------------------------------------------------------
 ;;; Tests for `pel-substitute-in-file-name'
 ;;; --------------------------------------------------------------------------
@@ -137,27 +103,6 @@
   (should-error
    (pel-substitute-in-file-name "$HOME/$DEFINITELY_NOT_SET_VAR_XYZ")
    :type 'user-error))
-
-(ert-deftest pel-cc-find-test/substitute-no-vars ()
-  "String without variables is returned unchanged."
-  (should (string= (pel-substitute-in-file-name "/usr/include/foo.h")
-                   "/usr/include/foo.h")))
-
-(ert-deftest pel-cc-find-test/substitute-known-var ()
-  "A known environment variable is expanded."
-  (let ((process-environment (cons "MYTEST_DIR=/opt/mytest" process-environment)))
-    (should (string= (pel-substitute-in-file-name "$MYTEST_DIR/include")
-                     "/opt/mytest/include"))))
-
-(ert-deftest pel-cc-find-test/substitute-unknown-var-signals-error ()
-  "An unknown environment variable signals a user-error."
-  ;; Make sure this var does not exist
-  (let ((process-environment
-         (seq-remove (lambda (e) (string-prefix-p "NONEXISTENT_PEL_VAR=" e))
-                     process-environment)))
-    (should-error
-     (pel-substitute-in-file-name "$NONEXISTENT_PEL_VAR/include")
-     :type 'user-error)))
 
 ;; ---------------------------------------------------------------------------
 ;; Tests for `pel-cc-find-activate-finder-method' — method dispatch
@@ -217,6 +162,22 @@
     (setq major-mode 'c-mode)
     (pel-cc-find-activate-finder-method 'generic nil)
     (should (= (length pel-filename-at-point-finders) 1))))
+
+(ert-deftest pel-cc-find-test/activate-default-from-awk-mode-option ()
+  "When method is nil, awk-mode should use `pel-awk-file-finder-method'."
+  (let ((pel-awk-file-finder-method 'generic))
+    (with-temp-buffer
+      (setq major-mode 'awk-mode)
+      (pel-cc-find-activate-finder-method nil nil)
+      (should (equal pel-filename-at-point-finders '(pel-generic-find-file))))))
+
+(ert-deftest pel-cc-find-test/activate-default-from-c++-mode-option ()
+  "When method is nil, c++-mode should use `pel-c++-file-finder-method'."
+  (let ((pel-c++-file-finder-method 'generic))
+    (with-temp-buffer
+      (setq major-mode 'c++-mode)
+      (pel-cc-find-activate-finder-method nil nil)
+      (should (equal pel-filename-at-point-finders '(pel-generic-find-file))))))
 
 ;; ---------------------------------------------------------------------------
 ;; Tests for `pel--cc-find-info-msg'

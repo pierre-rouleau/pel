@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 17:38:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 18:55:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -44,10 +44,11 @@
 
 (ert-deftest pel-open-test/dir-string-nil-visiting-file ()
   "nil value returns description using file's parent directory."
-  (ert-skip "Temporary skip failing test.")
-  ;; Simulate visiting a file by setting buffer-file-name.
+  ;; pel-current-buffer-filename checks buffer-file-truename, not buffer-file-name.
+  ;; Both must be set to simulate a visited file in a temp buffer.
   (with-temp-buffer
-    (setq buffer-file-name "/some/project/src/foo.c")
+    (setq buffer-file-name     "/some/project/src/foo.c")
+    (setq buffer-file-truename "/some/project/src/foo.c")
     (let ((result (pel--open-file-at-point-dir-string-for nil)))
       (should (stringp result))
       (should (string-match-p "file's parent directory" result))
@@ -65,9 +66,8 @@
 
 (ert-deftest pel-open-test/dir-string-cwd ()
   "cwd value returns description using current working directory."
-  (ert-skip "Temporary skio failing test")
-  (let ((default-directory "/tmp/myproject/")
-        (result (pel--open-file-at-point-dir-string-for 'cwd)))
+  (let* ((default-directory "/tmp/myproject/")
+         (result (pel--open-file-at-point-dir-string-for 'cwd)))
     (should (stringp result))
     (should (string-match-p "current working directory" result))
     (should (string-match-p "/tmp/myproject/" result))))
