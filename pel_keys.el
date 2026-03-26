@@ -3073,6 +3073,10 @@ MODE must be a symbol."
 ;;** Awk Programming Language Support
 ;;   -------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC W`` : Awk
+
+;; pel-cc-find-activate-finder-method is used in Awk, C and C++.
+(declare-function pel-cc-find-activate-finder-method "pel-cc-find")
+
 (when pel-use-awk
   (define-pel-global-prefix pel:for-awk   (kbd "<f11> SPC W"))
   (define-pel-global-prefix pel:awk-setup (kbd "<f11> SPC W <f4>"))
@@ -3089,6 +3093,13 @@ MODE must be a symbol."
                      pel:awk-guess)
     (pel-config-major-mode awk pel:for-awk :no-ts
       (progn
+
+        ;; Configure how to search for a file name from the user-option
+        ;; `pel-awk-file-finder-method' which may be specified in a
+        ;; .dir-local.el file.
+        (pel-cc-find-activate-finder-method pel-awk-file-finder-method
+                                            pel-awk-file-searched-extra-dir-trees)
+
         ;; 1) set the style: it identifies everything
         (pel--set-cc-style 'awk-mode pel-awk-bracket-style pel-awk-newline-mode)
         ;; 2) apply modifications requested by PEL user options.
@@ -3170,7 +3181,6 @@ MODE must be a symbol."
                                     ".jison"))))
 
   (declare-function pel--install-c-skel "pel-skels-c")
-  (declare-function pel-cc-find-activate-finder-method "pel-cc-find")
   (defvar pel-c-man-section)       ; prevent byte-compiler warning in Emacs 26
   (pel-eval-after-load cc-mode
     (pel--map-cc-for pel:for-c

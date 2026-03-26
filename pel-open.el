@@ -1,6 +1,6 @@
 ;;; pel-open.el --- Open file dispatcher  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2022, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2022, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -99,10 +99,16 @@ name is built. Select one of the following methods:
 ;;-pel-autoload
 (defun pel-open-at-point (&optional n noerror)
   "Open the file or mode-specific reference at point.
+
 If there is no target issue a `user-error' unless NOERROR is non-nil.
-In that case just return nil.
-Optionally identify a window to open a file reference with the argument N.
-See `pel-find-file-at-point-in-window' for more information."
+In that case just return nil.  Optionally identify a window to open a
+file reference with the argument N.
+
+See `pel-find-file-at-point-in-window' for more information.  The
+command is specialized in some major modes: AWK, C and C++.  For those
+modes the `pel-cc-find-activate-finder-method' function can be used to
+identify a specialized file finder stored in
+`pel-filename-at-point-finders' and a list of project roots."
   (interactive "P")
   ;; It's possible the file visited by the current buffer is located in a
   ;; directory that is not the current directory; the user might have

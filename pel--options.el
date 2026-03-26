@@ -6241,6 +6241,7 @@ The 4 methods are:
       the file in the current buffer identifies a tool name.  Currently PEL
       has support for C and C++ and has the following user-options:
 
+      - `pel-awk-file-finder-ini-tool-name' for included files in GNU awk files
       - `pel-c-file-finder-ini-tool-name' for searching headers from C files
       - `pel-c++-file-finder-ini-tool-name' for searching headers from C++
          files
@@ -6592,7 +6593,7 @@ The 4 methods are:
      tool identified by the `pel-ffind-executable' user-option.
 
     The command `pel-cc-set-file-finder-ini-tool-name' can be used to
-    modify the value of `pel--file-finder-ini-tool-name',
+    modify the value of `pel-c-file-finder-ini-tool-name',
     `pel-c++-file-finder-ini-tool-name' and
     `pel-awk-file-finder-ini-tool-name'
      dynamic value of the variable (but not the persistent value of
@@ -6665,7 +6666,7 @@ list of directories that are compiler-specific and that are
 identified in the value of a [file-finder] key named after the
 tool chain name and the file type.
 
-  For example, for a C file, if the tool chain name identified by
+  For example, for a AWK file, if the tool chain name identified by
   the PEL_CC_FIND_TOOLCHAIN environment variable or the
   `pel-awk-file-finder-ini-tool-name' user-option is \"IAR\", PEL
   looks for the key named `IAR-c-path' for a list of extra

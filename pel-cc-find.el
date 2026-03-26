@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 16:18:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 17:40:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -59,7 +59,7 @@
 ;; At the moment PEL supports a header file search mechanism based on the
 ;; content of the pel.ini file for the following major modes.  Others might be
 ;; added in the future.
-(defconst pel--c-file-finder-supported-modes '(c-mode c++-mode)
+(defconst pel--c-file-finder-supported-modes '(awk-mode c-mode c++-mode)
   "List of major modes supported by the header file searching mechanism.")
 
 ;; We want to support searching in tool-chain specific directories and allow
@@ -74,6 +74,11 @@
 ;;   tool-chain name of the current major-mode.
 ;; - If the environment variable does not exist then user-option specific to
 ;;   major-mode is used.
+
+(defvar pel--awk-file-finder-ini-tool-name (or
+                                            (getenv "PEL_CC_FIND_TOOLCHAIN")
+                                            pel-awk-file-finder-ini-tool-name)
+  "Identifies the name of an extra list of directories to use in AWK.")
 
 (defvar pel--c-file-finder-ini-tool-name (or
                                           (getenv "PEL_CC_FIND_TOOLCHAIN")
@@ -226,7 +231,8 @@ cannot find location of %s using include path spec identified in:
                             (cadr err)))))))))
 
 ;;-pel-autoload
-(defun pel-cc-find-activate-finder-method (&optional file-finder-method extra-searched-directory-trees)
+(defun pel-cc-find-activate-finder-method (&optional file-finder-method
+                                                     extra-searched-directory-trees)
   "Activate the file finder method for buffers of current major-mode.
 
 Set the search method to FILE-FINDER-METHOD if specified,
