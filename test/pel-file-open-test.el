@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 18:38:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 19:34:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -67,7 +67,7 @@
     (let ((parts (pel-filename-parts-at-point)))
       (should parts)
       (should (eq (nth 0 parts) 'fname))
-      (should (string-match-p "foo\\.c" (nth 1 parts)))
+      (should (string= (nth 1 parts) "foo.c"))
       (should (equal (nth 2 parts) 42)))))
 
 (ert-deftest pel-file-test/parts-filename-with-line-and-column ()
@@ -106,7 +106,10 @@
     (let ((parts (pel-filename-parts-at-point nil)))
       ;; After stripping file:// the result should be a normal filename
       (should parts)
-      (should (not (eq (car parts) 'http))))))
+      (should (not (eq (car parts) 'http)))
+      ;; Verify the path was correctly extracted
+      (should (eq (nth 0 parts) 'fname))
+      (should (string= (nth 1 parts) "/usr/include/stdio.h")))))
 
 (ert-deftest pel-file-test/parts-windows-drive-letter ()
   "A Windows-style path returns fname-w-ddrv type."
