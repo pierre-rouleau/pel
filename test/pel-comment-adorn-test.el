@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 14:28:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 08:36:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -171,14 +171,6 @@
 ;;; --------------------------------------------------------------------------
 ;;; Tests for all 10 commands delegating to pel-commented-adorn
 ;;; --------------------------------------------------------------------------
-
-(defun pel-comment-adorn-test--make-call-checker (expected-level)
-  "Return fun that checks pel-commented-adorn is called with EXPECTED-LEVEL."
-  (let ((result nil))
-    (cl-letf (((symbol-function 'pel-commented-adorn)
-               (lambda (level) (setq result level))))
-      (funcall (intern (format "pel-commented-adorn-%d" expected-level)))
-      result)))
 
 (ert-deftest pel-comment-adorn-test/delegation/level-1-delegates ()
   "pel-commented-adorn-1 delegates to pel-commented-adorn with level 1."

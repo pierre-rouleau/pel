@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 17:26:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 10:08:22 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -234,8 +234,8 @@ otherwise set it to the value held by the user-option that has a
 name \\='pel-MODE-file-finder-method\\=' where MODE is replaced by the
 major mode name (c, c++, d, etc...).
 
-If EXTRA-SEARCHED-DIRECTORY-TREES is non-nil the finder is set to also search
-in the list of directory trees identified by the list."
+If EXTRA-SEARCHED-DIRECTORY-TREES is non-nil and is either a string or a list
+of strings, the finder is set to also search in those directory trees."
   (unless file-finder-method
     (setq file-finder-method
           (pel-major-mode-symbol-value "pel-%s-file-finder-method")))

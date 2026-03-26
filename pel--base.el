@@ -243,6 +243,7 @@
 ;;  - `pel-text-from-beginning-of-line'
 ;;
 ;; Check text in buffer
+;;  - `pel-line-has-only-newline-p'
 ;;  - `pel-line-has-only-whitespace-p'
 ;;  - `pel-inside-code'
 ;;  - `pel-has-shebang-line'
@@ -2388,6 +2389,13 @@ otherwise it does not."
 ;; ---------------------------------------------------------------------------
 ;;* Check text in buffer
 ;;  ====================
+
+(defun pel-line-has-only-newline-p (&optional pos)
+  "Return t if current line (or line at POS) is empty, nil otherwise."
+  (save-excursion
+    (when pos (goto-char pos))
+    (= (progn (beginning-of-line) (point))
+       (progn (end-of-line) (point)))))
 
 (defun pel-line-has-only-whitespace-p (&optional pos)
   "Return t if current line (or line at POS) contain only whitespace.

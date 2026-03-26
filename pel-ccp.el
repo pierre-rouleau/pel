@@ -738,14 +738,9 @@ This command assumes point is not in a string or comment."
   (delete-region (line-beginning-position)
                  (min (point-max) (1+ (line-end-position)))))
 
-(defun pel--current-line-empty-p ()
-  "Return t if current line is empty, nil otherwise."
-  (= (save-excursion (beginning-of-line) (point))
-     (save-excursion (end-of-line) (point))))
-
 (defun pel--kill-line-but-delete-if-empty ()
   "Kill current line with text, otherwise delete it."
-  (if (pel--current-line-empty-p)
+  (if (pel-line-has-only-whitespace-p)
       (pel-delete-whole-line)
     (kill-whole-line 1)))
 

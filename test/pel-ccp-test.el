@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 17:32:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 08:19:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -35,38 +35,6 @@
 
 (require 'ert)
 (require 'pel-ccp)
-
-;;; --------------------------------------------------------------------------
-;;; Tests for `pel--current-line-empty-p'
-;;; --------------------------------------------------------------------------
-
-(ert-deftest pel-ccp-test/current-line-empty-p/empty-line ()
-  "Returns t for a completely empty line."
-  (with-temp-buffer
-    (insert "\n")
-    (goto-char (point-min))
-    (should (pel--current-line-empty-p))))
-
-(ert-deftest pel-ccp-test/current-line-empty-p/whitespace-only ()
-  "Returns nil for a line with only whitespace."
-  (with-temp-buffer
-    (insert "   \t  \n")
-    (goto-char (point-min))
-    (should-not (pel--current-line-empty-p))))
-
-(ert-deftest pel-ccp-test/current-line-empty-p/non-empty-line ()
-  "Returns nil for a line with text content."
-  (with-temp-buffer
-    (insert "hello world\n")
-    (goto-char (point-min))
-    (should-not (pel--current-line-empty-p))))
-
-(ert-deftest pel-ccp-test/current-line-empty-p/leading-whitespace-then-text ()
-  "Returns nil for a line with leading whitespace followed by text."
-  (with-temp-buffer
-    (insert "   int x = 0;\n")
-    (goto-char (point-min))
-    (should-not (pel--current-line-empty-p))))
 
 ;;; --------------------------------------------------------------------------
 ;;; Tests for `pel-clean-kill-ring'
