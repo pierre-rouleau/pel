@@ -6429,7 +6429,7 @@ Does not indent."
 
 (defcustom pel-awk-indent-width 4
   "Number of columns for AWK source code indentation.
-PEL stores this in `c-basic-offset' when editing buffers with C code.
+PEL stores this in `c-basic-offset' when editing AWK buffers.
 Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-awk
   :type 'integer
