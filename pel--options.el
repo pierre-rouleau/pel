@@ -6669,7 +6669,7 @@ tool chain name and the file type.
   For example, for a AWK file, if the tool chain name identified by
   the PEL_CC_FIND_TOOLCHAIN environment variable or the
   `pel-awk-file-finder-ini-tool-name' user-option is \"IAR\", PEL
-  looks for the key named `IAR-c-path' for a list of extra
+  looks for the key named `IAR-awk-path' for a list of extra
   directory names to search into.
 
 The search inside these directories is performed recursively by
@@ -7295,7 +7295,7 @@ tool chain name and the file type.
 
   For example, for a C++ file, if the tool chain name identified by
   the PEL_CC_FIND_TOOLCHAIN environment variable or the
-  `pel-c-file-finder-ini-tool-name' user-option is \"IAR\", PEL
+  `pel-c++-file-finder-ini-tool-name' user-option is \"IAR\", PEL
   looks for the key named `IAR-c++-path' for a list of extra
   directory names to search into.
 

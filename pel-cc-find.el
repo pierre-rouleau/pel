@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 17:40:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 20:40:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -276,9 +276,9 @@ of strings, the finder is set to also search in those directory trees."
                (pel-ffind-inpath fn path-list))))))
    ;; --
    ;; no other method currently supported
-   (t (error (format "invalid file-finder-method: %S for %s"
-                     file-finder-method
-                     major-mode))))
+   (t (user-error (format "invalid file-finder-method: %S for %s"
+                          file-finder-method
+                          major-mode))))
   (when extra-searched-directory-trees
     ;; Append a function that searches into all extra directory trees.
     (setq pel-filename-at-point-finders

@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 18:55:13 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 20:43:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -59,9 +59,10 @@
   (with-temp-buffer
     ;; No buffer-file-name
     (setq buffer-file-name nil)
-    (let ((default-directory "/tmp/myproject/")
-          (result (pel--open-file-at-point-dir-string-for nil)))
+    (let* ((default-directory "/tmp/myproject/")
+           (result (pel--open-file-at-point-dir-string-for nil)))
       (should (stringp result))
+      (should (string-match-p "/tmp/myproject/" result))
       (should (string-match-p "current working directory" result)))))
 
 (ert-deftest pel-open-test/dir-string-cwd ()
