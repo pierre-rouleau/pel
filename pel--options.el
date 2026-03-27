@@ -6393,16 +6393,16 @@ ccmode/Built_002din-Styles.html#Built_002din-Styles")
   "Column beyond which automatic line-wrapping should happen in AWK code.
 Can either be nil or an integer value.
 When set to nil, Emacs user option variable `fill-column' value
-is used for `c-mode' buffers, otherwise the integer value specified by
-`pel-c-fill-column' is stored in the variable `fill-column' for
-`c-mode' buffers.  The default is 80."
+is used for `awk-mode' buffers, otherwise the integer value specified by
+`pel-awk-fill-column' is stored in the variable `fill-column' for
+`awk-mode' buffers.  The default is 80."
   :group 'pel-pkg-for-awk
   :type '(choice
           (const   :tag "Use the default fill-column value." nil)
           (integer :tag "Use a value specific for awk-mode buffers:")))
 
 (defcustom  pel-awk-newline-mode 'context-newline
-  "Set default newline mode for `c-mode' buffers.
+  "Set default newline mode for `awk-mode' buffers.
 
 This may be one of the following values:
 

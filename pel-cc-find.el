@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 22:52:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 23:39:22 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -238,7 +238,7 @@ cannot find location of %s using include path spec identified in:
 Set the search method to FILE-FINDER-METHOD if specified,
 otherwise set it to the value held by the user-option that has a
 name \\='pel-MODE-file-finder-method\\=' where MODE is replaced by the
-major mode name (c, c++, d, etc...).
+major mode name (awk, c, c++, d, etc...).
 
 If EXTRA-SEARCHED-DIRECTORY-TREES is non-nil and is either a string or a list
 of strings, the finder is set to also search in those directory trees."
@@ -269,7 +269,7 @@ of strings, the finder is set to also search in those directory trees."
          (eq (length file-finder-method) 2))
     (let ((path-list (apply 'append file-finder-method)))
       ;; expand any reference to an environment variable in path-names
-      (setq path-list (mapcar (function substitute-in-file-name) path-list))
+      (setq path-list (mapcar (function pel-substitute-in-file-name) path-list))
       (setq pel-filename-at-point-finders
             (list
              (lambda (fn)
