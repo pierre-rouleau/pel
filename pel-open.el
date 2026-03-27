@@ -57,7 +57,7 @@ Can be one of the following:
 It can also be a `pel-open-file-at-point-dir'."
   (cond
    ((not value)
-    (if (buffer-file-name)
+    (if buffer-file-truename
         (format
          "use file's parent directory: %s"
          (file-name-directory (pel-current-buffer-filename)))
@@ -126,7 +126,7 @@ identify a specialized file finder stored in
            ;; file, then set the working directory to the file's parent
            ;; directory
            ((and (not pel--open-file-at-point-dir)
-                 (buffer-file-name))
+                 buffer-file-truename)
             (cd (file-name-directory (pel-current-buffer-filename))))
            ;; if a directory is forced by name and it exists, use it
            ((and (stringp pel--open-file-at-point-dir)

@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 19:35:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:37:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -145,7 +145,8 @@
   (with-temp-buffer
     (setq major-mode 'c-mode)
     (should-error
-     (pel-cc-find-activate-finder-method 'unsupported-method nil))))
+     (pel-cc-find-activate-finder-method 'unsupported-method nil)
+     :type 'user-error)))
 
 (ert-deftest pel-cc-find-test/activate-with-extra-dirs-appends-finder ()
   "Extra searched directory trees appends a second finder."

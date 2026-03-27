@@ -6239,21 +6239,21 @@ The 4 methods are:
       the example above).
     - The user-option corresponding to the name of the programming language of
       the file in the current buffer identifies a tool name.  Currently PEL
-      has support for C and C++ and has the following user-options:
+      has support for AWK, C and C++ and control the value of the following
+      user-options:
 
-      - `pel-awk-file-finder-ini-tool-name' for included files in GNU awk files
-      - `pel-c-file-finder-ini-tool-name' for searching headers from C files
+      - `pel-awk-file-finder-ini-tool-name' for included files in GNU awk files,
+      - `pel-c-file-finder-ini-tool-name' for searching headers from C files,
       - `pel-c++-file-finder-ini-tool-name' for searching headers from C++
-         files
+         files.
 
      It searches each of the directory trees with the file finder
      tool identified by the `pel-ffind-executable' user-option.
 
     The command `pel-cc-set-file-finder-ini-tool-name' can be used to
-    modify the value of `pel-c-file-finder-ini-tool-name' and
-    `pel-c++-file-finder-ini-tool-name' dynamic value of the variable
-    (but not the persistent value of the user-option which must be modified by
-    the customization mechanism).
+    modify the dynamic value used by the major mode.  However, the
+    persistent value of the user-options (used as the default values)
+    must be modified via Emacs customization mechanism.
 
 3: Environment variable string:
 
