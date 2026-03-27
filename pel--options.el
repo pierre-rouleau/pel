@@ -6187,28 +6187,30 @@ This complements the header search method identified by the
 (defcustom pel-c-file-finder-method 'generic
   "Set method used by `pel-open-at-point' to search C header files.
 
-The following 4 methods listed below are supported, with the ability to
-also identify an extra list of directory trees to search in the
-`pel-c-file-searched-extra-dir-trees' user-option (which are searched by
-the tool identified by the `pel-ffind-executable' user-option.)
+PEL supports 4 methods to search for C header files.
+Some of the methods search directory trees using the tool identified by
+`pel-ffind-executable'.
+Optionally, you can also identify a list of extra directory trees to
+search in the `pel-c-file-searched-extra-dir-trees' user-option.  Each
+method search these directories.
 
-The 4 methods are:
+The 4 search methods are:
 
 1: generic (the default):
 
-   The parent directory tree of the current file is searched.
+   Search the file inside the parent directory tree of the current file.
    The parent directory root is first identified and the file is searched
    in all its sub-directories.  The root is identified by the presence
    of one of the files identified by the `pel-project-root-identifiers'
    user option.
 
-   The entire directory tree under the root is searched with the file finder
-   tool identified by the `pel-ffind-executable' user-option.
+   The entire directory tree under the root is searched with the file
+   finder tool identified by `pel-ffind-executable'.
 
 2: Use the [file-finder] section of pel.ini file:
 
   Use a file named pel.ini inside the project\\='s directory tree.
-  The function `pel-open-at-point' searches for that file in the parent
+  The function `pel-open-at-point' looks for that file in the parent
   directory tree identified by the same method as above.
   The pel.ini file is a .INI file using the format described
   in https://en.wikipedia.org/wiki/INI_file.  It must have the following
@@ -6237,56 +6239,61 @@ The 4 methods are:
     - The PEL_CC_FIND_TOOLCHAIN environment variable is set and holds the name
       of the tool chain of one of these keys (like \"IAR\", \"gcc\", \"vs\" in
       the example above).
-    - The user-option corresponding to the name of the programming language of
-      the file in the current buffer identifies a tool name.  Currently PEL
-      has support for AWK, C and C++ and control the value of the following
-      user-options:
+    - The tool-name key used for the currently used programming language
+      is identified by tone of the corresponding user options:
 
-      - `pel-awk-file-finder-ini-tool-name' for included files in GNU awk files,
-      - `pel-c-file-finder-ini-tool-name' for searching headers from C files,
-      - `pel-c++-file-finder-ini-tool-name' for searching headers from C++
-         files.
+      - `pel-awk-file-finder-ini-tool-name' for AWK,
+      - `pel-c-file-finder-ini-tool-name' for C,
+      - `pel-c++-file-finder-ini-tool-name' for C++.
 
-     It searches each of the directory trees with the file finder
-     tool identified by the `pel-ffind-executable' user-option.
+    The function searches each of the directory trees with the file
+    finder tool identified by the `pel-ffind-executable' user-option.
 
-    The command `pel-cc-set-file-finder-ini-tool-name' can be used to
-    modify the dynamic value used by the major mode.  However, the
-    persistent value of the user-options (used as the default values)
-    must be modified via Emacs customization mechanism.
+    Use the command `pel-cc-set-file-finder-ini-tool-name' to temporary
+    modify the current value of the mode specific
+    `pel-awk-file-finder-ini-tool-name',
+    `pel-c-file-finder-ini-tool-name' or
+    `pel-c++-file-finder-ini-tool-name' from their initial values
+    corresponding to their customization values.  The changes will be
+    used in the current session but will not persists.  To change the
+    persistent values you must change the customized value using Emacs
+    customization mechanism.
 
 3: Environment variable string:
 
-  The name of an environment variable (such as \"INCLUDE\") that identifies
+  The name of an environment variable (such as \"INCLUDE\") identifies
   the directories to search.  Use this when your OS environment set up
   environment variables that inform the C compiler where header files are
-  located.  The directories identified this way are searched locally, not
-  recursively into their sub-directories.
+  located.
+
+  The only directories searched by this method are the directories identified,
+  their sub-directories are not searched.
 
 4: Two lists of directories: one for the project and one for the compiler tool:
 
-  This specifies two lists of directories.  The first list identifies the
-  project directories and the second list identifies the directories where the
-  compiler and libraries headers are stored.
+  This specifies two lists of directories:
+  - the first list identifies the project directories,
+  - the second list identifies the compiler and libraries directories
+    holding header files.
 
-  Note that for this option, the files are searched inside the directories,
-  but are *not* searched in their sub-directories.  Each directory searched
-  must be identified explicitly in the list.
+  The only directories searched by this method are the directories
+  identified, their sub-directories are not searched.
 
-  Each string in the lists can use environment variables as part of the
-  path-name and MUST use the $VARNAME syntax.  That can be quite useful
-  when the location of the project of the tools may vary from user to user
-  or computers.  For example \"$HOME/foo\" will be expanded to the foo
-  sub-directory under the user\\='s home directory.
+  The directory path name strings in each list can refer to environment
+  variables using the $VARNAME syntax.
+
+  Use this method when the location of the header directory for the
+  compiler and libraries change from system to system.
+
+  For example \"$HOME/foo\" will be expanded to the foo sub-directory
+  under the user\\='s home directory.
 
 You may want to store this value inside a .dir-local.el directory
 local-variable file with your C source code to control the behaviour
 of the file search based on your project.
 
-CAUTION: when changing this user-option, you may have to restart Emacs to
-         activate the new behaviour in various commands like when opening
-         file at point in various major modes. Executing pel-init may not
-         be sufficient."
+CAUTION: after changing this user-option, you must restart Emacs to activate
+         the new behaviour."
   :group 'pel-pkg-for-c
   :safe 't
   :type '(choice
