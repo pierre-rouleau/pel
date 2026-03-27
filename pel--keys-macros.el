@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 13:56:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:55:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1301,7 +1301,7 @@ There should be no key binding!" keyseq))
   (if (and (pel-running-under-ssh-p)
            (not pel-help-under-ssh))
       (user-error "When running under SSH, external help is not available")
-    (if (and (require 'pel-browse nil :no-error)
+    (if (and (require 'pel-browse nil :noerror)
              (fboundp 'pel-browse-url))
         (pel-browse-url url)
       (browse-url url)

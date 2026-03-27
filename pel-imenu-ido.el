@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2026-03-23 18:15:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:55:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -349,7 +349,7 @@ This function uses the completion method selected by
 `pel-use-imenu-anywhere' and any changes requested by executing the
 command `pel-select-goto-symbol-any-buffer-UI'."
   (interactive)
-  (if (and (require 'imenu-anywhere nil :no-error)
+  (if (and (require 'imenu-anywhere nil :noerror)
            (fboundp 'imenu-anywhere)
            (fboundp 'ido-imenu-anywhere)
            (fboundp 'ivy-imenu-anywhere)
@@ -375,7 +375,7 @@ By default this applies to imenu issued in all buffers,
 but with the IN-CURRENT-BUFFER argument set the change applies only
 to the current buffer."
   (interactive "P")
-  (if (require 'imenu nil :no-error)
+  (if (require 'imenu nil :noerror)
       (pel-toggle-and-show-user-option 'imenu-use-popup-menu
                                        (not in-current-buffer)
                                        "use pop-up menu"

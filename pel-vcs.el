@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  9 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-14 15:05:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:55:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -92,7 +92,7 @@ back-end."
         (if (= (length vcs-backends) 1)
             (user-error "There is only one VCS back-end for %s: %s"
                         current-filename (car vcs-backends))
-          (require 'vc nil :no-error)
+          (require 'vc nil :noerror)
 
           (pel--vc-switch-backend current-filename
                                   (pel-select-symbol-from "VCS" vcs-backends)))
@@ -119,7 +119,7 @@ When starting, the command does not create the buffer.
 It is created on the first VC event."
   (interactive)
   (unless (boundp 'vc-post-command-functions)
-    (require 'vc-dispatcher nil :no-error))
+    (require 'vc-dispatcher nil :noerror))
   (when (boundp 'vc-post-command-functions)
     (if (and vc-post-command-functions
              (member 'pel--vcs-log-vc vc-post-command-functions))

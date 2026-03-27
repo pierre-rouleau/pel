@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-26 15:24:39 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-26 17:39:36 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -912,13 +912,11 @@ test/pel-base-test.el.test-passed:              pel--base.elc
 test/pel-c-utils-test.el.test-passed:           pel-c-utils.elc
 test/pel-c-comment-test.el.test-passed:         pel-c-comment.elc
 test/pel-c-preproc-test.el.test-passed:         pel-c-preproc.elc
-
 test/pel-cc-find-test.el.test-passed:           pel-cc-find.elc
 test/pel-cc-navigate-test.el.test-passed:       pel-cc-navigate.elc
 test/pel-cc-test.el.test-passed:                pel--options.elc pel-cc.elc
 test/pel-ccp-test.el.test-passed:               pel-ccp.elc
 test/pel-comment-adorn-test.el.test-passed:     pel-comment-adorn.elc
-
 test/pel-dtreplace-test.el.test-passed:         pel-dtreplace.elc
 test/pel-elcode-test.el.test-passed:            pel-elcode.elc pel--base.elc
 test/pel-elpa-test.el.test-passed:              pel-elpa.elc pel-filedir.elc
@@ -931,6 +929,10 @@ test/pel-hash-test.el.test-passed:              pel-hash.elc
 test/pel-hex-test.el.test-passed:               pel-hex.elc
 test/pel-list-test.el.test-passed:              pel-list.elc
 test/pel-mark-test.el.test-passed:              pel-mark.elc pel--base.elc
+
+test/pel-open-test.el.test-passed:              pel--base.elc pel-open.elc
+test/pel-file-open-test.el.test-passed:         pel-file.elc
+
 test/pel-package-test.el.test-passed:           pel-package.elc pel--base.elc pel--options.elc
 test/pel-seq-test.el.test-passed:               pel-seq.elc
 test/pel-skel-c-test.el.test-passed:            pel--options.elc

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 10:58:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:55:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -197,7 +197,7 @@ then the \"elpa\" sub-directory of the directory identified by
 the variable `user-emacs-directory' is used."
   (file-name-as-directory (if (bound-and-true-p pel-package-user-dir-original)
                               (expand-file-name pel-package-user-dir-original)
-                            (if (and (require 'package nil :no-error)
+                            (if (and (require 'package nil :noerror)
                                      (boundp 'package-user-dir))
                                 (expand-file-name package-user-dir)
                               (expand-file-name "elpa" user-emacs-directory)))))
@@ -560,7 +560,7 @@ PKG may be a symbol or a string."
   ;; are not installed via that package.
   (when (locate-library (pel-as-string pkg))
     (setq pkg (pel-as-symbol pkg))
-    (if (and (require 'package nil :no-error)
+    (if (and (require 'package nil :noerror)
              (fboundp 'package--get-deps))
         (condition-case err
             (let ((pkg-arg      pkg)
@@ -852,7 +852,7 @@ The function does not support printing a full report on stdout."
                   (length (pel-commands))            ; # PEL commands
                   (length upgradable-pkgs) ; # upgradable PEL packages
                   (pel-doc-pdf-file-count) ; # PEL PDF files
-                  (if (and (require 'time nil :no-error)
+                  (if (and (require 'time nil :noerror)
                            (fboundp 'emacs-init-time))
                       (emacs-init-time)
                     "?")

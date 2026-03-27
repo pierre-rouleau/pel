@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 15:06:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 23:17:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,14 +25,18 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 
-;; ERT tests for the pure/utility functions in pel-cc-find.el.
-;; Tests focus on `pel-envar-in-string' and `pel-substitute-in-file-name'.
+
+;; Tests for pel-cc-find.el functions covering:
+;;  - `pel-envar-in-string'
+;;  - `pel-substitute-in-file-name'
+;;  - `pel-cc-find-activate-finder-method' (method dispatch)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
-(require 'ert)
 (require 'pel-cc-find)
+(require 'ert)
+(require 'seq)             ; use `seq-remove'
 
 ;;; --------------------------------------------------------------------------
 ;;; Tests for `pel-envar-in-string'
@@ -94,11 +98,114 @@
    (pel-substitute-in-file-name "$DEFINITELY_NOT_SET_VAR_XYZ/path")
    :type 'user-error))
 
+(ert-deftest pel-cc-find-test/substitute-in-file-name/unknown-var-2 ()
+  "Signal a user-error when an unknown env variable is referenced."
+  ;; Same as above but purge the variable from the environment.
+  (let ((process-environment
+         (seq-remove (lambda (e)
+                       (string-prefix-p "DEFINITELY_NOT_SET_VAR_XYZ=" e))
+                     process-environment)))
+    (should-error
+     (pel-substitute-in-file-name "$DEFINITELY_NOT_SET_VAR_XYZ/path")
+     :type 'user-error)))
+
 (ert-deftest pel-cc-find-test/substitute-in-file-name/mixed-known-unknown ()
   "Signal user-error even if one var is known and another is not."
   (should-error
    (pel-substitute-in-file-name "$HOME/$DEFINITELY_NOT_SET_VAR_XYZ")
    :type 'user-error))
+
+;; ---------------------------------------------------------------------------
+;; Tests for `pel-cc-find-activate-finder-method' — method dispatch
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-cc-find-test/activate-generic ()
+  "The 'generic method sets pel-filename-at-point-finders to pel-generic-find-file."
+  (with-temp-buffer
+    (setq major-mode 'c-mode)
+    (pel-cc-find-activate-finder-method 'generic nil)
+    (should (equal pel-filename-at-point-finders '(pel-generic-find-file)))))
+
+(ert-deftest pel-cc-find-test/activate-pel-ini-file ()
+  "The 'pel-ini-file method sets finders to pel-cc-find-via-pel-ini."
+  (with-temp-buffer
+    (setq major-mode 'c-mode)
+    (pel-cc-find-activate-finder-method 'pel-ini-file nil)
+    (should (= (length pel-filename-at-point-finders) 1))
+    (should (functionp (car pel-filename-at-point-finders)))))
+
+(ert-deftest pel-cc-find-test/activate-envvar-string ()
+  "A string method sets a lambda that calls pel-ffind-inpath-include."
+  (with-temp-buffer
+    (setq major-mode 'c-mode)
+    (pel-cc-find-activate-finder-method "INCLUDE" nil)
+    (should (= (length pel-filename-at-point-finders) 1))
+    (should (functionp (car pel-filename-at-point-finders)))))
+
+(ert-deftest pel-cc-find-test/activate-list-two-elements ()
+  "A two-element list method sets a lambda using pel-ffind-inpath."
+  (with-temp-buffer
+    (setq major-mode 'c-mode)
+    (pel-cc-find-activate-finder-method
+     '(("/proj/include") ("/usr/include"))
+     nil)
+    (should (= (length pel-filename-at-point-finders) 1))
+    (should (functionp (car pel-filename-at-point-finders)))))
+
+(ert-deftest pel-cc-find-test/activate-invalid-method-signals-error ()
+  "An invalid method signals an error."
+  (with-temp-buffer
+    (setq major-mode 'c-mode)
+    (should-error
+     (pel-cc-find-activate-finder-method 'unsupported-method nil)
+     :type 'user-error)))
+
+(ert-deftest pel-cc-find-test/activate-with-extra-dirs-appends-finder ()
+  "Extra searched directory trees appends a second finder."
+  (with-temp-buffer
+    (setq major-mode 'c-mode)
+    (pel-cc-find-activate-finder-method 'generic '("/extra/dir"))
+    ;; Should now have 2 finders: generic + extra dirs
+    (should (= (length pel-filename-at-point-finders) 2))))
+
+(ert-deftest pel-cc-find-test/activate-generic-no-extra-single-finder ()
+  "Generic method with no extra dirs yields exactly one finder."
+  (with-temp-buffer
+    (setq major-mode 'c-mode)
+    (pel-cc-find-activate-finder-method 'generic nil)
+    (should (= (length pel-filename-at-point-finders) 1))))
+
+(ert-deftest pel-cc-find-test/activate-default-from-awk-mode-option ()
+  "When method is nil, awk-mode should use `pel-awk-file-finder-method'."
+  (let ((pel-awk-file-finder-method 'generic))
+    (with-temp-buffer
+      (setq major-mode 'awk-mode)
+      (pel-cc-find-activate-finder-method nil nil)
+      (should (equal pel-filename-at-point-finders '(pel-generic-find-file))))))
+
+(ert-deftest pel-cc-find-test/activate-default-from-c++-mode-option ()
+  "When method is nil, c++-mode should use `pel-c++-file-finder-method'."
+  (let ((pel-c++-file-finder-method 'generic))
+    (with-temp-buffer
+      (setq major-mode 'c++-mode)
+      (pel-cc-find-activate-finder-method nil nil)
+      (should (equal pel-filename-at-point-finders '(pel-generic-find-file))))))
+
+;; ---------------------------------------------------------------------------
+;; Tests for `pel--cc-find-info-msg'
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-cc-find-test/info-msg-returns-string ()
+  "pel--cc-find-info-msg returns a non-empty string for a bound varname-suffix."
+  (with-temp-buffer
+    (setq major-mode 'c-mode)
+    ;; Ensure the user-option variable exists (it's defined in pel--options.el)
+    (let ((result (pel--cc-find-info-msg "file-finder-method")))
+      (should (stringp result))
+      (should (> (length result) 0))
+      ;; Should contain both "User option" and "buffer local" labels
+      (should (string-match-p "User option" result))
+      (should (string-match-p "buffer local" result)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-cc-find-test)

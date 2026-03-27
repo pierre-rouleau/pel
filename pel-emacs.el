@@ -134,7 +134,7 @@ the variable `pel-emacs-refcard-dirpath' user option."
 If WITH-DETAILS, print details in the *emacs-load-stats* buffer.  With
 \\[universal-argument] \\[universal-argument] prefix, also print content of `load-history'."
   (interactive "P")
-  (if (and (require 'package nil :no-error)
+  (if (and (require 'package nil :noerror)
            (boundp  'package-selected-packages)
            (boundp  'package-alist)
            (boundp  'package-activated-list))

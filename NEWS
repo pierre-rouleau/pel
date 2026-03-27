@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- The *pel-open-at-point* now support the GNU awk =@include= directive: PEL support AWK for searching included files the way
+  it already did for C and C++.  AWK support of *pel-cc-find-show-status* (bound to ~<f12> <f4> f~).
 - Improve *pel-cc-mode-info*: shows useful key bindings related to RET mode and hungry delete commands and
   shows the value of *pel-c-multiline-comments* for c-mode buffers.
 - Add report formatting utilities: *pel-insert-mode-symbol-content-line*, *pel-insert-mode-symbol-content-line-when-bound*.

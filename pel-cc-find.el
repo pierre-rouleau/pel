@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 10:08:22 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 23:39:22 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -59,7 +59,7 @@
 ;; At the moment PEL supports a header file search mechanism based on the
 ;; content of the pel.ini file for the following major modes.  Others might be
 ;; added in the future.
-(defconst pel--c-file-finder-supported-modes '(c-mode c++-mode)
+(defconst pel--c-file-finder-supported-modes '(awk-mode c-mode c++-mode)
   "List of major modes supported by the header file searching mechanism.")
 
 ;; We want to support searching in tool-chain specific directories and allow
@@ -74,6 +74,11 @@
 ;;   tool-chain name of the current major-mode.
 ;; - If the environment variable does not exist then user-option specific to
 ;;   major-mode is used.
+
+(defvar pel--awk-file-finder-ini-tool-name (or
+                                            (getenv "PEL_CC_FIND_TOOLCHAIN")
+                                            pel-awk-file-finder-ini-tool-name)
+  "Identifies the name of an extra list of directories to use in AWK.")
 
 (defvar pel--c-file-finder-ini-tool-name (or
                                           (getenv "PEL_CC_FIND_TOOLCHAIN")
@@ -226,13 +231,14 @@ cannot find location of %s using include path spec identified in:
                             (cadr err)))))))))
 
 ;;-pel-autoload
-(defun pel-cc-find-activate-finder-method (&optional file-finder-method extra-searched-directory-trees)
+(defun pel-cc-find-activate-finder-method (&optional file-finder-method
+                                                     extra-searched-directory-trees)
   "Activate the file finder method for buffers of current major-mode.
 
 Set the search method to FILE-FINDER-METHOD if specified,
 otherwise set it to the value held by the user-option that has a
 name \\='pel-MODE-file-finder-method\\=' where MODE is replaced by the
-major mode name (c, c++, d, etc...).
+major mode name (awk, c, c++, d, etc...).
 
 If EXTRA-SEARCHED-DIRECTORY-TREES is non-nil and is either a string or a list
 of strings, the finder is set to also search in those directory trees."
@@ -263,16 +269,16 @@ of strings, the finder is set to also search in those directory trees."
          (eq (length file-finder-method) 2))
     (let ((path-list (apply 'append file-finder-method)))
       ;; expand any reference to an environment variable in path-names
-      (setq path-list (mapcar (function substitute-in-file-name) path-list))
+      (setq path-list (mapcar (function pel-substitute-in-file-name) path-list))
       (setq pel-filename-at-point-finders
             (list
              (lambda (fn)
                (pel-ffind-inpath fn path-list))))))
    ;; --
    ;; no other method currently supported
-   (t (error (format "invalid file-finder-method: %S for %s"
-                     file-finder-method
-                     major-mode))))
+   (t (user-error "invalid file-finder-method: %S for %s"
+                  file-finder-method
+                  major-mode)))
   (when extra-searched-directory-trees
     ;; Append a function that searches into all extra directory trees.
     (setq pel-filename-at-point-finders
@@ -292,7 +298,7 @@ The string has 2 lines;
 The user option has the \"pel-X-Y\" format
 where X is the major mode name and Y is the varname-suffix.
 
-The buffer local variable option has the \"pel---X-Y\" format
+The buffer local variable option has the \"pel--X-Y\" format
 where X is the major mode name and Y is the varname-suffix."
   (let ((uopt-varname-format      (format "pel-%%s-%s" varname-suffix))
         (bufl-varname-format (format "pel--%%s-%s" varname-suffix)))
@@ -328,12 +334,9 @@ where X is the major mode name and Y is the varname-suffix."
         (format "\n\n\nUSER OPTIONS.\n  Default values for all %s buffers:\n"
                 user-buffer-major-mode))
 
-       (pel-insert-symbol-content-line
-        (pel-major-mode-symbol-for "pel-%s-file-finder-method"))
-       (pel-insert-symbol-content-line
-        (pel-major-mode-symbol-for "pel-%s-file-searched-extra-dir-trees"))
-       (pel-insert-symbol-content-line
-        (pel-major-mode-symbol-for "pel-%s-file-finder-ini-tool-name"))
+       (pel-insert-mode-symbol-content-line "pel-%s-file-finder-method")
+       (pel-insert-mode-symbol-content-line "pel-%s-file-searched-extra-dir-trees")
+       (pel-insert-mode-symbol-content-line "pel-%s-file-finder-ini-tool-name")
 
        (insert
         (format "\n\n\nACTUAL USED VALUE.
@@ -345,8 +348,7 @@ where X is the major mode name and Y is the varname-suffix."
   Value used inside all %s and all %s buffers:\n"
                 user-buffer user-buffer-major-mode))
 
-       (pel-insert-symbol-content-line
-        (pel-major-mode-symbol-for "pel--%s-file-finder-ini-tool-name")))
+       (pel-insert-mode-symbol-content-line "pel--%s-file-finder-ini-tool-name"))
      (unless append :clear-buffer)
      :use-help-mode)))
 

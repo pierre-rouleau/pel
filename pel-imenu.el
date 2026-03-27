@@ -114,7 +114,7 @@ via OLDFUN.  The original two arguments MENULIST and TITLE follow."
 (defun pel-imenu-rescan ()
   "Force immediate imenu rescan."
   (interactive)
-  (if (and (require 'imenu nil :no-error)
+  (if (and (require 'imenu nil :noerror)
            (fboundp 'imenu--menubar-select)
            (boundp  'imenu--rescan-item))
       (progn
@@ -129,7 +129,7 @@ imenu--menubar-select or imenu--rescan-item missing")))
 Change setting for current buffer only unless the GLOBALLY
 argument is specified."
   (interactive "P")
-  (if (require 'imenu nil :no-error)
+  (if (require 'imenu nil :noerror)
       (pel-toggle-and-show-user-option 'imenu-auto-rescan globally)
     (user-error "Cannot load imenu")))
 

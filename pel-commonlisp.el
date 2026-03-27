@@ -225,7 +225,7 @@ Use the Slime, SLY or PEL mechanism, whatever is available."
    ;;
    ;; No IDE: implement it.
    (t
-    (if (and (require 'hyperspec nil :no-error)
+    (if (and (require 'hyperspec nil :noerror)
              (fboundp 'common-lisp-hyperspec))
         (let ((symbol (or (pel-symbol-at-point)
                           (pel-prompt "Symbol: "

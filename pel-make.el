@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 11:57:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:55:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -200,7 +200,7 @@ The command support shift-marking."
         (when (re-search-forward
                "[[:blank:]]?\\(else\\)\\([#[:blank:]].*\\)?$"
                eol-pos
-               :no-error)
+               :noerror)
           ;; store position of the end of `else' in else-pos
           (setq else-pos (nth 3 (match-data))))))
     (and else-pos

@@ -129,7 +129,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
   (interactive "P")
   (if pel-mac-keypad-numlocked
       (insert-char ?1 (abs (prefix-numeric-value n)) t)
-    (if (and (require 'pel-navigate nil :no-error)
+    (if (and (require 'pel-navigate nil :noerror)
              (fboundp 'pel-end))
         (pel-end)
       (error "Function pel-end is not loaded"))))
@@ -150,7 +150,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
   (let ((n (prefix-numeric-value n)))
     (if pel-mac-keypad-numlocked
         (insert-char ?3 (abs n) t)
-      (if (require 'pel-scroll nil :no-error)
+      (if (require 'pel-scroll nil :noerror)
           (if (> 0)
               (when (fboundp 'pel-scroll-up)
                 (pel-scroll-up  n))
@@ -192,7 +192,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
   (let ((n (prefix-numeric-value n)))
     (if pel-mac-keypad-numlocked
         (insert-char ?7 (abs n) t)
-      (if (and (require 'pel-navigate nil :no-error)
+      (if (and (require 'pel-navigate nil :noerror)
                (fboundp 'pel-home))
           (pel-home)
         (error "Function pel-home is not loaded")))))
@@ -213,7 +213,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
   (let ((n (prefix-numeric-value n)))
     (if pel-mac-keypad-numlocked
         (insert-char ?9 (abs n) t)
-      (if (require 'pel-scroll nil :no-error)
+      (if (require 'pel-scroll nil :noerror)
           (if (> 0)
               (when (fboundp 'pel-scroll-down)
                 (pel-scroll-down n))
@@ -237,7 +237,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
   (let ((n (prefix-numeric-value n)))
     (if pel-mac-keypad-numlocked
         (insert-char ?- (abs n) t)
-      (if (and (require 'pel-ccp nil :no-error)
+      (if (and (require 'pel-ccp nil :noerror)
                (fboundp 'pel-kill-or-delete-marked-or-whole-line))
           (pel-kill-or-delete-marked-or-whole-line n)
         (error
@@ -250,7 +250,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
   (let ((n (prefix-numeric-value n)))
     (if pel-mac-keypad-numlocked
         (insert-char ?+ (abs n) t)
-      (if (and (require 'pel-ccp nil :no-error)
+      (if (and (require 'pel-ccp nil :noerror)
                (fboundp 'pel-copy-marked-or-whole-line))
           (pel-copy-marked-or-whole-line)))))
 

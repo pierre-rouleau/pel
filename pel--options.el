@@ -6239,20 +6239,21 @@ The 4 methods are:
       the example above).
     - The user-option corresponding to the name of the programming language of
       the file in the current buffer identifies a tool name.  Currently PEL
-      has support for C and C++ and has the following user-options:
+      has support for AWK, C and C++ and control the value of the following
+      user-options:
 
-      - `pel-c-file-finder-ini-tool-name' for searching headers from C files
+      - `pel-awk-file-finder-ini-tool-name' for included files in GNU awk files,
+      - `pel-c-file-finder-ini-tool-name' for searching headers from C files,
       - `pel-c++-file-finder-ini-tool-name' for searching headers from C++
-         files
+         files.
 
      It searches each of the directory trees with the file finder
      tool identified by the `pel-ffind-executable' user-option.
 
     The command `pel-cc-set-file-finder-ini-tool-name' can be used to
-    modify the value of `pel-c-file-finder-ini-tool-name' and
-    `pel-c++-file-finder-ini-tool-name' dynamic value of the variable
-    (but not the persistent value of the user-option which must be modified by
-    the customization mechanism).
+    modify the dynamic value used by the major mode.  However, the
+    persistent value of the user-options (used as the default values)
+    must be modified via Emacs customization mechanism.
 
 3: Environment variable string:
 
@@ -6392,16 +6393,16 @@ ccmode/Built_002din-Styles.html#Built_002din-Styles")
   "Column beyond which automatic line-wrapping should happen in AWK code.
 Can either be nil or an integer value.
 When set to nil, Emacs user option variable `fill-column' value
-is used for `c-mode' buffers, otherwise the integer value specified by
-`pel-c-fill-column' is stored in the variable `fill-column' for
-`c-mode' buffers.  The default is 80."
+is used for `awk-mode' buffers, otherwise the integer value specified by
+`pel-awk-fill-column' is stored in the variable `fill-column' for
+`awk-mode' buffers.  The default is 80."
   :group 'pel-pkg-for-awk
   :type '(choice
           (const   :tag "Use the default fill-column value." nil)
           (integer :tag "Use a value specific for awk-mode buffers:")))
 
 (defcustom  pel-awk-newline-mode 'context-newline
-  "Set default newline mode for `c-mode' buffers.
+  "Set default newline mode for `awk-mode' buffers.
 
 This may be one of the following values:
 
@@ -6428,7 +6429,7 @@ Does not indent."
 
 (defcustom pel-awk-indent-width 4
   "Number of columns for AWK source code indentation.
-PEL stores this in `c-basic-offset' when editing buffers with C code.
+PEL stores this in `c-basic-offset' when editing AWK buffers.
 Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-awk
   :type 'integer
@@ -6592,7 +6593,7 @@ The 4 methods are:
      tool identified by the `pel-ffind-executable' user-option.
 
     The command `pel-cc-set-file-finder-ini-tool-name' can be used to
-    modify the value of `pel--file-finder-ini-tool-name',
+    modify the value of `pel-c-file-finder-ini-tool-name',
     `pel-c++-file-finder-ini-tool-name' and
     `pel-awk-file-finder-ini-tool-name'
      dynamic value of the variable (but not the persistent value of
@@ -6665,10 +6666,10 @@ list of directories that are compiler-specific and that are
 identified in the value of a [file-finder] key named after the
 tool chain name and the file type.
 
-  For example, for a C file, if the tool chain name identified by
+  For example, for a AWK file, if the tool chain name identified by
   the PEL_CC_FIND_TOOLCHAIN environment variable or the
   `pel-awk-file-finder-ini-tool-name' user-option is \"IAR\", PEL
-  looks for the key named `IAR-c-path' for a list of extra
+  looks for the key named `IAR-awk-path' for a list of extra
   directory names to search into.
 
 The search inside these directories is performed recursively by
@@ -7294,7 +7295,7 @@ tool chain name and the file type.
 
   For example, for a C++ file, if the tool chain name identified by
   the PEL_CC_FIND_TOOLCHAIN environment variable or the
-  `pel-c-file-finder-ini-tool-name' user-option is \"IAR\", PEL
+  `pel-c++-file-finder-ini-tool-name' user-option is \"IAR\", PEL
   looks for the key named `IAR-c++-path' for a list of extra
   directory names to search into.
 

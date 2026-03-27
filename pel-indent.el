@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-03 13:58:38 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:55:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2023, 2024, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -411,7 +411,7 @@ Limitation: does not handle hard tabs and may move point."
   (let ((n (prefix-numeric-value n)))
     (when (> (current-column) 0)
       (left-char (min (current-column) (pel-indent-level-columns n)))
-      (if (and (require 'pel-ccp nil :no-error)
+      (if (and (require 'pel-ccp nil :noerror)
                (fboundp 'pel-delete-to-next-visible))
           (pel-delete-to-next-visible)
         (error "Function pel-delete-to-next-visible is not loaded")))))
@@ -476,7 +476,7 @@ by the numeric argument N (or if not specified N=1):
     (unless (use-region-p)
       (if (= n 0)
           (setq n 1))
-      (if (and (require 'pel-mark nil :no-error)
+      (if (and (require 'pel-mark nil :noerror)
                (fboundp 'pel-mark-line-up)
                (fboundp 'pel-mark-line-down))
           (if (< n 0)

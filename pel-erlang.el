@@ -1309,7 +1309,7 @@ The `pel-erlang-xref-engine' user-option identifies the persistent selection."
     (edts
      (progn
        (unless (bound-and-true-p edts-mode)
-         (if (and (require 'edts-start nil :no-error)
+         (if (and (require 'edts-start nil :noerror)
                   (fboundp 'edts-mode))
              (edts-mode 1)))
        (call-interactively 'edts-find-source-under-point)))

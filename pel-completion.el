@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 12:03:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:55:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -187,8 +187,8 @@ This is ido-grid, not ido-grid-mode, a different one."
 (defun pel--activate-ido-grid-mode (start-collapsed)
   "Activate ido-grid-mode in state identified by START-COLLAPSED."
   (if (and pel-use-ido-grid-mode
-           (require 'ido nil :no-error)
-           (require 'ido-grid-mode nil :no-error)
+           (require 'ido nil :noerror)
+           (require 'ido-grid-mode nil :noerror)
            (featurep 'ido-grid-mode)
            (fboundp 'ido-grid-mode))
       (let ((ido-grid-mode-start-collapsed start-collapsed))
@@ -199,8 +199,8 @@ This is ido-grid, not ido-grid-mode, a different one."
   "Activate ido-grid.
 Note that ido-grid is a different package than ido-grid-mode."
   (if (and pel-use-ido-grid
-           (require 'ido nil :no-error)
-           (require 'ido-grid nil :no-error)
+           (require 'ido nil :noerror)
+           (require 'ido-grid nil :noerror)
            (featurep 'ido-grid)
            (fboundp 'ido-grid-enable))
       (ido-grid-enable)
@@ -209,8 +209,8 @@ Note that ido-grid is a different package than ido-grid-mode."
 (defun pel--activate-ido-vertical ()
   "Activate the ido-vertical mode."
   (if (and pel-use-ido-vertical-mode
-           (require 'ido nil :no-error)
-           (require 'ido-vertical-mode nil :no-error)
+           (require 'ido nil :noerror)
+           (require 'ido-vertical-mode nil :noerror)
            (featurep 'ido-vertical-mode)
            (fboundp 'ido-vertical-mode))
       (ido-vertical-mode 1)
@@ -224,7 +224,7 @@ State can be one of:
 - \\='grid-expanded
 - \\='ido-grid
 - \\='vertical"
-  (if (require 'ido nil :no-error)
+  (if (require 'ido nil :noerror)
       (progn
         ;; 1- turn off any ido extension geometry and re-establish basic
         ;; ido-mode.
@@ -318,7 +318,7 @@ Return t when it is activated, nil otherwise.
 Constraint: Ido must be active when this is called to activate flx-ido."
   (if activate
       ;; activating flx-ido
-      (if (and (require 'flx-ido nil :no-error)
+      (if (and (require 'flx-ido nil :noerror)
                (featurep 'flx-ido)
                (boundp   'flx-ido-mode)
                (fboundp  'flx-ido-mode)
@@ -411,7 +411,7 @@ list `pel--ido-ubiquitous-whitelist'."
 Constraint:
 - Ido must be active when this is called to activate ido-ubiquitous."
   (if activate
-      (if (and (require 'ido-completing-read+ nil :no-error)
+      (if (and (require 'ido-completing-read+ nil :noerror)
                (boundp  'ido-ubiquitous-mode)
                (fboundp 'ido-ubiquitous-mode))
           (when (not ido-ubiquitous-mode)

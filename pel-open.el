@@ -1,6 +1,6 @@
 ;;; pel-open.el --- Open file dispatcher  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2022, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2022, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -57,7 +57,7 @@ Can be one of the following:
 It can also be a `pel-open-file-at-point-dir'."
   (cond
    ((not value)
-    (if (buffer-file-name)
+    (if buffer-file-truename
         (format
          "use file's parent directory: %s"
          (file-name-directory (pel-current-buffer-filename)))
@@ -99,10 +99,16 @@ name is built. Select one of the following methods:
 ;;-pel-autoload
 (defun pel-open-at-point (&optional n noerror)
   "Open the file or mode-specific reference at point.
+
 If there is no target issue a `user-error' unless NOERROR is non-nil.
-In that case just return nil.
-Optionally identify a window to open a file reference with the argument N.
-See `pel-find-file-at-point-in-window' for more information."
+In that case just return nil.  Optionally identify a window to open a
+file reference with the argument N.
+
+See `pel-find-file-at-point-in-window' for more information.  The
+command is specialized in some major modes: AWK, C and C++.  For those
+modes the `pel-cc-find-activate-finder-method' function can be used to
+identify a specialized file finder stored in
+`pel-filename-at-point-finders' and a list of project roots."
   (interactive "P")
   ;; It's possible the file visited by the current buffer is located in a
   ;; directory that is not the current directory; the user might have
@@ -120,7 +126,7 @@ See `pel-find-file-at-point-in-window' for more information."
            ;; file, then set the working directory to the file's parent
            ;; directory
            ((and (not pel--open-file-at-point-dir)
-                 (buffer-file-name))
+                 buffer-file-truename)
             (cd (file-name-directory (pel-current-buffer-filename))))
            ;; if a directory is forced by name and it exists, use it
            ((and (stringp pel--open-file-at-point-dir)
@@ -155,12 +161,12 @@ See `pel-find-file-at-point-in-window' for more information."
   "Open the URL at point in a local buffer.
 Copy the content of the URL into a temporary file, then open that file."
   (interactive)
-  (if (and (require 'pel-file nil :no-error)
+  (if (and (require 'pel-file nil :noerror)
            (fboundp 'pel-filename-parts-at-point))
       (let* ((type.url (pel-filename-parts-at-point))
              (url      (cdr type.url)))
         (if url
-            (if (and (require 'url-handlers nil :no-error)
+            (if (and (require 'url-handlers nil :noerror)
                      (fboundp 'url-copy-file))
                 (let ((filename (make-temp-file "pel-open-url")))
                   (url-copy-file url filename :ok-if-already-exists)
@@ -179,7 +185,7 @@ Copy the content of the URL into a temporary file, then open that file."
 - File encoding                             : %s
 - pel-open-at-point relative path resolution: %s
 - ido-use-filename-at-point                 : %s, ido-use-url-at-point : %s"
-           (or  (pel-current-buffer-filename nil nil :no-error)
+           (or  (pel-current-buffer-filename nil nil :noerror)
                 (format "buffer %s" (current-buffer)))
            buffer-file-coding-system
            (pel--open-file-at-point-dir-string-for
