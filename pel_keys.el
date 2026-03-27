@@ -11129,7 +11129,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (defun pel--load-pel-etags ()
   "Load pel-etags once."
   (unless (featurep 'pel-etags)
-    (load "pel-etags" :no-error)))
+    (load "pel-etags" :noerror)))
 
 (unless pel-emacs-30-or-later-p
   ;; The bug fix was incorporated in Emacs 30 stream

@@ -404,7 +404,7 @@ speedbar, otherwise don't move it."
                 (cond
                  ((string= speedbar-initial-expansion-list-name "files")
                   (let ((fname (pel-current-buffer-filename
-                                :sans-directory nil :no-error)))
+                                :sans-directory nil :noerror)))
                     (if fname
                         (pel--speedbar-focus-on fname sp-win original-window)
                       (user-error "Current buffer %s is not visiting a file"

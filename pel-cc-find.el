@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 22:01:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:52:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -298,7 +298,7 @@ The string has 2 lines;
 The user option has the \"pel-X-Y\" format
 where X is the major mode name and Y is the varname-suffix.
 
-The buffer local variable option has the \"pel---X-Y\" format
+The buffer local variable option has the \"pel--X-Y\" format
 where X is the major mode name and Y is the varname-suffix."
   (let ((uopt-varname-format      (format "pel-%%s-%s" varname-suffix))
         (bufl-varname-format (format "pel--%%s-%s" varname-suffix)))

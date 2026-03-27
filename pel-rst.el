@@ -615,7 +615,7 @@ This bookmark identifies the location for the next reStructuredText reference."
   ;; may have a bookmark for the edited reStructuredText file.
   ;; If it was loaded don't load it again as this would create duplicates.
   (unless pel--bookmark-file-loaded-p
-    (when (and (require 'bookmark nil :no-error)
+    (when (and (require 'bookmark nil :noerror)
                (boundp 'bookmark-default-file)
                (fboundp 'bookmark-load)
                (fboundp 'bookmark-all-names))

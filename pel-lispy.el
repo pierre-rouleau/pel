@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 14 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-12 14:32:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:55:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -96,7 +96,7 @@ Return t when lispy is loaded, nil otherwise"
 
   ;; Now ensure lispy is installed and loaded.
   (pel-ensure-package-elpa lispy from: melpa)
-  (require 'lispy nil :no-error))
+  (require 'lispy nil :noerror))
 
 (defun pel-set-lispy-mode-to (new-value)
   "Activate Lispy and any extra language support if needed.
@@ -115,7 +115,7 @@ NEW-VALUE is either 1, to activate or -1, to de-activate"
                                       julia-mode
                                       hy-mode)))
           (let ((mode-name (substring (symbol-name major-mode) 0 -5)))
-            (require (intern (format "le-%s" mode-name)) nil :no-error))))
+            (require (intern (format "le-%s" mode-name)) nil :noerror))))
     (error "lispy-mode is not loaded!")))
 
 (defun pel-lispy-mode ()
@@ -157,7 +157,7 @@ Return t when lpy is loaded, nil otherwise"
   (when (pel--get-hydra-and-lispy)
     ;; ensure that the lpy package is installed and loaded
     (pel-ensure-package-elpa lpy from: melpa)
-    (require 'lpy nil :no-error)))
+    (require 'lpy nil :noerror)))
 
 (defun pel-lpy-mode ()
   "Activate or toggle lpy mode.

@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 10:16:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:55:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -773,7 +773,7 @@ Don't install it if already installed or PEL in fast startup."
   "Require specified FEATURE when loading only, not when compiling.
 FEATURE must be a quoted symbol.
 This is normally used by the macro `pel-require-at-load'."
-  (unless (require feature nil :no-error)
+  (unless (require feature nil :noerror)
     (display-warning 'pel-require-at-load
                      (format "Failed loading %s" feature)
                      :error)))
@@ -793,7 +793,7 @@ FEATURE must be a quoted symbol.
 This is normally used by the macro `pel-require-after-init'."
   (run-with-idle-timer secs nil
                        (function require)
-                       feature nil :no-error))
+                       feature nil :noerror))
 
 (defmacro pel-require-after-init (feature secs)
   "Require specified FEATURE some SECS after initializing Emacs.

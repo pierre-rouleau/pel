@@ -336,7 +336,7 @@ Return (filename . action), where:
 - action is: \\='create | \\='edit | reason-for-nil-filename
 
 nil if user gave up, otherwise return the file name to open."
-  (if (and (require 'pel-prompt nil :no-error)
+  (if (and (require 'pel-prompt nil :noerror)
            (fboundp 'pel-y-n-e-or-l-p))
       (let ((action
              (pel-y-n-e-or-l-p

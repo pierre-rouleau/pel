@@ -161,12 +161,12 @@ identify a specialized file finder stored in
   "Open the URL at point in a local buffer.
 Copy the content of the URL into a temporary file, then open that file."
   (interactive)
-  (if (and (require 'pel-file nil :no-error)
+  (if (and (require 'pel-file nil :noerror)
            (fboundp 'pel-filename-parts-at-point))
       (let* ((type.url (pel-filename-parts-at-point))
              (url      (cdr type.url)))
         (if url
-            (if (and (require 'url-handlers nil :no-error)
+            (if (and (require 'url-handlers nil :noerror)
                      (fboundp 'url-copy-file))
                 (let ((filename (make-temp-file "pel-open-url")))
                   (url-copy-file url filename :ok-if-already-exists)
@@ -185,7 +185,7 @@ Copy the content of the URL into a temporary file, then open that file."
 - File encoding                             : %s
 - pel-open-at-point relative path resolution: %s
 - ido-use-filename-at-point                 : %s, ido-use-url-at-point : %s"
-           (or  (pel-current-buffer-filename nil nil :no-error)
+           (or  (pel-current-buffer-filename nil nil :noerror)
                 (format "buffer %s" (current-buffer)))
            buffer-file-coding-system
            (pel--open-file-at-point-dir-string-for

@@ -2,12 +2,12 @@
 
 ;; Created   : Wednesday, May  5 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-05 16:01:01, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:55:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -42,8 +42,8 @@
 Start the inferior LFE process if it's not already running.
 Switch to the LFE buffer afterwards when AND-GO argument is non-nil."
   (interactive "P")
-  (if (and (require 'inferior-lfe nil :no-error)
-           (require 'lfe-mode     nil :no-error)
+  (if (and (require 'inferior-lfe nil :noerror)
+           (require 'lfe-mode     nil :noerror)
            (fboundp 'lfe-mode)
            (fboundp 'lfe-eval-region)
            (fboundp 'inferior-lfe))

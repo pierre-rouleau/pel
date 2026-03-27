@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 14:36:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:55:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -119,7 +119,7 @@ FOR-GRAPHICS is:
   dual environment where graphic mode has a specific custom file,
 - nil when Emacs runs in terminal/TTY mode or in graphics mode without dual
   environment set."
-  (if (and (require 'package nil :no-error)
+  (if (and (require 'package nil :noerror)
            (fboundp 'package-quickstart-refresh)
            (boundp 'package-quickstart-file))
       (let* ((package-user-dir        (pel-elpa-name dirpath for-graphics))
@@ -214,7 +214,7 @@ Available for Emacs 27 and later only."
 ;; --
 (defun pel--remove-package-quickstart-files (for-graphics)
   "Remove package quickstart file identified by the FOR-GRAPHICS argument."
-  (if (and (require 'package nil :no-error)
+  (if (and (require 'package nil :noerror)
            (boundp 'package-quickstart-file))
       (let ((fname (pel-elpa-name package-quickstart-file
                                         for-graphics)))

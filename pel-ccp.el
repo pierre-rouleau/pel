@@ -783,7 +783,7 @@ the filtering and `kill-ring' appending capabilities."
           (progn
             ;; lazy load delsel because it's the only used here.
             ;; delsel is part of standard Emacs distribution.
-            (require 'delsel nil :no-error)
+            (require 'delsel nil :noerror)
             (if (fboundp 'delete-active-region)
                 ;; when n>0, kill region otherwise delete it
                 (delete-active-region (> n 0))))
@@ -879,7 +879,7 @@ All copy operations are performed by `kill-ring-save'."
 
 Repeat N times if specified.  With negative numeric argument delete backwards."
   (interactive "*P")
-  (if (and (require 'pel-navigate nil :no-error)
+  (if (and (require 'pel-navigate nil :noerror)
            (fboundp 'pel-next-visible))
       (progn
         (set-mark-command nil)

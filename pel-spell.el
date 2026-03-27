@@ -131,7 +131,7 @@
   ;; It might not be present on user's system: allow compilation anyhow to
   ;; provide ability to activate lazily.
   ;; from popup: use: popup-menu*
-  (require 'popup nil :no-error))
+  (require 'popup nil :noerror))
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -229,7 +229,7 @@ to allow the flyspell pop-up menu to work in terminal mode."
     (declare-function popup-menu* "popup")
     (defun pel-spell-flyspell-emacs-popup-textual (_event poss _word)
       "A textual flyspell popup menu."
-      (require 'popup nil :no-error)
+      (require 'popup nil :noerror)
       (require 'flyspell)
       (let* ((corrects (if flyspell-sort-corrections
                            (sort (car (cdr (cdr poss))) #'string<)

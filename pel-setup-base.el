@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-12 09:26:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:55:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -207,7 +207,7 @@ Raise error describing the problem if there is one."
 
 (defun pel-with-package-quickstart-p ()
   "Return t when package quickstart is currently used, nil otherwise."
-  (and (require 'package nil :no-error)
+  (and (require 'package nil :noerror)
        (boundp 'package-quickstart)
        package-quickstart
        (file-exists-p (locate-user-emacs-file "early-init.el"))

@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, February  5 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-23 12:36:46, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 22:55:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@
 (defun pel-goto-next-url ()
   "Move point to the end of next URL in buffer."
   (interactive)
-  (if (and (require 'goto-addr nil :no-error)
+  (if (and (require 'goto-addr nil :noerror)
            (boundp  'goto-address-url-regexp)
            (boundp  'goto-address-mode)
            (fboundp 'goto-address-mode))
@@ -57,7 +57,7 @@
 (defun pel-goto-previous-url ()
   "Move point to the beginning of previous URL in buffer."
   (interactive)
-  (if (and (require 'goto-addr nil :no-error)
+  (if (and (require 'goto-addr nil :noerror)
            (boundp  'goto-address-url-regexp)
            (boundp  'goto-address-mode)
            (fboundp 'goto-address-mode))
