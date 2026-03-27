@@ -2176,7 +2176,9 @@ This is only available on Emacs 29.1 and later."
   :type 'boolean
   :safe #'booleanp)
 (pel-put pel-use-ini :package-is :in-utils)
-(pel-put pel-use-ini :also-required-when '(or (eq pel-c-file-finder-method
+(pel-put pel-use-ini :also-required-when '(or (eq pel-awk-file-finder-method
+                                                  (quote pel-ini-file))
+                                              (eq pel-c-file-finder-method
                                                   (quote pel-ini-file))
                                               (eq pel-c++-file-finder-method
                                                   (quote pel-ini-file))))
@@ -13766,6 +13768,8 @@ CAUTION: This package needs major tuning!  It takes forever searching for a
 The function `pel-ffind-project-directory' walks up the directory
 tree from the current buffer's `default-directory', searching for
 any of these anchor files/directories using `locate-dominating-file'.
+This list is the default/base set; callers can augment it via
+the optional PROJECT-ROOT-IDENTIFIERS argument.
 
 Unless it finds a restrictive anchor identified by
 `pel-project-restricted-root-identifiers', the search continues and if
@@ -15745,9 +15749,9 @@ PEL uses my fork of this project."
   (edts                (setq pel-use-edts 'start-automatically))
   (erlang-ls           (setq pel-use-erlang-ls t)))
 
-(when (eq pel-c-file-finder-method 'pel-ini-file)
-  (setq pel-use-ini t))
-(when (eq pel-c++-file-finder-method 'pel-ini-file)
+(when (or (eq pel-awk-file-finder-method 'pel-ini-file)
+          (eq pel-c-file-finder-method 'pel-ini-file)
+          (eq pel-c++-file-finder-method 'pel-ini-file))
   (setq pel-use-ini t))
 
 (when (eq pel-prompt-read-method 'ivy)

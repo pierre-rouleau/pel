@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 27 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-27 15:28:02 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-27 15:57:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,7 +64,6 @@
 
 (ert-deftest pel-ffind-project-directory/stops-at-restricted-anchor ()
   "Stops at the nearest restricted anchor if present."
-  (ert-skip "Temporarily skip failing test")
   (let* ((root (make-temp-file "pel-ffind-t-" t))
          (a-dir (expand-file-name "proj/a" root))
          (deep (expand-file-name "proj/a/deep/x" root))
@@ -89,8 +88,8 @@
         (progn
           (make-directory default-directory t)
           (should (equal (pel-ffind-project-directory) nil))
-          ;; Sanity: pel-generic-find-file should gracefully fall back.
-          (should (listp (ignore-errors (pel-generic-find-file "no-such-file")))))
+          ;; If this signals an error, the test fails automatically.
+          (should (null (pel-generic-find-file "no-such-file"))))
       (delete-directory root t))))
 
 ;;; --------------------------------------------------------------------------

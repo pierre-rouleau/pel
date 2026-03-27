@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-27 14:45:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-27 15:39:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -178,6 +178,11 @@ nil otherwise."
         (found-dir nil))
     ;; make a list of all project root identifiers
     (dolist (fname project-root-identifiers)
+      (unless (member fname identifiers)
+        (push fname identifiers)))
+    ;; also search for restricted root identifiers so they can be found and
+    ;; trigger the stop.
+    (dolist (fname pel-project-restricted-root-identifiers)
       (unless (member fname identifiers)
         (push fname identifiers)))
     ;; search project root from current directory up looking for a
