@@ -6571,18 +6571,14 @@ The 4 search methods are:
      the outermost (shortest path) directory is selected.  This broadens
      the file search scope when nested projects exist while still allowing
      a restricted project scope for some projects.
-
-   - When multiple anchor files are found at different levels, the
-     outermost (shortest path) project root is used, broadening the file
-     search scope.
    - If nothing is found, the code searches the `default-directory'.
 
    For some language, such as Erlang, another variable (such as
-   `pel-erlang-extra-directories') cab be built by language specific logic
+   `pel-erlang-extra-directories') can be built by language specific logic
    and provided as an extra argument to the `pel-ffind-project-directory').
    This is not done for C.
 
-   Directory tree are searched with the file finder tool identified by
+   Directory trees are searched with the file finder tool identified by
    `pel-ffind-executable'.
 
 2: Use the [file-finder] section of pel.ini file:
@@ -6605,7 +6601,7 @@ The 4 search methods are:
     - the file type
     - the suffix string \"-path\"
 
-    Something like \"IAR-c-path\", \"gcc-c-path\", \"vs-c++-path\", etc...
+    Something like \"IAR-c-path\", \"gcc-c-path\", \"vs-c-path\", etc...
 
     These keys identify a set of directories that contain header files that
     are specific to the specified tool chain for the specific programming
@@ -6643,8 +6639,11 @@ The 4 search methods are:
   the directories to search.
 
   This method searches the directories identified by the environment
-  variables, not their sub-directories.  It also searches the directory tree
-  identified by  `pel-c-file-searched-extra-dir-trees'.
+  variables, not their sub-directories.
+
+  In addition, any directories in ‘pel-c-file-searched-extra-dir-trees’
+  are also searched recursively using the tool selected by
+  ‘pel-ffind-executable’.
 
   Use this method when your OS environment set up environment variables
   that inform the C compiler where header files are located.
@@ -6656,8 +6655,11 @@ The 4 search methods are:
   - the second list identifies the compiler and libraries directories
     holding header files.
 
-  The only directories searched by this method are the directories
-  identified, their sub-directories are not searched.
+  The directories listed for this method are searched non-recursively
+  (no sub-directory traversal).
+  In addition, any directories in ‘pel-c-file-searched-extra-dir-trees’
+  are also searched recursively using the tool selected by
+  ‘pel-ffind-executable’.
 
   The directory path name strings in each list can refer to environment
   variables using the $VARNAME syntax.

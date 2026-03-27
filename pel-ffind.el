@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-27 11:27:50 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-27 14:45:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -121,8 +121,8 @@ whether the VCS is told to ignore them or not."
         cmd)))))
 
 ;;-pel-autoload
-(defun pel-ffind (filename &optional directories)
-  "Search for FILENAME in current or specified DIRECTORIES trees.
+(defun pel-ffind (fname &optional directories)
+  "Search for FNAME in current or specified DIRECTORIES trees.
 
 The function searches in the directory trees identified by:
 
@@ -140,18 +140,18 @@ whether the VCS is told to ignore them or not."
   (let ((found-files
          (split-string
           (string-trim
-           (shell-command-to-string (pel-ffind-command filename
-                                                       directories))))))
-    ;; When filename has a directory portion it is ignored in the search
+           (shell-command-to-string (pel-ffind-command fname directories)))
+          "\n" t)))
+    ;; When fname has a directory portion it is ignored in the search
     ;; command created by pel-ffind-command otherwise the find or fd search
     ;; fails.  The result might include files that are not inside the
     ;; specified  directory then.  Remove these files from the result.
     (when (and found-files
-               (file-name-directory filename))
-      (let ((dir-portion (file-name-directory filename)))
+               (file-name-directory fname))
+      (let ((dir-portion (file-name-directory fname)))
         (setq found-files
-              (seq-filter (lambda (fname)
-                            (string-match dir-portion fname))
+              (seq-filter (lambda (fn)
+                            (string-match dir-portion fn))
                           found-files))))
     found-files))
 
@@ -188,11 +188,11 @@ nil otherwise."
     ;; prompted.
     ;;
     (catch 'pel-ffind--break
-      (dolist (fname identifiers)
-        (setq found-dir (locate-dominating-file default-directory fname))
+      (dolist (anchor-fname identifiers)
+        (setq found-dir (locate-dominating-file default-directory anchor-fname))
         (when found-dir
           ;; stop on any restricted root anchor
-          (when (member found-dir pel-project-restricted-root-identifiers)
+          (when (member anchor-fname pel-project-restricted-root-identifiers)
             (setq directory found-dir)
             (throw 'pel-ffind--break nil))
           (if directory
