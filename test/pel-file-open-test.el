@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 23:04:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 23:21:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,7 +45,7 @@
 
 (defmacro pel-file-test/with-point-on-string (str &rest body)
   "Execute BODY in a temp buffer with STR inserted and point at start."
-  (declare (indent 1))
+  (declare (indent 2))
   `(with-temp-buffer
      (insert ,str)
      (goto-char (point-min))
@@ -54,71 +54,72 @@
 (ert-deftest pel-file-test/parts-simple-filename ()
   "A plain filename returns (fname filename nil nil)."
   (pel-file-test/with-point-on-string "foo.c"
-    (let ((parts (pel-filename-parts-at-point)))
-      (should parts)
-      (should (eq (nth 0 parts) 'fname))
-      (should (string= (nth 1 parts) "foo.c"))
-      (should (null (nth 2 parts)))   ; no line
-      (should (null (nth 3 parts)))))) ; no column
+      (let ((parts (pel-filename-parts-at-point)))
+        (should parts)
+        (should (eq (nth 0 parts) 'fname))
+        (should (string= (nth 1 parts) "foo.c"))
+        (should (null (nth 2 parts)))   ; no line
+        (should (null (nth 3 parts)))))) ; no column
 
 (ert-deftest pel-file-test/parts-filename-with-line ()
   "A filename:line string returns correct line number."
   (pel-file-test/with-point-on-string "foo.c:42"
-    (let ((parts (pel-filename-parts-at-point)))
-      (should parts)
-      (should (eq (nth 0 parts) 'fname))
-      (should (string= (nth 1 parts) "foo.c"))
-      (should (equal (nth 2 parts) 42)))))
+      (let ((parts (pel-filename-parts-at-point)))
+        (should parts)
+        (should (eq (nth 0 parts) 'fname))
+        (should (string= (nth 1 parts) "foo.c"))
+        (should (equal (nth 2 parts) 42)))))
 
 (ert-deftest pel-file-test/parts-filename-with-line-and-column ()
   "A filename:line:column string returns correct line and column."
   (pel-file-test/with-point-on-string "src/bar.h:10:5"
-    (let ((parts (pel-filename-parts-at-point)))
-      (should parts)
-      (should (string-match-p "bar\\.h" (nth 1 parts)))
-      (should (equal (nth 2 parts) 10))
-      (should (equal (nth 3 parts) 5)))))
+      (let ((parts (pel-filename-parts-at-point)))
+        (should parts)
+        (should (string-match-p "bar\\.h" (nth 1 parts)))
+        (should (equal (nth 2 parts) 10))
+        (should (equal (nth 3 parts) 5)))))
 
 (ert-deftest pel-file-test/parts-line-zero-becomes-one ()
   "A line number of 0 is coerced to 1."
   (pel-file-test/with-point-on-string "foo.c:0"
-    (let ((parts (pel-filename-parts-at-point)))
-      (should (equal (nth 2 parts) 1)))))
+      (let ((parts (pel-filename-parts-at-point)))
+        (should parts)
+        (should (equal (nth 2 parts) 1)))))
 
 (ert-deftest pel-file-test/parts-http-url ()
   "An http URL returns a (http . url) cons."
   (pel-file-test/with-point-on-string "https://example.com/page"
-    (let ((parts (pel-filename-parts-at-point)))
-      (should (consp parts))
-      (should (eq (car parts) 'http))
-      (should (string= (cdr parts) "https://example.com/page")))))
+      (let ((parts (pel-filename-parts-at-point)))
+        (should (consp parts))
+        (should (eq (car parts) 'http))
+        (should (string= (cdr parts) "https://example.com/page")))))
 
 (ert-deftest pel-file-test/parts-http-url-with-http-scheme ()
   "An http:// URL returns a (http . url) cons."
   (pel-file-test/with-point-on-string "http://example.com/foo"
-    (let ((parts (pel-filename-parts-at-point)))
-      (should (consp parts))
-      (should (eq (car parts) 'http)))))
+      (let ((parts (pel-filename-parts-at-point)))
+        (should (consp parts))
+        (should (eq (car parts) 'http)))))
 
 (ert-deftest pel-file-test/parts-file-uri-stripped ()
   "A file:// URI prefix is stripped unless keep-file-url is set."
   (pel-file-test/with-point-on-string "file:///usr/include/stdio.h"
-    (let ((parts (pel-filename-parts-at-point nil)))
-      ;; After stripping file:// the result should be a normal filename
-      (should parts)
-      (should (not (eq (car parts) 'http)))
-      ;; Verify the path was correctly extracted
-      (should (eq (nth 0 parts) 'fname))
-      (should (string= (nth 1 parts) "/usr/include/stdio.h")))))
+      (let ((parts (pel-filename-parts-at-point nil)))
+        ;; After stripping file:// the result should be a normal filename
+        (should parts)
+        (should (not (eq (car parts) 'http)))
+        ;; Verify the path was correctly extracted
+        (should (eq (nth 0 parts) 'fname))
+        (should (string= (nth 1 parts) "/usr/include/stdio.h")))))
 
 (ert-deftest pel-file-test/parts-windows-drive-letter ()
   "A Windows-style path returns fname-w-ddrv type."
   ;; pel-filename-parts-at-point supports Windows-style filename
   ;; on all platforms.
   (pel-file-test/with-point-on-string "C:\\Users\\foo\\bar.txt"
-    (let ((parts (pel-filename-parts-at-point)))
-      (should parts)
-      (should (eq (nth 0 parts) 'fname-w-ddrv)))))
+      (let ((parts (pel-filename-parts-at-point)))
+        (should parts)
+        (should (eq (nth 0 parts) 'fname-w-ddrv)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Tests for `pel--find-by-finders'

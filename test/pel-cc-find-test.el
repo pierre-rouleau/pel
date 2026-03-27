@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 22:37:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-26 23:17:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,6 +36,7 @@
 
 (require 'pel-cc-find)
 (require 'ert)
+(require 'seq)             ; use `seq-remove'
 
 ;;; --------------------------------------------------------------------------
 ;;; Tests for `pel-envar-in-string'
@@ -96,6 +97,17 @@
   (should-error
    (pel-substitute-in-file-name "$DEFINITELY_NOT_SET_VAR_XYZ/path")
    :type 'user-error))
+
+(ert-deftest pel-cc-find-test/substitute-in-file-name/unknown-var-2 ()
+  "Signal a user-error when an unknown env variable is referenced."
+  ;; Same as above but purge the variable from the environment.
+  (let ((process-environment
+         (seq-remove (lambda (e)
+                       (string-prefix-p "DEFINITELY_NOT_SET_VAR_XYZ=" e))
+                     process-environment)))
+    (should-error
+     (pel-substitute-in-file-name "$DEFINITELY_NOT_SET_VAR_XYZ/path")
+     :type 'user-error)))
 
 (ert-deftest pel-cc-find-test/substitute-in-file-name/mixed-known-unknown ()
   "Signal user-error even if one var is known and another is not."
