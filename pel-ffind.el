@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 16:02:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-27 11:27:50 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -160,9 +160,16 @@ whether the VCS is told to ignore them or not."
 (defun pel-ffind-project-directory (&optional project-root-identifiers)
   "Find and return the project root directory of file in current buffer.
 
-Search project root directory using the identifier files specified in the
+Search project root directory using the anchor files specified in the
 `pel-project-root-identifiers' user-option and the ones in
 PROJECT-ROOT-IDENTIFIERS list if specified.
+
+Unless it finds a restrictive anchor identified by
+`pel-project-restricted-root-identifiers', the search continues and if
+multiple anchors are found at different tree levels, the
+outermost (shortest path) directory is selected.  This broadens the file
+search scope when nested projects exist while still allowing a
+restricted project scope for some projects.
 
 Return a directory name expanded and without trailing slash if found,
 nil otherwise."
@@ -174,18 +181,24 @@ nil otherwise."
       (unless (member fname identifiers)
         (push fname identifiers)))
     ;; search project root from current directory up looking for a
-    ;; project root identifier file.  Retain the shortest directory path found
+    ;; project root identifier file.  Stops at any restricted anchor if it
+    ;; finds one. Otherwise retain the shortest directory path found
     ;; to allow nested projects and keep the more encompassing one, broadening
     ;; the file search: anyway if more than 1 file found the user will be
     ;; prompted.
     ;;
-    (dolist (fname identifiers)
-      (setq found-dir (locate-dominating-file default-directory fname))
-      (when found-dir
-        (if directory
-            (when (< (length found-dir) (length directory))
-              (setq directory found-dir))
-          (setq directory found-dir))))
+    (catch 'pel-ffind--break
+      (dolist (fname identifiers)
+        (setq found-dir (locate-dominating-file default-directory fname))
+        (when found-dir
+          ;; stop on any restricted root anchor
+          (when (member found-dir pel-project-restricted-root-identifiers)
+            (setq directory found-dir)
+            (throw 'pel-ffind--break nil))
+          (if directory
+              (when (< (length found-dir) (length directory))
+                (setq directory found-dir))
+            (setq directory found-dir)))))
     ;; Return a directory name expanded and without trailing slash.
     (when directory
       (expand-file-name (directory-file-name directory)))))
