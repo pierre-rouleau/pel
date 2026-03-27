@@ -2415,8 +2415,9 @@ Select one of:
   -  {FNAME}    : the base name of the file.
   -  {DIRNAMES} : a space separated list of directory names to search.
 
-  When this is selected an example sis placed in the input field."
+  When this is selected an example is placed in the input field."
   :group 'pel-pkg-for-filemng
+  :group 'pel-file-finding
   :group 'pel-pkg-for-c++
   :group 'pel-pkg-for-c
   :type '(choice
@@ -6541,7 +6542,7 @@ via the ``<f12> <f4> d c`` sequence."
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defcustom pel-c-file-searched-extra-dir-trees nil
-  "List of directory trees also searched by the C header file search.
+  "List of extra directory trees recursively searched by the C header file search.
 
 This complements the header search method identified by the
 `pel-c-file-finder-method' user-option."

@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-27 15:39:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-27 18:01:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -48,6 +48,7 @@
 (require 'pel--base)                    ; use: `pel-system-is-macos-p'
 (require 'pel--options)                 ; use: `pel-ffind-executable'
 (eval-when-compile (require 'subr-x))   ; use: `string-join', `string-trim'
+(require 'seq)                          ; use: `seq-filter'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -95,7 +96,7 @@ whether the VCS is told to ignore them or not."
                   (setq pel--ffind-find-path (executable-find "find")))
         (user-error "pel-ffind-executable is find, but can't find it!"))
       ;; on macOS find requires the -s option to sort.
-      ;; That option is not supported ;; on Linux
+      ;; That option is not supported on Linux
       (let ((sort-option (if pel-system-is-macos-p "-s" "")))
         (format "%s %s %s -name '%s' -type f"
                 pel--ffind-find-path
@@ -151,7 +152,7 @@ whether the VCS is told to ignore them or not."
       (let ((dir-portion (file-name-directory fname)))
         (setq found-files
               (seq-filter (lambda (fn)
-                            (string-match dir-portion fn))
+                            (string-match-p (regexp-quote dir-portion) fn))
                           found-files))))
     found-files))
 
