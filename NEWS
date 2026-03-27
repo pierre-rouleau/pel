@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add a new user-option: *pel-project-restricted-root-identifiers*.  This restricts upward directory search by *pel-ffind-project-directory*
+  to allow creation of projects embedded inside directory trees while allowing a search that is either restricted inside
+  the sub-project or allowed to search from the entire tree as before.
 - The *pel-open-at-point* now support the GNU awk =@include= directive: PEL support AWK for searching included files the way
   it already did for C and C++.  AWK support of *pel-cc-find-show-status* (bound to ~<f12> <f4> f~).
 - Improve *pel-cc-mode-info*: shows useful key bindings related to RET mode and hungry delete commands and
