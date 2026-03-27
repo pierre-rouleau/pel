@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 27 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-27 15:57:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-27 16:09:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -93,6 +93,6 @@
       (delete-directory root t))))
 
 ;;; --------------------------------------------------------------------------
-(provide 'pel-ffind-project-directoryt-test)
+(provide 'pel-ffind-project-directory-test)
 
 ;;; pel-ffind-project-directory-test.el ends here

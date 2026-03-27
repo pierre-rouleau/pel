@@ -104,11 +104,17 @@ If there is no target issue a `user-error' unless NOERROR is non-nil.
 In that case just return nil.  Optionally identify a window to open a
 file reference with the argument N.
 
-See `pel-find-file-at-point-in-window' for more information.  The
-command is specialized in some major modes: AWK, C and C++.  For those
-modes the `pel-cc-find-activate-finder-method' function can be used to
-identify a specialized file finder stored in
-`pel-filename-at-point-finders' and a list of project roots."
+See `pel-find-file-at-point-in-window' for more information.
+
+Also see `pel-open-file-at-point-dir', used by the function when not
+using language specialized features.  When used in a buffer that
+supports programming language specialization (the command is specialized
+in some major modes: AWK, C and C++), it perform extra file searching
+logic by using the `pel-cc-find-activate-finder-method' function.  A
+buffer holds a finder stored in pel-filename-at-point-finders' and a
+list of project roots.  The user options controlling this are part of
+the `pel-file-finding' customization group."
+
   (interactive "P")
   ;; It's possible the file visited by the current buffer is located in a
   ;; directory that is not the current directory; the user might have

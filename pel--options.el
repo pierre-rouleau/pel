@@ -2282,6 +2282,10 @@ A Major mode."
 
 (defcustom pel-open-file-at-point-dir  nil
   "Root directory from where `pel-open-file-at-point' opens file.
+
+This is used by `pel-open-at-point' standard mode of operation, as opposed to
+the programming language specific operations.
+
 This user-option acts as the default for a buffer.  You can change
 the buffer\\='s local value with `pel-set-open-file-at-point-dir'
 Can be one of the following:
@@ -2291,6 +2295,7 @@ Can be one of the following:
 - \\='cwd    : use buffer\\='s current working directory
 - a string: the name of a specific directory."
   :group 'pel-pkg-for-filemng
+  :group 'pel-file-finding
   :type '(choice
           (const :tag "Use visited file's parent directory"  nil)
           (const :tag "Use buffer's current working directory" cwd)
