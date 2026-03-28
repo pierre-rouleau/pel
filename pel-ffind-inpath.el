@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 15:52:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 16:06:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -56,8 +56,8 @@
 (defun pel-ffind-inpath (filename paths)
   "Find FILENAME from the directories identified in PATHS.
 
-FILENAME must be a string that represent a file name.  The
-filename must not have a absolute paths but may have a partial
+FILENAME must be a string that represents a file name.  The
+filename must not have an absolute path but may have a partial
 relative path.
 
 PATHS is either a directory name string or a list of directories; those
@@ -79,7 +79,7 @@ found file and `pel-ffind-inpath' returns all files found."
         (push fname found-fnames)))))
 
 (defun pel-ffind-inpath-include (filename &optional include-env-var)
-  "Find file FILENAME in the directories identified by environment variable.
+  "Find file FILENAME in the directories identified by a environment variable.
 
 The function searches in the directories identified by the INCLUDE
 environment variable unless another environment variable is

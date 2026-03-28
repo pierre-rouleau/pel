@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, March 28 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 15:58:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 16:09:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -300,6 +300,23 @@ before the path list is passed to `pel-ffind-inpath'."
       (pel-ffind-inpath-test--with-env "INCLUDE" env
         (should (equal (pel-ffind-inpath-include "header.h")
                        (list f)))))))
+
+(ert-deftest pel-ffind-inpath-include/env-var-paths-with-whitespace-trimmed ()
+  "Directories with surrounding whitespace in INCLUDE are still matched correctly."
+  (pel-ffind-inpath-test--with-temp-dir tmpdir
+    (let ((f (expand-file-name "trim.h" tmpdir)))
+      (pel-ffind-inpath-test--touch f)
+      ;; Surround the directory with spaces to exercise the trim-chars argument.
+      (pel-ffind-inpath-test--with-env "INCLUDE" (concat " " tmpdir " ")
+        (should (equal (pel-ffind-inpath-include "trim.h")
+                       (list f)))))))
+
+(ert-deftest pel-ffind-inpath-include/only-separators-signals-user-error ()
+  "An INCLUDE value consisting entirely of path-separators yields no paths
+and must signal `user-error', not silently return nil."
+  (let ((only-seps (make-string 3 (string-to-char path-separator))))
+    (pel-ffind-inpath-test--with-env "INCLUDE" only-seps
+      (should-error (pel-ffind-inpath-include "any.h") :type 'user-error))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-ffind-inpath-test)
