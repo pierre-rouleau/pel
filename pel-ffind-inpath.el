@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 17:20:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 17:22:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -109,9 +109,9 @@ does not exist, has no value, or its value yields no valid directory paths
                                           'omit-nulls "[[:blank:]]*")))))
     (if paths
         (pel-ffind-inpath filename paths)
-      (user-error
-       "Content of environment variable %s does not identify any directory"
-       envvar-name))))
+      (user-error "\
+Environment variable %s does not exist, has no value, or yields no valid paths"
+                  envvar-name))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-ffind-inpath)
