@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, March 28 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 15:44:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 15:58:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -190,10 +190,11 @@ This test documents current behaviour.  If deduplication is added, update it."
 (ert-deftest pel-ffind-inpath-include/error-message-contains-var-name ()
   "The user-error message includes the name of the offending variable."
   (pel-ffind-inpath-test--with-env "NONEXISTENT_INC_ABC" nil
-    (condition-case err
-        (pel-ffind-inpath-include "x.h" "NONEXISTENT_INC_ABC")
-      (user-error
-       (should (string-match-p "NONEXISTENT_INC_ABC" (cadr err)))))))
+    (let ((err (should-error
+                (pel-ffind-inpath-include "x.h" "NONEXISTENT_INC_ABC")
+                :type 'user-error)))
+      (should (string-match-p "NONEXISTENT_INC_ABC"
+                              (error-message-string err))))))
 
 (ert-deftest pel-ffind-inpath-include/empty-env-var-signals-user-error ()
   "Signals `user-error' when the environment variable exists but is empty."
@@ -282,6 +283,23 @@ This test documents current behaviour.  If deduplication is added, update it."
         (pel-ffind-inpath-test--with-env "INCLUDE" env
           (should (equal (pel-ffind-inpath-include "q.h")
                          (list f1))))))))
+
+(ert-deftest pel-ffind-inpath-include/duplicate-dir-in-env-var-deduplicates ()
+  "When INCLUDE lists the same directory twice, seq-uniq ensures only one
+result is returned (not two copies of the same file path).
+
+This contrasts with `pel-ffind-inpath/duplicate-dir-in-paths-finds-file-twice',
+which documents that the lower-level function does NOT deduplicate.
+The deduplication is performed by `seq-uniq' in `pel-ffind-inpath-include'
+before the path list is passed to `pel-ffind-inpath'."
+  (pel-ffind-inpath-test--with-temp-dir tmpdir
+    (let* ((f   (expand-file-name "header.h" tmpdir))
+           ;; Same directory listed twice in the env var.
+           (env (mapconcat #'identity (list tmpdir tmpdir) path-separator)))
+      (pel-ffind-inpath-test--touch f)
+      (pel-ffind-inpath-test--with-env "INCLUDE" env
+        (should (equal (pel-ffind-inpath-include "header.h")
+                       (list f)))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-ffind-inpath-test)
