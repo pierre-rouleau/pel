@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 15:07:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 15:42:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -47,13 +47,14 @@
 ;;
 ;;
 (require 'pel--base)            ; use: `pel-list-of'
+(require 'seq)                  ; use: `seq-uniq'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
 (defun pel-ffind-inpath (filename paths)
-  "Find FILENAME from the directories identified in PATH.
+  "Find FILENAME from the directories identified in PATHS.
 
 FILENAME must be a string that represent a file name.  The
 filename must not have a absolute paths but may have a partial
@@ -80,7 +81,7 @@ found file and `pel-ffind-inpath' returns all files found."
 (defun pel-ffind-inpath-include (filename &optional include-env-var)
   "Find file FILENAME in the directories identified by environment variable.
 
-The function search in the directories identified by the INCLUDE
+The function searches in the directories identified by the INCLUDE
 environment variable unless another environment variable is
 specified by the INCLUDE-ENV-VAR optional argument.
 
@@ -91,8 +92,12 @@ The function issues a user-error if the specified environment variable
 does not exist or it has no value."
   (let* ((envvar-name (or include-env-var "INCLUDE"))
          (envvar-value (getenv envvar-name))
-         (paths (when envvar-value
-                  (split-string envvar-value path-separator))))
+         (paths (when (and envvar-value (not (string-empty-p envvar-value)))
+                  ;; - remove empty entries (when 2 path-separators are used)
+                  ;; - trim leading and trailing whitespace
+                  ;; - remove duplicates
+                  (seq-uniq (split-string envvar-value path-separator
+                                          'omit-nulls "[[:blank:]]*")))))
     (if paths
         (pel-ffind-inpath filename paths)
       (user-error "Environment variable %s does not exist or holds no value"
