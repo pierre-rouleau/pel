@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-03-28 11:41:44 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-03-28 15:46:06 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -792,6 +792,7 @@ pel-emacs.elc:            pel--base.elc pel--options.elc pel-prompt.elc pel-setu
 pel-erlang.elc:           pel--base.elc pel--options.elc pel-ffind.elc pel-fs.elc pel-indent.elc pel-modes.elc pel-syntax.elc pel-xref.elc pel-comment.elc
 pel-face-ut.elc:          pel--base.elc
 pel-ffind.elc:            pel--base.elc pel--options.elc
+pel-ffind-inpath.elc:     pel--base.elc
 pel-file-recent.elc:      pel--options.elc pel-prompt.elc
 pel-file.elc:             pel--base.elc pel-prompt.elc pel-read.elc pel-window.elc pel-filex.elc
 pel-filedir.elc:          pel--base.elc
@@ -921,6 +922,7 @@ test/pel-elcode-test.el.test-passed:            pel-elcode.elc pel--base.elc
 test/pel-elpa-test.el.test-passed:              pel-elpa.elc pel-filedir.elc
 test/pel-erlang-test.el.test-passed:            pel-erlang.elc pel-ert.elc
 test/pel-ert-test.el.test-passed:               pel-ert.elc
+test/pel-ffind-inpath-test.el.test-passed:      pel-ffind-inpath.elc
 test/pel-ffind-project-directory-test.el.test-passed: pel-ffind.elc pel--base.elc
 test/pel-file-test.el.test-passed:              pel-file.elc pel-ert.elc
 test/pel-file-open-test.el.test-passed:         pel-file.elc

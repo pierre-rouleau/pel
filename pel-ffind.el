@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 12:00:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 14:38:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,6 +34,7 @@
 
 ;; * `pel-ffind'
 ;;   - `pel-ffind-command'
+;;     - `pel--ffind-select-tool'
 ;;     - `pel--ffind-dirname-quoted'
 ;;
 ;; * `pel-generic-find-file'
@@ -57,12 +58,6 @@
   "Adjusted value of `pel-ffind-executable.")
 (defvar pel--ffind-path nil
   "Full path of fd/fdfind/find executable used.")
-
-;; (defvar pel--ffind-path nil
-;;   "Full path of fd executable if found.")
-;; (defvar pel--ffind-path nil
-;;   "Full path of find executable if found.")
-
 
 (defun pel--ffind-select-tool ()
   "Select the search tool based on `pel-ffind-executable' choice.
@@ -168,11 +163,8 @@ whether the VCS setting (like the .gitignore file) is set to ignore them."
 (defun pel-ffind (fname &optional directories)
   "Search for FNAME in current or specified DIRECTORIES trees.
 
-The function searches in the directory trees identified by:
-
-- in the DIRECTORIES argument if specified, otherwise
-- in the pel-ffind-directories if non nil, otherwise
-- in the current directory.
+The function searches in the directory trees identified by
+DIRECTORIES argument if specified, otherwise in the current directory.
 
 Returns a list of string, each string is the path of a file found.
 
