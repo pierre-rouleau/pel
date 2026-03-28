@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, March 28 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 16:54:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 17:05:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -76,6 +76,19 @@ The original value is restored on exit."
 
 (ert-deftest pel-ffind-inpath/absolute-filename-signals-user-error ()
   "Signals `user-error' when FILENAME is absolute."
+  (let ((abs (expand-file-name "abs.h" temporary-file-directory)))
+    (should-error (pel-ffind-inpath abs nil) :type 'user-error)))
+
+(ert-deftest pel-ffind-inpath/absolute-filename-error-contains-path ()
+  "The user-error message includes the offending absolute filename."
+  (let* ((abs (expand-file-name "abs.h" temporary-file-directory))
+         (err (should-error (pel-ffind-inpath abs nil) :type 'user-error)))
+    (should (string-match-p (regexp-quote abs)
+                            (error-message-string err)))))
+
+(ert-deftest pel-ffind-inpath/absolute-filename-with-nil-paths-signals-user-error ()
+  "Signals `user-error' for absolute FILENAME even when PATHS is nil.
+The absolute-path guard fires before the PATHS iteration."
   (let ((abs (expand-file-name "abs.h" temporary-file-directory)))
     (should-error (pel-ffind-inpath abs nil) :type 'user-error)))
 

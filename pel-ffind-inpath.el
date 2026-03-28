@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 16:39:13 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 17:07:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -97,7 +97,8 @@ It returns a list of absolute path strings, the name of the found
 file or files found in the directories identified by the environment variable.
 
 The function issues a user-error if the specified environment variable
-does not exist or it has no value."
+does not exist, has no value, or its value yields no valid directory paths
+\(e.g. it contains only path separators)."
   (let* ((envvar-name (or include-env-var "INCLUDE"))
          (envvar-value (getenv envvar-name))
          (paths (when (and envvar-value (not (string= envvar-value "")))
