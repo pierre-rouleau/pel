@@ -4,6 +4,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 ** Modifications, Fixes and Improvements:
 - Improve *pel-ffind-inpath-include*: it now properly handles several errors in environment variable values:
   non-existing environment variable, variable with empty value, duplicate entries, with two or more consecutive path separators.
+  Since the function does not support absolute file names it now issues a user-error if an absolute file name is passed to the function.
 - Improve *pel-ffind*:
   - better tool selection mechanism by *pel-ffind-executable* : the selection =fd= selects fd or fdfind if one is available,
     otherwise they fall back to the Unix find.
