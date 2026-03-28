@@ -149,6 +149,7 @@
 ;;  - `pel-list-str'
 ;;  - `pel-title-case-to-dash-separated'
 ;;  - `pel-grp-regex'
+;;  - `pel-shell-quote-path-keep-glob'
 ;;
 ;; Message List formatting
 ;;  - `pel-format-problem-messages'
@@ -1415,6 +1416,24 @@ after the closing parenthesis."
         (concat str tail)
       str)))
 
+(defun pel-shell-quote-path-keep-glob (path)
+  "Escape shell meta-chars in PATH but leave glob wildcards (*, ?, []).
+
+Examples:
+- (pel-shell-quote-path-keep-glob \"*.*\")         ➜ *.*\"
+- (pel-shell-quote-path-keep-glob \"* abc def.*\") ➜ *\\ abc\\ def.*\"."
+  (replace-regexp-in-string
+   ;; 1. Matches spaces, shell symbols, and literal backslashes.
+   ;; 2. Note: The literal backslash must be last in the set [ ... \\]
+   ;;    to avoid being treated as an escape for the closing bracket.
+   ;; 3. Perform a literal replacement to prevent interpreting the injected
+   ;;    backslashes to their `replace-match' meta meaning.
+   "\\([ ^$#%&*()!{}|;'\"<> \t\n\\]\\)"
+   (lambda (match)
+     (if (member match '("*" "?" "[" "]"))
+         match
+       (concat "\\" match)))
+   path 'fixedcase 'literal))
 
 ;; ---------------------------------------------------------------------------
 ;;* Message List formatting

@@ -2404,27 +2404,33 @@ Note that:
           (const :tag "psw-switch-recentf - Using popup-switcher"
                  psw-switch-recentf)))
 
-(defcustom pel-ffind-executable 'find
+(defcustom pel-ffind-executable 'auto
   "Name of the file finding executable that `pel-ffind' uses.
 
 Select one of:
-- find    : the Unix ubiquitous find utility.
-- fd      : the faster fd utility from https://github.com/sharkdp/fd.
-- command : Any command line that has the following keywords that will
+- fd      : use the faster fd utility or its fdfind equivalent if available,
+            use find otherwise.
+- find    : use the Unix ubiquitous find utility.
+- command : Specify a command line with the following keywords that will
             be replaced by their corresponding string:
   -  {FNAME}    : the base name of the file.
   -  {DIRNAMES} : a space separated list of directory names to search.
 
   When this is selected an example is placed in the input field."
+  :link '(url-link :tag "fd @ GitHub" "https://github.com/sharkdp/fd")
+  :link '(url-link :tag "fd @ doc.rs" "https://docs.rs/crate/fd-find/latest")
+  :link '(url-link
+          :tag "fdfind @ Debian"
+          "https://manpages.debian.org/unstable/fd-find/fdfind.1.en.html")
   :group 'pel-pkg-for-filemng
   :group 'pel-file-finding
   :group 'pel-pkg-for-c++
   :group 'pel-pkg-for-c
   :type '(choice
+          (const :tag "Use fd or fdfind if available, otherwise use find" fd)
           (const :tag "Use Unix find" find)
-          (const :tag "Use fd" fd)
-          (string :tag "command line" :value "find -L {DIRNAMES} -name {FNAME} -type f")))
-
+          (string :tag "Use this command line"
+                  :value "find -L {DIRNAMES} -name {FNAME} -type f")))
 
 (defcustom pel-use-fzf nil
   "Control whether PEL activates the fzf.el package for fast fuzzy search."
@@ -2438,7 +2444,6 @@ Select one of:
   :type 'boolean
   :safe #'booleanp)
 (pel-put pel-use-fzf :package-is :in-utils)
-
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-file-finding nil

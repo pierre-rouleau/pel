@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-27 18:01:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 12:00:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -27,11 +27,10 @@
 ;;
 ;; This provides the functions that find files.
 ;;
+;;  - `pel-ffind' function that find files using either the find or fd command
+;;    line utilities, as identified by the `pel-ffind-executable' user-option.
 ;;  - `pel-generic-find-file' searches a file inside one or several directory
 ;;    trees.
-;;  - `pel-ffind' function that find files using either the
-;;    find or fd command line utilities, as identified by the
-;;    `pel-ffind-executable' user-option.
 
 ;; * `pel-ffind'
 ;;   - `pel-ffind-command'
@@ -54,10 +53,44 @@
 ;;; Code:
 ;;
 
-(defvar pel--ffind-fd-path nil
-  "Full path of fd executable if found.")
-(defvar pel--ffind-find-path nil
-  "Full path of find executable if found.")
+(defvar pel--ffind-executable nil
+  "Adjusted value of `pel-ffind-executable.")
+(defvar pel--ffind-path nil
+  "Full path of fd/fdfind/find executable used.")
+
+;; (defvar pel--ffind-path nil
+;;   "Full path of fd executable if found.")
+;; (defvar pel--ffind-path nil
+;;   "Full path of find executable if found.")
+
+
+(defun pel--ffind-select-tool ()
+  "Select the search tool based on `pel-ffind-executable' choice.
+Return a (symbol . string) cons cell with the two values to store in
+`pel--ffind-executable' and `pel--ffind-path'."
+  (let (choice exe-path)
+    (cond
+     ((eq pel-ffind-executable 'fd)
+      ;; Some system (eg. Debian use fdfind instead of fd, allowing another,
+      ;; unrelated fd command: search for fdfind first.
+      (setq exe-path (executable-find "fdfind"))
+      (unless exe-path
+        (setq exe-path (executable-find "fd"))
+        (if exe-path
+            (setq choice 'fd)
+          (display-warning 'pel-ffind
+                           "\
+pel-ffind-executable requests fd but its not available: using find instead."
+                           :warning)
+          (setq choice 'find)
+          (setq exe-path (executable-find "find")))))
+     ((eq pel-ffind-executable 'find)
+      (setq choice 'find)
+      (setq exe-path (executable-find "find"))))
+    (unless exe-path
+      (user-error "\
+pel--ffind-executable attempts to use %s, but it is not available!" choice))
+    (cons choice exe-path)))
 
 (defun pel--ffind-dirname-quoted (dirname)
   "Return DIRNAME in quote and without trailing slash."
@@ -66,44 +99,54 @@
 (defun pel-ffind-command (filename directories)
   "Return a ffind command searching for FILENAME in DIRECTORIES.
 
-FILENAME may be a glob pattern.
-It may contain a partial directory path.
-The command returned will produce a list of files sorted in lexicographic
+FILENAME may be a glob file pattern, that start with an absolute or relative
+directory path.
+
+The returned command will produce a list of files sorted in lexicographic
 order.
 
-The VCS ignore capability of fd is not used, so all files are found
-whether the VCS is told to ignore them or not."
-  (let ((file-basename (file-name-nondirectory filename))
+The VCS-ignore capability of fd is not used, so all files are found
+whether the VCS setting (like the .gitignore file) is set to ignore them."
+  (let ((file-basename (pel-shell-quote-path-keep-glob
+                        (file-name-nondirectory filename)))
         (dirnames (if (> (length directories) 1)
                       (string-join (mapcar #'pel--ffind-dirname-quoted
                                            directories)
                                    " ")
                     (car directories))))
+
+    ;; Initialize tool selection and its path if not already done.
+    (unless pel--ffind-executable
+      (let ((choice.exe-path (pel--ffind-select-tool)))
+        (setq pel--ffind-executable (car choice.exe-path))
+        (setq pel--ffind-path (cdr choice.exe-path))))
+
     (cond
-     ;; -- fd is specified
+     ;; -- using fd (or fdfind):
      ((eq pel-ffind-executable 'fd)
-      (unless (or pel--ffind-fd-path
-                  (setq pel--ffind-fd-path (executable-find "fd")))
-        (user-error "pel-ffind-executable is fd, but can't find it!"))
-      ;; fd sorts by default.
+      ;; fd sorts by default.  The -g option (for globs) can't handle file
+      ;; names that start with a dash: it must be preceded with a backslash.
+      (when (pel-string-starts-with-p file-basename "-")
+        (setq file-basename (concat "\\" file-basename)))
       (format "%s --type f --color never --no-ignore-vcs -g '%s' %s"
-              pel--ffind-fd-path
+              pel--ffind-path
               file-basename
               dirnames))
-     ;; -- 'find is specified
+     ;;
+     ;; -- using find:
+     ;; find handles file names that start with a dash properly: no need for
+     ;; special escape.
      ((eq pel-ffind-executable 'find)
-      (unless (or pel--ffind-find-path
-                  (setq pel--ffind-find-path (executable-find "find")))
-        (user-error "pel-ffind-executable is find, but can't find it!"))
-      ;; on macOS find requires the -s option to sort.
+      ;; On macOS find requires the -s option to sort.
       ;; That option is not supported on Linux
       (let ((sort-option (if pel-system-is-macos-p "-s" "")))
         (format "%s %s %s -name '%s' -type f"
-                pel--ffind-find-path
+                pel--ffind-path
                 sort-option
                 dirnames
                 file-basename)))
-     ;; -- explicit command line
+     ;;
+     ;; -- using an explicit command line:
      ;; A string with the following keywords replaced:
      ;; {FNAME}    : the base name of the file
      ;; {DIRNAMES} : a space separated list of directory names to search

@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improve *pel-ffind*:
+  - better tool selection mechanism by *pel-ffind-executable* : the selection =fd= selects fd or fdfind if one is available,
+    otherwise they fall back to the Unix find.
+  - Better support for glob patterns and file names with special characters: uses the new *pel-shell-quote-path-keep-glob*
+    function to escapes the file name allowing both escaping and glob patterns.
 - Add a new user-option: *pel-project-restricted-root-identifiers*.  This restricts upward directory search by *pel-ffind-project-directory*
   to allow creation of projects embedded inside directory trees while allowing a search that is either restricted inside
   the sub-project or allowed to search from the entire tree as before.
