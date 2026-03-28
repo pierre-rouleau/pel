@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 11:45:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 12:28:50 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -337,25 +337,6 @@
                  '((a . 1) (b . 2) (c . 3)))))
 
 ;; --
-
-(when noninteractive
-  ;; The following test can only execute successfully under batch control.
-
-  (eval-and-compile
-    (defvar pel--is-in-fast-startup-mode (bound-and-true-p pel-running-in-fast-startup-p))
-    "Detect if PEL environment is in fast startup or not.")
-
-  (ert-deftest ert-test-fast-startup-p ()
-    "Test `pel-in-fast-startup-p'."
-    (should (eq (pel-in-fast-startup-p) pel--is-in-fast-startup-mode))
-
-    ;; Show that attempt to simulate PEL being in fast startup does not work.
-    (let ((pel-running-in-fast-startup-p nil))
-      (should (eq (pel-in-fast-startup-p) pel--is-in-fast-startup-mode)))
-
-    ;; Note: this next test will pass when run from the shell but not executed from with Emacs
-    (let ((pel-running-in-fast-startup-p t))
-      (should (eq (pel-in-fast-startup-p) pel--is-in-fast-startup-mode)))))
 
 ;; Special var for fast-startup check
 (defvar pel-running-in-fast-startup-p nil)
