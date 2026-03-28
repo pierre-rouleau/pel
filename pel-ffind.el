@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 16:02:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 12:00:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -27,11 +27,10 @@
 ;;
 ;; This provides the functions that find files.
 ;;
+;;  - `pel-ffind' function that find files using either the find or fd command
+;;    line utilities, as identified by the `pel-ffind-executable' user-option.
 ;;  - `pel-generic-find-file' searches a file inside one or several directory
 ;;    trees.
-;;  - `pel-ffind' function that find files using either the
-;;    find or fd command line utilities, as identified by the
-;;    `pel-ffind-executable' user-option.
 
 ;; * `pel-ffind'
 ;;   - `pel-ffind-command'
@@ -48,15 +47,50 @@
 (require 'pel--base)                    ; use: `pel-system-is-macos-p'
 (require 'pel--options)                 ; use: `pel-ffind-executable'
 (eval-when-compile (require 'subr-x))   ; use: `string-join', `string-trim'
+(require 'seq)                          ; use: `seq-filter'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
-(defvar pel--ffind-fd-path nil
-  "Full path of fd executable if found.")
-(defvar pel--ffind-find-path nil
-  "Full path of find executable if found.")
+(defvar pel--ffind-executable nil
+  "Adjusted value of `pel-ffind-executable.")
+(defvar pel--ffind-path nil
+  "Full path of fd/fdfind/find executable used.")
+
+;; (defvar pel--ffind-path nil
+;;   "Full path of fd executable if found.")
+;; (defvar pel--ffind-path nil
+;;   "Full path of find executable if found.")
+
+
+(defun pel--ffind-select-tool ()
+  "Select the search tool based on `pel-ffind-executable' choice.
+Return a (symbol . string) cons cell with the two values to store in
+`pel--ffind-executable' and `pel--ffind-path'."
+  (let (choice exe-path)
+    (cond
+     ((eq pel-ffind-executable 'fd)
+      ;; Some system (eg. Debian use fdfind instead of fd, allowing another,
+      ;; unrelated fd command: search for fdfind first.
+      (setq exe-path (executable-find "fdfind"))
+      (unless exe-path
+        (setq exe-path (executable-find "fd"))
+        (if exe-path
+            (setq choice 'fd)
+          (display-warning 'pel-ffind
+                           "\
+pel-ffind-executable requests fd but its not available: using find instead."
+                           :warning)
+          (setq choice 'find)
+          (setq exe-path (executable-find "find")))))
+     ((eq pel-ffind-executable 'find)
+      (setq choice 'find)
+      (setq exe-path (executable-find "find"))))
+    (unless exe-path
+      (user-error "\
+pel--ffind-executable attempts to use %s, but it is not available!" choice))
+    (cons choice exe-path)))
 
 (defun pel--ffind-dirname-quoted (dirname)
   "Return DIRNAME in quote and without trailing slash."
@@ -65,44 +99,54 @@
 (defun pel-ffind-command (filename directories)
   "Return a ffind command searching for FILENAME in DIRECTORIES.
 
-FILENAME may be a glob pattern.
-It may contain a partial directory path.
-The command returned will produce a list of files sorted in lexicographic
+FILENAME may be a glob file pattern, that start with an absolute or relative
+directory path.
+
+The returned command will produce a list of files sorted in lexicographic
 order.
 
-The VCS ignore capability of fd is not used, so all files are found
-whether the VCS is told to ignore them or not."
-  (let ((file-basename (file-name-nondirectory filename))
+The VCS-ignore capability of fd is not used, so all files are found
+whether the VCS setting (like the .gitignore file) is set to ignore them."
+  (let ((file-basename (pel-shell-quote-path-keep-glob
+                        (file-name-nondirectory filename)))
         (dirnames (if (> (length directories) 1)
                       (string-join (mapcar #'pel--ffind-dirname-quoted
                                            directories)
                                    " ")
                     (car directories))))
+
+    ;; Initialize tool selection and its path if not already done.
+    (unless pel--ffind-executable
+      (let ((choice.exe-path (pel--ffind-select-tool)))
+        (setq pel--ffind-executable (car choice.exe-path))
+        (setq pel--ffind-path (cdr choice.exe-path))))
+
     (cond
-     ;; -- fd is specified
+     ;; -- using fd (or fdfind):
      ((eq pel-ffind-executable 'fd)
-      (unless (or pel--ffind-fd-path
-                  (setq pel--ffind-fd-path (executable-find "fd")))
-        (user-error "pel-ffind-executable is fd, but can't find it!"))
-      ;; fd sorts by default.
+      ;; fd sorts by default.  The -g option (for globs) can't handle file
+      ;; names that start with a dash: it must be preceded with a backslash.
+      (when (pel-string-starts-with-p file-basename "-")
+        (setq file-basename (concat "\\" file-basename)))
       (format "%s --type f --color never --no-ignore-vcs -g '%s' %s"
-              pel--ffind-fd-path
+              pel--ffind-path
               file-basename
               dirnames))
-     ;; -- 'find is specified
+     ;;
+     ;; -- using find:
+     ;; find handles file names that start with a dash properly: no need for
+     ;; special escape.
      ((eq pel-ffind-executable 'find)
-      (unless (or pel--ffind-find-path
-                  (setq pel--ffind-find-path (executable-find "find")))
-        (user-error "pel-ffind-executable is find, but can't find it!"))
-      ;; on macOS find requires the -s option to sort.
-      ;; That option is not supported ;; on Linux
+      ;; On macOS find requires the -s option to sort.
+      ;; That option is not supported on Linux
       (let ((sort-option (if pel-system-is-macos-p "-s" "")))
         (format "%s %s %s -name '%s' -type f"
-                pel--ffind-find-path
+                pel--ffind-path
                 sort-option
                 dirnames
                 file-basename)))
-     ;; -- explicit command line
+     ;;
+     ;; -- using an explicit command line:
      ;; A string with the following keywords replaced:
      ;; {FNAME}    : the base name of the file
      ;; {DIRNAMES} : a space separated list of directory names to search
@@ -121,8 +165,8 @@ whether the VCS is told to ignore them or not."
         cmd)))))
 
 ;;-pel-autoload
-(defun pel-ffind (filename &optional directories)
-  "Search for FILENAME in current or specified DIRECTORIES trees.
+(defun pel-ffind (fname &optional directories)
+  "Search for FNAME in current or specified DIRECTORIES trees.
 
 The function searches in the directory trees identified by:
 
@@ -140,18 +184,18 @@ whether the VCS is told to ignore them or not."
   (let ((found-files
          (split-string
           (string-trim
-           (shell-command-to-string (pel-ffind-command filename
-                                                       directories))))))
-    ;; When filename has a directory portion it is ignored in the search
+           (shell-command-to-string (pel-ffind-command fname directories)))
+          "\n" t)))
+    ;; When fname has a directory portion it is ignored in the search
     ;; command created by pel-ffind-command otherwise the find or fd search
     ;; fails.  The result might include files that are not inside the
     ;; specified  directory then.  Remove these files from the result.
     (when (and found-files
-               (file-name-directory filename))
-      (let ((dir-portion (file-name-directory filename)))
+               (file-name-directory fname))
+      (let ((dir-portion (file-name-directory fname)))
         (setq found-files
-              (seq-filter (lambda (fname)
-                            (string-match dir-portion fname))
+              (seq-filter (lambda (fn)
+                            (string-match-p (regexp-quote dir-portion) fn))
                           found-files))))
     found-files))
 
@@ -160,9 +204,16 @@ whether the VCS is told to ignore them or not."
 (defun pel-ffind-project-directory (&optional project-root-identifiers)
   "Find and return the project root directory of file in current buffer.
 
-Search project root directory using the identifier files specified in the
+Search project root directory using the anchor files specified in the
 `pel-project-root-identifiers' user-option and the ones in
 PROJECT-ROOT-IDENTIFIERS list if specified.
+
+Unless it finds a restrictive anchor identified by
+`pel-project-restricted-root-identifiers', the search continues and if
+multiple anchors are found at different tree levels, the
+outermost (shortest path) directory is selected.  This broadens the file
+search scope when nested projects exist while still allowing a
+restricted project scope for some projects.
 
 Return a directory name expanded and without trailing slash if found,
 nil otherwise."
@@ -173,19 +224,30 @@ nil otherwise."
     (dolist (fname project-root-identifiers)
       (unless (member fname identifiers)
         (push fname identifiers)))
+    ;; also search for restricted root identifiers so they can be found and
+    ;; trigger the stop.
+    (dolist (fname pel-project-restricted-root-identifiers)
+      (unless (member fname identifiers)
+        (push fname identifiers)))
     ;; search project root from current directory up looking for a
-    ;; project root identifier file.  Retain the shortest directory path found
+    ;; project root identifier file.  Stops at any restricted anchor if it
+    ;; finds one. Otherwise retain the shortest directory path found
     ;; to allow nested projects and keep the more encompassing one, broadening
     ;; the file search: anyway if more than 1 file found the user will be
     ;; prompted.
     ;;
-    (dolist (fname identifiers)
-      (setq found-dir (locate-dominating-file default-directory fname))
-      (when found-dir
-        (if directory
-            (when (< (length found-dir) (length directory))
-              (setq directory found-dir))
-          (setq directory found-dir))))
+    (catch 'pel-ffind--break
+      (dolist (anchor-fname identifiers)
+        (setq found-dir (locate-dominating-file default-directory anchor-fname))
+        (when found-dir
+          ;; stop on any restricted root anchor
+          (when (member anchor-fname pel-project-restricted-root-identifiers)
+            (setq directory found-dir)
+            (throw 'pel-ffind--break nil))
+          (if directory
+              (when (< (length found-dir) (length directory))
+                (setq directory found-dir))
+            (setq directory found-dir)))))
     ;; Return a directory name expanded and without trailing slash.
     (when directory
       (expand-file-name (directory-file-name directory)))))
