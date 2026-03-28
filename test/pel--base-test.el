@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 12:28:50 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 12:52:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -20,15 +20,14 @@
 ;; ERT tests for pel--base.el.
 ;;
 ;; Policy and scope:
-;; - Tests are organized in the same order as functions in pel--base.el (by
-;;   coarse sections, matching the file’s banners).
-;; - Tests avoid environment brittleness (Tree‑sitter, user dirs, symlinks)
+;; - Tests are organized in the same order as functions in pel--base.el,
+;;   using the exact section title banners (;;* Section Name) found there.
+;; - Tests avoid environment brittleness (Tree-sitter, user dirs, symlinks)
 ;;   by stubbing or canonicalizing paths via file-truename.
 ;; - When a test needs a void symbol, it uses makunbound to keep the symbol
-;;   genuinely unbound (no defvar), so pel-symbol-value-or hits the “unknown”
-;;   branch. Where a variable must be seen by bound-and-true-p, it is defvar’d.
+;;   genuinely unbound (no defvar), so pel-symbol-value-or hits the "unknown"
+;;   branch.  Where a variable must be seen by bound-and-true-p, it is defvar'd.
 ;; - No use of string-search (Emacs 28+); only string-match-p.
-;; - No `#b` binary integer literals; only decimal integers.
 ;;
 ;; Covered items (representative, stable subset):
 ;;   pel-version, pel+=, pel-=, λc, pel-expression-p, pel-user-option-p,
@@ -48,6 +47,9 @@
 ;;   pel-symbol-value, pel-as-symbol, pel-symbol-at-point,
 ;;   pel-on-off-string, pel-symbol-on-off-string, pel-symbol-text,
 ;;   pel-value-on-off-text, pel-symbol-value-or, pel-yes-no-string,
+;;   pel-as-string, pel-end-text-with-period, pel-hastext, pel-when-text-in,
+;;   pel-string-or-nil, pel-string-for, pel-string-when, pel-string-spread,
+;;   pel-list-str, pel-title-case-to-dash-separated,
 ;;   pel-grp-regex, pel-shell-quote-path-keep-glob,
 ;;   pel--format-problem-messages, pel-format-problem-messages,
 ;;   pel-message-for, pel-use-or, pel-concat-strings-in-list,
@@ -74,15 +76,15 @@
 ;;   pel-visit-tags, pel-executable-find, pel-emacs-config-features-string.
 ;;
 ;; Items exercised with stubs (to avoid environment coupling):
-;;   pel-rebuild-utils        - stub file-directory-p to force the “no utils dir” path;
+;;   pel-rebuild-utils        - stub file-directory-p to force the "no utils dir" path;
 ;;                              capture display-warning without asserting its backend.
 ;;   pel-major-mode-use-tree-sitter, pel-treesit-ready-p, pel-ts-language-grammar-*
 ;;                              - stub pel-uses-tree-sitter, fboundp treesit, and treesit-ready-p.
 ;;
 ;; Notes:
-;; - Tests that depend on exact user directory layouts or platform‑specific
+;; - Tests that depend on exact user directory layouts or platform-specific
 ;;   canonicalization compare truename-normalized paths (file-truename).
-;; - Buffers created for “fresh” assertions use generate-new-buffer to avoid
+;; - Buffers created for "fresh" assertions use generate-new-buffer to avoid
 ;;   picking up stale state across runs.
 ;; - Path comparisons use truename to tolerate macOS /private prefixes.
 ;; - Tests that rely on dynamic binding declare vars with defvar.
@@ -157,7 +159,7 @@
      ,@body))
 
 ;;; --------------------------------------------------------------------------
-;;; 1) Version, macros, predicates, small utilities
+;;; ;;* PEL version
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest ert-test-pel-version ()
@@ -173,7 +175,9 @@
     (should (stringp v))
     (should (string-match-p "^[0-9]+\\.[0-9]+\\.[0-9]+" v))))
 
-;; --
+;;; --------------------------------------------------------------------------
+;;; ;;* Assignment operator macros
+;;; --------------------------------------------------------------------------
 
 (ert-deftest ert-test-increment-decrement ()
   "Test the `pel+=' and `pel-=' macros."
@@ -203,7 +207,9 @@
     (pel+= x 2)  (should (= x 3))
     (pel-= x 1)  (should (= x 2))))
 
-;; --
+;;; --------------------------------------------------------------------------
+;;; ;;* Function alias macro
+;;; --------------------------------------------------------------------------
 
 (ert-deftest ert-test-pel-lambda-c ()
   "Test `λc' (funcall alias macro)."
@@ -216,7 +222,9 @@
 (ert-deftest pel--base-test/macro/lambda-compose ()
   (should (= 4 (λc (lambda (n) (1+ n)) 3))))
 
-;; --
+;;; --------------------------------------------------------------------------
+;;; ;;* Base predicates
+;;; --------------------------------------------------------------------------
 
 (ert-deftest ert-test-pel-base-expression ()
   "Test pel-expression-p."
@@ -244,7 +252,9 @@
   (should (pel-user-option-p 'pel-use-common-lisp))
   (should-not (pel-user-option-p 'pel-use-visual-basic)))
 
-;; --
+;;; --------------------------------------------------------------------------
+;;; ;;* Set variable conditionally
+;;; --------------------------------------------------------------------------
 
 ;; Top-level defvar declares a true dynamic (special) variable,
 ;; making it visible to pel-set-if-non-nil's internal (set symbol value).
@@ -268,7 +278,24 @@
   (pel-set-if-non-nil 'pel--test-set-if-non-nil-var nil)
   (should (string= "hello" pel--test-set-if-non-nil-var)))
 
-;; --
+(defvar pel--base-test-sym nil)  ; declare special
+
+(ert-deftest pel--base-test/set-if-non-nil-and-bools-and-bits ()
+  (let ((pel--base-test-sym nil))
+    (pel-set-if-non-nil 'pel--base-test-sym nil)
+    (should (eq nil pel--base-test-sym))
+    (pel-set-if-non-nil 'pel--base-test-sym :v)
+    (should (eq :v pel--base-test-sym)))
+  (should (eq nil (pel-!0 0)))
+  (should (eq t   (pel-!0 1)))
+  (should (eq t   (pel-as-boolean 'x)))
+  (should (eq nil (pel-as-boolean nil)))
+  (should (pel-all-bitset-p 5 1 4))
+  (should-not (pel-all-bitset-p 5 1 2)))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Check for Zero
+;;; --------------------------------------------------------------------------
 
 (ert-deftest ert-test-pel-not-zero ()
   "Test `pel-!0'."
@@ -287,21 +314,9 @@
   (should (eq nil (pel-as-boolean nil)))
   (should (eq nil (pel-as-boolean nil))))
 
-(defvar pel--base-test-sym nil)  ; declare special
-(ert-deftest pel--base-test/set-if-non-nil-and-bools-and-bits ()
-  (let ((pel--base-test-sym nil))
-    (pel-set-if-non-nil 'pel--base-test-sym nil)
-    (should (eq nil pel--base-test-sym))
-    (pel-set-if-non-nil 'pel--base-test-sym :v)
-    (should (eq :v pel--base-test-sym)))
-  (should (eq nil (pel-!0 0)))
-  (should (eq t   (pel-!0 1)))
-  (should (eq t   (pel-as-boolean 'x)))
-  (should (eq nil (pel-as-boolean nil)))
-  (should (pel-all-bitset-p 5 1 4))
-  (should-not (pel-all-bitset-p 5 1 2)))
-
-;; --
+;;; --------------------------------------------------------------------------
+;;; ;;* Bitwise Operations
+;;; --------------------------------------------------------------------------
 
 (ert-deftest ert-test-pel-all-bitset-p ()
   "Test `pel-all-bitset-p'."
@@ -318,14 +333,14 @@
   ;; Zero value with zero bitmask.
   (should     (pel-all-bitset-p 0)))
 
-;; --
+;;; --------------------------------------------------------------------------
+;;; ;;* List Handling
+;;; --------------------------------------------------------------------------
 
 (ert-deftest ert-test-list-of ()
   "Test `pel-list-of'."
   (should (equal (pel-list-of 1) '(1)))
   (should (equal (pel-list-of '(1)) '(1))))
-
-;; --
 
 (ert-deftest ert-test-transpose-alist ()
   "Test `pel-transpose-alist'."
@@ -336,23 +351,26 @@
   (should (equal (pel-transpose-alist '((1 . a) (2 . b) (3 . c)))
                  '((a . 1) (b . 2) (c . 3)))))
 
-;; --
-
-;; Special var for fast-startup check
-(defvar pel-running-in-fast-startup-p nil)
-(ert-deftest pel--base-test/fast-startup/bound-and-true-p ()
-  (let ((pel-running-in-fast-startup-p nil))
-    (should-not (pel-in-fast-startup-p)))
-  (let ((pel-running-in-fast-startup-p t))
-    (should (pel-in-fast-startup-p))))
-
 (ert-deftest pel--base-test/list-of-and-transpose-alist ()
   (should (equal '(a)   (pel-list-of 'a)))
   (should (equal '(a b) (pel-list-of '(a b))))
   (should (equal '((2 . 1) (4 . 3)) (pel-transpose-alist '((1 . 2) (3 . 4))))))
 
 ;;; --------------------------------------------------------------------------
-;;; 2) Major/minor mode, buffer info, directories
+;;; ;;* Environment Querying functions
+;;; --------------------------------------------------------------------------
+
+;; Special var for fast-startup check
+(defvar pel-running-in-fast-startup-p nil)
+
+(ert-deftest pel--base-test/fast-startup/bound-and-true-p ()
+  (let ((pel-running-in-fast-startup-p nil))
+    (should-not (pel-in-fast-startup-p)))
+  (let ((pel-running-in-fast-startup-p t))
+    (should (pel-in-fast-startup-p))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Checking Major Mode
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest ert-test-pel-major-mode-of ()
@@ -371,116 +389,12 @@
           (should (eq 'text-mode (pel-major-mode-of buf))))
       (kill-buffer buf))))
 
-;; --
-
 (ert-deftest pel--base-test/mode/guards-and-derived ()
   (with-temp-buffer
     (emacs-lisp-mode)
     (should (pel-derived-mode-p nil 'emacs-lisp-mode))
     (should-error (pel-major-mode-must-be 'c-mode) :type 'user-error)
     (should-not (pel-dired-buffer-p nil t))))
-
-;; --
-
-(ert-deftest ert-test-pel-file-type-for ()
-  "Test `pel-file-type-for'."
-  ;; Default: strips -mode suffix.
-  (should (string= "emacs-lisp"  (pel-file-type-for 'emacs-lisp-mode)))
-  (should (string= "c"           (pel-file-type-for 'c-mode)))
-  (should (string= "python"      (pel-file-type-for 'python-mode)))
-  ;; Tree-sitter mode: strips -ts-mode suffix.
-  (should (string= "python"      (pel-file-type-for 'python-ts-mode)))
-  (should (string= "c"           (pel-file-type-for 'c-ts-mode)))
-  ;; Custom suffix.
-  (should (string= "flyspell"    (pel-file-type-for 'flyspell-mode "-mode")))
-  (should (string= "subword"     (pel-file-type-for 'subword-minor-mode
-                                                    "-minor-mode"))))
-
-(ert-deftest pel--base-test/mode/file-type-and-string-with-major-mode ()
-  (should (string= "emacs-lisp" (pel-file-type-for 'emacs-lisp-mode)))
-  (should (string= "c"          (pel-file-type-for 'c-ts-mode)))
-  (with-temp-buffer
-    (emacs-lisp-mode)
-    (should (string= "wrap-emacs-lisp-done"
-                     (pel-string-with-major-mode "wrap-%s-done")))))
-
-;; --
-
-(ert-deftest ert-test-pel-buffers-in-mode ()
-  "Test `pel-buffers-in-mode'."
-  (let* ((buf1 (get-buffer-create " *pel-test-bim-1*"))
-         (buf2 (get-buffer-create " *pel-test-bim-2*"))
-         (buf3 (get-buffer-create " *pel-test-bim-3*")))
-    (unwind-protect
-        (progn
-          (with-current-buffer buf1 (emacs-lisp-mode))
-          (with-current-buffer buf2 (text-mode))
-          (with-current-buffer buf3 (emacs-lisp-mode))
-          ;; Both buf1 and buf3 should appear.
-          (let ((result (pel-buffers-in-mode 'emacs-lisp-mode)))
-            (should (memq buf1 result))
-            (should (memq buf3 result))
-            (should-not (memq buf2 result)))
-          ;; Only buf2 for text-mode.
-          (let ((result (pel-buffers-in-mode 'text-mode)))
-            (should (memq buf2 result))
-            (should-not (memq buf1 result)))
-          ;; A mode with no buffers returns nil.
-          (should-not (pel-buffers-in-mode 'fundamental-mode-xyz-nonexistent)))
-      (kill-buffer buf1)
-      (kill-buffer buf2)
-      (kill-buffer buf3))))
-
-(ert-deftest pel--base-test/mode/buffers-in-mode-and-minor-mode-state ()
-  (let ((b1 (generate-new-buffer " *pel-base-b1*"))
-        (b2 (generate-new-buffer " *pel-base-b2*")))
-    (unwind-protect
-        (progn
-          (with-current-buffer b1 (emacs-lisp-mode))
-          (with-current-buffer b2 (fundamental-mode))
-          (let ((lst (pel-buffers-in-mode 'emacs-lisp-mode)))
-            (should (memq b1 lst))
-            (should-not (memq b2 lst))))
-      (kill-buffer b1)
-      (kill-buffer b2)))
-  (require 'abbrev)
-  (with-temp-buffer
-    (abbrev-mode -1)
-    (should (stringp (pel-minor-mode-state 'abbrev-mode nil)))
-    (abbrev-mode 1)
-    (should (stringp (pel-minor-mode-state 'abbrev-mode nil)))))
-
-;; Major-mode-bound symbols
-(ert-deftest pel--base-test/mode/major-mode-symbol-for-and-value ()
-  (with-temp-buffer
-    (emacs-lisp-mode)
-    (let ((fmt "pel-test-%s-flag"))
-      (should (eq (pel-major-mode-symbol-for fmt) 'pel-test-emacs-lisp-flag))
-      (pel-set-major-mode-symbol fmt 42)
-      (should (= 42 (pel-major-mode-symbol-value fmt))))))
-
-(ert-deftest pel--base-test/mode/major-mode-symbol-value-or-default ()
-  (with-temp-buffer
-    (emacs-lisp-mode)
-    ;; Use a fresh, never-set format to exercise the default path
-    (let ((fmt2 "pel-test-%s-undefined-flag"))
-      (should (= 777 (pel-major-mode-symbol-value-or fmt2 777))))))
-
-(ert-deftest pel--base-test/buffer-info/file-ext-eol-and-cd ()
-  (pel--base-test--with-temp-dir tmpd
-    (let* ((f (pel--base-test--write-file tmpd "a.txt" "x\r\n"))
-           (buf (find-file-noselect f)))
-      (unwind-protect
-          (with-current-buffer buf
-            (should (string-suffix-p "a.txt" (pel-current-buffer-filename t)))
-            (should (string= "txt" (pel-current-buffer-file-extension)))
-            (setq buffer-file-coding-system 'utf-8-dos)
-            (should (memq (pel-current-buffer-eol-type) '(unix dos mac nil)))
-            (let ((orig default-directory))
-              (pel-cd-to-current :silent)
-              (should (pel--base-test--same-dir-p default-directory tmpd))
-              (cd orig)))
-        (kill-buffer buf)))))
 
 ;; ===========================================================================
 ;; pel-derived-mode-p
@@ -542,12 +456,6 @@ was silently ignored and the current buffer was always queried."
           (with-current-buffer target-buf
             ;; Target buffer is in emacs-lisp-mode.
             (emacs-lisp-mode))
-          ;; Current buffer is in text-mode; we query target-buf for c-mode.
-          ;; Should be nil because target is emacs-lisp-mode, not c-mode.
-          ;; With the OLD (buggy) code this would have checked current buffer
-          ;; (text-mode) and also returned nil, masking the bug; but checking
-          ;; emacs-lisp-mode vs. emacs-lisp-mode for the target confirms the
-          ;; fix works in both directions.
           (with-temp-buffer
             (text-mode)
             ;; Querying the target buffer for text-mode: should be nil
@@ -600,13 +508,9 @@ was silently ignored and the current buffer was always queried."
 
 ;; ---------------------------------------------------------------------------
 ;; 5. Derived/ancestor mode detection
-;;
-;; emacs-lisp-mode is derived from prog-mode (Emacs >= 24).
-;; c-mode is also derived from prog-mode.
 
 (ert-deftest pel--base-test/derived-mode-p/ancestor-mode-current-buffer ()
-  "`pel-derived-mode-p' returns non-nil when the specified mode is an ancestor.
-`emacs-lisp-mode' is derived from `prog-mode'."
+  "`pel-derived-mode-p' returns non-nil when the specified mode is an ancestor."
   (pel--base-test--with-mode-buffer 'emacs-lisp-mode
     (should (pel-derived-mode-p nil 'prog-mode))))
 
@@ -617,7 +521,6 @@ was silently ignored and the current buffer was always queried."
         (progn
           (with-current-buffer target-buf
             (emacs-lisp-mode))
-          ;; From a fundamental-mode buffer, ask about prog-mode ancestry of target.
           (with-temp-buffer
             (fundamental-mode)
             (should (pel-derived-mode-p target-buf 'prog-mode))))
@@ -629,7 +532,6 @@ was silently ignored and the current buffer was always queried."
 (ert-deftest pel--base-test/derived-mode-p/non-matching-mode-nil ()
   "`pel-derived-mode-p' returns nil when mode is unrelated to the buffer's mode."
   (pel--base-test--with-mode-buffer 'emacs-lisp-mode
-    ;; emacs-lisp-mode is not derived from c-mode.
     (should-not (pel-derived-mode-p nil 'c-mode))))
 
 (ert-deftest pel--base-test/derived-mode-p/non-matching-mode-nil-other-buffer ()
@@ -660,11 +562,121 @@ was silently ignored and the current buffer was always queried."
 (ert-deftest pel--base-test/derived-mode-p/multiple-modes-ancestor-matches ()
   "`pel-derived-mode-p' returns non-nil when an ancestor mode is in MODES list."
   (pel--base-test--with-mode-buffer 'emacs-lisp-mode
-    ;; prog-mode is an ancestor of emacs-lisp-mode.
     (should (pel-derived-mode-p nil 'text-mode 'prog-mode))))
 
+(ert-deftest ert-test-pel-file-type-for ()
+  "Test `pel-file-type-for'."
+  ;; Default: strips -mode suffix.
+  (should (string= "emacs-lisp"  (pel-file-type-for 'emacs-lisp-mode)))
+  (should (string= "c"           (pel-file-type-for 'c-mode)))
+  (should (string= "python"      (pel-file-type-for 'python-mode)))
+  ;; Tree-sitter mode: strips -ts-mode suffix.
+  (should (string= "python"      (pel-file-type-for 'python-ts-mode)))
+  (should (string= "c"           (pel-file-type-for 'c-ts-mode)))
+  ;; Custom suffix.
+  (should (string= "flyspell"    (pel-file-type-for 'flyspell-mode "-mode")))
+  (should (string= "subword"     (pel-file-type-for 'subword-minor-mode
+                                                    "-minor-mode"))))
+
+(ert-deftest pel--base-test/mode/file-type-and-string-with-major-mode ()
+  (should (string= "emacs-lisp" (pel-file-type-for 'emacs-lisp-mode)))
+  (should (string= "c"          (pel-file-type-for 'c-ts-mode)))
+  (with-temp-buffer
+    (emacs-lisp-mode)
+    (should (string= "wrap-emacs-lisp-done"
+                     (pel-string-with-major-mode "wrap-%s-done")))))
+
+(ert-deftest ert-test-pel-buffers-in-mode ()
+  "Test `pel-buffers-in-mode'."
+  (let* ((buf1 (get-buffer-create " *pel-test-bim-1*"))
+         (buf2 (get-buffer-create " *pel-test-bim-2*"))
+         (buf3 (get-buffer-create " *pel-test-bim-3*")))
+    (unwind-protect
+        (progn
+          (with-current-buffer buf1 (emacs-lisp-mode))
+          (with-current-buffer buf2 (text-mode))
+          (with-current-buffer buf3 (emacs-lisp-mode))
+          ;; Both buf1 and buf3 should appear.
+          (let ((result (pel-buffers-in-mode 'emacs-lisp-mode)))
+            (should (memq buf1 result))
+            (should (memq buf3 result))
+            (should-not (memq buf2 result)))
+          ;; Only buf2 for text-mode.
+          (let ((result (pel-buffers-in-mode 'text-mode)))
+            (should (memq buf2 result))
+            (should-not (memq buf1 result)))
+          ;; A mode with no buffers returns nil.
+          (should-not (pel-buffers-in-mode 'fundamental-mode-xyz-nonexistent)))
+      (kill-buffer buf1)
+      (kill-buffer buf2)
+      (kill-buffer buf3))))
+
 ;;; --------------------------------------------------------------------------
-;;; 3) OS/Env and Emacs environment helpers
+;;; ;;* Minor and Major Mode Utilities
+;;; --------------------------------------------------------------------------
+
+(ert-deftest pel--base-test/mode/buffers-in-mode-and-minor-mode-state ()
+  (let ((b1 (generate-new-buffer " *pel-base-b1*"))
+        (b2 (generate-new-buffer " *pel-base-b2*")))
+    (unwind-protect
+        (progn
+          (with-current-buffer b1 (emacs-lisp-mode))
+          (with-current-buffer b2 (fundamental-mode))
+          (let ((lst (pel-buffers-in-mode 'emacs-lisp-mode)))
+            (should (memq b1 lst))
+            (should-not (memq b2 lst))))
+      (kill-buffer b1)
+      (kill-buffer b2)))
+  (require 'abbrev)
+  (with-temp-buffer
+    (abbrev-mode -1)
+    (should (stringp (pel-minor-mode-state 'abbrev-mode nil)))
+    (abbrev-mode 1)
+    (should (stringp (pel-minor-mode-state 'abbrev-mode nil)))))
+
+(ert-deftest pel--base-test/mode/major-mode-symbol-for-and-value ()
+  (with-temp-buffer
+    (emacs-lisp-mode)
+    (let ((fmt "pel-test-%s-flag"))
+      (should (eq (pel-major-mode-symbol-for fmt) 'pel-test-emacs-lisp-flag))
+      (pel-set-major-mode-symbol fmt 42)
+      (should (= 42 (pel-major-mode-symbol-value fmt))))))
+
+(ert-deftest pel--base-test/mode/major-mode-symbol-value-or-default ()
+  (with-temp-buffer
+    (emacs-lisp-mode)
+    ;; Use a fresh, never-set format to exercise the default path
+    (let ((fmt2 "pel-test-%s-undefined-flag"))
+      (should (= 777 (pel-major-mode-symbol-value-or fmt2 777))))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Buffer Information
+;;; --------------------------------------------------------------------------
+
+(ert-deftest pel--base-test/buffer-info/file-ext-eol-and-cd ()
+  (pel--base-test--with-temp-dir tmpd
+    (let* ((f (pel--base-test--write-file tmpd "a.txt" "x\r\n"))
+           (buf (find-file-noselect f)))
+      (unwind-protect
+          (with-current-buffer buf
+            (should (string-suffix-p "a.txt" (pel-current-buffer-filename t)))
+            (should (string= "txt" (pel-current-buffer-file-extension)))
+            (setq buffer-file-coding-system 'utf-8-dos)
+            (should (memq (pel-current-buffer-eol-type) '(unix dos mac nil)))
+            (let ((orig default-directory))
+              (pel-cd-to-current :silent)
+              (should (pel--base-test--same-dir-p default-directory tmpd))
+              (cd orig)))
+        (kill-buffer buf)))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Current Directory
+;;;
+;;; (covered by pel--base-test/buffer-info/file-ext-eol-and-cd above)
+;;; --------------------------------------------------------------------------
+
+;;; --------------------------------------------------------------------------
+;;; ;;* OS Environment Utilities
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/os-env/terminal-and-ssh ()
@@ -672,6 +684,10 @@ was silently ignored and the current buffer was always queried."
     (should (pel-terminal-is-macos-terminal-p)))
   (let ((process-environment (cons "SSH_CLIENT=1.2.3.4 22 12345" process-environment)))
     (should (pel-running-under-ssh-p))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Emacs Environment Utilities
+;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/emacs-env/locate-user-emacs-file-and-loadpath ()
   (should (file-name-absolute-p (pel-locate-user-emacs-file "pel-base-test.tmp")))
@@ -685,7 +701,7 @@ was silently ignored and the current buffer was always queried."
       (should (not added2)))))
 
 ;;; --------------------------------------------------------------------------
-;;; 4) File system type helpers
+;;; ;;* File System Type
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/fs/type-preds-and-descriptions ()
@@ -703,7 +719,7 @@ was silently ignored and the current buffer was always queried."
         (error (ert-info ((format "Skipping symlink checks in %s" tmpd)) (should t)))))))
 
 ;;; --------------------------------------------------------------------------
-;;; 5) String predicates and transformations
+;;; ;;* String predicates
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest ert-test-pel-whitespace-in-str-p ()
@@ -795,6 +811,21 @@ was silently ignored and the current buffer was always queried."
   (should-not (pel-uppercase-p "AaBCDEFGHIJKL"))
   (should-not (pel-uppercase-p "a")))
 
+(ert-deftest ert-test-pel-alnum-p ()
+  "Test `pel-alnum-p'."
+  (should     (pel-alnum-p "abc"))
+  (should     (pel-alnum-p "ABC"))
+  (should     (pel-alnum-p "abc123"))
+  (should     (pel-alnum-p "123"))
+  ;; Punctuation or whitespace → nil.
+  (should-not (pel-alnum-p "abc!"))
+  (should-not (pel-alnum-p "abc def"))
+  (should-not (pel-alnum-p "abc.def"))
+  (should-not (pel-alnum-p "."))
+  (should-not (pel-alnum-p "-"))
+  ; empty string: no alnum chars
+  (should-not (pel-alnum-p "")))
+
 (ert-deftest pel--base-test/strings/predicates ()
   (should (integerp (pel-whitespace-in-str-p "a b")))
   (should-not (pel-whitespace-in-str-p "ab"))
@@ -813,22 +844,9 @@ was silently ignored and the current buffer was always queried."
   (should (pel-alnum-p "Abc123"))
   (should-not (pel-alnum-p "A!")))
 
-(ert-deftest ert-test-pel-alnum-p ()
-  "Test `pel-alnum-p'."
-  (should     (pel-alnum-p "abc"))
-  (should     (pel-alnum-p "ABC"))
-  (should     (pel-alnum-p "abc123"))
-  (should     (pel-alnum-p "123"))
-  ;; Punctuation or whitespace → nil.
-  (should-not (pel-alnum-p "abc!"))
-  (should-not (pel-alnum-p "abc def"))
-  (should-not (pel-alnum-p "abc.def"))
-  (should-not (pel-alnum-p "."))
-  (should-not (pel-alnum-p "-"))
-  ; empty string: no alnum chars
-  (should-not (pel-alnum-p "")))
-
-;; --
+;;; --------------------------------------------------------------------------
+;;; ;;* Pluralizer
+;;; --------------------------------------------------------------------------
 
 (ert-deftest ert-test-pel-plural-of ()
   "Test `pel-plural-of'."
@@ -884,7 +902,7 @@ was silently ignored and the current buffer was always queried."
   (should (equal "calves"   (pel-pluralize 3 "calf"))))
 
 ;;; --------------------------------------------------------------------------
-;;; 6) Symbol value helpers and presentation
+;;; ;;* Symbol value extraction
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest ert-test-pel-as-symbol ()
@@ -895,7 +913,55 @@ was silently ignored and the current buffer was always queried."
   (should (eq 'foo (pel-as-symbol "foo")))
   (should (symbolp (pel-as-symbol "bar"))))
 
-;; --
+(defvar pel--base-test-x)
+
+(ert-deftest pel--base-test/symbol/value-and-at-point ()
+  ;; pel-symbol-value
+  (set (make-symbol "pel--base-test-tmp") 99) ;; ensure no warning; not used below
+  (set 'pel--base-test-x 10)
+  (should (= 10 (pel-symbol-value 'pel--base-test-x)))
+  ;; pel--symbol-value (unknown vs quiet)
+  (should (equal (list 'pel--base-test-void "**is currently unbound!**")
+                 (pel--symbol-value 'pel--base-test-void)))
+  (should (eq nil (pel--symbol-value 'pel--base-test-void :quiet)))
+  ;; pel-as-symbol
+  (should (eq 'abc (pel-as-symbol 'abc)))
+  (should (eq 'abc (pel-as-symbol "abc")))
+  ;; pel-symbol-at-point returns string at point
+  (with-temp-buffer
+    (emacs-lisp-mode)
+    (insert "foo")
+    (goto-char 2)
+    (should (equal "foo" (pel-symbol-at-point)))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Symbol at point
+;;;
+;;; (covered by pel--base-test/symbol/value-and-at-point above)
+;;; --------------------------------------------------------------------------
+
+;;; --------------------------------------------------------------------------
+;;; ;;* String generation utilities
+;;; --------------------------------------------------------------------------
+
+(ert-deftest ert-test-pel-on-off-string ()
+  "Test `pel-on-off-string'."
+  (should (string= "on"     (pel-on-off-string t)))
+  (should (string= "off"    (pel-on-off-string nil)))
+  (should (string= "yes"    (pel-on-off-string t "yes" "no")))
+  (should (string= "no"     (pel-on-off-string nil "yes" "no")))
+  (should (string= "active" (pel-on-off-string 42 "active")))
+  (should (string= "off"    (pel-on-off-string nil nil "off"))))
+
+(ert-deftest ert-test-pel-yes-no-string ()
+  "Test `pel-yes-no-string'."
+  (should (string= "yes"  (pel-yes-no-string t)))
+  (should (string= "no"   (pel-yes-no-string nil)))
+  (should (string= "true" (pel-yes-no-string t "true" "false")))
+  (should (string= "false"(pel-yes-no-string nil "true" "false")))
+  (should (string= "yes"  (pel-yes-no-string 42)))
+  (should (string= "yes"  (pel-yes-no-string '(a b)))))
+
 ;; Top-level defvar declares a true dynamic (special) variable.
 (defvar pel--test-symbol-value-or-var nil
   "Dynamic variable used only by `ert-test-pel-symbol-value-or'.")
@@ -918,28 +984,6 @@ was silently ignored and the current buffer was always queried."
   ;; Unbound with no replacement → informative string is returned.
   (should (stringp (pel-symbol-value-or 'pel--unbound-xyz-test))))
 
-;; --
-
-(defvar pel--base-test-x)
-(ert-deftest pel--base-test/symbol/value-and-at-point ()
-  ;; pel-symbol-value
-  (set (make-symbol "pel--base-test-tmp") 99) ;; ensure no warning; not used below
-  (set 'pel--base-test-x 10)
-  (should (= 10 (pel-symbol-value 'pel--base-test-x)))
-  ;; pel--symbol-value (unknown vs quiet)
-  (should (equal (list 'pel--base-test-void "**is currently unbound!**")
-                 (pel--symbol-value 'pel--base-test-void)))
-  (should (eq nil (pel--symbol-value 'pel--base-test-void :quiet)))
-  ;; pel-as-symbol
-  (should (eq 'abc (pel-as-symbol 'abc)))
-  (should (eq 'abc (pel-as-symbol "abc")))
-  ;; pel-symbol-at-point returns string at point
-  (with-temp-buffer
-    (emacs-lisp-mode)
-    (insert "foo")
-    (goto-char 2)
-    (should (equal "foo" (pel-symbol-at-point)))))
-
 (ert-deftest pel--base-test/presentation/on-off-and-texts ()
   (should (string= "on"  (pel-on-off-string t)))
   (should (string= "off" (pel-on-off-string nil)))
@@ -957,72 +1001,15 @@ was silently ignored and the current buffer was always queried."
   (should (string= "no"  (pel-yes-no-string nil))))
 
 ;;; --------------------------------------------------------------------------
-;;; 7) Message/format helpers and list utilities
+;;; ;;* Automated Mode Activation Check
+;;;
+;;; (pel-modes-activating-symbol-name-for, pel-minor-mode-auto-activated-by,
+;;;  pel-activated-in-str, pel-option-mode-state — not yet covered by tests)
 ;;; --------------------------------------------------------------------------
 
-(ert-deftest pel--base-test/messages/formatters ()
-  (let* ((problems '("p1" "p2"))
-         (out (pel--format-problem-messages problems "System Test:")))
-    (should (string-match-p "System Test:" out))
-    (should (string-match-p "- p1" out))
-    (should (string-match-p "- p2" out)))
-  (let ((txt (pel-format-problem-messages '("x") nil "Intro: %s" "arg")))
-    (should (string-match-p "Intro:" txt)))
-  (let ((m (pel--base-test--capture-message
-            (pel-message-for "Intro" '("a" "b")))))
-    (should (string-match-p "Intro" m))
-    (should (string-match-p "a" m))
-    (should (string-match-p "b" m))))
-
-(ert-deftest pel--base-test/value-check/use-or-and-ops-on-seqs ()
-  (should (equal "Abc."
-                 (pel-use-or "abc" #'pel-hastext 0
-                             (lambda (s)
-                               (concat (upcase (substring s 0 1))
-                                       (substring s 1)))
-                             #'pel-end-text-with-period)))
-  ;; pel-concat-strings-in-list returns concatenated string; for 5 items length=5
-  (should (= 5 (length (pel-concat-strings-in-list '("a" "b" "c" "d" "e")))))
-  (let ((lst '(1 2 3 4)))
-    (pel-prepend-to lst '(22))
-    (should (equal '(22 1 2 3 4) lst))
-    (pel-prepend-to lst '(33 44))
-    (should (equal '(33 44 22 1 2 3 4) lst)))
-  (let ((al '((one (".." "[..]")))))
-    (should (equal '((one (",," "[,,]") (".." "[..]")))
-                   (pel-cons-alist-at al 'one '(",,"
-                                                "[,,]")))))
-  (should (= 1 (pel-nth-elt 'b '(a b c d))))
-  (should (equal '(a new b c d) (pel-list-insert-before '(a b c d) 1 'new)))
-  (should (equal '(c a b d)     (pel-list-prepend-nth   '(a b c d) 2)))
-  (should (equal '(b c a d)     (pel-list-insert-car-at '(a b c d) 2)))
-  (should (equal '(c d)         (pel-delqs '(a b) '(a b c d)))))
-
-(ert-deftest pel--base-test/auto-mode-alist/delete ()
-  (let ((auto-mode-alist
-         '(("\\.foo\\'" . text-mode)
-           ("\\.bar\\'" . fundamental-mode)
-           ("\\.baz\\'" . text-mode))))
-    (pel-delete-from-auto-mode-alist 'text-mode)
-    (should (equal '(("\\.bar\\'" . fundamental-mode)) auto-mode-alist))))
-
-(ert-deftest ert-test-pel-on-off-string ()
-  "Test `pel-on-off-string'."
-  (should (string= "on"     (pel-on-off-string t)))
-  (should (string= "off"    (pel-on-off-string nil)))
-  (should (string= "yes"    (pel-on-off-string t "yes" "no")))
-  (should (string= "no"     (pel-on-off-string nil "yes" "no")))
-  (should (string= "active" (pel-on-off-string 42 "active")))
-  (should (string= "off"    (pel-on-off-string nil nil "off"))))
-
-(ert-deftest ert-test-pel-yes-no-string ()
-  "Test `pel-yes-no-string'."
-  (should (string= "yes"  (pel-yes-no-string t)))
-  (should (string= "no"   (pel-yes-no-string nil)))
-  (should (string= "true" (pel-yes-no-string t "true" "false")))
-  (should (string= "false"(pel-yes-no-string nil "true" "false")))
-  (should (string= "yes"  (pel-yes-no-string 42)))
-  (should (string= "yes"  (pel-yes-no-string '(a b)))))
+;;; --------------------------------------------------------------------------
+;;; ;;* String transformation utilities
+;;; --------------------------------------------------------------------------
 
 (ert-deftest ert-test-pel-as-string ()
   "Test `pel-as-string'."
@@ -1132,6 +1119,28 @@ was silently ignored and the current buffer was always queried."
   (should (string= (pel-shell-quote-path-keep-glob "*-[a-c]def.*")
                    "*-[a-c]def.*")))
 
+;;; --------------------------------------------------------------------------
+;;; ;;* Message List formatting
+;;; --------------------------------------------------------------------------
+
+(ert-deftest pel--base-test/messages/formatters ()
+  (let* ((problems '("p1" "p2"))
+         (out (pel--format-problem-messages problems "System Test:")))
+    (should (string-match-p "System Test:" out))
+    (should (string-match-p "- p1" out))
+    (should (string-match-p "- p2" out)))
+  (let ((txt (pel-format-problem-messages '("x") nil "Intro: %s" "arg")))
+    (should (string-match-p "Intro:" txt)))
+  (let ((m (pel--base-test--capture-message
+            (pel-message-for "Intro" '("a" "b")))))
+    (should (string-match-p "Intro" m))
+    (should (string-match-p "a" m))
+    (should (string-match-p "b" m))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Value check
+;;; --------------------------------------------------------------------------
+
 (ert-deftest ert-test-pel-use-or ()
   "Test `pel-use-or'."
   ;; Value satisfies check → return it.
@@ -1147,6 +1156,33 @@ was silently ignored and the current buffer was always queried."
   (should (eq 0 (pel-use-or "" #'pel-hastext 0
                              #'capitalize))))
 
+(ert-deftest pel--base-test/value-check/use-or-and-ops-on-seqs ()
+  (should (equal "Abc."
+                 (pel-use-or "abc" #'pel-hastext 0
+                             (lambda (s)
+                               (concat (upcase (substring s 0 1))
+                                       (substring s 1)))
+                             #'pel-end-text-with-period)))
+  ;; pel-concat-strings-in-list returns concatenated string; for 5 items length=5
+  (should (= 5 (length (pel-concat-strings-in-list '("a" "b" "c" "d" "e")))))
+  (let ((lst '(1 2 3 4)))
+    (pel-prepend-to lst '(22))
+    (should (equal '(22 1 2 3 4) lst))
+    (pel-prepend-to lst '(33 44))
+    (should (equal '(33 44 22 1 2 3 4) lst)))
+  (let ((al '((one (".." "[..]")))))
+    (should (equal '((one (",," "[,,]") (".." "[..]")))
+                   (pel-cons-alist-at al 'one '(",,"
+                                                "[,,]")))))
+  (should (= 1 (pel-nth-elt 'b '(a b c d))))
+  (should (equal '(a new b c d) (pel-list-insert-before '(a b c d) 1 'new)))
+  (should (equal '(c a b d)     (pel-list-prepend-nth   '(a b c d) 2)))
+  (should (equal '(b c a d)     (pel-list-insert-car-at '(a b c d) 2)))
+  (should (equal '(c d)         (pel-delqs '(a b) '(a b c d)))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Operations on sequences
+;;; --------------------------------------------------------------------------
 
 (ert-deftest ert-test-pel-concat-strings-in-list ()
   "Test `pel-concat-strings-in-list'."
@@ -1213,69 +1249,20 @@ was silently ignored and the current buffer was always queried."
   (should (equal '()        (pel-delqs '(a b c d) '(a b c d))))
   (should (equal '(a b)     (pel-delqs '() '(a b)))))
 
-;; --
+;;; --------------------------------------------------------------------------
+;;; ;;* Operation on auto-mode-alist
+;;; --------------------------------------------------------------------------
 
-(ert-deftest ert-test-pel-val-or-default ()
-  "Test `pel-val-or-default'."
-  (should (eq 42      (pel-val-or-default 42 99)))
-  (should (eq 99      (pel-val-or-default nil 99)))
-  (should (string= "x" (pel-val-or-default "x" "y")))
-  (should (string= "y"  (pel-val-or-default nil "y")))
-  (should (eq 'sym    (pel-val-or-default 'sym 'other))))
-
-;; --
-
-(defvar pel--test-toggle-flag nil
-  "Dynamic flag variable used only by `ert-test-pel-toggle'.")
-
-(ert-deftest ert-test-pel-toggle ()
-  "Test `pel-toggle'."
-  ;; Reset to a known state before each run.
-  (setq pel--test-toggle-flag nil)
-  (pel-toggle 'pel--test-toggle-flag)
-  (should (eq t   pel--test-toggle-flag))
-  (pel-toggle 'pel--test-toggle-flag)
-  (should (eq nil pel--test-toggle-flag))
-  ;; A second round-trip confirms symmetry.
-  (pel-toggle 'pel--test-toggle-flag)
-  (should (eq t   pel--test-toggle-flag))
-  ;; Passing a non-symbol should signal an error.
-  (should-error (pel-toggle 42))
-  (should-error (pel-toggle "string")))
-
-;; --
-
-(ert-deftest ert-test-pel-hook-symbol-for ()
-  "Test `pel-hook-symbol-for'."
-  (should (eq 'emacs-lisp-mode-hook (pel-hook-symbol-for 'emacs-lisp-mode)))
-  (should (eq 'text-mode-hook       (pel-hook-symbol-for 'text-mode)))
-  (should (eq 'c-mode-hook          (pel-hook-symbol-for 'c-mode))))
-
-(ert-deftest ert-test-pel-base-action-for ()
-  "Test pel-action-for."
-  ;; test toggle request
-  (should (eq (pel-action-for nil nil) 'activate ))
-  (should (eq (pel-action-for nil t)   'deactivate ))
-  (should (eq (pel-action-for 0   nil) 'activate ))
-  (should (eq (pel-action-for 0   t)   'deactivate ))
-  ;; test activate request
-  (should (eq (pel-action-for 1 nil)   'activate ))
-  (should (eq (pel-action-for 1 t)      nil))
-  (should (eq (pel-action-for 10 nil)  'activate ))
-  (should (eq (pel-action-for 10 t)      nil))
-  ;; test activate with a list - as C-u would cause
-  (should (eq (pel-action-for '(4) nil)   'activate ))
-  (should (eq (pel-action-for '(4) t)      nil))
-  (should (eq (pel-action-for '(16) nil)  'activate ))
-  (should (eq (pel-action-for '(16) t)     nil))
-  ;; test deactivate request
-  (should (eq (pel-action-for -1 nil)   nil ))
-  (should (eq (pel-action-for -1 t)     'deactivate))
-  (should (eq (pel-action-for -10 nil)  nil))
-  (should (eq (pel-action-for -10 t)    'deactivate)))
+(ert-deftest pel--base-test/auto-mode-alist/delete ()
+  (let ((auto-mode-alist
+         '(("\\.foo\\'" . text-mode)
+           ("\\.bar\\'" . fundamental-mode)
+           ("\\.baz\\'" . text-mode))))
+    (pel-delete-from-auto-mode-alist 'text-mode)
+    (should (equal '(("\\.bar\\'" . fundamental-mode)) auto-mode-alist))))
 
 ;;; --------------------------------------------------------------------------
-;;; 8) Build utils and Tree‑sitter (stubbed where needed)
+;;; ;;* PEL utils rebuild
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/utils/rebuild-utils/no-utils-dir-warning ()
@@ -1285,10 +1272,12 @@ was silently ignored and the current buffer was always queried."
     (should (or (null warn)
                 (string-match-p "utils directory" warn)))))
 
+;;; --------------------------------------------------------------------------
+;;; ;;* Tree-sitter major mode support
+;;; --------------------------------------------------------------------------
+
 (ert-deftest pel--base-test/treesit/mode-remap-and-supported-p ()
-  "Deterministic across environments. If the implementation consults
-`pel-treesit-ready-p', verify that readiness influences the result;
-otherwise verify consistent boolean results with a remap present."
+  "Deterministic across environments."
   (let ((pel-uses-tree-sitter t)
         (major-mode-remap-alist '((c-mode . c-ts-mode))))
     (let* ((baseline (pel-major-ts-mode-supported-p 'c))
@@ -1316,7 +1305,6 @@ otherwise verify consistent boolean results with a remap present."
         (should (eq res-nil baseline))
         (should (eq res-t   baseline))))))
 
-
 (ert-deftest pel--base-test/treesit/ready-and-grammar-stubbed ()
   ;; Force the 'ready' branch deterministically
   (let* ((pel-emacs-30-or-later-p t)
@@ -1333,8 +1321,31 @@ otherwise verify consistent boolean results with a remap present."
       (should (string= (pel-file-md5 f) expect)))))
 
 ;;; --------------------------------------------------------------------------
-;;; 9) Actions, toggles, symbols/hooks
+;;; ;;* Mode argument interpretation
 ;;; --------------------------------------------------------------------------
+
+(ert-deftest ert-test-pel-base-action-for ()
+  "Test pel-action-for."
+  ;; test toggle request
+  (should (eq (pel-action-for nil nil) 'activate ))
+  (should (eq (pel-action-for nil t)   'deactivate ))
+  (should (eq (pel-action-for 0   nil) 'activate ))
+  (should (eq (pel-action-for 0   t)   'deactivate ))
+  ;; test activate request
+  (should (eq (pel-action-for 1 nil)   'activate ))
+  (should (eq (pel-action-for 1 t)      nil))
+  (should (eq (pel-action-for 10 nil)  'activate ))
+  (should (eq (pel-action-for 10 t)      nil))
+  ;; test activate with a list - as C-u would cause
+  (should (eq (pel-action-for '(4) nil)   'activate ))
+  (should (eq (pel-action-for '(4) t)      nil))
+  (should (eq (pel-action-for '(16) nil)  'activate ))
+  (should (eq (pel-action-for '(16) t)     nil))
+  ;; test deactivate request
+  (should (eq (pel-action-for -1 nil)   nil ))
+  (should (eq (pel-action-for -1 t)     'deactivate))
+  (should (eq (pel-action-for -10 nil)  nil))
+  (should (eq (pel-action-for -10 t)    'deactivate)))
 
 (ert-deftest pel--base-test/action/interpretation ()
   (should (eq 'activate   (pel-action-for nil nil)))
@@ -1343,6 +1354,10 @@ otherwise verify consistent boolean results with a remap present."
   (should (eq nil         (pel-action-for 1 t)))
   (should (eq nil         (pel-action-for -1 nil)))
   (should (eq 'deactivate (pel-action-for -1 t))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Toggle a local mode
+;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/toggle-mode/abbrev ()
   (require 'abbrev)
@@ -1354,8 +1369,30 @@ otherwise verify consistent boolean results with a remap present."
                   (pel-toggle-mode-and-show 'abbrev-mode))))
         (should (stringp msg))))))
 
-;; Use defvar for dynamic binding tests
+;;; --------------------------------------------------------------------------
+;;; ;;* Toggle of values and variables
+;;; --------------------------------------------------------------------------
+
+(defvar pel--test-toggle-flag nil
+  "Dynamic flag variable used only by `ert-test-pel-toggle'.")
+
+(ert-deftest ert-test-pel-toggle ()
+  "Test `pel-toggle'."
+  ;; Reset to a known state before each run.
+  (setq pel--test-toggle-flag nil)
+  (pel-toggle 'pel--test-toggle-flag)
+  (should (eq t   pel--test-toggle-flag))
+  (pel-toggle 'pel--test-toggle-flag)
+  (should (eq nil pel--test-toggle-flag))
+  ;; A second round-trip confirms symmetry.
+  (pel-toggle 'pel--test-toggle-flag)
+  (should (eq t   pel--test-toggle-flag))
+  ;; Passing a non-symbol should signal an error.
+  (should-error (pel-toggle 42))
+  (should-error (pel-toggle "string")))
+
 (defvar pel--t-flag2 nil)
+
 (ert-deftest pel--base-test/toggle/variables-and-show ()
   (let ((pel--t-flag2 nil))
     (should (eq t  (pel-toggle 'pel--t-flag2)))
@@ -1372,24 +1409,70 @@ otherwise verify consistent boolean results with a remap present."
   (should (eq 7 (pel-val-or-default nil 7)))
   (should (eq 5 (pel-val-or-default 5 7))))
 
+(ert-deftest ert-test-pel-val-or-default ()
+  "Test `pel-val-or-default'."
+  (should (eq 42      (pel-val-or-default 42 99)))
+  (should (eq 99      (pel-val-or-default nil 99)))
+  (should (string= "x" (pel-val-or-default "x" "y")))
+  (should (string= "y"  (pel-val-or-default nil "y")))
+  (should (eq 'sym    (pel-val-or-default 'sym 'other))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Symbol processing
+;;; --------------------------------------------------------------------------
+
+(ert-deftest ert-test-pel-hook-symbol-for ()
+  "Test `pel-hook-symbol-for'."
+  (should (eq 'emacs-lisp-mode-hook (pel-hook-symbol-for 'emacs-lisp-mode)))
+  (should (eq 'text-mode-hook       (pel-hook-symbol-for 'text-mode)))
+  (should (eq 'c-mode-hook          (pel-hook-symbol-for 'c-mode))))
+
 (ert-deftest pel--base-test/symbols/hook-and-map ()
   (should (eq 'text-mode-hook (pel-hook-symbol-for 'text-mode)))
   (should (eq 'text-mode-map  (pel-map-symbol-for  'text-mode))))
 
+;;; --------------------------------------------------------------------------
+;;; ;;* Hook control
+;;; --------------------------------------------------------------------------
+
 (defvar pel--t-my-modes '(emacs-lisp-mode))
+
 (ert-deftest pel--base-test/hooks/add-hook-for ()
   (let ((pel--t-my-modes '(emacs-lisp-mode fundamental-mode))
         (emacs-lisp-mode-hook nil))
     (pel-add-hook-for 'pel--t-my-modes #'ignore '(emacs-lisp-mode))
     (should (memq #'ignore emacs-lisp-mode-hook))))
 
+;;; --------------------------------------------------------------------------
+;;; ;;* Minor mode activation
+;;; --------------------------------------------------------------------------
+
 (defvar pel--t-fake-list nil)
+
 (ert-deftest pel--base-test/minor-modes/check-minor-modes-in ()
   (should (>= (pel--check-minor-modes-in 'pel--t-fake-list '(no-such-mode)) 0))
   (should (>= (pel-check-minor-modes-in pel--t-fake-list) 0)))
 
 ;;; --------------------------------------------------------------------------
-;;; 10) Text at point and navigation
+;;; ;;* Argument converter
+;;;
+;;; (pel-multiplier, pel-mode-toggle-arg — not yet covered by dedicated tests)
+;;; --------------------------------------------------------------------------
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Iteration helpers
+;;;
+;;; (pel-dec, pel-inc — not yet covered by dedicated tests)
+;;; --------------------------------------------------------------------------
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Swap 2 values
+;;;
+;;; (pel-swap — not yet covered by dedicated tests)
+;;; --------------------------------------------------------------------------
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Text at point
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/point/chars-and-letter-case ()
@@ -1401,6 +1484,10 @@ otherwise verify consistent boolean results with a remap present."
     (should (pel-at-lowercase-p :exact))
     (goto-char 2)
     (should (pel-at-uppercase-p 1 :exact))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Calling functions
+;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/point/n-funcall-to-goto-helpers ()
   (let ((pos 0) (neg 0))
@@ -1419,6 +1506,16 @@ otherwise verify consistent boolean results with a remap present."
     (should (= (current-column) 1))
     (should-error (pel-goto-line 0))))
 
+;;; --------------------------------------------------------------------------
+;;; ;;* Moving Point
+;;;
+;;; (covered by pel--base-test/point/n-funcall-to-goto-helpers above)
+;;; --------------------------------------------------------------------------
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Line position
+;;; --------------------------------------------------------------------------
+
 (ert-deftest pel--base-test/point/same-line-p-and-region-for ()
   (with-temp-buffer
     (insert "A\nSTART here\nMIDDLE\nEND here\nZ\n")
@@ -1429,7 +1526,13 @@ otherwise verify consistent boolean results with a remap present."
       (should (integerp (cdr reg))))))
 
 ;;; --------------------------------------------------------------------------
-;;; 11) Insert/overwrite, extract text, shebang, code, whitespace
+;;; ;;* Identifying region
+;;;
+;;; (covered by pel--base-test/point/same-line-p-and-region-for above)
+;;; --------------------------------------------------------------------------
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Insert or overwrite text
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/insert/overwrite-or-insert ()
@@ -1446,6 +1549,10 @@ otherwise verify consistent boolean results with a remap present."
       (pel-insert-or-overwrite ?Y)
       (should (string= "aYc" (buffer-string))))))
 
+;;; --------------------------------------------------------------------------
+;;; ;;* Extract text from buffer
+;;; --------------------------------------------------------------------------
+
 (ert-deftest pel--base-test/extract/text-from-bol ()
   (with-temp-buffer
     (insert "hello\nworld\n")
@@ -1454,26 +1561,8 @@ otherwise verify consistent boolean results with a remap present."
     (search-forward "wor")           ; point just after "wor"
     (should (string= "wor" (pel-text-from-beginning-of-line)))))
 
-(ert-deftest pel--base-test/code/checks ()
-  (with-temp-buffer
-    (emacs-lisp-mode)
-    (insert "\"str\" ; com\nx\n")
-    (goto-char 2) (should-not (pel-inside-code))
-    (goto-char 9) (should-not (pel-inside-code))
-    (goto-char (point-max)) (backward-char)
-    (should (pel-inside-code))))
-
-(ert-deftest pel--base-test/shebang/has-line ()
-  (with-temp-buffer
-    (insert "#!/usr/bin/env bash\nx\n")
-    (goto-char 1)
-    (should (pel-has-shebang-line)))
-  (with-temp-buffer
-    (insert "not-shebang\n")
-    (should-not (pel-has-shebang-line))))
-
 ;;; --------------------------------------------------------------------------
-;;; Tests for `pel-line-has-only-whitespace-p'
+;;; ;;* Check text in buffer
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/line/only-whitespace-p ()
@@ -1513,8 +1602,26 @@ otherwise verify consistent boolean results with a remap present."
     (goto-char (point-min))
     (should-not (pel-line-has-only-whitespace-p))))
 
+(ert-deftest pel--base-test/code/checks ()
+  (with-temp-buffer
+    (emacs-lisp-mode)
+    (insert "\"str\" ; com\nx\n")
+    (goto-char 2) (should-not (pel-inside-code))
+    (goto-char 9) (should-not (pel-inside-code))
+    (goto-char (point-max)) (backward-char)
+    (should (pel-inside-code))))
+
+(ert-deftest pel--base-test/shebang/has-line ()
+  (with-temp-buffer
+    (insert "#!/usr/bin/env bash\nx\n")
+    (goto-char 1)
+    (should (pel-has-shebang-line)))
+  (with-temp-buffer
+    (insert "not-shebang\n")
+    (should-not (pel-has-shebang-line))))
+
 ;;; --------------------------------------------------------------------------
-;;; 12) File paths and URLs
+;;; ;;* File Path processing
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest ert-test-pel-normalize-fname ()
@@ -1592,7 +1699,7 @@ otherwise verify consistent boolean results with a remap present."
         (error (ert-info ((format "Skipping symlink ops in %s" d)) (should t)))))))
 
 ;;; --------------------------------------------------------------------------
-;;; 13) Insertion helpers, pretty-print, movement, print, parse, byte-compile, imenu, TAGS, portability
+;;; ;;* Insertion of text in current buffer
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/insertions/bold-url-symbol-and-lists ()
@@ -1615,7 +1722,10 @@ otherwise verify consistent boolean results with a remap present."
     (pel--pp '(:a 1 :b 2) (current-buffer) "  ")
     (should (string-match-p ":a" (buffer-string)))))
 
-;; pel-move-right-by — core behavior and invariants
+;;; --------------------------------------------------------------------------
+;;; ;;* Move point right, optionally inserting spaces
+;;; --------------------------------------------------------------------------
+
 (ert-deftest pel--base-test/move-right-by/basic-and-eob ()
   (with-temp-buffer
     (insert "0123456789\n")
@@ -1626,6 +1736,10 @@ otherwise verify consistent boolean results with a remap present."
     (goto-char (point-max))
     (pel-move-right-by 3)
     (should (= 8 (current-column)))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Print in dedicated buffer
+;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/print/into-named-buffer ()
   (let ((bufname "*PEL Print Test*"))
@@ -1640,6 +1754,10 @@ otherwise verify consistent boolean results with a remap present."
               (should (string-match-p "Body"  (buffer-string)))))
         (when b (kill-buffer b))))))
 
+;;; --------------------------------------------------------------------------
+;;; ;;* Code Parsing Support
+;;; --------------------------------------------------------------------------
+
 (ert-deftest pel--base-test/parse/point-in-comment-or-docstring ()
   (with-temp-buffer
     (emacs-lisp-mode)
@@ -1650,6 +1768,10 @@ otherwise verify consistent boolean results with a remap present."
     (search-forward "\"")
     (forward-char 1)
     (should (pel-point-in-comment-or-docstring #'ignore))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Byte-compilation
+;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/byte-compile/if-needed-stubs ()
   (pel--base-test--with-temp-dir d
@@ -1664,6 +1786,10 @@ otherwise verify consistent boolean results with a remap present."
         (pel-byte-compile-if-needed src)
         (should (= 1 calls))))))
 
+;;; --------------------------------------------------------------------------
+;;; ;;* Imenu Utilities
+;;; --------------------------------------------------------------------------
+
 (ert-deftest pel--base-test/imenu/add-sections-to ()
   (let ((lisp-imenu-generic-expression nil))
     (pel-add-imenu-sections-to
@@ -1673,6 +1799,10 @@ otherwise verify consistent boolean results with a remap present."
     (should (consp lisp-imenu-generic-expression))
     (should (cl-some (lambda (e) (string-match-p "defun" (cadr e)))
                      lisp-imenu-generic-expression))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Tags support
+;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/tags/visit-tags-stubbed ()
   (pel--base-test--with-temp-dir d
@@ -1684,6 +1814,10 @@ otherwise verify consistent boolean results with a remap present."
                    (lambda (f) (push f calls))))
           (pel-visit-tags (list local))
           (should (>= (length calls) 1)))))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Portability
+;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/portability/executable-find-and-config-features ()
   (should (stringp (or (pel-executable-find "sh")
