@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, March 28 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 16:09:38 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 16:54:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -73,6 +73,11 @@ The original value is restored on exit."
 (ert-deftest pel-ffind-inpath/nil-paths-returns-nil ()
   "Passing nil as PATHS returns nil without signalling an error."
   (should (null (pel-ffind-inpath "anything.h" nil))))
+
+(ert-deftest pel-ffind-inpath/absolute-filename-signals-user-error ()
+  "Signals `user-error' when FILENAME is absolute."
+  (let ((abs (expand-file-name "abs.h" temporary-file-directory)))
+    (should-error (pel-ffind-inpath abs nil) :type 'user-error)))
 
 (ert-deftest pel-ffind-inpath/file-absent-returns-nil ()
   "Returns nil when the requested file is not in any listed directory."
@@ -317,6 +322,12 @@ and must signal `user-error', not silently return nil."
   (let ((only-seps (make-string 3 (string-to-char path-separator))))
     (pel-ffind-inpath-test--with-env "INCLUDE" only-seps
       (should-error (pel-ffind-inpath-include "any.h") :type 'user-error))))
+
+(ert-deftest pel-ffind-inpath-include/absolute-filename-signals-user-error ()
+  "Signals `user-error' when FILENAME is absolute."
+  (pel-ffind-inpath-test--with-env "INCLUDE" temporary-file-directory
+    (let ((abs (expand-file-name "abs.h" temporary-file-directory)))
+      (should-error (pel-ffind-inpath-include abs) :type 'user-error))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-ffind-inpath-test)
