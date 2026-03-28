@@ -1,13 +1,13 @@
-;;; pel-ffind-inpath.el --- PEL file find searching in specified directories.  -*- lexical-binding: t; -*-
+;;; pel-ffind-inpath.el --- PEL file find searching in specified directories  -*- lexical-binding: t; -*-
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 22:38:25 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 15:07:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -46,53 +46,57 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--base)            ; use: `pel-list-of'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
-(defun pel-ffind-inpath (filename path)
+(defun pel-ffind-inpath (filename paths)
   "Find FILENAME from the directories identified in PATH.
 
 FILENAME must be a string that represent a file name.  The
-filename must not have a absolute path but may have a partial
+filename must not have a absolute paths but may have a partial
 relative path.
 
-PATH must be a list of directories; those directories are
-searched.  Only files located in the directories listed are
-found; this function does *not* perform a directory tree search.
+PATHS is either a directory name string or a list of directories; those
+directories are searched.  Only files located in the directories listed
+are found; this function does *not* perform a directory tree search.
 
 The function returns a list of file names with absolute path.
 If several files are found they are returned in the order of the directories
-in the PATH.  If nothing is found the function returns nil.
+in PATHS.  If nothing is found the function returns nil.
 
 Note that this function is similar to Emacs built-in
 `locate-file' except that `locate-file' only returns the first
 found file and `pel-ffind-inpath' returns all files found."
   (let ((found-fnames nil)
         fname)
-    (dolist (dir path (nreverse found-fnames))
+    (dolist (dir (pel-list-of paths) (nreverse found-fnames))
       (setq fname (expand-file-name filename dir))
       (when (file-exists-p fname)
         (push fname found-fnames)))))
 
 (defun pel-ffind-inpath-include (filename &optional include-env-var)
-  "Find file FILENAME in the directories identified by the INCLUDE env variable.
+  "Find file FILENAME in the directories identified by environment variable.
 
 The function search in the directories identified by the INCLUDE
 environment variable unless another environment variable is
 specified by the INCLUDE-ENV-VAR optional argument.
 
-The function issues an error if the specified environment
-variable does not exist or it has no value."
-  (let ((path (split-string
-               (or (getenv (or include-env-var "INCLUDE")) "")
-               path-separator)))
-    (if path
-        (pel-ffind-inpath filename path)
-      (user-error
-       (format "Environment variable %s does not exist or holds no value"
-               (or include-env-var "INCLUDE"))))))
+It returns a list of absolute path strings, the name of the found
+file or files found in the directories identified by the environment variable.
+
+The function issues a user-error if the specified environment variable
+does not exist or it has no value."
+  (let* ((envvar-name (or include-env-var "INCLUDE"))
+         (envvar-value (getenv envvar-name))
+         (paths (when envvar-value
+                  (split-string envvar-value path-separator))))
+    (if paths
+        (pel-ffind-inpath filename paths)
+      (user-error "Environment variable %s does not exist or holds no value"
+                  envvar-name))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-ffind-inpath)
