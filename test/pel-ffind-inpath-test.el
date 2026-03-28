@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, March 28 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 17:05:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 17:14:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -75,9 +75,10 @@ The original value is restored on exit."
   (should (null (pel-ffind-inpath "anything.h" nil))))
 
 (ert-deftest pel-ffind-inpath/absolute-filename-signals-user-error ()
-  "Signals `user-error' when FILENAME is absolute."
-  (let ((abs (expand-file-name "abs.h" temporary-file-directory)))
-    (should-error (pel-ffind-inpath abs nil) :type 'user-error)))
+  "Signals `user-error' when FILENAME is absolute, regardless of PATHS."
+  (pel-ffind-inpath-test--with-temp-dir tmpdir
+    (let ((abs (expand-file-name "abs.h" temporary-file-directory)))
+      (should-error (pel-ffind-inpath abs (list tmpdir)) :type 'user-error))))
 
 (ert-deftest pel-ffind-inpath/absolute-filename-error-contains-path ()
   "The user-error message includes the offending absolute filename."
