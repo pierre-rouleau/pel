@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 15:42:24 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-28 15:52:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -92,7 +92,7 @@ The function issues a user-error if the specified environment variable
 does not exist or it has no value."
   (let* ((envvar-name (or include-env-var "INCLUDE"))
          (envvar-value (getenv envvar-name))
-         (paths (when (and envvar-value (not (string-empty-p envvar-value)))
+         (paths (when (and envvar-value (not (string= envvar-value "")))
                   ;; - remove empty entries (when 2 path-separators are used)
                   ;; - trim leading and trailing whitespace
                   ;; - remove duplicates
