@@ -5446,6 +5446,14 @@ For %s this method may not be as useful as for other languages." lang-title)))
          (docstr1 (format-spec "\
 Extra directory trees recursively searched by the %S %f search.
 
+Each directory may start with ~ to identify the home directory.
+You can also use environment variables inside the directory names;
+those environment variables will be expanded.
+
+  For example \"$HOME/foo\" will be expanded to the foo sub-directory
+  under the user\\='s home directory.  You can use the reference to the
+  environment variable inside other parts of the directory path.
+
 This complements the %f search method identified by the
 `pel-%s-file-finder-method' user-option."
                                `((?f . ,f-type)
@@ -5453,7 +5461,7 @@ This complements the %f search method identified by the
                                  (?S . ,lang-title))))
          (m2-name (intern (format "pel-%s-file-finder-method" lang)))
          (docstr2 (format-spec "\
-Set method used by `pel-open-at-point' to search %S %fs.
+Method used by `pel-open-at-point' to search %S %fs.
 
 PEL supports 4 methods to search for %S %fs.
 
