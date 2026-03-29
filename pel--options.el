@@ -5573,8 +5573,8 @@ The 4 search methods are:
   are also searched recursively using the tool selected by
   `pel-ffind-executable’.
 
-  The directory path name strings in each list can refer to environment
-  variables using the $VARNAME syntax.
+  The directory path name strings in each list can start with ~ and
+  refer to environment variables using the $VARNAME syntax.
 
   %H
 

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-29 10:34:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-29 10:52:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -48,6 +48,7 @@
 (require 'pel-file)              ; use: `pel-filename-at-point-finders'
 (require 'pel-ffind)             ; use: `pel-ffind-project-directory',
 ;;                               ;      `pel-generic-find-file'
+;;                               ;      `pel-ffind-dirname-expanded'
 (require 'pel-ffind-inpath)      ; use: `pel-ffind-inpath-include'
 (require 'pel-ini)               ; use: `pel-ini-load'
 (eval-when-compile
@@ -237,7 +238,10 @@ of strings, the finder is set to also search in those directory trees."
          (eq (length file-finder-method) 2))
     (let ((path-list (apply 'append file-finder-method)))
       ;; expand any reference to an environment variable in path-names
-      (setq path-list (mapcar (function pel-substitute-in-file-name) path-list))
+      (setq path-list
+            (mapcar (function expand-file-name)
+                    (mapcar (function pel-substitute-in-file-name)
+                            path-list)))
       (setq pel-filename-at-point-finders
             (list
              (lambda (fn)

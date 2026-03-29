@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-29 10:36:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-29 10:48:12 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -37,7 +37,7 @@
 ;;   * `pel-ffind'
 ;;     - `pel-ffind-command'
 ;;       - `pel--ffind-select-tool'
-;;       - `pel--ffind-dirname-expanded'
+;;       - `pel-ffind-dirname-expanded'
 ;;         - `pel-substitute-in-file-name'
 ;;           - `pel-envar-in-string'
 ;;
@@ -87,10 +87,18 @@ an environment variable referenced in FILENAME is unknown."
   ;; then return the string with  everything substituted.
   (substitute-in-file-name filename))
 
-;; ---------------------------------------------------------------------------
+(defun pel-ffind-dirname-expanded (dirname)
+  "Return DIRNAME in quote, expanded and without trailing slash.
+Substitute the ~ with the home directory.
+Replace the name of environment variables with their values."
+  (format "'%s'" (directory-file-name
+                  (expand-file-name
+                   (pel-substitute-in-file-name  dirname)))))
 
+;; ---------------------------------------------------------------------------
 (defvar pel--ffind-executable nil
   "Adjusted value of `pel-ffind-executable.")
+
 (defvar pel--ffind-path nil
   "Full path of fd/fdfind/find executable used.")
 
@@ -122,14 +130,6 @@ pel-ffind-executable requests fd but its not available: using find instead."
 pel--ffind-executable attempts to use %s, but it is not available!" choice))
     (cons choice exe-path)))
 
-(defun pel--ffind-dirname-expanded (dirname)
-  "Return DIRNAME in quote, expanded and without trailing slash.
-Substitute the ~ with the home directory.
-Replace the name of environment variables with their values."
-  (format "'%s'" (directory-file-name
-                  (expand-file-name
-                   (pel-substitute-in-file-name  dirname)))))
-
 (defun pel-ffind-command (filename directories)
   "Return a ffind command searching for FILENAME in DIRECTORIES.
 
@@ -148,10 +148,10 @@ whether the VCS setting (like the .gitignore file) is set to ignore them."
   (let ((file-basename (pel-shell-quote-path-keep-glob
                         (file-name-nondirectory filename)))
         (dirnames (if (> (length directories) 1)
-                      (string-join (mapcar #'pel--ffind-dirname-expanded
+                      (string-join (mapcar #'pel-ffind-dirname-expanded
                                            directories)
                                    " ")
-                    (pel--ffind-dirname-expanded (car directories)))))
+                    (pel-ffind-dirname-expanded (car directories)))))
 
     ;; Initialize tool selection and its path if not already done.
     (unless pel--ffind-executable
