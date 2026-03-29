@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-29 13:21:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-29 13:45:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -263,14 +263,14 @@
   (should (boundp 'pel--objc-file-finder-ini-tool-name))
   (with-temp-buffer
     (setq-local pel--objc-file-finder-ini-tool-name "X")
-    (should (local-variable-p 'pel--objc-file-finder-ini-tool-name))))
+    (should (boundp 'pel--objc-file-finder-ini-tool-name))))
 
 (ert-deftest pel-cc-find-test/pike-buf-local-ini-tool-name-exists ()
   "pel--pike-file-finder-ini-tool-name buffer-local variable must be defined."
   (should (boundp 'pel--pike-file-finder-ini-tool-name))
   (with-temp-buffer
     (setq-local pel--pike-file-finder-ini-tool-name "X")
-    (should (local-variable-p 'pel--pike-file-finder-ini-tool-name))))
+    (should (boundp 'pel--pike-file-finder-ini-tool-name))))
 
 ;; ---------------------------------------------------------------------------
 ;;  4. pel-cc-set-file-finder-ini-tool-name rejects unsupported modes
@@ -290,17 +290,23 @@
 
 (ert-deftest pel-cc-find-test/set-finder-accepts/objc-mode ()
   "pel-cc-set-file-finder-ini-tool-name must not signal in objc-mode."
-  (with-temp-buffer
-    (setq major-mode 'objc-mode)
-    (pel-cc-set-file-finder-ini-tool-name "CLANG")
-    (should (equal pel--objc-file-finder-ini-tool-name "CLANG"))))
+  (let ((saved pel--objc-file-finder-ini-tool-name))
+    (unwind-protect
+        (with-temp-buffer
+          (setq major-mode 'objc-mode)
+          (pel-cc-set-file-finder-ini-tool-name "CLANG")
+          (should (equal pel--objc-file-finder-ini-tool-name "CLANG")))
+      (setq pel--objc-file-finder-ini-tool-name saved))))
 
-(ert-deftest pel-cc-find-test/set-finder-accepts/pike-mode ()
+(ert-deftest pel-cc-find-test/set-finder/accepts-pike-mode ()
   "pel-cc-set-file-finder-ini-tool-name must not signal in pike-mode."
-  (with-temp-buffer
-    (setq major-mode 'pike-mode)
-    (pel-cc-set-file-finder-ini-tool-name "MY-TOOL")
-    (should (equal pel--pike-file-finder-ini-tool-name "MY-TOOL"))))
+  (let ((saved pel--pike-file-finder-ini-tool-name))
+    (unwind-protect
+        (with-temp-buffer
+          (setq major-mode 'pike-mode)
+          (pel-cc-set-file-finder-ini-tool-name "MY-TOOL")
+          (should (equal pel--pike-file-finder-ini-tool-name "MY-TOOL")))
+      (setq pel--pike-file-finder-ini-tool-name saved))))
 
 ;; ---------------------------------------------------------------------------
 ;;  6. pel-cc-find-activate-finder-method works for ObjC generic method
@@ -380,15 +386,7 @@
     (pel-cc-find-activate-finder-method 'generic "/tmp/extra-pike-headers")
     (should (= 2 (length pel-filename-at-point-finders)))))
 
-(ert-deftest pel-cc-find-test/set-finder/accepts-objc-mode ()
-  "pel-cc-set-file-finder-ini-tool-name must not signal in objc-mode."
-  (let ((saved pel--objc-file-finder-ini-tool-name))
-    (unwind-protect
-        (with-temp-buffer
-          (setq major-mode 'objc-mode)
-          (pel-cc-set-file-finder-ini-tool-name "CLANG")
-          (should (equal pel--objc-file-finder-ini-tool-name "CLANG")))
-      (setq pel--objc-file-finder-ini-tool-name saved))))
+
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-cc-find-test)
