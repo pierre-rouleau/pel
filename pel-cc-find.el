@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-29 11:59:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-29 12:27:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -63,7 +63,7 @@
 ;; content of the pel.ini file for the following major modes.  Others might be
 ;; added in the future.
 (defconst pel--c-file-finder-supported-modes '(awk-mode
-                                               c-mode c++-mode obj-mode
+                                               c-mode c++-mode objc-mode
                                                pike-mode)
   "List of major modes supported by the header file searching mechanism.")
 

@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-29 10:36:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-29 12:36:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -207,6 +207,145 @@
       ;; Should contain both "User option" and "buffer local" labels
       (should (string-match-p "User option" result))
       (should (string-match-p "buffer local" result)))))
+
+;; ---------------------------------------------------------------------------
+;;  1. pel--c-file-finder-supported-modes
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-test--supported-modes-contains-objc ()
+  "objc-mode must appear in pel--c-file-finder-supported-modes."
+  (should (memq 'objc-mode pel--c-file-finder-supported-modes)))
+
+(ert-deftest pel-test--supported-modes-contains-pike ()
+  "pike-mode must appear in pel--c-file-finder-supported-modes."
+  (should (memq 'pike-mode pel--c-file-finder-supported-modes)))
+
+(ert-deftest pel-test--supported-modes-no-obj-mode-typo ()
+  "obj-mode (typo) must NOT appear in pel--c-file-finder-supported-modes."
+  (should-not (memq 'obj-mode pel--c-file-finder-supported-modes)))
+
+;; ---------------------------------------------------------------------------
+;;  2. Generated user-option variables exist for ObjC and Pike
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-test--objc-file-finder-method-exists ()
+  "pel-objc-file-finder-method user-option must be defined."
+  (should (boundp 'pel-objc-file-finder-method)))
+
+(ert-deftest pel-test--objc-file-searched-extra-dir-trees-exists ()
+  "pel-objc-file-searched-extra-dir-trees user-option must be defined."
+  (should (boundp 'pel-objc-file-searched-extra-dir-trees)))
+
+(ert-deftest pel-test--objc-file-finder-ini-tool-name-exists ()
+  "pel-objc-file-finder-ini-tool-name user-option must be defined."
+  (should (boundp 'pel-objc-file-finder-ini-tool-name)))
+
+(ert-deftest pel-test--pike-file-finder-method-exists ()
+  "pel-pike-file-finder-method user-option must be defined."
+  (should (boundp 'pel-pike-file-finder-method)))
+
+(ert-deftest pel-test--pike-file-searched-extra-dir-trees-exists ()
+  "pel-pike-file-searched-extra-dir-trees user-option must be defined."
+  (should (boundp 'pel-pike-file-searched-extra-dir-trees)))
+
+(ert-deftest pel-test--pike-file-finder-ini-tool-name-exists ()
+  "pel-pike-file-finder-ini-tool-name user-option must be defined."
+  (should (boundp 'pel-pike-file-finder-ini-tool-name)))
+
+;; ---------------------------------------------------------------------------
+;;  3. Buffer-local override variables exist for ObjC and Pike
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-test--objc-buf-local-ini-tool-name-exists ()
+  "pel--objc-file-finder-ini-tool-name buffer-local variable must be defined."
+  (should (boundp 'pel--objc-file-finder-ini-tool-name)))
+
+(ert-deftest pel-test--pike-buf-local-ini-tool-name-exists ()
+  "pel--pike-file-finder-ini-tool-name buffer-local variable must be defined."
+  (should (boundp 'pel--pike-file-finder-ini-tool-name)))
+
+;; ---------------------------------------------------------------------------
+;;  4. pel-cc-set-file-finder-ini-tool-name rejects unsupported modes
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-test--set-finder-rejects-python-mode ()
+  "pel-cc-set-file-finder-ini-tool-name must signal user-error in python-mode."
+  (with-temp-buffer
+    (setq major-mode 'python-mode)
+    (should-error
+     (pel-cc-set-file-finder-ini-tool-name "some-tool")
+     :type 'user-error)))
+
+;; ---------------------------------------------------------------------------
+;;  5. pel-cc-set-file-finder-ini-tool-name accepts ObjC and Pike
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-test--set-finder-accepts-objc-mode ()
+  "pel-cc-set-file-finder-ini-tool-name must not signal in objc-mode."
+  (with-temp-buffer
+    (setq major-mode 'objc-mode)
+    ;; Should complete without user-error
+    (should (progn
+              (pel-cc-set-file-finder-ini-tool-name "CLANG")
+              t))))
+
+(ert-deftest pel-test--set-finder-accepts-pike-mode ()
+  "pel-cc-set-file-finder-ini-tool-name must not signal in pike-mode."
+  (with-temp-buffer
+    (setq major-mode 'pike-mode)
+    (should (progn
+              (pel-cc-set-file-finder-ini-tool-name "MY-TOOL")
+              t))))
+
+;; ---------------------------------------------------------------------------
+;;  6. pel-cc-find-activate-finder-method works for ObjC generic method
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-test--activate-finder-generic-objc ()
+  "pel-cc-find-activate-finder-method sets generic finder for objc-mode."
+  (with-temp-buffer
+    (setq major-mode 'objc-mode)
+    (pel-cc-find-activate-finder-method 'generic nil)
+    (should (equal pel-filename-at-point-finders
+                   '(pel-generic-find-file)))))
+
+(ert-deftest pel-test--activate-finder-generic-pike ()
+  "pel-cc-find-activate-finder-method sets generic finder for pike-mode."
+  (with-temp-buffer
+    (setq major-mode 'pike-mode)
+    (pel-cc-find-activate-finder-method 'generic nil)
+    (should (equal pel-filename-at-point-finders
+                   '(pel-generic-find-file)))))
+
+;; ---------------------------------------------------------------------------
+;;  7. pel-cc-find-activate-finder-method appends extra dir-tree finder
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-test--activate-finder-with-extra-dirs-objc ()
+  "Extra dir trees must add a second finder function for objc-mode."
+  (with-temp-buffer
+    (setq major-mode 'objc-mode)
+    (pel-cc-find-activate-finder-method 'generic "/tmp/extra-headers")
+    (should (= 2 (length pel-filename-at-point-finders)))))
+
+(ert-deftest pel-test--activate-finder-invalid-method-errors ()
+  "An invalid method must signal user-error."
+  (with-temp-buffer
+    (setq major-mode 'objc-mode)
+    (should-error
+     (pel-cc-find-activate-finder-method 'invalid-method nil)
+     :type 'user-error)))
+
+;; ---------------------------------------------------------------------------
+;;  8. Regression: AWK lang-title must remain "AWK" (upcase), not "Awk"
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-test--awk-option-docstring-uses-upcase ()
+  "Docstring of pel-awk-file-searched-extra-dir-trees must contain \"AWK\"."
+  (should (string-match-p
+           "AWK"
+           (documentation-property 'pel-awk-file-searched-extra-dir-trees
+                                   'variable-documentation))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-cc-find-test)
