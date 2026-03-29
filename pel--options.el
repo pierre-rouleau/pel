@@ -491,7 +491,7 @@
 (eval-when-compile
   (require 'cl-macs))                   ; use: `cl-case'
 (eval-and-compile
-  (require 'format-spec))               ; use `format-spec'
+  (require 'format-spec))               ; use: `format-spec'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -5415,13 +5415,13 @@ A minor mode that provides a scroll bar inside the modeline.."
 (defmacro pel-defcustom-block-ffind-for (lang)
   "Generate the code for the definition of 3 user-options for the LANG mode.
 
-Define the following user-option defcustom forms::
+Define the following user-option defcustom forms:
  - pel-LANG-file-searched-extra-dir-trees
  - pel-LANG-file-finder-method
  - pel-LANG-file-finder-ini-tool-name
 
 where LANG is the programming language symbol like awk, c or c++."
-  (let* ((lang-str (format "%s" lang))
+  (let* ((lang-str (symbol-name lang))
          (lang-title (upcase lang-str))
          (f-type (if (memq lang '(c c++))
                      "header file"
@@ -5436,6 +5436,11 @@ Use this method when the location of the system AWK library
          (tool-str (if (memq lang '(c c++))
                        "IAR"
                      "GTOOL"))
+         (tpath-str (if (memq lang '(c c++))
+                        (format
+                         "\"IAR-%s-path\", \"gcc-%s-path\", \"vs-%s-path\""
+                         lang lang lang)
+                     (format "GTOOL-%s-path" lang)))
          (g-name (intern (format "pel-pkg-for-%s" lang)))
          (m1-name (intern (format "pel-%s-file-searched-extra-dir-trees"
                                   lang)))
@@ -5507,7 +5512,7 @@ The 4 search methods are:
     - the file type
     - the suffix string \"-path\"
 
-    Something like \"IAR-%s-path\", \"gcc-%s-path\", \"vs-%s-path\", etc...
+    Something like %t, etc...
 
     These keys identify a set of directories that contain %fs that
     are specific to the specified tool chain for the specific programming
@@ -5527,9 +5532,7 @@ The 4 search methods are:
 
     Use the command `pel-cc-set-file-finder-ini-tool-name' to
     temporarily modify the current value of the mode specific
-    `pel-awk-file-finder-ini-tool-name',
-    `pel-c-file-finder-ini-tool-name' or
-    `pel-c++-file-finder-ini-tool-name' from their initial values
+    `pel-%s-file-finder-ini-tool-name' from their initial values
     corresponding to their customization values.  The changes will be
     used in the current session but will not persist.  To change the
     persistent values you must change the customized value using Emacs
@@ -5580,7 +5583,8 @@ CAUTION: After changing this user-option, restart Emacs to activate
                                `((?f . ,f-type)
                                  (?H . ,h-paragraph)
                                  (?s . ,lang-str)
-                                 (?S . ,lang-title))))
+                                 (?S . ,lang-title)
+                                 (?t . ,tpath-str))))
          (m3-name (intern (format "pel-%s-file-finder-ini-tool-name" lang)))
          (docstr3 (format-spec "\
 Default file-finder tool name used by %S projects.
@@ -5592,7 +5596,7 @@ located automatically by PEL.
 
 The key identifies the %S language tool-chain (a compiler, an IDE,
 etc...) and the value associated with that key is a compiler/IDE
-tool-chain specific directories that contain %S %fs
+tool-chain specific set of directories that contain %S %fs
 and are searched when the `pel-open-at-point' command is issued
 to search for a %f.
 
@@ -5619,7 +5623,6 @@ user-option.
 See `pel-%s-file-finder-method' option 2 for more information
 about the expected file format of the pel.ini file."
                                `((?f . ,f-type)
-                                 (?H . ,h-paragraph)
                                  (?s . ,lang-str)
                                  (?S . ,lang-title)
                                  (?T . ,tool-str)))))
