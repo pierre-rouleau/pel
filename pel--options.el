@@ -5423,9 +5423,9 @@ Define the following user-option defcustom forms:
 where LANG is the programming language symbol like awk, c or c++."
   (let* ((lang-str (symbol-name lang))
          (lang-title (cond
-             ((eq lang 'objc) "Objective-C")
-             ((eq lang 'awk)  "AWK")
-             (t (capitalize lang-str))))
+                      ((eq lang 'objc) "Objective-C")
+                      ((eq lang 'awk)  "AWK")
+                      (t (capitalize lang-str))))
          (f-type (if (memq lang '(c c++ objc pike))
                      "header file"
                    "file"))
@@ -5438,7 +5438,7 @@ For %s this method may not be as useful as for other languages." lang-title)))
          (tool-str  (cond
                      ((memq lang '(c c++)) "IAR")
                      ((eq lang 'objc) "CLANG")
-                     (t "TOOL")))
+                     (t "SOME-TOOL")))
          (tpath-str (if (memq lang '(c c++))
                         (format
                          "\"IAR-%s-path\", \"gcc-%s-path\", \"vs-%s-path\""
