@@ -5576,10 +5576,10 @@ The 4 search methods are:
   The directory path name strings in each list can start with ~ and
   refer to environment variables using the $VARNAME syntax.
 
-  %H
-
   For example \"$HOME/foo\" will be expanded to the foo sub-directory
   under the user\\='s home directory.
+
+  %H
 
 You may want to store this value inside a .dir-local.el directory
 local-variable file with your %S source code to control the behaviour
