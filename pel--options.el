@@ -490,10 +490,8 @@
 ;;                                      ;      `pel-user-option-p'
 (eval-when-compile
   (require 'cl-macs)                    ; use: `cl-case'
-  (when pel-emacs-28-or-later-p
-    (require 'format-spec)))
-(unless pel-emacs-28-or-later-p
-  (require 'format-spec))
+  )
+(require 'format-spec)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
