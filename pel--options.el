@@ -491,7 +491,8 @@
 (eval-when-compile
   (require 'cl-macs)                    ; use: `cl-case'
   )
-(require 'format-spec)
+(eval-and-compile
+  (require 'format-spec))
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
