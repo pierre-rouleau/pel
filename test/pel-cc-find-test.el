@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-29 14:02:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-29 14:18:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -258,23 +258,23 @@
 ;;  3. Buffer-local override variables exist for ObjC and Pike
 ;; ---------------------------------------------------------------------------
 
-(ert-deftest pel-cc-find-test/objc-buf-local-ini-tool-name-exists ()
-  "pel--objc-file-finder-ini-tool-name buffer-local variable must be defined."
-  (should (boundp 'pel--objc-file-finder-ini-tool-name))
-  (with-temp-buffer
-    (setq-local pel--objc-file-finder-ini-tool-name "X")
-    (should (equal (buffer-local-value 'pel--objc-file-finder-ini-tool-name
-                                       (current-buffer))
-                   "X"))))
+(ert-deftest pel-cc-find-test/ini-tool-name-var/objc-exists ()
+    "pel--objc-file-finder-ini-tool-name buffer-local variable must be defined."
+    (should (boundp 'pel--objc-file-finder-ini-tool-name))
+    (with-temp-buffer
+      (setq-local pel--objc-file-finder-ini-tool-name "X")
+      (should (equal (buffer-local-value 'pel--objc-file-finder-ini-tool-name
+                                         (current-buffer))
+                     "X"))))
 
-(ert-deftest pel-cc-find-test/pike-buf-local-ini-tool-name-exists ()
-  "pel--pike-file-finder-ini-tool-name buffer-local variable must be defined."
-  (should (boundp 'pel--pike-file-finder-ini-tool-name))
-  (with-temp-buffer
-    (setq-local pel--pike-file-finder-ini-tool-name "X")
-    (should (equal (buffer-local-value 'pel--pike-file-finder-ini-tool-name
-                                       (current-buffer))
-                   "X"))))
+(ert-deftest pel-cc-find-test/ini-tool-name-var/pike-exists ()
+    "pel--pike-file-finder-ini-tool-name buffer-local variable must be defined."
+    (should (boundp 'pel--pike-file-finder-ini-tool-name))
+    (with-temp-buffer
+      (setq-local pel--pike-file-finder-ini-tool-name "X")
+      (should (equal (buffer-local-value 'pel--pike-file-finder-ini-tool-name
+                                         (current-buffer))
+                     "X"))))
 
 ;; ---------------------------------------------------------------------------
 ;;  4. pel-cc-set-file-finder-ini-tool-name rejects unsupported modes
@@ -351,6 +351,13 @@
      (pel-cc-find-activate-finder-method 'invalid-method nil)
      :type 'user-error)))
 
+(ert-deftest pel-cc-find-test/activate-finder/with-extra-dirs-pike ()
+    "Extra dir trees must add a second finder function for pike-mode."
+    (with-temp-buffer
+      (setq major-mode 'pike-mode)
+      (pel-cc-find-activate-finder-method 'generic "/tmp/extra-pike-headers")
+      (should (= 2 (length pel-filename-at-point-finders)))))
+
 ;; ---------------------------------------------------------------------------
 ;;  8. Regression: AWK lang-title must remain "AWK" (upcase), not "Awk"
 ;; ---------------------------------------------------------------------------
@@ -361,7 +368,6 @@
            "AWK"
            (documentation-property 'pel-awk-file-searched-extra-dir-trees
                                    'variable-documentation))))
-
 
 ;; ---------------------------------------------------------------------------
 ;; Others:
@@ -382,15 +388,6 @@
       (pel-cc-find-activate-finder-method nil nil)
       (should (equal pel-filename-at-point-finders
                      '(pel-generic-find-file))))))
-
-(ert-deftest pel-cc-find-test/activate-finder-with-extra-dirs-pike ()
-  "Extra dir trees must add a second finder function for pike-mode."
-  (with-temp-buffer
-    (setq major-mode 'pike-mode)
-    (pel-cc-find-activate-finder-method 'generic "/tmp/extra-pike-headers")
-    (should (= 2 (length pel-filename-at-point-finders)))))
-
-
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-cc-find-test)
