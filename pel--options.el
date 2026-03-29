@@ -5429,17 +5429,17 @@ where LANG is the programming language symbol like awk, c or c++."
          (h-paragraph (if (memq lang '(c c++))
                           "\
 Use this method when the location of the header directory for the
-  compiler and libraries change from system to system."
+  compiler and libraries changes from system to system."
                         (format "\
 For %s this method may not be as useful as for other languages." lang-title)))
          (tool-str (if (memq lang '(c c++))
                        "IAR"
-                     "GTOOL"))
+                     "TOOL"))
          (tpath-str (if (memq lang '(c c++))
                         (format
                          "\"IAR-%s-path\", \"gcc-%s-path\", \"vs-%s-path\""
                          lang lang lang)
-                     (format "GTOOL-%s-path" lang)))
+                     (format "TOOL-%s-path" lang)))
          (g-name (intern (format "pel-pkg-for-%s" lang)))
          (m1-name (intern (format "pel-%s-file-searched-extra-dir-trees"
                                   lang)))
@@ -5549,10 +5549,10 @@ The 4 search methods are:
   are also searched recursively using the tool selected by
   `pel-ffind-executable’.
 
-  Use this method when your OS environment set up environment variables
+  Use this method when your OS environment sets up environment variables
   that inform the %S compilers or tools where %fs are located.
 
-4: Two lists of directories: one for the project and one for the compiler tool:
+4: Two lists of directories: one for the project and one for the language tool:
 
   This specifies two lists of directories:
   - the first list identifies the project directories,
@@ -5594,8 +5594,8 @@ called pel.ini and located in the project directory tree and
 located automatically by PEL.
 
 The key identifies the %S language tool-chain (a compiler, an IDE,
-etc...) and the value associated with that key is a compiler/IDE
-tool-chain specific set of directories that contain %S %fs
+etc...) and the value associated with that key is a tool-chain
+specific set of directories that contain %S %fs
 and are searched when the `pel-open-at-point' command is issued
 to search for a %f.
 
