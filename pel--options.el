@@ -7238,6 +7238,49 @@ See `pel-c-file-finder-method' docstring for more information."
 
 (pel-defcustom-file-finder-method-for c++)
 
+(defcustom pel-c++-file-finder-ini-tool-name nil
+  "Default file-finder tool name used by C projects.
+
+This name, if specified, is the name of a key inside the
+[file-finder] section of an INI configuration file for PEL,
+called pel.ini and located in the project directory tree and
+located automatically by PEL.
+
+The key identifies the C language tool-chain (a compiler, an IDE,
+etc...) and the value associated with that key is a of
+compiler/IDE tool-chain specific directories that contain headers
+and are searched when the `pel-open-at-point' command is issued
+to search for a header file.
+
+This value overrides the name of the tool-chain identified by the
+PEL_CC_FIND_TOOLCHAIN environment variable, when the environment
+variable is either not defined or when you want to dynamically
+override the tool chain during an Emacs editing session.
+
+When the tool chain name is identified this way, PEL looks for a
+list of directories that are compiler-specific and that are
+identified in the value of a [file-finder] key named after the
+tool chain name and the file type.
+
+  For example, for a C file, if the tool chain name identified by
+  the PEL_CC_FIND_TOOLCHAIN environment variable or the
+  `pel-c-file-finder-ini-tool-name' user-option is \"IAR\", PEL
+  looks for the key named `IAR-c-path' for a list of extra
+  directory names to search into.
+
+The search inside these directories is performed recursively by
+the file searching tool identified by the `pel-ffind-executable'
+user-option.
+
+See `pel-c-file-finder-method' option 2 for more information
+about the expected file format of the pel.ini file."
+  :group 'pel-pkg-for-c++
+  :group 'pel-file-finding
+  :type '(choice
+          (const  :tag "Unused; no specific compiler identified." nil)
+          (string :tag "pel.ini [file-finder] tool-chain name key"))
+  :safe 't)
+
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-c++-code-style nil
   "C++ Source Code Style options."
