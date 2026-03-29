@@ -489,14 +489,9 @@
 (require 'pel--base)                    ; use: `pel-expression-p'
 ;;                                      ;      `pel-user-option-p'
 (eval-when-compile
-  (require 'cl-macs)                    ; use: `cl-case'
-  )
-
-(if (>= emacs-major-version 30)
-    (eval-when-compile
-      (require 'format-spec))
-  (eval-and-compile
-    (require 'format-spec)))
+  (require 'cl-macs))                   ; use: `cl-case'
+(eval-and-compile
+    (require 'format-spec))             ; use `format-spec'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
