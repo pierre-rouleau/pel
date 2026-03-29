@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-29 10:52:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-29 11:59:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,6 +45,8 @@
 (require 'pel--base)             ; use: `pel-major-mode-symbol-value'
 (require 'pel--options)          ; use: `pel-c-file-finder-ini-tool-name'
 ;;                               ;      `pel-c++-file-finder-ini-tool-name'
+;;                               ;      `pel-objc-file-finder-ini-tool-name'
+;;                               ;      `pel-pike-file-finder-ini-tool-name'
 (require 'pel-file)              ; use: `pel-filename-at-point-finders'
 (require 'pel-ffind)             ; use: `pel-ffind-project-directory',
 ;;                               ;      `pel-generic-find-file'
@@ -60,7 +62,9 @@
 ;; At the moment PEL supports a header file search mechanism based on the
 ;; content of the pel.ini file for the following major modes.  Others might be
 ;; added in the future.
-(defconst pel--c-file-finder-supported-modes '(awk-mode c-mode c++-mode)
+(defconst pel--c-file-finder-supported-modes '(awk-mode
+                                               c-mode c++-mode obj-mode
+                                               pike-mode)
   "List of major modes supported by the header file searching mechanism.")
 
 ;; We want to support searching in tool-chain specific directories and allow
@@ -90,6 +94,16 @@
                                             (getenv "PEL_CC_FIND_TOOLCHAIN")
                                             pel-c++-file-finder-ini-tool-name)
   "Identifies the name of an extra list of directories to use in C++.")
+
+(defvar pel--objc-file-finder-ini-tool-name (or
+                                             (getenv "PEL_CC_FIND_TOOLCHAIN")
+                                             pel-objc-file-finder-ini-tool-name)
+  "Identifies the name of an extra list of directories to use in Objective-C.")
+
+(defvar pel--pike-file-finder-ini-tool-name (or
+                                             (getenv "PEL_CC_FIND_TOOLCHAIN")
+                                             pel-pike-file-finder-ini-tool-name)
+  "Identifies the name of an extra list of directories to use in Pike.")
 
 ;;-pel-autoload
 (defun pel-cc-set-file-finder-ini-tool-name (tool-name)

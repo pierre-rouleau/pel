@@ -3437,6 +3437,9 @@ d-mode not added to ac-modes!"
   (define-pel-global-prefix pel:objc-guess          (kbd "<f11> SPC C-o <f4> g"))
   (define-pel-global-prefix pel:for-objc-preproc    (kbd "<f11> SPC C-o #"))
   (define-pel-global-prefix pel:objc-search-replace (kbd "<f11> SPC C-o s"))
+  (when pel-use-ini
+    (define-key pel:objc-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name)
+    (define-key pel:objc-setup (kbd "<f54>")  'pel-cc-set-file-finder-ini-tool-name))
   ;; [:todo 2025-04-27, by Pierre Rouleau: Activate skeletons]
   ;; (define-pel-global-prefix pel:objc-skel (kbd "<f11> SPC C-o <f12>"))
 
@@ -3460,8 +3463,6 @@ d-mode not added to ac-modes!"
                                   ".mm"
                                   ".M")))
 
-
-
   (pel-eval-after-load cc-mode
     (pel--map-cc-for pel:for-objc
                      pel:objc-setup
@@ -3478,9 +3479,8 @@ d-mode not added to ac-modes!"
         ;; Configure how to search for a file name from the user-option
         ;; `pel-c-file-finder-method' which may be specified in a
         ;; .dir-local.el file.
-        ;; [:todo 2025-04-27, by Pierre Rouleau: Add finder methods for Objective-C code]
-        (pel-cc-find-activate-finder-method pel-c-file-finder-method
-                                            pel-c-file-searched-extra-dir-trees)
+        (pel-cc-find-activate-finder-method pel-objc-file-finder-method
+                                            pel-objc-file-searched-extra-dir-trees)
 
         ;; Configure the CC Mode style for Objective-C from PEL custom variables
         ;; 1) set the style: it identifies everything
@@ -3520,8 +3520,12 @@ d-mode not added to ac-modes!"
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-p`` :
 (when pel-use-pike
-  (define-pel-global-prefix pel:for-pike  (kbd "<f11> SPC C-p"))
-  (define-pel-global-prefix pel:pike-skel (kbd "<f11> SPC C-p <f12>"))
+  (define-pel-global-prefix pel:for-pike   (kbd "<f11> SPC C-p"))
+  (define-pel-global-prefix pel:pike-setup (kbd "<f11> SPC C-p <f4>"))
+  (define-pel-global-prefix pel:pike-skel  (kbd "<f11> SPC C-p <f12>"))
+  (when pel-use-ini
+    (define-key pel:pike-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name)
+    (define-key pel:pike-setup (kbd "<f54>")  'pel-cc-set-file-finder-ini-tool-name))
 
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".pike"
@@ -3535,11 +3539,10 @@ d-mode not added to ac-modes!"
         ;; activate skeletons
         (pel--install-generic-skel pel:pike-skel 'pel-pkg-for-pike "pike")
         ;; Configure how to search for a file name from the user-option
-        ;; `pel-c-file-finder-method' which may be specified in a
+        ;; `pel-pike-file-finder-method' which may be specified in a
         ;; .dir-local.el file.
-        ;; [:todo 2025-03-14, by Pierre Rouleau: Add finder methods for Pike code]
-        (pel-cc-find-activate-finder-method pel-c-file-finder-method
-                                            pel-c-file-searched-extra-dir-trees)
+        (pel-cc-find-activate-finder-method pel-pike-file-finder-method
+                                            pel-pike-file-searched-extra-dir-trees)
 
         ;; Configure the CC Mode style for Pike from PEL custom variables
         ;; 1) set the style: it identifies everything
