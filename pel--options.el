@@ -2178,12 +2178,12 @@ This is only available on Emacs 29.1 and later."
   :type 'boolean
   :safe #'booleanp)
 (pel-put pel-use-ini :package-is :in-utils)
-(pel-put pel-use-ini :also-required-when '(or (eq pel-awk-file-finder-method
-                                                  (quote pel-ini-file))
-                                              (eq pel-c-file-finder-method
-                                                  (quote pel-ini-file))
-                                              (eq pel-c++-file-finder-method
-                                                  (quote pel-ini-file))))
+(pel-put pel-use-ini :also-required-when
+         '(or (eq pel-awk-file-finder-method (quote pel-ini-file))
+              (eq pel-c-file-finder-method   (quote pel-ini-file))
+              (eq pel-c++-file-finder-method (quote pel-ini-file))
+              (eq pel-objc-file-finder-method (quote pel-ini-file))
+              (eq pel-pike-file-finder-method (quote pel-ini-file))))
 
 (defcustom pel-use-emacs-toml nil
   "Whether PEL supports the emacs-toml to read/write .toml files.
@@ -5422,29 +5422,35 @@ Define the following user-option defcustom forms:
 
 where LANG is the programming language symbol like awk, c or c++."
   (let* ((lang-str (symbol-name lang))
-         (lang-title (upcase lang-str))
-         (f-type (if (memq lang '(c c++))
+         (lang-title (cond
+                      ((eq lang 'objc) "Objective-C")
+                      ((eq lang 'awk)  "AWK")
+                      (t (capitalize lang-str))))
+         (f-type (if (memq lang '(c c++ objc pike))
                      "header file"
                    "file"))
-         (h-paragraph (if (memq lang '(c c++))
+         (h-paragraph (if (memq lang '(c c++ objc pike))
                           "\
 Use this method when the location of the header directory for the
   compiler and libraries changes from system to system."
                         (format "\
 For %s this method may not be as useful as for other languages." lang-title)))
-         (tool-str (if (memq lang '(c c++))
-                       "IAR"
-                     "TOOL"))
+         (tool-str  (cond
+                     ((memq lang '(c c++)) "IAR")
+                     ((eq lang 'objc) "CLANG")
+                     (t "SOME-TOOL")))
          (tpath-str (if (memq lang '(c c++))
                         (format
                          "\"IAR-%s-path\", \"gcc-%s-path\", \"vs-%s-path\""
                          lang lang lang)
-                     (format "TOOL-%s-path" lang)))
+                      (format "%s-%s-path" tool-str lang)))
          (g-name (intern (format "pel-pkg-for-%s" lang)))
          (m1-name (intern (format "pel-%s-file-searched-extra-dir-trees"
                                   lang)))
          (docstr1 (format-spec "\
-Extra directory trees recursively searched by the %S %f search.
+Directory trees also searched by the %S %f search.
+
+These extra directories are searched recursively.
 
 Each directory may start with ~ to identify the home directory.
 You can also use environment variables inside the directory names;
@@ -12014,6 +12020,13 @@ Does not indent."
                  just-newline-no-indent)))
 
 
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+;; Define:
+;;  - pel-objc-file-searched-extra-dir-trees
+;;  - pel-objc-file-finder-method
+;;  - pel-objc-file-finder-ini-tool-name
+(pel-defcustom-block-ffind-for objc)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Ocaml Support
 ;; -------------
@@ -12519,6 +12532,13 @@ Does not indent."
   "Default shebang line to add in extension-less Pike files."
   :group 'pel-pkg-for-pike
   :type 'string)
+
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+;; Define:
+;;  - pel-pike-file-searched-extra-dir-trees
+;;  - pel-pike-file-finder-method
+;;  - pel-pike-file-finder-ini-tool-name
+(pel-defcustom-block-ffind-for pike)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Python Support
@@ -15606,8 +15626,10 @@ PEL uses my fork of this project."
   (erlang-ls           (setq pel-use-erlang-ls t)))
 
 (when (or (eq pel-awk-file-finder-method 'pel-ini-file)
-          (eq pel-c-file-finder-method 'pel-ini-file)
-          (eq pel-c++-file-finder-method 'pel-ini-file))
+          (eq pel-c-file-finder-method   'pel-ini-file)
+          (eq pel-c++-file-finder-method 'pel-ini-file)
+          (eq pel-objc-file-finder-method 'pel-ini-file)
+          (eq pel-pike-file-finder-method 'pel-ini-file))
   (setq pel-use-ini t))
 
 (when (eq pel-prompt-read-method 'ivy)
