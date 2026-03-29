@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 23:39:22 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-29 10:52:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -48,6 +48,7 @@
 (require 'pel-file)              ; use: `pel-filename-at-point-finders'
 (require 'pel-ffind)             ; use: `pel-ffind-project-directory',
 ;;                               ;      `pel-generic-find-file'
+;;                               ;      `pel-ffind-dirname-expanded'
 (require 'pel-ffind-inpath)      ; use: `pel-ffind-inpath-include'
 (require 'pel-ini)               ; use: `pel-ini-load'
 (eval-when-compile
@@ -123,38 +124,6 @@ This is only supported for the following file types: %s"
                          pel--c-file-finder-supported-modes)
                  ", "))))
 
-;; ---------------------------------------------------------------------------
-(defun pel-envar-in-string (string)
-  "Return names of environment variables extracted from the string.
-
-The variables must be prefixed with a '$' character and must end
-with a non alphanumeric or underscore character."
-  (let ((varnames nil)
-        (idx 0)
-        (new-idx nil)
-        varname)
-    (while (setq new-idx
-                 (string-match "\\$\\([[:alnum:]_]*\\)"
-                               (substring string idx)))
-      (setq varname (match-string 1 (substring string idx)))
-      (unless (string= varname "")
-        (push varname varnames))
-      (setq idx (+ idx new-idx 1 (length varname))))
-    (nreverse varnames)))
-
-(defun pel-substitute-in-file-name (filename)
-  "Substitute environment variables referred to in FILENAME.
-
-Does the same as `substitute-in-file-name' but signals a user-error when
-an environment variable referenced in FILENAME is unknown."
-  ;; First check and raise a user error if there is any unknown environment
-  ;; variable inside the filename string
-  (dolist (varname (pel-envar-in-string filename))
-    (unless (getenv varname)
-      (user-error "In \"%s\", the environment variable %s is unknown!"
-                  filename varname)))
-  ;; then return the string with  everything substituted.
-  (substitute-in-file-name filename))
 
 ;; ---------------------------------------------------------------------------
 
@@ -269,7 +238,10 @@ of strings, the finder is set to also search in those directory trees."
          (eq (length file-finder-method) 2))
     (let ((path-list (apply 'append file-finder-method)))
       ;; expand any reference to an environment variable in path-names
-      (setq path-list (mapcar (function pel-substitute-in-file-name) path-list))
+      (setq path-list
+            (mapcar (function expand-file-name)
+                    (mapcar (function pel-substitute-in-file-name)
+                            path-list)))
       (setq pel-filename-at-point-finders
             (list
              (lambda (fn)

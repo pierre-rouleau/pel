@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 14:38:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-29 10:48:12 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,14 +32,15 @@
 ;;  - `pel-generic-find-file' searches a file inside one or several directory
 ;;    trees.
 
-;; * `pel-ffind'
-;;   - `pel-ffind-command'
-;;     - `pel--ffind-select-tool'
-;;     - `pel--ffind-dirname-quoted'
-;;
 ;; * `pel-generic-find-file'
 ;;   - `pel-ffind-project-directory'
-;;   - `pel-ffind'
+;;   * `pel-ffind'
+;;     - `pel-ffind-command'
+;;       - `pel--ffind-select-tool'
+;;       - `pel-ffind-dirname-expanded'
+;;         - `pel-substitute-in-file-name'
+;;           - `pel-envar-in-string'
+;;
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -54,8 +55,50 @@
 ;;; Code:
 ;;
 
+(defun pel-envar-in-string (string)
+  "Return names of environment variables extracted from the string.
+
+The variables must be prefixed with a '$' character and must end
+with a non alphanumeric or underscore character."
+  (let ((varnames nil)
+        (idx 0)
+        (new-idx nil)
+        varname)
+    (while (setq new-idx
+                 (string-match "\\$\\([[:alnum:]_]*\\)"
+                               (substring string idx)))
+      (setq varname (match-string 1 (substring string idx)))
+      (unless (string= varname "")
+        (push varname varnames))
+      (setq idx (+ idx new-idx 1 (length varname))))
+    (nreverse varnames)))
+
+(defun pel-substitute-in-file-name (filename)
+  "Substitute environment variables referred to in FILENAME.
+
+Does the same as `substitute-in-file-name' but signals a user-error when
+an environment variable referenced in FILENAME is unknown."
+  ;; First check and raise a user error if there is any unknown environment
+  ;; variable inside the filename string
+  (dolist (varname (pel-envar-in-string filename))
+    (unless (getenv varname)
+      (user-error "In \"%s\", the environment variable %s is unknown!"
+                  filename varname)))
+  ;; then return the string with  everything substituted.
+  (substitute-in-file-name filename))
+
+(defun pel-ffind-dirname-expanded (dirname)
+  "Return DIRNAME in quote, expanded and without trailing slash.
+Substitute the ~ with the home directory.
+Replace the name of environment variables with their values."
+  (format "'%s'" (directory-file-name
+                  (expand-file-name
+                   (pel-substitute-in-file-name  dirname)))))
+
+;; ---------------------------------------------------------------------------
 (defvar pel--ffind-executable nil
   "Adjusted value of `pel-ffind-executable.")
+
 (defvar pel--ffind-path nil
   "Full path of fd/fdfind/find executable used.")
 
@@ -87,15 +130,15 @@ pel-ffind-executable requests fd but its not available: using find instead."
 pel--ffind-executable attempts to use %s, but it is not available!" choice))
     (cons choice exe-path)))
 
-(defun pel--ffind-dirname-quoted (dirname)
-  "Return DIRNAME in quote and without trailing slash."
-  (format "'%s'" (directory-file-name dirname)))
-
 (defun pel-ffind-command (filename directories)
   "Return a ffind command searching for FILENAME in DIRECTORIES.
 
 FILENAME may be a glob file pattern, that start with an absolute or relative
 directory path.
+
+The directories may start with \"~\" and contain environment variables
+prefixed with a '$' character and ending with a non alpha-numeric or
+underscore  character.
 
 The returned command will produce a list of files sorted in lexicographic
 order.
@@ -105,10 +148,10 @@ whether the VCS setting (like the .gitignore file) is set to ignore them."
   (let ((file-basename (pel-shell-quote-path-keep-glob
                         (file-name-nondirectory filename)))
         (dirnames (if (> (length directories) 1)
-                      (string-join (mapcar #'pel--ffind-dirname-quoted
+                      (string-join (mapcar #'pel-ffind-dirname-expanded
                                            directories)
                                    " ")
-                    (car directories))))
+                    (pel-ffind-dirname-expanded (car directories)))))
 
     ;; Initialize tool selection and its path if not already done.
     (unless pel--ffind-executable
