@@ -492,7 +492,7 @@
   (require 'cl-macs)                    ; use: `cl-case'
   )
 
-(if pel-emacs-30-or-later-p
+(if (>= emacs-major-version 30)
     (eval-when-compile
       (require 'format-spec))
   (eval-and-compile
