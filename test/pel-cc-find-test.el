@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-29 13:45:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-29 14:02:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -263,14 +263,18 @@
   (should (boundp 'pel--objc-file-finder-ini-tool-name))
   (with-temp-buffer
     (setq-local pel--objc-file-finder-ini-tool-name "X")
-    (should (boundp 'pel--objc-file-finder-ini-tool-name))))
+    (should (equal (buffer-local-value 'pel--objc-file-finder-ini-tool-name
+                                       (current-buffer))
+                   "X"))))
 
 (ert-deftest pel-cc-find-test/pike-buf-local-ini-tool-name-exists ()
   "pel--pike-file-finder-ini-tool-name buffer-local variable must be defined."
   (should (boundp 'pel--pike-file-finder-ini-tool-name))
   (with-temp-buffer
     (setq-local pel--pike-file-finder-ini-tool-name "X")
-    (should (boundp 'pel--pike-file-finder-ini-tool-name))))
+    (should (equal (buffer-local-value 'pel--pike-file-finder-ini-tool-name
+                                       (current-buffer))
+                   "X"))))
 
 ;; ---------------------------------------------------------------------------
 ;;  4. pel-cc-set-file-finder-ini-tool-name rejects unsupported modes
@@ -298,7 +302,7 @@
           (should (equal pel--objc-file-finder-ini-tool-name "CLANG")))
       (setq pel--objc-file-finder-ini-tool-name saved))))
 
-(ert-deftest pel-cc-find-test/set-finder/accepts-pike-mode ()
+(ert-deftest pel-cc-find-test/set-finder-accepts/pike-mode ()
   "pel-cc-set-file-finder-ini-tool-name must not signal in pike-mode."
   (let ((saved pel--pike-file-finder-ini-tool-name))
     (unwind-protect
