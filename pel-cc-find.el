@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-29 12:27:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-29 13:29:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,7 +33,10 @@
 ;;
 ;;  Each programming language supported has a user-option with a name that
 ;;  looks like 'pel-XX-file-finder-method' where 'XX' is the prefix of the
-;;  major mode name, like 'c' for `c-mode' and 'c++' for `c++-mode'.
+;;  major mode name, like 'c' for `c-mode' and 'c++' for `c++-mode' or the
+;;  other programming language modes for the supported programming languages.
+;;
+;;  The code currently supports AWK, C, C++, Objective-C and Pike.
 ;;
 ;; The user-option identify various methods to search for the file.  Look at
 ;; the docstring of `pel-c-file-finder-method' for the description.
