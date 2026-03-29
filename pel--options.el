@@ -491,7 +491,7 @@
 (eval-when-compile
   (require 'cl-macs))                   ; use: `cl-case'
 (eval-and-compile
-    (require 'format-spec))             ; use `format-spec'
+  (require 'format-spec))               ; use `format-spec'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -5421,15 +5421,11 @@ Define the following user-option defcustom forms::
  - pel-LANG-file-finder-ini-tool-name
 
 where LANG is the programming language symbol like awk, c or c++."
-  (declare (indent 1))
   (let* ((lang-str (format "%s" lang))
          (lang-title (upcase lang-str))
          (f-type (if (memq lang '(c c++))
                      "header file"
                    "file"))
-         (h-string (if (memq lang '(c c++))
-                     "header"
-                   ""))
          (h-paragraph (if (memq lang '(c c++))
                           "\
 Use this method when the location of the header directory for the
@@ -5437,6 +5433,9 @@ Use this method when the location of the header directory for the
                         "\
 Use this method when the location of the system AWK library
   files change from system to system."))
+         (tool-str (if (memq lang '(c c++))
+                       "IAR"
+                     "GTOOL"))
          (g-name (intern (format "pel-pkg-for-%s" lang)))
          (m1-name (intern (format "pel-%s-file-searched-extra-dir-trees"
                                   lang)))
@@ -5521,11 +5520,7 @@ The 4 search methods are:
       of the tool chain of one of these keys (like \"IAR\", \"gcc\", \"vs\" in
       the example above).
     - The tool-name key used for the currently used programming language
-      is identified by one of the corresponding user options:
-
-      - `pel-awk-file-finder-ini-tool-name' for AWK,
-      - `pel-c-file-finder-ini-tool-name' for C,
-      - `pel-c++-file-finder-ini-tool-name' for C++.
+      is identified by `pel-%s-file-finder-ini-tool-name'.
 
     The function searches each of the directory trees with the file
     finder tool identified by the `pel-ffind-executable' user-option.
@@ -5583,7 +5578,6 @@ of the file search based on your project.
 CAUTION: After changing this user-option, restart Emacs to activate
          the new behaviour.  Executing `pel-init' is not sufficient."
                                `((?f . ,f-type)
-                                 (?h . ,h-string)
                                  (?H . ,h-paragraph)
                                  (?s . ,lang-str)
                                  (?S . ,lang-title))))
@@ -5597,8 +5591,8 @@ called pel.ini and located in the project directory tree and
 located automatically by PEL.
 
 The key identifies the %S language tool-chain (a compiler, an IDE,
-etc...) and the value associated with that key is a of
-compiler/IDE tool-chain specific directories that contain %h
+etc...) and the value associated with that key is a compiler/IDE
+tool-chain specific directories that contain %S %fs
 and are searched when the `pel-open-at-point' command is issued
 to search for a %f.
 
@@ -5614,8 +5608,8 @@ tool chain name and the file type.
 
   For example, for a %S file, if the tool chain name identified by
   the PEL_CC_FIND_TOOLCHAIN environment variable or the
-  `pel-%s-file-finder-ini-tool-name' user-option is \"IAR\", PEL
-  looks for the key named `IAR-%s-path' for a list of extra
+  `pel-%s-file-finder-ini-tool-name' user-option is \"%T\",
+  PEL looks for the key named `%T-%s-path' for a list of extra
   directory names to search into.
 
 The search inside these directories is performed recursively by
@@ -5625,10 +5619,10 @@ user-option.
 See `pel-%s-file-finder-method' option 2 for more information
 about the expected file format of the pel.ini file."
                                `((?f . ,f-type)
-                                 (?h . ,h-string)
                                  (?H . ,h-paragraph)
                                  (?s . ,lang-str)
-                                 (?S . ,lang-title)))))
+                                 (?S . ,lang-title)
+                                 (?T . ,tool-str)))))
     `(progn
        (defcustom ,m1-name nil
          ,docstr1
@@ -5639,7 +5633,7 @@ about the expected file format of the pel.ini file."
          ,docstr2
          :group ',g-name
          :group 'pel-file-finding
-         :safe 't
+         :safe t
          :type
          '(choice
            (const :tag "Generic tree search" generic)
@@ -5655,7 +5649,7 @@ about the expected file format of the pel.ini file."
          ,docstr3
          :group ',g-name
          :group 'pel-file-finding
-         :safe 't
+         :safe t
          :type '(choice
                  (const  :tag "Unused; no specific compiler identified." nil)
                  (string :tag "pel.ini [file-finder] tool-chain name key"))))))
