@@ -491,8 +491,12 @@
 (eval-when-compile
   (require 'cl-macs)                    ; use: `cl-case'
   )
-(eval-and-compile
-  (require 'format-spec))
+
+(if pel-emacs-30-or-later-p
+    (eval-when-compile
+      (require 'format-spec))
+  (eval-and-compile
+    (require 'format-spec)))
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
