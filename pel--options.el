@@ -5413,25 +5413,46 @@ A minor mode that provides a scroll bar inside the modeline.."
 ;; programming language major modes.
 
 (defmacro pel-defcustom-block-ffind-for (lang)
-  "Define a custom variable NAME with a formatted DOC-TEMPLATE."
+  "Generate the code for the definition of 3 user-options for the LANG mode.
+
+Define the following user-option defcustom forms::
+ - pel-LANG-file-searched-extra-dir-trees
+ - pel-LANG-file-finder-method
+ - pel-LANG-file-finder-ini-tool-name
+
+where LANG is the programming language symbol like awk, c or c++."
   (declare (indent 1))
   (let* ((lang-str (format "%s" lang))
          (lang-title (upcase lang-str))
+         (f-type (if (memq lang '(c c++))
+                     "header file"
+                   "file"))
+         (h-string (if (memq lang '(c c++))
+                     "header"
+                   ""))
+         (h-paragraph (if (memq lang '(c c++))
+                          "\
+Use this method when the location of the header directory for the
+  compiler and libraries change from system to system."
+                        "\
+Use this method when the location of the system AWK library
+  files change from system to system."))
          (g-name (intern (format "pel-pkg-for-%s" lang)))
          (m1-name (intern (format "pel-%s-file-searched-extra-dir-trees"
                                   lang)))
          (docstr1 (format-spec "\
-Extra directory trees recursively searched by the %S header file search.
+Extra directory trees recursively searched by the %S %f search.
 
-This complements the header search method identified by the
+This complements the %f search method identified by the
 `pel-%s-file-finder-method' user-option."
-                               `((?s . ,lang-str)
+                               `((?f . ,f-type)
+                                 (?s . ,lang-str)
                                  (?S . ,lang-title))))
          (m2-name (intern (format "pel-%s-file-finder-method" lang)))
          (docstr2 (format-spec "\
-Set method used by `pel-open-at-point' to search %S header files.
+Set method used by `pel-open-at-point' to search %S %fs.
 
-PEL supports 4 methods to search for %S header files.
+PEL supports 4 methods to search for %S %fs.
 
 Some of the methods search directory trees using the tool identified by
 `pel-ffind-executable'.
@@ -5489,7 +5510,7 @@ The 4 search methods are:
 
     Something like \"IAR-%s-path\", \"gcc-%s-path\", \"vs-%s-path\", etc...
 
-    These keys identify a set of directories that contain header files that
+    These keys identify a set of directories that contain %fs that
     are specific to the specified tool chain for the specific programming
     language.
 
@@ -5532,14 +5553,14 @@ The 4 search methods are:
   ‘pel-ffind-executable’.
 
   Use this method when your OS environment set up environment variables
-  that inform the C compiler where header files are located.
+  that inform the C compiler where %fs are located.
 
 4: Two lists of directories: one for the project and one for the compiler tool:
 
   This specifies two lists of directories:
   - the first list identifies the project directories,
   - the second list identifies the compiler and libraries directories
-    holding header files.
+    holding %fs.
 
   The directories listed for this method are searched non-recursively
   (no sub-directory traversal).
@@ -5550,8 +5571,7 @@ The 4 search methods are:
   The directory path name strings in each list can refer to environment
   variables using the $VARNAME syntax.
 
-  Use this method when the location of the header directory for the
-  compiler and libraries change from system to system.
+  %H
 
   For example \"$HOME/foo\" will be expanded to the foo sub-directory
   under the user\\='s home directory.
@@ -5562,7 +5582,10 @@ of the file search based on your project.
 
 CAUTION: After changing this user-option, restart Emacs to activate
          the new behaviour.  Executing `pel-init' is not sufficient."
-                               `((?s . ,lang-str)
+                               `((?f . ,f-type)
+                                 (?h . ,h-string)
+                                 (?H . ,h-paragraph)
+                                 (?s . ,lang-str)
                                  (?S . ,lang-title))))
          (m3-name (intern (format "pel-%s-file-finder-ini-tool-name" lang)))
          (docstr3 (format-spec "\
@@ -5575,9 +5598,9 @@ located automatically by PEL.
 
 The key identifies the %S language tool-chain (a compiler, an IDE,
 etc...) and the value associated with that key is a of
-compiler/IDE tool-chain specific directories that contain headers
+compiler/IDE tool-chain specific directories that contain %h
 and are searched when the `pel-open-at-point' command is issued
-to search for a header file.
+to search for a %f.
 
 This value overrides the name of the tool-chain identified by the
 PEL_CC_FIND_TOOLCHAIN environment variable, when the environment
@@ -5601,7 +5624,10 @@ user-option.
 
 See `pel-%s-file-finder-method' option 2 for more information
 about the expected file format of the pel.ini file."
-                               `((?s . ,lang-str)
+                               `((?f . ,f-type)
+                                 (?h . ,h-string)
+                                 (?H . ,h-paragraph)
+                                 (?s . ,lang-str)
                                  (?S . ,lang-title)))))
     `(progn
        (defcustom ,m1-name nil
