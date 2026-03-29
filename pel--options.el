@@ -5430,9 +5430,8 @@ where LANG is the programming language symbol like awk, c or c++."
                           "\
 Use this method when the location of the header directory for the
   compiler and libraries change from system to system."
-                        "\
-Use this method when the location of the system AWK library
-  files change from system to system."))
+                        (format "\
+For %s this method may not be as useful as for other languages." lang-title)))
          (tool-str (if (memq lang '(c c++))
                        "IAR"
                      "GTOOL"))
@@ -5519,7 +5518,7 @@ The 4 search methods are:
     language.
 
     The function `pel-open-at-point' will search these extra
-    directories when one of the following condition is met:
+    directories when one of the following conditions are met:
 
     - The PEL_CC_FIND_TOOLCHAIN environment variable is set and holds the name
       of the tool chain of one of these keys (like \"IAR\", \"gcc\", \"vs\" in
@@ -5546,12 +5545,12 @@ The 4 search methods are:
   This method searches the directories identified by the environment
   variables, not their sub-directories.
 
-  In addition, any directories in ‘pel-%s-file-searched-extra-dir-trees’
+  In addition, any directories in `pel-%s-file-searched-extra-dir-trees’
   are also searched recursively using the tool selected by
-  ‘pel-ffind-executable’.
+  `pel-ffind-executable’.
 
   Use this method when your OS environment set up environment variables
-  that inform the C compiler where %fs are located.
+  that inform the %S compilers or tools where %fs are located.
 
 4: Two lists of directories: one for the project and one for the compiler tool:
 
@@ -5562,9 +5561,9 @@ The 4 search methods are:
 
   The directories listed for this method are searched non-recursively
   (no sub-directory traversal).
-  In addition, any directories in ‘pel-%s-file-searched-extra-dir-trees’
+  In addition, any directories in `pel-%s-file-searched-extra-dir-trees’
   are also searched recursively using the tool selected by
-  ‘pel-ffind-executable’.
+  `pel-ffind-executable’.
 
   The directory path name strings in each list can refer to environment
   variables using the $VARNAME syntax.
@@ -5631,6 +5630,7 @@ about the expected file format of the pel.ini file."
          ,docstr1
          :group ',g-name
          :group 'pel-file-finding
+         :safe t
          :type '(repeat string))
        (defcustom ,m2-name 'generic
          ,docstr2
