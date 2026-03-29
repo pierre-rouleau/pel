@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-29 12:36:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-03-29 12:55:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -230,7 +230,8 @@
 
 (ert-deftest pel-test--objc-file-finder-method-exists ()
   "pel-objc-file-finder-method user-option must be defined."
-  (should (boundp 'pel-objc-file-finder-method)))
+  (should (boundp 'pel-objc-file-finder-method))
+  (should (custom-variable-p 'pel-objc-file-finder-method)))
 
 (ert-deftest pel-test--objc-file-searched-extra-dir-trees-exists ()
   "pel-objc-file-searched-extra-dir-trees user-option must be defined."
@@ -242,7 +243,8 @@
 
 (ert-deftest pel-test--pike-file-finder-method-exists ()
   "pel-pike-file-finder-method user-option must be defined."
-  (should (boundp 'pel-pike-file-finder-method)))
+  (should (boundp 'pel-pike-file-finder-method))
+  (should (custom-variable-p 'pel-pike-file-finder-method)))
 
 (ert-deftest pel-test--pike-file-searched-extra-dir-trees-exists ()
   "pel-pike-file-searched-extra-dir-trees user-option must be defined."
@@ -258,11 +260,18 @@
 
 (ert-deftest pel-test--objc-buf-local-ini-tool-name-exists ()
   "pel--objc-file-finder-ini-tool-name buffer-local variable must be defined."
-  (should (boundp 'pel--objc-file-finder-ini-tool-name)))
+  (should (boundp 'pel--objc-file-finder-ini-tool-name))
+  (with-temp-buffer
+    (setq-local pel--objc-file-finder-ini-tool-name "X")
+    (should (local-variable-p 'pel--objc-file-finder-ini-tool-name))))
 
 (ert-deftest pel-test--pike-buf-local-ini-tool-name-exists ()
   "pel--pike-file-finder-ini-tool-name buffer-local variable must be defined."
-  (should (boundp 'pel--pike-file-finder-ini-tool-name)))
+  (should (boundp 'pel--pike-file-finder-ini-tool-name))
+  (should (boundp 'pel--pike-file-finder-ini-tool-name))
+  (with-temp-buffer
+    (setq-local pel--pike-file-finder-ini-tool-name "X")
+    (should (local-variable-p 'pel--pike-file-finder-ini-tool-name))))
 
 ;; ---------------------------------------------------------------------------
 ;;  4. pel-cc-set-file-finder-ini-tool-name rejects unsupported modes
@@ -284,18 +293,15 @@
   "pel-cc-set-file-finder-ini-tool-name must not signal in objc-mode."
   (with-temp-buffer
     (setq major-mode 'objc-mode)
-    ;; Should complete without user-error
-    (should (progn
-              (pel-cc-set-file-finder-ini-tool-name "CLANG")
-              t))))
+    (pel-cc-set-file-finder-ini-tool-name "CLANG")
+    (should (equal pel--objc-file-finder-ini-tool-name "CLANG"))))
 
 (ert-deftest pel-test--set-finder-accepts-pike-mode ()
   "pel-cc-set-file-finder-ini-tool-name must not signal in pike-mode."
   (with-temp-buffer
     (setq major-mode 'pike-mode)
-    (should (progn
-              (pel-cc-set-file-finder-ini-tool-name "MY-TOOL")
-              t))))
+    (pel-cc-set-file-finder-ini-tool-name "MY-TOOL")
+    (should (equal pel--pike-file-finder-ini-tool-name "MY-TOOL"))))
 
 ;; ---------------------------------------------------------------------------
 ;;  6. pel-cc-find-activate-finder-method works for ObjC generic method
