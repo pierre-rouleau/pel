@@ -5411,46 +5411,21 @@ A minor mode that provides a scroll bar inside the modeline.."
 
 ;; Define a macro used to declare file finding user-options used by
 ;; programming language major modes.
+;;
+;; First define the docstring format strings of the defcustom user-options
+;; that are defined by the macro.
 
-(defmacro pel-defcustom-block-ffind-for (lang)
-  "Generate the code for the definition of 3 user-options for the LANG mode.
+(eval-when-compile
+  ;; (defconst pel-LANG-file-searched-dir-trees-for-tools)
+  ;; (defconst pel-LANG-file-searched-dir-trees-for-projects
+  ;;   )
+  (defconst pel-LANG-file-searched-extra-dir-trees-format-string
+    "Directory trees also searched by the %S %f search.
 
-Define the following user-option defcustom forms:
- - pel-LANG-file-searched-extra-dir-trees
- - pel-LANG-file-finder-method
- - pel-LANG-file-finder-ini-tool-name
-
-where LANG is the programming language symbol like awk, c or c++."
-  (let* ((lang-str (symbol-name lang))
-         (lang-title (cond
-                      ((eq lang 'objc) "Objective-C")
-                      ((eq lang 'awk)  "AWK")
-                      (t (capitalize lang-str))))
-         (f-type (if (memq lang '(c c++ objc pike))
-                     "header file"
-                   "file"))
-         (h-paragraph (if (memq lang '(c c++ objc pike))
-                          "\
-Use this method when the location of the header directory for the
-  compiler and libraries changes from system to system."
-                        (format "\
-For %s this method may not be as useful as for other languages." lang-title)))
-         (tool-str  (cond
-                     ((memq lang '(c c++)) "IAR")
-                     ((eq lang 'objc) "CLANG")
-                     (t "SOME-TOOL")))
-         (tpath-str (if (memq lang '(c c++))
-                        (format
-                         "\"IAR-%s-path\", \"gcc-%s-path\", \"vs-%s-path\""
-                         lang lang lang)
-                      (format "%s-%s-path" tool-str lang)))
-         (g-name (intern (format "pel-pkg-for-%s" lang)))
-         (m1-name (intern (format "pel-%s-file-searched-extra-dir-trees"
-                                  lang)))
-         (docstr1 (format-spec "\
-Directory trees also searched by the %S %f search.
-
-These extra directories are searched recursively.
+Extra common directories, searched recursively on file search operations
+performed in %S buffers.
+The directories are not meant to be tool or project specific, just
+programming language specific: directories used by all tools and all projects.
 
 Each directory may start with ~ to identify the home directory.
 You can also use environment variables inside the directory names;
@@ -5461,13 +5436,10 @@ those environment variables will be expanded.
   environment variable inside other parts of the directory path.
 
 This complements the %f search method identified by the
-`pel-%s-file-finder-method' user-option."
-                               `((?f . ,f-type)
-                                 (?s . ,lang-str)
-                                 (?S . ,lang-title))))
-         (m2-name (intern (format "pel-%s-file-finder-method" lang)))
-         (docstr2 (format-spec "\
-Method used by `pel-open-at-point' to search %S %fs.
+`pel-%s-file-finder-method' user-option.")
+
+  (defconst pel-LANG-file-finder-method-format-string
+    "Method used by `pel-open-at-point' to search %S %fs.
 
 PEL supports 4 methods to search for %S %fs.
 
@@ -5592,15 +5564,10 @@ local-variable file with your %S source code to control the behaviour
 of the file search based on your project.
 
 CAUTION: After changing this user-option, restart Emacs to activate
-         the new behaviour.  Executing `pel-init' is not sufficient."
-                               `((?f . ,f-type)
-                                 (?H . ,h-paragraph)
-                                 (?s . ,lang-str)
-                                 (?S . ,lang-title)
-                                 (?t . ,tpath-str))))
-         (m3-name (intern (format "pel-%s-file-finder-ini-tool-name" lang)))
-         (docstr3 (format-spec "\
-Default file-finder tool name used by %S projects.
+         the new behaviour.  Executing `pel-init' is not sufficient.")
+
+  (defconst pel-LANG-file-finder-ini-tool-name-format-string
+    "Default file-finder tool name used by %S projects.
 
 This name, if specified, is the name of a key inside the
 [file-finder] section of an INI configuration file for PEL,
@@ -5634,11 +5601,64 @@ the file searching tool identified by the `pel-ffind-executable'
 user-option.
 
 See `pel-%s-file-finder-method' option 2 for more information
-about the expected file format of the pel.ini file."
-                               `((?f . ,f-type)
-                                 (?s . ,lang-str)
-                                 (?S . ,lang-title)
-                                 (?T . ,tool-str)))))
+about the expected file format of the pel.ini file."))
+
+
+(defmacro pel-defcustom-block-ffind-for (lang)
+  "Generate the code for the definition of 3 user-options for the LANG mode.
+
+Define the following user-option defcustom forms:
+ - pel-LANG-file-searched-extra-dir-trees
+ - pel-LANG-file-finder-method
+ - pel-LANG-file-finder-ini-tool-name
+
+where LANG is the programming language symbol like awk, c or c++."
+  (let* ((lang-str (symbol-name lang))
+         (lang-title (cond
+                      ((eq lang 'objc) "Objective-C")
+                      ((eq lang 'awk) "AWK")
+                      (t (capitalize lang-str))))
+         (f-type (if (memq lang '(c c++ objc pike))
+                     "header file"
+                   "file"))
+         (h-paragraph (if (memq lang '(c c++ objc pike))
+                          "\
+Use this method when the location of the header directory for the
+  compiler and libraries changes from system to system."
+                        (format "\
+For %s this method may not be as useful as for other languages." lang-title)))
+         (tool-str (cond
+                    ((memq lang '(c c++)) "IAR")
+                    ((eq lang 'objc) "CLANG")
+                    (t "SOME-TOOL")))
+         (tpath-str (if (memq lang '(c c++))
+                        (format
+                         "\"IAR-%s-path\", \"gcc-%s-path\", \"vs-%s-path\""
+                         lang lang lang)
+                      (format "%s-%s-path" tool-str lang)))
+         (g-name (intern (format "pel-pkg-for-%s" lang)))
+         (m1-name (intern (format "pel-%s-file-searched-extra-dir-trees"
+                                  lang)))
+         (docstr1 (format-spec
+                   pel-LANG-file-searched-extra-dir-trees-format-string
+                   `((?f . ,f-type)
+                     (?s . ,lang-str)
+                     (?S . ,lang-title))))
+         (m2-name (intern (format "pel-%s-file-finder-method" lang)))
+         (docstr2 (format-spec
+                   pel-LANG-file-finder-method-format-string
+                   `((?f . ,f-type)
+                     (?H . ,h-paragraph)
+                     (?s . ,lang-str)
+                     (?S . ,lang-title)
+                     (?t . ,tpath-str))))
+         (m3-name (intern (format "pel-%s-file-finder-ini-tool-name" lang)))
+         (docstr3 (format-spec
+                   pel-LANG-file-finder-ini-tool-name-format-string
+                   `((?f . ,f-type)
+                     (?s . ,lang-str)
+                     (?S . ,lang-title)
+                     (?T . ,tool-str)))))
     `(progn
        (defcustom ,m1-name nil
          ,docstr1
@@ -5668,7 +5688,7 @@ about the expected file format of the pel.ini file."
          :group 'pel-file-finding
          :safe t
          :type '(choice
-                 (const  :tag "Unused; no specific compiler identified." nil)
+                 (const :tag "Unused; no specific compiler identified." nil)
                  (string :tag "pel.ini [file-finder] tool-chain name key"))))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
