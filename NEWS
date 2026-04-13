@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix Emacs requirements for the gt package: it requires Emacs 28.1, not Emacs 27.1.
 - Add header file searching features to the Objective-C and Pike major modes similar to what PEL already supports in AWK, C and C++.
 - Improve *pel-ffind-inpath-include*: it now properly handles several errors in environment variable values:
   non-existing environment variable, variable with empty value, duplicate entries, with two or more consecutive path separators.
