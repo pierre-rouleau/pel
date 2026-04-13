@@ -2651,11 +2651,10 @@ can't bind negative-argument to C-_ and M-_"
 
 ;; Text Translation
 (when (and pel-use-go-translate
-           pel-emacs-27-or-later-p)
+           pel-emacs-28-or-later-p)
   (pel-ensure-package-elpa gt from: melpa)
   (define-pel-global-prefix pel:go-translate (kbd "<f11> W T"))
-  (define-key pel:writing-tools "T" 'gt-translate)
-  )
+  (define-key pel:writing-tools "T" 'gt-translate))
 
 (when pel-use-wc-mode
   (pel-ensure-package-elpa wc-mode from: melpa)
