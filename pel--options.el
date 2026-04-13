@@ -14858,7 +14858,7 @@ This requires Emacs 27.1 or later."
 (defcustom pel-use-go-translate nil
   "Control whether PEL activates the go-translate external package.
 
-This requires Emacs 27.1 or later.  On previous versions PEL automatically
+This requires Emacs 28.1 or later.  On previous versions PEL automatically
 turns it off."
   :group 'pel-pkg-for-text-translation
   :group 'pel-pkg-for-writing
@@ -15784,10 +15784,10 @@ PEL uses my fork of this project."
 (when (version< emacs-version "25.1")
   (setq pel-use-vterm nil))
 (when (version< emacs-version "27.1")
-  (setq pel-use-go-translate nil)
   (setq pel-use-tzc nil)
   (setq pel-use-csv nil))
 (when (version< emacs-version "28.1")
+  (setq pel-use-go-translate nil)
   (setq pel-use-simple-undo nil)
   (setq pel-use-vundo nil))
 
