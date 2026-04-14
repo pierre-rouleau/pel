@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-14 14:29:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-14 15:01:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -424,9 +424,9 @@
                       (pel-major-mode-of-file c-file)
                     (end-of-file
                      (ert-skip
-                      (format "pel-major-mode-of-file: end-of-file reading dir-locals \
-for %s (Emacs %s batch/CI — fix enable-dir-local-variables in impl)"
-                              c-file emacs-version)))
+                      (format
+                       "pel-major-mode-of-file: unexpected end-of-file for %s (Emacs %s batch/CI)"
+                       c-file emacs-version)))
                     (error
                      (ert-skip
                       (format "pel-major-mode-of-file signaled %S for %s (Emacs %s batch/CI)"
@@ -450,9 +450,9 @@ for %s (Emacs %s batch/CI — fix enable-dir-local-variables in impl)"
                       (pel-major-mode-of-file cpp-file)
                     (end-of-file
                      (ert-skip
-                      (format "pel-major-mode-of-file: end-of-file reading dir-locals \
-for %s (Emacs %s batch/CI — fix enable-dir-local-variables in impl)"
-                              cpp-file emacs-version)))
+                      (format
+                       "pel-major-mode-of-file: unexpected end-of-file for %s (Emacs %s batch/CI)"
+                       cpp-file emacs-version)))
                     (error
                      (ert-skip
                       (format "pel-major-mode-of-file signaled %S for %s (Emacs %s batch/CI)"
@@ -466,7 +466,7 @@ for %s (Emacs %s batch/CI — fix enable-dir-local-variables in impl)"
 
 (ert-deftest ert-test-pel-major-mode-of-file/erlang-file ()
   "Test `pel-major-mode-of-file' of Erlang file -> erlang-mode."
-  (when (or noninteractive (null pel-use-erlang))
+  (unless pel-use-erlang
     (ert-skip "Skip test that requires PEL Erlang support."))
   (should (memq  (pel-major-mode-of-file
                   (expand-file-name
@@ -476,7 +476,7 @@ for %s (Emacs %s batch/CI — fix enable-dir-local-variables in impl)"
 
 (ert-deftest ert-test-pel-major-mode-of-file/shell-file ()
   "Test `pel-major-mode-of-file' of shell script file -> sh-mode."
-  (when (or noninteractive (null pel-use-sh))
+  (unless pel-use-sh
     (ert-skip "Skip test that requires PEL shell programming support."))
   (should (eq 'sh-mode (pel-major-mode-of-file
                         (expand-file-name
@@ -516,7 +516,7 @@ for %s (Emacs %s batch/CI — fix enable-dir-local-variables in impl)"
       (unless detected-mode
         (ert-skip
          (format "pel-major-mode-of-file returned nil for %s \
-\(Emacs %s, possibly batch mode: set-auto-mode side-effects suppressed by ignore-errors)"
+\(Emacs %s: set-auto-mode could not determine a mode in this environment)"
                  el-file emacs-version)))
       ;; Mode was detected — now assert the language.
       (let ((lang (pel-language-of el-file)))

@@ -266,6 +266,7 @@
 ;;  - `pel-parent-dirpath'
 ;;    - `pel-normalize-fname'
 ;;  - `pel-sibling-dirpath'
+;;    - `pel-sibling-dirname'
 ;;  - `pel-expand-url-file-name'
 ;;  - `pel-path-strip'
 ;;  - `pel-url-join'
@@ -608,8 +609,13 @@ Return nil if FILENAME is a directory."
             (end-of-file nil)
             (error nil)))))))
 
-(defconst pel-lang-for-modes '((cperl . perl))
-  "Map unusual mode name to language symbol.")
+(defconst pel-lang-for-modes '((cperl . perl)
+                               (lisp-interaction . emacs-lisp))
+  "Alist mapping mode-name prefixes to canonical language symbols.
+Used by `pel-language-of' when `pel-file-type-for' produces a name that
+differs from the conventional language symbol.
+For example, `cperl-mode' has prefix \"cperl\" but the canonical
+language symbol is \\='perl.")
 
 (defun pel-language-of (&optional filename)
   "Return the programming language symbol used in buffer or specified FILENAME.
@@ -620,9 +626,10 @@ Return nil if the major mode of buffer or FILENAME is not derived from either
                    (pel-major-mode-of-file filename)
                  major-mode))
         (lang-symbol nil))
-    ;; Handle files/buffers that use programming or text major modes
-    ;; `provided-mode-derived-p' API has changed over Emacs versions:
-    ;; use 2 calls to support all versions.
+    ;; Handle files/buffers that use programming or text major modes.
+    ;; `provided-mode-derived-p' gained support for multiple mode arguments
+    ;; in Emacs 29.
+    ;; Use two separate calls to remain compatible with Emacs 27/28.
     (when (or (provided-mode-derived-p mmode 'prog-mode)
               (provided-mode-derived-p mmode 'text-mode))
       (setq lang-symbol (intern (pel-file-type-for mmode)))
@@ -908,9 +915,8 @@ SILENT is non-nil (can be requested by prefix argument)."
 
 (defun pel-envvar-value-list (varname &optional sep)
   "Return the SEP separated list of elements stored in environment VARNAME.
-If SEP is not specified the default separator is \":\".
-Return a list without duplicates, empty strings and trim white space from the
-beginning and end of each string."
+Each element is trimmed of surrounding whitespace; duplicates and empty
+entries are removed.  SEP defaults to \":\"."
   (delete-dups
    (mapcar #'string-trim
            (split-string (pel-string-for (getenv varname))
@@ -921,7 +927,7 @@ beginning and end of each string."
   "Recursively expand environment variables in STRING.
 
 Does the same as builtin `substitute-env-vars' but the expansion continues
-until no more variables are found or MAX-DEPTH default 10) is reached."
+until no more variables are found or MAX-DEPTH (default 10) is reached."
   (let ((depth 0)
         (limit (or max-depth 10))
         (latest string)
@@ -942,7 +948,9 @@ variable it is also expanded."
   (expand-file-name (pel-substitute-env-vars pathname)))
 
 (defun pel-path= (path1 path2)
-  "Compare PATH1 and PATH2, expanding environment variables and ~ in them."
+  "Return t if expanded PATH1 and PATH2 resolve to the same path.
+Return nil otherwise if they differ.
+Both arguments are fully expanded with `pel-expanded-path'."
   (string= (directory-file-name (pel-expanded-path path1))
            (directory-file-name (pel-expanded-path path2))))
 
@@ -1498,9 +1506,9 @@ Otherwise return nil."
     string))
 
 (defun pel-string-for (text &optional prefix suffix)
-  "Return TEXT if it's a string.  If nil return empty string.
-If PREFIX and/or SUFFIX are non-nil they are treated as strings and placed
-before and after the TEXT string."
+  "Return TEXT formatted as a string; return empty string if TEXT is nil.
+If PREFIX and/or SUFFIX are non-nil strings they are prepended/appended
+around TEXT."
   (declare (pure t) (side-effect-free t))
   (if text
       (format "%s%s%s"
@@ -2786,7 +2794,8 @@ This function handles both."
 ;;  ===================================
 
 (defun pel-as-bold (text)
-  "Return TEXT in bold."
+  "Return TEXT as a propertized string with \\='bold face."
+  (declare (pure t) (side-effect-free t))
   (propertize text 'face 'bold))
 
 (defun pel-insert-bold (text)
