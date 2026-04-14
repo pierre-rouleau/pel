@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-14 09:54:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-14 10:46:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -412,21 +412,23 @@
   "Test `pel-major-mode-of-file' of directory -> nil."
   (should-not (pel-major-mode-of-file pel--rootdir)))
 
-(ert-deftest ert-test-pel-major-mode-of-file/c-file ()
-  "Test `pel-major-mode-of-file' of C file -> c-mode."
-  (should (memq  (pel-major-mode-of-file
-                  (expand-file-name
-                   "example/c/c_preproc-styles.c"
-                   pel--rootdir))
-                 '(c-mode c-ts-mode))))
+(when pel-use-c
+  (ert-deftest ert-test-pel-major-mode-of-file/c-file ()
+    "Test `pel-major-mode-of-file' of C file -> c-mode."
+    (should (memq  (pel-major-mode-of-file
+                    (expand-file-name
+                     "example/c/c_preproc-styles.c"
+                     pel--rootdir))
+                   '(c-mode c-ts-mode)))))
 
-(ert-deftest ert-test-pel-major-mode-of-file/c++-file ()
-  "Test `pel-major-mode-of-file' of C++ file -> c++-mode."
-  (should (memq (pel-major-mode-of-file
-                 (expand-file-name
-                  "example/templates/cpp/code.cpp"
-                  pel--rootdir))
-                '(c++-mode c++-ts-mode ))))
+(when pel-use-c++
+  (ert-deftest ert-test-pel-major-mode-of-file/c++-file ()
+    "Test `pel-major-mode-of-file' of C++ file -> c++-mode."
+    (should (memq (pel-major-mode-of-file
+                   (expand-file-name
+                    "example/templates/cpp/code.cpp"
+                    pel--rootdir))
+                  '(c++-mode c++-ts-mode )))))
 
 ;; (ert-deftest ert-test-pel-major-mode-of-file/erlang-file ()
 ;;   "Test `pel-major-mode-of-file' of Erlang file -> erlang-mode."
@@ -736,7 +738,7 @@ was silently ignored and the current buffer was always queried."
     (should (pel-running-under-ssh-p))))
 
 
-(ert-deftest pel--base-test/os-env/subsitute-env-vars ()
+(ert-deftest pel--base-test/os-env/substitute-env-vars ()
   "Test `pel-substitute-env-vars' ability to expand recursively."
   (let ((process-environment
          (cons "USER=woz"
