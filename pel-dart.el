@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, November  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-13 22:30:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-13 22:41:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -212,7 +212,7 @@ Return a list of generic symbols described by this function."
 (defun pel-dart-indent-tab-info (&optional append)
   "Display Dart Indentation and hard tab control information."
   (interactive "P")
-  (pel-major-mode-must-be 'dart-ts-mode)
+  (pel-major-mode-must-be '(dart-mode dart-ts-mode))
   (let ((indent-control-context (pel-indent-control-context))
         (tab-control-context (pel-tab-control-context))
         (format-on-save (pel--symbol-value 'dart-ts-format-on-save :quiet)))
