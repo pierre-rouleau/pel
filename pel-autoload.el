@@ -333,7 +333,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   ;; --
   (pel-autoload "pel-dart" for:
-    pel-dart-mode)
+    pel-dart-mode
+    pel-dart-setup-info)
   (pel-autoload-function "pel-dart" for:
     pel--dart-ts-mode-fixer)
 
