@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-14 18:38:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-14 19:50:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1463,6 +1463,9 @@ It will fail if `delete-dups' is applied to the raw (un-trimmed) split strings."
   ;; Two characters.
   (should (string= "a b" (pel-string-spread "ab"))))
 
+(ert-deftest ert-test-pel-string-spread/empty ()
+  (should (string= "" (pel-string-spread ""))))
+
 (ert-deftest ert-test-pel-list-str ()
   "Test `pel-list-str'."
   (should (string= "a, b, c" (pel-list-str '(a b c))))
@@ -1527,6 +1530,12 @@ It will fail if `delete-dups' is applied to the raw (un-trimmed) split strings."
   (let* ((txt (pel--format-problem-messages '("p1" "p2" "p3") "Intro:")))
     (should (string-match-p "^Intro:" txt))
     (should (string-match-p "\n The following 3 problems remain:" txt))))
+
+(ert-deftest pel--base-format-problem-messages/empty-extra-intro ()
+  (let* ((a (pel--format-problem-messages '("p1") "Intro:"))
+         (b (pel--format-problem-messages '("p1") "Intro:" "")))
+    (should (string= a b))
+    (should (string-match-p "\n The following problem remains:" b))))
 
 (ert-deftest pel--base-test/messages/format-problem-messages-exact-no-extra-intro ()
   "Exact output must match the docstring example (no EXTRA-INTRO)."

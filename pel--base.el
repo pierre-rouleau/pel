@@ -653,7 +653,7 @@ Return nil if the major mode of buffer or FILENAME is not derived from either
   "Check that the current buffer major mode is one of MODES.
 MODES is either a major-mode symbol or a list of major-mode symbols.
 Raise an user error if the current buffer is not using one of the MODES;
-the message state that the current command is not appropriate."
+the message states that the current command is not appropriate."
   (unless (memq major-mode (pel-list-of modes))
     (user-error "This command is not meant for %s; use it in %S"
                 major-mode
@@ -1015,7 +1015,7 @@ SEE ALSO: `pel-expanded-path'."
 The directory is identified by `user-emacs-directory'.
 If the directory does not exist the function creates it.
 This is the same as `locate-user-emacs-file' with the path made absolute and
-canonized."
+canonical."
   (expand-file-name (locate-user-emacs-file fname)))
 
 (defun pel-add-dir-to-loadpath (dir)
@@ -1205,7 +1205,7 @@ non-nil, just return nil when SYMBOL is not bound."
 ;;  ===============
 
 (defun pel-symbol-at-point ()
-  "Return symbol at point; return nil if there are none."
+  "Return symbol at point as a string; return nil if there are none."
   (if (and (require 'thingatpt nil 'noerror)
            (fboundp 'thing-at-point))
       (thing-at-point 'symbol :no-properties)
@@ -1261,8 +1261,8 @@ If SYMBOL is not defined, show VOID-STRING if defined, \"void\" otherwise."
 
 (defun pel-value-on-off-text (symbol &optional on-string off-string)
   "Return a string describing SYMBOL as a boolean value.
-If SYMBOL value is non-nil: show ON-STRING if defined, \"on\" otherwise.
-If SYMBOL value is nil    : show OFF-STRING if defined, \"off\" otherwise."
+If SYMBOL's value is non-nil: show ON-STRING if defined, \"on\" otherwise.
+If SYMBOL's value is nil    : show OFF-STRING if defined, \"off\" otherwise."
   (format "%s is now%s %s"
           (symbol-name symbol)
           pel--prompt-separator
@@ -1505,9 +1505,11 @@ Return empty string if TEXT is the empty string."
     ""))
 
 (defun pel-hastext (string)
-  "Return t if STRING hold text, nil otherwise."
+  "Return t if STRING hold text, nil otherwise.
+Signal an error if STRING argument is not nil nor a string."
   (declare (pure t) (side-effect-free t))
-  (not (string= string "")))
+  (when string
+    (not (string= string ""))))
 
 (defun pel-when-text-in (string value)
   "Return VALUE if STRING is a non-empty string.
@@ -1554,7 +1556,7 @@ Example:
     ELISP> (pel-string-spread \"abcdef\" \"--\")
     \"a--b--c--d--e--f\"
     ELISP>"
-  (string-join (cdr (butlast (split-string string "")))
+  (string-join (split-string (or string "") "" t)
                (or separator " ")))
 
 (defun pel-list-str (list)
@@ -1650,7 +1652,7 @@ The second example shows where the EXTRA-INFO text is placed."
   (let ((problem-count (length problems)))
     (format "%s\n %she following %s %s:\n - %s"
             intro
-            (if extra-intro (format "%s t" extra-intro) "T")
+            (if (pel-hastext extra-intro) (format "%s t" extra-intro) "T")
             (pel-count-string problem-count "problem" nil :no-count-for-1)
             (pel-pluralize problem-count "remains" "remain")
             (string-join problems "\n - "))))
@@ -1982,7 +1984,7 @@ The function returns nil when tree-sitter mode is not supported."
           (assoc mode-symbol major-mode-remap-alist))))))
 
 (defun pel-treesit-ready-p (language &optional quiet)
-  "Check whether tree-sitter is ready to be used for MODE and LANGUAGE.
+  "Check whether tree-sitter is ready to be used for LANGUAGE.
 
 LANGUAGE is the language symbol to check for availability.
 It can also be a list of language symbols.
@@ -2714,8 +2716,8 @@ Example:
 
 (defun pel-url-location (url)
   "Return a description string for the URL.
-It check if the URL is a \"file:\" URL, and return \"Local\" for that,
-otherwise it returns \"Remote\"."
+Check if the URL is a \"file:\" URL, and return \"Local\" for that,
+otherwise return \"Remote\"."
   (declare (side-effect-free t))
   (if (pel-string-starts-with-p url "file:")
       "Local"
