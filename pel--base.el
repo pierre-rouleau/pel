@@ -598,10 +598,11 @@ Return nil if FILENAME is a directory."
                     ;; in the CI/batch environment: a comment-only .dir-locals.el
                     ;; causes read to signal end-of-file which is not reliably
                     ;; caught by ignore-errors in Emacs 27 batch mode.
-                    (enable-dir-local-variables nil))
-                (set-visited-file-name (expand-file-name filename) t)
-                (when (file-readable-p filename)
-                  (insert-file-contents filename))
+                    (enable-dir-local-variables nil)
+                    (expanded-fname (expand-file-name filename)))
+                (set-visited-file-name expanded-fname t)
+                (when (file-readable-p expanded-fname)
+                  (insert-file-contents expanded-fname))
                 (set-auto-mode)
                 (set-buffer-modified-p nil)
                 major-mode)
@@ -918,7 +919,8 @@ SILENT is non-nil (can be requested by prefix argument)."
 (defun pel-envvar-value-list (varname &optional sep)
   "Return the SEP separated list of elements stored in environment VARNAME.
 Each element is trimmed of surrounding whitespace; duplicates and empty
-entries are removed.  SEP defaults to \":\"."
+entries are removed.  SEP defaults to \":\" and is treated as a literal
+separator string (not a regexp)."
   (delete-dups
    (delq nil (mapcar (lambda (entry)
                        (let ((trimmed (string-trim entry)))
@@ -928,10 +930,11 @@ entries are removed.  SEP defaults to \":\"."
                                    (regexp-quote (or sep ":")))))))
 
 (defun pel-substitute-env-vars (string &optional max-depth)
-  "Recursively expand environment variables in STRING.
+  "Expand environment variables in STRING recursively.
 
-Does the same as builtin `substitute-env-vars' but the expansion continues
-until no more variables are found or MAX-DEPTH (default 10) is reached."
+Unlike the builtin `substitute-env-vars', which expands only once,
+this function re-expands until the string stops changing or
+MAX-DEPTH (default 10) iterations are reached."
   (let ((depth 0)
         (limit (or max-depth 10))
         (latest string)
@@ -1511,7 +1514,7 @@ Otherwise return nil."
 
 (defun pel-string-for (text &optional prefix suffix)
   "Return TEXT formatted as a string; return empty string if TEXT is nil.
-If PREFIX and/or SUFFIX are non-nil strings they are prepended/appended
+If PREFIX and/or SUFFIX are non-nil values they are prepended/appended
 around TEXT."
   (declare (pure t) (side-effect-free t))
   (if text

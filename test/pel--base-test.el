@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-14 15:01:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-14 16:26:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -519,6 +519,8 @@
 \(Emacs %s: set-auto-mode could not determine a mode in this environment)"
                  el-file emacs-version)))
       ;; Mode was detected — now assert the language.
+      ;; pel-language-of calls pel-major-mode-of-file internally but it's fine
+      ;; for the test.
       (let ((lang (pel-language-of el-file)))
         (should (symbolp lang))
         (should (eq 'emacs-lisp lang))))))
