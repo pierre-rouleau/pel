@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-14 13:38:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-14 14:29:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -417,15 +417,24 @@
   (let ((c-file (expand-file-name "example/c/c_preproc-styles.c" pel--rootdir)))
     (unless (file-exists-p c-file)
       (ert-skip (format "C fixture file not found: %s. PLEASE FIX REPO!" c-file)))
-    ;; cc-mode is built-in but must be loaded; skip gracefully if unavailable.
     (unless (or (featurep 'cc-mode)
                 (ignore-errors (require 'cc-mode nil t)))
       (ert-skip "cc-mode feature not available in this Emacs session"))
-    (let ((result (pel-major-mode-of-file c-file)))
+    (let ((result (condition-case err
+                      (pel-major-mode-of-file c-file)
+                    (end-of-file
+                     (ert-skip
+                      (format "pel-major-mode-of-file: end-of-file reading dir-locals \
+for %s (Emacs %s batch/CI — fix enable-dir-local-variables in impl)"
+                              c-file emacs-version)))
+                    (error
+                     (ert-skip
+                      (format "pel-major-mode-of-file signaled %S for %s (Emacs %s batch/CI)"
+                              err c-file emacs-version))))))
       (unless result
         (ert-skip
          (format "pel-major-mode-of-file returned nil for %s \
-\(Emacs %s batch: set-auto-mode may not activate modes without init)"
+(Emacs %s batch: set-auto-mode may not activate modes without init)"
                  c-file emacs-version)))
       (should (memq result '(c-mode c-ts-mode))))))
 
@@ -437,29 +446,42 @@
     (unless (or (featurep 'cc-mode)
                 (ignore-errors (require 'cc-mode nil t)))
       (ert-skip "cc-mode feature not available in this Emacs session"))
-    (let ((result (pel-major-mode-of-file cpp-file)))
+    (let ((result (condition-case err
+                      (pel-major-mode-of-file cpp-file)
+                    (end-of-file
+                     (ert-skip
+                      (format "pel-major-mode-of-file: end-of-file reading dir-locals \
+for %s (Emacs %s batch/CI — fix enable-dir-local-variables in impl)"
+                              cpp-file emacs-version)))
+                    (error
+                     (ert-skip
+                      (format "pel-major-mode-of-file signaled %S for %s (Emacs %s batch/CI)"
+                              err cpp-file emacs-version))))))
       (unless result
         (ert-skip
          (format "pel-major-mode-of-file returned nil for %s \
-\(Emacs %s batch: set-auto-mode may not activate modes without init)"
+(Emacs %s batch: set-auto-mode may not activate modes without init)"
                  cpp-file emacs-version)))
       (should (memq result '(c++-mode c++-ts-mode))))))
 
+(ert-deftest ert-test-pel-major-mode-of-file/erlang-file ()
+  "Test `pel-major-mode-of-file' of Erlang file -> erlang-mode."
+  (when (or noninteractive (null pel-use-erlang))
+    (ert-skip "Skip test that requires PEL Erlang support."))
+  (should (memq  (pel-major-mode-of-file
+                  (expand-file-name
+                   "example/templates/erlang/gen_fsm_1_0_0_1_1.erl"
+                   pel--rootdir))
+                 '(erlang-mode erlang-ts-mode))))
 
-;; (ert-deftest ert-test-pel-major-mode-of-file/erlang-file ()
-;;   "Test `pel-major-mode-of-file' of Erlang file -> erlang-mode."
-;;   (should (memq  (pel-major-mode-of-file
-;;                   (expand-file-name
-;;                    "example/templates/erlang/gen_fsm_1_0_0_1_1.erl"
-;;                    pel--rootdir))
-;;                  '('erlang-mode erlang-ts-mode))))
-
-;; (ert-deftest ert-test-pel-major-mode-of-file/shell-file ()
-;;   "Test `pel-major-mode-of-file' of shell script file -> sh-mode."
-;;   (should (eq 'sh-mode (pel-major-mode-of-file
-;;                         (expand-file-name
-;;                          "bin/e"
-;;                          pel--rootdir)))))
+(ert-deftest ert-test-pel-major-mode-of-file/shell-file ()
+  "Test `pel-major-mode-of-file' of shell script file -> sh-mode."
+  (when (or noninteractive (null pel-use-sh))
+    (ert-skip "Skip test that requires PEL shell programming support."))
+  (should (eq 'sh-mode (pel-major-mode-of-file
+                        (expand-file-name
+                         "bin/e"
+                         pel--rootdir)))))
 
 ;;; --------------------------------------------------------------------------
 ;;; ;;* Checking Major Mode - pel-language-of

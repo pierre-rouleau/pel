@@ -586,22 +586,27 @@ If VALUE is nil do nothing."
 Return nil if FILENAME is a directory."
   (unless (file-directory-p filename)
     (let ((buffer (get-file-buffer filename)))
-      ;; If the file is already visited in buffer check the major mode.
+      ;; If the file is already visited in a buffer, check its major mode.
       (if buffer
           (buffer-local-value 'major-mode buffer)
         ;; Otherwise visit it in a temp buffer and check major mode.
         (with-temp-buffer
-          ;; ignore error caused by filename being a directory
-          (ignore-errors
-            ;; Some major modes print information on startup: prevent those.
-            (let ((inhibit-message t))
-              ;; Expand file name to handle relative paths correctly
-              (set-visited-file-name (expand-file-name filename) t)
-              ;; set-auto-mode looks at filename, shebangs, and local variables
-              (set-auto-mode)
-              (set-buffer-modified-p nil)
-              major-mode)))))))
-
+          (condition-case nil
+              (let ((inhibit-message t)
+                    ;; Prevent hack-local-variables from reading .dir-locals.el
+                    ;; in the CI/batch environment: a comment-only .dir-locals.el
+                    ;; causes read to signal end-of-file which is not reliably
+                    ;; caught by ignore-errors in Emacs 27 batch mode.
+                    (enable-dir-local-variables nil))
+                (set-visited-file-name (expand-file-name filename) t)
+                (set-auto-mode)
+                (set-buffer-modified-p nil)
+                major-mode)
+            ;; Catch both the general error class and end-of-file explicitly,
+            ;; since Emacs 27 batch does not always propagate end-of-file
+            ;; through condition-case nil … (error nil).
+            (end-of-file nil)
+            (error nil)))))))
 
 (defconst pel-lang-for-modes '((cperl . perl))
   "Map unusual mode name to language symbol.")
