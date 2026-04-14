@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 12:52:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-14 09:54:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -370,23 +370,25 @@
     (should (pel-in-fast-startup-p))))
 
 ;;; --------------------------------------------------------------------------
-;;; ;;* Checking Major Mode
+;;; ;;* Checking Major Mode  - pel-major-mode-of-buffer
 ;;; --------------------------------------------------------------------------
 
-(ert-deftest ert-test-pel-major-mode-of ()
-  "Test `pel-major-mode-of'."
+(ert-deftest ert-test-pel-major-mode-of-buffer ()
+  "Test `pel-major-mode-of-buffer'."
   ;; In a temp buffer with emacs-lisp-mode, it returns that mode.
   (with-temp-buffer
     (emacs-lisp-mode)
-    (should (eq 'emacs-lisp-mode (pel-major-mode-of)))
-    (should (eq 'emacs-lisp-mode (pel-major-mode-of (current-buffer)))))
+    ;; without argument check current buffer
+    (should (eq 'emacs-lisp-mode (pel-major-mode-of-buffer)))
+    ;; it should be like passing the current buffer explicitly
+    (should (eq 'emacs-lisp-mode (pel-major-mode-of-buffer (current-buffer)))))
   ;; text-mode in another temp buffer.
   (let ((buf (get-buffer-create " *pel-test-text-mode*")))
     (unwind-protect
         (with-current-buffer buf
           (text-mode)
-          (should (eq 'text-mode (pel-major-mode-of)))
-          (should (eq 'text-mode (pel-major-mode-of buf))))
+          (should (eq 'text-mode (pel-major-mode-of-buffer)))
+          (should (eq 'text-mode (pel-major-mode-of-buffer buf))))
       (kill-buffer buf))))
 
 (ert-deftest pel--base-test/mode/guards-and-derived ()
@@ -395,6 +397,51 @@
     (should (pel-derived-mode-p nil 'emacs-lisp-mode))
     (should-error (pel-major-mode-must-be 'c-mode) :type 'user-error)
     (should-not (pel-dired-buffer-p nil t))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Checking Major Mode  - pel-major-mode-of-file
+;;; --------------------------------------------------------------------------
+
+(defconst pel--rootdir (file-name-directory
+                        (directory-file-name
+                         (file-name-directory
+                          (or load-file-name buffer-file-name))))
+  "Root directory of pel.")
+
+(ert-deftest ert-test-pel-major-mode-of-file/dir ()
+  "Test `pel-major-mode-of-file' of directory -> nil."
+  (should-not (pel-major-mode-of-file pel--rootdir)))
+
+(ert-deftest ert-test-pel-major-mode-of-file/c-file ()
+  "Test `pel-major-mode-of-file' of C file -> c-mode."
+  (should (memq  (pel-major-mode-of-file
+                  (expand-file-name
+                   "example/c/c_preproc-styles.c"
+                   pel--rootdir))
+                 '(c-mode c-ts-mode))))
+
+(ert-deftest ert-test-pel-major-mode-of-file/c++-file ()
+  "Test `pel-major-mode-of-file' of C++ file -> c++-mode."
+  (should (memq (pel-major-mode-of-file
+                 (expand-file-name
+                  "example/templates/cpp/code.cpp"
+                  pel--rootdir))
+                '(c++-mode c++-ts-mode ))))
+
+;; (ert-deftest ert-test-pel-major-mode-of-file/erlang-file ()
+;;   "Test `pel-major-mode-of-file' of Erlang file -> erlang-mode."
+;;   (should (memq  (pel-major-mode-of-file
+;;                   (expand-file-name
+;;                    "example/templates/erlang/gen_fsm_1_0_0_1_1.erl"
+;;                    pel--rootdir))
+;;                  '('erlang-mode erlang-ts-mode))))
+
+;; (ert-deftest ert-test-pel-major-mode-of-file/shell-file ()
+;;   "Test `pel-major-mode-of-file' of shell script file -> sh-mode."
+;;   (should (eq 'sh-mode (pel-major-mode-of-file
+;;                         (expand-file-name
+;;                          "bin/e"
+;;                          pel--rootdir)))))
 
 ;; ===========================================================================
 ;; pel-derived-mode-p
@@ -421,8 +468,8 @@
 (ert-deftest pel--base-test/derived-mode-p/nil-buffer-uses-current ()
   "`pel-derived-mode-p' with nil BUFFER-OR-NAME queries the current buffer."
   (pel--base-test--with-mode-buffer 'emacs-lisp-mode
-    ;; Current buffer is in emacs-lisp-mode.
-    (should (pel-derived-mode-p nil 'emacs-lisp-mode))))
+                                    ;; Current buffer is in emacs-lisp-mode.
+                                    (should (pel-derived-mode-p nil 'emacs-lisp-mode))))
 
 (ert-deftest pel--base-test/derived-mode-p/nil-buffer-nil-when-no-match ()
   "`pel-derived-mode-p' with nil BUFFER-OR-NAME returns nil when mode differs."
@@ -680,10 +727,26 @@ was silently ignored and the current buffer was always queried."
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/os-env/terminal-and-ssh ()
-  (let ((process-environment (cons "TERM_PROGRAM=Apple_Terminal" process-environment)))
+  (let ((process-environment
+         (cons "TERM_PROGRAM=Apple_Terminal" process-environment)))
     (should (pel-terminal-is-macos-terminal-p)))
-  (let ((process-environment (cons "SSH_CLIENT=1.2.3.4 22 12345" process-environment)))
+
+  (let ((process-environment
+         (cons "SSH_CLIENT=1.2.3.4 22 12345" process-environment)))
     (should (pel-running-under-ssh-p))))
+
+
+(ert-deftest pel--base-test/os-env/subsitute-env-vars ()
+  "Test `pel-substitute-env-vars' ability to expand recursively."
+  (let ((process-environment
+         (cons "USER=woz"
+               (cons "BAR=/home/user/$USER"
+                     (cons "FOO=$BAR/at/next" process-environment))))
+        (my-string "Path is: [$FOO]. $$ is not expanded, even for $USER."))
+    (should
+     (string=
+      "Path is: [/home/user/woz/at/next]. $ is not expanded, even for woz."
+      (pel-substitute-env-vars my-string)))))
 
 ;;; --------------------------------------------------------------------------
 ;;; ;;* Emacs Environment Utilities
@@ -691,14 +754,15 @@ was silently ignored and the current buffer was always queried."
 
 (ert-deftest pel--base-test/emacs-env/locate-user-emacs-file-and-loadpath ()
   (should (file-name-absolute-p (pel-locate-user-emacs-file "pel-base-test.tmp")))
-  (pel--base-test--with-temp-dir tmpd
-    (let ((added (pel-add-dir-to-loadpath tmpd)))
-      (should added)
-      (should (member (directory-file-name (file-truename tmpd))
-                      (mapcar (lambda (p) (directory-file-name (file-truename p)))
-                              load-path))))
-    (let ((added2 (pel-add-dir-to-loadpath tmpd)))
-      (should (not added2)))))
+  (pel--base-test--with-temp-dir
+   tmpd
+   (let ((added (pel-add-dir-to-loadpath tmpd)))
+     (should added)
+     (should (member (directory-file-name (file-truename tmpd))
+                     (mapcar (lambda (p) (directory-file-name (file-truename p)))
+                             load-path))))
+   (let ((added2 (pel-add-dir-to-loadpath tmpd)))
+     (should (not added2)))))
 
 ;;; --------------------------------------------------------------------------
 ;;; ;;* File System Type

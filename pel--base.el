@@ -62,14 +62,16 @@
 ;;  - `pel-in-fast-startup-p'
 ;;
 ;; Checking Major Mode
+;;  - `pel-language-of'
+;;    - `pel-major-mode-of-file'
 ;;  - `pel-major-mode-must-be'
 ;;  - `pel-derived-mode-p'
 ;;  - `pel-dired-buffer-p'
 ;;  - `pel-string-with-major-mode'
 ;;    - `pel-file-type-for'
-;;    - `pel-major-mode-of'
+;;    - `pel-major-mode-of-buffer'
 ;;  - `pel-buffers-in-mode'
-;;    - `pel-major-mode-of'
+;;    . `pel-major-mode-of-buffer'
 ;;
 ;; Minor and Major Mode Utilities
 ;;  - `pel-minor-mode-state'
@@ -82,6 +84,7 @@
 ;;  - `pel-current-buffer-filename'
 ;;  - `pel-current-buffer-file-extension'
 ;;  - `pel-current-buffer-eol-type'
+;;  - `pel-current-buffer-starts-with'
 ;;
 ;; Current Directory
 ;;  * `pel-cd-to-current'
@@ -89,6 +92,12 @@
 ;; OS Environment Utilities
 ;;  - `pel-terminal-is-macos-terminal-p'
 ;;  - `pel-running-under-ssh-p'
+;;  - `pel-envvar-value-list'
+;;  - `pel-substitute-env-vars'
+;;  - `pel-expanded-path'
+;;  - `pel-path='
+;;  - `pel-substitute-in-file-name'
+;;    - `pel-envar-in-string'
 ;;
 ;; Emacs Environment Utilities
 ;;  - `pel-locate-user-emacs-file'
@@ -573,6 +582,49 @@ If VALUE is nil do nothing."
 ;;* Checking Major Mode
 ;;  ===================
 
+(defun pel-major-mode-of-file (filename)
+  "Return the major mode symbol Emacs would use for FILENAME.
+Return nil for directory."
+  (let ((buffer (get-file-buffer filename)))
+    ;; If the file is already visited in buffer check the major mode.
+    (if buffer
+        (buffer-local-value 'major-mode buffer)
+      ;; Otherwise visit it in a temp buffer and check major mode.
+      (with-temp-buffer
+        ;; ignore error caused by filename being a directory
+        (ignore-errors
+          ;; Some major modes print information on startup: prevent those.
+          (let ((inhibit-message t))
+            ;; Expand file name to handle relative paths correctly
+            (set-visited-file-name (expand-file-name filename) t)
+            ;; set-auto-mode looks at filename, shebangs, and local variables
+            (set-auto-mode)
+            (set-buffer-modified-p nil)
+            major-mode))))))
+
+
+(defconst pel-lang-for-modes '((cperl . perl))
+  "Map unusual mode name to language symbol.")
+
+(defun pel-language-of (&optional filename)
+  "Return the programming language symbol used in buffer or specified FILENAME.
+If FILENAME is not specified use the current buffer.
+Return nil if the major mode of buffer or FILENAME is not derived from either
+`prog-mode' or `text-mode'."
+  (let ((mmode (if filename
+                   (pel-major-mode-of-file filename)
+                 major-mode))
+        (lang-symbol nil))
+    ;; Handle files/buffers that use programming or text major modes
+    ;; `provided-mode-derived-p' API has changed over Emacs versions:
+    ;; use 2 calls to support all versions.
+    (when (or (provided-mode-derived-p mmode 'prog-mode)
+              (provided-mode-derived-p mmode 'text-mode))
+      (setq lang-symbol (intern (pel-file-type-for mmode)))
+      (when (assoc lang-symbol pel-lang-for-modes)
+        (setq lang-symbol (cdr (assoc lang-symbol pel-lang-for-modes)))))
+    lang-symbol))
+
 (defun pel-major-mode-must-be (modes)
   "Check that the current buffer major mode is one of MODES.
 MODES is either a major-mode symbol or a list of major-mode symbols.
@@ -604,7 +656,7 @@ Accepts mode derived from `dired-mode' unless STRICT is non-nil."
         (unless strict
           (derived-mode-p 'dired-mode)))))
 
-(defun pel-major-mode-of (&optional buffer-or-name)
+(defun pel-major-mode-of-buffer (&optional buffer-or-name)
   "Return the major mode symbol of the specified BUFFER-OR-NAME.
 If not specified (or nil) return the major mode of the current buffer."
   (if buffer-or-name
@@ -634,7 +686,7 @@ major-mode.  That's the prefix string before the \"-mode\" portion of
 the major mode name of the current buffer or the one specified by
 BUFFER-OR-NAME."
   (format symbol-format-string
-          (pel-file-type-for (pel-major-mode-of buffer-or-name))))
+          (pel-file-type-for (pel-major-mode-of-buffer buffer-or-name))))
 
 (defun pel-buffers-in-mode (wanted-major-mode)
   "Return a list of buffers with specified WANTED-MAJOR-MODE, nil if none open.
@@ -711,7 +763,9 @@ or of the buffer specified by the BUFFER-OR-NAME argument or the variable
 The BUFFER argument value takes precedence to the value of the variable
 `pel-insert-symbol-content-context-buffer'. If both are nil, then the
 value is read from the context of the current buffer, which may be a
-local or global."
+local or global.
+
+Signal an error if the symbol is not bound."
   (symbol-value
    (pel-major-mode-symbol-for
     symbol-format-string
@@ -808,6 +862,13 @@ The nil value means that the type is unknown."
       (setq eol-type (coding-system-eol-type (aref eol-type 0))))
     (cdr (assoc eol-type pel-eol-mode-name))))
 
+(defun pel-current-buffer-starts-with (regexp)
+  "Return non-nil if current buffer starts with text REGEXP.
+Does not change match data."
+  (save-excursion
+    (goto-char (point-min))
+    (looking-at-p (regexp-quote regexp))))
+
 ;; ---------------------------------------------------------------------------
 ;;* Current Directory
 ;;  =================
@@ -838,6 +899,83 @@ SILENT is non-nil (can be requested by prefix argument)."
   (declare (side-effect-free t))
   (when (getenv "SSH_CLIENT")
     t))
+
+(defun pel-envvar-value-list (varname &optional sep)
+  "Return the SEP separated list of elements stored in environment VARNAME.
+If SEP is not specified the default separator is \":\".
+Return a list without duplicates, empty strings and trim white space from the
+beginning and end of each string."
+  (mapcar #'string-trim
+          (delete-dups
+           (split-string (pel-string-for
+                          (getenv varname))
+                         (or sep ":")
+                         'omit-nulls))))
+
+(defun pel-substitute-env-vars (string &optional max-depth)
+  "Recursively expand environment variables in STRING.
+
+Does the same as builtin `substitute-env-vars' but the expansion continues
+until no more variables are found or MAX-DEPTH default 10) is reached."
+  (let ((depth 0)
+        (limit (or max-depth 10))
+        (latest string)
+        (previous nil))
+    ;; Keep expanding until the string stops changing or loop hits depth limit
+    (while (and (not (string= latest previous))
+                (< depth limit))
+      (setq previous latest
+            latest (substitute-env-vars latest)
+            depth (1+ depth)))
+    latest))
+
+(defun pel-expanded-path (pathname)
+  "Return PATHNAME with ~ and $VARNAME style environment variables expanded.
+
+If the value of an environment variable itself refers to another environment
+variable it is also expanded."
+  (expand-file-name (pel-substitute-env-vars pathname)))
+
+(defun pel-path= (path1 path2)
+  "Compare PATH1 and PATH2, expanding environment variables and ~ in them."
+  (string= (directory-file-name (pel-expanded-path path1))
+           (directory-file-name (pel-expanded-path path2))))
+
+
+;; -- Alternate implementation allowing detection of invalid composition
+(defun pel-envar-in-string (string)
+  "Return names of environment variables extracted from the string.
+
+The variables must be prefixed with a '$' character and must end
+with a non alphanumeric or underscore character."
+  (let ((varnames nil)
+        (idx 0)
+        (new-idx nil)
+        varname)
+    (while (setq new-idx
+                 (string-match "\\$\\([[:alnum:]_]*\\)"
+                               (substring string idx)))
+      (setq varname (match-string 1 (substring string idx)))
+      (unless (string= varname "")
+        (push varname varnames))
+      (setq idx (+ idx new-idx 1 (length varname))))
+    (nreverse varnames)))
+
+(defun pel-substitute-in-file-name (filename)
+  "Substitute environment variables referred to in FILENAME.
+
+Does the same as `substitute-in-file-name' but signals a user-error when
+an environment variable referenced in FILENAME is unknown.
+
+SEE ALSO: `pel-expanded-path'."
+  ;; First check and raise a user error if there is any unknown environment
+  ;; variable inside the filename string
+  (dolist (varname (pel-envar-in-string filename))
+    (unless (getenv varname)
+      (user-error "In \"%s\", the environment variable %s is unknown!"
+                  filename varname)))
+  ;; then return the string with  everything substituted.
+  (substitute-in-file-name filename))
 
 ;; ---------------------------------------------------------------------------
 ;;* Emacs Environment Utilities
@@ -1354,10 +1492,17 @@ Otherwise return nil."
       nil
     string))
 
-(defun pel-string-for (text)
-  "Return TEXT if it's a string.  If nil return empty string."
+(defun pel-string-for (text &optional prefix suffix)
+  "Return TEXT if it's a string.  If nil return empty string.
+If PREFIX and/or SUFFIX are non-nil they are treated as strings and placed
+before and after the TEXT string."
   (declare (pure t) (side-effect-free t))
-  (if text text ""))
+  (if text
+      (format "%s%s%s"
+              (if prefix prefix "")
+              text
+              (if suffix suffix ""))
+    ""))
 
 (defun pel-string-when (condition &optional text)
   "Return TEXT (or CONDITION) when CONDITION is non-nil, empty string otherwise.
@@ -2635,6 +2780,10 @@ This function handles both."
 ;;* Insertion of text in current buffer
 ;;  ===================================
 
+(defun pel-as-bold (text)
+  "Return TEXT in bold."
+  (propertize text 'face 'bold))
+
 (defun pel-insert-bold (text)
   "Insert bold TEXT at point."
   (insert (propertize text 'face 'bold)))
@@ -2828,6 +2977,7 @@ The list of symbol is in SYMBOL-LIST and the maximum line width is LINE-WIDTH."
       (when (>= w line-width)
         (setq w 1)
         (insert "\n ")))))
+
 (defun pel-insert-list-content (symbol &optional
                                        buffer without-index
                                        no-button on-same-line)
