@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-14 10:46:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-14 11:04:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -445,6 +445,36 @@
 ;;                          "bin/e"
 ;;                          pel--rootdir)))))
 
+;;; --------------------------------------------------------------------------
+;;; ;;* Checking Major Mode - pel-language-of
+;;; --------------------------------------------------------------------------
+
+(ert-deftest pel--base-test/mode/language-of-emacs-lisp ()
+  "`pel-language-of' returns \\='emacs-lisp for an emacs-lisp-mode buffer."
+  (with-temp-buffer
+    (emacs-lisp-mode)
+    (should (eq 'emacs-lisp (pel-language-of)))))
+
+(ert-deftest pel--base-test/mode/language-of-text-mode ()
+  "`pel-language-of' returns \\='text for a text-mode buffer."
+  (with-temp-buffer
+    (text-mode)
+    (should (eq 'text (pel-language-of)))))
+
+(ert-deftest pel--base-test/mode/language-of-fundamental-mode ()
+  "`pel-language-of' returns nil for fundamental-mode (not prog or text derived)."
+  (with-temp-buffer
+    (fundamental-mode)
+    (should-not (pel-language-of))))
+
+(ert-deftest pel--base-test/mode/language-of-file ()
+  "`pel-language-of' accepts a FILENAME and returns its language symbol."
+  (let ((el-file (expand-file-name "pel--base.el" pel--rootdir)))
+    (when (file-exists-p el-file)
+      (let ((lang (pel-language-of el-file)))
+        (should (symbolp lang))
+        (should (eq 'emacs-lisp lang))))))
+
 ;; ===========================================================================
 ;; pel-derived-mode-p
 ;; ===========================================================================
@@ -718,6 +748,49 @@ was silently ignored and the current buffer was always queried."
               (cd orig)))
         (kill-buffer buf)))))
 
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Buffer Information - pel-current-buffer-starts-with
+;;; --------------------------------------------------------------------------
+
+(ert-deftest pel--base-test/buffer-info/starts-with-match ()
+  "`pel-current-buffer-starts-with' returns non-nil when buffer begins with TEXT."
+  (with-temp-buffer
+    (insert ";;; Commentary:\n(defun foo ())")
+    (should (pel-current-buffer-starts-with ";;;"))))
+
+(ert-deftest pel--base-test/buffer-info/starts-with-no-match ()
+  "`pel-current-buffer-starts-with' returns nil when TEXT is not at the start."
+  (with-temp-buffer
+    (insert ";;; Commentary:\n(defun foo ())")
+    ;; Text that appears in the buffer but not at position 1.
+    (should-not (pel-current-buffer-starts-with "(defun"))
+    ;; Text that is absent entirely.
+    (should-not (pel-current-buffer-starts-with "#!/bin/bash"))))
+
+(ert-deftest pel--base-test/buffer-info/starts-with-empty-buffer ()
+  "`pel-current-buffer-starts-with' returns nil for an empty buffer."
+  (with-temp-buffer
+    (should-not (pel-current-buffer-starts-with "anything"))))
+
+(ert-deftest pel--base-test/buffer-info/starts-with-shebang ()
+  "`pel-current-buffer-starts-with' detects shebang lines."
+  (with-temp-buffer
+    (insert "#!/usr/bin/env python3\nx = 1\n")
+    (should     (pel-current-buffer-starts-with "#!/"))
+    (should     (pel-current-buffer-starts-with "#!/usr/bin/env python3"))
+    (should-not (pel-current-buffer-starts-with "x = 1"))))
+
+(ert-deftest pel--base-test/buffer-info/starts-with-does-not-alter-match-data ()
+  "`pel-current-buffer-starts-with' does not clobber existing match data."
+  (with-temp-buffer
+    (insert "hello world")
+    (string-match "hello" "hello world")       ; set match data
+    (pel-current-buffer-starts-with "hello")
+    ;; match-data set before the call must still be intact
+    (should (= 0 (match-beginning 0)))
+    (should (= 5 (match-end 0)))))
+
 ;;; --------------------------------------------------------------------------
 ;;; ;;* Current Directory
 ;;;
@@ -749,6 +822,142 @@ was silently ignored and the current buffer was always queried."
      (string=
       "Path is: [/home/user/woz/at/next]. $ is not expanded, even for woz."
       (pel-substitute-env-vars my-string)))))
+
+;; -- pel-envvar-value-list --------------------------------------------------
+
+(ert-deftest pel--base-test/os-env/envvar-value-list-basic ()
+  "`pel-envvar-value-list' splits a colon-separated env var into a list."
+  (let ((process-environment
+         (cons "PEL_TEST_PATH=/usr/local/bin:/usr/bin:/bin"
+               process-environment)))
+    (let ((result (pel-envvar-value-list "PEL_TEST_PATH")))
+      (should (listp result))
+      (should (= 3 (length result)))
+      (should (member "/usr/local/bin" result))
+      (should (member "/usr/bin"       result))
+      (should (member "/bin"           result)))))
+
+(ert-deftest pel--base-test/os-env/envvar-value-list-unset ()
+  "`pel-envvar-value-list' returns an empty list for an unset variable."
+  ;; Remove any accidental definition of the sentinel name.
+  (let ((process-environment
+         (cl-remove-if (lambda (e) (string-prefix-p "PEL_ABSENT_XYZ=" e))
+                       process-environment)))
+    (should (equal '() (pel-envvar-value-list "PEL_ABSENT_XYZ")))))
+
+(ert-deftest pel--base-test/os-env/envvar-value-list-custom-sep ()
+  "`pel-envvar-value-list' accepts an alternative separator."
+  (let ((process-environment
+         (cons "PEL_TEST_SEMI=alpha;beta;gamma" process-environment)))
+    (let ((result (pel-envvar-value-list "PEL_TEST_SEMI" ";")))
+      (should (= 3 (length result)))
+      (should (member "alpha" result))
+      (should (member "beta"  result))
+      (should (member "gamma" result)))))
+
+(ert-deftest pel--base-test/os-env/envvar-value-list-dedup-and-trim ()
+  "`pel-envvar-value-list' removes duplicates and trims whitespace."
+  (let ((process-environment
+         (cons "PEL_TEST_DUP= foo : bar : foo : baz "
+               process-environment)))
+    (let ((result (pel-envvar-value-list "PEL_TEST_DUP")))
+      (should (member "foo" result))
+      (should (member "bar" result))
+      (should (member "baz" result))
+      ;; No duplicates.
+      (should (= (length result)
+                 (length (delete-dups (copy-sequence result))))))))
+
+;; -- pel-envar-in-string ----------------------------------------------------
+
+(ert-deftest pel--base-test/os-env/envar-in-string-basic ()
+  "`pel-envar-in-string' extracts $VAR names from a string."
+  (should (equal '("HOME")        (pel-envar-in-string "$HOME/docs")))
+  (should (equal '("FOO" "BAR")   (pel-envar-in-string "$FOO/$BAR")))
+  (should (equal '()              (pel-envar-in-string "/no/vars/here")))
+  (should (equal '()              (pel-envar-in-string ""))))
+
+(ert-deftest pel--base-test/os-env/envar-in-string-underscore ()
+  "`pel-envar-in-string' handles names containing underscores."
+  (should (equal '("MY_VAR")  (pel-envar-in-string "$MY_VAR/rest")))
+  (should (equal '("A_B_C")   (pel-envar-in-string "prefix/$A_B_C/suffix"))))
+
+(ert-deftest pel--base-test/os-env/envar-in-string-lone-dollar ()
+  "`pel-envar-in-string' ignores a bare $ with no alphanumeric/underscore name."
+  (should (equal '() (pel-envar-in-string "price is $")))
+  (should (equal '() (pel-envar-in-string "$ "))))
+
+(ert-deftest pel--base-test/os-env/envar-in-string-at-end-of-string ()
+  "`pel-envar-in-string' extracts a variable at the very end of the string."
+  (should (equal '("PATH") (pel-envar-in-string "/prefix/$PATH"))))
+
+;; -- pel-expanded-path ------------------------------------------------------
+
+(ert-deftest pel--base-test/os-env/expanded-path-tilde ()
+  "`pel-expanded-path' expands ~ to an absolute path."
+  (let ((result (pel-expanded-path "~")))
+    (should (file-name-absolute-p result))
+    (should-not (string-match-p "~" result))))
+
+(ert-deftest pel--base-test/os-env/expanded-path-env-var ()
+  "`pel-expanded-path' expands a $VAR-style environment variable."
+  (let ((process-environment
+         (cons "PEL_EXP_DIR=/tmp/pelexptest" process-environment)))
+    (let ((result (pel-expanded-path "$PEL_EXP_DIR/sub")))
+      (should (string-match-p "/tmp/pelexptest/sub" result)))))
+
+(ert-deftest pel--base-test/os-env/expanded-path-recursive ()
+  "`pel-expanded-path' recursively expands nested environment variables."
+  (let ((process-environment
+         (cons "PEL_R_A=/tmp"
+               (cons "PEL_R_B=$PEL_R_A/nested" process-environment))))
+    (let ((result (pel-expanded-path "$PEL_R_B/final")))
+      (should (string-match-p "/tmp/nested/final" result)))))
+
+;; -- pel-path= --------------------------------------------------------------
+
+(ert-deftest pel--base-test/os-env/path=-identical ()
+  "`pel-path=' returns t for identical paths (no env vars)."
+  (should (pel-path= "/usr/local/bin" "/usr/local/bin")))
+
+(ert-deftest pel--base-test/os-env/path=-tilde ()
+  "`pel-path=' expands ~ on both sides before comparing."
+  (let ((home (expand-file-name "~")))
+    (should (pel-path= "~"   home))
+    (should (pel-path= home  "~"))))
+
+(ert-deftest pel--base-test/os-env/path=-env-var-expansion ()
+  "`pel-path=' expands $VAR before comparing."
+  (let ((process-environment
+         (cons "PEL_CMP=/usr/local" process-environment)))
+    (should     (pel-path= "$PEL_CMP"   "/usr/local"))
+    (should     (pel-path= "/usr/local" "$PEL_CMP"))))
+
+(ert-deftest pel--base-test/os-env/path=-different ()
+  "`pel-path=' returns nil for genuinely different paths."
+  (should-not (pel-path= "/usr/local/bin" "/usr/bin")))
+
+;; -- pel-substitute-in-file-name --------------------------------------------
+
+(ert-deftest pel--base-test/os-env/substitute-in-file-name-known-var ()
+  "`pel-substitute-in-file-name' expands a known environment variable."
+  (let ((process-environment
+         (cons "PEL_SUB_DIR=/tmp/subst" process-environment)))
+    (let ((result (pel-substitute-in-file-name "$PEL_SUB_DIR/file.txt")))
+      (should (string-match-p "/tmp/subst/file.txt" result)))))
+
+(ert-deftest pel--base-test/os-env/substitute-in-file-name-unknown-var ()
+  "`pel-substitute-in-file-name' signals `user-error' for an unknown variable."
+  (let ((process-environment
+         (cl-remove-if (lambda (e) (string-prefix-p "PEL_GHOST_XYZ=" e))
+                       process-environment)))
+    (should-error (pel-substitute-in-file-name "$PEL_GHOST_XYZ/file.txt")
+                  :type 'user-error)))
+
+(ert-deftest pel--base-test/os-env/substitute-in-file-name-no-vars ()
+  "`pel-substitute-in-file-name' returns a plain path unchanged."
+  (should (string= "/tmp/plain.txt"
+                   (pel-substitute-in-file-name "/tmp/plain.txt"))))
 
 ;;; --------------------------------------------------------------------------
 ;;; ;;* Emacs Environment Utilities
@@ -1132,6 +1341,124 @@ was silently ignored and the current buffer was always queried."
   (should (string= ""      (pel-string-for nil)))
   (should (string= ""      (pel-string-for ""))))
 
+;;; --------------------------------------------------------------------------
+;;; ;;* OS Environment Utilities - new functions
+;;; --------------------------------------------------------------------------
+
+;; -- pel-envvar-value-list --------------------------------------------------
+
+(ert-deftest pel--base-test/os-env/envvar-value-list-basic ()
+  "`pel-envvar-value-list' splits a colon-separated env var into a list."
+  (let ((process-environment
+         (cons "PEL_TEST_PATH=/usr/local/bin:/usr/bin:/bin"
+               process-environment)))
+    (let ((result (pel-envvar-value-list "PEL_TEST_PATH")))
+      (should (listp result))
+      (should (= 3 (length result)))
+      (should (member "/usr/local/bin" result))
+      (should (member "/usr/bin"       result))
+      (should (member "/bin"           result)))))
+
+(ert-deftest pel--base-test/os-env/envvar-value-list-unset ()
+  "`pel-envvar-value-list' returns an empty list for an unset variable."
+  ;; Remove any accidental definition of the sentinel name.
+  (let ((process-environment
+         (cl-remove-if (lambda (e) (string-prefix-p "PEL_ABSENT_XYZ=" e))
+                       process-environment)))
+    (should (equal '() (pel-envvar-value-list "PEL_ABSENT_XYZ")))))
+
+(ert-deftest pel--base-test/os-env/envvar-value-list-custom-sep ()
+  "`pel-envvar-value-list' accepts an alternative separator."
+  (let ((process-environment
+         (cons "PEL_TEST_SEMI=alpha;beta;gamma" process-environment)))
+    (let ((result (pel-envvar-value-list "PEL_TEST_SEMI" ";")))
+      (should (= 3 (length result)))
+      (should (member "alpha" result))
+      (should (member "beta"  result))
+      (should (member "gamma" result)))))
+
+(ert-deftest pel--base-test/os-env/envvar-value-list-dedup-and-trim ()
+  "`pel-envvar-value-list' removes duplicates and trims whitespace."
+  (let ((process-environment
+         (cons "PEL_TEST_DUP= foo : bar : foo : baz "
+               process-environment)))
+    (let ((result (pel-envvar-value-list "PEL_TEST_DUP")))
+      (should (member "foo" result))
+      (should (member "bar" result))
+      (should (member "baz" result))
+      ;; No duplicates.
+      (should (= (length result)
+                 (length (delete-dups (copy-sequence result))))))))
+
+;; -- pel-envar-in-string ----------------------------------------------------
+
+(ert-deftest pel--base-test/os-env/envar-in-string-basic ()
+  "`pel-envar-in-string' extracts $VAR names from a string."
+  (should (equal '("HOME")        (pel-envar-in-string "$HOME/docs")))
+  (should (equal '("FOO" "BAR")   (pel-envar-in-string "$FOO/$BAR")))
+  (should (equal '()              (pel-envar-in-string "/no/vars/here")))
+  (should (equal '()              (pel-envar-in-string ""))))
+
+(ert-deftest pel--base-test/os-env/envar-in-string-underscore ()
+  "`pel-envar-in-string' handles names containing underscores."
+  (should (equal '("MY_VAR")  (pel-envar-in-string "$MY_VAR/rest")))
+  (should (equal '("A_B_C")   (pel-envar-in-string "prefix/$A_B_C/suffix"))))
+
+(ert-deftest pel--base-test/os-env/envar-in-string-lone-dollar ()
+  "`pel-envar-in-string' ignores a bare $ with no alphanumeric/underscore name."
+  (should (equal '() (pel-envar-in-string "price is $")))
+  (should (equal '() (pel-envar-in-string "$ "))))
+
+(ert-deftest pel--base-test/os-env/envar-in-string-at-end-of-string ()
+  "`pel-envar-in-string' extracts a variable at the very end of the string."
+  (should (equal '("PATH") (pel-envar-in-string "/prefix/$PATH"))))
+
+;; -- pel-expanded-path ------------------------------------------------------
+
+(ert-deftest pel--base-test/os-env/expanded-path-tilde ()
+  "`pel-expanded-path' expands ~ to an absolute path."
+  (let ((result (pel-expanded-path "~")))
+    (should (file-name-absolute-p result))
+    (should-not (string-match-p "~" result))))
+
+(ert-deftest pel--base-test/os-env/expanded-path-env-var ()
+  "`pel-expanded-path' expands a $VAR-style environment variable."
+  (let ((process-environment
+         (cons "PEL_EXP_DIR=/tmp/pelexptest" process-environment)))
+    (let ((result (pel-expanded-path "$PEL_EXP_DIR/sub")))
+      (should (string-match-p "/tmp/pelexptest/sub" result)))))
+
+(ert-deftest pel--base-test/os-env/expanded-path-recursive ()
+  "`pel-expanded-path' recursively expands nested environment variables."
+  (let ((process-environment
+         (cons "PEL_R_A=/tmp"
+               (cons "PEL_R_B=$PEL_R_A/nested" process-environment))))
+    (let ((result (pel-expanded-path "$PEL_R_B/final")))
+      (should (string-match-p "/tmp/nested/final" result)))))
+
+;; -- pel-path= --------------------------------------------------------------
+
+(ert-deftest pel--base-test/os-env/path=-identical ()
+  "`pel-path=' returns t for identical paths (no env vars)."
+  (should (pel-path= "/usr/local/bin" "/usr/local/bin")))
+
+(ert-deftest pel--base-test/os-env/path=-tilde ()
+  "`pel-path=' expands ~ on both sides before comparing."
+  (let ((home (expand-file-name "~")))
+    (should (pel-path= "~"   home))
+    (should (pel-path= home  "~"))))
+
+(ert-deftest pel--base-test/os-env/path=-env-var-expansion ()
+  "`pel-path=' expands $VAR before comparing."
+  (let ((process-environment
+         (cons "PEL_CMP=/usr/local" process-environment)))
+    (should     (pel-path= "$PEL_CMP"   "/usr/local"))
+    (should     (pel-path= "/usr/local" "$PEL_CMP"))))
+
+(ert-deftest pel--base-test/os-env/path=-different ()
+  "`pel-path=' returns nil for genuinely different paths."
+  (should-not (pel-path= "/usr/local/bin" "/usr/bin")))
+
 (ert-deftest ert-test-pel-string-when ()
   "Test `pel-string-when'."
   ;; Condition is non-nil and text is supplied → text.
@@ -1184,6 +1511,28 @@ was silently ignored and the current buffer was always queried."
                    "*\\ abc\\ def.*"))
   (should (string= (pel-shell-quote-path-keep-glob "*-[a-c]def.*")
                    "*-[a-c]def.*")))
+
+;; -- pel-substitute-in-file-name --------------------------------------------
+
+(ert-deftest pel--base-test/os-env/substitute-in-file-name-known-var ()
+  "`pel-substitute-in-file-name' expands a known environment variable."
+  (let ((process-environment
+         (cons "PEL_SUB_DIR=/tmp/subst" process-environment)))
+    (let ((result (pel-substitute-in-file-name "$PEL_SUB_DIR/file.txt")))
+      (should (string-match-p "/tmp/subst/file.txt" result)))))
+
+(ert-deftest pel--base-test/os-env/substitute-in-file-name-unknown-var ()
+  "`pel-substitute-in-file-name' signals `user-error' for an unknown variable."
+  (let ((process-environment
+         (cl-remove-if (lambda (e) (string-prefix-p "PEL_GHOST_XYZ=" e))
+                       process-environment)))
+    (should-error (pel-substitute-in-file-name "$PEL_GHOST_XYZ/file.txt")
+                  :type 'user-error)))
+
+(ert-deftest pel--base-test/os-env/substitute-in-file-name-no-vars ()
+  "`pel-substitute-in-file-name' returns a plain path unchanged."
+  (should (string= "/tmp/plain.txt"
+                   (pel-substitute-in-file-name "/tmp/plain.txt"))))
 
 ;;; --------------------------------------------------------------------------
 ;;; ;;* Message List formatting
@@ -1787,6 +2136,29 @@ was silently ignored and the current buffer was always queried."
   (with-temp-buffer
     (pel--pp '(:a 1 :b 2) (current-buffer) "  ")
     (should (string-match-p ":a" (buffer-string)))))
+
+(ert-deftest pel--base-test/insertions/as-bold-returns-propertized-string ()
+  "`pel-as-bold' returns the same string content with a bold face property."
+  (let ((result (pel-as-bold "hello")))
+    (should (stringp result))
+    (should (string= "hello" result))
+    ;; The face text-property must be 'bold at every character position.
+    (should (equal 'bold (get-text-property 0 'face result)))
+    (should (equal 'bold (get-text-property 4 'face result)))))
+
+(ert-deftest pel--base-test/insertions/as-bold-empty-string ()
+  "`pel-as-bold' handles an empty string without error."
+  (let ((result (pel-as-bold "")))
+    (should (stringp result))
+    (should (string= "" result))))
+
+(ert-deftest pel--base-test/insertions/as-bold-vs-insert-bold ()
+  "`pel-as-bold' returns what `pel-insert-bold' would insert."
+  ;; pel-as-bold returns the propertized string; pel-insert-bold inserts it.
+  (with-temp-buffer
+    (insert (pel-as-bold "world"))
+    (should (string= "world" (buffer-substring-no-properties (point-min) (point-max))))
+    (should (equal 'bold (get-text-property (point-min) 'face)))))
 
 ;;; --------------------------------------------------------------------------
 ;;; ;;* Move point right, optionally inserting spaces

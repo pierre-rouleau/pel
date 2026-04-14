@@ -620,8 +620,9 @@ Return nil if the major mode of buffer or FILENAME is not derived from either
     (when (or (provided-mode-derived-p mmode 'prog-mode)
               (provided-mode-derived-p mmode 'text-mode))
       (setq lang-symbol (intern (pel-file-type-for mmode)))
-      (when (assoc lang-symbol pel-lang-for-modes)
-        (setq lang-symbol (cdr (assoc lang-symbol pel-lang-for-modes)))))
+      (let ((mapped (assoc lang-symbol pel-lang-for-modes)))
+        (when mapped
+          (setq lang-symbol (cdr mapped)))))
     lang-symbol))
 
 (defun pel-major-mode-must-be (modes)
@@ -861,12 +862,12 @@ The nil value means that the type is unknown."
       (setq eol-type (coding-system-eol-type (aref eol-type 0))))
     (cdr (assoc eol-type pel-eol-mode-name))))
 
-(defun pel-current-buffer-starts-with (regexp)
-  "Return non-nil if current buffer starts with text REGEXP.
+(defun pel-current-buffer-starts-with (text)
+  "Return non-nil if current buffer starts with TEXT.
 Does not change match data."
   (save-excursion
     (goto-char (point-min))
-    (looking-at-p (regexp-quote regexp))))
+    (looking-at-p (regexp-quote text))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Current Directory

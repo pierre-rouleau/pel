@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-14 10:12:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-14 11:10:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -50,7 +50,7 @@
 ;;                                    ;      `pel-language-of'
 ;;                                    ;      `pel-string-for'
 ;;                                    ;      `pel-path='
-;;                                    ;      `pel-substitute-in-file-name'
+;;                                    ;      `pel-expandend-path'
 (require 'pel--options)               ; use: `pel-ffind-executable'
 (eval-when-compile (require 'subr-x)) ; use: `string-join', `string-trim'
 (require 'seq)                        ; use: `seq-filter'
@@ -64,8 +64,7 @@
 Substitute the ~ with the home directory.
 Replace the name of environment variables with their values."
   (format "'%s'" (directory-file-name
-                  (expand-file-name
-                   (pel-substitute-in-file-name  dirname)))))
+                  (pel-expanded-path dirname))))
 
 ;; ---------------------------------------------------------------------------
 (defvar pel--ffind-executable nil
