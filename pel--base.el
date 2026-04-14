@@ -583,23 +583,24 @@ If VALUE is nil do nothing."
 
 (defun pel-major-mode-of-file (filename)
   "Return the major mode symbol Emacs would use for FILENAME.
-Return nil for directory."
-  (let ((buffer (get-file-buffer filename)))
-    ;; If the file is already visited in buffer check the major mode.
-    (if buffer
-        (buffer-local-value 'major-mode buffer)
-      ;; Otherwise visit it in a temp buffer and check major mode.
-      (with-temp-buffer
-        ;; ignore error caused by filename being a directory
-        (ignore-errors
-          ;; Some major modes print information on startup: prevent those.
-          (let ((inhibit-message t))
-            ;; Expand file name to handle relative paths correctly
-            (set-visited-file-name (expand-file-name filename) t)
-            ;; set-auto-mode looks at filename, shebangs, and local variables
-            (set-auto-mode)
-            (set-buffer-modified-p nil)
-            major-mode))))))
+Return nil if FILENAME is a directory."
+  (unless (file-directory-p filename)
+    (let ((buffer (get-file-buffer filename)))
+      ;; If the file is already visited in buffer check the major mode.
+      (if buffer
+          (buffer-local-value 'major-mode buffer)
+        ;; Otherwise visit it in a temp buffer and check major mode.
+        (with-temp-buffer
+          ;; ignore error caused by filename being a directory
+          (ignore-errors
+            ;; Some major modes print information on startup: prevent those.
+            (let ((inhibit-message t))
+              ;; Expand file name to handle relative paths correctly
+              (set-visited-file-name (expand-file-name filename) t)
+              ;; set-auto-mode looks at filename, shebangs, and local variables
+              (set-auto-mode)
+              (set-buffer-modified-p nil)
+              major-mode)))))))
 
 
 (defconst pel-lang-for-modes '((cperl . perl))
@@ -905,10 +906,9 @@ SILENT is non-nil (can be requested by prefix argument)."
 If SEP is not specified the default separator is \":\".
 Return a list without duplicates, empty strings and trim white space from the
 beginning and end of each string."
-  (mapcar #'string-trim
-          (delete-dups
-           (split-string (pel-string-for
-                          (getenv varname))
+  (delete-dups
+   (mapcar #'string-trim
+           (split-string (pel-string-for (getenv varname))
                          (or sep ":")
                          'omit-nulls))))
 
@@ -953,7 +953,7 @@ with a non alphanumeric or underscore character."
         (new-idx nil)
         varname)
     (while (setq new-idx
-                 (string-match "\\$\\([[:alnum:]_]*\\)"
+                 (string-match "\\$\\([[:alpha:]_][[:alnum:]_]*\\)"
                                (substring string idx)))
       (setq varname (match-string 1 (substring string idx)))
       (unless (string= varname "")
