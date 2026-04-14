@@ -600,6 +600,8 @@ Return nil if FILENAME is a directory."
                     ;; caught by ignore-errors in Emacs 27 batch mode.
                     (enable-dir-local-variables nil))
                 (set-visited-file-name (expand-file-name filename) t)
+                (when (file-readable-p filename)
+                  (insert-file-contents filename))
                 (set-auto-mode)
                 (set-buffer-modified-p nil)
                 major-mode)
@@ -918,10 +920,12 @@ SILENT is non-nil (can be requested by prefix argument)."
 Each element is trimmed of surrounding whitespace; duplicates and empty
 entries are removed.  SEP defaults to \":\"."
   (delete-dups
-   (mapcar #'string-trim
-           (split-string (pel-string-for (getenv varname))
-                         (or sep ":")
-                         'omit-nulls))))
+   (delq nil (mapcar (lambda (entry)
+                       (let ((trimmed (string-trim entry)))
+                         (unless (string-empty-p trimmed)
+                           trimmed)))
+                     (split-string (pel-string-for (getenv varname))
+                                   (regexp-quote (or sep ":")))))))
 
 (defun pel-substitute-env-vars (string &optional max-depth)
   "Recursively expand environment variables in STRING.
@@ -963,15 +967,15 @@ The variables must be prefixed with a '$' character and must end
 with a non alphanumeric or underscore character."
   (let ((varnames nil)
         (idx 0)
-        (new-idx nil)
         varname)
-    (while (setq new-idx
-                 (string-match "\\$\\([[:alpha:]_][[:alnum:]_]*\\)"
-                               (substring string idx)))
-      (setq varname (match-string 1 (substring string idx)))
-      (unless (string= varname "")
+    (while (string-match
+            "\\(?:\\$\\$\\|\\${\\([[:alpha:]_][[:alnum:]_]*\\)}\\|\\$\\([[:alpha:]_][[:alnum:]_]*\\)\\)"
+            string idx)
+      (setq varname (or (match-string 1 string)
+                        (match-string 2 string)))
+      (when varname
         (push varname varnames))
-      (setq idx (+ idx new-idx 1 (length varname))))
+      (setq idx (match-end 0)))
     (nreverse varnames)))
 
 (defun pel-substitute-in-file-name (filename)
