@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June 10 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 14:42:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-13 23:15:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -93,9 +93,7 @@ The information is shown inside a *pel-time-stamp-info* help buffer."
      "*pel-time-stamp-info*"
      "Automatic File Time Stamp Control"
      (lambda ()
-       ;; (insert (propertize  "* Control Time Stamp Update on File Save:"
-       ;;                      'face
-       ;;                      'bold))
+       ;; (pel-insert-bold "* Control Time Stamp Update on File Save:")
        (insert (substitute-command-keys "
 PEL provides control of the hook logic required to automate the update
 of time stamp when a file is saved; it controls it with the value of the
@@ -123,8 +121,7 @@ function that updates time stamp when it is non-nil.
         "Only controls whether time-stamp command updates the time stamp.")
 
        (insert "\n\n")
-       (insert (propertize  "*Time Stamp Location and Format Control:" 'face
-                            'bold))
+       (pel-insert-bold "*Time Stamp Location and Format Control:")
        (insert "
 
 The location and format of the time stamp is either controlled by the single

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 20 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 14:42:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-13 23:19:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -75,10 +75,13 @@ and required by `pel-use-js'."
         (user-error
          "Can't use `js-ts-mode' nor `js-mode': check installation!"))))))
 
+;; Emacs tree-sitter handling fixer function.
+;; Identified by `pel--ts-mode-with-fixer' and used by `pel-eval-after-load'.
 ;;-pel-autoload
 (defun pel--js-ts-mode-fixer ()
   "Remove `js-ts-mode' entries from `auto-mode-alist'.
-It removes what entered when `js-ts-mode' loads."
+It removes what was entered when `js-ts-mode' loads to ensure that the
+`pel-js-mode' mode dispatcher remains used."
   ;; There are several file extensions for Javascript and the `js-ts-mode'
   ;; adds several entries (entries for .js, .zon).
   ;; Delete them all from auto-mode-alist.
@@ -213,7 +216,7 @@ following user-options:")
      "PEL setup for Javascript programming language"
      (lambda ()
        "Print Javascript setup info."
-       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (pel-insert-bold "* Major Mode Control:")
        (pel-insert-symbol-content 'major-mode nil :on-same-line nil
                                   "major mode currently used")
        (when pel-use-tree-sitter

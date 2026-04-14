@@ -159,10 +159,13 @@ and required by `pel-use-erlang'."
         (user-error
          "Can't use `erlang-ts-mode' nor `erlang-mode': check installation!"))))))
 
+;; Emacs tree-sitter handling fixer function.
+;; Identified by `pel--ts-mode-with-fixer' and used by `pel-eval-after-load'.
 ;;-pel-autoload
 (defun pel--erlang-ts-mode-fixer ()
   "Remove `erlang-ts-mode' entries from `auto-mode-alist'.
-It removes what entered when `erlang-ts-mode' loads."
+It removes what was entered when `erlang-ts-mode' loads to ensure that the
+`pel-erlang-mode' mode dispatcher remains used."
   ;; There are several file extensions for Erlang and the erlang-ts-mode
   ;; adds several entries (entries for .erlang, .ex, .exs, mix.lock).
   ;; Delete them all from auto-mode-alist.
@@ -268,7 +271,7 @@ following user-options:")
      "PEL setup for Erlang programming language"
      (lambda ()
        "Print Erlang setup info."
-       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (pel-insert-bold "* Major Mode Control:")
        (pel-insert-symbol-content 'major-mode nil :on-same-line nil
                                   "major mode currently used")
        (when pel-use-tree-sitter

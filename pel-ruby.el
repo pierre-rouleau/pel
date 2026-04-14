@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-05 16:59:56 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-13 23:17:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -75,10 +75,13 @@ and required by `pel-use-ruby'."
         (user-error
          "Can't use `ruby-ts-mode' nor `ruby-mode': check installation!"))))))
 
+;; Emacs tree-sitter handling fixer function.
+;; Identified by `pel--ts-mode-with-fixer' and used by `pel-eval-after-load'.
 ;;-pel-autoload
 (defun pel--ruby-ts-mode-fixer ()
   "Remove `ruby-ts-mode' entries from `auto-mode-alist'.
-It removes what entered when `ruby-ts-mode' loads."
+It removes what was entered when `ruby-ts-mode' loads to ensure that the
+`pel-ruby-mode' mode dispatcher remains used."
   ;; There are several file extensions for Ruby and the ruby-ts-mode
   ;; adds several entries (entries for all Ruby files).
   ;; Delete them all from auto-mode-alist.
@@ -171,7 +174,7 @@ following user-options:")
      "PEL setup for Ruby programming language"
      (lambda ()
        "Print Ruby setup info."
-       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (pel-insert-bold "* Major Mode Control:")
        (pel-insert-symbol-content 'major-mode nil :on-same-line nil
                                   "major mode currently used")
        (when pel-use-tree-sitter

@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, March 19 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-05 16:46:43 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-13 23:19:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -91,10 +91,13 @@ the selection made by `pel-lua-repl-used'."
       (error "lua-start-process is not bound."))))
 
 
+;; Emacs tree-sitter handling fixer function.
+;; Identified by `pel--ts-mode-with-fixer' and used by `pel-eval-after-load'.
 ;;-pel-autoload
 (defun pel--lua-ts-mode-fixer ()
   "Remove `lua-ts-mode' entries from `auto-mode-alist'.
-It removes what entered when `lua-ts-mode' loads."
+It removes what was entered when `lua-ts-mode' loads to ensure that
+`pel-lua-mode' mode dispatcher remains used."
   ;; There are several file extensions for Lua and the lua-ts-mode
   ;; adds several entries (entries for .lua).
   ;; Delete them all from auto-mode-alist.
@@ -189,7 +192,7 @@ following user-options:")
      "PEL setup for Lua programming language"
      (lambda ()
        "Print Lua setup info."
-       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (pel-insert-bold "* Major Mode Control:")
        (pel-insert-symbol-content 'major-mode nil :on-same-line nil
                                   "major mode currently used")
        (when pel-use-tree-sitter

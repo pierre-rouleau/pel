@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, December 23 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 11:13:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-13 23:23:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -119,7 +119,7 @@ following user-options:")
      "PEL setup for C3 programming language"
      (lambda ()
        "Print C3 setup"
-       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (pel-insert-bold "* Major Mode Control:")
        (insert "
 - Note: C3 is currently only supported by a Tree-Sitter aware mode.")
        (pel-insert-symbol-content 'major-mode nil :on-same-line nil
