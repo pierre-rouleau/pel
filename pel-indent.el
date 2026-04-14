@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 22:55:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-13 23:20:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -640,6 +640,7 @@ Return the new `tab-width' or nil if unchanged."
                           fsharp-indent-level
                           fsharp-indent-offset))
     (gdscript-mode       gdscript-indent-offset)
+    (gleam-mode          gleam-ts-indent-offset)
     (go-ts-mode          go-ts-mode-indent-offset)
     (gpr-ts-mode         gpr-ts-mode-indent-offset)
     (groovy-mode         groovy-indent-offset) ; Groovy
@@ -832,7 +833,7 @@ important variables and symbols in the context of the inspected major mode."
          (major-mode-specific-inserted nil)
          (pel-controls-indentation nil))
     ;; 2- insert information using those values
-    (insert (propertize "* Indentation Control:" 'face 'bold))
+    (pel-insert-bold "* Indentation Control:")
     ;;    - insert mode specialized info if a function exists for it.
     (when (fboundp indent-indent-info-inserter-fct)
       (setq already-inserted (funcall indent-indent-info-inserter-fct))
@@ -979,7 +980,7 @@ important variables and symbols in the context of the inspected major mode."
          (mode-base (pel-file-type-for used-major-mode)))
     ;; 2- insert information using those values
     (insert "\n\n")
-    (insert (propertize "* Hard Tab Control:" 'face 'bold))
+    (pel-insert-bold "* Hard Tab Control:")
     (when (fboundp indent-tab-info-inserter-fct)
       (setq already-inserted (funcall indent-tab-info-inserter-fct)))
     (when (and (not (memq 'tab-description-intro already-inserted))
@@ -1080,7 +1081,9 @@ With APPEND optional argument non-nil, append to the buffer."
   (let ((indent-tab-info-cmd (intern (pel-string-with-major-mode
                                       "pel-%s-indent-tab-info"))))
     (if (fboundp indent-tab-info-cmd)
+        ;; if a mode specific function exists, use it.
         (call-interactively indent-tab-info-cmd)
+      ;; otherwise use the lower level call backs.
       (let ((indent-control-context (pel-indent-control-context))
             (tab-control-context (pel-tab-control-context)))
         (pel-print-in-buffer

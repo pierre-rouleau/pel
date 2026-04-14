@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, October 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-05 16:45:50 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-13 23:20:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -112,7 +112,7 @@ following user-options:")
      "PEL setup for Forth programming language"
      (lambda ()
        "Print Forth setup info."
-       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (pel-insert-bold "* Major Mode Control:")
        (pel-insert-symbol-content 'major-mode nil :on-same-line nil
                                   "major mode currently used")
        (insert "

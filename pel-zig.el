@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, October 14 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-05 16:48:43 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-13 23:14:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -75,10 +75,13 @@ and required by `pel-use-zig'."
         (user-error
          "Can't use `zig-ts-mode' nor `zig-mode': check installation!"))))))
 
+;; Emacs tree-sitter handling fixer function.
+;; Identified by `pel--ts-mode-with-fixer' and used by `pel-eval-after-load'.
 ;;-pel-autoload
 (defun pel--zig-ts-mode-fixer ()
   "Remove `zig-ts-mode' entries from `auto-mode-alist'.
-It removes what entered when `zig-ts-mode' loads."
+It removes what was entered when `zig-ts-mode' loads to ensure that the
+`pel-zig-mode' mode dispatcher remains used."
   ;; There are several file extensions for Zig and the zig-ts-mode
   ;; adds several entries (entries for .zig, .zon).
   ;; Delete them all from auto-mode-alist.
@@ -172,7 +175,7 @@ following user-options:")
      "PEL setup for Zig programming language"
      (lambda ()
        "Print Zig setup info."
-       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (pel-insert-bold "* Major Mode Control:")
        (pel-insert-symbol-content 'major-mode nil :on-same-line nil
                                   "major mode currently used")
        (when pel-use-tree-sitter
@@ -182,7 +185,7 @@ following user-options:")
                                        (function pel-zig-mode-used-text))
        (insert "\n\n")
        ;;
-       (insert (propertize "* Code Formatting Control:" 'face 'bold))
+       (pel-insert-bold "* Code Formatting Control:")
        (pel-insert-symbol-content-line 'zig-format-on-save)
        ;; -- List of minor modes
        (pel-insert-list-of-minor-modes active-modes)

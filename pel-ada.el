@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, October 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-05 16:45:22 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-13 23:26:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -72,10 +72,13 @@ and required by `pel-use-ada'."
         (user-error
          "Can't use `ada-ts-mode' nor `ada-mode': check installation!"))))))
 
+;; Emacs tree-sitter handling fixer function.
+;; Identified by `pel--ts-mode-with-fixer' and used by `pel-eval-after-load'.
 ;;-pel-autoload
 (defun pel--ada-ts-mode-fixer ()
   "Remove `ada-ts-mode' entries from `auto-mode-alist'.
-It removes what entered when `ada-ts-mode' loads."
+It removes what was entered when `ada-ts-mode' loads to ensure that the
+`pel-ada-mode' mode dispatcher remains used."
   ;; There are several file extensions for Ada and the ada-ts-mode
   ;; adds several entries (entries for .ada, .zon).
   ;; Delete them all from auto-mode-alist.
@@ -167,6 +170,7 @@ following user-options:")
   (pel-major-mode-must-be '(ada-mode ada-ts-mode))
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
         (current-major-mode major-mode)
+        (active-modes (pel-active-minor-modes))
         (indent-control-context (pel-indent-control-context))
         (tab-control-context (pel-tab-control-context)))
     (pel-print-in-buffer
@@ -174,7 +178,7 @@ following user-options:")
      "PEL setup for Ada programming language"
      (lambda ()
        "Print Ada setup info."
-       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (pel-insert-bold "* Major Mode Control:")
        (pel-insert-symbol-content 'major-mode nil :on-same-line nil
                                   "major mode currently used")
        (when pel-use-tree-sitter
@@ -187,7 +191,9 @@ following user-options:")
          (unless (eq pel-use-ada 'with-tree-sitter)
            (insert "\n Unless you have a specific reason to not use it, you should.")))
        (insert "\n\n")
-       ;; --
+       ;; -- List of minor modes
+       (pel-insert-list-of-minor-modes active-modes)
+       (insert "\n\n")
        (pel-insert-minor-mode-activation-info current-major-mode
                                               #'pel--ada-minor-mode-info)
        (insert "\n\n")

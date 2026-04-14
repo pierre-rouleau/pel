@@ -2,12 +2,12 @@
 
 ;; Created   : Sunday, October 12 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-05 17:00:39 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-13 23:16:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -75,10 +75,13 @@ and required by `pel-use-rust'."
         (user-error
          "Can't use `rust-ts-mode' nor `rust-mode': check installation!"))))))
 
+;; Emacs tree-sitter handling fixer function.
+;; Identified by `pel--ts-mode-with-fixer' and used by `pel-eval-after-load'.
 ;;-pel-autoload`
 (defun pel--rust-ts-mode-fixer ()
   "Remove `rust-ts-mode' entries from `auto-mode-alist'.
-It removes what entered when `rust-ts-mode' loads."
+It removes what was entered when `rust-ts-mode' loads to ensure that the
+`pel-rust-mode' mode dispatcher remains used."
   (setq auto-mode-alist
         (rassq-delete-all 'rust-ts-mode auto-mode-alist)))
 
@@ -165,7 +168,7 @@ following user-options:")
      (lambda ()
        "Print Rust setup info."
        ;;
-       (insert (propertize "* Major Mode Control:" 'face 'bold))
+       (pel-insert-bold "* Major Mode Control:")
        (pel-insert-symbol-content 'major-mode nil :on-same-line nil
                                   "major mode currently used")
        (when pel-use-tree-sitter
@@ -175,7 +178,7 @@ following user-options:")
                                        (function pel-rust-mode-used-text))
        (insert "\n\n")
        ;;
-       (insert (propertize "* Rust Packages:" 'face 'bold))
+       (pel-insert-bold "* Rust Packages:")
        (dolist (s '(pel-use-rust-mode
                     pel-use-rustic
                     pel-use-cargo
