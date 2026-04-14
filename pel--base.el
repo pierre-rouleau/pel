@@ -582,35 +582,43 @@ If VALUE is nil do nothing."
 ;;* Checking Major Mode
 ;;  ===================
 
-(defun pel-major-mode-of-file (filename)
+(defun pel-major-mode-of-file (filename &optional must-exist)
   "Return the major mode symbol Emacs would use for FILENAME.
-Return nil if FILENAME is a directory."
-  (unless (file-directory-p filename)
-    (let ((buffer (get-file-buffer filename)))
-      ;; If the file is already visited in a buffer, check its major mode.
-      (if buffer
-          (buffer-local-value 'major-mode buffer)
-        ;; Otherwise visit it in a temp buffer and check major mode.
-        (with-temp-buffer
-          (condition-case nil
-              (let ((inhibit-message t)
-                    ;; Prevent hack-local-variables from reading .dir-locals.el
-                    ;; in the CI/batch environment: a comment-only .dir-locals.el
-                    ;; causes read to signal end-of-file which is not reliably
-                    ;; caught by ignore-errors in Emacs 27 batch mode.
-                    (enable-dir-local-variables nil)
-                    (expanded-fname (expand-file-name filename)))
-                (set-visited-file-name expanded-fname t)
-                (when (file-readable-p expanded-fname)
-                  (insert-file-contents expanded-fname))
-                (set-auto-mode)
-                (set-buffer-modified-p nil)
-                major-mode)
-            ;; Catch both the general error class and end-of-file explicitly,
-            ;; since Emacs 27 batch does not always propagate end-of-file
-            ;; through condition-case nil … (error nil).
-            (end-of-file nil)
-            (error nil)))))))
+
+Return nil if FILENAME is a directory.
+
+If MUST-EXIST is non-nil, issue an error if the file does not exist.
+Otherwise, for a FILENAME that is not a buffer and is a non-existent or
+unreadable file, the mode is inferred from the filename (auto-mode-alist)
+since there is no content to inspect."
+  (let ((expanded-fname (expand-file-name filename)))
+    (when (and must-exist (not (file-exists-p expanded-fname)))
+      (error "%s (expanded to %s) does not exists!" filename expanded-fname))
+    (unless (file-directory-p expanded-fname)
+      (let ((buffer (get-file-buffer expanded-fname)))
+        ;; If the file is already visited in a buffer, check its major mode.
+        (if buffer
+            (buffer-local-value 'major-mode buffer)
+          ;; Otherwise visit it in a temp buffer and check major mode.
+          (with-temp-buffer
+            (condition-case nil
+                (let ((inhibit-message t)
+                      ;; Prevent hack-local-variables from reading .dir-locals.el
+                      ;; in the CI/batch environment: a comment-only .dir-locals.el
+                      ;; causes read to signal end-of-file which is not reliably
+                      ;; caught by ignore-errors in Emacs 27 batch mode.
+                      (enable-dir-local-variables nil))
+                  (set-visited-file-name expanded-fname t)
+                  (when (file-readable-p expanded-fname)
+                    (insert-file-contents expanded-fname))
+                  (set-auto-mode)
+                  (set-buffer-modified-p nil)
+                  major-mode)
+              ;; Catch both the general error class and end-of-file explicitly,
+              ;; since Emacs 27 batch does not always propagate end-of-file
+              ;; through condition-case nil … (error nil).
+              (end-of-file nil)
+              (error nil))))))))
 
 (defconst pel-lang-for-modes '((cperl . perl)
                                (lisp-interaction . emacs-lisp))
@@ -660,9 +668,9 @@ If BUFFER-OR-NAME is nil, use current buffer."
     (apply (function derived-mode-p) modes)))
 
 (defun pel-dired-buffer-p (&optional buffer-or-name strict)
-  "Return mode if mode of BUFFER-OR-NAME is a Dired buffer, nil otherwise.
-
-Accepts mode derived from `dired-mode' unless STRICT is non-nil."
+  "Return non-nil if current buffer or BUFFER-OR-NAME is a Dired buffer.
+When STRICT is non-nil only return non-nil for buffer whose major mode
+is exactly `dired-mode'.  Return nil otherwise."
   (if buffer-or-name
       (with-current-buffer buffer-or-name
         (or (eq major-mode 'dired-mode)
@@ -966,8 +974,8 @@ Both arguments are fully expanded with `pel-expanded-path'."
 (defun pel-envar-in-string (string)
   "Return names of environment variables extracted from the string.
 
-The variables must be prefixed with a '$' character and must end
-with a non alphanumeric or underscore character."
+Supports the $VAR and ${VAR}, where variable names start with an underscore or
+a letter."
   (let ((varnames nil)
         (idx 0)
         varname)
@@ -1219,7 +1227,10 @@ on/off value, otherwise use \"on\" and \"off\"."
 (defun pel-symbol-on-off-string (symbol &optional on-string off-string
                                         void-string buffer)
   "Return representation of SYMBOL value and whether it is bound.
-When SYMBOL is not bound: return VOID-STRING or \"void\" if it's nil,
+
+When SYMBOL is not bound: return VOID-STRING or
+\"unknown - `SYMBOL' is not bound!\"
+
 When it is bound, return:
 - the OFF-STRING or \"off\" for nil,
 - the ON-STRING or \"on\" for SYMBOL boolean value.
@@ -1250,8 +1261,8 @@ If SYMBOL is not defined, show VOID-STRING if defined, \"void\" otherwise."
 
 (defun pel-value-on-off-text (symbol &optional on-string off-string)
   "Return a string describing SYMBOL as a boolean value.
-If SYMBOL value if non-nil: show ON-STRING if defined, \"on\" otherwise.
-If SYMBOL value  is nil   : show OFF-STRING if defined, \"off\" otherwise."
+If SYMBOL value is non-nil: show ON-STRING if defined, \"on\" otherwise.
+If SYMBOL value is nil    : show OFF-STRING if defined, \"off\" otherwise."
   (format "%s is now%s %s"
           (symbol-name symbol)
           pel--prompt-separator
@@ -1262,9 +1273,9 @@ If SYMBOL value  is nil   : show OFF-STRING if defined, \"off\" otherwise."
 (defun pel-symbol-value-or (symbol &optional replacement formatter buffer)
   "Return SYMBOL value if non void, otherwise its REPLACEMENT.
 
-If SYMBOL is void and there is no REPLACEMENT return a string
-created by (format \"unknown - %S is not loaded\" symbol).
-If SYMBOL is void and replacement is :nil-for-void, return nil.
+If SYMBOL is void and there is no REPLACEMENT return
+\"unknown - `SYMBOL' is not bound!\".
+If SYMBOL is unbound and REPLACEMENT is :nil-for-void, return nil.
 If SYMBOL is bound and FORMATTER is non nil it's a function that
 takes the symbol and returns a string.
 
@@ -1585,8 +1596,8 @@ after the closing parenthesis."
   "Escape shell meta-chars in PATH but leave glob wildcards (*, ?, []).
 
 Examples:
-- (pel-shell-quote-path-keep-glob \"*.*\")         ➜ *.*\"
-- (pel-shell-quote-path-keep-glob \"* abc def.*\") ➜ *\\ abc\\ def.*\"."
+- (pel-shell-quote-path-keep-glob \"*.*\")         ➜ \"*.*\"
+- (pel-shell-quote-path-keep-glob \"* abc def.*\") ➜ \"*\\ abc\\ def.*\"."
   (replace-regexp-in-string
    ;; 1. Matches spaces, shell symbols, and literal backslashes.
    ;; 2. Note: The literal backslash must be last in the set [ ... \\]
@@ -1959,7 +1970,7 @@ otherwise it returns nil."
     major-mode-remap-alist))
 
 (defun pel-major-ts-mode-supported-p (mode)
-  "Return t when the specified tree-sitter major MODE is supported.
+  "Return non-nil when the specified tree-sitter major MODE is supported.
 
 MODE must be a symbol that does NOT end with -mode.
 The function returns nil when tree-sitter mode is not supported."
@@ -2659,15 +2670,13 @@ environment variables that may be in the string."
 
 (defun pel-is-subdir-of (path1 path2)
   "Return t if PATH1 is a sub-directory of PATH2."
-  (let ((npath1 (pel-normalize-fname path1))
-        (npath2 (pel-normalize-fname path2)))
-    (when (string-match-p (regexp-quote npath2) npath1)
-      t)))
+  (let ((npath1 (file-name-as-directory (pel-normalize-fname path1)))
+        (npath2 (file-name-as-directory (pel-normalize-fname path2))))
+    (string-prefix-p npath2 npath1)))
 
 (defsubst pel-parent-dirpath (pathname)
   "Return parent directory of PATHNAME true name."
   (file-name-directory (pel-normalize-fname pathname)))
-
 
 (defun pel-sibling-dirname (dirpath sibling)
   "Return directory path name of SIBLING directory of DIRPATH directory."
@@ -2705,7 +2714,8 @@ Example:
 
 (defun pel-url-location (url)
   "Return a description string for the URL.
-Either \"Local\" or \"Remote\"."
+It check if the URL is a \"file:\" URL, and return \"Local\" for that,
+otherwise it returns \"Remote\"."
   (declare (side-effect-free t))
   (if (pel-string-starts-with-p url "file:")
       "Local"
@@ -2954,8 +2964,7 @@ and its value.  If that symbol is not bound, do nothing."
 (defun pel--pp (object &optional stream prefix)
   "Pretty-print OBJECT on STREAM if specified, standard output otherwise.
 
-A non-nil PREFIX should a be a string that is inserted before the
-OBJECT."
+A non-nil PREFIX should be a string that is inserted before the OBJECT."
   (if (and (require 'pp nil 'noerror)
            (fboundp 'pp-to-string))
       (let ((text (string-trim (pp-to-string object))))

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-14 16:26:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-14 18:38:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1513,6 +1513,40 @@ It will fail if `delete-dups' is applied to the raw (un-trimmed) split strings."
     (should (string-match-p "a" m))
     (should (string-match-p "b" m))))
 
+(ert-deftest pel--base-format-problem-messages/1-problem ()
+  (let* ((txt (pel--format-problem-messages '("p1") "Intro:")))
+    (should (string-match-p "^Intro:" txt))
+    (should (string-match-p "\n The following problem remains:" txt))))
+
+(ert-deftest pel--base-format-problem-messages/2-problems ()
+  (let* ((txt (pel--format-problem-messages '("p1" "p2") "Intro:")))
+    (should (string-match-p "^Intro:" txt))
+    (should (string-match-p "\n The following 2 problems remain:" txt))))
+
+(ert-deftest pel--base-format-problem-messages/3-problems ()
+  (let* ((txt (pel--format-problem-messages '("p1" "p2" "p3") "Intro:")))
+    (should (string-match-p "^Intro:" txt))
+    (should (string-match-p "\n The following 3 problems remain:" txt))))
+
+(ert-deftest pel--base-test/messages/format-problem-messages-exact-no-extra-intro ()
+  "Exact output must match the docstring example (no EXTRA-INTRO)."
+  (let ((result (pel--format-problem-messages '("problem 1" "problem 2")
+                                              "System Test Report:")))
+    (should
+     (string=
+      "System Test Report:\n The following 2 problems remain:\n - problem 1\n - problem 2"
+      result))))
+
+(ert-deftest pel--base-test/messages/format-problem-messages-exact-with-extra-intro ()
+  "Exact output must match the docstring example (with EXTRA-INTRO)."
+  (let ((result (pel--format-problem-messages '("problem 1" "problem 2")
+                                              "System Test Report:"
+                                              "The final report is that")))
+    (should
+     (string=
+      "System Test Report:\n The final report is that the following 2 problems remain:\n - problem 1\n - problem 2"
+      result))))
+
 ;;; --------------------------------------------------------------------------
 ;;; ;;* Value check
 ;;; --------------------------------------------------------------------------
@@ -1530,7 +1564,7 @@ It will fail if `delete-dups' is applied to the raw (un-trimmed) split strings."
                                         (pel-end-text-with-period s)))))
   ;; With transform functions: value fails check → alternative returned as-is.
   (should (eq 0 (pel-use-or "" #'pel-hastext 0
-                             #'capitalize))))
+                            #'capitalize))))
 
 (ert-deftest pel--base-test/value-check/use-or-and-ops-on-seqs ()
   (should (equal "Abc."
@@ -2038,6 +2072,12 @@ It will fail if `delete-dups' is applied to the raw (un-trimmed) split strings."
   (should (pel-same-fname-p "~/abc/.." "~"))
   (should (pel-same-fname-p "/abc/"    "/abc"))
   (should (pel-same-fname-p "/abc/def/ghi/"  "/abc/22/../def/ghi")))
+
+(ert-deftest ert-test-pel-is-subdir-of ()
+  "Test pel-is-subdir-of."
+  (should-not (pel-is-subdir-of "/tmp/foo-bar"    "/tmp/foo"))
+  (should     (pel-is-subdir-of "/tmp/foo/bar"    "/tmp/foo"))
+  (should-not (pel-is-subdir-of "/my/tmp/foo/bar" "/tmp/foo")))
 
 (ert-deftest pel--base-test/paths/file-in-and-normalize-and-same-fname ()
   (pel--base-test--with-temp-dir d
