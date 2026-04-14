@@ -318,8 +318,7 @@
 ;;; Dependencies:
 ;; subr (always loaded) ; use: called-interactively-p
 (require 'pel-comp)
-(eval-when-compile
-  (require 'subr-x))    ; use: `split-string', `string-join', `string-trim'
+(require 'subr-x)  ; use: `split-string', `string-join', `string-trim'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
