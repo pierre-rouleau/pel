@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 15 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-15 11:22:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-15 11:45:12 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -323,7 +323,6 @@
 
 (ert-deftest test-pel-prompt-purpose-for/empty-input-no-default-returns-empty ()
   "Returns empty string when input is empty and no default given."
-  (ert-skip "Temporary skip test that fails.")
   (pel-test--with-minibuffer-input ""
     (should (equal "" (pel-prompt-purpose-for "function")))))
 
@@ -594,4 +593,4 @@
       (should (string-match-p "pel-test--dummy-opt" msg)))))
 
 ;; ---------------------------------------------------------------------------
-;;; test-pel-prompt.el ends here
+;;; pel-prompt-test.el ends here

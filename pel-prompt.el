@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-15 11:16:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-15 11:44:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -400,7 +400,7 @@ returns DEFAULT."
      (string-trim
       (read-from-minibuffer prompt-text nil nil nil history-symbol))
      (function pel-hastext)
-     default
+     (or default "")
      (function pel-capitalize-first-letter)
      (lambda (v)
        (if no-ending-period
