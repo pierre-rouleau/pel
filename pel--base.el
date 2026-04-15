@@ -1183,8 +1183,8 @@ in which case return PLURAL."
   "Return SYMBOL value if it is bound.
 
 If it is not bound, then return a list with the symbol and a
-string describing that it is not bound, unless QUIET is non-nil.  If QUIET is
-non-nil, just return nil when SYMBOL is not bound."
+string describing that it is not bound, unless QUIET is non-nil.
+If QUIET is non-nil, just return nil when SYMBOL is not bound."
   (declare (side-effect-free t))
   (if (boundp symbol)
       (symbol-value symbol)
@@ -1192,7 +1192,9 @@ non-nil, just return nil when SYMBOL is not bound."
       (list symbol "**is currently unbound!**"))))
 
 (defun pel-symbol-value (symbol &optional buffer)
-  "Return SYMBOL value in current or specified BUFFER."
+  "Return SYMBOL value in current or specified BUFFER.
+It returns a (SYMBOL \"**is currently unbound!**\") list when the symbol is
+not bound."
   (if buffer
       (with-current-buffer buffer
         (pel--symbol-value symbol))
@@ -1980,7 +1982,8 @@ otherwise it returns nil."
   "Return non-nil when the specified tree-sitter major MODE is supported.
 
 MODE must be a symbol that does NOT end with -mode.
-The function returns nil when tree-sitter mode is not supported."
+The function returns nil when tree-sitter mode is not supported.
+It returns a (MODE . TS-MODE) cons cell when tree-sitter is supported by MODE."
   (let ((the-ts-mode (intern (format "%s-ts-mode" mode))))
     (if (fboundp the-ts-mode)
         t
@@ -2853,9 +2856,12 @@ Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
           ;; When a button is required, ensure that it describes the variable
           ;; in the context of the original buffer, not the info buffer.
           (let ((context-buffer pel-insert-symbol-content-context-buffer))
-            (insert-button name 'action (lambda (_s)
-                                          (describe-symbol symbol
-                                                           context-buffer))))
+            ;; PEL support Emacs >= 26.1, describe-symbol supports context
+            ;; buffer argument in all those versions.
+            (insert-button name
+                           'action
+                           (lambda (_s)
+                             (describe-symbol symbol context-buffer))))
         (insert name)))))
 
 
