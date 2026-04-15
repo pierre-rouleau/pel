@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 15 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-15 11:45:12 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-15 17:07:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -146,12 +146,6 @@
 ;;; -------------------------------------------------------------------------
 ;;; Tests for `pel-y-n-e-or-l-p' (noninteractive branch)
 ;;
-;; NOTE: These tests require the bug fix described above.  Until the while
-;; loop exit condition is corrected from:
-;;   (not (memq answer '(act skip edit-replacement automatic)))
-;; to:
-;;   (not (memq answer '(yes no edit findlib)))
-;; these tests will hang indefinitely.
 
 (ert-deftest test-pel-y-n-e-or-l-p/noninteractive-y ()
   "Returns `yes' for input \"y\" in noninteractive mode."
@@ -313,7 +307,7 @@
   "Omits period when NO-ENDING-PERIOD is non-nil."
   (pel-test--with-minibuffer-input "Does something"
     (should (equal "Does something"
-                   (pel-prompt-purpose-for "function" nil :no-period)))))
+                   (pel-prompt-purpose-for "function" nil 'no-period)))))
 
 (ert-deftest test-pel-prompt-purpose-for/empty-input-returns-default ()
   "Returns DEFAULT when user enters nothing."
