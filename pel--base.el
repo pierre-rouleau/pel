@@ -317,9 +317,10 @@
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
-;; subr (always loaded) ; use: called-interactively-p
+;; subr (always loaded) ; use: `called-interactively-p'
 (require 'pel-comp)
-(require 'subr-x)  ; use: `split-string', `string-join', `string-trim'
+(require 'subr-x)     ; use: `split-string', `string-join', `string-trim'
+(require 'cl-lib)     ; use: `cl-some'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -1016,7 +1017,7 @@ The directory is identified by `user-emacs-directory'.
 If the directory does not exist the function creates it.
 This is the same as `locate-user-emacs-file' with the path made absolute and
 canonical."
-  (expand-file-name (locate-user-emacs-file fname)))
+  (file-truename (locate-user-emacs-file fname)))
 
 (defun pel-add-dir-to-loadpath (dir)
   "Add directory DIR to Emacs variable `load-path' if not already in the list.
@@ -1508,7 +1509,7 @@ Return empty string if TEXT is the empty string."
     ""))
 
 (defun pel-hastext (string)
-  "Return t if STRING hold text, nil otherwise.
+  "Return t if STRING holds text, nil otherwise.
 Signal an error if STRING argument is not nil nor a string."
   (declare (pure t) (side-effect-free t))
   (when string
@@ -1563,7 +1564,8 @@ Example:
                (or separator " ")))
 
 (defun pel-list-str (list)
-  "Return a string representation of a LIST of symbols using comma separator."
+  "Return a string representation of a LIST of symbols using comma separator.
+Note that LIST must be a list of symbols."
   (string-join (mapcar (function symbol-name)
                        list)
                ", "))
@@ -1632,7 +1634,7 @@ Don't use this function directly; use the
 `pel-format-problem-messages' macro instead: it simplifies
 caller's code.
 
-Example:
+Example (as seen on ielm but indented):
 
   ELISP> (pel--format-problem-messages \\='(\"problem 1\" \"problem 2\")
                                        \"System Test Report:\")
@@ -1649,7 +1651,7 @@ Example:
     - problem 1
     - problem 2\"
 
-The second example shows where the EXTRA-INFO text is placed."
+The second example shows where the EXTRA-INTRO text is placed."
   (let ((problem-count (length problems)))
     (format "%s\n %she following %s %s:\n - %s"
             intro
@@ -2620,8 +2622,7 @@ current major mode."
       (not (re-search-forward "[^ \t]" eol t)))))
 
 (defun pel-inside-code (&optional pos)
-  "Return non-nil when point or POS is in code, nil if in comment or string.
-Note that this changes the search match data!"
+  "Return non-nil when point or POS is in code, nil if in comment or string."
   (let ((syntax (syntax-ppss (or pos (point)))))
     (and (not (nth 3 syntax))
          (not (nth 4 syntax)))))
@@ -3190,9 +3191,9 @@ if newer than the EL-FILENAME, force byte-compilation of the EL-FILENAME."
               (time-less-p (setq elc-modtime (pel-modtime-of elc-filename))
                            (pel-modtime-of el-filename))
               (and other-dependencies
-                   (or (mapcar
-                        (lambda (fname)
-                          (time-less-p elc-modtime (pel-modtime-of fname)))
+                   (or (cl-some (lambda (fname)
+                                  (time-less-p elc-modtime
+                                               (pel-modtime-of fname)))
                         other-dependencies))))
       (byte-compile-file el-filename))))
 

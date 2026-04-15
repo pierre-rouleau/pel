@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-14 20:17:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-14 20:50:02 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -969,6 +969,10 @@ It will fail if `delete-dups' is applied to the raw (un-trimmed) split strings."
 (ert-deftest pel--base-test/os-env/envar-in-string-braced ()
   (should (equal '("FOO")        (pel-envar-in-string "${FOO}/x")))
   (should (equal '("A_B")        (pel-envar-in-string "p/${A_B}/s"))))
+
+(ert-deftest pel--base-test/os-env/envar-in-string-dollar-digit-ignored ()
+  (should (equal '() (pel-envar-in-string "awk '{print $1}' file.txt")))
+  (should (equal '() (pel-envar-in-string "$9 not a var"))))
 
 ;; -- pel-expanded-path ------------------------------------------------------
 
@@ -2240,6 +2244,28 @@ It will fail if `delete-dups' is applied to the raw (un-trimmed) split strings."
         ;; Simulate existing .elc so second call does nothing
         (with-temp-file (concat src "c") (insert "dummy"))
         (pel-byte-compile-if-needed src)
+        (should (= 1 calls))))))
+
+(ert-deftest pel--base-test/byte-compile/other-deps-only-when-newer ()
+  (pel--base-test--with-temp-dir d
+    (let* ((src (pel--base-test--write-file d "x.el" "(message \"hi\")"))
+           (dep (pel--base-test--write-file d "dep.txt" "old"))
+           (elc (concat src "c"))
+           (calls 0))
+      (with-temp-file elc (insert "dummy-old"))
+      (set-file-times elc (current-time))               ;; elc is “now”
+      (sleep-for 0.01)
+      (set-file-times dep (current-time))               ;; dep newer than elc
+
+      (cl-letf (((symbol-function 'byte-compile-file)
+                 (lambda (_f) (setq calls (1+ calls)) :ok)))
+        ;; Should recompile because dep is newer than elc
+        (pel-byte-compile-if-needed src dep)
+        (should (= 1 calls))
+
+        ;; Make elc newest; should not recompile now
+        (set-file-times elc (current-time))
+        (pel-byte-compile-if-needed src dep)
         (should (= 1 calls))))))
 
 ;;; --------------------------------------------------------------------------
