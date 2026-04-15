@@ -593,7 +593,7 @@ unreadable file, the mode is inferred from the filename (auto-mode-alist)
 since there is no content to inspect."
   (let ((expanded-fname (expand-file-name filename)))
     (when (and must-exist (not (file-exists-p expanded-fname)))
-      (error "%s (expanded to %s) does not exists!" filename expanded-fname))
+      (error "%s (expanded to %s) does not exist!" filename expanded-fname))
     (unless (file-directory-p expanded-fname)
       (let ((buffer (get-file-buffer expanded-fname)))
         ;; If the file is already visited in a buffer, check its major mode.
@@ -652,7 +652,7 @@ Return nil if the major mode of buffer or FILENAME is not derived from either
 (defun pel-major-mode-must-be (modes)
   "Check that the current buffer major mode is one of MODES.
 MODES is either a major-mode symbol or a list of major-mode symbols.
-Raise an user error if the current buffer is not using one of the MODES;
+Raise a user error if the current buffer is not using one of the MODES;
 the message states that the current command is not appropriate."
   (unless (memq major-mode (pel-list-of modes))
     (user-error "This command is not meant for %s; use it in %S"
@@ -1042,7 +1042,7 @@ Return non-nil on success when it was added, nil otherwise."
 
 (defun pel-unix-socket-p (fname)
   "Return t if FNAME is a Unix Socket, nil otherwise.
-FNAME must exists otherwise an error is raised."
+FNAME must exist otherwise an error is raised."
   (eq (string-to-char (file-attribute-modes (file-attributes fname))) ?s))
 
 (defun pel-file-type-str (path)
@@ -1050,13 +1050,16 @@ FNAME must exists otherwise an error is raised."
 
 PATH must identify an existing file system object otherwise an
 error is raised."
-  (cond
-   ((file-symlink-p path)    "symbolic link")
-   ((file-directory-p path)  "directory")
-   ((file-regular-p path)    "file")
-   ((not (file-exists-p path)) (error "%s does not exist" path))
-   ((pel-unix-socket-p path) "UNIX socket")
-   (t "unknown file system object")))
+  ;; Remove trailing slash if any from path because symlink detection fail
+  ;; with trailing slash.
+  (let ((path-f (directory-file-name path)))
+    (cond
+     ((file-symlink-p path-f)    "symbolic link")
+     ((file-directory-p path-f)  "directory")
+     ((file-regular-p path-f)    "file")
+     ((not (file-exists-p path-f)) (error "%s does not exist" path-f))
+     ((pel-unix-socket-p path-f) "UNIX socket")
+     (t "unknown file system object"))))
 
 ;; ---------------------------------------------------------------------------
 ;;* String predicates
@@ -1075,7 +1078,7 @@ The index of the first whitespace character is returned when one is present."
       (string= (substring text (- len 1) len) " "))))
 
 (defun pel-starts-with-space-p (text)
-  "Return t if TEXT has space character(s) at beginning, nil otherwise."
+  "Return t if TEXT has space character(s) at the beginning, nil otherwise."
   (declare (side-effect-free t))
   (when (> (length text) 0)
     (string= (substring text 0 1) " ")))
@@ -1205,7 +1208,7 @@ non-nil, just return nil when SYMBOL is not bound."
 ;;  ===============
 
 (defun pel-symbol-at-point ()
-  "Return symbol at point as a string; return nil if there are none."
+  "Return symbol at point as a string; return nil if there is none."
   (if (and (require 'thingatpt nil 'noerror)
            (fboundp 'thing-at-point))
       (thing-at-point 'symbol :no-properties)
@@ -1560,7 +1563,7 @@ Example:
                (or separator " ")))
 
 (defun pel-list-str (list)
-  "Return a string representation of a LIST using comma separator."
+  "Return a string representation of a LIST of symbols using comma separator."
   (string-join (mapcar (function symbol-name)
                        list)
                ", "))
@@ -1620,8 +1623,6 @@ Examples:
 (defun pel--format-problem-messages (problems intro &optional extra-intro)
   "Return string describing PROBLEMS for INTRO.
 
-The generated string starts with an introduction created using the
-INTRO-FMT format string and its ARGS arguments if any.
 The next line starts with the EXTRA-INTRO string if non-nil.
 Then it lists the provided PROBLEMS list.
 
@@ -1652,7 +1653,9 @@ The second example shows where the EXTRA-INFO text is placed."
   (let ((problem-count (length problems)))
     (format "%s\n %she following %s %s:\n - %s"
             intro
-            (if (pel-hastext extra-intro) (format "%s t" extra-intro) "T")
+            (if (pel-hastext extra-intro)
+                (format "%s t" (string-trim extra-intro))
+              "T")
             (pel-count-string problem-count "problem" nil :no-count-for-1)
             (pel-pluralize problem-count "remains" "remain")
             (string-join problems "\n - "))))
@@ -2716,8 +2719,8 @@ Example:
 
 (defun pel-url-location (url)
   "Return a description string for the URL.
-Check if the URL is a \"file:\" URL, and return \"Local\" for that,
-otherwise return \"Remote\"."
+It checks whether URL starts with the \"file:\" scheme and returns \"Local\" in
+that case; otherwise returns \"Remote\"."
   (declare (side-effect-free t))
   (if (pel-string-starts-with-p url "file:")
       "Local"

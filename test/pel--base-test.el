@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-14 19:50:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-14 20:17:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -966,6 +966,10 @@ It will fail if `delete-dups' is applied to the raw (un-trimmed) split strings."
   "`pel-envar-in-string' extracts a variable at the very end of the string."
   (should (equal '("PATH") (pel-envar-in-string "/prefix/$PATH"))))
 
+(ert-deftest pel--base-test/os-env/envar-in-string-braced ()
+  (should (equal '("FOO")        (pel-envar-in-string "${FOO}/x")))
+  (should (equal '("A_B")        (pel-envar-in-string "p/${A_B}/s"))))
+
 ;; -- pel-expanded-path ------------------------------------------------------
 
 (ert-deftest pel--base-test/os-env/expanded-path-tilde ()
@@ -1034,6 +1038,10 @@ It will fail if `delete-dups' is applied to the raw (un-trimmed) split strings."
   (should (string= "/tmp/plain.txt"
                    (pel-substitute-in-file-name "/tmp/plain.txt"))))
 
+(ert-deftest pel--base-test/os-env/substitute-in-file-name-unknown-braced ()
+  (should-error (pel-substitute-in-file-name "${NO_SUCH_VAR}/f.txt")
+                :type 'user-error))
+
 ;;; --------------------------------------------------------------------------
 ;;; ;;* Emacs Environment Utilities
 ;;; --------------------------------------------------------------------------
@@ -1041,14 +1049,14 @@ It will fail if `delete-dups' is applied to the raw (un-trimmed) split strings."
 (ert-deftest pel--base-test/emacs-env/locate-user-emacs-file-and-loadpath ()
   (should (file-name-absolute-p (pel-locate-user-emacs-file "pel-base-test.tmp")))
   (pel--base-test--with-temp-dir
-   tmpd
-   (let ((added (pel-add-dir-to-loadpath tmpd)))
-     (should added)
-     (should (member (directory-file-name (file-truename tmpd))
-                     (mapcar (lambda (p) (directory-file-name (file-truename p)))
-                             load-path))))
-   (let ((added2 (pel-add-dir-to-loadpath tmpd)))
-     (should (not added2)))))
+      tmpd
+    (let ((added (pel-add-dir-to-loadpath tmpd)))
+      (should added)
+      (should (member (directory-file-name (file-truename tmpd))
+                      (mapcar (lambda (p) (directory-file-name (file-truename p)))
+                              load-path))))
+    (let ((added2 (pel-add-dir-to-loadpath tmpd)))
+      (should (not added2)))))
 
 ;;; --------------------------------------------------------------------------
 ;;; ;;* File System Type
