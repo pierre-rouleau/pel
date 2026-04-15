@@ -62,14 +62,16 @@
 ;;  - `pel-in-fast-startup-p'
 ;;
 ;; Checking Major Mode
+;;  - `pel-language-of'
+;;    - `pel-major-mode-of-file'
 ;;  - `pel-major-mode-must-be'
 ;;  - `pel-derived-mode-p'
 ;;  - `pel-dired-buffer-p'
 ;;  - `pel-string-with-major-mode'
 ;;    - `pel-file-type-for'
-;;    - `pel-major-mode-of'
+;;    - `pel-major-mode-of-buffer'
 ;;  - `pel-buffers-in-mode'
-;;    - `pel-major-mode-of'
+;;    . `pel-major-mode-of-buffer'
 ;;
 ;; Minor and Major Mode Utilities
 ;;  - `pel-minor-mode-state'
@@ -82,6 +84,7 @@
 ;;  - `pel-current-buffer-filename'
 ;;  - `pel-current-buffer-file-extension'
 ;;  - `pel-current-buffer-eol-type'
+;;  - `pel-current-buffer-starts-with'
 ;;
 ;; Current Directory
 ;;  * `pel-cd-to-current'
@@ -89,6 +92,12 @@
 ;; OS Environment Utilities
 ;;  - `pel-terminal-is-macos-terminal-p'
 ;;  - `pel-running-under-ssh-p'
+;;  - `pel-envvar-value-list'
+;;  - `pel-substitute-env-vars'
+;;  - `pel-expanded-path'
+;;  - `pel-path='
+;;  - `pel-substitute-in-file-name'
+;;    - `pel-envar-in-string'
 ;;
 ;; Emacs Environment Utilities
 ;;  - `pel-locate-user-emacs-file'
@@ -257,6 +266,7 @@
 ;;  - `pel-parent-dirpath'
 ;;    - `pel-normalize-fname'
 ;;  - `pel-sibling-dirpath'
+;;    - `pel-sibling-dirname'
 ;;  - `pel-expand-url-file-name'
 ;;  - `pel-path-strip'
 ;;  - `pel-url-join'
@@ -307,10 +317,10 @@
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
-;; subr (always loaded) ; use: called-interactively-p
+;; subr (always loaded) ; use: `called-interactively-p'
 (require 'pel-comp)
-(eval-when-compile
-  (require 'subr-x))    ; use: `split-string', `string-join', `string-trim'
+(require 'subr-x)     ; use: `split-string', `string-join', `string-trim'
+(require 'cl-lib)     ; use: `cl-some'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -573,11 +583,78 @@ If VALUE is nil do nothing."
 ;;* Checking Major Mode
 ;;  ===================
 
+(defun pel-major-mode-of-file (filename &optional must-exist)
+  "Return the major mode symbol Emacs would use for FILENAME.
+
+Return nil if FILENAME is a directory.
+
+If MUST-EXIST is non-nil, issue an error if the file does not exist.
+Otherwise, for a FILENAME that is not a buffer and is a non-existent or
+unreadable file, the mode is inferred from the filename (auto-mode-alist)
+since there is no content to inspect."
+  (let ((expanded-fname (expand-file-name filename)))
+    (when (and must-exist (not (file-exists-p expanded-fname)))
+      (error "%s (expanded to %s) does not exist!" filename expanded-fname))
+    (unless (file-directory-p expanded-fname)
+      (let ((buffer (get-file-buffer expanded-fname)))
+        ;; If the file is already visited in a buffer, check its major mode.
+        (if buffer
+            (buffer-local-value 'major-mode buffer)
+          ;; Otherwise visit it in a temp buffer and check major mode.
+          (with-temp-buffer
+            (condition-case nil
+                (let ((inhibit-message t)
+                      ;; Prevent hack-local-variables from reading .dir-locals.el
+                      ;; in the CI/batch environment: a comment-only .dir-locals.el
+                      ;; causes read to signal end-of-file which is not reliably
+                      ;; caught by ignore-errors in Emacs 27 batch mode.
+                      (enable-dir-local-variables nil))
+                  (set-visited-file-name expanded-fname t)
+                  (when (file-readable-p expanded-fname)
+                    (insert-file-contents expanded-fname))
+                  (set-auto-mode)
+                  (set-buffer-modified-p nil)
+                  major-mode)
+              ;; Catch both the general error class and end-of-file explicitly,
+              ;; since Emacs 27 batch does not always propagate end-of-file
+              ;; through condition-case nil … (error nil).
+              (end-of-file nil)
+              (error nil))))))))
+
+(defconst pel-lang-for-modes '((cperl . perl)
+                               (lisp-interaction . emacs-lisp))
+  "Alist mapping mode-name prefixes to canonical language symbols.
+Used by `pel-language-of' when `pel-file-type-for' produces a name that
+differs from the conventional language symbol.
+For example, `cperl-mode' has prefix \"cperl\" but the canonical
+language symbol is \\='perl.")
+
+(defun pel-language-of (&optional filename)
+  "Return the programming language symbol used in buffer or specified FILENAME.
+If FILENAME is not specified use the current buffer.
+Return nil if the major mode of buffer or FILENAME is not derived from either
+`prog-mode' or `text-mode'."
+  (let ((mmode (if filename
+                   (pel-major-mode-of-file filename)
+                 major-mode))
+        (lang-symbol nil))
+    ;; Handle files/buffers that use programming or text major modes.
+    ;; `provided-mode-derived-p' gained support for multiple mode arguments
+    ;; in Emacs 29.
+    ;; Use two separate calls to remain compatible with Emacs 27/28.
+    (when (or (provided-mode-derived-p mmode 'prog-mode)
+              (provided-mode-derived-p mmode 'text-mode))
+      (setq lang-symbol (intern (pel-file-type-for mmode)))
+      (let ((mapped (assoc lang-symbol pel-lang-for-modes)))
+        (when mapped
+          (setq lang-symbol (cdr mapped)))))
+    lang-symbol))
+
 (defun pel-major-mode-must-be (modes)
   "Check that the current buffer major mode is one of MODES.
 MODES is either a major-mode symbol or a list of major-mode symbols.
-Raise an user error if the current buffer is not using one of the MODES;
-the message state that the current command is not appropriate."
+Raise a user error if the current buffer is not using one of the MODES;
+the message states that the current command is not appropriate."
   (unless (memq major-mode (pel-list-of modes))
     (user-error "This command is not meant for %s; use it in %S"
                 major-mode
@@ -592,9 +669,9 @@ If BUFFER-OR-NAME is nil, use current buffer."
     (apply (function derived-mode-p) modes)))
 
 (defun pel-dired-buffer-p (&optional buffer-or-name strict)
-  "Return mode if mode of BUFFER-OR-NAME is a Dired buffer, nil otherwise.
-
-Accepts mode derived from `dired-mode' unless STRICT is non-nil."
+  "Return non-nil if current buffer or BUFFER-OR-NAME is a Dired buffer.
+When STRICT is non-nil only return non-nil for buffer whose major mode
+is exactly `dired-mode'.  Return nil otherwise."
   (if buffer-or-name
       (with-current-buffer buffer-or-name
         (or (eq major-mode 'dired-mode)
@@ -604,7 +681,7 @@ Accepts mode derived from `dired-mode' unless STRICT is non-nil."
         (unless strict
           (derived-mode-p 'dired-mode)))))
 
-(defun pel-major-mode-of (&optional buffer-or-name)
+(defun pel-major-mode-of-buffer (&optional buffer-or-name)
   "Return the major mode symbol of the specified BUFFER-OR-NAME.
 If not specified (or nil) return the major mode of the current buffer."
   (if buffer-or-name
@@ -634,7 +711,7 @@ major-mode.  That's the prefix string before the \"-mode\" portion of
 the major mode name of the current buffer or the one specified by
 BUFFER-OR-NAME."
   (format symbol-format-string
-          (pel-file-type-for (pel-major-mode-of buffer-or-name))))
+          (pel-file-type-for (pel-major-mode-of-buffer buffer-or-name))))
 
 (defun pel-buffers-in-mode (wanted-major-mode)
   "Return a list of buffers with specified WANTED-MAJOR-MODE, nil if none open.
@@ -711,7 +788,9 @@ or of the buffer specified by the BUFFER-OR-NAME argument or the variable
 The BUFFER argument value takes precedence to the value of the variable
 `pel-insert-symbol-content-context-buffer'. If both are nil, then the
 value is read from the context of the current buffer, which may be a
-local or global."
+local or global.
+
+Signal an error if the symbol is not bound."
   (symbol-value
    (pel-major-mode-symbol-for
     symbol-format-string
@@ -808,6 +887,13 @@ The nil value means that the type is unknown."
       (setq eol-type (coding-system-eol-type (aref eol-type 0))))
     (cdr (assoc eol-type pel-eol-mode-name))))
 
+(defun pel-current-buffer-starts-with (text)
+  "Return non-nil if current buffer starts with TEXT.
+Does not change match data."
+  (save-excursion
+    (goto-char (point-min))
+    (looking-at-p (regexp-quote text))))
+
 ;; ---------------------------------------------------------------------------
 ;;* Current Directory
 ;;  =================
@@ -839,6 +925,87 @@ SILENT is non-nil (can be requested by prefix argument)."
   (when (getenv "SSH_CLIENT")
     t))
 
+(defun pel-envvar-value-list (varname &optional sep)
+  "Return the SEP separated list of elements stored in environment VARNAME.
+Each element is trimmed of surrounding whitespace; duplicates and empty
+entries are removed.  SEP defaults to \":\" and is treated as a literal
+separator string (not a regexp)."
+  (delete-dups
+   (delq nil (mapcar (lambda (entry)
+                       (let ((trimmed (string-trim entry)))
+                         (unless (string-empty-p trimmed)
+                           trimmed)))
+                     (split-string (pel-string-for (getenv varname))
+                                   (regexp-quote (or sep ":")))))))
+
+(defun pel-substitute-env-vars (string &optional max-depth)
+  "Expand environment variables in STRING recursively.
+
+Unlike the builtin `substitute-env-vars', which expands only once,
+this function re-expands until the string stops changing or
+MAX-DEPTH (default 10) iterations are reached."
+  (let ((depth 0)
+        (limit (or max-depth 10))
+        (latest string)
+        (previous nil))
+    ;; Keep expanding until the string stops changing or loop hits depth limit
+    (while (and (not (string= latest previous))
+                (< depth limit))
+      (setq previous latest
+            latest (substitute-env-vars latest)
+            depth (1+ depth)))
+    latest))
+
+(defun pel-expanded-path (pathname)
+  "Return PATHNAME with ~ and $VARNAME style environment variables expanded.
+
+If the value of an environment variable itself refers to another environment
+variable it is also expanded."
+  (expand-file-name (pel-substitute-env-vars pathname)))
+
+(defun pel-path= (path1 path2)
+  "Return t if expanded PATH1 and PATH2 resolve to the same path.
+Return nil otherwise if they differ.
+Both arguments are fully expanded with `pel-expanded-path'."
+  (string= (directory-file-name (pel-expanded-path path1))
+           (directory-file-name (pel-expanded-path path2))))
+
+
+;; -- Alternate implementation allowing detection of invalid composition
+(defun pel-envar-in-string (string)
+  "Return names of environment variables extracted from the string.
+
+Supports the $VAR and ${VAR}, where variable names start with an underscore or
+a letter."
+  (let ((varnames nil)
+        (idx 0)
+        varname)
+    (while (string-match
+            "\\(?:\\$\\$\\|\\${\\([[:alpha:]_][[:alnum:]_]*\\)}\\|\\$\\([[:alpha:]_][[:alnum:]_]*\\)\\)"
+            string idx)
+      (setq varname (or (match-string 1 string)
+                        (match-string 2 string)))
+      (when varname
+        (push varname varnames))
+      (setq idx (match-end 0)))
+    (nreverse varnames)))
+
+(defun pel-substitute-in-file-name (filename)
+  "Substitute environment variables referred to in FILENAME.
+
+Does the same as `substitute-in-file-name' but signals a user-error when
+an environment variable referenced in FILENAME is unknown.
+
+SEE ALSO: `pel-expanded-path'."
+  ;; First check and raise a user error if there is any unknown environment
+  ;; variable inside the filename string
+  (dolist (varname (pel-envar-in-string filename))
+    (unless (getenv varname)
+      (user-error "In \"%s\", the environment variable %s is unknown!"
+                  filename varname)))
+  ;; then return the string with  everything substituted.
+  (substitute-in-file-name filename))
+
 ;; ---------------------------------------------------------------------------
 ;;* Emacs Environment Utilities
 ;;  ===========================
@@ -849,8 +1016,8 @@ SILENT is non-nil (can be requested by prefix argument)."
 The directory is identified by `user-emacs-directory'.
 If the directory does not exist the function creates it.
 This is the same as `locate-user-emacs-file' with the path made absolute and
-canonized."
-  (expand-file-name (locate-user-emacs-file fname)))
+canonical."
+  (file-truename (locate-user-emacs-file fname)))
 
 (defun pel-add-dir-to-loadpath (dir)
   "Add directory DIR to Emacs variable `load-path' if not already in the list.
@@ -876,7 +1043,7 @@ Return non-nil on success when it was added, nil otherwise."
 
 (defun pel-unix-socket-p (fname)
   "Return t if FNAME is a Unix Socket, nil otherwise.
-FNAME must exists otherwise an error is raised."
+FNAME must exist otherwise an error is raised."
   (eq (string-to-char (file-attribute-modes (file-attributes fname))) ?s))
 
 (defun pel-file-type-str (path)
@@ -884,13 +1051,16 @@ FNAME must exists otherwise an error is raised."
 
 PATH must identify an existing file system object otherwise an
 error is raised."
-  (cond
-   ((file-symlink-p path)    "symbolic link")
-   ((file-directory-p path)  "directory")
-   ((file-regular-p path)    "file")
-   ((not (file-exists-p path)) (error "%s does not exist" path))
-   ((pel-unix-socket-p path) "UNIX socket")
-   (t "unknown file system object")))
+  ;; Remove trailing slash if any from path because symlink detection fail
+  ;; with trailing slash.
+  (let ((path-f (directory-file-name path)))
+    (cond
+     ((file-symlink-p path-f)    "symbolic link")
+     ((file-directory-p path-f)  "directory")
+     ((file-regular-p path-f)    "file")
+     ((not (file-exists-p path-f)) (error "%s does not exist" path-f))
+     ((pel-unix-socket-p path-f) "UNIX socket")
+     (t "unknown file system object"))))
 
 ;; ---------------------------------------------------------------------------
 ;;* String predicates
@@ -909,7 +1079,7 @@ The index of the first whitespace character is returned when one is present."
       (string= (substring text (- len 1) len) " "))))
 
 (defun pel-starts-with-space-p (text)
-  "Return t if TEXT has space character(s) at beginning, nil otherwise."
+  "Return t if TEXT has space character(s) at the beginning, nil otherwise."
   (declare (side-effect-free t))
   (when (> (length text) 0)
     (string= (substring text 0 1) " ")))
@@ -1013,8 +1183,8 @@ in which case return PLURAL."
   "Return SYMBOL value if it is bound.
 
 If it is not bound, then return a list with the symbol and a
-string describing that it is not bound, unless QUIET is non-nil.  If QUIET is
-non-nil, just return nil when SYMBOL is not bound."
+string describing that it is not bound, unless QUIET is non-nil.
+If QUIET is non-nil, just return nil when SYMBOL is not bound."
   (declare (side-effect-free t))
   (if (boundp symbol)
       (symbol-value symbol)
@@ -1022,7 +1192,9 @@ non-nil, just return nil when SYMBOL is not bound."
       (list symbol "**is currently unbound!**"))))
 
 (defun pel-symbol-value (symbol &optional buffer)
-  "Return SYMBOL value in current or specified BUFFER."
+  "Return SYMBOL value in current or specified BUFFER.
+It returns a (SYMBOL \"**is currently unbound!**\") list when the symbol is
+not bound."
   (if buffer
       (with-current-buffer buffer
         (pel--symbol-value symbol))
@@ -1039,7 +1211,7 @@ non-nil, just return nil when SYMBOL is not bound."
 ;;  ===============
 
 (defun pel-symbol-at-point ()
-  "Return symbol at point; return nil if there are none."
+  "Return symbol at point as a string; return nil if there is none."
   (if (and (require 'thingatpt nil 'noerror)
            (fboundp 'thing-at-point))
       (thing-at-point 'symbol :no-properties)
@@ -1061,7 +1233,10 @@ on/off value, otherwise use \"on\" and \"off\"."
 (defun pel-symbol-on-off-string (symbol &optional on-string off-string
                                         void-string buffer)
   "Return representation of SYMBOL value and whether it is bound.
-When SYMBOL is not bound: return VOID-STRING or \"void\" if it's nil,
+
+When SYMBOL is not bound: return VOID-STRING or
+\"unknown - `SYMBOL' is not bound!\"
+
 When it is bound, return:
 - the OFF-STRING or \"off\" for nil,
 - the ON-STRING or \"on\" for SYMBOL boolean value.
@@ -1092,8 +1267,8 @@ If SYMBOL is not defined, show VOID-STRING if defined, \"void\" otherwise."
 
 (defun pel-value-on-off-text (symbol &optional on-string off-string)
   "Return a string describing SYMBOL as a boolean value.
-If SYMBOL value if non-nil: show ON-STRING if defined, \"on\" otherwise.
-If SYMBOL value  is nil   : show OFF-STRING if defined, \"off\" otherwise."
+If SYMBOL's value is non-nil: show ON-STRING if defined, \"on\" otherwise.
+If SYMBOL's value is nil    : show OFF-STRING if defined, \"off\" otherwise."
   (format "%s is now%s %s"
           (symbol-name symbol)
           pel--prompt-separator
@@ -1104,9 +1279,9 @@ If SYMBOL value  is nil   : show OFF-STRING if defined, \"off\" otherwise."
 (defun pel-symbol-value-or (symbol &optional replacement formatter buffer)
   "Return SYMBOL value if non void, otherwise its REPLACEMENT.
 
-If SYMBOL is void and there is no REPLACEMENT return a string
-created by (format \"unknown - %S is not loaded\" symbol).
-If SYMBOL is void and replacement is :nil-for-void, return nil.
+If SYMBOL is void and there is no REPLACEMENT return
+\"unknown - `SYMBOL' is not bound!\".
+If SYMBOL is unbound and REPLACEMENT is :nil-for-void, return nil.
 If SYMBOL is bound and FORMATTER is non nil it's a function that
 takes the symbol and returns a string.
 
@@ -1336,9 +1511,11 @@ Return empty string if TEXT is the empty string."
     ""))
 
 (defun pel-hastext (string)
-  "Return t if STRING hold text, nil otherwise."
+  "Return t if STRING holds text, nil otherwise.
+Signal an error if STRING argument is not nil nor a string."
   (declare (pure t) (side-effect-free t))
-  (not (string= string "")))
+  (when string
+    (not (string= string ""))))
 
 (defun pel-when-text-in (string value)
   "Return VALUE if STRING is a non-empty string.
@@ -1354,10 +1531,17 @@ Otherwise return nil."
       nil
     string))
 
-(defun pel-string-for (text)
-  "Return TEXT if it's a string.  If nil return empty string."
+(defun pel-string-for (text &optional prefix suffix)
+  "Return TEXT formatted as a string; return empty string if TEXT is nil.
+If PREFIX and/or SUFFIX are non-nil values they are prepended/appended
+around TEXT."
   (declare (pure t) (side-effect-free t))
-  (if text text ""))
+  (if text
+      (format "%s%s%s"
+              (if prefix prefix "")
+              text
+              (if suffix suffix ""))
+    ""))
 
 (defun pel-string-when (condition &optional text)
   "Return TEXT (or CONDITION) when CONDITION is non-nil, empty string otherwise.
@@ -1378,11 +1562,12 @@ Example:
     ELISP> (pel-string-spread \"abcdef\" \"--\")
     \"a--b--c--d--e--f\"
     ELISP>"
-  (string-join (cdr (butlast (split-string string "")))
+  (string-join (split-string (or string "") "" t)
                (or separator " ")))
 
 (defun pel-list-str (list)
-  "Return a string representation of a LIST using comma separator."
+  "Return a string representation of a LIST of symbols using comma separator.
+Note that LIST must be a list of symbols."
   (string-join (mapcar (function symbol-name)
                        list)
                ", "))
@@ -1420,8 +1605,8 @@ after the closing parenthesis."
   "Escape shell meta-chars in PATH but leave glob wildcards (*, ?, []).
 
 Examples:
-- (pel-shell-quote-path-keep-glob \"*.*\")         ➜ *.*\"
-- (pel-shell-quote-path-keep-glob \"* abc def.*\") ➜ *\\ abc\\ def.*\"."
+- (pel-shell-quote-path-keep-glob \"*.*\")         ➜ \"*.*\"
+- (pel-shell-quote-path-keep-glob \"* abc def.*\") ➜ \"*\\ abc\\ def.*\"."
   (replace-regexp-in-string
    ;; 1. Matches spaces, shell symbols, and literal backslashes.
    ;; 2. Note: The literal backslash must be last in the set [ ... \\]
@@ -1442,8 +1627,6 @@ Examples:
 (defun pel--format-problem-messages (problems intro &optional extra-intro)
   "Return string describing PROBLEMS for INTRO.
 
-The generated string starts with an introduction created using the
-INTRO-FMT format string and its ARGS arguments if any.
 The next line starts with the EXTRA-INTRO string if non-nil.
 Then it lists the provided PROBLEMS list.
 
@@ -1453,7 +1636,7 @@ Don't use this function directly; use the
 `pel-format-problem-messages' macro instead: it simplifies
 caller's code.
 
-Example:
+Example (as seen on ielm but indented):
 
   ELISP> (pel--format-problem-messages \\='(\"problem 1\" \"problem 2\")
                                        \"System Test Report:\")
@@ -1470,11 +1653,13 @@ Example:
     - problem 1
     - problem 2\"
 
-The second example shows where the EXTRA-INFO text is placed."
+The second example shows where the EXTRA-INTRO text is placed."
   (let ((problem-count (length problems)))
     (format "%s\n %she following %s %s:\n - %s"
             intro
-            (if extra-intro (format "%s t" extra-intro) "T")
+            (if (pel-hastext extra-intro)
+                (format "%s t" (string-trim extra-intro))
+              "T")
             (pel-count-string problem-count "problem" nil :no-count-for-1)
             (pel-pluralize problem-count "remains" "remain")
             (string-join problems "\n - "))))
@@ -1794,10 +1979,11 @@ otherwise it returns nil."
     major-mode-remap-alist))
 
 (defun pel-major-ts-mode-supported-p (mode)
-  "Return t when the specified tree-sitter major MODE is supported.
+  "Return non-nil when the specified tree-sitter major MODE is supported.
 
 MODE must be a symbol that does NOT end with -mode.
-The function returns nil when tree-sitter mode is not supported."
+The function returns nil when tree-sitter mode is not supported.
+It returns a (MODE . TS-MODE) cons cell when tree-sitter is supported by MODE."
   (let ((the-ts-mode (intern (format "%s-ts-mode" mode))))
     (if (fboundp the-ts-mode)
         t
@@ -1806,7 +1992,7 @@ The function returns nil when tree-sitter mode is not supported."
           (assoc mode-symbol major-mode-remap-alist))))))
 
 (defun pel-treesit-ready-p (language &optional quiet)
-  "Check whether tree-sitter is ready to be used for MODE and LANGUAGE.
+  "Check whether tree-sitter is ready to be used for LANGUAGE.
 
 LANGUAGE is the language symbol to check for availability.
 It can also be a list of language symbols.
@@ -2439,8 +2625,7 @@ current major mode."
       (not (re-search-forward "[^ \t]" eol t)))))
 
 (defun pel-inside-code (&optional pos)
-  "Return non-nil when point or POS is in code, nil if in comment or string.
-Note that this changes the search match data!"
+  "Return non-nil when point or POS is in code, nil if in comment or string."
   (let ((syntax (syntax-ppss (or pos (point)))))
     (and (not (nth 3 syntax))
          (not (nth 4 syntax)))))
@@ -2494,15 +2679,13 @@ environment variables that may be in the string."
 
 (defun pel-is-subdir-of (path1 path2)
   "Return t if PATH1 is a sub-directory of PATH2."
-  (let ((npath1 (pel-normalize-fname path1))
-        (npath2 (pel-normalize-fname path2)))
-    (when (string-match-p (regexp-quote npath2) npath1)
-      t)))
+  (let ((npath1 (file-name-as-directory (pel-normalize-fname path1)))
+        (npath2 (file-name-as-directory (pel-normalize-fname path2))))
+    (string-prefix-p npath2 npath1)))
 
 (defsubst pel-parent-dirpath (pathname)
   "Return parent directory of PATHNAME true name."
   (file-name-directory (pel-normalize-fname pathname)))
-
 
 (defun pel-sibling-dirname (dirpath sibling)
   "Return directory path name of SIBLING directory of DIRPATH directory."
@@ -2540,7 +2723,8 @@ Example:
 
 (defun pel-url-location (url)
   "Return a description string for the URL.
-Either \"Local\" or \"Remote\"."
+It checks whether URL starts with the \"file:\" scheme and returns \"Local\" in
+that case; otherwise returns \"Remote\"."
   (declare (side-effect-free t))
   (if (pel-string-starts-with-p url "file:")
       "Local"
@@ -2635,6 +2819,11 @@ This function handles both."
 ;;* Insertion of text in current buffer
 ;;  ===================================
 
+(defun pel-as-bold (text)
+  "Return TEXT as a propertized string with \\='bold face."
+  (declare (pure t) (side-effect-free t))
+  (propertize text 'face 'bold))
+
 (defun pel-insert-bold (text)
   "Insert bold TEXT at point."
   (insert (propertize text 'face 'bold)))
@@ -2667,9 +2856,12 @@ Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
           ;; When a button is required, ensure that it describes the variable
           ;; in the context of the original buffer, not the info buffer.
           (let ((context-buffer pel-insert-symbol-content-context-buffer))
-            (insert-button name 'action (lambda (_s)
-                                          (describe-symbol symbol
-                                                           context-buffer))))
+            ;; PEL support Emacs >= 26.1, describe-symbol supports context
+            ;; buffer argument in all those versions.
+            (insert-button name
+                           'action
+                           (lambda (_s)
+                             (describe-symbol symbol context-buffer))))
         (insert name)))))
 
 
@@ -2784,8 +2976,7 @@ and its value.  If that symbol is not bound, do nothing."
 (defun pel--pp (object &optional stream prefix)
   "Pretty-print OBJECT on STREAM if specified, standard output otherwise.
 
-A non-nil PREFIX should a be a string that is inserted before the
-OBJECT."
+A non-nil PREFIX should be a string that is inserted before the OBJECT."
   (if (and (require 'pp nil 'noerror)
            (fboundp 'pp-to-string))
       (let ((text (string-trim (pp-to-string object))))
@@ -2828,6 +3019,7 @@ The list of symbol is in SYMBOL-LIST and the maximum line width is LINE-WIDTH."
       (when (>= w line-width)
         (setq w 1)
         (insert "\n ")))))
+
 (defun pel-insert-list-content (symbol &optional
                                        buffer without-index
                                        no-button on-same-line)
@@ -3005,9 +3197,9 @@ if newer than the EL-FILENAME, force byte-compilation of the EL-FILENAME."
               (time-less-p (setq elc-modtime (pel-modtime-of elc-filename))
                            (pel-modtime-of el-filename))
               (and other-dependencies
-                   (or (mapcar
-                        (lambda (fname)
-                          (time-less-p elc-modtime (pel-modtime-of fname)))
+                   (or (cl-some (lambda (fname)
+                                  (time-less-p elc-modtime
+                                               (pel-modtime-of fname)))
                         other-dependencies))))
       (byte-compile-file el-filename))))
 

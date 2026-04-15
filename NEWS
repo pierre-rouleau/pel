@@ -2,6 +2,15 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Utility function *pel-string-for* has new optional prefix and suffix arguments.
+- Renamed *pel-major-mode-of* to *pel-major-mode-of-buffer*.
+- Add *pel-major-mode-of-file*, *pel-language-of*.
+- Add *pel-current-buffer-starts-with*.
+- Add *pel-substitute-env-vars* that substitutes all $VARNAME used.  It is now used in `pel-filename-at-point' allowing
+  expansion of environment variables that have values using other envvars.
+- Add *pel-envvar-value-list*  to extract the list of strings from a environment variable such as PATH.
+- Add *pel-expanded-path*
+- Add *pel-path=*
 - Fix Dart support for the ~<f12> ?~ key to get info on Dart major mode: completed the *pel-dart-setup-info* implementation.
 - Fix Emacs requirements for the gt package: it requires Emacs 28.1, not Emacs 27.1.
 - Add header file searching features to the Objective-C and Pike major modes similar to what PEL already supports in AWK, C and C++.

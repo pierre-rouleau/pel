@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-28 12:52:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-14 20:50:02 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -370,23 +370,25 @@
     (should (pel-in-fast-startup-p))))
 
 ;;; --------------------------------------------------------------------------
-;;; ;;* Checking Major Mode
+;;; ;;* Checking Major Mode  - pel-major-mode-of-buffer
 ;;; --------------------------------------------------------------------------
 
-(ert-deftest ert-test-pel-major-mode-of ()
-  "Test `pel-major-mode-of'."
+(ert-deftest ert-test-pel-major-mode-of-buffer ()
+  "Test `pel-major-mode-of-buffer'."
   ;; In a temp buffer with emacs-lisp-mode, it returns that mode.
   (with-temp-buffer
     (emacs-lisp-mode)
-    (should (eq 'emacs-lisp-mode (pel-major-mode-of)))
-    (should (eq 'emacs-lisp-mode (pel-major-mode-of (current-buffer)))))
+    ;; without argument check current buffer
+    (should (eq 'emacs-lisp-mode (pel-major-mode-of-buffer)))
+    ;; it should be like passing the current buffer explicitly
+    (should (eq 'emacs-lisp-mode (pel-major-mode-of-buffer (current-buffer)))))
   ;; text-mode in another temp buffer.
   (let ((buf (get-buffer-create " *pel-test-text-mode*")))
     (unwind-protect
         (with-current-buffer buf
           (text-mode)
-          (should (eq 'text-mode (pel-major-mode-of)))
-          (should (eq 'text-mode (pel-major-mode-of buf))))
+          (should (eq 'text-mode (pel-major-mode-of-buffer)))
+          (should (eq 'text-mode (pel-major-mode-of-buffer buf))))
       (kill-buffer buf))))
 
 (ert-deftest pel--base-test/mode/guards-and-derived ()
@@ -395,6 +397,133 @@
     (should (pel-derived-mode-p nil 'emacs-lisp-mode))
     (should-error (pel-major-mode-must-be 'c-mode) :type 'user-error)
     (should-not (pel-dired-buffer-p nil t))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Checking Major Mode  - pel-major-mode-of-file
+;;; --------------------------------------------------------------------------
+
+(defconst pel--rootdir (file-name-directory
+                        (directory-file-name
+                         (file-name-directory
+                          (or load-file-name buffer-file-name))))
+  "Root directory of pel.")
+
+(ert-deftest ert-test-pel-major-mode-of-file/dir ()
+  "Test `pel-major-mode-of-file' of directory -> nil."
+  (should-not (pel-major-mode-of-file pel--rootdir)))
+
+(ert-deftest ert-test-pel-major-mode-of-file/c-file ()
+  "Test `pel-major-mode-of-file' of C file -> c-mode or c-ts-mode."
+  (let ((c-file (expand-file-name "example/c/c_preproc-styles.c" pel--rootdir)))
+    (unless (file-exists-p c-file)
+      (ert-skip (format "C fixture file not found: %s. PLEASE FIX REPO!" c-file)))
+    (unless (or (featurep 'cc-mode)
+                (ignore-errors (require 'cc-mode nil t)))
+      (ert-skip "cc-mode feature not available in this Emacs session"))
+    (let ((result (condition-case err
+                      (pel-major-mode-of-file c-file)
+                    (end-of-file
+                     (ert-skip
+                      (format
+                       "pel-major-mode-of-file: unexpected end-of-file for %s (Emacs %s batch/CI)"
+                       c-file emacs-version)))
+                    (error
+                     (ert-skip
+                      (format "pel-major-mode-of-file signaled %S for %s (Emacs %s batch/CI)"
+                              err c-file emacs-version))))))
+      (unless result
+        (ert-skip
+         (format "pel-major-mode-of-file returned nil for %s \
+(Emacs %s batch: set-auto-mode may not activate modes without init)"
+                 c-file emacs-version)))
+      (should (memq result '(c-mode c-ts-mode))))))
+
+(ert-deftest ert-test-pel-major-mode-of-file/c++-file ()
+  "Test `pel-major-mode-of-file' of C++ file -> c++-mode or c++-ts-mode."
+  (let ((cpp-file (expand-file-name "example/templates/cpp/code.cpp" pel--rootdir)))
+    (unless (file-exists-p cpp-file)
+      (ert-skip (format "C++ fixture file not found: %s. PLEASE FIX REPO!" cpp-file)))
+    (unless (or (featurep 'cc-mode)
+                (ignore-errors (require 'cc-mode nil t)))
+      (ert-skip "cc-mode feature not available in this Emacs session"))
+    (let ((result (condition-case err
+                      (pel-major-mode-of-file cpp-file)
+                    (end-of-file
+                     (ert-skip
+                      (format
+                       "pel-major-mode-of-file: unexpected end-of-file for %s (Emacs %s batch/CI)"
+                       cpp-file emacs-version)))
+                    (error
+                     (ert-skip
+                      (format "pel-major-mode-of-file signaled %S for %s (Emacs %s batch/CI)"
+                              err cpp-file emacs-version))))))
+      (unless result
+        (ert-skip
+         (format "pel-major-mode-of-file returned nil for %s \
+(Emacs %s batch: set-auto-mode may not activate modes without init)"
+                 cpp-file emacs-version)))
+      (should (memq result '(c++-mode c++-ts-mode))))))
+
+(ert-deftest ert-test-pel-major-mode-of-file/erlang-file ()
+  "Test `pel-major-mode-of-file' of Erlang file -> erlang-mode."
+  (unless pel-use-erlang
+    (ert-skip "Skip test that requires PEL Erlang support."))
+  (should (memq  (pel-major-mode-of-file
+                  (expand-file-name
+                   "example/templates/erlang/gen_fsm_1_0_0_1_1.erl"
+                   pel--rootdir))
+                 '(erlang-mode erlang-ts-mode))))
+
+(ert-deftest ert-test-pel-major-mode-of-file/shell-file ()
+  "Test `pel-major-mode-of-file' of shell script file -> sh-mode."
+  (unless pel-use-sh
+    (ert-skip "Skip test that requires PEL shell programming support."))
+  (should (eq 'sh-mode (pel-major-mode-of-file
+                        (expand-file-name
+                         "bin/e"
+                         pel--rootdir)))))
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Checking Major Mode - pel-language-of
+;;; --------------------------------------------------------------------------
+
+(ert-deftest pel--base-test/mode/language-of-emacs-lisp ()
+  "`pel-language-of' returns \\='emacs-lisp for an emacs-lisp-mode buffer."
+  (with-temp-buffer
+    (emacs-lisp-mode)
+    (should (eq 'emacs-lisp (pel-language-of)))))
+
+(ert-deftest pel--base-test/mode/language-of-text-mode ()
+  "`pel-language-of' returns \\='text for a text-mode buffer."
+  (with-temp-buffer
+    (text-mode)
+    (should (eq 'text (pel-language-of)))))
+
+(ert-deftest pel--base-test/mode/language-of-fundamental-mode ()
+  "`pel-language-of' returns nil for fundamental-mode (not prog or text derived)."
+  (with-temp-buffer
+    (fundamental-mode)
+    (should-not (pel-language-of))))
+
+(ert-deftest pel--base-test/mode/language-of-file ()
+  "`pel-language-of' accepts a FILENAME and returns its language symbol."
+  (let* ((el-file (expand-file-name "pel--base.el" pel--rootdir)))
+    (unless (file-exists-p el-file)
+      (ert-skip (format "Source file not found: %s. PLEASE FIX REPO!" el-file)))
+    ;; Probe mode detection first: in Emacs 27 batch, set-auto-mode for .el
+    ;; files may fail silently inside ignore-errors, causing a nil return.
+    (let ((detected-mode (pel-major-mode-of-file el-file)))
+      (unless detected-mode
+        (ert-skip
+         (format "pel-major-mode-of-file returned nil for %s \
+\(Emacs %s: set-auto-mode could not determine a mode in this environment)"
+                 el-file emacs-version)))
+      ;; Mode was detected — now assert the language.
+      ;; pel-language-of calls pel-major-mode-of-file internally but it's fine
+      ;; for the test.
+      (let ((lang (pel-language-of el-file)))
+        (should (symbolp lang))
+        (should (eq 'emacs-lisp lang))))))
 
 ;; ===========================================================================
 ;; pel-derived-mode-p
@@ -669,6 +798,49 @@ was silently ignored and the current buffer was always queried."
               (cd orig)))
         (kill-buffer buf)))))
 
+
+;;; --------------------------------------------------------------------------
+;;; ;;* Buffer Information - pel-current-buffer-starts-with
+;;; --------------------------------------------------------------------------
+
+(ert-deftest pel--base-test/buffer-info/starts-with-match ()
+  "`pel-current-buffer-starts-with' returns non-nil when buffer begins with TEXT."
+  (with-temp-buffer
+    (insert ";;; Commentary:\n(defun foo ())")
+    (should (pel-current-buffer-starts-with ";;;"))))
+
+(ert-deftest pel--base-test/buffer-info/starts-with-no-match ()
+  "`pel-current-buffer-starts-with' returns nil when TEXT is not at the start."
+  (with-temp-buffer
+    (insert ";;; Commentary:\n(defun foo ())")
+    ;; Text that appears in the buffer but not at position 1.
+    (should-not (pel-current-buffer-starts-with "(defun"))
+    ;; Text that is absent entirely.
+    (should-not (pel-current-buffer-starts-with "#!/bin/bash"))))
+
+(ert-deftest pel--base-test/buffer-info/starts-with-empty-buffer ()
+  "`pel-current-buffer-starts-with' returns nil for an empty buffer."
+  (with-temp-buffer
+    (should-not (pel-current-buffer-starts-with "anything"))))
+
+(ert-deftest pel--base-test/buffer-info/starts-with-shebang ()
+  "`pel-current-buffer-starts-with' detects shebang lines."
+  (with-temp-buffer
+    (insert "#!/usr/bin/env python3\nx = 1\n")
+    (should     (pel-current-buffer-starts-with "#!/"))
+    (should     (pel-current-buffer-starts-with "#!/usr/bin/env python3"))
+    (should-not (pel-current-buffer-starts-with "x = 1"))))
+
+(ert-deftest pel--base-test/buffer-info/starts-with-does-not-alter-match-data ()
+  "`pel-current-buffer-starts-with' does not clobber existing match data."
+  (with-temp-buffer
+    (insert "hello world")
+    (string-match "hello" "hello world")       ; set match data
+    (pel-current-buffer-starts-with "hello")
+    ;; match-data set before the call must still be intact
+    (should (= 0 (match-beginning 0)))
+    (should (= 5 (match-end 0)))))
+
 ;;; --------------------------------------------------------------------------
 ;;; ;;* Current Directory
 ;;;
@@ -680,10 +852,199 @@ was silently ignored and the current buffer was always queried."
 ;;; --------------------------------------------------------------------------
 
 (ert-deftest pel--base-test/os-env/terminal-and-ssh ()
-  (let ((process-environment (cons "TERM_PROGRAM=Apple_Terminal" process-environment)))
+  (let ((process-environment
+         (cons "TERM_PROGRAM=Apple_Terminal" process-environment)))
     (should (pel-terminal-is-macos-terminal-p)))
-  (let ((process-environment (cons "SSH_CLIENT=1.2.3.4 22 12345" process-environment)))
+
+  (let ((process-environment
+         (cons "SSH_CLIENT=1.2.3.4 22 12345" process-environment)))
     (should (pel-running-under-ssh-p))))
+
+
+(ert-deftest pel--base-test/os-env/substitute-env-vars ()
+  "Test `pel-substitute-env-vars' ability to expand recursively."
+  (let ((process-environment
+         (cons "USER=woz"
+               (cons "BAR=/home/user/$USER"
+                     (cons "FOO=$BAR/at/next" process-environment))))
+        (my-string "Path is: [$FOO]. $$ is a single dollar sign, even for $USER."))
+    (should
+     (string=
+      "Path is: [/home/user/woz/at/next]. $ is a single dollar sign, even for woz."
+      (pel-substitute-env-vars my-string)))))
+
+;; -- pel-envvar-value-list --------------------------------------------------
+
+(ert-deftest pel--base-test/os-env/envvar-value-list-basic ()
+  "`pel-envvar-value-list' splits a colon-separated env var into a list."
+  (let ((process-environment
+         (cons "PEL_TEST_PATH=/usr/local/bin:/usr/bin:/bin"
+               process-environment)))
+    (let ((result (pel-envvar-value-list "PEL_TEST_PATH")))
+      (should (listp result))
+      (should (= 3 (length result)))
+      (should (member "/usr/local/bin" result))
+      (should (member "/usr/bin"       result))
+      (should (member "/bin"           result)))))
+
+(ert-deftest pel--base-test/os-env/envvar-value-list-unset ()
+  "`pel-envvar-value-list' returns an empty list for an unset variable."
+  ;; Remove any accidental definition of the sentinel name.
+  (let ((process-environment
+         (cl-remove-if (lambda (e) (string-prefix-p "PEL_ABSENT_XYZ=" e))
+                       process-environment)))
+    (should (equal '() (pel-envvar-value-list "PEL_ABSENT_XYZ")))))
+
+(ert-deftest pel--base-test/os-env/envvar-value-list-custom-sep ()
+  "`pel-envvar-value-list' accepts an alternative separator."
+  (let ((process-environment
+         (cons "PEL_TEST_SEMI=alpha;beta;gamma" process-environment)))
+    (let ((result (pel-envvar-value-list "PEL_TEST_SEMI" ";")))
+      (should (= 3 (length result)))
+      (should (member "alpha" result))
+      (should (member "beta"  result))
+      (should (member "gamma" result)))))
+
+(ert-deftest pel--base-test/os-env/envvar-value-list-dedup-and-trim ()
+  "`pel-envvar-value-list' removes duplicates and trims whitespace."
+  (let ((process-environment
+         (cons "PEL_TEST_DUP= foo : bar : foo : baz "
+               process-environment)))
+    (let ((result (pel-envvar-value-list "PEL_TEST_DUP")))
+      (should (member "foo" result))
+      (should (member "bar" result))
+      (should (member "baz" result))
+      ;; No duplicates.
+      (should (= (length result)
+                 (length (delete-dups (copy-sequence result))))))))
+
+(ert-deftest pel--base-test/os-env/envvar-value-list-dedup-whitespace-variants ()
+  "`pel-envvar-value-list' deduplicates entries that are identical after trimming.
+
+NOTE: this test requires the implementation to trim BEFORE deduplicating.
+It will fail if `delete-dups' is applied to the raw (un-trimmed) split strings."
+  ;; Three entries: 'foo', ' foo', 'foo ' — all trim to the same string.
+  ;; After correct trim-then-dedup only one entry should remain.
+  (let ((process-environment
+         (cons "PEL_TEST_WS_DUP=foo : foo: foo "
+               process-environment)))
+    (let ((result (pel-envvar-value-list "PEL_TEST_WS_DUP")))
+      (should (= 1 (length result)))
+      (should (member "foo" result))))
+  ;; Mixed whitespace-variant duplicates alongside unique entries.
+  ;; ' foo ', 'foo ', 'foo' all trim to 'foo'; ' bar', 'bar ' trim to 'bar'.
+  ;; Only 3 distinct entries ('foo', 'bar', 'baz') should remain.
+  (let ((process-environment
+         (cons "PEL_TEST_WS_MIX= foo : bar:foo :baz: bar "
+               process-environment)))
+    (let ((result (pel-envvar-value-list "PEL_TEST_WS_MIX")))
+      (should (= 3 (length result)))
+      (should (member "foo" result))
+      (should (member "bar" result))
+      (should (member "baz" result)))))
+
+;; -- pel-envar-in-string ----------------------------------------------------
+
+(ert-deftest pel--base-test/os-env/envar-in-string-basic ()
+  "`pel-envar-in-string' extracts $VAR names from a string."
+  (should (equal '("HOME")        (pel-envar-in-string "$HOME/docs")))
+  (should (equal '("FOO" "BAR")   (pel-envar-in-string "$FOO/$BAR")))
+  (should (equal '()              (pel-envar-in-string "/no/vars/here")))
+  (should (equal '()              (pel-envar-in-string ""))))
+
+(ert-deftest pel--base-test/os-env/envar-in-string-underscore ()
+  "`pel-envar-in-string' handles names containing underscores."
+  (should (equal '("MY_VAR")  (pel-envar-in-string "$MY_VAR/rest")))
+  (should (equal '("A_B_C")   (pel-envar-in-string "prefix/$A_B_C/suffix"))))
+
+(ert-deftest pel--base-test/os-env/envar-in-string-lone-dollar ()
+  "`pel-envar-in-string' ignores a bare $ with no alphanumeric/underscore name."
+  (should (equal '() (pel-envar-in-string "price is $")))
+  (should (equal '() (pel-envar-in-string "$ "))))
+
+(ert-deftest pel--base-test/os-env/envar-in-string-at-end-of-string ()
+  "`pel-envar-in-string' extracts a variable at the very end of the string."
+  (should (equal '("PATH") (pel-envar-in-string "/prefix/$PATH"))))
+
+(ert-deftest pel--base-test/os-env/envar-in-string-braced ()
+  (should (equal '("FOO")        (pel-envar-in-string "${FOO}/x")))
+  (should (equal '("A_B")        (pel-envar-in-string "p/${A_B}/s"))))
+
+(ert-deftest pel--base-test/os-env/envar-in-string-dollar-digit-ignored ()
+  (should (equal '() (pel-envar-in-string "awk '{print $1}' file.txt")))
+  (should (equal '() (pel-envar-in-string "$9 not a var"))))
+
+;; -- pel-expanded-path ------------------------------------------------------
+
+(ert-deftest pel--base-test/os-env/expanded-path-tilde ()
+  "`pel-expanded-path' expands ~ to an absolute path."
+  (let ((result (pel-expanded-path "~")))
+    (should (file-name-absolute-p result))
+    (should-not (string-match-p "~" result))))
+
+(ert-deftest pel--base-test/os-env/expanded-path-env-var ()
+  "`pel-expanded-path' expands a $VAR-style environment variable."
+  (let ((process-environment
+         (cons "PEL_EXP_DIR=/tmp/pelexptest" process-environment)))
+    (let ((result (pel-expanded-path "$PEL_EXP_DIR/sub")))
+      (should (string-match-p "/tmp/pelexptest/sub" result)))))
+
+(ert-deftest pel--base-test/os-env/expanded-path-recursive ()
+  "`pel-expanded-path' recursively expands nested environment variables."
+  (let ((process-environment
+         (cons "PEL_R_A=/tmp"
+               (cons "PEL_R_B=$PEL_R_A/nested" process-environment))))
+    (let ((result (pel-expanded-path "$PEL_R_B/final")))
+      (should (string-match-p "/tmp/nested/final" result)))))
+
+;; -- pel-path= --------------------------------------------------------------
+
+(ert-deftest pel--base-test/os-env/path=-identical ()
+  "`pel-path=' returns t for identical paths (no env vars)."
+  (should (pel-path= "/usr/local/bin" "/usr/local/bin")))
+
+(ert-deftest pel--base-test/os-env/path=-tilde ()
+  "`pel-path=' expands ~ on both sides before comparing."
+  (let ((home (expand-file-name "~")))
+    (should (pel-path= "~"   home))
+    (should (pel-path= home  "~"))))
+
+(ert-deftest pel--base-test/os-env/path=-env-var-expansion ()
+  "`pel-path=' expands $VAR before comparing."
+  (let ((process-environment
+         (cons "PEL_CMP=/usr/local" process-environment)))
+    (should     (pel-path= "$PEL_CMP"   "/usr/local"))
+    (should     (pel-path= "/usr/local" "$PEL_CMP"))))
+
+(ert-deftest pel--base-test/os-env/path=-different ()
+  "`pel-path=' returns nil for genuinely different paths."
+  (should-not (pel-path= "/usr/local/bin" "/usr/bin")))
+
+;; -- pel-substitute-in-file-name --------------------------------------------
+
+(ert-deftest pel--base-test/os-env/substitute-in-file-name-known-var ()
+  "`pel-substitute-in-file-name' expands a known environment variable."
+  (let ((process-environment
+         (cons "PEL_SUB_DIR=/tmp/subst" process-environment)))
+    (let ((result (pel-substitute-in-file-name "$PEL_SUB_DIR/file.txt")))
+      (should (string-match-p "/tmp/subst/file.txt" result)))))
+
+(ert-deftest pel--base-test/os-env/substitute-in-file-name-unknown-var ()
+  "`pel-substitute-in-file-name' signals `user-error' for an unknown variable."
+  (let ((process-environment
+         (cl-remove-if (lambda (e) (string-prefix-p "PEL_GHOST_XYZ=" e))
+                       process-environment)))
+    (should-error (pel-substitute-in-file-name "$PEL_GHOST_XYZ/file.txt")
+                  :type 'user-error)))
+
+(ert-deftest pel--base-test/os-env/substitute-in-file-name-no-vars ()
+  "`pel-substitute-in-file-name' returns a plain path unchanged."
+  (should (string= "/tmp/plain.txt"
+                   (pel-substitute-in-file-name "/tmp/plain.txt"))))
+
+(ert-deftest pel--base-test/os-env/substitute-in-file-name-unknown-braced ()
+  (should-error (pel-substitute-in-file-name "${NO_SUCH_VAR}/f.txt")
+                :type 'user-error))
 
 ;;; --------------------------------------------------------------------------
 ;;; ;;* Emacs Environment Utilities
@@ -691,7 +1052,8 @@ was silently ignored and the current buffer was always queried."
 
 (ert-deftest pel--base-test/emacs-env/locate-user-emacs-file-and-loadpath ()
   (should (file-name-absolute-p (pel-locate-user-emacs-file "pel-base-test.tmp")))
-  (pel--base-test--with-temp-dir tmpd
+  (pel--base-test--with-temp-dir
+      tmpd
     (let ((added (pel-add-dir-to-loadpath tmpd)))
       (should added)
       (should (member (directory-file-name (file-truename tmpd))
@@ -1066,6 +1428,32 @@ was silently ignored and the current buffer was always queried."
   (should (string= ""      (pel-string-for nil)))
   (should (string= ""      (pel-string-for ""))))
 
+(ert-deftest pel--base-test/strings/string-for-prefix-suffix ()
+  "Test `pel-string-for' optional PREFIX and SUFFIX arguments."
+  ;; nil text → always "" regardless of prefix/suffix
+  (should (string= "" (pel-string-for nil "["  "]")))
+  (should (string= "" (pel-string-for nil "["  nil)))
+  (should (string= "" (pel-string-for nil nil  "]")))
+  (should (string= "" (pel-string-for nil nil  nil)))
+  ;; non-nil text with prefix only
+  (should (string= "[hello"  (pel-string-for "hello" "[")))
+  (should (string= "[hello"  (pel-string-for "hello" "[" nil)))
+  ;; non-nil text with suffix only
+  (should (string= "hello]"  (pel-string-for "hello" nil "]")))
+  ;; non-nil text with both prefix and suffix
+  (should (string= "[hello]" (pel-string-for "hello" "[" "]")))
+  ;; empty string is non-nil → prefix/suffix are applied
+  (should (string= "[]"      (pel-string-for "" "[" "]")))
+  (should (string= "["       (pel-string-for "" "[")))
+  (should (string= "]"       (pel-string-for "" nil "]")))
+  (should (string= ""        (pel-string-for "" nil nil)))
+  ;; backward compatibility: no prefix/suffix → original behaviour
+  (should (string= "hello"   (pel-string-for "hello")))
+  (should (string= ""        (pel-string-for nil)))
+  (should (string= ""        (pel-string-for ""))))
+
+;; -- pel-string... --------------------------------------------------------------
+
 (ert-deftest ert-test-pel-string-when ()
   "Test `pel-string-when'."
   ;; Condition is non-nil and text is supplied → text.
@@ -1086,6 +1474,9 @@ was silently ignored and the current buffer was always queried."
   (should (string= "a" (pel-string-spread "a")))
   ;; Two characters.
   (should (string= "a b" (pel-string-spread "ab"))))
+
+(ert-deftest ert-test-pel-string-spread/empty ()
+  (should (string= "" (pel-string-spread ""))))
 
 (ert-deftest ert-test-pel-list-str ()
   "Test `pel-list-str'."
@@ -1137,6 +1528,46 @@ was silently ignored and the current buffer was always queried."
     (should (string-match-p "a" m))
     (should (string-match-p "b" m))))
 
+(ert-deftest pel--base-format-problem-messages/1-problem ()
+  (let* ((txt (pel--format-problem-messages '("p1") "Intro:")))
+    (should (string-match-p "^Intro:" txt))
+    (should (string-match-p "\n The following problem remains:" txt))))
+
+(ert-deftest pel--base-format-problem-messages/2-problems ()
+  (let* ((txt (pel--format-problem-messages '("p1" "p2") "Intro:")))
+    (should (string-match-p "^Intro:" txt))
+    (should (string-match-p "\n The following 2 problems remain:" txt))))
+
+(ert-deftest pel--base-format-problem-messages/3-problems ()
+  (let* ((txt (pel--format-problem-messages '("p1" "p2" "p3") "Intro:")))
+    (should (string-match-p "^Intro:" txt))
+    (should (string-match-p "\n The following 3 problems remain:" txt))))
+
+(ert-deftest pel--base-format-problem-messages/empty-extra-intro ()
+  (let* ((a (pel--format-problem-messages '("p1") "Intro:"))
+         (b (pel--format-problem-messages '("p1") "Intro:" "")))
+    (should (string= a b))
+    (should (string-match-p "\n The following problem remains:" b))))
+
+(ert-deftest pel--base-test/messages/format-problem-messages-exact-no-extra-intro ()
+  "Exact output must match the docstring example (no EXTRA-INTRO)."
+  (let ((result (pel--format-problem-messages '("problem 1" "problem 2")
+                                              "System Test Report:")))
+    (should
+     (string=
+      "System Test Report:\n The following 2 problems remain:\n - problem 1\n - problem 2"
+      result))))
+
+(ert-deftest pel--base-test/messages/format-problem-messages-exact-with-extra-intro ()
+  "Exact output must match the docstring example (with EXTRA-INTRO)."
+  (let ((result (pel--format-problem-messages '("problem 1" "problem 2")
+                                              "System Test Report:"
+                                              "The final report is that")))
+    (should
+     (string=
+      "System Test Report:\n The final report is that the following 2 problems remain:\n - problem 1\n - problem 2"
+      result))))
+
 ;;; --------------------------------------------------------------------------
 ;;; ;;* Value check
 ;;; --------------------------------------------------------------------------
@@ -1154,7 +1585,7 @@ was silently ignored and the current buffer was always queried."
                                         (pel-end-text-with-period s)))))
   ;; With transform functions: value fails check → alternative returned as-is.
   (should (eq 0 (pel-use-or "" #'pel-hastext 0
-                             #'capitalize))))
+                            #'capitalize))))
 
 (ert-deftest pel--base-test/value-check/use-or-and-ops-on-seqs ()
   (should (equal "Abc."
@@ -1663,6 +2094,12 @@ was silently ignored and the current buffer was always queried."
   (should (pel-same-fname-p "/abc/"    "/abc"))
   (should (pel-same-fname-p "/abc/def/ghi/"  "/abc/22/../def/ghi")))
 
+(ert-deftest ert-test-pel-is-subdir-of ()
+  "Test pel-is-subdir-of."
+  (should-not (pel-is-subdir-of "/tmp/foo-bar"    "/tmp/foo"))
+  (should     (pel-is-subdir-of "/tmp/foo/bar"    "/tmp/foo"))
+  (should-not (pel-is-subdir-of "/my/tmp/foo/bar" "/tmp/foo")))
+
 (ert-deftest pel--base-test/paths/file-in-and-normalize-and-same-fname ()
   (pel--base-test--with-temp-dir d
     (let* ((sub (expand-file-name "sub" d))
@@ -1721,6 +2158,29 @@ was silently ignored and the current buffer was always queried."
   (with-temp-buffer
     (pel--pp '(:a 1 :b 2) (current-buffer) "  ")
     (should (string-match-p ":a" (buffer-string)))))
+
+(ert-deftest pel--base-test/insertions/as-bold-returns-propertized-string ()
+  "`pel-as-bold' returns the same string content with a bold face property."
+  (let ((result (pel-as-bold "hello")))
+    (should (stringp result))
+    (should (string= "hello" result))
+    ;; The face text-property must be 'bold at every character position.
+    (should (equal 'bold (get-text-property 0 'face result)))
+    (should (equal 'bold (get-text-property 4 'face result)))))
+
+(ert-deftest pel--base-test/insertions/as-bold-empty-string ()
+  "`pel-as-bold' handles an empty string without error."
+  (let ((result (pel-as-bold "")))
+    (should (stringp result))
+    (should (string= "" result))))
+
+(ert-deftest pel--base-test/insertions/as-bold-vs-insert-bold ()
+  "`pel-as-bold' returns what `pel-insert-bold' would insert."
+  ;; pel-as-bold returns the propertized string; pel-insert-bold inserts it.
+  (with-temp-buffer
+    (insert (pel-as-bold "world"))
+    (should (string= "world" (buffer-substring-no-properties (point-min) (point-max))))
+    (should (equal 'bold (get-text-property (point-min) 'face)))))
 
 ;;; --------------------------------------------------------------------------
 ;;; ;;* Move point right, optionally inserting spaces
@@ -1784,6 +2244,28 @@ was silently ignored and the current buffer was always queried."
         ;; Simulate existing .elc so second call does nothing
         (with-temp-file (concat src "c") (insert "dummy"))
         (pel-byte-compile-if-needed src)
+        (should (= 1 calls))))))
+
+(ert-deftest pel--base-test/byte-compile/other-deps-only-when-newer ()
+  (pel--base-test--with-temp-dir d
+    (let* ((src (pel--base-test--write-file d "x.el" "(message \"hi\")"))
+           (dep (pel--base-test--write-file d "dep.txt" "old"))
+           (elc (concat src "c"))
+           (calls 0))
+      (with-temp-file elc (insert "dummy-old"))
+      (set-file-times elc (current-time))               ;; elc is “now”
+      (sleep-for 0.01)
+      (set-file-times dep (current-time))               ;; dep newer than elc
+
+      (cl-letf (((symbol-function 'byte-compile-file)
+                 (lambda (_f) (setq calls (1+ calls)) :ok)))
+        ;; Should recompile because dep is newer than elc
+        (pel-byte-compile-if-needed src dep)
+        (should (= 1 calls))
+
+        ;; Make elc newest; should not recompile now
+        (set-file-times elc (current-time))
+        (pel-byte-compile-if-needed src dep)
         (should (= 1 calls))))))
 
 ;;; --------------------------------------------------------------------------

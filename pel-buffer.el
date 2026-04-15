@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, May 27 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 11:51:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-14 09:58:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,7 +33,7 @@
 ;;
 ;;
 (require 'pel--base)                    ; use: `pel-buffers-in-mode',
-;;                                      ;      `pel-major-mode-of'
+;;                                      ;      `pel-major-mode-of-buffer'
 (require 'pel-list)                     ; use: `pel-list-index'
 (require 'bs)                           ; Emacs built-in
 
@@ -176,7 +176,7 @@ which also includes the current buffer which may be of another mode.
 Also set the default configuration to this new selected mode."
   (interactive)
   (let ((config-name (pel-bs-set-for-this-mode-only
-                      (pel-major-mode-of (bs--current-buffer)))))
+                      (pel-major-mode-of-buffer (bs--current-buffer)))))
     (bs-set-configuration config-name)
     (setq bs-default-configuration config-name)
     (bs--redisplay t)

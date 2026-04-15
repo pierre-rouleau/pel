@@ -28,7 +28,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-(require 'pel--base) ; use: `pel-major-mode-of', `pel-toggle'
+(require 'pel--base) ; use: `pel-major-mode-of-buffer', `pel-toggle'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -55,7 +55,7 @@ in which case it appends to the previous report."
   (let* ((fill-column-symbol (pel-major-mode-symbol-for "pel-%s-fill-column"))
          (fill-column-symbol-is-bound (boundp fill-column-symbol))
          (text-fill-column (current-fill-column))
-         (isa-lisp-mode (memq (pel-major-mode-of)
+         (isa-lisp-mode (memq (pel-major-mode-of-buffer)
                               '(emacs-lisp-mode
                                 lisp-interaction-mode
                                 lisp-mode)))
