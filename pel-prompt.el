@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 12:07:50 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-15 08:13:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -42,6 +42,7 @@
 ;; - `pel-prompt'
 ;; - `pel-prompt-with-completion'
 ;; - `pel-prompt-title'
+;; - `pel-prompt-for-filename'
 ;;
 ;; The `pel-y-n-e-or-l-p' function is a minor modification of the Emacs'
 ;; y-or-n-p.  It has the ability to type "e" or "E" as an answer to
@@ -77,6 +78,7 @@
 (require 'pel--options)               ; use: `pel-prompt-read-method'
 (require 'pel-text-transform)         ; use: `pel-capitalize-first-letter'
 (require 'subr-x)                     ; use: `string-trim'
+(require 'minibuffer)                 ; use: `read-file-name'
 (eval-when-compile
   (require 'cl-lib)                   ; use: `cl-dolist' and `cl-return'
   (require 'cl-macs))                 ; use: `cl-case'.
@@ -509,6 +511,37 @@ If WITH-FULL-STOP is non-nil a period is added if user did not enter one."
         (pel-end-text-with-period title)
       title)))
 
+;; ---------------------------------------------------------------------------
+;; Prompt for File
+
+(defun pel-prompt-for-filename (&optional default-filename)
+  "Prompt for a file name, showing DEFAULT-FILENAME if specified.
+The DEFAULT-FILENAME must be a string or nil.
+User can either accept the filename or modify it.
+If the file does not already exist, a confirmation is requested.
+Returns the expanded filename string."
+  (unless default-filename
+    (setq default-filename ""))
+  ;; `read-file-name' is flexible but I find it non-obvious.
+  ;; To get it to show the filename, it has to be placed in the DIR argument.
+  ;; With a single word (no path) will be interpreted as a file in the local
+  ;; directory (which is what I want).
+  ;; MUSTMATCH and PREDICATE are set to ensure the file exists.
+  ;; If it does not exist the user must confirm and then the caller can create
+  ;; it.
+  (expand-file-name (read-file-name
+                     ;; PROMPT
+                     "Open? (C-g to quit): "
+                     ;; DIR
+                     default-filename
+                     ;; DEFAULT_FILENAME
+                     nil
+                     ;; MUSTMATCH
+                     'confirm
+                     ;; INITIAL
+                     nil
+                     ;; PREDICATE
+                     'file-exists-p)))
 ;; -----------------------------------------------------------------------------
 (provide 'pel-prompt)
 
