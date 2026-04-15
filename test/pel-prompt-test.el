@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 15 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-15 11:08:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-15 11:22:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -155,63 +155,54 @@
 
 (ert-deftest test-pel-y-n-e-or-l-p/noninteractive-y ()
   "Returns `yes' for input \"y\" in noninteractive mode."
-  (ert-skip "Skip tests that hangs.")
   (cl-letf (((symbol-function 'read-string) (lambda (&rest _) "y")))
     (let ((noninteractive t))
       (should (eq 'yes (pel-y-n-e-or-l-p "Test? "))))))
 
 (ert-deftest test-pel-y-n-e-or-l-p/noninteractive-Y ()
   "Returns `yes' for uppercase \"Y\" in noninteractive mode."
-  (ert-skip "Skip tests that hangs.")
   (cl-letf (((symbol-function 'read-string) (lambda (&rest _) "Y")))
     (let ((noninteractive t))
       (should (eq 'yes (pel-y-n-e-or-l-p "Test? "))))))
 
 (ert-deftest test-pel-y-n-e-or-l-p/noninteractive-n ()
   "Returns `no' for input \"n\" in noninteractive mode."
-  (ert-skip "Skip tests that hangs.")
   (cl-letf (((symbol-function 'read-string) (lambda (&rest _) "n")))
     (let ((noninteractive t))
       (should (eq 'no (pel-y-n-e-or-l-p "Test? "))))))
 
 (ert-deftest test-pel-y-n-e-or-l-p/noninteractive-N ()
   "Returns `no' for uppercase \"N\" in noninteractive mode."
-  (ert-skip "Skip test that hangs")
   (cl-letf (((symbol-function 'read-string) (lambda (&rest _) "N")))
     (let ((noninteractive t))
       (should (eq 'no (pel-y-n-e-or-l-p "Test? "))))))
 
 (ert-deftest test-pel-y-n-e-or-l-p/noninteractive-e ()
   "Returns `edit' for input \"e\" in noninteractive mode."
-  (ert-skip "Skip tests that hangs.")
   (cl-letf (((symbol-function 'read-string) (lambda (&rest _) "e")))
     (let ((noninteractive t))
       (should (eq 'edit (pel-y-n-e-or-l-p "Test? "))))))
 
 (ert-deftest test-pel-y-n-e-or-l-p/noninteractive-E ()
   "Returns `edit' for uppercase \"E\" in noninteractive mode."
-  (ert-skip "Skip test that hangs.")
   (cl-letf (((symbol-function 'read-string) (lambda (&rest _) "E")))
     (let ((noninteractive t))
       (should (eq 'edit (pel-y-n-e-or-l-p "Test? "))))))
 
 (ert-deftest test-pel-y-n-e-or-l-p/noninteractive-l ()
   "Returns `findlib' for input \"l\" in noninteractive mode."
-  (ert-skip "Skip test that hangs.")
   (cl-letf (((symbol-function 'read-string) (lambda (&rest _) "l")))
     (let ((noninteractive t))
       (should (eq 'findlib (pel-y-n-e-or-l-p "Test? "))))))
 
 (ert-deftest test-pel-y-n-e-or-l-p/noninteractive-L ()
   "Returns `findlib' for uppercase \"L\" in noninteractive mode."
-  (ert-skip "Skip test that hangs.")
   (cl-letf (((symbol-function 'read-string) (lambda (&rest _) "L")))
     (let ((noninteractive t))
       (should (eq 'findlib (pel-y-n-e-or-l-p "Test? "))))))
 
 (ert-deftest test-pel-y-n-e-or-l-p/noninteractive-retry-on-bad-input ()
   "Re-prompts on invalid input; accepts valid input on retry."
-  (ert-skip "Skip test that hangs.")
   (let ((call-count 0))
     (cl-letf (((symbol-function 'read-string)
                (lambda (&rest _)
@@ -332,7 +323,7 @@
 
 (ert-deftest test-pel-prompt-purpose-for/empty-input-no-default-returns-empty ()
   "Returns empty string when input is empty and no default given."
-  (ert-skip "Temporary skip test that fails ")
+  (ert-skip "Temporary skip test that fails.")
   (pel-test--with-minibuffer-input ""
     (should (equal "" (pel-prompt-purpose-for "function")))))
 
@@ -481,7 +472,6 @@
 
 (ert-deftest test-pel-prompt-for-filename/nil-default-becomes-empty-string ()
   "Passes empty string as DIR when DEFAULT-FILENAME is nil."
-  (ert-skip "Temporary skip test that fails on: (wrong-number-of-arguments #<subr identity> 2)")
   (let (captured-dir)
     (cl-letf (((symbol-function 'read-file-name)
                (lambda (_prompt dir &rest _)
@@ -493,7 +483,6 @@
 
 (ert-deftest test-pel-prompt-for-filename/no-arg-uses-empty-dir ()
   "Passes empty string as DIR when called with no argument."
-  (ert-skip "Temporary skip test that fails on: (wrong-number-of-arguments #<subr identity> 2)")
   (let (captured-dir)
     (cl-letf (((symbol-function 'read-file-name)
                (lambda (_prompt dir &rest _)
@@ -505,7 +494,6 @@
 
 (ert-deftest test-pel-prompt-for-filename/string-default-passed-as-dir ()
   "Passes DEFAULT-FILENAME as the DIR argument."
-  (ert-skip "Temporary skip test that fails on: (wrong-number-of-arguments #<subr identity> 2)")
   (let (captured-dir)
     (cl-letf (((symbol-function 'read-file-name)
                (lambda (_prompt dir &rest _)
@@ -517,7 +505,6 @@
 
 (ert-deftest test-pel-prompt-for-filename/returns-expanded-name ()
   "Returns the result of `expand-file-name' on `read-file-name' output."
-  (ert-skip "Temporary skip test that fails on: (wrong-number-of-arguments (1 . 1) 2)")
   (cl-letf (((symbol-function 'read-file-name)
              (lambda (&rest _) "relative/path.txt"))
             ((symbol-function 'expand-file-name)
@@ -527,7 +514,6 @@
 
 (ert-deftest test-pel-prompt-for-filename/uses-confirm-mustmatch ()
   "Passes `confirm' as the MUSTMATCH argument."
-  (ert-skip "Temporary skip test that fails on: (wrong-number-of-arguments #<subr identity> 2)")
   (let (captured-mustmatch)
     (cl-letf (((symbol-function 'read-file-name)
                (lambda (_prompt _dir _default mustmatch &rest _)
@@ -539,7 +525,6 @@
 
 (ert-deftest test-pel-prompt-for-filename/uses-file-exists-p-predicate ()
   "Passes `file-exists-p' as the PREDICATE argument."
-  (ert-skip "Temporary skip test that fails on: (wrong-number-of-arguments #<subr identity> 2)")
   (let (captured-pred)
     (cl-letf (((symbol-function 'read-file-name)
                (lambda (_prompt _dir _default _mustmatch _initial pred)
@@ -551,7 +536,6 @@
 
 (ert-deftest test-pel-prompt-for-filename/correct-prompt-text ()
   "Uses the exact prompt string \"Open? (C-g to quit): \"."
-  (ert-skip "Temporary skip test that fails on: (wrong-number-of-arguments #<subr identity> 2)")
   (let (captured-prompt)
     (cl-letf (((symbol-function 'read-file-name)
                (lambda (prompt &rest _)
@@ -563,7 +547,6 @@
 
 (ert-deftest test-pel-prompt-for-filename/nil-default-filename-arg ()
   "Passes nil as DEFAULT_FILENAME (3rd arg) to `read-file-name'."
-  (ert-skip "Temporary skip test that fails on: (wrong-number-of-arguments #<subr identity> 2)")
   (let (captured-default)
     (cl-letf (((symbol-function 'read-file-name)
                (lambda (_prompt _dir default &rest _)

@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-15 08:13:24 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-15 11:16:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -145,7 +145,7 @@ y/Y (yes), n/N (no), e/E (edit), l/L (library).\n")
      (noninteractive
       (setq prompt (funcall padded prompt))
       (let ((temp-prompt prompt))
-        (while (not (memq answer '(act skip edit-replacement automatic)))
+        (while (not (memq answer '(yes no edit findlib)))
           (let ((str (read-string temp-prompt)))
             (cond ((member str '("y" "Y")) (setq answer 'yes))
                   ((member str '("n" "N")) (setq answer 'no))
