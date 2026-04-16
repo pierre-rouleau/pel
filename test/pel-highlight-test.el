@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, April 16 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-16 15:33:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 15:52:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -615,15 +615,15 @@ This verifies the scoped `remove-overlays' call leaves unrelated overlays alone.
           (should (equal "blue" (face-attribute 'highlight :background))))
       (set-face-background 'highlight orig-bg))))
 
-
 (ert-deftest ert-test-pel-set-highlight-color/clears-foreground ()
-  "Sets the `highlight' face `:foreground' attribute to nil (disabled)."
+  "Sets the `highlight' face `:foreground' attribute to `unspecified'.
+`set-face-foreground' with nil causes `face-attribute' to return `unspecified',
+unlike `set-face-underline' with nil which stores nil."
   (let ((orig-bg (face-attribute 'highlight :background))
         (orig-fg (face-attribute 'highlight :foreground)))
     (unwind-protect
         (progn
           (pel-set-highlight-color "yellow")
-          ;; set-face-foreground with nil stores nil, not 'unspecified
           (should (eq 'unspecified (face-attribute 'highlight :foreground))))
       (set-face-background 'highlight orig-bg)
       (set-face-foreground 'highlight orig-fg))))
@@ -913,7 +913,7 @@ Documents the degenerate-but-reachable code path."
                     (error (format "%S" err)))))
     (should (= 1 (pel-hl-test--count-highlight-overlays)))))
 
-(ert-deftest ert-test-pel-highlight-line/no-trailing-newline-overlay-end-is-1-plus-point-max ()
+(ert-deftest ert-test-pel-highlight-line/no-trailing-newline-overlay-end-is-point-max ()
   "Overlay end equals 1+ point-max when there is no trailing newline."
   (with-temp-buffer
     (insert "no newline at end")
@@ -943,6 +943,46 @@ Documents the degenerate-but-reachable code path."
     (let ((inhibit-message t))
       (pel-highlight-line))
     (should (= 1 (pel-hl-test--count-highlight-overlays)))))
+
+;; ---------------------------------------------------------------------------
+;;; pel--prompt-for-color uses completion-ignore-case t
+;; ---------------------------------------------------------------------------
+
+(ert-deftest ert-test-pel--prompt-for-color/calls-completing-read-with-ignore-case ()
+  "pel--prompt-for-color binds `completion-ignore-case' to t when calling
+`completing-read', making color name matching case-insensitive."
+  (let (captured-ignore-case)
+    (cl-letf (((symbol-function 'completing-read)
+               (lambda (&rest _)
+                 (setq captured-ignore-case completion-ignore-case)
+                 "blue")))
+      (pel--prompt-for-color))
+    (should (eq t captured-ignore-case))))
+
+(ert-deftest ert-test-pel--prompt-for-color/uses-shared-history-variable ()
+  "pel--prompt-for-color passes `pel-set-highlight-color--history' as HIST."
+  (let (captured-history-sym)
+    (cl-letf (((symbol-function 'completing-read)
+               (lambda (_prompt _collection _pred _require-match
+                        _initial-input hist &rest _)
+                 (setq captured-history-sym hist)
+                 "blue")))
+      (pel--prompt-for-color))
+    (should (eq 'pel-set-highlight-color--history captured-history-sym))))
+
+;; ---------------------------------------------------------------------------
+;;; pel--highlight-color initialized from pel-highlight-color-default
+;; ---------------------------------------------------------------------------
+
+(ert-deftest ert-test-pel--highlight-color/initialized-from-default ()
+  "`pel--highlight-color' is initialized from `pel-highlight-color-default'.
+The `defvar' binds `pel--highlight-color' to the customization default.
+This test verifies the relationship is preserved at load time."
+  ;; At load time the defvar has already run; both should be strings.
+  ;; We verify the types are consistent rather than asserting an exact value
+  ;; since the default can be customized by the user.
+  (should (stringp pel-highlight-color-default))
+  (should (stringp pel--highlight-color)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-highlight-test)

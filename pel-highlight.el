@@ -239,9 +239,17 @@ Return nil if there are none."
 (defun pel-highlight-line (&optional change-color)
   "Toggle highlighting of current line or marked area.
 
-With CHANGE-COLOR prompt for the new color.
-Supports tab-completion with colors shown for each color name.
-Prompt history is available."
+If a marked area or a line is partly highlighted, the function toggles
+the highlighting of the complete marked area or line, if something was
+highlighted it becomes non-highlighted and if something was highlighted
+it stops being highlighted.
+
+With CHANGE-COLOR prompt for the new color and changes the highlighting
+color to the selected one.  Previously highlighted text retains its
+previously used highlighting color.
+
+When prompting for a color the prompt Supports tab-completion with
+colors shown for each color name.  Prompt history is available."
   (interactive "P")
   (when change-color
     (let ((color-requested (pel--prompt-for-color)))
