@@ -9347,7 +9347,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:highlight      "u"  #'unhighlight-regexp)                ; M-s h u
 (define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
 (define-key pel:highlight      "h" 'pel-highlight-line)
-(define-key pel:highlight (kbd "M-H") 'pel-remove-line-highlight)
+(define-key pel:highlight      "H" 'pel-remove-line-highlight)
 
 (define-pel-global-prefix pel:highlight-info (kbd "<f11> h ?"))
 (define-key pel:highlight-info "(" 'pel-show-paren-info)

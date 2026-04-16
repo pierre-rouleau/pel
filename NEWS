@@ -2,6 +2,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Better key binding form *pel-remove-line-highlight* : it is now ~<f11> h H~ instead of ~<f11> h M-H~.
+  - Also improved both *pel-set-highlight-color* and *pel-highlight-line*:
+    pel-set-highlight-color used to signal an error under Emacs 30.2 now it
+    works properly.  Both commands now provide a completion buffer that shows
+    the colors of the candidate color names.
+    - The *pel-set-highlight-color* also properly modifies the same color as
+      *pel-highlight-line* issued with a prefix argument.  They use the same
+      prompt and that prompt has an history of the selected colors.
 - Improve *pel-highlight-line* : it now also toggles highlighting of marked area if an area is marked.
 - Utility function *pel-string-for* has new optional prefix and suffix arguments.
 - Renamed *pel-major-mode-of* to *pel-major-mode-of-buffer*.
