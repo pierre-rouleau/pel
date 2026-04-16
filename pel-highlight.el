@@ -170,7 +170,8 @@ The prompt has a buffer-specific history and supports tab completion."
                      (1+ (line-end-position)))))
     (if (pel--find-overlays-specifying
          'line-highlight-overlay-marker zone-start)
-        (remove-overlays zone-start zone-end)
+        (remove-overlays zone-start zone-end
+                         'line-highlight-overlay-marker t)
       (let ((overlay-highlight (make-overlay zone-start zone-end)))
         (overlay-put overlay-highlight
                      'face (list :background pel--highlight-color))
