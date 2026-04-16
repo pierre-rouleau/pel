@@ -92,7 +92,7 @@ the buffer."
 
 ;;-pel-autoload
 (defun pel-toggle-hl-line-sticky ()
-  "oggle whether current-line highlighting is sticky across all windows.
+  "Toggle whether current-line highlighting is sticky across all windows.
 It changes the value of `hl-line-sticky-flag'."
   (interactive)
   (setq hl-line-sticky-flag (not hl-line-sticky-flag))
