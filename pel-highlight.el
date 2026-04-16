@@ -148,7 +148,8 @@ Beep on each change to warn user of the change and display new value."
     found))
 
 (defun pel-highlight-line (&optional change-color)
-  "Toggle current line highlight.  With CHANGE-COLOR prompt for the new color.
+  "Toggle highlighting of current line or marked area.
+With CHANGE-COLOR prompt for the new color.
 
 The prompt has a buffer-specific history and supports tab completion."
   (interactive "P")
@@ -160,15 +161,21 @@ The prompt has a buffer-specific history and supports tab completion."
       (if (color-supported-p color-requested)
           (setq pel--highlight-color color-requested)
         (user-error "%s is not a supported color" color-requested))))
-  (if (pel--find-overlays-specifying
-       'line-highlight-overlay-marker
-       (line-beginning-position))
-      (remove-overlays (line-beginning-position) (1+ (line-end-position)))
-    (let ((overlay-highlight (make-overlay
-                              (line-beginning-position)
-                              (1+ (line-end-position)))))
-      (overlay-put overlay-highlight 'face (list :background pel--highlight-color))
-      (overlay-put overlay-highlight 'line-highlight-overlay-marker t))))
+  (let* ((use-region (use-region-p))
+         (zone-start (if use-region
+                         (region-beginning)
+                       (line-beginning-position)))
+         (zone-end (if use-region
+                       (region-end)
+                     (1+ (line-end-position)))))
+    (if (pel--find-overlays-specifying
+         'line-highlight-overlay-marker zone-start)
+        (remove-overlays zone-start zone-end)
+      (let ((overlay-highlight (make-overlay zone-start zone-end)))
+        (overlay-put overlay-highlight
+                     'face (list :background pel--highlight-color))
+        (overlay-put overlay-highlight
+                     'line-highlight-overlay-marker t)))))
 
 (defun pel-remove-line-highlight ()
   "Prompt.  If proceeds, remove all active line highlighting.

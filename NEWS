@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improve *pel-highlight-line* : it now also toggles highlighting of marked area if an area is marked.
 - Utility function *pel-string-for* has new optional prefix and suffix arguments.
 - Renamed *pel-major-mode-of* to *pel-major-mode-of-buffer*.
 - Add *pel-major-mode-of-file*, *pel-language-of*.
