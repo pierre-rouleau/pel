@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-12-12 08:09:36 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-13 15:28:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2025  Pierre Rouleau
+;; Copyright (C) 2021, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -106,10 +106,13 @@ and required by `pel-use-go'."
  check installation!"))))))
 
 
+;; Emacs tree-sitter handling fixer function.
+;; Identified by `pel--ts-mode-with-fixer' and used by `pel-eval-after-load'.
 ;;-pel-autoload`
 (defun pel--go-ts-mode-fixer ()
   "Remove `go-ts-mode' entries from `auto-mode-alist'.
-It removes what entered when `go-ts-mode' loads."
+It removes what was entered when `go-ts-mode' loads to ensure that the
+`pel-go-mode' mode dispatcher remains used."
   (setq auto-mode-alist
         (rassq-delete-all 'go-ts-mode auto-mode-alist))
   (setq auto-mode-alist
