@@ -39,7 +39,10 @@
 ;;
 ;; Highlight Lines
 ;;  * `pel-set-highlight-color'
+;;    - `pel--prompt-for-color'
+;;      - `pel--color-completion-collection'
 ;;  * `pel-highlight-line'
+;;    . `pel--prompt-for-color'
 ;;    - `pel--find-overlays-specifying'
 ;;  * `pel-remove-line-highlight'
 
@@ -89,7 +92,9 @@ the buffer."
 
 ;;-pel-autoload
 (defun pel-toggle-hl-line-sticky ()
-  "Toggle current line highlight is done in all windows or just current one.
+  "Toggle whether current line highlighting is active.
+Also show whether this activation is available only in current buffer or all
+windows showing current buffer.
 It changes the value of `hl-line-sticky-flag'."
   (interactive)
   (setq hl-line-sticky-flag (not hl-line-sticky-flag))
@@ -191,7 +196,8 @@ present in `read-color' on Emacs 30.2."
 (defun pel--prompt-for-color ()
   "Prompt for a color name string.
 Prompt supports completion which shows the color of each color name.
-The prompt has an history maintained in `pel-set-highlight-color--history'."
+The prompt has an history maintained in `pel-set-highlight-color--history'
+used by `pel-set-highlight-color' and `pel-highlight-line'."
   (let ((completion-ignore-case t))
     (completing-read
      (format "Highlight color [%s]: "
@@ -199,7 +205,7 @@ The prompt has an history maintained in `pel-set-highlight-color--history'."
      (pel--color-completion-collection)
      nil nil nil
      'pel-set-highlight-color--history
-     (face-attribute 'highlight :background))))
+     pel--highlight-color)))
 
 ;;-pel-autoload
 (defun pel-set-highlight-color (color-name)

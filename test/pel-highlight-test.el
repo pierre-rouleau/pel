@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, April 16 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-16 12:16:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 15:33:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -310,6 +310,17 @@
             (should (equal "blue" pel--highlight-color)))
         (setq pel--highlight-color saved)))))
 
+(ert-deftest ert-test-pel-set-highlight-color/updates-pel--highlight-color-2 ()
+  "Calling `pel-set-highlight-color' also updates `pel--highlight-color'."
+  (let ((orig-bg  (face-attribute 'highlight :background))
+        (orig-col pel--highlight-color))
+    (unwind-protect
+        (progn
+          (pel-set-highlight-color "coral")
+          (should (equal "coral" pel--highlight-color)))
+      (set-face-background 'highlight orig-bg)
+      (setq pel--highlight-color orig-col))))
+
 (ert-deftest ert-test-pel-highlight-line/change-color-still-creates-overlay ()
   "With CHANGE-COLOR, `pel-highlight-line' still creates an overlay on the line."
   (with-temp-buffer
@@ -604,6 +615,7 @@ This verifies the scoped `remove-overlays' call leaves unrelated overlays alone.
           (should (equal "blue" (face-attribute 'highlight :background))))
       (set-face-background 'highlight orig-bg))))
 
+
 (ert-deftest ert-test-pel-set-highlight-color/clears-foreground ()
   "Sets the `highlight' face `:foreground' attribute to nil (disabled)."
   (let ((orig-bg (face-attribute 'highlight :background))
@@ -735,6 +747,202 @@ This verifies the scoped `remove-overlays' call leaves unrelated overlays alone.
 (ert-deftest ert-test-pel--highlight-color/is-a-string ()
   "`pel--highlight-color' holds a string value."
   (should (stringp pel--highlight-color)))
+
+;; ---------------------------------------------------------------------------
+;;; pel--color-completion-collection — structural tests
+;; ---------------------------------------------------------------------------
+
+(ert-deftest ert-test-pel--color-completion-collection/returns-a-function ()
+  "`pel--color-completion-collection' returns a callable completion table."
+  (should (functionp (pel--color-completion-collection))))
+
+(ert-deftest ert-test-pel--color-completion-collection/metadata-contains-affixation-or-annotation ()
+  "The completion table advertises affixation-function (Emacs 27+) or
+annotation-function (older Emacs) in its metadata."
+  (let* ((table (pel--color-completion-collection))
+         (meta  (funcall table "" nil 'metadata)))
+    ;; meta is (metadata ...) or nil
+    (should (eq 'metadata (car meta)))
+    (let ((alist (cdr meta)))
+      (should (or (assq 'affixation-function alist)
+                  (assq 'annotation-function alist))))))
+
+(ert-deftest ert-test-pel--color-completion-collection/all-action-returns-list ()
+  "The completion table returns a list of strings for the `t' action."
+  (let* ((table  (pel--color-completion-collection))
+         (result (funcall table "" nil t)))
+    (should (listp result))
+    (should (> (length result) 0))
+    (should (stringp (car result)))))
+
+(ert-deftest ert-test-pel--color-completion-collection/try-action-recognizes-red ()
+  "The completion table recognizes \"red\" as a valid completion."
+  (let* ((table  (pel--color-completion-collection))
+         (result (funcall table "red" nil nil)))
+    ;; nil action (try-completion): returns t when exact match
+    (should result)))
+
+;; ---------------------------------------------------------------------------
+;;; Gap `#19` — overlay background matches the newly set color
+;; ---------------------------------------------------------------------------
+
+(ert-deftest ert-test-pel-highlight-line/change-color-overlay-background-matches-new-color ()
+  "After change-color, the created overlay's :background equals the new color."
+  (with-temp-buffer
+    (insert "hello\n")
+    (goto-char (point-min))
+    (let ((saved pel--highlight-color)
+          (inhibit-message t))
+      (unwind-protect
+          (cl-letf (((symbol-function 'completing-read)
+                     (lambda (&rest _) "magenta"))
+                    ((symbol-function 'color-supported-p)
+                     (lambda (&rest _) t)))
+            (pel-highlight-line t)
+            (let* ((ov   (pel-hl-test--find-highlight-overlay))
+                   (face (overlay-get ov 'face)))
+              (should (equal "magenta" (plist-get face :background)))))
+        (setq pel--highlight-color saved)))))
+
+(ert-deftest ert-test-pel-highlight-line/change-color-overlay-background-differs-from-old-color ()
+  "After change-color, the overlay background is the *new* color, not the old one."
+  (with-temp-buffer
+    (insert "hello\n")
+    (goto-char (point-min))
+    (let ((saved pel--highlight-color)
+          (inhibit-message t))
+      (unwind-protect
+          (progn
+            (setq pel--highlight-color "orange")
+            (cl-letf (((symbol-function 'completing-read)
+                       (lambda (&rest _) "cyan"))
+                      ((symbol-function 'color-supported-p)
+                       (lambda (&rest _) t)))
+              (pel-highlight-line t)
+              (let* ((ov   (pel-hl-test--find-highlight-overlay))
+                     (face (overlay-get ov 'face)))
+                (should-not (equal "orange" (plist-get face :background)))
+                (should     (equal "cyan"   (plist-get face :background))))))
+        (setq pel--highlight-color saved)))))
+
+;; ---------------------------------------------------------------------------
+;;; Gap `#20` — pel--find-overlays-specifying: property explicitly nil
+;; ---------------------------------------------------------------------------
+
+(ert-deftest ert-test-pel--find-overlays-specifying/property-explicitly-nil-not-found ()
+  "An overlay whose property is explicitly set to nil is not returned.
+`overlay-get' returns nil for both absent and nil-valued properties."
+  (with-temp-buffer
+    (insert "Hello, world!\n")
+    (let ((ov (make-overlay 1 6)))
+      (overlay-put ov 'line-highlight-overlay-marker nil)
+      (should (null (pel--find-overlays-specifying
+                     'line-highlight-overlay-marker 1))))))
+
+(ert-deftest ert-test-pel--find-overlays-specifying/nil-vs-t-property-discrimination ()
+  "Only the overlay with property t is returned; the one with nil is excluded."
+  (with-temp-buffer
+    (insert "Hello, world!\n")
+    (let ((ov-nil (make-overlay 1 6))
+          (ov-t   (make-overlay 1 6)))
+      (overlay-put ov-nil 'line-highlight-overlay-marker nil)
+      (overlay-put ov-t   'line-highlight-overlay-marker t)
+      (let ((result (pel--find-overlays-specifying
+                     'line-highlight-overlay-marker 1)))
+        (should result)
+        (should (= 1 (length result)))
+        (should (eq ov-t (car result)))))))
+
+;; ---------------------------------------------------------------------------
+;;; Gap `#21` — change-color with empty string from prompt
+;; ---------------------------------------------------------------------------
+
+(ert-deftest ert-test-pel-highlight-line/change-color-empty-string-unsupported-signals-user-error ()
+  "When the prompt returns \"\" and color-supported-p returns nil, user-error is signalled."
+  (with-temp-buffer
+    (insert "hello\n")
+    (goto-char (point-min))
+    (cl-letf (((symbol-function 'completing-read)
+               (lambda (&rest _) ""))
+              ((symbol-function 'color-supported-p)
+               (lambda (&rest _) nil)))
+      (should-error (pel-highlight-line t) :type 'user-error))))
+
+(ert-deftest ert-test-pel-highlight-line/change-color-empty-string-supported-sets-color ()
+  "When prompt returns \"\" and color-supported-p returns t, pel--highlight-color is set to \"\".
+Documents the degenerate-but-reachable code path."
+  (with-temp-buffer
+    (insert "hello\n")
+    (goto-char (point-min))
+    (let ((saved pel--highlight-color)
+          (inhibit-message t))
+      (unwind-protect
+          (cl-letf (((symbol-function 'completing-read)
+                     (lambda (&rest _) ""))
+                    ((symbol-function 'color-supported-p)
+                     (lambda (&rest _) t)))
+            (pel-highlight-line t)
+            (should (equal "" pel--highlight-color))
+            (should (= 1 (pel-hl-test--count-highlight-overlays))))
+        (setq pel--highlight-color saved)))))
+
+(ert-deftest ert-test-pel-highlight-line/change-color-empty-string-unsupported-no-overlay ()
+  "When user-error is signalled for an empty color, no overlay is created."
+  (with-temp-buffer
+    (insert "hello\n")
+    (goto-char (point-min))
+    (cl-letf (((symbol-function 'completing-read)
+               (lambda (&rest _) ""))
+              ((symbol-function 'color-supported-p)
+               (lambda (&rest _) nil)))
+      (ignore-errors (pel-highlight-line t)))
+    (should (= 0 (pel-hl-test--count-highlight-overlays)))))
+
+;; ---------------------------------------------------------------------------
+;;; Gap `#22` — pel-highlight-line in a buffer with no trailing newline
+;; ---------------------------------------------------------------------------
+
+(ert-deftest ert-test-pel-highlight-line/no-trailing-newline-creates-overlay ()
+  "No error when `pel-highlight-line' is called in a buffer with no trailing newline."
+  (with-temp-buffer
+    (insert "no newline at end")
+    (goto-char (point-min))
+    (let ((inhibit-message t))
+      (should-not (condition-case err
+                      (progn (pel-highlight-line) nil)
+                    (error (format "%S" err)))))
+    (should (= 1 (pel-hl-test--count-highlight-overlays)))))
+
+(ert-deftest ert-test-pel-highlight-line/no-trailing-newline-overlay-end-is-1-plus-point-max ()
+  "Overlay end equals 1+ point-max when there is no trailing newline."
+  (with-temp-buffer
+    (insert "no newline at end")
+    (goto-char (point-min))
+    (let ((expected-end (point-max))
+          (inhibit-message t))
+      (pel-highlight-line)
+      (should (= expected-end
+                 (overlay-end (pel-hl-test--find-highlight-overlay)))))))
+
+(ert-deftest ert-test-pel-highlight-line/no-trailing-newline-toggle-removes-overlay ()
+  "Second call on a no-trailing-newline buffer removes the overlay (toggle off)."
+  (with-temp-buffer
+    (insert "no newline at end")
+    (goto-char (point-min))
+    (let ((inhibit-message t))
+      (pel-highlight-line)
+      (should (= 1 (pel-hl-test--count-highlight-overlays)))
+      (pel-highlight-line)
+      (should (= 0 (pel-hl-test--count-highlight-overlays))))))
+
+(ert-deftest ert-test-pel-highlight-line/no-trailing-newline-point-at-eob ()
+  "Calling with point at point-max in a no-trailing-newline buffer creates an overlay."
+  (with-temp-buffer
+    (insert "end of buffer")
+    (goto-char (point-max))
+    (let ((inhibit-message t))
+      (pel-highlight-line))
+    (should (= 1 (pel-hl-test--count-highlight-overlays)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-highlight-test)
