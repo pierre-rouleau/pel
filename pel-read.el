@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-01-15 11:45:56 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 17:00:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2025, 2026  Pierre Rouleau
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,23 +25,37 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; Utility functions that read text from current buffer at point.
+;; Utility functions that read various text elements from current buffer at
+;; point.
 ;;
+;;  Read "thing" at point
 ;;  - `pel-word-at-point'
-;;  - `pel-sentence-at-point'
-;;  - `pel-paragraph-at-point'
 ;;    - `pel-thing-at-point'
+;;  - `pel-sentence-at-point'
+;;    . `pel-thing-at-point'
+;;  - `pel-paragraph-at-point'
+;;    . `pel-thing-at-point'
+;;
+;;  Read string at point
 ;;  - `pel-string-at-point'
+;;
+;;  Read customize symbol at point
+;;  - `pel-customize-symbol-at-line'
+;;    - `pel-move-to-face'
+;;    - `pel-move-past-face'
 ;;
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-(require 'pel-navigate)   ; use: pel-forward-word-start
+(require 'pel-navigate)   ; use: `pel-forward-word-start'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+;;* Read "thing" at point
+;;  =====================
 
 (defun pel-thing-at-point (thing)
   "Read and return the string of THING at point.
@@ -59,35 +73,39 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
                       (cdr bounds)))
           (goto-char (cdr bounds))
           text)
-      (error "No %s at point" thing))))
+      (user-error "No %s at point" thing))))
+
 
 ;;-pel-autoload
-(defun pel-word-at-point ()
-  "Read and return word at point, moving to next word."
+(defun pel-word-at-point (&optional dont-move)
+  "Return word at point, move to next word unless DONT-MOVE is set."
   (let ((text (pel-thing-at-point 'word)))
-    (ignore-errors
-      (pel-forward-word-start))
+    (unless dont-move
+      (ignore-errors
+        (pel-forward-word-start)))
     text))
 
 ;;-pel-autoload
-(defun pel-sentence-at-point ()
-  "Read and return sentence at point, moving to next sentence."
+(defun pel-sentence-at-point (&optional dont-move)
+  "Return sentence at point, move to next sentence unless DONT-MOVE is set."
   (let ((text (pel-thing-at-point 'sentence)))
-    (ignore-errors
-      (pel-forward-word-start))
+    (unless dont-move
+      (ignore-errors
+        (pel-forward-word-start)))
     text))
 
 ;;-pel-autoload
-(defun pel-paragraph-at-point ()
-  "Read and return paragraph at point, moving to next paragraph."
+(defun pel-paragraph-at-point (&optional dont-move)
+  "Return paragraph at point, move to next paragraph unless DONT-MOVE is set."
   (let ((text (pel-thing-at-point 'paragraph)))
-    (ignore-errors
-      (pel-forward-word-start))
+    (unless dont-move
+      (ignore-errors
+        (pel-forward-word-start)))
     text))
 
 ;; ---------------------------------------------------------------------------
-;; Read string at point
-;; --------------------
+;;* Read string at point
+;;  ====================
 
 (defun pel-string-at-point (delimiters &optional allow-space)
   "Return the string at point delimited by DELIMITERS string.
@@ -98,8 +116,8 @@ The DELIMITERS string must NOT include a space:
 - When point is located at a delimiter, space is not added as a delimiter
   to allow space to be included in the extracted string.
 
-If ALLOW-SPACE is non-nil, then the space character is never included
-in the delimiters so it becomes possible to capture a delimited string with
+If ALLOW-SPACE is non-nil, then the space character is never included in
+the delimiters so it becomes possible to capture a delimited string with
 spaces even when point is located between the delimiters."
   (save-excursion
     (let ((next-char (char-after)))
@@ -127,8 +145,8 @@ spaces even when point is located between the delimiters."
         ""))))
 
 ;; ---------------------------------------------------------------------------
-;; Read Customize Symbol at point
-;; ------------------------------
+;;* Read customize symbol at point
+;;  ==============================
 
 (defun pel-move-to-face (face limit)
   "Move to the first char with specified FACE up to LIMIT point.
@@ -158,12 +176,13 @@ Return point if char with FACE found, nil otherwise."
 Customize symbols are taken from Customize buffers *only*.
 They are identified by their `custom-variable-tag' face.
 The text may include space characters.
-The text must be on a single line."
+The text must be on a single line.
+Return nil if there are no customize symbol on current line."
   ;; Identify the symbol by the face of text.
   ;; Start from the beginning o the line.
   (save-excursion
-    (let (p1     ; point of first char
-          p2     ; point of last char
+    (let (p1                            ; point of first char
+          p2                            ; point of last char
           (pe (progn
                 (move-end-of-line 1)
                 (point))))
