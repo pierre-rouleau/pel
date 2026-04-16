@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 15 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-16 08:51:22 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 09:21:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -299,6 +299,27 @@
       (should (equal "apple"
                      (pel-prompt-select-read "Pick: " '("apple"
                                                         "banana")))))))
+
+(ert-deftest test-pel-prompt-select-read/non-nil-method-uses-ivy ()
+  "With non-nil `pel-prompt-read-method', delegates to `ivy-read'."
+  ;; The test support environments that uses or that does not use ivy.
+  ;; It mocks the presence of ivy if it is not present.
+  ;; It all cases it mock ivy-read to control what it returns.
+  (let ((pel-prompt-read-method 'ivy)
+        (added-ivy nil))
+    (unwind-protect
+        (progn
+          (unless (featurep 'ivy)
+            (provide 'ivy)
+            (setq added-ivy t))
+          (should (featurep 'ivy))
+          (cl-letf (((symbol-function 'ivy-read)
+                     (lambda (&rest _) "banana")))
+            (should (equal "banana"
+                           (pel-prompt-select-read "Pick: " '("apple"
+                                                              "banana"))))))
+      (when added-ivy
+        (setq features (delete 'ivy features))))))
 
 ;;; -------------------------------------------------------------------------
 ;;; Tests for `pel-prompt-purpose-for'
