@@ -92,9 +92,7 @@ the buffer."
 
 ;;-pel-autoload
 (defun pel-toggle-hl-line-sticky ()
-  "Toggle whether current line highlighting is active.
-Also show whether this activation is available only in current buffer or all
-windows showing current buffer.
+  "oggle whether current-line highlighting is sticky across all windows.
 It changes the value of `hl-line-sticky-flag'."
   (interactive)
   (setq hl-line-sticky-flag (not hl-line-sticky-flag))
@@ -196,8 +194,8 @@ present in `read-color' on Emacs 30.2."
 (defun pel--prompt-for-color ()
   "Prompt for a color name string.
 Prompt supports completion which shows the color of each color name.
-The prompt has an history maintained in `pel-set-highlight-color--history'
-used by `pel-set-highlight-color' and `pel-highlight-line'."
+The prompt has its history maintained in `pel-set-highlight-color--history'
+and is used by `pel-set-highlight-color' and `pel-highlight-line'."
   (let ((completion-ignore-case t))
     (completing-read
      (format "Highlight color [%s]: "
@@ -216,7 +214,9 @@ is visible during selection.  Works correctly on Emacs 30+ (avoids the
 `color-dark-p' / `min' crash present in `read-color' on that version).
 
 Supports tab-completion with colors shown for each color name.
-Prompt history is available."
+Prompt history is available.
+
+Store new value in `pel--highlight-color'."
   (interactive
    (list (pel--prompt-for-color)))
   (setq pel--highlight-color color-name)
@@ -248,8 +248,8 @@ With CHANGE-COLOR prompt for the new color and changes the highlighting
 color to the selected one.  Previously highlighted text retains its
 previously used highlighting color.
 
-When prompting for a color the prompt Supports tab-completion with
-colors shown for each color name.  Prompt history is available."
+The color prompt supports tab-completion with colors shown and a selection
+history."
   (interactive "P")
   (when change-color
     (let ((color-requested (pel--prompt-for-color)))

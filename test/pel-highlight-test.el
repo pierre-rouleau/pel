@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, April 16 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-16 15:52:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 16:16:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -983,6 +983,32 @@ This test verifies the relationship is preserved at load time."
   ;; since the default can be customized by the user.
   (should (stringp pel-highlight-color-default))
   (should (stringp pel--highlight-color)))
+
+;; ---------------------------------------------------------------------------
+;;; pel--color-completion-collection — nil-safe swatch (invalid color name)
+;; ---------------------------------------------------------------------------
+
+(ert-deftest ert-test-pel--color-completion-collection/nil-safe-swatch-for-invalid-color ()
+  "The affixation function does not crash when `color-name-to-rgb' returns nil.
+This guards against the Emacs 30.2 regression where invalid/absent colors
+caused `color-dark-p' to receive nil and crash via `(apply #'min nil)'."
+  (let* ((table  (pel--color-completion-collection))
+         (meta   (funcall table "" nil 'metadata))
+         (affix  (or (cdr (assq 'affixation-function (cdr meta)))
+                     ;; annotation-function fallback (Emacs < 27)
+                     (cdr (assq 'annotation-function (cdr meta))))))
+    (should affix)
+    ;; Feed an obviously invalid color name; must not signal an error.
+    (should-not
+     (condition-case err
+         (progn
+           (if (cdr (assq 'affixation-function (cdr meta)))
+               ;; affixation-function receives a list of candidates
+               (funcall affix '("not-a-real-color-xyz999"))
+             ;; annotation-function receives a single candidate string
+             (funcall affix "not-a-real-color-xyz999"))
+           nil)
+       (error (format "%S" err))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-highlight-test)
