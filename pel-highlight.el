@@ -4,7 +4,7 @@
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
-;; This file is part of the PEL package
+;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -20,17 +20,42 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;; User-controlled highlighting commands.
+;;
+;; Highlight Control
+;;  * `pel-show-paren-info'
+;;  * `pel-set-highlight-color'
+;;  * `pel-customize-highlight'
+;;  * `pel-toggle-hl-line-sticky'
+;;
+;; Whitespace and empty lines
+;;  * `pel-toggle-show-trailing-whitespace'
+;;  * `pel-toggle-indicate-empty-lines'
+;;
+;; Hard tabs
+;;  * `pel-toggle-indent-tabs-mode'
+;;
+;; Highlight Lines
+;;  * `pel-highlight-line'
+;;    - `pel--find-overlays-specifying'
+;;  * `pel-remove-line-highlight'
 
-;;; Code:
-(require 'hl-line)
+;;; --------------------------------------------------------------------------
+;;; Dependencies
+
 (require 'pel--base)
 (require 'pel-prompt)                   ; uses: `pel-prompt-with-completion'
-;; -----------------------------------------------------------------------------
-;; highlight control
-;; -----------------
+(require 'hl-line)
+
+;;; --------------------------------------------------------------------------
+;;; Code:
+
+
+;;* Highlight Control
+;;  =================
 
 ;;-pel-autoload
 (defun pel-show-paren-info (&optional append)
@@ -55,15 +80,15 @@ the buffer."
    :use-help-mode))
 
 ;;-pel-autoload
-(defun pel-set-highlight-color (colorname)
-  "Select (or prompt) for COLOR and use it as new line highlight.
+(defun pel-set-highlight-color (color-name)
+  "Select (or prompt) for COLOR-NAME and use it as new highlight color.
 With <tab> provides completion of the colors and their names."
-  (interactive (list (read-color (format "Color name [%s]: "
-                                         (face-attribute 'highlight :background)))))
-  (progn
-    (set-face-background 'highlight colorname)
-    (set-face-foreground 'highlight nil)
-    (set-face-underline 'highlight nil)))
+  (interactive (list (read-color
+                      (format "Color name [%s]: "
+                              (face-attribute 'highlight :background)))))
+  (set-face-background 'highlight color-name)
+  (set-face-foreground 'highlight nil)
+  (set-face-underline 'highlight nil))
 
 ;;-pel-autoload
 (defun pel-customize-highlight ()
@@ -73,24 +98,21 @@ With <tab> provides completion of the colors and their names."
 
 ;;-pel-autoload
 (defun pel-toggle-hl-line-sticky ()
-  "Toggle current line highlight to all windows or just the current one.
-Toggles the value of `hl-line-sticky-flag' between t and nil."
+  "Toggle current line highlight in all windows or just the current one.
+It changes the value of `hl-line-sticky-flag'."
   (interactive)
-  (progn
-    (eval-when-compile
-      (defvar hl-line-mode)) ; prevent warning about ref to free variable.
-    (setq hl-line-sticky-flag (not hl-line-sticky-flag))
-    (message "Current line highlighting %s done in %s."
-             (if hl-line-mode
-                 "is now"
-               "(currently disabled) will be")
-             (if hl-line-sticky-flag
-                 "all windows showing current buffer"
-               "current buffer only"))))
+  (setq hl-line-sticky-flag (not hl-line-sticky-flag))
+  (message "Current line highlighting %s done in %s."
+           (if hl-line-mode
+               "is now"
+             "(currently disabled) will be")
+           (if hl-line-sticky-flag
+               "all windows showing current buffer"
+             "current buffer only")))
 
 ;; -----------------------------------------------------------------------------
-;; Whitespace and empty lines
-;; --------------------------
+;;* Whitespace and empty lines
+;;  ==========================
 
 ;;-pel-autoload
 (defun pel-toggle-show-trailing-whitespace ()
@@ -105,8 +127,8 @@ Toggles the value of `hl-line-sticky-flag' between t and nil."
   (pel-toggle-and-show 'indicate-empty-lines))
 
 ;; -----------------------------------------------------------------------------
-;; Hard tabs
-;; ---------
+;;* Hard tabs
+;;  =========
 
 ;;-pel-autoload
 (defun pel-toggle-indent-tabs-mode (&optional arg)
@@ -129,15 +151,17 @@ Beep on each change to warn user of the change and display new value."
       (message "%s" (pel-symbol-text indent-tabs-mode on-string off-string)))))
 
 ;; ---------------------------------------------------------------------------
-;; Highlight Lines
-;; ---------------
+;;* Highlight Lines
+;;  ===============
 ;;
 ;; Credit: PascalIVKooten wrote the original version of the code
 
-(defvar pel--highlight-color pel-highlight-color-default)
+(defvar pel--highlight-color pel-highlight-color-default
+  "Currently used color for line/marked area highlighting.")
 
 (defun pel--find-overlays-specifying (prop pos)
-  "Return non-nil if the PROP overlay is used at position POS."
+  "Return the list of overlays at position POS that have property PROP.
+Return nil if there are none."
   (let ((overlays (overlays-at pos))
         found)
     (while overlays
@@ -149,9 +173,10 @@ Beep on each change to warn user of the change and display new value."
 
 (defun pel-highlight-line (&optional change-color)
   "Toggle highlighting of current line or marked area.
-With CHANGE-COLOR prompt for the new color.
 
-The prompt has a buffer-specific history and supports tab completion."
+With CHANGE-COLOR prompt for the new color.
+When prompting for a color, completion and buffer-specific history are
+available."
   (interactive "P")
   (when change-color
     (let ((color-requested (pel-prompt-with-completion
@@ -179,14 +204,11 @@ The prompt has a buffer-specific history and supports tab completion."
                      'line-highlight-overlay-marker t)))))
 
 (defun pel-remove-line-highlight ()
-  "Prompt.  If proceeds, remove all active line highlighting.
-
-Caution: also removes bm bookmarks!"
+  "Remove all active line/marked-area highlighting."
   (interactive)
-  (when (y-or-n-p "Will also remove all bm bookmarks.  Proceed? ")
-    (remove-overlays (point-min) (point-max))))
+  (remove-overlays (point-min) (point-max) 'line-highlight-overlay-marker t))
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-highlight)
 
 ;;; pel-highlight.el ends here

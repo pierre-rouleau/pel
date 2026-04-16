@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, April 16 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-16 10:32:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 11:28:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -40,7 +40,6 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-;;
 (require 'pel-highlight)
 (require 'ert)
 (require 'cl-lib)
@@ -66,11 +65,7 @@
        (transient-mark-mode (if saved-- 1 -1)))))
 
 (defmacro pel-hl-test--with-3-line-buffer (&rest body)
-  "Execute BODY in temp buffer containing three lines; point at line 1, col 0.
-Buffer content:
-  line one\\n
-  line two\\n
-  line three\\n"
+  "Execute BODY in temp buffer containing three lines; point at line 1, col 0."
   (declare (indent 0) (debug t))
   `(with-temp-buffer
      (insert "line one\nline two\nline three\n")
@@ -344,6 +339,7 @@ Buffer content:
 
 (ert-deftest ert-test-pel-highlight-line/change-color-unsupported-leaves-color-unchanged ()
   "With CHANGE-COLOR and an unsupported color, `pel--highlight-color' is not modified."
+  ;; the user-error is intentionally suppressed here to test side-effect-free state
   (with-temp-buffer
     (insert "hello\n")
     (goto-char (point-min))
@@ -372,18 +368,6 @@ Buffer content:
     (cl-letf (((symbol-function 'y-or-n-p) (lambda (_p) t)))
       (pel-remove-line-highlight))
     (should (= 0 (pel-hl-test--count-highlight-overlays)))))
-
-(ert-deftest ert-test-pel-remove-line-highlight/declined-keeps-all-overlays ()
-  "When the user declines, all existing overlays remain intact."
-  (pel-hl-test--with-3-line-buffer
-    (let ((inhibit-message t))
-      (pel-highlight-line)
-      (forward-line 1)
-      (pel-highlight-line))
-    (let ((before (pel-hl-test--count-highlight-overlays)))
-      (cl-letf (((symbol-function 'y-or-n-p) (lambda (_p) nil)))
-        (pel-remove-line-highlight))
-      (should (= before (pel-hl-test--count-highlight-overlays))))))
 
 (ert-deftest ert-test-pel-remove-line-highlight/no-error-on-empty-buffer ()
   "No error when called on a buffer that has no overlays."
