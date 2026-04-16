@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 15 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-16 07:45:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 08:51:22 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -30,7 +30,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-;;
+
 (require 'pel-prompt)
 (require 'ert)
 (require 'cl-lib)
@@ -287,6 +287,18 @@
             ((symbol-function 'message) #'ignore))
     (should (equal "banana"
                    (pel-select-string-from "Pick: " '("apple" "banana"))))))
+
+;;; -------------------------------------------------------------------------
+;;; Tests for `pel-prompt-select-read'
+
+(ert-deftest test-pel-prompt-select-read/nil-method-returns-string ()
+  "With nil pel-prompt-read-method, returns selected string."
+  (cl-letf (((symbol-function 'read-char-choice) (lambda (&rest _) ?0))
+            ((symbol-function 'message) #'ignore))
+    (let ((pel-prompt-read-method nil))
+      (should (equal "apple"
+                     (pel-prompt-select-read "Pick: " '("apple"
+                                                        "banana")))))))
 
 ;;; -------------------------------------------------------------------------
 ;;; Tests for `pel-prompt-purpose-for'
@@ -547,6 +559,11 @@
               ((symbol-function 'expand-file-name) (lambda (f &optional _dir) f)))
       (pel-prompt-for-filename "hint.txt")
       (should (null captured-default)))))
+
+(ert-deftest test-pel-prompt-for-filename/rejects-non-string-non-nil ()
+  "Signals wrong-type-argument for a non-string, non-nil argument."
+  (should-error (pel-prompt-for-filename 42)
+                :type 'wrong-type-argument))
 
 ;;; -------------------------------------------------------------------------
 ;;; Tests for `pel-set-user-option'

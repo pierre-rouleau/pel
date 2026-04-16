@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-15 17:19:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 08:46:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -111,7 +111,7 @@ This keymap is used by `pel-y-n-e-or-l-p'.")
 
 ;;-pel-autoload
 (defun pel-y-n-e-or-l-p (prompt)
-  "Ask user a \"y, n or e\" question.
+  "Ask user a \"y, n, e or l\" question.
 Return:
 - \\='yes     if the answer is \"y\",
 - \\='no      if it is \"n\",
@@ -229,11 +229,13 @@ SELECTION is a list of (char prompt value).
 CURRENT optionally identifies the currently used value.  It may hold the
 special value :no-current-value to prevent display of current value.
 
-SELECTION is printed right after TITLE, without any separating space,
-when CURRENT is :no-current-value.  If you want to separate them you
-need to include a space at the end of TITLE.  However, when a CURRENT
-value is shown, the trailing space in TITLE are ignored and the CURRENT
-value is shown in brackets following TITLE and one space.
+A \"Select\" prefix then SELECTION is printed right after TITLE, without
+space before \"Select\", when CURRENT is :no-current-value.
+If you want to separate them you need to include a space at the end of
+TITLE.  However, when a CURRENT value is shown, the trailing space in
+TITLE are ignored and the CURRENT value is shown in brackets following
+TITLE and one space.  This way it becomes possible to generate prompts
+with an empty title and no space before the selection text.
 
 NIL-VALUE optional string identifies meaning for a nil value.  It is
 required when the USER-OPTION may be set to the same thing by one value
@@ -349,6 +351,8 @@ The prompt mechanism is using the back-end selected by
 `pel-prompt-read-method' user-option."
   (cl-case pel-prompt-read-method
     ((nil)
+     ;; When default read method is used use index starting at 0 to get at
+     ;; least 10 choices with numeric indices.
      (pel-select-string-from prompt strings ?0))
     ((ivy)
      (if  (and (require 'ivy nil :noerror)
@@ -554,11 +558,12 @@ minibuffer for editing."
                      "Open? (C-g to quit): "
                      ;; DIR
                      default-filename
-                     ;; DEFAULT_FILENAME
+                     ;; DEFAULT-FILENAME
                      nil
                      ;; MUSTMATCH
                      'confirm
-                     ;; INITIAL
+                     ;; INITIAL: nil to prevent combination with DIR and
+                     ;; there's no (other) file name to start with.
                      nil
                      ;; PREDICATE
                      'file-exists-p)))
