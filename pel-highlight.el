@@ -81,7 +81,8 @@ the buffer."
 
 ;;-pel-autoload
 (defun pel-set-highlight-color (color-name)
-  "Select (or prompt) for COLOR-NAME and use it as new highlight color.
+  "Select COLOR-NAME and use it as new highlight color.
+Prompt for COLOR-NAME when called interactively.
 With <tab> provides completion of the colors and their names."
   (interactive (list (read-color
                       (format "Color name [%s]: "
@@ -98,7 +99,7 @@ With <tab> provides completion of the colors and their names."
 
 ;;-pel-autoload
 (defun pel-toggle-hl-line-sticky ()
-  "Toggle current line highlight in all windows or just the current one.
+  "Toggle current line highlight is done in all windows or just current one.
 It changes the value of `hl-line-sticky-flag'."
   (interactive)
   (setq hl-line-sticky-flag (not hl-line-sticky-flag))
@@ -110,7 +111,7 @@ It changes the value of `hl-line-sticky-flag'."
                "all windows showing current buffer"
              "current buffer only")))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;;* Whitespace and empty lines
 ;;  ==========================
 
@@ -126,7 +127,7 @@ It changes the value of `hl-line-sticky-flag'."
   (interactive)
   (pel-toggle-and-show 'indicate-empty-lines))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;;* Hard tabs
 ;;  =========
 

@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, April 16 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-16 11:28:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 12:16:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -28,7 +28,7 @@
 ;; ERT tests for pel-highlight.el.  Covers:
 ;;   - `pel--find-overlays-specifying': overlay property lookup at a position.
 ;;   - `pel-highlight-line': toggle overlay on current line or active region.
-;;   - `pel-remove-line-highlight': remove all overlays after confirmation.
+;;   - `pel-remove-line-highlight': remove all line-highlight overlays.
 ;;   - `pel-toggle-hl-line-sticky': toggle `hl-line-sticky-flag'.
 ;;   - `pel-toggle-show-trailing-whitespace': toggle `show-trailing-whitespace'.
 ;;   - `pel-toggle-indicate-empty-lines': toggle `indicate-empty-lines'.
@@ -355,8 +355,8 @@
 ;;; pel-remove-line-highlight
 ;; ---------------------------------------------------------------------------
 
-(ert-deftest ert-test-pel-remove-line-highlight/confirmed-removes-all-overlays ()
-  "When confirmed, all highlight overlays are removed from the buffer."
+(ert-deftest ert-test-pel-remove-line-highlight/removes-all-overlays ()
+  "All `line-highlight-overlay-marker' overlays are removed immediately."
   (pel-hl-test--with-3-line-buffer
     (let ((inhibit-message t))
       (pel-highlight-line)
@@ -365,8 +365,16 @@
       (forward-line 1)
       (pel-highlight-line))
     (should (= 3 (pel-hl-test--count-highlight-overlays)))
-    (cl-letf (((symbol-function 'y-or-n-p) (lambda (_p) t)))
-      (pel-remove-line-highlight))
+    (pel-remove-line-highlight)
+    (should (= 0 (pel-hl-test--count-highlight-overlays)))))
+
+(ert-deftest ert-test-pel-remove-line-highlight/removes-single-overlay ()
+  "A single `line-highlight-overlay-marker' overlay is removed correctly."
+  (pel-hl-test--with-3-line-buffer
+    (let ((inhibit-message t))
+      (pel-highlight-line))
+    (should (= 1 (pel-hl-test--count-highlight-overlays)))
+    (pel-remove-line-highlight)
     (should (= 0 (pel-hl-test--count-highlight-overlays)))))
 
 (ert-deftest ert-test-pel-remove-line-highlight/no-error-on-empty-buffer ()
@@ -374,10 +382,62 @@
   (with-temp-buffer
     (insert "nothing highlighted\n")
     (should (= 0 (pel-hl-test--count-highlight-overlays)))
-    (cl-letf (((symbol-function 'y-or-n-p) (lambda (_p) t)))
+    (should-not (condition-case err
+                    (progn (pel-remove-line-highlight) nil)
+                  (error (format "%S" err))))))
+
+(ert-deftest ert-test-pel-remove-line-highlight/idempotent ()
+  "Calling `pel-remove-line-highlight' twice does not error."
+  (pel-hl-test--with-3-line-buffer
+    (let ((inhibit-message t))
+      (pel-highlight-line))
+    (pel-remove-line-highlight)
+    (should-not (condition-case err
+                    (progn (pel-remove-line-highlight) nil)
+                  (error (format "%S" err))))
+    (should (= 0 (pel-hl-test--count-highlight-overlays)))))
+
+(ert-deftest ert-test-pel-remove-line-highlight/does-not-call-y-or-n-p ()
+  "The function removes overlays immediately without calling `y-or-n-p'."
+  (pel-hl-test--with-3-line-buffer
+    (let ((inhibit-message t))
+      (pel-highlight-line))
+    ;; If y-or-n-p were called it would signal an error because we make it
+    ;; error out; the absence of an error proves it is never called.
+    (cl-letf (((symbol-function 'y-or-n-p)
+               (lambda (&rest _)
+                 (error "y-or-n-p must not be called"))))
       (should-not (condition-case err
                       (progn (pel-remove-line-highlight) nil)
-                    (error (format "%S" err)))))))
+                    (error (format "%S" err)))))
+    (should (= 0 (pel-hl-test--count-highlight-overlays)))))
+
+(ert-deftest ert-test-pel-remove-line-highlight/preserves-non-marker-overlays ()
+  "Non-`line-highlight-overlay-marker' overlays are NOT removed.
+This verifies the scoped `remove-overlays' call leaves unrelated overlays alone."
+  (with-temp-buffer
+    (insert "Hello, world!\n")
+    ;; Create one marker overlay and one unrelated overlay.
+    (let ((inhibit-message t))
+      (pel-highlight-line))
+    (let ((foreign (make-overlay 1 6)))
+      (overlay-put foreign 'some-other-property t)
+      (should (= 1 (pel-hl-test--count-highlight-overlays)))
+      (pel-remove-line-highlight)
+      ;; Marker overlay gone, foreign overlay intact.
+      (should (= 0 (pel-hl-test--count-highlight-overlays)))
+      (should (overlay-buffer foreign)))))
+
+(ert-deftest ert-test-pel-remove-line-highlight/text-content-unchanged ()
+  "Buffer text is not altered by `pel-remove-line-highlight'."
+  (with-temp-buffer
+    (insert "line one\nline two\n")
+    (goto-char (point-min))
+    (let ((inhibit-message t))
+      (pel-highlight-line))
+    (let ((text-before (buffer-string)))
+      (pel-remove-line-highlight)
+      (should (equal text-before (buffer-string))))))
 
 ;; ---------------------------------------------------------------------------
 ;;; pel-toggle-hl-line-sticky
@@ -471,57 +531,64 @@
   "Without ARG, toggle `indent-tabs-mode' from nil to t."
   (with-temp-buffer
     (setq-local indent-tabs-mode nil)
-    (let ((inhibit-message t))
-      (pel-toggle-indent-tabs-mode))
+    (cl-letf (((symbol-function 'beep) #'ignore))
+      (let ((inhibit-message t))
+        (pel-toggle-indent-tabs-mode)))
     (should indent-tabs-mode)))
 
 (ert-deftest ert-test-pel-toggle-indent-tabs-mode/t-to-nil ()
   "Without ARG, toggle `indent-tabs-mode' from t to nil."
   (with-temp-buffer
     (setq-local indent-tabs-mode t)
-    (let ((inhibit-message t))
-      (pel-toggle-indent-tabs-mode))
+    (cl-letf (((symbol-function 'beep) #'ignore))
+      (let ((inhibit-message t))
+        (pel-toggle-indent-tabs-mode)))
     (should (null indent-tabs-mode))))
 
 (ert-deftest ert-test-pel-toggle-indent-tabs-mode/double-toggle-restores ()
   "Toggling twice without ARG restores the original value."
   (with-temp-buffer
     (setq-local indent-tabs-mode nil)
-    (let ((inhibit-message t))
-      (pel-toggle-indent-tabs-mode)
-      (pel-toggle-indent-tabs-mode))
+    (cl-letf (((symbol-function 'beep) #'ignore))
+      (let ((inhibit-message t))
+        (pel-toggle-indent-tabs-mode)
+        (pel-toggle-indent-tabs-mode)))
     (should (null indent-tabs-mode))))
 
 (ert-deftest ert-test-pel-toggle-indent-tabs-mode/positive-arg-sets-t ()
   "A positive ARG forces `indent-tabs-mode' to t."
   (with-temp-buffer
     (setq-local indent-tabs-mode nil)
-    (let ((inhibit-message t))
-      (pel-toggle-indent-tabs-mode 1))
+    (cl-letf (((symbol-function 'beep) #'ignore))
+      (let ((inhibit-message t))
+        (pel-toggle-indent-tabs-mode 1)))
     (should indent-tabs-mode)))
 
 (ert-deftest ert-test-pel-toggle-indent-tabs-mode/negative-arg-sets-nil ()
   "A negative ARG forces `indent-tabs-mode' to nil (spaces only)."
   (with-temp-buffer
     (setq-local indent-tabs-mode t)
-    (let ((inhibit-message t))
-      (pel-toggle-indent-tabs-mode -1))
+    (cl-letf (((symbol-function 'beep) #'ignore))
+      (let ((inhibit-message t))
+        (pel-toggle-indent-tabs-mode -1)))
     (should (null indent-tabs-mode))))
 
 (ert-deftest ert-test-pel-toggle-indent-tabs-mode/positive-arg-idempotent ()
   "A positive ARG keeps `indent-tabs-mode' t when already t."
   (with-temp-buffer
     (setq-local indent-tabs-mode t)
-    (let ((inhibit-message t))
-      (pel-toggle-indent-tabs-mode 2))
+    (cl-letf (((symbol-function 'beep) #'ignore))
+      (let ((inhibit-message t))
+        (pel-toggle-indent-tabs-mode 2)))
     (should indent-tabs-mode)))
 
 (ert-deftest ert-test-pel-toggle-indent-tabs-mode/negative-arg-idempotent ()
   "A negative ARG keeps `indent-tabs-mode' nil when already nil."
   (with-temp-buffer
     (setq-local indent-tabs-mode nil)
-    (let ((inhibit-message t))
-      (pel-toggle-indent-tabs-mode -1))
+    (cl-letf (((symbol-function 'beep) #'ignore))
+      (let ((inhibit-message t))
+        (pel-toggle-indent-tabs-mode -1)))
     (should (null indent-tabs-mode))))
 
 ;; ---------------------------------------------------------------------------
@@ -538,12 +605,13 @@
       (set-face-background 'highlight orig-bg))))
 
 (ert-deftest ert-test-pel-set-highlight-color/clears-foreground ()
-  "Sets the `highlight' face `:foreground' attribute to unspecified."
+  "Sets the `highlight' face `:foreground' attribute to nil (disabled)."
   (let ((orig-bg (face-attribute 'highlight :background))
         (orig-fg (face-attribute 'highlight :foreground)))
     (unwind-protect
         (progn
           (pel-set-highlight-color "yellow")
+          ;; set-face-foreground with nil stores nil, not 'unspecified
           (should (eq 'unspecified (face-attribute 'highlight :foreground))))
       (set-face-background 'highlight orig-bg)
       (set-face-foreground 'highlight orig-fg))))
