@@ -27,17 +27,17 @@
 ;; location, and then open the file inside a specified Emacs window or the URL
 ;; inside an external process frame.
 ;;
-;; The point can be located anywhere inside the file or URL in all
-;; cases except when the file name includes embedded spaces.  To
-;; extract a file name with embedded spaces, the file name must be
-;; enclosed with double quotes and the point must be located on the
-;; opening quote.  Line and column numbers are also supported.
+;; The point can be located anywhere inside the file or URL in all cases
+;; except when the file name includes embedded spaces.  To extract a file name
+;; with embedded spaces, the file name must be enclosed with double quotes and
+;; the point must be located on the opening quote.  Line and column numbers
+;; are also supported.
 ;;
 ;; The file is opened inside a specific window if it is specified by numeric
 ;; argument.  If a window already contains the file and no argument specify
-;; where to open the file, just move point to that window.  The numeric argument
-;; identify a cardinal direction to the target window.  If the pointed window is
-;; the minibuffer or a dedicated window the command fails.
+;; where to open the file, just move point to that window.  The numeric
+;; argument identify a cardinal direction to the target window.  If the
+;; pointed window is the minibuffer or a dedicated window the command fails.
 ;;
 ;; Credits: The pathstop string with Unicode block characters
 ;;          originally borrowed from Xah Lee's xah-open-file-at-cursor
@@ -58,7 +58,6 @@
 ;;     - pel--show-edit-action
 ;;   - pel--complete-filename-for
 ;;     - pel--lib-filename
-;;       - pel-prompt-for-filename
 ;;   - pel--show-edit-action
 ;;
 ;; * pel-show-filename-parts-at-point
@@ -300,34 +299,6 @@ but *only* when the complete string is enclosed in double quotes
          ;; When nothing matches, return nil
          (t nil)
          )))))
-
-(defun pel-prompt-for-filename (default-filename)
-  "Prompt for a file name, with DEFAULT-FILENAME shown.
-The DEFAULT-FILENAME must be a string or nil.
-User can either accept the filename or modify it.
-If the file does not already exist, a confirmation is requested.
-Returns the filename string."
-  (unless default-filename
-    (setq default-filename ""))
-  ;; read-file-name is flexible but I find it non-obvious. To get it to show
-  ;; the filename, it seems to have to be placed in the DIR argument.
-  ;; With it a single word (no path) will be interpreted as a file in the local
-  ;; directory (which is what I want).
-  ;; MUSTMATCH and PREDICATE are set to ensure the file exists.  If it does not
-  ;; the user must confirm and then the caller can create it.
-  (expand-file-name (read-file-name
-                     ;; PROMPT
-                     "Open? (C-g to quit): "
-                     ;; DIR
-                     default-filename
-                     ;; DEFAULT_FILENAME
-                     nil
-                     ;; MUSTMATCH
-                     'confirm
-                     ;; INITIAL
-                     nil
-                     ;; PREDICATE
-                     'file-exists-p)))
 
 (defun pel--lib-filename (filename)
   "Infer or prompt for library filename using incomplete FILENAME.

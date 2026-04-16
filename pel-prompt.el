@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 12:07:50 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 08:46:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -30,18 +30,21 @@
 ;; The file defines the following functions:
 ;;
 ;; - `pel-y-n-e-or-l-p'
-;; - `pel-set-user-option'
-;; - `pel-select-string-from'
 ;; - `pel-select-symbol-from'
 ;;   - `pel-select-from'
 ;;     - `pel--prompt-for'
 ;;       - `pel--var-value-description'
+;; - `pel-select-string-from'
+;; - `pel-prompt-select-read'
+;; - `pel-set-user-option'
 ;; - `pel-prompt-purpose-for'
+;; - `pel-prompt-class'
 ;; - `pel-prompt-function'
 ;; - `pel-prompt-args'
 ;; - `pel-prompt'
 ;; - `pel-prompt-with-completion'
 ;; - `pel-prompt-title'
+;; - `pel-prompt-for-filename'
 ;;
 ;; The `pel-y-n-e-or-l-p' function is a minor modification of the Emacs'
 ;; y-or-n-p.  It has the ability to type "e" or "E" as an answer to
@@ -77,6 +80,7 @@
 (require 'pel--options)               ; use: `pel-prompt-read-method'
 (require 'pel-text-transform)         ; use: `pel-capitalize-first-letter'
 (require 'subr-x)                     ; use: `string-trim'
+(require 'minibuffer)                 ; use: `read-file-name'
 (eval-when-compile
   (require 'cl-lib)                   ; use: `cl-dolist' and `cl-return'
   (require 'cl-macs))                 ; use: `cl-case'.
@@ -103,16 +107,16 @@
 The \"bindings\" in this map are not commands; they are answers.
 The valid answers include `yes', `no', `edit' and `findlib'.
 
-This keymap is used by `pel-y-n-e-or-l-p'")
+This keymap is used by `pel-y-n-e-or-l-p'.")
 
 ;;-pel-autoload
 (defun pel-y-n-e-or-l-p (prompt)
-  "Ask user a \"y, n or e\" question.
+  "Ask user a \"y, n, e or l\" question.
 Return:
 - \\='yes     if the answer is \"y\",
 - \\='no      if it is \"n\",
 - \\='edit    if it is \"e\", or
-- \\='findlib if it is \"!\".
+- \\='findlib if it is \"l\".
 PROMPT is the string to display to ask the question.
 It should end in a space;
 `pel-y-n-e-or-l-p' adds \"(y, n, e or l) \" to it.
@@ -143,7 +147,7 @@ y/Y (yes), n/N (no), e/E (edit), l/L (library).\n")
      (noninteractive
       (setq prompt (funcall padded prompt))
       (let ((temp-prompt prompt))
-        (while (not (memq answer '(act skip edit-replacement automatic)))
+        (while (not (memq answer '(yes no edit findlib)))
           (let ((str (read-string temp-prompt)))
             (cond ((member str '("y" "Y")) (setq answer 'yes))
                   ((member str '("n" "N")) (setq answer 'no))
@@ -192,7 +196,7 @@ y/Y (yes), n/N (no), e/E (edit), l/L (library).\n")
             ((eq answer 'no)        '(no   . ?n))
             ((eq answer 'edit)      '(edit . ?e))
             ((eq answer 'findlib)   '(findlib . ?l))
-            (t nil))))
+            (t (error "Invalid answer: %S" answer)))))
       (unless noninteractive
         (message "%s%c" prompt (cdr retl)))
       (car retl))))
@@ -219,16 +223,28 @@ Each choice is a list of 3 elements:
 
 (defun pel--prompt-for (title selection &optional current nil-value)
   "Return a prompt string with TITLE for SELECTION.
+
+TITLE is the first string displayed on the prompt.
 SELECTION is a list of (char prompt value).
-CURRENT optionally identifies the currently used value.  It may hold
-the spacial value :no-current-value to prevent display of current value.
+CURRENT optionally identifies the currently used value.  It may hold the
+special value :no-current-value to prevent display of current value.
+
+A \"Select\" prefix then SELECTION is printed right after TITLE, without
+space before \"Select\", when CURRENT is :no-current-value.
+If you want to separate them you need to include a space at the end of
+TITLE.  However, when a CURRENT value is shown, the trailing space in
+TITLE are ignored and the CURRENT value is shown in brackets following
+TITLE and one space.  This way it becomes possible to generate prompts
+with an empty title and no space before the selection text.
 
 NIL-VALUE optional string identifies meaning for a nil value.  It is
-required when the USER-OPTION may be set to the same thing by one
-value in the SELECTION but also by the nil value, and that nil
-value is not part of the SELECTION."
+required when the USER-OPTION may be set to the same thing by one value
+in the SELECTION but also by the nil value, and that nil value is not
+part of the SELECTION."
   (format "%s%s: %s."
-          title
+          (if (eq current :no-current-value)
+              title
+            (string-trim title))
           (if (eq current :no-current-value)
               "Select"
             (let ((initial-value (or (pel--var-value-description current
@@ -305,9 +321,9 @@ SYMBOLS := a list of symbols."
 
 (defun pel-select-string-from (title strings &optional first-idx)
   "Prompt with a TITLE to select from a set of STRINGS.
+Return the selected string.
 The list of choices use index characters starting at 1 unless
 FIRST-IDX is provided: a character.
-Return the selected symbol.
 TITLE   := a prompt string.  It should end with a space.
 STRINGS := a list of strings."
   (let* ((choices ())
@@ -335,6 +351,8 @@ The prompt mechanism is using the back-end selected by
 `pel-prompt-read-method' user-option."
   (cl-case pel-prompt-read-method
     ((nil)
+     ;; When default read method is used use index starting at 0 to get at
+     ;; least 10 choices with numeric indices.
      (pel-select-string-from prompt strings ?0))
     ((ivy)
      (if  (and (require 'ivy nil :noerror)
@@ -398,7 +416,7 @@ returns DEFAULT."
      (string-trim
       (read-from-minibuffer prompt-text nil nil nil history-symbol))
      (function pel-hastext)
-     default
+     (or default "")
      (function pel-capitalize-first-letter)
      (lambda (v)
        (if no-ending-period
@@ -443,9 +461,11 @@ Holds an independent function prompt history for each major mode."
 
 (defun pel-prompt-args (&optional transform-function)
   "Prompt for argument(s) and return potentially transformed input string.
-If TRANSFORM-FUNCTION is non-nil it must be a function that accepts
-the function var-name string and return it transformed or nil if the function
-var-name is not acceptable.
+
+If TRANSFORM-FUNCTION is non-nil it must be a function that accepts the
+ argument string and return it transformed or nil if the argument is not
+ acceptable.
+
 Holds an independent function prompt history for each major mode."
   (let ((history-symbol (intern
                          (format
@@ -509,6 +529,44 @@ If WITH-FULL-STOP is non-nil a period is added if user did not enter one."
         (pel-end-text-with-period title)
       title)))
 
+;; ---------------------------------------------------------------------------
+;; Prompt for File
+
+(defun pel-prompt-for-filename (&optional default-filename)
+  "Prompt for a file name, showing DEFAULT-FILENAME if specified.
+The DEFAULT-FILENAME must be a string or nil.
+User can either accept the filename or modify it.
+If the file does not already exist, a confirmation is requested.
+Returns the expanded filename string.
+
+Note: default-filename is passed as the DIR argument to read-file-name —
+not as the default filename — so that its value is displayed in the
+minibuffer for editing."
+  (unless (or (null default-filename)
+              (stringp default-filename))
+    (signal 'wrong-type-argument (list 'stringp default-filename)))
+  (setq default-filename (or default-filename ""))
+  ;; `read-file-name' is flexible but I find it non-obvious.
+  ;; To get it to show the filename, it has to be placed in the DIR argument.
+  ;; With a single word (no path) will be interpreted as a file in the local
+  ;; directory (which is what I want).
+  ;; MUSTMATCH and PREDICATE are set to ensure the file exists.
+  ;; If it does not exist the user must confirm and then the caller can create
+  ;; it.
+  (expand-file-name (read-file-name
+                     ;; PROMPT
+                     "Open? (C-g to quit): "
+                     ;; DIR
+                     default-filename
+                     ;; DEFAULT-FILENAME
+                     nil
+                     ;; MUSTMATCH
+                     'confirm
+                     ;; INITIAL: nil to prevent combination with DIR and
+                     ;; there's no (other) file name to start with.
+                     nil
+                     ;; PREDICATE
+                     'file-exists-p)))
 ;; -----------------------------------------------------------------------------
 (provide 'pel-prompt)
 
