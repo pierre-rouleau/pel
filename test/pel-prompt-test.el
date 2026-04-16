@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 15 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-16 09:21:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 10:17:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -624,4 +624,5 @@
       (should (string-match-p "pel-test--dummy-opt" msg)))))
 
 ;; ---------------------------------------------------------------------------
+(provide 'pel-prompt-test)
 ;;; pel-prompt-test.el ends here
