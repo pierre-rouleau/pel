@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-15 17:02:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-15 17:19:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -538,8 +538,10 @@ Returns the expanded filename string.
 Note: default-filename is passed as the DIR argument to read-file-name —
 not as the default filename — so that its value is displayed in the
 minibuffer for editing."
-  (unless default-filename
-    (setq default-filename ""))
+  (unless (or (null default-filename)
+              (stringp default-filename))
+    (signal 'wrong-type-argument (list 'stringp default-filename)))
+  (setq default-filename (or default-filename ""))
   ;; `read-file-name' is flexible but I find it non-obvious.
   ;; To get it to show the filename, it has to be placed in the DIR argument.
   ;; With a single word (no path) will be interpreted as a file in the local

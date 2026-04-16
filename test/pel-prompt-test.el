@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 15 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-15 17:07:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 07:45:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -470,7 +470,7 @@
                (lambda (_prompt dir &rest _)
                  (setq captured-dir dir)
                  "/some/file.txt"))
-              ((symbol-function 'expand-file-name) #'identity))
+              ((symbol-function 'expand-file-name) (lambda (f &optional _dir) f)))
       (pel-prompt-for-filename nil)
       (should (equal "" captured-dir)))))
 
@@ -481,7 +481,7 @@
                (lambda (_prompt dir &rest _)
                  (setq captured-dir dir)
                  "/some/file.txt"))
-              ((symbol-function 'expand-file-name) #'identity))
+              ((symbol-function 'expand-file-name) (lambda (f &optional _dir) f)))
       (pel-prompt-for-filename)
       (should (equal "" captured-dir)))))
 
@@ -492,7 +492,7 @@
                (lambda (_prompt dir &rest _)
                  (setq captured-dir dir)
                  "/some/file.txt"))
-              ((symbol-function 'expand-file-name) #'identity))
+              ((symbol-function 'expand-file-name) (lambda (f &optional _dir) f)))
       (pel-prompt-for-filename "myfile.txt")
       (should (equal "myfile.txt" captured-dir)))))
 
@@ -500,8 +500,7 @@
   "Returns the result of `expand-file-name' on `read-file-name' output."
   (cl-letf (((symbol-function 'read-file-name)
              (lambda (&rest _) "relative/path.txt"))
-            ((symbol-function 'expand-file-name)
-             (lambda (f) (concat "/root/" f))))
+            ((symbol-function 'expand-file-name) (lambda (f &optional _dir) (concat "/root/" f))))
     (should (equal "/root/relative/path.txt"
                    (pel-prompt-for-filename)))))
 
@@ -512,7 +511,7 @@
                (lambda (_prompt _dir _default mustmatch &rest _)
                  (setq captured-mustmatch mustmatch)
                  "/f.txt"))
-              ((symbol-function 'expand-file-name) #'identity))
+              ((symbol-function 'expand-file-name) (lambda (f &optional _dir) f)))
       (pel-prompt-for-filename)
       (should (eq 'confirm captured-mustmatch)))))
 
@@ -523,7 +522,7 @@
                (lambda (_prompt _dir _default _mustmatch _initial pred)
                  (setq captured-pred pred)
                  "/f.txt"))
-              ((symbol-function 'expand-file-name) #'identity))
+              ((symbol-function 'expand-file-name) (lambda (f &optional _dir) f)))
       (pel-prompt-for-filename)
       (should (eq 'file-exists-p captured-pred)))))
 
@@ -534,7 +533,7 @@
                (lambda (prompt &rest _)
                  (setq captured-prompt prompt)
                  "/f.txt"))
-              ((symbol-function 'expand-file-name) #'identity))
+              ((symbol-function 'expand-file-name) (lambda (f &optional _dir) f)))
       (pel-prompt-for-filename)
       (should (equal "Open? (C-g to quit): " captured-prompt)))))
 
@@ -545,7 +544,7 @@
                (lambda (_prompt _dir default &rest _)
                  (setq captured-default default)
                  "/f.txt"))
-              ((symbol-function 'expand-file-name) #'identity))
+              ((symbol-function 'expand-file-name) (lambda (f &optional _dir) f)))
       (pel-prompt-for-filename "hint.txt")
       (should (null captured-default)))))
 
