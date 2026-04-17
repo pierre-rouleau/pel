@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-16 22:11:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 22:31:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -66,15 +66,19 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
     (user-error "Failed loading thingatpt!"))
   (let ((bounds (bounds-of-thing-at-point thing))
         text)
-    (if bounds
+    (if (and bounds
+             (progn
+               (setq text (buffer-substring-no-properties
+                           (car bounds)
+                           (cdr bounds)))
+               ;; Emacs 26.1: bounds-of-thing-at-point 'word can return
+               ;; non-nil bounds covering only whitespace; reject that case.
+               (or (not (eq thing 'word))
+                   (string-match-p "\\w" text))))
         (progn
-          (setq text (buffer-substring-no-properties
-                      (car bounds)
-                      (cdr bounds)))
           (goto-char (cdr bounds))
           text)
       (user-error "No %s at point" thing))))
-
 
 ;;-pel-autoload
 (defun pel-word-at-point (&optional stay)
