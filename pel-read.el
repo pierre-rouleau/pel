@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-17 07:27:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 09:00:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -74,9 +74,10 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
                (setq text (buffer-substring-no-properties
                            (car bounds)
                            (cdr bounds)))
-               ;; Emacs 26.1: bounds-of-thing-at-point 'word can return
-               ;; non-nil bounds covering only whitespace; reject that case.
-               (or (not (eq thing 'word))
+               ;; Emacs 26.1: bounds-of-thing-at-point for 'word 'sentence
+               ;; or 'paragraph can return ;; non-nil bounds covering only
+               ;; whitespace; reject that case.
+               (or (not (memq thing '(word sentence paragraph)))
                    (string-match-p "\\w" text))))
         (progn
           (goto-char (cdr bounds))
@@ -131,7 +132,9 @@ The DELIMITERS string must NOT include a space:
 
 If ALLOW-SPACE is non-nil, then the space character is never included in
 the delimiters so it becomes possible to capture a delimited string with
-spaces even when point is located between the delimiters."
+spaces even when point is located between the delimiters.
+
+If there is no character next, return an empty string."
   (save-excursion
     (let ((next-char (char-after)))
       (if next-char

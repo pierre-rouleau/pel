@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, April 16 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-17 07:35:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 08:59:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -385,13 +385,21 @@ Stubs pel-forward-word-start so the test does not depend on pel-navigate."
 ;; ---------------------------------------------------------------------------
 ;; pel-sentence-at-point — additional cases
 
+;; After:
 (ert-deftest pel-read/sentence-at-point/whitespace-only-signals-user-error ()
   "Signals `user-error' when the buffer contains only whitespace.
-Unlike the word case, pel-thing-at-point does not apply the whitespace guard
-for \\='sentence, so this test documents that bounds-of-thing-at-point returns
-nil on whitespace-only content for sentences in all supported Emacs versions."
+Some Emacs versions (e.g. 26.1, 28.1) return non-nil bounds for whitespace
+when using bounds-of-thing-at-point for \\='sentence; pel-thing-at-point guards
+against this case for \\='word, \\='sentence and \\='paragraph."
   (pel-read-test--with-buffer "   "
     (should-error (pel-sentence-at-point t) :type 'user-error)))
+
+(ert-deftest pel-read/paragraph-at-point/whitespace-only-signals-user-error ()
+  "Signals `user-error' when the buffer contains only whitespace.
+Some Emacs versions return non-nil bounds for whitespace when using
+bounds-of-thing-at-point for \\='paragraph; pel-thing-at-point guards this."
+  (pel-read-test--with-buffer "   "
+    (should-error (pel-paragraph-at-point t) :type 'user-error)))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-move-past-face — explicit non-nil guard
