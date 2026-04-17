@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, April 16 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-16 22:08:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 22:35:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -65,8 +65,12 @@
     (should (= (point) 6))))          ; after "hello" (1-based, 6 = past 'o')
 
 (ert-deftest pel-read/thing-at-point/signals-user-error-when-absent ()
-  "Signals `user-error' (not `error') when no thing is at point."
+  "Signals `user-error' when no word thing is at point (whitespace or empty)."
+  ;; Use a buffer with only whitespace: Emacs 26.1 guards are in pel-thing-at-point.
   (pel-read-test--with-buffer "   "
+    (should-error (pel-thing-at-point 'word) :type 'user-error))
+  ;; Also verify with an empty buffer.
+  (with-temp-buffer
     (should-error (pel-thing-at-point 'word) :type 'user-error)))
 
 (ert-deftest pel-read/thing-at-point/returns-sentence ()
@@ -106,8 +110,11 @@
         (should called)))))
 
 (ert-deftest pel-read/word-at-point/no-word-signals-user-error ()
-  "Signals `user-error' when no word is at point."
+  "Signals `user-error' when no word is at point (whitespace or empty)."
   (pel-read-test--with-buffer "   "
+    (should-error (pel-word-at-point t) :type 'user-error))
+  ;; test empty buffer
+  (with-temp-buffer
     (should-error (pel-word-at-point t) :type 'user-error)))
 
 (ert-deftest pel-read/word-at-point/return-type-is-string ()
