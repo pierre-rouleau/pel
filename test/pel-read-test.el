@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, April 16 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-17 11:21:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 15:22:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -87,6 +87,13 @@
     (let ((result (pel-thing-at-point 'paragraph)))
       (should (stringp result))
       (should (string-match-p "First paragraph" result)))))
+
+(ert-deftest pel-read/thing-at-point/moves-past-sentence ()
+  "Moves point to the end of the matched sentence (cdr of bounds)."
+  (pel-read-test--with-buffer "Hello world.  Goodbye."
+    (pel-thing-at-point 'sentence)
+    ;; "Hello world." occupies positions 1–12; point 13 is the first space after
+    (should (= (point) 13))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-word-at-point
@@ -283,7 +290,7 @@ then finds no further content before the next delimiter → returns \"\"."
     (should (string= "" (pel-string-at-point "\"")))))
 
 ;; ---------------------------------------------------------------------------
-;; pel-move-to-face
+;; pel--move-to-face
 
 (ert-deftest pel-read/move-to-face/finds-face-and-returns-point ()
   "Moves to the first char with the given face and returns that position."
@@ -292,7 +299,7 @@ then finds no further content before the next delimiter → returns \"\"."
     ;; chars at positions 3-5 ("cde") get the test face
     (put-text-property 3 6 'face 'pel-test-face)
     (goto-char (point-min))
-    (let ((result (pel-move-to-face 'pel-test-face (point-max))))
+    (let ((result (pel--move-to-face 'pel-test-face (point-max))))
       (should (= result 3))
       (should (= (point) 3)))))
 
@@ -301,7 +308,7 @@ then finds no further content before the next delimiter → returns \"\"."
   (with-temp-buffer
     (insert "abcdef")
     (goto-char (point-min))
-    (should (null (pel-move-to-face 'nonexistent-face (point-max))))))
+    (should (null (pel--move-to-face 'nonexistent-face (point-max))))))
 
 (ert-deftest pel-read/move-to-face/respects-limit ()
   "Does not cross the limit even if the face appears beyond it."
@@ -310,7 +317,7 @@ then finds no further content before the next delimiter → returns \"\"."
     (put-text-property 5 7 'face 'pel-test-face)  ; "ef" has the face
     (goto-char (point-min))
     ;; limit is 4, face starts at 5 → not found
-    (should (null (pel-move-to-face 'pel-test-face 4)))))
+    (should (null (pel--move-to-face 'pel-test-face 4)))))
 
 (ert-deftest pel-read/move-to-face/point-already-on-face ()
   "Returns current point immediately when point is already on the target face.
@@ -320,13 +327,13 @@ The while loop's condition is false from the start so point never advances."
     ;; positions 1-4 ("abcd") carry the face
     (put-text-property 1 5 'face 'pel-test-face)
     (goto-char (point-min))             ; position 1 — already on the face
-    (let ((result (pel-move-to-face 'pel-test-face (point-max))))
+    (let ((result (pel--move-to-face 'pel-test-face (point-max))))
       (should result)                   ; must not be nil
       (should (= result 1))
       (should (= (point) 1)))))         ; point must not have moved
 
 ;; ---------------------------------------------------------------------------
-;; pel-move-past-face
+;; pel--move-past-face
 
 (ert-deftest pel-read/move-past-face/advances-past-face-region ()
   "Moves point past the contiguous region carrying the specified face."
@@ -334,7 +341,7 @@ The while loop's condition is false from the start so point never advances."
     (insert "abcdef")
     (put-text-property 1 5 'face 'pel-test-face)
     (goto-char (point-min))
-    (let ((result (pel-move-past-face 'pel-test-face (point-max))))
+    (let ((result (pel--move-past-face 'pel-test-face (point-max))))
       (should result)                   ; explicit non-nil guard
       (should (= result 5))
       (should (= (point) 5)))))
@@ -345,7 +352,7 @@ The while loop's condition is false from the start so point never advances."
     (insert "abcdef")
     (put-text-property 1 7 'face 'pel-test-face)  ; entire content
     (goto-char (point-min))
-    (should (null (pel-move-past-face 'pel-test-face (point-max))))))
+    (should (null (pel--move-past-face 'pel-test-face (point-max))))))
 
 (ert-deftest pel-read/move-past-face/no-face-at-start-returns-current-point ()
   "Returns current point immediately when point is not on the given face."
@@ -353,7 +360,7 @@ The while loop's condition is false from the start so point never advances."
     (insert "abcdef")
     (put-text-property 3 6 'face 'pel-test-face)  ; only "cde"
     (goto-char (point-min))                        ; position 1 — no face here
-    (let ((result (pel-move-past-face 'pel-test-face (point-max))))
+    (let ((result (pel--move-past-face 'pel-test-face (point-max))))
       (should result)
       (should (= result 1)))))
 

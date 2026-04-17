@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-17 14:21:39 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 15:20:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -44,9 +44,9 @@
 ;;
 ;;  Read customize symbol at point
 ;;  - `pel-customize-symbol-at-line'
-;;    - `pel-move-to-face'
+;;    - `pel--move-to-face'
 ;;      - `pel-read--face-at-point-p'
-;;    - `pel-move-past-face'
+;;    - `pel--move-past-face'
 ;;      . `pel-read--face-at-point-p'
 
 ;;; --------------------------------------------------------------------------
@@ -173,7 +173,7 @@ point and the end of the buffer. "
         (memq face f)
       (eq face f))))
 
-(defun pel-move-to-face (face limit)
+(defun pel--move-to-face (face limit)
   "Move to the first char with specified FACE, up to (but not including) LIMIT.
 If point is already on FACE, return point immediately without moving.
 Return the position of the first char with FACE, or nil if none is found
@@ -185,11 +185,13 @@ before LIMIT."
       nil
     (point)))
 
-(defun pel-move-past-face (face limit)
+(defun pel--move-past-face (face limit)
   "Move point past contiguous region with FACE, up to (but not including) LIMIT.
 If point is not on FACE, return point immediately.
 Return the new point position if a non-FACE char is reached before LIMIT,
-nil if the FACE region extends all the way to LIMIT."
+nil if the FACE region extends all the way to LIMIT.
+If point is not on FACE but equals LIMIT on entry, nil is returned (same
+as when the face region fills the buffer up to limit)."
   (while (and (pel-read--face-at-point-p face)
               (< (point) limit))
     (forward-char 1))
@@ -215,9 +217,9 @@ Return nil if no customize symbol is present on the current line."
                 (point))))
       ;; move to the beginning of line, unconstrained by fields
       (forward-line 0)
-      (setq p1 (pel-move-to-face 'custom-variable-tag pe))
+      (setq p1 (pel--move-to-face 'custom-variable-tag pe))
       (when p1
-        (setq p2 (pel-move-past-face 'custom-variable-tag pe))
+        (setq p2 (pel--move-past-face 'custom-variable-tag pe))
         (when p2
           (buffer-substring-no-properties p1 p2))))))
 
