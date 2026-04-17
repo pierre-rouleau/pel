@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-17 11:15:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 11:33:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -95,7 +95,7 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
   "Return sentence at point, move to next sentence unless DONT-MOVE is non-nil."
   ;; pel-thing-at-point leaves point just after the period at the end of the
   ;; sentence.  pel-forward-word-start moves point to the beginning of the
-  ;; next sentence.
+  ;; next word, which is the beginning of the next sentence.
   (let ((text (pel-thing-at-point 'sentence)))
     (unless dont-move
       (ignore-errors
@@ -107,7 +107,7 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
   "Return paragraph at point, move to next paragraph unless DONT-MOVE is non-nil."
   ;; pel-thing-at-point leaves point just after the period at the end of the
   ;; paragraph.  pel-forward-word-start moves point to the beginning of the
-  ;; next paragraph.
+  ;; next word, which is the beginning of the next paragraph.
   (let ((text (pel-thing-at-point 'paragraph)))
     (unless dont-move
       (ignore-errors
@@ -191,7 +191,7 @@ nil if the FACE region extends all the way to LIMIT."
   (while (and (pel-read--face-at-point-p face)
               (< (point) limit))
     (forward-char 1))
-  (if (eq (point) limit)
+  (if (= (point) limit)
       nil
     (point)))
 
