@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-16 22:31:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 07:27:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -27,6 +27,9 @@
 ;;
 ;; Utility functions that read various text elements from current buffer at
 ;; point.
+;;
+;; The following call hierarchy uses '-' for functions and '.' when repeating
+;; a function also called that has already been represented in the hierarchy.
 ;;
 ;;  Read "thing" at point
 ;;  - `pel-word-at-point'
@@ -81,28 +84,34 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
       (user-error "No %s at point" thing))))
 
 ;;-pel-autoload
-(defun pel-word-at-point (&optional stay)
-  "Return word at point, move to next word unless STAY is non-nil."
+(defun pel-word-at-point (&optional dont-move)
+  "Return word at point, move to next word unless DONT-MOVE is non-nil."
   (let ((text (pel-thing-at-point 'word)))
-    (unless stay
+    (unless dont-move
       (ignore-errors
         (pel-forward-word-start)))
     text))
 
 ;;-pel-autoload
-(defun pel-sentence-at-point (&optional stay)
-  "Return sentence at point, move to next sentence unless STAY is non-nil."
+(defun pel-sentence-at-point (&optional dont-move)
+  "Return sentence at point, move to next sentence unless DONT-MOVE is non-nil."
+  ;; pel-thing-at-point leaves point just after the period at the end of the
+  ;; sentence.  pel-forward-word-start moves point to the beginning of the
+  ;; next sentence.
   (let ((text (pel-thing-at-point 'sentence)))
-    (unless stay
+    (unless dont-move
       (ignore-errors
         (pel-forward-word-start)))
     text))
 
 ;;-pel-autoload
-(defun pel-paragraph-at-point (&optional stay)
-  "Return paragraph at point, move to next paragraph unless STAY is non-nil."
+(defun pel-paragraph-at-point (&optional dont-move)
+  "Return paragraph at point, move to next paragraph unless DONT-MOVE is non-nil."
+  ;; pel-thing-at-point leaves point just after the period at the end of the
+  ;; paragraph.  pel-forward-word-start moves point to the beginning of the
+  ;; next paragraph.
   (let ((text (pel-thing-at-point 'paragraph)))
-    (unless stay
+    (unless dont-move
       (ignore-errors
         (pel-forward-word-start)))
     text))
@@ -153,7 +162,7 @@ spaces even when point is located between the delimiters."
 ;;  ==============================
 
 (defun pel-move-to-face (face limit)
-  "Move to the first char with specified FACE up to LIMIT point.
+  "Move to the first char with specified FACE up to position LIMIT.
 Return point if char with FACE found, nil otherwise."
   (while (and (not (eq face
                        (get-char-property (point) 'face)))
@@ -164,8 +173,10 @@ Return point if char with FACE found, nil otherwise."
     (point)))
 
 (defun pel-move-past-face (face limit)
-  "Move to the first char that does not have specified FACE up to LIMIT point.
-Return point if char with FACE found, nil otherwise."
+  "Move point past the contiguous region with FACE, up to position LIMIT.
+If point is not on FACE, return point immediately.
+Return the new point position if a non-FACE char is reached before LIMIT,
+nil if the FACE region extends all the way to LIMIT."
   (while (and (eq face
                   (get-char-property (point) 'face))
               (< (point) limit))

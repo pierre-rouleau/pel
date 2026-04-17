@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, April 16 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-16 22:35:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 07:35:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -62,7 +62,8 @@
   "Moves point to the end of the matched thing (cdr of bounds)."
   (pel-read-test--with-buffer "hello world"
     (pel-thing-at-point 'word)
-    (should (= (point) 6))))          ; after "hello" (1-based, 6 = past 'o')
+    ;; "hello" occupies positions 1-5; point 6 is the space that follows it
+    (should (= (point) 6))))
 
 (ert-deftest pel-read/thing-at-point/signals-user-error-when-absent ()
   "Signals `user-error' when no word thing is at point (whitespace or empty)."
@@ -77,11 +78,6 @@
   "Returns the sentence text at point."
   (pel-read-test--with-buffer "Hello world.  Goodbye."
     (should (string= "Hello world." (pel-thing-at-point 'sentence)))))
-
-(ert-deftest pel-read/thing-at-point/empty-buffer-signals-user-error ()
-  "Signals `user-error' in an empty buffer."
-  (with-temp-buffer
-    (should-error (pel-thing-at-point 'word) :type 'user-error)))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-word-at-point
@@ -192,8 +188,8 @@
 (ert-deftest pel-read/string-at-point/point-inside-quoted-string ()
   "Extracts the substring between quote delimiters when point is inside."
   (pel-read-test--with-buffer "\"hello\""
-                              (goto-char 2) ; inside the quotes
-                              (should (string= "hello" (pel-string-at-point "\"")))))
+    (goto-char 2)                       ; inside the quotes
+    (should (string= "hello" (pel-string-at-point "\"")))))
 
 (ert-deftest pel-read/string-at-point/point-at-opening-delimiter ()
   "Extracts substring correctly when point is at the opening delimiter."
@@ -346,6 +342,74 @@
     (put-text-property 1 12 'face 'custom-variable-tag)
     (goto-char (point-min))
     (should (string= "Foo Bar Baz" (pel-customize-symbol-at-line)))))
+
+;; ---------------------------------------------------------------------------
+;; pel-string-at-point — additional cases
+
+(ert-deftest pel-read/string-at-point/point-at-closing-delimiter ()
+  "Point at the closing delimiter: forward-char overshoots, returns empty string.
+When point is on a closing delimiter, the implementation treats it as an
+opening delimiter (at-delimiter is non-nil), steps forward one char past it,
+then finds no further content before the next delimiter → returns \"\"."
+  (pel-read-test--with-buffer "\"hello\""
+    (goto-char 7)                         ; at closing quote (position 7)
+    (should (string= "" (pel-string-at-point "\"")))))
+
+;; ---------------------------------------------------------------------------
+;; pel-move-to-face — additional cases
+
+(ert-deftest pel-read/move-to-face/point-already-on-face ()
+  "Returns current point immediately when point is already on the target face.
+The while loop's condition is false from the start so point never advances."
+  (with-temp-buffer
+    (insert "abcdef")
+    ;; positions 1-4 (\"abcd\") carry the face
+    (put-text-property 1 5 'face 'pel-test-face)
+    (goto-char (point-min))             ; position 1 — already on the face
+    (let ((result (pel-move-to-face 'pel-test-face (point-max))))
+      (should result)                   ; must not be nil
+      (should (= result 1))
+      (should (= (point) 1)))))         ; point must not have moved
+
+;; ---------------------------------------------------------------------------
+;; pel-word-at-point — additional cases
+
+(ert-deftest pel-read/word-at-point/returns-word-when-stay-is-nil ()
+  "Returns the correct word string even when STAY is nil (move-after mode).
+Stubs pel-forward-word-start so the test does not depend on pel-navigate."
+  (pel-read-test--with-buffer "emacs lisp"
+    (cl-letf (((symbol-function 'pel-forward-word-start)
+               (lambda () nil)))        ; stub: suppress real navigation
+      (should (string= "emacs" (pel-word-at-point))))))
+
+;; ---------------------------------------------------------------------------
+;; pel-sentence-at-point — additional cases
+
+(ert-deftest pel-read/sentence-at-point/whitespace-only-signals-user-error ()
+  "Signals `user-error' when the buffer contains only whitespace.
+Unlike the word case, pel-thing-at-point does not apply the whitespace guard
+for \\='sentence, so this test documents that bounds-of-thing-at-point returns
+nil on whitespace-only content for sentences in all supported Emacs versions."
+  (pel-read-test--with-buffer "   "
+    (should-error (pel-sentence-at-point t) :type 'user-error)))
+
+;; ---------------------------------------------------------------------------
+;; pel-move-past-face — explicit non-nil guard
+
+(ert-deftest pel-read/move-past-face/advances-past-face-region/result-not-nil ()
+  "Advances past a face region: result is non-nil and equals expected position.
+This companion test to the main advances-past test adds an explicit non-nil
+assertion before the equality check, since (= nil 5) would signal a
+wrong-type-argument rather than a clean ert-test-failed."
+  (with-temp-buffer
+    (insert "abcdef")
+    ;; positions 1-4 (\"abcd\") carry the face
+    (put-text-property 1 5 'face 'pel-test-face)
+    (goto-char (point-min))
+    (let ((result (pel-move-past-face 'pel-test-face (point-max))))
+      (should result)                   ; explicit non-nil guard
+      (should (= result 5))
+      (should (= (point) 5)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-read-test)
