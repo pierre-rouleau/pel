@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-16 17:00:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-16 22:11:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -77,28 +77,28 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
 
 
 ;;-pel-autoload
-(defun pel-word-at-point (&optional dont-move)
-  "Return word at point, move to next word unless DONT-MOVE is set."
+(defun pel-word-at-point (&optional stay)
+  "Return word at point, move to next word unless STAY is non-nil."
   (let ((text (pel-thing-at-point 'word)))
-    (unless dont-move
+    (unless stay
       (ignore-errors
         (pel-forward-word-start)))
     text))
 
 ;;-pel-autoload
-(defun pel-sentence-at-point (&optional dont-move)
-  "Return sentence at point, move to next sentence unless DONT-MOVE is set."
+(defun pel-sentence-at-point (&optional stay)
+  "Return sentence at point, move to next sentence unless STAY is non-nil."
   (let ((text (pel-thing-at-point 'sentence)))
-    (unless dont-move
+    (unless stay
       (ignore-errors
         (pel-forward-word-start)))
     text))
 
 ;;-pel-autoload
-(defun pel-paragraph-at-point (&optional dont-move)
-  "Return paragraph at point, move to next paragraph unless DONT-MOVE is set."
+(defun pel-paragraph-at-point (&optional stay)
+  "Return paragraph at point, move to next paragraph unless STAY is non-nil."
   (let ((text (pel-thing-at-point 'paragraph)))
-    (unless dont-move
+    (unless stay
       (ignore-errors
         (pel-forward-word-start)))
     text))
