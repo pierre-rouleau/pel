@@ -45,7 +45,7 @@
 
 ;; ----
 
-(defconst fn-strings
+(defconst fn-example-strings
 ;;    tested pattern                   | expected results
 ;;    fnlc                             |---- ok-fn-spec --------------------------------|
 ;;    fnlc                             ok-kind      ok-fn                           ok-line ok-column
@@ -91,7 +91,7 @@
     ( "~/../other/src/python/d.py:"   (fname        "~/../other/src/python/d.py"    nil nil))))
 
 (ert-deftest ert-test-pel-file-extract-filename ()
-  (dolist (test-scenario fn-strings)
+  (dolist (test-scenario fn-example-strings)    ; test all file name patterns listed above.
     (let* ((fnlc (car test-scenario))
            (ok-fn-spec (cadr test-scenario))
            ;;(ok-kind    (car ok-fn-spec))
@@ -240,9 +240,9 @@
       (should (null  (nth 3 result))))))
 
 ;; ---------------------------------------------------------------------------
-;; pel-filename-parts-at-point — additional cases not covered by fn-strings
+;; pel-filename-parts-at-point — additional cases not covered by fn-example-strings
 ;;
-;; The existing ert-test-pel-file-extract-filename covers the fn-strings table.
+;; The existing ert-test-pel-file-extract-filename covers the fn-example-strings table.
 ;; These tests cover HTTP/file URLs and the shebang (#!) special case.
 
 (ert-deftest pel-filename-parts-at-point-http-url-test ()

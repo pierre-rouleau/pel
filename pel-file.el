@@ -47,49 +47,151 @@
 ;; Implementation call hierarchy
 ;; -----------------------------
 ;;
-;; * pel-show-filename-at-point
-;;     - pel-filename-at-point
-;;       - pel-string-at-point
+;;  Load visited Emacs Lisp file
+;;  * `pel-load-visited-file'
 ;;
-;; * pel-find-file-at-point-in-window
-;;   - pel-filename-parts-at-point
-;;   - pel--file-window-info-for
-;;   - pel--find-open-file-in-window
-;;     - pel--show-edit-action
-;;   - pel--complete-filename-for
-;;     - pel--lib-filename
-;;   - pel--show-edit-action
+;;  Show filename at point
+;;  * `pel-show-filename-at-point'
+;;      - `pel-filename-at-point'
 ;;
-;; * pel-show-filename-parts-at-point
-;;   - pel-filename-parts-at-point
+;;  Extract filename, line, column from text at point
+;;  - `pel-filename-parts-at-point'
+;;    - `pel--dir-name-if'
+;;    - `pel--tramp-remote-fspec'
+
+;;  * `pel-find-file-at-point-in-window'
+
+;;    - `pel--file-window-info-for'
+;;    - `pel--find-open-file-in-window'
+;;      - `pel--show-edit-action'
+;;    - `pel--complete-filename-for'
+;;      - `pel--lib-filename'
+;;    - `pel--show-edit-action'
 ;;
-;; * pel-open-file-in-other-dir
+;;  * `pel-show-filename-parts-at-point'
+;;    . `pel-filename-parts-at-point'
 ;;
-;; * pel-open-file-alternate
+;;  * `pel-open-file-in-other-dir'
 ;;
-;; * pel-show-rpm-providing-file
-;;   - pel-shell-command-on-current-file
+;;  * `pel-open-file-alternate'
+;;
+;;  * `pel-show-rpm-providing-file'
+;;    - `pel-shell-command-on-current-file'
 
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--base)     ; use: pel-val-or-default,
-                         ;      pel-goto-position,
-                         ;      pel-system-is-windows-p
+(require 'pel--base)     ; use: `pel-current-buffer-filename',
+                         ;      `pel-val-or-default',
+                         ;      `pel-goto-position',
+                         ;      `pel-system-is-windows-p',
+                         ;      `pel-substitute-env-vars'
+
 (require 'pel-prompt)    ; use: `pel-prompt-select-read'
-(require 'pel-read)      ; use: pel-string-at-point
-(require 'pel-window)    ; use pel-window-direction-for
-;;                       ;     pel-window-valid-for-editing-p
+(require 'pel-read)      ; use: `pel-string-at-point'
+(require 'pel-window)    ; use: `pel-window-direction-for'.
+;;                       ;      `pel-window-valid-for-editing-p'
 (require 'pel-filex)     ; use: `pel-open-in-os-app'
-(require 'tramp)         ; use: `tramp-tramp-file-p', `tramp-file-local-name'
-(eval-when-compile (require 'subr-x))  ; use: inlined: string-trim
+(require 'tramp)         ; use: `tramp-tramp-file-p',
+                         ;      `tramp-file-local-name'
+                         ;      `with-parsed-tramp-file-name'
+(require 'subr-x)        ; use: `string-trim'
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
 
+;;* Load visited Emacs Lisp file
+;;  ============================
+;;
 
-;; pel-find-file-at-point-in-window
-;; --------------------------------
+;;-pel-autoload
+(defun pel-load-visited-file (&optional use-elc)
+  "Load the elisp file visited by current buffer.
+Load the file source, not the byte-compiled version unless
+the optional USE-ELC argument is specified.
+Interactively use any prefix argument."
+  (interactive "P")
+  (let ((fn (pel-current-buffer-filename)))
+    (if (string= (file-name-extension fn) "el")
+        (let ((fn (file-name-sans-extension fn)))
+          (if use-elc
+              (load-file (concat fn ".elc"))
+            (load-file (concat fn ".el"))))
+      (user-error "Cannot load %s.  It is not an Emacs Lisp file!" fn))))
+
+
+;; ---------------------------------------------------------------------------
+;;* Show filename at point
+;;  ======================
+
+(defun pel-filename-at-point (&optional extra-delimiters)
+  "Return the file name at point (or marked region).
+
+Spaces inside the filename are accepted *only* when point is
+located before a double quote to the left of the filename.
+Spaces between the quote and the first character and last
+character or the filename are accepted but removed.
+
+The comma, semi-comma, parenthesis and square brackets are used
+as delimiters except for `rst-mode' and `markdown-mode'.
+
+When executed from with a buffer in `sh-mode', the shell variables
+found in the string are expanded and the delimiters include the
+'=' and ':' characters.  This helps extracting file names in
+shell scripts.
+
+Variable name expansion:
+- In shell and TCL mode buffers, perform $VAR
+  variable substitution in the file name.
+  That's useful for environment variables in file names.
+
+The optional EXTRA-DELIMITERS string allows adding extra
+delimiter characters to the existing list.
+
+Limitation: the file name delimiters currently used are
+relatively safe but not sufficient for all cases.  These will
+probably have to be modified to be a user option in a future version."
+  (if (use-region-p)
+      (buffer-substring-no-properties (region-beginning) (region-end))
+    (save-excursion
+      (let ((delimiters
+             "\t\n\"`'‘’“”|「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。"))
+        (when extra-delimiters
+          (setq delimiters (concat extra-delimiters delimiters)))
+        ;; In shell modes, allow delimiting the filenames by path separators
+        ;; and equal sign used in various statements.
+        (when (eq major-mode 'sh-mode)
+          (setq delimiters (concat "=:" delimiters)))
+        (unless (memq major-mode '(rst-mode))
+          (setq delimiters (concat ",;()[]" delimiters)))
+        (unless (memq major-mode '(sh-mode tcl-mode rst-mode markdown-mode))
+          (setq delimiters (concat "{}" delimiters)))
+        (let ((fname (string-trim (pel-string-at-point delimiters))))
+          (when (memq major-mode '(rst-mode sh-mode tcl-mode))
+            ;; perform $VARNAME and ${VARNAME} environment variable name expansion
+            (require 'env nil :noerror)
+            (setq fname (pel-substitute-env-vars fname)))
+          ;; If the file name ends with  a colon, remove it.
+          (if (and (> (length fname) 1)
+                   (string= (substring fname -1) ":"))
+              (substring fname 0 -1)
+            fname))))))
+
+;;-pel-autoload
+(defun pel-show-filename-at-point ()
+  "Display file name at point.
+
+This command uses the `pel-filename-at-point' to extract a file name from the
+current location.  It's essentially a utility to test file name extraction."
+  (interactive)
+  (let ((fname (pel-filename-at-point)))
+    (if (> (length fname) 0)
+        (message "File name :=「%s」" fname)
+      (user-error "No potential file name found here!"))))
+
+;; ---------------------------------------------------------------------------
+;;* Extract filename, line, column from text at point
+;;  =================================================
 
 (defun pel--dir-name-if (path-name directory-only)
   "Return PATH-NAME complete unless DIRECTORY-ONLY is non-nil.
@@ -98,17 +200,6 @@ In that case return the directory part of PATH-NAME."
       (file-name-directory path-name)
     path-name))
 
-(defun pel--show-tramp-fspec (fname)
-  "Return alist of Tramp file specification elements for FNAME.
-The keys are: method, user, domain, host, port, localname, and hop."
-  (with-parsed-tramp-file-name fname e
-    (list  (cons 'method e-method)
-           (cons 'user e-user)
-           (cons 'domain e-domain)
-           (cons 'host e-host)
-           (cons 'port e-port)
-           (cons 'localname  e-localname)
-           (cons 'hop e-hop))))
 
 (defun pel--tramp-remote-fspec (fname)
   "Return the Tramp-compliant remote part of a tramp-filename.
@@ -297,8 +388,9 @@ but *only* when the complete string is enclosed in double quotes
                   nil)))
 
          ;; When nothing matches, return nil
-         (t nil)
-         )))))
+         (t nil))))))
+
+;; ---------------------------------------------------------------------------
 
 (defun pel--lib-filename (filename)
   "Infer or prompt for library filename using incomplete FILENAME.
@@ -307,34 +399,30 @@ Return (filename . action), where:
 - action is: \\='create | \\='edit | reason-for-nil-filename
 
 nil if user gave up, otherwise return the file name to open."
-  (if (and (require 'pel-prompt nil :noerror)
-           (fboundp 'pel-y-n-e-or-l-p))
-      (let ((action
-             (pel-y-n-e-or-l-p
-              (format "\
+  (let ((action (pel-y-n-e-or-l-p
+                 (format "\
 File「%s」not found.   Create it, edit name or find Library file? "
-                      filename))))
-        (cond
-         ((equal action 'yes)
-          (cons filename 'create))
-         ;;
-         ((equal action 'no)
-          (cons nil   "Cancelled."))
-         ;;
-         ((equal action 'edit)
-          (let ((filename (pel-prompt-for-filename filename)))
-            (cons filename (if (file-exists-p filename)
-                               'edit
-                             'create))))
-         ;;
-         ((equal action 'findlib)
-          (when (and (require 'find-func)
-                     (fboundp 'find-library-name))
-            (let ((filename (find-library-name (file-name-base filename))))
-              (cons filename (if (file-exists-p filename)
-                                 'edit
-                               'create)))))))
-    (error "Function pel-prompt not loaded")))
+                         filename))))
+    (cond
+     ((equal action 'yes)
+      (cons filename 'create))
+     ;;
+     ((equal action 'no)
+      (cons nil "Cancelled."))
+     ;;
+     ((equal action 'edit)
+      (let ((filename (pel-prompt-for-filename filename)))
+        (cons filename (if (file-exists-p filename)
+                           'edit
+                         'create))))
+     ;;
+     ((equal action 'findlib)
+      (when (and (require 'find-func)
+                 (fboundp 'find-library-name))
+        (let ((filename (find-library-name (file-name-base filename))))
+          (cons filename (if (file-exists-p filename)
+                             'edit
+                           'create))))))))
 
 
 (defvar-local pel-filename-at-point-finders nil
@@ -648,87 +736,6 @@ Use the URL part when KEEP-FILE-URL is non nil."
     (if fname-parts
         (message "%S" fname-parts)
       (user-error "Nothing found! Possible PEL error for this mode?"))))
-
-;; -----------------------------------------------------------------------------
-;; Show filename at point
-;; ----------------------
-
-(defun pel-filename-at-point (&optional extra-delimiters)
-  "Return the file name at point (or marked region).
-
-Spaces inside the filename are accepted *only* when point is
-located before a double quote to the left of the filename.
-Spaces between the quote and the first character and last
-character or the filename are accepted but removed.
-
-The comma, semi-comma, parenthesis and square brackets are used
-as delimiters except for `rst-mode' and `markdown-mode'.
-
-When executed from with a buffer in `sh-mode', the shell variables
-found in the string are expanded and the delimiters include the
-'=' and ':' characters.  This helps extracting file names in
-shell scripts.
-
-Variable name expansion:
-- In shell and TCL mode buffers, perform $VAR
-  variable substitution in the file name.
-  That's useful for environment variables in file names.
-
-The optional EXTRA-DELIMITERS string allows adding extra
-delimiter characters to the existing list.
-
-Limitation: the file name delimiters currently used are
-relatively safe but not sufficient for all cases.  These will
-probably have to be modified to be a user option in a future version."
-  (if (use-region-p)
-      (buffer-substring-no-properties (region-beginning) (region-end))
-    (save-excursion
-      (let ((delimiters
-             "\t\n\"`'‘’“”|「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。"))
-        (when extra-delimiters
-          (setq delimiters (concat extra-delimiters delimiters)))
-        ;; In shell modes, allow delimiting the filenames by path separators
-        ;; and equal sign used in various statements.
-        (when (eq major-mode 'sh-mode)
-          (setq delimiters (concat "=:" delimiters)))
-        (unless (memq major-mode '(rst-mode))
-          (setq delimiters (concat ",;()[]" delimiters)))
-        (unless (memq major-mode '(sh-mode tcl-mode rst-mode markdown-mode))
-          (setq delimiters (concat "{}" delimiters)))
-        (let ((fname (string-trim (pel-string-at-point delimiters))))
-          (when (memq major-mode '(rst-mode sh-mode tcl-mode))
-            ;; perform $VARNAME and ${VARNAME} environment variable name expansion
-            (require 'env nil :noerror)
-            (setq fname (substitute-env-vars fname)))
-          ;; If the file name ends with  a colon, remove it.
-          (if (and (> (length fname) 1)
-                   (string= (substring fname -1) ":"))
-              (substring fname 0 -1)
-            fname))))))
-
-;;-pel-autoload
-(defun pel-show-filename-at-point ()
-  "Display file name at point in the mini-buffer."
-  (interactive)
-  (let ((fname (pel-filename-at-point)))
-    (if (> (length fname) 0)
-        (message "File name :=「%s」" fname)
-      (user-error "Nothing found! Possible PEL error for this mode?"))))
-
-;;-pel-autoload
-(defun pel-load-visited-file (&optional use-elc)
-  "Load the elisp file visited by current buffer.
-Load the file source, not the byte-compiled version unless
-the optional USE-ELC argument is specified.
-Interactively use any prefix argument."
-  (interactive "P")
-  (let ((fn (pel-current-buffer-filename)))
-    (if (string= (file-name-extension fn) "el")
-        (let ((fn (file-name-sans-extension fn)))
-          (if use-elc
-              (load-file (concat fn ".elc"))
-            (load-file (concat fn ".el"))))
-      (user-error "Cannot load %s.  It is not an Emacs Lisp file!" fn))))
 
 ;; ---------------------------------------------------------------------------
 ;; Open Same File in Other Directory
