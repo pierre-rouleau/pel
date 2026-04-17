@@ -1029,33 +1029,42 @@ non-nil, in which case it appends to the previous report."
      "*pel-ccp-info*"
      "Delete, Cut & Paste Control"
      (lambda ()
-       (insert "Delete key behaviour control:")
+       (pel-insert-bold "Delete key behaviour control:")
        (pel-insert-symbol-content-line 'normal-erase-is-backspace)
-       (pel-insert-symbol-content-line 'pel-force-normal-erase-is-backspace-off-in-terminal)
+       (pel-insert-symbol-content-line
+        'pel-force-normal-erase-is-backspace-off-in-terminal)
 
-       (insert "\n\nOther Emacs delete and kill behaviour control:")
+       (pel-insert-bold "\n\nOther Emacs delete and kill behaviour control:")
        (pel-insert-symbol-content-line 'delete-selection-mode)
        (pel-insert-symbol-content-line 'delete-selection-mode-hook)
        (pel-insert-symbol-content-line 'delete-selection-temporary-region)
        (pel-insert-symbol-content-line 'delete-trailing-lines)
        (pel-insert-symbol-content-line 'kill-ring-deindent-mode)
        (pel-insert-symbol-content-line 'kill-ring-deindent-mode-hook)
-       (pel-insert-symbol-content-line 'kill-ring-max)
        (pel-insert-symbol-content-line 'xterm-store-paste-ok-kill-ring)
        (pel-insert-symbol-content-line 'yank-from-kill-ring-rotate)
 
        (when use-lispy
-         (insert "\n\nOther local buffer mode specific controls:")
+         (pel-insert-bold "\n\nOther local buffer mode specific controls:")
          (pel-insert-symbol-content-line 'lispy-safe-delete))
 
-       (insert "\n\nPEL functionality control:")
+       (pel-insert-bold "\n\nPEL functionality control:")
        (pel-insert-symbol-content-line 'pel-show-copy-cut-text)
        (pel-insert-symbol-content-line 'pel-activate-overwrite-yank)
        (pel-insert-symbol-content-line 'pel--activate-overwrite-yank-in-buffer)
        (pel-insert-symbol-content-line 'pel-use-browse-kill-ring)
        (pel-insert-symbol-content-line 'pel-use-popup-kill-ring)
        (pel-insert-symbol-content-line 'pel-delete-trailing-whitespace)
-       (pel-insert-symbol-content-line 'pel-modes-preventing-delete-trailing-whitespace))
+       (pel-insert-symbol-content-line
+        'pel-modes-preventing-delete-trailing-whitespace)
+       (pel-insert-bold "\n\nKill Ring:")
+       (insert (format "\n- Remove duplicates in kill ring with %s "
+                       (pel-key-binding-string 'pel-clean-kill-ring)))
+       (when pel-use-browse-kill-ring
+         (insert (format ", and browse it with %s ."
+                         (pel-key-binding-string 'browse-kill-ring))))
+       (pel-insert-symbol-content-line 'kill-ring-max)
+       (pel-insert-list-content 'kill-ring))
      (unless append :clear-buffer)
      :use-help-mode)))
 ;;; --------------------------------------------------------------------------

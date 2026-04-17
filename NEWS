@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improve *pel-ccp-info*: it now prints the content of the kill ring and key bindings of useful commands.
 - Add dont-move optional argument to the pel-read.el utility function *pel-word-at-point*, *pel-sentence-at-point* and *pel-paragraph-at-point*.
 - Move *pel-prompt-for-filename* from pel-file.el to pel-prompt.el
 - Better key binding form *pel-remove-line-highlight* : it is now ~<f11> h H~ instead of ~<f11> h M-H~.
