@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, April 16 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-17 08:59:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 09:37:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,7 +25,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;;
+;; Test pel-read.el functions.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -265,10 +265,10 @@
   "Moves point past the contiguous region carrying the specified face."
   (with-temp-buffer
     (insert "abcdef")
-    ;; positions 1-4 ("abcd") have the face
     (put-text-property 1 5 'face 'pel-test-face)
     (goto-char (point-min))
     (let ((result (pel-move-past-face 'pel-test-face (point-max))))
+      (should result)          ; explicit non-nil guard
       (should (= result 5))
       (should (= (point) 5)))))
 
@@ -287,6 +287,7 @@
     (put-text-property 3 6 'face 'pel-test-face)  ; only "cde"
     (goto-char (point-min))                        ; position 1 — no face here
     (let ((result (pel-move-past-face 'pel-test-face (point-max))))
+      (should result)
       (should (= result 1)))))
 
 ;; ---------------------------------------------------------------------------
@@ -382,10 +383,25 @@ Stubs pel-forward-word-start so the test does not depend on pel-navigate."
                (lambda () nil)))        ; stub: suppress real navigation
       (should (string= "emacs" (pel-word-at-point))))))
 
+(ert-deftest pel-read/sentence-at-point/returns-sentence-when-dont-move-is-nil ()
+  "Returns correct sentence text even when DONT-MOVE is nil (move-after mode)."
+  (pel-read-test--with-buffer "Hello world.  Goodbye."
+    (cl-letf (((symbol-function 'pel-forward-word-start)
+               (lambda () nil)))
+      (should (string= "Hello world." (pel-sentence-at-point))))))
+
+(ert-deftest pel-read/paragraph-at-point/returns-paragraph-when-dont-move-is-nil ()
+  "Returns correct paragraph text even when DONT-MOVE is nil (move-after mode)."
+  (pel-read-test--with-buffer "First paragraph.\n\nSecond paragraph."
+    (cl-letf (((symbol-function 'pel-forward-word-start)
+               (lambda () nil)))
+      (let ((result (pel-paragraph-at-point)))
+        (should (stringp result))
+        (should (string-match-p "First paragraph" result))))))
+
 ;; ---------------------------------------------------------------------------
 ;; pel-sentence-at-point — additional cases
 
-;; After:
 (ert-deftest pel-read/sentence-at-point/whitespace-only-signals-user-error ()
   "Signals `user-error' when the buffer contains only whitespace.
 Some Emacs versions (e.g. 26.1, 28.1) return non-nil bounds for whitespace
@@ -400,24 +416,6 @@ Some Emacs versions return non-nil bounds for whitespace when using
 bounds-of-thing-at-point for \\='paragraph; pel-thing-at-point guards this."
   (pel-read-test--with-buffer "   "
     (should-error (pel-paragraph-at-point t) :type 'user-error)))
-
-;; ---------------------------------------------------------------------------
-;; pel-move-past-face — explicit non-nil guard
-
-(ert-deftest pel-read/move-past-face/advances-past-face-region/result-not-nil ()
-  "Advances past a face region: result is non-nil and equals expected position.
-This companion test to the main advances-past test adds an explicit non-nil
-assertion before the equality check, since (= nil 5) would signal a
-wrong-type-argument rather than a clean ert-test-failed."
-  (with-temp-buffer
-    (insert "abcdef")
-    ;; positions 1-4 (\"abcd\") carry the face
-    (put-text-property 1 5 'face 'pel-test-face)
-    (goto-char (point-min))
-    (let ((result (pel-move-past-face 'pel-test-face (point-max))))
-      (should result)                   ; explicit non-nil guard
-      (should (= result 5))
-      (should (= (point) 5)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-read-test)

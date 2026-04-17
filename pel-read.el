@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-17 09:00:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 09:33:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -75,7 +75,7 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
                            (car bounds)
                            (cdr bounds)))
                ;; Emacs 26.1: bounds-of-thing-at-point for 'word 'sentence
-               ;; or 'paragraph can return ;; non-nil bounds covering only
+               ;; or 'paragraph can return non-nil bounds covering only
                ;; whitespace; reject that case.
                (or (not (memq thing '(word sentence paragraph)))
                    (string-match-p "\\w" text))))
@@ -165,8 +165,10 @@ If there is no character next, return an empty string."
 ;;  ==============================
 
 (defun pel-move-to-face (face limit)
-  "Move to the first char with specified FACE up to position LIMIT.
-Return point if char with FACE found, nil otherwise."
+  "Move to the first char with specified FACE, up to (but not including) LIMIT.
+If point is already on FACE, return point immediately without moving.
+Return the position of the first char with FACE, or nil if none is found
+before LIMIT."
   (while (and (not (eq face
                        (get-char-property (point) 'face)))
               (< (point) limit))
@@ -176,7 +178,7 @@ Return point if char with FACE found, nil otherwise."
     (point)))
 
 (defun pel-move-past-face (face limit)
-  "Move point past the contiguous region with FACE, up to position LIMIT.
+  "Move point past contiguous region with FACE, up to (but not including) LIMIT.
 If point is not on FACE, return point immediately.
 Return the new point position if a non-FACE char is reached before LIMIT,
 nil if the FACE region extends all the way to LIMIT."
@@ -195,7 +197,7 @@ Customize symbols are taken from Customize buffers *only*.
 They are identified by their `custom-variable-tag' face.
 The text may include space characters.
 The text must be on a single line.
-Return nil if there are no customize symbol on current line."
+Return nil if no customize symbol is present on the current line."
   ;; Identify the symbol by the face of text.
   ;; Start from the beginning o the line.
   (save-excursion
