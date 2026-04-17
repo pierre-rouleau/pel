@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-17 10:02:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 10:53:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,14 +45,15 @@
 ;;  Read customize symbol at point
 ;;  - `pel-customize-symbol-at-line'
 ;;    - `pel-move-to-face'
+;;      - `pel-read--face-at-point-p'
 ;;    - `pel-move-past-face'
-;;
+;;      . `pel-read--face-at-point-p'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 (require 'pel-navigate)   ; use: `pel-forward-word-start'
-
+(require 'thingatpt)      ; use: `bounds-of-thing-at-point'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -63,10 +64,6 @@
 (defun pel-thing-at-point (thing)
   "Read and return the string of THING at point.
 See `bounds-of-thing-at-point' for a list of possible THING symbols."
-  ;; thingatpt: use: bounds-of-thing-at-point
-  (unless (and (require 'thingatpt nil :noerror)
-               (fboundp 'bounds-of-thing-at-point))
-    (user-error "Failed loading thingatpt!"))
   (let ((bounds (bounds-of-thing-at-point thing))
         text)
     (if (and bounds
@@ -128,7 +125,10 @@ The DELIMITERS string must NOT include a space:
 - If point is currently NOT located at one of the DELIMITERS characters
   then the space character is automatically added to the DELIMITERS.
 - When point is located at a delimiter, space is not added as a delimiter
-  to allow space to be included in the extracted string.
+  to allow space to be included in the extracted string enclosed within the
+  delimiters.
+
+Note that any of the DELIMITERS can be used as a start or end delimiter.
 
 If ALLOW-SPACE is non-nil, then the space character is never included in
 the delimiters so it becomes possible to capture a delimited string with
@@ -164,13 +164,19 @@ If there is no character next, return an empty string."
 ;;* Read customize symbol at point
 ;;  ==============================
 
+(defun pel-read--face-at-point-p (face)
+  "Return non-nil if FACE applies at point (handles both symbol and list)."
+  (let ((f (get-char-property (point) 'face)))
+    (if (listp f)
+        (memq face f)
+      (eq face f))))
+
 (defun pel-move-to-face (face limit)
   "Move to the first char with specified FACE, up to (but not including) LIMIT.
 If point is already on FACE, return point immediately without moving.
 Return the position of the first char with FACE, or nil if none is found
 before LIMIT."
-  (while (and (not (eq face
-                       (get-char-property (point) 'face)))
+  (while (and (not (pel-read--face-at-point-p face))
               (< (point) limit))
     (forward-char 1))
   (if (eq (point) limit)
@@ -182,8 +188,7 @@ before LIMIT."
 If point is not on FACE, return point immediately.
 Return the new point position if a non-FACE char is reached before LIMIT,
 nil if the FACE region extends all the way to LIMIT."
-  (while (and (eq face
-                  (get-char-property (point) 'face))
+  (while (and (pel-read--face-at-point-p face)
               (< (point) limit))
     (forward-char 1))
   (if (eq (point) limit)

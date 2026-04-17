@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, April 16 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-17 10:01:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 10:38:06 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -114,18 +114,28 @@
         (pel-word-at-point)
         (should called)))))
 
+(ert-deftest pel-read/sentence-at-point/no-word-signals-user-error ()
+  "Signals `user-error' in an empty buffer (no word)."
+  (with-temp-buffer
+    (should-error (pel-word-at-point t) :type 'user-error)))
+
 (ert-deftest pel-read/word-at-point/no-word-signals-user-error ()
   "Signals `user-error' when no word is at point (whitespace or empty)."
   (pel-read-test--with-buffer "   "
-    (should-error (pel-word-at-point t) :type 'user-error))
-  ;; test empty buffer
-  (with-temp-buffer
     (should-error (pel-word-at-point t) :type 'user-error)))
 
 (ert-deftest pel-read/word-at-point/return-type-is-string ()
   "Return value is always a string."
   (pel-read-test--with-buffer "test"
     (should (stringp (pel-word-at-point t)))))
+
+(ert-deftest pel-read/word-at-point/returns-word-when-dont-move-is-nil ()
+  "Returns the correct word string even when DONT-MOVE is nil (move-after mode).
+Stubs pel-forward-word-start so the test does not depend on pel-navigate."
+  (pel-read-test--with-buffer "emacs lisp"
+    (cl-letf (((symbol-function 'pel-forward-word-start)
+               (lambda () nil)))        ; stub: suppress real navigation
+      (should (string= "emacs" (pel-word-at-point))))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-sentence-at-point
@@ -156,6 +166,21 @@
 (ert-deftest pel-read/sentence-at-point/no-sentence-signals-user-error ()
   "Signals `user-error' in an empty buffer (no sentence)."
   (with-temp-buffer
+    (should-error (pel-sentence-at-point t) :type 'user-error)))
+
+(ert-deftest pel-read/sentence-at-point/returns-sentence-when-dont-move-is-nil ()
+  "Returns correct sentence text even when DONT-MOVE is nil (move-after mode)."
+  (pel-read-test--with-buffer "Hello world.  Goodbye."
+    (cl-letf (((symbol-function 'pel-forward-word-start)
+               (lambda () nil)))
+      (should (string= "Hello world." (pel-sentence-at-point))))))
+
+(ert-deftest pel-read/sentence-at-point/whitespace-only-signals-user-error ()
+  "Signals `user-error' when the buffer contains only whitespace.
+Some Emacs versions (e.g. 26.1, 28.1) return non-nil bounds for whitespace
+when using bounds-of-thing-at-point for \\='sentence; pel-thing-at-point guards
+against this case for \\='word, \\='sentence and \\='paragraph."
+  (pel-read-test--with-buffer "   "
     (should-error (pel-sentence-at-point t) :type 'user-error)))
 
 ;; ---------------------------------------------------------------------------
@@ -189,6 +214,22 @@
 (ert-deftest pel-read/paragraph-at-point/no-paragraph-signals-user-error ()
   "Signals `user-error' when no paragraph exists at point."
   (with-temp-buffer
+    (should-error (pel-paragraph-at-point t) :type 'user-error)))
+
+(ert-deftest pel-read/paragraph-at-point/returns-paragraph-when-dont-move-is-nil ()
+  "Returns correct paragraph text even when DONT-MOVE is nil (move-after mode)."
+  (pel-read-test--with-buffer "First paragraph.\n\nSecond paragraph."
+    (cl-letf (((symbol-function 'pel-forward-word-start)
+               (lambda () nil)))
+      (let ((result (pel-paragraph-at-point)))
+        (should (stringp result))
+        (should (string-match-p "First paragraph" result))))))
+
+(ert-deftest pel-read/paragraph-at-point/whitespace-only-signals-user-error ()
+  "Signals `user-error' when the buffer contains only whitespace.
+Some Emacs versions return non-nil bounds for whitespace when using
+bounds-of-thing-at-point for \\='paragraph; pel-thing-at-point guards this."
+  (pel-read-test--with-buffer "   "
     (should-error (pel-paragraph-at-point t) :type 'user-error)))
 
 ;; ---------------------------------------------------------------------------
@@ -237,6 +278,15 @@
       (pel-string-at-point "\"")
       (should (= pos (point))))))
 
+(ert-deftest pel-read/string-at-point/point-at-closing-delimiter ()
+  "Point at the closing delimiter: forward-char overshoots, returns empty string.
+When point is on a closing delimiter, the implementation treats it as an
+opening delimiter (at-delimiter is non-nil), steps forward one char past it,
+then finds no further content before the next delimiter → returns \"\"."
+  (pel-read-test--with-buffer "\"hello\""
+    (goto-char 7)                         ; at closing quote (position 7)
+    (should (string= "" (pel-string-at-point "\"")))))
+
 ;; ---------------------------------------------------------------------------
 ;; pel-move-to-face
 
@@ -267,6 +317,19 @@
     ;; limit is 4, face starts at 5 → not found
     (should (null (pel-move-to-face 'pel-test-face 4)))))
 
+(ert-deftest pel-read/move-to-face/point-already-on-face ()
+  "Returns current point immediately when point is already on the target face.
+The while loop's condition is false from the start so point never advances."
+  (with-temp-buffer
+    (insert "abcdef")
+    ;; positions 1-4 ("abcd") carry the face
+    (put-text-property 1 5 'face 'pel-test-face)
+    (goto-char (point-min))             ; position 1 — already on the face
+    (let ((result (pel-move-to-face 'pel-test-face (point-max))))
+      (should result)                   ; must not be nil
+      (should (= result 1))
+      (should (= (point) 1)))))         ; point must not have moved
+
 ;; ---------------------------------------------------------------------------
 ;; pel-move-past-face
 
@@ -277,7 +340,7 @@
     (put-text-property 1 5 'face 'pel-test-face)
     (goto-char (point-min))
     (let ((result (pel-move-past-face 'pel-test-face (point-max))))
-      (should result)          ; explicit non-nil guard
+      (should result)                   ; explicit non-nil guard
       (should (= result 5))
       (should (= (point) 5)))))
 
@@ -313,8 +376,8 @@
   "Returns the text carrying the custom-variable-tag face."
   (with-temp-buffer
     (insert "   My Symbol   rest of line")
-    ;;       123456789012345
-    ;; "My Symbol" occupies positions 4-12 (9 chars, exclusive end = 13)
+    ;; pos:  123456789012345
+    ;; ------> "My Symbol" occupies positions 4-12 (9 chars, exclusive end = 13)
     (put-text-property 4 13 'face 'custom-variable-tag)
     (goto-char (point-min))
     (should (string= "My Symbol" (pel-customize-symbol-at-line)))))
@@ -352,82 +415,6 @@
     (put-text-property 1 12 'face 'custom-variable-tag)
     (goto-char (point-min))
     (should (string= "Foo Bar Baz" (pel-customize-symbol-at-line)))))
-
-;; ---------------------------------------------------------------------------
-;; pel-string-at-point — additional cases
-
-(ert-deftest pel-read/string-at-point/point-at-closing-delimiter ()
-  "Point at the closing delimiter: forward-char overshoots, returns empty string.
-When point is on a closing delimiter, the implementation treats it as an
-opening delimiter (at-delimiter is non-nil), steps forward one char past it,
-then finds no further content before the next delimiter → returns \"\"."
-  (pel-read-test--with-buffer "\"hello\""
-    (goto-char 7)                         ; at closing quote (position 7)
-    (should (string= "" (pel-string-at-point "\"")))))
-
-;; ---------------------------------------------------------------------------
-;; pel-move-to-face — additional cases
-
-(ert-deftest pel-read/move-to-face/point-already-on-face ()
-  "Returns current point immediately when point is already on the target face.
-The while loop's condition is false from the start so point never advances."
-  (with-temp-buffer
-    (insert "abcdef")
-    ;; positions 1-4 (\"abcd\") carry the face
-    (put-text-property 1 5 'face 'pel-test-face)
-    (goto-char (point-min))             ; position 1 — already on the face
-    (let ((result (pel-move-to-face 'pel-test-face (point-max))))
-      (should result)                   ; must not be nil
-      (should (= result 1))
-      (should (= (point) 1)))))         ; point must not have moved
-
-;; ---------------------------------------------------------------------------
-;; pel-word-at-point — additional cases
-
-(ert-deftest pel-read/word-at-point/returns-word-when-dont-move-is-nil ()
-  "Returns the correct word string even when DONT-MOVE is nil (move-after mode).
-Stubs pel-forward-word-start so the test does not depend on pel-navigate."
-  (pel-read-test--with-buffer "emacs lisp"
-    (cl-letf (((symbol-function 'pel-forward-word-start)
-               (lambda () nil)))        ; stub: suppress real navigation
-      (should (string= "emacs" (pel-word-at-point))))))
-
-;; ---------------------------------------------------------------------------
-;; pel-sentence-at-point — additional cases
-
-(ert-deftest pel-read/sentence-at-point/returns-sentence-when-dont-move-is-nil ()
-  "Returns correct sentence text even when DONT-MOVE is nil (move-after mode)."
-  (pel-read-test--with-buffer "Hello world.  Goodbye."
-    (cl-letf (((symbol-function 'pel-forward-word-start)
-               (lambda () nil)))
-      (should (string= "Hello world." (pel-sentence-at-point))))))
-
-(ert-deftest pel-read/sentence-at-point/whitespace-only-signals-user-error ()
-  "Signals `user-error' when the buffer contains only whitespace.
-Some Emacs versions (e.g. 26.1, 28.1) return non-nil bounds for whitespace
-when using bounds-of-thing-at-point for \\='sentence; pel-thing-at-point guards
-against this case for \\='word, \\='sentence and \\='paragraph."
-  (pel-read-test--with-buffer "   "
-    (should-error (pel-sentence-at-point t) :type 'user-error)))
-
-;; ---------------------------------------------------------------------------
-;; pel-paragraph-at-point — additional cases
-
-(ert-deftest pel-read/paragraph-at-point/returns-paragraph-when-dont-move-is-nil ()
-  "Returns correct paragraph text even when DONT-MOVE is nil (move-after mode)."
-  (pel-read-test--with-buffer "First paragraph.\n\nSecond paragraph."
-    (cl-letf (((symbol-function 'pel-forward-word-start)
-               (lambda () nil)))
-      (let ((result (pel-paragraph-at-point)))
-        (should (stringp result))
-        (should (string-match-p "First paragraph" result))))))
-
-(ert-deftest pel-read/paragraph-at-point/whitespace-only-signals-user-error ()
-  "Signals `user-error' when the buffer contains only whitespace.
-Some Emacs versions return non-nil bounds for whitespace when using
-bounds-of-thing-at-point for \\='paragraph; pel-thing-at-point guards this."
-  (pel-read-test--with-buffer "   "
-    (should-error (pel-paragraph-at-point t) :type 'user-error)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-read-test)
