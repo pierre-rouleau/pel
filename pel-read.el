@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-17 11:33:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 14:21:39 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -134,7 +134,9 @@ If ALLOW-SPACE is non-nil, then the space character is never included in
 the delimiters so it becomes possible to capture a delimited string with
 spaces even when point is located between the delimiters.
 
-If there is no character next, return an empty string."
+If there is no character next, return an empty string.
+If there is no delimiter found before end of buffer return the text between
+point and the end of the buffer. "
   (save-excursion
     (let ((next-char (char-after)))
       (if next-char
