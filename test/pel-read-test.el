@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, April 16 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-17 09:37:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 10:01:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -26,6 +26,8 @@
 ;;; Commentary:
 ;;
 ;; Test pel-read.el functions.
+;;
+;; Use make to run the tests from the command line.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -78,6 +80,13 @@
   "Returns the sentence text at point."
   (pel-read-test--with-buffer "Hello world.  Goodbye."
     (should (string= "Hello world." (pel-thing-at-point 'sentence)))))
+
+(ert-deftest pel-read/thing-at-point/returns-paragraph ()
+  "Returns the paragraph text when point is inside a paragraph."
+  (pel-read-test--with-buffer "First paragraph.\n\nSecond paragraph."
+    (let ((result (pel-thing-at-point 'paragraph)))
+      (should (stringp result))
+      (should (string-match-p "First paragraph" result)))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-word-at-point
@@ -375,13 +384,16 @@ The while loop's condition is false from the start so point never advances."
 ;; ---------------------------------------------------------------------------
 ;; pel-word-at-point — additional cases
 
-(ert-deftest pel-read/word-at-point/returns-word-when-stay-is-nil ()
-  "Returns the correct word string even when STAY is nil (move-after mode).
+(ert-deftest pel-read/word-at-point/returns-word-when-dont-move-is-nil ()
+  "Returns the correct word string even when DONT-MOVE is nil (move-after mode).
 Stubs pel-forward-word-start so the test does not depend on pel-navigate."
   (pel-read-test--with-buffer "emacs lisp"
     (cl-letf (((symbol-function 'pel-forward-word-start)
                (lambda () nil)))        ; stub: suppress real navigation
       (should (string= "emacs" (pel-word-at-point))))))
+
+;; ---------------------------------------------------------------------------
+;; pel-sentence-at-point — additional cases
 
 (ert-deftest pel-read/sentence-at-point/returns-sentence-when-dont-move-is-nil ()
   "Returns correct sentence text even when DONT-MOVE is nil (move-after mode)."
@@ -389,6 +401,17 @@ Stubs pel-forward-word-start so the test does not depend on pel-navigate."
     (cl-letf (((symbol-function 'pel-forward-word-start)
                (lambda () nil)))
       (should (string= "Hello world." (pel-sentence-at-point))))))
+
+(ert-deftest pel-read/sentence-at-point/whitespace-only-signals-user-error ()
+  "Signals `user-error' when the buffer contains only whitespace.
+Some Emacs versions (e.g. 26.1, 28.1) return non-nil bounds for whitespace
+when using bounds-of-thing-at-point for \\='sentence; pel-thing-at-point guards
+against this case for \\='word, \\='sentence and \\='paragraph."
+  (pel-read-test--with-buffer "   "
+    (should-error (pel-sentence-at-point t) :type 'user-error)))
+
+;; ---------------------------------------------------------------------------
+;; pel-paragraph-at-point — additional cases
 
 (ert-deftest pel-read/paragraph-at-point/returns-paragraph-when-dont-move-is-nil ()
   "Returns correct paragraph text even when DONT-MOVE is nil (move-after mode)."
@@ -398,17 +421,6 @@ Stubs pel-forward-word-start so the test does not depend on pel-navigate."
       (let ((result (pel-paragraph-at-point)))
         (should (stringp result))
         (should (string-match-p "First paragraph" result))))))
-
-;; ---------------------------------------------------------------------------
-;; pel-sentence-at-point — additional cases
-
-(ert-deftest pel-read/sentence-at-point/whitespace-only-signals-user-error ()
-  "Signals `user-error' when the buffer contains only whitespace.
-Some Emacs versions (e.g. 26.1, 28.1) return non-nil bounds for whitespace
-when using bounds-of-thing-at-point for \\='sentence; pel-thing-at-point guards
-against this case for \\='word, \\='sentence and \\='paragraph."
-  (pel-read-test--with-buffer "   "
-    (should-error (pel-sentence-at-point t) :type 'user-error)))
 
 (ert-deftest pel-read/paragraph-at-point/whitespace-only-signals-user-error ()
   "Signals `user-error' when the buffer contains only whitespace.

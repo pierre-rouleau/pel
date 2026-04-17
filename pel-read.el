@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-17 09:33:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 10:02:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -74,7 +74,7 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
                (setq text (buffer-substring-no-properties
                            (car bounds)
                            (cdr bounds)))
-               ;; Emacs 26.1: bounds-of-thing-at-point for 'word 'sentence
+               ;; Emacs 26.1: bounds-of-thing-at-point for 'word, 'sentence
                ;; or 'paragraph can return non-nil bounds covering only
                ;; whitespace; reject that case.
                (or (not (memq thing '(word sentence paragraph)))
