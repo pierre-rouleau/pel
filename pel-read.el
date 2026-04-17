@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-17 10:53:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-17 11:15:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -179,7 +179,7 @@ before LIMIT."
   (while (and (not (pel-read--face-at-point-p face))
               (< (point) limit))
     (forward-char 1))
-  (if (eq (point) limit)
+  (if (= (point) limit)
       nil
     (point)))
 
@@ -204,7 +204,7 @@ The text may include space characters.
 The text must be on a single line.
 Return nil if no customize symbol is present on the current line."
   ;; Identify the symbol by the face of text.
-  ;; Start from the beginning o the line.
+  ;; Start from the beginning of the line.
   (save-excursion
     (let (p1                            ; point of first char
           p2                            ; point of last char
