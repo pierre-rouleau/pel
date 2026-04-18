@@ -153,13 +153,6 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-c-search-preproc-if-set
     pel-c-fix-preproc-if-problems)
 
-  (pel-autoload-function "pel-cc-find" for:
-    pel-cc-find-via-pel-ini
-    pel-cc-find-activate-finder-method)
-  (pel-autoload "pel-cc-find" for:
-    pel-cc-set-file-finder-ini-tool-name
-    pel-cc-find-show-status)
-
   (pel-autoload "pel-cc-navigate" for:
     pel-cc-to-switch-begin
     pel-cc-to-switch-end
@@ -452,7 +445,9 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload-function "pel-ffind" for:
     pel-ffind
-    pel-generic-find-file)
+    pel-generic-find-file
+    pel-ffind-set-devtool-name
+    pel-ffind-show-status)
 
   (pel-autoload "pel-file" for:
     pel-show-filename-at-point
@@ -774,7 +769,7 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-open" for:
     pel-open-at-point
-    pel-set-open-at-point-dir
+    pel-set-open-at-point-dir-home
     pel-browse-filename-at-point
     pel-open-url-at-point
     pel-show-filemng-status)

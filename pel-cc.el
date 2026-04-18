@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 14:38:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-18 11:03:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,18 +25,59 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;;  This file contains utilities to help manage the various CC modes.
+;;  This file contains utilities to help manage the various CC modes: AWK, C,
+;;  C++, D, Objective-C and Pike major modes.
+
+;; Insert line break suitable to the context
+;; - `pel-cc-newline'
+;;
+;; Control of the RET key behaviour in cc-modes
+;;  - `pel-cc-change-newline-mode'
+;;
+;; Indentation Control
+;;  * `pel-cc-set-indent-width'
+;;
+;; C/C++ Comment Style Selection
+;;  * `pel-c-toggle-comment-style'
+;;
+;; eldoc support for C
+;;  * `pel-toggle-c-eldoc-mode'
+;;
+;; Show CC-Mode Setup/Status/Settings Information
+;;  * `pel-cc-mode-info'
+;;    - `pel-cc-bracket-style-for'
+;;    - `pel-cc-c-default-style-for'
+;;    - `pel-cc-electric-keys'
+;;      - `pel-cc-filter-electric-key'
+;;        - `pel-cc-key-electric-p'
+;;
+;; Major-mode dispatcher for .h files
+;;  - `pel-cc-mode'
+;;    - `pel-is-objective-c-buffer'
+;;    - `pel-is-cpp-buffer'
+;;      - `pel--isa-buffer-of'
+;;
+;; File Type identification utilities
+;;  - `pel-is-objective-c-file'
+;;    . `pel-is-objective-c-buffer'
+;;  - `pel-is-cpp-file'
+;;    . `pel-is-cpp-buffer'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)
+(require 'pel--base)         ; use: `pel-current-buffer-starts-with'
 (require 'pel--options)
-(require 'pel-ffind)         ; use: `pel-ffind-project-directory'
+(require 'pel-ffind)         ; use: `pel-ffind-project-rootdir'
+(require 'cc-vars)           ; use: `c-basic-offset'
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+;;* Insert line break suitable to the context
+;;  =========================================
 
 (defvar-local pel-cc-newline-mode 'context-newline
   "Operation mode of the RET key in CC mode.
@@ -94,13 +135,20 @@ text alignment done by the function `align'."
         (align (point) end)))
     mode-used))
 
+;;* Control of the RET key behaviour in cc-modes
+;;  ============================================
+
 ;;-pel-autoload
 (defun pel-cc-change-newline-mode ()
-  "Change behaviour of function `pel-cc-newline'.
+  "Change the way the RET key behaves in the CC modes.
+
+Change behaviour of function `pel-cc-newline', and display the new mode
+in the echo area.
 
 Changes the mode to the next mode with the following order:
-+-> context newline -> newline and indent -> just newline no indent ->+
-|----------------------<----------------------------------------------|
+- context newline       <--+
+- newline and indent       |
+- just newline no indent ->+
 
 Display and return the new value of the mode."
   (interactive)
@@ -114,7 +162,91 @@ Display and return the new value of the mode."
                    'context-newline)))
     (message "Return key now does: %S" pel-cc-newline-mode)))
 
-;; --
+;; ---------------------------------------------------------------------------
+;;* Indentation Control
+;;  ===================
+
+;;-pel-autoload
+(defun pel-cc-set-indent-width (&optional new-width)
+  "Interactively change the Indentation with for current buffer to NEW-WIDTH.
+
+Prompt if not specified."
+  (interactive
+   (list (read-number
+          (format "Indentation width (0 to restore default) [%s]: "
+                  c-basic-offset))))
+  (if (boundp 'c-basic-offset)
+      (progn
+        (cond
+         ((> new-width 0)
+          (setq-local c-basic-offset new-width))
+         ((= new-width 0)
+          (setq-local c-basic-offset
+                      (pel-major-mode-symbol-value "pel-%s-indent-width")))
+         (t (user-error "Enter 0 or positive value!")))
+        (message "indentation is now %s" c-basic-offset))
+    (error "c-basic-offset is not loaded!")))
+
+;; ---------------------------------------------------------------------------
+;;* C/C++ Comment Style Selection
+;;  =============================
+;;
+;; Select between /* C */ and // C++ style comments.
+;;
+;; Note: this does not support the Objective-C JavaDoc/Doxygen and the
+;; HeaderDoc styles.  These could be added to C and C++ as well.
+;;
+;; /**
+;;  * Javadoc/Doxygen Objective-C style.
+;;  * Calculates the area.
+;;  * @param radius The radius of the circle.
+;;  * @return The area.
+;;  */
+;;
+;;
+;; /*!
+;;  * @brief A brief description of the method using HeaderDoc style.
+;;  */
+
+;;-pel-autoload
+(defun pel-c-toggle-comment-style (&optional arg)
+  "Toggle the comment style between block and line comments.
+Calls `c-toggle-comment-style' and print a message describing
+the newly used comment style.
+
+Optional numeric ARG, if supplied, switches to block comment
+style when positive, to line comment style when negative, and
+just toggles it when zero or left out.
+
+This action does nothing when the mode only has one comment style."
+  (interactive "P")
+  (require 'cc-cmds)
+  (when (fboundp 'c-toggle-comment-style)
+    (c-toggle-comment-style arg)
+    (message "Now commenting with: %s %s" comment-start comment-end)))
+
+;; ---------------------------------------------------------------------------
+;;* eldoc support for C
+;;  ===================
+
+;;-pel-autoload
+(defun pel-toggle-c-eldoc-mode ()
+  "Toggle c-eldoc mode on/off."
+  (interactive)
+  (if (pel-eglot-active-p)
+      (user-error "This buffer uses eglot; that has built-in eldoc support!")
+    (require 'c-eldoc nil :noerror)
+    (when (fboundp 'c-turn-on-eldoc-mode)
+      (if eldoc-mode
+          (progn
+            (eldoc-mode -1)
+            (message "eldoc-mode now OFF."))
+        (c-turn-on-eldoc-mode)
+        (message "c-eldoc-mode now ON. ")))))
+
+;; ---------------------------------------------------------------------------
+;;* Show CC-Mode Setup/Status/Settings Information
+;;  ==============================================
 
 (defun pel-cc-key-electric-p (key)
   "Return non-nil if KEY is electric, nil otherwise."
@@ -130,7 +262,7 @@ Display and return the new value of the mode."
 (defun pel-cc-electric-keys ()
   "Return a string with the electric keys."
   (seq-filter 'pel-cc-filter-electric-key
-          (mapcar 'string "#*/<>(){}:;,")))
+          (mapcar #'string "#*/<>(){}:;,")))
 
 (defun pel-cc-c-default-style-for (mode)
   "Return styles identified in variable `c-default-style' for MODE.
@@ -169,11 +301,9 @@ of the last report."
   (let* ((is-c (eq major-mode 'c-mode))
          (pel-insert-symbol-content-context-buffer (current-buffer))
          (not-avail-msg "not available for this mode")
-         (file-finder-method (pel-major-mode-symbol-value-or ;27
-                              "pel-%s-file-finder-method" "(not supported)"))
          (info
           (format
-           "%s state:
+           "%s
 - active style        : %s. This c-default-style is %s.
 - Electric characters : %s
 - RET mode            : %S%s
@@ -189,10 +319,8 @@ of the last report."
 - Comment style       : %s
 - Hungry delete       : %s
 - Project root        : %s
-- File finder method  : %s
-- %s
-- Extra Searched dirs : %s"
-           major-mode                    ; 1
+- File searching info : type  %s in %s buffer to get more information about file searching mechanism."
+           (pel-as-bold (format "%s state:" major-mode)) ; 1
            (if (boundp 'c-default-style) ; 2
                (alist-get major-mode c-default-style)
              "Unknown - c-default-style not loaded")
@@ -274,34 +402,12 @@ of the last report."
                                      (substitute-command-keys "\
 off, but the \\[c-hungry-delete-forward] and \\[c-hungry-delete-backwards] keys and their <f11> bindings are available.")
                                      not-avail-msg)
-           ;; TODO: move following code close to file finder logic
-           (or (pel-ffind-project-directory) ; 28
-               (format
-                "None found, searching for files identified in pel-project-root-identifiers: %s"
-                pel-project-root-identifiers))
-           file-finder-method           ; 29
-           (cond                        ; 30
-            ((eq file-finder-method 'generic)
-             (format "%-20s: %s"
-                     " pel-ffind-executable"
-                     pel-ffind-executable))
-            ((eq file-finder-method 'pel-ini-file)
-             (format "%-20s: %s"
-                     " tool chain"
-                     (or (pel-major-mode-symbol-value-or
-                          "pel--%s-file-finder-ini-tool-name" "(not supported)")
-                         "none specified")))
-            ((stringp file-finder-method)
-             (format
-              " Search in path listed in environment variable %s"
-              file-finder-method))
-            ((listp file-finder-method)
-             (format
-              " Search in specific directories: %s" file-finder-method))
-            (t "No file finder supported."))
-           (or (pel-major-mode-symbol-value
-                "pel-%s-file-searched-extra-dir-trees")
-               ""))))
+           ;; Project root
+           (or (pel-ffind-project-rootdir) ; 28
+               "None found")
+           ;; File searching info
+           (pel-key-binding-string 'pel-ffind-show-status) ; 29
+           (current-buffer))))
     (pel-print-in-buffer
      (pel-string-with-major-mode "*pel-%s-info*")
      (pel-string-with-major-mode "*%s Control")
@@ -318,8 +424,6 @@ off, but the \\[c-hungry-delete-forward] and \\[c-hungry-delete-backwards] keys 
        (pel-insert-mode-symbol-content-line-when-bound "pel-%s-multiline-comments")
        (pel-insert-mode-symbol-content-line "pel-%s-tab-width")
        (pel-insert-mode-symbol-content-line "pel-%s-use-tabs")
-       (unless (string= file-finder-method "(not supported)")
-         (pel-insert-mode-symbol-content-line "pel-%s-file-finder-method"))
        (pel-insert-mode-symbol-content-line "pel--%s-file-finder-ini-tool-name")
        (pel-insert-mode-symbol-content-line "pel-%s-file-searched-extra-dir-trees")
        (pel-insert-symbol-content-line 'pel-ffind-executable)
@@ -340,18 +444,20 @@ off, but the \\[c-hungry-delete-forward] and \\[c-hungry-delete-backwards] keys 
        (pel-insert-symbol-content-line 'c-block-comment-ender)
        (pel-insert-symbol-content-line 'c-block-comment-prefix)
 
-       (insert "\n\n*Pre-processor indentation control. (use c-toggle-cpp-indent-to-body, <f12> <f4> #, to toggle) ")
+       (pel-insert-bold "\n\n*Pre-processor indentation control: ")
+       (insert "(use c-toggle-cpp-indent-to-body, <f12> <f4> #, to toggle) ")
        (pel-insert-symbol-content-line 'c-cpp-indent-to-body-flag)
        (pel-insert-list-content 'c-cpp-indent-to-body-directives nil nil nil :on-same-line)
        (pel-insert-symbol-content-line 'c-electric-pound-behavior)
 
-       (insert "\n\n*Style control: (use c-set-offset, C-c C-o, to modify)")
+       (pel-insert-bold "\n\n*Style control: ")
+       (insert "(use c-set-offset, C-c C-o, to modify)")
        (pel-insert-list-content  'c-syntactic-context)
        (pel-insert-list-content  'c-offsets-alist nil nil nil :on-same-line)
 
-       (insert "\n\n*File extension association:")
+       (pel-insert-bold "\n\n*File extension association:")
        (pel-insert-symbol-content-line 'pel-auto-mode-alist)
-       (insert "\n\n*File skeleton control:")
+       (pel-insert-bold "\n\n*File skeleton control:")
        (pel-insert-mode-symbol-content-line "pel-%s-skel-use-separators")
        (pel-insert-mode-symbol-content-line "pel-%s-skel-insert-file-timestamp")
        (pel-insert-mode-symbol-content-line "pel-%s-skel-with-license")
@@ -375,93 +481,67 @@ off, but the \\[c-hungry-delete-forward] and \\[c-hungry-delete-backwards] keys 
          (pel-insert-symbol-content-line 'pel-c++-class-has-doc-block)
          (pel-insert-symbol-content-line 'pel-c++-class-doc-section-titles)
          (pel-insert-symbol-content-line 'pel-c++-class-members-sections))
-       (insert "\n\n See Also:\n- ")
+       (pel-insert-bold "\n\n*See Also:\n- ")
        (pel-insert-symbol 'auto-mode-alist)
        (insert "\n\n"))
      (unless append :clear-buffer)
      :use-help-mode
      (unless append :show-top))))
 
-;; --
-
-(defun pel-cc-set-indent-width (&optional new-width)
-  "Interactively change the Indentation with for current buffer to NEW-WIDTH.
-
-Prompt if not specified."
-  (interactive "nIndentation width (0 to restore default): ")
-  (if (boundp 'c-basic-offset)
-      (progn
-        (cond
-         ((> new-width 0)
-          (setq-local c-basic-offset new-width))
-         ((= new-width 0)
-          (setq-local c-basic-offset
-                      (pel-major-mode-symbol-value "pel-%s-indent-width")))
-         (t (user-error "Enter 0 or positive value!")))
-        (message "indentation is now %s" c-basic-offset))
-    (error "c-basic-offset is not loaded!")))
-
 ;; ---------------------------------------------------------------------------
+;;* Major-mode dispatcher for .h files
+;;  ==================================
+;;
+;; Distinguish Objective-C, C++ and C Code in files by looking for
+;; language specific keywords.
 
-(defun pel-c-toggle-comment-style (&optional arg)
-  "Toggle the comment style between block and line comments.
-Calls `c-toggle-comment-style' and print a message describing
-the newly used comment style.
-
-Optional numeric ARG, if supplied, switches to block comment
-style when positive, to line comment style when negative, and
-just toggles it when zero or left out.
-
-This action does nothing when the mode only has one comment style."
-  (interactive "P")
-  (require 'cc-cmds)
-  (when (fboundp 'c-toggle-comment-style)
-    (c-toggle-comment-style arg)
-    (message "Now commenting with: %s %s" comment-start comment-end)))
-
-;; ---------------------------------------------------------------------------
-(defun pel-toggle-c-eldoc-mode ()
-  "Toggle c-eldoc mode on/off."
-  (interactive)
-  (if (pel-eglot-active-p)
-      (user-error "This buffer uses eglot; that has built-in edoc support!")
-    (require 'c-eldoc nil :noerror)
-    (when (fboundp 'c-turn-on-eldoc-mode)
-      (if eldoc-mode
-          (progn
-            (eldoc-mode -1)
-            (message "eldoc-mode now OFF."))
-        (c-turn-on-eldoc-mode)
-        (message "c-eldoc-mode now ON. ")))))
-
-;; ---------------------------------------------------------------------------
-;; Distinguish Objective-C, C++ and C Code
-;; ---------------------------------------
-
-(defconst pel-cpp-keywords '("class "
-                             "final"
-                             "namespace "
-                             "override"
-                             "private:"
-                             "protected:"
-                             "public:"
-                             "std::"
-                             "template<"
-                             "using namespace "
-                             "virtual ")
+(defconst pel-cpp-keywords
+  '("class "
+    "namespace "
+    "using "
+    "final"
+    "override"
+    "private:"
+    "protected:"
+    "public:"
+    "std::"
+    "template<"
+    "virtual "
+    "C++ FILE:"                         ; PEL header placed at top of file
+    )
   "Strings only found in C++ code.")
 
 (defconst pel-cpp-regexp (rx-to-string
                           `(: (or ,@pel-cpp-keywords)))
   "Regexp string to search for C++ distinguishing code.")
 
-(defconst pel-objective-c-keywords '("@dynamic"
-                                     "@end"
-                                     "@implementation"
-                                     "@interface"
-                                     "@property"
-                                     "@protocol"
-                                     "@synthesize")
+(defconst pel-objective-c-keywords
+  '(
+    "@interface"
+    "@implementation"
+    "@end"
+    "@protocol"
+    "@class"
+    ;;
+    "@property"
+    "@synthesize"
+    "@dynamic"
+    "@selector"
+    "@encode"
+    ;;
+    "@public"
+    "@protected"
+    "@private"
+    "@package"
+    ;;
+    "@try"
+    "@catch"
+    "@finally"
+    "@throw"
+    "@synchronized"
+    ;;
+    "#import <"  ; '#import "fpath"' is supported by Microsoft C++ COM
+    )
   "Symbols only found in Objective-C code.")
 
 (defconst pel-objective-c-regexp (rx-to-string
@@ -477,31 +557,29 @@ Return nil otherwise."
       (while (and (not found)
                   (re-search-forward lang-regexp nil t))
         (save-match-data
-          (when (pel-inside-code (point))
-            (setq found t)))))
-    found))
+          (let ((original-mode major-mode) ; Save current mode function
+                ;; prevent major mode message output
+                (inhibit-message t))
+            (unwind-protect
+                (progn
+                  ;; temporary use C mode to allow detection of comments
+                  ;; that are supported by all C, C++ and Objective-C
+                  (c-mode)
+                  (when (pel-inside-code (point))
+                    (setq found t)))
+              ;; Restore original mode
+              (funcall original-mode)))))
+      found)))
 
 (defun pel-is-objective-c-buffer ()
   "Return t if current buffer holds Objective-C code, nil otherwise."
-  (pel--isa-buffer-of pel-objective-c-regexp))
-
-;; (defun pel-is-objective-c-file (fpath)
-;;   "Return t if file at FPATH contains Objective-C code.
-;; Return nil otherwise."
-;;   (with-temp-buffer
-;;     (insert-file-contents fpath)
-;;     (pel-is-objective-c-buffer)))
+  (or (pel--isa-buffer-of pel-objective-c-regexp)
+      (pel-current-buffer-starts-with "// OBJC FILE: ")))
 
 (defun pel-is-cpp-buffer ()
   "Return t if current buffer holds C++ code, nil otherwise."
-  (pel--isa-buffer-of pel-cpp-regexp))
-
-;; (defun pel-is-cpp-file (fpath)
-;;   "Return t if file at FPATH contains C++ code.
-;; Return nil otherwise."
-;;   (with-temp-buffer
-;;     (insert-file-contents fpath)
-;;     (pel-is-cpp-buffer)))
+  (or (pel--isa-buffer-of pel-cpp-regexp)
+      (pel-current-buffer-starts-with "// C++ FILE: ")))
 
 ;;-pel-autoload
 (defun pel-cc-mode ()
@@ -527,6 +605,24 @@ the file and the values of `pel-use-c', `pel-use-c++' and `pel-use-objc'."
              (fboundp 'c-ts-mode))
         (c-ts-mode)
       (c-mode)))))
+
+;;* File Type identification utilities
+;;  ==================================
+
+(defun pel-is-objective-c-file (fpath)
+  "Return t if file at FPATH contains Objective-C code.
+Return nil otherwise."
+  (with-temp-buffer
+    (insert-file-contents fpath)
+    (pel-is-objective-c-buffer)))
+
+(defun pel-is-cpp-file (fpath)
+  "Return t if file at FPATH contains C++ code.
+Return nil otherwise."
+  (with-temp-buffer
+    (insert-file-contents fpath)
+    (pel-is-cpp-buffer)))
+
 ;;; --------------------------------------------------------------------------
 (provide 'pel-cc)
 

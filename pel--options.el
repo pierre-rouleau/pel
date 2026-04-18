@@ -1751,8 +1751,6 @@ Activating the `pel-use-lispy' user-option indirectly activates
                    "https://github.com/magnars/multiple-cursors.el"))
 (pel-put pel-use-multiple-cursors :also-required-when 'pel-use-lispy)
 
-
-
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-cut-and-paste
 ;; -------------------------
@@ -2178,12 +2176,6 @@ This is only available on Emacs 29.1 and later."
   :type 'boolean
   :safe #'booleanp)
 (pel-put pel-use-ini :package-is :in-utils)
-(pel-put pel-use-ini :also-required-when
-         '(or (eq pel-awk-file-finder-method (quote pel-ini-file))
-              (eq pel-c-file-finder-method   (quote pel-ini-file))
-              (eq pel-c++-file-finder-method (quote pel-ini-file))
-              (eq pel-objc-file-finder-method (quote pel-ini-file))
-              (eq pel-pike-file-finder-method (quote pel-ini-file))))
 
 (defcustom pel-use-emacs-toml nil
   "Whether PEL supports the emacs-toml to read/write .toml files.
@@ -2282,14 +2274,14 @@ A Major mode."
   :group 'files
   :link `(url-link :tag "File Management PDF" ,(pel-pdf-file-url "file-mngt")))
 
-(defcustom pel-open-file-at-point-dir  nil
+(defcustom pel-open-file-at-point-dir-home  nil
   "Root directory from where `pel-open-file-at-point' opens file.
 
 This is used by `pel-open-at-point' standard mode of operation, as opposed to
 the programming language specific operations.
 
 This user-option acts as the default for a buffer.  You can change
-the buffer\\='s local value with `pel-set-open-file-at-point-dir'
+the buffer\\='s local value with `pel-set-open-file-at-point-dir-home'
 Can be one of the following:
 - nil     : use parent directory of currently visited file, the default.
             If buffer is not visiting a file, then use the buffer\\='s current
@@ -2410,8 +2402,9 @@ Note that:
   "Name of the file finding executable that `pel-ffind' uses.
 
 Select one of:
+- auto    : Same as fd, but issue no warning when using find as fallback.
 - fd      : use the faster fd utility or its fdfind equivalent if available,
-            use find otherwise.
+            use find otherwise (but issue a warning).
 - find    : use the Unix ubiquitous find utility.
 - command : Specify a command line with the following keywords that will
             be replaced by their corresponding string:
@@ -2429,8 +2422,12 @@ Select one of:
   :group 'pel-pkg-for-c++
   :group 'pel-pkg-for-c
   :type '(choice
-          (const :tag "Use fd or fdfind if available, otherwise use find" fd)
-          (const :tag "Use Unix find" find)
+          (const
+           :tag "auto: Use fd or fdfind if available, otherwise use find" auto)
+          (const
+           :tag
+           "fd: Use fd or fdfind if available, otherwise use find and warn" fd)
+          (const :tag "find: Use Unix find" find)
           (string :tag "Use this command line"
                   :value "find -L {DIRNAMES} -name {FNAME} -type f")))
 
@@ -5408,288 +5405,337 @@ A minor mode that provides a scroll bar inside the modeline.."
   "PEL customization for programming languages."
   :group 'pel-package-use)
 
+(defcustom pel-dev-tools nil
+  "Source directories associated with tool names.
 
-;; Define a macro used to declare file finding user-options used by
-;; programming language major modes.
-;;
-;; First define the docstring format strings of the defcustom user-options
-;; that are defined by the macro.
+Identify one or several directories and directory trees used by a tool
+identified by a tool name: a string that can hold any character except
+white space and colon (\\=':\\=').
 
-(eval-when-compile
-  ;; (defconst pel-LANG-file-searched-dir-trees-for-tools)
-  ;; (defconst pel-LANG-file-searched-dir-trees-for-projects
-  ;;   )
-  (defconst pel-LANG-file-searched-extra-dir-trees-format-string
-    "Directory trees also searched by the %S %f search.
+The tool name can correspond to a real tool, like gcc or anything that
+you find meaningful.  It can also be a convenient name for your
+development identifying a development environment.
 
-Extra common directories, searched recursively on file search operations
-performed in %S buffers.
-The directories are not meant to be tool or project specific, just
-programming language specific: directories used by all tools and all projects.
+The tool names identified here can then be used inside the tool items of
+the `pel-dev-projects' settings part of one or several projects to
+inject the corresponding directories inside those projects.
 
-Each directory may start with ~ to identify the home directory.
-You can also use environment variables inside the directory names;
-those environment variables will be expanded.
+The notes field allow you to store a note that may be useful to you later.
 
-  For example \"$HOME/foo\" will be expanded to the foo sub-directory
-  under the user\\='s home directory.  You can use the reference to the
-  environment variable inside other parts of the directory path.
+The directory and directory tree paths identified in this data structure
+must be absolute paths.  Each one can start with a ~ character to
+identify the user home.  Each one can also refer to environment
+variables using the $VARNAME syntax.
 
-This complements the %f search method identified by the
-`pel-%s-file-finder-method' user-option.")
+The directory paths identified by the path environment variables can
+hold values that use ~ and secondary environment variables using the
+$VARNAME syntax.
 
-  (defconst pel-LANG-file-finder-method-format-string
-    "Method used by `pel-open-at-point' to search %S %fs.
+Note that PEL search the tool directories in order first and then
+searches the directory trees in order.
 
-PEL supports 4 methods to search for %S %fs.
+Extract a directories and directory trees for a tool name with
+`pel-dev-tool-dirs'."
+  :group 'pel-file-finding
+  :group 'pel-pkg-for-project-mng
+  :safe t
+  :type '(repeat
+          (list :tag "Development Tool"
+                (string :tag "Tool Name")
+                (string :tag "Notes")   ; optional. User's quick notes.
+                (repeat :tag "Tool-Specific Directories"
+                        (string :tag "directory"))
+                (repeat :tag "Tool-Specific Directory Trees"
+                        (string :tag "directory tree")))))
 
-Some of the methods search directory trees using the tool identified by
-`pel-ffind-executable'.
+(defcustom pel-dev-libraries nil
+  "Source directories associated with library names.
 
-Optionally, you can also identify a list of extra directory trees to
-search in the `pel-%s-file-searched-extra-dir-trees' user-option.  Each
-method searches these directories.
+Identify one or several directory trees used by a source library
+identified by a library name.  The library name can correspond to a real
+library, like C++ boost or Poco.  It can also be convenient name for
+your own set of code libraries you use in several projects.
 
-The 4 search methods are:
+The library names identified here can then be used inside
+`pel-dev-projects' libraries.
 
-1: generic (the default):
+The library names identified here can then be used inside the library
+items of the `pel-dev-projects' settings part of one or several projects
+to inject the corresponding directories inside those projects.
 
-   Recursively search inside the parent directory tree of the current
-   file.
+The directory paths identified in this data structure must be absolute
+paths.  Each one can start with a ~ character to identify the user home.
+Each one can also refer to environment variables using the $VARNAME
+syntax.  The directory paths identified by the Path environment
+variables can hold values that use ~ and secondary environment variables
+using the $VARNAME syntax.
 
-   The root of the parent directory is identified by the presence of one
-   of the anchor files identified in the `pel-project-root-identifiers'
-   user-option (as done by `pel-ffind-project-directory').
+Note that PEL search the library directories in order first and then
+searches the directory trees in order.
 
-   - Unless it finds a restrictive anchor identified by
-     `pel-project-restricted-root-identifiers', the search continues
-     upward and if multiple anchors are found at different tree levels,
-     the outermost (shortest path) directory is selected.  This broadens
-     the file search scope when nested projects exist while still allowing
-     a restricted project scope for some projects.
-   - If nothing is found, the code searches the `default-directory'.
+Extract a directories and directory trees for a library name with
+`pel-dev-lib-dirs'."
+  :group 'pel-file-finding
+  :group 'pel-pkg-for-project-mng
+  :safe t
+  :type '(repeat
+          (list :tag "Code Library"
+                (string :tag "Library Name")
+                (string :tag "Notes")   ; optional. User's quick notes.
+                (repeat :tag "Library Code Directories"
+                        (string :tag "directory"))
+                (repeat :tag "Library Code Directory Trees"
+                        (string :tag "directory tree")))))
 
-   For some language, such as Erlang, another variable (such as
-   `pel-erlang-extra-directories') can be built by language specific logic
-   and provided as an extra argument to the `pel-ffind-project-directory').
-   This is not done for %S.
+(defun pel-dev--tool-lib-dirs-for (name set)
+  "Utility: return list (dirs dir-trees) for NAME in SET structure."
+  (let ((group (assoc name set)))
+    (list (nth 2 group)
+          (nth 3 group))))
 
-   Directory trees are searched with the file finder tool identified by
-   `pel-ffind-executable'.
+(defmacro pel-dev-tool-dirs (tool-name)
+  "Return (dirs dir-trees) list for specified TOOL-NAME."
+  `(pel-dev--tool-lib-dirs-for ,tool-name pel-dev-tools))
 
-2: Use the [file-finder] section of pel.ini file:
+(defmacro pel-dev-lib-dirs (lib-name)
+  "Return (dirs dir-trees) list for specified LIB-NAME."
+  `(pel-dev--tool-lib-dirs-for ,lib-name pel-dev-libraries))
 
-  Use a file named pel.ini inside the project\\='s directory tree.
-  The function `pel-open-at-point' looks for that file in the parent
-  directory tree identified by the same method as above.
-  The pel.ini file is a .INI file using the format described
-  in https://en.wikipedia.org/wiki/INI_file.  It must have the following
-  elements:
+(defcustom pel-dev-projects nil
+  "Programming projects directory tree structures.
 
-  - section: \\='[file-finder]\\='
-  - key:     \\='project-path\\=' : a list of directories where files
-                                    are searched for the current project.
+This defines the directory tree structure of programming projects.
+The information is used in various PEL commands that need to know what
+directories and directory trees contain source code the project uses.
+The structure allows definition of one or several programming project.
 
-  - extra tool-specific path key(s):
+Each programming project is defined as:
 
-    There can be several other keys with a name made of
-    - the tool chain name
-    - the file type
-    - the suffix string \"-path\"
+- Project Name:               A descriptive name. Only used for reference.
+                              Access it via `pel-dev-project.name' macro.
 
-    Something like %t, etc...
+- The project root directory: A directory path; normally the VCS root of
+  the project and normally holding one of the tag file identified by the
+  `pel-project-root-identifiers' user option.
+  - This is only used to identify the project owning the currently visited
+    file; it does NOT means that the project uses the entire directory tree
+    under that root!  The source code projects used by the project are
+    identified in the project settings below.
+  - Access it via `pel-dev-project.root-dir' macro.
 
-    These keys identify a set of directories that contain %fs that
-    are specific to the specified tool chain for the specific programming
-    language.
+- The project settings (accessed with `pel-dev-project.settings'):
 
-    The function `pel-open-at-point' will search these extra
-    directories when one of the following conditions are met:
+  - Programming Language(s):      The programming language(s) associated
+                                  with the following project setting.
+                                  These project settings will only be used
+                                  in buffers using major mode associated with
+                                  the identified programming language(s).
+                                  If no programming language is identified,
+                                  the project settings are used in the
+                                  buffers associated with all modes.
+                    Access it with: `pel-dev-project.setting.languages'
 
-    - The PEL_CC_FIND_TOOLCHAIN environment variable is set and holds the name
-      of the tool chain of one of these keys (like \"IAR\", \"gcc\", \"vs\" in
-      the example above).
-    - The tool-name key used for the currently used programming language
-      is identified by `pel-%s-file-finder-ini-tool-name'.
+  - Project directory tree(s):    The directory trees containing project's
+                                  source code in those language(s).
+                                  The project root directory (identified
+                                  above)
+                    Access it with: `pel-dev-project.setting.dir-trees'
 
-    The function searches each of the directory trees with the file
-    finder tool identified by the `pel-ffind-executable' user-option.
+  - Project Used Tool(s):         The name(s) of tool(s) used by the project.
+                                  A tool identified in `pel-dev-tools'.
+                                  The directories associated with each tool
+                                  are used by the project.
+                    Access it with: `pel-dev-project.setting.tools'
+                                  Note that the user can override the tool
+                                  names used for a given language by defining
+                                  a PEL_DEV_TOOL_FOR_\\='LANG\\=' (with \\='LANG\\='
+                                  being the language name such as C, CPP) that
+                                  holds a colon-separated list of tool names.
 
-    Use the command `pel-cc-set-file-finder-ini-tool-name' to
-    temporarily modify the current value of the mode specific
-    `pel-%s-file-finder-ini-tool-name' from their initial values
-    corresponding to their customization values.  The changes will be
-    used in the current session but will not persist.  To change the
-    persistent values you must change the customized value using Emacs
-    customization mechanism.
+  - Project Used Library/ies:     The name(s) of library/ies used by the
+                                  project identified in `pel-dev-libraries'.
+                                  The directories associated with each
+                                  library are used by the project.
+                    Access it with: `pel-dev-project.setting.libs'
 
-3: Environment variable string:
+  - Path Environment Variable(s): The name(s) of environment variable(s) that
+                                  identify list of directories such as the
+                                  INCLUDE environment variable.
+                                  The directories identified by the values of
+                                  those environment variables are used by the
+                                  project.
+                                  The envvar value may identify several
+                                  directories, each one separated by a
+                                  `path-separator'.
+                    Access it with: `pel-dev-project.setting.envvars'
 
-  The name of an environment variable (such as \"INCLUDE\") identifies
-  the directories to search.
+  - Exclusion regular expression(s): one or several regular expression strings
+                                     that identify directory or file names
+                                     that must be excluded from the list of
+                                     files provided by the `pel-ffind' when
+                                     the no-ignore option is non-nil.
+                    Access it with: `pel-dev-project.setting.exclude-regexps'
 
-  This method searches the directories identified by the environment
-  variables, not their sub-directories.
+The directory paths identified in this data structure must be absolute paths.
+Each one can start with a ~ character to identify the user home.
+Each one can also refer to environment variables using the $VARNAME syntax.
+The directory paths identified by the Path environment variables can hold
+values that use ~ and secondary environment variables using the $VARNAME
+syntax.
 
-  In addition, any directories in `pel-%s-file-searched-extra-dir-trees’
-  are also searched recursively using the tool selected by
-  `pel-ffind-executable’.
+Examples of valid directory path names:
+  - \"~/my/dev/projects/project-42\"
+  - \"$HOME/foo\" expands to the foo sub-directory under the user\\='s home.
+  - \"~/$DIR_PUBLIC/about-cpp\"  expands to the public directory in the
+    user\\='s home directory."
+  :group 'pel-file-finding
+  :group 'pel-pkg-for-project-mng
+  :safe t
+  :type '(repeat
+          (list :tag "Code Projects"
+                (string :tag "Project Name    ")
+                (list   :tag "Project Settings"
+                        (string :tag "Project Root    ")
+                        (repeat :tag "Project Settings"
+                                (list :tag "Lang"
+                                      (repeat :tag "Project Language(s)"
+                                              (choice
+                                               :tag "Select language"
+                                               (const :tag "Ada" ada)
+                                               (const :tag "Algol" algol)
+                                               (const :tag "AWK" awk)
+                                               (const :tag "C" c)
+                                               (const :tag "C++" c++)
+                                               (const :tag "C3" c3)
+                                               (const :tag "D" d)
+                                               (const :tag "Dart" dart)
+                                               (const :tag "Eiffel" eiffel)
+                                               (const :tag "Elixir" elixir)
+                                               (const :tag "Erlang" erlang)
+                                               (const :tag "Factor" factor)
+                                               (const :tag "Forth" forth)
+                                               (const :tag "Fortran" fortran)
+                                               (const :tag "Lisp - Arc" arc)
+                                               (const :tag "Lisp - Common Lisp" clisp)
+                                               (const :tag "Lisp - Clojure" clojure)
+                                               (const :tag "Lisp - Emacs Lisp" elisp)
+                                               (const :tag "Lisp - LFE" lfe)
+                                               (const :tag "Gleam" gleam)
+                                               (const :tag "Go" go)
+                                               (const :tag "Haskell" haskell)
+                                               (const :tag "Hy" hy)
+                                               (const :tag "Janet" janet)
+                                               (const :tag "Javascript" javascript)
+                                               (const :tag "Julia" julia)
+                                               (const :tag "Lua" lua)
+                                               (const :tag "M4" m4)
+                                               (const :tag "Modula" modula)
+                                               (const :tag "Nim" nim)
+                                               (const :tag "Objective-C" objc)
+                                               (const :tag "Odin" odin)
+                                               (const :tag "Pascal" pascal)
+                                               (const :tag "Perl" perl)
+                                               (const :tag "Pike" pike)
+                                               (const :tag "Python" python)
+                                               (const :tag "Rebol" rebol)
+                                               (const :tag "REXX" rexx)
+                                               (const :tag "Ruby" ruby)
+                                               (const :tag "Rust" rust)
+                                               (const :tag "Scheme" scheme)
+                                               (const :tag "Scheme - Chez" chez)
+                                               (const :tag "Scheme - Chibi" chibi)
+                                               (const :tag "Scheme - Chicken" chicken)
+                                               (const :tag "Scheme - Gambit" gambit)
+                                               (const :tag "Scheme - Gerbil" gerbil)
+                                               (const :tag "Schen" schen)
+                                               (const :tag "Seed7" seed7)
+                                               (const :tag "Smalltalk" smalltalk)
+                                               (const :tag "Swift" swift)
+                                               (const :tag "Tcl" tcl)
+                                               (const :tag "V" v)
+                                               (const :tag "Zig" zig)))
+                                      (repeat :tag "Project Common Dir Tree(s)"
+                                              (string :tag "Directory"))
+                                      (repeat :tag "Used Tools"
+                                              (string :tag "Tool Name"))
+                                      (repeat :tag "Use Libraries"
+                                              (string :tag "Lib  Name"))
+                                      (repeat :tag "Dir Env Vars"
+                                              (string :tag "Var  Name"))
+                                      (repeat :tag "Exclusion regexps"
+                                              (string :tag "excluded "))))))))
 
-  Use this method when your OS environment sets up environment variables
-  that inform the %S compilers or tools where %fs are located.
+(defmacro pel-dev-project.name (dev-project)
+  "Return the DEV-PROJECT name.
+A DEV-PROJECT is one of the entries of the `pel-dev-projects' list."
+  `(car ,dev-project))
 
-4: Two lists of directories: one for the project and one for the language tool:
+(defmacro pel-dev-project.root-dir (dev-project)
+  "Return the DEV-PROJECT root directory.
+A DEV-PROJECT is one of the entries of the `pel-dev-projects' list."
+  `(caadr ,dev-project))
 
-  This specifies two lists of directories:
-  - the first list identifies the project directories,
-  - the second list identifies the compiler and libraries directories
-    holding %fs.
+(defmacro pel-dev-project.settings (dev-project)
+  "Return the DEV-PROJECT settings list.
+A DEV-PROJECT is one of the entries of the `pel-dev-projects' list."
+  `(cadadr ,dev-project))
 
-  The directories listed for this method are searched non-recursively
-  (no sub-directory traversal).
-  In addition, any directories in `pel-%s-file-searched-extra-dir-trees’
-  are also searched recursively using the tool selected by
-  `pel-ffind-executable’.
+(defmacro pel-dev-project.setting.languages (dev-project.setting)
+  "Return the language list of DEV-PROJECT.SETTING.
+A DEV-PROJECT is one of the entries of the `pel-dev-projects' list.
+Extract the list of DEV-PROJECT.SETTING from a project with
+`pel-dev-project.settings', then pass one of its elements as
+DEV-PROJECT.SETTING."
+  `(car ,dev-project.setting))
 
-  The directory path name strings in each list can start with ~ and
-  refer to environment variables using the $VARNAME syntax.
+(defmacro pel-dev-project.setting.dir-trees (dev-project.setting)
+  "Return the list of directory trees of DEV-PROJECT.SETTING.
 
-  For example \"$HOME/foo\" will be expanded to the foo sub-directory
-  under the user\\='s home directory.
+Each list entry is a string representing an absolute path.
+The string can start with ~ and hold a $VARNAME
+A DEV-PROJECT is one of the entries of the `pel-dev-projects' list.
+Extract the list of DEV-PROJECT.SETTING from a project with
+`pel-dev-project.settings', then pass one of its elements as
+DEV-PROJECT.SETTING.
 
-  %H
+None of the path string is expanded."
+  `(cadr ,dev-project.setting))
 
-You may want to store this value inside a .dir-local.el directory
-local-variable file with your %S source code to control the behaviour
-of the file search based on your project.
+(defmacro pel-dev-project.setting.tools (dev-project.setting)
+  "Return the list of tools of DEV-PROJECT.SETTING.
 
-CAUTION: After changing this user-option, restart Emacs to activate
-         the new behaviour.  Executing `pel-init' is not sufficient.")
+Each list entry is a tool name corresponding to `pel-dev-tools' entry.
+The string can start with ~ and hold a $VARNAME style environment variable.
+A DEV-PROJECT is one of the entries of the `pel-dev-projects' list.
+Extract the list of DEV-PROJECT.SETTING from a project with
+`pel-dev-project.settings', then pass one of its elements as
+DEV-PROJECT.SETTING."
+  `(caddr ,dev-project.setting))
 
-  (defconst pel-LANG-file-finder-ini-tool-name-format-string
-    "Default file-finder tool name used by %S projects.
+(defmacro pel-dev-project.setting.libs (dev-project.setting)
+  "Return the list of libraries of DEV-PROJECT.SETTING.
+Each list entry is a library name corresponding to `pel-dev-libraries' entry.
+A DEV-PROJECT is one of the entries of the `pel-dev-projects' list.
+Extract the list of DEV-PROJECT.SETTING from a project with
+`pel-dev-project.settings', then pass one of its elements as
+DEV-PROJECT.SETTING."
+  `(cadddr ,dev-project.setting))
 
-This name, if specified, is the name of a key inside the
-[file-finder] section of an INI configuration file for PEL,
-called pel.ini and located in the project directory tree and
-located automatically by PEL.
+(defmacro pel-dev-project.setting.envvars (dev-project.setting)
+  "Return the list of path environment variables of DEV-PROJECT.SETTING.
+A DEV-PROJECT is one of the entries of the `pel-dev-projects' list.
+Extract the list of DEV-PROJECT.SETTING from a project with
+`pel-dev-project.settings', then pass one of its elements as
+DEV-PROJECT.SETTING."
+  `(cadr (cdddr ,dev-project.setting)))
 
-The key identifies the %S language tool-chain (a compiler, an IDE,
-etc...) and the value associated with that key is a tool-chain
-specific set of directories that contain %S %fs
-and are searched when the `pel-open-at-point' command is issued
-to search for a %f.
-
-This value overrides the name of the tool-chain identified by the
-PEL_CC_FIND_TOOLCHAIN environment variable, when the environment
-variable is either not defined or when you want to dynamically
-override the tool chain during an Emacs editing session.
-
-When the tool chain name is identified this way, PEL looks for a
-list of directories that are compiler-specific and that are
-identified in the value of a [file-finder] key named after the
-tool chain name and the file type.
-
-  For example, for a %S file, if the tool chain name identified by
-  the PEL_CC_FIND_TOOLCHAIN environment variable or the
-  `pel-%s-file-finder-ini-tool-name' user-option is \"%T\",
-  PEL looks for the key named `%T-%s-path' for a list of extra
-  directory names to search into.
-
-The search inside these directories is performed recursively by
-the file searching tool identified by the `pel-ffind-executable'
-user-option.
-
-See `pel-%s-file-finder-method' option 2 for more information
-about the expected file format of the pel.ini file."))
-
-
-(defmacro pel-defcustom-block-ffind-for (lang)
-  "Generate the code for the definition of 3 user-options for the LANG mode.
-
-Define the following user-option defcustom forms:
- - pel-LANG-file-searched-extra-dir-trees
- - pel-LANG-file-finder-method
- - pel-LANG-file-finder-ini-tool-name
-
-where LANG is the programming language symbol like awk, c or c++."
-  (let* ((lang-str (symbol-name lang))
-         (lang-title (cond
-                      ((eq lang 'objc) "Objective-C")
-                      ((eq lang 'awk) "AWK")
-                      (t (capitalize lang-str))))
-         (f-type (if (memq lang '(c c++ objc pike))
-                     "header file"
-                   "file"))
-         (h-paragraph (if (memq lang '(c c++ objc pike))
-                          "\
-Use this method when the location of the header directory for the
-  compiler and libraries changes from system to system."
-                        (format "\
-For %s this method may not be as useful as for other languages." lang-title)))
-         (tool-str (cond
-                    ((memq lang '(c c++)) "IAR")
-                    ((eq lang 'objc) "CLANG")
-                    (t "SOME-TOOL")))
-         (tpath-str (if (memq lang '(c c++))
-                        (format
-                         "\"IAR-%s-path\", \"gcc-%s-path\", \"vs-%s-path\""
-                         lang lang lang)
-                      (format "%s-%s-path" tool-str lang)))
-         (g-name (intern (format "pel-pkg-for-%s" lang)))
-         (m1-name (intern (format "pel-%s-file-searched-extra-dir-trees"
-                                  lang)))
-         (docstr1 (format-spec
-                   pel-LANG-file-searched-extra-dir-trees-format-string
-                   `((?f . ,f-type)
-                     (?s . ,lang-str)
-                     (?S . ,lang-title))))
-         (m2-name (intern (format "pel-%s-file-finder-method" lang)))
-         (docstr2 (format-spec
-                   pel-LANG-file-finder-method-format-string
-                   `((?f . ,f-type)
-                     (?H . ,h-paragraph)
-                     (?s . ,lang-str)
-                     (?S . ,lang-title)
-                     (?t . ,tpath-str))))
-         (m3-name (intern (format "pel-%s-file-finder-ini-tool-name" lang)))
-         (docstr3 (format-spec
-                   pel-LANG-file-finder-ini-tool-name-format-string
-                   `((?f . ,f-type)
-                     (?s . ,lang-str)
-                     (?S . ,lang-title)
-                     (?T . ,tool-str)))))
-    `(progn
-       (defcustom ,m1-name nil
-         ,docstr1
-         :group ',g-name
-         :group 'pel-file-finding
-         :safe t
-         :type '(repeat string))
-       (defcustom ,m2-name 'generic
-         ,docstr2
-         :group ',g-name
-         :group 'pel-file-finding
-         :safe t
-         :type
-         '(choice
-           (const :tag "Generic tree search" generic)
-           (const :tag "Use [file-finder] section in pel.ini" pel-ini-file)
-           (string :tag "Name of environment variable that identify directories"
-                   :value "INCLUDE")
-           (list :tag "Explicit lists of directories for project and tool"
-                 (repeat :tag "Project directories"
-                         (string :tag "Project directory"))
-                 (repeat :tag "Tool directories"
-                         (string :tag "Tool directory")))))
-       (defcustom ,m3-name nil
-         ,docstr3
-         :group ',g-name
-         :group 'pel-file-finding
-         :safe t
-         :type '(choice
-                 (const :tag "Unused; no specific compiler identified." nil)
-                 (string :tag "pel.ini [file-finder] tool-chain name key"))))))
+(defmacro pel-dev-project.setting.exclude-regexps (dev-project.setting)
+  "Return the list of exclusion regexp strings of DEV-PROJECT.SETTING.
+A DEV-PROJECT is one of the entries of the `pel-dev-projects' list.
+Extract the list of DEV-PROJECT.SETTING from a project with
+`pel-dev-project.settings', then pass one of its elements as
+DEV-PROJECT.SETTING."
+  `(caddr (cdddr ,dev-project.setting)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-pkg-for-hardware-description-languages nil
@@ -6601,12 +6647,6 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :type 'boolean
   :safe #'booleanp)
 
-;; Define:
-;;  - pel-awk-file-searched-extra-dir-trees
-;;  - pel-awk-file-finder-method
-;;  - pel-awk-file-finder-ini-tool-name
-(pel-defcustom-block-ffind-for awk)
-
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; C Language Support
 ;; ------------------
@@ -6669,13 +6709,6 @@ via the ``<f12> <f4> d c`` sequence."
                    "https://github.com/nflath/c-eldoc"))
 (pel-put pel-use-c-eldoc :package-is :in-utils)
 (pel-put pel-use-c-eldoc :requires 'pel-use-c)
-
-;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
-;; Define:
-;;  - pel-c-file-searched-extra-dir-trees
-;;  - pel-c-file-finder-method
-;;  - pel-c-file-finder-ini-tool-name
-(pel-defcustom-block-ffind-for c)
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-c-code-style nil
@@ -7238,13 +7271,6 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-c++
   :type '(repeat function))
-
-;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
-;; Define:
-;;  - pel-c++-file-searched-extra-dir-trees
-;;  - pel-c++-file-finder-method
-;;  - pel-c++-file-finder-ini-tool-name
-(pel-defcustom-block-ffind-for c++)
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-c++-code-style nil
@@ -8328,7 +8354,6 @@ Values in the [2, 8] range are accepted."
   "PEL support for Javascript.  Experimental."
   :group 'pel-pkg-for-software-programming-languages)
 
-
 (defcustom pel-use-js nil
   "Control whether PEL supports Javascript development.
 
@@ -8394,7 +8419,7 @@ This can have the following values:
 - A list of (variable . offset) cons cells defined explicitly as value.
   When using this be careful to leave no leading or trailing space for the
   variable name."
-  :group 'pel-pkg-for-js
+  :group 'pel-pkg-for-javascript
   :type '(choice
           (const :tag "Not tied; tab width is independent of indentation" nil)
           (const
@@ -8419,7 +8444,7 @@ Do not enter lambda expressions."
 (defcustom pel-js-indent-width 4
   "Number of columns for Javascript source code indentation.
 Values in the [2, 8] range are accepted."
-  :group 'pel-pkg-for-js
+  :group 'pel-pkg-for-javascript
   :type 'integer
   :safe 'pel-indent-valid-p)
 
@@ -8448,7 +8473,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 When turned on, PEL sets js2-mode-dev-mode-p to t when js2-mode is loaded,
 to activate extra js2 commands and features."
-  :group 'pel-pkg-for-js
+  :group 'pel-pkg-for-javascript
   :type 'boolean
   :safe #'booleanp)
 
@@ -9157,7 +9182,6 @@ You have several choices:
                  :options ((:command string)
                            (:options string)
                            (:filter string)))))
-
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-clisp-code-style nil
@@ -10602,31 +10626,34 @@ stored for processing."
 ;;      ~/.emacs.d/edts/doc/V
 ;;
 ;; PEL:
-;;  - Supports multiple versions of Erlang, supports erlang.el and EDTS
-;;    models, supports the use of MANPATH in the parent shell to identify the
-;;    path where the man files are stored and also supports the
-;;    ivy-erlang-complete  package.
+;;  - Supports multiple versions of Erlang,
+;;  - supports erlang.el and EDTS models,
+;;  - supports the use of MANPATH in the parent shell to identify the
+;;    path where the man files are stored, and
+;;  - supports the ivy-erlang-complete package.
 ;;
-;;    PEL provides independent management of the Erlang root directory for man
+;;  - Provides independent management of the Erlang root directory for man
 ;;    files used by erlang.el and the use of Erlang root directory for
-;;    everything else so it is possible to request man pages for a version of
-;;    Erlang different than what is currently being used.  This is useful when
-;;    checking for backward or forward compatibility.
+;;    everything else.
 ;;
-;;    PEL provides two user-options to identify the Erlang root directory:
-;;    - `pel-erlang-man-parent-rootdir' which identifies the Erlang root
-;;      directory or how to detect it, for the value that is used by the
-;;      erlang.el logic to open Erlang Man files: the function
-;;      `erlang-man-dir'.  PEL implements the `pel-erlang-man-dir' wrapper
-;;      that sets the `erlang-root-dir' to the value identified by
-;;      `pel-erlang-man-parent-rootdir' user-option.
-
-
-;;    `pel-erlang-version-detection-method'
-;;  - If `pel-erlang-man-parent-rootdir' is non-nil it either identifies the
-;;    parent directory of the Erlang man directory or an environment variable
-;;    that identifies it. When the identified directory exists PEL sets the
-;;    value of `erlang-root-dir' with it.
+;;      This way it is possible to request man pages for a version of Erlang
+;;      different than what is currently being used.  This is useful when
+;;      checking for backward or forward compatibility.
+;;
+;;  -  Provides the following user-options:
+;;
+;;     - `pel-erlang-man-parent-rootdir' identifies the Erlang root directory
+;;       or how to detect it, for the value that is used by the erlang.el
+;;       logic to open Erlang Man files: the function `erlang-man-dir'.
+;;
+;;       PEL implements the `pel-erlang-man-dir' wrapper that sets the
+;;       `erlang-root-dir' to the value identified by
+;;       `pel-erlang-man-parent-rootdir' user-option.
+;;
+;;       If `pel-erlang-man-parent-rootdir' is non-nil it either identifies
+;;       the parent directory of the Erlang man directory or an environment
+;;       variable that identifies it. When the identified directory exists PEL
+;;       sets the value of `erlang-root-dir' with it.
 ;;
 ;;       To support both erlang.el and EDTS, you can either store all the man
 ;;       parent directories inside ~/.emacs.d/edts/doc or place it somewhere
@@ -10634,16 +10661,16 @@ stored for processing."
 ;;       pointing to the directory ~/docs/Erlang/V that holds the man
 ;;       directory for the version V of Erlang.
 ;;
-;;  - The `pel-erlang-version-detection-method' selects one of 3 method to
-;;    detect Erlang's version. They are:
 ;;
-;;    - auto-detect : automatic detection using the `version-erl' command
-;;                    line utility (provided in PEL's bin directory).
-;;    - specified   : `pel-erlang-version-detection-method' is a string that
-;;                    identifies the Erlang version number.
-;;                    user option.
-;;    - by-envvar   : the version is read in the content of an environment
-;;                    variable specified by name.
+;;     - The `pel-erlang-version-detection-method' identify how to detect
+;;       Erlang's version.  It supports selects one of 3 methods:
+;;
+;;       - auto-detect : automatic detection using the `version-erl' command
+;;                       line utility (provided in PEL's bin directory).
+;;       - specified   : `pel-erlang-version-detection-method' is a string that
+;;                       identifies the Erlang version number.
+;;       - by-envvar   : the version is read in the content of an environment
+;;                       variable specified by name.
 ;;
 ;;  - PEL provides the version-erl command line utility (stored in PEL's bin
 ;;    directory).  This is a short Erlang script that prints Erlang's version
@@ -10654,22 +10681,20 @@ stored for processing."
 (defcustom pel-erlang-man-parent-rootdir nil
   "Root directory holding OTP man/man1 directory.
 
-Set the user-option variable to hold (or detect) the absolute
-path of the directory that holds Erlang/OTP man directory.  That
-man directory should hold a man1, man3, man4 and man6 holding
+Select how to identify the absolute path of the Erlang/OTP man directory,
+the directory that should hold a man1, man3, man4 and man6 directories of
 Erlang man files.
 
-The directory identified by `pel-erlang-man-parent-rootdir'
-can differ from the real Erlang root directory.  PEL wraps
-erlang.el `erlang-man-dir' with a function that sets the
-value of `erlang-root-dir' to the value identified by
-`pel-erlang-man-parent-rootdir' user-option as returned by
-the function `pel-erlang-man-parent-rootdir'.
+This can differ from the real Erlang root directory: PEL wraps erlang.el
+`erlang-man-dir' with a function that sets the value of
+`erlang-root-dir' to the value identified by
+`pel-erlang-man-parent-rootdir' user-option as returned by the function
+of the same name.
 
 Available choices:
 
-- nil : do not set it, use the value in `erlang-root-dir' user-option,
-  which in turn is set according to the method selected by the
+- nil : Use the value in `erlang-root-dir' user-option,
+  which is itself set according to the method selected by the
   `pel-erlang-path-detection-method' user-option.
 - Enter a string, such as \"/usr/local/otp\", that holds the man
   directory which holds man1, man3, man4 and man6.
@@ -12039,14 +12064,6 @@ a newline and then indent the new line."
 Does not indent."
                  just-newline-no-indent)))
 
-
-;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
-;; Define:
-;;  - pel-objc-file-searched-extra-dir-trees
-;;  - pel-objc-file-finder-method
-;;  - pel-objc-file-finder-ini-tool-name
-(pel-defcustom-block-ffind-for objc)
-
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Ocaml Support
 ;; -------------
@@ -12552,13 +12569,6 @@ Does not indent."
   "Default shebang line to add in extension-less Pike files."
   :group 'pel-pkg-for-pike
   :type 'string)
-
-;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
-;; Define:
-;;  - pel-pike-file-searched-extra-dir-trees
-;;  - pel-pike-file-finder-method
-;;  - pel-pike-file-finder-ini-tool-name
-(pel-defcustom-block-ffind-for pike)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Python Support
@@ -13631,6 +13641,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 (defgroup pel-pkg-for-project-mng nil
   "PEL customization for project managers."
   :group 'pel-package-use
+  :group 'pel-base-emacs
   :link `(url-link :tag "Projectile PDF" ,(pel-pdf-file-url "projectile")))
 
 (defcustom pel-use-find-file-in-project nil
@@ -13661,7 +13672,7 @@ CAUTION: This package needs major tuning!  It takes forever searching for a
 (defcustom pel-project-root-identifiers '(".git" ".hg" ".projectile" ".pel-project")
   "File/directory names that identify the root of a project directory tree.
 
-The function `pel-ffind-project-directory' walks up the directory
+The function `pel-ffind-project-rootdir' walks up the directory
 tree from the current buffer's `default-directory', searching for
 any of these anchor files/directories using `locate-dominating-file'.
 This list is the default/base set; callers can augment it via
@@ -13674,7 +13685,7 @@ outermost (shortest path) directory is selected.  This broadens the file
 search scope when nested projects exist while still allowing a
 restricted project scope for some projects.
 
-If no anchor is found, `pel-ffind-project-directory' returns nil and
+If no anchor is found, `pel-ffind-project-rootdir' returns nil and
 callers such as `pel-generic-find-file' fall back to `default-directory'.
 
 Note: The `pel.ini' file, used by one of the file finder methods, is NOT
@@ -13687,7 +13698,7 @@ found by this mechanism, not by being listed as an anchor itself."
 (defcustom pel-project-restricted-root-identifiers '(".pel-restricted-project")
   "File/directory names that identify strict root of a project directory tree.
 
-The function `pel-ffind-project-directory' walks up the directory
+The function `pel-ffind-project-rootdir' walks up the directory
 tree from the current buffer's `default-directory', searching for
 any of these anchor files/directories using `locate-dominating-file'.
 
@@ -15644,13 +15655,6 @@ PEL uses my fork of this project."
   (ggtags              (setq pel-use-ggtags t))
   (edts                (setq pel-use-edts 'start-automatically))
   (erlang-ls           (setq pel-use-erlang-ls t)))
-
-(when (or (eq pel-awk-file-finder-method 'pel-ini-file)
-          (eq pel-c-file-finder-method   'pel-ini-file)
-          (eq pel-c++-file-finder-method 'pel-ini-file)
-          (eq pel-objc-file-finder-method 'pel-ini-file)
-          (eq pel-pike-file-finder-method 'pel-ini-file))
-  (setq pel-use-ini t))
 
 (when (eq pel-prompt-read-method 'ivy)
   (setq pel-use-ivy t))

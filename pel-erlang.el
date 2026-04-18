@@ -103,7 +103,7 @@
 (require 'pel--options)         ; use: `pel-erlang-version-detection-method'
 ;;                              ;      `pel-erlang-path-detection-method'
 ;;                              ;      `pel-erlang-electric-keys'
-(require 'pel-ffind)            ; use: `pel-ffind'
+(require 'pel-ffind)            ; use: `pel-ffind', `pel-ffind-project-rootdir'
 (require 'pel-fs)               ; use: `pel-exec-pel-bin', `pel-exec-cmd'
 (require 'pel-indent)           ; use: `pel-indent-insert-control-info',
 ;;                              ;      `pel-indent-control-context'
@@ -1364,7 +1364,7 @@ with a slash.  There are no duplicates and the list is sorted."
         (directory nil))
     ;; Add project directory looking for each possible project root identifier
     (setq directory
-          (pel-ffind-project-directory pel-erlang-project-root-identifiers))
+          (pel-ffind-project-rootdir pel-erlang-project-root-identifiers))
     (when (and directory
                (not (member directory  dir-list)))
       (push directory dir-list))

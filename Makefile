@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-04-16 22:12:36 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-04-18 10:47:37 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -171,7 +171,6 @@ EL_FILES := pel--base.el \
 		pel-c-preproc.el \
 		pel-c-utils.el \
 		pel-c3.el \
-		pel-cc-find.el \
 		pel-cc-linux-kernel.el \
 		pel-cc-navigate.el \
 		pel-cc.el \
@@ -764,7 +763,6 @@ pel-c-comment.elc:        pel--base.elc pel--options.elc pel-comment.elc
 pel-c-preproc.elc:        pel--macros.elc pel-syntax.elc
 pel-c-utils.elc:          pel--base.elc pel--syntax-macros.elc
 pel-c3.elc:               pel--base.elc pel-modes.elc pel-prompt.elc
-pel-cc-find.elc:          pel--base.elc pel--options.elc pel-file.elc pel-ffind.elc pel-ffind-inpath.elc pel-ini.elc
 pel-cc-linux-kernel.elc:  pel--options.elc
 pel-cc-navigate.elc:      pel--syntax-macros.elc
 pel-cc.elc:               pel--base.elc pel--options.elc pel-ffind.elc
@@ -912,7 +910,6 @@ test/pel-autocomplete-test.el.test-passed:      pel-autocomplete.elc
 test/pel-c-utils-test.el.test-passed:           pel-c-utils.elc
 test/pel-c-comment-test.el.test-passed:         pel-c-comment.elc
 test/pel-c-preproc-test.el.test-passed:         pel-c-preproc.elc
-test/pel-cc-find-test.el.test-passed:           pel-cc-find.elc pel-ffind.elc
 test/pel-cc-navigate-test.el.test-passed:       pel-cc-navigate.elc
 test/pel-cc-test.el.test-passed:                pel--options.elc pel-cc.elc
 test/pel-ccp-test.el.test-passed:               pel-ccp.elc
