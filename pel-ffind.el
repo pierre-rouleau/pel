@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-19 16:35:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-19 16:50:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -29,7 +29,7 @@
 ;;
 ;; - `pel-ffind' is the most capable; it finds files located in the list of
 ;;   directories and directory trees corresponding to the language-specific
-;;   project settings defined identified by the `pel-dev-projects',
+;;   project settings identified by the `pel-dev-projects',
 ;;   `pel-dev-tools' and `pel-dev-libraries' user-options.  This includes
 ;;   directories that can be located in separate tree locations in the file
 ;;   system, not only inside the current project directory tree like the
@@ -474,7 +474,7 @@ considering the name of the currently visited file or the specified FILENAME."
         project-settings))))
 
 (defun pel-ffind-project-lang-setting (&optional filename)
-  "Return language specific project setting of current or FILENAME project.
+  "Return language-specific project setting of current or FILENAME project.
 
 Return nil if no project is found or if no setting appropriate for the
 specific language is found.
@@ -541,7 +541,7 @@ and set the ERROR-DETECTED symbol to t."
        (setq ,error-detected t))))
 
 (defun pel--ffind-project-lang-directories (&optional filename)
-  "Return language specific directory list of current or FILENAME project.
+  "Return language-specific directory list of current or FILENAME project.
 
 The inspected project and language is identified by the specified
 FILENAME if any, otherwise it is identified by the currently visited
@@ -652,7 +652,7 @@ issues a warning describing the error."
   "Return the list of tool names specific to the FILENAME or current buffer.
 
 Return the list of tool names identified by `pel-dev-projects' for the project
-and language specific for the FILENAME or currently visited file.  Return nil
+and language-specific for the FILENAME or currently visited file.  Return nil
 if there are none or if the buffer is not visiting a file."
   (pel-dev-project.setting.tools (pel-ffind-project-lang-setting filename)))
 
@@ -660,7 +660,7 @@ if there are none or if the buffer is not visiting a file."
   "Return the list of envvars specific to the FILENAME or current buffer.
 
 Return the list of environment variables identified by `pel-dev-projects'
-for the project and language specific for the FILENAME or currently
+for the project and language-specific for the FILENAME or currently
 visited file.  Return nil if there are none or if the buffer is not
 visiting a file."
   (pel-dev-project.setting.envvars (pel-ffind-project-lang-setting filename)))
@@ -669,7 +669,7 @@ visiting a file."
   "Return the list of exclude regexps specific to the FILENAME or current buffer.
 
 Return the list of exclude regexps identified by `pel-dev-projects'
-for the project and language specific for the FILENAME or currently
+for the project and language-specific for the FILENAME or currently
 visited file.  Return nil if there are none or if the buffer is not
 visiting a file."
   (pel-dev-project.setting.exclude-regexps
@@ -775,13 +775,13 @@ Search for FNAME file in the specified directories and directory trees.
 - If TREE-DPATHS is specified and INCLUSIVE is non-nil search:
   - in the directory trees specified by TREE-DPATHS and
   - in `default-directory' (always included), and
-  - in the directories and directory trees identified the `pel-dev-projects'
-    corresponding to the language specific project for to the currently
+  - in the directories and directory trees identified by `pel-dev-projects'
+    corresponding to the language-specific project for to the currently
     visited file.
 - If TREE-DPATHS is nil, then search
   - in `default-directory' (always included as a directory tree), and
-  - in the directories and directory trees identified the `pel-dev-projects'
-    corresponding to the language specific project for to the currently
+  - in the directories and directory trees identified by `pel-dev-projects'
+    corresponding to the language-specific project for to the currently
     visited file.
 
 The function excludes absolute file names that match one of the regular

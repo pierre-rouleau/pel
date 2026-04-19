@@ -5557,7 +5557,7 @@ Each programming project is defined as:
                     Access it with: `pel-dev-project.setting.tools'
                                   Note that the user can override the tool
                                   names used for a given language by defining
-                                  a PEL_DEV_TOOL_FOR_\\='LANG\\=' (with \\='LANG\\='
+                                  a PEL_DEV_TOOLS_FOR_\\='LANG\\=' (with \\='LANG\\='
                                   being the language name such as C, CPP) that
                                   holds a colon-separated list of tool names.
 
@@ -5581,9 +5581,9 @@ Each programming project is defined as:
   - Exclusion regular expression(s): one or several regular expression strings
                                      that identify directory or file names
                                      that must be excluded from the list of
-                                     files provided by the `pel-ffind' default
-                                     behaviour and when its no-ignore option
-                                     is explicitly set to nil.
+                                     files found by `pel-ffind', unless
+                                     `pel-ffind' is called with a non-nil
+                                     NO-IGNORE argument.
                     Access it with: `pel-dev-project.setting.exclude-regexps'
 
 The directory paths identified in this data structure must be absolute paths.
@@ -5717,7 +5717,8 @@ None of the path string is expanded."
   "Return the list of tools of DEV-PROJECT.SETTING.
 
 Each list entry is a tool name corresponding to `pel-dev-tools' entry.
-The string can start with ~ and hold a $VARNAME style environment variable.
+The tool name string can hold a $VARNAME or ${VARNAME} style environment
+variable.
 A DEV-PROJECT is one of the entries of the `pel-dev-projects' list.
 Extract the list of DEV-PROJECT.SETTING from a project with
 `pel-dev-project.settings', then pass one of its elements as

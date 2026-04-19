@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-19 13:15:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-19 17:04:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -172,9 +172,11 @@ Display and return the new value of the mode."
 
 Prompt if not specified (in interactive execution) or when nil is passed
 explicitly.
-Accepts values between 2 and 8 inclusively."
+Accepts values between 2 and 8 inclusively to set the width.
+When a language tab width default is configured, entering 0 restores it."
   (interactive)
-  ;; protect against an explicit nil argument
+  ;; Prompt when called interactively (new-width is always nil then) or
+  ;; when nil is passed programmatically.
   (let ((default-indent
          (pel-major-mode-symbol-value-or "pel-%s-indent-width" nil)))
     (when (or (null new-width)
