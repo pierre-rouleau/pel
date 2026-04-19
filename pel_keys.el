@@ -3460,7 +3460,7 @@ d-mode not added to ac-modes!"
       ;; 5) Configure M-( to put parentheses after a function name.
       (set (make-local-variable 'parens-require-spaces) nil)
       ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
-      (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
+      (pel-local-set-f12-M-f12 'pel:for-objc-preproc "#")
       ;; 7) Install language-specific skeletons
       ;; [:todo 2025-04-27, by Pierre Rouleau: Add skeletons for Objective-C]
       ;; (pel--install-c-skel pel:c-skel)
@@ -3468,7 +3468,7 @@ d-mode not added to ac-modes!"
       (pel--setup-for-cc)
       ;; [:todo 2025-04-30, by Pierre Rouleau: Check Objective-C indent width control]
       (setq-local pel-indentation-width-control-variables
-                  '(pel-obj-indent-width c-basic-offset))
+                  '(pel-objc-indent-width c-basic-offset))
       (setq-local pel-indentation-other-control-variables
                   '(c-syntactic-indentation))
       ;; imenu support is already provided by objc-mode
@@ -3485,6 +3485,7 @@ d-mode not added to ac-modes!"
   (define-pel-global-prefix pel:for-pike   (kbd "<f11> SPC C-p"))
   (define-pel-global-prefix pel:pike-setup (kbd "<f11> SPC C-p <f4>"))
   (define-pel-global-prefix pel:pike-guess (kbd "<f11> SPC C-p <f4> g"))
+  (define-pel-global-prefix pel:for-pike-preproc (kbd "<f11> SPC C-p #"))
   (define-pel-global-prefix pel:pike-skel  (kbd "<f11> SPC C-p <f12>"))
 
   (when pel-use-speedbar
@@ -3494,7 +3495,8 @@ d-mode not added to ac-modes!"
   (pel-eval-after-load cc-mode
     (pel--map-cc-for pel:for-pike
                      pel:pike-setup
-                     pel:pike-guess)
+                     pel:pike-guess
+                     pel:for-pike-preproc)
     (pel-config-major-mode pike pel:for-pike :no-ts
       (when (boundp 'pike-mode-map)
         (define-key pike-mode-map (kbd "M-;") 'pel-c-comment-dwim))
@@ -3517,7 +3519,7 @@ d-mode not added to ac-modes!"
       ;; 5) Configure M-( to put parentheses after a function name.
       (set (make-local-variable 'parens-require-spaces) nil)
       ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
-      (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
+      (pel-local-set-f12-M-f12 'pel:for-pike-preproc "#")
       ;; 7) Install language-specific skeletons
       ;; [:todo 2025-03-14, by Pierre Rouleau: Add skeletons for Pike]
       ;; (pel--install-c-skel pel:c-skel)

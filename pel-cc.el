@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-18 11:03:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-18 15:01:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -168,24 +168,25 @@ Display and return the new value of the mode."
 
 ;;-pel-autoload
 (defun pel-cc-set-indent-width (&optional new-width)
-  "Interactively change the Indentation with for current buffer to NEW-WIDTH.
+  "Interactively change the Indentation width for current buffer to NEW-WIDTH.
 
 Prompt if not specified."
   (interactive
    (list (read-number
           (format "Indentation width (0 to restore default) [%s]: "
                   c-basic-offset))))
-  (if (boundp 'c-basic-offset)
-      (progn
-        (cond
-         ((> new-width 0)
-          (setq-local c-basic-offset new-width))
-         ((= new-width 0)
-          (setq-local c-basic-offset
-                      (pel-major-mode-symbol-value "pel-%s-indent-width")))
-         (t (user-error "Enter 0 or positive value!")))
-        (message "indentation is now %s" c-basic-offset))
-    (error "c-basic-offset is not loaded!")))
+  (unless new-width
+    (setq new-width (read-number
+                     (format "Indentation width (0 to restore default) [%s]: "
+                             c-basic-offset))))
+  (cond
+   ((> new-width 0)
+    (setq-local c-basic-offset new-width))
+   ((= new-width 0)
+    (setq-local c-basic-offset
+                (pel-major-mode-symbol-value "pel-%s-indent-width")))
+   (t (user-error "Enter 0 or positive value!")))
+  (message "indentation is now %s" c-basic-offset))
 
 ;; ---------------------------------------------------------------------------
 ;;* C/C++ Comment Style Selection

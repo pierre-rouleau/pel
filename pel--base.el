@@ -420,7 +420,7 @@ executed by `pel-init' on startup.")
   "Return PEL package version string and also echoes it.
 Optionally insert it at point if INSERT is non-nil."
   (interactive "P")
-  (let ((version "0.4.1"))
+  (let ((version "0.4.2"))
     (if insert
         (insert version))
     (message "PEL version: %s" version)

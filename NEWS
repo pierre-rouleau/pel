@@ -1,7 +1,6 @@
 PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
-* Changes since Version 0.4.1:
-** Modifications, Fixes and Improvements:
+* Changes since Version 0.4.2:
 - Improve *pel-cc-mode-info*: shows useful key bindings related to RET mode and hungry delete commands and
   shows the value of *pel-c-multiline-comments* for c-mode buffers.
 - *Breaking change: major overhaul* of configuration and logic for specialized file searching done by *pel-open-at-point* and the
@@ -25,11 +24,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Renamed *pel-ffind-project-directory* to *pel-ffind-project-rootdir*
   - The following macros provide access to the elements of pel-dev-projects structure:
     - *pel-dev-project.name*, *pel-dev-project.root-dir*,
-      *pel-dev-project.settings*, *pel-dev-project.settings.languages*,
-      *pel-dev-project.settings.dir-trees*, *pel-dev-project.settings.tools*,
-      *pel-dev-project.settings.libs*, and *pel-dev-project.settings.envvars*.
+      *pel-dev-project.settings*, *pel-dev-project.setting.languages*,
+      *pel-dev-project.setting.dir-trees*, *pel-dev-project.setting.tools*,
+      *pel-dev-project.setting.libs*, and *pel-dev-project.setting.envvars*.
   - The pel.ini file is no longer used.  All project specific configuration is now stored in customization data.
-  - The *pel-ffind-set-devtool-name* command is now bound to ~<f11> f <f4> .~ key sequence instead of being bound into the ~<f12> <f4> <M-f6>~ key sequence
+  - The *pel-ffind-set-devtool-name* command is now bound to ~<f11> f <f4> .~ key sequence instead of being bound into the ~<f12> <f4> <M-f6>~ key sequence.
   - Renamed *pel-open-file-at-point-dir* user-option to *pel-open-file-at-point-dir-home* and *pel-set-open-at-point-dir* to *pel-set-open-at-point-dir-home*
   - Improved *pel-cc-mode*, the C/C++/Objective-C major mode dispatcher: it now supports more language keywords, properly ignore keywords inside comments,
     and support the PEL file type header comment in the first line of files.
@@ -39,13 +38,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     is no longer the case: it now supports most programming language modes and has a global behaviour fallback.
     With that several function and variables have changed:
     - Command *pel-cc-set-file-finder-ini-tool-name* is now *pel-ffind-set-devtool-name*
-    - The *pel-ffind-set-devtool-name* command is now bound to ~<f11> f <f4> .~ key sequence instead of being bound into the ~<f12> <f4> <M-f6>~ key sequence
-      of the major modes that used to support the command with the previous name.
   - The mechanism was previously activated for some major modes by a call to the *pel-cc-find-activate-finder-method* function
     when pel_keys.el is loaded.  This is no longer the case: the *pel-open-at-point* code checks the various relevant user-options
     when searching for files.
   - Renamed *pel-cc-find-show-status* (previously bound to ~<f12> <f4> f~ of cc-mode buffers) command to *pel-ffind-show-status* now bound to ~<f11> f <f4> ?~.
 - Fix Pike support: add key mapping in the ~<f12> <f4>~ prefix that had not been activated.
+* Changes since Version 0.4.1:
+** Modifications, Fixes and Improvements:
 - Improve *pel-ccp-info*: it now prints the content of the kill ring and key bindings of useful commands.
 - Add dont-move optional argument to the pel-read.el utility function *pel-word-at-point*, *pel-sentence-at-point* and *pel-paragraph-at-point*.
 - Move *pel-prompt-for-filename* from pel-file.el to pel-prompt.el

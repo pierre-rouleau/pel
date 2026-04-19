@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-04-18 10:47:37 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-04-18 13:49:59 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -89,7 +89,7 @@ EMACS_NATIVE_COMP_AVAILABLE := $(shell $(EMACS) --batch --eval '(when \
 #                       are broadly supported.
 #                       In the meantime PEL is staying at 0.4.1
 #                       unless someone requests package versions.
-PEL_VERSION := 0.4.1
+PEL_VERSION := 0.4.2
 
 # NOTE: Also update the version numbers in the following files:
 # - NEWS

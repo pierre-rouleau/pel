@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-18 11:10:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-18 17:57:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -106,8 +106,10 @@
 ;;                                    ;      `pel-path='
 (require 'pel--options)               ; use: `pel-ffind-executable'
 (eval-when-compile (require 'subr-x)) ; use: `string-join', `string-trim'
+;; subr is always loaded              ; use  `y-or-n-p'
 (require 'seq)                        ; use: `seq-filter', `seq-uniq'
 (require 'cl-lib)                     ; use: `cl-set-difference'
+(require 'cus-edit)                   ; use: `customize-option'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -128,25 +130,27 @@ It is selected by the `pel-ffind-set-devtool-name ' command.")
 
 (defun pel--dev-tool-names ()
   "Return a list of possible tool names available in `pel-dev-tools'."
-  (let ((tool-names ()))
-    (dolist (dev-tool pel-dev-tools (sort (reverse tool-names) #'string>))
-      (push (car dev-tool) tool-names))))
+  (sort (mapcar #'car pel-dev-tools) #'string<))
 
 ;;-pel-autoload
 (defun pel-ffind-set-devtool-name (tool-name)
   "Prompt/select a new development TOOL-NAME key for the buffer.
 
-When called in code , the TOOL-NAME must be one of the tool name key
+When called in code, the TOOL-NAME must be one of the tool name key
 identified in the `pel-dev-tools' user-option or nil.  Interactively, the
 command prompt the user for one of the available tool names."
   (interactive
    (let ((available-tool-names (pel--dev-tool-names)))
-     (when available-tool-names
-       (list (completing-read
-              (format "Select file finder tool name%s: "
-                      (pel-string-for pel--ffind-overriding-toolchain-name " (" ") "))
-              (pel--dev-tool-names))))))
-  (setq-local pel--ffind-overriding-toolchain-name tool-name))
+     (list
+      (when available-tool-names
+        (completing-read
+         (format "Select file finder tool name%s: "
+                 (pel-string-for pel--ffind-overriding-toolchain-name " (" ") "))
+         available-tool-names)))))
+  (if tool-name
+      (setq-local pel--ffind-overriding-toolchain-name tool-name)
+    (when (y-or-n-p "No tool identified in pel-dev-tools; customize it?")
+      (customize-option 'pel-dev-tools))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Search Tool Identification
@@ -158,7 +162,11 @@ command prompt the user for one of the available tool names."
 Identifies the search tool actually used.  When `pel-ffind-executable'
 is set to auto, it replaces auto by fdfind, fd or find.  Its value is
 computed by `pel--ffind-select-tool' which is called by
-`pel--ffind-command'.  That function stores the new value.")
+`pel--ffind-command'.  That function stores the new value.
+
+When `pel-ffind-executable' is a command string, the value
+\\='command-string is stored here and the code uses the command string
+from the `pel-ffind-executable' user-option.")
 
 (defvar pel--ffind-path nil
   "Full path of fd/fdfind/find executable used.")
@@ -169,7 +177,9 @@ computed by `pel--ffind-select-tool' which is called by
   "Select the search tool based on `pel-ffind-executable' choice.
 Return a (symbol . string) cons cell with the two values to store in
 `pel--ffind-executable' and `pel--ffind-path' when `pel-ffind-executable'
-value is fd or find.  Return (nil . nil) when a command line is specified."
+value is fd or find.  Return ('command-string . command) when a command line
+is specified."
+
   (let ((choice nil)
         (exe-path nil))
     (cond
@@ -182,36 +192,42 @@ value is fd or find.  Return (nil . nil) when a command line is specified."
       ;; unrelated fd command: search for fdfind first.
       (setq exe-path (executable-find "fdfind"))
       (unless exe-path
-        (setq exe-path (executable-find "fd"))
-        (if exe-path
-            (setq choice 'fd)
-          (unless (eq pel-ffind-executable 'auto)
-            (display-warning 'pel-ffind
-                             "\
+        (setq exe-path (executable-find "fd")))
+      (if exe-path
+          (setq choice 'fd)
+        (unless (eq pel-ffind-executable 'auto)
+          (display-warning 'pel-ffind
+                           "\
 pel-ffind-executable requests fd but neither fd nor fdfind is available.
 Using find instead."
-                             :warning))
-          (setq choice 'find)
-          (setq exe-path (executable-find "find")))))
+                           :warning))
+        (setq choice 'find)
+        (setq exe-path (executable-find "find"))))
      ;;
      ;; -- When find is selected use it.
      ((eq pel-ffind-executable 'find)
       (setq choice 'find)
       (setq exe-path (executable-find "find")))
      ;;
-     ;; -- When a command is used both variables should be set to nil.
-     (t nil))
+     ;; -- When a command string is specified, use it
+     ((stringp pel-ffind-executable)
+      (setq choice 'command-string)
+      (setq exe-path pel-ffind-executable)))
+     ;; -- if nothing is valid signal an error
     (unless exe-path
       (user-error
-       "None of fdfind, fd, or find tool available on this system!"))
+       "No command specified and none of fdfind, fd, or find tool available on this system!"))
     (cons choice exe-path)))
 
 (defun pel--ffind-dirname-expanded (dirname)
-  "Return DIRNAME in quote, expanded and without trailing slash.
+  "Return DIRNAME inside single quotes, expanded and without trailing slash.
 Substitute the ~ with the home directory.
 Replace the name of environment variables with their values."
-  (format "'%s'" (directory-file-name
-                  (pel-expanded-path dirname))))
+  (format "'%s'" (shell-quote-argument  ; escape any single quote that may be in path
+                  (directory-file-name  ; remove any trailing slash
+                   ;; fully expand dirname, expand all environment variables
+                   ;; and expand ~ if it is used.
+                   (pel-expanded-path dirname)))))
 
 (defun pel--ffind-command (filename tree-dpaths)
   "Return a ffind command searching for FILENAME in directory trees.
@@ -273,8 +289,8 @@ whether the VCS setting (like the .gitignore file) is set to ignore them."
      ;; A string with the following keywords replaced:
      ;; {FNAME}    : the base name of the file
      ;; {DIRNAMES} : a space separated list of directory names to search
-     ((stringp pel--ffind-executable)
-      (let ((cmd pel--ffind-executable))
+     ((eq pel--ffind-executable 'command-string)
+      (let ((cmd pel-ffind-executable))
         (setq cmd (replace-regexp-in-string "{FNAME}"
                                             file-basename
                                             cmd
@@ -504,10 +520,13 @@ these warning, you should fix `pel-dev-projects' contents."
 Expand ~ and environment variables in DIR and check its presence.
 If it is present push it to the DIRS list otherwise display a warning
 and set the ERROR-DETECTED symbol to t."
-  `(let ((expanded-dir (pel-expanded-path ,dir)))
+  ;; Note: the macro evaluates each argument once to prevent
+  ;;       problems induced by multiple side effects executions.
+  `(let* ((dt ,dir)
+          (expanded-dir (pel-expanded-path dt)))
      (if (file-directory-p expanded-dir)
          (push expanded-dir ,dirs)
-       (pel--warn-invalid-dir ,dir expanded-dir)
+       (pel--warn-invalid-dir dt expanded-dir)
        (setq ,error-detected t))))
 
 (defun pel--ffind-project-lang-directories (&optional filename)
@@ -607,7 +626,8 @@ issues a warning describing the error."
     ;; requesting user to modify the specs.  Clear the cached values of the
     ;; directory settings to allow using the changes done by the user.
     (when detected-error
-      (pel-ffind-reset-cache nil 'silently))
+      (message "Please fix pel-dev-projects errors.\
+ Then execute pel-ffind-reset-cache to activate your changes."))
     ;; Remove any duplicates from lists kept in the original order.
     (setq directories     (reverse (seq-uniq directories #'string=))
           directory-trees (reverse (seq-uniq directory-trees #'string=)))
@@ -690,7 +710,7 @@ specify any tool names."
 ;; - list of directories and directory trees associated with a dev tool chain
 ;;   identified in the `pel-dev-tools',
 ;; - list of directories and directory trees associated with a code library
-;;   identified in the `pel-dev-tlibraries'.
+;;   identified in the `pel-dev-libraries'.
 ;;
 ;; The code identifies the absolute path of each directory and directory-tree.
 ;; The user can use ~ and $VARNAME and ${VARNAME} style variable names inside
@@ -838,12 +858,13 @@ list of directory paths.
 
 Return a list of found file names with complete and expanded absolute path.
 Return nil if nothing found."
-  (let ((candidate-dir (pel-ffind-project-rootdir)))
-    (let* ((searched-directories (if candidate-dir
-                                     (cons candidate-dir tree-dpaths)
-                                   tree-dpaths))
-           (uniq-searched-dirs (delete-dups searched-directories)))
-      (pel-ffind fname uniq-searched-dirs))))
+  (let* ((candidate-dir (pel-ffind-project-rootdir))
+         (tree-dpaths (pel-list-of tree-dpaths))
+         (searched-directories (if candidate-dir
+                                   (cons candidate-dir tree-dpaths)
+                                 tree-dpaths))
+         (uniq-searched-dirs (delete-dups searched-directories)))
+    (pel-ffind fname uniq-searched-dirs)))
 
 ;; ---------------------------------------------------------------------------
 ;; TODO: when there are no directories/directory-trees to search do we search
@@ -863,9 +884,7 @@ Return nil if nothing found."
         (var-names       (pel-ffind-project-lang-envvars))
         (exclude-regexps (pel-ffind-project-lang-exclude-regexps))
         (env-tool-names (pel-ffind-env-tool-names (pel-language-of)))
-        (dir/trees/exclud-regxp (pel--ffind-project-lang-directories))
-
-        )
+        (dir/trees/exclud-regxp (pel--ffind-project-lang-directories)))
     (pel-print-in-buffer
      "*pel-cc-ffind-status*"
      "PEL FFIND Control Status"

@@ -614,7 +614,7 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   :link `(file-link :tag "Directory of PDF table files" ,(pel-pdf-directory))
   :link `(url-link  :tag "PEL key maps PDF" ,(pel-pdf-file-url "-pel-key-maps"))
   :link '(url-link  :tag "PEL @ GitHub" "https://github.com/pierre-rouleau/pel")
-  :package-version '(pel . "0.4.1"))
+  :package-version '(pel . "0.4.2"))
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-base-emacs nil
@@ -2281,7 +2281,7 @@ This is used by `pel-open-at-point' standard mode of operation, as opposed to
 the programming language specific operations.
 
 This user-option acts as the default for a buffer.  You can change
-the buffer\\='s local value with `pel-set-open-file-at-point-dir-home'
+the buffer\\='s local value with `pel-set-open-at-point-dir-home'
 Can be one of the following:
 - nil     : use parent directory of currently visited file, the default.
             If buffer is not visiting a file, then use the buffer\\='s current
@@ -5438,7 +5438,6 @@ Extract a directories and directory trees for a tool name with
 `pel-dev-tool-dirs'."
   :group 'pel-file-finding
   :group 'pel-pkg-for-project-mng
-  :safe t
   :type '(repeat
           (list :tag "Development Tool"
                 (string :tag "Tool Name")
@@ -5477,7 +5476,6 @@ Extract a directories and directory trees for a library name with
 `pel-dev-lib-dirs'."
   :group 'pel-file-finding
   :group 'pel-pkg-for-project-mng
-  :safe t
   :type '(repeat
           (list :tag "Code Library"
                 (string :tag "Library Name")
@@ -5590,7 +5588,6 @@ Examples of valid directory path names:
     user\\='s home directory."
   :group 'pel-file-finding
   :group 'pel-pkg-for-project-mng
-  :safe t
   :type '(repeat
           (list :tag "Code Projects"
                 (string :tag "Project Name    ")
@@ -5647,7 +5644,7 @@ Examples of valid directory path names:
                                                (const :tag "Scheme - Chicken" chicken)
                                                (const :tag "Scheme - Gambit" gambit)
                                                (const :tag "Scheme - Gerbil" gerbil)
-                                               (const :tag "Schen" schen)
+                                               ;; (const :tag "Schen" schen)  ; FUTURE
                                                (const :tag "Seed7" seed7)
                                                (const :tag "Smalltalk" smalltalk)
                                                (const :tag "Swift" swift)
