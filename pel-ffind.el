@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-19 12:43:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-19 15:46:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -150,7 +150,9 @@ command prompt the user for one of the available tool names."
                  (pel-string-for pel--ffind-overriding-toolchain-name " (" ") "))
          available-tool-names)))))
   (if tool-name
-      (setq-local pel--ffind-overriding-toolchain-name tool-name)
+      (progn
+        (setq-local pel--ffind-overriding-toolchain-name tool-name)
+        (pel-ffind-reset-cache nil 'silently))
     (when (y-or-n-p "No tool identified in pel-dev-tools; customize it?")
       (customize-option 'pel-dev-tools))))
 
@@ -356,7 +358,6 @@ user-option and/or installing a new file search tool in your system."
 ;; ---------------------------------------------------------------------------
 ;;* Extraction of Project Information
 ;;  =================================
-
 
 (defun pel-ffind-project-name (&optional filename)
   "Return the project name of FILENAME or currently visited file.
@@ -763,15 +764,20 @@ lists are `pel--ffind-searched-dirs' and `pel--ffind-searched-dir-trees'."
 (defun pel-ffind (fname &optional tree-dpaths inclusive no-ignore)
   "Search for FNAME in current and/or specified TREE-DPATHS.
 
+TREE-DPATHS can be nil, a single directory path string or a list of directory
+path strings.
+
 Search for FNAME file in the specified directories and directory trees.
 - If TREE-DPATHS is specified and INCLUSIVE is nil search exclusively
-  -  in the directory trees specified by TREE-DPATH.
+  -  in the directory trees specified by TREE-DPATHS.
 - If TREE-DPATHS is specified and INCLUSIVE is non-nil search:
-  - in the directory trees specified by TREE-DPATH and
+  - in the directory trees specified by TREE-DPATHS and
+  - in `default-directory' (always included), and
   - in the directories and directory trees identified the `pel-dev-projects'
     corresponding to the language specific project for to the currently
     visited file.
 - If TREE-DPATHS is nil, then search
+  - in `default-directory' (always included as a directory tree), and
   - in the directories and directory trees identified the `pel-dev-projects'
     corresponding to the language specific project for to the currently
     visited file.
@@ -811,7 +817,7 @@ told to ignore them or not."
             dir-trees (cons default-directory pel--ffind-searched-dir-trees)
             exclusion-regexps pel--ffind-exclusion-regexps)
       (when (and tree-dpaths inclusive)
-        (dolist (dtree tree-dpaths)
+        (dolist (dtree (pel-list-of tree-dpaths))
           (unless (member dtree dir-trees)
             (push dtree dir-trees)))))
     ;; Search for FNAME into directory trees first.
@@ -858,12 +864,16 @@ told to ignore them or not."
 
 ;;-pel-autoload
 (defun pel-generic-find-file (fname &optional tree-dpaths)
-  "Find FNAME file name(s) from in project holding the currently visited file.
+  "Find FNAME file name(s) from the project/directory holding the current file.
 
-Recursively search for FNAME inside the directory tree of the current
-project, and if specified, inside the list of directory trees specified
-by the TREE-DPATHS argument, which may be a single directory path or a
-list of directory paths.
+Identify the project root directory via `pel-ffind-project-rootdir'.
+If a project root is found, search exclusively in that directory
+tree (plus any TREE-DPATHS).  If no project root is identified, search
+in `default-directory' tree instead (the directory of the currently
+visited file).
+
+TREE-DPATHS may be a single directory path string or a list of directory
+path strings to search in addition to the project root directory tree.
 
 Return a list of found file names with complete and expanded absolute path.
 Return nil if nothing found."
@@ -876,10 +886,6 @@ Return nil if nothing found."
     (pel-ffind fname uniq-searched-dirs)))
 
 ;; ---------------------------------------------------------------------------
-;; TODO: when there are no directories/directory-trees to search do we search
-;; in current directory as a directory or as a directory tree?
-
-
 
 ;;-pel-autoload
 (defun pel-ffind-show-status (&optional append)

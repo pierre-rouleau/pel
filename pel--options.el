@@ -5488,7 +5488,13 @@ Extract a directories and directory trees for a library name with
 
 (defun pel-dev--tool-lib-dirs-for (name set)
   "Utility: return list (dirs dir-trees) for NAME in SET structure."
+  (unless (and (stringp name)
+             (not (string= name ""))
+             (not (string-match-p "[[:space:]:]" name)))
+  (user-error "Invalid development tool/library name: %S" name))
   (let ((group (assoc name set)))
+    (unless group
+      (user-error "Unknown development tool/library: %s" name))
     (list (nth 2 group)
           (nth 3 group))))
 
@@ -5536,8 +5542,12 @@ Each programming project is defined as:
 
   - Project directory tree(s):    The directory trees containing project's
                                   source code in those language(s).
-                                  The project root directory (identified
-                                  above)
+                                  The project root directory identified
+                                  above identifies the root of the project and
+                                  the directories searched are identified
+                                  here.  When none are defined here, the
+                                  entire project root directory tree is
+                                  searched.
                     Access it with: `pel-dev-project.setting.dir-trees'
 
   - Project Used Tool(s):         The name(s) of tool(s) used by the project.
