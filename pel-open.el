@@ -58,7 +58,7 @@
 
 (defvar-local pel--open-file-at-point-dir-home pel-open-file-at-point-dir-home
   "Root directory from where `pel-open-file-at-point' opens file.
-You can change its buffer-local value with `pel-set-open-file-at-point-dir'
+You can change its buffer-local value with `pel-set-open-at-point-dir-home'
 Can be one of the following:
 - nil     : use parent directory of currently visited file, the default.
             If buffer is not visiting a file, then use the buffer's current

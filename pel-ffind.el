@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-19 12:15:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-19 12:43:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -58,6 +58,8 @@
 ;;
 ;;
 ;; Extraction of Project Information
+;;    The '<<' mark functions that extract the fields of `pel-dev-projects':
+;;
 ;;  - `pel-ffind-project-name'                 <<
 ;;  - `pel-ffind-project-rootdir'              <<
 ;;    - `pel-ffind-project-directory-of'
@@ -330,7 +332,7 @@ The list is set by `pel--ffind-set-project-dirs'.")
 
 When CLEAR-SEARCH-TOOL is non-nil also clear the file search tool
 settings adjusted from the `pel-ffind-executable' user-option.
-Print a message show it's been done unless SILENTLY is non-nil.
+Print a message showing it's been done unless SILENTLY is non-nil.
 
 Clear the cache after changing the `pel-dev-projects', `pel-dev-tools'
 and `pel-dev-libraries' user-options to activate these changes.  Also
@@ -611,7 +613,7 @@ issues a warning describing the error."
             (pel--push-expanded-dir-to-dirs dir-tree directory-trees
                                             detected-error))))
 
-      ;; Get directories associated wit environment variables identified for
+      ;; Get directories associated with environment variables identified for
       ;; the project for the language.
       (dolist (varname (pel-dev-project.setting.envvars
                         proj-lang-setting))
@@ -647,7 +649,7 @@ issues a warning describing the error."
 (defun pel-ffind-project-lang-tools (&optional filename)
   "Return the list of tool names specific to the FILENAME or current buffer.
 
-Return the list of tool names identified by `dev-pel-project' for the project
+Return the list of tool names identified by `dev-pel-projects' for the project
 and language specific for the FILENAME or currently visited file.  Return nil
 if there are none or if the buffer is not visiting a file."
   (pel-dev-project.setting.tools (pel-ffind-project-lang-setting filename)))
@@ -655,7 +657,7 @@ if there are none or if the buffer is not visiting a file."
 (defun pel-ffind-project-lang-envvars (&optional filename)
   "Return the list of envvars specific to the FILENAME or current buffer.
 
-Return the list of environment variables identified by `dev-pel-project'
+Return the list of environment variables identified by `dev-pel-projects'
 for the project and language specific for the FILENAME or currently
 visited file.  Return nil if there are none or if the buffer is not
 visiting a file."
@@ -664,7 +666,7 @@ visiting a file."
 (defun pel-ffind-project-lang-exclude-regexps (&optional filename)
   "Return the list of exclude regexps specific to the FILENAME or current buffer.
 
-Return the list of exclude regexps identified by `dev-pel-project'
+Return the list of exclude regexps identified by `dev-pel-projects'
 for the project and language specific for the FILENAME or currently
 visited file.  Return nil if there are none or if the buffer is not
 visiting a file."
@@ -893,7 +895,7 @@ Return nil if nothing found."
         (env-tool-names (pel-ffind-env-tool-names (pel-language-of)))
         (dir/trees/exclud-regxp (pel--ffind-project-lang-directories)))
     (pel-print-in-buffer
-     "*pel-cc-ffind-status*"
+     "*pel-ffind-status*"
      "PEL FFIND Control Status"
      (lambda ()
        "Print user options & buffer local variables of file finding."

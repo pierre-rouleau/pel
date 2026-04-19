@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-18 15:01:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-19 13:15:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -170,22 +170,30 @@ Display and return the new value of the mode."
 (defun pel-cc-set-indent-width (&optional new-width)
   "Interactively change the Indentation width for current buffer to NEW-WIDTH.
 
-Prompt if not specified."
-  (interactive
-   (list (read-number
-          (format "Indentation width (0 to restore default) [%s]: "
-                  c-basic-offset))))
-  (unless new-width
-    (setq new-width (read-number
-                     (format "Indentation width (0 to restore default) [%s]: "
-                             c-basic-offset))))
-  (cond
-   ((> new-width 0)
-    (setq-local c-basic-offset new-width))
-   ((= new-width 0)
-    (setq-local c-basic-offset
-                (pel-major-mode-symbol-value "pel-%s-indent-width")))
-   (t (user-error "Enter 0 or positive value!")))
+Prompt if not specified (in interactive execution) or when nil is passed
+explicitly.
+Accepts values between 2 and 8 inclusively."
+  (interactive)
+  ;; protect against an explicit nil argument
+  (let ((default-indent
+         (pel-major-mode-symbol-value-or "pel-%s-indent-width" nil)))
+    (when (or (null new-width)
+              (called-interactively-p 'any))
+      (setq new-width
+            (read-number (format "Indentation width%s [%s]: "
+                                 (if default-indent
+                                     (format " (0 to restore default: %d)"
+                                             default-indent)
+                                   "")
+                                 c-basic-offset))))
+    (cond
+     ((< 1 new-width 9)
+      (setq-local c-basic-offset new-width))
+     ((and default-indent
+           (= new-width 0))
+      (setq-local c-basic-offset default-indent))
+     (t (user-error "Enter a positive value in the range [2,8], not %s!"
+                    new-width))))
   (message "indentation is now %s" c-basic-offset))
 
 ;; ---------------------------------------------------------------------------
@@ -425,8 +433,6 @@ off, but the \\[c-hungry-delete-forward] and \\[c-hungry-delete-backwards] keys 
        (pel-insert-mode-symbol-content-line-when-bound "pel-%s-multiline-comments")
        (pel-insert-mode-symbol-content-line "pel-%s-tab-width")
        (pel-insert-mode-symbol-content-line "pel-%s-use-tabs")
-       (pel-insert-mode-symbol-content-line "pel--%s-file-finder-ini-tool-name")
-       (pel-insert-mode-symbol-content-line "pel-%s-file-searched-extra-dir-trees")
        (pel-insert-symbol-content-line 'pel-ffind-executable)
        (pel-insert-symbol-content-line 'pel-use-smart-dash)
 

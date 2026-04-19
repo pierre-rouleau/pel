@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 27 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-19 11:13:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-19 13:36:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,14 +25,15 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;;
+;; ERT-based test for project management functions of pel-ffind.el
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
 (require 'pel-ffind)
-(require 'pel--base)      ;; if needed for utility macros
+(require 'pel--options)  ; use `pel-project-root-identifiers',
+                         ;     `pel-project-restricted-root-identifiers'
 (require 'cl-lib)
 (require 'ert)
 

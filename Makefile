@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-04-18 13:49:59 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-04-19 13:35:29 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -808,7 +808,7 @@ pel-hide-docstring.elc:   pel--base.elc pel-navigate.elc pel-face-ut.elc
 pel-hideshow.elc:         pel--base.elc
 pel-hier-face.elc:        pel--base.elc pel--install.elc
 pel-hier-modes.elc:       pel--install.elc
-pel-highlight.elc:        pel--base.elc pel-prompt.elc
+pel-highlight.elc:        pel--base.elc pel--options.elc pel-prompt.elc
 pel-ido.elc:              pel-prompt.elc
 pel-iedit.elc:            pel--options.elc
 pel-imenu-dbg.elc:        pel--base.elc
@@ -920,7 +920,7 @@ test/pel-elpa-test.el.test-passed:              pel-elpa.elc pel-filedir.elc
 test/pel-erlang-test.el.test-passed:            pel-erlang.elc pel-ert.elc
 test/pel-ert-test.el.test-passed:               pel-ert.elc
 test/pel-ffind-inpath-test.el.test-passed:      pel-ffind-inpath.elc
-test/pel-ffind-project-directory-test.el.test-passed: pel-ffind.elc pel--base.elc
+test/pel-ffind-project-directory-test.el.test-passed: pel-ffind.elc pel--options.elc
 test/pel-file-test.el.test-passed:              pel-file.elc pel-ert.elc
 test/pel-file-open-test.el.test-passed:         pel-file.elc
 test/pel-fill-test.el.test-passed:              pel-fill.elc pel--base.elc

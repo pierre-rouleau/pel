@@ -15,7 +15,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       - *pel-dev-tools*.  A list of tool name associated with a list of directory trees this tool uses.
       - *pel-dev-libraries*  A list of library names associated with a list of directory trees this library uses.
   - The new logic incorporates and simplifies the logic previously supported by various major-mode specific
-    user options named after the programming language the major mode supports and eliminates all of these user-options:
+    user options named after the programming language the major mode supports and eliminates all of the following user-options:
     - pel-LANG-file-searched-extra-dir-trees
     - pel-LANG-file-finder-method
     - pel-LANG-file-finder-ini-tool-name

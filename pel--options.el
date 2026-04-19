@@ -5571,8 +5571,9 @@ Each programming project is defined as:
   - Exclusion regular expression(s): one or several regular expression strings
                                      that identify directory or file names
                                      that must be excluded from the list of
-                                     files provided by the `pel-ffind' when
-                                     the no-ignore option is non-nil.
+                                     files provided by the `pel-ffind' default
+                                     behaviour and when its no-ignore option
+                                     is explicitly set to nil.
                     Access it with: `pel-dev-project.setting.exclude-regexps'
 
 The directory paths identified in this data structure must be absolute paths.
@@ -5693,7 +5694,7 @@ DEV-PROJECT.SETTING."
   "Return the list of directory trees of DEV-PROJECT.SETTING.
 
 Each list entry is a string representing an absolute path.
-The string can start with ~ and hold a $VARNAME
+The string can start with ~ and hold a $VARNAME style environment variable.
 A DEV-PROJECT is one of the entries of the `pel-dev-projects' list.
 Extract the list of DEV-PROJECT.SETTING from a project with
 `pel-dev-project.settings', then pass one of its elements as
