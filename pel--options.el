@@ -140,6 +140,7 @@
 ;;             - pel-d-code-style
 ;;         - pel-pkg-for-dart
 ;;         - pel-pkg-for-eiffel
+;;         - pel-pkg-for-java
 ;;         - pel-pkg-for-javascript
 ;;         - pel-pkg-for-go
 ;;         - pel-pkg-for-haskell
@@ -5622,6 +5623,7 @@ Examples of valid directory path names:
                                                (const :tag "Haskell" haskell)
                                                (const :tag "Hy" hy)
                                                (const :tag "Janet" janet)
+                                               (const :tag "Java" java)
                                                (const :tag "Javascript" javascript)
                                                (const :tag "Julia" julia)
                                                (const :tag "Lua" lua)
@@ -5630,6 +5632,7 @@ Examples of valid directory path names:
                                                (const :tag "Nim" nim)
                                                (const :tag "Objective-C" objc)
                                                (const :tag "Odin" odin)
+                                               (const :tag "Ocaml" ocaml)
                                                (const :tag "Pascal" pascal)
                                                (const :tag "Perl" perl)
                                                (const :tag "Pike" pike)
@@ -5644,6 +5647,7 @@ Examples of valid directory path names:
                                                (const :tag "Scheme - Chicken" chicken)
                                                (const :tag "Scheme - Gambit" gambit)
                                                (const :tag "Scheme - Gerbil" gerbil)
+                                               (const :tag "Scheme - Scsh" scsh)
                                                ;; (const :tag "Schen" schen)  ; FUTURE
                                                (const :tag "Seed7" seed7)
                                                (const :tag "Smalltalk" smalltalk)

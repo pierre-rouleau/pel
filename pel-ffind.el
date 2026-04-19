@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-18 17:57:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-19 12:15:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -487,17 +487,24 @@ ignored but will instead cause the generation of a warning.  If you see
 these warning, you should fix `pel-dev-projects' contents."
   (let ((project-settings (pel-ffind-project-settings filename))
         (lang (pel-language-of filename))
-        (lang-specific-setting nil))
+        (lang-specific-setting nil)
+        )
     (dolist (proj-setting project-settings)
-      (when (memq lang (pel-dev-project.setting.languages proj-setting))
-        (if lang-specific-setting
-            (display-warning
-             'pel-ffind-project-lang-setting
-             (format
-              "Multiple setting for %s in pel-dev-project %s."
-              lang (pel-ffind-project-name filename))
-             :warning)
-          (setq lang-specific-setting proj-setting))))
+      (let ((project-languages
+             (pel-dev-project.setting.languages proj-setting)))
+        ;; Each project can be language agnostic or specific to one or many.
+        (when (or (null project-languages)
+                  (memq lang project-languages))
+          ;; However only one of the project settings can be used.
+          ;; If more than one would apply issue a warning.
+          (if lang-specific-setting
+              (display-warning
+               'pel-ffind-project-lang-setting
+               (format
+                "Multiple setting for %s in pel-dev-project %s."
+                lang (pel-ffind-project-name filename))
+               :warning)
+            (setq lang-specific-setting proj-setting)))))
     lang-specific-setting))
 
 ;; --
