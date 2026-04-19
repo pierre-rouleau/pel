@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-19 15:46:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-19 16:35:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -27,19 +27,20 @@
 ;;
 ;; This file provides two file finding functions:
 ;;
-;; - `pel-ffind' is the most capable; it find files located in the list of
+;; - `pel-ffind' is the most capable; it finds files located in the list of
 ;;   directories and directory trees corresponding to the language-specific
-;;   project setting defined identified by the `pel-dev-projects',
+;;   project settings defined identified by the `pel-dev-projects',
 ;;   `pel-dev-tools' and `pel-dev-libraries' user-options.  This includes
 ;;   directories that can be located in separate tree locations in the file
 ;;   system, not only inside the current project directory tree like the
 ;;   directories used by the tool and libraries used by the project.
 ;;
-;; - `pel-generic-find-file' search for files inside the directory tree of the
-;;   current project, nothing else.
+;; - `pel-generic-find-file' searches for files inside the directory tree of
+;;   the current project if a project root is found, otherwise search in the
+;;   directory tree of the `default-directory'.
 ;;
 ;;
-;; The code hierarchical organization is show below, where '*' identifies a
+;; The code hierarchical organization is shown below, where '*' identifies a
 ;; command, '-' a function and '.' a reference to a function implemented
 ;; above.
 ;;
@@ -650,7 +651,7 @@ issues a warning describing the error."
 (defun pel-ffind-project-lang-tools (&optional filename)
   "Return the list of tool names specific to the FILENAME or current buffer.
 
-Return the list of tool names identified by `dev-pel-projects' for the project
+Return the list of tool names identified by `pel-dev-projects' for the project
 and language specific for the FILENAME or currently visited file.  Return nil
 if there are none or if the buffer is not visiting a file."
   (pel-dev-project.setting.tools (pel-ffind-project-lang-setting filename)))
@@ -658,7 +659,7 @@ if there are none or if the buffer is not visiting a file."
 (defun pel-ffind-project-lang-envvars (&optional filename)
   "Return the list of envvars specific to the FILENAME or current buffer.
 
-Return the list of environment variables identified by `dev-pel-projects'
+Return the list of environment variables identified by `pel-dev-projects'
 for the project and language specific for the FILENAME or currently
 visited file.  Return nil if there are none or if the buffer is not
 visiting a file."
@@ -667,11 +668,12 @@ visiting a file."
 (defun pel-ffind-project-lang-exclude-regexps (&optional filename)
   "Return the list of exclude regexps specific to the FILENAME or current buffer.
 
-Return the list of exclude regexps identified by `dev-pel-projects'
+Return the list of exclude regexps identified by `pel-dev-projects'
 for the project and language specific for the FILENAME or currently
 visited file.  Return nil if there are none or if the buffer is not
 visiting a file."
-  (pel-dev-project.setting.exclude-regexps (pel-ffind-project-lang-setting filename)))
+  (pel-dev-project.setting.exclude-regexps
+   (pel-ffind-project-lang-setting filename)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Extraction from Environment
@@ -877,11 +879,10 @@ path strings to search in addition to the project root directory tree.
 
 Return a list of found file names with complete and expanded absolute path.
 Return nil if nothing found."
-  (let* ((candidate-dir (pel-ffind-project-rootdir))
+  (let* ((candidate-dir (or (pel-ffind-project-rootdir)
+                            default-directory))
          (tree-dpaths (pel-list-of tree-dpaths))
-         (searched-directories (if candidate-dir
-                                   (cons candidate-dir tree-dpaths)
-                                 tree-dpaths))
+         (searched-directories (cons candidate-dir tree-dpaths))
          (uniq-searched-dirs (delete-dups searched-directories)))
     (pel-ffind fname uniq-searched-dirs)))
 
