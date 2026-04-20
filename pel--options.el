@@ -5456,9 +5456,6 @@ identified by a library name.  The library name can correspond to a real
 library, like C++ boost or Poco.  It can also be convenient name for
 your own set of code libraries you use in several projects.
 
-The library names identified here can then be used inside
-`pel-dev-projects' libraries.
-
 The library names identified here can then be used inside the library
 items of the `pel-dev-projects' settings part of one or several projects
 to inject the corresponding directories inside those projects.
@@ -5489,9 +5486,9 @@ Extract a directories and directory trees for a library name with
 (defun pel-dev--tool-lib-dirs-for (name set)
   "Utility: return list (dirs dir-trees) for NAME in SET structure."
   (unless (and (stringp name)
-             (not (string= name ""))
-             (not (string-match-p "[[:space:]:]" name)))
-  (user-error "Invalid development tool/library name: %S" name))
+               (not (string= name ""))
+               (not (string-match-p "[[:space:]:]" name)))
+    (user-error "Invalid development tool/library name: %S" name))
   (let ((group (assoc name set)))
     (unless group
       (user-error "Unknown development tool/library: %s" name))
@@ -5603,9 +5600,9 @@ Examples of valid directory path names:
   :type '(repeat
           (list :tag "Code Projects"
                 (string :tag "Project Name    ")
-                (list   :tag "Project Settings"
-                        (string :tag "Project Root    ")
-                        (repeat :tag "Project Settings"
+                (list   :tag "Project Root & Settings"
+                        (string :tag "- Project Root  ")
+                        (repeat :tag "- Per-Language Settings"
                                 (list :tag "Lang"
                                       (repeat :tag "Project Language(s)"
                                               (choice
@@ -5718,7 +5715,10 @@ None of the path string is expanded."
 
 Each list entry is a tool name corresponding to `pel-dev-tools' entry.
 The tool name string can hold a $VARNAME or ${VARNAME} style environment
-variable.
+variable.  Use environment variables inside tool names when tools selection
+is made by shell environment.  This can be quite useful for OS specific
+settings for instance.
+
 A DEV-PROJECT is one of the entries of the `pel-dev-projects' list.
 Extract the list of DEV-PROJECT.SETTING from a project with
 `pel-dev-project.settings', then pass one of its elements as

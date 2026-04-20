@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-19 16:50:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-19 17:14:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -126,7 +126,7 @@
 
 When non-nil this is the name of the tool chain selected dynamically for
 the current buffer, overriding any tool name selected by the value of
-PEL_DEV_TOOLS_FOR_'LANG' environment variable (if it exists) and the the
+PEL_DEV_TOOLS_FOR_'LANG' environment variable (if it exists) and the
 tool names specified inside the `pel-dev-libraries' data structure for
 the current project for the language.
 It is selected by the `pel-ffind-set-devtool-name ' command.")
@@ -776,12 +776,12 @@ Search for FNAME file in the specified directories and directory trees.
   - in the directory trees specified by TREE-DPATHS and
   - in `default-directory' (always included), and
   - in the directories and directory trees identified by `pel-dev-projects'
-    corresponding to the language-specific project for to the currently
+    corresponding to the language-specific project for the currently
     visited file.
 - If TREE-DPATHS is nil, then search
   - in `default-directory' (always included as a directory tree), and
   - in the directories and directory trees identified by `pel-dev-projects'
-    corresponding to the language-specific project for to the currently
+    corresponding to the language-specific project for the currently
     visited file.
 
 The function excludes absolute file names that match one of the regular

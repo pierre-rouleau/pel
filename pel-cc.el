@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-19 17:04:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-19 17:16:11 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -173,7 +173,7 @@ Display and return the new value of the mode."
 Prompt if not specified (in interactive execution) or when nil is passed
 explicitly.
 Accepts values between 2 and 8 inclusively to set the width.
-When a language tab width default is configured, entering 0 restores it."
+When a language indent width default is configured, entering 0 restores it."
   (interactive)
   ;; Prompt when called interactively (new-width is always nil then) or
   ;; when nil is passed programmatically.
@@ -194,7 +194,8 @@ When a language tab width default is configured, entering 0 restores it."
      ((and default-indent
            (= new-width 0))
       (setq-local c-basic-offset default-indent))
-     (t (user-error "Enter a positive value in the range [2,8], not %s!"
+     (t (user-error "Enter a positive value in the range [2,8]%s, not %s!"
+                     (if default-indent " (or 0 to restore default)" "")
                     new-width))))
   (message "indentation is now %s" c-basic-offset))
 
