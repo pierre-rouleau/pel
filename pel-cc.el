@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-20 13:59:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-20 14:16:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -523,11 +523,14 @@ off, but the \\[c-hungry-delete-forward] and \\[c-hungry-delete-backwards] keys 
 (defconst pel-cpp-regexp
   (rx-to-string
    '(or
-     ;; bare C++ keywords that need symbol boundaries
-     (: symbol-start (or "final"
-                         "override"
-                         "virtual"
-                         "class")
+     ;; bare C++ keywords: require a safe preceding context
+     ;; (whitespace, common delimiter, or line start) so that
+     ;; Objective-C '@class' is never mistaken for C++ 'class'.
+     (: (or line-start (any " \t\n\r{};,(:["))
+        (or "final"
+            "override"
+            "virtual"
+            "class")
         symbol-end)
      ;; self-delimiting with one of: trailing space, ':', '::', '<',
      ;; or non-identifier chars:
