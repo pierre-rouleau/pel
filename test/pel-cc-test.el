@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-20 14:24:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-20 14:51:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -246,7 +246,6 @@ Return the path of the created file."
 
 (ert-deftest pel-cc-test/cpp-regexp/matches-cpp-constructs ()
   "`pel-cpp-regexp' matches well-known C++ language constructs."
-  (ert-skip "Skip failing test")
   (dolist (code '("class Foo {"
                   "namespace std {"
                   "using namespace std;"
@@ -259,8 +258,9 @@ Return the path of the created file."
                   "void bar() override"
                   "class Baz final"
                   "// C++ FILE: my project"))
-    (should (string-match-p pel-cpp-regexp
-                            (format "Expected match for: %S" code)))))
+
+    (unless (string-match-p pel-cpp-regexp code)
+      (ert-fail (format "Expected match for: %S" code)))))
 
 (ert-deftest pel-cc-test/cpp-regexp/does-not-match-plain-c-constructs ()
   "`pel-cpp-regexp' does not match idiomatic plain C constructs."
@@ -269,8 +269,8 @@ Return the path of the created file."
                   "#include <stdio.h>"
                   "/* block comment */"
                   "return 0;"))
-    (should-not (string-match-p pel-cpp-regexp
-                                (format "Expected NO match for: %S" code)))))
+    (when (string-match-p pel-cpp-regexp code)
+      (ert-fail (format "Expected NO match for: %S" code)))))
 
 ;;; --------------------------------------------------------------------------
 ;;; Tests for `pel-objective-c-regexp' — Objective-C pattern matching
@@ -298,8 +298,8 @@ Return the path of the created file."
                   "@throw exception"
                   "@synchronized(self) {"
                   "#import <Foundation/Foundation.h>"))
-    (should (string-match-p pel-objective-c-regexp
-                            (format "Expected match for: %S" code)))))
+    (unless (string-match-p pel-objective-c-regexp code)
+      (ert-fail (format "Expected match for: %S" code)))))
 
 (ert-deftest pel-cc-test/objective-c-regexp/does-not-match-plain-c ()
   "`pel-objective-c-regexp' does not match plain C code."
@@ -307,8 +307,8 @@ Return the path of the created file."
                   "struct Foo {"
                   "#include <stdio.h>"
                   "return 0;"))
-    (should-not (string-match-p pel-objective-c-regexp
-                                (format "Expected NO match for: %S" code)))))
+    (when (string-match-p pel-objective-c-regexp code)
+      (ert-fail (format "Expected NO match for: %S" code)))))
 
 ;;; --------------------------------------------------------------------------
 ;;; Tests for `pel--isa-buffer-of' / `pel-is-cpp-buffer' / `pel-is-objective-c-buffer'
