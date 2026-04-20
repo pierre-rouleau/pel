@@ -57,8 +57,8 @@
 ;;  ============================================================
 
 (defvar-local pel--open-file-at-point-dir-home pel-open-file-at-point-dir-home
-  "Root directory from where `pel-open-file-at-point' opens file.
-You can change its buffer-local value with `pel-set-open-at-point-dir-home'
+  "Root directory from where `pel-open-at-point' opens file.
+You can change its buffer-local value with `pel-set-open-at-point-dir-home'.
 Can be one of the following:
 - nil     : use parent directory of currently visited file, the default.
             If buffer is not visiting a file, then use the buffer's current
@@ -108,7 +108,7 @@ Also see `pel-open-file-at-point-dir-home', used by the function when not
 using language specialized features.
 
 When used in an rST buffer it opens the reST reference at point.
-In all other buffers it dispatches to `pel-find-file-at-point-in-window'
+In all other buffers it dispatches to `pel-find-file-at-point-in-window'.
 
 The user options controlling this are part of the `pel-file-finding'
 customization group."
@@ -184,7 +184,7 @@ Copy the content of the URL into a temporary file, then open that file."
 
 (defun pel--open-file-at-point-dir-string-for (value)
   "Return description of a `pel--open-file-at-point-dir-home' value.
-It can also be a `pel-open-file-at-point-dir-home'."
+VALUE may also be taken from the `pel-open-file-at-point-dir-home' option."
   (cond
    ((not value)
     (if buffer-file-truename

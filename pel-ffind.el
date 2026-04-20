@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-19 17:14:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-20 16:39:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -62,12 +62,15 @@
 ;;    The '<<' mark functions that extract the fields of `pel-dev-projects':
 ;;
 ;;  - `pel-ffind-project-name'                 <<
+;;    - `pel--ffind-configured-project-of'
 ;;  - `pel-ffind-project-rootdir'              <<
+;;    . `pel--ffind-configured-project-of'
 ;;    - `pel-ffind-project-directory-of'
 ;;  - `pel--ffind-project-lang-directories'    <<
 ;;    - `pel-ffind-project-lang-setting'
 ;;      . `pel-ffind-project-name'
 ;;      - `pel-ffind-project-settings'
+;;        . `pel--ffind-configured-project-of'
 ;;    . `pel-ffind-env-tool-names'
 ;;    - `pel--push-expanded-dir-to-dirs'
 ;;      -`pel--warn-invalid-dir'
@@ -129,7 +132,7 @@ the current buffer, overriding any tool name selected by the value of
 PEL_DEV_TOOLS_FOR_'LANG' environment variable (if it exists) and the
 tool names specified inside the `pel-dev-libraries' data structure for
 the current project for the language.
-It is selected by the `pel-ffind-set-devtool-name ' command.")
+It is selected by the `pel-ffind-set-devtool-name' command.")
 
 (defun pel--dev-tool-names ()
   "Return a list of possible tool names available in `pel-dev-tools'."
@@ -141,7 +144,7 @@ It is selected by the `pel-ffind-set-devtool-name ' command.")
 
 When called in code, the TOOL-NAME must be one of the tool name key
 identified in the `pel-dev-tools' user-option or nil.  Interactively, the
-command prompt the user for one of the available tool names."
+command prompts the user for one of the available tool names."
   (interactive
    (let ((available-tool-names (pel--dev-tool-names)))
      (list
@@ -360,6 +363,33 @@ user-option and/or installing a new file search tool in your system."
 ;;* Extraction of Project Information
 ;;  =================================
 
+;; ---------------------------------------------------------------------------
+;;* Private helper: resolve project entry from pel-dev-projects by containment
+
+(defun pel--ffind-configured-project-of (pathname)
+  "Return the `pel-dev-projects' entry whose root-dir best contains PATHNAME.
+
+PATHNAME must be an absolute path (may start with ~ or hold $VARNAME or
+${VARNAME} style environment variables).
+
+\\='Best\\=' means the configured project whose root-dir, once expanded, is a
+parent of the expanded PATHNAME AND has the longest (most specific) path.
+This ensures the most-specific project wins when project roots are nested.
+
+Return the matching project entry (a list) if found, nil otherwise."
+  (let ((expanded-path (pel-expanded-path pathname))
+        (best-proj nil)
+        (best-len  0))
+    (dolist (proj pel-dev-projects)
+      (let* ((root     (pel-expanded-path (pel-dev-project.root-dir proj)))
+             (root-len (length root)))
+        (when (and (file-in-directory-p expanded-path root)
+                   (> root-len best-len))
+          (setq best-len root-len
+                best-proj proj))))
+    best-proj))
+
+
 (defun pel-ffind-project-name (&optional filename)
   "Return the project name of FILENAME or currently visited file.
 Return nil if no project name is found.
@@ -367,15 +397,22 @@ The project name is extracted from information found in `pel-dev-projects'
 considering the name of the currently visited file or the specified FILENAME."
   (let ((fname (or filename (buffer-file-name))))
     (when fname
-      (let ((project-root (pel-ffind-project-directory-of fname))
-            (project-name nil))
-        ;; Find the project root that matches the current project root: then
-        ;; return its associated project name.
+      (let* ((project-root (pel-ffind-project-directory-of fname))
+             (project-name nil))
+        ;; Phase 1: match by anchor-file-discovered root.
         (catch 'pel--ffind-pn-break
           (dolist (proj pel-dev-projects)
-            (when (pel-path= (pel-dev-project.root-dir proj) project-root)
+            (when (and project-root
+                       (pel-path= (pel-dev-project.root-dir proj) project-root))
               (setq project-name (pel-dev-project.name proj))
               (throw 'pel--ffind-pn-break nil))))
+        ;; Phase 2: fallback — resolve by configured root containment when no
+        ;; anchor files were found or when they did not match any configured
+        ;; project root.
+        (unless project-name
+          (let ((best (pel--ffind-configured-project-of fname)))
+            (when best
+              (setq project-name (pel-dev-project.name best)))))
         project-name))))
 
 ;; ----
@@ -449,10 +486,19 @@ levels, the outermost (shortest path) directory is selected.  This
 broadens the file search scope when nested projects exist while still
 allowing a restricted project scope for some projects.
 
-Return a directory name expanded and without trailing slash if found,
-nil otherwise."
-  (pel-ffind-project-directory-of default-directory
-                                  project-root-identifiers))
+Return a directory name expanded and without trailing slash if found.
+If no anchor files are found, fall back to the most specific configured
+`pel-dev-projects' root-dir that contains `default-directory'.
+Return nil if no project root is found by either method."
+  (or (pel-ffind-project-directory-of default-directory
+                                      project-root-identifiers)
+      ;; Fallback: resolve via configured pel-dev-projects root-dir.
+      ;; Useful when the project tree has no anchor files recognised by
+      ;; `pel-project-root-identifiers'.
+      (let ((best (pel--ffind-configured-project-of default-directory)))
+        (when best
+          (directory-file-name
+           (expand-file-name (pel-dev-project.root-dir best)))))))
 
 ;; ----
 (defun pel-ffind-project-settings (&optional filename)
@@ -464,13 +510,22 @@ The project name is extracted from information found in `pel-dev-projects'
 considering the name of the currently visited file or the specified FILENAME."
   (let ((fname (or filename (buffer-file-name))))
     (when fname
-      (let ((project-root (pel-ffind-project-directory-of fname))
-            (project-settings nil))
+      (let* ((project-root (pel-ffind-project-directory-of fname))
+             (project-settings nil))
+        ;; Phase 1: match by anchor-file-discovered root.
         (catch 'pel--ffind-pd-break
           (dolist (proj pel-dev-projects)
-            (when (pel-path= (pel-dev-project.root-dir proj)  project-root)
+            (when (and project-root
+                       (pel-path= (pel-dev-project.root-dir proj) project-root))
               (setq project-settings (pel-dev-project.settings proj))
               (throw 'pel--ffind-pd-break nil))))
+        ;; Phase 2: fallback — resolve by configured root containment when no
+        ;; anchor files were found or when they did not match any configured
+        ;; project root.
+        (unless project-settings
+          (let ((best (pel--ffind-configured-project-of fname)))
+            (when best
+              (setq project-settings (pel-dev-project.settings best)))))
         project-settings))))
 
 (defun pel-ffind-project-lang-setting (&optional filename)
@@ -558,7 +613,7 @@ the files that use the corresponding language LANG.
 
 All paths in both lists are absolute and are fully expanded.
 The presence of every directory is checked.
-If a directory does not exists it is removed from the list and the function
+If a directory does not exist it is removed from the list and the function
 issues a warning describing the error."
   (let ((proj-lang-setting (pel-ffind-project-lang-setting filename))
         (directories ())
@@ -690,8 +745,8 @@ language used by the current buffer or specified FILENAME such as C,
 PERL, etc).  The value of the variable environment variable is a
 colon-separated list of tool names.
 
-Return a list of tool name strings if there any.  Return nil if the
-environment variable does not exists or if it exists but does not
+Return a list of tool name strings if there are any.  Return nil if the
+environment variable does not exist or if it exists but does not
 specify any tool names."
   ;; Translate symbols that cannot be used in variable names, like c++.
   ;; Extract the list of tool names from the appropriate environment variable.
@@ -717,7 +772,7 @@ specify any tool names."
 ;; The project is identified by the visited file and the project directory
 ;; root that owns the file for the programming language.  Each
 ;; project/language identified in `pel-dev-projects' may have a set of:
-;; - directory-trees identified directly,,
+;; - directory-trees identified directly,
 ;; - list of directories identified by PATH-like environment variables,
 ;; - list of directories and directory trees associated with a dev tool chain
 ;;   identified in the `pel-dev-tools',
@@ -742,7 +797,7 @@ Set the directories and directory trees searched by `pel-ffind' for a search
 performed when editing the specified FILENAME (if one is specified) or in the
 current buffer.   The filename or buffer mode identifies the current language
 which has an impact on the selection of the directory lists extracted from the
-structures of the `pel-dev-projects', `pel-dev-libraries' the `pel-dev-tools'
+structures of the `pel-dev-projects', `pel-dev-libraries' and `pel-dev-tools'
 user-options.
 
 Perform the selection of directories if their cached values have not been set
@@ -772,13 +827,13 @@ path strings.
 Search for FNAME file in the specified directories and directory trees.
 - If TREE-DPATHS is specified and INCLUSIVE is nil search exclusively
   -  in the directory trees specified by TREE-DPATHS.
-- If TREE-DPATHS is specified and INCLUSIVE is non-nil search:
-  - in the directory trees specified by TREE-DPATHS and
+- If TREE-DPATHS is specified and INCLUSIVE is non-nil, search:
+  - in the directory trees specified by TREE-DPATHS, and
   - in `default-directory' (always included), and
   - in the directories and directory trees identified by `pel-dev-projects'
     corresponding to the language-specific project for the currently
     visited file.
-- If TREE-DPATHS is nil, then search
+- If TREE-DPATHS is nil, then search:
   - in `default-directory' (always included as a directory tree), and
   - in the directories and directory trees identified by `pel-dev-projects'
     corresponding to the language-specific project for the currently
@@ -894,13 +949,13 @@ Return nil if nothing found."
   (interactive "P")
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
         (user-buffer-major-mode major-mode)
-        (project-name    (pel-ffind-project-name))
-        (project-root    (pel-ffind-project-rootdir))
-        (tool-names      (pel-ffind-project-lang-tools))
-        (var-names       (pel-ffind-project-lang-envvars))
-        (exclude-regexps (pel-ffind-project-lang-exclude-regexps))
-        (env-tool-names (pel-ffind-env-tool-names (pel-language-of)))
-        (dir/trees/exclud-regxp (pel--ffind-project-lang-directories)))
+        (project-name         (pel-ffind-project-name))
+        (project-root         (pel-ffind-project-rootdir))
+        (tool-names           (pel-ffind-project-lang-tools))
+        (var-names            (pel-ffind-project-lang-envvars))
+        (exclude-regexps      (pel-ffind-project-lang-exclude-regexps))
+        (env-tool-names       (pel-ffind-env-tool-names (pel-language-of)))
+        (dir/trees/excl-regxp (pel--ffind-project-lang-directories)))
     (pel-print-in-buffer
      "*pel-ffind-status*"
      "PEL FFIND Control Status"
@@ -950,9 +1005,9 @@ Return nil if nothing found."
        (pel-insert-list-value "PATH-like env variables  " var-names t t)
        (insert "\n")
        (pel-insert-list-value "Searched directories     "
-                              (car dir/trees/exclud-regxp) nil t)
+                              (car dir/trees/excl-regxp) nil t)
        (pel-insert-list-value "Searched directory trees "
-                              (cadr dir/trees/exclud-regxp) nil t))
+                              (cadr dir/trees/excl-regxp) nil t))
 
      (unless append :clear-buffer)
      :use-help-mode)))

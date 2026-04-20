@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-20 14:16:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-20 16:23:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -175,7 +175,7 @@ explicitly.
 Accepts values between 2 and 8 inclusively to set the width.
 When a language indent width default number is configured, type 0 or RET
 to restore it.
-Does not change the indentation with of other buffers."
+Does not change the indentation width of other buffers."
   (interactive)
   ;; Prompt when called interactively (new-width is always nil then) or
   ;; when nil is passed programmatically.
@@ -276,7 +276,7 @@ This action does nothing when the mode only has one comment style."
 
 (defun pel-cc-key-electric-p (key)
   "Return non-nil if KEY is electric, nil otherwise."
-  ;; Work only with keys that may be electric.
+  ;; Works only with keys that may be electric.
   (local-key-binding key))
 
 (defun pel-cc-filter-electric-key (char)
@@ -286,7 +286,7 @@ This action does nothing when the mode only has one comment style."
     nil))
 
 (defun pel-cc-electric-keys ()
-  "Return a string with the electric keys."
+  "Return a list of string for the electric keys."
   (seq-filter 'pel-cc-filter-electric-key
           (mapcar #'string "#*/<>(){}:;,")))
 
@@ -330,7 +330,7 @@ of the last report."
          (info
           (format
            "%s
-- active style        : %s. This c-default-style is %s.
+- active style        : %s. c-default-style entry: %s.
 - Electric characters : %s
 - RET mode            : %S%s
                         Toggle indent on RET with `pel-toggle-newline-indent-align' with %s.
@@ -534,7 +534,6 @@ off, but the \\[c-hungry-delete-forward] and \\[c-hungry-delete-backwards] keys 
         symbol-end)
      ;; self-delimiting with one of: trailing space, ':', '::', '<',
      ;; or non-identifier chars:
-     ;; "class "
      "namespace "
      "using "
      "private:"
@@ -579,7 +578,7 @@ off, but the \\[c-hungry-delete-forward] and \\[c-hungry-delete-backwards] keys 
   "Regexp string to search for Objective-C distinguishing code.")
 
 (defun pel--isa-buffer-of (lang-regexp)
-  "Return t if the buffer hold the language identified by LANG-REGEXP.
+  "Return t if the buffer holds the language identified by LANG-REGEXP.
 Return nil otherwise."
   (let ((found nil))
     (save-excursion
@@ -614,8 +613,9 @@ Return nil otherwise."
 ;;-pel-autoload
 (defun pel-cc-mode ()
   "Major mode dispatcher for C, C++ and Objective-C.
-Use one of the following modes depending what is found inside the content of
-the file and the values of `pel-use-c', `pel-use-c++' and `pel-use-objc'."
+Use one of the following modes depending on what is found inside the
+content of the file and the values of `pel-use-c', `pel-use-c++' and
+`pel-use-objc'."
   (interactive)
   (cond
    ;; Objective-C (there is no Tree-Sitter support for Objective-C yet.)
