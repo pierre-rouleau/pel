@@ -107,17 +107,11 @@ See `pel-find-file-at-point-in-window' for more information.
 Also see `pel-open-file-at-point-dir-home', used by the function when not
 using language specialized features.
 
-TODO CHANGE ALL OF THIS!!!!
-`pel-cc-find-activate-finder-method' no longer exists!!
+When used in an rST buffer it opens the reST reference at point.
+In all other buffers it dispatches to `pel-find-file-at-point-in-window'
 
-When used in a buffer that
-supports programming language specialization (the command is specialized
-in some major modes: AWK, C and C++), it perform extra file searching
-logic by using the `pel-cc-find-activate-finder-method' function.  A
-buffer holds a finder stored in pel-filename-at-point-finders' and a
-list of project roots.  The user options controlling this are part of
-the `pel-file-finding' customization group."
-
+The user options controlling this are part of the `pel-file-finding'
+customization group."
   (interactive "P")
   ;; It's possible the file visited by the current buffer is located in a
   ;; directory that is not the current directory; the user might have

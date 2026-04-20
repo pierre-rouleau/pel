@@ -1,8 +1,8 @@
-;;; pel-ffind-project-rootdir.el --- Test the pel-ffind-project-rootdir  -*- lexical-binding: t; -*-
+;;; pel-ffind-project-rootdir-test.el --- Test the pel-ffind-project-rootdir  -*- lexical-binding: t; -*-
 
 ;; Created   : Friday, March 27 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-20 10:35:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-20 11:55:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -41,8 +41,9 @@
 ;;; Code:
 ;;
 
-(defun pel--test-touch (file)
-  "Create FILE and ensure its parent directories exist."
+(defun pel-ffind-test--touch (file)
+  "Create FILE and ensure its parent directories exist.
+FILE is treated as a file path whose parent directories will be created."
   (make-directory (file-name-directory (expand-file-name file)) t)
   (with-temp-file (expand-file-name file) (insert "")))
 
@@ -57,8 +58,8 @@
     (unwind-protect
         (progn
           ;; Create both anchors: .git at root (outermost), .hg one level down.
-          (pel--test-touch (expand-file-name ".git" root))
-          (pel--test-touch (expand-file-name ".hg" (expand-file-name "a" root)))
+          (pel-ffind-test--touch (expand-file-name ".git" root))
+          (pel-ffind-test--touch (expand-file-name ".hg" (expand-file-name "a" root)))
           (should (equal (pel-ffind-project-rootdir)
                          (directory-file-name (expand-file-name root)))))
       (delete-directory root t))))
@@ -75,8 +76,8 @@
     (unwind-protect
         (progn
           (make-directory deep t)
-          (pel--test-touch (expand-file-name ".git" root)) ; outermost
-          (pel--test-touch (expand-file-name ".pel-restricted-project" a-dir)) ; restricted nearer
+          (pel-ffind-test--touch (expand-file-name ".git" root)) ; outermost
+          (pel-ffind-test--touch (expand-file-name ".pel-restricted-project" a-dir)) ; restricted nearer
           (let ((expected (directory-file-name (expand-file-name a-dir))))
             (should (equal (pel-ffind-project-rootdir) expected))))
       (delete-directory root t))))
@@ -94,6 +95,6 @@
       (delete-directory root t))))
 
 ;;; --------------------------------------------------------------------------
-(provide 'pel-ffind-project-rootdir)
+(provide 'pel-ffind-project-rootdir-test)
 
-;;; pel-ffind-project-rootdir.el ends here
+;;; pel-ffind-project-rootdir-test.el ends here

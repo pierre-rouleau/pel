@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-19 17:16:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-20 11:54:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -173,21 +173,32 @@ Display and return the new value of the mode."
 Prompt if not specified (in interactive execution) or when nil is passed
 explicitly.
 Accepts values between 2 and 8 inclusively to set the width.
-When a language indent width default is configured, entering 0 restores it."
+When a language indent width default number is configured, type 0 or RET
+to restore it."
   (interactive)
   ;; Prompt when called interactively (new-width is always nil then) or
   ;; when nil is passed programmatically.
-  (let ((default-indent
-         (pel-major-mode-symbol-value-or "pel-%s-indent-width" nil)))
+  (let* ((original-indent-width c-basic-offset)
+         (default-indent
+          (pel-major-mode-symbol-value-or "pel-%s-indent-width" nil))
+         (used-default (or default-indent c-basic-offset))
+         (show-default (and (numberp used-default)
+                            (not (eq used-default original-indent-width)))))
+
     (when (or (null new-width)
               (called-interactively-p 'any))
       (setq new-width
-            (read-number (format "Indentation width%s [%s]: "
-                                 (if default-indent
-                                     (format " (0 to restore default: %d)"
-                                             default-indent)
-                                   "")
-                                 c-basic-offset))))
+            (read-number (format "Indentation width [%s]%s: "
+                                 original-indent-width
+                                 (if show-default
+                                     " 0 or RET to restore default"
+                                   ""))
+                         ;; In some modes, `c-basic-offset' is 'set-from-style
+                         ;; for those do not provide the default because its
+                         ;; not a number, for the others provide the default
+                         ;; in case user hit RET to accept the default.
+                         (when show-default
+                           used-default))))
     (cond
      ((< 1 new-width 9)
       (setq-local c-basic-offset new-width))
@@ -195,9 +206,11 @@ When a language indent width default is configured, entering 0 restores it."
            (= new-width 0))
       (setq-local c-basic-offset default-indent))
      (t (user-error "Enter a positive value in the range [2,8]%s, not %s!"
-                     (if default-indent " (or 0 to restore default)" "")
-                    new-width))))
-  (message "indentation is now %s" c-basic-offset))
+                    (if default-indent " (or 0 to restore default)" "")
+                    new-width)))
+    (if (eq original-indent-width new-width)
+        (message "No change to indent width; keep %s" original-indent-width)
+      (message "indentation is now %s" c-basic-offset))))
 
 ;; ---------------------------------------------------------------------------
 ;;* C/C++ Comment Style Selection
@@ -505,24 +518,26 @@ off, but the \\[c-hungry-delete-forward] and \\[c-hungry-delete-backwards] keys 
 ;; Distinguish Objective-C, C++ and C Code in files by looking for
 ;; language specific keywords.
 
-(defconst pel-cpp-keywords
-  '("class "
-    "namespace "
-    "using "
-    "final"
-    "override"
-    "private:"
-    "protected:"
-    "public:"
-    "std::"
-    "template<"
-    "virtual "
-    "C++ FILE:"                         ; PEL header placed at top of file
-    )
-  "Strings only found in C++ code.")
 
-(defconst pel-cpp-regexp (rx-to-string
-                          `(: (or ,@pel-cpp-keywords)))
+(defconst pel-cpp-regexp
+  (rx-to-string
+   '(or
+     ;; bare C++ keywords that need symbol boundaries
+     (: symbol-start (or "final"
+                         "override"
+                         "virtual")
+        symbol-end)
+     ;; self-delimiting with one of: trailing space, ':', '::', '<',
+     ;; or non-identifier chars:
+     "class "
+     "namespace "
+     "using "
+     "private:"
+     "protected:"
+     "public:"
+     "std::"
+     "template<"
+     "C++ FILE:"))
   "Regexp string to search for C++ distinguishing code.")
 
 (defconst pel-objective-c-keywords
