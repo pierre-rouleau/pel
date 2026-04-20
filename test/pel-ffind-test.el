@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, April 20 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-20 14:19:22 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-20 14:49:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -213,11 +213,15 @@ Both globals are restored to their original values on exit."
 
 (ert-deftest pel-ffind-env-tool-names/cpp-maps-to-CPP-not-C++ ()
   "The c++ symbol maps to PEL_DEV_TOOLS_FOR_CPP, not PEL_DEV_TOOLS_FOR_C++."
-  (ert-skip "Skip failing test")
+  ;; Phase 1: c++ reads PEL_DEV_TOOLS_FOR_CPP — returns "g++" when CPP is set.
   (pel-ffind-test--with-env "PEL_DEV_TOOLS_FOR_CPP" "g++"
     (pel-ffind-test--with-env "PEL_DEV_TOOLS_FOR_C++" nil
-      (should (equal (pel-ffind-env-tool-names 'c++) '("g++")))
-      (should (null  (pel-ffind-env-tool-names 'c++))))))
+      (should (equal (pel-ffind-env-tool-names 'c++) '("g++")))))
+  ;; Phase 2: PEL_DEV_TOOLS_FOR_C++ (literal) is NOT consulted —
+  ;; returns nil even when C++ literal variable is set, because only CPP is used.
+  (pel-ffind-test--with-env "PEL_DEV_TOOLS_FOR_CPP" nil
+    (pel-ffind-test--with-env "PEL_DEV_TOOLS_FOR_C++" "g++"
+      (should (null (pel-ffind-env-tool-names 'c++))))))
 
 (ert-deftest pel-ffind-env-tool-names/uppercase-language-in-varname ()
   "The environment variable name uses UPPER-CASE language suffix."
