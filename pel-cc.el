@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-20 11:54:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-20 13:59:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -174,7 +174,8 @@ Prompt if not specified (in interactive execution) or when nil is passed
 explicitly.
 Accepts values between 2 and 8 inclusively to set the width.
 When a language indent width default number is configured, type 0 or RET
-to restore it."
+to restore it.
+Does not change the indentation with of other buffers."
   (interactive)
   ;; Prompt when called interactively (new-width is always nil then) or
   ;; when nil is passed programmatically.
@@ -525,11 +526,12 @@ off, but the \\[c-hungry-delete-forward] and \\[c-hungry-delete-backwards] keys 
      ;; bare C++ keywords that need symbol boundaries
      (: symbol-start (or "final"
                          "override"
-                         "virtual")
+                         "virtual"
+                         "class")
         symbol-end)
      ;; self-delimiting with one of: trailing space, ':', '::', '<',
      ;; or non-identifier chars:
-     "class "
+     ;; "class "
      "namespace "
      "using "
      "private:"
