@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 27 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-20 11:55:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-21 16:18:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -47,7 +47,7 @@ FILE is treated as a file path whose parent directories will be created."
   (make-directory (file-name-directory (expand-file-name file)) t)
   (with-temp-file (expand-file-name file) (insert "")))
 
-(ert-deftest pel-ffind-project-directory/outermost-without-restricted ()
+(ert-deftest pel-ffind-project-rootdir/outermost-without-restricted ()
   "When multiple normal anchors exist, the outermost (shortest path) root is used."
   (let* ((root (make-temp-file "pel-ffind-t-" t))
          (inner (expand-file-name "a/b/c" root))
@@ -64,7 +64,7 @@ FILE is treated as a file path whose parent directories will be created."
                          (directory-file-name (expand-file-name root)))))
       (delete-directory root t))))
 
-(ert-deftest pel-ffind-project-directory/stops-at-restricted-anchor ()
+(ert-deftest pel-ffind-project-rootdir/stops-at-restricted-anchor ()
   "Stops at the nearest restricted anchor if present."
   (let* ((root (make-temp-file "pel-ffind-t-" t))
          (a-dir (expand-file-name "proj/a" root))
@@ -82,7 +82,7 @@ FILE is treated as a file path whose parent directories will be created."
             (should (equal (pel-ffind-project-rootdir) expected))))
       (delete-directory root t))))
 
-(ert-deftest pel-ffind-project-directory/fallback-to-default-directory ()
+(ert-deftest pel-ffind-project-rootdir/fallback-to-default-directory ()
   "When no anchors are found, return nil; callers fall back to default-directory."
   (let* ((root (make-temp-file "pel-ffind-t-" t))
          (default-directory (expand-file-name "no-anchors/here" root)))
