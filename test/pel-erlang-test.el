@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 13:43:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-21 10:54:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -37,17 +37,33 @@
 ;;  Buffer-position:
 ;;   - `pel-erlang-before-binary'
 ;;   - `pel-erlang-after-binary'
-;;   - `pel--after-dash'
+;;   - `pel--erlang-after-dash'
 ;;   - `pel--erlang-line-3%-comment-p'
 ;;
 ;;  Path extraction:
 ;;   - `pel--erlang-dirpath'
+;;
+;;  Other tests:
+;;  - `pel-erlang-electric-period' (with/without guards)
+;;  - `pel-erlang-forward-binary' / `pel-erlang-backward-binary' (nesting + strings)
+;;  - `pel-erlang-shell-mode-init'
+;;  - `pel-erlang-source-directories' (anchors + extras)
+;;  - `pel-erlang-setup-erlang-man-dir-root' (advice path)
+;;  - `pel-erlang-set-dirpath' (action called only on valid path)
+;;
+;; Some of the tests above are only executed when `pel-use-erlang' is
+;; activated since the code depends on `erlang-mode' being available.
+;;
+;; More tests are required to validate PEL's ability to install the packages
+;; used for Erlang support and that must be done without network access.
+;; This is done inside another file: pel-erlang-test-activation.el
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 (require 'pel-erlang)
 (require 'pel-ert)
+(eval-when-compile (require 'cl-lib))
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -181,67 +197,67 @@
     (should (pel-erlang-after-binary))))
 
 ;; ===========================================================================
-;; pel--after-dash
+;; pel--erlang-after-dash
 ;; ===========================================================================
 ;;
-;; Implementation note: pel--after-dash contains the guard (>= (point) 3).
+;; Implementation note: pel--erlang-after-dash contains the guard (>= (point) 3).
 ;; In Emacs, (point-min) == 1 in a normal buffer, so point-max of a 1-char
 ;; buffer is 2 and the guard fails.  A two-character string places point-max
 ;; at 3, satisfying the guard.
 
 (ert-deftest ert-test-pel--after-dash ()
-  "Test `pel--after-dash': t when point is after - but not after $-."
+  "Test `pel--erlang-after-dash': t when point is after - but not after $-."
   ;; Two chars ending in -: satisfies (>= (point) 3) and char-before is -.
   (with-temp-buffer
     (insert "a-")
     (goto-char (point-max))             ; point = 3
-    (should (pel--after-dash)))
+    (should (pel--erlang-after-dash)))
 
   ;; After $-: the $ makes it nil.
   (with-temp-buffer
     (insert "$-")
     (goto-char (point-max))             ; point = 3
-    (should-not (pel--after-dash)))
+    (should-not (pel--erlang-after-dash)))
 
   ;; Longer string ending in -: still t.
   (with-temp-buffer
     (insert "foo-")
     (goto-char (point-max))
-    (should (pel--after-dash)))
+    (should (pel--erlang-after-dash)))
 
   ;; Longer string ending in $-: nil.
   (with-temp-buffer
     (insert "foo$-")
     (goto-char (point-max))
-    (should-not (pel--after-dash)))
+    (should-not (pel--erlang-after-dash)))
 
   ;; Point guard: single-char buffer, point = 2 < 3 → nil.
   (with-temp-buffer
     (insert "-")
     (goto-char (point-max))             ; point = 2
-    (should-not (pel--after-dash)))
+    (should-not (pel--erlang-after-dash)))
 
   ;; No dash at all.
   (with-temp-buffer
     (insert "ab")
     (goto-char (point-max))
-    (should-not (pel--after-dash)))
+    (should-not (pel--erlang-after-dash)))
 
   ;; After -> (point right after >): char-before is >, not -.
   (with-temp-buffer
     (insert "->")
     (goto-char (point-max))
-    (should-not (pel--after-dash)))
+    (should-not (pel--erlang-after-dash)))
 
   ;; Point right after - inside a longer string.
   (with-temp-buffer
     (insert "foo-bar")
     (goto-char (+ (point-min) 4))       ; after -
-    (should (pel--after-dash)))
+    (should (pel--erlang-after-dash)))
 
   ;; Empty buffer.
   (with-temp-buffer
-    (should-not (pel--after-dash))))
+    (should-not (pel--erlang-after-dash))))
 
 ;; ===========================================================================
 ;; pel--erlang-line-3%-comment-p
@@ -351,6 +367,152 @@ Cleaned up in the test's unwind form.")
             (should (stringp (cdr result)))
             (should (string-match-p (regexp-quote fake-envvar) (cdr result)))))
       (setenv fake-envvar previous-value))))
+
+;; ---------------------------------------------------------------------------
+;; pel-erlang-electric-period
+;; ---------------------------------------------------------------------------
+(defvar erlang-electric-commands)       ;prevent warnings
+
+(ert-deftest pel-erlang/electric-period/inserts-gt-after-dash ()
+  "Typing '.' via `pel-erlang-electric-period' after '-' inserts '>'."
+  (unless pel-use-erlang
+    (ert-skip "Skip test that requires pel-use-erlang set."))
+  (with-temp-buffer
+    (let ((erlang-electric-commands '(pel-erlang-electric-period)))
+      (insert "x-")
+      (pel-erlang-electric-period 1)
+      (should (string= (buffer-string) "x->")))))
+
+(ert-deftest pel-erlang/electric-period/not-after-dollar-dash ()
+  "Guard prevents '>' insertion after '$-'; falls back to '.'."
+  (unless pel-use-erlang
+    (ert-skip "Skip test that requires pel-use-erlang set."))
+  (with-temp-buffer
+    (let ((erlang-electric-commands '(pel-erlang-electric-period)))
+      (insert "$-")
+      (cl-letf (((symbol-function 'self-insert-command)
+                 (lambda (_n) (insert "."))))
+        (pel-erlang-electric-period 1)
+        (should (string= (buffer-string) "$-."))))))
+
+(ert-deftest pel-erlang/electric-period/disabled-when-not-in-commands ()
+  "When key is not marked electric, the command just inserts '.'."
+  (unless pel-use-erlang
+    (ert-skip "Skip test that requires pel-use-erlang set."))
+  (with-temp-buffer
+    (let ((erlang-electric-commands nil))
+      (insert "-")
+      (cl-letf (((symbol-function 'self-insert-command)
+                 (lambda (_n) (insert "."))))
+        (pel-erlang-electric-period 1)
+        (should (string= (buffer-string) "-."))))))
+
+;; ---------------------------------------------------------------------------
+;; pel-erlang-forward-binary / pel-erlang-backward-binary
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-erlang/binary-movement/nested-and-strings ()
+  "Forward/backward binary navigation skips strings and matches nesting."
+  ;; Text: start << 1 , <<2,3>> , 4, \"<<not>>\" , <<5>> >>
+  (with-temp-buffer
+    (insert "<<1,<<2,3>>,4,\"<<not>>\",<<5>>>>")
+    ;; Start just before outermost '<<'
+    (goto-char (point-min))
+    (should (pel-erlang-before-binary))
+    (pel-erlang-forward-binary)
+    ;; After matching '>>' of the outermost
+    (should (pel-erlang-after-binary))
+    ;; Now go back to its start
+    (pel-erlang-backward-binary)
+    (should (and (pel-erlang-before-binary) (= (point) (point-min))))))
+
+;; ---------------------------------------------------------------------------
+;; pel-erlang-shell-mode-init
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-erlang/shell-init/sets-no-echo ()
+  "Shell init sets comint-process-echoes to t."
+  (let ((comint-process-echoes nil))
+    (pel-erlang-shell-mode-init)
+    (should comint-process-echoes)))
+
+;; ---------------------------------------------------------------------------
+;; pel-erlang-source-directories
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-erlang/source-directories/includes-root-project-and-extras ()
+  "Returns sorted unique list including Erlang root, project root, and extras."
+  (let* ((erl-root (make-temp-file "pel-erl-root-" t))
+         (proj-root (make-temp-file "pel-erl-proj-" t))
+         (deep (expand-file-name "app/src" proj-root))
+         (extra1 (make-temp-file "pel-erl-extra1-" t))
+         (extra2 (make-temp-file "pel-erl-extra2-" t))
+         (pel---extracted-erlang-root-dir (directory-file-name erl-root))
+         (pel-erlang-extra-directories (list extra1))
+         (pel-erlang-project-root-identifiers '("rebar.config")))
+    (unwind-protect
+        (progn
+          (make-directory deep t)
+          (with-temp-file (expand-file-name "rebar.config" proj-root) (insert "")) ; anchor
+          (let* ((default-directory deep)
+                 (dirs (pel-erlang-source-directories (list extra2)))
+                 (expected (sort (delete-dups
+                                  (list (directory-file-name erl-root)
+                                        (directory-file-name proj-root)
+                                        (directory-file-name extra1)
+                                        (directory-file-name extra2)))
+                                 #'string<)))
+            (should (equal dirs expected))))
+      (ignore-errors (delete-directory erl-root t))
+      (ignore-errors (delete-directory proj-root t))
+      (ignore-errors (delete-directory extra1 t))
+      (ignore-errors (delete-directory extra2 t)))))
+
+;; ---------------------------------------------------------------------------
+;; pel-erlang-setup-erlang-man-dir-root (advice)
+;; ---------------------------------------------------------------------------
+(defvar erlang-man-dir)                 ; prevent warnings
+
+(ert-deftest pel-erlang/erlang-man-dir/advice-calls-through-and-records-root ()
+  "Advice around `erlang-man-dir' sets detected root and calls the original."
+  (let ((pel--erlang-man-dir--setup nil)
+        (pel---detected-erlang-root-dir nil)
+        recorded)
+    ;; Define a stub original function.
+    (fset 'erlang-man-dir
+          (lambda (subdir &optional no-download)
+            (setq recorded (list :subdir subdir :no-download no-download))
+            "/fake/man/dir"))
+    (unwind-protect
+        (cl-letf (((symbol-function 'pel-erlang-root-path)
+                   (lambda () "/fake/erl/root")))
+          (pel-erlang-setup-erlang-man-dir-root)
+          (should (equal (erlang-man-dir "man" t) "/fake/man/dir"))
+          (should (equal recorded '(:subdir "man" :no-download t)))
+          (should (equal pel---detected-erlang-root-dir "/fake/erl/root")))
+      ;; Cleanup: remove advice so we don't affect other tests
+      (ignore-errors (advice-remove 'erlang-man-dir 'pel--erlang-man-dir)))))
+
+;; ---------------------------------------------------------------------------
+;; pel-erlang-set-dirpath
+;; ---------------------------------------------------------------------------
+
+(ert-deftest pel-erlang/set-dirpath/calls-action-only-when-valid ()
+  "pel-erlang-set-dirpath invokes ACTION only when the option resolves cleanly."
+  (let ((called nil))
+    ;; Mock pel-erlang-man-parent-rootdir to be used as 'user-option' symbol.
+    (cl-letf (((symbol-function 'pel-erlang-man-parent-rootdir)
+               (lambda () (list "/valid/path"))))
+      (pel-erlang-set-dirpath 'pel-erlang-man-parent-rootdir
+                              (lambda (dir) (setq called dir)))
+      (should (equal called "/valid/path")))
+    ;; Error case: returns (dir . error) → action not called
+    (setq called nil)
+    (cl-letf (((symbol-function 'pel-erlang-man-parent-rootdir)
+               (lambda () (cons "/bad/path" "some error"))))
+      (pel-erlang-set-dirpath 'pel-erlang-man-parent-rootdir
+                              (lambda (dir) (setq called dir)))
+      (should (null called)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-erlang-test)

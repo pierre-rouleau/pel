@@ -46,7 +46,7 @@
 
 ;; Period electric behaviour:
 ;; * `pel-erlang-electric-period'
-;;   - `pel--after-dash'
+;;   - `pel--erlang-after-dash'
 
 ;; Erlang Shell Control:
 ;; - `pel-erlang-shell-mode-init'
@@ -434,7 +434,7 @@ The following options are observed:
 ;; -> as -. which is easier to type on many keyboards and allows selecting the
 ;; non-electric behaviour of the > key indirectly but easily.
 
-(defun pel--after-dash ()
+(defun pel--erlang-after-dash ()
   "Return the true if point is after a dash and not after $- characters.
 Return nil if the dash character is the very first character of the buffer,
 but that is fine because no electric behaviour is required at that location."
@@ -450,7 +450,7 @@ but that is fine because no electric behaviour is required at that location."
   "Insert > after - but not after $- nor in string or comment or with ARG."
   (interactive "*p")
   (if (and (memq 'pel-erlang-electric-period erlang-electric-commands)
-           (pel--after-dash)
+           (pel--erlang-after-dash)
            (not (or current-prefix-arg
                     (pel-inside-comment-p)
                     (pel-inside-string-p))))

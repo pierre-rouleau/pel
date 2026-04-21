@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-04-20 14:15:14 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-04-21 10:09:38 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -926,6 +926,7 @@ test/pel-file-test.el.test-passed:              pel-file.elc pel-ert.elc
 test/pel-file-open-test.el.test-passed:         pel-file.elc
 test/pel-fill-test.el.test-passed:              pel-fill.elc pel--base.elc
 test/pel-filedir-test.el.test-passed:           pel-filedir.elc pel--base.elc
+test/pel-fs-test.el.test-passed:                pel-fs.elc
 test/pel-hash-test.el.test-passed:              pel-hash.elc
 test/pel-hex-test.el.test-passed:               pel-hex.elc
 test/pel-highlight-test.el.test-passed:         pel-highlight.elc
