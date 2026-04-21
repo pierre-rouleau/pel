@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-21 10:54:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-21 13:41:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,6 +64,11 @@
 (require 'pel-erlang)
 (require 'pel-ert)
 (eval-when-compile (require 'cl-lib))
+
+(when noninteractive
+  ;; Use the erlang.el stub file as a replacement for erlang.el
+  (add-to-list 'load-path (expand-file-name "test/stubs"))
+  (require 'erlang nil :noerror))
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -371,11 +376,9 @@ Cleaned up in the test's unwind form.")
 ;; ---------------------------------------------------------------------------
 ;; pel-erlang-electric-period
 ;; ---------------------------------------------------------------------------
-(defvar erlang-electric-commands)       ;prevent warnings
-
 (ert-deftest pel-erlang/electric-period/inserts-gt-after-dash ()
   "Typing '.' via `pel-erlang-electric-period' after '-' inserts '>'."
-  (unless pel-use-erlang
+  (unless (or pel-use-erlang noninteractive)
     (ert-skip "Skip test that requires pel-use-erlang set."))
   (with-temp-buffer
     (let ((erlang-electric-commands '(pel-erlang-electric-period)))
@@ -385,27 +388,25 @@ Cleaned up in the test's unwind form.")
 
 (ert-deftest pel-erlang/electric-period/not-after-dollar-dash ()
   "Guard prevents '>' insertion after '$-'; falls back to '.'."
-  (unless pel-use-erlang
+  (unless (or pel-use-erlang noninteractive)
     (ert-skip "Skip test that requires pel-use-erlang set."))
   (with-temp-buffer
-    (let ((erlang-electric-commands '(pel-erlang-electric-period)))
+    (let ((erlang-electric-commands '(pel-erlang-electric-period))
+          (last-command-event ?.))    ; ensure self-insert-command inserts '.'
       (insert "$-")
-      (cl-letf (((symbol-function 'self-insert-command)
-                 (lambda (_n) (insert "."))))
-        (pel-erlang-electric-period 1)
-        (should (string= (buffer-string) "$-."))))))
+      (pel-erlang-electric-period 1)
+      (should (string= (buffer-string) "$-.")))))
 
 (ert-deftest pel-erlang/electric-period/disabled-when-not-in-commands ()
   "When key is not marked electric, the command just inserts '.'."
-  (unless pel-use-erlang
+  (unless (or pel-use-erlang noninteractive)
     (ert-skip "Skip test that requires pel-use-erlang set."))
   (with-temp-buffer
-    (let ((erlang-electric-commands nil))
+    (let ((erlang-electric-commands nil)
+          (last-command-event ?.))    ; ensure self-insert-command inserts '.'
       (insert "-")
-      (cl-letf (((symbol-function 'self-insert-command)
-                 (lambda (_n) (insert "."))))
-        (pel-erlang-electric-period 1)
-        (should (string= (buffer-string) "-."))))))
+      (pel-erlang-electric-period 1)
+      (should (string= (buffer-string) "-.")))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-erlang-forward-binary / pel-erlang-backward-binary
@@ -471,7 +472,6 @@ Cleaned up in the test's unwind form.")
 ;; ---------------------------------------------------------------------------
 ;; pel-erlang-setup-erlang-man-dir-root (advice)
 ;; ---------------------------------------------------------------------------
-(defvar erlang-man-dir)                 ; prevent warnings
 
 (ert-deftest pel-erlang/erlang-man-dir/advice-calls-through-and-records-root ()
   "Advice around `erlang-man-dir' sets detected root and calls the original."
