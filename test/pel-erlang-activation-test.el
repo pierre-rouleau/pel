@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, April 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-21 13:50:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-21 15:40:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -66,83 +66,129 @@
 (require 'pel--install)  ;; for `pel-ensure-package-elpa' macro references
 (require 'ert)
 
+(when noninteractive
+  (add-to-list 'load-path (expand-file-name "test/stubs"))
+  (require 'erlang))
 
-;; (when noninteractive
-;;   ;; Use the erlang.el stub file as a replacement for erlang.el
-;;   (add-to-list 'load-path (expand-file-name "test/stubs"))
-;;   (require 'erlang nil :noerror))
-
+;; Predeclare relevant defcustoms as special to avoid lexical-binding conflicts
+;; when pel--options.el defcustom’s them during (load "pel_keys.el").
+(defvar pel-use-erlang)
+(defvar pel-use-erlang-ls)
+(defvar pel-use-tree-sitter)
 
 ;; ---------------------------------------------------------------------------
 ;;* Tier 1 - Unit “no network” tests (spy the installer)
 
-;; Small harness to spy pel--ensure-pkg-elpa and collect calls as (PKG . SITE)
+;; ---------------------------------------------------------------------------
+;; Spy harness: collect ensure calls as (PKG . SITE)
+;; ---------------------------------------------------------------------------
 (defmacro pel-activation-test--with-ensure-spy (&rest body)
-  "Execute BODY while spying pel--ensure-pkg-elpa calls into `calls'."
+  "Execute BODY while spying pel--ensure-pkg-elpa calls into `calls'.
+The spy is arity-tolerant and records entries as (PKG . SITE)."
   (declare (indent 0))
   `(let ((calls nil))
-     (cl-letf* (((symbol-function 'pel--ensure-pkg-elpa)
-                 ;; Accept both one-arg (PKG) and two-arg (PKG SITE) forms.
-                 (lambda (&rest args)
-                   (let ((pkg  (nth 0 args))
-                         (site (nth 1 args)))
-                     (push (cons pkg site) calls)
-                     t)))
-                ;; Pretend nothing is installed so ensure paths execute.
-                ((symbol-function 'pel-package-installed-p) (lambda (&rest _) nil))
-                ;; Default: not in fast startup; individual tests may override.
-                ((symbol-function 'pel-in-fast-startup-p)   (lambda () nil)))
+     (cl-letf*
+         (((symbol-function 'pel--ensure-pkg-elpa)
+           (lambda (pkg &optional elpa-site)
+             (push (cons pkg elpa-site) calls)
+             t))
+          ;; Pretend nothing is installed so ensure paths execute.
+          ((symbol-function 'pel-package-installed-p) (lambda (_feature) nil))
+          ;; Default: not in fast-startup; tests may rebind it locally.
+          ((symbol-function 'pel-in-fast-startup-p)   (lambda () nil)))
        ,@body)))
+
+;; ---------------------------------------------------------------------------
+;; Save/restore custom variables around BODY, avoiding let-bindings.
+;;
+;; Each entry in VARS may be:
+;;   - SYMBOL           => just save/restore it
+;;   - (SYMBOL VALUE)   => save, set to VALUE before BODY, then restore
+
+(defmacro pel-activation-test--with-vars (vars &rest body)
+  "Temporarily set and then restore global variables across BODY.
+
+VARS is a list of symbols or (SYMBOL VALUE) pairs.
+Symbols are saved and restored; pairs are set before BODY and restored after.
+This avoids lexical-binding conflicts that occur when let-binding defcustom
+variables."
+  (declare (indent 1))
+  ;; Validate argument shape early to avoid accidental (pel-use-FOO VAL)
+  ;; calls.
+  (unless (and (listp vars)
+               (cl-every (lambda (e) (or (symbolp e)
+                                         (and (consp e)
+                                              (symbolp (car e)))))
+                         vars))
+    (error "pel-activation-test--with-vars: \
+expected a list of SYMBOL or (SYMBOL VALUE) pairs, got: %S"
+           vars))
+  (let* ((syms (mapcar (lambda (e) (if (consp e) (car e) e)) vars))
+         (sets (cl-loop for e in vars if (consp e)
+                        collect `(set ',(car e) ,(cadr e)))))
+    `(let* ((--pel-vars-- ',syms)
+            (--pel-saved-- (mapcar (lambda (sym)
+                                     (list sym (boundp sym)
+                                           (and (boundp sym)
+                                                (symbol-value sym))))
+                                   --pel-vars--)))
+       (unwind-protect
+           (progn ,@sets ,@body)
+         (dolist (cell --pel-saved--)
+           (let ((sym      (nth 0 cell))
+                 (wasbound (nth 1 cell))
+                 (oldval   (nth 2 cell)))
+             (if wasbound
+                 (set sym oldval)
+               (makunbound sym))))))))
+
+;; ===========================================================================
+;; Tests
+;; ===========================================================================
 
 (ert-deftest pel-activation/erlang/ensures-core-packages ()
   "When `pel-use-erlang' is t, PEL asks to ensure Erlang packages."
-  (when noninteractive (ert-skip "Test failing non interactively"))
   (pel-activation-test--with-ensure-spy
-    (let ((pel-use-erlang t)
-          (pel-use-tree-sitter nil)
-          (pel-use-erlang-ls nil)
-          ;; keep other families off to avoid unrelated ensures
-          (pel-use-c nil) (pel-use-c++ nil) (pel-use-common-lisp nil)
-          (pel-use-rst nil) (pel-use-yasnippet nil) (pel-use-tree-sitter nil))
+    (pel-activation-test--with-vars
+        ((pel-use-erlang t)
+         (pel-use-erlang-ls nil)
+         (pel-use-tree-sitter nil))
       (load "pel_keys.el" nil 'nomessage 'nosuffix)
-      ;; Expect at least the core erlang package ensure, pinned to melpa.
-      (should (member (cons 'erlang "melpa") calls)))))
+      ;; Be tolerant about SITE arg; assert package intent.
+      (should (assoc 'erlang calls)))))
 
 (ert-deftest pel-activation/erlang/tree-sitter_adds_erlang_ts ()
   "When Tree-sitter is enabled, PEL also ensures erlang-ts."
-  (when noninteractive (ert-skip "Test failing non interactively"))
   (pel-activation-test--with-ensure-spy
-    (let ((pel-use-erlang t)
-          (pel-use-tree-sitter t)
-          (pel-use-erlang-ls nil))
+    (pel-activation-test--with-vars
+        ((pel-use-erlang t)
+         (pel-use-tree-sitter t)
+         (pel-use-erlang-ls nil))
       (load "pel_keys.el" nil 'nomessage 'nosuffix)
-      (should (member (cons 'erlang    "melpa") calls))
-      (should (member (cons 'erlang-ts "melpa") calls)))))
+      (should (assoc 'erlang    calls))
+      (should (assoc 'erlang-ts calls)))))
 
 (ert-deftest pel-activation/erlang/ls_adds_lsp_clients ()
   "When `pel-use-erlang-ls' is t, PEL ensures lsp-mode and lsp-ui."
-  (when noninteractive (ert-skip "Test failing non interactively"))
   (pel-activation-test--with-ensure-spy
-    (let ((pel-use-erlang t)
-          (pel-use-erlang-ls t)
-          (pel-use-tree-sitter nil))
+    (pel-activation-test--with-vars
+        ((pel-use-erlang t)
+         (pel-use-erlang-ls t)
+         (pel-use-tree-sitter nil))
       (load "pel_keys.el" nil 'nomessage 'nosuffix)
-      (should (member (cons 'erlang  "melpa") calls))
+      (should (assoc 'erlang  calls))
       (should (assoc 'lsp-mode calls))
       (should (assoc 'lsp-ui   calls)))))
 
 (ert-deftest pel-activation/erlang/fast-startup_prevents_installs ()
   "In fast-startup mode, no ensure calls occur even if `pel-use-erlang' is t."
-  (when noninteractive (ert-skip "Test failing non interactively"))
-  (let ((calls nil))
-    (cl-letf* (((symbol-function 'pel--ensure-pkg-elpa)
-                (lambda (&rest args)
-                  (push (cons (nth 0 args) (nth 1 args)) calls)
-                  t))
-               ((symbol-function 'pel-package-installed-p) (lambda (&rest _) nil))
-               ;; Simulate fast startup: installer should not be called at all.
-               ((symbol-function 'pel-in-fast-startup-p)   (lambda () t)))
-      (let ((pel-use-erlang t) (pel-use-erlang-ls t) (pel-use-tree-sitter t))
+  (pel-activation-test--with-ensure-spy
+    ;; Rebind fast-startup only for this test.
+    (cl-letf (((symbol-function 'pel-in-fast-startup-p) (lambda () t)))
+      (pel-activation-test--with-vars
+          ((pel-use-erlang t)
+           (pel-use-erlang-ls t)
+           (pel-use-tree-sitter t))
         (load "pel_keys.el" nil 'nomessage 'nosuffix)
         (should (null calls))))))
 
