@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-20 16:39:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-20 16:55:50 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -130,7 +130,7 @@
 When non-nil this is the name of the tool chain selected dynamically for
 the current buffer, overriding any tool name selected by the value of
 PEL_DEV_TOOLS_FOR_'LANG' environment variable (if it exists) and the
-tool names specified inside the `pel-dev-libraries' data structure for
+tool names specified inside the `pel-dev-projects' data structure for
 the current project for the language.
 It is selected by the `pel-ffind-set-devtool-name' command.")
 
@@ -543,7 +543,7 @@ any language inside the pel-dev-projects' data structure.  If a project
 settings identifies more than one setting for a given programming
 language only the first one will ever be used and all the others will be
 ignored but will instead cause the generation of a warning.  If you see
-these warning, you should fix `pel-dev-projects' contents."
+these warnings, you should fix `pel-dev-projects' contents."
   (let ((project-settings (pel-ffind-project-settings filename))
         (lang (pel-language-of filename))
         (lang-specific-setting nil)
@@ -602,7 +602,8 @@ The inspected project and language is identified by the specified
 FILENAME if any, otherwise it is identified by the currently visited
 file.
 
-The function returns a cons of 2 lists: (directories directory-trees).
+The function returns a list of three items: directories, directory-trees,
+exclusion-regexps.
 It includes all directories and directory trees specified directly and
 indirectly by the project tools and libraries identified in the project
 settings stored in the `pel-dev-projects' user-option.
@@ -825,7 +826,7 @@ TREE-DPATHS can be nil, a single directory path string or a list of directory
 path strings.
 
 Search for FNAME file in the specified directories and directory trees.
-- If TREE-DPATHS is specified and INCLUSIVE is nil search exclusively
+- If TREE-DPATHS is specified and INCLUSIVE is nil, search exclusively
   -  in the directory trees specified by TREE-DPATHS.
 - If TREE-DPATHS is specified and INCLUSIVE is non-nil, search:
   - in the directory trees specified by TREE-DPATHS, and
@@ -849,10 +850,10 @@ strings identifying several directories.
 Returns a list of strings, each string is the fully expanded absolute
 path of a file found.
 
-The directory tree file searching operation is performed using shell
+The directory tree file searching operation is performed using the shell
 command identified by `pel-ffind-executable'.
 
-Note that the \\='VCS ignore capability\\=' of fd is not used, so all
+Note that the VCS ignore capability of fd is not used, so all
 files are found whether the VCS ignore (via file like \.gitignore) is
 told to ignore them or not."
   (let ((dirs nil)

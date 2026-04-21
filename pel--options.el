@@ -5714,10 +5714,6 @@ None of the path string is expanded."
   "Return the list of tools of DEV-PROJECT.SETTING.
 
 Each list entry is a tool name corresponding to `pel-dev-tools' entry.
-The tool name string can hold a $VARNAME or ${VARNAME} style environment
-variable.  Use environment variables inside tool names when tools selection
-is made by shell environment.  This can be quite useful for OS specific
-settings for instance.
 
 A DEV-PROJECT is one of the entries of the `pel-dev-projects' list.
 Extract the list of DEV-PROJECT.SETTING from a project with
@@ -10763,7 +10759,7 @@ The choices are:
 
 - auto-detect : PEL extracts the version of Erlang by running the
                 bin/version-erl Erlang script.  This is the default.
-- by-envvar   : A string that is the name of en OS environment variable that
+- by-envvar   : A string that is the name of an OS environment variable that
                 holds the version of Erlang.  The default environment
                 variable name is PEL_ERLANG_VERSION, you can select another one.
 - Fixed string  that represents the Erlang version number.

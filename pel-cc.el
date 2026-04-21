@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-20 16:23:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-20 17:01:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -206,7 +206,7 @@ Does not change the indentation width of other buffers."
      ((and default-indent
            (= new-width 0))
       (setq-local c-basic-offset default-indent))
-     (t (user-error "Enter a positive value in the range [2,8]%s, not %s!"
+     (t (user-error "Enter a value in the range [2,8]%s, not %s!"
                     (if default-indent " (or 0 to restore default)" "")
                     new-width)))
     (if (eq original-indent-width new-width)
@@ -286,7 +286,7 @@ This action does nothing when the mode only has one comment style."
     nil))
 
 (defun pel-cc-electric-keys ()
-  "Return a list of string for the electric keys."
+  "Return a list of strings for the available electric keys."
   (seq-filter 'pel-cc-filter-electric-key
           (mapcar #'string "#*/<>(){}:;,")))
 

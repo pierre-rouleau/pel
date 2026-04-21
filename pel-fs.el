@@ -1,6 +1,6 @@
 ;;; pel-fs.el --- File System Operations  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
+;; Copyright (C) 2020-2023, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -126,9 +126,7 @@ Return t if it's OK, issue a user-error otherwise."
   "Execute a PEL bin executable CMD with ARGS.
 
 CMD must not have any path an must be one of the commands provided in the PEL
-bin directory.
-located in the
-The `pel-exec-pel-bin' checks if the file exists and was not tempered
+bin directory. First check if the executable file exists and was not tempered
 with by checking its MD5 hash digest.
 If the command file is invalid or does not exist, raise an error.
 If the file is OK, make the file executable if it is not already

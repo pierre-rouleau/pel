@@ -934,14 +934,17 @@ Can't detect Erlang root path." pel-erlang-path-detection-method)
 Return the version string on success.
 On error issue a warning describing the error and return nil."
   (cond
+   ;;
+   ;; When a version is specified, use it.
    ((stringp pel-erlang-version-detection-method)
     pel-erlang-version-detection-method)
    ;;
+   ;; When automatic detection is requested
    ((eq pel-erlang-version-detection-method 'auto-detect)
     (let* ((exit-code.version.stderr (pel-exec-pel-bin "version-erl"))
            (exit-code (car exit-code.version.stderr)))
       (if (eq exit-code 0)
-          (cdr exit-code.version.stderr)
+          (cadr exit-code.version.stderr)
         (display-warning
          'pel-erlang-version
          (format "pel/bin/version-erl failed with exit code: %S.
@@ -950,6 +953,7 @@ Cannot detect Erlang version: %s"
                  (nth 2 exit-code.version.stderr))
          :error))))
    ;;
+   ;; When environment variable is used
    ((and (consp pel-erlang-version-detection-method)
          (eq (car pel-erlang-version-detection-method) 'by-envvar))
     (let* ((envvar-name (cadr pel-erlang-version-detection-method))
@@ -1354,7 +1358,7 @@ The project directory tree is the root of the directory that contains
 the current directory and holds one of the files identified by the
 `pel-erlang-project-root-identifiers' user-option.
 
-If DIRECTORIES is specified , then the list also includes these directories.
+If DIRECTORIES is specified, then the list also includes these directories.
 You can also specify extra directories in the `pel-erlang-extra-directories'
 variable by dynamically binding it in the caller of the function.
 
@@ -1436,6 +1440,7 @@ Use the Erlang formatter command specified by the
                           (nth 2 exit-code.stdout.stderr)))))
       (and (file-exists-p tmp-fname)
            (delete-file tmp-fname)))))
+
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-erlang)

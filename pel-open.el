@@ -183,7 +183,7 @@ Copy the content of the URL into a temporary file, then open that file."
 ;; ---------------------------------------------------------------------------
 
 (defun pel--open-file-at-point-dir-string-for (value)
-  "Return description of a `pel--open-file-at-point-dir-home' value.
+  "Return a human-readable of VALUE for `pel--open-file-at-point-dir-home'.
 VALUE may also be taken from the `pel-open-file-at-point-dir-home' option."
   (cond
    ((not value)

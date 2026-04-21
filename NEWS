@@ -1,8 +1,6 @@
 PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.2:
-- Improve *pel-cc-mode-info*: shows useful key bindings related to RET mode and hungry delete commands and
-  shows the value of *pel-c-multiline-comments* for c-mode buffers.
 - *Breaking change: major overhaul* of configuration and logic for specialized file searching done by *pel-open-at-point* and the
   pel-ffind functions.
   - All specialized file searching is now controlled by the concept of development *project* and no longer major mode specific as
@@ -32,6 +30,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Renamed *pel-open-file-at-point-dir* user-option to *pel-open-file-at-point-dir-home* and *pel-set-open-at-point-dir* to *pel-set-open-at-point-dir-home*
   - Improved *pel-cc-mode*, the C/C++/Objective-C major mode dispatcher: it now supports more language keywords, properly ignore keywords inside comments,
     and support the PEL file type header comment in the first line of files.
+- Improve *pel-cc-mode-info*: shows useful key bindings related to RET mode and hungry delete commands and
+  shows the value of *pel-c-multiline-comments* for c-mode buffers.
+- Fix *pel-erlang-version* when automatic detection is used.
 - Improved *pel-cc-set-indent-width*: the prompt now shows the currently used indentation width.
 - Refactored the mode specific file finding mechanism.  Removed the file pel-cc-find.el, integrated some of its logic inside pel-ffind.el
   - It used to only support files managed by the cc-mode like AWK, C, C++ but
