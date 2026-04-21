@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, April 21 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-21 13:42:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-21 15:50:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the ERLANG package.
 ;; This file is not part of GNU Emacs.
@@ -36,6 +36,13 @@
 ;;; Code:
 ;;
 
+(when noninteractive
+  (message "************** USING STUB: test/stub/erlang.el ****************"))
+
+;; Provide both a variable and a function so call sites are satisfied.
+(defvar erlang-root-dir "/fake/erl/root")
+(defun erlang-root-dir () erlang-root-dir)
+
 (defvar erlang-electric-commands nil
   "Stubbed var used for testing pel-erlang.el.")
 
@@ -46,7 +53,9 @@
   "Stub erlang-mode."
   (interactive))
 
-(message "************** USING STUB: test/stub/erlang.el *******************")
+(defun erlang-shell ()
+  "Stub erlang-shell."
+  (interactive))
 
 ;;; --------------------------------------------------------------------------
 (provide 'erlang)
