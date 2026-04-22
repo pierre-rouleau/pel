@@ -774,6 +774,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-browse-filename-at-point
     pel-open-url-at-point
     pel-show-filemng-status)
+  (pel-autoload-function "pel-open" for:
+    pel-open-set-buffer-local-file-opener)
 
   (pel-autoload "pel-outline" for:
     pel-outline-print-vars)

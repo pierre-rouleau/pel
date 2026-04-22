@@ -7130,7 +7130,8 @@ to identify a Verilog file.  Anything else is assumed being V."
     (pel-config-major-mode rst pel:for-reST :no-ts
       (pel--install-rst-skel pel:rst-skel)
       (declare-function pel-rst-open-file-at-point "pel-rst")
-      (setq-local pel--open-file-name-extractor #'pel-rst-open-file-at-point)
+      (declare-function pel-open-set-buffer-local-file-opener "pel-open")
+      (pel-open-set-buffer-local-file-opener #'pel-rst-open-file-at-point)
       (when (and pel-use-imenu+
                  (fboundp 'imenup-add-defs-to-menubar))
         (imenup-add-defs-to-menubar)))))

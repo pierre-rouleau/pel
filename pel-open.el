@@ -31,6 +31,7 @@
 ;;  * `pel-set-open-at-point-dir-home'
 ;;
 ;; Open File at Point
+;;  - `pel-open-set-buffer-local-file-opener'
 ;;  * `pel-browse-filename-at-point'
 ;;    * `pel-open-at-point'
 ;;  * `pel-open-url-at-point'
@@ -64,6 +65,7 @@ Can be one of the following:
             working directory.
 - \\='cwd    : use buffer's current working directory
 - a string: the name of a specific directory.")
+
 
 ;;-pel-autoload
 (defun pel-set-open-at-point-dir-home ()
@@ -109,6 +111,11 @@ declined the responsibility and wants to let open by the standard way
 
 When nil, `pel-open-at-point' uses the default mechanism: it calls
 `pel-find-file-at-point-in-window' to open the file.")
+
+;;-pel-autoload
+(defun pel-open-set-buffer-local-file-opener (fun)
+  "Activate a special file opening function: FUN."
+  (setq-local pel--open-file-method fun))
 
 ;;-pel-autoload
 (defun pel-open-at-point (&optional n)
