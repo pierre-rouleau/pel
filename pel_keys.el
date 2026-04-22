@@ -760,7 +760,7 @@ Your version of Emacs does not support dynamic module.")))
                      avy-goto-word-1
                      avy-goto-word-0)
   ;; Since avy uses home row keys for targets, the bindings also use keys
-  ;; that are on the home row (at least for the the single key bindings).
+  ;; that are on the home row (at least for the single key bindings).
   ;; This helps speed the typing.  The meta key is used with some extra
   ;; bindings using the control key in graphics mode (since these keys are
   ;; not available in terminal mode).

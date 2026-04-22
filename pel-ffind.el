@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-20 16:55:50 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-22 14:55:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -143,14 +143,15 @@ It is selected by the `pel-ffind-set-devtool-name' command.")
   "Prompt/select a new development TOOL-NAME key for the buffer.
 
 When called in code, the TOOL-NAME must be one of the tool name key
-identified in the `pel-dev-tools' user-option or nil.  Interactively, the
-command prompts the user for one of the available tool names."
+identified in the `pel-dev-tools' user-option. It can also be or nil.
+Interactively, the command prompts the user for one of the available tool
+names."
   (interactive
    (let ((available-tool-names (pel--dev-tool-names)))
      (list
       (when available-tool-names
         (completing-read
-         (format "Select file finder tool name%s: "
+         (format "Select development tool name%s: "
                  (pel-string-for pel--ffind-overriding-toolchain-name " (" ") "))
          available-tool-names)))))
   (if tool-name
@@ -505,9 +506,7 @@ Return nil if no project root is found by either method."
   "Return the project settings list for current project or one using FILENAME.
 Return nil if no project is found.
 The inspected project is identified by the specified FILENAME if any,
-otherwise by the currently visited file.
-The project name is extracted from information found in `pel-dev-projects'
-considering the name of the currently visited file or the specified FILENAME."
+otherwise by the currently visited file."
   (let ((fname (or filename (buffer-file-name))))
     (when fname
       (let* ((project-root (pel-ffind-project-directory-of fname))
@@ -707,9 +706,11 @@ issues a warning describing the error."
 (defun pel-ffind-project-lang-tools (&optional filename)
   "Return the list of tool names specific to the FILENAME or current buffer.
 
-Return the list of tool names identified by `pel-dev-projects' for the project
-and language-specific for the FILENAME or currently visited file.  Return nil
-if there are none or if the buffer is not visiting a file."
+Return the list of tool names identified by `pel-dev-projects' for the
+project and for the language of FILENAME (or of the current buffer if
+nil).
+
+Return nil if there are none or if the buffer is not visiting a file."
   (pel-dev-project.setting.tools (pel-ffind-project-lang-setting filename)))
 
 (defun pel-ffind-project-lang-envvars (&optional filename)
@@ -722,7 +723,7 @@ visiting a file."
   (pel-dev-project.setting.envvars (pel-ffind-project-lang-setting filename)))
 
 (defun pel-ffind-project-lang-exclude-regexps (&optional filename)
-  "Return the list of exclude regexps specific to the FILENAME or current buffer.
+  "Return list of exclude regexps specific to the FILENAME or current buffer.
 
 Return the list of exclude regexps identified by `pel-dev-projects'
 for the project and language-specific for the FILENAME or currently
