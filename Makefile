@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-04-16 22:12:36 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-04-21 16:00:11 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -89,7 +89,7 @@ EMACS_NATIVE_COMP_AVAILABLE := $(shell $(EMACS) --batch --eval '(when \
 #                       are broadly supported.
 #                       In the meantime PEL is staying at 0.4.1
 #                       unless someone requests package versions.
-PEL_VERSION := 0.4.1
+PEL_VERSION := 0.4.2
 
 # NOTE: Also update the version numbers in the following files:
 # - NEWS
@@ -171,7 +171,6 @@ EL_FILES := pel--base.el \
 		pel-c-preproc.el \
 		pel-c-utils.el \
 		pel-c3.el \
-		pel-cc-find.el \
 		pel-cc-linux-kernel.el \
 		pel-cc-navigate.el \
 		pel-cc.el \
@@ -764,7 +763,6 @@ pel-c-comment.elc:        pel--base.elc pel--options.elc pel-comment.elc
 pel-c-preproc.elc:        pel--macros.elc pel-syntax.elc
 pel-c-utils.elc:          pel--base.elc pel--syntax-macros.elc
 pel-c3.elc:               pel--base.elc pel-modes.elc pel-prompt.elc
-pel-cc-find.elc:          pel--base.elc pel--options.elc pel-file.elc pel-ffind.elc pel-ffind-inpath.elc pel-ini.elc
 pel-cc-linux-kernel.elc:  pel--options.elc
 pel-cc-navigate.elc:      pel--syntax-macros.elc
 pel-cc.elc:               pel--base.elc pel--options.elc pel-ffind.elc
@@ -810,7 +808,7 @@ pel-hide-docstring.elc:   pel--base.elc pel-navigate.elc pel-face-ut.elc
 pel-hideshow.elc:         pel--base.elc
 pel-hier-face.elc:        pel--base.elc pel--install.elc
 pel-hier-modes.elc:       pel--install.elc
-pel-highlight.elc:        pel--base.elc pel-prompt.elc
+pel-highlight.elc:        pel--base.elc pel--options.elc pel-prompt.elc
 pel-ido.elc:              pel-prompt.elc
 pel-iedit.elc:            pel--options.elc
 pel-imenu-dbg.elc:        pel--base.elc
@@ -912,7 +910,6 @@ test/pel-autocomplete-test.el.test-passed:      pel-autocomplete.elc
 test/pel-c-utils-test.el.test-passed:           pel-c-utils.elc
 test/pel-c-comment-test.el.test-passed:         pel-c-comment.elc
 test/pel-c-preproc-test.el.test-passed:         pel-c-preproc.elc
-test/pel-cc-find-test.el.test-passed:           pel-cc-find.elc pel-ffind.elc
 test/pel-cc-navigate-test.el.test-passed:       pel-cc-navigate.elc
 test/pel-cc-test.el.test-passed:                pel--options.elc pel-cc.elc
 test/pel-ccp-test.el.test-passed:               pel-ccp.elc
@@ -920,14 +917,17 @@ test/pel-comment-adorn-test.el.test-passed:     pel-comment-adorn.elc
 test/pel-dtreplace-test.el.test-passed:         pel-dtreplace.elc
 test/pel-elcode-test.el.test-passed:            pel-elcode.elc pel--base.elc
 test/pel-elpa-test.el.test-passed:              pel-elpa.elc pel-filedir.elc
+test/pel-erlang-activation-test.el.test-passed: pel--install.elc pel_keys.elc
 test/pel-erlang-test.el.test-passed:            pel-erlang.elc pel-ert.elc
 test/pel-ert-test.el.test-passed:               pel-ert.elc
 test/pel-ffind-inpath-test.el.test-passed:      pel-ffind-inpath.elc
-test/pel-ffind-project-directory-test.el.test-passed: pel-ffind.elc pel--base.elc
+test/pel-ffind-test.el.test-passed:             pel-ffind.elc
+test/pel-ffind-project-rootdir-test.el.test-passed: pel-ffind.elc pel--options.elc
 test/pel-file-test.el.test-passed:              pel-file.elc pel-ert.elc
 test/pel-file-open-test.el.test-passed:         pel-file.elc
 test/pel-fill-test.el.test-passed:              pel-fill.elc pel--base.elc
 test/pel-filedir-test.el.test-passed:           pel-filedir.elc pel--base.elc
+test/pel-fs-test.el.test-passed:                pel-fs.elc
 test/pel-hash-test.el.test-passed:              pel-hash.elc
 test/pel-hex-test.el.test-passed:               pel-hex.elc
 test/pel-highlight-test.el.test-passed:         pel-highlight.elc

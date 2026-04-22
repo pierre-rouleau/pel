@@ -23,28 +23,42 @@
 ;; ---------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This file defines functions that perform operations that depend on the
-;; buffer major mode, the face at point and other criteria and which invoke
-;; functions in other PEL files.  These functions will evolve over time and
-;; will incorporate more functionality in various modes, allowing a
-;; multi-purpose function to be bound globally to a single key sequence or
-;; key-chord.
+;; This file holds a set of file opening functions.
+;;
+;;
+;;
+;; Directory Scope Control of `pel-open-at-point' file searches
+;;  * `pel-set-open-at-point-dir-home'
+;;
+;; Open File at Point
+;;  - `pel-open-set-buffer-local-file-opener'
+;;  * `pel-browse-filename-at-point'
+;;    * `pel-open-at-point'
+;;  * `pel-open-url-at-point'
+;;
+;; Display File Open Behaviour
+;;  * `pel-show-filemng-status'
+;;    - `pel--open-file-at-point-dir-string-for'
 
 ;; ---------------------------------------------------------------------------
 ;;; Dependencies:
 
 (require 'pel--base)        ; use: `pel-current-buffer-filename'
-(require 'pel--options)     ; use: `pel-open-file-at-point-dir'
+(require 'pel--options)     ; use: `pel-open-file-at-point-dir-home'
 (require 'pel-prompt)       ; use: `pel-select-from'
 (require 'pel-ido)          ; use: `pel-ido-use-fname-at-point-string-for'
 (require 'pel-ffind)        ; indirectly use: `pel-generic-find-file'
+(require 'pel-file)         ; use: `pel-find-file-at-point-in-window'
 
 ;; ---------------------------------------------------------------------------
 ;;; Code:
 
-(defvar-local pel--open-file-at-point-dir pel-open-file-at-point-dir
-  "Root directory from where `pel-open-file-at-point' opens file.
-You can change buffer's local value with `pel-set-open-file-at-point-dir'
+;;* Directory Scope Control of `pel-open-at-point' file searches
+;;  ============================================================
+
+(defvar-local pel--open-file-at-point-dir-home pel-open-file-at-point-dir-home
+  "Root directory from where `pel-open-at-point' opens file.
+You can change its buffer-local value with `pel-set-open-at-point-dir-home'.
 Can be one of the following:
 - nil     : use parent directory of currently visited file, the default.
             If buffer is not visiting a file, then use the buffer's current
@@ -52,28 +66,9 @@ Can be one of the following:
 - \\='cwd    : use buffer's current working directory
 - a string: the name of a specific directory.")
 
-(defun pel--open-file-at-point-dir-string-for (value)
-  "Return description of a `pel--open-file-at-point-dir' value.
-It can also be a `pel-open-file-at-point-dir'."
-  (cond
-   ((not value)
-    (if buffer-file-truename
-        (format
-         "use file's parent directory: %s"
-         (file-name-directory (pel-current-buffer-filename)))
-      (format "use buffer's current working directory: %s"
-              default-directory)))
-   ((eq value 'cwd)
-    (format
-     "use current working directory: %s"
-     default-directory))
-   ((stringp value)
-    (format "use: %s" value))
-   (t
-    "INVALID!")))
 
 ;;-pel-autoload
-(defun pel-set-open-at-point-dir ()
+(defun pel-set-open-at-point-dir-home ()
   "Set the behaviour of `pel-open-at-point' in current buffer.
 
 Select how it determines the directory from which a relative file
@@ -94,27 +89,51 @@ name is built. Select one of the following methods:
                                          nil
                                          nil
                                          t))))
-    (setq pel--open-file-at-point-dir choice)))
+    (setq pel--open-file-at-point-dir-home choice)))
+
+;; ---------------------------------------------------------------------------
+;;* Open File at Point
+;;  ==================
+
+(defvar-local pel--open-file-method nil
+  "Mode specific file name at point opening function.
+
+A function that extracts a file name in a way that is specific to the mode and
+opens it.
+
+When non-nil in a buffer, this function is used by `pel-open-at-point'
+in that buffer to extract the file name at point and open it. The
+function must take one argument, N, the same as `open-open-at-point'
+first argument. It must return non-nil if the function did take the
+responsibility to identify and open the file at point and nil if it
+declined the responsibility and wants to let open by the standard way
+`pel-open-a-point' opens the file.
+
+When nil, `pel-open-at-point' uses the default mechanism: it calls
+`pel-find-file-at-point-in-window' to open the file.")
 
 ;;-pel-autoload
-(defun pel-open-at-point (&optional n noerror)
+(defun pel-open-set-buffer-local-file-opener (fun)
+  "Activate a special file opening function: FUN."
+  (setq-local pel--open-file-method fun))
+
+;;-pel-autoload
+(defun pel-open-at-point (&optional n)
   "Open the file or mode-specific reference at point.
 
-If there is no target issue a `user-error' unless NOERROR is non-nil.
-In that case just return nil.  Optionally identify a window to open a
-file reference with the argument N.
+Extract the target file name from text at point and attempt to find a file
+with that name to open.
 
-See `pel-find-file-at-point-in-window' for more information.
+Optionally identify a window to open a file reference with the argument N.
+Opens the file with `pel-find-file-at-point-in-window' unless the buffer
+has a non-nil value for `pel-find-file-at-point-in-window' that identifies
+another function that does open the file.
 
-Also see `pel-open-file-at-point-dir', used by the function when not
-using language specialized features.  When used in a buffer that
-supports programming language specialization (the command is specialized
-in some major modes: AWK, C and C++), it perform extra file searching
-logic by using the `pel-cc-find-activate-finder-method' function.  A
-buffer holds a finder stored in pel-filename-at-point-finders' and a
-list of project roots.  The user options controlling this are part of
-the `pel-file-finding' customization group."
+Also see `pel-open-file-at-point-dir-home', used by the function when not
+using language specialized features.
 
+The user options controlling this are part of the `pel-file-finding'
+customization group."
   (interactive "P")
   ;; It's possible the file visited by the current buffer is located in a
   ;; directory that is not the current directory; the user might have
@@ -127,30 +146,28 @@ the `pel-file-finding' customization group."
   (let ((original-cwd default-directory))
     (condition-case the-error
         (progn
+          ;; First change current directory if necessary to open file from
+          ;; a different context.
           (cond
-           ;; If requested to use file's parent directory and visiting a
-           ;; file, then set the working directory to the file's parent
-           ;; directory
-           ((and (not pel--open-file-at-point-dir)
+           ;; If visiting a file and `pel--open-file-at-point-dir-home' does
+           ;; not impose a directory, use current's file parent directory.
+           ((and (not pel--open-file-at-point-dir-home)
                  buffer-file-truename)
             (cd (file-name-directory (pel-current-buffer-filename))))
-           ;; if a directory is forced by name and it exists, use it
-           ((and (stringp pel--open-file-at-point-dir)
-                 (file-exists-p pel--open-file-at-point-dir))
-            (cd pel--open-file-at-point-dir))
+           ;;
+           ;; if `pel--open-file-at-point-dir-home' impose a valid directory
+           ;; then use that.
+           ((and (stringp pel--open-file-at-point-dir-home)
+                 (file-exists-p pel--open-file-at-point-dir-home))
+            (cd pel--open-file-at-point-dir-home))
            ;; otherwise use current working directory as base.
            )
-          (if (and (eq major-mode 'rst-mode)
-                   (require 'pel-rst nil :noerror)
-                   (fboundp 'pel-at-rst-reference-p)
-                   (fboundp 'pel-rst-open-target)
-                   (pel-at-rst-reference-p))
-              (pel-rst-open-target n)
-            (if (and (require 'pel-file nil :noerror)
-                     (fboundp 'pel-find-file-at-point-in-window))
-                (pel-find-file-at-point-in-window n)
-              (unless noerror
-                (user-error "Cannot load pel-file!")))))
+
+          ;; Open the file using the mode specific method if it exists and
+          ;; does open the file, otherwise use the standard method.
+          (unless (and pel--open-file-method
+                       (funcall pel--open-file-method n))
+            (pel-find-file-at-point-in-window n)))
       (error
        ;; On error: go back to original directory and inform the user.
        (cd original-cwd)
@@ -164,7 +181,7 @@ the `pel-file-finding' customization group."
 
 ;;-pel-autoload
 (defun pel-open-url-at-point ()
-  "Open the URL at point in a local buffer.
+  "Open the content of URL at point in a local buffer.
 Copy the content of the URL into a temporary file, then open that file."
   (interactive)
   (if (and (require 'pel-file nil :noerror)
@@ -181,6 +198,29 @@ Copy the content of the URL into a temporary file, then open that file."
           (user-error "No valid URL at point!")))
     (error "Can't load pel-file!")))
 
+;; ---------------------------------------------------------------------------
+;;* Display File Open Behaviour
+;;  ===========================
+
+(defun pel--open-file-at-point-dir-string-for (value)
+  "Return a description of local VALUE of `pel--open-file-at-point-dir-home'.
+VALUE may also be taken from the `pel-open-file-at-point-dir-home' option."
+  (cond
+   ((not value)
+    (if buffer-file-truename
+        (format
+         "use file's parent directory: %s"
+         (file-name-directory (pel-current-buffer-filename)))
+      (format "use buffer's current working directory: %s"
+              default-directory)))
+   ((eq value 'cwd)
+    (format
+     "use current working directory: %s"
+     default-directory))
+   ((stringp value)
+    (format "use: %s" value))
+   (t
+    "INVALID!")))
 
 ;;-pel-autoload
 (defun pel-show-filemng-status ()
@@ -195,7 +235,7 @@ Copy the content of the URL into a temporary file, then open that file."
                 (format "buffer %s" (current-buffer)))
            buffer-file-coding-system
            (pel--open-file-at-point-dir-string-for
-            pel--open-file-at-point-dir)
+            pel--open-file-at-point-dir-home)
            (if (boundp 'ido-use-filename-at-point)
                (pel-ido-use-fname-at-point-string-for
                 ido-use-filename-at-point)

@@ -1,5 +1,59 @@
 PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
+* Changes since Version 0.4.2:
+- *Breaking change: major overhaul* of configuration and logic for specialized file searching done by *pel-open-at-point* and the
+  pel-ffind functions.
+  - All specialized file searching is now controlled by the concept of development *project* and no longer major mode specific as
+    it was previously the case.
+    - The directory trees used by every projects are now defined using 3 user-options:
+      - *pel-dev-projects*.  A named project with specified project root directory.
+        Identifies all source code directories used for each programming language used in the project.
+        The list of directories can be identify directly or indirectly by a set of tool and library names.
+        The directories associated by those tools and libraries are identified by the next user-options.
+      - *pel-dev-tools*.  A list of tool name associated with a list of directory trees this tool uses.
+      - *pel-dev-libraries*  A list of library names associated with a list of directory trees this library uses.
+  - The new logic incorporates and simplifies the logic previously supported by various major-mode specific
+    user options named after the programming language the major mode supports and eliminates all of the following user-options:
+    - pel-LANG-file-searched-extra-dir-trees
+    - pel-LANG-file-finder-method
+    - pel-LANG-file-finder-ini-tool-name
+    - pel-LANG-file-searched-dir-trees-per-tool
+    - pel-LANG-file-searched-dir-trees-per-project
+  - Improved *pel-open-at-point* further by making it more general.  Previously it only supported one special mode
+    of operation for reStructuredText buffer.  At the moment it still does but the code was changed to support ability
+    to support more special modes; it uses the default mechanism (calling  ) when the buffer local variable
+    *pel--open-file-method* is nil.  If that variable is set to a specialized function (like the new
+    *pel-rst-open-file-at-point* for reStructuredText), it uses that function.  The function can decline the
+    responsibility and return nil or can proceed and return non-nil.  The pel_keys code now set the buffer local
+    variable to the rst-mode specific function.  Other modes could define similar functions that are specific to their
+    modes.  It will become possible to support other markup languages like Org, markdown end others.
+  - Renamed *pel-ffind-project-directory* to *pel-ffind-project-rootdir*
+  - The following macros provide access to the elements of pel-dev-projects structure:
+    - *pel-dev-project.name*, *pel-dev-project.root-dir*,
+      *pel-dev-project.settings*, *pel-dev-project.setting.languages*,
+      *pel-dev-project.setting.dir-trees*, *pel-dev-project.setting.tools*,
+      *pel-dev-project.setting.libs*, and *pel-dev-project.setting.envvars*.
+  - The pel.ini file is no longer used.  All project specific configuration is now stored in customization data.
+  - The *pel-ffind-set-devtool-name* command is now bound to ~<f11> f <f4> .~ key sequence instead of being bound into the ~<f12> <f4> <M-f6>~ key sequence.
+  - Renamed *pel-open-file-at-point-dir* user-option to *pel-open-file-at-point-dir-home* and *pel-set-open-at-point-dir* to *pel-set-open-at-point-dir-home*
+  - Improved *pel-cc-mode*, the C/C++/Objective-C major mode dispatcher: it now supports more language keywords, properly ignore keywords inside comments,
+    and support the PEL file type header comment in the first line of files.
+- Improve *pel-cc-mode-info*: shows useful key bindings related to RET mode and hungry delete commands and
+  shows the value of *pel-c-multiline-comments* for c-mode buffers.
+- Fix *pel-erlang-version* when automatic detection is used.
+- Improved *pel-cc-set-indent-width*: the prompt now shows the currently used indentation width.
+- Refactored the mode specific file finding mechanism.  Removed the file pel-cc-find.el, integrated some of its logic inside pel-ffind.el
+  - It used to only support files managed by the cc-mode like AWK, C, C++ but
+    is no longer the case: it now supports most programming language modes and has a global behaviour fallback.
+    With that several function and variables have changed:
+    - Command *pel-cc-set-file-finder-ini-tool-name* is now *pel-ffind-set-devtool-name*
+  - The mechanism was previously activated for some major modes by a call to the *pel-cc-find-activate-finder-method* function
+    when pel_keys.el is loaded.  This is no longer the case: the *pel-open-at-point* code checks the various relevant user-options
+    when searching for files.
+  - Renamed *pel-cc-find-show-status* (previously bound to ~<f12> <f4> f~ of cc-mode buffers) command to *pel-ffind-show-status* now bound to ~<f11> f <f4> ?~.
+- Fix Pike support: add key mapping in the ~<f12> <f4>~ prefix that had not been activated.
+- Add *pel-insert-help-face* utility.
+- Improved *pel-show-erlang-version*: it now prints information inside a help type buffer with buttons to access customization of the user-options.
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
 - Improve *pel-ccp-info*: it now prints the content of the kill ring and key bindings of useful commands.
@@ -39,8 +93,6 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   the sub-project or allowed to search from the entire tree as before.
 - The *pel-open-at-point* now support the GNU awk =@include= directive: PEL support AWK for searching included files the way
   it already did for C and C++.  AWK support of *pel-cc-find-show-status* (bound to ~<f12> <f4> f~).
-- Improve *pel-cc-mode-info*: shows useful key bindings related to RET mode and hungry delete commands and
-  shows the value of *pel-c-multiline-comments* for c-mode buffers.
 - Add report formatting utilities: *pel-insert-mode-symbol-content-line*, *pel-insert-mode-symbol-content-line-when-bound*.
 - Add utilities: *pel-line-has-only-newline-p* , *pel-key-binding-string*.
 - Improve *pel-envar-in-string* : it no longer accepts a trailing =$= at the end of string as an unnamed environment variable.
@@ -493,7 +545,7 @@ PEL uses my fork of the project to eliminate most warnings.
     provide information about the Elixir support setup and access to the
     customization of several important user-options.
 - PEL mode loading macro *pel-eval-after-load* is now aware of Emacs
-  tree-sitter handling code current weakness and executes a fixed function
+  tree-sitter handling code current weakness and executes a fixer function
   when one is identified by the *pel--ts-mode-with-fixer* list.  The concept
   of fixer function is flexible: it can dynamically verifies the version of
   Emacs and operate accordingly for example.  PEL also starts associating mode

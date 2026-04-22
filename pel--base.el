@@ -278,6 +278,7 @@
 ;;
 ;; Insertion of text in current buffer
 ;;  - `pel-insert-bold'
+;;  - `pel-insert-help-face'
 ;;  - `pel-insert-url-link'
 ;;  - `pel-insert-mode-symbol-content-line-when-bound'
 ;;  - `pel-insert-mode-symbol-content-line'
@@ -420,7 +421,7 @@ executed by `pel-init' on startup.")
   "Return PEL package version string and also echoes it.
 Optionally insert it at point if INSERT is non-nil."
   (interactive "P")
-  (let ((version "0.4.1"))
+  (let ((version "0.4.2"))
     (if insert
         (insert version))
     (message "PEL version: %s" version)
@@ -2828,6 +2829,10 @@ This function handles both."
   "Insert bold TEXT at point."
   (insert (propertize text 'face 'bold)))
 
+(defun pel-insert-help-face (text)
+  "Insert TEXT at point with key help face."
+  (insert (propertize text 'face 'help-key-binding)))
+
 (defun pel-insert-url-link (title url &optional extra-text)
   "Insert a TITLE hyperlink button to specified URL.
 
@@ -2914,6 +2919,10 @@ By default:
   "Insert the name followed by the content of the specified SYMBOL.
 
 Insert the SYMBOL name as a clickable button inside current buffer.
+If the symbol is bound, print its value. If it is not bound, then print
+a message stating that it is currently unbound instead of printing its
+value.
+
 By default SYMBOL must be a global symbol as its value is read in the scope
 of the output buffer.  If the SYMBOL is a buffer local symbol, specify the
 buffer in the optional BUFFER argument.  You can also let-bind the variable
@@ -2924,10 +2933,7 @@ If EXTRA-TEXT is non-nil, it can be a string or a function:
 - A string is inserted after the symbol name.
 - A function is used to convert the value into a description string
   and that string is printed after the symbol."
-  (pel-insert-symbol-content
-   symbol
-   buffer
-   :on-same-line)
+  (pel-insert-symbol-content symbol buffer :on-same-line)
   (when extra-text
     (if (stringp extra-text)
         (insert (format  "  : %s" extra-text))

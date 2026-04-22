@@ -83,10 +83,12 @@
 ;;
 ;; - Open link URL:
 ;;
-;;   * `pel-rst-open-target'
-;;     - `pel--move-to-rst-target'
-;;     - `pel--rst-reference-target'
-;;       - `pel-at-rst-reference-p'
+;;   - `pel-rst-open-file-at-point'
+;;     - `pel-at-rst-reference-p'
+;;     * `pel-rst-open-target'
+;;       - `pel--move-to-rst-target'
+;;       - `pel--rst-reference-target'
+;;         . `pel-at-rst-reference-p'
 ;;
 ;; - Table Helper Utility:
 ;;
@@ -99,12 +101,13 @@
 ;; ---------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--base)        ; uses: `pel-whitespace-in-str-p'
-;;                          ;       `pel-chars-at-point'
+(require 'pel--base)        ; use: `pel-whitespace-in-str-p'
+;;                          ;      `pel-chars-at-point'
 (require 'pel--options)
-(require 'pel-whitespace)   ; uses: `pel-delete-trailing-whitespace'
-(require 'pel-ccp)          ; uses: `pel-delete-whole-line', `pel-duplicate-line'
+(require 'pel-whitespace)   ; use: `pel-delete-trailing-whitespace'
+(require 'pel-ccp)          ; use: `pel-delete-whole-line', `pel-duplicate-line'
 (require 'pel--macros)
+(require 'pel-file)         ; use: `pel-find-file-at-point-in-window'
 (require 'rst)              ; rst-mode code. Use `rst-backward-section'
 (eval-when-compile
   (require 'subr-x))        ; use: split-string
@@ -1061,22 +1064,28 @@ See `pel-find-file-at-point-in-window' for more information."
                    ;; otherwise it's a link to a file: try to find it
                    (t
                     (if result
-                        (if (and (require 'pel-file nil :noerror)
-                                 (fboundp 'pel-find-file-at-point-in-window))
-                            (pel-find-file-at-point-in-window
-                             n-value (function pel-html-to-rst))
-                          (user-error "Cannot load pel-file!"))
+                        (pel-find-file-at-point-in-window n-value #'pel-html-to-rst)
                       (unless noerror
                         (user-error "No reference target found!")))))
                 ;; reftype is a path: use that path directly
-                (if (and (require 'pel-file nil :noerror)
-                         (fboundp 'pel-find-file-at-point-in-window))
-                    (pel-find-file-at-point-in-window
-                     n-value (function pel-html-to-rst))
-                  (user-error "Cannot load pel-file!")))))
+                (pel-find-file-at-point-in-window n-value #'pel-html-to-rst))))
         (cd original-cwd)))
     (when new-position
+      (push-mark)
       (goto-char new-position))))
+
+;;-pel-autoload
+(defun pel-rst-open-file-at-point (&optional n)
+  "Open a file at point if it is a rst reference.
+
+Optionally identify a window to open a file reference with the argument N.
+See `pel-rst-open-target' for more information.
+
+The function opens the reSTucturedText reference at point and returns t.
+If point is not on a reference, the function does nothing and returns nil."
+  (when (pel-at-rst-reference-p)
+    (pel-rst-open-target n)
+    t))
 
 ;; ---------------------------------------------------------------------------
 ;; Table Helper Utility

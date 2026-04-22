@@ -50,6 +50,7 @@
 ;;; Dependencies
 
 (require 'pel--base)
+(require 'pel--options)                 ; uses 'pel-highlight-color-default'
 (require 'pel-prompt)                   ; uses: `pel-prompt-with-completion'
 (require 'hl-line)
 
@@ -198,8 +199,7 @@ The prompt has its history maintained in `pel-set-highlight-color--history'
 and is used by `pel-set-highlight-color' and `pel-highlight-line'."
   (let ((completion-ignore-case t))
     (completing-read
-     (format "Highlight color [%s]: "
-             (face-attribute 'highlight :background))
+     (format "Highlight color [%s]: " pel--highlight-color)
      (pel--color-completion-collection)
      nil nil nil
      'pel-set-highlight-color--history

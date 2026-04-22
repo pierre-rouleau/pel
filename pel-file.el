@@ -507,9 +507,7 @@ TARGET   := string  | nil"
 ;; --
 
 (defun pel--file-window-info-for (raw-n)
-  "Return list of values extracted from the interactive \"P\" argument.
-
-- RAW-N   : original raw prefix argument: may be nil
+  "Return list of values extracted from the RAW-N prefix argument.
 
 Return a list with the following elements, in order:
 - n             : raw window number; may be nil, negative, large.

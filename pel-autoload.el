@@ -153,13 +153,6 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-c-search-preproc-if-set
     pel-c-fix-preproc-if-problems)
 
-  (pel-autoload-function "pel-cc-find" for:
-    pel-cc-find-via-pel-ini
-    pel-cc-find-activate-finder-method)
-  (pel-autoload "pel-cc-find" for:
-    pel-cc-set-file-finder-ini-tool-name
-    pel-cc-find-show-status)
-
   (pel-autoload "pel-cc-navigate" for:
     pel-cc-to-switch-begin
     pel-cc-to-switch-end
@@ -450,6 +443,9 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; --
   (pel-autoload "pel-face-ut" for: pel-show-face-at-point)
 
+  (pel-autoload "pel-ffind" for:
+    pel-ffind-set-devtool-name
+    pel-ffind-show-status)
   (pel-autoload-function "pel-ffind" for:
     pel-ffind
     pel-generic-find-file)
@@ -774,10 +770,12 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-open" for:
     pel-open-at-point
-    pel-set-open-at-point-dir
+    pel-set-open-at-point-dir-home
     pel-browse-filename-at-point
     pel-open-url-at-point
     pel-show-filemng-status)
+  (pel-autoload-function "pel-open" for:
+    pel-open-set-buffer-local-file-opener)
 
   (pel-autoload "pel-outline" for:
     pel-outline-print-vars)
@@ -873,7 +871,9 @@ Argument FOR: just a required separator keyword to make code look better."
       pel-rst-literal
       pel-rst-interpreted
       pel-rst-table-dup-separator-lines
-      pel-rst-compile))
+      pel-rst-compile)
+    (pel-autoload-function "pel-rst" for:
+      pel-rst-open-file-at-point))
 
   (pel-autoload "pel-rpm-spec" for:
     pel-rpm-build

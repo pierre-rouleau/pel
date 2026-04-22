@@ -760,7 +760,7 @@ Your version of Emacs does not support dynamic module.")))
                      avy-goto-word-1
                      avy-goto-word-0)
   ;; Since avy uses home row keys for targets, the bindings also use keys
-  ;; that are on the home row (at least for the the single key bindings).
+  ;; that are on the home row (at least for the single key bindings).
   ;; This helps speed the typing.  The meta key is used with some extra
   ;; bindings using the control key in graphics mode (since these keys are
   ;; not available in terminal mode).
@@ -2767,7 +2767,10 @@ can't bind negative-argument to C-_ and M-_"
           pel-use-objc
           pel-use-pike)
 
-  ;; Associate .h file with C/C++/Objective mode selector
+  ;; Associate .h file with C/C++/Objective mode dispatcher because the .h
+  ;; files are used in C, C++ and Objective-C.  The dispatcher function
+  ;; detects the language from the file content and activates the appropriate
+  ;; major mode.
   (add-to-list 'auto-mode-alist '("\\.h\\'" . pel-cc-mode))
 
   (when pel-use-call-graph
@@ -2827,7 +2830,6 @@ bind it again after this call."
 
     ;; setup - electric mode control
     (define-key setup-prefix "?"         'pel-cc-mode-info)
-    (define-key setup-prefix "f"         'pel-cc-find-show-status)
     (define-key setup-prefix (kbd "C-i") 'pel-cc-set-indent-width)
     (define-key setup-prefix "e"         'c-toggle-electric-state)
     (define-key setup-prefix "s"         'c-set-style) ; interactively select style
@@ -3073,9 +3075,6 @@ MODE must be a symbol."
 ;;   -------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC W`` : Awk
 
-;; pel-cc-find-activate-finder-method is used in Awk, C and C++.
-(declare-function pel-cc-find-activate-finder-method "pel-cc-find")
-
 (when pel-use-awk
   (define-pel-global-prefix pel:for-awk   (kbd "<f11> SPC W"))
   (define-pel-global-prefix pel:awk-setup (kbd "<f11> SPC W <f4>"))
@@ -3091,38 +3090,30 @@ MODE must be a symbol."
                      pel:awk-setup
                      pel:awk-guess)
     (pel-config-major-mode awk pel:for-awk :no-ts
-      (progn
-
-        ;; Configure how to search for a file name from the user-option
-        ;; `pel-awk-file-finder-method' which may be specified in a
-        ;; .dir-local.el file.
-        (pel-cc-find-activate-finder-method pel-awk-file-finder-method
-                                            pel-awk-file-searched-extra-dir-trees)
-
-        ;; 1) set the style: it identifies everything
-        (pel--set-cc-style 'awk-mode pel-awk-bracket-style pel-awk-newline-mode)
-        ;; 2) apply modifications requested by PEL user options.
-        ;;    set variables only available in a CC mode with PEL
-        ;;    user-options unless the file-variable sets it.
-        (unless (assoc 'c-basic-offset file-local-variables-alist)
-          (pel-setq-local c-basic-offset pel-awk-indent-width))
-        ;; 3) set fill-column to PEL specified C's default if specified
-        (when pel-awk-fill-column
-          (setq-local fill-column pel-awk-fill-column))
-        ;; 4) Set default auto-newline mode as identified by PEL user option
-        (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-        ;; 5) Configure M-( to put parentheses after a function name.
-        (set (make-local-variable 'parens-require-spaces) nil)
-        ;; 6) Set tab-width for the buffer as specified by the PEL user option
-        ;; for the major mode.
-        (setq-local tab-width pel-awk-tab-width)
-        ;; 7) no skeleton for AWK at the moment.
-        ;; 8) extra setup
-        (pel--setup-for-cc)
-        (setq-local pel-indentation-width-control-variables
-                    '(pel-awk-indent-width c-basic-offset))
-        (setq-local pel-indentation-other-control-variables
-                    '(c-syntactic-indentation))))))
+      ;; 1) set the style: it identifies everything
+      (pel--set-cc-style 'awk-mode pel-awk-bracket-style pel-awk-newline-mode)
+      ;; 2) apply modifications requested by PEL user options.
+      ;;    set variables only available in a CC mode with PEL
+      ;;    user-options unless the file-variable sets it.
+      (unless (assoc 'c-basic-offset file-local-variables-alist)
+        (pel-setq-local c-basic-offset pel-awk-indent-width))
+      ;; 3) set fill-column to PEL specified C's default if specified
+      (when pel-awk-fill-column
+        (setq-local fill-column pel-awk-fill-column))
+      ;; 4) Set default auto-newline mode as identified by PEL user option
+      (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+      ;; 5) Configure M-( to put parentheses after a function name.
+      (set (make-local-variable 'parens-require-spaces) nil)
+      ;; 6) Set tab-width for the buffer as specified by the PEL user option
+      ;; for the major mode.
+      (setq-local tab-width pel-awk-tab-width)
+      ;; 7) no skeleton for AWK at the moment.
+      ;; 8) extra setup
+      (pel--setup-for-cc)
+      (setq-local pel-indentation-width-control-variables
+                  '(pel-awk-indent-width c-basic-offset))
+      (setq-local pel-indentation-other-control-variables
+                  '(c-syntactic-indentation)))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** C Programming Language Support
@@ -3154,9 +3145,6 @@ MODE must be a symbol."
 
   ;; Add extra key bindings specific to the C mode
   (define-key pel:c-setup "#" 'c-toggle-cpp-indent-to-body)
-  (when pel-use-ini
-    (define-key pel:c-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name)
-    (define-key pel:c-setup (kbd "<f54>") 'pel-cc-set-file-finder-ini-tool-name))
   (when pel-use-plantuml
     (define-key pel:for-c "u" 'pel-render-commented-plantuml))
 
@@ -3188,47 +3176,40 @@ MODE must be a symbol."
                      pel:for-c-preproc
                      pel:c-search-replace)
     (pel-config-major-mode c pel:for-c :no-ts
-      (progn
-        (defvar c-mode-map)  ; declare dynamic: prevent byte-compiler warnings
-        (define-key c-mode-map (kbd "M-;") 'pel-c-comment-dwim)
+      (defvar c-mode-map)    ; declare dynamic: prevent byte-compiler warnings
+      (define-key c-mode-map (kbd "M-;") 'pel-c-comment-dwim)
 
-        ;; Configure how to search for a file name from the user-option
-        ;; `pel-c-file-finder-method' which may be specified in a
-        ;; .dir-local.el file.
-        (pel-cc-find-activate-finder-method pel-c-file-finder-method
-                                            pel-c-file-searched-extra-dir-trees)
-
-        ;; Configure the CC Mode style for C from PEL custom variables
-        ;; 1) set the style: it identifies everything
-        (pel--set-cc-style 'c-mode pel-c-bracket-style pel-c-newline-mode)
-        ;; 2) apply modifications requested by PEL user options.
-        ;;    set variables only available in a CC mode with PEL
-        ;;     user-options unless the file-variable sets it.
-        (unless (assoc 'c-basic-offset file-local-variables-alist)
-          (pel-setq-local c-basic-offset pel-c-indent-width))
-        ;; 3) set fill-column to PEL specified C's default if specified
-        (when pel-c-fill-column
-          (setq-local fill-column pel-c-fill-column))
-        ;; 4) Set default auto-newline mode as identified by PEL user option
-        (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-        ;; 5) Configure M-( to put parentheses after a function name.
-        (set (make-local-variable 'parens-require-spaces) nil)
-        ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
-        (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
-        ;; 7) Install language-specific skeletons
-        (pel--install-c-skel pel:c-skel)
-        ;; 8) extra setup
-        (pel--setup-for-cc)
-        (setq-local pel-indentation-width-control-variables
-                    '(pel-c-indent-width c-basic-offset))
-        (setq-local pel-indentation-other-control-variables
-                    '(c-syntactic-indentation))
-        ;; 9) Activate Language server of choice
-        (when (and pel-use-emacs-ccls-for-c
-                   (fboundp 'lsp))
-          (lsp))
-        ;; 10) Activate man section for C
-        (setq-local pel-c-man-section "3"))))
+      ;; Configure the CC Mode style for C from PEL custom variables
+      ;; 1) set the style: it identifies everything
+      (pel--set-cc-style 'c-mode pel-c-bracket-style pel-c-newline-mode)
+      ;; 2) apply modifications requested by PEL user options.
+      ;;    set variables only available in a CC mode with PEL
+      ;;     user-options unless the file-variable sets it.
+      (unless (assoc 'c-basic-offset file-local-variables-alist)
+        (pel-setq-local c-basic-offset pel-c-indent-width))
+      ;; 3) set fill-column to PEL specified C's default if specified
+      (when pel-c-fill-column
+        (setq-local fill-column pel-c-fill-column))
+      ;; 4) Set default auto-newline mode as identified by PEL user option
+      (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+      ;; 5) Configure M-( to put parentheses after a function name.
+      (set (make-local-variable 'parens-require-spaces) nil)
+      ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
+      (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
+      ;; 7) Install language-specific skeletons
+      (pel--install-c-skel pel:c-skel)
+      ;; 8) extra setup
+      (pel--setup-for-cc)
+      (setq-local pel-indentation-width-control-variables
+                  '(pel-c-indent-width c-basic-offset))
+      (setq-local pel-indentation-other-control-variables
+                  '(c-syntactic-indentation))
+      ;; 9) Activate Language server of choice
+      (when (and pel-use-emacs-ccls-for-c
+                 (fboundp 'lsp))
+        (lsp))
+      ;; 10) Activate man section for C
+      (setq-local pel-c-man-section "3")))
 
   ;; Activate extra C styles
   (when pel-use-linux-kernel-code-style-support
@@ -3283,8 +3264,6 @@ MODE must be a symbol."
                      "\\.icc\\'")
 
   ;; Add extra key bindings specific to the C++ mode
-  (when pel-use-ini
-    (define-key pel:c++-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name))
   (when pel-use-plantuml
     (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
   (when pel-use-call-graph
@@ -3304,13 +3283,6 @@ MODE must be a symbol."
     (define-key pel:c++-search-replace (kbd "V") 'pel-move-up-to-class-visibility)
 
     (pel-config-major-mode c++ pel:for-c++ :no-ts
-
-      ;; Configure how to search for a file name from the user-option
-      ;; `pel-c++-file-finder-method' which may be specified in a
-      ;; .dir-local.el file.
-      (pel-cc-find-activate-finder-method pel-c++-file-finder-method
-                                          pel-c++-file-searched-extra-dir-trees)
-
       ;; "Set the environment for editing C++ files."
       ;; Configure the CC Mode style for C++ from PEL custom variables
       ;; 1) set the style: it identifies everything
@@ -3338,8 +3310,8 @@ MODE must be a symbol."
       (setq-local pel-indentation-other-control-variables
                   '(c-syntactic-indentation))
       ;; 9) Activate Language server of choice
-      (when (and  pel-use-emacs-ccls-for-c++
-                  (fboundp 'lsp))
+      (when (and pel-use-emacs-ccls-for-c++
+                 (fboundp 'lsp))
         (lsp))
       ;; 10) Activate man section for C++
       (setq-local pel-c++-man-section "3"))))
@@ -3436,9 +3408,7 @@ d-mode not added to ac-modes!"
   (define-pel-global-prefix pel:objc-guess          (kbd "<f11> SPC C-o <f4> g"))
   (define-pel-global-prefix pel:for-objc-preproc    (kbd "<f11> SPC C-o #"))
   (define-pel-global-prefix pel:objc-search-replace (kbd "<f11> SPC C-o s"))
-  (when pel-use-ini
-    (define-key pel:objc-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name)
-    (define-key pel:objc-setup (kbd "<f54>")  'pel-cc-set-file-finder-ini-tool-name))
+
   ;; [:todo 2025-04-27, by Pierre Rouleau: Activate skeletons]
   ;; (define-pel-global-prefix pel:objc-skel (kbd "<f11> SPC C-o <f12>"))
 
@@ -3469,50 +3439,43 @@ d-mode not added to ac-modes!"
                      pel:for-objc-preproc
                      pel:objc-search-replace)
     (pel-config-major-mode objc pel:for-objc :no-ts
-      (progn
-        ;; (define-key objc-mode-map (kbd "M-;") 'pel-c-comment-dwim)
+      ;; (define-key objc-mode-map (kbd "M-;") 'pel-c-comment-dwim)
 
-        ;; [:todo 2025-04-27, by Pierre Rouleau: Activate skeletons]
-        ;; activate skeletons
-        ;; (pel--install-generic-skel pel:objc-skel 'pel-pkg-for-objc "objective-c")
-        ;; Configure how to search for a file name from the user-option
-        ;; `pel-c-file-finder-method' which may be specified in a
-        ;; .dir-local.el file.
-        (pel-cc-find-activate-finder-method pel-objc-file-finder-method
-                                            pel-objc-file-searched-extra-dir-trees)
+      ;; [:todo 2025-04-27, by Pierre Rouleau: Activate skeletons]
+      ;; activate skeletons
 
-        ;; Configure the CC Mode style for Objective-C from PEL custom variables
-        ;; 1) set the style: it identifies everything
-        (pel--set-cc-style 'objc-mode pel-objc-bracket-style pel-objc-newline-mode)
-        ;; 2) apply modifications requested by PEL user options.
-        ;;    set variables only available in a CC mode with PEL
-        ;;     user-options unless the file-variable sets it.
-        (unless (assoc 'c-basic-offset file-local-variables-alist)
-          (pel-setq-local c-basic-offset pel-objc-indent-width))
-        ;; 3) set fill-column to PEL specified Objective-C's default if specified
-        (when pel-objc-fill-column
-          (setq-local fill-column pel-objc-fill-column))
-        ;; 4) Set default auto-newline mode as identified by PEL user option
-        (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-        ;; 5) Configure M-( to put parentheses after a function name.
-        (set (make-local-variable 'parens-require-spaces) nil)
-        ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
-        (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
-        ;; 7) Install language-specific skeletons
-        ;; [:todo 2025-04-27, by Pierre Rouleau: Add skeletons for Objective-C]
-        ;; (pel--install-c-skel pel:c-skel)
-        ;; 8) extra setup
-        (pel--setup-for-cc)
-        ;; [:todo 2025-04-30, by Pierre Rouleau: Check Objective-C indent width control]
-        (setq-local pel-indentation-width-control-variables
-                    '(pel-obj-indent-width c-basic-offset))
-        (setq-local pel-indentation-other-control-variables
-                    '(c-syntactic-indentation))
-        ;; imenu support is already provided by objc-mode
-        ;; 9) Activate Language server of choice
-        (when (and pel-use-emacs-ccls-for-objc
-                   (fboundp 'lsp))
-          (lsp))))))
+      ;; Configure the CC Mode style for Objective-C from PEL custom variables
+      ;; 1) set the style: it identifies everything
+      (pel--set-cc-style 'objc-mode pel-objc-bracket-style pel-objc-newline-mode)
+      ;; 2) apply modifications requested by PEL user options.
+      ;;    set variables only available in a CC mode with PEL
+      ;;     user-options unless the file-variable sets it.
+      (unless (assoc 'c-basic-offset file-local-variables-alist)
+        (pel-setq-local c-basic-offset pel-objc-indent-width))
+      ;; 3) set fill-column to PEL specified Objective-C's default if specified
+      (when pel-objc-fill-column
+        (setq-local fill-column pel-objc-fill-column))
+      ;; 4) Set default auto-newline mode as identified by PEL user option
+      (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+      ;; 5) Configure M-( to put parentheses after a function name.
+      (set (make-local-variable 'parens-require-spaces) nil)
+      ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
+      (pel-local-set-f12-M-f12 'pel:for-objc-preproc "#")
+      ;; 7) Install language-specific skeletons
+      ;; [:todo 2025-04-27, by Pierre Rouleau: Add skeletons for Objective-C]
+      ;; (pel--install-c-skel pel:c-skel)
+      ;; 8) extra setup
+      (pel--setup-for-cc)
+      ;; [:todo 2025-04-30, by Pierre Rouleau: Check Objective-C indent width control]
+      (setq-local pel-indentation-width-control-variables
+                  '(pel-objc-indent-width c-basic-offset))
+      (setq-local pel-indentation-other-control-variables
+                  '(c-syntactic-indentation))
+      ;; imenu support is already provided by objc-mode
+      ;; 9) Activate Language server of choice
+      (when (and pel-use-emacs-ccls-for-objc
+                 (fboundp 'lsp))
+        (lsp)))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** Pike Programming Language Support
@@ -3521,57 +3484,54 @@ d-mode not added to ac-modes!"
 (when pel-use-pike
   (define-pel-global-prefix pel:for-pike   (kbd "<f11> SPC C-p"))
   (define-pel-global-prefix pel:pike-setup (kbd "<f11> SPC C-p <f4>"))
+  (define-pel-global-prefix pel:pike-guess (kbd "<f11> SPC C-p <f4> g"))
+  (define-pel-global-prefix pel:for-pike-preproc (kbd "<f11> SPC C-p #"))
   (define-pel-global-prefix pel:pike-skel  (kbd "<f11> SPC C-p <f12>"))
-  (when pel-use-ini
-    (define-key pel:pike-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name)
-    (define-key pel:pike-setup (kbd "<f54>")  'pel-cc-set-file-finder-ini-tool-name))
 
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".pike"
                                   ".pmod")))
 
   (pel-eval-after-load cc-mode
+    (pel--map-cc-for pel:for-pike
+                     pel:pike-setup
+                     pel:pike-guess
+                     pel:for-pike-preproc)
     (pel-config-major-mode pike pel:for-pike :no-ts
-      (progn
-        (when (boundp 'pike-mode-map)
-          (define-key pike-mode-map (kbd "M-;") 'pel-c-comment-dwim))
-        ;; activate skeletons
-        (pel--install-generic-skel pel:pike-skel 'pel-pkg-for-pike "pike")
-        ;; Configure how to search for a file name from the user-option
-        ;; `pel-pike-file-finder-method' which may be specified in a
-        ;; .dir-local.el file.
-        (pel-cc-find-activate-finder-method pel-pike-file-finder-method
-                                            pel-pike-file-searched-extra-dir-trees)
+      (when (boundp 'pike-mode-map)
+        (define-key pike-mode-map (kbd "M-;") 'pel-c-comment-dwim))
+      ;; activate skeletons
+      (pel--install-generic-skel pel:pike-skel 'pel-pkg-for-pike "pike")
 
-        ;; Configure the CC Mode style for Pike from PEL custom variables
-        ;; 1) set the style: it identifies everything
-        (pel--set-cc-style 'pike-mode pel-pike-bracket-style pel-pike-newline-mode)
-        ;; 2) apply modifications requested by PEL user options.
-        ;;    set variables only available in a CC mode with PEL
-        ;;     user-options unless the file-variable sets it.
-        (unless (assoc 'c-basic-offset file-local-variables-alist)
-          (pel-setq-local c-basic-offset pel-pike-indent-width))
-        ;; 3) set fill-column to PEL specified Pike's default if specified
-        (when pel-pike-fill-column
-          (setq-local fill-column pel-pike-fill-column))
-        ;; 4) Set default auto-newline mode as identified by PEL user option
-        (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-        ;; 5) Configure M-( to put parentheses after a function name.
-        (set (make-local-variable 'parens-require-spaces) nil)
-        ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
-        (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
-        ;; 7) Install language-specific skeletons
-        ;; [:todo 2025-03-14, by Pierre Rouleau: Add skeletons for Pike]
-        ;; (pel--install-c-skel pel:c-skel)
-        ;; 8) extra setup
-        (pel--setup-for-cc)
-        (setq-local pel-indentation-width-control-variables
-                    '(pel-pike-indent-width c-basic-offset))
-        (setq-local pel-indentation-other-control-variables
-                    '(c-syntactic-indentation))
-        ;; - Add imenu support
-        (declare-function pel-pike-set-imenu "pel-pike")
-        (pel-pike-set-imenu)))))
+      ;; Configure the CC Mode style for Pike from PEL custom variables
+      ;; 1) set the style: it identifies everything
+      (pel--set-cc-style 'pike-mode pel-pike-bracket-style pel-pike-newline-mode)
+      ;; 2) apply modifications requested by PEL user options.
+      ;;    set variables only available in a CC mode with PEL
+      ;;     user-options unless the file-variable sets it.
+      (unless (assoc 'c-basic-offset file-local-variables-alist)
+        (pel-setq-local c-basic-offset pel-pike-indent-width))
+      ;; 3) set fill-column to PEL specified Pike's default if specified
+      (when pel-pike-fill-column
+        (setq-local fill-column pel-pike-fill-column))
+      ;; 4) Set default auto-newline mode as identified by PEL user option
+      (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+      ;; 5) Configure M-( to put parentheses after a function name.
+      (set (make-local-variable 'parens-require-spaces) nil)
+      ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
+      (pel-local-set-f12-M-f12 'pel:for-pike-preproc "#")
+      ;; 7) Install language-specific skeletons
+      ;; [:todo 2025-03-14, by Pierre Rouleau: Add skeletons for Pike]
+      ;; (pel--install-c-skel pel:c-skel)
+      ;; 8) extra setup
+      (pel--setup-for-cc)
+      (setq-local pel-indentation-width-control-variables
+                  '(pel-pike-indent-width c-basic-offset))
+      (setq-local pel-indentation-other-control-variables
+                  '(c-syntactic-indentation))
+      ;; - Add imenu support
+      (declare-function pel-pike-set-imenu "pel-pike")
+      (pel-pike-set-imenu))))
 
 ;; ---------------------------------------------------------------------------
 ;;** C3 Programming Language Support
@@ -4965,6 +4925,14 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     ;; install lsp-mode clients
     (pel-ensure-package-elpa lsp-mode from: melpa)
     (pel-ensure-package-elpa lsp-ui from: melpa))
+
+    ;; 1.2 Identify the language for LSP server
+  (pel-eval-after-load lsp-mode
+    (when (boundp 'lsp-language-id-configuration)
+      (add-to-list 'lsp-language-id-configuration
+                   '(erlang-ts-mode . "erlang"))
+      (add-to-list 'lsp-language-id-configuration
+                   '(erlang-mode . "erlang"))))
 
   ;; 2- Associate files with Erlang mode selector
   ;; Invocation control
@@ -7161,6 +7129,9 @@ to identify a Verilog file.  Anything else is assumed being V."
   (pel-eval-after-load rst
     (pel-config-major-mode rst pel:for-reST :no-ts
       (pel--install-rst-skel pel:rst-skel)
+      (declare-function pel-rst-open-file-at-point "pel-rst")
+      (declare-function pel-open-set-buffer-local-file-opener "pel-open")
+      (pel-open-set-buffer-local-file-opener #'pel-rst-open-file-at-point)
       (when (and pel-use-imenu+
                  (fboundp 'imenup-add-defs-to-menubar))
         (imenup-add-defs-to-menubar)))))
@@ -8795,6 +8766,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-pel-global-prefix pel:file (kbd "<f11> f"))
 (define-pel-global-prefix pel:file-help (kbd "<f11> f ?"))
 (define-pel-global-prefix pel:file-cfg (kbd "<f11> f <f4>"))
+(define-pel-global-prefix pel:find (kbd "<f11> f F"))
 (define-pel-global-prefix pel2:file (kbd "<M-f11> M-f"))
 ;; Used keys in <f11> f:
 ;; . / ?
@@ -8833,12 +8805,15 @@ See `flyspell-auto-correct-previous-word' for more info."
 (when pel-use-counsel
   (define-key pel:file "c" 'counsel-fzf))
 
-(define-pel-global-prefix pel:find (kbd "<f11> f F"))
+(define-key pel:file-cfg  "." 'pel-ffind-set-devtool-name)
+(define-key pel:file-cfg  "?" 'pel-ffind-show-status)
+
 (define-key pel:find "d" #'find-dired)
 (define-key pel:find "g" #'find-grep)
 (define-key pel:find "h" #'find-grep-dired)
 (define-key pel:find "l" #'find-lisp-find-dired)
 (define-key pel:find "n" #'find-name-dired)
+
 
 ;;** Open recent file
 ;; ------------------
@@ -8866,7 +8841,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; --------------------
 (global-set-key (kbd "M-*") 'pel-open-at-point)
 (define-key pel:file "."    'pel-open-at-point)
-(define-key pel:file ";"    'pel-set-open-at-point-dir)
+(define-key pel:file ";"    'pel-set-open-at-point-dir-home)
 (define-key pel:file (kbd "M-.") 'pel-set-ido-use-fname-at-point)
 (define-key pel:file (kbd "M-,") 'pel-set-ido-use-url-at-point)
 (define-key pel:file "/"    'pel-browse-filename-at-point)

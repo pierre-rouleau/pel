@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 20:43:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-22 17:51:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -98,8 +98,8 @@
                (not (eq sym 'pel-find-file-at-point-in-window)))))
     (with-temp-buffer
       (setq major-mode 'text-mode)
-      ;; noerror = t, should return nil instead of signalling user-error
-      (should-not (pel-open-at-point nil :noerror)))))
+      ;; should error if there is no file at point
+      (should-error (pel-open-at-point nil)))))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel-open-test)
