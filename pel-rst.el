@@ -1071,6 +1071,7 @@ See `pel-find-file-at-point-in-window' for more information."
                 (pel-find-file-at-point-in-window n-value #'pel-html-to-rst))))
         (cd original-cwd)))
     (when new-position
+      (push-mark)
       (goto-char new-position))))
 
 ;;-pel-autoload
