@@ -4926,6 +4926,14 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (pel-ensure-package-elpa lsp-mode from: melpa)
     (pel-ensure-package-elpa lsp-ui from: melpa))
 
+    ;; 1.2 Identify the language for LSP server
+  (pel-eval-after-load lsp-mode
+    (when (boundp 'lsp-language-id-configuration)
+      (add-to-list 'lsp-language-id-configuration
+                   '(erlang-ts-mode . "erlang"))
+      (add-to-list 'lsp-language-id-configuration
+                   '(erlang-mode . "erlang"))))
+
   ;; 2- Associate files with Erlang mode selector
   ;; Invocation control
   ;; - Identify Erlang files:

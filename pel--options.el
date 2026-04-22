@@ -10474,8 +10474,8 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Erlang Support
 ;; --------------
-;; Note: Erlang, is a BEAM VM programming language.
 ;;
+;; Note: Erlang, is a BEAM VM programming language.
 
 (defgroup pel-pkg-for-erlang nil
   "PEL customization for Erlang."

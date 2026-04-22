@@ -258,7 +258,8 @@ following user-options:")
 
 ;;-pel-autoload
 (defun pel-erlang-setup-info (&optional append)
-  "Display Erlang setup information."
+  "Display Erlang setup information in help type buffer.
+Clears current content unless APPEND is non-nil to instead append to the end."
   (interactive "P")
   (pel-major-mode-must-be '(erlang-mode erlang-ts-mode))
   (let ((pel-insert-symbol-content-context-buffer (current-buffer))
@@ -281,7 +282,14 @@ following user-options:")
                                        (function pel-erlang-mode-used-text))
        ;; -- List of minor modes
        (pel-insert-list-of-minor-modes active-modes)
-       (insert "\n\n")
+       (pel-insert-bold "\nOther Erlang-specific modes:")
+       (pel-insert-symbol-content-line 'pel-use-edts)
+       (insert
+        (format
+         "\n- See more information about Erlang tools settings with %s or "
+         (pel-key-binding-string 'pel-show-erlang-version)))
+       (pel-insert-help-face "<f12> ? v")
+       (insert " (inside an Erlang buffer).\n\n")
        ;; --
        (pel-insert-minor-mode-activation-info current-major-mode
                                               #'pel--erlang-minor-mode-info)
@@ -290,7 +298,6 @@ following user-options:")
        (pel-tab-insert-control-info tab-control-context))
      (unless append :clear-buffer)
      :use-help-mode)))
-
 
 ;; -------------------------------------
 ;; Query Erlang information using Erlang
@@ -900,12 +907,16 @@ The method used by PEL to detect Erlang root path is the
 Return the path string on success.
 On error issue a warning describing the error and return nil."
   (cond
+   ;;
+   ;; When a path is specified, use it.
    ((stringp pel-erlang-path-detection-method)
     pel-erlang-path-detection-method)
    ;;
+   ;; When automatic detection is requested, use the utility.
    ((eq pel-erlang-path-detection-method 'auto-detect)
     (pel--read-erlang-root-dir))
    ;;
+   ;; When environment variable is used, read its value.
    ((and (consp pel-erlang-path-detection-method)
          (eq (car pel-erlang-path-detection-method) 'by-envvar))
     (let* ((envvar-name (cadr pel-erlang-path-detection-method))
@@ -939,7 +950,7 @@ On error issue a warning describing the error and return nil."
    ((stringp pel-erlang-version-detection-method)
     pel-erlang-version-detection-method)
    ;;
-   ;; When automatic detection is requested
+   ;; When automatic detection is requested, use the utility.
    ((eq pel-erlang-version-detection-method 'auto-detect)
     (let* ((exit-code.version.stderr (pel-exec-pel-bin "version-erl"))
            (exit-code (car exit-code.version.stderr)))
@@ -953,7 +964,7 @@ Cannot detect Erlang version: %s"
                  (nth 2 exit-code.version.stderr))
          :error))))
    ;;
-   ;; When environment variable is used
+   ;; When environment variable is used, read its value.
    ((and (consp pel-erlang-version-detection-method)
          (eq (car pel-erlang-version-detection-method) 'by-envvar))
     (let* ((envvar-name (cadr pel-erlang-version-detection-method))
@@ -973,83 +984,102 @@ Can't detect Erlang version." pel-erlang-version-detection-method)
       nil)))
 
 (defun pel-erlang-ls-version ()
-  "Return a string describing erlang_ls version or nil if not available."
+  "Return a string describing erlang_ls version or nil if not available.
+The erlang_ls executable is the older Language Server Protocol for Erlang.
+Its home address is: https://erlang-ls.github.io/."
   (let ((exit-code.stdout.stderr (pel-exec-cmd "erlang_ls" "--version")))
     (when (car exit-code.stdout.stderr)
       (cadr (split-string (cadr exit-code.stdout.stderr))))))
 
+(defun pel-erlang-elp-version ()
+  "Return a string describing elp version or nil if not available.
+The elp is the Erlang Language Platform. A Language Server Protocol for Erlang.
+Its home address is: https://github.com/WhatsApp/erlang-language-platform."
+  (let ((exit-code.stdout.stderr (pel-exec-cmd "elp" "version")))
+    (when (car exit-code.stdout.stderr)
+      (cadr (split-string (cadr exit-code.stdout.stderr))))))
+
+(defun pel-erlang--version-for (version)
+  "Return version string or \"undetected\"."
+  (or version "undetected"))
+
+(defun pel-erlang--edts-version ()
+  "Return EDTS settings."
+  (cond
+   ((null pel-use-edts)
+    "Not available: to activate, customize pel-use-edts.")
+   ((eq pel-use-edts 'start-automatically)
+    (format "Activated automatically, currently %s."
+            (pel-symbol-on-off-string 'edts-mode)))
+   (t (format "Activated manually, currently %s."
+              (pel-symbol-on-off-string 'edts-mode)))))
+
 ;;-pel-autoload
-(defun pel-show-erlang-version ()
-  "Display version of Erlang, erlang.el and erlang_ls if available.
-Also displays `erlang-root-dir' and `pel-erlang-man-parent-rootdir'"
-  (interactive)
+(defun pel-show-erlang-version (&optional append)
+  "Display version of Erlang executable files and Erlang customization.
+Print information inside a help-type buffer.
+Clears current content unless APPEND is non-nil to instead append to the end."
+  (interactive "P")
   (require 'erlang nil :noerror)
   (let* ((pel-insert-symbol-content-context-buffer (current-buffer))
-         (erlang-ls-version (pel-erlang-ls-version))
+
          (detected-erlang-root-dir (pel-erlang-detected-root-dir))
          (path-mismatch (not (string=  detected-erlang-root-dir
-                                       (bound-and-true-p erlang-root-dir)))))
-    (message "Erlang version: %s, erlang.el version: %s%s
-pel-erlang-version-detection-method : %s
-pel-erlang-path-detection-method    : %s
-Detected erlang-root-dir            : %s
-pel-erlang-man-parent-rootdir       : %s%s%s%s%s
-EDTS                                : %s
-Erlang_ls (LSP for Erlang)          : %s"
-             (pel-erlang-version)
-             (if (fboundp 'erlang-version)
-                 (erlang-version)
-               "Unknown - not loaded!")
-             (if erlang-ls-version
-                 (format ", erlang_ls: %s" erlang-ls-version)
-               "")
-             pel-erlang-version-detection-method
-             pel-erlang-path-detection-method
-             (if path-mismatch
-                 (format "[%s] ⚠️
-         erlang-root-dir user-option: [%s] ⚠️ "
-                         detected-erlang-root-dir
-                         (bound-and-true-p erlang-root-dir))
-               detected-erlang-root-dir)
-             (let* ((value.error (pel-erlang-man-parent-rootdir))
-                    (man-rootdir (or (cdr value.error)
-                                     (car value.error))))
-               (if man-rootdir
-                   man-rootdir
-                 (format "nil, but Man operations use %s"
+                                       (bound-and-true-p erlang-root-dir))))
+         (edts-settings (pel-erlang--edts-version))
+         (value.error (pel-erlang-man-parent-rootdir))
+         (man-rootdir (or (cdr value.error) (car value.error))))
+    (pel-print-in-buffer
+     "*pel-erlang-version*"
+     "Erlang Environment"
+     (lambda ()
+       "Print Erlang environment info."
+       (pel-insert-bold "Erlang Executable Files:")
+       (insert (format "\n- Erlang     version: %s"
+                       (pel-erlang--version-for (pel-erlang-version))))
+       (insert (format "\n- erlang_ls  version: %s (not reported reliably)."
+                       (pel-erlang--version-for (pel-erlang-ls-version))))
+       (insert (format "\n- erlang elp version: %s"
+                       (pel-erlang--version-for (pel-erlang-elp-version))))
+
+       (pel-insert-bold "\n\nEmacs Erlang support:")
+       (pel-insert-symbol-content-line 'erlang-version
+                                       nil
+                                       (when (boundp 'erlang-version)
+                                         "(this is erlang.el version)"))
+       (pel-insert-symbol-content-line 'pel-erlang-version-detection-method)
+       (pel-insert-symbol-content-line 'pel-erlang-path-detection-method)
+       (pel-insert-symbol-content-line 'erlang-root-dir)
+       (insert (format "\n  -  Detected erlang-root-dir             : %s"
+                       detected-erlang-root-dir))
+       (when path-mismatch
+         (pel-insert-bold " ⚠️  Erlang version mismatch!!
+\t Try to restart Emacs (you might have updated Erlang recently).
+\t If the issue remains, update erlang-root-dir user-option to reflect
+\t your environment.  Otherwise some Erlang features may fail!")
+         (unless (eq pel-erlang-version-detection-method 'auto-detect)
+           (pel-insert-bold "\
+\t You may also want to set pel-erlang-version-detection-method to auto-detect")))
+       (pel-insert-symbol-content-line 'pel-erlang-man-parent-rootdir)
+       (unless man-rootdir
+         (insert (format ", but Man operations use %s"
                          (bound-and-true-p erlang-root-dir))))
-             (pel-string-when path-mismatch "
-⚠️  Automatic detection of Erlang Root Directory done by the script
-   pel/bin/erlang-root-dir returns a path that differs from what is stored
-   in the erlang-root-dir user-option. Some Erlang features may fail.
-   You may want to set pel-erlang-path-detection-method user-option to
-auto-detect.")
-             (if (and pel-use-ivy-erlang-complete
-                      (boundp 'ivy-erlang-complete-erlang-root))
-                 (format "
-ivy-erlang-complete-erlang-root     : %s" ivy-erlang-complete-erlang-root)
-               "")
-             (if (boundp 'ivy-erlang-complete-project-root)
-                 (format "
-ivy-erlang-complete-project-root    : %s" ivy-erlang-complete-project-root)
-               "")
-             (if (and pel-use-erlang-ls
-                      (boundp 'lsp-keymap-prefix))
-                 (format "
-lsp-keymap-prefix                   : %s" lsp-keymap-prefix)
-               "")
-             (cond
-              ((null pel-use-edts)
-               "Not available: to activate, customize pel-use-edts.")
-              ((eq pel-use-edts 'start-automatically)
-               (format "Activated automatically, currently %s."
-                       (pel-symbol-on-off-string 'edts-mode)))
-              (t (format "Activated manually, currently %s."
-                         (pel-symbol-on-off-string 'edts-mode))))
-             (if pel-use-erlang-ls
-                 (format "Available, currently %s."
-                         (pel-symbol-on-off-string 'lsp-mode))
-               "Not available: to activate, customize pel-use-erlang-ls."))))
+
+       (pel-insert-bold "\n\nLanguage Server Protocol Support:")
+       (pel-insert-symbol-content-line 'pel-use-erlang-ls)
+       (when (and pel-use-erlang-ls (boundp 'lsp-keymap-prefix))
+         (insert "\n  - lsp-keymap-prefix                     : ")
+         (if lsp-keymap-prefix
+             (pel-insert-help-face lsp-keymap-prefix)
+           (insert "nil")))
+
+       (pel-insert-bold "\n\nOther tools:")
+       (pel-insert-symbol-content-line 'pel-use-edts)
+       (insert (format ", %s" edts-settings))
+       (pel-insert-symbol-content-line 'ivy-erlang-complete-erlang-root)
+       (pel-insert-symbol-content-line 'ivy-erlang-complete-project-root))
+     (unless append :clear-buffer)
+     :use-help-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;; [:todo 2025-12-12, by Pierre Rouleau: Investigate: complete or remove the
