@@ -19,6 +19,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - pel-LANG-file-finder-ini-tool-name
     - pel-LANG-file-searched-dir-trees-per-tool
     - pel-LANG-file-searched-dir-trees-per-project
+  - Improved *pel-open-at-point* further by making it more general.  Previously it only supported one special mode
+    of operation for reStructuredText buffer.  At the moment it still does but the code was changed to support ability
+    to support more special modes; it uses the default mechanism (calling  ) when the buffer local variable
+    *pel--open-file-method* is nil.  If that variable is set to a specialized function (like the new
+    *pel-rst-open-file-at-point* for reStructuredText), it uses that function.  The function can decline the
+    responsibility and return nil or can proceed and return non-nil.  The pel_keys code now set the buffer local
+    variable to the rst-mode specific function.  Other modes could define similar functions that are specific to their
+    modes.  It will become possible to support other markup languages like Org, markdown end others.
   - Renamed *pel-ffind-project-directory* to *pel-ffind-project-rootdir*
   - The following macros provide access to the elements of pel-dev-projects structure:
     - *pel-dev-project.name*, *pel-dev-project.root-dir*,
