@@ -320,10 +320,9 @@ but when UPDATE is nil, it adds a new line after the underlining.
   (interactive "*p")
   (pel--rst-activate-adornment-style)
   (if (>= level (length rst-preferred-adornments))
-      (user-error
-       "Level %d not available in %s adornment style"
-       level
-       pel-rst-adornment-style))
+      (user-error "Level %d not available in %s adornment style"
+                  level
+                  pel-rst-adornment-style))
   (save-excursion
     (pel-delete-trailing-whitespace)
     (let* ((linelen (pel-current-line-length))
@@ -1139,8 +1138,7 @@ under the table title line."
     (if (executable-find pgm)
         (compile (format "%s %s"
                          command-line (buffer-file-name)))
-      (user-error
-       "Specified command line is invalid: %s is not on PATH.\
+      (user-error "Specified command line is invalid: %s is not on PATH.\
  Update pel-rst-compiler!" pgm))))
 
 ;; ---------------------------------------------------------------------------
