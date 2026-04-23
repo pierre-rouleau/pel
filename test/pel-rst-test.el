@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-23 09:25:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-23 17:04:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -147,8 +147,10 @@ The buffer is in `rst-mode' and point is at `point-min'."
   "After restore, underscore should have punctuation syntax."
   (with-temp-buffer
     (rst-mode)
-    (pel--rst-set-underscore-as-symbol)   ; make it symbol first
-    (pel--rst-restore-underscore-syntax)
+    (pel--rst-set-underscore-as-symbol) ; make it symbol first
+    (should (eq (char-syntax ?_) ?_))
+
+    (pel--rst-set-underscore-as-punctuation) ; then punctuation
     (should (eq (char-syntax ?_) ?.))))   ; '.' = punctuation syntax class
 
 (ert-deftest pel-rst-test/set-underscore-syntax/errors-without-superword ()
@@ -163,31 +165,36 @@ The buffer is in `rst-mode' and point is at `point-min'."
   (with-temp-buffer
     (rst-mode)
     (superword-mode 1)
-    (setq pel--rst-underscore-as-symbol nil)
-    ;; Toggle ON
+
+    ;; Set to punctuation syntax
+    (pel-rst-set-underscore-syntax -1)
+    (should (eq (char-syntax ?_) ?.))
+
+    ;; Toggle ON to underscore symbol syntax
     (pel-rst-set-underscore-syntax nil)
-    (should pel--rst-underscore-as-symbol)
-    ;; Toggle OFF
+    (should (eq (char-syntax ?_) ?_))
+
+    ;; Toggle OFF to underscore punctuation syntax
     (pel-rst-set-underscore-syntax nil)
-    (should-not pel--rst-underscore-as-symbol)))
+    (should (eq (char-syntax ?_) ?.))))
 
 (ert-deftest pel-rst-test/set-underscore-syntax/activate-with-positive-arg ()
   "Positive prefix arg activates symbol syntax."
   (with-temp-buffer
     (rst-mode)
     (superword-mode 1)
-    (setq pel--rst-underscore-as-symbol nil)
     (pel-rst-set-underscore-syntax 1)
-    (should pel--rst-underscore-as-symbol)))
+    ;; underscore should now have a symbol syntax
+    (should (eq (char-syntax ?_) ?_))))
 
 (ert-deftest pel-rst-test/set-underscore-syntax/deactivate-with-negative-arg ()
   "Non-positive prefix arg deactivates symbol syntax."
   (with-temp-buffer
     (rst-mode)
     (superword-mode 1)
-    (setq pel--rst-underscore-as-symbol t)
     (pel-rst-set-underscore-syntax -1)
-    (should-not pel--rst-underscore-as-symbol)))
+    ;; underscore should now have a punctuation syntax
+    (should (eq (char-syntax ?_) ?.))))
 
 ;; ===========================================================================
 ;; 3. Section adornment

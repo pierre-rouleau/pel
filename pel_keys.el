@@ -7107,14 +7107,8 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:for-reST "i" 'pel-rst-italic)
   (define-key pel:for-reST "l" 'pel-rst-literal)
   (define-key pel:for-reST "`" 'pel-rst-interpreted)
-  ;; experimental: TODO: may want to execute its constituents
-  ;;                     when superword-mode is activated and de-activated or
-  ;;                     when navigation functions are executed
-  ;;                     (`forward-word' and `backward-word') in
-  ;;                     reStructuredText when superword-mode is active.
-  ;;                     For now just set underscore syntax according to the
-  ;;                     presence of the minor mode.
   (define-key pel:for-reST "_" 'pel-rst-set-underscore-syntax)
+  (define-key pel:for-reST (kbd "M-p") #'superword-mode)
 
   ;;
   (when pel-use-plantuml

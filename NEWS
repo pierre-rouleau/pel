@@ -53,7 +53,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Renamed *pel-cc-find-show-status* (previously bound to ~<f12> <f4> f~ of cc-mode buffers) command to *pel-ffind-show-status* now bound to ~<f11> f <f4> ?~.
 - Fix Pike support: add key mapping in the ~<f12> <f4>~ prefix that had not been activated.
 - Add *pel-insert-help-face* utility.
+- Add *pel-caller-name* utility.  Use it when debugging code to get the name of a function's caller an optionally to trace the call chain.
 - Improved *pel-show-erlang-version*: it now prints information inside a help type buffer with buttons to access customization of the user-options.
+- Improved reStructuredText support:
+  - *pel-rst-set-underscore-syntax* controls the underscore character syntax at a buffer level, not globally.
+    Its implementation is also simpler; it no longer needs a special variable to maintain state.
+  - The *superword-mode* command is now bound to ~<f12> M-p~ in rst_mode buffers.
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
 - Improve *pel-ccp-info*: it now prints the content of the kill ring and key bindings of useful commands.

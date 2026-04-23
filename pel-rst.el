@@ -26,6 +26,11 @@
 ;; This file contains defintions to extend the support of reStructuredText
 ;; files.
 ;;
+;; - rst-mode character syntax control
+;;
+;;   * `pel-rst-set-underscore-syntax'
+;;     - `pel--rst-set-underscore-as-symbol'
+;;     - `pel--rst-set-underscore-as-punctuation'
 ;;
 ;; - Section Adornment Control
 ;;
@@ -103,7 +108,7 @@
 
 (require 'pel--base)        ; use: `pel-whitespace-in-str-p'
 ;;                          ;      `pel-chars-at-point'
-(require 'pel--options)
+(require 'pel--options)     ; use: `pel-rst-adornment-style'
 (require 'pel-whitespace)   ; use: `pel-delete-trailing-whitespace'
 (require 'pel-ccp)          ; use: `pel-delete-whole-line', `pel-duplicate-line'
 (require 'pel--macros)
@@ -129,60 +134,54 @@
 ;; ---------------------------------
 ;;
 
-(defvar pel--rst-underscore-as-symbol nil
-  "Remember if the underscore syntax is a symbol or not.")
-
-(defun pel--rst-set-underscore-as-symbol ()
+(defun pel--rst-set-underscore-as-symbol (&optional quiet)
   "Set syntax of underscore character as symbol."
-  (modify-syntax-entry ?_ "_" rst-mode-syntax-table))
+  (modify-syntax-entry ?_ "_" rst-mode-syntax-table)
+  (unless quiet
+    (message "Underscore syntax is now: symbol")))
 
-(defun pel--rst-restore-underscore-syntax ()
+(defun pel--rst-set-underscore-as-punctuation (&optional quiet)
   "Restore syntax of underscore character to punctuation."
-  (modify-syntax-entry ?_ "." rst-mode-syntax-table))
+  (modify-syntax-entry ?_ "." rst-mode-syntax-table)
+  (unless quiet
+    (message "Underscore syntax is now: punctuation")))
 
 ;;-pel-autoload
 (defun pel-rst-set-underscore-syntax (&optional action)
   "Set underscore syntax to punctuation or symbol according to superword-mode.
 
 If superword-mode is active then the function can be used to change the
-syntax of the underscore character.
+syntax of the underscore character from punctuation (the default) to symbol
+and vice versa.  If superword-mode is not active the function signals a
+user-error.
 
 The optional ACTION  argument controls whether the underscore syntax is
 toggled, activated or de-activated:
-- ACTION not set or nil : toggles the underscore syntax.
-- ACTION set positive:  activates underscore syntax.
-- ACTIVATES set negative: de-activates underscore syntax.
+- ACTION not set or nil : toggles the underscore between symbol and
+                          punctuation syntax.
+- ACTION set positive   : activates symbol syntax where underscore is part of
+                          words.
+- ACTIVATES set negative: Activate punctuation syntax where underscore is not
+                          part of words.
 
-By default the syntax of an underscore in rst-mode is a
-punctuation.  To use the superword-mode the syntax of the
-underscore must be symbol instead.
-
-This function checks if the superword-mode is active and changes the syntax of
-the underscore character to symbol if superword-mode is on, otherwise sets it
-to the default: symbol."
+Activate underscore as symbol to make underscore part of words."
   (interactive "P")
   (if (bound-and-true-p superword-mode)
-      (cond
-       ((not action)
-        ;; Toggle
-        (if (not pel--rst-underscore-as-symbol)
-            (progn
-              (pel--rst-set-underscore-as-symbol)
-              (setq pel--rst-underscore-as-symbol t)
-              (message "Underscore syntax is now: symbol"))
-          (pel--rst-restore-underscore-syntax)
-          (setq pel--rst-underscore-as-symbol nil)
-          (message "Underscore syntax is now: punctuation")))
-       ((> (prefix-numeric-value action) 0)
-        ;; Activate underscore syntax
-        (pel--rst-set-underscore-as-symbol)
-        (setq pel--rst-underscore-as-symbol t)
-        (message "Underscore syntax is now: symbol"))
-       ((<= (prefix-numeric-value action) 0)
-        ;; De-activate underscore syntax
-        (pel--rst-restore-underscore-syntax)
-        (setq pel--rst-underscore-as-symbol nil)
-        (message "Underscore syntax is now: punctuation")))
+      (let ((und-syntax-is-symbol (eq (char-syntax ?_) ?_)))
+        (cond
+         ;; Toggle underscore syntax
+         ((not action)
+          (if und-syntax-is-symbol
+              (pel--rst-set-underscore-as-punctuation)
+            (pel--rst-set-underscore-as-symbol)))
+         ;;
+         ;; Activate underscore as symbol syntax
+         ((> (prefix-numeric-value action) 0)
+          (pel--rst-set-underscore-as-symbol))
+         ;;
+         ;; De-activate underscore as punctuation syntax
+         ((<= (prefix-numeric-value action) 0)
+          (pel--rst-set-underscore-as-punctuation))))
     ;; superword-mode is off
     (user-error "superword-mode is turned off.  First turn it on!")))
 
@@ -194,7 +193,11 @@ to the default: symbol."
 ;; www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
 
 (defvar pel--rst-used-adornment-style nil
-  "Remember last adornment style value set by `pel-rst-set-adornment'.")
+  "Adornment style currently used in the buffer.
+
+When the reStructuredText file
+Remember last adornment style value set by `pel-rst-set-adornment'.")
+
 
 (defun pel-rst-set-adornment (style)
   "Set the reStructuredText adornment STYLE.
@@ -263,7 +266,7 @@ STYLE identifies the number of levels supported and their adornment.
                (length rst-preferred-adornments)))))
 
 (defun pel--rst-activate-adornment-style ()
-  "Activate the adornment style selected by `pel-rst-adornment-style'."
+  "Activate adornment style selected by `pel-rst-adornment-style' user-option."
   (pel-rst-set-adornment pel-rst-adornment-style))
 
 ;;-pel-autoload

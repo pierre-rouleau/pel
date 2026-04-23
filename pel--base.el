@@ -315,10 +315,13 @@
 ;;  - `pel-emacs-config-features-string'
 ;;  - `pel-hardware-model-string'
 ;;  - `pel-eglot-active-p'
+;;
+;; Analysis and Debugging
+;;  - `pel-caller-name'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
-;; subr (always loaded) ; use: `called-interactively-p'
+;; subr (always loaded) ; use: `called-interactively-p', `backtrace-frame'
 (require 'pel-comp)
 (require 'subr-x)     ; use: `split-string', `string-join', `string-trim'
 (require 'cl-lib)     ; use: `cl-some'
@@ -3338,6 +3341,62 @@ Returns nil when Emacs does not support tree-sitter."
   "Return t if `eglot' is used in the current buffer, nil otherwise."
   (and (fboundp 'eglot-managed-p)
        (eglot-managed-p)))
+
+;; ---------------------------------------------------------------------------
+;;* Analysis and Debugging
+
+(cl-defun pel-caller-name (&key (trace nil) (nest-count 1) (max-depth 40))
+  "Return the name of the calling function.
+
+By default this does not print anything.  If you want to print the
+caller names in the message buffer, set TRACE to non-nil.
+
+By default identify the direct caller, corresponding to a NEST-COUNT of 1.
+If you want to return the grand-parent use a NEST-COUNT of 2, for more ancestry
+use a larger number.
+
+If NEST-COUNT is set to \\='all, then the function returns the very first
+caller.
+
+A NEST-COUNT depth protection is controlled by MAX-DEPTH frames which
+defaults to 40.  If you need a larger ancestry than that, specify a larger
+MAX-DEPTH value."
+  (let ((i 0)
+        (call-count 0)
+        (limit max-depth)               ; Default to 20 frames for safety
+        (search-started nil)
+        (search-count (if (eq nest-count 'all)
+                          max-depth
+                        nest-count))
+        (found-caller nil)
+        frame
+        last-func
+        func)
+    (while (and (< i limit)
+                (setq frame (backtrace-frame i)))
+      (pel+= i 1)
+      (setq last-func func)
+      (setq func (nth 1 frame))
+      (when (and trace search-started)
+        (pel+= call-count 1)
+        (message "** Caller %2d: %s" call-count func))
+      ;; Skip internal tools and this function itself.
+      ;; The next call that isn't "us" is the caller.
+      (cond
+       (search-started
+        (pel-= search-count 1)
+        (when (= search-count 0)
+          (when trace
+            (message "** Next caller is it (now at %s)" func))
+          (setq found-caller func
+                ;; exit the loop
+                i limit)))
+       ;;
+       ((and func (not (memq func '(backtrace-frame pel-caller-name))))
+        (setq search-started t)
+        (when trace
+          (message "** Called   : %s" func)))))
+    (or found-caller func last-func)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)
