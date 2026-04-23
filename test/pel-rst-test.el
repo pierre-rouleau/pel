@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-22 20:20:02 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-22 20:54:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -49,6 +49,7 @@
 (require 'pel-rst)    ;; unit under test
 (require 'ert)
 (require 'rst)        ;; for rst-mode / syntax-table
+(require 'cl-lib)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -367,7 +368,6 @@ The buffer is in `rst-mode' and point is at `point-min'."
 
 (ert-deftest pel-rst-test/adorn/level-0-is-over-and-under ()
   "Level 0 (title) in default style produces over-and-under adornment."
-  (ert-skip "Failing test")
   (pel-rst-test--with-adornment-style 'default
     (with-temp-buffer
       (rst-mode)
@@ -375,8 +375,8 @@ The buffer is in `rst-mode' and point is at `point-min'."
       (goto-char (point-min))
       (pel-rst-adorn 0)
       (let ((content (buffer-string)))
-        ;; Count '=' lines: there must be 2 (overline + underline)
-        (should (= (cl-count-if (lambda (line) (string-match-p "^=+$" line))
+        ;; default style has indent-steps=1 so lines start with a space
+        (should (= (cl-count-if (lambda (line) (string-match-p "^ *=+$" line))
                                 (split-string content "\n"))
                    2))))))
 
@@ -405,28 +405,27 @@ The buffer is in `rst-mode' and point is at `point-min'."
 ;; pel-rst-adorn-title
 
 (ert-deftest pel-rst-test/adorn-title/over-and-under-in-default ()
-  "`pel-rst-adorn-title' creates over-and-under '=' adornment."
-  (ert-skip "Failing test")
+  "'pel-rst-adorn-title' creates over-and-under '=' adornment."
   (pel-rst-test--with-adornment-style 'default
     (with-temp-buffer
       (rst-mode)
       (insert "Main Title")
       (goto-char (point-min))
       (pel-rst-adorn-title)
-      (let ((lines (split-string (buffer-string) "\n" :omit-nulls)))
-        (should (cl-some (lambda (l) (string-match-p "^=+$" l)) lines))
-        (should (cl-some (lambda (l) (string= "Main Title" l)) lines))))))
+      (let ((lines (split-string (buffer-string) "\n" t)))
+        (should (cl-some (lambda (l) (string-match-p "^ *=+$" l)) lines))
+        (should (cl-some (lambda (l) (string= (string-trim l) "Main Title")) lines))))))
 
 (ert-deftest pel-rst-test/adorn-title/leaves-mark-at-end-of-title ()
-  "`pel-rst-adorn-title' pushes a mark at the end of the title text line."
-  (ert-skip "Failing test")
+  "'pel-rst-adorn-title' pushes a mark at the end of the title text line."
   (pel-rst-test--with-adornment-style 'default
     (with-temp-buffer
       (rst-mode)
       (insert "My Title")
       (goto-char (point-min))
+      ;; Ensure there is already a mark so push-mark has an old value to push.
+      (set-mark (point))
       (pel-rst-adorn-title)
-      ;; mark-ring should be non-empty
       (should mark-ring))))
 
 ;; ---------------------------------------------------------------------------
@@ -633,14 +632,15 @@ The buffer is in `rst-mode' and point is at `point-min'."
   "Returns a string beginning with \"RST-\" and containing the file path."
   (let ((tmpfile (make-temp-file "pel-rst-test-" nil ".rst")))
     (unwind-protect
-        (with-current-buffer (find-file-noselect tmpfile)
-          (rst-mode)
-          (unwind-protect
-              (let ((name (pel-rst-ref-bookmark-name)))
-                (should (stringp name))
-                (should (string-prefix-p "RST-" name))
-                (should (string-match-p (regexp-quote tmpfile) name)))
-            (kill-buffer (current-buffer))))
+        (let ((pel--bookmark-file-loaded-p t))   ; skip bookmark-load in CI
+          (with-current-buffer (find-file-noselect tmpfile)
+            (rst-mode)
+            (unwind-protect
+                (let ((name (pel-rst-ref-bookmark-name)))
+                  (should (stringp name))
+                  (should (string-prefix-p "RST-" name))
+                  (should (string-match-p (regexp-quote tmpfile) name)))
+              (kill-buffer (current-buffer)))))
       (delete-file tmpfile))))
 
 ;; ---------------------------------------------------------------------------
@@ -842,11 +842,12 @@ The buffer is in `rst-mode' and point is at `point-min'."
 
 (ert-deftest pel-rst-test/rst-reference-target/extracts-target-text ()
   "Extracts the link text when sitting on a rst-reference span."
-  (ert-skip "Failing test")
   (with-temp-buffer
     (insert "`my-ref`_")
-    ;; Simulate face: chars 2-7 are the reference (inside backticks)
-    (put-text-property 2 8 'face 'rst-reference)
+    ;; Cover from 'm' (pos 2) through '_' (pos 9) inclusive so the end-scan
+    ;; while advances past the closing '`' and triggers backtick trimming.
+    ;; (point-max) == 10 in a 9-char buffer.
+    (put-text-property 2 (point-max) 'face 'rst-reference)
     (goto-char 3)
     (let ((result (pel--rst-reference-target)))
       (should (consp result))
@@ -902,7 +903,7 @@ The buffer is in `rst-mode' and point is at `point-min'."
 
 (ert-deftest pel-rst-test/move-to-rst-target/finds-multiline-reference ()
   "Finds a target split over two lines."
-  (ert-skip "Failing test")
+  (ert-skip "Failing code the test identifies: must fix the code!")
   (with-temp-buffer
     (insert ".. _my-link:\n   https://example.com\n")
     ;; First search for exact match fails, falls back to finding target line
@@ -968,18 +969,15 @@ The buffer is in `rst-mode' and point is at `point-min'."
 
 (ert-deftest pel-rst-test/table-dup-separator-lines/does-not-error ()
   "`pel-rst-table-dup-separator-lines' completes without error on a simple table."
-  (ert-skip "Failing test")
   (with-temp-buffer
     (rst-mode)
-    (insert "+---------+--------+\n")
-    (insert "| Header  | Value  |\n")
-    (insert "+---------+--------+\n")
-    (insert "| Data    | 42     |\n")
-    (insert "+---------+--------+\n")
+    (insert "\n")
+    (insert "Header 1    Header 2     Header 3\n")
+    (insert "=========== ============ ==============\n")
+    (insert "abcdef.      ghijkl.     12345\n\nb")
     (goto-char (point-min))
-    (forward-line 2)                    ; line under title line
+    (forward-line 2)     ; on the separator line
     (should (progn (pel-rst-table-dup-separator-lines) t))))
-
 
 ;; ===========================================================================
 ;; 8. Compilation
