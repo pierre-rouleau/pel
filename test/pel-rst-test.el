@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-23 09:23:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-23 09:25:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -208,7 +208,6 @@ The buffer is in `rst-mode' and point is at `point-min'."
 
 (ert-deftest pel-rst-test/set-adornment/crisper-has-13-levels ()
   "`CRiSPer' style registers 13 adornment levels (title + 12)."
-  (ert-skip "Test fails under CI")
   (pel-rst-test--with-adornment-style 'CRiSPer
     (should (= (length rst-preferred-adornments) 13))))
 
