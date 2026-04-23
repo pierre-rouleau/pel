@@ -188,6 +188,12 @@ Activate underscore as symbol to make underscore part of words."
 ;; ---------------------------------------------------------------------------
 ;; Section Adornment Control
 ;; -------------------------
+;;
+;; The section adornment control is buffer specific, allowing each
+;; reStructuredText buffer to use a different scheme if necessary.  The
+;; default state is identified by the `pel-rst-set-adornment' user-option.
+;; Each rst-mode
+
 
 ;; Sphinx-Python style ref:
 ;; www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
@@ -195,13 +201,20 @@ Activate underscore as symbol to make underscore part of words."
 (defvar pel--rst-used-adornment-style nil
   "Adornment style currently used in the buffer.
 
-When the reStructuredText file
-Remember last adornment style value set by `pel-rst-set-adornment'.")
+Since activation of the section adornment can only be changed by a call to
+the `pel-rst-set-adornment' function, the initial value of the variable is
+nil to indicate that the buffer has not yet been set.
+It defaults to the value selected by the `pel-rst-set-adornment' user-option
+seen on startup and can be changed dynamically by the `pel-rst-set-adornment'
+command.")
 
 
 (defun pel-rst-set-adornment (style)
   "Set the reStructuredText adornment STYLE.
-Set it to one of: \\='CRiSPeR, \\='Sphinx-Python, or \\='default.
+Set it to one of: \\='CRiSPeR, \\='Sphinx-Python, \\='default,
+or \\'pel-default, which means the value set by the `pel-rst-adornment-style'
+user-option is used (and that is one of the first 3 values).
+
 STYLE identifies the number of levels supported and their adornment.
 - \\='default is Emacs `rst-mode' default.  A title and 7 levels.
 - \\='Sphinx-Python is what Sphinx uses: 6 levels:
@@ -214,46 +227,45 @@ STYLE identifies the number of levels supported and their adornment.
 - \\='CRiSPer, a title and 12-level mode previously developed for CRiSP."
   ;; Validate style eagerly so an unknown STYLE always raises user-error,
   ;; independent of whether rst-preferred-adornments is currently bound.
-  (unless (memq style '(CRiSPer Sphinx-Python default))
+  (unless (memq style '(CRiSPer Sphinx-Python default pel-default))
     (user-error "Unsupported style %S" style))
-  (when
-      (or
-       (not pel--rst-used-adornment-style)
-       (not (eq pel--rst-used-adornment-style style)))
-    (pel-when-bound
-        'rst-preferred-adornments
-      (setq
-       rst-preferred-adornments
-       (cond ((eq style 'default)
-              '((?= over-and-under 1)
-                (?= simple 0)
-                (?- simple 0)
-                (?~ simple 0)
-                (?+ simple 0)
-                (?` simple 0)
-                (?# simple 0)
-                (?@ simple 0)))
-             ((eq style 'Sphinx-Python)
-              '((?# over-and-under 0)   ; for parts
-                (?* over-and-under 0)   ; for chapters
-                (?= simple 0)           ; for sections
-                (?- simple 0)           ; for subsections
-                (?^ simple 0)           ; for subsubsections
-                (?\" simple 0)))        ; for paragraph
-             ((eq style 'CRiSPer)
-              '((?= over-and-under 0)   ; level  0 : title
-                (?= simple 0)           ; level  1
-                (?- simple 0)           ; level  2
-                (?~ simple 0)           ; level  3
-                (?^ simple 0)           ; level  4
-                (?+ simple 0)           ; level  5
-                (?* simple 0)           ; level  6
-                (?> simple 0)           ; level  7
-                (?< simple 0)           ; level  8
-                (?_ simple 0)           ; level  9
-                (?# simple 0)           ; level 10
-                (?` simple 0)           ; level 11
-                (?@ simple 0)))))       ; level 12
+  ;; Change it only if the requested value differs from what is currently
+  ;; used.
+  (when (eq style 'pel-default)
+    (setq style ))
+  (unless (eq pel--rst-used-adornment-style style)
+    (pel-when-bound 'rst-preferred-adornments
+      (setq rst-preferred-adornments
+            (cond ((eq style 'default)
+                   '((?= over-and-under 1)
+                     (?= simple 0)
+                     (?- simple 0)
+                     (?~ simple 0)
+                     (?+ simple 0)
+                     (?` simple 0)
+                     (?# simple 0)
+                     (?@ simple 0)))
+                  ((eq style 'Sphinx-Python)
+                   '((?# over-and-under 0) ; for parts
+                     (?* over-and-under 0) ; for chapters
+                     (?= simple 0)         ; for sections
+                     (?- simple 0)         ; for subsections
+                     (?^ simple 0)         ; for subsubsections
+                     (?\" simple 0)))      ; for paragraph
+                  ((eq style 'CRiSPer)
+                   '((?= over-and-under 0) ; level  0 : title
+                     (?= simple 0)         ; level  1
+                     (?- simple 0)         ; level  2
+                     (?~ simple 0)         ; level  3
+                     (?^ simple 0)         ; level  4
+                     (?+ simple 0)         ; level  5
+                     (?* simple 0)         ; level  6
+                     (?> simple 0)         ; level  7
+                     (?< simple 0)         ; level  8
+                     (?_ simple 0)         ; level  9
+                     (?# simple 0)         ; level 10
+                     (?` simple 0)         ; level 11
+                     (?@ simple 0)))))     ; level 12
       ;; re-set the value in case it was called from user explictly.
       (setq pel-rst-adornment-style style)
       ;; and remember last set value independently to reduce the number

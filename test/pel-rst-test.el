@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-23 17:04:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-23 17:44:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -93,8 +93,8 @@ The buffer is in `rst-mode' and point is at `point-min'."
 (defmacro pel-rst-test--with-adornment-style (style &rest body)
   "Bind adornment STYLE and execute BODY with a clean slate."
   (declare (indent 1) (debug t))
-  `(let ((pel-rst-adornment-style ,style)
-         (pel--rst-used-adornment-style nil))
+  `(let ((pel-rst-adornment-style ,style)      ; set the user-option value
+         (pel--rst-used-adornment-style nil))  ; simulate the buffer local to use something different
      (pel-rst-set-adornment ,style)
      ,@body))
 
