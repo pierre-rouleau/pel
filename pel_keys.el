@@ -7120,9 +7120,11 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:rst-adorn-style "C" 'pel-rst-adorn-CRiSPer)
 
   (declare-function pel--install-rst-skel "pel-skels-rst")
+  (declare-function pel-rst-set-adornment "pel-rst")
   (pel-eval-after-load rst
     (pel-config-major-mode rst pel:for-reST :no-ts
       (pel--install-rst-skel pel:rst-skel)
+      (pel-rst-set-adornment 'pel-default 'quiet)
       (declare-function pel-rst-open-file-at-point "pel-rst")
       (declare-function pel-open-set-buffer-local-file-opener "pel-open")
       (pel-open-set-buffer-local-file-opener #'pel-rst-open-file-at-point)

@@ -59,6 +59,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - *pel-rst-set-underscore-syntax* controls the underscore character syntax at a buffer level, not globally.
     Its implementation is also simpler; it no longer needs a special variable to maintain state.
   - The *superword-mode* command is now bound to ~<f12> M-p~ in rst_mode buffers.
+  - Improved implementation of the *pel-rst-set-adornment* function: it now properly deals with each rst-mode buffer
+    separately: the *pel--rst-used-adornment-style* variable is buffer local.  Logic is also simpler now that it is called when
+    each rst-mode buffer opens, as scheduled by the pel_keys logic.
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
 - Improve *pel-ccp-info*: it now prints the content of the kill ring and key bindings of useful commands.

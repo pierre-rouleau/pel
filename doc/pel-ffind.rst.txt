@@ -6,7 +6,7 @@ Opening file at point -- searching for files
 :Project:
 :Created:  Wednesday, April 22 2026.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-04-22 19:16:28, by Pierre Rouleau.
+:Modified: 2026-04-28 11:04:23 EDT, updated by Pierre Rouleau.
 :Copyright: © 2026, Pierre Rouleau
 
 
@@ -19,15 +19,21 @@ Opening file at point -- searching for files
 Call Hierarchies
 ================
 
+Inside an Erlang buffer,
+`pel-filename-at-point-finders` is set to `pel-erlang-find-file`.
+
+
 ::
 
    - pel-open-at-point
      - pel-find-file-at-point-in-window
-       - pel--find-open-file-in-window
+     - pel--complete-filename-for
+       - pel--find-by-finders  <---( pel-filename-at-point-finders )
+     - pel--find-open-file-in-window
          - find-file
 
-Inside an Erlang buffer,
-`pel-filename-at-point-finders` is set to `pel-erlang-find-file`.
+
+
 
 ::
 

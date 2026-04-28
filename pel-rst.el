@@ -198,7 +198,7 @@ Activate underscore as symbol to make underscore part of words."
 ;; Sphinx-Python style ref:
 ;; www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
 
-(defvar pel--rst-used-adornment-style nil
+(defvar-local pel--rst-used-adornment-style nil
   "Adornment style currently used in the buffer.
 
 Since activation of the section adornment can only be changed by a call to
@@ -208,12 +208,14 @@ It defaults to the value selected by the `pel-rst-set-adornment' user-option
 seen on startup and can be changed dynamically by the `pel-rst-set-adornment'
 command.")
 
-
-(defun pel-rst-set-adornment (style)
+;;-pel-autoload
+(defun pel-rst-set-adornment (style &optional quiet)
   "Set the reStructuredText adornment STYLE.
-Set it to one of: \\='CRiSPeR, \\='Sphinx-Python, \\='default,
-or \\'pel-default, which means the value set by the `pel-rst-adornment-style'
-user-option is used (and that is one of the first 3 values).
+
+Set it to one of: \\='CRiSPeR, \\='Sphinx-Python, \\='default, or
+\\'pel-default, which means the value set by the
+`pel-rst-adornment-style' user-option is used (and that is one of
+the first 3 values).
 
 STYLE identifies the number of levels supported and their adornment.
 - \\='default is Emacs `rst-mode' default.  A title and 7 levels.
@@ -224,7 +226,10 @@ STYLE identifies the number of levels supported and their adornment.
   - subsections,
   - subsubsections,
   - paragraphs.
-- \\='CRiSPer, a title and 12-level mode previously developed for CRiSP."
+- \\='CRiSPer, a title and 12-level mode previously developed for CRiSP.
+
+The function prints a message when the style changes unless the QUIET argument
+is non-nil."
   ;; Validate style eagerly so an unknown STYLE always raises user-error,
   ;; independent of whether rst-preferred-adornments is currently bound.
   (unless (memq style '(CRiSPer Sphinx-Python default pel-default))
@@ -232,7 +237,7 @@ STYLE identifies the number of levels supported and their adornment.
   ;; Change it only if the requested value differs from what is currently
   ;; used.
   (when (eq style 'pel-default)
-    (setq style ))
+    (setq style pel-rst-adornment-style))
   (unless (eq pel--rst-used-adornment-style style)
     (pel-when-bound 'rst-preferred-adornments
       (setq rst-preferred-adornments
@@ -272,10 +277,11 @@ STYLE identifies the number of levels supported and their adornment.
       ;; of times it is set to only when it changes, which happens when
       ;; the function is called explicitly or when pel-rst-adornment-style
       ;; is set via file local variable assignment.
-      (setq pel--rst-used-adornment-style style)
-      (message "Now using the %s adornment style with %d levels supported."
-               style
-               (length rst-preferred-adornments)))))
+      (setq-local pel--rst-used-adornment-style style)
+      (unless quiet
+	(message "Now using the %s adornment style with %d levels supported."
+		 style
+		 (length rst-preferred-adornments))))))
 
 (defun pel--rst-activate-adornment-style ()
   "Activate adornment style selected by `pel-rst-adornment-style' user-option."
@@ -965,7 +971,16 @@ Return nil if no hyperlink target found."
     ;; search for a complete reference (target and URL on the same line) first
     (if (re-search-forward (concat regexp " +") nil :noerror)
         t
-      ;; if that fails search for a line that only has the target)
+      ;; [:todo 2026-04-23, by Pierre Rouleau: add logic to support multi-line
+      ;;                                       links]
+
+      ;; If that fails there are 2 other possibilities:
+      ;; 1) The current line is the first of a chain of references which ends
+      ;;    with a line that holds the reference with the URL.
+      ;; 2) The reference target is a section inside this file or another
+      ;;    reStructured file;
+      ;; Handle case 2: search for a line that only has the target: a section
+      ;; title.  The search must start from the top of the file.
       (goto-char (point-min))
       (if (re-search-forward regexp nil :noerror)
           ;; if that's found move to the first complete reference line

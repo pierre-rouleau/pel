@@ -873,6 +873,7 @@ Argument FOR: just a required separator keyword to make code look better."
       pel-rst-table-dup-separator-lines
       pel-rst-compile)
     (pel-autoload-function "pel-rst" for:
+      pel-rst-set-adornment
       pel-rst-open-file-at-point))
 
   (pel-autoload "pel-rpm-spec" for:
