@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-28 11:09:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-28 11:27:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -91,13 +91,17 @@ The buffer is in `rst-mode' and point is at `point-min'."
 
 ;; Shorthand to set the default adornment style cleanly inside a test.
 (defmacro pel-rst-test--with-adornment-style (style &rest body)
-  "Bind adornment STYLE and execute BODY with a clean slate."
+  "Bind adornment STYLE and execute BODY with a clean slate in an rst-mode buffer.
+`rst-mode' ensures `rst-preferred-adornments' is buffer-locally initialized
+before `pel-rst-set-adornment' writes to it, making the test
+environment-independent between local and CI batch Emacs."
   (declare (indent 1) (debug t))
-  `(let ((pel-rst-adornment-style ,style)      ; set the user-option value
-         (pel--rst-used-adornment-style nil))  ; simulate the buffer local to use something different
-     (pel-rst-set-adornment ,style)
-     ,@body))
-
+  `(with-temp-buffer
+     (rst-mode)
+     (let ((pel-rst-adornment-style ,style)
+           (pel--rst-used-adornment-style nil))
+       (pel-rst-set-adornment ,style)
+       ,@body)))
 
 ;; ===========================================================================
 ;; 1. Utility
@@ -109,9 +113,9 @@ The buffer is in `rst-mode' and point is at `point-min'."
 (ert-deftest pel-rst-test/current-line-length/basic ()
   "Return length of a non-empty line."
   (pel-rst-test--with-temp-rst-buffer "Hello World\nSecond line\n"
-    (should (= (pel-current-line-length) 11))
-    (forward-line 1)
-    (should (= (pel-current-line-length) 11))))
+                                      (should (= (pel-current-line-length) 11))
+                                      (forward-line 1)
+                                      (should (= (pel-current-line-length) 11))))
 
 (ert-deftest pel-rst-test/current-line-length/empty-line ()
   "Return 0 for an empty line."
@@ -215,7 +219,6 @@ The buffer is in `rst-mode' and point is at `point-min'."
 
 (ert-deftest pel-rst-test/set-adornment/crisper-has-13-levels ()
   "`CRiSPer' style registers 13 adornment levels (title + 12)."
-  (ert-skip "Test that fails on CI")
   (pel-rst-test--with-adornment-style
    'CRiSPer
    (should (= (length rst-preferred-adornments) 13))))
