@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-29 14:35:22 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-29 14:44:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -46,6 +46,8 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
+(defvar rst-preferred-adornments)       ; allow test to let-bind it
+
 (require 'pel-rst)    ;; unit under test
 (require 'pel--base)  ; use: `pel-line-length'
 (require 'ert)
