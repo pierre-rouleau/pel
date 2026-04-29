@@ -52,8 +52,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     when searching for files.
   - Renamed *pel-cc-find-show-status* (previously bound to ~<f12> <f4> f~ of cc-mode buffers) command to *pel-ffind-show-status* now bound to ~<f11> f <f4> ?~.
 - Fix Pike support: add key mapping in the ~<f12> <f4>~ prefix that had not been activated.
-- Add *pel-insert-help-face* utility.
-- Add *pel-caller-name* utility.  Use it when debugging code to get the name of a function's caller an optionally to trace the call chain.
+- Add several utility functions in pel--base.el:
+  - *pel-insert-help-face* to insert text with the help face.
+  - *pel-line-length* that returns the length of the current or specified line.
+  - *pel-setq-user-option* to dynamically change the value of a customizable user-option without modifying the persistent customized value.
+  - *pel-caller-name*.  Use it when debugging code to get the name of a function's caller an optionally to trace the call chain.
 - Improved *pel-show-erlang-version*: it now prints information inside a help type buffer with buttons to access customization of the user-options.
 - Improved reStructuredText support:
   - *pel-rst-set-underscore-syntax* controls the underscore character syntax at a buffer level, not globally.
@@ -62,6 +65,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Improved implementation of the *pel-rst-set-adornment* function: it now properly deals with each rst-mode buffer
     separately: the *pel--rst-used-adornment-style* variable is buffer local.  Logic is also simpler now that it is called when
     each rst-mode buffer opens, as scheduled by the pel_keys logic.
+  - Improved implementation of line adornment.  It is now possible to handle levels with over and under lining and increase/decrease
+    to/from any level.  The commands prevent changes to invalid levels.
+  - Add *pel-rst-adornment-style-info* command, bound to ~<f12> <f4> a ?~.
+  - Also modified key binding of the command setting the adornment style: they are all under the ~<f12> <f4> a~ prefix.
+    The goal is to bind all major mode specific setup commands under their ~<f12> <f4>~ key prefix for consistency and also to free
+    the maximum number of key bindings under the ~<f12>~ key of supported major modes.
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
 - Improve *pel-ccp-info*: it now prints the content of the kill ring and key bindings of useful commands.

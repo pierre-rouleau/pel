@@ -44,6 +44,9 @@
 ;;  - `pel-expression-p'
 ;;  - `pel-user-option-p'
 ;;
+;; Set user-option session value
+;;  - `pel-setq-user-option'
+;;
 ;; Set variable conditionally
 ;;  - `pel-set-if-non-nil'
 ;;
@@ -241,6 +244,9 @@
 ;;   - `pel-goto-position'
 ;;   - `pel-goto-line'
 ;;
+;; Line length
+;; - `pel-line-length'
+
 ;; Line position:
 ;;  - `pel-same-line-p'
 ;;
@@ -515,6 +521,23 @@ code execution)."
   (and (custom-variable-p symbol)
        (eq t (compare-strings "pel-use-" nil nil
                               (symbol-name symbol) 0 8))))
+
+;; ---------------------------------------------------------------------------
+;;* Set user-option session value
+;;  =============================
+
+(defun pel-setq-user-option (user-option value)
+  "Dynamically set the USER-OPTION (a symbol) to the specified VALUE.
+
+This changes the dynamic value of USER-OPTION in the current session;
+the local buffer and the global value.
+This change does not persist across Emacs session.
+
+If you need to change a user-option persistently, change it through
+Emacs customization mechanism."
+  (set-default user-option value)
+  (when (local-variable-p user-option)
+    (set user-option value)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Set variable conditionally
@@ -2540,6 +2563,18 @@ Return nil."
       (pel-goto-line line))
   (if column
       (move-to-column column)))
+
+;; ---------------------------------------------------------------------------
+;;* Line length
+;;  ===========
+
+(defun pel-line-length (&optional n)
+  "Return number of characters inside the current line or N-1 lines forward.
+
+If N is not specified, is nil or 1: return the length of the current line.
+Otherwise return the line N-1 lines forward: so if N is 2 use next line,
+if N is 0 use previous line, etc..."
+  (- (line-end-position n) (line-beginning-position n)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Line position
