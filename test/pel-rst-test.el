@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-29 15:50:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-29 17:42:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -100,29 +100,25 @@ The buffer is in `rst-mode' and point is at `point-min'."
 
 (ert-deftest pel-rst-test/current-line-length/basic ()
   "Return length of a non-empty line."
-  (ert-skip "Test has to be re-done")
   (pel-rst-test--with-temp-rst-buffer "Hello World\nSecond line\n"
-                                      (should (= (pel-line-length) 11))
-                                      (forward-line 1)
-                                      (should (= (pel-line-length) 11))))
+    (should (= (pel-line-length) 11))
+    (forward-line 1)
+    (should (= (pel-line-length) 11))))
 
 (ert-deftest pel-rst-test/current-line-length/empty-line ()
   "Return 0 for an empty line."
-  (ert-skip "Test has to be re-designed; code has changed.")
   (pel-rst-test--with-temp-rst-buffer "\n"
-                                      (should (= (pel-line-length) 0))))
+    (should (= (pel-line-length) 0))))
 
 (ert-deftest pel-rst-test/current-line-length/with-n-arg ()
   "N=1 gives current line; N=2 gives next line."
-  (ert-skip "Test has to be ree-designeed; code has changed.")
   (pel-rst-test--with-temp-rst-buffer "Hello\nWorld!"
-                                      (should (= (pel-line-length 1) 5))
-                                      (should (= (pel-line-length 2) 6))
-                                      (should (= (pel-line-length 0) 0)))) ; line before (BOB) is empty
+    (should (= (pel-line-length 1) 5))
+    (should (= (pel-line-length 2) 6))
+    (should (= (pel-line-length 0) 0)))) ; line before (BOB) is empty
 
 (ert-deftest pel-rst-test/current-line-length/on-manual-title-overline ()
   "Title overline in pel-manual.rst is 30 characters."
-  (ert-skip "Test has to be ree-designeed; code has changed.")
   ;; "==============================" (30 '=' chars)
   ;; matching "PEL -- Pragmatic Emacs Library" (30 chars)
   (pel-rst-test--with-manual-rst-buffer
@@ -402,55 +398,47 @@ Environment-independent across Emacs 26.1+ on Linux and macOS."
 (ert-deftest pel-rst-test/adorn/level-1-default-adds-equals-underline ()
   "Level 1 in default style adds a '=' underline with no leading spaces."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "My Section Title")
-      (goto-char (point-min))
-      (pel-rst-adorn 1)
-      (let* ((lines (split-string (buffer-string) "\n" t)))
-        (should (cl-some (lambda (l) (string= l "My Section Title")) lines))
-        (should (cl-some (lambda (l) (string-match-p "^=+$" l)) lines))))))
+    (insert "My Section Title")
+    (goto-char (point-min))
+    (pel-rst-adorn 1)
+    (let* ((lines (split-string (buffer-string) "\n" t)))
+      (should (cl-some (lambda (l) (string= l "My Section Title")) lines))
+      (should (cl-some (lambda (l) (string-match-p "^=+$" l)) lines)))))
 
 (ert-deftest pel-rst-test/adorn/level-2-default-adds-dash-underline ()
   "Level 2 in default style adds a '-' underline."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "A Subsection")
-      (goto-char (point-min))
-      (pel-rst-adorn 2)
-      (let* ((lines (split-string (buffer-string) "\n" t)))
-        (should (cl-some (lambda (l) (string-match-p "^-+$" l)) lines))))))
+    (insert "A Subsection")
+    (goto-char (point-min))
+    (pel-rst-adorn 2)
+    (let* ((lines (split-string (buffer-string) "\n" t)))
+      (should (cl-some (lambda (l) (string-match-p "^-+$" l)) lines)))))
 
 (ert-deftest pel-rst-test/adorn/underline-length-matches-title ()
   "The underline line is exactly as long as the title line."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "Hello")                   ; 5 characters
-      (goto-char (point-min))
-      (pel-rst-adorn 1)
-      ;; After adorning, line 2 is the underline.  pel-rst-adorn uses
-      ;; save-excursion so point is still on the title line.
-      (forward-line 1)
-      (should (= (- (line-end-position) (line-beginning-position)) 5)))))
+    (insert "Hello")                   ; 5 characters
+    (goto-char (point-min))
+    (pel-rst-adorn 1)
+    ;; After adorning, line 2 is the underline.  pel-rst-adorn uses
+    ;; save-excursion so point is still on the title line.
+    (forward-line 1)
+    (should (= (- (line-end-position) (line-beginning-position)) 5))))
 
 (ert-deftest pel-rst-test/adorn/level-0-default-adds-leading-spaces ()
   "Level 0 in default style has indent-steps=1: overline, title, underline each \
 get one leading space."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "Title Text")
-      (goto-char (point-min))
-      (pel-rst-adorn 0)
-      (let* ((lines (split-string (buffer-string) "\n" t)))
-        ;; Both adornment lines have the pattern "^ =+$"
-        (should (= (cl-count-if
-                    (lambda (l) (string-match-p "^ =+$" l)) lines)
-                   2))
-        ;; Title line also has a leading space
-        (should (cl-some (lambda (l) (string-match-p "^ Title Text$" l)) lines))))))
+    (insert "Title Text")
+    (goto-char (point-min))
+    (pel-rst-adorn 0)
+    (let* ((lines (split-string (buffer-string) "\n" t)))
+      ;; Both adornment lines have the pattern "^ =+$"
+      (should (= (cl-count-if
+                  (lambda (l) (string-match-p "^ =+$" l)) lines)
+                 2))
+      ;; Title line also has a leading space
+      (should (cl-some (lambda (l) (string-match-p "^ Title Text$" l)) lines)))))
 
 (ert-deftest pel-rst-test/adorn/level-0-crisper-over-and-under ()
   "Level 0 in CRiSPer style uses '=' over-and-under; accept optional leading spaces."
@@ -480,31 +468,25 @@ get one leading space."
 (ert-deftest pel-rst-test/adorn/invalid-level-signals-user-error ()
   "An invalid level raises `user-error'."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "Some Title")
-      (goto-char (point-min))
-      (should-error (pel-rst-adorn 8) :type 'user-error))))
+    (insert "Some Title")
+    (goto-char (point-min))
+    (should-error (pel-rst-adorn 8) :type 'user-error)))
 
 (ert-deftest pel-rst-test/adorn/negative-level-signals-user-error ()
   "A negative level raises `user-error'."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "Some Title")
-      (goto-char (point-min))
-      (should-error (pel-rst-adorn -1) :type 'user-error))))
+    (insert "Some Title")
+    (goto-char (point-min))
+    (should-error (pel-rst-adorn -1) :type 'user-error)))
 
 (ert-deftest pel-rst-test/adorn/point-unchanged-after-call ()
   "`pel-rst-adorn' uses save-excursion: point stays on the title line."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "My Title\nNext line\n")
-      (goto-char (point-min))
-      (let ((orig (point)))
-        (pel-rst-adorn 1)
-        (should (= (point) orig))))))
+    (insert "My Title\nNext line\n")
+    (goto-char (point-min))
+    (let ((orig (point)))
+      (pel-rst-adorn 1)
+      (should (= (point) orig)))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-rst-adorn-title
@@ -550,30 +532,27 @@ one leading space (indent-steps=1)."
 (ert-deftest pel-rst-test/adorn-title/pushes-mark ()
   "`pel-rst-adorn-title' calls push-mark: mark-ring must be non-nil after."
   (pel-rst-test--with-adornment-style 'CRiSPer
-    (with-temp-buffer
-      (rst-mode)
-      (insert "My Title")
-      (goto-char (point-min))
-      ;; Pre-set a mark: push-mark pushes the *old* mark onto mark-ring.
-      ;; Without a prior mark, mark-ring stays nil.
-      (set-mark (point))
-      (pel-rst-adorn-title)
-      (should mark-ring))))
+    (insert "My Title")
+    (goto-char (point-min))
+    ;; Pre-set a mark: push-mark pushes the *old* mark onto mark-ring.
+    ;; Without a prior mark, mark-ring stays nil.
+    (set-mark (point))
+    (pel-rst-adorn-title)
+    (should mark-ring)))
 
 ;; ---------------------------------------------------------------------------
 ;; Convenience wrappers pel-rst-adorn-1 … pel-rst-adorn-10
 
-(ert-deftest pel-rst-test/adorn-convenience/wrappers-1-to-6-in-sphinx ()
-  "Wrappers 1-6 produce valid adornment in Sphinx-Python style."
+(ert-deftest pel-rst-test/adorn-convenience/wrappers-1-to-5-in-sphinx ()
+  "Wrappers 1-5 produce valid adornment in Sphinx-Python style."
   (pel-rst-test--with-adornment-style 'Sphinx-Python
     (dolist (fn '(pel-rst-adorn-1 pel-rst-adorn-2 pel-rst-adorn-3
-                  pel-rst-adorn-4 pel-rst-adorn-5 pel-rst-adorn-6))
-      (with-temp-buffer
-        (rst-mode)
-        (insert "Test Title")
-        (goto-char (point-min))
-        (funcall fn)
-        (should (> (count-lines (point-min) (point-max)) 1))))))
+                                  pel-rst-adorn-4 pel-rst-adorn-5))
+      (erase-buffer)
+      (insert "Test Title")
+      (goto-char (point-min))
+      (funcall fn)
+      (should (> (count-lines (point-min) (point-max)) 1)))))
 
 (ert-deftest pel-rst-test/adorn-convenience/wrappers-1-to-7-in-default ()
   "Wrappers 1-7 produce valid adornment in default style (8 levels: 0-7)."
@@ -581,28 +560,26 @@ one leading space (indent-steps=1)."
     (dolist (fn '(pel-rst-adorn-1 pel-rst-adorn-2 pel-rst-adorn-3
                   pel-rst-adorn-4 pel-rst-adorn-5 pel-rst-adorn-6
                   pel-rst-adorn-7))
-      (with-temp-buffer
-        (rst-mode)
-        (insert "Test Title")
-        (goto-char (point-min))
-        (funcall fn)
-        (should (> (count-lines (point-min) (point-max)) 1))))))
+      (erase-buffer)
+      (insert "Test Title")
+      (goto-char (point-min))
+      (funcall fn)
+      (should (> (count-lines (point-min) (point-max)) 1)))))
 
 (ert-deftest pel-rst-test/adorn-convenience/level-8-invalid-in-default ()
   "`pel-rst-adorn-8' signals `user-error' in default style (only 8 levels: 0-7)."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "Test Title")
-      (goto-char (point-min))
-      (should-error (pel-rst-adorn-8) :type 'user-error))))
+    (insert "Test Title")
+    (goto-char (point-min))
+    (should-error (pel-rst-adorn-8) :type 'user-error)))
 
-(ert-deftest pel-rst-test/adorn-convenience/level-7-invalid-in-sphinx ()
-  "`pel-rst-adorn-7' signals `user-error' in Sphinx-Python style (only 6 levels)."
+(ert-deftest pel-rst-test/adorn-convenience/level-6-invalid-in-sphinx ()
+  "`pel-rst-adorn-6' signals `user-error' in Sphinx-Python style.
+Sphinx style has only 6 levels which includes level 0: the title."
   (pel-rst-test--with-adornment-style 'Sphinx-Python
     (insert "Test Title")
     (goto-char (point-min))
-    (should-error (pel-rst-adorn-7) :type 'user-error)))
+    (should-error (pel-rst-adorn-6) :type 'user-error)))
 
 (ert-deftest pel-rst-test/adorn-convenience/wrappers-8-to-10-in-crisper ()
   "Wrappers 8-10 work in CRiSPer style (13 levels); skipped if unavailable."
@@ -627,37 +604,31 @@ one leading space (indent-steps=1)."
 (ert-deftest pel-rst-test/level-at/level-1-simple-equals-in-default ()
   "`pel--rst-level-at' returns 1 for a '=' simple underline (default style)."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      ;; Blank line above ensures the overline-scan fallback reads ?\n, not ?=
-      (insert "\nSection Title\n")
-      (goto-char (point-min))
-      (forward-line 1)                  ; point on "Section Title"
-      (pel-rst-adorn 1)
-      ;; pel-rst-adorn uses save-excursion → point still on title line
-      (should (= (pel--rst-level-at) 1)))))
+    ;; Blank line above ensures the overline-scan fallback reads ?\n, not ?=
+    (insert "\nSection Title\n")
+    (goto-char (point-min))
+    (forward-line 1)                    ; point on "Section Title"
+    (pel-rst-adorn 1)
+    ;; pel-rst-adorn uses save-excursion → point still on title line
+    (should (= (pel--rst-level-at) 1))))
 
 (ert-deftest pel-rst-test/level-at/level-2-simple-dash-in-default ()
   "`pel--rst-level-at' returns 2 for a '-' simple underline (default style)."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "\nSubsection\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 2)
-      (should (= (pel--rst-level-at) 2)))))
+    (insert "\nSubsection\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 2)
+    (should (= (pel--rst-level-at) 2))))
 
 (ert-deftest pel-rst-test/level-at/level-3-simple-tilde-in-default ()
   "`pel--rst-level-at' returns 3 for a '~' simple underline (default style)."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "\nSubsubsection\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 3)
-      (should (= (pel--rst-level-at) 3)))))
+    (insert "\nSubsubsection\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 3)
+    (should (= (pel--rst-level-at) 3))))
 
 (ert-deftest pel-rst-test/level-at/level-0-over-and-under-in-crisper ()
   "`pel--rst-level-at' returns 0 for '=' over-and-under (CRiSPer style)."
@@ -674,25 +645,21 @@ one leading space (indent-steps=1)."
 (ert-deftest pel-rst-test/level-at/returns-nil-for-unadorned-line ()
   "`pel--rst-level-at' returns nil when the line is not adorned."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "Plain text\nAnother line\n")
-      (goto-char (point-min))
-      (should (null (pel--rst-level-at))))))
+    (insert "Plain text\nAnother line\n")
+    (goto-char (point-min))
+    (should (null (pel--rst-level-at)))))
 
 (ert-deftest pel-rst-test/level-at/explicit-pos-argument ()
   "`pel--rst-level-at' with POS detects the level at a remote position."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "\nSection Title\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 1)
-      (let ((title-pos (progn (goto-char (point-min)) (forward-line 1) (point))))
-        ;; Move point somewhere else entirely, then query by position
-        (goto-char (point-max))
-        (should (= (pel--rst-level-at title-pos) 1))))))
+    (insert "\nSection Title\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 1)
+    (let ((title-pos (progn (goto-char (point-min)) (forward-line 1) (point))))
+      ;; Move point somewhere else entirely, then query by position
+      (goto-char (point-max))
+      (should (= (pel--rst-level-at title-pos) 1)))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel--rst-adorn-level+=
@@ -730,49 +697,43 @@ one leading space (indent-steps=1)."
 (ert-deftest pel-rst-test/adorn-change/step-1-changes-equals-to-dash ()
   "`pel--rst-adorn-change' +1 replaces '=' level-1 underline with '-' level-2."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "\nSection Title\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 1)
-      ;; point is still on title line (save-excursion in pel-rst-adorn)
-      (pel--rst-adorn-change 1 :quiet)
-      ;; Underline is now on line 3 (blank, title, underline)
-      (goto-char (point-min))
-      (forward-line 2)
-      (back-to-indentation)
-      (should (= (char-after) ?-)))))
+    (insert "\nSection Title\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 1)
+    ;; point is still on title line (save-excursion in pel-rst-adorn)
+    (pel--rst-adorn-change 1 :quiet)
+    ;; Underline is now on line 3 (blank, title, underline)
+    (goto-char (point-min))
+    (forward-line 2)
+    (back-to-indentation)
+    (should (= (char-after) ?-))))
 
 (ert-deftest pel-rst-test/adorn-change/step-minus-1-changes-dash-to-equals ()
   "`pel--rst-adorn-change' -1 replaces '-' level-2 underline with '=' level-1."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "\nSubsection\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 2)
-      (pel--rst-adorn-change -1 :quiet)
-      (goto-char (point-min))
-      (forward-line 2)
-      (back-to-indentation)
-      (should (= (char-after) ?=)))))
+    (insert "\nSubsection\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 2)
+    (pel--rst-adorn-change -1 :quiet)
+    (goto-char (point-min))
+    (forward-line 2)
+    (back-to-indentation)
+    (should (= (char-after) ?=))))
 
 (ert-deftest pel-rst-test/adorn-change/step-0-same-level-preserved ()
   "`pel--rst-adorn-change' with step 0 keeps the same adornment character."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "\nSection\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 1)
-      (pel--rst-adorn-change 0 :quiet)
-      (goto-char (point-min))
-      (forward-line 2)
-      (back-to-indentation)
-      (should (= (char-after) ?=)))))
+    (insert "\nSection\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 1)
+    (pel--rst-adorn-change 0 :quiet)
+    (goto-char (point-min))
+    (forward-line 2)
+    (back-to-indentation)
+    (should (= (char-after) ?=))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel--rst-adorn-level-of-previous-section
@@ -780,28 +741,24 @@ one leading space (indent-steps=1)."
 (ert-deftest pel-rst-test/adorn-level-of-prev/no-previous-returns-nil ()
   "Returns nil when there is no previous section in the buffer."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "Plain text without any section header\n")
-      (goto-char (point-max))
-      (should (null (pel--rst-adorn-level-of-previous-section))))))
+    (insert "Plain text without any section header\n")
+    (goto-char (point-max))
+    (should (null (pel--rst-adorn-level-of-previous-section)))))
 
 (ert-deftest pel-rst-test/adorn-level-of-prev/detects-level-1-section ()
   "Returns the level of a level-1 section header above the current position."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      ;; Build a level-1 section, then position below it
-      (insert "\nSection Header\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 1)
-      (goto-char (point-max))
-      (insert "\nBody text after section.\n")
-      (goto-char (point-max))
-      (let ((level (pel--rst-adorn-level-of-previous-section)))
-        ;; Allow nil (no font-lock text props in batch) or integer 1
-        (should (or (null level) (= level 1)))))))
+    ;; Build a level-1 section, then position below it
+    (insert "\nSection Header\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 1)
+    (goto-char (point-max))
+    (insert "\nBody text after section.\n")
+    (goto-char (point-max))
+    (let ((level (pel--rst-adorn-level-of-previous-section)))
+      ;; Allow nil (no font-lock text props in batch) or integer 1
+      (should (or (null level) (= level 1))))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel--line-adorned-p
@@ -809,14 +766,12 @@ one leading space (indent-steps=1)."
 (ert-deftest pel-rst-test/line-adorned-p/adorned-title-is-detected ()
   "`pel--line-adorned-p' returns non-nil for a title with a matching underline."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "\nSection Title\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 1)
-      ;; point still on title line
-      (should (pel--line-adorned-p)))))
+    (insert "\nSection Title\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 1)
+    ;; point still on title line
+    (should (pel--line-adorned-p))))
 
 (ert-deftest pel-rst-test/line-adorned-p/plain-text-is-not-adorned ()
   "`pel--line-adorned-p' returns nil on a plain text line."
@@ -841,48 +796,45 @@ one leading space (indent-steps=1)."
 (ert-deftest pel-rst-test/adorn-refresh/updates-underline-after-title-extension ()
   "`pel-rst-adorn-refresh' updates an underline to match an extended title."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      ;; Create a level-1 section with a 5-char title
-      (insert "\nShort\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 1)
-      ;; Now extend the title: "Short" → "Short Title" (11 chars)
-      (goto-char (point-min))
-      (forward-line 1)
-      (end-of-line)
-      (insert " Title")
-      ;; Refresh: underline must become 11 chars
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn-refresh)
-      (goto-char (point-min))
-      (forward-line 2)
-      (should (= (- (line-end-position) (line-beginning-position)) 11)))))
+    ;; Create a level-1 section with a 5-char title
+    (insert "\nShort\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 1)
+    ;; Now extend the title: "Short" → "Short Title" (11 chars)
+    (goto-char (point-min))
+    (forward-line 1)
+    (end-of-line)
+    (insert " Title")
+    ;; Refresh: underline must become 11 chars
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn-refresh)
+    (goto-char (point-min))
+    (forward-line 2)
+    (should (= (- (line-end-position) (line-beginning-position)) 11))))
 
 (ert-deftest pel-rst-test/adorn-refresh/preserves-adornment-character ()
   "`pel-rst-adorn-refresh' keeps the same adornment character."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "\nSection\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 2)                 ; '-' underline
-      (goto-char (point-min))
-      (forward-line 1)
-      ;; Extend title and refresh
-      (end-of-line)
-      (insert " Extended")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn-refresh)
-      ;; Underline must still be '-'
-      (goto-char (point-min))
-      (forward-line 2)
-      (back-to-indentation)
-      (should (= (char-after) ?-)))))
+    (insert "\nSection\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 2)                   ; '-' underline
+    (goto-char (point-min))
+    (forward-line 1)
+    ;; Extend title and refresh
+    (end-of-line)
+    (insert " Extended")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn-refresh)
+    ;; Underline must still be '-'
+    (goto-char (point-min))
+    (forward-line 2)
+    (back-to-indentation)
+    (message "%S" (= (char-after) ?-))
+    (should (= (char-after) ?-))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-rst-adorn-same-level
@@ -891,24 +843,22 @@ one leading space (indent-steps=1)."
   "`pel-rst-adorn-same-level' adorns an unadorned line at the same level \
 as the previous section."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      ;; Create a level-1 section ('=' simple)
-      (insert "\nFirst Section\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 1)
-      ;; Add an unadorned title after it
-      (goto-char (point-max))
-      (insert "\nNew Section\n")
-      ;; Position on the new unadorned title
-      (forward-line -1)
-      (pel-rst-adorn-same-level)
-      ;; Underline for the new title should be '=' (level 1 in default)
-      (goto-char (point-max))
-      (forward-line -1)
-      (back-to-indentation)
-      (should (= (char-after) ?=)))))
+    ;; Create a level-1 section ('=' simple)
+    (insert "\nFirst Section\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 1)
+    ;; Add an unadorned title after it
+    (goto-char (point-max))
+    (insert "\nNew Section\n")
+    ;; Position on the new unadorned title
+    (forward-line -1)
+    (pel-rst-adorn-same-level)
+    ;; Underline for the new title should be '=' (level 1 in default)
+    (goto-char (point-max))
+    (forward-line -1)
+    (back-to-indentation)
+    (should (= (char-after) ?=))))
 
 (ert-deftest pel-rst-test/adorn-same-level/adjusts-adorned-line-to-previous ()
   "`pel-rst-adorn-same-level' adjusts an already-adorned line to match the \
@@ -935,11 +885,9 @@ previous section level when they differ."
 (ert-deftest pel-rst-test/adorn-same-level/errors-without-previous-section ()
   "`pel-rst-adorn-same-level' signals `user-error' when no previous section."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "Only Line\n")
-      (goto-char (point-min))
-      (should-error (pel-rst-adorn-same-level) :type 'user-error))))
+    (insert "Only Line\n")
+    (goto-char (point-min))
+    (should-error (pel-rst-adorn-same-level) :type 'user-error)))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-rst-adorn-increase-level / pel-rst-adorn-decrease-level
@@ -947,97 +895,85 @@ previous section level when they differ."
 (ert-deftest pel-rst-test/adorn-increase-level/on-adorned-line ()
   "`pel-rst-adorn-increase-level' changes level-1 '=' to level-2 '-'."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "\nSection\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 1)
-      ;; point on title; increase level
-      (pel-rst-adorn-increase-level)
-      (goto-char (point-min))
-      (forward-line 2)
-      (back-to-indentation)
-      (should (= (char-after) ?-)))))
+    (insert "\nSection\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 1)
+    ;; point on title; increase level
+    (pel-rst-adorn-increase-level)
+    (goto-char (point-min))
+    (forward-line 2)
+    (back-to-indentation)
+    (should (= (char-after) ?-))))
 
 (ert-deftest pel-rst-test/adorn-decrease-level/on-adorned-line ()
   "`pel-rst-adorn-decrease-level' changes level-2 '-' to level-1 '='."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "\nSubsection\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 2)
-      (pel-rst-adorn-decrease-level)
-      (goto-char (point-min))
-      (forward-line 2)
-      (back-to-indentation)
-      (should (= (char-after) ?=)))))
+    (insert "\nSubsection\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 2)
+    (pel-rst-adorn-decrease-level)
+    (goto-char (point-min))
+    (forward-line 2)
+    (back-to-indentation)
+    (should (= (char-after) ?=))))
 
 (ert-deftest pel-rst-test/adorn-increase-level/on-unadorned-no-previous-errors ()
   "`pel-rst-adorn-increase-level' on unadorned line with no previous section \
 signals `user-error'."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "Only Line\n")
-      (goto-char (point-min))
-      (should-error (pel-rst-adorn-increase-level) :type 'user-error))))
+    (insert "Only Line\n")
+    (goto-char (point-min))
+    (should-error (pel-rst-adorn-increase-level) :type 'user-error)))
 
 (ert-deftest pel-rst-test/adorn-decrease-level/on-unadorned-no-previous-errors ()
   "`pel-rst-adorn-decrease-level' on unadorned line with no previous section \
 signals `user-error'."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "Only Line\n")
-      (goto-char (point-min))
-      (should-error (pel-rst-adorn-decrease-level) :type 'user-error))))
+    (insert "Only Line\n")
+    (goto-char (point-min))
+    (should-error (pel-rst-adorn-decrease-level) :type 'user-error)))
 
 (ert-deftest pel-rst-test/adorn-increase-level/on-unadorned-with-previous-adorns ()
   "`pel-rst-adorn-increase-level' on unadorned line with a prev level-1 section \
 adorns at level 2."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      ;; Level-1 section above
-      (insert "\nPrev Section\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 1)
-      ;; New unadorned title
-      (goto-char (point-max))
-      (insert "\nNew Title\n")
-      (forward-line -1)
-      (pel-rst-adorn-increase-level)
-      ;; Underline should be '-' (level 2)
-      (goto-char (point-max))
-      (forward-line -1)
-      (back-to-indentation)
-      (should (= (char-after) ?-)))))
+    ;; Level-1 section above
+    (insert "\nPrev Section\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 1)
+    ;; New unadorned title
+    (goto-char (point-max))
+    (insert "\nNew Title\n")
+    (forward-line -1)
+    (pel-rst-adorn-increase-level)
+    ;; Underline should be '-' (level 2)
+    (goto-char (point-max))
+    (forward-line -1)
+    (back-to-indentation)
+    (should (= (char-after) ?-))))
 
 (ert-deftest pel-rst-test/adorn-decrease-level/on-unadorned-with-previous-adorns ()
   "`pel-rst-adorn-decrease-level' on unadorned line with a prev level-2 section \
 adorns at level 1."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      ;; Level-2 section above
-      (insert "\nPrev Subsection\n")
-      (goto-char (point-min))
-      (forward-line 1)
-      (pel-rst-adorn 2)
-      ;; New unadorned title
-      (goto-char (point-max))
-      (insert "\nNew Title\n")
-      (forward-line -1)
-      (pel-rst-adorn-decrease-level)
-      ;; Underline should be '=' (level 1)
-      (goto-char (point-max))
-      (forward-line -1)
-      (back-to-indentation)
-      (should (= (char-after) ?=)))))
+    ;; Level-2 section above
+    (insert "\nPrev Subsection\n")
+    (goto-char (point-min))
+    (forward-line 1)
+    (pel-rst-adorn 2)
+    ;; New unadorned title
+    (goto-char (point-max))
+    (insert "\nNew Title\n")
+    (forward-line -1)
+    (pel-rst-adorn-decrease-level)
+    ;; Underline should be '=' (level 1)
+    (goto-char (point-max))
+    (forward-line -1)
+    (back-to-indentation)
+    (should (= (char-after) ?=))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel--rst-delete-whole-line
@@ -1084,16 +1020,10 @@ adorns at level 1."
 (ert-deftest pel-rst-test/line-adorned-p/underline-char-detection ()
   "Detects adornment from the underline character when font-lock is absent."
   ;; Without active font-lock the code falls back to underline-char detection.
-  (ert-skip "Test has to be ree-designeed; code has changed.")
   (pel-rst-test--with-adornment-style 'default
-                                      (with-temp-buffer
-                                        (rst-mode)
-                                        (insert "My Section\n==========\n")
-                                        (goto-char (point-min))
-                                        ;; The char-based fallback should find '=' and match level 1
-                                        (let ((result (pel--line-adorned-p)))
-                                          ;; Returns a level integer or nil (no font-lock text props)
-                                          (should (or (null result) (integerp result)))))))
+    (insert "My Section\n==========\n")
+    (goto-char (point-min))
+    (should (pel--line-adorned-p))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-rst-adorn-refresh / pel-rst-adorn-same-level /
@@ -1104,31 +1034,24 @@ adorns at level 1."
 
 (ert-deftest pel-rst-test/adorn-refresh/errors-without-adorned-line ()
   "`pel-rst-adorn-refresh' signals user-error when no adornment is detected."
-  (ert-skip "Test that will have to be ree-implemented becuaase pel-rst changed.")
   (pel-rst-test--with-adornment-style 'default
-                                      (with-temp-buffer
-                                        (rst-mode)
-                                        (insert "Plain text\n")
-                                        (goto-char (point-min))
-                                        (should-error (pel-rst-adorn-refresh) :type 'user-error))))
+    (insert "Plain text\n")
+    (goto-char (point-min))
+    (should-error (pel-rst-adorn-refresh) :type 'user-error)))
 
 (ert-deftest pel-rst-test/adorn-increase-level/errors-without-previous-section ()
   "`pel-rst-adorn-increase-level' errors when no previous section."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "Only Line\n")
-      (goto-char (point-min))
-      (should-error (pel-rst-adorn-increase-level) :type 'user-error))))
+    (insert "Only Line\n")
+    (goto-char (point-min))
+    (should-error (pel-rst-adorn-increase-level) :type 'user-error)))
 
 (ert-deftest pel-rst-test/adorn-decrease-level/errors-without-previous-section ()
   "`pel-rst-adorn-decrease-level' errors when no previous section."
   (pel-rst-test--with-adornment-style 'default
-    (with-temp-buffer
-      (rst-mode)
-      (insert "Only Line\n")
-      (goto-char (point-min))
-      (should-error (pel-rst-adorn-decrease-level) :type 'user-error))))
+    (insert "Only Line\n")
+    (goto-char (point-min))
+    (should-error (pel-rst-adorn-decrease-level) :type 'user-error)))
 
 ;; ===========================================================================
 ;; 4. Link/reference bookmark management
@@ -1163,11 +1086,10 @@ adorns at level 1."
 
 (ert-deftest pel-rst-test/goto-next-empty-line/moves-to-empty-line ()
   "Moves point to the empty line."
-  (ert-skip "Test has to be ree-designeed; code has changed.")
   (pel-rst-test--with-temp-rst-buffer "First line\n\nThird line\n"
-                                      (pel-goto-next-empty-line)
-                                      (should (= (line-number-at-pos) 2))
-                                      (should (= (pel-line-length) 0))))
+    (pel-goto-next-empty-line)
+    (should (= (line-number-at-pos) 2))
+    (should (= (pel-line-length) 0))))
 
 (ert-deftest pel-rst-test/goto-next-empty-line/no-error-flag ()
   "When NO-ERROR is non-nil, point does not move and no error is raised."
@@ -1183,7 +1105,6 @@ adorns at level 1."
 
 (ert-deftest pel-rst-test/goto-next-empty-line/in-manual ()
   "Finds an empty line inside pel-manual.rst."
-  (ert-skip "Test has to be ree-designeed; code has changed.")
   (pel-rst-test--with-manual-rst-buffer
    (pel-goto-next-empty-line)
    (should (= (pel-line-length) 0))))
@@ -1493,7 +1414,7 @@ adorns at level 1."
 
 (ert-deftest pel-rst-test/move-to-rst-target/finds-multiline-reference ()
   "Finds a target split over two lines."
-  (ert-skip "Failing code the test identifies: must fix the code!")
+  (ert-skip "The support must be re-implemented")
   (with-temp-buffer
     (insert ".. _my-link:\n   https://example.com\n")
     ;; First search for exact match fails, falls back to finding target line
@@ -1589,12 +1510,11 @@ adorns at level 1."
 
 (ert-deftest pel-rst-test/fixture/manual-rst-title-overline-30-chars ()
   "First line of pel-manual.rst is a 30-character '=' overline."
-  (ert-skip "Test has to be ree-designeed; code has changed.")
   (pel-rst-test--with-manual-rst-buffer
-   (should (= (pel-line-length) 30))
-   (should (string-match-p "^=+$"
-                           (buffer-substring (line-beginning-position)
-                                             (line-end-position))))))
+    (should (= (pel-line-length) 30))
+    (should (string-match-p "^=+$"
+                            (buffer-substring (line-beginning-position)
+                                              (line-end-position))))))
 
 (ert-deftest pel-rst-test/fixture/manual-rst-has-section-adornments ()
   "pel-manual.rst contains RST section underline/overline patterns."

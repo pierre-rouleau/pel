@@ -663,7 +663,7 @@ current adorn style, signal a user error otherwise."
         (pel-rst-adorn (pel--rst-adorn-level+= level step))
       (user-error "Cannot detect section level of previous section!"))))
 
-(defun pel--line-adorned-p ()
+(defun pel--line-adorned-p (&optional allow-mismatch)
   "Return t if current line is section-adorned, nil otherwise."
   (save-excursion
     ;; the line should have no trailing whitespace
@@ -674,8 +674,7 @@ current adorn style, signal a user error otherwise."
     (back-to-indentation)
     (let ((point-text-face-property (get-text-property (point) 'face)))
       (if (and point-text-face-property
-               (listp point-text-face-property)
-               nil)
+               (listp point-text-face-property))
           ;; current line is adorned with the style supported by rst-mode
           ;; so just check the adornment text face property to get the level
           (not (not (memq
@@ -695,11 +694,13 @@ current adorn style, signal a user error otherwise."
               (underline-length (progn
                                   (forward-line 1)
                                   (pel-line-length))))
-          (when (= title-line-length underline-length)
-            ;; back to the title line
-            (forward-line -1)
-            ;; and check if the underlining is correct
-            (not (not (pel--rst-level-at)))))))))
+          (if allow-mismatch
+              (> underline-length 0)
+            (when (= title-line-length underline-length)
+              ;; back to the title line
+              (forward-line -1)
+              ;; and check if the underlining is correct
+              (not (not (pel--rst-level-at))))))))))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-same-level ()
@@ -729,6 +730,8 @@ adjust to previous section level."
   "Refresh the adornment of the current line.
 This helps when the length of the line changes."
   (interactive "*")
+  (unless (pel--line-adorned-p 'allow-mismatch)
+    (user-error "Current line is not adorned, cannot refresh it!"))
   (pel--rst-adorn-change 0))
 
 ;;-pel-autoload
