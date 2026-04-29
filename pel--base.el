@@ -44,6 +44,9 @@
 ;;  - `pel-expression-p'
 ;;  - `pel-user-option-p'
 ;;
+;; Set user-option session value
+;;  - `pel-setq-user-option'
+;;
 ;; Set variable conditionally
 ;;  - `pel-set-if-non-nil'
 ;;
@@ -241,6 +244,9 @@
 ;;   - `pel-goto-position'
 ;;   - `pel-goto-line'
 ;;
+;; Line length
+;; - `pel-line-length'
+
 ;; Line position:
 ;;  - `pel-same-line-p'
 ;;
@@ -315,10 +321,13 @@
 ;;  - `pel-emacs-config-features-string'
 ;;  - `pel-hardware-model-string'
 ;;  - `pel-eglot-active-p'
+;;
+;; Analysis and Debugging
+;;  - `pel-caller-name'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
-;; subr (always loaded) ; use: `called-interactively-p'
+;; subr (always loaded) ; use: `called-interactively-p', `backtrace-frame'
 (require 'pel-comp)
 (require 'subr-x)     ; use: `split-string', `string-join', `string-trim'
 (require 'cl-lib)     ; use: `cl-some'
@@ -512,6 +521,23 @@ code execution)."
   (and (custom-variable-p symbol)
        (eq t (compare-strings "pel-use-" nil nil
                               (symbol-name symbol) 0 8))))
+
+;; ---------------------------------------------------------------------------
+;;* Set user-option session value
+;;  =============================
+
+(defun pel-setq-user-option (user-option value)
+  "Dynamically set the USER-OPTION (a symbol) to the specified VALUE.
+
+This changes the dynamic value of USER-OPTION in the current session;
+the local buffer and the global value.
+This change does not persist across Emacs session.
+
+If you need to change a user-option persistently, change it through
+Emacs customization mechanism."
+  (set-default user-option value)
+  (when (local-variable-p user-option)
+    (set user-option value)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Set variable conditionally
@@ -2539,6 +2565,18 @@ Return nil."
       (move-to-column column)))
 
 ;; ---------------------------------------------------------------------------
+;;* Line length
+;;  ===========
+
+(defun pel-line-length (&optional n)
+  "Return number of characters inside the current line or N-1 lines forward.
+
+If N is not specified, is nil or 1: return the length of the current line.
+Otherwise return the line N-1 lines forward: so if N is 2 use next line,
+if N is 0 use previous line, etc..."
+  (- (line-end-position n) (line-beginning-position n)))
+
+;; ---------------------------------------------------------------------------
 ;;* Line position
 ;;  =============
 
@@ -3338,6 +3376,62 @@ Returns nil when Emacs does not support tree-sitter."
   "Return t if `eglot' is used in the current buffer, nil otherwise."
   (and (fboundp 'eglot-managed-p)
        (eglot-managed-p)))
+
+;; ---------------------------------------------------------------------------
+;;* Analysis and Debugging
+
+(cl-defun pel-caller-name (&key (trace nil) (nest-count 1) (max-depth 40))
+  "Return the name of the calling function.
+
+By default this does not print anything.  If you want to print the
+caller names in the message buffer, set TRACE to non-nil.
+
+By default identify the direct caller, corresponding to a NEST-COUNT of 1.
+If you want to return the grand-parent use a NEST-COUNT of 2, for more ancestry
+use a larger number.
+
+If NEST-COUNT is set to \\='all, then the function returns the very first
+caller.
+
+A NEST-COUNT depth protection is controlled by MAX-DEPTH frames which
+defaults to 40.  If you need a larger ancestry than that, specify a larger
+MAX-DEPTH value."
+  (let ((i 0)
+        (call-count 0)
+        (limit max-depth)               ; Default to 20 frames for safety
+        (search-started nil)
+        (search-count (if (eq nest-count 'all)
+                          max-depth
+                        nest-count))
+        (found-caller nil)
+        frame
+        last-func
+        func)
+    (while (and (< i limit)
+                (setq frame (backtrace-frame i)))
+      (pel+= i 1)
+      (setq last-func func)
+      (setq func (nth 1 frame))
+      (when (and trace search-started)
+        (pel+= call-count 1)
+        (message "** Caller %2d: %s" call-count func))
+      ;; Skip internal tools and this function itself.
+      ;; The next call that isn't "us" is the caller.
+      (cond
+       (search-started
+        (pel-= search-count 1)
+        (when (= search-count 0)
+          (when trace
+            (message "** Next caller is it (now at %s)" func))
+          (setq found-caller func
+                ;; exit the loop
+                i limit)))
+       ;;
+       ((and func (not (memq func '(backtrace-frame pel-caller-name))))
+        (setq search-started t)
+        (when trace
+          (message "** Called   : %s" func)))))
+    (or found-caller func last-func)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)

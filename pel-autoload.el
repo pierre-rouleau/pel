@@ -843,6 +843,7 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (when (and (boundp 'pel-use-rst) pel-use-rst)
     (pel-autoload "pel-rst" for:
+      pel-rst-adornment-style-info
       pel-rst-set-underscore-syntax
       pel-rst-set-ref-bookmark
       pel-rst-goto-ref-bookmark
@@ -873,6 +874,7 @@ Argument FOR: just a required separator keyword to make code look better."
       pel-rst-table-dup-separator-lines
       pel-rst-compile)
     (pel-autoload-function "pel-rst" for:
+      pel-rst-set-adornment
       pel-rst-open-file-at-point))
 
   (pel-autoload "pel-rpm-spec" for:

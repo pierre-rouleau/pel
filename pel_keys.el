@@ -7107,28 +7107,26 @@ to identify a Verilog file.  Anything else is assumed being V."
   (define-key pel:for-reST "i" 'pel-rst-italic)
   (define-key pel:for-reST "l" 'pel-rst-literal)
   (define-key pel:for-reST "`" 'pel-rst-interpreted)
-  ;; experimental: TODO: may want to execute its constituents
-  ;;                     when superword-mode is activated and de-activated or
-  ;;                     when navigation functions are executed
-  ;;                     (`forward-word' and `backward-word') in
-  ;;                     reStructuredText when superword-mode is active.
-  ;;                     For now just set underscore syntax according to the
-  ;;                     presence of the minor mode.
   (define-key pel:for-reST "_" 'pel-rst-set-underscore-syntax)
+  (define-key pel:for-reST (kbd "M-p") #'superword-mode)
 
   ;;
   (when pel-use-plantuml
     (define-key pel:for-reST  "u" 'pel-render-commented-plantuml))
   ;;
-  (define-pel-global-prefix pel:rst-adorn-style (kbd "<f11> SPC M-r A"))
+  (define-pel-global-prefix pel:rst-setup (kbd "<f11> SPC M-r <f4>"))
+  (define-pel-global-prefix pel:rst-adorn-style (kbd "<f11> SPC M-r <f4> a"))
+  (define-key pel:rst-adorn-style "?" 'pel-rst-adornment-style-info)
   (define-key pel:rst-adorn-style "d" 'pel-rst-adorn-default)
-  (define-key pel:rst-adorn-style "S" 'pel-rst-adorn-Sphinx-Python)
-  (define-key pel:rst-adorn-style "C" 'pel-rst-adorn-CRiSPer)
+  (define-key pel:rst-adorn-style "s" 'pel-rst-adorn-Sphinx-Python)
+  (define-key pel:rst-adorn-style "c" 'pel-rst-adorn-CRiSPer)
 
   (declare-function pel--install-rst-skel "pel-skels-rst")
+  (declare-function pel-rst-set-adornment "pel-rst")
   (pel-eval-after-load rst
     (pel-config-major-mode rst pel:for-reST :no-ts
       (pel--install-rst-skel pel:rst-skel)
+      (pel-rst-set-adornment 'pel-default nil 'quiet)
       (declare-function pel-rst-open-file-at-point "pel-rst")
       (declare-function pel-open-set-buffer-local-file-opener "pel-open")
       (pel-open-set-buffer-local-file-opener #'pel-rst-open-file-at-point)

@@ -24,40 +24,70 @@
 ;;; Commentary:
 ;;
 ;; This file contains defintions to extend the support of reStructuredText
-;; files.
+;; files. The following call hierarchy list the commands (*), and the
+;; functions (-) they call.  The (.) markers identify function hierarchy
+;; reference that are not expanded further because that's done somewhere else.
+;;
+;; - rst-mode character syntax control
+;;
+;;   * `pel-rst-set-underscore-syntax'
+;;     - `pel--rst-set-underscore-as-symbol'
+;;     - `pel--rst-set-underscore-as-punctuation'
 ;;
 ;;
 ;; - Section Adornment Control
 ;;
-;;  * `pel-rst-adorn-decrease-level'
-;;  * `pel-rst-adorn-increase-level'
-;;  * `pel-rst-adorn-refresh'
-;;  * `pel-rst-adorn-same-level'
-;;    - `pel--line-adorned-p'
-;;    - `pel--rst-adorn-same-as-previous'
-;;      - `pel--rst-adorn-level-of-previous-section'
+;;  - Adornment Style Selection Control
+;;  * `pel-rst-adornment-style-info'
+;;    - `pel-rst-used-adornment-style'
+;;
+;;  * `pel-rst-adorn-CRiSPer'        -> `pel-rst-set-adornment'
+;;  * `pel-rst-adorn-Sphinx-Python'  -> `pel-rst-set-adornment'
+;;  * `pel-rst-adorn-default'        -> `pel-rst-set-adornment'
+;;
+;;  - Line Adornment Control - Adorn line at specified level
+;;  * `pel-rst-adorn-title'          -> `pel-rst-adorn'
+;;  * `pel-rst-adorn-1'              -> `pel-rst-adorn'
+;;  * `pel-rst-adorn-2'              -> `pel-rst-adorn'
+;;  * `pel-rst-adorn-3'              -> `pel-rst-adorn'
+;;  * `pel-rst-adorn-4'              -> `pel-rst-adorn'
+;;  * `pel-rst-adorn-5'              -> `pel-rst-adorn'
+;;  * `pel-rst-adorn-6'              -> `pel-rst-adorn'
+;;  * `pel-rst-adorn-7'              -> `pel-rst-adorn'
+;;  * `pel-rst-adorn-8'              -> `pel-rst-adorn'
+;;  * `pel-rst-adorn-9'              -> `pel-rst-adorn'
+;;  * `pel-rst-adorn-10'             -> `pel-rst-adorn'
+;;    - `pel-rst-adorn'
+;;      - `pel--rst-level-valid-p'
+;;      - `pel--rst-level-adorn-level-style'
+;;
+;;  - Line Adornment Control - Add/Adjust Adornment Line
 ;;    - `pel--rst-adorn-change'
+;;      - `pel--rst-level-at'
+;;      . `pel--rst-level-adorn-level-style'
+;;      - `pel--rst-adorn-level+='
+;;        - `pel--rst-level-valid-p'
 ;;      - `pel--rst-delete-whole-line'
-;;        - `pel--rst-level-for'
-;;  * `pel-rst-adorn-10'
-;;  * `pel-rst-adorn-9'
-;;  * `pel-rst-adorn-8'
-;;  * `pel-rst-adorn-7'
-;;  * `pel-rst-adorn-6'
-;;  * `pel-rst-adorn-5'
-;;  * `pel-rst-adorn-4'
-;;  * `pel-rst-adorn-3'
-;;  * `pel-rst-adorn-2'
-;;  * `pel-rst-adorn-1'
-;;  * `pel-rst-adorn-title'
-;;    * `pel-rst-adorn'
-;;  - `pel-delete-trailing-whitespace'
-;;      - `pel-current-line-length'
-;;  * `pel-rst-adorn-CRiSPer'
-;;  * `pel-rst-adorn-Sphinx-Python'
-;;  * `pel-rst-adorn-default'
-;;    - `pel--rst-activate-adornment-style'
-;;      - `pel-rst-set-adornment'
+;;    - `pel--rst-adorn-same-as-previous'
+;;      . `pel--rst-adorn-level-of-previous-section'
+;;      . `pel--rst-adorn-level+='
+;;      . `pel-rst-adorn'
+;;  * `pel-rst-adorn-same-level'
+;;    - `pel--rst-adorn-level-of-previous-section'
+;;      - `pel--rst-level-at'
+;;    - `pel--rst-level-at'
+;;    . `pel--rst-adorn-change'
+;;    . `pel-rst-adorn'
+;;  * `pel-rst-adorn-refresh'
+;;    . `pel--rst-adorn-change'
+;;  * `pel-rst-adorn-increase-level'
+;;    - `pel--line-adorned-p'
+;;    . `pel--rst-adorn-change'
+;;    . `pel--rst-adorn-same-as-previous'
+;;  * `pel-rst-adorn-decrease-level'
+;;    - `pel--line-adorned-p'
+;;    . `pel--rst-adorn-change'
+;;    . `pel--rst-adorn-same-as-previous'
 ;;
 ;;
 ;; - Link/reference location bookmark management:
@@ -81,6 +111,7 @@
 ;;   * `pel-rst-bold'
 ;;     - `pel--rst-emphasize-with'
 ;;
+;;
 ;; - Open link URL:
 ;;
 ;;   - `pel-rst-open-file-at-point'
@@ -103,12 +134,12 @@
 
 (require 'pel--base)        ; use: `pel-whitespace-in-str-p'
 ;;                          ;      `pel-chars-at-point'
-(require 'pel--options)
+(require 'pel--options)     ; use: `pel-rst-adornment-style'
 (require 'pel-whitespace)   ; use: `pel-delete-trailing-whitespace'
 (require 'pel-ccp)          ; use: `pel-delete-whole-line', `pel-duplicate-line'
 (require 'pel--macros)
 (require 'pel-file)         ; use: `pel-find-file-at-point-in-window'
-(require 'rst)              ; rst-mode code. Use `rst-backward-section'
+(require 'rst)              ; rst-mode code. Use `rst-backward-section', `rst-preferred-adornments'
 (eval-when-compile
   (require 'subr-x))        ; use: split-string
 
@@ -125,82 +156,129 @@
     (user-error "Failed loading thingatpt!")))
 
 ;; ---------------------------------------------------------------------------
-;; rst-mode character syntax control
-;; ---------------------------------
+;;* rst-mode character syntax control
+;;  =================================
 ;;
 
-(defvar pel--rst-underscore-as-symbol nil
-  "Remember if the underscore syntax is a symbol or not.")
-
-(defun pel--rst-set-underscore-as-symbol ()
+(defun pel--rst-set-underscore-as-symbol (&optional quiet)
   "Set syntax of underscore character as symbol."
-  (modify-syntax-entry ?_ "_" rst-mode-syntax-table))
+  (modify-syntax-entry ?_ "_" rst-mode-syntax-table)
+  (unless quiet
+    (message "Underscore syntax is now: symbol")))
 
-(defun pel--rst-restore-underscore-syntax ()
+(defun pel--rst-set-underscore-as-punctuation (&optional quiet)
   "Restore syntax of underscore character to punctuation."
-  (modify-syntax-entry ?_ "." rst-mode-syntax-table))
+  (modify-syntax-entry ?_ "." rst-mode-syntax-table)
+  (unless quiet
+    (message "Underscore syntax is now: punctuation")))
 
 ;;-pel-autoload
 (defun pel-rst-set-underscore-syntax (&optional action)
   "Set underscore syntax to punctuation or symbol according to superword-mode.
 
 If superword-mode is active then the function can be used to change the
-syntax of the underscore character.
+syntax of the underscore character from punctuation (the default) to symbol
+and vice versa.  If superword-mode is not active the function signals a
+user-error.
 
 The optional ACTION  argument controls whether the underscore syntax is
 toggled, activated or de-activated:
-- ACTION not set or nil : toggles the underscore syntax.
-- ACTION set positive:  activates underscore syntax.
-- ACTIVATES set negative: de-activates underscore syntax.
+- ACTION not set or nil : toggles the underscore between symbol and
+                          punctuation syntax.
+- ACTION set positive   : activates symbol syntax where underscore is part of
+                          words.
+- ACTIVATES set negative: Activate punctuation syntax where underscore is not
+                          part of words.
 
-By default the syntax of an underscore in rst-mode is a
-punctuation.  To use the superword-mode the syntax of the
-underscore must be symbol instead.
-
-This function checks if the superword-mode is active and changes the syntax of
-the underscore character to symbol if superword-mode is on, otherwise sets it
-to the default: symbol."
+Activate underscore as symbol to make underscore part of words."
   (interactive "P")
   (if (bound-and-true-p superword-mode)
-      (cond
-       ((not action)
-        ;; Toggle
-        (if (not pel--rst-underscore-as-symbol)
-            (progn
-              (pel--rst-set-underscore-as-symbol)
-              (setq pel--rst-underscore-as-symbol t)
-              (message "Underscore syntax is now: symbol"))
-          (pel--rst-restore-underscore-syntax)
-          (setq pel--rst-underscore-as-symbol nil)
-          (message "Underscore syntax is now: punctuation")))
-       ((> (prefix-numeric-value action) 0)
-        ;; Activate underscore syntax
-        (pel--rst-set-underscore-as-symbol)
-        (setq pel--rst-underscore-as-symbol t)
-        (message "Underscore syntax is now: symbol"))
-       ((<= (prefix-numeric-value action) 0)
-        ;; De-activate underscore syntax
-        (pel--rst-restore-underscore-syntax)
-        (setq pel--rst-underscore-as-symbol nil)
-        (message "Underscore syntax is now: punctuation")))
+      (let ((und-syntax-is-symbol (eq (char-syntax ?_) ?_)))
+        (cond
+         ;; Toggle underscore syntax
+         ((not action)
+          (if und-syntax-is-symbol
+              (pel--rst-set-underscore-as-punctuation)
+            (pel--rst-set-underscore-as-symbol)))
+         ;;
+         ;; Activate underscore as symbol syntax
+         ((> (prefix-numeric-value action) 0)
+          (pel--rst-set-underscore-as-symbol))
+         ;;
+         ;; De-activate underscore as punctuation syntax
+         ((<= (prefix-numeric-value action) 0)
+          (pel--rst-set-underscore-as-punctuation))))
     ;; superword-mode is off
     (user-error "superword-mode is turned off.  First turn it on!")))
 
 ;; ---------------------------------------------------------------------------
-;; Section Adornment Control
-;; -------------------------
+;;* Section Adornment Control
+;;  =========================
+;;
+;; The section adornment control is buffer specific, allowing each
+;; reStructuredText buffer to use a different scheme if necessary.  The
+;; default adornment style used by PEL is set by the `pel-rst-set-adornment'
+;; user-option.  PEL applies it to the `rst-mode' `rst-preferred-adornments'
+;; user-option dynamically: in the local buffer value for the current buffer.
+;;
+;; PEL provides commands to further change the adornment style in the current
+;; buffer and also globally.  The global change does not affect the style used
+;; in the currently opened rst-mode buffers but affects the adornment style of
+;; the rst-mode buffers opened later in the current Emacs editing session.
+;; The change does not persist across Emacs editing session.
+;;
+;; PEL supports 3 different style:
+;;
+;; - The default rst-mode style, identified by the value of the
+;;   `rst-preferred-adornments' user-option.  The `rst-mode' default for this
+;;   is a style with a title level with 7 other levels.  The user can change
+;;   this (since it can be customized).  PEL honors the setting when the
+;;   default style is selected.
+;;
+;; - The Sphinx-Python style, consisting of 6 levels.
+;;   See:
+;;   www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
+;;
+;; - The CRiSPer style; a style with a title level and 12 other levels.  This
+;;   is a style I wrote long ago for CRiSPer, a extension package for the
+;;   CRiSP editor (a successor of Underware Brief editor).  Something I used
+;;   before using Emacs.
 
-;; Sphinx-Python style ref:
-;; www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
+;; --
+;;** Adornment Style Selection Control
+;;   ---------------------------------
 
-(defvar pel--rst-used-adornment-style nil
-  "Remember last adornment style value set by `pel-rst-set-adornment'.")
+(defvar-local pel--rst-used-adornment-style nil
+  "Adornment style currently used in the buffer.
 
-(defun pel-rst-set-adornment (style)
+Activation of the section adornment can only be changed by a call to the
+`pel-rst-set-adornment' function because real activation is done by changing
+the value of the rst-mode `rst-preferred-adornments' user-option.")
+
+
+(defun pel-rst-used-adornment-style ()
+  "Return adornment style used by current buffer."
+  pel--rst-used-adornment-style)
+
+;;-pel-autoload
+(defun pel-rst-adornment-style-info ()
+  "Display which adornment style is used."
+  (interactive)
+  (message "Used PEL adornment style: %s, with %d levels."
+           pel--rst-used-adornment-style
+           (length rst-preferred-adornments)))
+
+
+;; --
+
+;;-pel-autoload
+(defun pel-rst-set-adornment (style &optional globally quiet)
   "Set the reStructuredText adornment STYLE.
-Set it to one of: \\='CRiSPeR, \\='Sphinx-Python, or \\='default.
+
 STYLE identifies the number of levels supported and their adornment.
-- \\='default is Emacs `rst-mode' default.  A title and 7 levels.
+- \\='default is Emacs `rst-mode' default identified by
+  `rst-preferred-adornments' user-option which defaults to a title and 7
+  levels.
 - \\='Sphinx-Python is what Sphinx uses: 6 levels:
   - parts,
   - chapters,
@@ -208,70 +286,95 @@ STYLE identifies the number of levels supported and their adornment.
   - subsections,
   - subsubsections,
   - paragraphs.
-- \\='CRiSPer, a title and 12-level mode previously developed for CRiSP."
-  (when
-      (or
-       (not pel--rst-used-adornment-style)
-       (not (eq pel--rst-used-adornment-style style)))
-    (pel-when-bound
-     'rst-preferred-adornments
-     (setq
-      rst-preferred-adornments
-      (cond ((eq style 'default)
-             '((?= over-and-under 1)
-               (?= simple 0)
-               (?- simple 0)
-               (?~ simple 0)
-               (?+ simple 0)
-               (?` simple 0)
-               (?# simple 0)
-               (?@ simple 0)))
-            ((eq style 'Sphinx-Python)
-             '((?# over-and-under 0)  ; for parts
-               (?* over-and-under 0)  ; for chapters
-               (?= simple 0)          ; for sections
-               (?- simple 0)          ; for subsections
-               (?^ simple 0)          ; for subsubsections
-               (?\" simple 0)))       ; for paragraph
-            ((eq style 'CRiSPer)
-             '((?= over-and-under 0)  ; level  0 : title
-               (?= simple 0)          ; level  1
-               (?- simple 0)          ; level  2
-               (?~ simple 0)          ; level  3
-               (?^ simple 0)          ; level  4
-               (?+ simple 0)          ; level  5
-               (?* simple 0)          ; level  6
-               (?> simple 0)          ; level  7
-               (?< simple 0)          ; level  8
-               (?_ simple 0)          ; level  9
-               (?# simple 0)          ; level 10
-               (?` simple 0)          ; level 11
-               (?@ simple 0)))        ; level 12
-            (t (user-error "Unsupported style %S" style))))
-     ;; re-set the value in case it was called from user explictly.
-     (setq pel-rst-adornment-style style)
-     ;; and remember last set value independently to reduce the number
-     ;; of times it is set to only when it changes, which happens when
-     ;; the function is called explicitly or when pel-rst-adornment-style
-     ;; is set via file local variable assignment.
-     (setq pel--rst-used-adornment-style style)
-     (message "Now using the %s adornment style with %d levels supported."
-              style
-              (length rst-preferred-adornments)))))
+- \\='CRiSPer, a title and 12-level mode previously developed for CRiSP.
+- \\='pel-default identifies one of the above 3 styled as selected by the
+  `pel-rst-adornment-style' user-option.
 
-(defun pel--rst-activate-adornment-style ()
-  "Activate the adornment style selected by `pel-rst-adornment-style'."
-  (pel-rst-set-adornment pel-rst-adornment-style))
+When GLOBALLY is non-nil, apply the change to all buffers by updating
+the global default value of `rst-preferred-adornments'.  When GLOBALLY
+is nil (the default), the change is buffer-local and affects only the
+current buffer.
+
+The function prints a message when the style changes unless the QUIET argument
+is non-nil."
+  ;; Validate style eagerly so an unknown STYLE always raises user-error,
+  ;; independent of whether rst-preferred-adornments is currently bound.
+  (unless (memq style '(CRiSPer Sphinx-Python default pel-default))
+    (user-error "Unsupported style %S" style))
+  ;; Change it only if the requested value differs from what is currently
+  ;; used.
+  (when (eq style 'pel-default)
+    (setq style pel-rst-adornment-style))
+
+  ;; Ensure rst is loaded and the current buffer has a concrete local slot
+  ;; for `rst-preferred-adornments` before we assign to it. This avoids
+  ;; Emacs-version/platform timing differences in how rst-mode localizes
+  ;; the user option (observed on Emacs 26.1 and some macOS builds).
+  (require 'rst nil :noerror)
+  (when (and (not globally) (boundp 'rst-preferred-adornments)
+             (not (local-variable-p 'rst-preferred-adornments)))
+    (make-local-variable 'rst-preferred-adornments)
+    (setq rst-preferred-adornments (default-value 'rst-preferred-adornments)))
+
+  (let ((old-adornments rst-preferred-adornments)
+        (new-adornments
+         (cond ((eq style 'default)
+                '((?= over-and-under 1) ; level 0 : title
+                  (?= simple 0)         ; level 1
+                  (?- simple 0)         ; level 2
+                  (?~ simple 0)         ; level 3
+                  (?+ simple 0)         ; level 4
+                  (?` simple 0)         ; level 5
+                  (?# simple 0)         ; level 6
+                  (?@ simple 0)))       ; level 7
+               ((eq style 'Sphinx-Python)
+                '((?# over-and-under 0) ; 0: for parts
+                  (?* over-and-under 0) ; 1: for chapters
+                  (?= simple 0)         ; 2: for sections
+                  (?- simple 0)         ; 3: for subsections
+                  (?^ simple 0)         ; 4: for subsubsections
+                  (?\" simple 0)))      ; 5: for paragraph
+               ((eq style 'CRiSPer)
+                '((?= over-and-under 0) ; level  0 : title
+                  (?= simple 0)         ; level  1
+                  (?- simple 0)         ; level  2
+                  (?~ simple 0)         ; level  3
+                  (?^ simple 0)         ; level  4
+                  (?+ simple 0)         ; level  5
+                  (?* simple 0)         ; level  6
+                  (?> simple 0)         ; level  7
+                  (?< simple 0)         ; level  8
+                  (?_ simple 0)         ; level  9
+                  (?# simple 0)         ; level 10
+                  (?` simple 0)         ; level 11
+                  (?@ simple 0))))))    ; level 12
+    (if globally
+        (progn
+          ;; rst-preferred-adornments is a defcustom user-option
+          ;; dynamically change its global and local-buffer value
+          (pel-setq-user-option 'rst-preferred-adornments new-adornments)
+          ;; Do the same for pel-rst-adornment-style user-options
+          (pel-setq-user-option 'pel-rst-adornment-style style))
+      (setq-local rst-preferred-adornments new-adornments))
+    (setq-local pel--rst-used-adornment-style style)
+    (unless quiet
+      (message "%ssing the %s adornment style with %d levels supported."
+               (if (equal new-adornments old-adornments)
+                   "U"
+                 "Now u")
+               style
+               (length new-adornments)))))
 
 ;;-pel-autoload
-(defun pel-rst-adorn-default ()
+(defun pel-rst-adorn-default (&optional globally)
   "Set the default section adornment style.
-This is Emacs `rst-mode' default: a title with 7 levels."
-  (interactive)
-  (pel-rst-set-adornment 'default))
+This is Emacs `rst-mode' default: a title with 7 levels.
+With prefix argument GLOBALLY, change style to all `rst-mode' buffers."
+  (interactive "P")
+  (pel-rst-set-adornment 'default globally))
 
 ;;-pel-autoload
-(defun pel-rst-adorn-Sphinx-Python ()
+(defun pel-rst-adorn-Sphinx-Python (&optional globally)
   "Set the Sphinx-Python section adornment style.
 This is what Sphinx supports: 6 levels:
 - parts,
@@ -279,74 +382,124 @@ This is what Sphinx supports: 6 levels:
 - sections,
 - subsections,
 - subsubsections,
-- paragraphs."
-  (interactive)
-  (pel-rst-set-adornment 'Sphinx-Python))
+- paragraphs.
+With prefix argument GLOBALLY, change style to all `rst-mode' buffers."
+  (interactive "P")
+  (pel-rst-set-adornment 'Sphinx-Python globally))
 
 ;;-pel-autoload
-(defun pel-rst-adorn-CRiSPer ()
+(defun pel-rst-adorn-CRiSPer (&optional globally)
   "Set the CRiSPer section adornment style.
-A title level with another 10 levels."
-  (interactive)
-  (pel-rst-set-adornment 'CRiSPer))
+A title level with another 12 levels.
+With prefix argument GLOBALLY, change style to all `rst-mode' buffers."
+  (interactive "P")
+  (pel-rst-set-adornment 'CRiSPer globally))
 
 ;; --
 
-(defun pel-current-line-length (&optional n)
-  "Return number of characters inside the current line or N-1 lines forward.
-If N is not specified, is nil or 1: return the length of the current line.
-Otherwise return the line N-1 lines forward: so if N is 2 use next line,
-if N is 0 use previous line, etc..."
-  (- (line-end-position n) (line-beginning-position n)))
+;; Ensure our adornment style is applied after rst-mode initializes in every
+;; buffer.
 
-;; NOTE: The following could be an interactive command but then it should go
-;; inside pel-whitespace.el or pel-ccp.el.  Since it's probably not going to
-;; be that useful as a stand-alone command (because we can set automatic
-;; deletion of all trailing whitespace inside current buffer), I'm leaving
-;; it here until it's needed somewhere else.
-;; Then I'll move it and put all infrastructure to autoload it and
-;; then making it a stand-alone command will be worthwhile:
-;; I want to reduce the dependencies to the maximum to reduce extra loading.
+(defun pel--rst-activate-adornment-style ()
+  "Activate chosen RST adornment style buffer-locally after rst-mode init."
+  (when (boundp 'rst-preferred-adornments)
+    ;; Make sure we have a concrete local slot to avoid Emacs-version timing
+    ;; differences.
+    (unless (local-variable-p 'rst-preferred-adornments)
+      (make-local-variable 'rst-preferred-adornments)
+      (setq rst-preferred-adornments
+            (default-value 'rst-preferred-adornments))))
+  ;;
+  ;; Re-apply the selected style for the current  active rst-mode buffer,
+  ;; quietly.
+  (when (boundp 'pel-rst-adornment-style)
+    (ignore-errors
+      (pel-rst-set-adornment pel-rst-adornment-style nil 'quiet))))
+
+;; Install the hook with APPEND = t so we run after upstream hooks that may
+;; reset defaults.
+(add-hook 'rst-mode-hook #'pel--rst-activate-adornment-style t)
+
+;; --
+;;** Line Adornment Control - Adorn line at specified level
+;;   ------------------------------------------------------
 ;;
+;; -- Utilities
 
-(defun pel-rst-adorn (&optional level update)
+(defun pel--rst-level-adorn-level-style (level)
+  "Return the adorn level style for the LEVEL used by the current style.
+Return \\='simple or \\='over-and-under."
+  (when (>= level (length rst-preferred-adornments))
+    (error "Level %d not available in %s adornment style"
+           level
+           pel-rst-adornment-style))
+  (cadr (nth level rst-preferred-adornments)))
+
+(defun pel--rst-level-valid-p (level)
+  "Return non-nil when LEVEL is a valid adorn level for current adorn style.
+Return nil otherwise."
+  (< -1 level (length rst-preferred-adornments)))
+
+;; --
+
+(defun pel-rst-adorn (&optional level)
   "Adorn the current line as a reStructuredText section at the specified LEVEL.
 When UPDATE is non-nil do not add a new line after the underlining line,
 but when UPDATE is nil, it adds a new line after the underlining.
 `pel-rst-adorn' leaves the cursor unmoved, on the title line."
-  (interactive "*p")
-  (pel--rst-activate-adornment-style)
-  (if (>= level (length rst-preferred-adornments))
-      (user-error
-       "Level %d not available in %s adornment style"
-       level
-       pel-rst-adornment-style))
-  (save-excursion
-    (pel-delete-trailing-whitespace)
-    (let* ((linelen (pel-current-line-length))
-           (adorn-level (nth level rst-preferred-adornments))
-           (adorn-char (car adorn-level))
-           (adorn-style (nth 1 adorn-level))
-           (indent-steps (nth 2 adorn-level)))
-      (move-end-of-line nil)
-      (insert (format "\n%s"
-                      (make-string linelen adorn-char)))
-      (unless update
-        (insert "\n"))
-      (when (eq adorn-style 'over-and-under)
-        (forward-line (if update -1 -2))
-        (insert (format "\n%s\n"
-                        (make-string linelen adorn-char))))
-      ;; if the style requires indentation, indent the 3 lines
-      (when (> indent-steps 0)
-        (dotimes (_i indent-steps)
-          (dolist (rel-line  '(0 2 2))
-            (beginning-of-line rel-line)
-            (insert " ")))))))
+  (unless (pel--rst-level-valid-p level)
+    (user-error "Level %d not available in %s adornment style"
+                level
+                pel-rst-adornment-style))
+  ;; proceed if level is OK.
+  (let* ((orig-line (line-number-at-pos))
+         (has-over-line (eq (pel--rst-level-adorn-level-style level)
+                            'over-and-under))
+         (need-space-at-top
+          (and (< orig-line 2)
+               has-over-line)))
+    (when need-space-at-top
+      ;; Create empty line above title text to allow for overlining
+      (goto-char (point-min))
+      (insert "\n"))
+    (save-excursion
+      (pel-delete-trailing-whitespace)
+      (let* ((linelen (pel-line-length))
+             (adorn-level (nth level rst-preferred-adornments))
+             (adorn-char (car adorn-level))
+             (adorn-style (nth 1 adorn-level))
+             (indent-steps (nth 2 adorn-level)))
+        (move-end-of-line nil)
+        (insert (format "\n%s"
+                        (make-string linelen adorn-char)))
+        (when (eq adorn-style 'over-and-under)
+          (forward-line -2)
+          (insert (format "\n%s"
+                          (make-string linelen adorn-char))))
+        ;; if the style requires indentation, indent the 3 lines
+        (when (> indent-steps 0)
+          (let ((indentation (make-string indent-steps ?\s)))
+            (dotimes (_i 3)
+              (beginning-of-line)
+              (insert indentation)
+              (forward-line 1))))))
+    (when need-space-at-top
+      ;; delete the empty line previously added
+      (forward-line -2)
+      (delete-char 1)
+      (forward-line 1))
+    ;; For title-like over and under-linking: add lines after.
+    (when has-over-line
+      ;; move point to end of title
+      (end-of-line)
+      (push-mark)
+      (forward-line 3)
+      (insert "\n"))))
 
 ;; The following convenience functions defined to ease execution from keys
 
 ;;-pel-autoload
+
 (defun pel-rst-adorn-title ()
   "Adorn current line with level-0 (title) reStructuredText section adornment.
 If point is at the top of the file, the top adorn line is placed
@@ -355,18 +508,7 @@ on the first line of the file.
 In all cases, a mark is left at the end of the title text line
 and point is placed 2 lines below."
   (interactive "*")
-  (let ((orig-line (line-number-at-pos)))
-    (pel-rst-adorn 0)
-    (when (< orig-line 2)
-      ;; delete the empty line this creates when done at the top of the file
-      (forward-line -2)
-      (delete-char 1))
-    ;; move point to end of title
-    (forward-line 1)
-    (end-of-line)
-    (push-mark)
-    (forward-line 2)
-    (insert "\n")))
+  (pel-rst-adorn 0))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-1 ()
@@ -428,89 +570,137 @@ and point is placed 2 lines below."
   (interactive "*")
   (pel-rst-adorn 10))
 
-(defun pel--rst-level-for (char)
-  "Return the level number for a specific CHAR, nil if not found.
-Ignore the title level."
-  (let ((level-number 1)
-        (level-detected nil))
-    (dolist (adorn-level (cdr rst-preferred-adornments))
-      (unless level-detected
-        (let ((adorn-char (car adorn-level)))
-          (if (eq adorn-char char)
-              (setq level-detected level-number)
-            (pel+= level-number 1)))))
-    level-detected))
+;; --
+;;** Line Adornment Control - Add/Adjust Adornment Line
+;;   --------------------------------------------------
+
+(defun pel--rst-level-at (&optional pos)
+  "Return the adornment level number at POS or point.
+The POS (or point) is assumed to be on the text, title, line.
+Return nil if none."
+  (save-excursion
+    (when pos
+      (goto-char pos))
+    ;; First move to the underlining line
+    (forward-line 1)
+    ;; Read first non-whitespace character on lines to get the
+    ;; underlining and over-lining characters.
+    (let* ((underline-char (save-excursion
+                             (back-to-indentation)
+                             (char-after)))
+           (overline-char (save-excursion
+                            (forward-line -2)
+                            (back-to-indentation)
+                            (char-after)))
+           (adorn-line-style (if (eq underline-char overline-char)
+                                 'over-and-under
+                               'simple))
+           (level-number -1)
+           (level-detected nil))
+      (catch 'pel-rst-break
+        (dolist (adorn-level  rst-preferred-adornments)
+          (pel+= level-number 1)
+          (when (and (eq (cadr adorn-level) adorn-line-style)
+                     (eq (car adorn-level)  underline-char))
+            (setq level-detected level-number)
+            (throw 'pel-rst-break nil))))
+      level-detected)))
 
 (defun pel--rst-delete-whole-line ()
-  "Local copy of delete-whole-line: delete the current line."
+  "Delete the current line."
+  ;; A copy of `pel-delete-whole-line' from pel-ccp.  Avoid loading that file.
   (delete-region (line-beginning-position)
                  (min (point-max) (1+ (line-end-position)))))
 
-(defun pel--rst-adorn-change (step)
+(defun pel--rst-adorn-level+= (level step)
+  "Increase adorn LEVEL by STEP.
+
+LEVEL must be a valid adorn level for the current adorn style.
+STEP is a positive or negative number.
+
+Return the value (+ level step) if the result is a valid adorn level for the
+current adorn style, signal a user error otherwise."
+  (let ((new-level (pel+= level step)))
+    (if (pel--rst-level-valid-p new-level)
+        new-level
+      (user-error "Invalid new level %d for %s adornment style"
+                  new-level pel--rst-used-adornment-style))))
+
+(defun pel--rst-adorn-change (step &optional quiet)
   "Change adornment of current line by STEP level.
 - If STEP is 1: increase level.
 - If STEP is -1: decrease level."
   (save-excursion
-    (let ((current-level (progn
-                           (forward-line 1)
-                           (pel--rst-level-for (char-after)))))
+    ;; read level from underlining.
+    ;; Restore title without adornment
+    (let* ((current-level (pel--rst-level-at))
+           (current-level-style
+            (pel--rst-level-adorn-level-style current-level))
+           (new-level (pel--rst-adorn-level+= current-level step)))
+      ;; remove the current underlining line
+      (forward-line 1)
       (pel--rst-delete-whole-line)
       (forward-line -1)
-      (pel-rst-adorn (+ current-level step))
-      ;; prevent adding another line each time the level is changed
-      (end-of-line 2)
-      (delete-char 1 nil))))
+      ;; remove the overlining if there's one
+      (when (eq current-level-style 'over-and-under)
+        (forward-line -1)
+        (pel--rst-delete-whole-line))
+      (pel-rst-adorn new-level)
+      (unless quiet
+        (unless (= current-level new-level)
+          (message "Section now at level %d" new-level))))))
 
 (defun pel--rst-adorn-level-of-previous-section ()
   "Return the adornment level of the previous section in the text."
   (save-excursion
     (rst-backward-section 1)
-    (forward-line 1)
-    (pel--rst-level-for (char-after))))
+    (pel--rst-level-at)))
 
 (defun pel--rst-adorn-same-as-previous  (step)
   "Adorn current line at the STEP level compared to the previous adornment."
   (let ((level (pel--rst-adorn-level-of-previous-section)))
     (if level
-        (pel-rst-adorn (+ level step))
+        (pel-rst-adorn (pel--rst-adorn-level+= level step))
       (user-error "Cannot detect section level of previous section!"))))
 
-(defun pel--line-adorned-p ()
-  "Return t if current line is section-adorned, nil otherwise.
-REQUIREMENT: the line must not have trailing whitespaces."
+(defun pel--line-adorned-p (&optional allow-mismatch)
+  "Return t if current line is section-adorned, nil otherwise."
   (save-excursion
     ;; the line should have no trailing whitespace
     ;; check a character 2 char before end of line to be safe
     ;; since line might be indented (for some styles) and the
     ;; rst-level-x property goes up to end of line (but not on
     ;; the end-of-line character).
-    (move-end-of-line nil)
-    (backward-char 2)
+    (back-to-indentation)
     (let ((point-text-face-property (get-text-property (point) 'face)))
       (if (and point-text-face-property
                (listp point-text-face-property))
           ;; current line is adorned with the style supported by rst-mode
           ;; so just check the adornment text face property to get the level
-          (car (memq
-                (car point-text-face-property)
-                '(rst-level-1
-                  rst-level-2
-                  rst-level-3
-                  rst-level-4
-                  rst-level-5
-                  rst-level-6)))
-        ;; The level is not adorned, check character in the underline
-        ;; to detect the level (if there is one). Check that the underline
-        ;; is the same length as the title line and check its last char.
+          (not (not (memq
+                     (car point-text-face-property)
+                     '(rst-level-1
+                       rst-level-2
+                       rst-level-3
+                       rst-level-4
+                       rst-level-5
+                       rst-level-6))))
+        ;; The level is not using an adornment face, but it could still be
+        ;; underlined properly if the title line and the underlining have the
+        ;; same length. Check those and then check the character used in the
+        ;; underlining and possibly the line over the title.
         ;; It's not foolproof, but probably OK for most cases.
-        (let ((title-line-length (pel-current-line-length))
+        (let ((title-line-length (pel-line-length))
               (underline-length (progn
                                   (forward-line 1)
-                                  (pel-current-line-length))))
-          (when (equal title-line-length underline-length)
-            (move-end-of-line nil)
-            (backward-char 2)
-            (pel--rst-level-for (char-after))))))))
+                                  (pel-line-length))))
+          (if allow-mismatch
+              (> underline-length 0)
+            (when (= title-line-length underline-length)
+              ;; back to the title line
+              (forward-line -1)
+              ;; and check if the underlining is correct
+              (not (not (pel--rst-level-at))))))))))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-same-level ()
@@ -518,37 +708,31 @@ REQUIREMENT: the line must not have trailing whitespaces."
 If the line is already adorned, update the adornment:
 adjust to previous section level."
   (interactive "*")
-  (pel--rst-activate-adornment-style)
-  (let ((previous-level (pel--rst-adorn-level-of-previous-section)))
-    (if previous-level
-        (progn
-          (pel-delete-trailing-whitespace)
-          (if (pel--line-adorned-p)
-              (progn
-                (save-excursion
-                  (forward-line 1)
-                  (pel--rst-delete-whole-line))
-                (pel-rst-adorn previous-level :update))
-            (pel-rst-adorn previous-level)))
-      (user-error "Cannot detect section level of previous section!"))))
+  (let ((previous-level (pel--rst-adorn-level-of-previous-section))
+        (current-level  (pel--rst-level-at)))
+    (cond
+     ;;
+     ;; if both are adorned; adjust adornment
+     ((and (numberp previous-level)
+           (numberp current-level))
+      (unless (= previous-level current-level)
+        (pel--rst-adorn-change (- previous-level current-level))))
+     ;;
+     ;; Current line is not adorned, but there's a section before
+     ((and (numberp previous-level))
+      (pel-rst-adorn previous-level))
+     ;;
+     ;; There's no previous section, regardless of current line state
+     (t (user-error "Cannot detect section level of previous section!")))))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-refresh ()
   "Refresh the adornment of the current line.
 This helps when the length of the line changes."
   (interactive "*")
-  (pel--rst-activate-adornment-style)
-  (let ((current-level (save-excursion
-                         (forward-line 1)
-                         (pel--rst-level-for (char-after)))))
-    (if current-level
-        (progn
-          (pel-delete-trailing-whitespace)
-          (save-excursion
-            (forward-line 1)
-            (pel--rst-delete-whole-line))
-          (pel-rst-adorn current-level :update))
-      (user-error "Cannot detect section level!"))))
+  (unless (pel--line-adorned-p 'allow-mismatch)
+    (user-error "Current line is not adorned, cannot refresh it!"))
+  (pel--rst-adorn-change 0))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-increase-level ()
@@ -556,8 +740,6 @@ This helps when the length of the line changes."
 If the line is not already adorned, adorn it with a level higher than
 previous section."
   (interactive "*")
-  (pel--rst-activate-adornment-style)
-  (pel-delete-trailing-whitespace)
   (if (pel--line-adorned-p)
       (pel--rst-adorn-change 1)
     (pel--rst-adorn-same-as-previous 1)))
@@ -568,15 +750,13 @@ previous section."
 If the line not already adorned, adorn it with a level lower than
 previous section."
   (interactive "*")
-  (pel--rst-activate-adornment-style)
-  (pel-delete-trailing-whitespace)
   (if (pel--line-adorned-p)
       (pel--rst-adorn-change -1)
     (pel--rst-adorn-same-as-previous -1)))
 
 ;; ---------------------------------------------------------------------------
-;; Link/reference location bookmark management
-;; -------------------------------------------
+;;* Link/reference location bookmark management
+;;  ===========================================
 ;;
 ;; Call hierarchy:
 ;;
@@ -793,8 +973,8 @@ space for new entry!
 Move there with pel-rst-goto-ref-bookmark then add lines!"))))))))
 
 ;; ---------------------------------------------------------------------------
-;; Emphasis markup support
-;; -----------------------
+;;* Emphasis markup support
+;;  =======================
 
 (defconst pel--rst-whitespace-chars  '(?\s ?\t ?\n ?\r)
   "Supported whitespace surrounding characters.")
@@ -882,8 +1062,8 @@ and leave point inside it."
   (pel--rst-emphasize-with "`"))
 
 ;; ---------------------------------------------------------------------------
-;; Open Link URL
-;; -------------
+;;* Open Link URL
+;;  ============
 ;;
 ;; Open the URL identified by the reStucturedText link.
 ;; This way, user does not have to move point to the URL: the URL can be
@@ -948,7 +1128,16 @@ Return nil if no hyperlink target found."
     ;; search for a complete reference (target and URL on the same line) first
     (if (re-search-forward (concat regexp " +") nil :noerror)
         t
-      ;; if that fails search for a line that only has the target)
+      ;; [:todo 2026-04-23, by Pierre Rouleau: add logic to support multi-line
+      ;;                                       links]
+
+      ;; If that fails there are 2 other possibilities:
+      ;; 1) The current line is the first of a chain of references which ends
+      ;;    with a line that holds the reference with the URL.
+      ;; 2) The reference target is a section inside this file or another
+      ;;    reStructured file;
+      ;; Handle case 2: search for a line that only has the target: a section
+      ;; title.  The search must start from the top of the file.
       (goto-char (point-min))
       (if (re-search-forward regexp nil :noerror)
           ;; if that's found move to the first complete reference line
@@ -1088,7 +1277,8 @@ If point is not on a reference, the function does nothing and returns nil."
     t))
 
 ;; ---------------------------------------------------------------------------
-;; Table Helper Utility
+;;* Table Helper Utility
+;;  ====================
 
 (defun pel-rst-table-dup-separator-lines (&optional update)
   "Complete the table separator line to the top and the bottom of the table.
@@ -1116,8 +1306,8 @@ under the table title line."
     (yank)))
 
 ;; ---------------------------------------------------------------------------
-;; Output generation: compilation support
-;; --------------------------------------
+;;* Output generation: compilation support
+;;  =====================================
 
 (defvar pel-home-dirpath-name)          ; Prevent byte-compiler warning
 ;;                                      ; This is defined in PEL init.el
@@ -1136,8 +1326,7 @@ under the table title line."
     (if (executable-find pgm)
         (compile (format "%s %s"
                          command-line (buffer-file-name)))
-      (user-error
-       "Specified command line is invalid: %s is not on PATH.\
+      (user-error "Specified command line is invalid: %s is not on PATH.\
  Update pel-rst-compiler!" pgm))))
 
 ;; ---------------------------------------------------------------------------
