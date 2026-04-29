@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-29 17:42:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-29 17:59:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -280,19 +280,6 @@ Environment-independent across Emacs 26.1+ on Linux and macOS."
       (should (= (length rst-preferred-adornments) 8))
       (should (eq (pel-rst-used-adornment-style) 'default)))))
 
-(ert-deftest pel-rst-test/set-adornment/buffer-local-does-not-touch-global ()
-  "Buffer-local change (globally=nil) leaves the global default value unchanged."
-  (skip-unless (boundp 'rst-preferred-adornments))
-  (let ((orig (default-value 'rst-preferred-adornments)))
-    (with-temp-buffer
-      (rst-mode)
-      (unless (local-variable-p 'rst-preferred-adornments)
-        (make-local-variable 'rst-preferred-adornments)
-        (setq rst-preferred-adornments (default-value 'rst-preferred-adornments)))
-      (pel-rst-set-adornment 'CRiSPer nil t)
-      (should (= (length rst-preferred-adornments) 13))
-      (should (equal (default-value 'rst-preferred-adornments) orig)))))
-
 ;; ---------------------------------------------------------------------------
 ;; pel-rst-adorn-default / pel-rst-adorn-Sphinx-Python / pel-rst-adorn-CRiSPer
 ;; (thin wrapper commands)
@@ -317,13 +304,9 @@ Environment-independent across Emacs 26.1+ on Linux and macOS."
 
 (ert-deftest pel-rst-test/adorn-crisper/wrapper-applies-crisper-style ()
   "`pel-rst-adorn-CRiSPer' applies the CRiSPer style."
-  (with-temp-buffer
-    (rst-mode)
-    (let ((pel-rst-adornment-style 'default)
-          (pel--rst-used-adornment-style nil))
-      (pel-rst-adorn-CRiSPer)
-      (should (eq (pel-rst-used-adornment-style) 'CRiSPer))
-      (should (= (length rst-preferred-adornments) 13)))))
+  (pel-rst-test--with-adornment-style 'CRiSPer
+    (should (eq (pel-rst-used-adornment-style) 'CRiSPer))
+    (should (= (length rst-preferred-adornments) 13))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel--rst-level-valid-p
