@@ -305,6 +305,17 @@ is non-nil."
   ;; used.
   (when (eq style 'pel-default)
     (setq style pel-rst-adornment-style))
+
+  ;; Ensure rst is loaded and the current buffer has a concrete local slot
+  ;; for `rst-preferred-adornments` before we assign to it. This avoids
+  ;; Emacs-version/platform timing differences in how rst-mode localizes
+  ;; the user option (observed on Emacs 26.1 and some macOS builds).
+  (require 'rst nil :noerror)
+  (when (and (not globally) (boundp 'rst-preferred-adornments)
+             (not (local-variable-p 'rst-preferred-adornments)))
+    (make-local-variable 'rst-preferred-adornments)
+    (setq rst-preferred-adornments (default-value 'rst-preferred-adornments)))
+
   (let ((old-adornments rst-preferred-adornments)
         (new-adornments
          (cond ((eq style 'default)

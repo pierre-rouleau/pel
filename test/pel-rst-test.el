@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-29 15:20:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-29 15:50:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -46,8 +46,6 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-(defvar rst-preferred-adornments)       ; allow test to let-bind it
-
 (require 'pel-rst)    ;; unit under test
 (require 'pel--base)  ; use: `pel-line-length'
 (require 'ert)
@@ -216,7 +214,18 @@ Environment-independent across Emacs 26.1+ on Linux and macOS."
   (declare (indent 1) (debug t))
   `(with-temp-buffer
      (rst-mode)
+
+     ;; Pre-create local slot seeded from the global default.
+     (when (boundp 'rst-preferred-adornments)
+       (unless (local-variable-p 'rst-preferred-adornments)
+         (make-local-variable 'rst-preferred-adornments)
+         (setq rst-preferred-adornments (default-value
+                                         'rst-preferred-adornments))))
+
+     ;; Apply STYLE in this buffer.
      (pel-rst-set-adornment ,style nil :quiet)
+
+     ;; code
      ,@body))
 
 ;; ---------------------------------------------------------------------------
@@ -278,17 +287,15 @@ Environment-independent across Emacs 26.1+ on Linux and macOS."
 (ert-deftest pel-rst-test/set-adornment/buffer-local-does-not-touch-global ()
   "Buffer-local change (globally=nil) leaves the global default value unchanged."
   (skip-unless (boundp 'rst-preferred-adornments))
-  (let ((original-length (length (default-value 'rst-preferred-adornments))))
+  (let ((orig (default-value 'rst-preferred-adornments)))
     (with-temp-buffer
       (rst-mode)
-      (let ((pel--rst-used-adornment-style nil))
-        ;; Apply CRiSPer (13 levels) buffer-locally
-        (pel-rst-set-adornment 'CRiSPer nil :quiet)
-        ;; Buffer-local copy must show 13 entries
-        (should (= (length rst-preferred-adornments) 13))
-        ;; Global default must remain unchanged
-        (should (= (length (default-value 'rst-preferred-adornments))
-                   original-length))))))
+      (unless (local-variable-p 'rst-preferred-adornments)
+        (make-local-variable 'rst-preferred-adornments)
+        (setq rst-preferred-adornments (default-value 'rst-preferred-adornments)))
+      (pel-rst-set-adornment 'CRiSPer nil t)
+      (should (= (length rst-preferred-adornments) 13))
+      (should (equal (default-value 'rst-preferred-adornments) orig)))))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-rst-adorn-default / pel-rst-adorn-Sphinx-Python / pel-rst-adorn-CRiSPer
@@ -599,10 +606,12 @@ one leading space (indent-steps=1)."
 
 (ert-deftest pel-rst-test/adorn-convenience/wrappers-8-to-10-in-crisper ()
   "Wrappers 8-10 work in CRiSPer style (13 levels); skipped if unavailable."
-  (dolist (fn '(pel-rst-adorn-8 pel-rst-adorn-9 pel-rst-adorn-10))
-    (pel-rst-test--with-adornment-style 'CRiSPer
-      (should (eq (pel-rst-used-adornment-style) 'CRiSPer))
-      (should (= (length rst-preferred-adornments) 13))
+  (pel-rst-test--with-adornment-style 'CRiSPer
+    (should (eq (pel-rst-used-adornment-style) 'CRiSPer))
+    (should (= (length rst-preferred-adornments) 13))
+    ;;
+    (dolist (fn '(pel-rst-adorn-8 pel-rst-adorn-9 pel-rst-adorn-10))
+      (erase-buffer)
       (insert "Test Title")
       (goto-char (point-min))
       (funcall fn)
