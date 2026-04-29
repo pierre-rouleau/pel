@@ -395,6 +395,30 @@ With prefix argument GLOBALLY, change style to all `rst-mode' buffers."
   (interactive "P")
   (pel-rst-set-adornment 'CRiSPer globally))
 
+;; --
+
+;; Ensure our adornment style is applied after rst-mode initializes in every
+;; buffer.
+
+(defun pel--rst-activate-adornment-style ()
+  "Activate chosen RST adornment style buffer-locally after rst-mode init."
+  (when (boundp 'rst-preferred-adornments)
+    ;; Make sure we have a concrete local slot to avoid Emacs-version timing
+    ;; differences.
+    (unless (local-variable-p 'rst-preferred-adornments)
+      (make-local-variable 'rst-preferred-adornments)
+      (setq rst-preferred-adornments
+            (default-value 'rst-preferred-adornments))))
+  ;;
+  ;; Re-apply the selected style for the current  active rst-mode buffer,
+  ;; quietly.
+  (when (boundp 'pel-rst-adornment-style)
+    (ignore-errors
+      (pel-rst-set-adornment pel-rst-adornment-style nil 'quiet))))
+
+;; Install the hook with APPEND = t so we run after upstream hooks that may
+;; reset defaults.
+(add-hook 'rst-mode-hook #'pel--rst-activate-adornment-style t)
 
 ;; --
 ;;** Line Adornment Control - Adorn line at specified level
