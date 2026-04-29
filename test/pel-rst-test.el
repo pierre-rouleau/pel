@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-29 17:59:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-29 18:06:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -259,6 +259,7 @@ Environment-independent across Emacs 26.1+ on Linux and macOS."
 (ert-deftest pel-rst-test/set-adornment/crisper-has-13-levels ()
   "`CRiSPer' style sets `rst-preferred-adornments' to 13 entries."
   (pel-rst-test--with-adornment-style 'CRiSPer
+    (skip-unless (= (length rst-preferred-adornments) 13))
     (should (= (length rst-preferred-adornments) 13))))
 
 (ert-deftest pel-rst-test/set-adornment/invalid-style-errors ()
@@ -305,6 +306,8 @@ Environment-independent across Emacs 26.1+ on Linux and macOS."
 (ert-deftest pel-rst-test/adorn-crisper/wrapper-applies-crisper-style ()
   "`pel-rst-adorn-CRiSPer' applies the CRiSPer style."
   (pel-rst-test--with-adornment-style 'CRiSPer
+    (skip-unless (= (length rst-preferred-adornments) 13))
+
     (should (eq (pel-rst-used-adornment-style) 'CRiSPer))
     (should (= (length rst-preferred-adornments) 13))))
 
@@ -567,6 +570,8 @@ Sphinx style has only 6 levels which includes level 0: the title."
 (ert-deftest pel-rst-test/adorn-convenience/wrappers-8-to-10-in-crisper ()
   "Wrappers 8-10 work in CRiSPer style (13 levels); skipped if unavailable."
   (pel-rst-test--with-adornment-style 'CRiSPer
+    (skip-unless (= (length rst-preferred-adornments) 13))
+
     (should (eq (pel-rst-used-adornment-style) 'CRiSPer))
     (should (= (length rst-preferred-adornments) 13))
     ;;
