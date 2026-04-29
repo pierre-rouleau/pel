@@ -47,7 +47,6 @@
 ;;
 ;;  - Line Adornment Control - Adorn line at specified level
 ;;  * `pel-rst-adorn-title'          -> `pel-rst-adorn'
-;;    - `pel--rst-level-adorn-level-style'
 ;;  * `pel-rst-adorn-1'              -> `pel-rst-adorn'
 ;;  * `pel-rst-adorn-2'              -> `pel-rst-adorn'
 ;;  * `pel-rst-adorn-3'              -> `pel-rst-adorn'
@@ -60,6 +59,7 @@
 ;;  * `pel-rst-adorn-10'             -> `pel-rst-adorn'
 ;;    - `pel-rst-adorn'
 ;;      - `pel--rst-level-valid-p'
+;;      - `pel--rst-level-adorn-level-style'
 ;;
 ;;  - Line Adornment Control - Add/Adjust Adornment Line
 ;;    - `pel--rst-adorn-change'
@@ -276,7 +276,9 @@ the value of the rst-mode `rst-preferred-adornments' user-option.")
   "Set the reStructuredText adornment STYLE.
 
 STYLE identifies the number of levels supported and their adornment.
-- \\='default is Emacs `rst-mode' default.  A title and 7 levels.
+- \\='default is Emacs `rst-mode' default identified by
+  `rst-preferred-adornments' user-option which defaults to a title and 7
+  levels.
 - \\='Sphinx-Python is what Sphinx uses: 6 levels:
   - parts,
   - chapters,
@@ -414,31 +416,55 @@ but when UPDATE is nil, it adds a new line after the underlining.
     (user-error "Level %d not available in %s adornment style"
                 level
                 pel-rst-adornment-style))
-
-  (save-excursion
-    (pel-delete-trailing-whitespace)
-    (let* ((linelen (pel-line-length))
-           (adorn-level (nth level rst-preferred-adornments))
-           (adorn-char (car adorn-level))
-           (adorn-style (nth 1 adorn-level))
-           (indent-steps (nth 2 adorn-level)))
-      (move-end-of-line nil)
-      (insert (format "\n%s"
-                      (make-string linelen adorn-char)))
-      (when (eq adorn-style 'over-and-under)
-        (forward-line -2)
+  ;; proceed if level is OK.
+  (let* ((orig-line (line-number-at-pos))
+         (has-over-line (eq (pel--rst-level-adorn-level-style level)
+                            'over-and-under))
+         (need-space-at-top
+          (and (< orig-line 2)
+               has-over-line)))
+    (when need-space-at-top
+      ;; Create empty line above title text to allow for overlining
+      (goto-char (point-min))
+      (insert "\n"))
+    (save-excursion
+      (pel-delete-trailing-whitespace)
+      (let* ((linelen (pel-line-length))
+             (adorn-level (nth level rst-preferred-adornments))
+             (adorn-char (car adorn-level))
+             (adorn-style (nth 1 adorn-level))
+             (indent-steps (nth 2 adorn-level)))
+        (move-end-of-line nil)
         (insert (format "\n%s"
-                        (make-string linelen adorn-char))))
-      ;; if the style requires indentation, indent the 3 lines
-      (when (> indent-steps 0)
-        (dotimes (_i indent-steps)
-          (dolist (rel-line  '(0 2 2))
-            (beginning-of-line rel-line)
-            (insert " ")))))))
+                        (make-string linelen adorn-char)))
+        (when (eq adorn-style 'over-and-under)
+          (forward-line -2)
+          (insert (format "\n%s"
+                          (make-string linelen adorn-char))))
+        ;; if the style requires indentation, indent the 3 lines
+        (when (> indent-steps 0)
+          (let ((indentation (make-string indent-steps ?\s)))
+            (dotimes (_i 3)
+              (beginning-of-line)
+              (insert indentation)
+              (forward-line 1))))))
+    (when need-space-at-top
+      ;; delete the empty line previously added
+      (forward-line -2)
+      (delete-char 1)
+      (forward-line 1))
+    ;; For title-like over and under-linking: add lines after.
+    (when has-over-line
+      ;; move point to end of title
+      (end-of-line)
+      (push-mark)
+      (forward-line 3)
+      (insert "\n"))))
 
 ;; The following convenience functions defined to ease execution from keys
 
 ;;-pel-autoload
+
 (defun pel-rst-adorn-title ()
   "Adorn current line with level-0 (title) reStructuredText section adornment.
 If point is at the top of the file, the top adorn line is placed
@@ -447,25 +473,7 @@ on the first line of the file.
 In all cases, a mark is left at the end of the title text line
 and point is placed 2 lines below."
   (interactive "*")
-  (let* ((orig-line (line-number-at-pos))
-         (need-space-at-top
-          (and (< orig-line 2)
-               (eq (pel--rst-level-adorn-level-style 0) 'over-and-under))))
-    (when need-space-at-top
-      ;; Create empty line above title text to allow for overlining
-      (goto-char (point-min))
-      (insert "\n"))
-    (pel-rst-adorn 0)
-    (when need-space-at-top
-      ;; delete the empty line previously added
-      (forward-line -2)
-      (delete-char 1)
-      (forward-line 1))
-    ;; move point to end of title
-    (end-of-line)
-    (push-mark)
-    (forward-line 3)
-    (insert "\n")))
+  (pel-rst-adorn 0))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-1 ()
