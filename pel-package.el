@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 15:07:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 15:22:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -913,25 +913,28 @@ also be requested by PEL user-options.\n"))
     (when errors
       (error "PEL Specification errors: %d" (length errors)))))
 
-(defvar loaded-file-name load-file-name)
-(defconst pel-pkg-stat-excluded-file '(".dir-locals.el"
-                                       "install-pel.el"
-                                       "pel-autoloads.el"
-                                       "pel-pkg.el"
-                                       "pel_keys.el"
-                                       "pel__hydra.el")
-  "Name of the PEL Emacs Lisp files not used to gather statistics.")
+(defconst loaded-file-name (or load-file-name buffer-file-name)
+  "Path of this file, set at load time.")
+
+(defconst pel-pkg-stat-excluded-files '(".dir-locals.el"
+                                        "install-pel.el"
+                                        "pel-autoloads.el"
+                                        "pel-pkg.el"
+                                        "pel_keys.el"
+                                        "pel__hydra.el")
+  "Name of PEL Emacs Lisp files not used to gather statistics.")
 
 (defun pel--elisp-files ()
   "Return a list of the PEL Emacs Lisp files that must be taken into account.
 
-Exclude files identified in `pel-pkg-stat-excluded-file' to gather the
+Exclude files identified in `pel-pkg-stat-excluded-files' to gather the
 statistics."
   (condition-case err
-      (let* ((current-dir-files (process-lines "git" "ls-files" "--" ":(glob)*.el"))
+      (let* ((default-directory (file-name-directory loaded-file-name))
+             (current-dir-files (process-lines "git" "ls-files" "--" ":(glob)*.el"))
              (filtered-files (cl-remove-if
                               (lambda (file)
-                                (member file pel-pkg-stat-excluded-file))
+                                (member file pel-pkg-stat-excluded-files))
                               current-dir-files)))
         filtered-files)
     (error
@@ -944,7 +947,7 @@ statistics."
 
 Use this to compute statistics.
 Requires git to be available in PATH and the PEL files to be
-inside a git repository (uses `pel--elisp-files')"
+inside a git repository (uses `pel--elisp-files')."
   (interactive)
   (let ((current-directory (file-name-directory loaded-file-name)))
     (dolist (file (pel--elisp-files))
