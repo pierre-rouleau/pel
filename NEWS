@@ -73,7 +73,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     the maximum number of key bindings under the ~<f12>~ key of supported major modes.
 - New feature: a mechanism that simplifies single stepping into Emacs Lisp code and using a specific buffer for context.
   This feature is mainly useful when writing new Elisp code and single step while editing, without having to use the debugger to single step into the code.
-  This includes 4 commands, available in the Emacs Lisp buffers:
+  This includes 4 commands, available in the Emacs Lisp buffers, bound under the PEL ~<f12>~ major prefix of Emacs Lisp buffers only, and also available under the longer generic ~<f11> SPC l~ key prefix for Emacs Lisp buffers:
   - *pel-eval-info*, bound to ~<f12> x ?~, which display the state of the feature: whether it is active and which buffer is the context target buffer.
   - *pel-eval-set-target-buffer*, bound to ~<f12> x b~, which prompts for a context target buffer that will be affected by the executed Elisp code.
   - *pel-eval-stop*, bound to ~<f12> x s~, which disconnects the context target buffer.

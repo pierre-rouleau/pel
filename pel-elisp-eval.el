@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, June  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 09:25:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 10:11:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -71,8 +71,8 @@
 ;; it) to execute with `pel-eval-to-target' which then moves to the next one.
 
 
-(defvar pel--eval-target-buffer nil
-  "The buffer where code will be executed.")
+(defvar-local pel--eval-target-buffer nil
+  "The context buffer where extracted code will be executed.")
 
 
 (defun pel--eval-buffer-binding-type ()
@@ -118,12 +118,18 @@
   (setq pel--eval-target-buffer nil))
 
 (defun pel--safe-forward-sexp ()
-  "Move to the beginning of the next sexp.
+  "Move to the end of the next sexp.
 Signal user-error if there is no sexp forward."
   (let ((original-pos (point)))
-    (forward-sexp)  ; moves to the end of sexp
-    (unless (and (< original-pos (point))
-                 (eq (char-before) ?\)))
+    (condition-case _err
+        ;; move to the end of sexp.
+        ;; May throw a scan-error in some versions of Emacs but not all.
+        (forward-sexp)
+      (scan-error
+       (user-error "No sexp found at point (%d)!" original-pos)))
+    (when (or (= (point)  original-pos)
+              (and (eobp)
+                   (not (eq (char-before) ?\)))))
       (user-error "No sexp found at point (%d)!" original-pos))))
 
 ;;-pel-autoload
@@ -145,8 +151,11 @@ Signals a user  error if there is no sexp forward."
                 (elisp--preceding-sexp))))
     (with-current-buffer pel--eval-target-buffer
       (eval sexp (buffer-local-value 'lexical-binding (current-buffer))))
-    ;; Move point forward for the next "step"
-    (forward-sexp)
+    ;; Move point forward for the next "step".
+    (condition-case _err
+        (forward-sexp)
+      (scan-error
+       (user-error "No more sexp found!")))
     ;; Skip as many comments as possible.
     (forward-comment most-positive-fixnum)))
 
