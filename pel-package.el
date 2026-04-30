@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 15:22:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 15:33:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -919,10 +919,11 @@ also be requested by PEL user-options.\n"))
 (defconst pel-pkg-stat-excluded-files '(".dir-locals.el"
                                         "install-pel.el"
                                         "pel-autoloads.el"
+                                        "pel-package.el" ; already loaded
                                         "pel-pkg.el"
-                                        "pel_keys.el"
+                                        "pel_keys.el"    ; already loaded
                                         "pel__hydra.el")
-  "Name of PEL Emacs Lisp files not used to gather statistics.")
+  "List of names of PEL Emacs Lisp files not used to gather statistics.")
 
 (defun pel--elisp-files ()
   "Return a list of the PEL Emacs Lisp files that must be taken into account.
