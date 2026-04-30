@@ -418,7 +418,7 @@ packages, etc...
 --------------------------
 
 
-- PEL provides over 732 extra commands.  PEL commands extend the packages
+- PEL provides 732 extra commands.  PEL commands extend the packages
   it supports and provides some of its own features.  Some commands are only
   available for a given OS, most are accessible in every OS.
 - When the ``pel-use-hydra`` user-option is turned on, PEL provides 12

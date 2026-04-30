@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2026-04-30 13:56:21 EDT, updated by Pierre Rouleau.
+:Modified: 2026-04-30 14:25:00 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025, 2026 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -7720,7 +7720,7 @@ Naming Conventions
   that have the "pel-" prefix and the "-test" suffix.
 
 - Other Emacs Lisp files are included in this repository,
-  such as ``install-pel.el``.   These file are not part of PEL
+  such as ``install-pel.el``.   Theses file are not part of PEL
   itself and may be removed in the future.
   These files contain code that is not part of PEL but are used to develop PEL.
   The names of these files do not start with "pel-" but they end with "-pel".
