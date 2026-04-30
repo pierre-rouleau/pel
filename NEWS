@@ -1,6 +1,6 @@
 PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
-* Changes since Version 0.4.2:
+* New in Version 0.4.2 (under development):
 - *Breaking change: major overhaul* of configuration and logic for specialized file searching done by *pel-open-at-point* and the
   pel-ffind functions.
   - All specialized file searching is now controlled by the concept of development *project* and no longer major mode specific as
