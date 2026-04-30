@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, June  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 07:21:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 09:25:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -67,29 +67,46 @@
 ;; Identify the target buffer by executing `pel-eval-set-target-buffer'.
 ;;
 ;; Once that done, select the buffer that holds the code you want to execute
-;; manually.  Place point at the location of the first sexp to execute then
-;; execute `pel-eval-to-target' to execute the sexp and move to the next one.
+;; manually.  Place point at or before the start of the first sexp (not inside
+;; it) to execute with `pel-eval-to-target' which then moves to the next one.
 
 
 (defvar pel--eval-target-buffer nil
   "The buffer where code will be executed.")
+
+
+(defun pel--eval-buffer-binding-type ()
+  "Return a string describing the binding type of current buffer code."
+  (if (buffer-local-value 'lexical-binding (current-buffer))
+      "lexical"
+    "dynamic"))
 
 ;;-pel-autoload
 (defun pel-eval-info ()
   "Print state of single step executer."
   (interactive)
   (if pel--eval-target-buffer
-      (message "Elisp Code Stepping done in context of buffer: %s" (buffer-name pel--eval-target-buffer))
+      (if (buffer-live-p pel--eval-target-buffer)
+          (message
+           "Elisp %s binding code stepping done in context of buffer: %s"
+           (pel--eval-buffer-binding-type)
+           (buffer-name pel--eval-target-buffer))
+        ;; The buffer previously used is no longer valid.
+        (setq pel--eval-target-buffer nil)
+        (message
+         "Previously used buffer was killed; Elisp code stepping now stopped"))
     (message "Elisp Code Stepping is inactive")))
 
 ;;-pel-autoload
 (defun pel-eval-set-target-buffer ()
   "Prompt for and set the target buffer for remote evaluation."
   (interactive)
-  (let* ((buf-name (read-buffer "Select buffer: "(other-buffer (current-buffer)) t))
+  (let* ((buf-name (read-buffer "Select buffer: "
+                                (other-buffer (current-buffer))
+                                t))
          (buf-obj (get-buffer buf-name)))
     (setq pel--eval-target-buffer buf-obj)
-    (message "Evaluation target set to: %s" buf-obj)))
+    (message "Evaluation target set to: %s" (buffer-name buf-obj))))
 
 ;;-pel-autoload
 (defun pel-eval-stop ()
@@ -97,14 +114,26 @@
   (interactive)
   (unless pel--eval-target-buffer
     (user-error "No target buffer selected for single stepping.
- Execute pel-eval-set-target-buffer in the target buffer first!"))
+ Execute pel-eval-set-target-buffer to select a target buffer first!"))
   (setq pel--eval-target-buffer nil))
+
+(defun pel--safe-forward-sexp ()
+  "Move to the beginning of the next sexp.
+Signal user-error if there is no sexp forward."
+  (let ((original-pos (point)))
+    (forward-sexp)  ; moves to the end of sexp
+    (unless (and (< original-pos (point))
+                 (eq (char-before) ?\)))
+      (user-error "No sexp found at point (%d)!" original-pos))))
 
 ;;-pel-autoload
 (defun pel-eval-to-target ()
   "Evaluate the expression at point in the target buffer and move to the next.
 The evaluation of the sexp in the current buffer is done in the context buffer
-that was identified by the last execution of `pel-eval-set-target-buffer'."
+that was identified by the last execution of `pel-eval-set-target-buffer'.
+That evaluation is using the same kind of binding that is used by the current
+buffer holding the Elisp code that is executed.
+Signals a user  error if there is no sexp forward."
   (interactive)
 
   (unless (and pel--eval-target-buffer (buffer-live-p pel--eval-target-buffer))
@@ -112,14 +141,14 @@ that was identified by the last execution of `pel-eval-set-target-buffer'."
 
   (let ((sexp (save-excursion
                 ;; Move to end of current sexp to capture it
-                (forward-sexp)
+                (pel--safe-forward-sexp)
                 (elisp--preceding-sexp))))
     (with-current-buffer pel--eval-target-buffer
-      (eval sexp))
+      (eval sexp (buffer-local-value 'lexical-binding (current-buffer))))
     ;; Move point forward for the next "step"
     (forward-sexp)
-    ;; Skip as many comments as possible. Use point-max as a large value.
-    (forward-comment (point-max))))
+    ;; Skip as many comments as possible.
+    (forward-comment most-positive-fixnum)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elisp-eval)
