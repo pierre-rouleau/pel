@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 22:55:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 15:49:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -162,6 +162,7 @@
 (require 'pel-navigate)         ; use: `pel-backward-token-start'
 (require 'pel-elpa)             ; use: `pel-elpa-package-directories'
 ;;                              ;      `pel-el-files-in'
+(require 'cl-lib)               ; use: `cl-remove-if'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -912,171 +913,50 @@ also be requested by PEL user-options.\n"))
     (when errors
       (error "PEL Specification errors: %d" (length errors)))))
 
-(defvar loaded-file-name load-file-name)
+(defconst loaded-file-name (or load-file-name buffer-file-name)
+  "Path of this file, set at load time.")
+
+(defconst pel-pkg-stat-excluded-files
+  '(".dir-locals.el"        ; does not define PEL code
+    "install-pel.el"        ; does not define PEL code
+    "pel-autoloads.el"      ; does not define PEL code
+    "pel-package.el"        ; this file
+    "pel-pkg.el"            ; does not define PEL code
+    "pel_keys.el"           ; loaded by `pel-package-info-all'
+    "pel__hydra.el"         ; special PEL code to exclude.
+    )
+  "List of names of PEL Emacs Lisp files not used to gather statistics.")
+
+(defun pel--elisp-files ()
+  "Return a list of the PEL Emacs Lisp files that must be taken into account.
+
+Requires git to be available in PATH and the PEL source to be inside a git
+repository.
+
+Exclude files identified in `pel-pkg-stat-excluded-files' to gather the
+statistics."
+  (condition-case err
+      (let* ((default-directory (file-name-directory loaded-file-name))
+             (current-dir-files (process-lines "git" "ls-files" "--" ":(glob)*.el"))
+             (filtered-files (cl-remove-if
+                              (lambda (file)
+                                (member file pel-pkg-stat-excluded-files))
+                              current-dir-files)))
+        filtered-files)
+    (error
+     (user-error "pel--elisp-files: git call failed: %s"
+                 (error-message-string err)))))
+
 
 (defun pel-load-all ()
   "Load *all* PEL files.
 
-Use this to compute statistics."
+Use this to compute statistics.
+Requires git to be available in PATH and the PEL files to be
+inside a git repository (uses `pel--elisp-files')."
   (interactive)
-  (let ((current-directory (file-name-directory loaded-file-name))
-        (files (list
-                "pel--base.el"
-                "pel--keys-macros.el"
-                "pel--macros.el"
-                "pel--options.el"
-                "pel--syntax-macros.el"
-                "pel-abbrev.el"
-                "pel-align.el"
-                "pel-applescript.el"
-                "pel-as.el"
-                "pel-autocomplete.el"
-                "pel-autoload.el"
-                "pel-benchmark.el"
-                "pel-bookmark.el"
-                "pel-browse.el"
-                "pel-buffer.el"
-                "pel-c-comment.el"
-                "pel-c-preproc.el"
-                "pel-c-utils.el"
-                "pel-cc-find.el"
-                "pel-cc-linux-kernel.el"
-                "pel-cc-navigate.el"
-                "pel-cc.el"
-                "pel-ccp.el"
-                "pel-comint.el"
-                "pel-comment-adorn.el"
-                "pel-comment.el"
-                "pel-commonlisp.el"
-                "pel-comp.el"
-                "pel-completion.el"
-                "pel-cpp.el"
-                "pel-cua.el"
-                "pel-cursor.el"
-                "pel-custom.el"
-                "pel-d.el"
-                "pel-diff.el"
-                "pel-dtreplace.el"
-                "pel-elisp-analyze.el"
-                "pel-elisp-eval.el"
-                "pel-elisp.el"
-                "pel-elpa.el"
-                "pel-emacs-analyze.el"
-                "pel-emacs.el"
-                "pel-erlang.el"
-                "pel-ert.el"
-                "pel-etags.el"
-                "pel-face-ut.el"
-                "pel-ffind-inpath.el"
-                "pel-ffind.el"
-                "pel-file-recent.el"
-                "pel-file.el"
-                "pel-filedir.el"
-                "pel-filex.el"
-                "pel-fill.el"
-                "pel-font.el"
-                "pel-frame-control.el"
-                "pel-fs.el"
-                "pel-go.el"
-                "pel-goto-addr.el"
-                "pel-graphviz-dot.el"
-                "pel-hash.el"
-                "pel-help.el"
-                "pel-hex.el"
-                "pel-hide-docstring.el"
-                "pel-hideshow.el"
-                "pel-highlight.el"
-                "pel-ibuffer.el"
-                "pel-ido.el"
-                "pel-iedit-modes-support.el"
-                "pel-iedit.el"
-                "pel-imenu-dbg.el"
-                "pel-imenu-ido.el"
-                "pel-imenu.el"
-                "pel-indent.el"
-                "pel-ini.el"
-                "pel-itemize.el"
-                "pel-kbmacros.el"
-                "pel-key-chord.el"
-                "pel-lfe.el"
-                "pel-line-control.el"
-                "pel-lisp.el"
-                "pel-lispy.el"
-                "pel-list.el"
-                "pel-lsp.el"
-                "pel-lua.el"
-                "pel-make.el"
-                "pel-man.el"
-                "pel-mark.el"
-                "pel-navigate.el"
-                "pel-net.el"
-                "pel-nim.el"
-                "pel-numkpad.el"
-                "pel-open.el"
-                "pel-outline.el"
-                "pel-package.el"
-                "pel-pathmng.el"
-                "pel-perl.el"
-                "pel-pike.el"
-                "pel-plantuml.el"
-                "pel-pp.el"
-                "pel-process.el"
-                "pel-prompt.el"
-                "pel-psw.el"
-                "pel-python.el"
-                "pel-read.el"
-                "pel-regexp.el"
-                "pel-register.el"
-                "pel-rpm-spec.el"
-                "pel-rst.el"
-                "pel-ruby.el"
-                "pel-scheme.el"
-                "pel-screen.el"
-                "pel-scroll.el"
-                "pel-search-regexp.el"
-                "pel-search.el"
-                "pel-seed7.el"
-                "pel-seq.el"
-                "pel-server.el"
-                "pel-setup-27.el"
-                "pel-setup-base.el"
-                "pel-setup.el"
-                "pel-sh.el"
-                "pel-shell.el"
-                "pel-skels-c.el"
-                "pel-skels-clisp.el"
-                "pel-skels-cpp.el"
-                "pel-skels-elisp.el"
-                "pel-skels-erlang.el"
-                "pel-skels-generic.el"
-                "pel-skels-rst.el"
-                "pel-skels.el"
-                "pel-smartparens.el"
-                "pel-speedbar.el"
-                "pel-spell-iedit.el"
-                "pel-spell.el"
-                "pel-sudo-edit.el"
-                "pel-syntax.el"
-                "pel-tcl.el"
-                "pel-tempo.el"
-                "pel-text-insert.el"
-                "pel-text-transform.el"
-                "pel-time.el"
-                "pel-timestamp.el"
-                "pel-undo.el"
-                "pel-uuid.el"
-                "pel-vc.el"
-                "pel-vcs.el"
-                "pel-whitespace.el"
-                "pel-window.el"
-                "pel-xr.el"
-                "pel-xref.el"
-                "pel-yang.el"
-                ;; Don't load the special hydra support as it
-                ;; would cause build problems here.
-                ;; "pel__hydra.el"
-                )))
-    (dolist (file files)
+  (let ((current-directory (file-name-directory loaded-file-name)))
+    (dolist (file (pel--elisp-files))
       (load-file (expand-file-name file current-directory)))))
 
 (defun pel-package-info-all ()
