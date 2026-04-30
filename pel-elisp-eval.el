@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, June  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-06-07 10:43:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-29 23:40:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -38,13 +38,13 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
-
 ;; Credit: Stephen Berman provided the core of the following function to
 ;; extract the result to copy in the kill-ring.
 
+;;-pel-autoload
 (defun pel-eval-last-sexp-and-copy ()
   "Evaluate sexp before point; print value in echo area and copy to kill-ring."
-  (interactive )
+  (interactive)
   (let ((result (eval (macroexpand-all
                            (eval-sexp-add-defvars
                             (elisp--eval-defun-1
@@ -52,6 +52,73 @@
                       lexical-binding)))
     (message "%s" result)
     (kill-new (format "%s" result))))
+
+
+;; ---------------------------------------------------------------------------
+;;* Elisp Code Stepper - With Target Buffer
+;;  =======================================
+;;
+;; The purpose of the following code is to single step inside some Emacs Lisp
+;; code as if it ran inside another buffer.  This is quite useful when writing
+;; unit test code for Emacs Lisp files.
+;;
+;; To use it you need at least 2 buffers: one buffer where the operation will
+;; be performed and a buffer with the Emacs Lisp code to execute.
+;; Identify the target buffer by executing `pel-eval-set-target-buffer'.
+;;
+;; Once that done, select the buffer that holds the code you want to execute
+;; manually.  Place point at the location of the first sexp to execute then
+;; execute `pel-eval-to-target' to execute the sexp and move to the next one.
+
+
+(defvar pel--eval-target-buffer nil
+  "The buffer where code will be executed.")
+
+;;-pel-autoload
+(defun pel-eval-info ()
+  "Print state of single step executer."
+  (interactive)
+  (if pel--eval-target-buffer
+      (message "Elisp Code Stepping done in context of buffer: %s" pel--eval-target-buffer)
+    (message "Elisp Code Stepping is inactive")))
+
+;;-pel-autoload
+(defun pel-eval-set-target-buffer ()
+  "Set the current buffer as the target for remote evaluation."
+  (interactive)
+  (let* ((buf-name (read-buffer "Select buffer: "(other-buffer (current-buffer)) t))
+         (buf-obj (get-buffer buf-name)))
+    (setq pel--eval-target-buffer buf-obj)
+    (message "Evaluation target set to: %s" buf-obj)))
+
+;;-pel-autoload
+(defun pel-eval-stop ()
+  "Stop using the previously selected buffer for code stepping."
+  (interactive)
+  (unless pel--eval-target-buffer
+    (user-error "No target buffer selected for single stepping.
+ Execute pel-eval-set-target-buffer in the target buffer first!"))
+  (setq pel--eval-target-buffer nil))
+
+;;-pel-autoload
+(defun pel-eval-to-target ()
+  "Evaluate the expression at point in the target buffer and move to the next."
+  (interactive)
+
+  (unless (and pel--eval-target-buffer (buffer-live-p pel--eval-target-buffer))
+    (call-interactively 'pel-eval-set-target-buffer))
+
+  (let ((sexp (save-excursion
+                ;; Move to end of current sexp to capture it
+                (forward-sexp)
+                (elisp--preceding-sexp))))
+    (with-current-buffer pel--eval-target-buffer
+      (eval sexp))
+    ;; Move point forward for the next "step"
+    (forward-sexp)
+    (forward-line)
+    (back-to-indentation)
+    (message "Evaluated in %s" (buffer-name pel--eval-target-buffer))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elisp-eval)

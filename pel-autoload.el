@@ -373,7 +373,11 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-run-ert)
 
   (pel-autoload "pel-elisp-eval" for:
-    pel-eval-last-sexp-and-copy)
+    pel-eval-last-sexp-and-copy
+    pel-eval-info
+    pel-eval-set-target-buffer
+    pel-eval-stop
+    pel-eval-to-target)
 
   ;; --
   (pel-autoload "pel-elixir" for:

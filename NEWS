@@ -71,6 +71,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Also modified key binding of the command setting the adornment style: they are all under the ~<f12> <f4> a~ prefix.
     The goal is to bind all major mode specific setup commands under their ~<f12> <f4>~ key prefix for consistency and also to free
     the maximum number of key bindings under the ~<f12>~ key of supported major modes.
+- New feature: a mechanism that simplifies single stepping into Emacs Lisp code and using a specific buffer for context.
+  This feature is mainly useful when writing new Elisp code and single step while editing, without having to use the debugger to single step into the code.
+  This includes 4 commands, available in the Emacs Lisp buffers:
+  - *pel-eval-info*, bound to ~<f12> x ?~, which display the state of the feature; whether it is active and which buffer is the context target buffer.
+  - *pel-eval-set-target-buffer*, bound to ~<f12> x b~, which prompts for a context target buffer that will be affected by the executed Elisp code.
+  - *pel-eval-stop*, bound to ~<f12> x s~, which disconnects the context target buffer.
+  - *pel-eval-to-target*, bound to ~<f12> x x~, which reads the next Emacs Lisp sexp at point and evaluates it in the context of the context buffer.
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
 - Improve *pel-ccp-info*: it now prints the content of the kill ring and key bindings of useful commands.
