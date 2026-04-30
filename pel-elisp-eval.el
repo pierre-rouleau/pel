@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, June  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 11:02:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 11:15:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -115,7 +115,7 @@
   (interactive)
   (unless pel--eval-target-buffer
     (user-error "No target buffer selected for single stepping.
- Execute pel-eval-set-target-buffer to select a target buffer first!"))
+ Execute `pel-eval-set-target-buffer' to select a target buffer first!"))
   (setq pel--eval-target-buffer nil)
   (message "Elisp code stepping stopped"))
 
@@ -141,7 +141,7 @@ The evaluation of the sexp in the current buffer is done in the context buffer
 that was identified by the last execution of `pel-eval-set-target-buffer'.
 That evaluation is using the same kind of binding that is used by the current
 buffer holding the Elisp code that is executed.
-Signals a user  error if there is no sexp forward."
+Signals a user error if there is no sexp forward."
   (interactive)
 
   (unless (and pel--eval-target-buffer (buffer-live-p pel--eval-target-buffer))
@@ -156,7 +156,9 @@ Signals a user  error if there is no sexp forward."
     (with-current-buffer pel--eval-target-buffer
       (eval sexp (buffer-local-value 'lexical-binding (current-buffer))))
     ;; Move point forward for the next sexp
-    ;; If there's none that's OK; the issue will be detected later.
+    ;; If `forward-sexp' signals an error (as it does in some versions of Emacs)
+    ;; or if it does not and there no sexp: that's OK; the issue will be
+    ;; detected later if the user tries to step in code again.
     ;; Just make sure to catch scan error the function may throw.
     (condition-case _err
         (forward-sexp)
