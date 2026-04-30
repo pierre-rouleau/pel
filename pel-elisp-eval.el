@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, June  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 11:25:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 11:38:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -150,9 +150,13 @@ Signals a user error if there is no sexp forward."
   (let ((sexp (save-excursion
                 ;; Move to end of current sexp to capture it
                 (pel--safe-forward-sexp)
-                (elisp--preceding-sexp))))
+                (elisp--preceding-sexp)))
+        (use-lexical-binding lexical-binding))
     (with-current-buffer pel--eval-target-buffer
-      (eval sexp (buffer-local-value 'lexical-binding (current-buffer))))
+      ;; execute source code with binding used in the source buffer but
+      ;; execute that code in the context of the target buffer; that buffer
+      ;; may be using any major mode.
+      (eval sexp use-lexical-binding))
     ;; Move point forward for the next sexp
     ;; If `forward-sexp' signals an error (as it does in some versions of
     ;; Emacs) issue a user error.
