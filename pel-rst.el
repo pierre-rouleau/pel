@@ -24,9 +24,22 @@
 ;;; Commentary:
 ;;
 ;; This file contains defintions to extend the support of reStructuredText
-;; files. The following call hierarchy list the commands (*), and the
-;; functions (-) they call.  The (.) markers identify function hierarchy
-;; reference that are not expanded further because that's done somewhere else.
+;; files.  It provides several facilities that improve upon the standard
+;; `rst-mode':
+;;
+;;  - Dynamic underscore syntax management
+;;  - Simple section adornment management
+;;  - Hyperlink creation and navigation
+;;  - Emphasis markup commands
+;;  - Specialized file opening that supports hyperlinks and web pages
+;;  - Table helper
+;;  - Compilation support: generation of HTML from reStructuredText file.
+;;
+;;
+;;
+;; The following call hierarchy list the commands (*), and the functions (-)
+;; they call.  The (.) markers identify function hierarchy reference that are
+;; not expanded further because that's done somewhere else.
 ;;
 ;; - rst-mode character syntax control
 ;;
@@ -118,6 +131,7 @@
 ;;     - `pel-at-rst-reference-p'
 ;;     * `pel-rst-open-target'
 ;;       - `pel--move-to-rst-target'
+;;         - `pel--valid-ref-on-following-line-after'
 ;;       - `pel--rst-reference-target'
 ;;         . `pel-at-rst-reference-p'
 ;;
@@ -1116,6 +1130,26 @@ represents."
     (unless noerror
       (user-error "Point is not located over a rst-reference!"))))
 
+
+(defun pel--valid-ref-on-following-line-after (&optional pos)
+  "Check if a relevant reference target is present on a line below.
+
+Return the position of the target URL/reference-text if there is one, nil
+if there is none.
+
+A relevant reference target is a reference target with a complete target
+on a line below the current line with no intervening empty line between."
+  (let ((start-pos (or pos (point)))
+        (target-pos nil))
+    (save-excursion
+      (setq target-pos (re-search-forward
+                        "^.. _[[:alnum:] _\\\\'-]+: +[[:alnum:]]"
+                        nil :noerror))
+      (when target-pos
+        (goto-char start-pos)
+        (unless (re-search-forward "^$" target-pos :noerror)
+          (1- target-pos))))))
+
 (defun pel--move-to-rst-target (target)
   "Move point to the rst definition link for TARGET.
 
@@ -1128,28 +1162,36 @@ Return nil if no hyperlink target found."
     ;; search for a complete reference (target and URL on the same line) first
     (if (re-search-forward (concat regexp " +") nil :noerror)
         t
-      ;; [:todo 2026-04-23, by Pierre Rouleau: add logic to support multi-line
-      ;;                                       links]
-
-      ;; If that fails there are 2 other possibilities:
-      ;; 1) The current line is the first of a chain of references which ends
-      ;;    with a line that holds the reference with the URL.
-      ;; 2) The reference target is a section inside this file or another
-      ;;    reStructured file;
-      ;; Handle case 2: search for a line that only has the target: a section
-      ;; title.  The search must start from the top of the file.
+      ;; If that fails, check if we find a reference line without a target
+      ;; followed by the real reference that has the target.
       (goto-char (point-min))
-      (if (re-search-forward regexp nil :noerror)
-          ;; if that's found move to the first complete reference line
-          (re-search-forward ": +.+$" nil :noerror)
-        ;; otherwise try to find a line that begins with the target
-        ;; that might be a title
-        (goto-char (point-min))
-        (when (re-search-forward (format "^%s$" target) nil :noerror)
-          ;; It's a title target! Not a file target!
-          ;; Just move point there and leave it there!
-          (list 'rst-title (point)))))))
-
+      (let* ((empty-ref-pos (re-search-forward regexp nil :noerror))
+             (final-target-pos nil))
+        (when empty-ref-pos
+          (setq final-target-pos
+                (pel--valid-ref-on-following-line-after empty-ref-pos))
+          (if final-target-pos
+              ;; Found a final target@! Use that!
+              (goto-char final-target-pos)
+            ;; If that fails there are 2 other possibilities:
+            ;; 1) The current line is the first of a chain of references which
+            ;;    ends with a line that holds the reference with the URL.
+            ;; 2) The reference target is a section inside this file or
+            ;;    another reStructuredText file;
+            ;; Handle case 2: search for a line that only has the target:
+            ;;    a section title.  The search must start from the top of
+            ;;    the file.
+            (goto-char (point-min))
+            (if (re-search-forward regexp nil :noerror)
+                ;; if that's found move to the first complete reference line
+                (re-search-forward ": +.+$" nil :noerror)
+              ;; otherwise try to find a line that begins with the target
+              ;; that might be a title
+              (goto-char (point-min))
+              (when (re-search-forward (format "^%s$" target) nil :noerror)
+                ;; It's a title target! Not a file target!
+                ;; Just move point there and leave it there!
+                (list 'rst-title (point))))))))))
 
 (defun pel--rst-target-regxp (target)
   "Transform TARGET string into a regular expression string to search for it."
