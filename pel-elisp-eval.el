@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, June  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-29 23:40:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 07:21:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -79,12 +79,12 @@
   "Print state of single step executer."
   (interactive)
   (if pel--eval-target-buffer
-      (message "Elisp Code Stepping done in context of buffer: %s" pel--eval-target-buffer)
+      (message "Elisp Code Stepping done in context of buffer: %s" (buffer-name pel--eval-target-buffer))
     (message "Elisp Code Stepping is inactive")))
 
 ;;-pel-autoload
 (defun pel-eval-set-target-buffer ()
-  "Set the current buffer as the target for remote evaluation."
+  "Prompt for and set the target buffer for remote evaluation."
   (interactive)
   (let* ((buf-name (read-buffer "Select buffer: "(other-buffer (current-buffer)) t))
          (buf-obj (get-buffer buf-name)))
@@ -102,7 +102,9 @@
 
 ;;-pel-autoload
 (defun pel-eval-to-target ()
-  "Evaluate the expression at point in the target buffer and move to the next."
+  "Evaluate the expression at point in the target buffer and move to the next.
+The evaluation of the sexp in the current buffer is done in the context buffer
+that was identified by the last execution of `pel-eval-set-target-buffer'."
   (interactive)
 
   (unless (and pel--eval-target-buffer (buffer-live-p pel--eval-target-buffer))
@@ -116,9 +118,8 @@
       (eval sexp))
     ;; Move point forward for the next "step"
     (forward-sexp)
-    (forward-line)
-    (back-to-indentation)
-    (message "Evaluated in %s" (buffer-name pel--eval-target-buffer))))
+    ;; Skip as many comments as possible. Use point-max as a large value.
+    (forward-comment (point-max))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elisp-eval)
