@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, June  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 11:38:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 11:57:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -134,12 +134,16 @@ Signal user-error if there is no sexp forward."
 
 ;;-pel-autoload
 (defun pel-eval-to-target ()
-  "Evaluate sexp at or after point in the target buffer and move to next sexp.
-The evaluation of the sexp in the current buffer is done in the context buffer
-that was identified by the last execution of `pel-eval-set-target-buffer'.
-That evaluation is using the same kind of binding that is used by the current
-buffer holding the Elisp code that is executed.
-Signals a user error if there is no sexp forward."
+  "Get sexp at or after point and evaluate it in the context of target buffer.
+
+The evaluation of the sexp uses the same binding as the binding of the
+source buffer.  After execution done in the context of target buffer,
+move point to next sexp in current buffer (the source buffer: the Emacs
+Lisp buffer holding code being single stepped).
+
+The target buffer was previously identified by `pel-eval-set-target-buffer'.
+
+Signals a user error if there is no sexp forward in the source buffer."
   (interactive)
 
   (unless (and pel--eval-target-buffer (buffer-live-p pel--eval-target-buffer))
