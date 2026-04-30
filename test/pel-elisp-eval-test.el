@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, April 30 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 10:02:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 11:29:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -212,9 +212,7 @@ Point is placed at `point-min' before BODY runs."
 
 (ert-deftest pel-test/safe-forward-sexp/atom-integer ()
   "Moves past an integer atom without error.
-NOTE: This test documents a known bug — the current (< original-pos (point))
-and (eq (char-before) ?\\)) check spuriously fires for atoms.
-Mark :expected-result :failed until the bug is fixed."
+This is an accepted limitation."
   (pel-test--with-elisp-buffer "42 "
     (should-not (condition-case err
                     (progn (pel--safe-forward-sexp) nil)
@@ -222,7 +220,7 @@ Mark :expected-result :failed until the bug is fixed."
 
 (ert-deftest pel-test/safe-forward-sexp/atom-string ()
   "Moves past a string atom without error.
-NOTE: Same known bug as for integers."
+This is an accepted limitation."
   (pel-test--with-elisp-buffer "\"hello\" "
     (should-not (condition-case err
                     (progn (pel--safe-forward-sexp) nil)
@@ -230,16 +228,14 @@ NOTE: Same known bug as for integers."
 
 (ert-deftest pel-test/safe-forward-sexp/atom-symbol ()
   "Moves past a symbol atom without error.
-NOTE: Same known bug as for integers."
+This is an accepted limitation."
   (pel-test--with-elisp-buffer "my-symbol "
     (should-not (condition-case err
                     (progn (pel--safe-forward-sexp) nil)
                   (user-error err)))))
 
 (ert-deftest pel-test/safe-forward-sexp/at-eob-signals-user-error ()
-  "Signals user-error (not scan-error) when there is nothing to move over.
-NOTE: Currently forward-sexp throws raw scan-error since there is no
-condition-case wrapper.  Mark :expected-result :failed until bug `#1` is fixed."
+  "Signals user-error (not scan-error) when there is nothing to move over."
   (pel-test--with-elisp-buffer ""
     (should-error (pel--safe-forward-sexp) :type 'user-error)))
 
@@ -347,9 +343,7 @@ condition-case wrapper.  Mark :expected-result :failed until bug `#1` is fixed."
     (should prompted)))
 
 (ert-deftest pel-test/pel-eval-to-target/at-eob-does-not-scan-error ()
-  "Calling pel-eval-to-target with no sexp forward raises user-error, not scan-error.
-NOTE: Currently the outer (forward-sexp) is unguarded so a raw scan-error
-propagates.  Mark :expected-result :failed until bug `#4` is fixed."
+  "Calling pel-eval-to-target with no sexp forward raises user-error, not scan-error."
   (let* ((target (get-buffer-create "*pel-test/eob*"))
          (pel--eval-target-buffer target))
     (unwind-protect

@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, June  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 11:15:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 11:25:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -77,9 +77,7 @@
 
 (defun pel--eval-buffer-binding-type ()
   "Return a string describing the binding type of current buffer code."
-  (if (buffer-local-value 'lexical-binding (current-buffer))
-      "lexical"
-    "dynamic"))
+  (if lexical-binding "lexical" "dynamic"))
 
 ;;-pel-autoload
 (defun pel-eval-info ()
@@ -129,14 +127,14 @@ Signal user-error if there is no sexp forward."
         (forward-sexp)
       (scan-error
        (user-error "No sexp found at point (%d)!" original-pos)))
-    (when (or (= (point)  original-pos)
+    (when (or (= (point) original-pos)
               (and (eobp)
                    (not (eq (char-before) ?\)))))
       (user-error "No sexp found at point (%d)!" original-pos))))
 
 ;;-pel-autoload
 (defun pel-eval-to-target ()
-  "Evaluate the expression at point in the target buffer and move to the next.
+  "Evaluate sexp at or after point in the target buffer and move to next sexp.
 The evaluation of the sexp in the current buffer is done in the context buffer
 that was identified by the last execution of `pel-eval-set-target-buffer'.
 That evaluation is using the same kind of binding that is used by the current
@@ -156,10 +154,10 @@ Signals a user error if there is no sexp forward."
     (with-current-buffer pel--eval-target-buffer
       (eval sexp (buffer-local-value 'lexical-binding (current-buffer))))
     ;; Move point forward for the next sexp
-    ;; If `forward-sexp' signals an error (as it does in some versions of Emacs)
-    ;; or if it does not and there no sexp: that's OK; the issue will be
+    ;; If `forward-sexp' signals an error (as it does in some versions of
+    ;; Emacs) issue a user error.
+    ;; If it does not and there is no sexp: that's OK; the issue will be
     ;; detected later if the user tries to step in code again.
-    ;; Just make sure to catch scan error the function may throw.
     (condition-case _err
         (forward-sexp)
       (scan-error
