@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, June  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 10:48:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 11:02:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -83,7 +83,7 @@
 
 ;;-pel-autoload
 (defun pel-eval-info ()
-  "Print state of single step executer."
+  "Print state of single step executor."
   (interactive)
   (if pel--eval-target-buffer
       (if (buffer-live-p pel--eval-target-buffer)
@@ -120,7 +120,7 @@
   (message "Elisp code stepping stopped"))
 
 (defun pel--safe-forward-sexp ()
-  "Move to the end of current or next sexp.
+  "Move past the sexp at or after point.
 Signal user-error if there is no sexp forward."
   (let ((original-pos (point)))
     (condition-case _err
