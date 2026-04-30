@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, June  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-06-07 10:43:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 11:57:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2025  Pierre Rouleau
+;; Copyright (C) 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -38,13 +38,13 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
-
 ;; Credit: Stephen Berman provided the core of the following function to
 ;; extract the result to copy in the kill-ring.
 
+;;-pel-autoload
 (defun pel-eval-last-sexp-and-copy ()
   "Evaluate sexp before point; print value in echo area and copy to kill-ring."
-  (interactive )
+  (interactive)
   (let ((result (eval (macroexpand-all
                            (eval-sexp-add-defvars
                             (elisp--eval-defun-1
@@ -52,6 +52,126 @@
                       lexical-binding)))
     (message "%s" result)
     (kill-new (format "%s" result))))
+
+
+;; ---------------------------------------------------------------------------
+;;* Elisp Code Stepper - With Target Buffer
+;;  =======================================
+;;
+;; The purpose of the following code is to single step inside some Emacs Lisp
+;; code as if it ran inside another buffer.  This is quite useful when writing
+;; unit test code for Emacs Lisp files.
+;;
+;; To use it you need at least 2 buffers: one buffer where the operation will
+;; be performed and a buffer with the Emacs Lisp code to execute.
+;; Identify the target buffer by executing `pel-eval-set-target-buffer'.
+;;
+;; Once that done, select the buffer that holds the code you want to execute
+;; manually.  Place point at or before the start of the first sexp (not inside
+;; it) to execute with `pel-eval-to-target' which then moves to the next one.
+
+
+(defvar-local pel--eval-target-buffer nil
+  "The context buffer where extracted code will be executed.")
+
+
+(defun pel--eval-buffer-binding-type ()
+  "Return a string describing the binding type of current buffer code."
+  (if lexical-binding "lexical" "dynamic"))
+
+;;-pel-autoload
+(defun pel-eval-info ()
+  "Print state of single step executor."
+  (interactive)
+  (if pel--eval-target-buffer
+      (if (buffer-live-p pel--eval-target-buffer)
+          (message
+           "Stepping %s-bound %s source in context of target buffer: %s"
+           (pel--eval-buffer-binding-type)
+           (buffer-name (current-buffer))
+           (buffer-name pel--eval-target-buffer))
+        ;; The buffer previously used is no longer valid.
+        (setq pel--eval-target-buffer nil)
+        (message
+         "Previously used buffer was killed; Elisp code stepping now stopped"))
+    (message "Elisp Code Stepping is inactive")))
+
+;;-pel-autoload
+(defun pel-eval-set-target-buffer ()
+  "Prompt for and set the target buffer for remote evaluation."
+  (interactive)
+  (let* ((buf-name (read-buffer "Select buffer: "
+                                (other-buffer (current-buffer))
+                                t))
+         (buf-obj (get-buffer buf-name)))
+    (setq pel--eval-target-buffer buf-obj)
+    (message "Evaluation target set to: %s" (buffer-name buf-obj))))
+
+;;-pel-autoload
+(defun pel-eval-stop ()
+  "Stop using the previously selected buffer for code stepping."
+  (interactive)
+  (unless pel--eval-target-buffer
+    (user-error "No target buffer selected for single stepping.
+ Execute `pel-eval-set-target-buffer' to select a target buffer first!"))
+  (setq pel--eval-target-buffer nil)
+  (message "Elisp code stepping stopped"))
+
+(defun pel--safe-forward-sexp ()
+  "Move past the sexp at or after point.
+Signal user-error if there is no sexp forward."
+  (let ((original-pos (point)))
+    (condition-case _err
+        ;; move to the end of sexp.
+        ;; May throw a scan-error in some versions of Emacs but not all.
+        (forward-sexp)
+      (scan-error
+       (user-error "No sexp found at point (%d)!" original-pos)))
+    (when (or (= (point) original-pos)
+              (and (eobp)
+                   (not (eq (char-before) ?\)))))
+      (user-error "No sexp found at point (%d)!" original-pos))))
+
+;;-pel-autoload
+(defun pel-eval-to-target ()
+  "Get sexp at or after point and evaluate it in the context of target buffer.
+
+The evaluation of the sexp uses the same binding as the binding of the
+source buffer.  After execution done in the context of target buffer,
+move point to next sexp in current buffer (the source buffer: the Emacs
+Lisp buffer holding code being single stepped).
+
+The target buffer was previously identified by `pel-eval-set-target-buffer'.
+
+Signals a user error if there is no sexp forward in the source buffer."
+  (interactive)
+
+  (unless (and pel--eval-target-buffer (buffer-live-p pel--eval-target-buffer))
+    (call-interactively 'pel-eval-set-target-buffer))
+  (unless (and pel--eval-target-buffer (buffer-live-p pel--eval-target-buffer))
+    (user-error "No target buffer set; aborting"))
+
+  (let ((sexp (save-excursion
+                ;; Move to end of current sexp to capture it
+                (pel--safe-forward-sexp)
+                (elisp--preceding-sexp)))
+        (use-lexical-binding lexical-binding))
+    (with-current-buffer pel--eval-target-buffer
+      ;; execute source code with binding used in the source buffer but
+      ;; execute that code in the context of the target buffer; that buffer
+      ;; may be using any major mode.
+      (eval sexp use-lexical-binding))
+    ;; Move point forward for the next sexp
+    ;; If `forward-sexp' signals an error (as it does in some versions of
+    ;; Emacs) issue a user error.
+    ;; If it does not and there is no sexp: that's OK; the issue will be
+    ;; detected later if the user tries to step in code again.
+    (condition-case _err
+        (forward-sexp)
+      (scan-error
+       (user-error "No more sexp found!")))
+    ;; Skip as many comments as possible.
+    (forward-comment most-positive-fixnum)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elisp-eval)

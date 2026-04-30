@@ -4270,6 +4270,13 @@ d-mode not added to ac-modes!"
 (define-key pel:elisp-lib "c" #'locate-library)
 (define-key pel:elisp-lib "p" #'list-packages)
 
+(define-pel-global-prefix pel:eval-step       (kbd "<f11> SPC l x"))
+(define-key pel:eval-step "?" 'pel-eval-info)
+(define-key pel:eval-step "b" 'pel-eval-set-target-buffer)
+(define-key pel:eval-step "s" 'pel-eval-stop)
+(define-key pel:eval-step "x" 'pel-eval-to-target)
+
+
 (when pel-use-macrostep
   (pel-ensure-package-elpa macrostep from: melpa)
   (pel-autoload-file macrostep for: macrostep-expand)

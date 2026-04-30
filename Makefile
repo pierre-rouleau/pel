@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-04-29 13:40:05 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-04-30 10:02:47 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -916,6 +916,7 @@ test/pel-ccp-test.el.test-passed:               pel-ccp.elc
 test/pel-comment-adorn-test.el.test-passed:     pel-comment-adorn.elc
 test/pel-dtreplace-test.el.test-passed:         pel-dtreplace.elc
 test/pel-elcode-test.el.test-passed:            pel-elcode.elc pel--base.elc
+test/pel-elisp-eval-test.el.test-passed:        pel-elisp-eval.elc pel-ert.elc
 test/pel-elpa-test.el.test-passed:              pel-elpa.elc pel-filedir.elc
 test/pel-erlang-activation-test.el.test-passed: pel--install.elc pel_keys.elc
 test/pel-erlang-test.el.test-passed:            pel-erlang.elc pel-ert.elc
