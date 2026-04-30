@@ -6,7 +6,7 @@ PEL -- Pragmatic Emacs Library
    :alt: License
    :target: https://www.gnu.org/licenses/gpl-3.0.html
 
-.. image:: https://img.shields.io/badge/Version-V0_4_1-teal
+.. image:: https://img.shields.io/badge/Version-V0_4_2-teal
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel/blob/master/NEWS
 
@@ -26,7 +26,7 @@ PEL -- Pragmatic Emacs Library
    :alt: User Options
    :target: `➣ Customization Driven Package Management & Configuration`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-725-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-732-teal
    :alt: PEL Commands
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
@@ -62,7 +62,7 @@ or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 Essentially PEL:
 
 - extends Emacs,
-- adds a large number (725) of convenient commands and provides glue logic to
+- adds a large number (732) of convenient commands and provides glue logic to
   increase feature cohesion and simplify their use,
 - provides the ability to easily install, update a large set (372) of external
   packages from multiple sources:
@@ -418,7 +418,7 @@ packages, etc...
 --------------------------
 
 
-- PEL provides over 725 extra commands.  PEL commands extend the packages
+- PEL provides over 732 extra commands.  PEL commands extend the packages
   it supports and provides some of its own features.  Some commands are only
   available for a given OS, most are accessible in every OS.
 - When the ``pel-use-hydra`` user-option is turned on, PEL provides 12
@@ -607,7 +607,7 @@ Notes
               The command detects the key sequence and the context to
               identify which PEL PDF to open.
 
-              PEL currently implements 725 interactive commands.  Some are
+              PEL currently implements 732 interactive commands.  Some are
               always loaded.  Several are auto-loaded when needed.  This count
               excludes the number of template commands that are dynamically constructed
               and loaded only for major modes, such as Erlang, that support
