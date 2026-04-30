@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, June  7 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 10:11:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 10:48:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -88,8 +88,9 @@
   (if pel--eval-target-buffer
       (if (buffer-live-p pel--eval-target-buffer)
           (message
-           "Elisp %s binding code stepping done in context of buffer: %s"
+           "Stepping %s-bound %s source in context of target buffer: %s"
            (pel--eval-buffer-binding-type)
+           (buffer-name (current-buffer))
            (buffer-name pel--eval-target-buffer))
         ;; The buffer previously used is no longer valid.
         (setq pel--eval-target-buffer nil)
@@ -115,10 +116,11 @@
   (unless pel--eval-target-buffer
     (user-error "No target buffer selected for single stepping.
  Execute pel-eval-set-target-buffer to select a target buffer first!"))
-  (setq pel--eval-target-buffer nil))
+  (setq pel--eval-target-buffer nil)
+  (message "Elisp code stepping stopped"))
 
 (defun pel--safe-forward-sexp ()
-  "Move to the end of the next sexp.
+  "Move to the end of current or next sexp.
 Signal user-error if there is no sexp forward."
   (let ((original-pos (point)))
     (condition-case _err
@@ -144,6 +146,8 @@ Signals a user  error if there is no sexp forward."
 
   (unless (and pel--eval-target-buffer (buffer-live-p pel--eval-target-buffer))
     (call-interactively 'pel-eval-set-target-buffer))
+  (unless (and pel--eval-target-buffer (buffer-live-p pel--eval-target-buffer))
+    (user-error "No target buffer set; aborting"))
 
   (let ((sexp (save-excursion
                 ;; Move to end of current sexp to capture it
@@ -151,7 +155,9 @@ Signals a user  error if there is no sexp forward."
                 (elisp--preceding-sexp))))
     (with-current-buffer pel--eval-target-buffer
       (eval sexp (buffer-local-value 'lexical-binding (current-buffer))))
-    ;; Move point forward for the next "step".
+    ;; Move point forward for the next sexp
+    ;; If there's none that's OK; the issue will be detected later.
+    ;; Just make sure to catch scan error the function may throw.
     (condition-case _err
         (forward-sexp)
       (scan-error
