@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, May  1 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-01 16:30:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-01 17:48:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -86,12 +86,17 @@ Return nil if Emacs is a normal Emacs frame (no server involved)."
               (pel-count-string c-count "client"))))))
 
 ;;-pel-autoload
-(defun pel-modeline-describe ()
-  "Decodes the first set of characters at left of buffer modeline.
-Print an detailed description of the characters representing the coding
+(defun pel-modeline-describe (&optional append)
+  "Print a detailed description on modeline left-most information.
+
+Print the information inside a help-mode buffer. Clear the help buffer unless
+the APPEND argument is specified.
+
+Print a detailed description of the characters representing the coding
 system, the input method, the Emacs process type (normal or daemon with client
-count), the line ending format and the buffer modification status. "
-  (interactive)
+count), the line ending format, the buffer modification status, the remote
+file access state  and the window dedication state."
+  (interactive "P")
   (let* ((coding buffer-file-coding-system)
          (eol (coding-system-eol-type coding))
          (is-client (frame-parameter nil 'client))
@@ -105,76 +110,98 @@ count), the line ending format and the buffer modification status. "
          ;; different under Windows, so get the real value.
          (p4 (char-to-string (coding-system-get coding :mnemonic)))
 
-         (p5 (cond ((eq eol 0) ": (Unix/LF)")
-                   ((eq eol 1) "\\ (DOS/CRLF)")
-                   ((eq eol 2) "/ (Mac/CR)")
-                   (t ":")))
+         (p5-char (cond ((eq eol 0) (format "%s" eol-mnemonic-unix))
+                        ((eq eol 1) (format "%s" eol-mnemonic-dos))
+                        ((eq eol 2) (format "%s" eol-mnemonic-mac))
+                        (t          (format "%s" eol-mnemonic-undecided))))
+         (p5 (format "%s (%s)" p5-char
+                     (cond ((eq eol 0) "Unix/LF")
+                           ((eq eol 1) "DOS/CRLF")
+                           ((eq eol 2) "Mac/CR")
+                           (t          "Undecided"))))
+
          (csetm (coding-system-eol-type-mnemonic coding))
          (p5a (if (and (eq eol 0) (equal csetm ":"))
                   ""
                 (format ", %s" csetm)))
-         (p6 (if buffer-read-only "%" "-"))
-         (p7 (if (buffer-modified-p) "*" "-"))
+         (p67 (cond ((and buffer-read-only (buffer-modified-p))
+                     "%*  → read-only but externally modified")
+                    (buffer-read-only
+                     "%%  → read-only")
+                    ((buffer-modified-p)
+                     "**  → modified and writable")
+                    (t
+                     "--  → unchanged and writable")))
          (p8 (if (file-remote-p default-directory) "@" "-"))
          (ept (pel-emacsclient-description))
          (emacs-process-type (if ept
                                  (format "@ %s" ept)
-                               "Normal Emacs process")))
-    (pel-print-in-buffer
-     "*modeline-description*"
-     "Description of the modeline information"
-     (if (display-graphic-p)
-         ;; In graphics mode
-         (let* ((c2 (if use-named-input-method "- c1 " "     "))
-                (c3 (if use-named-input-method 2 1))
-                (c4 (1+ c3))
-                (ce (if is-client (format "- c%d " (1+ c4))   "     "))
-                (c6 (if is-client (+ c4 2) (1+ c4)))
-                (c7 (1+ c6))
-                (c8 (1+ c7)))
-           (format "\
+                               "Normal Emacs process"))
+         (ded (window-dedicated-p))
+         (p-ded (cond ((eq ded t) "D  → window strongly dedicated to buffer")
+                      (ded        "d  → window weakly dedicated to buffer")
+                      (t          nil))) ; nil = not dedicated
+         (last-c 0)
+         (description nil))
+    (setq description
+          (if (display-graphic-p)
+              ;; In graphics mode
+              (let* ((c2 (if use-named-input-method "- c1 " "     "))
+                     (c3 (if use-named-input-method 2 1))
+                     (c4 (1+ c3))
+                     (ce (if is-client (format "- c%d " (1+ c4))   "     "))
+                     (c6 (if is-client (+ c4 2) (1+ c4)))
+                     (c7 (1+ c6))
+                     (c8 (1+ c7)))
+                (setq last-c c8)
+                (format "\
      (Multibyte):   %s
 %s(Input Meth):  %s (U = None/UTF-8, otherwise show name abbreviation)
 - c%d (File Coding): %s (= is Raw, U is UTF-8)
 - c%d (EOL):         %s
 %sEmacs process: %s
-- c%d (Read-Only):   %s (%% is Read-Only, - is writable)
-- c%d (Modified):    %s (* is Modified,   - is unchanged)
+- c%d/%d (Mod state): %s
 - c%d (Remote):      %s (@ is Remote,     - is local)"
-                   p1
-                   c2 p2
-                   c3 p4
-                   c4 (format "%s%s" p5 p5a)
-                   ce emacs-process-type
-                   c6 p6
-                   c7 p7
-                   c8 p8))
-       ;; in terminal mode
-       (let* ((p3 (terminal-coding-system))
+                        p1
+                        c2 p2
+                        c3 p4
+                        c4 (format "%s%s" p5 p5a)
+                        ce emacs-process-type
+                        c6 c7 p67
+                        c8 p8))
+            ;; in terminal mode
+            (let* ((p3 (terminal-coding-system))
 
-              (ce (if is-client "- c6 "   "     "))
-              (c6 (if is-client 7 6))
-              (c7 (1+ c6))
-              (c8 (1+ c7)))
-         (format "\
+                   (ce (if is-client "- c6 "   "     "))
+                   (c6 (if is-client 7 6))
+                   (c7 (1+ c6))
+                   (c8 (1+ c7)))
+              (setq last-c c8)
+              (format "\
 - c1 (Multibyte):   %s
 - c2 (Input Meth):  %s (U = None/UTF-8, otherwise show name abbreviation)
-- c3 (Terminal):    %s (U = UTF-8)
+- c3 (Trm. coding): %s (U = UTF-8, = = raw, D = DOS cpNNN)
 - c4 (File Coding): %s (= is Raw, U is UTF-8)
 - c5 (EOL):         %s
 %sEmacs process: %s
-- c%d (Read-Only):   %s (%% is Read-Only, - is writable)
-- c%d (Modified):    %s (* is Modified,   - is unchanged)
+- c%d/%d (Mod state): %s
 - c%d (Remote):      %s (@ is Remote,     - is local)"
-                 p1 p2 p3 p4
-                 (format "%s%s" p5 p5a)
-                 ce emacs-process-type
-                 c6 p6
-                 c7 p7
-                 c8 p8)))
-     'clear-buffer
-     'use-help-mode
-     'show-top)))
+                      p1 p2 p3 p4
+                      (format "%s%s" p5 p5a)
+                      ce emacs-process-type
+                      c6 c7 p67
+                      c8 p8))))
+    (when p-ded
+      (setq description (concat description
+                                (format "\n- c%d Window Ded.:   %s"
+                                        (1+ last-c)
+                                        p-ded))))
+    (pel-print-in-buffer
+     "*modeline-description*"
+     "Description of the modeline information"
+     description
+     (unless append :clear-buffer)
+     :use-help-mode)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-modeline)
