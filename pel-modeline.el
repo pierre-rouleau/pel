@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, May  1 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-01 16:07:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-01 16:30:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -41,6 +41,8 @@
 ;;; Dependencies:
 ;;
 (require 'pel--base)
+(require 'seq)         ; use: `seq-filter'
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -92,7 +94,7 @@ count), the line ending format and the buffer modification status. "
   (interactive)
   (let* ((coding buffer-file-coding-system)
          (eol (coding-system-eol-type coding))
-         (is-client (daemonp))
+         (is-client (frame-parameter nil 'client))
          (p1 (if enable-multibyte-characters "-  → multibyte capable" "n  → unibyte") )
          (use-named-input-method (and current-input-method-title
                                       (> (length current-input-method-title) 0)))
