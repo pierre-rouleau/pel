@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 22:55:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-04-30 21:57:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -77,31 +77,34 @@
 ;; `pel--prefix-to-topic-alist' below.  Specially those that have duplicated
 ;; entries.
 
-(defconst pel--c-groups (let ((items (list 'c
-                                           'c-macro
-                                           'bison-mode
-                                           'electricity)))
-                          (when pel-use-call-graph
-                            (append items '(call-graph))))
+
+(defconst pel--c-groups (list 'c
+                              'c-macro
+                              'bison-mode
+                              'electricity
+                              'smart-dash
+                              'call-graph)
+
   "List of groups for C.")
 
-(defconst pel--c++-groups (let ((items (list 'cpp
-                                             'c-macro
-                                             'electricity)))
-                            (when pel-use-call-graph
-                              (append items '(call-graph))))
+(defconst pel--c++-groups (list 'cpp
+                                'c-macro
+                                'electricity
+                                'smart-dash
+                                'call-graph)
   "List of groups for C++.")
 
-(defconst pel--objc-groups (let ((items (list 'c
-                                              'c-macro
-                                              'electricity
-                                              'objc-font-lock)))
-                             (when pel-use-call-graph
-                               (append items '(call-graph))))
+(defconst pel--objc-groups (list 'c
+                                 'c-macro
+                                 'electricity
+                                 'objc-font-lock
+                                 'smart-dash
+                                 'call-graph)
   "List of groups for Objective-C")
 
 (defconst pel--awk-groups (list 'c
-                                'electricity)
+                                'electricity
+                                'smart-dash)
   "List of groups for Awk.")
 
 (defconst pel--dired-groups (list 'dired
@@ -231,7 +234,8 @@
 ;; Unfortunately the group used by zig-ts-mode is not zig but zig-ts
 (defconst pel--zig-groups (if pel-use-tree-sitter
                               (list 'zig-mode
-                                    'zig-ts)
+                                    'zig-ts
+                                    'smart-dash)
                             (list 'zig-mode))
   "List of groups for Zig.")
 
@@ -336,7 +340,8 @@
     ([f11 32 ?C f12] "pl-c++"           pel-c++-skeleton-control)
     ([f11 32 ?C ?#]  "pl-c++"           pel-pkg-for-c++         hide-ifdef)
     ([f11 32 ?D]     "pl-d"             pel-pkg-for-d           (d-mode
-                                                                 electricity))
+                                                                 electricity
+                                                                 smart-dash))
 
     ([f11 32 ?d]     "pl-dart"          pel-pkg-for-dart        (dart dart-ts))
     ([f11 32 ?L]     "pl-common-lisp"   pel-pkg-for-clisp       (lisp
@@ -377,7 +382,8 @@
                                                                  go-cover
                                                                  godoc
                                                                  go-dot-mod
-                                                                 electricity))
+                                                                 electricity
+                                                                 smart-dash))
     ([f11 32 ?h]     "pl-haskell"       pel-pkg-for-haskell     haskell)
     ([f11 32 ?u]     "pl-lua"           pel-pkg-for-lua         ,pel--lua-groups)
     ([f11 32 ?T]     "pl-janet"         pel-pkg-for-janet       (janet
