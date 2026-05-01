@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, May  1 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-01 10:11:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-01 11:18:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -37,23 +37,25 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-
+(require 'pel--base)
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
 ;;-pel-autoload
 (defun pel-modeline-describe ()
-  "Decodes the first 8 characters of the current modeline.
+  "Decodes the first set of characters at left of buffer modeline.
 Print an detailed description of the characters representing the coding
 system, line ending and modification status. "
   (interactive)
   (let* ((coding buffer-file-coding-system)
          (eol (coding-system-eol-type coding))
-         (input-meth current-input-method)
-         (p1 (if enable-multibyte-characters "-" "n"))
-         (p2 (if input-meth (char-to-string (aref (symbol-name input-meth) 0)) "U"))
-         (p3 "U") ;; Terminal output (usually U in modern UTF-8 terminals)
+         (p1 (if enable-multibyte-characters "-  → multibyte capable" "n  → unibyte") )
+         (p2 (if (and current-input-method-title
+                      (> (length current-input-method-title) 0))
+                 (format "%s → %s." current-input-method-title current-input-method)
+               "U"))
+         ;; Terminal output (usually U in modern UTF-8 terminals)
          (p4 (let ((base (coding-system-get coding :base)))
                (cond ((eq base 'no-conversion) "=")
                      ((eq base 'undecided) "-")
@@ -65,16 +67,30 @@ system, line ending and modification status. "
          (p6 (if buffer-read-only "%" "-"))
          (p7 (if (buffer-modified-p) "*" "-"))
          (p8 (if (file-remote-p default-directory) "@" "-")))
-    (message "\
+
+    (if pel-emacs-is-graphic-p
+        ;; In graphics mode
+        (message "\
+- (Multibyte):   %s (not shown in modeline)
+- (Input Meth):  %s (U = None/UTF-8, otherwise show name abbreviation)
+- (File Coding): %s (= is Raw, U is UTF-8)
+- (EOL):         %s
+- (Read-Only):   %s (%% is Read-Only, - is writable)
+- (Modified):    %s (* is Modified,   - is unchanged)
+- (Remote):      %s (@ is Remote,     - is local)"
+                 p1 p2 p4 p5 p6 p7 p8)
+      ;; in terminal mode
+      (let ((p3 (terminal-coding-system)))
+        (message "\
 Pos 1 (Multibyte):   %s
-Pos 2 (Input Meth):  %s (U = None/UTF-8)
+Pos 2 (Input Meth):  %s (U = None/UTF-8, otherwise show name abbreviation)
 Pos 3 (Terminal):    %s (U = UTF-8)
 Pos 4 (File Coding): %s (= is Raw, U is UTF-8)
 Pos 5 (EOL):         %s
 Pos 6 (Read-Only):   %s (%% is Read-Only, - is writable)
 Pos 7 (Modified):    %s (* is Modified,   - is unchanged)
 Pos 8 (Remote):      %s (@ is Remote,     - is local)"
-             p1 p2 p3 p4 p5 p6 p7 p8)))
+                 p1 p2 p3 p4 p5 p6 p7 p8)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-modeline)
