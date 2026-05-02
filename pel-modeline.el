@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, May  1 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-02 11:54:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-02 14:22:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -128,11 +128,11 @@ file access state  and the window dedication state."
                            (t          "Undecided"))))
 
          (p67 (cond ((and buffer-read-only (buffer-modified-p))
-                     "%*     ⇶ read-only but externally modified.")
+                     "%*    ⇶ read-only but externally modified.")
                     (buffer-read-only
-                     "%%     ⇶ read-only.")
+                     "%%    ⇶ read-only." )
                     ((buffer-modified-p)
-                     "**     ⇶ modified and writable.")
+                     "**    ⇶ modified and writable.")
                     (t
                      "--    ⇶ unchanged and writable.")))
          (p8 (format "%-5s ⇶ %s.  (@ → remote, - → local)"
@@ -141,7 +141,7 @@ file access state  and the window dedication state."
          (ept (pel-emacsclient-description))
          (emacs-process-type (if ept
                                  (format "@     ⇶ %s" ept)
-                               "      ⇶ Normal Emacs process"))
+                               "      ⇶ Normal Emacs process."))
          (ded (window-dedicated-p))
          (p-ded (cond ((eq ded t) "D     ⇶ window strongly dedicated to buffer")
                       (ded        "d     ⇶ window weakly dedicated to buffer")
