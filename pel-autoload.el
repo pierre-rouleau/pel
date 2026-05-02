@@ -720,6 +720,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-jump-to-mark
     pel-exchange-point-and-mark-no-activate)
 
+  (pel-autoload "pel-modeline" for:
+    pel-modeline-describe)
+
   (pel-autoload "pel-modes" for:
     pel-mode-setup-info)
 

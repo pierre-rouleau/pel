@@ -1166,6 +1166,7 @@ Does not handle all of English, it handles the following types:
   - command -> commands"
   (let ((last-letter (substring-no-properties word -1)))
     (cond
+     ((string= word "is") "are")
      ;; class -> classes.  tomato -> tomatoes
      ((member last-letter '("s" "o"))
       (concat word "es"))
@@ -3185,7 +3186,7 @@ instead."
              ;; using format twice because it prints an escaped % ("%%")
              ;; with 2 percent characters instead of only one if it is not
              ;; processed by another format call.
-             (insert (format (format "%s\n\n" text))))
+             (insert (format "%s" (format "%s\n\n" text))))
             ((functionp text)
              (funcall text))
             (t (error "Invalid type for text: %S" text)))

@@ -10528,6 +10528,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (declare-function display-time-mode "time")
   (call-interactively (function display-time-mode)))
 
+(define-key pel:mode-line "?"  'pel-modeline-describe)
 (define-key pel:mode-line "f"  'which-function-mode)
 (define-key pel:mode-line "t" #'pel-toggle-time-display)
 (define-key pel:mode-line "c"  'column-number-mode)

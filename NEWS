@@ -78,11 +78,18 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - *pel-eval-set-target-buffer*, bound to ~<f12> x b~, which prompts for a context target buffer that will be affected by the executed Elisp code.
   - *pel-eval-stop*, bound to ~<f12> x s~, which disconnects the context target buffer.
   - *pel-eval-to-target*, bound to ~<f12> x x~, which reads the next Emacs Lisp sexp at point, evaluates it in the context target buffer, and advance point to the next sexp.
+- New feature: *pel-modeline-describe*, bound to ~<f11> M-d ?~, opens a help-mode buffer and describes the meaning of the left-most portion
+  of the modeline: the coding system, the input method, whether Emacs is a normal process or a client to a daemon (and the daemon name, client count), the line ending format and
+  the buffer modification status.  It helps understand the cryptic information shown by Emacs which provides lots of information in a small area.
+- Fixes:
+  - Regression fix: the ~<f12> <f3>~ key is available again in the C, C++ and Objective-C buffers.
+  - Fix: *pel-print-in-buffer* function no longer fails when text argument is a string.
 - Started writing extensive unit test code.  The goal is to cover all PEL Emacs Lisp code.  There is still much test code to write.
   PEL Emacs Lisp code byte and native compiled for most Emacs versions since Emacs 26.1 in Github CI system.
   No warnings detected by either compiler is allowed.
   The ERT-based test code is also executed.
   The code is reviewed by the CodeRabbit AI agent.
+
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
 - Improve *pel-ccp-info*: it now prints the content of the kill ring and key bindings of useful commands.
