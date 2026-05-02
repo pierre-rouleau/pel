@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, May  1 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-02 14:22:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-02 15:34:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,6 +36,95 @@
 ;; a normal process, and returns a string describing the emacs client type,
 ;; name and client count when Emacs is an Emacs daemon client.
 ;;
+;; The goal of this feature is to guide users into understanding what the
+;; modeline shows.  It displays information to deal with Emacs operating in
+;; terminal mode or in graphics mode and whether a normal Emacs process or a
+;; client to Emacs daemon server is used.  Some of the characters shown on the
+;; modeline do not always appear, but the report show all relevant information
+;; in a format that attempts to help user identify the purpose of each
+;; modeline character.
+;;
+;; A set of examples should clarify the intent.
+;;
+;; Terminal mode reports:
+;;
+;; - From normal Emacs process:
+;;
+;;   ----Description of the modeline information from pel-modeline.el
+;;   - c1 (Multibyte):     -     ⇶ multibyte capable.
+;;   - c2 (Input Meth):    U     ⇶ None/UTF-8.  (U → None/UTF-8, or its name)
+;;   - c3 (Trm. coding):   U     ⇶ utf-8.  (U → UTF-8, = → raw, D → DOS cpNNN)
+;;   - c4 (Buffer Coding): U     ⇶ utf-8-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
+;;   - c5 (EOL):           :     ⇶ Unix/LF.
+;;        Emacs process:         ⇶ Normal Emacs process.
+;;   - c6/7 (Mod state):   **    ⇶ modified and writable.
+;;   - c8 (File System):   -     ⇶ local.  (@ → remote, - → local)
+;;
+;;   ----Description of the modeline information from pel-modeline.el
+;;   - c1 (Multibyte):     -     ⇶ multibyte capable.
+;;   - c2 (Input Meth):    U     ⇶ None/UTF-8.  (U → None/UTF-8, or its name)
+;;   - c3 (Trm. coding):   U     ⇶ utf-8.  (U → UTF-8, = → raw, D → DOS cpNNN)
+;;   - c4 (Buffer Coding): U     ⇶ utf-8-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
+;;   - c5 (EOL):           :     ⇶ Unix/LF.
+;;        Emacs process:         ⇶ Normal Emacs process.
+;;   - c6/7 (Mod state):   --    ⇶ unchanged and writable.
+;;   - c8 (File System):   -     ⇶ local.  (@ → remote, - → local)
+;;
+;;   ----Description of the modeline information from pel-modeline.el
+;;   - c1 (Multibyte):     -     ⇶ multibyte capable.
+;;   - c2 (Input Meth):    U     ⇶ None/UTF-8.  (U → None/UTF-8, or its name)
+;;   - c3 (Trm. coding):   U     ⇶ utf-8.  (U → UTF-8, = → raw, D → DOS cpNNN)
+;;   - c4 (Buffer Coding): U     ⇶ utf-8-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
+;;   - c5 (EOL):           :     ⇶ Unix/LF.
+;;        Emacs process:         ⇶ Normal Emacs process.
+;;   - c6/7 (Mod state):   %*    ⇶ read-only but externally modified.
+;;   - c8 (File System):   -     ⇶ local.  (@ → remote, - → local)
+;;   - c9 Window Ded.:     D     ⇶ window strongly dedicated to buffer
+;;
+;; - From Daemon client
+;;
+;;   ----Description of the modeline information from *scratch*
+;;   - c1 (Multibyte):     -     ⇶ multibyte capable.
+;;   - c2 (Input Meth):    U     ⇶ None/UTF-8.  (U → None/UTF-8, or its name)
+;;   - c3 (Trm. coding):   U     ⇶ utf-8.  (U → UTF-8, = → raw, D → DOS cpNNN)
+;;   - c4 (Buffer Coding): U     ⇶ utf-8-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
+;;   - c5 (EOL):           :     ⇶ Unix/LF.
+;;   - c6 Emacs process:   @     ⇶ emacsclient of D1 daemon which has 2 clients.
+;;   - c7/8 (Mod state):   --    ⇶ unchanged and writable.
+;;   - c9 (File System):   -     ⇶ local.  (@ → remote, - → local)
+;;
+
+;; A graphics mode report
+;;
+;;  - From normal Emacs process:
+;;
+;;   ----Description of the modeline information from *scratch*
+;;        (Multibyte):           ⇶ multibyte capable.
+;;        (Input Meth):          ⇶ None/UTF-8.  (U → None/UTF-8, or its name)
+;;   - c1 (Buffer Coding): U     ⇶ utf-8-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
+;;   - c2 (EOL):           :     ⇶ Unix/LF.
+;;        Emacs process:         ⇶ Normal Emacs process.
+;;   - c3/4 (Mod state):   --    ⇶ unchanged and writable.
+;;   - c5 (File System):   -     ⇶ local.  (@ → remote, - → local)
+;;
+;; - From a daemon client process:
+;;
+;;   ----Description of the modeline information from *scratch*
+;;        (Multibyte):           ⇶ multibyte capable.
+;;        (Input Meth):          ⇶ None/UTF-8.  (U → None/UTF-8, or its name)
+;;   - c1 (Buffer Coding): U     ⇶ utf-8-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
+;;   - c2 (EOL):           :     ⇶ Unix/LF.
+;;   - c3 Emacs process:   @     ⇶ Emacs daemon GD1 with 1 client
+;;   - c4/5 (Mod state):   --    ⇶ unchanged and writable.
+;;   - c6 (File System):   -     ⇶ local.  (@ → remote, - → local)
+;;
+;;
+;; In the report each code group shown on the mode line is identified by a
+;; code group number, such as c1, c2, c3, etc...
+;;
+;; Some information, like the Emacs process and the dedicated window
+;; information is only displayed when it is relevant.
+
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -97,21 +186,24 @@ system, the input method, the Emacs process type (normal or daemon with client
 count), the line ending format, the buffer modification status, the remote
 file access state  and the window dedication state."
   (interactive "P")
-  (let* ((coding buffer-file-coding-system)
+  (let* ((in-graphics (display-graphic-p))
+         (coding buffer-file-coding-system)
          (eol (coding-system-eol-type coding))
          (is-client (frame-parameter nil 'client))
          (p1 (if enable-multibyte-characters
-                 "-     ⇶ multibyte capable."
-               "n     ⇶ unibyte.") )
+                 (format "%s     ⇶ multibyte capable." (if in-graphics " " "-"))
+               (format "%s     ⇶ unibyte." (if in-graphics " " "n"))) )
          (use-named-input-method (and
                                   current-input-method-title
                                   (> (length current-input-method-title) 0)))
          (p2 (format
               "%-5s ⇶ %s.  (U → None/UTF-8, or its name)"
-              (if use-named-input-method current-input-method-title "U")
+              (if use-named-input-method
+                  current-input-method-title
+                (if in-graphics " " "U"))
               (if use-named-input-method current-input-method "None/UTF-8")))
-         ;; Terminal output. Usually U in modern UTF-8 terminals, but its
-         ;; different under Windows, so get the real value.
+         ;; File I/O coding system mnemonic — usually U for UTF-8, but D for DOS
+         ;; cpNNN coding systems on Windows/DOS, = for raw, etc.
          (p4
           (format "%-5s ⇶ %s. (U → UTF-8, = → raw, D → DOS cpNNN)"
                   (char-to-string (coding-system-get coding :mnemonic))
@@ -149,7 +241,7 @@ file access state  and the window dedication state."
          (last-c 0)
          (description nil))
     (setq description
-          (if (display-graphic-p)
+          (if in-graphics
               ;; In graphics mode
               (let* ((c2 (if use-named-input-method "- c1 " "     "))
                      (c3 (if use-named-input-method 2 1))
@@ -160,13 +252,13 @@ file access state  and the window dedication state."
                      (c8 (1+ c7)))
                 (setq last-c c8)
                 (format "\
-     (Multibyte):   %s
-%s(Input Meth):  %s
-- c%d (File Coding): %s
-- c%d (EOL):         %s
-%sEmacs process: %s
-- c%d/%d (Mod state): %s
-- c%d (File System): %s"
+     (Multibyte):     %s
+%s(Input Meth):    %s
+- c%d (Buffer Coding): %s
+- c%d (EOL):           %s
+%sEmacs process:   %s
+- c%d/%d (Mod state):   %s
+- c%d (File System):   %s"
                         p1
                         c2 p2
                         c3 p4
@@ -186,14 +278,14 @@ file access state  and the window dedication state."
                    (c8 (1+ c7)))
               (setq last-c c8)
               (format "\
-- c1 (Multibyte):   %s
-- c2 (Input Meth):  %s
-- c3 (Trm. coding): %s
-- c4 (File Coding): %s
-- c5 (EOL):         %s
-%sEmacs process: %s
-- c%d/%d (Mod state): %s
-- c%d (File System): %s"
+- c1 (Multibyte):     %s
+- c2 (Input Meth):    %s
+- c3 (Trm. coding):   %s
+- c4 (Buffer Coding): %s
+- c5 (EOL):           %s
+%sEmacs process:   %s
+- c%d/%d (Mod state):   %s
+- c%d (File System):   %s"
                       p1
                       p2
                       p3
@@ -204,7 +296,7 @@ file access state  and the window dedication state."
                       c8 p8))))
     (when p-ded
       (setq description (concat description
-                                (format "\n- c%d Window Ded.:   %s"
+                                (format "\n- c%d Window Ded.:     %s"
                                         (1+ last-c)
                                         p-ded))))
     (pel-print-in-buffer
