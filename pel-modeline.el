@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, May  1 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-02 16:50:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-02 17:15:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -103,7 +103,7 @@ Return nil if Emacs is a normal Emacs frame (no server involved)."
      ;;
      ;;  waiting emacs daemon
      ((eq e-type t)
-      (format "Emacs daemon%s with %s"
+      (format "Emacs daemon%s with %s."
               (if c-name (format " %s" c-name) "?")
               (pel-count-string c-count "client")))
      ;;
