@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, May  1 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-02 16:34:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-02 16:50:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -44,127 +44,18 @@
 ;; in a format that attempts to help user identify the purpose of each
 ;; modeline character.
 ;;
-;; A set of examples should clarify the intent.
+;; An report example for a normal Emacs process running in terminal follows.
+;; The report is generated for the following modeline : -UUU:---
 ;;
-;; Terminal mode reports:
-;;
-;; - From normal Emacs process:
-;;
-;;    For modeline : -UUU:---
-;;
-;;   ❌   Report is wrong: has 4 lines with U:
-;;
-;;      ----Description of the modeline information from pel-modeline.el
-;;      - c1 (Multibyte):     -     ⇶ multibyte capable.
-;;      - c2 (Input Meth):    U     ⇶ None/UTF-8.  (U → None/UTF-8, or its name)
-;;      - c3 (Kbd. coding):   U     ⇶ utf-8-unix.  (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c4 (Trm. coding):   U     ⇶ utf-8.  (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c5 (Buffer Coding): U     ⇶ utf-8-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c6 (EOL):           :     ⇶ Unix/LF.
-;;           Emacs process:         ⇶ Normal Emacs process.
-;;      - c7/8 (Mod state):   **    ⇶ modified and writable.
-;;      - c9 (File System):   -     ⇶ local.  (@ → remote, - → local)
-;;
-;;    For modeline : -UUU:**-
-;;
-;;   ❌   Report is wrong: has 4 lines with U:
-;;
-;;      ----Description of the modeline information from pel-modeline.el
-;;      - c1 (Multibyte):     -     ⇶ multibyte capable.
-;;      - c2 (Input Meth):    U     ⇶ None/UTF-8.  (U → None/UTF-8, or its name)
-;;      - c3 (Kbd. coding):   U     ⇶ utf-8-unix.  (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c4 (Trm. coding):   U     ⇶ utf-8.  (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c5 (Buffer Coding): U     ⇶ utf-8-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c6 (EOL):           :     ⇶ Unix/LF.
-;;           Emacs process:         ⇶ Normal Emacs process.
-;;      - c7/8 (Mod state):   **    ⇶ modified and writable.
-;;      - c9 (File System):   -     ⇶ local.  (@ → remote, - → local)
-;;
-;;    For modeline : -UUU:%%-D
-;;
-;;   ❌   Report is wrong: has 4 lines with U:
-;;
-;;      ----Description of the modeline information from pel-modeline.el
-;;      - c1 (Multibyte):     -     ⇶ multibyte capable.
-;;      - c2 (Input Meth):    U     ⇶ None/UTF-8.  (U → None/UTF-8, or its name)
-;;      - c3 (Kbd. coding):   U     ⇶ utf-8-unix.  (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c4 (Trm. coding):   U     ⇶ utf-8.  (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c5 (Buffer Coding): U     ⇶ utf-8-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c6 (EOL):           :     ⇶ Unix/LF.
-;;           Emacs process:         ⇶ Normal Emacs process.
-;;      - c7/8 (Mod state):   %%    ⇶ read-only.
-;;      - c9 (File System):   -     ⇶ local.  (@ → remote, - → local)
-;;      - c10 Window Ded.:    D     ⇶ window strongly dedicated to buffer
-;;
-;;
-;;    For modeline : -FR>UUU:**-
-;;
-;;      ----Description of the modeline information from pel-modeline.el
-;;      - c1 (Multibyte):     -     ⇶ multibyte capable.
-;;      - c2 (Input Meth):    FR>   ⇶ french-prefix.  (U → None/UTF-8, or its name)
-;;      - c3 (Kbd. coding):   U     ⇶ utf-8-unix.  (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c4 (Trm. coding):   U     ⇶ utf-8.  (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c5 (Buffer Coding): U     ⇶ utf-8-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c6 (EOL):           :     ⇶ Unix/LF.
-;;           Emacs process:         ⇶ Normal Emacs process.
-;;      - c7/8 (Mod state):   --    ⇶ unchanged and writable.
-;;      - c9 (File System):   -     ⇶ local.  (@ → remote, - → local)
-;;
-;;    For modeline : -UU-:--@
-;;
-;;      ----Description of the modeline information from backup-zlogin
-;;      - c1 (Multibyte):     -     ⇶ multibyte capable.
-;;      - c2 (Input Meth):    U     ⇶ None/UTF-8.  (U → None/UTF-8, or its name)
-;;      - c3 (Kbd. coding):   U     ⇶ utf-8-unix.  (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c4 (Trm. coding):   U     ⇶ utf-8.  (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c5 (Buffer Coding): -     ⇶ undecided-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c6 (EOL):           :     ⇶ Unix/LF.
-;;           Emacs process:         ⇶ Normal Emacs process.
-;;      - c7/8 (Mod state):   --    ⇶ unchanged and writable.
-;;      - c9 (File System):   @     ⇶ remote.  (@ → remote, - → local)
-;;
-;;
-;; - From Daemon client
-;;
-;;    For modeline: -UUU:@---
-;;
-;;   ❌   Report is wrong: has 4 lines with U:
-;;
-;;      ----Description of the modeline information from *scratch*
-;;      - c1 (Multibyte):     -     ⇶ multibyte capable.
-;;      - c2 (Input Meth):    U     ⇶ None/UTF-8.  (U → None/UTF-8, or its name)
-;;      - c3 (Kbd. coding):   U     ⇶ utf-8-unix.  (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c4 (Trm. coding):   U     ⇶ utf-8.  (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c5 (Buffer Coding): U     ⇶ utf-8-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
-;;      - c6 (EOL):           :     ⇶ Unix/LF.
-;;      - c7 Emacs process:   @     ⇶ emacsclient of ThePEL daemon which has 4 clients.
-;;      - c8/9 (Mod state):   --    ⇶ unchanged and writable.
-;;      - c10 (File System):  -     ⇶ local.  (@ → remote, - → local)
-
-
-;; A graphics mode report
-;;
-;;  - From normal Emacs process:
-;;
-;;   ----Description of the modeline information from *scratch*
-;;        (Multibyte):           ⇶ multibyte capable.
-;;        (Input Meth):          ⇶ None/UTF-8.  (U → None/UTF-8, or its name)
-;;   - c1 (Buffer Coding): U     ⇶ utf-8-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
-;;   - c2 (EOL):           :     ⇶ Unix/LF.
-;;        Emacs process:         ⇶ Normal Emacs process.
-;;   - c3/4 (Mod state):   --    ⇶ unchanged and writable.
-;;   - c5 (File System):   -     ⇶ local.  (@ → remote, - → local)
-;;
-;; - From a daemon client process:
-;;
-;;   ----Description of the modeline information from *scratch*
-;;        (Multibyte):           ⇶ multibyte capable.
-;;        (Input Meth):          ⇶ None/UTF-8.  (U → None/UTF-8, or its name)
-;;   - c1 (Buffer Coding): U     ⇶ utf-8-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
-;;   - c2 (EOL):           :     ⇶ Unix/LF.
-;;   - c3 Emacs process:   @     ⇶ Emacs daemon GD1 with 1 client.
-;;   - c4/5 (Mod state):   --    ⇶ unchanged and writable.
-;;   - c6 (File System):   -     ⇶ local.  (@ → remote, - → local)
+;;     ----Description of the modeline information from pel-modeline.el
+;;     - c1 (Multibyte):     -     ⇶ multibyte capable.
+;;     - c2 (Kbd. coding):   U     ⇶ utf-8-unix.  (U → UTF-8, = → raw, D → DOS cpNNN; also: no input method)
+;;     - c3 (Trm. coding):   U     ⇶ utf-8.  (U → UTF-8, = → raw, D → DOS cpNNN)
+;;     - c4 (Buffer Coding): U     ⇶ utf-8-unix. (U → UTF-8, = → raw, D → DOS cpNNN)
+;;     - c5 (EOL):           :     ⇶ Unix/LF.
+;;          Emacs process:         ⇶ Normal Emacs process.
+;;     - c6/7 (Mod state):   --    ⇶ unchanged and writable.
+;;     - c8 (File System):   -     ⇶ local.  (@ → remote, - → local)
 ;;
 ;;
 ;; In the report each code group shown on the mode line is identified by a
@@ -315,24 +206,28 @@ file access state  and the window dedication state."
                         c6 c7 p67
                         c8 p8))
             ;; in terminal mode
-            (let* (;; c3: keyboard INPUT coding mnemonic
-                   (p3-kbd (format "%-5s ⇶ %s.  (U → UTF-8, = → raw, D → DOS cpNNN)"
-                                   (char-to-string
-                                    (coding-system-get (keyboard-coding-system) :mnemonic))
-                                   (keyboard-coding-system)))
-                   ;; c4: terminal OUTPUT coding mnemonic
-                   (p3-trm (format "%-5s ⇶ %s.  (U → UTF-8, = → raw, D → DOS cpNNN)"
-                                   (char-to-string
-                                    (coding-system-get (terminal-coding-system) :mnemonic))
-                                   (terminal-coding-system)))
-                   ;; c5: buffer/file coding (p4 from outer let*)
-                   ;; c6: EOL (p5 from outer let*)
-                   (ce (if is-client "- c7 " "     "))
-                   (c7 (if is-client 8 7))
-                   (c8 (1+ c7))
-                   (c9 (1+ c8)))
-              (setq last-c c9)
-              (format "\
+            (let* ((p3-kbd-mnemonic
+                    (char-to-string
+                     (coding-system-get (keyboard-coding-system) :mnemonic)))
+                   (p3-kbd
+                    (format "%-5s ⇶ %s.  (U → UTF-8, = → raw, D → DOS cpNNN)"
+                            p3-kbd-mnemonic
+                            (keyboard-coding-system)))
+                   (p3-trm
+                    (format "%-5s ⇶ %s.  (U → UTF-8, = → raw, D → DOS cpNNN)"
+                            (char-to-string
+                             (coding-system-get (terminal-coding-system) :mnemonic))
+                            (terminal-coding-system)))
+                   ;; EOL is at c5 (no IM) or c6 (with IM)
+                   (base-eol-c (if use-named-input-method 6 5))
+                   (ce (if is-client (format "- c%d " (1+ base-eol-c)) "     "))
+                   (c-mod1 (if is-client (+ base-eol-c 2) (1+ base-eol-c)))
+                   (c-mod2 (1+ c-mod1))
+                   (c-fs (1+ c-mod2)))
+              (setq last-c c-fs)
+              (if use-named-input-method
+                  ;; With active IM: c2=IM, c3=kbd, c4=trm, c5=file, c6=eol
+                  (format "\
 - c1 (Multibyte):     %s
 - c2 (Input Meth):    %s
 - c3 (Kbd. coding):   %s
@@ -342,15 +237,29 @@ file access state  and the window dedication state."
 %sEmacs process:   %s
 - c%d/%d (Mod state):   %s
 - c%d (File System):%s  %s"
-                      p1
-                      p2
-                      p3-kbd
-                      p3-trm
-                      p4
-                      p5
-                      ce emacs-process-type
-                      c7 c8 p67
-                      c9 (if (< c9 10) " " "") p8))))
+                          p1 p2 p3-kbd p3-trm p4 p5
+                          ce emacs-process-type
+                          c-mod1 c-mod2 p67
+                          c-fs (if (< c-fs 10) " " "") p8)
+                ;; No active IM: c2=kbd (also serves as "no IM" slot), c3=trm, c4=file, c5=eol
+                (format "\
+- c1 (Multibyte):     %s
+- c2 (Kbd. coding):   %s
+- c3 (Trm. coding):   %s
+- c4 (Buffer Coding): %s
+- c5 (EOL):           %s
+%sEmacs process:   %s
+- c%d/%d (Mod state):   %s
+- c%d (File System):%s  %s"
+                        p1
+                        ;; c2: keyboard coding mnemonic is also the "no input method" indicator
+                        (format "%-5s ⇶ %s.  (U → UTF-8, = → raw, D → DOS cpNNN; also: no input method)"
+                                p3-kbd-mnemonic
+                                (keyboard-coding-system))
+                        p3-trm p4 p5
+                        ce emacs-process-type
+                        c-mod1 c-mod2 p67
+                        c-fs (if (< c-fs 10) " " "") p8)))))
     (when p-ded
       (setq description (concat description
                                 (format "\n- c%d Window Ded.:%s    %s"
