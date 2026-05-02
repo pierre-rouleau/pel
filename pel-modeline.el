@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, May  1 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-02 11:25:06 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-02 11:54:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -101,19 +101,19 @@ file access state  and the window dedication state."
          (eol (coding-system-eol-type coding))
          (is-client (frame-parameter nil 'client))
          (p1 (if enable-multibyte-characters
-                 "-   ⇶ multibyte capable."
-               "n   ⇶ unibyte.") )
+                 "-     ⇶ multibyte capable."
+               "n     ⇶ unibyte.") )
          (use-named-input-method (and
                                   current-input-method-title
                                   (> (length current-input-method-title) 0)))
          (p2 (format
-              "%-3s ⇶ %s.  (U → None/UTF-8, or its name)"
+              "%-5s ⇶ %s.  (U → None/UTF-8, or its name)"
               (if use-named-input-method current-input-method-title "U")
               (if use-named-input-method current-input-method "None/UTF-8")))
          ;; Terminal output. Usually U in modern UTF-8 terminals, but its
          ;; different under Windows, so get the real value.
          (p4
-          (format "%s   ⇶ %s. (U → UTF-8, = → raw, D → DOS cpNNN)"
+          (format "%-5s ⇶ %s. (U → UTF-8, = → raw, D → DOS cpNNN)"
                   (char-to-string (coding-system-get coding :mnemonic))
                   coding))
 
@@ -121,30 +121,30 @@ file access state  and the window dedication state."
                         ((eq eol 1) (format "%s" eol-mnemonic-dos))
                         ((eq eol 2) (format "%s" eol-mnemonic-mac))
                         (t          (format "%s" eol-mnemonic-undecided))))
-         (p5 (format "%s   ⇶ %s." p5-char
+         (p5 (format "%-5s ⇶ %s." p5-char
                      (cond ((eq eol 0) "Unix/LF")
                            ((eq eol 1) "DOS/CRLF")
                            ((eq eol 2) "Mac/CR")
                            (t          "Undecided"))))
 
          (p67 (cond ((and buffer-read-only (buffer-modified-p))
-                     "%*  ⇶ read-only but externally modified.")
+                     "%*     ⇶ read-only but externally modified.")
                     (buffer-read-only
-                     "%%  ⇶ read-only.")
+                     "%%     ⇶ read-only.")
                     ((buffer-modified-p)
-                     "**  ⇶ modified and writable.")
+                     "**     ⇶ modified and writable.")
                     (t
-                     "--  ⇶ unchanged and writable.")))
-         (p8 (format "%s   ⇶ %s.  (@ → remote, - → local)"
+                     "--    ⇶ unchanged and writable.")))
+         (p8 (format "%-5s ⇶ %s.  (@ → remote, - → local)"
                      (if (file-remote-p default-directory) "@" "-")
                      (if (file-remote-p default-directory) "remote" "local")))
          (ept (pel-emacsclient-description))
          (emacs-process-type (if ept
-                                 (format "@   ⇶ %s" ept)
-                               "    ⇶ Normal Emacs process"))
+                                 (format "@     ⇶ %s" ept)
+                               "      ⇶ Normal Emacs process"))
          (ded (window-dedicated-p))
-         (p-ded (cond ((eq ded t) "D   ⇶ window strongly dedicated to buffer")
-                      (ded        "d   ⇶ window weakly dedicated to buffer")
+         (p-ded (cond ((eq ded t) "D     ⇶ window strongly dedicated to buffer")
+                      (ded        "d     ⇶ window weakly dedicated to buffer")
                       (t          nil))) ; nil = not dedicated
          (last-c 0)
          (description nil))
@@ -175,7 +175,7 @@ file access state  and the window dedication state."
                         c6 c7 p67
                         c8 p8))
             ;; in terminal mode
-            (let* ((p3 (format "%s   ⇶ %s.  (U → UTF-8, = → raw, D → DOS cpNNN)"
+            (let* ((p3 (format "%-5s ⇶ %s.  (U → UTF-8, = → raw, D → DOS cpNNN)"
                                (char-to-string
                                 (coding-system-get
                                  (terminal-coding-system) :mnemonic))
