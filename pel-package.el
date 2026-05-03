@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-03 15:35:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-03 15:53:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1266,15 +1266,17 @@ Return a list of elpa directories moved or deleted."
 (defun pel-cleanup (&optional dry-run)
   "Move all unrequired packages to their attic directory.
 
-With optional argument DRY-RUN, do nothing just report what would
-be done.  Print a description of the operation in the
-*pel-cleanup* buffer.
-This command is *not* available when PEL operates in fast startup."
+With optional argument DRY-RUN, do nothing just report what would be
+done.  Print a description of the operation in the *pel-cleanup* buffer.
+
+This command is *not* available when PEL operates in fast startup or
+when running inside an Emacs server client (emacsclient).  It must be
+run from a standalone Emacs process."
   (interactive "P")
   (when (pel-in-fast-startup-p)
     (user-error "pel-cleanup is not available in fast startup operation!
 Use pel-setup-normal to return to normal operation."))
-  (when (frame-parameter nil 'client)   ; in any server client (terminal or GUI)?
+  (when (frame-parameter nil 'client) ; in any server client (terminal or GUI)?
     (user-error "pel-cleanup is not available in a server client!
 Use a normal Emacs process."))
   ;;
