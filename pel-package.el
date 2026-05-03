@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 15:49:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-03 09:15:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -217,7 +217,7 @@ inside your init.el file.")
   (file-name-as-directory
    (pel-elpa-name (expand-file-name "elpa-attic" user-emacs-directory)
                   (and (bound-and-true-p pel-init-support-dual-environment-p)
-                       pel-emacs-is-graphic-p)))
+                       (display-graphic-p))))
   "Absolute path of the user elpa-attic directory.
 PEL supports a pel-attic directory for dual independent
 customization when it is requested as specified by the presence
@@ -227,7 +227,7 @@ of `pel-init-support-dual-environment-p' symbol set to t.")
   (file-name-as-directory
    (pel-elpa-name (expand-file-name pel-utils-dirname user-emacs-directory)
                   (and (bound-and-true-p pel-init-support-dual-environment-p)
-                       pel-emacs-is-graphic-p)))
+                       (display-graphic-p))))
   "Absolute path of the PEL utils directory.
 PEL supports a utils directory for dual independent customization
 when it is requested as specified by the presence of
@@ -237,7 +237,7 @@ when it is requested as specified by the presence of
   (file-name-as-directory
    (pel-elpa-name (expand-file-name (concat pel-utils-dirname "-attic")
                                     user-emacs-directory)
-                  pel-emacs-is-graphic-p))
+                  (display-graphic-p)))
   "Absolute path of the PEL utils-attic directory.")
 
 (defconst pel-required-packages '(popup)

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 22:55:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-03 09:15:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -174,7 +174,7 @@ Return nil if all is OK."
                       (pel-elpa-name (pel-sibling-dirpath
                                       pel-package-user-dir-original
                                       "elpa-complete")
-                                     pel-emacs-is-graphic-p)))
+                                     (display-graphic-p))))
             (pel-push-fmt problems
                 "Incompatible elpa directory : %s.
    It clashes with PEL's logic to flip between -complete and -reduced."
@@ -216,7 +216,7 @@ Raise error describing the problem if there is one."
          (pel-elpa-name
           "package-quickstart.el"
           (and pel-detected-dual-environment-in-init-p
-               pel-emacs-is-graphic-p))))))
+               (display-graphic-p)))))))
 
 (defun pel-prompt-with-quickstart-state (prompt
                                          &optional show-requested-status
@@ -479,7 +479,7 @@ non-nil, to nil otherwise.  Byte compile the result file if the
 
 (defun pel--other-mode-custom-filename ()
   "Return the name of the customization file used by the other mode."
-  (pel-elpa-name custom-file (not pel-emacs-is-graphic-p)))
+  (pel-elpa-name custom-file (not (display-graphic-p))))
 
 (defun pel-set-user-option-persistently (user-option value &optional and-graphics)
   "Set USER-OPTION symbol to specified VALUE in all PEL customization files.

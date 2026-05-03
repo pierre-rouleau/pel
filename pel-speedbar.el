@@ -115,7 +115,7 @@
 (defvar pel-speedbar-type-used
   (if (not (fboundp 'sr-speedbar-toggle))
       'speedbar
-    (if pel-emacs-is-graphic-p
+    (if (display-graphic-p)
         nil
       (when pel-prefer-sr-speedbar-in-terminal
         'sr-speedbar)))
@@ -141,7 +141,7 @@ Do *not* change its value manually.")
 (defun pel--speedbar-toggle ()
   "Open/close Speedbar appropriately, remember we're using it."
   (setq pel-speedbar-type-used 'speedbar)
-  (if pel-emacs-is-graphic-p
+  (if (display-graphic-p)
       (speedbar)
     (speedbar-get-focus)))
 
@@ -165,7 +165,7 @@ in subsequent calls of the Emacs session."
   (interactive)
   (cond ((not pel-speedbar-type-used)
          (if (yes-or-no-p
-              (if pel-emacs-is-graphic-p
+              (if (display-graphic-p)
                   "Use separate frame? "
                 "Use entire terminal frame instead of a dedicated window? "))
              (pel--speedbar-toggle)
@@ -277,7 +277,7 @@ Contract and re-expand parents to see the change.%s"
     (user-error "Open Speedbar first")))
 
 ;;-pel-autoload
-(when pel-emacs-is-graphic-p
+(when (display-graphic-p)
   (defun pel-speedbar-toggle-images ()
     "Execute `speedbar-toggle-images' if loaded, warn otherwise."
     (interactive)

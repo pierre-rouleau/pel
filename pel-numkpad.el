@@ -90,7 +90,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
      the function to display potentially invalid information."
   (interactive)
   (if (and pel-system-is-macos-p
-           pel-emacs-is-a-tty-p)
+           (pel-emacs-is-a-tty-p))
       (user-error
        "NumLock state unknown: can't detect <clear> key events in macOS TTY")
     (if pel-mac-keypad-numlocked
@@ -109,7 +109,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
      prevent proper handling of the NumPad keys."
   (interactive)
   (if (and pel-system-is-macos-p
-           pel-emacs-is-a-tty-p)
+           (pel-emacs-is-a-tty-p))
       (user-error
        "Can't toggle NumLock on macOS TTY: use <clear> & switch blindly.")
       (pel-toggle 'pel-mac-keypad-numlocked)

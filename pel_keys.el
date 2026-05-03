@@ -129,12 +129,11 @@
 ;;;---------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-(require 'pel--base)    ; use pel-system-is-macos-p
-;;                      ;     pel-system-is-windows-p
-;;                      ;     pel-emacs-is-a-tty-p
-;;                      ;     pel-emacs-is-graphic-p
-;;                      ;     pel-toggle
-;;                      ;     pel-mode-toggle-arg
+(require 'pel--base)    ; use: `pel-system-is-macos-p'
+;;                      ;      `pel-system-is-windows-p'
+;;                      ;      `pel-emacs-is-a-tty-p'
+;;                      ;      `pel-toggle'
+;;                      ;      `pel-mode-toggle-arg'
 
 (require 'pel--install) ; use pel-ensure-package-elpa
 ;;                      ;
@@ -149,9 +148,11 @@
 (require 'pel--keys-macros) ; use: `pel-eval-after-load'
 ;;                          ;      `pel-config-major-mode'
 ;;                          ;      `pel--set-indent-control-variables'.
-(require 'pel--options) ; all `pel-use-...' variables identify what to use.
-;;                      ; also defines a set of utility functions to deal with
-;;                      ; the options: pel-auto-complete-help
+(require 'pel--options) ; use: all `pel-use-...' variables identify what to use.
+;;                      ;      also defines a set of utility functions to deal with
+;;                      ;      the options: pel-auto-complete-help
+;;                      ; use: `pel-emacs-is-graphic-p'
+
 (eval-when-compile
   (require 'cl-macs))   ; use: `cl-eval-when'
 
@@ -347,7 +348,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;;* Adjust behaviour of the delete key if required
 ;;  ==============================================
 ;;
-(when (and pel-emacs-is-a-tty-p
+(when (and (pel-emacs-is-a-tty-p)
            pel-force-normal-erase-is-backspace-off-in-terminal)
   (run-with-idle-timer
    (if (integerp pel-force-normal-erase-is-backspace-off-in-terminal)
@@ -1044,7 +1045,7 @@ Your version of Emacs does not support dynamic module.")))
 ;;*** Full Screen and Mouse Control
 ;;    -----------------------------
 (define-key pel: (kbd      "<f11>")        'pel-toggle-frame-fullscreen)
-(when pel-emacs-is-a-tty-p
+(when (pel-emacs-is-a-tty-p)
   (define-key pel: (kbd    "<f12>")       #'xterm-mouse-mode))
 
 ;;*** Uniquify: meaningful names when multiple buffers have the same name
@@ -1253,7 +1254,7 @@ Your version of Emacs does not support dynamic module.")))
 ;; word.
 (global-set-key (kbd "<M-left>")  #'backward-word)
 (global-set-key (kbd "<M-right>") #'forward-word)
-(when (and pel-emacs-is-a-tty-p
+(when (and (pel-emacs-is-a-tty-p)
            pel-map-meta-left-right-to-Y-Z)
   ;; On a TTY:
   ;; map <M-left>  to the ANSI key sequence for M-Y: "\033Y"
@@ -4424,13 +4425,10 @@ d-mode not added to ac-modes!"
 
   ;; Add support for Speedbar listing Common Lisp files:
   (when pel-use-speedbar
-    (pel-add-speedbar-extension ".c?li?sp")
+    (pel-add-speedbar-extension ".li?sp")
     (dolist (ext-regexp pel-clisp-extra-files)
       (pel-add-speedbar-extension ext-regexp)))
-
-  ;; Add extra Common Lisp file extensions
-  (add-to-list 'auto-mode-alist '("\\.clisp\\'" . lisp-mode))
-  ;; and more if requested by user
+  ;; Add extra Common Lisp file extensions if requested by user
   (dolist (ext-regexp pel-clisp-extra-files)
     (add-to-list 'auto-mode-alist ext-regexp))
 
@@ -5459,7 +5457,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   ;; Setup the LFE major mode
   (pel-config-major-mode lfe pel:for-lfe :no-ts
-    (when pel-emacs-is-a-tty-p
+    (when (pel-emacs-is-a-tty-p)
       (if (boundp 'lfe-mode-map)
           (define-key lfe-mode-map (kbd "M-[") nil)
         (display-warning 'pel-lfe
@@ -6895,7 +6893,7 @@ to identify a Verilog file.  Anything else is assumed being V."
         (define-key org-mode-map (kbd "ESC <down>") nil)
         (define-key org-mode-map (kbd "ESC <right>") nil)
         (define-key org-mode-map (kbd "ESC <left>") nil)
-        (when (and pel-emacs-is-a-tty-p
+        (when (and (pel-emacs-is-a-tty-p)
                    pel-map-meta-left-right-to-Y-Z)
           ;; On a TTY:
           ;; map <M-left>  to the ANSI key sequence for M-Y: "\033Y"
@@ -7936,7 +7934,7 @@ to pel-use-helm-descbinds"))
 
 ;; popup is used in Terminal mode for spell check menu,
 ;; and must be available when pel-spell-init is called.
-(when pel-emacs-is-a-tty-p
+(when (pel-emacs-is-a-tty-p)
   (pel-ensure-package-elpa popup from: melpa)
   (pel-autoload-file popup for: pel-spell-init))
 
@@ -8191,7 +8189,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (global-set-key (kbd "<M-down>")   'pel-scroll-up)  ; scroll text up: toward small line number
 (global-set-key (kbd "<M-up>")    'pel-scroll-down) ; scroll text down: toward large line number
 ;; and with the mouse in terminal mode
-(when pel-emacs-is-a-tty-p
+(when (pel-emacs-is-a-tty-p)
   ;; activate mouse-based scrolling
   (global-set-key (kbd "<mouse-4>") 'pel-scroll-down)
   (global-set-key (kbd "<mouse-5>") 'pel-scroll-up))
@@ -10916,7 +10914,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (defvar desktop-restore-reuses-frames)
   (defvar desktop-restore-in-current-display)
 
-  (when pel-emacs-is-a-tty-p
+  (when (pel-emacs-is-a-tty-p)
     (defun pel--activate-frameset-restore ()
         "Activate frameset-restore."
       (frameset-restore

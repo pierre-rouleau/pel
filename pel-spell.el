@@ -225,7 +225,7 @@ to allow the flyspell pop-up menu to work in terminal mode."
   ;; package is installed.  Code in pel-zkeys.el schedule
   ;; the installation of popup if pel-spell-init is used
   ;; when emacs is used in terminal mode.
-  (unless pel-emacs-is-graphic-p
+  (unless (display-graphic-p)
     (declare-function popup-menu* "popup")
     (defun pel-spell-flyspell-emacs-popup-textual (_event poss _word)
       "A textual flyspell popup menu."

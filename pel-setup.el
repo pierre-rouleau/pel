@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 11:28:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-03 09:15:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -597,7 +597,7 @@ Utility function.  If REASON-MSG is specified include that message on error."
             (message "%s\n All is now OK!%s"
                      done-text
                      (pel-string-when
-                      pel-emacs-is-graphic-p
+                      (display-graphic-p)
                       "
 Please restart Emacs to pick up the graphics-mode specific environment."))
           (message "Nothing to do, it's already setup."))))))
@@ -1303,7 +1303,7 @@ Failed fast startup setup for %s after %d of %d steps: %s
     (user-error "PEL/Emacs is already setup for fast startup!"))
    ;;
    ((and (bound-and-true-p package-quickstart)
-         pel-emacs-is-graphic-p)
+         (display-graphic-p))
     (user-error "PEL currently is not able to switch to fast startup mode when
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off
@@ -1363,7 +1363,7 @@ is only one or when its for the terminal (TTY) mode."
    ((eq (pel-startup-mode) 'normal)
     (user-error "PEL/Emacs is already using the normal setup!"))
    ((and (bound-and-true-p package-quickstart)
-         pel-emacs-is-graphic-p)
+         (display-graphic-p))
     (user-error "PEL currently is not able to restore from fast startup mode when
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off

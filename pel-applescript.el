@@ -52,10 +52,8 @@
 
 ;;; Code:
 
-
 (require 'pel-read)
 (require 'pel--options)                 ; uses: pel-mac-voice-name
-(require 'pel--base)                    ; uses: pel-emacs-is-graphic-p
 
 (defconst pel-narration-translations
   '(("[_(){}`*~\\<>/^•]" . " ")
@@ -76,7 +74,7 @@ The translation identified in the first list element is done first.")
 (defvar pel-mac-voice-name)
 
 (if pel-system-is-macos-p
-    (if pel-emacs-is-graphic-p
+    (if (display-graphic-p)
         (require 'term/ns-win)
       (defun do-applescript (command)
         "Execute a small AppleScript COMMAND.

@@ -494,6 +494,11 @@
 (eval-and-compile
   (require 'format-spec))               ; use: `format-spec'
 
+(defconst pel-emacs-is-graphic-p (display-graphic-p)
+  "Predicate: t when Emacs is running in graphics mode, nil otherwise.
+⚠️  Only use inside PEL pel_keys or pel--options nowhere else
+because it is not reliable inside a GUI daemon client.")
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 

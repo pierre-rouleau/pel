@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 23:41:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-03 09:15:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -98,7 +98,7 @@ prints the Emacs init time on the echo area."
           (insert (format "%s | %-20s | %-20s | %-12s | Emacs %s%s on %s\n"
                           (format-time-string "%F %T")
                           (emacs-init-time)
-                          (if pel-emacs-is-graphic-p "graphic mode" "terminal (TTY) mode")
+                          (if (display-graphic-p) "graphic mode" "terminal (TTY) mode")
                           pel-operation-mode
                           emacs-version
                           (pel-string-when (and pel-emacs-27-or-later-p

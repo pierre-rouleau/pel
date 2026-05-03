@@ -367,15 +367,15 @@
 
 The non-nil value of the predicate is the `module-file-suffix'.")
 
-(defconst pel-emacs-is-graphic-p (display-graphic-p)
-  "Predicate: t when Emacs is running in graphics mode, nil otherwise.")
+(defun pel-emacs-is-a-tty-p ()
+  "Predicate: t when Emacs is running in TTY mode, nil otherwise."
+  (not (display-graphic-p)))
 
-(defconst pel-emacs-is-a-tty-p (not pel-emacs-is-graphic-p)
-  "Predicate: t when Emacs is running in TTY mode, nil otherwise.")
+(defun pel-can-display-special-chars-p ()
+  "Predicate: t if Emacs can properly show Unicode characters like 👍 or 👎."
+  (and (eq system-type 'darwin)
+       (not (display-graphic-p))))
 
-(defconst pel-can-display-special-chars-p  (and (eq system-type 'darwin)
-                                                pel-emacs-is-a-tty-p)
-  "Predicate: t if Emacs can properly show Unicode characters like 👍 or 👎.")
 ;; TODO: add ability to install unicode fonts and take it into account.
 
 (defconst pel-emacs-27-or-later-p (>= emacs-major-version 27)

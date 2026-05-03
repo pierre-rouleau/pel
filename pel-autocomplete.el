@@ -247,7 +247,7 @@ Activate when ARG is t or positive, deactivate when it is negative."
   "Return t if variable `corfu-mode' is loaded and on, nil otherwise.
 On systems that must also use `corfu-terminal-mode' also check if it is on."
   (if (and pel-use-corfu-terminal
-           (not pel-emacs-is-graphic-p))
+           (not (display-graphic-p)))
       (and (bound-and-true-p corfu-terminal-mode)
            (bound-and-true-p corfu-mode))
     (bound-and-true-p corfu-mode)))
@@ -256,7 +256,7 @@ On systems that must also use `corfu-terminal-mode' also check if it is on."
   "Return t if variable `global-corfu-mode' is loaded and on, nil otherwise.
 On systems that must also use `corfu-terminal-mode' also check if it is on."
   (if (and pel-use-corfu-terminal
-           (not pel-emacs-is-graphic-p))
+           (not (display-graphic-p)))
       ;; corfu-terminal-mode is a global minor mode
       (bound-and-true-p corfu-terminal-mode)
     (bound-and-true-p global-corfu-mode)))
@@ -269,7 +269,7 @@ On systems that must also use `corfu-terminal-mode' also check if it is on."
     (global-corfu-mode -1))
   ;; corfu-terminal-mode is a global minor mode
   (when (and pel-use-corfu-terminal
-             (not pel-emacs-is-graphic-p)
+             (not (display-graphic-p))
              (bound-and-true-p corfu-terminal-mode)
              (fboundp 'corfu-terminal-mode))
     (corfu-terminal-mode -1)))
@@ -280,7 +280,7 @@ On systems that must also use `corfu-terminal-mode' also check if it is on."
     (corfu-mode -1))
   ;; corfu-terminal-mode is a global minor mode
   (when (and pel-use-corfu-terminal
-             (not pel-emacs-is-graphic-p)
+             (not (display-graphic-p))
              (bound-and-true-p corfu-terminal-mode)
              (fboundp 'corfu-terminal-mode))
     (corfu-terminal-mode -1)))
@@ -293,7 +293,7 @@ On systems that must also use `corfu-terminal-mode' also check if it is on."
       (progn
         (require 'corfu nil :noerror)
         (when (and pel-use-corfu-terminal
-                   (not pel-emacs-is-graphic-p))
+                   (not (display-graphic-p)))
           (require 'corfu-terminal nil :noerror)))
     (display-warning 'pel--setup-corfu "\
 Trying to use corfu while pel-use-corfu user-option is off." :error)))
@@ -308,7 +308,7 @@ Trying to use corfu while pel-use-corfu user-option is off." :error)))
 (defun pel--corfu-terminal-maybe ()
   "If required activate corfu-terminal mode."
   (when (and pel-use-corfu-terminal
-             (not pel-emacs-is-graphic-p)
+             (not (display-graphic-p))
              (fboundp 'corfu-terminal-mode))
     (corfu-terminal-mode 1)))
 
@@ -418,7 +418,7 @@ non-nil, in which case it appends to the previous report."
          (pel-insert-mode-state-and-use  'corfu-mode 'pel-use-corfu)
          (pel-insert-mode-state          'global-corfu-mode)
          (when (and pel-use-corfu-terminal
-                    (not pel-emacs-is-graphic-p))
+                    (not (display-graphic-p)))
            (pel-insert-mode-state        'corfu-terminal-mode)))
 
        (pel-insert-bold "\n\n****Customization:")
