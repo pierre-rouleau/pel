@@ -86,7 +86,6 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - *pel-caller-name*.  Use it when debugging code to get the name of a function's caller an optionally to trace the call chain.
     - *pel-emacs-is-a-tty-p*; now a function instead of a defconst variable to prevent issues in daemon clients.
     - *pel-can-display-special-chars-p*; now a function instead of a defconst variable to prevent issues in daemon clients.
-    - *pel-running-in-server-client-p* identifies whether Emacs is a server client session.
 - Improved PDF files:
   - ⅀ Diff & Merge: Describe how to create a patch file from a diff-mode buffer.
   - ⅀ Faces/Fonts: more about changing a face.
@@ -110,6 +109,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     the display-graphic-p function for performing the check at run time.
     This problem affected the management of the Speedbar, SR-Speedbar and *pel-say* in macOS when running inside a GUI daemon client.
     Also the pel-cleanup command is no longer allowed to proceed when the user issues the command from within an Emacs server client.
+  - Improvement: *do-applescript* no longer relies on the shell to execute the osascript command.
 - Started writing extensive unit test code.  The goal is to cover all PEL Emacs Lisp code.  There is still much test code to write.
   PEL Emacs Lisp code byte and native compiled for most Emacs versions since Emacs 26.1 in Github CI system.
   No warnings detected by either compiler is allowed.

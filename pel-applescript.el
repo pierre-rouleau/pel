@@ -31,13 +31,11 @@
 ;; an applescript command or program.  It does not support full interaction
 ;; with AppleScript via events.
 ;;
-;; In Terminal mode, the do-applescript function is implemented invoking
-;; the osascript in a child process instead of using the Cocoa built-in
-;; library.
+;; The `do-applescript' function is implemented invoking the osascript in a
+;; child process instead of using the Cocoa built-in library.
 ;;
 ;; Currently the main purpose of this is to allow the use of the vocal
-;; interface and read text out-load, as this is a very early version of the
-;; code.
+;; interface and read text out-loud.
 ;;
 ;; * `pel-say-word'
 ;; * `pel-say-sentence'
@@ -76,15 +74,14 @@ The translation identified in the first list element is done first.")
 
 (defun do-applescript (command)
   "Execute a small AppleScript COMMAND on macOS systems only.
+
 Note: all quotes in the COMMAND string will be escaped.
 To say something, use:  (do-applescript \"say \\\"Hello\\\"\")"
   (if pel-system-is-macos-p
       (progn
         (when (display-graphic-p)
           (require 'term/ns-win))
-        (shell-command
-         (format "osascript -e \"%s\""
-                 (replace-regexp-in-string "\"" "\\\\\"" command))))
+        (call-process "osascript" nil 0 nil "-e" command))
     (error "do-applescript is only available on macOS systems!")))
 
 ;;-pel-autoload

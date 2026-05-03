@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-03 13:59:38 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-03 15:35:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1274,7 +1274,7 @@ This command is *not* available when PEL operates in fast startup."
   (when (pel-in-fast-startup-p)
     (user-error "pel-cleanup is not available in fast startup operation!
 Use pel-setup-normal to return to normal operation."))
-  (when (pel-running-in-server-client-p)
+  (when (frame-parameter nil 'client)   ; in any server client (terminal or GUI)?
     (user-error "pel-cleanup is not available in a server client!
 Use a normal Emacs process."))
   ;;
