@@ -1,7 +1,7 @@
-// DART FILE: test-dart.dart
+// GO FILE: test-go.go
 //
-// Purpose   : Test Dart support.
-// Created   : Monday, April 13 2026.
+// Purpose   : Test Go Support.
+// Created   : Thursday, April 30 2026.
 // ---------------------------------------------------------------------------
 // Module Description
 // ------------------

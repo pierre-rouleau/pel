@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-01 11:21:27 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-03 08:36:51 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -899,6 +899,14 @@ pel__hydra.elc:           pel--base.elc pel--options.elc pel--keys-macros.elc pe
 # This ensures tests are all done before pel_keys.elc is built in parallel builds.
 pel_keys.elc:             pel_keys.el pel__hydra.el $(ELC_FILES)
 
+TEST_CC_FILES := test/test-files/test-c.c \
+                 test/test-files/test-c.h \
+                 test/test-files/test-cpp.h  \
+                 test/test-files/test-cpp-2.h  \
+                 test/test-files/test-objective-c.h \
+                 test/test-files/test-objective-c-2.h \
+                 test/test-files/test-objective-c-3.h \
+                 test/test-files/test-objective-c.m
 
 # Test code dependency:
 test/pel--base-test.el.test-passed:             pel--base.elc pel--options.elc
@@ -913,7 +921,7 @@ test/pel-c-utils-test.el.test-passed:           pel-c-utils.elc
 test/pel-c-comment-test.el.test-passed:         pel-c-comment.elc
 test/pel-c-preproc-test.el.test-passed:         pel-c-preproc.elc
 test/pel-cc-navigate-test.el.test-passed:       pel-cc-navigate.elc
-test/pel-cc-test.el.test-passed:                pel--options.elc pel-cc.elc
+test/pel-cc-test.el.test-passed:                pel--options.elc pel-cc.elc $(TEST_CC_FILES)
 test/pel-ccp-test.el.test-passed:               pel-ccp.elc
 test/pel-comment-adorn-test.el.test-passed:     pel-comment-adorn.elc
 test/pel-dtreplace-test.el.test-passed:         pel-dtreplace.elc

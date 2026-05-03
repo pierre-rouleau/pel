@@ -1,7 +1,7 @@
-// PIKE FILE: test-pike2.pmod
+// OBJC FILE: test-objective-c.m
 //
-// Purpose   : Test Pike file.
-// Created   : Friday, April 10 2026.
+// Purpose   : Test Objective-C Support.
+// Created   : Thursday, April 30 2026.
 // -----------------------------------------------------------------------------
 // Module Description
 // ------------------
