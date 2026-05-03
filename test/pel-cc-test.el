@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-20 14:51:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-03 08:00:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -276,7 +276,7 @@ Return the path of the created file."
 ;;; Tests for `pel-objective-c-regexp' — Objective-C pattern matching
 ;;; --------------------------------------------------------------------------
 
-(ert-deftest pel-cc-test/objective-c-regexp/matches-objc-constructs ()
+(ert-deftest pel-cc-test/test-objective-c-regexp/matches-objc-constructs ()
   "`pel-objective-c-regexp' matches all recognised Objective-C constructs."
   (dolist (code '("@interface MyClass : NSObject"
                   "@implementation MyClass"
@@ -301,7 +301,7 @@ Return the path of the created file."
     (unless (string-match-p pel-objective-c-regexp code)
       (ert-fail (format "Expected match for: %S" code)))))
 
-(ert-deftest pel-cc-test/objective-c-regexp/does-not-match-plain-c ()
+(ert-deftest pel-cc-test/test-objective-c-regexp/does-not-match-plain-c ()
   "`pel-objective-c-regexp' does not match plain C code."
   (dolist (code '("int main(void)"
                   "struct Foo {"
@@ -482,39 +482,39 @@ Return the path of the created file."
 
 ;; Detect mode of real files
 
-(ert-deftest pel-cc-test/detect-real-file-mode/c.h ()
+(ert-deftest pel-cc-test/detect-real-file-mode/test-c.h ()
   "Detect mode of real files stored in repo."
-  (let ((fpath (expand-file-name "test/test-files/c.h" pel--rootdir)))
+  (let ((fpath (expand-file-name "test/test-files/test-c.h" pel--rootdir)))
     (should-not (pel-is-objective-c-file fpath))
     (should-not (pel-is-cpp-file         fpath))))
 
-(ert-deftest pel-cc-test/detect-real-file-mode/cpp.h ()
+(ert-deftest pel-cc-test/detect-real-file-mode/test-cpp.h ()
   "Detect mode of real files stored in repo."
-  (let ((fpath (expand-file-name "test/test-files/cpp.h" pel--rootdir)))
-    (should-not (pel-is-objective-c-file fpath))
-    (should     (pel-is-cpp-file         fpath))))
-
-(ert-deftest pel-cc-test/detect-real-file-mode/cpp-2 ()
-  "Detect mode of real files stored in repo."
-  (let ((fpath (expand-file-name "test/test-files/cpp-2.h" pel--rootdir)))
+  (let ((fpath (expand-file-name "test/test-files/test-cpp.h" pel--rootdir)))
     (should-not (pel-is-objective-c-file fpath))
     (should     (pel-is-cpp-file         fpath))))
 
-(ert-deftest pel-cc-test/detect-real-file-mode/objective-c ()
+(ert-deftest pel-cc-test/detect-real-file-mode/test-cpp-2 ()
   "Detect mode of real files stored in repo."
-  (let ((fpath (expand-file-name "test/test-files/objective-c.h" pel--rootdir)))
+  (let ((fpath (expand-file-name "test/test-files/test-cpp-2.h" pel--rootdir)))
+    (should-not (pel-is-objective-c-file fpath))
+    (should     (pel-is-cpp-file         fpath))))
+
+(ert-deftest pel-cc-test/detect-real-file-mode/test-objective-c ()
+  "Detect mode of real files stored in repo."
+  (let ((fpath (expand-file-name "test/test-files/test-objective-c.h" pel--rootdir)))
     (should     (pel-is-objective-c-file fpath))
     (should-not (pel-is-cpp-file         fpath))))
 
-(ert-deftest pel-cc-test/detect-real-file-mode/objective-c2 ()
+(ert-deftest pel-cc-test/detect-real-file-mode/test-objective-c-2 ()
   "Detect mode of real files stored in repo."
-  (let ((fpath (expand-file-name "test/test-files/objective-c2.h" pel--rootdir)))
+  (let ((fpath (expand-file-name "test/test-files/test-objective-c-2.h" pel--rootdir)))
     (should     (pel-is-objective-c-file fpath))
     (should-not (pel-is-cpp-file         fpath))))
 
-(ert-deftest pel-cc-test/detect-real-file-mode/objective-c3 ()
+(ert-deftest pel-cc-test/detect-real-file-mode/test-objective-c-3 ()
   "Detect mode of real files stored in repo."
-  (let ((fpath (expand-file-name "test/test-files/objective-c3.h" pel--rootdir)))
+  (let ((fpath (expand-file-name "test/test-files/test-objective-c-3.h" pel--rootdir)))
     (should     (pel-is-objective-c-file fpath))
     (should-not (pel-is-cpp-file         fpath))))
 
@@ -606,14 +606,14 @@ Return the path of the created file."
 ;;; Tests for `pel-objective-c-keywords' and `pel-cpp-keywords' — constant sanity checks
 ;;; --------------------------------------------------------------------------
 
-(ert-deftest pel-cc-test/constants/objective-c-keywords-is-nonempty-list ()
+(ert-deftest pel-cc-test/constants/test-objective-c-keywords-is-nonempty-list ()
   "`pel-objective-c-keywords' must be a non-empty list of strings."
   (should (listp pel-objective-c-keywords))
   (should (> (length pel-objective-c-keywords) 0))
   (dolist (kw pel-objective-c-keywords)
     (should (stringp kw))))
 
-(ert-deftest pel-cc-test/constants/objective-c-keywords-contains-required-markers ()
+(ert-deftest pel-cc-test/constants/test-objective-c-keywords-contains-required-markers ()
   "`pel-objective-c-keywords' must include the mandatory ObjC distinguishers."
   (dolist (kw '("@interface" "@implementation" "@end" "@protocol"))
     (should (member kw pel-objective-c-keywords))))
@@ -623,7 +623,7 @@ Return the path of the created file."
   (should (stringp pel-cpp-regexp))
   (should (> (length pel-cpp-regexp) 0)))
 
-(ert-deftest pel-cc-test/constants/objective-c-regexp-is-string ()
+(ert-deftest pel-cc-test/constants/test-objective-c-regexp-is-string ()
   "`pel-objective-c-regexp' must compile to a non-empty string."
   (should (stringp pel-objective-c-regexp))
   (should (> (length pel-objective-c-regexp) 0)))

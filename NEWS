@@ -81,6 +81,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - New feature: *pel-modeline-describe*, bound to ~<f11> M-d ?~, opens a help-mode buffer and describes the meaning of the left-most portion
   of the modeline: the coding system, the input method, whether Emacs is a normal process or a client to a daemon (and the daemon name, client count), the line ending format and
   the buffer modification status.  It helps understand the cryptic information shown by Emacs which provides lots of information in a small area.
+- Add more default file extensions for languages:
+  -  .clisp for CommonLisp
+- Improved PDF files:
+  - ⅀ Diff & Merge: Describe how to create a patch file from a diff-mode buffer.
+  - Language files:
+    - 𝕻𝔩 - Arc: show file extensions.
+    - 𝕻𝔩 - Common Lisp: more links to common Lisp articles/sites.
+    - 𝕻𝔩-Objective-C : more on file extensions.
 - Fixes:
   - Regression fix: the ~<f12> <f3>~ key is available again in the C, C++ and Objective-C buffers.
   - Fix: *pel-print-in-buffer* function no longer fails when text argument is a string.
@@ -89,6 +97,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   No warnings detected by either compiler is allowed.
   The ERT-based test code is also executed.
   The code is reviewed by the CodeRabbit AI agent.
+  - Includes a set of language specific and file encoding files inside the test/test-files directory.  Some are used
+    by automated tests, other are used manually until automated tests are competed.
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
