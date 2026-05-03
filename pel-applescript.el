@@ -75,7 +75,6 @@ The translation identified in the first list element is done first.")
 (defun do-applescript (command)
   "Execute a small AppleScript COMMAND on macOS systems only.
 
-Note: all quotes in the COMMAND string will be escaped.
 To say something, use:  (do-applescript \"say \\\"Hello\\\"\")"
   (if pel-system-is-macos-p
       (progn
