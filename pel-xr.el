@@ -1,6 +1,6 @@
 ;;; pel-xr.el --- Regexp Interpretation  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -114,7 +114,7 @@ Print evaluation in the *regexp-eval* buffer."
                 (insert (format "  - @%2d: %s\n"
                                 (car offset.comment)
                                 (cdr offset.comment))))
-            (insert (if pel-can-display-special-chars-p
+            (insert (if (pel-can-display-special-chars-p)
                         "️  👍\n"
                       "  OK\n")))
           (display-buffer bufname)))

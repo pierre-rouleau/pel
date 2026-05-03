@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 16:41:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-03 16:34:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -62,6 +62,7 @@
 ;;
 (require 'pel-autocomplete)
 (require 'ert)
+(require 'cl-lib)
 
 ;; Declare variables from external packages as special/dynamic variables so
 ;; that `let' bindings are visible to `bound-and-true-p' even when the
@@ -135,42 +136,39 @@
     (should (pel--global-company-mode-p))))
 
 ;; ===========================================================================
-;; pel--corfu-mode-p
-;; In graphic sessions (pel-emacs-is-graphic-p non-nil), only corfu-mode
-;; is checked.  In terminal sessions with corfu-terminal enabled, both
-;; corfu-terminal-mode and corfu-mode must be on.
+;; pel--corfu-mode-p In graphic sessions only corfu-mode is checked.  In
+;; terminal sessions with corfu-terminal enabled, both corfu-terminal-mode and
+;; corfu-mode must be on.
 ;; ===========================================================================
 
 (ert-deftest pel-autocomplete-test/corfu-mode-p/graphic-off-when-nil ()
   "`pel--corfu-mode-p' returns nil on graphic display when `corfu-mode' is nil."
-  (let ((corfu-mode nil)
-        (pel-use-corfu-terminal nil)
-        (pel-emacs-is-graphic-p t))
-    (should-not (pel--corfu-mode-p))))
+  (let ((corfu-mode nil))
+    (cl-letf (((symbol-function 'display-graphic-p) (lambda () t)))
+      (should-not (pel--corfu-mode-p)))))
 
 (ert-deftest pel-autocomplete-test/corfu-mode-p/graphic-on-when-t ()
   "`pel--corfu-mode-p' returns non-nil on graphic display when `corfu-mode' is t."
-  (let ((corfu-mode t)
-        (pel-use-corfu-terminal nil)
-        (pel-emacs-is-graphic-p t))
-    (should (pel--corfu-mode-p))))
+  (let ((corfu-mode t))
+    (cl-letf (((symbol-function 'display-graphic-p) (lambda () t)))
+      (should (pel--corfu-mode-p)))))
 
 (ert-deftest pel-autocomplete-test/corfu-mode-p/terminal-requires-both-modes ()
   "`pel--corfu-mode-p' on terminal with corfu-terminal requires both modes on."
-  (let ((pel-use-corfu-terminal t)
-        (pel-emacs-is-graphic-p nil))
-    ;; Both on → t
-    (let ((corfu-mode t)
-          (corfu-terminal-mode t))
-      (should (pel--corfu-mode-p)))
-    ;; Only corfu-mode on → nil
-    (let ((corfu-mode t)
-          (corfu-terminal-mode nil))
-      (should-not (pel--corfu-mode-p)))
-    ;; Only corfu-terminal-mode on → nil
-    (let ((corfu-mode nil)
-          (corfu-terminal-mode t))
-      (should-not (pel--corfu-mode-p)))))
+  (let ((pel-use-corfu-terminal t))
+    (cl-letf (((symbol-function 'display-graphic-p) (lambda () nil)))
+      ;; Both on → t
+      (let ((corfu-mode t)
+            (corfu-terminal-mode t))
+        (should (pel--corfu-mode-p)))
+      ;; Only corfu-mode on → nil
+      (let ((corfu-mode t)
+            (corfu-terminal-mode nil))
+        (should-not (pel--corfu-mode-p)))
+      ;; Only corfu-terminal-mode on → nil
+      (let ((corfu-mode nil)
+            (corfu-terminal-mode t))
+        (should-not (pel--corfu-mode-p))))))
 
 ;; ===========================================================================
 ;; pel--global-corfu-mode-p
@@ -179,25 +177,25 @@
 (ert-deftest pel-autocomplete-test/global-corfu-mode-p/graphic-off-when-nil ()
   "`pel--global-corfu-mode-p' returns nil on graphic display when mode is nil."
   (let ((global-corfu-mode nil)
-        (pel-use-corfu-terminal nil)
-        (pel-emacs-is-graphic-p t))
-    (should-not (pel--global-corfu-mode-p))))
+        (pel-use-corfu-terminal nil))
+    (cl-letf (((symbol-function 'display-graphic-p) (lambda () t)))
+      (should-not (pel--global-corfu-mode-p)))))
 
 (ert-deftest pel-autocomplete-test/global-corfu-mode-p/graphic-on-when-t ()
   "`pel--global-corfu-mode-p' returns non-nil on graphic display when mode is t."
   (let ((global-corfu-mode t)
-        (pel-use-corfu-terminal nil)
-        (pel-emacs-is-graphic-p t))
-    (should (pel--global-corfu-mode-p))))
+        (pel-use-corfu-terminal nil))
+    (cl-letf (((symbol-function 'display-graphic-p) (lambda () t)))
+      (should (pel--global-corfu-mode-p)))))
 
 (ert-deftest pel-autocomplete-test/global-corfu-mode-p/terminal-uses-corfu-terminal ()
   "On terminal with corfu-terminal, `pel--global-corfu-mode-p' checks corfu-terminal-mode."
-  (let ((pel-use-corfu-terminal t)
-        (pel-emacs-is-graphic-p nil))
-    (let ((corfu-terminal-mode t))
-      (should (pel--global-corfu-mode-p)))
-    (let ((corfu-terminal-mode nil))
-      (should-not (pel--global-corfu-mode-p)))))
+  (let ((pel-use-corfu-terminal t))
+    (cl-letf (((symbol-function 'display-graphic-p) (lambda () nil)))
+      (let ((corfu-terminal-mode t))
+        (should (pel--global-corfu-mode-p)))
+      (let ((corfu-terminal-mode nil))
+        (should-not (pel--global-corfu-mode-p))))))
 
 ;; ===========================================================================
 ;; pel--autocompletion-tools-selection

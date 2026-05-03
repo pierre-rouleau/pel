@@ -90,7 +90,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
      the function to display potentially invalid information."
   (interactive)
   (if (and pel-system-is-macos-p
-           pel-emacs-is-a-tty-p)
+           (pel-emacs-is-a-tty-p))
       (user-error
        "NumLock state unknown: can't detect <clear> key events in macOS TTY")
     (if pel-mac-keypad-numlocked
@@ -109,7 +109,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
      prevent proper handling of the NumPad keys."
   (interactive)
   (if (and pel-system-is-macos-p
-           pel-emacs-is-a-tty-p)
+           (pel-emacs-is-a-tty-p))
       (user-error
        "Can't toggle NumLock on macOS TTY: use <clear> & switch blindly.")
       (pel-toggle 'pel-mac-keypad-numlocked)
@@ -151,7 +151,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
     (if pel-mac-keypad-numlocked
         (insert-char ?3 (abs n) t)
       (if (require 'pel-scroll nil :noerror)
-          (if (> 0)
+          (if (> n 0)
               (when (fboundp 'pel-scroll-up)
                 (pel-scroll-up  n))
             (when (fboundp 'pel-scroll-down)
@@ -214,7 +214,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
     (if pel-mac-keypad-numlocked
         (insert-char ?9 (abs n) t)
       (if (require 'pel-scroll nil :noerror)
-          (if (> 0)
+          (if (> n 0)
               (when (fboundp 'pel-scroll-down)
                 (pel-scroll-down n))
             (when (fboundp 'pel-scroll-up)

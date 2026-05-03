@@ -33,6 +33,10 @@
 ;; PEL version
 ;;  * `pel-version'
 ;;
+;; Emacs TTY/Graphics Mode Detection
+;; - `pel-emacs-is-a-tty-p'
+;; - `pel-can-display-special-chars-p'
+;;
 ;; Assignment operator macros
 ;;  - `pel+='
 ;;  - `pel-='
@@ -367,15 +371,6 @@
 
 The non-nil value of the predicate is the `module-file-suffix'.")
 
-(defconst pel-emacs-is-graphic-p (display-graphic-p)
-  "Predicate: t when Emacs is running in graphics mode, nil otherwise.")
-
-(defconst pel-emacs-is-a-tty-p (not pel-emacs-is-graphic-p)
-  "Predicate: t when Emacs is running in TTY mode, nil otherwise.")
-
-(defconst pel-can-display-special-chars-p  (and (eq system-type 'darwin)
-                                                pel-emacs-is-a-tty-p)
-  "Predicate: t if Emacs can properly show Unicode characters like 👍 or 👎.")
 ;; TODO: add ability to install unicode fonts and take it into account.
 
 (defconst pel-emacs-27-or-later-p (>= emacs-major-version 27)
@@ -459,6 +454,19 @@ Other uses risk returning non-nil value that point to the wrong file."
 ;; (declare-function macroexp-file-name (if (version< emacs-version "28")
 ;;                                          "pel--base"
 ;;                                        "macroexp"))
+
+;; ---------------------------------------------------------------------------
+;;* Emacs TTY/Graphics Mode Detection
+;;  =================================
+
+(defun pel-emacs-is-a-tty-p ()
+  "Predicate: t when Emacs is running in TTY mode, nil otherwise."
+  (not (display-graphic-p)))
+
+(defun pel-can-display-special-chars-p ()
+  "Predicate: t if Emacs can properly show Unicode characters like 👍 or 👎."
+  (and (eq system-type 'darwin)
+       (not (display-graphic-p))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Assignment operator macros

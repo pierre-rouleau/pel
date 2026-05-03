@@ -161,7 +161,7 @@ Emacs %-4s startup time: %s   (in %s mode%s)
                                                             'native-compile))
                               ""
                             "out")
-                          (if pel-emacs-is-graphic-p
+                          (if (display-graphic-p)
                               (format "in graphics mode%s"
                                       (if (bound-and-true-p
                                            pel-init-support-dual-environment-p)

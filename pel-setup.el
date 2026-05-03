@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 11:28:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-03 13:23:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -251,7 +251,6 @@
 ;;                             ;      `pel-string-when'
 ;;                             ;      `pel-sibling-dirpath'
 ;;                             ;      `pel-point-symlink-to'
-;;                             ;      `pel-emacs-is-graphic-p'
 (require 'pel--options)        ; use: `pel-compile-pel-bundle-autoload'
 (require 'pel-custom)          ; use: `pel-customize-save'
 (require 'pel-list)            ; use: `pel-join'
@@ -414,8 +413,8 @@ independent environments for terminal and graphics mode."
          (elpa-dn-g       (pel-elpa-name elpa-dn :for-graphics))
          (elpa-cmplt-dn   (pel-sibling-dirname pel-elpa-dirpath "elpa-complete"))
          (elpa-cmplt-dn-g (pel-elpa-name elpa-cmplt-dn :for-graphics))
-         (utils-dp        (pel-elpa-name pel-utils-dirpath nil))
-         (utils-dp-g      (pel-elpa-name pel-utils-dirpath :for-graphics))
+         (utils-dp        (pel-elpa-name (pel-utils-dirpath) nil))
+         (utils-dp-g      (pel-elpa-name (pel-utils-dirpath) :for-graphics))
          (issues nil)
          ;; vertical align names by imposing a padding to all messages
          (pel-problems-text-length -35))
@@ -508,9 +507,9 @@ Utility function.  If REASON-MSG is specified include that message on error."
          (elpa-dn-g       (pel-elpa-name elpa-dn :for-graphics))
          (elpa-cmplt-dn   (pel-sibling-dirname pel-elpa-dirpath "elpa-complete"))
          (elpa-cmplt-dn-g (pel-elpa-name elpa-cmplt-dn :for-graphics))
-         (utils-dn        (pel-elpa-name (directory-file-name pel-utils-dirpath)
+         (utils-dn        (pel-elpa-name (directory-file-name (pel-utils-dirpath))
                                          nil))
-         (utils-dn-g      (pel-elpa-name (directory-file-name pel-utils-dirpath)
+         (utils-dn-g      (pel-elpa-name (directory-file-name (pel-utils-dirpath))
                                          :for-graphics))
          (actions nil))
     ;; 1:
@@ -597,7 +596,7 @@ Utility function.  If REASON-MSG is specified include that message on error."
             (message "%s\n All is now OK!%s"
                      done-text
                      (pel-string-when
-                      pel-emacs-is-graphic-p
+                      (display-graphic-p)
                       "
 Please restart Emacs to pick up the graphics-mode specific environment."))
           (message "Nothing to do, it's already setup."))))))
@@ -1303,7 +1302,7 @@ Failed fast startup setup for %s after %d of %d steps: %s
     (user-error "PEL/Emacs is already setup for fast startup!"))
    ;;
    ((and (bound-and-true-p package-quickstart)
-         pel-emacs-is-graphic-p)
+         (display-graphic-p))
     (user-error "PEL currently is not able to switch to fast startup mode when
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off
@@ -1363,7 +1362,7 @@ is only one or when its for the terminal (TTY) mode."
    ((eq (pel-startup-mode) 'normal)
     (user-error "PEL/Emacs is already using the normal setup!"))
    ((and (bound-and-true-p package-quickstart)
-         pel-emacs-is-graphic-p)
+         (display-graphic-p))
     (user-error "PEL currently is not able to restore from fast startup mode when
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off

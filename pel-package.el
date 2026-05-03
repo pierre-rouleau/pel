@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 15:49:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-03 15:53:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -90,12 +90,11 @@
 ;;  The code identifies you local Elpa and utils directories and their attic
 ;;  counterparts, normally stored inside the ~/.emacs.d directory or the
 ;;  equivalent.  The location of those directories is stored inside the
-;;  following defconst variables:
+;;  `pel-elpa-dirpath' defconst and the returned by the following functions:
 ;;
-;;                       - `pel-elpa-dirpath'
-;;                       - `pel-elpa-attic-dirpath'
-;;                       - `pel-utils-dirpath'
-;;                       - `pel-utils-attic-dirpath'
+;;   - `pel-elpa-attic-dirpath'
+;;   - `pel-utils-dirpath'
+;;   - `pel-utils-attic-dirpath'
 
 ;; The function call trees are shown here:
 ;;
@@ -213,32 +212,36 @@ path of the elpa directory or symlink if it exists.
 Note that you can have several elpa directories if you set `package-user-dir'
 inside your init.el file.")
 
-(defconst pel-elpa-attic-dirpath
-  (file-name-as-directory
-   (pel-elpa-name (expand-file-name "elpa-attic" user-emacs-directory)
-                  (and (bound-and-true-p pel-init-support-dual-environment-p)
-                       pel-emacs-is-graphic-p)))
-  "Absolute path of the user elpa-attic directory.
+(defun pel-elpa-attic-dirpath ()
+  "Return the absolute path of the user elpa-attic directory.
 PEL supports a pel-attic directory for dual independent
 customization when it is requested as specified by the presence
-of `pel-init-support-dual-environment-p' symbol set to t.")
-
-(defconst pel-utils-dirpath
+of `pel-init-support-dual-environment-p' symbol set to t."
   (file-name-as-directory
-   (pel-elpa-name (expand-file-name pel-utils-dirname user-emacs-directory)
-                  (and (bound-and-true-p pel-init-support-dual-environment-p)
-                       pel-emacs-is-graphic-p)))
+   (pel-elpa-name
+    (expand-file-name "elpa-attic" user-emacs-directory)
+    (and (bound-and-true-p pel-init-support-dual-environment-p)
+         (display-graphic-p)))))
+
+(defun pel-utils-dirpath ()
   "Absolute path of the PEL utils directory.
 PEL supports a utils directory for dual independent customization
 when it is requested as specified by the presence of
-`pel-init-support-dual-environment-p' symbol set to t.")
-
-(defconst pel-utils-attic-dirpath
+`pel-init-support-dual-environment-p' symbol set to t."
   (file-name-as-directory
-   (pel-elpa-name (expand-file-name (concat pel-utils-dirname "-attic")
-                                    user-emacs-directory)
-                  pel-emacs-is-graphic-p))
-  "Absolute path of the PEL utils-attic directory.")
+   (pel-elpa-name
+    (expand-file-name pel-utils-dirname user-emacs-directory)
+    (and (bound-and-true-p pel-init-support-dual-environment-p)
+         (display-graphic-p)))))
+
+(defun pel-utils-attic-dirpath ()
+  "Absolute path of the PEL utils-attic directory."
+  (file-name-as-directory
+   (pel-elpa-name
+    (expand-file-name (concat pel-utils-dirname "-attic")
+                      user-emacs-directory)
+    (and (bound-and-true-p pel-init-support-dual-environment-p)
+         (display-graphic-p)))))
 
 (defconst pel-required-packages '(popup)
   "List of package names that PEL always uses.")
@@ -829,8 +832,8 @@ The function does not support printing a full report on stdout."
                     package-user-dir))
                   package-user-dir      ; package directory
                   (length               ; # packages in PEL utils
-                   (pel-el-files-in pel-utils-dirpath))
-                  pel-utils-dirpath     ; PEL utils directory}
+                   (pel-el-files-in (pel-utils-dirpath)))
+                  (pel-utils-dirpath)   ; PEL utils directory}
                   (length load-path)    ; load-path size
                   (length user-options) ; total # user-options
                   (length (seq-filter   ; # of non-nil user-options
@@ -1013,7 +1016,7 @@ order.
   PEL user-options.
 - The second list identifies the files that are currently not used by the PEL
   user options."
-  (let ((utils-el-files (directory-files pel-utils-dirpath nil "\\.el\\'"))
+  (let ((utils-el-files (directory-files (pel-utils-dirpath) nil "\\.el\\'"))
         (active-utils-files ())
         (excess-utils-files ()))
     (dolist (utils-symbol (cadr (pel-activated-packages)))
@@ -1044,21 +1047,21 @@ Return the a cons of 2 lists:
   (let ((unrequired-files (pel-utils-unrequired))
         ;; get list of orphaned .elc (a .elc without a .el file). Delete them
         ;; when no dry-run.
-        (removed-elc-files (pel-remove-invalid-elc pel-utils-dirpath dry-run)))
+        (removed-elc-files (pel-remove-invalid-elc (pel-utils-dirpath) dry-run)))
     (unless dry-run
       (when unrequired-files
-        (unless (file-exists-p pel-utils-attic-dirpath)
-          (make-directory pel-utils-attic-dirpath))
+        (unless (file-exists-p (pel-utils-attic-dirpath))
+          (make-directory (pel-utils-attic-dirpath)))
         (dolist (file unrequired-files)
-          (let ((utils-filename (expand-file-name file pel-utils-dirpath))
+          (let ((utils-filename (expand-file-name file (pel-utils-dirpath)))
                 (attic-filename (expand-file-name file
-                                                  pel-utils-attic-dirpath)))
+                                                  (pel-utils-attic-dirpath))))
             (if (file-exists-p attic-filename)
                 (delete-file utils-filename)
-              (rename-file utils-filename pel-utils-attic-dirpath))))
+              (rename-file utils-filename (pel-utils-attic-dirpath)))))
         ;; byte recompile all .el files newer than .elc or when the .elc is
         ;; missing.
-        (byte-recompile-directory pel-utils-dirpath 0)))
+        (byte-recompile-directory (pel-utils-dirpath) 0)))
     (cons unrequired-files removed-elc-files)))
 
 ;; --
@@ -1077,7 +1080,7 @@ The returned list of directory paths is sorted in alphabetical
 order.  For several versions of a given package the most recent
 is placed last."
   (directory-files (if in-attic
-                       pel-elpa-attic-dirpath
+                       (pel-elpa-attic-dirpath)
                      package-user-dir)
                    :full-path
                    (format "\\`%s-[0-9-.]+\\'"
@@ -1109,10 +1112,10 @@ removed."
       (unless dry-run
         (let ((new-location (expand-file-name
                              (file-name-nondirectory dirpath)
-                             pel-elpa-attic-dirpath)))
+                             (pel-elpa-attic-dirpath))))
           (if (file-exists-p new-location)
               (delete-directory dirpath :recursively)
-            (pel-move-to-dir dirpath pel-elpa-attic-dirpath)))))
+            (pel-move-to-dir dirpath (pel-elpa-attic-dirpath))))))
     (nreverse removed-dirpaths)))
 
 ;; --
@@ -1243,8 +1246,8 @@ Return a list of elpa directories moved or deleted."
       ;; unless this is a dry-run (in which case just accumulate the directory
       ;; names in the moved-elpa-dirs list).  If the directory is already
       ;; inside the elpa-attic then delete it.
-      (unless (file-exists-p pel-elpa-attic-dirpath)
-        (make-directory pel-elpa-attic-dirpath))
+      (unless (file-exists-p (pel-elpa-attic-dirpath))
+        (make-directory (pel-elpa-attic-dirpath)))
       (dolist (pkg unrequired-elpa)
         (setq moved-elpa-dirs
               (append moved-elpa-dirs
@@ -1263,39 +1266,46 @@ Return a list of elpa directories moved or deleted."
 (defun pel-cleanup (&optional dry-run)
   "Move all unrequired packages to their attic directory.
 
-With optional argument DRY-RUN, do nothing just report what would
-be done.  Print a description of the operation in the
-*pel-cleanup* buffer.
-This command is *not* available when PEL operates in fast startup."
+With optional argument DRY-RUN, do nothing just report what would be
+done.  Print a description of the operation in the *pel-cleanup* buffer.
+
+This command is *not* available when PEL operates in fast startup or
+when running inside an Emacs server client (emacsclient).  It must be
+run from a standalone Emacs process."
   (interactive "P")
-  (if (pel-in-fast-startup-p)
-      (user-error "pel-cleanup is not available in fast startup operation!
-Use pel-setup-normal to return to normal operation.")
-    (when (or dry-run
-              (y-or-n-p "Proceed with removal of non-required packages? "))
-      (message "%s" (propertize "Checking PEL user-options and packages..." 'face 'bold))
-      (let* ((utils-results     (pel-clean-utils dry-run))
-             (removed-el-files  (car utils-results))
-             (removed-elc-files (cdr utils-results))
-             (moved-elpa-dirs   (pel-clean-elpa dry-run)))
-        (message "")
-        (pel-print-in-buffer
-         "*pel-cleanup*"
-         (if dry-run "Dry-run of PEL Cleanup"
-           "PEL Cleanup")
-         (lambda ()
-           (let ((n 0)
-                 verb-moved
-                 verb-Moved
-                 verb-Removed)
-             (if dry-run
-                 (setq verb-moved "that would have been moved"
-                       verb-Moved "Would move"
-                       verb-Removed "Would remove")
-               (setq verb-moved "moved"
-                     verb-Moved "Moved"
-                     verb-Removed "Removed"))
-             (insert "
+  (when (pel-in-fast-startup-p)
+    (user-error "pel-cleanup is not available in fast startup operation!
+Use pel-setup-normal to return to normal operation."))
+  (when (frame-parameter nil 'client) ; in any server client (terminal or GUI)?
+    (user-error "pel-cleanup is not available in a server client!
+Use a normal Emacs process."))
+  ;;
+  ;; When state permits it, proceed.
+  (when (or dry-run
+            (y-or-n-p "Proceed with removal of non-required packages? "))
+    (message "%s" (propertize "Checking PEL user-options and packages..." 'face 'bold))
+    (let* ((utils-results     (pel-clean-utils dry-run))
+           (removed-el-files  (car utils-results))
+           (removed-elc-files (cdr utils-results))
+           (moved-elpa-dirs   (pel-clean-elpa dry-run)))
+      (message "")
+      (pel-print-in-buffer
+       "*pel-cleanup*"
+       (if dry-run "Dry-run of PEL Cleanup"
+         "PEL Cleanup")
+       (lambda ()
+         (let ((n 0)
+               verb-moved
+               verb-Moved
+               verb-Removed)
+           (if dry-run
+               (setq verb-moved "that would have been moved"
+                     verb-Moved "Would move"
+                     verb-Removed "Would remove")
+             (setq verb-moved "moved"
+                   verb-Moved "Moved"
+                   verb-Removed "Removed"))
+           (insert "
 The PEL cleanup removes packages that are not needed, based on
 the value of the `pel-use-' customization user-options.
 
@@ -1303,9 +1313,9 @@ PEL does not remove packages that are dependencies of packages
 that are activated by the user-options or packages manually
 installed that have been identified in the following user-options:
 ")
-             (pel-insert-list-content 'pel-elpa-packages-to-keep nil nil nil 'on-same-line)
-             (pel-insert-list-content 'pel-utils-packages-to-keep nil nil nil 'on-same-line)
-             (insert (format "
+           (pel-insert-list-content 'pel-elpa-packages-to-keep nil nil nil 'on-same-line)
+           (pel-insert-list-content 'pel-utils-packages-to-keep nil nil nil 'on-same-line)
+           (insert (format "
 
 ******************
 **IMPORTANT NOTE**
@@ -1322,8 +1332,8 @@ PEL CLEANUP %s:
 
 " (if dry-run "DRY - RUN"
     "EXECUTION")))
-             (when dry-run
-               (insert "This is a dry-run ONLY.  NOTHING was done!
+           (when dry-run
+             (insert "This is a dry-run ONLY.  NOTHING was done!
 
 The remainder of the message shows what would have been done if
 you elected to perform a real cleanup by issuing the
@@ -1331,37 +1341,39 @@ you elected to perform a real cleanup by issuing the
 intention by typing 'y' to its prompt.
 
 "))
-             (when removed-elc-files
-                 (insert (format "%s %d orphaned .elc files.\n"
-                                 verb-Removed (length removed-elc-files))))
-             (when removed-el-files
-               (insert (format "%s %d files,\nfrom: %s\nto  : %s\n"
-                               verb-Moved
-                               (length removed-el-files)
-                               pel-utils-dirpath
-                               pel-utils-attic-dirpath))
-               (insert (format "The files %s to utils-attic are:\n\n"
-                               verb-moved))
-               (dolist (fn removed-el-files)
-                 (pel+= n 1)
-                 (insert (format "- %3d: %s\n" n fn))))
-             (when moved-elpa-dirs
-               (when (or removed-el-files removed-elc-files)
-                 (insert "\n\n"))
-               (insert (format "Elpa packages %s,
+           (when removed-elc-files
+             (insert (format "%s %d orphaned .elc files.\n"
+                             verb-Removed (length removed-elc-files))))
+           (when removed-el-files
+             (insert (format "%s %d files,\nfrom: %s\nto  : %s\n"
+                             verb-Moved
+                             (length removed-el-files)
+                             (pel-utils-dirpath)
+                             (pel-utils-attic-dirpath)))
+             (insert (format "The files %s to utils-attic are:\n\n"
+                             verb-moved))
+             (dolist (fn removed-el-files)
+               (pel+= n 1)
+               (insert (format "- %3d: %s\n" n fn))))
+           (when moved-elpa-dirs
+             (when (or removed-el-files removed-elc-files)
+               (insert "\n\n"))
+             (insert (format "Elpa packages %s,
 from: %s
 to  : %s :\n\n"
-                               verb-moved
-                               pel-elpa-dirpath
-                               pel-elpa-attic-dirpath))
-               (setq n 0)
-               (dolist (pkgdir moved-elpa-dirs)
-                 (pel+= n 1)
-                 (insert (format "- %3d: %s\n" n pkgdir))))
-             (unless (or removed-el-files
-                         removed-elc-files
-                         moved-elpa-dirs)
-               (insert "Nothing to cleanup!!")))))))))
+                             verb-moved
+                             pel-elpa-dirpath
+                             (pel-elpa-attic-dirpath)))
+             (setq n 0)
+             (dolist (pkgdir moved-elpa-dirs)
+               (pel+= n 1)
+               (insert (format "- %3d: %s\n" n pkgdir))))
+           (unless (or removed-el-files
+                       removed-elc-files
+                       moved-elpa-dirs)
+             (insert "Nothing to cleanup!!")))))))
+
+  )
 
 ;; --
 

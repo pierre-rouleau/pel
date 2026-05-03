@@ -36,7 +36,6 @@
 ;;; Code:
 (require 'pel--base)                    ; use: pel-count-string
 ;;                                      ;      pel-system-is-macos-p
-;;                                      ;      pel-emacs-is-graphic-p
 
 ;;-pel-autoload
 (defun pel-toggle-frame-fullscreen ()
@@ -45,7 +44,7 @@
 In Terminal mode, issue error to show how to use the OS keystrokes
 to toggle the fullscreen mode."
   (interactive)
-  (if pel-emacs-is-graphic-p
+  (if (display-graphic-p)
       (toggle-frame-fullscreen)
     (if pel-system-is-macos-p
         (let* ((terminal_name (pel-val-or-default
@@ -70,7 +69,7 @@ use your OS supported command to toggle fullscreen mode"))))
             (length (frame-list))
             "frame")
            (pel-count-string
-            (if pel-emacs-is-graphic-p
+            (if (display-graphic-p)
                 (length (visible-frame-list))
               1)
             "is" "are")))
@@ -89,7 +88,7 @@ In graphics mode:
   ;; larger frame number...
   (raise-frame (previous-frame
                 nil
-                (if (and pel-emacs-is-graphic-p arg)
+                (if (and (display-graphic-p) arg)
                     0
                   'visible))))
 
@@ -107,7 +106,7 @@ In graphics mode:
   ;; smaller frame number...
   (raise-frame (next-frame
                 nil
-                (if (and pel-emacs-is-graphic-p arg)
+                (if (and (display-graphic-p) arg)
                     0
                   'visible))))
 

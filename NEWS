@@ -52,11 +52,6 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     when searching for files.
   - Renamed *pel-cc-find-show-status* (previously bound to ~<f12> <f4> f~ of cc-mode buffers) command to *pel-ffind-show-status* now bound to ~<f11> f <f4> ?~.
 - Fix Pike support: add key mapping in the ~<f12> <f4>~ prefix that had not been activated.
-- Add several utility functions in pel--base.el:
-  - *pel-insert-help-face* to insert text with the help face.
-  - *pel-line-length* that returns the length of the current or specified line.
-  - *pel-setq-user-option* to dynamically change the value of a customizable user-option without modifying the persistent customized value.
-  - *pel-caller-name*.  Use it when debugging code to get the name of a function's caller an optionally to trace the call chain.
 - Improved *pel-show-erlang-version*: it now prints information inside a help type buffer with buttons to access customization of the user-options.
 - Improved reStructuredText support:
   - *pel-rst-set-underscore-syntax* controls the underscore character syntax at a buffer level, not globally.
@@ -83,19 +78,38 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   the buffer modification status.  It helps understand the cryptic information shown by Emacs which provides lots of information in a small area.
 - Add more default file extensions for languages:
   -  .clisp for CommonLisp
+- Add utility functions:
+  - In pel--base.el:
+    - *pel-insert-help-face* to insert text with the help face.
+    - *pel-line-length* that returns the length of the current or specified line.
+    - *pel-setq-user-option* to dynamically change the value of a customizable user-option without modifying the persistent customized value.
+    - *pel-caller-name*.  Use it when debugging code to get the name of a function's caller an optionally to trace the call chain.
+    - *pel-emacs-is-a-tty-p*; now a function instead of a defconst variable to prevent issues in daemon clients.
+    - *pel-can-display-special-chars-p*; now a function instead of a defconst variable to prevent issues in daemon clients.
 - Improved PDF files:
   - ⅀ Diff & Merge: Describe how to create a patch file from a diff-mode buffer.
   - ⅀ Faces/Fonts: more about changing a face.
+  - ⅀ Speedbar: formatting, identify dynamic commands with the 🎚️  icon.
   - Language files:
     - 𝕻𝔩 - Arc: show file extensions.
     - 𝕻𝔩 - CommonLisp: more links to CommonLisp articles/sites.
-    - 𝕻𝔩-Objective-C : more on file extensions.
+    - 𝕻𝔩 - Objective-C : more on file extensions.
     - 𝕻𝔩 - Pike: describe file extensions used by Pike.
   - Markup files:
     - Ɱ reStructuredText: show that code now uses ~<f12><f4> a~ for adornment setup and ~<f12> <f4> a ?~ to display info about adornment style.
 - Fixes:
   - Regression fix: the ~<f12> <f3>~ key is available again in the C, C++ and Objective-C buffers.
+  - Fix: *pel-3* and *pel-9* that did not check the function argument properly.
+    Under supported systems these keys correspond to the keypad 3 and 9 keys and can be used to
+    scroll the current buffer even inside org-mode buffers.
   - Fix: *pel-print-in-buffer* function no longer fails when text argument is a string.
+  - Fix: detection of graphics mode used to be done only at load time and stored in defconst variables defined in pel--base.el:
+    pel-emacs-is-graphic-p, pel-emacs-is-a-tty-p and pel-can-display-special-chars-p.  Doing it this way was fragile because
+    a GUI Emacs daemon client would still get values indicating that Emacs was a terminal based Emacs.  The new code calls
+    the display-graphic-p function for performing the check at run time.
+    This problem affected the management of the Speedbar, SR-Speedbar and *pel-say* in macOS when running inside a GUI daemon client.
+    Also the pel-cleanup command is no longer allowed to proceed when the user issues the command from within an Emacs server client.
+  - Improvement: *do-applescript* no longer relies on the shell to execute the osascript command.
 - Started writing extensive unit test code.  The goal is to cover all PEL Emacs Lisp code.  There is still much test code to write.
   PEL Emacs Lisp code byte and native compiled for most Emacs versions since Emacs 26.1 in Github CI system.
   No warnings detected by either compiler is allowed.
