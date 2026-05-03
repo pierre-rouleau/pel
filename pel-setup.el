@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-03 09:15:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-03 11:10:11 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -414,8 +414,8 @@ independent environments for terminal and graphics mode."
          (elpa-dn-g       (pel-elpa-name elpa-dn :for-graphics))
          (elpa-cmplt-dn   (pel-sibling-dirname pel-elpa-dirpath "elpa-complete"))
          (elpa-cmplt-dn-g (pel-elpa-name elpa-cmplt-dn :for-graphics))
-         (utils-dp        (pel-elpa-name pel-utils-dirpath nil))
-         (utils-dp-g      (pel-elpa-name pel-utils-dirpath :for-graphics))
+         (utils-dp        (pel-elpa-name (pel-utils-dirpath) nil))
+         (utils-dp-g      (pel-elpa-name (pel-utils-dirpath) :for-graphics))
          (issues nil)
          ;; vertical align names by imposing a padding to all messages
          (pel-problems-text-length -35))
@@ -508,9 +508,9 @@ Utility function.  If REASON-MSG is specified include that message on error."
          (elpa-dn-g       (pel-elpa-name elpa-dn :for-graphics))
          (elpa-cmplt-dn   (pel-sibling-dirname pel-elpa-dirpath "elpa-complete"))
          (elpa-cmplt-dn-g (pel-elpa-name elpa-cmplt-dn :for-graphics))
-         (utils-dn        (pel-elpa-name (directory-file-name pel-utils-dirpath)
+         (utils-dn        (pel-elpa-name (directory-file-name (pel-utils-dirpath))
                                          nil))
-         (utils-dn-g      (pel-elpa-name (directory-file-name pel-utils-dirpath)
+         (utils-dn-g      (pel-elpa-name (directory-file-name (pel-utils-dirpath))
                                          :for-graphics))
          (actions nil))
     ;; 1:

@@ -277,13 +277,15 @@ Contract and re-expand parents to see the change.%s"
     (user-error "Open Speedbar first")))
 
 ;;-pel-autoload
-(when (display-graphic-p)
-  (defun pel-speedbar-toggle-images ()
-    "Execute `speedbar-toggle-images' if loaded, warn otherwise."
-    (interactive)
-    (if (fboundp 'speedbar-toggle-images)
-        (speedbar-toggle-images)
-      (user-error "Open Speedbar first"))))
+(defun pel-speedbar-toggle-images ()
+  "Execute `speedbar-toggle-images' if loaded, warn otherwise.
+Only available in graphics mode."
+  (interactive)
+  (if (display-graphic-p)
+      (if (fboundp 'speedbar-toggle-images)
+          (speedbar-toggle-images)
+        (user-error "Open Speedbar first"))
+    (user-error "Speedbar images are only available in graphics mode")))
 
 ;; --
 ;; Control Behaviour on SR-Speedbar item selection

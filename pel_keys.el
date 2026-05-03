@@ -10062,8 +10062,8 @@ See `flyspell-auto-correct-previous-word' for more info."
   (define-key pel:speedbar (kbd "M-o")  'pel-speedbar-toggle-sorting)
   (define-key pel:speedbar (kbd "M-f")  'pel-speedbar-focus-current-file)
   ;; (define-key pel:speedbar "e"  #'speedbar-toggle-etags)
-  (when pel-emacs-is-graphic-p
-    (define-key pel:speedbar (kbd "M-i") 'pel-speedbar-toggle-images))
+  (define-key pel:speedbar (kbd "M-i") 'pel-speedbar-toggle-images)
+
 
   (defun pel--sr-speedbar-setup()
     "Setup the sr-speedbar hooks."
