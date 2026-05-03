@@ -112,13 +112,7 @@
   nil
   "If non-nil, holds the window to return to from sr-speedbar.")
 
-(defvar pel-speedbar-type-used
-  (if (not (fboundp 'sr-speedbar-toggle))
-      'speedbar
-    (if (display-graphic-p)
-        nil
-      (when pel-prefer-sr-speedbar-in-terminal
-        'sr-speedbar)))
+(defvar pel-speedbar-type-used nil
   "Identifies the type of Speedbar component used.
 The values are:
 - nil:          nothing used so far, prompt first time used.
@@ -129,9 +123,16 @@ The values are:
 \\='sr-speedbar is only allowed if available.
 When available, \\='sr-speedbar is preferred in terminal mode,
 unless `pel-prefer-sr-speedbar-in-terminal' is nil.")
+;; ---------------------------------------------------------------------------
+(if (not (fboundp 'sr-speedbar-toggle))
+      'speedbar
+    (if (display-graphic-p)
+        nil
+      (when pel-prefer-sr-speedbar-in-terminal
+        'sr-speedbar)))
+;; ---------------------------------------------------------------------------
 
-(defvar pel--speedbar-active
-  nil
+(defvar pel--speedbar-active nil
   "Identifies whether Speedbar was already opened.
 t if Speedbar was opened, nil otherwise.
 Do *not* change its value manually.")
@@ -220,6 +221,8 @@ If no speedbar is used, open one."
 (defun pel-speedbar-toggle-refresh ()
   "Toggle automatic refresh of used Speedbar."
   (interactive)
+  (unless pel-speedbar-type-used
+    (pel-open-close-speedbar))
   (if pel--speedbar-active
       (cond ((equal pel-speedbar-type-used 'speedbar)
              (speedbar-toggle-updates)
@@ -242,6 +245,8 @@ If no speedbar is used, open one."
 (defun pel-speedbar-refresh ()
   "Force refresh of Speedbar content."
   (interactive)
+  (unless pel-speedbar-type-used
+    (pel-open-close-speedbar))
   (if pel--speedbar-active
       (cond ((equal pel-speedbar-type-used 'speedbar)
              (speedbar-refresh t))
@@ -257,7 +262,12 @@ If no speedbar is used, open one."
   "Execute `speedbar-toggle-show-all-files' if loaded, warn otherwise."
   (interactive)
   (if (fboundp 'speedbar-toggle-show-all-files)
-      (speedbar-toggle-show-all-files)
+      (progn
+        (speedbar-toggle-show-all-files)
+        (when (boundp 'speedbar-show-unknown-files)
+          (if speedbar-show-unknown-files
+              (message "Speedbar now show files it cannot tag")
+            (message "Speedbar now does not show files it cannot tag"))))
     (user-error "Open Speedbar first")))
 
 ;;-pel-autoload

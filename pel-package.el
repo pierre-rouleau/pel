@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-03 11:14:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-03 11:51:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -212,47 +212,36 @@ path of the elpa directory or symlink if it exists.
 Note that you can have several elpa directories if you set `package-user-dir'
 inside your init.el file.")
 
-(defvar pel--elpa-attic-dirpath nil
-  "Cached path; nil until first use; access it via `pel-elpa-attic-dirpath'.")
 (defun pel-elpa-attic-dirpath ()
   "Return the absolute path of the user elpa-attic directory.
 PEL supports a pel-attic directory for dual independent
 customization when it is requested as specified by the presence
 of `pel-init-support-dual-environment-p' symbol set to t."
-  (or pel--elpa-attic-dirpath
-      (setq pel--elpa-attic-dirpath
-            (file-name-as-directory
-             (pel-elpa-name
-              (expand-file-name "elpa-attic" user-emacs-directory)
-              (and (bound-and-true-p pel-init-support-dual-environment-p)
-                   (display-graphic-p)))))))
+  (file-name-as-directory
+   (pel-elpa-name
+    (expand-file-name "elpa-attic" user-emacs-directory)
+    (and (bound-and-true-p pel-init-support-dual-environment-p)
+         (display-graphic-p)))))
 
-(defvar pel--utils-dirpath nil
-  "Cached path; nil until first use; access it via `pel-utils-dirpath'.")
 (defun pel-utils-dirpath ()
   "Absolute path of the PEL utils directory.
 PEL supports a utils directory for dual independent customization
 when it is requested as specified by the presence of
 `pel-init-support-dual-environment-p' symbol set to t."
-  (or pel--utils-dirpath
-      (setq pel--utils-dirpath
-            (file-name-as-directory
-             (pel-elpa-name
-              (expand-file-name pel-utils-dirname user-emacs-directory)
-              (and (bound-and-true-p pel-init-support-dual-environment-p)
-                   (display-graphic-p)))))))
+  (file-name-as-directory
+   (pel-elpa-name
+    (expand-file-name pel-utils-dirname user-emacs-directory)
+    (and (bound-and-true-p pel-init-support-dual-environment-p)
+         (display-graphic-p)))))
 
-(defvar pel--utils-attic-dirpath nil
-  "Cached path; nil until first use; access it via `pel-utils-attic-dirpath'.")
-(defun  pel-utils-attic-dirpath ()
+(defun pel-utils-attic-dirpath ()
   "Absolute path of the PEL utils-attic directory."
-  (or pel--utils-attic-dirpath
-      (setq pel--utils-attic-dirpath
-            (file-name-as-directory
-             (pel-elpa-name
-              (expand-file-name (concat pel-utils-dirname "-attic")
-                                user-emacs-directory)
-              (display-graphic-p))))))
+  (file-name-as-directory
+   (pel-elpa-name
+    (expand-file-name (concat pel-utils-dirname "-attic")
+                      user-emacs-directory)
+    (and (bound-and-true-p pel-init-support-dual-environment-p)
+         (display-graphic-p)))))
 
 (defconst pel-required-packages '(popup)
   "List of package names that PEL always uses.")

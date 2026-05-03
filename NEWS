@@ -89,6 +89,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Improved PDF files:
   - ⅀ Diff & Merge: Describe how to create a patch file from a diff-mode buffer.
   - ⅀ Faces/Fonts: more about changing a face.
+  - ⅀ Speedbar: formatting, identify dynamic commands with the 🎚️  icon.
   - Language files:
     - 𝕻𝔩 - Arc: show file extensions.
     - 𝕻𝔩 - CommonLisp: more links to CommonLisp articles/sites.
@@ -103,6 +104,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     pel-emacs-is-graphic-p, pel-emacs-is-a-tty-p and pel-can-display-special-chars-p.  Doing it this way was fragile because
     a GUI Emacs daemon client would still get values indicating that Emacs was a terminal based Emacs.  The new code calls
     the display-graphics-p function for performing the check at run time.
+    This problem affected the management of the Speedbar, SR-Speedbar.
 - Started writing extensive unit test code.  The goal is to cover all PEL Emacs Lisp code.  There is still much test code to write.
   PEL Emacs Lisp code byte and native compiled for most Emacs versions since Emacs 26.1 in Github CI system.
   No warnings detected by either compiler is allowed.
