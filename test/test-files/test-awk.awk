@@ -2,8 +2,6 @@
 #
 # Purpose   : Awk test file.
 # Created   : Thursday, April 30 2026.
-# Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-04-30 16:38:49 EDT, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------

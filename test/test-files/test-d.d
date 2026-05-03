@@ -2,8 +2,6 @@
 //
 // Purpose   : Test D file.
 // Created   : Friday, April 10 2026.
-// Author    : Pierre Rouleau <prouleau001@gmail.com>
-// Time-stamp: <2026-04-10 16:24:20 EDT, updated by Pierre Rouleau>
 // -----------------------------------------------------------------------------
 // Module Description
 // ------------------

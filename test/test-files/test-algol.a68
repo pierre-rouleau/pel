@@ -2,8 +2,6 @@
 |
 | Purpose   : Test Algol 68 support.
 | Created   : Thursday, April 30 2026.
-| Author    : Pierre Rouleau <prouleau001@gmail.com>
-| Time-stamp: <2026-04-30 17:29:01 EDT, updated by Pierre Rouleau>
 }
 { ---------------------------------------------------------------------------}
 { Module Description

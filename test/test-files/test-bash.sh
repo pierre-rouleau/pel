@@ -3,8 +3,6 @@
 #
 # Purpose   : TEST FILE Find all Perl files in specified directory tree.
 # Created   : Saturday, January 18 2025 (a modified copy of something in my USRHOME)
-# Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2025-01-18 13:20:34 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------

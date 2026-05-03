@@ -2,8 +2,6 @@
 //
 // Purpose   : Test Objective-C Support.
 // Created   : Thursday, April 30 2026.
-// Author    : Pierre Rouleau <prouleau001@gmail.com>
-// Time-stamp: <2026-04-30 20:55:24 EDT, updated by Pierre Rouleau>
 // -----------------------------------------------------------------------------
 // Module Description
 // ------------------

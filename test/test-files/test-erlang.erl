@@ -2,8 +2,6 @@
 %
 % Purpose   : Test Erlang support.
 % Created   : Monday, April 13 2026.
-% Author    : Pierre Rouleau <prouleau001@gmail.com>
-% Time-stamp: <2026-04-13 19:16:45 EDT, updated by Pierre Rouleau>
 %% -------------------------------------------------------------------------------------------------
 % Module Description
 % ------------------

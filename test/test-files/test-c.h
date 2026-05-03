@@ -2,8 +2,6 @@
 **
 ** Purpose   : Test PEL's ability to detect C .h files.
 ** Created   : Thursday, April  9 2026.
-** Author    : Pierre Rouleau <prouleau001@gmail.com>
-** Time-stamp: <2026-05-01 07:35:37 EDT, updated by Pierre Rouleau>
 */
 /* -------------------------------------------------------------------------- */
 /* Module Description
