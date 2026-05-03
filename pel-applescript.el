@@ -52,8 +52,9 @@
 
 ;;; Code:
 
-(require 'pel-read)
-(require 'pel--options)                 ; uses: pel-mac-voice-name
+(require 'pel--base)                ; use: `pel-system-is-macos-p'
+(require 'pel--options)
+(require 'pel-read)                 ; use: `pel-mac-voice-name'
 
 (defconst pel-narration-translations
   '(("[_(){}`*~\\<>/^•]" . " ")
@@ -73,20 +74,18 @@ The translation identified in the first list element is done first.")
 ;; forward definition to prevent byte-compiler warnings
 (defvar pel-mac-voice-name)
 
-(if pel-system-is-macos-p
-    (if (display-graphic-p)
-        (require 'term/ns-win)
-      (defun do-applescript (command)
-        "Execute a small AppleScript COMMAND.
+(defun do-applescript (command)
+  "Execute a small AppleScript COMMAND on macOS systems only.
 Note: all quotes in the COMMAND string will be escaped.
 To say something, use:  (do-applescript \"say \\\"Hello\\\"\")"
+  (if pel-system-is-macos-p
+      (progn
+        (when (display-graphic-p)
+          (require 'term/ns-win))
         (shell-command
-         (format
-          "osascript -e \"%s\""
-          (replace-regexp-in-string "\"" "\\\\\"" command)))))
-  (defun do-applescript (_command)
-    "No COMMAND executed, error raised: this requires macOS."
-    (error "The do-applescript is only available on macOS systems!")))
+         (format "osascript -e \"%s\""
+                 (replace-regexp-in-string "\"" "\\\\\"" command))))
+    (error "do-applescript is only available on macOS systems!")))
 
 ;;-pel-autoload
 (defun pel-say (text &optional translations)
@@ -119,12 +118,12 @@ Return t if the text was said, nil otherwise."
   (unless (string-match-p "\"" text)
     (if (fboundp 'do-applescript)
         (let ((cmd (format "say \"%s\"%s"
-                 text
-                 (if (and (boundp 'pel-mac-voice-name)
-                          (stringp pel-mac-voice-name)
-                          (> (length pel-mac-voice-name) 2))
-                     (format " using \"%s\"" pel-mac-voice-name)
-                   ""))))
+                           text
+                           (if (and (boundp 'pel-mac-voice-name)
+                                    (stringp pel-mac-voice-name)
+                                    (> (length pel-mac-voice-name) 2))
+                               (format " using \"%s\"" pel-mac-voice-name)
+                             ""))))
           (message cmd)
           (do-applescript cmd))
       (user-error "The function do-applescript is not defined!"))

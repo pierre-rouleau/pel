@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-03 11:51:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-03 13:59:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1271,34 +1271,39 @@ be done.  Print a description of the operation in the
 *pel-cleanup* buffer.
 This command is *not* available when PEL operates in fast startup."
   (interactive "P")
-  (if (pel-in-fast-startup-p)
-      (user-error "pel-cleanup is not available in fast startup operation!
-Use pel-setup-normal to return to normal operation.")
-    (when (or dry-run
-              (y-or-n-p "Proceed with removal of non-required packages? "))
-      (message "%s" (propertize "Checking PEL user-options and packages..." 'face 'bold))
-      (let* ((utils-results     (pel-clean-utils dry-run))
-             (removed-el-files  (car utils-results))
-             (removed-elc-files (cdr utils-results))
-             (moved-elpa-dirs   (pel-clean-elpa dry-run)))
-        (message "")
-        (pel-print-in-buffer
-         "*pel-cleanup*"
-         (if dry-run "Dry-run of PEL Cleanup"
-           "PEL Cleanup")
-         (lambda ()
-           (let ((n 0)
-                 verb-moved
-                 verb-Moved
-                 verb-Removed)
-             (if dry-run
-                 (setq verb-moved "that would have been moved"
-                       verb-Moved "Would move"
-                       verb-Removed "Would remove")
-               (setq verb-moved "moved"
-                     verb-Moved "Moved"
-                     verb-Removed "Removed"))
-             (insert "
+  (when (pel-in-fast-startup-p)
+    (user-error "pel-cleanup is not available in fast startup operation!
+Use pel-setup-normal to return to normal operation."))
+  (when (pel-running-in-server-client-p)
+    (user-error "pel-cleanup is not available in a server client!
+Use a normal Emacs process."))
+  ;;
+  ;; When state permits it, proceed.
+  (when (or dry-run
+            (y-or-n-p "Proceed with removal of non-required packages? "))
+    (message "%s" (propertize "Checking PEL user-options and packages..." 'face 'bold))
+    (let* ((utils-results     (pel-clean-utils dry-run))
+           (removed-el-files  (car utils-results))
+           (removed-elc-files (cdr utils-results))
+           (moved-elpa-dirs   (pel-clean-elpa dry-run)))
+      (message "")
+      (pel-print-in-buffer
+       "*pel-cleanup*"
+       (if dry-run "Dry-run of PEL Cleanup"
+         "PEL Cleanup")
+       (lambda ()
+         (let ((n 0)
+               verb-moved
+               verb-Moved
+               verb-Removed)
+           (if dry-run
+               (setq verb-moved "that would have been moved"
+                     verb-Moved "Would move"
+                     verb-Removed "Would remove")
+             (setq verb-moved "moved"
+                   verb-Moved "Moved"
+                   verb-Removed "Removed"))
+           (insert "
 The PEL cleanup removes packages that are not needed, based on
 the value of the `pel-use-' customization user-options.
 
@@ -1306,9 +1311,9 @@ PEL does not remove packages that are dependencies of packages
 that are activated by the user-options or packages manually
 installed that have been identified in the following user-options:
 ")
-             (pel-insert-list-content 'pel-elpa-packages-to-keep nil nil nil 'on-same-line)
-             (pel-insert-list-content 'pel-utils-packages-to-keep nil nil nil 'on-same-line)
-             (insert (format "
+           (pel-insert-list-content 'pel-elpa-packages-to-keep nil nil nil 'on-same-line)
+           (pel-insert-list-content 'pel-utils-packages-to-keep nil nil nil 'on-same-line)
+           (insert (format "
 
 ******************
 **IMPORTANT NOTE**
@@ -1325,8 +1330,8 @@ PEL CLEANUP %s:
 
 " (if dry-run "DRY - RUN"
     "EXECUTION")))
-             (when dry-run
-               (insert "This is a dry-run ONLY.  NOTHING was done!
+           (when dry-run
+             (insert "This is a dry-run ONLY.  NOTHING was done!
 
 The remainder of the message shows what would have been done if
 you elected to perform a real cleanup by issuing the
@@ -1334,37 +1339,39 @@ you elected to perform a real cleanup by issuing the
 intention by typing 'y' to its prompt.
 
 "))
-             (when removed-elc-files
-                 (insert (format "%s %d orphaned .elc files.\n"
-                                 verb-Removed (length removed-elc-files))))
-             (when removed-el-files
-               (insert (format "%s %d files,\nfrom: %s\nto  : %s\n"
-                               verb-Moved
-                               (length removed-el-files)
-                               (pel-utils-dirpath)
-                               (pel-utils-attic-dirpath)))
-               (insert (format "The files %s to utils-attic are:\n\n"
-                               verb-moved))
-               (dolist (fn removed-el-files)
-                 (pel+= n 1)
-                 (insert (format "- %3d: %s\n" n fn))))
-             (when moved-elpa-dirs
-               (when (or removed-el-files removed-elc-files)
-                 (insert "\n\n"))
-               (insert (format "Elpa packages %s,
+           (when removed-elc-files
+             (insert (format "%s %d orphaned .elc files.\n"
+                             verb-Removed (length removed-elc-files))))
+           (when removed-el-files
+             (insert (format "%s %d files,\nfrom: %s\nto  : %s\n"
+                             verb-Moved
+                             (length removed-el-files)
+                             (pel-utils-dirpath)
+                             (pel-utils-attic-dirpath)))
+             (insert (format "The files %s to utils-attic are:\n\n"
+                             verb-moved))
+             (dolist (fn removed-el-files)
+               (pel+= n 1)
+               (insert (format "- %3d: %s\n" n fn))))
+           (when moved-elpa-dirs
+             (when (or removed-el-files removed-elc-files)
+               (insert "\n\n"))
+             (insert (format "Elpa packages %s,
 from: %s
 to  : %s :\n\n"
-                               verb-moved
-                               pel-elpa-dirpath
-                               (pel-elpa-attic-dirpath)))
-               (setq n 0)
-               (dolist (pkgdir moved-elpa-dirs)
-                 (pel+= n 1)
-                 (insert (format "- %3d: %s\n" n pkgdir))))
-             (unless (or removed-el-files
-                         removed-elc-files
-                         moved-elpa-dirs)
-               (insert "Nothing to cleanup!!")))))))))
+                             verb-moved
+                             pel-elpa-dirpath
+                             (pel-elpa-attic-dirpath)))
+             (setq n 0)
+             (dolist (pkgdir moved-elpa-dirs)
+               (pel+= n 1)
+               (insert (format "- %3d: %s\n" n pkgdir))))
+           (unless (or removed-el-files
+                       removed-elc-files
+                       moved-elpa-dirs)
+             (insert "Nothing to cleanup!!")))))))
+
+  )
 
 ;; --
 

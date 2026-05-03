@@ -4425,7 +4425,7 @@ d-mode not added to ac-modes!"
 
   ;; Add support for Speedbar listing Common Lisp files:
   (when pel-use-speedbar
-    (pel-add-speedbar-extension ".li?sp")
+    (pel-add-speedbar-extension ".c?li?sp")
     (dolist (ext-regexp pel-clisp-extra-files)
       (pel-add-speedbar-extension ext-regexp)))
   ;; Add extra Common Lisp file extensions if requested by user

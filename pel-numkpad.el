@@ -151,7 +151,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
     (if pel-mac-keypad-numlocked
         (insert-char ?3 (abs n) t)
       (if (require 'pel-scroll nil :noerror)
-          (if (> 0)
+          (if (> n 0)
               (when (fboundp 'pel-scroll-up)
                 (pel-scroll-up  n))
             (when (fboundp 'pel-scroll-down)
@@ -214,7 +214,7 @@ BUG: If running Linux in a VM hosted on macOS, the code does not
     (if pel-mac-keypad-numlocked
         (insert-char ?9 (abs n) t)
       (if (require 'pel-scroll nil :noerror)
-          (if (> 0)
+          (if (> n 0)
               (when (fboundp 'pel-scroll-down)
                 (pel-scroll-down n))
             (when (fboundp 'pel-scroll-up)

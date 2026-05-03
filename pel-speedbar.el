@@ -89,9 +89,10 @@
 ;;; Dependencies:
 
 (require 'speedbar)
-(require 'pel--base)         ; use: pel-emacs-is-graphic-p
-(require 'pel--macros)
-(require 'pel--options)      ; use: pel-prefer-sr-speedbar-in-terminal
+(require 'pel--base)        ; use: `pel-on-off-string'
+(require 'pel--options)     ; use: `pel-prefer-sr-speedbar-in-terminal'
+(require 'pel--macros)      ; use: `pel-when-fbound'
+
 ;; sr-speedbar may not be installed.
 ;; Allow compilation if it's not installed:
 ;; later code checks if its symbols are bound
@@ -123,14 +124,6 @@ The values are:
 \\='sr-speedbar is only allowed if available.
 When available, \\='sr-speedbar is preferred in terminal mode,
 unless `pel-prefer-sr-speedbar-in-terminal' is nil.")
-;; ---------------------------------------------------------------------------
-(if (not (fboundp 'sr-speedbar-toggle))
-      'speedbar
-    (if (display-graphic-p)
-        nil
-      (when pel-prefer-sr-speedbar-in-terminal
-        'sr-speedbar)))
-;; ---------------------------------------------------------------------------
 
 (defvar pel--speedbar-active nil
   "Identifies whether Speedbar was already opened.
@@ -164,17 +157,28 @@ Do *not* change its value manually.")
 Once Speedbar or Sr-Speedbar has been used, keep using the same
 in subsequent calls of the Emacs session."
   (interactive)
-  (cond ((not pel-speedbar-type-used)
-         (if (yes-or-no-p
-              (if (display-graphic-p)
-                  "Use separate frame? "
-                "Use entire terminal frame instead of a dedicated window? "))
-             (pel--speedbar-toggle)
-           (pel--sr-speedbar-toggle)))
-        ((equal pel-speedbar-type-used 'speedbar)
-         (pel--speedbar-toggle))
-        ((equal pel-speedbar-type-used 'sr-speedbar)
-         (pel--sr-speedbar-toggle)))
+  (cond
+   ((not pel-speedbar-type-used)
+    ;; First use: in TTY, prefer sr-speedbar automatically when requested
+    ;; and available; otherwise prompt the user.
+    (if (and (not (display-graphic-p))
+             (fboundp 'sr-speedbar-toggle)
+             pel-prefer-sr-speedbar-in-terminal)
+        (pel--sr-speedbar-toggle)
+      (if (yes-or-no-p
+           (if (display-graphic-p)
+               "Use separate frame? "
+             "Use entire terminal frame instead of a dedicated window? "))
+          (pel--speedbar-toggle)
+        (pel--sr-speedbar-toggle))))
+   ;;
+   ;; Currently using speedbar
+   ((equal pel-speedbar-type-used 'speedbar)
+    (pel--speedbar-toggle))
+   ;;
+   ;; Currently using sr-speedbar
+   ((equal pel-speedbar-type-used 'sr-speedbar)
+    (pel--sr-speedbar-toggle)))
   (setq pel--speedbar-active t))
 
 ;; --

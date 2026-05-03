@@ -469,6 +469,17 @@ Other uses risk returning non-nil value that point to the wrong file."
        (not (display-graphic-p))))
 
 ;; ---------------------------------------------------------------------------
+;;* Checking Emacs server/daemon client
+;;  ====================================
+
+(defun pel-running-in-server-client-p ()
+  "Return non-nil when the current frame was created by an Emacs server client.
+
+This is true when Emacs was started as a daemon and the user is connected
+via emacsclient (GUI or terminal)."
+  (frame-parameter nil 'client))
+
+;; ---------------------------------------------------------------------------
 ;;* Assignment operator macros
 ;;  ==========================
 ;;

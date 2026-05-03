@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-03 11:10:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-03 13:23:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -251,7 +251,6 @@
 ;;                             ;      `pel-string-when'
 ;;                             ;      `pel-sibling-dirpath'
 ;;                             ;      `pel-point-symlink-to'
-;;                             ;      `pel-emacs-is-graphic-p'
 (require 'pel--options)        ; use: `pel-compile-pel-bundle-autoload'
 (require 'pel-custom)          ; use: `pel-customize-save'
 (require 'pel-list)            ; use: `pel-join'

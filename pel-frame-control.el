@@ -36,7 +36,6 @@
 ;;; Code:
 (require 'pel--base)                    ; use: pel-count-string
 ;;                                      ;      pel-system-is-macos-p
-;;                                      ;      pel-emacs-is-graphic-p
 
 ;;-pel-autoload
 (defun pel-toggle-frame-fullscreen ()
