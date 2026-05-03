@@ -85,10 +85,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   -  .clisp for CommonLisp
 - Improved PDF files:
   - ⅀ Diff & Merge: Describe how to create a patch file from a diff-mode buffer.
+  - ⅀ Faces/Fonts: more about changing a face.
   - Language files:
     - 𝕻𝔩 - Arc: show file extensions.
-    - 𝕻𝔩 - Common Lisp: more links to common Lisp articles/sites.
+    - 𝕻𝔩 - CommonLisp: more links to CommonLisp articles/sites.
     - 𝕻𝔩-Objective-C : more on file extensions.
+    - 𝕻𝔩 - Pike: describe file extensions used by Pike.
+  - Markup files:
+    - Ɱ reStructuredText: show that code now uses ~<f12><f4> a~ for adornment setup and ~<f12> <f4> a ?~ to display info about adornment style.
 - Fixes:
   - Regression fix: the ~<f12> <f3>~ key is available again in the C, C++ and Objective-C buffers.
   - Fix: *pel-print-in-buffer* function no longer fails when text argument is a string.
@@ -98,7 +102,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   The ERT-based test code is also executed.
   The code is reviewed by the CodeRabbit AI agent.
   - Includes a set of language specific and file encoding files inside the test/test-files directory.  Some are used
-    by automated tests, other are used manually until automated tests are competed.
+    by automated tests, others are used manually until automated tests are competed.
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
