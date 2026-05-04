@@ -38,10 +38,6 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Renamed *pel-open-file-at-point-dir* user-option to *pel-open-file-at-point-dir-home* and *pel-set-open-at-point-dir* to *pel-set-open-at-point-dir-home*
   - Improved *pel-cc-mode*, the C/C++/Objective-C major mode dispatcher: it now supports more language keywords, properly ignore keywords inside comments,
     and support the PEL file type header comment in the first line of files.
-- Improve *pel-cc-mode-info*: shows useful key bindings related to RET mode and hungry delete commands and
-  shows the value of *pel-c-multiline-comments* for c-mode buffers.
-- Fix *pel-erlang-version* when automatic detection is used.
-- Improved *pel-cc-set-indent-width*: the prompt now shows the currently used indentation width.
 - Refactored the mode specific file finding mechanism.  Removed the file pel-cc-find.el, integrated some of its logic inside pel-ffind.el
   - It used to only support files managed by the cc-mode like AWK, C, C++ but
     is no longer the case: it now supports most programming language modes and has a global behaviour fallback.
@@ -51,8 +47,6 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     when pel_keys.el is loaded.  This is no longer the case: the *pel-open-at-point* code checks the various relevant user-options
     when searching for files.
   - Renamed *pel-cc-find-show-status* (previously bound to ~<f12> <f4> f~ of cc-mode buffers) command to *pel-ffind-show-status* now bound to ~<f11> f <f4> ?~.
-- Fix Pike support: add key mapping in the ~<f12> <f4>~ prefix that had not been activated.
-- Improved *pel-show-erlang-version*: it now prints information inside a help type buffer with buttons to access customization of the user-options.
 - Improved reStructuredText support:
   - *pel-rst-set-underscore-syntax* controls the underscore character syntax at a buffer level, not globally.
     Its implementation is also simpler; it no longer needs a special variable to maintain state.
@@ -76,8 +70,22 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - New feature: *pel-modeline-describe*, bound to ~<f11> M-d ?~, opens a help-mode buffer and describes the meaning of the left-most portion
   of the modeline: the coding system, the input method, whether Emacs is a normal process or a client to a daemon (and the daemon name, client count), the line ending format and
   the buffer modification status.  It helps understand the cryptic information shown by Emacs which provides lots of information in a small area.
-- Add more default file extensions for languages:
-  -  .clisp for CommonLisp
+
+- Update programming language support:
+  - cc-mode (C, C++, Objective-C, ...):
+    - Improve *pel-cc-mode-info*: shows useful key bindings related to RET mode and hungry delete commands and
+      shows the value of *pel-c-multiline-comments* for c-mode buffers.
+    - Improved *pel-cc-set-indent-width*: the prompt now shows the currently used indentation width.
+  - C & C++:
+    - Tree-Sitter modes support for C and C++ now support the ~<f12>~ key properly.
+  -  CommonLisp:
+    - CommonLisp supports the .clisp file extension.
+  - Erlang:
+    - Fix *pel-erlang-version* when automatic detection is used.
+    - Improved *pel-show-erlang-version*: it now prints information inside a help type buffer with buttons to access customization of the user-options.
+  - Pike:
+    - Fix Pike support: add key mapping in the ~<f12> <f4>~ prefix that had not been activated.
+
 - Add utility functions:
   - In pel--base.el:
     - *pel-insert-help-face* to insert text with the help face.
@@ -99,6 +107,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - Ɱ reStructuredText: show that code now uses ~<f12><f4> a~ for adornment setup and ~<f12> <f4> a ?~ to display info about adornment style.
 - Fixes:
   - Regression fix: the ~<f12> <f3>~ key is available again in the C, C++ and Objective-C buffers.
+  - Regression fix: when Bison support is requested via *pel-use-bison* support for C is required but the code
+    used to set *pel-use-c* to t even if it was set to with-tree-sitter, changing user's setting.
+    The same type of error affected pel-use-lua, pel-use-projectile and pel-use-yasnippet.
+    They are now all fixed.
+  - Fix: *pel-use-java* can now be set to with-tree-sitter to support Tree-Sitter mode.
+  - Fix: *pel-use-python* can now be set to with-tree-sitter to support Tree-Sitter mode.
   - Fix: *pel-3* and *pel-9* that did not check the function argument properly.
     Under supported systems these keys correspond to the keypad 3 and 9 keys and can be used to
     scroll the current buffer even inside org-mode buffers.

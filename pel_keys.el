@@ -3176,7 +3176,7 @@ MODE must be a symbol."
                      pel:c-guess
                      pel:for-c-preproc
                      pel:c-search-replace)
-    (pel-config-major-mode c pel:for-c :no-ts
+    (pel-config-major-mode c pel:for-c :same-for-ts
       (defvar c-mode-map)    ; declare dynamic: prevent byte-compiler warnings
       (define-key c-mode-map (kbd "M-;") 'pel-c-comment-dwim)
 
@@ -3283,7 +3283,7 @@ MODE must be a symbol."
     (define-key pel:c++-search-replace (kbd "v") 'pel-move-down-to-class-visibility)
     (define-key pel:c++-search-replace (kbd "V") 'pel-move-up-to-class-visibility)
 
-    (pel-config-major-mode c++ pel:for-c++ :no-ts
+    (pel-config-major-mode c++ pel:for-c++ :same-for-ts
       ;; "Set the environment for editing C++ files."
       ;; Configure the CC Mode style for C++ from PEL custom variables
       ;; 1) set the style: it identifies everything
