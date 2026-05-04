@@ -111,6 +111,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     used to set *pel-use-c* to t even if it was set to with-tree-sitter, changing user's setting.
     The same type of error affected pel-use-lua, pel-use-projectile and pel-use-yasnippet.
     They are now all fixed.
+  - Fix: *pel-use-java* can now be set to with-tree-sitter to support Tree-Sitter mode.
+  - Fix: *pel-use-python* can now be set to with-tree-sitter to support Tree-Sitter mode.
   - Fix: *pel-3* and *pel-9* that did not check the function argument properly.
     Under supported systems these keys correspond to the keypad 3 and 9 keys and can be used to
     scroll the current buffer even inside org-mode buffers.

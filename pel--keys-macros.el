@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-04 09:50:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-04 16:19:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -170,19 +170,6 @@
                            smart-dash)
   "List of groups for Go.")
 
-(defconst pel--lfe-groups '(lfe
-                            lispy)
-  "List of groups for LFE.")
-
-
-
-;; Unfortunately the group used by lua-ts-mode is not lua but lua-ts
-(defconst pel--lua-groups (if pel-use-tree-sitter
-                              (list 'lua
-                                    'lua-ts)
-                            (list 'lua))
-  "List of groups for Lua.")
-
 (defconst pel--janet-groups '(janet
                               ijanet
                               inf-janet)
@@ -202,6 +189,19 @@
                               julia-snail
                               electricity)
   "List of groups for Julia.")
+
+(defconst pel--lfe-groups '(lfe
+                            lispy)
+  "List of groups for LFE.")
+
+
+
+;; Unfortunately the group used by lua-ts-mode is not lua but lua-ts
+(defconst pel--lua-groups (if pel-use-tree-sitter
+                              (list 'lua
+                                    'lua-ts)
+                            (list 'lua))
+  "List of groups for Lua.")
 
 (defconst pel--objc-groups '(c
                              c-macro
@@ -510,10 +510,6 @@
     ([f11 32 ?h]     "pl-haskell"       pel-pkg-for-haskell     haskell)
     (,(kbd "<f11> SPC C-h") "pl-hy"     pel-pkg-for-hy)
 
-    (,(kbd "<f11> SPC C-l") "pl-lfe"    pel-pkg-for-lfe         ,pel--lfe-groups)
-    (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        ,pel--lfe-groups)
-    ([f11 32 ?u]     "pl-lua"           pel-pkg-for-lua         ,pel--lua-groups)
-
     ([f11 32 ?T]     "pl-janet"         pel-pkg-for-janet       ,pel--janet-groups)
     ([f11 32 ?J]     "pl-java"          pel-pkg-for-java        (java c))
     ;; [:todo 2025-10-08, by Pierre Rouleau: Add ability to select the js or
@@ -521,6 +517,10 @@
     ;; used for Javascript.]
     ([f11 32 ?i]     "pl-javascript"    pel-pkg-for-javascript  ,pel--javascript-groups)
     ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       ,pel--julia-groups)
+
+    (,(kbd "<f11> SPC C-l") "pl-lfe"    pel-pkg-for-lfe         ,pel--lfe-groups)
+    (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        ,pel--lfe-groups)
+    ([f11 32 ?u]     "pl-lua"           pel-pkg-for-lua         ,pel--lua-groups)
 
     ([f11 32 ?M]     "pl-make"          pel-pkg-for-make        makefile)
     ([f11 32 ?3]     "pl-meson"         pel-pkg-for-meson       meson)

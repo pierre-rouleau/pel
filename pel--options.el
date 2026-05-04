@@ -8318,10 +8318,17 @@ Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-software-programming-languages)
 
 (defcustom pel-use-java nil
-  "Control whether PEL enhancement for Java support are active."
+  "Control whether PEL enhancement for Java support are active.
+
+This *must* be activated to allow any other package for java support.
+When activating it you can select between the following values:
+- t                : use `java-mode' provided by the java-mode built-in.
+- with-tree-sitter : use `java-ts-mode' provided by the java-ts-mode built-in."
   :group 'pel-pkg-for-java
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use java" nil)
+          (const :tag "Use classic mode: java-mode" t)
+          (const :tag "Use tree-sitter mode: java-ts-mode" with-tree-sitter)))
 
 (defcustom pel-java-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Java buffers.
@@ -12593,11 +12600,19 @@ Does not indent."
   :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Python PDF" ,(pel-pdf-file-url "pl-python")))
 
-(defcustom pel-use-python  nil
-  "Control whether PEL supports Python development."
+(defcustom pel-use-python nil
+  "Control whether PEL supports Python development.
+
+This *must* be activated to allow any other package for python support.
+When activating it you can select between the following values:
+- t                : use `python-mode' provided by the python-mode built-in.
+- with-tree-sitter : use `python-ts-mode' provided by the python-ts-mode
+                     built-in."
   :group 'pel-pkg-for-python
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use python" nil)
+          (const :tag "Use classic mode: python-mode" t)
+          (const :tag "Use tree-sitter mode: python-ts-mode" with-tree-sitter)))
 (pel-put pel-use-python :package-is :builtin-emacs)
 
 (defcustom pel-python-activates-minor-modes nil
