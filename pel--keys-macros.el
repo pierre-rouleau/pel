@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-04 09:06:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-04 09:50:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -468,7 +468,7 @@
                                                                  eldoc-box
                                                                  eglot))
 
-    (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         ,pel--arc-groups)
+    (,(kbd "<f11> SPC C-a")             pel-pkg-for-arc         ,pel--arc-groups)
     ([f11 32 ?A]     "pl-ada"           pel-pkg-for-ada         (ada ada-ts))
     ([f11 32 ?8]     "pl-algol"         pel-pkg-for-algol       a68)
     ([f11 32 ?a]     "pl-applescript"   pel-pkg-for-applescript apples)
