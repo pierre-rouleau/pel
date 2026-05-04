@@ -15677,10 +15677,6 @@ PEL uses my fork of this project."
   (setq pel-use-ivy-erlang-complete t
         pel-use-company             t))
 
-(when pel-use-projectile-speedbar
-  (setq pel-use-projectile t)       ; t:= activate projectile later by command
-  (setq pel-use-speedbar t))
-
 (when pel-use-lispy
   (setq pel-use-iedit t
         pel-use-multiple-cursors t))
@@ -15709,7 +15705,8 @@ PEL uses my fork of this project."
         pel-use-counsel t))
 
 (when pel-use-bison
-  (setq pel-use-c t))
+  (unless pel-use-c
+    (setq pel-use-c t)))
 
 (when (or pel-use-indent-tools
           pel-use-iflipb
@@ -15721,7 +15718,8 @@ PEL uses my fork of this project."
   (setq pel-use-hydra t))
 
 (when pel-use-verilog-ext
-  (setq pel-use-yasnippet t))
+  (unless pel-use-yasnippet
+    (setq pel-use-yasnippet t)))
 
 (when pel-use-lsp-origami
   (setq pel-use-origami t))
@@ -15731,10 +15729,14 @@ PEL uses my fork of this project."
           pel-use-treemacs-magit)
   (setq pel-use-treemacs t))
 
+(when pel-use-projectile-speedbar
+  (setq pel-use-speedbar t))
+
 (when (or pel-use-projectile-speedbar
           pel-use-treemacs-projectile
           pel-use-flycheck-projectile)
-  (setq pel-use-projectile t))
+  (unless pel-use-projectile
+    (setq pel-use-projectile t)))
 
 (when pel-use-nix
   (setq pel-use-magit-section t))
@@ -15844,7 +15846,8 @@ PEL uses my fork of this project."
   (setq pel-use-merlin t))
 
 (when pel-use-xmake
-  (setq pel-use-lua t))
+  (unless pel-use-lua
+    (setq pel-use-lua t)))
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)
 
