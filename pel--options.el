@@ -3358,6 +3358,7 @@ See the author site at URL http://malsyned.net/smart-dash.html"
     c++-mode
     d-mode
     elixir-mode
+    objc-mode
     pike-mode
     python-mode
     shell-script-mode)
