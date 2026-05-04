@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 21:57:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-04 09:06:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -77,36 +77,193 @@
 ;; `pel--prefix-to-topic-alist' below.  Specially those that have duplicated
 ;; entries.
 
+(defconst pel--arc-groups '(arc
+                            lispy)
+  "List of groups for Arc.")
 
-(defconst pel--c-groups (list 'c
-                              'c-macro
-                              'bison-mode
-                              'electricity
-                              'smart-dash
-                              'call-graph)
+(defconst pel--awk-groups '(c
+                            electricity
+                            smart-dash)
+  "List of groups for AWK.")
+
+(defconst pel--c-groups '(c
+                          c-macro
+                          bison-mode
+                          electricity
+                          smart-dash
+                          call-graph)
 
   "List of groups for C.")
 
-(defconst pel--c++-groups (list 'cpp
-                                'c-macro
-                                'electricity
-                                'smart-dash
-                                'call-graph)
+(defconst pel--c++-groups '(cpp
+                            c-macro
+                            electricity
+                            smart-dash
+                            call-graph)
   "List of groups for C++.")
 
-(defconst pel--objc-groups (list 'c
-                                 'c-macro
-                                 'electricity
-                                 'objc-font-lock
-                                 'smart-dash
-                                 'call-graph)
-  "List of groups for Objective-C")
+(defconst pel--clisp-groups '(lisp
+                              lispy
+                              slime
+                              sly)
+  "List of groups for Common Lisp.")
 
-(defconst pel--awk-groups (list 'c
-                                'electricity
-                                'smart-dash)
-  "List of groups for Awk.")
+(defconst pel--clojure-groups '(clojure
+                                cider
+                                cljr
+                                lispy)
+  "List of groups for Clojure")
 
+(defconst pel--d-groups '(d-mode
+                          electricity
+                          smart-dash)
+  "List of groups for D.")
+
+;; Unfortunately the group used by elixir-ts-mode is not elixir but `elixir-ts'
+(defconst pel--elixir-groups (if pel-use-tree-sitter
+                                 (list 'elixir
+                                       'elixir-ts
+                                       'electricity)
+                               (list 'elixir
+                                     'electricity))
+  "List of groups related to Elixir.")
+
+(defconst pel--emacslisp-groups '(checkdoc
+                                  editing-basics
+                                  elint
+                                  elisp-depend
+                                  eros
+                                  highlight-defined
+                                  lisp
+                                  lispy
+                                  lisp-docstring-toggle
+                                  parinfer-rust-mode
+                                  rainbow-delimiters
+                                  suggest)
+  "List of groups for Emacs Lisp.")
+
+(defconst pel--erlang-groups '(erlang
+                               erldoc
+                               erlstack
+                               edts
+                               ivy-erlang-complete
+                               lsp-erlang
+                               lsp-mode
+                               lsp-treemacs
+                               auto-highlight-symbol
+                               electricity
+                               smart-dash
+                               smartparens
+                               treemacs)
+  "List of groups for Erlang.")
+
+(defconst pel--forth-groups '(forth
+                              forth-smie
+                              forth-spec)
+  "Lisp of groups for Forth.")
+
+(defconst pel--go-groups '(go
+                           go-cover
+                           godoc
+                           go-dot-mod
+                           electricity
+                           smart-dash)
+  "List of groups for Go.")
+
+(defconst pel--lfe-groups '(lfe
+                            lispy)
+  "List of groups for LFE.")
+
+
+
+;; Unfortunately the group used by lua-ts-mode is not lua but lua-ts
+(defconst pel--lua-groups (if pel-use-tree-sitter
+                              (list 'lua
+                                    'lua-ts)
+                            (list 'lua))
+  "List of groups for Lua.")
+
+(defconst pel--janet-groups '(janet
+                              ijanet
+                              inf-janet)
+  "List of groups for Janet.")
+
+(defconst pel--javascript-groups '(js
+                                   js2-mode
+                                   js3-mode
+                                   js-comint
+                                   js2-refactor
+                                   flow-minor-mode
+                                   xref-js2)
+  "List of groups for Javascript.")
+
+(defconst pel--julia-groups '(julia
+                              julia-mode
+                              julia-snail
+                              electricity)
+  "List of groups for Julia.")
+
+(defconst pel--objc-groups '(c
+                             c-macro
+                             electricity
+                             objc-font-lock
+                             smart-dash
+                             call-graph)
+  "List of groups for Objective-C.")
+
+(defconst pel--ocaml-groups '(merlin
+                              tuareg
+                              tuareg-opam)
+  "List of groups for OCaml.")
+
+(defconst pel--odin-groups '(odin
+                             flycheck-odin)
+  "List of groups for Odin.")
+
+(defconst pel--perl-groups '(perl
+                             cperl
+                             electricity
+                             perl-repl
+                             perl-live)
+  "Lisp of groups for Perl.")
+
+(defconst pel--pike-groups '(c
+                             smart-dash)
+  "List of groups for Pike.")
+
+(defconst pel--python-groups '(python
+                               python-flymake
+                               electricity)
+  "List of groups for Python.")
+
+(defconst pel--ruby-groups (if pel-use-tree-sitter
+                               (list 'ruby
+                                     'ruby-ts
+                                     'electricity)
+                             (list 'ruby
+                                   'electricity))
+  "List of groups for Ruby.")
+
+(defconst pel--rust-groups '(rust-mode
+                             rustic
+                             racer
+                             cargo
+                             electricity
+                             smart-dash)
+  "Lisp of groups for Rust")
+
+(defconst pel--scheme-groups '(scheme
+                               geiser
+                               macrostep-geiser
+                               quack
+                               lispy)
+  "List of groups for Scheme")
+
+(defconst pel--v-groups '(v-mode
+                          electricity)
+  "List of groups for V.")
+
+;; --
 (defconst pel--dired-groups (list 'dired
                                   'dired-git-info
                                   'dired-hide-dotfiles
@@ -119,21 +276,6 @@
                                   'wdired)
   "List of groups used related to Dired.")
 
-;; Unfortunately the group used by elixir-ts-mode is not elixir but `elixir-ts'
-(defconst pel--elixir-groups (if pel-use-tree-sitter
-                                 (list 'elixir
-                                       'elixir-ts
-                                       'electricity)
-                               (list 'elixir
-                                     'electricity))
-  "List of groups related to Elixir.")
-
-;; Unfortunately the group used by lua-ts-mode is not lua but lua-ts
-(defconst pel--lua-groups (if pel-use-tree-sitter
-                              (list 'lua
-                                    'lua-ts)
-                            (list 'lua))
-  "List of groups for Lua.")
 
 (defconst pel--highligh-groups (let ((items (list 'auto-highlight-symbol
                                                   'electricity
@@ -175,12 +317,7 @@
                                 'lsp-treemacs)
   "List of groups for LSP.")
 
-(defconst pel--scheme-groups (list 'scheme
-                                   'geiser
-                                   'macrostep-geiser
-                                   'quack
-                                   'lispy)
-  "List of groups for Scheme")
+
 
 (defconst pel--spell-groups (if (version< emacs-version "27.1")
                                 (list 'ispell
@@ -212,13 +349,7 @@
                              items)
   "List of groups for undo.")
 
-(defconst pel--ruby-groups (if pel-use-tree-sitter
-                               (list 'ruby
-                                     'ruby-ts
-                                     'electricity)
-                             (list 'ruby
-                                   'electricity))
-  "List of groups for Ruby.")
+
 
 (defconst pel--verilog-groups (let ((items (if (fboundp 'verilog-ts-mode)
                                                (list 'verilog-mode
@@ -331,177 +462,113 @@
     ([f11 27 ?s]     "speedbar"         pel-pkg-for-speedbar    (speedbar
                                                                  sr-speedbar
                                                                  projectile-speedbar))
+
+    ;; -- programming language support
+    ([f11 32 ?*]  "all-pl"    pel-pkg-for-all-languages         (eldoc
+                                                                 eldoc-box
+                                                                 eglot))
+
+    (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         ,pel--arc-groups)
     ([f11 32 ?A]     "pl-ada"           pel-pkg-for-ada         (ada ada-ts))
     ([f11 32 ?8]     "pl-algol"         pel-pkg-for-algol       a68)
-    ([f11 32 ?9]     "pl-rebol"         pel-pkg-for-rebol       nil) ; current implementation has no customization
-    ([f11 32 ?F]     "pl-fortran"       pel-pkg-for-fortran     fortran)
-    ([f11 32 ?W]     "pl-awk"           pel-pkg-for-awk         ,pel--awk-groups)
-    ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         ,pel--c++-groups)
-    ([f11 32 ?C f12] "pl-c++"           pel-c++-skeleton-control)
-    ([f11 32 ?C ?#]  "pl-c++"           pel-pkg-for-c++         hide-ifdef)
-    ([f11 32 ?D]     "pl-d"             pel-pkg-for-d           (d-mode
-                                                                 electricity
-                                                                 smart-dash))
-
-    ([f11 32 ?d]     "pl-dart"          pel-pkg-for-dart        (dart dart-ts))
-    ([f11 32 ?L]     "pl-common-lisp"   pel-pkg-for-clisp       (lisp
-                                                                 lispy
-                                                                 slime
-                                                                 sly))
-    ([f11 32 ?L f12] "pl-common-lisp"   pel-clisp-code-style)
-    ([f11 32 ?M]     "pl-make"          pel-pkg-for-make        makefile)
-    ([f11 32 ?R]     "pl-rexx"          pel-pkg-for-rexx        rexx-mode)
-    ([f11 32 ?N]     "pl-rexx"          pel-pkg-for-rexx        netrexx)
     ([f11 32 ?a]     "pl-applescript"   pel-pkg-for-applescript apples)
+    ([f11 32 ?W]     "pl-awk"           pel-pkg-for-awk         ,pel--awk-groups)
     ([f11 32 ?c]     "pl-c"             pel-pkg-for-c           ,pel--c-groups)
     ([f11 32 ?c f12] "pl-c"             pel-c-skeleton-control)
     ([f11 32 ?c ?#]  "pl-c"             pel-pkg-for-c           hide-ifdef)
-    ([f11 32 ?e]     "pl-erlang"        pel-pkg-for-erlang      (erlang
-                                                                 erldoc
-                                                                 erlstack
-                                                                 edts
-                                                                 ivy-erlang-complete
-                                                                 lsp-erlang
-                                                                 lsp-mode
-                                                                 lsp-treemacs
-                                                                 auto-highlight-symbol
-                                                                 electricity
-                                                                 smart-dash
-                                                                 smartparens
-                                                                 treemacs))
+    (,(kbd "<f11> SPC M-C") "pl-c3"     pel-pkg-for-c3          c3-ts)
+    ([f11 32 27 ?C]         "pl-c3"     pel-pkg-for-c3          c3-ts)
+    ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         ,pel--c++-groups)
+    ([f11 32 ?C f12] "pl-c++"           pel-c++-skeleton-control)
+    ([f11 32 ?C ?#]  "pl-c++"           pel-pkg-for-c++         hide-ifdef)
+    ([f11 32 ?L]     "pl-common-lisp"   pel-pkg-for-clisp       ,pel--clisp-groups)
+    ([f11 32 ?L f12] "pl-common-lisp"   pel-clisp-code-style)
+    (,(kbd "<f11> SPC C-j") "pl-clojure" pel-pkg-for-clojure    ,pel--clojure-groups)
+    ([f11 32 ?D]     "pl-d"             pel-pkg-for-d           ,pel--d-groups)
+    ([f11 32 ?d]     "pl-dart"          pel-pkg-for-dart        (dart dart-ts))
+
+    (,(kbd "<f11> SPC C-e") "pl-eiffel" pel-pkg-for-eiffel      eiffel)
+    ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      ,pel--elixir-groups)
+
+    ([f11 32 ?l]     "pl-emacs-lisp"    pel-pkg-for-emacs-lisp  ,pel--emacslisp-groups)
+    ([f11 32 ?l f12] "pl-emacs-lisp"    pel-elisp-code-style)
+    ([f11 32 ?l 20]  "ert"              pel-pkg-for-testing     (coverlay testcover testcover-mark-line))
+    (,(kbd "<f11> SPC C-t") "ert"       pel-pkg-for-cram)
+
+    ([f11 32 ?e]     "pl-erlang"        pel-pkg-for-erlang      ,pel--erlang-groups)
     ([f11 32 ?e f12] "pl-erlang"        pel-erlang-code-style)
     ([f11 32 ?e ?L]  "pl-erlang"        pel-pkg-for-lsp-mode    ,(cons 'lsp-erlang pel--lsp-groups))
     ([f11 32 ?e ?w]  "pl-erlang"        pel-pkg-for-lsp-mode    (treemacs
                                                                  lsp-treemacs))
     (,(kbd "<f11> SPC M-f") "pl-factor" pel-pkg-for-factor      factor)
     ([f11 32 27 ?f]         "pl-factor" pel-pkg-for-factor      factor)
-    ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth       (forth
-                                                                 forth-smie
-                                                                 forth-spec))
-    ([f11 32 ?g]     "pl-go"            pel-pkg-for-go          (go
-                                                                 go-cover
-                                                                 godoc
-                                                                 go-dot-mod
-                                                                 electricity
-                                                                 smart-dash))
+    ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth       ,pel--forth-groups)
+    ([f11 32 ?F]     "pl-fortran"       pel-pkg-for-fortran     fortran)
+    (,(kbd "<f11> SPC M-G") "pl-gleam"  pel-pkg-for-gleam       gleam-ts)
+    ([f11 32 27 ?G]         "pl-gleam"  pel-pkg-for-gleam       gleam-ts)
+    ([f11 32 ?g]     "pl-go"            pel-pkg-for-go          ,pel--go-groups)
     ([f11 32 ?h]     "pl-haskell"       pel-pkg-for-haskell     haskell)
+    (,(kbd "<f11> SPC C-h") "pl-hy"     pel-pkg-for-hy)
+
+    (,(kbd "<f11> SPC C-l") "pl-lfe"    pel-pkg-for-lfe         ,pel--lfe-groups)
+    (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        ,pel--lfe-groups)
     ([f11 32 ?u]     "pl-lua"           pel-pkg-for-lua         ,pel--lua-groups)
-    ([f11 32 ?T]     "pl-janet"         pel-pkg-for-janet       (janet
-                                                                 ijanet
-                                                                 inf-janet))
+
+    ([f11 32 ?T]     "pl-janet"         pel-pkg-for-janet       ,pel--janet-groups)
     ([f11 32 ?J]     "pl-java"          pel-pkg-for-java        (java c))
     ;; [:todo 2025-10-08, by Pierre Rouleau: Add ability to select the js or
     ;; js2-mode group automatically, corresponding to the major mode being
     ;; used for Javascript.]
-    ([f11 32 ?i]     "pl-javascript"    pel-pkg-for-javascript  (js
-                                                                 js2-mode
-                                                                 js3-mode
-                                                                 js-comint
-                                                                 js2-refactor
-                                                                 flow-minor-mode
-                                                                 xref-js2))
-    ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       (julia
-                                                                 julia-mode
-                                                                 julia-snail
-                                                                 electricity))
-    ([f11 32 ?l]     "pl-emacs-lisp"    pel-pkg-for-emacs-lisp  (checkdoc
-                                                                 editing-basics
-                                                                 elint
-                                                                 elisp-depend
-                                                                 eros
-                                                                 highlight-defined
-                                                                 lisp
-                                                                 lispy
-                                                                 lisp-docstring-toggle
-                                                                 parinfer-rust-mode
-                                                                 rainbow-delimiters
-                                                                 suggest))
-    ([f11 32 ?l 20] "ert" pel-pkg-for-testing (coverlay testcover
-                                                        testcover-mark-line))
-    (,(kbd "<f11> SPC C-t") "ert"   pel-pkg-for-cram)
+    ([f11 32 ?i]     "pl-javascript"    pel-pkg-for-javascript  ,pel--javascript-groups)
+    ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       ,pel--julia-groups)
 
-    ([f11 32 ?l f12] "pl-emacs-lisp"    pel-elisp-code-style)
+    ([f11 32 ?M]     "pl-make"          pel-pkg-for-make        makefile)
+    ([f11 32 ?3]     "pl-meson"         pel-pkg-for-meson       meson)
+    ([f11 32 ?2]     "pl-modula2"       pel-pkg-for-modula-2    modula2)
+    ([f11 32 ?4]     "pl-m4"            pel-pkg-for-m4          m4)
 
-    ([f11 32 ?*]  "all-pl"    pel-pkg-for-all-languages      (eldoc
-                                                              eldoc-box
-                                                              eglot))
+    ([f11 32 ?n]     "pl-nim"           pel-pkg-for-nim         (nim electricity))
+    ([f11 32 ?5]     "pl-ninja"         pel-pkg-for-ninja       ninja)
 
-    ([f11 32 ?0]     "ssh-files"    pel-pkg-for-ssh         ssh-file)
-    ([f11 32 ?1]     "ssh-files"    pel-pkg-for-ssh         ssh-file)
-    ([f11 32 ?2]     "pl-modula2"   pel-pkg-for-modula-2    modula2)
-    ([f11 32 ?3]     "pl-meson"     pel-pkg-for-meson       meson)
-    ([f11 32 ?4]     "pl-m4"        pel-pkg-for-m4          m4)
-    ([f11 32 ?5]     "pl-ninja"     pel-pkg-for-ninja       ninja)
-    ([f11 32 ?n]     "pl-nim"       pel-pkg-for-nim         (nim
-                                                             electricity))
-    ([f11 32 ?o]     "pl-ocaml"     pel-pkg-for-ocaml       (merlin
-                                                             tuareg
-                                                             tuareg-opam))
-    ([f11 32 ?O]     "pl-odin"      pel-pkg-for-odin        (odin
-                                                             flycheck-odin))
-    ([f11 32 ?p]     "pl-python"    pel-pkg-for-python      (python
-                                                             python-flymake
-                                                             electricity))
-    ([f11 32 ?r]     "pl-rust"      pel-pkg-for-rust        (rust-mode
-                                                             rustic
-                                                             racer
-                                                             cargo
-                                                             electricity))
-    ([f11 32 ?P]     "pl-perl"      pel-pkg-for-perl         (perl
-                                                              cperl
-                                                              electricity
-                                                              perl-repl
-                                                              perl-live))
-    ([f11 32 ?U]     "pl-ruby"      pel-pkg-for-ruby         ,pel--ruby-groups)
-    ([f11 32 ?7]     "pl-seed7"     pel-pkg-for-seed7        seed7)
-    ([f11 32 ?:]     "pl-smalltalk" pel-pkg-for-smalltalk    smalltalk-mode)
-    ([f11 32 ?s]     "pl-swift"     pel-pkg-for-swift         swift)
-    ([f11 32 ?t]     "pl-tcl"       pel-pkg-for-tcl           tcl)
-    ([f11 32 ?v]     "pl-v"         pel-pkg-for-v            (v-mode
-                                                              electricity))
-    ([f11 32 ?V]     "hdl-verilog"  pel-pkg-for-verilog       ,pel--verilog-groups)
-    ([f11 32 ?H]     "hdl-vhdl"     pel-pkg-for-vhdl          vhdl)
+    (,(kbd "<f11> SPC C-o") "pl-objc"   pel-pkg-for-objc        ,pel--objc-groups)
+    ([f11 32 ?o]     "pl-ocaml"         pel-pkg-for-ocaml       ,pel--ocaml-groups)
+    ([f11 32 ?O]     "pl-odin"          pel-pkg-for-odin        ,pel--odin-groups)
+    ([f11 32 ?P]     "pl-perl"          pel-pkg-for-perl        ,pel--perl-groups )
+    (,(kbd "<f11> SPC C-p") "pl-pike"   pel-pkg-for-pike        ,pel--pike-groups)
+    ([f11 32 ?p]     "pl-python"        pel-pkg-for-python      ,pel--python-groups)
 
-    ([f11 32 ?x]     "pl-elixir"    pel-pkg-for-elixir        ,pel--elixir-groups)
-    ([f11 32 ?Z]     "pl-sh"        pel-pkg-for-sh-scripting ,pel--sh-scripting-groups)
-    (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         (arc
-                                                                 lispy))
-    (,(kbd "<f11> SPC C-e") "pl-eiffel" pel-pkg-for-eiffel      eiffel)
+    ([f11 32 ?9]     "pl-rebol"         pel-pkg-for-rebol       nil)
+    ([f11 32 ?R]     "pl-rexx"          pel-pkg-for-rexx        rexx-mode)
+    ([f11 32 ?N]     "pl-rexx"          pel-pkg-for-rexx        netrexx)
+    ([f11 32 ?r]     "pl-rust"          pel-pkg-for-rust        ,pel--rust-groups)
+    ([f11 32 ?U]     "pl-ruby"          pel-pkg-for-ruby        ,pel--ruby-groups)
 
-    (,(kbd "<f11> SPC M-C") "pl-c3"  pel-pkg-for-c3       c3-ts)
-    ([f11 32 27 ?C]         "pl-c3"  pel-pkg-for-c3       c3-ts)
-
-    (,(kbd "<f11> SPC M-G") "pl-gleam"  pel-pkg-for-gleam       gleam-ts)
-    ([f11 32 27 ?G]         "pl-gleam"  pel-pkg-for-gleam       gleam-ts)
-
-
-    (,(kbd "<f11> SPC C-h") "pl-hy"     pel-pkg-for-hy)
-    (,(kbd "<f11> SPC C-j") "pl-clojure" pel-pkg-for-clojure    (clojure
-                                                                 cider
-                                                                 cljr
-                                                                 lispy))
-    (,(kbd "<f11> SPC C-l") "pl-lfe"    pel-pkg-for-lfe         (lfe
-                                                                 lispy))
-    (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        (lfe
-                                                                 lispy))
-
-    (,(kbd "<f11> SPC C-o") "pl-objc"   pel-pkg-for-objc ,pel--objc-groups)
-
-    (,(kbd "<f11> SPC C-p") "pl-pike"   pel-pkg-for-pike  c)
-    ;; Scheme Dialect Languages
     (,(kbd "<f11> SPC C-s C-s") "pl-scheme"        pel-pkg-for-scheme  ,pel--scheme-groups)
     (,(kbd "<f11> SPC C-s C-z") "pl-chez-scheme"   pel-pkg-for-chez    ,pel--scheme-groups)
     (,(kbd "<f11> SPC C-s C-i") "pl-chibi-scheme"  pel-pkg-for-chibi   ,pel--scheme-groups)
     (,(kbd "<f11> SPC C-s C-k") "pl-chicken-scheme" pel-pkg-for-chicken ,pel--scheme-groups)
-    (,(kbd "<f11> SPC C-s C-b") "pl-gambit-scheme" pel-pkg-for-gambit  ,(cons 'gambit
-                                                                              pel--scheme-groups))
-    (,(kbd "<f11> SPC C-s C-e") "pl-gerbil-scheme" pel-pkg-for-gerbil  ,(cons 'gerbil-mode
-                                                                              pel--scheme-groups))
+    (,(kbd "<f11> SPC C-s C-b") "pl-gambit-scheme" pel-pkg-for-gambit  ,(cons 'gambit pel--scheme-groups))
+    (,(kbd "<f11> SPC C-s C-e") "pl-gerbil-scheme" pel-pkg-for-gerbil  ,(cons 'gerbil-mode pel--scheme-groups))
     (,(kbd "<f11> SPC C-s C-g") "pl-guile-scheme"  pel-pkg-for-guile   ,pel--scheme-groups)
-    (,(kbd "<f11> SPC C-s C-m") "pl-mit-scheme-scheme"   pel-pkg-for-mit-scheme  ,pel--scheme-groups)
-    (,(kbd "<f11> SPC C-s C-r") "pl-racket" pel-pkg-for-racket  ,(cons 'racket
-                                                                       pel--scheme-groups) )
+    (,(kbd "<f11> SPC C-s C-m") "pl-mit-scheme-scheme" pel-pkg-for-mit-scheme  ,pel--scheme-groups)
+    (,(kbd "<f11> SPC C-s C-r") "pl-racket"        pel-pkg-for-racket  ,(cons 'racket pel--scheme-groups) )
     (,(kbd "<f11> SPC C-s C-h") "pl-scsh-scheme"   pel-pkg-for-scsh    ,pel--scheme-groups)
+
+    ([f11 32 ?7]     "pl-seed7"         pel-pkg-for-seed7       seed7)
+    ([f11 32 ?Z]     "pl-sh"            pel-pkg-for-sh-scripting ,pel--sh-scripting-groups)
+    ([f11 32 ?:]     "pl-smalltalk"     pel-pkg-for-smalltalk   smalltalk-mode)
+    ([f11 32 ?s]     "pl-swift"         pel-pkg-for-swift       swift)
+    ([f11 32 ?t]     "pl-tcl"           pel-pkg-for-tcl         tcl)
+    ([f11 32 ?v]     "pl-v"             pel-pkg-for-v           ,pel--v-groups)
+    ([f11 32 ?V]     "hdl-verilog"      pel-pkg-for-verilog     ,pel--verilog-groups)
+    ([f11 32 ?H]     "hdl-vhdl"         pel-pkg-for-vhdl        vhdl)
+
+
+    ([f11 32 ?0]     "ssh-files"    pel-pkg-for-ssh         ssh-file)
+    ([f11 32 ?1]     "ssh-files"    pel-pkg-for-ssh         ssh-file)
+    ;;
+
+
     ;;
     ;; ([f11 ?C]
     ([f11 ?D]        "drawing"          pel-pkg-for-drawing-markup (artist
