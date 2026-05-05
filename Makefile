@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-05 10:49:25 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-05 12:06:42 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -746,7 +746,7 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 # Note: pel--options.el lazily requires some other pel files but they are NOT
 #       included in the dependency as it would create a circular make dependency.
 pel--base.elc:            pel-comp.elc
-pel--install.elc:         pel--base.elc pel--macros.elc
+pel--install.elc:         pel--base.elc pel--options.elc pel--macros.elc
 pel--keys-macros.elc:     pel--base.elc pel--indent.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-browse.elc
 pel--options.elc:         pel--base.elc
 pel-abbrev.elc:           pel--base.elc
@@ -778,7 +778,7 @@ pel-cursor.elc:           pel--options.elc
 pel-custom.elc:           pel--base.elc
 pel-d.elc:                pel--base.elc pel--options.elc pel-ccp.elc
 pel-dart.elc:             pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
-pel-diff.elc:             pel--base.elc pel-window.elc pel--keys-macros.elc
+pel-diff.elc:             pel--base.elc pel-window.elc pel--install.elc pel--keys-macros.el
 pel-dtreplace.elc:        pel--base.elc pel--options.elc
 pel-elcode.elc:           pel--base.elc
 pel-eldoc.elc:            pel--base.elc

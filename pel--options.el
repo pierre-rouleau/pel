@@ -576,6 +576,14 @@ Last character is a forward slash."
    (format "%s/doc/pdf/"
            (file-name-directory (locate-library "pel")))))
 
+(defun pel-help-pdfs-dir ()
+  "Open a Dired buffer on the PEL PDF directory."
+  (interactive)
+  ;; TODO: if the buffer is already opened, move point to that buffer and
+  ;; make that buffer visible, don't open a new buffer or
+  ;; don't use the current window
+  (find-file (pel-pdf-directory)))
+
 (defun pel-pdf-file-url (topic &optional on-web category)
   "Return the full path of a PEL pdf table for TOPIC in CATEGORY.
 
