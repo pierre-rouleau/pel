@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-05 12:16:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-05 14:00:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -71,6 +71,7 @@
 ;;; Dependencies:
 ;;
 (require 'pel--base)
+(require 'pel--indent)           ; use: `pel-tab-width-control-variables'.
 (require 'pel--options)          ; use: `pel-use-tree-sitter'
 (eval-when-compile
   (require 'pel--macros))        ; use `pel-append-to' to generate code.

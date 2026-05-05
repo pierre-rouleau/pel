@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-05 12:18:41 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-05 13:59:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -55,7 +55,6 @@
 ;;
 ;;
 (require 'pel--base)    ; use: `macroexp-file-name'
-(require 'pel--indent)  ; use: `pel-tab-width-control-variables'.
 (require 'pel--macros)  ; use: `pel-append-to'
 (require 'pel--options) ; use: `pel-use-call-graph', `pel-use-tree-sitter', ...
 (require 'seq)          ; use: `seq-concatenate', `seq-drop', `seq-subseq'
