@@ -5759,35 +5759,36 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-python "1"         'lispy-describe-inline)
     (define-key pel:for-python "2"         'lispy-arglist-inline))
 
+  (pel-setup-major-mode (python python-ts-mode) python
+                        pel:for-python :same-for-ts
 
-  ;; Eagerly register the python-mode → python-ts-mode remap.
-  ;; This must happen at startup, before the first Python file is opened,
-  ;; because Emacs checks major-mode-remap-alist before activating the mode
-  ;; (and thus before any mode hook can run).
-  (when (and (eq pel-use-python 'with-tree-sitter)
-             (boundp 'major-mode-remap-alist)
-             (pel-treesit-remap-available-for 'python))
-    (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode)))
+    ;; init-body: runs immediately at startup, before any file is opened.
+    (progn
+      ;; (pel-set-auto-mode 'python-mode "\\.py\\'")
+      ;; (when pel-use-python-flymake
+      ;;   (pel-set-auto-mode 'python-mode "\\.pyi\\'"))
+      )
 
-  ;; Activate python mode (with or without tree-sitter support)
-  ;; Do it for both python-mode and tree-sitter aware python-ts-mode.
-  ;; python-ts-mode is available when tree-sitter is enabled.
-  (pel-eval-after-load (python python-ts-mode)
-    (pel-config-major-mode python pel:for-python :same-for-ts
-      (when (boundp 'python-indent-offset)
-        (setq-local python-indent-offset pel-python-indent-width))
-      (when (boundp 'py-indent-offset)
-        (setq-local py-indent-offset pel-python-indent-width))
-      (when (and pel-use-indent-tools
-                 (eq pel-indent-tools-key-bound 'python)
-                 (require 'indent-tools nil 'noerror)
-                 (boundp 'indent-tools-keymap-prefix))
-        (when (boundp 'python-mode-map)
-          (define-key python-mode-map indent-tools-keymap-prefix
-                      'indent-tools-hydra/body))
-        (when (boundp 'python-ts-mode-map)
-          (define-key python-ts-mode-map indent-tools-keymap-prefix
-                      'indent-tools-hydra/body))))))
+    ;; ------------------------------------------------------------------
+    ;; after-load-body: runs inside with-eval-after-load, before hook setup.
+    (progn)                        ; nothing extra needed for Python right now
+
+    ;; ------------------------------------------------------------------
+    ;; config-body: runs in the mode hook (via hack-local-variables-hook).
+    (when (boundp 'python-indent-offset)
+      (setq-local python-indent-offset pel-python-indent-width))
+    (when (boundp 'py-indent-offset)
+      (setq-local py-indent-offset pel-python-indent-width))
+    (when (and pel-use-indent-tools
+               (eq pel-indent-tools-key-bound 'python)
+               (require 'indent-tools nil 'noerror)
+               (boundp 'indent-tools-keymap-prefix))
+      (when (boundp 'python-mode-map)
+        (define-key python-mode-map indent-tools-keymap-prefix
+                    'indent-tools-hydra/body))
+      (when (boundp 'python-ts-mode-map)
+        (define-key python-ts-mode-map indent-tools-keymap-prefix
+                    'indent-tools-hydra/body)))))
 
 ;; (use-package jedi
 ;;   :ensure t

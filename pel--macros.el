@@ -2,11 +2,13 @@
 
 ;; Created   : Monday, March 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-24 17:15:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-05 15:46:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
+;; Copyright (C) 2020, 2021, 2024-2026  Pierre Rouleau
+;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
@@ -33,11 +35,8 @@
 ;;
 ;;  To achieve the above goals PEL files cannot load or require external
 ;;  packages directly, they must do it lazily.  The code inside pel_keys.el
-;;  take advantage of the use-package macro to do that.  The code inside the
-;;  other files must require the external packages lazily inside functions and
-;;  must also verify if the external functions and variables they use are
-;;  bound, otherwise the compiler generates warnings and the code may fail
-;;  inside a PEL function.
+;;  take advantage of several macros to do that.  The base macros used by
+;;  pel_keys.el and other macro defining files are defined here.
 ;;
 ;;  The file provide a way to place tracing message used only for debugging
 ;;  and removed from production code, as controlled by a condition variable:
