@@ -135,18 +135,22 @@
 ;;                      ;      `pel-toggle'
 ;;                      ;      `pel-mode-toggle-arg'
 
-(require 'pel--install) ; use pel-ensure-package-elpa
-;;                      ;
-;;                      ;
-;;                      ;
-;;                      ;
+(require 'pel--install) ; use: `pel-autoload-file'
+;;                      ;      `pel-ensure-package-elpa'
+;;                      ;      `pel-eval-after-load'
+;;                      ;      `pel-install-github-file'
+;;                      ;      `pel-install-github-files'
+;;                      ;      `pel-require'
+;;                      ;      `pel-require-after-init'
+;;                      ;      `pel-require-at-load'
+;;                      ;      `pel-set-auto-mode'
+;;                      ;      `pel-soft-require-or-warn'
 
 (require 'pel--indent)  ; use: `pel-indentation-width-control-variables',
 ;;                      ;      `pel-indentation-other-control-variables',
 ;;                      ;      `pel-tab-width-control-variables'.
 (require 'pel--macros)  ; use: pel-setq, pel-seq-default
-(require 'pel--keys-macros) ; use: `pel-eval-after-load'
-;;                          ;      `pel-config-major-mode'
+(require 'pel--keys-macros) ; use: `pel-config-major-mode'
 ;;                          ;      `pel--set-indent-control-variables'.
 (require 'pel--options) ; use: all `pel-use-...' variables identify what to use.
 ;;                      ;      also defines a set of utility functions to deal with
@@ -3191,7 +3195,9 @@ MODE must be a symbol."
       ;;     user-options unless the file-variable sets it.
       (unless (assoc 'c-basic-offset file-local-variables-alist)
         (pel-setq-local c-basic-offset pel-c-indent-width))
-      (when (boundp 'c-ts-mode-indent-offset)
+      (when (and (boundp 'c-ts-mode-indent-offset)
+                 (not (assoc 'c-ts-mode-indent-offset
+                             file-local-variables-alist)))
         (setq-local c-ts-mode-indent-offset pel-c-indent-width))
       ;; 3) set fill-column to PEL specified C's default if specified
       (when pel-c-fill-column
@@ -3298,7 +3304,9 @@ MODE must be a symbol."
       ;;     user-options unless the file-variable sets it.
       (unless (assoc 'c-basic-offset file-local-variables-alist)
         (pel-setq c-basic-offset pel-c++-indent-width))
-      (when (boundp 'c-ts-mode-indent-offset)
+      (when (and (boundp 'c-ts-mode-indent-offset)
+                 (not (assoc c-ts-mode-indent-offset
+                             file-local-variables-alist)))
         ;; Note C++ Tree Sitter uses c-ts-mode-indent-offset not c++-ts....
         (setq-local c-ts-mode-indent-offset pel-c++-indent-width))
       ;; 3) set fill-column to PEL specified C++'s default if specified

@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-03 13:07:50 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-05 10:49:25 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -747,7 +747,7 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 #       included in the dependency as it would create a circular make dependency.
 pel--base.elc:            pel-comp.elc
 pel--install.elc:         pel--base.elc pel--macros.elc
-pel--keys-macros.elc:     pel--base.elc pel--indent.elc pel--macros.elc pel--install.elc pel--options.elc pel-prompt.elc pel-browse.elc
+pel--keys-macros.elc:     pel--base.elc pel--indent.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-browse.elc
 pel--options.elc:         pel--base.elc
 pel-abbrev.elc:           pel--base.elc
 pel-ada.elc:              pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
