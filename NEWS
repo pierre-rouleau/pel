@@ -71,6 +71,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   of the modeline: the coding system, the input method, whether Emacs is a normal process or a client to a daemon (and the daemon name, client count), the line ending format and
   the buffer modification status.  It helps understand the cryptic information shown by Emacs which provides lots of information in a small area.
 
+- Improve startup speed by deferring more code to the moment a major mode feature is loaded.
 - Update programming language support:
   - cc-mode (C, C++, Objective-C, ...):
     - Improve *pel-cc-mode-info*: shows useful key bindings related to RET mode and hungry delete commands and
@@ -83,8 +84,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Erlang:
     - Fix *pel-erlang-version* when automatic detection is used.
     - Improved *pel-show-erlang-version*: it now prints information inside a help type buffer with buttons to access customization of the user-options.
+  - Java:
+    - Now properly setup for Tree-Sitter based major-mode.
   - Pike:
     - Fix Pike support: add key mapping in the ~<f12> <f4>~ prefix that had not been activated.
+  - Python:
+    - Now properly setup for Tree-Sitter based major-mode.
+  - Verilog:
+    - Now properly setup for Tree-Sitter based major-mode.
 
 - Add utility functions:
   - In pel--base.el:
