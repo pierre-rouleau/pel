@@ -115,23 +115,31 @@
 (require 'pel-prompt)                   ; use: `pel-prompt'
 
 (eval-when-compile
-  (require 'cl-lib)                     ; use: cl-dolist and cl-return
+  (require 'cl-lib)                     ; use: `cl-dolist' and `cl-return'
+  (require 'subr-x))                    ; use: `string-trim'
 
-  ;; both flyspell and ispell are loaded lazily if required, but their symbols
-  ;; are needed at compilation. Same for popup.
-  ;; The following are part of Emacs
-  (require 'flyspell)   ; use: flyspell-sort-corrections, flyspell-emacs-popup
-  ;;               ispell use: ispell-call-process, ispell-check-version
-  ;;                           ispell-local-dictionary, ispell-dictionary,
-  ;;                           ispell-program-name, ispell-personal-dictionary
-  (require 'ispell)
-  (require 'subr-x)                     ; use: inlined: string-trim
+;; Declare flyspell symbols used at runtime (loaded lazily)
+(declare-function flyspell-sort-corrections "flyspell")
+(declare-function flyspell-emacs-popup      "flyspell")
+(declare-function flyspell-generic-progmode-verify "flyspell")
+(defvar flyspell-sort-corrections)
+(defvar flyspell-generic-check-word-predicate)
 
-  ;; The last is an external package.
-  ;; It might not be present on user's system: allow compilation anyhow to
-  ;; provide ability to activate lazily.
-  ;; from popup: use: popup-menu*
-  (require 'popup nil :noerror))
+;; Declare ispell symbols used at runtime (loaded lazily)
+(declare-function ispell-call-process       "ispell")
+(declare-function ispell-check-version      "ispell")
+(declare-function ispell-valid-dictionary-list "ispell")
+(declare-function ispell-change-dictionary  "ispell")
+(declare-function ispell-internal-change-dictionary "ispell")
+(defvar ispell-local-dictionary)
+(defvar ispell-dictionary)
+(defvar ispell-program-name)
+(defvar ispell-personal-dictionary)
+(defvar ispell-local-pdict)
+(defvar ispell-current-personal-dictionary)
+
+;; popup is an optional external package (terminal-mode spell menu)
+(declare-function popup-menu* "popup")
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:

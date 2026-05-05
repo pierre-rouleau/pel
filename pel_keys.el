@@ -7990,7 +7990,8 @@ to pel-use-helm-descbinds"))
 ;;
 (autoload 'ispell-check-version "ispell")
 (declare-function pel-spell-init-from-user-option "pel-spell")
-(pel-eval-after-load ispell (pel-spell-init-from-user-option))
+(pel-eval-after-load ispell
+  (pel-spell-init-from-user-option))
 
 (define-key pel:spell "." #'ispell)
 (define-key pel:spell ";" #'ispell-comments-and-strings)
