@@ -5739,32 +5739,36 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-python "2"         'lispy-arglist-inline))
 
   ;; Activate python mode (with or without tree-sitter support)
-  (pel-config-major-mode-with-ts
-      python
-      pel:for-python
-    (when (boundp 'python-indent-offset)
-      (setq-local python-indent-offset pel-python-indent-width))
-    (when (boundp 'py-indent-offset)
-      (setq-local py-indent-offset pel-python-indent-width))
-    (when (and pel-use-indent-tools
-               (eq pel-indent-tools-key-bound 'python)
-               (require 'indent-tools nil 'noerror)
-               (boundp 'indent-tools-keymap-prefix)
-               (boundp 'python-mode-map))
-      (define-key python-mode-map indent-tools-keymap-prefix
-                  'indent-tools-hydra/body))))
+  ;; Do it for both python-mode and tree-sitter aware python-ts-mode.
+  ;; python-ts-mode is available when tree-sitter is enabled.
+  (pel-eval-after-load (python python-ts-mode)
+    (pel-config-major-mode python pel:for-python :same-for-ts
+      (when (boundp 'python-indent-offset)
+        (setq-local python-indent-offset pel-python-indent-width))
+      (when (boundp 'py-indent-offset)
+        (setq-local py-indent-offset pel-python-indent-width))
+      (when (and pel-use-indent-tools
+                 (eq pel-indent-tools-key-bound 'python)
+                 (require 'indent-tools nil 'noerror)
+                 (boundp 'indent-tools-keymap-prefix))
+        (when (boundp 'python-mode-map)
+          (define-key python-mode-map indent-tools-keymap-prefix
+                      'indent-tools-hydra/body))
+        (when (boundp 'python-ts-mode-map)
+          (define-key python-ts-mode-map indent-tools-keymap-prefix
+                      'indent-tools-hydra/body))))))
 
-  ;; (use-package jedi
-  ;;   :ensure t
-  ;;   :init
-  ;;   (add-hook 'python-mode-hook #'jedi:setup)
-  ;;   (add-hook 'python-mode-hook #'jedi:ac-setup))
+;; (use-package jedi
+;;   :ensure t
+;;   :init
+;;   (add-hook 'python-mode-hook #'jedi:setup)
+;;   (add-hook 'python-mode-hook #'jedi:ac-setup))
 
-  ;; NOTE: Jedi requires the installation of the backend server with
-  ;; M-x jedi:install-server
-  ;;
-  ;; For this to work, virtualenv must be present!!
-  ;; inside /usr/local/bin/virtualenv
+;; NOTE: Jedi requires the installation of the backend server with
+;; M-x jedi:install-server
+;;
+;; For this to work, virtualenv must be present!!
+;; inside /usr/local/bin/virtualenv
 
 ;; ---------------------------------------------------------------------------
 ;;** REXX Programming Language Support

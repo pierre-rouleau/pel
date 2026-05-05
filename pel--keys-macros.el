@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-04 16:19:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-04 21:36:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -2082,54 +2082,6 @@ Function created by the `pel-config-major-mode' macro."
            ,@newbody))
        (progn
          ,@hook-body))))
-
-;; [:todo 2025-05-17, by Pierre Rouleau: Add support for packages that
-;;  have a same symbols for mode and features, like Ada, which is
-;;  supported by : ada-mode in the file feature ada-mode
-;;           and : ada-ts-mode in the file feature ada-ts-mode
-;;  while keeping the ability to support modes where the feature name
-;;  does not end with '-mode'.
-;;  Perhaps the code should accept 4 symbols in case the code is implemented
-;;  in files that have several functions in them and a feature name that
-;;  differs completely.]
-
-;; [:todo 2025-10-08, by Pierre Rouleau: Update the following: it may not be
-;; required anymore]
-(defmacro pel-config-major-mode-with-ts (target-mode
-                                         &optional key-prefix
-                                         &rest body)
-  "Setup the major-mode and tree-sitter major mode for TARGET-MODE.
-
-See `pel-config-major-mode' for the description of the arguments KEY-PREFIX
-and BODY; this uses the exact same arguments."
-  (declare (indent 2))
-  (let ((gn-mode    (intern (format "%s-mode"    target-mode)))
-        (gn-ts-mode (intern (format "%s-ts-mode" target-mode)))
-        (gn-ts-target-mode (intern (format "%s-ts" target-mode)))
-        (gn-tab-width    (intern (format "pel-%s-tab-width" target-mode)))
-        (gn-ts-tab-width (intern (format "pel-%s-ts-tab-width" target-mode)))
-        (gn-use-tabs     (intern (format "pel-%s-use-tabs" target-mode)))
-        (gn-ts-use-tabs  (intern (format "pel-%s-ts-use-tabs" target-mode)))
-        (gn-activates-mm (intern (format "pel-%s-activates-minor-modes" target-mode)))
-        (gn-ts-activates-mm (intern (format "pel-%s-ts-activates-minor-modes" target-mode))))
-    ;; return the following generated code:
-    `(progn
-       (pel-major-mode-use-tree-sitter (quote ,gn-mode) (quote ,gn-ts-mode))
-       (pel-eval-after-load ,target-mode
-         ;; 1- setup for the ts-mode when it is available
-         (when (pel-major-ts-mode-supported-p (quote ,target-mode))
-           ;; create and set ts-mode mirroring variables
-           (progn
-             (defvar ,gn-ts-tab-width)
-             (defvar ,gn-ts-use-tabs)
-             (defvar ,gn-ts-activates-mm)
-             (setq ,gn-ts-tab-width ,gn-tab-width)
-             (setq ,gn-ts-use-tabs  ,gn-use-tabs)
-             (setq ,gn-ts-activates-mm ,gn-activates-mm))
-           ;; activate
-           (pel-config-major-mode ,gn-ts-target-mode ,key-prefix :no-ts ,@body))
-         ;; 2- setup for the standard mode
-         (pel-config-major-mode ,target-mode ,key-prefix :no-ts ,@body)))))
 
 ;; --
 
