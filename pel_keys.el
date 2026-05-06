@@ -2993,7 +2993,7 @@ MODE must be a symbol."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC A`` : Ada
 
 (when pel-use-ada
-  (pel-setup-major-mode ada (ada-mode ada-ts-mode) pel:for-ada :same-for-ts
+  (pel-setup-major-mode ada :same-for-ts
     at-init:
     (progn
       ;; 1- Install required packages for Ada
@@ -3614,7 +3614,7 @@ d-mode not added to ac-modes!"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC d`` :
 
 (when pel-use-dart
-  (pel-setup-major-mode dart (dart-mode dart-ts-mode) pel:for-dart :same-for-ts
+  (pel-setup-major-mode dart :same-for-ts
     at-init:
     (progn
       ;; 1- Install required packages for Dart
@@ -3636,12 +3636,7 @@ d-mode not added to ac-modes!"
 
       ;; 4- Buffer keymap for Dart
       (define-pel-global-prefix pel:for-dart  (kbd "<f11> SPC d"))
-      (define-key pel:for-dart "?" 'pel-dart-setup-info)
-
-      ;; 5- Install optional packages for Dart
-      )
-
-    after-feature-load: nil ;; nothing
+      (define-key pel:for-dart "?" 'pel-dart-setup-info))
 
     when-buffer-opens:
     ;; Dart tab/indent logic has its own quirks:
@@ -3657,12 +3652,7 @@ d-mode not added to ac-modes!"
       (pel-setq-local-unless-filevar tab-width pel-dart-indent-width))
     ;; for both modes
     (pel-setq-local-unless-filevar indent-tabs-mode pel-dart-use-tabs)
-    (pel--set-indent-control-variables pel-dart-tie-indent-to-tab-width))
-
-  ;; 6- Activate Dart setup.
-  ;;    Schedule more configuration upon Dart feature loading
-  ;;
-  )
+    (pel--set-indent-control-variables pel-dart-tie-indent-to-tab-width)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Factor Programming Language Support
@@ -3856,21 +3846,19 @@ d-mode not added to ac-modes!"
   (declare-function pel--java-setup-with-lsp "pel_keys" ())
 
   ;; java-mode is implemented in the cc-mode.el
-  (pel-setup-major-mode java (cc-mode java-ts-mode)
-                        pel:for-java :same-for-ts
+  (pel-setup-major-mode java :same-for-ts
+                        features: (cc-mode java-ts-mode)
     at-init:
     (progn
       (define-pel-global-prefix pel:for-java  (kbd "<f11> SPC J"))
       (when pel-use-lsp-java
         (pel-ensure-package-elpa lsp-java from: melpa)))
 
-    after-feature-load: nil
-
     ;; don't load lsp on cc-mode loaded; wait until user opens a Java file.
     when-buffer-opens:
     (when pel-use-lsp-java
-        (add-hook 'java-mode-hook #'pel--java-setup-with-lsp)
-        (add-hook 'java-ts-mode-hook #'pel--java-setup-with-lsp))))
+      (add-hook 'java-mode-hook #'pel--java-setup-with-lsp)
+      (add-hook 'java-ts-mode-hook #'pel--java-setup-with-lsp))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Javascript Programming Language Support
@@ -5400,8 +5388,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ----------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` :
 (when pel-use-elixir
-  (pel-setup-major-mode elixir (elixir-mode elixir-ts-mode) pel:for-elixir
-                        :same-for-ts
+  (pel-setup-major-mode elixir :same-for-ts
     at-init:
     (progn
       ;; 1- Install required packages for Elixir
@@ -5453,8 +5440,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
         (pel-autoload-file lsp-elixir for: elixir-mode)
         (declare-function lsp "lsp-mode" (&optional arg))
         (add-hook 'elixir-mode-hook #'lsp)))
-
-    after-feature-load: nil
 
     when-buffer-opens:
     ;; 6- Activate Elixir setup.
@@ -5771,17 +5756,15 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-python "1"         'lispy-describe-inline)
     (define-key pel:for-python "2"         'lispy-arglist-inline))
 
-  (pel-setup-major-mode python (python python-ts-mode)
-                        pel:for-python :same-for-ts
+  (pel-setup-major-mode python :same-for-ts
+                        features: (python python-ts-mode)
     ;; runs immediately at startup, before any file is opened.
-    at-init:
-    (progn
-      ;; (pel-set-auto-mode 'python-mode "\\.py\\'")
-      ;; (when pel-use-python-flymake
-      ;;   (pel-set-auto-mode 'python-mode "\\.pyi\\'"))
-      )
-
-    after-feature-load: nil   ; nothing extra needed for Python right now
+    ;; at-init:
+    ;; (progn
+    ;;   ;; (pel-set-auto-mode 'python-mode "\\.py\\'")
+    ;;   ;; (when pel-use-python-flymake
+    ;;   ;;   (pel-set-auto-mode 'python-mode "\\.pyi\\'"))
+    ;;   )
 
     when-buffer-opens: ;; runs in the mode hook (via hack-local-variables-hook).
     (when (boundp 'python-indent-offset)
@@ -6019,8 +6002,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC U`` :
 (when pel-use-ruby
-  (pel-setup-major-mode ruby (ruby-mode ruby-ts-mode)
-                        pel:for-ruby :same-for-ts
+  (pel-setup-major-mode ruby :same-for-ts
     at-init:
     (progn
       ;; 1- Install required packages for Ruby
@@ -6309,8 +6291,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   --------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC u`` :
 (when pel-use-lua
-  (pel-setup-major-mode lua (lua-mode lua-ts-mode)
-                        pel:for-lua :same-for-ts
+  (pel-setup-major-mode lua :same-for-ts
     at-init:
     (progn
       ;; 1- Install required packages for Lua
@@ -6331,8 +6312,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (define-key pel:for-lua "?" 'pel-lua-setup-info)
       (when pel-use-tree-sitter
         (define-key pel:for-lua "z" 'pel-lua-repl)))
-
-    after-feature-load: nil
 
     when-buffer-opens:
     ;; activate skeletons
@@ -6502,8 +6481,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC V`` :
 
 (when pel-use-verilog
-  (pel-setup-major-mode verilog (verilog-mode verilog-ts-mode)
-                        pel:for-verilog :same-for-ts
+  (pel-setup-major-mode verilog :same-for-ts
     at-init:
     (progn
       (define-pel-global-prefix pel:for-verilog  (kbd "<f11> SPC V"))
@@ -6537,8 +6515,6 @@ to identify a Verilog file.  Anything else is assumed being V."
                       veri-kompass-go-backward
                       veri-kompass-go-up
                       veri-kompass-go-up-from-point)))
-
-    after-feature-load: nil
 
     when-buffer-opens:
     ;; Activate PEL <f12> key management,
@@ -6588,8 +6564,7 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-z`` :
 
 (when pel-use-zig
-  (pel-setup-major-mode zig (zig-mode zig-ts-mode)
-                        pel:for-zig :same-for-ts
+  (pel-setup-major-mode zig :same-for-ts
     at-init:
     (progn
       ;; 1- Install required packages for Zig
@@ -6611,8 +6586,6 @@ to identify a Verilog file.  Anything else is assumed being V."
       ;; 4- Buffer keymap for Zig
       (define-pel-global-prefix pel:for-zig  (kbd "<f11> SPC M-z"))
       (define-key pel:for-zig "?" 'pel-zig-setup-info))
-
-    after-feature-load: nil
 
     when-buffer-opens:
     ;; 6- Activate Zig setup.

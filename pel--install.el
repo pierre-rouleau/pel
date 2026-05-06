@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-05 22:35:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-06 07:15:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1230,23 +1230,11 @@ A form is considered empty when it is nil or an empty `progn': (progn)."
         (equal form '(progn)))))
 
 
-(defmacro pel-setup-major-mode (target-mode
-                                features
-                                key-prefix ts-option
-                                at-init: init-body
-                                &optional after-feature-load: after-load-body
-                                when-buffer-opens: &rest config-body)
+(defmacro pel-setup-major-mode (target-mode ts-option &rest args)
   "Configure a major mode with tree-sitter awareness.
 
 Arguments:
 TARGET-MODE     The bare mode symbol, e.g. \\='python (same meaning as in
-                `pel-config-major-mode').
-
-FEATURES        A feature symbol or unquoted list of feature symbols
-                (same as the first argument of `pel-eval-after-load').
-                Used to time the `pel-config-major-mode' setup.
-
-KEY-PREFIX      The <f12>/<M-f12> key prefix (same as
                 `pel-config-major-mode').
 
 TS-OPTION       Tree-sitter option, one of
@@ -1262,83 +1250,118 @@ TS-OPTION       Tree-sitter option, one of
 - :independent-ts : when the ts-sitter mode exists but does not derive from
                     the normal mode and PEL must support both.
 
-INIT-BODY       A single form (possibly a `progn') executed immediately at
-                initialization time, before Emacs opens any files.
-                Typical use: `auto-mode-alist' registrations.
+ARGS            A sequence of marker-introduced sections:
 
-AFTER-LOAD-BODY  A single form executed inside each `with-eval-after-load'
-                 block (via `pel-eval-after-load') but *before* the
-                `pel-config-major-mode' hook setup.
+  features: FEATURES-FORM
+                  Optional.  When absent, FEATURES is inferred from
+                  TARGET-MODE and TS-OPTION:
+                    :no-ts         -> <target-mode>-mode (single feature)
+                    :ts-only       -> <target-mode>-ts-mode (single feature)
+                    :same-for-ts   -> (<target-mode>-mode <target-mode>-ts-mode)
+                    :independent-ts -> same as :same-for-ts
+                  Provide this marker only when the naming convention does
+                  not apply (e.g. java uses \\='cc-mode, python uses \\='python).
 
-CONFIG-BODY     Zero or more forms passed as the body to
-                `pel-config-major-mode'; they run inside the mode-hook
-                `hack-local-variables-hook'.
+  at-init: INIT-BODY
+                  Required.  A single form executed immediately at
+                  initialization time, before Emacs opens any files.
+                  Typical use: `auto-mode-alist' registrations, package
+                  installs, key-prefix definitions.  Pass nil when empty.
 
-The at-init:, after-feature-load: and when-buffer-opens: arguments are
-required documenting markers.
+  after-feature-load: AFTER-LOAD-BODY
+                  Optional.  A single form executed inside the
+                  `pel-eval-after-load' block, *before* `pel-config-major-mode'.
+                  Omit the marker entirely when nothing is needed here.
+
+  when-buffer-opens: CONFIG-BODY...
+                  Optional.  Zero or more forms passed as the body of
+                  `pel-config-major-mode'; they run inside the mode hook
+                  via `hack-local-variables-hook'.  Omit the marker
+                  entirely when no per-buffer setup is needed.
+
+Inferred values (never need to be supplied by the caller):
+
+KEY-PREFIX      Always inferred as the symbol `pel:for-<target-mode>'.
 
 Tree-sitter handling:
 
-When TS-OPTION is `:same-for-ts', the `major-mode-remap-alist' entry
-that redirects the classic mode to the tree-sitter variant is
-established *eagerly* at step 1 (init time), before any file is ever
-opened.  This guarantees the very first buffer is already redirected to
-Tree-Sitter if that is required by the user: `pel-config-major-mode' is
-invoked with `:same-for-ts-early-remap', which registers hooks for both
-the classic and TS modes without duplicating the remap-alist update."
-  (declare (indent 4))
-  (ignore at-init: after-feature-load: when-buffer-opens:)
+When TS-OPTION is `:same-for-ts', the `major-mode-remap-alist' entry that
+redirects the classic mode to the tree-sitter variant is established
+*eagerly* at step 1 (init time), before any file is ever opened.  This
+guarantees the very first buffer is already redirected to Tree-Sitter if
+that is required by the user.  `pel-config-major-mode' is invoked with
+`:same-for-ts-early-remap' internally, which registers hooks for both the
+classic and TS modes without duplicating the remap-alist update."
+  (declare (indent 2))
   (unless (memq ts-option '(:no-ts :ts-only :same-for-ts :independent-ts))
     (error "pel-setup-major-mode: ts-option must be :no-ts, :ts-only, \
 :same-for-ts or :independent-ts; got: %S" ts-option))
-  (let* (;; When :same-for-ts, tell pel-config-major-mode that the remap-alist
-         ;; entry is already taken care of by us; otherwise pass through as-is.
-         (internal-ts-option (if (eq ts-option :same-for-ts)
-                                 :same-for-ts-early-remap
-                               ts-option))
-         ;; Runtime symbol names derived from TARGET-MODE
-         (gn-use-var    (intern (format "pel-use-%s"    target-mode)))
-         (gn-mode-name  (intern (format "%s-mode"       target-mode)))
-         (gn-ts-mode    (intern (format "%s-ts-mode"    target-mode))))
-    `(progn
-       ;; ---------------------------------------------------------------
-       ;; Step 1: Run INIT-BODY immediately at startup.
-       ;; Typical content: auto-mode-alist entries, package-specific
-       ;; setup that must be visible before any file is opened.
-       ;; Omitted entirely when init-body is nil or (progn).
-       ,@(unless (pel--empty-form-p init-body)
-           (list init-body))
+ ;; Parse marker-delimited sections from ARGS at macro-expansion time.
+  (let ((features-override nil)
+        (init-body         nil)
+        (after-load-body   nil)
+        (config-body       nil)
+        (remaining         args))
+    (while remaining
+      (let ((marker (car remaining)))
+        (cond
+         ((eq marker 'features:)
+          (setq features-override (cadr remaining)
+                remaining         (cddr remaining)))
+         ((eq marker 'at-init:)
+          (setq init-body  (cadr remaining)
+                remaining  (cddr remaining)))
+         ((eq marker 'after-feature-load:)
+          (setq after-load-body (cadr remaining)
+                remaining       (cddr remaining)))
+         ((eq marker 'when-buffer-opens:)
+          (setq config-body (cdr remaining)
+                remaining   nil))
+         (t
+          (error "pel-setup-major-mode: unknown marker: %S" marker)))))
+    (let*
+        ;; Derive all names and feature lists at macro-expansion time.
+        ((gn-use-var       (intern (format "pel-use-%s"  target-mode)))
+         (gn-mode-name     (intern (format "%s-mode"     target-mode)))
+         (gn-ts-mode       (intern (format "%s-ts-mode"  target-mode)))
+         ;; Key-prefix is always pel:for-<target-mode>.
+         (gn-key-prefix    (intern (format "pel:for-%s"  target-mode)))
+         ;; Infer features from ts-option unless the caller provided an
+         ;; override.
+         (gn-features      (or features-override
+                               (pcase ts-option
+                                 (:no-ts   gn-mode-name)
+                                 (:ts-only gn-ts-mode)
+                                 (_        (list gn-mode-name gn-ts-mode)))))
+         ;; Internal TS option: suppress duplicate remap-alist insertion.
+         (gn-ts-option     (if (eq ts-option :same-for-ts)
+                               :same-for-ts-early-remap
+                             ts-option)))
+      `(progn
+         ;; ---------------------------------------------------------------
+         ;; Step 1: Run INIT-BODY immediately at startup.
+         ;; Omitted entirely when init-body is nil or (progn).
+         ,@(unless (pel--empty-form-p init-body)
+             (list init-body))
 
-       ;; ---------------------------------------------------------------
-       ;; Step 2: Eagerly register the major-mode-remap-alist entry when
-       ;; Emacs supports it.
-       ;; - This must execute at init time: ;; Emacs consults
-       ;;   `major-mode-remap-alist' before activating (and thus before any
-       ;;   mode hook can run), so a hook-based approach would always miss
-       ;;   the first opened buffer.
-       ;; - Generated only when ts-option is :same-for-ts.
-       ,@(when (eq ts-option :same-for-ts)
-           `((when (and (eq ,gn-use-var 'with-tree-sitter)
+         ;; ---------------------------------------------------------------
+         ;; Step 2: Eagerly register the major-mode-remap-alist entry.
+         ;; Generated only when ts-option is :same-for-ts.
+         ,@(when (eq ts-option :same-for-ts)
+             `((when
+                   (and (eq ,gn-use-var 'with-tree-sitter)
                         (boundp 'major-mode-remap-alist)
                         (pel-treesit-remap-available-for (quote ,target-mode)))
-               (add-to-list (quote major-mode-remap-alist)
-                            (quote (,gn-mode-name . ,gn-ts-mode))))))
+                 (add-to-list (quote major-mode-remap-alist)
+                              (quote (,gn-mode-name . ,gn-ts-mode))))))
 
-       ;; ---------------------------------------------------------------
-       ;; Step 3: Deferred setup — everything that needs the mode feature
-       ;; to already be loaded.
-       ;; AFTER-LOAD-BODY runs first, then pel-config-major-mode installs
-       ;; the mode-hook machinery (key bindings, minor-mode activation, …).
-       ;; pel-config-major-mode is called with :same-for-ts-early-remap
-       ;; (instead of :same-for-ts) to register hooks for both classic and
-       ;; TS modes without re-inserting the remap-alist entry.
-       (pel-eval-after-load ,features
-         ;; Omitted entirely when after-load-body is nil or (progn).
-         ,@(unless (pel--empty-form-p after-load-body)
-             (list after-load-body))
-         ;;
-         (pel-config-major-mode ,target-mode ,key-prefix ,internal-ts-option
-           ,@config-body)))))
+         ;; ---------------------------------------------------------------
+         ;; Step 3: Deferred setup via pel-eval-after-load.
+         (pel-eval-after-load ,gn-features
+           ,@(unless (pel--empty-form-p after-load-body)
+               (list after-load-body))
+           (pel-config-major-mode ,target-mode ,gn-key-prefix ,gn-ts-option
+             ,@config-body))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--install)
