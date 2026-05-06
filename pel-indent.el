@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-13 23:20:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-04 12:41:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -870,11 +870,13 @@ Note: The above variable control the indentation of this major mode.
         (when pel-use-dtrt-indent
           (insert "\
       However, `dtrt-indent-mode' may detect a different indentation
-      scheme for already written files and change the indentation
+      scheme for files with existing code and change the indentation
       control variable value used by the major-mode, overriding the
-      value selected by customization.  In that case you will see a
-      different value in the above list and a message note describing
-      the adjustment made by `dtrt-indent-mode'.
+      value selected by customization.
+      In that case, a message stating that indentation variable
+      was adjusted was printed when you opened the file and the
+      value shown above will differ from what is being imposed
+      by `dtrt-indent-mode'.
 "))))
     (dolist (symb '(standard-indent
                     tab-always-indent

@@ -619,7 +619,6 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-help-pdf-select
     pel-customize-pel
     pel-customize-library
-    pel-help-pdfs-dir
     pel-help-on-completion-input
     pel-help-on-outline)
 

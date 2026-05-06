@@ -576,6 +576,14 @@ Last character is a forward slash."
    (format "%s/doc/pdf/"
            (file-name-directory (locate-library "pel")))))
 
+(defun pel-help-pdfs-dir ()
+  "Open a Dired buffer on the PEL PDF directory."
+  (interactive)
+  ;; TODO: if the buffer is already opened, move point to that buffer and
+  ;; make that buffer visible, don't open a new buffer or
+  ;; don't use the current window
+  (find-file (pel-pdf-directory)))
+
 (defun pel-pdf-file-url (topic &optional on-web category)
   "Return the full path of a PEL pdf table for TOPIC in CATEGORY.
 
@@ -3358,6 +3366,7 @@ See the author site at URL http://malsyned.net/smart-dash.html"
     c++-mode
     d-mode
     elixir-mode
+    objc-mode
     pike-mode
     python-mode
     shell-script-mode)
@@ -8317,10 +8326,17 @@ Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-software-programming-languages)
 
 (defcustom pel-use-java nil
-  "Control whether PEL enhancement for Java support are active."
+  "Control whether PEL enhancement for Java support are active.
+
+This *must* be activated to allow any other package for java support.
+When activating it you can select between the following values:
+- t                : use `java-mode' provided by the java-mode built-in.
+- with-tree-sitter : use `java-ts-mode' provided by the java-ts-mode built-in."
   :group 'pel-pkg-for-java
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use java" nil)
+          (const :tag "Use classic mode: java-mode" t)
+          (const :tag "Use tree-sitter mode: java-ts-mode" with-tree-sitter)))
 
 (defcustom pel-java-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Java buffers.
@@ -12592,11 +12608,19 @@ Does not indent."
   :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Python PDF" ,(pel-pdf-file-url "pl-python")))
 
-(defcustom pel-use-python  nil
-  "Control whether PEL supports Python development."
+(defcustom pel-use-python nil
+  "Control whether PEL supports Python development.
+
+This *must* be activated to allow any other package for python support.
+When activating it you can select between the following values:
+- t                : use `python-mode' provided by the python-mode built-in.
+- with-tree-sitter : use `python-ts-mode' provided by the python-ts-mode
+                     built-in."
   :group 'pel-pkg-for-python
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use python" nil)
+          (const :tag "Use classic mode: python-mode" t)
+          (const :tag "Use tree-sitter mode: python-ts-mode" with-tree-sitter)))
 (pel-put pel-use-python :package-is :builtin-emacs)
 
 (defcustom pel-python-activates-minor-modes nil
@@ -15677,10 +15701,6 @@ PEL uses my fork of this project."
   (setq pel-use-ivy-erlang-complete t
         pel-use-company             t))
 
-(when pel-use-projectile-speedbar
-  (setq pel-use-projectile t)       ; t:= activate projectile later by command
-  (setq pel-use-speedbar t))
-
 (when pel-use-lispy
   (setq pel-use-iedit t
         pel-use-multiple-cursors t))
@@ -15709,7 +15729,8 @@ PEL uses my fork of this project."
         pel-use-counsel t))
 
 (when pel-use-bison
-  (setq pel-use-c t))
+  (unless pel-use-c
+    (setq pel-use-c t)))
 
 (when (or pel-use-indent-tools
           pel-use-iflipb
@@ -15721,7 +15742,8 @@ PEL uses my fork of this project."
   (setq pel-use-hydra t))
 
 (when pel-use-verilog-ext
-  (setq pel-use-yasnippet t))
+  (unless pel-use-yasnippet
+    (setq pel-use-yasnippet t)))
 
 (when pel-use-lsp-origami
   (setq pel-use-origami t))
@@ -15731,10 +15753,14 @@ PEL uses my fork of this project."
           pel-use-treemacs-magit)
   (setq pel-use-treemacs t))
 
+(when pel-use-projectile-speedbar
+  (setq pel-use-speedbar t))
+
 (when (or pel-use-projectile-speedbar
           pel-use-treemacs-projectile
           pel-use-flycheck-projectile)
-  (setq pel-use-projectile t))
+  (unless pel-use-projectile
+    (setq pel-use-projectile t)))
 
 (when pel-use-nix
   (setq pel-use-magit-section t))
@@ -15844,7 +15870,8 @@ PEL uses my fork of this project."
   (setq pel-use-merlin t))
 
 (when pel-use-xmake
-  (setq pel-use-lua t))
+  (unless pel-use-lua
+    (setq pel-use-lua t)))
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)
 

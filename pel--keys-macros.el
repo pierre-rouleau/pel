@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-30 21:57:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-05 13:59:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -55,9 +55,7 @@
 ;;
 ;;
 (require 'pel--base)    ; use: `macroexp-file-name'
-(require 'pel--indent)  ; use: `pel-tab-width-control-variables'.
 (require 'pel--macros)  ; use: `pel-append-to'
-(require 'pel--install) ; use: `pel-eval-after-load'
 (require 'pel--options) ; use: `pel-use-call-graph', `pel-use-tree-sitter', ...
 (require 'seq)          ; use: `seq-concatenate', `seq-drop', `seq-subseq'
 (eval-when-compile
@@ -77,36 +75,193 @@
 ;; `pel--prefix-to-topic-alist' below.  Specially those that have duplicated
 ;; entries.
 
+(defconst pel--arc-groups '(arc
+                            lispy)
+  "List of groups for Arc.")
 
-(defconst pel--c-groups (list 'c
-                              'c-macro
-                              'bison-mode
-                              'electricity
-                              'smart-dash
-                              'call-graph)
+(defconst pel--awk-groups '(c
+                            electricity
+                            smart-dash)
+  "List of groups for AWK.")
+
+(defconst pel--c-groups '(c
+                          c-macro
+                          bison-mode
+                          electricity
+                          smart-dash
+                          call-graph)
 
   "List of groups for C.")
 
-(defconst pel--c++-groups (list 'cpp
-                                'c-macro
-                                'electricity
-                                'smart-dash
-                                'call-graph)
+(defconst pel--c++-groups '(cpp
+                            c-macro
+                            electricity
+                            smart-dash
+                            call-graph)
   "List of groups for C++.")
 
-(defconst pel--objc-groups (list 'c
-                                 'c-macro
-                                 'electricity
-                                 'objc-font-lock
-                                 'smart-dash
-                                 'call-graph)
-  "List of groups for Objective-C")
+(defconst pel--clisp-groups '(lisp
+                              lispy
+                              slime
+                              sly)
+  "List of groups for Common Lisp.")
 
-(defconst pel--awk-groups (list 'c
-                                'electricity
-                                'smart-dash)
-  "List of groups for Awk.")
+(defconst pel--clojure-groups '(clojure
+                                cider
+                                cljr
+                                lispy)
+  "List of groups for Clojure")
 
+(defconst pel--d-groups '(d-mode
+                          electricity
+                          smart-dash)
+  "List of groups for D.")
+
+;; Unfortunately the group used by elixir-ts-mode is not elixir but `elixir-ts'
+(defconst pel--elixir-groups (if pel-use-tree-sitter
+                                 (list 'elixir
+                                       'elixir-ts
+                                       'electricity)
+                               (list 'elixir
+                                     'electricity))
+  "List of groups related to Elixir.")
+
+(defconst pel--emacslisp-groups '(checkdoc
+                                  editing-basics
+                                  elint
+                                  elisp-depend
+                                  eros
+                                  highlight-defined
+                                  lisp
+                                  lispy
+                                  lisp-docstring-toggle
+                                  parinfer-rust-mode
+                                  rainbow-delimiters
+                                  suggest)
+  "List of groups for Emacs Lisp.")
+
+(defconst pel--erlang-groups '(erlang
+                               erldoc
+                               erlstack
+                               edts
+                               ivy-erlang-complete
+                               lsp-erlang
+                               lsp-mode
+                               lsp-treemacs
+                               auto-highlight-symbol
+                               electricity
+                               smart-dash
+                               smartparens
+                               treemacs)
+  "List of groups for Erlang.")
+
+(defconst pel--forth-groups '(forth
+                              forth-smie
+                              forth-spec)
+  "Lisp of groups for Forth.")
+
+(defconst pel--go-groups '(go
+                           go-cover
+                           godoc
+                           go-dot-mod
+                           electricity
+                           smart-dash)
+  "List of groups for Go.")
+
+(defconst pel--janet-groups '(janet
+                              ijanet
+                              inf-janet)
+  "List of groups for Janet.")
+
+(defconst pel--javascript-groups '(js
+                                   js2-mode
+                                   js3-mode
+                                   js-comint
+                                   js2-refactor
+                                   flow-minor-mode
+                                   xref-js2)
+  "List of groups for Javascript.")
+
+(defconst pel--julia-groups '(julia
+                              julia-mode
+                              julia-snail
+                              electricity)
+  "List of groups for Julia.")
+
+(defconst pel--lfe-groups '(lfe
+                            lispy)
+  "List of groups for LFE.")
+
+
+
+;; Unfortunately the group used by lua-ts-mode is not lua but lua-ts
+(defconst pel--lua-groups (if pel-use-tree-sitter
+                              (list 'lua
+                                    'lua-ts)
+                            (list 'lua))
+  "List of groups for Lua.")
+
+(defconst pel--objc-groups '(c
+                             c-macro
+                             electricity
+                             objc-font-lock
+                             smart-dash
+                             call-graph)
+  "List of groups for Objective-C.")
+
+(defconst pel--ocaml-groups '(merlin
+                              tuareg
+                              tuareg-opam)
+  "List of groups for OCaml.")
+
+(defconst pel--odin-groups '(odin
+                             flycheck-odin)
+  "List of groups for Odin.")
+
+(defconst pel--perl-groups '(perl
+                             cperl
+                             electricity
+                             perl-repl
+                             perl-live)
+  "Lisp of groups for Perl.")
+
+(defconst pel--pike-groups '(c
+                             smart-dash)
+  "List of groups for Pike.")
+
+(defconst pel--python-groups '(python
+                               python-flymake
+                               electricity)
+  "List of groups for Python.")
+
+(defconst pel--ruby-groups (if pel-use-tree-sitter
+                               (list 'ruby
+                                     'ruby-ts
+                                     'electricity)
+                             (list 'ruby
+                                   'electricity))
+  "List of groups for Ruby.")
+
+(defconst pel--rust-groups '(rust-mode
+                             rustic
+                             racer
+                             cargo
+                             electricity
+                             smart-dash)
+  "Lisp of groups for Rust")
+
+(defconst pel--scheme-groups '(scheme
+                               geiser
+                               macrostep-geiser
+                               quack
+                               lispy)
+  "List of groups for Scheme")
+
+(defconst pel--v-groups '(v-mode
+                          electricity)
+  "List of groups for V.")
+
+;; --
 (defconst pel--dired-groups (list 'dired
                                   'dired-git-info
                                   'dired-hide-dotfiles
@@ -119,21 +274,6 @@
                                   'wdired)
   "List of groups used related to Dired.")
 
-;; Unfortunately the group used by elixir-ts-mode is not elixir but `elixir-ts'
-(defconst pel--elixir-groups (if pel-use-tree-sitter
-                                 (list 'elixir
-                                       'elixir-ts
-                                       'electricity)
-                               (list 'elixir
-                                     'electricity))
-  "List of groups related to Elixir.")
-
-;; Unfortunately the group used by lua-ts-mode is not lua but lua-ts
-(defconst pel--lua-groups (if pel-use-tree-sitter
-                              (list 'lua
-                                    'lua-ts)
-                            (list 'lua))
-  "List of groups for Lua.")
 
 (defconst pel--highligh-groups (let ((items (list 'auto-highlight-symbol
                                                   'electricity
@@ -175,12 +315,7 @@
                                 'lsp-treemacs)
   "List of groups for LSP.")
 
-(defconst pel--scheme-groups (list 'scheme
-                                   'geiser
-                                   'macrostep-geiser
-                                   'quack
-                                   'lispy)
-  "List of groups for Scheme")
+
 
 (defconst pel--spell-groups (if (version< emacs-version "27.1")
                                 (list 'ispell
@@ -212,13 +347,7 @@
                              items)
   "List of groups for undo.")
 
-(defconst pel--ruby-groups (if pel-use-tree-sitter
-                               (list 'ruby
-                                     'ruby-ts
-                                     'electricity)
-                             (list 'ruby
-                                   'electricity))
-  "List of groups for Ruby.")
+
 
 (defconst pel--verilog-groups (let ((items (if (fboundp 'verilog-ts-mode)
                                                (list 'verilog-mode
@@ -331,177 +460,113 @@
     ([f11 27 ?s]     "speedbar"         pel-pkg-for-speedbar    (speedbar
                                                                  sr-speedbar
                                                                  projectile-speedbar))
+
+    ;; -- programming language support
+    ([f11 32 ?*]  "all-pl"    pel-pkg-for-all-languages         (eldoc
+                                                                 eldoc-box
+                                                                 eglot))
+
+    (,(kbd "<f11> SPC C-a")             pel-pkg-for-arc         ,pel--arc-groups)
     ([f11 32 ?A]     "pl-ada"           pel-pkg-for-ada         (ada ada-ts))
     ([f11 32 ?8]     "pl-algol"         pel-pkg-for-algol       a68)
-    ([f11 32 ?9]     "pl-rebol"         pel-pkg-for-rebol       nil) ; current implementation has no customization
-    ([f11 32 ?F]     "pl-fortran"       pel-pkg-for-fortran     fortran)
-    ([f11 32 ?W]     "pl-awk"           pel-pkg-for-awk         ,pel--awk-groups)
-    ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         ,pel--c++-groups)
-    ([f11 32 ?C f12] "pl-c++"           pel-c++-skeleton-control)
-    ([f11 32 ?C ?#]  "pl-c++"           pel-pkg-for-c++         hide-ifdef)
-    ([f11 32 ?D]     "pl-d"             pel-pkg-for-d           (d-mode
-                                                                 electricity
-                                                                 smart-dash))
-
-    ([f11 32 ?d]     "pl-dart"          pel-pkg-for-dart        (dart dart-ts))
-    ([f11 32 ?L]     "pl-common-lisp"   pel-pkg-for-clisp       (lisp
-                                                                 lispy
-                                                                 slime
-                                                                 sly))
-    ([f11 32 ?L f12] "pl-common-lisp"   pel-clisp-code-style)
-    ([f11 32 ?M]     "pl-make"          pel-pkg-for-make        makefile)
-    ([f11 32 ?R]     "pl-rexx"          pel-pkg-for-rexx        rexx-mode)
-    ([f11 32 ?N]     "pl-rexx"          pel-pkg-for-rexx        netrexx)
     ([f11 32 ?a]     "pl-applescript"   pel-pkg-for-applescript apples)
+    ([f11 32 ?W]     "pl-awk"           pel-pkg-for-awk         ,pel--awk-groups)
     ([f11 32 ?c]     "pl-c"             pel-pkg-for-c           ,pel--c-groups)
     ([f11 32 ?c f12] "pl-c"             pel-c-skeleton-control)
     ([f11 32 ?c ?#]  "pl-c"             pel-pkg-for-c           hide-ifdef)
-    ([f11 32 ?e]     "pl-erlang"        pel-pkg-for-erlang      (erlang
-                                                                 erldoc
-                                                                 erlstack
-                                                                 edts
-                                                                 ivy-erlang-complete
-                                                                 lsp-erlang
-                                                                 lsp-mode
-                                                                 lsp-treemacs
-                                                                 auto-highlight-symbol
-                                                                 electricity
-                                                                 smart-dash
-                                                                 smartparens
-                                                                 treemacs))
+    (,(kbd "<f11> SPC M-C") "pl-c3"     pel-pkg-for-c3          c3-ts)
+    ([f11 32 27 ?C]         "pl-c3"     pel-pkg-for-c3          c3-ts)
+    ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         ,pel--c++-groups)
+    ([f11 32 ?C f12] "pl-c++"           pel-c++-skeleton-control)
+    ([f11 32 ?C ?#]  "pl-c++"           pel-pkg-for-c++         hide-ifdef)
+    ([f11 32 ?L]     "pl-common-lisp"   pel-pkg-for-clisp       ,pel--clisp-groups)
+    ([f11 32 ?L f12] "pl-common-lisp"   pel-clisp-code-style)
+    (,(kbd "<f11> SPC C-j") "pl-clojure" pel-pkg-for-clojure    ,pel--clojure-groups)
+    ([f11 32 ?D]     "pl-d"             pel-pkg-for-d           ,pel--d-groups)
+    ([f11 32 ?d]     "pl-dart"          pel-pkg-for-dart        (dart dart-ts))
+
+    (,(kbd "<f11> SPC C-e") "pl-eiffel" pel-pkg-for-eiffel      eiffel)
+    ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      ,pel--elixir-groups)
+
+    ([f11 32 ?l]     "pl-emacs-lisp"    pel-pkg-for-emacs-lisp  ,pel--emacslisp-groups)
+    ([f11 32 ?l f12] "pl-emacs-lisp"    pel-elisp-code-style)
+    ([f11 32 ?l 20]  "ert"              pel-pkg-for-testing     (coverlay testcover testcover-mark-line))
+    (,(kbd "<f11> SPC C-t") "ert"       pel-pkg-for-cram)
+
+    ([f11 32 ?e]     "pl-erlang"        pel-pkg-for-erlang      ,pel--erlang-groups)
     ([f11 32 ?e f12] "pl-erlang"        pel-erlang-code-style)
     ([f11 32 ?e ?L]  "pl-erlang"        pel-pkg-for-lsp-mode    ,(cons 'lsp-erlang pel--lsp-groups))
     ([f11 32 ?e ?w]  "pl-erlang"        pel-pkg-for-lsp-mode    (treemacs
                                                                  lsp-treemacs))
     (,(kbd "<f11> SPC M-f") "pl-factor" pel-pkg-for-factor      factor)
     ([f11 32 27 ?f]         "pl-factor" pel-pkg-for-factor      factor)
-    ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth       (forth
-                                                                 forth-smie
-                                                                 forth-spec))
-    ([f11 32 ?g]     "pl-go"            pel-pkg-for-go          (go
-                                                                 go-cover
-                                                                 godoc
-                                                                 go-dot-mod
-                                                                 electricity
-                                                                 smart-dash))
+    ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth       ,pel--forth-groups)
+    ([f11 32 ?F]     "pl-fortran"       pel-pkg-for-fortran     fortran)
+    (,(kbd "<f11> SPC M-G") "pl-gleam"  pel-pkg-for-gleam       gleam-ts)
+    ([f11 32 27 ?G]         "pl-gleam"  pel-pkg-for-gleam       gleam-ts)
+    ([f11 32 ?g]     "pl-go"            pel-pkg-for-go          ,pel--go-groups)
     ([f11 32 ?h]     "pl-haskell"       pel-pkg-for-haskell     haskell)
-    ([f11 32 ?u]     "pl-lua"           pel-pkg-for-lua         ,pel--lua-groups)
-    ([f11 32 ?T]     "pl-janet"         pel-pkg-for-janet       (janet
-                                                                 ijanet
-                                                                 inf-janet))
+    (,(kbd "<f11> SPC C-h") "pl-hy"     pel-pkg-for-hy)
+
+    ([f11 32 ?T]     "pl-janet"         pel-pkg-for-janet       ,pel--janet-groups)
     ([f11 32 ?J]     "pl-java"          pel-pkg-for-java        (java c))
     ;; [:todo 2025-10-08, by Pierre Rouleau: Add ability to select the js or
     ;; js2-mode group automatically, corresponding to the major mode being
     ;; used for Javascript.]
-    ([f11 32 ?i]     "pl-javascript"    pel-pkg-for-javascript  (js
-                                                                 js2-mode
-                                                                 js3-mode
-                                                                 js-comint
-                                                                 js2-refactor
-                                                                 flow-minor-mode
-                                                                 xref-js2))
-    ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       (julia
-                                                                 julia-mode
-                                                                 julia-snail
-                                                                 electricity))
-    ([f11 32 ?l]     "pl-emacs-lisp"    pel-pkg-for-emacs-lisp  (checkdoc
-                                                                 editing-basics
-                                                                 elint
-                                                                 elisp-depend
-                                                                 eros
-                                                                 highlight-defined
-                                                                 lisp
-                                                                 lispy
-                                                                 lisp-docstring-toggle
-                                                                 parinfer-rust-mode
-                                                                 rainbow-delimiters
-                                                                 suggest))
-    ([f11 32 ?l 20] "ert" pel-pkg-for-testing (coverlay testcover
-                                                        testcover-mark-line))
-    (,(kbd "<f11> SPC C-t") "ert"   pel-pkg-for-cram)
+    ([f11 32 ?i]     "pl-javascript"    pel-pkg-for-javascript  ,pel--javascript-groups)
+    ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       ,pel--julia-groups)
 
-    ([f11 32 ?l f12] "pl-emacs-lisp"    pel-elisp-code-style)
+    (,(kbd "<f11> SPC C-l") "pl-lfe"    pel-pkg-for-lfe         ,pel--lfe-groups)
+    (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        ,pel--lfe-groups)
+    ([f11 32 ?u]     "pl-lua"           pel-pkg-for-lua         ,pel--lua-groups)
 
-    ([f11 32 ?*]  "all-pl"    pel-pkg-for-all-languages      (eldoc
-                                                              eldoc-box
-                                                              eglot))
+    ([f11 32 ?M]     "pl-make"          pel-pkg-for-make        makefile)
+    ([f11 32 ?3]     "pl-meson"         pel-pkg-for-meson       meson)
+    ([f11 32 ?2]     "pl-modula2"       pel-pkg-for-modula-2    modula2)
+    ([f11 32 ?4]     "pl-m4"            pel-pkg-for-m4          m4)
 
-    ([f11 32 ?0]     "ssh-files"    pel-pkg-for-ssh         ssh-file)
-    ([f11 32 ?1]     "ssh-files"    pel-pkg-for-ssh         ssh-file)
-    ([f11 32 ?2]     "pl-modula2"   pel-pkg-for-modula-2    modula2)
-    ([f11 32 ?3]     "pl-meson"     pel-pkg-for-meson       meson)
-    ([f11 32 ?4]     "pl-m4"        pel-pkg-for-m4          m4)
-    ([f11 32 ?5]     "pl-ninja"     pel-pkg-for-ninja       ninja)
-    ([f11 32 ?n]     "pl-nim"       pel-pkg-for-nim         (nim
-                                                             electricity))
-    ([f11 32 ?o]     "pl-ocaml"     pel-pkg-for-ocaml       (merlin
-                                                             tuareg
-                                                             tuareg-opam))
-    ([f11 32 ?O]     "pl-odin"      pel-pkg-for-odin        (odin
-                                                             flycheck-odin))
-    ([f11 32 ?p]     "pl-python"    pel-pkg-for-python      (python
-                                                             python-flymake
-                                                             electricity))
-    ([f11 32 ?r]     "pl-rust"      pel-pkg-for-rust        (rust-mode
-                                                             rustic
-                                                             racer
-                                                             cargo
-                                                             electricity))
-    ([f11 32 ?P]     "pl-perl"      pel-pkg-for-perl         (perl
-                                                              cperl
-                                                              electricity
-                                                              perl-repl
-                                                              perl-live))
-    ([f11 32 ?U]     "pl-ruby"      pel-pkg-for-ruby         ,pel--ruby-groups)
-    ([f11 32 ?7]     "pl-seed7"     pel-pkg-for-seed7        seed7)
-    ([f11 32 ?:]     "pl-smalltalk" pel-pkg-for-smalltalk    smalltalk-mode)
-    ([f11 32 ?s]     "pl-swift"     pel-pkg-for-swift         swift)
-    ([f11 32 ?t]     "pl-tcl"       pel-pkg-for-tcl           tcl)
-    ([f11 32 ?v]     "pl-v"         pel-pkg-for-v            (v-mode
-                                                              electricity))
-    ([f11 32 ?V]     "hdl-verilog"  pel-pkg-for-verilog       ,pel--verilog-groups)
-    ([f11 32 ?H]     "hdl-vhdl"     pel-pkg-for-vhdl          vhdl)
+    ([f11 32 ?n]     "pl-nim"           pel-pkg-for-nim         (nim electricity))
+    ([f11 32 ?5]     "pl-ninja"         pel-pkg-for-ninja       ninja)
 
-    ([f11 32 ?x]     "pl-elixir"    pel-pkg-for-elixir        ,pel--elixir-groups)
-    ([f11 32 ?Z]     "pl-sh"        pel-pkg-for-sh-scripting ,pel--sh-scripting-groups)
-    (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         (arc
-                                                                 lispy))
-    (,(kbd "<f11> SPC C-e") "pl-eiffel" pel-pkg-for-eiffel      eiffel)
+    (,(kbd "<f11> SPC C-o") "pl-objc"   pel-pkg-for-objc        ,pel--objc-groups)
+    ([f11 32 ?o]     "pl-ocaml"         pel-pkg-for-ocaml       ,pel--ocaml-groups)
+    ([f11 32 ?O]     "pl-odin"          pel-pkg-for-odin        ,pel--odin-groups)
+    ([f11 32 ?P]     "pl-perl"          pel-pkg-for-perl        ,pel--perl-groups )
+    (,(kbd "<f11> SPC C-p") "pl-pike"   pel-pkg-for-pike        ,pel--pike-groups)
+    ([f11 32 ?p]     "pl-python"        pel-pkg-for-python      ,pel--python-groups)
 
-    (,(kbd "<f11> SPC M-C") "pl-c3"  pel-pkg-for-c3       c3-ts)
-    ([f11 32 27 ?C]         "pl-c3"  pel-pkg-for-c3       c3-ts)
+    ([f11 32 ?9]     "pl-rebol"         pel-pkg-for-rebol       nil)
+    ([f11 32 ?R]     "pl-rexx"          pel-pkg-for-rexx        rexx-mode)
+    ([f11 32 ?N]     "pl-rexx"          pel-pkg-for-rexx        netrexx)
+    ([f11 32 ?r]     "pl-rust"          pel-pkg-for-rust        ,pel--rust-groups)
+    ([f11 32 ?U]     "pl-ruby"          pel-pkg-for-ruby        ,pel--ruby-groups)
 
-    (,(kbd "<f11> SPC M-G") "pl-gleam"  pel-pkg-for-gleam       gleam-ts)
-    ([f11 32 27 ?G]         "pl-gleam"  pel-pkg-for-gleam       gleam-ts)
-
-
-    (,(kbd "<f11> SPC C-h") "pl-hy"     pel-pkg-for-hy)
-    (,(kbd "<f11> SPC C-j") "pl-clojure" pel-pkg-for-clojure    (clojure
-                                                                 cider
-                                                                 cljr
-                                                                 lispy))
-    (,(kbd "<f11> SPC C-l") "pl-lfe"    pel-pkg-for-lfe         (lfe
-                                                                 lispy))
-    (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        (lfe
-                                                                 lispy))
-
-    (,(kbd "<f11> SPC C-o") "pl-objc"   pel-pkg-for-objc ,pel--objc-groups)
-
-    (,(kbd "<f11> SPC C-p") "pl-pike"   pel-pkg-for-pike  c)
-    ;; Scheme Dialect Languages
     (,(kbd "<f11> SPC C-s C-s") "pl-scheme"        pel-pkg-for-scheme  ,pel--scheme-groups)
     (,(kbd "<f11> SPC C-s C-z") "pl-chez-scheme"   pel-pkg-for-chez    ,pel--scheme-groups)
     (,(kbd "<f11> SPC C-s C-i") "pl-chibi-scheme"  pel-pkg-for-chibi   ,pel--scheme-groups)
     (,(kbd "<f11> SPC C-s C-k") "pl-chicken-scheme" pel-pkg-for-chicken ,pel--scheme-groups)
-    (,(kbd "<f11> SPC C-s C-b") "pl-gambit-scheme" pel-pkg-for-gambit  ,(cons 'gambit
-                                                                              pel--scheme-groups))
-    (,(kbd "<f11> SPC C-s C-e") "pl-gerbil-scheme" pel-pkg-for-gerbil  ,(cons 'gerbil-mode
-                                                                              pel--scheme-groups))
+    (,(kbd "<f11> SPC C-s C-b") "pl-gambit-scheme" pel-pkg-for-gambit  ,(cons 'gambit pel--scheme-groups))
+    (,(kbd "<f11> SPC C-s C-e") "pl-gerbil-scheme" pel-pkg-for-gerbil  ,(cons 'gerbil-mode pel--scheme-groups))
     (,(kbd "<f11> SPC C-s C-g") "pl-guile-scheme"  pel-pkg-for-guile   ,pel--scheme-groups)
-    (,(kbd "<f11> SPC C-s C-m") "pl-mit-scheme-scheme"   pel-pkg-for-mit-scheme  ,pel--scheme-groups)
-    (,(kbd "<f11> SPC C-s C-r") "pl-racket" pel-pkg-for-racket  ,(cons 'racket
-                                                                       pel--scheme-groups) )
+    (,(kbd "<f11> SPC C-s C-m") "pl-mit-scheme-scheme" pel-pkg-for-mit-scheme  ,pel--scheme-groups)
+    (,(kbd "<f11> SPC C-s C-r") "pl-racket"        pel-pkg-for-racket  ,(cons 'racket pel--scheme-groups) )
     (,(kbd "<f11> SPC C-s C-h") "pl-scsh-scheme"   pel-pkg-for-scsh    ,pel--scheme-groups)
+
+    ([f11 32 ?7]     "pl-seed7"         pel-pkg-for-seed7       seed7)
+    ([f11 32 ?Z]     "pl-sh"            pel-pkg-for-sh-scripting ,pel--sh-scripting-groups)
+    ([f11 32 ?:]     "pl-smalltalk"     pel-pkg-for-smalltalk   smalltalk-mode)
+    ([f11 32 ?s]     "pl-swift"         pel-pkg-for-swift       swift)
+    ([f11 32 ?t]     "pl-tcl"           pel-pkg-for-tcl         tcl)
+    ([f11 32 ?v]     "pl-v"             pel-pkg-for-v           ,pel--v-groups)
+    ([f11 32 ?V]     "hdl-verilog"      pel-pkg-for-verilog     ,pel--verilog-groups)
+    ([f11 32 ?H]     "hdl-vhdl"         pel-pkg-for-vhdl        vhdl)
+
+
+    ([f11 32 ?0]     "ssh-files"    pel-pkg-for-ssh         ssh-file)
+    ([f11 32 ?1]     "ssh-files"    pel-pkg-for-ssh         ssh-file)
+    ;;
+
+
     ;;
     ;; ([f11 ?C]
     ([f11 ?D]        "drawing"          pel-pkg-for-drawing-markup (artist
@@ -1767,331 +1832,6 @@ KEY sequence then create function bindings under the PREFIX
                 (list
                  `(define-key ,prefix (kbd "<f3>") 'pel-customize-library)))
       code)))
-
-;; ---------------------------------------------------------------------------
-
-
-
-;; --
-
-(defun pel--mode-hook-maybe-call (fct mode hook &optional append)
-  "Schedule FCT as the MODE HOOK: call it if buffer is currently in that MODE.
-The function FCT is added at the beginning of the hook list unless the
-optional argument APPEND is non-nil, in which case it is added at the end."
-  (add-hook hook fct append)
-  ;; if the current mode is the required mode also run the specified function
-  (if (eq major-mode mode)
-      (funcall fct)))
-
-(defconst pel--tab-controlling-major-modes
-  '(cwl
-    dart      ; dart-mode and dart-ts-mode ; differ; explicit logic is needed.
-    go
-    go-dot-mod
-    go-mod                              ; for go-mod-ts-mode
-    ibuffer
-    intel-hex
-    janet
-    js2 js3
-    lfe inferior-lfe
-    lisp arc clojure
-    makefile
-    nimscript
-    nix
-    perl
-    scheme chez chibi chicken gambit gerbil guile mit-scheme racket scsh
-    seed7
-    shell
-    ssh-authorized-keys ssh-known-hosts
-    term
-    tup)
-  "List of major mode that fully control the tab behaviour and width.
-
-These modes do not have both `pel-<mode>-tab-width' and a `pel-<mode>-use-tabs'
-user-options variables.")
-
-(defun pel-treesit-remap-available-for (mode)
-  "Return non-nil when treesit is available the ts MODE can use MODE.
-MODE is a symbol like \\='c or \\='rust identifying the major mode."
-  (and pel-use-tree-sitter
-       (pel-treesit-language-available-p mode)
-       (boundp 'major-mode-remap-alist)))
-
-(defun pel--set-indent-control-variables (indent-to-tab-width)
-  "Activate the value identified by the INDENT-TO-TAB-WIDTH.
-This must be the value of the  pel-MM-tie-indent-to-tab-width customizable
-user-option, where MM is the major mode name (like c or python).
-The function saves its value in the `pel-tab-width-control-variables' buffer
-local variable."
-  (let ((value (if (eq indent-to-tab-width 'use-predef-vars)
-                   (let ((constvar (pel-major-mode-symbol-for
-                                    "pel--%s-indent-predef-vars")))
-                     (when (boundp constvar)
-                       (symbol-value constvar)))
-                 indent-to-tab-width)))
-    (setq-local pel-tab-width-control-variables value)))
-
-(defun pel--auto-activate-fly ()
-  "Auto-activate fly syntax checking engine if necessary.
-Automatic activation is done for a file identified inside
-`pel-files-activating-syntax-check' when the major mode is in
-`pel-fly-engine-for-modes' and identifies an fly engine."
-  (let ((filename (buffer-file-name))
-        (found nil)
-        (fullpath-name nil)
-        (engine nil))
-    (when filename
-      (setq engine (car-safe
-                    (cdr-safe
-                     (assoc (intern (pel-file-type-for major-mode))
-                            pel-fly-engine-for-modes))))
-      (when engine
-        ;; [:todo 2025-12-11, by Pierre Rouleau: optimize with a while?]
-        (dolist (pathname pel-files-activating-syntax-check)
-          (setq fullpath-name (expand-file-name pathname))
-          (if (pel-string-ends-with-p pathname "/")
-              (when (pel-string-starts-with-p filename fullpath-name)
-                (setq found t))
-            (when (string= fullpath-name filename)
-              (setq found t))))
-        (when found
-          (cond
-           ((eq engine 'flymake) (flymake-mode 1))
-           ((eq engine 'flycheck) (when pel-use-flycheck
-                                    (with-no-warnings
-                                      (flycheck-mode 1))))))))))
-
-
-;; TODO: pel-config-major-mode does not seem to support shell-mode and
-;;       term-mode properly.  Investigate and fix.
-
-(defmacro pel-config-major-mode (target-mode key-prefix ts-option &rest body)
-  "Setup the major mode identified by TARGET-MODE.
-
-TARGET-MODE is an unquoted symbol identifying the mode: it's the
-major mode name without the -mode suffix.  Something like
-emacs-lisp, c, python, etc...
-
-The KEY-PREFIX argument is a PEL mode-specific key-prefix unquoted
-symbol.  Something like symbol `pel:for-c' and symbol `pel:for-make'.
-That symbol must already been defined prior to the macro invocation, and
-it should have been defined with a `define-pel-global-prefix' form.  If
-KEY-PREFIX is nil or has the value :no-f12-keys then no <f12> and
-<M-f12> PEL key prefixes are created for the major mode.
-
-The TS-OPTION control how tree-sitter mode is supported.
-This can only be one of the following:
-- :no-ts          : no special tree-sitter support
-- :ts-only        : support for tree-sitter specific mode only is requested,
-                    but no support for the classic mode
-- :same-for-ts    : when the tree-sitter-based mode derives from the normal
-                    mode and PEL must support both.
-- :independent-ts : when the ts-sitter mode exists but does not derive from
-                    the normal mode and PEL must support both.
-
-The BODY is a set of forms to execute when the major mode hook
-executes, at the moment when a buffer with that major mode opens
-and after the local variables have been loaded."
-  (declare (indent 3))
-  (unless (memq ts-option '(:no-ts :ts-only :same-for-ts :independent-ts))
-    (display-warning 'Invalid-PEL-code
-                     (format
-                      "Invalid (pel-config-major-mode %S %S %S)"
-                      target-mode key-prefix ts-option)))
-  (let ((gn-fct1 (intern (format "pel--setup-for-%s-with-local-vars"
-                                 target-mode)))
-        (gn-docstring1
-         (format "\
-Activate %s setup, take local variables into account.
-Function created by the `pel-config-major-mode' macro."
-                 target-mode))
-        (gn-fct2 (intern (format "pel--setup-for-%s" target-mode)))
-        (gn-docstring2 (format "Set the environment for %s buffers."
-                               target-mode))
-        (gn-mode-name (intern (format "%s-mode" target-mode)))
-        (gn-ts-mode-name (intern (format "%s-ts-mode" target-mode)))
-        (gn-mode-hook (intern (format "%s-mode-hook" target-mode)))
-        (gn-ts-mode-hook (intern (format "%s-ts-mode-hook" target-mode)))
-        (gn-minor-modes (intern (format "pel-%s-activates-minor-modes"
-                                        target-mode)))
-        (gn-use      (intern (format "pel-use-%s" target-mode)))
-        (gn-use-tabs (intern (format "pel-%s-use-tabs"
-                                     target-mode)))
-        (gn-tab-width (intern (format "pel-%s-tab-width"
-                                      target-mode)))
-        (gn-tie-indent-2-tab (intern
-                              (format "pel-%s-tie-indent-to-tab-width"
-                                      target-mode)))
-        (gn-fname       (file-name-base (macroexp-file-name)))
-        (newbody nil)
-        (hook-body nil))
-    ;; Add code to newbody in order: some code is placed *before* BODY
-    ;; to allow BODY to see the values and possibly modify them.
-    ;; Some code is added *after* the BODY.  BODY is a list.
-    ;;
-    ;; 1 - Code before BODY
-    ;; If the major mode is not one of the modes that do not need
-    ;; to support hard-tab control and width create code that set them
-    (unless (memq target-mode pel--tab-controlling-major-modes)
-      ;; Starting with Emacs 30, org-mode only supports a tab-width of 8
-      (unless (and pel-emacs-30-or-later-p
-                   (eq target-mode 'org))
-        (pel-append-to newbody
-          `((pel-setq-local-unless-filevar tab-width ,gn-tab-width))))
-      (pel-append-to newbody
-        `((pel-setq-local-unless-filevar indent-tabs-mode ,gn-use-tabs)))
-      (when (boundp gn-tie-indent-2-tab)
-        (pel-append-to newbody
-          `((pel--set-indent-control-variables ,gn-tie-indent-2-tab)))))
-
-    ;; - Add tree sitter control if necessary
-    (when (and (eq ts-option :same-for-ts)
-               (boundp 'major-mode-remap-alist))
-      ;; There are no reasons to use major-mode when the major-ts-mode
-      ;; mode is available and working.  Therefore, when the tree-sitter mode
-      ;; is requested by the user for this major mode, ensure that whenever
-      ;; major-mode is requested, major-ts-mode is used.
-      ;; See: https://cgit.git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?h=emacs-30#n123
-      (pel-append-to newbody
-        `((when (pel-treesit-remap-available-for (quote ,target-mode))
-            (if (eq ,gn-use 'with-tree-sitter)
-                (add-to-list (quote major-mode-remap-alist)
-                             (quote
-                              (,gn-mode-name . ,gn-ts-mode-name)))
-              (add-to-list (quote major-mode-remap-alist)
-                           (quote (,gn-mode-name))))))))
-    ;;
-    ;; 2 - Include BODY
-    (pel-append-to newbody body)
-    ;;
-    ;; 3 - Include code that must be done *after* BODY:
-    ;;
-    ;; When the <f12> key prefixes are defined, set them up first
-    ;; in the function body to ensure they are available and will not shadow
-    ;; another call to `pel-local-set-f12-M-f12' that wants to install a
-    ;; sub-prefix.
-    (when (and key-prefix
-               (not (eq key-prefix :no-f12-keys)))
-      (pel-append-to newbody
-        `((pel-local-set-f12-M-f12 (quote ,key-prefix)))))
-
-    ;; Add the code that activates the minor modes identified by the
-    ;;`pel-<mode>-activates-minor-modes' user-option, and other PEL
-    ;; user options:
-    ;; - `pel-fly-engine-for-modes' & `pel-files-activating-syntax-check'
-    (pel-append-to newbody
-      `((pel-turn-on-local-minor-modes-in
-         (quote ,gn-minor-modes))
-        (pel-check-minor-modes-in ,gn-minor-modes)
-        (pel--auto-activate-fly)))
-
-    ;; 4 - Prepare the code that is invoked after the newbody
-    (pel-append-to hook-body
-      `((declare-function ,gn-fct2 ,gn-fname)
-        (defun ,gn-fct1 ()
-          ,gn-docstring1
-          (add-hook 'hack-local-variables-hook
-                    (function ,gn-fct2) nil t))
-        (declare-function ,gn-fct1 ,gn-fname)))
-
-    ;; 4.1 - Append support for classic mode if necessary
-    (unless (eq ts-option :ts-only)
-      (pel-append-to hook-body
-        `((pel--mode-hook-maybe-call (function ,gn-fct1)
-                                     (quote ,gn-mode-name)
-                                     (quote ,gn-mode-hook)))))
-    ;; 4.1 - Append support for ts-mode if necessary
-    (when (memq ts-option '(:ts-only :same-for-ts :independent-ts))
-      (pel-append-to hook-body
-        `((pel--mode-hook-maybe-call (function ,gn-fct1)
-                                     (quote ,gn-ts-mode-name)
-                                     (quote ,gn-ts-mode-hook)))))
-
-    ;; 5 - Return the following generated code:
-    `(progn
-       (defun ,gn-fct2 ()
-         ,gn-docstring2
-         (progn
-           ,@newbody))
-       (progn
-         ,@hook-body))))
-
-;; [:todo 2025-05-17, by Pierre Rouleau: Add support for packages that
-;;  have a same symbols for mode and features, like Ada, which is
-;;  supported by : ada-mode in the file feature ada-mode
-;;           and : ada-ts-mode in the file feature ada-ts-mode
-;;  while keeping the ability to support modes where the feature name
-;;  does not end with '-mode'.
-;;  Perhaps the code should accept 4 symbols in case the code is implemented
-;;  in files that have several functions in them and a feature name that
-;;  differs completely.]
-
-;; [:todo 2025-10-08, by Pierre Rouleau: Update the following: it may not be
-;; required anymore]
-(defmacro pel-config-major-mode-with-ts (target-mode
-                                         &optional key-prefix
-                                         &rest body)
-  "Setup the major-mode and tree-sitter major mode for TARGET-MODE.
-
-See `pel-config-major-mode' for the description of the arguments KEY-PREFIX
-and BODY; this uses the exact same arguments."
-  (declare (indent 2))
-  (let ((gn-mode    (intern (format "%s-mode"    target-mode)))
-        (gn-ts-mode (intern (format "%s-ts-mode" target-mode)))
-        (gn-ts-target-mode (intern (format "%s-ts" target-mode)))
-        (gn-tab-width    (intern (format "pel-%s-tab-width" target-mode)))
-        (gn-ts-tab-width (intern (format "pel-%s-ts-tab-width" target-mode)))
-        (gn-use-tabs     (intern (format "pel-%s-use-tabs" target-mode)))
-        (gn-ts-use-tabs  (intern (format "pel-%s-ts-use-tabs" target-mode)))
-        (gn-activates-mm (intern (format "pel-%s-activates-minor-modes" target-mode)))
-        (gn-ts-activates-mm (intern (format "pel-%s-ts-activates-minor-modes" target-mode))))
-    ;; return the following generated code:
-    `(progn
-       (pel-major-mode-use-tree-sitter (quote ,gn-mode) (quote ,gn-ts-mode))
-       (pel-eval-after-load ,target-mode
-         ;; 1- setup for the ts-mode when it is available
-         (when (pel-major-ts-mode-supported-p (quote ,target-mode))
-           ;; create and set ts-mode mirroring variables
-           (progn
-             (defvar ,gn-ts-tab-width)
-             (defvar ,gn-ts-use-tabs)
-             (defvar ,gn-ts-activates-mm)
-             (setq ,gn-ts-tab-width ,gn-tab-width)
-             (setq ,gn-ts-use-tabs  ,gn-use-tabs)
-             (setq ,gn-ts-activates-mm ,gn-activates-mm))
-           ;; activate
-           (pel-config-major-mode ,gn-ts-target-mode ,key-prefix :no-ts ,@body))
-         ;; 2- setup for the standard mode
-         (pel-config-major-mode ,target-mode ,key-prefix :no-ts ,@body)))))
-
-;; --
-
-(defun pel-local-set-f12 (prefix &optional key)
-  "Assign the <f12> or <f12> KEY to PREFIX."
-  (if key
-      (local-set-key (kbd (format "<f12> %s" key))   prefix)
-    (local-set-key (kbd "<f12>")   prefix)))
-
-(defun pel-local-set-f12-M-f12 (prefix &optional key)
-  "Assign the <f12>/<M-f12> or <f12>/<M-f12> KEY to PREFIX."
-  ;; Bind the M-F12 first and F12 last so F12 shows up in menu.
-  (if key
-      (progn
-        (local-set-key (kbd (format "<M-f12> %s" key)) prefix)
-        (local-set-key (kbd (format "<f12> %s" key))   prefix))
-    (local-set-key (kbd "<M-f12>") prefix)
-    (local-set-key (kbd "<f12>")   prefix)))
-
-;; --
-
-;;-pel-autoload
-(defun pel-help-pdfs-dir ()
-  "Open a Dired buffer on the PEL PDF directory."
-  (interactive)
-  ;; TODO: if the buffer is already opened, move point to that buffer and
-  ;; make that buffer visible, don't open a new buffer or
-  ;; don't use the current window
-  (find-file (pel-pdf-directory)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--keys-macros)

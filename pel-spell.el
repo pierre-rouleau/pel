@@ -115,23 +115,33 @@
 (require 'pel-prompt)                   ; use: `pel-prompt'
 
 (eval-when-compile
-  (require 'cl-lib)                     ; use: cl-dolist and cl-return
+  (require 'cl-lib)                     ; use: `cl-dolist' and `cl-return'
+  (require 'subr-x))                    ; use: `string-trim'
 
-  ;; both flyspell and ispell are loaded lazily if required, but their symbols
-  ;; are needed at compilation. Same for popup.
-  ;; The following are part of Emacs
-  (require 'flyspell)   ; use: flyspell-sort-corrections, flyspell-emacs-popup
-  ;;               ispell use: ispell-call-process, ispell-check-version
-  ;;                           ispell-local-dictionary, ispell-dictionary,
-  ;;                           ispell-program-name, ispell-personal-dictionary
-  (require 'ispell)
-  (require 'subr-x)                     ; use: inlined: string-trim
+;; Declare flyspell symbols used at runtime (loaded lazily)
+(declare-function flyspell-sort-corrections "flyspell")
+(declare-function flyspell-emacs-popup      "flyspell")
+(declare-function flyspell-generic-progmode-verify "flyspell")
+(defvar flyspell-sort-corrections)
+(defvar flyspell-generic-check-word-predicate)
 
-  ;; The last is an external package.
-  ;; It might not be present on user's system: allow compilation anyhow to
-  ;; provide ability to activate lazily.
-  ;; from popup: use: popup-menu*
-  (require 'popup nil :noerror))
+;; Declare ispell symbols used at runtime (loaded lazily)
+(declare-function ispell-call-process       "ispell")
+(declare-function ispell-check-version      "ispell")
+(declare-function ispell-valid-dictionary-list "ispell")
+(declare-function ispell-change-dictionary  "ispell")
+(declare-function ispell-internal-change-dictionary "ispell")
+(defvar ispell-local-dictionary)
+(defvar ispell-dictionary)
+(defvar ispell-program-name)
+(defvar ispell-personal-dictionary)
+(defvar ispell-local-pdict)
+(defvar ispell-current-personal-dictionary)
+
+;; popup is an optional external package (terminal-mode spell menu)
+(declare-function popup-menu* "popup")
+
+(declare-function pel-spell-iedit-check-conflict "peel-spell-iedit")
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -143,8 +153,6 @@
 ;; flyspell-mode and flyspell-prog-mode.    The last one,
 ;; `pel-spell-toggle-prevent-flyspell' toggles the variable that prevents
 ;; activation of these minor modes.
-
-(declare-function pel-spell-iedit-check-conflict "pel-spell-iedit")
 
 ;;-pel-autoload
 (defun pel-spell-maybe-activate-flyspell ()
@@ -226,7 +234,6 @@ to allow the flyspell pop-up menu to work in terminal mode."
   ;; the installation of popup if pel-spell-init is used
   ;; when emacs is used in terminal mode.
   (unless (display-graphic-p)
-    (declare-function popup-menu* "popup")
     (defun pel-spell-flyspell-emacs-popup-textual (_event poss _word)
       "A textual flyspell popup menu."
       (require 'popup nil :noerror)
@@ -401,10 +408,6 @@ Return \"?\" instead."
           (format "%s default personal dictionary" ispell-program-name))
     "? - ispell is not loaded yet."))
 
-;; Declare variable and function used in flyspell.el which control flyspell
-;; prog mode.
-(declare-function flyspell-generic-progmode-verify "flyspell")
-
 (defun pel--spell-flyspell-prog-mode-state ()
   "Return t if flyspell-prog-mode is on, nil otherwise."
   ;; `flyspell-prog-mode' is just a normal function that takes no argument,
@@ -458,10 +461,6 @@ Other available information:\n"
 ;; ---------------------------------------------------------------------------
 ;; Selection of Dictionary
 ;; -----------------------
-
-(declare-function ispell-internal-change-dictionary "ispell")
-(defvar ispell-local-dictionary)
-(defvar ispell-current-personal-dictionary)
 
 ;;-pel-autoload
 (defun pel-spell-change-dictionary (dict &optional globally)

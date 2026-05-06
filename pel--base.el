@@ -64,6 +64,7 @@
 ;; List Handling:
 ;;  - `pel-list-of'
 ;;  - `pel-transpose-alist'
+;;  - `pel-items-by-markers'
 ;;
 ;; Environment Querying functions
 ;;  - `pel-in-fast-startup-p'
@@ -602,6 +603,30 @@ If VALUE is nil do nothing."
   (mapcar (lambda (pair)
             (cons (cdr pair) (car pair)))
           alist))
+
+(defun pel-items-by-markers (markers items)
+  "Group elements of ITEMS based on MARKERS.
+Returns an association list where each key is a marker from MARKERS
+and the value is a list of elements found between it and the next marker."
+  (let (alist current-marker current-group)
+    (dolist (item items)
+      (if (member item markers)
+          ;; If item is a marker
+          (progn
+            ;; Save the previous group if one exists
+            (when current-marker
+              (push (cons current-marker (nreverse current-group)) alist))
+            ;; Reset for the new marker
+            (setq current-marker item
+                  current-group nil))
+        ;; If item is NOT a marker, add it to the current group
+        (when current-marker
+          (push item current-group))))
+    ;; Push the final group after the loop finishes
+    (when current-marker
+      (push (cons current-marker (nreverse current-group)) alist))
+    ;; Reverse the alist to maintain original order
+    (nreverse alist)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Environment Querying functions

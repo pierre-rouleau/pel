@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, March 12 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-04-30 22:19:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-05 12:06:12 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -31,10 +31,11 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)                    ; use: pel-current-buffer-filename
-(require 'pel-window)                   ; use: pel-window-direction-for
-;;                                      ;      pel-window-select
-(require 'pel--keys-macros)
+(require 'pel--base)                    ; use: `pel-current-buffer-filename'
+(require 'pel-window)                   ; use: `pel-window-direction-for'
+;;                                      ;      `pel-window-select'
+(require 'pel--install)                 ; use: `pel-local-set-f12-M-f12'
+(require 'pel--keys-macros)             ; use: `define-pel-global-prefix'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
