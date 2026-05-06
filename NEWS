@@ -101,6 +101,18 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - *pel-caller-name*.  Use it when debugging code to get the name of a function's caller an optionally to trace the call chain.
     - *pel-emacs-is-a-tty-p*; now a function instead of a defconst variable to prevent issues in daemon clients.
     - *pel-can-display-special-chars-p*; now a function instead of a defconst variable to prevent issues in daemon clients.
+- Add code setup macros:
+  - In pel--install.el:
+    - The *pel-setup-major-mode* macro, now used inside pel_keys.el, simplifies the code to setup the major mode
+      of several programming and markup or tool configuration languages.  After identifying the major-mode symbol and
+      whether Tree-Sitter is supported you place the forms inside one of 3 sections identified by markers: *at-init:*,
+      *after-feature-load:* and *when-buffer-opens:*.  The macro generates the necessary code that must run when Emacs starts,
+      when the feature implementing the major mode loads and when the buffer using that major mode opens up.
+      The macro sets up the require hooks, deals with Tree-Sitter when it is supported generating code that allows the user
+      to identify whether the major mode uses a Tree-Sitter based mode or not based on the appropriate PEL user-option and
+      also allows the user to switch easily from classic mode to Tree-Sitter mode with the *pel-treesit-toggle-mode* command.
+      The macro takes Emacs version into account and generates code that is valid for that version of Emacs.
+      This simplifies writing PEL code for new major modes.  It is now used in pel_keys.el for several major modes.
 - Improved PDF files:
   - ⅀ Diff & Merge: Describe how to create a patch file from a diff-mode buffer.
   - ⅀ Faces/Fonts: more about changing a face.
@@ -131,6 +143,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     This problem affected the management of the Speedbar, SR-Speedbar and *pel-say* in macOS when running inside a GUI daemon client.
     Also the pel-cleanup command is no longer allowed to proceed when the user issues the command from within an Emacs server client.
   - Improvement: *do-applescript* no longer relies on the shell to execute the osascript command.
+  - Fix: the first file opened in modes that support Tree-Sitter now open using the mode selected by the mode user-option; past version
+    of the code honoured the user-option only on the second buffer opened form the major mode.
 - Started writing extensive unit test code.  The goal is to cover all PEL Emacs Lisp code.  There is still much test code to write.
   PEL Emacs Lisp code byte and native compiled for most Emacs versions since Emacs 26.1 in Github CI system.
   No warnings detected by either compiler is allowed.

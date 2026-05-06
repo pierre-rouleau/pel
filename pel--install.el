@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-06 11:17:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-06 12:02:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -66,6 +66,17 @@
 ;; Speedbar Support
 ;; - `pel-add-speedbar-extension'
 ;;
+
+;; Major Mode Configuration
+;; @ `pel-setup-major-mode'
+;;   @ `pel-config-major-mode'
+;;     @ `pel-local-set-f12-M-f12'
+;;     - `pel--auto-activate-fly'
+;;     - `pel--set-indent-control-variables'
+;;     - `pel-treesit-remap-available-for'
+;;  @ `pel--mode-hook-maybe-call'
+;;  @ `pel-eval-after-load'
+
 ;;
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -1220,16 +1231,6 @@ Function created by the `pel-config-major-mode' macro."
          ,@hook-body))))
 
 
-;; ---------------------------------------------------------------------------
-
-(eval-and-compile
-  (defun pel--empty-form-p (form)
-    "Return non-nil if FORM is trivially empty at macro-expansion time.
-A form is considered empty when it is nil or an empty `progn': (progn)."
-    (or (null form)
-        (equal form '(progn)))))
-
-
 (defmacro pel-setup-major-mode (target-mode ts-option &rest args)
   "Configure a major mode with tree-sitter awareness.
 
@@ -1357,12 +1358,6 @@ classic and TS modes without duplicating the remap-alist update."
          (gn-ts-option     (if (eq ts-option :same-for-ts)
                                :same-for-ts-early-remap
                              ts-option)))
-
-      ;; macro debugging trace
-      ;; (message "init-forms       %S" init-forms)
-      ;; (message "after-load-forms %S" after-load-forms)
-      ;; (message "config-body     %S" config-body)
-
       ;; -------------------------------------------------------------------
       ;; Build the three groups of top-level generated forms.
       ;; init-forms/after-forms are lists already (possibly nil) and are
@@ -1391,50 +1386,6 @@ classic and TS modes without duplicating the remap-alist update."
         (pcase (length all-forms)
           (1 (car all-forms))
           (_ `(progn ,@all-forms)))))))
-
-
-(defface pel-setup-major-mode-marker-face
-  '((t :inherit font-lock-builtin-face :weight bold))
-  "Face used to highlight pel-setup-major-mode markers."
-  :group 'pel-base)
-
-(defconst pel-setup-major-mode--markers-rx
-  (rx symbol-start
-      (or "at-init:" "after-feature-load:" "when-buffer-opens:" "features:")
-      symbol-end))
-
-(defun pel-setup-major-mode--font-lock-matcher (limit)
-  "Font-lock matcher that highlights markers.
-Does it only within a (pel-setup-major-mode …) form."
-  (let (found)
-    (while (and (not found)
-                (re-search-forward (rx "(" "pel-setup-major-mode") limit t))
-      (let ((sexp-start (match-beginning 0)))
-        (condition-case nil
-            (let ((sexp-end (save-excursion
-                              (goto-char sexp-start)
-                              (forward-sexp)
-                              (point))))
-              (when
-                  (re-search-forward
-                   pel-setup-major-mode--markers-rx sexp-end t)
-                (set-match-data (list (match-beginning 0) (match-end 0)))
-                (setq found t)))
-          (scan-error nil)))) ; tolerate unbalanced parens while typing
-    found))
-
-(defun pel-setup-major-mode--enable-marker-font-lock ()
-  "Setup the special font lock for macro markers."
-  ;; (message "***** RUNNING pel-setup-major-mode--enable-marker-font-lock")
-  (font-lock-add-keywords
-   nil
-   '((pel-setup-major-mode--font-lock-matcher
-      0 pel-setup-major-mode-marker-face keep))
-   'append))
-
-;; Register hooks for both classic and tree-sitter Elisp modes.
-(add-hook 'emacs-lisp-mode-hook
-          #'pel-setup-major-mode--enable-marker-font-lock)
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--install)
