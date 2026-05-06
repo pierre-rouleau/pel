@@ -5650,77 +5650,68 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;** Python Programming Language Support
 ;;   -----------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` :
+
+;; ⚠️  I recommend that you stay away from the external package python-mode.el
+;;    as much as possible.
+;; Support for pel-use-external-python-mode was removed because use-package
+;; will load it and once it is loaded, it conflicts with Emacs built-in
+;; python.el.
+
 (when pel-use-python
-
-  ;; ⚠️  I recommend that you stay away from the external package python-mode.el
-  ;; Support for pel-use-external-python-mode was removed because use-package
-  ;; will load it and once it is loaded, it conflicts with Emacs built-in
-  ;; python.el.
-
-  ;; 🚧 Needs work
-  ;; [:todo 2025-03-18, by Pierre Rouleau: run code after the python mode is
-  ;;        loaded,not right at startup.
-  ;;        Look into the impact of tree-sitter on that logic for Emacs <30
-  ;;        and >= 30: 2 possible behaviours. ]
-  (when pel-use-elpy
-    (pel-ensure-package-elpa elpy from: melpa))
-  ;; TODO control start of elpy
-
-  ;; Normally, (python-shell-prompt-detect) should evaluate to
-  ;; (">>> " "... " "") for Python shell to work properly.
-  ;; Under Windows, that is currently not the
-  ;; case for my system (but also others as described by
-  ;;  https://github.com/jorgenschaefer/elpy/issues/733)
-  ;; I investigated and a work-around is to set python-shell-unbuffered to nil.
-  ;; So I attempt to do this here to see if that works when launching emacs.
-  ;;
-  ;; There is another, remaining problem: the "native" python completion does
-  ;; not work on Windows because of its lack of proper PTY (pseudo terminal).
-  ;; Therefore, in Windows, "python" should be added to the list bound to
-  ;; python-shell-completion-native-disabled-interpreters.
-  ;;
-  ;; The code below does both for Windows.
-  (when pel-system-is-windows-p
-    (defvar python-shell-unbuffered)
-    (defvar python-shell-completion-native-disabled-interpreters)
-    (setq python-shell-unbuffered nil)
-    (if (boundp 'python-shell-completion-native-disabled-interpreters)
-        (add-to-list
-         'python-shell-completion-native-disabled-interpreters "python")
-      (setq python-shell-completion-native-disabled-interpreters '("python"))))
-
-  ;;
-  (define-pel-global-prefix pel:for-python       (kbd "<f11> SPC p"))
-  (define-pel-global-prefix pel:python-highlight (kbd "<f11> SPC p h"))
-  (define-pel-global-prefix pel:python-skel      (kbd "<f11> SPC p <f12>"))
-  (define-key pel:for-python    "."        'pel-find-thing-at-point)
-  (define-key pel:for-python    "z"        'run-python)
-  (define-key pel:for-python (kbd "M-p")  #'superword-mode)
-  ;; activate skeletons
-  (pel--install-generic-skel pel:python-skel 'pel-pkg-for-python "python")
-  ;;
-  (when pel-use-plantuml
-    (define-key pel:for-python    "u"      'pel-render-commented-plantuml))
-  (define-key pel:python-highlight "("  #'show-paren-mode)
-  (when pel-use-rainbow-delimiters
-    (define-key pel:python-highlight ")" 'rainbow-delimiters-mode))
-
-  ;; lpy-mode: lispy-style modal editing for Python.
-  (when pel-use-lpy
-    (pel-autoload-file pel-lispy for: pel-lpy-mode)
-    (define-key pel:for-python (kbd "M-L") 'pel-lpy-mode)
-    (define-key pel:for-python "1"         'lispy-describe-inline)
-    (define-key pel:for-python "2"         'lispy-arglist-inline))
-
   (pel-setup-major-mode python :same-for-ts
     features: (python python-ts-mode)
-    ;; runs immediately at startup, before any file is opened.
-    ;; at-init:
-    ;; (progn
-    ;;   ;; (pel-set-auto-mode 'python-mode "\\.py\\'")
-    ;;   ;; (when pel-use-python-flymake
-    ;;   ;;   (pel-set-auto-mode 'python-mode "\\.pyi\\'"))
-    ;;   )
+
+    at-init:
+    (when pel-use-elpy
+      (pel-ensure-package-elpa elpy from: melpa))
+    ;; TODO control start of elpy
+
+    ;; Normally, (python-shell-prompt-detect) should evaluate to
+    ;; (">>> " "... " "") for Python shell to work properly.
+    ;; Under Windows, that is currently not the
+    ;; case for my system (but also others as described by
+    ;;  https://github.com/jorgenschaefer/elpy/issues/733)
+    ;; I investigated and a work-around is to set python-shell-unbuffered to nil.
+    ;; So I attempt to do this here to see if that works when launching emacs.
+    ;;
+    ;; There is another, remaining problem: the "native" python completion does
+    ;; not work on Windows because of its lack of proper PTY (pseudo terminal).
+    ;; Therefore, in Windows, "python" should be added to the list bound to
+    ;; python-shell-completion-native-disabled-interpreters.
+    ;;
+    ;; The code below does both for Windows.
+    (when pel-system-is-windows-p
+      (defvar python-shell-unbuffered)
+      (defvar python-shell-completion-native-disabled-interpreters)
+      (setq python-shell-unbuffered nil)
+      (if (boundp 'python-shell-completion-native-disabled-interpreters)
+          (add-to-list
+           'python-shell-completion-native-disabled-interpreters "python")
+        (setq python-shell-completion-native-disabled-interpreters '("python"))))
+
+    ;;
+    (define-pel-global-prefix pel:for-python       (kbd "<f11> SPC p"))
+    (define-pel-global-prefix pel:python-highlight (kbd "<f11> SPC p h"))
+    (define-pel-global-prefix pel:python-skel      (kbd "<f11> SPC p <f12>"))
+    (define-key pel:for-python    "."        'pel-find-thing-at-point)
+    (define-key pel:for-python    "z"        'run-python)
+    (define-key pel:for-python (kbd "M-p")  #'superword-mode)
+    ;; activate skeletons
+    (pel--install-generic-skel pel:python-skel 'pel-pkg-for-python "python")
+    ;;
+    (when pel-use-plantuml
+      (define-key pel:for-python    "u"      'pel-render-commented-plantuml))
+    (define-key pel:python-highlight "("  #'show-paren-mode)
+    (when pel-use-rainbow-delimiters
+      (define-key pel:python-highlight ")" 'rainbow-delimiters-mode))
+
+    ;; lpy-mode: lispy-style modal editing for Python.
+    (when pel-use-lpy
+      (pel-autoload-file pel-lispy for: pel-lpy-mode)
+      (define-key pel:for-python (kbd "M-L") 'pel-lpy-mode)
+      (define-key pel:for-python "1"         'lispy-describe-inline)
+      (define-key pel:for-python "2"         'lispy-arglist-inline))
+
 
     when-buffer-opens:
     (when (boundp 'python-indent-offset)
@@ -6022,49 +6013,64 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` :
 (when pel-use-rust
-  ;; 1- Install required packages for Rust
+  (pel-setup-major-mode rust :same-for-ts
+    at-init:
+    ;; 1- Install required packages for Rust
+    ;;      [:todo 2025-10-13, by Pierre Rouleau: better integrate rustic if
+    ;;                         still needed, otherwise remove it from PEL.
+    ;;                         Currently not integrated.]
+    (when pel-use-rust-mode
+      ;; Important rust-mode user-options:
+      ;; - rust-format-on-save
+      (pel-ensure-package-elpa rust-mode from: melpa)
+      (pel-autoload-file rust-mode for: rust-mode))
+    (when pel-use-rustic
+      (pel-ensure-package-elpa rustic from: melpa)
+      (pel-autoload-file rustic for: rustic))
+    (when pel-use-cargo
+      (pel-ensure-package-elpa cargo from: melpa)
+      (pel-autoload-file cargo for: cargo-minor-mode))
+    (when pel-use-emacs-racer
+      (pel-ensure-package-elpa racer from: melpa)
+      (pel-autoload-file racer for: racer-mode))
+    ;; flycheck with rust-mode
+    (when (and pel-use-rust-mode
+               pel-use-flycheck-rust)
+      (pel-ensure-package-elpa flycheck-rust from: melpa)
+      (declare-function flycheck-rust-setup "flycheck-rust")
+      (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
+      (pel-eval-after-load flycheck
+        (pel-soft-require-or-warn flycheck-rust)))
 
-  ;; [:todo 2025-10-13, by Pierre Rouleau: better integrate rustic if still
-  ;; needed, otherwise remove it from PEL.  Currently not integrated.]
-  (when pel-use-rust-mode
-    ;; Important rust-mode user-options:
-    ;; - rust-format-on-save
-    (pel-ensure-package-elpa rust-mode from: melpa)
-    (pel-autoload-file rust-mode for: rust-mode))
-  (when pel-use-rustic
-    (pel-ensure-package-elpa rustic from: melpa)
-    (pel-autoload-file rustic for: rustic))
-  (when pel-use-cargo
-    (pel-ensure-package-elpa cargo from: melpa)
-    (pel-autoload-file cargo for: cargo-minor-mode))
-  (when pel-use-emacs-racer
-    (pel-ensure-package-elpa racer from: melpa)
-    (pel-autoload-file racer for: racer-mode))
-  ;; flycheck with rust-mode
-  (when (and pel-use-rust-mode
-             pel-use-flycheck-rust)
-    (pel-ensure-package-elpa flycheck-rust from: melpa)
-    (declare-function flycheck-rust-setup "flycheck-rust")
-    (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
-    (pel-eval-after-load flycheck
-      (pel-soft-require-or-warn flycheck-rust)))
+    ;; 2- Associate files with Rust major mode selector
+    (add-to-list 'auto-mode-alist '("\\.rs\\'" . pel-rust-mode))
 
-  ;; 2- Associate files with Rust major mode selector
-  (add-to-list 'auto-mode-alist '("\\.rs\\'" . pel-rust-mode))
+    ;; 3- Speedbar support for Rust
+    (when pel-use-speedbar (pel-add-speedbar-extension ".rs"))
 
-  ;; 3- Speedbar support for Rust
-  (when pel-use-speedbar (pel-add-speedbar-extension ".rs"))
+    ;; 4- Rust buffer keymap
+    (define-pel-global-prefix pel:for-rust (kbd "<f11> SPC r"))
+    (define-key pel:for-rust "?" 'pel-rust-setup-info)
+    (define-key pel:for-rust "c" 'rust-run)
+    (define-key pel:for-rust "d" 'rust-dbg-wrap-or-unwrap)
+    (define-key pel:for-rust "l" 'rust-run-clippy)
 
-  ;; 4- Rust buffer keymap
-  (define-pel-global-prefix pel:for-rust (kbd "<f11> SPC r"))
-  (define-key pel:for-rust "?" 'pel-rust-setup-info)
-  (define-key pel:for-rust "c" 'rust-run)
-  (define-key pel:for-rust "d" 'rust-dbg-wrap-or-unwrap)
-  (define-key pel:for-rust "l" 'rust-run-clippy)
+    ;; 5- Schedule major mode configuration
+    ;; [:todo 2025-10-08, by Pierre Rouleau: check if the following is needed]
+    ;; (when pel-use-cargo
+    ;;   (cond
+    ;;    ((boundp 'rust-mode-map)
+    ;;     (define-key rust-mode-map
+    ;;                 (kbd "TAB") 'company-indent-or-complete-common))
+    ;;    ((boundp 'rust-ts-mode-map)
+    ;;     (define-key rust-ts-mode-map
+    ;;                 (kbd "TAB") 'company-indent-or-complete-common))
+    ;;    (t (display-warning 'pel-use-rust
+    ;;                        "Unbound rust-mode-map or rust-ts-mode-map!"
+    ;;                        :error))))
+    )
 
-  ;; 5- Schedule more configuration upon Rust feature loading
-  ;;  - 5.1 Schedule minor mode configuration
-  ;;
+  ;; - 6 Schedule minor mode configuration
   (when pel-use-cargo
     (pel-eval-after-load cargo
       ;; [:todo 2025-10-13, by Pierre Rouleau:
@@ -6075,27 +6081,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
         (add-hook 'rust-mode-hook #'racer-mode)
         (add-hook 'racer-mode-hook #'eldoc-mode))
       (when pel-use-company
-        (add-hook 'racer-mode-hook #'company-mode))))
-  ;;
-  ;;  - 5.2 Schedule major mode configuration
-  ;;    Do it for both rust-mode and tree-sitter aware rust-ts-mode
-  ;;    rust-ts-mode is declared derived from rust-mode.
-  ;;
-  (pel-eval-after-load (rust-mode rust-ts-mode)
-    (pel-config-major-mode rust pel:for-rust :same-for-ts
-      ;; [:todo 2025-10-08, by Pierre Rouleau: check if the following is needed]
-      ;; (when pel-use-cargo
-      ;;   (cond
-      ;;    ((boundp 'rust-mode-map)
-      ;;     (define-key rust-mode-map
-      ;;                 (kbd "TAB") 'company-indent-or-complete-common))
-      ;;    ((boundp 'rust-ts-mode-map)
-      ;;     (define-key rust-ts-mode-map
-      ;;                 (kbd "TAB") 'company-indent-or-complete-common))
-      ;;    (t (display-warning 'pel-use-rust
-      ;;                        "Unbound rust-mode-map or rust-ts-mode-map!"
-      ;;                        :error))))
-      )))
+        (add-hook 'racer-mode-hook #'company-mode)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Modula2 Programming Language Support
@@ -6103,12 +6089,15 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC 2`` :
 ;; Emacs built-in support with PEL extensions
 (when pel-use-modula-2
-  (define-pel-global-prefix pel:for-modula-2  (kbd "<f11> SPC 2"))
-
-  ;; (add-to-list 'auto-mode-alist '("\\.\\(mod\\|MOD\\|m2\\)\\)\\'") . modula-2-mode )
-  ;; The feature is: modula2.  The mode is: m2-mode (with an alias named modula-2-mode)
-  (pel-eval-after-load modula2
-    (pel-config-major-mode m2 pel:for-modula-2 :no-ts)))
+  ;; The mode is: m2-mode (with an alias named modula-2-mode)
+  ;; The feature is: modula2.
+  (pel-setup-major-mode modula-2 :no-ts
+    features: modula2
+    at-init:
+    (define-pel-global-prefix pel:for-modula-2  (kbd "<f11> SPC 2"))
+    ;; add the extension to the end: .mod clashes with Go
+    (add-to-list
+     'auto-mode-alist '("\\.\\(mod\\|MOD\\|m2\\)\\)\\'" . modula-2-mode) t)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Pascal Programming Language Support
@@ -6116,11 +6105,11 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-p`` :
 ;; Emacs built-in support with PEL extensions
 (when pel-use-pascal
-  (define-pel-global-prefix pel:for-pascal  (kbd "<f11> SPC M-p"))
-
   ;; The feature is: pascal.  The mode is: pascal-mode.
-  (pel-eval-after-load pascal
-    (pel-config-major-mode pascal pel:for-pascal :no-ts)))
+  (pel-setup-major-mode pascal :no-ts
+    features: pascal
+    at-init:
+    (define-pel-global-prefix pel:for-pascal  (kbd "<f11> SPC M-p"))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Eiffel Programming Language Support
@@ -6170,95 +6159,93 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC 7`` :
 (when pel-use-seed7
-  (define-pel-global-prefix pel:for-seed7  (kbd "<f11> SPC 7"))
+  (pel-setup-major-mode seed7 :no-ts
+    at-init:
+    (pel-install-github-files "pierre-rouleau/seed7-mode/master"
+                              '("seed7-mode.el"
+                                "tools/s7xref.sd7"))
 
-  (pel-install-github-files "pierre-rouleau/seed7-mode/master"
-                            '("seed7-mode.el"
-                              "tools/s7xref.sd7"))
-  (pel-autoload-file seed7-mode for: seed7-mode)
+    (pel-autoload-file seed7-mode for: seed7-mode)
 
-  (define-key pel:for-seed7 "c" 'seed7-compile)
-  (define-key pel:for-seed7 (kbd "<up>")   'seed7-to-block-backward)
-  (define-key pel:for-seed7 (kbd "<down>") 'seed7-to-block-forward)
+    (add-to-list 'auto-mode-alist '("\\.s\\(d7\\|7i\\)\\'" . seed7-mode))
 
-  (pel-eval-after-load seed7-mode
-    (pel-config-major-mode seed7 pel:for-seed7 :no-ts
-      (setq-local pel-indentation-width-control-variables 'seed7-indent-width)
-      (setq-local pel-tab-width-control-variables         'seed7-indent-width)
-      (when (boundp 'seed7-mode-map)
-        (let ((map seed7-mode-map))
-          (define-key map (kbd "<f6> <up>")    'seed7-beg-of-defun)
-          (define-key map (kbd "<f6> <down>")  'seed7-end-of-defun)
-          (define-key map (kbd "<f6> <right>") 'seed7-beg-of-next-defun)))))
+    (define-pel-global-prefix pel:for-seed7  (kbd "<f11> SPC 7"))
+    (define-key pel:for-seed7 "c" 'seed7-compile)
+    (define-key pel:for-seed7 (kbd "<up>")   'seed7-to-block-backward)
+    (define-key pel:for-seed7 (kbd "<down>") 'seed7-to-block-forward)
 
-  (add-to-list 'auto-mode-alist '("\\.s\\(d7\\|7i\\)\\'" . seed7-mode)))
+    when-buffer-opens:
+    (setq-local pel-indentation-width-control-variables 'seed7-indent-width)
+    (setq-local pel-tab-width-control-variables         'seed7-indent-width)
+    (when (boundp 'seed7-mode-map)
+      (let ((map seed7-mode-map))
+        (define-key map (kbd "<f6> <up>")    'seed7-beg-of-defun)
+        (define-key map (kbd "<f6> <down>")  'seed7-end-of-defun)
+        (define-key map (kbd "<f6> <right>") 'seed7-beg-of-next-defun)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Smalltalk  Programming Language Support
 ;;   ---------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC :`` :
 ;; Experimental 🚧
-
 (when pel-use-smalltalk
-  (define-pel-global-prefix pel:for-smalltalk  (kbd "<f11> SPC s"))
-
-  (pel-ensure-package-elpa smalltalk-mode from: gnu)
-
-  (pel-eval-after-load smalltalk-mode
-    (pel-config-major-mode smalltalk pel:for-smalltalk :no-ts)))
+  (pel-setup-major-mode smalltalk :no-ts
+    at-init:
+    (pel-ensure-package-elpa smalltalk-mode from: gnu)
+    (define-pel-global-prefix pel:for-smalltalk  (kbd "<f11> SPC s"))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Swift  Programming Language Support
 ;;   -----------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC s`` :
 ;; Experimental 🚧
-
 (when pel-use-swift
-  (define-pel-global-prefix pel:for-swift  (kbd "<f11> SPC s"))
+  (pel-setup-major-mode swift :no-ts
+    at-init:
+    (pel-ensure-package-elpa swift-mode from: melpa)
+    (when pel-use-tree-sitter
+      (pel-ensure-package-elpa swift-ts-mode from: melpa))
 
-  (pel-ensure-package-elpa swift-mode from: melpa)
-  (when pel-use-tree-sitter
-    (pel-ensure-package-elpa swift-ts-mode from: melpa))
-
-  (pel-eval-after-load swift-mode
-    (pel-config-major-mode swift pel:for-swift :no-ts)))
+    (define-pel-global-prefix pel:for-swift  (kbd "<f11> SPC s"))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Tcl  Programming Language Support
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC t`` :
 (when pel-use-tcl
-  ;; 1- Install required packages for Tcl
-  ;;   tcl-mode is built in Emacs
+  (pel-setup-major-mode tcl :no-ts
+    features: tcl
+    at-init:
+    ;; 1- Install required packages for Tcl
+    ;;   Not needed: tcl-mode is built in Emacs
 
-  ;; 2- Associate files with Tcl mode selector
-  ;;   Not needed : there 's no tcl-ts-mode yet.
+    ;; 2- Associate files with Tcl mode selector
+    ;;   Not needed : there 's no tcl-ts-mode yet.
 
-  ;; 3- Speedbar support for Tcl
-  ;;    Already identified in speedbar.el
+    ;; 3- Speedbar support for Tcl
+    ;;    Already identified in speedbar.el
 
-  ;; 4- Buffer keymap for Tcl
-  (define-pel-global-prefix pel:for-tcl (kbd "<f11> SPC t"))
-  (define-pel-global-prefix pel:tcl-skel (kbd "<f11> SPC t <f12>"))
-  (define-key pel:for-tcl "?" 'pel-tcl-setup-info)
+    ;; 4- Buffer keymap for Tcl
+    (define-pel-global-prefix pel:for-tcl (kbd "<f11> SPC t"))
+    (define-pel-global-prefix pel:tcl-skel (kbd "<f11> SPC t <f12>"))
+    (define-key pel:for-tcl "?" 'pel-tcl-setup-info)
 
-  ;; 5- Install optional packages for Tcl
+    ;; 5- Install optional packages for Tcl
 
-  ;; 6- Activate Tcl Setup
-  ;;    Schedule more configuration upon Tcl feature loading
-  ;;
-  (defvar pel-tcl-man-section)     ; prevent byte-compiler warning in Emacs 26
-  (pel-eval-after-load tcl
-    (pel-config-major-mode tcl pel:for-tcl :no-ts
-      ;; activate skeletons
-      (pel--install-generic-skel pel:tcl-skel 'pel-pkg-for-tcl "tcl")
-      ;; Use the n section for tcl man pages
-      (setq-local pel-tcl-man-section "n")
-      ;; ensure consistency of indent control
-      (when (boundp 'tcl-indent-level)
-        (setq-local tcl-indent-level pel-tcl-indent-width))
-      (when (boundp 'tcl-continued-indent-level)
-        (setq-local tcl-continued-indent-level pel-tcl-indent-width)))))
+    ;; 6- Activate Tcl Setup
+    ;;    Schedule more configuration upon Tcl feature loading
+    ;;
+    (defvar pel-tcl-man-section)   ; prevent byte-compiler warning in Emacs 26
+    when-buffer-opens:
+    ;; activate skeletons
+    (pel--install-generic-skel pel:tcl-skel 'pel-pkg-for-tcl "tcl")
+    ;; Use the n section for tcl man pages
+    (setq-local pel-tcl-man-section "n")
+    ;; ensure consistency of indent control
+    (when (boundp 'tcl-indent-level)
+      (setq-local tcl-indent-level pel-tcl-indent-width))
+    (when (boundp 'tcl-continued-indent-level)
+      (setq-local tcl-continued-indent-level pel-tcl-indent-width))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Lua Programming Language Support

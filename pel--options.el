@@ -11809,14 +11809,14 @@ Values in the [2, 8] range are accepted."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-m2-activates-minor-modes nil
+(defcustom pel-modula-2-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Modula2 buffers.
 Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-modula-2
   :type '(repeat function))
 
-(defcustom pel-m2-use-tabs nil
+(defcustom pel-modula-2-use-tabs nil
   "Value of `indent-tabs-mode' for editing modula2 files.
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
@@ -11824,7 +11824,7 @@ Do not enter lambda expressions."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-m2-tab-width 4
+(defcustom pel-modula-2-tab-width 4
   "Number of columns rendered in a buffer for a tab in Modula2 buffers."
   :group 'pel-pkg-for-modula-2
   :type 'integer

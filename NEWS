@@ -146,6 +146,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Fix: the first file opened in modes that support Tree-Sitter now open using the mode selected by the mode user-option; past version
     of the code honoured the user-option only on the second buffer opened form the major mode.
   - Fix: setup of major mode for Odin programming language files.
+  - Breaking change: For Modula-2 support, renamed the following user-options:
+    - pel-m2-activates-minor-modes to pel-modula-2-activates-minor-modes
+    - pel-m2-use-tabs to pel-modula-2-use-tabs
+    - pel-m2-tab-width to pel-modula-2-tab-width
 - Started writing extensive unit test code.  The goal is to cover all PEL Emacs Lisp code.  There is still much test code to write.
   PEL Emacs Lisp code byte and native compiled for most Emacs versions since Emacs 26.1 in Github CI system.
   No warnings detected by either compiler is allowed.
