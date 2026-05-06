@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-06 07:15:13 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-06 08:57:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1297,31 +1297,19 @@ classic and TS modes without duplicating the remap-alist update."
     (error "pel-setup-major-mode: ts-option must be :no-ts, :ts-only, \
 :same-for-ts or :independent-ts; got: %S" ts-option))
  ;; Parse marker-delimited sections from ARGS at macro-expansion time.
-  (let ((features-override nil)
-        (init-body         nil)
-        (after-load-body   nil)
-        (config-body       nil)
-        (remaining         args))
-    (while remaining
-      (let ((marker (car remaining)))
-        (cond
-         ((eq marker 'features:)
-          (setq features-override (cadr remaining)
-                remaining         (cddr remaining)))
-         ((eq marker 'at-init:)
-          (setq init-body  (cadr remaining)
-                remaining  (cddr remaining)))
-         ((eq marker 'after-feature-load:)
-          (setq after-load-body (cadr remaining)
-                remaining       (cddr remaining)))
-         ((eq marker 'when-buffer-opens:)
-          (setq config-body (cdr remaining)
-                remaining   nil))
-         (t
-          (error "pel-setup-major-mode: unknown marker: %S" marker)))))
+  (let ((sections   (pel-items-by-markers '(features:
+                                            at-init:
+                                            after-feature-load:
+                                            when-buffer-opens:)
+                                          args)))
     (let*
-        ;; Derive all names and feature lists at macro-expansion time.
-        ((gn-use-var       (intern (format "pel-use-%s"  target-mode)))
+        ((features-override (cdr (assoc 'features: sections)))
+         (init-body         (cadr (assoc 'at-init:  sections)))
+         (after-load-body   (cadr (assoc 'after-feature-load: sections)))
+         (config-body       (cdr (assoc 'when-buffer-opens: sections)))
+
+         ;; Derive all names and feature lists at macro-expansion time.
+         (gn-use-var       (intern (format "pel-use-%s"  target-mode)))
          (gn-mode-name     (intern (format "%s-mode"     target-mode)))
          (gn-ts-mode       (intern (format "%s-ts-mode"  target-mode)))
          ;; Key-prefix is always pel:for-<target-mode>.
@@ -1337,31 +1325,54 @@ classic and TS modes without duplicating the remap-alist update."
          (gn-ts-option     (if (eq ts-option :same-for-ts)
                                :same-for-ts-early-remap
                              ts-option)))
-      `(progn
-         ;; ---------------------------------------------------------------
-         ;; Step 1: Run INIT-BODY immediately at startup.
-         ;; Omitted entirely when init-body is nil or (progn).
-         ,@(unless (pel--empty-form-p init-body)
-             (list init-body))
 
-         ;; ---------------------------------------------------------------
-         ;; Step 2: Eagerly register the major-mode-remap-alist entry.
-         ;; Generated only when ts-option is :same-for-ts.
-         ,@(when (eq ts-option :same-for-ts)
-             `((when
-                   (and (eq ,gn-use-var 'with-tree-sitter)
-                        (boundp 'major-mode-remap-alist)
-                        (pel-treesit-remap-available-for (quote ,target-mode)))
-                 (add-to-list (quote major-mode-remap-alist)
-                              (quote (,gn-mode-name . ,gn-ts-mode))))))
+      ;; macro debugging trace
+      ;; (message "init-body:       %S" init-body)
+      ;; (message "after-load-body: %S" after-load-body)
+      ;; (message "config-body:     %S" config-body)
 
-         ;; ---------------------------------------------------------------
-         ;; Step 3: Deferred setup via pel-eval-after-load.
-         (pel-eval-after-load ,gn-features
-           ,@(unless (pel--empty-form-p after-load-body)
-               (list after-load-body))
-           (pel-config-major-mode ,target-mode ,gn-key-prefix ,gn-ts-option
-             ,@config-body))))))
+      ;; Inline body-extraction: flatten a (progn ...) body by splicing
+      ;; its inner forms directly; suppress nil and empty (progn) entirely.
+      ;; This avoids both nested `progn' wrappers and empty `progn' forms.
+      ;; The cl-flet is evaluated at macro-expansion time.
+      (cl-flet ((extract-forms (body)
+                  ;; Return a LIST of forms to splice from BODY.
+                  (cond
+                   ;; nil or empty (progn): no code at all
+                   ((or (null body) (equal body '(progn))) nil)
+                   ;; (progn FORM...): splice inner forms directly
+                   ((and (consp body) (eq (car body) 'progn)) (cdr body))
+                   ;; any other single form: wrap in list for splicing
+                   (t (list body)))))
+        ;; -------------------------------------------------------------------
+        ;; Build the three groups of top-level generated forms.
+        ;; -------------------------------------------------------------------
+        ;; Step 1 forms: from at-init: BODY (flattened if progn)
+        (let* ((step1-forms (extract-forms init-body))
+               ;; Step 2 form: eager remap-alist registration (:same-for-ts only)
+               (step2-forms (when (eq ts-option :same-for-ts)
+                              `((when (and (eq ,gn-use-var 'with-tree-sitter)
+                                           (boundp 'major-mode-remap-alist)
+                                           (pel-treesit-remap-available-for
+                                            (quote ,target-mode)))
+                                  (add-to-list (quote major-mode-remap-alist)
+                                               (quote (,gn-mode-name . ,gn-ts-mode)))))))
+               ;; Step 3 form: deferred setup — always present
+               (step3-form  `(pel-eval-after-load ,gn-features
+                               ;; after-feature-load: content (flattened if progn)
+                               ,@(extract-forms after-load-body)
+                               ;; pel-config-major-mode: always emitted
+                               (pel-config-major-mode ,target-mode
+                                   ,gn-key-prefix
+                                   ,gn-ts-option
+                                 ,@config-body)))
+               ;; All top-level forms combined
+               (all-forms   (append step1-forms step2-forms (list step3-form))))
+          ;; Wrap in progn only when 2+ forms; emit directly when exactly 1.
+          (pcase (length all-forms)
+            (1 (car all-forms))
+            (_ `(progn ,@all-forms)))))
+      )))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--install)
