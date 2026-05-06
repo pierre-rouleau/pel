@@ -11809,6 +11809,14 @@ Values in the [2, 8] range are accepted."
   :type 'boolean
   :safe #'booleanp)
 
+;; Backward-compatibility aliases for renamed Modula-2 options.
+(define-obsolete-variable-alias 'pel-m2-activates-minor-modes
+  'pel-modula-2-activates-minor-modes "0.5.0")
+(define-obsolete-variable-alias 'pel-m2-use-tabs
+  'pel-modula-2-use-tabs "0.5.0")
+(define-obsolete-variable-alias 'pel-m2-tab-width
+  'pel-modula-2-tab-width "0.5.0")
+
 (defcustom pel-modula-2-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Modula2 buffers.
 Enter *local* minor-mode activating function symbols.

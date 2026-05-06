@@ -5636,13 +5636,14 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-autoload-file odin-mode for: odin-mode)
     (when pel-use-flycheck-odin
       (pel-install-github-file "pierre-rouleau/flycheck-odin/master"
-                               "flycheck-odin.el"))
+                               "flycheck-odin.el")
+      (pel-autoload-file flycheck-odin for: flycheck-odin-setup))
 
     (define-pel-global-prefix pel:for-odin (kbd "<f11> SPC O"))
     (add-to-list 'auto-mode-alist '("\\.odin\\'" . odin-mode))
 
     after-feature-load:
-    (when (fboundp 'flycheck-odin-setup)
+    (when pel-use-flycheck-odin
       (eval-after-load 'flycheck
         '(add-hook 'flycheck-mode-hook #'flycheck-odin-setup)))))
 
@@ -6097,7 +6098,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-pel-global-prefix pel:for-modula-2  (kbd "<f11> SPC 2"))
     ;; add the extension to the end: .mod clashes with Go
     (add-to-list
-     'auto-mode-alist '("\\.\\(mod\\|MOD\\|m2\\)\\)\\'" . modula-2-mode) t)))
+     'auto-mode-alist '("\\.\\(mod\\|MOD\\|m2\\)\\'" . modula-2-mode) t)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Pascal Programming Language Support
@@ -6192,7 +6193,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-setup-major-mode smalltalk :no-ts
     at-init:
     (pel-ensure-package-elpa smalltalk-mode from: gnu)
-    (define-pel-global-prefix pel:for-smalltalk  (kbd "<f11> SPC s"))))
+    (define-pel-global-prefix pel:for-smalltalk  (kbd "<f11> SPC :"))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Swift  Programming Language Support
