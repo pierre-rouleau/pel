@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-06 12:02:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-06 14:03:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1238,58 +1238,54 @@ Arguments:
 TARGET-MODE     The bare mode symbol, e.g. \\='python (same meaning as in
                 `pel-config-major-mode').
 
-TS-OPTION       Tree-sitter option, one of
-
-- :no-ts          : no special tree-sitter support
-
-- :ts-only        : support for tree-sitter specific mode only is requested,
-                    but no support for the classic mode
-
-- :same-for-ts    : when the tree-sitter-based mode derives from the normal
-                    mode and PEL must support both.
-
-- :independent-ts : when the ts-sitter mode exists but does not derive from
-                    the normal mode and PEL must support both.
+TS-OPTION       Tree-sitter option, one of:
+ - `:no-ts'          : no special tree-sitter support
+ - `:ts-only'        : support for tree-sitter specific mode only is requested,
+                       but no support for the classic mode
+ - `:same-for-ts'    : when the tree-sitter-based mode derives from the normal
+                       mode and PEL must support both.
+ - `:independent-ts' : when the ts-sitter mode exists but does not derive from
+                       the normal mode and PEL must support both.
 
 ARGS            A sequence of marker-introduced sections:
 
-  features: FEATURES-FORM
-                  Optional.  When absent, FEATURES is inferred from
-                  TARGET-MODE and TS-OPTION:
-                    :no-ts         -> <target-mode>-mode (single feature)
-                    :ts-only       -> <target-mode>-ts-mode (single feature)
-                    :same-for-ts   -> (<target-mode>-mode <target-mode>-ts-mode)
-                    :independent-ts -> same as :same-for-ts
-                  Provide this marker only when the naming convention does
-                  not apply (e.g. java uses \\='cc-mode, python uses \\='python).
+  - `features:' FEATURES-FORM for classic and ts mode features.
+                Optional.  When absent, FEATURES is inferred from
+                TARGET-MODE and TS-OPTION:
+                - `:no-ts'         -> <target-mode>-mode (single feature)
+                - `:ts-only'       -> <target-mode>-ts-mode (single feature)
+                - `:same-for-ts'   -> (<target-mode>-mode <target-mode>-ts-mode)
+                - `:independent-ts' -> same as :same-for-ts
+                Provide this marker only when the naming convention does
+                not apply (e.g. java uses \\='cc-mode, python uses \\='python).
 
-  at-init:        Optional.  Followed by zero or more forms executed at
-                  initialization time, before Emacs opens any files.
+  - `at-init:'  Optional.  Followed by zero or more forms executed at
+                initialization time, before Emacs opens any files.
 
-  after-feature-load:
-                  Optional.  Followed by zero or more forms executed inside
-                  the `pel-eval-after-load' block, *before*
-                  `pel-config-major-mode': after the feature file has been
-                  loaded but before the TARGET-MODE hook runs.
+  - `after-feature-load:'
+                Optional.  Followed by zero or more forms executed inside
+                the `pel-eval-after-load' block, *before*
+                `pel-config-major-mode': after the feature file has been
+                loaded but before the TARGET-MODE hook runs.
 
-  when-buffer-opens:
-                  Optional.  Zero or more forms passed as the body of
-                  `pel-config-major-mode'; they run inside the mode hook
-                  via `hack-local-variables-hook'.
+  - `when-buffer-opens:'
+                Optional.  Zero or more forms passed as the body of
+                `pel-config-major-mode'; they run inside the mode hook
+                via `hack-local-variables-hook'.
 
-Inferred values (never need to be supplied by the caller):
+The following values are inferred:
 
-KEY-PREFIX      Always inferred as the symbol `pel:for-<target-mode>'.
+  KEY-PREFIX    Always inferred as the symbol `pel:for-<target-mode>'.
 
 Tree-sitter handling:
 
-When TS-OPTION is `:same-for-ts', the `major-mode-remap-alist' entry that
-redirects the classic mode to the tree-sitter variant is established
-*eagerly* at step 1 (init time), before any file is ever opened.  This
-guarantees the very first buffer is already redirected to Tree-Sitter if
-that is required by the user.  `pel-config-major-mode' is invoked with
-`:same-for-ts-early-remap' internally, which registers hooks for both the
-classic and TS modes without duplicating the remap-alist update."
+  When TS-OPTION is `:same-for-ts', the `major-mode-remap-alist' entry that
+  redirects the classic mode to the tree-sitter variant is established
+  *eagerly* at step 1 (init time), before any file is ever opened.  This
+  guarantees the very first buffer is already redirected to Tree-Sitter if
+  that is required by the user.  `pel-config-major-mode' is invoked with
+  `:same-for-ts-early-remap' internally, which registers hooks for both the
+  classic and TS modes without duplicating the remap-alist update."
   (declare (indent 2))
   (unless (memq ts-option '(:no-ts :ts-only :same-for-ts :independent-ts))
     (error "pel-setup-major-mode: ts-option must be :no-ts, :ts-only, \

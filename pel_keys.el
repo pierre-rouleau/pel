@@ -3041,37 +3041,6 @@ MODE must be a symbol."
   (pel-eval-after-load a68-mode
     (pel-config-major-mode a68 pel:for-algol :no-ts)))
 
-;; ---------------------------------------------------------------------------
-;;** Rebol programming language
-;;   --------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC 9`` : Rebol
-(when pel-use-rebol
-  ;; 1- Install required packages for Rebol
-  (pel-install-file
-   "https://www.rebol.com/tools/rebol.el"
-   "rebol.el")
-  (pel-autoload-file rebol for: rebol-mode)
-
-  ;; 2- Associate files with Rebol mode
-  (add-to-list 'auto-mode-alist '("\\.reb\\'" . rebol-mode))
-  ;; the .r extension clashes with the R language .r, place it at the end.
-  (add-to-list 'auto-mode-alist '("\\.r\\'" . rebol-mode) 'append)
-
-  ;; 3- Speedbar support for Rebol
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".r" ".reb")))
-
-  ;; 4- Define Buffer keymap for Rebol
-  (define-pel-global-prefix pel:for-rebol (kbd "<f11> SPC 9"))
-  (define-key pel:for-rebol "?" 'pel-mode-setup-info)
-
-  ;; 5- Install optional packages for Rebol
-  ;;
-  ;; 6- Activate Rebol setup.
-  ;;    Schedule more configuration upon Rebol feature loading
-  (pel-eval-after-load rebol
-    (pel-config-major-mode rebol pel:for-rebol :no-ts)))
-
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** Awk Programming Language Support
 ;;   -------------------------------
@@ -4511,114 +4480,111 @@ d-mode not added to ac-modes!"
 ;;   --------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-a`` :
 (when pel-use-arc
-  (pel-autoload-file arc for: arc-mode)
-  (pel-autoload-file inferior-arc for: run-arc)
-  (pel-install-github-files "arclanguage/anarki/master/extras"
-                            '("arc.el"
-                              "inferior-arc.el"))
-  ;; associate .arc file with arc-mode
-  (add-to-list 'auto-mode-alist '("\\.arc\\'" . arc-mode))
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension ".arc"))
+  (pel-setup-major-mode arc :no-ts
+    at-init:
+    (pel-autoload-file arc for: arc-mode)
+    (pel-autoload-file inferior-arc for: run-arc)
+    (pel-install-github-files "arclanguage/anarki/master/extras"
+                              '("arc.el"
+                                "inferior-arc.el"))
+    ;; associate .arc file with arc-mode
+    (add-to-list 'auto-mode-alist '("\\.arc\\'" . arc-mode))
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".arc"))
 
-  (define-pel-global-prefix pel:for-arc (kbd "<f11> SPC C-a"))
-  (pel--lisp-languages-map-for pel:for-arc)
-
-  (pel-eval-after-load arc
-    ;; activate the <f12> key binding for arc-mode
-    (pel-config-major-mode arc pel:for-arc :no-ts)))
+    (define-pel-global-prefix pel:for-arc (kbd "<f11> SPC C-a"))
+    (pel--lisp-languages-map-for pel:for-arc)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Janet Programming Language Support
 ;;   ----------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC T`` :
 (when pel-use-janet
+  (pel-setup-major-mode janet :no-ts
+    at-init:
+    ;; Installation
+    (when pel-use-janet-mode
+      ;; (pel-ensure-package-elpa janet-mode from: melpa)
+      ;; Use my version of janet-mode: it's ahead of the MELPA available one.
+      (pel-install-github-file "pierre-rouleau/janet-mode/master/"
+                               "janet-mode.el")
+      (pel-autoload-file janet-mode for:
+                         janet-mode)
+      (add-to-list 'auto-mode-alist '("\\.janet\\'" . janet-mode))
+      (add-to-list 'interpreter-mode-alist '("janet" . janet-mode)))
 
-  ;; Installation
-  (when pel-use-janet-mode
-    ;; (pel-ensure-package-elpa janet-mode from: melpa)
-    ;; Use my version of janet-mode: it's ahead of the MELPA available one.
-    (pel-install-github-file "pierre-rouleau/janet-mode/master/"
-                             "janet-mode.el")
-    (pel-autoload-file janet-mode for:
-                       janet-mode)
-    (add-to-list 'auto-mode-alist '("\\.janet\\'" . janet-mode))
-    (add-to-list 'interpreter-mode-alist '("janet" . janet-mode)))
+    (when pel-use-ijanet
+      (pel-install-github-file "SerialDev/ijanet-mode/master/"
+                               "ijanet.el")
+      (pel-autoload-file ijanet for:
+                         ijanet))
+    (when pel-use-inf-janet
+      (pel-install-github-file "velkyel/inf-janet/master"
+                               "inf-janet.el")
+      (pel-autoload-file inf-janet for:
+                         inf-janet-mode
+                         inf-janet))
+    ;; Speedbar support
+    ;; TODO: add imenu support to allow detection of forms
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".janet"))
 
-  (when pel-use-ijanet
-    (pel-install-github-file "SerialDev/ijanet-mode/master/"
-                             "ijanet.el")
-    (pel-autoload-file ijanet for:
-                       ijanet))
-  (when pel-use-inf-janet
-    (pel-install-github-file "velkyel/inf-janet/master"
-                             "inf-janet.el")
-    (pel-autoload-file inf-janet for:
-                       inf-janet-mode
-                       inf-janet))
-  ;; Speedbar support
-  ;; TODO: add imenu support to allow detection of forms
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension ".janet"))
-
-  ;; Key Bindings
-  (define-pel-global-prefix pel:for-janet (kbd "<f11> SPC T"))
-  (pel--lisp-languages-map-for pel:for-janet)
-  (pel-eval-after-load janet-mode
-    (pel-config-major-mode janet pel:for-janet :no-ts)))
+    ;; Key Bindings
+    (define-pel-global-prefix pel:for-janet (kbd "<f11> SPC T"))
+    (pel--lisp-languages-map-for pel:for-janet)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Clojure Programming Language Support
 ;;   ------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-j`` :
 (when pel-use-clojure
-  ;; Installation
-  (pel-ensure-package-elpa clojure-mode from: melpa)
-  (pel-autoload-file clojure-mode for: clojure-mode)
+  (pel-setup-major-mode clojure :no-ts
+    at-init:
+    ;; Installation
+    (pel-ensure-package-elpa clojure-mode from: melpa)
+    (pel-autoload-file clojure-mode for: clojure-mode)
 
-  (define-pel-global-prefix pel:for-clojure (kbd "<f11> SPC C-j"))
-  (pel--lisp-languages-map-for pel:for-clojure)
+    (define-pel-global-prefix pel:for-clojure (kbd "<f11> SPC C-j"))
+    (pel--lisp-languages-map-for pel:for-clojure)
 
-  (when pel-use-cider
-    (pel-ensure-package-elpa cider from: melpa)
-    (pel-autoload-file cider for:
-                       cider-jack-in
-                       cider-connect
-                       cider-connect-cljs)
-    (define-key pel:for-clojure "j" 'cider-jack-in)
-    (define-key pel:for-clojure "c" 'cider-connect)
-    (define-key pel:for-clojure "C" 'cider-connect-cljs))
+    (when pel-use-cider
+      (pel-ensure-package-elpa cider from: melpa)
+      (pel-autoload-file cider for:
+                         cider-jack-in
+                         cider-connect
+                         cider-connect-cljs)
+      (define-key pel:for-clojure "j" 'cider-jack-in)
+      (define-key pel:for-clojure "c" 'cider-connect)
+      (define-key pel:for-clojure "C" 'cider-connect-cljs))
 
-  ;; Activate Yasnippets for Clojure if requested.
-  ;; Load the package when Yasnippet starts.
-  (when (and  pel-use-clojure-snippets
-              pel-use-yasnippet)
-    (pel-ensure-package-elpa clojure-snippets from: melpa)
-    (pel-autoload-file clojure-snippets for:
-                       yas-global-mode
-                       yas-minor-mode))
+    ;; Activate Yasnippets for Clojure if requested.
+    ;; Load the package when Yasnippet starts.
+    (when (and  pel-use-clojure-snippets
+                pel-use-yasnippet)
+      (pel-ensure-package-elpa clojure-snippets from: melpa)
+      (pel-autoload-file clojure-snippets for:
+                         yas-global-mode
+                         yas-minor-mode))
 
-  (when pel-use-clj-refactor
-    (pel-ensure-package-elpa clj-refactor from: melpa))
+    (when pel-use-clj-refactor
+      (pel-ensure-package-elpa clj-refactor from: melpa))
 
-  (pel-eval-after-load clojure-mode
-    ;; activate the <f12> key binding for clojure-mode
-    (pel-config-major-mode clojure pel:for-clojure :no-ts
-      (when pel-use-clj-refactor
-        ;; Activate clj-refactor and optionally Yasnippet
-        (if (and (fboundp 'clj-refactor-mode)
-                 (fboundp 'cljr-add-keybindings-with-prefix))
-            (progn
-              (clj-refactor-mode 1)
-              (when (and pel-use-yasnippet
-                         (fboundp 'yas-minor-mode))
-                ;; for adding require/use/import statements
-                (yas-minor-mode 1))
-              ;; This choice of keybinding leaves cider-macroexpand-1 unbound
-              (cljr-add-keybindings-with-prefix "C-c C-m"))
-          (display-warning 'pel-clojure
-                           "clj-refactor not properly loaded"
-                           :error))))))
+    when-buffer-opens:
+    (when pel-use-clj-refactor
+      ;; Activate clj-refactor and optionally Yasnippet
+      (if (and (fboundp 'clj-refactor-mode)
+               (fboundp 'cljr-add-keybindings-with-prefix))
+          (progn
+            (clj-refactor-mode 1)
+            (when (and pel-use-yasnippet
+                       (fboundp 'yas-minor-mode))
+              ;; for adding require/use/import statements
+              (yas-minor-mode 1))
+            ;; This choice of keybinding leaves cider-macroexpand-1 unbound
+            (cljr-add-keybindings-with-prefix "C-c C-m"))
+        (display-warning 'pel-clojure
+                         "clj-refactor not properly loaded"
+                         :error)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Scheme Family Programming Language Support
@@ -5791,59 +5757,79 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; inside /usr/local/bin/virtualenv
 
 ;; ---------------------------------------------------------------------------
+;;** Rebol programming language
+;;   --------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC 9`` : Rebol
+(when pel-use-rebol
+  (pel-setup-major-mode rebol :no-ts
+    at-init:
+    ;; 1- Install required packages for Rebol
+    (pel-install-file "https://www.rebol.com/tools/rebol.el" "rebol.el")
+    (pel-autoload-file rebol for: rebol-mode)
+
+    ;; 2- Associate files with Rebol mode
+    (add-to-list 'auto-mode-alist '("\\.reb\\'" . rebol-mode))
+    ;; the .r extension clashes with the R language .r, place it at the end.
+    (add-to-list 'auto-mode-alist '("\\.r\\'" . rebol-mode) 'append)
+
+    ;; 3- Speedbar support for Rebol
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".r" ".reb")))
+
+    ;; 4- Define Buffer keymap for Rebol
+    (define-pel-global-prefix pel:for-rebol (kbd "<f11> SPC 9"))
+    (define-key pel:for-rebol "?" 'pel-mode-setup-info)))
+
+;; ---------------------------------------------------------------------------
 ;;** REXX Programming Language Support
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC R`` :
 (when pel-use-rexx
-  ;; Download and byte-compile rexx-mode if not already present.
-  ;; See home page: https://github.com/emacsattic/rexx-mode
-  ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
-  (pel-install-github-files "pierre-rouleau/rexx-mode/master"
-                            '("rexx-mode.el"
-                              "rexx-debug.el"))
-  (pel-autoload-file rexx-mode for:
-                     rexx-mode
-                     rexx-goto-next-procedure
-                     rexx-goto-previous-procedure)
-  ;; set the file extensions
-  (pel-set-auto-mode rexx-mode for:
-                     "\\.\\(rexx?\\|elx\\|ncomm\\|cpr\\)\\'")
+  (pel-setup-major-mode rexx :no-ts
+    at-init:
+    ;; Download and byte-compile rexx-mode if not already present.
+    ;; See home page: https://github.com/emacsattic/rexx-mode
+    ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
+    (pel-install-github-files "pierre-rouleau/rexx-mode/master"
+                              '("rexx-mode.el"
+                                "rexx-debug.el"))
+    (pel-autoload-file rexx-mode for:
+                       rexx-mode
+                       rexx-goto-next-procedure
+                       rexx-goto-previous-procedure)
+    ;; set the file extensions
+    (pel-set-auto-mode rexx-mode for:
+                       "\\.\\(rexx?\\|elx\\|ncomm\\|cpr\\)\\'")
 
-  ;; Set the mode specific key prefix
-  (define-pel-global-prefix pel:for-rexx (kbd "<f11> SPC R"))
-  (define-key pel:for-rexx (kbd "<down>") 'rexx-goto-next-procedure)
-  (define-key pel:for-rexx (kbd "<up>")   'rexx-goto-previous-procedure)
-
-  (pel-eval-after-load rexx-mode
-    ;; activate the <f12> key binding for rexx-mode
-    (pel-config-major-mode rexx pel:for-rexx :no-ts)))
+    ;; Set the mode specific key prefix
+    (define-pel-global-prefix pel:for-rexx (kbd "<f11> SPC R"))
+    (define-key pel:for-rexx (kbd "<down>") 'rexx-goto-next-procedure)
+    (define-key pel:for-rexx (kbd "<up>")   'rexx-goto-previous-procedure)))
 
 ;; ---------------------------------------------------------------------------
 ;;** NetRexx Programming Language Support
 ;;   ------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC N`` :
 (when pel-use-netrexx
-  ;; Download netrexx.el directly from GitHub as there is no official support
-  ;; by either GNU Elpa or MELPA
-  (pel-install-github-file "pierre-rouleau/netrexx-mode/master"
-                           "netrexx-mode.el")
-  (pel-autoload-file netrexx-mode for: netrexx-mode)
-  ;; Set the file extension for NetRexx: ".nrx"
-  (pel-set-auto-mode netrexx-mode for: "\\.nrx\\'")
+  (pel-setup-major-mode netrexx :no-ts
+    at-init:
+    ;; Download netrexx.el directly from GitHub as there is no official support
+    ;; by either GNU Elpa or MELPA
+    (pel-install-github-file "pierre-rouleau/netrexx-mode/master"
+                             "netrexx-mode.el")
+    (pel-autoload-file netrexx-mode for: netrexx-mode)
+    ;; Set the file extension for NetRexx: ".nrx"
+    (pel-set-auto-mode netrexx-mode for: "\\.nrx\\'")
 
-  ;; Set the mode specific key prefix
-  (define-pel-global-prefix pel:for-netrexx (kbd "<f11> SPC N"))
-  (define-key pel:for-netrexx (kbd "<down>") 'netrexx-next-method)
-  (define-key pel:for-netrexx (kbd "<up>")   'netrexx-previous-method)
-  (define-key pel:for-netrexx "="            'netrexx-select-current-block)
-  (define-key pel:for-netrexx "s"            'netrexx-sanitize-region)
-  (define-key pel:for-netrexx ";"            'netrexx-insert-end-comment)
-  (define-key pel:for-netrexx "e"          'netrexx-insert-end-comment-region)
-  (define-key pel:for-netrexx "j"          'netrexx-insert-javadoc-for-method)
-
-  (pel-eval-after-load netrexx-mode
-    ;; activate the <f12> key binding for netrexx-mode
-    (pel-config-major-mode netrexx pel:for-netrexx :no-ts)))
+    ;; Set the mode specific key prefix
+    (define-pel-global-prefix pel:for-netrexx (kbd "<f11> SPC N"))
+    (define-key pel:for-netrexx (kbd "<down>") 'netrexx-next-method)
+    (define-key pel:for-netrexx (kbd "<up>")   'netrexx-previous-method)
+    (define-key pel:for-netrexx "=" 'netrexx-select-current-block)
+    (define-key pel:for-netrexx "s" 'netrexx-sanitize-region)
+    (define-key pel:for-netrexx ";" 'netrexx-insert-end-comment)
+    (define-key pel:for-netrexx "e" 'netrexx-insert-end-comment-region)
+    (define-key pel:for-netrexx "j" 'netrexx-insert-javadoc-for-method)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Perl Programming Language Support
