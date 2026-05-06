@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-05 15:46:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-05 22:35:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1230,25 +1230,37 @@ A form is considered empty when it is nil or an empty `progn': (progn)."
         (equal form '(progn)))))
 
 
-(defmacro pel-setup-major-mode (features
-                                target-mode key-prefix ts-option
-                                init-body after-load-body
-                                &rest config-body)
+(defmacro pel-setup-major-mode (target-mode
+                                features
+                                key-prefix ts-option
+                                at-init: init-body
+                                &optional after-feature-load: after-load-body
+                                when-buffer-opens: &rest config-body)
   "Configure a major mode with tree-sitter awareness.
 
 Arguments:
+TARGET-MODE     The bare mode symbol, e.g. \\='python (same meaning as in
+                `pel-config-major-mode').
+
 FEATURES        A feature symbol or unquoted list of feature symbols
                 (same as the first argument of `pel-eval-after-load').
                 Used to time the `pel-config-major-mode' setup.
 
-TARGET-MODE     The bare mode symbol, e.g. \\='python (same meaning as in
-                `pel-config-major-mode').
-
 KEY-PREFIX      The <f12>/<M-f12> key prefix (same as
                 `pel-config-major-mode').
 
-TS-OPTION       Tree-sitter option, one of :no-ts :ts-only :same-for-ts
-                :independent-ts (same meaning as in `pel-config-major-mode').
+TS-OPTION       Tree-sitter option, one of
+
+- :no-ts          : no special tree-sitter support
+
+- :ts-only        : support for tree-sitter specific mode only is requested,
+                    but no support for the classic mode
+
+- :same-for-ts    : when the tree-sitter-based mode derives from the normal
+                    mode and PEL must support both.
+
+- :independent-ts : when the ts-sitter mode exists but does not derive from
+                    the normal mode and PEL must support both.
 
 INIT-BODY       A single form (possibly a `progn') executed immediately at
                 initialization time, before Emacs opens any files.
@@ -1262,16 +1274,20 @@ CONFIG-BODY     Zero or more forms passed as the body to
                 `pel-config-major-mode'; they run inside the mode-hook
                 `hack-local-variables-hook'.
 
+The at-init:, after-feature-load: and when-buffer-opens: arguments are
+required documenting markers.
 
-Tree-sitter handling (the Python fix):
-  When TS-OPTION is `:same-for-ts', the `major-mode-remap-alist' entry that
-  redirects the classic mode to the tree-sitter variant is established *eagerly*
-  at step 1 (init time), before any file is ever opened.  This guarantees the
-  very first Python (or other language) buffer is already redirected.
-  `pel-config-major-mode' is invoked with `:same-for-ts-early-remap', which
-  registers hooks for both the classic and TS modes without duplicating the
-  remap-alist update."
+Tree-sitter handling:
+
+When TS-OPTION is `:same-for-ts', the `major-mode-remap-alist' entry
+that redirects the classic mode to the tree-sitter variant is
+established *eagerly* at step 1 (init time), before any file is ever
+opened.  This guarantees the very first buffer is already redirected to
+Tree-Sitter if that is required by the user: `pel-config-major-mode' is
+invoked with `:same-for-ts-early-remap', which registers hooks for both
+the classic and TS modes without duplicating the remap-alist update."
   (declare (indent 4))
+  (ignore at-init: after-feature-load: when-buffer-opens:)
   (unless (memq ts-option '(:no-ts :ts-only :same-for-ts :independent-ts))
     (error "pel-setup-major-mode: ts-option must be :no-ts, :ts-only, \
 :same-for-ts or :independent-ts; got: %S" ts-option))
