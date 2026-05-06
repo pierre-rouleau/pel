@@ -2995,25 +2995,24 @@ MODE must be a symbol."
 (when pel-use-ada
   (pel-setup-major-mode ada :same-for-ts
     at-init:
-    (progn
-      ;; 1- Install required packages for Ada
-      ;;    - Always install ada-mode when Ada is used.
-      (pel-ensure-package-elpa ada-mode from: gnu)
-      ;;    - Install ada-ts-mode when tree-sitter is used.
-      (when pel-use-tree-sitter
-        (pel-ensure-package-elpa ada-ts-mode from: melpa))
+    ;; 1- Install required packages for Ada
+    ;;    - Always install ada-mode when Ada is used.
+    (pel-ensure-package-elpa ada-mode from: gnu)
+    ;;    - Install ada-ts-mode when tree-sitter is used.
+    (when pel-use-tree-sitter
+      (pel-ensure-package-elpa ada-ts-mode from: melpa))
 
-      ;; 2- Associate files with Ada mode selector
-      (add-to-list 'auto-mode-alist '("\\.ad[abs]\\'" . pel-ada-mode))
+    ;; 2- Associate files with Ada mode selector
+    (add-to-list 'auto-mode-alist '("\\.ad[abs]\\'" . pel-ada-mode))
 
-      ;; 3- Speedbar support for Ada
-      (when pel-use-speedbar
-        (pel-add-speedbar-extension ".ad[abs]"))
+    ;; 3- Speedbar support for Ada
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".ad[abs]"))
 
-      ;; 4- Define Buffer keymap for Ada
-      (define-pel-global-prefix pel:for-ada (kbd "<f11> SPC A"))
-      (define-key pel:for-ada "?" 'pel-ada-setup-info)
-      (define-key pel:for-ada (kbd "M-f") 'pel-open-file-alternate))))
+    ;; 4- Define Buffer keymap for Ada
+    (define-pel-global-prefix pel:for-ada (kbd "<f11> SPC A"))
+    (define-key pel:for-ada "?" 'pel-ada-setup-info)
+    (define-key pel:for-ada (kbd "M-f") 'pel-open-file-alternate)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Algol programming language
@@ -3616,27 +3615,26 @@ d-mode not added to ac-modes!"
 (when pel-use-dart
   (pel-setup-major-mode dart :same-for-ts
     at-init:
-    (progn
-      ;; 1- Install required packages for Dart
-      ;;    - Always install dart-mode when Dart is used.
-      (pel-ensure-package-elpa dart-mode from: melpa)
-      ;;    - Install dart-ts-mode when Dart and Tree-Sitter are supported
-      (when pel-use-tree-sitter
-        (pel-install-github-file "50ways2sayhard/dart-ts-mode/master"
-                                 "dart-ts-mode.el")
-        (pel-autoload-file dart-ts-mode for:
-                           dart-ts-mode))
+    ;; 1- Install required packages for Dart
+    ;;    - Always install dart-mode when Dart is used.
+    (pel-ensure-package-elpa dart-mode from: melpa)
+    ;;    - Install dart-ts-mode when Dart and Tree-Sitter are supported
+    (when pel-use-tree-sitter
+      (pel-install-github-file "50ways2sayhard/dart-ts-mode/master"
+                               "dart-ts-mode.el")
+      (pel-autoload-file dart-ts-mode for:
+                         dart-ts-mode))
 
-      ;; 2- Associate files with Dart mode selector
-      (add-to-list 'auto-mode-alist '("\\.dart\\'" . pel-dart-mode))
+    ;; 2- Associate files with Dart mode selector
+    (add-to-list 'auto-mode-alist '("\\.dart\\'" . pel-dart-mode))
 
-      ;; 3- Speedbar support for Dart
-      (when pel-use-speedbar
-        (pel-add-speedbar-extension '(".dart")))
+    ;; 3- Speedbar support for Dart
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".dart")))
 
-      ;; 4- Buffer keymap for Dart
-      (define-pel-global-prefix pel:for-dart  (kbd "<f11> SPC d"))
-      (define-key pel:for-dart "?" 'pel-dart-setup-info))
+    ;; 4- Buffer keymap for Dart
+    (define-pel-global-prefix pel:for-dart  (kbd "<f11> SPC d"))
+    (define-key pel:for-dart "?" 'pel-dart-setup-info)
 
     when-buffer-opens:
     ;; Dart tab/indent logic has its own quirks:
@@ -3849,10 +3847,9 @@ d-mode not added to ac-modes!"
   (pel-setup-major-mode java :same-for-ts
                         features: (cc-mode java-ts-mode)
     at-init:
-    (progn
-      (define-pel-global-prefix pel:for-java  (kbd "<f11> SPC J"))
-      (when pel-use-lsp-java
-        (pel-ensure-package-elpa lsp-java from: melpa)))
+    (define-pel-global-prefix pel:for-java  (kbd "<f11> SPC J"))
+    (when pel-use-lsp-java
+      (pel-ensure-package-elpa lsp-java from: melpa))
 
     ;; don't load lsp on cc-mode loaded; wait until user opens a Java file.
     when-buffer-opens:
@@ -4287,7 +4284,6 @@ d-mode not added to ac-modes!"
 (define-key pel:eval-step "s" 'pel-eval-stop)
 (define-key pel:eval-step "x" 'pel-eval-to-target)
 
-
 (when pel-use-macrostep
   (pel-ensure-package-elpa macrostep from: melpa)
   (pel-autoload-file macrostep for: macrostep-expand)
@@ -4360,8 +4356,10 @@ d-mode not added to ac-modes!"
          (setq-local pel-filename-at-point-finders '(pel-elisp-find-file)))
      (display-warning
       'pel-file
-      "pel-file.el not found; file-at-point openers not activated.")))
+      "pel-file.el not found; file-at-point openers not activated."))
+   (pel-setup-major-mode--enable-marker-font-lock))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
+
 
 
 (when pel-use-helpful
@@ -5390,56 +5388,55 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-elixir
   (pel-setup-major-mode elixir :same-for-ts
     at-init:
-    (progn
-      ;; 1- Install required packages for Elixir
-      ;;    - Always install elixir-mode when Elixir is used.
-      ;;    - elixir-ts-mode is built-in Emacs.
-      (pel-ensure-package-elpa elixir-mode from: melpa)
-      (pel-autoload-file elixir-mode for: elixir-mode)
+    ;; 1- Install required packages for Elixir
+    ;;    - Always install elixir-mode when Elixir is used.
+    ;;    - elixir-ts-mode is built-in Emacs.
+    (pel-ensure-package-elpa elixir-mode from: melpa)
+    (pel-autoload-file elixir-mode for: elixir-mode)
 
-      ;; 2- Associate files with Elixir mode selector
-      (add-to-list 'auto-mode-alist
-                   (cons
-                    (regexp-opt '(".ex'" ".exs'" ".elixir'" "mix.lock"))
-                    'pel-elixir-mode))
+    ;; 2- Associate files with Elixir mode selector
+    (add-to-list 'auto-mode-alist
+                 (cons
+                  (regexp-opt '(".ex'" ".exs'" ".elixir'" "mix.lock"))
+                  'pel-elixir-mode))
 
-      ;; 3- Speedbar support for Elixir (not done by elixir-mode.el)
-      (when pel-use-speedbar
-        (pel-add-speedbar-extension '(".ex"
-                                      ".exs"
-                                      ".elixir"
-                                      "mix.lock")))
+    ;; 3- Speedbar support for Elixir (not done by elixir-mode.el)
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".ex"
+                                    ".exs"
+                                    ".elixir"
+                                    "mix.lock")))
 
-      ;; 4- Buffer keymap for Elixir
-      (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
-      (define-key pel:for-elixir "?" 'pel-elixir-setup-info)
-      (define-key pel:for-elixir (kbd "M-p") #'superword-mode)
+    ;; 4- Buffer keymap for Elixir
+    (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
+    (define-key pel:for-elixir "?" 'pel-elixir-setup-info)
+    (define-key pel:for-elixir (kbd "M-p") #'superword-mode)
 
-      ;; 5- Install optional packages for Elixir
-      (when pel-use-plantuml
-        (define-key pel:for-elixir "u" 'pel-render-commented-plantuml))
-      (when pel-use-alchemist
-        (pel-ensure-package-elpa alchemist from: melpa)
-        (pel-autoload-file alchemist for:
-                           alchemist-iex-mode
-                           alchemist-iex-run)
-        (define-key pel:for-elixir "z"         #'alchemist-iex-run))
-      (when pel-use-elixir-exunit
-        (pel-ensure-package-elpa exunit from: melpa)
-        (pel-autoload-file exunit for:
-                           exunit-mode
-                           exunit-rerun
-                           exunit-verify-all
-                           exunit-verify-all-in-umbrella
-                           exunit-verify-single
-                           exunit-verify
-                           exunit-toggle-file-and-test
-                           exunit-toggle-file-and-test-other-window))
-      (when pel-use-elixir-lsp
-        (pel-ensure-package-elpa lsp-elixir from: melpa)
-        (pel-autoload-file lsp-elixir for: elixir-mode)
-        (declare-function lsp "lsp-mode" (&optional arg))
-        (add-hook 'elixir-mode-hook #'lsp)))
+    ;; 5- Install optional packages for Elixir
+    (when pel-use-plantuml
+      (define-key pel:for-elixir "u" 'pel-render-commented-plantuml))
+    (when pel-use-alchemist
+      (pel-ensure-package-elpa alchemist from: melpa)
+      (pel-autoload-file alchemist for:
+                         alchemist-iex-mode
+                         alchemist-iex-run)
+      (define-key pel:for-elixir "z"         #'alchemist-iex-run))
+    (when pel-use-elixir-exunit
+      (pel-ensure-package-elpa exunit from: melpa)
+      (pel-autoload-file exunit for:
+                         exunit-mode
+                         exunit-rerun
+                         exunit-verify-all
+                         exunit-verify-all-in-umbrella
+                         exunit-verify-single
+                         exunit-verify
+                         exunit-toggle-file-and-test
+                         exunit-toggle-file-and-test-other-window))
+    (when pel-use-elixir-lsp
+      (pel-ensure-package-elpa lsp-elixir from: melpa)
+      (pel-autoload-file lsp-elixir for: elixir-mode)
+      (declare-function lsp "lsp-mode" (&optional arg))
+      (add-hook 'elixir-mode-hook #'lsp))
 
     when-buffer-opens:
     ;; 6- Activate Elixir setup.
@@ -5757,7 +5754,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-python "2"         'lispy-arglist-inline))
 
   (pel-setup-major-mode python :same-for-ts
-                        features: (python python-ts-mode)
+    features: (python python-ts-mode)
     ;; runs immediately at startup, before any file is opened.
     ;; at-init:
     ;; (progn
@@ -5766,7 +5763,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;;   ;;   (pel-set-auto-mode 'python-mode "\\.pyi\\'"))
     ;;   )
 
-    when-buffer-opens: ;; runs in the mode hook (via hack-local-variables-hook).
+    when-buffer-opens:
     (when (boundp 'python-indent-offset)
       (setq-local python-indent-offset pel-python-indent-width))
     (when (boundp 'py-indent-offset)
@@ -6004,37 +6001,35 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-ruby
   (pel-setup-major-mode ruby :same-for-ts
     at-init:
-    (progn
-      ;; 1- Install required packages for Ruby
-      ;;    - ruby-mode and ruby-ts-mode are built-in Emacs
+    ;; 1- Install required packages for Ruby
+    ;;    - ruby-mode and ruby-ts-mode are built-in Emacs
 
-      ;; 2- Associate files with Ruby mode selector
-      (add-to-list 'auto-mode-alist
-                   (cons (purecopy (concat "\\(?:\\.\\(?:"
-                                           "rbw?\\|ru\\|rake\\|thor\\|axlsx"
-                                           "\\|jbuilder\\|rabl\\|gemspec\\|podspec"
-                                           "\\)"
-                                           "\\|/"
-                                           "\\(?:Gem\\|Rake\\|Cap\\|Thor"
-                                           "\\|Puppet\\|Berks\\|Brew\\|Fast"
-                                           "\\|Vagrant\\|Guard\\|Pod\\)file"
-                                           "\\)\\'"))
-                         'pel-ruby-mode))
+    ;; 2- Associate files with Ruby mode selector
+    (add-to-list 'auto-mode-alist
+                 (cons (purecopy (concat "\\(?:\\.\\(?:"
+                                         "rbw?\\|ru\\|rake\\|thor\\|axlsx"
+                                         "\\|jbuilder\\|rabl\\|gemspec\\|podspec"
+                                         "\\)"
+                                         "\\|/"
+                                         "\\(?:Gem\\|Rake\\|Cap\\|Thor"
+                                         "\\|Puppet\\|Berks\\|Brew\\|Fast"
+                                         "\\|Vagrant\\|Guard\\|Pod\\)file"
+                                         "\\)\\'"))
+                       'pel-ruby-mode))
 
-      ;; 3- Speedbar support for Ruby
-      (when pel-use-speedbar
-        (pel-add-speedbar-extension '(".rb"
-                                      ".arb"
-                                      ".erb"
-                                      ".rake"
-                                      ".rdoc")))
+    ;; 3- Speedbar support for Ruby
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".rb"
+                                    ".arb"
+                                    ".erb"
+                                    ".rake"
+                                    ".rdoc")))
 
-      ;; 4- Buffer keymap for Ruby
-      (define-pel-global-prefix pel:for-ruby (kbd "<f11> SPC U"))
-      (define-pel-global-prefix pel:ruby-skel (kbd "<f11> SPC U <f12>"))
-      (define-key pel:for-ruby "?" 'pel-ruby-setup-info))
+    ;; 4- Buffer keymap for Ruby
+    (define-pel-global-prefix pel:for-ruby (kbd "<f11> SPC U"))
+    (define-pel-global-prefix pel:ruby-skel (kbd "<f11> SPC U <f12>"))
+    (define-key pel:for-ruby "?" 'pel-ruby-setup-info)
 
-    after-feature-load: nil
     when-buffer-opens:
     ;; 6- Activate Ruby setup.
     ;; activate skeletons
@@ -6293,25 +6288,24 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-lua
   (pel-setup-major-mode lua :same-for-ts
     at-init:
-    (progn
-      ;; 1- Install required packages for Lua
-      ;;    - Always install lua-mode when Lua is used.
-      (pel-ensure-package-elpa lua-mode from: melpa)
-      ;;    - The lua-ts-mode is built-in Emacs.
+    ;; 1- Install required packages for Lua
+    ;;    - Always install lua-mode when Lua is used.
+    (pel-ensure-package-elpa lua-mode from: melpa)
+    ;;    - The lua-ts-mode is built-in Emacs.
 
-      ;; 2- Associate files with Lua mode selector
-      (add-to-list 'auto-mode-alist '("\\.lua\\'" . pel-lua-mode))
+    ;; 2- Associate files with Lua mode selector
+    (add-to-list 'auto-mode-alist '("\\.lua\\'" . pel-lua-mode))
 
-      ;; 3- Speedbar support for Lua
-      (when pel-use-speedbar
-        (pel-add-speedbar-extension ".lua"))
+    ;; 3- Speedbar support for Lua
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".lua"))
 
-      ;; 4- Buffer keymap for Lua
-      (define-pel-global-prefix pel:for-lua (kbd "<f11> SPC u"))
-      (define-pel-global-prefix pel:lua-skel (kbd "<f11> SPC u <f12>"))
-      (define-key pel:for-lua "?" 'pel-lua-setup-info)
-      (when pel-use-tree-sitter
-        (define-key pel:for-lua "z" 'pel-lua-repl)))
+    ;; 4- Buffer keymap for Lua
+    (define-pel-global-prefix pel:for-lua (kbd "<f11> SPC u"))
+    (define-pel-global-prefix pel:lua-skel (kbd "<f11> SPC u <f12>"))
+    (define-key pel:for-lua "?" 'pel-lua-setup-info)
+    (when pel-use-tree-sitter
+      (define-key pel:for-lua "z" 'pel-lua-repl))
 
     when-buffer-opens:
     ;; activate skeletons
@@ -6483,38 +6477,37 @@ to identify a Verilog file.  Anything else is assumed being V."
 (when pel-use-verilog
   (pel-setup-major-mode verilog :same-for-ts
     at-init:
-    (progn
-      (define-pel-global-prefix pel:for-verilog  (kbd "<f11> SPC V"))
+    (define-pel-global-prefix pel:for-verilog  (kbd "<f11> SPC V"))
 
-      ;; Get the Emacs Lisp Tree sitter mode
-      (when pel-use-tree-sitter
-        (pel-ensure-package-elpa verilog-ts-mode from: melpa)
-        ;; Once installed & loaded, use it to install its verilog grammar.
-        (unless (pel-treesit-language-available-p 'systemverilog)
-          (when (fboundp 'verilog-ts-install-grammar)
-            (message "Install SystemVerilog tree-sitter grammar...")
-            (verilog-ts-install-grammar))))
+    ;; Get the Emacs Lisp Tree sitter mode
+    (when pel-use-tree-sitter
+      (pel-ensure-package-elpa verilog-ts-mode from: melpa)
+      ;; Once installed & loaded, use it to install its verilog grammar.
+      (unless (pel-treesit-language-available-p 'systemverilog)
+        (when (fboundp 'verilog-ts-install-grammar)
+          (message "Install SystemVerilog tree-sitter grammar...")
+          (verilog-ts-install-grammar))))
 
-      ;; Install/use other external package when requested.
-      (when pel-use-verilog-ext
-        (pel-ensure-package-elpa verilog-ext from: melpa))
-      (when pel-use-veri-kompass
-        ;; Instead of using melpa, use my fork until my PR gets merged.
-        ;; (pel-ensure-package-elpa veri-kompass from: melpa)
-        (pel-install-gitlab-file "prouleau" "veri-kompass" "veri-kompass.el")
-        (pel-autoload "veri-kompass" for: veri-kompass
-                      veri-kompass-search-driver-at-point
-                      veri-kompass-search-load-at-point
-                      veri-kompass-follow-from-point
-                      veri-kompass-mark-comments
-                      veri-kompass-mark-code-blocks
-                      veri-kompass-open-at-point
-                      veri-kompass-unmark
-                      veri-kompass-mark
-                      veri-kompass-mark-and-jump
-                      veri-kompass-go-backward
-                      veri-kompass-go-up
-                      veri-kompass-go-up-from-point)))
+    ;; Install/use other external package when requested.
+    (when pel-use-verilog-ext
+      (pel-ensure-package-elpa verilog-ext from: melpa))
+    (when pel-use-veri-kompass
+      ;; Instead of using melpa, use my fork until my PR gets merged.
+      ;; (pel-ensure-package-elpa veri-kompass from: melpa)
+      (pel-install-gitlab-file "prouleau" "veri-kompass" "veri-kompass.el")
+      (pel-autoload "veri-kompass" for: veri-kompass
+                    veri-kompass-search-driver-at-point
+                    veri-kompass-search-load-at-point
+                    veri-kompass-follow-from-point
+                    veri-kompass-mark-comments
+                    veri-kompass-mark-code-blocks
+                    veri-kompass-open-at-point
+                    veri-kompass-unmark
+                    veri-kompass-mark
+                    veri-kompass-mark-and-jump
+                    veri-kompass-go-backward
+                    veri-kompass-go-up
+                    veri-kompass-go-up-from-point))
 
     when-buffer-opens:
     ;; Activate PEL <f12> key management,
@@ -6566,26 +6559,25 @@ to identify a Verilog file.  Anything else is assumed being V."
 (when pel-use-zig
   (pel-setup-major-mode zig :same-for-ts
     at-init:
-    (progn
-      ;; 1- Install required packages for Zig
-      ;;    - Always install zig-mode when Zig is used.
-      (pel-ensure-package-elpa zig-mode from: melpa)
-      ;;    - Install zig-ts-mode when Zig and Tree-Sitter are supported
-      (when pel-use-tree-sitter
-        (pel-ensure-package-elpa zig-ts-mode from: melpa))
+    ;; 1- Install required packages for Zig
+    ;;    - Always install zig-mode when Zig is used.
+    (pel-ensure-package-elpa zig-mode from: melpa)
+    ;;    - Install zig-ts-mode when Zig and Tree-Sitter are supported
+    (when pel-use-tree-sitter
+      (pel-ensure-package-elpa zig-ts-mode from: melpa))
 
-      ;; 2- Associate files with Zig mode selector
-      (add-to-list 'auto-mode-alist '("\\.zig\\'" . pel-zig-mode))
-      (add-to-list 'auto-mode-alist '("\\.zon\\'" . pel-zig-mode))
+    ;; 2- Associate files with Zig mode selector
+    (add-to-list 'auto-mode-alist '("\\.zig\\'" . pel-zig-mode))
+    (add-to-list 'auto-mode-alist '("\\.zon\\'" . pel-zig-mode))
 
-      ;; 3- Speedbar support for Zig
-      (when pel-use-speedbar
-        (pel-add-speedbar-extension '(".zig"
-                                      ".zon")))
+    ;; 3- Speedbar support for Zig
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".zig"
+                                    ".zon")))
 
-      ;; 4- Buffer keymap for Zig
-      (define-pel-global-prefix pel:for-zig  (kbd "<f11> SPC M-z"))
-      (define-key pel:for-zig "?" 'pel-zig-setup-info))
+    ;; 4- Buffer keymap for Zig
+    (define-pel-global-prefix pel:for-zig  (kbd "<f11> SPC M-z"))
+    (define-key pel:for-zig "?" 'pel-zig-setup-info)
 
     when-buffer-opens:
     ;; 6- Activate Zig setup.
