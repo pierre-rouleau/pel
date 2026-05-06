@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-06 11:01:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-06 11:17:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1431,6 +1431,10 @@ Does it only within a (pel-setup-major-mode …) form."
    '((pel-setup-major-mode--font-lock-matcher
       0 pel-setup-major-mode-marker-face keep))
    'append))
+
+;; Register hooks for both classic and tree-sitter Elisp modes.
+(add-hook 'emacs-lisp-mode-hook
+          #'pel-setup-major-mode--enable-marker-font-lock)
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--install)

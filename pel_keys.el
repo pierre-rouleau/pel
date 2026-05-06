@@ -4356,8 +4356,7 @@ d-mode not added to ac-modes!"
          (setq-local pel-filename-at-point-finders '(pel-elisp-find-file)))
      (display-warning
       'pel-file
-      "pel-file.el not found; file-at-point openers not activated."))
-   (pel-setup-major-mode--enable-marker-font-lock))
+      "pel-file.el not found; file-at-point openers not activated.")))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
 
 
