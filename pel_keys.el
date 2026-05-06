@@ -4371,6 +4371,26 @@ d-mode not added to ac-modes!"
   (define-key pel:elisp-depmap "s" 'elisp-depmap-makesummarytable))
 
 ;; ---------------------------------------------------------------------------
+;;** Arc Programming Language Support
+;;   --------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-a`` :
+(when pel-use-arc
+  (pel-setup-major-mode arc :no-ts
+    at-init:
+    (pel-autoload-file arc for: arc-mode)
+    (pel-autoload-file inferior-arc for: run-arc)
+    (pel-install-github-files "arclanguage/anarki/master/extras"
+                              '("arc.el"
+                                "inferior-arc.el"))
+    ;; associate .arc file with arc-mode
+    (add-to-list 'auto-mode-alist '("\\.arc\\'" . arc-mode))
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".arc"))
+
+    (define-pel-global-prefix pel:for-arc (kbd "<f11> SPC C-a"))
+    (pel--lisp-languages-map-for pel:for-arc)))
+
+;; ---------------------------------------------------------------------------
 ;;** Common Lisp Programming Language Support
 ;;   ----------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` :
@@ -4474,64 +4494,6 @@ d-mode not added to ac-modes!"
           (setq pel-lisp-imenu-generic-expression
                 lisp-imenu-generic-expression))
         (setq-local imenu-generic-expression lisp-imenu-generic-expression)))))
-
-;; ---------------------------------------------------------------------------
-;;** Arc Programming Language Support
-;;   --------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-a`` :
-(when pel-use-arc
-  (pel-setup-major-mode arc :no-ts
-    at-init:
-    (pel-autoload-file arc for: arc-mode)
-    (pel-autoload-file inferior-arc for: run-arc)
-    (pel-install-github-files "arclanguage/anarki/master/extras"
-                              '("arc.el"
-                                "inferior-arc.el"))
-    ;; associate .arc file with arc-mode
-    (add-to-list 'auto-mode-alist '("\\.arc\\'" . arc-mode))
-    (when pel-use-speedbar
-      (pel-add-speedbar-extension ".arc"))
-
-    (define-pel-global-prefix pel:for-arc (kbd "<f11> SPC C-a"))
-    (pel--lisp-languages-map-for pel:for-arc)))
-
-;; ---------------------------------------------------------------------------
-;;** Janet Programming Language Support
-;;   ----------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC T`` :
-(when pel-use-janet
-  (pel-setup-major-mode janet :no-ts
-    at-init:
-    ;; Installation
-    (when pel-use-janet-mode
-      ;; (pel-ensure-package-elpa janet-mode from: melpa)
-      ;; Use my version of janet-mode: it's ahead of the MELPA available one.
-      (pel-install-github-file "pierre-rouleau/janet-mode/master/"
-                               "janet-mode.el")
-      (pel-autoload-file janet-mode for:
-                         janet-mode)
-      (add-to-list 'auto-mode-alist '("\\.janet\\'" . janet-mode))
-      (add-to-list 'interpreter-mode-alist '("janet" . janet-mode)))
-
-    (when pel-use-ijanet
-      (pel-install-github-file "SerialDev/ijanet-mode/master/"
-                               "ijanet.el")
-      (pel-autoload-file ijanet for:
-                         ijanet))
-    (when pel-use-inf-janet
-      (pel-install-github-file "velkyel/inf-janet/master"
-                               "inf-janet.el")
-      (pel-autoload-file inf-janet for:
-                         inf-janet-mode
-                         inf-janet))
-    ;; Speedbar support
-    ;; TODO: add imenu support to allow detection of forms
-    (when pel-use-speedbar
-      (pel-add-speedbar-extension ".janet"))
-
-    ;; Key Bindings
-    (define-pel-global-prefix pel:for-janet (kbd "<f11> SPC T"))
-    (pel--lisp-languages-map-for pel:for-janet)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Clojure Programming Language Support
@@ -4885,6 +4847,49 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (pel-config-major-mode scsh pel:for-scsh :no-ts)))
 
 ;; ---------------------------------------------------------------------------
+;;** Eiffel Programming Language Support
+;;   -----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-e`` :
+
+(when pel-use-eiffel
+  (define-pel-global-prefix pel:for-eiffel   (kbd "<f11> SPC C-e"))
+  (pel-install-github-file "pierre-rouleau/eiffel-mode/master"
+                           "eiffel-mode.el")
+  (pel-autoload "eiffel-mode" for: eiffel-mode)
+  (add-to-list 'auto-mode-alist '("\\.e\\'" . eiffel-mode))
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".e"))
+
+  ;; (pel-config-major-mode eiffel pel:for-eiffel :no-ts
+  ;; [:todo 2025-05-18, by Pierre Rouleau: The eiffel-mode does not fully
+  ;;   comply with all the mechanics of a major mode yet and therefore the
+  ;;   above macro cannot be used. Use the following expanded code instead
+  ;;   until the eiffel-mode is fixed and/or the macro is adjusted to handle
+  ;;   that situation. ]
+  (pel-eval-after-load eiffel-mode
+    (progn
+      (defun pel--setup-for-eiffel nil
+        "Set the environment for eiffel buffers."
+        (progn
+          (unless (assoc 'tab-width file-local-variables-alist)
+            (setq-local tab-width pel-eiffel-tab-width))
+          (unless (assoc 'indent-tabs-mode file-local-variables-alist)
+            (setq-local indent-tabs-mode pel-eiffel-use-tabs))
+          (pel-local-set-f12-M-f12 'pel:for-eiffel)
+          (pel-turn-on-local-minor-modes-in
+           'pel-eiffel-activates-minor-modes))
+        ;; Activate syntax checkers if necessary
+        (pel--auto-activate-fly))
+      (declare-function pel--setup-for-eiffel "pel_keys")
+
+      (pel-check-minor-modes-in pel-eiffel-activates-minor-modes)
+      (pel--mode-hook-maybe-call
+
+       ;; (function pel--setup-for-eiffel-with-local-vars) 'eiffel-mode
+       (function pel--setup-for-eiffel) 'eiffel-mode
+       'eiffel-mode-hook))))
+
+;; ---------------------------------------------------------------------------
 ;;** Erlang Programming Language Support - BEAM Language Family
 ;;   ----------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` :
@@ -4912,7 +4917,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (pel-ensure-package-elpa lsp-mode from: melpa)
     (pel-ensure-package-elpa lsp-ui from: melpa))
 
-    ;; 1.2 Identify the language for LSP server
+  ;; 1.2 Identify the language for LSP server
   (pel-eval-after-load lsp-mode
     (when (boundp 'lsp-language-id-configuration)
       (add-to-list 'lsp-language-id-configuration
@@ -5559,6 +5564,79 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel--lisp-languages-map-for pel:for-hy)))
 
 ;; ---------------------------------------------------------------------------
+;;** Janet Programming Language Support
+;;   ----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC T`` :
+(when pel-use-janet
+  (pel-setup-major-mode janet :no-ts
+    at-init:
+    ;; Installation
+    (when pel-use-janet-mode
+      ;; (pel-ensure-package-elpa janet-mode from: melpa)
+      ;; Use my version of janet-mode: it's ahead of the MELPA available one.
+      (pel-install-github-file "pierre-rouleau/janet-mode/master/"
+                               "janet-mode.el")
+      (pel-autoload-file janet-mode for:
+                         janet-mode)
+      (add-to-list 'auto-mode-alist '("\\.janet\\'" . janet-mode))
+      (add-to-list 'interpreter-mode-alist '("janet" . janet-mode)))
+
+    (when pel-use-ijanet
+      (pel-install-github-file "SerialDev/ijanet-mode/master/"
+                               "ijanet.el")
+      (pel-autoload-file ijanet for:
+                         ijanet))
+    (when pel-use-inf-janet
+      (pel-install-github-file "velkyel/inf-janet/master"
+                               "inf-janet.el")
+      (pel-autoload-file inf-janet for:
+                         inf-janet-mode
+                         inf-janet))
+    ;; Speedbar support
+    ;; TODO: add imenu support to allow detection of forms
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".janet"))
+
+    ;; Key Bindings
+    (define-pel-global-prefix pel:for-janet (kbd "<f11> SPC T"))
+    (pel--lisp-languages-map-for pel:for-janet)))
+
+;; ---------------------------------------------------------------------------
+;;** Lua Programming Language Support
+;;   --------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC u`` :
+(when pel-use-lua
+  (pel-setup-major-mode lua :same-for-ts
+    at-init:
+    ;; 1- Install required packages for Lua
+    ;;    - Always install lua-mode when Lua is used.
+    (pel-ensure-package-elpa lua-mode from: melpa)
+    ;;    - The lua-ts-mode is built-in Emacs.
+
+    ;; 2- Associate files with Lua mode selector
+    (add-to-list 'auto-mode-alist '("\\.lua\\'" . pel-lua-mode))
+
+    ;; 3- Speedbar support for Lua
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".lua"))
+
+    ;; 4- Buffer keymap for Lua
+    (define-pel-global-prefix pel:for-lua (kbd "<f11> SPC u"))
+    (define-pel-global-prefix pel:lua-skel (kbd "<f11> SPC u <f12>"))
+    (define-key pel:for-lua "?" 'pel-lua-setup-info)
+    (when pel-use-tree-sitter
+      (define-key pel:for-lua "z" 'pel-lua-repl))
+
+    when-buffer-opens:
+    ;; activate skeletons
+    (pel--install-generic-skel pel:lua-skel 'pel-pkg-for-lua "lua")
+    ;; Ensure consistency among indentation user-options
+    (when (boundp 'lua-indent-level)
+      (setq-local lua-indent-level pel-lua-indent-width))
+    (when (boundp 'lua-ts-indent-offset)
+      (setq-local lua-ts-indent-offset pel-lua-indent-width))))
+
+;; ---------------------------------------------------------------------------
 ;;** Nim Programming Language Support
 ;;   --------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC n`` :
@@ -6113,49 +6191,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-pel-global-prefix pel:for-pascal  (kbd "<f11> SPC M-p"))))
 
 ;; ---------------------------------------------------------------------------
-;;** Eiffel Programming Language Support
-;;   -----------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-e`` :
-
-(when pel-use-eiffel
-  (define-pel-global-prefix pel:for-eiffel   (kbd "<f11> SPC C-e"))
-  (pel-install-github-file "pierre-rouleau/eiffel-mode/master"
-                           "eiffel-mode.el")
-  (pel-autoload "eiffel-mode" for: eiffel-mode)
-  (add-to-list 'auto-mode-alist '("\\.e\\'" . eiffel-mode))
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension ".e"))
-
-  ;; (pel-config-major-mode eiffel pel:for-eiffel :no-ts
-  ;; [:todo 2025-05-18, by Pierre Rouleau: The eiffel-mode does not fully
-  ;;   comply with all the mechanics of a major mode yet and therefore the
-  ;;   above macro cannot be used. Use the following expanded code instead
-  ;;   until the eiffel-mode is fixed and/or the macro is adjusted to handle
-  ;;   that situation. ]
-  (pel-eval-after-load eiffel-mode
-    (progn
-      (defun pel--setup-for-eiffel nil
-        "Set the environment for eiffel buffers."
-        (progn
-          (unless (assoc 'tab-width file-local-variables-alist)
-            (setq-local tab-width pel-eiffel-tab-width))
-          (unless (assoc 'indent-tabs-mode file-local-variables-alist)
-            (setq-local indent-tabs-mode pel-eiffel-use-tabs))
-          (pel-local-set-f12-M-f12 'pel:for-eiffel)
-          (pel-turn-on-local-minor-modes-in
-           'pel-eiffel-activates-minor-modes))
-        ;; Activate syntax checkers if necessary
-        (pel--auto-activate-fly))
-      (declare-function pel--setup-for-eiffel "pel_keys")
-
-      (pel-check-minor-modes-in pel-eiffel-activates-minor-modes)
-      (pel--mode-hook-maybe-call
-
-       ;; (function pel--setup-for-eiffel-with-local-vars) 'eiffel-mode
-       (function pel--setup-for-eiffel) 'eiffel-mode
-       'eiffel-mode-hook))))
-
-;; ---------------------------------------------------------------------------
 ;;** Seed7 Programming Language Support
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC 7`` :
@@ -6247,41 +6282,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (setq-local tcl-indent-level pel-tcl-indent-width))
     (when (boundp 'tcl-continued-indent-level)
       (setq-local tcl-continued-indent-level pel-tcl-indent-width))))
-
-;; ---------------------------------------------------------------------------
-;;** Lua Programming Language Support
-;;   --------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC u`` :
-(when pel-use-lua
-  (pel-setup-major-mode lua :same-for-ts
-    at-init:
-    ;; 1- Install required packages for Lua
-    ;;    - Always install lua-mode when Lua is used.
-    (pel-ensure-package-elpa lua-mode from: melpa)
-    ;;    - The lua-ts-mode is built-in Emacs.
-
-    ;; 2- Associate files with Lua mode selector
-    (add-to-list 'auto-mode-alist '("\\.lua\\'" . pel-lua-mode))
-
-    ;; 3- Speedbar support for Lua
-    (when pel-use-speedbar
-      (pel-add-speedbar-extension ".lua"))
-
-    ;; 4- Buffer keymap for Lua
-    (define-pel-global-prefix pel:for-lua (kbd "<f11> SPC u"))
-    (define-pel-global-prefix pel:lua-skel (kbd "<f11> SPC u <f12>"))
-    (define-key pel:for-lua "?" 'pel-lua-setup-info)
-    (when pel-use-tree-sitter
-      (define-key pel:for-lua "z" 'pel-lua-repl))
-
-    when-buffer-opens:
-    ;; activate skeletons
-    (pel--install-generic-skel pel:lua-skel 'pel-pkg-for-lua "lua")
-    ;; Ensure consistency among indentation user-options
-    (when (boundp 'lua-indent-level)
-      (setq-local lua-indent-level pel-lua-indent-width))
-    (when (boundp 'lua-ts-indent-offset)
-      (setq-local lua-ts-indent-offset pel-lua-indent-width))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Sh, Unix Shell Programming Support
