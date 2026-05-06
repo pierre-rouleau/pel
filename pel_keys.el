@@ -5419,30 +5419,31 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` :
 ;; LFE := Lisp Flavoured Erlang
 (when pel-use-lfe
-  (pel-ensure-package-elpa lfe-mode from: melpa)
-  ;; the elpa-compliant package autoload handles all auto-loading.
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".lfe"
-                                  ".lfes"
-                                  ".lfesh")))
+  (pel-setup-major-mode lfe :no-ts
+    at-init:
+    (pel-ensure-package-elpa lfe-mode from: melpa)
+    ;; the elpa-compliant package autoload handles all auto-loading.
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".lfe"
+                                    ".lfes"
+                                    ".lfesh")))
 
-  (define-pel-global-prefix pel:for-lfe (kbd "<f11> SPC C-l"))
-  (pel--lisp-languages-map-for pel:for-lfe)
-  (define-key pel:for-lfe "[" 'lfe-insert-brackets)
-  (define-key pel:for-lfe "z" 'run-lfe)
-  (define-key pel:for-lfe (kbd "M-c") 'pel-lfe-eval-buffer)
+    (define-pel-global-prefix pel:for-lfe (kbd "<f11> SPC C-l"))
+    (pel--lisp-languages-map-for pel:for-lfe)
+    (define-key pel:for-lfe "[" 'lfe-insert-brackets)
+    (define-key pel:for-lfe "z" 'run-lfe)
+    (define-key pel:for-lfe (kbd "M-c") 'pel-lfe-eval-buffer)
 
-  (pel-eval-after-load lfe-mode
+    when-buffer-opens:
     ;; Setup the LFE major mode
-    (pel-config-major-mode lfe pel:for-lfe :no-ts
-      (when (pel-emacs-is-a-tty-p)
-        (if (boundp 'lfe-mode-map)
-            (define-key lfe-mode-map (kbd "M-[") nil)
-          (display-warning 'pel-lfe
-                           "The lfe-mode-map is not bound.
+    (when (pel-emacs-is-a-tty-p)
+      (if (boundp 'lfe-mode-map)
+          (define-key lfe-mode-map (kbd "M-[") nil)
+        (display-warning 'pel-lfe
+                         "The lfe-mode-map is not bound.
  Cannot disable the problematic M-[ key.
  Function keys starting with F5 will no work!"
-                           :error)))))
+                         :error))))
 
   ;; Setup the inferior-lfe-mode support
   ;; Add <f12> keys to the LFE shell (no macro yet for that, spell it out)
@@ -5457,7 +5458,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (declare-function pel--setup-for-inferior-lfe "pel_keys")
   (pel-check-minor-modes-in pel-inferior-lfe-activates-minor-modes)
   (pel--mode-hook-maybe-call
-
    (function pel--setup-for-inferior-lfe)
    'inferior-lfe-mode 'inferior-lfe-mode-hook))
 
@@ -5466,34 +5466,28 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ---------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-G `` : Gleam
 (when pel-use-gleam
-  ;; 1- Install required packages for Gleam
-  ;;    - Always install `gleam-ts-mode' when Gleam is used.
-  ;;      Originally Gleam Emacs support was provided by `gleam-mode'.
-  ;;      The developers eventually dropped it for a new `gleam-ts-mode'.
-  ;;      PEL was only supporting the first one, and it now only supports the other.
-  (pel-install-github-files "gleam-lang/gleam-mode/master"
-                            "gleam-ts-mode.el")
-  (pel-autoload-file gleam-ts-mode for: gleam-ts-mode)
+  (pel-setup-major-mode gleam :ts-only
+    at-init:
+    ;; 1- Install required packages for Gleam
+    ;;    - Always install `gleam-ts-mode' when Gleam is used.
+    ;;      Originally Gleam Emacs support was provided by `gleam-mode'.
+    ;;      The developers eventually dropped it for a new `gleam-ts-mode'.
+    ;;      PEL was only supporting the first one, and it now only supports the other.
+    (pel-install-github-files "gleam-lang/gleam-mode/master"
+                              "gleam-ts-mode.el")
+    (pel-autoload-file gleam-ts-mode for: gleam-ts-mode)
 
-  ;; 2- Associate files with Gleam mode selector
-  (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-ts-mode))
+    ;; 2- Associate files with Gleam mode selector
+    (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-ts-mode))
 
-  ;; 3- Speedbar support for Gleam
-  (when pel-use-speedbar (pel-add-speedbar-extension ".gleam"))
+    ;; 3- Speedbar support for Gleam
+    (when pel-use-speedbar (pel-add-speedbar-extension ".gleam"))
 
-  ;; 4- Buffer keymap for Gleam
-  (define-pel-global-prefix pel:for-gleam (kbd "<f11> SPC M-G"))
-  (define-key pel:for-gleam "?"         'pel-gleam-setup-info)
-  (define-key pel:for-gleam (kbd "M-s") 'pel-gleam-toggle-format-on-buffer-save)
-  (define-key pel:for-gleam (kbd "M-t") 'pel-set-tab-width)
-
-  ;; 5- Install optional packages for Gleam
-
-  ;; 6- Activate Gleam setup.
-  ;;    Schedule more configuration upon Gleam feature loading
-  ;;
-  (pel-eval-after-load gleam-ts-mode
-    (pel-config-major-mode gleam pel:for-gleam :ts-only)))
+    ;; 4- Buffer keymap for Gleam
+    (define-pel-global-prefix pel:for-gleam (kbd "<f11> SPC M-G"))
+    (define-key pel:for-gleam "?"         'pel-gleam-setup-info)
+    (define-key pel:for-gleam (kbd "M-s") 'pel-gleam-toggle-format-on-buffer-save)
+    (define-key pel:for-gleam (kbd "M-t") 'pel-set-tab-width)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** Hamler Programming Language Support - BEAM Language Family
@@ -5535,18 +5529,18 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC h`` :
 (when pel-use-haskell
-  (define-pel-global-prefix pel:for-haskell (kbd "<f11> SPC h"))
-  (when pel-use-haskell-mode
-    (pel-ensure-package-elpa haskell-mode from: melpa)
-    (declare-function run-haskell "inf-haskell")
-    (define-key pel:for-haskell "z" #'run-haskell))
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".hs"
-                                  ".hsc"
-                                  ".gs")))
-  (pel-eval-after-load haskell-mode
+  (pel-setup-major-mode haskell :no-ts
+    at-init:
     ;; the haskell-mode is part of Emacs
-    (pel-config-major-mode haskell pel:for-haskell :no-ts)))
+    (define-pel-global-prefix pel:for-haskell (kbd "<f11> SPC h"))
+    (when pel-use-haskell-mode
+      (pel-ensure-package-elpa haskell-mode from: melpa)
+      (declare-function run-haskell "inf-haskell")
+      (define-key pel:for-haskell "z" #'run-haskell))
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".hs"
+                                    ".hsc"
+                                    ".gs")))))
 
 ;; Using Intero to support Haskell programming language.
 ;; (add-hook 'haskell-mode-hook #'intero-mode)
@@ -5556,15 +5550,13 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   -------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-h`` : Hy
 (when pel-use-hy
-  (pel-ensure-package-elpa hy-mode from: melpa)
-  (pel-autoload-file hy-mode for: hy-mode)
+  (pel-setup-major-mode hy :no-ts
+    at-init:
+    (pel-ensure-package-elpa hy-mode from: melpa)
+    (pel-autoload-file hy-mode for: hy-mode)
 
-  (define-pel-global-prefix pel:for-hy (kbd "<f11> SPC C-h"))
-  (pel--lisp-languages-map-for pel:for-hy)
-
-  (pel-eval-after-load  hy-mode
-    ;; activate the <f12> key binding for hy-mode
-    (pel-config-major-mode hy pel:for-hy :no-ts)))
+    (define-pel-global-prefix pel:for-hy (kbd "<f11> SPC C-h"))
+    (pel--lisp-languages-map-for pel:for-hy)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Nim Programming Language Support
@@ -5635,23 +5627,25 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;** Odin Programming Language Support
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC O`` :
-
 (when pel-use-odin
-  (define-pel-global-prefix pel:for-odin (kbd "<f11> SPC O"))
+  (pel-setup-major-mode odin :no-ts
+    at-init:
+    (pel-install-github-files "pierre-rouleau/odin-mode/master"
+                              '("odin-mode.el" "main.odin"))
 
-  (pel-install-github-files "pierre-rouleau/odin-mode/master"
-                            '("odin-mode.el" "main.odin"))
-  (when pel-use-flycheck-odin
-    (pel-install-github-file "pierre-rouleau/flycheck-odin/master"
-                             "flycheck-odin.el")
-    (pel-eval-after-load odin-mode
-      (when (fboundp 'flycheck-odin-setup)
-        (eval-after-load 'flycheck
-          '(add-hook 'flycheck-mode-hook #'flycheck-odin-setup)))))
+    (pel-autoload-file odin-mode for: odin-mode)
+    (when pel-use-flycheck-odin
+      (pel-install-github-file "pierre-rouleau/flycheck-odin/master"
+                               "flycheck-odin.el"))
 
-  (pel-autoload-file odin-mode for: odin-mode)
-  (add-to-list 'auto-mode-alist '("\\.odin\\'" . odin-mode))
-  (pel-config-major-mode odin pel:for-odin :no-ts))
+    (define-pel-global-prefix pel:for-odin (kbd "<f11> SPC O"))
+    (add-to-list 'auto-mode-alist '("\\.odin\\'" . odin-mode))
+
+    after-feature-load:
+    (when (fboundp 'flycheck-odin-setup)
+      (eval-after-load 'flycheck
+        '(add-hook 'flycheck-mode-hook #'flycheck-odin-setup)))))
+
 ;; ---------------------------------------------------------------------------
 ;;** Python Programming Language Support
 ;;   -----------------------------------

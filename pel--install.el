@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-06 14:03:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-06 14:24:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1244,8 +1244,8 @@ TS-OPTION       Tree-sitter option, one of:
                        but no support for the classic mode
  - `:same-for-ts'    : when the tree-sitter-based mode derives from the normal
                        mode and PEL must support both.
- - `:independent-ts' : when the ts-sitter mode exists but does not derive from
-                       the normal mode and PEL must support both.
+ - `:independent-ts' : when the tree-sitter mode exists but does not derive
+                       from the normal mode and PEL must support both.
 
 ARGS            A sequence of marker-introduced sections:
 

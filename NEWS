@@ -145,6 +145,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Improvement: *do-applescript* no longer relies on the shell to execute the osascript command.
   - Fix: the first file opened in modes that support Tree-Sitter now open using the mode selected by the mode user-option; past version
     of the code honoured the user-option only on the second buffer opened form the major mode.
+  - Fix: setup of major mode for Odin programming language files.
 - Started writing extensive unit test code.  The goal is to cover all PEL Emacs Lisp code.  There is still much test code to write.
   PEL Emacs Lisp code byte and native compiled for most Emacs versions since Emacs 26.1 in Github CI system.
   No warnings detected by either compiler is allowed.
