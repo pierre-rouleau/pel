@@ -3165,6 +3165,8 @@ MODE must be a symbol."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-a`` :
 (when pel-use-arc
   (pel-setup-major-mode arc :no-ts
+    features: arc
+    ;; ---------------
     at-init:
     (pel-autoload-file arc for: arc-mode)
     (pel-autoload-file inferior-arc for: run-arc)
@@ -3236,161 +3238,169 @@ MODE must be a symbol."
 ;; that is part of Emacs.  All autoloading is already set by Emacs.  The only
 ;; extra code needed is to add the specialized menu and then activate it,
 ;; along with the specialized CC Mode minor modes via the c-mode-hook.
-
 (when pel-use-c
-  (define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
-  (define-pel-global-prefix pel:c-setup       (kbd "<f11> SPC c <f4>"))
-  (define-pel-global-prefix pel:c-eldoc       (kbd "<f11> SPC c <f4> d"))
-  (define-pel-global-prefix pel:c-guess       (kbd "<f11> SPC c <f4> g"))
-  (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
-  (define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
-  (define-pel-global-prefix pel:c-search-replace (kbd "<f11> SPC c s"))
+  (pel-setup-major-mode c :same-for-ts
+    features: cc-mode
+    ;; ---------------
+    at-init:
+    (define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
+    (define-pel-global-prefix pel:c-setup       (kbd "<f11> SPC c <f4>"))
+    (define-pel-global-prefix pel:c-eldoc       (kbd "<f11> SPC c <f4> d"))
+    (define-pel-global-prefix pel:c-guess       (kbd "<f11> SPC c <f4> g"))
+    (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
+    (define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
+    (define-pel-global-prefix pel:c-search-replace (kbd "<f11> SPC c s"))
 
-  (define-key pel:c-eldoc "d" 'eldoc-mode)
-  (define-key pel:c-eldoc "?" 'pel-eldoc-setup-info)
-  (when pel-use-c-eldoc
-    (pel-install-github-file "nflath/c-eldoc/master" "c-eldoc.el")
-    (pel-autoload-file c-eldoc for: c-turn-on-eldoc-mode)
-    (when (eq pel-use-c-eldoc 'use-from-start)
-      (declare-function c-turn-on-eldoc-mode "c-eldoc")
-      (add-hook 'c-mode-hook #'c-turn-on-eldoc-mode))
-    (define-key pel:c-eldoc "c" 'pel-toggle-c-eldoc-mode))
+    (when pel-use-c-eldoc
+      (pel-install-github-file "nflath/c-eldoc/master" "c-eldoc.el")
+      (pel-autoload-file c-eldoc for: c-turn-on-eldoc-mode)
+      (when (eq pel-use-c-eldoc 'use-from-start)
+        (declare-function c-turn-on-eldoc-mode "c-eldoc")
+        (add-hook 'c-mode-hook #'c-turn-on-eldoc-mode))
+      (define-key pel:c-eldoc "c" 'pel-toggle-c-eldoc-mode))
+    (define-key pel:c-eldoc "d" 'eldoc-mode)
+    (define-key pel:c-eldoc "?" 'pel-eldoc-setup-info)
 
-  ;; Add extra key bindings specific to the C mode
-  (define-key pel:c-setup "#" 'c-toggle-cpp-indent-to-body)
-  (when pel-use-plantuml
-    (define-key pel:for-c "u" 'pel-render-commented-plantuml))
+    ;; Add extra key bindings specific to the C mode
+    (define-key pel:c-setup "#" 'c-toggle-cpp-indent-to-body)
+    (when pel-use-plantuml
+      (define-key pel:for-c "u" 'pel-render-commented-plantuml))
 
-  (when pel-use-call-graph
-    (define-key pel:for-c (kbd "M-g") 'call-graph))
+    (when pel-use-call-graph
+      (define-key pel:for-c (kbd "M-g") 'call-graph))
 
-  (when pel-use-bison
-    (pel-ensure-package-elpa bison-mode from: melpa)
-    ;; the bison-mode file associates: .y -> bison-mode
-    ;;                                 .l -> flex-mode
-    ;;                                 .jison -> jison-mode
-    ;; add missing associations
-    (pel-set-auto-mode bison-mode for: "\\.yacc\\'")
-    (pel-set-auto-mode flex-mode for:  "\\.lex\\'")
-    ;; and add speedbar support when activated
-    (when pel-use-speedbar
-      (pel-add-speedbar-extension '(".y"
-                                    ".yacc"
-                                    ".lex"
-                                    ".l"
-                                    ".jison"))))
+    (when pel-use-bison
+      (pel-ensure-package-elpa bison-mode from: melpa)
+      ;; the bison-mode file associates: .y -> bison-mode
+      ;;                                 .l -> flex-mode
+      ;;                                 .jison -> jison-mode
+      ;; add missing associations
+      (pel-set-auto-mode bison-mode for: "\\.yacc\\'")
+      (pel-set-auto-mode flex-mode for:  "\\.lex\\'")
+      ;; and add speedbar support when activated
+      (when pel-use-speedbar
+        (pel-add-speedbar-extension '(".y"
+                                      ".yacc"
+                                      ".lex"
+                                      ".l"
+                                      ".jison"))))
 
-  (declare-function pel--install-c-skel "pel-skels-c")
-  (defvar pel-c-man-section)       ; prevent byte-compiler warning in Emacs 26
-  (pel-eval-after-load cc-mode
+    (declare-function pel--install-c-skel "pel-skels-c")
+    (defvar pel-c-man-section)     ; prevent byte-compiler warning in Emacs 26
+
+    ;; ---------------
+    after-feature-load:
     (pel--map-cc-for pel:for-c
                      pel:c-setup
                      pel:c-guess
                      pel:for-c-preproc
                      pel:c-search-replace)
-    (pel-config-major-mode c pel:for-c :same-for-ts
-      (defvar c-mode-map)    ; declare dynamic: prevent byte-compiler warnings
-      (define-key c-mode-map (kbd "M-;") 'pel-c-comment-dwim)
+    ;; Activate extra C styles
+    (when pel-use-linux-kernel-code-style-support
+      (declare-function pel-linux-kernel-code-style-setup "pel-cc-linux-kernel")
+      (pel-linux-kernel-code-style-setup)
+      (define-key pel:for-c (kbd "M-k") 'pel-linux-kernel-code-style))
 
-      ;; Configure the CC Mode style for C from PEL custom variables
-      ;; 1) set the style: it identifies everything
-      (pel--set-cc-style 'c-mode pel-c-bracket-style pel-c-newline-mode)
-      ;; 2) apply modifications requested by PEL user options.
-      ;;    set variables only available in a CC mode with PEL
-      ;;     user-options unless the file-variable sets it.
-      (unless (assoc 'c-basic-offset file-local-variables-alist)
-        (pel-setq-local c-basic-offset pel-c-indent-width))
-      (when (and (boundp 'c-ts-mode-indent-offset)
-                 (not (assoc 'c-ts-mode-indent-offset
-                             file-local-variables-alist)))
-        (setq-local c-ts-mode-indent-offset pel-c-indent-width))
-      ;; 3) set fill-column to PEL specified C's default if specified
-      (when pel-c-fill-column
-        (setq-local fill-column pel-c-fill-column))
-      ;; 4) Set default auto-newline mode as identified by PEL user option
-      (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-      ;; 5) Configure M-( to put parentheses after a function name.
-      (set (make-local-variable 'parens-require-spaces) nil)
-      ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
-      (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
-      ;; 7) Install language-specific skeletons
-      (pel--install-c-skel pel:c-skel)
-      ;; 8) extra setup
-      (pel--setup-for-cc)
-      (setq-local pel-indentation-width-control-variables
-                  '(pel-c-indent-width c-basic-offset))
-      (setq-local pel-indentation-other-control-variables
-                  '(c-syntactic-indentation))
-      ;; 9) Activate Language server of choice
-      (when (and pel-use-emacs-ccls-for-c
-                 (fboundp 'lsp))
-        (lsp))
-      ;; 10) Activate man section for C
-      (setq-local pel-c-man-section "3")))
+    ;; ---------------
+    when-buffer-opens:
+    (defvar c-mode-map)      ; declare dynamic: prevent byte-compiler warnings
+    (define-key c-mode-map (kbd "M-;") 'pel-c-comment-dwim)
 
-  ;; Activate extra C styles
-  (when pel-use-linux-kernel-code-style-support
-    (declare-function pel-linux-kernel-code-style-setup "pel-cc-linux-kernel")
-    (pel-linux-kernel-code-style-setup)
-    (define-key pel:for-c (kbd "M-k") 'pel-linux-kernel-code-style)))
+    ;; Configure the CC Mode style for C from PEL custom variables
+    ;; 1) set the style: it identifies everything
+    (pel--set-cc-style 'c-mode pel-c-bracket-style pel-c-newline-mode)
+    ;; 2) apply modifications requested by PEL user options.
+    ;;    set variables only available in a CC mode with PEL
+    ;;     user-options unless the file-variable sets it.
+    (unless (assoc 'c-basic-offset file-local-variables-alist)
+      (pel-setq-local c-basic-offset pel-c-indent-width))
+    (when (and (boundp 'c-ts-mode-indent-offset)
+               (not (assoc 'c-ts-mode-indent-offset
+                           file-local-variables-alist)))
+      (setq-local c-ts-mode-indent-offset pel-c-indent-width))
+    ;; 3) set fill-column to PEL specified C's default if specified
+    (when pel-c-fill-column
+      (setq-local fill-column pel-c-fill-column))
+    ;; 4) Set default auto-newline mode as identified by PEL user option
+    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+    ;; 5) Configure M-( to put parentheses after a function name.
+    (set (make-local-variable 'parens-require-spaces) nil)
+    ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
+    (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
+    ;; 7) Install language-specific skeletons
+    (pel--install-c-skel pel:c-skel)
+    ;; 8) extra setup
+    (pel--setup-for-cc)
+    (setq-local pel-indentation-width-control-variables
+                '(pel-c-indent-width c-basic-offset))
+    (setq-local pel-indentation-other-control-variables
+                '(c-syntactic-indentation))
+    ;; 9) Activate Language server of choice
+    (when (and pel-use-emacs-ccls-for-c
+               (fboundp 'lsp))
+      (lsp))
+    ;; 10) Activate man section for C
+    (setq-local pel-c-man-section "3")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** C++ Programming Language Support
 ;;   --------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C`` :
-
 ;; Note: C++ editing is always available in Emacs via the CC Mode and the
 ;; c++-mode that is part of Emacs.  All autoloading is already set by Emacs.
 ;; The only extra code needed is to add the specialized menu and then activate
 ;; it, along with the specialized CC Mode minor modes via the c++-mode-hook.
-
 (when pel-use-c++
-  (define-pel-global-prefix pel:for-c++         (kbd "<f11> SPC C"))
-  (define-pel-global-prefix pel:c++-setup       (kbd "<f11> SPC C <f4>"))
-  (define-pel-global-prefix pel:c++-guess       (kbd "<f11> SPC C <f4> g"))
-  (define-pel-global-prefix pel:for-c++-preproc (kbd "<f11> SPC C #"))
-  (define-pel-global-prefix pel:c++-skel        (kbd "<f11> SPC C <f12>"))
-  (define-pel-global-prefix pel:c++-search-replace (kbd "<f11> SPC C s"))
+  (pel-setup-major-mode c++ :same-for-ts
+    features: cc-mode
+    ;; ---------------
+    at-init:
+    (define-pel-global-prefix pel:for-c++         (kbd "<f11> SPC C"))
+    (define-pel-global-prefix pel:c++-setup       (kbd "<f11> SPC C <f4>"))
+    (define-pel-global-prefix pel:c++-guess       (kbd "<f11> SPC C <f4> g"))
+    (define-pel-global-prefix pel:for-c++-preproc (kbd "<f11> SPC C #"))
+    (define-pel-global-prefix pel:c++-skel        (kbd "<f11> SPC C <f12>"))
+    (define-pel-global-prefix pel:c++-search-replace (kbd "<f11> SPC C s"))
 
-  ;; PEL code deals with the language name extracted from the
-  ;; LANG-ts-mode major mode name.  For C++, this is c++.
-  ;; That means that PEL code will use (treesit-ready-p 'c++)
-  ;; to detect if the Tree-Sitter is ready for C++.
-  ;; However, Emacs uses 'cpp' for the Tree-Sitter language name for C++.
-  ;; Normally they will all be the same, but in this case they differ.
-  ;; To allow PEL code to work we must associate c++ to cpp
-  ;; in the `treesit-load-name-override-list'
-  (when (boundp 'treesit-load-name-override-list)
-    (add-to-list 'treesit-load-name-override-list
-                 '(c++ "libtree-sitter-cpp" "tree_sitter_cpp")))
+    ;; PEL code deals with the language name extracted from the
+    ;; LANG-ts-mode major mode name.  For C++, this is c++.
+    ;; That means that PEL code will use (treesit-ready-p 'c++)
+    ;; to detect if the Tree-Sitter is ready for C++.
+    ;; However, Emacs uses 'cpp' for the Tree-Sitter language name for C++.
+    ;; Normally they will all be the same, but in this case they differ.
+    ;; To allow PEL code to work we must associate c++ to cpp
+    ;; in the `treesit-load-name-override-list'
+    (when (boundp 'treesit-load-name-override-list)
+      (add-to-list 'treesit-load-name-override-list
+                   '(c++ "libtree-sitter-cpp" "tree_sitter_cpp")))
 
+    (when pel-use-speedbar
+      ;; Add extensions not already covered by default Emacs code
+      (pel-add-speedbar-extension '(".cc"
+                                    ".C"
+                                    ".CC"
+                                    ".hh"
+                                    ".HH"
+                                    ".ii"
+                                    ".inl"
+                                    ".icc")))
+    ;; Add auto support for extensions not supported by default
+    (pel-set-auto-mode c++-mode for:
+                       "\\.inl\\'"
+                       "\\.icc\\'")
 
-  (when pel-use-speedbar
-    ;; Add extensions not already covered by default Emacs code
-    (pel-add-speedbar-extension '(".cc"
-                                  ".C"
-                                  ".CC"
-                                  ".hh"
-                                  ".HH"
-                                  ".ii"
-                                  ".inl"
-                                  ".icc")))
-                                        ; Add auto support for extensions not supported by default
-  (pel-set-auto-mode c++-mode for:
-                     "\\.inl\\'"
-                     "\\.icc\\'")
+    ;; Add extra key bindings specific to the C++ mode
+    (when pel-use-plantuml
+      (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
+    (when pel-use-call-graph
+      (define-key pel:for-c++ (kbd "M-g") 'call-graph))
 
-  ;; Add extra key bindings specific to the C++ mode
-  (when pel-use-plantuml
-    (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
-  (when pel-use-call-graph
-    (define-key pel:for-c++ (kbd "M-g") 'call-graph))
+    ;; Add C++ specific commands
+    (defvar pel-c++-man-section)   ; prevent byte-compiler warning in Emacs 26
+    (declare-function pel--install-c++-skel "pel-skels-cpp")
 
-  ;; Add C++ specific commands
-  (defvar pel-c++-man-section)     ; prevent byte-compiler warning in Emacs 26
-  (declare-function pel--install-c++-skel "pel-skels-cpp")
-
-  (pel-eval-after-load cc-mode
+    ;; ---------------
+    after-feature-load:
     (pel--map-cc-for pel:for-c++
                      pel:c++-setup
                      pel:c++-guess
@@ -3399,44 +3409,45 @@ MODE must be a symbol."
     (define-key pel:c++-search-replace (kbd "v") 'pel-move-down-to-class-visibility)
     (define-key pel:c++-search-replace (kbd "V") 'pel-move-up-to-class-visibility)
 
-    (pel-config-major-mode c++ pel:for-c++ :same-for-ts
-      ;; "Set the environment for editing C++ files."
-      ;; Configure the CC Mode style for C++ from PEL custom variables
-      ;; 1) set the style: it identifies everything
-      (pel--set-cc-style 'c++-mode pel-c++-bracket-style pel-c++-newline-mode)
-      ;; 2)  apply modifications requested by PEL user options.
-      ;;     set variables only available in a CC mode with PEL
-      ;;     user-options unless the file-variable sets it.
-      (unless (assoc 'c-basic-offset file-local-variables-alist)
-        (pel-setq c-basic-offset pel-c++-indent-width))
-      (when (and (boundp 'c-ts-mode-indent-offset)
-                 (not (assoc c-ts-mode-indent-offset
-                             file-local-variables-alist)))
-        ;; Note C++ Tree Sitter uses c-ts-mode-indent-offset not c++-ts....
-        (setq-local c-ts-mode-indent-offset pel-c++-indent-width))
-      ;; 3) set fill-column to PEL specified C++'s default if specified
-      (when pel-c++-fill-column
-        (setq fill-column pel-c++-fill-column))
-      ;; 4) Set default auto-newline mode as identified by PEL user option
-      (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-      ;; 5) Configure M-( to put parentheses after a function name.
-      (set (make-local-variable 'parens-require-spaces) nil)
-      ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
-      (pel-local-set-f12-M-f12 'pel:for-c++-preproc "#")
-      ;; 7) Install language-specific skeletons
-      (pel--install-c++-skel pel:c++-skel)
-      ;; 8) extra setup
-      (pel--setup-for-cc)
-      (setq-local pel-indentation-width-control-variables
-                  '(pel-c++-indent-width c-basic-offset))
-      (setq-local pel-indentation-other-control-variables
-                  '(c-syntactic-indentation))
-      ;; 9) Activate Language server of choice
-      (when (and pel-use-emacs-ccls-for-c++
-                 (fboundp 'lsp))
-        (lsp))
-      ;; 10) Activate man section for C++
-      (setq-local pel-c++-man-section "3"))))
+    ;; ---------------
+    when-buffer-opens:
+    ;; "Set the environment for editing C++ files."
+    ;; Configure the CC Mode style for C++ from PEL custom variables
+    ;; 1) set the style: it identifies everything
+    (pel--set-cc-style 'c++-mode pel-c++-bracket-style pel-c++-newline-mode)
+    ;; 2)  apply modifications requested by PEL user options.
+    ;;     set variables only available in a CC mode with PEL
+    ;;     user-options unless the file-variable sets it.
+    (unless (assoc 'c-basic-offset file-local-variables-alist)
+      (pel-setq c-basic-offset pel-c++-indent-width))
+    (when (and (boundp 'c-ts-mode-indent-offset)
+               (not (assoc c-ts-mode-indent-offset
+                           file-local-variables-alist)))
+      ;; Note C++ Tree Sitter uses c-ts-mode-indent-offset not c++-ts....
+      (setq-local c-ts-mode-indent-offset pel-c++-indent-width))
+    ;; 3) set fill-column to PEL specified C++'s default if specified
+    (when pel-c++-fill-column
+      (setq fill-column pel-c++-fill-column))
+    ;; 4) Set default auto-newline mode as identified by PEL user option
+    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+    ;; 5) Configure M-( to put parentheses after a function name.
+    (set (make-local-variable 'parens-require-spaces) nil)
+    ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
+    (pel-local-set-f12-M-f12 'pel:for-c++-preproc "#")
+    ;; 7) Install language-specific skeletons
+    (pel--install-c++-skel pel:c++-skel)
+    ;; 8) extra setup
+    (pel--setup-for-cc)
+    (setq-local pel-indentation-width-control-variables
+                '(pel-c++-indent-width c-basic-offset))
+    (setq-local pel-indentation-other-control-variables
+                '(c-syntactic-indentation))
+    ;; 9) Activate Language server of choice
+    (when (and pel-use-emacs-ccls-for-c++
+               (fboundp 'lsp))
+      (lsp))
+    ;; 10) Activate man section for C++
+    (setq-local pel-c++-man-section "3")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** C3 Programming Language Support
@@ -3481,7 +3492,6 @@ MODE must be a symbol."
     (define-key pel:for-c3 (kbd "M-t") 'pel-set-tab-width)
     (define-key pel:for-c3 "c"         'pel-c3-compile)
     ;; (define-key pel:for-c3 (kbd "M-s") 'pel-c3-toggle-format-on-buffer-save)
-
     ;; 5- Install optional packages for C3
 
     ;; ---------------
@@ -4675,6 +4685,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-F`` :
 (when pel-use-fortran
   (pel-setup-major-mode fortran :no-ts
+    features: fortran
     at-init:
     ;; 1- Fortran support is built-in.
     ;;    No installation required for classic mode.
@@ -4690,6 +4701,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC F`` :
 (when pel-use-f90
   (pel-setup-major-mode f90 :no-ts
+    features: f90
     at-init:
     ;; 1- Fortran 90 support is built-in.
     ;;    No installation required for classic mode.

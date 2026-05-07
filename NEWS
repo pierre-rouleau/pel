@@ -73,6 +73,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 - Improve startup speed by deferring more code to the moment a major mode feature is loaded.
 - Update programming language support:
+  - Arc: fix the ~<f12>~ key settings.
   - cc-mode (C, C++, Objective-C, ...):
     - Improve *pel-cc-mode-info*: shows useful key bindings related to RET mode and hungry delete commands and
       shows the value of *pel-c-multiline-comments* for c-mode buffers.
@@ -87,6 +88,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - FORTRAN:
     - PEL now distinguish between fixed-format FORTRAN (like FORTRAN-77) now supported by *pel-use-fortran* and
       free format FORMAT (like FORTRAN-90) now supported by the new *pel-use-f90* user-option.
+    - Also properly provide the ~<f12>~ key prefix.
   - Go:
     - Fix: pel-go-gofmt-on-buffer-save only hooked on go buffers, not all.
     - Fix: Tree-Sitter mode activation for first file opened.
