@@ -79,7 +79,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       shows the value of *pel-c-multiline-comments* for c-mode buffers.
     - Improved *pel-cc-set-indent-width*: the prompt now shows the currently used indentation width.
   - C & C++:
-    - Tree-Sitter modes support for C and C++ now support the ~<f12>~ key properly.
+    - Tree-Sitter modes support for C and C++ now support the ~<f12>~ key properly and activate
+      on the first file opened.
   -  CommonLisp:
     - CommonLisp supports the .clisp file extension.
   - Erlang:

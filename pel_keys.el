@@ -3240,7 +3240,7 @@ MODE must be a symbol."
 ;; along with the specialized CC Mode minor modes via the c-mode-hook.
 (when pel-use-c
   (pel-setup-major-mode c :same-for-ts
-    features: cc-mode
+    features: (cc-mode c-ts-mode)
     ;; ---------------
     at-init:
     (define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
@@ -3352,7 +3352,7 @@ MODE must be a symbol."
 ;; it, along with the specialized CC Mode minor modes via the c++-mode-hook.
 (when pel-use-c++
   (pel-setup-major-mode c++ :same-for-ts
-    features: cc-mode
+    features: (cc-mode c++-ts-mode)
     ;; ---------------
     at-init:
     (define-pel-global-prefix pel:for-c++         (kbd "<f11> SPC C"))
