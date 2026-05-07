@@ -11502,13 +11502,14 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 ;; Fortran support
 ;; ---------------
 (defgroup pel-pkg-for-fortran nil
-  "PEL customization for Fortran."
+  "PEL customization for FORTRAN."
   :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Fortran PDF"
                    ,(pel-pdf-file-url "pl-fortran")))
 
 (defcustom pel-use-fortran nil
-  "Control whether PEL supports the Fortran programming language."
+  "Control whether PEL supports the fixed format FORTRAN programming language.
+This corresponds to FORTRAN-77 and similar."
   :group 'pel-pkg-for-fortran
   :type 'boolean
   :safe #'booleanp)
@@ -11544,6 +11545,16 @@ Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-fortran
   :type 'boolean
   :safe #'booleanp)
+
+
+;; --
+(defcustom pel-use-f90 nil
+  "Control whether PEL supports the free-format FORTRAN programming language.
+This corresponds to FORTRAN-90 and later."
+  :group 'pel-pkg-for-fortran
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put pel-use-f90 :package-is :a-gate)
 
 (defcustom pel-f90-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for F90 buffers.
@@ -11809,14 +11820,22 @@ Values in the [2, 8] range are accepted."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-m2-activates-minor-modes nil
+;; Backward-compatibility aliases for renamed Modula-2 options.
+(define-obsolete-variable-alias 'pel-m2-activates-minor-modes
+  'pel-modula-2-activates-minor-modes "0.5.0")
+(define-obsolete-variable-alias 'pel-m2-use-tabs
+  'pel-modula-2-use-tabs "0.5.0")
+(define-obsolete-variable-alias 'pel-m2-tab-width
+  'pel-modula-2-tab-width "0.5.0")
+
+(defcustom pel-modula-2-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Modula2 buffers.
 Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-modula-2
   :type '(repeat function))
 
-(defcustom pel-m2-use-tabs nil
+(defcustom pel-modula-2-use-tabs nil
   "Value of `indent-tabs-mode' for editing modula2 files.
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
@@ -11824,7 +11843,7 @@ Do not enter lambda expressions."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-m2-tab-width 4
+(defcustom pel-modula-2-tab-width 4
   "Number of columns rendered in a buffer for a tab in Modula2 buffers."
   :group 'pel-pkg-for-modula-2
   :type 'integer

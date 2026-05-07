@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-05 13:59:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-07 17:58:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -466,7 +466,7 @@
                                                                  eldoc-box
                                                                  eglot))
 
-    (,(kbd "<f11> SPC C-a")             pel-pkg-for-arc         ,pel--arc-groups)
+    (,(kbd "<f11> SPC C-a")  "pl-arc"   pel-pkg-for-arc         ,pel--arc-groups)
     ([f11 32 ?A]     "pl-ada"           pel-pkg-for-ada         (ada ada-ts))
     ([f11 32 ?8]     "pl-algol"         pel-pkg-for-algol       a68)
     ([f11 32 ?a]     "pl-applescript"   pel-pkg-for-applescript apples)
@@ -501,7 +501,8 @@
     (,(kbd "<f11> SPC M-f") "pl-factor" pel-pkg-for-factor      factor)
     ([f11 32 27 ?f]         "pl-factor" pel-pkg-for-factor      factor)
     ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth       ,pel--forth-groups)
-    ([f11 32 ?F]     "pl-fortran"       pel-pkg-for-fortran     fortran)
+    ([f11 32 ?F]     "pl-fortran"       pel-pkg-for-fortran     fortran) ; FORTRAN-90
+    (,(kbd "<f11> SPC M-F") "pl-fortran" pel-pkg-for-fortran    fortran) ; FORTRAN-77
     (,(kbd "<f11> SPC M-G") "pl-gleam"  pel-pkg-for-gleam       gleam-ts)
     ([f11 32 27 ?G]         "pl-gleam"  pel-pkg-for-gleam       gleam-ts)
     ([f11 32 ?g]     "pl-go"            pel-pkg-for-go          ,pel--go-groups)
@@ -908,7 +909,7 @@ stored inside the doc/pdf directory.")
     ("erlang-ts"           [f11 32 ?e])
     ("factor"              [f11 32 27 ?f])
     ("forth"               [f11 32 ?f])
-    ("fortran"             [f11 32 ?F])
+    ("fortran"             [f11 32 27 ?F])
     ("f90"                 [f11 32 ?F])
     ("gleam"               [f11 32 27 ?G])
     ("gleam-ts"            [f11 32 27 ?G])

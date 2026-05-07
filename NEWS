@@ -73,17 +73,26 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 - Improve startup speed by deferring more code to the moment a major mode feature is loaded.
 - Update programming language support:
+  - Arc: fix the ~<f12>~ key settings.
   - cc-mode (C, C++, Objective-C, ...):
     - Improve *pel-cc-mode-info*: shows useful key bindings related to RET mode and hungry delete commands and
       shows the value of *pel-c-multiline-comments* for c-mode buffers.
     - Improved *pel-cc-set-indent-width*: the prompt now shows the currently used indentation width.
   - C & C++:
-    - Tree-Sitter modes support for C and C++ now support the ~<f12>~ key properly.
+    - Tree-Sitter modes support for C and C++ now support the ~<f12>~ key properly and activate
+      on the first file opened.
   -  CommonLisp:
     - CommonLisp supports the .clisp file extension.
   - Erlang:
     - Fix *pel-erlang-version* when automatic detection is used.
     - Improved *pel-show-erlang-version*: it now prints information inside a help type buffer with buttons to access customization of the user-options.
+  - FORTRAN:
+    - PEL now distinguish between fixed-format FORTRAN (like FORTRAN-77) now supported by *pel-use-fortran* and
+      free format FORMAT (like FORTRAN-90) now supported by the new *pel-use-f90* user-option.
+    - Also properly provide the ~<f12>~ key prefix.
+  - Go:
+    - Fix: pel-go-gofmt-on-buffer-save only hooked on go buffers, not all.
+    - Fix: Tree-Sitter mode activation for first file opened.
   - Java:
     - Now properly setup for Tree-Sitter based major-mode.
   - Pike:
@@ -145,6 +154,15 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Improvement: *do-applescript* no longer relies on the shell to execute the osascript command.
   - Fix: the first file opened in modes that support Tree-Sitter now open using the mode selected by the mode user-option; past version
     of the code honoured the user-option only on the second buffer opened form the major mode.
+  - Fix: setup of major mode for Odin programming language files.
+  - Change: for Modula-2 support, renamed the following user-options:
+    - pel-m2-activates-minor-modes to pel-modula-2-activates-minor-modes
+    - pel-m2-use-tabs to pel-modula-2-use-tabs
+    - pel-m2-tab-width to pel-modula-2-tab-width
+    - The old variable defcustom names are still available via aliases until version 0.5.0.
+  - Fix: corruption of flycheck control in code that was adding the flycheck-rust-setup to flycheck-mode-hook executed when pel-use-rust
+    was active.  It is now properly handled in the scope of Rust modes only.
+  - Fix: key binding for Smalltalk that previously was hijacked by Swift's.
 - Started writing extensive unit test code.  The goal is to cover all PEL Emacs Lisp code.  There is still much test code to write.
   PEL Emacs Lisp code byte and native compiled for most Emacs versions since Emacs 26.1 in Github CI system.
   No warnings detected by either compiler is allowed.
