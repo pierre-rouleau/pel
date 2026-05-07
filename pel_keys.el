@@ -3439,65 +3439,67 @@ MODE must be a symbol."
 ;;   -------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-C`` :
 (when pel-use-c3
-  ;; 1 - Install required package for C3
-  (pel-install-github-file "c3lang/c3-ts-mode/master"
-                           "c3-ts-mode.el")
-  (pel-autoload-file c3-ts-mode for: c3-ts-mode)
+  (pel-setup-major-mode c3 :ts-only
+    ;; ---------------
+    at-init:
+    ;; 1 - Install required package for C3
+    (pel-install-github-file "c3lang/c3-ts-mode/master" "c3-ts-mode.el")
+    (pel-autoload-file c3-ts-mode for: c3-ts-mode)
 
-  ;; 1.1 - Install tree-sitter language grammar for C3 if missing.
-  (when (and (fboundp 'treesit-language-available-p)
-             (fboundp 'treesit-install-language-grammar)
-             (boundp  'treesit-language-source-alist))
-    (unless (treesit-language-available-p 'c3)
-      (add-to-list 'treesit-language-source-alist
-                   '(c3 "https://github.com/c3lang/tree-sitter-c3"))
-      (treesit-install-language-grammar 'c3
-                                        (expand-file-name
-                                         "tree-sitter"
-                                         user-emacs-directory))))
-  ;; 1.2 Identify the language for LSP server
-  (pel-eval-after-load lsp-mode
-    (when (boundp 'lsp-language-id-configuration)
-      (add-to-list 'lsp-language-id-configuration '(c3-ts-mode . "c3"))))
+    ;; 1.1 - Install tree-sitter language grammar for C3 if missing.
+    (when (and (fboundp 'treesit-language-available-p)
+               (fboundp 'treesit-install-language-grammar)
+               (boundp  'treesit-language-source-alist))
+      (unless (treesit-language-available-p 'c3)
+        (add-to-list 'treesit-language-source-alist
+                     '(c3 "https://github.com/c3lang/tree-sitter-c3"))
+        (treesit-install-language-grammar 'c3
+                                          (expand-file-name
+                                           "tree-sitter"
+                                           user-emacs-directory))))
+    ;; 1.2 Identify the language for LSP server
+    (pel-eval-after-load lsp-mode
+      (when (boundp 'lsp-language-id-configuration)
+        (add-to-list 'lsp-language-id-configuration '(c3-ts-mode . "c3"))))
 
-  ;; 2- Associate files with C3 mode selector
-  (add-to-list 'auto-mode-alist '("\\.c3[it]?\\'" . c3-ts-mode))
+    ;; 2- Associate files with C3 mode selector
+    (add-to-list 'auto-mode-alist '("\\.c3[it]?\\'" . c3-ts-mode))
 
-  ;; 3- Speedbar support for C3
-  (when pel-use-speedbar (pel-add-speedbar-extension ".c3[it]?"))
+    ;; 3- Speedbar support for C3
+    (when pel-use-speedbar (pel-add-speedbar-extension ".c3[it]?"))
 
-  ;; 4- Buffer keymap for C3
-  (define-pel-global-prefix pel:for-c3   (kbd "<f11> SPC M-C"))
-  (define-pel-global-prefix pel:c3-setup (kbd "<f11> SPC M-C <f4>"))
-  ;; (define-pel-global-prefix pel:c3-guess (kbd "<f11> SPC M-C <f4> g"))
-  (define-key pel:c3-setup (kbd "M-;")   'pel-select-c3-comment-style)
-  (define-key pel:for-c3 "?"         'pel-c3-setup-info)
-  (define-key pel:for-c3 (kbd "M-t") 'pel-set-tab-width)
-  (define-key pel:for-c3 "c"         'pel-c3-compile)
-  ;; (define-key pel:for-c3 (kbd "M-s") 'pel-c3-toggle-format-on-buffer-save)
+    ;; 4- Buffer keymap for C3
+    (define-pel-global-prefix pel:for-c3   (kbd "<f11> SPC M-C"))
+    (define-pel-global-prefix pel:c3-setup (kbd "<f11> SPC M-C <f4>"))
+    ;; (define-pel-global-prefix pel:c3-guess (kbd "<f11> SPC M-C <f4> g"))
+    (define-key pel:c3-setup (kbd "M-;")   'pel-select-c3-comment-style)
+    (define-key pel:for-c3 "?"         'pel-c3-setup-info)
+    (define-key pel:for-c3 (kbd "M-t") 'pel-set-tab-width)
+    (define-key pel:for-c3 "c"         'pel-c3-compile)
+    ;; (define-key pel:for-c3 (kbd "M-s") 'pel-c3-toggle-format-on-buffer-save)
 
-  ;; 5- Install optional packages for C3
+    ;; 5- Install optional packages for C3
 
-  ;; 6- Activate C3 setup.
-  ;;    Schedule more configuration upon C3 feature loading
-  ;;
-  (pel-eval-after-load c3-ts-mode
+    ;; ---------------
+    after-feature-load:
     (pel--map-cc-for pel:for-c3 pel:c3-setup)
-    (pel-config-major-mode c3 pel:for-c3 :ts-only
-      ;; Update the treesit font lock level to what is identified by PEL
-      ;; options and update the rendering of the current buffer.
-      ;; This way the setting does not affect other buffers that use other
-      ;; tree-sitter based major modes.
-      (when (and
-             (boundp 'treesit-font-lock-level)
-             (fboundp 'treesit-font-lock-recompute-features)
-             (fboundp 'font-lock-update))
-        (setq-local treesit-font-lock-level pel-c3-treesit-font-lock-level)
-        (treesit-font-lock-recompute-features)
-        (font-lock-update))
-      ;; Set default C3 language control values - Drive from PEL options.
-      (when (boundp 'c3-ts-mode-indent-offset)
-        (setq c3-ts-mode-indent-offset pel-c3-indent-width)))))
+
+    ;; ---------------
+    when-buffer-opens:
+    ;; Update the treesit font lock level to what is identified by PEL
+    ;; options and update the rendering of the current buffer.
+    ;; This way the setting does not affect other buffers that use other
+    ;; tree-sitter based major modes.
+    (when (and
+           (boundp 'treesit-font-lock-level)
+           (fboundp 'treesit-font-lock-recompute-features)
+           (fboundp 'font-lock-update))
+      (setq-local treesit-font-lock-level pel-c3-treesit-font-lock-level)
+      (treesit-font-lock-recompute-features)
+      (font-lock-update))
+    ;; Set default C3 language control values - Drive from PEL options.
+    (when (boundp 'c3-ts-mode-indent-offset)
+      (setq c3-ts-mode-indent-offset pel-c3-indent-width))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Common Lisp Programming Language Support
@@ -5297,79 +5299,82 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ----------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-o`` :
 (when pel-use-objc
-  (define-pel-global-prefix pel:for-objc            (kbd "<f11> SPC C-o"))
-  (define-pel-global-prefix pel:objc-setup          (kbd "<f11> SPC C-o <f4>"))
-  (define-pel-global-prefix pel:objc-guess          (kbd "<f11> SPC C-o <f4> g"))
-  (define-pel-global-prefix pel:for-objc-preproc    (kbd "<f11> SPC C-o #"))
-  (define-pel-global-prefix pel:objc-search-replace (kbd "<f11> SPC C-o s"))
+  ;; Objective-C support is builtin Emacs, provided by cc-mode.
+  (pel-setup-major-mode objc :no-ts
+    features: cc-mode
+    ;; ----------------
+    at-init:
+    (define-pel-global-prefix pel:for-objc            (kbd "<f11> SPC C-o"))
+    (define-pel-global-prefix pel:objc-setup          (kbd "<f11> SPC C-o <f4>"))
+    (define-pel-global-prefix pel:objc-guess          (kbd "<f11> SPC C-o <f4> g"))
+    (define-pel-global-prefix pel:for-objc-preproc    (kbd "<f11> SPC C-o #"))
+    (define-pel-global-prefix pel:objc-search-replace (kbd "<f11> SPC C-o s"))
+    (when pel-use-objc-font-lock
+      (pel-install-github-file "pierre-rouleau/objc-font-lock/master/"
+                               "objc-font-lock.el")
+      (pel-autoload-file objc-font-lock for:
+                         objc-font-lock-mode
+                         objc-font-lock-global-mode)
+      (define-key pel:for-objc (kbd "M-F") 'objc-font-lock-mode))
+    (when pel-use-flycheck-objc-clang
+      (pel-ensure-package-elpa flycheck-objc-clang from: melpa))
 
-  ;; [:todo 2025-04-27, by Pierre Rouleau: Activate skeletons]
-  ;; (define-pel-global-prefix pel:objc-skel (kbd "<f11> SPC C-o <f12>"))
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".m" ".mm" ".M")))
 
-  (when pel-use-flycheck-objc-clang
-    (pel-ensure-package-elpa flycheck-objc-clang from: melpa)
-    (when pel-use-flycheck
-      (with-eval-after-load 'flycheck
-        (when (fboundp 'flycheck-objc-clang-setup)
-          (add-hook 'flycheck-mode-hook #'flycheck-objc-clang-setup)))))
-
-  (when pel-use-objc-font-lock
-    (pel-install-github-file "pierre-rouleau/objc-font-lock/master/"
-                             "objc-font-lock.el")
-    (pel-autoload-file objc-font-lock for:
-                       objc-font-lock-mode
-                       objc-font-lock-global-mode)
-    (define-key pel:for-objc (kbd "M-F") 'objc-font-lock-mode))
-
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".m"
-                                  ".mm"
-                                  ".M")))
-
-  (pel-eval-after-load cc-mode
+    ;; ----------------
+    after-feature-load:
     (pel--map-cc-for pel:for-objc
                      pel:objc-setup
                      pel:objc-guess
                      pel:for-objc-preproc
                      pel:objc-search-replace)
-    (pel-config-major-mode objc pel:for-objc :no-ts
-      ;; (define-key objc-mode-map (kbd "M-;") 'pel-c-comment-dwim)
 
-      ;; [:todo 2025-04-27, by Pierre Rouleau: Activate skeletons]
-      ;; activate skeletons
+    ;; ----------------
+    when-buffer-opens:
+    ;; (define-key objc-mode-map (kbd "M-;") 'pel-c-comment-dwim)
 
-      ;; Configure the CC Mode style for Objective-C from PEL custom variables
-      ;; 1) set the style: it identifies everything
-      (pel--set-cc-style 'objc-mode pel-objc-bracket-style pel-objc-newline-mode)
-      ;; 2) apply modifications requested by PEL user options.
-      ;;    set variables only available in a CC mode with PEL
-      ;;     user-options unless the file-variable sets it.
-      (unless (assoc 'c-basic-offset file-local-variables-alist)
-        (pel-setq-local c-basic-offset pel-objc-indent-width))
-      ;; 3) set fill-column to PEL specified Objective-C's default if specified
-      (when pel-objc-fill-column
-        (setq-local fill-column pel-objc-fill-column))
-      ;; 4) Set default auto-newline mode as identified by PEL user option
-      (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-      ;; 5) Configure M-( to put parentheses after a function name.
-      (set (make-local-variable 'parens-require-spaces) nil)
-      ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
-      (pel-local-set-f12-M-f12 'pel:for-objc-preproc "#")
-      ;; 7) Install language-specific skeletons
-      ;; [:todo 2025-04-27, by Pierre Rouleau: Add skeletons for Objective-C]
-      ;; (pel--install-c-skel pel:c-skel)
-      ;; 8) extra setup
-      (pel--setup-for-cc)
-      ;; [:todo 2025-04-30, by Pierre Rouleau: Check Objective-C indent width control]
-      (setq-local pel-indentation-width-control-variables
-                  '(pel-objc-indent-width c-basic-offset))
-      (setq-local pel-indentation-other-control-variables
-                  '(c-syntactic-indentation))
-      ;; imenu support is already provided by objc-mode
-      ;; 9) Activate Language server of choice
-      (when (and pel-use-emacs-ccls-for-objc
-                 (fboundp 'lsp))
-        (lsp)))))
+    ;; [:todo 2025-04-27, by Pierre Rouleau: Activate skeletons]
+    ;; activate skeletons
+    ;; (define-pel-global-prefix pel:objc-skel (kbd "<f11> SPC C-o <f12>"))
+
+    ;; Configure the CC Mode style for Objective-C from PEL custom variables
+    ;; 1) set the style: it identifies everything
+    (pel--set-cc-style 'objc-mode pel-objc-bracket-style pel-objc-newline-mode)
+    ;; 2) apply modifications requested by PEL user options.
+    ;;    set variables only available in a CC mode with PEL
+    ;;     user-options unless the file-variable sets it.
+    (unless (assoc 'c-basic-offset file-local-variables-alist)
+      (pel-setq-local c-basic-offset pel-objc-indent-width))
+    ;; 3) set fill-column to PEL specified Objective-C's default if specified
+    (when pel-objc-fill-column
+      (setq-local fill-column pel-objc-fill-column))
+    ;; 4) Set default auto-newline mode as identified by PEL user option
+    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+    ;; 5) Configure M-( to put parentheses after a function name.
+    (set (make-local-variable 'parens-require-spaces) nil)
+    ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
+    (pel-local-set-f12-M-f12 'pel:for-objc-preproc "#")
+    ;; 7) Install language-specific skeletons
+    ;; [:todo 2025-04-27, by Pierre Rouleau: Add skeletons for Objective-C]
+    ;; (pel--install-c-skel pel:c-skel)
+    ;; 8) extra setup
+    (pel--setup-for-cc)
+    ;; [:todo 2025-04-30, by Pierre Rouleau: Check Objective-C indent width control]
+    (setq-local pel-indentation-width-control-variables
+                '(pel-objc-indent-width c-basic-offset))
+    (setq-local pel-indentation-other-control-variables
+                '(c-syntactic-indentation))
+    ;; imenu support is already provided by objc-mode
+    ;; 9) Activate Language server of choice
+    (when (and pel-use-emacs-ccls-for-objc
+               (fboundp 'lsp))
+      (lsp))
+
+    (when (and  pel-use-flycheck-objc-clang
+                pel-use-flycheck)
+      (when (fboundp 'flycheck-objc-clang-setup)
+        (flycheck-objc-clang-setup)))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** Ocaml Programming Language Support
@@ -5396,6 +5401,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC O`` :
 (when pel-use-odin
   (pel-setup-major-mode odin :no-ts
+    ;; ----------------
     at-init:
     (pel-install-github-files "pierre-rouleau/odin-mode/master"
                               '("odin-mode.el" "main.odin"))
@@ -5409,10 +5415,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-pel-global-prefix pel:for-odin (kbd "<f11> SPC O"))
     (add-to-list 'auto-mode-alist '("\\.odin\\'" . odin-mode))
 
-    after-feature-load:
+    ;; ----------------
+    when-buffer-opens:
     (when pel-use-flycheck-odin
-      (eval-after-load 'flycheck
-        '(add-hook 'flycheck-mode-hook #'flycheck-odin-setup)))))
+        (flycheck-odin-setup))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Pascal Programming Language Support
@@ -5825,6 +5831,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` :
 (when pel-use-rust
   (pel-setup-major-mode rust :same-for-ts
+    ;; ----------------
     at-init:
     ;; 1- Install required packages for Rust
     ;;      [:todo 2025-10-13, by Pierre Rouleau: better integrate rustic if
@@ -5879,21 +5886,22 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;;                        "Unbound rust-mode-map or rust-ts-mode-map!"
     ;;                        :error))))
 
+    ;; - 6 Schedule minor mode configuration
+    (when pel-use-cargo
+      (add-hook 'rust-mode-hook #'cargo-minor-mode)
+      (add-hook 'rust-ts-mode-hook #'cargo-minor-mode))
+    (when pel-use-emacs-racer
+      (add-hook 'rust-mode-hook #'racer-mode)
+      (add-hook 'rust-ts-mode-hook #'racer-mode)
+      (add-hook 'racer-mode-hook #'eldoc-mode)
+      (when pel-use-company
+        (add-hook 'racer-mode-hook #'company-mode)))
+
+    ;; ----------------
     when-buffer-opens:
     (when (and pel-use-rust-mode
                pel-use-flycheck-rust)
-      (flycheck-rust-setup)))
-
-  ;; - 6 Schedule minor mode configuration
-  (when pel-use-cargo
-    (add-hook 'rust-mode-hook #'cargo-minor-mode)
-    (add-hook 'rust-ts-mode-hook #'cargo-minor-mode))
-  (when pel-use-emacs-racer
-    (add-hook 'rust-mode-hook #'racer-mode)
-    (add-hook 'rust-ts-mode-hook #'racer-mode)
-    (add-hook 'racer-mode-hook #'eldoc-mode)
-    (when pel-use-company
-      (add-hook 'racer-mode-hook #'company-mode))))
+      (flycheck-rust-setup))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Seed7 Programming Language Support

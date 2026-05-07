@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-07 09:46:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-07 12:05:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1267,11 +1267,10 @@ ARGS            A sequence of marker-introduced sections:
   - `at-init:'  Optional.  Followed by zero or more forms executed at
                 initialization time, before Emacs opens any files.
 
-  - `after-feature-load:'
-                Optional.  Followed by zero or more forms executed inside
-                the `pel-eval-after-load' block, *before*
-                `pel-config-major-mode': after the feature file has been
-                loaded but before the TARGET-MODE hook runs.
+  - `after-feature-load:'  Optional. Followed by zero or more forms
+                executed inside the `pel-eval-after-load' block,
+                *before* `pel-config-major-mode': after the feature file
+                has been loaded but before the TARGET-MODE hook runs.
 
   - `when-buffer-opens:'
                 Optional.  Zero or more forms passed as the body of
@@ -1321,7 +1320,7 @@ Tree-sitter handling:
          "pel-setup-major-mode: `key-prefix:' expects exactly 1 symbol,\
  got %d forms"
          (length kp-lst)))
-      (unless (symbolp (car kp-lst))
+      (when (and kp-lst (not (symbolp (car kp-lst))))
         (error
          "pel-setup-major-mode: `key-prefix:' expects exactly 1 symbol,\
  got 1 list")))
