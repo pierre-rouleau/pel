@@ -3520,105 +3520,108 @@ MODE must be a symbol."
 ;;   ----------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` :
 (when pel-use-common-lisp
-  ;; PEL supports the installation of both Slime and Sly, but only supports
-  ;; using one of them in an Emacs session, as they both use the same hooks.
-  (cond
-   ;; Using Slime
-   ((memq pel-use-common-lisp '(with-slime with-slime+))
-    (pel-ensure-package-elpa slime from: melpa)
-    ;; [:todo 2026-02-13, by Pierre Rouleau: should this be done when loading
-    ;; a lisp-mode file or right away as done now?]
-    ;; (load )
+  (pel-setup-major-mode lisp :no-ts
+    ;; ---------------
+    at-init:
 
-    )
+    ;; PEL supports the installation of both Slime and Sly, but only supports
+    ;; using one of them in an Emacs session, as they both use the same hooks.
+    (cond
+     ;; Using Slime
+     ;; [:todo 2026-02-13, by Pierre Rouleau: should this be done when loading
+     ;;                           a lisp-mode file or right away as done
+     ;;                           now?]
+     ((memq pel-use-common-lisp '(with-slime with-slime+))
+      (pel-ensure-package-elpa slime from: melpa))
+     ;;
+     ;; Using SLY
+     ((eq pel-use-common-lisp 'with-sly)
+      (pel-ensure-package-elpa sly from: melpa)))
 
-   ;; Using SLY
-   ((eq pel-use-common-lisp 'with-sly)
-    (pel-ensure-package-elpa sly from: melpa))
-   )
-
-  (pel-eval-after-load inf-lisp ; `inferior-lisp-program' is defined in `inf-lisp'
-    (when (and pel-inferior-lisp-program
-               (boundp 'inferior-lisp-program))
-      (message "PEL: setting inferior-lisp-program to pel-inferior-lisp-program value: %S" pel-inferior-lisp-program)
-      (setq inferior-lisp-program pel-inferior-lisp-program)))
+    ;; `inferior-lisp-program' is defined in `inf-lisp'
+    (pel-eval-after-load inf-lisp
+      (when (and pel-inferior-lisp-program
+                 (boundp 'inferior-lisp-program))
+        (setq inferior-lisp-program pel-inferior-lisp-program)))
 
 
-  ;; Add support for Speedbar listing Common Lisp files:
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension ".c?li?sp")
+    ;; Add support for Speedbar listing Common Lisp files:
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".c?li?sp")
+      (dolist (ext-regexp pel-clisp-extra-files)
+        (pel-add-speedbar-extension ext-regexp)))
+    ;; Add extra Common Lisp file extensions if requested by user
     (dolist (ext-regexp pel-clisp-extra-files)
-      (pel-add-speedbar-extension ext-regexp)))
-  ;; Add extra Common Lisp file extensions if requested by user
-  (dolist (ext-regexp pel-clisp-extra-files)
-    (add-to-list 'auto-mode-alist ext-regexp))
+      (add-to-list 'auto-mode-alist ext-regexp))
 
-  (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
-  (define-pel-global-prefix pel:cl-analyze (kbd "<f11> SPC L a"))
-  (define-pel-global-prefix pel:cl-highlight (kbd "<f11> SPC L h"))
-  (define-pel-global-prefix pel:cl-docstring (kbd "<f11> SPC L '"))
-  (define-pel-global-prefix pel:lisp-skel (kbd "<f11> SPC L <f12>"))
-  ;; (define-pel-global-prefix pel:for-lisp-repl (kbd "<f11> SPC z L")) Future <f12> key right inside the REPL.
-  (pel--lisp-languages-map-for pel:for-lisp)
-  (when pel-use-plantuml
-    (define-key pel:for-lisp "u" 'pel-render-commented-plantuml))
-  (define-key pel:for-lisp "z" 'pel-cl-repl)
-  (define-key pel:for-lisp "?" 'pel-cl-hyperspec-lookup)
-  (define-key pel:for-lisp (kbd "M-?") 'pel-cl-qr-pdf)
-  (define-key pel:cl-analyze "l" 'pel-cl-lint)
+    (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
+    (define-pel-global-prefix pel:cl-analyze (kbd "<f11> SPC L a"))
+    (define-pel-global-prefix pel:cl-highlight (kbd "<f11> SPC L h"))
+    (define-pel-global-prefix pel:cl-docstring (kbd "<f11> SPC L '"))
+    (define-pel-global-prefix pel:lisp-skel (kbd "<f11> SPC L <f12>"))
+    ;; Future <f12> key right inside the REPL.
+    ;; (define-pel-global-prefix pel:for-lisp-repl (kbd "<f11> SPC z L"))
+    (pel--lisp-languages-map-for pel:for-lisp)
+    (when pel-use-plantuml
+      (define-key pel:for-lisp "u" 'pel-render-commented-plantuml))
+    (define-key pel:for-lisp "z" 'pel-cl-repl)
+    (define-key pel:for-lisp "?" 'pel-cl-hyperspec-lookup)
+    (define-key pel:for-lisp (kbd "M-?") 'pel-cl-qr-pdf)
+    (define-key pel:cl-analyze "l" 'pel-cl-lint)
 
-  (defvar pel-lisp-imenu-generic-expression nil
-    "Cache copy for the PEL computed imenu index rule for Common Lisp.")
+    (defvar pel-lisp-imenu-generic-expression nil
+      "Cache copy for the PEL computed imenu index rule for Common Lisp.")
 
-  ;; Enable use of the Common Lisp Hyperspec by setting their location.
-  ;; Customize `pel-clisp-hyperspec-root' if you want to use a local copy.
-  (pel-setq common-lisp-hyperspec-root
-            (pel-expand-url-file-name pel-clisp-hyperspec-root))
+    ;; Enable use of the Common Lisp Hyperspec by setting their location.
+    ;; Customize `pel-clisp-hyperspec-root' if you want to use a local copy.
+    (pel-setq common-lisp-hyperspec-root
+              (pel-expand-url-file-name pel-clisp-hyperspec-root))
 
-  (declare-function pel--install-clisp-skel "pel-skels-clisp")
-  (pel-eval-after-load lisp-mode
-    (pel-config-major-mode lisp pel:for-lisp :no-ts
-      (pel-local-set-f12-M-f12 'pel:elisp-function "f")
-      (pel--install-clisp-skel pel:lisp-skel)
-      ;;
-      ;; TODO: Add keys for Common Lisp Skeletons
-                                        ;(pel--install-clisp-skel pel:lisp-skel)
-      ;;
-      ;; Add key that can add symbols for imenu parsing
-      (local-set-key (kbd "M-g <f4> .") 'pel-cl-add-symbol-to-imenu)
-      ;;
-      ;; Common Lisp Style
-      ;; Adjust fill-column if specified by user-option
-      (when pel-clisp-fill-column
-        (setq fill-column pel-clisp-fill-column))
-      ;; Ensure that pel-separator-line uses 3 semicolons.
-      (setq-local pel-comment-prefix ";;;")
-      ;;
-      ;; Common Lisp indentation rules differ from Emacs Lisp indentation rules:
-      ;; - for Common Lisp buffers, use common-lisp-indent-function as indenter,
-      ;;   replacing the default indenter (which conforms to the Emacs Lisp
-      ;;   indentation rules).
-      ;; NOTE: this code is already done by slime-setup, so this is therefore
-      ;; not required when Slime is used.
-      (unless (memq pel-use-common-lisp '(with-slime with-slime+))
-        (set (make-local-variable 'lisp-indent-function)
-             'common-lisp-indent-function))
-      ;; When Slime is used and extra slime contributions are identified
-      ;; activate them.
-      (when (eq pel-use-common-lisp 'with-slime+)
-        (pel-eval-after-load slime
-          (when (fboundp 'slime-setup)
-            (slime-setup))))
-      ;; imenu support: add ability to extract more Common Lisp definitions.
-      ;; compute it once after a pel-init (instead of on each file opened).
-      (when (boundp 'lisp-imenu-generic-expression)
-        (when (and (boundp 'lisp-mode-symbol-regexp)
-                   (not pel-lisp-imenu-generic-expression))
-          (pel-add-imenu-sections-to pel-clisp-define-forms
-                                     'lisp-imenu-generic-expression)
-          (setq pel-lisp-imenu-generic-expression
-                lisp-imenu-generic-expression))
-        (setq-local imenu-generic-expression lisp-imenu-generic-expression)))))
+    (declare-function pel--install-clisp-skel "pel-skels-clisp")
+
+    ;; ---------------
+    when-buffer-opens:
+    (pel-local-set-f12-M-f12 'pel:elisp-function "f")
+    (pel--install-clisp-skel pel:lisp-skel)
+    ;;
+    ;; TODO: Add keys for Common Lisp Skeletons
+    ;; (pel--install-clisp-skel pel:lisp-skel)
+    ;;
+    ;; Add key that can add symbols for imenu parsing
+    (local-set-key (kbd "M-g <f4> .") 'pel-cl-add-symbol-to-imenu)
+    ;;
+    ;; Common Lisp Style
+    ;; Adjust fill-column if specified by user-option
+    (when pel-clisp-fill-column
+      (setq fill-column pel-clisp-fill-column))
+    ;; Ensure that pel-separator-line uses 3 semicolons.
+    (setq-local pel-comment-prefix ";;;")
+    ;;
+    ;; Common Lisp indentation rules differ from Emacs Lisp indentation rules:
+    ;; - for Common Lisp buffers, use common-lisp-indent-function as indenter,
+    ;;   replacing the default indenter (which conforms to the Emacs Lisp
+    ;;   indentation rules).
+    ;; NOTE: this code is already done by slime-setup, so this is therefore
+    ;; not required when Slime is used.
+    (unless (memq pel-use-common-lisp '(with-slime with-slime+))
+      (set (make-local-variable 'lisp-indent-function)
+           'common-lisp-indent-function))
+    ;; When Slime is used and extra slime contributions are identified
+    ;; activate them.
+    (when (eq pel-use-common-lisp 'with-slime+)
+      (pel-eval-after-load slime
+        (when (fboundp 'slime-setup)
+          (slime-setup))))
+    ;; imenu support: add ability to extract more Common Lisp definitions.
+    ;; compute it once after a pel-init (instead of on each file opened).
+    (when (boundp 'lisp-imenu-generic-expression)
+      (when (and (boundp 'lisp-mode-symbol-regexp)
+                 (not pel-lisp-imenu-generic-expression))
+        (pel-add-imenu-sections-to pel-clisp-define-forms
+                                   'lisp-imenu-generic-expression)
+        (setq pel-lisp-imenu-generic-expression
+              lisp-imenu-generic-expression))
+      (setq-local imenu-generic-expression lisp-imenu-generic-expression))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Clojure Programming Language Support
@@ -4140,8 +4143,6 @@ d-mode not added to ac-modes!"
       'pel-file
       "pel-file.el not found; file-at-point openers not activated.")))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
-
-
 
 (when pel-use-helpful
   (pel-ensure-package-elpa helpful from: melpa)
