@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-07 08:29:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-07 09:46:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1257,10 +1257,13 @@ ARGS            A sequence of marker-introduced sections:
                 - `:same-for-ts'   -> (<target-mode>-mode <target-mode>-ts-mode)
                 - `:independent-ts' -> same as :same-for-ts
                 Provide this marker only when the naming convention does
-                not apply (e.g. java uses \\='cc-mode, python uses \\='python).
+                not apply (e.g. java uses \\='cc-mode, python uses
+                \\='python).
+
   - `key-prefix:' Optional. Followed by one symbol, such as pel:for-ocaml,
                 identifying the key prefix for the mode.
                 If not specified it is set to pel:for-<target-mode>
+
   - `at-init:'  Optional.  Followed by zero or more forms executed at
                 initialization time, before Emacs opens any files.
 
@@ -1277,7 +1280,8 @@ ARGS            A sequence of marker-introduced sections:
 
 The following values are inferred:
 
-  KEY-PREFIX    Always inferred as the symbol `pel:for-<target-mode>'.
+  KEY-PREFIX    Inferred as `pel:for-<target-mode>' unless overridden by
+                the `key-prefix:' marker.
 
 Tree-sitter handling:
 
@@ -1309,6 +1313,18 @@ Tree-sitter handling:
       (when bad
         (error "pel-setup-major-mode: unknown marker(s): %S. Allowed: %S"
                (nreverse (delete-dups bad)) allowed-markers)))
+    ;; - check that only one symbol follows key-prefix: marker
+    (let* ((kpcell (assoc 'key-prefix: sections))
+           (kp-lst (and kpcell (cdr kpcell))))
+      (when (and kp-lst (/= (length kp-lst) 1))
+        (error
+         "pel-setup-major-mode: `key-prefix:' expects exactly 1 symbol,\
+ got %d forms"
+         (length kp-lst)))
+      (unless (symbolp (car kp-lst))
+        (error
+         "pel-setup-major-mode: `key-prefix:' expects exactly 1 symbol,\
+ got 1 list")))
     ;; - check for duplicate markers
     (let (seen dups)
       (dolist (cell sections)
@@ -1317,7 +1333,7 @@ Tree-sitter handling:
       (when dups
         (error "pel-setup-major-mode: duplicate marker(s): %S"
                (nreverse dups))))
-    ;; - If used, only one form must follow the `feature:' marker.
+    ;; - If used, only one form must follow the `features:' marker.
     (let* ((fcell (assoc 'features: sections))
            (features-lst (and fcell (cdr fcell))))
       (when (and features-lst (/= (length features-lst) 1))
