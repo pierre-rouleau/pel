@@ -3663,79 +3663,81 @@ MODE must be a symbol."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` :
 
 (when pel-use-d
-  (define-pel-global-prefix pel:for-d     (kbd "<f11> SPC D"))
-  (define-pel-global-prefix pel:d-skel    (kbd "<f11> SPC D <f12>"))
-  (define-pel-global-prefix pel:d-setup   (kbd "<f11> SPC D <f4>"))
-  (define-pel-global-prefix pel:d-guess   (kbd "<f11> SPC D <f4> g"))
+  (pel-setup-major-mode d :no-ts
+    ;; ---------------
+    at-init:
+    (pel-ensure-package-elpa d-mode from: melpa)
+    ;; There are 2 supported code completion packages for D:
+    (when pel-use-d-ac-dcd
+      (pel-ensure-package-elpa ac-dcd from: melpa)
+      (pel-autoload-file ac-dcd for: ac-dcd-setup))
+    (when pel-use-d-company-dcd
+      (pel-ensure-package-elpa company-dcd from: melpa)
+      (pel-autoload-file company-dcd for: company-dcd-mode))
 
-  (pel-ensure-package-elpa d-mode from: melpa)
-  (pel-autoload-file d-mode for: d-mode)
-  ;; When opening a D source code file, load the d-mode feature.
-  (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
+    ;; When opening a D source code file, load the d-mode feature.
+    (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
+    ;; Overcome omission bug in d-mode: add support for Speedbar
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".d"))
 
-  ;; Overcome omission bug in d-mode: add support for Speedbar
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension ".d"))
+    (define-pel-global-prefix pel:for-d     (kbd "<f11> SPC D"))
+    (define-pel-global-prefix pel:d-skel    (kbd "<f11> SPC D <f12>"))
+    (define-pel-global-prefix pel:d-setup   (kbd "<f11> SPC D <f4>"))
+    (define-pel-global-prefix pel:d-guess   (kbd "<f11> SPC D <f4> g"))
 
-  ;; Configure commands available on the D key-map.
-  (when pel-use-plantuml
-    (define-key pel:for-d "u" 'pel-render-commented-plantuml))
+    ;; Configure commands available on the D key-map.
+    (when pel-use-plantuml
+      (define-key pel:for-d "u" 'pel-render-commented-plantuml))
 
-  ;; Configure auto-completion based on selection
-  ;; There are 2 possibilities
-  (when pel-use-d-ac-dcd
-    (pel-ensure-package-elpa ac-dcd from: melpa)
-    (pel-autoload-file ac-dcd for: ac-dcd-setup)
-    (pel-eval-after-load d-mode
+    ;; ---------------
+    after-feature-load:
+    (pel--map-cc-for pel:for-d pel:d-setup pel:d-guess)
+    ;; There are 2 supported code completion packages for D:
+    (when pel-use-d-ac-dcd
       (if (and (require 'auto-complete nil 'noerror)
                (boundp 'ac-modes))
           (add-to-list 'ac-modes 'd-mode)
         (display-warning 'pel-use-d-ac-dcd
                          "Failed loading auto-complete: \
 d-mode not added to ac-modes!"
-                         :error)))
-    (declare-function ac-dcd-setup "ac-dcd")
-    (add-hook 'd-mode-hook #'ac-dcd-setup))
+                         :error))
+      (declare-function ac-dcd-setup "ac-dcd")
+      (add-hook 'd-mode-hook #'ac-dcd-setup))
+    (when pel-use-d-company-dcd
+      (declare-function company-dcd-mode "company-dcd")
+      (add-hook 'd-mode-hook #'company-dcd-mode))
 
-  (when pel-use-d-company-dcd
-    (pel-ensure-package-elpa company-dcd from: melpa)
-    (pel-autoload-file company-dcd for: company-dcd-mode)
-    (declare-function company-dcd-mode "company-dcd")
-    (add-hook 'd-mode-hook #'company-dcd-mode))
-
-  (pel-eval-after-load d-mode
-    (pel--map-cc-for pel:for-d pel:d-setup pel:d-guess)
-    (pel-config-major-mode d pel:for-d :no-ts
-      ;; "Set the environment for editing D files."
-      ;; activate skeletons
-      (pel--install-generic-skel pel:d-skel
-                                 'pel-pkg-for-d
-                                 "d")
-      ;; Configure the CC Mode style for C++ from PEL custom variables
-      ;; 1) set the style: it identifies everything
-      (pel--set-cc-style 'd-mode pel-d-bracket-style pel-d-newline-mode)
-      ;; 2)  apply modifications requested by PEL user options.
-      ;;     set variables only available in a CC mode with PEL
-      ;;     user-options unless the file-variable sets it.
-      (unless (assoc 'c-basic-offset file-local-variables-alist)
-        (pel-setq-local c-basic-offset pel-d-indent-width))
-      ;; 3) set fill-column to PEL specified D's default if specified
-      (when pel-d-fill-column
-        (setq-local fill-column pel-d-fill-column))
-      ;; 4) Set default auto-newline mode as identified by PEL user option
-      (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-      ;; Configure M-( to put parentheses after a function name.
-      (set (make-local-variable 'parens-require-spaces) nil)
-      ;; 5) Set tab-width for the buffer as specified by the PEL user option
-      ;; for the major mode.
-      (setq-local tab-width pel-d-tab-width)
-      (setq-local pel-indentation-width-control-variables
-                  '(pel-d-indent-width c-basic-offset))
-      (setq-local pel-indentation-other-control-variables
-                  '(c-syntactic-indentation))
-      ;; 7) Install language-specific skeletons
-      ;; TODO
-      )))
+    ;; ---------------
+    when-buffer-opens:
+    ;; "Set the environment for editing D files."
+    ;; activate skeletons
+    (pel--install-generic-skel pel:d-skel 'pel-pkg-for-d "d")
+    ;; Configure the CC Mode style for C++ from PEL custom variables
+    ;; 1) set the style: it identifies everything
+    (pel--set-cc-style 'd-mode pel-d-bracket-style pel-d-newline-mode)
+    ;; 2)  apply modifications requested by PEL user options.
+    ;;     set variables only available in a CC mode with PEL
+    ;;     user-options unless the file-variable sets it.
+    (unless (assoc 'c-basic-offset file-local-variables-alist)
+      (pel-setq-local c-basic-offset pel-d-indent-width))
+    ;; 3) set fill-column to PEL specified D's default if specified
+    (when pel-d-fill-column
+      (setq-local fill-column pel-d-fill-column))
+    ;; 4) Set default auto-newline mode as identified by PEL user option
+    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+    ;; Configure M-( to put parentheses after a function name.
+    (set (make-local-variable 'parens-require-spaces) nil)
+    ;; 5) Set tab-width for the buffer as specified by the PEL user option
+    ;; for the major mode.
+    (setq-local tab-width pel-d-tab-width)
+    (setq-local pel-indentation-width-control-variables
+                '(pel-d-indent-width c-basic-offset))
+    (setq-local pel-indentation-other-control-variables
+                '(c-syntactic-indentation))
+    ;; 7) Install language-specific skeletons
+    ;; TODO
+    ))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** Dart Programming Language Support
