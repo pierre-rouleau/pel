@@ -5686,20 +5686,19 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ----------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC o`` :
 (when pel-use-ocaml
-  (define-pel-global-prefix pel:for-ocaml (kbd "<f11> SPC o"))
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".ml"
-                                  ".mli")))
-  ;; note: All 3 next flags are turned on when `pel-use-ocaml' is on.
-  (when pel-use-caml-mode
-    (pel-ensure-package-elpa caml from: melpa))
-  (when pel-use-merlin
-    (pel-ensure-package-elpa merlin from: melpa))
-  (when pel-use-tuareg
-    (pel-ensure-package-elpa tuareg from: melpa))
-  ;; the ocaml-mode is part of Emacs
-  (pel-eval-after-load tuareg
-    (pel-config-major-mode tuareg pel:for-ocaml :no-ts)))
+  (pel-setup-major-mode tuareg :no-ts
+    key-prefix: pel:for-ocaml
+    features: tuareg
+    at-init:
+    ;; Note: the ocaml-mode is part of Emacs
+    ;;       And all 3 next flags are turned on when `pel-use-ocaml' is on.
+    (when pel-use-caml-mode (pel-ensure-package-elpa caml   from: melpa))
+    (when pel-use-merlin    (pel-ensure-package-elpa merlin from: melpa))
+    (when pel-use-tuareg    (pel-ensure-package-elpa tuareg from: melpa))
+
+    (define-pel-global-prefix pel:for-ocaml (kbd "<f11> SPC o"))
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".ml"  ".mli")))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Odin Programming Language Support

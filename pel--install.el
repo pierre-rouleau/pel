@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-06 14:24:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-07 08:29:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1258,7 +1258,9 @@ ARGS            A sequence of marker-introduced sections:
                 - `:independent-ts' -> same as :same-for-ts
                 Provide this marker only when the naming convention does
                 not apply (e.g. java uses \\='cc-mode, python uses \\='python).
-
+  - `key-prefix:' Optional. Followed by one symbol, such as pel:for-ocaml,
+                identifying the key prefix for the mode.
+                If not specified it is set to pel:for-<target-mode>
   - `at-init:'  Optional.  Followed by zero or more forms executed at
                 initialization time, before Emacs opens any files.
 
@@ -1292,7 +1294,8 @@ Tree-sitter handling:
 :same-for-ts or :independent-ts; got: %S" ts-option))
   ;; Parse marker-delimited sections from ARGS at macro-expansion time.
   (let* ((argc            (length args))
-         (allowed-markers '(features: at-init: after-feature-load:
+         (allowed-markers '(features: key-prefix:
+                                      at-init: after-feature-load:
                                       when-buffer-opens:))
          (sections (pel-items-by-markers allowed-markers args)))
     ;; Validate arguments: detect invalid use of markers
@@ -1333,6 +1336,7 @@ Tree-sitter handling:
          (- argc consumed))))
     (let*
         ((features-forms   (cdr (assoc 'features: sections)))
+         (key-prefix       (cadr (assoc 'key-prefix: sections)))
          (init-forms       (cdr (assoc 'at-init:  sections)))
          (after-load-forms (cdr (assoc 'after-feature-load: sections)))
          (config-body      (cdr (assoc 'when-buffer-opens: sections)))
@@ -1342,7 +1346,8 @@ Tree-sitter handling:
          (gn-mode-name     (intern (format "%s-mode"     target-mode)))
          (gn-ts-mode       (intern (format "%s-ts-mode"  target-mode)))
          ;; Key-prefix is always pel:for-<target-mode>.
-         (gn-key-prefix    (intern (format "pel:for-%s"  target-mode)))
+         (gn-key-prefix    (or key-prefix
+                               (intern (format "pel:for-%s"  target-mode))))
          ;; Infer features from ts-option unless the caller provided an
          ;; override.
          (gn-features      (or (car features-forms)
