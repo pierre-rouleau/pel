@@ -848,6 +848,8 @@ Your version of Emacs does not support dynamic module.")))
 ;;** Emacs ls emulation support
 ;;   --------------------------
 (when pel-use-emacs-ls-emulation
+  ;; [:todo 2026-05-07, by Pierre Rouleau: DEFER the following to when
+  ;;                                       a Dired buffer opens?]
   (defvar dired-use-ls-dired)           ; prevent byte-compile warnings
   (defvar ls-lisp-use-insert-directory-program) ; ditto
   (setq dired-use-ls-dired nil)
@@ -2309,7 +2311,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;  C       - C++
 ;;  D       - D
 ;;  E       - Elm
-;;  F       - FORTRAN
+;;  F       - FORTRAN (modern, Fortran-90 syntax)
 ;;  G       - Groovy
 ;;  H       - VHDL
 ;;  J       - Java            -              JVM
@@ -2390,6 +2392,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;  M-A     - Alpaca          -              BEAM Language, Functional/ML
 ;;  M-C     - C3
 ;;  M-D     - Dired
+;;  M-F     - FORTRAN fixed form (FORTRAN-77 and similar)
 ;;  M-G     - Gleam           -              BEAM Language
 ;;  M-H     - Hamler          -              BEAM Language, Functional/ML/Haskell
 ;;  M-M     - MscGen
@@ -3095,32 +3098,29 @@ MODE must be a symbol."
 ;;   --------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC 8`` : Algol
 (when pel-use-algol
-  ;; 1- Install required packages for Algol
-  (pel-install-file
-   "https://git.sr.ht/~jemarch/a68-mode/blob/master/a68-mode.el"
-   "a68-mode.el")
-  (pel-autoload-file a68-mode for: a68-mode)
+  (pel-setup-major-mode a68 :no-ts
+    key-prefix: pel:for-algol
+    ;; ---------------
+    at-init:
+    ;; 1- Install required packages for Algol
+    (pel-install-file
+     "https://git.sr.ht/~jemarch/a68-mode/blob/master/a68-mode.el"
+     "a68-mode.el")
+    (pel-autoload-file a68-mode for: a68-mode)
 
-  ;; 2- Associate files with Algol mode selector
-  (add-to-list 'auto-mode-alist '("\\.a68\\'" . a68-mode))
+    ;; 2- Associate files with Algol mode selector
+    (add-to-list 'auto-mode-alist '("\\.a68\\'" . a68-mode))
 
-  ;; 3- Speedbar support for Algol
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension ".a68"))
+    ;; 3- Speedbar support for Algol
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".a68"))
 
-  ;; 4- Define Buffer keymap for Algol
-  (define-pel-global-prefix pel:for-algol (kbd "<f11> SPC 8"))
-  ;; 5- Install optional packages for Algol
+    ;; 4- Define Buffer keymap for Algol
+    (define-pel-global-prefix pel:for-algol (kbd "<f11> SPC 8"))))
 
-  ;; 6- Activate Algol setup.
-  ;;    Schedule more configuration upon Algol feature loading
-  (pel-eval-after-load a68-mode
-    (pel-config-major-mode a68 pel:for-algol :no-ts)))
-
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; ---------------------------------------------------------------------------
 ;;** AppleScript support
 ;; Function Keys - <f11> - Prefix ``<f11> SPC a`` :
-
 (when pel-use-applescript
   ;; the Melpa package does not seemed maintained. Use my copy instead.
   (pel-install-github-files "pierre-rouleau/apples-mode/master"
@@ -3183,46 +3183,50 @@ MODE must be a symbol."
 ;;** Awk Programming Language Support
 ;;   -------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC W`` : Awk
-
 (when pel-use-awk
-  (define-pel-global-prefix pel:for-awk   (kbd "<f11> SPC W"))
-  (define-pel-global-prefix pel:awk-setup (kbd "<f11> SPC W <f4>"))
-  (define-pel-global-prefix pel:awk-guess (kbd "<f11> SPC W <f4> g"))
+  ;; Awk support is built-in Emacs, provided by cc-mode
+  (pel-setup-major-mode awk :no-ts
+    features: cc-mode
+    ;; ---------------
+    at-init:
+    (when pel-use-speedbar (pel-add-speedbar-extension ".awk"))
 
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension ".awk"))
+    (define-pel-global-prefix pel:for-awk   (kbd "<f11> SPC W"))
+    (define-pel-global-prefix pel:awk-setup (kbd "<f11> SPC W <f4>"))
+    (define-pel-global-prefix pel:awk-guess (kbd "<f11> SPC W <f4> g"))
 
-  ;; Activate PEL Awk setup.  awk-mode is from cc-mode
-  ;; Load this when the cc-mode is loaded.
-  (pel-eval-after-load cc-mode
+    ;; ---------------
+    after-feature-load:
     (pel--map-cc-for pel:for-awk
                      pel:awk-setup
                      pel:awk-guess)
-    (pel-config-major-mode awk pel:for-awk :no-ts
-      ;; 1) set the style: it identifies everything
-      (pel--set-cc-style 'awk-mode pel-awk-bracket-style pel-awk-newline-mode)
-      ;; 2) apply modifications requested by PEL user options.
-      ;;    set variables only available in a CC mode with PEL
-      ;;    user-options unless the file-variable sets it.
-      (unless (assoc 'c-basic-offset file-local-variables-alist)
-        (pel-setq-local c-basic-offset pel-awk-indent-width))
-      ;; 3) set fill-column to PEL specified C's default if specified
-      (when pel-awk-fill-column
-        (setq-local fill-column pel-awk-fill-column))
-      ;; 4) Set default auto-newline mode as identified by PEL user option
-      (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-      ;; 5) Configure M-( to put parentheses after a function name.
-      (set (make-local-variable 'parens-require-spaces) nil)
-      ;; 6) Set tab-width for the buffer as specified by the PEL user option
-      ;; for the major mode.
-      (setq-local tab-width pel-awk-tab-width)
-      ;; 7) no skeleton for AWK at the moment.
-      ;; 8) extra setup
-      (pel--setup-for-cc)
-      (setq-local pel-indentation-width-control-variables
-                  '(pel-awk-indent-width c-basic-offset))
-      (setq-local pel-indentation-other-control-variables
-                  '(c-syntactic-indentation)))))
+
+    ;; ---------------
+    when-buffer-opens:
+    ;; 1) set the style: it identifies everything
+    (pel--set-cc-style 'awk-mode pel-awk-bracket-style pel-awk-newline-mode)
+    ;; 2) apply modifications requested by PEL user options.
+    ;;    set variables only available in a CC mode with PEL
+    ;;    user-options unless the file-variable sets it.
+    (unless (assoc 'c-basic-offset file-local-variables-alist)
+      (pel-setq-local c-basic-offset pel-awk-indent-width))
+    ;; 3) set fill-column to PEL specified C's default if specified
+    (when pel-awk-fill-column
+      (setq-local fill-column pel-awk-fill-column))
+    ;; 4) Set default auto-newline mode as identified by PEL user option
+    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+    ;; 5) Configure M-( to put parentheses after a function name.
+    (set (make-local-variable 'parens-require-spaces) nil)
+    ;; 6) Set tab-width for the buffer as specified by the PEL user option
+    ;; for the major mode.
+    (setq-local tab-width pel-awk-tab-width)
+    ;; 7) no skeleton for AWK at the moment.
+    ;; 8) extra setup
+    (pel--setup-for-cc)
+    (setq-local pel-indentation-width-control-variables
+                '(pel-awk-indent-width c-basic-offset))
+    (setq-local pel-indentation-other-control-variables
+                '(c-syntactic-indentation))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** C Programming Language Support
@@ -3663,7 +3667,6 @@ MODE must be a symbol."
 ;;** D Programming Language Support
 ;;   ------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` :
-
 (when pel-use-d
   (pel-setup-major-mode d :no-ts
     ;; ---------------
@@ -3745,7 +3748,6 @@ d-mode not added to ac-modes!"
 ;;** Dart Programming Language Support
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC d`` :
-
 (when pel-use-dart
   (pel-setup-major-mode dart :same-for-ts
     at-init:
@@ -3816,7 +3818,6 @@ d-mode not added to ac-modes!"
 ;;** Eiffel Programming Language Support
 ;;   -----------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-e`` :
-
 (when pel-use-eiffel
   (define-pel-global-prefix pel:for-eiffel   (kbd "<f11> SPC C-e"))
   (pel-install-github-file "pierre-rouleau/eiffel-mode/master"
@@ -4638,64 +4639,67 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;** Forth Programming Language Support
 ;;   ----------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` :
-
 (when pel-use-forth
-  ;; 1- Install required packages for Forth
-  ;;    - Always install forth-mode when Forth is used.
-  ;;    - There is no tree-sitter mode available yet AFAIK.
-  (pel-ensure-package-elpa forth-mode from: melpa)
-  (pel-autoload-file forth-mode for:
-                     forth-mode
-                     forth-block-mode
-                     forth-interaction-mode)
+  (pel-setup-major-mode forth :no-ts
+    at-init:
+    ;; 1- Install required packages for Forth
+    ;;    - Always install forth-mode when Forth is used.
+    ;;    - There is no tree-sitter mode available yet AFAIK.
+    (pel-ensure-package-elpa forth-mode from: melpa)
+    (pel-autoload-file forth-mode for:
+                       forth-mode
+                       forth-block-mode
+                       forth-interaction-mode)
+    ;; 2- Associate files with Forth mode selector
+    ;;    Done by forth-mode elpa-based installation.
+    ;;
+    ;; 3- Speedbar support for Forth
+    ;;    Done by forth-mode.el
+    ;;
+    ;; 4- Buffer keymap for Forth
+    (define-pel-global-prefix pel:for-forth (kbd "<f11> SPC f"))
+    (define-key pel:for-forth  "?"  'pel-forth-setup-info)
+    (define-key pel:for-forth  "z"  'run-forth)
 
-  ;; 2- Associate files with Forth mode selector
-  ;;    Done by forth-mode elpa-based installation.
+    ;; 5- Install optional packages for Forth
 
-  ;; 3- Speedbar support for Forth
-  ;;    Done by forth-mode.el
-
-  ;; 4- Buffer keymap for Forth
-  (define-pel-global-prefix pel:for-forth (kbd "<f11> SPC f"))
-  (define-key pel:for-forth  "?"  'pel-forth-setup-info)
-  (define-key pel:for-forth  "z"  'run-forth)
-
-  ;; 5- Install optional packages for Forth
-
-  ;; 6- Activate Forth setup.
-  ;;    Schedule more configuration upon Forth feature loading
-  ;;
-  (pel-eval-after-load forth-mode
-    (pel-config-major-mode forth pel:for-forth :no-ts
-      (when (boundp 'forth-smie-basic-indent)
-        (setq-local forth-smie-basic-indent pel-forth-indent-width))
-      (setq-local tab-width pel-forth-tab-width))))
+    when-buffer-opens:
+    (when (boundp 'forth-smie-basic-indent)
+      (setq-local forth-smie-basic-indent pel-forth-indent-width))
+    (setq-local tab-width pel-forth-tab-width)))
 
 ;; ---------------------------------------------------------------------------
-;;** FORTRAN Programming Language Support
-;;   ------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC F`` :
+;;** FORTRAN Programming Languages Support
+;;   -------------------------------------
+;;*** FORTRAN (fixed format: Fortran-77 and similar)
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-F`` :
 (when pel-use-fortran
-  ;; 1- Fortran support is built-in. No installation required for classic mode.
+  (pel-setup-major-mode fortran :no-ts
+    at-init:
+    ;; 1- Fortran support is built-in.
+    ;;    No installation required for classic mode.
+    ;; 2- Associate files with Fortran mode selector
+    ;;    Already done in Emacs.
+    ;; 3- Speedbar support for Fortran
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".f" ".F" ".for")))
+    ;; 4- Define Buffer keymap for Fortran
+    (define-pel-global-prefix pel:for-fortran (kbd "<f11> SPC M-F"))))
 
-  ;; 2- Associate files with Fortran mode selector
-  ;; Emacs built-in support Fortran and Fortran 90 modes.
-
-  ;; 3- Speedbar support for Fortran
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".f" ".F" ".for"
-                                  ".f90" ".f95" ".f03" ".f08")))
-
-  ;; 4- Define Buffer keymap for Fortran
-  (define-pel-global-prefix pel:for-fortran (kbd "<f11> SPC F"))
-  ;; 5- Install optional packages for Fortran
-
-  ;; 6- Activate Fortran setup.
-  ;;    Schedule more configuration upon Fortran feature loading
-  (pel-eval-after-load fortran
-    (pel-config-major-mode fortran pel:for-fortran :no-ts))
-  (pel-eval-after-load f90
-    (pel-config-major-mode f90 pel:for-fortran :no-ts)))
+;;*** FORTRAN-90 (free-format: Fortran-90 and later)
+;; - Function Keys - <f11> - Prefix ``<f11> SPC F`` :
+(when pel-use-f90
+  (pel-setup-major-mode f90 :no-ts
+    at-init:
+    ;; 1- Fortran 90 support is built-in.
+    ;;    No installation required for classic mode.
+    ;; 2- Associate files with Fortran mode selector
+    ;;    Already done in Emacs.
+    ;; 3- Speedbar support for Fortran-90
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".f90" ".f95" ".f03" ".f08")))
+    ;; 4- Define Buffer keymap for Fortran-90
+    (define-pel-global-prefix pel:for-f90 (kbd "<f11> SPC F"))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Gleam Programming Language Support - BEAM Language Family
@@ -4730,58 +4734,53 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ------------------------------
 ;; - function Language Support Keys - <f11> - Prefix ``<f11> SPC g`` :
 (when pel-use-go
-  ;; 1- Install required packages for Go
-  ;;    - Always install go-mode when Go is used.
-  (pel-ensure-package-elpa go-mode from: melpa)
-  (pel-autoload-file go-mode for: go-mode)
+  (pel-setup-major-mode go :same-for-ts
+    ;; ----------------
+    at-init:
+    ;; 1- Install required packages for Go
+    ;;    - Always install go-mode when Go is used.
+    (pel-ensure-package-elpa go-mode from: melpa)
+    (pel-autoload-file go-mode for: go-mode)
 
-  ;; 2- Associate files with Go mode selector
-  (add-to-list 'auto-mode-alist '("\\.go\\'" . pel-go-mode))
-  (add-to-list 'auto-mode-alist '("go\\.mod\\'" . pel-go-dot-mod-mode))
+    ;;1.1- Install optional packages for Go
+    ;; - goflymake package installation - either using flymake or flycheck
+    (when pel-use-goflymake
+      ;; goflymake is a mixed package:
+      ;; - it has the Go source: 'goflymake/main.go' that Go will compile into
+      ;;   the executable stored in a directory that should be on your PATH,
+      ;; - the emacs lisp go-flymake.el and go-flycheck.el files.
+      ;; To ensure the Emacs Lisp files are available to Emacs regardless of
+      ;; the Go project or workspace used, both Emacs Lisp files are stored in
+      ;; PEL utility directory.
+      (pel-install-github-files "dougm/goflymake/master"
+                                '("go-flycheck.el" "go-flymake.el")))
 
-  ;; 3- Speedbar support for Go
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".go"
-                                  "go.mod")))
+    ;; 2- Associate files with Go mode selector
+    (add-to-list 'auto-mode-alist '("\\.go\\'" . pel-go-mode))
+    (add-to-list 'auto-mode-alist '("go\\.mod\\'" . pel-go-dot-mod-mode))
 
-  ;; 4- Buffer keymap for Go
-  (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
-  (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
-  (define-key pel:for-go "?"         'pel-go-setup-info)
+    ;; 3- Speedbar support for Go
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".go" "go.mod")))
 
-  ;;5- Install optional packages for Go
-  ;; - goflymake package installation - either using flymake or flycheck
-  (when pel-use-goflymake
-    ;; goflymake is a mixed package:
-    ;; - it has the Go source: 'goflymake/main.go' that Go will compile into
-    ;;   the executable stored in a directory that should be on your PATH,
-    ;; - the emacs lisp go-flymake.el and go-flycheck.el files.
-    ;; To ensure the Emacs Lisp files are available to Emacs regardless of the
-    ;; Go project or workspace used, both Emacs Lisp files are stored in PEL
-    ;; utility directory.
-    (pel-install-github-files "dougm/goflymake/master"
-                              '("go-flycheck.el" "go-flymake.el")))
+    ;; 4- Buffer keymap for Go
+    (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
+    (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
+    (define-key pel:for-go "?"         'pel-go-setup-info)
 
-  ;; 6- Activate Go Setup
-  ;;    Schedule more configuration upon Go feature loading
-  ;;
-  ;;    The go-ts-mode really derives from prog-mode even though it updates
-  ;;    the dependency tree to make it look like a child of go-mode, but it
-  ;;    does not load go-mode.  Therefore the PEL hooking must be done for
-  ;;    both go-mode and go-ts-mode.
-  ;;
-  (pel-eval-after-load (go-mode go-ts-mode)
-    ;; Set environment for Go programming using go-mode.
-    ;; [:todo 2025-05-08, by Pierre Rouleau: automate the activation of
-    ;;         goflymake Go program by adjusting the GOPATH when flycheck
-    ;;         with goflymake support is requested.]
+    ;; ----------------
+    after-feature-load:
+    ;; The go-ts-mode really derives from prog-mode even though it updates
+    ;; the dependency tree to make it look like a child of go-mode, but it
+    ;; does not load go-mode.  Therefore the PEL hooking must be done for
+    ;; both go-mode and go-ts-mode.
     (defun pel--go-mode-config ()
       "Setup the Go specific major mode."
       ;; ensure gofmt is executed before saving file if
       ;; configured to do so
       (when pel-go-run-gofmt-on-buffer-save
         (declare-function pel-go-gofmt-on-buffer-save "pel-go" ())
-        (add-hook 'before-save-hook  #'pel-go-gofmt-on-buffer-save))
+        (add-hook 'before-save-hook  #'pel-go-gofmt-on-buffer-save nil :local))
       ;; Set the display width of hard tabs used in Go source
       ;; as controlled by PEL user-option
       (setq-local tab-width pel-go-tab-width)
@@ -4801,15 +4800,19 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                  pel-use-goflymake)))))
     (declare-function pel--go-mode-config "pel_keys")
 
-    (pel-config-major-mode go pel:for-go :same-for-ts
-      (pel--go-mode-config))
     (pel-config-major-mode go-dot-mod pel:for-go :no-ts
       (pel--go-mode-config))
     (pel-config-major-mode go-mod pel:for-go :ts-only
-      (pel--go-mode-config)))
+      (pel--go-mode-config))
 
-  ;; [:todo 2025-10-12, by Pierre Rouleau: Add support for the Go packages]
-  )
+    ;; ----------------
+    when-buffer-opens:
+    ;; Set environment for Go programming using go-mode.
+    (pel--go-mode-config)
+    ;; [:todo 2025-05-08, by Pierre Rouleau: automate the activation of
+    ;;         goflymake Go program by adjusting the GOPATH when flycheck
+    ;;         with goflymake support is requested.]
+    ))
 
 ;; ---------------------------------------------------------------------------
 ;;** Hamler Programming Language Support - BEAM Language Family
@@ -5433,6 +5436,154 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-pel-global-prefix pel:for-pascal  (kbd "<f11> SPC M-p"))))
 
 ;; ---------------------------------------------------------------------------
+;;** Perl Programming Language Support
+;;   ---------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC P`` :
+(when pel-use-perl
+  ;; Perl file extension - associations for buffer and speedbar
+  (defconst pel-perl-fext-regex
+    "\\.\\([pP]\\([Llm]\\|erl\\|od\\)\\|al\\|pH\\)\\(\\.tdy\\)?\\'")
+
+  (defun pel--perl-activate-file-search ()
+    "Utility setup: activate file search in Perl."
+    (when (require 'pel-file nil 'noerror)
+      (setq-local pel-filename-at-point-finders '(pel-perl-find-file))))
+  (declare-function pel--perl-activate-file-search  "pel_keys")
+
+  (define-pel-global-prefix pel:for-perl (kbd "<f11> SPC P"))
+  (define-pel-global-prefix pel:perl-skel (kbd "<f11> SPC P <f12>"))
+  (define-pel-global-prefix pel:perl-setup (kbd "<f11> SPC P <f4>"))
+
+  (define-key pel:for-perl (kbd "<up>")     'beginning-of-defun)
+  (define-key pel:for-perl (kbd "<down>")   'end-of-defun)
+  (define-key pel:for-perl "c"              'pel-perl-critic)
+
+  (when pel-perl-mode
+    ;; pel-perl-mode is nil when perl-mode is requested and non-nil for any of
+    ;; the more advanced cperl-mode.  - Force using the selected cperl-mode
+    ;; when perl-mode is explicitly requested inside a file via the file local
+    ;; variable settings.
+    (defalias 'perl-mode 'cperl-mode)
+
+    ;; Activate cperl-mode
+    (setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
+    (setq interpreter-mode-alist
+          (rassq-delete-all 'perl-mode interpreter-mode-alist))
+    (add-to-list 'interpreter-mode-alist '("\\(mini\\)?perl5?" . cperl-mode))
+    ;; Limitation: once HaraldJoerg files are installed in utils, the only
+    ;; way to use the built-in cperl-mode is to delete them manually from
+    ;; utils.
+    ;; Take cperl-mode.el from the upstream branch: it's upstream of Emacs
+    ;; distributed cperl-mode and holds the latest features and fixes that
+    ;; might only be available in later versions of Emacs.
+    ;; Take the perl-tidy-ediff from the master branch; that is not released
+    ;; into the official Emacs distribution yet.
+    (when (eq pel-perl-mode 'HaraldJoerg/cperl-mode)
+      (pel-install-github-file "HaraldJoerg/cperl-mode/upstream" "cperl-mode.el")
+      (pel-install-github-file "HaraldJoerg/cperl-mode/master" "perl-tidy-ediff.el")
+      (pel-autoload-file perl-tidy-ediff for:
+                         perl-tidy-ediff
+                         perl-tidy-ediff-region
+                         perl-tidy-ediff-sub)
+      (define-key pel:for-perl "T"  'pel-perl-tidy-ediff)
+      (define-key pel:for-perl "t"  'perl-tidy-ediff-sub))
+    ;; Enhance iedit-mode for cperl-mode
+    (when pel-use-iedit
+      (declare-function pel-iedit-enhance-cperl "pel-iedit-modes-support" ())
+      (pel-eval-after-load cperl-mode
+        (pel-soft-require-or-warn pel-iedit-modes-support
+          (add-hook 'cperl-mode-hook #'pel-iedit-enhance-cperl))))
+
+    (when pel-use-perl-live-coding
+      (pel-install-github-files "pierre-rouleau/perl-live/master"
+				                '("perl-live.el" "perl-live.pl"))
+      (pel-autoload "perl-live" for: perl-live-eval
+		            perl-live-eval-region
+		            perl-live-eval-line
+		            perl-live-eval-region-or-line
+		            perl-live-eval-sexp
+		            perl-live-run)
+      (defun pel-perl-live-run ()
+        "Start perl-live-run and move to the buffer."
+        (interactive)
+        (when (fboundp 'perl-live-run)
+          (call-interactively (function perl-live-run))
+          (switch-to-buffer "*perl live*")))
+      (define-key pel:for-perl "l"  'pel-perl-live-run)))
+
+  (add-to-list 'auto-mode-alist  '("\\.?perltidyrc\\'" . conf-unix-mode))
+  ;; Associate file to major-mode for Perl
+  (let ((selected-perl-mode (if pel-perl-mode 'cperl-mode 'perl-mode)))
+    (add-to-list 'auto-mode-alist (cons "\\.tdy\\'" selected-perl-mode))
+    (add-to-list 'auto-mode-alist (cons pel-perl-fext-regex  selected-perl-mode)))
+
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension pel-perl-fext-regex))
+  (when pel-perl-mode
+    (define-key pel:perl-setup "." 'pel-perl-show-source-directories)
+    (define-key pel:perl-setup "?" 'pel-perl-show-status)
+    (define-key pel:perl-setup "s" 'pel-perl-show-style)
+    (define-key pel:perl-setup (kbd "C-i") 'pel-perl-set-style)
+
+    (define-key pel:for-perl "H"       'cperl-perldoc-at-point)
+    (define-key pel:for-perl "h"       'cperl-perldoc)
+    (define-key pel:for-perl "|"       'cperl-lineup))
+
+  ;; TWO modes must be configured when they load:
+  ;; 1) the perl-mode, which is part of Emacs
+  (defvar pel-perl-man-section)      ; prevent byte-compiler warning in Emacs 26
+  (pel-eval-after-load perl-mode
+    (pel-config-major-mode perl pel:for-perl :no-ts
+      ;; activate skeletons
+      (pel--install-generic-skel pel:perl-skel
+                                 '(pel-pkg-generic-code-style
+                                   pel-pkg-for-perl-general)
+                                 "perl")
+      ;;
+      (pel--perl-activate-file-search)
+      (pel-setq-local-unless-filevar tab-width
+                                     pel-general-perl-indent-level)
+      (pel-setq-local-unless-filevar indent-tabs-mode
+                                     pel-perl-use-tabs)
+      (when (boundp 'perl-indent-level)
+        (pel-setq-local-unless-filevar perl-indent-level
+                                       pel-general-perl-indent-level))
+      ;; Activate man section for Perl
+      (setq-local pel-perl-man-section "3pm")))
+  ;;
+  ;; 2) the cperl-mode, which may come from Emacs or from external package
+  (defvar pel-cperl-man-section)    ; prevent byte-compiler warning in Emacs 26
+  (pel-eval-after-load cperl-mode
+    (pel-config-major-mode cperl pel:for-perl :no-ts
+      ;; activate skeletons
+      (pel--install-generic-skel pel:perl-skel
+                                 '(pel-pkg-generic-code-style
+                                   pel-pkg-for-perl-general)
+                                 "perl")
+      ;;
+      (pel--perl-activate-file-search)
+      (pel-setq-local-unless-filevar tab-width
+                                     pel-general-perl-indent-level)
+      (pel-setq-local-unless-filevar indent-tabs-mode
+                                     pel-cperl-use-tabs)
+      (when (boundp 'cperl-indent-level)
+        (pel-setq-local-unless-filevar cperl-indent-level
+                                       pel-general-perl-indent-level))
+      ;; Activate man section for Perl
+      (setq-local pel-cperl-man-section "3pm")
+      ;; control whitespace display
+      (when pel-cperl-show-trailing-whitespace-normally
+        (when (boundp 'cperl-invalid-face)
+          (setq-local cperl-invalid-face nil))
+        (setq-local show-trailing-whitespace t))))
+
+  (when pel-use-perl-repl
+    (pel-install-github-file "pierre-rouleau/perl-repl-el/master"
+                             "perl-repl.el")
+    (pel-autoload "perl-repl" for: perl-repl)
+    (define-key pel:for-perl    "z" 'perl-repl)))
+
+;; ---------------------------------------------------------------------------
 ;;** Pike Programming Language Support
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-p`` :
@@ -5632,154 +5783,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-pel-global-prefix pel:for-rexx (kbd "<f11> SPC R"))
     (define-key pel:for-rexx (kbd "<down>") 'rexx-goto-next-procedure)
     (define-key pel:for-rexx (kbd "<up>")   'rexx-goto-previous-procedure)))
-
-;; ---------------------------------------------------------------------------
-;;** Perl Programming Language Support
-;;   ---------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC P`` :
-(when pel-use-perl
-  ;; Perl file extension - associations for buffer and speedbar
-  (defconst pel-perl-fext-regex
-    "\\.\\([pP]\\([Llm]\\|erl\\|od\\)\\|al\\|pH\\)\\(\\.tdy\\)?\\'")
-
-  (defun pel--perl-activate-file-search ()
-    "Utility setup: activate file search in Perl."
-    (when (require 'pel-file nil 'noerror)
-      (setq-local pel-filename-at-point-finders '(pel-perl-find-file))))
-  (declare-function pel--perl-activate-file-search  "pel_keys")
-
-  (define-pel-global-prefix pel:for-perl (kbd "<f11> SPC P"))
-  (define-pel-global-prefix pel:perl-skel (kbd "<f11> SPC P <f12>"))
-  (define-pel-global-prefix pel:perl-setup (kbd "<f11> SPC P <f4>"))
-
-  (define-key pel:for-perl (kbd "<up>")     'beginning-of-defun)
-  (define-key pel:for-perl (kbd "<down>")   'end-of-defun)
-  (define-key pel:for-perl "c"              'pel-perl-critic)
-
-  (when pel-perl-mode
-    ;; pel-perl-mode is nil when perl-mode is requested and non-nil for any of
-    ;; the more advanced cperl-mode.  - Force using the selected cperl-mode
-    ;; when perl-mode is explicitly requested inside a file via the file local
-    ;; variable settings.
-    (defalias 'perl-mode 'cperl-mode)
-
-    ;; Activate cperl-mode
-    (setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
-    (setq interpreter-mode-alist
-          (rassq-delete-all 'perl-mode interpreter-mode-alist))
-    (add-to-list 'interpreter-mode-alist '("\\(mini\\)?perl5?" . cperl-mode))
-    ;; Limitation: once HaraldJoerg files are installed in utils, the only
-    ;; way to use the built-in cperl-mode is to delete them manually from
-    ;; utils.
-    ;; Take cperl-mode.el from the upstream branch: it's upstream of Emacs
-    ;; distributed cperl-mode and holds the latest features and fixes that
-    ;; might only be available in later versions of Emacs.
-    ;; Take the perl-tidy-ediff from the master branch; that is not released
-    ;; into the official Emacs distribution yet.
-    (when (eq pel-perl-mode 'HaraldJoerg/cperl-mode)
-      (pel-install-github-file "HaraldJoerg/cperl-mode/upstream" "cperl-mode.el")
-      (pel-install-github-file "HaraldJoerg/cperl-mode/master" "perl-tidy-ediff.el")
-      (pel-autoload-file perl-tidy-ediff for:
-                         perl-tidy-ediff
-                         perl-tidy-ediff-region
-                         perl-tidy-ediff-sub)
-      (define-key pel:for-perl "T"  'pel-perl-tidy-ediff)
-      (define-key pel:for-perl "t"  'perl-tidy-ediff-sub))
-    ;; Enhance iedit-mode for cperl-mode
-    (when pel-use-iedit
-      (declare-function pel-iedit-enhance-cperl "pel-iedit-modes-support" ())
-      (pel-eval-after-load cperl-mode
-        (pel-soft-require-or-warn pel-iedit-modes-support
-          (add-hook 'cperl-mode-hook #'pel-iedit-enhance-cperl))))
-
-    (when pel-use-perl-live-coding
-      (pel-install-github-files "pierre-rouleau/perl-live/master"
-				                '("perl-live.el" "perl-live.pl"))
-      (pel-autoload "perl-live" for: perl-live-eval
-		            perl-live-eval-region
-		            perl-live-eval-line
-		            perl-live-eval-region-or-line
-		            perl-live-eval-sexp
-		            perl-live-run)
-      (defun pel-perl-live-run ()
-        "Start perl-live-run and move to the buffer."
-        (interactive)
-        (when (fboundp 'perl-live-run)
-          (call-interactively (function perl-live-run))
-          (switch-to-buffer "*perl live*")))
-      (define-key pel:for-perl "l"  'pel-perl-live-run)))
-
-  (add-to-list 'auto-mode-alist  '("\\.?perltidyrc\\'" . conf-unix-mode))
-  ;; Associate file to major-mode for Perl
-  (let ((selected-perl-mode (if pel-perl-mode 'cperl-mode 'perl-mode)))
-    (add-to-list 'auto-mode-alist (cons "\\.tdy\\'" selected-perl-mode))
-    (add-to-list 'auto-mode-alist (cons pel-perl-fext-regex  selected-perl-mode)))
-
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension pel-perl-fext-regex))
-  (when pel-perl-mode
-    (define-key pel:perl-setup "." 'pel-perl-show-source-directories)
-    (define-key pel:perl-setup "?" 'pel-perl-show-status)
-    (define-key pel:perl-setup "s" 'pel-perl-show-style)
-    (define-key pel:perl-setup (kbd "C-i") 'pel-perl-set-style)
-
-    (define-key pel:for-perl "H"       'cperl-perldoc-at-point)
-    (define-key pel:for-perl "h"       'cperl-perldoc)
-    (define-key pel:for-perl "|"       'cperl-lineup))
-
-  ;; TWO modes must be configured when they load:
-  ;; 1) the perl-mode, which is part of Emacs
-  (defvar pel-perl-man-section)      ; prevent byte-compiler warning in Emacs 26
-  (pel-eval-after-load perl-mode
-    (pel-config-major-mode perl pel:for-perl :no-ts
-      ;; activate skeletons
-      (pel--install-generic-skel pel:perl-skel
-                                 '(pel-pkg-generic-code-style
-                                   pel-pkg-for-perl-general)
-                                 "perl")
-      ;;
-      (pel--perl-activate-file-search)
-      (pel-setq-local-unless-filevar tab-width
-                                     pel-general-perl-indent-level)
-      (pel-setq-local-unless-filevar indent-tabs-mode
-                                     pel-perl-use-tabs)
-      (when (boundp 'perl-indent-level)
-        (pel-setq-local-unless-filevar perl-indent-level
-                                       pel-general-perl-indent-level))
-      ;; Activate man section for Perl
-      (setq-local pel-perl-man-section "3pm")))
-  ;;
-  ;; 2) the cperl-mode, which may come from Emacs or from external package
-  (defvar pel-cperl-man-section)    ; prevent byte-compiler warning in Emacs 26
-  (pel-eval-after-load cperl-mode
-    (pel-config-major-mode cperl pel:for-perl :no-ts
-      ;; activate skeletons
-      (pel--install-generic-skel pel:perl-skel
-                                 '(pel-pkg-generic-code-style
-                                   pel-pkg-for-perl-general)
-                                 "perl")
-      ;;
-      (pel--perl-activate-file-search)
-      (pel-setq-local-unless-filevar tab-width
-                                     pel-general-perl-indent-level)
-      (pel-setq-local-unless-filevar indent-tabs-mode
-                                     pel-cperl-use-tabs)
-      (when (boundp 'cperl-indent-level)
-        (pel-setq-local-unless-filevar cperl-indent-level
-                                       pel-general-perl-indent-level))
-      ;; Activate man section for Perl
-      (setq-local pel-cperl-man-section "3pm")
-      ;; control whitespace display
-      (when pel-cperl-show-trailing-whitespace-normally
-        (when (boundp 'cperl-invalid-face)
-          (setq-local cperl-invalid-face nil))
-        (setq-local show-trailing-whitespace t))))
-
-  (when pel-use-perl-repl
-    (pel-install-github-file "pierre-rouleau/perl-repl-el/master"
-                             "perl-repl.el")
-    (pel-autoload "perl-repl" for: perl-repl)
-    (define-key pel:for-perl    "z" 'perl-repl)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Ruby Programming Language Support

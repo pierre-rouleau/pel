@@ -11502,13 +11502,14 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 ;; Fortran support
 ;; ---------------
 (defgroup pel-pkg-for-fortran nil
-  "PEL customization for Fortran."
+  "PEL customization for FORTRAN."
   :group 'pel-pkg-for-software-programming-languages
   :link `(url-link :tag "Fortran PDF"
                    ,(pel-pdf-file-url "pl-fortran")))
 
 (defcustom pel-use-fortran nil
-  "Control whether PEL supports the Fortran programming language."
+  "Control whether PEL supports the fixed format FORTRAN programming language.
+This corresponds to FORTRAN-77 and similar."
   :group 'pel-pkg-for-fortran
   :type 'boolean
   :safe #'booleanp)
@@ -11544,6 +11545,16 @@ Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-fortran
   :type 'boolean
   :safe #'booleanp)
+
+
+;; --
+(defcustom pel-use-f90 nil
+  "Control whether PEL supports the free-format FORTRAN programming language.
+This corresponds to FORTRAN-90 and later."
+  :group 'pel-pkg-for-fortran
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put pel-use-f90 :package-is :a-gate)
 
 (defcustom pel-f90-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for F90 buffers.

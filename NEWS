@@ -84,6 +84,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Erlang:
     - Fix *pel-erlang-version* when automatic detection is used.
     - Improved *pel-show-erlang-version*: it now prints information inside a help type buffer with buttons to access customization of the user-options.
+  - FORTRAN:
+    - PEL now distinguish between fixed-format FORTRAN (like FORTRAN-77) now supported by *pel-use-fortran* and
+      free format FORMAT (like FORTRAN-90) now supported by the new *pel-use-f90* user-option.
+  - Go:
+    - Fix: pel-go-gofmt-on-buffer-save only hooked on go buffers, not all.
+    - Fix: Tree-Sitter mode activation for first file opened.
   - Java:
     - Now properly setup for Tree-Sitter based major-mode.
   - Pike:
