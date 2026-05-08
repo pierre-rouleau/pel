@@ -2297,6 +2297,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;  *       - All programming languages
 ;;  .       - APL
 ;;  :       - Smalltalk
+;;  #       - FYPP - Fortran Python Pre-Processor
 ;;  0       - ssh-authorized-keys-mode
 ;;  1       - ssh-known-host-mode
 ;;  2       - Modula2
@@ -4712,7 +4713,14 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (when pel-use-speedbar
       (pel-add-speedbar-extension '(".f90" ".f95" ".f03" ".f08")))
     ;; 4- Define Buffer keymap for Fortran-90
-    (define-pel-global-prefix pel:for-f90 (kbd "<f11> SPC F"))))
+    (define-pel-global-prefix pel:for-f90 (kbd "<f11> SPC F")))
+
+  ;; FYPP Support
+  (pel-setup-major-mode fypp :no-ts
+    features: pel-fypp
+    at-init:
+    (add-to-list 'auto-mode-alist '("\\.fypp\\'" . fypp-mode))
+    (when pel-use-speedbar (pel-add-speedbar-extension '(".fypp")))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Gleam Programming Language Support - BEAM Language Family

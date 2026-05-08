@@ -90,6 +90,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - PEL now distinguish between fixed-format FORTRAN (like FORTRAN-77) now supported by *pel-use-fortran* and
       free format FORMAT (like FORTRAN-90) now supported by the new *pel-use-f90* user-option.
     - Also properly provide the ~<f12>~ key prefix.
+    - Add support for .fypp files: Fortran Python Pre-Processor files with the fypp major mode derived from the f90 major mode..
   - Go:
     - Fix: pel-go-gofmt-on-buffer-save only hooked on go buffers, not all.
     - Fix: Tree-Sitter mode activation for first file opened.
