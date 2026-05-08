@@ -5120,29 +5120,22 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ----------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC j`` :
 (when pel-use-julia
-  (pel-setup-major-mode julia :no-ts
+  (pel-setup-major-mode julia :same-for-ts
     ;; ---------------
     at-init:
     (pel-ensure-package-elpa julia-mode from: melpa)
+    (when pel-use-tree-sitter
+      (pel-ensure-package-elpa julia-ts-mode from: melpa))
+    (define-pel-global-prefix pel:for-julia (kbd "<f11> SPC j"))
     ;; For Julia, the julia-snail package uses julia-mode and
     ;; other required package.
     ;; Note that it also requires the vterm or eat package.
-    (pel-ensure-package-elpa julia-snail from: melpa)
-    (pel-autoload-file julia-snail for:
-                       julia-snail
-                       julia-snail-mode)
-    (define-pel-global-prefix pel:for-julia (kbd "<f11> SPC j"))
-    (define-key pel:for-julia  "z" #'julia-snail)
-
-    ;; ---------------
-    when-buffer-opens:
-    (when (or pel-use-vterm
-              pel-use-emacs-eat)
-      (if (fboundp 'julia-snail-mode)
-          (julia-snail-mode 1)
-        (display-warning 'pel-use-julia
-                         "Cannot load julia-snail-mode"
-                         :error)))))
+    (when pel-use-julia-snail
+      (pel-ensure-package-elpa julia-snail from: melpa)
+      (pel-autoload-file julia-snail for:
+                         julia-snail
+                         julia-snail-mode)
+      (define-key pel:for-julia  "z" #'julia-snail))))
 
 ;; ---------------------------------------------------------------------------
 ;;** LFE Programming Language Support - BEAM Language Family Lisp

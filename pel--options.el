@@ -8117,7 +8117,7 @@ on."
   :type '(choice
           (const :tag "Do not use Dart" nil)
           (const :tag "Use classic mode: dart-mode" t)
-          (const :tag "Use tree-sitter mode: dart-ts-mode . Preferred."
+          (const :tag "Use tree-sitter mode: dart-ts-mode. Preferred."
                  with-tree-sitter)))
 (pel-put pel-use-dart :package-is '(if pel-use-tree-sitter
                                        '((elpa . dart-mode)
@@ -11633,15 +11633,23 @@ Values in the [2, 8] range are accepted."
 
 (defcustom pel-use-julia  nil
   "Control whether PEL supports Julia development.
-IMPORTANT:
-  You *must* also activate `pel-use-vterm' to be able to use Julia
-  development as this uses the `julia-snail' package which includes both the
-  `julia-mode' but also a fast Julia REPL that uses the vterm."
+
+This *must* be activated to allow any other package for Julia.
+When activating it you can select between the following values:
+- t                : use `julia-mode' provided by the `julia-mode'
+                     external package.
+- with-tree-sitter : use `julia-ts-mode' provided by the `julia-ts-mode'
+                     external package."
   :group 'pel-pkg-for-julia
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put pel-use-julia :package-is 'julia-snail)
-(pel-put pel-use-julia :requires 'pel-use-vterm)
+  :type '(choice
+          (const :tag "Do not use Julia" nil)
+          (const :tag "Use classic mode: julia-mode" t)
+          (const :tag "Use tree-sitter mode: julia-ts-mode."
+                 with-tree-sitter)))
+(pel-put pel-use-julia :package-is '(if pel-use-tree-sitter
+                                       '((elpa . julia-mode)
+                                         (elpa . julia-ts-mode))
+                                     '((elpa . julia-mode))))
 
 (defcustom pel-julia-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Julia buffers.
@@ -11669,6 +11677,19 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-pkg-for-julia
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-use-julia-snail nil
+  "Control whether PEL supports Julia snail environment.
+Activated automatically when `pel-use-julia' is activated."
+  :group 'pel-pkg-for-julia
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put pel-use-julia-snail :requires 'pel-use-julia)
+(when pel-use-julia
+  (setq pel-use-julia-snail t))
+(when pel-use-julia-snail
+  (unless pel-use-julia
+    (setq pel-use-julia t)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Lua Support

@@ -96,6 +96,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - Fix: Tree-Sitter mode activation for first file opened.
   - Java:
     - Now properly setup for Tree-Sitter based major-mode.
+  - Julia:
+    - Modernize.  Properly support the ~<f12>~ key prefix. Add Tree-Sitter mode support.
   - Pike:
     - Fix Pike support: add key mapping in the ~<f12> <f4>~ prefix that had not been activated.
   - Python:
