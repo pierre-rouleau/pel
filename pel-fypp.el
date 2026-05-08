@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, May  8 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-08 07:53:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-08 08:15:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,10 +25,9 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; A very minimal implementation of major-mode for fypp the Fortran Python
-;; pre-processor which adds syntax highlighting for:
-;;  - #:if, #:for, etc.
-;;  - ${eval}$
+;; A minimal implementation of fypp major-mode, a mjor mode for the Fortran
+;; Python Pre-Processor.  It essentially just adds syntax highlighting for
+;; fypp expressions.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -43,8 +42,15 @@
   "Major mode for editing Fypp-preprocessed Fortran code."
   (font-lock-add-keywords
    nil
-   '(("#:[a-z]+" . font-lock-preprocessor-face) ;; Highlights #:if, #:for, etc.
-     ("\\$[:{].*?[:}]\\$" . font-lock-keyword-face)))) ; Highlights ${eval}$
+   '(
+     ;; Highlights #:if, #:for, etc.
+     ("#:[a-z]+" . font-lock-preprocessor-face)
+
+     ;; Enclosed Python expressions
+     ("\\${.*?}\\$"   . font-lock-keyword-face) ; Highlights ${expr}$
+     ("\\$:.*?:\\$"   . font-lock-keyword-face) ; Highlights $:expr:$
+
+     )))
 
 ;;; -------------------------------------------------------------------------
 (provide 'pel-fypp)

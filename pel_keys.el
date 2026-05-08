@@ -4715,7 +4715,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;; 4- Define Buffer keymap for Fortran-90
     (define-pel-global-prefix pel:for-f90 (kbd "<f11> SPC F")))
 
-  ;; FYPP Support
+  ;; FYPP Support - activated once Fortran-90 is requested.
+  ;; FYPP files are always intermixed with Fortran-90 files; they are used
+  ;; together: there's no need to a specific pel-use-fypp user-option;
+  ;; pel-use-f90 activates Fortran-90 and FYPP support.
   (pel-setup-major-mode fypp :no-ts
     features: pel-fypp
     at-init:
