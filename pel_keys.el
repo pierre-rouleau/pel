@@ -4841,6 +4841,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; ---------------------------------------------------------------------------
 ;;** Hamler Programming Language Support - BEAM Language Family
 ;;   ----------------------------------------------------------
+;;
+;; Note: as of May 2026, Hamler development seems stalled.
+;;       For the moment PEL will not support it unless it starts back.
+;;
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-H `` :
 ;; Programming Language Family: BEAM, Functional/ML/Haskell
 ;; Future: haml-mode
@@ -4893,6 +4897,44 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
     (define-pel-global-prefix pel:for-hy (kbd "<f11> SPC C-h"))
     (pel--lisp-languages-map-for pel:for-hy)))
+
+;; ---------------------------------------------------------------------------
+;;** Janet Programming Language Support
+;;   ----------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC T`` :
+(when pel-use-janet
+  (pel-setup-major-mode janet :no-ts
+    at-init:
+    ;; Installation
+    (when pel-use-janet-mode
+      ;; (pel-ensure-package-elpa janet-mode from: melpa)
+      ;; Use my version of janet-mode: it's ahead of the MELPA available one.
+      (pel-install-github-file "pierre-rouleau/janet-mode/master/"
+                               "janet-mode.el")
+      (pel-autoload-file janet-mode for:
+                         janet-mode)
+      (add-to-list 'auto-mode-alist '("\\.janet\\'" . janet-mode))
+      (add-to-list 'interpreter-mode-alist '("janet" . janet-mode)))
+
+    (when pel-use-ijanet
+      (pel-install-github-file "SerialDev/ijanet-mode/master/"
+                               "ijanet.el")
+      (pel-autoload-file ijanet for:
+                         ijanet))
+    (when pel-use-inf-janet
+      (pel-install-github-file "velkyel/inf-janet/master"
+                               "inf-janet.el")
+      (pel-autoload-file inf-janet for:
+                         inf-janet-mode
+                         inf-janet))
+    ;; Speedbar support
+    ;; TODO: add imenu support to allow detection of forms
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".janet"))
+
+    ;; Key Bindings
+    (define-pel-global-prefix pel:for-janet (kbd "<f11> SPC T"))
+    (pel--lisp-languages-map-for pel:for-janet)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Java Programming Language Support
@@ -5077,67 +5119,23 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;** Julia Programming Language Support
 ;;   ----------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC j`` :
-(when (and pel-use-julia pel-use-vterm)
-  ;; 🚧 Experimental: not yet completed.
-  ;; For Julia, the julia-snail package uses julia-mode and
-  ;; other required package.
-  ;; Note that it also requires the vterm package.
-  (pel-ensure-package-elpa julia-snail from: melpa)
-  (pel-autoload-file julia-snail for:
-                     julia-mode
-                     julia-snail
-                     julia-snail-mode)
-  (define-pel-global-prefix pel:for-julia (kbd "<f11> SPC j"))
-  (define-key pel:for-julia  "z" #'julia-snail)
-
-  (pel-eval-after-load julia-mode
-    (pel-config-major-mode julia pel:for-julia :no-ts
-      (if (fboundp 'julia-snail-mode)
-          (julia-snail-mode 1)
-        (display-warning 'pel-use-julia
-                         "Cannot load julia-nail-mode"
-                         :error))
-      ;; 5) Set tab-width for the buffer as specified by the PEL user option
-      ;; for the major mode.
-      (setq-local tab-width pel-julia-tab-width))))
-
-;; ---------------------------------------------------------------------------
-;;** Janet Programming Language Support
-;;   ----------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC T`` :
-(when pel-use-janet
-  (pel-setup-major-mode janet :no-ts
+(when pel-use-julia
+  (pel-setup-major-mode julia :same-for-ts
+    ;; ---------------
     at-init:
-    ;; Installation
-    (when pel-use-janet-mode
-      ;; (pel-ensure-package-elpa janet-mode from: melpa)
-      ;; Use my version of janet-mode: it's ahead of the MELPA available one.
-      (pel-install-github-file "pierre-rouleau/janet-mode/master/"
-                               "janet-mode.el")
-      (pel-autoload-file janet-mode for:
-                         janet-mode)
-      (add-to-list 'auto-mode-alist '("\\.janet\\'" . janet-mode))
-      (add-to-list 'interpreter-mode-alist '("janet" . janet-mode)))
-
-    (when pel-use-ijanet
-      (pel-install-github-file "SerialDev/ijanet-mode/master/"
-                               "ijanet.el")
-      (pel-autoload-file ijanet for:
-                         ijanet))
-    (when pel-use-inf-janet
-      (pel-install-github-file "velkyel/inf-janet/master"
-                               "inf-janet.el")
-      (pel-autoload-file inf-janet for:
-                         inf-janet-mode
-                         inf-janet))
-    ;; Speedbar support
-    ;; TODO: add imenu support to allow detection of forms
-    (when pel-use-speedbar
-      (pel-add-speedbar-extension ".janet"))
-
-    ;; Key Bindings
-    (define-pel-global-prefix pel:for-janet (kbd "<f11> SPC T"))
-    (pel--lisp-languages-map-for pel:for-janet)))
+    (pel-ensure-package-elpa julia-mode from: melpa)
+    (when pel-use-tree-sitter
+      (pel-ensure-package-elpa julia-ts-mode from: melpa))
+    (define-pel-global-prefix pel:for-julia (kbd "<f11> SPC j"))
+    ;; For Julia, the julia-snail package uses julia-mode and
+    ;; other required package.
+    ;; Note that it also requires the vterm or eat package.
+    (when pel-use-julia-snail
+      (pel-ensure-package-elpa julia-snail from: melpa)
+      (pel-autoload-file julia-snail for:
+                         julia-snail
+                         julia-snail-mode)
+      (define-key pel:for-julia  "z" #'julia-snail))))
 
 ;; ---------------------------------------------------------------------------
 ;;** LFE Programming Language Support - BEAM Language Family Lisp
