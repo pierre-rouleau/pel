@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, May  8 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-08 08:54:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-08 09:08:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -49,7 +49,7 @@
      ;; Enclosed Python expressions
      ;; - Highlights ${expr}$
      ("\\${.*?}\\$"   . font-lock-keyword-face)
-     ;;- Highlights line-form $: eval directives
+     ;; - Highlights line-form $: eval directives
      ("^\\s-*\\$:.*$" . font-lock-keyword-face) )))
 
 ;;; -------------------------------------------------------------------------
