@@ -5129,7 +5129,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;; Note that it also requires the vterm or eat package.
     (pel-ensure-package-elpa julia-snail from: melpa)
     (pel-autoload-file julia-snail for:
-                       julia-mode
                        julia-snail
                        julia-snail-mode)
     (define-pel-global-prefix pel:for-julia (kbd "<f11> SPC j"))
@@ -5137,11 +5136,13 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
     ;; ---------------
     when-buffer-opens:
-    (if (fboundp 'julia-snail-mode)
-        (julia-snail-mode 1)
-      (display-warning 'pel-use-julia
-                       "Cannot load julia-nail-mode"
-                       :error))))
+    (when (or pel-use-vterm
+              pel-use-emacs-eat)
+      (if (fboundp 'julia-snail-mode)
+          (julia-snail-mode 1)
+        (display-warning 'pel-use-julia
+                         "Cannot load julia-snail-mode"
+                         :error)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** LFE Programming Language Support - BEAM Language Family Lisp
