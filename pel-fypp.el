@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, May  8 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-08 11:09:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-08 11:35:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -144,11 +144,22 @@
           "\\>"))
 
 (defconst pel-fypp-comment-regexp
-  "^[[:blank:]]*#!"
+  "^[[:blank:]]*#!.*$"
   "FYPP comment regular expression.")
+
+(defun fypp--syntax-propertize (start end)
+  "Apply syntax properties for FYPP-specific constructs between START and END."
+  (goto-char start)
+  (funcall
+   (syntax-propertize-rules
+    ;; Make '#' in '#!' sequences a comment-start character,
+    ;; so the whole '#! ...' line is treated as a comment.
+    ("\\(#\\)!" (1 "<")))
+   start end))
 
 (define-derived-mode fypp-mode f90-mode "Fypp"
   "Major mode for editing Fypp-preprocessed Fortran code."
+  (setq-local syntax-propertize-function #'fypp--syntax-propertize)
   (font-lock-add-keywords
    nil
    (list
@@ -162,19 +173,22 @@
     (cons pel-fypp-opening-end-inline-block-regexp font-lock-preprocessor-face)
 
     ;; Enclosed Python expressions
-    ;; - Highlights the edges of ${expr}$
+    ;; - Highlights the edges of ${ expr }$ . The expr is not rendered.
     (cons "\\${"    font-lock-preprocessor-face)
     (cons "}\\$"    font-lock-preprocessor-face)
-    ;; - Highlights line-form $: eval directives
+
+    ;; - Highlights the "$:" at the start of line-form $:eval directive
     (cons "^[[:blank:]]*\\$:"  font-lock-preprocessor-face)
-    ;; - Highlights the @ at beginning of macros
+
+    ;; - Highlights the @ at beginning and end of macros
     (cons "@:" font-lock-preprocessor-face)
     (cons "@{" font-lock-preprocessor-face)
     (cons "}@" font-lock-preprocessor-face)
 
-    ;; Comment
+    ;; - Highlight FYPP style comments
     (cons pel-fypp-comment-regexp font-lock-comment-face)
     )))
+
 
 ;;; -------------------------------------------------------------------------
 (provide 'pel-fypp)
