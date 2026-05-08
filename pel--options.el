@@ -11509,7 +11509,8 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 (defcustom pel-use-fortran nil
   "Control whether PEL supports the fixed format FORTRAN programming language.
-This corresponds to FORTRAN-77 and similar."
+This corresponds to FORTRAN-77 and similar.
+Activate support for FORTRAN-90 and later with `pel-use-f90'."
   :group 'pel-pkg-for-fortran
   :type 'boolean
   :safe #'booleanp)
@@ -11550,7 +11551,11 @@ Values in the [2, 8] range are accepted."
 ;; --
 (defcustom pel-use-f90 nil
   "Control whether PEL supports the free-format FORTRAN programming language.
-This corresponds to FORTRAN-90 and later."
+This corresponds to FORTRAN-90 and later.
+Enabling this also enables fypp (Fortran Python Pre-Processor) support.
+
+Activate support for the older fixed-format FORTRAN-77 and others with
+`pel-use-fortran'."
   :group 'pel-pkg-for-fortran
   :type 'boolean
   :safe #'booleanp)
@@ -11581,6 +11586,37 @@ Values in the [2, 8] range are accepted."
 
 (defcustom pel-f90-use-tabs nil
   "Value of `indent-tabs-mode' for editing f90 files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-fortran
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-fypp-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for FYPP buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-fortran
+  :type '(repeat function))
+
+(defcustom pel-fypp-tab-width 4
+  "Column width display rendering of hard tab for buffers in `fypp-mode'.
+
+PEL stores this in `tab-width' when opening FYPP buffers.
+
+This does *NOT* control the indentation in FYPP files.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters.
+
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-fortran
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-fypp-use-tabs nil
+  "Value of `indent-tabs-mode' for editing fypp files.
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
   :group 'pel-pkg-for-fortran

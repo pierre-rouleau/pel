@@ -498,6 +498,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-forth-insert-tab-info)
 
   ;; --
+  (pel-autoload "pel-fypp" for:
+    fypp-mode)
+
+  ;; --
   (pel-autoload "pel-goto-addr" for:
     pel-goto-next-url
     pel-goto-previous-url)
