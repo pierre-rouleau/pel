@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, May  8 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-08 08:15:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-08 08:54:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,7 +25,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; A minimal implementation of fypp major-mode, a mjor mode for the Fortran
+;; A minimal implementation of fypp major-mode, a major mode for the Fortran
 ;; Python Pre-Processor.  It essentially just adds syntax highlighting for
 ;; fypp expressions.
 
@@ -47,10 +47,10 @@
      ("#:[a-z]+" . font-lock-preprocessor-face)
 
      ;; Enclosed Python expressions
-     ("\\${.*?}\\$"   . font-lock-keyword-face) ; Highlights ${expr}$
-     ("\\$:.*?:\\$"   . font-lock-keyword-face) ; Highlights $:expr:$
-
-     )))
+     ;; - Highlights ${expr}$
+     ("\\${.*?}\\$"   . font-lock-keyword-face)
+     ;;- Highlights line-form $: eval directives
+     ("^\\s-*\\$:.*$" . font-lock-keyword-face) )))
 
 ;;; -------------------------------------------------------------------------
 (provide 'pel-fypp)
