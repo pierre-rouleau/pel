@@ -11554,7 +11554,7 @@ Values in the [2, 8] range are accepted."
 This corresponds to FORTRAN-90 and later.
 It also supports the fypp (Fortran Python Pre-Processor) files.
 Activate support for the older fixed-format FORTRAN-77 and others with
-`pel-use-fortan'."
+`pel-use-fortran'."
   :group 'pel-pkg-for-fortran
   :type 'boolean
   :safe #'booleanp)
