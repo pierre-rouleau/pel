@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-08 07:14:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-08 15:58:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -183,7 +183,6 @@
   "List of groups for Javascript.")
 
 (defconst pel--julia-groups '(julia
-                              julia-mode
                               julia-snail
                               electricity)
   "List of groups for Julia.")
