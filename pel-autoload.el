@@ -1148,6 +1148,17 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-sp-erlang-handler
     pel-smartparens-setup-erlang)
 
+  ;; --
+  (pel-autoload "pel-v" for:
+    pel-v-or-verilog-mode
+    pel-v-setup-info)
+  (pel-autoload-function "pel-v" for:
+    pel-v-cleanup-auto-mode-alist
+    pel-v-insert-indent-info
+    pel-v-insert-tab-info
+    pel-v-mode-used-text)
+
+  ;; --
   (pel-autoload "pel-vc" for:
     pel-vc-svn-init)
 

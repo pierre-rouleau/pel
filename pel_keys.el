@@ -6412,84 +6412,52 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC v`` :
 ;; Preliminary 🚧
 
+(declare-function pel-v-cleanup-auto-mode-alist "pel-v")
 (when pel-use-v
-  (define-pel-global-prefix pel:for-v  (kbd "<f11> SPC v"))
-
-  (defun pel-v-or-verilog-mode ()
-    "Open buffer in V or Verilog specific mode.
-If buffer is empty prompt user.
-Otherwise check for a Verilog file variable or a endmodule statement
-to identify a Verilog file.  Anything else is assumed being V."
-    (let ((is-verilog
-           (or
-            (and
-             (or (eq (buffer-size) 0)
-                 (not (search-forward-regexp "[^ \t\n\r]" nil 'noerror)))
-             (y-or-n-p "Create a Verilog (y) or V (n) file?"))
-            (save-excursion
-              (goto-char (point-min))
-              (search-forward-regexp "\\-\\*\\- [Mm]ode: [Vv]erilog[; ]"
-                                     nil 'noerror))
-            (save-excursion
-              (goto-char (point-min))
-              (search-forward-regexp "\\<endmodule\\>"
-                                     nil 'noerror)))))
-      (if is-verilog
-          (if (and
-               (pel-treesit-language-available-p 'verilog)
-               (fboundp 'verilog-ts-mode))
-              (verilog-ts-mode)
-            (verilog-mode))
-        (if (eq pel-use-v 'v-mode)
-            (v-mode)
-          (vlang-mode)))))
-  (declare-function pel-v-or-verilog-mode "pel_keys")
-
-  (defun pel-v-cleanup-auto-mode-alist ()
-    "Remove invalid entries for V from auto-mode-alist."
-    ;; Remove any other .v rules from the auto-mode-alist that
-    ;; might have been added by the loading of the V language mode code.
-    ;; remove what v-mode code adds (if present)
-    (setq auto-mode-alist (delete '("\\(\\.v?v\\|\\.vsh\\)$" . v-mode)
-                                  auto-mode-alist))
-
-    ;; remove what vlang-mode adds (if present)
-    (setq auto-mode-alist (delete '("\\.v\\'" . vlang-or-verilog-mode)
-                                  auto-mode-alist)))
-  (declare-function pel-v-cleanup-auto-mode-alist "pel_keys")
-
-
-  (cond
-   ((eq pel-use-v 'v-mode)
-    (pel-ensure-package-elpa v-mode from: melpa)
-    (pel-autoload-file v-mode for: v-mode)
-    (define-key pel:for-v (kbd "C-f") 'v-format-buffer)
-    (define-key pel:for-v (kbd "<f10>") 'v-menu)
-    (pel-eval-after-load v-mode
-      (pel-config-major-mode v pel:for-v :no-ts
-        (pel-v-cleanup-auto-mode-alist))))
-
-   ((eq pel-use-v 'vlang-mode)
-    ;; vlang-mode is experimental: only provides font-locking
-    ;; use, not on MELPA: download directly from github.
-    (pel-install-github-file "pierre-rouleau/vlang-mode/master"
-                             "vlang-mode.el")
-    (pel-autoload-file vlang-mode for: vlang-mode)
-    (pel-eval-after-load vlang-mode
-      (pel-config-major-mode v pel:for-v :no-ts
-        (pel-v-cleanup-auto-mode-alist)))))
-
+  ;; Common init setup for both implementations
   ;; V file name extension clashes with Verilog file names.
   ;; To allow both V and Verilog to coexist,
-  ;;   use `pel-v-or-verilog' for .v files.
+  ;;   use `pel-v-or-verilog-mode' for .v files.
+  (add-to-list 'auto-mode-alist (cons "\\.v\\'" 'pel-v-or-verilog-mode))
   ;; The other file types are not ambiguous.
   (add-to-list 'auto-mode-alist (cons "\\.\\(vv\\|vsh\\)\\'"
                                       (if (eq pel-use-v 'v-mode)
                                           'v-mode
                                         'vlang-mode)))
-  (add-to-list 'auto-mode-alist (cons "\\.v\\'" 'pel-v-or-verilog-mode))
+  (run-at-time "3 sec" nil (function pel-v-cleanup-auto-mode-alist))
 
-  (run-at-time "3 sec" nil (function pel-v-cleanup-auto-mode-alist)))
+  ;; The key prefix is the same for both
+  (define-pel-global-prefix pel:for-v (kbd "<f11> SPC v"))
+  (define-key pel:for-v "?"          'pel-v-setup-info)
+
+
+  (cond
+   ;; --- v-mode (recommended, from MELPA) ---
+   ((eq pel-use-v 'v-mode)
+    (pel-setup-major-mode v :no-ts
+      at-init:
+      (pel-ensure-package-elpa v-mode from: melpa)
+      (pel-autoload-file v-mode for: v-mode)
+
+      (define-key pel:for-v (kbd "C-f")  'v-format-buffer)
+      (define-key pel:for-v (kbd "<f10>") 'v-menu)
+
+      ;; Activate V setup
+      when-buffer-opens:
+      (pel-v-cleanup-auto-mode-alist)))
+
+   ;; --- vlang-mode (experimental, font-lock only, from GitHub) ---
+   ((eq pel-use-v 'vlang-mode)
+    (pel-setup-major-mode v :no-ts
+      features: vlang-mode
+      at-init:
+      (pel-install-github-file "pierre-rouleau/vlang-mode/master"
+                               "vlang-mode.el")
+      (pel-autoload-file vlang-mode for: vlang-mode)
+
+      ;; Activate V setup
+      when-buffer-opens:
+      (pel-v-cleanup-auto-mode-alist)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Verilog Programming Language Support

@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-08 07:08:34 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-09 14:47:07 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -312,6 +312,7 @@ EL_FILES := pel--base.el \
 		pel-treesit.el \
 		pel-undo.el \
 		pel-uuid.el \
+		pel-v.el \
 		pel-vc.el \
 		pel-vcs.el \
 		pel-whitespace.el \
@@ -882,6 +883,7 @@ pel-time.elc:             pel--base.elc
 pel-timestamp.elc:        pel--base.elc pel--options.elc
 pel-treesit.elc:          pel--base.elc pel--keys-macros.elc pel-prompt.elc
 pel-undo.elc:             pel--options.elc
+pel-v.elc:                pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel-vc.elc:               pel--options.elc
 pel-vcs.elc:              pel--base.elc pel-filedir.elc pel-prompt.elc
 pel-whitespace.elc:       pel--base.elc pel--options.elc
