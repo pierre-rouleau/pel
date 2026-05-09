@@ -5223,15 +5223,13 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; ---------------------------------------------------------------------------
 ;;** M4 programming utilities
 ;; Function Keys - <f11> - Prefix ``<f11> SPC 4`` :
-
 (when pel-use-m4
-  (define-pel-global-prefix pel:for-m4     (kbd "<f11> SPC 4"))
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension ".m4"))
-
-  (pel-eval-after-load m4-mode
-    ;; m4 is part of Emacs
-    (pel-config-major-mode m4 pel:for-m4 :no-ts)))
+  ;; m4 is part of Emacs
+  (pel-setup-major-mode m4 :no-ts
+    at-init:
+    (define-pel-global-prefix pel:for-m4     (kbd "<f11> SPC 4"))
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".m4"))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Modula2 Programming Language Support
@@ -5279,45 +5277,55 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   --------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC n`` :
 (when pel-use-nim
-  ;; 1- Install required packages for Nim
-  ;;    - Always install nim-mode when Nim is used.
-  (pel-ensure-package-elpa nim-mode from: melpa)
+  (pel-setup-major-mode nim :no-ts
+    ;; ----------------
+    at-init:
+    ;; 1- Install required packages for Nim
+    ;;    - Always install nim-mode when Nim is used.
+    (pel-ensure-package-elpa nim-mode from: melpa)
 
-  ;; 2- Associate files with Nim mode selector
-  ;;   Not needed : there 's no nim-ts-mode yet.
+    ;; 2- Associate files with Nim mode selector
+    ;;   Not needed : there 's no nim-ts-mode yet.
 
-  ;; 3- Speedbar support for Nim
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".nim"
-                                  ".nims"
-                                  ".nimble")))
+    ;; 3- Speedbar support for Nim
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".nim"
+                                    ".nims"
+                                    ".nimble")))
 
-  ;; 4- Buffer keymap for Nim
-  (define-pel-global-prefix pel:for-nim (kbd "<f11> SPC n"))
-  (define-pel-global-prefix pel:nim-skel (kbd "<f11> SPC n <f12>"))
-  (define-key pel:for-nim "?" 'pel-nim-setup-info)
+    ;; 4- Buffer keymap for Nim
+    (define-pel-global-prefix pel:for-nim (kbd "<f11> SPC n"))
+    (define-pel-global-prefix pel:nim-skel (kbd "<f11> SPC n <f12>"))
+    (define-key pel:for-nim "?" 'pel-nim-setup-info)
 
-  ;; 5- Install optional packages for Nim
+    ;; 5- Install optional packages for Nim
 
-  ;; 6- Activate Nim Setup
-  ;;    Schedule more configuration upon Nim feature loading
-  ;;
-  (pel-eval-after-load nim-mode
-    (pel-config-major-mode nim pel:for-nim :no-ts
-      ;; activate skeletons
-      (pel--install-generic-skel pel:nim-skel 'pel-pkg-for-nim "nim")
-      ;; ensure consistent indentation control
-      (when (boundp 'nim-indent-offset)
-        (setq-local nim-indent-offset pel-nim-indent-width))
-      (setq-local tab-width pel-nim-tab-width))
-
+    ;; 6- Activate Nim Setup
+    ;;    Schedule more configuration upon Nim feature loading
+    ;;
+    ;; ----------------
+    after-feature-load:
+    ;; [:todo 2026-05-09, by Pierre Rouleau: ideally the body of this macro
+    ;;    would be specified inside a new marker of pel-setup-major-mode
+    ;;    called after-feature-load-config-major: nimscript pel:for-nim :no-ts
+    ;;    and placed inside a pel-config-major-mode macro placed after the one
+    ;;    pel-setup-major-mode creates for the when-buffer-opens: forms. ]
     (pel-config-major-mode nimscript pel:for-nim :no-ts
       ;; activate skeletons
       (pel--install-generic-skel pel:nim-skel 'pel-pkg-for-nim "nim")
       ;; ensure consistent indentation control
       (when (boundp 'nimscript-indent-offset)
         (setq-local nimscript-indent-offset pel-nim-indent-width))
-      (setq-local tab-width pel-nim-tab-width))))
+      (setq-local tab-width pel-nim-tab-width))
+
+    ;; ----------------
+    when-buffer-opens:
+    ;; activate skeletons
+    (pel--install-generic-skel pel:nim-skel 'pel-pkg-for-nim "nim")
+    ;; ensure consistent indentation control
+    (when (boundp 'nim-indent-offset)
+      (setq-local nim-indent-offset pel-nim-indent-width))
+    (setq-local tab-width pel-nim-tab-width)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Objective-C Programming Language Support
@@ -5610,56 +5618,62 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-p`` :
 (when pel-use-pike
-  (define-pel-global-prefix pel:for-pike   (kbd "<f11> SPC C-p"))
-  (define-pel-global-prefix pel:pike-setup (kbd "<f11> SPC C-p <f4>"))
-  (define-pel-global-prefix pel:pike-guess (kbd "<f11> SPC C-p <f4> g"))
-  (define-pel-global-prefix pel:for-pike-preproc (kbd "<f11> SPC C-p #"))
-  (define-pel-global-prefix pel:pike-skel  (kbd "<f11> SPC C-p <f12>"))
+  ;; Pike support is built-in Emacs: it uses cc-mode
+  (pel-setup-major-mode pike :no-ts
+    features: cc-mode
+    ;; ----------------
+    at-init:
+    (when pel-use-speedbar (pel-add-speedbar-extension '(".pike" ".pmod")))
 
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".pike"
-                                  ".pmod")))
+    (define-pel-global-prefix pel:for-pike   (kbd "<f11> SPC C-p"))
+    (define-pel-global-prefix pel:pike-setup (kbd "<f11> SPC C-p <f4>"))
+    (define-pel-global-prefix pel:pike-guess (kbd "<f11> SPC C-p <f4> g"))
+    (define-pel-global-prefix pel:for-pike-preproc (kbd "<f11> SPC C-p #"))
+    (define-pel-global-prefix pel:pike-skel  (kbd "<f11> SPC C-p <f12>"))
 
-  (pel-eval-after-load cc-mode
+    ;; ----------------
+    after-feature-load:
     (pel--map-cc-for pel:for-pike
                      pel:pike-setup
                      pel:pike-guess
                      pel:for-pike-preproc)
-    (pel-config-major-mode pike pel:for-pike :no-ts
-      (when (boundp 'pike-mode-map)
-        (define-key pike-mode-map (kbd "M-;") 'pel-c-comment-dwim))
-      ;; activate skeletons
-      (pel--install-generic-skel pel:pike-skel 'pel-pkg-for-pike "pike")
 
-      ;; Configure the CC Mode style for Pike from PEL custom variables
-      ;; 1) set the style: it identifies everything
-      (pel--set-cc-style 'pike-mode pel-pike-bracket-style pel-pike-newline-mode)
-      ;; 2) apply modifications requested by PEL user options.
-      ;;    set variables only available in a CC mode with PEL
-      ;;     user-options unless the file-variable sets it.
-      (unless (assoc 'c-basic-offset file-local-variables-alist)
-        (pel-setq-local c-basic-offset pel-pike-indent-width))
-      ;; 3) set fill-column to PEL specified Pike's default if specified
-      (when pel-pike-fill-column
-        (setq-local fill-column pel-pike-fill-column))
-      ;; 4) Set default auto-newline mode as identified by PEL user option
-      (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-      ;; 5) Configure M-( to put parentheses after a function name.
-      (set (make-local-variable 'parens-require-spaces) nil)
-      ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
-      (pel-local-set-f12-M-f12 'pel:for-pike-preproc "#")
-      ;; 7) Install language-specific skeletons
-      ;; [:todo 2025-03-14, by Pierre Rouleau: Add skeletons for Pike]
-      ;; (pel--install-c-skel pel:c-skel)
-      ;; 8) extra setup
-      (pel--setup-for-cc)
-      (setq-local pel-indentation-width-control-variables
-                  '(pel-pike-indent-width c-basic-offset))
-      (setq-local pel-indentation-other-control-variables
-                  '(c-syntactic-indentation))
-      ;; - Add imenu support
-      (declare-function pel-pike-set-imenu "pel-pike")
-      (pel-pike-set-imenu))))
+    ;; ----------------
+    when-buffer-opens:
+    (when (boundp 'pike-mode-map)
+      (define-key pike-mode-map (kbd "M-;") 'pel-c-comment-dwim))
+    ;; activate skeletons
+    (pel--install-generic-skel pel:pike-skel 'pel-pkg-for-pike "pike")
+
+    ;; Configure the CC Mode style for Pike from PEL custom variables
+    ;; 1) set the style: it identifies everything
+    (pel--set-cc-style 'pike-mode pel-pike-bracket-style pel-pike-newline-mode)
+    ;; 2) apply modifications requested by PEL user options.
+    ;;    set variables only available in a CC mode with PEL
+    ;;     user-options unless the file-variable sets it.
+    (unless (assoc 'c-basic-offset file-local-variables-alist)
+      (pel-setq-local c-basic-offset pel-pike-indent-width))
+    ;; 3) set fill-column to PEL specified Pike's default if specified
+    (when pel-pike-fill-column
+      (setq-local fill-column pel-pike-fill-column))
+    ;; 4) Set default auto-newline mode as identified by PEL user option
+    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+    ;; 5) Configure M-( to put parentheses after a function name.
+    (set (make-local-variable 'parens-require-spaces) nil)
+    ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
+    (pel-local-set-f12-M-f12 'pel:for-pike-preproc "#")
+    ;; 7) Install language-specific skeletons
+    ;; [:todo 2025-03-14, by Pierre Rouleau: Add skeletons for Pike]
+    ;; (pel--install-c-skel pel:c-skel)
+    ;; 8) extra setup
+    (pel--setup-for-cc)
+    (setq-local pel-indentation-width-control-variables
+                '(pel-pike-indent-width c-basic-offset))
+    (setq-local pel-indentation-other-control-variables
+                '(c-syntactic-indentation))
+    ;; - Add imenu support
+    (declare-function pel-pike-set-imenu "pel-pike")
+    (pel-pike-set-imenu)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Python Programming Language Support
@@ -6287,40 +6301,45 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 ;;   This is for shell programming support: editing shell script files.
 ;;   For shell/terminal commend line support, see below.
 (when pel-use-sh
-  (define-pel-global-prefix pel:for-sh (kbd "<f11> SPC Z"))
-  (define-pel-global-prefix pel:sh-skel (kbd "<f11> SPC Z <f12>"))
-
   ;; Shell support, the sh-mode is part of Emacs
-  (pel-eval-after-load sh-script
-    (pel-config-major-mode sh pel:for-sh :no-ts
-      (superword-mode 1)
-      (define-key pel:for-sh "\"" 'pel-sh-double-quote-word)
-      (define-key pel:for-sh "'"  'pel-sh-single-quote-word)
-      (define-key pel:for-sh "`"  'pel-sh-backtick-quote-word)
-      (define-key pel:for-sh "-"  'pel-toggle-accept-hyphen)
-      (define-key pel:for-sh "t"  'pel-sh-add-sh-local)
-      (define-key pel:for-sh (kbd "<down>")  'pel-sh-next-function)
-      (define-key pel:for-sh (kbd "<up>")    'pel-sh-prev-function)
-      ;; activate skeletons
-      (pel--install-generic-skel pel:sh-skel 'pel-pkg-generic-code-style "sh")
-      ;; Make M-<f12> same as <f12> for convenience.
-      (pel-local-set-f12-M-f12 'pel:for-sh)))
-  ;; [:todo 2026-02-19, by Pierre Rouleau: Update this logic to handle
-  ;;                    Emacs > 29 where Emacs handle Flymake-Shellcheck
-  ;;                    integration ]
-  (cond
-   ;; using flymake
-   ((memq pel-use-shellcheck '(flymake-manual
-                               flymake-automatic))
-    (pel-ensure-package-elpa flymake-shellcheck from: melpa)
-    (when (eq pel-use-shellcheck 'flymake-automatic)
-      (declare-function flymake-shellcheck-load "flymake-shellcheck")
-      (add-hook 'sh-mode-hook #'flymake-shellcheck-load)))
-   ;; using flycheck
-   ;; - flycheck support is already extended by default.
-   ;; - start it automatically if it was requested by user-option
-   ((eq pel-use-shellcheck 'flycheck-automatic)
-    (add-hook 'sh-mode-hook #'flycheck-mode))))
+  (pel-setup-major-mode sh :no-ts
+    features: sh-script
+    ;; ----------------
+    at-init:
+    (define-pel-global-prefix pel:for-sh (kbd "<f11> SPC Z"))
+    (define-pel-global-prefix pel:sh-skel (kbd "<f11> SPC Z <f12>"))
+
+    ;; [:todo 2026-02-19, by Pierre Rouleau: Update this logic to handle
+    ;;                    Emacs > 29 where Emacs handle Flymake-Shellcheck
+    ;;                    integration ]
+    (cond
+     ;; using flymake
+     ((memq pel-use-shellcheck '(flymake-manual
+                                 flymake-automatic))
+      (pel-ensure-package-elpa flymake-shellcheck from: melpa)
+      (when (eq pel-use-shellcheck 'flymake-automatic)
+        (declare-function flymake-shellcheck-load "flymake-shellcheck")
+        (add-hook 'sh-mode-hook #'flymake-shellcheck-load)))
+     ;; using flycheck
+     ;; - flycheck support is already extended by default.
+     ;; - start it automatically if it was requested by user-option
+     ((eq pel-use-shellcheck 'flycheck-automatic)
+      (add-hook 'sh-mode-hook #'flycheck-mode)))
+
+    ;; ----------------
+    when-buffer-opens:
+    (superword-mode 1)
+    (define-key pel:for-sh "\"" 'pel-sh-double-quote-word)
+    (define-key pel:for-sh "'"  'pel-sh-single-quote-word)
+    (define-key pel:for-sh "`"  'pel-sh-backtick-quote-word)
+    (define-key pel:for-sh "-"  'pel-toggle-accept-hyphen)
+    (define-key pel:for-sh "t"  'pel-sh-add-sh-local)
+    (define-key pel:for-sh (kbd "<down>")  'pel-sh-next-function)
+    (define-key pel:for-sh (kbd "<up>")    'pel-sh-prev-function)
+    ;; activate skeletons
+    (pel--install-generic-skel pel:sh-skel 'pel-pkg-generic-code-style "sh")
+    ;; Make M-<f12> same as <f12> for convenience.
+    (pel-local-set-f12-M-f12 'pel:for-sh)))
 
 ;; ---------------------------------------------------------------------------
 ;;** SQL Programming Language Support
@@ -6545,14 +6564,12 @@ to identify a Verilog file.  Anything else is assumed being V."
 ;; Preliminary 🚧
 
 (when pel-use-vhdl
-  (define-pel-global-prefix pel:for-vhdl  (kbd "<f11> SPC H"))
-
-  (add-to-list 'auto-mode-alist '("\\.vhdl?\\'" . vhdl-mode))
-  (when pel-use-tree-sitter
-    (pel-ensure-package-elpa vhdl-ts-mode from: melpa))
-
-  (pel-eval-after-load vhdl-mode
-    (pel-config-major-mode vhdl pel:for-vhdl :no-ts)))
+  (pel-setup-major-mode vhdl :no-ts
+    at-init:
+    (when pel-use-tree-sitter
+      (pel-ensure-package-elpa vhdl-ts-mode from: melpa))
+    (add-to-list 'auto-mode-alist '("\\.vhdl?\\'" . vhdl-mode))
+    (define-pel-global-prefix pel:for-vhdl  (kbd "<f11> SPC H"))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Zig Programming Language Support
