@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 14:15:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 16:06:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,6 +36,7 @@
 (require 'pel--options)           ; use: `pel-perl-shebang-line'
 (require 'pel-ccp)                ; use: `pel-delete-line'
 (require 'pel-ffind)              ; use: `pel-ffind'
+(require 'pel-file)               ; use: `pel-filename-at-point-finders'
 (require 'tramp)                  ; use: `tramp-tramp-file-p', `tramp-file-local-name'
 (eval-when-compile
   (require 'subr-x))              ; use: string-join, string-trim
@@ -43,6 +44,18 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+
+;;-pel-autoload
+(defun pel-perl-live-run ()
+  "Start perl-live-run and move to the buffer."
+  (interactive)
+  (if (fboundp 'perl-live-run)
+      (progn
+        (call-interactively #'perl-live-run)
+        (switch-to-buffer "*perl live*"))
+    (user-error "perl-live-run is not available;
+set pel-use-perl-live-coding to install/enable the Perl live package")))
 
 ;;-pel-autoload
 (defun pel-perl-critic (&optional verbose)
@@ -63,19 +76,19 @@ Show errors in compilation-mode buffer in a format that allows navigation."
            (default-directory (file-name-directory current-filename))
            (is-a-tramp-fname (tramp-tramp-file-p current-filename)))
       (if (pel-executable-find "perlcritic" is-a-tramp-fname)
-	      (compile
-	       ;; use a format that can be used by the compile mode to move to the error.
+	  (compile
+	   ;; use a format that can be used by the compile mode to move to the error.
            ;; Note that prior to Emacs 27, tramp-file-local-name did not exist.
-	       (format
+	   (format
             (if verbose
-		        "perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s, %%C:\\t%%m.\\n  %%P (%%e):\\n%%d\\n\" %s"
+		"perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s, %%C:\\t%%m.\\n  %%P (%%e):\\n%%d\\n\" %s"
               "perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s:\\t%%m.\\t(%%e)\\n\" %s")
             (shell-quote-argument (if (and is-a-tramp-fname
                                            (fboundp 'tramp-file-local-name))
                                       (tramp-file-local-name current-filename)
                                     current-filename)))
-	       nil)
-	    (user-error "Please install perlcritic")))))
+	   nil)
+	(user-error "Please install perlcritic")))))
 
 ;; ----
 (defun pel-perl-source-directories (&optional directories)
@@ -182,6 +195,12 @@ Return nil if nothing found.
 
 ;; --
 ;;-pel-autoload
+(defun pel--perl-activate-file-search ()
+  "Utility setup: activate file search in Perl."
+  (setq-local pel-filename-at-point-finders '(pel-perl-find-file)))
+
+;; --
+;;-pel-autoload
 (defun pel-perl-tidy-ediff ()
   "Run perltidy on the current buffer, start ediff session.
 
@@ -238,8 +257,8 @@ in which case it appends to the previous report."
 
 Prompt for indentation style name and apply it."
   (interactive)
-  (if (fboundp 'cperl-file-style)
-      (call-interactively 'cperl-file-style)
+  (if (fboundp 'cperl-set-style)
+      (call-interactively 'cperl-set-style)
     (user-error "First set perl-user-perl to HaraldJoerg/cperl-mode!")))
 
 ;; ---------------------------------------------------------------------------

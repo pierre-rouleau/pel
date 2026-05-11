@@ -1,0 +1,29 @@
+#!/bin/sh
+# SH FILE: build-pel
+#
+# Purpose   : Build PEL quickly from scratch then run all tests and display stats.
+# Created   : Monday, May 11 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-05-11 13:44:46 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Build PEL Emacs Lisp code quickly, then check if there are any issues in the
+# key prefix logic between pel_keys.el and pel--keys-macros.el, then run all
+# unit test and complete by checking PEL stats.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# PEL code, Emacs and GNU Make.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+
+make clean && make -j compile-only && make lint && make && make stats
+# ----------------------------------------------------------------------------

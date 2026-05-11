@@ -654,7 +654,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-hide/show-all-docstrings
     pel-toggle-all-docstrings)
 
-
+  ;; --
   (pel-autoload "pel-imenu" for:
     pel-imenu-rescan)
 
@@ -670,13 +670,21 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-indent" for:
     pel-insert-tab-set-width-info)
 
+  ;; --
+  (pel-autoload-function "pel-java" for:
+    pel--java-setup-with-lsp)
+
+  ;; --
   (pel-autoload "pel-kbmacros" for:
     pel-kmacro-start-macro-or-insert-counter
     pel-forget-recorded-keyboard-macro
     pel-kmacro-ring-show-status)
 
+  ;; --
   (pel-autoload "pel-lfe" for:
     pel-lfe-eval-buffer)
+  (pel-autoload-function "pel-lfe" for:
+    pel--setup-for-inferior-lfe)
 
   (pel-autoload "pel-line-control" for:
     pel-lc-previous-logical-line
@@ -798,12 +806,14 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-install-from-elpa-attic)
 
   (pel-autoload "pel-perl" for:
+    pel-perl-live-run
     pel-perl-critic
     pel-perl-tidy-ediff
     pel-perl-show-status
     pel-perl-set-style
     pel-perl-show-style)
   (pel-autoload-function "pel-perl" for:
+    pel--perl-activate-file-search
     pel-perl-find-file
     pel-perl-show-source-directories
     pel-perl-insert-shebang-line)
@@ -1148,6 +1158,17 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-sp-erlang-handler
     pel-smartparens-setup-erlang)
 
+  ;; --
+  (pel-autoload "pel-v" for:
+    pel-v-setup-info)
+  (pel-autoload-function "pel-v" for:
+    pel-v-or-verilog-mode
+    pel-v-cleanup-auto-mode-alist
+    pel-v-insert-indent-info
+    pel-v-insert-tab-info
+    pel-v-mode-used-text)
+
+  ;; --
   (pel-autoload "pel-vc" for:
     pel-vc-svn-init)
 

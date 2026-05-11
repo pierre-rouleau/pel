@@ -5843,10 +5843,18 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :link '(url-link :tag "VHDL @ Wikipedia" "https://en.wikipedia.org/wiki/VHDL"))
 
 (defcustom pel-use-vhdl nil
-  "Control whether PEL supports the VHDL Programming Language Development."
+  "Control whether PEL supports the VHDL Programming Language Development.
+
+This *must* be activated to allow any other package for VHDL.
+When activating it you can select between the following values:
+- t                : use `vhdl-mode' provided by the vhdl-mode external package.
+- with-tree-sitter : use `vhdl-ts-mode' provided by the vhdl-ts-mode external
+                     package."
   :group 'pel-pkg-for-vhdl
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use VHDL" nil)
+          (const :tag "Use classic mode: vhdl-mode" t)
+          (const :tag "Use tree-sitter mode: vhdl-ts-mode." with-tree-sitter)))
 (pel-put pel-use-vhdl :package-is '(if pel-use-tree-sitter
                                        (quote ((elpa . vhdl-mode)
                                                (elpa . vhdl-ts-mode)))

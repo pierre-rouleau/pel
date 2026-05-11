@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-08 07:08:34 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-11 13:17:32 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -238,6 +238,7 @@ EL_FILES := pel--base.el \
 		pel-indent.el \
 		pel-ini.el \
 		pel-itemize.el \
+		pel-java.el \
 		pel-js.el \
 		pel-kbmacros.el \
 		pel-key-chord.el \
@@ -312,6 +313,7 @@ EL_FILES := pel--base.el \
 		pel-treesit.el \
 		pel-undo.el \
 		pel-uuid.el \
+		pel-v.el \
 		pel-vc.el \
 		pel-vcs.el \
 		pel-whitespace.el \
@@ -626,7 +628,8 @@ help:
 	@printf " * make clean-tar     - Remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make clean-mypelpa - Remove the directory $(PELPA_DIR)\n"
 	@printf " * make clean-test    - Remove test tag file to allow running all tests again.\n"
-	@printf " * make lint          - Check .el files with elisp-lint (it must be installed).\n"
+	@printf " * make lint          - Check key prefix logic.\n"
+	@printf " * make lint-strict   - Check .el files with elisp-lint (it must be installed).\n"
 	@printf " * make timeit        - Check startup time of Emacs with and without packages.\n"
 	@printf " * make stats         - Load all PEL files & compute PEL statistics.  Also installs\n"
 	@printf "                        missing files/packages specified by pel-use.. user-options.\n"
@@ -821,7 +824,7 @@ pel-ini.elc:              pel--install.elc
 pel-js.elc:               pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel-kbmacros.elc:         pel--options.elc pel-list.elc
 pel-key-chord.elc:        pel--base.elc pel--options.elc
-pel-lfe.elc:              pel-comment.elc
+pel-lfe.elc:              pel--base.elc pel--install.elc pel-comment.elc
 pel-lisp.elc:             pel--base.elc
 pel-lispy.elc:            pel--base.elc pel--install.elc pel--options.elc
 pel-list.elc:             pel--base.elc pel--install.elc
@@ -839,7 +842,7 @@ pel-open.elc:             pel--base.elc pel--options.elc pel-prompt.elc pel-ido.
 pel-outline.elc:          pel--base.elc
 pel-package.elc:          pel--base.elc pel--options.elc pel-navigate.elc pel-elpa.elc
 pel-pathmng.elc:          pel--base.elc pel-window.elc
-pel-perl.elc:             pel--base.elc pel--options.elc pel-ccp.elc pel-ffind.elc
+pel-perl.elc:             pel--base.elc pel--options.elc pel-ccp.elc pel-ffind.elc pel-file.elc
 pel-pike.elc:             pel--base.elc pel--options.elc pel-ccp.elc
 pel-plantuml.elc:         pel--base.elc
 pel-pp.elc:               pel--base.elc
@@ -882,6 +885,7 @@ pel-time.elc:             pel--base.elc
 pel-timestamp.elc:        pel--base.elc pel--options.elc
 pel-treesit.elc:          pel--base.elc pel--keys-macros.elc pel-prompt.elc
 pel-undo.elc:             pel--options.elc
+pel-v.elc:                pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel-vc.elc:               pel--options.elc
 pel-vcs.elc:              pel--base.elc pel-filedir.elc pel-prompt.elc
 pel-whitespace.elc:       pel--base.elc pel--options.elc
@@ -1051,8 +1055,14 @@ timeit:
 # This requires access to a load-path that can find elisp-lint as well
 # as all the tools it uses and all packages used by PEL.
 # This is why the Emacs init file is loaded.
-.PHONY: lint
-lint:
+.PHONY: lint validate-key-prefixes
+
+validate-key-prefixes:
+	$(EMACS) -Q --batch -l bin/pel-lint.el --eval "(pel-lint-main)"
+
+lint: validate-key-prefixes
+
+lint-strict: lint
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
 			 --no-package-format --no-package-lint --no-fill-column $(EL_FILES) pel_keys.el
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
