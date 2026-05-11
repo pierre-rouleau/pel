@@ -4934,26 +4934,16 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;   ---------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC J`` :
 (when pel-use-java
-
-  (defun pel--java-setup-with-lsp ()
-    "Setup Java with language server capability."
-    (if (require 'lsp-java nil 'noerror)
-        (when (fboundp 'lsp)
-          (lsp))
-      (display-warning
-       'pel-use-java
-       "lsp-java not available; skipping Java LSP activation." :error)))
-  (declare-function pel--java-setup-with-lsp "pel_keys" ())
-
   ;; java-mode is implemented in the cc-mode.el
   (pel-setup-major-mode java :same-for-ts
-                        features: (cc-mode java-ts-mode)
+    features: (cc-mode java-ts-mode)
     at-init:
     (define-pel-global-prefix pel:for-java  (kbd "<f11> SPC J"))
     (when pel-use-lsp-java
       (pel-ensure-package-elpa lsp-java from: melpa))
 
     ;; don't load lsp on cc-mode loaded; wait until user opens a Java file.
+    (declare-function pel--java-setup-with-lsp "pel-java" ())
     when-buffer-opens:
     (when pel-use-lsp-java
       (add-hook 'java-mode-hook #'pel--java-setup-with-lsp)

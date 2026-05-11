@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, May 11 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-11 12:38:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 13:35:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -28,8 +28,8 @@
 ;;
 ;; Usage (run from the PEL root directory):
 ;;
-;;   emacs -Q --batch --script bin/pel-int.el
-;;   emacs -Q --batch --script bin/pel-int.el MACROS-FILE KEYS-FILE
+;;   emacs -Q --batch -l bin/pel-lint.el --eval "(pel-lint-main)"
+;;   emacs -Q --batch -l bin/pel-lint.el --eval "(pel-lint-main)" -- MACROS-FILE KEYS-FILE
 ;;
 ;; Checks that every pel-setup-major-mode call either has an explicit
 ;; key-prefix: clause, or that its inferred pel:for-<target> symbol is

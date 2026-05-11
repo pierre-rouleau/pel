@@ -654,7 +654,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-hide/show-all-docstrings
     pel-toggle-all-docstrings)
 
-
+  ;; --
   (pel-autoload "pel-imenu" for:
     pel-imenu-rescan)
 
@@ -670,6 +670,11 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-indent" for:
     pel-insert-tab-set-width-info)
 
+  ;; --
+  (pel-autoload-function "pel-java" for:
+    pel--java-setup-with-lsp)
+
+  ;; --
   (pel-autoload "pel-kbmacros" for:
     pel-kmacro-start-macro-or-insert-counter
     pel-forget-recorded-keyboard-macro
