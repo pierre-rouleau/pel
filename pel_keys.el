@@ -6396,7 +6396,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 ;; Preliminary 🚧
 
 (declare-function pel-v-cleanup-auto-mode-alist "pel-v")
-(declare-function pel-v-or-verilog-mod          "pel-v")
+(declare-function pel-v-or-verilog-mode         "pel-v")
 (declare-function pel-v-cleanup-auto-mode-alist "pel-v")
 (when pel-use-v
   ;; Common init setup for both implementations

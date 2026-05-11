@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-11 13:17:32 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-11 19:37:51 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -568,6 +568,12 @@ ELC_FILES2 := $(subst .el,.elc,$(EL_FILES2))
 # PEL_TAR_FILE makes the name of the PEL tar file name (with PEL version)
 PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 
+
+# BIN_EL_FILES  : Emacs Lisp utility scripts stored under bin/
+# BIN_ELC_FILES : their byte-compiled counterparts
+BIN_EL_FILES  := bin/pel-lint.el
+BIN_ELC_FILES := $(subst .el,.elc,$(BIN_EL_FILES))
+
 # -----------------------------------------------------------------------------
 # First rule, allows 'make' command to build everything that needs updating
 
@@ -1013,6 +1019,29 @@ pel: $(ELC_FILES) pel_keys.elc
 
 pel.elc: pel.el pel_keys.elc
 
+
+# Pattern rule: byte-compile (and native-compile when available) scripts in bin/.
+# -L bin is added so that (provide 'pel-lint) / (require 'pel-lint) resolve
+# correctly during compilation.
+ifeq ($(EMACS_NATIVE_COMP_AVAILABLE), yes)
+bin/%.elc: bin/%.el
+	$(EMACS) -Q --batch -L . -L bin \
+	         --eval '(setq byte-compile-error-on-warn t)' \
+	         -f batch-byte-compile $<
+	$(EMACS) -Q --batch -L . -L bin \
+	         --eval '(setq byte-compile-error-on-warn t)' \
+	         -f batch-native-compile $<
+else
+bin/%.elc: bin/%.el
+	$(EMACS) -Q --batch -L . -L bin \
+	         --eval '(setq byte-compile-error-on-warn t)' \
+	         -f batch-byte-compile $<
+endif
+
+# compile-bin: convenience target to compile all bin/ utility scripts.
+.PHONY: compile-bin
+compile-bin: $(BIN_ELC_FILES)
+
 # ----------------------------------------------------------------------------
 # RULES: to execute ERT tests
 
@@ -1057,7 +1086,7 @@ timeit:
 # This is why the Emacs init file is loaded.
 .PHONY: lint validate-key-prefixes
 
-validate-key-prefixes:
+validate-key-prefixes:  bin/pel-lint.elc
 	$(EMACS) -Q --batch -l bin/pel-lint.el --eval "(pel-lint-main)"
 
 lint: validate-key-prefixes
@@ -1140,6 +1169,7 @@ clean-mypelpa:
 
 clean: clean-tar clean-mypelpa clean-test
 	-rm *.elc
+	-rm -f $(BIN_ELC_FILES)
 	-rm -rf $(OUT_DIR)
 	-rm -rf $(TMP_DIR)
 
