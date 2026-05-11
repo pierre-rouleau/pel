@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-11 14:17:33 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 16:06:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -197,8 +197,7 @@ Return nil if nothing found.
 ;;-pel-autoload
 (defun pel--perl-activate-file-search ()
   "Utility setup: activate file search in Perl."
-  (when (require 'pel-file nil 'noerror)
-    (setq-local pel-filename-at-point-finders '(pel-perl-find-file))))
+  (setq-local pel-filename-at-point-finders '(pel-perl-find-file)))
 
 ;; --
 ;;-pel-autoload

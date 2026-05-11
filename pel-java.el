@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, May 11 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-11 13:05:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 17:06:06 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -38,13 +38,13 @@
 
 ;;-pel-autoload
 (defun pel--java-setup-with-lsp ()
-    "Setup Java with language server capability."
-    (if (require 'lsp-java nil 'noerror)
-        (when (fboundp 'lsp)
-          (lsp))
-      (display-warning
-       'pel-use-java
-       "lsp-java not available; skipping Java LSP activation." :error)))
+  "Setup Java with language server capability."
+  (if (require 'lsp-java nil 'noerror)
+      (when (fboundp 'lsp)
+        (lsp))
+    (display-warning
+     'pel-use-java
+     "lsp-java not available; skipping Java LSP activation." :error)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-java)
