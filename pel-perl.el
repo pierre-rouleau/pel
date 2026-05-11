@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-11 12:04:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 13:52:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -48,13 +48,13 @@
 
 ;;-pel-autoload
 (defun pel-perl-live-run ()
-        "Start perl-live-run and move to the buffer."
-        (interactive)
-        (if (fboundp 'perl-live-run)
-            (progn
-              (call-interactively (function perl-live-run))
-              (switch-to-buffer "*perl live*"))
-          (user-error "perl-live-run is not available;
+  "Start perl-live-run and move to the buffer."
+  (interactive)
+  (if (fboundp 'perl-live-run)
+      (progn
+        (call-interactively #'perl-live-run)
+        (switch-to-buffer "*perl live*"))
+    (user-error "perl-live-run is not available;
 set pel-use-perl-live-coding to install/enable the Perl live package")))
 
 ;;-pel-autoload
@@ -258,8 +258,8 @@ in which case it appends to the previous report."
 
 Prompt for indentation style name and apply it."
   (interactive)
-  (if (fboundp 'cperl-file-style)
-      (call-interactively 'cperl-file-style)
+  (if (fboundp 'cperl-set-style)
+      (call-interactively 'cperl-set--style)
     (user-error "First set perl-user-perl to HaraldJoerg/cperl-mode!")))
 
 ;; ---------------------------------------------------------------------------

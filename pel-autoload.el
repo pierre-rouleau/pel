@@ -1160,9 +1160,9 @@ Argument FOR: just a required separator keyword to make code look better."
 
   ;; --
   (pel-autoload "pel-v" for:
-    pel-v-or-verilog-mode
     pel-v-setup-info)
   (pel-autoload-function "pel-v" for:
+    pel-v-or-verilog-mode
     pel-v-cleanup-auto-mode-alist
     pel-v-insert-indent-info
     pel-v-insert-tab-info

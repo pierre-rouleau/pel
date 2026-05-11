@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, May 11 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-11 13:35:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 13:45:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -211,4 +211,5 @@ KEYS-FILE is the path to pel_keys.el."
         (kill-emacs 0)))))
 
 ;; ---------------------------------------------------------------------------
+(provide 'pel-lint)
 ;;; pel-lint.el ends here

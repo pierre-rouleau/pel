@@ -5497,6 +5497,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                                  pel-pkg-for-perl-general)
                                "perl")
     (pel--perl-activate-file-search)
+    ;; For Perl, a single set of user-options are defined; use those explicitly.
     (pel-setq-local-unless-filevar tab-width
                                    pel-general-perl-indent-level)
     (pel-setq-local-unless-filevar indent-tabs-mode
@@ -6395,6 +6396,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 ;; Preliminary 🚧
 
 (declare-function pel-v-cleanup-auto-mode-alist "pel-v")
+(declare-function pel-v-or-verilog-mod          "pel-v")
+(declare-function pel-v-cleanup-auto-mode-alist "pel-v")
 (when pel-use-v
   ;; Common init setup for both implementations
   ;; V file name extension clashes with Verilog file names.
@@ -6407,6 +6410,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                                           'v-mode
                                         'vlang-mode)))
   (run-at-time "3 sec" nil (function pel-v-cleanup-auto-mode-alist))
+
+  (when pel-use-speedbar (pel-add-speedbar-extension '(".v" ".vv" ".vsh")))
 
   ;; The key prefix is the same for both
   (define-pel-global-prefix pel:for-v (kbd "<f11> SPC v"))

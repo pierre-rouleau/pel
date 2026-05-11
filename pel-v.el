@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, May  9 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-09 15:37:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 13:58:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -28,7 +28,7 @@
 ;; PEL extra support for the V programming language.
 ;; Supports both v-mode and vlang-mode external packages.
 ;;
-;; Since both V and Verilog have files with  the .v option, this also provides
+;; Since both V and Verilog have files with the .v option, this also provides
 ;; the mode detector function `pel-v-or-verilog-mode'.
 
 
@@ -51,11 +51,9 @@
 ;;
 
 (declare-function verilog-mode "verilog-mode")
+(declare-function verilog-ts-mode "verilog-ts-mode")
 (declare-function v-mode       "v-mode")
 (declare-function vlang-mode   "vlang-mode")
-
-;; (pel-autoload-file v-mode for: v-mode)
-;; (pel-autoload-file vlang-mode for: vlang-mode)
 
 ;;-pel-autoload
 (defun pel-v-or-verilog-mode ()
@@ -90,16 +88,16 @@ to identify a Verilog file.  Anything else is assumed being V."
 
 ;;-pel-autoload
 (defun pel-v-cleanup-auto-mode-alist ()
-    "Remove invalid entries for V from auto-mode-alist."
-    ;; Remove any other .v rules from the auto-mode-alist that
-    ;; might have been added by the loading of the V language mode code.
-    ;; remove what v-mode code adds (if present)
-    (setq auto-mode-alist (delete '("\\(\\.v?v\\|\\.vsh\\)$" . v-mode)
-                                  auto-mode-alist))
+  "Remove invalid entries for V from auto-mode-alist."
+  ;; Remove any other .v rules from the auto-mode-alist that
+  ;; might have been added by the loading of the V language mode code.
+  ;; remove what v-mode code adds (if present)
+  (setq auto-mode-alist (delete '("\\(\\.v?v\\|\\.vsh\\)$" . v-mode)
+                                auto-mode-alist))
 
-    ;; remove what vlang-mode adds (if present)
-    (setq auto-mode-alist (delete '("\\.v\\'" . vlang-or-verilog-mode)
-                                  auto-mode-alist)))
+  ;; remove what vlang-mode adds (if present)
+  (setq auto-mode-alist (delete '("\\.v\\'" . vlang-or-verilog-mode)
+                                auto-mode-alist)))
 
 
 ;;-pel-autoload
