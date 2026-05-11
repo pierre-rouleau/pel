@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-11 11:48:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 12:04:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -50,9 +50,12 @@
 (defun pel-perl-live-run ()
         "Start perl-live-run and move to the buffer."
         (interactive)
-        (when (fboundp 'perl-live-run)
-          (call-interactively (function perl-live-run))
-          (switch-to-buffer "*perl live*")))
+        (if (fboundp 'perl-live-run)
+            (progn
+              (call-interactively (function perl-live-run))
+              (switch-to-buffer "*perl live*"))
+          (user-error "perl-live-run is not available;
+set pel-use-perl-live-coding to install/enable the Perl live package")))
 
 ;;-pel-autoload
 (defun pel-perl-critic (&optional verbose)

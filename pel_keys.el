@@ -5165,7 +5165,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; Setup the inferior-lfe-mode support
   (define-pel-global-prefix pel:for-inferior-lfe (kbd "<f11> SPC SPC C-l"))
 
-  (declare-function pel--setup-for-inferior-lfe "pel_lfe")
+  (declare-function pel--setup-for-inferior-lfe "pel-lfe")
   (pel-check-minor-modes-in pel-inferior-lfe-activates-minor-modes)
   (pel--mode-hook-maybe-call
    (function pel--setup-for-inferior-lfe)
@@ -6440,6 +6440,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
    ;; --- vlang-mode (experimental, font-lock only, from GitHub) ---
    ((eq pel-use-v 'vlang-mode)
+    ;; Use the same pel-v-... user-options with vlang-mode
     (pel-setup-major-mode v :no-ts
       features: vlang-mode
       at-init:
