@@ -6520,7 +6520,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 ;; Preliminary 🚧
 
 (when pel-use-vhdl
-  (pel-setup-major-mode vhdl :no-ts
+  (pel-setup-major-mode vhdl :same-for-ts
     at-init:
     (when pel-use-tree-sitter
       (pel-ensure-package-elpa vhdl-ts-mode from: melpa))

@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-11 13:52:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 14:17:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -259,7 +259,7 @@ in which case it appends to the previous report."
 Prompt for indentation style name and apply it."
   (interactive)
   (if (fboundp 'cperl-set-style)
-      (call-interactively 'cperl-set--style)
+      (call-interactively 'cperl-set-style)
     (user-error "First set perl-user-perl to HaraldJoerg/cperl-mode!")))
 
 ;; ---------------------------------------------------------------------------
