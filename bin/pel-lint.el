@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, May 11 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-11 13:45:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 17:10:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -113,11 +113,11 @@ TARGET-INFO is a hash table: target-name string -> t (has explicit key-prefix:)
         (let* ((target     (match-string-no-properties 1))
                (body-start (match-end 0))
                ;; Body ends just before the next pel-setup-major-mode call.
-               (body-end   (save-excursion
-                             (if (re-search-forward
-                                  "(pel-setup-major-mode" nil t)
-                                 (match-beginning 0)
-                               (point-max))))
+               (body-end (save-excursion
+                           (goto-char (match-beginning 0))
+                           (condition-case nil
+                               (progn (forward-sexp 1) (point))
+                             (scan-error (point-max)))))
                (body       (buffer-substring-no-properties body-start body-end))
                (has-kp     (if (string-match-p "key-prefix:" body) t nil)))
           (puthash target has-kp target-info))))
