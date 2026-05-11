@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, May 11 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-11 17:10:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 17:24:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -160,7 +160,12 @@ KEYS-FILE is the path to pel_keys.el."
                          (lambda (a)
                            (or (equal a target)
                                (not (gethash a actual-targets))
-                               (pel-lint/ts-variant-pair-p target a)))
+                               (pel-lint/ts-variant-pair-p target a)
+                               ;; Exclude co-aliases that already own their
+                               ;; inferred prefix via
+                               ;; define-pel-global-prefix: they are the
+                               ;; canonical owner, so no conflict exists.
+                               (gethash (concat "pel:for-" a) defined-prefixes)))
                          aliases)))
                    (when conflicting
                      (push
