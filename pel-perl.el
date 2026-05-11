@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-11 08:33:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 11:48:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,6 +36,7 @@
 (require 'pel--options)           ; use: `pel-perl-shebang-line'
 (require 'pel-ccp)                ; use: `pel-delete-line'
 (require 'pel-ffind)              ; use: `pel-ffind'
+(require 'pel-file)               ; use: `pel-filename-at-point-finders'
 (require 'tramp)                  ; use: `tramp-tramp-file-p', `tramp-file-local-name'
 (eval-when-compile
   (require 'subr-x))              ; use: string-join, string-trim
@@ -44,11 +45,6 @@
 ;;; Code:
 ;;
 
-;;-pel-autoload
-(defun pel--perl-activate-file-search ()
-    "Utility setup: activate file search in Perl."
-    (when (require 'pel-file nil 'noerror)
-      (setq-local pel-filename-at-point-finders '(pel-perl-find-file))))
 
 ;;-pel-autoload
 (defun pel-perl-live-run ()
@@ -193,6 +189,13 @@ Return nil if nothing found.
                              (pel-perl-source-directories directories))
                             file-pathnames)))
     file-pathnames))
+
+;; --
+;;-pel-autoload
+(defun pel--perl-activate-file-search ()
+  "Utility setup: activate file search in Perl."
+  (when (require 'pel-file nil 'noerror)
+    (setq-local pel-filename-at-point-finders '(pel-perl-find-file))))
 
 ;; --
 ;;-pel-autoload
