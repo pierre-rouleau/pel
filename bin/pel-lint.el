@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, May 11 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-11 17:24:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 19:30:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -46,6 +46,7 @@
 ;;
 ;;
 (require 'cl-lib)
+(require 'subr-x)              ; use: `string-trim'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
