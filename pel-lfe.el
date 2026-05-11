@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, May  5 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 22:55:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 09:35:39 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,10 +31,19 @@
 ;;; Dependencies:
 ;;
 ;;  Currently loads LFE support lazily.
-(require 'pel-comment)                 ; use: pel-delete-all-comments
+(require 'pel--base)              ; use: `pel-turn-on-local-minor-modes-in'
+(require 'pel--install)           ; use: `pel-local-set-f12-M-f12'
+(require 'pel-comment)            ; use: `pel-delete-all-comments'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+;;-pel-autoload
+(defun pel--setup-for-inferior-lfe ()
+  "Activate inferior-lfe setup, take local variables into account."
+  (pel-local-set-f12-M-f12 'pel:for-inferior-lfe)
+  (pel-turn-on-local-minor-modes-in
+   'pel-inferior-lfe-activates-minor-modes))
 
 ;;-pel-autoload
 (defun pel-lfe-eval-buffer (&optional and-go)

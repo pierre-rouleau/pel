@@ -675,8 +675,11 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-forget-recorded-keyboard-macro
     pel-kmacro-ring-show-status)
 
+  ;; --
   (pel-autoload "pel-lfe" for:
     pel-lfe-eval-buffer)
+  (pel-autoload-function "pel-lfe" for:
+    pel--setup-for-inferior-lfe)
 
   (pel-autoload "pel-line-control" for:
     pel-lc-previous-logical-line
@@ -798,12 +801,14 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-install-from-elpa-attic)
 
   (pel-autoload "pel-perl" for:
+    pel-perl-live-run
     pel-perl-critic
     pel-perl-tidy-ediff
     pel-perl-show-status
     pel-perl-set-style
     pel-perl-show-style)
   (pel-autoload-function "pel-perl" for:
+    pel--perl-activate-file-search
     pel-perl-find-file
     pel-perl-show-source-directories
     pel-perl-insert-shebang-line)

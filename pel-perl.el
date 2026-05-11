@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 14:15:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 08:33:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,6 +45,20 @@
 ;;
 
 ;;-pel-autoload
+(defun pel--perl-activate-file-search ()
+    "Utility setup: activate file search in Perl."
+    (when (require 'pel-file nil 'noerror)
+      (setq-local pel-filename-at-point-finders '(pel-perl-find-file))))
+
+;;-pel-autoload
+(defun pel-perl-live-run ()
+        "Start perl-live-run and move to the buffer."
+        (interactive)
+        (when (fboundp 'perl-live-run)
+          (call-interactively (function perl-live-run))
+          (switch-to-buffer "*perl live*")))
+
+;;-pel-autoload
 (defun pel-perl-critic (&optional verbose)
   "Validate the Perl file visited in current buffer with perlcritic.
 
@@ -63,19 +77,19 @@ Show errors in compilation-mode buffer in a format that allows navigation."
            (default-directory (file-name-directory current-filename))
            (is-a-tramp-fname (tramp-tramp-file-p current-filename)))
       (if (pel-executable-find "perlcritic" is-a-tramp-fname)
-	      (compile
-	       ;; use a format that can be used by the compile mode to move to the error.
+	  (compile
+	   ;; use a format that can be used by the compile mode to move to the error.
            ;; Note that prior to Emacs 27, tramp-file-local-name did not exist.
-	       (format
+	   (format
             (if verbose
-		        "perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s, %%C:\\t%%m.\\n  %%P (%%e):\\n%%d\\n\" %s"
+		"perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s, %%C:\\t%%m.\\n  %%P (%%e):\\n%%d\\n\" %s"
               "perlcritic --nocolor --verbose \"%%F:%%l:%%c:\\tSev:%%s:\\t%%m.\\t(%%e)\\n\" %s")
             (shell-quote-argument (if (and is-a-tramp-fname
                                            (fboundp 'tramp-file-local-name))
                                       (tramp-file-local-name current-filename)
                                     current-filename)))
-	       nil)
-	    (user-error "Please install perlcritic")))))
+	   nil)
+	(user-error "Please install perlcritic")))))
 
 ;; ----
 (defun pel-perl-source-directories (&optional directories)
