@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-11 11:48:52 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-11 12:50:10 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -627,7 +627,8 @@ help:
 	@printf " * make clean-tar     - Remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make clean-mypelpa - Remove the directory $(PELPA_DIR)\n"
 	@printf " * make clean-test    - Remove test tag file to allow running all tests again.\n"
-	@printf " * make lint          - Check .el files with elisp-lint (it must be installed).\n"
+	@printf " * make lint          - Check key prefix logic.\n"
+	@printf " * make lint-strict   - Check .el files with elisp-lint (it must be installed).\n"
 	@printf " * make timeit        - Check startup time of Emacs with and without packages.\n"
 	@printf " * make stats         - Load all PEL files & compute PEL statistics.  Also installs\n"
 	@printf "                        missing files/packages specified by pel-use.. user-options.\n"
@@ -1053,8 +1054,14 @@ timeit:
 # This requires access to a load-path that can find elisp-lint as well
 # as all the tools it uses and all packages used by PEL.
 # This is why the Emacs init file is loaded.
-.PHONY: lint
-lint:
+.PHONY: lint validate-key-prefixes
+
+validate-key-prefixes:
+	$(EMACS) -Q --batch -l bin/pel-lint.el --eval "(pel-lint-main)"
+
+lint: validate-key-prefixes
+
+lint-strict: lint
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
 			 --no-package-format --no-package-lint --no-fill-column $(EL_FILES) pel_keys.el
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
