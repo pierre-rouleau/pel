@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-12 08:11:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-12 08:56:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -902,6 +902,8 @@ The ERROR argument is the caught error."
                                     zig-ts-mode)
   "List of Tree Sitter modes that require execution of a mode fixer function.
 
+The mode fixer functions are used in `pel-eval-after-load' for their
+respective mode.
 The fixer mode function has a name that has a format like
 pel--MODE-fixer with where MODE corresponds to the name of the mode
 taken from this list.")
