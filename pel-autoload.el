@@ -80,8 +80,7 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-abbrev" for:
     pel-ispell-word-then-abbrev
-    pel-abbrev-info
-    pel-extract-abbrev-definitions)
+    pel-abbrev-info pel-extract-abbrev-definitions)
 
   (pel-autoload "pel-ada" for:
     pel-ada-mode
@@ -101,14 +100,14 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (when (eq system-type 'darwin)
     (pel-autoload "pel-applescript" for:
-      pel-pel-say-word
+      pel-say-word
       pel-say-sentence
       pel-say-paragraph
       pel-say-region
-      pel-say
-      pel-say-words)
+      pel-say)
     (pel-autoload-function "pel-applescript" for:
-      pel-run-applescript))
+      pel-run-applescript
+      pel-say-words))
 
   (pel-autoload "pel-as" for: pel-as)
 
@@ -134,11 +133,12 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-buffer" for:
     pel-bs-next
     pel-bs-previous
-    pel-bs-init
     pel-smb-next
     pel-smb-previous
     pel-show-all-buffers
     pel-kill-current-buffer)
+  (pel-autoload-function "pel-buffer" for:
+      pel-bs-init)
 
   (pel-autoload "pel-c-utils" for:
     pel-c-search-equal-NULL
@@ -241,7 +241,6 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-delete-from-beginning-of-line
     pel-delete-to-next-visible
     pel-kill-word-and-whitespace
-    pel-delete-to-eol
     pel-duplicate-line
     pel-join-next-line
     pel-toggle-overwrite-yank
@@ -294,15 +293,16 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-comp" for:
     pel-native-compile-util)
 
+  ;; --
   (pel-autoload "pel-completion" for:
     pel-select-completion-mode
     pel-show-active-completion-mode
     pel-ido-mode
-    pel-set-ido-ubiquitous
     pel-ido-ubiquitous
     pel-flx-ido
     pel-select-ido-geometry)
   (pel-autoload-function "pel-completion" for:
+    pel-set-ido-ubiquitous
     pel-set-completion-mode)
 
   (pel-autoload "pel-cpp" for:
@@ -426,7 +426,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-erlang-find-definitions
     pel-erlang-unwind)
   (pel-autoload-function "pel-erlang" for:
-    pel--erlang-ts--fixer
+    pel--erlang-ts-fixer
     pel-erlang-mode-used-text
     pel-erlang-insert-indent-info
     pel-erlang-insert-tab-info
@@ -518,11 +518,11 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; --
   (pel-autoload "pel-go" for:
     pel-go-mode
-    pel-go-dot-mod-mode
     pel-go-toggle-gofmt-on-buffer-save
     pel-go-setup-info
     pel-go-mod-setup-info)
   (pel-autoload-function "pel-go" for:
+    pel-go-dot-mod-mode
     pel--go-ts-mode-fixer
     pel-go-insert-indent-info
     pel-go-insert-tab-info
@@ -571,7 +571,6 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-bibyte)
 
   (pel-autoload "pel-iedit" for:
-    pel-iedit-toggle-just-in-code
     pel-customize-pel-iedit)
   (pel-autoload-function "pel-iedit" for:
     pel-add-keys-to-iedit-mode)
@@ -580,10 +579,12 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-set-ido-use-fname-at-point
     pel-set-ido-use-url-at-point)
 
+  ;; --
   (pel-autoload "pel-imenu" for:
     pel-imenu-toggle-follows-order
-    pel-imenu-toggle-auto-rescan
-    pel-imenu-init)
+    pel-imenu-toggle-auto-rescan)
+  (pel-autoload-function "pel-imenu" for:
+      pel-imenu-init)
 
   (pel-autoload "pel-imenu-dbg" for:
     pel-imenu-print-vars)
@@ -667,8 +668,6 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-indent-with-tabs
     pel-indent-with-spaces
     pel-indent-with-tabs-mode)
-  (pel-autoload-function "pel-indent" for:
-    pel-insert-tab-set-width-info)
 
   ;; --
   (pel-autoload-function "pel-java" for:
@@ -811,11 +810,11 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-perl-tidy-ediff
     pel-perl-show-status
     pel-perl-set-style
-    pel-perl-show-style)
+    pel-perl-show-style
+    pel-perl-show-source-directories)
   (pel-autoload-function "pel-perl" for:
     pel--perl-activate-file-search
     pel-perl-find-file
-    pel-perl-show-source-directories
     pel-perl-insert-shebang-line)
 
   (pel-autoload-function "pel-pike" for:
@@ -834,14 +833,14 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-pp-prev-directive
     pel-pp-show-state)
 
-  (pel-autoload-function "pel-process" for:
+  (pel-autoload "pel-process" for:
     pel-process-tree)
 
   (pel-autoload-function "pel-prompt" for:
     pel-y-n-e-or-l-p
     pel-select-from)
 
-  (pel-autoload-function "pel-psw" for:
+  (pel-autoload "pel-psw" for:
     pel-psw-navigate-files)
 
   (pel-autoload "pel-register" for:
@@ -868,7 +867,6 @@ Argument FOR: just a required separator keyword to make code look better."
       pel-rst-set-ref-bookmark
       pel-rst-goto-ref-bookmark
       pel-rst-makelink
-      pel-rst-set-adornment
       pel-rst-adorn-default
       pel-rst-adorn-Sphinx-Python
       pel-rst-adorn-CRiSPer
@@ -1153,13 +1151,13 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-sp-previous-sexp
     pel-sp-delete-char
     pel-sp-backward-delete-char
-    pel-smartparens-augment
     pel-smartparens-info
     pel-sp-forward-symbol
     pel-sp-backward-symbol)
   (pel-autoload-function "pel-smartparens" for:
     pel-sp-erlang-handler
-    pel-smartparens-setup-erlang)
+    pel-smartparens-setup-erlang
+    pel-smartparens-augment)
 
   ;; --
   (pel-autoload "pel-v" for:
@@ -1172,7 +1170,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-v-mode-used-text)
 
   ;; --
-  (pel-autoload "pel-vc" for:
+  (pel-autoload-function "pel-vc" for:
     pel-vc-svn-init)
 
   (pel-autoload "pel-vcs" for:

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, May 11 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-12 13:59:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-12 14:45:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -62,6 +62,30 @@
 ;;       usage inside an existing `pel-eval-after-load' block.
 ;;       A mismatch means the fixer can never be called.
 ;;
+;; Autoload-registration consistency checks
+;; =========================================
+;; Four checks are performed:
+;;
+;;   A1. Every symbol listed in a (pel-autoload FNAME for: ...) or
+;;       (pel-autoload-function FNAME for: ...) call in pel-autoload.el
+;;       has a matching definition (defun/defsubst/cl-defun/
+;;       define-derived-mode/define-minor-mode/define-global-minor-mode/
+;;       define-generic-mode) in FNAME.el.
+;;       Catches typos such as double-dashes or renamed functions where
+;;       the autoload entry was not updated.
+;;
+;;   A2. The source file FNAME.el named in each autoload entry exists and
+;;       is readable in PEL-DIR.
+;;       Catches stale entries left behind when a file is renamed or removed.
+;;
+;;   A3. A symbol is interactive (a command or mode) but is registered under
+;;       `pel-autoload-function' (which is for non-interactive functions).
+;;       → Should be moved to a `pel-autoload' entry.
+;;
+;;   A4. A symbol is non-interactive but is registered under `pel-autoload'
+;;       (which is for interactive commands).
+;;       → Should be moved to a `pel-autoload-function' entry.
+
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
@@ -473,6 +497,222 @@ PEL-DIR      is the directory containing the pel-*.el source files."
     (length errors)))
 
 ;; ---------------------------------------------------------------------------
+;;* Autoload Checker
+;;  ================
+
+;; ---------------------------------------------------------------------------
+;;** Step A1/A2 – Parse pel-autoload.el for (pel-autoload[−function] ...) calls
+
+(defun pel-lint/parse-autoload-entries (autoload-file)
+  "Parse AUTOLOAD-FILE; return list of (MACRO-NAME FILENAME SYMBOL-LIST) triples.
+MACRO-NAME is the symbol `pel-autoload' or `pel-autoload-function' — this
+distinguishes interactive commands from non-interactive functions.
+FILENAME is the bare string from each call (e.g. \"pel-ada\").
+SYMBOL-LIST is the list of function symbols registered.
+Uses the Lisp reader; comments, strings and dotted pairs are handled safely.
+Forms nested inside `when', `if', `cond', etc. are traversed recursively."
+  (let (result)
+    (cl-labels
+        ((walk-list (tail)
+           ;; Safe traversal: stops at non-cons cdr (handles dotted pairs).
+           (while (consp tail)
+             (walk (car tail))
+             (setq tail (cdr tail))))
+         (walk (form)
+           (when (consp form)
+             (cond
+              ;; (pel-autoload        FNAME for: SYM ...) or
+              ;; (pel-autoload-function FNAME for: SYM ...)
+              ((and (memq (car form) '(pel-autoload pel-autoload-function))
+                    (stringp (cadr form)))
+               (let* ((macro-name (car form))
+                      (fname      (cadr form))
+                      ;; caddr is the literal `for:' keyword — skip it
+                      (sym-tail   (cdddr form))
+                      (sym-list   nil))
+                 (while (consp sym-tail)
+                   (when (symbolp (car sym-tail))
+                     (push (car sym-tail) sym-list))
+                   (setq sym-tail (cdr sym-tail)))
+                 (when sym-list
+                   (push (list macro-name fname (nreverse sym-list))
+                         result))))
+              ;; Any other cons: recurse into all sub-forms.
+              (t
+               (walk-list form))))))
+      (with-temp-buffer
+        (insert-file-contents autoload-file)
+        (goto-char (point-min))
+        (condition-case nil
+          (while t (walk (read (current-buffer))))
+          (end-of-file nil))))
+    (nreverse result)))
+
+;; ---------------------------------------------------------------------------
+;;** Step A1 helper – Collect definition names and interactivity from a source file
+
+(defun pel-lint/collect-defuns-in-file (filepath)
+  "Return hash-table mapping function-name strings to their interactivity.
+The value stored for each function is:
+  t   — the function is interactive (a command or a mode function).
+  nil — the function exists but has no interactive declaration.
+Use `:absent' as the DEFAULT argument to `gethash' to distinguish a
+non-interactive function (nil value) from a missing one (`:absent').
+
+Recognized definition forms:
+  `defun', `defsubst', `cl-defun'  — interactive if first non-docstring
+    body form is (interactive ...).
+  `define-derived-mode', `define-minor-mode',
+  `define-global-minor-mode', `define-generic-mode'  — always interactive.
+
+Traverses nested forms so definitions inside `when', `unless', etc. are found.
+Uses the Lisp reader; comments and strings are automatically skipped."
+  (let ((defuns (make-hash-table :test #'equal)))
+    (cl-labels
+        ((interactive-body-p (body)
+           ;; BODY is cdddr of the defun: ([DOCSTRING] BODYFORM...).
+           ;; Skip an optional leading docstring, then check whether the
+           ;; first remaining form is (interactive ...).
+           (let ((forms (if (and (consp body) (stringp (car body)))
+                            (cdr body)
+                          body)))
+             (and (consp forms)
+                  (consp (car forms))
+                  (eq (caar forms) 'interactive))))
+         (walk-list (tail)
+           (while (consp tail)
+             (walk (car tail))
+             (setq tail (cdr tail))))
+         (walk (form)
+           (when (consp form)
+             (cond
+              ;; defun / defsubst / cl-defun — interactivity from body
+              ((and (memq (car form) '(defun defsubst cl-defun))
+                    (symbolp (cadr form)))
+               (puthash (symbol-name (cadr form))
+                        (interactive-body-p (cdddr form))
+                        defuns)
+               ;; Recurse into body to catch any nested definitions.
+               (walk-list (cdddr form)))
+              ;; Mode-defining macros — always produce an interactive command.
+              ;; define-derived-mode : (define-derived-mode MODE PARENT "Name" ...)
+              ;; define-minor-mode   : (define-minor-mode MODE ...)
+              ;; define-global-minor-mode, define-generic-mode: same pattern.
+              ((and (memq (car form) '(define-derived-mode
+                                       define-minor-mode
+                                       define-global-minor-mode
+                                       define-generic-mode))
+                    (symbolp (cadr form)))
+               (puthash (symbol-name (cadr form)) t defuns))
+              ;; Any other cons: recurse into sub-forms.
+              (t
+               (walk-list form))))))
+      (with-temp-buffer
+        (insert-file-contents filepath)
+        (goto-char (point-min))
+        (condition-case nil
+          (while t (walk (read (current-buffer))))
+          (end-of-file nil))))
+    defuns))
+
+;; ---------------------------------------------------------------------------
+;;** Cross-validate
+
+(defun pel-lint/validate-autoload-registrations (autoload-file pel-dir)
+  "Return list of error strings for autoload-registration inconsistencies.
+
+AUTOLOAD-FILE is the path to pel-autoload.el.
+PEL-DIR is the directory containing the pel-*.el source files.
+
+Four checks are performed (see file commentary for full description):
+A1 — listed symbol has no matching definition in the named source file.
+A2 — named source file does not exist in PEL-DIR.
+A3 — listed symbol is interactive but registered under `pel-autoload-function'.
+A4 — listed symbol is non-interactive but registered under `pel-autoload'."
+  (let ((entries (pel-lint/parse-autoload-entries autoload-file))
+        errors)
+    (dolist (entry entries)
+      (let* ((macro-name (nth 0 entry))
+             (fname      (nth 1 entry))
+             (symbols    (nth 2 entry))
+             (filepath   (expand-file-name (concat fname ".el") pel-dir)))
+        ;; -- Check A2: source file must exist and be readable ---------------
+        (if (not (file-readable-p filepath))
+            (push
+             (format
+              (concat "  [A2] pel-autoload.el references \"%s\" but\n"
+                      "       %s\n"
+                      "       does not exist or is not readable.\n"
+                      "    → Remove or correct the autoload entry in\n"
+                      "      pel-autoload.el.")
+              fname filepath)
+             errors)
+          ;; -- Checks A1 / A3 / A4: inspect each listed symbol --------------
+          (let ((defuns (pel-lint/collect-defuns-in-file filepath)))
+            (dolist (sym symbols)
+              (let* ((sym-name      (symbol-name sym))
+                     ;; :absent sentinel distinguishes nil (non-interactive)
+                     ;; from a truly missing function.
+                     (interactive-p (gethash sym-name defuns :absent)))
+                (cond
+                 ;; A1: function not defined in the named file at all
+                 ((eq interactive-p :absent)
+                  (push
+                   (format
+                    (concat "  [A1] pel-autoload.el lists '%s'\n"
+                            "       for file \"%s\", but no matching definition\n"
+                            "       (defun / defsubst / cl-defun /\n"
+                            "        define-derived-mode / define-minor-mode /\n"
+                            "        define-global-minor-mode / define-generic-mode)\n"
+                            "       named '%s' was found in\n"
+                            "       %s.\n"
+                            "    → Check for a typo in pel-autoload.el or a\n"
+                            "      missing/renamed definition in %s.el.")
+                    sym-name fname sym-name filepath fname)
+                   errors))
+                 ;; A3: interactive symbol listed under pel-autoload-function
+                 ((and (eq macro-name 'pel-autoload-function)
+                       interactive-p)
+                  (push
+                   (format
+                    (concat "  [A3] '%s' in \"%s\" is an interactive command\n"
+                            "       but is registered under `pel-autoload-function'.\n"
+                            "    → Move '%s' to a `pel-autoload' entry in\n"
+                            "      pel-autoload.el.")
+                    sym-name fname sym-name)
+                   errors))
+                 ;; A4: non-interactive symbol listed under pel-autoload
+                 ((and (eq macro-name 'pel-autoload)
+                       (not interactive-p))
+                  (push
+                   (format
+                    (concat "  [A4] '%s' in \"%s\" is a non-interactive function\n"
+                            "       but is registered under `pel-autoload'.\n"
+                            "    → Move '%s' to a `pel-autoload-function' entry in\n"
+                            "      pel-autoload.el.")
+                    sym-name fname sym-name)
+                   errors)))))))))
+    (nreverse errors)))
+
+;; ---------------------------------------------------------------------------
+;;** Autoload-check entry point
+
+(defun pel-lint-autoloads (autoload-file pel-dir)
+  "Run autoload-registration consistency checks.  Return error count."
+  (message "--------------------------------------------")
+  (message "PEL autoload-registration consistency validator")
+  (message "  Autoload file : %s" autoload-file)
+  (message "  PEL source    : %s" pel-dir)
+  (let ((errors (pel-lint/validate-autoload-registrations
+                 autoload-file pel-dir)))
+    (if errors
+        (progn
+          (message "\nERRORS — autoload-registration inconsistencies found:")
+          (dolist (e errors) (message "\n%s" e)))
+      (message "OK — no autoload-registration inconsistencies found."))
+    (length errors)))
+
+;; ---------------------------------------------------------------------------
 ;;* Top Level Script Main
 ;;  =====================
 
@@ -483,6 +723,7 @@ PEL-DIR      is the directory containing the pel-*.el source files."
          (keys-file    (or (nth 1 extra-args) "pel_keys.el"))
          (macros-file  (or (nth 2 extra-args) "pel--keys-macros.el"))
          (install-file (or (nth 3 extra-args) "pel--install.el"))
+         (autoload-file (or (nth 4 extra-args) "pel-autoload.el"))
          (errors 0))
 
     ;; Prevent Emacs from attempting to process remaining args itself.
@@ -492,7 +733,7 @@ PEL-DIR      is the directory containing the pel-*.el source files."
     (unless (file-directory-p pel-dir)
       (message "ERROR: Not a directory: %s" pel-dir)
       (kill-emacs 2))
-    (dolist (f (list keys-file macros-file install-file))
+    (dolist (f (list keys-file macros-file install-file autoload-file))
       (unless (file-readable-p f)
         (message "ERROR: Cannot read: %s" f)
         (kill-emacs 2)))
@@ -501,6 +742,8 @@ PEL-DIR      is the directory containing the pel-*.el source files."
     (pel+= errors (pel-lint-key-prefixes keys-file macros-file))
     (message "\n")
     (pel+= errors (pel-lint-fixers pel-dir keys-file install-file))
+    (message "\n")
+    (pel+= errors (pel-lint-autoloads autoload-file pel-dir))
     (message "\n")
     (if (= errors 0)
         (kill-emacs 0)
