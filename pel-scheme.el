@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, June 26 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-11 22:38:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 22:53:12 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -138,6 +138,16 @@ See `pel-chez-repl' for complete description."
   (pel-move-to-window (pel-window-direction-for n))
   (run-scheme "scsh"))
 
+
+(declare-function gambit-inferior-mode "gambit")
+
+(defun pel--gambit-inferior-mode-for-gerbil ()
+  "Activate `gambit-inferior-mode' only in Gerbil-backed inferior Scheme buffers."
+  (when (and (boundp 'scheme-program-name)
+             scheme-program-name
+             (string= (file-name-nondirectory scheme-program-name)
+                      (file-name-nondirectory pel-gerbil-repl)))
+    (gambit-inferior-mode)))
 ;;; --------------------------------------------------------------------------
 (provide 'pel-scheme)
 

@@ -6187,11 +6187,11 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (pel-setup-major-mode gerbil :no-ts
       at-init:
       (pel-install-github-file "vyzo/gerbil/master/etc/" "gerbil-mode.el")
-      (declare-function gambit-inferior-mode "gambit")
       (pel-autoload-file gerbil-mode for: gerbil-mode)
       ;; The pel--options code forces pel-use-gambit on when pel-use-gerbil
       ;; is on.
-      (add-hook 'inferior-scheme-mode-hook #'gambit-inferior-mode )
+      (declare-function pel--gambit-inferior-mode-for-gerbil "pel-scheme")
+      (add-hook 'inferior-scheme-mode-hook #'pel--gambit-inferior-mode-for-gerbil)
       ;; Gerbil files use the same file extension as Scheme: .ss
       ;; Use Emacs file variable to activate the Gerbil mode: place the following
       ;; text on the first line:  ;; -*- Gerbil -*-
@@ -6205,9 +6205,9 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
       when-buffer-opens:
       ;; Inside Gerbil mode, ensure that the Scheme REPL is the gerbil REPL.
-        (pel--set-scheme-repl pel-gerbil-repl)
-        ;; Visit identified TAGS files
-        (pel-visit-tags pel-gerbil-base-tags)))
+      (pel--set-scheme-repl pel-gerbil-repl)
+      ;; Visit identified TAGS files
+      (pel-visit-tags pel-gerbil-base-tags)))
 
   ;; --------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-b`` : Guile
