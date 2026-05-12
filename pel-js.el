@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 20 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-12 15:38:02 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-12 17:52:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -69,7 +69,7 @@ and required by `pel-use-js'."
                        (format "Can't use js-ts-mode: %s"
                                (if (pel-treesit-ready-p 'js)
                                    "error loading js-ts-mode"
-                                 "no grammar for javascript")))
+                                 "no grammar for JavaScript")))
       (if (fboundp 'js-mode)
           (js-mode)
         (user-error
@@ -82,8 +82,7 @@ and required by `pel-use-js'."
   "Remove `js-ts-mode' entries from `auto-mode-alist'.
 It removes what was entered when `js-ts-mode' loads to ensure that the
 `pel-js-mode' mode dispatcher remains used."
-  ;; There are several file extensions for Javascript and the `js-ts-mode'
-  ;; adds several entries (entries for .js, .zon).
+  ;; js-ts-mode registers several filename patterns (for example: .js, .mjs, .cjs).
   ;; Delete them all from auto-mode-alist.
   (setq auto-mode-alist
         (rassq-delete-all 'js-ts-mode auto-mode-alist))
@@ -132,7 +131,7 @@ Return a list of generic symbols described."
   `tab-width' to the same value of `pel-js-indent-width' and then you
   can control the visual rendering of indentation by changing the values
   of those two user-options: the content of the buffer and file does
-  won't change but the indentation rendering will.
+  not change but the indentation rendering will.
 
   Note, however, that other editors may not be able to do the same; the use of
   hard tabs in Javascript source code is not required as it is for Go, therefore
@@ -165,11 +164,11 @@ Return a list of generic symbols described."
   "Insert Javascript hard tab setup used in current context.
 Return a list of generic symbols described."
   (insert "
-- The hard tab rendering width is for a js buffer is controlled by
-  `pel-js-tab-width' and stored into `tab-width'.
+- The hard tab rendering width for a js buffer is controlled by
+  `pel-js-tab-width' and stored in `tab-width'.
   These do not control the indentation, just the visual width (in
   columns) that Emacs uses to render a hard tab character.
-  Whether hard tabs are used in js buffer is controlled by
+  Whether hard tabs are used in a js buffer is controlled by
   `pel-js-use-tabs' and stored inside `indent-tabs-mode'.
 ")
   (pel-insert-symbol-content-line 'pel-js-tab-width)

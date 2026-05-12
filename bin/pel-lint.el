@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, May 11 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-12 15:33:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-12 17:45:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -319,7 +319,7 @@ Scans all pel-[a-z]*.el files in PEL-DIR using the Lisp reader."
             (while t
               (let ((form (read (current-buffer))))
                 ;; Looking for: (defun pel--<feature>-fixer () ...)
-                (when (and (listp form)
+                (when (and (consp form)
                            (memq (car form) '(defun defsubst))
                            (symbolp (cadr form)))
                   (let ((fn-name (symbol-name (cadr form))))

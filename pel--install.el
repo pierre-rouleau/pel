@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-12 15:30:20 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-12 17:39:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -917,7 +917,7 @@ taken from this list.")
 FEATURE is either a feature symbol or a list of feature symbols.
 Both must be unquoted.
 A list of feature symbol is useful, for example, when the tree-sitter
-mode is provided by a different file them the classic major mode,
+mode is provided by a different file than the classic major mode,
 and the tree-sitter mode file does not load the classic mode file."
   (declare (indent 1))
   (let ((code nil)
