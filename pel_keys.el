@@ -5982,9 +5982,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; ---------------------------------------------------------------------------
 ;;** Scheme Family Programming Language Support
 ;;   ------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-s`` :
 ;; IMPORTANT:
-;; From EMacs implementation point of view Scheme is a language family that
+;; From Emacs implementation point of view Scheme is a language family that
 ;; includes the following Scheme dialects:
 ;;                                         - Chez Scheme
 ;;                                         - Chicken Scheme
@@ -6008,6 +6007,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; default Scheme.
 
 (when pel-use-scheme
+  (declare-function pel--set-scheme-repl "pel_keys")
+
   ;; Install requested Scheme Family options
   (when pel-use-geiser
     (pel-ensure-package-elpa geiser from: melpa)
@@ -6122,73 +6123,60 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                        quack-pltfile-raw
                        quack-pltfile-quit))
 
-  ;; Just activate the <f12> key for Scheme.
-  (define-pel-global-prefix pel:for-scheme (kbd "<f11> SPC C-s C-s"))
-  (pel--lisp-languages-map-for pel:for-scheme)
-
-  ;; activate the <f12> key binding for scheme-mode
-  (pel-config-major-mode scheme pel:for-scheme :no-ts)
+  ;; --------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-s`` : Scheme
+  (pel-setup-major-mode scheme :no-ts
+    at-init:
+    (define-pel-global-prefix pel:for-scheme (kbd "<f11> SPC C-s C-s"))
+    (pel--lisp-languages-map-for pel:for-scheme))
 
   ;; --------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-z`` : Chez
   (when pel-use-chez
-    (define-pel-global-prefix pel:for-chez (kbd "<f11> SPC C-s C-z"))
-    (pel--lisp-languages-map-for pel:for-chez)
-    (define-key pel:for-chez "z" 'pel-chez-repl)
-    (define-key pel:for-chez (kbd "C-l") 'pel-clear-scheme-repl-buffer)
-    ;; activate the <f12> key binding for chez-mode
-    (pel-config-major-mode chez pel:for-chez :no-ts))
+    (pel-setup-major-mode chez :no-ts
+      at-init:
+      (define-pel-global-prefix pel:for-chez (kbd "<f11> SPC C-s C-z"))
+      (pel--lisp-languages-map-for pel:for-chez)
+      (define-key pel:for-chez "z"         'pel-chez-repl)
+      (define-key pel:for-chez (kbd "C-l") 'pel-clear-scheme-repl-buffer)))
 
   ;; --------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-i`` : Chibi
-
   (when pel-use-chibi
-    (define-pel-global-prefix pel:for-chibi (kbd "<f11> SPC C-s C-i"))
-    (pel--lisp-languages-map-for pel:for-chibi)
-    (define-key pel:for-chibi "z" 'pel-chibi-repl)
-    (define-key pel:for-chibi (kbd "C-l") 'pel-clear-scheme-repl-buffer)
-    ;; activate the <f12> key binding for chibi-mode
-    (pel-config-major-mode chibi pel:for-chibi :no-ts))
+    (pel-setup-major-mode chibi :no-ts
+      at-init:
+      (define-pel-global-prefix pel:for-chibi (kbd "<f11> SPC C-s C-i"))
+      (pel--lisp-languages-map-for pel:for-chibi)
+      (define-key pel:for-chibi "z"         'pel-chibi-repl)
+      (define-key pel:for-chibi (kbd "C-l") 'pel-clear-scheme-repl-buffer)))
 
   ;; --------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-k`` : Chicken
-
   (when pel-use-chicken
-    (define-pel-global-prefix pel:for-chicken (kbd "<f11> SPC C-s C-k"))
-    (pel--lisp-languages-map-for pel:for-chicken)
-    (define-key pel:for-chicken "z" 'pel-chicken-repl)
-    (define-key pel:for-chicken (kbd "C-l") 'pel-clear-scheme-repl-buffer)
-    ;; activate the <f12> key binding for chicken-mode
-    (pel-config-major-mode chicken pel:for-chicken :no-ts))
+    (pel-setup-major-mode chicken :no-ts
+      at-init:
+      (define-pel-global-prefix pel:for-chicken (kbd "<f11> SPC C-s C-k"))
+      (pel--lisp-languages-map-for pel:for-chicken)
+      (define-key pel:for-chicken "z"         'pel-chicken-repl)
+      (define-key pel:for-chicken (kbd "C-l") 'pel-clear-scheme-repl-buffer)))
 
   ;; --------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-b`` : Gambit
   ;; Note: PEL ensures that pel-use-gambit is set when pel-use-gerbil is set.
   (when pel-use-gambit
+    (pel-setup-major-mode gambit :no-ts
+      at-init:
+      (pel-install-github-file "pierre-rouleau/gambit/master/misc/" "gambit.el")
+      (pel-autoload-file gambit for: gambit-mode gambit-inferior-mode)
 
-    (defun pel--set-scheme-repl (repl)
-      "Set the Scheme REPL program to specified REPL."
-      (if (boundp 'scheme-program-name)
-          (let ((repl-file-path-name (executable-find repl)))
-            (if repl-file-path-name
-                (setq scheme-program-name repl-file-path-name)
-              (display-warning 'pel--set-scheme-repl
-                               (format "Cannot find REPL at: %s" repl)
-                               :error)))))
+      (define-pel-global-prefix pel:for-gambit (kbd "<f11> SPC C-s C-b"))
+      (pel--lisp-languages-map-for pel:for-gambit)
+      (define-key pel:for-gambit "z" 'pel-gambit-repl)
+      (define-key pel:for-gambit (kbd "C-l") 'pel-clear-scheme-repl-buffer)
 
-    ;; No package made for this.  Take the code directly from Github
-    (pel-install-github-file "pierre-rouleau/gambit/master/misc/" "gambit.el")
-    (pel-autoload-file gambit for: gambit-mode gambit-inferior-mode)
-
-    (define-pel-global-prefix pel:for-gambit (kbd "<f11> SPC C-s C-b"))
-    (pel--lisp-languages-map-for pel:for-gambit)
-    (define-key pel:for-gambit "z" 'pel-gambit-repl)
-    (define-key pel:for-gambit (kbd "C-l") 'pel-clear-scheme-repl-buffer)
-
-    ;; activate the <f12> key binding for gambit-mode
-    (pel-config-major-mode gambit pel:for-gambit :no-ts
+      when-buffer-opens:
       ;; Inside Gambit mode, ensure that the Scheme REPL is the Gambit REPL
-      ;; unless Gerbil is also used.
+      ;; unless Gerbil is also used; in that case it's done by Gerbil code below..
       (unless pel-use-gerbil
         (pel--set-scheme-repl pel-gambit-repl))))
 
@@ -6196,28 +6184,26 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-e`` : Gerbil
   ;; IMPORTANT: this code must be located AFTER the code that supports Gambit.
   (when pel-use-gerbil
-    (declare-function pel--set-scheme-repl "pel_keys")
-    ;; No package made for this.  Take the code directly from Github
-    (pel-install-github-file "vyzo/gerbil/master/etc/" "gerbil-mode.el")
-    (declare-function gambit-inferior-mode "gambit")
-    (pel-autoload-file gerbil-mode for: gerbil-mode)
-    ;; In pel--options the code forces pel-use-gambit on when pel-use-gerbil
-    ;; is on.
-    (add-hook 'inferior-scheme-mode-hook #'gambit-inferior-mode )
-    ;; Gerbil files use the same file extension as Scheme: .ss
-    ;; Use Emacs file variable to activate the Gerbil mode: place the following
-    ;; text on the first line:  ;; -*- Gerbil -*-
-    (when pel-use-speedbar
-      (pel-add-speedbar-extension '("\\.ss\\'"
-                                    "\\.pkg\\'")))
+    (pel-setup-major-mode gerbil :no-ts
+      at-init:
+      (pel-install-github-file "vyzo/gerbil/master/etc/" "gerbil-mode.el")
+      (pel-autoload-file gerbil-mode for: gerbil-mode)
+      ;; The pel--options code forces pel-use-gambit on when pel-use-gerbil
+      ;; is on.
+      (declare-function pel--gambit-inferior-mode-for-gerbil "pel-scheme")
+      (add-hook 'inferior-scheme-mode-hook #'pel--gambit-inferior-mode-for-gerbil)
+      ;; Gerbil files use the same file extension as Scheme: .ss
+      ;; Use Emacs file variable to activate the Gerbil mode: place the following
+      ;; text on the first line:  ;; -*- Gerbil -*-
+      (when pel-use-speedbar
+        (pel-add-speedbar-extension '("\\.ss\\'" "\\.pkg\\'")))
 
-    (define-pel-global-prefix pel:for-gerbil (kbd "<f11> SPC C-s C-e"))
-    (pel--lisp-languages-map-for pel:for-gerbil)
-    (define-key pel:for-gerbil "z"         'pel-gerbil-repl)
-    (define-key pel:for-gerbil (kbd "C-l") 'pel-clear-scheme-repl-buffer)
+      (define-pel-global-prefix pel:for-gerbil (kbd "<f11> SPC C-s C-e"))
+      (pel--lisp-languages-map-for pel:for-gerbil)
+      (define-key pel:for-gerbil "z"         'pel-gerbil-repl)
+      (define-key pel:for-gerbil (kbd "C-l") 'pel-clear-scheme-repl-buffer)
 
-    ;; activate the <f12> key binding for gerbil-mode
-    (pel-config-major-mode gerbil pel:for-gerbil :no-ts
+      when-buffer-opens:
       ;; Inside Gerbil mode, ensure that the Scheme REPL is the gerbil REPL.
       (pel--set-scheme-repl pel-gerbil-repl)
       ;; Visit identified TAGS files
@@ -6226,56 +6212,54 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   ;; --------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-b`` : Guile
   (when pel-use-guile
-    (define-pel-global-prefix pel:for-guile (kbd "<f11> SPC C-s C-g"))
-    (pel--lisp-languages-map-for pel:for-guile)
-    (define-key pel:for-guile "z" 'pel-guile-repl)
-    (define-key pel:for-guile (kbd "C-l") 'pel-clear-scheme-repl-buffer)
-    ;; activate the <f12> key binding for guile-mode
-    (pel-config-major-mode guile pel:for-guile :no-ts))
+    (pel-setup-major-mode guile :no-ts
+      at-init:
+      (define-pel-global-prefix pel:for-guile (kbd "<f11> SPC C-s C-g"))
+      (pel--lisp-languages-map-for pel:for-guile)
+      (define-key pel:for-guile "z"         'pel-guile-repl)
+      (define-key pel:for-guile (kbd "C-l") 'pel-clear-scheme-repl-buffer)))
 
   ;; --------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-m`` : Mit-Scheme
   (when pel-use-mit-scheme
-    (define-pel-global-prefix pel:for-mit-scheme (kbd "<f11> SPC C-s C-m"))
-    (pel--lisp-languages-map-for pel:for-mit-scheme)
-    (define-key pel:for-mit-scheme "z" 'pel-mit-scheme-repl)
-    (define-key pel:for-mit-scheme (kbd "C-l") 'pel-clear-scheme-repl-buffer)
-    ;; activate the <f12> key binding for mit-scheme-mode
-    (pel-config-major-mode mit-scheme pel:for-mit-scheme :no-ts))
+    (pel-setup-major-mode  mit-scheme :no-ts
+      at-init:
+      (define-pel-global-prefix pel:for-mit-scheme (kbd "<f11> SPC C-s C-m"))
+      (pel--lisp-languages-map-for pel:for-mit-scheme)
+      (define-key pel:for-mit-scheme "z"         'pel-mit-scheme-repl)
+      (define-key pel:for-mit-scheme (kbd "C-l") 'pel-clear-scheme-repl-buffer)))
 
   ;; --------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-r`` : Racket
   ;; IMPORTANT: This must be done *after* the processing of Scheme.  See note in
   ;; the Scheme section.
   (when pel-use-racket
-    (pel-ensure-package-elpa racket-mode from: melpa)
-    (pel-autoload-file racket-mode for: racket-mode)
+    (pel-setup-major-mode racket :no-ts
+      at-init:
+      (pel-ensure-package-elpa racket-mode from: melpa)
+      (pel-autoload-file racket-mode for: racket-mode)
 
-    (define-pel-global-prefix pel:for-racket (kbd "<f11> SPC C-s C-r"))
-    (pel--lisp-languages-map-for pel:for-racket)
-    (define-key pel:for-racket "z" 'pel-racket-repl)
-    (define-key pel:for-racket (kbd "C-l") 'pel-clear-scheme-repl-buffer)
+      (define-pel-global-prefix pel:for-racket (kbd "<f11> SPC C-s C-r"))
+      (pel--lisp-languages-map-for pel:for-racket)
+      (define-key pel:for-racket "z"         'pel-racket-repl)
+      (define-key pel:for-racket (kbd "C-l") 'pel-clear-scheme-repl-buffer)
 
-    ;; The racket-mode is already supported via scheme-mode and the associations
-    ;; are present in auto-mode-alist.  Remove them first to ensure proper support.
-    (pel-delete-from-auto-mode-alist 'racket-mode)
-    (add-to-list 'auto-mode-alist '("\\.rkt[dl]?\\'" . racket-mode))
-    ;; Activate Speedbar support
-    (when pel-use-speedbar
-      (pel-add-speedbar-extension "\\.rkt[dl]?\\'"))
-    (pel-eval-after-load racket-mode
-      ;; activate the <f12> key binding for racket-mode
-      (pel-config-major-mode racket pel:for-racket :no-ts)))
+      ;; The racket-mode is already supported via scheme-mode and the associations
+      ;; are present in auto-mode-alist.  Remove them first to ensure proper support.
+      (pel-delete-from-auto-mode-alist 'racket-mode)
+      (add-to-list 'auto-mode-alist '("\\.rkt[dl]?\\'" . racket-mode))
+      ;; Activate Speedbar support
+      (when pel-use-speedbar (pel-add-speedbar-extension "\\.rkt[dl]?\\'"))))
 
   ;; --------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-h`` : Scsh
   (when pel-use-scsh
-    (define-pel-global-prefix pel:for-scsh (kbd "<f11> SPC C-s C-h"))
-    (pel--lisp-languages-map-for pel:for-scsh)
-    (define-key pel:for-scsh "z" 'pel-scsh-repl)
-    (define-key pel:for-scsh (kbd "C-l") 'pel-clear-scheme-repl-buffer)
-    ;; activate the <f12> key binding for scsh-mode
-    (pel-config-major-mode scsh pel:for-scsh :no-ts)))
+    (pel-setup-major-mode scsh :no-ts
+      at-init:
+      (define-pel-global-prefix pel:for-scsh (kbd "<f11> SPC C-s C-h"))
+      (pel--lisp-languages-map-for pel:for-scsh)
+      (define-key pel:for-scsh "z" 'pel-scsh-repl)
+      (define-key pel:for-scsh (kbd "C-l") 'pel-clear-scheme-repl-buffer))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Sh, Unix Shell Programming Support

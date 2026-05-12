@@ -934,6 +934,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-mit-scheme-repl
     pel-racket-repl
     pel-scsh-repl)
+  (pel-autoload-function "pel-scheme" for:
+    pel--set-scheme-repl
+    pel--gambit-inferior-mode-for-gerbil)
 
   (pel-autoload "pel-scroll" for:
     pel-toggle-scroll-sync
