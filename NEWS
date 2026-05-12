@@ -20,8 +20,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - pel-LANG-file-searched-dir-trees-per-tool
     - pel-LANG-file-searched-dir-trees-per-project
   - Improved *pel-open-at-point* further by making it more general.  Previously it only supported one special mode
-    of operation for reStructuredText buffer.  At the moment it still does but the code was changed to support ability
-    to support more special modes; it uses the default mechanism (calling  ) when the buffer local variable
+    of operation for reStructuredText buffer.  It still does but the code was changed to support ability
+    to support more special modes; it uses the default mechanism when the buffer local variable
     *pel--open-file-method* is nil.  If that variable is set to a specialized function (like the new
     *pel-rst-open-file-at-point* for reStructuredText), it uses that function.  The function can decline the
     responsibility and return nil or can proceed and return non-nil.  The pel_keys code now set the buffer local
@@ -166,6 +166,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Fix: corruption of flycheck control in code that was adding the flycheck-rust-setup to flycheck-mode-hook executed when pel-use-rust
     was active.  It is now properly handled in the scope of Rust modes only.
   - Fix: key binding for Smalltalk that previously was hijacked by Swift's.
+  - Fix: PEL can now properly activate minor modes implemented by functions that take no arguments like `flyspell-prog-mode';
+    it no longer calls these functions with an argument of value 1; it calls them without any argument.
+- Add a new specialized linter tool, written in Emacs Lisp, that checks the validity of PEL major mode code support, the PEL function and command auto-loading control and several other PEL code constructions.
+  PEL uses several interdependent Lisp macros that make code easier to write but also make it easy to miss something;
+  the specialized linter checks various aspects of the code to ensure that all is fine.
+  It is written in Emacs Lisp; nothing else needs to be installed.
+  The specialized linter is *bin/pel-lint*; it is executed by the Make via the ~make lint~ command.
+  You can also use the *bin/build-pel/* script to build all PEL files, lint it, run all unit tests and compute the statistics.
 - Started writing extensive unit test code.  The goal is to cover all PEL Emacs Lisp code.  There is still much test code to write.
   PEL Emacs Lisp code byte and native compiled for most Emacs versions since Emacs 26.1 in Github CI system.
   No warnings detected by either compiler is allowed.

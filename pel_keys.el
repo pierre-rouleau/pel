@@ -3082,7 +3082,7 @@ MODE must be a symbol."
     (when pel-use-tree-sitter
       (pel-ensure-package-elpa ada-ts-mode from: melpa))
 
-    ;; 2- Associate files with Ada mode selector
+    ;; 2- Associate files with Ada mode dispatcher.  Uses a mode fixer.
     (add-to-list 'auto-mode-alist '("\\.ad[abs]\\'" . pel-ada-mode))
 
     ;; 3- Speedbar support for Ada
@@ -4239,9 +4239,7 @@ d-mode not added to ac-modes!"
 
   ;; 3- Speedbar support for Erlang (not done by erlang.el)
   (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".erl"
-                                  ".hrl"
-                                  ".escript")))
+    (pel-add-speedbar-extension '(".erl" ".hrl" ".escript")))
 
   ;; 4- Buffer keymap for Erlang
   ;;    Bind keys that can be used *before* the erlang.el file is loaded

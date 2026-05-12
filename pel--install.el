@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-12 08:11:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-12 18:04:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -894,25 +894,31 @@ The ERROR argument is the caught error."
 (defconst pel--ts-mode-with-fixer '(ada-ts-mode
                                     dart-ts-mode
                                     elixir-ts-mode
-                                    erlang-ts-mode
+                                    erlang-ts
                                     go-ts-mode
                                     js-ts-mode
+                                    lua-ts-mode
                                     ruby-ts-mode
                                     rust-ts-mode
                                     zig-ts-mode)
-  "List of Tree Sitter modes that require execution of a mode fixer function.
+  "List of Tree Sitter modes *features* that require a mode fixer function.
 
+NOTE: the symbols inside the list are the features provided by the Emacs
+Lisp file that implements the Tree-Sitter mode.
+
+The mode fixer functions are used in `pel-eval-after-load' for their
+respective mode.
 The fixer mode function has a name that has a format like
-pel--MODE-fixer with where MODE corresponds to the name of the mode
+pel--MODE-fixer, where MODE corresponds to the name of the mode
 taken from this list.")
 
 (defmacro pel-eval-after-load (features &rest body)
   "Evaluate BODY after the FEATURES has been loaded.
 FEATURE is either a feature symbol or a list of feature symbols.
 Both must be unquoted.
-A list of feature symbol is useful, for example, when the tree-sitter
-mode is provided by a different file them the classic major mode,
-and the tree-sitter mode file does not load the classic mode file."
+A list of feature symbol is useful, for example, when the Tree-sitter
+mode is provided by a different file than the classic major mode,
+and the Tree-sitter mode file does not load the classic mode file."
   (declare (indent 1))
   (let ((code nil)
         (feature-body nil))

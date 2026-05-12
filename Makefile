@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-11 19:37:51 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-12 17:44:48 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -634,7 +634,7 @@ help:
 	@printf " * make clean-tar     - Remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make clean-mypelpa - Remove the directory $(PELPA_DIR)\n"
 	@printf " * make clean-test    - Remove test tag file to allow running all tests again.\n"
-	@printf " * make lint          - Check key prefix logic.\n"
+	@printf " * make lint          - Run PEL specialized logic checkers (key-prefixes, mode fixer, autoloads).\n"
 	@printf " * make lint-strict   - Check .el files with elisp-lint (it must be installed).\n"
 	@printf " * make timeit        - Check startup time of Emacs with and without packages.\n"
 	@printf " * make stats         - Load all PEL files & compute PEL statistics.  Also installs\n"
@@ -755,6 +755,7 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 
 # Note: pel--options.el lazily requires some other pel files but they are NOT
 #       included in the dependency as it would create a circular make dependency.
+bin/pel-lint.elc:         pel--base.elc
 pel--base.elc:            pel-comp.elc
 pel--install.elc:         pel--base.elc pel--indent.elc pel--options.elc pel--macros.elc
 pel--keys-macros.elc:     pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-browse.elc
@@ -773,7 +774,7 @@ pel-buffer.elc:           pel--base.elc pel-list.elc
 pel-c-comment.elc:        pel--base.elc pel--options.elc pel-comment.elc
 pel-c-preproc.elc:        pel--macros.elc pel-syntax.elc
 pel-c-utils.elc:          pel--base.elc pel--syntax-macros.elc
-pel-c3.elc:               pel--base.elc pel-modes.elc pel-prompt.elc
+pel-c3.elc:               pel--base.elc pel-indent.elc pel-modes.elc pel-prompt.elc
 pel-cc-linux-kernel.elc:  pel--options.elc
 pel-cc-navigate.elc:      pel--syntax-macros.elc
 pel-cc.elc:               pel--base.elc pel--options.elc pel-ffind.elc

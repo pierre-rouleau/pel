@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, December 23 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-13 23:23:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-12 14:56:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,6 +33,7 @@
 ;;
 (require 'pel--base)         ; use: `pel-insert-list-content',
 ;;                           ;      `pel-insert-symbol-content-context-buffer'
+(require 'pel-indent)        ; use: `pel-indent-insert-control-info'
 (require 'pel-modes)         ; use: `pel-insert-minor-mode-activation-info'
 (require 'pel-prompt)        ; use: `pel-select-from'
 (require 'cl-macs)           ; use: `cl-case'
