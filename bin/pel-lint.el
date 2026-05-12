@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, May 11 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-12 10:38:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-12 10:58:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -29,7 +29,7 @@
 ;; Usage (run from the PEL root directory):
 ;;
 ;;   emacs -Q --batch -l bin/pel-lint.el --eval "(pel-lint-main)"
-;;   emacs -Q --batch -l bin/pel-lint.el --eval "(pel-lint-main)" -- MACROS-FILE KEYS-FILE
+;;   emacs -Q --batch -l bin/pel-lint.el --eval "(pel-lint-main)" -- PEL-DIR KEYS-FILE MACROS-FILE INSTALL-FILE
 ;;
 ;; Key Prefix Check
 ;; ================
@@ -66,6 +66,22 @@
 ;;; Dependencies:
 ;;
 ;;
+
+(eval-and-compile
+  ;; Make the PEL root directory (one level above this bin/ directory)
+  ;; available on the load-path so that PEL source files can be required
+  ;; with (require 'pel--base), (require 'pel--macros), etc.
+  (let ((pel-root (expand-file-name
+                   ".."
+                   (file-name-directory
+                    (or load-file-name
+                        (and (boundp 'byte-compile-current-file)
+                             byte-compile-current-file)
+                        buffer-file-name)))))
+    (unless (member pel-root load-path)
+      (push pel-root load-path))))
+
+(require 'pel--base)           ; use: `pel+='
 (require 'cl-lib)
 (require 'subr-x)              ; use: `string-trim'
 
@@ -218,17 +234,18 @@ KEYS-FILE is the path to pel_keys.el."
 
 (defun pel-lint-key-prefixes (keys-file macros-file)
   "Run key prefix linting in KEYS-FILE and MACROS_FILE.  Return error count."
-    (message "PEL key-prefix consistency validator")
-    (message "  Macros file : %s" macros-file)
-    (message "  Keys file   : %s" keys-file)
-    (let ((errors (pel-lint/validate-key-prefixes macros-file keys-file)))
-      (if errors
-          (progn
-            (message "\nERRORS — key-prefix alias mismatches found:")
-            (dolist (e errors)
-              (message "\n%s" e)))
-        (message "OK — no key-prefix alias mismatches found."))
-      (length errors)))
+  (message "--------------------------------------------")
+  (message "PEL key-prefix consistency validator")
+  (message "  Macros file : %s" macros-file)
+  (message "  Keys file   : %s" keys-file)
+  (let ((errors (pel-lint/validate-key-prefixes macros-file keys-file)))
+    (if errors
+        (progn
+          (message "\nERRORS — key-prefix alias mismatches found:")
+          (dolist (e errors)
+            (message "\n%s" e)))
+      (message "OK — no key-prefix alias mismatches found."))
+    (length errors)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Mode Dispatcher/Fixer Linting
@@ -249,7 +266,7 @@ KEYS-FILE is the path to pel_keys.el."
                           (goto-char (1- (point))) ; back to opening '('
                           (forward-sexp 1)
                           (point))))
-          (while (re-search-forward "\\([a-z][a-z0-9-]+\\)" list-end t)
+          (while (re-search-forward "\\([a-z][a-z0-9+-]*\\)" list-end t)
             (push (match-string-no-properties 1) modes)))))
     (nreverse modes)))
 
@@ -269,7 +286,7 @@ fixer to be triggered.  Searches all pel-[a-z]*.el files in PEL-DIR."
           (goto-char (point-min))
           (while (re-search-forward
                   (concat "(defun[[:space:]]+pel--"
-                          "\\([a-z][a-z0-9-]+\\)"
+                          "\\([a-z][a-z0-9+-]*\\)"
                           "-fixer[[:space:]]*()")
                   nil t)
             (push (cons (match-string-no-properties 1) fname) result)))))
@@ -407,6 +424,7 @@ PEL-DIR      is the directory containing the pel-*.el source files."
 
 (defun pel-lint-fixers (pel-dir keys-file install-file)
   "Run fixer-registration consistency checks; Return error count."
+  (message "--------------------------------------------")
   (message "PEL fixer-registration consistency validator")
   (message "  Install file : %s" install-file)
   (message "  Keys file    : %s" keys-file)
@@ -446,8 +464,10 @@ PEL-DIR      is the directory containing the pel-*.el source files."
         (kill-emacs 2)))
 
     ;; Proceed: run linters
-    (setq errors (+ errors (pel-lint-key-prefixes keys-file macros-file)))
-    (setq errors (+ errors (pel-lint-fixers pel-dir keys-file install-file)))
+    (pel+= errors (pel-lint-key-prefixes keys-file macros-file))
+    (message "\n")
+    (pel+= errors (pel-lint-fixers pel-dir keys-file install-file))
+    (message "\n")
     (if (= errors 0)
         (kill-emacs 0)
       (kill-emacs 1))))

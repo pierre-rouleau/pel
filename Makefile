@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-11 19:37:51 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-12 10:47:47 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -755,6 +755,7 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 
 # Note: pel--options.el lazily requires some other pel files but they are NOT
 #       included in the dependency as it would create a circular make dependency.
+bin/pel-lint.elc:         pel--base.elc
 pel--base.elc:            pel-comp.elc
 pel--install.elc:         pel--base.elc pel--indent.elc pel--options.elc pel--macros.elc
 pel--keys-macros.elc:     pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-browse.elc
