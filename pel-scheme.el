@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, June 26 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-03-10 14:06:43, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-11 22:38:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -39,6 +39,16 @@
 ;;; Code:
 ;;
 
+;;-pel-autoload
+(defun pel--set-scheme-repl (repl)
+      "Set the Scheme REPL program to specified REPL."
+      (if (boundp 'scheme-program-name)
+          (let ((repl-file-path-name (executable-find repl)))
+            (if repl-file-path-name
+                (setq scheme-program-name repl-file-path-name)
+              (display-warning 'pel--set-scheme-repl
+                               (format "Cannot find REPL at: %s" repl)
+                               :error)))))
 ;;-pel-autoload
 (defun pel-clear-scheme-repl-buffer ()
   "Erase content of the Scheme REPL running under Emacs."
