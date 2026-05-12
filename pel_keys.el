@@ -4953,19 +4953,17 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;;** Javascript Programming Language Support
 ;;   ---------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC i`` :
-
-(defconst pel--js-files-regexp "\\(\\.js[mx]?\\|\\.har\\|\\.mjs\\)\\'"
-  "File regexp for Javascript.")
-
 (when pel-use-js
   ;;    - js-mode and js-ts-mode are built-in Emacs
   ;;    - js2-mode  is an external package
+  (declare-function pel-js-mode           "pel-js")
+  (declare-function pel--js-ts-mode-fixer "pel-js")
 
-  ;; Note: the code does not exactly follow the regular code layout pattern
-  ;; because of the multiple choices to reduce the decisions.
+  (defconst pel--js-files-regexp "\\(\\.js[mx]?\\|\\.har\\|\\.mjs\\)\\'"
+    "File regexp for Javascript.")
 
-  (define-pel-global-prefix pel:for-js  (kbd "<f11> SPC i"))
-  (define-key pel:for-js "?" 'pel-js-setup-info)
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '(".js" ".jsx" ".mjs" ".har")))
 
   ;; PEL code deals with the language name extracted from the
   ;; LANG-ts-mode major mode name.  For Javascript, this is js.
@@ -4980,29 +4978,35 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (add-to-list 'treesit-load-name-override-list
                  '(js "libtree-sitter-javascript" "tree_sitter_javascript")))
 
-  ;; install js-comint if required, regardless of the mode used to support
-  ;; Javascript.
+  (define-pel-global-prefix pel:for-js  (kbd "<f11> SPC i"))
+  (define-key pel:for-js "?" 'pel-js-setup-info)
+
+  ;; Optional js-comint REPL, independent of which JS major mode is selected.
   (when pel-use-js-comint
     (pel-ensure-package-elpa js-comint from: melpa)
     (define-key pel:for-js "z" 'js-comint-repl))
 
+  ;; Force js2 dev-mode defvar before js2-mode loads.
   (when pel-js2-activates-development-mode
-    ;; Activate dev mode for js2-mode before it is loaded.
-    ;; In js2-mode this is a defvar set to nil.  Force it to t.
     (defvar js2-mode-dev-mode-p t))
 
   (cond
-   ;; When using the external js3-mode
+   ;; --- js3-mode (external classic mode) ---
    ((eq pel-use-js 'js3-mode)
-    (pel-ensure-package-elpa js3-mode from: melpa)
-    (pel-autoload-file js3-mode for:
-                       js3-mode)
-    (add-to-list 'auto-mode-alist
-                 (cons pel--js-files-regexp 'js3-mode))
-    (pel-eval-after-load js3-mode
-      (pel-config-major-mode js3 pel:for-js :no-ts
-        (when (boundp 'js3-indent-level)
-          (setq-local js3-indent-level pel-js-indent-width)))))
+    (pel-setup-major-mode js3 :no-ts
+      key-prefix: pel:for-js
+      features: js3-mode
+      ;; ----------------
+      at-init:
+      ;; 1- Install js3-mode
+      (pel-ensure-package-elpa js3-mode from: melpa)
+      (pel-autoload-file js3-mode for: js3-mode)
+      ;; 2- Associate files with js3-mode
+      (add-to-list 'auto-mode-alist (cons pel--js-files-regexp 'js3-mode))
+      ;; ----------------
+      when-buffer-opens:
+      (when (boundp 'js3-indent-level)
+        (setq-local js3-indent-level pel-js-indent-width))))
 
    ;; for all other modes
    (t
@@ -5081,9 +5085,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                              with-ts-js2-minor))
       ;; Use PEL mode selector
       (add-to-list 'auto-mode-alist (cons pel--js-files-regexp 'pel-js-mode))
-      (pel-autoload-file js for:
-                         js-mode js-ts-mode)
-
+      (pel-autoload-file js for: js-mode js-ts-mode)
       (pel-eval-after-load js
         (pel-config-major-mode js pel:for-js :same-for-ts
           (when (boundp 'js-indent-level)
@@ -5131,9 +5133,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-ensure-package-elpa lfe-mode from: melpa)
     ;; the elpa-compliant package autoload handles all auto-loading.
     (when pel-use-speedbar
-      (pel-add-speedbar-extension '(".lfe"
-                                    ".lfes"
-                                    ".lfesh")))
+      (pel-add-speedbar-extension '(".lfe" ".lfes" ".lfesh")))
 
     (define-pel-global-prefix pel:for-lfe (kbd "<f11> SPC C-l"))
     (pel--lisp-languages-map-for pel:for-lfe)

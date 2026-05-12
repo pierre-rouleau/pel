@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-07 12:05:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-12 08:11:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -897,6 +897,7 @@ The ERROR argument is the caught error."
                                     erlang-ts-mode
                                     go-ts-mode
                                     js-ts-mode
+                                    ruby-ts-mode
                                     rust-ts-mode
                                     zig-ts-mode)
   "List of Tree Sitter modes that require execution of a mode fixer function.
