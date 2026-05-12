@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-12 17:39:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-12 18:04:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -916,9 +916,9 @@ taken from this list.")
   "Evaluate BODY after the FEATURES has been loaded.
 FEATURE is either a feature symbol or a list of feature symbols.
 Both must be unquoted.
-A list of feature symbol is useful, for example, when the tree-sitter
+A list of feature symbol is useful, for example, when the Tree-sitter
 mode is provided by a different file than the classic major mode,
-and the tree-sitter mode file does not load the classic mode file."
+and the Tree-sitter mode file does not load the classic mode file."
   (declare (indent 1))
   (let ((code nil)
         (feature-body nil))
