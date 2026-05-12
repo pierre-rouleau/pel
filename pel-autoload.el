@@ -426,7 +426,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-erlang-find-definitions
     pel-erlang-unwind)
   (pel-autoload-function "pel-erlang" for:
-    pel--erlang-ts-mode-fixer
+    pel--erlang-ts--fixer
     pel-erlang-mode-used-text
     pel-erlang-insert-indent-info
     pel-erlang-insert-tab-info

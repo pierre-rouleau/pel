@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-12 08:56:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-12 13:26:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -894,13 +894,17 @@ The ERROR argument is the caught error."
 (defconst pel--ts-mode-with-fixer '(ada-ts-mode
                                     dart-ts-mode
                                     elixir-ts-mode
-                                    erlang-ts-mode
+                                    erlang-ts
                                     go-ts-mode
                                     js-ts-mode
+                                    lua-ts-mode
                                     ruby-ts-mode
                                     rust-ts-mode
                                     zig-ts-mode)
-  "List of Tree Sitter modes that require execution of a mode fixer function.
+  "List of Tree Sitter modes *features* that require a mode fixer function.
+
+NOTE: the symbols inside the list are the features provided by the Emacs
+Lisp file that implements the Tree-Sitter mode.
 
 The mode fixer functions are used in `pel-eval-after-load' for their
 respective mode.

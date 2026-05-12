@@ -166,6 +166,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Fix: corruption of flycheck control in code that was adding the flycheck-rust-setup to flycheck-mode-hook executed when pel-use-rust
     was active.  It is now properly handled in the scope of Rust modes only.
   - Fix: key binding for Smalltalk that previously was hijacked by Swift's.
+- Add a new specialized linter tool, written in Emacs Lisp, that checks the validity of PEL major mode code support.
+  PEL uses several interdependent Lisp macros that make code easier to write but also make it easy to miss something;
+  the specialized linter checks various aspects of the code to ensure that all is fine.
+  It is written in Emacs Lisp; nothing else needs to be installed.
+  The specialized linter is *bin/pel-lint*; it is executed by the Make via the ~make lint~ command.
+  You can also use the *bin/build-pel/* script to build all PEL files, lint it, run all unit tests and compute the statistics.
 - Started writing extensive unit test code.  The goal is to cover all PEL Emacs Lisp code.  There is still much test code to write.
   PEL Emacs Lisp code byte and native compiled for most Emacs versions since Emacs 26.1 in Github CI system.
   No warnings detected by either compiler is allowed.

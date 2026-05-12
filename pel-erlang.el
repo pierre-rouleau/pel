@@ -162,7 +162,7 @@ and required by `pel-use-erlang'."
 ;; Emacs tree-sitter handling fixer function.
 ;; Identified by `pel--ts-mode-with-fixer' and used by `pel-eval-after-load'.
 ;;-pel-autoload
-(defun pel--erlang-ts-mode-fixer ()
+(defun pel--erlang-ts-fixer ()
   "Remove `erlang-ts-mode' entries from `auto-mode-alist'.
 It removes what was entered when `erlang-ts-mode' loads to ensure that the
 `pel-erlang-mode' mode dispatcher remains used."

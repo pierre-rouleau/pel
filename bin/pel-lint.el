@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, May 11 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-12 10:58:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-12 13:59:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -254,102 +254,136 @@ KEYS-FILE is the path to pel_keys.el."
 ;;** Step F1 – Extract pel--ts-mode-with-fixer list from pel--install.el
 
 (defun pel-lint/parse-fixer-list (install-file)
-  "Return list of feature-name from pel--ts-mode-with-fixer in INSTALL-FILE."
-  (let ((modes '()))
-    (with-temp-buffer
-      (insert-file-contents install-file)
-      (goto-char (point-min))
-      (when (re-search-forward
-             "(defconst[[:space:]]+pel--ts-mode-with-fixer[[:space:]]+'("
-             nil t)
-        (let ((list-end (save-excursion
-                          (goto-char (1- (point))) ; back to opening '('
-                          (forward-sexp 1)
-                          (point))))
-          (while (re-search-forward "\\([a-z][a-z0-9+-]*\\)" list-end t)
-            (push (match-string-no-properties 1) modes)))))
-    (nreverse modes)))
+  "Return list of feature-name from `pel--ts-mode-with-fixer' in INSTALL-FILE.
+Return a list of feature-name strings.
+Uses the Emacs Lisp reader: comments are automatically ignored."
+  (with-temp-buffer
+    (insert-file-contents install-file)
+    (goto-char (point-min))
+    (let (result)
+      (condition-case nil
+          (while t
+            (let ((form (read (current-buffer))))
+              ;; Looking for: (defconst pel--ts-mode-with-fixer '(sym ...) "doc")
+              (when (and (listp form)
+                         (eq (car  form) 'defconst)
+                         (eq (cadr form) 'pel--ts-mode-with-fixer))
+                (let ((val (nth 2 form))) ; third element is the value expression
+                  ;; value is (quote (ada-ts-mode dart-ts-mode ...))
+                  (when (and (listp val)
+                             (eq (car val) 'quote)
+                             (listp (cadr val)))
+                    (setq result
+                          (mapcar #'symbol-name (cadr val))))))))
+        (end-of-file nil))
+      result)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Step F2 – Find all pel--*-fixer defuns in pel-*.el source files
 
 (defun pel-lint/parse-el-files-for-fixers (pel-dir)
-  "Return alist of (FEATURE-NAME . FILENAME) for every pel--%s-fixer defun found.
-FEATURE-NAME is the string between \"pel--\" and \"-fixer\" in the function
-name — it must exactly equal an entry in `pel--ts-mode-with-fixer' for the
-fixer to be triggered.  Searches all pel-[a-z]*.el files in PEL-DIR."
-  (let ((result '()))
-    (dolist (fpath (directory-files pel-dir t "\\`pel-[a-z][a-z0-9-]*\\.el\\'"))
+  "Return alist (FEATURE-NAME . FILENAME) for every `pel--<f>-fixer' defun found.
+Scans all pel-[a-z]*.el files in PEL-DIR using the Lisp reader."
+  (let (result)
+    (dolist (fpath (directory-files
+                    pel-dir t "\\`pel-[a-z][a-z0-9-]*\\.el\\'"))
       (let ((fname (file-name-nondirectory fpath)))
         (with-temp-buffer
           (insert-file-contents fpath)
           (goto-char (point-min))
-          (while (re-search-forward
-                  (concat "(defun[[:space:]]+pel--"
-                          "\\([a-z][a-z0-9+-]*\\)"
-                          "-fixer[[:space:]]*()")
-                  nil t)
-            (push (cons (match-string-no-properties 1) fname) result)))))
+          (condition-case nil
+            (while t
+              (let ((form (read (current-buffer))))
+                ;; Looking for: (defun pel--<feature>-fixer () ...)
+                (when (and (listp form)
+                           (memq (car form) '(defun defsubst))
+                           (symbolp (cadr form)))
+                  (let ((fn-name (symbol-name (cadr form))))
+                    (when (string-match "\\`pel--\\(.*\\)-fixer\\'" fn-name)
+                      (push (cons (match-string 1 fn-name) fname)
+                            result))))))
+            (end-of-file nil)))))
     (nreverse result)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Step F3 – Collect all feature symbols reachable via pel-eval-after-load
 
 (defun pel-lint/parse-keys-for-eval-after-load-features (keys-file)
-  "Return hash-table of feature-name strings reachable by pel-eval-after-load.
-Collects from KEYS-FILE (pel_keys.el):
-  1. Single-feature  (pel-eval-after-load FEATURE ...)  calls.
-  2. Multi-feature   (pel-eval-after-load (F1 F2 ...) ...)  calls.
-  3. Features inferred from
-     (pel-setup-major-mode TARGET :same-for-ts|:independent-ts|:ts-only ...)
-     which the macro expands to pel-eval-after-load with TARGET-ts-mode.
-  4. Features inferred from
-     (pel-config-major-mode TARGET ... :same-for-ts|:independent-ts ...)
-     inside an existing pel-eval-after-load block."
+  "Return hash-table of feature-name strings reachable via `pel-eval-after-load'.
+Uses the Emacs Lisp reader to parse KEYS-FILE; comments and strings are
+automatically ignored.  Handles:
+  - (pel-eval-after-load FEATURE ...)
+  - (pel-eval-after-load (F1 F2 ...) ...)
+  - (pel-setup-major-mode TARGET :same-for-ts|:independent-ts|:ts-only ...)
+  - (pel-config-major-mode TARGET ... :same-for-ts|:independent-ts|:ts-only ...)"
   (let ((features (make-hash-table :test #'equal)))
-    (with-temp-buffer
-      (insert-file-contents keys-file)
-      ;; 1. Direct: (pel-eval-after-load single-feature ...)
-      (goto-char (point-min))
-      (while (re-search-forward
-              "(pel-eval-after-load[[:space:]]+\\([a-z][a-z0-9-]+\\)"
-              nil t)
-        (puthash (match-string-no-properties 1) t features))
-      ;; 2. Direct: (pel-eval-after-load (feat1 feat2 ...) ...)
-      (goto-char (point-min))
-      (while (re-search-forward
-              "(pel-eval-after-load[[:space:]]+(\\([^)\n]+\\))"
-              nil t)
-        (dolist (tok (split-string (match-string-no-properties 1)))
-          (when (string-match-p "\\`[a-z][a-z0-9-]*\\'" tok)
-            (puthash tok t features))))
-      ;; 3. Infer <target>-ts-mode from pel-setup-major-mode ts options
-      (goto-char (point-min))
-      (while (re-search-forward
-              (concat "(pel-setup-major-mode[[:space:]]+"
-                      "\\([a-z][a-z0-9+_-]+\\)"
-                      "[[:space:]]+:"
-                      "\\(same-for-ts\\|independent-ts\\|ts-only\\)")
-              nil t)
-        (let ((target (match-string-no-properties 1))
-              (option (match-string-no-properties 2)))
-          (puthash (concat target "-ts-mode") t features)
-          (unless (string-equal option "ts-only")
-            (puthash (concat target "-mode") t features))))
-      ;; 4. Infer <target>-ts-mode from pel-config-major-mode ts options
-      ;;    (used inside pel-eval-after-load blocks, e.g. for JS)
-      (goto-char (point-min))
-      (while (re-search-forward
-              (concat "(pel-config-major-mode[[:space:]]+"
-                      "\\([a-z][a-z0-9+_-]+\\)"
-                      "\\(?:[[:space:]]+[^:)]*\\)"
-                      ":\\(same-for-ts\\|independent-ts\\|ts-only\\)")
-              nil t)
-        (let ((target (match-string-no-properties 1))
-              (option (match-string-no-properties 2)))
-          (puthash (concat target "-ts-mode") t features)
-          (unless (string-equal option "ts-only")
-            (puthash (concat target "-mode") t features)))))
+    (cl-labels
+        ((note (sym)
+           (puthash (symbol-name sym) t features))
+         (ts-option-p (kw)
+           (memq kw '(:same-for-ts :independent-ts :ts-only)))
+         (walk-list (tail)
+           ;; Safe list traversal: stops at non-cons cdr (handles dotted pairs).
+           (while (consp tail)
+             (walk (car tail))
+             (setq tail (cdr tail))))
+         (walk (form)
+           (when (consp form)          ; consp excludes nil and non-list atoms
+             (cond
+              ;; (pel-eval-after-load FEATURE ...) — single symbol
+              ((and (eq (car form) 'pel-eval-after-load)
+                    (symbolp (cadr form)))
+               (note (cadr form))
+               (walk-list (cddr form)))
+              ;; (pel-eval-after-load (F1 F2 ...) ...) — list of symbols
+              ((and (eq (car form) 'pel-eval-after-load)
+                    (listp (cadr form)))
+               (let ((feat-tail (cadr form)))
+                 (while (consp feat-tail)
+                   (when (symbolp (car feat-tail))
+                     (note (car feat-tail)))
+                   (setq feat-tail (cdr feat-tail))))
+               (walk-list (cddr form)))
+              ;; (pel-setup-major-mode TARGET OPTION ...)
+              ((eq (car form) 'pel-setup-major-mode)
+               (let ((target (cadr form)))
+                 (when (symbolp target)
+                   (let ((args (cddr form)))
+                     (while args
+                       (when (ts-option-p (car args))
+                         (note (intern
+                                (concat (symbol-name target) "-ts-mode")))
+                         (unless (eq (car args) :ts-only)
+                           (note target)))
+                       (setq args (cdr args))))))
+               (walk-list (cddr form)))
+              ;; (pel-config-major-mode TARGET KEYVAR OPTION ...)
+              ;; Note: KEYVAR may contain ':' (e.g. pel:for-js); the reader
+              ;; handles this transparently.
+              ((eq (car form) 'pel-config-major-mode)
+               (let ((target (cadr form)))
+                 (when (symbolp target)
+                   (let ((args (cddr form)))
+                     (while args
+                       (when (ts-option-p (car args))
+                         (note (intern
+                                (concat (symbol-name target) "-ts-mode")))
+                         (unless (eq (car args) :ts-only)
+                           (note target)))
+                       (setq args (cdr args))))))
+               (walk-list (cddr form)))
+              ;; Any other cons: recurse into sub-forms safely.
+              ;; Using walk-list (while consp) rather than mapc so that
+              ;; improper/dotted-pair lists like ("a" . "α") don't crash.
+              (t
+               (walk-list form))))))
+      (with-temp-buffer
+        (insert-file-contents keys-file)
+        (goto-char (point-min))
+        (condition-case nil
+          (while t
+            (walk (read (current-buffer))))
+          (end-of-file nil))))
     features))
 
 ;; ---------------------------------------------------------------------------
