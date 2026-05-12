@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, May 11 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-12 14:45:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-12 15:33:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -29,7 +29,7 @@
 ;; Usage (run from the PEL root directory):
 ;;
 ;;   emacs -Q --batch -l bin/pel-lint.el --eval "(pel-lint-main)"
-;;   emacs -Q --batch -l bin/pel-lint.el --eval "(pel-lint-main)" -- PEL-DIR KEYS-FILE MACROS-FILE INSTALL-FILE
+;;   emacs -Q --batch -l bin/pel-lint.el --eval "(pel-lint-main)" -- PEL-DIR KEYS-FILE MACROS-FILE INSTALL-FILE AUTOLOAD-FILE
 ;;
 ;; Key Prefix Check
 ;; ================
@@ -257,7 +257,7 @@ KEYS-FILE is the path to pel_keys.el."
 ;;** Key Prefix Main
 
 (defun pel-lint-key-prefixes (keys-file macros-file)
-  "Run key prefix linting in KEYS-FILE and MACROS_FILE.  Return error count."
+  "Run key prefix linting in KEYS-FILE and MACROS-FILE.  Return error count."
   (message "--------------------------------------------")
   (message "PEL key-prefix consistency validator")
   (message "  Macros file : %s" macros-file)
@@ -444,7 +444,7 @@ PEL-DIR      is the directory containing the pel-*.el source files."
                   "      and register it with pel-autoload-function in\n"
                   "      pel-autoload.el.")
           feature feature feature
-          (replace-regexp-in-string "-ts-mode\\'" "" feature))
+          (replace-regexp-in-string "-ts\\(-mode\\)?\\'" "" feature))
          errors)))
     ;; -- Check F2: every defined fixer function has its feature in list --
     (maphash
@@ -571,11 +571,16 @@ Uses the Lisp reader; comments and strings are automatically skipped."
     (cl-labels
         ((interactive-body-p (body)
            ;; BODY is cdddr of the defun: ([DOCSTRING] BODYFORM...).
-           ;; Skip an optional leading docstring, then check whether the
-           ;; first remaining form is (interactive ...).
-           (let ((forms (if (and (consp body) (stringp (car body)))
-                            (cdr body)
-                          body)))
+           ;; Skip an optional leading docstring AND an optional leading
+           ;; (declare ...) form, then check whether the first remaining
+           ;; form is (interactive ...).
+           (let ((forms body))
+             (when (and (consp forms) (stringp (car forms)))
+               (setq forms (cdr forms)))
+             (when (and (consp forms)
+                        (consp (car forms))
+                        (eq (caar forms) 'declare))
+               (setq forms (cdr forms)))
              (and (consp forms)
                   (consp (car forms))
                   (eq (caar forms) 'interactive))))
@@ -740,11 +745,11 @@ A4 — listed symbol is non-interactive but registered under `pel-autoload'."
 
     ;; Proceed: run linters
     (pel+= errors (pel-lint-key-prefixes keys-file macros-file))
-    (message "\n")
+    (message "")
     (pel+= errors (pel-lint-fixers pel-dir keys-file install-file))
-    (message "\n")
+    (message "")
     (pel+= errors (pel-lint-autoloads autoload-file pel-dir))
-    (message "\n")
+    (message "")
     (if (= errors 0)
         (kill-emacs 0)
       (kill-emacs 1))))

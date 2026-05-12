@@ -167,7 +167,7 @@ and required by `pel-use-erlang'."
 It removes what was entered when `erlang-ts-mode' loads to ensure that the
 `pel-erlang-mode' mode dispatcher remains used."
   ;; There are several file extensions for Erlang and the erlang-ts-mode
-  ;; adds several entries (entries for .erlang, .ex, .exs, mix.lock).
+  ;; adds several entries (entries for .erl, .hrl, .escript).
   ;; Delete them all from auto-mode-alist.
   (setq auto-mode-alist
         (rassq-delete-all 'erlang-ts-mode auto-mode-alist)))

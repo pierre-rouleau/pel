@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-12 13:26:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-12 15:30:20 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -909,7 +909,7 @@ Lisp file that implements the Tree-Sitter mode.
 The mode fixer functions are used in `pel-eval-after-load' for their
 respective mode.
 The fixer mode function has a name that has a format like
-pel--MODE-fixer with where MODE corresponds to the name of the mode
+pel--MODE-fixer, where MODE corresponds to the name of the mode
 taken from this list.")
 
 (defmacro pel-eval-after-load (features &rest body)

@@ -2379,7 +2379,19 @@ local minor mode is specified instead of a global minor mode."
         (symbol-name minor-modes) minor-mode major-mode
         minor-mode (symbol-name minor-modes))
        :warning))
-    (funcall minor-mode 1)))
+    (pel--activate-minor-mode minor-mode)))
+
+(defun pel--activate-minor-mode (minor-mode)
+  "Activate a MINOR-MODE."
+  ;; Standard minor-mode toggles accept an optional numeric argument where
+  ;; a positive value means "enable" (arity MIN=0, MAX≥1 or MAX=many).
+  ;; A few commands such as `flyspell-prog-mode' take no arguments at all
+  ;; (arity 0 . 0).  Use `func-arity' to dispatch correctly.
+  (let ((max-args (cdr (func-arity minor-mode))))
+    (if (or (eq max-args 'many)
+            (> max-args 0))
+        (funcall minor-mode 1)
+      (funcall minor-mode))))
 
 (defun pel-turn-on-local-minor-modes-in (minor-modes)
   "Turn all *local* MINOR-MODES on for the buffer\\='s major mode.
@@ -2406,7 +2418,8 @@ global minor mode is specified instead of a local minor mode."
         (symbol-name minor-modes) minor-mode major-mode
         minor-mode (symbol-name minor-modes))
        :warning))
-    (funcall minor-mode 1)))
+    ;; Activate the minor mode.
+    (pel--activate-minor-mode minor-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Argument converter
