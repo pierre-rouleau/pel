@@ -707,37 +707,52 @@ graphic mode."
 (defun pel-generate-autoload-file-for (dir)
   "Prepare (compile + autoload) all files in directory DIR.
 Return the complete name of the generated autoload file."
-  ;; [:todo 2026-05-13, by Pierre Rouleau: Replace the current call pattern
-  ;; with a direct call to loaddefs-generate on Emacs 29+, overriding per-file
-  ;; redirects by passing the output file explicitly.]
   (if pel-emacs-29-or-later-p
       (require 'loaddefs-gen)
     (require 'autoload))
-  (let ((generated-fname nil))
-    (if (boundp 'generated-autoload-file)
-        (let ((original-generated-autoload-file  generated-autoload-file))
-          (setq generated-autoload-file (expand-file-name
-                                         "pel-bundle-autoloads.el"
-                                         dir))
-          (condition-case-unless-debug err
-              (progn
-                (if (and pel-emacs-28-or-later-p
-                         (fboundp 'make-directory-autoloads))
-                    (make-directory-autoloads dir generated-autoload-file)
-                  (if (fboundp 'update-directory-autoloads)
-                      (update-directory-autoloads dir)
-                    (error "update-directory-autoloads not bound!")))
-                (setq generated-fname generated-autoload-file)
-                (when (get-buffer "pel-bundle-autoloads.el")
-                  (kill-buffer "pel-bundle-autoloads.el")))
-            (error
-             (display-warning
-              'pel-generate-autoload-file-for
-              (format "Failed generating the %s/pel-bundle-autoloads.el: %s"
-                      dir err)
-              :error)))
-          (setq generated-autoload-file original-generated-autoload-file))
-      (error "The autoload.el variable `generated-autoload-file' is not bound!"))
+  (let ((generated-fname nil)
+        (output-file (expand-file-name "pel-bundle-autoloads.el" dir)))
+    (if pel-emacs-29-or-later-p
+        ;; On Emacs 29+, call loaddefs-generate directly with an explicit
+        ;; output-file argument.  This overrides any per-file
+        ;; Generated-Autoload-File cookie redirects so that all autoloads are
+        ;; written to a single known location.
+        (condition-case-unless-debug err
+            (progn
+              (loaddefs-generate (list dir) output-file)
+              (setq generated-fname output-file)
+              (when (get-buffer "pel-bundle-autoloads.el")
+                (kill-buffer "pel-bundle-autoloads.el")))
+          (error
+           (display-warning
+            'pel-generate-autoload-file-for
+            (format "Failed generating the %s/pel-bundle-autoloads.el: %s"
+                    dir err)
+            :error)))
+      ;; On Emacs < 29, use the older API that relies on the
+      ;; generated-autoload-file dynamic variable.
+      (if (boundp 'generated-autoload-file)
+          (let ((original-generated-autoload-file generated-autoload-file))
+            (setq generated-autoload-file output-file)
+            (condition-case-unless-debug err
+                (progn
+                  (if (and pel-emacs-28-or-later-p
+                           (fboundp 'make-directory-autoloads))
+                      (make-directory-autoloads dir generated-autoload-file)
+                    (if (fboundp 'update-directory-autoloads)
+                        (update-directory-autoloads dir)
+                      (error "update-directory-autoloads not bound!")))
+                  (setq generated-fname generated-autoload-file)
+                  (when (get-buffer "pel-bundle-autoloads.el")
+                    (kill-buffer "pel-bundle-autoloads.el")))
+              (error
+               (display-warning
+                'pel-generate-autoload-file-for
+                (format "Failed generating the %s/pel-bundle-autoloads.el: %s"
+                        dir err)
+                :error)))
+            (setq generated-autoload-file original-generated-autoload-file))
+        (error "The autoload.el variable `generated-autoload-file' is not bound!")))
     generated-fname))
 
 
@@ -1284,12 +1299,6 @@ Failed fast startup setup for %s after %d of %d steps: %s
                 pel-detected-dual-environment-in-init-p
                 "\n Affects Emacs running in terminal and graphics mode!")))
 
-;; [:todo 2026-02-21, by Pierre Rouleau: Fix pel-setup-fast on Emacs >= 29
-;;                    where it does not work.  Identify what changed
-;;                    in Emacs that prevents it to work.
-;;                    Also add ability to handle the native compilation mode,
-;;                    the cached .eln files that are now supported in Emacs.
-;; ]
 ;;-pel-autoload
 (defun pel-setup-fast ()
   "Prepare the elpa directories and code to speed up Emacs startup."
@@ -1297,12 +1306,10 @@ Failed fast startup setup for %s after %d of %d steps: %s
   ;; Validate Emacs initialization file -- issue error on any problem
   (pel-setup-validate-init-files)
   ;; When Emacs init is OK, check further
-  (when pel-emacs-29-or-later-p
-    (user-error "PEL Fast startup is not yet working in Emacs >= 29!"))
   (cond
    ;;
    ((eq (pel-startup-mode) 'fast)
-    (user-error "PEL/Emacs is already setup for fast startup!"))
+
    ;;
    ((and (bound-and-true-p package-quickstart)
          (display-graphic-p))
