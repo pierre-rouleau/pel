@@ -8104,7 +8104,10 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:indent "w"             'pel-set-tab-width)
 (define-key pel:indent (kbd "TAB")     'pel-indent-rigidly)
 (define-key pel:indent (kbd "<RET>")   'pel-newline-and-indent-below)
-(define-pel-global-prefix pel:indent-with (kbd "<f11> TAB i"))
+(when pel-use-tbindent
+  (pel-ensure-package-elpa tbindent from: melpa)
+  (define-pel-global-prefix pel:indent-with (kbd "<f11> TAB i"))
+  (define-key pel:indent-with "m" 'tbindent-mode))
 
 (global-set-key (kbd "<C-M-i>") 'pel-unindent-lines)
 

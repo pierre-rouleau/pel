@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-13 16:20:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-13 16:51:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -121,53 +121,6 @@
 ;; the inspected major mode and passing the resulting hash structure to the
 ;; printing function.
 ;;
-;;
-;;* Hard-tab Based Indentation Control
-;;
-;; Although not popular in most software development circles, using hard tabs
-;; for indentation provides the undeniable advantage of flexibility in terms
-;; of visual rendering.  Once all indentation level correspond to 1 hard-tab
-;; it becomes very easy to change the visual width of indentation by simply
-;; changing the rendered width of a hard tab character and that does not
-;; modify the content of the file.
-;;
-;; This is a feature that appeals to people that have problems working with
-;; small indentation width as increasing being reported on the Internet.  To
-;; them the hard-line strict guidelines imposed by programming communities
-;; such as Dart and Gleam who impose a 2-space indentation scheme is a real
-;; problem.
-;;
-;; If the indentation scheme content of the files in those programming
-;; languages cannot be changed as imposed by these draconian rules, a
-;; workaround is to temporary change the indentation scheme to a hard-tab
-;; based indentation and then change the width of the hard tab as well as the
-;; width of all indentation control variables for the mode.
-;;
-;; For example, Dart and Gleam impose a 2-space indentation level.  For
-;; buffers using major modes for those languages, we can use the following
-;; procedure:
-;;
-;; - set the indentation control variable to 2 and the `tab-width' to 2,
-;; - tabify the indentation whitespace of the entire buffer excluding all
-;;   strings and comments.
-;; - change the with of hard tabs (controlled by the `tab-width' variable),
-;;   and the width of the variables for the major mode to a larger value.
-;;
-;; Once this is done, we can see the code with a wider indentation and
-;; continue to work with the rules imposed by the major mode logic.
-;;
-;; Later, before saving the buffer back to the file, we simply perform the
-;; following steps:
-;;
-;; - restore the tab and indentation width back to 2,
-;; - untabify all indentation whitespace,
-;; - saving the file.
-;;
-;; All necessary functions are provided here, along with a special minor-mode
-;; that automatically performs all operation seamlessly, allowing editing the
-;; Dart and Gleam files with wider indentation just as if they had flexible
-;; guidelines.  The files will always retain their original indentation scheme
-;; rigidity and everybody might be happier!
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -515,13 +468,6 @@ by the numeric argument N (or if not specified N=1):
 ;;    - pel-mode-indent-control-vars
 ;;      - pel-mode-or-ts-mode-indent-control-vars
 
-
-(defvar-local pel--original-tab-width nil
-  "Tab width value used before `pel-indent-with-tabs' is used.")
-
-(defvar-local pel--last-set-tab-width nil
-  "Tab width set by last `pel-set-tab-width' call.")
-
 (defun pel-read-number (prompt default history-symbol)
   "Emacs version sensitive `read-number'.
 Prompts with PROMPT, use DEFAULT value and the HISTORY-SYMBOL to track
@@ -562,8 +508,7 @@ Return the new `tab-width' or nil if unchanged."
             (when (boundp var)
               (set (make-local-variable var) n)))))
       ;; Always set `tab-width' to the new value.
-      (setq-local tab-width n)
-      (setq-local pel--last-set-tab-width n))))
+      (setq-local tab-width n))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Indentation and Tab Width Control Introspection
@@ -871,8 +816,7 @@ Note: The above variable control the indentation of this major mode.
 "))))
     (dolist (symb '(standard-indent
                     tab-always-indent
-                    indent-line-function
-                    pel-indent-with-tabs-mode))
+                    indent-line-function))
       (unless (memq symb already-inserted)
         (pel-insert-symbol-content-line symb)))
     ;; --
@@ -1033,23 +977,14 @@ important variables and symbols in the context of the inspected major mode."
         (if (and pel-tab-width-control-variables
                  (not (pel-indent--indent-vars-have-offset
                        pel-tab-width-control-variables)))
-            (let ((pel-indent-with-tabs-mode-for-MM
-                   (pel-major-mode-symbol-for "pel-indent-with-tabs-mode-for-%s")))
-              (insert
-               (format "
+            (insert "
      - For this buffer you can use this technique, because the current variables
        identified in pel-tab-width-control-variables identify variables that
        have an offset of zero from the tab width.
-       - Use the `pel-indent-with-tabs-mode' for that.%s"
-                       (if (boundp pel-indent-with-tabs-mode-for-MM)
-                           (format "
-         The easiest way is to set `%s' to the indentation width
-         you want to use in the buffer to automatically activate this minor
-         mode which convert indentation when opening and saving the file."
-                                   pel-indent-with-tabs-mode-for-MM)
-                         "")))
-              (when (boundp pel-indent-with-tabs-mode-for-MM)
-                (pel-insert-symbol-content-line pel-indent-with-tabs-mode-for-MM)))
+       - Install and use `tbindent-mode' (available on MELPA) to convert
+         the buffer to tab-based indentation while keeping the original
+         space-based indentation in the file.")
+          ;; else
           (when (and (boundp pel--MM-indent-predef-vars)
                      (symbol-value pel--MM-indent-predef-vars))
             (if (not (pel-indent--indent-vars-have-offset

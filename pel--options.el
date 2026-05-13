@@ -3242,6 +3242,20 @@ Note: popup-switcher 2.14 has several bugs I fixed in my fork, which PEL
   :group 'pel-package-use
   :link `(url-link :tag "Indentation PDF" ,(pel-pdf-file-url "indentation")))
 
+
+(defcustom pel-use-tbindent nil
+  "Whether PEL activates the tbindent external package.
+This package provides the `tbindent-mode', a minor mode that you
+can use with programming languages that impose a very small indentation
+scheme, like Dart and Gleam.  With this mode you can turn the 2-space
+indentation scheme into tab-based with wider indentation in buffers while
+keeping the 2-space indentation inside files."
+  :group 'pel-pkg-for-indentation
+  :link '(url-link :tag "tbindent @ GitHub"
+                   "https://github.com/pierre-rouleau/tab-based-indent")
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-dtrt-indent nil
   "Whether PEL activates the dtrt-indent external package.
 To adapt to foreign indentation offset.
