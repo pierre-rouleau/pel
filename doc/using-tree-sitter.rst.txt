@@ -7,7 +7,7 @@ Using tree-sitter with Emacs and PEL
 :Ref: `PEL How-to Tips`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-10-24 09:23:02 EDT, updated by Pierre Rouleau.
+:Modified: 2026-05-13 11:59:48 EDT, updated by Pierre Rouleau.
 :Copyright: © 2025, 2026, Pierre Rouleau
 
 
@@ -311,8 +311,8 @@ logic that
 
 - associate the hooks to the classic and the tree-sitter major mode for a file
   type,
-- associates a major mode selector with the file type in ``auto-mode-alist``:
-  the mode selector command checks the ``pel-use-MODE`` customizable
+- associates a major mode dispatcher with the file type in ``auto-mode-alist``:
+  the mode dispatcher command checks the ``pel-use-MODE`` customizable
   user-option for the specific MODE and runs the selected major mode (either
   an appropriate classic mode or a tree-sitter based mode),
 - schedules the execution of a *fixer* function when the file implementing a

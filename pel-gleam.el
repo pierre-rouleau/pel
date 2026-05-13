@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October  6 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-13 22:51:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-13 15:44:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -137,10 +137,7 @@ Return a list of generic symbols described by this function."
  You can disable the format on save while you work on that file.
  When you're done just untabify the code with \\[untabify].
 
- PEL can automate all that: simply activate the
- `pel-indent-with-tabs-mode-for-gleam'  user-option below.
- This does the same as the tbindent-mode implemented
- as a separate package.
+ Use tbindent-mode (available from MELPA) for this.
 "))
   (pel-insert-symbol-content-line 'pel-gleam-tab-width)
   (pel-insert-symbol-content-line 'pel-gleam-use-tabs

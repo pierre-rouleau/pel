@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, November  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-13 22:41:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-13 15:39:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -37,7 +37,7 @@
 ;;   - Forces `fill-column' to 80
 ;;   - Only support // style comment, even though /* */ style is supported.
 ;;
-;; * `indent-tabs-mode':
+;; * `dart-ts-mode':
 ;;   - Indentation width is controlled by `dart-ts-mode-indent-offset'
 ;;     user-option which defaults to 2.
 ;;
@@ -62,11 +62,10 @@
 ;; to increase tab width to a larger value to widen the rendering of
 ;; indentation on their screen without any impact on the file's content.
 ;;
-;; PEL implements a solution to this problem: an automated conversion of
-;; space-indented files into tab-indented buffers with ability to change the
-;; tab width.  For Dart, this special minor mode is activated by the
-;; `pel-indent-with-tabs-mode-for-dart' user-option.
-;;
+;; I implemented a solution to this problem and created an Emacs minor mode
+;; for this: tbindent-mode.  An older version of this used to be part of PEL
+;; but since tbindent is now published on MELPA I removed the old
+;; implementation from PEL.
 
 ;;  Major Mode Dispatcher: `pel-dart-mode'
 ;;  * `pel-dart-mode'
@@ -138,7 +137,6 @@ and required by `pel-use-dart'."
 It removes what was entered when `dart-ts-mode' loads to ensure that the
 `pel-dart-mode' mode dispatcher remains used."
   ;; There are several file extensions for Dart and the dart-ts-mode
-  ;; adds several entries (entries for .dart, .zon).
   ;; Delete them all from auto-mode-alist.
   (setq auto-mode-alist
         (rassq-delete-all 'dart-ts-mode auto-mode-alist)))
@@ -169,7 +167,11 @@ Return a list of generic symbols described by this function."
   ;; `pel-mode-or-ts-mode-indent-control-vars' to identify
   ;; `dart-ts-indent-offset'.  Therefore no user-option value/link is
   ;; inserted here, just a note that only Tree-Sitter mode variable is used.
-  (insert "\nDart has no classic mode.")
+  (insert "\nDart style imposes a 2-space indentation scheme.
+If you have a problem with small indentation you might want to
+use tbindent-mode to convert your buffer to wider tab-based
+indentation while keeping 2-space indentation in the Dart files.
+Install tbindent for that.  It is available on MELPA.\n")
   ;; Return the list of generic symbols this function inserts.
   ;; These symbols are later used to identify the information already
   ;; inserted.
@@ -195,10 +197,7 @@ Return a list of generic symbols described by this function."
  You can disable the format on save while you work on that file.
  When you're done just untabify the code with \\[untabify].
 
- PEL can automate all that: simply activate the
- `pel-indent-with-tabs-mode-for-dart'  user-option below.
- This does the same as the tbindent-mode implemented
- as a separate package.
+ Use tbindent-mode (available from MELPA) for this.
 "))
   (pel-insert-symbol-content-line 'pel-dart-tab-width)
   (pel-insert-symbol-content-line 'pel-dart-use-tabs

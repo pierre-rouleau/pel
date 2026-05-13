@@ -2727,13 +2727,18 @@ can't bind negative-argument to C-_ and M-_"
   ;; Associate .h file with C/C++/Objective mode dispatcher because the .h
   ;; files are used in C, C++ and Objective-C.  The dispatcher function
   ;; detects the language from the file content and activates the appropriate
-  ;; major mode.
+  ;; major mode. remove the old C/C++ dispatcher and use the C/C++/Objective-C
+  ;; dispatcher PEL provides.
+  ;;
+  ;; Note that Pike also use .h files, but those files contain standard C or
+  ;; C++ code.  Therefore it is important to run this code if only Pike is
+  ;; activated.
+  (setq auto-mode-alist (delete '("\\.h\\'" . c-or-c++-mode) auto-mode-alist))
   (add-to-list 'auto-mode-alist '("\\.h\\'" . pel-cc-mode))
 
   (when pel-use-call-graph
     (pel-ensure-package-elpa call-graph from: melpa)
-    (pel-autoload-file call-graph for:
-                       call-graph)))
+    (pel-autoload-file call-graph for: call-graph)))
 
 ;; ---------------------------------------------------------------------------
 ;;** All CC Mode keys for AWK, C, C++, D, Objective-C & Pike
@@ -3109,7 +3114,7 @@ MODE must be a symbol."
      "a68-mode.el")
     (pel-autoload-file a68-mode for: a68-mode)
 
-    ;; 2- Associate files with Algol mode selector
+    ;; 2- Associate files with Algol mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.a68\\'" . a68-mode))
 
     ;; 3- Speedbar support for Algol
@@ -3235,10 +3240,17 @@ MODE must be a symbol."
 ;;** C Programming Language Support
 ;;   ------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c``
-;; Note: C editing is always available in Emacs via the CC Mode and the c-mode
+;;
+;; Notes:
+;; C editing is always available in Emacs via the CC Mode and the c-mode
 ;; that is part of Emacs.  All autoloading is already set by Emacs.  The only
 ;; extra code needed is to add the specialized menu and then activate it,
 ;; along with the specialized CC Mode minor modes via the c-mode-hook.
+;;
+;; For C, no mode fixer is required: using the `c-ts-mode' does not prepend
+;; a new entry inside `auto-mode-alist' to always associate C files with
+;; `c-ts-mode'.
+;;
 (when pel-use-c
   (pel-setup-major-mode c :same-for-ts
     features: (cc-mode c-ts-mode)
@@ -3346,11 +3358,18 @@ MODE must be a symbol."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** C++ Programming Language Support
 ;;   --------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C`` :
-;; Note: C++ editing is always available in Emacs via the CC Mode and the
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C``
+;;
+;; Notes:
+;; C++ editing is always available in Emacs via the CC Mode and the
 ;; c++-mode that is part of Emacs.  All autoloading is already set by Emacs.
 ;; The only extra code needed is to add the specialized menu and then activate
 ;; it, along with the specialized CC Mode minor modes via the c++-mode-hook.
+;;
+;; For C++, no mode fixer is required: using the `c++-ts-mode' does not
+;; prepend a new entry inside `auto-mode-alist' to always associate C++ files
+;; with `c++-ts-mode'.
+;;
 (when pel-use-c++
   (pel-setup-major-mode c++ :same-for-ts
     features: (cc-mode c++-ts-mode)
@@ -3478,7 +3497,7 @@ MODE must be a symbol."
       (when (boundp 'lsp-language-id-configuration)
         (add-to-list 'lsp-language-id-configuration '(c3-ts-mode . "c3"))))
 
-    ;; 2- Associate files with C3 mode selector
+    ;; 2- Associate files with C3 mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.c3[it]?\\'" . c3-ts-mode))
 
     ;; 3- Speedbar support for C3
@@ -3775,7 +3794,7 @@ d-mode not added to ac-modes!"
       (pel-autoload-file dart-ts-mode for:
                          dart-ts-mode))
 
-    ;; 2- Associate files with Dart mode selector
+    ;; 2- Associate files with Dart mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.dart\\'" . pel-dart-mode))
 
     ;; 3- Speedbar support for Dart
@@ -3799,8 +3818,7 @@ d-mode not added to ac-modes!"
       ;; dart-mode has no indent width control variable; it uses tab-width
       (pel-setq-local-unless-filevar tab-width pel-dart-indent-width))
     ;; for both modes
-    (pel-setq-local-unless-filevar indent-tabs-mode pel-dart-use-tabs)
-    (pel--set-indent-control-variables pel-dart-tie-indent-to-tab-width)))
+    (pel-setq-local-unless-filevar indent-tabs-mode pel-dart-use-tabs)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Factor Programming Language Support
@@ -3875,7 +3893,7 @@ d-mode not added to ac-modes!"
     (pel-ensure-package-elpa elixir-mode from: melpa)
     (pel-autoload-file elixir-mode for: elixir-mode)
 
-    ;; 2- Associate files with Elixir mode selector
+    ;; 2- Associate files with Elixir mode dispatcher
     (add-to-list 'auto-mode-alist
                  (cons
                   (regexp-opt '(".ex'" ".exs'" ".elixir'" "mix.lock"))
@@ -4214,7 +4232,7 @@ d-mode not added to ac-modes!"
       (add-to-list 'lsp-language-id-configuration
                    '(erlang-mode . "erlang"))))
 
-  ;; 2- Associate files with Erlang mode selector
+  ;; 2- Associate files with Erlang mode dispatcher
   ;; Invocation control
   ;; - Identify Erlang files:
   ;;   The ~/.erlang is the Erlang configuration file: allow the file
@@ -4653,7 +4671,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                        forth-mode
                        forth-block-mode
                        forth-interaction-mode)
-    ;; 2- Associate files with Forth mode selector
+    ;; 2- Associate files with Forth mode dispatcher
     ;;    Done by forth-mode elpa-based installation.
     ;;
     ;; 3- Speedbar support for Forth
@@ -4682,7 +4700,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     at-init:
     ;; 1- Fortran support is built-in.
     ;;    No installation required for classic mode.
-    ;; 2- Associate files with Fortran mode selector
+    ;; 2- Associate files with Fortran mode dispatcher
     ;;    Already done in Emacs.
     ;; 3- Speedbar support for Fortran
     (when pel-use-speedbar
@@ -4698,7 +4716,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     at-init:
     ;; 1- Fortran 90 support is built-in.
     ;;    No installation required for classic mode.
-    ;; 2- Associate files with Fortran mode selector
+    ;; 2- Associate files with Fortran-90 mode dispatcher
     ;;    Already done in Emacs.
     ;; 3- Speedbar support for Fortran-90
     (when pel-use-speedbar
@@ -4732,7 +4750,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                               "gleam-ts-mode.el")
     (pel-autoload-file gleam-ts-mode for: gleam-ts-mode)
 
-    ;; 2- Associate files with Gleam mode selector
+    ;; 2- Associate files with Gleam mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-ts-mode))
 
     ;; 3- Speedbar support for Gleam
@@ -4770,7 +4788,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (pel-install-github-files "dougm/goflymake/master"
                                 '("go-flycheck.el" "go-flymake.el")))
 
-    ;; 2- Associate files with Go mode selector
+    ;; 2- Associate files with Go mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.go\\'" . pel-go-mode))
     (add-to-list 'auto-mode-alist '("go\\.mod\\'" . pel-go-dot-mod-mode))
 
@@ -5081,7 +5099,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                              with-tree-sitter
                              with-js2-minor
                              with-ts-js2-minor))
-      ;; Use PEL mode selector
+      ;; Associate files with JavaScript mode dispatcher
       (add-to-list 'auto-mode-alist (cons pel--js-files-regexp 'pel-js-mode))
       (pel-autoload-file js for: js-mode js-ts-mode)
       (pel-eval-after-load js
@@ -5171,7 +5189,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-ensure-package-elpa lua-mode from: melpa)
     ;;    - The lua-ts-mode is built-in Emacs.
 
-    ;; 2- Associate files with Lua mode selector
+    ;; 2- Associate files with Lua mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.lua\\'" . pel-lua-mode))
 
     ;; 3- Speedbar support for Lua
@@ -5258,7 +5276,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;;    - Always install nim-mode when Nim is used.
     (pel-ensure-package-elpa nim-mode from: melpa)
 
-    ;; 2- Associate files with Nim mode selector
+    ;; 2- Associate files with Nim mode dispatcher
     ;;   Not needed : there 's no nim-ts-mode yet.
 
     ;; 3- Speedbar support for Nim
@@ -5811,7 +5829,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;; 1- Install required packages for Ruby
     ;;    - ruby-mode and ruby-ts-mode are built-in Emacs
 
-    ;; 2- Associate files with Ruby mode selector
+    ;; 2- Associate files with Ruby mode dispatcher
     (add-to-list 'auto-mode-alist
                  (cons (purecopy (concat "\\(?:\\.\\(?:"
                                          "rbw?\\|ru\\|rake\\|thor\\|axlsx"
@@ -5879,7 +5897,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (pel-eval-after-load flycheck
         (pel-soft-require-or-warn flycheck-rust)))
 
-    ;; 2- Associate files with Rust major mode selector
+    ;; 2- Associate files with Rust major mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.rs\\'" . pel-rust-mode))
 
     ;; 3- Speedbar support for Rust
@@ -6343,7 +6361,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     ;; 1- Install required packages for Tcl
     ;;   Not needed: tcl-mode is built in Emacs
 
-    ;; 2- Associate files with Tcl mode selector
+    ;; 2- Associate files with Tcl mode dispatcher
     ;;   Not needed : there 's no tcl-ts-mode yet.
 
     ;; 3- Speedbar support for Tcl
@@ -6524,7 +6542,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (when pel-use-tree-sitter
       (pel-ensure-package-elpa zig-ts-mode from: melpa))
 
-    ;; 2- Associate files with Zig mode selector
+    ;; 2- Associate files with Zig mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.zig\\'" . pel-zig-mode))
     (add-to-list 'auto-mode-alist '("\\.zon\\'" . pel-zig-mode))
 
@@ -8079,17 +8097,17 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-pel-global-prefix pel:indent (kbd "<f11> TAB"))
 (define-key pel:indent "?"             'pel-show-indent)
 (define-key pel:indent "e"            #'edit-tab-stops)
-(define-key pel:indent "m"            'pel-toggle-indent-tabs-mode)
+(define-key pel:indent "m"             'pel-toggle-indent-tabs-mode)
 (define-key pel:indent "r"            #'indent-relative)
 (define-key pel:indent "c"             'pel-indent-lines)
 (define-key pel:indent "C"             'pel-unindent-lines)
 (define-key pel:indent "w"             'pel-set-tab-width)
 (define-key pel:indent (kbd "TAB")     'pel-indent-rigidly)
 (define-key pel:indent (kbd "<RET>")   'pel-newline-and-indent-below)
-(define-pel-global-prefix pel:indent-with (kbd "<f11> TAB i"))
-(define-key pel:indent-with (kbd "TAB") 'pel-indent-with-tabs)
-(define-key pel:indent-with (kbd "SPC") 'pel-indent-with-spaces)
-(define-key pel:indent-with "m"         'pel-indent-with-tabs-mode)
+(when pel-use-tbindent
+  (pel-ensure-package-elpa tbindent from: melpa)
+  (define-pel-global-prefix pel:indent-with (kbd "<f11> TAB i"))
+  (define-key pel:indent-with "m" 'tbindent-mode))
 
 (global-set-key (kbd "<C-M-i>") 'pel-unindent-lines)
 

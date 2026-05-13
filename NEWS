@@ -20,11 +20,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - pel-LANG-file-searched-dir-trees-per-tool
     - pel-LANG-file-searched-dir-trees-per-project
   - Improved *pel-open-at-point* further by making it more general.  Previously it only supported one special mode
-    of operation for reStructuredText buffer.  It still does but the code was changed to support ability
-    to support more special modes; it uses the default mechanism when the buffer local variable
-    *pel--open-file-method* is nil.  If that variable is set to a specialized function (like the new
+    of operation for reStructuredText buffer.  It still does but the code was changed to support more special modes;
+    it uses the default mechanism when the buffer local variable *pel--open-file-method* is nil.
+    If that variable is set to a specialized function (like the new
     *pel-rst-open-file-at-point* for reStructuredText), it uses that function.  The function can decline the
-    responsibility and return nil or can proceed and return non-nil.  The pel_keys code now set the buffer local
+    responsibility and return nil or can proceed and return non-nil.  The pel_keys code now set the buffer-local
     variable to the rst-mode specific function.  Other modes could define similar functions that are specific to their
     modes.  It will become possible to support other markup languages like Org, markdown end others.
   - Renamed *pel-ffind-project-directory* to *pel-ffind-project-rootdir*
@@ -38,6 +38,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Renamed *pel-open-file-at-point-dir* user-option to *pel-open-file-at-point-dir-home* and *pel-set-open-at-point-dir* to *pel-set-open-at-point-dir-home*
   - Improved *pel-cc-mode*, the C/C++/Objective-C major mode dispatcher: it now supports more language keywords, properly ignore keywords inside comments,
     and support the PEL file type header comment in the first line of files.
+- Removed the *pel-indent-with-tabs-mode* minor mode and all surrounding logic.
+  Instead PEL now explicitly supports the tbindent-mode provided as a separate package, available on MELPA,
+  when the *pel-use-tbindent*  user-option is set to t.
 - Refactored the mode specific file finding mechanism.  Removed the file pel-cc-find.el, integrated some of its logic inside pel-ffind.el
   - It used to only support files managed by the cc-mode like AWK, C, C++ but
     is no longer the case: it now supports most programming language modes and has a global behaviour fallback.
