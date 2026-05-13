@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-04 12:41:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-13 16:20:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -578,16 +578,6 @@ Return the new `tab-width' or nil if unchanged."
 ;;       . pel-tab-control-context
 ;;       - pel-indent--indent-vars-have-offset
 ;;
-;;  * `pel-indent-with-tabs-mode'
-;;     - pel-mode-indentation-width
-;;       - pel-mode-indent-control-vars
-;;           - pel-mode-or-ts-mode-indent-control-vars
-;;     - pel--install-indented-with-tabs-auto-fill
-;;       - pel-indented-with-tabs-do-auto-fill
-;;         - pel--adjusted-fill-column
-;;     - pel--restore-original-fill-function
-;;     - pel--tm-before-save-or-kill
-;;     - pel--tm-after-save
 
 ;; Credit Note: the following table was originally derived from code
 ;;              that resides inside dtrt-indent.el and indent-control.el
@@ -740,6 +730,7 @@ Return the new `tab-width' or nil if unchanged."
   "Map mode name to indentation control variable(s) it uses.")
 
 
+
 (defun pel-mode-or-ts-mode-indent-control-vars (&optional mode)
   "Return list of indentation control vars for classic/TS mode or MODE.
 Return nil if nothing found for either."
@@ -758,7 +749,7 @@ Return nil if nothing found for either."
 (defun pel-mode-indent-control-vars (&optional mode)
   "Return list of indentation control vars for current major mode or MODE.
 Check the variables identified in `pel-tab-width-control-variables' if there is
-some, otherwise check the variables defined in `pel--mode-indent-vars.'
+some.
 Return nil if none is identified in either location.
 Note that the returned list may be a list of variable symbol as well as
 (variable . offset) cons cells."
@@ -1096,329 +1087,6 @@ With APPEND optional argument non-nil, append to the buffer."
            (pel-tab-insert-control-info tab-control-context))
          (unless append :clear-buffer)
          :use-help-mode)))))
-
-;; ---------------------------------------------------------------------------
-;;* Hard-tab Based Indentation Control
-;;
-;;   * `pel-indent-with-tabs-mode', the minor mode.
-;;     * `pel-indent-with-tabs'
-;;       - pel-tabify-all-indent
-;;         - pel-inside-code
-;;       . `pel-set-tab-width'
-;;     * `pel-indent-with-spaces'
-;;       . `pel-set-tab-width'
-
-(defun pel-tabify-all-indent ()
-  "Convert multiple spaces in indent to tabs when possible.
-
-Process complete buffer: a group of spaces in the leading indentation is
-partially replaced by tabs when this can be done without changing the
-column they end at.  Comments and strings are not modified.
-
-The variable `tab-width' controls the spacing of tab stops.
-This is a indentation specific `tabify' function."
-  (save-excursion
-    (save-restriction
-      ;; Process entire buffer.
-      (goto-char (point-min))
-      (let ((indent-tabs-mode t)
-            (inside-code nil))
-        (while (re-search-forward "^[ \t]* [ \t]+" nil t)
-          ;; In white-space indentation: adjust to TABs were possible.
-          (save-match-data
-            (setq inside-code (pel-inside-code (point))))
-          (when inside-code
-            (let ((end-col (current-column))
-                  (beg-col (save-excursion (goto-char (match-beginning 0))
-                                           (skip-chars-forward "\t")
-                                           (current-column))))
-              (unless (= (/ end-col tab-width) (/ beg-col tab-width))
-                ;; The spacing (after some leading TABs which we wouldn't
-                ;; want to touch anyway) does not straddle a TAB boundary,
-                ;; so it neither contains a TAB, nor will we be able to use
-                ;; a TAB here anyway: there's nothing to do.
-                (delete-region (match-beginning 0) (point))
-                (indent-to end-col)))))))))
-
-(defvar pel-indent-with-tabs-mode)      ; prevent byte compiler warning
-
-(defun pel-indent-with-tabs (&optional with-tab-width
-                                       by-minor-mode)
-  "Convert current buffer to use tabs for indentation.
-
-If the optional WITH-TAB-WIDTH numerical argument is specified, after
-conversion to tab-based indentation change the tab width to that
-specified value.  If the argument is not specified, prompt for the tab
-width to use.
-
-This command is only available when the `pel-indent-with-tabs-mode' is
-turned off.  Since it is used internally by `pel-indent-with-tabs-mode',
-the BY-MINOR-MODE parameter must only be set by the call from
-`pel-indent-with-tabs-mode'."
-  (interactive
-   (if (and current-prefix-arg (not (consp current-prefix-arg)))
-       (list (prefix-numeric-value current-prefix-arg))
-     (list (pel-read-number "Indent with tab width: "
-                            tab-width
-                            (pel-major-mode-symbol-for
-                             "pel-indent-with-tabs-history-for-%s")))))
-  (if (or by-minor-mode (not pel-indent-with-tabs-mode))
-      (progn
-        ;; first tabify indentation whitespace, replacing space-based
-        ;; indentation with tabs that represent the specified tab width.
-        (pel-tabify-all-indent)
-        ;; Remember `tab-width' originally used in the buffer.
-        ;; It should correspond with the indentation width.
-        (unless pel--original-tab-width
-          (setq-local pel--original-tab-width tab-width))
-        ;; Adjust the tab and indentation width to the new selection.
-        (pel-set-tab-width with-tab-width)
-        ;; New indented code must now be indented with hard tabs.
-        ;; support older Emacs where the function was not available.
-        (if (fboundp 'indent-tabs-mode)
-            (indent-tabs-mode 1)
-          (setq-local indent-tabs-mode t)))
-    (user-error
-     "Command not available while pel-indent-with-tabs-mode is active!")))
-
-(defun pel-indent-with-spaces (&optional with-tab-width by-minor-mode)
-  "Convert current buffer to use space for indentation.
-
-Restore the space-based indentation scheme using the tab width that was
-used before the first call to `pel-indent-with-tabs' unless the optional
-WITH-TAB-WIDTH numerical argument is specified.  If an optional
-numerical argument is specified, use that for tab width.
-
-This command is only available when the `pel-indent-with-tabs-mode' is
-turned off.  Since it is used internally by `pel-indent-with-tabs-mode',
-the BY-MINOR-MODE parameter must only be set by the call from
-`pel-indent-with-tabs-mode'."
-  (interactive "P")
-  (if (or by-minor-mode (not pel-indent-with-tabs-mode))
-      (save-excursion
-        (if with-tab-width
-            (pel-set-tab-width with-tab-width)
-          ;; Restore the original tab-width if it was stored in
-          ;; `pel--original-tab-width'
-          (when (or  pel--original-tab-width
-                     pel--last-set-tab-width)
-            (pel-set-tab-width pel--original-tab-width)))
-        ;; Then untabify.  Note that hard-tabs inside strings and comments
-        ;; will be replaced by spaces.  If this is a problem in some cases,
-        ;; please let me know.
-        (untabify (point-min) (point-max))
-        ;; New indented code must now be indented with spaces.
-        ;; support older Emacs where the function was not available.
-        (if (fboundp 'indent-tabs-mode)
-            (indent-tabs-mode -1)
-          (setq-local indent-tabs-mode nil)))
-    (user-error
-     "Command not available while pel-indent-with-tabs-mode is active!")))
-
-;; ---------------------------------------------------------------------------
-;;* Manage auto-fill in tab-based indented buffer
-;;  ---------------------------------------------
-;;
-;; When a buffer is loaded with the content of a file that uses a 2-space
-;; indentation scheme and a maximum line length of 80 columns, we need to
-;; adjust the `fill-column' value when then buffer holds the text that uses a
-;; different indentation based on tabs that are rendered with a different
-;; width. The code in this section deals with that.
-;;
-;; The value of the original `fill-column' used for the space-based
-;; indentation file is remembered in the `pel--normalfile-fill-column'
-;; buffer local variable.
-;;
-;; When the `pel-mode' is active, it replaces the function that performs
-;; the automatic filling by `pel--normalfile-fill-column' which computes
-;; the adjusted value of fill-column on each line by counting the number of
-;; hard tab character present on the line and their impact on the fill-column.
-;; That function is only called when automatic filling is activated.
-;;
-;; These are only used indirectly by the `pel-mode' as shown by the
-;; following call hierarchy, where
-;; `pel--install-indented-with-tabs-auto-fill' installs that function to
-;; deal with automatic filling and `pel--restore-original-fill-function'
-;; restores the original function when turning off `pel-mode':
-;;
-;;  * `pel-indent-with-tabs-mode'
-;;    - `pel--install-indented-with-tabs-auto-fill'
-;;      > `pel-indented-with-tabs-do-auto-fill'
-;;      - `pel--adjusted-fill-column'
-;;    - `pel--restore-original-fill-function'
-
-(defvar-local pel--normalfile-fill-column nil
-  "The `fill-column' value used for the normal space indented file format.")
-
-(defun pel--adjusted-fill-column (space-indent-width viewed-tab-width
-                                                     &optional position)
-  "Return adjusted fill column for tab-indented line at POSITION or point.
-
-That is the `fill-column' that can be used in the tab-indented buffer to
-correspond to what `fill-column' is inside the real space-indented file.
-- SPACE-INDENT-WIDTH corresponds to what the file normally uses.
-- VIEWED-TAB-WIDTH corresponds to what is used in the buffer."
-  (save-excursion
-    (when position (goto-char position))
-    (let* ((extra-columns-per-tab (- viewed-tab-width space-indent-width))
-           (line-start-pos (progn (forward-line 0) (point)))
-           (line-end-pos   (progn (end-of-line) (point)))
-           (tab-count      (count-matches "\t" line-start-pos line-end-pos))
-           (extra-columns  (* tab-count extra-columns-per-tab)))
-      ;; Cache the real, file-specific, `fill-column' value in buffer local
-      ;; variable.
-      (unless pel--normalfile-fill-column
-        (setq-local pel--normalfile-fill-column fill-column))
-      ;; return what fill column should be for this line
-      (+ pel--normalfile-fill-column extra-columns))))
-
-(defvar-local pel--normal-auto-fill-function nil
-  "Remember function `auto-fill-function' normally used for normal files.")
-
-(defvar-local pel--space-based-indent-width nil
-  "Original space based indentation width for the file.")
-
-(defun pel-indented-with-tabs-do-auto-fill ()
-  "Perform the auto-fill inside a tabs-indented buffer.
-Adjust the buffer-local `fill-column' based on the indentation scheme used and
-in the normal file and the tabs-based indentation used inside the buffer, then
-execute the `do-auto-fill'."
-  ;; Adjust the fill-column to what it should be if the indentation had been
-  ;; reconverted back to 2-space indents and then execute the fill function.
-  (let ((fill-column (pel--adjusted-fill-column pel--space-based-indent-width
-                                                tab-width)))
-    (funcall pel--normal-auto-fill-function)))
-
-(defun pel--install-indented-with-tabs-auto-fill ()
-  "Install the tabs-indented aware auto fill function."
-  ;; Cache the `auto-fill-function' for the buffer.
-  (unless pel--normal-auto-fill-function
-    (setq-local pel--normal-auto-fill-function normal-auto-fill-function)
-    (make-local-variable 'normal-auto-fill-function)
-    (setq-local normal-auto-fill-function
-                'pel-indented-with-tabs-do-auto-fill))
-  (when auto-fill-function
-    (setq-local auto-fill-function
-                (function pel-indented-with-tabs-do-auto-fill))))
-
-(defun pel--restore-original-fill-function ()
-  "Restore original fill function."
-  (when pel--normal-auto-fill-function
-    (setq-local normal-auto-fill-function pel--normal-auto-fill-function)
-    (when auto-fill-function
-      (setq-local auto-fill-function pel--normal-auto-fill-function))))
-
-
-(defvar-local pel--tab-width-used-during-tab-based-indent nil)
-
-(defun pel--tm-before-save-or-kill ()
-  "Disable tab-based indentation and restore native space-base indent.
-This is performed just before saving a buffer to a file or killing it."
-  (setq-local pel--tab-width-used-during-tab-based-indent tab-width)
-  (pel-indent-with-spaces nil :by-minor-mode))
-
-(defun pel--tm-after-save ()
-  "Restore tab-based indentation with same width used before buffer save."
-  (if pel--tab-width-used-during-tab-based-indent
-      (progn
-        (pel-indent-with-tabs pel--tab-width-used-during-tab-based-indent
-                              :by-minor-mode)
-        (set-buffer-modified-p nil))
-    (display-warning 'pel-indent
-                     "pelt--tm-after-save: unknown indentation width!"
-                     :error)))
-;; ---------------------------------------------------------------------------
-;;* Minor Mode
-;;  ----------
-
-(define-minor-mode pel-indent-with-tabs-mode
-  "Minor mode that automatically converts buffer to tab-based indentation."
-  :lighter " ⍈"
-  (let ((warning-message-printed nil))
-    (if pel-indent-with-tabs-mode
-        ;; When turning mode on
-        ;; --------------------
-        (progn
-          (if (eq tab-width (pel-mode-indentation-width))
-              ;; conditions are met to transform buffer to tab-based indent
-              (progn
-                ;; if buffer is modified allow user to save first.
-                ;; If user quit, catch and activate the mode anyway, without saving.
-                (condition-case nil
-                    (when (and (buffer-modified-p)
-                               (y-or-n-p (format "Save modified %S first? "
-                                                 (current-buffer))))
-                      (save-buffer))
-                  (quit
-                   (message "Indenting with tabs Mode enabled, buffer not saved!")
-                   (setq warning-message-printed t)))
-                ;; Proceed
-                (unless warning-message-printed
-                  (message "Converting %s to tab-based indent, width=%d ..."
-                           (current-buffer)
-                           tab-width ))
-                (with-silent-modifications
-                  ;; Remember the original space based indentation width
-                  (setq-local pel--space-based-indent-width
-                              (pel-mode-indentation-width))
-
-                  ;; activate indentation with tabs using either the indentation width
-                  ;; specified by customization (if that symbol exists and is non-nil
-                  ;; or the native tab-width matching indentation width
-                  (pel-indent-with-tabs (or (pel-major-mode-symbol-value-or
-                                             "pel-indent-with-tabs-mode-for-%s"
-                                             nil)
-                                            tab-width)
-                                        :by-minor-mode)
-                  ;; Install a special auto-fill function that is aware that each tab
-                  ;; in the buffer corresponds to the file original space indentation
-                  ;; scheme.
-                  (pel--install-indented-with-tabs-auto-fill))
-                ;; The buffer was modified by replacing spaces with tabs but
-                ;; since we want to use it as if it was normal, don't show
-                ;; the buffer modified unless it already was.
-                (unless warning-message-printed
-                  (set-buffer-modified-p nil))
-                ;; schedule operation before and after buffer save.
-                (unless (memq 'pel--tm-before-save-or-kill  before-save-hook)
-                  (add-hook 'before-save-hook #'pel--tm-before-save-or-kill
-                            -100
-                            'local))
-                (unless (memq 'pel--tm-before-save-or-kill  kill-buffer-hook)
-                  (add-hook 'kill-buffer-hook #'pel--tm-before-save-or-kill
-                            -100
-                            'local))
-                (unless (memq 'pel--tm-after-save after-save-hook)
-                  (add-hook 'after-save-hook #'pel--tm-after-save
-                            +100
-                            'local))
-
-                (unless warning-message-printed
-                  (message "Indenting with tabs Mode enabled.")))
-            ;; conditions are NOT met to transform buffer to tab-based indent
-            ;; tab-width differs from current indentation!
-            (setq-local pel-indent-with-tabs-mode nil)
-            (user-error "\
-Cannot activate pel-indent-with-tabs-mode: tab-width (%d) differs from %s (%d)!
-These must be the same and must represent the real indentation width used.
-To change tab-width, type:  M-: (setq-local tab-width %d)"
-                        tab-width
-                        (pel-mode-indent-control-vars)
-                        (pel-mode-indentation-width)
-                        (pel-mode-indentation-width))))
-
-      ;; When turning mode off
-      ;; ---------------------
-      (with-silent-modifications
-        (pel-indent-with-spaces nil :by-minor-mode))
-      (pel--restore-original-fill-function)
-      (when (memq 'pel--tm-before-save-or-kill before-save-hook)
-        (remove-hook 'before-save-hook #'pel--tm-before-save-or-kill 'local))
-      (when (memq 'pel--tm-before-save-or-kill kill-buffer-hook)
-        (remove-hook 'kill-buffer-hook #'pel--tm-before-save-or-kill 'local))
-      (when (memq 'pel--tm-after-save after-save-hook)
-        (remove-hook 'after-save-hook #'pel--tm-after-save 'local))
-      (message "Indenting with tabs Mode disabled."))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-indent)

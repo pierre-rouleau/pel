@@ -3818,8 +3818,7 @@ d-mode not added to ac-modes!"
       ;; dart-mode has no indent width control variable; it uses tab-width
       (pel-setq-local-unless-filevar tab-width pel-dart-indent-width))
     ;; for both modes
-    (pel-setq-local-unless-filevar indent-tabs-mode pel-dart-use-tabs)
-    (pel--set-indent-control-variables pel-dart-tie-indent-to-tab-width)))
+    (pel-setq-local-unless-filevar indent-tabs-mode pel-dart-use-tabs)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Factor Programming Language Support
@@ -8098,7 +8097,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-pel-global-prefix pel:indent (kbd "<f11> TAB"))
 (define-key pel:indent "?"             'pel-show-indent)
 (define-key pel:indent "e"            #'edit-tab-stops)
-(define-key pel:indent "m"            'pel-toggle-indent-tabs-mode)
+(define-key pel:indent "m"             'pel-toggle-indent-tabs-mode)
 (define-key pel:indent "r"            #'indent-relative)
 (define-key pel:indent "c"             'pel-indent-lines)
 (define-key pel:indent "C"             'pel-unindent-lines)
@@ -8106,9 +8105,6 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:indent (kbd "TAB")     'pel-indent-rigidly)
 (define-key pel:indent (kbd "<RET>")   'pel-newline-and-indent-below)
 (define-pel-global-prefix pel:indent-with (kbd "<f11> TAB i"))
-(define-key pel:indent-with (kbd "TAB") 'pel-indent-with-tabs)
-(define-key pel:indent-with (kbd "SPC") 'pel-indent-with-spaces)
-(define-key pel:indent-with "m"         'pel-indent-with-tabs-mode)
 
 (global-set-key (kbd "<C-M-i>") 'pel-unindent-lines)
 

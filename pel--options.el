@@ -8139,35 +8139,6 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-dart
   :type '(repeat function))
 
-(defcustom pel-indent-with-tabs-mode-for-dart nil
-  "Indentation width rendering of hard tabs `pel-indent-with-tabs-mode'.
-- If nil, the Dart file is edited with the indentation scheme selected
-  by `pel-dart-indent-width' and `pel-dart-tab-width'.
-- If a number is selected, the `pel-indent-with-tabs-mode' is automatically
-  enabled for Dart files with the visual indentation width specified by this
-  value.
-  - Selecting this also automatically adds `pel-indent-with-tabs-mode'
-    to `pel-dart-activates-minor-modes' to automatically active the minor mode.
-
-For example, set this to 4 if you want to edit Dart files with a visual
-indentation rendering of 4 columns, even if the file uses a 2-space
-indentation scheme.  The buffer will render indentation with hard-tabs
-using a tab width of 4.  The modified buffer will be saved back to the
-file with the original 2-space indentation scheme.
-
-IMPORTANT: after changing this value you must restart Emacs for the
-           modifications to take effect."
-  :group 'pel-pkg-for-dart
-  :type '(choice
-          (const
-           :tag "Normal editing; do not use `pel-indent-with-tabs-mode'"
-           nil)
-          (integer
-           :tag "Use `pel-indent-with-tabs-mode' with selected indent width")))
-
-(when pel-indent-with-tabs-mode-for-dart
-  (push 'pel-indent-with-tabs-mode pel-dart-activates-minor-modes))
-
 (defcustom pel-dart-indent-width 2
   "Number of columns for Dart source code indentation.
 
@@ -8206,49 +8177,6 @@ Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-dart
   :type 'boolean
   :safe #'booleanp)
-
-;; Define a list of Dart indentation control variables that could be tied to
-;; `tab-width'.  These will be used when `pel-dart-tie-indent-to-tab-width'
-;; is set to use-predef-vars.
-(defconst pel--dart-indent-predef-vars
-  '((dart-ts-mode-indent-offset  .  0))
-  "List of dart indentation variables that can be tied to tab width.
-In Dart buffers, when `pel-dart-tie-indent-to-tab-width' is set to
-use-predef-vars, the `pel-set-tab-width' command stores the value of
-`tab-width' inside each of these variables.
-
-Each entry is a cons cell:
-- the car is the variable name.
-- the cdr is the offset applied to `tab-width':
-   The value stored in the variable is: (+ tab-with offset)")
-
-;; Dart style guide imposes use of 2-spaces for indentation.
-;; Dart imposes this as a law.  No other style is accepted despite
-;; complaints by several.  PEL is written to ease their pain.
-(defcustom pel-dart-tie-indent-to-tab-width 'use-predef-vars
-  "Identify whether `pel-set-tab-width' also sets indentation.
-This can have the following values:
-- nil             : In Dart buffers, `pel-set-tab-width' only sets the value
-                    of `tab-width'.
-- use-predef-vars : In Dart buffers, `pel-set-tab-width' sets the value of
-                    `tab-width' and all variables identified by the
-                    `pel--dart-indent-predef-vars' constant.
-- A list of (variable . offset) cons cells defined explicitly as value.
-  When using this be careful to leave no leading or trailing space for the
-  variable name."
-  :group 'pel-pkg-for-dart
-  :type '(choice
-          (const :tag "Not tied; tab width is independent of indentation" nil)
-          (const
-           :tag "Tied; use variables defined in `pel--dart-indent-predef-vars'"
-           use-predef-vars)
-          ;; The variable list defined in `pel--dart-indent-predef-vars' may
-          ;; not be appropriate for your needs.
-          ;; In that case specify your own list here:
-          (repeat :tag "Tied; define the list of indent variables to use"
-                  (cons
-                   (symbol :tag  "variable (no space) ")
-                   (integer :tag "offset from tab-width" :value 0)))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Eiffel Programming Language Support
@@ -11292,75 +11220,6 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-gleam
   :type '(repeat function))
-
-(defcustom pel-indent-with-tabs-mode-for-gleam nil
-  "Indentation width rendering of hard tabs `pel-indent-with-tabs-mode'.
-- If nil, the Gleam file is edited with the indentation scheme selected
-  by `pel-gleam-indent-width' and `pel-gleam-tab-width'.
-- If a number is selected, the `pel-indent-with-tabs-mode' is automatically
-  enabled for Gleam files with the visual indentation width specified by this
-  value.
-  - Selecting this also automatically adds `pel-indent-with-tabs-mode'
-    to `pel-gleam-activates-minor-modes' to automatically active the minor mode.
-
-For example, set this to 4 if you want to edit Gleam files with a visual
-indentation rendering of 4 columns, even if the file uses a 2-space
-indentation scheme.  The buffer will render indentation with hard-tabs
-using a tab width of 4.  The modified buffer will be saved back to the
-file with the original 2-space indentation scheme.
-
-IMPORTANT: after changing this value you must restart Emacs for the
-           modifications to take effect."
-  :group 'pel-pkg-for-gleam
-  :type '(choice
-          (const
-           :tag "Normal editing; do not use `pel-indent-with-tabs-mode'"
-           nil)
-          (integer
-           :tag "Use `pel-indent-with-tabs-mode' with selected indent width")))
-
-;; Define a list of Gleam indentation control variables that could be tied to
-;; `tab-width'.  These will be used when `pel-gleam-tie-indent-to-tab-width'
-;; is set to use-predef-vars.
-
-(defconst pel--gleam-indent-predef-vars
-  '((gleam-ts-indent-offset  .  0))
-  "List of gleam indentation variables that can be tied to tab width.
-In Gleam buffers, when `pel-gleam-tie-indent-to-tab-width' is set to
-use-predef-vars, the `pel-set-tab-width' command stores the value of
-`tab-width' inside each of these variables.
-
-Each entry is a cons cell:
-- the car is the variable name.
-- the cdr is the offset applied to `tab-width':
-   The value stored in the variable is: (+ tab-with offset)")
-;; Gleam style guide recommends use of spaces for indentation.
-
-(defcustom pel-gleam-tie-indent-to-tab-width nil
-  "Identify whether `pel-set-tab-width' also sets indentation.
-This can have the following values:
-- nil             : In Gleam buffers, `pel-set-tab-width' only sets the value
-                    of `tab-width'.
-- use-predef-vars : In Gleam buffers, `pel-set-tab-width' sets the value of
-                    `tab-width' and all variables identified by the
-                    `pel--gleam-indent-predef-vars' constant.
-- A list of (variable . offset) cons cells defined explicitly as value.
-  When using this be careful to leave no leading or trailing space for the
-  variable name."
-  :group 'pel-pkg-for-gleam
-  :type
-  '(choice
-    (const :tag "nil: Not tied; tab width is independent of indentation" nil)
-    (const :tag "use-predef-vars: Tied; use variables defined in\
- `pel--gleam-indent-predef-vars'"
-           use-predef-vars)
-    ;; The variable list defined in `pel--gleam-indent-predef-vars' may
-    ;; not be appropriate for your needs.
-    ;; In that case specify your own list here:
-    (repeat :tag "Tied; define the list of indent variables to use"
-            (cons
-             (symbol :tag  "variable (no space) ")
-             (integer :tag "offset from tab-width" :value 0)))))
 
 (defcustom pel-gleam-tab-width 2
   "Column width display rendering of hard tab for gleam buffers.
@@ -14811,34 +14670,6 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-cram
   :type '(repeat function))
-
-(defcustom pel-indent-with-tabs-mode-for-cram nil
-  "Indentation width rendering of hard tabs `pel-indent-with-tabs-mode'.
-- If nil, the Cram file is edited with the indentation scheme selected
-  by `pel-cram-indent-width' and `pel-cram-tab-width'.
-- If a number is selected, the `pel-indent-with-tabs-mode' is automatically
-  enabled for Cram files with the visual indentation width specified by this
-  value.
-  - Selecting this also automatically adds `pel-indent-with-tabs-mode'
-    to `pel-cram-activates-minor-modes' to automatically active the minor mode.
-
-For example, set this to 4 if you want to edit Cram files with a visual
-indentation rendering of 4 columns, even if the file uses a 2-space
-indentation scheme.  The buffer will render indentation with hard-tabs
-using a tab width of 4.  The modified buffer will be saved back to the
-file with the original 2-space indentation scheme.
-
-IMPORTANT: after changing this value you must restart Emacs for the
-           modifications to take effect."
-  :group 'pel-pkg-for-cram
-  :type '(choice
-          (const
-           :tag "Normal editing; do not use `pel-indent-with-tabs-mode'"
-           nil)
-          (integer
-           :tag "Use `pel-indent-with-tabs-mode' with selected indent width")))
-
-
 
 (defcustom pel-cram-indent-width 2
   "Number of columns for Cram source code indentation.

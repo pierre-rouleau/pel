@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, November  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-13 15:01:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-13 15:39:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -62,11 +62,10 @@
 ;; to increase tab width to a larger value to widen the rendering of
 ;; indentation on their screen without any impact on the file's content.
 ;;
-;; PEL implements a solution to this problem: an automated conversion of
-;; space-indented files into tab-indented buffers with ability to change the
-;; tab width.  For Dart, this special minor mode is activated by the
-;; `pel-indent-with-tabs-mode-for-dart' user-option.
-;;
+;; I implemented a solution to this problem and created an Emacs minor mode
+;; for this: tbindent-mode.  An older version of this used to be part of PEL
+;; but since tbindent is now published on MELPA I removed the old
+;; implementation from PEL.
 
 ;;  Major Mode Dispatcher: `pel-dart-mode'
 ;;  * `pel-dart-mode'
@@ -198,10 +197,7 @@ Return a list of generic symbols described by this function."
  You can disable the format on save while you work on that file.
  When you're done just untabify the code with \\[untabify].
 
- PEL can automate all that: simply activate the
- `pel-indent-with-tabs-mode-for-dart'  user-option below.
- This does the same as the tbindent-mode implemented
- as a separate package.
+ Use tbindent-mode (available from MELPA) for this.
 "))
   (pel-insert-symbol-content-line 'pel-dart-tab-width)
   (pel-insert-symbol-content-line 'pel-dart-use-tabs

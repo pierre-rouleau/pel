@@ -664,10 +664,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-indent-lines
     pel-unindent-lines
     pel-indent-rigidly
-    pel-show-indent
-    pel-indent-with-tabs
-    pel-indent-with-spaces
-    pel-indent-with-tabs-mode)
+    pel-show-indent)
 
   ;; --
   (pel-autoload-function "pel-java" for:
