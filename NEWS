@@ -84,7 +84,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - C & C++:
     - Tree-Sitter modes support for C and C++ now support the ~<f12>~ key properly and activate
       on the first file opened.
-  -  CommonLisp:
+  - CommonLisp:
     - CommonLisp supports the .clisp file extension.
   - Erlang:
     - Fix *pel-erlang-version* when automatic detection is used.
@@ -97,10 +97,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Go:
     - Fix: pel-go-gofmt-on-buffer-save only hooked on go buffers, not all.
     - Fix: Tree-Sitter mode activation for first file opened.
-  - Java:
-    - Now properly setup for Tree-Sitter based major-mode.
   - Julia:
     - Modernize.  Properly support the ~<f12>~ key prefix. Add Tree-Sitter mode support.
+  - Java:
+    - Now properly setup for Tree-Sitter based major-mode.
   - Pike:
     - Fix Pike support: add key mapping in the ~<f12> <f4>~ prefix that had not been activated.
   - Python:
@@ -479,7 +479,8 @@ PEL uses my fork of the project to eliminate most warnings.
     the buffer content back to the file  with the 2-space indentation scheme.
     You can then conform to the strict and inflexible Dart guideline while
     using something else inside your buffer.
-- Add the *pel-indent-with-tabs-mode* minor mode.  When activated that minor
+- Add the *pel-indent-with-tabs-mode* minor mode. ~Note: this was removed later, once tbindent mode was implemented in a separate package available in MELPA.~
+  When activated that minor
   mode automatically turn all space-based indentation into tabs-based
   indentation using the same width. You can then widen the indentation
   visually by increasing the tab and indentation width by executing the
