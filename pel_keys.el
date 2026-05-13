@@ -3114,7 +3114,7 @@ MODE must be a symbol."
      "a68-mode.el")
     (pel-autoload-file a68-mode for: a68-mode)
 
-    ;; 2- Associate files with Algol mode selector
+    ;; 2- Associate files with Algol mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.a68\\'" . a68-mode))
 
     ;; 3- Speedbar support for Algol
@@ -3497,7 +3497,7 @@ MODE must be a symbol."
       (when (boundp 'lsp-language-id-configuration)
         (add-to-list 'lsp-language-id-configuration '(c3-ts-mode . "c3"))))
 
-    ;; 2- Associate files with C3 mode selector
+    ;; 2- Associate files with C3 mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.c3[it]?\\'" . c3-ts-mode))
 
     ;; 3- Speedbar support for C3
@@ -3794,7 +3794,7 @@ d-mode not added to ac-modes!"
       (pel-autoload-file dart-ts-mode for:
                          dart-ts-mode))
 
-    ;; 2- Associate files with Dart mode selector
+    ;; 2- Associate files with Dart mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.dart\\'" . pel-dart-mode))
 
     ;; 3- Speedbar support for Dart
@@ -3894,7 +3894,7 @@ d-mode not added to ac-modes!"
     (pel-ensure-package-elpa elixir-mode from: melpa)
     (pel-autoload-file elixir-mode for: elixir-mode)
 
-    ;; 2- Associate files with Elixir mode selector
+    ;; 2- Associate files with Elixir mode dispatcher
     (add-to-list 'auto-mode-alist
                  (cons
                   (regexp-opt '(".ex'" ".exs'" ".elixir'" "mix.lock"))
@@ -4233,7 +4233,7 @@ d-mode not added to ac-modes!"
       (add-to-list 'lsp-language-id-configuration
                    '(erlang-mode . "erlang"))))
 
-  ;; 2- Associate files with Erlang mode selector
+  ;; 2- Associate files with Erlang mode dispatcher
   ;; Invocation control
   ;; - Identify Erlang files:
   ;;   The ~/.erlang is the Erlang configuration file: allow the file
@@ -4672,7 +4672,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                        forth-mode
                        forth-block-mode
                        forth-interaction-mode)
-    ;; 2- Associate files with Forth mode selector
+    ;; 2- Associate files with Forth mode dispatcher
     ;;    Done by forth-mode elpa-based installation.
     ;;
     ;; 3- Speedbar support for Forth
@@ -4701,7 +4701,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     at-init:
     ;; 1- Fortran support is built-in.
     ;;    No installation required for classic mode.
-    ;; 2- Associate files with Fortran mode selector
+    ;; 2- Associate files with Fortran mode dispatcher
     ;;    Already done in Emacs.
     ;; 3- Speedbar support for Fortran
     (when pel-use-speedbar
@@ -4717,7 +4717,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     at-init:
     ;; 1- Fortran 90 support is built-in.
     ;;    No installation required for classic mode.
-    ;; 2- Associate files with Fortran mode selector
+    ;; 2- Associate files with Fortran mode dispatcher
     ;;    Already done in Emacs.
     ;; 3- Speedbar support for Fortran-90
     (when pel-use-speedbar
@@ -4751,7 +4751,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                               "gleam-ts-mode.el")
     (pel-autoload-file gleam-ts-mode for: gleam-ts-mode)
 
-    ;; 2- Associate files with Gleam mode selector
+    ;; 2- Associate files with Gleam mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-ts-mode))
 
     ;; 3- Speedbar support for Gleam
@@ -4789,7 +4789,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (pel-install-github-files "dougm/goflymake/master"
                                 '("go-flycheck.el" "go-flymake.el")))
 
-    ;; 2- Associate files with Go mode selector
+    ;; 2- Associate files with Go mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.go\\'" . pel-go-mode))
     (add-to-list 'auto-mode-alist '("go\\.mod\\'" . pel-go-dot-mod-mode))
 
@@ -5100,7 +5100,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                              with-tree-sitter
                              with-js2-minor
                              with-ts-js2-minor))
-      ;; Use PEL mode selector
+      ;; Use PEL mode dispatcher
       (add-to-list 'auto-mode-alist (cons pel--js-files-regexp 'pel-js-mode))
       (pel-autoload-file js for: js-mode js-ts-mode)
       (pel-eval-after-load js
@@ -5190,7 +5190,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-ensure-package-elpa lua-mode from: melpa)
     ;;    - The lua-ts-mode is built-in Emacs.
 
-    ;; 2- Associate files with Lua mode selector
+    ;; 2- Associate files with Lua mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.lua\\'" . pel-lua-mode))
 
     ;; 3- Speedbar support for Lua
@@ -5277,7 +5277,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;;    - Always install nim-mode when Nim is used.
     (pel-ensure-package-elpa nim-mode from: melpa)
 
-    ;; 2- Associate files with Nim mode selector
+    ;; 2- Associate files with Nim mode dispatcher
     ;;   Not needed : there 's no nim-ts-mode yet.
 
     ;; 3- Speedbar support for Nim
@@ -5830,7 +5830,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;; 1- Install required packages for Ruby
     ;;    - ruby-mode and ruby-ts-mode are built-in Emacs
 
-    ;; 2- Associate files with Ruby mode selector
+    ;; 2- Associate files with Ruby mode dispatcher
     (add-to-list 'auto-mode-alist
                  (cons (purecopy (concat "\\(?:\\.\\(?:"
                                          "rbw?\\|ru\\|rake\\|thor\\|axlsx"
@@ -5898,7 +5898,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (pel-eval-after-load flycheck
         (pel-soft-require-or-warn flycheck-rust)))
 
-    ;; 2- Associate files with Rust major mode selector
+    ;; 2- Associate files with Rust major mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.rs\\'" . pel-rust-mode))
 
     ;; 3- Speedbar support for Rust
@@ -6362,7 +6362,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     ;; 1- Install required packages for Tcl
     ;;   Not needed: tcl-mode is built in Emacs
 
-    ;; 2- Associate files with Tcl mode selector
+    ;; 2- Associate files with Tcl mode dispatcher
     ;;   Not needed : there 's no tcl-ts-mode yet.
 
     ;; 3- Speedbar support for Tcl
@@ -6543,7 +6543,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (when pel-use-tree-sitter
       (pel-ensure-package-elpa zig-ts-mode from: melpa))
 
-    ;; 2- Associate files with Zig mode selector
+    ;; 2- Associate files with Zig mode dispatcher
     (add-to-list 'auto-mode-alist '("\\.zig\\'" . pel-zig-mode))
     (add-to-list 'auto-mode-alist '("\\.zon\\'" . pel-zig-mode))
 
