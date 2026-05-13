@@ -38,6 +38,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Renamed *pel-open-file-at-point-dir* user-option to *pel-open-file-at-point-dir-home* and *pel-set-open-at-point-dir* to *pel-set-open-at-point-dir-home*
   - Improved *pel-cc-mode*, the C/C++/Objective-C major mode dispatcher: it now supports more language keywords, properly ignore keywords inside comments,
     and support the PEL file type header comment in the first line of files.
+- Removed the *pel-indent-with-tabs-mode* minor mode and all surrounding logic.
+  Instead PEL now explicitly supports the tbindent-mode provided as a separate package, available on MELPA,
+  when the *pel-use-tbindent*  user-option is set to t.
 - Refactored the mode specific file finding mechanism.  Removed the file pel-cc-find.el, integrated some of its logic inside pel-ffind.el
   - It used to only support files managed by the cc-mode like AWK, C, C++ but
     is no longer the case: it now supports most programming language modes and has a global behaviour fallback.
