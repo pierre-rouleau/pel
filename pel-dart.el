@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, November  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-13 22:41:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-13 10:48:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -138,7 +138,6 @@ and required by `pel-use-dart'."
 It removes what was entered when `dart-ts-mode' loads to ensure that the
 `pel-dart-mode' mode dispatcher remains used."
   ;; There are several file extensions for Dart and the dart-ts-mode
-  ;; adds several entries (entries for .dart, .zon).
   ;; Delete them all from auto-mode-alist.
   (setq auto-mode-alist
         (rassq-delete-all 'dart-ts-mode auto-mode-alist)))

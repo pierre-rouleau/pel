@@ -2727,13 +2727,18 @@ can't bind negative-argument to C-_ and M-_"
   ;; Associate .h file with C/C++/Objective mode dispatcher because the .h
   ;; files are used in C, C++ and Objective-C.  The dispatcher function
   ;; detects the language from the file content and activates the appropriate
-  ;; major mode.
+  ;; major mode. remove the old C/C++ dispatcher and use the C/C++/Objective-C
+  ;; dispatcher PEL provides.
+  ;;
+  ;; Note that Pike also use .h files, but those files contain standard C or
+  ;; C++ code.  Therefore it is important to run this code if only Pike is
+  ;; activated.
+  (setq auto-mode-alist (delete '("\\.h\\'" . c-or-c++-mode) auto-mode-alist))
   (add-to-list 'auto-mode-alist '("\\.h\\'" . pel-cc-mode))
 
   (when pel-use-call-graph
     (pel-ensure-package-elpa call-graph from: melpa)
-    (pel-autoload-file call-graph for:
-                       call-graph)))
+    (pel-autoload-file call-graph for: call-graph)))
 
 ;; ---------------------------------------------------------------------------
 ;;** All CC Mode keys for AWK, C, C++, D, Objective-C & Pike
@@ -3235,10 +3240,17 @@ MODE must be a symbol."
 ;;** C Programming Language Support
 ;;   ------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c``
-;; Note: C editing is always available in Emacs via the CC Mode and the c-mode
+;;
+;; Notes:
+;; C editing is always available in Emacs via the CC Mode and the c-mode
 ;; that is part of Emacs.  All autoloading is already set by Emacs.  The only
 ;; extra code needed is to add the specialized menu and then activate it,
 ;; along with the specialized CC Mode minor modes via the c-mode-hook.
+;;
+;; For C, no mode fixer is required: using the `c-ts-mode' does not prepend
+;; a new entry inside `auto-mode-alist' to always associate C files with
+;; `c-ts-mode'.
+;;
 (when pel-use-c
   (pel-setup-major-mode c :same-for-ts
     features: (cc-mode c-ts-mode)
@@ -3346,11 +3358,18 @@ MODE must be a symbol."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** C++ Programming Language Support
 ;;   --------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C`` :
-;; Note: C++ editing is always available in Emacs via the CC Mode and the
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C``
+;;
+;; Notes:
+;; C++ editing is always available in Emacs via the CC Mode and the
 ;; c++-mode that is part of Emacs.  All autoloading is already set by Emacs.
 ;; The only extra code needed is to add the specialized menu and then activate
 ;; it, along with the specialized CC Mode minor modes via the c++-mode-hook.
+;;
+;; For C++, no mode fixer is required: using the `c++-ts-mode' does not
+;; prepend a new entry inside `auto-mode-alist' to always associate C++ files
+;; with `c++-ts-mode'.
+;;
 (when pel-use-c++
   (pel-setup-major-mode c++ :same-for-ts
     features: (cc-mode c++-ts-mode)
