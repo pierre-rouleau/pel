@@ -2357,6 +2357,28 @@ The MINOR-MODES argument must be an unquoted symbol."
   `(pel--check-minor-modes-in (quote ,minor-modes) ,minor-modes))
 
 
+(defun pel--activate-minor-mode (minor-mode)
+  "Activate a MINOR-MODE."
+  ;; First check if the function is available.
+  ;; fboundp for an autoloaded function not yet loaded returns t.
+  (if (not (fboundp minor-mode))
+      (display-warning
+       'pel-invalid-mode-symbol
+       (format "\
+Cannot activate minor mode %S: function is not defined.
+Check the customization of your `pel-%s-activates-minor-modes'
+user-option."
+               minor-mode (pel-file-type-for major-mode)))
+  ;; Standard minor-mode toggles accept an optional numeric argument where
+  ;; a positive value means "enable" (arity MIN=0, MAX≥1 or MAX=many).
+  ;; A few commands such as `flyspell-prog-mode' take no arguments at all
+  ;; (arity 0 . 0).  Use `func-arity' to dispatch correctly.
+  (let ((max-args (cdr (func-arity minor-mode))))
+    (if (or (eq max-args 'many)
+            (> max-args 0))
+        (funcall minor-mode 1)
+      (funcall minor-mode)))))
+
 (defun pel-turn-on-global-minor-modes-in (minor-modes)
   "Turn all *global* MINOR-MODES on for all buffers.
 
@@ -2380,18 +2402,6 @@ local minor mode is specified instead of a global minor mode."
         minor-mode (symbol-name minor-modes))
        :warning))
     (pel--activate-minor-mode minor-mode)))
-
-(defun pel--activate-minor-mode (minor-mode)
-  "Activate a MINOR-MODE."
-  ;; Standard minor-mode toggles accept an optional numeric argument where
-  ;; a positive value means "enable" (arity MIN=0, MAX≥1 or MAX=many).
-  ;; A few commands such as `flyspell-prog-mode' take no arguments at all
-  ;; (arity 0 . 0).  Use `func-arity' to dispatch correctly.
-  (let ((max-args (cdr (func-arity minor-mode))))
-    (if (or (eq max-args 'many)
-            (> max-args 0))
-        (funcall minor-mode 1)
-      (funcall minor-mode))))
 
 (defun pel-turn-on-local-minor-modes-in (minor-modes)
   "Turn all *local* MINOR-MODES on for the buffer\\='s major mode.

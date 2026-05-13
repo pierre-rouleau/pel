@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, November  4 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-13 10:48:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-13 15:01:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -37,7 +37,7 @@
 ;;   - Forces `fill-column' to 80
 ;;   - Only support // style comment, even though /* */ style is supported.
 ;;
-;; * `indent-tabs-mode':
+;; * `dart-ts-mode':
 ;;   - Indentation width is controlled by `dart-ts-mode-indent-offset'
 ;;     user-option which defaults to 2.
 ;;
@@ -168,7 +168,11 @@ Return a list of generic symbols described by this function."
   ;; `pel-mode-or-ts-mode-indent-control-vars' to identify
   ;; `dart-ts-indent-offset'.  Therefore no user-option value/link is
   ;; inserted here, just a note that only Tree-Sitter mode variable is used.
-  (insert "\nDart has no classic mode.")
+  (insert "\nDart style imposes a 2-space indentation scheme.
+If you have a problem with small indentation you might want to
+use tbindent-mode to convert your buffer to wider tab-based
+indentation while keeping 2-space indentation in the Dart files.
+Install tbindent for that.  It is available on MELPA.\n")
   ;; Return the list of generic symbols this function inserts.
   ;; These symbols are later used to identify the information already
   ;; inserted.

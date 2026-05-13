@@ -8143,7 +8143,7 @@ Do not enter lambda expressions."
   "Indentation width rendering of hard tabs `pel-indent-with-tabs-mode'.
 - If nil, the Dart file is edited with the indentation scheme selected
   by `pel-dart-indent-width' and `pel-dart-tab-width'.
-- If a number is selected it, the `pel-indent-with-tabs-mode' is automatically
+- If a number is selected, the `pel-indent-with-tabs-mode' is automatically
   enabled for Dart files with the visual indentation width specified by this
   value.
   - Selecting this also automatically adds `pel-indent-with-tabs-mode'
@@ -11297,7 +11297,7 @@ Do not enter lambda expressions."
   "Indentation width rendering of hard tabs `pel-indent-with-tabs-mode'.
 - If nil, the Gleam file is edited with the indentation scheme selected
   by `pel-gleam-indent-width' and `pel-gleam-tab-width'.
-- If a number is selected it, the `pel-indent-with-tabs-mode' is automatically
+- If a number is selected, the `pel-indent-with-tabs-mode' is automatically
   enabled for Gleam files with the visual indentation width specified by this
   value.
   - Selecting this also automatically adds `pel-indent-with-tabs-mode'
@@ -14816,7 +14816,7 @@ Do not enter lambda expressions."
   "Indentation width rendering of hard tabs `pel-indent-with-tabs-mode'.
 - If nil, the Cram file is edited with the indentation scheme selected
   by `pel-cram-indent-width' and `pel-cram-tab-width'.
-- If a number is selected it, the `pel-indent-with-tabs-mode' is automatically
+- If a number is selected, the `pel-indent-with-tabs-mode' is automatically
   enabled for Cram files with the visual indentation width specified by this
   value.
   - Selecting this also automatically adds `pel-indent-with-tabs-mode'
