@@ -4717,7 +4717,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     at-init:
     ;; 1- Fortran 90 support is built-in.
     ;;    No installation required for classic mode.
-    ;; 2- Associate files with Fortran mode dispatcher
+    ;; 2- Associate files with Fortran-90 mode dispatcher
     ;;    Already done in Emacs.
     ;; 3- Speedbar support for Fortran-90
     (when pel-use-speedbar
@@ -5100,7 +5100,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                              with-tree-sitter
                              with-js2-minor
                              with-ts-js2-minor))
-      ;; Use PEL mode dispatcher
+      ;; Associate files with JavaScript mode dispatcher
       (add-to-list 'auto-mode-alist (cons pel--js-files-regexp 'pel-js-mode))
       (pel-autoload-file js for: js-mode js-ts-mode)
       (pel-eval-after-load js
