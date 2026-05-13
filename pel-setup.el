@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-03 13:23:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-13 18:01:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -707,6 +707,9 @@ graphic mode."
 (defun pel-generate-autoload-file-for (dir)
   "Prepare (compile + autoload) all files in directory DIR.
 Return the complete name of the generated autoload file."
+  ;; [:todo 2026-05-13, by Pierre Rouleau: Replace the current call pattern
+  ;; with a direct call to loaddefs-generate on Emacs 29+, overriding per-file
+  ;; redirects by passing the output file explicitly.]
   (if pel-emacs-29-or-later-p
       (require 'loaddefs-gen)
     (require 'autoload))
