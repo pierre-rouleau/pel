@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-13 22:33:50 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-14 08:20:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -719,7 +719,13 @@ Return the complete name of the generated autoload file."
               (progn
                 (when (fboundp 'loaddefs-generate) ; Prevent warnings when compiling on Emacs < 29.
                   (with-no-warnings                ; where loaddefs-generate does not exist
-                    (loaddefs-generate (list dir) output-file)))
+                    (loaddefs-generate (list dir)
+                                       output-file
+                                       nil
+                                       (concat "(add-to-list 'load-path"
+                                               " (file-name-directory"
+                                               " (or load-file-name"
+                                               "      buffer-file-name)))\n"))))
                 (setq generated-fname output-file)
                 (when (get-buffer "pel-bundle-autoloads.el")
                   (kill-buffer "pel-bundle-autoloads.el")))
@@ -1312,10 +1318,6 @@ Failed fast startup setup for %s after %d of %d steps: %s
   ;; Validate Emacs initialization file -- issue error on any problem
   (pel-setup-validate-init-files)
   ;; When Emacs init is OK, check further
-  (when pel-emacs-29-or-later-p
-    (unless (yes-or-no-p "Experimental, not fully tested.\
- Save your ~/.emacs.d. Proceed? ")
-      (user-error "PEL Fast startup is not yet working in Emacs >= 29!")))
   (cond
    ;;
    ((eq (pel-startup-mode) 'fast)
@@ -1375,10 +1377,6 @@ is only one or when its for the terminal (TTY) mode."
 (defun pel-setup-normal ()
   "Restore normal PEL/Emacs operation mode."
   (interactive)
-  (when pel-emacs-29-or-later-p
-    (unless (yes-or-no-p "Experimental, not fully tested.\
- Save your ~/.emacs.d. Proceed? ")
-      (user-error "PEL Fast startup restoration is not yet working in Emacs >= 29!")))
   (pel-setup-validate-init-files)
   (cond
    ((eq (pel-startup-mode) 'normal)
