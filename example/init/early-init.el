@@ -136,6 +136,10 @@ defined in pel--options.el")
 (defconst pel-early-init-suppress-file-name-handler-p nil
   "When t, disable `file-name-handler-alist' during startup and restore it after.")
 
+(defconst pel-early-init-disable-ui-elements-p nil
+  "When t, suppress toolbar/menu-bar/scrollbar rendering early in graphics mode.
+Has no effect when Emacs runs in terminal/TTY mode.")
+
 ;; ---------------------------------------------------------------------------
 ;; The code below this line does not require editing.
 ;; ==================================================
@@ -148,6 +152,12 @@ defined in pel--options.el")
        (or (string-equal (getenv "PEL_EMACS_IN_GRAPHICS") "1")
            (not (getenv pel-early-init-shell-detection-envvar))))
   "Force independent graphics mode customization.")
+
+(defconst pel--ei-in-graphics-p
+  (or (string-equal (getenv "PEL_EMACS_IN_GRAPHICS") "1")
+      (not (getenv pel-early-init-shell-detection-envvar)))
+  "Non-nil when early-init.el detects that Emacs is running in graphics mode.
+Uses the same heuristic as `pel-force-graphic-specific-custom-file-p'.")
 
 ;; ---------------------------------------------------------------------------
 ;; GC Threshold Boost During Startup
@@ -204,6 +214,29 @@ defined in pel--options.el")
             (lambda ()
               (setq file-name-handler-alist
                     pel--startup-file-name-handler-alist))))
+
+;; ---------------------------------------------------------------------------
+;; Disable UI Elements Early (Graphics Mode Only)
+;; ===============================================
+;; Tool bars, menu bars, and scroll bars are initialised by the C layer very
+;; early in the Emacs startup sequence.  If they are disabled later in
+;; init.el, Emacs has already rendered them — wasting time — and then must
+;; tear them down.  Declaring them absent via `default-frame-alist' in
+;; early-init.el prevents that render-then-teardown cycle entirely.
+;;
+;; `frame-inhibit-implied-resize' stops the extra frame geometry recalculation
+;; that would otherwise happen when those elements are subsequently removed.
+;;
+;; Since `display-graphic-p' is not available in early-init.el, graphics mode
+;; is detected via `pel--ei-in-graphics-p' using the same environment-variable
+;; heuristic used for `pel-force-graphic-specific-custom-file-p'.
+
+(when (and pel-early-init-disable-ui-elements-p
+           pel--ei-in-graphics-p)
+  (push '(tool-bar-lines . 0)   default-frame-alist)
+  (push '(menu-bar-lines . 0)   default-frame-alist)
+  (push '(vertical-scroll-bars) default-frame-alist)
+  (setq frame-inhibit-implied-resize t))
 
 ;; ---------------------------------------------------------------------------
 
