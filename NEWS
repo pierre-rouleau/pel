@@ -139,8 +139,15 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - 𝕻𝔩 - Pike: describe file extensions used by Pike.
   - Markup files:
     - Ɱ reStructuredText: show that code now uses ~<f12><f4> a~ for adornment setup and ~<f12> <f4> a ?~ to display info about adornment style.
-- Fixes:
+- Fast Startup improvements:
   - Fix: fast startup mode now works on Emacs 29 and later.
+  - Fix: the elpa directory identification used for dual setting (terminal and graphics) and fast startup in for graphics.
+  - Improve startup speed in normal mode and fast startup mode by using several techniques in the early-init.el file.  A copy of that
+    file is located inside the example/init directory.  The new techniques must currently be activated manually by setting the following defconst to t:
+    - *pel-early-init-support-gc-boost-p*
+    - *pel-early-init-suppress-file-name-handler-p*
+    - *pel-early-init-disable-ui-elements-p*
+- Fixes:
   - Fix: key binding for Smalltalk that previously was hijacked by Swift's.
   - Regression fix: the ~<f12> <f3>~ key is available again in the C, C++ and Objective-C buffers.
   - Regression fix: when Bison support is requested via *pel-use-bison* support for C is required but the code

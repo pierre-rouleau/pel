@@ -241,16 +241,14 @@ Uses the same heuristic as `pel-force-graphic-specific-custom-file-p'.")
 ;; ---------------------------------------------------------------------------
 
 (defun pel--graphic-file-name (fname)
-  "Appends \"-graphics\" to the end of a .el, .elc or extension less FNAME.
-Also expands to the file true name, replacing symlinks by what they point to."
+  "Appends \"-graphics\" to the end of a .el, .elc or extension less FNAME."
   ;; use only functions implemented in C
   (let ((ext (substring fname -3)))
-    (file-truename
-     (cond
-      ((string-match "-graphics" fname) fname)
-      ((string-equal ext ".el") (concat (substring fname 0 -3) "-graphics.el"))
-      ((string-equal ext "elc") (concat (substring fname 0 -4) "-graphics.elc"))
-      (t                        (concat fname "-graphics"))))))
+    (cond
+     ((string-match "-graphics" fname) fname)
+     ((string-equal ext ".el") (concat (substring fname 0 -3) "-graphics.el"))
+     ((string-equal ext "elc") (concat (substring fname 0 -4) "-graphics.elc"))
+     (t (concat fname "-graphics")))))
 
 ;; If Emacs is running in Graphics mode with dual environment (independent
 ;; customization and Elpa packages for terminal/TTY and graphics mode), then

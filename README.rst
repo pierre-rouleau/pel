@@ -248,18 +248,29 @@ Again any feedback is welcome. Thanks!
           # packages activated   : 41
           # packages selected    : 190
 
+    - On a 2023 macStudio running Emacs 30.2 in terminal mode with PEL 0.4.2
+      under macOS, with package quickstart enabled, it shows the following::
+
+          Emacs 30.2.50 startup time: 0.365716 seconds   (in fast mode, with package quickstart, with native compilation, in terminal mode.)
+          # loaded files         : 476
+          # load-path length     : 72
+          # features             : 499
+          # package-alist        : 41
+          # packages activated   : 41
+          # packages selected    : 190
+
     - Compare the  exact same setup, with the ability to run the exact same
       commands,  when Emacs is running in normal mode where
       PEL did not create a bundle of several packages to reduce the number of
       entries in Emacs load path::
 
-         Emacs 30.2.50 startup time: 1.275756 seconds   (in normal mode, without package quickstart, with native compilation, in terminal mode.)
-         # loaded files         : 847
-         # load-path length     : 332
-         # features             : 833
-         # package-alist        : 303
-         # packages activated   : 303
-         # packages selected    : 190
+          Emacs 30.2.50 startup time: 1.275756 seconds   (in normal mode, without package quickstart, with native compilation, in terminal mode.)
+          # loaded files         : 847
+          # load-path length     : 332
+          # features             : 833
+          # package-alist        : 303
+          # packages activated   : 303
+          # packages selected    : 190
 
     - On a 2023 macStudio running Emacs 30.2 in graphics mode with PEL 0.4.2
       under macOS::
@@ -285,13 +296,13 @@ Again any feedback is welcome. Thanks!
     - On a 2014 imac running Emacs 28.2 in terminal mode with PEL under Linux
       Ubuntu 16 running in a VM under macOS::
 
-         Emacs 28.2 startup time: 0.126206 seconds   (in fast mode, without package quickstart, without native compilation, in terminal mode.)
-         # loaded files         : 319
-         # load-path length     : 37
-         # features             : 299
-         # package-alist        : 9
-         # packages activated   : 9
-         # packages selected    : 152
+          Emacs 28.2 startup time: 0.126206 seconds   (in fast mode, without package quickstart, without native compilation, in terminal mode.)
+          # loaded files         : 319
+          # load-path length     : 37
+          # features             : 299
+          # package-alist        : 9
+          # packages activated   : 9
+          # packages selected    : 152
 
 - PEL supports Emacs 26 and later.
 
