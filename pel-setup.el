@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-13 22:21:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-13 22:33:50 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -717,7 +717,9 @@ Return the complete name of the generated autoload file."
           (require 'loaddefs-gen)
           (condition-case-unless-debug err
               (progn
-                (loaddefs-generate (list dir) output-file)
+                (when (fboundp 'loaddefs-generate) ; Prevent warnings when compiling on Emacs < 29.
+                  (with-no-warnings                ; where loaddefs-generate does not exist
+                    (loaddefs-generate (list dir) output-file)))
                 (setq generated-fname output-file)
                 (when (get-buffer "pel-bundle-autoloads.el")
                   (kill-buffer "pel-bundle-autoloads.el")))
