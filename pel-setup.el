@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-03 13:23:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-14 08:20:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -707,24 +707,26 @@ graphic mode."
 (defun pel-generate-autoload-file-for (dir)
   "Prepare (compile + autoload) all files in directory DIR.
 Return the complete name of the generated autoload file."
-  (if pel-emacs-29-or-later-p
-      (require 'loaddefs-gen)
-    (require 'autoload))
-  (let ((generated-fname nil))
-    (if (boundp 'generated-autoload-file)
-        (let ((original-generated-autoload-file  generated-autoload-file))
-          (setq generated-autoload-file (expand-file-name
-                                         "pel-bundle-autoloads.el"
-                                         dir))
+  (let ((generated-fname nil)
+        (output-file (expand-file-name "pel-bundle-autoloads.el" dir)))
+    (if pel-emacs-29-or-later-p
+        ;; Emacs 29+: call loaddefs-generate directly, passing the output file
+        ;; explicitly so that per-file ;;;###autoload cookie redirects are
+        ;; overridden and all autoloads land in our target file.
+        (progn
+          (require 'loaddefs-gen)
           (condition-case-unless-debug err
               (progn
-                (if (and pel-emacs-28-or-later-p
-                         (fboundp 'make-directory-autoloads))
-                    (make-directory-autoloads dir generated-autoload-file)
-                  (if (fboundp 'update-directory-autoloads)
-                      (update-directory-autoloads dir)
-                    (error "update-directory-autoloads not bound!")))
-                (setq generated-fname generated-autoload-file)
+                (when (fboundp 'loaddefs-generate) ; Prevent warnings when compiling on Emacs < 29.
+                  (with-no-warnings                ; where loaddefs-generate does not exist
+                    (loaddefs-generate (list dir)
+                                       output-file
+                                       nil
+                                       (concat "(add-to-list 'load-path"
+                                               " (file-name-directory"
+                                               " (or load-file-name"
+                                               "      buffer-file-name)))\n"))))
+                (setq generated-fname output-file)
                 (when (get-buffer "pel-bundle-autoloads.el")
                   (kill-buffer "pel-bundle-autoloads.el")))
             (error
@@ -732,9 +734,31 @@ Return the complete name of the generated autoload file."
               'pel-generate-autoload-file-for
               (format "Failed generating the %s/pel-bundle-autoloads.el: %s"
                       dir err)
-              :error)))
-          (setq generated-autoload-file original-generated-autoload-file))
-      (error "The autoload.el variable `generated-autoload-file' is not bound!"))
+              :error))))
+      ;; Emacs < 29: use the generated-autoload-file dynamic variable approach.
+      (require 'autoload)
+      (if (boundp 'generated-autoload-file)
+          (let ((original-generated-autoload-file generated-autoload-file))
+            (setq generated-autoload-file output-file)
+            (condition-case-unless-debug err
+                (progn
+                  (if (and pel-emacs-28-or-later-p
+                           (fboundp 'make-directory-autoloads))
+                      (make-directory-autoloads dir generated-autoload-file)
+                    (if (fboundp 'update-directory-autoloads)
+                        (update-directory-autoloads dir)
+                      (error "update-directory-autoloads not bound!")))
+                  (setq generated-fname generated-autoload-file)
+                  (when (get-buffer "pel-bundle-autoloads.el")
+                    (kill-buffer "pel-bundle-autoloads.el")))
+              (error
+               (display-warning
+                'pel-generate-autoload-file-for
+                (format "Failed generating the %s/pel-bundle-autoloads.el: %s"
+                        dir err)
+                :error)))
+            (setq generated-autoload-file original-generated-autoload-file))
+        (error "The autoload.el variable `generated-autoload-file' is not bound!")))
     generated-fname))
 
 
@@ -1294,8 +1318,6 @@ Failed fast startup setup for %s after %d of %d steps: %s
   ;; Validate Emacs initialization file -- issue error on any problem
   (pel-setup-validate-init-files)
   ;; When Emacs init is OK, check further
-  (when pel-emacs-29-or-later-p
-    (user-error "PEL Fast startup is not yet working in Emacs >= 29!"))
   (cond
    ;;
    ((eq (pel-startup-mode) 'fast)
@@ -1355,8 +1377,6 @@ is only one or when its for the terminal (TTY) mode."
 (defun pel-setup-normal ()
   "Restore normal PEL/Emacs operation mode."
   (interactive)
-  (when pel-emacs-29-or-later-p
-    (user-error "PEL Fast startup restoration is not yet working in Emacs >= 29!"))
   (pel-setup-validate-init-files)
   (cond
    ((eq (pel-startup-mode) 'normal)
