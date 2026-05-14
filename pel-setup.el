@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-14 15:17:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-14 16:37:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1272,13 +1272,13 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
             (when (and pel-emacs-28-or-later-p
                        (fboundp 'native-compile-async)
                        (featurep 'native-compile))
-              (message "Native compilation of pel-bundle in %s (async)..." new-bundle-dp)
+              (message "Native compilation of pel-bundle in %s (async)..."
+                       new-bundle-dp)
+              ;; Native compile all files in the pel-bundle but do not load
+              ;; them.  It's a recursive operation to go through the entire
+              ;; directory tree.
               (native-compile-async (list (expand-file-name new-bundle-dp))
-                                    'recursively
-                                    :error-callback
-                                    (lambda (err)
-                                      (message "native-compile error: %S"
-                                               err)))
+                                    'recursively)
               (pel+= step-count 1)))    ; STEP 16
           ;;
           ;; If there is a elpa symlink remove it and create a new one
