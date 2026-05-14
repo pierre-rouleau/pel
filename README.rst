@@ -248,6 +248,19 @@ Again any feedback is welcome. Thanks!
           # packages activated   : 41
           # packages selected    : 190
 
+    - Compare the  exact same setup, with the ability to run the exact same
+      commands,  when Emacs is running in normal mode where
+      PEL did not create a bundle of several packages to reduce the number of
+      entries in Emacs load path::
+
+         Emacs 30.2.50 startup time: 1.275756 seconds   (in normal mode, without package quickstart, with native compilation, in terminal mode.)
+         # loaded files         : 847
+         # load-path length     : 332
+         # features             : 833
+         # package-alist        : 303
+         # packages activated   : 303
+         # packages selected    : 190
+
     - On a 2023 macStudio running Emacs 30.2 in graphics mode with PEL 0.4.2
       under macOS::
 
