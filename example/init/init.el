@@ -50,6 +50,7 @@
 ;;   - OPTION G: Activate commands that may be confusing for new Emacs users.
 ;;
 ;;   Locate these manually edited variable by searching for "OPTION".
+
 ;; ---------------------------------------------------------------------------
 ;;
 ;; Section 0: PEL Edited Variable Definitions
@@ -158,6 +159,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
 
 ;; Section 2: Control package.el and garbage collection
 ;; ====================================================
+;;
 ;; To speed up Emacs init, prevent checking for file handling association and
 ;; prevent garbage collection.
 ;;
@@ -500,6 +502,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
                          "emacs-customization-graphics.el"
                        "emacs-customization.el")
                      user-emacs-directory))
+
   ;; Attempt to load the selected customization file.  If not found, create an
   ;; empty one to allow Emacs to start, but display a warning message
   ;; describing the error.

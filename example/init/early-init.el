@@ -130,11 +130,21 @@ If you want to use some other file, please modify the initialized value.")
 The value should be the same as `pel-shell-detection-envvar' user-variable
 defined in pel--options.el")
 
+(defconst pel-early-init-support-gc-boost-p nil
+  "When t, raise GC threshold during startup and restore it afterwards.")
+
+(defconst pel-early-init-suppress-file-name-handler-p nil
+  "When t, disable `file-name-handler-alist' during startup and restore it after.")
+
+(defconst pel-early-init-disable-ui-elements-p nil
+  "When t, suppress toolbar/menu-bar/scrollbar rendering early in graphics mode.
+Has no effect when Emacs runs in terminal/TTY mode.")
+
 ;; ---------------------------------------------------------------------------
 ;; The code below this line does not require editing.
 ;; ==================================================
 
-(defconst pel-early-init-file-version "0.2"
+(defconst pel-early-init-file-version "0.3"
   "Version of PEL early-init.el. Verified by pel-setup logic. Do NOT change.")
 
 (defconst pel-force-graphic-specific-custom-file-p
@@ -143,19 +153,102 @@ defined in pel--options.el")
            (not (getenv pel-early-init-shell-detection-envvar))))
   "Force independent graphics mode customization.")
 
-;; ----
+(defconst pel--ei-in-graphics-p
+  (or (string-equal (getenv "PEL_EMACS_IN_GRAPHICS") "1")
+      (not (getenv pel-early-init-shell-detection-envvar)))
+  "Non-nil when early-init.el detects that Emacs is running in graphics mode.
+Uses the same heuristic as `pel-force-graphic-specific-custom-file-p'.")
+
+;; ---------------------------------------------------------------------------
+;; GC Threshold Boost During Startup
+;; ==================================
+;; Temporarily raise the GC threshold so Emacs does not pause for garbage
+;; collection while loading the hundreds of Lisp files that make up the
+;; initial load.
+;; The original values are restored via `emacs-startup-hook' so that normal
+;; interactive GC behaviour is not affected after initialization completes.
+;;
+;; This block must appear before any package activation or fast-startup work
+;; to ensure the boost is in effect for the entire startup sequence.
+;;
+;; The saved values (pel--ei-gc-cons-threshold-saved /
+;; pel--ei-gc-cons-percentage-saved) capture whatever the Emacs C layer
+;; initialised those variables to, so the restore is always correct even
+;; across Emacs versions that may ship different defaults.
+
+(when pel-early-init-support-gc-boost-p
+  (defvar pel--ei-gc-cons-threshold-saved gc-cons-threshold
+    "GC cons threshold saved before startup boost; restored after init.")
+  (defvar pel--ei-gc-cons-percentage-saved gc-cons-percentage
+    "GC cons percentage saved before startup boost; restored after init.")
+  (setq gc-cons-threshold most-positive-fixnum
+        gc-cons-percentage 0.6)
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (setq gc-cons-threshold pel--ei-gc-cons-threshold-saved
+                    gc-cons-percentage pel--ei-gc-cons-percentage-saved))))
+
+;; ---------------------------------------------------------------------------
+;; Suppress ``file-name-handler-alist`` During Startup
+;; ===================================================
+;;
+;; Every `load'/`require' call consults `file-name-handler-alist' to check for
+;; special file handlers (remote files, .gz compression, TRAMP, etc.).
+;; Disabling it during startup reduces overhead; it should be restored
+;; afterwards.  With a large number of files loaded at startup, the savings
+;; are meaningful.
+;;
+;; This is safe because PEL loads only local, non-compressed .el/.elc files
+;; from the bundle or elpa directories during startup; no remote or
+;; compressed file access is needed at that point.
+;;
+;; This block is placed before any package activation and fast-startup code
+;; so that the handler suppression is in effect for the entire startup
+;; sequence.
+
+(when pel-early-init-suppress-file-name-handler-p
+  (defvar pel--startup-file-name-handler-alist file-name-handler-alist)
+  (setq file-name-handler-alist nil)
+
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (setq file-name-handler-alist
+                    pel--startup-file-name-handler-alist))))
+
+;; ---------------------------------------------------------------------------
+;; Disable UI Elements Early (Graphics Mode Only)
+;; ===============================================
+;; Tool bars, menu bars, and scroll bars are initialised by the C layer very
+;; early in the Emacs startup sequence.  If they are disabled later in
+;; init.el, Emacs has already rendered them — wasting time — and then must
+;; tear them down.  Declaring them absent via `default-frame-alist' in
+;; early-init.el prevents that render-then-teardown cycle entirely.
+;;
+;; `frame-inhibit-implied-resize' stops the extra frame geometry recalculation
+;; that would otherwise happen when those elements are subsequently removed.
+;;
+;; Since `display-graphic-p' is not available in early-init.el, graphics mode
+;; is detected via `pel--ei-in-graphics-p' using the same environment-variable
+;; heuristic used for `pel-force-graphic-specific-custom-file-p'.
+
+(when (and pel-early-init-disable-ui-elements-p
+           pel--ei-in-graphics-p)
+  (push '(tool-bar-lines . 0)   default-frame-alist)
+  (push '(menu-bar-lines . 0)   default-frame-alist)
+  (push '(vertical-scroll-bars) default-frame-alist)
+  (setq frame-inhibit-implied-resize t))
+
+;; ---------------------------------------------------------------------------
 
 (defun pel--graphic-file-name (fname)
-  "Appends \"-graphics\" to the end of a .el, .elc or extension less FNAME.
-Also expands to the file true name, replacing symlinks by what they point to."
+  "Appends \"-graphics\" to the end of a .el, .elc or extension less FNAME."
   ;; use only functions implemented in C
   (let ((ext (substring fname -3)))
-    (file-truename
-     (cond
-      ((string-match "-graphics" fname) fname)
-      ((string-equal ext ".el") (concat (substring fname 0 -3) "-graphics.el"))
-      ((string-equal ext "elc") (concat (substring fname 0 -4) "-graphics.elc"))
-      (t                        (concat fname "-graphics"))))))
+    (cond
+     ((string-match "-graphics" fname) fname)
+     ((string-equal ext ".el") (concat (substring fname 0 -3) "-graphics.el"))
+     ((string-equal ext "elc") (concat (substring fname 0 -4) "-graphics.elc"))
+     (t (concat fname "-graphics")))))
 
 ;; If Emacs is running in Graphics mode with dual environment (independent
 ;; customization and Elpa packages for terminal/TTY and graphics mode), then
@@ -220,10 +313,16 @@ For debugging and to quiet byte-compiler warning.")
 (let ((fast-startup-setup-fname (expand-file-name "pel-fast-startup-init.el"
                                                   user-emacs-directory)))
   (when (file-exists-p fast-startup-setup-fname)
-    (load (file-name-sans-extension fast-startup-setup-fname) :noerror :nomessage)
-    (pel-fast-startup-init pel-force-graphic-specific-custom-file-p
-                           pel-early-init-support-package-quickstart-p)
-    ;; Remember Emacs is running in PEL's fast startup mode.
-    (setq pel-running-in-fast-startup-p t)))
+    ;; Attempt to load the 'pel-fast-startup-init.el' file that was built
+    ;; dynamically by PEL.  Identify running in fast startup mode only on
+    ;; success.
+    (when (load (file-name-sans-extension fast-startup-setup-fname)
+                :noerror :nomessage)
+      (declare-function pel-fast-startup-init "pel-fast-startup-init"
+                        (&optional force-graphics using-package-quickstart))
+      (pel-fast-startup-init pel-force-graphic-specific-custom-file-p
+                             pel-early-init-support-package-quickstart-p)
+      ;; Remember Emacs is running in PEL's fast startup mode.
+      (setq pel-running-in-fast-startup-p t))))
 
 ;;; --------------------------------------------------------------------------

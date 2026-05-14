@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-11 18:45:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-14 17:12:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -195,13 +195,13 @@ The DIRSPEC is the data structure returned by the function
                               ; ... with a name that does not start with '.'
                (not (eq (string-to-char (setq dirname (car dirspec)))
                         ?.))
-               ;; ...and is not the archives directory.
-               (not (member dirname '("archives" "gnupg"))))
+               ;; ...and is not one of the following directory names
+               (not (member dirname '("archives" "gnupg" "elpa-old"))))
       dirname)))
 
 (defun pel-elpa-package-directories (elpa-dirpath)
   "Return a list of package directories inside the ELPA-DIRPATH directory.
-Each entry in the list is an elpa-compliant directory name,
+Each entry in the returned list is an elpa-compliant directory name,
 something like \"ztree-20250209.1933\"."
   (mapcar #'car
           (seq-filter (function pel-elpa-package-dirspec-p)

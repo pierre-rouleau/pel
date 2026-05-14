@@ -189,23 +189,29 @@ Again any feedback is welcome. Thanks!
 - With PEL, Emacs will start faster than with several other systems; PEL
   Emacs initialization is heavily optimized to auto-load and defer execution
   as much as possible.  Emacs startup time under a second for a large number
-  of activated package is easily achieved, even on old computers.  Take a look
-  at some screen shots in the startup directory:
+  of activated package is easily achieved, even on old computers.
 
-  - A 0.5 seconds startup with 223 packages by PEL
-    `on a 2014 imac running Emacs 26.3 terminal`_ (in normal mode),
-  - And a 0.1 seconds startup with the same settings
-    `on a 2014 imac running Emacs 26.3 terminal in fast-startup mode`_,
-  - `On Emacs 30.1 in terminal mode under Rocky Linux 8.10 VM running in a 2014 iMac`_,
-    accessed via ssh with a GNU screen session.
-    Note this one: it has 412 loaded features, yet the Emacs startup time is 0.5 seconds
-    even if PEL fast startup mode is not used!  Emacs is using native compilation mode here,
-    and Emacs also runs faster on Linux than under macOS.
-  - `On a 2023 macStudio running Emacs 30.1 in terminal`_ (in normal mode,
-    without native compilation), starts in 0.58 seconds while providing 612
-    features (with 634 loaded files).
-  - `On a 2023 macStudio running Emacs 30.1 in Graphics mode`_ (in normal-mode,
-    without native compilation).
+  - PEL provides examples of `early-init.el`_ and `init.el`_ files that must be used
+    to achieve these performances (and faster when fast startup is used).
+  - Take a look at some numbers and screen shots in the startup directory:
+
+    - A 0.65 second startup with 433 loaded files on terminal based Emacs 30.2
+      running on a 2023 macStudio computer and 0.81 seconds for 422 loaded files
+      in graphical Emacs on the same computer.
+    - A 0.5 seconds startup with 223 packages by PEL
+      `on a 2014 imac running Emacs 26.3 terminal`_ (in normal mode),
+    - And a 0.1 seconds startup with the same settings
+      `on a 2014 imac running Emacs 26.3 terminal in fast-startup mode`_,
+    - `On Emacs 30.1 in terminal mode under Rocky Linux 8.10 VM running in a 2014 iMac`_,
+      accessed via ssh with a GNU screen session.
+      Note this one: it has 412 loaded features, yet the Emacs startup time is 0.5 seconds
+      even if PEL fast startup mode is not used!  Emacs is using native compilation mode here,
+      and Emacs also runs faster on Linux than under macOS.
+    - `On a 2023 macStudio running Emacs 30.1 in terminal`_ (in normal mode,
+      without native compilation), starts in 0.58 seconds while providing 612
+      features (with 634 loaded files).
+    - `On a 2023 macStudio running Emacs 30.1 in Graphics mode`_ (in normal-mode,
+      without native compilation).
 
 - You can speed Emacs startup much more with PEL `fast startup mode`_ command
   (see also `⅀ Fast Startup PDF`_ [#firefox]_).
@@ -237,48 +243,10 @@ Again any feedback is welcome. Thanks!
   - With PEL you can see a quick report with relevant information by executing
     the `pel-emacs-load-stats` command.
 
-    - On a 2023 macStudio running Emacs 30.2 in terminal mode with PEL 0.4.2
-      under macOS, it shows the following::
-
-          Emacs 30.2.50 startup time: 0.394174 seconds   (in fast mode, without package quickstart, with native compilation, in terminal mode.)
-          # loaded files         : 461
-          # load-path length     : 70
-          # features             : 445
-          # package-alist        : 41
-          # packages activated   : 41
-          # packages selected    : 190
-
-    - On a 2023 macStudio running Emacs 30.2 in graphics mode with PEL 0.4.2
-      under macOS::
-
-          Emacs 30.2.50 startup time: 0.409924 seconds   (in fast mode, without package quickstart, with native compilation, in graphics mode with dual environment.)
-          # loaded files         : 458
-          # load-path length     : 61
-          # features             : 440
-          # package-alist        : 31
-          # packages activated   : 32
-          # packages selected    : 170
-
-    - On a 2014 imac running Emacs 26.3 in terminal mode with PEL under macOS::
-
-          Emacs 26.3 startup time: 0.1 seconds   (in fast mode)
-          # loaded files         : 317
-          # load-path length     : 63
-          # features             : 271
-          # package-alist        : 28
-          # packages activated   : 27
-          # packages selected    : 185
-
-    - On a 2014 imac running Emacs 28.2 in terminal mode with PEL under Linux
-      Ubuntu 16 running in a VM under macOS::
-
-         Emacs 28.2 startup time: 0.126206 seconds   (in fast mode, without package quickstart, without native compilation, in terminal mode.)
-         # loaded files         : 319
-         # load-path length     : 37
-         # features             : 299
-         # package-alist        : 9
-         # packages activated   : 9
-         # packages selected    : 152
+    - On a 2023 macStudio running Emacs 30.2 mode with PEL 0.4.2
+      under macOS, fast startup achieves a 0.18 seconds average in terminal
+      mode for 421 loaded files and 0.23 seconds average in graphical for 461
+      loaded files.
 
 - PEL supports Emacs 26 and later.
 
@@ -716,8 +684,10 @@ Notes
 .. _🚦 Tree-sitter PDF:         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/tree-sitter-parsers.pdf
 .. _Mozilla Firefox:            https://en.wikipedia.org/wiki/Firefox
 .. _How to setup GUI Emacs environment: doc/pel-manual.rst#prepare-using-gui-launched-emacs-running-in-graphics-mode
+.. _init.el:
 .. _PEL compatible Emacs init.el: example/init/init.el
 .. _PEL compatible early-init.el:
+.. _early-init.el:
 .. _early-init.el file template:
 .. _example/init/early-init.el: example/init/early-init.el
 .. _package-quickstart feature: https://git.savannah.gnu.org/cgit/emacs.git/commit/etc/NEWS?id=6dfdf0c9e8e4aca77b148db8d009c862389c64d3
