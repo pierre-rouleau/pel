@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-26 22:55:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-15 11:19:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -197,7 +197,7 @@ Available for Emacs 27 and later only."
       (message "Activating package quickstart...")
       (pel--set-package-quickstart-in-early-init t)
       (let ((elpa-dpath (pel-sibling-dirpath
-                         pel-elpa-dirpath
+                         (pel-elpa-dirpath 'at-startup)
                          (if (eq startup-mode 'fast)
                              "elpa-reduced"
                            (if (file-exists-p (locate-user-emacs-file "elpa-complete"))

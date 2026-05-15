@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-03 15:53:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-15 11:55:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -89,8 +89,13 @@
 ;;
 ;;  The code identifies you local Elpa and utils directories and their attic
 ;;  counterparts, normally stored inside the ~/.emacs.d directory or the
-;;  equivalent.  The location of those directories is stored inside the
-;;  `pel-elpa-dirpath' defconst and the returned by the following functions:
+;;  equivalent.  The location of those directories when Emacs starts and load
+;;  this file is first stored inside the `pel--elpa-dirpath-original' defconst.
+;;  That value is returned by (`pel-elpa-dirpath' 'at-startup).  The current
+;;  value is returned by (`pel-elpa-dirpath 'now).
+;;
+;;   - `pel-elpa-dirpath'
+;;     - `pel-elpa-locate'
 ;;
 ;;   - `pel-elpa-attic-dirpath'
 ;;   - `pel-utils-dirpath'
@@ -170,47 +175,88 @@
 ;; [:todo 2024-01-05, by Pierre Rouleau: better handle unbound
 ;;                    pel-package-user-dir-original value.]
 (defun pel-locate-elpa ()
-  "Return the absolute path of the local Elpa directory.
+  "Return the absolute path of the local Elpa directory (or symlink).
 
-PEL init.el file changes the value of `package-user-dir' to
-ensure that the value used by package.el is a true directory
-name, not a symlink.  That is done to ensure that the entries
-inside the `load-path' remain valid even if an external Emacs/PEL
-process switches the startup mode and changes the target of the
-elpa symlink.
+PEL early-init.el and init.el file update the dynamic value of the Emacs
+`package-user-dir' user-option to ensure that the value used by
+package.el:
 
-Before this is done, the code stores the original value of
-`package-user-dir', which corresponds to the user-option value
-stored in the custom file, into `pel-package-user-dir-original'.
+- correspond to what is required when PEL operates in dual tty/graphics
+  setup environment for Emacs running in terminal or graphics mode,
+- is a true directory name, not the symlink that may point to it.
+
+This is done to ensure that the entries inside the `load-path' remain
+valid even if an external Emacs/PEL process switches the startup mode
+and changes the target of the elpa symlink.
+
+PEL init.el code stores the original value of `package-user-dir', which
+corresponds to the user-option value stored in the custom file, into
+`pel-package-user-dir-original'.
 
 PEL will be able to use this value to transform the original elpa
 directory into a symlink that points to a directory named
-\"elpa-complete\".
+\"elpa-complete\" or \"elpa-complete-graphics\" when dual tty/graphics
+mode is used and Emacs is a GUI process.
 
-It's possible that PEL is used with a init.el file that has not
-yet been populated with the proper code. In that case the
-`pel-package-user-dir-original' variable may not exist; in that
-case the function returns nil.
+It's possible that PEL is used with a init.el file that has not yet been
+populated with the proper code and pel-package-user-dir-original'
+variable does not exist. In that case the function report a warning and
+tries to locate the elpa directory the standard way using the standard
+`package-user-dir' or by building its path via the
+`user-emacs-directory' value.  If you get the warning you should update
+your init.el file (and possibly the early-init.el) by using what PEL provides
+in the example/init directory.
 
 In the remote possibility that `package-user-dir' is not bound
 then the \"elpa\" sub-directory of the directory identified by
 the variable `user-emacs-directory' is used."
-  (file-name-as-directory (if (bound-and-true-p pel-package-user-dir-original)
-                              (expand-file-name pel-package-user-dir-original)
-                            (if (and (require 'package nil :noerror)
-                                     (boundp 'package-user-dir))
-                                (expand-file-name package-user-dir)
-                              (expand-file-name "elpa" user-emacs-directory)))))
+  (file-name-as-directory
+   (if (bound-and-true-p pel-package-user-dir-original)
+       (expand-file-name pel-package-user-dir-original)
+     ;;
+     ;; `pel-package-user-dir-original' does not exist!
+     ;; You are not using a PEL compliant init.el file!
+     ;; But warn only at load or run time, not at compile time
+     (unless (or (bound-and-true-p byte-compile-current-file)
+                 (bound-and-true-p comp-native-compiling))
+       (let ((errmsg
+              (format "⚠️  Emacs init.el does not comply with PEL requirements!
+    Please update your init.el%s! Use PEL example/init files as templates."
+                      (if pel-emacs-27-or-later-p
+                          " and your early-init.el"
+                        ""))))
+         (if noninteractive
+             ;; If issued from a command line Emacs invocation stop with an
+             ;; error
+             (error errmsg)
+           ;; otherwise, during run time, just display warning error
+           (display-warning 'pel-locate-elpa errmsg :error))))
+     ;; Return something that is still valid for Emacs despite the problem.
+     (if (and (require 'package nil :noerror)
+              (boundp 'package-user-dir))
+         (expand-file-name package-user-dir)
+       (expand-file-name "elpa" user-emacs-directory)))))
 
 
-(defconst pel-elpa-dirpath  (pel-locate-elpa)
-  "Absolute path of the user elpa directory or symlink.
-This may differ from the value of `package-user-dir' when a symlink
-is used as PEL init files ensure that `package-user-dir' is set to the
-target of the elpa symlink while `pel-elpa-dirpath' is always set to the
-path of the elpa directory or symlink if it exists.
-Note that you can have several elpa directories if you set `package-user-dir'
-inside your init.el file.")
+(defconst pel--elpa-dirpath-original  (pel-locate-elpa)
+  "Absolute path of the user elpa directory or symlink used when Emacs starts.
+
+This may differ from the value of `package-user-dir' when a symlink is
+used as PEL init files ensure that `package-user-dir' is set to the
+target of the elpa symlink while `pel--elpa-dirpath-original' is always
+set to the path of the elpa directory or symlink if it exists.  Note
+that you can have several elpa directories if you set `package-user-dir'
+inside your init.el file.
+
+Evaluate (`pel-elpa-dirpath' \\='at-startup) to access this value.")
+
+(defun pel-elpa-dirpath (moment)
+  "Return absolute path of user elpa directory or symlink at specific MOMENT.
+MOMENT can be \\='at-startup or \\='now."
+  (cond
+   ((eq moment 'at-startup) pel--elpa-dirpath-original)
+   ((eq moment 'now) (pel-locate-elpa))
+   (t (error "Invalid pel-elpa-dirpath argument: %S" moment))))
 
 (defun pel-elpa-attic-dirpath ()
   "Return the absolute path of the user elpa-attic directory.
@@ -616,7 +662,7 @@ specified and non-nil.
 The list includes all packages that cannot be removed because of imposed
 restriction unless IGNORE-RESTRICTION is non-nil.
 
-Return a list of 2 lists:
+Return a list of 3 lists:
 - 1: list is a list of elpa package symbols,
 - 2: list is a list of utils file name symbols.
 - 3: list of error messages, if any
@@ -668,12 +714,14 @@ their names."
   "Insert a numbered list of packages in current buffer.
 
 PKGS is the list of packages to print.
-TITLE is the text that must be printed before the list."
+TITLE is the text that must be printed before the list.
+Return the length of PKGS."
   (let ((n 0))
     (insert title)
     (dolist (pkg pkgs)
       (pel+= n 1)
-      (insert (format "- %3d: %s\n" n pkg)))))
+      (insert (format "- %3d: %s\n" n pkg)))
+    n))
 
 (defun pel--show-pkgs-for (group-name all-pkgs pkgs+lock pkgs+deps to-keep)
   "Utility: insert description of used packages.
@@ -709,12 +757,9 @@ TO-KEEP:      List of package symbols or file name strings that are installed
 (defun pel--show-pkgs-in-excess-for (group pkgs)
   "Utility: list GROUP package PKGS in excess.
 Return the number of packages in excess."
-  (let ((n 0))
-    (when pkgs
-      (pel--insert-pkgs-list
-       (format "\n%s packages in excess:\n" group)
-       pkgs))
-    n))
+  (if pkgs
+      (pel--insert-pkgs-list (format "\n%s packages in excess:\n" group) pkgs)
+    0))
 
 ;; declare package.el variables  to prevent byte-compiler warnings
 (defvar package-selected-packages)
@@ -1141,7 +1186,8 @@ Return the number of symbols that were removed from the
 `package-selected-package' form."
   (let ((edited-filepath (or filepath custom-file))
         (pkgs (if (listp pkgs) pkgs (list pkgs)))
-        (remove-count 0))
+        (remove-count 0)
+        (original-superword-mode-state superword-mode))
     (with-temp-file edited-filepath
       (insert-file-contents edited-filepath)
       ;; use superword-mode to ensure that movement commands jump over
@@ -1177,13 +1223,14 @@ Return the number of symbols that were removed from the
                   (delete-char 1)))
               (pel+= remove-count 1))))
         (widen)
-        remove-count))))
+        remove-count))
+    ;; restore superword-mode to what it was before.
+    (superword-mode (if original-superword-mode-state 1 -1))))
 
-(defun pel-elpa-packages-in-dir ()
+(defun pel-elpa-packages-in-dir (moment)
   "Return a list of symbol for all packages present in local Elpa directory.
 
-The function search the directory identified by the variable
-`pel-elpa-dirpath'.
+The function search the directory identified by `pel-elpa-dirpath'.
 
 The directory holds sub-directories, one per package/version.
 The directory may hold several versions of a specific Elpa package.
@@ -1191,7 +1238,7 @@ The returned list contains only one symbol identifying the package for each
 version of that package.
 The list of package symbols is sorted by symbol names."
   (let ((elpa-pkg-dir-names  (directory-files
-                              pel-elpa-dirpath nil ".+[0-9-.]+\\'"))
+                              (pel-elpa-dirpath moment) nil ".+[0-9-.]+\\'"))
         (elpa-pkg-names ()))
     (dolist (dir-name elpa-pkg-dir-names)
       (when (eq 0 (string-match "\\`\\([^ ]+\\)-[0-9-.]+\\'" dir-name))
@@ -1207,7 +1254,7 @@ of their dependencies.
 The returned list contains symbols, each symbol is the name (without any
 version numbering) of the elpa package.  The list is sorted."
   (let ((activated-elpa (car (pel-activated-packages)))
-        (available-elpa (pel-elpa-packages-in-dir))
+        (available-elpa (pel-elpa-packages-in-dir 'now))
         (excess-elpa    ()))
     ;; Some packages are identified by the user as used, even though PEL may
     ;; not requests it via user-options; make sure to not identify these
@@ -1362,7 +1409,7 @@ intention by typing 'y' to its prompt.
 from: %s
 to  : %s :\n\n"
                              verb-moved
-                             pel-elpa-dirpath
+                             (pel-elpa-dirpath 'now)
                              (pel-elpa-attic-dirpath)))
              (setq n 0)
              (dolist (pkgdir moved-elpa-dirs)
@@ -1388,15 +1435,16 @@ The elpa-attic directory is the ~/.emacs.d/pel-elpa-attic directory."
   ;; MELPA packages which uses ISO-8601 format.
   (let ((elpa-attic-pkg-dirpath (car-safe
                                  (last (pel-elpa-dirs-for pkg :in-attic))))
-        (installation-succeeded nil))
+        (installation-succeeded nil)
+        (used-elpa-dirpath (pel-elpa-dirpath 'now)))
     (when elpa-attic-pkg-dirpath
       (let ((dest-dirpath
              (expand-file-name (file-name-nondirectory
                                 elpa-attic-pkg-dirpath)
-                               pel-elpa-dirpath)))
+                               used-elpa-dirpath)))
         (unless (file-exists-p dest-dirpath)
           (copy-directory elpa-attic-pkg-dirpath
-                          (file-name-as-directory pel-elpa-dirpath)
+                          (file-name-as-directory used-elpa-dirpath)
                           :keep-time))
         (push dest-dirpath load-path)
         (load-library (pel-as-string pkg))

@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-14 16:37:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-15 11:26:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -406,12 +406,13 @@ slash) or in file name (without the terminating slash) format."
 Return nil if no problems found: all is OK, ready to use Emacs in
 independent environments for terminal and graphics mode."
   (require 'cus-edit)                   ; use: `custom-file'`
-  (let* ((custom-fname    (pel-elpa-name custom-file nil))
+  (let* ((used-elpa-dirpath (pel-elpa-dirpath 'at-startup))
+         (custom-fname    (pel-elpa-name custom-file nil))
          (custom-fname-g  (pel-elpa-name custom-file :for-graphics))
-         (elpa-dp         (pel-elpa-name pel-elpa-dirpath nil))
+         (elpa-dp         (pel-elpa-name used-elpa-dirpath nil))
          (elpa-dn         (directory-file-name elpa-dp))
          (elpa-dn-g       (pel-elpa-name elpa-dn :for-graphics))
-         (elpa-cmplt-dn   (pel-sibling-dirname pel-elpa-dirpath "elpa-complete"))
+         (elpa-cmplt-dn   (pel-sibling-dirname used-elpa-dirpath "elpa-complete"))
          (elpa-cmplt-dn-g (pel-elpa-name elpa-cmplt-dn :for-graphics))
          (utils-dp        (pel-elpa-name (pel-utils-dirpath) nil))
          (utils-dp-g      (pel-elpa-name (pel-utils-dirpath) :for-graphics))
@@ -500,12 +501,13 @@ Return a list of performed actions (in reverse order of execution)."
 
 Utility function.  If REASON-MSG is specified include that message on error."
   (require 'cus-edit)                   ; use: `custom-file'`
-  (let* ((custom-fn       (pel-elpa-name custom-file nil))
+  (let* ((used-elpa-dirpath (pel-elpa-dirpath 'at-startup))
+         (custom-fn       (pel-elpa-name custom-file nil))
          (custom-fn-g     (pel-elpa-name custom-file :for-graphics))
-         (elpa-dp         (pel-elpa-name pel-elpa-dirpath nil))
+         (elpa-dp         (pel-elpa-name used-elpa-dirpath nil))
          (elpa-dn         (directory-file-name elpa-dp))
          (elpa-dn-g       (pel-elpa-name elpa-dn :for-graphics))
-         (elpa-cmplt-dn   (pel-sibling-dirname pel-elpa-dirpath "elpa-complete"))
+         (elpa-cmplt-dn   (pel-sibling-dirname used-elpa-dirpath "elpa-complete"))
          (elpa-cmplt-dn-g (pel-elpa-name elpa-cmplt-dn :for-graphics))
          (utils-dn        (pel-elpa-name (directory-file-name (pel-utils-dirpath))
                                          nil))
@@ -686,9 +688,10 @@ There are inconsistencies in the PEL dual environment setup.
                 like \"elpa-complete\" or \"elpa-reduced\".
 - FOR-GRAPHICS: non-nil when dual environment is set and Emacs runs in
 graphic mode."
-  (let ((adj (lambda (fn) (pel-elpa-name fn for-graphics))))
-    (pel-point-symlink-to (λc adj pel-elpa-dirpath)
-                          (λc adj (pel-sibling-dirpath pel-elpa-dirpath name)))))
+  (let* ((used-elpa-dirpath (pel-elpa-dirpath 'at-startup))
+         (adj (lambda (fn) (pel-elpa-name fn for-graphics))))
+    (pel-point-symlink-to (λc adj used-elpa-dirpath)
+                          (λc adj (pel-sibling-dirpath used-elpa-dirpath name)))))
 
 (defun pel-switch-to-elpa-complete (for-graphics)
   "Change elpa symlink to the elpa-complete sub-directory.
@@ -1143,13 +1146,14 @@ GUI         No              nil
 GUI         Yes             t
 
 It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
-  (let (;; define closures used to reduce visual clutter
-        (adj          (lambda (fn) (pel-elpa-name fn for-graphics))) ; adjust for graphics
-        (elpa-sibling (lambda (dp) (pel-sibling-dirpath pel-elpa-dirpath dp)))
-        (step-count 0)
-        (cd-original default-directory))
+  (let* (;; define closures used to reduce visual clutter
+         (used-elpa-dirpath (pel-elpa-dirpath 'at-startup))
+         (adj          (lambda (fn) (pel-elpa-name fn for-graphics))) ; adjust for graphics
+         (elpa-sibling (lambda (dp) (pel-sibling-dirpath used-elpa-dirpath dp)))
+         (step-count 0)
+         (cd-original default-directory))
     (condition-case-unless-debug err
-        (let* ((elpa-dp-adj      (λc adj pel-elpa-dirpath))
+        (let* ((elpa-dp-adj      (λc adj used-elpa-dirpath))
                (elpa-reduced-dp  (λc adj (λc elpa-sibling "elpa-reduced")))
                (elpa-complete-dp (λc adj (λc elpa-sibling "elpa-complete")))
                (bundle-dp        (λc elpa-sibling "pel-bundle"))
@@ -1166,7 +1170,7 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
           (pel-prepend-to actions (pel--prepare-main-elpa-dir for-graphics))
           (pel+= step-count 1)          ; STEP 1
           ;;
-          (pel--validate-elpa-symlink pel-elpa-dirpath for-graphics)
+          (pel--validate-elpa-symlink used-elpa-dirpath for-graphics)
           (pel+= step-count 1)          ; STEP 2
           ;;
           ;; The pel-bundle directory should not exists.  That's a
@@ -1385,7 +1389,7 @@ is only one or when its for the terminal (TTY) mode."
     (require 'pel-setup-27)
     (pel--setup-early-init pel-support-package-quickstart)
     (if pel-support-package-quickstart
-        (pel--create-package-quickstart pel-elpa-dirpath for-graphics)
+        (pel--create-package-quickstart (pel-elpa-dirpath 'at-startup) for-graphics)
       (pel--remove-package-quickstart-files for-graphics))))
 
 ;;-pel-autoload
