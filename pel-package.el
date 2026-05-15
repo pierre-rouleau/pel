@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-15 11:55:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-15 13:23:02 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -218,7 +218,8 @@ the variable `user-emacs-directory' is used."
      ;; You are not using a PEL compliant init.el file!
      ;; But warn only at load or run time, not at compile time
      (unless (or (bound-and-true-p byte-compile-current-file)
-                 (bound-and-true-p comp-native-compiling))
+                 (bound-and-true-p comp-native-compiling)
+                 (getenv "EMACS_TEST_VERBOSE"))
        (let ((errmsg
               (format "⚠️  Emacs init.el does not comply with PEL requirements!
     Please update your init.el%s! Use PEL example/init files as templates."
