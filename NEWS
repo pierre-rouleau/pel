@@ -128,6 +128,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       also allows the user to switch easily from classic mode to Tree-Sitter mode with the *pel-treesit-toggle-mode* command.
       The macro takes Emacs version into account and generates code that is valid for that version of Emacs.
       This simplifies writing PEL code for new major modes.  It is now used in pel_keys.el for several major modes.
+- Improved statistics: The *pel-package-info* command, also accessible via the *make stats* command, now report the number of packages PEL can install with quelpa.
 - Improved PDF files:
   - ⅀ Diff & Merge: Describe how to create a patch file from a diff-mode buffer.
   - ⅀ Faces/Fonts: more about changing a face.

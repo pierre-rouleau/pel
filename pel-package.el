@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-16 16:26:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-16 16:53:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -454,6 +454,15 @@ Group 2 is package name.")
   "Regexp to extract package name from a `pel-install-file' form.
 Name of package is in group 1.")
 
+(defconst pel--regexp-quelpa-pkg-name
+  "(pel-quelpa-install\\s-+(\\([-[:alnum:]]+\\)"
+  "Regexp to extract package name from a `pel-quelpa-install' form.
+Matches forms like:
+  (pel-quelpa-install (pkgname :fetcher ...))
+or multi-line forms where `pkgname' appears on the next line after indentation.
+The `\\s-+' matches any whitespace, including newlines and leading spaces.
+Group 1 captures the package symbol name.")
+
 (defun pel--pkg-installed-by-pel (regexp &optional group extracter)
   "Return list of package names PEL can install with specified mechanism.
 The installation mechanism is specified by the REGEXP expression
@@ -493,20 +502,32 @@ and the optional GROUP number and EXTRACTER function."
       (match-string 1))))
 
 (defun pel-installable-packages ()
-  "Return a list of packages PEL can install."
-  (let ((pkgs-from-elpa (sort
-                         (pel--pkg-installed-by-pel pel--regxp-pel-ensure 1)
-                         (function string<)))
+  "Return a list of 3 lists of packages PEL can install.
+The returned list has the form (ELPA QUELPA OTHERS), where:
+- ELPA   : packages installable from Elpa-compliant repositories,
+           identified by `pel-ensure-package-elpa' forms.
+- QUELPA : packages installable via quelpa from VCS sources,
+           identified by `pel-quelpa-install' forms.
+- OTHERS : the quelpa tool itself and packages installed from
+           GitHub, GitLab, or local files.
+Note: a package appearing under both ELPA and QUELPA means PEL
+uses a conditional branch to choose between sources (e.g. lispy)."
+  (let ((pkgs-from-elpa
+         (sort (pel--pkg-installed-by-pel pel--regxp-pel-ensure 1)
+               (function string<)))
+        (pkgs-from-quelpa
+         (sort (pel--pkg-installed-by-pel pel--regexp-quelpa-pkg-name 1)
+               (function string<)))
         (pkgs-others
          (sort
           (append
-           '("quelpa")                  ; uses a special method
+           '("quelpa")                  ; the quelpa tool itself
            (pel--pkg-installed-by-pel pel--regxp-from-github 1
                                       (function pel--extract-github-pkg-name))
            (pel--pkg-installed-by-pel pel--regxp-from-gitlab 2)
            (pel--pkg-installed-by-pel pel--regexp-pel-install-file 1))
           (function string<))))
-    (list pkgs-from-elpa pkgs-others)))
+    (list pkgs-from-elpa pkgs-from-quelpa pkgs-others)))        ; 3 lists
 
 ;; --
 
@@ -944,6 +965,9 @@ The function does not support printing a full report on stdout."
          (n-utils-locked    (- n-utils-all n-utils-bdeps))
          (user-options      (pel-user-options))
          (installable-pkgs  (pel-installable-packages))
+         (n-installable-elpa   (length (nth 0 installable-pkgs)))
+         (n-installable-quelpa (length (nth 1 installable-pkgs)))
+         (n-installable-others (length (nth 2 installable-pkgs)))
          (upgradable-pkgs   (pel-package-upgradable))
          (overview
           (format "\
@@ -953,7 +977,7 @@ The function does not support printing a full report on stdout."
 - %3d Utils files   stored in: %s
 - size of load-path          : %d directories
 - # pel-use-... user-options : %3d (%d are active)
-- # packages PEL can install : %d Elpa-compliant, %d others
+- # packages PEL can install : %d Elpa-compliant, %d quelpa,  %d others
 - PEL activated elpa packages: %s
 - PEL Activated utils files  : %s
 - # loaded files             : %d
@@ -983,8 +1007,9 @@ The function does not support printing a full report on stdout."
                            (lambda (x) (symbol-value x))
                            user-options))
                   ;; # package PEL can install
-                  (length (car installable-pkgs))  ; elpa compliant packages
-                  (length (cadr installable-pkgs)) ; other packages
+                  n-installable-elpa
+                  n-installable-quelpa
+                  n-installable-others
                   (pel--elpa-stats n-elpa-base ; PEL activated elpa packages
                                    n-elpa-deps
                                    n-elpa-locked)
