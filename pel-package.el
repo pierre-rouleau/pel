@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-16 16:53:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-16 17:12:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -241,7 +241,7 @@ set to the path of the elpa directory or symlink if it exists.  Note
 that you can have several elpa directories if you set `package-user-dir'
 inside your init.el file.
 
-Evaluate (`pel-elpa-dirpath' \\='at-startup) to access this value.")
+Evaluate (`pel-elpa-dirpath' \\='switch-dir-at-startup) to access this value.")
 
 (defun pel-elpa-dirpath (type)
   "Return absolute path of user elpa directory or symlink as by TYPE.
@@ -253,6 +253,11 @@ depends on the TYPE argument, which can be one of the following symbols:
                           also be a symlink (and normally is once PEL has
                           setup the ability to activate the fast startup
                           mode).
+
+- \\='switch-dir-at-startup  The elpa (or elpa-graphics) directory which may
+                          also be a symlink (and normally is once PEL has
+                          setup the ability to activate the fast startup
+                          mode) seen when Emacs started.
 
 - \\='final-dir-at-startup   The final directory elpa-complete, elpa-reduced,
                           elpa-complete-graphics or elpa-reduced-graphics
@@ -344,7 +349,9 @@ Here's a representation of the symlink and directories:
                                             /
 "
   (cond
+   ;;
    ((eq type 'final-dir-at-startup) package-user-dir)
+   ;;
    ((memq type '(final-dir-now switch-dir))
     (let ((switch-dir (pel-locate-elpa)))
       (if (eq type 'switch-dir)
@@ -353,6 +360,8 @@ Here's a representation of the symlink and directories:
         (if (file-symlink-p (directory-file-name switch-dir))
             (file-truename switch-dir)
           switch-dir))))
+   ;;
+   ((eq type 'switched-dir-at-startup) pel--elpa-dirpath-original)
    (t (error "Invalid pel-elpa-dirpath argument: %S" type))))
 
 (defun pel-elpa-attic-dirpath ()
@@ -1398,7 +1407,7 @@ of their dependencies.
 The returned list contains symbols, each symbol is the name (without any
 version numbering) of the elpa package.  The list is sorted."
   (let ((activated-elpa (car (pel-activated-packages)))
-        (available-elpa (pel-elpa-packages-in-dir 'now))
+        (available-elpa (pel-elpa-packages-in-dir 'final-dir-at-startup))
         (excess-elpa    ()))
     ;; Some packages are identified by the user as used, even though PEL may
     ;; not requests it via user-options; make sure to not identify these
