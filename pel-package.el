@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-16 14:31:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-16 15:56:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1223,7 +1223,10 @@ The function assumes that:
                 (fn-b (file-name-nondirectory b)))
             (let ((v-a (and (string-match "-\\([0-9.]+\\)$" fn-a) (match-string 1 fn-a)))
                   (v-b (and (string-match "-\\([0-9.]+\\)$" fn-b) (match-string 1 fn-b))))
-              (version< v-a v-b))))))
+              (cond
+               ((and v-a v-b) (version< v-a v-b))
+               (v-b t)      ; a has no version, sort before b
+               (t nil))))))); b has no version or neither, keep order
 
 (defun pel-elpa-dirs-for (pkg &optional in-attic)
   "Return a list of directory names for specified package PKG.
@@ -1304,8 +1307,7 @@ Return the number of symbols that were removed from the
 `package-selected-package' form."
   (let ((edited-filepath (or filepath custom-file))
         (pkgs (if (listp pkgs) pkgs (list pkgs)))
-        (remove-count 0)
-        (original-superword-mode-state superword-mode))
+        (remove-count 0))
     (with-temp-file edited-filepath
       (insert-file-contents edited-filepath)
       ;; use superword-mode to ensure that movement commands jump over
@@ -1341,9 +1343,7 @@ Return the number of symbols that were removed from the
                   (delete-char 1)))
               (pel+= remove-count 1))))
         (widen)
-        remove-count))
-    ;; restore superword-mode to what it was before.
-    (superword-mode (if original-superword-mode-state 1 -1))))
+        remove-count))))
 
 (defun pel-elpa-packages-in-dir (type)
   "Return a list of symbol for all packages present in local Elpa directory.

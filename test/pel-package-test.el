@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 24 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-15 15:13:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-16 15:58:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -263,7 +263,17 @@
                    "/some/dir/for/elpa/packages/my-green-package-2036121110.100"
                    )))
     (should (equal (pel-pkgs-sorted-by-version pkglist)
-                   sorted))))
+                   sorted))
+
+    ;; Edge case: empty list
+    (should (equal (pel-pkgs-sorted-by-version '()) '()))
+    ;; Edge case: single element
+    (should (equal (pel-pkgs-sorted-by-version
+                    '("/some/dir/for/elpa/packages/my-green-package-2024121110.100"))
+                   '("/some/dir/for/elpa/packages/my-green-package-2024121110.100")))))
+
+
+
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-package-test)
