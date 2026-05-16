@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-16 16:16:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-16 16:26:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -455,7 +455,9 @@ Group 2 is package name.")
 Name of package is in group 1.")
 
 (defun pel--pkg-installed-by-pel (regexp &optional group extracter)
-  "Return list of package names PEL can install from Elpa compliant sites."
+  "Return list of package names PEL can install with specified mechanism.
+The installation mechanism is specified by the REGEXP expression
+and the optional GROUP number and EXTRACTER function."
   (or group (setq group 1))
   (let ((pkg-names nil)
         found
