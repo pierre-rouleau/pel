@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-16 15:56:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-16 16:16:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -407,10 +407,9 @@ when it is requested as specified by the presence of
        (when (and (commandp symbol)
                   (progn
                     (setq cmd-name (symbol-name symbol))
-                    (and (eq t (compare-strings "pel-" nil nil
-                                                cmd-name 0 4))
-                         (not (pel-string-starts-with-p cmd-name "pel-∑"))
-                         (not (pel-string-starts-with-p cmd-name "pel-⅀")))))
+                    (and (string-prefix-p "pel-" cmd-name)
+                         (not (string-prefix-p "pel-∑" cmd-name))
+                         (not (string-prefix-p "pel-⅀" cmd-name)))))
          (push symbol symbols))))
     (nreverse symbols)))
 
