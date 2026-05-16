@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-15 11:19:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-16 15:06:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -111,8 +111,8 @@
 
 DIRPATH is the path of a ELpa-compliant directory used.
 Normally that's the elpa directory inside the user-emacs-directory but
-that can be the elpa-reduced directory for fast startup or then ones
-for graphics mode when the dual mode is used.
+that can be the elpa-reduced directory for fast startup or the one for
+graphics mode when the dual mode is used.
 
 FOR-GRAPHICS is:
 - t when setting package quickstart for Emacs running in graphics mode and
@@ -197,7 +197,7 @@ Available for Emacs 27 and later only."
       (message "Activating package quickstart...")
       (pel--set-package-quickstart-in-early-init t)
       (let ((elpa-dpath (pel-sibling-dirpath
-                         (pel-elpa-dirpath 'at-startup)
+                         (pel-elpa-dirpath 'switch-dir)
                          (if (eq startup-mode 'fast)
                              "elpa-reduced"
                            (if (file-exists-p (locate-user-emacs-file "elpa-complete"))

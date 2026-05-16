@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-15 11:20:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-16 14:55:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -301,7 +301,7 @@ startup if all tests pass."
                              '(nil t)
                            '(nil)))
       (let* ((mode-description (pel-setup-mode-description for-graphic))
-             (elpa-dirpath (pel-elpa-name (pel-elpa-dirpath 'at-startup)
+             (elpa-dirpath (pel-elpa-name (pel-elpa-dirpath 'switch-dir)
                                           for-graphic))
              (elpa-reduced-dirpath (pel-elpa-name
                                     (pel-sibling-dirpath

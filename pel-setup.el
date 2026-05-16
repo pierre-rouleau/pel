@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-15 11:26:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-16 15:07:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -406,7 +406,7 @@ slash) or in file name (without the terminating slash) format."
 Return nil if no problems found: all is OK, ready to use Emacs in
 independent environments for terminal and graphics mode."
   (require 'cus-edit)                   ; use: `custom-file'`
-  (let* ((used-elpa-dirpath (pel-elpa-dirpath 'at-startup))
+  (let* ((used-elpa-dirpath (pel-elpa-dirpath 'switch-dir))
          (custom-fname    (pel-elpa-name custom-file nil))
          (custom-fname-g  (pel-elpa-name custom-file :for-graphics))
          (elpa-dp         (pel-elpa-name used-elpa-dirpath nil))
@@ -501,7 +501,7 @@ Return a list of performed actions (in reverse order of execution)."
 
 Utility function.  If REASON-MSG is specified include that message on error."
   (require 'cus-edit)                   ; use: `custom-file'`
-  (let* ((used-elpa-dirpath (pel-elpa-dirpath 'at-startup))
+  (let* ((used-elpa-dirpath (pel-elpa-dirpath 'switch-dir))
          (custom-fn       (pel-elpa-name custom-file nil))
          (custom-fn-g     (pel-elpa-name custom-file :for-graphics))
          (elpa-dp         (pel-elpa-name used-elpa-dirpath nil))
@@ -688,7 +688,7 @@ There are inconsistencies in the PEL dual environment setup.
                 like \"elpa-complete\" or \"elpa-reduced\".
 - FOR-GRAPHICS: non-nil when dual environment is set and Emacs runs in
 graphic mode."
-  (let* ((used-elpa-dirpath (pel-elpa-dirpath 'at-startup))
+  (let* ((used-elpa-dirpath (pel-elpa-dirpath 'switch-dir))
          (adj (lambda (fn) (pel-elpa-name fn for-graphics))))
     (pel-point-symlink-to (λc adj used-elpa-dirpath)
                           (λc adj (pel-sibling-dirpath used-elpa-dirpath name)))))
@@ -1147,7 +1147,7 @@ GUI         Yes             t
 
 It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
   (let* (;; define closures used to reduce visual clutter
-         (used-elpa-dirpath (pel-elpa-dirpath 'at-startup))
+         (used-elpa-dirpath (pel-elpa-dirpath 'switch-dir))
          (adj          (lambda (fn) (pel-elpa-name fn for-graphics))) ; adjust for graphics
          (elpa-sibling (lambda (dp) (pel-sibling-dirpath used-elpa-dirpath dp)))
          (step-count 0)
@@ -1389,7 +1389,7 @@ is only one or when its for the terminal (TTY) mode."
     (require 'pel-setup-27)
     (pel--setup-early-init pel-support-package-quickstart)
     (if pel-support-package-quickstart
-        (pel--create-package-quickstart (pel-elpa-dirpath 'at-startup) for-graphics)
+        (pel--create-package-quickstart (pel-elpa-dirpath 'final-dir-at-startup) for-graphics)
       (pel--remove-package-quickstart-files for-graphics))))
 
 ;;-pel-autoload
