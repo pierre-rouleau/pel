@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-16 17:12:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-17 08:12:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -730,56 +730,89 @@ some PEL user-options have been turned off."
   "Compare name strings of S1 and S2 symbols."
   (string< (symbol-name s1) (symbol-name s2)))
 
+(defun pel--pkg-deps-via-package-alist (pkg)
+  "Return a flat list of transitive dependency symbols for PKG.
+Walks `package-alist' using the stable public `package-desc-reqs' API.
+This is a version-independent fallback used when neither
+`package--get-deps' nor `package--dependencies' is available.
+PKG is a symbol; the returned list does NOT include PKG itself."
+  ;; Breadth-first traversal of package-alist.
+  (let ((seen '())
+        (queue (list pkg)))
+    (while queue
+      (let ((current (pop queue)))
+        (unless (memq current seen)
+          (let ((pkg-desc (cadr (assq current package-alist))))
+            (when pkg-desc
+              (push current seen)
+              (dolist (req (package-desc-reqs pkg-desc))
+                (unless (memq (car req) seen)
+                  (push (car req) queue))))))))
+    ;; Exclude PKG itself: we report only its dependencies.
+    (delq pkg seen)))
+
 (defun pel-elpa-pkg-dependencies (pkg)
   "Return a list of package symbols that are elpa dependencies of package PKG.
 
-PKG may be a symbol or a string."
-  ;; Make sure that pkg is present, if it is not then its dependants
+PKG may be a symbol or a string.
+
+Implementation strategy by Emacs version:
+- Emacs ≤ 26 : `package--get-deps' accepts a single symbol argument.
+- Emacs 27-29: `package--get-deps' accepts a list argument (signature
+  changed in the October 2019 Emacs commit).  The post-2019 version also
+  includes PKG itself in its result; it is stripped here.
+- Emacs 30+  : `package--get-deps' was removed.  PEL uses
+  `pel--pkg-deps-via-package-alist' which performs the identical BFS
+  traversal with only the stable public APIs `package-alist' and
+  `package-desc-reqs', avoiding reliance on any changed internal
+  package.el function."
+  ;; Make sure that pkg is present, if it is not, its dependants
   ;; are not installed via that package.
   (when (locate-library (pel-as-string pkg))
     (setq pkg (pel-as-symbol pkg))
-    (if (and (require 'package nil :noerror)
-             (fboundp 'package--get-deps))
-        (condition-case err
-            (let ((pkg-arg      pkg)
-                  (dependencies ()))
-              ;; package--get-deps was modified on the October 6th 2019.
-              ;; The argument for the new version is a list.
-              (when pel-emacs-27-or-later-p
-                (setq pkg-arg (list pkg-arg)))
-              (condition-case err
-                  (setq dependencies (package--get-deps pkg-arg))
-                (error
-                 (setq dependencies nil)
-                 (display-warning
-                  'emacs-pkg-dependencies
-                  (format "\
+    (if (require 'package nil :noerror)
+        (cond
+         ;; ------------------------------------------------------------------
+         ;; Emacs ≤ 29: `package--get-deps' is available.
+         ;; The argument changed from a symbol to a list in October 2019
+         ;; (Emacs 27 era).  The post-2019 form also returns PKG itself;
+         ;; strip it for a consistent return contract.
+         ;;
+         ((fboundp 'package--get-deps)
+          (condition-case err
+              (let* ((pkg-arg      (if pel-emacs-27-or-later-p
+                                       (list pkg)
+                                     pkg))
+                     (dependencies (condition-case inner-err
+                                       (package--get-deps pkg-arg)
+                                     (error
+                                      (display-warning
+                                       'emacs-pkg-dependencies
+                                       (format "\
 Warning: %s dependencies are not identified properly: %s
 Please report the issue to the package developer
 if this is a recent version of the package."
-                          pkg-arg
-                          err))))
-              ;; package--get-deps of October 6th 2019 leaves the searched
-              ;; pkg in the list of dependencies it returns.  The old code did
-              ;; not do that. IMHO its a bug, violating the principle of least
-              ;; surprise, but it looks like the only place where it is
-              ;; invoked requires it to be included.
-              ;; Since I don't want the pkg to be listed in its dependencies,
-              ;; I remove it if it is there.
-              (when (memq pkg dependencies)
-                (delete pkg dependencies))
-              dependencies)
-          ;; error handler
-          (wrong-type-argument
-           (unless (memq pkg pel-elpa-obsolete-packages)
-             (display-warning
-              'pel-elpa-pkg-dependencies
-              (format "\
-Error extracting dependencies for %s : %s
-Is it obsolete? If so it should be added to pel-elpa-obsolete-packages."
-                      pkg err)
-              :error))
-           nil))
+                                               pkg-arg inner-err))
+                                      nil))))
+                ;; package--get-deps (post Oct 2019) includes PKG itself;
+                ;; use delq (eq-based) since pkg is a symbol.
+                (delq pkg dependencies))
+            (wrong-type-argument
+             (unless (memq pkg pel-elpa-obsolete-packages)
+               (display-warning
+                'pel-elpa-pkg-dependencies
+                (format "\
+Error extracting dependencies for %s: %s
+Is it obsolete? If so it should be added to `pel-elpa-obsolete-packages'."
+                        pkg err)
+                :error))
+             nil)))
+         ;; ------------------------------------------------------------------
+         ;; Emacs 30+: package--get-deps was removed.
+         ;; Use the stable-public-API BFS walker.
+         ;;
+         (t
+          (pel--pkg-deps-via-package-alist pkg)))
       (error "Failed loading package"))))
 
 (defun pel-activated-packages (&optional without-dependants ignore-restriction)
