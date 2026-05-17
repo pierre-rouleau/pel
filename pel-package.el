@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-17 11:41:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-17 12:19:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -191,7 +191,7 @@ directory into a symlink that points to a directory named
 mode is used and Emacs is a GUI process.
 
 It's possible that PEL is used with a init.el file that has not yet been
-populated with the proper code and pel-package-user-dir-original'
+populated with the proper code and `pel-package-user-dir-original'
 variable does not exist. In that case the function report a warning and
 tries to locate the elpa directory the standard way using the standard
 `package-user-dir' or by building its path via the

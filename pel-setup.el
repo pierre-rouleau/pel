@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-17 11:25:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-17 12:35:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -820,31 +820,14 @@ Return a (ACTIVATE . byte-compile result) cons cell."
                                       (locate-library "pel_keys"))
                                      ".el")))))
 
-(defun pel-setup-fast-startup-init (fname deps-pkg-versions-alist extra-code)
-  "Write Emacs Lisp code to add the DEPS-PKG-VERSIONS-ALIST to Emacs in FNAME.
+(defun pel-setup-fast-startup-init-text (deps-pkg-versions-alist extra-code)
+  "Return the Elisp code for the pel-fast-startup-init.el file.
 
-- FNAME: string.  Name of the file where the code of the function
-  `pel-fast-startup-init' is written.
-
-The function `pel-fast-startup-init' adds each entry of
-DEPS-PKG-VERSIONS-ALIST to Emacs `package--builtin-versions' and adds
-some EXTRA-CODE.
-
-- DEPS-PKG-VERSIONS-ALIST: list of package dependencies gathered from the
-  various X-pkg.el files for each package X whose code was placed in the
-  elpa-reduced/pel-bundle *pseudo-package* that was not already part of
-  the `package--builtin-versions' list.
-
-By adding those package/version inside the `package--builtin-versions'
-list we ensure that Emacs package.el logic will not attempt to download
-these packages.  We don't need Emacs to download them because they have
-already been downloaded when Emacs was in normal startup mode.  The
-DEPS-PKG-VERSIONS-ALIST list was originally returned by the function
-`pel-elpa-disable-pkg-deps-in'."
-  (with-temp-file fname
-    (erase-buffer)
-    (goto-char (point-min))
-    (insert (format "\
+This file is required when PEL uses the fast startup mode.
+The file is created for the packages identified in DEPS-PKG-VERSIONS-ALIST
+and has extra code specified in EXTRA-CODE."
+  ;;
+  (format "\
 ;;; Setup Emacs for PEL fast startup.  -*- lexical-binding: t; -*-
 ;;; DO NOT EDIT! It will be overwritten next time pel-setup-fast is executed!
 ;;;
@@ -939,8 +922,35 @@ Return the pkg/version alist.\"
 
 ;; ---------------------------------------------------------------------------
 
-" deps-pkg-versions-alist extra-code))))
+" deps-pkg-versions-alist extra-code))
 
+(defun pel-setup-fast-startup-init (fname deps-pkg-versions-alist extra-code)
+  "Write Emacs Lisp code to add the DEPS-PKG-VERSIONS-ALIST to Emacs in FNAME.
+
+- FNAME: string.  Name of the file where the code of the function
+  `pel-fast-startup-init' is written.
+
+The function `pel-fast-startup-init' adds each entry of
+DEPS-PKG-VERSIONS-ALIST to Emacs `package--builtin-versions' and adds
+some EXTRA-CODE.
+
+- DEPS-PKG-VERSIONS-ALIST: list of package dependencies gathered from the
+  various X-pkg.el files for each package X whose code was placed in the
+  elpa-reduced/pel-bundle *pseudo-package* that was not already part of
+  the `package--builtin-versions' list.
+
+By adding those package/version inside the `package--builtin-versions'
+list we ensure that Emacs package.el logic will not attempt to download
+these packages.  We don't need Emacs to download them because they have
+already been downloaded when Emacs was in normal startup mode.  The
+DEPS-PKG-VERSIONS-ALIST list was originally returned by the function
+`pel-elpa-disable-pkg-deps-in'."
+  (with-temp-file fname
+    (erase-buffer)
+    (goto-char (point-min))
+    (insert (pel-setup-fast-startup-init-text
+             deps-pkg-versions-alist
+             extra-code))))
 
 ;; --
 
@@ -1420,9 +1430,9 @@ Failed fast startup setup for %s after %d of %d steps: %s
     (user-error "PEL currently is not able to switch to fast startup mode when
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off
-  to execute this command.  Once the switch is completed, PEL can
-  run in fast startup mode with package startup active in graphic mode.
-  Sorry for the inconvenience"))
+  (with “M-x pel-setup-no-quickstart) to execute this command.
+  Once the switch is completed, PEL can run in fast startup mode with package
+  startup active in graphic mode. Sorry for the inconvenience"))
    ;;
    (t
     (when (y-or-n-p (pel-prompt-with-quickstart-state
@@ -1478,7 +1488,7 @@ is only one or when its for the terminal (TTY) mode."
     (user-error "PEL currently is not able to restore from fast startup mode when
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off
-  to execute this command.
+  (with “M-x pel-setup-no-quickstart) to execute this command.
   Sorry for the inconvenience"))
    (t
     (when (y-or-n-p (pel-prompt-with-quickstart-state
