@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-17 09:34:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-17 11:41:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -261,13 +261,16 @@ depends on the TYPE argument, which can be one of the following symbols:
 
 - \\='final-dir-at-startup   The final directory elpa-complete, elpa-reduced,
                           elpa-complete-graphics or elpa-reduced-graphics
-                          directory used by this Emacs sessions when it
+                          directory used by this Emacs session when it
                           started.
 
 - \\='final-dir-now          The final directory elpa-complete, elpa-reduced,
                           elpa-complete-graphics or elpa-reduced-graphics
                           directory as currently identified in the file
                           system by the elpa or elpa-graphics symlink.
+                          When a symlink is used, the returned value is
+                          fully resolved and identifies the final directory
+                          target.
 
 To understand the purpose of this function you need to understand the
 way PEL organizes the `user-emacs-directory' (normally ~/.emacs.d) with
@@ -316,7 +319,7 @@ use the \"~/.emacs.d/elpa-complete\" directory that was not modified.
 It becomes important for the PEL logic to be able to identify the
 real (final) directory in some situations, and identify the location of
 the symlink (switch) in other situations.  And this must be easy to
-identify the one that the current Emacs session started with and the the
+identify the one that the current Emacs session started with and the
 final directory currently identified by the symlink that can differ from
 the one the current Emacs session is using because the PEL logic changed
 the target of the symlink to change the mode from normal to fast or vice
@@ -348,24 +351,25 @@ Here's a representation of the symlink and directories:
                  +-- elpa-reduced-graphics  |
                                             /
 "
-  (cond
-   ;;
-   ((eq type 'final-dir-at-startup)
-    ;; although PEL init ensure package-user-dir ends with a "/"
-    ;; don't take any chances: ensure it does.
-    (file-name-as-directory package-user-dir))
-   ;;
-   ((memq type '(final-dir-now switch-dir))
-    (let ((switch-dir (pel-locate-elpa)))
-      (if (eq type 'switch-dir)
-          switch-dir
-        ;; final-dir-now requested
-        (if (file-symlink-p (directory-file-name switch-dir))
-            (file-truename switch-dir)
-          switch-dir))))
-   ;;
-   ((eq type 'switch-dir-at-startup) pel--elpa-dirpath-original)
-   (t (error "Invalid pel-elpa-dirpath argument: %S" type))))
+  (file-name-as-directory
+   (cond
+    ;;
+    ((eq type 'final-dir-at-startup)
+     ;; although PEL init ensure package-user-dir ends with a "/"
+     ;; don't take any chances: ensure it does.
+     package-user-dir)
+    ;;
+    ((memq type '(final-dir-now switch-dir))
+     (let ((switch-dir (pel-locate-elpa)))
+       (if (eq type 'switch-dir)
+           switch-dir
+         ;; final-dir-now requested
+         (if (file-symlink-p (directory-file-name switch-dir))
+             (file-truename switch-dir)
+           switch-dir))))
+    ;;
+    ((eq type 'switch-dir-at-startup) pel--elpa-dirpath-original)
+    (t (error "Invalid pel-elpa-dirpath argument: %S" type)))))
 
 (defun pel-elpa-attic-dirpath ()
   "Return the absolute path of the user elpa-attic directory.
