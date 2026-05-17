@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-17 08:12:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-17 09:34:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -350,7 +350,10 @@ Here's a representation of the symlink and directories:
 "
   (cond
    ;;
-   ((eq type 'final-dir-at-startup) package-user-dir)
+   ((eq type 'final-dir-at-startup)
+    ;; although PEL init ensure package-user-dir ends with a "/"
+    ;; don't take any chances: ensure it does.
+    (file-name-as-directory package-user-dir))
    ;;
    ((memq type '(final-dir-now switch-dir))
     (let ((switch-dir (pel-locate-elpa)))
@@ -361,7 +364,7 @@ Here's a representation of the symlink and directories:
             (file-truename switch-dir)
           switch-dir))))
    ;;
-   ((eq type 'switched-dir-at-startup) pel--elpa-dirpath-original)
+   ((eq type 'switch-dir-at-startup) pel--elpa-dirpath-original)
    (t (error "Invalid pel-elpa-dirpath argument: %S" type))))
 
 (defun pel-elpa-attic-dirpath ()

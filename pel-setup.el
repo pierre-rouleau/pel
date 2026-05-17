@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-16 15:07:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-17 11:01:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -707,6 +707,13 @@ graphic mode."
 graphic mode."
   (pel--switch-to-elpa "elpa-reduced" for-graphics))
 
+;; Prevent warnings when compiling on Emacs < 29.
+;; where `loaddefs-generate' does not exist.
+(declare-function loaddefs-generate "loaddefs-gen"
+                  (dir output-file &optional excluded-files
+                       extra-data include-package-version
+                       generate-full))
+
 (defun pel-generate-autoload-file-for (dir)
   "Prepare (compile + autoload) all files in directory DIR.
 Return the complete name of the generated autoload file."
@@ -720,15 +727,21 @@ Return the complete name of the generated autoload file."
           (require 'loaddefs-gen)
           (condition-case-unless-debug err
               (progn
-                (when (fboundp 'loaddefs-generate) ; Prevent warnings when compiling on Emacs < 29.
-                  (with-no-warnings                ; where loaddefs-generate does not exist
-                    (loaddefs-generate (list dir)
-                                       output-file
-                                       nil
-                                       (concat "(add-to-list 'load-path"
-                                               " (file-name-directory"
-                                               " (or load-file-name"
-                                               "      buffer-file-name)))\n"))))
+                (when (fboundp 'loaddefs-generate)
+                  (loaddefs-generate (list dir)
+                                     output-file
+                                     nil
+                                     ;; code to put at top of the
+                                     ;; pel-bundle-autoloads.el: ensure that
+                                     ;; the directory name added to load-path
+                                     ;; does not have trailing "/", like other
+                                     ;; directories in loade-path because
+                                     ;; `add-to-list' compares strings exactly.
+                                     (concat "(add-to-list 'load-path"
+                                             "(directory-file-name"
+                                             " (file-name-directory"
+                                             "  (or load-file-name"
+                                             "      buffer-file-name))))\n")))
                 (setq generated-fname output-file)
                 (when (get-buffer "pel-bundle-autoloads.el")
                   (kill-buffer "pel-bundle-autoloads.el")))
@@ -1103,23 +1116,86 @@ If all is OK, it just returns nil."
 The Emacs directory (%s) is not compatible with PEL startup management."
         user-emacs-directory)))))
 
-(defun pel--create-pel-setup-fast-startup-init (deps-pkg-versions-alist new-bundle-dp)
-  "Write Emacs Lisp code to add the DEPS-PKG-VERSIONS-ALIST to Emacs with a bundle.
+
+(defun pel--setup-fast-startup-init-extra-code (bundle-dp)
+  "Return a string with Elisp code to add support for the PEL bundle package.
+The BUNDLE-DP is the directory path of the PEL bundle.
+
+The returned code string uses a `%s' placeholder at the `elpa-reduced'
+component of the path so that the generated `pel-fast-startup-init'
+function can select the plain or `-graphics' variant at startup time via
+its FORCE-GRAPHICS parameter.
+
+A warning is issued (via `display-warning') when:
+- BUNDLE-DP is nil or empty (cannot generate any path).
+- BUNDLE-DP does not contain \"elpa-reduced\" (the `%s' placeholder
+  substitution would be a no-op, silently disabling graphics-mode
+  load-path switching)."
+  ;;
+  ;; Guard 1: nil or empty path — nothing useful can be generated.
+  ;;          On error: skip step 2: return an empty string.
+  (if (or (null bundle-dp)
+          (string-empty-p bundle-dp))
+      (progn
+        (display-warning
+         'pel-setup
+         "pel--setup-fast-startup-init-extra-code: \
+bundle-dp is nil or empty; step 2 load-path code will be omitted.
+Please report this internal code error to project maintainer!"
+         :error)
+        ;; Return an empty string
+        "")
+    ;;
+    ;; Guard 2: path does not contain "elpa-reduced" — the %s substitution
+    ;; would be a no-op and graphics/terminal path selection would silently
+    ;; break.  However do not skip step 2 on this error.
+    (unless (string-match-p "elpa-reduced" bundle-dp)
+      (display-warning
+       'pel-setup
+       (format "pel--setup-fast-startup-init-extra-code: \
+bundle-dp \"%s\" does not contain \"elpa-reduced\".
+The generated step 2 load-path form will not distinguish between \
+graphics and terminal Emacs instances.
+Please report this internal code error to project maintainer!"
+               bundle-dp)
+       :error))
+    ;;
+    ;; Proceed: generate and return the string.
+    (let* (;; Introduce the %s placeholder at the elpa-reduced level so the
+           ;; generated code can pick plain or graphics variant at run time.
+           (bundle-with-placeholder
+            (replace-regexp-in-string
+             "elpa-reduced"
+             "elpa-reduced%s"
+             bundle-dp))
+           ;; Escape any remaining % that are NOT our intended %s placeholder
+           ;; to prevent misinterpretation by `format' when the user's path
+           ;; happens to contain a literal % character.
+           ;; We only want to protect % not followed by 's'.
+           (safe-path
+            (replace-regexp-in-string
+             "%\\([^s]\\)" "%%\\1"
+             bundle-with-placeholder)))
+      (format "\
+;; step 2: (only for Emacs >= 27)
+  (when using-package-quickstart
+      (add-to-list 'load-path
+                   (format \"%s\"
+                           (if force-graphics \"-graphics\" \"\"))))"
+              safe-path))))
+
+
+(defun pel--create-pel-setup-fast-startup-init (deps-pkg-versions-alist
+                                                new-bundle-dp)
+  "Write Elisp code to add the DEPS-PKG-VERSIONS-ALIST to Emacs with a bundle.
 
 NEW-BUNDLED-DP is the name of the new Elpa bundle directory."
   (pel-setup-fast-startup-init
    pel-fast-startup-init-fname
    deps-pkg-versions-alist
    (pel-string-when pel-emacs-27-or-later-p
-                    (format ";; step 2: (only for Emacs >= 27)
-  (when using-package-quickstart
-      (add-to-list 'load-path
-                   (format \"%s\"
-                           (if force-graphics \"-graphics\" \"\"))))"
-                            (replace-regexp-in-string
-                             "elpa-reduced"
-                             "elpa-reduced%s"
-                             new-bundle-dp)))))
+                    (pel--setup-fast-startup-init-extra-code
+                     new-bundle-dp))))
 
 ;; Declare native-compile-async to ensure the code compiles on older Emacs
 ;; where this function does not exists.  Code won't use it in those Emacs
@@ -1317,7 +1393,7 @@ Failed fast startup setup for %s after %d of %d steps: %s
  Please also report the problem as a bug in the PEL Github project."
                                 (pel-setup-mode-description for-graphics)
                                 step-count
-                                (if pel-emacs-27-or-later-p 19 17)
+                                (if pel-emacs-27-or-later-p 20 18)
                                 err
                                 user-emacs-directory))))
     (cd cd-original)))
