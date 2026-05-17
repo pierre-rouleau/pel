@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-17 12:35:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-17 18:14:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -714,6 +714,15 @@ graphic mode."
                        extra-data include-package-version
                        generate-full))
 
+(defconst pel--auto-load-adder-code
+  "  (let* ((__dir (directory-file-name
+                    (file-name-directory (or load-file-name buffer-file-name)))))
+       (if (fboundp 'pel--add-to-load-path-once)
+           (pel--add-to-load-path-once __dir)
+         (add-to-list 'load-path __dir)))"
+
+  "Elisp Code that adds a package to load path.")
+
 (defun pel-generate-autoload-file-for (dir)
   "Prepare (compile + autoload) all files in directory DIR.
 Return the complete name of the generated autoload file."
@@ -728,20 +737,19 @@ Return the complete name of the generated autoload file."
           (condition-case-unless-debug err
               (progn
                 (when (fboundp 'loaddefs-generate)
-                  (loaddefs-generate (list dir)
-                                     output-file
-                                     nil
-                                     ;; code to put at top of the
-                                     ;; pel-bundle-autoloads.el: ensure that
-                                     ;; the directory name added to load-path
-                                     ;; does not have trailing "/", like other
-                                     ;; directories in loade-path because
-                                     ;; `add-to-list' compares strings exactly.
-                                     (concat "(add-to-list 'load-path"
-                                             "(directory-file-name"
-                                             " (file-name-directory"
-                                             "  (or load-file-name"
-                                             "      buffer-file-name))))\n")))
+                  (loaddefs-generate
+                   (list dir)
+                   output-file
+                   nil
+                   ;; code to put at top of the
+                   ;; pel-bundle-autoloads.el: ensure that
+                   ;; the directory name added to load-path
+                   ;; does not have trailing "/", like other
+                   ;; directories in load-path because
+                   ;; `add-to-list' compares strings
+                   ;; exactly and use the safe adder if it
+                   ;; exists.
+                   pel--auto-load-adder-code))
                 (setq generated-fname output-file)
                 (when (get-buffer "pel-bundle-autoloads.el")
                   (kill-buffer "pel-bundle-autoloads.el")))
@@ -839,6 +847,26 @@ and has extra code specified in EXTRA-CODE."
 
 \(require 'package)
 
+;; ----
+;; Utility function
+
+(defun pel--add-to-load-path-once (dir)
+  \"Add directory DIR to `load-path' if DIR is not already inside it.
+Prevent multiple insertion by literal string and by truename
+to avoid symlink/realpath double entries.\"
+  ;; load-path directories do not end with /
+  (let* ((norm (directory-file-name (expand-file-name dir)))
+         (norm-truename (ignore-errors (file-truename norm))))
+    (unless (seq-some
+             (lambda (p)
+               (let* ((p0 (directory-file-name (expand-file-name p)))
+                      (pt (ignore-errors (file-truename p0))))
+                 (or (string= p0 norm)
+                     (and norm-truename pt (string= pt norm-truename)))))
+             load-path)
+      (add-to-list 'load-path norm))))
+
+;; ----
 \(defvar pel-running-in-fast-startup-p nil)
 
 \(defvar pel-fast-startup-builtin-packages
@@ -1186,7 +1214,7 @@ Please report this internal code error to project maintainer!"
       (format "\
 ;; step 2: (only for Emacs >= 27)
   (when using-package-quickstart
-      (add-to-list 'load-path
+      (pel--add-to-load-path-once 'load-path
                    (format \"%s\"
                            (if force-graphics \"-graphics\" \"\"))))"
               safe-path))))

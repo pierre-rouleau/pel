@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-16 15:06:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-17 18:21:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -122,15 +122,29 @@ FOR-GRAPHICS is:
   (if (and (require 'package nil :noerror)
            (fboundp 'package-quickstart-refresh)
            (boundp 'package-quickstart-file))
-      (let* ((package-user-dir        (pel-elpa-name dirpath for-graphics))
+      ;; If package-quickstart-refresh errors, leave a clear diagnostic and do
+      ;; not leave a half-written quickstart file. Wrap with condition-case
+      ;; and remove the file on failure.
+      (let* ((package-user-dir (pel-elpa-name dirpath for-graphics))
              (package-quickstart-file (pel-elpa-name package-quickstart-file for-graphics))
-             (package-alist           (pel-elpa-package-alist-of-dir package-user-dir)))
-        (package-quickstart-refresh)
-        ;; Byte-compile it if requested, otherwise remove its .elc
-        (pel-compile-file-if package-quickstart-file
-                             (and pel-compile-package-quickstart
-                                  (pel-remove-no-byte-compile-in
-                                   package-quickstart-file))))
+             (package-alist (pel-elpa-package-alist-of-dir package-user-dir)))
+        (condition-case err
+            (progn
+              (package-quickstart-refresh)
+              ;; Byte-compile it if requested, otherwise remove its .elc
+              (pel-compile-file-if
+               package-quickstart-file
+               (and pel-compile-package-quickstart
+                    (pel-remove-no-byte-compile-in package-quickstart-file))))
+          (error
+           (when (file-exists-p package-quickstart-file)
+             (ignore-errors (delete-file package-quickstart-file))
+             (ignore-errors (delete-file (concat package-quickstart-file "c"))))
+           (signal 'error
+                   (list (format "Failed generating package-quickstart for %s (%s): %s"
+                                 package-user-dir
+                                 (if for-graphics "graphics" "tty")
+                                 (error-message-string err)))))))
     ;; report any error
     (error "Failed accessing package-quickstart")))
 
