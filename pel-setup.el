@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-17 11:01:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-17 11:25:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -805,23 +805,20 @@ Return the complete file path name of the file written."
 (defvar pel-running-in-fast-startup-p) ; Really defined in init.el.
 ;;                                     ; here: prevent byte-compiler warnings.
 (defun pel-bundled-mode (activate)
-  "Activate PEL bundled mode if ACTIVATE is non-nil, de-activate it otherwise.
+  "Activate PEL bundled mode if ACTIVATE is non-nil, deactivate otherwise.
 
-This byte-compiles the pel_keys.el file with a new behaviour for the following
-macros that control PEL's management of external package installation and
-loading:
-- `pel-ensure-package-elpa'
+This byte-compiles the pel_keys.el file with the behaviour of macros
+like `pel-ensure-package-elpa' controlled by the value of ACTIVATE.
+When ACTIVATE is non-nil, the function `pel-in-fast-startup-p' returns t
+which prevents these macros from emitting code that checks for presence of
+external packages and loads them.
 
-When ACTIVATE is non-nil, then the function `pel-in-fast-startup-p' returns t
-which prevents these macros to emit code that check for presence of external
-package and to load them.
-
-Return a (activate . byte-compile result) cons cell."
-  (setq pel-running-in-fast-startup-p activate)
-  (cons pel-running-in-fast-startup-p
-        (byte-compile-file (concat (file-name-sans-extension
-                                    (locate-library "pel_keys"))
-                                   ".el"))))
+Return a (ACTIVATE . byte-compile result) cons cell."
+  (let ((pel-running-in-fast-startup-p activate))
+    (cons pel-running-in-fast-startup-p
+          (byte-compile-file (concat (file-name-sans-extension
+                                      (locate-library "pel_keys"))
+                                     ".el")))))
 
 (defun pel-setup-fast-startup-init (fname deps-pkg-versions-alist extra-code)
   "Write Emacs Lisp code to add the DEPS-PKG-VERSIONS-ALIST to Emacs in FNAME.
