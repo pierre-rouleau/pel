@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-18 10:08:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-18 12:00:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1033,8 +1033,8 @@ The function does not support printing a full report on stdout."
 - # loaded files             : %d
 - # features                 : %d
 - # package-alist            : %d
-- # packages activated       : %d
-- # packages selected        : %d
+- # packages activated *     : %d <<= # of package used by Emacs in normal mode
+- # packages selected        : %d (explicitly selected; no deps, no built-ins)
 - # PEL loaded commands      : %d
 - # upgradable elpa packages : %d
 - # PEL PDF files            : %d

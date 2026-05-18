@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-18 10:31:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-18 11:41:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -417,7 +417,9 @@ function does not attempt to detect duplicate and returns nil."
                 (push (cons new existing) duplicates)
                 (display-warning
                  'pel-elpa-create-copies
-                 (format "Duplicate file name in bundle:\n new: %s\n existing: %s"
+                 (format "Duplicate file name in bundle:
+  new     : %s
+  existing: %s"
                          new existing)
                  :warning))
             ;; destination does not exist (normal case):
