@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-17 22:24:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-18 10:31:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -412,13 +412,13 @@ function does not attempt to detect duplicate and returns nil."
               ;; note: the destination will hold the name of the other
               ;;       file when with-symlinks true.  But report the issue
               ;;       as a warning.
-              (progn
-                (push (cons src-fn (file-truename dst-fn))
-                      duplicates)
+              (let ((new src-fn)
+                    (existing (file-truename dst-fn)))
+                (push (cons new existing) duplicates)
                 (display-warning
                  'pel-elpa-create-copies
-                 (format "Duplicate file name in bundle: %s\n existing: %s"
-                         (car duplicates) (cdr (car duplicates)))
+                 (format "Duplicate file name in bundle:\n new: %s\n existing: %s"
+                         new existing)
                  :warning))
             ;; destination does not exist (normal case):
             ;;   copy file or create symlink
