@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-18 12:00:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-18 12:36:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1033,7 +1033,7 @@ The function does not support printing a full report on stdout."
 - # loaded files             : %d
 - # features                 : %d
 - # package-alist            : %d
-- # packages activated *     : %d <<= # of package used by Emacs in normal mode
+- # packages activated *     : %d <<= # of packages used by Emacs
 - # packages selected        : %d (explicitly selected; no deps, no built-ins)
 - # PEL loaded commands      : %d
 - # upgradable elpa packages : %d
@@ -1180,18 +1180,29 @@ inside a git repository (uses `pel--elisp-files')."
     (dolist (file (pel--elisp-files))
       (load-file (expand-file-name file current-directory)))))
 
-(defun pel-package-info-all ()
-  "Generate statistics with all PEL files loaded.
-
-Use only for computing statistics!! It loads all of PEL."
-  (interactive)
-  (load-library "pel_keys")
-  (pel-load-all)
-  (pel-package-info-message))
-
 (defun pel-package-info-message ()
   "Print PEL package information on stdout."
   (pel-package-info nil t))
+
+(defun pel-package-info-all ()
+  "Generate statistics with all PEL files loaded.
+
+CAUTION: Use only for computing statistics as it loads all the packages
+and all PEL files!!"
+  (interactive)
+  (load-library "pel_keys")
+  (pel-load-all)
+  ;; Ensure all packages are fully activated before gathering stats.
+  ;; In Emacs 27+, package-activate-all must be called explicitly in
+  ;; --batch mode since the automatic pre-init call to package-initialize
+  ;; was removed. Without this, package-activated-list will be incomplete.
+  (require 'package)
+  (if (fboundp 'package-activate-all)
+      (package-activate-all)            ; Emacs 27+
+    (package-initialize))               ; Emacs 26 fallback
+  ;; Now print the information.
+  (pel-package-info-message))
+
 ;; ---------------------------------------------------------------------------
 
 (defun pel-inactive-user-options ()
