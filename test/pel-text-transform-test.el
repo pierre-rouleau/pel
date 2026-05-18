@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, April 19 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 19:32:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-18 10:41:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -131,15 +131,15 @@
     ("One two Three Four Five Six Seven Eight Nine Ten"
      (lambda ()
        (goto-char 4)
-       (pel-downcase-word-or-region))
+       (pel-downcase-word-or-region)))
     ("One two Three Four Five Six Seven Eight Nine Ten"
      (lambda ()
        (goto-char 8)
        (pel-downcase-word-or-region -1)))
-    ("One Two Three Four Five Six SeVen Eight Nine Ten"
+    ("One Two Three Four Five Six SEven Eight Nine Ten"
      (lambda ()
        (goto-char 30)
-       (pel-downcase-word-or-region))))))
+       (pel-downcase-word-or-region)))))
 
 (defconst pel--tt-test3
   '(;; initial string
