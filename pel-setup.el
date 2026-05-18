@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-17 22:19:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-18 10:10:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -268,6 +268,7 @@
 ;;                             ;      `pel-startup-mode'
 ;;                             ;      `pel-prompt-with-quickstart-state'
 ;;                             ;      `pel-push-fmt'
+(require 'subr-x)              ; use: `string-empty-p'
 
 ;; Then following functions are defined in pel-setup-27, which is
 ;; only used in Emacs >= 27.
@@ -911,7 +912,7 @@ Return the pkg/version alist.\"
 ;; This is needed because in PEL fast-startup mode all external
 ;; packages have already been downloaded but they are not visible to
 ;; package.el logic at this point because the packages have been bundled
-;; together inside the elpa-reduce/pel-bundle *pseudo-package*.
+;; together inside the elpa-reduced/pel-bundle *pseudo-package*.
 
 \(defun pel--pct (_packages)
   \"Filter packages to prevent downloads.\"
@@ -1357,7 +1358,7 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
           ;; pass whether its invoked for graphics mode and whether it's
           ;; called from early-init.
           ;;
-          ;; The `pel-fast-startup-init' function is s called by early-init
+          ;; The `pel-fast-startup-init' function is called by early-init
           ;; for Emacs ≥ 27, and called by init.el for earlier versions of
           ;; Emacs.  in both cases to add the (package
           ;; version) dependencies to simulate builtins by adding them to the
