@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-14 16:37:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-18 10:10:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -268,6 +268,7 @@
 ;;                             ;      `pel-startup-mode'
 ;;                             ;      `pel-prompt-with-quickstart-state'
 ;;                             ;      `pel-push-fmt'
+(require 'subr-x)              ; use: `string-empty-p'
 
 ;; Then following functions are defined in pel-setup-27, which is
 ;; only used in Emacs >= 27.
@@ -406,12 +407,13 @@ slash) or in file name (without the terminating slash) format."
 Return nil if no problems found: all is OK, ready to use Emacs in
 independent environments for terminal and graphics mode."
   (require 'cus-edit)                   ; use: `custom-file'`
-  (let* ((custom-fname    (pel-elpa-name custom-file nil))
+  (let* ((used-elpa-dirpath (pel-elpa-dirpath 'switch-dir))
+         (custom-fname    (pel-elpa-name custom-file nil))
          (custom-fname-g  (pel-elpa-name custom-file :for-graphics))
-         (elpa-dp         (pel-elpa-name pel-elpa-dirpath nil))
+         (elpa-dp         (pel-elpa-name used-elpa-dirpath nil))
          (elpa-dn         (directory-file-name elpa-dp))
          (elpa-dn-g       (pel-elpa-name elpa-dn :for-graphics))
-         (elpa-cmplt-dn   (pel-sibling-dirname pel-elpa-dirpath "elpa-complete"))
+         (elpa-cmplt-dn   (pel-sibling-dirname used-elpa-dirpath "elpa-complete"))
          (elpa-cmplt-dn-g (pel-elpa-name elpa-cmplt-dn :for-graphics))
          (utils-dp        (pel-elpa-name (pel-utils-dirpath) nil))
          (utils-dp-g      (pel-elpa-name (pel-utils-dirpath) :for-graphics))
@@ -500,12 +502,13 @@ Return a list of performed actions (in reverse order of execution)."
 
 Utility function.  If REASON-MSG is specified include that message on error."
   (require 'cus-edit)                   ; use: `custom-file'`
-  (let* ((custom-fn       (pel-elpa-name custom-file nil))
+  (let* ((used-elpa-dirpath (pel-elpa-dirpath 'switch-dir))
+         (custom-fn       (pel-elpa-name custom-file nil))
          (custom-fn-g     (pel-elpa-name custom-file :for-graphics))
-         (elpa-dp         (pel-elpa-name pel-elpa-dirpath nil))
+         (elpa-dp         (pel-elpa-name used-elpa-dirpath nil))
          (elpa-dn         (directory-file-name elpa-dp))
          (elpa-dn-g       (pel-elpa-name elpa-dn :for-graphics))
-         (elpa-cmplt-dn   (pel-sibling-dirname pel-elpa-dirpath "elpa-complete"))
+         (elpa-cmplt-dn   (pel-sibling-dirname used-elpa-dirpath "elpa-complete"))
          (elpa-cmplt-dn-g (pel-elpa-name elpa-cmplt-dn :for-graphics))
          (utils-dn        (pel-elpa-name (directory-file-name (pel-utils-dirpath))
                                          nil))
@@ -686,9 +689,10 @@ There are inconsistencies in the PEL dual environment setup.
                 like \"elpa-complete\" or \"elpa-reduced\".
 - FOR-GRAPHICS: non-nil when dual environment is set and Emacs runs in
 graphic mode."
-  (let ((adj (lambda (fn) (pel-elpa-name fn for-graphics))))
-    (pel-point-symlink-to (λc adj pel-elpa-dirpath)
-                          (λc adj (pel-sibling-dirpath pel-elpa-dirpath name)))))
+  (let* ((used-elpa-dirpath (pel-elpa-dirpath 'switch-dir))
+         (adj (lambda (fn) (pel-elpa-name fn for-graphics))))
+    (pel-point-symlink-to (λc adj used-elpa-dirpath)
+                          (λc adj (pel-sibling-dirpath used-elpa-dirpath name)))))
 
 (defun pel-switch-to-elpa-complete (for-graphics)
   "Change elpa symlink to the elpa-complete sub-directory.
@@ -704,6 +708,22 @@ graphic mode."
 graphic mode."
   (pel--switch-to-elpa "elpa-reduced" for-graphics))
 
+;; Prevent warnings when compiling on Emacs < 29.
+;; where `loaddefs-generate' does not exist.
+(declare-function loaddefs-generate "loaddefs-gen"
+                  (dir output-file &optional excluded-files
+                       extra-data include-package-version
+                       generate-full))
+
+(defconst pel--auto-load-adder-code
+  "  (let* ((__dir (directory-file-name
+                    (file-name-directory (or load-file-name buffer-file-name)))))
+       (if (fboundp 'pel--add-to-load-path-once)
+           (pel--add-to-load-path-once __dir)
+         (add-to-list 'load-path __dir)))"
+
+  "Elisp Code that adds a package to load path.")
+
 (defun pel-generate-autoload-file-for (dir)
   "Prepare (compile + autoload) all files in directory DIR.
 Return the complete name of the generated autoload file."
@@ -717,15 +737,20 @@ Return the complete name of the generated autoload file."
           (require 'loaddefs-gen)
           (condition-case-unless-debug err
               (progn
-                (when (fboundp 'loaddefs-generate) ; Prevent warnings when compiling on Emacs < 29.
-                  (with-no-warnings                ; where loaddefs-generate does not exist
-                    (loaddefs-generate (list dir)
-                                       output-file
-                                       nil
-                                       (concat "(add-to-list 'load-path"
-                                               " (file-name-directory"
-                                               " (or load-file-name"
-                                               "      buffer-file-name)))\n"))))
+                (when (fboundp 'loaddefs-generate)
+                  (loaddefs-generate
+                   (list dir)
+                   output-file
+                   nil
+                   ;; code to put at top of the
+                   ;; pel-bundle-autoloads.el: ensure that
+                   ;; the directory name added to load-path
+                   ;; does not have trailing "/", like other
+                   ;; directories in load-path because
+                   ;; `add-to-list' compares strings
+                   ;; exactly and use the safe adder if it
+                   ;; exists.
+                   pel--auto-load-adder-code))
                 (setq generated-fname output-file)
                 (when (get-buffer "pel-bundle-autoloads.el")
                   (kill-buffer "pel-bundle-autoloads.el")))
@@ -789,49 +814,29 @@ Return the complete file path name of the file written."
 (defvar pel-running-in-fast-startup-p) ; Really defined in init.el.
 ;;                                     ; here: prevent byte-compiler warnings.
 (defun pel-bundled-mode (activate)
-  "Activate PEL bundled mode if ACTIVATE is non-nil, de-activate it otherwise.
+  "Activate PEL bundled mode if ACTIVATE is non-nil, deactivate otherwise.
 
-This byte-compiles the pel_keys.el file with a new behaviour for the following
-macros that control PEL's management of external package installation and
-loading:
-- `pel-ensure-package-elpa'
+This byte-compiles the pel_keys.el file with the behaviour of macros
+like `pel-ensure-package-elpa' controlled by the value of ACTIVATE.
+When ACTIVATE is non-nil, the function `pel-in-fast-startup-p' returns t
+which prevents these macros from emitting code that checks for presence of
+external packages and loads them.
 
-When ACTIVATE is non-nil, then the function `pel-in-fast-startup-p' returns t
-which prevents these macros to emit code that check for presence of external
-package and to load them.
+Return a (ACTIVATE . byte-compile result) cons cell."
+  (let ((pel-running-in-fast-startup-p activate))
+    (cons pel-running-in-fast-startup-p
+          (byte-compile-file (concat (file-name-sans-extension
+                                      (locate-library "pel_keys"))
+                                     ".el")))))
 
-Return a (activate . byte-compile result) cons cell."
-  (setq pel-running-in-fast-startup-p activate)
-  (cons pel-running-in-fast-startup-p
-        (byte-compile-file (concat (file-name-sans-extension
-                                    (locate-library "pel_keys"))
-                                   ".el"))))
+(defun pel-setup-fast-startup-init-text (deps-pkg-versions-alist extra-code)
+  "Return the Elisp code for the pel-fast-startup-init.el file.
 
-(defun pel-setup-fast-startup-init (fname deps-pkg-versions-alist extra-code)
-  "Write Emacs Lisp code to add the DEPS-PKG-VERSIONS-ALIST to Emacs in FNAME.
-
-- FNAME: string.  Name of the file where the code of the function
-  `pel-fast-startup-init' is written.
-
-The function `pel-fast-startup-init' adds each entry of
-DEPS-PKG-VERSIONS-ALIST to Emacs `package--builtin-versions' and adds
-some EXTRA-CODE.
-
-- DEPS-PKG-VERSIONS-ALIST: list of package dependencies gathered from the
-  various X-pkg.el files for each package X whose code was placed in the
-  elpa-reduced/pel-bundle *pseudo-package* that was not already part of
-  the `package--builtin-versions' list.
-
-By adding those package/version inside the `package--builtin-versions'
-list we ensure that Emacs package.el logic will not attempt to download
-these packages.  We don't need Emacs to download them because they have
-already been downloaded when Emacs was in normal startup mode.  The
-DEPS-PKG-VERSIONS-ALIST list was originally returned by the function
-`pel-elpa-disable-pkg-deps-in'."
-  (with-temp-file fname
-    (erase-buffer)
-    (goto-char (point-min))
-    (insert (format "\
+This file is required when PEL uses the fast startup mode.
+The file is created for the packages identified in DEPS-PKG-VERSIONS-ALIST
+and has extra code specified in EXTRA-CODE."
+  ;;
+  (format "\
 ;;; Setup Emacs for PEL fast startup.  -*- lexical-binding: t; -*-
 ;;; DO NOT EDIT! It will be overwritten next time pel-setup-fast is executed!
 ;;;
@@ -843,6 +848,27 @@ DEPS-PKG-VERSIONS-ALIST list was originally returned by the function
 
 \(require 'package)
 
+;; ----
+;; Utility function
+
+(defun pel--add-to-load-path-once (dir)
+  \"Add directory DIR to `load-path' if DIR is not already inside it.
+Prevent multiple insertion by literal string and by truename to avoid
+symlink/realpath double entries.\"
+  (let* ((norm (directory-file-name (expand-file-name dir)))
+         (norm-truename (ignore-errors (file-truename norm)))
+         (found nil))
+    (dolist (p load-path)
+      (let* ((p0 (directory-file-name (expand-file-name p)))
+             (pt (ignore-errors (file-truename p0))))
+        (when (or (string= p0 norm)
+                  (and norm-truename pt (string= pt norm-truename)))
+          (setq found t))))
+    (unless found
+      (add-to-list 'load-path norm))))
+
+
+;; ----
 \(defvar pel-running-in-fast-startup-p nil)
 
 \(defvar pel-fast-startup-builtin-packages
@@ -858,7 +884,7 @@ DEPS-PKG-VERSIONS-ALIST list was originally returned by the function
 \(defun pel-fast-startup-init (&optional force-graphics using-package-quickstart)
   \"Setup data to support the fast-startup mode.
 
-- #1: Add pkg/version of the dependencies of packages whose code has been been
+- #1: Add pkg/version of the dependencies of packages whose code has been
       bundled into elpa-reduced/pel-bundle *pseudo-package* to
       `package--builtin-versions' to prevent their downloads.
 - #2: For Emacs >= 27, when package-quickstart is used,  an extra step is
@@ -886,7 +912,7 @@ Return the pkg/version alist.\"
 ;; This is needed because in PEL fast-startup mode all external
 ;; packages have already been downloaded but they are not visible to
 ;; package.el logic at this point because the packages have been bundled
-;; together inside the elpa-reduce/pel-bundle *pseudo-package*.
+;; together inside the elpa-reduced/pel-bundle *pseudo-package*.
 
 \(defun pel--pct (_packages)
   \"Filter packages to prevent downloads.\"
@@ -926,8 +952,35 @@ Return the pkg/version alist.\"
 
 ;; ---------------------------------------------------------------------------
 
-" deps-pkg-versions-alist extra-code))))
+" deps-pkg-versions-alist extra-code))
 
+(defun pel-setup-fast-startup-init (fname deps-pkg-versions-alist extra-code)
+  "Write Emacs Lisp code to add the DEPS-PKG-VERSIONS-ALIST to Emacs in FNAME.
+
+- FNAME: string.  Name of the file where the code of the function
+  `pel-fast-startup-init' is written.
+
+The function `pel-fast-startup-init' adds each entry of
+DEPS-PKG-VERSIONS-ALIST to Emacs `package--builtin-versions' and adds
+some EXTRA-CODE.
+
+- DEPS-PKG-VERSIONS-ALIST: list of package dependencies gathered from the
+  various X-pkg.el files for each package X whose code was placed in the
+  elpa-reduced/pel-bundle *pseudo-package* that was not already part of
+  the `package--builtin-versions' list.
+
+By adding those package/version inside the `package--builtin-versions'
+list we ensure that Emacs package.el logic will not attempt to download
+these packages.  We don't need Emacs to download them because they have
+already been downloaded when Emacs was in normal startup mode.  The
+DEPS-PKG-VERSIONS-ALIST list was originally returned by the function
+`pel-elpa-disable-pkg-deps-in'."
+  (with-temp-file fname
+    (erase-buffer)
+    (goto-char (point-min))
+    (insert (pel-setup-fast-startup-init-text
+             deps-pkg-versions-alist
+             extra-code))))
 
 ;; --
 
@@ -1100,23 +1153,86 @@ If all is OK, it just returns nil."
 The Emacs directory (%s) is not compatible with PEL startup management."
         user-emacs-directory)))))
 
-(defun pel--create-pel-setup-fast-startup-init (deps-pkg-versions-alist new-bundle-dp)
-  "Write Emacs Lisp code to add the DEPS-PKG-VERSIONS-ALIST to Emacs with a bundle.
+
+(defun pel--setup-fast-startup-init-extra-code (bundle-dp)
+  "Return a string with Elisp code to add support for the PEL bundle package.
+The BUNDLE-DP is the directory path of the PEL bundle.
+
+The returned code string uses a `%s' placeholder at the `elpa-reduced'
+component of the path so that the generated `pel-fast-startup-init'
+function can select the plain or `-graphics' variant at startup time via
+its FORCE-GRAPHICS parameter.
+
+A warning is issued (via `display-warning') when:
+- BUNDLE-DP is nil or empty (cannot generate any path).
+- BUNDLE-DP does not contain \"elpa-reduced\" (the `%s' placeholder
+  substitution would be a no-op, silently disabling graphics-mode
+  load-path switching)."
+  ;;
+  ;; Guard 1: nil or empty path — nothing useful can be generated.
+  ;;          On error: skip step 2: return an empty string.
+  (if (or (null bundle-dp)
+          (string-empty-p bundle-dp))
+      (progn
+        (display-warning
+         'pel-setup
+         "pel--setup-fast-startup-init-extra-code: \
+bundle-dp is nil or empty; step 2 load-path code will be omitted.
+Please report this internal code error to project maintainer!"
+         :error)
+        ;; Return an empty string
+        "")
+    ;;
+    ;; Guard 2: path does not contain "elpa-reduced" — the %s substitution
+    ;; would be a no-op and graphics/terminal path selection would silently
+    ;; break.  However do not skip step 2 on this error.
+    (unless (string-match-p "elpa-reduced" bundle-dp)
+      (display-warning
+       'pel-setup
+       (format "pel--setup-fast-startup-init-extra-code: \
+bundle-dp \"%s\" does not contain \"elpa-reduced\".
+The generated step 2 load-path form will not distinguish between \
+graphics and terminal Emacs instances.
+Please report this internal code error to project maintainer!"
+               bundle-dp)
+       :error))
+    ;;
+    ;; Proceed: generate and return the string.
+    (let* (;; Introduce the %s placeholder at the elpa-reduced level so the
+           ;; generated code can pick plain or graphics variant at run time.
+           (bundle-with-placeholder
+            (replace-regexp-in-string
+             "elpa-reduced"
+             "elpa-reduced%s"
+             bundle-dp))
+           ;; Escape any remaining % that are NOT our intended %s placeholder
+           ;; to prevent misinterpretation by `format' when the user's path
+           ;; happens to contain a literal % character.
+           ;; We only want to protect % not followed by 's'.
+           (safe-path
+            (replace-regexp-in-string
+             "%\\([^s]\\)" "%%\\1"
+             bundle-with-placeholder)))
+      (format "\
+;; step 2: (only for Emacs >= 27)
+  (when using-package-quickstart
+      (pel--add-to-load-path-once
+                   (format \"%s\"
+                           (if force-graphics \"-graphics\" \"\"))))"
+              safe-path))))
+
+
+(defun pel--create-pel-setup-fast-startup-init (deps-pkg-versions-alist
+                                                new-bundle-dp)
+  "Write Elisp code to add the DEPS-PKG-VERSIONS-ALIST to Emacs with a bundle.
 
 NEW-BUNDLED-DP is the name of the new Elpa bundle directory."
   (pel-setup-fast-startup-init
    pel-fast-startup-init-fname
    deps-pkg-versions-alist
    (pel-string-when pel-emacs-27-or-later-p
-                    (format ";; step 2: (only for Emacs >= 27)
-  (when using-package-quickstart
-      (add-to-list 'load-path
-                   (format \"%s\"
-                           (if force-graphics \"-graphics\" \"\"))))"
-                            (replace-regexp-in-string
-                             "elpa-reduced"
-                             "elpa-reduced%s"
-                             new-bundle-dp)))))
+                    (pel--setup-fast-startup-init-extra-code
+                     new-bundle-dp))))
 
 ;; Declare native-compile-async to ensure the code compiles on older Emacs
 ;; where this function does not exists.  Code won't use it in those Emacs
@@ -1143,13 +1259,14 @@ GUI         No              nil
 GUI         Yes             t
 
 It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
-  (let (;; define closures used to reduce visual clutter
-        (adj          (lambda (fn) (pel-elpa-name fn for-graphics))) ; adjust for graphics
-        (elpa-sibling (lambda (dp) (pel-sibling-dirpath pel-elpa-dirpath dp)))
-        (step-count 0)
-        (cd-original default-directory))
+  (let* (;; define closures used to reduce visual clutter
+         (used-elpa-dirpath (pel-elpa-dirpath 'switch-dir))
+         (adj          (lambda (fn) (pel-elpa-name fn for-graphics))) ; adjust for graphics
+         (elpa-sibling (lambda (dp) (pel-sibling-dirpath used-elpa-dirpath dp)))
+         (step-count 0)
+         (cd-original default-directory))
     (condition-case-unless-debug err
-        (let* ((elpa-dp-adj      (λc adj pel-elpa-dirpath))
+        (let* ((elpa-dp-adj      (λc adj used-elpa-dirpath))
                (elpa-reduced-dp  (λc adj (λc elpa-sibling "elpa-reduced")))
                (elpa-complete-dp (λc adj (λc elpa-sibling "elpa-complete")))
                (bundle-dp        (λc elpa-sibling "pel-bundle"))
@@ -1166,7 +1283,7 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
           (pel-prepend-to actions (pel--prepare-main-elpa-dir for-graphics))
           (pel+= step-count 1)          ; STEP 1
           ;;
-          (pel--validate-elpa-symlink pel-elpa-dirpath for-graphics)
+          (pel--validate-elpa-symlink used-elpa-dirpath for-graphics)
           (pel+= step-count 1)          ; STEP 2
           ;;
           ;; The pel-bundle directory should not exists.  That's a
@@ -1241,7 +1358,7 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
           ;; pass whether its invoked for graphics mode and whether it's
           ;; called from early-init.
           ;;
-          ;; The `pel-fast-startup-init' function is s called by early-init
+          ;; The `pel-fast-startup-init' function is called by early-init
           ;; for Emacs ≥ 27, and called by init.el for earlier versions of
           ;; Emacs.  in both cases to add the (package
           ;; version) dependencies to simulate builtins by adding them to the
@@ -1313,7 +1430,7 @@ Failed fast startup setup for %s after %d of %d steps: %s
  Please also report the problem as a bug in the PEL Github project."
                                 (pel-setup-mode-description for-graphics)
                                 step-count
-                                (if pel-emacs-27-or-later-p 19 17)
+                                (if pel-emacs-27-or-later-p 20 18)
                                 err
                                 user-emacs-directory))))
     (cd cd-original)))
@@ -1343,9 +1460,9 @@ Failed fast startup setup for %s after %d of %d steps: %s
     (user-error "PEL currently is not able to switch to fast startup mode when
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off
-  to execute this command.  Once the switch is completed, PEL can
-  run in fast startup mode with package startup active in graphic mode.
-  Sorry for the inconvenience"))
+  (with “M-x pel-setup-no-quickstart) to execute this command.
+  Once the switch is completed, PEL can run in fast startup mode with package
+  startup active in graphic mode. Sorry for the inconvenience"))
    ;;
    (t
     (when (y-or-n-p (pel-prompt-with-quickstart-state
@@ -1385,7 +1502,7 @@ is only one or when its for the terminal (TTY) mode."
     (require 'pel-setup-27)
     (pel--setup-early-init pel-support-package-quickstart)
     (if pel-support-package-quickstart
-        (pel--create-package-quickstart pel-elpa-dirpath for-graphics)
+        (pel--create-package-quickstart (pel-elpa-dirpath 'final-dir-at-startup) for-graphics)
       (pel--remove-package-quickstart-files for-graphics))))
 
 ;;-pel-autoload
@@ -1401,7 +1518,7 @@ is only one or when its for the terminal (TTY) mode."
     (user-error "PEL currently is not able to restore from fast startup mode when
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off
-  to execute this command.
+  (with “M-x pel-setup-no-quickstart) to execute this command.
   Sorry for the inconvenience"))
    (t
     (when (y-or-n-p (pel-prompt-with-quickstart-state

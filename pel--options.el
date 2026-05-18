@@ -447,7 +447,7 @@
 ;; - Erlang
 ;; - Gleam
 ;; - Go
-;; - Js (Javascript)
+;; - Js (JavaScript)
 ;; - Lua
 ;; - Nim
 ;; - Ruby

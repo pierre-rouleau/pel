@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 24 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 12:49:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-16 15:58:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -243,6 +243,37 @@
              (pel-packages-for 'pel-use-markdown-mode)
              '((elpa . markdown-mode)
                (elpa . edit-indirect))))))
+
+(ert-deftest ert-test-pel-pkgs-sorted-by-version ()
+  "Test sorting the package numbers."
+  (let ((pkglist '(
+                   "/some/dir/for/elpa/packages/my-green-package-2026121110.100"
+                   "/some/dir/for/elpa/packages/my-green-package-2025091110.100"
+                   "/some/dir/for/elpa/packages/my-green-package-2023011110.100"
+                   "/some/dir/for/elpa/packages/my-green-package-2036121110.100"
+                   "/some/dir/for/elpa/packages/my-green-package-2024121110.100"
+                   "/some/dir/for/elpa/packages/my-green-package-2024021110.100"
+                   ))
+        (sorted  '(
+                   "/some/dir/for/elpa/packages/my-green-package-2023011110.100"
+                   "/some/dir/for/elpa/packages/my-green-package-2024021110.100"
+                   "/some/dir/for/elpa/packages/my-green-package-2024121110.100"
+                   "/some/dir/for/elpa/packages/my-green-package-2025091110.100"
+                   "/some/dir/for/elpa/packages/my-green-package-2026121110.100"
+                   "/some/dir/for/elpa/packages/my-green-package-2036121110.100"
+                   )))
+    (should (equal (pel-pkgs-sorted-by-version pkglist)
+                   sorted))
+
+    ;; Edge case: empty list
+    (should (equal (pel-pkgs-sorted-by-version '()) '()))
+    ;; Edge case: single element
+    (should (equal (pel-pkgs-sorted-by-version
+                    '("/some/dir/for/elpa/packages/my-green-package-2024121110.100"))
+                   '("/some/dir/for/elpa/packages/my-green-package-2024121110.100")))))
+
+
+
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-package-test)

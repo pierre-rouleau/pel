@@ -1144,6 +1144,8 @@ The index of the first whitespace character is returned when one is present."
   (when (> (length text) 0)
     (string= (substring text 0 1) " ")))
 
+;; [:todo 2026-05-16, by Pierre Rouleau: string-suffix-p should be used
+;; instead of pel-string-ends-with-p]
 (defun pel-string-ends-with-p (text suffix &optional ignore-case)
   "Return t if TEXT string does end with SUFFIX string, nil otherwise.
 Ignore case differences if IGNORE-CASE is non-nil."
@@ -1155,6 +1157,8 @@ Ignore case differences if IGNORE-CASE is non-nil."
                                 text (- text-len suffix-len) nil
                                 ignore-case)))))
 
+;; [:todo 2026-05-16, by Pierre Rouleau: string-prefix-p should be used
+;;                                       instead of pel-string-starts-with-p]
 (defun pel-string-starts-with-p (text prefix &optional ignore-case)
   "Return t if TEXT string does start with PREFIX string, nil otherwise.
 Ignore case differences if IGNORE-CASE is non-nil."
