@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-18 11:41:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-18 16:25:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -367,6 +367,21 @@ information unless DONT-UPDATE-FILE is non-nil."
 ;;* Copy the Emacs Lisp files of all one-level Elpa packages into a directory
 ;;  =========================================================================
 
+(defconst pel--bundle-excluded-basenames
+  '("elpa")
+  "List of base file names (without extension) to exclude from the PEL bundle.
+
+These are files that ELPA packages include in their source tree for
+historical or build-infrastructure reasons, but which are not required
+at runtime by any package.  They must not be copied into the flat
+bundle directory because multiple unrelated packages may ship a file
+with the same name, causing harmless but confusing duplicate warnings.
+
+Known entries:
+- \"elpa\": The original ELPA bootstrap script (Tom Tromey, circa 2009).
+  Packages such as ivy and lispy include it as a developer convenience
+  artifact.  No package requires it via (require \\='elpa) at runtime.")
+
 (defun pel-elpa-create-copies (elpa-dir-path
                                dest-dir-path
                                &optional with-symlinks)
@@ -405,7 +420,9 @@ function does not attempt to detect duplicate and returns nil."
                    (member (file-name-extension fname) '("el" "elc"))
                    (not (pel-string-ends-with-p (file-name-sans-extension
                                                  fname)
-                                                "-pkg")))
+                                                "-pkg"))
+                   (not (member (file-name-sans-extension fname)
+                        pel--bundle-excluded-basenames)))
           (setq src-fn (expand-file-name fname source-dir-path-name))
           (setq dst-fn (expand-file-name fname dest-dir-path))
           (if (file-exists-p dst-fn)
