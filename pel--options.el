@@ -14837,12 +14837,16 @@ This requires Emacs 27.1 or later."
   "Control whether PEL activates the go-translate external package.
 
 This requires Emacs 28.1 or later.  On previous versions PEL automatically
-turns it off."
+turns it off.
+
+Note: the original package was named go-translate.  It was later renamed gt.
+If you have both packages in your system you should remove one of them.
+The `pel-cleanup' command can do that for you."
   :group 'pel-pkg-for-text-translation
   :group 'pel-pkg-for-writing
   :group 'pel-pkg-for-spelling
   :link '(url-link :tag "Go-Translate @ GitHub"
-                   "https://github.com/lorniu/gt")
+                   "https://github.com/lorniu/gt.el")
   :type 'boolean
   :safe #'booleanp)
 (pel-put pel-use-go-translate :package-is '(quote ((elpa . gt))))
