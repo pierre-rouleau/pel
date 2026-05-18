@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-17 12:28:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-18 10:13:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -78,7 +78,7 @@
 (require 'pel-elpa)            ; use: `pel-elpa-name'
 (require 'pel-package)         ; use: `pel-elpa-dirpath'
 
-(eval-when-compile (require 'subr-x)) ; use: `string-join'
+(require 'subr-x)              ; use: `string-join'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -278,7 +278,7 @@ The FOR-GRAPHICS argument identifies the setup forced for independent graphics."
       "dual-environment graphics mode"
     (if pel-detected-dual-environment-in-init-p
         "dual-environment terminal/tty mode"
-      "single custom-file modes")))
+      "single custom-file mode")))
 
 (defun pel-fast-setup-met-criteria ()
   "Check if the setup meets fast startup settings.
@@ -299,8 +299,8 @@ startup if all tests pass."
     (pel+= test-count 1)
     (if (pel-in-fast-startup-p)
         (pel-push-fmt met-criteria
-            "Identified as fast startup by function `pel-in-fast-startup'")
-      (pel-push-fmt issues "The `pel-in-fast-startup' is not set."))
+            "Identified as fast startup by function `pel-in-fast-startup-p'")
+      (pel-push-fmt issues "The `pel-running-in-fast-startup-p' is not set."))
     ;;
     (pel+= test-count 1)
     (if (file-exists-p pel-fast-startup-init-fname)
