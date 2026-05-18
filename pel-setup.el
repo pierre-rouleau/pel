@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-17 18:14:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-17 21:41:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -852,19 +852,20 @@ and has extra code specified in EXTRA-CODE."
 
 (defun pel--add-to-load-path-once (dir)
   \"Add directory DIR to `load-path' if DIR is not already inside it.
-Prevent multiple insertion by literal string and by truename
-to avoid symlink/realpath double entries.\"
-  ;; load-path directories do not end with /
+Prevent multiple insertion by literal string and by truename to avoid
+symlink/realpath double entries.\"
   (let* ((norm (directory-file-name (expand-file-name dir)))
-         (norm-truename (ignore-errors (file-truename norm))))
-    (unless (seq-some
-             (lambda (p)
-               (let* ((p0 (directory-file-name (expand-file-name p)))
-                      (pt (ignore-errors (file-truename p0))))
-                 (or (string= p0 norm)
-                     (and norm-truename pt (string= pt norm-truename)))))
-             load-path)
+         (norm-truename (ignore-errors (file-truename norm)))
+         (found nil))
+    (dolist (p load-path)
+      (let* ((p0 (directory-file-name (expand-file-name p)))
+             (pt (ignore-errors (file-truename p0))))
+        (when (or (string= p0 norm)
+                  (and norm-truename pt (string= pt norm-truename)))
+          (setq found t))))
+    (unless found
       (add-to-list 'load-path norm))))
+
 
 ;; ----
 \(defvar pel-running-in-fast-startup-p nil)
@@ -1214,7 +1215,7 @@ Please report this internal code error to project maintainer!"
       (format "\
 ;; step 2: (only for Emacs >= 27)
   (when using-package-quickstart
-      (pel--add-to-load-path-once 'load-path
+      (pel--add-to-load-path-once
                    (format \"%s\"
                            (if force-graphics \"-graphics\" \"\"))))"
               safe-path))))
