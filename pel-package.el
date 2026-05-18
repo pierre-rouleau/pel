@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-17 12:19:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-17 22:28:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1639,7 +1639,7 @@ The elpa-attic directory is the ~/.emacs.d/pel-elpa-attic directory."
           (copy-directory elpa-attic-pkg-dirpath
                           (file-name-as-directory used-elpa-dirpath)
                           :keep-time))
-        (push dest-dirpath load-path)
+        (add-to-list 'load-path dest-dirpath)
         (load-library (pel-as-string pkg))
         (setq installation-succeeded t)))
     installation-succeeded))

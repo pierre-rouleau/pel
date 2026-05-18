@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-14 17:12:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-17 22:24:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -417,7 +417,8 @@ function does not attempt to detect duplicate and returns nil."
                       duplicates)
                 (display-warning
                  'pel-elpa-create-copies
-                 (format "Duplicate file: %s" (car duplicates))
+                 (format "Duplicate file name in bundle: %s\n existing: %s"
+                         (car duplicates) (cdr (car duplicates)))
                  :warning))
             ;; destination does not exist (normal case):
             ;;   copy file or create symlink

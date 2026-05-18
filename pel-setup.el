@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-17 21:41:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-17 22:19:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -883,7 +883,7 @@ symlink/realpath double entries.\"
 \(defun pel-fast-startup-init (&optional force-graphics using-package-quickstart)
   \"Setup data to support the fast-startup mode.
 
-- #1: Add pkg/version of the dependencies of packages whose code has been been
+- #1: Add pkg/version of the dependencies of packages whose code has been
       bundled into elpa-reduced/pel-bundle *pseudo-package* to
       `package--builtin-versions' to prevent their downloads.
 - #2: For Emacs >= 27, when package-quickstart is used,  an extra step is
