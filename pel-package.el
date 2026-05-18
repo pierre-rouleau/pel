@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-17 22:28:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-18 10:08:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -161,6 +161,7 @@
 (require 'pel-elpa)             ; use: `pel-elpa-package-directories'
 ;;                              ;      `pel-el-files-in'
 (require 'cl-lib)               ; use: `cl-remove-if'
+(require 'seq)                  ; use: `seq-filter'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -1639,7 +1640,10 @@ The elpa-attic directory is the ~/.emacs.d/pel-elpa-attic directory."
           (copy-directory elpa-attic-pkg-dirpath
                           (file-name-as-directory used-elpa-dirpath)
                           :keep-time))
-        (add-to-list 'load-path dest-dirpath)
+        ;; Add the directory to load-path if it does not already exists.
+        ;; Entries in load-path do not have the trailing "/"; therefore
+        ;; remove it from the one we enter.
+        (add-to-list 'load-path (directory-file-name dest-dirpath))
         (load-library (pel-as-string pkg))
         (setq installation-succeeded t)))
     installation-succeeded))
