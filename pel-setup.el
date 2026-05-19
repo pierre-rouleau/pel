@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 17:24:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 17:39:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1022,7 +1022,11 @@ list we ensure that Emacs package.el logic will not attempt to download
 these packages.  We don't need Emacs to download them because they have
 already been downloaded when Emacs was in normal startup mode.  The
 DEPS-PKG-VERSIONS-ALIST list was originally returned by the function
-`pel-elpa-disable-pkg-deps-in'."
+`pel-elpa-disable-pkg-deps-in'.
+
+After writing the file, unconditionally byte-compiles FNAME.  On Emacs 28+
+with native compilation support, also triggers asynchronous native
+compilation so the .eln is ready for the next Emacs startup."
   (with-temp-file fname
     (erase-buffer)
     (goto-char (point-min))
@@ -1281,7 +1285,7 @@ Please report this internal code error to project maintainer!"
                                                 new-bundle-dp)
   "Write Elisp code to add the DEPS-PKG-VERSIONS-ALIST to Emacs with a bundle.
 
-NEW-BUNDLED-DP is the name of the new Elpa bundle directory."
+NEW-BUNDLE-DP is the name of the new Elpa bundle directory."
   (pel-setup-fast-startup-init
    pel-fast-startup-init-fname
    deps-pkg-versions-alist
