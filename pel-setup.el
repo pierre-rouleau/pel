@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 13:23:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 13:53:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1012,7 +1012,15 @@ DEPS-PKG-VERSIONS-ALIST list was originally returned by the function
     (goto-char (point-min))
     (insert (pel-setup-fast-startup-init-text
              deps-pkg-versions-alist
-             extra-code))))
+             extra-code)))
+  ;; Byte-compile the generated file unconditionally.  No user-option guard
+  ;; is needed: pel-fast-startup-init.el is entirely managed by PEL, never
+  ;; edited by hand.  The .elc ensures fast loading on all supported Emacs
+  ;; versions.  On Emacs 28+ with native compilation support the .eln is
+  ;; built asynchronously and will be used from the next Emacs startup
+  ;; onward.
+  (when (byte-compile-file fname)
+    (pel--native-compile-if-available fname)))
 
 ;; --
 
@@ -1529,12 +1537,18 @@ is only one or when its for the terminal (TTY) mode."
   ;; but leave the elpa-reduced directory around in case some other
   ;; Emacs process is currently running in fast-start operation mode.
   (when (file-exists-p pel-fast-startup-init-fname)
-    (delete-file pel-fast-startup-init-fname))
+    (delete-file pel-fast-startup-init-fname)
+    ;; Also remove the byte-compiled version.
+    (let ((elc (concat pel-fast-startup-init-fname "c")))
+      (when (file-exists-p elc)
+        (delete-file elc))))
+  ;;
   (when pel-emacs-27-or-later-p
     (require 'pel-setup-27)
     (pel--setup-early-init pel-support-package-quickstart)
     (if pel-support-package-quickstart
-        (pel--create-package-quickstart (pel-elpa-dirpath 'final-dir-at-startup) for-graphics)
+        (pel--create-package-quickstart
+         (pel-elpa-dirpath 'final-dir-at-startup) for-graphics)
       (pel--remove-package-quickstart-files for-graphics))))
 
 ;;-pel-autoload
