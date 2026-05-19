@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 17:14:39 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 17:24:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -879,13 +879,13 @@ to properly point to elpa-reduced directory.\"
   (let* ((elpa-link    (expand-file-name \"elpa\"         user-emacs-directory))
          (expected-dir (expand-file-name \"elpa-reduced\" user-emacs-directory))
          (link-target  (and (file-symlink-p elpa-link)
-                              (file-truename elpa-link))))
-      (unless (and link-target
-                   (string= (directory-file-name (file-truename expected-dir))
-                            (directory-file-name link-target)))
-        (display-warning
-         'pel-fast-startup-init
-         \"\
+                            (file-truename elpa-link))))
+    (unless (and link-target
+                 (string= (directory-file-name (file-truename expected-dir))
+                          (directory-file-name link-target)))
+      (display-warning
+        'pel-fast-startup-init
+        \"\
 ⚠️  PEL fast-startup: the elpa symlink is missing or points to the wrong directory.
        Please run M-x pel-setup-fast to restore fast-startup mode, or
                   M-x pel-setup-normal to revert to normal mode.
@@ -1272,9 +1272,8 @@ Please report this internal code error to project maintainer!"
       (format "\
 ;; step 2: (only for Emacs >= 27)
   (when using-package-quickstart
-      (pel--add-to-load-path-once
-                   (format \"%s\"
-                           (if force-graphics \"-graphics\" \"\"))))"
+    (pel--add-to-load-path-once
+      (format \"%s\" (if force-graphics \"-graphics\" \"\"))))"
               safe-path))))
 
 
