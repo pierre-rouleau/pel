@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 15:24:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 16:02:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -951,6 +951,14 @@ Return the pkg/version alist.\"
   nil)
 
 \(advice-add  'package-compute-transaction  :filter-return (function pel--pct))
+
+;; Remove the startup-time download-suppression advice once Emacs has
+;; fully initialized, so that interactive package operations (including
+;; Emacs 29+ `package-vc-install') work correctly in the session.
+\(add-hook 'emacs-startup-hook
+          (lambda ()
+            (advice-remove 'package-compute-transaction
+                           (function pel--pct))))
 
 ;; ----
 ;; Ensure that `package-load-all-descriptors' uses the graphics-specific
