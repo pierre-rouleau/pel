@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-18 10:13:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 09:09:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -426,11 +426,26 @@ The early-init.el file is created inside the directory identified by the
 ;;* Update PEL constant values in init.el or early-init.el
 ;; =======================================================
 
+(defun pel--native-compile-if-available (el-fname)
+  "Native-compile EL-FNAME if native compilation is available on this Emacs."
+  (when (featurep 'native-compile)
+    (require 'comp-run)
+    (when (and (fboundp 'native-comp-available-p)
+               (native-comp-available-p))
+      ;; Use async compilation; the .eln will be ready for the next startup.
+      (native-compile-async (list el-fname) nil t))))
+
 (defun pel-compile-file-if (el-fname byte-compile-it)
   "Byte compile file EL-FNAME if BYTE-COMPILE-IT is set.
+
+It also native-compile it when native compilation is supported by Emacs
+and BYTE-COMPILE-IT is set to \\='byte-and-native-compile-it.
+
 Otherwise delete the .elc file if it exists."
   (if byte-compile-it
-      (byte-compile-file el-fname)
+      (when (and (byte-compile-file el-fname)
+                 (eq byte-compile-it 'byte-and-native-compile-it))
+        (pel--native-compile-if-available el-fname))
     ;; no compilation needed; remove any left-over .elc file
     (let ((elc-fname (concat el-fname "c")))
       (when (file-exists-p elc-fname)
@@ -448,7 +463,10 @@ Otherwise delete the .elc file if it exists."
     supported files.
 - SYMBOL-VALUES: a list of symbol-value pairs.  The symbol is the name of
   the variable to update to the specified value.
-- BYTE-COMPILE-IT: boolean.  If non-nil, byte compile resulting FNAME.
+- BYTE-COMPILE-IT: nil: does not compile file.
+                   non-nil, byte compile resulting FNAME.
+                   \\='byte-and-native-compile-it: byte compile and
+                   native compile if Emacs supports it.
 
 Raise a user error if the function does not find the file or the
 `defconst' form defining a specified symbol inside the file.  The error

@@ -360,6 +360,12 @@ Customization Variables (selection)
 
   - ``pel-support-package-quickstart`` (Emacs ≥ 27): enable/disable
     quickstart.
+  - ``pel-compile-emacs-init`` enable/disable byte compilation of your Emacs
+    init.el file.  The default is ``byte-and-native-compile-it`` to
+    byte-compile and native-compile the file.
+  - ``pel-compile-emacs-early-init`` enable/disable byte compilation of your Emacs
+    early-init.el file.  The default is ``byte-and-native-compile-it`` to
+    byte-compile and native compile the file.
 
 - Constant defined inside ``~/.emacs.d/init.el``.
   Edit that file to modify it's value:
