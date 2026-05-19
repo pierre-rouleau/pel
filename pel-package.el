@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-18 10:08:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-18 15:57:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -111,6 +111,7 @@
 ;;
 ;;
 ;; * `pel-cleanup'
+;;   - `pel-clean-renamed-packages'
 ;;   - `pel-clean-utils'
 ;;     - `pel-utils-unrequired'
 ;;       - `pel-active-and-excess-utils'
@@ -1033,8 +1034,8 @@ The function does not support printing a full report on stdout."
 - # loaded files             : %d
 - # features                 : %d
 - # package-alist            : %d
-- # packages activated       : %d
-- # packages selected        : %d
+- # packages activated *     : %d <<= # of packages used by Emacs
+- # packages selected        : %d (explicitly selected; no deps, no built-ins)
 - # PEL loaded commands      : %d
 - # upgradable elpa packages : %d
 - # PEL PDF files            : %d
@@ -1180,18 +1181,29 @@ inside a git repository (uses `pel--elisp-files')."
     (dolist (file (pel--elisp-files))
       (load-file (expand-file-name file current-directory)))))
 
-(defun pel-package-info-all ()
-  "Generate statistics with all PEL files loaded.
-
-Use only for computing statistics!! It loads all of PEL."
-  (interactive)
-  (load-library "pel_keys")
-  (pel-load-all)
-  (pel-package-info-message))
-
 (defun pel-package-info-message ()
   "Print PEL package information on stdout."
   (pel-package-info nil t))
+
+(defun pel-package-info-all ()
+  "Generate statistics with all PEL files loaded.
+
+CAUTION: Use only for computing statistics as it loads all the packages
+and all PEL files!!"
+  (interactive)
+  (load-library "pel_keys")
+  (pel-load-all)
+  ;; Ensure all packages are fully activated before gathering stats.
+  ;; In Emacs 27+, package-activate-all must be called explicitly in
+  ;; --batch mode since the automatic pre-init call to package-initialize
+  ;; was removed. Without this, package-activated-list will be incomplete.
+  (require 'package)
+  (if (fboundp 'package-activate-all)
+      (package-activate-all)            ; Emacs 27+
+    (package-initialize))               ; Emacs 26 fallback
+  ;; Now print the information.
+  (pel-package-info-message))
+
 ;; ---------------------------------------------------------------------------
 
 (defun pel-inactive-user-options ()
@@ -1504,6 +1516,62 @@ Return a list of elpa directories moved or deleted."
     ;; to restart: the load-path will be updated then.
     moved-elpa-dirs))
 
+;; --
+
+(defconst pel--elpa-package-renames
+  '((go-translate . gt))
+  "Alist of known ELPA package renames: (OLD-PACKAGE . NEW-PACKAGE).
+Each entry is a cons cell where the car is the symbol for the old/superseded
+package name and the cdr is the symbol for its replacement.
+
+When `pel-clean-renamed-packages' detects that both the old and new package
+directories exist in the active elpa directory, it moves the old one to the
+elpa-attic directory to prevent filename collisions in the fast-startup bundle.
+
+Known renames:
+- go-translate was renamed to gt (https://github.com/lorniu/gt.el).")
+
+(defun pel-clean-renamed-packages (&optional dry-run)
+  "Move superseded (renamed) ELPA packages from elpa to elpa-attic.
+
+Checks `pel--elpa-package-renames' for known package renames.  For each
+entry, when both the old (superseded) and new (replacement) package
+directories are present in the active elpa directory, the old package is
+moved to the elpa-attic directory.  The new package is never touched.
+
+This prevents filename collisions in the fast-startup bundle created by
+`pel-elpa-create-copies', which requires unique filenames across all packages.
+
+If the destination directory in elpa-attic already exists the old package
+directory is deleted instead of moved.
+
+If DRY-RUN is non-nil, no files are moved or deleted; the function only
+returns the list of old package directories that would have been moved.
+
+Return a list of old package directory paths that were moved (or would have
+been moved in a dry run)."
+  (let ((moved-dirs ()))
+    (dolist (rename pel--elpa-package-renames)
+      (let* ((old-pkg  (car rename))
+             (new-pkg  (cdr rename))
+             (old-dirs (pel-elpa-dirs-for old-pkg))
+             (new-dirs (pel-elpa-dirs-for new-pkg)))
+        ;; Only retire the old package when its replacement is already present,
+        ;; to avoid accidentally removing the sole copy of the files.
+        (when (and old-dirs new-dirs)
+          (unless (or dry-run (file-exists-p (pel-elpa-attic-dirpath)))
+            (make-directory (pel-elpa-attic-dirpath)))
+          (setq moved-dirs
+                (append moved-dirs
+                        (pel-move-elpa-pkg-to-elpa-attic old-pkg dry-run)))
+          ;; Also scrub the old package symbol from package-selected-packages
+          ;; in memory and in the customization file so Emacs no longer tries
+          ;; to activate it on the next start.
+          (unless dry-run
+            (pel-clean-package-selected-packages (list old-pkg))
+            (pel-clean-package-selected-packages-in-file (list old-pkg))))))
+    moved-dirs))
+
 (defun pel-cleanup (&optional dry-run)
   "Move all unrequired packages to their attic directory.
 
@@ -1525,10 +1593,13 @@ Use a normal Emacs process."))
   (when (or dry-run
             (y-or-n-p "Proceed with removal of non-required packages? "))
     (message "%s" (propertize "Checking PEL user-options and packages..." 'face 'bold))
-    (let* ((utils-results     (pel-clean-utils dry-run))
-           (removed-el-files  (car utils-results))
-           (removed-elc-files (cdr utils-results))
-           (moved-elpa-dirs   (pel-clean-elpa dry-run)))
+    (let* ((utils-results       (pel-clean-utils dry-run))
+           (removed-el-files    (car utils-results))
+           (removed-elc-files   (cdr utils-results))
+           ;; Retire superseded (renamed) packages BEFORE the general cleanup
+           ;; so that pel-clean-elpa does not also try to process them.
+           (renamed-pkg-dirs    (pel-clean-renamed-packages dry-run))
+           (moved-elpa-dirs     (pel-clean-elpa dry-run)))
       (message "")
       (pel-print-in-buffer
        "*pel-cleanup*"
@@ -1540,11 +1611,11 @@ Use a normal Emacs process."))
                verb-Moved
                verb-Removed)
            (if dry-run
-               (setq verb-moved "that would have been moved"
-                     verb-Moved "Would move"
+               (setq verb-moved   "that would have been moved"
+                     verb-Moved   "Would move"
                      verb-Removed "Would remove")
-             (setq verb-moved "moved"
-                   verb-Moved "Moved"
+             (setq verb-moved   "moved"
+                   verb-Moved   "Moved"
                    verb-Removed "Removed"))
            (insert "
 The PEL cleanup removes packages that are not needed, based on
@@ -1596,8 +1667,26 @@ intention by typing 'y' to its prompt.
              (dolist (fn removed-el-files)
                (pel+= n 1)
                (insert (format "- %3d: %s\n" n fn))))
-           (when moved-elpa-dirs
+           ;; ---- Check superseded/renamed packages ----
+           (when renamed-pkg-dirs
              (when (or removed-el-files removed-elc-files)
+               (insert "\n\n"))
+             (insert (format "Superseded (renamed) Elpa packages %s to elpa-attic,
+from: %s
+to  : %s
+
+See `pel--elpa-package-renames' for the list of known renames.\n\n"
+                             verb-moved
+                             (pel-elpa-dirpath 'final-dir-at-startup)
+                             (pel-elpa-attic-dirpath)))
+             (setq n 0)
+             (dolist (pkgdir renamed-pkg-dirs)
+               (pel+= n 1)
+               (insert (format "- %3d: %s\n" n pkgdir)))
+             (pel-insert-list-content 'pel--elpa-package-renames nil nil nil 'on-same-line))
+           ;; ---- report general unrequired packages ----
+           (when moved-elpa-dirs
+             (when (or removed-el-files removed-elc-files renamed-pkg-dirs)
                (insert "\n\n"))
              (insert (format "Elpa packages %s,
 from: %s
@@ -1611,10 +1700,9 @@ to  : %s :\n\n"
                (insert (format "- %3d: %s\n" n pkgdir))))
            (unless (or removed-el-files
                        removed-elc-files
+                       renamed-pkg-dirs
                        moved-elpa-dirs)
-             (insert "Nothing to cleanup!!")))))))
-
-  )
+             (insert "Nothing to cleanup!!"))))))))
 
 ;; --
 

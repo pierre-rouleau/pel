@@ -140,7 +140,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - 𝕻𝔩 - Pike: describe file extensions used by Pike.
   - Markup files:
     - Ɱ reStructuredText: show that code now uses ~<f12><f4> a~ for adornment setup and ~<f12> <f4> a ?~ to display info about adornment style.
-- Fast Startup improvements:
+- Improvement to package management:
+  - The *pel-cleanup* command can now detect packages that have been renamed over time and can move the older
+    package into the elpa-attic directory.  The *pel--elpa-package-renames* defconst identifies the packages that have been renamed.
+    The *pel-clean-renamed-packages* function is called by pel-cleanup to preform the detection and cleanup.
+    Removing old named packages when the package with the new name is present eliminate one type of warning that is issued by the *pel-setup-fast* command when activating the PEL fast start mode.
+    The issue does not cause problem but the warning might be disturbing.
+- Improvement to the PEL Fast Startup mode:
   - Fix: fast startup mode now works on Emacs 29 and later.
   - Fix: the elpa directory identification used for dual setting (terminal and graphics) and fast startup in for graphics.
   - Improve startup speed in normal mode and fast startup mode by using several techniques in the early-init.el file.  A copy of that
@@ -148,6 +154,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - *pel-early-init-support-gc-boost-p*
     - *pel-early-init-suppress-file-name-handler-p*
     - *pel-early-init-disable-ui-elements-p*
+  - Improve robustness of the transition by adding several checks for errors and unit test that validates the fast startup file created by PEL.
+  - PEL no longer copies the old ELPA bootstrap script elpa.el into the PEL bundle directory and no longer warns when finding more than one
+    package that includes that elpa.el file.  The elpa.el file is only needed on the installation of these package with a long history
+    (if needed at all) and those files are not needed when Emacs runs.  There's no need to warn users of the duplication since this is harmless.
 - Fixes:
   - Fix: key binding for Smalltalk that previously was hijacked by Swift's.
   - Regression fix: the ~<f12> <f3>~ key is available again in the C, C++ and Objective-C buffers.
