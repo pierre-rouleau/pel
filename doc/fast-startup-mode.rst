@@ -356,12 +356,25 @@ Typical Workflow
 Customization Variables (selection)
 ===================================
 
-- ``pel-support-package-quickstart`` (Emacs ≥ 27): enable/disable quickstart.
-- ``pel-init-support-dual-environment-p``: separate terminal vs graphics
-  custom files and package directories.
+- User-option defined in ``pel--options.el`` that you can set via customization:
+
+  - ``pel-support-package-quickstart`` (Emacs ≥ 27): enable/disable
+    quickstart.
+
+- Constant defined inside ``~/.emacs.d/init.el``.
+  Edit that file to modify it's value:
+
+  - ``pel-init-support-dual-environment-p``: separate terminal vs graphics
+    custom files and package directories.
+
+- Constants defined inside the ``~/.emacs.d/early-init.el``
+  Edit that file to modify their values:
+
 - ``pel-early-init-support-gc-boost-p``: GC threshold boost during init.
 - ``pel-early-init-suppress-file-name-handler-p``: suppress file handlers.
 - ``pel-early-init-disable-ui-elements-p``: disable UI elements early.
+
+Activate them all to get the fastest Emacs startup.
 
 -----------------------------------------------------------------------------
 
