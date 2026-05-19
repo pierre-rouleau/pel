@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 17:01:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 17:14:39 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -953,7 +953,9 @@ Return the pkg/version alist.\"
 ;; together inside the elpa-reduced/pel-bundle *pseudo-package*.
 
 \(defun pel--pct (_packages)
-  \"Prevent package downloads during PEL fast-startup initialization.\"
+  \"Prevent package downloads during PEL fast-startup initialization.
+This temporary advice is removed once Emacs startup completes, restoring
+package download capabilities.\"
   nil)
 
 \(advice-add  'package-compute-transaction  :filter-return (function pel--pct))

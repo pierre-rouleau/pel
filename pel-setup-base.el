@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 16:58:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 17:16:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -504,10 +504,16 @@ describes what was not found, requesting the user to fix it."
   "Update Emacs user init.el to USE-DUAL-ENVIRONMENT or not.
 
 Update init.el for dual environment when USE-DUAL-ENVIRONMENT is
-non-nil, otherwise prevent it from using it.  Set
-`pel-init-support-dual-environment-p' to t when USE-DUAL-ENVIRONMENT is
-non-nil, to nil otherwise.  Byte compile the result file if the
-`pel-compile-emacs-init' user-option is turned on."
+non-nil, otherwise prevent it from using it.
+
+Set `pel-init-support-dual-environment-p' to t when USE-DUAL-ENVIRONMENT
+is non-nil, to nil otherwise.
+
+Byte compile the result according to `pel-compile-emacs-init':
+- nil: do not compile; but recompile if init.elc already exists (to
+  keep it in sync with the updated source).
+- t: byte-compile only.
+- \\='byte-and-native-compile-it: byte-compile and native-compile."
   (let* ((init-fname (locate-user-emacs-file "init.el"))
          (elc-existed-p (file-exists-p (concat init-fname "c"))))
     (pel-update-emacs-user-init-file

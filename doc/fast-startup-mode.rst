@@ -368,8 +368,8 @@ Customization Variables (selection)
     - ``byte-and-native-compile-it`` (byte-compile and native-compile;
       default).
 
-  - ``pel-compile-emacs-early-init``: same three-value choice as above for
-    ``early-init.el`` (where the file is early-init instead of init).
+  - ``pel-compile-emacs-early-init``: same three-value choice as above,
+    applied to ``early-init.el``.
 
 - Constant defined inside ``~/.emacs.d/init.el``.
   Edit that file to modify its value:

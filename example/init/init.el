@@ -400,7 +400,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
     ;; On Emacs >= 27 in fast-startup mode, package-activate-all has already
     ;; been called automatically by Emacs (after early-init, before init).
     ;; Calling package-initialize again via the hook would activate packages
-    ;; a second time, requesting duplicated load-path entries.
+    ;; a second time, producing duplicate load-path entries.
     ;; The hook is only needed for Emacs < 27, where there is no early-init.
     (when (< emacs-major-version 27)
       (with-no-warnings  ; prevent complaining about pel--init-package-support
