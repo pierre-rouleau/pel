@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 09:27:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 10:27:02 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2024, 2025, 2026  Pierre Rouleau
+;; Copyright (C) 2021-2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -433,7 +433,8 @@ The early-init.el file is created inside the directory identified by the
                                                    selector))
 
 (defun pel--native-compile-if-available (el-fname)
-  "Native-compile EL-FNAME if native compilation is available on this Emacs."
+  "Native-compile EL-FNAME if native compilation is available on this Emacs.
+The resulting .eln file will be used on the next Emacs startup, not immediately."
   (when (featurep 'native-compile)
     (require 'comp-run)
     (when (and (fboundp 'native-comp-available-p)
@@ -445,10 +446,11 @@ The early-init.el file is created inside the directory identified by the
 (defun pel-compile-file-if (el-fname byte-compile-it)
   "Byte compile file EL-FNAME if BYTE-COMPILE-IT is set.
 
-It also native-compile it when native compilation is supported by Emacs
-and BYTE-COMPILE-IT is set to \\='byte-and-native-compile-it.
-
-Otherwise delete the .elc file if it exists."
+BYTE-COMPILE-IT controls the action:
+- nil: do not compile; delete the .elc file if it exists.
+- t: byte-compile EL-FNAME only.
+- \\='byte-and-native-compile-it: byte-compile and, when Emacs supports
+  native compilation, also native-compile EL-FNAME asynchronously."
   (if byte-compile-it
       (when (and (byte-compile-file el-fname)
                  (eq byte-compile-it 'byte-and-native-compile-it))
@@ -470,10 +472,12 @@ Otherwise delete the .elc file if it exists."
     supported files.
 - SYMBOL-VALUES: a list of symbol-value pairs.  The symbol is the name of
   the variable to update to the specified value.
-- BYTE-COMPILE-IT: nil: does not compile file.
-                   non-nil, byte compile resulting FNAME.
-                   \\='byte-and-native-compile-it: byte compile and
-                   native compile if Emacs supports it.
+- BYTE-COMPILE-IT controls the compilation action:
+  - nil: do not compile; delete the .elc file if it exists.
+  - t: byte-compile FNAME only.
+  - \\='byte-and-native-compile-it: byte-compile FNAME and, when Emacs
+    supports native compilation, also native-compile FNAME
+    asynchronously.
 
 Raise a user error if the function does not find the file or the
 `defconst' form defining a specified symbol inside the file.  The error
