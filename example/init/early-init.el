@@ -323,6 +323,7 @@ For debugging and to quiet byte-compiler warning.")
       (pel-fast-startup-init pel-force-graphic-specific-custom-file-p
                              pel-early-init-support-package-quickstart-p)
       ;; Remember Emacs is running in PEL's fast startup mode.
+      (defvar pel-running-in-fast-startup-p)
       (setq pel-running-in-fast-startup-p t))))
 
 ;;; --------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-18 10:10:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-18 22:26:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -897,6 +897,15 @@ symlink/realpath double entries.\"
 
 Return the pkg/version alist.\"
   (setq pel-force-graphic-specific-files force-graphics)
+  ;;
+  ;; Capture the original package-user-dir before it is transformed.
+  ;; This prevents a false `pel-locate-elpa' warning in graphics mode when
+  ;; `pel-package.el' is loaded before `emacs-startup-hook' fires.
+  (unless (bound-and-true-p pel-package-user-dir-original)
+    (when (boundp 'package-user-dir)
+      (defvar pel-package-user-dir-original nil)
+      (setq pel-package-user-dir-original package-user-dir)))
+  ;;
   ;; step 1:
   (dolist (dep-ver pel-fast-startup-builtin-packages)
     (add-to-list 'package--builtin-versions dep-ver))
