@@ -386,12 +386,10 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;;
   (defvar package-quickstart) ; declared only to prevent byte-compiler warning.
   (when pel-running-in-fast-startup-p
-    ;; Start fast startup for: - Emacs < 27
-    ;;                         - Emacs >= 27 when package quickstart is not used.
-    ;;                                       when used, early-init starts it.
-    (when (or (< emacs-major-version 27)
-              (null (boundp 'package-quickstart))
-              (not package-quickstart))
+    ;; Start fast startup for Emacs < 27.
+    ;; On Emacs >= 27 early-init.el always calls pel-fast-startup-init
+    ;; unconditionally (before package-activate-all fires).
+    (when (< emacs-major-version 27)
       (if (and (load (file-name-sans-extension pel-fast-startup-init-fname)
                      :noerror :nomessage)
                (fboundp 'pel-fast-startup-init))
@@ -405,7 +403,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
     ;; a second time, requesting duplicated load-path entries.
     ;; The hook is only needed for Emacs < 27, where there is no early-init.
     (when (< emacs-major-version 27)
-      (with-no-warnings    ; prevent complaining about pel--init-package-support
+      (with-no-warnings  ; prevent complaining about pel--init-package-support
         (add-hook 'emacs-startup-hook (function pel--init-package-support)))))
 
   ;; -------------------------------------------------------------------------
