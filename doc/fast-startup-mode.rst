@@ -361,11 +361,15 @@ Customization Variables (selection)
   - ``pel-support-package-quickstart`` (Emacs ≥ 27): enable/disable
     quickstart.
   - ``pel-compile-emacs-init``: controls compilation of ``init.el`` after PEL
-    updates it.  Three values are supported: ``nil`` (do not compile; deletes any
-    existing ``.elc``), ``t`` (byte-compile only), or
-    ``byte-and-native-compile-it`` (byte-compile and native-compile; default).
-  - ``pel-compile-emacs-early-init``: same three-value choice for
-    ``early-init.el``.
+    updates it.  Three values are supported:
+
+    - ``nil`` (do not compile; deletes any existing ``.elc``),
+    - ``t`` (byte-compile only), or
+    - ``byte-and-native-compile-it`` (byte-compile and native-compile;
+      default).
+
+  - ``pel-compile-emacs-early-init``: same three-value choice as above for
+    ``early-init.el`` (where the file is early-init instead of init).
 
 - Constant defined inside ``~/.emacs.d/init.el``.
   Edit that file to modify it's value:
