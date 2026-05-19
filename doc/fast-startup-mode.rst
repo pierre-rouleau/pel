@@ -370,9 +370,9 @@ Customization Variables (selection)
 - Constants defined inside the ``~/.emacs.d/early-init.el``
   Edit that file to modify their values:
 
-- ``pel-early-init-support-gc-boost-p``: GC threshold boost during init.
-- ``pel-early-init-suppress-file-name-handler-p``: suppress file handlers.
-- ``pel-early-init-disable-ui-elements-p``: disable UI elements early.
+  - ``pel-early-init-support-gc-boost-p``: GC threshold boost during init.
+  - ``pel-early-init-suppress-file-name-handler-p``: suppress file handlers.
+  - ``pel-early-init-disable-ui-elements-p``: disable UI elements early.
 
 Activate them all to get the fastest Emacs startup.
 
