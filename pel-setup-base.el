@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 09:09:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 09:19:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -431,6 +431,7 @@ The early-init.el file is created inside the directory identified by the
   (when (featurep 'native-compile)
     (require 'comp-run)
     (when (and (fboundp 'native-comp-available-p)
+               (fboundp 'native-compile-async)
                (native-comp-available-p))
       ;; Use async compilation; the .eln will be ready for the next startup.
       (native-compile-async (list el-fname) nil t))))
