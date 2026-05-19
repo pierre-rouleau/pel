@@ -978,7 +978,7 @@ customization files."
 
 ;; ----
 (defcustom pel-compile-emacs-init 'byte-and-native-compile-it
-  "Whether PEL setup commands that update init.el also compiles it.
+  "Whether PEL setup commands that update init.el also compile it.
 
 The default is to byte-compile and native-compile the init.el file to
 improve Emacs startup performance.
@@ -1011,7 +1011,7 @@ file."
                  byte-and-native-compile-it)))
 
 (defcustom pel-compile-emacs-early-init 'byte-and-native-compile-it
-  "Whether PEL setup commands that update early-init.el also compiles it.
+  "Whether PEL setup commands that update early-init.el also compile it.
 
 The default is to byte-compile and native-compile the early-init.el file
 to improve Emacs startup performance.
