@@ -77,9 +77,12 @@
   "Directory where PEL Emacs Lisp source files are stored.")
 
 ;; --
-(defconst pel-init-file-version "0.3"
+(defconst pel-init-file-version "0.3.1"
   "Version of PEL init.el. Verified by pel-setup logic. Do NOT change.")
 ;; Update notes:
+;;  - version 0.3.1: In Emacs >= 27, code no longer setup the hook to execute
+;;                   `package-activate-all' after emacs startup because it has
+;;                   already been done by PEL early-init.
 ;;  - version 0.3: OPTION C code modified:
 ;;                 - Now explicitly load benchmark-init-modes.  It was not
 ;;                   required in older versions of Emacs but is required in
@@ -396,9 +399,14 @@ Also expands to the file true name, replacing symlinks by what they point to."
                                       pel-emacs-is-graphic-p))
         (message "WARNING: Failed loading pel-fast-startup-init\
  from user-emacs-directory")))
-    (with-no-warnings    ; prevent complaining about pel--init-package-support
-      (add-hook 'emacs-startup-hook (function pel--init-package-support))))
-
+    ;; On Emacs >= 27 in fast-startup mode, package-activate-all has already
+    ;; been called automatically by Emacs (after early-init, before init).
+    ;; Calling package-initialize again via the hook would activate packages
+    ;; a second time, requesting duplicated load-path entries.
+    ;; The hook is only needed for Emacs < 27, where there is no early-init.
+    (when (< emacs-major-version 27)
+      (with-no-warnings    ; prevent complaining about pel--init-package-support
+        (add-hook 'emacs-startup-hook (function pel--init-package-support)))))
 
   ;; -------------------------------------------------------------------------
   ;; Section 3: Delay loading of abbreviation definitions
