@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 10:27:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 13:23:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -829,7 +829,8 @@ Return a (ACTIVATE . byte-compile result) cons cell."
                                       (locate-library "pel_keys"))
                                      ".el")))))
 
-(defun pel-setup-fast-startup-init-text (deps-pkg-versions-alist extra-code)
+(defun pel-setup-fast-startup-init-text (deps-pkg-versions-alist
+                                         extra-code)
   "Return the Elisp code for the pel-fast-startup-init.el file.
 
 This file is required when PEL uses the fast startup mode.
@@ -849,7 +850,7 @@ and has extra code specified in EXTRA-CODE."
 \(require 'package)
 
 ;; ----
-;; Utility function
+;; Utility functions
 
 (defun pel--add-to-load-path-once (dir)
   \"Add directory DIR to `load-path' if DIR is not already inside it.
@@ -867,7 +868,23 @@ symlink/realpath double entries.\"
     (unless found
       (add-to-list 'load-path norm))))
 
-
+(defun pel--warn-if-invalid-elpa-symlink ()
+  \"Sanity check: warn if the elpa symlink does not point to elpa-reduced.\"
+  (let* ((elpa-link    (expand-file-name \"elpa\"         user-emacs-directory))
+         (expected-dir (expand-file-name \"elpa-reduced\" user-emacs-directory))
+         (link-target  (and (file-symlink-p elpa-link)
+                              (file-truename elpa-link))))
+      (unless (and link-target
+                   (string= (directory-file-name (file-truename expected-dir))
+                            (directory-file-name link-target)))
+        (display-warning
+         'pel-fast-startup-init
+         \"\
+⚠️  PEL fast-startup: the elpa symlink is missing or points to the wrong directory.
+       Please run M-x pel-setup-fast to restore fast-startup mode, or
+                  M-x pel-setup-normal to revert to normal mode.
+       Until then Emacs will start in a degraded state.\"
+         :error))))
 ;; ----
 \(defvar pel-running-in-fast-startup-p nil)
 
@@ -896,6 +913,12 @@ symlink/realpath double entries.\"
       or from early-init.el when package quickstart is not used.
 
 Return the pkg/version alist.\"
+  ;;
+  ;; Sanity check: verify that the elpa symlink points to elpa-reduced.
+  ;; If not, fast-startup cannot work correctly.  Warn user.
+  (pel--warn-if-invalid-elpa-symlink)
+  ;;
+  ;;
   (setq pel-force-graphic-specific-files force-graphics)
   ;;
   ;; Capture the original package-user-dir before it is transformed.
