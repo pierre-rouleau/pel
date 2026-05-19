@@ -372,7 +372,7 @@ Customization Variables (selection)
     ``early-init.el`` (where the file is early-init instead of init).
 
 - Constant defined inside ``~/.emacs.d/init.el``.
-  Edit that file to modify it's value:
+  Edit that file to modify its value:
 
   - ``pel-init-support-dual-environment-p``: separate terminal vs graphics
     custom files and package directories.

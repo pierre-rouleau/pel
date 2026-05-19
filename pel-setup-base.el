@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 10:46:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 16:58:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -508,11 +508,13 @@ non-nil, otherwise prevent it from using it.  Set
 `pel-init-support-dual-environment-p' to t when USE-DUAL-ENVIRONMENT is
 non-nil, to nil otherwise.  Byte compile the result file if the
 `pel-compile-emacs-init' user-option is turned on."
-  (pel-update-emacs-user-init-file
-   "init.el"
-   (list
-    (list 'pel-init-support-dual-environment-p (not (null use-dual-environment))))
-   pel-compile-emacs-init))
+  (let* ((init-fname (locate-user-emacs-file "init.el"))
+         (elc-existed-p (file-exists-p (concat init-fname "c"))))
+    (pel-update-emacs-user-init-file
+     "init.el"
+     (list
+      (list 'pel-init-support-dual-environment-p (not (null use-dual-environment))))
+     (or pel-compile-emacs-init elc-existed-p))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Save user-option persistently

@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 16:02:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 17:01:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -869,7 +869,13 @@ symlink/realpath double entries.\"
       (add-to-list 'load-path norm))))
 
 (defun pel--warn-if-invalid-elpa-symlink ()
-  \"Sanity check: warn if the elpa symlink does not point to elpa-reduced.\"
+  \"Sanity check: warn if the elpa symlink is absent or invalid.
+
+In PEL fast-startup mode `~/.emacs.d/elpa' must point to `elpa-reduced'.
+Issues a warning of category `pel-fast-startup-init' at :error level when
+the symlink is missing or points to the wrong directory, instructing the
+user to run `pel-setup-fast' or `pel-setup-normal' to rebuild the symlink
+to properly point to elpa-reduced directory.\"
   (let* ((elpa-link    (expand-file-name \"elpa\"         user-emacs-directory))
          (expected-dir (expand-file-name \"elpa-reduced\" user-emacs-directory))
          (link-target  (and (file-symlink-p elpa-link)
@@ -947,7 +953,7 @@ Return the pkg/version alist.\"
 ;; together inside the elpa-reduced/pel-bundle *pseudo-package*.
 
 \(defun pel--pct (_packages)
-  \"Filter packages to prevent downloads.\"
+  \"Prevent package downloads during PEL fast-startup initialization.\"
   nil)
 
 \(advice-add  'package-compute-transaction  :filter-return (function pel--pct))

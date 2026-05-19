@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 10:26:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 16:40:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -54,6 +54,7 @@
 ;;                                    ;      `pel-remove-no-byte-compile-in'
 ;;                                    ;      `pel-update-emacs-user-init-file'
 ;;                                    ;      `pel-detected-dual-environment-in-init-p'
+;;                                    ;      `pel-create-early-init-if-missing'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
