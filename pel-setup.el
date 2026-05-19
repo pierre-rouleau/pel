@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 13:53:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 15:24:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1537,11 +1537,11 @@ is only one or when its for the terminal (TTY) mode."
   ;; but leave the elpa-reduced directory around in case some other
   ;; Emacs process is currently running in fast-start operation mode.
   (when (file-exists-p pel-fast-startup-init-fname)
-    (delete-file pel-fast-startup-init-fname)
-    ;; Also remove the byte-compiled version.
-    (let ((elc (concat pel-fast-startup-init-fname "c")))
-      (when (file-exists-p elc)
-        (delete-file elc))))
+    (delete-file pel-fast-startup-init-fname))
+  ;; Also remove the byte-compiled version.
+  (let ((elc (concat pel-fast-startup-init-fname "c")))
+    (when (file-exists-p elc)
+      (delete-file elc)))
   ;;
   (when pel-emacs-27-or-later-p
     (require 'pel-setup-27)
