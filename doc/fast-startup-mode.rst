@@ -1,11 +1,11 @@
-==============================
+=====================
 PEL Fast Startup Mode
-==============================
+=====================
 
 :URL: https://github.com/pierre-rouleau/pel/tree/master/doc
 :Project:  `PEL Project home page`_
-:Created:  2026-05-19
-:Modified: 2026-05-18 23:05:04 EDT, updated by Pierre Rouleau.
+:Created:  2026-05-18
+:Modified: 2026-05-19 23:05:04 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2026 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -360,12 +360,12 @@ Customization Variables (selection)
 
   - ``pel-support-package-quickstart`` (Emacs ≥ 27): enable/disable
     quickstart.
-  - ``pel-compile-emacs-init`` enable/disable byte compilation of your Emacs
-    init.el file.  The default is ``byte-and-native-compile-it`` to
-    byte-compile and native-compile the file.
-  - ``pel-compile-emacs-early-init`` enable/disable byte compilation of your Emacs
-    early-init.el file.  The default is ``byte-and-native-compile-it`` to
-    byte-compile and native compile the file.
+  - ``pel-compile-emacs-init``: controls compilation of ``init.el`` after PEL
+    updates it.  Three values are supported: ``nil`` (do not compile; deletes any
+    existing ``.elc``), ``t`` (byte-compile only), or
+    ``byte-and-native-compile-it`` (byte-compile and native-compile; default).
+  - ``pel-compile-emacs-early-init``: same three-value choice for
+    ``early-init.el``.
 
 - Constant defined inside ``~/.emacs.d/init.el``.
   Edit that file to modify it's value:
