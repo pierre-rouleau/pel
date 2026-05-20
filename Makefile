@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-20 10:53:23 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-20 10:59:41 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -148,8 +148,8 @@ PEL_ELPA_COMPLETE := $(PEL_EMACS_DIR)/elpa-complete
 PEL_ELPA_REDUCED  := $(PEL_EMACS_DIR)/elpa-reduced
 
 # Is Emacs using PEL Fast Startup Mode?
-#
-# "yes" when elpa-complete dir exists → PEL fast startup was set up
+# "yes" when: elpa is a symlink pointing to elpa-reduced,
+#             AND both elpa-complete and elpa-reduced directories exist.
 PEL_FAST_STARTUP := $(shell \
   [ -L "$(PEL_EMACS_DIR)/elpa" ] \
   && readlink "$(PEL_EMACS_DIR)/elpa" | grep -q "elpa-reduced" \
@@ -1097,7 +1097,7 @@ clean-test:
 #   by letting it know that a test is underway.
 #   - Note that in normal mode, the variable is not set to allow pel-locate-elpa
 #     to perform the check; in normal mode `make stats` does not modify the
-#     environment so the le-locate-elpa check is valid.
+#     environment so the pel-locate-elpa check is valid.
 # - inject an --eval BEFORE -l init.el that loads 'package',
 #   temporarily points package-user-dir at elpa-reduced (as fast
 #   startup uses), and calls package-initialize.

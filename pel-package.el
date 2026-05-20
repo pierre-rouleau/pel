@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-20 10:38:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-20 11:06:50 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1107,8 +1107,8 @@ packages seen by Emacs and speeds up Emacs startup.
 Since several packages have been merged into the pel-bundle package,
 it becomes difficult to know the exact number of Emacs packages used
 in this system.  If you want to see the exact number of Emacs Lisp
-packages used in the system, execute this command when PEL is operating
-in normal mode.\n\n"))
+packages used in this system, execute this command when PEL is operating
+in normal mode either with the `make stats` command or inside Emacs.\n\n"))
          (unless full-report
            (insert "
 More information about Elpa packages and Utils files are printed in the
@@ -1206,11 +1206,11 @@ and all PEL files!!"
   (interactive)
   (load-library "pel_keys")
   (pel-load-all)
-  ;; In Emacs 27+, use `package-activate-all' to re-activate packages
-  ;; whose directories were added to `package-user-dir' by the --eval
-  ;; block in the Makefile stats target.  `package-activate-all' is
-  ;; a lighter operation than `package-initialize' (no rescan), and
-  ;; is the correct API for Emacs 27+.
+  ;; In Emacs 27+, use `package-activate-all' to activate packages
+  ;; found in the subdirectories under `package-user-dir' (set to
+  ;; elpa-reduced by the --eval block in the Makefile stats target).
+  ;; `package-activate-all' is a lighter operation than `package-initialize'
+  ;; (no rescan), and is the correct API for Emacs 27+.
   ;; Without this, `package-activated-list' would be incomplete.
   (require 'package)
   (if (fboundp 'package-activate-all)
