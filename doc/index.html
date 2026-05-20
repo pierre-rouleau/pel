@@ -1,0 +1,1061 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.21.2: https://docutils.sourceforge.io/" />
+<meta name="author" content="Pierre Rouleau &lt;prouleau001&#64;gmail.com&gt;" />
+<meta name="copyright" content="© 2026, Pierre Rouleau" />
+<title>PEL Documentation</title>
+<style type="text/css">
+
+/* CSS FILE: std.css
+ *
+ * File      : /Users/roup/web/pr-web/css/std.css
+ * Purpose   : Style sheet for reStructuredText generated pages.
+ * Created   : Monday, November  2 2020.
+ * Author    : Pierre Rouleau <prouleau001@gmail.com>
+ * Time-stamp: <2020-11-02 09:38:56, updated by Pierre Rouleau>
+ */
+/* -------------------------------------------------------------------------*/
+/* Module Description
+ * ------------------
+ *
+ * Stylesheet based on Dave Kuhlman CSS from his page http://www.rexx.com/~dkuhlman/
+ *
+ */
+
+/* -------------------------------------------------------------------------*/
+/* Dependencies
+ * ------------
+ */
+
+
+
+/* -------------------------------------------------------------------------*/
+/* Code
+ * ----
+ */
+
+body {
+  font: 90% 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  color: black;
+  margin: 2em;
+  padding: 2em;
+}
+
+a[href] {
+  color: #436976;
+  background-color: transparent;
+}
+
+a.toc-backref {
+  text-decoration: none;
+}
+
+h1 a[href] {
+  text-decoration: none;
+  color: #fcb100;
+  background-color: transparent;
+}
+
+a.strong {
+  font-weight: bold;
+}
+
+img {
+  margin: 0;
+  border: 0;
+}
+
+p {
+  margin: 0.5em 0 1em 0;
+  line-height: 1.5em;
+}
+p a {
+  text-decoration: underline;
+}
+p a:visited {
+  color: purple;
+  background-color: transparent;
+}
+p a:active {
+  color: red;
+  background-color: transparent;
+}
+a:hover {
+  text-decoration: none;
+}
+p img {
+  border: 0;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #003a6b;
+  background-color: transparent;
+  font: 100% 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding-top: 0.5em;
+}
+
+h1 {
+  font-size: 160%;
+  margin-bottom: 0.5em;
+  border-bottom: 1px solid #fcb100;
+}
+h2 {
+  font-size: 140%;
+  margin-bottom: 0.5em;
+  border-bottom: 1px solid #aaa;
+}
+h3 {
+  font-size: 130%;
+  margin-bottom: 0.5em;
+  text-decoration: underline;
+}
+h4 {
+  font-size: 110%;
+  font-weight: bold;
+}
+h5 {
+  font-size: 100%;
+  font-weight: bold;
+}
+h6 {
+  font-size: 80%;
+  font-weight: bold;
+}
+
+ul a, ol a {
+  text-decoration: underline;
+}
+
+dt {
+  font-weight: bold;
+}
+dt a {
+  text-decoration: none;
+}
+
+dd {
+  line-height: 1.5em;
+  margin-bottom: 1em;
+}
+
+.footnote-reference {
+  font-variant: super;
+  font-size: 0.8em;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Definition lists */
+/* ---------------- */
+/*
+dl.docutils {
+    font-family: georgia,times,serif;
+    margin: 0 0 0.5em;
+    padding: 0.2em 0.5em;
+}
+
+.docutils dt {
+    font-weight: bold;
+}
+
+.docutils dd {
+    border-left: 1px solid black;
+    margin: 0;
+    padding: 0 0 0.5em 0.5em;
+}
+*/
+/* -------------------------------------------------------------------------- */
+
+legend {
+  background: #ffffff;
+  padding: 0.5em;
+}
+
+form {
+  margin: 0;
+}
+
+
+dl.form {
+  margin: 0;
+  padding: 1em;
+}
+
+dl.form dt {
+  width: 30%;
+  float: left;
+  margin: 0;
+  padding: 0 0.5em 0.5em 0;
+  text-align: right;
+}
+
+input {
+  font: 100% 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
+  color: black;
+  background-color: white;
+  vertical-align: middle;
+}
+
+abbr, acronym, .explain {
+  color: black;
+  background-color: transparent;
+}
+
+q, blockquote {
+}
+
+code, pre {
+  font-family: monospace;
+  font-size: 1.2em;
+  display: block;
+  padding: 10px;
+  border: 1px solid #838183;
+  background-color:  #f8f8f8;  /* background color used for literal blocks and code blocks */
+  color: #000;
+  overflow: auto;
+  margin: 0.5em 1em;
+}
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+tt.docutils {
+  background-color: #eeeeee;
+}
+
+/* .align-center is used to center things.
+** ---------------------------------------
+**
+** For example, this class is applied to centered images in reStructuredText:
+**
+**  .. image:: some_image.png
+**     :align: center
+*/
+.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+/* Pygments related */
+
+.highlight  { background: #FFFFFF; }
+.highlight .n  { color: black; }
+.highlight .c  { color:#5F5A60; font-style: italic }      /* Comment */
+.highlight .err { border: 1px solid #FF0000 }             /* Error */
+.highlight .o  { color: #666666; font-weight: bold }      /* Operator */
+.highlight .cm { color: green; font-style: italic}        /* Comment.Multiline */
+.highlight .cp { color: green }                           /* Comment.Preproc */
+.highlight .c1 { color: green }                           /* Comment.Single */
+.highlight .cs { color: green}                            /* Comment.Special */
+.highlight .gd { color: #A00000 }                         /* Generic.Deleted */
+.highlight .ge { font-style: italic }                     /* Generic.Emph */
+.highlight .gr { color: #FF0000 }                         /* Generic.Error */
+.highlight .gh { color: #000080 }                         /* Generic.Heading */
+.highlight .gi { color: #00A000 }                         /* Generic.Inserted */
+.highlight .go { color: #808080 }                         /* Generic.Output */
+.highlight .gp { color: #000080 }                         /* Generic.Prompt */
+.highlight .gs { color: #000080 }                         /* Generic.Strong */
+.highlight .gu { color: #800080 }                         /* Generic.Subheading */
+.highlight .gt { color: #0040D0 }                         /* Generic.Traceback */
+.highlight .k  { color: orange; font-weight: bold }       /* Keyword */
+.highlight .kc { color: #F850FF }                         /* Keyword.Constant */
+.highlight .kd { color: #F850FF }                         /* Keyword.Declaration */
+.highlight .kp { color: #F850FF }                         /* Keyword.Pseudo */
+.highlight .kr { color: #F850FF }                         /* Keyword.Reserved */
+.highlight .kt { color: #005BDE; font-weight: bold}       /* Keyword.Type */
+.highlight .m  { color: #CF6A4C }                         /* Literal.Number */
+.highlight .s  { color: #BB4444 }                         /* Literal.String */
+.highlight .na { color: #BB4444 }                         /* Name.Attribute */
+.highlight .nb { color: #AA22FF }                         /* Name.Builtin */
+.highlight .nc { color: #7587A6; font-weight: bold }      /* Name.Class */
+.highlight .no { color: #880000 }                         /* Name.Constant */
+.highlight .nd { color: #AA22FF }                         /* Name.Decorator */
+.highlight .ni { color: #999999 }                         /* Name.Entity */
+.highlight .ne { color: #D2413A; font-weight: bold }      /* Name.Exception */
+.highlight .nf { color: #8F9D6A; font-weight: bold }      /* Name.Function */
+.highlight .nl { color: #A0A000; font-weight: bold }      /* Name.Label */
+.highlight .nn { color: #C0C0FF; font-weight: bold }      /* Name.Namespace */
+.highlight .nt { color: #008000 }                         /* Name.Tag */
+.highlight .nv { color: #B8860B }                         /* Name.Variable */
+.highlight .ow { color: #AA22FF }                         /* Operator.Word */
+.highlight .mf { color: #666666 }                         /* Literal.Number.Float */
+.highlight .mh { color: #666666 }                         /* Literal.Number.Hex */
+.highlight .mi { color: #CF6A4C }                         /* Literal.Number.Integer */
+.highlight .mo { color: #CF6A4C }                         /* Literal.Number.Oct */
+.highlight .sb { color: #BB4444 }                         /* Literal.String.Backtick */
+.highlight .sc { color: #BB4444 }                         /* Literal.String.Char */
+.highlight .sd { color: #BB4444 }                         /* Literal.String.Doc */
+.highlight .s2 { color: #BB4444 }                         /* Literal.String.Double */
+.highlight .se { color: #BB6622 }                         /* Literal.String.Escape */
+.highlight .sh { color: #BB4444 }                         /* Literal.String.Heredoc */
+.highlight .si { color: #BB6688 }                         /* Literal.String.Interpol */
+.highlight .sx { color: #008000 }                         /* Literal.String.Other */
+.highlight .sr { color: #BB6688 }                         /* Literal.String.Regex */
+.highlight .s1 { color: #BB4444 }                         /* Literal.String.Single */
+.highlight .ss { color: #B8860B }                         /* Literal.String.Symbol */
+.highlight .bp { color: #AA22FF }                         /* Name.Builtin.Pseudo */
+.highlight .vc { color: #B8860B }                         /* Name.Variable.Class */
+.highlight .vg { color: #B8860B }                         /* Name.Variable.Global */
+.highlight .vi { color: #B8860B }                         /* Name.Variable.Instance */
+.highlight .il { color: #666666 }                         /* Literal.Number.Integer.Long */
+
+/* ----------------------------------------------------------------------------
+ *
+ * Custom Interpreted Text Roles
+ * See http://docutils.sourceforge.net/docs/ref/rst/directives.html#role
+ *
+**/
+
+
+/* attributes for the 17 standard CSS color names
+** ----------------------------------------------
+**
+** Ref: http://www.w3schools.com/cssref/css_colornames.asp
+**
+** For example:
+**
+**       :red: Color the text in red (e.g. This :red:`word` is in red.)
+*/
+
+.aqua {
+    color: aqua;
+}
+
+.black {
+    color: black;
+}
+
+.blue {
+    color: blue;
+}
+
+.fuchsia {
+    color: fuchsia;
+}
+
+.gray {
+    color: gray;
+}
+
+.grey {
+    color: grey;
+}
+
+.green {
+    color: green;
+}
+
+.lime {
+    color: lime;
+}
+
+.maroon {
+    color: maroon;
+}
+
+.navy {
+    color: navy;
+}
+
+.olive {
+    color: olive;
+}
+
+.purple {
+    color: purple;
+}
+
+.red {
+    color: red;
+}
+
+.silver {
+    color: silver;
+}
+
+.teal {
+    color: teal;
+}
+
+.white {
+    color: white;
+}
+
+.yellow {
+    color: yellow;
+}
+
+/* --------------------------------------------------------------------------*/
+/* attributes for the 17 standard CSS color names in bold
+** ------------------------------------------------------
+**
+** The attributes for the colors have the same names as the normal colors
+** appended with a 'b'.
+**
+** For example:
+**
+**       :redb: Color the bold text in red (e.g. This :redb:`word` is bold in red.)
+*/
+
+.aquab {
+    color: aqua;
+    font-weight: bold
+}
+
+.blackb {
+    color: black;
+    font-weight: bold
+}
+
+.blueb {
+    color: blue;
+    font-weight: bold
+}
+
+.fuchsiab {
+    color: fuchsia;
+    font-weight: bold
+}
+
+.grayb {
+    color: gray;
+    font-weight: bold
+}
+
+.greyb {
+    color: grey;
+    font-weight: bold
+}
+
+.greenb {
+    color: green;
+    font-weight: bold
+}
+
+.limeb {
+    color: lime;
+    font-weight: bold
+}
+
+.maroonb {
+    color: maroon;
+    font-weight: bold
+}
+
+.navyb {
+    color: navy;
+    font-weight: bold
+}
+
+.oliveb {
+    color: olive;
+    font-weight: bold
+}
+
+.purpleb {
+    color: purple;
+    font-weight: bold
+}
+
+.redb {
+    color: red;
+    font-weight: bold
+}
+
+.silverb {
+    color: silver;
+    font-weight: bold
+}
+
+.tealb {
+    color: teal;
+    font-weight: bold
+}
+
+.whiteb {
+    color: white;
+    font-weight: bold
+}
+
+.yellowb {
+    color: yellow;
+    font-weight: bold
+}
+
+/* --------------------------------------------------------------------------*/
+/* attributes for the 17 standard CSS color names in bold and underlined
+** ---------------------------------------------------------------------
+**
+** The attributes for the colors have the same names as the normal colors
+** appended with a 'bu'.
+**
+** For example:
+**
+**       :redbu: Color the bold, underlined text in red (e.g. This :redbu:`word` is bold, undelined in red.)
+*/
+
+.aquabu {
+    color: aqua;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.blackbu {
+    color: black;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.bluebu {
+    color: blue;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.fuchsiabu {
+    color: fuchsia;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.graybu {
+    color: gray;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.greybu {
+    color: grey;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.greenbu {
+    color: green;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.limebu {
+    color: lime;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.maroonbu {
+    color: maroon;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.navybu {
+    color: navy;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.olivebu {
+    color: olive;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.purplebu {
+    color: purple;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.redbu {
+    color: red;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.silverbu {
+    color: silver;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.tealbu {
+    color: teal;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.whitebu {
+    color: white;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.yellowbu {
+    color: yellow;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+/* --------------------------------------------------------------------------*/
+
+/* --------------------------------------------------------------------------*/
+/* attributes for the 17 standard CSS color names and underlined
+** -------------------------------------------------------------
+**
+** The attributes for the colors have the same names as the normal colors
+** appended with a 'u'.
+**
+** For example:
+**
+**       :redu: Color the underlined text in red (e.g. This :redu:`word` is undelined in red.)
+*/
+
+.aquau {
+    color: aqua;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.blacku {
+    color: black;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.blueu {
+    color: blue;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.fuchsiau {
+    color: fuchsia;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.grayu {
+    color: gray;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.greyu {
+    color: grey;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.greenu {
+    color: green;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.limeu {
+    color: lime;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.maroonu {
+    color: maroon;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.navyu {
+    color: navy;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.oliveu {
+    color: olive;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.purpleu {
+    color: purple;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.redu {
+    color: red;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.silveru {
+    color: silver;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.tealu {
+    color: teal;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.whiteu {
+    color: white;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+.yellowu {
+    color: yellow;
+    text-decoration: underline;
+    font-size: 110%
+}
+
+
+/* --------------------------------------------------------------------------*/
+/* attributes for the 17 standard CSS color names in italic
+** --------------------------------------------------------
+**
+** The attribites for the colors have the same names as the normal colors
+** appended with a 'i'.
+**
+** For example:
+**
+**       :redi: Color the italic text in red (e.g. This :redi:`word` is italic in red.)
+*/
+
+.aquai{
+    color: aqua;
+    font-style: italic;
+    font-size: 110%
+}
+
+.blacki{
+    color: black;
+    font-style: italic;
+    font-size: 110%
+}
+
+.bluei{
+    color: blue;
+    font-style: italic;
+    font-size: 110%
+}
+
+.fuchsiai{
+    color: fuchsia;
+    font-style: italic;
+    font-size: 110%
+}
+
+.grayi{
+    color: gray;
+    font-style: italic;
+    font-size: 110%
+}
+
+.greyi{
+    color: grey;
+    font-style: italic;
+    font-size: 110%
+}
+
+.greeni{
+    color: green;
+    font-style: italic;
+    font-size: 110%
+}
+
+.limei{
+    color: lime;
+    font-style: italic;
+    font-size: 110%
+}
+
+.marooni{
+    color: maroon;
+    font-style: italic;
+    font-size: 110%
+}
+
+.navyi{
+    color: navy;
+    font-style: italic;
+    font-size: 110%
+}
+
+.olivei{
+    color: olive;
+    font-style: italic;
+    font-size: 110%
+}
+
+.purplei{
+    color: purple;
+    font-style: italic;
+    font-size: 110%
+}
+
+.redi{
+    color: red;
+    font-style: italic;
+    font-size: 110%
+}
+
+.silveri{
+    color: silver;
+    font-style: italic;
+    font-size: 110%
+}
+
+.teali{
+    color: teal;
+    font-style: italic;
+    font-size: 110%
+}
+
+.whitei{
+    color: white;
+    font-style: italic;
+    font-size: 110%
+}
+
+.yellowi{
+    color: yellow;
+    font-style: italic;
+    font-size: 110%
+}
+
+/* --------------------------------------------------------------------------*/
+/* attributes for the 17 standard CSS color names in bold and italic
+** -----------------------------------------------------------------
+**
+** The attribites for the colors have the same names as the normal colors
+** appended with a 'bi'.
+**
+** For example:
+**
+**       :redbi: Color the bold, underlined text in red (e.g. This :redbi:`word` is bold, italic in red.)
+*/
+
+.aquabi {
+    color: aqua;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.blackbi {
+    color: black;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.bluebi {
+    color: blue;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.fuchsiabi {
+    color: fuchsia;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.graybi {
+    color: gray;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.greybi {
+    color: grey;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.greenbi {
+    color: green;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.limebi {
+    color: lime;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.maroonbi {
+    color: maroon;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.navybi {
+    color: navy;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.olivebi {
+    color: olive;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.purplebi {
+    color: purple;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.redbi {
+    color: red;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.silverbi {
+    color: silver;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.tealbi {
+    color: teal;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.whitebi {
+    color: white;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+.yellowbi {
+    color: yellow;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 110%
+}
+
+/* --------------------------------------------------------------------------*/
+
+
+/* :monospace: Use a monospace font for this text. (e.g. Monospace :monospace:`font`.) */
+.monospace {
+    font-family: monospace;
+}
+
+/* :pre: Defines text in which whitespaces are preserved. (e.g. Spaces are :pre:`preserved       in     this     text`.) */
+.pre {
+    white-space: pre;
+}
+
+/* :strike: Defines strikethrough text (e.g. This :strike:`word` is strikethrough.) */
+.strike {
+    text-decoration: line-through;
+}
+
+/* --------------------------------------------------------------------------*/
+
+</style>
+</head>
+<body>
+<div class="document" id="pel-documentation">
+<h1 class="title">PEL Documentation</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr class="home-url field"><th class="docinfo-name">Home URL:</th><td class="field-body"><a class="reference external" href="https://github.com/pierre-rouleau/pel">https://github.com/pierre-rouleau/pel</a></td>
+</tr>
+<tr><th class="docinfo-name">Author:</th>
+<td>Pierre Rouleau &lt;<a class="reference external" href="mailto:prouleau001&#37;&#52;&#48;gmail&#46;com">prouleau001<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;</td></tr>
+<tr><th class="docinfo-name">Copyright:</th>
+<td>© 2026, Pierre Rouleau</td></tr>
+<tr class="pdf-index field"><th class="docinfo-name">PDF Index:</th><td class="field-body">-index.pdf</td>
+</tr>
+</tbody>
+</table>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<p><strong>CAUTION</strong>  This site is under construction!!</p>
+<p>The links in the PDF files are still pointing to the location where the raw
+files are stored.</p>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- links: -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- Local Variables:
+time-stamp-line-limit: 10
+time-stamp-start: "^:Modified:[ \t]+\\\\?"
+time-stamp-end:   "\\.$"
+End: -->
+</div>
+<div class="footer">
+<hr class="footer" />
+<a class="reference external" href="index.rst">View document source</a>.
+Generated on: 2026-05-20 19:53 UTC.
+Generated by <a class="reference external" href="https://docutils.sourceforge.io/">Docutils</a> from <a class="reference external" href="https://docutils.sourceforge.io/rst.html">reStructuredText</a> source.
+
+</div>
+</body>
+</html>
