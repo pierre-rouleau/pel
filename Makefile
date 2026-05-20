@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-20 09:31:48 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-20 10:27:39 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -1089,25 +1089,27 @@ clean-test:
 # To prevent an Emacs crash and allow this test while also preventing
 # pel-locate-elpa from detecting and reporting an invalid PEL state:
 # - issue an Emacs command with the EMACS_TEST_VERBOSE environment variable set
+#   to prevent pel-locate-elpa from reporting an inconsistency in PEL environment
+#   by letting it know that a test is underway.
 # - inject an --eval BEFORE -l init.el that loads 'package',
-#   temporarily points package-user-dir at elpa-complete (which
-#   holds all individual packages), and calls package-initialize.
+#   temporarily points package-user-dir at elpa-reduce (as fast
+#   startup uses), and calls package-initialize.
 
 stats:
 ifeq ($(PEL_FAST_STARTUP),yes)
 	@EMACS_TEST_VERBOSE=0 $(EMACS) --batch -L . \
 	  --eval "(progn \
 	            (require (quote package)) \
-	            (when (file-directory-p \"$(PEL_ELPA_REDUCED)\") \
-	              (setq package-user-dir \"$(PEL_ELPA_REDUCED)\")) \
+	            (setq package-user-dir \"$(PEL_ELPA_REDUCED)\") \
 	            (package-initialize))" \
 	  -l "$(EMACS_INIT)" -l pel-package.el -f pel-package-info-all
-	@printf "CAUTION: This almost represents what PEL uses in fast startup.\n"
+	@printf "CAUTION: This almost represents what PEL uses in terms of packages in fast startup.\n"
 	@printf "         There are minor differences to load-path size, loaded\n"
 	@printf "         files and features due to the way Emacs is started for\n"
-	@printf "         this test. The Emacs init-time shown here is for Emacs\n"
-	@printf "         in batch mode, not interactive mode.\n"
-	@printf "    -->  To see what Emacs really uses in fast startup mode,\n"
+	@printf "         this test.\n"
+	@printf "         The Emacs init-time shown here does not represent the fast startup time,\n"
+	@printf "         it's the batch mode startup with differences in package initalization.\n"
+	@printf "    -->  To see what Emacs really uses in fast startup mode, and it's real startup time,\n"
 	@printf "         execute the pel-package-info command inside Emacs.\n"
 
 else

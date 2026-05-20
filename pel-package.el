@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-20 09:12:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-20 10:38:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -60,7 +60,7 @@
 ;;  - Use `pel-package-info' to get a quick overview of the packages requested
 ;;    by PEL user-options, their dependencies and the packages that must
 ;;    remain because they are use by Emacs running in another mode
-;;    (graphic/TTY).  Produce a more detailed report in a *pel-user-options*
+;;    (graphic/TTY).  Produce a more detailed report in a *pel-package-info*
 ;;    buffer by passing an argument to the command.
 ;; - Use the command `pel-cleanup' to deactivate all packages in excess:
 ;;   packages that are not in the list of:
@@ -980,7 +980,7 @@ a string that says so."
 (defun pel-package-info (&optional full-report on-stdout)
   "Display information about packages required by PEL.
 
-Print the information in *pel-user-options* buffer, unless
+Print the information in *pel-package-info* buffer, unless
 ON-STDOUT is non-nil, in which case it prints it in the echo
 area.  By default prints a short report with the main
 information, but if FULL-REPORT is non-nil (interactively with
@@ -1034,7 +1034,7 @@ The function does not support printing a full report on stdout."
 - # loaded files             : %d
 - # features                 : %d
 - # package-alist            : %d
-- # packages activated *     : %d%s
+- # packages activated       : %d%s
 - # packages selected        : %d (explicitly selected; no deps, no built-ins)
 - # PEL loaded commands      : %d
 - # upgradable elpa packages : %d
@@ -1103,7 +1103,12 @@ The function does not support printing a full report on stdout."
 In PEL fast startup mode, the Elisp files of single directory packages
 are stored inside the pel-bundle package.  This reduces the number of
 packages seen by Emacs and speeds up Emacs startup.
-Use normal startup mode to see the real number of packages Emacs uses.\n\n"))
+
+Since several packages have been merged into the pel-bundle package,
+it becomes difficult to know the exact number of Emacs packages used
+in this system.  If you want to see the exact number of Emacs Lisp
+packages used in the system, execute this command when PEL is operating
+in normal mode.\n\n"))
          (unless full-report
            (insert "
 More information about Elpa packages and Utils files are printed in the
@@ -1201,10 +1206,12 @@ and all PEL files!!"
   (interactive)
   (load-library "pel_keys")
   (pel-load-all)
-  ;; Ensure all packages are fully activated before gathering stats.
-  ;; In Emacs 27+, package-activate-all must be called explicitly in
-  ;; --batch mode since the automatic pre-init call to package-initialize
-  ;; was removed. Without this, package-activated-list will be incomplete.
+  ;; In Emacs 27+, use `package-activate-all' to re-activate packages
+  ;; whose directories were added to `package-user-dir' by the --eval
+  ;; block in the Makefile stats target.  `package-activate-all' is
+  ;; a lighter operation than `package-initialize' (no rescan), and
+  ;; is the correct API for Emacs 27+.
+  ;; Without this, `package-activated-list' would be incomplete.
   (require 'package)
   (if (fboundp 'package-activate-all)
       (package-activate-all)            ; Emacs 27+
