@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-20 10:59:41 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-20 11:28:06 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -142,7 +142,7 @@ DEST_DOC_PDF_DIR := $(DEST_DIR)/doc/pdf
 PEL_EMACS_DIR     := $(HOME)/.emacs.d
 PEL_ELPA_COMPLETE := $(PEL_EMACS_DIR)/elpa-complete
 #
-# The elpa-reduced directory hold the multi-directory packages
+# The elpa-reduced directory holds the multi-directory packages
 # and the files of all single-directory packages are stored into the pel-bundle
 # pseudo package.
 PEL_ELPA_REDUCED  := $(PEL_EMACS_DIR)/elpa-reduced
@@ -1116,7 +1116,7 @@ ifeq ($(PEL_FAST_STARTUP),yes)
 	@printf "         this test.\n"
 	@printf "         The Emacs init-time shown here does not represent the fast startup time,\n"
 	@printf "         it's the batch mode startup with differences in package initialization.\n"
-	@printf "    -->  To see what Emacs really uses in fast startup mode, and it's real startup time,\n"
+	@printf "    -->  To see what Emacs really uses in fast startup mode, and its real startup time,\n"
 	@printf "         execute the pel-package-info command inside Emacs.\n"
 
 else
