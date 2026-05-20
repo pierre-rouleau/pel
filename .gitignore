@@ -49,7 +49,7 @@ HTML/*
 
 # Local html rendering of reStructuredText or markdown files
 # No html files are included in the depot.
-*.html
+# *.html
 
 # Byte-Compiled Emacs Lisp files
 *.elc
