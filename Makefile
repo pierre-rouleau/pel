@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-17 21:48:20 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-20 08:10:01 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -99,7 +99,8 @@ PEL_VERSION := 0.4.2
 # - pel-manual.rst
 
 # -----------------------------------------------------------------------------
-# Directory Used in this build
+# Identify Directories
+# --------------------
 
 # SRC_DIR   : where all PEL .el file are stored
 SRC_DIR := .
@@ -133,6 +134,21 @@ DEST_TEST_DIR    := $(DEST_DIR)/test
 #                 Note that while PEL is distributed via its Git repository,
 #                 these files do not need to be included in the PEL tar file.
 DEST_DOC_PDF_DIR := $(DEST_DIR)/doc/pdf
+
+
+# Emacs Directory
+# ---------------
+
+PEL_EMACS_DIR    := $(HOME)/.emacs.d
+PEL_ELPA_COMPLETE := $(PEL_EMACS_DIR)/elpa-complete
+
+# Is Emacs using PEL Fast Startup Mode?
+#
+# "yes" when elpa-complete dir exists → PEL fast startup was set up
+PEL_FAST_STARTUP := $(shell \
+  [ -L "$(PEL_EMACS_DIR)/elpa" ] \
+  && readlink "$(PEL_EMACS_DIR)/elpa" | grep -q "elpa-reduced" \
+  && echo "yes" || echo "no")
 
 # -----------------------------------------------------------------------------
 # Identify the files used in the package.
@@ -1060,11 +1076,37 @@ clean-test:
 	-rm -f test/*.test-passed
 
 # ----------------------------------------------------------------------------
-# PEL Statistics
+# stats: display PEL package statistics
 
 .PHONY:	stats
+
+# In PEL fast-startup mode 'emacs-startup-hook' never fires in
+# --batch, so package-initialize is never called and individual
+# packages (e.g. flycheck) are not on load-path.
+# To prevent an Emacs crash and allow this test while also preventing
+# pel-locate-elpa from detecting and reporting an invalid PEL state:
+# - issue an Emacs command with the EMACS_TEST_VERBOSE environment variable set
+# - inject an --eval BEFORE -l init.el that loads 'package',
+#   temporarily points package-user-dir at elpa-complete (which
+#   holds all individual packages), and calls package-initialize.
+
 stats:
-	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info-all
+ifeq ($(PEL_FAST_STARTUP),yes)
+	@EMACS_TEST_VERBOSE=0 $(EMACS) --batch -L . \
+	  --eval "(progn \
+	            (require (quote package)) \
+	            (setq package-user-dir \"$(PEL_ELPA_COMPLETE)\") \
+	            (package-initialize))" \
+	  -l "$(EMACS_INIT)" -l pel-package.el -f pel-package-info-all
+	@printf "CAUTION: This does NOT represent what PEL uses in fast startup!\n"
+	@printf "         It represents the state in normal mode.\n"
+	@printf "         To see what Emacs really uses in fast startup mode,\n"
+	@printf "         issue the pel-package-info command inside Emacs.\n"
+
+else
+	@$(EMACS) --batch -L . \
+	  -l "$(EMACS_INIT)" -l pel-package.el -f pel-package-info-all
+endif
 
 # ----------------------------------------------------------------------------
 # Startup time measurement
