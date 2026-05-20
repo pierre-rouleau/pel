@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 22:10:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 22:17:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -884,9 +884,9 @@ to properly point to elpa-reduced directory.\"
                  (string= (directory-file-name (file-truename expected-dir))
                           (directory-file-name link-target)))
       (display-warning
-        'pel-fast-startup-init
-        \"\
-WARNING: PEL fast-startup: the elpa symlink is missing or points to the wrong directory.
+       'pel-fast-startup-init
+       \"\
+!! PEL fast-startup: the elpa symlink is missing or points to the wrong directory.
          Please run M-x pel-setup-fast to restore fast-startup mode, or
                     M-x pel-setup-normal to revert to normal mode.
          Until then Emacs will start in a degraded state.\"
