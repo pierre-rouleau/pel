@@ -4,8 +4,8 @@ PEL Documentation
 
 :Home URL: https://github.com/pierre-rouleau/pel
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Copyright: © 2026, Pierre Rouleau
-:PDF Index: -index.pdf
+:Copyright: © 2021-2026, Pierre Rouleau
+:PDF Index: `PEL Index PDF`_
 
 .. contents::  **Table of Contents**
 .. sectnum::
@@ -20,6 +20,7 @@ files are stored.
 .. ---------------------------------------------------------------------------
 .. links:
 
+.. _PEL Index PDF: -index.pdf
 
 .. ---------------------------------------------------------------------------
 
