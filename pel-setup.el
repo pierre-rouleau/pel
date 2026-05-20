@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 17:39:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 22:10:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -886,11 +886,11 @@ to properly point to elpa-reduced directory.\"
       (display-warning
         'pel-fast-startup-init
         \"\
-⚠️  PEL fast-startup: the elpa symlink is missing or points to the wrong directory.
-       Please run M-x pel-setup-fast to restore fast-startup mode, or
-                  M-x pel-setup-normal to revert to normal mode.
-       Until then Emacs will start in a degraded state.\"
-         :error))))
+WARNING: PEL fast-startup: the elpa symlink is missing or points to the wrong directory.
+         Please run M-x pel-setup-fast to restore fast-startup mode, or
+                    M-x pel-setup-normal to revert to normal mode.
+         Until then Emacs will start in a degraded state.\"
+        :error))))
 ;; ----
 \(defvar pel-running-in-fast-startup-p nil)
 
@@ -955,7 +955,7 @@ Return the pkg/version alist.\"
 \(defun pel--pct (_packages)
   \"Prevent package downloads during PEL fast-startup initialization.
 This temporary advice is removed once Emacs startup completes, restoring
-package download capabilities.\"
+package download capabilities, including Emacs 29+ `package-vc-install'.\"
   nil)
 
 \(advice-add  'package-compute-transaction  :filter-return (function pel--pct))
@@ -1277,7 +1277,7 @@ Please report this internal code error to project maintainer!"
 ;; step 2: (only for Emacs >= 27)
   (when using-package-quickstart
     (pel--add-to-load-path-once
-      (format \"%s\" (if force-graphics \"-graphics\" \"\"))))"
+     (format \"%s\" (if force-graphics \"-graphics\" \"\"))))"
               safe-path))))
 
 
