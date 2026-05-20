@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-18 15:57:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 22:56:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1034,7 +1034,7 @@ The function does not support printing a full report on stdout."
 - # loaded files             : %d
 - # features                 : %d
 - # package-alist            : %d
-- # packages activated *     : %d <<= # of packages used by Emacs
+- # packages activated *     : %d%s
 - # packages selected        : %d (explicitly selected; no deps, no built-ins)
 - # PEL loaded commands      : %d
 - # upgradable elpa packages : %d
@@ -1071,6 +1071,8 @@ The function does not support printing a full report on stdout."
                   (length features)                  ; # features
                   (length package-alist)             ; # package-alist
                   (length package-activated-list)    ; # packages activated
+                  (if (pel-in-fast-startup-p) ""
+                    " <<= # of packages used by Emacs")
                   (length package-selected-packages) ; # packages selected
                   (length (pel-commands))            ; # PEL commands
                   (length upgradable-pkgs) ; # upgradable PEL packages
@@ -1082,9 +1084,6 @@ The function does not support printing a full report on stdout."
                   (emacs-version)
                   (pel-emacs-config-features-string)
                   (pel-hardware-model-string))))
-    (when (pel-in-fast-startup-p)
-      (user-error "PEL is running in fast-startup. \
- This is only available in normal mode!"))
     (when errors
       (setq overview
             (concat
@@ -1098,17 +1097,26 @@ The function does not support printing a full report on stdout."
        "PEL User Option activated packages"
        (lambda ()
          "Print report."
-         (insert (format "\n%s\n
+         (insert overview)
+         (when (pel-in-fast-startup-p)
+           (insert "
+In PEL fast startup mode, the Elisp files of single directory packages
+are stored inside the pel-bundle package.  This reduces the number of
+packages seen by Emacs and speeds up Emacs startup.
+Use normal startup mode to see the real number of packages Emacs uses.\n\n"))
+         (unless full-report
+           (insert "
 More information about Elpa packages and Utils files are printed in the
-full report. Request it by invoking the command with a prefix argument."
-                         overview))
+full report. Request it by invoking the command with a prefix argument."))
          (when full-report
            (insert (format "\n
 Elpa packages and Utils files are shown below.
 The dependencies and lock restrictions are identified.
 Note that a package required by PEL may also be a dependency
 of another package; the ones identified as dependencies may
-also be requested by PEL user-options.\n"))
+also be requested by PEL user-options.\n")
+                   )
+
            (pel--show-pkgs-for "Elpa" elpa-all elpa+lock elpa-bdeps
                                pel-elpa-packages-to-keep)
            (pel--show-pkgs-for "Utils" utils-all utils+lock utils-bdeps
