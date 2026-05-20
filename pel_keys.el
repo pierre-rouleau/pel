@@ -8113,13 +8113,30 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; -- dtrt-indent
 (when pel-use-dtrt-indent
   (pel-ensure-package-elpa dtrt-indent from: melpa)
-  (when (boundp 'dtrt-indent-global-mode)
-    (setq dtrt-indent-global-mode 'activated-by--pel-use-dtrt-indent))
-  (define-pel-global-prefix pel:indent-dtrt (kbd "<f11> TAB d"))
-  (define-key pel:indent-dtrt "d" 'dtrt-indent-try-set-offset)
-  (define-key pel:indent-dtrt "D" 'dtrt-indent-set)
-  (define-key pel:indent-dtrt "u" 'dtrt-indent-undo)
-  (define-key pel:indent-dtrt "?" 'dtrt-indent-diagnosis))
+
+  ;; CAUTION: do NOT customize `dtrt-indent-global-mode' user-option: to
+  ;; prevent adding a (dtrt-indent-global-mode ...) form into your
+  ;; emacs-customization.el file: that would force the dtrt-indent.el file to
+  ;; be loaded regardless of the setting!
+  ;; - Ref: my bug report: https://github.com/jscheid/dtrt-indent/issues/95
+  ;;
+  ;; Defer global-mode activation until the first file is actually opened.
+  ;; This avoids loading dtrt-indent during no-file startup.
+  ;; Once the hook fires it removes itself; the global mode then handles
+  ;; all subsequently created buffers automatically via after-change-major-mode-hook.
+  (defun pel--enable-dtrt-indent-global-mode ()
+    "Enable `dtrt-indent-global-mode' on first file visit, then self-remove."
+    (remove-hook 'find-file-hook #'pel--enable-dtrt-indent-global-mode)
+    (when (fboundp 'dtrt-indent-global-mode)
+      (dtrt-indent-global-mode 1)
+      (define-pel-global-prefix pel:indent-dtrt (kbd "<f11> TAB d"))
+      (define-key pel:indent-dtrt "d" 'dtrt-indent-try-set-offset)
+      (define-key pel:indent-dtrt "D" 'dtrt-indent-set)
+      (define-key pel:indent-dtrt "u" 'dtrt-indent-undo)
+      (define-key pel:indent-dtrt "?" 'dtrt-indent-diagnosis)))
+  (declare-function pel--enable-dtrt-indent-global-mode "pel_keys")
+  ;;
+  (add-hook 'find-file-hook #'pel--enable-dtrt-indent-global-mode))
 
 ;; -- indent-bars
 (when pel-use-indent-bars

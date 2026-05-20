@@ -1,11 +1,11 @@
-==============================
+=====================
 PEL Fast Startup Mode
-==============================
+=====================
 
 :URL: https://github.com/pierre-rouleau/pel/tree/master/doc
 :Project:  `PEL Project home page`_
-:Created:  2026-05-19
-:Modified: 2026-05-18 23:05:04 EDT, updated by Pierre Rouleau.
+:Created:  2026-05-18
+:Modified: 2026-05-19 23:05:04 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2026 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -356,12 +356,35 @@ Typical Workflow
 Customization Variables (selection)
 ===================================
 
-- ``pel-support-package-quickstart`` (Emacs ≥ 27): enable/disable quickstart.
-- ``pel-init-support-dual-environment-p``: separate terminal vs graphics
-  custom files and package directories.
-- ``pel-early-init-support-gc-boost-p``: GC threshold boost during init.
-- ``pel-early-init-suppress-file-name-handler-p``: suppress file handlers.
-- ``pel-early-init-disable-ui-elements-p``: disable UI elements early.
+- User-option defined in ``pel--options.el`` that you can set via customization:
+
+  - ``pel-support-package-quickstart`` (Emacs ≥ 27): enable/disable
+    quickstart.
+  - ``pel-compile-emacs-init``: controls compilation of ``init.el`` after PEL
+    updates it.  Three values are supported:
+
+    - ``nil`` (do not compile; deletes any existing ``.elc``),
+    - ``t`` (byte-compile only), or
+    - ``byte-and-native-compile-it`` (byte-compile and native-compile;
+      default).
+
+  - ``pel-compile-emacs-early-init``: same three-value choice as above,
+    applied to ``early-init.el``.
+
+- Constant defined inside ``~/.emacs.d/init.el``.
+  Edit that file to modify its value:
+
+  - ``pel-init-support-dual-environment-p``: separate terminal vs graphics
+    custom files and package directories.
+
+- Constants defined inside the ``~/.emacs.d/early-init.el``
+  Edit that file to modify their values:
+
+  - ``pel-early-init-support-gc-boost-p``: GC threshold boost during init.
+  - ``pel-early-init-suppress-file-name-handler-p``: suppress file handlers.
+  - ``pel-early-init-disable-ui-elements-p``: disable UI elements early.
+
+Activate them all to get the fastest Emacs startup.
 
 -----------------------------------------------------------------------------
 

@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-18 10:13:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 17:16:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2024, 2025, 2026  Pierre Rouleau
+;; Copyright (C) 2021-2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -110,7 +110,7 @@ In the current code this is only done by `pel--setup-dual-environment'")
 ;;* Emacs Initialisation file validation
 ;;  ====================================
 
-(defconst pel--expected-init-file-version "0.3"
+(defconst pel--expected-init-file-version "0.3.1"
   "Must match what is in the example/init/init.el.")
 
 (defconst pel--expected-early-init-file-version "0.3"
@@ -426,11 +426,35 @@ The early-init.el file is created inside the directory identified by the
 ;;* Update PEL constant values in init.el or early-init.el
 ;; =======================================================
 
+;; Native compilation APIs are defined in comp-run (when available).
+(declare-function native-comp-available-p "comp-run")
+(declare-function native-compile-async "comp-run" (files
+                                                   &optional recursively load
+                                                   selector))
+
+(defun pel--native-compile-if-available (el-fname)
+  "Native-compile EL-FNAME if native compilation is available on this Emacs.
+The resulting .eln file will be used on the next Emacs startup, not immediately."
+  (when (featurep 'native-compile)
+    (require 'comp-run)
+    (when (and (fboundp 'native-comp-available-p)
+               (fboundp 'native-compile-async)
+               (native-comp-available-p))
+      ;; Use async compilation; the .eln will be ready for the next startup.
+      (native-compile-async (list el-fname) nil t))))
+
 (defun pel-compile-file-if (el-fname byte-compile-it)
   "Byte compile file EL-FNAME if BYTE-COMPILE-IT is set.
-Otherwise delete the .elc file if it exists."
+
+BYTE-COMPILE-IT controls the action:
+- nil: do not compile; delete the .elc file if it exists.
+- t: byte-compile EL-FNAME only.
+- \\='byte-and-native-compile-it: byte-compile and, when Emacs supports
+  native compilation, also native-compile EL-FNAME asynchronously."
   (if byte-compile-it
-      (byte-compile-file el-fname)
+      (when (and (byte-compile-file el-fname)
+                 (eq byte-compile-it 'byte-and-native-compile-it))
+        (pel--native-compile-if-available el-fname))
     ;; no compilation needed; remove any left-over .elc file
     (let ((elc-fname (concat el-fname "c")))
       (when (file-exists-p elc-fname)
@@ -448,7 +472,12 @@ Otherwise delete the .elc file if it exists."
     supported files.
 - SYMBOL-VALUES: a list of symbol-value pairs.  The symbol is the name of
   the variable to update to the specified value.
-- BYTE-COMPILE-IT: boolean.  If non-nil, byte compile resulting FNAME.
+- BYTE-COMPILE-IT controls the compilation action:
+  - nil: do not compile; delete the .elc file if it exists.
+  - t: byte-compile FNAME only.
+  - \\='byte-and-native-compile-it: byte-compile FNAME and, when Emacs
+    supports native compilation, also native-compile FNAME
+    asynchronously.
 
 Raise a user error if the function does not find the file or the
 `defconst' form defining a specified symbol inside the file.  The error
@@ -475,15 +504,23 @@ describes what was not found, requesting the user to fix it."
   "Update Emacs user init.el to USE-DUAL-ENVIRONMENT or not.
 
 Update init.el for dual environment when USE-DUAL-ENVIRONMENT is
-non-nil, otherwise prevent it from using it.  Set
-`pel-init-support-dual-environment-p' to t when USE-DUAL-ENVIRONMENT is
-non-nil, to nil otherwise.  Byte compile the result file if the
-`pel-compile-emacs-init' user-option is turned on."
-  (pel-update-emacs-user-init-file
-   "init.el"
-   (list
-    (list 'pel-init-support-dual-environment-p (not (null use-dual-environment))))
-   pel-compile-emacs-init))
+non-nil, otherwise prevent it from using it.
+
+Set `pel-init-support-dual-environment-p' to t when USE-DUAL-ENVIRONMENT
+is non-nil, to nil otherwise.
+
+Byte compile the result according to `pel-compile-emacs-init':
+- nil: do not compile; but recompile if init.elc already exists (to
+  keep it in sync with the updated source).
+- t: byte-compile only.
+- \\='byte-and-native-compile-it: byte-compile and native-compile."
+  (let* ((init-fname (locate-user-emacs-file "init.el"))
+         (elc-existed-p (file-exists-p (concat init-fname "c"))))
+    (pel-update-emacs-user-init-file
+     "init.el"
+     (list
+      (list 'pel-init-support-dual-environment-p (not (null use-dual-environment))))
+     (or pel-compile-emacs-init elc-existed-p))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Save user-option persistently

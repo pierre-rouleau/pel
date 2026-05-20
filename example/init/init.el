@@ -77,9 +77,12 @@
   "Directory where PEL Emacs Lisp source files are stored.")
 
 ;; --
-(defconst pel-init-file-version "0.3"
+(defconst pel-init-file-version "0.3.1"
   "Version of PEL init.el. Verified by pel-setup logic. Do NOT change.")
 ;; Update notes:
+;;  - version 0.3.1: In Emacs >= 27, code no longer setup the hook to execute
+;;                   `package-activate-all' after emacs startup because it has
+;;                   already been done by PEL early-init.
 ;;  - version 0.3: OPTION C code modified:
 ;;                 - Now explicitly load benchmark-init-modes.  It was not
 ;;                   required in older versions of Emacs but is required in
@@ -383,12 +386,10 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;;
   (defvar package-quickstart) ; declared only to prevent byte-compiler warning.
   (when pel-running-in-fast-startup-p
-    ;; Start fast startup for: - Emacs < 27
-    ;;                         - Emacs >= 27 when package quickstart is not used.
-    ;;                                       when used, early-init starts it.
-    (when (or (< emacs-major-version 27)
-              (null (boundp 'package-quickstart))
-              (not package-quickstart))
+    ;; Start fast startup for Emacs < 27.
+    ;; On Emacs >= 27 early-init.el always calls pel-fast-startup-init
+    ;; unconditionally (before package-activate-all fires).
+    (when (< emacs-major-version 27)
       (if (and (load (file-name-sans-extension pel-fast-startup-init-fname)
                      :noerror :nomessage)
                (fboundp 'pel-fast-startup-init))
@@ -396,9 +397,14 @@ Also expands to the file true name, replacing symlinks by what they point to."
                                       pel-emacs-is-graphic-p))
         (message "WARNING: Failed loading pel-fast-startup-init\
  from user-emacs-directory")))
-    (with-no-warnings    ; prevent complaining about pel--init-package-support
-      (add-hook 'emacs-startup-hook (function pel--init-package-support))))
-
+    ;; On Emacs >= 27 in fast-startup mode, package-activate-all has already
+    ;; been called automatically by Emacs (after early-init, before init).
+    ;; Calling package-initialize again via the hook would activate packages
+    ;; a second time, producing duplicate load-path entries.
+    ;; The hook is only needed for Emacs < 27, where there is no early-init.
+    (when (< emacs-major-version 27)
+      (with-no-warnings  ; prevent complaining about pel--init-package-support
+        (add-hook 'emacs-startup-hook (function pel--init-package-support)))))
 
   ;; -------------------------------------------------------------------------
   ;; Section 3: Delay loading of abbreviation definitions

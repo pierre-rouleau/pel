@@ -977,31 +977,66 @@ customization files."
   :safe #'booleanp)
 
 ;; ----
-(defcustom pel-compile-emacs-init nil
-  "Whether PEL setup commands that update init.el also `byte-compile' it.
+(defcustom pel-compile-emacs-init 'byte-and-native-compile-it
+  "Whether PEL setup commands that update init.el also compile it.
+
+The default is to byte-compile and native-compile the init.el file to
+improve Emacs startup performance.
+
+If you want to test the validity of your init.el file, byte compile it
+from the command line with the el-byte-compile script available in PEL
+bin directory.
+
+If your init.el file is the PEL example/init/init.el template as it
+should with PEL, then you can byte-compile and native compile this
+file.
+
+Note: PEL does not use the use-package macro. But if you need to add
+your own code and want to use the use-package macro you will need to add
+`(eval-when-compile (require \\='use-package))` before the use of the
+macro inside your init.el to allow compilation.
 
 Note that this assumes that your init.el file does not prevent byte
-compilation.  If your file defines the `no-byte-compile' variable, remove that
-or force it nil if you want PEL to `byte-compile' it.
+compilation.  If your file defines the `no-byte-compile' variable,
+remove it or force it nil if you want PEL to `byte-compile' it.
 
-Unlike the pel-bundle and `package-quickstart' files, PEL will not change the
-value of `no-byte-compile' file variable in your init.el file."
+Unlike the pel-bundle and `package-quickstart' files, PEL will not
+change the value of `no-byte-compile' file variable in your init.el
+file."
   :group 'pel-fast-startup
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "do not compile it" nil)
+          (const :tag "byte-compile it" t)
+          (const :tag "byte-compile and native-compile it"
+                 byte-and-native-compile-it)))
 
-(defcustom pel-compile-emacs-early-init nil
-  "Whether PEL setup commands that update early-init.el also `byte-compile' it.
+(defcustom pel-compile-emacs-early-init 'byte-and-native-compile-it
+  "Whether PEL setup commands that update early-init.el also compile it.
 
-Note that this assumes that your early-init.el file does not prevent byte
-compilation.  If your file defines the `no-byte-compile' variable, remove that
-or force it nil if you want PEL to `byte-compile' it.
+The default is to byte-compile and native-compile the early-init.el file
+to improve Emacs startup performance.
 
-Unlike the pel-bundle and `package-quickstart' files, PEL will not change the
-value of `no-byte-compile' file variable in your early-init.el file."
+If you want to test the validity of your early-init.el file, byte
+compile it from the command line with the el-byte-compile script
+available in PEL bin directory.
+
+If your early-init.el file is the PEL example/init/early-init.el
+template as it should with PEL, then you can byte-compile and native
+compile this file.
+
+Note that this assumes that your early-init.el file does not prevent
+byte compilation.  If your file defines the `no-byte-compile' variable,
+remove that or force it nil if you want PEL to `byte-compile' it.
+
+Unlike the pel-bundle and `package-quickstart' files, PEL will not
+change the value of `no-byte-compile' file variable in your
+early-init.el file."
   :group 'pel-fast-startup
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "do not compile it" nil)
+          (const :tag "byte-compile it" t)
+          (const :tag "byte-compile and native-compile it"
+                 byte-and-native-compile-it)))
 
 ;; ----
 (defcustom pel-support-package-quickstart nil

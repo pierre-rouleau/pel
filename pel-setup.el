@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-18 22:26:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-19 22:17:52 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
+;; Copyright (C) 2021-2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -829,7 +829,8 @@ Return a (ACTIVATE . byte-compile result) cons cell."
                                       (locate-library "pel_keys"))
                                      ".el")))))
 
-(defun pel-setup-fast-startup-init-text (deps-pkg-versions-alist extra-code)
+(defun pel-setup-fast-startup-init-text (deps-pkg-versions-alist
+                                         extra-code)
   "Return the Elisp code for the pel-fast-startup-init.el file.
 
 This file is required when PEL uses the fast startup mode.
@@ -849,7 +850,7 @@ and has extra code specified in EXTRA-CODE."
 \(require 'package)
 
 ;; ----
-;; Utility function
+;; Utility functions
 
 (defun pel--add-to-load-path-once (dir)
   \"Add directory DIR to `load-path' if DIR is not already inside it.
@@ -867,7 +868,29 @@ symlink/realpath double entries.\"
     (unless found
       (add-to-list 'load-path norm))))
 
+(defun pel--warn-if-invalid-elpa-symlink ()
+  \"Sanity check: warn if the elpa symlink is absent or invalid.
 
+In PEL fast-startup mode `~/.emacs.d/elpa' must point to `elpa-reduced'.
+Issues a warning of category `pel-fast-startup-init' at :error level when
+the symlink is missing or points to the wrong directory, instructing the
+user to run `pel-setup-fast' or `pel-setup-normal' to rebuild the symlink
+to properly point to elpa-reduced directory.\"
+  (let* ((elpa-link    (expand-file-name \"elpa\"         user-emacs-directory))
+         (expected-dir (expand-file-name \"elpa-reduced\" user-emacs-directory))
+         (link-target  (and (file-symlink-p elpa-link)
+                            (file-truename elpa-link))))
+    (unless (and link-target
+                 (string= (directory-file-name (file-truename expected-dir))
+                          (directory-file-name link-target)))
+      (display-warning
+       'pel-fast-startup-init
+       \"\
+!! PEL fast-startup: the elpa symlink is missing or points to the wrong directory.
+         Please run M-x pel-setup-fast to restore fast-startup mode, or
+                    M-x pel-setup-normal to revert to normal mode.
+         Until then Emacs will start in a degraded state.\"
+        :error))))
 ;; ----
 \(defvar pel-running-in-fast-startup-p nil)
 
@@ -896,6 +919,12 @@ symlink/realpath double entries.\"
       or from early-init.el when package quickstart is not used.
 
 Return the pkg/version alist.\"
+  ;;
+  ;; Sanity check: verify that the elpa symlink points to elpa-reduced.
+  ;; If not, fast-startup cannot work correctly.  Warn user.
+  (pel--warn-if-invalid-elpa-symlink)
+  ;;
+  ;;
   (setq pel-force-graphic-specific-files force-graphics)
   ;;
   ;; Capture the original package-user-dir before it is transformed.
@@ -924,10 +953,20 @@ Return the pkg/version alist.\"
 ;; together inside the elpa-reduced/pel-bundle *pseudo-package*.
 
 \(defun pel--pct (_packages)
-  \"Filter packages to prevent downloads.\"
+  \"Prevent package downloads during PEL fast-startup initialization.
+This temporary advice is removed once Emacs startup completes, restoring
+package download capabilities, including Emacs 29+ `package-vc-install'.\"
   nil)
 
 \(advice-add  'package-compute-transaction  :filter-return (function pel--pct))
+
+;; Remove the startup-time download-suppression advice once Emacs has
+;; fully initialized, so that interactive package operations (including
+;; Emacs 29+ `package-vc-install') work correctly in the session.
+\(add-hook 'emacs-startup-hook
+          (lambda ()
+            (advice-remove 'package-compute-transaction
+                           (function pel--pct))))
 
 ;; ----
 ;; Ensure that `package-load-all-descriptors' uses the graphics-specific
@@ -983,13 +1022,25 @@ list we ensure that Emacs package.el logic will not attempt to download
 these packages.  We don't need Emacs to download them because they have
 already been downloaded when Emacs was in normal startup mode.  The
 DEPS-PKG-VERSIONS-ALIST list was originally returned by the function
-`pel-elpa-disable-pkg-deps-in'."
+`pel-elpa-disable-pkg-deps-in'.
+
+After writing the file, unconditionally byte-compiles FNAME.  On Emacs 28+
+with native compilation support, also triggers asynchronous native
+compilation so the .eln is ready for the next Emacs startup."
   (with-temp-file fname
     (erase-buffer)
     (goto-char (point-min))
     (insert (pel-setup-fast-startup-init-text
              deps-pkg-versions-alist
-             extra-code))))
+             extra-code)))
+  ;; Byte-compile the generated file unconditionally.  No user-option guard
+  ;; is needed: pel-fast-startup-init.el is entirely managed by PEL, never
+  ;; edited by hand.  The .elc ensures fast loading on all supported Emacs
+  ;; versions.  On Emacs 28+ with native compilation support the .eln is
+  ;; built asynchronously and will be used from the next Emacs startup
+  ;; onward.
+  (when (byte-compile-file fname)
+    (pel--native-compile-if-available fname)))
 
 ;; --
 
@@ -1225,9 +1276,8 @@ Please report this internal code error to project maintainer!"
       (format "\
 ;; step 2: (only for Emacs >= 27)
   (when using-package-quickstart
-      (pel--add-to-load-path-once
-                   (format \"%s\"
-                           (if force-graphics \"-graphics\" \"\"))))"
+    (pel--add-to-load-path-once
+     (format \"%s\" (if force-graphics \"-graphics\" \"\"))))"
               safe-path))))
 
 
@@ -1235,7 +1285,7 @@ Please report this internal code error to project maintainer!"
                                                 new-bundle-dp)
   "Write Elisp code to add the DEPS-PKG-VERSIONS-ALIST to Emacs with a bundle.
 
-NEW-BUNDLED-DP is the name of the new Elpa bundle directory."
+NEW-BUNDLE-DP is the name of the new Elpa bundle directory."
   (pel-setup-fast-startup-init
    pel-fast-startup-init-fname
    deps-pkg-versions-alist
@@ -1507,11 +1557,17 @@ is only one or when its for the terminal (TTY) mode."
   ;; Emacs process is currently running in fast-start operation mode.
   (when (file-exists-p pel-fast-startup-init-fname)
     (delete-file pel-fast-startup-init-fname))
+  ;; Also remove the byte-compiled version.
+  (let ((elc (concat pel-fast-startup-init-fname "c")))
+    (when (file-exists-p elc)
+      (delete-file elc)))
+  ;;
   (when pel-emacs-27-or-later-p
     (require 'pel-setup-27)
     (pel--setup-early-init pel-support-package-quickstart)
     (if pel-support-package-quickstart
-        (pel--create-package-quickstart (pel-elpa-dirpath 'final-dir-at-startup) for-graphics)
+        (pel--create-package-quickstart
+         (pel-elpa-dirpath 'final-dir-at-startup) for-graphics)
       (pel--remove-package-quickstart-files for-graphics))))
 
 ;;-pel-autoload
