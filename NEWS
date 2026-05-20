@@ -158,6 +158,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - PEL no longer copies the old ELPA bootstrap script elpa.el into the PEL bundle directory and no longer warns when finding more than one
     package that includes that elpa.el file.  The elpa.el file is only needed on the installation of these package with a long history
     (if needed at all) and those files are not needed when Emacs runs.  There's no need to warn users of the duplication since this is harmless.
+  - The *make stats* command now supports PEL fast startup mode ; it distinguishes between Emacs running in normal mode and fast startup mode
+    and adjusts accordingly.
 - Fixes:
   - Fix: key binding for Smalltalk that previously was hijacked by Swift's.
   - Regression fix: the ~<f12> <f3>~ key is available again in the C, C++ and Objective-C buffers.

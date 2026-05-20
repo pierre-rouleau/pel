@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 22:56:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-20 09:12:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1093,8 +1093,8 @@ The function does not support printing a full report on stdout."
     (if on-stdout
         (message overview)
       (pel-print-in-buffer
-       "*pel-user-options*"
-       "PEL User Option activated packages"
+       "*pel-package-info*"
+       "PEL package & user-options activated packages"
        (lambda ()
          "Print report."
          (insert overview)
