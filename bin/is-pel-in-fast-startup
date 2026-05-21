@@ -4,7 +4,7 @@
 # Purpose   : Detect if PEL is in fast startup mode.
 # Created   : Wednesday, May 20 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 11:23:45 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 11:31:25 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -97,16 +97,24 @@ fi
 # Check PEL mode
 output_message="no"
 exit_code=1
-if [ -L "$emacs_dir/elpa" ]; then
-    if [ -d "$emacs_dir/elpa-complete" ]; then
-        if readlink "$emacs_dir/elpa" | grep -q "elpa-reduced"; then
-            output_message="yes"
-            exit_code=0
+if [ -d "$emacs_dir/elpa" ]; then
+    if [ -L "$emacs_dir/elpa" ]; then
+        if [ -d "$emacs_dir/elpa-complete" ]; then
+            if [ "$(basename "$(readlink "$emacs_dir/elpa")")" = "elpa-reduced" ]; then
+                output_message="yes"
+                exit_code=0
+            fi
+        else
+            output_message="invalid PEL environment: missing elpa-complete directory"
+            exit_code=3
         fi
     else
-        output_message="invalid PEL environment: missing elpa-complete directory"
+        output_message="invalid PEL environment: $emacs_dir/elpa is a directory, not a symlink"
         exit_code=3
     fi
+else
+    output_message="invalid PEL and Emacs environment: missing elpa directory"
+    exit_code=3
 fi
 if [ "$quiet" = "no" ]; then
     echo "$output_message"
