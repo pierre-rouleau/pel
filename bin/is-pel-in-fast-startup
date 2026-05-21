@@ -4,7 +4,7 @@
 # Purpose   : Detect if PEL is in fast startup mode.
 # Created   : Wednesday, May 20 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 11:59:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 12:00:47 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -84,7 +84,7 @@ fi
 # Determine effective Emacs user directory
 # Note: EMACS_USER_DIRECTORY is a PEL-specific environment variable that
 #       allows the user to override the Emacs user directory location explicitly.
-if [ -n "${EMACS_USER_DIRECTORY:-}" ]; then
+if [ -n "${EMACS_USER_DIRECTORY:-}" ] && [ -d "$EMACS_USER_DIRECTORY" ]; then
     emacs_dir="$EMACS_USER_DIRECTORY"
 elif [ -d "$HOME/.emacs.d" ]; then
     emacs_dir="$HOME/.emacs.d"
