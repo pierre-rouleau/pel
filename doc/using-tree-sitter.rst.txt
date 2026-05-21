@@ -329,7 +329,7 @@ logic that
 .. links:
 
 .. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
-.. _PEL How-to Tips: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-howto.pdf
+.. _PEL How-to Tips: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-howto.pdf
 .. _How to Get Started with Tree-Sitter:  https://www.masteringemacs.org/article/how-to-get-started-tree-sitter
 .. _What's new in Emacs 30.1?: https://www.masteringemacs.org/article/whats-new-in-emacs-301
 .. _How to recompile all Emacs Lisp files after updating Emacs to a different version: upgrading-emacs.rst.txt
@@ -338,7 +338,7 @@ logic that
 .. _mentioned in the Emacs 30 Notes: https://cgit.git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?h=emacs-30#n120
 .. _Tree-Sitter Language Grammar: https://www.gnu.org/software/emacs/manual/html_node/elisp/Language-Grammar.html
 .. _tree-sitter-langs: https://github.com/emacs-tree-sitter/tree-sitter-langs
-.. _🚦Tree-sitter PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/tree-sitter-parsers.pdf
+.. _🚦Tree-sitter PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/tree-sitter-parsers.pdf
 .. _Tree-Sitter library: https://github.com/tree-sitter/tree-sitter?tab=readme-ov-file#readme
 .. _Tree-Sitter Library Documentation: https://tree-sitter.github.io/tree-sitter/
 .. _List of parsers @ tree-sitter wiki: https://github.com/tree-sitter/tree-sitter/wiki/List-of-parsers

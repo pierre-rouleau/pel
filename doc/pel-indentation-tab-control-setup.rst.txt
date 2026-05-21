@@ -7,7 +7,7 @@ Showing Information About Indentation and Hard Tab Control under PEL
 :Created:  Wednesday, October 29 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-11-04 16:20:34 EST, updated by Pierre Rouleau.
-:Copyright: © 2025, Pierre Rouleau
+:Copyright: © 2025, 2026, Pierre Rouleau
 
 
 .. contents::  **Table of Contents**
@@ -322,14 +322,14 @@ taken after each step.
 .. _TRS-80: https://en.wikipedia.org/wiki/TRS-80
 .. _PDP-11: https://en.wikipedia.org/wiki/PDP-11
 .. _VAX: https://en.wikipedia.org/wiki/VAX
-.. _⅀ Indentation PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/indentation.pdf
+.. _⅀ Indentation PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/indentation.pdf
 .. _Step 1: res/gleam-indent-01.png
 .. _Step 2: res/gleam-indent-02.png
 .. _Step 3: res/gleam-indent-03.png
 .. _Step 4: res/gleam-indent-04.png
 .. _Step 5: res/gleam-indent-05.png
 .. _dtrt-indent-mode: https://github.com/jscheid/dtrt-indent
-.. _dtrt-indent in ⅀ Indentation PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/indentation.pdf#page=4
+.. _dtrt-indent in ⅀ Indentation PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/indentation.pdf#page=4
 
 
 .. ---------------------------------------------------------------------------

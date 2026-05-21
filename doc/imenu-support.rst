@@ -7,7 +7,7 @@ iMenu Support Description
 :Created:  Wednesday, May 12, 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-03-11 23:59:19 EDT, updated by Pierre Rouleau.
-:Copyright: © 2021, 2025, Pierre Rouleau
+:Copyright: © 2021, 2025, 2026, Pierre Rouleau
 
 
 Introduction
@@ -19,7 +19,7 @@ the ``prog-mode``.
 
 Also see the `How to add iMenu and Speedbar support for a major mode PDF`_.
 
-.. _How to add iMenu and Speedbar support for a major mode PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/imenu-speedbar-support.pdf
+.. _How to add iMenu and Speedbar support for a major mode PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/imenu-speedbar-support.pdf
 
 
 Support for Major Modes

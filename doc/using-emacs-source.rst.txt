@@ -8,7 +8,7 @@ Using Emacs Source Code
 :Created:  Monday, March  3 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-09-11 17:24:16 EDT, updated by Pierre Rouleau.
-:Copyright: © 2025, Pierre Rouleau
+:Copyright: © 2025, 2026, Pierre Rouleau
 
 
 .. contents::  **Table of Contents**
@@ -77,7 +77,7 @@ code just as easily as within elisp source code.
 .. links:
 
 .. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
-.. _PEL How-to Tips: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-howto.pdf
+.. _PEL How-to Tips: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-howto.pdf
 
 .. ---------------------------------------------------------------------------
 

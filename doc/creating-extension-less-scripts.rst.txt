@@ -7,8 +7,8 @@ Create extension-less executable scripts with PEL
 :Ref: `PEL How-to Tips`_
 :Created:  Tuesday, March 18 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-20 15:40:22 EDT, updated by Pierre Rouleau.
-:Copyright: © 2025, Pierre Rouleau
+:Modified: 2026-05-21 00:22:41 EDT, updated by Pierre Rouleau.
+:Copyright: © 2025, 2026, Pierre Rouleau
 
 
 .. contents::  **Table of Contents**
@@ -77,15 +77,15 @@ must set the **pel-use-pike** user option to ``t``.
 .. links:
 
 .. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
-.. _PEL How-to Tips:                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-howto.pdf
-.. _𝕻𝔩 - UNIX Shell:                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-sh.pdf#page=1
-.. _𝕻𝔩 - D:                         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-d.pdf#page=1
-.. _𝕻𝔩 - Lua:                       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-lua.pdf#page=1
-.. _𝕻𝔩 - Nim:                       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-nim.pdf#page=1
-.. _𝕻𝔩 - Perl:                      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-perl.pdf#page=1
-.. _𝕻𝔩 - Pike:                      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-pike.pdf#page=1
-.. _𝕻𝔩 - Python:                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf#page=1
-.. _𝕻𝔩 - Tcl:                       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-tcl.pdf#page=1
+.. _PEL How-to Tips:                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-howto.pdf
+.. _𝕻𝔩 - UNIX Shell:                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-sh.pdf#page=1
+.. _𝕻𝔩 - D:                         https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-d.pdf#page=1
+.. _𝕻𝔩 - Lua:                       https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-lua.pdf#page=1
+.. _𝕻𝔩 - Nim:                       https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-nim.pdf#page=1
+.. _𝕻𝔩 - Perl:                      https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-perl.pdf#page=1
+.. _𝕻𝔩 - Pike:                      https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-pike.pdf#page=1
+.. _𝕻𝔩 - Python:                    https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-python.pdf#page=1
+.. _𝕻𝔩 - Tcl:                       https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-tcl.pdf#page=1
 
 .. ---------------------------------------------------------------------------
 

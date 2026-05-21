@@ -1,6 +1,8 @@
 PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- All PEL PDF files are now hosted on a GitHub Pages site.  The PDF files should now be rendered by all web browsers, not only Firefox.
+  The original URL of the PDF files remain but the ones in the Pages site differ and all internal links use the Pages site URL.
 - *Breaking change: major overhaul* of configuration and logic for specialized file searching done by *pel-open-at-point* and the
   pel-ffind functions.
   - All specialized file searching is now controlled by the concept of development *project* and no longer major mode specific as
@@ -439,7 +441,7 @@ PEL uses my fork of the project to eliminate most warnings.
   - Add support for wc-mode via *pel-use-wc-mode*.
   - Add support for writegood-mode via *pel-use-writegood-mode*.
   - Add support for writeroom-mode via *pel-use-writeroom-mode*.
-  - See the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/writing-tools.pdf][Writing Tools PDF]] for the key bindings.
+  - See the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/writing-tools.pdf][Writing Tools PDF]] for the key bindings.
 - Add a new PEL key prefix: ~<f11> C-f~ for face and fonts.
   It include the PEL conventional ~<f1>~, ~<f2>~ and ~<f3>~ keys to access the help and customization buffers related to face and fonts.
   It also include several key bindings for face and font information and management.
@@ -795,7 +797,7 @@ PEL uses my fork of the project to eliminate most warnings.
 - Improved support for the emacs-ssh-file-modes making Emacs aware of the format of the SSH /known_hosts/ and /authorized_keys/ files.
   This is activated by the *pel-use-emacs-ssh-file-modes* user-option.
   - PEL now use my fork of the original project which modernizes the code and fixes font locking issues that shows under the latest Emacs.
-  - Add the ~<f12>~ key prefix binding top the two modes allowing quick access to the new [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ssh-files.pdf][ssh PDF]] help file and to the
+  - Add the ~<f12>~ key prefix binding top the two modes allowing quick access to the new [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/ssh-files.pdf][ssh PDF]] help file and to the
     PEL and mode specific customization buffers.
   - also add the ~<f12> =~ key binding to the *ssh-abbreviated-keys-mode* command.
 - Add logic to native compile Emacs lisp files downloaded into PEL =~/.emacs.d/utils=
@@ -807,14 +809,14 @@ PEL uses my fork of the project to eliminate most warnings.
   *pel-use-vhdl* is activated (set to t).  This is a early implementation.
   When activated, PEL provides the PEL conventional keys in *vhdl-mode*
   buffers:
-  - ~<f12> <f1>~  opens the (new, early) [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/hdl-vhdl.pdf][𝖍𝖉𝔩 - VHDL PDF]] file(or HTML page).
+  - ~<f12> <f1>~  opens the (new, early) [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/hdl-vhdl.pdf][𝖍𝖉𝔩 - VHDL PDF]] file(or HTML page).
   - ~<f12> <f2>~ opens the customization buffer for PEL VHDL support.
   - ~<f12> <f3>~ opens the Emacs customization buffer for *vhdl-mode*.
 - Add PEL support for the Verilog hardware description language when
   *pel-use-verilog* is activated (set to t).  This is a early implementation.
   When activated, PEL provides the PEL conventional keys in *verilog-mode*
   buffers:
-  - ~<f12> <f1>~  opens the (new, early) [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/hdl-verilog.pdf][𝖍𝖉𝔩 - Verilog PDF]] file(or HTML page).
+  - ~<f12> <f1>~  opens the (new, early) [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/hdl-verilog.pdf][𝖍𝖉𝔩 - Verilog PDF]] file(or HTML page).
   - ~<f12> <f2>~ opens the customization buffer for PEL Verilog support.
   - ~<f12> <f3>~ opens the Emacs customization buffer for *verilog-mode*.
 - Add support for the following external package supporting Verilog:
@@ -881,7 +883,7 @@ PEL uses my fork of the project to eliminate most warnings.
     *pel-dirtree-replace-undo* command, bound to ~<f11> s M-u~.  This restores
     all files to their original state when the list of modified file is non
     nil and backup files were created.
-  - Documented in at end of [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=7][⅀ Search/Replace PDF page 7]].
+  - Documented in at end of [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/search-replace.pdf#page=7][⅀ Search/Replace PDF page 7]].
 - Add ~<f11> f n~ key binding to the very useful *find-name-dired* command.
   This complements the ~<f11> f F n~ key binding.
   Also fixed key bindings listed in the File PDF.
@@ -889,7 +891,7 @@ PEL uses my fork of the project to eliminate most warnings.
 - Add *pel-allow-recursive-minibuffer* user-option to control activation of minibuffer recursive editing
   with activation of the minibuffer-depth-indicate-mode.
   It is disabled by default.
-  Also added the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/recursive-edit.pdf][⅀ Recursive Edit PDF]].
+  Also added the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/recursive-edit.pdf][⅀ Recursive Edit PDF]].
 - Add the *build-after-emacs-update* make target.  Use it to rebuild the Emacs/PEL/ ecosystem
   after upgrading Emacs. This re-compiles all PEL emacs lisp files, Emacs init.el,
   all Emacs lisp package files and all PEL utils emacs lisp files.
@@ -936,12 +938,12 @@ PEL uses my fork of the project to eliminate most warnings.
   Also improved *pel-beginning-of-line* to use the same prefix argument logic for consistency.
 - Add experimental support for the Eiffel programming language.
   It is activated when the *pel-use-eiffel* user options is activated (turned on, set to *t*).
-  - Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-eiffel.pdf][𝕻𝔩 - Eiffel]] PDF.  Uses my fork of the eiffel-mode.  This code is not working well, font-locking is not even working.
+  - Add the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-eiffel.pdf][𝕻𝔩 - Eiffel]] PDF.  Uses my fork of the eiffel-mode.  This code is not working well, font-locking is not even working.
     I stared fixing it but lot more is required. This is low in my priority list at the moment.
     The commands are not yet documented.
 - Add experimental support for the Ada programming language.
   It is activated when the *pel-use-ada* user options is activated (turned on, set to *t*).
-  - Add the  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ada.pdf][𝕻𝔩 - Ada]] PDF.  Uses the ada-mode.
+  - Add the  [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-ada.pdf][𝕻𝔩 - Ada]] PDF.  Uses the ada-mode.
     The commands are not yet documented and other useful tools not integrated.
 - Simplified activation of Nim support: when *pel-use-nim* user-option is activated (turned on, set to *t*), the
   *pel-use-nim-mode* user-option is automatically turned on too to activate the use of the package that provides
@@ -986,17 +988,17 @@ PEL uses my fork of the project to eliminate most warnings.
 - Fix management of autoloaded flycheck and flymake by *pel-toggle-mode*: the code of *pel-autoload-p* was using
   knowledge of the internal data structure of a function used by Emacs prior to Emacs 28.  This PEL base function
   is no longer available; PEL now uses Emacs provided *autoloadp* and *autoload-do-load* which have been available since Emacs 24.3
-- Add ~<f12><f1>~ key binding for *change-log-mode* to open the new [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/changelog][⅀Changelog]] PDF, activated when *pel-use-changelog-mode*
+- Add ~<f12><f1>~ key binding for *change-log-mode* to open the new [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/changelog][⅀Changelog]] PDF, activated when *pel-use-changelog-mode*
   user option is on.
 - Add ~<f12><f1>~ key binding for *tup-mode* and *nix-mode* to open their respective PDF files:
-   [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-nix.pdf][𝕻𝔩 - Nix]] and [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-tup.pdf][𝕻𝔩 - Tup]].  Re-organized the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf][➢Index]] PDF to add cells for these 2 build systems along with the others,
+   [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-nix.pdf][𝕻𝔩 - Nix]] and [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-tup.pdf][𝕻𝔩 - Tup]].  Re-organized the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index.pdf][➢Index]] PDF to add cells for these 2 build systems along with the others,
    eliminating a section which increases spaces for Emacs topics and programming language tables.
 - Add the *pel-rst-compile* command, bound to the ~<f12> c~ key sequence in *rst-mode*.  That command uses the
   command line identified by the *pel-rst-compiler* user option to render the reStructuredText file into
   the output format selected by the command.  The default is the provided pel-rst2html command.
 - Add support for the SPDX license inserting code.  Bound ~C-c i l~ as well as ~<f6> M-l~ and ~<f11> i M-l~ to *spdx-insert-spdx*.
   This is still preliminary: integration with tempo-based templates is not done yet.
-- Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/compilation-mode][⅀Compilation Mode]] PDF.  Type  ~<f12> <f1>~ inside a compilation-mode buffer to open it.
+- Add the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/compilation-mode][⅀Compilation Mode]] PDF.  Type  ~<f12> <f1>~ inside a compilation-mode buffer to open it.
 - Add the ~<f11> t m y~ key binding  for *prettify-symbols-mode*.  Its state is now shown by *pel-show-text-modes*.
 - *pel-ediff-2files* (bound to ~<f11> d 2~) can now compare the content of special buffers just as it was (and still is) able to do with files.
   This is quite useful to compare the content of files stored in compressed files such as ZIP, tarbals, and RPM files for example.
@@ -1016,10 +1018,10 @@ PEL uses my fork of the project to eliminate most warnings.
   - Currently the above is not documented in the PDF files.
 - Add preliminary PEL support for Objective-C, when *pel-use-objc* user-option is set.
   - Currently support the Basic PEL ~<f12>~ key bindings to get help and access the customization.
-  - Add an early version of the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-objc.pdf][𝕻𝔩 - Objective-C]] PDF.
+  - Add an early version of the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-objc.pdf][𝕻𝔩 - Objective-C]] PDF.
 - Add preliminary support for Smalltalk, via GNU Smalltalk, when *pel-use-smalltalk* user-option is set.
   - Currently support the Basic PEL ~<f12>~ key bindings to get help and access the customization.
-  - Add an early version of the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-smalltalk.pdf][𝕻𝔩 - Smalltalk]] PDF.
+  - Add an early version of the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-smalltalk.pdf][𝕻𝔩 - Smalltalk]] PDF.
 - Add 2 new commands to insert short time stamps: *pel-insert-date-wkd-short* (bound to ~<f11> i C-d~), and
   *pel-insert-date-wkd-time-short* (bound to to ~<f11> i C-t~). As with others their string formats are fully customizable.
 - Add the *pel-bookmark-set-file* command, bound to ~<f1> ' M-f~.
@@ -1070,8 +1072,8 @@ PEL uses my fork of the project to eliminate most warnings.
   - the ~<f11> , p~ key sequence is bound to *completion-preview-mode*.
   - the ~<f11> , P~ key sequence (upper-case P) is bound to *global-completion-preview-mode*.
   When the mode is active the ~M-n~ and ~M-p~ keys are active to select next and previous completion candidate.
-- Add an early version of the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-tcl.pdf][𝕻𝔩 - Tcl]] PDF.
-- Add preliminary support for Lua when *pel-use-lua* is set. Add an early version of the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-lua.pdf][𝕻𝔩 - Lua]] PDF.
+- Add an early version of the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-tcl.pdf][𝕻𝔩 - Tcl]] PDF.
+- Add preliminary support for Lua when *pel-use-lua* is set. Add an early version of the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-lua.pdf][𝕻𝔩 - Lua]] PDF.
 - The ~<f12><f12>~ key prefix holding keybindings related to tempo skeleton insertion and management is now available for the
   *sh-mode*, D, Lua, Nim, Perl, Pike, Python and Ruby, Tcl and Tcl expect buffers.
   - While doing that I also improved the *pel-tempo-install-pel-skel* function, allowing the creation of a command bound
@@ -1082,13 +1084,13 @@ PEL uses my fork of the project to eliminate most warnings.
   The command is used to interactively select a major mode for config or script modes that use a shebang line.
   Once the command is used to select the major mode, the ~<f12>~ key becomes a prefix key.
 - Add preliminary PEL support for the Pike programming language:
-  - Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-pike.pdf][𝕻𝔩 - Pike]] PDF.  It's an early version.
+  - Add the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-pike.pdf][𝕻𝔩 - Pike]] PDF.  It's an early version.
   - The PEL support for Pike is controlled by the *pel-use-pike* user-option: set it to t and restart Emacs to activate it.
     - For now it provides the ~<f12>~ key prefix for Pike in pike-mode buffer.
       Since pike-mode derives from cc-mode, lots of support is inherited, but not yet documented.
       Several PEL features are not yet activated for Pike.
 - Add (experimental) support for the Odin programming language:
-  - Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-odin.pdf][𝕻𝔩 - Odin]] PDF.  It's an early version.
+  - Add the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-odin.pdf][𝕻𝔩 - Odin]] PDF.  It's an early version.
   - The support for Odin is controlled by the *pel-use-odin* user-option: set it to t and restart Emacs to activate it.
   - Add support for *flycheck-odin* when *pel-use-flycheck-odin* user-option is set to t.
 - Supports org-mode modification in Emacs 30.1 and later: tab-width for org-mode is fixed to 8.
@@ -1114,7 +1116,7 @@ PEL uses my fork of the project to eliminate most warnings.
 - Add support to perl-live-coding when *pel-use-perl-live-coding* user-option is set.
   This provides a very nice and powerful dynamic Perl environment.
   Also added the ~<f12> l~ key binding to *perl-live-run*
-- Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/perl5.pdf][Perl5]] PDF that gives an overview of Perl 5 features with lots of links.
+- Add the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/perl5.pdf][Perl5]] PDF that gives an overview of Perl 5 features with lots of links.
   Open it with ~<f11> p perl5~ or with ~<f11> p perl-info~ .
 - Add the *pel-show-rpm-providing-file* command bound to ~<f11> f ? r~ on Linux systems.
   This command prints the name of the RPM that provides the current buffer's file.
@@ -1185,7 +1187,7 @@ PEL uses my fork of the project to eliminate most warnings.
   are shown, like other modes, with the trailing-whitespace face (which is red by default).
 - Add support for the emacs-ssh-file-modes making Emacs aware of the format of the SSH /known_hosts/ and /authorized_keys/ files.
   This is activated by the *pel-use-emacs-ssh-file-modes* user-option.
-- Add Emacs-style command line key bindings description in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/bash.pdf][𝕻𝔩 - Bash]] PDF.
+- Add Emacs-style command line key bindings description in the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/bash.pdf][𝕻𝔩 - Bash]] PDF.
 - In rpm-spec-mode buffers: add *pel-rpm-build* bound to ~<f12> b~ and *pel-rpm-spec-lint* bound to ~<f12> l~ .
   The first one executes the rpmbuild command with arguments provided at prompt (with -ba as defaults)
   and executes the RPM build.  Then second executes the rpmlint shell command and filter
@@ -1212,7 +1214,7 @@ PEL uses my fork of the project to eliminate most warnings.
   Inside ibuffers, added ~<f12> c~ binding to *ibuffer-filter-chosen-by-completion* and
   ~<f12> d~ binding to *ibuffer-filter-by-directory* .
 - Add PEL extensions support for AWK when the *pel-use-awk* user-option is set to *t*.
-  - The ~<f12>~ key is supported.  The [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-awk.pdf][𝕻𝔩 - AWK]] PDF describes the key bindings.
+  - The ~<f12>~ key is supported.  The [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-awk.pdf][𝕻𝔩 - AWK]] PDF describes the key bindings.
 - Add a new PDF for *rpm-archive* and *rpm-spec-mode* mode.
   This supports the ~<f11> SPC M-R <f1>~, ~<f11> SPC M-R <f2>~ and ~<f11> SPC M-R <f3>~ to access the PDF and the
   customization groups, but not the corresponding <f12> key bindings yet.
@@ -1221,7 +1223,7 @@ PEL uses my fork of the project to eliminate most warnings.
 - Add preliminary PEL AWK support, activated by the *pel-use-awk* user-option.
 - Add early support for the *x509-mode* that decodes various X.509 file format with openSSL.
   PEL support is minimal: activated by the *pel-use-x509-mode* user-option, auto-loading of *x509-dwim*
-  and a new PDF page: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/x509.pdf][Ɱ X.509 Certificates]].
+  and a new PDF page: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/x509.pdf][Ɱ X.509 Certificates]].
 - Add support for a Perl REPL via the perl-repl package.
 - Improved cperl-mode support: it now supports the ~<f12>~ key binding.
 - Add support for dir-treeview: ~<f11> B D~ is now bound to *dir-treview* and ~<f11> B d~ is bound to *dir_treeview-open*.
@@ -1258,8 +1260,8 @@ PEL uses my fork of the project to eliminate most warnings.
   totally implemented in Emacs Lisp.  Use the ~<f11> z f~ to launch *eat-mode*
   terminal in the current window.  The mode support the ~<f12> <up>~ and
   ~<f12> <down>~  navigation across prompts.
-  - Add a (very early draft) [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/eat-mode.pdf][⅀ eat-mode PD]]
-  - Updated the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/shells-comparison.pdf][🚦Shells/Terminals Comparisons PDF]] to include information
+  - Add a (very early draft) [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/eat-mode.pdf][⅀ eat-mode PD]]
+  - Updated the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/shells-comparison.pdf][🚦Shells/Terminals Comparisons PDF]] to include information
     about eat.
 - Add *pel-sh-add-sh-local* , bound to ~<f12> t~ inside sh-mode buffers;
   it inserts a sh-shell file-local variable definition at the end of the buffer
@@ -1288,7 +1290,7 @@ PEL uses my fork of the project to eliminate most warnings.
     is now bound to ~<f11> w i t~ (mnemonic being "window in tab") and inside the
     pel-∑wnd hydra ~T~ key. Also add key bindings to navigate to next (~]~) and
     previous (~[~) tab.
-  - Add a new  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/tab-bar.pdf][⅀ Tab-Bar PDF]] linked inside the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf][➢Index]] PDF.
+  - Add a new  [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/tab-bar.pdf][⅀ Tab-Bar PDF]] linked inside the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index.pdf][➢Index]] PDF.
   - add ~<f11> TAB~ prefix key for all tab-bar commands:
 - Add support for [[https://melpa.org/#/transpose-frame][transpose-frame]] , activated by *pel-use-transpose-frame*.
   The key bindings are under the ~<f11> w t~ key sequence prefix.
@@ -1385,7 +1387,7 @@ PEL uses my fork of the project to eliminate most warnings.
     to reduce its width.
   - Add key binding ~<f11> w \ \~ for *window-toggle-side-windows* and ~<f11> w 0~ to
     *delete-windows-on*.
-  - Updated the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf][⅀ Windows PDF]] , adding some missing information and fixing some.
+  - Updated the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/windows.pdf][⅀ Windows PDF]] , adding some missing information and fixing some.
 - *pel-shell-previous-prompt* and *pel-shell-next-prompt* commands now accept a numeric
   argument.  By default it's 1.  Using a different number allows repetition and direction
   change.  These commands now also leaves point after the prompt on the first character of
@@ -1394,7 +1396,7 @@ PEL uses my fork of the project to eliminate most warnings.
   PEL sets *term-prompt-regexp* to the value of *pel-shell-prompt-line-regexp* allowing
   all prompt navigation search to use the same regular expression.  This user-option is
   part of the new customization group: *pel-pkg-for-term-mode*.
-- Moved the GNU Make specific information from the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make PDF]] file to the new GNU Make
+- Moved the GNU Make specific information from the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-make.pdf][𝕻𝔩 - Make PDF]] file to the new GNU Make
   PDF stored in the doc/pdf/lang directory.  To access it, type ~C-u <f12> <f1>~ from a
   buffer that edits a make file in Gnu Make mode.  This is a new method to access language
   specific PDF files.  I previously added a zsh PDF that is accessible using the same key
@@ -1428,7 +1430,7 @@ PEL uses my fork of the project to eliminate most warnings.
   of the occurrence and move to the next iedit occurrence, respectively, instead of the
   default ~backtab~, ~M-;~ and ~backtab~ keys.  This way, the standard behaviour of these
   often used keys can use used over an iedit occurrence.  The description of the iedit
-  mode in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]] shows if a key binding is available over the iedit
+  mode in the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/search-replace.pdf][⅀ Search/Replace PDF]] shows if a key binding is available over the iedit
   occurrence or anywhere when the iedit-mode is active.
 - Add customization for iedit-mode: the new *pel-pkg-for-iedit* customization group holds
   the new *pel-iedit-use-alternate-keys* user-option that can be used to restore the
@@ -1679,7 +1681,7 @@ PEL uses my fork of the project to eliminate most warnings.
   ~<f11> = =~ key, which is easier to type than the other ~<f11>~ keys
   sequences.  It's best to use ~<kp-separator>~ but this is unfortunately not
   available under some Linux environments.
-- Improved:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf][𝕻𝔩 - Erlang PDF]] by moving EDTS-specific commands related to
+- Improved:  [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-erlang.pdf][𝕻𝔩 - Erlang PDF]] by moving EDTS-specific commands related to
   Erlang shell and help inside their topic specific area of the file instead
   of leaving them inside the EDTS-specific area.  Also added information on
   limitations of some of the help commands.
@@ -1980,7 +1982,7 @@ PEL uses my fork of the project to eliminate most warnings.
 - New: In C and C++ modes, PEL provides a set of commands to search for
   problematic code statements and also provides commands that can refactor the
   C and C++ code replacing problematic code by corresponding safer code
-  constructs.  For more details look at the end of the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf][𝕻𝔩 - C]] and [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c++.pdf][𝕻𝔩 - C++]] PDF pages.
+  constructs.  For more details look at the end of the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-c.pdf][𝕻𝔩 - C]] and [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-c++.pdf][𝕻𝔩 - C++]] PDF pages.
 - New: Additional support for Subversion vc back-end: add the
   *pel-vcs-svn-verbose-log* user-option to allow using the --verbose switch on
   the *vc-print-log* and *vc-print-root-log* commands with Subversion back-end
@@ -2049,7 +2051,7 @@ PEL uses my fork of the project to eliminate most warnings.
   set to t.  File extensions supported are =.msc= and =.msc.txt= .
   Support provided by the [[https://github.com/thomsten/mscgen-mode#readme][mscgen-mode]] GitHub project.
   The ~<f12>~ key prefix is available in mscgen-mode buffers, providing quick
-  access to the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mscgen.pdf][MscGen PEL PDF file]], the PEL customization and mscgen-mode
+  access to the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mscgen.pdf][MscGen PEL PDF file]], the PEL customization and mscgen-mode
   customization as well as a small set of mscgen-mode commands.  PEL support
   for comments, generic skeleton is available, as well as the ability to
   specify the nature of tabs (its width and whether spaces are used) and
@@ -2298,7 +2300,7 @@ PEL uses my fork of the project to eliminate most warnings.
     are bound to the ~C-x t~ key prefix.
     - New: When the *pel-use-timeclock-timelog* is also turned on,an updated
       version of timelog.el is installed.
-  - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/time-tracking.pdf][⅀ Time Tracking PDF]]
+  - New: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/time-tracking.pdf][⅀ Time Tracking PDF]]
 - New: Add ability to differentiate ~M-b~ from ~<M-left>~ and ~m-f~ from ~<M-right>~ on
   Emacs running in terminal mode on a macOS Terminal.app application: the
   Terminal.app must be setup to issue the ~Esc Y~ when Option-left is typed
@@ -2346,7 +2348,7 @@ PEL uses my fork of the project to eliminate most warnings.
   active when Magit is available.
 - New: *pel-vcs-toggle-vc-log* command, bound to ~<f11> v l~.
   Toggle the logging of VC back-end commands in the `*pel-vc-log*` buffer.
-- New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/vcs-git.pdf][⅀ VCS-Git 𝔛Magit PDF]]
+- New: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/vcs-git.pdf][⅀ VCS-Git 𝔛Magit PDF]]
 - New: key prefix ~<f11> d e R~ for the ediff-registry commands.
 - New: support for the built-in *smerge-mode* activated by the new *pel-use-smerge*
   user-option. If its value is set to /auto/ then /smerge-mode/ is
@@ -2384,13 +2386,13 @@ PEL uses my fork of the project to eliminate most warnings.
   allowing that key to insert hyphen when the keypad NumLock is on and
   act dash insertion when no area is marked ans as a marked-area kill otherwise.
 - New: experimental support for the [[https://en.wikipedia.org/wiki/YANG][YANG modelling language file]] using yang-mode
-  and outline mode.  Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/yang.pdf][Ⓢ YANG PDF]].
+  and outline mode.  Add the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/yang.pdf][Ⓢ YANG PDF]].
 - New: Experimental support for the [[https://janet-lang.org][Janet Programming language]] when
   ``pel-use-janet`` and other PEL user-options are turned on
   (``pel-use-janet-mode``, ``pel-use-ijanet`` and ``pel-use-inf-janet``).
   The ``pel:for-janet`` prefix is bound to ~<f11> SPC T~ which maps to
   ~<f12>~ inside /.janet/ files.  Includes support for iMenu and Speedbar.
-  - Add a [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-janet.pdf][𝕻𝔩 - Janet PDF]].
+  - Add a [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-janet.pdf][𝕻𝔩 - Janet PDF]].
 - Improve: *Erlang support*:
   - Improved: *pel-open-at-point* is now able to search for files inside the
     current Erlang project and inside the Erlang root directory (the Erlang
@@ -2464,13 +2466,13 @@ PEL uses my fork of the project to eliminate most warnings.
             comma key for the current erlang buffer by typing ~<M-f12> M-` ,~,
             or for all erlang buffers by typing ~M-- <M-f12> M-` ,~.
 
-    - Enhance [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf][𝕻𝔩 - Erlang PDF]]:
+    - Enhance [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-erlang.pdf][𝕻𝔩 - Erlang PDF]]:
       - Add description of the electric behaviour of keys in erlang-mode
         buffers.
       - Describe behaviour of the smartparens navigation and code transformation
         commands in erlang-mode buffers.
 - Fix: typo describing character class in the Emacs regexp syntax of the
-  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀  Search/Replace PDF]].
+  [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/search-replace.pdf][⅀  Search/Replace PDF]].
   Also better described *pel-replace-regexp*.
 - Change: The key prefix for smartparens startup commands changed from
   ~<f11> i (~ to ~<f11> (~.
@@ -2590,7 +2592,7 @@ PEL uses my fork of the project to eliminate most warnings.
   - New: a new pel-∑buffer Hydra provides quick access to these commands.
 - New: *Build Tool Scripting Support*:
   - New: *Make file Editing support*:
-    - New:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make]] PDF that describes make file editing support, along with
+    - New:  [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-make.pdf][𝕻𝔩 - Make]] PDF that describes make file editing support, along with
       PEL additions.
       - PEL adds support to the Microsoft's nmake file format, something not
         provided by Emacs built-in make file support.
@@ -2729,7 +2731,7 @@ PEL uses my fork of the project to eliminate most warnings.
     - Add ~<f11> m p~ key sequence binding to *mc/mark-previous-like-this*
     - Add ~<f11> m a~ key sequence binding to *mc/mark-all-like-this*
     - ... and several other commands: there's a total of 35 of them,
-      all documented in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/cursor.pdf][⅀ Cursor PDF]].
+      all documented in the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/cursor.pdf][⅀ Cursor PDF]].
 - Update: *Customization*:
   - New: *pel-auto-mode-alist* user option in the Pel Base Emacs group allows
     user-specified  association of file name pattern to a major mode.  It can
@@ -2962,7 +2964,7 @@ PEL uses my fork of the project to eliminate most warnings.
     implementation of Common Lisp Hyperspec symbol lookup.  It's bound to the
     Common Lisp specific ~<f12> ?~ key sequence.
   - New: During Ido input completion, the ~<f1>~ key opens the
-    [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/completion-input.pdf][⅀Input Completion PDF]] which now describes all key bindings available for
+    [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/completion-input.pdf][⅀Input Completion PDF]] which now describes all key bindings available for
     the Ido prompts.  the same key is available in Ivy prompts.
   - New: Add support for ivy-avy.  It is activated when both *pel-use-ivy* and
     *pel-use-ivy* user-options are activated.
@@ -2977,7 +2979,7 @@ PEL uses my fork of the project to eliminate most warnings.
     - Command *pel-key-chord-describe* (bound to ~<f11> <f5> k ?~)
       displays the state of key-chord/key-seq and the key bindings if
       key-chord-mode is active.
-    - ~<f11> <f5> k <f1>~ opens the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/key-chords.pdf][⅀ Key-Chords PDF]].
+    - ~<f11> <f5> k <f1>~ opens the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/key-chords.pdf][⅀ Key-Chords PDF]].
     - ~<f11> <f5> k <f2>~ opens the PEL key-chords customization buffer.
     - ~<f11> <f5> k <f3>~ opens the key-chords package customization buffer.
 - Update: *Markup Language Support*
@@ -2988,7 +2990,7 @@ PEL uses my fork of the project to eliminate most warnings.
   - The ~<f11> SPC M-m~ key prefix gives access to the Markdown specific
     PEL keys which becomes the ~<f12>~ key when the markdown-mode is active.
     Currently this key prefix has only 3 sub-keys:
-    - ~<f1>~ opens the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-markdown.pdf][Ɱ Markdown PDF]].
+    - ~<f1>~ opens the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-markdown.pdf][Ɱ Markdown PDF]].
     - ~<f2>~ opens the *pel-pkg-for-markdown* customization group where various markdown
       support packages can be enabled with the PEL user-options.
     - ~<f3>~ provides access to the customization group for the
@@ -3229,7 +3231,7 @@ PEL uses my fork of the project to eliminate most warnings.
           support for Clojure with the clojure-mode package..
           - The PEL ~<f12>~ Lisp hot key is available in that mode, along with
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
-            - It's ~<f12> <f1>~ key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-clojure.pdf][𝕻𝔩 - Clojure PDF]]
+            - It's ~<f12> <f1>~ key opens the preliminary  [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-clojure.pdf][𝕻𝔩 - Clojure PDF]]
             - It's ~<f12> <f2>~ key opens PEL clojure customization buffer.
             - It's ~<f12> <f3>~ key opens the clojure customization buffer.
         - The user-option variable *pel-use-cider* activates Cider.
@@ -3251,7 +3253,7 @@ PEL uses my fork of the project to eliminate most warnings.
           support for Scheme.
           - The PEL ~<f12>~ Lisp hot key is available in that mode, along with
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
-            - It's ~<f12> <f1>~ key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-scheme.pdf][𝕻𝔩 - Scheme PDF]]
+            - It's ~<f12> <f1>~ key opens the preliminary  [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-scheme.pdf][𝕻𝔩 - Scheme PDF]]
             - It's ~<f12> <f2>~ key opens PEL scheme customization buffer.
             - It's ~<f12> <f3>~ key opens the scheme customization buffer.
     - New: *Gerbil Scheme*:
@@ -3260,7 +3262,7 @@ PEL uses my fork of the project to eliminate most warnings.
           support for Gerbil.
           - The PEL ~<f12>~ Lisp hot key is available in that mode, along with
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
-            - It's ~<f12> <f1>~ key opens the preliminary [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-scheme.pdf][𝕻𝔩 - Scheme PDF]]. In
+            - It's ~<f12> <f1>~ key opens the preliminary [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-scheme.pdf][𝕻𝔩 - Scheme PDF]]. In
               the future it may have its own PDF since the language is quite
               interesting but since the Scheme PDF is currently in a very early
               stage it uses the same.
@@ -3280,7 +3282,7 @@ PEL uses my fork of the project to eliminate most warnings.
         - The user-option variable *pel-use-hy* activates it.
           - The PEL ~<f12>~ Lisp hot key is available in that mode, along with
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
-            - It's ~<f12> <f1>~ key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-hy.pdf][𝕻𝔩 - Hy PDF]].
+            - It's ~<f12> <f1>~ key opens the preliminary  [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-hy.pdf][𝕻𝔩 - Hy PDF]].
             - It's ~<f12> <f2>~ key opens PEL hy customization buffer.
     - Update: *LFE - Lisp Flavored Erlang*:
       - New: Added PEL ~<f12>~ Lisp hot key with all Lisp-available features.
@@ -3302,7 +3304,7 @@ PEL uses my fork of the project to eliminate most warnings.
     - The previously used ~<f12> F~ key sequence to toggle flymake is
       replaced by ~<f12> !~ which is bound to *pel-erlang-toggle-syntax-check*.
   - New: *Forth*:
-    - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf][𝕻𝔩 - Forth]] PDF that describes the commands available for the Forth
+    - New: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-forth.pdf][𝕻𝔩 - Forth]] PDF that describes the commands available for the Forth
       programming language.
     - New: the ~<f11> x f~ key sequences opens a Forth interpreter window.
   - New: *Go*:
@@ -3313,14 +3315,14 @@ PEL uses my fork of the project to eliminate most warnings.
         - The *pel-use-goflymake* user-option identifies whether flymake or
           flycheck is used with Go files.  The ~<f12> !~ key can be used to
           toggle the activated mode.
-    - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-go.pdf][𝕻𝔩 - Go]] PDF that describes the commands available for the Go
+    - New: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-go.pdf][𝕻𝔩 - Go]] PDF that describes the commands available for the Go
      programming language.
   - New: *Gleam*, an Erlang BEAM language
     - New: added support for the Gleam programming language, activated when
       the *pel-use-gleam* user-option is turned on (set to *t*).  The support
       is very basic.  It provides early *gleam-mode* package when the
       *pel-use-gleam-mode* user-option is turned on.
-    - New:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-gleam.pdf][𝕻𝔩 - Gleam]] PDF.
+    - New:  [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-gleam.pdf][𝕻𝔩 - Gleam]] PDF.
   - New: **Haskell**
     - New: add explicit support for Haskell via the *pel-use-haskell* user-option.
       Also provide the *pel-haskell-activates-minor-modes* user-option to automatically
@@ -3375,7 +3377,7 @@ PEL uses my fork of the project to eliminate most warnings.
     - New: Added a Rust-specific key prefix (=pel:for-rust=) accessible
       globally  via ~<f11> SPC r~ and inside a Rust mode via ~<f12>~.
       This prefix key provides access to Rust specific commands, which include:
-      - The ~<f12> <f1>~ key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rust.pdf][𝕻𝔩 - Rust PDF]].
+      - The ~<f12> <f1>~ key opens the preliminary  [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-rust.pdf][𝕻𝔩 - Rust PDF]].
       - The ~<f12> <f2>~ key opens PEL Rust customization buffer.
       - The ~<f12> <f3>~ key opens the Rust customization buffer.
       - The ~<f12> c~ key builds the Rust file using *rust-run*.
@@ -3387,7 +3389,7 @@ PEL uses my fork of the project to eliminate most warnings.
 - Update: *Rectangles*:
   - New: the *iedit-rectangle-mode* is accessible directly with the ~C-x r RET~
     key binding.  There is no need to use the iedit-mode first.
-  - New: the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/rectangles.pdf][⅀ Rectangles PDF]]describes the *iedit-rectangle-mode* and available
+  - New: the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/rectangles.pdf][⅀ Rectangles PDF]]describes the *iedit-rectangle-mode* and available
     commands.
 - Update: *Searching*:
   - New: support for combined expression search with the
@@ -3492,7 +3494,7 @@ PEL uses my fork of the project to eliminate most warnings.
       modes where the easy-escape minor mode is automatically activated.
     - The new ~<f11> "~ key binding to *easy-escape-minor-mode* allows quick
       toggle of the easy-escape minor mode.
-    - The command is described in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]].
+    - The command is described in the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/search-replace.pdf][⅀ Search/Replace PDF]].
 - Update: *Text Insertion*:
   - New: Add ability to insert Greek letters:
     -  If the *pel-activate-f9-for-greek* user-option is turned on (set to t),
@@ -3550,42 +3552,42 @@ PEL uses my fork of the project to eliminate most warnings.
 + New: added background colours to key sequence cells to highlight the fact
   that some key sequences are only available for specific major or minor modes
   or when point is over text that has been turned into a button.
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/align.pdf][⅀ Align]] better describes handling of indentation on ~M-RET~.
-+ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf][➢Index]] PDF which holds links to all other PDF tables.
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/grep.pdf][⅀ Grep PDF]] describes ag and ripgrep menu.  Also references projectile-based
++ Update: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/align.pdf][⅀ Align]] better describes handling of indentation on ~M-RET~.
++ New: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index.pdf][➢Index]] PDF which holds links to all other PDF tables.
++ Update: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/grep.pdf][⅀ Grep PDF]] describes ag and ripgrep menu.  Also references projectile-based
  search commands.
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf][⅀ Help PDF]] better introduces reader to getting help from Emacs and
++ Update: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/help.pdf][⅀ Help PDF]] better introduces reader to getting help from Emacs and
   PEL.
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/input-method.pdf][⅀ Input Method]] also includes information about encoding.
++ Update: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/input-method.pdf][⅀ Input Method]] also includes information about encoding.
   The ~<f11> ? p~ key binding completion allows "encoding" to open that PDF.
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/completion-input.pdf][⅀ Input Completion PDF]] table better describes Ido, Ivy and Helm and the
++ Update: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/completion-input.pdf][⅀ Input Completion PDF]] table better describes Ido, Ivy and Helm and the
   commands that PEL supports to change mode dynamically.
-+ New:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/completion-input-availability.pdf][🚦Input Completion Availability PDF]] table describes the feature
++ New:  [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/completion-input-availability.pdf][🚦Input Completion Availability PDF]] table describes the feature
   availability of the various input-completion methods supported by PEL.
-+ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/treemacs.pdf][⅀𝔛 Treemacs PDF]]
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/indentation.pdf][⅀ Indentation]] better describes handling of indentation on ~M-RET~.
++ New: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/treemacs.pdf][⅀𝔛 Treemacs PDF]]
++ Update: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/indentation.pdf][⅀ Indentation]] better describes handling of indentation on ~M-RET~.
 + Update: C, C++ and D programming language support tables.
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf][𝕻𝔩 - Python]] programming language : listed more commands.
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/rectangles.pdf][⅀ Rectangles PDF]] better describes how to mark rectangle areas.
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]] describes the superword-mode, subword-mode better, and
++ Update: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-python.pdf][𝕻𝔩 - Python]] programming language : listed more commands.
++ Update: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/rectangles.pdf][⅀ Rectangles PDF]] better describes how to mark rectangle areas.
++ Update: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/search-replace.pdf][⅀ Search/Replace PDF]] describes the superword-mode, subword-mode better, and
   includes description of the projectile commands.  It also describes all
   iedit-mode commands.
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/text-modes.pdf][⅀ Text Modes PDF]] describes the superword-mode, subword-mode better, and new
++ Update: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/text-modes.pdf][⅀ Text Modes PDF]] describes the superword-mode, subword-mode better, and new
   key binding to overwrite-mode (~<Esc><kp-0>~).
-+ Renamed ⅀ Tags to [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref.pdf][⅀ Xref]]; the PDF will describe several cross-referencing
++ Renamed ⅀ Tags to [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/xref.pdf][⅀ Xref]]; the PDF will describe several cross-referencing
   mechanisms, not just the tags-based mechanisms.
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/undo-redo-repeat.pdf][⅀ Undo/Redo/Repeat/Arg]] better describes how to repeat commands.
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf][⅀ Windows PDF]] now describes the new Esc and ~<f1>~ cursor keys to manage
++ Update: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/undo-redo-repeat.pdf][⅀ Undo/Redo/Repeat/Arg]] better describes how to repeat commands.
++ Update: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/windows.pdf][⅀ Windows PDF]] now describes the new Esc and ~<f1>~ cursor keys to manage
   and navigate across windows.
 + Updates to the Buffer, CUA, Cut & Paste, Marking, Undo PDF reference tables.
-+ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make]] PDF that describes make file editing support.
-+ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf][𝕻𝔩 - Forth]] PDF describing support for the Forth programming language.
-+ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-netrexx.pdf][𝕻𝔩 - Netrexx]] PDF describing support for the NetRexx programming
++ New: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-make.pdf][𝕻𝔩 - Make]] PDF that describes make file editing support.
++ New: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-forth.pdf][𝕻𝔩 - Forth]] PDF describing support for the Forth programming language.
++ New: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-netrexx.pdf][𝕻𝔩 - Netrexx]] PDF describing support for the NetRexx programming
   language.
-+ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rexx.pdf][𝕻𝔩 - REXX]] PDF describing support for the REXX programming language.
-+ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-markdown.pdf][Ɱ Markdown PDF]], describing markdown support.
-+ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/macOS-keys.pdf][ macOS Keys ]]PDF that lists and describes the macOS specific keys.
-+ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-CRiSP-Emacs.pdf][➢CRiSP ➫ Emacs]] PDF for Brief and CRiSP users.  It lists the
++ New: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-rexx.pdf][𝕻𝔩 - REXX]] PDF describing support for the REXX programming language.
++ New: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-markdown.pdf][Ɱ Markdown PDF]], describing markdown support.
++ New: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/macOS-keys.pdf][ macOS Keys ]]PDF that lists and describes the macOS specific keys.
++ New: [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-CRiSP-Emacs.pdf][➢CRiSP ➫ Emacs]] PDF for Brief and CRiSP users.  It lists the
   correspondences between Brief/CRiSP with CRiSPer and Emacs with PEL.
 ** Use Manual Additions and Improvements:
 - Added instructions on how to install

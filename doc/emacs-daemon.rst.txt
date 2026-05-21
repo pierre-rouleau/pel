@@ -8,7 +8,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-08-30 15:43:20 EDT, updated by Pierre Rouleau.
-:Copyright: © 2024, 2025, Pierre Rouleau
+:Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
 .. ---------------------------------------------------------------------------
@@ -348,13 +348,13 @@ install emacs`` command::
 
 
 .. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
-.. _PEL How-to Tips: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-howto.pdf
+.. _PEL How-to Tips: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-howto.pdf
 .. _Emacs for Mac OS X:  https://emacsformacosx.com/
 .. _Homebrew package manager: https://en.wikipedia.org/wiki/Homebrew_(package_manager)
 .. _e:  ../bin/e
 .. _ge: ../bin/ge
 .. _ec: ../bin/ec
-.. _Closing Suspending PEL PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/closing-suspending.pdf
+.. _Closing Suspending PEL PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/closing-suspending.pdf
 .. _quick installation script: ./install_e_ge_ec.rst.txt
 .. _exec-path-from-shell: https://github.com/purcell/exec-path-from-shell
 .. _described above: #short-commands-to-start-emacs-from-the-terminal-shell

@@ -36,7 +36,7 @@ PEL -- Pragmatic Emacs Library
 
 .. image:: https://img.shields.io/badge/PDF_Files-221-blue
    :alt: PDF Files
-   :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
+   :target: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index.pdf
 
 .. image:: https://img.shields.io/badge/PEL_Manual-Αlpha_state-blue
    :alt: Manual Status
@@ -721,12 +721,12 @@ Notes
 .. _😇: `➣ PEL Package Integration and Enhancements`_
 .. _🤯: `➣ Customization Driven Package Management & Configuration`_
 .. _😃: `➣ Emacs Fast Startup`_
-.. _PEL Key Maps PDF:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
+.. _PEL Key Maps PDF:   https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-pel-key-maps.pdf
 .. _🤔: `➣ Extends Emacs Documentation`_
 .. _🥳: doc/emacs-daemon.rst.txt
 .. _➢Index PDF:
 .. _PEL Topic Index PDF:
-.. _PEL Index PDF:      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
+.. _PEL Index PDF:      https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index.pdf
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
 .. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File
@@ -765,9 +765,9 @@ Notes
 .. _PEL Customization:          doc/pel-manual.rst#pel-customization
 .. _dual customization:         doc/pel-manual.rst#independent-customization-for-terminal-and-graphics-modes
 .. _fast startup mode:          doc/pel-manual.rst#normal-startup-and-fast-startup-modes
-.. _⅀ Fast Startup PDF:         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/fast-startup.pdf
-.. _⅀ Customize PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf
-.. _🚦 Tree-sitter PDF:         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/tree-sitter-parsers.pdf
+.. _⅀ Fast Startup PDF:         https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/fast-startup.pdf
+.. _⅀ Customize PDF:            https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/customize.pdf
+.. _🚦 Tree-sitter PDF:         https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/tree-sitter-parsers.pdf
 .. _Mozilla Firefox:            https://en.wikipedia.org/wiki/Firefox
 .. _How to setup GUI Emacs environment: doc/pel-manual.rst#prepare-using-gui-launched-emacs-running-in-graphics-mode
 .. _init.el:
@@ -797,9 +797,9 @@ Notes
 .. _How to recompile all Emacs Lisp files after upgrading Emacs: https://github.com/pierre-rouleau/pel/blob/master/doc/upgrading-emacs.rst.txt
 .. _How to use Emacs stand-alone processes, daemon and clients: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
 .. _Install the Emacs launcher shortcut scripts: https://github.com/pierre-rouleau/pel/blob/master/doc/install_e_ge_ec.rst.txt
-.. _➢Legend PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-legend.pdf
-.. _GNU make: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/gmake.pdf
-.. _Perl 5: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/lang/perl5.pdf
+.. _➢Legend PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-legend.pdf
+.. _GNU make: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/gmake.pdf
+.. _Perl 5: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/perl5.pdf
 .. _shell scripts: https://github.com/pierre-rouleau/pel/tree/master/bin
 .. _awk scripts: https://github.com/pierre-rouleau/pel/tree/master/awk
 .. _USRHOME project: https://github.com/pierre-rouleau/usrhome?tab=readme-ov-file#readme

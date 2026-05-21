@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2026-04-30 15:52:13 EDT, updated by Pierre Rouleau.
+:Modified: 2026-05-21 00:21:37 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025, 2026 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -616,7 +616,7 @@ More information about PEL configuration is in the next section.
 .. _create an issue: https://github.com/pierre-rouleau/pel/issues
 .. _Update any option in PEL init.el file: `Further Configure the init.el File`_
 .. _sample/emacs-customization: ../sample/emacs-customization
-.. _PEL Index PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
+.. _PEL Index PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index.pdf
 
 .. ---------------------------------------------------------------------------
 
@@ -1003,7 +1003,7 @@ bindings to cursor keys and numerical keypad keys.
 See the `macOS-terminal-settings PDF`_ for more information.
 
 .. _Terminal built-in application: https://en.wikipedia.org/wiki/Terminal_(macOS)
-.. _macOS-terminal-settings PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/macOS-terminal-settings.pdf
+.. _macOS-terminal-settings PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/macOS-terminal-settings.pdf
 .. _ANSI escape codes: https://en.wikipedia.org/wiki/ANSI_escape_code
 
 
@@ -1557,11 +1557,11 @@ The section titled `How to Modify the Terminal Keyboard Shortcut Keys`_
 describes how to do that under some environments.
 
 
-.. _PEL Key Maps PDF file: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
+.. _PEL Key Maps PDF file: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-pel-key-maps.pdf
 .. _key prefixes:          https://www.gnu.org/software/emacs/manual/html_node/emacs/Keys.html#Keys
-.. _⅀ ⌨︎ Modifier Keys PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/modifier-keys.pdf
-.. _⌨︎Keys - Fn PDF:        https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-fn.pdf
-.. _⌨︎Keys - F11:           https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-f11.pdf
+.. _⅀ ⌨︎ Modifier Keys PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/modifier-keys.pdf
+.. _⌨︎Keys - Fn PDF:        https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/keys-fn.pdf
+.. _⌨︎Keys - F11:           https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/keys-f11.pdf
 .. _Hydra heads:           https://github.com/abo-abo/hydra#readme
 .. _GNOME Terminal:        https://en.wikipedia.org/wiki/GNOME_Terminal
 
@@ -2169,7 +2169,7 @@ fast-startup operation mode: Emacs startup time is now around 0.1 second.
 .. figure::  res/fast-startup-001.png
    :scale: 50 %
 
-.. _Fast Startup PDF Sheet: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/fast-startup.pdf
+.. _Fast Startup PDF Sheet: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/fast-startup.pdf
 
 
 Measuring Emacs Startup Time
@@ -2772,7 +2772,7 @@ moment you want without having to change and reload your Emacs initialization co
 Persistence of your choices across Emacs editing sessions is provided by Emacs
 customization mechanism.
 See the `Input Completion`_ and
-`Customization <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf>`_
+`Customization <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/customize.pdf>`_
 PDF files for more information.
 
 The management of completion mode is provided by the `pel-completion`_ file.
@@ -2953,7 +2953,7 @@ More information on it is available in the page titled
 PEL CUA Mode Extension Utilities
 --------------------------------
 
-:PDF Sheet: `CUA <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/cua.pdf>`_
+:PDF Sheet: `CUA <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/cua.pdf>`_
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
 :Status: Experimental
@@ -4314,7 +4314,7 @@ More information is available in the `Apple-Script`_ PDF table.
 PEL Support For C
 ~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - C: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf
+.. _𝕻𝔩 - C: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-c.pdf
 
 :Language Family: `Curly-Bracket Programming Language`_
 :PDF Sheet: `𝕻𝔩 - C`_
@@ -4460,7 +4460,7 @@ available by the commands accessed via the ``pel:c-skel`` key prefix which is
 mapped to the ``<f12> <f12>`` key sequence in any c-mode buffer.
 
 See the
-`C PDF <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf>`_
+`C PDF <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-c.pdf>`_
 and related tables for more information on the various key sequences available.
 
 PEL Tempo Skeleton Templates Flexibility
@@ -5278,7 +5278,7 @@ You can toggle the **pel-tempo-mode** minor mode with the ``<f12> <f12>
 PEL Support For C++
 ~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩- C++: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c++.pdf
+.. _𝕻𝔩- C++: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-c++.pdf
 
 :Language Family: `Curly-Bracket Programming Language`_
 :PDF Sheet: `𝕻𝔩- C++`_
@@ -5314,7 +5314,7 @@ on which the c++-mode is based via the **pel:for-c++** key-map, bound to the
 PEL Support for Common Lisp
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - Common Lisp: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-common-lisp.pdf>
+.. _𝕻𝔩 - Common Lisp: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-common-lisp.pdf>
 
 :Language Family: `LISP Programming Language Family`_
 :PDF Sheet: `𝕻𝔩 - Common Lisp`_
@@ -5349,7 +5349,7 @@ inside this directory and Emacs can access them locally.
 PEL Support For D
 ~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - D: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-d.pdf
+.. _𝕻𝔩 - D: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-d.pdf
 
 :Language Family: `Curly-Bracket Programming Language`_
 :PDF Sheet: `𝕻𝔩 - D`_
@@ -5390,7 +5390,7 @@ on which the d-mode is based via the **pel:for-d** key-map, bound to the
 PEL Support for Elixir
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - Elixir: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-elixir.pdf
+.. _𝕻𝔩 - Elixir: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-elixir.pdf
 
 :Language Family: `BEAM VM Programming Language`_
 :PDF Sheet: `𝕻𝔩 - Elixir`_
@@ -5423,7 +5423,7 @@ elixir-mode_ package.  With it the file extensions ``.exs``, ``.ex``, and
 PEL Support for Emacs Lisp
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _⨋𝕻𝔩 - Emacs Lisp: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-emacs-lisp.pdf
+.. _⨋𝕻𝔩 - Emacs Lisp: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-emacs-lisp.pdf
 
 
 :Language Family: `LISP Programming Language Family`_
@@ -5462,7 +5462,7 @@ code.  Some of them can also be used for other types of Lisp as well.
 PEL Support for Erlang
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - Erlang:                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf
+.. _𝕻𝔩 - Erlang:                  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-erlang.pdf
 
 :Language Family: `BEAM VM Programming Language`_
 :PDF Sheet: `𝕻𝔩 - Erlang`_
@@ -5704,7 +5704,7 @@ pel-erlang-space-after-comma-in-blocks:
 
 
 
-.. _PEL Erlang PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf
+.. _PEL Erlang PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-erlang.pdf
 .. _Erlang Programming Language: https://en.wikipedia.org/wiki/Erlang_(programming_language)
 .. _Erlang official Emacs support: https://melpa.org/#/erlang
 .. _erlang-mode: https://github.com/erlang/otp/tree/master/lib/tools/emacs
@@ -5773,7 +5773,7 @@ customization buffer.
 
 More information on outline is available in the `⅀ Outline PDF`_.
 
-.. _⅀ Outline PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/outline.pdf
+.. _⅀ Outline PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/outline.pdf
 
 
 Erlang-specific Display Rendering of hard tabs
@@ -6100,7 +6100,7 @@ for various type of Erlang files.
 PEL Support for Forth
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩- Forth: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf
+.. _𝕻𝔩- Forth: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-forth.pdf
 .. _Concatenative Programming Language: https://en.wikipedia.org/wiki/Concatenative_programming_language
 
 :Language Family: Stack-Based, `Concatenative Programming Language`_
@@ -6128,7 +6128,7 @@ forth-mode_ package.  With it the file extensions ``.f``, ``.fs``, ``.fth``, and
 PEL Support for Gleam
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - Gleam: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-gleam.pdf
+.. _𝕻𝔩 - Gleam: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-gleam.pdf
 
 :Language Family: `BEAM VM Programming Language`_
 :PDF Sheet: `𝕻𝔩 - Gleam`_
@@ -6143,7 +6143,7 @@ PEL Support for Gleam
                  - From a buffer in gleam-mode: ``<f12>`` and ``<M-f12>``
 
 PEL support for Gleam is experimental.
-See the `Gleam PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-gleam.pdf>`_
+See the `Gleam PDF Sheet <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-gleam.pdf>`_
 for more information.
 
 ---------------------------------------------------------------------------
@@ -6151,7 +6151,7 @@ for more information.
 PEL Support for Go
 ~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - Go: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-go.pdf
+.. _𝕻𝔩 - Go: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-go.pdf
 
 :Language Family: `Curly-Bracket Programming Language`_
 :PDF Sheet: `𝕻𝔩 - Go`_
@@ -6168,7 +6168,7 @@ PEL Support for Go
 
 PEL support for Go is experimental using the go-mode, go-flymake and
 go-flycheck.
-See the `Go PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-go.pdf>`_
+See the `Go PDF Sheet <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-go.pdf>`_
 for more information.
 
 ---------------------------------------------------------------------------
@@ -6176,7 +6176,7 @@ for more information.
 PEL Support for Janet
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - Janet: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-janet.pdf
+.. _𝕻𝔩 - Janet: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-janet.pdf
 
 :Language Family: LISP-like Programming Language
 :PDF Sheet: `𝕻𝔩 - Janet`_
@@ -6197,7 +6197,7 @@ PEL Support for Janet
                  - From a buffer in janet-mode: ``<f12>`` and ``<M-f12>``
 
 PEL support for Janet is experimental.
-See the `Janet PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-janet.pdf>`_
+See the `Janet PDF Sheet <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-janet.pdf>`_
 for more information.
 
 
@@ -6206,7 +6206,7 @@ for more information.
 PEL Support for Julia
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - Julia: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-julia.pdf
+.. _𝕻𝔩 - Julia: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-julia.pdf
 
 :PDF Sheet: `𝕻𝔩 - Julia`_
 :PEL Customization: - Group: ``pel-pkg-for-julia``
@@ -6234,7 +6234,7 @@ PEL Support for LFE
 ~~~~~~~~~~~~~~~~~~~
 
 
-.. _𝕻𝔩 - LFE: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-lfe.pdf
+.. _𝕻𝔩 - LFE: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-lfe.pdf
 
 :Language Family: - `BEAM VM Programming Language`_
                   - `LISP Programming Language Family`_
@@ -6252,7 +6252,7 @@ PEL Support for LFE
 
 PEL support for LFE, `Lisp Flavored Erlang`_, inherits from Emacs Lisp support and some extra feature
 supported by PEL.
-See the `LFE PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-lfe.pdf>`_
+See the `LFE PDF Sheet <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-lfe.pdf>`_
 for more information.
 
 
@@ -6264,7 +6264,7 @@ for more information.
 PEL Support for NetRexx
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - NetRexx: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-netrexx.pdf
+.. _𝕻𝔩 - NetRexx: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-netrexx.pdf
 
 
 :PDF Sheet: `𝕻𝔩 - NetRexx`_
@@ -6279,7 +6279,7 @@ PEL Support for NetRexx
                  - From a buffer in netrexx-mode: ``<f12>`` and ``<M-f12>``
 
 PEL support for NetRexx is experimental.
-See the `NetRexx PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-netrexx.pdf>`_
+See the `NetRexx PDF Sheet <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-netrexx.pdf>`_
 for more information.
 
 ---------------------------------------------------------------------------
@@ -6287,7 +6287,7 @@ for more information.
 PEL Support for Nim
 ~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - Nim: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-nim.pdf
+.. _𝕻𝔩 - Nim: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-nim.pdf
 
 :PDF Sheet: `𝕻𝔩 - Nim`_
 :PEL Customization: - Group: ``pel-pkg-for-nim``
@@ -6301,7 +6301,7 @@ PEL Support for Nim
                  - From a buffer in nim-mode: ``<f12>`` and ``<M-f12>``
 
 PEL support for Nim is experimental.
-See the `Nim PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-nim.pdf>`_
+See the `Nim PDF Sheet <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-nim.pdf>`_
 for more information.
 
 
@@ -6310,7 +6310,7 @@ for more information.
 PEL Support for OCaml
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - OCaml: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ocaml.pdf
+.. _𝕻𝔩 - OCaml: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-ocaml.pdf
 
 :Language Family: ML
 :PDF Sheet: `𝕻𝔩 - OCaml`_
@@ -6327,7 +6327,7 @@ PEL Support for OCaml
                  - From a buffer in caml-mode: ``<f12>`` and ``<M-f12>``
 
 PEL support for OCaml is experimental.
-See the `OCaml PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ocaml.pdf>`_
+See the `OCaml PDF Sheet <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-ocaml.pdf>`_
 for more information.
 
 
@@ -6336,7 +6336,7 @@ for more information.
 PEL Support for Perl
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - Perl: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-perl.pdf
+.. _𝕻𝔩 - Perl: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-perl.pdf
 
 :PDF Sheet: `𝕻𝔩 - Perl`_
 :PEL Customization: - Group: ``pel-pkg-for-perl``
@@ -6350,7 +6350,7 @@ PEL Support for Perl
                  - From a buffer in perl-mode: ``<f12>`` and ``<M-f12>``
 
 PEL support for Perl is experimental.
-See the `Perl PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-perl.pdf>`_
+See the `Perl PDF Sheet <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-perl.pdf>`_
 for more information.
 
 
@@ -6359,7 +6359,7 @@ for more information.
 PEL Support for Python
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - Python: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf
+.. _𝕻𝔩 - Python: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-python.pdf
 
 :PDF Sheet: `𝕻𝔩 - Python`_
 :PEL Customization: - Group: ``pel-pkg-for-python``
@@ -6385,7 +6385,7 @@ are automatically recognized as being Python files.
 PEL Support for REXX
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - REXX: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rexx.pdf
+.. _𝕻𝔩 - REXX: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-rexx.pdf
 
 :PDF Sheet: `𝕻𝔩 - REXX`_
 :PEL Customization: - Group: ``pel-pkg-for-rexx``
@@ -6411,7 +6411,7 @@ forth-mode_ package.  With it the file extensions ``.rexx``, ``.elx``, ``.ncomm`
 PEL Support for Ruby
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - Ruby: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ruby.pdf
+.. _𝕻𝔩 - Ruby: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-ruby.pdf
 
 :PDF Sheet: `𝕻𝔩 - Ruby`_
 :PEL Customization: - Group: ``pel-pkg-for-ruby``
@@ -6425,7 +6425,7 @@ PEL Support for Ruby
                  - From a buffer in ruby-mode: ``<f12>`` and ``<M-f12>``
 
 PEL support for Ruby is experimental.
-See the `Ruby PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ruby.pdf>`_
+See the `Ruby PDF Sheet <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-ruby.pdf>`_
 for more information.
 
 
@@ -6434,7 +6434,7 @@ for more information.
 PEL Support for Rust
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - Rust: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rust.pdf
+.. _𝕻𝔩 - Rust: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-rust.pdf
 
 :PDF Sheet: `𝕻𝔩 - Rust`_
 :PEL Customization: - Group: ``pel-pkg-for-rust``
@@ -6458,7 +6458,7 @@ PEL Support for Rust
 PEL support for Rust is experimental using the rust-mode, rustic,
 flycheck-rust, emacs-racer and cargo.
 
-See the `Rust PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rust.pdf>`_
+See the `Rust PDF Sheet <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-rust.pdf>`_
 for more information.
 
 ---------------------------------------------------------------------------
@@ -6466,7 +6466,7 @@ for more information.
 PEL Support for Unix Shell
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - Unix Shell: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-sh.pdf
+.. _𝕻𝔩 - Unix Shell: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-sh.pdf
 
 :PDF Sheet: `𝕻𝔩 - Unix Shell`_
 :PEL Customization: - Group: ``pel-pkg-for-sh``
@@ -6485,7 +6485,7 @@ PEL Support for Unix Shell
 PEL support several Unix Shell using Emacs built-in support for them and
 extending it with some extra code.
 
-See the `Unix Shell PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-sh.pdf>`_
+See the `Unix Shell PDF Sheet <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-sh.pdf>`_
 for more information.
 
 ---------------------------------------------------------------------------
@@ -6493,7 +6493,7 @@ for more information.
 PEL Support for V
 ~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 - V: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-v.pdf
+.. _𝕻𝔩 - V: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-v.pdf
 
 :PDF Sheet: `𝕻𝔩 - V`_
 :PEL Customization: - Group: ``pel-pkg-for-v``
@@ -6509,7 +6509,7 @@ PEL Support for V
 
 PEL support for the emerging V language is experimental using the v-mode.
 
-See the `V PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-v.pdf>`_
+See the `V PDF Sheet <https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-v.pdf>`_
 for more information.
 
 
@@ -7929,7 +7929,7 @@ bindings without affecting PEL's bindings.  If you have a specific request,
 please describe your request on the `PEL wiki`_, I'll take a look and see what I can do.
 
 .. _PEL wiki:                         https://github.com/pierre-rouleau/pel/wiki
-.. _Function Keys Mappings PDF table: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-fn.pdf
+.. _Function Keys Mappings PDF table: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/keys-fn.pdf
 
 
 How to Modify the Terminal Keyboard Shortcut Keys
@@ -8309,118 +8309,118 @@ exhaustive list):
 
 .. _my fork of centimacro: https://github.com/pierre-rouleau/centimacro
 
-.. _Abbreviations:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/abbreviations.pdf
-.. _Align:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/align.pdf
-.. _AsciiDoc support:                         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/asciidoc.pdf
-.. _Auto-Completion:                          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/auto-completion.pdf
-.. _Autosave & Backups:                       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/autosave-backup.pdf
-.. _Bookmarks:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/bookmarks.pdf
-.. _Buffers:                                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/buffers.pdf
-.. _CUA Mode Support:                         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/cua.pdf
-.. _Case Conversion:                          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/case-conversion.pdf
-.. _Closing and Suspending:                   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/closing-suspending.pdf
-.. _Comments:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/comments.pdf
-.. _Counting:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/counting.pdf
-.. _Cross-Referencing:                        https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref.pdf
-.. _Cursor:                                   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/cursor.pdf
-.. _Cut, Delete, Copy and Paste:              https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/cut-paste.pdf
-.. _Diff and Merge:                           https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/diff-merge.pdf
-.. _Dired:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-dired.pdf
-.. _Display Lines:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/display-lines.pdf
-.. _Document Legend:                          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-legend.pdf
-.. _Drawing:                                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/drawing.pdf
-.. _Enriched Text:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/enriched-text.pdf
-.. _F11 Keys:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-f11.pdf
-.. _Faces and Fonts:                          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/faces-fonts.pdf
-.. _Fast Startup:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/fast-startup.pdf
-.. _File Management:                          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/file-mngt.pdf
-.. _File and Directory Local Variables:       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/file-variables.pdf
-.. _Filling and Justification:                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/filling-justification.pdf
-.. _Frames:                                   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/frames.pdf
-.. _Function Keys:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-fn.pdf
+.. _Abbreviations:                            https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/abbreviations.pdf
+.. _Align:                                    https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/align.pdf
+.. _AsciiDoc support:                         https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/asciidoc.pdf
+.. _Auto-Completion:                          https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/auto-completion.pdf
+.. _Autosave & Backups:                       https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/autosave-backup.pdf
+.. _Bookmarks:                                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/bookmarks.pdf
+.. _Buffers:                                  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/buffers.pdf
+.. _CUA Mode Support:                         https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/cua.pdf
+.. _Case Conversion:                          https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/case-conversion.pdf
+.. _Closing and Suspending:                   https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/closing-suspending.pdf
+.. _Comments:                                 https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/comments.pdf
+.. _Counting:                                 https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/counting.pdf
+.. _Cross-Referencing:                        https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/xref.pdf
+.. _Cursor:                                   https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/cursor.pdf
+.. _Cut, Delete, Copy and Paste:              https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/cut-paste.pdf
+.. _Diff and Merge:                           https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/diff-merge.pdf
+.. _Dired:                                    https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-dired.pdf
+.. _Display Lines:                            https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/display-lines.pdf
+.. _Document Legend:                          https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-legend.pdf
+.. _Drawing:                                  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/drawing.pdf
+.. _Enriched Text:                            https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/enriched-text.pdf
+.. _F11 Keys:                                 https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/keys-f11.pdf
+.. _Faces and Fonts:                          https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/faces-fonts.pdf
+.. _Fast Startup:                             https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/fast-startup.pdf
+.. _File Management:                          https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/file-mngt.pdf
+.. _File and Directory Local Variables:       https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/file-variables.pdf
+.. _Filling and Justification:                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/filling-justification.pdf
+.. _Frames:                                   https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/frames.pdf
+.. _Function Keys:                            https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/keys-fn.pdf
 .. _Github rendering of the Buffers PDF:      pdf/buffers.pdf
-.. _Graphviz Dot:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/graphviz-dot.pdf
-.. _Grep:                                     https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/grep.pdf
+.. _Graphviz Dot:                             https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/graphviz-dot.pdf
+.. _Grep:                                     https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/grep.pdf
 .. _Help PDF:
-.. _Help:                                     https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf
-.. _Hide/Show Code Block:                     https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/hide-show-code.pdf
-.. _Highlight:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/highlight.pdf
-.. _Hooks:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/hooks.pdf
-.. _Indentation:                              https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/indentation.pdf
+.. _Help:                                     https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/help.pdf
+.. _Hide/Show Code Block:                     https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/hide-show-code.pdf
+.. _Highlight:                                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/highlight.pdf
+.. _Hooks:                                    https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/hooks.pdf
+.. _Indentation:                              https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/indentation.pdf
 .. _Input Completion PDF:
-.. _Input Completion:                         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/completion-input.pdf
-.. _Input Method:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/input-method.pdf
-.. _Inserting Text:                           https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/inserting-text.pdf
-.. _Key Chords:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/key-chords.pdf
-.. _Keyboard Macros:                          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keyboard-macros.pdf
-.. _Marking:                                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/marking.pdf
-.. _Menus:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/menus.pdf
-.. _Mercurial:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/vcs-mercurial.pdf
-.. _Mode Line PDF:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-line.pdf
-.. _Mouse:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mouse.pdf
-.. _Narrowing:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/narrowing.pdf
+.. _Input Completion:                         https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/completion-input.pdf
+.. _Input Method:                             https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/input-method.pdf
+.. _Inserting Text:                           https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/inserting-text.pdf
+.. _Key Chords:                               https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/key-chords.pdf
+.. _Keyboard Macros:                          https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/keyboard-macros.pdf
+.. _Marking:                                  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/marking.pdf
+.. _Menus:                                    https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/menus.pdf
+.. _Mercurial:                                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/vcs-mercurial.pdf
+.. _Mode Line PDF:                            https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-line.pdf
+.. _Mouse:                                    https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mouse.pdf
+.. _Narrowing:                                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/narrowing.pdf
 
 .. _⅀ Navigation:
 .. _⅀ Navigation PDF:
-.. _Navigation:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/navigation.pdf
-.. _Number Keypad:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
-.. _Outline:                                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/outline.pdf
-.. _PEL Index PDF:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
-.. _PEL Key Maps:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
-.. _Packages:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/packages.pdf
-.. _Projectile Project Interaction Manager:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/projectile.pdf
-.. _Rectangles:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/rectangles.pdf
-.. _Registers:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/registers.pdf
-.. _Scrolling:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/scrolling.pdf
-.. _Search and Replace:                       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf
-.. _Sessions:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/sessions.pdf
-.. _Shells:                                   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/shells.pdf
-.. _Sorting:                                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/sorting.pdf
-.. _Speedbar:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/speedbar.pdf
-.. _Spell Checking:                           https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/spell-checking.pdf
+.. _Navigation:                               https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/navigation.pdf
+.. _Number Keypad:                            https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/numkeypad.pdf
+.. _Outline:                                  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/outline.pdf
+.. _PEL Index PDF:                            https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index.pdf
+.. _PEL Key Maps:                             https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-pel-key-maps.pdf
+.. _Packages:                                 https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/packages.pdf
+.. _Projectile Project Interaction Manager:   https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/projectile.pdf
+.. _Rectangles:                               https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/rectangles.pdf
+.. _Registers:                                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/registers.pdf
+.. _Scrolling:                                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/scrolling.pdf
+.. _Search and Replace:                       https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/search-replace.pdf
+.. _Sessions:                                 https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/sessions.pdf
+.. _Shells:                                   https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/shells.pdf
+.. _Sorting:                                  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/sorting.pdf
+.. _Speedbar:                                 https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/speedbar.pdf
+.. _Spell Checking:                           https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/spell-checking.pdf
 .. _Syntax Check PDF:
-.. _Syntax Check:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/syntax-checking.pdf
-.. _Templates:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/templates.pdf
-.. _Text-modes:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/text-modes.pdf
-.. _Transpose:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/transpose.pdf
-.. _Treemacs:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/treemacs.pdf
-.. _Undo, Redo, Repeat and Prefix Arguments:  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/undo-redo-repeat.pdf
+.. _Syntax Check:                             https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/syntax-checking.pdf
+.. _Templates:                                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/templates.pdf
+.. _Text-modes:                               https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/text-modes.pdf
+.. _Transpose:                                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/transpose.pdf
+.. _Treemacs:                                 https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/treemacs.pdf
+.. _Undo, Redo, Repeat and Prefix Arguments:  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/undo-redo-repeat.pdf
 
 .. _⅀ Customize:
 .. _Customization PDF:
-.. _User Option Customization:                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf
-.. _Web:                                      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/web.pdf
-.. _Whitespaces:                              https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/whitespaces.pdf
-.. _Windows:                                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf
-.. _Ubuntu 16.04 Linux Desktop Keys on macOS Host:  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ubuntu-16-04-desktop-keys.pdf
+.. _User Option Customization:                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/customize.pdf
+.. _Web:                                      https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/web.pdf
+.. _Whitespaces:                              https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/whitespaces.pdf
+.. _Windows:                                  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/windows.pdf
+.. _Ubuntu 16.04 Linux Desktop Keys on macOS Host:  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/ubuntu-16-04-desktop-keys.pdf
 .. _ISO-8601 standard format:                 https://en.wikipedia.org/wiki/ISO_8601
 
 
 
-.. _ERT:                                      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ert.pdf
-.. _ibuffer-mode:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ibuffer-mode.pdf
-.. _macOS Terminal settings:                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/macOS-terminal-settings.pdf
+.. _ERT:                                      https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/ert.pdf
+.. _ibuffer-mode:                             https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/ibuffer-mode.pdf
+.. _macOS Terminal settings:                  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/macOS-terminal-settings.pdf
 
-.. _Org mode:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-org-mode.pdf
-.. _reStructuredText mode:                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-rst.pdf
+.. _Org mode:                                 https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-org-mode.pdf
+.. _reStructuredText mode:                    https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-rst.pdf
 .. _Emacs Modifier Keys:
-.. _Modifier Keys:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/modifier-keys.pdf
-.. _Apple-Script:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-applescript.pdf
+.. _Modifier Keys:                            https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/modifier-keys.pdf
+.. _Apple-Script:                             https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-applescript.pdf
 ..  C++
-.. _C Language PDF:                           https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf
+.. _C Language PDF:                           https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-c.pdf
 
 ..  Common Lisp
-.. _Emacs Lisp Types:                         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/emacs-lisp-types.pdf
-.. _Lispy mode support:                       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/plm-lispy.pdf
+.. _Emacs Lisp Types:                         https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/emacs-lisp-types.pdf
+.. _Lispy mode support:                       https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/plm-lispy.pdf
 ..  D
 ..  elixir
 ..  Emacs Lisp
-..  _Erlang Language PDF:                     https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf
+..  _Erlang Language PDF:                     https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-erlang.pdf
 
 ..  forth
 ..  python
 ..  REXX
-.. _PlantUML-Mode:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/plantuml.pdf
+.. _PlantUML-Mode:                            https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/plantuml.pdf
 
 
 

@@ -7,7 +7,7 @@ How to write an Emacs major mode
 :Created:  Tuesday, April  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-04-04 14:32:09 EDT, updated by Pierre Rouleau.
-:Copyright: © 2025, Pierre Rouleau
+:Copyright: © 2025, 2026, Pierre Rouleau
 
 .. warning:: 🚧 This is an early draft of the document  🚧
 
@@ -368,8 +368,8 @@ faces to colorize the strace output.
 .. _Defining Faces:                                 https://www.gnu.org/software/emacs/manual/html_node/elisp/Defining-Faces.html
 .. _The rx Structured Regexp Notation:              https://www.gnu.org/software/emacs/manual/html_node/elisp/Rx-Notation.html
 .. _The rx macro:                                   https://www.gnu.org/software/emacs/manual/html_node/elisp/Rx-Functions.html
-.. _Emacs Regexp Syntax @ PEL ⅀ Search/Replace PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=9
-.. _re-builder @ PEL ⅀ Search/Replace PDF:          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf#page=10
+.. _Emacs Regexp Syntax @ PEL ⅀ Search/Replace PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/search-replace.pdf#page=9
+.. _re-builder @ PEL ⅀ Search/Replace PDF:          https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/search-replace.pdf#page=10
 .. _Emacs Syntax Tables:                            https://www.gnu.org/software/emacs/manual/html_node/elisp/Syntax-Tables.html
 .. _Emacs Char-Tables:                              https://www.gnu.org/software/emacs/manual/html_node/elisp/Char_002dTables.html
 .. _Emacs Lisp Sequences, Arrays and Vectors:       https://www.gnu.org/software/emacs/manual/html_node/elisp/Sequences-Arrays-Vectors.html

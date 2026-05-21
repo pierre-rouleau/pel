@@ -7,7 +7,7 @@ Using ctags and etags for cross referencing with TAGS
 :Created:  Wednesday, June  5 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-10-30 11:27:03 EDT, updated by Pierre Rouleau.
-:Copyright: © 2024, 2025, Pierre Rouleau
+:Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
 
@@ -125,8 +125,8 @@ installed symbolic link differs from what is expected.
 .. _etags-py:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py
 .. _etags-rs:                    https://github.com/pierre-rouleau/pel/blob/master/bin/etags-rs
 .. _etags-tcl:                   https://github.com/pierre-rouleau/pel/blob/master/bin/etags-tcl
-.. _🚦 Xref-Support PDF:         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref-support.pdf
-.. _⅀ Xref PDF:                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref.pdf
+.. _🚦 Xref-Support PDF:         https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/xref-support.pdf
+.. _⅀ Xref PDF:                  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/xref.pdf
 .. _GNU Autotools:               https://en.wikipedia.org/wiki/GNU_Autotools
 .. _pel/bin/setup/install-etags-builders.sh: https://github.com/pierre-rouleau/pel/blob/master/bin/setup/install-etags-builders.sh
 
