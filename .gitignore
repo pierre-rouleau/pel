@@ -44,9 +44,6 @@ test/*.test-passed
 test-result/*
 compile-logs/*
 
-# GNU Global generated HTML rendering of code
-HTML/*
-
 # Local html rendering of reStructuredText or markdown files
 # All .html files are ignored except the published PDF index page.
 *.html
@@ -99,7 +96,7 @@ GRTAGS
 GTAGS
 gtags-explain.*
 
-# HTML rendering of PEL code
+# GNU Global generated HTML rendering of code
 HTML/*
 
 # etags-el generated file
