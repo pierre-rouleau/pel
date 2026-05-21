@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-21 15:38:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-21 16:00:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -118,11 +118,11 @@ The buffer is in `rst-mode' and point is at `point-min'."
     (should (= (pel-line-length 0) 0)))) ; line before (BOB) is empty
 
 (ert-deftest pel-rst-test/current-line-length/on-manual-title-overline ()
-  "Title overline in pel-manual.rst is 30 characters."
-  ;; "==============================" (30 '=' chars)
-  ;; matching "PEL -- Pragmatic Emacs Leverage" (30 chars)
+  "Title overline in pel-manual.rst is 31 characters."
+  ;; "==============================" (31 '=' chars)
+  ;; matching "PEL -- Pragmatic Emacs Leverage" (31 chars)
   (pel-rst-test--with-manual-rst-buffer
-   (should (= (pel-line-length) 30))))
+   (should (= (pel-line-length) 31))))
 
 ;; ===========================================================================
 ;; 2. Underscore syntax control
@@ -1496,10 +1496,10 @@ adorns at level 1."
   "doc/pel-manual.rst test fixture file must exist."
   (should (file-exists-p pel-rst-test--manual-rst-file)))
 
-(ert-deftest pel-rst-test/fixture/manual-rst-title-overline-30-chars ()
-  "First line of pel-manual.rst is a 30-character '=' overline."
+(ert-deftest pel-rst-test/fixture/manual-rst-title-overline-31-chars ()
+  "First line of pel-manual.rst is a 31-character '=' overline."
   (pel-rst-test--with-manual-rst-buffer
-    (should (= (pel-line-length) 30))
+    (should (= (pel-line-length) 31))
     (should (string-match-p "^=+$"
                             (buffer-substring (line-beginning-position)
                                               (line-end-position))))))
