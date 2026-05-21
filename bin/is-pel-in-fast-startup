@@ -4,7 +4,7 @@
 # Purpose   : Check and report whether Emacs is using PEL Fast Startup Mode.
 # Created   : Wednesday, May 20 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 12:49:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 13:52:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -99,7 +99,10 @@ elif [ -n "${XDG_CONFIG_HOME:-}" ] && [ -d "${XDG_CONFIG_HOME}/emacs" ]; then
 elif [ -d "$HOME/.config/emacs" ]; then
     emacs_dir="$HOME/.config/emacs"
 else
-    emacs_dir="$HOME/.emacs.d"
+    # No recognized Emacs user directory found; report and exit
+    printf -- "%s: no Emacs user directory found (tried ~/.emacs.d, XDG paths, ~/.config/emacs).\n" \
+        "${pgm_name}" >&2
+    exit 3
 fi
 
 # --
@@ -113,6 +116,9 @@ if [ -d "$emacs_dir/elpa" ]; then
             if readlink "$emacs_dir/elpa" | grep -q "elpa-reduced"; then
                 output_message="yes"
                 exit_code=0
+            else
+                # Symlink exists and is valid, but does not point to an elpa-reduced path
+                output_message="no"   # exit_code already 1
             fi
         else
             output_message="PEL environment missing elpa-complete directory; not yet set for fast startup"
@@ -131,12 +137,12 @@ else
     exit_code=3
 fi
 
-if [ "$quiet" = "no" ]; then
-    printf -- "%s\n" "$output_message"
-elif [ "$exit_code" -eq 3 ]; then
-    # Always report invalid environment, even in quiet mode
+if [ "$exit_code" -eq 3 ]; then
     printf -- "%s\n" "$output_message" >&2
+elif [ "$quiet" = "no" ]; then
+    printf -- "%s\n" "$output_message"
 fi
+
 exit "$exit_code"
 
 # ----------------------------------------------------------------------------

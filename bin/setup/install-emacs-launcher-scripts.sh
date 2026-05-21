@@ -4,15 +4,21 @@
 # Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 12:56:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 13:55:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Creates symbolic links from ~/bin to several of the important PEL scripts,
-# such as e, ge, ec and several other scripts.
+# Creates symbolic links from ~/bin to important PEL scripts: e, ge, ec,
+# is-emacs-daemon-running and is-pel-in-fast-startup.
 #
 # Tell user to put ~/bin inside PATH if it's not already there.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - realpath  (GNU coreutils / BSD; not strictly POSIX)
 
 # ----------------------------------------------------------------------------
 # Code
