@@ -103,13 +103,10 @@ Essentially PEL:
 - uses Emacs powerful customization system to drive activation
   of features,
 
-  - PEL provides an Emacs init.el and early-init.el file; to use PEL you need
-    to use the PEL specific init.el file,
-    as described inside the `PEL installation`_,
-    and you won't need to edit it to control installation and manage the PEL
-    supported packages.  If you need to add extra logic that PEL does not yet
-    implement, you can add it to your copy of that init.el file, otherwise
-    PEL logic controls it via customizable user-options.
+  - PEL provides example Emacs `init.el`_ and `early-init.el`_ files that take
+    advantage of various optimization techniques to speed Emacs startup while
+    providing extra PEL capabilities.  See the `PEL installation`_ to use
+    these files.
 
 - has a GNU make-driven build system that byte-compiles all Emacs Lisp files,
   native-compiles when Emacs supports native compilation and treats warnings
