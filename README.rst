@@ -106,7 +106,7 @@ Essentially PEL:
   - PEL provides example Emacs `init.el`_ and `early-init.el`_ files that take
     advantage of various optimization techniques to speed Emacs startup while
     providing extra PEL capabilities.  See the `PEL installation`_ to use
-    these files.
+    these files,
 
 - has a GNU make-driven build system that byte-compiles all Emacs Lisp files,
   native-compiles when Emacs supports native compilation and treats warnings
@@ -126,12 +126,12 @@ Essentially PEL:
   available in graphical mode,
 - attempt to provide globally unified keyboard experience for a large set of
   commands across multiple major modes,
-- document Emacs features in over 221 topic oriented PDF tables which
+- document Emacs features in over `221 topic oriented PDF tables`_ which
   provide and overview of the topic, list standard Emacs commands, PEL extra
   commands, their key bindings, links to the Emacs manual, to the external
   packages, to description articles and more.
-  Some tables describe tools like `GNU make`_ or languages (like `Perl 5`_).
 
+  - Some tables describe tools like `GNU make`_ or languages (like `Perl 5`_).
   - All PDF tables are heavily hyperlinked, with table of contents links to
     the table topics, links to other tables, and links back to the
     `➢Index PDF`_ that gives you a top level view of all topics inside one page.
@@ -794,6 +794,7 @@ Notes
 .. _USRHOME project: https://github.com/pierre-rouleau/usrhome?tab=readme-ov-file#readme
 .. _Using tree-sitter with Emacs and PEL: https://github.com/pierre-rouleau/pel/blob/master/doc/using-tree-sitter.rst.txt
 .. _tbindent: https://github.com/pierre-rouleau/tab-based-indent
+.. _221 topic oriented PDF tables: https://pierre-rouleau.github.io/pel/
 
 ..
    -----------------------------------------------------------------------------
