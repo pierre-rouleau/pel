@@ -48,8 +48,9 @@ compile-logs/*
 HTML/*
 
 # Local html rendering of reStructuredText or markdown files
-# No html files are included in the depot.
-# *.html
+# All .html files are ignored except the published PDF index page.
+*.html
+!doc/pdf/index.html
 
 # Byte-Compiled Emacs Lisp files
 *.elc
