@@ -18,15 +18,15 @@ PEL -- Pragmatic Emacs Leverage
    :alt: Package Quickstart
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/PEL_Managed_Packages-372-teal
+.. image:: https://img.shields.io/badge/PEL_Managed_Packages-377-teal
    :alt: Managed Packages
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
-.. image:: https://img.shields.io/badge/PEL_User_Options-419-teal
+.. image:: https://img.shields.io/badge/PEL_User_Options-422-teal
    :alt: User Options
    :target: `➣ Customization Driven Package Management & Configuration`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-732-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-729-teal
    :alt: PEL Commands
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
@@ -60,7 +60,7 @@ PEL -- Pragmatic Emacs Leverage
   linux and macOS like a pro? `🥳`_
 - And you want **fast** Emacs startup?  On a 2023 macOS Apple
   Silicon computer PEL starts Emacs with **303 elpa packages and 108 other
-  single file packages in 0.16 seconds** and it's even faster on Linux! 😲
+  single file packages in 0.16 seconds** and **sub 0.1 seconds** on Linux! 😲
 
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
@@ -68,9 +68,9 @@ or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 Essentially PEL:
 
 - extends Emacs,
-- adds a large number (732) of convenient commands and provides glue logic to
+- adds a large number (729) of convenient commands and provides glue logic to
   increase feature cohesion and simplify their use,
-- provides the ability to easily install, update a large set (372) of external
+- provides the ability to easily install, update a large set (377) of external
   packages from multiple sources:
 
   - elpa compliant sites: GNU elpa, MELPA,
@@ -223,7 +223,7 @@ Again any feedback is welcome. Thanks!
       without native compilation).
 
 - You can **speed Emacs startup much more** with PEL `fast startup mode`_ command
-  (see also `⅀ Fast Startup PDF`_ [#firefox]_).
+  (see also `⅀ Fast Startup PDF`_ .
   PEL supports 2 different Emacs startup operation modes:
 
   - The **normal startup** mode, using Emacs' standard package.el
@@ -360,7 +360,7 @@ Again any feedback is welcome. Thanks!
   - the improvement of behaviour of several major and minor modes,
   - the use of the features provided by PEL.
 
-- PEL provides a large number (419) of customizable user options to control all
+- PEL provides a large number (422) of customizable user options to control all
   this and provides several commands to access the customization buffers and
   help commands that generate reports in ``*Help*`` like buffers listing
   relevant user-options and providing quick access to their customization.
@@ -443,7 +443,7 @@ packages, etc...
 -----------------------------------------------------------------
 
 - In normal mode, PEL controls the download, installation, configuration and
-  activation of **372** *top-level* [#externp]_ external packages through the
+  activation of **377** *top-level* [#externp]_ external packages through the
   use of easy-to-setup customization user-options that have a name that start
   with the "``pel-use-``" prefix.
 
@@ -478,9 +478,7 @@ packages, etc...
   with hyperlinks to Emacs manuals, external packages, articles and other
   useful references.
 
-  - See the `PEL Index PDF`_ [#firefox]_ as a starting point.  For the best
-    user experience, use a browser, like Firefox, that can render the PDF
-    inline (as opposed to downloading it) so you can use the links quickly.
+  - See the `PEL Index PDF`_ as a starting point.
     Inside Emacs use ``<f11> <f1>`` to open the `PEL Index PDF`_ and then
     navigate from it, or use ``<f12> <f1>`` to open the PDF describing the
     major mode of the current buffer and its key bindings.
@@ -519,7 +517,7 @@ packages, etc...
 ➣ PEL Convenience Commands
 --------------------------
 
-- PEL provides 732 extra commands or more.  PEL commands extend the packages
+- PEL provides 729 extra commands or more.  PEL commands extend the packages
   it supports and provides some of its own features.  Some commands are only
   available for a given OS, most are accessible in every OS.
 - When the ``pel-use-hydra`` user-option is turned on, PEL provides 12
@@ -622,20 +620,13 @@ Notes
 
 
 .. [#externp] An external package may have dependencies.  The dependencies are also
-              installed. PEL currently provides access to 372 top-level external packages.
+              installed. PEL currently provides access to 377 top-level external packages.
               The actual number of packages is larger when counting their
               dependencies (currently 48 extra packages installed as dependencies).
               From within PEL execute the **pel-package-info**
               command with prefix argument to get a full report (or just type
               ``C-u <f11> ? e ?``).  Also notice the short report printed at
               the end the make-driven build of PEL.
-
-.. [#firefox] All `PEL PDF files`_ have a large number of hyperlinks to other
-              PDF files, Emacs manual pages, external packages and articles.
-              Use a browser that is capable of rendering PDF files for the best user
-              experience.  The `Mozilla Firefox`_ browser does an excellent job
-              at it since its version 78, under all operating system and is
-              highly recommended.
 
 .. [#doc]     The source of the `PEL PDF files`_ is a single macOS Number
               spreadsheet file.  It's also available in the Git
@@ -708,7 +699,7 @@ Notes
               The command detects the key sequence and the context to
               identify which PEL PDF to open.
 
-              PEL currently implements 732 interactive commands.  Some are
+              PEL currently implements 729 interactive commands.  Some are
               always loaded.  Several are auto-loaded when needed.  This count
               excludes the number of template commands that are dynamically constructed
               and loaded only for major modes, such as Erlang, that support
@@ -771,7 +762,6 @@ Notes
 .. _⅀ Fast Startup PDF:         https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/fast-startup.pdf
 .. _⅀ Customize PDF:            https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/customize.pdf
 .. _🚦 Tree-sitter PDF:         https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/tree-sitter-parsers.pdf
-.. _Mozilla Firefox:            https://en.wikipedia.org/wiki/Firefox
 .. _How to setup GUI Emacs environment: doc/pel-manual.rst#prepare-using-gui-launched-emacs-running-in-graphics-mode
 .. _init.el:
 .. _PEL compatible Emacs init.el: example/init/init.el
