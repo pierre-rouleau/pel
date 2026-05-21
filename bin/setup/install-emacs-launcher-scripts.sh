@@ -4,7 +4,7 @@
 # Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 15:10:26 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 15:20:42 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -93,12 +93,7 @@ printf -- "\nFor help on these commands use their --help command line option.\n"
 printf -- "\
    e --help is emacs --help.
    e opens an independent emacs process in terminal mode.
-   ge and ec have their own help, which are:\n\n"
-ge --help
-printf -- "\n\n"
-ec --help
-printf -- "\n\n"
-# No need to print the help of other scripts.
+   All other commands print their own help with -h or --help.\n\n"
 
 # ----------------------------------------------------------------------------
 #  Local Variables:
