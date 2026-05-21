@@ -44,12 +44,10 @@ test/*.test-passed
 test-result/*
 compile-logs/*
 
-# GNU Global generated HTML rendering of code
-HTML/*
-
 # Local html rendering of reStructuredText or markdown files
-# No html files are included in the depot.
-# *.html
+# All .html files are ignored except the published PDF index page.
+*.html
+!doc/pdf/index.html
 
 # Byte-Compiled Emacs Lisp files
 *.elc
@@ -98,7 +96,7 @@ GRTAGS
 GTAGS
 gtags-explain.*
 
-# HTML rendering of PEL code
+# GNU Global generated HTML rendering of code
 HTML/*
 
 # etags-el generated file

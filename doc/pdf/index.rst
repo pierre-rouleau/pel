@@ -7,19 +7,14 @@ PEL Documentation
 :Copyright: © 2021-2026, Pierre Rouleau
 :PDF Index: `PEL Quick Access Topics Index PDF`_
 
-.. contents::  **Table of Contents**
-.. sectnum::
-
 .. ---------------------------------------------------------------------------
 
-**CAUTION**  This site is under construction!!
+List of All PEL PDF Files
+=========================
 
-The links in the PDF files are still pointing to the location of the
-raw files.
+The `-index.pdf`_ PDF is an index table with links to all other PEL PDFs.
 
-The list of PEL PDF files with links to the Pages hosted version of the files
-(which will render in all browsers) follows.  Note that the links inside them
-still point to the original PDF located in the PEL repo directory tree.
+The complete list of PEL PDF files is:
 
 #. `-index.pdf`_
 #. `-CRiSP-Emacs.pdf`_
@@ -470,14 +465,6 @@ still point to the original PDF located in the PEL repo directory tree.
 .. _lang/perl5.pdf:                                        pel-table-based-documentation1/lang/perl5.pdf
 .. _lang/sh.pdf:                                           pel-table-based-documentation1/lang/sh.pdf
 .. _lang/zsh.pdf:                                          pel-table-based-documentation1/lang/zsh.pdf
-
-
-
-
-
-
-
-
 
 .. ---------------------------------------------------------------------------
 
