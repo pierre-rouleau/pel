@@ -466,14 +466,6 @@ The complete list of PEL PDF files is:
 .. _lang/sh.pdf:                                           pel-table-based-documentation1/lang/sh.pdf
 .. _lang/zsh.pdf:                                          pel-table-based-documentation1/lang/zsh.pdf
 
-
-
-
-
-
-
-
-
 .. ---------------------------------------------------------------------------
 
 ..
