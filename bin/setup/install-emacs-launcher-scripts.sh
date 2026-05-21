@@ -4,7 +4,7 @@
 # Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 15:04:51 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 15:10:26 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -18,7 +18,9 @@
 # Dependencies
 # ------------
 #
-# - dirname
+# - dirname   (POSIX)
+# - ln        (POSIX)
+# - ls        (POSIX)
 
 # ----------------------------------------------------------------------------
 # Code
@@ -102,5 +104,3 @@ printf -- "\n\n"
 #  Local Variables:
 #  sh-shell: sh
 #  End:
-
-#  LocalWords:  zsh
