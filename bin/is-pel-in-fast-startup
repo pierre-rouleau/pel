@@ -1,21 +1,22 @@
 #!/bin/sh
 # SH FILE: is-pel-in-fast-startup
 #
-# Purpose   : Detect if PEL is in fast startup mode.
+# Purpose   : Check and report whether Emacs is using PEL Fast Startup Mode.
 # Created   : Wednesday, May 20 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 12:00:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 12:09:12 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Shell command that detects whether Emacs operates in PEL Fast Startup mode.
+# Also validates the Emacs user directory environment, checking if it matches
+# what is required by PEL.
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-# - basename  (POSIX)
 # - readlink  (GNU coreutils / BSD; not strictly POSIX)
 # - grep      (POSIX)
 # - printf    (POSIX)
@@ -25,7 +26,7 @@
 # ----
 #
 #
-pgm_name="$(basename "$0")"
+pgm_name="${0##*/}"
 quiet=no
 
 print_usage()
@@ -84,8 +85,14 @@ fi
 # Determine effective Emacs user directory
 # Note: EMACS_USER_DIRECTORY is a PEL-specific environment variable that
 #       allows the user to override the Emacs user directory location explicitly.
-if [ -n "${EMACS_USER_DIRECTORY:-}" ] && [ -d "$EMACS_USER_DIRECTORY" ]; then
-    emacs_dir="$EMACS_USER_DIRECTORY"
+if [ -n "${EMACS_USER_DIRECTORY:-}" ]; then
+    if [ -d "$EMACS_USER_DIRECTORY" ]; then
+        emacs_dir="$EMACS_USER_DIRECTORY"
+    else
+        printf -- "%s: EMACS_USER_DIRECTORY is set to '%s' but that directory does not exist.\n" \
+            "${pgm_name}" "$EMACS_USER_DIRECTORY" >&2
+        exit 3
+    fi
 elif [ -d "$HOME/.emacs.d" ]; then
     emacs_dir="$HOME/.emacs.d"
 elif [ -n "${XDG_CONFIG_HOME:-}" ] && [ -d "${XDG_CONFIG_HOME}/emacs" ]; then

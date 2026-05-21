@@ -1,15 +1,16 @@
 #!/bin/sh
 # SH FILE: install-emacs-launcher-scripts.sh
 #
-# Purpose   : Install the e, ge and ec scripts in ~/bin.
+# Purpose   : Install the e, ge and ec and other scripts in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 11:55:03 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 12:11:40 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Creates symbolic links from ~/bin to the e, ge and ec scripts.
+# Also create symlinks for other utilities.
 # Tell user to put ~/bin inside PATH if it's not already there.
 
 # ----------------------------------------------------------------------------
@@ -39,7 +40,7 @@ fi
 # 1. Pre-installation checks:
 check_file()
 {
-    if [ -e "$1" ]; then
+    if [ -e "$1" ] || [ -L "$1" ]; then
         printf -- "***ERROR: File %s already exists.\n" "$1"
         printf -- "   Was this already installed?\n"
         printf -- "   If not, remove that file or rename it and try again.\n\n"
