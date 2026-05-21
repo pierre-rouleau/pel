@@ -94,10 +94,9 @@ Essentially PEL:
 - provides the ability to use Tree-Sitter based major modes but also
   dynamically switch from classic to Tree-Sitter based major mode and back
   at any time and without any impact on your original selection;
-  the `🚦 Tree-sitter PDF`_ lists these modes,
 
   - the `🚦 Tree-sitter PDF`_ provides information on the Tree-Sitter
-    language grammar and major modes supporting it, and
+    language grammars and major modes supporting it, and
   - the document titled `Using tree-sitter with Emacs and PEL`_ describes how to setup
     your environment to use the Tree-Sitter based modes,
 
