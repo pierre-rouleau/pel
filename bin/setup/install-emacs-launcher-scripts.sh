@@ -4,12 +4,12 @@
 # Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 12:51:04 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 12:56:47 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Creates symbolic links from ~/bin to several of the important PELscripts,
+# Creates symbolic links from ~/bin to several of the important PEL scripts,
 # such as e, ge, ec and several other scripts.
 #
 # Tell user to put ~/bin inside PATH if it's not already there.
