@@ -1,0 +1,81 @@
+#!/bin/sh
+# SH FILE: is-pel-in-fast-startup
+#
+# Purpose   : Detect if PEL is in fast startup mode.
+# Created   : Wednesday, May 20 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-05-21 10:40:17 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+#
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+pgm_name="$(basename "$0")"
+quiet=no
+
+print_usage()
+{
+    printf -- "
+%s: Check and report whether Emacs is using PEL Fast Startup Mode.
+
+ Usage: %s h|--help
+  • Print this help information.
+
+ Usage: %s [-q|--quiet]
+  • Check if whether Emacs is using PEL Fast Startup Mode.
+    Exit code is 0 if it is, 1 if Emacs operate in normal mode.
+  • By default the command prints 'yes' or 'no' unless the
+    -q or --quiet option is specified.
+" "${pgm_name}" "${pgm_name}" "${pgm_name}"
+}
+
+# --
+# Check validity of arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    if [ "$#" = "1" ]; then
+        exit 0
+    else
+        exit  1
+    fi
+fi
+
+# --
+# Quiet request?
+if [ "$1" = "-q" ] || [ "$1" = "--quiet" ]; then
+    quiet="yes"
+fi
+
+# --
+# Check PEL mode
+in_fast_startup="no"
+if [ -L "$HOME/.emacs.d/elpa" ]; then
+    if readlink "$HOME/.emacs.d/elpa" | grep -q "elpa-reduced"; then
+        in_fast_startup="yes"
+    fi
+fi
+if [ $quiet = "no" ]; then
+    echo $in_fast_startup
+fi
+if [ "$in_fast_startup" = "yes" ]; then
+    exit 0
+else
+    exit 1
+fi
+
+# ----------------------------------------------------------------------------
