@@ -3,7 +3,7 @@
 # Purpose   : Copy all PEL PDF files to a Pages site.
 # Created   : Wednesday, May 20 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-20 15:24:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-20 22:48:37 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -17,6 +17,9 @@
 # prevents PDF rendering on most browsers except Firefox.  But it does not do
 # that for PDF files stored in its Pages site.  Therefore this job will just
 # copy them.
+
+# Source:       repo:  doc/pd
+# Destination:  Page site /pel-table-based-documentation1/
 
 # ----------------------------------------------------------------------------
 # Dependencies
