@@ -1,28 +1,35 @@
 #!/bin/sh
-# SH FILE: install-scripts.sh
+# SH FILE: install-emacs-launcher-scripts.sh
 #
-# Purpose   : Install the e, ge and ce scripts in ~/bin.
+# Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 18:10:20 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 15:28:08 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Creates symbolic links from ~/bin to the e, ge and ce scripts.
+# Creates symbolic links from ~/bin to important PEL scripts: e, ge, ec,
+# is-emacs-daemon-running and is-pel-in-fast-startup.
+#
 # Tell user to put ~/bin inside PATH if it's not already there.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - dirname   (POSIX)
+# - ln        (POSIX)
+# - ls        (POSIX)
 
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
-# Extract name of executing script:
-#  - With Bash: script=${BASH_SOURCE[0]}
-#  - With zsh:  script=${(%):-%x}
+# Extract name of executing script using POSIX tools:
 #
-# Use POSIX compliant code here:
-script="$(realpath "$0")"
-script_dirpath="$(dirname "$script")"
+script_dirpath="$(cd "$(dirname "$0")" && pwd -P)"
+script="${script_dirpath}/${0##*/}"
 bin_dirpath="$(dirname "$script_dirpath")"
 
 # echo "The script is: ${script}"
@@ -35,9 +42,11 @@ if [ ! -d "$HOME/bin" ]; then
     exit 1
 fi
 
+# --
+# 1. Pre-installation checks:
 check_file()
 {
-    if [ -e "$1" ]; then
+    if [ -e "$1" ] || [ -L "$1" ]; then
         printf -- "***ERROR: File %s already exists.\n" "$1"
         printf -- "   Was this already installed?\n"
         printf -- "   If not, remove that file or rename it and try again.\n\n"
@@ -49,7 +58,10 @@ check_file "$HOME/bin/e"
 check_file "$HOME/bin/ge"
 check_file "$HOME/bin/ec"
 check_file "$HOME/bin/is-emacs-daemon-running"
+check_file "$HOME/bin/is-pel-in-fast-startup"
 
+# --
+# 2. Install the symlinks:
 install_symlink_for()
 {
     ln -s "${bin_dirpath}/$1" "$HOME/bin/$1"  || exit 1
@@ -59,13 +71,17 @@ install_symlink_for e
 install_symlink_for ge
 install_symlink_for ec
 install_symlink_for is-emacs-daemon-running
+install_symlink_for is-pel-in-fast-startup
 
+# --
+# 3. Success listing:
 
-printf -- "SUCCESS!!\nInstallation of e, ge and ec scripts completed!\nThey are:\n\n"
+printf -- "SUCCESS!!\nInstallation of all following scripts completed!\nThey are:\n\n"
 ls -l "$HOME/bin/e"
 ls -l "$HOME/bin/ge"
 ls -l "$HOME/bin/ec"
 ls -l "$HOME/bin/is-emacs-daemon-running"
+ls -l "$HOME/bin/is-pel-in-fast-startup"
 
 if [ "$(command -v e)" != "$HOME/bin/e" ]; then
     printf -- "***NEXT STEP:\n"
@@ -77,15 +93,9 @@ printf -- "\nFor help on these commands use their --help command line option.\n"
 printf -- "\
    e --help is emacs --help.
    e opens an independent emacs process in terminal mode.
-   eg and ec have their own help, which are:\n\n"
-ge --help
-printf -- "\n\n"
-ec --help
-printf -- "\n\n"
+   All other commands print their own help with -h or --help.\n\n"
 
 # ----------------------------------------------------------------------------
 #  Local Variables:
 #  sh-shell: sh
 #  End:
-
-#  LocalWords:  zsh

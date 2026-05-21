@@ -1,0 +1,160 @@
+#!/bin/sh
+# SH FILE: is-pel-in-fast-startup
+#
+# Purpose   : Check and report whether Emacs is using PEL Fast Startup Mode.
+# Created   : Wednesday, May 20 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-05-21 15:27:42 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Shell command that detects whether Emacs operates in PEL Fast Startup mode.
+# Also validates the Emacs user directory environment, checking if it matches
+# what is required by PEL.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - readlink  (GNU coreutils / BSD; not strictly POSIX)
+# - grep      (POSIX)
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+pgm_name="${0##*/}"
+quiet="no"
+
+print_usage()
+{
+    printf -- "
+%s: Check and report whether Emacs is using PEL Fast Startup Mode.
+
+ Usage: %s -h|--help
+  • Print this help information.
+
+ Usage: %s [-q|--quiet]
+  • Check whether Emacs is using PEL Fast Startup Mode.
+    Exit code is 0 if it is, 1 if Emacs operates in normal mode.
+  • By default the command prints a message like 'yes', 'no'
+    unless the -q or --quiet option is specified.
+  • If the PEL environment is invalid or incomplete, the command
+    always prints an error message on stderr.
+
+ Exit code:
+   • 0 : all command arguments are OK, Emacs operates in PEL Fast Startup mode.
+   • 1 : all command arguments are OK, Emacs operates in normal mode.
+   • 2 : unexpected command arguments, including help request with something else.
+   • 3 : Emacs environment does not comply with PEL to allow activation of PEL
+         Fast Startup mode.
+
+" "${pgm_name}" "${pgm_name}" "${pgm_name}"
+}
+
+# --
+# Check validity of arguments
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    if [ "$#" -eq 1 ]; then
+        exit 0
+    else
+        exit 2
+    fi
+fi
+
+# --
+# Quiet request?
+if [ "$1" = "-q" ] || [ "$1" = "--quiet" ]; then
+    if [ "$#" -ne 1 ]; then
+        printf -- "%s: Unexpected arguments after %s\n" "${pgm_name}" "$1" >&2
+        printf -- "Use -h to print usage\n" >&2
+        exit 2
+    fi
+    quiet="yes"
+elif [ "$#" -gt 0 ]; then
+    printf -- "%s: Unknown option: %s\n" "${pgm_name}" "$1" >&2
+    printf -- "Use -h to print usage\n" >&2
+    exit 2
+fi
+
+# --
+# Determine effective Emacs user directory
+# Note: EMACS_USER_DIRECTORY is a PEL-specific environment variable that
+#       allows the user to override the Emacs user directory location explicitly.
+if [ -n "${EMACS_USER_DIRECTORY:-}" ]; then
+    if [ -d "$EMACS_USER_DIRECTORY" ]; then
+        emacs_dir="$EMACS_USER_DIRECTORY"
+    else
+        printf -- "%s: EMACS_USER_DIRECTORY is set to '%s' but that directory does not exist.\n" \
+            "${pgm_name}" "$EMACS_USER_DIRECTORY" >&2
+        exit 3
+    fi
+elif [ -d "$HOME/.emacs.d" ]; then
+    emacs_dir="$HOME/.emacs.d"
+elif [ -n "${XDG_CONFIG_HOME:-}" ] && [ -d "${XDG_CONFIG_HOME}/emacs" ]; then
+    emacs_dir="${XDG_CONFIG_HOME}/emacs"
+elif [ -d "$HOME/.config/emacs" ]; then
+    emacs_dir="$HOME/.config/emacs"
+else
+    # No recognized Emacs user directory found; report and exit
+    printf -- "%s: no Emacs user directory found (tried ~/.emacs.d, XDG paths, ~/.config/emacs).\n" \
+        "${pgm_name}" >&2
+    exit 3
+fi
+
+# --
+# Check PEL mode
+output_message="no"
+exit_code=1
+if [ -d "$emacs_dir/elpa" ]; then
+    if [ -L "$emacs_dir/elpa" ]; then
+        if [ -d "$emacs_dir/elpa-complete" ]; then
+            # check for elpa-reduced (even ones with version suffix)
+            if readlink "$emacs_dir/elpa" | grep -q "elpa-reduced"; then
+                output_message="yes"
+                exit_code=0
+            else
+                # Symlink exists and is valid, but does not point to an elpa-reduced path
+                output_message="no"   # exit_code already 1
+            fi
+        else
+            output_message="PEL environment missing elpa-complete directory; not yet set for fast startup"
+            exit_code=3
+        fi
+    else
+        output_message="PEL environment: $emacs_dir/elpa is a directory, not a symlink; not yet set for fast startup"
+        exit_code=3
+    fi
+else
+    if [ -L "$emacs_dir/elpa" ]; then
+        output_message="invalid PEL environment: $emacs_dir/elpa symlink target is not a directory"
+    else
+        output_message="invalid PEL and Emacs environment: missing elpa directory"
+    fi
+    exit_code=3
+fi
+
+case "$output_message" in
+    yes | no )
+    ;;
+
+    * )
+        output_message="${pgm_name}: ${output_message}"
+        ;;
+esac
+
+if [ "$exit_code" -eq 3 ]; then
+    printf -- "%s\n" "$output_message" >&2
+elif [ "$quiet" = "no" ]; then
+    printf -- "%s\n" "$output_message"
+fi
+
+exit "$exit_code"
+
+# ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:
