@@ -4,7 +4,7 @@
 # Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 15:20:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 15:28:08 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -61,7 +61,7 @@ check_file "$HOME/bin/is-emacs-daemon-running"
 check_file "$HOME/bin/is-pel-in-fast-startup"
 
 # --
-# 2. Install the symlink:
+# 2. Install the symlinks:
 install_symlink_for()
 {
     ln -s "${bin_dirpath}/$1" "$HOME/bin/$1"  || exit 1

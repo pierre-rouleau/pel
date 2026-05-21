@@ -4,7 +4,7 @@
 # Purpose   : Check and report whether Emacs is using PEL Fast Startup Mode.
 # Created   : Wednesday, May 20 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 15:17:57 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 15:27:42 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -138,7 +138,7 @@ else
 fi
 
 case "$output_message" in
-    "yes" | "no")
+    yes | no )
     ;;
 
     * )
