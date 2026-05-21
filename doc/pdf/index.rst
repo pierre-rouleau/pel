@@ -12,14 +12,12 @@ PEL Documentation
 
 .. ---------------------------------------------------------------------------
 
-**CAUTION**  This site is under construction!!
+List of All PEL PDF Files
+=========================
 
-The links in the PDF files are still pointing to the location of the
-raw files.
+The `-index.pdf`_ PDF is an index table with links to all other PEL PDFs.
 
-The list of PEL PDF files with links to the Pages hosted version of the files
-(which will render in all browsers) follows.  Note that the links inside them
-still point to the original PDF located in the PEL repo directory tree.
+The complete list of PEL PDF files is:
 
 #. `-index.pdf`_
 #. `-CRiSP-Emacs.pdf`_
