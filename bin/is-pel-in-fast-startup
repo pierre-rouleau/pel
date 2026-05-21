@@ -4,20 +4,21 @@
 # Purpose   : Detect if PEL is in fast startup mode.
 # Created   : Wednesday, May 20 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 10:40:17 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 11:13:19 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-#
-
+# Shell command that detects whether Emacs operates in PEL Fast Startup mode.
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-#
-
+# - basename  (POSIX)
+# - readlink  (POSIX)
+# - grep      (POSIX)
+# - printf    (POSIX)
 
 # ----------------------------------------------------------------------------
 # Code
@@ -36,10 +37,19 @@ print_usage()
   • Print this help information.
 
  Usage: %s [-q|--quiet]
-  • Check if whether Emacs is using PEL Fast Startup Mode.
-    Exit code is 0 if it is, 1 if Emacs operate in normal mode.
-  • By default the command prints 'yes' or 'no' unless the
-    -q or --quiet option is specified.
+  • Check whether Emacs is using PEL Fast Startup Mode.
+    Exit code is 0 if it is, 1 if Emacs operates in normal mode.
+  • By default the command prints a message like 'yes', 'no' or
+    'invalid PEL environment' unless the -q or --quiet option
+    is specified.
+
+ Exit code:
+   • 0 : all command arguments are OK, Emacs operates in PEL Fast Startup mode.
+   • 1 : all command arguments are OK, Emacs operates in normal mode.
+   • 2 : unexpected command arguments, including help request with something else.
+   • 3 : Emacs environment does not comply with PEL to allow activation of PEL
+         Fast Startup mode.
+
 " "${pgm_name}" "${pgm_name}" "${pgm_name}"
 }
 
@@ -48,10 +58,10 @@ print_usage()
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
-    if [ "$#" = "1" ]; then
+    if [ "$#" -eq 1 ]; then
         exit 0
     else
-        exit  1
+        exit 2
     fi
 fi
 
@@ -59,23 +69,47 @@ fi
 # Quiet request?
 if [ "$1" = "-q" ] || [ "$1" = "--quiet" ]; then
     quiet="yes"
+elif [ "$#" -gt 0 ]; then
+    printf -- "%s: Unknown option: %s\n" "${pgm_name}" "$1" >&2
+    printf -- "Use -h to print usage\n" >&2
+    exit 2
+fi
+
+# --
+# Determine effective Emacs user directory
+if [ -n "${EMACS_USER_DIRECTORY:-}" ]; then
+    emacs_dir="$EMACS_USER_DIRECTORY"
+elif [ -d "$HOME/.emacs.d" ]; then
+    emacs_dir="$HOME/.emacs.d"
+elif [ -n "${XDG_CONFIG_HOME:-}" ] && [ -d "${XDG_CONFIG_HOME}/emacs" ]; then
+    emacs_dir="${XDG_CONFIG_HOME}/emacs"
+elif [ -d "$HOME/.config/emacs" ]; then
+    emacs_dir="$HOME/.config/emacs"
+else
+    emacs_dir="$HOME/.emacs.d"
 fi
 
 # --
 # Check PEL mode
-in_fast_startup="no"
-if [ -L "$HOME/.emacs.d/elpa" ]; then
-    if readlink "$HOME/.emacs.d/elpa" | grep -q "elpa-reduced"; then
-        in_fast_startup="yes"
+output_message="no"
+exit_code=1
+if [ -L "$emacs_dir/elpa" ]; then
+    if [ -d "$emacs_dir/elpa-complete" ]; then
+        if readlink "$emacs_dir/elpa" | grep -q "elpa-reduced"; then
+            output_message="yes"
+            exit_code=0
+        fi
+    else
+        output_message="invalid PEL environment: missing elpa-complete directory"
+        exit_code=3
     fi
 fi
-if [ $quiet = "no" ]; then
-    echo $in_fast_startup
+if [ "$quiet" = "no" ]; then
+    echo "$output_message"
 fi
-if [ "$in_fast_startup" = "yes" ]; then
-    exit 0
-else
-    exit 1
-fi
+exit $exit_code
 
 # ----------------------------------------------------------------------------
+# Local Variables:
+# sh-shell: sh
+# End:

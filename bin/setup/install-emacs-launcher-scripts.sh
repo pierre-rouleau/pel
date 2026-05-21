@@ -4,7 +4,7 @@
 # Purpose   : Install the e, ge and ce scripts in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-02-18 18:10:20 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 11:16:09 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -35,6 +35,8 @@ if [ ! -d "$HOME/bin" ]; then
     exit 1
 fi
 
+# --
+# 1. Pre-installation checks:
 check_file()
 {
     if [ -e "$1" ]; then
@@ -49,7 +51,10 @@ check_file "$HOME/bin/e"
 check_file "$HOME/bin/ge"
 check_file "$HOME/bin/ec"
 check_file "$HOME/bin/is-emacs-daemon-running"
+check_file "$HOME/bin/is-pel-in-fast-startup"
 
+# --
+# 2. Install the symlink:
 install_symlink_for()
 {
     ln -s "${bin_dirpath}/$1" "$HOME/bin/$1"  || exit 1
@@ -59,13 +64,17 @@ install_symlink_for e
 install_symlink_for ge
 install_symlink_for ec
 install_symlink_for is-emacs-daemon-running
+install_symlink_for is-pel-in-fast-startup
 
+# --
+# 3. Success listing:
 
 printf -- "SUCCESS!!\nInstallation of e, ge and ec scripts completed!\nThey are:\n\n"
 ls -l "$HOME/bin/e"
 ls -l "$HOME/bin/ge"
 ls -l "$HOME/bin/ec"
 ls -l "$HOME/bin/is-emacs-daemon-running"
+ls -l "$HOME/bin/is-pel-in-fast-startup"
 
 if [ "$(command -v e)" != "$HOME/bin/e" ]; then
     printf -- "***NEXT STEP:\n"
