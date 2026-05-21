@@ -4,7 +4,7 @@
 # Purpose   : Detect if PEL is in fast startup mode.
 # Created   : Wednesday, May 20 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 11:31:25 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 11:45:19 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -16,7 +16,7 @@
 # ------------
 #
 # - basename  (POSIX)
-# - readlink  (POSIX)
+# - readlink  (GNU coreutils / BSD; not strictly POSIX)
 # - grep      (POSIX)
 # - printf    (POSIX)
 
@@ -39,9 +39,10 @@ print_usage()
  Usage: %s [-q|--quiet]
   • Check whether Emacs is using PEL Fast Startup Mode.
     Exit code is 0 if it is, 1 if Emacs operates in normal mode.
-  • By default the command prints a message like 'yes', 'no' or
-    'invalid PEL environment' unless the -q or --quiet option
-    is specified.
+  • By default the command prints a message like 'yes', 'no'
+    unless the -q or --quiet option is specified.
+  • If the PEL environment is invalid or incomplete, the command
+    always prints an error message on stderr.
 
  Exit code:
    • 0 : all command arguments are OK, Emacs operates in PEL Fast Startup mode.
@@ -100,7 +101,8 @@ exit_code=1
 if [ -d "$emacs_dir/elpa" ]; then
     if [ -L "$emacs_dir/elpa" ]; then
         if [ -d "$emacs_dir/elpa-complete" ]; then
-            if [ "$(basename "$(readlink "$emacs_dir/elpa")")" = "elpa-reduced" ]; then
+            # check for elpa-reduced (even ones with version suffix)
+            if readlink "$emacs_dir/elpa" | grep -q "elpa-reduced"; then
                 output_message="yes"
                 exit_code=0
             fi
@@ -116,10 +118,14 @@ else
     output_message="invalid PEL and Emacs environment: missing elpa directory"
     exit_code=3
 fi
+
 if [ "$quiet" = "no" ]; then
     echo "$output_message"
+elif [ "$exit_code" -eq 3 ]; then
+    # Always report invalid environment, even in quiet mode
+    printf -- "%s\n" "$output_message" >&2
 fi
-exit $exit_code
+exit "$exit_code"
 
 # ----------------------------------------------------------------------------
 # Local Variables:

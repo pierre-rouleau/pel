@@ -1,10 +1,10 @@
 #!/bin/sh
-# SH FILE: install-scripts.sh
+# SH FILE: install-emacs-launcher-scripts.sh
 #
 # Purpose   : Install the e, ge and ce scripts in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 11:16:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 11:48:38 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -69,7 +69,7 @@ install_symlink_for is-pel-in-fast-startup
 # --
 # 3. Success listing:
 
-printf -- "SUCCESS!!\nInstallation of e, ge and ec scripts completed!\nThey are:\n\n"
+printf -- "SUCCESS!!\nInstallation of all following scripts completed!\nThey are:\n\n"
 ls -l "$HOME/bin/e"
 ls -l "$HOME/bin/ge"
 ls -l "$HOME/bin/ec"
@@ -91,6 +91,7 @@ ge --help
 printf -- "\n\n"
 ec --help
 printf -- "\n\n"
+# No need to print the help of other scripts.
 
 # ----------------------------------------------------------------------------
 #  Local Variables:
