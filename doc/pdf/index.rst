@@ -81,8 +81,6 @@ still point to the original PDF located in the PEL repo directory tree.
 #. `ibuffer-mode.pdf`_
 #. `imenu-speedbar-support.pdf`_
 #. `indentation.pdf`_
-#. `index.html`_
-#. `index.rst`_
 #. `input-method.pdf`_
 #. `inserting-text.pdf`_
 #. `key-chords.pdf`_
@@ -309,8 +307,6 @@ still point to the original PDF located in the PEL repo directory tree.
 .. _ibuffer-mode.pdf:                                      pel-table-based-documentation1/ibuffer-mode.pdf
 .. _imenu-speedbar-support.pdf:                            pel-table-based-documentation1/imenu-speedbar-support.pdf
 .. _indentation.pdf:                                       pel-table-based-documentation1/indentation.pdf
-.. _index.html:                                            pel-table-based-documentation1/index.html
-.. _index.rst:                                             pel-table-based-documentation1/index.rst
 .. _input-method.pdf:                                      pel-table-based-documentation1/input-method.pdf
 .. _inserting-text.pdf:                                    pel-table-based-documentation1/inserting-text.pdf
 .. _key-chords.pdf:                                        pel-table-based-documentation1/key-chords.pdf
@@ -463,7 +459,7 @@ still point to the original PDF located in the PEL repo directory tree.
 .. _xref.pdf:                                              pel-table-based-documentation1/xref.pdf
 .. _yaml.pdf:                                              pel-table-based-documentation1/yaml.pdf
 .. _yang.pdf:                                              pel-table-based-documentation1/yang.pdf
-.. _lang/bash.pdf:                                         pel-table-based-documentation1/ lang/bash.pdf
+.. _lang/bash.pdf:                                         pel-table-based-documentation1/lang/bash.pdf
 .. _lang/gmake.pdf:                                        pel-table-based-documentation1/lang/gmake.pdf
 .. _lang/gnu-readline.pdf:                                 pel-table-based-documentation1/lang/gnu-readline.pdf
 .. _lang/indentation-styles.pdf:                           pel-table-based-documentation1/lang/indentation-styles.pdf
