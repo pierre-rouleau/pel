@@ -1,1 +1,1 @@
-# pel -- Pragmatic Emacs Library
+# pel -- Pragmatic Emacs Leverage

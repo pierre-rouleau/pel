@@ -3,7 +3,7 @@ Showing Information About Indentation and Hard Tab Control under PEL
 ====================================================================
 
 :Home URL: https://github.com/pierre-rouleau/pel
-:Project: `PEL -- Pragmatic Emacs Library`_
+:Project: `PEL -- Pragmatic Emacs Leverage`_
 :Created:  Wednesday, October 29 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-11-04 16:20:34 EST, updated by Pierre Rouleau.
@@ -314,7 +314,7 @@ taken after each step.
 .. ---------------------------------------------------------------------------
 .. links:
 
-.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _PEL -- Pragmatic Emacs Leverage: https://github.com/pierre-rouleau/pel#readme
 .. _Showing Information about Emacs Major Mode and its PEL Support: pel-major-mode-setup.rst.txt#showing-information-about-emacs-major-mode-and-its-pel-support
 .. _Apple-II: https://en.wikipedia.org/wiki/Apple_II
 .. _Commodore-64: https://en.wikipedia.org/wiki/Commodore_64

@@ -3,11 +3,11 @@ Cross-reference tools
 =====================
 
 :Home URL: https://github.com/pierre-rouleau/pel
-:Project: `PEL -- Pragmatic Emacs Library`_
+:Project: `PEL -- Pragmatic Emacs Leverage`_
 :Created:  Wednesday, May 12 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-03-12 00:03:59 EDT, updated by Pierre Rouleau.
-:Copyright: © 2021-2025, Pierre Rouleau
+:Copyright: © 2021-2026, Pierre Rouleau
 
 .. warning:: This is a preliminary version, and is a early form of a *work in progress*.
 
@@ -53,7 +53,7 @@ The directories that contain Emacs Lisp code include:
 .. ---------------------------------------------------------------------------
 .. links:
 
-.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _PEL -- Pragmatic Emacs Leverage: https://github.com/pierre-rouleau/pel#readme
 
 .. ---------------------------------------------------------------------------
 

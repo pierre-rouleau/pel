@@ -3,7 +3,7 @@ Create extension-less executable scripts with PEL
 =================================================
 
 :Home URL: https://github.com/pierre-rouleau/pel
-:Project: `PEL -- Pragmatic Emacs Library`_
+:Project: `PEL -- Pragmatic Emacs Leverage`_
 :Ref: `PEL How-to Tips`_
 :Created:  Tuesday, March 18 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
@@ -76,7 +76,7 @@ must set the **pel-use-pike** user option to ``t``.
 .. ---------------------------------------------------------------------------
 .. links:
 
-.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _PEL -- Pragmatic Emacs Leverage: https://github.com/pierre-rouleau/pel#readme
 .. _PEL How-to Tips:                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-howto.pdf
 .. _𝕻𝔩 - UNIX Shell:                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-sh.pdf#page=1
 .. _𝕻𝔩 - D:                         https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-d.pdf#page=1

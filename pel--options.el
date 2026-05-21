@@ -617,7 +617,7 @@ master/doc/pdf/%s%s.pdf" subdir topic)
 ;; ---------------------------
 
 (defgroup pel nil
-  "Pragmatic Emacs Library.
+  "Pragmatic Emacs Leverage.
 A collection of facilities designed to integrate and complement a large
 set of Emacs libraries while providing key bindings that mainly use function
 keys as key prefixes, leaving the standard Emacs keys untouched.

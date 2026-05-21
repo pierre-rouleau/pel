@@ -3,7 +3,7 @@ Showing Information about Emacs Major Mode and its PEL Support
 ==============================================================
 
 :Home URL: https://github.com/pierre-rouleau/pel
-:Project: `PEL -- Pragmatic Emacs Library`_
+:Project: `PEL -- Pragmatic Emacs Leverage`_
 :Created:  Tuesday, October 28 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-10-28 14:12:45, by Pierre Rouleau.
@@ -100,7 +100,7 @@ information help on more topics.
 .. ---------------------------------------------------------------------------
 .. links:
 
-.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _PEL -- Pragmatic Emacs Leverage: https://github.com/pierre-rouleau/pel#readme
 .. _Ada:           res/ada-mode-setup.png
 .. _C:             res/c-mode-setup.png
 .. _in terminal:   res/c-mode-setup-terminal.png

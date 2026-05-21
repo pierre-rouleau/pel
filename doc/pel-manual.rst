@@ -1,12 +1,12 @@
-==============================
-PEL -- Pragmatic Emacs Library
-==============================
+===============================
+PEL -- Pragmatic Emacs Leverage
+===============================
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2026-05-21 00:21:37 EDT, updated by Pierre Rouleau.
+:Modified: 2026-05-21 15:54:10 EDT, updated by Pierre Rouleau.
 :License:
-    Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025, 2026 Pierre Rouleau <prouleau001@gmail.com>
+    Copyright (c) 2020-2026 Pierre Rouleau <prouleau001@gmail.com>
 
 
     You can redistribute this document and/or modify it under the terms of the GNU
