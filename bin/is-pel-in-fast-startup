@@ -4,7 +4,7 @@
 # Purpose   : Detect if PEL is in fast startup mode.
 # Created   : Wednesday, May 20 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 11:13:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 11:23:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -33,7 +33,7 @@ print_usage()
     printf -- "
 %s: Check and report whether Emacs is using PEL Fast Startup Mode.
 
- Usage: %s h|--help
+ Usage: %s -h|--help
   • Print this help information.
 
  Usage: %s [-q|--quiet]
@@ -55,7 +55,6 @@ print_usage()
 
 # --
 # Check validity of arguments
-
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     if [ "$#" -eq 1 ]; then
@@ -68,6 +67,11 @@ fi
 # --
 # Quiet request?
 if [ "$1" = "-q" ] || [ "$1" = "--quiet" ]; then
+    if [ "$#" -ne 1 ]; then
+        printf -- "%s: Unexpected arguments after %s\n" "${pgm_name}" "$1" >&2
+        printf -- "Use -h to print usage\n" >&2
+        exit 2
+    fi
     quiet="yes"
 elif [ "$#" -gt 0 ]; then
     printf -- "%s: Unknown option: %s\n" "${pgm_name}" "$1" >&2
