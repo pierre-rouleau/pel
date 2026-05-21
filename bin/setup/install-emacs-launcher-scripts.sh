@@ -4,7 +4,7 @@
 # Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 13:55:14 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 15:04:51 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -18,19 +18,16 @@
 # Dependencies
 # ------------
 #
-# - realpath  (GNU coreutils / BSD; not strictly POSIX)
+# - dirname
 
 # ----------------------------------------------------------------------------
 # Code
 # ----
 #
-# Extract name of executing script:
-#  - With Bash: script=${BASH_SOURCE[0]}
-#  - With zsh:  script=${(%):-%x}
+# Extract name of executing script using POSIX tools:
 #
-# Use POSIX compliant code here:
-script="$(realpath "$0")"
-script_dirpath="$(dirname "$script")"
+script_dirpath="$(cd "$(dirname "$0")" && pwd -P)"
+script="${script_dirpath}/${0##*/}"
 bin_dirpath="$(dirname "$script_dirpath")"
 
 # echo "The script is: ${script}"
