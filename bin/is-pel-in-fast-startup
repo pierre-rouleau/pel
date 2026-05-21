@@ -4,7 +4,7 @@
 # Purpose   : Check and report whether Emacs is using PEL Fast Startup Mode.
 # Created   : Wednesday, May 20 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 12:09:12 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 12:49:19 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -19,7 +19,6 @@
 #
 # - readlink  (GNU coreutils / BSD; not strictly POSIX)
 # - grep      (POSIX)
-# - printf    (POSIX)
 
 # ----------------------------------------------------------------------------
 # Code
@@ -116,11 +115,11 @@ if [ -d "$emacs_dir/elpa" ]; then
                 exit_code=0
             fi
         else
-            output_message="invalid PEL environment: missing elpa-complete directory"
+            output_message="PEL environment missing elpa-complete directory; not yet set for fast startup"
             exit_code=3
         fi
     else
-        output_message="invalid PEL environment: $emacs_dir/elpa is a directory, not a symlink"
+        output_message="PEL environment: $emacs_dir/elpa is a directory, not a symlink; not yet set for fast startup"
         exit_code=3
     fi
 else
