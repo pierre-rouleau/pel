@@ -1,42 +1,46 @@
-# YAML FILE: deplo-pdfs.yml
+# YAML FILE: deploy-pdfs.yml
 #
-# Purpose   : Copy all PEL PDF files to a Pages site.
+# Purpose   : Copy PEL PDF files to a Pages sub-directory; copy other
+#             top-level doc/pdf files (index.html, index.rst, …) to the
+#             Pages root.
 # Created   : Wednesday, May 20 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-20 15:24:56 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-20 23:22:55 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-#
-# Copy the PEL PDF files into Github Pages to allow browser to render them
+# Copy the PEL PDF files into Github Pages to allow browsers to render them
 # easily.
 #
-# Github sends raw hosted PDF files with a HTTP header intended to force security
-# isolation  (:Content-Disposition: attachment; filename=-index.pdf) and that
-# prevents PDF rendering on most browsers except Firefox.  But it does not do
-# that for PDF files stored in its Pages site.  Therefore this job will just
-# copy them.
+# Github sends raw hosted PDF files with a HTTP header intended to force
+# security isolation (Content-Disposition: attachment; filename=...) which
+# prevents PDF rendering on most browsers except Firefox.  Github Pages does
+# not apply that header, so the files are copied there instead.
+#
+# Source:       repo:  doc/pdf/**
+# Destination:  Pages site /pel-table-based-documentation1/  (*.pdf files)
+#               Pages site /                                  (all other files)
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-# Github actions, Github Pages
+# Github Actions, Github Pages
 
 # ----------------------------------------------------------------------------
 # Code
 # ----
-#
-#
 
 name: Deploy PEL PDFs to Pages
 
 on:
   push:
     branches:
-      - master  # Runs whenever updated by master branch
-  workflow_dispatch: # Allows manual trigger
+      - master          # Runs whenever master branch is updated …
+    paths:
+      - 'doc/pdf/**'    # … but only when doc/pdf tree actually changes
+  workflow_dispatch:    # Allows manual trigger
 
 permissions:
   contents: read
@@ -60,11 +64,26 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload PDF Directory Artifact
+      - name: Stage files into Pages layout
+        run: |
+          mkdir -p _site/pel-table-based-documentation1
+
+          # Copy *.pdf files (preserving sub-tree) into the Pages sub-directory.
+          rsync -a \
+                --include='*/' \
+                --include='*.pdf' \
+                --exclude='*' \
+                doc/pdf/ _site/pel-table-based-documentation1/
+
+          # Copy every non-PDF file at the root of doc/pdf to the Pages root
+          # (e.g. index.html, index.rst).
+          find doc/pdf -maxdepth 1 -type f ! -name '*.pdf' -exec cp {} _site/ \;
+
+      - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Take all files under doc/pdf directory tree.
-          path: 'doc/pdf'
+          # Upload the staged tree so the sub-directory layout is preserved.
+          path: '_site'
 
       - name: Deploy to GitHub Pages
         id: deployment
