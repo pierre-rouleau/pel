@@ -4,7 +4,7 @@
 # Purpose   : Detect if PEL is in fast startup mode.
 # Created   : Wednesday, May 20 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 11:45:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 11:59:04 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -82,6 +82,8 @@ fi
 
 # --
 # Determine effective Emacs user directory
+# Note: EMACS_USER_DIRECTORY is a PEL-specific environment variable that
+#       allows the user to override the Emacs user directory location explicitly.
 if [ -n "${EMACS_USER_DIRECTORY:-}" ]; then
     emacs_dir="$EMACS_USER_DIRECTORY"
 elif [ -d "$HOME/.emacs.d" ]; then
@@ -115,12 +117,16 @@ if [ -d "$emacs_dir/elpa" ]; then
         exit_code=3
     fi
 else
-    output_message="invalid PEL and Emacs environment: missing elpa directory"
+    if [ -L "$emacs_dir/elpa" ]; then
+        output_message="invalid PEL environment: $emacs_dir/elpa symlink target is not a directory"
+    else
+        output_message="invalid PEL and Emacs environment: missing elpa directory"
+    fi
     exit_code=3
 fi
 
 if [ "$quiet" = "no" ]; then
-    echo "$output_message"
+    printf -- "%s\n" "$output_message"
 elif [ "$exit_code" -eq 3 ]; then
     # Always report invalid environment, even in quiet mode
     printf -- "%s\n" "$output_message" >&2

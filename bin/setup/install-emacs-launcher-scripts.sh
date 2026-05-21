@@ -1,15 +1,15 @@
 #!/bin/sh
 # SH FILE: install-emacs-launcher-scripts.sh
 #
-# Purpose   : Install the e, ge and ce scripts in ~/bin.
+# Purpose   : Install the e, ge and ec scripts in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 11:48:38 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-21 11:55:03 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Creates symbolic links from ~/bin to the e, ge and ce scripts.
+# Creates symbolic links from ~/bin to the e, ge and ec scripts.
 # Tell user to put ~/bin inside PATH if it's not already there.
 
 # ----------------------------------------------------------------------------
@@ -86,7 +86,7 @@ printf -- "\nFor help on these commands use their --help command line option.\n"
 printf -- "\
    e --help is emacs --help.
    e opens an independent emacs process in terminal mode.
-   eg and ec have their own help, which are:\n\n"
+   ge and ec have their own help, which are:\n\n"
 ge --help
 printf -- "\n\n"
 ec --help
