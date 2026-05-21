@@ -41,6 +41,8 @@ still point to the original PDF located in the PEL repo directory tree.
 #. `case-conversion.pdf`_
 #. `changelog.pdf`_
 #. `closing-suspending.pdf`_
+#. `cmd/ls.pdf`_
+#. `cmd/ssh.pdf`_
 #. `comments.pdf`_
 #. `compilation-mode.pdf`_
 #. `completion-input-availability.pdf`_
@@ -192,7 +194,7 @@ still point to the original PDF located in the PEL repo directory tree.
 #. `projectile.pdf`_
 #. `rectangles.pdf`_
 #. `recursive-edit.pdf`_
-#. `regexp`_
+#. `regexp/grep-regexp.pdf`_
 #. `registers.pdf`_
 #. `rockylinux8-desktop-keys.pdf`_
 #. `rpm-spec-file.pdf`_
@@ -267,6 +269,8 @@ still point to the original PDF located in the PEL repo directory tree.
 .. _case-conversion.pdf:                                   pel-table-based-documentation1/case-conversion.pdf
 .. _changelog.pdf:                                         pel-table-based-documentation1/changelog.pdf
 .. _closing-suspending.pdf:                                pel-table-based-documentation1/closing-suspending.pdf
+.. _cmd/ls.pdf:                                            pel-table-based-documentation1/cmd/ls.pdf
+.. _cmd/ssh.pdf:                                           pel-table-based-documentation1/cmd/ssh.pdf
 .. _comments.pdf:                                          pel-table-based-documentation1/comments.pdf
 .. _compilation-mode.pdf:                                  pel-table-based-documentation1/compilation-mode.pdf
 .. _completion-input-availability.pdf:                     pel-table-based-documentation1/completion-input-availability.pdf
@@ -411,7 +415,7 @@ still point to the original PDF located in the PEL repo directory tree.
 .. _projectile.pdf:                                        pel-table-based-documentation1/projectile.pdf
 .. _rectangles.pdf:                                        pel-table-based-documentation1/rectangles.pdf
 .. _recursive-edit.pdf:                                    pel-table-based-documentation1/recursive-edit.pdf
-.. _regexp:                                                pel-table-based-documentation1/regexp
+.. _regexp/grep-regexp.pdf:                                pel-table-based-documentation1/regexp/grep-regexp.pdf
 .. _registers.pdf:                                         pel-table-based-documentation1/registers.pdf
 .. _rockylinux8-desktop-keys.pdf:                          pel-table-based-documentation1/rockylinux8-desktop-keys.pdf
 .. _rpm-spec-file.pdf:                                     pel-table-based-documentation1/rpm-spec-file.pdf
