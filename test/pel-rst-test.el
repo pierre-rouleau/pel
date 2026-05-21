@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 22 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-29 18:06:24 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-21 15:38:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -120,7 +120,7 @@ The buffer is in `rst-mode' and point is at `point-min'."
 (ert-deftest pel-rst-test/current-line-length/on-manual-title-overline ()
   "Title overline in pel-manual.rst is 30 characters."
   ;; "==============================" (30 '=' chars)
-  ;; matching "PEL -- Pragmatic Emacs Library" (30 chars)
+  ;; matching "PEL -- Pragmatic Emacs Leverage" (30 chars)
   (pel-rst-test--with-manual-rst-buffer
    (should (= (pel-line-length) 30))))
 

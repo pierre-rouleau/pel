@@ -1,4 +1,4 @@
-PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
+PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
 - All PEL PDF files are now hosted on a GitHub Pages site.  The PDF files should now be rendered by all web browsers, not only Firefox.

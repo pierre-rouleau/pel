@@ -1,6 +1,6 @@
-==============================
-PEL -- Pragmatic Emacs Library
-==============================
+===============================
+PEL -- Pragmatic Emacs Leverage
+===============================
 
 .. image:: https://img.shields.io/:License-gpl3-blue.svg
    :alt: License
@@ -45,6 +45,9 @@ PEL -- Pragmatic Emacs Library
 .. image:: https://github.com/pierre-rouleau/pel/workflows/Build/badge.svg
    :alt: Build State
    :target: https://github.com/pierre-rouleau/pel/actions
+
+.. figure:: doc/res/pel-logo.jpg
+   :scale: 50 %
 
 - Tired of writing Emacs configuration code? `🤯`_
 - Afraid of or ever declared `.emacs bankruptcy`_? 😰

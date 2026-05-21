@@ -3,11 +3,11 @@ Advising Functions in Emacs Lisp
 ================================
 
 :Home URL: https://github.com/pierre-rouleau/pel
-:Project: `PEL -- Pragmatic Emacs Library`_
+:Project: `PEL -- Pragmatic Emacs Leverage`_
 :Created:  Sunday, July 18 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-03-11 23:59:19 EDT, updated by Pierre Rouleau.
-:Copyright: © 2021, 2025, Pierre Rouleau
+:Copyright: © 2021, 2025, 2026, Pierre Rouleau
 
 
 .. contents::  **Table of Contents**
@@ -68,7 +68,7 @@ To restore the original function use the advice-remove:
 .. ---------------------------------------------------------------------------
 .. links
 
-.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _PEL -- Pragmatic Emacs Leverage: https://github.com/pierre-rouleau/pel#readme
 
 .. ---------------------------------------------------------------------------
 

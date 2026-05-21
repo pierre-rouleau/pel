@@ -3,7 +3,7 @@ iMenu Support Description
 =========================
 
 :Home URL: https://github.com/pierre-rouleau/pel
-:Project: `PEL -- Pragmatic Emacs Library`_
+:Project: `PEL -- Pragmatic Emacs Leverage`_
 :Created:  Wednesday, May 12, 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-03-11 23:59:19 EDT, updated by Pierre Rouleau.
@@ -136,7 +136,7 @@ From: https://developpaper.com/exploiting-emacs-imenus-potential/
 .. ---------------------------------------------------------------------------
 .. links
 
-.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _PEL -- Pragmatic Emacs Leverage: https://github.com/pierre-rouleau/pel#readme
 
 .. ---------------------------------------------------------------------------
 

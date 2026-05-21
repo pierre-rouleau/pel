@@ -3,7 +3,7 @@ Using the Emacs stand-alone processes, daemon and clients
 =========================================================
 
 :Home URL: https://github.com/pierre-rouleau/pel
-:Project: `PEL -- Pragmatic Emacs Library`_
+:Project: `PEL -- Pragmatic Emacs Leverage`_
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
@@ -347,7 +347,7 @@ install emacs`` command::
 .. links
 
 
-.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _PEL -- Pragmatic Emacs Leverage: https://github.com/pierre-rouleau/pel#readme
 .. _PEL How-to Tips: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-howto.pdf
 .. _Emacs for Mac OS X:  https://emacsformacosx.com/
 .. _Homebrew package manager: https://en.wikipedia.org/wiki/Homebrew_(package_manager)

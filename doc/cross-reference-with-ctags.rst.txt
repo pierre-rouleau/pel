@@ -3,7 +3,7 @@ Using ctags and etags for cross referencing with TAGS
 =====================================================
 
 :Home URL: https://github.com/pierre-rouleau/pel
-:Project: `PEL -- Pragmatic Emacs Library`_
+:Project: `PEL -- Pragmatic Emacs Leverage`_
 :Created:  Wednesday, June  5 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-10-30 11:27:03 EDT, updated by Pierre Rouleau.
@@ -104,7 +104,7 @@ installed symbolic link differs from what is expected.
 .. links
 
 
-.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _PEL -- Pragmatic Emacs Leverage: https://github.com/pierre-rouleau/pel#readme
 .. _Ctags @ Wikipedia:           https://en.wikipedia.org/wiki/Ctags
 .. _FreeBSD CTags:               https://github.com/freebsd/freebsd-src/tree/main/usr.bin/ctags
 .. _Exuberant Ctags:             https://ctags.sourceforge.net/

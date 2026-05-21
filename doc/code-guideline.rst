@@ -3,11 +3,11 @@ Emacs Lisp Code Guideline
 =========================
 
 :Home URL: https://github.com/pierre-rouleau/pel
-:Project: `PEL -- Pragmatic Emacs Library`_
+:Project: `PEL -- Pragmatic Emacs Leverage`_
 :Created:  Wednesday, May 12 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-03-12 00:03:59 EDT, updated by Pierre Rouleau.
-:Copyright: © 2025, Pierre Rouleau
+:Copyright: © 2025, 2026, Pierre Rouleau
 
 This document describes a general code guideline for Emacs Lisp code written
 inside this project.
@@ -183,7 +183,7 @@ Both of these implementations produce the same byte code::
 .. ---------------------------------------------------------------------------
 .. links:
 
-.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _PEL -- Pragmatic Emacs Leverage: https://github.com/pierre-rouleau/pel#readme
 
 .. ---------------------------------------------------------------------------
 

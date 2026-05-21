@@ -3,7 +3,7 @@ How to write an Emacs major mode
 ================================
 
 :Home URL: https://github.com/pierre-rouleau/pel
-:Project: `PEL -- Pragmatic Emacs Library`_:
+:Project: `PEL -- Pragmatic Emacs Leverage`_:
 :Created:  Tuesday, April  1 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-04-04 14:32:09 EDT, updated by Pierre Rouleau.
@@ -353,7 +353,7 @@ faces to colorize the strace output.
 .. ---------------------------------------------------------------------------
 .. links:
 
-.. _PEL -- Pragmatic Emacs Library:                 https://github.com/pierre-rouleau/pel#readme
+.. _PEL -- Pragmatic Emacs Leverage:                 https://github.com/pierre-rouleau/pel#readme
 .. _Emacs Major Modes:                              https://www.gnu.org/software/emacs/manual/html_node/emacs/Major-Modes.html
 .. _Options Controlling Comments:                   https://www.gnu.org/software/emacs/manual/html_node/emacs/Options-for-Comments.html
 .. _Derived Modes:                                  https://www.gnu.org/software/emacs/manual/html_node/elisp/Derived-Modes.html#Derived-Modes

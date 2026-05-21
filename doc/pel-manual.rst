@@ -1,5 +1,5 @@
 ==============================
-PEL -- Pragmatic Emacs Library
+PEL -- Pragmatic Emacs Leverage
 ==============================
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst

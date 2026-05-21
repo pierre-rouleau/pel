@@ -3,11 +3,11 @@ Build Emacs from Source
 =======================
 
 :Home URL: https://github.com/pierre-rouleau/pel
-:Project: `PEL -- Pragmatic Emacs Library`_
+:Project: `PEL -- Pragmatic Emacs Leverage`_
 :Created:  Tuesday, March  4 2025.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Modified: 2025-11-26 11:56:02 EST, updated by Pierre Rouleau.
-:Copyright: © 2025, Pierre Rouleau
+:Copyright: © 2025, 2026, Pierre Rouleau
 
 .. contents::  **Table of Contents**
 .. sectnum::
@@ -262,7 +262,7 @@ For more information on the ``.eln`` files see:
 .. ---------------------------------------------------------------------------
 .. links:
 
-.. _PEL -- Pragmatic Emacs Library: https://github.com/pierre-rouleau/pel#readme
+.. _PEL -- Pragmatic Emacs Leverage: https://github.com/pierre-rouleau/pel#readme
 .. _What's new in Emacs 30.1?: https://www.masteringemacs.org/article/whats-new-in-emacs-301
 .. _Speed up Emacs with libjansson and native elisp compilation:  https://www.masteringemacs.org/article/speed-up-emacs-libjansson-native-elisp-compilation
 .. _How to Get Started with Tree-Sitter:  https://www.masteringemacs.org/article/how-to-get-started-tree-sitter
