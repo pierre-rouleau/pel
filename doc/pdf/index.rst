@@ -7,9 +7,6 @@ PEL Documentation
 :Copyright: © 2021-2026, Pierre Rouleau
 :PDF Index: `PEL Quick Access Topics Index PDF`_
 
-.. contents::  **Table of Contents**
-.. sectnum::
-
 .. ---------------------------------------------------------------------------
 
 List of All PEL PDF Files
