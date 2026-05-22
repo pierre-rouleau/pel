@@ -15,16 +15,9 @@ name: Build (Windows - manual)
 
 on:
   workflow_dispatch:
-    inputs:
-      emacs_version:
-        description: 'Emacs version to test (e.g. 28.1, 29.4, 30.1)'
-        required: false
-        default: '30.1'
 
 jobs:
   build-windows:
-    env:
-      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     runs-on: windows-latest
     strategy:
       fail-fast: false
@@ -64,7 +57,7 @@ jobs:
           }
           $failed = @()
           foreach ($f in $testFiles) {
-              & pwsh -NoProfile -File ".\bin\ert-test.ps1" $f.FullName
+              & ".\bin\ert-test.ps1" $f.FullName
               if ($LASTEXITCODE -ne 0) {
                   $failed += $f.Name
               }

@@ -19,7 +19,10 @@ param(
     [string]$TestFile,
 
     [Parameter(Position = 1)]
-    [string]$EmacsBin
+    [string]$EmacsBin,
+
+    [Alias('h')]
+    [switch]$Help
 )
 
 $pgmName = Split-Path -Leaf $PSCommandPath
@@ -49,14 +52,18 @@ $pgmName -- Run the Emacs Ert test.
 
 # ---------------------------------------------------------------------------
 # Check validity of arguments
+# PowerShell accepts unique prefix matching, so --help maps to -Help)
 
-if (-not $TestFile -or $TestFile -eq '-h' -or $TestFile -eq '--help') {
+if ($Help) {
     Print-Usage
-    if ($TestFile -eq '-h' -or $TestFile -eq '--help') {
-        exit 0
-    }
+    exit 0
+}
+
+if (-not $TestFile) {
+    Print-Usage
     exit 1
 }
+
 
 # Determine the Emacs binary: explicit arg > $EMACS env var > 'emacs'
 if ($EmacsBin) {
