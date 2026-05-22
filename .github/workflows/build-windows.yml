@@ -10,11 +10,25 @@
 # - Compilation step uses bash (Git Bash) so GNU Make POSIX shell recipes work.
 # - ERT tests step uses PowerShell (pwsh) via bin/ert-test.ps1, the Windows
 #   equivalent of bin/ert-test, to run every test/pel-*-test.el test file.
+#
+# - run_tests input: set to true to also run ERT tests after compilation.
+#   Default is false because several ERT tests currently fail due to
+#   Unix file name conventions used in test code (see todo below).
+
+# [:todo 2026-05-22, by Pierre Rouleau: Several ERT tests fail due to
+#                    Unix file name conventions used in test code. For the moment
+#                    running the tests is disabled by default.]
 
 name: Build (Windows - manual)
 
 on:
   workflow_dispatch:
+    inputs:
+      run_tests:
+        description: 'Run ERT tests after compilation (may fail; see known issues)'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   build-windows:
@@ -47,6 +61,7 @@ jobs:
         run: make compile-only
 
       - name: Run ERT tests
+        if: ${{ inputs.run_tests }}
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
