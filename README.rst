@@ -182,10 +182,10 @@ Essentially PEL extends plain vanilla Emacs and provides:
 - **Dynamic Feature Selection** allows selection of minor modes or command
   behaviour like selecting whether search command uses the standard iSearch,
   or features from `Anzu`_ or `Swiper`_.  Same for input and auto completion,
-  cross reference, etc...
+  cross-reference, etc.
 - **Extensive Introspection** with contextual help commands that describe
   major mode and minor modes, indentation and hard-tab control,
-  cross-reference control, etc...  These contextual commands open specialized
+  cross-reference control, etc.  These contextual commands open specialized
   help buffers that assemble everything relevant in one place with buttons to
   quickly access the relevant customizable user-options.
 - **Flexible Tree-sitter Support**
@@ -238,7 +238,7 @@ Again any feedback is welcome. Thanks!
 
 - PEL supports terminal Emacs launched from a shell and graphics Emacs
   launched from a shell or a GUI program like Windows Explorer, macOS Finder,
-  Linux file managers, etc...
+  Linux file managers, etc.
 
 ➣ Short Emacs and Emacs Client Launcher Scripts
 ------------------------------------------------
@@ -322,7 +322,7 @@ Again any feedback is welcome. Thanks!
       installation via customization.
 
   - With PEL you can see a quick report with relevant information by executing
-    the `pel-emacs-load-stats` command.
+    the ``pel-emacs-load-stats`` command.
 
     - On a 2023 macStudio with Geekbench 6.7.1 rate of 2490 single-core/13076
       multicore, with **303 elpa packages and 108 other non-elpa single file
@@ -508,7 +508,7 @@ programming and markup languages.
 As PEL evolves the goal is to support for programming languages will increase
 and each fully supported programming language will come with a topic-oriented
 help PDF, enhanced electric key behaviours, enhanced navigation integrating
-packages, etc...
+packages, etc.
 
 
 ➣ Automatic Download, Installation and Setup of External Packages
@@ -598,8 +598,9 @@ packages, etc...
   available for a given OS, most are accessible in every OS.
 - When the ``pel-use-hydra`` user-option is turned on, PEL provides 12
   specialized key Hydra_  and provides access to one from an external package.
-  From the 12 PEL Hydras, 10 are global and invoked by typing the ``<f7>``
-  prefix key followed by one selection key.
+  From the 12 Hydras, nine are PEL global hydras invoked by typing the ``<f7>``
+  prefix key followed by one selection key, one is an external package hydra
+  and two are mode specific PEL hydras..
 
   - The global key Hydras are:
 
@@ -615,12 +616,12 @@ packages, etc...
     **pel-∑sel-display**  Selective Display         ``<f7> M-h``
     **pel-∑winInfo**      Window/Buffer purpose     ``<f7> W``
     **pel-∑window**       Window management Hydra   ``<f7> w``
+    indent-tools-hydra    Indentation tools         ``<f7> <TAB>``
     ===================== ========================= ================
 
   - PEL also provides language-specific Hydras for C and C++ major modes; both
     are accessed via the ``<f12> <f7>`` key sequence, a key sequence PEL uses
     for major-mode specific commands.
-  - And PEL provides a key binding (``<f7> <TAB>``) to the indent-tool-hydra.
 
 - The key bindings of several commands are the same in several major-modes but
   they perform actions that are specialized to the major mode of the current
