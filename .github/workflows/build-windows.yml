@@ -58,6 +58,10 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $testFiles = Get-ChildItem -Path test -Filter 'pel-*-test.el' | Sort-Object Name
+          if (-not $testFiles -or $testFiles.Count -eq 0) {
+              Write-Host "No ERT test files found (expected test/pel-*-test.el)."
+              exit 1
+          }
           $failed = @()
           foreach ($f in $testFiles) {
               & pwsh -NoProfile -File ".\bin\ert-test.ps1" $f.FullName
