@@ -171,7 +171,7 @@ Essentially PEL extends plain vanilla Emacs and provides:
 
   - All are executed on GitHub CI on several supported Emacs versions on Linux
     and macOS environments (see `PEL's GitHub workflow build YAML file`_).
-  - Builds and tests pass only when no error and no warning is detected.
+  - Builds and tests pass only when no error and no warning are detected.
   - PEL has a growing suite of ERT-based test code.
   - PEL has several specialized linting programs that parse elisp code and
     detect errors that would only be detected at run time under specific
@@ -310,8 +310,8 @@ Again any feedback is welcome. Thanks!
     In fast startup you can use all external packages you have already
     installed in normal startup mode but now Emacs starts much faster.  In
     fast startup PEL does not support download and installation of new
-    external packages but just return to normal mode to do so.  PEL provides two
-    commands to switch modes:
+    external packages, but you can just return to normal mode to do so.
+    PEL provides two commands to switch modes:
 
     - The **pel-setup-fast** (``<f11> M-S f``) activates the fast startup
       mode. It bundles all external packages that use a single directory
