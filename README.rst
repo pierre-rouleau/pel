@@ -98,11 +98,12 @@ Essentially PEL extends plain vanilla Emacs and provides:
 
 - **Feature Integration/Gradual Use** PEL controls installation and
   configuration of external packages a through the various ``pel-use-...``
-  customizable user-options.  PEL provides glue logic between various packages
-  in ways that external packages can't do alone (and would require more
-  programming on your part).  You can start small by activating only what you
-  need and add more later or remove something you no longer need, all done
-  through customization; you do not need to write code for that.
+  customizable user-options.
+
+  - PEL provides integration glue that no individual package provides on its own.
+  - You can start small by activating only what you need and add more later,
+    or remove something you no longer need, all done
+    through customization; you do not need to write code for that.
 
 - **Broad language / major-mode coverage** as PEL explicitly supports over 80
   programming, markup, hardware description and data description languages as
@@ -161,15 +162,15 @@ Essentially PEL extends plain vanilla Emacs and provides:
 
 - **Fast Startup Mode**: ahead-of-time pre-compilation and physical directory
   restructuring system squashes Emacs ``load-path`` that speeds Emacs boot
-  time even more, allowing **sub 0.1 seconds** startups on system with over 300
-  packages.  PEL provides commands to toggle from normal mode to fast startup
-  and back.
+  time even more,
+  allowing sub 0.1 second startups on Linux
+  and under 0.2 seconds on macOS, even with over 300 packages.
+  PEL provides commands to toggle from normal mode to fast startup and back.
 - **Extensive Code Validation** of all Emacs Lisp code through byte and native
   compilation controlled by GNU Make script which also performs **specialized
   linting**, ERT-based **unit testing**.  All executed on GitHub CI on all supported
   Emacs versions (26 to 30) on Linux and macOS environments.
   Builds and test pass only when no error and no warning is detected.
-  All code is reviewed by the excellent CodeRabbit AI system.
 - **Dynamic Feature Selection** allows selection of minor modes or command
   behaviour like selecting whether search command uses the standard iSearch,
   or features from `Anzu`_ or `Swiper`_.  Same for input and auto completion,
