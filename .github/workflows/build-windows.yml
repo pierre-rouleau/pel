@@ -1,34 +1,23 @@
 # YAML FILE: build-windows.yml
 #
-# Purpose   : Manual Windows build of PEL code (byte-compilation only).
+# Purpose   : Manual Windows build of PEL code (byte-compilation + ERT tests).
 # Created   : 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
 #
 # Notes:
 # - This workflow is triggered only manually (workflow_dispatch).
-# - It uses jcs090218/setup-emacs which supports Linux, macOS, and Windows
-#   from a single action, unlike purcell/setup-emacs which relies on Nix
-#   and does not support Windows.
-# - The run step explicitly uses bash (Git Bash on Windows) so that GNU Make
-#   shell recipes using POSIX commands (mkdir, cp, etc.) work correctly.
-# - Only 'make compile-only' is run: this byte-compiles all PEL Emacs Lisp
-#   files but skips the ERT test runner (bin/ert-test), whose Windows
-#   compatibility has not yet been verified.  Tests can be enabled later.
+# - Uses jcs090218/setup-emacs which supports Linux, macOS, and Windows.
+# - Compilation step uses bash (Git Bash) so GNU Make POSIX shell recipes work.
+# - ERT tests step uses PowerShell (pwsh) via bin/ert-test.ps1, the Windows
+#   equivalent of bin/ert-test, to run every test/pel-*-test.el test file.
 
 name: Build (Windows - manual)
 
 on:
   workflow_dispatch:
-    inputs:
-      emacs_version:
-        description: 'Emacs version to test (e.g. 28.1, 29.4, 30.1)'
-        required: false
-        default: '30.1'
 
 jobs:
   build-windows:
-    env:
-      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     runs-on: windows-latest
     strategy:
       fail-fast: false
@@ -51,10 +40,32 @@ jobs:
         shell: bash
         run: emacs --version
 
-      - name: Run build (compile only)
+      - name: Compile (byte-compile all PEL files)
         shell: bash
         env:
           EMACS_INIT: ${{ github.workspace }}/ci/init.el
         run: make compile-only
+
+      - name: Run ERT tests
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $testFiles = Get-ChildItem -Path test -Filter 'pel-*-test.el' | Sort-Object Name
+          if (-not $testFiles -or $testFiles.Count -eq 0) {
+              Write-Host "No ERT test files found (expected test/pel-*-test.el)."
+              exit 1
+          }
+          $failed = @()
+          foreach ($f in $testFiles) {
+              & ".\bin\ert-test.ps1" $f.FullName
+              if ($LASTEXITCODE -ne 0) {
+                  $failed += $f.Name
+              }
+          }
+          if ($failed.Count -gt 0) {
+              Write-Host "FAILED tests: $($failed -join ', ')"
+              exit 1
+          }
+          Write-Host "All ERT tests passed."
 
 # ----------------------------------------------------------------------------
