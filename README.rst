@@ -68,8 +68,9 @@ or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 
 Essentially PEL extends plain vanilla Emacs and provides:
 
-- **Large command expansion**: adds 729 key bound commands with glue logic
-  increasing feature cohesion and simplify their use.
+- **Unified, Cohesive Command Interface**: with 729 additional key bound
+  commands with several providing glue logic between features to increasing
+  feature cohesion and simplify their use.
 - **Extended Vanilla Emacs Key Bindings** keeps the vanilla Emacs key binding
   with a large set of extra key bindings using function key prefixes and
   instructions on how to activate them on macOS and several Linux distros.
@@ -82,14 +83,52 @@ Essentially PEL extends plain vanilla Emacs and provides:
     commands across multiple major modes.
 
 - **Useful Hydras** enhance typing further. See `➣ PEL Convenience Commands`_ below.
-- **Canned configuration** via customization that identify used packages and
+- **Zero-Code Configuration** via customization that identify used packages and
   their settings.
 
+  - No Emacs Lisp coding required — all PEL and Emacs features, package
+    activation, and configuration are driven entirely by Emacs' built-in
+    customization UI.
   - Allow independent configuration of terminal-based and GUI-based Emacs
     customization to prevent slowing down terminal mode with logic that is only
     available in graphical mode.
-  - This makes it trivial to change or maintain several entire
-    specialized workspace setups.
+  - This makes it trivial to maintain various specialized workspace setups.
+  - The customization files can be stored in directories under **VCS** control
+    easily keep track of changes and share them across machines.
+  - Your init.el file won't grow over time; the information is stored in PEL's
+    logic and inside your customization files.
+
+- **Broad language / major-mode coverage** as PEL explicitly supports over 80
+  programming, markup, hardware description and data description languages as
+  well as build control languages and various other major modes.
+
+  - PEL provides specialized programming language templates to ease file
+    creation like C, C++ and Erlang for example.
+  - PEL provides copyright notice and time stamp management.
+  - To help you edit files with narrow indentation schemes such as Dart and Gleam
+    files that must use a 2-space indent; PEL integrates my stand-alone
+    `tbindent`_ package that provides a minor mode that automatically converts
+    the indentation to tabs-based indentation in the buffer so you can see the
+    code better the way *you* want 😎.
+
+- **Cross-platform Portability** Supports Linux, macOS and Windows, Emacs 26.3
+  and later, running under a terminal or GUI as an independent Emacs process
+  or under the Emacs daemon.
+
+  - PEL provides `POSIX-compliant shell scripts to launch Emacs`_ within a shell
+    context (with all its environment variables) in the following modes:
+
+    - single process terminal mode: the `e command`_,
+    - single process GUI mode: the `ge command`_,
+    - daemon Emacs server and clients: the `ec command`_.
+
+- **Non-invasive/Safe Design** PEL does not monkey patch Emacs.  As PEL
+  evolves new features are added into PEL Emacs Lips code that is byte and
+  native compiled on all supported Emacs versions on macOS and Linux.  No
+  compilation error or warning is allowed.  Ert based testing is written for
+  an increasing set of PEL files and several PEL specialized checks are
+  performed by PEL lint programs that parse elisp code.
+  All PEL code is further scrutinized by the CodeRabbit AI agent.
 
 - **Integrates external packages, control their installation** by
   customization. Currently supports 377 external packages from multiple sources:
@@ -123,10 +162,10 @@ Essentially PEL extends plain vanilla Emacs and provides:
   or features from `Anzu`_ or `Swiper`_.  Same for input and auto completion,
   cross reference, etc...
 - **Extensive Introspection** with contextual help commands that describe
-  major mode and minor modes, indentation and hard-tab control, cross-reference
-  control, etc...
-  These commands print information in specialized help buffer with buttons for
-  relevant customizable user-option and specialized descriptions.
+  major mode and minor modes, indentation and hard-tab control,
+  cross-reference control, etc...  These contextual commands open specialized
+  help buffers that assembles everything relevant in one place with buttons to
+  quickly access the relevant customizable user-options.
 - **Flexible Tree-sitter Support**
 
   - Customization-specified selection of  whether the Tree-sitter or classic
@@ -143,29 +182,21 @@ Essentially PEL extends plain vanilla Emacs and provides:
   user-options. This increases cohesion between those features in ways that
   external packages can't do alone (and would require more programming on your
   part).
-- **Extensive Tabular PDF Help** that describes each major Emacs feature,
-  minor and major modes. The PDF tables are heavily hyperlinked with a
-  `PEL Index PDF`_ to quickly locate a topic.
-  See the `➣ Extends Emacs Documentation`_ section.
+- **221 Extensive Topic-organized Reference PDFs** The heavily hyperlinked
+  tables serve as visual, topic-organized key-binding and feature reference
+  sheets, an unusual approach in the Emacs ecosystem which complements Emacs
+  excellent documentation system.
+  Use the `PEL Index PDF`_ to quickly locate a topic.
+  See the `➣ Extends Emacs Documentation`_ section for more information.
 - **Many Command Line Tools** comes with PEL: the `shell scripts`_ to start
   Emacs in various ways, build CTags tables, the `awk scripts`_ for text
   filtering and transformation.
 
   - See other tools provided by my `USRHOME project`_.
 
-..
-   - help you edit files with narrow indentation schemes such as Dart and Gleam
-     files that must use a 2-space indent; PEL integrates my stand-alone
-     `tbindent`_ package that provides a minor mode that automatically converts
-     the indentation to tabs-based indentation in the buffer so you can see the
-     code better the way *you* want 😎,
-
 PEL keeps evolving.  I use it to  maintain my Emacs configuration on
 several macOS and Linux systems and also under Windows (whenever I have to use
-it).  The configuration logic is inside the PEL source code, which is byte
-compiled by a make file. All I need to do is install PEL on the
-systems and copy the customization files (which I keep under VCS control for
-historical and distribution control).
+it).
 
 And, using PEL, I can still use other Emacs packages installed under Emacs
 package management and if I need to use them often in multiple systems I
@@ -818,6 +849,10 @@ Notes
 .. _quelpa: https://github.com/quelpa/quelpa
 .. _Swiper: https://github.com/abo-abo/swiper?tab=readme-ov-file#readme
 .. _Anzu: https://github.com/emacsorphanage/anzu?tab=readme-ov-file#readme
+.. _e command: https://github.com/pierre-rouleau/pel/blob/master/bin/e
+.. _ge command: https://github.com/pierre-rouleau/pel/blob/master/bin/ge
+.. _ec command: https://github.com/pierre-rouleau/pel/blob/master/bin/ec
+.. _POSIX-compliant shell scripts to launch Emacs: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
 
 ..
    -----------------------------------------------------------------------------
