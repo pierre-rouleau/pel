@@ -60,7 +60,7 @@ jobs:
           $testFiles = Get-ChildItem -Path test -Filter 'pel-*-test.el' | Sort-Object Name
           $failed = @()
           foreach ($f in $testFiles) {
-              & bin\ert-test.ps1 $f.FullName
+              & pwsh -NoProfile -File ".\bin\ert-test.ps1" $f.FullName
               if ($LASTEXITCODE -ne 0) {
                   $failed += $f.Name
               }
