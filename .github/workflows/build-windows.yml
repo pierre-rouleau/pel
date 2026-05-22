@@ -10,15 +10,25 @@
 # - Compilation step uses bash (Git Bash) so GNU Make POSIX shell recipes work.
 # - ERT tests step uses PowerShell (pwsh) via bin/ert-test.ps1, the Windows
 #   equivalent of bin/ert-test, to run every test/pel-*-test.el test file.
+#
+# - run_tests input: set to true to also run ERT tests after compilation.
+#   Default is false because several ERT tests currently fail due to
+#   Unix file name conventions used in test code (see todo below).
 
-# [:todo 2026-05-22, by Pierre Rouleau: Several RRT test fails due to
+# [:todo 2026-05-22, by Pierre Rouleau: Several ERT tests fail due to
 #                    Unix file name conventions used in test code. For the moment
-#                    running the tests is disabled.]
+#                    running the tests is disabled by default.]
 
 name: Build (Windows - manual)
 
 on:
   workflow_dispatch:
+    inputs:
+      run_tests:
+        description: 'Run ERT tests after compilation (may fail; see known issues)'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   build-windows:
@@ -50,26 +60,27 @@ jobs:
           EMACS_INIT: ${{ github.workspace }}/ci/init.el
         run: make compile-only
 
-      # - name: Run ERT tests
-      #   shell: pwsh
-      #   run: |
-      #     $ErrorActionPreference = 'Stop'
-      #     $testFiles = Get-ChildItem -Path test -Filter 'pel-*-test.el' | Sort-Object Name
-      #     if (-not $testFiles -or $testFiles.Count -eq 0) {
-      #         Write-Host "No ERT test files found (expected test/pel-*-test.el)."
-      #         exit 1
-      #     }
-      #     $failed = @()
-      #     foreach ($f in $testFiles) {
-      #         & ".\bin\ert-test.ps1" $f.FullName
-      #         if ($LASTEXITCODE -ne 0) {
-      #             $failed += $f.Name
-      #         }
-      #     }
-      #     if ($failed.Count -gt 0) {
-      #         Write-Host "FAILED tests: $($failed -join ', ')"
-      #         exit 1
-      #     }
-      #     Write-Host "All ERT tests passed."
+      - name: Run ERT tests
+        if: ${{ inputs.run_tests }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $testFiles = Get-ChildItem -Path test -Filter 'pel-*-test.el' | Sort-Object Name
+          if (-not $testFiles -or $testFiles.Count -eq 0) {
+              Write-Host "No ERT test files found (expected test/pel-*-test.el)."
+              exit 1
+          }
+          $failed = @()
+          foreach ($f in $testFiles) {
+              & ".\bin\ert-test.ps1" $f.FullName
+              if ($LASTEXITCODE -ne 0) {
+                  $failed += $f.Name
+              }
+          }
+          if ($failed.Count -gt 0) {
+              Write-Host "FAILED tests: $($failed -join ', ')"
+              exit 1
+          }
+          Write-Host "All ERT tests passed."
 
 # ----------------------------------------------------------------------------
