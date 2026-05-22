@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-22 15:12:56 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-22 16:01:48 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -71,6 +71,19 @@ ifeq ($(GITHUB_WORKSPACE),)
 	EMACS_INIT = "~/.emacs.d/init.el"
 else
 	EMACS_INIT = "$(GITHUB_WORKSPACE)/ci/init.el"
+endif
+
+# ----------------------------------------------------------------------------
+# Detect OS platform
+# ------------------
+# On Windows $(OS) is always set to 'Windows_NT' (cmd.exe, PowerShell, Git Bash).
+# On POSIX systems (Linux, macOS) $(OS) is unset or not 'Windows_NT'.
+ifeq ($(OS),Windows_NT)
+    ERT_TEST_CMD = powershell -NoProfile -ExecutionPolicy Bypass -File bin\ert-test.ps1
+    ERT_TEST_DEP = bin/ert-test.ps1
+else
+    ERT_TEST_CMD = bin/ert-test
+    ERT_TEST_DEP = bin/ert-test
 endif
 
 # ----------------------------------------------------------------------------
@@ -1071,8 +1084,9 @@ compile-bin: $(BIN_ELC_FILES)
 # RULES: to execute ERT tests
 
 #  Pattern Rule: How to create a .el.test-passed file from a .el file
-test/pel-%-test.el.test-passed: test/pel-%-test.el bin/ert-test
-	bin/ert-test $<
+test/pel-%-test.el.test-passed: test/pel-%-test.el $(ERT_TEST_DEP)
+	$(ERT_TEST_CMD) $<
+
 
 .PHONY:	test clean-test
 
