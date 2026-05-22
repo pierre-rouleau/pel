@@ -3,7 +3,6 @@ PEL Documentation
 =================
 
 :Home URL: https://github.com/pierre-rouleau/pel
-:Author:  Pierre Rouleau <prouleau001@gmail.com>
 :Copyright: © 2021-2026, Pierre Rouleau
 :PDF Index: `PEL Quick Access Topics Index PDF`_
 
@@ -13,6 +12,7 @@ List of All PEL PDF Files
 =========================
 
 The `-index.pdf`_ PDF is an index table with links to all other PEL PDFs.
+These PDF files are stored in the Git repository in the `doc/pdf directory`_.
 
 The complete list of PEL PDF files is:
 
@@ -241,6 +241,8 @@ The complete list of PEL PDF files is:
 
 .. ---------------------------------------------------------------------------
 .. links:
+
+.. _doc/pdf directory:      https://github.com/pierre-rouleau/pel/tree/master/doc/pdf
 
 .. _PEL Quick Access Topics Index PDF:
 .. _PEL Index PDF:

@@ -58,95 +58,107 @@ PEL -- Pragmatic Emacs Leverage
   `😃`_
 - You *also* want to `run Emacs daemon(s) with text and graphics clients`_ on
   linux and macOS like a pro? `🥳`_
-- And you want **fast** Emacs startup?  On a 2023 macOS Apple
-  Silicon computer PEL starts Emacs with **303 elpa packages and 108 other
-  single file packages in 0.16 seconds** and **sub 0.1 seconds** on Linux! 😲
+- And you want **real fast** independent Emacs process startup as well as
+  easy-to-use Emacs server? 😲
+- And it's safe.  PEL relies on rock-solid built-in GNU Emacs mechanisms with
+  standard Make-driven automation with clean and documented code.
 
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 
-Essentially PEL:
+Essentially PEL extends plain vanilla Emacs and provides:
 
-- extends Emacs,
-- adds a large number (729) of convenient commands and provides glue logic to
-  increase feature cohesion and simplify their use,
-- provides the ability to easily install, update a large set (377) of external
-  packages from multiple sources:
+- **Large command expansion**: adds 729 key bound commands with glue logic
+  increasing feature cohesion and simplify their use.
+- **Extended Vanilla Emacs Key Bindings** keeps the vanilla Emacs key binding
+  with a large set of extra key bindings using function key prefixes and
+  instructions on how to activate them on macOS and several Linux distros.
 
-  - elpa compliant sites: GNU elpa, MELPA,
-  - Github hosted files that are not setup as Emacs packages,
-  - Gitlab hosted files that are not setup as Emacs packages,
+  - Supports Emacs in terminal mode, providing terminal key bindings for
+    commands that normally do not have them.
+  - Support Emacs in graphical mode with some extensions specific to macOS and
+    Linux.
+  - Attempt to provide globally unified keyboard experience for a large set of
+    commands across multiple major modes.
+
+- **Useful Hydras** enhance typing further. See `➣ PEL Convenience Commands`_ below.
+- **Canned configuration** via customization that identify used packages and
+  their settings.
+
+  - Allow independent configuration of terminal-based and GUI-based Emacs
+    customization to prevent slowing down terminal mode with logic that is only
+    available in graphical mode.
+  - This makes it trivial to change or maintain several entire
+    specialized workspace setups.
+
+- **Integrates external packages, control their installation** by
+  customization. Currently supports 377 external packages from multiple sources:
+
+  - `GNU Elpa`_ and `MELPA`_ elpa-compliant sites, `quelpa`_ installs from
+    source,
+  - GitHub, Gitlab or web-site hosted files not setup as Emacs packages,
   - and you can still install packages with Emacs package management commands,
-    and manually configure them by adding specific logic in the PEL init.el file.
+    and manually configure them by adding extra logic in the PEL init.el file.
 
-- provides contextual help commands that describe how to deal with indentation
-  and hard tab control in most major modes showing you which customizable
-  user-option sets the indentation width and the use of hard-tabs, describe
-  why those values may be overridden in files written by other when
-  pel-use-dtrt-indent is activate, and also describe how to use a hard-tab
-  indentation scheme to dynamically modify rendered indentation in some modes
-  where that technique is possible,
-- help you edit files with narrow indentation schemes such as Dart and Gleam
-  files that must use a 2-space indent; PEL integrates my stand-alone
-  `tbindent`_ package that provides a minor mode that automatically converts
-  the indentation to tabs-based indentation in the buffer so you can see the
-  code better the way *you* want 😎,
-- provides the ability to use Tree-Sitter based major modes but also
-  dynamically switch from classic to Tree-Sitter based major mode and back
-  at any time and without any impact on your original selection;
+- **Emacs Startup Optimization** with carefully crafted pre-compiled
+  byte/native compiled `early-init.el`_, `init.el` and control logic with
+  aggressive lazy-loading, deferred execution to maximize speed of independent
+  Emacs processes.
 
-  - the `🚦 Tree-sitter PDF`_ provides information on the Tree-Sitter
-    language grammars and major modes supporting it, and
-  - the document titled `Using tree-sitter with Emacs and PEL`_ describes how to setup
-    your environment to use the Tree-Sitter based modes,
+  - See the `PEL installation`_ for details.
 
-- uses Emacs powerful customization system to drive activation
-  of features,
+- **Fast Startup Mode**: ahead-of-time pre-compilation and physical directory
+  restructuring system squashes Emacs ``load-path`` that speeds Emacs boot
+  time even more, allowing **sub 0.1 seconds** startups on system with over 300
+  packages.  PEL provides commands to toggle from normal mode to fast startup
+  and back.
+- **Extensive Code Validation** of all Emacs Lisp code through byte and native
+  compilation controlled by GNU Make script which also performs **specialized
+  linting**, ERT-based **unit testing**.  All executed on GitHub CI on all supported
+  Emacs versions (26 to 30) on Linux and macOS environments.
+  Builds and test pass only when no error and no warning is detected.
+  All code is reviewed by the excellent CodeRabbit AI system.
+- **Dynamic Feature Selection** allows selection of minor modes or command
+  behaviour like selecting whether search command uses the standard iSearch,
+  or features from `Anzu`_ or `Swiper`_.  Same for input and auto completion,
+  cross reference, etc...
+- **Extensive Introspection** with contextual help commands that describe
+  major mode and minor modes, indentation and hard-tab control, cross-reference
+  control, etc...
+  These commands print information in specialized help buffer with buttons for
+  relevant customizable user-option and specialized descriptions.
+- **Flexible Tree-sitter Support**
 
-  - PEL provides example Emacs `init.el`_ and `early-init.el`_ files that take
-    advantage of various optimization techniques to speed Emacs startup while
-    providing extra PEL capabilities.  See the `PEL installation`_ to use
-    these files,
+  - Customization-specified selection of  whether the Tree-sitter or classic
+    major mode is used for each major mode that supports both.
+  - Dynamically switch from classic to Tree-sitter based major mode and back
+    at any time and without any impact on your original selection.
+  - See the `🚦 Tree-sitter PDF`_; it provides information on the tree-sitter
+    language grammars and major modes supporting it.
+  - Also see the document titled `Using tree-sitter with Emacs and PEL`_ which
+    describes how to setup your environment to use the tree-sitter based modes,
 
-- has a GNU make-driven build system that byte-compiles all Emacs Lisp files,
-  native-compiles when Emacs supports native compilation and treats warnings
-  as error on all supported Emacs versions,  There's also a growing number of
-  ERT-driven test files to check code validity on all supported Emacs versions
-  ran locally and under Github,
-- provides integrated features between built-in Emacs and
-  external packages, increasing cohesion between those features in ways that
+- **Feature Integration** between built-in Emacs features and external
+  packages optionally activated by customization via the ``pel-use-....``
+  user-options. This increases cohesion between those features in ways that
   external packages can't do alone (and would require more programming on your
-  part),
-- support Emacs in terminal mode, providing terminal key bindings for
-  commands that normally do not have them,
-- support Emacs in graphical mode with some extensions specific to macOS and
-  Linux,
-- allow independent configuration of terminal-based and GUI-based Emacs
-  customization to prevent slowing down terminal mode with logic that is only
-  available in graphical mode,
-- attempt to provide globally unified keyboard experience for a large set of
-  commands across multiple major modes,
-- document Emacs features in over `221 topic oriented PDF tables`_ which
-  provide and overview of the topic, list standard Emacs commands, PEL extra
-  commands, their key bindings, links to the Emacs manual, to the external
-  packages, to description articles and more.
+  part).
+- **Extensive Tabular PDF Help** that describes each major Emacs feature,
+  minor and major modes. The PDF tables are heavily hyperlinked with a
+  `PEL Index PDF`_ to quickly locate a topic.
+  See the `➣ Extends Emacs Documentation`_ section.
+- **Many Command Line Tools** comes with PEL: the `shell scripts`_ to start
+  Emacs in various ways, build CTags tables, the `awk scripts`_ for text
+  filtering and transformation.
 
-  - Some tables describe tools like `GNU make`_ or languages (like `Perl 5`_).
-  - All PDF tables are heavily hyperlinked, with table of contents links to
-    the table topics, links to other tables, and links back to the
-    `➢Index PDF`_ that gives you a top level view of all topics inside one page.
-  - The PDF tables use colour codes and icons (see the `➢Legend PDF`_ for their
-    meaning) to speed identification of commands, identify if they are
-    available globally, for major mode, minor mode or under special
-    circumstances to help you understand Emacs.
+  - See other tools provided by my `USRHOME project`_.
 
-- PEL also provide documentation on other topics.
-- And PEL also provides other tools:
-
-  - `shell scripts`_ to start Emacs or execute tools to help use
-    features inside Emacs.
-  - `awk scripts`_ for text filtering and transformation.
-  - See the tools provided by my `USRHOME project`_.
+..
+   - help you edit files with narrow indentation schemes such as Dart and Gleam
+     files that must use a 2-space indent; PEL integrates my stand-alone
+     `tbindent`_ package that provides a minor mode that automatically converts
+     the indentation to tabs-based indentation in the buffer so you can see the
+     code better the way *you* want 😎,
 
 PEL keeps evolving.  I use it to  maintain my Emacs configuration on
 several macOS and Linux systems and also under Windows (whenever I have to use
@@ -187,6 +199,11 @@ Again any feedback is welcome. Thanks!
 
 ➣ Emacs Fast Startup
 --------------------
+
+..
+  On a 2023 macOS Apple
+  Silicon computer PEL starts Emacs with **303 elpa packages and 108 other
+  single file packages in 0.16 seconds** and **sub 0.1 seconds** on Linux!
 
 - With PEL, Emacs will start faster than with several other systems; PEL
   Emacs initialization is heavily optimized to auto-load and defer execution
@@ -469,21 +486,25 @@ packages, etc...
 ➣ Extends Emacs Documentation
 -----------------------------
 
-- PEL provides **221** `PDF topic-oriented reference sheets`_ [#doc]_ packed
-  with symbol annotated, colour coded key bindings and command descriptions,
-  with hyperlinks to Emacs manuals, external packages, articles and other
+- PEL provides **221** `topic oriented PDF tables`_ [#doc]_ each heavily hyperlinked
+  to each other and to public resources.  The top-level `PEL Index PDF`_  is a
+  table listing the table for each Emacs feature, major and minor mode
+  described in other tables.  Each table attempts to provide quickly accessible
+  concise information about the features, commands, function signatures, key
+  bindings and is packed with symbol annotated and colour coded information.
+  It includes hyperlinks to Emacs manuals, external packages, articles and other
   useful references.
 
-  - See the `PEL Index PDF`_ as a starting point.
-    Inside Emacs use ``<f11> <f1>`` to open the `PEL Index PDF`_ and then
-    navigate from it, or use ``<f12> <f1>`` to open the PDF describing the
-    major mode of the current buffer and its key bindings.
-
+    - The PDF tables use colour codes and icons (see the `➢Legend PDF`_ for their
+      meaning) to speed identification of commands, identify if they are
+      available globally, for major mode, minor mode or under special
+      circumstances to help you understand Emacs.
     - Some major modes also support the opening of a language-specific PDF.
       This is done by using a key prefix: ``C-u <f12> <f1>``.  For example
       this now opens a PDF on zsh when the command is issued from a buffer
       editing a zsh script, or a GNU Make PDF from a buffer editing a make file
       in GNU Make mode.
+    - Some tables describe tools like `GNU make`_ or languages (like `Perl 5`_).
 
 - `PEL's Manual`_ describes PEL features in more details. See:
 
@@ -794,7 +815,10 @@ Notes
 .. _USRHOME project: https://github.com/pierre-rouleau/usrhome?tab=readme-ov-file#readme
 .. _Using tree-sitter with Emacs and PEL: https://github.com/pierre-rouleau/pel/blob/master/doc/using-tree-sitter.rst.txt
 .. _tbindent: https://github.com/pierre-rouleau/tab-based-indent
-.. _221 topic oriented PDF tables: https://pierre-rouleau.github.io/pel/
+.. _topic oriented PDF tables: https://pierre-rouleau.github.io/pel/
+.. _quelpa: https://github.com/quelpa/quelpa
+.. _Swiper: https://github.com/abo-abo/swiper?tab=readme-ov-file#readme
+.. _Anzu: https://github.com/emacsorphanage/anzu?tab=readme-ov-file#readme
 
 ..
    -----------------------------------------------------------------------------
