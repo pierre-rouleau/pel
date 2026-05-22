@@ -95,8 +95,8 @@ Essentially PEL extends plain vanilla Emacs and provides:
   - This makes it trivial to maintain various specialized workspace setups.
   - The customization files can be stored in directories under **VCS** control
     easily keep track of changes and share them across machines.
-  - Your init.el file won't grow over time; the information is stored in PEL's
-    logic and inside your customization files.
+  - No ``.emacs`` bankruptcy risk: your init.el file won't grow over time as
+    information is stored in PEL's logic and inside your customization files.
 
 - **Broad language / major-mode coverage** as PEL explicitly supports over 80
   programming, markup, hardware description and data description languages as
