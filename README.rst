@@ -65,7 +65,7 @@ or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 
 Essentially PEL extends plain vanilla Emacs and provides:
 
-- **Unified, Cohesive Command Interface**: with 729 additional key bound
+- **Unified, Cohesive Command Interface**: with 729 additional key-bound
   commands, several of which provide glue logic between features to increase
   cohesion and simplify usage.
 - **Extended Vanilla Emacs Key Bindings** keeps the vanilla Emacs key bindings
@@ -171,7 +171,7 @@ Essentially PEL extends plain vanilla Emacs and provides:
 
   - All are executed on GitHub CI on several supported Emacs versions on Linux
     and macOS environments (see `PEL's GitHub workflow build YAML file`_).
-  - Builds and test pass only when no error and no warning is detected.
+  - Builds and tests pass only when no error and no warning is detected.
   - PEL has a growing suite of ERT-based test code.
   - PEL has several specialized linting programs that parse elisp code and
     detect errors that would only be detected at run time under specific
@@ -310,7 +310,7 @@ Again any feedback is welcome. Thanks!
     In fast startup you can use all external packages you have already
     installed in normal startup mode but now Emacs starts much faster.  In
     fast startup PEL does not support download and installation of new
-    external packages but just return to normal mode to do so.  PEL provides 2
+    external packages but just return to normal mode to do so.  PEL provides two
     commands to switch modes:
 
     - The **pel-setup-fast** (``<f11> M-S f``) activates the fast startup
