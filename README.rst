@@ -54,12 +54,10 @@ PEL -- Pragmatic Emacs Leverage
 - Don't want to spend your time writing Emacs Lisp code? 😳 [#elispfun]_
 - Need to quickly access help now and later on specific topic? `🤔`_
 - Want to learn Emacs and try several built-in and external packages? `😇`_
-- Want a fast single process startup even with a large number of external packages installed?
+- Want to run independent Emacs sessions with **fast** startup even with a large number of external packages installed?
   `😃`_
-- You *also* want to `run Emacs daemon(s) with text and graphics clients`_ on
+- And *also* want to `run Emacs daemon(s) with text and graphics clients`_ on
   linux and macOS like a pro? `🥳`_
-- And you want **fast** independent Emacs process startup as well as
-  easy-to-use Emacs server? 😲
 
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
@@ -100,7 +98,7 @@ Essentially PEL extends plain vanilla Emacs and provides:
   configuration of external packages a through the various ``pel-use-...``
   customizable user-options.
 
-  - PEL provides integration glue that no individual package provides on its own.
+  - PEL provides coordination logic that no individual package provides on its own.
   - You can start small by activating only what you need and add more later,
     or remove something you no longer need, all done
     through customization; you do not need to write code for that.
@@ -168,9 +166,12 @@ Essentially PEL extends plain vanilla Emacs and provides:
   PEL provides commands to toggle from normal mode to fast startup and back.
 - **Extensive Code Validation** of all Emacs Lisp code through byte and native
   compilation controlled by GNU Make script which also performs **specialized
-  linting**, ERT-based **unit testing**.  All executed on GitHub CI on all supported
-  Emacs versions (26 to 30) on Linux and macOS environments.
-  Builds and test pass only when no error and no warning is detected.
+  linting**, ERT-based **unit testing**.
+
+  - All executed on GitHub CI on several supported Emacs versions on Linux
+    and macOS environments (see `PEL's GitHub workflow build YAML file`_).
+  - Builds and test pass only when no error and no warning is detected.
+
 - **Dynamic Feature Selection** allows selection of minor modes or command
   behaviour like selecting whether search command uses the standard iSearch,
   or features from `Anzu`_ or `Swiper`_.  Same for input and auto completion,
@@ -195,13 +196,21 @@ Essentially PEL extends plain vanilla Emacs and provides:
   tables serve as visual, topic-organized key-binding and feature reference
   sheets, an unusual approach in the Emacs ecosystem which complements Emacs
   excellent documentation system.
-  Use the `PEL Index PDF`_ to quickly locate a topic.
-  See the `➣ Extends Emacs Documentation`_ section for more information.
+
+  - Use the `PEL Index PDF`_ to quickly locate a topic.
+  - See the `Tramp PDF`_ to learn how to use and troubleshoot it.
+  - See the `Mode Line PDF`_ to see the command that describes Emacs cryptic
+    mode line process and buffer type.
+  - See the `➣ Extends Emacs Documentation`_ section for more information.
+
 - **Many Command Line Tools** comes with PEL: the `shell scripts`_ to start
   Emacs in various ways, build CTags tables, the `awk scripts`_ for text
   filtering and transformation.
 
-  - See other tools provided by my `USRHOME project`_.
+  - You may also be interested by my separate `USRHOME project`_ to setup
+    your POSIX compliant shells; it is not part nor required to use PEL but
+    provides several useful commands and setup shells for system that you can
+    access with Emacs Tramp.
 
 PEL keeps evolving.  I use it to  maintain my Emacs configuration on
 several macOS and Linux systems and also under Windows (whenever I have to use
@@ -862,6 +871,9 @@ Notes
 .. _ge command: https://github.com/pierre-rouleau/pel/blob/master/bin/ge
 .. _ec command: https://github.com/pierre-rouleau/pel/blob/master/bin/ec
 .. _POSIX-compliant shell scripts to launch Emacs: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
+.. _PEL's GitHub workflow build YAML file: https://github.com/pierre-rouleau/pel/blob/master/.github/workflows/build.yml
+.. _Tramp PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/tramp.pdf
+.. _Mode Line PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-line.pdf
 
 ..
    -----------------------------------------------------------------------------
