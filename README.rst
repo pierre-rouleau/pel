@@ -156,7 +156,7 @@ Essentially PEL extends plain vanilla Emacs and provides:
   - See the `PEL installation`_ for details.
 
 - **Fast Startup Mode**: Beyond general startup optimization, PEL provides
-  ahead-of-time byte and native compilation and physical directory
+  ahead-of-time byte/native compilation and physical directory
   restructuring system that squashes Emacs ``load-path``. This speeds up Emacs
   boot time even more, allowing:
 
@@ -169,7 +169,7 @@ Essentially PEL extends plain vanilla Emacs and provides:
   compilation controlled by GNU Make script which also performs **specialized
   linting**, ERT-based **unit testing**.
 
-  - All executed on GitHub CI on several supported Emacs versions on Linux
+  - All are executed on GitHub CI on several supported Emacs versions on Linux
     and macOS environments (see `PEL's GitHub workflow build YAML file`_).
   - Builds and test pass only when no error and no warning is detected.
   - PEL has a growing suite of ERT-based test code.
@@ -291,7 +291,7 @@ Again any feedback is welcome. Thanks!
       without native compilation).
 
 - You can **speed Emacs startup much more** with PEL `fast startup mode`_ command
-  (see also `⅀ Fast Startup PDF`_.
+  (see also `⅀ Fast Startup PDF`_).
   PEL supports 2 different Emacs startup operation modes:
 
   - The **normal startup** mode, using Emacs' standard package.el
