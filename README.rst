@@ -78,7 +78,11 @@ Essentially PEL extends plain vanilla Emacs and provides:
   - Attempt to provide globally unified keyboard experience for a large set of
     commands across multiple major modes.
 
-- **Useful Hydras** enhance typing further. See `➣ PEL Convenience Commands`_ below.
+- **Useful Hydras** enhance keyboard navigation and editing efficiency
+  further.
+
+  - See `➣ PEL Convenience Commands`_ below.
+
 - **Zero-Code Configuration** via customization that identifies used packages and
   their settings.
 
@@ -95,7 +99,7 @@ Essentially PEL extends plain vanilla Emacs and provides:
     information is stored in PEL's logic and inside your customization files.
 
 - **Feature Integration/Gradual Use** PEL controls installation and
-  configuration of external packages a through the various ``pel-use-...``
+  configuration of external packages through the various ``pel-use-...``
   customizable user-options.
 
   - PEL provides coordination logic that no individual package provides on its own.
@@ -144,20 +148,22 @@ Essentially PEL extends plain vanilla Emacs and provides:
   - and you can still install packages with Emacs package management commands,
     and manually configure them by adding extra logic in the PEL init.el file.
 
-- **Emacs Startup Optimization** with carefully crafted pre-compiled
-  byte/native compiled `early-init.el`_, `init.el` and control logic with
-  aggressive lazy-loading, deferred execution to maximize speed of independent
-  Emacs processes.
+- **Emacs Startup Optimization** with carefully crafted, byte/native compiled
+  `early-init.el`_, `init.el`_ and `control logic`_ with aggressive lazy-loading,
+  macro-based deferred execution to maximize speed of independent Emacs processes.
 
   - See the `PEL installation`_ for details.
 
 - **Fast Startup Mode**: Beyond general startup optimization, PEL provides
-  ahead-of-time pre-compilation and physical directory
-  restructuring system squashes Emacs ``load-path`` that speeds Emacs boot
-  time even more,
-  allowing sub 0.1 second startups on Linux
-  and under 0.2 seconds on macOS, even with over 300 packages.
+  ahead-of-time pre-compilation and physical directory restructuring system
+  that squashes Emacs ``load-path``. This speeds up Emacs boot time even more,
+  allowing:
+
+  - sub 0.1 second startups on Linux, and
+  - under 0.2 seconds on macOS, even with over 300 packages.
+
   PEL provides commands to toggle from normal mode to fast startup and back.
+
 - **Extensive Code Validation** of all Emacs Lisp code through byte and native
   compilation controlled by GNU Make script which also performs **specialized
   linting**, ERT-based **unit testing**.
@@ -874,6 +880,7 @@ Notes
 .. _PEL's GitHub workflow build YAML file: https://github.com/pierre-rouleau/pel/blob/master/.github/workflows/build.yml
 .. _Tramp PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/tramp.pdf
 .. _Mode Line PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-line.pdf
+.. _control logic: https://github.com/pierre-rouleau/pel/blob/master/pel_keys.el
 
 ..
    -----------------------------------------------------------------------------
