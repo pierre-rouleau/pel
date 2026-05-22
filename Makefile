@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-21 15:57:31 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-22 15:12:56 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -358,7 +358,7 @@ OTHER_FILES := README
 # - All test files are located inside the test sub-directory and have a name
 #   that matches: pel-*test.el.
 # - All ERT tests are performed by the bin/ert-test script.
-# - When a test passes bin/ert-test creates a file that has the same name
+# - When a test passes, bin/ert-test creates a file that has the same name
 #   as the file with the .test-passed suffix added to the file name.
 # - Those files are used as markers for make and prevent re-execution of
 #   the tests that have already passed.
