@@ -58,7 +58,7 @@ PEL -- Pragmatic Emacs Leverage
   `😃`_
 - You *also* want to `run Emacs daemon(s) with text and graphics clients`_ on
   linux and macOS like a pro? `🥳`_
-- And you want **real fast** independent Emacs process startup as well as
+- And you want **fast** independent Emacs process startup as well as
   easy-to-use Emacs server? 😲
 - And it's safe.  PEL relies on rock-solid built-in GNU Emacs mechanisms with
   standard Make-driven automation with clean and documented code.
@@ -201,8 +201,7 @@ Again any feedback is welcome. Thanks!
 --------------------
 
 ..
-  On a 2023 macOS Apple
-  Silicon computer PEL starts Emacs with **303 elpa packages and 108 other
+  On a 2023 Apple Silicon Mac Studio computer, PEL starts Emacs with **303 elpa packages and 108 other
   single file packages in 0.16 seconds** and **sub 0.1 seconds** on Linux!
 
 - With PEL, Emacs will start faster than with several other systems; PEL
@@ -388,7 +387,7 @@ Again any feedback is welcome. Thanks!
   prefix key and each supported major mode uses the ``<f12>`` key as the main
   prefix key.  For instance in a C buffer, use ``<f12> <f1>`` to access the
   C-specific PEL PDF, ``<f12> <f2>`` to access the PEL customization buffer to
-  activate C features, and ``f12> <f3>`` to the customization buffers
+  activate C features, and ``<f12> <f3>`` to the customization buffers
   controlling the major mode and related features.
 
   - Unlike default Emacs behaviour, PEL can open customization buffer for a
