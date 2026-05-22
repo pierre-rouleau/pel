@@ -1,0 +1,60 @@
+# YAML FILE: build-windows.yml
+#
+# Purpose   : Manual Windows build of PEL code (byte-compilation only).
+# Created   : 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+#
+# Notes:
+# - This workflow is triggered only manually (workflow_dispatch).
+# - It uses jcs090218/setup-emacs which supports Linux, macOS, and Windows
+#   from a single action, unlike purcell/setup-emacs which relies on Nix
+#   and does not support Windows.
+# - The run step explicitly uses bash (Git Bash on Windows) so that GNU Make
+#   shell recipes using POSIX commands (mkdir, cp, etc.) work correctly.
+# - Only 'make compile-only' is run: this byte-compiles all PEL Emacs Lisp
+#   files but skips the ERT test runner (bin/ert-test), whose Windows
+#   compatibility has not yet been verified.  Tests can be enabled later.
+
+name: Build (Windows - manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      emacs_version:
+        description: 'Emacs version to test (e.g. 28.1, 29.4, 30.1)'
+        required: false
+        default: '30.1'
+
+jobs:
+  build-windows:
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        emacs_version:
+          - '28.1'
+          - '29.4'
+          - '30.1'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Emacs ${{ matrix.emacs_version }}
+        uses: jcs090218/setup-emacs@master
+        with:
+          version: ${{ matrix.emacs_version }}
+
+      - name: Verify Emacs
+        shell: bash
+        run: emacs --version
+
+      - name: Run build (compile only)
+        shell: bash
+        env:
+          EMACS_INIT: ${{ github.workspace }}/ci/init.el
+        run: make compile-only
+
+# ----------------------------------------------------------------------------
