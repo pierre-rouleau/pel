@@ -92,7 +92,7 @@ Write-Host "+ $emacsBinary $($emacsArgs -join ' ')"
 
 # Set verbose env var for the child process
 $env:EMACS_TEST_VERBOSE = '1'
-& $emacsBinary `@emacsArgs`
+& $emacsBinary @emacsArgs
 $exitCode = $LASTEXITCODE
 Remove-Item Env:\EMACS_TEST_VERBOSE -ErrorAction SilentlyContinue
 

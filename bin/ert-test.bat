@@ -1,4 +1,4 @@
-`@echo` off
+@echo off
 :: BAT FILE: ert-test.bat
 ::
 :: Purpose   : Run an Ert test  (Windows CMD wrapper for ert-test.ps1)
