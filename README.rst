@@ -135,13 +135,6 @@ Essentially PEL extends plain vanilla Emacs and provides:
 
     - No compilation error or warning is allowed.
 
-  - PEL has an increasing amount of Ert based test code.
-  - PEL has several specialized linting programs that parse elisp code and
-    detect errors that would only be detected at run time under specific
-    conditions.
-  - All PEL code is built by a GNU Make script that I use in my systems and on
-    GitHub CI systems under all platforms and supported Emacs versions.
-
 - **Integrates external packages, control their installation** by
   customization. Supports 377 external packages from multiple sources:
 
@@ -158,7 +151,8 @@ Essentially PEL extends plain vanilla Emacs and provides:
 
   - See the `PEL installation`_ for details.
 
-- **Fast Startup Mode**: ahead-of-time pre-compilation and physical directory
+- **Fast Startup Mode**: Beyond general startup optimization, PEL provides
+  ahead-of-time pre-compilation and physical directory
   restructuring system squashes Emacs ``load-path`` that speeds Emacs boot
   time even more,
   allowing sub 0.1 second startups on Linux
@@ -171,6 +165,12 @@ Essentially PEL extends plain vanilla Emacs and provides:
   - All executed on GitHub CI on several supported Emacs versions on Linux
     and macOS environments (see `PEL's GitHub workflow build YAML file`_).
   - Builds and test pass only when no error and no warning is detected.
+  - PEL has an increasing amount of Ert based test code.
+  - PEL has several specialized linting programs that parse elisp code and
+    detect errors that would only be detected at run time under specific
+    conditions.
+  - All PEL code is built by a GNU Make script that I use in my systems and on
+    GitHub CI systems under all platforms and supported Emacs versions.
 
 - **Dynamic Feature Selection** allows selection of minor modes or command
   behaviour like selecting whether search command uses the standard iSearch,
@@ -398,7 +398,7 @@ Again any feedback is welcome. Thanks!
           # packages activated   : 9
           # packages selected    : 66
 
-- PEL supports Emacs 26 and later.
+- PEL supports Emacs 26.3 and later.
 
   - For Emacs 27 and later the ``pel-early-init-template`` user-option (which
     defaults to `example/init/early-init.el`_) allows you to identify a
