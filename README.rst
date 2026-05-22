@@ -116,7 +116,7 @@ Essentially PEL extends plain vanilla Emacs and provides:
     creation like C, C++ and Erlang for example.
   - PEL provides copyright notice and time stamp management.
   - To help you edit files with narrow indentation schemes such as Dart and Gleam
-    files that must use a 2-space indent.  PEL integrates my stand-alone
+    files that must use a 2-space indent, PEL integrates my stand-alone
     `tbindent`_ package that provides a minor mode that automatically converts
     the indentation to tabs-based indentation in the buffer so you can see the
     code better the way *you* want 😎.
@@ -136,8 +136,9 @@ Essentially PEL extends plain vanilla Emacs and provides:
 
   - All PEL Emacs Lisp code (including the early-init.el and init.el) is byte and
     native compiled on all supported Emacs versions on macOS and Linux, and
-    no compilation error or warning is allowed.  There is currently no Windows
-    environment in the CI build though.
+    no compilation error or warning is allowed.  Note that there is currently
+    no Windows environment in the CI build; I have not found one that is light
+    enough to run for this open-source project.
 
 - **Integrates external packages, control their installation** by
   customization. Supports 377 external packages from multiple sources:
@@ -323,7 +324,7 @@ Again any feedback is welcome. Thanks!
   - With PEL you can see a quick report with relevant information by executing
     the `pel-emacs-load-stats` command.
 
-    - On a 2023 macStudio with Geekbench 6.7.1 rate of 2490 single-code/13076
+    - On a 2023 macStudio with Geekbench 6.7.1 rate of 2490 single-core/13076
       multicore, with **303 elpa packages and 108 other non-elpa single file
       packages** installed from their repos, Emacs 30.2 takes about 0.67 seconds to
       start in normal mode but takes just about **0.17 seconds** in terminal mode
@@ -734,7 +735,7 @@ Notes
               in the same directory can be bundled.
 
             With PEL it's possible to reduce this further by removing packages
-            you do not need, without loosing their configuration:
+            you do not need, without losing their configuration:
 
             - go to normal startup mode,
             - disable un-required packages by setting their corresponding
