@@ -67,15 +67,15 @@ Essentially PEL extends plain vanilla Emacs and provides:
 - **Unified, Cohesive Command Interface**: with 729 additional key bound
   commands, several of which provide glue logic between features to increase
   cohesion and simplify usage.
-- **Extended Vanilla Emacs Key Bindings** keeps the vanilla Emacs key binding
+- **Extended Vanilla Emacs Key Bindings** keeps the vanilla Emacs key bindings
   with a large set of extra key bindings using function key prefixes and
   instructions on how to activate them on macOS and several Linux distros.
 
   - Supports Emacs in terminal mode, providing terminal key bindings for
     commands that normally do not have them.
-  - Support Emacs in graphical mode with some extensions specific to macOS and
+  - Supports Emacs in graphical mode with some extensions specific to macOS and
     Linux.
-  - Attempt to provide globally unified keyboard experience for a large set of
+  - Attempts to provide globally unified keyboard experience for a large set of
     commands across multiple major modes.
 
 - **Useful Hydras** enhance keyboard navigation and editing efficiency
