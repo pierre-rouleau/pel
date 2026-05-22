@@ -156,9 +156,9 @@ Essentially PEL extends plain vanilla Emacs and provides:
   - See the `PEL installation`_ for details.
 
 - **Fast Startup Mode**: Beyond general startup optimization, PEL provides
-  ahead-of-time pre-compilation and physical directory restructuring system
-  that squashes Emacs ``load-path``. This speeds up Emacs boot time even more,
-  allowing:
+  ahead-of-time byte and native compilation and physical directory
+  restructuring system that squashes Emacs ``load-path``. This speeds up Emacs
+  boot time even more, allowing:
 
   - sub 0.1 second startups on Linux, and
   - under 0.2 seconds on macOS, even with over 300 packages.
@@ -172,7 +172,7 @@ Essentially PEL extends plain vanilla Emacs and provides:
   - All executed on GitHub CI on several supported Emacs versions on Linux
     and macOS environments (see `PEL's GitHub workflow build YAML file`_).
   - Builds and test pass only when no error and no warning is detected.
-  - PEL has an increasing amount of ERT-based test code.
+  - PEL has a growing suite of ERT-based test code.
   - PEL has several specialized linting programs that parse elisp code and
     detect errors that would only be detected at run time under specific
     conditions.
@@ -201,7 +201,7 @@ Essentially PEL extends plain vanilla Emacs and provides:
 
 - **221 Extensive Topic-organized Reference PDFs** The heavily hyperlinked
   tables serve as visual, topic-organized key-binding and feature reference
-  sheets, an unusual approach in the Emacs ecosystem which complements Emacs
+  sheets, an unusual approach in the Emacs ecosystem which complements Emacs'
   excellent documentation system.
 
   - Use the `PEL Index PDF`_ to quickly locate a topic.
@@ -291,7 +291,7 @@ Again any feedback is welcome. Thanks!
       without native compilation).
 
 - You can **speed Emacs startup much more** with PEL `fast startup mode`_ command
-  (see also `⅀ Fast Startup PDF`_ .
+  (see also `⅀ Fast Startup PDF`_.
   PEL supports 2 different Emacs startup operation modes:
 
   - The **normal startup** mode, using Emacs' standard package.el
