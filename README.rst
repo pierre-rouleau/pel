@@ -596,16 +596,10 @@ packages, etc.
   - `How to use Emacs stand-alone processes, daemon and clients`_
   - `Install the Emacs launcher shortcut scripts`_
 
-  ..
-     .. warning:: GitHub presently fails to render several reStructuredText files
-                  to HTML.  They are currently working to resolve `this issue`_.
-
-   .. _this issue: https://github.com/orgs/community/discussions/86715
-
 Key Strengths of PEL's PDF Documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Elite Information Density**: The index has dense, easy-to-use, visual
+**High Information Density**: The index has dense, easy-to-use, visual
 organization. Instead of making you scroll through a 10,000-word webpage,
 everything—from core startup mechanics to granular language support for dozens
 of languages—is mapped onto a single, scannable coordinate grid.
@@ -622,10 +616,10 @@ used in the current buffer with ``<f12> <f1>``.
 
 **Massive Technical Breadth**: The documentation charts cover everything from
 low-level UNIX tools (Make, CMake, Ninja) to lightweight markups, hardware
-description languages, and over 65 distinct programming languages.
+description software programming languages.
 Emacs is like a full operating system, PEL treats it like that.
 
-The PEL index PDF and all other PDFs showcases a unique approach to managing
+The PEL index and all other PDFs showcase a unique approach to managing
 a sprawling configuration ecosystem: using heavily cross-referenced, visually
 dense PDF maps with hyperlinks to relevant documents.
 
