@@ -60,8 +60,6 @@ PEL -- Pragmatic Emacs Leverage
   linux and macOS like a pro? `🥳`_
 - And you want **fast** independent Emacs process startup as well as
   easy-to-use Emacs server? 😲
-- And it's safe.  PEL relies on rock-solid built-in GNU Emacs mechanisms with
-  standard Make-driven automation with clean and documented code.
 
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
@@ -97,6 +95,14 @@ Essentially PEL extends plain vanilla Emacs and provides:
     to easily keep track of changes and share them across machines.
   - No ``.emacs`` bankruptcy risk: your init.el file won't grow over time as
     information is stored in PEL's logic and inside your customization files.
+
+- **Feature Integration/Gradual Use** PEL controls installation and
+  configuration of external packages a through the various ``pel-use-...``
+  customizable user-options.  PEL provides glue logic between various packages
+  in ways that external packages can't do alone (and would require more
+  programming on your part).  You can start small by activating only what you
+  need and add more later or remove something you no longer need, all done
+  through customization; you do not need to write code for that.
 
 - **Broad language / major-mode coverage** as PEL explicitly supports over 80
   programming, markup, hardware description and data description languages as
@@ -134,10 +140,11 @@ Essentially PEL extends plain vanilla Emacs and provides:
   - PEL has several specialized linting programs that parse elisp code and
     detect errors that would only be detected at run time under specific
     conditions.
-  - All PEL code is further scrutinized by the excellent CodeRabbit AI agent.
+  - All PEL code is built by a GNU Make script that I use in my systems and on
+    GitHub CI systems under all platforms and supported Emacs versions.
 
 - **Integrates external packages, control their installation** by
-  customization. Currently supports 377 external packages from multiple sources:
+  customization. Supports 377 external packages from multiple sources:
 
   - `GNU Elpa`_ and `MELPA`_ elpa-compliant sites, `quelpa`_ installs from
     source,
@@ -183,11 +190,6 @@ Essentially PEL extends plain vanilla Emacs and provides:
   - Also see the document titled `Using tree-sitter with Emacs and PEL`_ which
     describes how to setup your environment to use the tree-sitter based modes,
 
-- **Feature Integration** between built-in Emacs features and external
-  packages optionally activated by customization via the ``pel-use-....``
-  user-options. This increases cohesion between those features in ways that
-  external packages can't do alone (and would require more programming on your
-  part).
 - **221 Extensive Topic-organized Reference PDFs** The heavily hyperlinked
   tables serve as visual, topic-organized key-binding and feature reference
   sheets, an unusual approach in the Emacs ecosystem which complements Emacs
