@@ -90,7 +90,7 @@ Essentially PEL extends plain vanilla Emacs and provides:
   - No Emacs Lisp coding required — all PEL and Emacs features, package
     activation, and configuration are driven entirely by Emacs' built-in
     customization UI.
-  - Allow independent configuration of terminal-based and GUI-based Emacs
+  - Allows independent configuration of terminal-based and GUI-based Emacs
     customization to prevent slowing down terminal mode with logic that is only
     available in graphical mode.
   - This makes it trivial to maintain various specialized workspace setups.
@@ -116,7 +116,7 @@ Essentially PEL extends plain vanilla Emacs and provides:
     creation like C, C++ and Erlang for example.
   - PEL provides copyright notice and time stamp management.
   - To help you edit files with narrow indentation schemes such as Dart and Gleam
-    files that must use a 2-space indent; PEL integrates my stand-alone
+    files that must use a 2-space indent.  PEL integrates my stand-alone
     `tbindent`_ package that provides a minor mode that automatically converts
     the indentation to tabs-based indentation in the buffer so you can see the
     code better the way *you* want 😎.
@@ -136,7 +136,8 @@ Essentially PEL extends plain vanilla Emacs and provides:
 
   - All PEL Emacs Lisp code (including the early-init.el and init.el) is byte and
     native compiled on all supported Emacs versions on macOS and Linux, and
-    no compilation error or warning is allowed.
+    no compilation error or warning is allowed.  There is currently no Windows
+    environment in the CI build though.
 
 - **Integrates external packages, control their installation** by
   customization. Supports 377 external packages from multiple sources:
@@ -170,7 +171,7 @@ Essentially PEL extends plain vanilla Emacs and provides:
   - All executed on GitHub CI on several supported Emacs versions on Linux
     and macOS environments (see `PEL's GitHub workflow build YAML file`_).
   - Builds and test pass only when no error and no warning is detected.
-  - PEL has an increasing amount of Ert based test code.
+  - PEL has an increasing amount of ERT-based test code.
   - PEL has several specialized linting programs that parse elisp code and
     detect errors that would only be detected at run time under specific
     conditions.
