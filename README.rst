@@ -616,8 +616,8 @@ used in the current buffer with ``<f12> <f1>``.
 
 **Massive Technical Breadth**: The documentation charts cover everything from
 low-level UNIX tools (Make, CMake, Ninja) to lightweight markups, hardware
-description software programming languages.
-Emacs is like a full operating system, PEL treats it like that.
+description and software programming languages.
+Emacs is like a full operating system; PEL treats it like that.
 
 The PEL index and all other PDFs showcase a unique approach to managing
 a sprawling configuration ecosystem: using heavily cross-referenced, visually
