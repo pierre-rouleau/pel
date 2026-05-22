@@ -309,8 +309,10 @@ Again any feedback is welcome. Thanks!
 
     In fast startup you can use all external packages you have already
     installed in normal startup mode but now Emacs starts much faster.  In
-    fast startup PEL does not support download and installation of new
-    external packages, but you can just return to normal mode to do so.
+    fast startup PEL does not support its normal download and installation
+    external packages via customization, you must return to normal mode to do
+    so.
+
     PEL provides two commands to switch modes:
 
     - The **pel-setup-fast** (``<f11> M-S f``) activates the fast startup
@@ -320,6 +322,16 @@ Again any feedback is welcome. Thanks!
     - The **pel-setup-normal** (``<f11> M-S n``) restores the normal Emacs
       setup with package management capabilities and PEL's automatic package
       installation via customization.
+
+    Note that while PEL operating in fast startup mode still supports
+    installations of packages via Emacs package manager commands; they will be
+    installed in the elpa-reduced directory in the standard way.  That will
+    unfortunately increase Emacs' startup time, but it will work.  In all
+    cases it is best to return to normal mode when installing new packages and
+    keep the fast startup mode as efficient as possible.  It's also best to
+    install packages by customizing PEL user-options for the packages that PEL
+    already supports.  Please do not hesitate to request for the inclusion of
+    new packages.
 
   - With PEL you can see a quick report with relevant information by executing
     the ``pel-emacs-load-stats`` command.
