@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-23 08:38:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-23 14:18:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -320,6 +320,75 @@ slash) or in file name (without the terminating slash) format."
       (copy-directory (directory-file-name source)
                       (directory-file-name dest))
     (advice-remove 'copy-file #'pel-copy-only-file)))
+
+(defun pel--other-emacs-pids ()
+  "Return a list of PIDs of other Emacs processes currently running.
+
+Detects:
+- Terminal/CLI Emacs on Linux and macOS  (pgrep -xi emacs)
+- macOS GUI Emacs (e.g. Emacs-arm64-11 inside Emacs.app) (pgrep -f path)
+- Windows Emacs  (tasklist /FI IMAGENAME eq emacs.exe)
+
+Returns nil when no other Emacs processes are found."
+  (let ((current (emacs-pid))
+        pids)
+    (cond
+     ;; -- Windows
+     ;; `pgrep' is not available; use the built-in `tasklist' command.
+     ;; Output with /FO CSV /NH looks like:
+     ;;   \"emacs.exe\",\"12345\",\"Console\",\"1\",\"25,000 K\"
+     ;; `runemacs.exe' is a thin launcher that exits immediately once it
+     ;; spawns `emacs.exe', so we only need to query for emacs.exe.
+     ((eq system-type 'windows-nt)
+      (with-temp-buffer
+        (call-process "tasklist" nil t nil
+                      "/FI" "IMAGENAME eq emacs.exe"
+                      "/FO" "CSV" "/NH")
+        (goto-char (point-min))
+        (while (re-search-forward
+                "^\"[Ee]macs\\.exe\",\"\\([0-9]+\\)\"" nil t)
+          (let ((pid (string-to-number (match-string 1))))
+            (unless (or (= pid current) (memq pid pids))
+              (push pid pids))))))
+     ;;
+     ;; -- Unix / Linux / macOS
+     ;; `pgrep' must be present; bail out silently if it is not.
+     ((executable-find "pgrep")
+      ;; Pass 1: exact, case-insensitive name match — catches all CLI Emacs
+      ;; instances on both Linux and macOS.
+      (with-temp-buffer
+        (call-process "pgrep" nil t nil "-xi" "emacs")
+        (goto-char (point-min))
+        (while (re-search-forward "^\\([0-9]+\\)" nil t)
+          (let ((pid (string-to-number (match-string 1))))
+            (unless (or (= pid current) (memq pid pids))
+              (push pid pids)))))
+      ;; Pass 2 (macOS only): match by full command-line path to catch GUI
+      ;; Emacs whose binary name is e.g. "Emacs-arm64-11", not "emacs".
+      ;; -f matches the complete argv[0] path, not just the process name.
+      (when (eq system-type 'darwin)
+        (with-temp-buffer
+          (call-process "pgrep" nil t nil "-f" "Emacs.app/Contents/MacOS")
+          (goto-char (point-min))
+          (while (re-search-forward "^\\([0-9]+\\)" nil t)
+            (let ((pid (string-to-number (match-string 1))))
+              (unless (or (= pid current) (memq pid pids))
+                (push pid pids)))))))
+     ;;
+     ;; -- Unix / Linux / macOS — pgrep MISSING
+     ;; Without pgrep, concurrent Emacs processes cannot be detected.
+     ;; Issue a visible warning so the user knows the guard is inactive.
+     (t
+      (display-warning
+       'pel-setup
+       "pel--other-emacs-pids: `pgrep' was not found on this system!
+Concurrent Emacs process detection is unavailable.
+PEL cannot warn you if other Emacs processes are running in fast startup
+mode when you copy packages to elpa-complete.
+Please install `pgrep' (typically part of the `procps' or
+`proctools' package) and restart Emacs."
+       :error)))
+    (nreverse pids)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Modification of init.el and early-init.el files
@@ -1304,6 +1373,106 @@ NEW-BUNDLE-DP is the name of the new Elpa bundle directory."
 The tag file name is `pel-fast-startup-installed-tag'."
   (expand-file-name pel-fast-startup-installed-tag elpa-reduced-dp))
 
+(defun pel--fast-startup-straggler-dirs (elpa-reduced-dp)
+  "Return straggler package directories in ELPA-REDUCED-DP.
+
+A straggler is a subdirectory whose modification time is strictly newer
+than the `pel-fast-startup-installed-tag' tag file written at the end of
+the last `pel--setup-fast' run.  Such directories were installed via
+\\[list-packages] during a fast-startup session and have not yet been
+migrated to elpa-complete.
+
+Excluded from the result:
+- \".\" and \"..\" pseudo-entries
+- dotfiles (the tag file itself uses a leading dot)
+- directories whose name starts with \"pel-bundle-\"
+
+Returns a list of absolute paths, or nil when the tag file is absent,
+ELPA-REDUCED-DP is not a directory, or no stragglers are found."
+  (let ((tag-fpath (pel--fast-startup-tag-fpath elpa-reduced-dp)))
+    (when (and (file-exists-p    tag-fpath)
+               (file-directory-p elpa-reduced-dp))
+      (let ((tag-mtime (nth 5 (file-attributes tag-fpath))))
+        (seq-filter
+         (lambda (entry)
+           (let ((basename (file-name-nondirectory entry)))
+             (and (not (member basename '("." "..")))
+                  (not (string-prefix-p "." basename))
+                  (not (string-prefix-p "pel-bundle-" basename))
+                  (file-directory-p entry)
+                  (time-less-p tag-mtime
+                               (nth 5 (file-attributes entry))))))
+         (directory-files elpa-reduced-dp t))))))
+
+(defun pel--check-fast-startup-stragglers (elpa-reduced-dp)
+  "Abort fast startup activation when ELPA-REDUCED-DP holds un-migrated packages.
+
+Calls `pel--fast-startup-straggler-dirs' to find package directories that
+were installed via \\[list-packages] during the last fast-startup session
+and have not yet been migrated to elpa-complete.
+
+Raises a `user-error' whose message depends on whether other Emacs processes
+are currently running (detected via `pel--other-emacs-pids'):
+
+- No other Emacs processes: the directories are safe to delete manually.
+  The error lists them and tells the user to delete them from
+  ELPA-REDUCED-DP (or run \\[pel-setup-normal], which migrates them
+  automatically) before retrying `pel-setup-fast'.
+
+- Other Emacs processes running: those processes may still be using the
+  straggler directories.  The error tells the user to exit all other
+  Emacs sessions first, then delete the listed directories.
+
+This function is a no-op when `pel--fast-startup-straggler-dirs' returns nil.
+
+Called by `pel--setup-fast' immediately before STEP 4 deletes elpa-reduced."
+  (let ((stragglers (pel--fast-startup-straggler-dirs elpa-reduced-dp)))
+    (when stragglers
+      (let ((other-pids (pel--other-emacs-pids)))
+        (if other-pids
+            (user-error "\
+Cannot activate fast startup: the following package director%s in
+  %s
+%s installed during a previous fast-startup session and %s not yet been
+migrated to elpa-complete.
+
+Other Emacs process%s %s currently running (PIDs: %s).
+Exit all other Emacs sessions first, then delete the director%s listed
+below from elpa-reduced before retrying pel-setup-fast:
+
+  %s"
+                        (if (cdr stragglers) "ies" "y")
+                        elpa-reduced-dp
+                        (if (cdr stragglers) "were" "was")
+                        (if (cdr stragglers) "have" "has")
+                        (if (cdr other-pids) "es" "")
+                        (if (cdr other-pids) "are" "is")
+                        (mapconcat #'number-to-string other-pids ", ")
+                        (if (cdr stragglers) "ies" "y")
+                        (mapconcat #'file-name-nondirectory
+                                   stragglers
+                                   "\n  "))
+          ;; no other Emacs processes running
+          (user-error "\
+Cannot activate fast startup: the following package director%s in
+  %s
+%s installed during a previous fast-startup session and %s not yet been
+migrated to elpa-complete.
+
+No other Emacs processes are running.  Please delete the director%s listed
+below from elpa-reduced (or run M-x pel-setup-normal first, which migrates
+them automatically) before retrying pel-setup-fast:
+
+  %s"
+                      (if (cdr stragglers) "ies" "y")
+                      elpa-reduced-dp
+                      (if (cdr stragglers) "were" "was")
+                      (if (cdr stragglers) "have" "has")
+                      (if (cdr stragglers) "ies" "y")
+                      (mapconcat #'file-name-nondirectory
+                                 stragglers
+                                 "\n  ")))))))
+
 (defun pel--setup-fast (for-graphics)
   "Prepare the elpa directories and code to speed up Emacs startup.
 
@@ -1366,6 +1535,12 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
           ;; pel-bundle and the multi-level packages that could not be
           ;; bundled in the previous execution of `pel-setup-fast'.
           (when (file-exists-p elpa-reduced-dp)
+            ;;
+            ;; Guard: refuse to delete and rebuild elpa-reduced if packages
+            ;; installed during a prior fast-startup session have not yet been
+            ;; migrated.  Raises user-error with remediation instructions.
+            (pel--check-fast-startup-stragglers elpa-reduced-dp)
+            ;;
             (delete-directory elpa-reduced-dp :recursive)
             (pel-push-fmt actions "Deleted old directory %s" elpa-reduced-dp))
           (pel+= step-count 1)          ; STEP 4
@@ -1562,24 +1737,35 @@ Failed fast startup setup for %s after %d of %d steps: %s
       (setq pel-fast-startup-setup-changed t)))))
 
 ;; --
+
 (defun pel--migrate-fast-startup-packages (for-graphics)
   "Migrate packages installed during fast startup to elpa-complete.
 
 While PEL is in fast startup mode the `elpa' symlink points to
 `elpa-reduced', so any package installed via \\[list-packages] during
-that session lands in `elpa-reduced'.  This function detects those packages
-by finding subdirectories of `elpa-reduced' whose modification time is
-newer than the `pel-fast-startup-installed-tag' tag file, and moves them
-into `elpa-complete' so they become fully available once normal mode is
-restored.
+that session lands in `elpa-reduced'.  This function calls
+`pel--fast-startup-straggler-dirs' to detect those packages and migrates
+them to `elpa-complete' before the elpa symlink is flipped back.
+
+Migration strategy depends on whether other Emacs processes are running
+(detected via `pel--other-emacs-pids'):
+
+- No other Emacs processes: the directories are MOVED (renamed) into
+  `elpa-complete' silently.  This is safe because no other process is
+  using `elpa-reduced'.
+
+- Other Emacs processes running: the directories are COPIED into
+  `elpa-complete' so that the running processes can continue to use the
+  originals in `elpa-reduced'.  A `display-warning' at `:warning' level
+  lists the directories left behind in `elpa-reduced' and reminds the
+  user to remove them once all Emacs sessions have been closed.
 
 FOR-GRAPHICS is non-nil when handling the graphics-specific directory pair
 \(elpa-reduced-graphics / elpa-complete-graphics).
 
-This function is a no-op when:
-- the tag file does not exist (fast-startup was never activated, or was
-  activated with an older PEL version that did not create the tag), or
-- no package directory newer than the tag file is found.
+Return t when it is safe to proceed with switching to normal mode, nil if
+a migration error occurred that left the directories in an inconsistent
+state.  When no stragglers are found the function is a no-op and returns t.
 
 Called by `pel--setup-normal' before the elpa symlink is flipped."
   (let* ((used-elpa-dirpath (pel-elpa-dirpath 'switch-dir))
@@ -1587,47 +1773,74 @@ Called by `pel--setup-normal' before the elpa symlink is flipped."
          (elpa-sibling (lambda (dp) (pel-sibling-dirpath used-elpa-dirpath dp)))
          (elpa-reduced-dp  (λc adj (λc elpa-sibling "elpa-reduced")))
          (elpa-complete-dp (λc adj (λc elpa-sibling "elpa-complete")))
-         (tag-fpath        (pel--fast-startup-tag-fpath elpa-reduced-dp)))
-    (when (and (file-exists-p   tag-fpath)
-               (file-directory-p elpa-reduced-dp)
-               (file-directory-p elpa-complete-dp))
-      (let ((tag-mtime  (nth 5 (file-attributes tag-fpath)))
-            (moved-pkgs nil))
-        (dolist (entry (directory-files elpa-reduced-dp t))
-          (let ((basename (file-name-nondirectory entry)))
-            ;; Exclude:
-            ;;  - "." and ".." pseudo-entries
-            ;;  - all dotfiles (the tag file itself uses a leading dot)
-            ;;  - pel-bundle-* pseudo-package directories (integral part of
-            ;;    the elpa-reduced layout, must not be migrated)
-            (unless (or (member basename '("." ".."))
-                        (string-prefix-p "." basename)
-                        (string-prefix-p "pel-bundle-" basename))
-              (when (and (file-directory-p entry)
-                         (time-less-p tag-mtime
-                                      (nth 5 (file-attributes entry))))
-                (let ((dest (expand-file-name basename elpa-complete-dp)))
-                  (if (file-exists-p dest)
-                      ;; Destination already exists — warn but do not
-                      ;; overwrite; the user can reconcile manually.
-                      (display-warning
-                       'pel-setup
-                       (format "pel--migrate-fast-startup-packages: \
+         (candidates       (pel--fast-startup-straggler-dirs elpa-reduced-dp)))
+    (if (not candidates)
+        t                               ; nothing to migrate — safe to proceed
+      (when (file-directory-p elpa-complete-dp)
+        (let* ((other-pids   (pel--other-emacs-pids))
+               (migrated-pkgs nil)
+               (leftover-pkgs nil)
+               (error-pkgs    nil))
+          (dolist (entry candidates)
+            (let* ((basename (file-name-nondirectory entry))
+                   (dest     (expand-file-name basename elpa-complete-dp)))
+              (if (file-exists-p dest)
+                  ;; Destination already exists — warn and skip; the package
+                  ;; is already present in elpa-complete so this is non-fatal.
+                  (display-warning
+                   'pel-setup
+                   (format "pel--migrate-fast-startup-packages: \
 skipped %s — directory already exists in %s."
-                               basename elpa-complete-dp)
-                       :warning)
-                    (rename-file entry dest)
-                    (push basename moved-pkgs)))))))
-        (if moved-pkgs
-            (message
-             "PEL setup: migrated %d package(s) installed during \
-fast startup to elpa-complete: %s"
-             (length moved-pkgs)
-             (mapconcat #'identity (nreverse moved-pkgs) ", "))
-          (message
-           "PEL setup: no packages installed during fast startup \
-were found to migrate."))))))
+                           basename elpa-complete-dp)
+                   :warning)
+                (condition-case err
+                    (if other-pids
+                        ;; Other Emacs processes running: COPY to preserve
+                        ;; originals for those processes.
+                        (progn
+                          (pel-copy-directory entry dest)
+                          (push basename migrated-pkgs)
+                          (push basename leftover-pkgs))
+                      ;; No other Emacs processes: MOVE silently.
+                      (rename-file entry dest)
+                      (push basename migrated-pkgs))
+                  (error
+                   (display-warning
+                    'pel-setup
+                    (format "pel--migrate-fast-startup-packages: \
+failed to migrate %s: %s"
+                            basename (error-message-string err))
+                    :error)
+                   (push basename error-pkgs))))))
+          ;; Warn about copies left behind in elpa-reduced.
+          (when leftover-pkgs
+            (display-warning
+             'pel-setup
+             (format "\
+The following package director%s %s copied (not moved) into elpa-complete
+because other Emacs process%s %s still running (PIDs: %s).
 
+The original%s remain in:
+  %s
+
+  %s
+
+Please remove %s from elpa-reduced once all currently running Emacs
+sessions have been closed.  Leaving %s in elpa-reduced slightly increases
+the load-path length and reduces PEL fast startup efficiency."
+                     (if (cdr leftover-pkgs) "ies" "y")
+                     (if (cdr leftover-pkgs) "were" "was")
+                     (if (cdr other-pids) "es" "")
+                     (if (cdr other-pids) "are" "is")
+                     (mapconcat #'number-to-string other-pids ", ")
+                     (if (cdr leftover-pkgs) "s" "")
+                     elpa-reduced-dp
+                     (mapconcat #'identity (nreverse leftover-pkgs) "\n  ")
+                     (if (cdr leftover-pkgs) "them" "it")
+                     (if (cdr leftover-pkgs) "them" "it"))
+             :warning))
+          ;; Return t only when no migration errors occurred.
+          (null error-pkgs))))))
 
 (defun pel--setup-normal (for-graphics)
   "Restore normal PEL/Emacs operation mode.
@@ -1638,9 +1851,16 @@ the file used by Emacs running in terminal (TTY) mode.  It is nil when there
 is only one or when its for the terminal (TTY) mode."
   ;; Before flipping the elpa symlink back, check for packages that were
   ;; installed via M-x list-packages while PEL was in fast startup mode.
-  ;; Those packages landed in elpa-reduced and must be moved to elpa-complete
-  ;; so they are available in normal mode.
-  (pel--migrate-fast-startup-packages for-graphics)
+  ;; Those packages landed in elpa-reduced and must be migrated to
+  ;; elpa-complete so they are available in normal mode.
+  ;; Abort if migration signals that the directories are in an inconsistent
+  ;; state (e.g. a copy/move error occurred for one or more packages).
+  (unless (pel--migrate-fast-startup-packages for-graphics)
+    (user-error "\
+PEL setup-normal aborted: one or more packages could not be migrated from
+elpa-reduced to elpa-complete.  Check the *Warnings* buffer for details.
+Correct the problem manually before retrying M-x pel-setup-normal."))
+  ;; All is OK: proceed
   ;;
   ;; PEL is currently running in fast-startup mode. Switch back to normal.
   ;; Restore PEL's ability to download and install external packages
