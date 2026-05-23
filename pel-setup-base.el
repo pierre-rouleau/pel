@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 17:16:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-23 08:13:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -263,6 +263,21 @@ Raise error describing the problem if there is one."
                                        user-emacs-directory)
   "Name of code file that must be executed by fast-startup in init/early-init.
 When fast startup is not activated, this file must be deleted.")
+
+(defconst pel-fast-startup-installed-tag ".pel-fast-startup-installed-tag"
+  "Basename of the elpa-reduced tag file.
+
+This file is  written inside elpa-reduced at the end of a successful
+`pel--setup-fast' run.
+
+The presence of this file — and its modification time — allows
+`pel--setup-normal' to detect and migrate any Elpa packages that were
+installed via \\[list-packages] while PEL was running in fast startup
+mode, moving them from elpa-reduced to elpa-complete before the symlink
+is flipped back.
+
+The file is intentionally a dotfile so it is ignored by package.el and
+excluded from the migration logic automatically.")
 
 (defvar pel-fast-startup-setup-changed nil
   "Identifies that PEL setup has changed.

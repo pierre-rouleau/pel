@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-19 22:17:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-23 08:38:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1299,6 +1299,11 @@ NEW-BUNDLE-DP is the name of the new Elpa bundle directory."
 (declare-function native-compile-async "comp-run" (files &optional recursively
                                                          load selector))
 
+(defun pel--fast-startup-tag-fpath (elpa-reduced-dp)
+  "Return the absolute path of the fast-startup tag file inside ELPA-REDUCED-DP.
+The tag file name is `pel-fast-startup-installed-tag'."
+  (expand-file-name pel-fast-startup-installed-tag elpa-reduced-dp))
+
 (defun pel--setup-fast (for-graphics)
   "Prepare the elpa directories and code to speed up Emacs startup.
 
@@ -1479,7 +1484,24 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
                 (pel--create-package-quickstart elpa-reduced-dp for-graphics)
               (pel--remove-package-quickstart-files for-graphics))
             (pel+= step-count 1))       ; STEP 20 (Emacs >= 27)
-          (pel-message-for "Completed:" actions))
+          (pel-message-for "Completed:" actions)
+          ;;
+          ;; Write a tag file into elpa-reduced so that pel--setup-normal can
+          ;; later detect and migrate any Elpa packages that the user installs
+          ;; via M-x list-packages while PEL is running in fast startup mode.
+          ;; Any package directory newer than this file was installed during
+          ;; fast startup and will be moved to elpa-complete on the next call
+          ;; to pel-setup-normal.
+          (write-region "\
+DO NOT REMOVE THIS PEL FAST STARTUP TAG FILE!
+Files created after this file will be moved into the elpa-complete directory
+when PEL return to normal mode.\n"
+                        nil
+                        (pel--fast-startup-tag-fpath elpa-reduced-dp)
+                        nil 'silent)
+
+
+          )
       (error
        (display-warning 'pel-setup-fast
                         (format "\
@@ -1540,6 +1562,73 @@ Failed fast startup setup for %s after %d of %d steps: %s
       (setq pel-fast-startup-setup-changed t)))))
 
 ;; --
+(defun pel--migrate-fast-startup-packages (for-graphics)
+  "Migrate packages installed during fast startup to elpa-complete.
+
+While PEL is in fast startup mode the `elpa' symlink points to
+`elpa-reduced', so any package installed via \\[list-packages] during
+that session lands in `elpa-reduced'.  This function detects those packages
+by finding subdirectories of `elpa-reduced' whose modification time is
+newer than the `pel-fast-startup-installed-tag' tag file, and moves them
+into `elpa-complete' so they become fully available once normal mode is
+restored.
+
+FOR-GRAPHICS is non-nil when handling the graphics-specific directory pair
+\(elpa-reduced-graphics / elpa-complete-graphics).
+
+This function is a no-op when:
+- the tag file does not exist (fast-startup was never activated, or was
+  activated with an older PEL version that did not create the tag), or
+- no package directory newer than the tag file is found.
+
+Called by `pel--setup-normal' before the elpa symlink is flipped."
+  (let* ((used-elpa-dirpath (pel-elpa-dirpath 'switch-dir))
+         (adj          (lambda (fn) (pel-elpa-name fn for-graphics)))
+         (elpa-sibling (lambda (dp) (pel-sibling-dirpath used-elpa-dirpath dp)))
+         (elpa-reduced-dp  (λc adj (λc elpa-sibling "elpa-reduced")))
+         (elpa-complete-dp (λc adj (λc elpa-sibling "elpa-complete")))
+         (tag-fpath        (pel--fast-startup-tag-fpath elpa-reduced-dp)))
+    (when (and (file-exists-p   tag-fpath)
+               (file-directory-p elpa-reduced-dp)
+               (file-directory-p elpa-complete-dp))
+      (let ((tag-mtime  (nth 5 (file-attributes tag-fpath)))
+            (moved-pkgs nil))
+        (dolist (entry (directory-files elpa-reduced-dp t))
+          (let ((basename (file-name-nondirectory entry)))
+            ;; Exclude:
+            ;;  - "." and ".." pseudo-entries
+            ;;  - all dotfiles (the tag file itself uses a leading dot)
+            ;;  - pel-bundle-* pseudo-package directories (integral part of
+            ;;    the elpa-reduced layout, must not be migrated)
+            (unless (or (member basename '("." ".."))
+                        (string-prefix-p "." basename)
+                        (string-prefix-p "pel-bundle-" basename))
+              (when (and (file-directory-p entry)
+                         (time-less-p tag-mtime
+                                      (nth 5 (file-attributes entry))))
+                (let ((dest (expand-file-name basename elpa-complete-dp)))
+                  (if (file-exists-p dest)
+                      ;; Destination already exists — warn but do not
+                      ;; overwrite; the user can reconcile manually.
+                      (display-warning
+                       'pel-setup
+                       (format "pel--migrate-fast-startup-packages: \
+skipped %s — directory already exists in %s."
+                               basename elpa-complete-dp)
+                       :warning)
+                    (rename-file entry dest)
+                    (push basename moved-pkgs)))))))
+        (if moved-pkgs
+            (message
+             "PEL setup: migrated %d package(s) installed during \
+fast startup to elpa-complete: %s"
+             (length moved-pkgs)
+             (mapconcat #'identity (nreverse moved-pkgs) ", "))
+          (message
+           "PEL setup: no packages installed during fast startup \
+were found to migrate."))))))
+
+
 (defun pel--setup-normal (for-graphics)
   "Restore normal PEL/Emacs operation mode.
 
@@ -1547,16 +1636,25 @@ The FOR-GRAPHICS argument is t when changing the environment for the
 Emacs running in graphics mode and has a custom file that is independent from
 the file used by Emacs running in terminal (TTY) mode.  It is nil when there
 is only one or when its for the terminal (TTY) mode."
+  ;; Before flipping the elpa symlink back, check for packages that were
+  ;; installed via M-x list-packages while PEL was in fast startup mode.
+  ;; Those packages landed in elpa-reduced and must be moved to elpa-complete
+  ;; so they are available in normal mode.
+  (pel--migrate-fast-startup-packages for-graphics)
+  ;;
   ;; PEL is currently running in fast-startup mode. Switch back to normal.
   ;; Restore PEL's ability to download and install external packages
   (pel-bundled-mode nil)
+  ;;
   ;;  Restore the normal, complete, Elpa directory.
   (pel-switch-to-elpa-complete for-graphics)
+  ;;
   ;; Remove the file that is used to identify using fast-startup
   ;; but leave the elpa-reduced directory around in case some other
   ;; Emacs process is currently running in fast-start operation mode.
   (when (file-exists-p pel-fast-startup-init-fname)
     (delete-file pel-fast-startup-init-fname))
+  ;;
   ;; Also remove the byte-compiled version.
   (let ((elc (concat pel-fast-startup-init-fname "c")))
     (when (file-exists-p elc)
@@ -1578,9 +1676,13 @@ is only one or when its for the terminal (TTY) mode."
   (cond
    ((eq (pel-startup-mode) 'normal)
     (user-error "PEL/Emacs is already using the normal setup!"))
+   ;; [:todo 2026-05-23, by Pierre Rouleau: In order to lift this restriction
+   ;;                    the `pel--setup-init-file-problems' issue identified
+   ;;                    by another TODO must be resolved.  ]
    ((and (bound-and-true-p package-quickstart)
          (display-graphic-p))
-    (user-error "PEL currently is not able to restore from fast startup mode when
+    (user-error "\
+PEL currently is not able to restore from fast startup mode when
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off
   (with “M-x pel-setup-no-quickstart) to execute this command.
