@@ -1362,6 +1362,53 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
               bundle-dp))
           (pel+= step-count 1)          ; STEP 3
           ;;
+          ;; Before deleting elpa-reduced, check whether any packages were
+          ;; installed there during the previous fast-startup session (i.e.
+          ;; their directory is newer than the tag file).  Those must be
+          ;; removed by the user — or migrated via `pel-setup-normal' —
+          ;; before fast-startup mode can be safely re-activated, because
+          ;; rebuilding elpa-reduced would silently discard them.
+          (let ((tag-fpath (pel--fast-startup-tag-fpath elpa-reduced-dp)))
+            (when (file-exists-p tag-fpath)
+              (let ((tag-mtime    (nth 5 (file-attributes tag-fpath)))
+                    (stale-pkgs  nil))
+                (dolist (entry (directory-files elpa-reduced-dp t))
+                  (let ((basename (file-name-nondirectory entry)))
+                    (unless (or (member basename '("." ".."))
+                                (string-prefix-p "." basename)
+                                (string-prefix-p "pel-bundle-" basename))
+                      (when (and (file-directory-p entry)
+                                 (time-less-p tag-mtime
+                                              (nth 5 (file-attributes entry))))
+                        (push basename stale-pkgs)))))
+                (when stale-pkgs
+                  (let ((other-pids (pel--other-emacs-pids)))
+                    (user-error "\
+PEL cannot activate fast-startup mode: %d package director%s installed
+during the previous fast-startup session %s still present in:
+  %s
+and must be removed first.  Use `pel-setup-normal' to copy them to
+elpa-complete before re-activating fast-startup mode.
+Offending director%s:
+  %s%s"
+                                (length stale-pkgs)
+                                (if (cdr stale-pkgs) "ies" "y")
+                                (if (cdr stale-pkgs) "are" "is")
+                                elpa-reduced-dp
+                                (if (cdr stale-pkgs) "ies" "y")
+                                (mapconcat #'identity
+                                           (nreverse stale-pkgs) "\n  ")
+                                (if other-pids
+                                    (format
+                                     "\nNote: %d other Emacs process(es) \
+are running (PID%s: %s).
+It may be necessary to exit all of them before switching modes."
+                                     (length other-pids)
+                                     (if (cdr other-pids) "s" "")
+                                     (mapconcat #'number-to-string
+                                                other-pids ", "))
+                                  "")))))))
+          ;;
           ;; Delete old elpa-reduced if it exists: it contains the old
           ;; pel-bundle and the multi-level packages that could not be
           ;; bundled in the previous execution of `pel-setup-fast'.
@@ -1562,6 +1609,28 @@ Failed fast startup setup for %s after %d of %d steps: %s
       (setq pel-fast-startup-setup-changed t)))))
 
 ;; --
+
+(defun pel--other-emacs-pids ()
+  "Return a list of PIDs of other running Emacs processes.
+
+Uses `list-system-processes' and `process-attributes' to find all
+processes whose command name starts with \"emacs\" (case-insensitive),
+excluding the current Emacs process (identified by `emacs-pid').
+
+Returns nil when `list-system-processes' is not supported on this platform
+or when no other Emacs processes are found."
+  (when (fboundp 'list-system-processes)
+    (let ((my-pid (emacs-pid))
+          (others nil))
+      (dolist (pid (list-system-processes))
+        (unless (eq pid my-pid)
+          (let* ((attrs (ignore-errors (process-attributes pid)))
+                 (comm  (and attrs (alist-get 'comm attrs))))
+            (when (and comm
+                       (string-match-p "\\`[Ee]macs" comm))
+              (push pid others)))))
+      (nreverse others))))
+
 (defun pel--migrate-fast-startup-packages (for-graphics)
   "Migrate packages installed during fast startup to elpa-complete.
 
@@ -1569,9 +1638,16 @@ While PEL is in fast startup mode the `elpa' symlink points to
 `elpa-reduced', so any package installed via \\[list-packages] during
 that session lands in `elpa-reduced'.  This function detects those packages
 by finding subdirectories of `elpa-reduced' whose modification time is
-newer than the `pel-fast-startup-installed-tag' tag file, and moves them
+newer than the `pel-fast-startup-installed-tag' tag file, and copies them
 into `elpa-complete' so they become fully available once normal mode is
-restored.
+restored.  The originals are intentionally left in `elpa-reduced' so
+that any concurrently running Emacs process in fast-startup mode can
+continue using them.
+
+When other Emacs processes are detected the user is warned and prompted
+to confirm the copy.  If the user declines, a reminder is shown asking
+them to manually remove the packages from `elpa-reduced' before the next
+call to `pel-setup-normal'.
 
 FOR-GRAPHICS is non-nil when handling the graphics-specific directory pair
 \(elpa-reduced-graphics / elpa-complete-graphics).
@@ -1591,8 +1667,9 @@ Called by `pel--setup-normal' before the elpa symlink is flipped."
     (when (and (file-exists-p   tag-fpath)
                (file-directory-p elpa-reduced-dp)
                (file-directory-p elpa-complete-dp))
-      (let ((tag-mtime  (nth 5 (file-attributes tag-fpath)))
-            (moved-pkgs nil))
+      (let ((tag-mtime    (nth 5 (file-attributes tag-fpath)))
+            (pending-pkgs nil))
+        ;; Collect package directories installed after the tag file.
         (dolist (entry (directory-files elpa-reduced-dp t))
           (let ((basename (file-name-nondirectory entry)))
             ;; Exclude:
@@ -1606,31 +1683,83 @@ Called by `pel--setup-normal' before the elpa symlink is flipped."
               (when (and (file-directory-p entry)
                          (time-less-p tag-mtime
                                       (nth 5 (file-attributes entry))))
-                (let ((dest (expand-file-name basename elpa-complete-dp)))
-                  (if (file-exists-p dest)
-                      ;; Destination already exists — warn but do not
-                      ;; overwrite; the user can reconcile manually.
-                      (display-warning
-                       'pel-setup
-                       (format "pel--migrate-fast-startup-packages: \
+                (push (cons basename entry) pending-pkgs)))))
+        (if (null pending-pkgs)
+            (message "PEL setup: no packages installed during fast startup \
+were found to migrate.")
+          ;; Packages were found — check for concurrent Emacs processes.
+          (let* ((other-pids   (pel--other-emacs-pids))
+                 (proceed
+                  (if other-pids
+                      (yes-or-no-p
+                       (format "\
+PEL: %d other Emacs process(es) are running (PID%s: %s).
+Packages installed during fast-startup are still in elpa-reduced and may
+be in use by those processes.  Copy them to elpa-complete anyway? "
+                               (length other-pids)
+                               (if (cdr other-pids) "s" "")
+                               (mapconcat #'number-to-string
+                                          other-pids ", ")))
+                    t)))
+            (if (not proceed)
+                ;; User chose not to copy; remind them to clean up manually.
+                (display-warning
+                 'pel-setup
+                 (format "\
+PEL setup: copy of fast-startup packages to elpa-complete was skipped.
+The following package director%s remain in %s:
+  %s
+You MUST manually remove %s from elpa-reduced before the next
+invocation of `pel-setup-normal', otherwise they will be copied then.
+You should also remove them before re-activating fast-startup mode via
+`pel-setup-fast', which will refuse to proceed while they are present."
+                         (if (cdr pending-pkgs) "ies" "y")
+                         elpa-reduced-dp
+                         (mapconcat #'car (nreverse pending-pkgs) "\n  ")
+                         (if (cdr pending-pkgs) "them" "it"))
+                 :warning)
+              ;; Proceed with copying.
+              (when other-pids
+                (display-warning
+                 'pel-setup
+                 (format "\
+PEL setup: packages are being copied to elpa-complete.
+Their originals remain in elpa-reduced for the %d concurrently running
+Emacs process(es) (PID%s: %s).
+Please manually remove those packages from elpa-reduced once all other
+Emacs sessions using fast-startup mode have exited."
+                         (length other-pids)
+                         (if (cdr other-pids) "s" "")
+                         (mapconcat #'number-to-string other-pids ", "))
+                 :warning))
+              (let ((copied-pkgs nil))
+                (dolist (name.entry (nreverse pending-pkgs))
+                  (let* ((basename (car name.entry))
+                         (entry    (cdr name.entry))
+                         (dest     (expand-file-name basename elpa-complete-dp)))
+                    (if (file-exists-p dest)
+                        ;; Destination already exists — warn but do not
+                        ;; overwrite; the user can reconcile manually.
+                        (display-warning
+                         'pel-setup
+                         (format "pel--migrate-fast-startup-packages: \
 skipped %s — directory already exists in %s."
-                               basename elpa-complete-dp)
-                       :warning)
-                    (rename-file entry dest)
-                    (push basename moved-pkgs)))))))
-        (if moved-pkgs
-            (message
-             "PEL setup: migrated %d package(s) installed during \
+                                 basename elpa-complete-dp)
+                         :warning)
+                      (pel-copy-directory entry dest)
+                      (push basename copied-pkgs))))
+                (if copied-pkgs
+                    (message
+                     "PEL setup: copied %d package(s) installed during \
 fast startup to elpa-complete: %s"
-             (length moved-pkgs)
-             (mapconcat #'identity (nreverse moved-pkgs) ", "))
-          (message
-           "PEL setup: no packages installed during fast startup \
-were found to migrate."))))))
+                     (length copied-pkgs)
+                     (mapconcat #'identity (nreverse copied-pkgs) ", "))
+                  (message "PEL setup: no packages could be copied \
+to elpa-complete (all destinations already existed)."))))))))
 
 
 (defun pel--setup-normal (for-graphics)
-  "Restore normal PEL/Emacs operation mode.
+
 
 The FOR-GRAPHICS argument is t when changing the environment for the
 Emacs running in graphics mode and has a custom file that is independent from
