@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-23 08:13:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-24 11:55:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -376,8 +376,10 @@ Optional arguments:
              (message "PEL/Emacs %soperates in fast startup mode%s.
  Emacs starts faster because single directory packages are bundled inside
  a single directory: %selpa-reduced/pel-bundle-YYYYMMDD.hhmm.
- However, in this setup mode, PEL is not able to install any external package.
- To install new package return to normal mode by executing pel-setup-normal."
+ NOTE: PEL's automatic package management via `pel-use-<XYZ>' customization is
+ suspended in this mode.  You can still install packages manually via
+ M-x list-packages; they land in elpa-reduced and will be migrated to
+ elpa-complete automatically when you run M-x pel-setup-normal."
                       now-msg
                       (pel-prompt-with-quickstart-state "" nil pq-just-modified)
                       user-emacs-directory))

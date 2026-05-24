@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-24 11:25:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-24 12:40:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -329,8 +329,6 @@ Detects:
 - macOS GUI Emacs (e.g. Emacs-arm64-11 inside Emacs.app) (pgrep -f path)
 - Windows Emacs  (tasklist /FI IMAGENAME eq emacs.exe)
 
-Raise a user-error if pgrep is missing and is needed.
-
 Returns nil when no other Emacs processes are found."
   (let ((current (emacs-pid))
         pids)
@@ -341,17 +339,20 @@ Returns nil when no other Emacs processes are found."
      ;;   \"emacs.exe\",\"12345\",\"Console\",\"1\",\"25,000 K\"
      ;; `runemacs.exe' is a thin launcher that exits immediately once it
      ;; spawns `emacs.exe', so we only need to query for emacs.exe.
+     ;; Some Windows Emacs distributions ship emacs-w32.exe (a native Windows
+     ;; GUI variant), also test this one.
      ((eq system-type 'windows-nt)
-      (with-temp-buffer
-        (call-process "tasklist" nil t nil
-                      "/FI" "IMAGENAME eq emacs.exe"
-                      "/FO" "CSV" "/NH")
-        (goto-char (point-min))
-        (while (re-search-forward
-                "^\"[Ee]macs\\.exe\",\"\\([0-9]+\\)\"" nil t)
-          (let ((pid (string-to-number (match-string 1))))
-            (unless (or (= pid current) (memq pid pids))
-              (push pid pids))))))
+      (dolist (exe-name '("emacs.exe" "emacs-w32.exe"))
+        (with-temp-buffer
+          (call-process "tasklist" nil t nil
+                        "/FI" (format "IMAGENAME eq %s" exe-name)
+                        "/FO" "CSV" "/NH")
+          (goto-char (point-min))
+          (while (re-search-forward
+                  "^\"[Ee]macs[^\"]*\\.exe\",\"\\([0-9]+\\)\"" nil t)
+            (let ((pid (string-to-number (match-string 1))))
+              (unless (or (= pid current) (memq pid pids))
+                (push pid pids)))))))
      ;;
      ;; -- Unix / Linux / macOS
      ;; `pgrep' must be present; bail out silently if it is not.
@@ -378,17 +379,61 @@ Returns nil when no other Emacs processes are found."
                 (push pid pids)))))))
      ;;
      ;; -- Unix / Linux / macOS — pgrep MISSING
-     ;; Without pgrep, concurrent Emacs processes cannot be detected.
-     ;; Issue a visible warning so the user knows the guard is inactive.
-     (t
-      (user-error
-       "pel--other-emacs-pids: `pgrep' was not found on this system!
-Concurrent Emacs process detection is unavailable.
-PEL cannot warn you if other Emacs processes are running in fast startup
-mode when you copy packages to elpa-complete.
-Please install `pgrep' (typically part of the `procps' or
-`proctools' package) and restart Emacs.")))
+     (t nil)) ; pgrep unavailable — cannot detect other processes, return nil
     (nreverse pids)))
+
+(defun pel--require-process-detection ()
+  "Raise a `user-error' on Unix/macOS if `pgrep' is not available.
+
+On Unix and macOS systems, PEL uses `pgrep' to detect other running Emacs
+processes before activating fast startup mode.  Without it, PEL cannot
+determine whether another Emacs process is currently using `elpa-reduced',
+and switching to fast startup could silently destroy packages installed by
+that other process (since `pel--setup-fast' deletes and rebuilds
+`elpa-reduced').
+
+This function is a no-op on Windows (`system-type' is `windows-nt'), where
+`tasklist' is used directly and is always available.
+
+Called by `pel--setup-fast' before any filesystem changes are made."
+  (unless (or (eq system-type 'windows-nt)
+              (executable-find "pgrep"))
+    (user-error "\
+PEL fast startup requires `pgrep' to detect other running Emacs processes.
+`pgrep' was not found on this system.
+
+Without it, PEL cannot safely determine whether another Emacs session is
+using `elpa-reduced', and activating fast startup could destroy packages
+installed by that session.
+
+Please install `pgrep' and retry:
+  - Linux:  install the `procps' package (e.g. sudo apt install procps)
+  - macOS:  install the `proctools' package (e.g. brew install proctools)
+
+Once installed, restart Emacs and retry M-x pel-setup-fast.")))
+
+(defun pel--require-symlink-allowed ()
+  "Check if a symbolic link can be created in this Windows system.
+On Windows, creating symlinks requires either:
+
+- Developer Mode enabled (Windows 10 1703+), or
+- Administrator privileges
+
+Check if the symbolic links work here, issue user error otherwise."
+  (unless (or (file-symlink-p (locate-user-emacs-file "elpa"))
+              ;; Accept if symlinks already work in this environment.
+              (ignore-errors
+                (let ((test-link (expand-file-name
+                                  ".pel-symlink-test" user-emacs-directory))
+                      (test-target user-emacs-directory))
+                  (unwind-protect
+                      (progn (make-symbolic-link test-target test-link)
+                             t)
+                    (ignore-errors (delete-file test-link))))))
+    (user-error "\
+PEL fast-startup requires symlink support.
+On Windows this needs Developer Mode enabled (Settings > Developer options)
+or Administrator privileges.  Enable Developer Mode and retry.")))
 
 ;; ---------------------------------------------------------------------------
 ;;** Modification of init.el and early-init.el files
@@ -1396,8 +1441,7 @@ ELPA-REDUCED-DP is not a directory, or no stragglers are found."
         (seq-filter
          (lambda (entry)
            (let ((basename (file-name-nondirectory entry)))
-             (and (not (member basename '("." "..")))
-                  (not (string-prefix-p "." basename))
+             (and (not (string-prefix-p "." basename))
                   (not (string-prefix-p "pel-bundle-" basename))
                   (file-directory-p entry)
                   (time-less-p tag-mtime
@@ -1635,18 +1679,18 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
               ;; directory tree.
               (native-compile-async (list (expand-file-name new-bundle-dp))
                                     'recursively)
-              (pel+= step-count 1)))    ; STEP 16
+              (pel+= step-count 1)))    ; STEP 16 (optional)
           ;;
           ;; If there is a elpa symlink remove it and create a new one
           ;; that points to elpa-reduced
           (pel-switch-to-elpa-reduced for-graphics)
-          (pel+= step-count 1)          ; STEP 17
+          (pel+= step-count 1)          ; STEP 16 or 17
           ;; Re-compile pel_keys.el with
           ;; `pel-running-in-fast-startup-p' bound to t to prevent PEL
           ;; from downloading and installing external packages while PEL
           ;; runs in PEL bundled mode.
           (pel-bundled-mode t)
-          (pel+= step-count 1)          ; STEP 18
+          (pel+= step-count 1)          ; STEP 17 or 18
           ;;
           ;; handle package quickstart when running Emacs ≥ 27
           (when pel-emacs-27-or-later-p
@@ -1654,11 +1698,11 @@ It must be non-nil when Emacs runs in GUI mode and PEL uses the dual-mode."
             (declare-function pel--create-package-quickstart "pel-setup-27")
             (declare-function pel--remove-package-quickstart-files "pel-setup-27")
             (pel--setup-early-init pel-support-package-quickstart)
-            (pel+= step-count 1)        ; STEP 19 (Emacs >= 27)
+            (pel+= step-count 1)        ; STEP 18 or 19 (Emacs >= 27)
             (if pel-support-package-quickstart
                 (pel--create-package-quickstart elpa-reduced-dp for-graphics)
               (pel--remove-package-quickstart-files for-graphics))
-            (pel+= step-count 1))       ; STEP 20 (Emacs >= 27)
+            (pel+= step-count 1))       ; STEP 19 or 20 (Emacs >= 27)
           (pel-message-for "Completed:" actions)
           ;;
           ;; Write a tag file into elpa-reduced so that pel--setup-normal can
@@ -1673,20 +1717,16 @@ Files created after this file will be moved into the elpa-complete directory
 when PEL return to normal mode.\n"
                         nil
                         (pel--fast-startup-tag-fpath elpa-reduced-dp)
-                        nil 'silent)
-
-
-          )
+                        nil 'silent))
       (error
        (display-warning 'pel-setup-fast
                         (format "\
-Failed fast startup setup for %s after %d of %d steps: %s
+Failed fast startup setup for %s after step %d: %s
  Please inspect the %s directory to restore a valid setup.
  See pel-setup.el commentary for further information.
  Please also report the problem as a bug in the PEL Github project."
                                 (pel-setup-mode-description for-graphics)
                                 step-count
-                                (if pel-emacs-27-or-later-p 20 18)
                                 err
                                 user-emacs-directory))))
     (cd cd-original)))
@@ -1705,7 +1745,15 @@ Failed fast startup setup for %s after %d of %d steps: %s
   (interactive)
   ;; Validate Emacs initialization file -- issue error on any problem
   (pel-setup-validate-init-files)
-  ;; When Emacs init is OK, check further
+  (if (eq system-type 'windows-nt)
+      ;; On Windows verify that symlink capability is allowed.
+      ;; Abort immediately if it is not allowed.
+      (pel--require-symlink-allowed)
+    ;; On Unix/macOS, pgrep is required for safe concurrent-process
+    ;; detection.  Abort immediately if it is missing.
+    (pel--require-process-detection))
+
+  ;; When all conditions are OK, check further
   (cond
    ;;
    ((eq (pel-startup-mode) 'fast)
@@ -1774,6 +1822,10 @@ Return t when it is safe to proceed with switching to normal mode, nil if
 a migration error occurred that left the directories in an inconsistent
 state.  When no stragglers are found the function is a no-op and returns t.
 
+When `elpa-complete' does not exist, raises a `user-error' rather than
+returning nil, since this represents a misconfigured environment rather
+than a migration failure.
+
 Called by `pel--setup-normal' before the elpa symlink is flipped."
   (let* ((used-elpa-dirpath (pel-elpa-dirpath 'switch-dir))
          (adj          (lambda (fn) (pel-elpa-name fn for-graphics)))
@@ -1803,7 +1855,11 @@ other Emacs are running and directory already exists in %s."
                                                  basename elpa-complete-dp)
                                          :warning)
                       ;; File/dir exists in elpa-complete and no other Emacs
-                      ;; process is running.  Just delete it from elpa-reduced.
+                      ;; process is running.  Just delete it from
+                      ;; elpa-reduced.
+                      (message "\
+PEL setup: %s already in elpa-complete; removed duplicate from elpa-reduced."
+                               basename)
                       (pel--delete-file-dir reduced-dp))
                   ;; File does not exists in elpa-complete.
                   (condition-case err   ; protect against copy/move errors
