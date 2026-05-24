@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-24 13:34:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-24 14:39:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -354,7 +354,8 @@ because pgrep is not available."
                   "^\"[Ee]macs[^\"]*\\.exe\",\"\\([0-9]+\\)\"" nil t)
             (let ((pid (string-to-number (match-string 1))))
               (unless (or (= pid current) (memq pid pids))
-                (push pid pids)))))))
+                (push pid pids))))))
+      (nreverse pids))
      ;;
      ;; -- Unix / Linux / macOS
      ;; `pgrep' must be present; bail out silently if it is not.
@@ -378,11 +379,12 @@ because pgrep is not available."
           (while (re-search-forward "^\\([0-9]+\\)" nil t)
             (let ((pid (string-to-number (match-string 1))))
               (unless (or (= pid current) (memq pid pids))
-                (push pid pids)))))))
+                (push pid pids))))))
+      (nreverse pids))
      ;;
      ;; -- Unix / Linux / macOS — pgrep MISSING
-     (t 'unknown-no-pgrep)) ; no pgrep — cannot detect other processes
-    (nreverse pids)))
+     ;; pgrep unavailable — callers must handle conservatively
+     (t 'unknown-no-pgrep))))
 
 (defun pel--require-process-detection ()
   "Raise a `user-error' on Unix/macOS if `pgrep' is not available.
@@ -1453,7 +1455,7 @@ ELPA-REDUCED-DP is not a directory, or no stragglers are found."
 
 
 (defun pel--describe-stragglers (stragglers elpa-reduced-dp)
-  "Return a string describing the STRAGGLERs packages left over pel-reduced."
+  "Return a string describing the STRAGGLERs packages left in elpa-reduced."
   (format "the following package director%s in
  %s
 %s installed during a previous fast-startup session and %s not yet been
@@ -1465,12 +1467,14 @@ migrated to elpa-complete."
 
 (defun pel--describe-other-emacs-processes (other-pids)
   "Return a string describing the other Emacs processes running."
-  (if other-pids
-      (format "Other Emacs process%s %s currently running (PIDs: %s)"
-              (if (cdr other-pids) "es" "")
-              (if (cdr other-pids) "are" "is")
-              (mapconcat #'number-to-string other-pids ", "))
-    "No other Emacs processes are running."))
+  (if (eq other-pids 'unknown-n0-pgrep)
+      "Undetectable Emacs processes maybe running - pgrep is not available."
+    (if other-pids
+        (format "Other Emacs process%s %s currently running (PIDs: %s)"
+                (if (cdr other-pids) "es" "")
+                (if (cdr other-pids) "are" "is")
+                (mapconcat #'number-to-string other-pids ", "))
+      "No other Emacs processes are running.")))
 
 (defun pel--check-fast-startup-stragglers (elpa-reduced-dp)
   "Abort fast startup activation when ELPA-REDUCED-DP holds un-migrated packages.
@@ -1853,7 +1857,9 @@ Called by `pel--setup-normal' before the elpa symlink is flipped."
       (if (file-directory-p elpa-complete-dp)
           ;; Note: if we can't detect if there other Emacs process act as if
           ;;       there were some and migrate any straggler packages.
-          (let* ((other-pids   (pel--other-emacs-pids))
+          (let* ((other-pids (pel--other-emacs-pids))
+                 ;; When pgrep is absent, act conservatively: assume other
+                 ;; processes exist.
                  (migrated-pkgs nil)
                  (leftover-pkgs nil)
                  (error-pkgs    nil))
@@ -1865,12 +1871,17 @@ Called by `pel--setup-normal' before the elpa symlink is flipped."
                         ;; File/Dir exists in elpa-complete but other Emacs
                         ;; processes are running Leave the file in the
                         ;; elpa-reduced directory but warn user.
-                        (display-warning 'pel-setup
-                                         (format "\
-pel--migrate-fast-startup-packages: skipped removing %s:
-other Emacs are running and directory already exists in %s."
-                                                 basename elpa-complete-dp)
-                                         :warning)
+                        (display-warning
+                         'pel-setup
+                         (format "\
+pel--migrate-fast-startup-packages: skipped removing %s and:
+- Directory already exists in %s.
+- %s"
+                                 basename
+                                 elpa-complete-dp
+                                 (pel--describe-other-emacs-processes
+                                  other-pids))
+                         :warning)
                       ;; File/dir exists in elpa-complete and no other Emacs
                       ;; process is running.  Just delete it from
                       ;; elpa-reduced.
@@ -1907,8 +1918,8 @@ pel--migrate-fast-startup-packages: failed to migrate %s: %s"
               (display-warning
                'pel-setup
                (format "\
-The following package director%s %s copied (not moved) into elpa-complete
-because other Emacs process%s %s still running (PIDs: %s).
+The following package director%s %s copied (not moved) into elpa-complete.
+%s
 
 The original%s remain in:
   %s
@@ -1920,9 +1931,7 @@ sessions have been closed.  Leaving %s in elpa-reduced slightly increases
 the load-path length and reduces PEL fast startup efficiency."
                        (if (cdr leftover-pkgs) "ies" "y")
                        (if (cdr leftover-pkgs) "were" "was")
-                       (if (cdr other-pids) "es" "")
-                       (if (cdr other-pids) "are" "is")
-                       (mapconcat #'number-to-string other-pids ", ")
+                       (pel--describe-other-emacs-processes other-pids)
                        (if (cdr leftover-pkgs) "s" "")
                        elpa-reduced-dp
                        (mapconcat #'identity (nreverse leftover-pkgs) "\n  ")
