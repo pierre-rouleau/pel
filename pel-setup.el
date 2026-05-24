@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-24 16:28:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-24 17:01:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1433,8 +1433,8 @@ the last `pel--setup-fast' run.  Such directories were installed via
 migrated to elpa-complete.
 
 Excluded from the result:
-- \".\" and \"..\" pseudo-entries
-- dotfiles (the tag file itself uses a leading dot)
+- \".\" and \"..\" pseudo-entries and the tag file
+  itself (which uses a leading dot)
 - directories whose name starts with \"pel-bundle-\"
 
 Returns a list of absolute paths, or nil when the tag file is absent,
@@ -1855,7 +1855,7 @@ Called by `pel--setup-normal' before the elpa symlink is flipped."
         t                               ; nothing to migrate — safe to proceed
       (if (file-directory-p elpa-complete-dp)
           ;; Note: if we can't detect if there are other Emacs processes, act
-          ;;       as if there were some: copy rather than mode.
+          ;;       as if there were some: copy rather than move.
           (let* ((other-pids (pel--other-emacs-pids))
                  ;; When pgrep is absent, act conservatively: assume other
                  ;; processes exist.
@@ -2008,7 +2008,7 @@ Correct the problem manually before retrying M-x pel-setup-normal."))
 PEL currently is not able to restore from fast startup mode when
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off
-  (with “M-x pel-setup-no-quickstart) to execute this command.
+  (with M-x pel-setup-no-quickstart) to execute this command.
   Sorry for the inconvenience"))
    (t
     (when (y-or-n-p (pel-prompt-with-quickstart-state
