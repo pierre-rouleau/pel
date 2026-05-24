@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-24 17:01:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-24 17:09:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1521,7 +1521,7 @@ below from elpa-reduced before retrying pel-setup-fast:
                                      "\n  "))
             ;; no other Emacs processes running
             (user-error "\
-Cannot activate fast startup: %s\n\n%s
+Cannot activate fast startup. %s\n\n%s
 
 Please delete the director%s listed below from elpa-reduced (or run M-x
 pel-setup-normal first, which migrates them automatically) before
