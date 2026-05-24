@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-24 14:39:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-24 14:55:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1467,8 +1467,8 @@ migrated to elpa-complete."
 
 (defun pel--describe-other-emacs-processes (other-pids)
   "Return a string describing the other Emacs processes running."
-  (if (eq other-pids 'unknown-n0-pgrep)
-      "Undetectable Emacs processes maybe running - pgrep is not available."
+  (if (eq other-pids 'unknown-no-pgrep)
+      "Undetectable Emacs processes may be running - pgrep is not available."
     (if other-pids
         (format "Other Emacs process%s %s currently running (PIDs: %s)"
                 (if (cdr other-pids) "es" "")
@@ -1505,8 +1505,7 @@ Called by `pel--setup-fast' immediately before STEP 4 deletes elpa-reduced."
             (user-error "Cannot activate fast startup: %s\n
 Also cannot determine if other Emacs processes are running because pgrep is
 not installed.  Please install pgrep and try again."
-                        (pel--describe-stragglers stragglers elpa-reduced-dp)
-                        )
+                        (pel--describe-stragglers stragglers elpa-reduced-dp))
           (if other-pids
               (user-error "Cannot activate fast startup: %s\n\n%s
 
@@ -1783,7 +1782,7 @@ Failed fast startup setup for %s after step %d: %s
     (user-error "PEL currently is not able to switch to fast startup mode when
   package quickstart is used and Emacs is running in graphic mode.
   Use Emacs running in terminal mode or turn package quickstart off
-  (with “M-x pel-setup-no-quickstart) to execute this command.
+  (with M-x pel-setup-no-quickstart) to execute this command.
   Once the switch is completed, PEL can run in fast startup mode with package
   startup active in graphic mode. Sorry for the inconvenience"))
    ;;
