@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-24 11:14:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-24 11:25:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1783,57 +1783,57 @@ Called by `pel--setup-normal' before the elpa symlink is flipped."
          (elpa-reduced-leftovers (pel--fast-startup-straggler-dirs elpa-reduced-dp)))
     (if (not elpa-reduced-leftovers)
         t                               ; nothing to migrate — safe to proceed
-      (when (file-directory-p elpa-complete-dp)
-        (let* ((other-pids   (pel--other-emacs-pids))
-               (migrated-pkgs nil)
-               (leftover-pkgs nil)
-               (error-pkgs    nil))
-          (dolist (reduced-dp elpa-reduced-leftovers)
-            (let* ((basename (file-name-nondirectory reduced-dp))
-                   (complete-dp (expand-file-name basename elpa-complete-dp)))
-              (if (file-exists-p complete-dp)
-                  (if other-pids
-                      ;; File/Dir exists in elpa-complete but other Emacs
-                      ;; processes are running Leave the file in the
-                      ;; elpa-reduced directory but warn user.
-                      (display-warning 'pel-setup
-                                       (format "\
+      (if (file-directory-p elpa-complete-dp)
+          (let* ((other-pids   (pel--other-emacs-pids))
+                 (migrated-pkgs nil)
+                 (leftover-pkgs nil)
+                 (error-pkgs    nil))
+            (dolist (reduced-dp elpa-reduced-leftovers)
+              (let* ((basename (file-name-nondirectory reduced-dp))
+                     (complete-dp (expand-file-name basename elpa-complete-dp)))
+                (if (file-exists-p complete-dp)
+                    (if other-pids
+                        ;; File/Dir exists in elpa-complete but other Emacs
+                        ;; processes are running Leave the file in the
+                        ;; elpa-reduced directory but warn user.
+                        (display-warning 'pel-setup
+                                         (format "\
 pel--migrate-fast-startup-packages: skipped removing %s:
 other Emacs are running and directory already exists in %s."
-                                               basename elpa-complete-dp)
-                                       :warning)
-                    ;; File/dir exists in elpa-complete and no other Emacs
-                    ;; process is running.  Just delete it from elpa-reduced.
-                    (pel--delete-file-dir reduced-dp))
-                ;; File does not exists in elpa-complete.
-                (condition-case err     ; protect against copy/move errors
-                    (if other-pids
-                        ;; Other Emacs processes running: COPY to preserve
-                        ;; originals for those processes.
-                        (progn
-                          (pel-copy-directory reduced-dp complete-dp)
-                          (push basename migrated-pkgs)
-                          (push basename leftover-pkgs))
-                      ;; No other Emacs processes: MOVE silently.
-                      (rename-file reduced-dp complete-dp)
-                      (push basename migrated-pkgs))
-                  (error
-                   ;; Error detected while copying or moving files/dirs to
-                   ;; elpa-complete:
-                   ;; - erase possibly partially copied files
-                   (pel--delete-file-dir complete-dp)
-                   ;; - then report error.
-                   (display-warning 'pel-setup
-                                    (format "\
+                                                 basename elpa-complete-dp)
+                                         :warning)
+                      ;; File/dir exists in elpa-complete and no other Emacs
+                      ;; process is running.  Just delete it from elpa-reduced.
+                      (pel--delete-file-dir reduced-dp))
+                  ;; File does not exists in elpa-complete.
+                  (condition-case err   ; protect against copy/move errors
+                      (if other-pids
+                          ;; Other Emacs processes running: COPY to preserve
+                          ;; originals for those processes.
+                          (progn
+                            (pel-copy-directory reduced-dp complete-dp)
+                            (push basename migrated-pkgs)
+                            (push basename leftover-pkgs))
+                        ;; No other Emacs processes: MOVE silently.
+                        (rename-file reduced-dp complete-dp)
+                        (push basename migrated-pkgs))
+                    (error
+                     ;; Error detected while copying or moving files/dirs to
+                     ;; elpa-complete:
+                     ;; - erase possibly partially copied files
+                     (pel--delete-file-dir complete-dp)
+                     ;; - then report error.
+                     (display-warning 'pel-setup
+                                      (format "\
 pel--migrate-fast-startup-packages: failed to migrate %s: %s"
-                                            basename (error-message-string err))
-                                    :error)
-                   (push basename error-pkgs))))))
-          ;; Warn about copies left behind in elpa-reduced.
-          (when leftover-pkgs
-            (display-warning
-             'pel-setup
-             (format "\
+                                              basename (error-message-string err))
+                                      :error)
+                     (push basename error-pkgs))))))
+            ;; Warn about copies left behind in elpa-reduced.
+            (when leftover-pkgs
+              (display-warning
+               'pel-setup
+               (format "\
 The following package director%s %s copied (not moved) into elpa-complete
 because other Emacs process%s %s still running (PIDs: %s).
 
@@ -1845,19 +1845,24 @@ The original%s remain in:
 Please remove %s from elpa-reduced once all currently running Emacs
 sessions have been closed.  Leaving %s in elpa-reduced slightly increases
 the load-path length and reduces PEL fast startup efficiency."
-                     (if (cdr leftover-pkgs) "ies" "y")
-                     (if (cdr leftover-pkgs) "were" "was")
-                     (if (cdr other-pids) "es" "")
-                     (if (cdr other-pids) "are" "is")
-                     (mapconcat #'number-to-string other-pids ", ")
-                     (if (cdr leftover-pkgs) "s" "")
-                     elpa-reduced-dp
-                     (mapconcat #'identity (nreverse leftover-pkgs) "\n  ")
-                     (if (cdr leftover-pkgs) "them" "it")
-                     (if (cdr leftover-pkgs) "them" "it"))
-             :warning))
-          ;; Return t only when no migration errors occurred.
-          (null error-pkgs))))))
+                       (if (cdr leftover-pkgs) "ies" "y")
+                       (if (cdr leftover-pkgs) "were" "was")
+                       (if (cdr other-pids) "es" "")
+                       (if (cdr other-pids) "are" "is")
+                       (mapconcat #'number-to-string other-pids ", ")
+                       (if (cdr leftover-pkgs) "s" "")
+                       elpa-reduced-dp
+                       (mapconcat #'identity (nreverse leftover-pkgs) "\n  ")
+                       (if (cdr leftover-pkgs) "them" "it")
+                       (if (cdr leftover-pkgs) "them" "it"))
+               :warning))
+            ;; Return t only when no migration errors occurred.
+            (null error-pkgs))
+        ;; The elpa-complete directory does not exits!!
+        ;; The files cannot be migrated.
+        (user-error "The elpa-complete directory %s does not exist!
+Please verify and fix your environment."
+                    elpa-complete-dp)))))
 
 (defun pel--setup-normal (for-graphics)
   "Restore normal PEL/Emacs operation mode.
