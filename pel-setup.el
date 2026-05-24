@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-24 12:40:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-24 13:34:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -329,7 +329,9 @@ Detects:
 - macOS GUI Emacs (e.g. Emacs-arm64-11 inside Emacs.app) (pgrep -f path)
 - Windows Emacs  (tasklist /FI IMAGENAME eq emacs.exe)
 
-Returns nil when no other Emacs processes are found."
+Returns nil when no other Emacs processes are found, or
+\\='unknown-no-pgrep when they cannot be identified on Unix-like OS
+because pgrep is not available."
   (let ((current (emacs-pid))
         pids)
     (cond
@@ -379,7 +381,7 @@ Returns nil when no other Emacs processes are found."
                 (push pid pids)))))))
      ;;
      ;; -- Unix / Linux / macOS — pgrep MISSING
-     (t nil)) ; pgrep unavailable — cannot detect other processes, return nil
+     (t 'unknown-no-pgrep)) ; no pgrep — cannot detect other processes
     (nreverse pids)))
 
 (defun pel--require-process-detection ()
@@ -420,16 +422,17 @@ On Windows, creating symlinks requires either:
 - Administrator privileges
 
 Check if the symbolic links work here, issue user error otherwise."
-  (unless (or (file-symlink-p (locate-user-emacs-file "elpa"))
-              ;; Accept if symlinks already work in this environment.
-              (ignore-errors
-                (let ((test-link (expand-file-name
-                                  ".pel-symlink-test" user-emacs-directory))
-                      (test-target user-emacs-directory))
-                  (unwind-protect
-                      (progn (make-symbolic-link test-target test-link)
-                             t)
-                    (ignore-errors (delete-file test-link))))))
+  (unless
+      (ignore-errors
+        (let ((test-link (expand-file-name
+                          ".pel-symlink-test" user-emacs-directory))
+              (test-target user-emacs-directory))
+          (unwind-protect
+              (progn
+                (ignore-errors (delete-file test-link))
+                (make-symbolic-link test-target test-link)
+                t)
+            (ignore-errors (delete-file test-link)))))
     (user-error "\
 PEL fast-startup requires symlink support.
 On Windows this needs Developer Mode enabled (Settings > Developer options)
@@ -1448,6 +1451,27 @@ ELPA-REDUCED-DP is not a directory, or no stragglers are found."
                                (nth 5 (file-attributes entry))))))
          (directory-files elpa-reduced-dp t))))))
 
+
+(defun pel--describe-stragglers (stragglers elpa-reduced-dp)
+  "Return a string describing the STRAGGLERs packages left over pel-reduced."
+  (format "the following package director%s in
+ %s
+%s installed during a previous fast-startup session and %s not yet been
+migrated to elpa-complete."
+          (if (cdr stragglers) "ies" "y")
+          elpa-reduced-dp
+          (if (cdr stragglers) "were" "was")
+          (if (cdr stragglers) "have" "has")))
+
+(defun pel--describe-other-emacs-processes (other-pids)
+  "Return a string describing the other Emacs processes running."
+  (if other-pids
+      (format "Other Emacs process%s %s currently running (PIDs: %s)"
+              (if (cdr other-pids) "es" "")
+              (if (cdr other-pids) "are" "is")
+              (mapconcat #'number-to-string other-pids ", "))
+    "No other Emacs processes are running."))
+
 (defun pel--check-fast-startup-stragglers (elpa-reduced-dp)
   "Abort fast startup activation when ELPA-REDUCED-DP holds un-migrated packages.
 
@@ -1473,49 +1497,40 @@ Called by `pel--setup-fast' immediately before STEP 4 deletes elpa-reduced."
   (let ((stragglers (pel--fast-startup-straggler-dirs elpa-reduced-dp)))
     (when stragglers
       (let ((other-pids (pel--other-emacs-pids)))
-        (if other-pids
-            (user-error "\
-Cannot activate fast startup: the following package director%s in
-  %s
-%s installed during a previous fast-startup session and %s not yet been
-migrated to elpa-complete.
+        (if (eq other-pids 'unknown-no-pgrep)
+            (user-error "Cannot activate fast startup: %s\n
+Also cannot determine if other Emacs processes are running because pgrep is
+not installed.  Please install pgrep and try again."
+                        (pel--describe-stragglers stragglers elpa-reduced-dp)
+                        )
+          (if other-pids
+              (user-error "Cannot activate fast startup: %s\n\n%s
 
-Other Emacs process%s %s currently running (PIDs: %s).
 Exit all other Emacs sessions first, then delete the director%s listed
 below from elpa-reduced before retrying pel-setup-fast:
 
   %s"
-                        (if (cdr stragglers) "ies" "y")
-                        elpa-reduced-dp
-                        (if (cdr stragglers) "were" "was")
-                        (if (cdr stragglers) "have" "has")
-                        (if (cdr other-pids) "es" "")
-                        (if (cdr other-pids) "are" "is")
-                        (mapconcat #'number-to-string other-pids ", ")
+                          (pel--describe-stragglers stragglers elpa-reduced-dp)
+                          (pel--describe-other-emacs-processes other-pids)
+                          (if (cdr stragglers) "ies" "y")
+                          (mapconcat #'file-name-nondirectory
+                                     stragglers
+                                     "\n  "))
+            ;; no other Emacs processes running
+            (user-error "\
+Cannot activate fast startup: %s\n\n%s
+
+Please delete the director%s listed below from elpa-reduced (or run M-x
+pel-setup-normal first, which migrates them automatically) before
+retrying pel-setup-fast:
+
+  %s"
+                        (pel--describe-stragglers stragglers elpa-reduced-dp)
+                        (pel--describe-other-emacs-processes other-pids)
                         (if (cdr stragglers) "ies" "y")
                         (mapconcat #'file-name-nondirectory
                                    stragglers
-                                   "\n  "))
-          ;; no other Emacs processes running
-          (user-error "\
-Cannot activate fast startup: the following package director%s in
-  %s
-%s installed during a previous fast-startup session and %s not yet been
-migrated to elpa-complete.
-
-No other Emacs processes are running.  Please delete the director%s listed
-below from elpa-reduced (or run M-x pel-setup-normal first, which migrates
-them automatically) before retrying pel-setup-fast:
-
-  %s"
-                      (if (cdr stragglers) "ies" "y")
-                      elpa-reduced-dp
-                      (if (cdr stragglers) "were" "was")
-                      (if (cdr stragglers) "have" "has")
-                      (if (cdr stragglers) "ies" "y")
-                      (mapconcat #'file-name-nondirectory
-                                 stragglers
-                                 "\n  ")))))))
+                                   "\n  "))))))))
 
 (defun pel--setup-fast (for-graphics)
   "Prepare the elpa directories and code to speed up Emacs startup.
@@ -1836,6 +1851,8 @@ Called by `pel--setup-normal' before the elpa symlink is flipped."
     (if (not elpa-reduced-leftovers)
         t                               ; nothing to migrate — safe to proceed
       (if (file-directory-p elpa-complete-dp)
+          ;; Note: if we can't detect if there other Emacs process act as if
+          ;;       there were some and migrate any straggler packages.
           (let* ((other-pids   (pel--other-emacs-pids))
                  (migrated-pkgs nil)
                  (leftover-pkgs nil)
