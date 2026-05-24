@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-24 14:55:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-24 16:28:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1854,8 +1854,8 @@ Called by `pel--setup-normal' before the elpa symlink is flipped."
     (if (not elpa-reduced-leftovers)
         t                               ; nothing to migrate — safe to proceed
       (if (file-directory-p elpa-complete-dp)
-          ;; Note: if we can't detect if there other Emacs process act as if
-          ;;       there were some and migrate any straggler packages.
+          ;; Note: if we can't detect if there are other Emacs processes, act
+          ;;       as if there were some: copy rather than mode.
           (let* ((other-pids (pel--other-emacs-pids))
                  ;; When pgrep is absent, act conservatively: assume other
                  ;; processes exist.

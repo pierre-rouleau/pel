@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-24 11:55:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-24 16:34:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -273,8 +273,8 @@ This file is  written inside elpa-reduced at the end of a successful
 The presence of this file — and its modification time — allows
 `pel--setup-normal' to detect and migrate any Elpa packages that were
 installed via \\[list-packages] while PEL was running in fast startup
-mode, moving them from elpa-reduced to elpa-complete before the symlink
-is flipped back.
+mode, moving or copying them from elpa-reduced to elpa-complete before
+the symlink is flipped back.
 
 The file is intentionally a dotfile so it is ignored by package.el and
 excluded from the migration logic automatically.")
