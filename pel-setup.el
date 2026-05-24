@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-23 14:18:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-24 11:14:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -329,6 +329,8 @@ Detects:
 - macOS GUI Emacs (e.g. Emacs-arm64-11 inside Emacs.app) (pgrep -f path)
 - Windows Emacs  (tasklist /FI IMAGENAME eq emacs.exe)
 
+Raise a user-error if pgrep is missing and is needed.
+
 Returns nil when no other Emacs processes are found."
   (let ((current (emacs-pid))
         pids)
@@ -379,15 +381,13 @@ Returns nil when no other Emacs processes are found."
      ;; Without pgrep, concurrent Emacs processes cannot be detected.
      ;; Issue a visible warning so the user knows the guard is inactive.
      (t
-      (display-warning
-       'pel-setup
+      (user-error
        "pel--other-emacs-pids: `pgrep' was not found on this system!
 Concurrent Emacs process detection is unavailable.
 PEL cannot warn you if other Emacs processes are running in fast startup
 mode when you copy packages to elpa-complete.
 Please install `pgrep' (typically part of the `procps' or
-`proctools' package) and restart Emacs."
-       :error)))
+`proctools' package) and restart Emacs.")))
     (nreverse pids)))
 
 ;; ---------------------------------------------------------------------------
@@ -1737,6 +1737,13 @@ Failed fast startup setup for %s after %d of %d steps: %s
       (setq pel-fast-startup-setup-changed t)))))
 
 ;; --
+(defun pel--delete-file-dir (dest)
+  "Delete DEST file or directory if it exists."
+  (when (file-exists-p dest)
+    (if (file-directory-p dest)
+        (delete-directory dest :recursive)
+      (delete-file dest))))
+
 
 (defun pel--migrate-fast-startup-packages (for-graphics)
   "Migrate packages installed during fast startup to elpa-complete.
@@ -1773,44 +1780,54 @@ Called by `pel--setup-normal' before the elpa symlink is flipped."
          (elpa-sibling (lambda (dp) (pel-sibling-dirpath used-elpa-dirpath dp)))
          (elpa-reduced-dp  (λc adj (λc elpa-sibling "elpa-reduced")))
          (elpa-complete-dp (λc adj (λc elpa-sibling "elpa-complete")))
-         (candidates       (pel--fast-startup-straggler-dirs elpa-reduced-dp)))
-    (if (not candidates)
+         (elpa-reduced-leftovers (pel--fast-startup-straggler-dirs elpa-reduced-dp)))
+    (if (not elpa-reduced-leftovers)
         t                               ; nothing to migrate — safe to proceed
       (when (file-directory-p elpa-complete-dp)
         (let* ((other-pids   (pel--other-emacs-pids))
                (migrated-pkgs nil)
                (leftover-pkgs nil)
                (error-pkgs    nil))
-          (dolist (entry candidates)
-            (let* ((basename (file-name-nondirectory entry))
-                   (dest     (expand-file-name basename elpa-complete-dp)))
-              (if (file-exists-p dest)
-                  ;; Destination already exists — warn and skip; the package
-                  ;; is already present in elpa-complete so this is non-fatal.
-                  (display-warning
-                   'pel-setup
-                   (format "pel--migrate-fast-startup-packages: \
-skipped %s — directory already exists in %s."
-                           basename elpa-complete-dp)
-                   :warning)
-                (condition-case err
+          (dolist (reduced-dp elpa-reduced-leftovers)
+            (let* ((basename (file-name-nondirectory reduced-dp))
+                   (complete-dp (expand-file-name basename elpa-complete-dp)))
+              (if (file-exists-p complete-dp)
+                  (if other-pids
+                      ;; File/Dir exists in elpa-complete but other Emacs
+                      ;; processes are running Leave the file in the
+                      ;; elpa-reduced directory but warn user.
+                      (display-warning 'pel-setup
+                                       (format "\
+pel--migrate-fast-startup-packages: skipped removing %s:
+other Emacs are running and directory already exists in %s."
+                                               basename elpa-complete-dp)
+                                       :warning)
+                    ;; File/dir exists in elpa-complete and no other Emacs
+                    ;; process is running.  Just delete it from elpa-reduced.
+                    (pel--delete-file-dir reduced-dp))
+                ;; File does not exists in elpa-complete.
+                (condition-case err     ; protect against copy/move errors
                     (if other-pids
                         ;; Other Emacs processes running: COPY to preserve
                         ;; originals for those processes.
                         (progn
-                          (pel-copy-directory entry dest)
+                          (pel-copy-directory reduced-dp complete-dp)
                           (push basename migrated-pkgs)
                           (push basename leftover-pkgs))
                       ;; No other Emacs processes: MOVE silently.
-                      (rename-file entry dest)
+                      (rename-file reduced-dp complete-dp)
                       (push basename migrated-pkgs))
                   (error
-                   (display-warning
-                    'pel-setup
-                    (format "pel--migrate-fast-startup-packages: \
-failed to migrate %s: %s"
-                            basename (error-message-string err))
-                    :error)
+                   ;; Error detected while copying or moving files/dirs to
+                   ;; elpa-complete:
+                   ;; - erase possibly partially copied files
+                   (pel--delete-file-dir complete-dp)
+                   ;; - then report error.
+                   (display-warning 'pel-setup
+                                    (format "\
+pel--migrate-fast-startup-packages: failed to migrate %s: %s"
+                                            basename (error-message-string err))
+                                    :error)
                    (push basename error-pkgs))))))
           ;; Warn about copies left behind in elpa-reduced.
           (when leftover-pkgs
