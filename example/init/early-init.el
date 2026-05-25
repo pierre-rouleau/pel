@@ -20,10 +20,9 @@
 ;; the code must resort to environment variables to detect if Emacs is
 ;; running in graphics mode or in terminal/TTY mode.  The code uses the
 ;; presence of the "PEL_EMACS_IN_GRAPHICS" environment variable set to "1 to
-;; identify the graphics mode when Emacs is launched from a shell and the
-;; absence of an environment variable identified by the
-;; `pel-early-init-shell-detection-envvar' when Emacs is launched from a GUI
-;; application launcher.
+;; identify the graphics mode when Emacs is launched from a shell. For pure
+;; GUI Emacs PEL uses the `pel-emacs-gui-programs'; the absolute path of all
+;; GUI Emacs commands available on this system.
 ;;
 ;; The code of this file does not load any Emacs Lisp file, it only uses what
 ;; is already available: the Emacs Lisp forms implemented in C and the ones
@@ -64,9 +63,7 @@
 ;;     used.  If your shell does not have such environment variable, use
 ;;     something like "PEL_SHELL" and define it inside your shell
 ;;     initialization file (something like ~/.bashrc or ~/.bash_profile).
-;;     - Identified in early-init.el by `pel-early-init-shell-detection-envvar',
-;;       and set by PEL command to the same value as the
-;;       `pel-shell-detection-envvar' user-option.
+;;     - Identified in early-init.el by `pel-emacs-gui-programs'.
 ;;
 ;; - PEL fast startup:
 ;;   Whether PEL activates the fast startup mode.
@@ -125,10 +122,8 @@ If you want to use some other file, please modify the initialized value.")
 (defconst pel-early-init-support-dual-environment-p nil
   "When t PEL uses 2 custom files: one for TTY and one for graphic mode.")
 
-(defconst pel-early-init-shell-detection-envvar "_"
-  "Name of envvar used to detect that Emacs was launched by a shell.
-The value should be the same as `pel-shell-detection-envvar' user-variable
-defined in pel--options.el")
+(defconst pel-early-init-emacs-gui-programs nil
+  "List of absolute paths of Emacs executables known to be pure GUI programs.`")
 
 (defconst pel-early-init-support-gc-boost-p nil
   "When t, raise GC threshold during startup and restore it afterwards.")
@@ -144,20 +139,25 @@ Has no effect when Emacs runs in terminal/TTY mode.")
 ;; The code below this line does not require editing.
 ;; ==================================================
 
-(defconst pel-early-init-file-version "0.3"
+(defconst pel-early-init-file-version "0.4"
   "Version of PEL early-init.el. Verified by pel-setup logic. Do NOT change.")
+
+(defconst pel--ei-in-graphics-p
+  (or
+   ;; For PEL controlled ec launched GUI where PEL_EMACS_IN_GRAPHICS envvar is defined.
+   (string-equal (getenv "PEL_EMACS_IN_GRAPHICS") "1")
+   ;; For pure GUI programs identified in `pel-emacs-gui-programs' user-option
+   ;; then copied into `pel-early-init-emacs-gui-programs' above.
+   (and pel-early-init-emacs-gui-programs
+        (member (expand-file-name invocation-name invocation-directory)
+                pel-early-init-emacs-gui-programs)))
+  "Non-nil when early-init.el detects that Emacs is running in graphics mode.
+Uses the same heuristic as `pel-force-graphic-specific-custom-file-p'.")
 
 (defconst pel-force-graphic-specific-custom-file-p
   (and pel-early-init-support-dual-environment-p
-       (or (string-equal (getenv "PEL_EMACS_IN_GRAPHICS") "1")
-           (not (getenv pel-early-init-shell-detection-envvar))))
+       pel--ei-in-graphics-p)
   "Force independent graphics mode customization.")
-
-(defconst pel--ei-in-graphics-p
-  (or (string-equal (getenv "PEL_EMACS_IN_GRAPHICS") "1")
-      (not (getenv pel-early-init-shell-detection-envvar)))
-  "Non-nil when early-init.el detects that Emacs is running in graphics mode.
-Uses the same heuristic as `pel-force-graphic-specific-custom-file-p'.")
 
 ;; ---------------------------------------------------------------------------
 ;; GC Threshold Boost During Startup
