@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-16 08:46:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-25 13:39:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -45,6 +45,7 @@
 ;; - `pel-prompt-with-completion'
 ;; - `pel-prompt-title'
 ;; - `pel-prompt-for-filename'
+;; - `pel-long-prompt-yes-no'
 ;;
 ;; The `pel-y-n-e-or-l-p' function is a minor modification of the Emacs'
 ;; y-or-n-p.  It has the ability to type "e" or "E" as an answer to
@@ -73,6 +74,10 @@
 ;; provides a completion from the choices given in a collection list.
 ;;
 ;; The `pel-prompt-title' is a specialized prompt for a title string.
+;;
+;; Use the `pel-long-prompt-yes-no' when you must prompt with a very long
+;; message. That message is printed inside its own temporary window and then
+;; the prompt is shown in the echo area referring to that window.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies
@@ -86,6 +91,7 @@
   (require 'cl-macs))                 ; use: `cl-case'.
 
 
+;; ---------------------------------------------------------------------------
 ;;; Code:
 
 (defvar pel-prompt-map
@@ -567,6 +573,32 @@ minibuffer for editing."
                      nil
                      ;; PREDICATE
                      'file-exists-p)))
+
+;; ---
+
+(defun pel-long-prompt-yes-no (msg &optional prompt-msg)
+  "Display a long MSG in the *Attention* window and prompt in the echo area.
+PROMPT-MSG is the querying prompt shown in the echo area.
+It defaults to \"Proceed? \".
+The function return t if the answer is positive, nil otherwise."
+  (let ((buf-name "*Attention*")
+        reply)
+    ;; 1. Create and show the multi-line buffer
+    (with-output-to-temp-buffer buf-name
+      (print msg))
+    ;; 2. Force Emacs to draw the new window layout immediately
+    (sit-for 0)
+    ;; 3. Prompt the user, wrapped in unwind-protect to clear the window when done
+    (unwind-protect
+        (setq reply (y-or-n-p (format "See *Attention* buffer: %s"
+                                      (or prompt-msg "Proceed? "))))
+
+      ;; 4. Always close the message window when done, even if C-g is pressed
+      (let ((win (get-buffer-window buf-name)))
+        (when win
+          (delete-window win))))
+    reply))
+
 ;; -----------------------------------------------------------------------------
 (provide 'pel-prompt)
 
