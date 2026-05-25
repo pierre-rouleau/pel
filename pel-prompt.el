@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-25 14:59:24 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-25 15:04:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -596,7 +596,8 @@ The function returns t if the answer is positive, nil otherwise."
 
       ;; 4. Close the message window when done, even if C-g is pressed
       (let ((win (get-buffer-window buf-name)))
-        (when (window-deletable-p win)
+        (when (and win
+                   (window-deletable-p win))
           (delete-window win))
         (when (get-buffer buf-name)
           (kill-buffer buf-name))))
