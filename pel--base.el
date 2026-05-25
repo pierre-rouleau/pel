@@ -472,18 +472,23 @@ Other uses risk returning non-nil value that point to the wrong file."
 
 (defun pel-is-os-launched-gui-p ()
   "Predicate: t when Emacs is a GUI Emacs launched from the OS, not a shell."
-  (cond
-   ((eq system-type 'windows-nt)
-    ;; Windows: Check for standard command prompt / PowerShell markers
-    (not (or
-          (getenv "PROMPT")          ; Exists inside standard Windows cmd.exe
-          (getenv "PSModulePath"))))   ; Exists inside Windows PowerShell / Core
+  (when (display-graphic-p)
+    (cond
+     ((eq system-type 'windows-nt)
+      ;; Windows: Check for standard command prompt / PowerShell markers
+      (not (or (getenv "PROMPT")        ; cmd.exe session
+               ;; Check for active PS session, not just installation:
+               (and (getenv "PSModulePath")
+                    (getenv "PSVersionTable")) ; only set in active PS session
+               (getenv "SHLVL"))))             ; Git Bash / MSYS2 / Cygwin
 
-   ;; Linux, macOS: check for POSIX shell identifiers
-   (t (let ((shlvl (getenv "SHLVL")))
-        (and (display-graphic-p)
-             (or (null shlvl)
-                 (equal shlvl "0"))))))) ; Shell Level tracking variable (POSIX shells)
+     ;; Linux, macOS: check for POSIX shell identifiers
+     (t (let ((shlvl (getenv "SHLVL")))
+          ;;  Shell Level tracking variable (POSIX shells)
+          (and (or (null shlvl) (equal shlvl "0"))
+               (not (or (getenv "TERM_PROGRAM")
+                        (getenv "COLORTERM")
+                        (getenv "SSH_TTY")))))))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Assignment operator macros
