@@ -308,10 +308,11 @@ Again any feedback is welcome. Thanks!
     - under 0.2 seconds on macOS, even with over 300 packages, see [#quick]_.
 
     In fast startup you can use all external packages you have already
-    installed in normal startup mode but now Emacs starts much faster.  In
-    fast startup PEL does not support its normal download and installation
-    external packages via customization, you must return to normal mode to do
-    so.
+    installed in normal startup mode but now Emacs starts much faster.
+    You cannot use PEL customization based package installation but
+    you can still install packages with Emacs ``package-list``.
+    To restore PEL's ability to control package by customization you must
+    return to Emacs normal mode.
 
     PEL provides two commands to switch modes:
 
@@ -323,15 +324,19 @@ Again any feedback is welcome. Thanks!
       setup with package management capabilities and PEL's automatic package
       installation via customization.
 
-    Note that while PEL operating in fast startup mode still supports
-    installations of packages via Emacs package manager commands; they will be
-    installed in the elpa-reduced directory in the standard way.  That will
-    unfortunately increase Emacs' startup time, but it will work.  In all
-    cases it is best to return to normal mode when installing new packages and
-    keep the fast startup mode as efficient as possible.  It's also best to
-    install packages by customizing PEL user-options for the packages that PEL
-    already supports.  Please do not hesitate to request for the inclusion of
-    new packages.
+    Note that while PEL operating in fast startup mode
+    installations of packages via Emacs package manager commands will be
+    installed in the elpa-reduced directory in the standard way, not in the
+    most efficient way.  That may increase Emacs' startup time a little, but
+    it will work.
+
+    To maintain the highest efficiency it is best to return to normal mode
+    when installing new packages allowing PEL to create update bundles when
+    activating fast startup mode with all packages installed by normal mode.
+
+    It's also best to install packages by customizing PEL
+    user-options for the packages that PEL already supports.  Please do not
+    hesitate to request for the inclusion of new packages.
 
   - With PEL you can see a quick report with relevant information by executing
     the ``pel-emacs-load-stats`` command.
