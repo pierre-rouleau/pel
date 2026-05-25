@@ -470,25 +470,99 @@ Other uses risk returning non-nil value that point to the wrong file."
   (and (eq system-type 'darwin)
        (not (display-graphic-p))))
 
+
+;; (defun pel-is-os-launched-gui-p ()
+;;   "Predicate: t when Emacs is a GUI Emacs launched from the OS, not a shell."
+;;   (when (display-graphic-p)
+;;     (cond
+;;      ((eq system-type 'windows-nt)
+;;       ;; Windows: detect terminal/session-launched GUI via shell/session markers.
+;;       (not (or (getenv "PROMPT")        ; cmd.exe
+;;                (getenv "SHLVL")         ; MSYS2/Cygwin/Git Bash
+;;                (getenv "MSYSTEM")
+;;                (getenv "WT_SESSION")
+;;                (getenv "TERM"))))
+;;
+;;      ;; Linux, macOS: check for POSIX shell identifiers
+;;      (t
+;;       (let ((shlvl (getenv "SHLVL")))
+;;         ;; OS-launched GUI only when no terminal/remote markers are present.
+;;         (and (not (or (getenv "TERM")
+;;                       (getenv "TERM_PROGRAM")
+;;                       (getenv "COLORTERM")
+;;                       (getenv "SSH_TTY")
+;;                       (getenv "SSH_CLIENT")))
+;;              (or (null shlvl) (equal shlvl "0"))))))))
+
+(defconst pel--known-shells
+  '("bash" "zsh" "sh" "dash" "fish" "ksh" "tcsh" "csh" "ash" "mksh" "pdksh"
+    "elvish" "nu" "ion" "yash" "rbash" "rzsh")
+  "Common Unix shell executable names used by `pel-is-os-launched-gui-p'.")
+
+(defun pel--linux-parent-process-name ()
+  "Return the parent process executable name on Linux via /proc.
+Reads /proc/self/status to obtain the PPid, then reads /proc/<ppid>/comm
+for the executable name.  No subprocess is spawned; this is fast and
+has no side-effects.  Returns nil if the information is unavailable."
+  (let ((ppid
+         (with-temp-buffer
+           (insert-file-contents "/proc/self/status")
+           (when (re-search-forward "^PPid:[ \t]+\\([0-9]+\\)" nil t)
+             (match-string 1)))))
+    (when ppid
+      (let ((comm-file (format "/proc/%s/comm" ppid)))
+        (when (file-readable-p comm-file)
+          (with-temp-buffer
+            (insert-file-contents comm-file)
+            (string-trim (buffer-string))))))))
+
 (defun pel-is-os-launched-gui-p ()
-  "Predicate: t when Emacs is a GUI Emacs launched from the OS, not a shell."
+  "Predicate: t when Emacs is a GUI Emacs launched from the OS, not a shell.
+Returns nil when Emacs is running in terminal mode, or when it was launched
+from a shell (interactively or via a shell script such as bin/ec)."
   (when (display-graphic-p)
     (cond
+     ;; Windows
      ((eq system-type 'windows-nt)
-      ;; Windows: Check for standard command prompt / PowerShell markers
-      (not (or (getenv "PROMPT")        ; cmd.exe session
-               ;; Check for active PS session, not just installation:
+      ;; PROMPT      → set only inside an active cmd.exe session
+      ;; PSModulePath is system-wide (set at PS installation), but
+      ;; PSVersionTable is session-only → both present = active PS session
+      ;; SHLVL       → set by Git Bash / MSYS2 / Cygwin shells
+      (not (or (getenv "PROMPT")
                (and (getenv "PSModulePath")
-                    (getenv "PSVersionTable")) ; only set in active PS session
-               (getenv "SHLVL"))))             ; Git Bash / MSYS2 / Cygwin
+                    (getenv "PSVersionTable"))
+               (getenv "SHLVL"))))
 
-     ;; Linux, macOS: check for POSIX shell identifiers
-     (t (let ((shlvl (getenv "SHLVL")))
-          ;;  Shell Level tracking variable (POSIX shells)
-          (and (or (null shlvl) (equal shlvl "0"))
-               (not (or (getenv "TERM_PROGRAM")
-                        (getenv "COLORTERM")
-                        (getenv "SSH_TTY")))))))))
+     ;;
+     ;; GNU/Linux — exact check via /proc (no subprocess, O(1) cost)
+     ((eq system-type 'gnu/linux)
+      (let ((parent (pel--linux-parent-process-name)))
+        (if parent
+            ;; Definitive: true only when the parent is NOT a known shell
+            (not (member parent pel--known-shells))
+          ;; /proc/<ppid>/comm unreadable (container / restricted namespace):
+          ;; fall back to env-var heuristics
+          (let ((shlvl (getenv "SHLVL")))
+            (and (or (null shlvl) (equal shlvl "0"))
+                 (not (or (getenv "TERM_PROGRAM")
+                          (getenv "COLORTERM")
+                          (getenv "SSH_TTY"))))))))
+
+     ;;
+     ;; macOS, *BSD, and other Unix-like systems
+     ;; A ps-based parent-process check would be exact but spawns a
+     ;; subprocess at startup; env-var heuristics are used instead.
+     ;; macOS launchd sets TERM=dumb for GUI apps launched from the desktop;
+     ;; every real terminal emulator sets a meaningful value (xterm-256color,
+     ;; alacritty, xterm-kitty, …).
+     (t
+      (let ((shlvl (getenv "SHLVL"))
+            (term  (getenv "TERM")))
+        (and (or (null shlvl) (equal shlvl "0"))
+             (or (null term)  (equal term "dumb"))
+             (not (or (getenv "TERM_PROGRAM") ; Terminal.app, iTerm2, VSCode…
+                      (getenv "COLORTERM")    ; Alacritty, Kitty (true-colour)
+                      (getenv "SSH_TTY")))))))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Assignment operator macros
