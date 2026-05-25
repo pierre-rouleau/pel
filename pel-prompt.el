@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-25 13:39:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-25 14:59:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -574,18 +574,19 @@ minibuffer for editing."
                      ;; PREDICATE
                      'file-exists-p)))
 
-;; ---
+;; ---------------------------------------------------------------------------
+;; Long Prompt
 
 (defun pel-long-prompt-yes-no (msg &optional prompt-msg)
   "Display a long MSG in the *Attention* window and prompt in the echo area.
 PROMPT-MSG is the querying prompt shown in the echo area.
 It defaults to \"Proceed? \".
-The function return t if the answer is positive, nil otherwise."
+The function returns t if the answer is positive, nil otherwise."
   (let ((buf-name "*Attention*")
         reply)
     ;; 1. Create and show the multi-line buffer
     (with-output-to-temp-buffer buf-name
-      (print msg))
+      (princ msg))
     ;; 2. Force Emacs to draw the new window layout immediately
     (sit-for 0)
     ;; 3. Prompt the user, wrapped in unwind-protect to clear the window when done
@@ -593,10 +594,12 @@ The function return t if the answer is positive, nil otherwise."
         (setq reply (y-or-n-p (format "See *Attention* buffer: %s"
                                       (or prompt-msg "Proceed? "))))
 
-      ;; 4. Always close the message window when done, even if C-g is pressed
+      ;; 4. Close the message window when done, even if C-g is pressed
       (let ((win (get-buffer-window buf-name)))
-        (when win
-          (delete-window win))))
+        (when (window-deletable-p win)
+          (delete-window win))
+        (when (get-buffer buf-name)
+          (kill-buffer buf-name))))
     reply))
 
 ;; -----------------------------------------------------------------------------
