@@ -111,7 +111,7 @@ If you want to use some other file, please modify the initialized value.")
 ;; PEL Controlled values
 ;; ---------------------
 ;;
-;; The following 3 defconst forms are controlled by the function
+;; The following 6 defconst forms are controlled by the function
 ;; `pel--update-early-init' used by PEL commands code. Therefore you do not
 ;; need to edit this file manually. The value MUST remain at the end of the
 ;; line for each of these forms.  The docstring MUST start on the next line.
@@ -123,7 +123,7 @@ If you want to use some other file, please modify the initialized value.")
   "When t PEL uses 2 custom files: one for TTY and one for graphic mode.")
 
 (defconst pel-early-init-emacs-gui-programs nil
-  "List of absolute paths of Emacs executables known to be pure GUI programs.`")
+  "List of absolute paths of Emacs executables known to be pure GUI programs.")
 
 (defconst pel-early-init-support-gc-boost-p nil
   "When t, raise GC threshold during startup and restore it afterwards.")
