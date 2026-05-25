@@ -890,7 +890,8 @@ Note: `display-graphic-p' is still checked, so a terminal-mode Emacs using
 the same binary will never return t."
   :group 'pel-base-emacs
   :group 'pel-fast-startup
-  :type '(repeat file))
+  :type '(repeat file)
+  :safe #'listp)
 
 
 (defcustom pel-shell-detection-envvar "OBSOLETE-DO-NOT-USE!"
