@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-24 16:34:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-25 10:49:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -373,27 +373,29 @@ Optional arguments:
  You may experience inconsistent Emacs behaviour.  It's best to restart Emacs!"
                  mode)
       (cond ((eq mode 'fast)
-             (message "PEL/Emacs %soperates in fast startup mode%s.
+             (display-message-or-buffer "\
+PEL/Emacs %soperates in fast startup mode%s.
  Emacs starts faster because single directory packages are bundled inside
  a single directory: %selpa-reduced/pel-bundle-YYYYMMDD.hhmm.
  NOTE: PEL's automatic package management via `pel-use-<XYZ>' customization is
  suspended in this mode.  You can still install packages manually via
  M-x list-packages; they land in elpa-reduced and will be migrated to
  elpa-complete automatically when you run M-x pel-setup-normal."
-                      now-msg
-                      (pel-prompt-with-quickstart-state "" nil pq-just-modified)
-                      user-emacs-directory))
+                                        now-msg
+                                        (pel-prompt-with-quickstart-state "" nil pq-just-modified)
+                                        user-emacs-directory))
             ((eq mode 'normal)
-             (message "PEL/Emacs %soperates in normal mode%s.
+             (display-message-or-buffer "\
+PEL/Emacs %soperates in normal mode%s.
  In this mode Emacs packages are setup the way Emacs normally organizes them.
  You can install new packages and you can use PEL customization to add and
  install new package, or use pel-cleanup to remove the unused ones.
  With a large number of external packages Emacs normally starts slower
  because of the larger number of directories inside %selpa
  If you want to speed up Emacs startup execute pel-setup-fast."
-                      now-msg
-                      (pel-prompt-with-quickstart-state "" nil pq-just-modified)
-                      user-emacs-directory))
+                                        now-msg
+                                        (pel-prompt-with-quickstart-state "" nil pq-just-modified)
+                                        user-emacs-directory))
             (t
              (let* ((tc.met-criteria.problems (pel-fast-setup-met-criteria))
                     (met-criteria (nth 1 tc.met-criteria.problems))
