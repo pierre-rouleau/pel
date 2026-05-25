@@ -36,6 +36,7 @@
 ;; Emacs TTY/Graphics Mode Detection
 ;; - `pel-emacs-is-a-tty-p'
 ;; - `pel-can-display-special-chars-p'
+;; - `pel-is-os-launched-gui-p'
 ;;
 ;; Assignment operator macros
 ;;  - `pel+='
@@ -468,6 +469,21 @@ Other uses risk returning non-nil value that point to the wrong file."
   "Predicate: t if Emacs can properly show Unicode characters like 👍 or 👎."
   (and (eq system-type 'darwin)
        (not (display-graphic-p))))
+
+(defun pel-is-os-launched-gui-p ()
+  "Predicate: t when Emacs is a GUI Emacs launched from the OS, not a shell."
+  (cond
+   ((eq system-type 'windows-nt)
+    ;; Windows: Check for standard command prompt / PowerShell markers
+    (not (or
+          (getenv "PROMPT")          ; Exists inside standard Windows cmd.exe
+          (getenv "PSModulePath"))))   ; Exists inside Windows PowerShell / Core
+
+   ;; Linux, macOS: check for POSIX shell identifiers
+   (t (let ((shlvl (getenv "SHLVL")))
+        (and (display-graphic-p)
+             (or (null shlvl)
+                 (equal shlvl "0"))))))) ; Shell Level tracking variable (POSIX shells)
 
 ;; ---------------------------------------------------------------------------
 ;;* Assignment operator macros

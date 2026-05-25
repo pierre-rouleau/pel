@@ -189,7 +189,7 @@
   "Remembers that `pel-init' was called.  DO NOT MODIFY!")
 
 (unless pel--init-called-once
-  (unless (getenv pel-shell-detection-envvar)
+  (when (pel-is-os-launched-gui-p)
     ;; A GUI Emacs is running! Set up its process environment from user-option.
     (when (and (require 'pel-process nil 'noerror)
                (fboundp 'pel-process-update-environment-from))
