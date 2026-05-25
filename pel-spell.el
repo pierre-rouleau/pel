@@ -113,6 +113,7 @@
 (require 'pel--macros)
 (require 'pel--options)
 (require 'pel-prompt)                   ; use: `pel-prompt'
+(require 'pel--process)                 ; use: `pel-is-os-launched-gui-p'
 
 (eval-when-compile
   (require 'cl-lib)                     ; use: `cl-dolist' and `cl-return'
@@ -300,18 +301,16 @@ The %s user-option identifies %s as your spell checker program.
                                  var-name program-name
                                  var-name
                                  (pel-string-when
-                                  (not (getenv pel-shell-detection-envvar))
+                                  (pel-is-os-launched-gui-p)
                                   (format "
- - The '%s' environment variable, selected by `pel-shell-detection-envvar' to
-   detect a shell launching of Emacs, is not set in the environment.
-   That indicates that Emacs was launched from a GUI application instead
-   of a shell.  For this environment you will need to do one of the following:
+   This instance of Emacs was launched from a GUI application instead
+   of a shell.  For this environment you need to do one of the following:
    - Identify the complete path of the ispell-compatible in
      `pel-spell-check-tool',  or
    - Update the PATH used by Emacs by specifying an extension of PATH
      inside the `pel-gui-process-environment' user-option that includes
      the directory where your ispell-compatible program is located."
-                                          pel-shell-detection-envvar))
+                                          ))
                                  (getenv "PATH")
                                  pel--spell-error-info-msg)
                          :error)

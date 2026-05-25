@@ -873,21 +873,31 @@ Use this is a tool to help debug syntax processing of major modes."
   :link `(url-link :tag "Fast Startup PDF" ,(pel-pdf-file-url "fast-startup"))
   :group 'pel)
 
-(defcustom pel-shell-detection-envvar "_"
+(defcustom pel-emacs-gui-programs nil
+  "List of absolute paths of Emacs executables known to be pure GUI programs.
+When non-nil, `pel-is-os-launched-gui-p' returns t immediately if the
+running Emacs executable matches any listed path, bypassing the
+platform-specific heuristics entirely.
+
+Typical use cases:
+- macOS: add the path inside the .app bundle, e.g.
+    \"/Applications/Emacs.app/Contents/MacOS/Emacs\"
+  (this binary is never invoked directly from a shell, so the match is exact).
+- Linux: a dedicated GUI-only build, e.g. \"/opt/emacs-gui/bin/emacs\".
+- Windows: a dedicated GUI build, e.g. \"C:/emacs-gui/bin/emacs.exe\".
+
+Note: `display-graphic-p' is still checked, so a terminal-mode Emacs using
+the same binary will never return t."
+  :group 'pel-base-emacs
+  :group 'pel-fast-startup
+  :type '(repeat file)
+  :safe #'listp)
+
+
+(defcustom pel-shell-detection-envvar "OBSOLETE-DO-NOT-USE!"
   "Name of envvar used to detect that Emacs was launched by a shell.
 
-The default is \"_\", the environment variable that Bash uses to
-identify the name of the executable that launched it.  This
-environment variable is not part of the process environment when
-Emacs is launched from a GUI program such as macOS Finder.
-
-Change this value when using another shell or when running on
-other operating system such as Windows.  If you cannot find a
-suitable environment variable that is defined when Emacs is
-launched, then define an environment variable that will be
-present in all instances of your shell but not inside the OS
-process environment.  For instance you could use the environment
-name \"PEL_SHELL\"."
+OBSOLETE user-option no longer used. Delete it from your customization."
   :group 'pel-fast-startup
   :type 'string)
 
@@ -927,10 +937,9 @@ IMPORTANT NOTES
 
 These environment variables are only used for a GUI-launched
 Emacs session; an Emacs session that has not been launched by a
-shell.  PEL detects this type of Emacs session when it detects
-that the environment variable identified by
-`pel-shell-detection-envvar' is not present inside the process
-environment.
+shell.  The `pel-is-os-launched-gui-p' function detects this
+type of Emacs session and uses the `pel-emacs-gui-programs'
+user-option to reliably identify them.
 
 PEL sets Emacs environment variable process **once** per process
 execution session, during the **first** call of function

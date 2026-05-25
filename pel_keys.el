@@ -156,6 +156,7 @@
 ;;                      ;      also defines a set of utility functions to deal with
 ;;                      ;      the options: pel-auto-complete-help
 ;;                      ; use: `pel-emacs-is-graphic-p'
+(require 'pel--process) ; use: `pel-is-os-launched-gui-p'
 
 (eval-when-compile
   (require 'cl-macs))   ; use: `cl-eval-when'
@@ -189,7 +190,7 @@
   "Remembers that `pel-init' was called.  DO NOT MODIFY!")
 
 (unless pel--init-called-once
-  (unless (getenv pel-shell-detection-envvar)
+  (when (pel-is-os-launched-gui-p)
     ;; A GUI Emacs is running! Set up its process environment from user-option.
     (when (and (require 'pel-process nil 'noerror)
                (fboundp 'pel-process-update-environment-from))

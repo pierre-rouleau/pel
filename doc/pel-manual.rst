@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Leverage
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2026-05-21 15:54:10 EDT, updated by Pierre Rouleau.
+:Modified: 2026-05-25 18:59:20 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020-2026 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1130,32 +1130,30 @@ variables are read by PEL's code but also by the code in the ``early-init.el``
 Although this method requires an initial manual setup it runs quickly and does
 not slow Emacs startup [#purcell]_.
 
-PEL's method requires 2 environment variables and logic inside both
-early-init.el and inside init.el.
+PEL uses a different method that supports two different ways of launching GUI
+Emacs processes:
 
-The environment variables are used like this:
+- PEL provides the `ec`_ command to launch GUI Emacs from the shell.
+  This shell script sets the ``PEL_EMACS_IN_GRAPHICS`` environment variable to
+  the value "1".  PEL internal logic checks for this value.
+- PEL provides ``pel-is-os-launched-gui-p`` function that returns t when the
+  current Emacs is a OS launched GUI program.
+  It uses the ``pel-emacs-gui-programs`` user-option to identify
+  the absolute path of one or several GUI Emacs programs that can be launched
+  from the OS GUI (the desktop or whatever the OS supports).
 
-========== ========== ==============================================
-Variable 1 Variable 2 Detected mode
-========== ========== ==============================================
-Not set    N/A        GUI launched Emacs running in graphics mode.
-Not set    Set to "1" Shell launched Emacs running in graphics mode.
-Set        Not set    Shell launched Emacs running in terminal mode.
-========== ========== ==============================================
+  - By default this is unset and ``pel-is-os-launched-gui-p`` logic uses
+    heuristics in attempt to identify the GUI Emacs.  It's not 100% reliable
+    so it's best to customize the ``pel-emacs-gui-programs`` user-option and
+    identify the GUI Emacs programs you use.
+  - Doing it will also allows detection GUI program inside early-init.el and
+    will allow PEL to inject or replace environment variables top values you
+    identify inside the ``pel-gui-process-environment`` user-option.  That
+    gives you even more control to what your GUI Emacs sees in the environment.
 
-- **Variable 1**: identified by the ``pel-shell-detection-envvar`` user
-  option.
-
-  - The default value of the user-option is the specially reserved "_"
-    environment variable used by Bash. If you do not use Bash to launch Emacs
-    you will have to use something else.  In the worst case, use ``PEL_SHELL``
-    and set that environment variable inside your shell startup script
-    (something like ``~/.bash_profile``).
-
-- **Variable 2**: ``PEL_EMACS_IN_GRAPHICS`` environment variable.
-  This variable must be set to ``"1"`` by the shell script that launches the
-  shell launched Emacs in graphics mode.  See the script examples in the
-  sub-sections of `Launching graphics mode Emacs from a shell`_.
+For more instruction on launching Emacs with PEL see
+the script examples in the
+sub-sections of `Launching graphics mode Emacs from a shell`_.
 
 
 If you plan to use PEL support for package quickstart, you must use an
@@ -1191,10 +1189,10 @@ section PEL provides a solution to this problem, a solution that does not slow
 down Emacs startup and requires you to set one or two PEL customization
 user-option variables:
 
-- ``pel-shell-detection-envvar`` to identify an environment variable whose
-  presence identifies that Emacs was launched by a shell and absence
-  identifies that Emacs was launched from a GUI application such as Windows
-  Explorer, macOS Finder or something like that.
+- ``pel-emacs-gui-programs`` to identify the absolute path of all pure GUI
+  Emacs programs you use in your system;  the Emacs programs
+  launched from a GUI application such as Windows
+  Explorer, macOS Finder or the equivalent.
 
 - ``pel-gui-process-environment`` is where you define the environment
   variables for the GUI Emacs.  You can define any environment variable name
@@ -1219,11 +1217,6 @@ checker program (aspell, hunspell or ispell) or several compilers.
   `example/init/init.el`_ file:
 
   - Set OPTION A: set ``pel-init-support-dual-environment-p`` to ``t``
-  - Set OPTION B: set ``pel-ei-shell-detection-envvar`` to the name of the
-    environment variable your shell always set or the one you always set
-    inside your shell startup script (something like ``PEL_SHELL``).
-    Its value should be the same as what is defined by the
-    ``pel-shell-detection-envvar`` user-option.
 
 - For Emacs 27 and later, to support the package quickstart feature you must
   also create an ``early-init.el`` file that has the logic shown inside the
@@ -1241,7 +1234,7 @@ like Windows Explorer or macOS Finder you must also do the following:
 - Type the ``<f11> M-s <f2>`` key sequence to open the customization buffer
   where you can set these two user-option variables.
 
-  - Set the values of ``pel-shell-detection-envvar`` and ``environment``.
+  - Set the values of ``pel-emacs-gui-programs`` and ``pel-gui-process-environment``.
     Save the customization file.
 
 - Restart Emacs for these to take effect.
