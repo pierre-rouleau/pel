@@ -156,6 +156,7 @@
 ;;                      ;      also defines a set of utility functions to deal with
 ;;                      ;      the options: pel-auto-complete-help
 ;;                      ; use: `pel-emacs-is-graphic-p'
+(require 'pel--process) ; use: `pel-is-os-launched-gui-p'
 
 (eval-when-compile
   (require 'cl-macs))   ; use: `cl-eval-when'

@@ -113,6 +113,7 @@
 (require 'pel--macros)
 (require 'pel--options)
 (require 'pel-prompt)                   ; use: `pel-prompt'
+(require 'pel--process)                 ; use: `pel-is-os-launched-gui-p'
 
 (eval-when-compile
   (require 'cl-lib)                     ; use: `cl-dolist' and `cl-return'

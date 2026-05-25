@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-22 16:01:48 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-25 18:12:24 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -191,6 +191,7 @@ EL_FILES := pel--base.el \
 		pel--indent.el \
 		pel--keys-macros.el \
 		pel--macros.el \
+		pel--process.el \
 		pel--options.el \
 		pel-abbrev.el \
 		pel-ada.el \
@@ -796,6 +797,7 @@ pel--base.elc:            pel-comp.elc
 pel--install.elc:         pel--base.elc pel--indent.elc pel--options.elc pel--macros.elc
 pel--keys-macros.elc:     pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-browse.elc
 pel--options.elc:         pel--base.elc
+pel--process.elc:         pel--options.elc
 pel-abbrev.elc:           pel--base.elc
 pel-ada.elc:              pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
 pel-align.elc:            pel-hash.elc pel--base.elc
@@ -918,7 +920,7 @@ pel-skels-rst.elc:        pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-in
 pel-skels.elc:            pel--base.elc pel--options.elc pel-prompt.elc
 pel-smartparens.elc:      pel--base.elc pel-syntax.elc
 pel-speedbar.elc:         pel--base.elc pel--macros.elc pel--options.elc
-pel-spell.elc:            pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc
+pel-spell.elc:            pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc pel--process.elc
 pel-syntax.elc:           pel--base.elc pel--options.elc pel--syntax-macros.elc pel--macros.elc
 pel-tcl.elc:              pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
 pel-tempo.elc:            pel--keys-macros.elc pel-prompt.elc
