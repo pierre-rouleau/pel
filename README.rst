@@ -334,7 +334,7 @@ Again any feedback is welcome. Thanks!
     when installing new packages allowing PEL to create update bundles when
     activating fast startup mode with all packages installed by normal mode.
 
-    It's also best to install packages by customizing PEL
+    it's also best to install packages by customizing PEL
     user-options for the packages that PEL already supports.  Please do not
     hesitate to request for the inclusion of new packages.
 
@@ -562,47 +562,31 @@ packages, etc.
 ➣ Extends Emacs Documentation
 -----------------------------
 
+PEL PDF Tables
+~~~~~~~~~~~~~~
+
 - PEL provides **221** `topic oriented PDF tables`_ [#doc]_ each heavily hyperlinked
   to each other and to public resources.  The top-level `PEL Index PDF`_  is a
-  table listing the table for each Emacs feature, major and minor mode
-  described in other tables.  Each table attempts to provide quickly accessible
+  table listing the table for each Emacs feature, major and minor mode.
+  Each table attempts to provide quickly accessible
   concise information about the features, commands, function signatures, key
   bindings and is packed with symbol annotated and colour coded information.
   It includes hyperlinks to Emacs manuals, external packages, articles and other
   useful references.
 
-    - The PDF tables use colour codes and icons (see the `➢Legend PDF`_ for their
-      meaning) to speed identification of commands, identify if they are
-      available globally, for major mode, minor mode or under special
-      circumstances to help you understand Emacs.
-    - Some major modes also support the opening of a language-specific PDF.
-      This is done by using a key prefix: ``C-u <f12> <f1>``.  For example
-      this now opens a PDF on zsh when the command is issued from a buffer
-      editing a zsh script, or a GNU Make PDF from a buffer editing a make file
-      in GNU Make mode.
-    - Some tables describe tools like `GNU make`_ or languages (like `Perl 5`_).
+  - The PDF tables use colour codes and icons (see the `➢Legend PDF`_ for their
+    meaning) to speed identification of commands, identify if they are
+    available globally, for major mode, minor mode or under special
+    circumstances to help you understand Emacs.
+  - Some major modes also support the opening of a language-specific PDF.
+    This is done by using a key prefix: ``C-u <f12> <f1>``.  For example
+    this now opens a PDF on zsh when the command is issued from a buffer
+    editing a zsh script, or a GNU Make PDF from a buffer editing a make file
+    in GNU Make mode.
+  - Some tables describe tools like `GNU make`_ or languages, like `Perl 5`_.
 
-- `PEL's Manual`_ describes PEL features in more details. See:
 
-  - `How to install PEL`_,
-  - `How to setup GUI Emacs environment`_ to control GUI launched Emacs PATH
-    and other environment variables easily with a fast starting Emacs,
-  - `PEL setup commands`_ for `dual customization`_ and `fast startup mode`_,
-  - `PEL initialization command`_ and `PEL cleanup command`_,
-  - `PEL Customization`_,
-  - `PEL Key Bindings`_,
-  - `PEL convenience features`_ with PEL commands that extend several aspects
-    of Emacs.
-
-- `Several Documentation Pages on various Emacs Topics`_, including:
-
-  - `How to build Emacs from source`_
-  - `How to recompile all Emacs Lisp files after upgrading Emacs`_
-  - `How to use Emacs stand-alone processes, daemon and clients`_
-  - `Install the Emacs launcher shortcut scripts`_
-
-Key Strengths of PEL's PDF Documentation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Key Strengths of PEL's PDF Documentation:**
 
 **High Information Density**: The index has dense, easy-to-use, visual
 organization. Instead of making you scroll through a 10,000-word webpage,
@@ -628,6 +612,30 @@ The PEL index and all other PDFs showcase a unique approach to managing
 a sprawling configuration ecosystem: using heavily cross-referenced, visually
 dense PDF maps with hyperlinks to relevant documents.
 
+PEL Manual
+~~~~~~~~~~
+
+- `PEL's Manual`_ describes PEL features in more details. See:
+
+  - `How to install PEL`_,
+  - `How to setup GUI Emacs environment`_ to control GUI launched Emacs PATH
+    and other environment variables easily with a fast starting Emacs,
+  - `PEL setup commands`_ for `dual customization`_ and `fast startup mode`_,
+  - `PEL initialization command`_ and `PEL cleanup command`_,
+  - `PEL Customization`_,
+  - `PEL Key Bindings`_,
+  - `PEL convenience features`_ with PEL commands that extend several aspects
+    of Emacs.
+
+Topic Specific Documents
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- `Several Documentation Pages on various Emacs Topics`_, including:
+
+  - `How to build Emacs from source`_
+  - `How to recompile all Emacs Lisp files after upgrading Emacs`_
+  - `How to use Emacs stand-alone processes, daemon and clients`_
+  - `Install the Emacs launcher shortcut scripts`_
 
 
 ➣ PEL Convenience Commands
