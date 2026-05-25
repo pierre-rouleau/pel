@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-24 17:09:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-24 22:46:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1502,10 +1502,17 @@ Called by `pel--setup-fast' immediately before STEP 4 deletes elpa-reduced."
     (when stragglers
       (let ((other-pids (pel--other-emacs-pids)))
         (if (eq other-pids 'unknown-no-pgrep)
-            (user-error "Cannot activate fast startup: %s\n
+            (user-error "Cannot activate fast startup: %s\n\n
 Also cannot determine if other Emacs processes are running because pgrep is
-not installed.  Please install pgrep and try again."
-                        (pel--describe-stragglers stragglers elpa-reduced-dp))
+not installed.  Please install pgrep and try again.
+
+Director%s to remove or migrate:
+
+  %s
+"
+                        (pel--describe-stragglers stragglers elpa-reduced-dp)
+                        (if (cdr stragglers) "ies" "y")
+                        (mapconcat #'file-name-nondirectory stragglers "\n  "))
           (if other-pids
               (user-error "Cannot activate fast startup: %s\n\n%s
 
