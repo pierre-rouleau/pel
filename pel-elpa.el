@@ -77,6 +77,33 @@
 (defvar pel-elpa-debug-tracing-p nil
   "Set it to non-nil to activate debug tracing.")
 
+;;* Package name/version regexp
+;;  ============================
+;;
+;; Centralized regexp components for matching ELPA package directory names
+;; of the form \"PKGNAME-VERSION\", where VERSION may include pre-release
+;; suffixes (e.g. \"cask-0.9.1pre\", \"ztree-20250209.1933\").
+;;
+;; Use these constants everywhere package directory basenames are parsed so
+;; that a single change keeps all callers in sync.
+
+(defconst pel--pkg-version-regexp "[0-9][[:alnum:].]*"
+  "Regexp matching an ELPA package version string.
+Matches versions such as \"20250209.1933\", \"1.2.3\", \"0.9.1pre\", \"3.5\".
+The version must start with a digit and may contain alphanumerics and dots.")
+
+(defconst pel--pkg-name-regexp "[-[:alnum:]+_]+"
+  "Regexp matching an ELPA package name.
+Matches names that may contain hyphens, alphanumerics, plus signs and
+underscores.")
+
+(defconst pel--pkg-dir-name-regexp
+  (concat "\\`\\(" pel--pkg-name-regexp "\\)-" pel--pkg-version-regexp "\\'")
+  "Regexp matching an ELPA package directory basename.
+Matches strings like \"ztree-20250209.1933\", \"ace-link-20241101.1344\",
+\"cask-0.9.1pre\".
+Group 1 captures the package name.")
+
 ;;* Utilities
 ;;  =========
 ;;
@@ -492,7 +519,7 @@ Example:
 
 Note that the code supports versions inside the name of the elpa directory."
   (let ((basename (file-name-nondirectory (directory-file-name dirname))))
-    (when (string-match "\\`\\([-[:alnum:]+_]+\\)-[0-9][[:alnum:].]*\\'" basename)
+    (when (string-match pel--pkg-dir-name-regexp basename)
       (match-string 1 basename))))
 
 (defun pel-elpa-package-alist-of-dir (dirpath)
