@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-20 11:06:50 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-25 23:17:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -161,6 +161,9 @@
 (require 'pel-navigate)         ; use: `pel-backward-token-start'
 (require 'pel-elpa)             ; use: `pel-elpa-package-directories'
 ;;                              ;      `pel-el-files-in'
+;;                              ;      `pel-elpa-pkg-version-regexp'
+;;                              ;      `pel-elpa-pkg-dirname-regexp'
+;;                              ;      `pel-elpa-package-name-for'
 (require 'cl-lib)               ; use: `cl-remove-if'
 (require 'seq)                  ; use: `seq-filter'
 
@@ -1317,19 +1320,25 @@ The function assumes that:
 - the last hyphen in the name separates the package name from the package
   version number,
 - every package has the same name,
-- every package number uses the same style of version number: digits
-  representing a YYYYMMDD.HHMMSS sequence or Major.minor or equivalent
-  like 12.23, 12.44, etc..."
+- version strings may be numeric (e.g. YYYYMMDD.HHMMSS, 1.2.3) or may
+  include alphanumeric pre-release suffixes (e.g. 0.9.1pre, 1.0alpha)."
   (sort (copy-sequence pkg-dirs)
         (lambda (a b)
           (let ((fn-a (file-name-nondirectory a))
                 (fn-b (file-name-nondirectory b)))
-            (let ((v-a (and (string-match "-\\([0-9.]+\\)$" fn-a) (match-string 1 fn-a)))
-                  (v-b (and (string-match "-\\([0-9.]+\\)$" fn-b) (match-string 1 fn-b))))
+            (let* ((ver-re (concat "-\\(" pel-elpa-pkg-version-regexp "\\)$"))
+                   (v-a (and (string-match ver-re fn-a) (match-string 1 fn-a)))
+                   (v-b (and (string-match ver-re fn-b) (match-string 1 fn-b))))
               (cond
-               ((and v-a v-b) (version< v-a v-b))
-               (v-b t)      ; a has no version, sort before b
-               (t nil))))))); b has no version or neither, keep order
+               ;; Compare version numbers if possible otherwise compare as strings.
+               ((and v-a v-b)
+                (condition-case nil
+                    (version< v-a v-b)
+                  (error (string< v-a v-b))))
+               ;; a has no version, sort before b
+               (v-b t)
+               ;; b has no version or neither, keep order
+               (t nil)))))))
 
 (defun pel-elpa-dirs-for (pkg &optional in-attic)
   "Return a list of directory names for specified package PKG.
@@ -1352,8 +1361,9 @@ packages present in the elpa-attic directory."
                         (pel-elpa-attic-dirpath)
                       package-user-dir)
                     :full-path
-                    (format "\\`%s-[0-9-.]+\\'"
-                            (regexp-quote (pel-as-string pkg))))))
+                    (format "\\`%s-%s\\'"
+                            (regexp-quote (pel-as-string pkg))
+                            pel-elpa-pkg-version-regexp))))
 
 (defun pel-move-to-dir (file dir)
   "Move FILE to directory DIR.
@@ -1451,6 +1461,8 @@ Return the number of symbols that were removed from the
 (defun pel-elpa-packages-in-dir (type)
   "Return a list of symbol for all packages present in local Elpa directory.
 
+The TYPE argument is the same as the one for `pel-elpa-dirpath'.
+
 The function search the directory identified by `pel-elpa-dirpath'.
 
 The directory holds sub-directories, one per package/version.
@@ -1459,13 +1471,16 @@ The returned list contains only one symbol identifying the package for each
 version of that package.
 The list of package symbols is sorted by symbol names."
   (let ((elpa-pkg-dir-names  (directory-files
-                              (pel-elpa-dirpath type) nil ".+[0-9-.]+\\'"))
+                              (pel-elpa-dirpath type)
+                              nil
+                              pel-elpa-pkg-dirname-regexp))
         (elpa-pkg-names ()))
     (dolist (dir-name elpa-pkg-dir-names)
-      (when (eq 0 (string-match "\\`\\([^ ]+\\)-[0-9-.]+\\'" dir-name))
-        (let ((pkg-name  (intern (match-string 1 dir-name))))
-          (unless (memq pkg-name elpa-pkg-names)
-            (push pkg-name elpa-pkg-names)))))
+      (let ((pkg-name-str (pel-elpa-package-name-for dir-name)))
+        (when pkg-name-str
+          (let ((pkg-name (intern pkg-name-str)))
+            (unless (memq pkg-name elpa-pkg-names)
+              (push pkg-name elpa-pkg-names))))))
     (nreverse elpa-pkg-names)))
 
 (defun pel-elpa-unrequired ()

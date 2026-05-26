@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-18 16:25:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-25 22:51:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -30,6 +30,10 @@
 ;;  well as re-organize the Emacs directory to speed-up Emacs start-up time.
 ;;
 ;;
+;; Package name / version regexp constants:
+;;  - `pel-elpa-pkg-version-regexp'
+;;  - `pel-elpa-pkg-dirname-regexp'
+
 ;; Utilities:
 ;;  - `pel-elpa-name'
 ;;  - `pel-el-files-in'
@@ -473,10 +477,31 @@ have no sub-directories."
 ;;   . `pel-elpa-package-directories'
 ;;   . `pel-elpa-load-pkg-descriptor'
 
+
+(defconst pel-elpa-pkg-version-regexp "[0-9][[:alnum:].-]*"
+  "Regexp matching the version portion of an Elpa package directory name.
+Matches:
+- Standard MELPA timestamp versions : \"20250209.1933\"
+- Classic semver-style              : \"1.2.3\"
+- Versions with alphanumeric suffix : \"0.9.1pre\", \"0.9.1-pre\",
+                                      \"1.0alpha\", \"2.3rc1\"
+
+Use this constant everywhere a version portion needs to be matched so that
+support for unusual version strings remains consistent across PEL.")
+
+(defconst pel-elpa-pkg-dirname-regexp
+  (concat "\\`\\([-[:alnum:]+_]+\\)-" pel-elpa-pkg-version-regexp "\\'")
+  "Regexp matching an Elpa package directory basename (name-version).
+Built from `pel-elpa-pkg-version-regexp'.
+Match group 1 captures the package name.
+Examples: \"ztree-20250209.1933\", \"cask-0.9.1pre\",
+          \"ace-link-20241101.1344\".")
+
+;; --
 (defun pel-elpa-package-name-for (dirname)
   "Return the package name for the specific DIRNAME, return nil on error.
 
-The DIRNAME is expected to be a package-name.-version string.
+The DIRNAME is expected to be a package-name-version string.
 This only performs a string manipulation to extract the package name.
 
 Example:
@@ -490,9 +515,12 @@ Example:
            \"~/.emacs.d/elpa-1.2/ace-link-20241101.1344\")
   \"ace-link\"
 
+  ELISP> (pel-elpa-package-name-for \"cask-0.9.1pre\")
+  \"cask\"
+
 Note that the code supports versions inside the name of the elpa directory."
   (let ((basename (file-name-nondirectory (directory-file-name dirname))))
-    (when (string-match "\\`\\([-[:alnum:]+_]+\\)-[0-9.]+\\'" basename)
+    (when (string-match pel-elpa-pkg-dirname-regexp basename)
       (match-string 1 basename))))
 
 (defun pel-elpa-package-alist-of-dir (dirpath)
