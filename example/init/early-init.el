@@ -19,7 +19,7 @@
 ;; `display-graphic-p' is not yet available when early-init.el is executed,
 ;; the code must resort to environment variables to detect if Emacs is running
 ;; in graphics mode or in terminal/TTY mode.  The code uses the presence of
-;; the "PEL_EMACS_IN_GRAPHICS" environment variable set to "1"" to identify
+;; the "PEL_EMACS_IN_GRAPHICS" environment variable set to "1" to identify
 ;; the graphics mode when Emacs is launched from a shell. For pure GUI Emacs
 ;; PEL uses the `pel-emacs-gui-programs' user-option; the absolute path of all
 ;; GUI Emacs commands available on this system.  This is copied into
