@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-26 07:48:47 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-26 08:08:08 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -756,7 +756,7 @@ check-user-init-files:
 	          -l "build/check-init-versions-for-pel.el"
 else
 check-user-init-files:
-	`@printf` "CI build detected (GITHUB_WORKSPACE set): skipping user init file version check.\n"
+	@printf "CI build detected (GITHUB_WORKSPACE set): skipping user init file version check.\n"
 endif
 
 # -----------------------------------------------------------------------------

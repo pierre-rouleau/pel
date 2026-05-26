@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-26 07:36:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-26 08:07:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the CHECK package.
 ;; This file is not part of GNU Emacs.
@@ -29,7 +29,7 @@
 ;;             carry the version numbers expected by this PEL release.
 ;; Called by : The PEL Makefile target `check-user-init-files', before any
 ;;             byte or native compilation.
-;; Usage     : emacs --batch -Q -l build/check-init-versions.el
+;; Usage     : emacs --batch -Q -l build/check-init-versions-for-pel.el
 ;;             (the Makefile sets PEL_EXAMPLE_DIR and PEL_USER_EMACS_D via
 ;;             --eval "(setenv ...)" before loading this file.)
 ;; Notes     : - Does NOT load user or example files; scans them as text.
@@ -105,7 +105,14 @@ not readable or VARNAME is not found."
   ;;  If PEL users using Emacs >= 27 do not have an early-init.el and they
   ;;  try to activate quickstart mode PEL will detect that and can create the
   ;;  file for the user.
-  (when (file-readable-p user-early-init)
+  (cond
+   ;;
+   ((and (file-exists-p user-early-init)
+         (not (file-readable-p user-early-init)))
+    (push (format "Cannot read user early-init.el: %s" user-early-init)
+          errors))
+   ;;
+   ((file-readable-p user-early-init)
     (let ((expected (pel--check-init-extract-version example-early
                                                      "pel-early-init-file-version"))
           (actual   (pel--check-init-extract-version user-early-init
@@ -127,7 +134,7 @@ not readable or VARNAME is not found."
   Please update   : %s\n\
   Using template  : %s"
                       actual expected user-early-init example-early)
-              errors)))))
+              errors))))))
 
   ;; ── Report and exit ───────────────────────────────────────────────────────
   (if errors
