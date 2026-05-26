@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-25 22:06:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-25 22:44:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1321,7 +1321,7 @@ The function assumes that:
 - every package has the same name,
 - every package number uses the same style of version number: digits
   representing a YYYYMMDD.HHMMSS sequence or Major.minor or equivalent
-  like 12.23, 12.44, etc..."
+  like 12.23, 12.44, etc. It also accepts alphanumeric suffix."
   (sort (copy-sequence pkg-dirs)
         (lambda (a b)
           (let ((fn-a (file-name-nondirectory a))
@@ -1330,9 +1330,15 @@ The function assumes that:
                    (v-a (and (string-match ver-re fn-a) (match-string 1 fn-a)))
                    (v-b (and (string-match ver-re fn-b) (match-string 1 fn-b))))
               (cond
-               ((and v-a v-b) (version< v-a v-b))
-               (v-b t)               ; a has no version, sort before b
-               (t nil))))))); b has no version or neither, keep order
+               ;; Compare version numbers if possible otherwise compare as strings.
+               ((and v-a v-b)
+                (condition-case nil
+                    (version< v-a v-b)
+                  (error (string< v-a v-b))))
+               ;; a has no version, sort before b
+               (v-b t)
+               ;; b has no version or neither, keep order
+               (t nil)))))))
 
 (defun pel-elpa-dirs-for (pkg &optional in-attic)
   "Return a list of directory names for specified package PKG.
@@ -1467,7 +1473,7 @@ The list of package symbols is sorted by symbol names."
   (let ((elpa-pkg-dir-names  (directory-files
                               (pel-elpa-dirpath type)
                               nil
-                              (concat ".+-" pel-elpa-pkg-version-regexp "\\'")))
+                              pel-elpa-pkg-dirname-regexp))
         (elpa-pkg-names ()))
     (dolist (dir-name elpa-pkg-dir-names)
       (let ((pkg-name-str (pel-elpa-package-name-for dir-name)))

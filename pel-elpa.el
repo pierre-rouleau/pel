@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-25 22:25:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-25 22:51:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -30,6 +30,10 @@
 ;;  well as re-organize the Emacs directory to speed-up Emacs start-up time.
 ;;
 ;;
+;; Package name / version regexp constants:
+;;  - `pel-elpa-pkg-version-regexp'
+;;  - `pel-elpa-pkg-dirname-regexp'
+
 ;; Utilities:
 ;;  - `pel-elpa-name'
 ;;  - `pel-el-files-in'
@@ -490,13 +494,14 @@ support for unusual version strings remains consistent across PEL.")
   "Regexp matching an Elpa package directory basename (name-version).
 Built from `pel-elpa-pkg-version-regexp'.
 Match group 1 captures the package name.
-Examples: \"ztree-20250209.1933\", \"cask-0.9.1pre\", \"ace-link-20241101.1344\".")
+Examples: \"ztree-20250209.1933\", \"cask-0.9.1pre\",
+          \"ace-link-20241101.1344\".")
 
 ;; --
 (defun pel-elpa-package-name-for (dirname)
   "Return the package name for the specific DIRNAME, return nil on error.
 
-The DIRNAME is expected to be a package-name.-version string.
+The DIRNAME is expected to be a package-name-version string.
 This only performs a string manipulation to extract the package name.
 
 Example:
@@ -509,6 +514,9 @@ Example:
   ELISP> (pel-elpa-package-name-for
            \"~/.emacs.d/elpa-1.2/ace-link-20241101.1344\")
   \"ace-link\"
+
+  ELISP> (pel-elpa-package-name-for \"cask-0.9.1pre\")
+  \"cask\"
 
 Note that the code supports versions inside the name of the elpa directory."
   (let ((basename (file-name-nondirectory (directory-file-name dirname))))

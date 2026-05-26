@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 24 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-16 15:58:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-25 22:51:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -274,6 +274,61 @@
 
 
 
+(ert-deftest ert-test-pel-pkgs-sorted-by-version/semver ()
+  "Test `pel-pkgs-sorted-by-version' with classic semantic version numbers.
+This verifies that entries using dotted semver strings (e.g. \"1.2.3\") are
+sorted correctly, complementing the MELPA-timestamp coverage in
+`ert-test-pel-pkgs-sorted-by-version'."
+  (let ((pkglist '("/some/dir/elpa/seq-2.23"
+                   "/some/dir/elpa/seq-0.7"
+                   "/some/dir/elpa/seq-1.4"))
+        (sorted  '("/some/dir/elpa/seq-0.7"
+                   "/some/dir/elpa/seq-1.4"
+                   "/some/dir/elpa/seq-2.23")))
+    (should (equal (pel-pkgs-sorted-by-version pkglist) sorted)))
+  ;; Single entry: must return a one-element list unchanged.
+  (should (equal (pel-pkgs-sorted-by-version '("/some/dir/elpa/seq-2.23"))
+                 '("/some/dir/elpa/seq-2.23"))))
+
+
+(ert-deftest ert-test-pel-pkgs-sorted-by-version/alphanumeric-prerelease ()
+  "Test `pel-pkgs-sorted-by-version' with alphanumeric pre-release suffixes.
+
+Emacs `version<' recognises the keywords pre, alpha, beta, rc and snapshot as
+pre-release markers (see `version-to-list'), so these test cases use only those
+known keywords.  The expected ordering is:
+
+  alpha < beta < pre/rc < (no suffix / release)
+
+which means:
+  0.9.1pre < 0.9.2pre < 1.0.0
+  1.0.0alpha1 < 1.0.0beta2 < 1.0.0"
+  ;; Case 1: two pre-release variants and a release, full path form.
+  (let ((pkglist '("/some/dir/elpa/cask-1.0.0"
+                   "/some/dir/elpa/cask-0.9.2pre"
+                   "/some/dir/elpa/cask-0.9.1pre"))
+        (sorted  '("/some/dir/elpa/cask-0.9.1pre"
+                   "/some/dir/elpa/cask-0.9.2pre"
+                   "/some/dir/elpa/cask-1.0.0")))
+    (should (equal (pel-pkgs-sorted-by-version pkglist) sorted)))
+  ;; Case 2: alpha < beta < release.
+  (let ((pkglist '("/some/dir/elpa/mypkg-1.0.0beta2"
+                   "/some/dir/elpa/mypkg-1.0.0"
+                   "/some/dir/elpa/mypkg-1.0.0alpha1"))
+        (sorted  '("/some/dir/elpa/mypkg-1.0.0alpha1"
+                   "/some/dir/elpa/mypkg-1.0.0beta2"
+                   "/some/dir/elpa/mypkg-1.0.0")))
+    (should (equal (pel-pkgs-sorted-by-version pkglist) sorted)))
+  ;; Edge case: single pre-release entry must be returned as-is.
+  (should (equal (pel-pkgs-sorted-by-version '("/some/dir/elpa/cask-0.9.1pre"))
+                 '("/some/dir/elpa/cask-0.9.1pre")))
+  ;; Edge case: entries without a recognisable version must not crash;
+  ;; the list length is preserved.
+  (should (= (length (pel-pkgs-sorted-by-version
+                      '("/some/dir/elpa/archives"
+                        "/some/dir/elpa/cask-0.9.1pre"
+                        "/some/dir/elpa/cask-1.0.0")))
+             3)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-package-test)
