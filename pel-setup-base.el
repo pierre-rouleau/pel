@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-25 17:31:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-26 06:47:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -131,70 +131,76 @@ Return nil if all is OK."
     (if (boundp 'pel-init-file-version)
         (unless (string= (pel-as-string pel-init-file-version)
                          pel--expected-init-file-version)
-          (pel-push-fmt problems
-              "Invalid pel-init-file-version: %s instead of expected %s
+          (pel-push-fmt
+           problems
+           "Invalid pel-init-file-version: %s instead of expected %s
    Please update your init.el file.
    Use the pel/example/init/init.el as template."
-            pel-init-file-version pel--expected-init-file-version))
+           pel-init-file-version pel--expected-init-file-version))
       ;; `pel-init-file-version' is not bound at all: the init.el file does
       ;; not define it, so it was not prepared from the PEL template
       ;; or is using an old one.
-      (pel-push-fmt problems
-          "Invalid init.el file (%s): not ready for PEL startup management.
+      (pel-push-fmt
+       problems
+       "Invalid init.el file (%s): not ready for PEL startup management.
    It must define `pel-init-file-version' set to \"%s\".
    Use the pel/example/init/init.el as template."
-        user-init-file pel--expected-init-file-version))
+       user-init-file pel--expected-init-file-version))
     ;;
     (when pel-emacs-27-or-later-p
       (if (file-exists-p (locate-user-emacs-file "early-init.el"))
           (if (boundp 'pel-early-init-file-version)
               (unless (string= (pel-as-string pel-early-init-file-version)
                                pel--expected-early-init-file-version)
-                (pel-push-fmt problems
-                    "Invalid pel-early-init-file-version: %s instead of expected %s
+                (pel-push-fmt
+                 problems
+                 "Invalid pel-early-init-file-version: %s instead of expected %s
    Please update your early-init.el file.
    Use the pel/example/init/early-init.el as template."
-                  pel-early-init-file-version
-                  pel--expected-early-init-file-version))
+                 pel-early-init-file-version
+                 pel--expected-early-init-file-version))
             ;; `pel-early-init-file-version' is not bound at all: the
             ;; early-init.el file was not prepared from the PEL template
             ;; or is using an old one.
-            (pel-push-fmt problems
-                "Invalid early-init.el file (%searly-init.el): not ready for PEL startup management.
+            (pel-push-fmt
+             problems
+             "Invalid early-init.el file (%searly-init.el): not ready for PEL startup management.
    It must define `pel-early-init-file-version' set to \"%s\".
    Use the pel/example/init/early-init.el as template."
-              (file-name-parent-directory user-init-file)
-              pel--expected-early-init-file-version))
+             (file-name-parent-directory user-init-file)
+             pel--expected-early-init-file-version))
 
         (when early-init-must-exist
-          (pel-push-fmt problems
-              "This feature requires a PEL compatible early-init.el file
+          (pel-push-fmt
+           problems
+           "This feature requires a PEL compatible early-init.el file
    (with `pel-early-init-file-version' set to \"%s\")
    inside %s and that is missing.  Create one, using
    pel/example/init/early-init.el as template."
-            pel--expected-early-init-file-version
-            (file-name-parent-directory user-init-file)))))
+           pel--expected-early-init-file-version
+           (file-name-parent-directory user-init-file)))))
     ;;
-    ;; The next check cannot be performed when quickstart is used because in
-    ;; that case I cannot find a way to get the original value of
-    ;; package-user-dir inside the early-init.el file.  TODO.
-    (unless (bound-and-true-p package-quickstart)
-      (if (boundp 'pel-package-user-dir-original)
-          (when (and (not (file-symlink-p pel-package-user-dir-original))
-                     (pel-same-fname-p
-                      pel-package-user-dir-original
-                      (pel-elpa-name (pel-sibling-dirpath
-                                      pel-package-user-dir-original
-                                      "elpa-complete")
-                                     (display-graphic-p))))
-            (pel-push-fmt problems
-                "Incompatible elpa directory : %s.
+    ;; The check below works in all modes including graphics+quickstart
+    ;; because PEL early-init captures the value of `package-user-dir'
+    ;; in `pel-package-user-dir-original'.
+    (if (boundp 'pel-package-user-dir-original)
+        (when (and (not (file-symlink-p pel-package-user-dir-original))
+                   (pel-same-fname-p
+                    pel-package-user-dir-original
+                    (pel-elpa-name (pel-sibling-dirpath
+                                    pel-package-user-dir-original
+                                    "elpa-complete")
+                                   (display-graphic-p))))
+          (pel-push-fmt
+           problems
+           "Incompatible elpa directory : %s.
    It clashes with PEL's logic to flip between -complete and -reduced."
-              pel-package-user-dir-original))
-        (pel-push-fmt problems
-            "The init.el file is incompatible with PEL startup management:
+           pel-package-user-dir-original))
+      (pel-push-fmt
+       problems
+       "The init.el file is incompatible with PEL startup management:
  - `pel-package-user-dir-original' is not bound.
-   It should be set in init.el to remember `package-user-dir'.")))
+   It should be set in init.el to remember `package-user-dir'."))
     ;;
     (nreverse problems)))
 

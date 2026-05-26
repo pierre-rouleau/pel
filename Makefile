@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-25 18:12:24 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-26 07:48:47 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -621,7 +621,7 @@ BIN_ELC_FILES := $(subst .el,.elc,$(BIN_EL_FILES))
 #   as soon as its dependencies have been compiled.
 # - Compile pel_keys.el and pel.el at the end.
 
-all: pel-top $(ALL_TEST_PASSED) pel_keys.elc pel.elc
+all: check-user-init-files pel-top $(ALL_TEST_PASSED) pel_keys.elc pel.elc
 
 pel-top: $(ALL_TEST_PASSED) $(ELC_FILES)
 
@@ -634,7 +634,7 @@ first-build: $(ELC_FILES)
 
 # Target compile-only:
 # - Compile all .el files (including pel_keys.el and pel.el, done at the end).
-compile-only: $(ELC_FILES) pel_keys.elc pel.elc
+compile-only: check-user-init-files $(ELC_FILES) pel_keys.elc pel.elc
 
 # -----------------------------------------------------------------------------
 # Self-desciptive rule: make help prints the info.
@@ -643,6 +643,8 @@ compile-only: $(ELC_FILES) pel_keys.elc pel.elc
 help:
 	@printf "\nBuild Emacs PEL for use and distribution.\n"
 	@printf "\nStops on the first error (or compiler warning).\n"
+	@printf " Checks if user early-init.el and init.el are valid for PEL,\n"
+	@printf " and if they use the latest versions.\n"
 	@printf "\n"
 	@printf "Currently building PEL version $(PEL_VERSION).\n"
 	@printf "1) First byte-compile all Emacs Lisp files in required order.\n"
@@ -729,6 +731,33 @@ check-target:
 
 check-elc-files:
 	@echo ELC_FILES = "( $(ELC_FILES) )"
+
+# ---------------------------------------------------------------------------
+# Target check-user-init-files
+# ----------------------------
+# Before any byte or native compilation, verify that the user's
+# ~/.emacs.d/init.el and (when present) ~/.emacs.d/early-init.el carry the
+# version numbers expected by this release of PEL.  An incompatible init file
+# is caught early rather than producing a confusing build or runtime failure.
+#
+# The check is performed by build/check-init-versions-for-pel.el, a standalone Elisp
+# script that scans files as plain text (no package activation required).
+#
+# Skipped automatically in GitHub CI (GITHUB_WORKSPACE is set) because CI
+# uses ci/init.el, which has its own separate compatibility guarantee.
+#
+.PHONY: check-user-init-files
+
+ifeq ($(GITHUB_WORKSPACE),)
+check-user-init-files:
+	@$(EMACS) --batch -Q \
+	          --eval "(setenv \"PEL_EXAMPLE_DIR\"  \"example/init\")" \
+	          --eval "(setenv \"PEL_USER_EMACS_D\" (expand-file-name \"$(PEL_EMACS_DIR)\"))" \
+	          -l "build/check-init-versions-for-pel.el"
+else
+check-user-init-files:
+	`@printf` "CI build detected (GITHUB_WORKSPACE set): skipping user init file version check.\n"
+endif
 
 # -----------------------------------------------------------------------------
 # Creating the target directories when they don't exist.
@@ -1092,10 +1121,10 @@ test/pel-%-test.el.test-passed: test/pel-%-test.el $(ERT_TEST_DEP)
 
 .PHONY:	test clean-test
 
-test:	$(ALL_TEST_PASSED)
+test:	check-user-init-files $(ALL_TEST_PASSED)
 
 # The rm -f option prevents complaints from rm when the file is not present.
-clean-test:
+clean-test:  check-user-init-files
 	-rm -f test/*.test-passed
 
 # ----------------------------------------------------------------------------
@@ -1247,7 +1276,7 @@ clean-tar:
 clean-mypelpa:
 	-rm -rf $(PELPA_DIR)
 
-clean: clean-tar clean-mypelpa clean-test
+clean: check-user-init-files clean-tar clean-mypelpa clean-test
 	-rm *.elc
 	-rm -f $(BIN_ELC_FILES)
 	-rm -rf $(OUT_DIR)

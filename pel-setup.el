@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-24 22:46:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-26 06:59:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1779,21 +1779,8 @@ Failed fast startup setup for %s after step %d: %s
     (pel--require-process-detection))
 
   ;; When all conditions are OK, check further
-  (cond
-   ;;
-   ((eq (pel-startup-mode) 'fast)
-    (user-error "PEL/Emacs is already setup for fast startup!"))
-   ;;
-   ((and (bound-and-true-p package-quickstart)
-         (display-graphic-p))
-    (user-error "PEL currently is not able to switch to fast startup mode when
-  package quickstart is used and Emacs is running in graphic mode.
-  Use Emacs running in terminal mode or turn package quickstart off
-  (with M-x pel-setup-no-quickstart) to execute this command.
-  Once the switch is completed, PEL can run in fast startup mode with package
-  startup active in graphic mode. Sorry for the inconvenience"))
-   ;;
-   (t
+  (if (eq (pel-startup-mode) 'fast)
+       (user-error "PEL/Emacs is already setup for fast startup!")
     (when (y-or-n-p (pel-prompt-with-quickstart-state
                      "Change to fast startup mode"
                      :show-requested-quickstart))
@@ -1807,7 +1794,7 @@ Failed fast startup setup for %s after step %d: %s
         (pel--setup-fast t))
       ;; inform user, possibly after a deprecated warning
       (run-with-idle-timer 1 nil (function pel--setup-fast-message))
-      (setq pel-fast-startup-setup-changed t)))))
+      (setq pel-fast-startup-setup-changed t))))
 
 ;; --
 (defun pel--delete-file-dir (dest)
@@ -2003,21 +1990,8 @@ Correct the problem manually before retrying M-x pel-setup-normal."))
   "Restore normal PEL/Emacs operation mode."
   (interactive)
   (pel-setup-validate-init-files)
-  (cond
-   ((eq (pel-startup-mode) 'normal)
-    (user-error "PEL/Emacs is already using the normal setup!"))
-   ;; [:todo 2026-05-23, by Pierre Rouleau: In order to lift this restriction
-   ;;                    the `pel--setup-init-file-problems' issue identified
-   ;;                    by another TODO must be resolved.  ]
-   ((and (bound-and-true-p package-quickstart)
-         (display-graphic-p))
-    (user-error "\
-PEL currently is not able to restore from fast startup mode when
-  package quickstart is used and Emacs is running in graphic mode.
-  Use Emacs running in terminal mode or turn package quickstart off
-  (with M-x pel-setup-no-quickstart) to execute this command.
-  Sorry for the inconvenience"))
-   (t
+  (if (eq (pel-startup-mode) 'normal)
+      (user-error "PEL/Emacs is already using the normal setup!")
     (when (y-or-n-p (pel-prompt-with-quickstart-state
                      "Restore normal startup mode"
                      :show-requested-quickstart))
@@ -2034,7 +2008,7 @@ PEL currently is not able to restore from fast startup mode when
                (pel-string-when
                 pel-detected-dual-environment-in-init-p
                 "\n Affects Emacs running in terminal and graphics mode!"))
-      (setq pel-fast-startup-setup-changed t)))))
+      (setq pel-fast-startup-setup-changed t))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-setup)
