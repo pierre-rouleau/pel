@@ -8,7 +8,7 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
   It is important to use PEL compatible early-init.el and init.el to use PEL.
   Templates for those files are stored in the example/init directory and they are used for this verification.
   This protects users when an important change to these template files is published.
-- PEL Makefile byte-compiles user's init.el and early-init.el.
+- PEL Makefile byte-compiles user's init.el and early-init.el when present.
 - All PEL PDF files are now hosted on a GitHub Pages site.  The PDF files should now be rendered by all web browsers, not only Firefox.
   The original URL of the PDF files remain but the ones in the Pages site differ and all internal links use the Pages site URL.
 - *Breaking change: major overhaul* of configuration and logic for specialized file searching done by *pel-open-at-point* and the

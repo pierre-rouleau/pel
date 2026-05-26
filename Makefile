@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-26 10:36:35 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-26 11:42:32 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -616,12 +616,19 @@ BIN_ELC_FILES := $(subst .el,.elc,$(BIN_EL_FILES))
 # validated and after PEL itself has been byte-compiled.
 #
 # WARNING: if you edit ~/.emacs.d/init.el or ~/.emacs.d/early-init.el
-#          manually, run  make compile-user-init  to refresh the .elc files.
+#          manually, run  make compile-init  to refresh the .elc files.
 #          A stale .elc is harder to debug than a non-compiled init file.
 #          Also note that your ~/.emacs.d/init.el should not require any
 #          external packages, otherwise you will see warnings in the following
 #          byte compilation.
 #
+
+# Convenience: force recompilation regardless of stamp age.
+.PHONY: compile-init
+compile-init:
+	rm -f build/.compile-user-init-stamp
+	$(MAKE) build/.compile-user-init-stamp
+
 ifeq ($(GITHUB_WORKSPACE),)
 build/.compile-user-init-stamp: build/.check-init-stamp pel.elc
 	@printf "Byte-compiling user init.el ...\n"
@@ -699,9 +706,9 @@ help:
 	@printf "                         compile all files except pel_keys.el and pel.el.\n"
 	@printf "                         No external file or package gets loaded.\n"
 	@printf "                         No tests are executed.\n"
-	@printf " * make check-init    - Check validity of user init.el and, if present\n"
-	@printf "                         and early-init.el.\n"
+	@printf " * make check-init    - Check validity of user init.el and early-init.el if present\n"
 	@printf "                         Deletes the stamp to force a fresh check.\n"
+	@printf " * make compile-init  - Force recompilation of init files.\n"
 	@printf " * make test          - Run the regression tests.\n"
 	@printf " * make clean         - Remove $(PELPA_DIR),  all output files, all test tag files,\n"
 	@printf "                        and remove $(PEL_TAR_FILE)\n"
