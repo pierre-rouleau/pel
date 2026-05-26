@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-26 14:36:52 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-26 14:50:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1216,10 +1216,11 @@ Return a list of performed action descriptions in reverse order."
               "Created %s symlink that points to %s"
             elpa-dp elpa-dp-cmplt))
         actions)
-    (user-error "Invalid init.el file detected:
+    (user-error "Invalid init.el or early-init.el file detected:
   The `pel-package-user-dir-original' symbol is unknown.
   PEL cannot safely manage Emacs startup mode.
-  Please update your init.el file; use pel/example/init/init.el template!")))
+  Please update your init.el (and early-init.el if present);
+  use pel/example/init/ templates!")))
 
 (defun pel--elpa-symlink-problems (elpa-dirpath for-graphics)
   "Check validity of ELPA_DIRPATH used FOR-GRAPHICS.

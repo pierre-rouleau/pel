@@ -21,13 +21,13 @@
 ;; in graphics mode or in terminal/TTY mode.  The code uses the presence of
 ;; the "PEL_EMACS_IN_GRAPHICS" environment variable set to "1" to identify
 ;; the graphics mode when Emacs is launched from a shell. For pure GUI Emacs
-;; PEL uses the `pel-emacs-gui-programs' user-option; the absolute path of all
+;; PEL uses the `pel-emacs-gui-programs' user-option; the absolute paths of all
 ;; GUI Emacs commands available on this system.  This is copied into
 ;; `pel-early-init-emacs-gui-programs' constant.
 ;;
 ;; The code of this file does not load any Emacs Lisp file, it only uses what
 ;; is already available: the Emacs Lisp forms implemented in C and the ones
-;; that are normally bundled in the Emacs dump.  This includes the files
+;; that are normally bundled in the Emacs dump.  This includes the file
 ;; subr.el.
 ;;
 ;;
