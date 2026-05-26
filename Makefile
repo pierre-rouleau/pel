@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-26 13:51:57 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-26 14:13:08 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -677,7 +677,7 @@ compile-only: build/.check-init-stamp $(ELC_FILES) pel_keys.elc pel.elc \
               build/.compile-user-init-stamp
 
 # -----------------------------------------------------------------------------
-# Self-desciptive rule: make help prints the info.
+# Self-descriptive rule: make help prints the info.
 
 .PHONY: help
 help:

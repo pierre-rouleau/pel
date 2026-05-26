@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-26 06:59:13 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-26 14:14:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1172,8 +1172,8 @@ If it is nil, do it for the default directories used when dual-environment is
 not used or when used with terminal based Emacs.
 
 The elpa directory is identified by the `pel-package-user-dir-original'
-variable set by init.el before its renaming of the `package-user-dir' to
-control the content of the `load-path'.
+variable captured by `early-init.el' at load time (preferred), or by
+`init.el' as a fallback when no `early-init.el' is present.
 
 - If this already is a symlink, then do nothing.
 - Otherwise it identifies a directory and proceed:

@@ -126,7 +126,7 @@ the PEL directory structure on first invocation.")
 ;; directories have different extensions (in the context of this function
 ;; calls).
 (defun pel--graphic-file-name (fname)
-  "Appends \"-graphics\" to the end of a .el, .elc or extension less FNAME.
+  "Appends \"-graphics\" to the end of a .el, .elc or extension-less FNAME.
 Also expands to the file true name, replacing symlinks by what they point to."
   ;; use only functions implemented in C or elisp available early
   (let ((ext (substring fname -3)))
