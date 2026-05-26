@@ -1324,8 +1324,8 @@ The function assumes that:
         (lambda (a b)
           (let ((fn-a (file-name-nondirectory a))
                 (fn-b (file-name-nondirectory b)))
-            (let ((v-a (and (string-match "-\\([0-9.]+\\)$" fn-a) (match-string 1 fn-a)))
-                  (v-b (and (string-match "-\\([0-9.]+\\)$" fn-b) (match-string 1 fn-b))))
+            (let ((v-a (and (string-match "-\\([0-9][[:alnum:].]*\\)$" fn-a) (match-string 1 fn-a)))
+                  (v-b (and (string-match "-\\([0-9][[:alnum:].]*\\)$" fn-b) (match-string 1 fn-b))))
               (cond
                ((and v-a v-b) (version< v-a v-b))
                (v-b t)      ; a has no version, sort before b
@@ -1352,7 +1352,7 @@ packages present in the elpa-attic directory."
                         (pel-elpa-attic-dirpath)
                       package-user-dir)
                     :full-path
-                    (format "\\`%s-[0-9-.]+\\'"
+                    (format "\\`%s-[0-9][[:alnum:].]*\\'"
                             (regexp-quote (pel-as-string pkg))))))
 
 (defun pel-move-to-dir (file dir)
@@ -1459,14 +1459,14 @@ The returned list contains only one symbol identifying the package for each
 version of that package.
 The list of package symbols is sorted by symbol names."
   (let ((elpa-pkg-dir-names  (directory-files
-                              (pel-elpa-dirpath type) nil ".+[0-9-.]+\\'"))
+                              (pel-elpa-dirpath type) nil ".+-[0-9][[:alnum:].]*\\'"))
         (elpa-pkg-names ()))
     (dolist (dir-name elpa-pkg-dir-names)
-      (when (eq 0 (string-match "\\`\\([^ ]+\\)-[0-9-.]+\\'" dir-name))
+      (when (eq 0 (string-match "\\`\\([^ ]+\\)-[0-9][[:alnum:].]*\\'" dir-name))
         (let ((pkg-name  (intern (match-string 1 dir-name))))
           (unless (memq pkg-name elpa-pkg-names)
             (push pkg-name elpa-pkg-names)))))
-    (nreverse elpa-pkg-names)))
+
 
 (defun pel-elpa-unrequired ()
   "Return a list of the elpa packages that are not required by PEL.
