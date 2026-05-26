@@ -11493,10 +11493,12 @@ This call simulates a F7 prefix key unless DONT-SIMULATE is non-nil."
       (condition-case err
           (require pel-user-extra-code-feature nil 'noerror)
         (error
-         (warn "ERROR loading your extra initialization file specified by: %s
-The detected error is: %s"
-               pel-user-extra-code-feature
-               (error-message-string err))))
+         (display-warning
+          'pel-user-extra-init
+          (format "Error loading `%s': %s\nCheck the file providing this feature."
+                  pel-user-extra-code-feature
+                  (error-message-string err))
+          :warning)))
     ;; pel-user-extra-code-feature is not a symbol; cannot load.
     (display-warning
      'pel-user-extra-init

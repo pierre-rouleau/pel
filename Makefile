@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-26 11:42:32 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-26 12:12:22 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -626,7 +626,7 @@ BIN_ELC_FILES := $(subst .el,.elc,$(BIN_EL_FILES))
 # Convenience: force recompilation regardless of stamp age.
 .PHONY: compile-init
 compile-init:
-	rm -f build/.compile-user-init-stamp
+	@rm -f build/.compile-user-init-stamp
 	$(MAKE) build/.compile-user-init-stamp
 
 ifeq ($(GITHUB_WORKSPACE),)
@@ -683,8 +683,8 @@ compile-only: build/.check-init-stamp $(ELC_FILES) pel_keys.elc pel.elc \
 help:
 	@printf "\nBuild Emacs PEL for use and distribution.\n"
 	@printf "\nStops on the first error (or compiler warning).\n"
-	@printf " Checks if user early-init.el and init.el are valid for PEL,\n"
-	@printf " and if they use the latest versions.\n"
+	@printf " Checks if user init.el, and when present early-init.el are valid\n"
+	@printf "  for PEL, and if they use the latest versions.\n"
 	@printf "\n"
 	@printf "Currently building PEL version $(PEL_VERSION).\n"
 	@printf "1) First byte-compile all Emacs Lisp files in required order.\n"
@@ -706,7 +706,7 @@ help:
 	@printf "                         compile all files except pel_keys.el and pel.el.\n"
 	@printf "                         No external file or package gets loaded.\n"
 	@printf "                         No tests are executed.\n"
-	@printf " * make check-init    - Check validity of user init.el and early-init.el if present\n"
+	@printf " * make check-init    - Check validity of user init.el and early-init.el, if present.\n"
 	@printf "                         Deletes the stamp to force a fresh check.\n"
 	@printf " * make compile-init  - Force recompilation of init files.\n"
 	@printf " * make test          - Run the regression tests.\n"
@@ -776,8 +776,8 @@ check-elc-files:
 	@echo ELC_FILES = "( $(ELC_FILES) )"
 
 # ---------------------------------------------------------------------------
-# Ensure validity of user init/early-ini files
-# --------------------------------------------
+# Ensure validity of user init/early-init files
+# ---------------------------------------------
 # Before any byte or native compilation, verify that the user's
 # ~/.emacs.d/init.el and (when present) ~/.emacs.d/early-init.el carry the
 # version numbers expected by this release of PEL.  An incompatible init file

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-26 10:31:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-26 12:18:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -102,9 +102,9 @@ not readable or VARNAME is not found."
   ;; -- Check early-init.el (present only on Emacs >= 27)
   ;; Absence of the file is not an error: Emacs 26 users have no
   ;; early-init.el.
-  ;;  If PEL users using Emacs >= 27 do not have an early-init.el and they
-  ;;  try to activate quickstart mode PEL will detect that and can create the
-  ;;  file for the user.
+  ;; - If PEL users using Emacs >= 27 do not have an early-init.el and they
+  ;;   try to activate quickstart mode PEL will detect that and can create the
+  ;;   file for the user.
   (cond
    ;;
    ((and (file-exists-p user-early-init)
