@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-25 22:44:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-25 23:17:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -162,6 +162,7 @@
 (require 'pel-elpa)             ; use: `pel-elpa-package-directories'
 ;;                              ;      `pel-el-files-in'
 ;;                              ;      `pel-elpa-pkg-version-regexp'
+;;                              ;      `pel-elpa-pkg-dirname-regexp'
 ;;                              ;      `pel-elpa-package-name-for'
 (require 'cl-lib)               ; use: `cl-remove-if'
 (require 'seq)                  ; use: `seq-filter'
@@ -1319,9 +1320,8 @@ The function assumes that:
 - the last hyphen in the name separates the package name from the package
   version number,
 - every package has the same name,
-- every package number uses the same style of version number: digits
-  representing a YYYYMMDD.HHMMSS sequence or Major.minor or equivalent
-  like 12.23, 12.44, etc. It also accepts alphanumeric suffix."
+- version strings may be numeric (e.g. YYYYMMDD.HHMMSS, 1.2.3) or may
+  include alphanumeric pre-release suffixes (e.g. 0.9.1pre, 1.0alpha)."
   (sort (copy-sequence pkg-dirs)
         (lambda (a b)
           (let ((fn-a (file-name-nondirectory a))

@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  2 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-25 22:45:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-25 23:18:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -103,9 +103,8 @@
   (should (string= (pel-elpa-package-name-for "my_pkg-1.0")                "my_pkg"))
   ;; Hyphenated pre-release suffix
   (should (string= (pel-elpa-package-name-for "demo-1.0-pre")              "demo"))
-  ;; Classic semver
+  ;; Package names with classic semver-style versions
   (should (string= (pel-elpa-package-name-for "pel-0.4.1")                 "pel"))
-
   ;; Non-package directory names must return nil
   (should (null (pel-elpa-package-name-for "archives")))
   (should (null (pel-elpa-package-name-for "gnupg")))
