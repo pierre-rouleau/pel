@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-25 21:50:13 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-25 22:20:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -474,12 +474,13 @@ have no sub-directories."
 ;;   . `pel-elpa-load-pkg-descriptor'
 
 
-(defconst pel-elpa-pkg-version-regexp "[0-9][[:alnum:].]*"
+(defconst pel-elpa-pkg-version-regexp "[0-9][[:alnum:].-]*"
   "Regexp matching the version portion of an Elpa package directory name.
 Matches:
 - Standard MELPA timestamp versions : \"20250209.1933\"
 - Classic semver-style              : \"1.2.3\"
-- Versions with alphanumeric suffix : \"0.9.1pre\", \"1.0alpha\", \"2.3rc1\"
+- Versions with alphanumeric suffix : \"0.9.1pre\", \"0.9.1-pre\",
+                                      \"1.0alpha\", 2.3rc1\"
 
 Use this constant everywhere a version portion needs to be matched so that
 support for unusual version strings remains consistent across PEL.")
