@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-26 08:09:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-26 09:35:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -183,24 +183,34 @@ Return nil if all is OK."
     ;; The check below works in all modes including graphics+quickstart
     ;; because PEL early-init captures the value of `package-user-dir'
     ;; in `pel-package-user-dir-original'.
-    (if (boundp 'pel-package-user-dir-original)
-        (when (and (not (file-symlink-p pel-package-user-dir-original))
-                   (pel-same-fname-p
-                    pel-package-user-dir-original
-                    (pel-elpa-name (pel-sibling-dirpath
-                                    pel-package-user-dir-original
-                                    "elpa-complete")
-                                   (display-graphic-p))))
-          (pel-push-fmt
-           problems
-           "Incompatible elpa directory : %s.
-   It clashes with PEL's logic to flip between -complete and -reduced."
-           pel-package-user-dir-original))
+    (cond
+     ;;
+     ((not (boundp 'pel-package-user-dir-original))
       (pel-push-fmt
-       problems
-       "The init.el file is incompatible with PEL startup management:
+          problems
+          "The init.el or early-init.el file is incompatible with PEL startup management:
  - `pel-package-user-dir-original' is not bound.
-   It should be set in init.el to remember `package-user-dir'."))
+   It should be set to remember `package-user-dir'."))
+     ;;
+     ((not (stringp pel-package-user-dir-original))
+      (pel-push-fmt
+          problems
+          "`pel-package-user-dir-original' has invalid value %S; expected a directory name string."
+        pel-package-user-dir-original))
+     ;;
+     ((and (not (file-symlink-p pel-package-user-dir-original))
+           (pel-same-fname-p
+            pel-package-user-dir-original
+            (pel-elpa-name (pel-sibling-dirpath
+                            pel-package-user-dir-original
+                            "elpa-complete")
+                           (display-graphic-p))))
+       (pel-push-fmt
+           problems
+           "Incompatible elpa directory identified by pel-package-user-dir-original : %s.
+   This is not a symlink.
+   It clashes with PEL's logic to flip between -complete and -reduced."
+         pel-package-user-dir-original)))
     ;;
     (nreverse problems)))
 

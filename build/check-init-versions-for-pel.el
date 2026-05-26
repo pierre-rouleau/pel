@@ -2,9 +2,9 @@
 
 ;; Created   : Tuesday, May 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-26 08:07:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-26 09:37:29 EDT, updated by Pierre Rouleau>
 
-;; This file is part of the CHECK package.
+;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
 ;; Copyright (C) 2026  Pierre Rouleau

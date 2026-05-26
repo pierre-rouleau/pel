@@ -36,6 +36,10 @@ test/elisp-example-with-defun-in-strings.el
 test/pel-filedir-tests.el
 test/data/*
 
+# PEL build tag
+build/.check-init-stamp
+build/.compile-user-init-stamp
+
 # PEL test tag
 pel-ran-tests.tag
 test/*.test-passed

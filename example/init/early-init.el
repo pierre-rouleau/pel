@@ -17,12 +17,13 @@
 ;;
 ;; Since Emacs has not initialized its graphics support code and the function
 ;; `display-graphic-p' is not yet available when early-init.el is executed,
-;; the code must resort to environment variables to detect if Emacs is
-;; running in graphics mode or in terminal/TTY mode.  The code uses the
-;; presence of the "PEL_EMACS_IN_GRAPHICS" environment variable set to "1 to
-;; identify the graphics mode when Emacs is launched from a shell. For pure
-;; GUI Emacs PEL uses the `pel-emacs-gui-programs'; the absolute path of all
-;; GUI Emacs commands available on this system.
+;; the code must resort to environment variables to detect if Emacs is running
+;; in graphics mode or in terminal/TTY mode.  The code uses the presence of
+;; the "PEL_EMACS_IN_GRAPHICS" environment variable set to "1"" to identify
+;; the graphics mode when Emacs is launched from a shell. For pure GUI Emacs
+;; PEL uses the `pel-emacs-gui-programs' user-option; the absolute path of all
+;; GUI Emacs commands available on this system.  This is copied into
+;; `pel-early-init-emacs-gui-programs' constant.
 ;;
 ;; The code of this file does not load any Emacs Lisp file, it only uses what
 ;; is already available: the Emacs Lisp forms implemented in C and the ones
@@ -228,13 +229,13 @@ Uses the same heuristic as `pel-force-graphic-specific-custom-file-p'.")
 ;; sets it with `(unless pel-package-user-dir-original ...)'; that guard
 ;; makes the init.el assignment a no-op when this early-init code has
 ;; already saved the value.
-(when (boundp 'package-user-dir)
-  (defvar pel-package-user-dir-original nil
-    "Original `package-user-dir' captured at early-init time, before
-any PEL advice overwrites it for graphics/quickstart mode.
-Set by early-init.el; used by `pel-setup-normal' and `pel-setup-fast'
-to locate the elpa symlink regardless of quickstart and graphics mode.")
-  (setq pel-package-user-dir-original package-user-dir))
+
+(defvar pel-package-user-dir-original
+  (if (boundp 'package-user-dir)
+      package-user-dir
+    (expand-file-name "elpa" user-emacs-directory))
+  "Original `package-user-dir' captured at early-init time, before
+any PEL advice overwrites it for graphics/quickstart mode.")
 
 ;; ---------------------------------------------------------------------------
 ;; Disable UI Elements Early (Graphics Mode Only)
@@ -267,11 +268,10 @@ to locate the elpa symlink regardless of quickstart and graphics mode.")
 ;; ensure that:
 ;; - `package-user-dir' is adjusted to use the -graphics directory
 ;;   so that `load-path' gets packages from the -graphics directory.
-;; -
-;; package quickstart activation uses the graphics-specific files.
+;; - package quickstart activation uses the graphics-specific files.
 
 (defun pel--graphic-file-name (fname)
-  "Appends \"-graphics\" to the end of a .el, .elc or extension less FNAME."
+  "Appends \"-graphics\" to the end of a .el, .elc or extension-less FNAME."
   ;; use only functions implemented in C
   (let ((ext (substring fname -3)))
     (cond
