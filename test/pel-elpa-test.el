@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  2 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-26 17:14:47 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-25 22:07:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -83,6 +83,27 @@
     (should (equal  (pel-el-files-in test-dir)
                     '("file-a.el" "file-b.el" "file-c.el")))))
 
+
+(ert-deftest test-pel-elpa-package-name-for ()
+  "Test `pel-elpa-package-name-for'."
+  ;; Standard MELPA timestamp versions
+  (should (string= (pel-elpa-package-name-for "ztree-20250209.1933")       "ztree"))
+  (should (string= (pel-elpa-package-name-for "ace-link-20241101.1344")    "ace-link"))
+  ;; Full path inputs are also supported
+  (should (string= (pel-elpa-package-name-for
+                    "~/.emacs.d/elpa/ztree-20250209.1933")                  "ztree"))
+  (should (string= (pel-elpa-package-name-for
+                    "~/.emacs.d/elpa-1.2/ace-link-20241101.1344")           "ace-link"))
+  ;; Versions with alphanumeric suffixes (motivation for PR `#168`)
+  (should (string= (pel-elpa-package-name-for "cask-0.9.1pre")             "cask"))
+  (should (string= (pel-elpa-package-name-for "some-pkg-1.0alpha")         "some-pkg"))
+  (should (string= (pel-elpa-package-name-for "other-pkg-2.3rc1")          "other-pkg"))
+  ;; Package names containing + or _ characters
+  (should (string= (pel-elpa-package-name-for "c++-mode-1.0")              "c++-mode"))
+  ;; Non-package directory names must return nil
+  (should (null (pel-elpa-package-name-for "archives")))
+  (should (null (pel-elpa-package-name-for "gnupg")))
+  (should (null (pel-elpa-package-name-for "no-version-here"))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elpa-test)
