@@ -153,7 +153,7 @@ Has no effect when Emacs runs in terminal/TTY mode.")
         (member (expand-file-name invocation-name invocation-directory)
                 pel-early-init-emacs-gui-programs)))
   "Non-nil when early-init.el detects that Emacs is running in graphics mode.
-Uses the same heuristic as `pel-force-graphic-specific-custom-file-p'.")
+This value is used by `pel-force-graphic-specific-custom-file-p'.")
 
 (defconst pel-force-graphic-specific-custom-file-p
   (and pel-early-init-support-dual-environment-p

@@ -102,7 +102,7 @@
   "Non-nil when PEL runs in fast startup mode, nil otherwise.")
 
 (defvar pel-package-user-dir-original nil
-  "When set, it is the dirpath of the `package-user-dir' symlink.
+  "The value of `package-user-dir' as captured before PEL overwrites it.
 
 The function `pel--init-package-support' stores the original
 value of dirpath here and updates the value of `package-user-dir'

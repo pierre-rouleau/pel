@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-26 12:12:22 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-26 13:12:56 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -683,7 +683,7 @@ compile-only: build/.check-init-stamp $(ELC_FILES) pel_keys.elc pel.elc \
 help:
 	@printf "\nBuild Emacs PEL for use and distribution.\n"
 	@printf "\nStops on the first error (or compiler warning).\n"
-	@printf " Checks if user init.el, and when present early-init.el are valid\n"
+	@printf " Checks if user init.el, and when present, early-init.el are valid\n"
 	@printf "  for PEL, and if they use the latest versions.\n"
 	@printf "\n"
 	@printf "Currently building PEL version $(PEL_VERSION).\n"
@@ -700,13 +700,13 @@ help:
 	@printf "Usage:\n"
 	@printf " * make               - Same as 'make all': build everything as needed.\n"
 	@printf " * make all           - Compile all files and run tests as soon as possible.\n"
-	@printf " * make compile-only  - Compile all Emacs Lisp files. Do not run tests.\n"
+	@printf " * make compile-only  - Compile all Emacs Lisp user init and PEL files. Do not run tests.\n"
 	@printf " * make pel           - Compile all files except pel.el. Do not run tests.\n"
 	@printf " * make first-build   - First build done on a virgin system:\n"
 	@printf "                         compile all files except pel_keys.el and pel.el.\n"
 	@printf "                         No external file or package gets loaded.\n"
 	@printf "                         No tests are executed.\n"
-	@printf " * make check-init    - Check validity of user init.el and early-init.el, if present.\n"
+	@printf " * make check-init    - Check validity of user init.el and, if present, early-init.el.\n"
 	@printf "                         Deletes the stamp to force a fresh check.\n"
 	@printf " * make compile-init  - Force recompilation of init files.\n"
 	@printf " * make test          - Run the regression tests.\n"
