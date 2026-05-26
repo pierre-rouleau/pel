@@ -85,6 +85,39 @@
 
 
 ;;; --------------------------------------------------------------------------
+
+(ert-deftest test-pel-elpa-package-name-for ()
+  "Test `pel-elpa-package-name-for' with various package directory name formats."
+
+  ;; Standard MELPA-style timestamp version
+  (should (string= (pel-elpa-package-name-for "ztree-20250209.1933")        "ztree"))
+  (should (string= (pel-elpa-package-name-for "ace-link-20241101.1344")     "ace-link"))
+
+  ;; Full path inputs
+  (should (string= (pel-elpa-package-name-for "~/.emacs.d/elpa/ztree-20250209.1933")
+                   "ztree"))
+  (should (string= (pel-elpa-package-name-for "~/.emacs.d/elpa-1.2/ace-link-20241101.1344")
+                   "ace-link"))
+
+  ;; Pre-release / alphanumeric version suffixes (the broadened support)
+  (should (string= (pel-elpa-package-name-for "cask-0.9.1pre")              "cask"))
+  (should (string= (pel-elpa-package-name-for "some-pkg-1.0beta")           "some-pkg"))
+  (should (string= (pel-elpa-package-name-for "my-package-2.3alpha")        "my-package"))
+
+  ;; Simple Major.minor versions
+  (should (string= (pel-elpa-package-name-for "pkg-12.23")                  "pkg"))
+  (should (string= (pel-elpa-package-name-for "use-package-2.4.5")          "use-package"))
+
+  ;; Package names with underscores and plus signs
+  (should (string= (pel-elpa-package-name-for "cl++-1.0")                   "cl++"))
+
+  ;; Should return nil when no version suffix is present
+  (should (eq nil (pel-elpa-package-name-for "not-a-package")))
+  (should (eq nil (pel-elpa-package-name-for "nodash")))
+  ;; Version must start with a digit
+  (should (eq nil (pel-elpa-package-name-for "pkg-abc"))))
+
+;;; --------------------------------------------------------------------------
 (provide 'pel-elpa-test)
 
-;;; pel-elpa-test.el ends here
+
