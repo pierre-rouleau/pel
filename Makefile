@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-26 14:13:08 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-26 14:38:29 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -612,8 +612,8 @@ BIN_EL_FILES  := bin/pel-lint.el
 BIN_ELC_FILES := $(subst .el,.elc,$(BIN_EL_FILES))
 
 # ---------------------------------------------------------------------------
-# Byte-compile the user's init.el and early-init.el after they have been
-# validated and after PEL itself has been byte-compiled.
+# Byte-compile the user's init.el and, when present, early-init.el after they
+# have been validated and after PEL itself has been byte-compiled.
 #
 # WARNING: if you edit ~/.emacs.d/init.el or ~/.emacs.d/early-init.el
 #          manually, run  make compile-init  to refresh the .elc files.
@@ -700,7 +700,7 @@ help:
 	@printf "Usage:\n"
 	@printf " * make               - Same as 'make all': build everything as needed.\n"
 	@printf " * make all           - Compile all files and run tests as soon as possible.\n"
-	@printf " * make compile-only  - Compile all Emacs Lisp user init and PEL files. Do not run tests.\n"
+	@printf " * make compile-only  - Compile all PEL Emacs Lisp and user init files. Do not run tests.\n"
 	@printf " * make pel           - Compile all files except pel.el. Do not run tests.\n"
 	@printf " * make first-build   - First build done on a virgin system:\n"
 	@printf "                         compile all files except pel_keys.el and pel.el.\n"

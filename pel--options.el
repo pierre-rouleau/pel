@@ -656,7 +656,7 @@ CAUTION: don't forget to do the following:
   `pel-cleanup' command.
 - Byte compile your files to ensure they will load cleanly and quickly.
   You can use the bin/el-byte-compile script to do that from the command
-  line or byte compile it with by typing \\[pel-byte-compile-file-and-load]
+  line or byte compile it by typing \\[pel-byte-compile-file-and-load]
   from within Emacs."
   :group 'pel-base-emacs
   :type 'symbol)
