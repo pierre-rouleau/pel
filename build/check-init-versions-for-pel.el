@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-26 12:18:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-26 13:40:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -145,7 +145,7 @@ not readable or VARNAME is not found."
           (message "\n* %s" e))
         (message "\nResolve the above issue(s) before rebuilding PEL.
   Please compare your version of the file(s) with the versions stored
-  inside the example/init directory.\n")
+  inside %s.\n" example-dir)
         (kill-emacs 1))
     (message "PEL init file version check: OK.")))
 

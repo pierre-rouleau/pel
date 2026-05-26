@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-26 13:30:12 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-26 13:42:53 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -708,7 +708,8 @@ help:
 	@printf "                         No tests are executed.\n"
 	@printf " * make check-init    - Check validity of user init.el and, if present, early-init.el.\n"
 	@printf "                         Deletes the stamp to force a fresh check.\n"
-	@printf " * make compile-init  - Force recompilation of init files.\n"
+	@printf " * make compile-init  - Force byte-recompilation of user init.el and early-init.el.\n"
+	@printf "                        Run this after manually editing those files.\n"
 	@printf " * make test          - Run the regression tests.\n"
 	@printf " * make clean         - Remove $(PELPA_DIR),  all output files, all test tag files,\n"
 	@printf "                        and remove $(PEL_TAR_FILE)\n"
