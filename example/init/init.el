@@ -104,18 +104,15 @@
 (defvar pel-package-user-dir-original nil
   "The value of `package-user-dir' as captured before PEL overwrites it.
 
-The function `pel--init-package-support' stores the original
-value of dirpath here and updates the value of `package-user-dir'
-to control the format of the entries placed inside the
-`load-path'.
+Set by `early-init.el' at load time (preferred path), or by
+`pel--init-package-support' in `init.el' as a fallback when no
+`early-init.el' is present.
 
 PEL logic transforms `package-user-dir' to make it point to the
-elpa-complete or elpa-reduced directory (or the graphics
-equivalent in dual environment mode).  Having access to the
-original value will allow `pel-setup-fast' to create the symlink
-the very first time it is called when a user transforms its
-original Emacs directory into a directory that supports PEL
-startup mode management.")
+elpa-complete or elpa-reduced directory (or the graphics equivalent
+in dual environment mode).  Having access to the original value lets
+`pel-setup-fast' and `pel-setup-normal' correctly establish or remove
+the PEL directory structure on first invocation.")
 
 
 ;; Section 1 : Utility function definition
@@ -229,11 +226,11 @@ Also expands to the file true name, replacing symlinks by what they point to."
     ;; sets the `package-user-dir' dynamic value (not the user-option value we
     ;; see inside this function) to a true directory name, following all
     ;; symbolic links to their target, before package functions like
-    ;; `package-initialize' is called. This that `load-path' entries are true
-    ;; directory names, fully expanded (to symlink target if any symlink is
-    ;; used) to ensure continued validity of a process `load-path' even if the
-    ;; "~/.emacs.d/elpa" is a symlink and its target is changed by another
-    ;; process.
+    ;; `package-initialize' is called.  This ensures that `load-path' entries
+    ;; are true directory names, fully expanded (to symlink target if any
+    ;; symlink is used) to ensure continued validity of a process `load-path'
+    ;; even if the "~/.emacs.d/elpa" is a symlink and its target is changed by
+    ;; another process.
 
     (if (< emacs-major-version 27)
         ;; Emacs prior to 27

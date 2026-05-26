@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-26 13:12:56 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-26 13:30:12 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -683,7 +683,7 @@ compile-only: build/.check-init-stamp $(ELC_FILES) pel_keys.elc pel.elc \
 help:
 	@printf "\nBuild Emacs PEL for use and distribution.\n"
 	@printf "\nStops on the first error (or compiler warning).\n"
-	@printf " Checks if user init.el, and when present, early-init.el are valid\n"
+	@printf " Checks if user init.el and, when present, early-init.el are valid\n"
 	@printf "  for PEL, and if they use the latest versions.\n"
 	@printf "\n"
 	@printf "Currently building PEL version $(PEL_VERSION).\n"
