@@ -145,7 +145,8 @@ Has no effect when Emacs runs in terminal/TTY mode.")
 
 (defconst pel--ei-in-graphics-p
   (or
-   ;; For PEL controlled ec launched GUI where PEL_EMACS_IN_GRAPHICS envvar is defined.
+   ;; For PEL-controlled Emacs launched from a shell where PEL_EMACS_IN_GRAPHICS
+   ;; envvar is defined (as the PEL bin/ge script does).
    (string-equal (getenv "PEL_EMACS_IN_GRAPHICS") "1")
    ;; For pure GUI programs identified in `pel-emacs-gui-programs' user-option
    ;; then copied into `pel-early-init-emacs-gui-programs' above.

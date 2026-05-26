@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-26 13:39:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-26 13:50:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -80,8 +80,8 @@
 
 (require 'subr-x)              ; use: `string-join'
 
-(defvar pel-package-user-dir-original) ; Prevent warning only . Defined in
-                                       ; early-init (preferred) or init.el
+(defvar pel-package-user-dir-original) ; Prevent warning only.  Defined in
+                                       ; early-init (preferred) or init.el.
 
 
 ;;; --------------------------------------------------------------------------
