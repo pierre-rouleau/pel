@@ -17,17 +17,18 @@
 ;;
 ;; Since Emacs has not initialized its graphics support code and the function
 ;; `display-graphic-p' is not yet available when early-init.el is executed,
-;; the code must resort to environment variables to detect if Emacs is
-;; running in graphics mode or in terminal/TTY mode.  The code uses the
-;; presence of the "PEL_EMACS_IN_GRAPHICS" environment variable set to "1 to
-;; identify the graphics mode when Emacs is launched from a shell. For pure
-;; GUI Emacs PEL uses the `pel-emacs-gui-programs'; the absolute path of all
-;; GUI Emacs commands available on this system.
+;; the code must resort to environment variables to detect if Emacs is running
+;; in graphics mode or in terminal/TTY mode.  The code uses the presence of
+;; the "PEL_EMACS_IN_GRAPHICS" environment variable set to "1" to identify
+;; the graphics mode when Emacs is launched from a shell. For pure GUI Emacs
+;; PEL uses the `pel-emacs-gui-programs' user-option; the absolute paths of all
+;; GUI Emacs commands available on this system.  This is copied into
+;; `pel-early-init-emacs-gui-programs' constant.
 ;;
 ;; The code of this file does not load any Emacs Lisp file, it only uses what
 ;; is already available: the Emacs Lisp forms implemented in C and the ones
-;; that are normally bundled in the Emacs dump.  This includes the files
-;; subrl.el.
+;; that are normally bundled in the Emacs dump.  This includes the file
+;; subr.el.
 ;;
 ;;
 ;; PEL Feature Control
@@ -63,7 +64,7 @@
 ;;     used.  If your shell does not have such environment variable, use
 ;;     something like "PEL_SHELL" and define it inside your shell
 ;;     initialization file (something like ~/.bashrc or ~/.bash_profile).
-;;     - Identified in early-init.el by `pel-emacs-gui-programs'.
+;;     - Identified in early-init.el by `pel-early-init-emacs-gui-programs'.
 ;;
 ;; - PEL fast startup:
 ;;   Whether PEL activates the fast startup mode.
@@ -139,12 +140,13 @@ Has no effect when Emacs runs in terminal/TTY mode.")
 ;; The code below this line does not require editing.
 ;; ==================================================
 
-(defconst pel-early-init-file-version "0.4"
+(defconst pel-early-init-file-version "0.5"
   "Version of PEL early-init.el. Verified by pel-setup logic. Do NOT change.")
 
 (defconst pel--ei-in-graphics-p
   (or
-   ;; For PEL controlled ec launched GUI where PEL_EMACS_IN_GRAPHICS envvar is defined.
+   ;; For PEL-controlled Emacs launched from a shell where PEL_EMACS_IN_GRAPHICS
+   ;; envvar is defined (as the PEL bin/ge script does).
    (string-equal (getenv "PEL_EMACS_IN_GRAPHICS") "1")
    ;; For pure GUI programs identified in `pel-emacs-gui-programs' user-option
    ;; then copied into `pel-early-init-emacs-gui-programs' above.
@@ -152,7 +154,7 @@ Has no effect when Emacs runs in terminal/TTY mode.")
         (member (expand-file-name invocation-name invocation-directory)
                 pel-early-init-emacs-gui-programs)))
   "Non-nil when early-init.el detects that Emacs is running in graphics mode.
-Uses the same heuristic as `pel-force-graphic-specific-custom-file-p'.")
+This value is used by `pel-force-graphic-specific-custom-file-p'.")
 
 (defconst pel-force-graphic-specific-custom-file-p
   (and pel-early-init-support-dual-environment-p
@@ -216,6 +218,27 @@ Uses the same heuristic as `pel-force-graphic-specific-custom-file-p'.")
                     pel--startup-file-name-handler-alist))))
 
 ;; ---------------------------------------------------------------------------
+;; Capture original package-user-dir
+;; ==================================
+;; Save `package-user-dir' here, in early-init.el, BEFORE any advice can
+;; overwrite it.  `pel--ei-package-activate-all' (below) permanently
+;; overwrites `package-user-dir' to the -graphics variant when package
+;; quickstart is active in graphics mode.  By the time init.el runs, the
+;; original value is gone, so it must be saved now.
+;;
+;; `init.el' declares `pel-package-user-dir-original' with defvar and also
+;; sets it with `(unless pel-package-user-dir-original ...)'; that guard
+;; makes the init.el assignment a no-op when this early-init code has
+;; already saved the value.
+
+(defvar pel-package-user-dir-original
+  (if (boundp 'package-user-dir)
+      package-user-dir
+    (expand-file-name "elpa" user-emacs-directory))
+  "Original `package-user-dir' captured at early-init time, before
+any PEL advice overwrites it for graphics/quickstart mode.")
+
+;; ---------------------------------------------------------------------------
 ;; Disable UI Elements Early (Graphics Mode Only)
 ;; ===============================================
 ;; Tool bars, menu bars, and scroll bars are initialised by the C layer very
@@ -239,9 +262,17 @@ Uses the same heuristic as `pel-force-graphic-specific-custom-file-p'.")
   (setq frame-inhibit-implied-resize t))
 
 ;; ---------------------------------------------------------------------------
+;; Adjust file names for GUI Emacs
+;; ===============================
+;; If Emacs is running in Graphics mode with dual environment (independent
+;; customization and Elpa packages for terminal/TTY and graphics mode), then
+;; ensure that:
+;; - `package-user-dir' is adjusted to use the -graphics directory
+;;   so that `load-path' gets packages from the -graphics directory.
+;; - package quickstart activation uses the graphics-specific files.
 
 (defun pel--graphic-file-name (fname)
-  "Appends \"-graphics\" to the end of a .el, .elc or extension less FNAME."
+  "Appends \"-graphics\" to the end of a .el, .elc or extension-less FNAME."
   ;; use only functions implemented in C
   (let ((ext (substring fname -3)))
     (cond
@@ -250,13 +281,6 @@ Uses the same heuristic as `pel-force-graphic-specific-custom-file-p'.")
      ((string-equal ext "elc") (concat (substring fname 0 -4) "-graphics.elc"))
      (t (concat fname "-graphics")))))
 
-;; If Emacs is running in Graphics mode with dual environment (independent
-;; customization and Elpa packages for terminal/TTY and graphics mode), then
-;; ensure that:
-;; - `package-user-dir' is adjusted to use the -graphics directory
-;;   so that `load-path' gets packages from the -graphics directory.
-;; -
-;; package quickstart activation uses the graphics-specific files.
 
 (when pel-force-graphic-specific-custom-file-p
 

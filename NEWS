@@ -1,8 +1,16 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- You can now write your own extra Emacs initialization code inside your own Emacs Lisp file identified by the
+  PEL *pel-user-extra-code-feature* user-option.  PEL will load this file after loading itself.
+  You can extend PEL's capabilities this way.
+- PEL Makefile now checks the validity of the user's init.el and, when present, early-init.el before building PEL and reports issues.
+  It is important to use PEL compatible early-init.el and init.el to use PEL.
+  Templates for those files are stored in the example/init directory and they are used for this verification.
+  This protects users when an important change to these template files is published.
 - All PEL PDF files are now hosted on a GitHub Pages site.  The PDF files should now be rendered by all web browsers, not only Firefox.
   The original URL of the PDF files remain but the ones in the Pages site differ and all internal links use the Pages site URL.
+- PEL Makefile byte-compiles user's init.el and, when present, early-init.el.
 - *Breaking change: major overhaul* of configuration and logic for specialized file searching done by *pel-open-at-point* and the
   pel-ffind functions.
   - All specialized file searching is now controlled by the concept of development *project* and no longer major mode specific as

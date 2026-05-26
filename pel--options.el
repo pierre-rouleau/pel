@@ -635,6 +635,32 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   "PEL Emacs basic configuration."
   :group 'pel)
 
+(defcustom pel-user-extra-code-feature nil
+  "Optional user-specific feature name.
+
+Identify the feature provided by your own Emacs extra initialization
+file here. PEL will load this feature after completing loading of pel_keys
+when all PEL features are available.
+
+Enter the symbol corresponding to the (provide \\='your-extra-init)
+statement at the end of your file that provides this extra
+initialization.
+
+CAUTION: don't forget to do the following:
+
+- Store your extra init .el file and any other of your elisp files it
+  requires inside your ~/.emacs.d/utils directory to prevent adding
+  another entry to Emacs `load-path'.
+- Identify your files inside `pel-utils-packages-to-keep' to prevent PEL
+  from attempting to erase your files during the execution of the
+  `pel-cleanup' command.
+- Byte compile your files to ensure they will load cleanly and quickly.
+  You can use the bin/el-byte-compile script to do that from the command
+  line or byte compile it by typing \\[pel-byte-compile-file-and-load]
+  from within Emacs."
+  :group 'pel-base-emacs
+  :type 'symbol)
+
 (defcustom pel-major-modes-with-no-indentation '(dired-mode
                                                  help-mode
                                                  ibuffer-mode

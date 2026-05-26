@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-24 22:46:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-26 14:50:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1172,8 +1172,8 @@ If it is nil, do it for the default directories used when dual-environment is
 not used or when used with terminal based Emacs.
 
 The elpa directory is identified by the `pel-package-user-dir-original'
-variable set by init.el before its renaming of the `package-user-dir' to
-control the content of the `load-path'.
+variable captured by `early-init.el' at load time (preferred), or by
+`init.el' as a fallback when no `early-init.el' is present.
 
 - If this already is a symlink, then do nothing.
 - Otherwise it identifies a directory and proceed:
@@ -1192,15 +1192,10 @@ Return a list of performed action descriptions in reverse order."
                                             elpa-dp "elpa-complete")
                                            for-graphics))
              (actions nil))
-        (unless (or (file-symlink-p elpa-dp)
-                    (bound-and-true-p package-quickstart))
+        (unless (file-symlink-p elpa-dp)
           ;; the main elpa is a directory, not a symbolic link
           ;; make sure it does not already use the elpa-complete name;
-          ;; Complain if it does.  However only perform this check when
-          ;; not using package quickstart because in package quickstart I have
-          ;; not found a way to identify the original package-user-dir which
-          ;; identifies the symlink when fast start is used and then elpa-dp
-          ;; ends up having the value of the symlink target.  TODO.
+          ;; Complain if it does.
           (when (pel-same-fname-p elpa-dp elpa-dp-cmplt)
             (user-error "Invalid elpa directory in %s:
  The elpa directory name (%s) clash with PEL startup management strategy.
@@ -1221,10 +1216,11 @@ Return a list of performed action descriptions in reverse order."
               "Created %s symlink that points to %s"
             elpa-dp elpa-dp-cmplt))
         actions)
-    (user-error "Invalid init.el file detected:
+    (user-error "Invalid init.el or early-init.el file detected:
   The `pel-package-user-dir-original' symbol is unknown.
   PEL cannot safely manage Emacs startup mode.
-  Please update your init.el file; use pel/example/init/init.el template!")))
+  Please update your init.el (and early-init.el if present);
+  use pel/example/init/ templates!")))
 
 (defun pel--elpa-symlink-problems (elpa-dirpath for-graphics)
   "Check validity of ELPA_DIRPATH used FOR-GRAPHICS.
@@ -1275,47 +1271,43 @@ The directory (or symlink to the directory) that should hold
           (pel-elpa-name custom-file for-graphics)
           original-elpa-dirpath)
       ;;
-      ;; elpa exists, check its validity, but only do that
-      ;;  when package quickstart is disabled as PEL is not yet capable of
-      ;;  getting to the original package-user-dir when package quickstart is
-      ;;  used. TODO.
-      (unless (bound-and-true-p package-quickstart)
-        (if elpa-symlink
-            (progn
-              (unless (pel-symlink-points-to-p elpa-dirname
-                                               elpa-complete-dirpath)
-                (pel-push-fmt problems "The elpa symlink target is invalid.
+      ;; elpa exists, check its validity.
+      (if elpa-symlink
+          (progn
+            (unless (pel-symlink-points-to-p elpa-dirname
+                                             elpa-complete-dirpath)
+              (pel-push-fmt problems "The elpa symlink target is invalid.
    - Current symlink target : %s
    - Expected symlink target: %s"
-                  elpa-symlink
-                  elpa-complete-dirpath))
-              ;;
-              (unless (file-name-absolute-p elpa-symlink)
-                (pel-push-fmt problems
-                    "The %s symlink target is not an absolute path:
+                elpa-symlink
+                elpa-complete-dirpath))
+            ;;
+            (unless (file-name-absolute-p elpa-symlink)
+              (pel-push-fmt problems
+                  "The %s symlink target is not an absolute path:
    - Current symlink target : %s
    - Expected symlink target: %s
  Attempting a repair."
-                  elpa-dirpath
-                  elpa-symlink
-                  elpa-complete-dirpath)
-                ;; try to repair it
-                (pel-point-symlink-to elpa-dirname elpa-complete-dirpath)
-                (setq elpa-symlink (file-symlink-p elpa-dirname)))
-              ;;
-              (unless (directory-name-p elpa-symlink)
-                (pel-push-fmt problems
-                    "\
+                elpa-dirpath
+                elpa-symlink
+                elpa-complete-dirpath)
+              ;; try to repair it
+              (pel-point-symlink-to elpa-dirname elpa-complete-dirpath)
+              (setq elpa-symlink (file-symlink-p elpa-dirname)))
+            ;;
+            (unless (directory-name-p elpa-symlink)
+              (pel-push-fmt problems
+                  "\
 The elpa symlink target format does not use a directory name format:
    - Current symlink target : %s
    - Expected symlink target: %s
  Attempting a repair."
-                  elpa-symlink
-                  elpa-complete-dirpath)
-                ;; try to repair it.
-                (pel-point-symlink-to elpa-dirname elpa-complete-dirpath)))
-          (pel-push-fmt problems "The elpa is not a symlink  : %s"
-            elpa-dirname))))
+                elpa-symlink
+                elpa-complete-dirpath)
+              ;; try to repair it.
+              (pel-point-symlink-to elpa-dirname elpa-complete-dirpath)))
+        (pel-push-fmt problems "The elpa is not a symlink  : %s"
+          elpa-dirname)))
     (nreverse problems)))
 
 (defun pel--validate-elpa-symlink (elpa-dirpath for-graphics )
@@ -1779,21 +1771,8 @@ Failed fast startup setup for %s after step %d: %s
     (pel--require-process-detection))
 
   ;; When all conditions are OK, check further
-  (cond
-   ;;
-   ((eq (pel-startup-mode) 'fast)
-    (user-error "PEL/Emacs is already setup for fast startup!"))
-   ;;
-   ((and (bound-and-true-p package-quickstart)
-         (display-graphic-p))
-    (user-error "PEL currently is not able to switch to fast startup mode when
-  package quickstart is used and Emacs is running in graphic mode.
-  Use Emacs running in terminal mode or turn package quickstart off
-  (with M-x pel-setup-no-quickstart) to execute this command.
-  Once the switch is completed, PEL can run in fast startup mode with package
-  startup active in graphic mode. Sorry for the inconvenience"))
-   ;;
-   (t
+  (if (eq (pel-startup-mode) 'fast)
+       (user-error "PEL/Emacs is already setup for fast startup!")
     (when (y-or-n-p (pel-prompt-with-quickstart-state
                      "Change to fast startup mode"
                      :show-requested-quickstart))
@@ -1807,7 +1786,7 @@ Failed fast startup setup for %s after step %d: %s
         (pel--setup-fast t))
       ;; inform user, possibly after a deprecated warning
       (run-with-idle-timer 1 nil (function pel--setup-fast-message))
-      (setq pel-fast-startup-setup-changed t)))))
+      (setq pel-fast-startup-setup-changed t))))
 
 ;; --
 (defun pel--delete-file-dir (dest)
@@ -2003,21 +1982,8 @@ Correct the problem manually before retrying M-x pel-setup-normal."))
   "Restore normal PEL/Emacs operation mode."
   (interactive)
   (pel-setup-validate-init-files)
-  (cond
-   ((eq (pel-startup-mode) 'normal)
-    (user-error "PEL/Emacs is already using the normal setup!"))
-   ;; [:todo 2026-05-23, by Pierre Rouleau: In order to lift this restriction
-   ;;                    the `pel--setup-init-file-problems' issue identified
-   ;;                    by another TODO must be resolved.  ]
-   ((and (bound-and-true-p package-quickstart)
-         (display-graphic-p))
-    (user-error "\
-PEL currently is not able to restore from fast startup mode when
-  package quickstart is used and Emacs is running in graphic mode.
-  Use Emacs running in terminal mode or turn package quickstart off
-  (with M-x pel-setup-no-quickstart) to execute this command.
-  Sorry for the inconvenience"))
-   (t
+  (if (eq (pel-startup-mode) 'normal)
+      (user-error "PEL/Emacs is already using the normal setup!")
     (when (y-or-n-p (pel-prompt-with-quickstart-state
                      "Restore normal startup mode"
                      :show-requested-quickstart))
@@ -2034,7 +2000,7 @@ PEL currently is not able to restore from fast startup mode when
                (pel-string-when
                 pel-detected-dual-environment-in-init-p
                 "\n Affects Emacs running in terminal and graphics mode!"))
-      (setq pel-fast-startup-setup-changed t)))))
+      (setq pel-fast-startup-setup-changed t))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-setup)

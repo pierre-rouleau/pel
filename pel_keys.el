@@ -11485,6 +11485,29 @@ This call simulates a F7 prefix key unless DONT-SIMULATE is non-nil."
       (pel-byte-compile-if-needed el-filename))))
 
 ;; ---------------------------------------------------------------------------
+;;* Optional Loading of User Extra Startup Code
+;;  ===========================================
+(when pel-user-extra-code-feature
+  (if (symbolp pel-user-extra-code-feature)
+      ;; load user's extra code; prevent errors from affecting startup.
+      (condition-case err
+          (require pel-user-extra-code-feature nil 'noerror)
+        (error
+         (display-warning
+          'pel-user-extra-init
+          (format "Error loading `%s': %s\nCheck the file providing this feature."
+                  pel-user-extra-code-feature
+                  (error-message-string err))
+          :warning)))
+    ;; pel-user-extra-code-feature is not a symbol; cannot load.
+    (display-warning
+     'pel-user-extra-init
+     (format "The `pel-user-extra-code-feature' user-option must be a symbol
+but its value is %S.  Please update your customization."
+             pel-user-extra-code-feature)
+     :warning)))
+
+;; ---------------------------------------------------------------------------
 (provide 'pel_keys)
 
 ;;; pel_keys.el ends here

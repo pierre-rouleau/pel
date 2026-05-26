@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-25 18:12:24 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-26 14:38:29 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -611,6 +611,44 @@ PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 BIN_EL_FILES  := bin/pel-lint.el
 BIN_ELC_FILES := $(subst .el,.elc,$(BIN_EL_FILES))
 
+# ---------------------------------------------------------------------------
+# Byte-compile the user's init.el and, when present, early-init.el after they
+# have been validated and after PEL itself has been byte-compiled.
+#
+# WARNING: if you edit ~/.emacs.d/init.el or ~/.emacs.d/early-init.el
+#          manually, run  make compile-init  to refresh the .elc files.
+#          A stale .elc is harder to debug than a non-compiled init file.
+#          Also note that your ~/.emacs.d/init.el should not require any
+#          external packages, otherwise you will see warnings in the following
+#          byte compilation.
+#
+
+# Convenience: force recompilation regardless of stamp age.
+.PHONY: compile-init
+compile-init:
+	@rm -f build/.compile-user-init-stamp
+	$(MAKE) build/.compile-user-init-stamp
+
+ifeq ($(GITHUB_WORKSPACE),)
+build/.compile-user-init-stamp: build/.check-init-stamp pel.elc
+	@printf "Byte-compiling user init.el ...\n"
+	@$(EMACS) --batch -Q \
+	          --eval "(add-to-list 'load-path default-directory)" \
+	          -f batch-byte-compile \
+	          "$(PEL_EMACS_DIR)/init.el"
+	@if [ -f "$(PEL_EMACS_DIR)/early-init.el" ]; then \
+	    printf "Byte-compiling user early-init.el ...\n"; \
+	    $(EMACS) --batch -Q \
+	            -f batch-byte-compile \
+	            "$(PEL_EMACS_DIR)/early-init.el"; \
+	fi
+	@touch $@
+else
+build/.compile-user-init-stamp: build/.check-init-stamp pel.elc
+	@printf "CI build: skipping user init.el byte-compilation.\n"
+	@touch $@
+endif
+
 # -----------------------------------------------------------------------------
 # First rule, allows 'make' command to build everything that needs updating
 
@@ -621,28 +659,32 @@ BIN_ELC_FILES := $(subst .el,.elc,$(BIN_EL_FILES))
 #   as soon as its dependencies have been compiled.
 # - Compile pel_keys.el and pel.el at the end.
 
-all: pel-top $(ALL_TEST_PASSED) pel_keys.elc pel.elc
+all: build/.check-init-stamp pel-top $(ALL_TEST_PASSED) pel_keys.elc pel.elc \
+     build/.compile-user-init-stamp
 
-pel-top: $(ALL_TEST_PASSED) $(ELC_FILES)
+pel-top: build/.check-init-stamp $(ALL_TEST_PASSED) $(ELC_FILES)
 
 # Target first-build:
 # - Compile all .el files except pel_keys.el and pel.el
 #   PEL files hold the logic to install external package and does not
 #   need any other tool to help for external package installation.
 
-first-build: $(ELC_FILES)
+first-build: build/.check-init-stamp $(ELC_FILES)
 
 # Target compile-only:
 # - Compile all .el files (including pel_keys.el and pel.el, done at the end).
-compile-only: $(ELC_FILES) pel_keys.elc pel.elc
+compile-only: build/.check-init-stamp $(ELC_FILES) pel_keys.elc pel.elc \
+              build/.compile-user-init-stamp
 
 # -----------------------------------------------------------------------------
-# Self-desciptive rule: make help prints the info.
+# Self-descriptive rule: make help prints the info.
 
 .PHONY: help
 help:
 	@printf "\nBuild Emacs PEL for use and distribution.\n"
 	@printf "\nStops on the first error (or compiler warning).\n"
+	@printf " Checks if user init.el and, when present, early-init.el are valid\n"
+	@printf "  for PEL, and if they use the latest versions.\n"
 	@printf "\n"
 	@printf "Currently building PEL version $(PEL_VERSION).\n"
 	@printf "1) First byte-compile all Emacs Lisp files in required order.\n"
@@ -658,12 +700,16 @@ help:
 	@printf "Usage:\n"
 	@printf " * make               - Same as 'make all': build everything as needed.\n"
 	@printf " * make all           - Compile all files and run tests as soon as possible.\n"
-	@printf " * make compile-only  - Compile all Emacs Lisp files. Do not run tests.\n"
+	@printf " * make compile-only  - Compile all PEL Emacs Lisp and user init files. Do not run tests.\n"
 	@printf " * make pel           - Compile all files except pel.el. Do not run tests.\n"
 	@printf " * make first-build   - First build done on a virgin system:\n"
 	@printf "                         compile all files except pel_keys.el and pel.el.\n"
 	@printf "                         No external file or package gets loaded.\n"
 	@printf "                         No tests are executed.\n"
+	@printf " * make check-init    - Check validity of user init.el and, if present, early-init.el.\n"
+	@printf "                         Deletes the stamp to force a fresh check.\n"
+	@printf " * make compile-init  - Force byte-recompilation of user init.el and, when present, early-init.el.\n"
+	@printf "                        Run this after manually editing those files.\n"
 	@printf " * make test          - Run the regression tests.\n"
 	@printf " * make clean         - Remove $(PELPA_DIR),  all output files, all test tag files,\n"
 	@printf "                        and remove $(PEL_TAR_FILE)\n"
@@ -729,6 +775,53 @@ check-target:
 
 check-elc-files:
 	@echo ELC_FILES = "( $(ELC_FILES) )"
+
+# ---------------------------------------------------------------------------
+# Ensure validity of user init/early-init files
+# ---------------------------------------------
+# Before any byte or native compilation, verify that the user's
+# ~/.emacs.d/init.el and (when present) ~/.emacs.d/early-init.el carry the
+# version numbers expected by this release of PEL.  An incompatible init file
+# is caught early rather than producing a confusing build or runtime failure.
+#
+# The check is performed by build/check-init-versions-for-pel.el, a standalone Elisp
+# script that scans files as plain text (no package activation required).
+#
+# Skipped automatically in GitHub CI (GITHUB_WORKSPACE is set) because CI
+# uses ci/init.el, which has its own separate compatibility guarantee.
+#
+# Non-phony stamp target for the user init-file version check.
+# The check runs (at most once) whenever the checker script or the PEL template
+# files change.  All compilation and test targets depend on this file, so GNU Make
+# guarantees the check completes before any parallel job that depends on it.
+#
+# NOTE: changes to the *user's* ~/.emacs.d/init.el or early-init.el are outside
+#       the repository and therefore do not automatically invalidate this stamp.
+#       Run  make check-init  to force a fresh check after updating
+#       those files manually.
+
+ifeq ($(GITHUB_WORKSPACE),)
+build/.check-init-stamp: build/check-init-versions-for-pel.el \
+                          example/init/early-init.el \
+                          example/init/init.el
+	@$(EMACS) --batch -Q \
+	          --eval "(setenv \"PEL_EXAMPLE_DIR\"  \"example/init\")" \
+	          --eval "(setenv \"PEL_USER_EMACS_D\" (expand-file-name \"$(PEL_EMACS_DIR)\"))" \
+	          -l "build/check-init-versions-for-pel.el"
+	@touch $@
+else
+build/.check-init-stamp: build/check-init-versions-for-pel.el \
+                          example/init/early-init.el \
+                          example/init/init.el
+	@printf "CI build detected (GITHUB_WORKSPACE set): skipping user init file version check.\n"
+	@touch $@
+endif
+
+# Convenience alias: force a fresh check regardless of stamp age.
+.PHONY: check-init
+check-init:
+	@rm -f build/.check-init-stamp
+	$(MAKE) build/.check-init-stamp
 
 # -----------------------------------------------------------------------------
 # Creating the target directories when they don't exist.
@@ -1041,7 +1134,6 @@ else
 	$(EMACS) -Q --batch -L . --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile $<
 endif
 
-.PHONY:	pel
 # Target to byte-compile all Emacs Lisp files inside one Emacs Session.
 # Compile all without any init configuration.
 # Compile pel_keys.el last, *with* init.el so it can find the external packages.
@@ -1054,8 +1146,9 @@ endif
 # - When all EL_FILES are byte compiled and the ERT tests have run and succeeded, then:
 #   - byte compile pel_keys.el
 #   - byte compile pel.el
+.PHONY:	pel
 
-pel: $(ELC_FILES) pel_keys.elc
+pel: build/.check-init-stamp $(ELC_FILES) pel_keys.elc
 
 pel.elc: pel.el pel_keys.elc
 
@@ -1092,7 +1185,7 @@ test/pel-%-test.el.test-passed: test/pel-%-test.el $(ERT_TEST_DEP)
 
 .PHONY:	test clean-test
 
-test:	$(ALL_TEST_PASSED)
+test:	build/.check-init-stamp $(ALL_TEST_PASSED)
 
 # The rm -f option prevents complaints from rm when the file is not present.
 clean-test:
@@ -1252,6 +1345,8 @@ clean: clean-tar clean-mypelpa clean-test
 	-rm -f $(BIN_ELC_FILES)
 	-rm -rf $(OUT_DIR)
 	-rm -rf $(TMP_DIR)
+	-rm -f build/.check-init-stamp
+	-rm -f build/.compile-user-init-stamp
 
 clean-build: clean all
 
