@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-26 09:52:05 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-26 10:36:35 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -618,6 +618,9 @@ BIN_ELC_FILES := $(subst .el,.elc,$(BIN_EL_FILES))
 # WARNING: if you edit ~/.emacs.d/init.el or ~/.emacs.d/early-init.el
 #          manually, run  make compile-user-init  to refresh the .elc files.
 #          A stale .elc is harder to debug than a non-compiled init file.
+#          Also note that your ~/.emacs.d/init.el should not require any
+#          external packages, otherwise you will see warnings in the following
+#          byte compilation.
 #
 ifeq ($(GITHUB_WORKSPACE),)
 build/.compile-user-init-stamp: build/.check-init-stamp pel.elc
@@ -652,7 +655,7 @@ endif
 all: build/.check-init-stamp pel-top $(ALL_TEST_PASSED) pel_keys.elc pel.elc \
      build/.compile-user-init-stamp
 
-pel-top: $(ALL_TEST_PASSED) $(ELC_FILES)
+pel-top: build/.check-init-stamp $(ALL_TEST_PASSED) $(ELC_FILES)
 
 # Target first-build:
 # - Compile all .el files except pel_keys.el and pel.el
@@ -696,7 +699,9 @@ help:
 	@printf "                         compile all files except pel_keys.el and pel.el.\n"
 	@printf "                         No external file or package gets loaded.\n"
 	@printf "                         No tests are executed.\n"
-	@printf " * make check-init    - Check validity of user init.el and early-init.el\n"
+	@printf " * make check-init    - Check validity of user init.el and, if present\n"
+	@printf "                         and early-init.el.\n"
+	@printf "                         Deletes the stamp to force a fresh check.\n"
 	@printf " * make test          - Run the regression tests.\n"
 	@printf " * make clean         - Remove $(PELPA_DIR),  all output files, all test tag files,\n"
 	@printf "                        and remove $(PEL_TAR_FILE)\n"
@@ -807,7 +812,7 @@ endif
 # Convenience alias: force a fresh check regardless of stamp age.
 .PHONY: check-init
 check-init:
-	`@rm` -f build/.check-init-stamp
+	@rm -f build/.check-init-stamp
 	$(MAKE) build/.check-init-stamp
 
 # -----------------------------------------------------------------------------
@@ -1121,7 +1126,6 @@ else
 	$(EMACS) -Q --batch -L . --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile $<
 endif
 
-.PHONY:	pel
 # Target to byte-compile all Emacs Lisp files inside one Emacs Session.
 # Compile all without any init configuration.
 # Compile pel_keys.el last, *with* init.el so it can find the external packages.
@@ -1134,8 +1138,9 @@ endif
 # - When all EL_FILES are byte compiled and the ERT tests have run and succeeded, then:
 #   - byte compile pel_keys.el
 #   - byte compile pel.el
+.PHONY:	pel
 
-pel: $(ELC_FILES) pel_keys.elc
+pel: build/.check-init-stamp $(ELC_FILES) pel_keys.elc
 
 pel.elc: pel.el pel_keys.elc
 

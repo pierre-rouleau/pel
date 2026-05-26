@@ -28,7 +28,7 @@
 ;; The code of this file does not load any Emacs Lisp file, it only uses what
 ;; is already available: the Emacs Lisp forms implemented in C and the ones
 ;; that are normally bundled in the Emacs dump.  This includes the files
-;; subrl.el.
+;; subr.el.
 ;;
 ;;
 ;; PEL Feature Control
@@ -64,7 +64,7 @@
 ;;     used.  If your shell does not have such environment variable, use
 ;;     something like "PEL_SHELL" and define it inside your shell
 ;;     initialization file (something like ~/.bashrc or ~/.bash_profile).
-;;     - Identified in early-init.el by `pel-emacs-gui-programs'.
+;;     - Identified in early-init.el by `pel-early-init-emacs-gui-programs'.
 ;;
 ;; - PEL fast startup:
 ;;   Whether PEL activates the fast startup mode.

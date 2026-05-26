@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-26 10:15:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-26 10:30:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -193,15 +193,13 @@ Return nil if all is OK."
  - `pel-package-user-dir-original' is not bound.
    It should be set to remember `package-user-dir'."))
      ;;
-     ((and (boundp 'pel-package-user-dir-original)
-           (not (stringp pel-package-user-dir-original)))
+     ((not (stringp pel-package-user-dir-original))
       (pel-push-fmt
           problems
           "`pel-package-user-dir-original' has invalid value %S; expected a directory name string."
         pel-package-user-dir-original))
      ;;
-     ((and (boundp 'pel-package-user-dir-original)
-           (not (file-symlink-p pel-package-user-dir-original))
+     ((and (not (file-symlink-p pel-package-user-dir-original))
            (pel-same-fname-p
             pel-package-user-dir-original
             (pel-elpa-name (pel-sibling-dirpath

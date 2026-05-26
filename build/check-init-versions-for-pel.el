@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 26 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-26 09:37:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-26 10:31:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -27,8 +27,8 @@
 ;;
 ;; Purpose   : Verify that the user's init.el and early-init.el (when present)
 ;;             carry the version numbers expected by this PEL release.
-;; Called by : The PEL Makefile target `check-user-init-files', before any
-;;             byte or native compilation.
+;; Called by : The PEL Makefile stamp target `build/.check-init-stamp' (run
+;;             via `make check-init'), before any byte or native compilation.
 ;; Usage     : emacs --batch -Q -l build/check-init-versions-for-pel.el
 ;;             (the Makefile sets PEL_EXAMPLE_DIR and PEL_USER_EMACS_D via
 ;;             --eval "(setenv ...)" before loading this file.)
