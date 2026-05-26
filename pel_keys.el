@@ -11485,6 +11485,13 @@ This call simulates a F7 prefix key unless DONT-SIMULATE is non-nil."
       (pel-byte-compile-if-needed el-filename))))
 
 ;; ---------------------------------------------------------------------------
+;;* Optional Loading of User Extra Startup Code
+;;  ===========================================
+(when pel-user-extra-code-feature
+  ;; load user's extra code; prevent errors from affecting startup.
+  (require pel-user-extra-code-feature nil 'noerror))
+
+;; ---------------------------------------------------------------------------
 (provide 'pel_keys)
 
 ;;; pel_keys.el ends here
