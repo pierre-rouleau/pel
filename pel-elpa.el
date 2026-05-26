@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-18 16:25:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-05-25 21:31:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -492,7 +492,7 @@ Example:
 
 Note that the code supports versions inside the name of the elpa directory."
   (let ((basename (file-name-nondirectory (directory-file-name dirname))))
-    (when (string-match "\\`\\([-[:alnum:]+_]+\\)-[0-9.]+\\'" basename)
+    (when (string-match "\\`\\([-[:alnum:]+_]+\\)-[0-9][[:alnum:].]*\\'" basename)
       (match-string 1 basename))))
 
 (defun pel-elpa-package-alist-of-dir (dirpath)
