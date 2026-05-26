@@ -4,7 +4,7 @@
 # Purpose   : Build PEL quickly from scratch then run all tests and display stats.
 # Created   : Monday, May 11 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-11 13:44:46 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-26 12:21:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -25,5 +25,5 @@
 # ----
 #
 
-make clean && make -j compile-only && make lint && make && make stats
+make check-init && make clean && make -j compile-only && make lint && make && make stats
 # ----------------------------------------------------------------------------
