@@ -4,7 +4,7 @@
 # Purpose   : Build PEL quickly from scratch then run all tests and display stats.
 # Created   : Monday, May 11 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-26 14:41:31 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-05-26 22:07:05 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -15,7 +15,8 @@
 # - build PEL Emacs Lisp code quickly (using concurrent Make build),
 # - check if there are any issues in the key prefix logic between pel_keys.el and pel--keys-macros.el,
 # - run all unit tests
-# - and complete by loading everything in an Emacs session then print PEL stats.
+# - byte compile user init and, when present, the early-init.el
+# - Load everything in an Emacs session then print PEL stats.
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -30,6 +31,14 @@
 
 # Check user init and early-init right at the beginning to prevent cleaning
 # if the user's file should be updated.
+# Build user init/early-init before making stats.
 #
-make check-init && make clean && make -j compile-only && make lint && make && make stats
+make check-init && \
+    make clean && \
+    make -j compile-only-pel && \
+    make lint && \
+    make test && \
+    make compile-init && \
+    make stats
+
 # ----------------------------------------------------------------------------

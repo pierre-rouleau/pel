@@ -114,7 +114,11 @@ in dual environment mode).  Having access to the original value lets
 `pel-setup-fast' and `pel-setup-normal' correctly establish or remove
 the PEL directory structure on first invocation.")
 
+;; ---------------------------------------------------------------------------
+;; Warning Prevention
+(defvar package-user-dir)             ; prevent byte-compiler warning
 
+;; ---------------------------------------------------------------------------
 ;; Section 1 : Utility function definition
 ;; =======================================
 ;;

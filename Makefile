@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-26 14:38:29 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-26 21:44:48 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -652,7 +652,7 @@ endif
 # -----------------------------------------------------------------------------
 # First rule, allows 'make' command to build everything that needs updating
 
-.PHONY: all compile-only first-build pel-top
+.PHONY: all compile-only compile-only-pel first-build pel-top
 
 # Target all (the default target):
 # - First build the .elc files to check for errors, running tests
@@ -676,6 +676,7 @@ first-build: build/.check-init-stamp $(ELC_FILES)
 compile-only: build/.check-init-stamp $(ELC_FILES) pel_keys.elc pel.elc \
               build/.compile-user-init-stamp
 
+compile-only-pel: build/.check-init-stamp $(ELC_FILES) pel_keys.elc pel.elc
 # -----------------------------------------------------------------------------
 # Self-descriptive rule: make help prints the info.
 
@@ -701,6 +702,10 @@ help:
 	@printf " * make               - Same as 'make all': build everything as needed.\n"
 	@printf " * make all           - Compile all files and run tests as soon as possible.\n"
 	@printf " * make compile-only  - Compile all PEL Emacs Lisp and user init files. Do not run tests.\n"
+	@printf " * make compile-only-pel  - Compile all PEL Emacs Lisp. Do not run tests.\n"
+	@printf "                            Checks the version of init.el and early-init.el but does not compile them.\n"
+	@printf "                            Use this if you have problem compiling init.el and early-init.el\n"
+	@printf "                            without warnings.\n"
 	@printf " * make pel           - Compile all files except pel.el. Do not run tests.\n"
 	@printf " * make first-build   - First build done on a virgin system:\n"
 	@printf "                         compile all files except pel_keys.el and pel.el.\n"
