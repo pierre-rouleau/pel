@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-05-26 21:25:50 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-05-26 21:44:48 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -676,7 +676,7 @@ first-build: build/.check-init-stamp $(ELC_FILES)
 compile-only: build/.check-init-stamp $(ELC_FILES) pel_keys.elc pel.elc \
               build/.compile-user-init-stamp
 
-compile-only-pel: $(ELC_FILES) pel_keys.elc pel.elc
+compile-only-pel: build/.check-init-stamp $(ELC_FILES) pel_keys.elc pel.elc
 # -----------------------------------------------------------------------------
 # Self-descriptive rule: make help prints the info.
 
@@ -703,7 +703,8 @@ help:
 	@printf " * make all           - Compile all files and run tests as soon as possible.\n"
 	@printf " * make compile-only  - Compile all PEL Emacs Lisp and user init files. Do not run tests.\n"
 	@printf " * make compile-only-pel  - Compile all PEL Emacs Lisp. Do not run tests.\n"
-	@printf "                            Use this if you have problem compiling init.el and earluy-init.el\n"
+	@printf "                            Checks the version of init.el and early-init.el but does not compile them.\n"
+	@printf "                            Use this if you have problem compiling init.el and early-init.el\n"
 	@printf "                            without warnings.\n"
 	@printf " * make pel           - Compile all files except pel.el. Do not run tests.\n"
 	@printf " * make first-build   - First build done on a virgin system:\n"
