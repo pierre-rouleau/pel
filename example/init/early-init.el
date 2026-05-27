@@ -231,6 +231,9 @@ This value is used by `pel-force-graphic-specific-custom-file-p'.")
 ;; makes the init.el assignment a no-op when this early-init code has
 ;; already saved the value.
 
+;; Warning Prevention
+(defvar package-user-dir)             ; prevent byte-compiler warning
+
 (defvar pel-package-user-dir-original
   (if (boundp 'package-user-dir)
       package-user-dir
@@ -308,6 +311,7 @@ For debugging and to quiet byte-compiler warning.")
   ;;     `package-activate-all'
   ;;
   (defvar package-quickstart)           ; prevent byte-compiler warning
+  (defvar package-quickstart-file)      ; prevent byte-compiler warning
   (when pel-early-init-support-package-quickstart-p
     (setq package-quickstart t)
 
