@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-03 12:40:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 13:54:12 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,6 +42,8 @@
 ;;        . `pel-elcode-operators-in'
 ;;          . `pel-elcode--args-in'
 ;;  * `pel-elcode-print-properties-of-next-defun-with-some'
+;;    + `pel-elcode-properties-of-sexp-at-point'
+;;      + ...
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -51,6 +53,8 @@
 (require 'seq)          ; use: `seq-filter' (not autoloaded in Emacs 26)
 ;;                             `seq-partition', `seq-every-p'
 (require 'pel-elisp)    ; use: `pel-elisp-beginning-of-previous-form'
+;;                             `pel-elisp-beginning-of-next-form'
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -366,25 +370,23 @@ a \"nil\" message."
 Note that it skips the defsubst forms.
 Also store the property form in the kill ring."
   (interactive)
-  (let ((count 0)
+  (let ((one-done nil)
         (original-pos (point))
-        found props )
+        found)
     (while (and (not found)
                 (not (eobp)))
       (if (pel-elisp-beginning-of-next-form 1 'defun-forms
                                             :silent :dont-push-mark)
           ;; Found a form
-          (progn
-
-            (setq props (pel-elcode-properties-of-sexp-at-point))
+          (let ((props (pel-elcode-properties-of-sexp-at-point)))
             (when props
-              (pel+= count 1)
+              (setq one-done t)
               (kill-new (format "%S" props))
               (message "%S" props)
               (setq found t)))
         ;; no defun found; stop looping
         (setq found t)))
-    (when (= count 0)
+    (unless one-done
       (message "No defun with applicable properties found below")
       (goto-char original-pos))))
 ;;; --------------------------------------------------------------------------
