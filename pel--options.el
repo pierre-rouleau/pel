@@ -509,11 +509,13 @@ because it is not reliable inside a GUI daemon client.")
 (defun pel-opt-indent-valid-p (n)
   "Return t if N is nil or a valid indentation integer in 2-8 range.
 Return nil otherwise."
+  (declare (pure t) (side-effect-free t))
   (or (not n)
       (and (integerp n) (< n 9) (> n 1))))
 
 (defun pel-indent-valid-p (n)
   "Return t if N is a valid indentation integer in 2-8 range, nil otherwise."
+  (declare (pure t) (side-effect-free t))
   (and (integerp n) (< n 9) (> n 1)))
 
 (defun pel-c-style-valid-p (style)
@@ -3541,6 +3543,7 @@ that are expanded when the note is inserted:
 
 (defun pel--date-time-doc (fmt doc)
   "Generate docstring from format FMT and DOC description."
+  (declare (side-effect-free t))
   (format
    "%s
 
