@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-03 10:05:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 12:40:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -26,7 +26,7 @@
 ;;; Commentary:
 ;;
 ;; This file defines the `pel-elcode-print-properties-of-sexp-at-point'
-;; command that displays a declare for that identifies whether the sexp at
+;; command that displays a declare form that identifies whether the sexp at
 ;; point is pure, side-effect-free and/or error-free.  Use this to improve the
 ;; declaration of your low-level code to allow the compiler to generate more
 ;; efficient code.
@@ -285,7 +285,7 @@ operator are found."
 
 
 (defun pel-elcode-properties-of-sexp (sexp)
-   "Return a property declare form for specified SEXP.
+  "Return a property declare form for specified SEXP.
 The declare form identifies whether the sexp is pure, side-effect-free and/or
 error-free."
   (let ((operators (pel-elcode-operators-in sexp)))
@@ -341,13 +341,18 @@ error-free."
 ;;-pel-autoload
 (defun pel-elcode-print-properties-of-sexp-at-point ()
   "Print whether sexp at point is pure, side-effect-free and/or error-free.
+
+The sexp supported are defun and defsubst forms.
+
 When a pure, side-effect-free or error-free property can be applied to the
 sexp the `declare' form is copied in the kill ring for later insertion in code
 and also printed in a message.  If no property applied the function just print
 a \"nil\" message."
   (interactive)
   (save-excursion
-    (unless (looking-at "(defun ")
+    (forward-line 0) ; move to beginning of line otherwise next block of code
+                     ;  will move to previous form.
+    (unless (looking-at "(def\\(un\\|subst\\) ")
       (pel-elisp-beginning-of-previous-form 1 'defun-forms
                                             :silent :dont-push-mark))
     (let ((props (pel-elcode-properties-of-sexp-at-point)))
@@ -358,9 +363,11 @@ a \"nil\" message."
 ;;-pel-autoload
 (defun pel-elcode-print-properties-of-next-defun-with-some ()
   "Move point to beginning of the next defun with properties; print them.
+Note that it skips the defsubst forms.
 Also store the property form in the kill ring."
   (interactive)
   (let ((count 0)
+        (original-pos (point))
         found props )
     (while (and (not found)
                 (not (eobp)))
@@ -376,9 +383,10 @@ Also store the property form in the kill ring."
               (message "%S" props)
               (setq found t)))
         ;; no defun found; stop looping
-        (message "%s defun with properties found"
-                 (if (= count 0) "No" "No more"))
-        (setq found t)))))
+        (setq found t)))
+    (when (= count 0)
+      (message "No defun with applicable properties found below")
+      (goto-char original-pos))))
 ;;; --------------------------------------------------------------------------
 
 (provide 'pel-elcode)
