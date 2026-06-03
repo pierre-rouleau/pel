@@ -582,6 +582,7 @@ If VALUE is nil do nothing."
 
 (defun pel-all-bitset-p (value &rest bits)
   "Return t when all and only those BITS are set in VALUE, nil otherwise."
+  (declare (pure t) (side-effect-free t))
   (let ((bitmask 0))
     (dolist (bit bits bitmask)
       (setq bitmask (logior bitmask bit)))
@@ -637,6 +638,7 @@ and the value is a list of elements found between it and the next marker."
 (eval-and-compile
   (defun pel-in-fast-startup-p ()
     "Return non-nil when PEL runs in fast startup operation."
+    (declare (side-effect-free t))
     (bound-and-true-p pel-running-in-fast-startup-p)))
 
 ;; ---------------------------------------------------------------------------
@@ -1804,6 +1806,7 @@ And with transformation functions:
 
 (defun pel-concat-strings-in-list (list)
   "Return the concatenation of all strings in the LIST of strings."
+  (declare (pure t) (side-effect-free t))
   (let ((acc "")
         elem)
     (while list
@@ -2635,6 +2638,7 @@ Return nil."
 If N is not specified, is nil or 1: return the length of the current line.
 Otherwise return the line N-1 lines forward: so if N is 2 use next line,
 if N is 0 use previous line, etc..."
+  (declare (side-effect-free t))
   (- (line-end-position n) (line-beginning-position n)))
 
 ;; ---------------------------------------------------------------------------
@@ -2921,7 +2925,7 @@ This function handles both."
 
 (defun pel-as-bold (text)
   "Return TEXT as a propertized string with \\='bold face."
-  (declare (pure t) (side-effect-free t))
+  (declare (side-effect-free t))
   (propertize text 'face 'bold))
 
 (defun pel-insert-bold (text)
@@ -3403,6 +3407,7 @@ Returns nil when Emacs does not support tree-sitter."
 
 (defun pel-emacs-config-features-string ()
   "Print the names of all Emacs configured compilation features."
+  (declare (side-effect-free t))
   (format "%s. With%s native compilation.%s" system-configuration-features
           (if pel-emacs-with-native-comp-p "" "out")
           (format
