@@ -60,6 +60,11 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
     when pel_keys.el is loaded.  This is no longer the case: the *pel-open-at-point* code checks the various relevant user-options
     when searching for files.
   - Renamed *pel-cc-find-show-status* (previously bound to ~<f12> <f4> f~ of cc-mode buffers) command to *pel-ffind-show-status* now bound to ~<f11> f <f4> ?~.
+- Improved Emacs Lisp support:
+  - Improved ability to detect defun forms that can be declared pure and/or side-effect free:
+    - Add the *pel-elcode-print-properties-of-next-defun-with-some* command, bound to ~<f12> a S~ in emacs-lisp buffers.
+      This command moves point to the next defun form that can have such a declaration; the declaration is stored in the kill-ring and can be inserted by typing ~C-y~.
+    - The *pel-elcode-print-properties-of-sexp-at-point* no longer needs to be issued from the opening parens; it can be issued from anywhere inside the defun form.
 - Improved reStructuredText support:
   - *pel-rst-set-underscore-syntax* controls the underscore character syntax at a buffer level, not globally.
     Its implementation is also simpler; it no longer needs a special variable to maintain state.

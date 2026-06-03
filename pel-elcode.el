@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-03 09:01:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 10:05:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -41,6 +41,7 @@
 ;;      - `pel-elcode-operators-in-sexp-at-point'
 ;;        . `pel-elcode-operators-in'
 ;;          . `pel-elcode--args-in'
+;;  * `pel-elcode-print-properties-of-next-defun-with-some'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -337,6 +338,7 @@ error-free."
       (goto-char pos))
     (pel-elcode-properties-of-sexp (sexp-at-point))))
 
+;;-pel-autoload
 (defun pel-elcode-print-properties-of-sexp-at-point ()
   "Print whether sexp at point is pure, side-effect-free and/or error-free.
 When a pure, side-effect-free or error-free property can be applied to the
@@ -346,12 +348,37 @@ a \"nil\" message."
   (interactive)
   (save-excursion
     (unless (looking-at "(defun ")
-      (call-interactively #'pel-elisp-beginning-of-previous-form))
+      (pel-elisp-beginning-of-previous-form 1 'defun-forms
+                                            :silent :dont-push-mark))
     (let ((props (pel-elcode-properties-of-sexp-at-point)))
       (when props
         (kill-new (format "%S" props)))
       (message "%S" props))))
 
+;;-pel-autoload
+(defun pel-elcode-print-properties-of-next-defun-with-some ()
+  "Move point to beginning of the next defun with properties; print them.
+Also store the property form in the kill ring."
+  (interactive)
+  (let ((count 0)
+        found props )
+    (while (and (not found)
+                (not (eobp)))
+      (if (pel-elisp-beginning-of-next-form 1 'defun-forms
+                                            :silent :dont-push-mark)
+          ;; Found a form
+          (progn
+
+            (setq props (pel-elcode-properties-of-sexp-at-point))
+            (when props
+              (pel+= count 1)
+              (kill-new (format "%S" props))
+              (message "%S" props)
+              (setq found t)))
+        ;; no defun found; stop looping
+        (message "%s defun with properties found"
+                 (if (= count 0) "No" "No more"))
+        (setq found t)))))
 ;;; --------------------------------------------------------------------------
 
 (provide 'pel-elcode)
