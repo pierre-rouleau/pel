@@ -1152,7 +1152,7 @@ plus the ability to comment the current line if ARG is the numeric 0."
 
 (defun pel-erlang-stop-when-arg-used-p ()
   "Return `stop' when invoking command invoked with arguments, nil otherwise."
-  (declare (pure t) (side-effect-free error-free))
+  (declare (side-effect-free error-free))
   (if current-prefix-arg
       'stop
     t))

@@ -337,22 +337,22 @@ Please see the function `tempo-define-template'.")
 
 (defun pel-erlang-skel-edoc-in-header-p ()
   "Return t if edoc must be used in header, nil otherwise."
-  (declare (pure t) (side-effect-free error-free))
+  (declare  (side-effect-free error-free))
   (eq pel-erlang-skel-with-edoc t))
 
 (defun pel-erlang-skel-edoc-in-function-p ()
   "Return t if edoc must be used in header, nil otherwise."
-  (declare (pure t) (side-effect-free t))
+  (declare  (side-effect-free t))
   (memq pel-erlang-skel-with-edoc '(t in-function-only)))
 
 (defun pel-erlang-skel-prompt-for-file-purpose-p ()
   "Return t if must prompt for file purpose, nil otherwise."
-  (declare (pure t) (side-effect-free t))
+  (declare  (side-effect-free t))
   (memq pel-erlang-skel-prompt-for-purpose '(t in-file-only)))
 
 (defun pel-erlang-skel-prompt-for-function-purpose-p ()
   "Return t if must prompt for file purpose, nil otherwise."
-  (declare (pure t) (side-effect-free t))
+  (declare  (side-effect-free t))
   (memq pel-erlang-skel-prompt-for-purpose '(t in-function-only)))
 
 (defalias 'pel-erlang-skel-prompt-for-function-name-p
