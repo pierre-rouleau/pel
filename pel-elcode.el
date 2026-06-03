@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-20 14:28:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 09:01:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -49,7 +49,7 @@
 (require 'pel--base)    ; use: `pel-delqs'
 (require 'seq)          ; use: `seq-filter' (not autoloaded in Emacs 26)
 ;;                             `seq-partition', `seq-every-p'
-
+(require 'pel-elisp)    ; use: `pel-elisp-beginning-of-previous-form'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -344,10 +344,13 @@ sexp the `declare' form is copied in the kill ring for later insertion in code
 and also printed in a message.  If no property applied the function just print
 a \"nil\" message."
   (interactive)
-  (let ((props (pel-elcode-properties-of-sexp-at-point)))
-    (when props
-      (kill-new (format "%S" props)))
-    (message "%S" props)))
+  (save-excursion
+    (unless (looking-at "(defun ")
+      (call-interactively #'pel-elisp-beginning-of-previous-form))
+    (let ((props (pel-elcode-properties-of-sexp-at-point)))
+      (when props
+        (kill-new (format "%S" props)))
+      (message "%S" props))))
 
 ;;; --------------------------------------------------------------------------
 
