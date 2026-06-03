@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-03 16:34:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 17:22:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -579,7 +579,7 @@ The completion modes available is taken from the following user options:
 - `pel-use-ivy'
 - `pel-use-counsel'
 The bit layout corresponds to the values of pel-USE-{IDO|IVY|COUNSEL|HELM}."
-  (declare (pure t) (side-effect-free t))
+  (declare (side-effect-free t))
   (let ((mask 0))
     (when pel-use-ido
       (setq mask pel-USE-IDO))
