@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-20 14:28:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 15:54:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -26,7 +26,7 @@
 ;;; Commentary:
 ;;
 ;; This file defines the `pel-elcode-print-properties-of-sexp-at-point'
-;; command that displays a declare for that identifies whether the sexp at
+;; command that displays a declare form that identifies whether the sexp at
 ;; point is pure, side-effect-free and/or error-free.  Use this to improve the
 ;; declaration of your low-level code to allow the compiler to generate more
 ;; efficient code.
@@ -38,9 +38,9 @@
 ;;      - `pel-elcode-properties-of-sexp'
 ;;        - `pel-elcode-operators-in'
 ;;          - `pel-elcode--args-in'
-;;      - `pel-elcode-operators-in-sexp-at-point'
-;;        . `pel-elcode-operators-in'
-;;          . `pel-elcode--args-in'
+;;  * `pel-elcode-print-properties-of-next-defun-with-some'
+;;    + `pel-elcode-properties-of-sexp-at-point'
+;;      + ...
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -49,6 +49,8 @@
 (require 'pel--base)    ; use: `pel-delqs'
 (require 'seq)          ; use: `seq-filter' (not autoloaded in Emacs 26)
 ;;                             `seq-partition', `seq-every-p'
+(require 'pel-elisp)    ; use: `pel-elisp-beginning-of-previous-form'
+;;                             `pel-elisp-beginning-of-next-form'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -71,7 +73,7 @@
     ;; The following special forms operators have no impact
     quote
     function)
-  "List of operators that have no impact on purity or side-effect.")
+  "List of operators that have no impact on purity or side effects.")
 
 (defconst pel-elcode-structural-forms
   '(defun defsubst lambda
@@ -121,7 +123,7 @@ made visible.
 
 Return a list of operator symbols found in EXP in the order of their
 first appearance, with all duplicates removed.  Return nil if no
-operator are found."
+operators are found."
   (let ((symbols ()))
     (cond
      ((and (listp exp) (symbolp (car exp)))
@@ -281,10 +283,8 @@ operator are found."
 
 ;; --
 
-
-
 (defun pel-elcode-properties-of-sexp (sexp)
-   "Return a property declare form for specified SEXP.
+  "Return a property declare form for specified SEXP.
 The declare form identifies whether the sexp is pure, side-effect-free and/or
 error-free."
   (let ((operators (pel-elcode-operators-in sexp)))
@@ -295,7 +295,7 @@ error-free."
       (setq operators (pel-delqs pel-elcode-non-impacting-operators
                                  operators))
       ;;
-      ;; If the first symbol is defun, remove it from the list.
+      ;; If the first symbol is defun or defsubst, remove it from the list.
       (when (memq (car-safe operators) '(defun defsubst))
         (setq operators (cdr operators)))
       ;;
@@ -337,18 +337,63 @@ error-free."
       (goto-char pos))
     (pel-elcode-properties-of-sexp (sexp-at-point))))
 
+;;-pel-autoload
 (defun pel-elcode-print-properties-of-sexp-at-point ()
-  "Print whether sexp at point is pure, side-effect-free and/or error-free.
-When a pure, side-effect-free or error-free property can be applied to the
-sexp the `declare' form is copied in the kill ring for later insertion in code
-and also printed in a message.  If no property applied the function just print
-a \"nil\" message."
-  (interactive)
-  (let ((props (pel-elcode-properties-of-sexp-at-point)))
-    (when props
-      (kill-new (format "%S" props)))
-    (message "%S" props)))
+  "Print whether defun at point is pure, side-effect-free and/or error-free.
 
+When a pure, side-effect-free or error-free property can be applied to the
+defun the `declare' form is copied in the kill ring for later insertion in code
+and also printed in a message.  If no property applies the function prints
+no message."
+  (interactive)
+  (save-excursion
+    (let ((original-pos (point))
+          defun-start-pos defun-end-pos)
+      ;; move to indentation otherwise next block of code will move to
+      ;; previous form.
+      (back-to-indentation)
+      (unless (looking-at "(defun ")
+        (unless (pel-elisp-beginning-of-previous-form 1 'defun-forms
+                                                      :silent :dont-push-mark)
+          (user-error "Point is not inside a defun form!")))
+
+      (setq defun-start-pos (point)
+            defun-end-pos   (ignore-errors (scan-sexps defun-start-pos 1)))
+      (if (and defun-end-pos
+               (<= defun-start-pos original-pos)
+               (< original-pos defun-end-pos))
+          (let ((props (pel-elcode-properties-of-sexp-at-point)))
+            (when props
+              (kill-new (format "%S" props))
+              (message "%S" props)))
+        (user-error "Point is not inside a defun form!")))))
+
+;; --
+;;-pel-autoload
+(defun pel-elcode-print-properties-of-next-defun-with-some ()
+  "Move point to beginning of the next defun with properties; print them.
+Note that it skips the defsubst forms.
+Also store the property form in the kill ring."
+  (interactive)
+  (let ((one-done nil)
+        (original-pos (point))
+        found)
+    (while (and (not found)
+                (not (eobp)))
+      (if (pel-elisp-beginning-of-next-form 1 'defun-forms
+                                            :silent :dont-push-mark)
+          ;; Found a form
+          (let ((props (pel-elcode-properties-of-sexp-at-point)))
+            (when props
+              (setq one-done t)
+              (kill-new (format "%S" props))
+              (message "%S" props)
+              (setq found t)))
+        ;; no defun found; stop looping
+        (setq found t)))
+    (unless one-done
+      (message "No defun with applicable properties found below")
+      (goto-char original-pos))))
 ;;; --------------------------------------------------------------------------
 
 (provide 'pel-elcode)

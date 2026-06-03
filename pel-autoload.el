@@ -349,7 +349,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   ;; --
   (pel-autoload "pel-elcode" for:
-    pel-elcode-print-properties-of-sexp-at-point)
+    pel-elcode-print-properties-of-sexp-at-point
+    pel-elcode-print-properties-of-next-defun-with-some)
   ;; --
   (pel-autoload "pel-eldoc" for:
     pel-eldoc-setup-info)

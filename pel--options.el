@@ -509,11 +509,13 @@ because it is not reliable inside a GUI daemon client.")
 (defun pel-opt-indent-valid-p (n)
   "Return t if N is nil or a valid indentation integer in 2-8 range.
 Return nil otherwise."
+  (declare (pure t) (side-effect-free t))
   (or (not n)
       (and (integerp n) (< n 9) (> n 1))))
 
 (defun pel-indent-valid-p (n)
   "Return t if N is a valid indentation integer in 2-8 range, nil otherwise."
+  (declare (pure t) (side-effect-free t))
   (and (integerp n) (< n 9) (> n 1)))
 
 (defun pel-c-style-valid-p (style)
@@ -3541,6 +3543,7 @@ that are expanded when the note is inserted:
 
 (defun pel--date-time-doc (fmt doc)
   "Generate docstring from format FMT and DOC description."
+  (declare (side-effect-free t))
   (format
    "%s
 
@@ -10104,18 +10107,19 @@ Note that activating Scsh also activates Scheme support."
 
   The target is specified using one of the following:
 
-  0) All top-level forms.  The default.
-1) Top-level defun forms only.
-2) All defun forms, any level.
-3) All of the following forms, any level
+0) \\='all-top-level-forms   : All top-level forms.  The default.
+1) \\='top-level-defun-forms : Top-level defun forms only.
+2) \\='defun-forms           : All defun forms, any level.
+3) \\='all-defun-defmacro-defsubst-forms: All of the following forms, any level:
    - defun
    - defsubst
    - defmacro
    - cl-defmacro
    - defalias
    - defadvice
-4) All defmacro and cl-defmacro forms, any level.
-5) All of the following forms, any level
+4) \\='all-defmacro-forms    : All defmacro and cl-defmacro forms, any level.
+5) \\='all-functions-macros-eieio-def-forms: All of the following forms,
+   at any level:
    - defun
    - defsubst
    - defmacro
@@ -10125,7 +10129,7 @@ Note that activating Scsh also activates Scheme support."
    - defclass
    - defmethod
    - defgeneric
-6) All of the following forms, any level
+6) \\='all-functions-variables-def-forms: All of the following forms, any level
    - defun
    - defsubst
    - defmacro
@@ -10145,7 +10149,8 @@ Note that activating Scsh also activates Scheme support."
    - deftheme
    - defcustom
    - defgroup
-7) All of the following variable definition forms, at any level:
+7) \\='all-variables-def-forms : All of the following variable definition forms,
+   at any level:
    - defvar
    - defvaralias
    - defvar-local
@@ -10156,7 +10161,7 @@ Note that activating Scsh also activates Scheme support."
    - deftheme
    - defcustom
    - defgroup
-8) All forms specified by the list defined by:
+8) \\='user-specified: All forms specified by the list defined by:
    - `pel-elisp-user-specified-targets'
    - `pel-elisp-user-specified-targets2'
 

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 12:43:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 15:26:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -501,8 +501,8 @@ and pure predicates must yield a full pure+side-effect-free result."
 ;;* `pel-elcode-print-properties-of-sexp-at-point'
 ;;  ==============================================
 
-(ert-deftest ert-test-pel-elcode-print-properties-of-sexp-at-point--nil ()
-  "When no properties apply: kill-ring is unchanged and message shows nil."
+(ert-deftest ert-test-pel-elcode-print-properties-of-sexp-at-point--none ()
+  "When no properties apply: kill-ring is unchanged and no message shown."
   (with-temp-buffer
     (emacs-lisp-mode)
     (insert "(defun f () (message \"hi\"))")
@@ -515,8 +515,8 @@ and pure predicates must yield a full pure+side-effect-free result."
         (pel-elcode-print-properties-of-sexp-at-point))
       ;; `kill-new' must NOT have been called when props is nil
       (should-not kill-ring)
-      ;; But message must still be called with "nil"
-      (should (equal captured-message "nil")))))
+      ;; No message when there's no appropriate declare form
+      (should-not  captured-message))))
 
 (ert-deftest ert-test-pel-elcode-print-properties-of-sexp-at-point--pure ()
   "When properties exist: result is pushed to kill-ring and shown via message."
