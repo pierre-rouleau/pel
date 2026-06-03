@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-03 17:45:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 17:56:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -128,6 +128,174 @@ Take NEW-LOCAL-VARS local variables into account."
 Take NEW-LOCAL-VARS local variables into account."
   `(dolist (item ,body)
      (pel-elcode--add-ops-from-list item ,var ,new-local-vars)))
+
+(defun pel-elcode--variable-read-symbol-p (symbol local-vars)
+  "Return non-nil if SYMBOL denotes a non-local variable read.
+
+Ignore locally bound variables, nil, t and keywords."
+  (and (symbolp symbol)
+       (not (memq symbol local-vars))
+       (not (memq symbol '(nil t)))
+       (not (keywordp symbol))))
+
+(defmacro pel-elcode--add-vars-from-list (items var new-local-vars)
+  "Add variable reads present in ITEMS list to VAR.
+Take NEW-LOCAL-VARS local variables into account."
+  `(setq ,var
+         (append (reverse (pel-elcode-variables-read-in
+                           ,items ,new-local-vars))
+                 ,var)))
+
+(defmacro pel-elcode--add-vars-from-lists (body var new-local-vars)
+  "Add variable reads present in BODY list to VAR.
+Take NEW-LOCAL-VARS local variables into account."
+  `(dolist (item ,body)
+     (pel-elcode--add-vars-from-list item ,var ,new-local-vars)))
+
+(defun pel-elcode-variables-read-in (exp &optional local-vars)
+  "Return non-local variable symbols read by EXP.
+
+LOCAL-VARS is a list of symbols locally bound in the current lexical
+scope.  Variable symbols found in quoted forms, function forms,
+lambda/defun arglists, binding positions and `setq' target positions
+are ignored.
+
+The returned list preserves first-read order and contains no duplicates."
+  (let ((symbols ()))
+    (cond
+
+     ;; A plain symbol in value position is a variable read unless it is local
+     ;; or self-evaluating.
+     ((pel-elcode--variable-read-symbol-p exp local-vars)
+      (push exp symbols))
+
+     ((and (consp exp) (symbolp (car exp)))
+      (let ((head (car exp))
+            (body (cdr exp)))
+
+        ;; Keep macro handling consistent with `pel-elcode-operators-in'.
+        (when (and (macrop head)
+                   (not (memq head pel-elcode-structural-forms))
+                   (not (memq head pel-elcode-non-impacting-operators)))
+          (let ((expanded (macroexpand-1 exp)))
+            (unless (equal expanded exp)
+              (setq exp expanded
+                    head (car-safe exp)
+                    body (cdr-safe exp)))))
+
+        (cond
+
+         ;; (defun NAME (ARGS) [DOCSTRING] BODY...)
+         ;; Skip NAME and ARGS.  BODY sees ARGS as locals.
+         ((memq head '(defun defsubst))
+          (let ((locvars (append (pel-elcode--args-in (cadr body))
+                                 local-vars)))
+            (pel-elcode--add-vars-from-lists (cddr body) symbols locvars)))
+
+         ;; (lambda (ARGS) BODY...)
+         ;; Skip ARGS.  BODY sees ARGS as locals.
+         ((eq head 'lambda)
+          (let ((locvars (append (pel-elcode--args-in (car body))
+                                 local-vars)))
+            (pel-elcode--add-vars-from-lists (cdr body) symbols locvars)))
+
+         ;; (let ((VAR VAL) ...) BODY...)
+         ;; VAL forms see the outer scope.  BODY sees all VARs as locals.
+         ((eq head 'let)
+          (let* ((bindings (car body))
+                 (vars     (delq nil
+                                 (mapcar (lambda (b)
+                                           (cond
+                                            ((symbolp b) b)
+                                            ((symbolp (car-safe b)) (car b))))
+                                         bindings)))
+                 (vals     (delq nil
+                                 (mapcar (lambda (b)
+                                           (when (consp b) (cadr b)))
+                                         bindings)))
+                 (locals   (append vars local-vars)))
+            (pel-elcode--add-vars-from-lists vals symbols local-vars)
+            (pel-elcode--add-vars-from-lists (cdr body) symbols locals)))
+
+         ;; (let* ((VAR VAL) ...) BODY...)
+         ;; Each VAL sees the variables bound by previous bindings.
+         ((eq head 'let*)
+          (let ((running-locals local-vars))
+            (dolist (binding (car body))
+              (if (consp binding)
+                  (progn
+                    (setq symbols
+                          (append (reverse (pel-elcode-variables-read-in
+                                            (cadr binding) running-locals))
+                                  symbols))
+                    (when (symbolp (car binding))
+                      (push (car binding) running-locals)))
+                (when (symbolp binding)
+                  (push binding running-locals))))
+            (pel-elcode--add-vars-from-lists (cdr body)
+                                             symbols
+                                             running-locals)))
+
+         ;; (dolist (VAR LIST [RESULT]) BODY...)
+         ;; LIST sees the outer scope.  RESULT and BODY see VAR as local.
+         ((eq head 'dolist)
+          (let* ((var-spec    (car body))
+                 (var         (car var-spec))
+                 (list-form   (cadr var-spec))
+                 (result-form (cddr var-spec))
+                 (body-forms  (cdr body))
+                 (locals      (if (symbolp var)
+                                  (cons var local-vars)
+                                local-vars)))
+            (pel-elcode--add-vars-from-list list-form symbols local-vars)
+            (pel-elcode--add-vars-from-lists result-form symbols locals)
+            (pel-elcode--add-vars-from-lists body-forms symbols locals)))
+
+         ;; (dotimes (VAR COUNT [RESULT]) BODY...)
+         ;; COUNT sees the outer scope.  RESULT and BODY see VAR as local.
+         ((eq head 'dotimes)
+          (let* ((var-spec    (car body))
+                 (var         (car var-spec))
+                 (count-form  (cadr var-spec))
+                 (result-form (cddr var-spec))
+                 (body-forms  (cdr body))
+                 (locals      (if (symbolp var)
+                                  (cons var local-vars)
+                                local-vars)))
+            (pel-elcode--add-vars-from-list count-form symbols local-vars)
+            (pel-elcode--add-vars-from-lists result-form symbols locals)
+            (pel-elcode--add-vars-from-lists body-forms symbols locals)))
+
+         ;; (setq VAR1 VAL1 VAR2 VAL2 ...)
+         ;; Target variables are writes, not reads.  Only VAL forms are reads.
+         ((eq head 'setq)
+          (let ((val-forms (mapcar #'cadr (seq-partition body 2))))
+            (pel-elcode--add-vars-from-lists val-forms symbols local-vars)))
+
+         ;; (cond (TEST BODY...) ...)
+         ;; Each clause is a list of expressions, not a function call.
+         ((eq head 'cond)
+          (dolist (clause body)
+            (pel-elcode--add-vars-from-lists clause symbols local-vars)))
+
+         ;; (quote X) / (function X) / (declare ...) contain no variable reads
+         ;; for the purpose of this analysis.
+         ((memq head '(quote function declare)))
+
+         ;; Standard function/macro call: only arguments are value positions.
+         (t
+          (pel-elcode--add-vars-from-lists body symbols local-vars)))))
+
+     ;; If the head is not a symbol, every element is in value position.
+     ((consp exp)
+      (pel-elcode--add-vars-from-lists exp symbols local-vars)))
+
+    (reverse
+     (seq-filter #'identity
+                 (delete-dups symbols)))))
+
+
+
 
 (defun pel-elcode-operators-in (exp &optional local-vars)
   "Recursively extract operator symbols from EXP, ignoring variable names.
@@ -308,8 +476,9 @@ operators are found."
   "Return a property declare form for specified SEXP.
 The declare form identifies whether the sexp is pure, side-effect-free and/or
 error-free."
-  (let ((operators (pel-elcode-operators-in sexp)))
-    (when operators
+  (let ((operators (pel-elcode-operators-in sexp))
+        (vars-read (pel-elcode-variables-read-in sexp)))
+    (when (or operators vars-read)
       ;; Some flow control/iteration special form/functions have
       ;; no impact on whether the defun is pure or side-effect-free,
       ;; so remove them from the inspected list of operators.
@@ -324,6 +493,18 @@ error-free."
       ;; If one does not have a property, the defun at point does not
       ;; have that property: so remove it from the defun-props.
       (let ((defun-props (list 'pure 'side-effect-free 'error-free)))
+
+        ;; Reading a non-local variable makes the result depend on external
+        ;; state.  That includes user-options (`defcustom' variables), globals
+        ;; and dynamically scoped variables.  Such reads do not necessarily
+        ;; mutate state, so they do not by themselves remove `side-effect-free',
+        ;; but they must remove `pure'.
+        (when vars-read
+          (setq defun-props (delq 'pure defun-props))
+          ;; A read of an unbound non-local variable can signal void-variable.
+          (unless (seq-every-p #'boundp vars-read)
+            (setq defun-props (delq 'error-free defun-props))))
+
         (catch 'pel-elcode-break
           (dolist (op operators)
             (unless (function-get op 'pure)
@@ -420,6 +601,7 @@ Also store the property form in the kill ring."
     (unless one-done
       (message "No defun with applicable properties found below")
       (goto-char original-pos))))
+
 ;;; --------------------------------------------------------------------------
 
 (provide 'pel-elcode)
