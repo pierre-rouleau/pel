@@ -473,9 +473,22 @@ operators are found."
 ;; --
 
 (defun pel-elcode-properties-of-sexp (sexp)
-  "Return a property declare form for specified SEXP.
-The declare form identifies whether the sexp is pure, side-effect-free and/or
-error-free."
+  "Return a cons (DECLARE-FORM . DIAGNOSTICS) for specified SEXP.
+DECLARE-FORM is the property declare form that identifies whether the
+sexp is pure, side-effect-free and/or error-free.  It is nil when no
+properties apply.
+
+DIAGNOSTICS is an alist with the following keys:
+  `vars-read'          -- non-local variables that remove `pure'
+  `unbound-vars'       -- subset of vars-read not always `boundp',
+                          which also remove `error-free'
+  `non-pure-ops'       -- operators that remove `pure'
+  `allocating-ops'     -- allocating operators that remove `pure'
+  `non-sef-ops'        -- operators that remove `side-effect-free'
+                          (and thereby `error-free' as well)
+  `non-error-free-ops' -- operators that remove only `error-free'
+
+All lists preserve first-occurrence order."
   (let ((operators (pel-elcode-operators-in sexp))
         (vars-read (pel-elcode-variables-read-in sexp)))
     (when (or operators vars-read)
@@ -492,7 +505,13 @@ error-free."
       ;; Inspect the remaining operators.
       ;; If one does not have a property, the defun at point does not
       ;; have that property: so remove it from the defun-props.
-      (let ((defun-props (list 'pure 'side-effect-free 'error-free)))
+      ;; Continue inspecting ALL operators to collect complete diagnostics.
+      (let ((defun-props (list 'pure 'side-effect-free 'error-free))
+            ;; Diagnostic accumulators -- collected in reverse then reversed.
+            (diag-non-pure-ops       ())
+            (diag-allocating-ops     ())
+            (diag-non-sef-ops        ())
+            (diag-non-error-free-ops ()))
 
         ;; Reading a non-local variable makes the result depend on external
         ;; state.  That includes user-options (`defcustom' variables), globals
@@ -505,25 +524,29 @@ error-free."
           (unless (seq-every-p #'boundp vars-read)
             (setq defun-props (delq 'error-free defun-props))))
 
-        (catch 'pel-elcode-break
-          (dolist (op operators)
-            (unless (function-get op 'pure)
-              (setq defun-props (delq 'pure defun-props)))
-            ;; Allocation functions are declared side-effect-free by Emacs for
-            ;; byte-compiler purposes, but pel-elcode treats them as impure
-            ;; because they produce a new heap object on every call.
-            (if (memq op pel-elcode-allocating-operators)
+        ;; Inspect every operator -- no early exit -- to collect all reasons.
+        (dolist (op operators)
+          (unless (function-get op 'pure)
+            (setq defun-props (delq 'pure defun-props))
+            (push op diag-non-pure-ops))
+          ;; Allocation functions are declared side-effect-free by Emacs for
+          ;; byte-compiler purposes, but pel-elcode treats them as impure
+          ;; because they produce a new heap object on every call.
+          (if (memq op pel-elcode-allocating-operators)
+              (progn
                 (setq defun-props (delq 'pure defun-props))
-              (pcase (function-get op 'side-effect-free)
-                ('error-free)
-                ('t (setq defun-props (delq 'error-free defun-props)))
-                (_  (setq defun-props (pel-delqs '(side-effect-free error-free)
-                                                 defun-props)))))
-            ;; Stop once there's no properties left.
-            (unless defun-props
-              (throw 'pel-elcode-break nil))))
-        ;; Return the properties that remain for the defun.
-        ;; But first reformat it into a proper declare argument.
+                (push op diag-allocating-ops))
+            (pcase (function-get op 'side-effect-free)
+              ('error-free)
+              ('t
+               (setq defun-props (delq 'error-free defun-props))
+               (push op diag-non-error-free-ops))
+              (_
+               (setq defun-props (pel-delqs '(side-effect-free error-free)
+                                            defun-props))
+               (push op diag-non-sef-ops)))))
+
+        ;; Build the declare form from the remaining properties.
         (let ((expr ()))
           (if (memq 'error-free defun-props)
               (push '(side-effect-free error-free) expr)
@@ -533,12 +556,35 @@ error-free."
             (push '(pure t) expr))
           (when expr
             (push 'declare expr))
-          expr)))))
+
+          ;; Compute the diagnostic alist, keeping first-occurrence order.
+          (let ((unbound-vars (seq-filter (lambda (v) (not (boundp v)))
+                                          vars-read)))
+            (cons expr
+                  (list
+                   (cons 'vars-read          vars-read)
+                   (cons 'unbound-vars       unbound-vars)
+                   (cons 'non-pure-ops       (nreverse diag-non-pure-ops))
+                   (cons 'allocating-ops     (nreverse diag-allocating-ops))
+                   (cons 'non-sef-ops        (nreverse diag-non-sef-ops))
+                   (cons 'non-error-free-ops (nreverse diag-non-error-free-ops))))))))))
+
+(defun pel-elcode--format-diagnostics (diagnostics)
+  "Return a human-readable string for DIAGNOSTICS alist, or nil if all empty.
+DIAGNOSTICS is the cdr of the cons returned by `pel-elcode-properties-of-sexp'."
+  (let ((parts ()))
+    (pcase-dolist (`(,key . ,vals) diagnostics)
+      (when vals
+        (push (format "  %s: %s"
+                      key
+                      (mapconcat #'symbol-name vals ", "))
+              parts)))
+    (when parts
+      (mapconcat #'identity (nreverse parts) "\n"))))
 
 (defun pel-elcode-properties-of-sexp-at-point (&optional pos)
-  "Return a property declare form for sexp at POS or at point.
-The declare form identifies whether the sexp is pure, side-effect-free and/or
-error-free."
+  "Return a cons (DECLARE-FORM . DIAGNOSTICS) for sexp at POS or at point.
+See `pel-elcode-properties-of-sexp' for the meaning of each element."
   (save-excursion
     (when pos
       (goto-char pos))
@@ -550,8 +596,8 @@ error-free."
 
 When a pure, side-effect-free or error-free property can be applied to the
 defun the `declare' form is copied in the kill ring for later insertion in code
-and also printed in a message.  If no property applies the function prints
-no message."
+and also printed in a message.  If no property applies the function reports
+all detected reasons why properties were removed."
   (interactive)
   (save-excursion
     (let ((original-pos (point))
@@ -569,10 +615,21 @@ no message."
       (if (and defun-end-pos
                (<= defun-start-pos original-pos)
                (< original-pos defun-end-pos))
-          (let ((props (pel-elcode-properties-of-sexp-at-point)))
-            (when props
-              (kill-new (format "%S" props))
-              (message "%S" props)))
+          (let* ((result (pel-elcode-properties-of-sexp-at-point))
+                 (props  (car result))
+                 (diags  (cdr result)))
+            (if props
+                (progn
+                  (kill-new (format "%S" props))
+                  (let ((diag-str (pel-elcode--format-diagnostics diags)))
+                    (if diag-str
+                        (message "%S\nReasons:\n%s" props diag-str)
+                      (message "%S" props))))
+              (let ((diag-str (pel-elcode--format-diagnostics diags)))
+                (if diag-str
+                    (message "No declare properties apply. Detected issues:\n%s"
+                             diag-str)
+                  (message "No declare properties found")))))
         (user-error "Point is not inside a defun form!")))))
 
 ;; --
@@ -580,7 +637,8 @@ no message."
 (defun pel-elcode-print-properties-of-next-defun-with-some ()
   "Move point to beginning of the next defun with properties; print them.
 Note that it skips the defsubst forms.
-Also store the property form in the kill ring."
+Also store the property form in the kill ring.
+All detected issues that prevent a property from being inferred are listed."
   (interactive)
   (let ((one-done nil)
         (original-pos (point))
@@ -590,15 +648,20 @@ Also store the property form in the kill ring."
       (if (pel-elisp-beginning-of-next-form 1 'defun-forms
                                             :silent :dont-push-mark)
           ;; Found a form
-          (let ((props (pel-elcode-properties-of-sexp-at-point)))
+          (let* ((result (pel-elcode-properties-of-sexp-at-point))
+                 (props  (car result))
+                 (diags  (cdr result)))
             (when props
               (setq one-done t)
               (kill-new (format "%S" props))
-              (message "%S" props)
+              (let ((diag-str (pel-elcode--format-diagnostics diags)))
+                (if diag-str
+                    (message "%S\nReasons:\n%s" props diag-str)
+                  (message "%S" props)))
               (setq found t)))
         ;; no defun found; stop looping
         (setq found t)))
-    (unless one-done
+
       (message "No defun with applicable properties found below")
       (goto-char original-pos))))
 
