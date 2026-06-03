@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-03 15:54:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 17:45:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -74,6 +74,27 @@
     quote
     function)
   "List of operators that have no impact on purity or side effects.")
+
+(defconst pel-elcode-allocating-operators
+  '(;; Hash tables
+    make-hash-table copy-hash-table
+    ;; Sequences / vectors / lists
+    make-vector make-list make-bool-vector make-char-table
+    cons list append reverse copy-sequence copy-tree copy-alist
+    vector vconcat
+    ;; Strings
+    make-string concat format format-message propertize
+    ;; Symbols
+    make-symbol gensym
+    ;; Records / byte-code objects
+    make-record record make-byte-code
+    ;; Keymaps
+    make-keymap make-sparse-keymap)
+  "Functions that allocate new objects.
+Despite Emacs declaring these as `side-effect-free' (meaning their
+result may be safely discarded), a function whose body calls any of
+these cannot be declared `side-effect-free' by `pel-elcode' because
+each call produces a fresh, non-`eq' heap object.")
 
 (defconst pel-elcode-structural-forms
   '(defun defsubst lambda
@@ -307,11 +328,16 @@ error-free."
           (dolist (op operators)
             (unless (function-get op 'pure)
               (setq defun-props (delq 'pure defun-props)))
-            (pcase (function-get op 'side-effect-free)
-              ('error-free)
-              ('t (setq defun-props (delq 'error-free defun-props)))
-              (_  (setq defun-props (pel-delqs '(side-effect-free error-free)
-                                               defun-props))))
+            ;; Allocation functions are declared side-effect-free by Emacs for
+            ;; byte-compiler purposes, but pel-elcode treats them as impure
+            ;; because they produce a new heap object on every call.
+            (if (memq op pel-elcode-allocating-operators)
+                (setq defun-props (delq 'pure defun-props))
+              (pcase (function-get op 'side-effect-free)
+                ('error-free)
+                ('t (setq defun-props (delq 'error-free defun-props)))
+                (_  (setq defun-props (pel-delqs '(side-effect-free error-free)
+                                                 defun-props)))))
             ;; Stop once there's no properties left.
             (unless defun-props
               (throw 'pel-elcode-break nil))))
