@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-03 13:54:12 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 14:34:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -38,9 +38,6 @@
 ;;      - `pel-elcode-properties-of-sexp'
 ;;        - `pel-elcode-operators-in'
 ;;          - `pel-elcode--args-in'
-;;      - `pel-elcode-operators-in-sexp-at-point'
-;;        . `pel-elcode-operators-in'
-;;          . `pel-elcode--args-in'
 ;;  * `pel-elcode-print-properties-of-next-defun-with-some'
 ;;    + `pel-elcode-properties-of-sexp-at-point'
 ;;      + ...
@@ -126,7 +123,7 @@ made visible.
 
 Return a list of operator symbols found in EXP in the order of their
 first appearance, with all duplicates removed.  Return nil if no
-operator are found."
+operators are found."
   (let ((symbols ()))
     (cond
      ((and (listp exp) (symbolp (car exp)))
@@ -286,8 +283,6 @@ operator are found."
 
 ;; --
 
-
-
 (defun pel-elcode-properties-of-sexp (sexp)
   "Return a property declare form for specified SEXP.
 The declare form identifies whether the sexp is pure, side-effect-free and/or
@@ -300,7 +295,7 @@ error-free."
       (setq operators (pel-delqs pel-elcode-non-impacting-operators
                                  operators))
       ;;
-      ;; If the first symbol is defun, remove it from the list.
+      ;; If the first symbol is defun or defsubst, remove it from the list.
       (when (memq (car-safe operators) '(defun defsubst))
         (setq operators (cdr operators)))
       ;;
@@ -344,19 +339,17 @@ error-free."
 
 ;;-pel-autoload
 (defun pel-elcode-print-properties-of-sexp-at-point ()
-  "Print whether sexp at point is pure, side-effect-free and/or error-free.
-
-The sexp supported are defun and defsubst forms.
+  "Print whether defun at point is pure, side-effect-free and/or error-free.
 
 When a pure, side-effect-free or error-free property can be applied to the
-sexp the `declare' form is copied in the kill ring for later insertion in code
-and also printed in a message.  If no property applied the function just print
+defun the `declare' form is copied in the kill ring for later insertion in code
+and also printed in a message.  If no property applies the function just prints
 a \"nil\" message."
   (interactive)
   (save-excursion
     (forward-line 0) ; move to beginning of line otherwise next block of code
                      ;  will move to previous form.
-    (unless (looking-at "(def\\(un\\|subst\\) ")
+    (unless (looking-at "(defun ")
       (pel-elisp-beginning-of-previous-form 1 'defun-forms
                                             :silent :dont-push-mark))
     (let ((props (pel-elcode-properties-of-sexp-at-point)))
@@ -364,6 +357,7 @@ a \"nil\" message."
         (kill-new (format "%S" props)))
       (message "%S" props))))
 
+;; --
 ;;-pel-autoload
 (defun pel-elcode-print-properties-of-next-defun-with-some ()
   "Move point to beginning of the next defun with properties; print them.

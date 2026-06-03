@@ -3406,7 +3406,7 @@ Returns nil when Emacs does not support tree-sitter."
        (treesit-language-available-p language)))
 
 (defun pel-emacs-config-features-string ()
-  "Print the names of all Emacs configured compilation features."
+  "Return the names of all Emacs configured compilation features."
   (declare (side-effect-free t))
   (format "%s. With%s native compilation.%s" system-configuration-features
           (if pel-emacs-with-native-comp-p "" "out")
