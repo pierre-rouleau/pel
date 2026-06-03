@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-26 14:50:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 16:19:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -955,6 +955,7 @@ Return a (ACTIVATE . byte-compile result) cons cell."
 This file is required when PEL uses the fast startup mode.
 The file is created for the packages identified in DEPS-PKG-VERSIONS-ALIST
 and has extra code specified in EXTRA-CODE."
+  (declare (side-effect-free t))
   ;;
   (format "\
 ;;; Setup Emacs for PEL fast startup.  -*- lexical-binding: t; -*-
@@ -1448,6 +1449,7 @@ ELPA-REDUCED-DP is not a directory, or no stragglers are found."
 
 (defun pel--describe-stragglers (stragglers elpa-reduced-dp)
   "Return a string describing the STRAGGLERs packages left in elpa-reduced."
+  (declare (side-effect-free t))
   (format "the following package director%s in
  %s
 %s installed during a previous fast-startup session and %s not yet been

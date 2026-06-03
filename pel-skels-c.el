@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-17 15:11:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 16:22:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2023, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -475,6 +475,7 @@ Insert the skeleton selected by the user option variable
   "Return a tempo list for a C #define statement.
 If point is after text, go to new line.
 Leave point after statement."
+  (declare (side-effect-free error-free))
   (list
    'l
    '& "#define " 'p ))
@@ -483,6 +484,7 @@ Leave point after statement."
   "Return a tempo list for a C #include \"\" statement.
 If point is after text, go to new line.
 Leave point when file name goes, then after statement."
+  (declare (side-effect-free error-free))
   (list
    'l
    '& "#include \"" 'p ".h\"" 'p))
@@ -491,6 +493,7 @@ Leave point when file name goes, then after statement."
   "Return a tempo list for a C #include <> statement.
 If point is after text, go to new line.
 Leave point when file name goes, then after statement."
+  (declare (side-effect-free error-free))
   (list
    'l
    '& "#include <" 'p ".h>" 'p))

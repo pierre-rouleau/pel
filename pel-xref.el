@@ -317,6 +317,7 @@ where: nil := Emacs xref default (not initialized).")
 
 (defun pel-xref-ivy-xref-state-str ()
   "Return the ivy-xref state representation string."
+  (declare (side-effect-free t))
   (if (featurep 'ivy-xref)
       (pel-on-off-string (eq xref-show-xrefs-function 'ivy-xref-show-xrefs))
     (if pel-use-ivy-xref
@@ -325,6 +326,7 @@ where: nil := Emacs xref default (not initialized).")
 
 (defun pel-xref-helm-xref-state-str ()
   "Return the helm-xref state representation string."
+  (declare (side-effect-free t))
   (if (featurep 'helm-xref)
       (pel-on-off-string
        (eq xref-show-xrefs-function (if pel-emacs-27-or-later-p

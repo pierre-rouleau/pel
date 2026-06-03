@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, January 31 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-07-04 12:02:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 16:13:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022, 2025  Pierre Rouleau
+;; Copyright (C) 2022, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -83,6 +83,7 @@
 
 (defun pel-seconds-to-hms (seconds)
   "Convert SECONDS integer into a (hour minute second) list."
+  (declare (side-effect-free t))
   (list (/ seconds 3600) (/ (% seconds 3600) 60) (% seconds 60)))
 
 
@@ -103,6 +104,7 @@ Return the value untouched if valid, raise an error otherwise."
 
 (defun pel-hms-to-sec (hms)
   "Return number of seconds in the HMS triple."
+  (declare (pure t) (side-effect-free t))
   (+ (* 3600 (nth 0 hms))
      (* 60 (nth 1 hms))
      (nth 2 hms)))
@@ -150,6 +152,7 @@ the returned value."
 
 (defun pel--time-fmt (number)
   "Return empty string if NUMBER is 0, NUMBER followed by colon otherwise."
+  (declare (side-effect-free t))
   (if (eq number 0)
       ""
     (format "%d:" number)))

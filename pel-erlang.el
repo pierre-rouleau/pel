@@ -1001,6 +1001,7 @@ Its home address is: https://github.com/WhatsApp/erlang-language-platform."
 
 (defun pel-erlang--version-for (version)
   "Return version string or \"undetected\"."
+  (declare (pure t) (side-effect-free error-free))
   (or version "undetected"))
 
 (defun pel-erlang--edts-version ()
@@ -1151,6 +1152,7 @@ plus the ability to comment the current line if ARG is the numeric 0."
 
 (defun pel-erlang-stop-when-arg-used-p ()
   "Return `stop' when invoking command invoked with arguments, nil otherwise."
+  (declare (pure t) (side-effect-free error-free))
   (if current-prefix-arg
       'stop
     t))

@@ -399,6 +399,7 @@ Return \"?\" instead."
 (defun pel-ispell-personal-dictionary ()
   "Return string describing Ispell personal dictionary if Ispell is loaded.
 Return \"?\" instead."
+  (declare (side-effect-free t))
   (if (and (boundp 'ispell-current-personal-dictionary)
            (boundp 'ispell-personal-dictionary)
            (boundp 'ispell-program-name))
@@ -409,6 +410,7 @@ Return \"?\" instead."
 
 (defun pel--spell-flyspell-prog-mode-state ()
   "Return t if flyspell-prog-mode is on, nil otherwise."
+  (declare (side-effect-free t))
   ;; `flyspell-prog-mode' is just a normal function that takes no argument,
   ;; not a minor mode function that takes an argument with a variable that has
   ;; the same name.  To detect if it is on, code must check the sate of a

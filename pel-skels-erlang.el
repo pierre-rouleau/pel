@@ -1,6 +1,6 @@
 ;;; pel-skels-erlang.el --- Erlang specific tempo skeletons  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2023, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -117,6 +117,7 @@
 The comment uses PERCENT number of '%' (or 3 if not specified).
 The line is made with '-' unless another CHAR is specified.
 Note: the smallest allowed `fill-column' value is 70."
+  (declare (side-effect-free t))
   (let ((percent (or percent 3))
         (char    (or char ?-)))
     (concat (make-string percent ?%)
@@ -336,18 +337,22 @@ Please see the function `tempo-define-template'.")
 
 (defun pel-erlang-skel-edoc-in-header-p ()
   "Return t if edoc must be used in header, nil otherwise."
+  (declare (pure t) (side-effect-free error-free))
   (eq pel-erlang-skel-with-edoc t))
 
 (defun pel-erlang-skel-edoc-in-function-p ()
   "Return t if edoc must be used in header, nil otherwise."
+  (declare (pure t) (side-effect-free t))
   (memq pel-erlang-skel-with-edoc '(t in-function-only)))
 
 (defun pel-erlang-skel-prompt-for-file-purpose-p ()
   "Return t if must prompt for file purpose, nil otherwise."
+  (declare (pure t) (side-effect-free t))
   (memq pel-erlang-skel-prompt-for-purpose '(t in-file-only)))
 
 (defun pel-erlang-skel-prompt-for-function-purpose-p ()
   "Return t if must prompt for file purpose, nil otherwise."
+  (declare (pure t) (side-effect-free t))
   (memq pel-erlang-skel-prompt-for-purpose '(t in-function-only)))
 
 (defalias 'pel-erlang-skel-prompt-for-function-name-p

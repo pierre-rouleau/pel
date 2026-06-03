@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, May 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-02-02 22:49:00 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 16:21:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2023, 2025  Pierre Rouleau
+;; Copyright (C) 2021, 2023, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -241,17 +241,18 @@ Insert the skeleton selected by the user option variable
 (defun pel-skels-c++-doc-section-titles (section-titles)
   "Return a C++ documentation block skeleton list of SECTION-TITLES.
 SECTION-TITLES may be nil.  In that case the function returns nil."
+  (declare (side-effect-free t))
   (when section-titles
     (let ((cc "// ")
           (sk (list 'l)))
       (dolist (stitle section-titles)
         (pel-append-to
-         sk
-         (list
-          cc stitle ":\n"
-          cc " " 'p 'n
-          cc 'n
-          cc 'n)))
+            sk
+          (list
+           cc stitle ":\n"
+           cc " " 'p 'n
+           cc 'n
+           cc 'n)))
       sk)))
 
 (defun pel-skels-c++-doc-block (class-name &optional purpose)

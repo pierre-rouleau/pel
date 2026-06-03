@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-22 19:27:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 16:39:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -131,16 +131,17 @@ If FILE is not found in DIRPATH, the parent of DIRPATH is searched."
 ;; --
 (defun pel-symlink-is-relative-p (link-path)
   "Return t if a LINK-PATH symlink is a relative symlink, nil otherwise."
+  (declare (side-effect-free t))
   (let ((target (file-symlink-p link-path)))
     (and target
          (not (file-name-absolute-p target)))))
 
 (defun pel-symlink-is-absolute-p (link-path)
   "Return t if a LINK-PATH symlink is an absolute symlink, nil otherwise."
+  (declare (side-effect-free t))
   (let ((target (file-symlink-p link-path)))
     (and target
          (file-name-absolute-p target))))
-
 
 ;; --
 (defun pel-symlink-broken-p (fpath)

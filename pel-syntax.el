@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-25 11:32:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 16:14:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -88,14 +88,17 @@
 
 (defun pel-get-text-property (property &optional pos)
   "Return specific text PROPERTY of character at POS or point."
+  (declare (side-effect-free t))
   (get-text-property (or pos (point)) property))
 
 (defun pel-get-syntax-prop (&optional pos)
   "Return syntax property of character at POS or point."
+  (declare (side-effect-free t))
   (get-text-property (or pos (point)) 'syntax-table))
 
 (defun pel-get-face (&optional pos)
   "Return face property of character at POS or point."
+  (declare (side-effect-free t))
   (get-text-property (or pos (point)) 'face))
 
 ;;-pel-autoload

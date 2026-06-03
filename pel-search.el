@@ -2,7 +2,7 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 11:27:06 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 16:23:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -438,6 +438,7 @@ This can be:
 
 (defun pel--title-function-for-constraint (constraint)
   "Return a (title . function) cost for a specified CONSTRAINT."
+  (declare (side-effect-free error-free))
   (cond
    ((eq constraint nil)          '("" . nil))
    ((eq constraint 'code)         (cons "In code " #'pel--isearch-in-code-p))
@@ -514,6 +515,7 @@ A nil value means that Emacs standard search is used.")
 
 (defun pel-active-search-tool-str ()
   "Return a string describing the currently used search tool."
+  (declare (side-effect-free t))
   (format "%s%s"
           (if (not pel--active-search-tool)
               "default iSearch"
@@ -567,6 +569,7 @@ A nil value corresponds to Emacs default."
 
 (defun pel--search-tools-selection ()
   "Return a list of (char prompt symbol) of available search tool choices."
+  (declare (side-effect-free error-free))
   (let ((selection (list '(?e "iSearch (default)" nil))))
     (when pel-use-swiper (push '(?s "Swiper" swiper) selection))
     (when pel-use-anzu   (push '(?a "iSearch & Anzu" anzu) selection))
