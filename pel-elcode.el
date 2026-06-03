@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-03 14:34:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 15:18:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -73,7 +73,7 @@
     ;; The following special forms operators have no impact
     quote
     function)
-  "List of operators that have no impact on purity or side-effect.")
+  "List of operators that have no impact on purity or side effects.")
 
 (defconst pel-elcode-structural-forms
   '(defun defsubst lambda
@@ -343,19 +343,28 @@ error-free."
 
 When a pure, side-effect-free or error-free property can be applied to the
 defun the `declare' form is copied in the kill ring for later insertion in code
-and also printed in a message.  If no property applies the function just prints
-a \"nil\" message."
+and also printed in a message.  If no property applies the function prints
+no message."
   (interactive)
   (save-excursion
-    (forward-line 0) ; move to beginning of line otherwise next block of code
-                     ;  will move to previous form.
-    (unless (looking-at "(defun ")
-      (pel-elisp-beginning-of-previous-form 1 'defun-forms
-                                            :silent :dont-push-mark))
-    (let ((props (pel-elcode-properties-of-sexp-at-point)))
-      (when props
-        (kill-new (format "%S" props)))
-      (message "%S" props))))
+    (let ((original-pos (point))
+          defun-start-pos defun-end-pos)
+      ;; move to beginning of line otherwise next block of code will move to
+      ;; previous form.
+      (back-to-indentation)
+      (unless (looking-at "(defun ")
+        (pel-elisp-beginning-of-previous-form 1 'defun-forms
+                                              :silent :dont-push-mark))
+      (setq defun-start-pos (point)
+            defun-end-pos   (ignore-errors (scan-sexps defun-start-pos 1)))
+      (if (and defun-end-pos
+               (<= defun-start-pos original-pos)
+               (< original-pos defun-end-pos))
+          (let ((props (pel-elcode-properties-of-sexp-at-point)))
+            (when props
+              (kill-new (format "%S" props))
+              (message "%S" props)))
+        (user-error "Point is not inside a defun form!")))))
 
 ;; --
 ;;-pel-autoload

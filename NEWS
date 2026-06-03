@@ -61,8 +61,8 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
     when searching for files.
   - Renamed *pel-cc-find-show-status* (previously bound to ~<f12> <f4> f~ of cc-mode buffers) command to *pel-ffind-show-status* now bound to ~<f11> f <f4> ?~.
 - Improved Emacs Lisp support:
-  - Improved ability to detect defun forms that can be declared pure, side-effect and/or error free:
-    - Add the *pel-elcode-print-properties-of-next-defun-with-some* command, bound to ~<f12> a S~ in emacs-lisp buffers.
+  - Improved ability to detect defun forms that can be declared pure, side-effect-free and/or error-free:
+    - Added the *pel-elcode-print-properties-of-next-defun-with-some* command, bound to ~<f12> a S~ in emacs-lisp buffers.
       This command moves point to the next defun form that can have such a declaration; the declaration is stored in the kill-ring and can be inserted by typing ~C-y~.
     - The *pel-elcode-print-properties-of-sexp-at-point* no longer needs to be issued from the opening parens; it can be issued from anywhere inside the defun form.
 - Improved reStructuredText support:
