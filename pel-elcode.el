@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-03 15:18:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 15:54:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -349,12 +349,14 @@ no message."
   (save-excursion
     (let ((original-pos (point))
           defun-start-pos defun-end-pos)
-      ;; move to beginning of line otherwise next block of code will move to
+      ;; move to indentation otherwise next block of code will move to
       ;; previous form.
       (back-to-indentation)
       (unless (looking-at "(defun ")
-        (pel-elisp-beginning-of-previous-form 1 'defun-forms
-                                              :silent :dont-push-mark))
+        (unless (pel-elisp-beginning-of-previous-form 1 'defun-forms
+                                                      :silent :dont-push-mark)
+          (user-error "Point is not inside a defun form!")))
+
       (setq defun-start-pos (point)
             defun-end-pos   (ignore-errors (scan-sexps defun-start-pos 1)))
       (if (and defun-end-pos
