@@ -376,7 +376,7 @@ The any extra ARGS are arguments passed to SKEL-FUNCTION."
 (defun pel-lisp-family-major-mode-p ()
   "Return t if the current major mode is for a Lisp-family language.
 Return nil otherwise."
-  (declare (pure t) (side-effect-free t))
+  (declare  (side-effect-free t))
   (memq major-mode '(lisp-mode
                      emacs-lisp-mode
                      lfe-mode
