@@ -1292,7 +1292,7 @@ not bound."
   "Return \"off\" for nil, \"on\" for non-nil BOOLEAN argument.
 If ON-STRING and OFF-STRING arguments are specified use them as the
 on/off value, otherwise use \"on\" and \"off\"."
-  (declare (pure t) (side-effect-free t))
+  (declare (pure t) (side-effect-free error-free))
   (if boolean
       (or on-string "on")
     (or off-string "off")))
@@ -1602,7 +1602,7 @@ Otherwise return nil."
   "Return TEXT formatted as a string; return empty string if TEXT is nil.
 If PREFIX and/or SUFFIX are non-nil values they are prepended/appended
 around TEXT."
-  (declare (pure t) (side-effect-free t))
+  (declare (side-effect-free t))
   (if text
       (format "%s%s%s"
               (if prefix prefix "")
@@ -1613,7 +1613,7 @@ around TEXT."
 (defun pel-string-when (condition &optional text)
   "Return TEXT (or CONDITION) when CONDITION is non-nil, empty string otherwise.
 TEXT is optional, if it's nil CONDITION must be a string or nil."
-  (declare (pure t) (side-effect-free t))
+  (declare (pure t) (side-effect-free error-free))
   (if condition (or text condition) ""))
 
 (defun pel-string-spread (string &optional separator)
@@ -1806,7 +1806,7 @@ And with transformation functions:
 
 (defun pel-concat-strings-in-list (list)
   "Return the concatenation of all strings in the LIST of strings."
-  (declare (pure t) (side-effect-free t))
+  (declare (side-effect-free t))
   (let ((acc "")
         elem)
     (while list
@@ -2279,7 +2279,7 @@ Use NAME instead symbol name in the message if specified."
 
 (defun pel-val-or-default (val default)
   "Return VAL if not nil otherwise return DEFAULT."
-  (declare (pure t) (side-effect-free t))
+  (declare (pure t) (side-effect-free error-free))
   (or val default))
 
 ;; ---------------------------------------------------------------------------

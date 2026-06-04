@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-04 06:22:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-04 06:41:12 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -241,6 +241,7 @@ Insert the skeleton selected by the user option variable
 (defun pel-skels-c++-doc-section-titles (section-titles)
   "Return a C++ documentation block skeleton list of SECTION-TITLES.
 SECTION-TITLES may be nil.  In that case the function returns nil."
+  (declare (side-effect-free t))
   (when section-titles
     (let ((cc "// ")
           (sk (list 'l)))

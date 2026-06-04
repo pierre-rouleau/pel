@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-25 23:17:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-04 07:17:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -740,6 +740,7 @@ some PEL user-options have been turned off."
 
 (defun pel-symbol-name-< (s1 s2)
   "Compare name strings of S1 and S2 symbols."
+  (declare (pure t) (side-effect-free t))
   (string< (symbol-name s1) (symbol-name s2)))
 
 (defun pel--pkg-deps-via-package-alist (pkg)
@@ -943,6 +944,7 @@ Return the number of packages in excess."
   "Return formatted string for package BASE, DEPS and LOCKED counts.
 When running in fast startup setup, the counts are meaningless, so return
 a string that says so."
+  (declare (side-effect-free t))
   (if (pel-in-fast-startup-p)
       "Not available in PEL fast startup setup."
     (format "%3d (%3d dependants, %d imposed by restrictions)"

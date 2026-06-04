@@ -1,6 +1,6 @@
 ;;; pel-hideshow.el --- PEL Hide/Show -*- lexical-binding: t -*-
 
-;; Copyright (C) 2020, 2024  Pierre Rouleau
+;; Copyright (C) 2020, 2024, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -226,6 +226,7 @@ This hides text indented by that many columns."
 (defun pel--indent-size ()
   "Return the indentation size used by the current buffer if any, 1 otherwise."
   ;; for bracket-type programming languages: use c-basic-offset
+  (declare (side-effect-free t))
   (if (boundp 'c-basic-offset)
       c-basic-offset
     1))

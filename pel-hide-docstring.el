@@ -230,6 +230,7 @@ But if SILENT is non-nil, instead of issuing an error return nil instead."
 Therefore nil might be because the character does not have the invisible
 attribute or because it has the invisible attribute but its value is not
 \\='hide-docstring."
+  (declare (side-effect-free t))
   (eq (get-text-property pos 'invisible) 'hide-docstring))
 
 (defun pel--docstring-visible-p (&optional next)

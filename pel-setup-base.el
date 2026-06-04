@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-26 13:50:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-04 07:11:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -308,7 +308,9 @@ Only set by `pel-setup-fast' or `pel-setup-normal'.  Never cleared.")
 
 (defun pel-setup-mode-description (for-graphics)
   "Describe the mode context of a setup.
-The FOR-GRAPHICS argument identifies the setup forced for independent graphics."
+The FOR-GRAPHICS argument identifies the setup forced for independent
+graphics."
+  (declare (side-effect-free t))
   (if for-graphics
       "dual-environment graphics mode"
     (if pel-detected-dual-environment-in-init-p
@@ -613,6 +615,7 @@ to align the messages they generate.")
 
 (defun pel--problem-format (msg)
   "Return a format string for MSG filled by `pel-problems-text-length'."
+  (declare (side-effect-free t))
   (when (integerp pel-problems-text-length)
     (let ((fmt (format "%%%ds" pel-problems-text-length)))
       (setq msg (format fmt msg))))

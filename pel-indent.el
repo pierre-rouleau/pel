@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-13 16:51:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-04 09:45:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -246,6 +246,7 @@ in the region created by the function."
 (defun pel-indent-level-columns (&optional n)
   "Return the number of columns corresponding to 1 (or N) indentation levels.
 The indentation level depends on the type of buffer."
+  (declare (side-effect-free t))
   (let ((cols-by-indentation-level   (if (and (boundp 'c-basic-offset)
                                               (integerp c-basic-offset))
                                          c-basic-offset
@@ -258,6 +259,7 @@ The returned value is a list of 3 elements:
 - line number of the first line in the region
 - line number of the last line in the region
 - symbol \\='point-before-mark or \\='mark-before-point."
+  (declare (side-effect-free t))
   (list
    (line-number-at-pos (region-beginning))
    (line-number-at-pos (region-end))
@@ -879,6 +881,7 @@ The VARS parameter must be either:
 
 The function return t only if there is at least one cons cell that
 specifies a non-zero offset for a variable bound in the current mode."
+  (declare (side-effect-free t))
   (let ((has-offset nil))
     (dolist (var (pel-list-of vars))
       (when (and (consp var)
