@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-06-03 23:14:01 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-06-04 12:27:43 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -660,7 +660,7 @@ endif
 # - Compile pel_keys.el and pel.el at the end.
 
 all: build/.check-init-stamp pel-top $(ALL_TEST_PASSED) pel_keys.elc pel.elc \
-     build/.compile-user-init-stamp
+     validate-declarations build/.compile-user-init-stamp
 
 pel-top: build/.check-init-stamp $(ALL_TEST_PASSED) $(ELC_FILES)
 
