@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, October  7 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-13 23:35:38 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 16:11:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -71,6 +71,7 @@
 
 (defun pel-yang-regexp-for (id)
   "Return a regexp capturing name of ID in group 1."
+  (declare (side-effect-free t))
   (format "^ *%s +\\([-a-zA-Z0-9_\\.:]+\\) *{" id))
 
 (defvar pel-yang-imenu-generic-expression

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-08 15:58:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 16:26:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1066,6 +1066,7 @@ F6, F7, F8, F11, F12 or M-F12 prefix.\n\
   "Return a list of partial names of PDF files in TABLE-ENTRY.
 Return strings: the partial names of PDF files for the TABLE-ENTRY.
 Return nil if there are none."
+  (declare (side-effect-free t))
   (let ((elem (nth 1 table-entry)))
     (if (stringp elem)
         (list elem)
@@ -1073,6 +1074,7 @@ Return nil if there are none."
 
 (defun pel--kte-pel-groups (table-entry)
   "Return a list of symbols of PEL group for the TABLE-ENTRY, or nil if none."
+  (declare (side-effect-free t))
   (let ((elem (nth 2 table-entry)))
     (if (and (symbolp elem) elem)
         (list elem)
@@ -1082,6 +1084,7 @@ Return nil if there are none."
   "Return the library customization group for the TABLE-ENTRY.
 Return a list of groups if there are several.
 Return nil if there are none."
+  (declare (pure t) (side-effect-free t))
   (nth 3 table-entry))
 
 (defun pel--keyseq ()
@@ -1721,6 +1724,7 @@ display in other window and open the related group(s) that exist."
 (defun pel-prefixed (str &optional prefix)
   "Return the STR string prefixed with PREFIX (or space) if not empty.
 Pass empty string unchanged."
+  (declare (side-effect-free t))
   (if (string= str "")
       ""
     (format "%s%s"

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, December  7 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-21 18:12:59 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 16:38:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -161,36 +161,42 @@
   "Return t when value V1 and V2 are eq, nil otherwise.
 Ignore all other arguments that are placed passed for the sole
 purpose of showing their values in the ert report when the test fails."
+  (declare (pure t) (side-effect-free error-free))
   (eq v1 v2))
 
 (defun pel-equal (v1 v2 &rest _)
   "Return t when value V1 and V2 are equal, nil otherwise.
 Ignore all other arguments that are placed passed for the sole
 purpose of showing their values in the ert report when the test fails."
+  (declare (pure t) (side-effect-free t))
   (equal v1 v2))
 
 (defun pel-string= (s1 s2 &rest _)
   "Return t when string S1 and S2 are equal, nil otherwise.
 Ignore all other arguments that are placed passed for the sole
 purpose of showing their values in the ert report when the test fails."
+  (declare (pure t) (side-effect-free t))
   (string= s1 s2))
 
 (defun pel-neq (v1 v2 &rest _)
   "Return t when value V1 and V2 are not eq, nil otherwise.
 Ignore all other arguments that are placed passed for the sole
 purpose of showing their values in the ert report when the test fails."
+  (declare (pure t) (side-effect-free error-free))
   (not (eq v1 v2)))
 
 (defun pel-nequal (v1 v2 &rest _)
   "Return t when value V1 and V2 are not equal, nil otherwise.
 Ignore all other arguments that are placed passed for the sole
 purpose of showing their values in the ert report when the test fails."
+  (declare (pure t) (side-effect-free t))
   (not (equal v1 v2)))
 
 (defun pel-string!= (s1 s2 &rest _)
   "Return t when string S1 and S2 are not equal, nil otherwise.
 Ignore all other arguments that are placed passed for the sole
 purpose of showing their values in the ert report when the test fails."
+  (declare (pure t) (side-effect-free t))
   (not (string= s1 s2)))
 
 ;;; --------------------------------------------------------------------------

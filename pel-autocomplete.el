@@ -94,11 +94,13 @@
 ;; State of auto-complete-mode
 (defun pel--auto-complete-mode-p ()
   "Return t `auto-complete-mode' is loaded and on, nil otherwise."
+  (declare (side-effect-free t))
   (bound-and-true-p auto-complete-mode))
 
 (defun pel--global-auto-complete-mode-p ()
   "Return t if `global-auto-complete-mode' is loaded and on.
 Return nil otherwise."
+  (declare (side-effect-free t))
   (bound-and-true-p global-auto-complete-mode))
 
 ;; --
@@ -172,10 +174,12 @@ Activate when ARG is nil, t or positive, deactivate when it is negative."
 
 (defun pel--company-mode-p ()
   "Return t `company-mode' is loaded and on, nil otherwise."
+  (declare (side-effect-free t))
   (bound-and-true-p company-mode))
 
 (defun pel--global-company-mode-p ()
   "Return t if `global-company-mode' is loaded and on, nil otherwise."
+  (declare (side-effect-free t))
   (bound-and-true-p global-company-mode))
 
 ;; --

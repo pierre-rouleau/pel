@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, December 23 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 09:35:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-03 16:45:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -76,6 +76,7 @@ original insertion order."
 The returned list holds elements in the same order as they were
 entered: the first element entered in the list is the first
 element in the returned list."
+  (declare (side-effect-free t))
   (reverse (gethash key hash-table ())))
 
 ;;; --------------------------------------------------------------------------

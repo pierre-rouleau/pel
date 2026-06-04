@@ -53,6 +53,7 @@ customize the face found at point."
 (defun pel-face-at-pos-is (pos face)
   "Return t if face at POS is FACE, nil otherwise.
 If POS has several faces return t if FACE is one of them, nil otherwise."
+  (declare (side-effect-free t))
   (let ((the-face (get-char-property pos 'face)))
     (if (listp the-face)
         (memq face the-face)

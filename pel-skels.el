@@ -62,6 +62,7 @@
 (defun pel-skel-space-for (string)
   "Return a space string if STRING does not end with a space.
 Return an empty string otherwise."
+  (declare (side-effect-free t))
   (pel-string-when (not (pel-ends-with-space-p string)) " "))
 
 (defun pel-skel-header (func)
@@ -83,9 +84,10 @@ Return an empty string otherwise."
 (defun pel-date (&optional utc)
   "Return a YYYY-MM-DD (ISO 8601 conforming) date.
 Return a UTC Date Time if UTC is non-nil."
+  (declare (side-effect-free t))
   (if utc
-       (format-time-string "%F %T (UTC)" nil t)
-     (format-time-string "%F")))
+      (format-time-string "%F %T (UTC)" nil t)
+    (format-time-string "%F")))
 
 ;;-pel-autoload
 (defun pel-time-stamp (&optional format-string user-format utc)
@@ -106,6 +108,7 @@ following order:
 
 This time stamp will be updated automatically by Emacs on file save
 when `pel-update-time-stamp' is non-nil."
+  (declare (side-effect-free t))
   (format (or format-string "Time-stamp: <%s%s>")
           (if utc
               (format-time-string "%F %T (UTC)" nil t)
@@ -373,6 +376,7 @@ The any extra ARGS are arguments passed to SKEL-FUNCTION."
 (defun pel-lisp-family-major-mode-p ()
   "Return t if the current major mode is for a Lisp-family language.
 Return nil otherwise."
+  (declare  (side-effect-free t))
   (memq major-mode '(lisp-mode
                      emacs-lisp-mode
                      lfe-mode
