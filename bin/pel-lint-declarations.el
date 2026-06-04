@@ -61,6 +61,7 @@
       (push pel-root load-path))))
 
 (require 'lisp-mode)
+(require 'pel--macros)
 (require 'pel-elcode)
 (require 'cl-lib)
 

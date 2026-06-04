@@ -241,10 +241,11 @@ Insert the skeleton selected by the user option variable
 (defun pel-skels-c++-doc-section-titles (section-titles)
   "Return a C++ documentation block skeleton list of SECTION-TITLES.
 SECTION-TITLES may be nil.  In that case the function returns nil."
+  (declare (side-effect-free t))
   (when section-titles
     (let ((cc "// ")
           (sk (list 'l)))
-      (dolist (stitle section-titles)
+
         (pel-append-to
             sk
           (list
