@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 20 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-14 15:01:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-04 05:58:12 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,6 +42,7 @@
 
 (defun pel--sudo-filename (filename)
   "Return the FILENAME prefixed with sudo decoration for tramp."
+  (declare (side-effect-free t))
   (concat "/sudo:root@localhost:" filename))
 
 

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, January 31 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-04 05:38:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-04 05:57:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -152,7 +152,7 @@ the returned value."
 
 (defun pel--time-fmt (number)
   "Return empty string if NUMBER is 0, NUMBER followed by colon otherwise."
-  (declare (side-effect-free error-free))
+  (declare (side-effect-free t))
   (if (eq number 0)
       ""
     (format "%d:" number)))

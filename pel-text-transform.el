@@ -1,6 +1,6 @@
 ;;; pel-text-transform.el --- PEL Text Transformation -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -55,6 +55,7 @@
 
 (defun pel-capitalize-first-letter (text)
   "Return TEXT string with first letter capitalized."
+  (declare (side-effect-free t))
   (if (> (length text) 0)
       (concat (upcase (substring text 0 1))
               (substring text 1))
@@ -248,6 +249,7 @@ With negative N: convert that many letters before point."
 
 (defun pel--sentence-end-description ()
   "Return a string describing end of sentence."
+  (declare (side-effect-free error-free))
   (if sentence-end-double-space
       "2 space characters"
     "1 space character"))
