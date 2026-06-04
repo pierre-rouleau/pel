@@ -62,8 +62,10 @@
 
 (require 'cl-lib)
 (require 'lisp-mode)
-(let ((load-prefer-newer t))
-  (require 'pel-elcode))
+(require 'elisp-mode)
+(eval-and-compile
+  (let ((load-prefer-newer t))
+    (require 'pel-elcode)))
 
 
 ;; ---------------------------------------------------------------------------
@@ -298,6 +300,7 @@ error, so scanning continues with the next file."
     (with-temp-buffer
       (insert-file-contents filename)
       (goto-char (point-min))
+      (emacs-lisp-mode)
       (with-syntax-table emacs-lisp-mode-syntax-table
         (condition-case err
             (while t
