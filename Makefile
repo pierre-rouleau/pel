@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-06-03 09:10:49 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-06-03 18:04:33 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -608,7 +608,7 @@ PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 
 # BIN_EL_FILES  : Emacs Lisp utility scripts stored under bin/
 # BIN_ELC_FILES : their byte-compiled counterparts
-BIN_EL_FILES  := bin/pel-lint.el
+BIN_EL_FILES  := bin/pel-lint.el bin/pel-lint-declarations.el
 BIN_ELC_FILES := $(subst .el,.elc,$(BIN_EL_FILES))
 
 # ---------------------------------------------------------------------------
@@ -891,6 +891,7 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 # Note: pel--options.el lazily requires some other pel files but they are NOT
 #       included in the dependency as it would create a circular make dependency.
 bin/pel-lint.elc:         pel--base.elc
+bin/pel-lint-delclarations.elc:  pel-elcode.elc
 pel--base.elc:            pel-comp.elc
 pel--install.elc:         pel--base.elc pel--indent.elc pel--options.elc pel--macros.elc
 pel--keys-macros.elc:     pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-browse.elc
@@ -1266,6 +1267,9 @@ timeit:
 
 validate-key-prefixes:  bin/pel-lint.elc
 	$(EMACS) -Q --batch -l bin/pel-lint.el --eval "(pel-lint-main)"
+
+validate-declarations: bin/pel-lint-declarations.elc
+	$(EMACS) -Q --batch -L . -l bin/pel-lint-declarations.el --eval "(pel-lint-declarations-main)"
 
 lint: validate-key-prefixes
 
