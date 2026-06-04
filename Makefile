@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-06-03 22:52:20 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-06-03 23:14:01 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -891,7 +891,7 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 # Note: pel--options.el lazily requires some other pel files but they are NOT
 #       included in the dependency as it would create a circular make dependency.
 bin/pel-lint.elc:         pel--base.elc
-bin/pel-lint-delclarations.elc:  pel-elcode.elc
+bin/pel-lint-declarations.elc:  pel-elcode.elc
 pel--base.elc:            pel-comp.elc
 pel--install.elc:         pel--base.elc pel--indent.elc pel--options.elc pel--macros.elc
 pel--keys-macros.elc:     pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-browse.elc
@@ -1159,6 +1159,24 @@ pel: build/.check-init-stamp $(ELC_FILES) pel_keys.elc
 pel.elc: pel.el pel_keys.elc
 
 
+ifeq ($(EMACS_NATIVE_COMP_AVAILABLE), yes)
+bin/pel-lint-declarations.elc: bin/pel-lint-declarations.el pel-elcode.elc
+	$(EMACS) -Q --batch -L . -L bin \
+	         --eval '(setq byte-compile-error-on-warn t)' \
+	         -l pel-elcode \
+	         -f batch-byte-compile $<
+	$(EMACS) -Q --batch -L . -L bin \
+	         --eval '(setq byte-compile-error-on-warn t)' \
+	         -l pel-elcode \
+	         -f batch-native-compile $<
+else
+bin/pel-lint-declarations.elc: bin/pel-lint-declarations.el pel-elcode.elc
+	$(EMACS) -Q --batch -L . -L bin \
+	         --eval '(setq byte-compile-error-on-warn t)' \
+	         -l pel-elcode \
+	         -f batch-byte-compile $<
+endif
+
 # Pattern rule: byte-compile (and native-compile when available) scripts in bin/.
 # -L bin is added so that (provide 'pel-lint) / (require 'pel-lint) resolve
 # correctly during compilation.
@@ -1263,7 +1281,7 @@ timeit:
 # This requires access to a load-path that can find elisp-lint as well
 # as all the tools it uses and all packages used by PEL.
 # This is why the Emacs init file is loaded.
-.PHONY: lint validate-key-prefixes
+.PHONY: lint validate-key-prefixes validate-declarations
 
 validate-key-prefixes:  bin/pel-lint.elc
 	$(EMACS) -Q --batch -l bin/pel-lint.el --eval "(pel-lint-main)"
