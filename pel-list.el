@@ -48,6 +48,7 @@
 LIST is not modified.
 Return the new list.
 Performance: O(n) - of LIST size."
+  (declare (side-effect-free t))
   (append
    (butlast list (- (length list) n))
    (cons elem (nthcdr n list))))
@@ -57,6 +58,7 @@ Performance: O(n) - of LIST size."
 LIST is not modified.
 Return the new list.
 Performance: O(n) - of LIST size."
+  (declare (side-effect-free t))
   (append
    (butlast list (- (length list) n))
    seq

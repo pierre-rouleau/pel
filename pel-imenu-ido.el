@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2026-03-26 22:55:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-04 07:27:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -151,6 +151,7 @@ are t or have a non-nil symbol value.
 
 The function return nil if any of the requirement is not met,
 t if they are all met."
+  (declare (side-effect-free t))
   (let ((allowed t))
     (dolist (requirement (nthcdr 3 entry))
       (setq allowed (and allowed

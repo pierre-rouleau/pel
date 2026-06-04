@@ -246,21 +246,25 @@ The syntax table of the current buffer is used to check.
 .
 The returned non-nil value is a list where the head is
 the syntax type code for `ch'."
+  (declare (side-effect-free t))
   (memq (char-syntax ch) '(?w ?_)))
 
 (defun pel-at-word-or-symbol-start-p ()
   "Return t if point is located at symbol boundary character."
+  (declare (side-effect-free t))
   (and (pel-is-word-or-symbol-char (char-after))
        (not (pel-is-word-or-symbol-char (char-before)))))
 
 ;; --
 (defun pel-at-wspace-end-p ()
   "Return t if point is located at end of whitespace."
-  (and (= (char-syntax (char-before))  ?\s)
+  (declare (side-effect-free t))
+  (and (= (char-syntax (char-before)) ?\s)
        (not (= (char-syntax (char-after)) ?\s))))
 
 (defun pel-char-next ()
   "Return character next after point."
+  (declare (side-effect-free t))
   (char-after (+ (point) 1)))
 
 (defun pel-is-operator-char (ch)
@@ -269,6 +273,7 @@ The syntax table of the current buffer is used to check.
 .
 The returned non-nil value is a list where the head is
 the syntax type code for `ch'."
+  (declare (side-effect-free t))
   (memq (char-syntax ch) '(?. ?\" ?_)))
 
 ;; --
@@ -278,10 +283,12 @@ The syntax table of the current buffer is used to check.
 .
 The returned non-nil value is a list where the head is
 the syntax type code for `ch'."
+  (declare (side-effect-free t))
   (memq (char-syntax ch) '(?\s ?>)))
 
 (defun pel-at-operator-before-wspace-p ()
   "Return t if point is located at the end of an operator before whitespace."
+  (declare (side-effect-free t))
   (and (pel-is-operator-char (char-after))
        (pel-is-whitespace-or-newline (pel-char-next))))
 
@@ -289,6 +296,7 @@ the syntax type code for `ch'."
 ;; Point status predicates
 (defun pel-at-token-start-p ()
   "Return t if point is located a word/symbol or whitespace boundary."
+  (declare (side-effect-free t))
   (or
    (pel-at-word-or-symbol-start-p)
    (pel-at-wspace-end-p)
@@ -354,6 +362,7 @@ See `pel-forward-token-start' for details."
 
 (defun pel-at-word-boundary-p ()
   "Return t if point is located at a word boundary character."
+  (declare (side-effect-free t))
   (let ((syntax-chrs (if superword-mode
                          '(?w ?_)
                        '(?w)))
@@ -412,6 +421,7 @@ On reaching end of buffer, stop and signal error."
 
 (defun pel-at-syntax-change-p ()
   "Return t if point is located at a boundary between 2 character syntax."
+  (declare (side-effect-free t))
   (not (= (char-syntax (char-after)) (char-syntax (char-before)))))
 
 ;;-pel-autoload

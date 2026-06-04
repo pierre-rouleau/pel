@@ -227,6 +227,7 @@ Store new value in `pel--highlight-color'."
 (defun pel--find-overlays-specifying (prop pos)
   "Return the list of overlays at position POS that have property PROP.
 Return nil if there are none."
+  (declare (side-effect-free t))
   (let ((overlays (overlays-at pos))
         found)
     (while overlays

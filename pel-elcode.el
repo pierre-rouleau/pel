@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-04 05:55:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-04 09:34:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -67,6 +67,34 @@
 ;;; Code:
 ;;
 
+;; side-effect-free and pure
+;; -------------------------
+;;
+;; For Emacs Lisp declare semantics, side-effect-free means the byte compiler
+;; may discard the call when its return value is unused. It does not imply
+;; that two calls can be merged, common-subexpression-eliminated, or replaced
+;; by one shared result. That stronger substitution property belongs to pure,
+;; not side-effect-free.
+;;
+;; - side-effect-free enables dead-code elimination (discarding unused calls).
+;; - pure enables referential transparency/substitution (constant folding and
+;;   common-subexpression elimination).
+;;
+;; To back this up, we can look at how the Emacs source code itself defines
+;; these properties in byte-run.el:
+;;
+;; - side-effect-free: Defined as "the function is useful only for its return
+;;                     value".
+;;                     If that value isn't used, the compiler throws the call
+;;                     away.
+;;
+;; - pure:             Defined as "the function choice depends only on its
+;;                     arguments, and has no side effects".
+;;                     This is what signals to the compiler that the function
+;;                     will always yield the exact same value for identical
+;;                     inputs, allowing it to safely merge or pre-evaluate the
+;;                     calls.
+
 (defconst pel-elcode-non-impacting-operators
   '(and
     or
@@ -110,11 +138,16 @@ must not preserve the `error-free' declaration property.")
     make-record record make-byte-code
     ;; Keymaps
     make-keymap make-sparse-keymap)
-  "Functions that allocate new objects.
-Despite Emacs declaring these as `side-effect-free' (meaning their
-result may be safely discarded), a function whose body calls any of
-these cannot be declared `side-effect-free' by `pel-elcode' because
-each call produces a fresh, non-`eq' heap object.")
+  "Functions that allocate fresh objects.
+
+Allocation does not make a function side-effecting under Emacs
+`declare' semantics: a function that calls `list', `cons', `vector',
+`concat', etc. may still be `side-effect-free' because it does not mutate
+pre-existing state.
+
+However, allocation prevents `pure' inference because repeated calls may
+return fresh, non-`eq' objects.  For example, two calls to a function that
+returns `(list 1 2 3)' produce equal but not `eq' results.")
 
 (defconst pel-elcode-structural-forms
   '(defun defsubst lambda
@@ -153,6 +186,7 @@ Take NEW-LOCAL-VARS local variables into account."
   "Return non-nil if SYMBOL denotes a non-local variable read.
 
 Ignore locally bound variables, nil, t and keywords."
+  (declare (pure t) (side-effect-free t))
   (and (symbolp symbol)
        (not (memq symbol local-vars))
        (not (memq symbol '(nil t)))
@@ -530,9 +564,8 @@ error-free."
             (unless (function-get op 'pure)
               (setq defun-props (delq 'pure defun-props)))
             ;;
-            ;; Allocation functions are declared side-effect-free by Emacs for
-            ;; byte-compiler purposes, but pel-elcode treats them as impure
-            ;; because they produce a new heap object on every call.
+            ;; Allocation functions may still be side-effect-free, but they
+            ;; are not pure: repeated calls may return fresh, non-`eq' objects.
             (when (memq op pel-elcode-allocating-operators)
               (setq defun-props (delq 'pure defun-props)))
             ;;
@@ -545,8 +578,21 @@ error-free."
             (pcase (function-get op 'side-effect-free)
               ('error-free)
               ('t (setq defun-props (delq 'error-free defun-props)))
-              (_  (setq defun-props (pel-delqs '(side-effect-free error-free)
-                                               defun-props))))
+              (_
+               ;; `function-get' returned nil or an unrecognised value.  Two cases:
+               ;;
+               ;;  1. The property IS on the symbol plist but is not `t' or
+               ;;     `error-free' (the operator is *known* to have side effects):
+               ;;     remove both `side-effect-free' and `error-free'.
+               ;;
+               ;;  2. The property is simply ABSENT from the plist (e.g. a
+               ;;     user-defined function/macro not yet loaded in this session.
+               ;;     This is common in `emacs -Q --batch' linting runs).
+               ;;     - One way to handle this is to warn about unknown
+               ;;     operators to get the user to ensure that the macro file.
+               ;; [:todo 2026-06-04, by Pierre Rouleau: do the above?]
+               (setq defun-props (pel-delqs '(side-effect-free error-free)
+                                            defun-props))))
             ;; Stop once there's no properties left.
             (unless defun-props
               (throw 'pel-elcode-break nil))))

@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 24 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-18 10:57:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-04 07:23:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -57,13 +57,15 @@
 ;;
 
 (defun pel-mode-activating-user-option-p (symbol)
-  "Return t when SYMBOL is valid PEL modes-activating user-option, nil otherwise."
+  "Return t when SYMBOL is a valid modes-activating user-option, nil otherwise."
+  (declare (side-effect-free t))
   (and (custom-variable-p symbol)
        (pel-string-starts-with-p (symbol-name symbol)
                                  "pel-modes-activating-")))
 
 (defun pel-compare-symbol-names (s1 s2)
   "Return <0 is name of S1 sorts smaller than name of S2."
+  (declare (pure t) (side-effect-free t))
   (string< (symbol-name s1) (symbol-name s2)))
 
 (defun pel-mode-activating-user-options ()
@@ -79,10 +81,12 @@
   "Return t if USER-OPTION activates major MODE.
 USER-OPTION is a symbol for one of the pel-modes-activating- user-options.
 MODE is a symbol for the specific mode."
+  (declare (side-effect-free t))
   (memq mode (symbol-value user-option)))
 
 (defun pel-custom-group-for (user-option)
   "Return the customization group for a USER-OPTION."
+  (declare (side-effect-free t))
   ;; I did not find any mechanism to identify the group of a defcustom.
   ;; So, I added the :in-group property to the pel-modes-activating-
   ;; defcustom as a work-around.

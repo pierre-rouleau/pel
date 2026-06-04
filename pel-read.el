@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-17 15:20:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-04 07:14:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -168,6 +168,7 @@ point and the end of the buffer. "
 
 (defun pel-read--face-at-point-p (face)
   "Return non-nil if FACE applies at point (handles both symbol and list)."
+  (declare (side-effect-free t))
   (let ((f (get-char-property (point) 'face)))
     (if (listp f)
         (memq face f)

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, December 23 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-03 16:45:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-04 07:44:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -59,6 +59,7 @@ predicates as `make-hash-table', with a different default:
 
 User-supplied test and hash functions can be specified via
 `define-hash-table-test’."
+  (declare (side-effect-free t))
   (make-hash-table :test (or test 'eq)))
 
 (defun pel-addto-hash-of-lists (hash-table key element)

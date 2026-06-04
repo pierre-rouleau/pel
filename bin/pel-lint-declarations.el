@@ -63,6 +63,11 @@
 (require 'lisp-mode)
 (require 'pel-elcode)
 (require 'cl-lib)
+;; [:todo 2026-06-04, by Pierre Rouleau: the following is temporary and PEL
+;; specific.  It should be replaced by the ability to load the files required
+;; by the analyzed source.]
+(require 'pel--macros)
+
 
 ;; ---------------------------------------------------------------------------
 ;; Utilities

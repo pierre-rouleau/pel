@@ -272,6 +272,7 @@ the value of the rst-mode `rst-preferred-adornments' user-option.")
 
 (defun pel-rst-used-adornment-style ()
   "Return adornment style used by current buffer."
+  (declare (side-effect-free t))
   pel--rst-used-adornment-style)
 
 ;;-pel-autoload
@@ -452,6 +453,7 @@ Return \\='simple or \\='over-and-under."
 (defun pel--rst-level-valid-p (level)
   "Return non-nil when LEVEL is a valid adorn level for current adorn style.
 Return nil otherwise."
+  (declare (side-effect-free t))
   (< -1 level (length rst-preferred-adornments)))
 
 ;; --
@@ -998,7 +1000,7 @@ Move there with pel-rst-goto-ref-bookmark then add lines!"))))))))
 
 Return an empty string if no escaping is required.
 Supported separators are white-space characters and OTHER-SEPARATOR-CHARS."
-
+  (declare (side-effect-free t))
   (if (or (memq (char-after point) pel--rst-whitespace-chars)
           (memq (char-after point) other-separator-chars))
       ""
@@ -1085,6 +1087,7 @@ and leave point inside it."
 
 (defun pel-at-rst-reference-p (&optional pos)
   "Return t if POS (or point) is at a rst-reference character, nil otherwise."
+  (declare (side-effect-free t))
   (setq pos (or pos (point)))
   (eq (get-text-property pos 'face) 'rst-reference))
 
@@ -1092,6 +1095,7 @@ and leave point inside it."
   "Return t if character at POS is a valid reST reference character.
 
 Return nil otherwise.  The '<' and '>' are invalid."
+  (declare (side-effect-free t))
   (not (memq (char-after pos) '(?< ?>))))
 
 (defun pel--rst-reference-target (&optional pos noerror)
