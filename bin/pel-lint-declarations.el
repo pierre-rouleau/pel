@@ -66,7 +66,8 @@
 (eval-and-compile
   (let ((load-prefer-newer t))
     (require 'pel-elcode)))
-
+(require 'byte-opt)     ; use: `pure' and `side-effect-free' symbol properties
+;;                             on built-in functions (not, eq, symbolp, consp, …)
 
 ;; ---------------------------------------------------------------------------
 ;; Utilities
