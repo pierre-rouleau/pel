@@ -61,7 +61,9 @@
       (push pel-root load-path))))
 
 (require 'cl-lib)
-(require 'pel-elcode)
+(require 'lisp-mode)
+(let ((load-prefer-newer t))
+  (require 'pel-elcode))
 
 
 ;; ---------------------------------------------------------------------------
@@ -256,34 +258,71 @@ This reports, in order of priority:
 ;; ---------------------------------------------------------------------------
 ;; File scanning
 
-(defun pel-lint-declarations--first-diagnostic-in-file (filename)
-  "Return first missing-declaration diagnostic in FILENAME, or nil."
-  (with-temp-buffer
-    (insert-file-contents filename)
-    (goto-char (point-min))
-    (catch 'diagnostic
-      (condition-case err
-          (while t
-            ;; Skip whitespace and comments so line number points at the form.
-            (forward-comment (point-max))
-            (when (eobp)
-              (throw 'diagnostic nil))
-            (let* ((start-pos (point))
-                   (line      (line-number-at-pos start-pos))
-                   (form      (read (current-buffer))))
-              (when (pel-lint-declarations--defun-form-p form)
-                (let ((diagnostic
-                       (pel-lint-declarations--diagnostic-for-defun
-                        filename line form)))
-                  (when diagnostic
-                    (throw 'diagnostic diagnostic))))))
-        (end-of-file
-         nil)
-        (error
-         (format "%s:%d: read error: %s"
-                 filename
-                 (line-number-at-pos)
-                 (error-message-string err)))))))
+;; (defun pel-lint-declarations--first-diagnostic-in-file (filename)
+;;   "Return first missing-declaration diagnostic in FILENAME, or nil."
+;;   (with-temp-buffer
+;;     (insert-file-contents filename)
+;;     (goto-char (point-min))
+;;     (catch 'diagnostic
+;;       (condition-case err
+;;           (while t
+;;             ;; Skip whitespace and comments so line number points at the form.
+;;             (forward-comment (point-max))
+;;             (when (eobp)
+;;               (throw 'diagnostic nil))
+;;             (let* ((start-pos (point))
+;;                    (line      (line-number-at-pos start-pos))
+;;                    (form      (read (current-buffer))))
+;;               (when (pel-lint-declarations--defun-form-p form)
+;;                 (let ((diagnostic
+;;                        (pel-lint-declarations--diagnostic-for-defun
+;;                         filename line form)))
+;;                   (when diagnostic
+;;                     (throw 'diagnostic diagnostic))))))
+;;         (end-of-file
+;;          nil)
+;;         (error
+;;          (format "%s:%d: read error: %s"
+;;                  filename
+;;                  (line-number-at-pos)
+;;                  (error-message-string err)))))))
+
+
+(defun pel-lint-declarations--diagnostics-in-file (filename)
+  "Return all declaration diagnostics found in FILENAME.
+
+If a read error occurs, return diagnostics found before the read error plus
+one read-error diagnostic.  The file cannot be parsed reliably after such an
+error, so scanning continues with the next file."
+  (let ((diagnostics '()))
+    (with-temp-buffer
+      (insert-file-contents filename)
+      (goto-char (point-min))
+      (with-syntax-table emacs-lisp-mode-syntax-table
+        (condition-case err
+            (while t
+              ;; Use the Emacs Lisp syntax table so `forward-comment' skips
+              ;; semicolon comments before line number capture.
+              (forward-comment (point-max))
+              (if (eobp)
+                  (signal 'end-of-file nil)
+                (let* ((line (line-number-at-pos))
+                       (form (read (current-buffer))))
+                  (when (pel-lint-declarations--defun-form-p form)
+                    (let ((diagnostic
+                           (pel-lint-declarations--diagnostic-for-defun
+                            filename line form)))
+                      (when diagnostic
+                        (push diagnostic diagnostics)))))))
+          (end-of-file
+           nil)
+          (error
+           (push (format "%s:%d: read error: %s"
+                         filename
+                         (line-number-at-pos)
+                         (error-message-string err))
+                 diagnostics)))))
+    (nreverse diagnostics)))
 
 (defun pel-lint-declarations--elisp-files-in-current-directory ()
   "Return sorted list of Emacs Lisp files in `default-directory'."
@@ -292,30 +331,58 @@ This reports, in order of priority:
                          "\\.el\\'")
         #'string<))
 
-(defun pel-lint-declarations-first-diagnostic ()
-  "Return first missing-declaration diagnostic in current directory, or nil.
+;; (defun pel-lint-declarations-first-diagnostic ()
+;;   "Return first missing-declaration diagnostic in current directory, or nil.
+;;
+;; Only `*.el' files directly under `default-directory' are scanned."
+;;   (catch 'diagnostic
+;;     (dolist (filename (pel-lint-declarations--elisp-files-in-current-directory))
+;;       (let ((diagnostic
+;;              (pel-lint-declarations--first-diagnostic-in-file filename)))
+;;         (when diagnostic
+;;           (throw 'diagnostic diagnostic))))
+;;     nil))
+
+(defun pel-lint-declarations-diagnostics ()
+  "Return all declaration diagnostics in current directory.
 
 Only `*.el' files directly under `default-directory' are scanned."
-  (catch 'diagnostic
+  (let ((diagnostics '()))
     (dolist (filename (pel-lint-declarations--elisp-files-in-current-directory))
-      (let ((diagnostic
-             (pel-lint-declarations--first-diagnostic-in-file filename)))
-        (when diagnostic
-          (throw 'diagnostic diagnostic))))
-    nil))
+      (setq diagnostics
+            (append diagnostics
+                    (pel-lint-declarations--diagnostics-in-file filename))))
+    diagnostics))
+
+(defun pel-lint-declarations-first-diagnostic ()
+  "Return first declaration diagnostic in current directory, or nil."
+  (car (pel-lint-declarations-diagnostics)))
 
 ;; ---------------------------------------------------------------------------
 ;; Command-line entry point
 
-(defun pel-lint-declarations-main ()
-  "Run missing declaration linting for all Emacs Lisp files in current directory.
+;; (defun pel-lint-declarations-main ()
+;;   "Run missing declaration linting for all Emacs Lisp files in current directory.
+;;
+;; Exit with status 1 on the first diagnostic.  Exit with status 0 when no
+;; diagnostic is found."
+;;   (let ((diagnostic (pel-lint-declarations-first-diagnostic)))
+;;     (if diagnostic
+;;         (progn
+;;           (princ (concat diagnostic "\n") #'external-debugging-output)
+;;           (kill-emacs 1))
+;;       (kill-emacs 0))))
 
-Exit with status 1 on the first diagnostic.  Exit with status 0 when no
-diagnostic is found."
-  (let ((diagnostic (pel-lint-declarations-first-diagnostic)))
-    (if diagnostic
+(defun pel-lint-declarations-main ()
+  "Run declaration linting for all Emacs Lisp files in current directory.
+
+Print all diagnostics found.  Exit with status 1 when at least one diagnostic
+is found.  Exit with status 0 when no diagnostic is found."
+  (let ((diagnostics (pel-lint-declarations-diagnostics)))
+    (if diagnostics
         (progn
-          (princ (concat diagnostic "\n") #'external-debugging-output)
+          (dolist (diagnostic diagnostics)
+            (princ (concat diagnostic "\n") #'external-debugging-output))
           (kill-emacs 1))
       (kill-emacs 0))))
 

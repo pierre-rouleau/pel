@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-06-03 18:04:33 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-06-03 22:52:20 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -1268,7 +1268,7 @@ timeit:
 validate-key-prefixes:  bin/pel-lint.elc
 	$(EMACS) -Q --batch -l bin/pel-lint.el --eval "(pel-lint-main)"
 
-validate-declarations: bin/pel-lint-declarations.elc
+validate-declarations: pel-elcode.elc bin/pel-lint-declarations.elc
 	$(EMACS) -Q --batch -L . -l bin/pel-lint-declarations.el --eval "(pel-lint-declarations-main)"
 
 lint: validate-key-prefixes
