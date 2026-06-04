@@ -60,11 +60,9 @@
     (unless (member pel-root load-path)
       (push pel-root load-path))))
 
-(require 'cl-lib)
 (require 'lisp-mode)
-(let ((load-prefer-newer t))
-  (require 'pel-elcode))
-
+(require 'pel-elcode)
+(require 'cl-lib)
 
 ;; ---------------------------------------------------------------------------
 ;; Utilities
