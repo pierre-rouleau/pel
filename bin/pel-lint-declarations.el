@@ -60,14 +60,9 @@
     (unless (member pel-root load-path)
       (push pel-root load-path))))
 
-(require 'cl-lib)
 (require 'lisp-mode)
-(require 'elisp-mode)
-(eval-and-compile
-  (let ((load-prefer-newer t))
-    (require 'pel-elcode)))
-(require 'byte-opt)     ; use: `pure' and `side-effect-free' symbol properties
-;;                             on built-in functions (not, eq, symbolp, consp, …)
+(require 'pel-elcode)
+(require 'cl-lib)
 
 ;; ---------------------------------------------------------------------------
 ;; Utilities
@@ -301,7 +296,6 @@ error, so scanning continues with the next file."
     (with-temp-buffer
       (insert-file-contents filename)
       (goto-char (point-min))
-      (emacs-lisp-mode)
       (with-syntax-table emacs-lisp-mode-syntax-table
         (condition-case err
             (while t

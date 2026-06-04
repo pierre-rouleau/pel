@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 17 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-03 17:56:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-04 05:34:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,12 +45,23 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-;;
 (require 'pel--base)    ; use: `pel-delqs'
-(require 'seq)          ; use: `seq-filter' (not autoloaded in Emacs 26)
-;;                             `seq-partition', `seq-every-p'
+
 (require 'pel-elisp)    ; use: `pel-elisp-beginning-of-previous-form'
 ;;                             `pel-elisp-beginning-of-next-form'
+
+(require 'seq)          ; use: `seq-filter' (not autoloaded in Emacs 26)
+;;                             `seq-partition', `seq-every-p'
+
+;; `pel-elcode-properties-of-sexp' infers declaration properties by
+;; querying function symbol properties such as `pure' and
+;; `side-effect-free' with `function-get'.  For many built-in functions
+;; (`not', `eq', `symbolp', `consp', etc.) these properties are installed
+;; by `byte-opt.el'.  A fresh interpreted or `emacs -Q --batch' session
+;; does not necessarily load the byte compiler machinery first, so require
+;; `byte-opt' explicitly to make the inference environment-independent.
+(require 'byte-opt)
+
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
