@@ -34,7 +34,7 @@ PEL -- Pragmatic Emacs Leverage
    :alt: PEL Hydras
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
-.. image:: https://img.shields.io/badge/PDF_Files-221-blue
+.. image:: https://img.shields.io/badge/PDF_Files-223-blue
    :alt: PDF Files
    :target: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index.pdf
 
@@ -199,7 +199,7 @@ Essentially PEL extends plain vanilla Emacs and provides:
   - Also see the document titled `Using tree-sitter with Emacs and PEL`_ which
     describes how to setup your environment to use the tree-sitter based modes,
 
-- **221 Extensive Topic-organized Reference PDFs** The heavily hyperlinked
+- **223 Extensive Topic-organized Reference PDFs** The heavily hyperlinked
   tables serve as visual, topic-organized key-binding and feature reference
   sheets, an unusual approach in the Emacs ecosystem which complements Emacs'
   excellent documentation system.
@@ -565,7 +565,7 @@ packages, etc.
 PEL PDF Tables
 ~~~~~~~~~~~~~~
 
-- PEL provides **221** `topic oriented PDF tables`_ [#doc]_ each heavily hyperlinked
+- PEL provides **223** `topic oriented PDF tables`_ [#doc]_ each heavily hyperlinked
   to each other and to public resources.  The top-level `PEL Index PDF`_  is a
   table listing the table for each Emacs feature, major and minor mode.
   Each table attempts to provide quickly accessible
