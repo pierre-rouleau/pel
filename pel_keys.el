@@ -6868,6 +6868,11 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
   (pel-eval-after-load org
     (define-key pel:for-org-mode (kbd "TAB") 'org-indent-mode)
+    (define-key pel:for-org-mode "c" 'org-lint)
+    (define-key pel:for-org-mode "L" 'org-store-link)
+    (define-key pel:for-org-mode "A" 'org-agenda)
+    (define-key pel:for-org-mode "C" 'org-capture)
+    (define-key pel:for-org-mode "B" 'org-switchb)
     (defvar pel-org-electric-pairs '((?\* . ?\*)
                                      (?/ . ?/)
                                      (?= . ?=)
