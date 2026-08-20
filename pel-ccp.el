@@ -1004,12 +1004,16 @@ Nothing is copied to the kill ring."
 
 (defun pel-overwrite-yank (&optional arg)
   "Yank over existing text when overwrite-mode is active.
-Otherwise yank/insert as usual."
+Otherwise yank/insert as usual.
+In `org-mode' or mode derived from it, invoke `org-yank'."
   (interactive)
-  (when (and pel--activate-overwrite-yank-in-buffer
-             (bound-and-true-p overwrite-mode))
-    (delete-char (length (current-kill 0))))
-  (yank arg))
+  (if (and (derived-mode-p 'org-mode)
+           (fboundp 'org-yank))
+      (org-yank arg)
+    (when (and pel--activate-overwrite-yank-in-buffer
+               (bound-and-true-p overwrite-mode))
+      (delete-char (length (current-kill 0))))
+    (yank arg)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Information Helper
