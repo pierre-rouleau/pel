@@ -6859,20 +6859,17 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                      org-agenda
                      org-capture
                      org-switchb)
-  ;; instead of using the C-c keys suggested by the Org manual, use
-  ;; keys under the pel:org-mode prefix.
-  (define-key pel:org-mode "l" 'org-store-link)
-  (define-key pel:org-mode "a" 'org-agenda)
-  (define-key pel:org-mode "c" 'org-capture)
-  (define-key pel:org-mode "b" 'org-switchb)
+
 
   (pel-eval-after-load org
+    ;; Add easy-to use F12 key bindings for org commands.
     (define-key pel:for-org-mode (kbd "TAB") 'org-indent-mode)
     (define-key pel:for-org-mode "c" 'org-lint)
-    (define-key pel:for-org-mode "L" 'org-store-link)
-    (define-key pel:for-org-mode "A" 'org-agenda)
+    ;;
+    (define-key pel:for-org-mode "l" 'org-store-link)
+    (define-key pel:for-org-mode "a" 'org-agenda)
     (define-key pel:for-org-mode "C" 'org-capture)
-    (define-key pel:for-org-mode "B" 'org-switchb)
+    (define-key pel:for-org-mode "b" 'org-switchb)
     (defvar pel-org-electric-pairs '((?\* . ?\*)
                                      (?/ . ?/)
                                      (?= . ?=)
