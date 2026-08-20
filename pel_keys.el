@@ -6862,6 +6862,9 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
 
   (pel-eval-after-load org
+    ;; Add global keys that are useful from everywhere but
+    ;; only when an org-mode buffer has been opened.
+    (global-set-key (kbd "C-c l") #'org-store-link)
     ;; Add easy-to use F12 key bindings for org commands.
     (define-key pel:for-org-mode (kbd "TAB") 'org-indent-mode)
     (define-key pel:for-org-mode "c" 'org-lint)
