@@ -63,6 +63,13 @@ PEL -- Pragmatic Emacs Leverage
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 
+You can also **add your own Emacs Lisp code** in the ``pel-user-init.el`` file stored
+in PEL utils directory and use your favourite technology to install any package you
+need, create extra key bindings or add new code logic.
+See the coding instructions inside section 8 of the
+`PEL compatible Emacs init.el`_ (also labelled as ``OPTION F``).
+
+
 Essentially PEL extends plain vanilla Emacs and provides:
 
 - **Unified, Cohesive Command Interface**: with 729 additional key-bound
@@ -721,6 +728,12 @@ Notes
                For those that prefer to stay away from Emacs Lisp and
                concentrate on other tasks you can use PEL and configure Emacs
                using its powerful customization system.
+
+               - You may also want to write your own code to complement PEL
+                 inside the ~/.emacs.d/utils/user-init.el file and activate
+                 its loading in the section 8 of PEL `init.el`_.
+               - If you get hooked, you may even want to contribute to
+                 PEL. All contributions are welcome!
 
 .. [#install] Unfortunately PEL installation is manual but it's not difficult.
               Detailed instructions for installing PEL are located inside `section

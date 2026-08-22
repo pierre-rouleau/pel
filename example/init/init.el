@@ -46,7 +46,7 @@
 ;;   - OPTION D: whether Emacs displays its startup message for current user.
 ;;   - OPTION E: whether graphical Emacs toolbar is displayed or not and
 ;;               other options.
-;;   - OPTION F: Extra user-code.
+;;   - OPTION F: Optional extra user-code: user-init.
 ;;   - OPTION G: Activate commands that may be confusing for new Emacs users.
 ;;
 ;;   Locate these manually edited variable by searching for "OPTION".
@@ -569,17 +569,27 @@ Also expands to the file true name, replacing symlinks by what they point to."
   (push pel-home-dirpath-name load-path)
 
   ;; ------------------------------------------------------------------------
-  ;; Section 8: Extra User-Specific Logic
-  ;; ====================================
+  ;; Section 8: Optional Extra User-Specific Logic
+  ;; =============================================
   ;;
-  ;; If you absolutely need to define values or run some code at
-  ;; initialization time that PEL does not already handle and that you cannot
-  ;; control via Emacs customization system, write your code here before the
-  ;; code in section 9 where PEL is initialized.
+  ;; OPTION F: Write extra code here if needed.
+
+  ;; If you need to define values or run some code at
+  ;; initialization time because PEL does not something you want, you can.
+  ;; Please follow the following procedure:
   ;;
-  ;; OPTION F: Write extra code here if absolutely needed.
-  ;;           Keep it short and fast.
-  ;;           Make sure it byte-compiles without warnings.
+  ;; - Create the file ~/.emacs.d/utils/pel-user-init.el
+  ;; - Write your code inside that file:
+  ;;   - it must use static binding,
+  ;;   - keep the code fast and as short as possible; it does not have
+  ;;     access to PEL's library (if you want to use PEL library move
+  ;;     this section 8 *after* section 9 below),
+  ;;   - byte compile it: it must byte compile without error or warnings.
+  ;; - Then un-comment the following code line to load pel-user-init.
+  ;;
+  ;; (load "pel-user-init")
+
+  ;; - Once all done make sure you can still build PEL with the make command.
 
   ;; -------------------------------------------------------------------------
   ;; Section 9: Start PEL
