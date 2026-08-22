@@ -537,7 +537,8 @@ and supply your own logic in the pel-user-init.el file.
 
 Emacs gets its power from the large set of built-in and external packages
 available for it.  A large number of external packages are available from
-package repositories like `GNU Elpa`_, MELPA_.  There are also Emacs Lisp
+package repositories like `GNU Elpa`_, MELPA_ or from `quelpa`_ to install
+packages from source file.  PEL can also install Emacs Lisp packages from its
 files available on Github and Gitlab.  PEL provides access to a growing number
 of these packages as described in the next section.
 
@@ -563,9 +564,10 @@ packages, etc.
 
   - Once activated by a PEL user option, PEL installs the newly activated
     packages on initialization (or when Emacs starts) from `GNU Elpa`_,
-    MELPA_, and simple GitHub or Gitlab repositories even when the files
-    have not been setup as an elpa-compliant package.  PEL provides
-    configuration logic and hooks where needed.
+    MELPA_, installs some via `quelpa`_, and can install from simple GitHub or
+    Gitlab repositories even when the files have not been setup as an
+    elpa-compliant package.  PEL provides configuration logic and hooks where
+    needed.
 
   - Use the **pel-cleanup** command to **remove** deactivated packages not
     requested by PEL user-options, moving those packages from the ``elpa``
@@ -582,7 +584,9 @@ packages, etc.
 
 - PEL integrates these packages and adds a large number of key bindings.
   The PEL key-bindings **do not interfere with the Emacs standard key bindings**
-  (except for a small number of documented ones).
+  (except for a small number of documented ones).  It also enhance some of the
+  standard Emacs key bindings by making them more versatile (like ``C-y``
+  which provides support for yanking with text overwrite capabilities).
 
 ➣ Extends Emacs Documentation
 -----------------------------
@@ -592,13 +596,14 @@ PEL PDF Tables
 
 - PEL provides **222** `topic oriented PDF tables`_ [#doc]_ each heavily hyperlinked
   to each other and to public resources.  The top-level `PEL Index PDF`_  is a
-  table listing the table for each Emacs feature, major and minor mode.
-  Each table attempts to provide quickly accessible
-  concise information about the features, commands, function signatures, key
-  bindings and is packed with symbol annotated and colour coded information.
-  It includes hyperlinks to Emacs manuals, external packages, articles and other
-  useful references.
+  table listing the table for each Emacs feature, major and minor mode
+  (with the `PEL Index Section Overview PDF`_ which highlights its sections).
 
+  - Each table attempts to provide quickly accessible
+    concise information about the features, commands, function signatures, key
+    bindings and is packed with symbol annotated and colour coded information.
+    It includes hyperlinks to Emacs manuals, external packages, articles and other
+    useful references.
   - The PDF tables use colour codes and icons (see the `➢Legend PDF`_ for their
     meaning) to speed identification of commands, identify if they are
     available globally, for major mode, minor mode or under special
