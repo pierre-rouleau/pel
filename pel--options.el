@@ -1137,15 +1137,19 @@ By default, PEL identifies the following packages:
   :type '(repeat symbol))
 
 (defcustom pel-utils-packages-to-keep (if pel-emacs-28-or-later-p
-                                          '("benchmark-init-modes.el"
+                                          '("pel-user-init.el"
+                                            "benchmark-init-modes.el"
                                             "benchmark-init.el")
-                                        '("benchmark-init-modes.el"
+                                        '("pel-user-init.el"
+                                          "benchmark-init-modes.el"
                                           "benchmark-init.el"
                                           "hierarchy.el"))
   "List of utils file names that should not be removed by `pel-cleanup'.
 
 If you manually install Emacs Lisp files in your utils directory, you should
-put their names in this list to prevent their removal by `pel-cleanup'."
+put their names in this list to prevent their removal by `pel-cleanup'.
+The file pel-user-init.el may be used to store your own logic; that file
+is never removed."
   :group 'pel-package-use
   :type '(repeat string))
 
@@ -5757,7 +5761,7 @@ Examples of valid directory path names:
                                                (const :tag "Scheme - Gambit" gambit)
                                                (const :tag "Scheme - Gerbil" gerbil)
                                                (const :tag "Scheme - Scsh" scsh)
-                                               ;; (const :tag "Schen" schen)  ; FUTURE
+                                               ;; (const :tag "Shen" shen)  ; FUTURE
                                                (const :tag "Seed7" seed7)
                                                (const :tag "Smalltalk" smalltalk)
                                                (const :tag "Swift" swift)
