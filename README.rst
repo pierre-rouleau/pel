@@ -59,6 +59,9 @@ PEL -- Pragmatic Emacs Leverage
   `😃`_
 - And *also* want to `run Emacs daemon(s) with text and graphics clients`_ on
   Linux and macOS like a pro? `🥳`_
+- And you want or need to write your own elisp code to use other packages and
+  add extra key bindings or logic? Place that logic inside pel-user-init file
+  and enjoy! `🤩`_
 
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
@@ -515,6 +518,20 @@ Again any feedback is welcome. Thanks!
     activate dual independent customization.  It will create the required
     customization files.
 
+
+➣ PEL User Init for your own Elisp code
+---------------------------------------
+
+You can also **add your own Emacs Lisp code** in the ``pel-user-init.el`` file stored
+in PEL utils directory and use your favourite technology to install any package you
+need, create extra key bindings or add new code logic.
+See the coding instructions inside section 8 of the
+`PEL compatible Emacs init.el`_ (also labelled as ``OPTION F``).
+
+If PEL support for a package or a language conflicts with your logic simply
+don't enable the PEL user option to activate that package or language support
+and supply your own logic in the pel-user-init.el file.
+
 ➣ PEL Package Integration and Enhancements
 ------------------------------------------
 
@@ -857,6 +874,7 @@ Notes
 .. _PEL Key Maps PDF:   https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-pel-key-maps.pdf
 .. _🤔: `➣ Extends Emacs Documentation`_
 .. _🥳: doc/emacs-daemon.rst.txt
+.. _🤩: `➣ PEL User Init for your own Elisp code`_
 .. _➢Index PDF:
 .. _PEL Topic Index PDF:
 .. _PEL Index PDF:                   https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index.pdf
