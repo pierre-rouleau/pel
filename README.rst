@@ -34,7 +34,7 @@ PEL -- Pragmatic Emacs Leverage
    :alt: PEL Hydras
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
-.. image:: https://img.shields.io/badge/PDF_Files-223-blue
+.. image:: https://img.shields.io/badge/PDF_Files-222-blue
    :alt: PDF Files
    :target: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index.pdf
 
@@ -206,12 +206,13 @@ Essentially PEL extends plain vanilla Emacs and provides:
   - Also see the document titled `Using tree-sitter with Emacs and PEL`_ which
     describes how to setup your environment to use the tree-sitter based modes,
 
-- **223 Extensive Topic-organized Reference PDFs** The heavily hyperlinked
+- **222 Extensive Topic-organized Reference PDFs** The heavily hyperlinked
   tables serve as visual, topic-organized key-binding and feature reference
   sheets, an unusual approach in the Emacs ecosystem which complements Emacs'
   excellent documentation system.
 
   - Use the `PEL Index PDF`_ to quickly locate a topic.
+  - See the `PEL Index Section Overview PDF`_ which describes the index layout.
   - See the `Tramp PDF`_ to learn how to use and troubleshoot it.
   - See the `Mode Line PDF`_ to see the command that describes Emacs cryptic
     mode line process and buffer type.
@@ -572,7 +573,7 @@ packages, etc.
 PEL PDF Tables
 ~~~~~~~~~~~~~~
 
-- PEL provides **223** `topic oriented PDF tables`_ [#doc]_ each heavily hyperlinked
+- PEL provides **222** `topic oriented PDF tables`_ [#doc]_ each heavily hyperlinked
   to each other and to public resources.  The top-level `PEL Index PDF`_  is a
   table listing the table for each Emacs feature, major and minor mode.
   Each table attempts to provide quickly accessible
@@ -858,7 +859,8 @@ Notes
 .. _🥳: doc/emacs-daemon.rst.txt
 .. _➢Index PDF:
 .. _PEL Topic Index PDF:
-.. _PEL Index PDF:      https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index.pdf
+.. _PEL Index PDF:                   https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index.pdf
+.. _PEL Index Section Overview PDF:  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index-sections.pdf
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
 .. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File
