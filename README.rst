@@ -1007,7 +1007,7 @@ Notes
 .. _Tramp PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/tramp.pdf
 .. _Mode Line PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-line.pdf
 .. _control logic: https://github.com/pierre-rouleau/pel/blob/master/pel_keys.el
-.. _Comparing PEL configuration logic to DOOM and Spacemacs: doc/comparing-pel-to-others.rst.html
+.. _Comparing PEL configuration logic to DOOM and Spacemacs: doc/comparing-pel-to-others.rst.txt
 
 ..
    -----------------------------------------------------------------------------
