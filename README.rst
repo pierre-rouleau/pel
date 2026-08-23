@@ -236,6 +236,9 @@ Essentially PEL extends plain vanilla Emacs 26.3 and later and it provides:
     provides several useful commands and setup shells for system that you can
     access with Emacs Tramp.
 
+See `Comparing PEL configuration logic to DOOM and Spacemacs`_ for a
+comparison of PEL to DOOM and Spacemacs.
+
 PEL keeps evolving.  I use it to  maintain my Emacs configuration on
 several macOS and Linux systems and also under Windows (whenever I have to use
 it).
@@ -1004,6 +1007,7 @@ Notes
 .. _Tramp PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/tramp.pdf
 .. _Mode Line PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-line.pdf
 .. _control logic: https://github.com/pierre-rouleau/pel/blob/master/pel_keys.el
+.. _Comparing PEL configuration logic to DOOM and Spacemacs: doc/comparing-pel-to-others.rst.html
 
 ..
    -----------------------------------------------------------------------------

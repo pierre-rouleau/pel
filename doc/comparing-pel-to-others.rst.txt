@@ -1,0 +1,108 @@
+=======================================================
+Comparing PEL configuration logic to DOOM and Spacemacs
+=======================================================
+
+:Home URL: https://github.com/pierre-rouleau/pel
+:Project: `PEL -- Pragmatic Emacs Leverage`_
+:Created:  Saturday, August 22 2026.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2026-08-22 23:02:38, by Pierre Rouleau.
+:Copyright: © 2026, Pierre Rouleau
+
+
+.. contents::  **Table of Contents**
+.. sectnum::
+
+.. ---------------------------------------------------------------------------
+
+Comparing PEL to DOOM and Spacemacs
+===================================
+
+PEL does provide configuration logic to integrate packages and prevent clashes,
+but it implements it using a completely different philosophy than Doom Emacs
+or Spacemacs.
+
+While Doom and Spacemacs use a "code-first, modular" architecture
+(Modules/Layers), PEL uses a "data-driven, menu-first" architecture driven
+entirely by Emacs’ built-in Customization UI and PEL internal logic that aims at
+simplifying and integrating several packages.
+
+The technical differences in how PEL handles configuration logic compared to
+Doom and Spacemacs highlight these contrasting approaches:
+
+How PEL Handles Configuration Logic
+-----------------------------------
+
+Instead of forcing
+you to write Emacs Lisp code (init.el), PEL pre-packages the configuration
+logic for hundreds of popular packages (like Projectile, Treemacs, Magit, and
+language modes) inside its own source files. You turn them on and tweak them
+via visual customization menus:
+
+- **No Code Configuration**: Rather than using ``use-package`` blocks,
+  you use ``M-x customize-group``. Turning on a variable like ``pel-use-projectile``
+  fires off internal PEL configuration logic that automatically hooks it into
+  your Emacs lifecycle.
+- **The "Zero Bankruptcy" Design**: In Doom or Spacemacs,
+  adding a lot of code to your private configuration files risks formatting
+  errors that can crash your startup. Because PEL abstracts the configuration
+  logic into its own tested core, your personal configuration stays minimal,
+  risk-free, and clean.
+- **Dual-Environment Tuning**: PEL contains specialized logic
+  that detects whether Emacs is running in a graphical GUI or a terminal
+  window. It dynamically disables features that don't make sense in a terminal
+  (like graphical icons or heavy font rendering) to prevent terminal lag.
+
+How PEL Resolves Package Logic Clashes
+--------------------------------------
+
+Doom and Spacemacs resolve clashes by completely overriding default package
+behaviors using opinionated macros.  PEL resolves clashes using keybinding
+isolation and user-controlled toggle switches:
+
+- **Keybinding Reservation**: Package clashes often happen when two extensions
+  fight over the same shortcut.  PEL solves this by cleanly mapping its
+  integration logic to specific function keys (like ``<f5>`` and ``<f8>``) and
+  prefixes (like ``<f6>``, ``<f7>``, ``<f11>`` and ``<f12>``) that standard
+  Emacs and third-party packages almost never touch.
+
+- **Explicit Toggle States**: If you use a package like Projectile, PEL
+  provides user-option customization variables like ``pel-use-projectile``
+  with options like ``use-from-start`` or manually activated switches.  This
+  stops packages from step-invading each other’s buffers unless you explicitly
+  allow the logic hook.
+
+- **The pel-cleanup System**: If you turn off a package in your settings, its
+  lingering code can still pollute Emacs’ runtime memory or clash with active
+  utilities.  PEL includes a custom ``pel-cleanup`` command that physically
+  unlinks and moves deactivated packages out of active directory sight into an
+  "attic" folder to guarantee zero logical spillover.
+
+
+The Core Trade-off
+------------------
+
+= =============== ==================================================== ========================================================================
+. Feature         Doom/Spacemacs                                       Emacs PEL
+= =============== ==================================================== ========================================================================
+. Logic Driver    User-edited code files (init.el, packages.el)        Uses Text/Graphical Customization Menus (``M-x customize``)
+. Philosophy      **Opinionated Integration**:                         **Pragmatic Enhancement**:
+                  Forces packages to look and behave like a            Keeps the look of "Vanilla" Emacs but builds highly
+                  unified IDE out of the box.                          organized key and file logic behind the scenes.
+. Package Clashes Resolved automatically by framework maintainers      Resolved by clean structural key separation and user variable choices.
+                  rewriting code hooks.
+= =============== ==================================================== ========================================================================
+
+.. ---------------------------------------------------------------------------
+.. links:
+
+.. _PEL -- Pragmatic Emacs Leverage: https://github.com/pierre-rouleau/pel#readme
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
