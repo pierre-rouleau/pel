@@ -10,6 +10,8 @@ PEL -- Pragmatic Emacs Leverage
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel/blob/master/NEWS
 
+.. image:: https://img.shields.io/badge/Emacs%E2%89%A5%2026.3-green
+
 .. image:: https://img.shields.io/badge/Fast-startup-green
    :alt: Fast Startup
    :target: https://github.com/pierre-rouleau/pel?tab=readme-ov-file#-emacs-fast-startup
@@ -75,7 +77,7 @@ See the coding instructions inside section 8 of the
 `PEL compatible Emacs init.el`_ (also labelled as ``OPTION F``).
 
 
-Essentially PEL extends plain vanilla Emacs and provides:
+Essentially PEL extends plain vanilla Emacs 26.3 and later and it provides:
 
 - **Unified, Cohesive Command Interface**: with 729 additional key-bound
   commands, several of which provide glue logic between features to increase
@@ -269,6 +271,9 @@ Again any feedback is welcome. Thanks!
 ➣ Emacs Fast Startup
 --------------------
 
+PEL can achieve a sub 0.1 seconds Emacs init-time by using its unique
+fast-startup mode, a specialized building and directory bundling strategy.
+That works on all versions PEL supports: Emacs 26.3 and later.
 ..
   On a 2023 Apple Silicon Mac Studio computer, PEL starts Emacs with **303 elpa packages and 108 other
   single file packages in 0.16 seconds** and **sub 0.1 seconds** on Linux!
