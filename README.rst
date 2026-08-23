@@ -11,6 +11,8 @@ PEL -- Pragmatic Emacs Leverage
    :target: https://github.com/pierre-rouleau/pel/blob/master/NEWS
 
 .. image:: https://img.shields.io/badge/Emacs%E2%89%A5%2026.3-green
+   :alt: Emacs ≥ 26.3
+   :target: `➣ Supports Emacs 26.3 and later`_
 
 .. image:: https://img.shields.io/badge/Fast-startup-green
    :alt: Fast Startup
@@ -247,6 +249,13 @@ features don't hesitate to ask.  And if you like what you see why not give
 this project a star to encourage me further?
 
 Again any feedback is welcome. Thanks!
+
+➣ Supports Emacs 26.3 and later
+-------------------------------
+
+PEL supports Emacs 26.3 and later.  The fast startup mode is available in
+Emacs 26.3 and later, even though Emacs quick-startup is not available until
+Emacs 27.
 
 ➣ Supports Launching Emacs from GUI and Shell
 ---------------------------------------------
