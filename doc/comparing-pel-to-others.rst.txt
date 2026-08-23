@@ -85,7 +85,11 @@ The Core Trade-off
 = =============== ==================================================== ========================================================================
 . Feature         Doom/Spacemacs                                       Emacs PEL
 = =============== ==================================================== ========================================================================
-. Logic Driver    User-edited code files (init.el, packages.el)        Uses Text/Graphical Customization Menus (``M-x customize``)
+. Logic Driver    User-edited code files (init.el, packages.el)        Uses Text/Graphical Customization Menus (``M-x customize``):
+
+                                                                       All configuration is done through customization, including the selection of packages to install.
+                                                                       Users can also add their own Emacs Lisp code inside the ``utils/ pel-user-init.el`` file, but
+                                                                       it is not required and often not done.
 . Philosophy      **Opinionated Integration**:                         **Pragmatic Enhancement**:
                   Forces packages to look and behave like a            Keeps the look of "Vanilla" Emacs but builds highly
                   unified IDE out of the box.                          organized key and file logic behind the scenes.
