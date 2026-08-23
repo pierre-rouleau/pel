@@ -17,6 +17,7 @@ These PDF files are stored in the Git repository in the `doc/pdf directory`_.
 The complete list of PEL PDF files is:
 
 #. `-index.pdf`_
+#. `-index-sections.pdf`_
 #. `-CRiSP-Emacs.pdf`_
 #. `-contribute-to-emacs.pdf`_
 #. `-emacs-user-options.pdf`_
@@ -174,9 +175,9 @@ The complete list of PEL PDF files is:
 #. `pl-ruby.pdf`_
 #. `pl-rust.pdf`_
 #. `pl-scheme.pdf`_
-#. `pl-schen.pdf`_
 #. `pl-seed7.pdf`_
 #. `pl-sh.pdf`_
+#. `pl-shen.pdf`_
 #. `pl-smalltalk.pdf`_
 #. `pl-swift.pdf`_
 #. `pl-tcl.pdf`_
@@ -247,6 +248,7 @@ The complete list of PEL PDF files is:
 .. _PEL Quick Access Topics Index PDF:
 .. _PEL Index PDF:
 .. _-index.pdf:                                            pel-table-based-documentation1/-index.pdf
+.. _-index-sections.pdf:                                   pel-table-based-documentation1/-index-sections.pdf
 .. _-CRiSP-Emacs.pdf:                                      pel-table-based-documentation1/-CRiSP-Emacs.pdf
 .. _-contribute-to-emacs.pdf:                              pel-table-based-documentation1/-contribute-to-emacs.pdf
 .. _-emacs-user-options.pdf:                               pel-table-based-documentation1/-emacs-user-options.pdf
@@ -397,9 +399,9 @@ The complete list of PEL PDF files is:
 .. _pl-ruby.pdf:                                           pel-table-based-documentation1/pl-ruby.pdf
 .. _pl-rust.pdf:                                           pel-table-based-documentation1/pl-rust.pdf
 .. _pl-scheme.pdf:                                         pel-table-based-documentation1/pl-scheme.pdf
-.. _pl-schen.pdf:                                          pel-table-based-documentation1/pl-schen.pdf
 .. _pl-seed7.pdf:                                          pel-table-based-documentation1/pl-seed7.pdf
 .. _pl-sh.pdf:                                             pel-table-based-documentation1/pl-sh.pdf
+.. _pl-shen.pdf:                                           pel-table-based-documentation1/pl-shen.pdf
 .. _pl-smalltalk.pdf:                                      pel-table-based-documentation1/pl-smalltalk.pdf
 .. _pl-swift.pdf:                                          pel-table-based-documentation1/pl-swift.pdf
 .. _pl-tcl.pdf:                                            pel-table-based-documentation1/pl-tcl.pdf
