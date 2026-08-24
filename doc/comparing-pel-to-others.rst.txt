@@ -15,8 +15,8 @@ Comparing PEL configuration logic to DOOM and Spacemacs
 
 .. ---------------------------------------------------------------------------
 
-Comparing PEL to DOOM and Spacemacs
-===================================
+Core: Configuration and Package Management
+==========================================
 
 PEL does provide configuration logic to integrate packages and prevent clashes,
 but it implements it using a completely different philosophy than Doom Emacs
@@ -39,10 +39,14 @@ logic for hundreds of popular packages (like Projectile, Treemacs, Magit, and
 language modes) inside its own source files. You turn them on and tweak them
 via visual customization menus:
 
-- **No Code Configuration**: Rather than using ``use-package`` blocks,
-  you use ``M-x customize-group``. Turning on a variable like ``pel-use-projectile``
-  fires off internal PEL configuration logic that automatically hooks it into
-  your Emacs lifecycle.
+- **No Code Configuration**: Rather than using ``use-package`` blocks, you use
+  ``M-x customize-group``. Turning on a customization user-option variable
+  like ``pel-use-projectile`` fires off internal PEL configuration logic that
+  automatically hooks it into your Emacs lifecycle.  You identify packages you
+  need, behaviour you need by setting appropriate customization user-option
+  variables.  If you do need to use packages PEL does not yet support, or write
+  special logic, you can write it inside a dedicated file; the `` utils/pel-user-init.el``.
+
 - **The "Zero Bankruptcy" Design**: In Doom or Spacemacs,
   adding a lot of code to your private configuration files risks formatting
   errors that can crash your startup. Because PEL abstracts the configuration
@@ -83,13 +87,15 @@ The Core Trade-off
 ------------------
 
 = =============== ==================================================== ========================================================================
-. Feature         Doom/Spacemacs                                       Emacs PEL
+. Feature         Doom/Spacemacs                                       PEL
 = =============== ==================================================== ========================================================================
-. Logic Driver    User-edited code files (init.el, packages.el)        Uses Text/Graphical Customization Menus (``M-x customize``):
+. Logic Driver    User-edited code files (init.el, packages.el)        Controlled by `Emacs customization`_.
+                                                                       PEL provides a large set of customization user-option variables that activate
+                                                                       packages and control their behaviour and control behaviour of Emacs in general.
+                                                                       PEL provides several commands with bound keys that help manage customization.
+                                                                       Supports 2 sets of customization: one for Emacs running in Terminal mode and when it runs in Graphics mode.
+                                                                       Also supports user-edited ``util/pel-user-init.el file`` for extra user-specific logic.
 
-                                                                       All configuration is done through customization, including the selection of packages to install.
-                                                                       Users can also add their own Emacs Lisp code inside the ``utils/ pel-user-init.el`` file, but
-                                                                       it is not required and often not done.
 . Philosophy      **Opinionated Integration**:                         **Pragmatic Enhancement**:
                   Forces packages to look and behave like a            Keeps the look of "Vanilla" Emacs but builds highly
                   unified IDE out of the box.                          organized key and file logic behind the scenes.
@@ -98,9 +104,177 @@ The Core Trade-off
 = =============== ==================================================== ========================================================================
 
 .. ---------------------------------------------------------------------------
+
+Keybindings and its discoverability
+===================================
+
+DOOM Emacs - Speed-Centric Vim Leader Focus
+-------------------------------------------
+
+Doom Emacs is built around Evil-mode, a system that transforms Emacs into a
+hyper-fast Vim clone. You navigate, delete, and type text using Vim's distinct
+"Normal", "Insert", and "Visual" modes.
+
+- **The Mechanism**: Doom relies on a Leader Key setup, which defaults to the
+  Spacebar (SPC) when you are in Vim's Normal mode.
+
+- **How it looks**: To save a file, you tap SPC f s (Space → File → Save). To
+  split a window, you tap SPC w v (Space → Window → Vertical Split).
+
+- **The Benefit**: Your fingers rarely leave the home row of the
+  keyboard. Doom's keybindings are highly optimized for speed; the maintainers
+  aggressively strip out unnecessary menu layers to make sure common
+  programming tasks require the fewest keystrokes possible.
+
+- **The Tradeoff**: When using an external package with Doom, Doom often has
+  to remap its key bindings and you can't rely on the external package
+  documentation; you must look at Doom-specific shortcut instead.
+  This is often confusing for new users.
+
+
+
+Spacemacs: Mnemonic-First Discoverability Focus
+-----------------------------------------------
+
+Spacemacs pioneered the Spacebar-as-a-leader philosophy. It is designed to be
+highly mnemonic (easy to remember based on words) and visually discoverable
+for beginners.
+
+- **The Mechanism**: Like Doom, it uses SPC as a leader key. However,
+  Spacemacs maps every command to a strict semantic layout based on the first
+  letter of English words.
+
+- **How it looks**: Pressing SPC opens a clean visual menu at the bottom of
+  your screen using the which-key package.
+
+  - Tap b for Buffers → a new menu opens listing buffer commands.
+  - Tap p for Projects → a new menu opens listing project commands.
+
+ - **The Benefit**: You almost never have to memorize shortcuts. As long as
+   you can remember the first letter of the concept you want (e.g., g for Git,
+   t for Toggles, m for Major-mode), you can visually walk through the menus
+   to find your command.
+
+- **The Tradeoff**: When using an external package with Spacemacs, Spacemacs
+  often has to remap its key bindings and you can't rely on the external
+  package documentation; you must look at Doom-specific shortcut instead.
+  This is often confusing for new users.
+
+
+PEL: Plain Vanilla Emacs on Steroids
+------------------------------------
+
+- **The Mechanism**: PEL uses plain vanilla Emacs and adds key binding commands directly to your
+  keyboard's Function Keys (<f2> through <f12>).
+
+- **How it looks**:
+
+  - To repeat last command you can use Emacs default ``C-x z``
+    mapping to repeat but also ``<f5>``.
+  - To toggle the current buffer from read-only to writable you can use Emacs
+    default ``C-x C-q`` but also ``<f11> b r``.  The ``<f11> b`` is a prefix
+    to buffer commands.  The ``<f11> b <f1>`` opens the `⅀ Buffers PEL help
+    file`_ that documents all PEL supported commands related to buffer
+    management including Emacs native commands, commands provided by extra
+    packages and commands provided by PEL.
+  - To create a new frame you can use Emacs default ``C-x 5 2`` command but
+    also ``<f11> F 2``.  The ``<f11> F`` is a prefix to all frame commands and
+    ``<f11> F <f1>`` opens the `⅀ Frames PDF help file`_ either locally or in
+    your web browser.  toggle a programming minor mode, you hit <f6>. To access
+    language-specific features, you use <f12>.
+  - To program in C, activate the ``pel-use-c`` user option customized
+    variable. In C buffers - the ``<f12>`` prefix provides access to several C
+    specific commands:
+
+      - ``<f12> <f1>`` opens the `𝕻𝔩 - C PDF help file`_.
+      - ``<f12> <f2>`` opens the PEL C configuration customization buffer.
+      - ``<f12> <f3>`` opens the Emacs C configuration customization buffer.
+      - ``<f12> # <f3>`` opens the Emacs C pre-processor configuration customization buffer.
+
+  - To program in C++, activate the ``pel-use-c++`` user option customized
+    variable. In C++ buffers the ``<f12>`` prefix provides access to several C++
+    specific commands and ``<f12> <f1>`` opens the `𝕻𝔩 - C++ PDF help file`_
+    and the other (like for C).
+  - The ``<f12>`` key bindings is available in other major modes supported by
+    PEL.  In those, the ``<f11> ? \`` key opens a special information buffer
+    that shows how the major mode is controlled, lists all active minor modes
+    and provides access for the customization of the major mode.  This is also
+    available via the ``<f12> ?`` key binding for some major modes like Ada,
+    Dart, Elixir, Gleam, Go and several others.
+  - PEL also provides several pre-defined key chords; they are listed in the
+    `⅀ Key-Chords PEL PDF help file`_.
+  - PEL activates the which-key package which shows all available keys if you
+    pause after hitting the prefix key.
+  - PEL does not remap the keys of external packages. It documents them.
+
+- **The Benefit**: PEL is compatible with plain vanilla Emacs key binding and
+  key bindings created by external packages. It completely avoids keybinding
+  clashes because standard Emacs packages rarely use high function keys.  You
+  do not need to change how you type or edit text; you just use function keys
+  as quick execution triggers.
+
+  - Also, for discoverability:
+
+    - Key prefixes under function keys are mnemonics and organized to be easily
+      identified with major mode commands under the ``<f12>`` made common or
+      highly similar across major modes for convenience.
+    - Topic-oriented documentation is easily accessible via the ``<f1>`` key
+      under the various ``<f11>`` prefixes and major mode specific ``<f12> <f1>``
+      prefix.
+
+- **Upstream Intactness**: Because PEL maps its custom discovery trees
+  exclusively to function keys, it leaves standard Emacs key spaces untouched.
+  If a third-party package's manual tells you to use an Emacs native
+  combination (like ``C-c C-c`` to submit a code block or ``M-.`` to jump to a
+  definition), those exact shortcuts still work natively inside PEL.
+
+PEL adds function keys as prefixes for the global map and the major-mode
+maps. The `PEL ⌨️Keys - Fn PDF`_ shows how the function keys are used.  PEL
+uses the following function keys as key prefixes:
+
+=========== ================ =====================================================================================
+Key         Emacs key prefix Purpose
+=========== ================ =====================================================================================
+``<f6>``    ``pel:f6``       Maps general purpose and navigational commands not available elsewhere.
+``<S-f6>``  ``pel:f6``       Same keys as above.
+``<f7>``    for `hydras`_    Prefix key to access the main global map key `hydras`_ `supported by PEL`_ when the ``pel-use-hydra`` user option is activated.
+``<f11>``   ``pel:``         The main PEL key prefix to some commands and several other sub-prefixes like ``<f11> b>`` for buffer operations, ``<f11> w`` for windows and ``<f11> F`` for frame.
+``<M-f11>`` ``pel2:``        Secondary PEL key prefix to other commands and sub-prefixes.
+``<f12>``   major mode       Prefix key available in PEL supported major modes to mode specific commands.
+``<M-f12>`` major mode       Same as above.
+=========== ================ =====================================================================================
+
+
+Comparison of the Key Discovery Flow
+------------------------------------
+
+If you lose track of your shortcuts, your path to discovery across these tools looks like this:
+
+- **In Doom**: You pause after pressing ``SPC`` and look at a highly
+  optimized, modified Vim-centric menu.
+- **In Spacemacs**: You pause after pressing ``SPC`` and look at a heavily
+  structured, word-associated mnemonic menu tree.
+- **In PEL**: You pause after pressing any prefix (PEL prefixes like ``<f6>``,
+  ``<f7>``, ``<f11>`` or ``<f12>`` or Emacs prefixes like ``C-x`` or ``C-c``)
+  to access Emacs or PEL's unique features, while continuing to use native
+  Emacs key chords for standard text editing and package actions.
+  In PEL all plain vanilla Emacs key mappings and external key mappings are available
+  and are fully documented.
+
+
+.. ---------------------------------------------------------------------------
 .. links:
 
 .. _PEL -- Pragmatic Emacs Leverage: https://github.com/pierre-rouleau/pel#readme
+.. _Emacs customization:             https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/customize.pdf
+.. _PEL ⌨️Keys - Fn PDF:              https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/keys-fn.pdf
+.. _hydras:                          https://github.com/abo-abo/hydra
+.. _supported by PEL:                https://github.com/pierre-rouleau/pel#pel-convenience-commands
+.. _⅀ Frames PDF help file:          https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/frames.pdf
+.. _⅀ Buffers PEL help file:         https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/buffers.pdf
+.. _𝕻𝔩 - C PDF help file:            https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-c.pdf
+.. _𝕻𝔩 - C++ PDF help file:          https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-c++.pdf
+.. _⅀ Key-Chords PEL PDF help file:  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/key-chords.pdf
 
 .. ---------------------------------------------------------------------------
 
