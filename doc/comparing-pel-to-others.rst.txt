@@ -66,7 +66,8 @@ Overview
     - **Structure and Format**:
 
       - **Topic-Oriented**: Split into distinct cheat sheets and guides, like the
-        `PEL Topics Index`_ or individual language and configuration files.
+        `PEL Topics Index`_ or individual language (like the `𝕻𝔩 - C++ PDF`_ or the `𝕻𝔩 - Erlang PDF`_)
+        and configuration files (like `⅀ Buffers`_, `⅀ Navigation`_, `⅀ Scrolling`_  and `⅀ Windows`_ PDFs).
       - **Visual Quickcards**: Built as concise reference cards that map out key
         bindings, features, and customization options.
       - **Dual Access**: Designed to be read locally or rendered directly inside
@@ -387,14 +388,20 @@ If you lose track of your shortcuts, your path to discovery across these tools l
 .. _hydras:                          https://github.com/abo-abo/hydra
 .. _supported by PEL:                https://github.com/pierre-rouleau/pel#pel-convenience-commands
 .. _⅀ Frames PDF help file:          https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/frames.pdf
+.. _⅀ Buffers:
 .. _⅀ Buffers PEL help file:         https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/buffers.pdf
 .. _𝕻𝔩 - C PDF help file:            https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-c.pdf
+.. _𝕻𝔩 - C++ PDF:
 .. _𝕻𝔩 - C++ PDF help file:          https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-c++.pdf
 .. _⅀ Key-Chords PEL PDF help file:  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/key-chords.pdf
 .. _GNU Screen:                      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/gnu-screen.pdf
 .. _fast startup mode:               https://github.com/pierre-rouleau/pel?tab=readme-ov-file#-emacs-fast-startup
 .. _PEL Topics Index:                https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index.pdf
 .. _consistent icon and legend system: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-legend.pdf
+.. _𝕻𝔩 - Erlang PDF:                 https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-erlang.pdf
+.. _⅀ Navigation:                    https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/navigation.pdf
+.. _⅀ Scrolling:                     https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/scrolling.pdf
+.. _⅀ Windows:                       https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/windows.pdf
 
 .. ---------------------------------------------------------------------------
 
