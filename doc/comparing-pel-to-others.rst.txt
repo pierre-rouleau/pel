@@ -70,8 +70,8 @@ Overview
         and configuration files (like `⅀ Buffers`_, `⅀ Navigation`_, `⅀ Scrolling`_  and `⅀ Windows`_ PDFs).
       - **Visual Quickcards**: Built as concise reference cards that map out key
         bindings, features, and customization options.
-      - **Dual Access**: Designed to be read locally or rendered directly inside
-        web browsers and local PDF-compatible viewers.
+      - **Dual Access**: Designed to be read locally with local PDF-compatible viewers
+        or rendered directly inside web browsers via simple key-bound commands.
 
     - **Key Characteristics**
 
