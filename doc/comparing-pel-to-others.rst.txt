@@ -228,6 +228,21 @@ PEL: Plain Vanilla Emacs on Steroids
   combination (like ``C-c C-c`` to submit a code block or ``M-.`` to jump to a
   definition), those exact shortcuts still work natively inside PEL.
 
+- **Key Clashing Avoidance and Terminal Support**: In terminal environments, a
+  massive point of friction for Emacs users is key clashing (for example, GNU
+  Screen defaults to using ``C-a`` to control windows, which completely destroys
+  Emacs' core ``C-a`` shortcut to move to the beginning of a line).
+
+  - To solve this, PEL includes pre-configured dotfiles for terminal managers
+    like GNU Screen.  PEL's configuration instructions state: standard Emacs
+    does not use ``C-^`` globally or as a prefix.  PEL explicitly reserves and
+    avoids binding ``C-^`` inside its Emacs architecture to guarantee it stays
+    vacant.  It uses that empty space to remap GNU Screen's terminal control
+    prefix away from ``C-a`` and over to ``C-^``. This allows you to manage
+    terminal multiplexer split windows using ``C-^`` without ever breaking a
+    single native or PEL-specific Emacs keybinding.
+
+
 PEL adds function keys as prefixes for the global map and the major-mode
 maps. The `PEL ⌨️Keys - Fn PDF`_ shows how the function keys are used.  PEL
 uses the following function keys as key prefixes:
@@ -243,6 +258,7 @@ Key         Emacs key prefix Purpose
 ``<f12>``   major mode       Prefix key available in PEL supported major modes to mode specific commands.
 ``<M-f12>`` major mode       Same as above.
 =========== ================ =====================================================================================
+
 
 
 Comparison of the Key Discovery Flow
