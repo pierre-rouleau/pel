@@ -30,7 +30,7 @@ Overview
   native ``~/.emacs.d/`` structure to provide optimized, out-of-the-box templates
   and utilities.
 
-  - Driven Entirely by Built-In Customization:
+  - **Driven Entirely by Built-In Customization**:
 
     Unlike other frameworks that require you to write complex Lisp macros or
     manage private configuration layers, PEL relies fundamentally on the native
@@ -42,7 +42,7 @@ Overview
     editing environment using standard visual UI toggles instead of writing
     code.
 
-  - "Vanilla-Friendly" Performance Wrapper:
+  - **"Vanilla-Friendly" Performance Wrapper**:
 
     Rather than stripping away Emacs' native package manager (package.el), PEL
     works with it.  It serves as a performance wrapper that intercepts
@@ -50,68 +50,70 @@ Overview
     lightweight utility library that forces vanilla Emacs to start up in under
     a second while retaining a 100% vanilla feel.
 
-  - With a Fast Emacs Process Startup Mode:
+  - **With a Fast Emacs Process Startup Mode**:
 
     PEL provides a `fast startup mode`_ that allows you to achieve fast startup speed
     with large number of external package by using a unique package bundling mechanism
     to get fast startup speed rarely achieved by other methods, including Doom.
 
-  - PEL provides a provides a unique and extensive set of topic-oriented PDF
+  - **With extensive set of highly cohesive and hyperlinked PDF cheat sheets**:
+
+    PEL provides a provides a unique and extensive set of topic-oriented PDF
     quickcards and manuals designed to help users learn commands, understand
     features, and navigate programming language support without writing raw
     Elisp code.
 
-    **Structure and Format**:
+    - **Structure and Format**:
 
-    - **Topic-Oriented**: Split into distinct cheat sheets and guides, like the
-      `PEL Topics Index`_ or individual language and configuration files.
-    - **Visual Quickcards**: Built as concise reference cards that map out key
-      bindings, features, and customization options.
-    - **Dual Access**: Designed to be read locally or rendered directly inside
-      web browsers and local PDF-compatible viewers.
+      - **Topic-Oriented**: Split into distinct cheat sheets and guides, like the
+        `PEL Topics Index`_ or individual language and configuration files.
+      - **Visual Quickcards**: Built as concise reference cards that map out key
+        bindings, features, and customization options.
+      - **Dual Access**: Designed to be read locally or rendered directly inside
+        web browsers and local PDF-compatible viewers.
 
-    **Key Characteristics**
+    - **Key Characteristics**
 
-    - **External Integration**:
-      Supplements Emacs's native Info documentation by offering portable visual
-      references for rapid external lookups.
-    - **Customization Focused**: Directly links
-      documented concepts to Emacs customization groups and user options.
-    - **Beginner Friendly**: Aims to lower the learning curve for new users by outlining
-      shortcuts and configurations cleanly.
-    - **Highly useful for seasoned Emacs users** with:
+      - **External Integration**:
+        Supplements Emacs's native Info documentation by offering portable visual
+        references for rapid external lookups.
+      - **Customization Focused**: Directly links
+        documented concepts to Emacs customization groups and user options.
+      - **Beginner Friendly**: Aims to lower the learning curve for new users by outlining
+        shortcuts and configurations cleanly.
+      - **Highly useful for seasoned Emacs users** with:
 
-      - **High-Density, Visual Cross-Referencing**:
+        - **High-Density, Visual Cross-Referencing**:
 
-        - **Compressed Information Layout**: The tables pack functions, signatures,
-          keybindings, and scopes into highly condensed, color-coded layouts.
-          This visual format is much faster to scan than scrolling through long,
-          text-heavy built-in ``M-x describe-mode`` or Info buffers.
-        - **Annotated Symbol Systems**: PEL uses a `consistent icon and legend
-          system`_ to immediately signal whether a command is global, specific to a
-          major mode, restricted to a minor mode, or dependent on a specific
-          environment (like graphical vs. terminal mode).
+          - **Compressed Information Layout**: The tables pack functions, signatures,
+            keybindings, and scopes into highly condensed, color-coded layouts.
+            This visual format is much faster to scan than scrolling through long,
+            text-heavy built-in ``M-x describe-mode`` or Info buffers.
+          - **Annotated Symbol Systems**: PEL uses a `consistent icon and legend
+            system`_ to immediately signal whether a command is global, specific to a
+            major mode, restricted to a minor mode, or dependent on a specific
+            environment (like graphical vs. terminal mode).
 
-       - **Multi-Package Configuration Discovery**:
+         - **Multi-Package Configuration Discovery**:
 
-         - **Pre-Mapped Package Interactions**:
-           Experienced users who want to add capabilities (e.g., setting up tree-sitter
-           grammars or advanced auto-completion) can look at the relevant PEL table to
-           see exactly how multiple external packages interact.
-         - **Customization Mapping**:
-           The documentation charts out exactly which Emacs customization groups
-           (defcustom options) modify specific package features, making it easier to
-           tweak an advanced setup without digging through source code.
+           - **Pre-Mapped Package Interactions**:
+             Experienced users who want to add capabilities (e.g., setting up tree-sitter
+             grammars or advanced auto-completion) can look at the relevant PEL table to
+             see exactly how multiple external packages interact.
+           - **Customization Mapping**:
+             The documentation charts out exactly which Emacs customization groups
+             (defcustom options) modify specific package features, making it easier to
+             tweak an advanced setup without digging through source code.
 
-       - **Dual-Screen Context Switching**:
+         - **Dual-Screen Context Switching**:
 
-         - **Uninterrupted Buffers**: Opening documentation in a browser or separate PDF
-           viewer lets users keep their Emacs window layout exactly how they like it.
-           They can reference multi-step workflows (like complex Git, grep, or terminal
-           emulator configurations) without splitting their active workspace.
-         - **Hyperlinked Ecosystem**: The tables feature deep hyperlinks pointing directly to
-           official Emacs manuals, external package repositories, and authoritative
-           articles, serving as a unified launchpad for deep technical research.
+           - **Uninterrupted Buffers**: Opening documentation in a browser or separate PDF
+             viewer lets users keep their Emacs window layout exactly how they like it.
+             They can reference multi-step workflows (like complex Git, grep, or terminal
+             emulator configurations) without splitting their active workspace.
+           - **Hyperlinked Ecosystem**: The tables feature deep hyperlinks pointing directly to
+             official Emacs manuals, external package repositories, and authoritative
+             articles, serving as a unified launchpad for deep technical research.
 
 Core: Configuration and Package Management
 ==========================================
