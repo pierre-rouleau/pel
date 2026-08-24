@@ -234,7 +234,7 @@ PEL: Plain Vanilla Emacs on Steroids
   Emacs' core ``C-a`` shortcut to move to the beginning of a line).
 
   - To solve this, PEL includes pre-configured dotfiles for terminal managers
-    like GNU Screen.  PEL's configuration instructions state: standard Emacs
+    like `GNU Screen`_.  PEL's configuration instructions state: standard Emacs
     does not use ``C-^`` globally or as a prefix.  PEL explicitly reserves and
     avoids binding ``C-^`` inside its Emacs architecture to guarantee it stays
     vacant.  It uses that empty space to remap GNU Screen's terminal control
@@ -291,6 +291,7 @@ If you lose track of your shortcuts, your path to discovery across these tools l
 .. _𝕻𝔩 - C PDF help file:            https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-c.pdf
 .. _𝕻𝔩 - C++ PDF help file:          https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-c++.pdf
 .. _⅀ Key-Chords PEL PDF help file:  https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/key-chords.pdf
+.. _GNU Screen:                      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/gnu-screen.pdf
 
 .. ---------------------------------------------------------------------------
 
