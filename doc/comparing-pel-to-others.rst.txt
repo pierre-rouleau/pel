@@ -94,26 +94,26 @@ Overview
             major mode, restricted to a minor mode, or dependent on a specific
             environment (like graphical vs. terminal mode).
 
-         - **Multi-Package Configuration Discovery**:
+        - **Multi-Package Configuration Discovery**:
 
-           - **Pre-Mapped Package Interactions**:
-             Experienced users who want to add capabilities (e.g., setting up tree-sitter
-             grammars or advanced auto-completion) can look at the relevant PEL table to
-             see exactly how multiple external packages interact.
-           - **Customization Mapping**:
-             The documentation charts out exactly which Emacs customization groups
-             (defcustom options) modify specific package features, making it easier to
-             tweak an advanced setup without digging through source code.
+          - **Pre-Mapped Package Interactions**:
+            Experienced users who want to add capabilities (e.g., setting up tree-sitter
+            grammars or advanced auto-completion) can look at the relevant PEL table to
+            see exactly how multiple external packages interact.
+          - **Customization Mapping**:
+            The documentation charts out exactly which Emacs customization groups
+            (defcustom options) modify specific package features, making it easier to
+            tweak an advanced setup without digging through source code.
 
-         - **Dual-Screen Context Switching**:
+        - **Dual-Screen Context Switching**:
 
-           - **Uninterrupted Buffers**: Opening documentation in a browser or separate PDF
-             viewer lets users keep their Emacs window layout exactly how they like it.
-             They can reference multi-step workflows (like complex Git, grep, or terminal
-             emulator configurations) without splitting their active workspace.
-           - **Hyperlinked Ecosystem**: The tables feature deep hyperlinks pointing directly to
-             official Emacs manuals, external package repositories, and authoritative
-             articles, serving as a unified launchpad for deep technical research.
+          - **Uninterrupted Buffers**: Opening documentation in a browser or separate PDF
+            viewer lets users keep their Emacs window layout exactly how they like it.
+            They can reference multi-step workflows (like complex Git, grep, or terminal
+            emulator configurations) without splitting their active workspace.
+          - **Hyperlinked Ecosystem**: The tables feature deep hyperlinks pointing directly to
+            official Emacs manuals, external package repositories, and authoritative
+            articles, serving as a unified launchpad for deep technical research.
 
 Core: Configuration and Package Management
 ==========================================
