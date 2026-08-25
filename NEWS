@@ -1,6 +1,7 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- New key bindings for org-mode: ~<f12> h e~ for *org-entities-help*.
 - The file ~/.emacs.d/utils/pel-user-init.el is used to store user's specific logic and is never removed by ``pel-cleanup``.
 - You can now write your own extra Emacs initialization code inside your own Emacs Lisp file identified by the
   PEL *pel-user-extra-code-feature* user-option.  PEL will load this file after loading itself.
@@ -89,7 +90,6 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 - New feature: *pel-modeline-describe*, bound to ~<f11> M-d ?~, opens a help-mode buffer and describes the meaning of the left-most portion
   of the modeline: the coding system, the input method, whether Emacs is a normal process or a client to a daemon (and the daemon name, client count), the line ending format and
   the buffer modification status.  It helps understand the cryptic information shown by Emacs which provides lots of information in a small area.
-
 - Improve startup speed by deferring more code to the moment a major mode feature is loaded.
 - Update programming language support:
   - Arc: fix the ~<f12>~ key settings.
@@ -123,7 +123,6 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
     - Now properly setup for Tree-Sitter based major-mode.
   - Verilog:
     - Now properly setup for Tree-Sitter based major-mode.
-
 - Add utility functions:
   - In pel--base.el:
     - *pel-insert-help-face* to insert text with the help face.
@@ -162,21 +161,9 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
     The *pel-clean-renamed-packages* function is called by pel-cleanup to preform the detection and cleanup.
     Removing old named packages when the package with the new name is present eliminate one type of warning that is issued by the *pel-setup-fast* command when activating the PEL fast start mode.
     The issue does not cause problem but the warning might be disturbing.
-- Improvement to the PEL Fast Startup mode:
-  - Fix: fast startup mode now works on Emacs 29 and later.
-  - Fix: the elpa directory identification used for dual setting (terminal and graphics) and fast startup in for graphics.
-  - Improve startup speed in normal mode and fast startup mode by using several techniques in the early-init.el file.  A copy of that
-    file is located inside the example/init directory.  The new techniques must currently be activated manually by setting the following defconst to t:
-    - *pel-early-init-support-gc-boost-p*
-    - *pel-early-init-suppress-file-name-handler-p*
-    - *pel-early-init-disable-ui-elements-p*
-  - Improve robustness of the transition by adding several checks for errors and unit test that validates the fast startup file created by PEL.
-  - PEL no longer copies the old ELPA bootstrap script elpa.el into the PEL bundle directory and no longer warns when finding more than one
-    package that includes that elpa.el file.  The elpa.el file is only needed on the installation of these package with a long history
-    (if needed at all) and those files are not needed when Emacs runs.  There's no need to warn users of the duplication since this is harmless.
-  - The *make stats* command now supports PEL fast startup mode ; it distinguishes between Emacs running in normal mode and fast startup mode
-    and adjusts accordingly.
-- Fixes:
+- *Fixes*:
+  - Fix: the ~<f12> <f1>~ key sequence typed from a =*vc-dir*= buffer now properly selects the appropriate PDF manual for the currently-use VC backend.
+  - Fix: the ~<f11> v <f1>~ key sequence now prompts for the VC backend to open the required VCS PDF manual.
   - Fix: detection of GUI Emacs launched from the OS, as opposed to being launched from a shell:
     - Add the *pel-is-os-launched-gui-p* utility function in pel--preocess that does the detection.
     - Use it inside pel_keys once allowing the addition of 'environment' variables specified by PEL customization in
@@ -217,6 +204,20 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
     was active.  It is now properly handled in the scope of Rust modes only.
   - Fix: PEL can now properly activate minor modes implemented by functions that take no arguments like `flyspell-prog-mode';
     it no longer calls these functions with an argument of value 1; it calls them without any argument.
+- Improvement to the PEL Fast Startup mode:
+  - Fix: fast startup mode now works on Emacs 29 and later.
+  - Fix: the elpa directory identification used for dual setting (terminal and graphics) and fast startup in for graphics.
+  - Improve startup speed in normal mode and fast startup mode by using several techniques in the early-init.el file.  A copy of that
+    file is located inside the example/init directory.  The new techniques must currently be activated manually by setting the following defconst to t:
+    - *pel-early-init-support-gc-boost-p*
+    - *pel-early-init-suppress-file-name-handler-p*
+    - *pel-early-init-disable-ui-elements-p*
+  - Improve robustness of the transition by adding several checks for errors and unit test that validates the fast startup file created by PEL.
+  - PEL no longer copies the old ELPA bootstrap script elpa.el into the PEL bundle directory and no longer warns when finding more than one
+    package that includes that elpa.el file.  The elpa.el file is only needed on the installation of these package with a long history
+    (if needed at all) and those files are not needed when Emacs runs.  There's no need to warn users of the duplication since this is harmless.
+  - The *make stats* command now supports PEL fast startup mode ; it distinguishes between Emacs running in normal mode and fast startup mode
+    and adjusts accordingly.
 - Add a new specialized linter tool, written in Emacs Lisp, that checks the validity of PEL major mode code support, the PEL function and command auto-loading control and several other PEL code constructions.
   PEL uses several interdependent Lisp macros that make code easier to write but also make it easy to miss something;
   the specialized linter checks various aspects of the code to ensure that all is fine.
@@ -1796,7 +1797,7 @@ PEL uses my fork of the project to eliminate most warnings.
   windows is currently activated.  The two commands are
   *pel-scroll-up-only-this* (bound to ~<f11> | <donw>~) and
   *pel-scroll-down-only-this* (bound to ~<f11> | <up>~).
-- New: better indention control with the **pel-<mode>-use-tab** and the
+- New: better indention control with the *pel-<mode>-use-tab* and the
   **pel-<mode>-tab-width* user-options for several major modes: adoc,
   graphviz-dot, plantuml, markdown org, yaml, javascript, haskell,
   hy, elixir, gleam, forth, julia, nim, tuareg (OCaml), python, rexx,
@@ -2421,8 +2422,8 @@ PEL uses my fork of the project to eliminate most warnings.
     current Erlang project and inside the Erlang root directory (the Erlang
     library).  PEL detects the location of the Erlang root directory with the
     provided erlang-root-dir Erlang script (see next).
-  - New: [[bin/erlang-root-dir][bin/erlang-root-dir]] Erlang script detects and returns Erlang’s root directory.
-  - Improved: [[bin/version-erl][bin/version-erl]] script longer prints SASL progress information when
+  - New: [[file:bin/erlang-root-dir][bin/erlang-root-dir]] Erlang script detects and returns Erlang’s root directory.
+  - Improved: [[file:bin/version-erl][bin/version-erl]] script longer prints SASL progress information when
     older versions of Erlang are used.
   - New: add support for ivy-erlang-complete external package when
     *pel-use-ivy-erlang-complete* user-option is turned on (t).
@@ -2515,11 +2516,11 @@ PEL uses my fork of the project to eliminate most warnings.
 - New: unified cross reference commands for Erlang.  The ~M-.~ ~M-,~ keys
   are bound to PEL commands that dispatch the cross reference command to find
   the definition of Erlang identifier at point and go back using the cross
-  reference back end currently active.   The **pel-erlang-xref-engine**
+  reference back end currently active.   The *pel-erlang-xref-engine*
   user-option identifies the cross reference back-end to use.  The user can
   change the cross reference engine back-end dynamically using the new
-  **pel-erlang-select-xref** command and see which one is active with the
-  **pel-erlang-show-xref** command.  These are bound to ~<M-f12> M-. M-.~
+  *pel-erlang-select-xref* command and see which one is active with the
+  *pel-erlang-show-xref* command.  These are bound to ~<M-f12> M-. M-.~
   and ~<M-f12> M-. M-?~ key sequence respectively.  PEL supports etags,
   dumb-jump, ggtags, ivy-erlang-complete, edts and erlang-ls back-ends.
 - New: Simplified installation. PEL now provides the init.el and the early-init.el file
@@ -2536,10 +2537,10 @@ PEL uses my fork of the project to eliminate most warnings.
   possibly setting one environment variable into your shell initialization
   script.
 - New: PEL now provides 2 operation modes: the normal Emacs mode of operation
-  and the new **fast-startup** setup.  In the fast-startup setup, Emacs init startup
+  and the new *fast-startup* setup.  In the fast-startup setup, Emacs init startup
   time is reduced further by bundling all single directory external packages
-  inside a single directory.  Use the **pel-setup-fast** command to activate
-  the fast startup setup.  Use the **pel-setup-normal** command to restore
+  inside a single directory.  Use the *pel-setup-fast* command to activate
+  the fast startup setup.  Use the *pel-setup-normal* command to restore
   Emacs standard environment.  Use the fast startup setup when you want to use
   a large number of external packages and want to reduce Emacs startup time
   more than what can be done otherwise.
@@ -2891,7 +2892,7 @@ PEL uses my fork of the project to eliminate most warnings.
     *pel-use-helpful* user-option is turned on.  Its commands are bound to the
     ~<f1> <f2>~ key prefix.
 - Update: *Hide/Show*:
-  - New: add support for the **origami-mode** code folding package, activated
+  - New: add support for the *origami-mode* code folding package, activated
     when the *pel-use-origami* is turned on (set to *t*) or indirectly when
     *pel-use-erlang-ls* is set. Provides key bindings which also include
     bindings for command that hide/show comments and docstrings.
@@ -3101,9 +3102,9 @@ PEL uses my fork of the project to eliminate most warnings.
       command can be selected by the PEL user options for each mode as well as
       commands that control the activation of the features dynamically in the
       current buffer.  The features include:
-    - Insertion of newline with or without indentation of the new inserted line,
-      extension of the comment, with or without alignment of comments,
-      assignments in the code block.
+      - Insertion of newline with or without indentation of the new inserted line,
+        extension of the comment, with or without alignment of comments,
+        assignments in the code block.
       - The selection of the underlying command used to control the line
         insertion defines its main behaviour: one of 3 different commands:
         c-context-line-break, newline or electric-indent-just-newline which
@@ -3112,7 +3113,7 @@ PEL uses my fork of the project to eliminate most warnings.
         is done by the PEL user options *pel-c-newline-mode*,
         *pel-c++-newline-mode* and *pel-d-newline-mode* for the respective major
         modes.  The behaviour can also be dynamically changed in the current
-        buffer by the new *pel-cc-change-newline-mode** command (bound to
+        buffer by the new *pel-cc-change-newline-mode* command (bound to
         ~<f12> M-RET~).
       - *pel-cc-newline* command also aligns comments
         and assignments in the above code block is controlled by the variable
@@ -3214,13 +3215,6 @@ PEL uses my fork of the project to eliminate most warnings.
       - New: ~<f12> D~ binding to new command *pel-add-dir-to-loadpath* which
         adds a directory to Emacs load-path.
       - New: key binding ~<f12> c a~ to *disassemble*.
-        *open-paren-in-column-0-is-defun-start*.  This controls the behaviour of
-        *beginning-of-defun* and *end-of-defun** functions: whether a paren in
-        the first column is always interpreted as a start of defun, even inside
-        strings.
-        - **Use this first implementation with care**: it prevents checkdoc from
-          completing its verification.
-          I am currently trying to fix this.
       - New: added support for *eros-mode* from the eros external package which
         provides overlay display of the result of evaluations done by
         *eval-last-sexp*:
