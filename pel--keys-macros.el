@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-08-25 16:02:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-08-25 16:42:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -745,15 +745,15 @@ stored inside the doc/pdf directory.")
     ([f11 ?t ?w]     "whitespaces"      nil                     whitespace)
     ([f11 ?u]        "undo-redo-repeat" pel-pkg-for-undo        ,pel--undo-groups)
     ;; when accessing VCS directly from <f11> v: prompt for the VCS
-    ([f11 ?v]        ,#'pel--vcs-manual? pel-pkg-for-vcs        (vc
-                                                                 vc-hg
-                                                                 vc-git
-                                                                 magit
-                                                                 monky))
+    ([f11 ?v]        pel--prompt4-vcs        pel-pkg-for-vcs        (vc
+                                                                vc-hg
+                                                                vc-git
+                                                                magit
+                                                                monky))
     ;; When accessing VCS from the vc-dir-mode buffer:
-    (,(kbd "<f11> SPC SPC v") ,#'pel--vc-mode-vcs-manual  pel-pkg-for-vcs   (vc
-                                                                            vc-hg
-                                                                            vc-git))
+    (,(kbd "<f11> SPC SPC v") pel--select-vcs  pel-pkg-for-vcs   (vc
+                                                             vc-hg
+                                                             vc-git))
     ([f11 ?w]        "windows"        pel-pkg-for-window  (windows
                                                            ace-window
                                                            ace-window-display
@@ -1082,14 +1082,18 @@ F6, F7, F8, F11, F12 or M-F12 prefix.\n\
              keyseq)
            pel--prefix-to-topic-alist)))
 
-(defun pel--kte-pdfs (table-entry)
+(defun pel--kte-pdfs (table-entry &optional at-define-time)
   "Return a list of partial names of PDF files in TABLE-ENTRY.
 Return strings: the partial names of PDF files for the TABLE-ENTRY.
-Return nil if there are none."
+Return nil if there are none.
+Note that this function can also be called at define time by the
+`define-pel-global-prefix' macro.  When it is called this way no external
+function is called because this executes at initialization time."
   (let ((elem (nth 1 table-entry)))
     (cond
      ((stringp elem)   (list elem))
-     ((functionp elem) (list (funcall elem)))
+     ((and (null at-define-time) (eq elem 'pel--prompt4-vcs)) (list (pel--vcs-manual?)))
+     ((and (null at-define-time) (eq elem 'pel--select-vcs))  (list (pel--vc-mode-vcs-manual)))
      (t elem))))
 
 (defun pel--kte-pel-groups (table-entry)
@@ -1834,7 +1838,7 @@ KEY sequence then create function bindings under the PREFIX
   customization group(s) in the entry."
   (let* ((keyseq   (eval key))          ; key is a kbd expression.
          (kte      (pel--get-kte keyseq))
-         (with-f1  (pel--kte-pdfs kte))
+         (with-f1  (pel--kte-pdfs kte 'dont-run))
          (with-f2  (pel--kte-pel-groups kte))
          (with-f3  (pel--kte-lib-groups kte))
          (code
