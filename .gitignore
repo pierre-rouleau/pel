@@ -6,6 +6,7 @@ pel-unpackage-init.el
 
 # internal development notes
 pel_doc.org
+pel-todo.org
 
 #internal private tools
 publish-*.sh
