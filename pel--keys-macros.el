@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-03 16:26:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-08-25 16:02:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -57,10 +57,12 @@
 (require 'pel--base)    ; use: `macroexp-file-name'
 (require 'pel--macros)  ; use: `pel-append-to'
 (require 'pel--options) ; use: `pel-use-call-graph', `pel-use-tree-sitter', ...
+(require 'pel-prompt)   ; use: `pel-select-from'
 (require 'seq)          ; use: `seq-concatenate', `seq-drop', `seq-subseq'
 (eval-when-compile
   (require 'cl-lib)     ; use: `cl-dolist', `cl-return'
   (require 'cl-macs))   ; use: `cl-eval-when'
+(require 'vc-dir)       ; use: `vs-dir-backend'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -368,6 +370,20 @@
   "List of groups for Zig.")
 
 
+(defun pel--vcs-manual? ()
+  "Prompt for the VCS manual to use: Git, Mercurial or Subversion.
+Return the manual PDF file name."
+  (pel-select-from "VCS" '((?g "Git" "vcs-git")
+                           (?m "Mercurial" "vcs-mercurial")
+                           (?s "Subversion" "vcs-subversion"))))
+
+(defun pel--vc-mode-vcs-manual ()
+  "Return the PDF file name of the VCS manual for the current VC mode."
+  (pcase vc-dir-backend
+    ('Git "vcs-git")
+    ('Hg "vcs-mercurial")
+    ('SVN "vcs-subversion")
+    (backend (error "Unsupported VC backend: %s" backend))))
 
 ;; TODO: add logic in the processing of that table to allow the first element
 ;;       of a row to be a list of key sequences.
@@ -728,14 +744,16 @@ stored inside the doc/pdf directory.")
     ([f11 ?t ?t]     "transpose"        nil)
     ([f11 ?t ?w]     "whitespaces"      nil                     whitespace)
     ([f11 ?u]        "undo-redo-repeat" pel-pkg-for-undo        ,pel--undo-groups)
-    ([f11 ?v]        "vcs-mercurial"    pel-pkg-for-vcs         (vc
+    ;; when accessing VCS directly from <f11> v: prompt for the VCS
+    ([f11 ?v]        ,#'pel--vcs-manual? pel-pkg-for-vcs        (vc
                                                                  vc-hg
                                                                  vc-git
                                                                  magit
                                                                  monky))
-    (,(kbd "<f11> SPC SPC v") "vcs-mercurial" pel-pkg-for-vcs   (vc
-                                                                 vc-hg
-                                                                 vc-git))
+    ;; When accessing VCS from the vc-dir-mode buffer:
+    (,(kbd "<f11> SPC SPC v") ,#'pel--vc-mode-vcs-manual  pel-pkg-for-vcs   (vc
+                                                                            vc-hg
+                                                                            vc-git))
     ([f11 ?w]        "windows"        pel-pkg-for-window  (windows
                                                            ace-window
                                                            ace-window-display
@@ -1043,6 +1061,8 @@ where f12 abbreviates the full f11 key sequence for the
 current major mode.
 Check the key sequences.  Expand the f12 key sequence into
 the full f11 key sequence.  Report invalid key sequence."
+  ;; For vc-dir: ([f11 32 32 118] "vcs-mercurial" pel-pkg-for-vcs (vc vc-hg vc-git))
+  ;; for emacs-lisp-mode: ([f11 32 108] "pl-emacs-lisp" pel-pkg-for-emacs-lisp (checkdoc editing-basics elint elisp-depend eros highlight-defined lisp lispy lisp-docstring-toggle parinfer-rust-mode rainbow-delimiters suggest))
   (let ((prefix-key (elt keyseq 0)))
     ;; (message "pel--kte-for: prefix-key : %s" prefix-key)
     (unless (or (memq prefix-key '(f6 f7 f8 f11 f12 M-f11 M-f12))
@@ -1066,11 +1086,11 @@ F6, F7, F8, F11, F12 or M-F12 prefix.\n\
   "Return a list of partial names of PDF files in TABLE-ENTRY.
 Return strings: the partial names of PDF files for the TABLE-ENTRY.
 Return nil if there are none."
-  (declare (side-effect-free t))
   (let ((elem (nth 1 table-entry)))
-    (if (stringp elem)
-        (list elem)
-      elem)))
+    (cond
+     ((stringp elem)   (list elem))
+     ((functionp elem) (list (funcall elem)))
+     (t elem))))
 
 (defun pel--kte-pel-groups (table-entry)
   "Return a list of symbols of PEL group for the TABLE-ENTRY, or nil if none."
@@ -1190,6 +1210,7 @@ normally end with the F1 key."
          (pdfs   (if category
                      (pel-lang-pdf)
                    (pel--kte-pdfs kte))))
+    ;; (message "category      :--> %S" category)
     ;; (message "pel--keyseq   :--> %s" keyseq)
     ;; (message "pel--kte-for  :--> %s" kte)
     ;; (message "pel--kte-pdfs :--> %s" pdfs)

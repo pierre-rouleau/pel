@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-06-03 23:14:01 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-06-14 10:04:09 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -87,7 +87,8 @@ else
 endif
 
 # ----------------------------------------------------------------------------
-# Define abilities of Emacs - native compilation.
+# Define Emacs capabilities - native compilation
+# ----------------------------------------------
 
 EMACS_NATIVE_COMP_AVAILABLE := $(shell $(EMACS) --batch --eval '(when \
                                                                   (and (fboundp (quote native-comp-available-p)) \
@@ -171,7 +172,8 @@ PEL_FAST_STARTUP := $(shell \
   && echo "yes" || echo "no")
 
 # -----------------------------------------------------------------------------
-# Identify the files used in the package.
+# Identify package files
+# ----------------------
 
 # The Emacs Lisp files that must be byte-compiled to check their validity.
 # IMPORTANT:
