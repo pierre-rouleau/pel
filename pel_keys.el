@@ -540,9 +540,6 @@ Open GitHub file if OPEN-GITHUB-PAGE-P IS non-nil."
          (display-warning 'pel-quelpa
                           (format "Error in quelpa installation: skipping quelpa bootstrap: %s" err)))))))
 
-
-
-
 (when pel-use-package-lint
   (pel-ensure-package-elpa package-lint from: melpa))
 (when pel-use-flycheck-package
@@ -6847,6 +6844,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
 (when pel-use-org
   (define-pel-global-prefix pel:for-org-mode   (kbd "<f11> SPC M-o"))
+  (define-pel-global-prefix pel:org-mode-help (kbd "<f11> SPC M-o h"))
   (define-pel-global-prefix pel:org-mode (kbd "<f11> M-o"))
   ;; (define-pel-global-prefix pel:org-mode-setup (kbd "<f11> SPC M-o <f4>"))
 
@@ -6873,6 +6871,9 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:for-org-mode "a" 'org-agenda)
     (define-key pel:for-org-mode "C" 'org-capture)
     (define-key pel:for-org-mode "b" 'org-switchb)
+    ;;
+    (define-key pel:org-mode-help "e" 'org-entities-help)
+
     (defvar pel-org-electric-pairs '((?\* . ?\*)
                                      (?/ . ?/)
                                      (?= . ?=)
