@@ -634,11 +634,19 @@ Emacs.  It has:
 The complete set of PDF tables are linked into the top-level `PEL Index PDF`_,
 which acts as a dense, quickly accessible dispatcher.
 
-- See the `PEL Index Section Overview PDF`_ which highlights the index layout.
-- See the `Tramp PDF`_ to learn how to use and troubleshoot it.
-- See the `Mode Line PDF`_ to see the command that describes Emacs cryptic
-  mode line process and buffer type.
-- Some tables describe tools like `GNU make`_ or languages, like `Perl 5`_.
+- The `PEL Index Section Overview PDF`_ highlights the index layout.
+- Several tables describe major Emacs features like the `⅀ Bookmarks PDF`_, `⅀
+  Diff & Merge PDF`_, `⅀ Search/Replace PDF`_,
+- Several tables describe programming language major modes like the `𝕻𝔩 - C
+  PDF`_, the `⨋𝕻𝔩 - Emacs Lisp PDF`_, the `𝕻𝔩 - Erlang PDF`_,
+- Several tables describe the major modes of text markup languages like the
+  `Ɱ Org-Mode PDF`_ and the `Ɱ reStructuredText PDF`_.
+- There are other useful tables:
+
+  - The `Tramp PDF`_ describes how to use and troubleshoot it.
+  - The `Mode Line PDF`_ to see the command that describes Emacs cryptic
+    mode line process and buffer type.
+  - Some tables describe tools like `GNU make`_ or languages, like `Perl 5`_.
 
 PEL provides key bindings to view the appropriate PDF file in the local PDF
 viewer or in the system's browser, including:
@@ -1033,6 +1041,14 @@ Notes
 .. _GNU Make PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/gmake.pdf
 .. _⅀ Buffers PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/buffers.pdf
 .. _Perl5 PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/perl5.pdf
+.. _⅀ Bookmarks PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/bookmarks.pdf
+.. _⅀ Diff & Merge PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/diff-merge.pdf
+.. _⅀ Search/Replace PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/search-replace.pdf
+.. _𝕻𝔩 - C PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-c.pdf
+.. _⨋𝕻𝔩 - Emacs Lisp PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-emacs-lisp.pdf
+.. _𝕻𝔩 - Erlang PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-erlang.pdf
+.. _Ɱ Org-Mode PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-org-mode.pdf
+.. _Ɱ reStructuredText PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-rst.pdf
 
 ..
    -----------------------------------------------------------------------------
