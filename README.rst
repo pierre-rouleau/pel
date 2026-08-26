@@ -54,11 +54,11 @@ PEL -- Pragmatic Emacs Leverage
    :scale: 50 %
    :alt: PEL - Pragmatic Emacs Leverage
 
-- Want a quick and useful Emacs setup now, without writing Emacs configuration code? `🤯`_
-- Afraid of or ever declared `.emacs bankruptcy`_? 😰
+- Want a quick and useful Emacs setup now, without writing Emacs Lisp configuration code? `🤯`_
+- Afraid to ever having to declare `.emacs bankruptcy`_? 😰
 - Don't have time to write specialized Emacs Lisp code? 😳 [#elispfun]_
-- Need to learn quickly and access help now and later on specific topic? `🤔`_
-- Want to learn Emacs and try several built-in and external packages? `😇`_
+- Need to learn Emacs quickly and access help now and later on specific topics? `🤔`_
+- Want to learn and try several Emacs built-in and external packages? `😇`_
 - Want to run independent Emacs sessions with `fast startup`_
   of about 0.1 seconds with large set of external packages installed?
   `😃`_
