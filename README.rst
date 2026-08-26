@@ -840,10 +840,10 @@ Notes
               the end the make-driven build of PEL.
 
 .. [#doc]     The source of the `PEL PDF files`_ is a single macOS Number
-              spreadsheet file.  It's also available in the Git
-              `pel-pdf-spreadsheet repo`_.  I would have liked  to find a way
-              to create this with a markup flexible enough but I did not find
-              one. Let me know if you know one that can build the same output.
+              spreadsheet file.  I periodically push a version to the Git
+              `pel-pdf-spreadsheet repo`_.  I would have liked to find a way
+              to create this with a text markup flexible enough but I did not find
+              any. Let me know if you know one that can build the same output.
 
 .. [#quick] **Fast initialization**:  PEL code uses all the techniques to
             improve initialization speed.  By default it starts quickly,
