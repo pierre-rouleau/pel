@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-08-25 16:42:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-08-26 12:03:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1159,6 +1159,10 @@ Each entry of the list is file base name without file extension."
       ;; Return MMMM for the makefile-MMMM-mode modes.
       ;; Example: for makefile-gmake-mode: return "gmake".
       (list (substring major-mode-str 9 -5)))
+
+     ((or (derived-mode-p 'cperl-mode)
+          (derived-mode-p 'perl-mode))
+      (list "perl5"))
 
      (t  (user-error "No language specific for this major mode!")))))
 
