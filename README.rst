@@ -54,18 +54,17 @@ PEL -- Pragmatic Emacs Leverage
    :scale: 50 %
    :alt: PEL - Pragmatic Emacs Leverage
 
-- Tired of writing Emacs configuration code? `🤯`_
+- Want a quick and useful Emacs setup now, without writing Emacs configuration code? `🤯`_
 - Afraid of or ever declared `.emacs bankruptcy`_? 😰
-- Don't want to spend your time writing Emacs Lisp code? 😳 [#elispfun]_
-- Need to quickly access help now and later on specific topic? `🤔`_
+- Don't have time to write specialized Emacs Lisp code? 😳 [#elispfun]_
+- Need to learn quickly and access help now and later on specific topic? `🤔`_
 - Want to learn Emacs and try several built-in and external packages? `😇`_
-- Want to run independent Emacs sessions with **fast** startup even with a large number of external packages installed?
+- Want to run independent Emacs sessions with **fast** startup
+  of about 0.1 seconds with large set of external packages installed?
   `😃`_
 - And *also* want to `run Emacs daemon(s) with text and graphics clients`_ on
-  Linux and macOS like a pro? `🥳`_
-- Or use multiple Emacs processes and use PEL **fast startup** mode to load
-  in about 0.1 seconds a large set of packages and features! That's fast, no? `😁`_
-- And you want or need to write your own elisp code to use other packages and
+  Linux, macOS and Windows and use `Tramp`_ like a pro? `🥳`_
+- But sometimes you need to write your own elisp code to use other packages and
   add extra key bindings or logic? Place that logic inside pel-user-init file
   and enjoy! `🤩`_
 
@@ -284,7 +283,8 @@ Emacs 27.
 --------------------
 
 PEL can achieve a sub 0.1 seconds Emacs init-time by using its unique
-fast-startup mode, a specialized building and directory bundling strategy.
+fast-startup mode, a specialized building and directory bundling mechanism
+that provides fast startup speed rarely achieved by other methods, including Doom.
 That works on all versions PEL supports: Emacs 26.3 and later.
 
 ..
@@ -1004,6 +1004,7 @@ Notes
 .. _ec command: https://github.com/pierre-rouleau/pel/blob/master/bin/ec
 .. _POSIX-compliant shell scripts to launch Emacs: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
 .. _PEL's GitHub workflow build YAML file: https://github.com/pierre-rouleau/pel/blob/master/.github/workflows/build.yml
+.. _Tramp:
 .. _Tramp PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/tramp.pdf
 .. _Mode Line PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-line.pdf
 .. _control logic: https://github.com/pierre-rouleau/pel/blob/master/pel_keys.el
