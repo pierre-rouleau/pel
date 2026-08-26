@@ -6843,9 +6843,10 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 ;;   ----------------
 
 (when pel-use-org
-  (define-pel-global-prefix pel:for-org-mode     (kbd "<f11> SPC M-o"))
-  (define-pel-global-prefix pel:org-mode-help    (kbd "<f11> SPC M-o h"))
-  (define-pel-global-prefix pel:org-mode-preview (kbd "<f11> SPC M-o v"))
+  (define-pel-global-prefix pel:for-org-mode   (kbd "<f11> SPC M-o"))
+  (define-pel-global-prefix pel:org-mode-help  (kbd "<f11> SPC M-o h"))
+  (define-pel-global-prefix pel:org-preview    (kbd "<f11> SPC M-o v"))
+  (define-pel-global-prefix pel:org-clock      (kbd "<f11> SPC M-o c"))
   ;; (define-pel-global-prefix pel:org-mode-setup (kbd "<f11> SPC M-o <f4>"))
 
   ;; Org-Mode activation, as suggested by
@@ -6866,11 +6867,12 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:for-org-mode (kbd "TAB") 'org-indent-mode)
     (define-key pel:for-org-mode "c" 'org-lint)
     (define-key pel:for-org-mode "s" 'org-insert-structure-template)
-    (define-key pel:org-mode-preview "v" 'org-toggle-include-images)
-    (define-key pel:org-mode-preview "V" 'org-redisplay-inline-images)
+    (define-key pel:org-clock   "r" 'org-clock-report)
+    (define-key pel:org-preview "v" 'org-toggle-include-images)
+    (define-key pel:org-preview "V" 'org-redisplay-inline-images)
     (when (version<= "9.8" (org-version))
-      (define-key pel:org-mode-preview "r" 'org-link-preview-region)
-      (define-key pel:org-mode-preview "c" 'org-link-preview-clear))
+      (define-key pel:org-preview "r" 'org-link-preview-region)
+      (define-key pel:org-preview "c" 'org-link-preview-clear))
     ;;
     (define-key pel:for-org-mode "l" 'org-store-link)
     (define-key pel:for-org-mode "a" 'org-agenda)

@@ -4,6 +4,7 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 - New key bindings for org-mode:
   -  ~<f12> h e~ for *org-entities-help*.
   -  ~<f12> s~ for *org-insert-structure-template*, allowing the command invoked by keys in terminal-based Emacs.
+  -  ~<f12> c~ is a key prefix for org-mode clock commands.
   -  ~<f12> v~ is a key prefix for org-mode image preview commands. Two of them require org-mode 9.8 or later.
 - The file ~/.emacs.d/utils/pel-user-init.el is used to store user's specific logic and is never removed by ``pel-cleanup``.
 - You can now write your own extra Emacs initialization code inside your own Emacs Lisp file identified by the
