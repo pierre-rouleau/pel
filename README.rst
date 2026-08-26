@@ -214,17 +214,8 @@ Essentially PEL extends plain vanilla Emacs 26.3 and later and it provides:
   - Also see the document titled `Using tree-sitter with Emacs and PEL`_ which
     describes how to setup your environment to use the tree-sitter based modes,
 
-- **222 Extensive Topic-organized Reference PDFs** The heavily hyperlinked
-  tables serve as visual, topic-organized key-binding and feature reference
-  sheets, an unusual approach in the Emacs ecosystem which complements Emacs'
-  excellent documentation system.
-
-  - Use the `PEL Index PDF`_ to quickly locate a topic.
-  - See the `PEL Index Section Overview PDF`_ which describes the index layout.
-  - See the `Tramp PDF`_ to learn how to use and troubleshoot it.
-  - See the `Mode Line PDF`_ to see the command that describes Emacs cryptic
-    mode line process and buffer type.
-  - See the `➣ Extends Emacs Documentation`_ section for more information.
+- **222 Extensive Topic-organized Reference Quick Sheet PDFs**  (see `PEL PDF
+  Tables`_ below).
 
 - **Many Command Line Tools** comes with PEL: the `shell scripts`_ to start
   Emacs in various ways, build CTags tables, the `awk scripts`_ for text
@@ -619,27 +610,53 @@ packages, etc.
 PEL PDF Tables
 ~~~~~~~~~~~~~~
 
-- PEL provides **222** `topic oriented PDF tables`_ [#doc]_ each heavily hyperlinked
-  to each other and to public resources.  The top-level `PEL Index PDF`_  is a
-  table listing the table for each Emacs feature, major and minor mode
-  (with the `PEL Index Section Overview PDF`_ which highlights its sections).
+PEL provides **222** `topic oriented PDF quick-reference tables`_ [#doc]_,
+each heavily color-coded and hyperlinked to each other, to Emacs manuals and
+their sections, to external packages and other public resources.  This is a
+unique approach in the Emacs world; it complements Emacs' excellent `help and
+documentation system`_.
 
-  - Each table attempts to provide quickly accessible
-    concise information about the features, commands, function signatures, key
-    bindings and is packed with symbol annotated and colour coded information.
-    It includes hyperlinks to Emacs manuals, external packages, articles and other
-    useful references.
-  - The PDF tables use colour codes and icons (see the `➢Legend PDF`_ for their
-    meaning) to speed identification of commands, identify if they are
-    available globally, for major mode, minor mode or under special
-    circumstances to help you understand Emacs.
-  - Some major modes also support the opening of a language-specific PDF.
-    This is done by using a key prefix: ``C-u <f12> <f1>``.  For example
-    this now opens a PDF on zsh when the command is issued from a buffer
-    editing a zsh script, or a GNU Make PDF from a buffer editing a make file
-    in GNU Make mode.
-  - Some tables describe tools like `GNU make`_ or languages, like `Perl 5`_.
+Each table serves as a visual, concise reference of Emacs features, commands,
+function signatures, key bindings and examples. Each and is packed with symbol
+annotated and colour coded information.  Each includes hyperlinks to Emacs
+manuals, external packages, articles and other useful references.
 
+The PDF tables use colour codes and icons to quickly identify Emacs command
+categories, identify their availability (global, major-mode specific,
+minor-mode specific or under special circumstances) to help you understand
+Emacs.  It has:
+
+- Functional design: Colors categorize command types rather than just serving decoration.
+- Context markers: They show if a shortcut works globally or only in specific modes.
+- Speed identification: Colors let users scan dense information tables quickly.
+- `Legend reference PDF`_: A separate legend PDF defines the exact meaning of each color and icon.
+
+The complete set of PDF tables are linked into the top-level `PEL Index PDF`_,
+which acts as a dense, quickly accessible dispatcher.
+
+- See the `PEL Index Section Overview PDF`_ which highlights the index layout.
+- See the `Tramp PDF`_ to learn how to use and troubleshoot it.
+- See the `Mode Line PDF`_ to see the command that describes Emacs cryptic
+  mode line process and buffer type.
+- Some tables describe tools like `GNU make`_ or languages, like `Perl 5`_.
+
+PEL provides key bindings to view the appropriate PDF file in the local PDF
+viewer or in the system's browser, including:
+
+- ``<f11> ? p`` prompts (with completion) and open selected PDF,
+- ``<f11> <f1>`` opens the `PEL Index PDF`_
+- ``<f11> b <f1>`` opens the `⅀ Buffers PDF`_ and several others,
+- ``<f12> <f1>`` opens the PDF describing the major mode of the current
+  buffer.
+- ``C-u <f12> <f1>`` is available in some major modes to open an alternate PDF,
+  for example:
+
+  - opens the `Perl5 PDF`_ when the command is issued from a buffer editing a
+    Perl file,
+  - opens the `zsh PDF`_ when the command is issued from a buffer editing a
+    zsh script,
+  - opens the `Bash PDF`_ when the buffer edits a bash script,
+  - opens the `GNU Make PDF`_ from a buffer editing a make file in GNU Make mode.
 
 **Key Strengths of PEL's PDF Documentation:**
 
@@ -987,6 +1004,7 @@ Notes
 .. _How to recompile all Emacs Lisp files after upgrading Emacs: https://github.com/pierre-rouleau/pel/blob/master/doc/upgrading-emacs.rst.txt
 .. _How to use Emacs stand-alone processes, daemon and clients: https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt
 .. _Install the Emacs launcher shortcut scripts: https://github.com/pierre-rouleau/pel/blob/master/doc/install_e_ge_ec.rst.txt
+.. _Legend reference PDF:
 .. _➢Legend PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-legend.pdf
 .. _GNU make: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/gmake.pdf
 .. _Perl 5: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/perl5.pdf
@@ -995,7 +1013,7 @@ Notes
 .. _USRHOME project: https://github.com/pierre-rouleau/usrhome?tab=readme-ov-file#readme
 .. _Using tree-sitter with Emacs and PEL: https://github.com/pierre-rouleau/pel/blob/master/doc/using-tree-sitter.rst.txt
 .. _tbindent: https://github.com/pierre-rouleau/tab-based-indent
-.. _topic oriented PDF tables: https://pierre-rouleau.github.io/pel/
+.. _topic oriented PDF quick-reference tables: https://pierre-rouleau.github.io/pel/
 .. _quelpa: https://github.com/quelpa/quelpa
 .. _Swiper: https://github.com/abo-abo/swiper?tab=readme-ov-file#readme
 .. _Anzu: https://github.com/emacsorphanage/anzu?tab=readme-ov-file#readme
@@ -1009,6 +1027,12 @@ Notes
 .. _Mode Line PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-line.pdf
 .. _control logic: https://github.com/pierre-rouleau/pel/blob/master/pel_keys.el
 .. _Comparing PEL configuration logic to DOOM and Spacemacs: doc/comparing-pel-to-others.rst.txt
+.. _help and documentation system: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/help.pdf
+.. _zsh PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/zsh.pdf
+.. _Bash PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/bash.pdf
+.. _GNU Make PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/gmake.pdf
+.. _⅀ Buffers PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/buffers.pdf
+.. _Perl5 PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/perl5.pdf
 
 ..
    -----------------------------------------------------------------------------
