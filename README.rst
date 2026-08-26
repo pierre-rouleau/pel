@@ -59,24 +59,17 @@ PEL -- Pragmatic Emacs Leverage
 - Don't have time to write specialized Emacs Lisp code? 😳 [#elispfun]_
 - Need to learn quickly and access help now and later on specific topic? `🤔`_
 - Want to learn Emacs and try several built-in and external packages? `😇`_
-- Want to run independent Emacs sessions with **fast** startup
+- Want to run independent Emacs sessions with `fast startup`_
   of about 0.1 seconds with large set of external packages installed?
   `😃`_
 - And *also* want to `run Emacs daemon(s) with text and graphics clients`_ on
   Linux, macOS and Windows and use `Tramp`_ like a pro? `🥳`_
 - But sometimes you need to write your own elisp code to use other packages and
-  add extra key bindings or logic? Place that logic inside pel-user-init file
+  add extra key bindings or logic? Place that logic inside the ``pel-user-init.el`` file
   and enjoy! `🤩`_
 
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
-
-You can also **add your own Emacs Lisp code** in the ``pel-user-init.el`` file stored
-in PEL utils directory and use your favourite technology to install any package you
-need, create extra key bindings or add new code logic.
-See the coding instructions inside section 8 of the
-`PEL compatible Emacs init.el`_ (also labelled as ``OPTION F``).
-
 
 Essentially PEL extends plain vanilla Emacs 26.3 and later and it provides:
 
@@ -538,11 +531,11 @@ That works on all versions PEL supports: Emacs 26.3 and later.
 ➣ PEL User Init for your own Elisp code
 ---------------------------------------
 
-You can also **add your own Emacs Lisp code** in the ``pel-user-init.el`` file stored
-in PEL utils directory and use your favourite technology to install any package you
-need, create extra key bindings or add new code logic.
-See the coding instructions inside section 8 of the
-`PEL compatible Emacs init.el`_ (also labelled as ``OPTION F``).
+Although not necessary with PEL, you can also **add your own Emacs Lisp code**
+in the ``pel-user-init.el`` file stored in PEL utils directory and use your
+favourite technology to install any package you need, create extra key
+bindings or add new code logic.  See the coding instructions inside section 8
+of the `PEL compatible Emacs init.el`_ (also labelled as ``OPTION F``).
 
 If PEL support for a package or a language conflicts with your logic simply
 don't enable the PEL user option to activate that package or language support
@@ -932,11 +925,10 @@ Notes
 
 .. _😇: `➣ PEL Package Integration and Enhancements`_
 .. _🤯: `➣ Customization Driven Package Management & Configuration`_
+.. _fast startup:
 .. _😃: `➣ Emacs Fast Startup`_
-.. _PEL Key Maps PDF:   https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-pel-key-maps.pdf
 .. _🤔: `➣ Extends Emacs Documentation`_
 .. _🥳: doc/emacs-daemon.rst.txt
-.. _😁: `➣ Emacs Fast Startup`_
 .. _🤩: `➣ PEL User Init for your own Elisp code`_
 .. _➢Index PDF:
 .. _PEL Topic Index PDF:
@@ -945,6 +937,7 @@ Notes
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
 .. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File
+.. _PEL Key Maps PDF:   https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-pel-key-maps.pdf
 .. _manual:
 .. _PEL manual:
 .. _PEL's Manual:               doc/pel-manual.rst
