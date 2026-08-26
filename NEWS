@@ -1,7 +1,9 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
-- New key bindings for org-mode: ~<f12> h e~ for *org-entities-help*.
+- New key bindings for org-mode:
+  -  ~<f12> h e~ for *org-entities-help*.
+  -  ~<f12> s~ for *org-insert-structure-template*, allowing the command invoked by keys in terminal-based Emacs.
 - The file ~/.emacs.d/utils/pel-user-init.el is used to store user's specific logic and is never removed by ``pel-cleanup``.
 - You can now write your own extra Emacs initialization code inside your own Emacs Lisp file identified by the
   PEL *pel-user-extra-code-feature* user-option.  PEL will load this file after loading itself.

@@ -6866,6 +6866,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     ;; Add easy-to use F12 key bindings for org commands.
     (define-key pel:for-org-mode (kbd "TAB") 'org-indent-mode)
     (define-key pel:for-org-mode "c" 'org-lint)
+    (define-key pel:for-org-mode "s" 'org-insert-structure-template)
     ;;
     (define-key pel:for-org-mode "l" 'org-store-link)
     (define-key pel:for-org-mode "a" 'org-agenda)
