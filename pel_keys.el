@@ -6860,6 +6860,11 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                      org-switchb)
 
   (pel-eval-after-load org
+    (when (and pel-org-clock-auto-clockout-timer
+               (boundp  'org-clock-auto-clockout-timer)
+               (fboundp 'org-clock-auto-clockout-insinuate))
+      (setq org-clock-auto-clockout-timer pel-org-clock-auto-clockout-timer)
+      (org-clock-auto-clockout-insinuate))
     ;; Add global keys that are useful from everywhere but
     ;; only when an org-mode buffer has been opened.
     (global-set-key (kbd "C-c l") #'org-store-link)

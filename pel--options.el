@@ -5174,6 +5174,18 @@ display of hard TAB characters."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-org-clock-auto-clockout-timer nil
+  "Timer for auto clocking out when Emacs is idle.
+When set to a number, auto clock out the currently clocked in
+task after this number of seconds of idle time.
+
+This sets `org-clock-auto-clockout-timer' and then PEL sets up calling
+`org-clock-auto-clockout-insinuate' when org-mode is loaded."
+  :group 'pel-pkg-for-org
+  :type '(choice
+	  (integer :tag "Clock out after Emacs is idle for X seconds")
+	  (const :tag "Never auto clock out" nil)))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; reStructuredText support
 ;; ------------------------
