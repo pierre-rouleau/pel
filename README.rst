@@ -60,7 +60,8 @@ PEL -- Pragmatic Emacs Leverage
 - Need to learn Emacs quickly and access help now and later on specific topics? `🤔`_
 - Want to learn and try several Emacs built-in and external packages? `😇`_
 - Want to run independent Emacs sessions with `fast startup`_
-  of about 0.1 seconds with large set of external packages installed?
+  of about 0.1 seconds with large set of external packages installed and key
+  bindings that work in GUI Emacs and terminal-based Emacs?
   `😃`_
 - And *also* want to `run Emacs daemon(s) with text and graphics clients`_ on
   Linux, macOS and Windows and use `Tramp`_ like a pro? `🥳`_
@@ -71,7 +72,8 @@ PEL -- Pragmatic Emacs Leverage
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 
-Essentially PEL extends plain vanilla Emacs 26.3 and later and it provides:
+Essentially PEL extends plain vanilla Emacs 26.3 and later, works on GUI Emacs
+and terminal-based Emacs (with working key bindings) and provides:
 
 - **Unified, Cohesive Command Interface**: with 729 additional key-bound
   commands, several of which provide glue logic between features to increase
