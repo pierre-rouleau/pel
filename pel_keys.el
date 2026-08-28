@@ -1387,7 +1387,7 @@ Your version of Emacs does not support dynamic module.")))
 ;;    --------------------
 ;;
 ;; pel:f6 keys:
-;;  d f l L
+;;  d f l o L
 ;;  SPC
 ;;  C-f C-i <C-M-i> C-n C-p
 ;;  M-f
@@ -1432,6 +1432,12 @@ Your version of Emacs does not support dynamic module.")))
 (declare-function pel--install-generic-skel "pel--install-generic-skel")
 (run-with-idle-timer 1 nil (function pel--install-generic-skel) pel:f6)
 
+;; Add Org mode support
+(when pel-use-org
+  (define-pel-global-prefix pel:f6-org (kbd "<f6> o"))
+  (define-key pel:f6-org "a" 'org-agenda)
+  (define-key pel:f6-org "b" 'org-switchb)
+  (define-key pel:f6-org "c" 'org-capture))
 ;; ---------------------------------------------------------------------------
 ;;*** Shutdown Server - <f11> C-x
 
@@ -6843,8 +6849,10 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 ;;   ----------------
 
 (when pel-use-org
+  (defvar org-modules)                  ; prevent compiler warning
   (define-pel-global-prefix pel:for-org-mode   (kbd "<f11> SPC M-o"))
-  (define-pel-global-prefix pel:org-mode-help  (kbd "<f11> SPC M-o h"))
+  (define-pel-global-prefix pel:org-mode-help  (kbd "<f11> SPC M-o ?"))
+  (define-pel-global-prefix pel:org-agenda     (kbd "<f11> SPC M-o a"))
   (define-pel-global-prefix pel:org-preview    (kbd "<f11> SPC M-o v"))
   (define-pel-global-prefix pel:org-clock      (kbd "<f11> SPC M-o c"))
   ;; (define-pel-global-prefix pel:org-mode-setup (kbd "<f11> SPC M-o <f4>"))
@@ -6859,7 +6867,16 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                      org-capture
                      org-switchb)
 
+  (global-set-key (kbd "C-c a") 'org-agenda)
   (pel-eval-after-load org
+    ;; schedule
+    (add-hook  'org-agenda-mode-hook
+               (lambda ()
+                 (pel-autoload-file org-habit for:
+                                    org-habit-toggle-habits)
+                 (add-to-list 'org-modules 'org-habit t)))
+
+
     (when (and pel-org-clock-auto-clockout-timer
                (boundp  'org-clock-auto-clockout-timer)
                (fboundp 'org-clock-auto-clockout-insinuate))
@@ -6878,13 +6895,15 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (when (version<= "9.8" (org-version))
       (define-key pel:org-preview "r" 'org-link-preview-region)
       (define-key pel:org-preview "c" 'org-link-preview-clear))
+    ;; Agenda commands
+    (define-key pel:org-agenda "a" 'org-agenda)
+    (define-key pel:org-agenda "," 'org-cycle-agenda-files)
     ;;
     (define-key pel:for-org-mode "l" 'org-store-link)
-    (define-key pel:for-org-mode "a" 'org-agenda)
     (define-key pel:for-org-mode "C" 'org-capture)
-    (define-key pel:for-org-mode "b" 'org-switchb)
     ;;
     (define-key pel:org-mode-help "e" 'org-entities-help)
+    (define-key pel:org-mode-help "i" 'org-info)
 
     (defvar pel-org-electric-pairs '((?\* . ?\*)
                                      (?/ . ?/)
@@ -8334,7 +8353,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;;   M-a M-p
 ;;   ?
 ;;   I K R S U V X
-;;   a b c f h i k l n p r s v x
+;;   a b c f h i k l n o p r s v x
 
 (define-pel-global-prefix pel:buffer (kbd "<f11> b"))
 (define-pel-global-prefix pel:text-to (kbd "<f11> b t"))
@@ -8350,6 +8369,8 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:buffer "l"   'pel-switch-to-last-used-buffer)
 (define-key pel:buffer "n"  #'next-buffer)
 (define-key pel:buffer "?"   'pel-emacs-buffer-stats)
+(when pel-use-org
+  (define-key pel:buffer "o" 'org-switchb))
 (define-key pel:buffer "p"  #'previous-buffer)
 (define-key pel:buffer "r"  #'read-only-mode)
 (define-key pel:buffer "s"   'bs-show)

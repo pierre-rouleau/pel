@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-08-26 12:03:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-08-28 07:14:41 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -403,7 +403,7 @@ Return the manual PDF file name."
                                                                 popup-imenu
                                                                 popup-switcher))
 
-    ([f6]            "inserting-text"   pel-pkg-generic-code-style)
+    ([f6]            "pel-environment-variables" pel-pkg-generic-code-style)
     ([f8]            "projectile"       pel-pkg-for-project-mng (projectile
                                                                  projectile-speedbar))
     ([f11]           "-index"       nil)
