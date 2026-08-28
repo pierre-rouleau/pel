@@ -83,6 +83,7 @@ The complete list of PEL PDF files is:
 #. `inserting-text.pdf`_
 #. `key-chords.pdf`_
 #. `keyboard-macros.pdf`_
+#. `keys-f6.pdf`_
 #. `keys-f11.pdf`_
 #. `keys-f12.pdf`_
 #. `keys-fn.pdf`_
@@ -314,6 +315,7 @@ The complete list of PEL PDF files is:
 .. _inserting-text.pdf:                                    pel-table-based-documentation1/inserting-text.pdf
 .. _key-chords.pdf:                                        pel-table-based-documentation1/key-chords.pdf
 .. _keyboard-macros.pdf:                                   pel-table-based-documentation1/keyboard-macros.pdf
+.. _keys-f6.pdf:                                           pel-table-based-documentation1/keys-f6.pdf
 .. _keys-f11.pdf:                                          pel-table-based-documentation1/keys-f11.pdf
 .. _keys-f12.pdf:                                          pel-table-based-documentation1/keys-f12.pdf
 .. _keys-fn.pdf:                                           pel-table-based-documentation1/keys-fn.pdf
