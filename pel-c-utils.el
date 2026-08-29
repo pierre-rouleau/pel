@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-03 16:32:24 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-04 13:53:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -166,7 +166,6 @@ Return number of expression replaced."
 
 Replace the '%s' by what is required for C++ class support.
 Return adjusted regexp."
-  (declare (side-effect-free t))
   (format regex (if (eq major-mode 'c++-mode)
                     "\\([_[:alpha:]][_[:alnum:]]*::\\)*"
                   "")))
