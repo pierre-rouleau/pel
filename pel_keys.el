@@ -6870,12 +6870,18 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (global-set-key (kbd "C-c a") 'org-agenda)
   (pel-eval-after-load org
     ;; schedule
-    (add-hook  'org-agenda-mode-hook
-               (lambda ()
-                 (pel-autoload-file org-habit for:
-                                    org-habit-toggle-habits)
-                 (add-to-list 'org-modules 'org-habit t)))
-
+    (pel-eval-after-load org-agenda
+      ;; Activate org-habit commands via autoloading
+      (pel-autoload-file org-habit for:
+                         org-habit-toggle-habits)
+      (add-to-list 'org-modules 'org-habit t)
+      ;; Add a <f12><f1> key to open the org PDF from org-agenda-mode
+      (when (boundp 'org-agenda-mode-map)
+        (define-key org-agenda-mode-map
+                    (kbd "<f12> <f1>")
+                    (lambda (&optional open-github-page-p)
+                      (interactive)
+                      (pel-help-open-pdf "mode-org-mode" open-github-page-p)))))
 
     (when (and pel-org-clock-auto-clockout-timer
                (boundp  'org-clock-auto-clockout-timer)
