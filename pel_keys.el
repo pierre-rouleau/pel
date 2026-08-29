@@ -166,6 +166,16 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
+;; Debugging code  - Indetify how Org Mode is autoloaded
+;; Uncomment the following code to detect why org-mode is auto-loaded
+
+;; (add-hook 'after-load-functions
+;;           (lambda (file)
+;;             (when (string-match-p "org" file)
+;;               (message "Org loaded by file: %s" file)
+;;               (backtrace))))
+
+
 ;; ---------------------------------------------------------------------------
 ;;* Install Future-Proof Packages
 ;;  =============================
@@ -1434,10 +1444,11 @@ Your version of Emacs does not support dynamic module.")))
 
 ;; Add Org mode support
 (when pel-use-org
+  ;; Bind Org mode commands that can be used before Org mode is loaded.
   (define-pel-global-prefix pel:f6-org (kbd "<f6> o"))
   (define-key pel:f6-org "a" 'org-agenda)
-  (define-key pel:f6-org "b" 'org-switchb)
   (define-key pel:f6-org "c" 'org-capture))
+
 ;; ---------------------------------------------------------------------------
 ;;*** Shutdown Server - <f11> C-x
 
@@ -6849,13 +6860,26 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 ;;   ----------------
 
 (when pel-use-org
-  (defvar org-modules)                  ; prevent compiler warning
+  ;; prevent compiler warnings by declaring free variables defined
+  ;; elsewhere or out of the top level of this file.
+  (defvar org-modules)
+  (defvar pel:f6-org)
   (define-pel-global-prefix pel:for-org-mode   (kbd "<f11> SPC M-o"))
   (define-pel-global-prefix pel:org-mode-help  (kbd "<f11> SPC M-o ?"))
   (define-pel-global-prefix pel:org-agenda     (kbd "<f11> SPC M-o a"))
   (define-pel-global-prefix pel:org-preview    (kbd "<f11> SPC M-o v"))
   (define-pel-global-prefix pel:org-clock      (kbd "<f11> SPC M-o c"))
   ;; (define-pel-global-prefix pel:org-mode-setup (kbd "<f11> SPC M-o <f4>"))
+
+  (defvar pel-has-detected-org-file nil
+    "Set to t once Emacs has detected opening of an Org file.")
+
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (message "An Org file was opened! Buffer: %s" (buffer-name))
+              (unless pel-has-detected-org-file
+                (setq pel-has-detected-org-file t))))
+
 
   ;; Org-Mode activation, as suggested by
   ;; https://orgmode.org/manual/Activation.html#Activation :
@@ -6877,11 +6901,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (add-to-list 'org-modules 'org-habit t)
       ;; Add a <f12><f1> key to open the org PDF from org-agenda-mode
       (when (boundp 'org-agenda-mode-map)
-        (define-key org-agenda-mode-map
-                    (kbd "<f12> <f1>")
-                    (lambda (&optional open-github-page-p)
-                      (interactive)
-                      (pel-help-open-pdf "mode-org-mode" open-github-page-p)))))
+        (define-key org-agenda-mode-map (kbd "<f12> <f1>") 'pel-org-open-pdf)))
 
     (when (and pel-org-clock-auto-clockout-timer
                (boundp  'org-clock-auto-clockout-timer)
@@ -6891,6 +6911,10 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     ;; Add global keys that are useful from everywhere but
     ;; only when an org-mode buffer has been opened.
     (global-set-key (kbd "C-c l") #'org-store-link)
+    (define-key pel:f6-org "b" 'org-switchb)
+    (define-pel-global-prefix pel:f6-org-config (kbd "<f6> o <f4>"))
+    (define-key pel:f6-org-config "r" 'pel-org-set-refile-targets)
+
     ;; Add easy-to use F12 key bindings for org commands.
     (define-key pel:for-org-mode (kbd "TAB") 'org-indent-mode)
     (define-key pel:for-org-mode "c" 'org-lint)

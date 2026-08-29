@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
 - Improved org-mode support:
+  - Add new pel-org.el file; it defines a set of utilities for Org mode.
   - Improved description coverage in the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-org-mode.pdf][Ɱ Org-Mode PDF]]
   - Add support for *org-habit* module.
   - New key bindings for org-mode major-mode:
@@ -14,7 +15,10 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
     - ~<f6> o a~ mapped to *org-agenda*
     - ~<f11> b o~ and ~<f6> o b~ mapped to *org-switchb*
     - ~<f6> o c~ mapped to *org-capture*.
+    - ~<f6> o <f4>~ is a new key prefix to quickly access specific Org customization.
+    - ~<f6> o <f4> r~ mapped to *pel-org-set-refile-targets* which accesses *org-refile-targets*.
   - Add *pel-org-clock-auto-clockout-timer* user option: it controls activation of Org mode automatic clocking out.
+  - Improved logic for PEL PDF file opening, to better support all modes, including org-mode.
 - The file ~/.emacs.d/utils/pel-user-init.el is used to store user's specific logic and is never removed by ``pel-cleanup``.
 - You can now write your own extra Emacs initialization code inside your own Emacs Lisp file identified by the
   PEL *pel-user-extra-code-feature* user-option.  PEL will load this file after loading itself.

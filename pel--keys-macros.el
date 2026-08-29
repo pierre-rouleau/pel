@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-08-28 21:57:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-08-29 12:02:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,21 +34,40 @@
 ;; create the key bindings for functions that open the customization groups
 ;; PEL configuration and for Emacs groups.
 ;;
-;; The following lists the functions ('-'), and macros ('@') provided
-;; and their calling hierarchy:
+;; The following lists the functions ('-'), the commands ('*') and macros
+;; ('@') provided and their calling hierarchy:
 ;;
-;; @ `pel--cfg-emacs'
-;; @ `pel--cfg-ext-pkg'
-;; @ `pel--cfg'
-;;    - `pel-prefixed'
-;; @ `pel--cfg-pkg'
-;;    - `pel--customize-groups'
-;;       - `pel--customize-group'
-;;         - `pel--group-isin-libfile'
-;;         - `pel--isa-custom-group-p'
-;;         - `pel--multi-file-customization-p'
-;;         - `pel--load-all-libs-for'
-;;           - `pel--load-all-in'
+;;  @ `pel--cfg-emacs'
+;;  @ `pel--cfg-ext-pkg'
+;;  @ `pel--cfg'
+;;     - `pel-prefixed'
+;;  @ `pel--cfg-pkg'
+;;     - `pel--customize-groups'
+;;        - `pel--customize-group'
+;;          - `pel--group-isin-libfile'
+;;          - `pel--isa-custom-group-p'
+;;          - `pel--multi-file-customization-p'
+;;          - `pel--load-all-libs-for'
+;;            - `pel--load-all-in'
+
+;; Opening PEL PDF Files
+;; ---------------------
+;;  * `pel-help-pdf'
+;;    - `pel--help-pdf-arg-value-for'
+;;    - `pel-lang-pdf'
+;;    - `pel--help-browse'
+;;
+;;  * `pel-help-on-completion-input'
+;;    - `pel-help-open-pdf'
+;;      - `pel--help-browse'
+;;
+;;  * `pel-help-on-outline'
+;;    - `pel-help-open-pdf'
+;;      - `pel--help-browse'
+;;
+;;  * `pel-help-pdf-select'
+;;    - `pel-help-open-pdf'
+;;      - `pel--help-browse'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -1137,6 +1156,10 @@ If the current buffer."
   (defvar sh-shell)
   (symbol-name sh-shell))
 
+;; ----
+;; Opening PEL PDF Files
+;; ---------------------
+
 (defun pel-lang-pdf ()
   "Return list of language specific PDF file for current buffer.
 
@@ -1165,6 +1188,45 @@ Each entry of the list is file base name without file extension."
       (list "perl5"))
 
      (t  (user-error "No language specific for this major mode!")))))
+
+(defun pel--help-pdf-arg-value-for (raw-arg)
+  "Return value N for help pdf raw-arg value.
+Return one of the following values N:
+
+======== ======= ==============================
+Raw Arg  N value Content
+======== ======= ==============================
+nil      none    local Mode-specific PDF
+1         1      local Mode-specific PDF
+-1       -1      Web-hosted  Mode-specific PDF
+(4)      -1      Web-hosted  Mode-specific PDF
+>=2      >= 2    Local Language/Syntax/Ref PDF
+(16)     >= 2    Local Language/Syntax/Ref PDF
+<= -2    <= -2   Web-hosted Language/Syntax/Ref
+(64)     <= -2   Web-hosted Language/Syntax/Ref
+======== ======= =============================="
+  (cond
+   ((null raw-arg)  1)
+   ((listp raw-arg) (let ((val (car raw-arg)))
+                      (cond
+                       ((= val 4) -1)
+                       ((= val 16) 2)
+                       ((= val 64) -2)
+                       (t (error "Invalid argument: %S" raw-arg)))))
+   ((integerp raw-arg) raw-arg)
+   (t (error "Invalid argument: %S" raw-arg))))
+
+(defun pel--help-browse (url)
+  "Browse the specified URL using the method selected by user-options."
+  (if (and (pel-running-under-ssh-p)
+           (not pel-help-under-ssh))
+      (user-error "When running under SSH, external help is not available")
+    (if (and (require 'pel-browse nil :noerror)
+             (fboundp 'pel-browse-url))
+        (pel-browse-url url)
+      (browse-url url)
+      (user-error "Failed loading pel-browse, used Emacs browse-url instead!"))))
+
 
 ;;-pel-autoload
 (defun pel-help-pdf (&optional n)
@@ -1217,13 +1279,8 @@ sequence that led to the execution of the command.  These key sequences
 normally end with the F1 key."
   (interactive "P")
   ;; (message "N is %s" n
-  (cond
-   ((null n)  (setq n 0))
-   ((listp n) (setq n (let ((val (car n)))
-                        (cond
-                         ((= val 4) -1)
-                         ((= val 16) 2)
-                         ((= val 64) -2))))))
+  ;; Convert argument to 1, -1, 2 or -2 (see table above)
+  (setq n (pel--help-pdf-arg-value-for n))
   (let* ((open-github-page-p (< n 0))
          (category  (when (>= (abs n) 2) "lang"))
          (keyseq (pel--keyseq))         ; identify the first key(s)
@@ -1414,22 +1471,14 @@ There should be no key binding!" keyseq))
 (defvar pel--prompt-history-for-help-pdf nil
   "History list for function `pel-help-pdf-select'.")
 
-(defun pel--help-browse (url)
-  "Browse the specified URL using the method selected by user-options."
-  (if (and (pel-running-under-ssh-p)
-           (not pel-help-under-ssh))
-      (user-error "When running under SSH, external help is not available")
-    (if (and (require 'pel-browse nil :noerror)
-             (fboundp 'pel-browse-url))
-        (pel-browse-url url)
-      (browse-url url)
-      (user-error "Failed loading pel-browse, used Emacs browse-url instead!"))))
-
 (defun pel-help-open-pdf (topic &optional open-github-page-p)
   "Open PDF help for TOPIC string.
 If OPEN-GITHUB-PAGE-P is non-nil open the corresponding GitHub web page
 instead."
-  (pel--help-browse (pel-pdf-file-url topic open-github-page-p)))
+  (pel--help-browse (pel-pdf-file-url topic
+                                      (if pel-flip-help-pdf-arg
+                                          (not open-github-page-p)
+                                        open-github-page-p))))
 
 ;;-pel-autoload
 (defun pel-help-on-completion-input (&optional open-github-page-p)
@@ -1441,9 +1490,7 @@ hosted raw PDF file.  However, if the user-option variable
 `pel-flip-help-pdf-arg' is set, it's the other way around: the
 GitHub remote file is opened by default."
   (interactive "P")
-  (pel-help-open-pdf "completion-input" (if pel-flip-help-pdf-arg
-                                            (not open-github-page-p)
-                                          open-github-page-p)))
+  (pel-help-open-pdf "completion-input" open-github-page-p))
 
 ;;-pel-autoload
 (defun pel-help-on-outline (&optional open-github-page-p)
@@ -1455,9 +1502,7 @@ hosted raw PDF file.  However, if the user-option variable
 `pel-flip-help-pdf-arg' is set, it's the other way around: the
 GitHub remote file is opened by default."
   (interactive "P")
-  (pel-help-open-pdf "outline" (if pel-flip-help-pdf-arg
-                                   (not open-github-page-p)
-                                 open-github-page-p)))
+  (pel-help-open-pdf "outline" open-github-page-p))
 
 ;;-pel-autoload
 (defun pel-help-pdf-select (&optional open-github-page-p)

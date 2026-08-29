@@ -138,7 +138,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-show-all-buffers
     pel-kill-current-buffer)
   (pel-autoload-function "pel-buffer" for:
-      pel-bs-init)
+    pel-bs-init)
 
   (pel-autoload "pel-c-utils" for:
     pel-c-search-equal-NULL
@@ -585,7 +585,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-imenu-toggle-follows-order
     pel-imenu-toggle-auto-rescan)
   (pel-autoload-function "pel-imenu" for:
-      pel-imenu-init)
+    pel-imenu-init)
 
   (pel-autoload "pel-imenu-dbg" for:
     pel-imenu-print-vars)
@@ -791,6 +791,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-show-filemng-status)
   (pel-autoload-function "pel-open" for:
     pel-open-set-buffer-local-file-opener)
+
+  (pel-autoload "pel-org" for:
+    pel-org-open-pdf
+    pel-org-set-refile-targets)
 
   (pel-autoload "pel-outline" for:
     pel-outline-print-vars)
