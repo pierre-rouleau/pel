@@ -175,6 +175,12 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
     Removing old named packages when the package with the new name is present eliminate one type of warning that is issued by the *pel-setup-fast* command when activating the PEL fast start mode.
     The issue does not cause problem but the warning might be disturbing.
 - *Fixes*:
+  - Fix: regression in handling of prefix argument to the command bound to ~<f12> <f1>~ : the *pel-pdf-help* command now handle the ~C-u~ prefix argument as described (it opens the local PDF by default), and
+    it now also supports the opening of Language/Syntax/Ref PDF when the major mode has one.  The command accepts the following arguments:
+    - None or numerical prefix 1: opens the mode main PDF with local PDF viewer
+    - ~C-u~ or numerical -1 prefix argument: opens the mode main PDF web page with system browser
+    - ~C-u C-u~ or numerical prefix 2: opens the language/Syntax/Ref PDF with local PDF viewer
+    - ~C-u C-u C-u~ or numerical prefix -2: opens the language/Syntax/Ref PDF web page with system browser.
   - Fix: the ~<f12> <f1>~ key sequence typed from a =*vc-dir*= buffer now properly selects the appropriate PDF manual for the currently-use VC backend.
   - Fix: the ~<f11> v <f1>~ key sequence now prompts for the VC backend to open the required VCS PDF manual.
   - Fix: detection of GUI Emacs launched from the OS, as opposed to being launched from a shell:

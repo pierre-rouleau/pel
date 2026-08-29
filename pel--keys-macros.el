@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-08-28 07:14:41 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-08-28 21:57:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1177,10 +1177,16 @@ N value Content                  Method
 ======= ======================== ============================================
 none    Mode-specific PDF        Open local PDF
  1      Mode-specific PDF        Open local PDF with PDF reader
--1      Mode-specific PDF        Open GitHub raw PDF with default web browser
+-1      Mode-specific PDF        Open GitHub PDF with default web browser
 >= 2    Language/Syntax/Ref PDF  Open local PDF
-<= -2   Language/Syntax/Ref PDF  Open GitHub raw PDF with default web browser
+<= -2   Language/Syntax/Ref PDF  Open GitHub PDF with default web browser
 ======= ======================== ============================================
+
+The command also accepts:
+
+- One C-u prefix: Open GitHub PDF with default web browser
+- Two C-u prefix: Open language/Syntax/Ref local PDF
+- Three C-u prefix: Open language/Syntax/Ref Github PDF with default web browser
 
 The local PDF is opened according to the value selected by the
 `pel-open-pdf-method' user-option; which defaults to the local
@@ -1209,8 +1215,15 @@ quickly navigate through PEL documentation inside the browser.
 The `pel-help-pdf' function determines the requested PDF topic by the key
 sequence that led to the execution of the command.  These key sequences
 normally end with the F1 key."
-  (interactive "p")
-  ;; (message "N is %s" n)
+  (interactive "P")
+  ;; (message "N is %s" n
+  (cond
+   ((null n)  (setq n 0))
+   ((listp n) (setq n (let ((val (car n)))
+                        (cond
+                         ((= val 4) -1)
+                         ((= val 16) 2)
+                         ((= val 64) -2))))))
   (let* ((open-github-page-p (< n 0))
          (category  (when (>= (abs n) 2) "lang"))
          (keyseq (pel--keyseq))         ; identify the first key(s)
