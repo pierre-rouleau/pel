@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-04 09:45:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-06-04 13:58:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -246,7 +246,6 @@ in the region created by the function."
 (defun pel-indent-level-columns (&optional n)
   "Return the number of columns corresponding to 1 (or N) indentation levels.
 The indentation level depends on the type of buffer."
-  (declare (side-effect-free t))
   (let ((cols-by-indentation-level   (if (and (boundp 'c-basic-offset)
                                               (integerp c-basic-offset))
                                          c-basic-offset
