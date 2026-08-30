@@ -117,7 +117,6 @@
 The comment uses PERCENT number of '%' (or 3 if not specified).
 The line is made with '-' unless another CHAR is specified.
 Note: the smallest allowed `fill-column' value is 70."
-  (declare (side-effect-free t))
   (let ((percent (or percent 3))
         (char    (or char ?-)))
     (concat (make-string percent ?%)
