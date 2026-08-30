@@ -1442,13 +1442,6 @@ Your version of Emacs does not support dynamic module.")))
 (declare-function pel--install-generic-skel "pel--install-generic-skel")
 (run-with-idle-timer 1 nil (function pel--install-generic-skel) pel:f6)
 
-;; Add Org mode support
-(when pel-use-org
-  ;; Bind Org mode commands that can be used before Org mode is loaded.
-  (define-pel-global-prefix pel:f6-org (kbd "<f6> o"))
-  (define-key pel:f6-org "a" 'org-agenda)
-  (define-key pel:f6-org "c" 'org-capture))
-
 ;; ---------------------------------------------------------------------------
 ;;*** Shutdown Server - <f11> C-x
 
@@ -6863,13 +6856,24 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   ;; prevent compiler warnings by declaring free variables defined
   ;; elsewhere or out of the top level of this file.
   (defvar org-modules)
-  (defvar pel:f6-org)
+
+  ;; Org mode from <f11>
+  (define-pel-global-prefix pel:org         (kbd "<f11> M-o"))
+  (define-pel-global-prefix pel:org-config  (kbd "<f11> M-o <f4>"))
+
+  (define-pel-global-prefix pel:org-mode-setup (kbd "<f11> SPC M-o <f4>"))
+
+  ;; Org mode major mode (F12 key)
   (define-pel-global-prefix pel:for-org-mode   (kbd "<f11> SPC M-o"))
   (define-pel-global-prefix pel:org-mode-help  (kbd "<f11> SPC M-o ?"))
   (define-pel-global-prefix pel:org-agenda     (kbd "<f11> SPC M-o a"))
   (define-pel-global-prefix pel:org-preview    (kbd "<f11> SPC M-o v"))
   (define-pel-global-prefix pel:org-clock      (kbd "<f11> SPC M-o c"))
-  ;; (define-pel-global-prefix pel:org-mode-setup (kbd "<f11> SPC M-o <f4>"))
+
+  ;; Add Org mode support
+  ;; Bind Org mode commands that can be used before Org mode is loaded.
+  (define-key pel:org "a" 'org-agenda)
+  (define-key pel:org "c" 'org-capture)
 
   (defvar pel-has-detected-org-file nil
     "Set to t once Emacs has detected opening of an Org file.")
@@ -6911,9 +6915,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     ;; Add global keys that are useful from everywhere but
     ;; only when an org-mode buffer has been opened.
     (global-set-key (kbd "C-c l") #'org-store-link)
-    (define-key pel:f6-org "b" 'org-switchb)
-    (define-pel-global-prefix pel:f6-org-config (kbd "<f6> o <f4>"))
-    (define-key pel:f6-org-config "r" 'pel-org-set-refile-targets)
+    (define-key pel:org "b" 'org-switchb)
+    (define-key pel:org-config "r" 'pel-org-set-refile-targets)
 
     ;; Add easy-to use F12 key bindings for org commands.
     (define-key pel:for-org-mode (kbd "TAB") 'org-indent-mode)

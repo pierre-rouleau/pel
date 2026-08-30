@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-08-29 16:07:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-08-29 21:48:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -54,6 +54,10 @@ GitHub remote file is opened by default."
 (defun pel-org-set-refile-targets (&optional other-window)
   "Customize `org-refile-targets'."
   (interactive "p")
+  ;; For some reason I don't yet understand, customizing
+  ;; `org-refile-targets' before an Org file is opened shows
+  ;; an error in the value and does not allow modifying the user-option, even
+  ;; if the org.el is loaded.  So prevent execution until an org file is opened.
   (unless (bound-and-true-p pel-has-detected-org-file)
     (user-error "Open an org-mode file first."))
   (if other-window
