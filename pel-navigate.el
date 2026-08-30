@@ -362,7 +362,6 @@ See `pel-forward-token-start' for details."
 
 (defun pel-at-word-boundary-p ()
   "Return t if point is located at a word boundary character."
-  (declare (side-effect-free t))
   (let ((syntax-chrs (if superword-mode
                          '(?w ?_)
                        '(?w)))
