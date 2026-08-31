@@ -989,6 +989,7 @@ Your version of Emacs does not support dynamic module.")))
 ;;
 ;;   Since the above are long to type, once you type one, use 'C-x z' to
 ;;   repeat, typing 'z' subsequently to repeat again, or even easier: <f5>.
+;;   In Emacs ≥ 28.1, Type <f11> <f5> <f5> to toggle repeat-mode (see below).
 ;;
 ;; - Original window kill: 'C-x 0' and 'C-x 1'
 ;; - Original window split and creation: 'C-x 2' and 'C-x 3'
@@ -1391,7 +1392,8 @@ Your version of Emacs does not support dynamic module.")))
 ;; Bind repeat to a single key: <f5> and <S-F5>
 (global-set-key (kbd "<f5>") 'repeat)
 ;; <S-f5> is also bound to repeat but also marks.
-
+(when pel-emacs-28-or-later-p
+  (define-key pel:mode (kbd "<f5>") 'repeat-mode))
 ;; ---------------------------------------------------------------------------
 ;;*** Function Keys - <f6>
 ;;    --------------------

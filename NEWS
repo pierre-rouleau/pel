@@ -1,6 +1,7 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- In Emacs 28.1 or later, ~<f11> <f5> <f5>~ is now bound to *repeat-mode*; it toggles the repeat-mode introduced in Emacs 28.1.
 - Improved org-mode support:
   - Add new pel-org.el file; it defines a set of utilities for Org mode.
   - Improved description coverage in the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-org-mode.pdf][Ɱ Org-Mode PDF]]
