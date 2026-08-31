@@ -7839,7 +7839,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 (define-key pel:describe (kbd "M-c") #'list-coding-systems)
 (define-key pel:describe (kbd "M-C")  'pel-list-coding-categories)
 (when pel-emacs-28-or-later-p
-  (define-key pel:describe "d" 'shortdoc))
+  (define-key pel:describe "d" 'shortdoc)
+  (define-key pel:describe (kbd "<f5>") 'describe-repeat-maps))
 (define-key pel:describe "e"  'pel-show-buffer-file-encoding)
 (define-key pel:describe "C" #'describe-coding-system)
 (define-key pel:describe "F" #'list-faces-display)
