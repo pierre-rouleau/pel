@@ -6880,9 +6880,14 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
   (add-hook 'org-mode-hook
             (lambda ()
-              (message "An Org file was opened! Buffer: %s" (buffer-name))
               (unless pel-has-detected-org-file
-                (setq pel-has-detected-org-file t))))
+                ;; Inform pel-org.el logic that an org file was opened.
+                (setq pel-has-detected-org-file t)
+                ;; Also activate key bindings that must only be present once at
+                ;; least one org mode file has been opened.
+                ;; At this time org is loaded.
+                (define-key pel:org "b" 'org-switchb)
+                (define-key pel:org-config "r" 'pel-org-set-refile-targets))))
 
 
   ;; Org-Mode activation, as suggested by
@@ -6915,8 +6920,6 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     ;; Add global keys that are useful from everywhere but
     ;; only when an org-mode buffer has been opened.
     (global-set-key (kbd "C-c l") #'org-store-link)
-    (define-key pel:org "b" 'org-switchb)
-    (define-key pel:org-config "r" 'pel-org-set-refile-targets)
 
     ;; Add easy-to use F12 key bindings for org commands.
     (define-key pel:for-org-mode (kbd "TAB") 'org-indent-mode)
