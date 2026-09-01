@@ -6888,7 +6888,6 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (define-pel-global-prefix pel:org-mode-help  (kbd "<f11> SPC M-o ?"))
   (define-pel-global-prefix pel:org-agenda     (kbd "<f11> SPC M-o a"))
   (define-pel-global-prefix pel:org-preview    (kbd "<f11> SPC M-o v"))
-  (define-pel-global-prefix pel:org-clock      (kbd "<f11> SPC M-o c"))
 
   ;; Add Org mode support
   ;; Bind Org mode commands that can be used before Org mode is loaded.
@@ -6945,7 +6944,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:for-org-mode (kbd "TAB") 'org-indent-mode)
     (define-key pel:for-org-mode "c" 'org-lint)
     (define-key pel:for-org-mode "s" 'org-insert-structure-template)
-    (define-key pel:org-clock   "r" 'org-clock-report)
+    (define-key pel:for-org-mode "r" 'org-clock-report)
     (define-key pel:org-preview "v" 'org-toggle-include-images)
     (define-key pel:org-preview "V" 'org-redisplay-inline-images)
     (when (version<= "9.8" (org-version))
