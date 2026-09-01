@@ -1,7 +1,9 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
-- Add the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/calendar.pdf][⅀ Calendar PDF]] and the ~<f12>~ key bindings for the calendar-mode.
+- Add support for Emacs Calendar:
+  - Add the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/calendar.pdf][⅀ Calendar PDF]] and the ~<f12>~ key bindings for the calendar-mode.
+  - Add the *pel-pkg-for-calendar* customization group and the *pel-activate-appt-notification* which activates the calendar appointment notification mechanism.
 - In Emacs 28.1 or later, ~<f11> <f5> <f5>~ is now bound to *repeat-mode*; it toggles the repeat-mode introduced in Emacs 28.1.
   The ~<f11> ? d <f5>~ is also bound to *describe-repeat-maps*.
 - Improved org-mode support:

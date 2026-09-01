@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-08-31 13:01:00 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-01 13:50:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -649,8 +649,7 @@ Return the manual PDF file name."
                                                                  popup-switcher))
     ;; ([f11 ?b ?I]
 
-    ;; (,(kbd "<f11> SPC SPC c") "calendar"  nil calendar)
-    ([f11 32 32 ?c]           "calendar"  nil calendar)
+    ([f11 32 32 ?c] "calendar"  pel-pkg-for-calendar  calendar)
 
     ([f11 ?h]       "highlight"  (pel-pkg-for-highlight
                                   pel-pkg-for-modeline

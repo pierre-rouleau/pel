@@ -225,6 +225,7 @@
 ;;     - pel-pkg-for-testing
 ;;     - pel-pkg-for-text-mode
 ;;     - pel-pkg-for-time-tracking
+;;       - pel-pkg-for-calendar
 ;;     - pel-pkg-for-text-translation
 ;;     - pel-pkg-for-undo
 ;;     - pel-pkg-for-vcs
@@ -14917,12 +14918,26 @@ This requires Emacs 27.1 or later."
   :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
+;; Calendar Support
+;; ----------------
+(defgroup pel-pkg-for-calendar nil
+  "List of user-options that control Calendar functionalities."
+  :group 'pel-pkg-for-time-tracking)
+
+(defcustom pel-activate-appt-notification nil
+  "Control whether PEL activates automatic notification of appointments.
+This uses the appt package, part of Emacs Calendar system."
+  :group 'pel-pkg-for-calendar
+  :link `(url-link :tag "Calendar PDF" ,(pel-pdf-file-url "calendar"))
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
 ;; Text Translation
 ;; ----------------
 (defgroup pel-pkg-for-text-translation nil
   "List of packages that PEL can use to perform natural text translation."
   :group 'pel-package-use)
-
 
 (defcustom pel-use-go-translate nil
   "Control whether PEL activates the go-translate external package.
