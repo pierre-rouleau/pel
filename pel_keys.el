@@ -6920,6 +6920,17 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                      org-switchb)
 
   (global-set-key (kbd "C-c a") 'org-agenda)
+
+  (pel-eval-after-load org-agenda
+    ;; Add local key bindings to the org-agenda-mode keymap
+    (when (boundp 'org-agenda-mode-map)
+      ;; Add org-agenda-undo because C-_ is used by PEL as a negative prefix
+      ;; key and C-_ is normally used by Org mode as its remote undo.
+      (define-key org-agenda-mode-map (kbd "C-M-_") 'org-agenda-undo)
+      (define-key org-agenda-mode-map (kbd "C-S-_") 'org-agenda-undo)
+      (define-key org-agenda-mode-map (kbd "<f12> <up>")   'org-agenda-todo-previousset)
+      (define-key org-agenda-mode-map (kbd "<f12> <down>") 'org-agenda-todo-nextset)))
+
   (pel-eval-after-load org
     ;; schedule
     (pel-eval-after-load org-agenda
