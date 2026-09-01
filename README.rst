@@ -38,7 +38,7 @@ PEL -- Pragmatic Emacs Leverage
    :alt: PEL Hydras
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
-.. image:: https://img.shields.io/badge/PDF_Files-223-blue
+.. image:: https://img.shields.io/badge/PDF_Files-224-blue
    :alt: PDF Files
    :target: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/-index.pdf
 
@@ -209,7 +209,7 @@ and terminal-based Emacs (with working key bindings) and provides:
   - Also see the document titled `Using tree-sitter with Emacs and PEL`_ which
     describes how to setup your environment to use the tree-sitter based modes,
 
-- **223 Extensive Topic-organized Reference Quick Sheet PDFs**  (see `PEL PDF
+- **224 Extensive Topic-organized Reference Quick Sheet PDFs**  (see `PEL PDF
   Tables`_ below).
 
 - **Many Command Line Tools** comes with PEL: the `shell scripts`_ to start
@@ -605,7 +605,7 @@ packages, etc.
 PEL PDF Tables
 ~~~~~~~~~~~~~~
 
-PEL provides **223** `topic oriented PDF quick-reference tables`_ [#doc]_,
+PEL provides **224** `topic oriented PDF quick-reference tables`_ [#doc]_,
 each heavily color-coded and hyperlinked to each other, to Emacs manuals and
 their sections, to external packages and other public resources.  This is a
 unique approach in the Emacs world; it complements Emacs' excellent `help and

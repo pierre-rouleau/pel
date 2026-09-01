@@ -39,6 +39,7 @@ The complete list of PEL PDF files is:
 #. `closing-suspending.pdf`_
 #. `cmd/ls.pdf`_
 #. `cmd/ssh.pdf`_
+#. `calendar.pdf`_
 #. `comments.pdf`_
 #. `compilation-mode.pdf`_
 #. `completion-input-availability.pdf`_
@@ -271,6 +272,7 @@ The complete list of PEL PDF files is:
 .. _closing-suspending.pdf:                                pel-table-based-documentation1/closing-suspending.pdf
 .. _cmd/ls.pdf:                                            pel-table-based-documentation1/cmd/ls.pdf
 .. _cmd/ssh.pdf:                                           pel-table-based-documentation1/cmd/ssh.pdf
+.. _calendar.pdf:                                          pel-table-based-documentation1/calendar.pdf
 .. _comments.pdf:                                          pel-table-based-documentation1/comments.pdf
 .. _compilation-mode.pdf:                                  pel-table-based-documentation1/compilation-mode.pdf
 .. _completion-input-availability.pdf:                     pel-table-based-documentation1/completion-input-availability.pdf

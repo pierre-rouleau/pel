@@ -789,6 +789,15 @@ Your version of Emacs does not support dynamic module.")))
   (global-set-key (kbd "M-g w")   'avy-goto-word-1)
   (global-set-key (kbd "M-g e")   'avy-goto-word-0))
 
+;;** Calendar
+;;   --------
+(define-pel-global-prefix pel:for-calendar   (kbd "<f11> SPC SPC c"))
+(define-key pel: (kbd "M-C") 'calendar)
+(pel--mode-hook-maybe-call
+ (lambda ()
+   (pel-local-set-f12 'pel:for-calendar))
+ 'calendar-mode 'calendar-mode-hook)
+
 ;;** Combobulate -- Tree Sitter Based operations
 ;;   -------------------------------------------
 (when pel-use-combobulate
@@ -848,7 +857,6 @@ Your version of Emacs does not support dynamic module.")))
 ;;
 ;; activate the <f12> key binding for dired
 (pel--mode-hook-maybe-call
-
  (lambda ()
    (pel-local-set-f12 'pel:for-dired))
  'dired-mode 'dired-mode-hook)
@@ -2414,6 +2422,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;
 ;;  SPC C-l - inferior-lfe-mode
 ;;  SPC b   - ibuffer-mode
+;;  SPC c   - calendar-mode
 ;;  SPC d d - diff-mode
 ;;  SPC d e - ediff-mode
 ;;  SPC d s - smerge-mode
@@ -8510,6 +8519,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;; diff-mode support
 ;; Provide <f12> <f1>, <f12> <f2> and <f12><f3> keys for diff-mode
+(define-pel-global-prefix pel:for-diff            (kbd "<f11> SPC SPC d"))
 (define-pel-global-prefix pel:for-diff-mode       (kbd "<f11> SPC SPC d d"))
 (define-pel-global-prefix pel:for-diff-mode-setup (kbd "<f11> SPC SPC d d <f4>"))
 (define-key pel:for-diff-mode-setup "?" 'pel-diff-show-status)

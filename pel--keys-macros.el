@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-08-29 12:02:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-08-31 13:01:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -648,6 +648,10 @@ Return the manual PDF file name."
                                                                  nhexl
                                                                  popup-switcher))
     ;; ([f11 ?b ?I]
+
+    ;; (,(kbd "<f11> SPC SPC c") "calendar"  nil calendar)
+    ([f11 32 32 ?c]           "calendar"  nil calendar)
+
     ([f11 ?h]       "highlight"  (pel-pkg-for-highlight
                                   pel-pkg-for-modeline
                                   pel-pkg-for-parens)
@@ -765,14 +769,14 @@ stored inside the doc/pdf directory.")
     ([f11 ?u]        "undo-redo-repeat" pel-pkg-for-undo        ,pel--undo-groups)
     ;; when accessing VCS directly from <f11> v: prompt for the VCS
     ([f11 ?v]        pel--prompt4-vcs        pel-pkg-for-vcs        (vc
-                                                                vc-hg
-                                                                vc-git
-                                                                magit
-                                                                monky))
+                                                                     vc-hg
+                                                                     vc-git
+                                                                     magit
+                                                                     monky))
     ;; When accessing VCS from the vc-dir-mode buffer:
     (,(kbd "<f11> SPC SPC v") pel--select-vcs  pel-pkg-for-vcs   (vc
-                                                             vc-hg
-                                                             vc-git))
+                                                                  vc-hg
+                                                                  vc-git))
     ([f11 ?w]        "windows"        pel-pkg-for-window  (windows
                                                            ace-window
                                                            ace-window-display
@@ -955,8 +959,9 @@ stored inside the doc/pdf directory.")
     ("go-ts"               [f11 32 ?g])
     ("graphviz-dot"        [f11 32 27 ?g])
     ("haskell"             [f11 32 ?h])
-    ("hy" [f11 32 8])
+    ("hy"                  [f11 32 8])
     ("ibuffer"             [f11 32 32 ?b])
+    ("calendar"            [f11 32 32 ?c])
     ("inferior-lfe"        [f11 32 32 12])
     ("janet"               [f11 32 ?T])
     ("java"                [f11 32 ?J])
