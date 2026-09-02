@@ -6931,6 +6931,14 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (define-key org-agenda-mode-map (kbd "<f12> <up>")   'org-agenda-todo-previousset)
       (define-key org-agenda-mode-map (kbd "<f12> <down>") 'org-agenda-todo-nextset)))
 
+  (when (pel-emacs-is-a-tty-p)
+    (pel-eval-after-load org-clock
+      ;; When running inside a terminal, provide a notification handler
+      ;; that works in terminal.
+      (when (and (boundp 'org-show-notification-handler)
+                 (null org-show-notification-handler))
+        (setq org-show-notification-handler 'pel-org-notify))))
+
   (pel-eval-after-load org
     ;; schedule
     (pel-eval-after-load org-agenda
