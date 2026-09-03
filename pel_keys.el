@@ -6887,6 +6887,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (define-pel-global-prefix pel:for-org-mode   (kbd "<f11> SPC M-o"))
   (define-pel-global-prefix pel:org-mode-help  (kbd "<f11> SPC M-o ?"))
   (define-pel-global-prefix pel:org-agenda     (kbd "<f11> SPC M-o a"))
+  (define-pel-global-prefix pel:org-archive    (kbd "<f11> SPC M-o M-a"))
   (define-pel-global-prefix pel:org-preview    (kbd "<f11> SPC M-o v"))
 
   ;; Add Org mode support
@@ -6897,6 +6898,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (defvar pel-has-detected-org-file nil
     "Set to t once Emacs has detected opening of an Org file.")
 
+  (add-hook 'org-after-refile-insert-hook 'pel--org-clean-archive-properties-on-refile)
   (add-hook 'org-mode-hook
             (lambda ()
               (unless pel-has-detected-org-file
@@ -6964,8 +6966,9 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:for-org-mode "c" 'org-lint)
     (define-key pel:for-org-mode "s" 'org-insert-structure-template)
     (define-key pel:for-org-mode "r" 'org-clock-report)
-    (define-key pel:org-preview "v" 'org-toggle-include-images)
-    (define-key pel:org-preview "V" 'org-redisplay-inline-images)
+    (define-key pel:org-preview  "v" 'org-toggle-include-images)
+    (define-key pel:org-preview  "V" 'org-redisplay-inline-images)
+    (define-key pel:org-archive  "r" 'pel-org-archive-restore)
     (when (version<= "9.8" (org-version))
       (define-key pel:org-preview "r" 'org-link-preview-region)
       (define-key pel:org-preview "c" 'org-link-preview-clear))

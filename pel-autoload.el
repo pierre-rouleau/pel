@@ -795,7 +795,10 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-org" for:
     pel-org-open-pdf
     pel-org-set-refile-targets
+    pel-org-archive-restore
     pel-org-notify)
+  (pel-autoload-function "pel-org" for:
+    pel--org-clean-archive-properties-on-refile)
 
   (pel-autoload "pel-outline" for:
     pel-outline-print-vars)
