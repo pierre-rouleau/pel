@@ -30,7 +30,7 @@ PEL -- Pragmatic Emacs Leverage
    :alt: User Options
    :target: `➣ Customization Driven Package Management & Configuration`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-729-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-749-teal
    :alt: PEL Commands
    :target: https://github.com/pierre-rouleau/pel#pel-convenience-commands
 
@@ -75,7 +75,7 @@ or `update it`_ [#update]_ ! Leave `feedback in the discussion`_ if you wish.
 Essentially PEL extends plain vanilla Emacs 26.3 and later, works on GUI Emacs
 and terminal-based Emacs (with working key bindings) and provides:
 
-- **Unified, Cohesive Command Interface**: with 729 additional key-bound
+- **Unified, Cohesive Command Interface**: with 749 additional key-bound
   commands, several of which provide glue logic between features to increase
   cohesion and simplify usage.
 - **Extended Vanilla Emacs Key Bindings** keeps the vanilla Emacs key bindings
@@ -716,7 +716,7 @@ Topic Specific Documents
 ➣ PEL Convenience Commands
 --------------------------
 
-- PEL provides 729 extra commands or more.  PEL commands extend the packages
+- PEL provides 749 extra commands or more.  PEL commands extend the packages
   it supports and provides some of its own features.  Some commands are only
   available for a given OS, most are accessible in every OS.
 - When the ``pel-use-hydra`` user-option is turned on, PEL provides 12
@@ -912,7 +912,7 @@ Notes
               The command detects the key sequence and the context to
               identify which PEL PDF to open.
 
-              PEL currently implements 729 interactive commands.  Some are
+              PEL currently implements 749 interactive commands.  Some are
               always loaded.  Several are auto-loaded when needed.  This count
               excludes the number of template commands that are dynamically constructed
               and loaded only for major modes, such as Erlang, that support
