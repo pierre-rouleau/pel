@@ -15,6 +15,8 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
     - ~<f12> ? e~ for *org-entities-help* and ~<f12> ? i~ for *org-info*.
     - ~<f12> s~ for *org-insert-structure-template*, allowing the command invoked by keys in terminal-based Emacs.
     - ~<f12> c~ is a key prefix for org-mode clock commands.
+    - ~<f12> t~ is a key prefix for org-mode table commands that are either
+      not available for Emacs running in terminal, or not bound.
     - ~<f12> v~ is a key prefix for org-mode image preview commands. Two of them require org-mode 9.8 or later.
     - ~<f12> M-a~ is a key prefix for org-mode archive commands. It holds:
       - ~<f12> M-a r~ bound to *pel-org-archive-restore* command.  That

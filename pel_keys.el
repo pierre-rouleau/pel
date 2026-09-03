@@ -6889,6 +6889,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (define-pel-global-prefix pel:org-agenda     (kbd "<f11> SPC M-o a"))
   (define-pel-global-prefix pel:org-archive    (kbd "<f11> SPC M-o M-a"))
   (define-pel-global-prefix pel:org-preview    (kbd "<f11> SPC M-o v"))
+  (define-pel-global-prefix pel:org-table      (kbd "<f11> SPC M-o t"))
 
   ;; Add Org mode support
   ;; Bind Org mode commands that can be used before Org mode is loaded.
@@ -6969,6 +6970,11 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:org-preview  "v" 'org-toggle-include-images)
     (define-key pel:org-preview  "V" 'org-redisplay-inline-images)
     (define-key pel:org-archive  "r" 'pel-org-archive-restore)
+    (define-key pel:org-table    (kbd "SPC") 'org-table-blank-field)
+    (define-key pel:org-table    (kbd "RET") 'org-table-copy-down)
+    (define-key pel:org-table    "i" 'org-table-import)
+    (define-key pel:org-table    "t" 'org-table-header-line-mode)
+    (define-key pel:org-table    (kbd "M-t") 'org-table-transpose-table-at-point)
     (when (version<= "9.8" (org-version))
       (define-key pel:org-preview "r" 'org-link-preview-region)
       (define-key pel:org-preview "c" 'org-link-preview-clear))
