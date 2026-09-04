@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-01 13:50:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-04 10:50:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1202,6 +1202,7 @@ Raw Arg  N value Content
 ======== ======= ==============================
 nil      none    local Mode-specific PDF
 1         1      local Mode-specific PDF
+'-       -1      Web-hosted  Mode-specific PDF
 -1       -1      Web-hosted  Mode-specific PDF
 (4)      -1      Web-hosted  Mode-specific PDF
 >=2      >= 2    Local Language/Syntax/Ref PDF
@@ -1211,6 +1212,7 @@ nil      none    local Mode-specific PDF
 ======== ======= =============================="
   (cond
    ((null raw-arg)  1)
+   ((eq raw-arg '-) -1)                 ; accept 'M- -' as -1
    ((listp raw-arg) (let ((val (car raw-arg)))
                       (cond
                        ((= val 4) -1)
