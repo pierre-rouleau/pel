@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-05 09:58:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-05 11:23:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -204,6 +204,16 @@ Raise an error when failing to restore item unless SILENT is non-nil."
 Nothing to restore; use in valid/non-empty Org Archive buffer"))))
           (user-error "Nothing to restore: %s" (error-message-string err))))
     (error "Cannot load org-refile")))
+
+;; ---------------------------------------------------------------------------
+;; Specialized Org Customization Commands
+;; --------------------------------------
+
+(defun pel-customize-org-agenda (&optional other-window)
+  "Customize Org Agenda.
+If OTHER-WINDOW is non-nil display in other window."
+  (interactive "P")
+  (pel--customize-group "org-agenda" other-window))
 
 ;; ---------------------------------------------------------------------------
 ;; Org Notification that works in terminal-based Emacs

@@ -6931,6 +6931,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       ;; key and C-_ is normally used by Org mode as its remote undo.
       (define-key org-agenda-mode-map (kbd "C-M-_") 'org-agenda-undo)
       (define-key org-agenda-mode-map (kbd "C-S-_") 'org-agenda-undo)
+      (define-key org-agenda-mode-map (kbd "<f12> <f3>") 'pel-customize-org-agenda)
       (define-key org-agenda-mode-map (kbd "<f12> <up>")   'org-agenda-todo-previousset)
       (define-key org-agenda-mode-map (kbd "<f12> <down>") 'org-agenda-todo-nextset)))
 
