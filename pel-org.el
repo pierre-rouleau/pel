@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-05 09:23:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-05 09:58:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -77,6 +77,7 @@ GitHub remote file is opened by default."
 ;; from the archived file.
 
 ;;  * `pel-org-archive-restore'
+;;    - `pel--org-buffer-is-archive-p'
 ;;    - `pel--org-archive-original'
 ;;      - `pel--org-archive-file-first-property'
 ;;    - `pel--org-heading-and-pos'
@@ -150,11 +151,25 @@ Returns nil if the structural path cannot be found."
               (error nil)))))
     (error "org not loaded in 'pel--org-heading-and-pos'")))
 
+(defun pel--org-buffer-is-archive-p ()
+  "Return t if current buffer is an Org archive file."
+  (let ((fname (buffer-file-name)))
+    (and fname
+         (string-suffix-p ".org_archive" fname)
+         (eq major-mode 'org-mode))))
+
+;; (defun pel-org-buffer-is-archive-p (&optional buffer)
+;;   "Return t if BUFFER is an Org archive file."
+;;   (if buffer
+;;       (with-current-buffer buffer
+;;         (pel--org-buffer-is-archive-p))
+;;     (pel--org-buffer-is-archive-p)))
+
 (defun pel-org-archive-restore (&optional silent)
   "Restore archived sub-tree at or above point back to its original org file.
 Raise an error when failing to restore item unless SILENT is non-nil."
   (interactive)
-  (unless (eq major-mode 'org-mode)
+  (unless (pel--org-buffer-is-archive-p)
     (user-error "This buffer (%s) is not an Org archive buffer!" (buffer-name)))
   (require 'org-refile 'noerror)
   (if (and (fboundp 'org-narrow-to-subtree)
