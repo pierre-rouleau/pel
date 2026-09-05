@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-03 14:31:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-05 09:23:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -76,6 +76,11 @@ GitHub remote file is opened by default."
 ;; came from.  When the data is restored all ARCHIVE properties are removed
 ;; from the archived file.
 
+;;  * `pel-org-archive-restore'
+;;    - `pel--org-archive-original'
+;;      - `pel--org-archive-file-first-property'
+;;    - `pel--org-heading-and-pos'
+
 (defvar pel-refile-is-archive-restore nil
   "Set to t by `pel-org-archive-restore' to activate archived tree restoration.")
 
@@ -146,30 +151,43 @@ Returns nil if the structural path cannot be found."
     (error "org not loaded in 'pel--org-heading-and-pos'")))
 
 (defun pel-org-archive-restore (&optional silent)
-  "Restore archived sub-tree back to its original org file.
+  "Restore archived sub-tree at or above point back to its original org file.
 Raise an error when failing to restore item unless SILENT is non-nil."
   (interactive)
+  (unless (eq major-mode 'org-mode)
+    (user-error "This buffer (%s) is not an Org archive buffer!" (buffer-name)))
   (require 'org-refile 'noerror)
-  (if (fboundp 'org-refile)
-      (let ((fname--location (pel--org-archive-original))
-            done)
-        (when fname--location
-          (let ((orig-org-fname (nth 0 fname--location))
-                (heading-path   (nth 1 fname--location))
-                (rfloc nil))
-            (with-current-buffer (find-file-noselect orig-org-fname)
-              (let ((heading--location (pel--org-heading-and-pos heading-path)))
-                (when heading--location
-                  (setq rfloc (list  (car heading--location)
-                                     orig-org-fname
-                                     nil
-                                     (cdr heading--location))))))
-            (let ((pel-refile-is-archive-restore t))
-              (org-refile nil nil rfloc))
-            (setq done t)))
-        (unless (or done silent)
-          (user-error
-           "Nothing to restore; use in valid/non-empty Org Archive buffer")))
+  (if (and (fboundp 'org-narrow-to-subtree)
+           (fboundp 'org-refile))
+      (save-restriction
+        (condition-case err
+            (progn
+              ;; Narrow to the subtree at point to restore that tree and get
+              ;; the information from that tree, not the first one in the file.
+              (org-narrow-to-subtree)
+              ;; Within the narrowed subtree, search and identify the properties.
+              (let ((fname--location (pel--org-archive-original))
+                    done)
+                (when fname--location
+                  ;; if information found proceed with the refiling.
+                  (let ((orig-org-fname (nth 0 fname--location))
+                        (heading-path (nth 1 fname--location))
+                        (rfloc nil))
+                    (with-current-buffer (find-file-noselect orig-org-fname)
+                      (let ((heading--location (pel--org-heading-and-pos heading-path)))
+                        (when heading--location
+                          (setq rfloc (list (car heading--location)
+                                            orig-org-fname
+                                            nil
+                                            (cdr heading--location))))))
+                    (let ((pel-refile-is-archive-restore t))
+                      (org-refile nil nil rfloc))
+                    (setq done t)))
+                (unless (or done silent)
+                  (user-error
+                   "\
+Nothing to restore; use in valid/non-empty Org Archive buffer"))))
+          (user-error "Nothing to restore: %s" (error-message-string err))))
     (error "Cannot load org-refile")))
 
 ;; ---------------------------------------------------------------------------
