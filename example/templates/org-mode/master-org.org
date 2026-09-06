@@ -50,7 +50,7 @@ reports you must turn on the [[elisp:(customize-variable 'org-clock-report-inclu
 
 * Today's Activity Summary
 #+BEGIN: clocktable :maxlevel 5 :step day :tstart "<today>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files
-#+END
+#+END:
 
 * Daily Log
 #+BEGIN: clocktable :maxlevel 5 :step day :tstart "<-1w>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files
