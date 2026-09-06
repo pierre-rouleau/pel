@@ -31,7 +31,9 @@ mistakes.
 
 Keep an eye on the time report for today to ensure that your tasks are tracked
 properly. Commit files often; that will help you track your changes, catch
-and correct mistakes.
+and correct mistakes.  The day-based reports support five heading levels to
+help organized tasks with sub-tasks and see the activity details at the day level.
+The weekly and monthly reports consolidate on the top level only.
 
 All time is formatted in =Hours:Minutes= format, not consolidated into days on
 purpose.
@@ -47,11 +49,11 @@ reports you must turn on the [[elisp:(customize-variable 'org-clock-report-inclu
 
 
 * Today's Activity Summary
-#+BEGIN: clocktable :maxlevel 2 :step day :tstart "<today>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files
+#+BEGIN: clocktable :maxlevel 5 :step day :tstart "<today>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files
 #+END
 
 * Daily Log
-#+BEGIN: clocktable :maxlevel 2 :step day :tstart "<-1w>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files
+#+BEGIN: clocktable :maxlevel 5 :step day :tstart "<-1w>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files
 #+END:
 
 * Weekly Summary
