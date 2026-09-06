@@ -6893,6 +6893,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
   ;; Add Org mode support
   ;; Bind Org mode commands that can be used before Org mode is loaded.
+  (define-key pel:org (kbd "M-o") 'orgtbl-mode)
   (define-key pel:org "a" 'org-agenda)
   (define-key pel:org "c" 'org-capture)
 
