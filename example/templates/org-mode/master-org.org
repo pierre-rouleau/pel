@@ -2,6 +2,54 @@
 
 #+STARTUP: content
 
+#+BEGIN_COMMENT
+* Overview - How to use this.
+This file is an example of how to create a time consolidation report for all
+time tracked activities in a set of your files identified by the
+[[elisp:(customize-variable 'pel-org-project-files)][pel-org-project-files user-option]].
+
+*To use this*:
+- Create a directory that will hold your time tracking todo list Org files.
+- Ideally put this directory under version control; it will help you keep
+  track of your changes and will allow you to back it up somewhere else
+  easily.
+- You may want to create sub-directories; one per project.
+- Create time tracking todo Org files in those directories and put them under
+  VCS control.  These files must have a =.org= file extension.
+- Create Org archive for each one of these files; the org archives must be
+  stored inside the same directory as the original and must have a =.org_archive=
+  file extension.  Also put these files under VCS control.
+- Identify the names of the time tracking files in [[elisp:(customize-variable 'pel-org-project-files)][pel-org-project-files user-option]].
+- In the parent directory create a =master-activity.org= file that is a
+  duplicate of this file.  This file is not listed in the
+  pel-org-project-files.
+
+With this file organization you will be able to archive done tasks into
+archive org files and by putting everything under VCS you will be able to see
+changes to the files when archiving done tasks and revert when you make
+mistakes.
+
+Keep an eye on the time report for today to ensure that your tasks are tracked
+properly. Commit files often; that will help you track your changes, catch
+and correct mistakes.
+
+All time is formatted in =Hours:Minutes= format, not consolidated into days on
+purpose.
+
+*To track your time*: create or refresh a report; expand the corresponding
+subtree, place point on the =#+BEGIN line= and hit ~C-c C-c~.
+PEL also supports the ~<f12> r~ key binding for that.
+
+*NOTE*: By default, the reports will *not* include time for the tasks
+currently being clocked in.  If you want to incorporate that time in the
+reports you must turn on the [[elisp:(customize-variable 'org-clock-report-include-clocking-task)][org-clock-report-include-clocking-task user-option]].
+#+END_COMMENT
+
+
+* Today's Activity Summary
+#+BEGIN: clocktable :maxlevel 2 :step day :tstart "<today>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files
+#+END
+
 * Daily Log
 #+BEGIN: clocktable :maxlevel 2 :step day :tstart "<-1w>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files
 #+END:

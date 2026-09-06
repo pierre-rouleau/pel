@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-06 13:06:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-06 15:25:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -43,6 +43,7 @@
                                    ; and set by a hook function when an org
                                    ; file is opened.
 
+;;-pel-autoload
 (defun pel-org-open-pdf (&optional open-github-page-p)
   "Open Ɱ Org-Mode PEL PDF.
 
@@ -55,6 +56,7 @@ GitHub remote file is opened by default."
   (pel-help-open-pdf "mode-org-mode" open-github-page-p))
 
 
+;;-pel-autoload
 (defun pel-org-set-refile-targets (&optional other-window)
   "Customize `org-refile-targets'."
   (interactive "p")
@@ -85,6 +87,7 @@ GitHub remote file is opened by default."
 (defvar pel-refile-is-archive-restore nil
   "Set to t by `pel-org-archive-restore' to activate archived tree restoration.")
 
+;;-pel-autoload
 (defun pel--org-clean-archive-properties-on-refile (&optional force)
   "Automatically clear archive context properties when a subtree is refiled."
   (require 'org 'noerror)
@@ -165,6 +168,7 @@ Returns nil if the structural path cannot be found."
 ;;         (pel--org-buffer-is-archive-p))
 ;;     (pel--org-buffer-is-archive-p)))
 
+;;-pel-autoload
 (defun pel-org-archive-restore (&optional silent)
   "Restore archived sub-tree at or above point back to its original org file.
 Raise an error when failing to restore item unless SILENT is non-nil."
@@ -209,6 +213,7 @@ Nothing to restore; use in valid/non-empty Org Archive buffer"))))
 ;; Specialized Org Customization Commands
 ;; --------------------------------------
 
+;;-pel-autoload
 (defun pel-customize-org-agenda (&optional other-window)
   "Customize Org Agenda.
 If OTHER-WINDOW is non-nil display in other window."
@@ -219,6 +224,7 @@ If OTHER-WINDOW is non-nil display in other window."
 ;; Org Notification that works in terminal-based Emacs
 ;; ---------------------------------------------------
 
+;;-pel-autoload
 (defun pel-org-notify (msg)
   "Notifier - display MSG on echo area and in OS-specific notification.
 Inside a SSH session, just display the message in the echo area."
@@ -259,6 +265,7 @@ Inside a SSH session, just display the message in the echo area."
 ;; Org Clock Table Report Support
 ;; ------------------------------
 
+;;-pel-autoload
 (defun pel-org-get-project-files ()
   "Return the list of project files identified by `pel-org-project-files'.
 

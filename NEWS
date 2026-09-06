@@ -35,6 +35,7 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
   - In Org Agenda View, typing ~<f12> <f3>~ is bound to *pel-customize-org-agenda* to customize the org-agenda group.
   - Improved logic for PEL PDF file opening, to better support all modes, including org-mode.
 - With *pel-use-org* turned on PEL now binds the *orgtbl-mode* command to ~<f11> M-o M-o~.  Use this to activate the OrgTbl minor mode in text modes to operate on tables in the same way that Org does.
+- Provide an example file for time tracked tasks reporting consolidation with documentation and links to the customized user-options in ~example/templates/org-mode/master-org.org~.
 - The file ~/.emacs.d/utils/pel-user-init.el is used to store user's specific logic and is never removed by ``pel-cleanup``.
 - You can now write your own extra Emacs initialization code inside your own Emacs Lisp file identified by the
   PEL *pel-user-extra-code-feature* user-option.  PEL will load this file after loading itself.
