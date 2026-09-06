@@ -12,6 +12,7 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
   - Improved description coverage in the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-org-mode.pdf][Ɱ Org-Mode PDF]]
   - Add support for *org-habit* module.
   - New key bindings for org-mode major-mode:
+    - ~<f12> RET~ for *org-insert-todo-heading-respect-content* providing binding that works in terminal-based Emacs.
     - ~<f12> ? e~ for *org-entities-help* and ~<f12> ? i~ for *org-info*.
     - ~<f12> s~ for *org-insert-structure-template*, allowing the command invoked by keys in terminal-based Emacs.
     - ~<f12> c~ is a key prefix for org-mode clock commands.

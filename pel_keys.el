@@ -6965,6 +6965,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (global-set-key (kbd "C-c l") #'org-store-link)
 
     ;; Add easy-to use F12 key bindings for org commands.
+    (define-key pel:for-org-mode (kbd "RET") 'org-insert-todo-heading-respect-content)
     (define-key pel:for-org-mode (kbd "TAB") 'org-indent-mode)
     (define-key pel:for-org-mode "c" 'org-lint)
     (define-key pel:for-org-mode "s" 'org-insert-structure-template)
