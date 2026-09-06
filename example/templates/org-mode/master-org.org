@@ -1,0 +1,19 @@
+#+TITLE: Consolidated Daily Activity Log
+
+#+STARTUP: content
+
+* Daily Log
+#+BEGIN: clocktable :maxlevel 2 :step day :tstart "<-1w>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files
+#+END:
+
+* Weekly Summary
+#+BEGIN: clocktable :maxlevel 1 :step week :tstart "<-4w>" :tend "<now>" :narrow 60 :scope pel-org-get-project-files
+#+END:
+
+* Monthly Summary
+#+BEGIN: clocktable :maxlevel 1 :step month :tstart "<-3m>" :tend "<now>" :narrow 60 :scope pel-org-get-project-files
+#+END:
+
+# Local Variables:
+# org-duration-format: ((special . h:mm))
+# End:

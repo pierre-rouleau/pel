@@ -5130,7 +5130,9 @@ programming language files."
   :link `(url-link :tag "Org Mode PDF" ,(pel-pdf-file-url "mode-org-mode")))
 
 (defcustom pel-use-org nil
-  "Control whether PEL supports Org-Mode."
+  "Control whether PEL supports Org-Mode.
+
+You must activate this when using Org Mode with PEL."
   :group 'pel-pkg-for-org-mode
   :type 'boolean
   :safe #'booleanp)
@@ -5163,7 +5165,7 @@ opening org buffers.
 This does *NOT* control the indentation in org files, only for commands
 that mode point to tab stop positions such as `tab-to-tab-stop', and the
 display of hard TAB characters."
-  :group 'pel-pkg-for-org
+  :group 'pel-pkg-for-org-mode
   :type 'integer
   :safe 'pel-indent-valid-p)
 
@@ -5171,7 +5173,7 @@ display of hard TAB characters."
   "Value of `indent-tabs-mode' for editing org files.
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-org
+  :group 'pel-pkg-for-org-mode
   :type 'boolean
   :safe #'booleanp)
 
@@ -5182,10 +5184,17 @@ task after this number of seconds of idle time.
 
 This sets `org-clock-auto-clockout-timer' and then PEL sets up calling
 `org-clock-auto-clockout-insinuate' when org-mode is loaded."
-  :group 'pel-pkg-for-org
+  :group 'pel-pkg-for-org-mode
   :type '(choice
 	  (integer :tag "Clock out after Emacs is idle for X seconds")
 	  (const :tag "Never auto clock out" nil)))
+
+(defcustom pel-org-project-files nil
+  "A list Org files containing clocked activities.
+These will be used in project clock tables.
+Each entry must be a valid path to an Org file."
+  :type '(repeat (file :tag "Org File Path"))
+  :group 'pel-pkg-for-org-mode)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; reStructuredText support
