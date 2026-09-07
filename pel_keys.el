@@ -6888,6 +6888,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (define-pel-global-prefix pel:org-mode-help  (kbd "<f11> SPC M-o ?"))
   (define-pel-global-prefix pel:org-agenda     (kbd "<f11> SPC M-o a"))
   (define-pel-global-prefix pel:org-archive    (kbd "<f11> SPC M-o M-a"))
+  (define-pel-global-prefix pel:org-list       (kbd "<f11> SPC M-o l"))
   (define-pel-global-prefix pel:org-preview    (kbd "<f11> SPC M-o v"))
   (define-pel-global-prefix pel:org-table      (kbd "<f11> SPC M-o t"))
 
@@ -6965,11 +6966,14 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (global-set-key (kbd "C-c l") #'org-store-link)
 
     ;; Add easy-to use F12 key bindings for org commands.
-    (define-key pel:for-org-mode (kbd "RET") 'org-insert-todo-heading-respect-content)
+    (define-key pel:for-org-mode (kbd "RET")   'org-insert-todo-heading-respect-content)
+    (define-key pel:for-org-mode (kbd "M-RET") 'org-insert-todo-heading)
     (define-key pel:for-org-mode (kbd "TAB") 'org-indent-mode)
     (define-key pel:for-org-mode "c" 'org-lint)
     (define-key pel:for-org-mode "s" 'org-insert-structure-template)
     (define-key pel:for-org-mode "r" 'org-clock-report)
+    (define-key pel:org-list     "*" 'org-list-make-subtree)
+    (define-key pel:org-list     "r" 'org-list-repair)
     (define-key pel:org-preview  "v" 'org-toggle-include-images)
     (define-key pel:org-preview  "V" 'org-redisplay-inline-images)
     (define-key pel:org-archive  "r" 'pel-org-archive-restore)
@@ -6985,7 +6989,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:org-agenda "a" 'org-agenda)
     (define-key pel:org-agenda "," 'org-cycle-agenda-files)
     ;;
-    (define-key pel:for-org-mode "l" 'org-store-link)
+    (define-key pel:for-org-mode "." 'org-store-link)
     (define-key pel:for-org-mode "C" 'org-capture)
     ;;
     (define-key pel:org-mode-help "e" 'org-entities-help)
