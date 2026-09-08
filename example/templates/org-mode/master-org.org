@@ -2,8 +2,7 @@
 
 #+STARTUP: content
 
-#+BEGIN_COMMENT
-* Overview - How to use this.
+* COMMENT - Overview - How to use this.
 This file is an example of how to create a time consolidation report for all
 time tracked activities in a set of your files identified by the
 [[elisp:(customize-variable 'pel-org-project-files)][pel-org-project-files user-option]].
@@ -35,17 +34,21 @@ and correct mistakes.  The day-based reports support five heading levels to
 help organized tasks with sub-tasks and see the activity details at the day level.
 The weekly and monthly reports consolidate on the top level only.
 
+*To track your time*:
+- Create or refresh a report; expand the corresponding subtree, place point on
+  the =#+BEGIN line= and hit ~C-c C-c~.
+  - PEL also supports the ~<f12> r~ key binding to *org-clock-report* for that.
+  - PEL also supports the ~<f12> t M-=~ key binding to
+    *org-table-iterate-buffer-tables* which creates or refresh *all* reports
+    at once!
+
 All time is formatted in =Hours:Minutes= format, not consolidated into days on
 purpose.
-
-*To track your time*: create or refresh a report; expand the corresponding
-subtree, place point on the =#+BEGIN line= and hit ~C-c C-c~.
-PEL also supports the ~<f12> r~ key binding for that.
 
 *NOTE*: By default, the reports will *not* include time for the tasks
 currently being clocked in.  If you want to incorporate that time in the
 reports you must turn on the [[elisp:(customize-variable 'org-clock-report-include-clocking-task)][org-clock-report-include-clocking-task user-option]].
-#+END_COMMENT
+
 
 
 * Today's Activity Summary
