@@ -67,6 +67,7 @@ The complete list of PEL PDF files is:
 #. `file-variables.pdf`_
 #. `filling-justification.pdf`_
 #. `frames.pdf`_
+#. `gnu-calc.pdf`_
 #. `gnu-screen.pdf`_
 #. `graphviz-dot.pdf`_
 #. `grep.pdf`_
@@ -300,6 +301,7 @@ The complete list of PEL PDF files is:
 .. _file-variables.pdf:                                    pel-table-based-documentation1/file-variables.pdf
 .. _filling-justification.pdf:                             pel-table-based-documentation1/filling-justification.pdf
 .. _frames.pdf:                                            pel-table-based-documentation1/frames.pdf
+.. _gnu-calc.pdf:                                          pel-table-based-documentation1/gnu-calc.pdf
 .. _gnu-screen.pdf:                                        pel-table-based-documentation1/gnu-screen.pdf
 .. _graphviz-dot.pdf:                                      pel-table-based-documentation1/graphviz-dot.pdf
 .. _grep.pdf:                                              pel-table-based-documentation1/grep.pdf

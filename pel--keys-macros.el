@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-04 10:50:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-10 14:39:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -649,6 +649,7 @@ Return the manual PDF file name."
                                                                  popup-switcher))
     ;; ([f11 ?b ?I]
 
+    ([f11 32 32 ?C] "gnu-calc"  pel-pkg-for-calc      calc)
     ([f11 32 32 ?c] "calendar"  pel-pkg-for-calendar  calendar)
 
     ([f11 ?h]       "highlight"  (pel-pkg-for-highlight
@@ -960,6 +961,7 @@ stored inside the doc/pdf directory.")
     ("haskell"             [f11 32 ?h])
     ("hy"                  [f11 32 8])
     ("ibuffer"             [f11 32 32 ?b])
+    ("calc"                [f11 32 32 ?C])
     ("calendar"            [f11 32 32 ?c])
     ("inferior-lfe"        [f11 32 32 12])
     ("janet"               [f11 32 ?T])

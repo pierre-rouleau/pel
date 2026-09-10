@@ -44,6 +44,7 @@
 ;;     - pel-pkg-for-bookmark
 ;;     - pel-pkg-for-buffer
 ;;       - pel-pkg-for-ibuffer
+;;     - pel-pkg-for-calc
 ;;     - pel-pkg-for-completion
 ;;     - pel-pkg-for-cursor
 ;;       - pel-pkg-for-iedit
@@ -1363,6 +1364,53 @@ For the `ibuffer-mode', you may want to activate the following minor modes:
   :type 'boolean
   :safe #'booleanp)
 (pel-put pel-use-ibuffer-tramp :package-is :in-utils)
+
+;; ---------------------------------------------------------------------------
+;; Calc Support
+;; ------------
+(defgroup pel-pkg-for-calc nil
+  "PEL settings for Gnu calc, Emacs computer algebra system."
+  :group 'pel-package-use
+  :link `(url-link :tag "Calc PDF" ,(pel-pdf-file-url "gnu-calc")))
+
+(defcustom pel-use-calc nil
+  "Control whether PEL supports Gnu calc."
+  :group 'pel-pkg-for-calc
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-calc-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for calc buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-calc
+  :type '(repeat function))
+
+(defcustom pel-calc-gnuplot-device nil
+  "Gnuplot device type to use in calc plot commands.
+
+PEL sets `calc-gnuplot-default-device' with the value if this value is not nil
+nor an empty string.
+
+Under macOS, to use XQuartz Qt based gnuplot_qt plot window, you may want to
+set this to \"qt 0 font \\\"Sans,10\\\"\".
+
+You can also use the value defined by the GNUTERM environment variable that
+gnuplot uses."
+  :group 'pel-pkg-for-calc
+  :type `(choice
+          (const :tag "Use default" nil)
+          (string :tag "Use this value"
+                  :value ,(if (eq system-type 'darwin)
+                              "qt 0 font \"Sans,10\""
+                            ""))
+          (list  :tag "Use envvar if it exists, or use specified string."
+                 (string :tag "Environment variable"
+                         :value "GETTERM")
+                 (string :tag "Use this if it is not set"
+                         :value ,(when (eq system-type 'darwin)
+                                   "qt 0 font \"Sans,10\""
+                                   )))))
 
 ;; ---------------------------------------------------------------------------
 ;; Completion Support

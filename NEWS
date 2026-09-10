@@ -1,6 +1,15 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- Add extra support for Gnu Calc, activated by the *pel-use-calc* user-option.
+  - Adds the *pel-calc-gnuplot-device* user-option to automatically set the gnuplot device for Gnu Calc.
+  - Provides the ~<f12>~ key prefix with usual PEL commands to access help and
+    customization. It also provides the ~<f12> i~ key binding to *calc-info*
+    which opens the Emacs Info node on Gnu Calc.  That's the best source of
+    information on Gnu Calc; only old versions of the manual are available on
+    the web.
+  - Provides a [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/gnu-calc.pdf][⅀ Gnu Calc PDF]] accessible via ~<f12> <f1>~  (or the longer
+    ~<f11> SPC SPC C <f1>~ globally available key sequence).
 - Add support for Emacs Calendar:
   - Add the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/calendar.pdf][⅀ Calendar PDF]] and the ~<f12>~ key bindings for the calendar-mode.
   - Add the *pel-pkg-for-calendar* customization group and the *pel-activate-appt-notification* which activates the calendar appointment notification mechanism.

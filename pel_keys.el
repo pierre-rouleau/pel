@@ -789,6 +789,41 @@ Your version of Emacs does not support dynamic module.")))
   (global-set-key (kbd "M-g w")   'avy-goto-word-1)
   (global-set-key (kbd "M-g e")   'avy-goto-word-0))
 
+;;** Calc
+;;   ----
+(when pel-use-calc
+
+  (defun pel-calc-gnuplot-device ()
+    "Return gnuplot device identified by customization and environment."
+    (let ((gnuplot-device pel-calc-gnuplot-device))
+      (when (listp pel-calc-gnuplot-device)
+        (setq gnuplot-device (getenv (or (car-safe pel-calc-gnuplot-device)
+                                         "")))
+        (setq gnuplot-device (or gnuplot-device (nth 1 pel-calc-gnuplot-device)
+                                 nil)))
+      ;; Return only a string or nil: nothing else
+      (when (stringp gnuplot-device)
+        gnuplot-device)))
+  (declare-function pel-calc-gnuplot-device "pel_keys")
+
+  (pel-setup-major-mode calc :no-ts
+    features: calc
+    at-init:
+    (define-pel-global-prefix pel:for-calc   (kbd "<f11> SPC SPC C"))
+
+    after-feature-load:
+    ;; For some reason, trying to setup F12 right when calc loads does not
+    ;; work, but works when waiting some time; probably because it takes a
+    ;; bit of time to setup the key map.
+    (run-at-time 3 nil (lambda ()
+                         (pel-local-set-f12 'pel:for-calc)))
+    (define-pel-global-prefix pel:calc-mode-help  (kbd "<f11> SPC SPC C ?"))
+    (define-key pel:calc-mode-help "i" 'calc-info)
+    (let ((gnuplot-device (pel-calc-gnuplot-device)))
+      (when (and gnuplot-device
+                 (boundp 'calc-gnuplot-default-device))
+        (setq calc-gnuplot-default-device gnuplot-device)))))
+
 ;;** Calendar
 ;;   --------
 (define-pel-global-prefix pel:for-calendar   (kbd "<f11> SPC SPC c"))
@@ -2432,6 +2467,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;  SPC C-l - inferior-lfe-mode
 ;;  SPC b   - ibuffer-mode
 ;;  SPC c   - calendar-mode
+;;  SPC C   - calc-mode
 ;;  SPC d d - diff-mode
 ;;  SPC d e - ediff-mode
 ;;  SPC d s - smerge-mode
