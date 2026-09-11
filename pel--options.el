@@ -5245,7 +5245,9 @@ Each entry must be a valid path to an Org file."
   :group 'pel-pkg-for-org-mode)
 
 (defcustom pel-org-archive-with-hierarchy nil
-  "If set, retain the task hierarchy in Org archive files."
+  "If set, retain the task hierarchy in Org archive files.
+Note that this requires Emacs ≥ 27.1 to be effective.
+On Emacs 26.1, this has no effect."
   :group 'pel-pkg-for-org-mode
   :type 'boolean
   :safe #'booleanp)
