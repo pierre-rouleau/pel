@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-11 18:01:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-11 18:10:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,7 +36,6 @@
 (require 'cus-edit)          ; use: `customize-option'
 (require 'org)               ; use: `org-get-outline-path', `org-entry-get',
 ;;                           ;     `org-archive-location'
-(require 'org-archive)       ; use: `org-archive--compute-location'
 (require 'org-macs)          ; use: `org-with-wide-buffer'
 
 ;;; --------------------------------------------------------------------------
@@ -244,79 +243,85 @@ Did you change the original heading text? If so, modify the archive
 (defun pel--org-archive-preserve-hierarchy-adv (orig-fun &rest args)
   "Advise `org-archive-subtree' to recreate the original outline path
 hierarchy inside the archive file before archiving the task."
-  ;; (message "PEL pel--org-archive-preserve-hierarchy-adv: START with %S %S" orig-fun args)
-  (let*
-      ;; oldpath := list of task parent headings
-      ((oldpath (org-get-outline-path))
-       ;; archive-file. := name of the archive file
-       (archive-location-string (or (org-entry-get nil "ARCHIVE" 'inherit)
-                                    org-archive-location))
-       (archive-file (car (org-archive--compute-location archive-location-string))))
-    (if (and oldpath archive-file)
-        ;;
-        ;; Proceed with enhanced archiving.
-        (progn
-          ;; PHASE 1: Reconstruct the structural nodes inside the archive buffer.
-          ;;  - open the archive file cleanly in the background.
-          (with-current-buffer (find-file-noselect archive-file)
-            (org-with-wide-buffer
-             (goto-char (point-min))
-             (let
-                 ;; Track heading level and its scope.
-                 ((current-level 1)
-                  (scope-start   (point-min))
-                  (scope-end     (point-max)))
-               (dolist (heading oldpath)
-                 (narrow-to-region scope-start scope-end)
+  ;; use: `org-archive--compute-location'
+  (if (and (require 'org-archive 'noerror)
+           (fboundp 'org-archive--compute-location))
+      (let*
+          ;; oldpath := list of task parent headings
+          ((oldpath (org-get-outline-path))
+           ;; archive-file. := name of the archive file
+           (archive-location-string (or (org-entry-get nil "ARCHIVE" 'inherit)
+                                        org-archive-location))
+           (archive-file (car (org-archive--compute-location archive-location-string))))
+        (if (and oldpath archive-file)
+            ;;
+            ;; Proceed with enhanced archiving.
+            (progn
+              ;; PHASE 1: Reconstruct the structural nodes inside the archive buffer.
+              ;;  - open the archive file cleanly in the background.
+              (with-current-buffer (find-file-noselect archive-file)
+                (org-with-wide-buffer
                  (goto-char (point-min))
-                 (let ((heading-regexp (format
-                                        "^%s %s$"
-                                        (regexp-quote (make-string current-level ?*))
-                                        (regexp-quote heading))))
-                   (if (re-search-forward heading-regexp nil t)
-                       ;; Found end of parent heading.
-                       (progn
-                         ;; Find its tree boundaries for the next iteration loop.
+                 (let
+                     ;; Track heading level and its scope.
+                     ((current-level 1)
+                      (scope-start   (point-min))
+                      (scope-end     (point-max)))
+                   (dolist (heading oldpath)
+                     (narrow-to-region scope-start scope-end)
+                     (goto-char (point-min))
+                     (let ((heading-regexp (format
+                                            "^%s %s$"
+                                            (regexp-quote (make-string current-level ?*))
+                                            (regexp-quote heading))))
+                       (if (re-search-forward heading-regexp nil t)
+                           ;; Found end of parent heading.
+                           (progn
+                             ;; Find its tree boundaries for the next iteration loop.
+                             (setq scope-start (point))
+                             (org-end-of-subtree t t)
+                             (setq scope-end (point)))
+                         ;;
+                         ;; Parent heading is missing from the archive.
+                         ;; - Insert it cleanly at the end of the current scope.
+                         (goto-char (point-max))
+                         (unless (bolp) (insert "\n"))
+                         (insert (format "%s %s\n" (make-string current-level ?*) heading))
+                         ;; - Narrow the scope to this brand-new empty parent tree
                          (setq scope-start (point))
-                         (org-end-of-subtree t t)
-                         (setq scope-end (point)))
-                     ;;
-                     ;; Parent heading is missing from the archive.
-                     ;; - Insert it cleanly at the end of the current scope.
-                     (goto-char (point-max))
-                     (unless (bolp) (insert "\n"))
-                     (insert (format "%s %s\n" (make-string current-level ?*) heading))
-                     ;; - Narrow the scope to this brand-new empty parent tree
-                     (setq scope-start (point))
-                     (setq scope-end (point))))
-                 ;; Temporarily widen: allow next loop cycle to re-narrow correctly
-                 (widen)
-                 ;; and increment heading level
-                 (setq current-level (1+ current-level))))))
+                         (setq scope-end (point))))
+                     ;; Temporarily widen: allow next loop cycle to re-narrow correctly
+                     (widen)
+                     ;; and increment heading level
+                     (setq current-level (1+ current-level))))))
 
-          ;; PHASE 2: Back in the original buffer, set up the targeted override and
-          ;; execute the original archiving with `org-archive-location' set
-          ;; to the target location for this specific archive action to land
-          ;; precisely under the newly verified/created parent hierarchy.
-          ;; (message "PEL pel--org-archive-preserve-hierarchy-adv: About to invoke org-archive-subtree in %S" (current-buffer))
-          (let* ((parent-depth (length oldpath))
-                 (parent-stars (make-string parent-depth ?*))
-                 (org-archive-location (format "%s::%s %s"
-                                               archive-file
-                                               parent-stars
-                                               (car (last oldpath)))))
-            (apply orig-fun args))
+              ;; PHASE 2: Back in the original buffer, set up the targeted override and
+              ;; execute the original archiving with `org-archive-location' set
+              ;; to the target location for this specific archive action to land
+              ;; precisely under the newly verified/created parent hierarchy.
+              ;; (message "PEL pel--org-archive-preserve-hierarchy-adv: About to invoke org-archive-subtree in %S" (current-buffer))
+              (let* ((parent-depth (length oldpath))
+                     (parent-stars (make-string parent-depth ?*))
+                     (org-archive-location (format "%s::%s %s"
+                                                   archive-file
+                                                   parent-stars
+                                                   (car (last oldpath)))))
+                (apply orig-fun args))
 
-          ;; PHASE 3: return the Org Archive buffer in its startup view mode.
-          (with-current-buffer (find-file-noselect archive-file)
-            (when (require 'org-cycle :noerror)
-              ;; Reset the visibility view back to the org archive file #+STARTUP preference
-              ;; and cleanly save the file in the background.
-              (org-cycle-set-startup-visibility)
-              (save-buffer))))
-      ;;
-      ;; Could not find task parent headings: perform standard archiving.
-      (apply orig-fun args))))
+              ;; PHASE 3: return the Org Archive buffer in its startup view mode.
+              (with-current-buffer (find-file-noselect archive-file)
+                (when (and (require 'org-cycle :noerror)
+                           (fboundp 'org-cycle-set-startup-visibility))
+                  ;; Reset the visibility view back to the org archive file #+STARTUP preference
+                  ;; and cleanly save the file in the background.
+                  (org-cycle-set-startup-visibility)
+                  (save-buffer))))
+          ;;
+          ;; Could not find task parent headings: perform standard archiving.
+          (apply orig-fun args)))
+    ;;
+    ;; `org-archive--compute-location' is not available: perform standard archiving
+    (apply orig-fun args)))
 
 (defun pel-org-enhance-archiving ()
   "Enhance Org archiving: store the task hierarchy in the archive."
