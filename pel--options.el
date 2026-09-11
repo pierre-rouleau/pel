@@ -5244,6 +5244,12 @@ Each entry must be a valid path to an Org file."
   :type '(repeat (file :tag "Org File Path"))
   :group 'pel-pkg-for-org-mode)
 
+(defcustom pel-org-archive-with-hierarchy nil
+  "If set, retain the task hierarchy in Org archive files."
+  :group 'pel-pkg-for-org-mode
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; reStructuredText support
 ;; ------------------------

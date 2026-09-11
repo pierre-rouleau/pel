@@ -6949,7 +6949,6 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                 (define-key pel:org "b" 'org-switchb)
                 (define-key pel:org-config "r" 'pel-org-set-refile-targets))))
 
-
   ;; Org-Mode activation, as suggested by
   ;; https://orgmode.org/manual/Activation.html#Activation :
   (pel-autoload-file org for:
@@ -6982,6 +6981,12 @@ Can't load ac-geiser: geiser-repl-mode: %S"
         (setq org-show-notification-handler 'pel-org-notify))))
 
   (pel-eval-after-load org
+    ;; Enhance archiving if requested
+    (when pel-org-archive-with-hierarchy
+      ;; Keep task hierarchy in Org archives.
+      (declare-function pel-org-enhance-archiving "pel-org")
+      (pel-org-enhance-archiving))
+
     ;; schedule
     (pel-eval-after-load org-agenda
       ;; Activate org-habit commands via autoloading

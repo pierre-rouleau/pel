@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-06 15:25:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-11 17:09:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,9 +31,14 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)                    ; use `pel-running-under-ssh-p'
+(require 'pel--base)         ; use `pel-running-under-ssh-p'
 (require 'pel--keys-macros)
-(require 'cus-edit)                     ; use: `customize-option'
+(require 'cus-edit)          ; use: `customize-option'
+(require 'org)               ; use `org-get-outline-path', `org-entry-get',
+;;                           ;     `org-archive-location'
+(require 'org-archive)       ; use `org-archive--compute-location'
+(require 'org-cycle)         ; use: `org-cycle-set-startup-visibility'
+(require 'org-macs)          ; use `org-with-wide-buffer'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -178,36 +183,145 @@ Raise an error when failing to restore item unless SILENT is non-nil."
   (require 'org-refile 'noerror)
   (if (and (fboundp 'org-narrow-to-subtree)
            (fboundp 'org-refile))
-      (save-restriction
-        (condition-case err
-            (progn
-              ;; Narrow to the subtree at point to restore that tree and get
-              ;; the information from that tree, not the first one in the file.
-              (org-narrow-to-subtree)
-              ;; Within the narrowed subtree, search and identify the properties.
-              (let ((fname--location (pel--org-archive-original))
-                    done)
-                (when fname--location
-                  ;; if information found proceed with the refiling.
-                  (let ((orig-org-fname (nth 0 fname--location))
-                        (heading-path (nth 1 fname--location))
-                        (rfloc nil))
-                    (with-current-buffer (find-file-noselect orig-org-fname)
-                      (let ((heading--location (pel--org-heading-and-pos heading-path)))
-                        (when heading--location
-                          (setq rfloc (list (car heading--location)
-                                            orig-org-fname
-                                            nil
-                                            (cdr heading--location))))))
-                    (let ((pel-refile-is-archive-restore t))
-                      (org-refile nil nil rfloc))
-                    (setq done t)))
-                (unless (or done silent)
-                  (user-error
-                   "\
-Nothing to restore; use in valid/non-empty Org Archive buffer"))))
-          (user-error "Nothing to restore: %s" (error-message-string err))))
+      (let (orig-org-fname
+            heading-path
+            local-error)
+        (save-restriction
+          (condition-case err
+              (progn
+                ;; Narrow to the subtree at point to restore that tree and get
+                ;; the information from that tree, not the first one in the file.
+                (org-narrow-to-subtree)
+                ;; Within the narrowed subtree, search and identify the properties.
+                (let ((fname--location (pel--org-archive-original))
+                      done)
+                  (when fname--location
+                    ;; if information found proceed with the refiling.
+                    (setq orig-org-fname (nth 0 fname--location)
+                          heading-path   (nth 1 fname--location))
+                    (let ((rfloc nil))
+                      (with-current-buffer (find-file-noselect orig-org-fname)
+                        (let ((heading--location (pel--org-heading-and-pos heading-path)))
+                          (when heading--location
+                            (setq rfloc (list (car heading--location)
+                                              orig-org-fname
+                                              nil
+                                              (cdr heading--location))))))
+                      (let ((pel-refile-is-archive-restore t))
+                        (org-refile nil nil rfloc))
+                      (setq done t)))
+                  (unless (or done silent)
+                    (setq local-error t)
+                    (user-error
+                     "use in valid/non-empty Org Archive buffer"))))
+            (error
+             (user-error "Nothing to restore: %s"
+                         (if local-error
+                             (error-message-string err)
+                           (format "%s
+Could not find \"%s\" inside file: %s
+Did you change the original heading text? If so, modify the archive
+:ARCHIVE_OLDPATH: value to match what is in the original Org file."
+                                   (error-message-string err)
+                                   heading-path
+                                   orig-org-fname)))))))
     (error "Cannot load org-refile")))
+
+
+;; ---------------------------------------------------------------------------
+;; Archive File Creation - Prevent Flattening
+;; ------------------------------------------
+;;
+;; When archiving timed-tracked tasks, Org mode stores the tasks in the Org
+;; archive in a flattened list by default.  It's fine, but when creating a
+;; clocktable based report that includes the archived files, we loose the
+;; parent/child information and that information can be useful to identify
+;; those tasks.
+;;
+;; PEL will activate the following advice when
+;; `pel-org-archive-with-hierarchy' user-option is turned on.
+
+
+(defun pel--org-archive-preserve-hierarchy-adv (orig-fun &rest args)
+  "Advise `org-archive-subtree' to recreate the original outline path
+hierarchy inside the archive file before archiving the task."
+  ;; (message "PEL pel--org-archive-preserve-hierarchy-adv: START with %S %S" orig-fun args)
+  (let*
+      ;; oldpath := list of task parent headings
+      ((oldpath (org-get-outline-path))
+       ;; archive-file. := name of the archive file
+       (archive-location-string (or (org-entry-get nil "ARCHIVE" 'inherit)
+                                    org-archive-location))
+       (archive-file (car (org-archive--compute-location archive-location-string))))
+    (if (and oldpath archive-file)
+        ;;
+        ;; Proceed with enhanced archiving.
+        (progn
+          ;; PHASE 1: Reconstruct the structural nodes inside the archive buffer.
+          ;;  - open the archive file cleanly in the background.
+          (with-current-buffer (find-file-noselect archive-file)
+            (org-with-wide-buffer
+             (goto-char (point-min))
+             (let
+                 ;; Track heading level and its scope.
+                 ((current-level 1)
+                  (scope-start   (point-min))
+                  (scope-end     (point-max)))
+               (dolist (heading oldpath)
+                 (narrow-to-region scope-start scope-end)
+                 (goto-char (point-min))
+                 (let ((heading-regexp (format
+                                        "^%s %s$"
+                                        (regexp-quote (make-string current-level ?*))
+                                        (regexp-quote heading))))
+                   (if (re-search-forward heading-regexp nil t)
+                       ;; Found end of parent heading.
+                       (progn
+                         ;; Find its tree boundaries for the next iteration loop.
+                         (setq scope-start (point))
+                         (org-end-of-subtree t t)
+                         (setq scope-end (point)))
+                     ;;
+                     ;; Parent heading is missing from the archive.
+                     ;; - Insert it cleanly at the end of the current scope.
+                     (goto-char (point-max))
+                     (unless (bolp) (insert "\n"))
+                     (insert (format "%s %s\n" (make-string current-level ?*) heading))
+                     ;; - Narrow the scope to this brand-new empty parent tree
+                     (setq scope-start (point))
+                     (setq scope-end (point))))
+                 ;; Temporarily widen: allow next loop cycle to re-narrow correctly
+                 (widen)
+                 ;; and increment heading level
+                 (setq current-level (1+ current-level))))))
+
+          ;; PHASE 2: Back in the original buffer, set up the targeted override and
+          ;; execute the original archiving with `org-archive-location' set
+          ;; to the target location for this specific archive action to land
+          ;; precisely under the newly verified/created parent hierarchy.
+          ;; (message "PEL pel--org-archive-preserve-hierarchy-adv: About to invoke org-archive-subtree in %S" (current-buffer))
+          (let* ((parent-depth (length oldpath))
+                 (parent-stars (make-string parent-depth ?*))
+                 (org-archive-location (format "%s::%s %s"
+                                               archive-file
+                                               parent-stars
+                                               (car (last oldpath)))))
+            (apply orig-fun args))
+
+          ;; PHASE 3: return the Org Archive buffer in its startup view mode.
+          (with-current-buffer (find-file-noselect archive-file)
+            ;; Reset the visibility view back to the org archive file #+STARTUP preference
+            ;; and cleanly save the file in the background.
+            (org-cycle-set-startup-visibility)
+            (save-buffer)))
+      ;;
+      ;; Could not find task parent headings: perform standard archiving.
+      (apply orig-fun args))))
+
+(defun pel-org-enhance-archiving ()
+  "Enhance Org archiving: store the task hierarchy in the archive."
+  (advice-add 'org-archive-subtree :around
+              #'pel--org-archive-preserve-hierarchy-adv))
 
 ;; ---------------------------------------------------------------------------
 ;; Specialized Org Customization Commands

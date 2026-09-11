@@ -16,6 +16,12 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 - In Emacs 28.1 or later, ~<f11> <f5> <f5>~ is now bound to *repeat-mode*; it toggles the repeat-mode introduced in Emacs 28.1.
   The ~<f11> ? d <f5>~ is also bound to *describe-repeat-maps*.
 - Improved org-mode support:
+  - When the *pel-org-archive-with-hierarchy* user-option is set, the
+    *org-archive-subtree-default* command (bound to ~C-c C-x C-a~) stores the
+    task hierarchy inside the Org Archive, something that Org mode  does not
+    do by default.  Storing the task hierarchy inside the Org archive files
+    allows creating clocktable reports that show the tasks within their
+    hierarchy something that can be quite useful.
   - With Emacs running in terminal mode, PEL provides a notification handler (*pel-org-notify*) that can generate OS native notifications.
   - Add new pel-org.el file; it defines a set of utilities for Org mode.
   - Improved description coverage in the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-org-mode.pdf][Ɱ Org-Mode PDF]]
