@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-11 17:09:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-11 18:01:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,11 +34,10 @@
 (require 'pel--base)         ; use `pel-running-under-ssh-p'
 (require 'pel--keys-macros)
 (require 'cus-edit)          ; use: `customize-option'
-(require 'org)               ; use `org-get-outline-path', `org-entry-get',
+(require 'org)               ; use: `org-get-outline-path', `org-entry-get',
 ;;                           ;     `org-archive-location'
-(require 'org-archive)       ; use `org-archive--compute-location'
-(require 'org-cycle)         ; use: `org-cycle-set-startup-visibility'
-(require 'org-macs)          ; use `org-with-wide-buffer'
+(require 'org-archive)       ; use: `org-archive--compute-location'
+(require 'org-macs)          ; use: `org-with-wide-buffer'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -310,10 +309,11 @@ hierarchy inside the archive file before archiving the task."
 
           ;; PHASE 3: return the Org Archive buffer in its startup view mode.
           (with-current-buffer (find-file-noselect archive-file)
-            ;; Reset the visibility view back to the org archive file #+STARTUP preference
-            ;; and cleanly save the file in the background.
-            (org-cycle-set-startup-visibility)
-            (save-buffer)))
+            (when (require 'org-cycle :noerror)
+              ;; Reset the visibility view back to the org archive file #+STARTUP preference
+              ;; and cleanly save the file in the background.
+              (org-cycle-set-startup-visibility)
+              (save-buffer))))
       ;;
       ;; Could not find task parent headings: perform standard archiving.
       (apply orig-fun args))))
