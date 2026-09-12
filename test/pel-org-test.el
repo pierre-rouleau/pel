@@ -1,0 +1,167 @@
+;;; pel-org-test.el --- ERT tests for pel-org.el  -*- lexical-binding: t; -*-
+
+;; This file is part of the PEL package.
+;; This file is not part of GNU Emacs.
+
+;;; Commentary:
+;;
+;; Tests for Org archive utilities in pel-org.el.
+
+;;; Code:
+
+(require 'ert)
+(require 'cl-lib)
+(require 'org)
+(require 'org-archive)
+(require 'pel-org)
+
+(defmacro pel-org-test--with-temp-dir (directory &rest body)
+  "Bind DIRECTORY to a temporary directory and execute BODY."
+  (declare (indent 1) (debug (symbolp body)))
+  `(let ((,directory (make-temp-file "pel-org-test-" t)))
+     (unwind-protect
+         (progn ,@body)
+       ;; Kill buffers that visit files in the temporary directory.
+       (dolist (buffer (buffer-list))
+         (let ((file-name (buffer-file-name buffer)))
+           (when (and file-name
+                      (file-in-directory-p file-name ,directory))
+             (kill-buffer buffer))))
+       (ignore-errors (delete-directory ,directory t)))))
+
+(defun pel-org-test--write-file (file-name content)
+  "Write CONTENT to FILE-NAME."
+  (with-temp-file file-name
+    (insert content)))
+
+(ert-deftest pel-org/archive-file-first-property/returns-first-value ()
+  "`pel--org-archive-file-first-property' returns the first matching value."
+  (with-temp-buffer
+    (org-mode)
+    (insert
+     "* First\n"
+     ":PROPERTIES:\n"
+     ":ARCHIVE_FILE: /tmp/first.org\n"
+     ":END:\n"
+     "* Second\n"
+     ":PROPERTIES:\n"
+     ":ARCHIVE_FILE: /tmp/second.org\n"
+     ":END:\n")
+    (goto-char (point-min))
+    (should
+     (equal (pel--org-archive-file-first-property "ARCHIVE_FILE")
+            "/tmp/first.org"))))
+
+(ert-deftest pel-org/archive-file-first-property/returns-nil-when-absent ()
+  "`pel--org-archive-file-first-property' returns nil when no property exists."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* No archive metadata\n")
+    (should-not
+     (pel--org-archive-file-first-property "ARCHIVE_FILE"))))
+
+(ert-deftest pel-org/heading-and-pos/returns-leaf-and-position ()
+  "`pel--org-heading-and-pos' finds a valid structural path."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Project\n** Area\n*** Task\n")
+    (let ((location (pel--org-heading-and-pos "Project/Area/Task")))
+      (should (equal (car location) "Task"))
+      (should (integer-or-marker-p (cdr location)))
+      (goto-char (cdr location))
+      (should (looking-at-p "\\*\\*\\* Task")))))
+
+(ert-deftest pel-org/heading-and-pos/returns-nil-for-missing-path ()
+  "`pel--org-heading-and-pos' returns nil for a missing structural path."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Project\n** Area\n")
+    (should-not
+     (pel--org-heading-and-pos "Project/Unknown/Task"))))
+
+(ert-deftest pel-org/clean-archive-properties/clears-only-during-restore ()
+  "`pel--org-clean-archive-properties-on-refile' protects normal refiles."
+  (with-temp-buffer
+    (org-mode)
+    (insert
+     "* Archived task\n"
+     ":PROPERTIES:\n"
+     ":ARCHIVE_TIME: [2026-01-01 Thu]\n"
+     ":ARCHIVE_FILE: /tmp/source.org\n"
+     ":ARCHIVE_OLPATH: Project/Task\n"
+     ":ARCHIVE_CATEGORY: source\n"
+     ":ARCHIVE_TODO: DONE\n"
+     ":ARCHIVE_ITAGS: :tag:\n"
+     ":KEEP: yes\n"
+     ":END:\n")
+    (goto-char (point-min))
+    (let ((pel-refile-is-archive-restore nil))
+      (pel--org-clean-archive-properties-on-refile)
+      (should (equal (org-entry-get nil "ARCHIVE_FILE")
+                     "/tmp/source.org")))
+    (let ((pel-refile-is-archive-restore t))
+      (pel--org-clean-archive-properties-on-refile)
+      (dolist (property '("ARCHIVE_TIME" "ARCHIVE_FILE" "ARCHIVE_OLPATH"
+                          "ARCHIVE_CATEGORY" "ARCHIVE_TODO" "ARCHIVE_ITAGS"))
+        (should-not (org-entry-get nil property)))
+      (should (equal (org-entry-get nil "KEEP") "yes")))))
+
+
+
+
+(defun pel-org-test--require-hierarchy-support ()
+  "Skip the current test when hierarchy-preserving archiving is unavailable."
+  (unless (and (not (version< emacs-version "27.1"))
+               (fboundp 'org-archive--compute-location))
+    (ert-skip
+     "Hierarchy-preserving archiving requires Emacs 27.1 or later.")))
+
+(ert-deftest pel-org/archive-preserve-hierarchy/archives-complete-hierarchy ()
+  "Archive a nested task below the recreated parent hierarchy.
+
+This test requires Emacs 27.1 or later and an Org version that provides
+`org-archive--compute-location'."
+  (pel-org-test--require-hierarchy-support)
+  (pel-org-test--with-temp-dir directory
+    (let* ((source-file (expand-file-name "source.org" directory))
+           (archive-file (concat source-file "_archive")))
+      (pel-org-test--write-file
+       source-file
+       (concat
+        "* Project\n"
+        "** Area\n"
+        "*** Task\n"
+        "Task body.\n"))
+      (with-current-buffer (find-file-noselect source-file)
+        (org-mode)
+        (goto-char (point-min))
+        (re-search-forward "^\\*\\*\\* Task$")
+        (beginning-of-line)
+        (let ((org-archive-location (concat archive-file "::")))
+          ;; Call the advice directly with the real Org implementation.
+          (pel--org-archive-preserve-hierarchy-adv
+           #'org-archive-subtree)))
+      (with-current-buffer (find-file-noselect archive-file)
+        (org-mode)
+        (org-with-wide-buffer
+         ;; Verify that the complete structural path exists.
+         (goto-char (point-min))
+         (let ((pos (org-find-olp '("Project" "Area" "Task") 'this-buffer)))
+           (should pos)
+           (goto-char pos)
+
+           ;; Verify that the selected headline is the expected child.
+           (should (equal (org-get-outline-path t t)
+                          '("Project" "Area" "Task")))
+           (should (= (org-outline-level) 3))
+
+           (let ((subtree-end (save-excursion
+                                (org-end-of-subtree t t))))
+             ;; Verify that Org archived the subtree content.
+             (org-end-of-meta-data t)
+             (should (re-search-forward "^Task body\\.$" subtree-end t)))))))))
+
+;; ---------------------------------------------------------------------------
+(provide 'pel-org-test)
+
+;;; pel-org-test.el ends here

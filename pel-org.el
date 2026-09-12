@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-11 18:10:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-12 08:02:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -62,7 +62,7 @@ GitHub remote file is opened by default."
 ;;-pel-autoload
 (defun pel-org-set-refile-targets (&optional other-window)
   "Customize `org-refile-targets'."
-  (interactive "p")
+  (interactive "P")
   ;; For some reason I don't yet understand, customizing
   ;; `org-refile-targets' before an Org file is opened shows
   ;; an error in the value and does not allow modifying the user-option, even
@@ -70,8 +70,8 @@ GitHub remote file is opened by default."
   (unless (bound-and-true-p pel-has-detected-org-file)
     (user-error "Open an org-mode file first."))
   (if other-window
-      (customize-option-other-window 'org-refile-targets))
-  (customize-option 'org-refile-targets))
+      (customize-option-other-window 'org-refile-targets)
+    (customize-option 'org-refile-targets)))
 
 ;; ---------------------------------------------------------------------------
 ;; Archive Restoration
@@ -93,7 +93,7 @@ GitHub remote file is opened by default."
 ;;-pel-autoload
 (defun pel--org-clean-archive-properties-on-refile (&optional force)
   "Automatically clear archive context properties when a subtree is refiled."
-  (require 'org 'noerror)
+  (require 'org nil 'noerror)
   (if (fboundp 'org-delete-property)
       (when (or pel-refile-is-archive-restore force)
         (dolist (prop '("ARCHIVE_TIME"
@@ -109,7 +109,7 @@ GitHub remote file is opened by default."
   "Return the property of the first headline defining a ARCHIVE_FILE property.
 Search the entire buffer.
 Return the expanded path string if one is found, nil otherwise."
-  (require 'org 'noerror)
+  (require 'org nil 'noerror)
   (if (and (fboundp 'org-map-entries)
            (fboundp 'org-entry-get))
       (when (derived-mode-p 'org-mode)
@@ -135,7 +135,7 @@ OUTLINE-PATH-STRING should look like \"Parent/Child/Grandchild\".
 
 Returns a cons cell: (final-heading-string . buffer-position).
 Returns nil if the structural path cannot be found."
-  (require 'org 'noerror)
+  (require 'org nil 'noerror)
   (if (fboundp 'org-find-olp)
       (when (and (derived-mode-p 'org-mode)
                  (stringp outline-path-string)
@@ -178,7 +178,7 @@ Raise an error when failing to restore item unless SILENT is non-nil."
   (interactive)
   (unless (pel--org-buffer-is-archive-p)
     (user-error "This buffer (%s) is not an Org archive buffer!" (buffer-name)))
-  (require 'org-refile 'noerror)
+  (require 'org-refile nil 'noerror)
   (if (and (fboundp 'org-narrow-to-subtree)
            (fboundp 'org-refile))
       (let (orig-org-fname
@@ -230,11 +230,11 @@ Did you change the original heading text? If so, modify the archive
 ;; Archive File Creation - Prevent Flattening
 ;; ------------------------------------------
 ;;
-;; When archiving timed-tracked tasks, Org mode stores the tasks in the Org
-;; archive in a flattened list by default.  It's fine, but when creating a
-;; clocktable based report that includes the archived files, we loose the
-;; parent/child information and that information can be useful to identify
-;; those tasks.
+;; When archiving time-tracked tasks, Org mode stores the tasks in the Org
+;; archive in a flattened list by default.  That might be acceptable for some
+;; use cases, but when creating a clocktable based report that includes the
+;; archived files, we lose the parent/child information and that information
+;; can be useful to identify those tasks.
 ;;
 ;; PEL will activate the following advice when
 ;; `pel-org-archive-with-hierarchy' user-option is turned on.
@@ -242,9 +242,12 @@ Did you change the original heading text? If so, modify the archive
 
 (defun pel--org-archive-preserve-hierarchy-adv (orig-fun &rest args)
   "Advise `org-archive-subtree' to recreate the original outline path
-hierarchy inside the archive file before archiving the task."
-  ;; use: `org-archive--compute-location'
-  (if (and (require 'org-archive 'noerror)
+hierarchy inside the archive file before archiving the task.
+The advice is modular: it passes all arguments, unchanged, to
+`org-archive-subtree'."
+  ;; Requires Emacs ≥ 27.1 for hierarchy preservation; older versions use
+  ;; standard archiving when `org-archive--compute-location' is unavailable.
+  (if (and (require 'org-archive nil 'noerror)
            (fboundp 'org-archive--compute-location))
       (let*
           ;; oldpath := list of task parent headings
@@ -260,6 +263,11 @@ hierarchy inside the archive file before archiving the task."
               ;; PHASE 1: Reconstruct the structural nodes inside the archive buffer.
               ;;  - open the archive file cleanly in the background.
               (with-current-buffer (find-file-noselect archive-file)
+                ;; There may not be any entries for .org_archive file in
+                ;; auto-mode-alist and the archive file may not have the line
+                ;; forcing the use of Org mode.  If so, force it.
+                (unless (derived-mode-p 'org-mode)
+                  (org-mode))
                 (org-with-wide-buffer
                  (goto-char (point-min))
                  (let
@@ -310,7 +318,7 @@ hierarchy inside the archive file before archiving the task."
 
               ;; PHASE 3: return the Org Archive buffer in its startup view mode.
               (with-current-buffer (find-file-noselect archive-file)
-                (when (and (require 'org-cycle :noerror)
+                (when (and (require 'org-cycle nil 'noerror)
                            (fboundp 'org-cycle-set-startup-visibility))
                   ;; Reset the visibility view back to the org archive file #+STARTUP preference
                   ;; and cleanly save the file in the background.
