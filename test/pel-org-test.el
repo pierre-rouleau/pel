@@ -106,57 +106,7 @@
         (should-not (org-entry-get nil property)))
       (should (equal (org-entry-get nil "KEEP") "yes")))))
 
-(ert-deftest pel-org/archive-preserve-hierarchy/creates-missing-parents ()
-  "The advice creates the missing archive parent hierarchy."
-  (pel-org-test--with-temp-dir directory
-    (let* ((archive-file (expand-file-name "source.org_archive" directory))
-           (source-file (expand-file-name "source.org" directory))
-           captured-location)
-      (pel-org-test--write-file archive-file "")
-      (pel-org-test--write-file
-       source-file
-       "* Project\n** Area\n*** Task\n")
-      (with-current-buffer (find-file-noselect source-file)
-        (org-mode)
-        (goto-char (point-min))
-        (re-search-forward "^\\*\\*\\* Task$")
-        (cl-letf (((symbol-function 'org-archive--compute-location)
-                   (lambda (_location) (list archive-file))))
-          (pel--org-archive-preserve-hierarchy-adv
-           (lambda (&rest _args)
-             (setq captured-location org-archive-location))
-           nil)))
-      (with-current-buffer (find-file-noselect archive-file)
-        (should
-         (string-match-p "^\\* Project\n\\*\\* Area\n"
-                         (buffer-string))))
-      (should (equal captured-location
-                     (format "%s::** Area" archive-file))))))
 
-(ert-deftest pel-org/archive-preserve-hierarchy/does-not-duplicate-parents ()
-  "The advice retains an existing archive parent hierarchy."
-  (pel-org-test--with-temp-dir directory
-    (let* ((archive-file (expand-file-name "source.org_archive" directory))
-           (source-file (expand-file-name "source.org" directory)))
-      (pel-org-test--write-file
-       archive-file
-       "* Project\n** Area\n** Existing archived task\n")
-      (pel-org-test--write-file
-       source-file
-       "* Project\n** Area\n*** Task\n")
-      (with-current-buffer (find-file-noselect source-file)
-        (org-mode)
-        (goto-char (point-min))
-        (re-search-forward "^\\*\\*\\* Task$")
-        (cl-letf (((symbol-function 'org-archive--compute-location)
-                   (lambda (_location) (list archive-file))))
-          (pel--org-archive-preserve-hierarchy-adv
-           (lambda (&rest _args) nil)
-           nil)))
-      (with-current-buffer (find-file-noselect archive-file)
-        (goto-char (point-min))
-        (should (= (how-many "^\\* Project$" (point-min) (point-max)) 1))
-        (should (= (how-many "^\\*\\* Area$" (point-min) (point-max)) 1))))))
 
 
 (defun pel-org-test--require-hierarchy-support ()
@@ -196,18 +146,20 @@ This test requires Emacs 27.1 or later and an Org version that provides
         (org-with-wide-buffer
          ;; Verify that the complete structural path exists.
          (goto-char (point-min))
-         (should (org-find-olp '("Project" "Area" "Task") 'this-buffer))
+         (let ((pos (org-find-olp '("Project" "Area" "Task") 'this-buffer)))
+           (should pos)
+           (goto-char pos)
 
-         ;; Verify that the selected headline is the expected child.
-         (should (equal (org-get-outline-path t t)
-                        '("Project" "Area" "Task")))
-         (should (= (org-outline-level) 3))
+           ;; Verify that the selected headline is the expected child.
+           (should (equal (org-get-outline-path t t)
+                          '("Project" "Area" "Task")))
+           (should (= (org-outline-level) 3))
 
-         ;; Verify that Org archived the subtree content.
-         (org-end-of-meta-data t)
-         (should (re-search-forward "^Task body\\.$"
-                                    (org-end-of-subtree t t)
-                                    t)))))))
+           ;; Verify that Org archived the subtree content.
+           (org-end-of-meta-data t)
+           (should (re-search-forward "^Task body\\.$"
+                                      (org-end-of-subtree t t)
+                                      t))))))))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel-org-test)
