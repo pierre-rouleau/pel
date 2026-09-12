@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-12 07:25:41 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-12 08:02:37 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -62,7 +62,7 @@ GitHub remote file is opened by default."
 ;;-pel-autoload
 (defun pel-org-set-refile-targets (&optional other-window)
   "Customize `org-refile-targets'."
-  (interactive "p")
+  (interactive "P")
   ;; For some reason I don't yet understand, customizing
   ;; `org-refile-targets' before an Org file is opened shows
   ;; an error in the value and does not allow modifying the user-option, even
@@ -263,6 +263,11 @@ The advice is modular: it passes all arguments, unchanged, to
               ;; PHASE 1: Reconstruct the structural nodes inside the archive buffer.
               ;;  - open the archive file cleanly in the background.
               (with-current-buffer (find-file-noselect archive-file)
+                ;; There may not be any entries for .org_archive file in
+                ;; auto-mode-alist and the archive file may not have the line
+                ;; forcing the use of Org mode.  If so, force it.
+                (unless (derived-mode-p 'org-mode)
+                  (org-mode))
                 (org-with-wide-buffer
                  (goto-char (point-min))
                  (let
