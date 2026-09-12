@@ -1,0 +1,280 @@
+=================================================================
+Time Tracking with Org Mode: Managing Multiple Projects and Tasks
+=================================================================
+
+:Home URL:
+:Project:
+:Created:  Saturday, September 12 2026.
+:Author:  Pierre Rouleau <prouleau001@gmail.com>
+:Modified: 2026-09-12 07:02:21, by Pierre Rouleau.
+:Copyright: © 2026, Pierre Rouleau
+
+
+.. contents::  **Table of Contents**
+.. sectnum::
+
+.. ---------------------------------------------------------------------------
+
+
+Objectives
+==========
+
+- Track the time for the tasks of multiple projects.
+- Create a report of active and completed tasks and the time spent for them.
+- The report must include:
+
+  - time spent today,
+  - time spent daily this week,
+  - time spent weekly, for the last 3 weeks,
+  - time spent monthly, for the last 3 months.
+
+- The report must track time of tasks underway and the completed tasks.
+- The tasks can be organized as a hierarchy of parent tasks, with sub-tasks
+  and sub-sub-tasks.
+
+  - Five level should be allowed.
+  - The hierarchy should be visible in the generated report.
+
+- The system must support tracking of activities related to several,
+  independent, activities or projects.  For instance it should be possible to
+  track consulting work for different customers independently.
+- Information from completed tasks should be  removed from the file describing
+  the active tasks and placed into an archive.
+
+  - This reduces the clutter in the active task file.
+
+- All data must be stored under a VCS to provide protection against loss and
+  allow correction of errors.
+
+Methodology Used
+================
+
+The idea is to use Emacs Org Mode and store project-specific information
+inside a project-specific Org file into a directory tree that is under VCS
+control.
+
+First we create a directory tree to hold all Org files.
+In this example, we're tracking the activities of 3 projects, P1, P2 and P3.
+We create the following directory tree and their files under the directory
+``~/my``::
+
+
+      my/project-tracking
+      ├── master.org
+      ├── project1
+      │   ├── p1.org
+      │   └── p1.org_archive
+      ├── project2
+      │   ├── p2.org
+      │   └── p2.org_archive
+      └── project3
+          ├── p3.org
+          └── p3.org_archive
+
+
+The file my/project-tracking/master.org is setup to hold the report of all
+activities.  Each project has its own directory with a main file (like p1.org)
+and an archive file (like p1.org_archive).
+
+The directory ``my/project-tracking`` is the VCS root.  Use the VCS or DVCS of your
+choice and add all these files to it.  I personally use either Git or
+Mercurial for this but you can use anything.
+
+
+Setting Up the Files
+--------------------
+
+The Master File
+~~~~~~~~~~~~~~~
+
+Store the content of PEL `example/templates/org-mode/master-org.org`_ file inside
+your master.org file.
+
+The Main Project File
+~~~~~~~~~~~~~~~~~~~~~
+
+For each project should have its own directory.  The name of the directory can
+be anything relevant, the name of the file should be short, but provide enough
+information as it will appear in the report.
+
+You could split major activities in several files for each project or keep
+them inside one file per project for simplicity.
+
+Each of these file must be an ``.org`` file and should contain something like
+the following from PEL `example/templates/org-mode/project.org`_ ::
+
+    -*- mode: org; org-duration-format: h:mm; -*-
+
+    #+STARTUP: content
+    #+COLUMNS: %25ITEM %4TODO %3PRIORITY %TAGS
+
+This instructs Org to track the number of hours and minutes, and never print time in
+number of days.
+
+The Org Archive Files
+~~~~~~~~~~~~~~~~~~~~~
+
+Each project main ``.org`` file will also have a corresponding Org archive
+file, either created by Org when archiving a task or by copying the content
+of PEL `example/templates/org-mode/project.org_archive`_ ::
+
+      #    -*- mode: org -*-
+
+      #+STARTUP: content
+
+Note that the first line might not be written when the file is created by
+archiving a tasks.  It's best to add it so you can view the Org archive file
+with org-mode.
+
+
+Setup the Project
+-----------------
+
+Once the file hierarchy is created, Org must be aware of them.
+
+Notice the ``:scope pel-org-get-project-files`` at the end of the
+``clocktable`` line inside the master.org file.  This is the name of a PEL
+function that returns the list of relevant files identified by the
+``pel-org-project-files`` customizable user option.
+
+Therefore to complete the setup you must customize the following user-options:
+
+= ==================================== ==========================================
+. PEL user-option                      Description
+= ==================================== ==========================================
+. ``pel-use-org``                      Activates PEL support for Org.
+
+                                       - Set it to **t** to activate it.
+
+. ``pel-org-archive-with-hierarchy``   Control whether the task hierarchy is
+                                       identified and maintained in the Org
+                                       archive files.
+
+                                       - Turn it one (set it to **t**) if you
+                                         want to see the task hierarchy in the
+                                         report for the archived tasks.
+
+. ``pel-org-project-files``            Identifies the Org and Org archive
+                                       files that will be scanned when creating or refreshing
+                                       the time reports.
+
+                                       - Identify the path of each of your project and project
+                                         archive files.
+
+= ==================================== ==========================================
+
+
+Generating an Activity Report
+-----------------------------
+
+Once you have information stored in your Org project files, have logged
+time in them, and setup the require PEL user options (as described in the
+previous section), you can create or refresh a time tracking report by saving all
+your Org files containing relevant information and opening the master.org
+file.
+
+Inside the master.org file, locate the lines that start with ``#+BEGIN:
+clocktable`` and type ``C-c C-c`` on them to create or refresh the relevant
+report.
+
+There's 4 different reports in the recommended file and the first one is to
+track the tasks done on this current day.
+
+Here's how it might look inside a terminal-based Emacs::
+
+    * Todays' Log
+    #+BEGIN: clocktable :maxlevel 5 :step day :tstart "<today>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files
+
+    Daily report: [2026-09-12 Sat]
+    |                      | <60>                                                 |        |      |      |      |
+    | File                 | Headline                                             | Time   |      |      |      |
+    |----------------------+------------------------------------------------------+--------+------+------+------|
+    |                      | ALL *Total time*                                     | *2:27* |      |      |      |
+    |----------------------+------------------------------------------------------+--------+------+------+------|
+    | pel-todo.org         | *File time*                                          | *2:27* |      |      |      |
+    |                      | PEL Code                                             | 2:27   |      |      |      |
+    |                      | \_  Complete PDF Files                               |        | 2:27 |      |      |
+    |                      | \_    Org-Mode PDF: Add more info.                   |        |      | 2:27 |      |
+    |                      | \_      Create Activity Time Tracking infrastructure |        |      |      | 2:27 |
+    |----------------------+------------------------------------------------------+--------+------+------+------|
+    | pel-todo.org_archive | *File time*                                          | *0:00* |      |      |      |
+    #+END
+
+
+The last table of the month report might look like this::
+
+     Monthly report starting on: [2026-09-01 Tue]
+   |                      | <60>                                                                                     |         |       |       |       |       |
+   | File                 | Headline                                                                                 | Time    |       |       |       |       |
+   |----------------------+------------------------------------------------------------------------------------------+---------+-------+-------+-------+-------|
+   |                      | ALL *Total time*                                                                         | *88:48* |       |       |       |       |
+   |----------------------+------------------------------------------------------------------------------------------+---------+-------+-------+-------+-------|
+   | pel-todo.org         | *File time*                                                                              | *35:26* |       |       |       |       |
+   |                      | PEL Code                                                                                 | 35:26   |       |       |       |       |
+   |                      | \_  Complete PDF Files                                                                   |         | 31:58 |       |       |       |
+   |                      | \_    Write filter program for PDF file intra-links update                               |         |       |  0:18 |       |       |
+   |                      | \_    Add Make control to update the links in PDF files                                  |         |       |  1:52 |       |       |
+   |                      | \_    Write pipe-spy program in Go                                                       |         |       |  1:03 |       |       |
+   |                      | \_    Org-Mode PDF: Add more info.                                                       |         |       | 28:45 |       |       |
+   |                      | \_      Org PDF: improve content general work                                            |         |       |       |  8:37 |       |
+   |                      | \_      Create Activity Time Tracking infrastructure                                     |         |       |       | 17:02 |       |
+   |                      | \_      Research and Document Operations in Org Mode                                     |         |       |       |  1:11 |       |
+   |                      | \_      Gnu Calc Support                                                                 |         |       |       |  1:55 |       |
+   |                      | \_        Learn how to use gnuplot, document installation, using in macOS, the language. |         |       |       |       |  0:38 |
+   |                      | \_        Add Gnu Calc PDF - document Gnu Calc                                           |         |       |       |       |  1:17 |
+   |                      | \_  Code Modification Needed                                                             |         |  1:30 |       |       |       |
+   |                      | \_    Update documentation of the PEL PDF launching commands; check if all works fine.   |         |       |  1:30 |       |       |
+   |                      | \_  New Feature Needed                                                                   |         |  1:58 |       |       |       |
+   |                      | \_    Investigate use of Canadian-based AI                                               |         |       |  0:32 |       |       |
+   |                      | \_    Research and Investigate new Emacs features for PEL                                |         |       |  1:26 |       |       |
+   |----------------------+------------------------------------------------------------------------------------------+---------+-------+-------+-------+-------|
+   | pel-todo.org_archive | *File time*                                                                              | *53:22* |       |       |       |       |
+   |                      | PEL Code                                                                                 | 53:22   |       |       |       |       |
+   |                      | \_  New Feature Needed                                                                   |         |  1:28 |       |       |       |
+   |                      | \_    Fix restoring from archive: allow restoring any top level subtree                  |         |       |  1:28 |       |       |
+   |                      | \_  Complete PDF Files                                                                   |         | 51:48 |       |       |       |
+   |                      | \_    Complete Org Mode PDF - First pass.                                                |         |       | 18:28 |       |       |
+   |                      | \_    Add Calendar PDF                                                                   |         |       |  4:57 |       |       |
+   |                      | \_    Org-Mode PDF: Add more info.                                                       |         |       | 28:23 |       |       |
+   |                      | \_      Add info on Org Spreadsheet information                                          |         |       |       |  6:01 |       |
+   |                      | \_      Add info on relative timers                                                      |         |       |       |  1:02 |       |
+   |                      | \_      Add ~<f12> <f3>~ key binding in Org Agenda View to customize org-agenda.         |         |       |       |  0:45 |       |
+   |                      | \_      Add info on Checkboxes                                                           |         |       |       |  0:31 |       |
+   |                      | \_      Add support to the OrgTbl minor mode                                             |         |       |       |  0:33 |       |
+   |                      | \_      Cleanup Copy Paste section                                                       |         |       |       |  0:58 |       |
+   |                      | \_      Fix page 2: double ~C-c C-x \~                                                   |         |       |       |  0:38 |       |
+   |                      | \_      Add info on Plain List operations                                                |         |       |       |  2:29 |       |
+   |                      | \_      Gnu Calc Support                                                                 |         |       |       | 15:26 |       |
+   |                      | \_        Find how to get gnuplot to work under macOS Terminal based Emacs               |         |       |       |       | 11:43 |
+   |                      | \_        Add support for calc in PEL with f12 support                                   |         |       |       |       |  3:43 |
+   |                      | \_  Code Modification Needed                                                             |         |  0:06 |       |       |       |
+   |                      | \_    The ~<f6> <f1>~ key sequence must now open the F6 PDF                              |         |       |  0:06 |       |       |
+   #+END:
+
+Notice the information in the second table row that essentially identifies the
+time tracked in tasks that were archived.  If you archive only the tasks that
+are in the ``DONE`` state, you essentially end up with information on the
+total duration of that task.
+
+Also notice that the task hierarchy is available with 5 levels.
+
+
+.. ---------------------------------------------------------------------------
+.. links:
+
+
+.. _example/templates/org-mode/master-org.org: https://github.com/pierre-rouleau/pel/blob/master/example/templates/org-mode/master-org.org?plain=1
+.. _example/templates/org-mode/project.org:    https://github.com/pierre-rouleau/pel/blob/master/example/templates/org-mode/project.org?plain=1
+.. _example/templates/org-mode/project.org_archive:    https://github.com/pierre-rouleau/pel/blob/master/example/templates/org-mode/project.org_archive?plain=1
+
+
+
+
+.. ---------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-line-limit: 10
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:

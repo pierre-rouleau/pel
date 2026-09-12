@@ -1,0 +1,4 @@
+-*- mode: org; org-duration-format: h:mm; -*-
+
+#+STARTUP: content
+#+COLUMNS: %25ITEM %4TODO %3PRIORITY %TAGS

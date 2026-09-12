@@ -3,6 +3,7 @@
 #+STARTUP: content
 
 * COMMENT - Overview - How to use this.
+
 This file is an example of how to create a time consolidation report for all
 time tracked activities in a set of your files identified by the
 [[elisp:(customize-variable 'pel-org-project-files)][pel-org-project-files user-option]].
@@ -38,16 +39,20 @@ The weekly and monthly reports consolidate on the top level only.
 - Create or refresh a report; expand the corresponding subtree, place point on
   the =#+BEGIN line= and hit ~C-c C-c~.
   - PEL also supports the ~<f12> r~ key binding to *org-clock-report* for that.
-  - PEL also supports the ~<f12> t M-=~ key binding to
-    *org-table-iterate-buffer-tables* which creates or refresh *all* reports
-    at once!
 
 All time is formatted in =Hours:Minutes= format, not consolidated into days on
 purpose.
 
-*NOTE*: By default, the reports will *not* include time for the tasks
-currently being clocked in.  If you want to incorporate that time in the
-reports you must turn on the [[elisp:(customize-variable 'org-clock-report-include-clocking-task)][org-clock-report-include-clocking-task user-option]].
+*NOTES*:
+- By default, the reports will *not* include time for the tasks
+  currently being clocked in.  If you want to incorporate that time in the
+  reports you must turn on the [[elisp:(customize-variable 'org-clock-report-include-clocking-task)][org-clock-report-include-clocking-task user-option]].
+- Also by default, tasks are archived into a flat list of tasks; their parent
+  hierarchy is *not* stored in the  archive file. With PEL, you can turn on the
+  [[elisp:(customize-option 'pel-org-archive-with-hierarchy)][pel-org-archive-with-hierarchy user-option]] to store the parent hierarchy
+  inside the archive file.  Doing this will provide the task parent hierarchy
+  inside the report of archived tasks.  If you archive the completed tasks,
+  the master report will provide valuable information on all completed tasks.
 
 
 
@@ -60,11 +65,11 @@ reports you must turn on the [[elisp:(customize-variable 'org-clock-report-inclu
 #+END:
 
 * Weekly Summary
-#+BEGIN: clocktable :maxlevel 1 :step week :tstart "<-4w>" :tend "<now>" :narrow 60 :scope pel-org-get-project-files
+#+BEGIN: clocktable :maxlevel 5 :step week :tstart "<-4w>" :tend "<now>" :narrow 60 :scope pel-org-get-project-files
 #+END:
 
 * Monthly Summary
-#+BEGIN: clocktable :maxlevel 1 :step month :tstart "<-3m>" :tend "<now>" :narrow 60 :scope pel-org-get-project-files
+#+BEGIN: clocktable :maxlevel 5 :step month :tstart "<-3m>" :tend "<now>" :narrow 60 :scope pel-org-get-project-files
 #+END:
 
 # Local Variables:
