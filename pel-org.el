@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-12 06:58:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-12 07:25:41 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -93,7 +93,7 @@ GitHub remote file is opened by default."
 ;;-pel-autoload
 (defun pel--org-clean-archive-properties-on-refile (&optional force)
   "Automatically clear archive context properties when a subtree is refiled."
-  (require 'org 'noerror)
+  (require 'org nil 'noerror)
   (if (fboundp 'org-delete-property)
       (when (or pel-refile-is-archive-restore force)
         (dolist (prop '("ARCHIVE_TIME"
@@ -109,7 +109,7 @@ GitHub remote file is opened by default."
   "Return the property of the first headline defining a ARCHIVE_FILE property.
 Search the entire buffer.
 Return the expanded path string if one is found, nil otherwise."
-  (require 'org 'noerror)
+  (require 'org nil 'noerror)
   (if (and (fboundp 'org-map-entries)
            (fboundp 'org-entry-get))
       (when (derived-mode-p 'org-mode)
@@ -135,7 +135,7 @@ OUTLINE-PATH-STRING should look like \"Parent/Child/Grandchild\".
 
 Returns a cons cell: (final-heading-string . buffer-position).
 Returns nil if the structural path cannot be found."
-  (require 'org 'noerror)
+  (require 'org nil 'noerror)
   (if (fboundp 'org-find-olp)
       (when (and (derived-mode-p 'org-mode)
                  (stringp outline-path-string)
@@ -178,7 +178,7 @@ Raise an error when failing to restore item unless SILENT is non-nil."
   (interactive)
   (unless (pel--org-buffer-is-archive-p)
     (user-error "This buffer (%s) is not an Org archive buffer!" (buffer-name)))
-  (require 'org-refile 'noerror)
+  (require 'org-refile nil 'noerror)
   (if (and (fboundp 'org-narrow-to-subtree)
            (fboundp 'org-refile))
       (let (orig-org-fname
@@ -247,7 +247,7 @@ The advice is modular: it passes all arguments, unchanged, to
 `org-archive-subtree'."
   ;; Requires Emacs ≥ 27.1 for hierarchy preservation; older versions use
   ;; standard archiving when `org-archive--compute-location' is unavailable.
-  (if (and (require 'org-archive 'noerror)
+  (if (and (require 'org-archive nil 'noerror)
            (fboundp 'org-archive--compute-location))
       (let*
           ;; oldpath := list of task parent headings
@@ -313,7 +313,7 @@ The advice is modular: it passes all arguments, unchanged, to
 
               ;; PHASE 3: return the Org Archive buffer in its startup view mode.
               (with-current-buffer (find-file-noselect archive-file)
-                (when (and (require 'org-cycle :noerror)
+                (when (and (require 'org-cycle nil 'noerror)
                            (fboundp 'org-cycle-set-startup-visibility))
                   ;; Reset the visibility view back to the org archive file #+STARTUP preference
                   ;; and cleanly save the file in the background.
