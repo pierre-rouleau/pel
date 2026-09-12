@@ -204,51 +204,51 @@ Here's how it might look inside a terminal-based Emacs::
 The last table of the month report might look like this::
 
      Monthly report starting on: [2026-09-01 Tue]
-   |                      | <60>                                                                                     |         |       |       |       |       |
-   | File                 | Headline                                                                                 | Time    |       |       |       |       |
-   |----------------------+------------------------------------------------------------------------------------------+---------+-------+-------+-------+-------|
-   |                      | ALL *Total time*                                                                         | *88:48* |       |       |       |       |
-   |----------------------+------------------------------------------------------------------------------------------+---------+-------+-------+-------+-------|
-   | pel-todo.org         | *File time*                                                                              | *35:26* |       |       |       |       |
-   |                      | PEL Code                                                                                 | 35:26   |       |       |       |       |
-   |                      | \_  Complete PDF Files                                                                   |         | 31:58 |       |       |       |
-   |                      | \_    Write filter program for PDF file intra-links update                               |         |       |  0:18 |       |       |
-   |                      | \_    Add Make control to update the links in PDF files                                  |         |       |  1:52 |       |       |
-   |                      | \_    Write pipe-spy program in Go                                                       |         |       |  1:03 |       |       |
-   |                      | \_    Org-Mode PDF: Add more info.                                                       |         |       | 28:45 |       |       |
-   |                      | \_      Org PDF: improve content general work                                            |         |       |       |  8:37 |       |
-   |                      | \_      Create Activity Time Tracking infrastructure                                     |         |       |       | 17:02 |       |
-   |                      | \_      Research and Document Operations in Org Mode                                     |         |       |       |  1:11 |       |
-   |                      | \_      Gnu Calc Support                                                                 |         |       |       |  1:55 |       |
-   |                      | \_        Learn how to use gnuplot, document installation, using in macOS, the language. |         |       |       |       |  0:38 |
-   |                      | \_        Add Gnu Calc PDF - document Gnu Calc                                           |         |       |       |       |  1:17 |
-   |                      | \_  Code Modification Needed                                                             |         |  1:30 |       |       |       |
-   |                      | \_    Update documentation of the PEL PDF launching commands; check if all works fine.   |         |       |  1:30 |       |       |
-   |                      | \_  New Feature Needed                                                                   |         |  1:58 |       |       |       |
-   |                      | \_    Investigate use of Canadian-based AI                                               |         |       |  0:32 |       |       |
-   |                      | \_    Research and Investigate new Emacs features for PEL                                |         |       |  1:26 |       |       |
-   |----------------------+------------------------------------------------------------------------------------------+---------+-------+-------+-------+-------|
-   | pel-todo.org_archive | *File time*                                                                              | *53:22* |       |       |       |       |
-   |                      | PEL Code                                                                                 | 53:22   |       |       |       |       |
-   |                      | \_  New Feature Needed                                                                   |         |  1:28 |       |       |       |
-   |                      | \_    Fix restoring from archive: allow restoring any top level subtree                  |         |       |  1:28 |       |       |
-   |                      | \_  Complete PDF Files                                                                   |         | 51:48 |       |       |       |
-   |                      | \_    Complete Org Mode PDF - First pass.                                                |         |       | 18:28 |       |       |
-   |                      | \_    Add Calendar PDF                                                                   |         |       |  4:57 |       |       |
-   |                      | \_    Org-Mode PDF: Add more info.                                                       |         |       | 28:23 |       |       |
-   |                      | \_      Add info on Org Spreadsheet information                                          |         |       |       |  6:01 |       |
-   |                      | \_      Add info on relative timers                                                      |         |       |       |  1:02 |       |
-   |                      | \_      Add ~<f12> <f3>~ key binding in Org Agenda View to customize org-agenda.         |         |       |       |  0:45 |       |
-   |                      | \_      Add info on Checkboxes                                                           |         |       |       |  0:31 |       |
-   |                      | \_      Add support to the OrgTbl minor mode                                             |         |       |       |  0:33 |       |
-   |                      | \_      Cleanup Copy Paste section                                                       |         |       |       |  0:58 |       |
-   |                      | \_      Fix page 2: double ~C-c C-x \~                                                   |         |       |       |  0:38 |       |
-   |                      | \_      Add info on Plain List operations                                                |         |       |       |  2:29 |       |
-   |                      | \_      Gnu Calc Support                                                                 |         |       |       | 15:26 |       |
-   |                      | \_        Find how to get gnuplot to work under macOS Terminal based Emacs               |         |       |       |       | 11:43 |
-   |                      | \_        Add support for calc in PEL with f12 support                                   |         |       |       |       |  3:43 |
-   |                      | \_  Code Modification Needed                                                             |         |  0:06 |       |       |       |
-   |                      | \_    The ~<f6> <f1>~ key sequence must now open the F6 PDF                              |         |       |  0:06 |       |       |
+   |                 | <60>                                                                                     |         |       |       |       |       |
+   | File            | Headline                                                                                 | Time    |       |       |       |       |
+   |-----------------+------------------------------------------------------------------------------------------+---------+-------+-------+-------+-------|
+   |                 | ALL *Total time*                                                                         | *88:48* |       |       |       |       |
+   |-----------------+------------------------------------------------------------------------------------------+---------+-------+-------+-------+-------|
+   | pel.org         | *File time*                                                                              | *35:26* |       |       |       |       |
+   |                 | PEL Code                                                                                 | 35:26   |       |       |       |       |
+   |                 | \_  Complete PDF Files                                                                   |         | 31:58 |       |       |       |
+   |                 | \_    Write filter program for PDF file intra-links update                               |         |       |  0:18 |       |       |
+   |                 | \_    Add Make control to update the links in PDF files                                  |         |       |  1:52 |       |       |
+   |                 | \_    Write pipe-spy program in Go                                                       |         |       |  1:03 |       |       |
+   |                 | \_    Org-Mode PDF: Add more info.                                                       |         |       | 28:45 |       |       |
+   |                 | \_      Org PDF: improve content general work                                            |         |       |       |  8:37 |       |
+   |                 | \_      Create Activity Time Tracking infrastructure                                     |         |       |       | 17:02 |       |
+   |                 | \_      Research and Document Operations in Org Mode                                     |         |       |       |  1:11 |       |
+   |                 | \_      Gnu Calc Support                                                                 |         |       |       |  1:55 |       |
+   |                 | \_        Learn how to use gnuplot, document installation, using in macOS, the language. |         |       |       |       |  0:38 |
+   |                 | \_        Add Gnu Calc PDF - document Gnu Calc                                           |         |       |       |       |  1:17 |
+   |                 | \_  Code Modification Needed                                                             |         |  1:30 |       |       |       |
+   |                 | \_    Update documentation of the PEL PDF launching commands; check if all works fine.   |         |       |  1:30 |       |       |
+   |                 | \_  New Feature Needed                                                                   |         |  1:58 |       |       |       |
+   |                 | \_    Investigate use of Canadian-based AI                                               |         |       |  0:32 |       |       |
+   |                 | \_    Research and Investigate new Emacs features for PEL                                |         |       |  1:26 |       |       |
+   |-----------------+------------------------------------------------------------------------------------------+---------+-------+-------+-------+-------|
+   | pel.org_archive | *File time*                                                                              | *53:22* |       |       |       |       |
+   |                 | PEL Code                                                                                 | 53:22   |       |       |       |       |
+   |                 | \_  New Feature Needed                                                                   |         |  1:28 |       |       |       |
+   |                 | \_    Fix restoring from archive: allow restoring any top level subtree                  |         |       |  1:28 |       |       |
+   |                 | \_  Complete PDF Files                                                                   |         | 51:48 |       |       |       |
+   |                 | \_    Complete Org Mode PDF - First pass.                                                |         |       | 18:28 |       |       |
+   |                 | \_    Add Calendar PDF                                                                   |         |       |  4:57 |       |       |
+   |                 | \_    Org-Mode PDF: Add more info.                                                       |         |       | 28:23 |       |       |
+   |                 | \_      Add info on Org Spreadsheet information                                          |         |       |       |  6:01 |       |
+   |                 | \_      Add info on relative timers                                                      |         |       |       |  1:02 |       |
+   |                 | \_      Add ~<f12> <f3>~ key binding in Org Agenda View to customize org-agenda.         |         |       |       |  0:45 |       |
+   |                 | \_      Add info on Checkboxes                                                           |         |       |       |  0:31 |       |
+   |                 | \_      Add support to the OrgTbl minor mode                                             |         |       |       |  0:33 |       |
+   |                 | \_      Cleanup Copy Paste section                                                       |         |       |       |  0:58 |       |
+   |                 | \_      Fix page 2: double ~C-c C-x \~                                                   |         |       |       |  0:38 |       |
+   |                 | \_      Add info on Plain List operations                                                |         |       |       |  2:29 |       |
+   |                 | \_      Gnu Calc Support                                                                 |         |       |       | 15:26 |       |
+   |                 | \_        Find how to get gnuplot to work under macOS Terminal based Emacs               |         |       |       |       | 11:43 |
+   |                 | \_        Add support for calc in PEL with f12 support                                   |         |       |       |       |  3:43 |
+   |                 | \_  Code Modification Needed                                                             |         |  0:06 |       |       |       |
+   |                 | \_    The ~<f6> <f1>~ key sequence must now open the F6 PDF                              |         |       |  0:06 |       |       |
    #+END:
 
 Notice the information in the second table row that essentially identifies the
