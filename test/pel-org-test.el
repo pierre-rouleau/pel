@@ -155,11 +155,11 @@ This test requires Emacs 27.1 or later and an Org version that provides
                           '("Project" "Area" "Task")))
            (should (= (org-outline-level) 3))
 
-           ;; Verify that Org archived the subtree content.
-           (org-end-of-meta-data t)
-           (should (re-search-forward "^Task body\\.$"
-                                      (org-end-of-subtree t t)
-                                      t))))))))
+           (let ((subtree-end (save-excursion
+                                (org-end-of-subtree t t))))
+             ;; Verify that Org archived the subtree content.
+             (org-end-of-meta-data t)
+             (should (re-search-forward "^Task body\\.$" subtree-end t)))))))))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel-org-test)
