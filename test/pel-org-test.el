@@ -158,6 +158,51 @@
         (should (= (how-many "^\\* Project$" (point-min) (point-max)) 1))
         (should (= (how-many "^\\*\\* Area$" (point-min) (point-max)) 1))))))
 
+
+(defun pel-org-test--require-hierarchy-support ()
+  "Skip the current test when hierarchy-preserving archiving is unavailable."
+  (unless (and (not (version< emacs-version "27.1"))
+               (fboundp 'org-archive--compute-location))
+    (ert-skip
+     "Hierarchy-preserving archiving requires Emacs 27.1 or later.")))
+
+(ert-deftest pel-org/archive-preserve-hierarchy/archives-complete-hierarchy ()
+  "Archive a nested task under the original parent hierarchy.
+
+This test requires Emacs 27.1 or later and an Org version that provides
+`org-archive--compute-location'."
+  (pel-org-test--require-hierarchy-support)
+  (pel-org-test--with-temp-dir directory
+    (let* ((source-file (expand-file-name "source.org" directory))
+           (archive-file (concat source-file "_archive")))
+      (pel-org-test--write-file
+       source-file
+       (concat
+        "* Project\n"
+        "** Area\n"
+        "*** Task\n"
+        "Task body.\n"))
+      (with-current-buffer (find-file-noselect source-file)
+        (org-mode)
+        (goto-char (point-min))
+        (re-search-forward "^\\*\\*\\* Task$")
+        (beginning-of-line)
+        (let ((org-archive-location (concat archive-file "::")))
+          ;; Call the advice directly with the real Org archive function.
+          (pel--org-archive-preserve-hierarchy-adv
+           #'org-archive-subtree)))
+      (with-current-buffer (find-file-noselect archive-file)
+        (org-mode)
+        (goto-char (point-min))
+        ;; The archive can contain ARCHIVE_* properties between the Task
+        ;; heading and its body. Therefore, check the hierarchy separately.
+        (should
+         (re-search-forward
+          "^\\* Project\n\\*\\* Area\n\\*\\*\\* Task$"
+          nil t))
+        (should (re-search-forward "^Task body\\.$" nil t))))))
+
+;; ---------------------------------------------------------------------------
 (provide 'pel-org-test)
 
 ;;; pel-org-test.el ends here
