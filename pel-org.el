@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-12 06:45:39 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-12 06:58:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -70,8 +70,8 @@ GitHub remote file is opened by default."
   (unless (bound-and-true-p pel-has-detected-org-file)
     (user-error "Open an org-mode file first."))
   (if other-window
-      (customize-option-other-window 'org-refile-targets))
-  (customize-option 'org-refile-targets))
+      (customize-option-other-window 'org-refile-targets)
+    (customize-option 'org-refile-targets)))
 
 ;; ---------------------------------------------------------------------------
 ;; Archive Restoration
@@ -230,11 +230,11 @@ Did you change the original heading text? If so, modify the archive
 ;; Archive File Creation - Prevent Flattening
 ;; ------------------------------------------
 ;;
-;; When archiving timed-tracked tasks, Org mode stores the tasks in the Org
-;; archive in a flattened list by default.  It's fine, but when creating a
-;; clocktable based report that includes the archived files, we loose the
-;; parent/child information and that information can be useful to identify
-;; those tasks.
+;; When archiving time-tracked tasks, Org mode stores the tasks in the Org
+;; archive in a flattened list by default.  That might be acceptable for some
+;; use cases, but when creating a clocktable based report that includes the
+;; archived files, we lose the parent/child information and that information
+;; can be useful to identify those tasks.
 ;;
 ;; PEL will activate the following advice when
 ;; `pel-org-archive-with-hierarchy' user-option is turned on.
@@ -245,7 +245,8 @@ Did you change the original heading text? If so, modify the archive
 hierarchy inside the archive file before archiving the task.
 The advice is modular: it passes all arguments, unchanged, to
 `org-archive-subtree'."
-  ;; Requires Emacs ≥ 27.1 because it uses: `org-archive--compute-location'
+  ;; Requires Emacs ≥ 27.1 for hierarchy preservation; older versions use
+  ;; standard archiving when `org-archive--compute-location' is unavailable.
   (if (and (require 'org-archive 'noerror)
            (fboundp 'org-archive--compute-location))
       (let*
