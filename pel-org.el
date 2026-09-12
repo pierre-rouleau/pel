@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-11 18:10:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-12 06:45:39 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -242,8 +242,10 @@ Did you change the original heading text? If so, modify the archive
 
 (defun pel--org-archive-preserve-hierarchy-adv (orig-fun &rest args)
   "Advise `org-archive-subtree' to recreate the original outline path
-hierarchy inside the archive file before archiving the task."
-  ;; use: `org-archive--compute-location'
+hierarchy inside the archive file before archiving the task.
+The advice is modular: it passes all arguments, unchanged, to
+`org-archive-subtree'."
+  ;; Requires Emacs ≥ 27.1 because it uses: `org-archive--compute-location'
   (if (and (require 'org-archive 'noerror)
            (fboundp 'org-archive--compute-location))
       (let*
