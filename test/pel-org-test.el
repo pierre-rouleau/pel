@@ -196,7 +196,7 @@ This test requires Emacs 27.1 or later and an Org version that provides
         (org-with-wide-buffer
          ;; Verify that the complete structural path exists.
          (goto-char (point-min))
-         (should (org-find-olp '("Project" "Area" "Task")))
+         (should (org-find-olp '("Project" "Area" "Task") 'this-buffer))
 
          ;; Verify that the selected headline is the expected child.
          (should (equal (org-get-outline-path t t)
