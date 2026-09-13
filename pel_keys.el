@@ -840,7 +840,8 @@ Your version of Emacs does not support dynamic module.")))
                          "Activate appointment mechanism."
                          (require 'appt)
                          (when (fboundp 'appt-activate)
-                           (appt-activate 1)))))
+                           (appt-activate 1)
+                           (org-agenda-to-appt)))))
 
 ;;** Combobulate -- Tree Sitter Based operations
 ;;   -------------------------------------------
@@ -7970,6 +7971,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
 (define-pel-global-prefix pel:emacs (kbd "<f11> ? e"))
 (define-key pel:emacs (kbd "C-p") #'list-processes)
+(define-key pel:emacs (kbd "C-t") #'list-timers)
 (define-key pel:emacs "B"  'pel-emacs-bug-info)
 (define-key pel:emacs "b"  'pel-emacs-buffer-stats)
 (define-key pel:emacs "c"  'pel-emacs-command-stats)
