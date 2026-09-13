@@ -161,6 +161,11 @@ Therefore to complete the setup you must customize the following user-options:
                                        - Identify the path of each of your project and project
                                          archive files.
 
+. ``org-agenda-files``                 Identifies all Org files scanned to
+                                       create the Org Agenda view.
+
+                                       Identify every original project file
+                                       here, but **not** the archive files.
 = ==================================== ==========================================
 
 
