@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-12 08:02:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-13 12:55:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,7 +32,7 @@
 ;;
 ;;
 (require 'pel--base)         ; use `pel-running-under-ssh-p'
-(require 'pel--keys-macros)
+(require 'pel--keys-macros)  ; use: `pel-customize-groups-from'
 (require 'cus-edit)          ; use: `customize-option'
 (require 'org)               ; use: `org-get-outline-path', `org-entry-get',
 ;;                           ;     `org-archive-location'
@@ -345,7 +345,13 @@ The advice is modular: it passes all arguments, unchanged, to
   "Customize Org Agenda.
 If OTHER-WINDOW is non-nil display in other window."
   (interactive "P")
-  (pel--customize-group "org-agenda" other-window))
+  (pel-customize-groups-from '(org-agenda appt) other-window))
+
+;; ---------------------------------------------------------------------------
+;; Org Appointment Notification
+;; ----------------------------
+
+
 
 ;; ---------------------------------------------------------------------------
 ;; Org Notification that works in terminal-based Emacs

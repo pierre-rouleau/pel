@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-10 14:39:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-13 12:51:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -856,8 +856,8 @@ stored inside the doc/pdf directory.")
     (,(kbd "<f11> SPC M-l") "outline"          pel-pkg-for-outline     outlines)
     ([f11 32 27 ?l]         "outline"          pel-pkg-for-outline     outlines)
 
-    (,(kbd "<f11> SPC M-o") "mode-org-mode"    pel-pkg-for-org-mode    org)
-    ([f11 32 27 ?o]         "mode-org-mode"    pel-pkg-for-org-mode    org)
+    (,(kbd "<f11> SPC M-o") "mode-org-mode"    pel-pkg-for-org-mode    (org apt))
+    ([f11 32 27 ?o]         "mode-org-mode"    pel-pkg-for-org-mode    (org apt))
 
     (,(kbd "<f11> SPC M-p") "pl-pascal" pel-pkg-for-pascal    pascal)
     ([f11 32 27 ?p]         "pl-pascal" pel-pkg-for-pascal    pascal)
@@ -1734,6 +1734,16 @@ Is it installed? If not set PEL user option to activate it.\n\
 To customize it manually load the library where this group is defined"
                         group)))))))
 
+(defun pel-customize-groups-from (groups &optional other-window)
+  "Prompt and customize one of GROUPS optionally in OTHER-WINDOW."
+  ;; First build a choice list with numbers as the choice selector.
+  (require 'pel-prompt nil :noerror)
+  (if (fboundp 'pel-select-symbol-from)
+      (pel--customize-group
+       (pel-select-symbol-from "Select group" groups)
+       other-window)
+    (error "Failed loading pel-prompt!")))
+
 ;;-pel-autoload
 (defun pel-customize-pel (&optional other-window)
   "Open the PEL customize group(s) for the current context.
@@ -1769,13 +1779,7 @@ There should be no key binding!" keyseq))
     (if (symbolp groups)
         (pel--customize-group groups other-window)
       ;; There are several groups.  Prompt for one and open it.
-      ;; First build a choice list with numbers as the choice selector.
-      (require 'pel-prompt nil :noerror)
-      (if (fboundp 'pel-select-symbol-from)
-          (pel--customize-group
-           (pel-select-symbol-from "Select group" groups)
-           other-window)
-        (error "Failed loading pel-prompt!")))))
+      (pel-customize-groups-from groups))))
 
 ;;----------------------------------------------------------------------------
 
