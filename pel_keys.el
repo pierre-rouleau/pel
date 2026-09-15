@@ -793,7 +793,7 @@ Your version of Emacs does not support dynamic module.")))
 ;;   ----
 (when pel-use-calc
 
-  (defun pel-calc-gnuplot-device ()
+  (defun pel-calc-set-gnuplot-device ()
     "Return gnuplot device identified by customization and environment."
     (let ((gnuplot-device pel-calc-gnuplot-device))
       (when (listp pel-calc-gnuplot-device)
@@ -804,7 +804,7 @@ Your version of Emacs does not support dynamic module.")))
       ;; Return only a string or nil: nothing else
       (when (stringp gnuplot-device)
         gnuplot-device)))
-  (declare-function pel-calc-gnuplot-device "pel_keys")
+  (declare-function pel-calc-set-gnuplot-device "pel_keys")
 
   (pel-setup-major-mode calc :no-ts
     features: calc
@@ -819,7 +819,7 @@ Your version of Emacs does not support dynamic module.")))
                          (pel-local-set-f12 'pel:for-calc)))
     (define-pel-global-prefix pel:calc-mode-help  (kbd "<f11> SPC SPC C ?"))
     (define-key pel:calc-mode-help "i" 'calc-info)
-    (let ((gnuplot-device (pel-calc-gnuplot-device)))
+    (let ((gnuplot-device (pel-calc-set-gnuplot-device)))
       (when (and gnuplot-device
                  (boundp 'calc-gnuplot-default-device))
         (setq calc-gnuplot-default-device gnuplot-device)))))
@@ -835,13 +835,7 @@ Your version of Emacs does not support dynamic module.")))
 (define-pel-global-prefix pel:diary     (kbd "<f11> M-D"))
 (define-key pel:diary (kbd "M-A")  'appt-activate)
 (when pel-activate-appt-notification
-  (run-with-idle-timer 4 nil
-                       (lambda ()
-                         "Activate appointment mechanism."
-                         (require 'appt)
-                         (when (fboundp 'appt-activate)
-                           (appt-activate 1)
-                           (org-agenda-to-appt)))))
+  (run-with-idle-timer 4 nil 'pel-org-setup-appt-notification))
 
 ;;** Combobulate -- Tree Sitter Based operations
 ;;   -------------------------------------------
@@ -6976,7 +6970,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (when (pel-emacs-is-a-tty-p)
     (pel-eval-after-load org-clock
       ;; When running inside a terminal, provide a notification handler
-      ;; that works in terminal.
+      ;; that works in terminal: use `pel-org-notify' unless the user
+      ;; has already identified one in `org-show-notification-handler'.
       (when (and (boundp 'org-show-notification-handler)
                  (null org-show-notification-handler))
         (setq org-show-notification-handler 'pel-org-notify))))
@@ -6988,6 +6983,18 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (declare-function pel-org-enhance-archiving "pel-org")
       (pel-org-enhance-archiving))
 
+    ;; Ensure that Org Agenda scheduled events are notified when
+    ;; notification support is activated.
+    (when pel-activate-appt-notification
+      ;; Automatically update notifications every time the agenda is opened.
+      (add-hook 'org-finalize-agenda-hook 'pel-org-agenda-to-appt)
+      ;; Automatically refresh the notification queue every night at 12:05 AM
+      (run-at-time "12:05am" (* 24 3600) 'pel-org-agenda-to-appt-silently)
+      ;; Also ensure that tasks status changes are taken into account
+      (add-hook 'org-after-todo-state-change-hook 'pel-org-agenda-to-appt-silently)
+      (advice-add 'org-schedule :after 'pel-org-agenda-to-appt-silently)
+      (advice-add 'org-deadline :after 'pel-org-agenda-to-appt-silently))
+
     ;; schedule
     (pel-eval-after-load org-agenda
       ;; Activate org-habit commands via autoloading
@@ -6996,7 +7003,10 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (add-to-list 'org-modules 'org-habit t)
       ;; Add a <f12><f1> key to open the org PDF from org-agenda-mode
       (when (boundp 'org-agenda-mode-map)
-        (define-key org-agenda-mode-map (kbd "<f12> <f1>") 'pel-org-open-pdf)))
+        (define-key org-agenda-mode-map (kbd "<f12> <f1>") 'pel-org-open-pdf))
+
+      ;; Load org-clock to activate appointments and scheduled events notification
+      (require 'org-clock))
 
     (when (and pel-org-clock-auto-clockout-timer
                (boundp  'org-clock-auto-clockout-timer)

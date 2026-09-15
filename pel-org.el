@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-13 12:55:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-15 09:46:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -37,6 +37,7 @@
 (require 'org)               ; use: `org-get-outline-path', `org-entry-get',
 ;;                           ;     `org-archive-location'
 (require 'org-macs)          ; use: `org-with-wide-buffer'
+(require 'org-agenda)        ; use: `org-agenda-to-appt'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -348,14 +349,30 @@ If OTHER-WINDOW is non-nil display in other window."
   (pel-customize-groups-from '(org-agenda appt) other-window))
 
 ;; ---------------------------------------------------------------------------
-;; Org Appointment Notification
-;; ----------------------------
-
-
-
-;; ---------------------------------------------------------------------------
 ;; Org Notification that works in terminal-based Emacs
 ;; ---------------------------------------------------
+;;
+;;  Org variables involved in notification:
+;;
+;; ================================ ==================== ========================
+;; Variable                         From                 Purpose
+;; ================================ ==================== ========================
+;; org-show-notification-handler    org-clock.el         How notifications are
+;;                                                       issued.  Must be set
+;;                                                       to `pel-org-notify'
+;;
+;; appt-message-warning-time        appt.el              Time in minutes
+;;                                                       before appointment
+;;                                                       warning begins.
+;;                                                       Default: 12.
+;;
+;; appt-display-interval            appt.el              Interval in minutes
+;;                                                       to display
+;;                                                       appointment reminders.
+;;                                                       Default: 3.
+;; ================================ ==================== ========================
+
+
 
 ;;-pel-autoload
 (defun pel-org-notify (msg)
@@ -393,6 +410,57 @@ Inside a SSH session, just display the message in the echo area."
   ;; Also display message in echo area
   (ding)
   (message "🔔 Org: %s" msg))
+
+;; ---------------------------------------------------------------------------
+;; Org Appointment Notification
+;; ----------------------------
+;;
+;; - `pel-org-agenda-to-appt-silently'
+;;   - `pel-org-agenda-to-appt'
+;;
+;; - `pel-org-setup-appt-notification'
+
+;; Dynamic declaration of appt variables to prevent compiler warning.
+(defvar appt-display-format)
+(defvar appt-disp-window-function)
+(defvar appt-display-mode-line)
+(defvar appt-visible)
+
+(defun pel-org-setup-appt-notification ()
+  "Configure the appointment and scheduled events notifications."
+  ;; First setup what needs to execute right after loading appt
+  (with-eval-after-load 'appt
+    ;; 1. Tell appt to pass notifications to a window function
+    (setq appt-display-format 'window)
+    ;; 2. Override the window function to run your macOS handler instead
+    (setq appt-disp-window-function
+          (lambda (min-to-app _new-time msg)
+            ;; Format a string combining the countdown time and the Org heading text
+            (let ((full-message (format "In %s Min: %s" min-to-app msg)))
+              (pel-org-notify full-message))))
+    ;; 3. Disable built-in echoes and modeline spam if you only want the macOS popup
+    (setq appt-display-mode-line nil)
+    (setq appt-visible nil))
+
+  ;; Then load appt to activate appointments
+  (require 'appt)
+  (appt-activate 1)
+  (org-agenda-to-appt))
+
+(defun pel-org-agenda-to-appt ()
+  "Pull tasks from your Org agenda files into the appt system."
+  (interactive)
+  (if (boundp 'appt-time-msg-list)
+      (progn
+        (setq appt-time-msg-list nil)
+        (org-agenda-to-appt))
+    ;; appt is not loaded yet, so configure it.
+    (pel-org-setup-appt-notification)))
+
+(defun pel-org-agenda-to-appt-silently ()
+  "Silently update appointments without popping up agenda buffers."
+  (let ((inhibit-message t))
+    (pel-org-agenda-to-appt)))
 
 ;; ---------------------------------------------------------------------------
 ;; Org Clock Table Report Support
