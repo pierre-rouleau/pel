@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-15 09:46:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-15 16:28:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -457,8 +457,14 @@ Inside a SSH session, just display the message in the echo area."
     ;; appt is not loaded yet, so configure it.
     (pel-org-setup-appt-notification)))
 
-(defun pel-org-agenda-to-appt-silently ()
-  "Silently update appointments without popping up agenda buffers."
+(defun pel-org-agenda-to-appt-silently (&rest _args)
+  "Silently update appointments without popping up agenda buffers.
+Ignore ARGS if any are passed. "
+  ;; pel_keys.el adds `pel-org-agenda-to-appt-silently' as :after advice for
+  ;; `org-schedule' and `org-deadline'. Both Org commands accept ARG and optional
+  ;; TIME, and their (interactive "P") declarations pass the prefix
+  ;; argument. :after advice receives those arguments.  These arguments are
+  ;; identified as _args here and ignored explicitly.
   (let ((inhibit-message t))
     (pel-org-agenda-to-appt)))
 
