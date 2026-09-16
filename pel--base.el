@@ -3417,12 +3417,11 @@ The first one found from the list is used.
 
 ARGS must be a list of arguments, or nil if none is required.
 
-Return non-nil only when PROGRAM exits successfully.
+Return non-nil only when runs and PROGRAM exits successfully.
 Return nil when PROGRAM is unavailable or its execution signals an error.
-Display that error as an error-warning when the program signals an error
-or when no valid PROGRAM to use is found."
+Also display that error as an error-warning when the program signals an error."
   (let ((pgm (pel-find-first-program-in (pel-list-of program))))
-    (if pgm
+    (when pgm
         (condition-case err
             (let ((exit-code (apply #'call-process pgm nil 0 nil args)))
               (when (or (null exit-code)
@@ -3438,14 +3437,7 @@ or when no valid PROGRAM to use is found."
                       (error-message-string err))
               :error)
              ;; return nil
-             nil)))
-      ;;
-      (display-warning
-       'pel-call-program-if-available
-       (format "No valid program in %S" program)
-       :error)
-      ;; return nil
-      nil)))
+             nil))))))
 
 (defun pel-treesit-language-available-p (language)
   "Return non-nil if tree-sitter LANGUAGE exists and is loadable.

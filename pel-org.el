@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-16 15:32:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-16 16:16:11 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -363,6 +363,9 @@ If OTHER-WINDOW is non-nil display in other window."
 ;; org-show-notification-handler    org-clock.el         How notifications are
 ;;                                                       issued.  Must be set
 ;;                                                       to `pel-org-notify'
+;;                                                       in a terminal session
+;;                                                       if not already set by
+;;                                                       user's customization.
 ;;
 ;; appt-message-warning-time        appt.el              Time in minutes
 ;;                                                       before appointment
@@ -423,7 +426,7 @@ Inside a SSH session, just display the message in the echo area."
                                          '("--id" "complete"))))
        ;;
        ;; 3. Windows: use PowerShell when it is available.
-       ((memq system-type '(windows-nt ms-dos))
+       ((eq system-type 'windows-nt)
         (pel-call-program-if-available
          '("powershell" "pwsh")
          `("-Command"
@@ -462,14 +465,13 @@ Inside a SSH session, just display the message in the echo area."
 (defun pel-org-show-appt-reminder (min-to-app _new-time msg)
   "Display appointment due in MIN-TO-APP (a string) minutes.
 
-NEW-TIME is a string giving the current date and that is ignored.
-Displays the appointment message APPT-MSG in the echo area and inside an
+_NEW-TIME is a string giving the current date and that is ignored.
+Displays the appointment message MSG in the echo area and inside an
 OS-specific pop-up window.
 
 The arguments may also be lists, where each element relates to a
 separate appointment."
   ;; appt can pass lists when several appointments are due.
-  (message "pel-org-show-appt-reminder: msg:=%s" msg)
   (let ((minutes   (pel-list-of min-to-app))
         (messages  (pel-list-of msg))
         (last-minutes "?"))

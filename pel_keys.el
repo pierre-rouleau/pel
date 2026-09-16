@@ -7003,10 +7003,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (add-to-list 'org-modules 'org-habit t)
       ;; Add a <f12><f1> key to open the org PDF from org-agenda-mode
       (when (boundp 'org-agenda-mode-map)
-        (define-key org-agenda-mode-map (kbd "<f12> <f1>") 'pel-org-open-pdf))
-
-      ;; Load org-clock to activate appointments and scheduled events notification
-      (require 'org-clock))
+        (define-key org-agenda-mode-map (kbd "<f12> <f1>") 'pel-org-open-pdf)))
 
     (when (and pel-org-clock-auto-clockout-timer
                (boundp  'org-clock-auto-clockout-timer)
