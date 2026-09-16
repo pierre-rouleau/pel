@@ -3403,8 +3403,6 @@ If IS-REMOTE is non-nil:
   "Return the path of first executable program found in PROGRAMS."
   (cl-some #'executable-find programs))
 
-
-
 ;; [:todo 2026-09-16, by Pierre Rouleau: evolve pel-call-program-if-available
 ;; to support calling remote program (with `process-file' instead of
 ;; `call-process') and provide the ability to request allowing the exception.
@@ -3421,8 +3419,8 @@ ARGS must be a list of arguments, or nil if none is required.
 
 Return non-nil only when PROGRAM exits successfully.
 Return nil when PROGRAM is unavailable or its execution signals an error.
-Display that error as an error-warning when the program signals an error.
-Raise an error if no valid PROGRAM specified."
+Display that error as an error-warning when the program signals an error
+or when no valid PROGRAM to use is found."
   (let ((pgm (pel-find-first-program-in (pel-list-of program))))
     (if pgm
         (condition-case err

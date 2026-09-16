@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-16 15:07:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-16 15:32:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -479,12 +479,14 @@ separate appointment."
                                       last-minutes)))
         (setq last-minutes minutes-to-appointment)
         (pel-org-notify
-         (format "In %s @ %s"
-                 (if (equal minutes-to-appointment "?")
-                     "?"
-                   (pel-count-string (string-to-number minutes-to-appointment)
-                                     "minute"))
-                 msg))))))
+         (if (equal minutes-to-appointment "?")
+             msg
+           (let ((minutes-left (string-to-number minutes-to-appointment)))
+             (if (zerop minutes-left)
+                 (format "NOW, %s" msg)
+               (format "In %s @ %s"
+                       (pel-count-string minutes-left "minute")
+                       msg)))))))))
 
 ;; Dynamic declaration of appt variables to prevent compiler warning.
 (defvar appt-display-format)
