@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-16 11:31:40 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-16 15:07:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -375,57 +375,36 @@ If OTHER-WINDOW is non-nil display in other window."
 ;;                                                       Default: 3.
 ;; ================================ ==================== ========================
 
+(defun pel--org-applescript-text-expression (string)
+  "Return STRING as an AppleScript text expression.
 
-(defun pel--org-applescript-string (string)
-  "Return STRING encoded for use in an AppleScript string literal."
-  ;; Follows the following rules:
-  ;; - Apple Developer: Special String Characters:
-  ;;    @ https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/reference/ASLR_classes.html
-  ;; - Apple Developer: Lexical Conventions — Text literals:
-  ;;    @ https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/conceptual/ASLR_lexical_conventions.html
-  (replace-regexp-in-string
-   "\t" "\\\\t"
-   (replace-regexp-in-string
-    "\n" "\\\\n"
-    (replace-regexp-in-string
-     "\r" "\\\\r"
-     (replace-regexp-in-string
-      "\"" "\\\\\""
-      (replace-regexp-in-string "\\\\" "\\\\\\\\" string 'fixedcase 'literal)
-      'fixedcase 'literal)
-     'fixedcase 'literal)
-    'fixedcase 'literal)
-   'fixedcase 'literal))
+Keep normal text in contiguous AppleScript string literals.  Represent each
+literal backslash with `(character id 92)'."
+;; Follows the following rules:
+;; - Apple Developer: Special String Characters:
+;;    @ https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/reference/ASLR_classes.html
+;; - Apple Developer: Lexical Conventions — Text literals:
+;;    @ https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/conceptual/ASLR_lexical_conventions.html
+  (mapconcat
+   (lambda (text)
+     (format
+      "\"%s\""
+      (replace-regexp-in-string "\"" "\\\\\"" text 'fixedcase 'literal)))
+   ;; Keep empty fragments.  They are required if STRING starts or ends
+   ;; with a backslash, or contains consecutive backslashes.
+   (split-string string "\\\\" nil)
+   " & (character id 92) & "))
 
 (defun pel--org-powershell-string (string)
   "Return STRING as Base64-encoded UTF-16LE data for PowerShell source."
   (base64-encode-string (encode-coding-string string 'utf-16le) t))
-
-(defun pel--org-call-process-if-available (program &rest args)
-  "Run PROGRAM with ARGS when PROGRAM is available.
-
-Return non-nil only when PROGRAM exits successfully.
-Return nil when PROGRAM is unavailable or its execution signals an error.
-Display that error as a warning when the program signals an error."
-  (when (executable-find program)
-    (condition-case err
-        (zerop (apply #'call-process program nil 0 nil args))
-      (error (progn
-               (display-warning 'pel-org-notify
-                                (format "Failed executing %s %S: %s"
-                                        program
-                                        args
-                                        (error-message-string err))
-                                :error)
-               nil)))))
-
 
 ;;-pel-autoload
 (defun pel-org-notify (msg)
   "Notifier - display MSG on echo area and in OS-specific notification.
 Inside a SSH session, just display the message in the echo area."
   (unless (pel-running-under-ssh-p)
-    (let ((title "Org Mode"))
+    (let ((title "Org Mode"))    ; title must NOT include any backslash
       (cond
        ;; 1. macOS (Plays the native 'Glass' alert sound)
        ((eq system-type 'darwin)
@@ -433,9 +412,9 @@ Inside a SSH session, just display the message in the echo area."
          "osascript"
          `("-e"
            ,(format
-             "display notification \"%s\" with title \"%s\" sound name \"Glass\""
-             (pel--org-applescript-string msg)
-             (pel--org-applescript-string title)))))
+             "display notification %s with title \"%s\" sound name \"Glass\""
+             (pel--org-applescript-text-expression msg)
+             title))))
        ;;
        ;; 2. Linux (Uses notify-send and plays a system sound via canberra-gtk-play)
        ((eq system-type 'gnu/linux)
@@ -490,17 +469,21 @@ OS-specific pop-up window.
 The arguments may also be lists, where each element relates to a
 separate appointment."
   ;; appt can pass lists when several appointments are due.
+  (message "pel-org-show-appt-reminder: msg:=%s" msg)
   (let ((minutes   (pel-list-of min-to-app))
         (messages  (pel-list-of msg))
-        (last-minutes 1))
+        (last-minutes "?"))
     (dolist (msg messages)
       (let ((minutes-to-appointment (if minutes
                                         (pop minutes)
                                       last-minutes)))
         (setq last-minutes minutes-to-appointment)
         (pel-org-notify
-         (format "In %s: %s"
-                 (pel-count-string minutes-to-appointment "minute")
+         (format "In %s @ %s"
+                 (if (equal minutes-to-appointment "?")
+                     "?"
+                   (pel-count-string (string-to-number minutes-to-appointment)
+                                     "minute"))
                  msg))))))
 
 ;; Dynamic declaration of appt variables to prevent compiler warning.
