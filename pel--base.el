@@ -3407,7 +3407,7 @@ If IS-REMOTE is non-nil:
 ;; to support calling remote program (with `process-file' instead of
 ;; `call-process') and provide the ability to request allowing the exception.
 ;; ]
-(defun pel-call-program-if-available (program args)
+(defun pel-call-program-if-available (program args &optional synchronously)
   "Run PROGRAM with ARGS when PROGRAM is available.
 
 PROGRAM is either a string with the name of the program to execute,
@@ -3417,27 +3417,35 @@ The first one found from the list is used.
 
 ARGS must be a list of arguments, or nil if none is required.
 
+Invoke program asynchronously unless the optional SYNCHRONOUSLY argument is
+non-nil.
+
 Return non-nil only when runs and PROGRAM exits successfully.
 Return nil when PROGRAM is unavailable or its execution signals an error.
 Also display that error as an error-warning when the program signals an error."
   (let ((pgm (pel-find-first-program-in (pel-list-of program))))
     (when pgm
-        (condition-case err
-            (let ((exit-code (apply #'call-process pgm nil 0 nil args)))
-              (when (or (null exit-code)
-                        (eq exit-code 0))
-                t))
-          (error
-           (progn
-             (display-warning
-              'pel-call-program-if-available
-              (format "Failed executing [%s] %S: %s"
-                      program
-                      args
-                      (error-message-string err))
-              :error)
-             ;; return nil
-             nil))))))
+      (condition-case err
+          (let ((exit-code (apply #'call-process
+                                  pgm
+                                  nil
+                                  (if synchronously nil 0)
+                                  nil
+                                  args)))
+            (when (or (null exit-code)
+                      (eq exit-code 0))
+              t))
+        (error
+         (progn
+           (display-warning
+            'pel-call-program-if-available
+            (format "Failed executing [%s] %S: %s"
+                    program
+                    args
+                    (error-message-string err))
+            :error)
+           ;; return nil
+           nil))))))
 
 (defun pel-treesit-language-available-p (language)
   "Return non-nil if tree-sitter LANGUAGE exists and is loadable.

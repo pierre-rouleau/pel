@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-16 16:16:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-16 16:43:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -421,7 +421,7 @@ Inside a SSH session, just display the message in the echo area."
        ;;
        ;; 2. Linux (Uses notify-send and plays a system sound via canberra-gtk-play)
        ((eq system-type 'gnu/linux)
-        (when (pel-call-program-if-available "notify-send" `(,title ,msg))
+        (when (pel-call-program-if-available "notify-send" `(,title ,msg) 'synchronously)
           (pel-call-program-if-available "canberra-gtk-play"
                                          '("--id" "complete"))))
        ;;
