@@ -335,7 +335,7 @@
 ;; subr (always loaded) ; use: `called-interactively-p', `backtrace-frame'
 (require 'pel-comp)
 (require 'subr-x)     ; use: `split-string', `string-join', `string-trim'
-(require 'cl-lib)     ; use: `cl-some', `cl-return'
+(require 'cl-lib)     ; use: `cl-some'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -3401,11 +3401,7 @@ If IS-REMOTE is non-nil:
 
 (defun pel-find-first-program-in (programs)
   "Return the path of first executable program found in PROGRAMS."
-  (let (found)
-    (dolist (pg programs found)
-      (setq found (executable-find pg))
-      (when found
-        (cl-return found)))))
+  (cl-some #'executable-find programs))
 
 ;; [:todo 2026-09-16, by Pierre Rouleau: evolve pel-call-program-if-available
 ;; to support calling remote program (with `process-file' instead of
@@ -3423,18 +3419,29 @@ ARGS must be a list of arguments, or nil if none is required.
 
 Return non-nil only when PROGRAM exits successfully.
 Return nil when PROGRAM is unavailable or its execution signals an error.
-Display that error as an error-warning when the program signals an error."
-  (when (pel-find-first-program-in (pel-list-of program))
-    (condition-case err
-        (zerop (apply #'call-process program nil 0 nil args))
-      (error (progn
-               (display-warning 'pel
-                                (format "Failed executing %s %S: %s"
-                                        program
-                                        args
-                                        (error-message-string err))
-                                :error)
-               nil)))))
+Display that error as an error-warning when the program signals an error.
+Raise an error if no valid PROGRAM specified."
+  (let ((pgm (pel-find-first-program-in (pel-list-of program))))
+    (if pgm
+        (condition-case err
+            (zerop (apply #'call-process pgm nil 0 nil args))
+          (error (progn
+                   (display-warning
+                    'pel
+                    (format "Failed executing %s %S: %s"
+                            program
+                            args
+                            (error-message-string err))
+                    :error)
+                   ;; return nil
+                   nil)))
+      ;;
+      (display-warning
+       'pel
+       (format "No valid program in %S" program)
+       :error)
+      ;; return nil
+      nil)))
 
 (defun pel-treesit-language-available-p (language)
   "Return non-nil if tree-sitter LANGUAGE exists and is loadable.

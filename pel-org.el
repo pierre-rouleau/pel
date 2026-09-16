@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-16 10:59:12 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-16 11:31:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -384,7 +384,7 @@ If OTHER-WINDOW is non-nil display in other window."
   ;; - Apple Developer: Lexical Conventions — Text literals:
   ;;    @ https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/conceptual/ASLR_lexical_conventions.html
   (replace-regexp-in-string
-   "\n" "\\\\t"
+   "\t" "\\\\t"
    (replace-regexp-in-string
     "\n" "\\\\n"
     (replace-regexp-in-string
