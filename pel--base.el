@@ -335,7 +335,7 @@
 ;; subr (always loaded) ; use: `called-interactively-p', `backtrace-frame'
 (require 'pel-comp)
 (require 'subr-x)     ; use: `split-string', `string-join', `string-trim'
-(require 'cl-lib)     ; use: `cl-some'
+(require 'cl-lib)     ; use: `cl-some', `cl-return'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -3398,6 +3398,43 @@ If IS-REMOTE is non-nil:
                     emacs-major-version
                     command)
       (executable-find command))))
+
+(defun pel-find-first-program-in (programs)
+  "Return the path of first executable program found in PROGRAMS."
+  (let (found)
+    (dolist (pg programs found)
+      (setq found (executable-find pg))
+      (when found
+        (cl-return found)))))
+
+;; [:todo 2026-09-16, by Pierre Rouleau: evolve pel-call-program-if-available
+;; to support calling remote program (with `process-file' instead of
+;; `call-process') and provide the ability to request allowing the exception.
+;; ]
+(defun pel-call-program-if-available (program args)
+  "Run PROGRAM with ARGS when PROGRAM is available.
+
+PROGRAM is either a string with the name of the program to execute,
+or a list of strings, each string being different programs that do the same
+thing and use the same arguments (as in \\='(\"powershell\" \"pwsh\").
+The first one found from the list is used.
+
+ARGS must be a list of arguments, or nil if none is required.
+
+Return non-nil only when PROGRAM exits successfully.
+Return nil when PROGRAM is unavailable or its execution signals an error.
+Display that error as an error-warning when the program signals an error."
+  (when (pel-find-first-program-in (pel-list-of program))
+    (condition-case err
+        (zerop (apply #'call-process program nil 0 nil args))
+      (error (progn
+               (display-warning 'pel
+                                (format "Failed executing %s %S: %s"
+                                        program
+                                        args
+                                        (error-message-string err))
+                                :error)
+               nil)))))
 
 (defun pel-treesit-language-available-p (language)
   "Return non-nil if tree-sitter LANGUAGE exists and is loadable.

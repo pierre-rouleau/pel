@@ -14990,9 +14990,22 @@ This requires Emacs 27.1 or later."
   :group 'pel-pkg-for-time-tracking)
 
 (defcustom pel-activate-appt-notification nil
-  "Control whether PEL activates automatic notification of appointments.
-This uses the appt package, part of Emacs Calendar system."
+  "Control whether PEL activates automatic appointment notifications.
+
+When non-nil, PEL activates the Emacs `appt' package and does the following:
+- Refreshes the appointment list after an Org Agenda display, a TODO state
+  change, a schedule change, a deadline change, and once each night.
+- Displays a native notification when the operating system and
+  notification executable support one.
+- Always displays the reminder in the echo area.
+- With Emacs accessed via a SSH session, only uses the echo area.
+
+PEL imports qualifying Org Agenda entries through `org-agenda-to-appt'.
+With the default filters, scheduled and deadline entries require an `hh:mm'
+time.  An untimed entry such as `SCHEDULED: <2026-09-16 Wed>' does not create
+an appointment reminder."
   :group 'pel-pkg-for-calendar
+  :group 'pel-pkg-for-org
   :link `(url-link :tag "Calendar PDF" ,(pel-pdf-file-url "calendar"))
   :type 'boolean
   :safe #'booleanp)

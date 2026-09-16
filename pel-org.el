@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-15 16:28:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-16 10:59:12 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,7 +31,9 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)         ; use `pel-running-under-ssh-p'
+(require 'pel--base)         ; use `pel-running-under-ssh-p',
+;;                           ;     `pel-call-program-if-available'
+;;                           ;     `pel-count-string'
 (require 'pel--keys-macros)  ; use: `pel-customize-groups-from'
 (require 'cus-edit)          ; use: `customize-option'
 (require 'org)               ; use: `org-get-outline-path', `org-entry-get',
@@ -107,9 +109,10 @@ GitHub remote file is opened by default."
     (error "org not loaded in `pel--org-clean-archive-properties-on-refile'")))
 
 (defun pel--org-archive-file-first-property (property-name)
-  "Return the property of the first headline defining a ARCHIVE_FILE property.
-Search the entire buffer.
-Return the expanded path string if one is found, nil otherwise."
+  "Return PROPERTY-NAME from the first headline that defines it.
+
+Search the entire current Org buffer.
+Return the property value as stored, or nil when no headline defines it."
   (require 'org nil 'noerror)
   (if (and (fboundp 'org-map-entries)
            (fboundp 'org-entry-get))
@@ -373,6 +376,49 @@ If OTHER-WINDOW is non-nil display in other window."
 ;; ================================ ==================== ========================
 
 
+(defun pel--org-applescript-string (string)
+  "Return STRING encoded for use in an AppleScript string literal."
+  ;; Follows the following rules:
+  ;; - Apple Developer: Special String Characters:
+  ;;    @ https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/reference/ASLR_classes.html
+  ;; - Apple Developer: Lexical Conventions — Text literals:
+  ;;    @ https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/conceptual/ASLR_lexical_conventions.html
+  (replace-regexp-in-string
+   "\n" "\\\\t"
+   (replace-regexp-in-string
+    "\n" "\\\\n"
+    (replace-regexp-in-string
+     "\r" "\\\\r"
+     (replace-regexp-in-string
+      "\"" "\\\\\""
+      (replace-regexp-in-string "\\\\" "\\\\\\\\" string 'fixedcase 'literal)
+      'fixedcase 'literal)
+     'fixedcase 'literal)
+    'fixedcase 'literal)
+   'fixedcase 'literal))
+
+(defun pel--org-powershell-string (string)
+  "Return STRING as Base64-encoded UTF-16LE data for PowerShell source."
+  (base64-encode-string (encode-coding-string string 'utf-16le) t))
+
+(defun pel--org-call-process-if-available (program &rest args)
+  "Run PROGRAM with ARGS when PROGRAM is available.
+
+Return non-nil only when PROGRAM exits successfully.
+Return nil when PROGRAM is unavailable or its execution signals an error.
+Display that error as a warning when the program signals an error."
+  (when (executable-find program)
+    (condition-case err
+        (zerop (apply #'call-process program nil 0 nil args))
+      (error (progn
+               (display-warning 'pel-org-notify
+                                (format "Failed executing %s %S: %s"
+                                        program
+                                        args
+                                        (error-message-string err))
+                                :error)
+               nil)))))
+
 
 ;;-pel-autoload
 (defun pel-org-notify (msg)
@@ -383,31 +429,44 @@ Inside a SSH session, just display the message in the echo area."
       (cond
        ;; 1. macOS (Plays the native 'Glass' alert sound)
        ((eq system-type 'darwin)
-        (let* ((script
-                (format "display notification \"%s\" with title \"%s\" sound name \"Glass\""
-                        msg title)))
-          (call-process "osascript" nil 0 nil "-e" script)))
-
+        (pel-call-program-if-available
+         "osascript"
+         `("-e"
+           ,(format
+             "display notification \"%s\" with title \"%s\" sound name \"Glass\""
+             (pel--org-applescript-string msg)
+             (pel--org-applescript-string title)))))
+       ;;
        ;; 2. Linux (Uses notify-send and plays a system sound via canberra-gtk-play)
        ((eq system-type 'gnu/linux)
-        (progn
-          (call-process "notify-send" nil 0 nil title msg)
-          (if (executable-find "canberra-gtk-play")
-              (call-process "canberra-gtk-play" nil 0 nil "--id" "complete"))))
-
-       ;; 3. Windows (Triggers standard system notification sound natively)
+        (when (pel-call-program-if-available "notify-send" `(,title ,msg))
+          (pel-call-program-if-available "canberra-gtk-play"
+                                         '("--id" "complete"))))
+       ;;
+       ;; 3. Windows: use PowerShell when it is available.
        ((memq system-type '(windows-nt ms-dos))
-        (let ((ps-script (format
-                          "[void] [System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms'); \
-                         $notification = New-Object System.Windows.Forms.NotifyIcon; \
-                         $notification.Icon = [System.Drawing.SystemIcons]::Information; \
-                         $notification.BalloonTipTitle = '%s'; \
-                         $notification.BalloonTipText = '%s'; \
-                         $notification.Visible = $true; \
-                         $notification.ShowBalloonTip(5000); \
-                         [System.Media.SystemSounds]::Asterisk.Play();" title msg)))
-          (call-process "powershell" nil 0 nil "-Command" ps-script))))))
-  ;; Also display message in echo area
+        (pel-call-program-if-available
+         '("powershell" "pwsh")
+         `("-Command"
+           ,(format
+             (concat
+              "[void][System.Reflection.Assembly]::"
+              "LoadWithPartialName('System.Windows.Forms');"
+              "$title=[Text.Encoding]::Unicode.GetString("
+              "[Convert]::FromBase64String('%s'));"
+              "$message=[Text.Encoding]::Unicode.GetString("
+              "[Convert]::FromBase64String('%s'));"
+              "$notification=New-Object System.Windows.Forms.NotifyIcon;"
+              "$notification.Icon=[System.Drawing.SystemIcons]::Information;"
+              "$notification.BalloonTipTitle=$title;"
+              "$notification.BalloonTipText=$message;"
+              "$notification.Visible=$true;"
+              "$notification.ShowBalloonTip(5000);"
+              "[System.Media.SystemSounds]::Asterisk.Play();")
+             (pel--org-powershell-string title)
+             (pel--org-powershell-string msg))))))))
+  ;;
+  ;; Display message in echo area in all cases.
   (ding)
   (message "🔔 Org: %s" msg))
 
@@ -419,6 +478,30 @@ Inside a SSH session, just display the message in the echo area."
 ;;   - `pel-org-agenda-to-appt'
 ;;
 ;; - `pel-org-setup-appt-notification'
+;;   ➜ `pel-org-show-appt-reminder'
+
+(defun pel-org-show-appt-reminder (min-to-app _new-time msg)
+  "Display appointment due in MIN-TO-APP (a string) minutes.
+
+NEW-TIME is a string giving the current date and that is ignored.
+Displays the appointment message APPT-MSG in the echo area and inside an
+OS-specific pop-up window.
+
+The arguments may also be lists, where each element relates to a
+separate appointment."
+  ;; appt can pass lists when several appointments are due.
+  (let ((minutes   (pel-list-of min-to-app))
+        (messages  (pel-list-of msg))
+        (last-minutes 1))
+    (dolist (msg messages)
+      (let ((minutes-to-appointment (if minutes
+                                        (pop minutes)
+                                      last-minutes)))
+        (setq last-minutes minutes-to-appointment)
+        (pel-org-notify
+         (format "In %s: %s"
+                 (pel-count-string minutes-to-appointment "minute")
+                 msg))))))
 
 ;; Dynamic declaration of appt variables to prevent compiler warning.
 (defvar appt-display-format)
@@ -427,28 +510,31 @@ Inside a SSH session, just display the message in the echo area."
 (defvar appt-visible)
 
 (defun pel-org-setup-appt-notification ()
-  "Configure the appointment and scheduled events notifications."
+  "Configure appointment notifications for qualifying Org Agenda entries.
+
+`org-agenda-to-appt' selects the entries.  With its default settings,
+`:scheduled*' and `:deadline*' entries require an `hh:mm' time.  Therefore,
+an untimed entry such as `SCHEDULED: <2026-09-16 Wed>' has no reminder."
   ;; First setup what needs to execute right after loading appt
   (with-eval-after-load 'appt
-    ;; 1. Tell appt to pass notifications to a window function
+    ;; 1. Tell appt to pass notifications to the native notification handler.
     (setq appt-display-format 'window)
-    ;; 2. Override the window function to run your macOS handler instead
-    (setq appt-disp-window-function
-          (lambda (min-to-app _new-time msg)
-            ;; Format a string combining the countdown time and the Org heading text
-            (let ((full-message (format "In %s Min: %s" min-to-app msg)))
-              (pel-org-notify full-message))))
-    ;; 3. Disable built-in echoes and modeline spam if you only want the macOS popup
+    (setq appt-disp-window-function #'pel-org-show-appt-reminder)
+    ;; 2. Disable appt's built-in echo-area and mode-line displays.
     (setq appt-display-mode-line nil)
     (setq appt-visible nil))
 
-  ;; Then load appt to activate appointments
+  ;; Load and activate appt, then refresh the appointment list.
   (require 'appt)
   (appt-activate 1)
   (org-agenda-to-appt))
 
 (defun pel-org-agenda-to-appt ()
-  "Pull tasks from your Org agenda files into the appt system."
+  "Refresh appt entries from qualifying Org Agenda entries.
+
+With the default `org-agenda-to-appt' filters, scheduled and deadline
+entries must contain an `hh:mm' time.  Untimed scheduled entries do not
+create appt reminders."
   (interactive)
   (if (boundp 'appt-time-msg-list)
       (progn
@@ -458,13 +544,9 @@ Inside a SSH session, just display the message in the echo area."
     (pel-org-setup-appt-notification)))
 
 (defun pel-org-agenda-to-appt-silently (&rest _args)
-  "Silently update appointments without popping up agenda buffers.
-Ignore ARGS if any are passed. "
-  ;; pel_keys.el adds `pel-org-agenda-to-appt-silently' as :after advice for
-  ;; `org-schedule' and `org-deadline'. Both Org commands accept ARG and optional
-  ;; TIME, and their (interactive "P") declarations pass the prefix
-  ;; argument. :after advice receives those arguments.  These arguments are
-  ;; identified as _args here and ignored explicitly.
+  "Refresh appt entries without displaying an Org Agenda buffer.
+
+The ignored arguments make this function compatible with `:after' advice."
   (let ((inhibit-message t))
     (pel-org-agenda-to-appt)))
 
