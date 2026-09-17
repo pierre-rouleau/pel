@@ -496,6 +496,12 @@ separate appointment."
 (defvar appt-display-mode-line)
 (defvar appt-visible)
 
+;; `org-agenda-to-appt' adds entries through `appt-add'.  The `appt'
+;; package does not distinguish entries by source.  Track the objects
+;; that PEL adds so a later refresh can remove only those entries.
+(defvar pel--org-appt-time-msg-list nil
+  "Appointment objects most recently imported from Org by PEL.")
+
 (defun pel-org-setup-appt-notification ()
   "Configure appointment notifications for qualifying Org Agenda entries.
 
@@ -514,7 +520,7 @@ an untimed entry such as `SCHEDULED: <2026-09-16 Wed>' has no reminder."
   ;; Load and activate appt, then refresh the appointment list.
   (require 'appt)
   (appt-activate 1)
-  (org-agenda-to-appt))
+  (pel-org-agenda-to-appt))
 
 (defun pel-org-agenda-to-appt ()
   "Refresh appt entries from qualifying Org Agenda entries.
@@ -524,9 +530,25 @@ entries must contain an `hh:mm' time.  Untimed scheduled entries do not
 create appt reminders."
   (interactive)
   (if (boundp 'appt-time-msg-list)
-      (progn
-        (setq appt-time-msg-list nil)
-        (org-agenda-to-appt))
+      (let (appointments-before-import)
+        ;; Do not clear `appt-time-msg-list'.  It also contains diary
+        ;; appointments and appointments added with `appt-add'.
+        (dolist (appointment pel--org-appt-time-msg-list)
+          (setq appt-time-msg-list
+                (delq appointment appt-time-msg-list)))
+        (setq pel--org-appt-time-msg-list nil
+              ;; `appt-add' sorts the list.  Copy the list spine while
+              ;; retaining the identity of every appointment object.
+              appointments-before-import
+              (copy-sequence appt-time-msg-list))
+        (org-agenda-to-appt)
+        ;; `org-agenda-to-appt' calls `appt-add'.  Record objects that this
+        ;; import added, but do not record objects present before the import.
+        (dolist (appointment appt-time-msg-list)
+          (unless (memq appointment appointments-before-import)
+            (push appointment pel--org-appt-time-msg-list)))
+        (setq pel--org-appt-time-msg-list
+              (nreverse pel--org-appt-time-msg-list)))
     ;; appt is not loaded yet, so configure it.
     (pel-org-setup-appt-notification)))
 
