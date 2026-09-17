@@ -15003,7 +15003,9 @@ When non-nil, PEL activates the Emacs `appt' package and does the following:
 PEL imports qualifying Org Agenda entries through `org-agenda-to-appt'.
 With the default filters, scheduled and deadline entries require an `hh:mm'
 time.  An untimed entry such as `SCHEDULED: <2026-09-16 Wed>' does not create
-an appointment reminder."
+an appointment reminder.
+
+Note that activating this will also activate `pel-use-org'"
   :group 'pel-pkg-for-calendar
   :group 'pel-pkg-for-org
   :link `(url-link :tag "Calendar PDF" ,(pel-pdf-file-url "calendar"))
@@ -15989,6 +15991,10 @@ PEL uses my fork of this project."
 (when pel-use-xmake
   (unless pel-use-lua
     (setq pel-use-lua t)))
+
+(when pel-activate-appt-notification
+  (setq pel-use-org t))
+
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)
 
