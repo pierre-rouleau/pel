@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-13 12:55:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-17 10:24:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,12 +31,15 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)         ; use `pel-running-under-ssh-p'
+(require 'pel--base)         ; use `pel-running-under-ssh-p',
+;;                           ;     `pel-call-program-if-available'
+;;                           ;     `pel-count-string'
 (require 'pel--keys-macros)  ; use: `pel-customize-groups-from'
 (require 'cus-edit)          ; use: `customize-option'
 (require 'org)               ; use: `org-get-outline-path', `org-entry-get',
 ;;                           ;     `org-archive-location'
 (require 'org-macs)          ; use: `org-with-wide-buffer'
+(require 'org-agenda)        ; use: `org-agenda-to-appt'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -106,9 +109,10 @@ GitHub remote file is opened by default."
     (error "org not loaded in `pel--org-clean-archive-properties-on-refile'")))
 
 (defun pel--org-archive-file-first-property (property-name)
-  "Return the property of the first headline defining a ARCHIVE_FILE property.
-Search the entire buffer.
-Return the expanded path string if one is found, nil otherwise."
+  "Return PROPERTY-NAME from the first headline that defines it.
+
+Search the entire current Org buffer.
+Return the property value as stored, or nil when no headline defines it."
   (require 'org nil 'noerror)
   (if (and (fboundp 'org-map-entries)
            (fboundp 'org-entry-get))
@@ -348,51 +352,220 @@ If OTHER-WINDOW is non-nil display in other window."
   (pel-customize-groups-from '(org-agenda appt) other-window))
 
 ;; ---------------------------------------------------------------------------
-;; Org Appointment Notification
-;; ----------------------------
-
-
-
-;; ---------------------------------------------------------------------------
 ;; Org Notification that works in terminal-based Emacs
 ;; ---------------------------------------------------
+;;
+;;  Org variables involved in notification:
+;;
+;; ================================ ==================== ========================
+;; Variable                         From                 Purpose
+;; ================================ ==================== ========================
+;; org-show-notification-handler    org-clock.el         How notifications are
+;;                                                       issued.  In a
+;;                                                       terminal session PEL
+;;                                                       sets this to
+;;                                                       `pel-org-notify' when
+;;                                                       the user option is nil.
+;;
+;; appt-message-warning-time        appt.el              Time in minutes
+;;                                                       before appointment
+;;                                                       warning begins.
+;;                                                       Default: 12.
+;;
+;; appt-display-interval            appt.el              Interval in minutes
+;;                                                       to display
+;;                                                       appointment reminders.
+;;                                                       Default: 3.
+;; ================================ ==================== ========================
+
+(defun pel--org-applescript-text-expression (string)
+  "Return STRING as an AppleScript text expression.
+
+Keep normal text in contiguous AppleScript string literals.  Represent each
+literal backslash with `(character id 92)'."
+  ;; Follows the following rules:
+  ;; - Apple Developer: Special String Characters:
+  ;;    @ https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/reference/ASLR_classes.html
+  ;; - Apple Developer: Lexical Conventions — Text literals:
+  ;;    @ https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/conceptual/ASLR_lexical_conventions.html
+  (mapconcat
+   (lambda (text)
+     (format
+      "\"%s\""
+      (replace-regexp-in-string "\"" "\\\\\"" text 'fixedcase 'literal)))
+   ;; Keep empty fragments.  They are required if STRING starts or ends
+   ;; with a backslash, or contains consecutive backslashes.
+   (split-string string "\\\\" nil)
+   " & (character id 92) & "))
+
+(defun pel--org-powershell-string (string)
+  "Return STRING as Base64-encoded UTF-16LE data for PowerShell source."
+  (base64-encode-string (encode-coding-string string 'utf-16le) t))
 
 ;;-pel-autoload
 (defun pel-org-notify (msg)
-  "Notifier - display MSG on echo area and in OS-specific notification.
+  "Display MSG on echo area and in OS-specific notification if possible.
 Inside a SSH session, just display the message in the echo area."
   (unless (pel-running-under-ssh-p)
-    (let ((title "Org Mode"))
+    (let ((title "Org Mode"))    ; title must NOT include any backslash
       (cond
        ;; 1. macOS (Plays the native 'Glass' alert sound)
        ((eq system-type 'darwin)
-        (let* ((script
-                (format "display notification \"%s\" with title \"%s\" sound name \"Glass\""
-                        msg title)))
-          (call-process "osascript" nil 0 nil "-e" script)))
-
+        (pel-call-program-if-available
+         "osascript"
+         `("-e"
+           ,(format
+             "display notification %s with title \"%s\" sound name \"Glass\""
+             (pel--org-applescript-text-expression msg)
+             title))))
+       ;;
        ;; 2. Linux (Uses notify-send and plays a system sound via canberra-gtk-play)
        ((eq system-type 'gnu/linux)
-        (progn
-          (call-process "notify-send" nil 0 nil title msg)
-          (if (executable-find "canberra-gtk-play")
-              (call-process "canberra-gtk-play" nil 0 nil "--id" "complete"))))
-
-       ;; 3. Windows (Triggers standard system notification sound natively)
-       ((memq system-type '(windows-nt ms-dos))
-        (let ((ps-script (format
-                          "[void] [System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms'); \
-                         $notification = New-Object System.Windows.Forms.NotifyIcon; \
-                         $notification.Icon = [System.Drawing.SystemIcons]::Information; \
-                         $notification.BalloonTipTitle = '%s'; \
-                         $notification.BalloonTipText = '%s'; \
-                         $notification.Visible = $true; \
-                         $notification.ShowBalloonTip(5000); \
-                         [System.Media.SystemSounds]::Asterisk.Play();" title msg)))
-          (call-process "powershell" nil 0 nil "-Command" ps-script))))))
-  ;; Also display message in echo area
+        (when (pel-call-program-if-available "notify-send" `(,title ,msg) 'synchronously)
+          (pel-call-program-if-available "canberra-gtk-play"
+                                         '("--id" "complete"))))
+       ;;
+       ;; 3. Windows: use PowerShell when it is available.
+       ((eq system-type 'windows-nt)
+        (pel-call-program-if-available
+         '("powershell" "pwsh")
+         `("-Command"
+           ,(format
+             (concat
+              "[void][System.Reflection.Assembly]::"
+              "LoadWithPartialName('System.Windows.Forms');"
+              "$title=[Text.Encoding]::Unicode.GetString("
+              "[Convert]::FromBase64String('%s'));"
+              "$message=[Text.Encoding]::Unicode.GetString("
+              "[Convert]::FromBase64String('%s'));"
+              "$notification=New-Object System.Windows.Forms.NotifyIcon;"
+              "$notification.Icon=[System.Drawing.SystemIcons]::Information;"
+              "$notification.BalloonTipTitle=$title;"
+              "$notification.BalloonTipText=$message;"
+              "$notification.Visible=$true;"
+              "$notification.ShowBalloonTip(5000);"
+              "[System.Media.SystemSounds]::Asterisk.Play();")
+             (pel--org-powershell-string title)
+             (pel--org-powershell-string msg))))))))
+  ;;
+  ;; Display message in echo area in all cases.
   (ding)
   (message "🔔 Org: %s" msg))
+
+;; ---------------------------------------------------------------------------
+;; Org Appointment Notification
+;; ----------------------------
+;;
+;; - `pel-org-agenda-to-appt-silently'
+;;   - `pel-org-agenda-to-appt'
+;;
+;; - `pel-org-setup-appt-notification'
+;;   ➜ `pel-org-show-appt-reminder'
+;;     - `pel-org-notify'
+
+(defun pel-org-show-appt-reminder (min-to-app _new-time msg)
+  "Display appointment due in MIN-TO-APP (a string) minutes.
+
+_NEW-TIME is a string giving the current date and that is ignored.
+The arguments may also be lists, where each element relates to a
+separate appointment.
+
+Calls `pel-org-notify' to display the appointment information on the
+echo area and, if possible, in a OS-specific notification system when
+the Emacs session is not running inside a SSH session."
+  ;; appt can pass lists when several appointments are due.
+  (let ((minutes   (pel-list-of min-to-app))
+        (messages  (pel-list-of msg))
+        (last-minutes "?"))
+    (dolist (msg messages)
+      (let ((minutes-to-appointment (if minutes
+                                        (pop minutes)
+                                      last-minutes)))
+        (setq last-minutes minutes-to-appointment)
+        (pel-org-notify
+         (if (equal minutes-to-appointment "?")
+             msg
+           (let ((minutes-left (string-to-number minutes-to-appointment)))
+             (if (zerop minutes-left)
+                 (format "NOW, %s" msg)
+               (format "In %s @ %s"
+                       (pel-count-string minutes-left "minute")
+                       msg)))))))))
+
+
+;; `org-agenda-to-appt' adds entries through `appt-add'.  However, The `appt'
+;; package does not distinguish entries by source.  Track the objects that we
+;; add so a later refresh can remove only those entries.
+(defvar pel--org-appt-time-msg-list nil
+  "Appointment objects most recently imported from Org.")
+
+;; Dynamic declaration of appt variables to prevent compiler warning.
+(defvar appt-display-format)
+(defvar appt-disp-window-function)
+(defvar appt-display-mode-line)
+(defvar appt-visible)
+
+(defun pel-org-setup-appt-notification ()
+  "Configure appointment notifications for qualifying Org Agenda entries.
+
+`org-agenda-to-appt' selects the entries.  With its default settings,
+`:scheduled*' and `:deadline*' entries require an `hh:mm' time.  Therefore,
+an untimed entry such as `SCHEDULED: <2026-09-16 Wed>' has no reminder."
+  ;; First setup what needs to execute right after loading appt
+  (with-eval-after-load 'appt
+    ;; 1. Tell appt to pass notifications to the native notification handler.
+    (setq appt-display-format 'window)
+    (setq appt-disp-window-function #'pel-org-show-appt-reminder)
+    ;; 2. Disable appt's built-in echo-area and mode-line displays.
+    (setq appt-display-mode-line nil)
+    (setq appt-visible nil))
+
+  ;; Load and activate appt, then refresh the appointment list.
+  (require 'appt)
+  (appt-activate 1)
+  (pel-org-agenda-to-appt))
+
+(defun pel-org-agenda-to-appt ()
+  "Refresh appt entries from qualifying Org Agenda entries.
+With the default `org-agenda-to-appt' filters, scheduled and deadline
+entries must contain an `hh:mm' time.  Untimed scheduled entries do not
+create appt reminders."
+  (interactive)
+  (if (boundp 'appt-time-msg-list)
+      (let (appointments-before-import)
+        ;; Remove all appointments that we have already imported from Org
+        ;; from `appt-time-msg-list'.  This way we keep any appointment
+        ;; that were added by the diary (which is independent from Org) or via
+        ;; explicit calls to `appt-add'.
+        (dolist (appointment pel--org-appt-time-msg-list)
+          (setq appt-time-msg-list
+                (delq appointment appt-time-msg-list)))
+
+        ;; Remember the appointment list before calling `org-agenda-to-appt'
+        ;; which calls `appt-add' that adds what is in `appt-time-msg-list'.
+        ;; `appt-add' also sorts the list.
+        (setq pel--org-appt-time-msg-list nil
+              ;; Copy the list spine while retaining the identity of every
+              ;; appointment object.
+              appointments-before-import (copy-sequence appt-time-msg-list))
+        (org-agenda-to-appt)
+        ;; Remember objects that this import added, excluding those that were
+        ;; present before the import.
+        (dolist (appointment appt-time-msg-list)
+          (unless (memq appointment appointments-before-import)
+            (push appointment pel--org-appt-time-msg-list)))
+        (setq pel--org-appt-time-msg-list
+              (nreverse pel--org-appt-time-msg-list)))
+    ;;
+    ;; appt is not loaded yet, so configure it.
+    (pel-org-setup-appt-notification)))
+
+(defun pel-org-agenda-to-appt-silently (&rest _args)
+  "Refresh appt entries without displaying an Org Agenda buffer.
+
+The ignored arguments make this function compatible with `:after' advice."
+  (let ((inhibit-message t))
+    (pel-org-agenda-to-appt)))
 
 ;; ---------------------------------------------------------------------------
 ;; Org Clock Table Report Support
