@@ -3420,8 +3420,12 @@ ARGS must be a list of arguments, or nil if none is required.
 Invoke program asynchronously unless the optional SYNCHRONOUSLY argument is
 non-nil.
 
-Return non-nil only when runs and PROGRAM is launched asynchronously
-successfully or synchronously executes successfully.
+Return non-nil only when PROGRAM executable is found and one of the
+following is true:
+ - SYNCHRONOUSLY is nil, and the program was launched asynchronously
+   successfully.
+ - SYNCHRONOUSLY is non-nil and the program executed synchronously
+   successfully.
 Return nil when PROGRAM is unavailable, exists with non-zero or signals an
 error.  The function also display that error as an error-warning when the
 program signals an error."

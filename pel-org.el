@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-17 09:19:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-17 09:50:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -404,7 +404,7 @@ literal backslash with `(character id 92)'."
 
 ;;-pel-autoload
 (defun pel-org-notify (msg)
-  "Notifier - display MSG on echo area and in OS-specific notification.
+  "Display MSG on echo area and in OS-specific notification if possible.
 Inside a SSH session, just display the message in the echo area."
   (unless (pel-running-under-ssh-p)
     (let ((title "Org Mode"))    ; title must NOT include any backslash
@@ -461,6 +461,7 @@ Inside a SSH session, just display the message in the echo area."
 ;;
 ;; - `pel-org-setup-appt-notification'
 ;;   ➜ `pel-org-show-appt-reminder'
+;;     - `pel-org-notify'
 
 (defun pel-org-show-appt-reminder (min-to-app _new-time msg)
   "Display appointment due in MIN-TO-APP (a string) minutes.
@@ -470,7 +471,11 @@ Displays the appointment message MSG in the echo area and inside an
 OS-specific pop-up window.
 
 The arguments may also be lists, where each element relates to a
-separate appointment."
+separate appointment.
+
+This calls `pel-org-notify' to display the appointment information on
+the echo area and, if possible, in a OS-specific notification system
+when the Emacs session is not running inside a SSH session."
   ;; appt can pass lists when several appointments are due.
   (let ((minutes   (pel-list-of min-to-app))
         (messages  (pel-list-of msg))
