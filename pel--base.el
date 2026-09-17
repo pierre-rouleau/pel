@@ -3420,9 +3420,11 @@ ARGS must be a list of arguments, or nil if none is required.
 Invoke program asynchronously unless the optional SYNCHRONOUSLY argument is
 non-nil.
 
-Return non-nil only when runs and PROGRAM exits successfully.
-Return nil when PROGRAM is unavailable or its execution signals an error.
-Also display that error as an error-warning when the program signals an error."
+Return non-nil only when runs and PROGRAM is launched asynchronously
+successfully or synchronously executes successfully.
+Return nil when PROGRAM is unavailable, exists with non-zero or signals an
+error.  The function also display that error as an error-warning when the
+program signals an error."
   (let ((pgm (pel-find-first-program-in (pel-list-of program))))
     (when pgm
       (condition-case err

@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-16 16:43:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-17 09:19:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -361,11 +361,11 @@ If OTHER-WINDOW is non-nil display in other window."
 ;; Variable                         From                 Purpose
 ;; ================================ ==================== ========================
 ;; org-show-notification-handler    org-clock.el         How notifications are
-;;                                                       issued.  Must be set
-;;                                                       to `pel-org-notify'
-;;                                                       in a terminal session
-;;                                                       if not already set by
-;;                                                       user's customization.
+;;                                                       issued.  In a
+;;                                                       terminal session PEL
+;;                                                       sets this to
+;;                                                       `pel-org-notify' when
+;;                                                       the user option is nil.
 ;;
 ;; appt-message-warning-time        appt.el              Time in minutes
 ;;                                                       before appointment
@@ -383,11 +383,11 @@ If OTHER-WINDOW is non-nil display in other window."
 
 Keep normal text in contiguous AppleScript string literals.  Represent each
 literal backslash with `(character id 92)'."
-;; Follows the following rules:
-;; - Apple Developer: Special String Characters:
-;;    @ https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/reference/ASLR_classes.html
-;; - Apple Developer: Lexical Conventions — Text literals:
-;;    @ https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/conceptual/ASLR_lexical_conventions.html
+  ;; Follows the following rules:
+  ;; - Apple Developer: Special String Characters:
+  ;;    @ https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/reference/ASLR_classes.html
+  ;; - Apple Developer: Lexical Conventions — Text literals:
+  ;;    @ https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/conceptual/ASLR_lexical_conventions.html
   (mapconcat
    (lambda (text)
      (format
@@ -490,6 +490,13 @@ separate appointment."
                        (pel-count-string minutes-left "minute")
                        msg)))))))))
 
+
+;; `org-agenda-to-appt' adds entries through `appt-add'.  However, The `appt'
+;; package does not distinguish entries by source.  Track the objects that we
+;; add so a later refresh can remove only those entries.
+(defvar pel--org-appt-time-msg-list nil
+  "Appointment objects most recently imported from Org.")
+
 ;; Dynamic declaration of appt variables to prevent compiler warning.
 (defvar appt-display-format)
 (defvar appt-disp-window-function)
@@ -514,19 +521,40 @@ an untimed entry such as `SCHEDULED: <2026-09-16 Wed>' has no reminder."
   ;; Load and activate appt, then refresh the appointment list.
   (require 'appt)
   (appt-activate 1)
-  (org-agenda-to-appt))
+  (pel-org-agenda-to-appt))
 
 (defun pel-org-agenda-to-appt ()
   "Refresh appt entries from qualifying Org Agenda entries.
-
 With the default `org-agenda-to-appt' filters, scheduled and deadline
 entries must contain an `hh:mm' time.  Untimed scheduled entries do not
 create appt reminders."
   (interactive)
   (if (boundp 'appt-time-msg-list)
-      (progn
-        (setq appt-time-msg-list nil)
-        (org-agenda-to-appt))
+      (let (appointments-before-import)
+        ;; Remove all appointments that we have already imported from Org
+        ;; from `appt-time-msg-list'.  This way we keep any appointment
+        ;; that were added by the diary (which is independent from Org) or via
+        ;; explicit calls to `appt-add'.
+        (dolist (appointment pel--org-appt-time-msg-list)
+          (setq appt-time-msg-list
+                (delq appointment appt-time-msg-list)))
+
+        ;; Remember the appointment list before calling `org-agenda-to-appt'
+        ;; which calls `appt-add' that adds what is in `appt-time-msg-list'.
+        ;; `appt-add' also sorts the list.
+        (setq pel--org-appt-time-msg-list nil
+              ;; Copy the list spine while retaining the identity of every
+              ;; appointment object.
+              appointments-before-import (copy-sequence appt-time-msg-list))
+        (org-agenda-to-appt)
+        ;; Remember objects that this import added, excluding those that were
+        ;; present before the import.
+        (dolist (appointment appt-time-msg-list)
+          (unless (memq appointment appointments-before-import)
+            (push appointment pel--org-appt-time-msg-list)))
+        (setq pel--org-appt-time-msg-list
+              (nreverse pel--org-appt-time-msg-list)))
+    ;;
     ;; appt is not loaded yet, so configure it.
     (pel-org-setup-appt-notification)))
 
