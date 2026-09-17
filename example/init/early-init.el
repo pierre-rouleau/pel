@@ -71,6 +71,10 @@
 ;;   - This is detected by the presence of the file "pel-fast-startup-init.el"
 ;;     in the user Emacs directory.
 ;;
+;; This file also supports cleaning up the load-path on macOS systems where
+;; an invalid entry holding "Contents/Resources/site-lisp" may be injected.
+;; - This can be removed or replaced by a "~/.emacs.d/site-lisp" directory
+;;   if this directory exists.
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -263,6 +267,19 @@ any PEL advice overwrites it for graphics/quickstart mode.")
   (push '(menu-bar-lines . 0)   default-frame-alist)
   (push '(vertical-scroll-bars) default-frame-alist)
   (setq frame-inhibit-implied-resize t))
+
+;; ---------------------------------------------------------------------------
+;; Fix macOS load-path from holding invalid "Contents/Resources/site-lisp"
+;; ======================================================================
+
+(when (eq system-type 'darwin)
+  ;; Safely remove the broken relative entry immediately at boot
+  (setq load-path (delete "Contents/Resources/site-lisp" load-path))
+
+  ;; 2. Inject your clean, absolute custom site-lisp directory
+  (let ((my-site-lisp (expand-file-name "site-lisp" user-emacs-directory)))
+    (when (file-directory-p my-site-lisp)
+      (add-to-list 'load-path my-site-lisp))))
 
 ;; ---------------------------------------------------------------------------
 ;; Adjust file names for GUI Emacs

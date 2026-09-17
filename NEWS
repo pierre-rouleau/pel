@@ -1,6 +1,8 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- Improved the [[https://github.com/pierre-rouleau/pel/blob/master/example/init/early-init.el][early-init.el example]]: for macOS it removes an invalid entry in load-path holding
+  "Contents/Resources/site-lisp" and adds the =~/.emacs.d/site-lisp= directory if that exists.
 - Add extra support for Gnu Calc, activated by the *pel-use-calc* user-option.
   - Adds the *pel-calc-gnuplot-device* user-option to automatically set the gnuplot device for Gnu Calc.
   - Provides the ~<f12>~ key prefix with usual PEL commands to access help and
