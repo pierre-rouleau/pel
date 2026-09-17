@@ -3426,8 +3426,8 @@ following is true:
    successfully.
  - SYNCHRONOUSLY is non-nil and the program executed synchronously
    successfully.
-Return nil when PROGRAM is unavailable, exists with non-zero or signals an
-error.  The function also display that error as an error-warning when the
+Return nil when PROGRAM is unavailable, exits with non-zero or signals an
+error.  The function also displays that error as an error-warning when the
 program signals an error."
   (let ((pgm (pel-find-first-program-in (pel-list-of program))))
     (when pgm
