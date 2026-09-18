@@ -9,18 +9,18 @@ time tracked activities in a set of your files identified by the
 [[elisp:(customize-variable 'pel-org-project-files)][pel-org-project-files user-option]].
 
 *Provided reports:*
-- Today's activities.  Not compact to help highlight where time is spent.
-- Adjustable Summary: block-controlled log meant to be modified by the user to
+- *Today's Activities*.  Not compact to help highlight where time is spent.
+- *Adjustable Summary*: block-controlled log meant to be modified by the user to
   identify the monitored period.  Change the value of the =:block= attribute.
   This creates a compact report.
-- Daily log: the activity of today and 7 days before that. Also not compact.
-- Weekly Summary: the activities summarized by week: the 4 previous weeks and
+- *Daily Log*: the activity of today and 7 days before that. Also not compact.
+- *Weekly Summary*: the activities summarized by week: the 4 previous weeks and
   this week. A compact report.
-- Monthly Summary: the activities summarized by month: the 3 previous months
+- *Monthly Summary*: the activities summarized by month: the 3 previous months
   and this month. A compact report.
 
 
-*First Set The File Infrastructure*:
+*First, Create the File Infrastructure*:
 - Create a directory that will hold your time tracking todo list Org files:
   the /time-tracking log directory/.
   - Inside each of your project directory trees you may also want to create
