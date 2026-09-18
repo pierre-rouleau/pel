@@ -81,7 +81,7 @@ into days on purpose.
   inside the archive file.  Doing this will provide the task parent hierarchy
   inside the report of archived tasks.  If you archive the completed tasks,
   the master report will provide valuable information on all completed tasks.
-
+- This file is best viewed /inside Emacs/: it has links org-mode will be able to use.
 
 
 * Today's Activity Summary
@@ -108,6 +108,7 @@ into days on purpose.
 * Monthly Summary
 #+BEGIN: clocktable :maxlevel 5 :step month :tstart "<-3m>" :tend "<now>" :narrow 60 :scope pel-org-get-project-files :tags t :compact t
 #+END:
+
 
 # Local Variables:
 # org-duration-format: ((special . h:mm))
