@@ -2,7 +2,7 @@
 
 #+STARTUP: content
 
-* COMMENT - Overview - How to use this.
+* Overview - How to use this.
 
 This file is an example of how to create a time consolidation report for all
 time tracked activities in a set of your files identified by the
