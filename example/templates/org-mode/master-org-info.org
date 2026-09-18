@@ -1,0 +1,76 @@
+#+TITLE: Consolidated Daily Activity Log
+
+
+* COMMENT - Overview - How to use this.
+
+This file is an example of how to create a time consolidation report for all
+time tracked activities in a set of your files identified by the
+[[elisp:(customize-variable 'pel-org-project-files)][pel-org-project-files user-option]].
+
+*Provided reports:*
+- Today's activities
+- Daily log: the activity of today and 7 days before that.
+- Weekly Summary: the activities summarized by week: the 4 previous weeks and this week.
+- Monthly Summary: the activities summarized by month: the 3 previous months and this month.
+
+*To use this*:
+- Create a directory that will hold your time tracking todo list Org files:
+  the /time-tracking log directory/.
+  - Inside each of your project directory trees you may also want to create
+    a [[https://en.wikipedia.org/wiki/Symbolic_link][symbolic link]] to the project-specific time tracking file that is stored
+    inside the /time-tracking log directory/.  That will give you quick access
+    to the time tracking file for your project and that information will not
+    be stored along with your project files.
+  - You may also want to put that symbolic link file in the files ignored by
+    your VCS system just as PEL identifies the pel-todo.org file in its
+    [[https://github.com/pierre-rouleau/pel/blob/master/.gitignore#L8][.gitignore file]].
+- Ideally put this directory under version control; it will help you keep
+  track of your changes and will allow you to back it up somewhere else
+  easily.
+- You may want to create sub-directories; one per project.
+- Create time tracking todo Org files in those directories and put them under
+  VCS control.  These files must have a =.org= file extension.
+- Create Org archive for each one of these files; the org archives must be
+  stored inside the same directory as the original and must have a =.org_archive=
+  file extension.  Also put these files under VCS control.
+- Identify the names of the time tracking files in [[elisp:(customize-variable 'pel-org-project-files)][pel-org-project-files user-option]].
+- In the parent directory create a =master-activity.org= file that is a
+  duplicate of this file.  This file is not listed in the
+  pel-org-project-files.
+
+With this file organization you will be able to archive done tasks into
+archive org files and by putting everything under VCS you will be able to see
+changes to the files when archiving done tasks and revert when you make
+mistakes.
+- Also note that the project contents and the time tracking for that project
+  are stored into *two different* VCS-controlled repositories.  You probably
+  do not want to commit your time tracking information with the files of your
+  project repository.
+
+Keep an eye on the time report for today to ensure that your tasks are tracked
+properly. Commit files often; that will help you track your changes, catch
+and correct mistakes.  The day-based reports support five heading levels to
+help organized tasks with sub-tasks and see the activity details at the day level.
+The weekly and monthly reports consolidate on the top level only.
+
+*Refresh Time Reports*:
+- *To create or refresh a report*: expand the corresponding subtree, place point on
+  the =#+BEGIN line= and hit ~C-c C-c~.
+- *To refresh the first report of the file, today's work*: execute
+  [[help:org-clock-report][org-clock-report]] with a prefix argument.  With PEL, type ~C-u <f12> r~.
+- *To refresh all reports in the buffer*: execute [[help:org-dblock-update][org-dblock-update]] with a
+  prefix argument; type: ~C-u C-c C-x C-u~.
+
+All time is formatted in =Hours:Minutes= format; they are not consolidated
+into days on purpose.
+
+*NOTES*:
+- By default, the reports will *not* include time for the tasks
+  currently being clocked in.  If you want to incorporate that time in the
+  reports you must turn on the [[elisp:(customize-variable 'org-clock-report-include-clocking-task)][org-clock-report-include-clocking-task user-option]].
+- Also by default, tasks are archived into a flat list of tasks; their parent
+  hierarchy is *not* stored in the  archive file. With PEL, you can turn on the
+  [[elisp:(customize-option 'pel-org-archive-with-hierarchy)][pel-org-archive-with-hierarchy user-option]] to store the parent hierarchy
+  inside the archive file.  Doing this will provide the task parent hierarchy
+  inside the report of archived tasks.  If you archive the completed tasks,
+  the master report will provide valuable information on all completed tasks.
