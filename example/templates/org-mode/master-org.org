@@ -1,6 +1,6 @@
 #+TITLE: Consolidated Daily Activity Log
 
-#+STARTUP: showall
+#+STARTUP: content
 
 * COMMENT - Overview - How to use this.
 
@@ -9,12 +9,18 @@ time tracked activities in a set of your files identified by the
 [[elisp:(customize-variable 'pel-org-project-files)][pel-org-project-files user-option]].
 
 *Provided reports:*
-- Today's activities
-- Daily log: the activity of today and 7 days before that.
-- Weekly Summary: the activities summarized by week: the 4 previous weeks and this week.
-- Monthly Summary: the activities summarized by month: the 3 previous months and this month.
+- Today's activities.  Not compact to help highlight where time is spent.
+- Adjustable Summary: block-controlled log meant to be modified by the user to
+  identify the monitored period.  Change the value of the =:block= attribute.
+  This creates a compact report.
+- Daily log: the activity of today and 7 days before that. Also not compact.
+- Weekly Summary: the activities summarized by week: the 4 previous weeks and
+  this week. A compact report.
+- Monthly Summary: the activities summarized by month: the 3 previous months
+  and this month. A compact report.
 
-*To use this*:
+
+*First Set The File Infrastructure*:
 - Create a directory that will hold your time tracking todo list Org files:
   the /time-tracking log directory/.
   - Inside each of your project directory trees you may also want to create
@@ -54,7 +60,7 @@ and correct mistakes.  The day-based reports support five heading levels to
 help organized tasks with sub-tasks and see the activity details at the day level.
 The weekly and monthly reports consolidate on the top level only.
 
-*Refresh Time Reports*:
+*Then Refresh the Time Reports*:
 - *To create or refresh a report*: expand the corresponding subtree, place point on
   the =#+BEGIN line= and hit ~C-c C-c~.
 - *To refresh the first report of the file, today's work*: execute
@@ -66,11 +72,11 @@ All time is formatted in =Hours:Minutes= format; they are not consolidated
 into days on purpose.
 
 *NOTES*:
-- By default, the reports will *not* include time for the tasks
-  currently being clocked in.  If you want to incorporate that time in the
-  reports you must turn on the [[elisp:(customize-variable 'org-clock-report-include-clocking-task)][org-clock-report-include-clocking-task user-option]].
+- By default, the reports will *not* include time for the tasks currently
+  being clocked in.  If you want to incorporate that time in the reports you
+  must turn on the [[elisp:(customize-variable 'org-clock-report-include-clocking-task)][org-clock-report-include-clocking-task user-option]].
 - Also by default, tasks are archived into a flat list of tasks; their parent
-  hierarchy is *not* stored in the  archive file. With PEL, you can turn on the
+  hierarchy is *not* stored in the archive file. With PEL, you can turn on the
   [[elisp:(customize-option 'pel-org-archive-with-hierarchy)][pel-org-archive-with-hierarchy user-option]] to store the parent hierarchy
   inside the archive file.  Doing this will provide the task parent hierarchy
   inside the report of archived tasks.  If you archive the completed tasks,
@@ -81,6 +87,15 @@ into days on purpose.
 * Today's Activity Summary
 #+BEGIN: clocktable :maxlevel 5 :step day :tstart "<today>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files
 #+END:
+
+* Adjustable Summary
+#+BEGIN: clocktable :maxlevel 5 :block today  :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files :tags t :compact t
+#+END
+- *Note*: put your cursor on the =:block= argument (originally it was /today/)
+  and press the ~S-<right>~ or ~S-<left>~ key to select another day.  Instead
+  of today, you can also use thisweek, thismonth and thisyear as values.  and
+  the keys will allow you to create report for period plus or minus a specific
+  amount.
 
 * Daily Log
 #+BEGIN: clocktable :maxlevel 5 :step day :tstart "<-1w>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files :tags t
