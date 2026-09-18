@@ -94,9 +94,9 @@ into days on purpose.
 
 - *Note*: put your cursor on the =:block= argument (originally it was /today/)
   and press the ~S-<right>~ or ~S-<left>~ key to select another day.  Instead
-  of today, you can also use thisweek, thismonth and thisyear as values.  and
-  the keys will allow you to create report for period plus or minus a specific
-  amount.
+  of today, you can also use =thisweek=, =thismonth= and =thisyear= as values.
+  The keys will allow you to create report for period plus or minus a specific
+  amount quickly.
 
 * Daily Log
 #+BEGIN: clocktable :maxlevel 5 :step day :tstart "<-1w>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files :tags t
