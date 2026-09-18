@@ -91,6 +91,7 @@ into days on purpose.
 * Adjustable Summary
 #+BEGIN: clocktable :maxlevel 5 :block today  :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files :tags t :compact t
 #+END
+
 - *Note*: put your cursor on the =:block= argument (originally it was /today/)
   and press the ~S-<right>~ or ~S-<left>~ key to select another day.  Instead
   of today, you can also use thisweek, thismonth and thisyear as values.  and
