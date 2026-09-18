@@ -1,5 +1,10 @@
 #+TITLE: Consolidated Daily Activity Log
 
+#+LINK: gh-showall info:
+#+HTML: <style>main .markdown-body details { display: block !important; } main .markdown-body details > summary { pointer-events: none; }</style>
+
+#+STARTUP: content
+
 * COMMENT - Overview - How to use this.
 
 This file is an example of how to create a time consolidation report for all
@@ -94,5 +99,4 @@ into days on purpose.
 
 # Local Variables:
 # org-duration-format: ((special . h:mm))
-# eval: (org-content)
 # End:
