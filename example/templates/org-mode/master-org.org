@@ -1,9 +1,6 @@
 #+TITLE: Consolidated Daily Activity Log
 
-#+LINK: gh-showall info:
-#+HTML: <style>main .markdown-body details { display: block !important; } main .markdown-body details > summary { pointer-events: none; }</style>
-
-#+STARTUP: content
+#+STARTUP: showall
 
 * COMMENT - Overview - How to use this.
 
