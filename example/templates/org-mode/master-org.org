@@ -94,7 +94,7 @@ into days on purpose.
 
 - *Note*: put your cursor on the =:block= argument (originally it was /today/)
   and press the ~S-<right>~ or ~S-<left>~ key to select another day.  Instead
-  of today, you can also use =thisweek=, =thismonth= and =thisyear= as values.
+  of =today=, you can also use =thisweek=, =thismonth= and =thisyear= as values.
   The keys will allow you to create report for period plus or minus a specific
   amount quickly.
 
