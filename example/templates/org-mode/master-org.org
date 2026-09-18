@@ -35,13 +35,16 @@ and correct mistakes.  The day-based reports support five heading levels to
 help organized tasks with sub-tasks and see the activity details at the day level.
 The weekly and monthly reports consolidate on the top level only.
 
-*To track your time*:
-- Create or refresh a report; expand the corresponding subtree, place point on
+*Refresh Time Reports*:
+- *To create or refresh a report*: expand the corresponding subtree, place point on
   the =#+BEGIN line= and hit ~C-c C-c~.
-  - PEL also supports the ~<f12> r~ key binding to *org-clock-report* for that.
+- *To refresh the first report of the file, today's work*: execute
+  [[help:org-clock-report][org-clock-report]] with a prefix argument.  With PEL, type ~C-u <f12> r~.
+- *To refresh all reports in the buffer*: execute [[help:org-dblock-update][org-dblock-update]] with a
+  prefix argument; type: ~C-u C-c C-x C-u~.
 
-All time is formatted in =Hours:Minutes= format, not consolidated into days on
-purpose.
+All time is formatted in =Hours:Minutes= format; they are not consolidated
+into days on purpose.
 
 *NOTES*:
 - By default, the reports will *not* include time for the tasks
