@@ -1,15 +1,28 @@
 #+TITLE: Consolidated Daily Activity Log
 
-#+STARTUP: content
-
 * COMMENT - Overview - How to use this.
 
 This file is an example of how to create a time consolidation report for all
 time tracked activities in a set of your files identified by the
 [[elisp:(customize-variable 'pel-org-project-files)][pel-org-project-files user-option]].
 
+*Provided reports:*
+- Today's activities
+- Daily log: the activity of today and 7 days before that.
+- Weekly Summary: the activities summarized by week: the 4 previous weeks and this week.
+- Monthly Summary: the activities summarized by month: the 3 previous months and this month.
+
 *To use this*:
-- Create a directory that will hold your time tracking todo list Org files.
+- Create a directory that will hold your time tracking todo list Org files:
+  the /time-tracking log directory/.
+  - Inside each of your project directory trees you may also want to create
+    a [[https://en.wikipedia.org/wiki/Symbolic_link][symbolic link]] to the project-specific time tracking file that is stored
+    inside the /time-tracking log directory/.  That will give you quick access
+    to the time tracking file for your project and that information will not
+    be stored along with your project files.
+  - You may also want to put that symbolic link file in the files ignored by
+    your VCS system just as PEL identifies the pel-todo.org file in its
+    [[https://github.com/pierre-rouleau/pel/blob/master/.gitignore#L8][.gitignore file]].
 - Ideally put this directory under version control; it will help you keep
   track of your changes and will allow you to back it up somewhere else
   easily.
@@ -28,6 +41,10 @@ With this file organization you will be able to archive done tasks into
 archive org files and by putting everything under VCS you will be able to see
 changes to the files when archiving done tasks and revert when you make
 mistakes.
+- Also note that the project contents and the time tracking for that project
+  are stored into *two different* VCS-controlled repositories.  You probably
+  do not want to commit your time tracking information with the files of your
+  project repository.
 
 Keep an eye on the time report for today to ensure that your tasks are tracked
 properly. Commit files often; that will help you track your changes, catch
@@ -64,17 +81,18 @@ into days on purpose.
 #+END:
 
 * Daily Log
-#+BEGIN: clocktable :maxlevel 5 :step day :tstart "<-1w>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files
+#+BEGIN: clocktable :maxlevel 5 :step day :tstart "<-1w>" :tend "<now>" :narrow 60  (require 'org-clock) (require 'org-table) :scope pel-org-get-project-files :tags t
 #+END:
 
 * Weekly Summary
-#+BEGIN: clocktable :maxlevel 5 :step week :tstart "<-4w>" :tend "<now>" :narrow 60 :scope pel-org-get-project-files
+#+BEGIN: clocktable :maxlevel 5 :step week :tstart "<-4w>" :tend "<now>" :narrow 60 :scope pel-org-get-project-files :tags t :compact t
 #+END:
 
 * Monthly Summary
-#+BEGIN: clocktable :maxlevel 5 :step month :tstart "<-3m>" :tend "<now>" :narrow 60 :scope pel-org-get-project-files
+#+BEGIN: clocktable :maxlevel 5 :step month :tstart "<-3m>" :tend "<now>" :narrow 60 :scope pel-org-get-project-files :tags t :compact t
 #+END:
 
 # Local Variables:
 # org-duration-format: ((special . h:mm))
+# eval: (org-content)
 # End:
