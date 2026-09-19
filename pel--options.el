@@ -2813,10 +2813,10 @@ of the impact these user-option variable have."
 When `pel-flip-help-pdf-arg' is set, the argument of the function `pel-help-pdf'
 is reversed before used.
 
-By default, `pel-help-pdf' opens the local PDF file when no
-argument is passed, and the remote PDF file is opened when the
-argument is specified.  If `pel-flip-help-pdf-arg' is set it's the other way
-around."
+By default, as defined by `pel-open-pdf-method', the `pel-help-pdf'
+command opens the local PDF file when no argument is passed, and the
+remote PDF file is opened when the argument is specified.  If
+`pel-flip-help-pdf-arg' is set it's the other way around."
   :group 'pel-pkg-for-web-browse
   :group 'pel-pkg-for-help
   :type 'boolean
@@ -2830,7 +2830,8 @@ The main method is either:
 - pdf-viewer, or
 - web-browser: the web browser identified by `pel-browser-used'.
 
-The alternate method is the other one."
+The alternate method is the other one.
+See also `pel-flip-help-pdf-arg'."
   :group 'pel-pkg-for-web-browse
   :group 'pel-pkg-for-help
   :type '(choice
@@ -2838,10 +2839,10 @@ The alternate method is the other one."
           (const :tag "Open PEL PDF with web browser." web-browser)))
 
 
-;; TODO: once PEL explicitly supports TCL, move the next user option into it.
 (defcustom pel-tcl-man-section (if pel-system-is-linux-p "3tcl" "n")
   "Section of the Man pages for tcl major mode."
   :group 'pel-pkg-for-help
+  :group 'pel-pkg-for-tcl
   :type 'string)
 
 ;; ---------------------------------------------------------------------------
@@ -5240,8 +5241,17 @@ This sets `org-clock-auto-clockout-timer' and then PEL sets up calling
 (defcustom pel-org-project-files nil
   "A list Org files containing clocked activities.
 These will be used in project clock tables.
-Each entry must be a valid path to an Org file."
-  :type '(repeat (file :tag "Org File Path"))
+You can specify the Org files in 2 different ways:
+- 1: Identify a list of files to parse.
+- 2: Identify a list of directory and file-search regular expressions pairs.
+     This will search each identified directory recursively using the
+     regular expression to search for the files.
+
+Each entry must be a valid path to an Org file or directory."
+  :type '(choice
+          (repeat :tag "Specified files" (file :tag "Specific Org Files"))
+          (repeat :tag "Specified Directories" (list (file :tag "Directory trees with Org Files")
+                                                     (string :tag "File regexp" "\\.org\\'"))))
   :group 'pel-pkg-for-org-mode)
 
 (defcustom pel-org-archive-with-hierarchy nil
