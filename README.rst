@@ -651,15 +651,37 @@ viewer or in the system's browser, including:
 - ``<f11> b <f1>`` opens the `⅀ Buffers PDF`_ and several others,
 - ``<f12> <f1>`` opens the PDF describing the major mode of the current
   buffer.
-- ``C-u <f12> <f1>`` is available in some major modes to open an alternate PDF,
-  for example:
 
-  - opens the `Perl5 PDF`_ when the command is issued from a buffer editing a
-    Perl file,
-  - opens the `zsh PDF`_ when the command is issued from a buffer editing a
+PEL opens the PDF file using the local PDF viewer by default.  It can also
+open the web-based GitHub served PDF file if you use press the ``C-u`` prefix
+argument key (as in ``C-u <f12> <f1>``.  If you prefer to always open the
+web-based file instead, you can flip the selection behaviour by setting the
+**pel-flip-help-pdf-arg** user-option.
+
+PEL also provides secondary PDF files for some modes and provide a quick
+method to open those too.    For example:
+
+- Emacs Lisp Mode, ``C-u C-u <f12> <f1>`` and ``C-u C-u C-u <f12> <f1>`` prompt to open
+  one of the secondary files (`𝕻𝔩- Lispy`_ or `⨋※ - Emacs Lisp Types`_) and open it locally
+  or via the web browser.
+
+- in Perl mode:
+
+  - ``C-u C-u <f12> <f1>`` opens the `Perl5 PDF`_ file with the local PDF viewer.
+  - ``C-u C-u C-u <f12> <f1>`` opens the web-based `Perl5 PDF`_ file.
+
+- When writing a shells script the secondary commands (``C-u C-u <f12> <f1>``
+  and ``C-u C-u C-u <f12> <f1>``) open the PDF file that contain information
+  relative to the current shell language:
+
+  - the `zsh PDF`_ when the command is issued from a buffer editing a
     zsh script,
-  - opens the `Bash PDF`_ when the buffer edits a bash script,
-  - opens the `GNU Make PDF`_ from a buffer editing a make file in GNU Make mode.
+  - the `Bash PDF`_ when the buffer edits a bash script,
+  - the `sh PDF`_ when the buffer edits a POSIX sh script,
+
+- When writing a make file script, the secondary file is the `GNU Make PDF`_
+  from a buffer editing a make file in GNU Make mode.
+
 
 **Key Strengths of PEL's PDF Documentation:**
 
@@ -1033,6 +1055,7 @@ Notes
 .. _help and documentation system: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/help.pdf
 .. _zsh PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/zsh.pdf
 .. _Bash PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/bash.pdf
+.. _sh PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/sh.pdf
 .. _GNU Make PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/gmake.pdf
 .. _⅀ Buffers PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/buffers.pdf
 .. _Perl5 PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/lang/perl5.pdf
@@ -1044,6 +1067,8 @@ Notes
 .. _𝕻𝔩 - Erlang PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-erlang.pdf
 .. _Ɱ Org-Mode PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-org-mode.pdf
 .. _Ɱ reStructuredText PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-rst.pdf
+.. _𝕻𝔩- Lispy: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/plm-lispy.pdf
+.. _⨋※ - Emacs Lisp Types: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/emacs-lisp-types.pdf
 
 ..
    -----------------------------------------------------------------------------
