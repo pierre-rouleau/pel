@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-17 10:24:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-18 15:21:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -577,7 +577,20 @@ The ignored arguments make this function compatible with `:after' advice."
 
 Use this inside an Org clocktable :scope argument.
 See an example inside the file example/templates/org-mode/master-org.org"
-  pel-org-project-files)
+  (if (listp (car pel-org-project-files))
+      ;; A list of directories and the regular expression to identify the
+      ;; files is identified: search them all and return the list of found
+      ;; files.
+      (let ((org-files nil))
+        (dolist (dir-regexp pel-org-project-files)
+          (let ((directory   (car dir-regexp))
+                (file-regexp (cadr dir-regexp)))
+            (dolist (file (directory-files-recursively directory file-regexp))
+              (unless (member file org-files)
+                (push file org-files)))))
+        (nreverse org-files))
+    ;; A list of files are identified, return that list.
+    pel-org-project-files))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-org)

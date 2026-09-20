@@ -20,6 +20,10 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 - In Emacs 28.1 or later, ~<f11> <f5> <f5>~ is now bound to *repeat-mode*; it toggles the repeat-mode introduced in Emacs 28.1.
   The ~<f11> ? d <f5>~ is also bound to *describe-repeat-maps*.
 - Improved org-mode support:
+  - The *pel-org-project-files* user-option allows selection of Org files via a static list of files
+    or dynamically via a list of directory tree and regular expression pairs.
+    This is quite useful to create a powerful project management time tracking
+    system.
   - When the *pel-org-archive-with-hierarchy* user-option is set on Emacs ≥ 27.1, the
     *org-archive-subtree-default* command (bound to ~C-c C-x C-a~) stores the
     task hierarchy inside the Org Archive, something that Org mode  does not
