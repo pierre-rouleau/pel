@@ -36,7 +36,7 @@
 ;;   - pel-base-emacs
 ;;     - pel-pkg-for-parser
 ;;       - pel-pkg-for-tree-sitter
-;;   - pel-syntax-tools
+;;   - pel-char-syntax-tools
 ;;   - pel-fast-startup
 ;;   - pel-package-use
 ;;     - pel-pkg-package-mng
@@ -882,8 +882,8 @@ NOTES: - PEL only supports tree-sitter for Emacs 30.1 and later and
 (unless pel-use-tree-sitter  (setq pel-use-combobulate nil))
 
 ;; ---------------------------------------------------------------------------
-(defgroup pel-syntax-tools nil
-  "PEL syntax investigation tools."
+(defgroup pel-char-syntax-tools nil
+  "PEL character syntax investigation tools."
   :group 'pel)
 
 (defcustom pel-syntax-text-properties '(category ; used by erlang.el
@@ -894,7 +894,7 @@ The text properties listed here are included in the message displayed by the
 `pel-syntax-at-point' command.
 
 Use this is a tool to help debug syntax processing of major modes."
-  :group 'pel-syntax-tools
+  :group 'pel-char-syntax-tools
   :type '(repeat symbol))
 
 ;; ---------------------------------------------------------------------------
