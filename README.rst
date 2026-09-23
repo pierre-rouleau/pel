@@ -54,7 +54,8 @@ PEL -- Pragmatic Emacs Leverage
    :scale: 50 %
    :alt: PEL - Pragmatic Emacs Leverage
 
-- Want a quick and useful Emacs setup now, without writing Emacs Lisp configuration code? `🤯`_
+- Want a quick and useful Emacs setup now, with useful project controlling
+  features, without writing Emacs Lisp configuration code? `🤯`_
 - Afraid to ever having to declare `.emacs bankruptcy`_? 😰
 - Don't have time to write specialized Emacs Lisp code? 😳 [#elispfun]_
 - Need to learn Emacs quickly and access help now and later on specific topics? `🤔`_
@@ -158,6 +159,19 @@ and terminal-based Emacs (with working key bindings) and provides:
   - GitHub, Gitlab or web-site hosted files not setup as Emacs packages,
   - and you can still install packages with Emacs package management commands,
     and manually configure them by adding extra logic in the PEL init.el file.
+  - PEL also **improves** several of the external packages it uses, providing extra
+    logic to integrate the features of several packages and, in some cases,
+    add new features to existing external package to simplify complex tasks.
+
+    - For example, PEL provides a powerful set of multi-directory aware project
+      management commands that greatly simplify code navigation in software
+      projects that use system and third-party libraries.  For example you can
+      open a C or C++ header file easily or perform a multi-directory search
+      or cross-reference operation.  PEL provides the logic to use powerful
+      Emacs built-in and external packages along with its own logic to do
+      that.  See PEL's use of `deadgrep`_ and `pel-open-at-point for C++`_
+      and the **pel-dev-projects** user-option.
+
 
 - **Emacs Startup Optimization** with carefully crafted, byte/native compiled
   `early-init.el`_, `init.el`_ and `control logic`_ with aggressive lazy-loading,
@@ -1069,6 +1083,8 @@ Notes
 .. _Ɱ reStructuredText PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/mode-rst.pdf
 .. _𝕻𝔩- Lispy: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/plm-lispy.pdf
 .. _⨋※ - Emacs Lisp Types: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/emacs-lisp-types.pdf
+.. _deadgrep: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/grep.pdf#page=3
+.. _pel-open-at-point for C++: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/pl-c++.pdf#page=6
 
 ..
    -----------------------------------------------------------------------------
