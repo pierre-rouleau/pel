@@ -563,7 +563,7 @@ If APPEND is non-nil, append to the buffer."
                      'face '(:foreground "forest green" :weight bold))
          used-tags-case-fold-search
          used-fold-case
-         (propertize "<f11> X B"
+         (propertize "<f11> X X"
                      'face '(:foreground "forest green" :weight bold))))
        (pel-insert-bold "* Xref Back Ends:\n")
        (insert
@@ -584,7 +584,7 @@ If APPEND is non-nil, append to the buffer."
   - cscope-minor-mode        : %s %s
     - helm-cscope-mode       : %s
     - helm-scope key bindings: %s\n\n"
-                (propertize "<f11> X X"
+                (propertize "<f11> X B"
                      'face '(:foreground "forest green" :weight bold))
                 used-state
                 (pel-minor-mode-auto-activated-by 'dumb-jump-mode nil "" :show-all)
