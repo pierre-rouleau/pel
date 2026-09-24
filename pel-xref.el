@@ -563,7 +563,7 @@ If APPEND is non-nil, append to the buffer."
                      'face '(:foreground "forest green" :weight bold))
          used-tags-case-fold-search
          used-fold-case
-         (propertize "<f11> X X"
+         (propertize "<f11> X B"
                      'face '(:foreground "forest green" :weight bold))))
        (pel-insert-bold "* Xref Back Ends:\n")
        (insert
