@@ -15464,11 +15464,11 @@ USE WITH CAUTION! It's old code that clashes with many modes."
 (defcustom pel-bind-m-dot-to-xref-find-custom-definition t
   "If set, the M-.  key is bound to special xref find in Custom buffers.
 
-When this is set to t, the M-.  key is bound to the
+When this is set to t, the '\\=M-.' key is bound to the
 function `pel-xref-find-custom-definition-at-line' when point is
 in a custom-mode buffer.  This way you can find the source of
 a user-option variable by moving point over the name of a user-option
-and type the M-. key.
+and type the '\\=M-.' key.
 This is the default.  To prevent this binding, set it to nil."
   :group 'pel-pkg-for-xref
   :type 'boolean
