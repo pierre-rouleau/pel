@@ -2171,6 +2171,8 @@ can't bind negative-argument to C-_ and M-_"
     ;; projectile-project-buffers-other-buffer to a key that is physically
     ;; closely located to Esc on most keyboards: the 1 key.
     (define-key projectile-command-map (kbd "ESC") nil)
+    (define-key projectile-command-map "." 'projectile-find-references)
+    (define-key projectile-command-map "?" 'projectile-project-info)
     (define-key projectile-command-map "1"
       'projectile-project-buffers-other-buffer)
     (define-key projectile-command-map (kbd "<f1>") 'pel-help-pdf)
