@@ -522,7 +522,7 @@ Open GitHub file if OPEN-GITHUB-PAGE-P IS non-nil."
 (define-pel-global-prefix pel:     (kbd "<f11>"))
 (define-pel-global-prefix pel2:    (kbd "<M-f11>"))
 (define-pel-global-prefix pel:help (kbd "<f11> ?"))
-(define-pel-global-prefix pel:mode (kbd "<f11> <f5>"))
+(define-pel-global-prefix pel:repeat (kbd "<f11> <f5>"))
 (define-pel-global-prefix pel:cfg-goto (kbd "M-g <f4>"))
 
 ;; ---------------------------------------------------------------------------
@@ -1439,8 +1439,10 @@ Your version of Emacs does not support dynamic module.")))
 ;; Bind repeat to a single key: <f5> and <S-F5>
 (global-set-key (kbd "<f5>") 'repeat)
 ;; <S-f5> is also bound to repeat but also marks.
-(when pel-emacs-28-or-later-p
-  (define-key pel:mode (kbd "<f5>") 'repeat-mode))
+(when pel-emacs-27-or-later-p
+  (define-key pel:repeat "f" 'fileloop-continue)
+  (when pel-emacs-28-or-later-p
+    (define-key pel:repeat (kbd "<f5>") 'repeat-mode)))
 ;; ---------------------------------------------------------------------------
 ;;*** Function Keys - <f6>
 ;;    --------------------
@@ -7330,6 +7332,34 @@ Can't load ac-geiser: geiser-repl-mode: %S"
         (imenup-add-defs-to-menubar)))))
 
 ;; ---------------------------------------------------------------------------
+;;** draw Commands - <f11> D
+;; - Function Keys - <f11> - Prefix ``<f11> D`` :
+
+(define-pel-global-prefix pel:draw (kbd "<f11> D"))
+(define-key pel:draw "a"  'artist-mode)       ; toggle artist-mode
+(define-key pel:draw "p"  'picture-mode)      ; activate picture-mode
+(when pel-use-syntree
+  (pel-ensure-package-elpa syntree from: melpa)
+  (define-key pel:draw "s"  'syntree-new))
+(when pel-use-ascii-art-to-unicode
+  (pel-ensure-package-elpa ascii-art-to-unicode from: gnu))
+(when pel-use-uniline
+  (pel-ensure-package-elpa uniline from: melpa)
+  ;; for reason I don't yet understand uniline-mode does not autoload
+  ;; properly with the MELPA installation, so I explicitly autoload it here:
+  (pel-autoload-file uniline for: uniline-mode)
+  ;; Add <f8> as the uniline key insert as <insert> is often not available
+  ;; on various keyboards ans <f8> can be used in minor modes because PEL
+  ;; reserves it for projectile only.
+  (pel-eval-after-load uniline-core
+    (when (and (boundp 'uniline-key-insert)
+               (fboundp 'uniline--set-insert-key))
+      (unless (member "<f8>" uniline-key-insert)
+        (push "<f8>" uniline-key-insert)
+        (uniline--set-insert-key 'uniline-key-insert uniline-key-insert))))
+  (define-key pel:draw "u"  'uniline-mode))
+
+;; ---------------------------------------------------------------------------
 ;;** Graphviz Dot
 ;;   ------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-g`` :
@@ -7338,8 +7368,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (pel-autoload-file graphviz-dot-mode for: graphviz-dot-mode)
 
   ;; Global bindings for Graphviz-Dot
-  (define-key pel:mode (kbd "M-g") 'graphviz-dot-mode)
-  (define-key pel:mode "G"         'pel-render-commented-graphviz-dot)
+  (define-key pel:draw (kbd "M-g") 'graphviz-dot-mode)
+  (define-key pel:draw "g"         'pel-render-commented-graphviz-dot)
 
   ;; Graphviz-Dot specific mode keys
   (define-pel-global-prefix pel:for-graphviz-dot (kbd "<f11> SPC M-g"))
@@ -7348,7 +7378,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (define-key pel:for-graphviz-dot (kbd "TAB") 'graphviz-dot-indent-graph)
 
   (pel-eval-after-load graphviz-dot-mode
-      (pel-config-major-mode graphviz-dot pel:for-graphviz-dot :no-ts)))
+    (pel-config-major-mode graphviz-dot pel:for-graphviz-dot :no-ts)))
 
 ;; ---------------------------------------------------------------------------
 ;;** MscGen
@@ -8904,34 +8934,6 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:patch "b"  'epatch-buffer)
 
 ;; ---------------------------------------------------------------------------
-;;** draw Commands - <f11> D
-;; - Function Keys - <f11> - Prefix ``<f11> D`` :
-
-(define-pel-global-prefix pel:draw (kbd "<f11> D"))
-(define-key pel:draw "a"  'artist-mode)       ; toggle artist-mode
-(define-key pel:draw "p"  'picture-mode)      ; activate picture-mode
-(when pel-use-syntree
-  (pel-ensure-package-elpa syntree from: melpa)
-  (define-key pel:draw "s"  'syntree-new))
-(when pel-use-ascii-art-to-unicode
-  (pel-ensure-package-elpa ascii-art-to-unicode from: gnu))
-(when pel-use-uniline
-  (pel-ensure-package-elpa uniline from: melpa)
-  ;; for reason I don't yet understand uniline-mode does not autoload
-  ;; properly with the MELPA installation, so I explicitly autoload it here:
-  (pel-autoload-file uniline for: uniline-mode)
-  ;; Add <f8> as the uniline key insert as <insert> is often not available
-  ;; on various keyboards ans <f8> can be used in minor modes because PEL
-  ;; reserves it for projectile only.
-  (pel-eval-after-load uniline-core
-    (when (and (boundp 'uniline-key-insert)
-               (fboundp 'uniline--set-insert-key))
-      (unless (member "<f8>" uniline-key-insert)
-        (push "<f8>" uniline-key-insert)
-        (uniline--set-insert-key 'uniline-key-insert uniline-key-insert))))
-  (define-key pel:draw "u"  'uniline-mode))
-
-;; ---------------------------------------------------------------------------
 ;;* Face/Font Management - <f11> C-f
 ;; - Function Keys - <f11> - Prefix ``<f11> C-f`` :
 ;;
@@ -9576,7 +9578,6 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-install-github-file "emacsmirror/vline/master" "vline.el")
   (pel-autoload-file vline for: vline-mode)
   (define-key pel:highlight "|"  'vline-mode)
-  (define-key pel:mode      "|"  'vline-mode)
   (define-key pel:          "9"  'vline-mode))
 
 (when (and (version< emacs-version "27.1")
@@ -9584,13 +9585,11 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-ensure-package-elpa fill-column-indicator from: melpa)
   (pel-autoload-file fill-column-indicator for: fci-mode)
   (define-key pel:highlight "\\" 'fci-mode)
-  (define-key pel:mode      "\\"  'fci-mode)
   (define-key pel:          "8"  'fci-mode))
 ;; For Emacs 27.1 & later use the built-in display-fill-column-indicator-mode.
 (unless (version< emacs-version "27.1")
   (define-key pel:highlight "\\" 'display-fill-column-indicator-mode)
-  (define-key pel:          "8"  'display-fill-column-indicator-mode)
-  (define-key pel:mode      "\\" 'display-fill-column-indicator-mode))
+  (define-key pel:          "8"  'display-fill-column-indicator-mode))
 
 ;; -----------------------------------------------------------------------------
 ;;* Insert Text Operations - <f11> i
@@ -11521,7 +11520,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;;* Key-Chord Mode - <f11> <f5> k
 ;;  ==============
 
-(define-pel-global-prefix pel:mode-key-chord (kbd "<f11> <f5> k"))
+(define-pel-global-prefix pel:mode-key-chord (kbd "<f11> M-k"))
 
 (when pel-use-key-chord
   (defun pel--start-key-chord-mode ()
@@ -11531,7 +11530,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (declare-function pel--start-key-chord-mode "pel_keys")
 
   (define-key pel:mode-key-chord  "?" 'pel-key-chord-describe)
-  (define-key pel:keys (kbd "M-K")    'pel-key-chord-describe)
+  (define-key pel:help (kbd "M-k")    'pel-key-chord-describe)
 
   ;; The key-seq is only activated once key-chord is activated.
   ;; Both must be active for key-seq to be used.  When both are

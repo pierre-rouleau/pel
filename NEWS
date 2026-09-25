@@ -1,6 +1,12 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- Improved ~<f11>~ key-binding scheme:  ~<f11> M-k~ is now used for key-chord
+  commands and ~<f11> <f5>~ is only used for repetition of continuation
+  commands.
+  - Moved the graphviz-mode commands key bindings into the ~<f11> D~ instead
+    of under the ~<f11> <f5>~ prefix.
+  - Add the ~<f11> <f5> f~ binding to *fileloop-continue* in Emacs ≥ 27.1.
 - Improved the [[https://github.com/pierre-rouleau/pel/blob/master/example/init/early-init.el][early-init.el example]]: for macOS it removes an invalid entry in load-path holding
   "Contents/Resources/site-lisp" and adds the =~/.emacs.d/site-lisp= directory if that exists.
 - Add extra support for Gnu Calc, activated by the *pel-use-calc* user-option.

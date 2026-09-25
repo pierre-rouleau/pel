@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-25 13:37:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-25 17:52:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -437,7 +437,9 @@ Return the manual PDF file name."
     ([f11 f8]        "projectile"       pel-pkg-for-project-mng (projectile
                                                                  projectile-speedbar))
 
-    ([f11 f5 ?k]     "key-chords"        pel-pkg-for-key-chord   key-chord)
+    (,(kbd "<f11> M-k") "key-chords"    pel-pkg-for-key-chord   key-chord)
+    ([f11 27 ?k]     "key-chords"       pel-pkg-for-key-chord   key-chord)
+
     ([f11 ?$]        "spell-checking"   pel-pkg-for-spelling    ,pel--spell-groups)
     ([f11 ?']        "bookmarks"        pel-pkg-for-bookmark    (bookmark
                                                                  bm))
