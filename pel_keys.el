@@ -4056,6 +4056,7 @@ d-mode not added to ac-modes!"
 (define-pel-global-prefix pel:ert             (kbd "<f11> SPC l C-t"))
 (define-pel-global-prefix pel:testcover       (kbd "<f11> SPC l C-t C-c"))
 
+(define-key pel:elisp-help "?"  'pel-mode-setup-info)
 (define-key pel:for-elisp "z"  'ielm)
 (define-key pel:elisp-loadpath "d"  'pel-add-dir-to-loadpath)
 (pel--lisp-languages-map-for pel:for-elisp)
