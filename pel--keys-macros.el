@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-13 12:51:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-25 13:37:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1182,7 +1182,12 @@ Each entry of the list is file base name without file extension."
       ;; doc/pdf/lang directory, and because the files returned by this
       ;; function are supposed to be in the lang subdir, return a file name
       ;; that force looking into the above dir.
-      (list "../plm-lispy" "../emacs-lisp-types"))
+      (list "../plm-lispy"
+            "../display-buffer"
+            "../emacs-lisp-types"
+            "../emacs-lisp-topics"
+            "../emacs-lisp-refs"
+            "../build-tools"))
 
      ((pel-string-starts-with-p major-mode-str "makefile-")
       ;; Return MMMM for the makefile-MMMM-mode modes.
