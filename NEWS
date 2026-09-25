@@ -20,6 +20,9 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 - In Emacs 28.1 or later, ~<f11> <f5> <f5>~ is now bound to *repeat-mode*; it toggles the repeat-mode introduced in Emacs 28.1.
   The ~<f11> ? d <f5>~ is also bound to *describe-repeat-maps*.
 - Improved org-mode support:
+  - The value of *pel-org-todo-keywords* user-option is stored into *org-todo-keywords*.  Its docstring
+    describes the capabilities and how to open the relevant Org manual section.   The default value
+    now provides a WAIT state with timestamp note on entry.
   - The *pel-org-project-files* user-option allows selection of Org files via a static list of files
     or dynamically via a list of directory tree and regular expression pairs.
     This is quite useful to create a powerful project management time tracking

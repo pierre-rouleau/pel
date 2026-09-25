@@ -5262,6 +5262,31 @@ On Emacs 26.1, this has no effect."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-org-todo-keywords '((sequence "TODO(t)"
+                                             "IN-PROGRESS(p)"
+                                             "WAIT(w@/!)"
+                                             "|"
+                                             "DONE(d)"))
+  "Org-mode todo sequence(s) to use.
+
+This is stored into `org-todo-keywords'.
+The default value defines 4 states, each one has a fast access key (t, p, w,
+and d) respectively.  The DONE state is final.  The WAIT state is optional and
+can be skipped.  When entering the WAIT state a timestamped note is created
+and when leaving the WAIT a timestamp is identified.
+
+For more information on the various features you can identify in the
+Org Mode todo sequences, evaluate the following to open the relevant manual
+sections with \\[eval-last-sexp] at the end of each line:
+
+- (info \"(org) TODO Extensions\")
+- (info \"(org) Tracking TODO state changes\")"
+  :group 'pel-pkg-for-org-mode
+  :type '(repeat
+          (cons :tag "Sequence Definition"
+                (const :tag "Type" sequence)
+                (repeat :tag "Keywords" string))))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; reStructuredText support
 ;; ------------------------

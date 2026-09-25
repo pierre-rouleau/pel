@@ -7059,9 +7059,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (pel-setq org-special-ctrl-a/e t)
     ;; Activate timestamp log for DONE tasks
     (pel-setq org-log-done 'time)
-    ;; Add the "IN-PROGRESS" in the list of TODO states
-    (pel-setq org-todo-keywords
-              (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
+    ;; Use the todo states defined by the user.
+    (pel-setq org-todo-keywords pel-org-todo-keywords)
     ;;
     (when pel-windmove-on-esc-cursor
       ;; Remove Esc down/up/left/right mapping to org-meta...
@@ -9466,6 +9465,9 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;;** deadgrep
 (when pel-use-deadgrep
+  ;; Use my fork.  It supports ability to search in multiple directories,
+  ;; a list associated to a 'Context Directory' identified inside the
+  ;; `deadgrep-extra-searched-directories' user-option.
   (pel-install-github-file "pierre-rouleau/deadgrep/master" "deadgrep.el")
   (pel-autoload-file deadgrep for: deadgrep)
   ;; (pel-ensure-package-elpa deadgrep from: melpa)
