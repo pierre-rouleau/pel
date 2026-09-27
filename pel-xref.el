@@ -585,7 +585,7 @@ If APPEND is non-nil, append to the buffer."
     - helm-cscope-mode       : %s
     - helm-scope key bindings: %s\n\n"
                 (propertize "<f11> X B"
-                     'face '(:foreground "forest green" :weight bold))
+                            'face '(:foreground "forest green" :weight bold))
                 used-state
                 (pel-minor-mode-auto-activated-by 'dumb-jump-mode nil "" :show-all)
                 (pel-option-mode-state 'ggtags-mode 'pel-use-ggtags)
@@ -623,7 +623,9 @@ If APPEND is non-nil, append to the buffer."
        (pel-insert-bold "\n\nXref control variables:")
        (pel-insert-symbol-content-line 'xref-show-xrefs-function)
 
-       )
+       (pel-insert-bold "\n\nXref grep-like search control variables:")
+       (pel-insert-symbol-content-line 'xref-search-program)
+       (pel-insert-list-content  'xref-search-program-alist))
      (unless append :clear-buffer)
      :use-help-mode)))
 
