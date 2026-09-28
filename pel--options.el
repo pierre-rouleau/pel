@@ -6281,6 +6281,15 @@ Each entry should be a string:
   :safe #'booleanp)
 (pel-put pel-use-flycheck-projectile :package-is :in-utils)
 
+(defcustom pel-force-flycheck-emacs-lisp-load-path-inherit t
+  "When on, force `flycheck-emacs-lisp-load-path' to \\='inherit.
+
+The default forces PEL to force Flycheck to use Emacs inherited `load-path'
+to prevent generation of warnings on valid code like: (require \\='pel--base)."
+  :group 'pel-pkg-for-syntax-check
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Language Server Protocol (LSP) Support
 ;; --------------------------------------
@@ -15824,6 +15833,34 @@ PEL uses my fork of this project."
   :type 'boolean
   :safe #'booleanp)
 (pel-put pel-use-pr-whisper :requires 'pel-use-quelpa)
+
+(defcustom pel-use-flymake-vale nil
+  "Control whether PEL uses the flymake-vale.
+This requires vale to be installed separately for the Operating System."
+  :link '(url-link :tag "flymake-vale @ GitHub"
+                   "https://github.com/tpeacock19/flymake-vale")
+  :link '(url-link :tag "vale" "https://vale.sh/")
+  :link '(url-link :tag "vale quickstart" "https://vale.sh/quickstart")
+  :link '(url-link :tag "vale style guide explorer" "https://vale.sh/explorer")
+  :group 'pel-pkg-for-writing
+  :group 'pel-pkg-for-syntax-check
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put pel-use-flymake-vale :package-is :in-utils)
+
+(defcustom pel-use-flycheck-vale nil
+  "Control whether PEL uses the flycheck-vale.
+This requires vale to be installed separately for the Operating System."
+  :link '(url-link :tag "flycheck-vale @ GitHub"
+                   "https://github.com/abingham/flycheck-vale")
+  :link '(url-link :tag "vale" "https://vale.sh/")
+  :link '(url-link :tag "vale quickstart" "https://vale.sh/quickstart")
+  :link '(url-link :tag "vale style guide explorer" "https://vale.sh/explorer")
+  :group 'pel-pkg-for-writing
+  :group 'pel-pkg-for-syntax-check
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put pel-use-flycheck-vale :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; Incompatible selection Management

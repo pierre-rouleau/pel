@@ -2570,6 +2570,13 @@ can't bind negative-argument to C-_ and M-_"
                      flycheck-mode
                      flycheck-select-checker)
     (pel-eval-after-load flycheck
+      ;; By default get flycheck to use the initialized `load-path', not
+      ;; 'emacs -Q' empty `load-path'.
+      (when (and (boundp 'flycheck-emacs-lisp-load-path)
+                 (null flycheck-emacs-lisp-load-path)
+                 pel-force-flycheck-emacs-lisp-load-path-inherit)
+        (setq flycheck-emacs-lisp-load-path 'inherit))
+      ;; Add key bindings to navigate errors.
       (when (boundp 'flycheck-mode-map)
         (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
         (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error))))
@@ -2783,6 +2790,22 @@ can't bind negative-argument to C-_ and M-_"
   (define-key pel:writing-tools "H" 'pr-whisper-insert-from-history)
   (define-key pel:writing-tools "S" 'pr-whisper-stop-record))
 
+(when pel-use-flymake-vale
+  (pel-install-github-file "tpeacock19/flymake-vale/master"
+                           "flymake-vale.el")
+
+  (unless (fboundp 'flymake-vale-load)
+    (autoload 'flymake-vale-load "flymake-vale"))
+  (declare-function flymake-vale-load "flymake-vale"))
+
+(when pel-use-flycheck-vale
+  (pel-install-github-file "abingham/flycheck-vale/master"
+                           "flycheck-vale.el")
+
+  ;; (unless (fboundp 'flymake-vale-load)
+  ;;   (autoload 'flymake-vale-load "flymake-vale"))
+  ;; (declare-function flymake-vale-load "flymake-vale")
+  )
 ;; ---------------------------------------------------------------------------
 ;;** All C-like programming languages: C, C++, Objective-C, Pike
 ;;   -----------------------------------------------------------

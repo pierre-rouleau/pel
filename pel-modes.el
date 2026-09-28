@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 24 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-04 07:23:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-21 15:53:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -193,6 +193,7 @@ most generic information about the mode."
              (pel-use-mode-user-option-symbol (intern
                                                (pel-string-with-major-mode
                                                 "pel-use-%s")))
+             (mode-hook-symbol (intern (pel-string-with-major-mode "%s-mode-hook")))
              (major-mode-used-text-fct (intern (pel-string-with-major-mode
                                                 "pel-%s-mode-used-text")))
              (major-mode-activates-minor-modes (intern
@@ -241,6 +242,10 @@ most generic information about the mode."
  Please create a bug report in https://github.com/pierre-rouleau/pel
  to request explicit control of facilities you would need for this mode.
 "))
+           ;; -- Hooks
+           (insert "\n\n")
+           (pel-insert-bold "* Hooks:")
+           (pel-insert-symbol-content mode-hook-symbol)
            ;; -- List of minor modes
            (pel-insert-list-of-minor-modes active-modes)
 
@@ -251,6 +256,16 @@ most generic information about the mode."
               current-major-mode
               (when (boundp major-mode-activates-minor-modes)
                 #'pel--maj-mode-minor-mode-activation-info)))
+           (insert "\n\n")
+
+           ;; Flymake & Flycheck support
+           (pel-insert-bold "* Syntax checking Control:")
+           (insert "\n- Flymake:")
+           (pel-insert-symbol-content 'flymake-diagnostic-functions)
+           (when pel-use-flymake-vale
+             (pel-insert-symbol-content 'flymake-vale-modes))
+
+
            (insert "\n\n")
            (unless (memq current-major-mode pel-major-modes-with-no-indentation)
              ;; -- Indentation & Hard Tab Control
