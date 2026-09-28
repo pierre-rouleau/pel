@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-25 17:52:33 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-09-26 11:56:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -733,7 +733,7 @@ stored inside the doc/pdf directory.")
 
 (defconst pel---prefix-to-topic-alist-2
   `(([f11 ?o]        "sorting"          nil)
-    ([f11 ?p]        "project-tools"    pel-pkg-for-project-mng  ffip)
+    ([f11 ?p]        "project-tools"    pel-pkg-for-project-mng  (project ffip))
     ([f11 ?r]        "registers"        nil)
     ([f11 ?s]        "search-replace"   pel-pkg-for-search      (isearch
                                                                  anzu
@@ -1508,6 +1508,18 @@ GitHub remote file is opened by default."
   (pel-help-open-pdf "completion-input" open-github-page-p))
 
 ;;-pel-autoload
+(defun pel-help-on-project (&optional open-github-page-p)
+  "Open the project help PDF, in a browser if arg OPEN-WEB-PAGE set.
+
+By default the function opens the local PDF file unless the
+OPEN-GITHUB-PAGE-P is specified, in which case it opens the GitHub
+hosted raw PDF file.  However, if the user-option variable
+`pel-flip-help-pdf-arg' is set, it's the other way around: the
+GitHub remote file is opened by default."
+  (interactive "P")
+  (pel-help-open-pdf "project-tools" open-github-page-p))
+
+;;-pel-autoload
 (defun pel-help-on-outline (&optional open-github-page-p)
   "Open the outline help PDF, in a browser if arg OPEN-WEB-PAGE set.
 
@@ -1787,6 +1799,18 @@ There should be no key binding!" keyseq))
         (pel--customize-group groups other-window)
       ;; There are several groups.  Prompt for one and open it.
       (pel-customize-groups-from groups))))
+
+;;-pel-autoload
+(defun pel-customize-pel-project (&optional other-window)
+  "Open project customization group."
+  (interactive "P")
+  (pel--customize-group "pel-pkg-for-project-mng" other-window))
+
+;;-pel-autoload
+(defun pel-customize-project (&optional other-window)
+  "Open project customization group."
+  (interactive "P")
+  (pel-customize-groups-from '(project ffip) other-window))
 
 ;;----------------------------------------------------------------------------
 

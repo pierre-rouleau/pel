@@ -1123,7 +1123,10 @@ Your version of Emacs does not support dynamic module.")))
     ;; rationalize buffer after killing uniquified buffer
     (pel-setq uniquify-after-kill-buffer-p t)
     ;; Don't  not uniquify special buffers
-    (pel-setq uniquify-ignore-buffers-re "^\\*")))
+    (pel-setq uniquify-ignore-buffers-re "^\\*")
+    (when (and (eq pel-use-uniquify 'project-aware)
+               (boundp 'uniquify-dirname-transform))
+      (setq uniquify-dirname-transform 'project-uniquify-dirname-transform))))
 
 ;; ---------------------------------------------------------------------------
 ;;* Extra key bindings
@@ -1439,10 +1442,6 @@ Your version of Emacs does not support dynamic module.")))
 ;; Bind repeat to a single key: <f5> and <S-F5>
 (global-set-key (kbd "<f5>") 'repeat)
 ;; <S-f5> is also bound to repeat but also marks.
-(when pel-emacs-27-or-later-p
-  (define-key pel:repeat "f" 'fileloop-continue)
-  (when pel-emacs-28-or-later-p
-    (define-key pel:repeat (kbd "<f5>") 'repeat-mode)))
 ;; ---------------------------------------------------------------------------
 ;;*** Function Keys - <f6>
 ;;    --------------------
@@ -1455,6 +1454,10 @@ Your version of Emacs does not support dynamic module.")))
 ;;  C-M-f
 ;;  <down> <up> <left> <right>
 ;;  <f12>
+(when pel-emacs-27-or-later-p
+  (define-key pel:repeat "f" 'fileloop-continue)
+  (when pel-emacs-28-or-later-p
+    (define-key pel:repeat (kbd "<f5>") 'repeat-mode)))
 
 (define-pel-global-prefix pel:f6 (kbd "<f6>"))
 (define-key pel:f6 (kbd "<f6>") 'pel-jump-to-mark)
@@ -1907,6 +1910,8 @@ can't bind negative-argument to C-_ and M-_"
 (define-key pel:cfg "p" 'pel-customize-pel-base-emacs-group)
 (define-key pel:cfg "v" 'customize-save-variable)
 (define-key pel:cfg "." 'pel-xref-find-custom-definition-at-line)
+(when pel-emacs-30-or-later-p
+  (define-key pel:cfg "D" 'customize-dirlocals))
 ;;
 
 (define-key pel:cfg-pel "B" 'pel-browse-pel)
@@ -9972,8 +9977,39 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (define-pel-global-prefix pel:project (kbd "<f11> p"))
 
+;; If the user wants to get the latest project.el from Gnu Elpa then install
+;; it; it will override Emacs project.el builtin.  That's a good way to get
+;; the latest project.el when not using the latest version of Emacs.
+(when pel-use-project-from-elpa
+  (unless (pel-in-fast-startup-p)
+    (defvar package-install-upgrade-built-in)
+    (let ((package-install-upgrade-built-in t))
+      (package-install 'project))))
+
+(pel-eval-after-load project
+  (when (boundp 'project-prefix-map)
+    (define-key project-prefix-map (kbd "<f1>")   'pel-help-on-project)
+    (define-key project-prefix-map (kbd "<f2>")   'pel-customize-pel-project)
+    (define-key project-prefix-map (kbd "<f3>")   'pel-customize-project)
+    (define-key project-prefix-map (kbd "<f4> d") 'project-forget-project)
+    (define-key project-prefix-map (kbd "<f4> A") 'project-remember-projects-under)
+    (if (or pel-emacs-31-or-later-p pel-use-project-from-elpa)
+        (progn
+          (define-key project-prefix-map (kbd "<f4> a") 'project-remember-project)
+          (define-key project-prefix-map (kbd "C-f") 'project-root-find-file)
+          (define-key project-prefix-map (kbd "M-d") 'project-find-matching-buffer)
+          (define-key project-prefix-map (kbd "C-s") 'project-save-some-buffers))
+      ;;
+      ;; project-recompile became autoloaded in Emacs 31 (or project 0.12) only.
+      (pel-autoload-file project for: project-recompile))
+    (define-key project-prefix-map "C" 'project-recompile)
+    (define-key project-prefix-map (kbd "M-d") 'project-forget-zombie-projects)
+    (define-key project-prefix-map "O" 'project-prefix-or-any-command)
+    (define-key project-prefix-map "S" 'project-search)))
+
 (when pel-use-find-file-in-project
-  ;; CAUTION: This package needs some work. Projectile is MUCH better!
+  ;; CAUTION: This package needs some work. Project.el and Projectile are MUCH
+  ;; better!
   (pel-install-github-file "redguardtoo/find-file-in-project/master"
                            "find-file-in-project.el")
   (pel-autoload-file find-file-in-project for:

@@ -1294,10 +1294,22 @@ The buffers will respectively be named:
 - hello.c|somedir
 
 If you kill 2 of these buffers, the remaining buffer will be named
-hello.c"
+hello.c.
+
+On Emacs 30.1 and later it is also possible to select the \\='project-aware
+value.  This activates project awareness: slash-separated components
+from `project-name' is appended to the buffer directory name to make buffer
+names unique.   PEL does this by setting the `uniquify-dirname-transform'
+variable to `project-uniquify-dirname-transform'."
   :group 'pel-pkg-for-buffer
-  :type 'boolean
-  :safe #'booleanp
+  :type `,(if pel-emacs-30-or-later-p
+              ;; Emacs 30.1 or later
+              '(choice
+                (const :tag "DO not use" nil)
+                (const :tag "Use as identity" t)
+                (const :tag "Use with project-awareness" project-aware))
+            ;; Before Emacs 30.1
+            'boolean)
   :link '(custom-manual "(emacs)Uniquify"))
 (pel-put pel-use-uniquify :package-is :builtin-emacs)
 
@@ -13836,6 +13848,15 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :group 'pel-package-use
   :group 'pel-base-emacs
   :link `(url-link :tag "Projectile PDF" ,(pel-pdf-file-url "projectile")))
+
+(defcustom pel-use-project-from-elpa nil
+  "Control whether PEL uses GNU Elpa project.el instead of Emacs built-in.
+
+The version of project.el on Elpa may be more recent than the version built-in
+Emacs, if you want to install the version from Elpa set this to t."
+  :group 'pel-pkg-for-project-mng
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-use-find-file-in-project nil
   "Control whether PEL supports the find-file-in-project package.

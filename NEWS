@@ -1,6 +1,21 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- Improved support for Emacs project.el:
+  - Document the project specific commands in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/project-tools.pdf][⅀ Project PDF]] including the
+    ones provided by PEL.
+  - The key bindings include the ~<f11> p~ and the ~C-x p~ key prefixes.
+    Added the ~<f1>~, ~<f2>~, ~<f3>~ PEL keys in the project key map under
+    ~C-x p~.  Also added configuration commands under the ~C-xp <f4>~ key
+    prefix.
+  - Add the ability to use the latest version of project.el from GNU Elpa
+    (which is version 0.12 when this was written) and use it under Emacs prior
+    to the latest version of Emacs.  This is controlled by the
+    *pel-use-project-from-elpa* user-option.
+  - Add project-specific support for buffer name "/uniquifying/": the
+    *pel-use-uniquify* user-option can be set to the value =project-aware= on
+    Emacs 30.1 and later to identify the project root name when several files
+    from various projects are opened.
 - Improved ~<f11>~ key-binding scheme:  ~<f11> M-k~ is now used for key-chord
   commands and ~<f11> <f5>~ is only used for repetition of continuation
   commands.
