@@ -6,7 +6,7 @@ Advising Functions in Emacs Lisp
 :Project: `PEL -- Pragmatic Emacs Leverage`_
 :Created:  Sunday, July 18 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-11 23:59:19 EDT, updated by Pierre Rouleau.
+:Modified: 2026-09-27 21:12:16 EDT, updated by Pierre Rouleau.
 :Copyright: © 2021, 2025, 2026, Pierre Rouleau
 
 
@@ -38,7 +38,7 @@ After that the ``foo`` command inserts "hello world!\n".
 Run Code Before Execution of a Function
 ---------------------------------------
 
-The following defadvice adds code that inserts the string "And you say: "
+The following ``defadvice`` adds code that inserts the string "And you say: "
 before what ``foo`` inserts:
 
 .. code:: elisp
