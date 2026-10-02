@@ -108,6 +108,9 @@
 ;;   `pel-early-init-custom-file' variable to reflect the name of your Emacs
 ;;   customization file.
 
+(defconst pel--command-line-default-directory default-directory
+  "Remember the current directory from where Emacs was launched.")
+
 (defconst pel-early-init-custom-file "~/.emacs.d/emacs-customization.el"
   "Value of `custom-file' used by early-init.el code.
 If you want to use some other file, please modify the initialized value.")

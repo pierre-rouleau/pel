@@ -52,7 +52,16 @@
 ;;   Locate these manually edited variable by searching for "OPTION".
 
 ;; ---------------------------------------------------------------------------
-;;
+;; Section -1: PEL constants: do not modify!
+;; =========================================
+
+(defconst pel-emacs-launch-directory
+  (if (boundp 'pel--command-line-default-directory)
+      pel--command-line-default-directory ;; Emacs 27+: Captured at start of early-init
+    command-line-default-directory) ;; Emacs 26: Captured at the very start of init
+  "The working directory from which Emacs process was originally launched.")
+
+;; ---------------------------------------------------------------------------
 ;; Section 0: PEL Edited Variable Definitions
 ;; ==========================================
 ;;
@@ -639,6 +648,9 @@ Also expands to the file true name, replacing symlinks by what they point to."
 
   ;; - C-x < : scroll-left
   ;; (put 'scroll-left 'disabled nil)
+
+  ;; <f11> ? e C-t
+  ;; (put 'list-timers 'disabled nil)
   )
 
 ;;; ---- end of init.el ------------------------------------------------------
