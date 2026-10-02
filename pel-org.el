@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-18 15:21:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-02 13:54:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -37,7 +37,7 @@
 (require 'pel--keys-macros)  ; use: `pel-customize-groups-from'
 (require 'cus-edit)          ; use: `customize-option'
 (require 'org)               ; use: `org-get-outline-path', `org-entry-get',
-;;                           ;     `org-archive-location'
+;;                           ;      `org-archive-location', `org-agenda-files'
 (require 'org-macs)          ; use: `org-with-wide-buffer'
 (require 'org-agenda)        ; use: `org-agenda-to-appt'
 
@@ -575,13 +575,15 @@ The ignored arguments make this function compatible with `:after' advice."
 (defun pel-org-get-project-files ()
   "Return the list of project files identified by `pel-org-project-files'.
 
-Use this inside an Org clocktable :scope argument.
+Use this inside an Org clocktable :scope argument to generate
+a report with clocked activities from all your Org files.
 See an example inside the file example/templates/org-mode/master-org.org"
   (if (listp (car pel-org-project-files))
-      ;; A list of directories and the regular expression to identify the
-      ;; files is identified: search them all and return the list of found
-      ;; files.
-      (let ((org-files nil))
+      ;; Use the files identified by `org-agenda-files' plus all files
+      ;; identified by the list of directories and the file regular expression
+      ;; that identify these files: search them, add them to the list if not
+      ;; already present and return the list of all the files.
+      (let ((org-files (copy-sequence org-agenda-files)))
         (dolist (dir-regexp pel-org-project-files)
           (let ((directory   (car dir-regexp))
                 (file-regexp (cadr dir-regexp)))

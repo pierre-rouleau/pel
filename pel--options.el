@@ -1338,7 +1338,7 @@ When set, PEL activates the following key sequences:
 
 (defcustom pel-use-iflipb nil
   "Control whether PEL provides access to the iflipb package."
-  :link '(url-link :tag "iflipb @GitHub"
+  :link '(url-link :tag "iflipb @ GitHub"
                    "https://github.com/jrosdahl/iflipb")
   :group 'pel-pkg-for-buffer
   :type 'boolean
@@ -4694,7 +4694,7 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 
 (defcustom pel-use-asciidoc nil
   "Control whether PEL activates support for Asciidoc with adoc mode."
-  :link '(url-link :tag "adoc-mode @GitHub"
+  :link '(url-link :tag "adoc-mode @ GitHub"
                    "https://github.com/sensorflo/adoc-mode")
   :group 'pel-pkg-for-asciidoc
   :type 'boolean
@@ -5253,6 +5253,17 @@ This sets `org-clock-auto-clockout-timer' and then PEL sets up calling
 (defcustom pel-org-project-files nil
   "A list Org files containing clocked activities.
 These will be used in project clock tables.
+
+You would normally want to set this to the option 2, which makes it take
+all files identified by a set of files identified by a regular
+expression searched into a directory tree.  Since your activity files
+should already be defined inside the `org-agenda-files' user-option,
+identify a regular expression to identify the Org archive files here.
+PEL will then be able to generate time reports using the time logged in your
+current activity files (which are showing in your agenda) as well as the
+archive that contain time logged in completed tasks (and do not show in your
+agenda).
+
 You can specify the Org files in 2 different ways:
 - 1: Identify a list of files to parse.
 - 2: Identify a list of directory and file-search regular expressions pairs.
@@ -5262,8 +5273,11 @@ You can specify the Org files in 2 different ways:
 Each entry must be a valid path to an Org file or directory."
   :type '(choice
           (repeat :tag "Specified files" (file :tag "Specific Org Files"))
-          (repeat :tag "Specified Directories" (list (file :tag "Directory trees with Org Files")
-                                                     (string :tag "File regexp" "\\.org\\'"))))
+          (repeat :tag "Use all files identified by org-agenda-file, plus"
+                  (list :tag "the files in"
+                   (file :tag "Directory tree")
+                   (string :tag "files with name matching regexp"
+                           "\\.org_archive\\'"))))
   :group 'pel-pkg-for-org-mode)
 
 (defcustom pel-org-archive-with-hierarchy nil
@@ -6248,7 +6262,7 @@ Each entry should be a string:
 
 (defcustom pel-use-flymake-collection nil
   "Whether PEL uses flymake-collection package."
-  :link '(url-link :tag "flymake-collection @GitHub"
+  :link '(url-link :tag "flymake-collection @ GitHub"
                    "https://github.com/mohkale/flymake-collection")
   :group 'pel-pkg-for-syntax-check
   :type 'boolean
@@ -6256,7 +6270,7 @@ Each entry should be a string:
 
 (defcustom pel-use-flycheck-eglot nil
   "Whether PEL uses flycheck-eglot package."
-  :link '(url-link :tag "flycheck-eglot @GitHub"
+  :link '(url-link :tag "flycheck-eglot @ GitHub"
                    "https://github.com/flycheck/flycheck-eglot")
   :group 'pel-pkg-for-syntax-check
   :type 'boolean
@@ -6265,7 +6279,7 @@ Each entry should be a string:
 
 (defcustom pel-use-flycheck-inline nil
   "Whether PEL uses flycheck-inline package."
-  :link '(url-link :tag "flycheck-inline @GitHub"
+  :link '(url-link :tag "flycheck-inline @ GitHub"
                    "https://github.com/flycheck/flycheck-inline")
   :group 'pel-pkg-for-syntax-check
   :type 'boolean
@@ -6274,7 +6288,7 @@ Each entry should be a string:
 
 (defcustom pel-use-flycheck-projectile nil
   "Whether PEL uses flycheck-projectile package."
-  :link '(url-link :tag "flycheck-projectile @GitHub"
+  :link '(url-link :tag "flycheck-projectile @ GitHub"
                    "https://github.com/nbfalcon/flycheck-projectile")
   :group 'pel-pkg-for-syntax-check
   :type 'boolean
@@ -14178,8 +14192,9 @@ The value can be:
                                  external package.
 - `with-desktop-registry-automatic': Use desktop, the desktop-registry
                                      and activate desktop auto-save mode.
-- `with-desktop+':               Use desktop and the desktop+ external package.
-                                 *Recommended* for new users."
+- `with-desktop+':               Use desktop and the desktop+ external
+                                 package.  The best option for desktop
+                                 driven session manager."
   :group 'pel-pkg-for-session
   :type '(choice
           (const :tag "Not used" nil)
