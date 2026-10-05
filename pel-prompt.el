@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-25 15:04:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-05 11:31:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -488,20 +488,29 @@ Holds an independent function prompt history for each major mode."
 ;; ---------------------------------------------------------------------------
 ;; Generic prompt
 
-(defun pel-prompt (prompt &optional scope capitalize)
+(defun pel-prompt (prompt &optional scope capitalize default-value)
   "Generic PROMPT for string.
 
 Optionally identify a SCOPE symbol for the prompt history.
 If it is specified the prompt has its own history for each major mode,
 otherwise it has no history.
 
+Propose DEFAULT-VALUE if it is not nil.
+
 Return entered string, optionally capitalized if CAPITALIZE is non-nil."
   (let* ((history-symbol (when scope
                            (intern
                             (format "pel-prompt-%s-%s" scope major-mode))))
          (text (string-trim
-                (read-from-minibuffer (format "%s: " prompt)
-                                      nil nil nil history-symbol))))
+                (read-from-minibuffer (if default-value
+                                          (format "%s (default %s): " prompt default-value)
+                                        (format "%s: " prompt))
+                                      nil nil nil
+                                      history-symbol
+                                      default-value))))
+    (if (and default-value
+             (string= text ""))
+        (setq text default-value))
     (if capitalize
         (pel-capitalize-first-letter text)
       text)))
