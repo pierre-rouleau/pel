@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-03-13 15:59:48 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-06 09:58:59 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -24,32 +24,33 @@
 # Code
 # ----
 #
+pgm_name="$(basename "$0")"
 os_name="$(uname)"
 print_usage()
 {
     printf -- "\
-ec : Open specified files in emacsclient. Start Emacs daemon if necessary.
+%s : Open specified files in emacsclient. Start Emacs daemon if necessary.
 
  USAGES:
-  ➨ ec [-h|--help]
+  ➨ %s [-h|--help]
 
         -h, --help: print this help.
 
-  ➨ ec [-g|--gui] [--name=DAEMON-NAME] [emacsclient-options]
+  ➨ %s [-g|--gui] [--name=DAEMON-NAME] [OPTION-or-FILENAME]...
 
         If the Emacs daemon is not already running, start it.
         -g, --gui:  start a graphical emacsclient, otherwise
                     start a terminal-based emacsclient (the default).
 
-  ➨ ec --start-daemon [--name=DAEMON-NAME] [emacsclient-options]
+  ➨ %s --start-daemon [--name=DAEMON-NAME] [OPTION-or-FILENAME]...
 
-        Use ec --start-daemon to only start the daemon without starting
+        Use --start-daemon to only start the daemon without starting
         any client.
         If the daemon is already running the command prints a message
         and exit with an exit code of 1.  You can use it to check if the
         daemon is running.
 
-  ➨ ec --check-daemon [--name=DAEMON-NAME] [emacsclient-options]
+  ➨ %s --check-daemon [--name=DAEMON-NAME] [OPTION-or-FILENAME]...
 
         The --check-daemon is used to explicitly check if the Emacs
         daemon for the default socket is running.
@@ -59,9 +60,11 @@ ec : Open specified files in emacsclient. Start Emacs daemon if necessary.
       must use.  It's possible to create several daemons and client(s)
       attaching to that daemon by using that option.
 
-      The emacsclient options are also supported when specified last.
+      The OPTION-or-FILENAME is the set of emacsclient options and the
+      name of the files to edit.  All emacsclient options are supported
+      when specified last.
       See emacsclient man page for information about those.
-"
+" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
     case "${os_name}" in
         Darwin)
         printf -- "\
@@ -87,9 +90,9 @@ ec : Open specified files in emacsclient. Start Emacs daemon if necessary.
 
  Note: Under Linux, emacs-lucid is used to start the daemon if the --gui
        option is specified and the emacs-lucid executable file is found
-       on the current PATH.  Otherwise, ec defaults to emacs.
+       on the current PATH.  Otherwise, %s defaults to emacs.
 
-"
+" "$pgm_name"
         ;;
     esac
 }

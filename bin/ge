@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent, detached, GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-03-13 14:18:46 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-06 09:42:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -19,34 +19,118 @@
 # Code
 # ----
 #
+
+pgm_name="$(basename "$0")"
+EMACS_DIR=$(emacs -Q --batch --eval="(princ (directory-file-name user-emacs-directory))")
+EASYSESSION_SESSION_DIR="$EMACS_DIR/easysession"
+EASYSESSION_SESSION_CATALOG="$EMACS_DIR/pel-easysession-catalog.txt"
+
 print_usage()
 {
     printf -- "\
-ge : Open an independent, detached, graphical-mode instance of Emacs.
+%s : Open an independent, detached, graphical-mode instance of Emacs.
 
- Usage: ge [-h|--help]
-        ge [FILE..]
+ Usage: %s -h | --help
 
- Note: All command line arguments are passed to the Emacs application
-       unchanged.  See Emacs man page for more options.
+  • Print this help information.
 
-       Emacs is launched inside an independent OS window, but
-       that process inherit the current directory.
-       Control is returned right away to the terminal shell.
+ Usage: %s [OPTION-or-FILENAME]...
 
-       On macOS the graphics version of Emacs is taken from one of
-       the following locations:
+  • Launch the graphical Emacs process with the specified Emacs
+    OPTION-or-FILENAME.
+    The process is launched from within the current directory and inherits the
+    current environment variables.
+    This does not auto-load any session.
 
-       - If PEL_GE_DIR environment variable is defined, it must identify
+ Usage: %s [-s] [SESSION-NAME] [--] [OPTION-or-FILENAME]...
+        %s --session-name=SESSION_NAME [OPTION-or-FILENAME]...
+        PEL_SESSION=SESSION-NAME %s -s [OPTION-or-FILENAME]...
+
+  • Execute the graphical Emacs process, passing it the OPTION-or-FILENAME
+    options.
+    The process is launched from within the current directory and inherits the
+    current environment variables.  This also forces the automatic loading of
+    an easysession.
+    The name of the session is either specified on the command line as
+    SESSION-NAME or taken from the PEL_SESSION environment variable according
+    to the following rules:
+    • If -s is specified without any session name after the -s
+      or with the PEL_SESSION=SESSION-NAME before the script name
+      and PEL_SESSION environment variable does not already exist
+      or is currently empty, then the script requires the use of the
+      directory-specific session.
+      • This is the session name associated with the current directory
+        identified inside the PEL easysession catalog file:
+        %s
+      • If you need to specify '-s' without a session name and need to pass
+        other arguments to Emacs use '-s --'.
+    • If '-s' is specified with no session name but the PEL_SESSION
+      environment variable has a non-empty value, the session with that name
+      is auto-loaded.  The, special name '.' (without quotes) identifies a
+      directory-specific session name extracted from the PEl easyssesion
+      catalog.
+    • Any word (except '--') directly following '-s', '--session-name=' or the
+      'PEL_SESSION=' identifies the session name and overrides the
+      session name that could be previously identified by the current value of
+      the PEL_SESSION environment variable.
+
+  The -s and --session-name options force the automatic loading of a session
+  using the Emacs easysession logic and are active when the following
+  conditions are met:
+    • The PEL pel-use-easysession user-option is turned on in the graphics mode
+      customization.
+    • The PEL pel-easysession-autoload user-option is turned on in the graphics
+      mode customization.
+    • The easysession.el package is installed (PEL installs it when
+      Emacs starts and pel-use-easysession is on)
+    • The %s directory exists.
+    • The %s file exists.
+      • It has a line that identifies a session for the current directory.
+      • That file is present in the %s directory.
+
+NOTES
+    • %s launches Emacs inside an independent OS window, but that process
+      inherits the current directory and the complete environment of the
+      current shell.  This includes the PATH, LIBPATH, MANPATH, and several
+      other useful environment variables.  This can be useful in many
+      situations.  You can even launch different Emacs processes from
+      different shells, each ones having different specialized environments,
+      and potentially an associated session.
+    • Control is returned right away to the terminal shell.
+    • On macOS the graphics version of Emacs is taken from one of the
+      following locations:
+       • If PEL_GE_DIR environment variable is defined, it must identify
          the path of an emacs executable file that launches in graphics
          mode by default.  If the environment variable is set and
          %s/emacs is valid then that is used.
          Use this, for example,  if you have built Emacs yourself
          and want to use this version of Emacs without activating it
          by default in your shells or in the system.
-       - If /Applications/Emacs.app/Contents/MacOS exists and holds
+       • If /Applications/Emacs.app/Contents/MacOS exists and holds
          an appropriate Emacs executable file, that is used.
-" "$PEL_GE_DIR"
+       • Remember that PEL supports the dual-customization mode where
+         customization of Emacs in terminal mode is independent that
+         the customization of Emacs in graphics mode.
+
+ DIAGNOSTICS
+  The script is silent by default.  To force it to display error messages to
+  describe unmet conditions for the -s option, set the PEL_DIAG environment
+  variable to 1.  If there is a problem, it will be displayed and the script
+  will exit before invoking Emacs.  Use that to troubleshoot environment
+  problems.
+  • With USRHOME installed, type: setenv PEL_DIAG 1
+
+ SEE ALSO
+  • e  : to start a terminal-based Emacs process.
+  • ec : to start a Emacs daemon server or client.
+  • USRHOME : shell environment control with several commands.
+              At https://github.com/pierre-rouleau/usrhome
+
+" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" \
+           "$EASYSESSION_SESSION_CATALOG" "$EASYSESSION_SESSION_DIR" \
+           "$EASYSESSION_SESSION_CATALOG" "$EASYSESSION_SESSION_DIR" \
+           "$PEL_GE_DIR" \
+           "$pgm_name"
     if [ "$(uname)" = "Darwin" ]; then
         printf -- "\
 
@@ -59,12 +143,146 @@ ge : Open an independent, detached, graphical-mode instance of Emacs.
 
 }
 
+# --
+# Handle help request
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     print_usage
     exit 0
 fi
 
+# ----------------------------------------------------------------------------
+# Diagnostic printf
+# -----------------
+
+any_diag=no
+diag_printf() {
+    case "$PEL_DIAG" in
+        1)
+            # Forward the format string and all arguments safely
+            # Note: use %b in format string instead of %s if the
+            #       arguments use backslash escapes.
+            format_str="$1"
+            shift
+            printf "$format_str" "$@"
+            any_diag=yes
+            ;;
+    esac
+}
+
+# ----------------------------------------------------------------------------
+# Detect if an auto EasySession launch is requested
+# -------------------------------------------------
+
+# Check if the -s option is present on the command line.
+with_s_flag=0
+session_name=
+
+# Loop through arguments to look for -s at the very beginning.
+# Extract the session name; support the following possibilities:
+#  -s                   -> session_name = "."
+#  -s ABC               -> session_name = "ABC"
+#  --session-name=ABC   -> session_name = "ABC"
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -s)
+            with_s_flag=1
+            if [ -n "$PEL_SESSION" ]; then
+                session_name="$PEL_SESSION"
+            else
+                session_name=.
+            fi
+            if [ $# -gt 1 ]; then
+                # Check if the next argument starts with a hyphen
+                case "$2" in
+                    -*)
+                        # It's another flag, so -s is alone
+                        shift 1
+                        ;;
+                    *)
+                        # It's the value for -s
+                        session_name="$2"
+                        shift 1
+                        ;;
+                esac
+            fi
+            shift
+            ;;
+
+        --session=*)
+            session_name="${1#*=}"
+            shift 1
+            ;;
+
+        --)
+            # Stop parsing if standard end-of-options delimiter is met
+            shift
+            break
+            ;;
+        *)
+            # Stop parsing at the first argument that is not -s
+            break
+            ;;
+    esac
+done
+
+# If diagnostics is active print info (but don't count them as errors)
+if [ "$PEL_DIAG" = "1" ]; then
+    printf "Using: session name: '%s'\n" "$session_name"
+    printf "       other arg   : %s\n"   "$@"
+fi
+
+# Then check if the EasySession directory used to store the session files
+# exists in the Emacs directory and contains at least one file to activate
+# the option.
+#
+dir_has_file=0
+
+if [ "$with_s_flag" -eq 1 ]; then
+    if [ -d "$EASYSESSION_SESSION_DIR" ]; then
+        # The directory exists.  Check if it holds any file.
+        # The pattern inside quotes ensures we check the literal folder,
+        # but the trailing /* must be unquoted for globbing to work.
+        for item in "$EASYSESSION_SESSION_DIR"/*; do
+            # Check if the glob actually expanded to a real file/folder
+            if [ -f "$item" ]; then
+                dir_has_file=1
+                break
+            fi
+        done
+        if [ "$dir_has_file" -eq 1 ]; then
+            # Check if the catalog file exists.  Without it PEL won't be able
+            # to open the session.
+            if [ -f "$EASYSESSION_SESSION_CATALOG" ]; then
+                PEL_SESSION="$session_name"
+                export PEL_SESSION_AUTO
+            else
+                diag_printf "No PEL session catalog file, %s, exist\n" "$EASYSESSION_SESSION_CATALOG"
+            fi
+        else
+            diag_printf "No session file present in %s\n" "$EASYSESSION_SESSION_DIR"
+        fi
+    else
+        diag_printf "EasySession directory does not exist: %s\n" "$EASYSESSION_SESSION_DIR"
+    fi
+
+    # If there were any error detected, always print error info and exit.
+    if [ "$any_diag" = "yes" ]; then
+        printf "ERROR: Can't proceed with auto restoration of dir-specific session!\n"
+        printf "Fix the issue, use %s without the -s option or disable PEL_DIAG.\n" "$pgm_name"
+        exit 1
+    fi
+else
+    # When e is invoked without the -s or --session-name option, ensure that PEL_SESSION
+    # is empty to prevent Emacs from auto-loading an easysession.
+    if [ -n "$PEL_SESSION" ]; then
+        unset -v PEL_SESSION
+    fi
+fi
+
+# ----------------------------------------------------------------------------
+# Invoke the Graphical Emacs using the process appropriate to the OS
+# and environment.
 
 # Pass to emacs:
 #   - --chdir to the current working directory so we open the same files
@@ -140,10 +358,13 @@ case $(uname) in
         #   At this point I don't see a reason to provide an overriding
         #   mechanism using an environment variable.
         #   If someone sees one please let me know.
+        #
+        # Invoke the process via exec for efficiency and allowing proper signal dispatching.
+        # Note that exec replaces the running script, so we can't check Emacs exit code.
         if command -v emacs-lucid > /dev/null ; then
-            emacs-lucid --chdir="$(pwd)" "$@" &
+            exec emacs-lucid --chdir="$(pwd)" "$@" &
         else
-            emacs --chdir="$(pwd)" "$@" &
+            exec emacs --chdir="$(pwd)" "$@" &
         fi
         ;;
 

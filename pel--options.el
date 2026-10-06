@@ -1344,6 +1344,14 @@ When set, PEL activates the following key sequences:
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-buffer-terminator nil
+  "Control whether PEL uses the buffer-terminator package."
+  :link '(url-link :tag "buffer-terminator @ GitHub"
+                   "https://github.com/jamescherti/buffer-terminator.el")
+  :group 'pel-pkg-for-buffer
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 (defgroup pel-pkg-for-ibuffer nil
   "List of external packages that PEL can use to extend `ibuffer-mode'."
@@ -14174,6 +14182,209 @@ PEL supports the following tools:
   :link `(url-link :tag "Sessions PDF" ,(pel-pdf-file-url "sessions"))
   :link '(custom-manual "(emacs)Saving Emacs Sessions"))
 
+
+(defcustom pel-use-easysession nil
+  "Control whether PEL uses easysession.el for session management.
+
+A modern and more robust alternative to desktop-based session management
+with several extensions that can be selected by activating it with the
+\\='Use with specified extensions\\=' via a menu of available capabilities
+providing what is described in the package main page.
+
+Notes:
+1 - Session auto-loading is controlled by the `pel-easysession-autoload'
+    user-option.  The pel-use-easysession settings control what is stored ,
+restored and other mechanisms of easysession
+2 - Activating the \\='Kill all buffers when changing a session\\=' option
+    may cause unnecessary disk I/O when files present in the closed session
+    are also present in the new session.   Use this option with caution.
+    You may prefer to activate `pel-use-buffer-terminator' instead.
+3 - The \\='Save/restore only visible buffers\\=' option will prevent
+    restoring any file visiting buffers that were not shown in the visible
+    frame of a terminal-based session.
+"
+  :group 'pel-pkg-for-session
+  :link '(url-link :tag "easysession.el @ GitHub"
+                   "https://github.com/jamescherti/easysession.el/tree/main")
+  :type '(choice
+          (const :tag "Not used" nil)
+          (list
+           :tag "Use with specified extensions"
+           :value (10 (save-current-session-when-switching
+                       exclude-current-session-when-switching))
+           (integer
+            :tag "Automatic session save interval (in minutes)"
+            :value 10)
+           (set
+            :tag "Extensions"
+            (const
+             :tag "Save the current session when using `easysession-switch-to'"
+             save-current-session-when-switching)
+            (const
+             :tag "Exclude current session name when loading or switching session"
+             exclude-current-session-when-switching)
+            (const
+             :tag "Persist and restore the scratch buffer"
+             save-scratch-buffer)
+            (const
+             :tag "Persist and restore Magit buffers"
+             save-magit-buffers)
+            (const
+             :tag "Make the current session name appear in the mode-line"
+             show-name-in-mode-line)
+            (const
+             :tag "Display the session name in the tab bar"
+             show-name-in-tab-bar)
+            (const
+             :tag "Create an empty session setup"
+             create-minimal-sessions)
+            (const
+             :tag "Auto-save only main session, manually save others"
+             auto-save-main-session)
+            (const
+             :tag "Kill all buffers/frames/windows before loading a session"
+             kill-all-before-loading-session)
+            (const
+             :tag "Make easysession-reset save all buffers without \
+prompting before killing everything"
+             auto-save-all-buffer-before-loading-session)
+            (const
+             :tag "Kill all buffers when changing a session (see note #2)"
+             kill-all-buffers-when-changing-session)
+            (const
+             :tag "Save/restore only visible buffers (see note #3)"
+             save-visible-buffers)
+            (const
+             :tag "Exclude restoring remote Tramp-accessed buffers"
+             dont-restore-remote-tramp-buffers)
+            (cons
+             :tag "Always save/restore these buffers"
+             (const :tag "" :format "" included-buffer-names)
+             (repeat
+              :tag "Include"
+              :inline t
+              (string :tag "buffer name")))
+            (const
+             :tag "Open saved session file in read-only mode"
+             edit-saved-session-file-in-RO)
+            (const
+             :tag
+             "Save session file in human-readable format"
+             save-in-human-readable-format)
+            (const
+             :tag "Disable new session confirmation prompt"
+             no-prompt-on-new-session)
+            ;;
+            (const
+             :tag "Ensure restored buffers are properly fontified"
+             force-fontification)
+            ;;
+            (const
+             :tag "Suppress EasySession messages"
+             force-quietness)
+
+            ;; The following block uses cons cell to put an identifier
+            ;; constant symbol that acts as a data structure purpose
+            ;; identifier.  The code prevents these helper elements from
+            ;; rendering on the UI by forcing empty tag strings and use
+            ;; :format strings that suppress output:
+            ;; - :format "%t\n%v" : Prints the main tag, a newline, and
+            ;;                      shifts the values directly up.
+            ;; - :format ""       : Completely suppresses this element from
+            ;;                      rendering text or lines.
+            ;; - :format "%v"     : Suppresses the set's wrapper
+            ;;                      text/newlines, making checkboxes line
+            ;;                      up under the main header
+            ;; The ':format "%v"' is not used in the repeat because it
+            ;; prevents seeing the widget when there's nothing in the list
+            ;; of other global variables.  Instead ':inline t' is specified
+            ;; to prevent the empty line.
+            (cons
+             :tag "Persist and restore global variables:"
+             :format "%t\n%v"                      ;
+             (const :tag "" :format "" saved-global-variables) ;
+             (set :tag ""
+                  :format "%v"
+                  (const :tag "kill-ring" kill-ring)
+                  (const :tag "mark-ring" mark-ring)
+                  (const :tag "search-ring" search-ring)
+                  (const :tag "regexp-search-ring" regexp-search-ring)
+                  (cons
+                   :tag "Other variables:"
+                   :format "%t\n%v"
+                   (const :tag "" :format "" user-defined-globals)
+                   (repeat
+                    :tag "Add/delete"
+                    :inline t
+                    (symbol :tag "Variable name")))))))))
+
+(defcustom pel-easysession-autoload nil
+  "Activate easysession auto-loading, controlled by PEL_SESSION env. var.
+
+1 - Session auto-loading is controlled by the presence and value of the
+    PEL_SESSION environment variable when that option is active.  The value
+    of the environment variable controls the name of the session loaded.
+    The possible values are:
+
+    - .    : When the value is a period, the name of the session is
+             extracted from the PEL easysession catalog file (identified
+             by the value of the `pel-easysession-catalog-filename'
+             user-option).  This allows creating a session specific to
+             the directory from where Emacs is launched.  With PEL you
+             can use the e or ge command with the -s option to force
+             this auto-loading.
+             When this is used and activated, PEL extracts the name of the
+             easysession session identified in the PEL session catalog file
+             and if it finds and exists in the easysession directory
+             it then autoloads the identified session.
+
+    - name : Any other name corresponds to the session name identified in the
+             easysession directory.  PEL autoloads that session if it is
+             identified in the easysession directory.
+
+    Remember that PEL supports independent customization for terminal-based
+    and Graphics-based Emacs.  You can use this here to activate automatic
+    session loading for terminal-based Emacs independently from
+    Graphics-Emacs even when both are launched from a shell with the
+    PEL `e' and `ge' shell commands and have access to the PEL_SESSION
+    environment variable."
+  :group 'pel-pkg-for-session
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-easysession-catalog-filename "pel-easysession-catalog.txt"
+  "Name of the PEL easysession auto-session catalog file.
+
+This is the file that holds the list of sessions associated with
+directory names and use by the automatic session loading based on
+current directory.  That file is stored in the `user-emacs-directory'
+and contains a set of lines that have a strict format.
+
+Each line has 3 elements:
+
+- An absolute directory path.  Must be fully expanded (~ cannot be used).
+- A separator string (without quotes): \"\t;--pel--\t;\"
+- A string: the name of the corresponding easysession session name.
+
+PEL maintains this file and places the line corresponding to the most recently
+used session at the top of the file and deletes duplicate entries related to
+the directory identified by the first line.."
+  :group 'pel-pkg-for-session
+  :type 'directory)
+
+;; Mutual exclusive entry (saved in case I need it later)
+;; (radio-button-choice
+;;  :tag "Action done when loading a new session"
+;;  :format "%t:\n%v"
+;;  (const :tag "None" nil)
+;;  (const
+;;   :tag "Kill buffers/frames/windows before loading a session"
+;;   kill-all-before-loading-session)
+;;  (const
+;;   :tag "Auto-save all buffers when loading a session"
+;;   auto-save-all-buffer-before-loading-session))
+
+
 (defcustom pel-use-desktop nil
   "Control whether desktop feature is used for session management.
 
@@ -14194,7 +14405,11 @@ The value can be:
                                      and activate desktop auto-save mode.
 - `with-desktop+':               Use desktop and the desktop+ external
                                  package.  The best option for desktop
-                                 driven session manager."
+                                 driven session manager.
+
+Note that the easysession package is more powerful and is a better choice.
+PEL continues to support the desktop packages but you might want to give
+easysession a try.  You can use both if you wish."
   :group 'pel-pkg-for-session
   :type '(choice
           (const :tag "Not used" nil)
