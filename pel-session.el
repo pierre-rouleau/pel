@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-06 17:03:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-06 17:38:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -183,12 +183,14 @@ easysession is loaded."
      ;;
      ;; Display the session name in the tab bar
      ((eq elm 'show-name-in-tab-bar)
-      (setq tab-bar-format '(tab-bar-format-tabs
-                             tab-bar-format-align-right
-                             tab-bar-format-global))
-      (add-to-list 'global-mode-string
-                   '(:eval (easysession-mode-line-session-name-format))
-                   'append))
+      ;; This is only available in some Emacs versions
+      (when (boundp 'tab-bar-format)
+        (setq tab-bar-format '(tab-bar-format-tabs
+                               tab-bar-format-align-right
+                               tab-bar-format-global))
+        (add-to-list 'global-mode-string
+                     '(:eval (easysession-mode-line-session-name-format))
+                     'append)))
      ;;
      ;; Create an empty session setup
      ((eq elm 'create-minimal-sessions)
