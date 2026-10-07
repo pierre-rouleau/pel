@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, December  7 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-06 21:42:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-06 22:43:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -43,9 +43,8 @@
                (server-running-p))
     (user-error
      "This Emacs session is not using an Emacs Server! Nothing done"))
-  (save-some-buffers)
-  (when
-      (y-or-n-p "Shut Emacs Server down and close all its clients?")
+  (when (y-or-n-p "Shut Emacs Server down and close all its clients?")
+    (save-some-buffers)
     (when (and pel-use-easysession
                (daemonp)
                (fboundp 'easysession-save-session-and-close-frames))

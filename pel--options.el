@@ -14214,7 +14214,7 @@ restored and other mechanisms of easysession
                    (save-current-session-when-switching
                     exclude-current-session-when-switching))
            (cons
-            :tag "Automatic session save interval"
+            :tag "Automatic session save interval (0 := prevent time-save)"
             (const :tag "" :format "" save-interval)
             (integer
              :tag "-> interval (in minutes)"

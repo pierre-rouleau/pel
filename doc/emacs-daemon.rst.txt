@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-06 10:10:33 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-06 22:21:42 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -73,11 +73,11 @@ The e_ command:
       • If '-s' is specified with no session name but the PEL_SESSION
         environment variable has a non-empty value, the session with that name
         is auto-loaded.  The, special name '.' (without quotes) identifies a
-        directory-specific session name extracted from the PEl easyssesion
+        directory-specific session name extracted from the PEL easyssesion
         catalog.
       • Any word (except '--') directly following '-s', '--session-name=' or the
         'PEL_SESSION=' identifies the session name and overrides the
-        session name that could be previously identified by the current value of
+        session name that could be identified by the current value of
         the PEL_SESSION environment variable.
 
     The -s and --session-name options force the automatic loading of a session
@@ -178,11 +178,11 @@ holding that Emacs executable file.
       • If '-s' is specified with no session name but the PEL_SESSION
         environment variable has a non-empty value, the session with that name
         is auto-loaded.  The, special name '.' (without quotes) identifies a
-        directory-specific session name extracted from the PEl easyssesion
+        directory-specific session name extracted from the PEL easyssesion
         catalog.
       • Any word (except '--') directly following '-s', '--session-name=' or the
         'PEL_SESSION=' identifies the session name and overrides the
-        session name that could be previously identified by the current value of
+        session name that could be identified by the current value of
         the PEL_SESSION environment variable.
 
     The -s and --session-name options force the automatic loading of a session
@@ -200,7 +200,7 @@ holding that Emacs executable file.
         • That file is present in the ~/.emacs.d/easysession directory.
 
   NOTES
-      • /Users/roup/my/bin launches Emacs inside an independent OS window, but that process
+      • ge launches Emacs inside an independent OS window, but that process
         inherits the current directory and the complete environment of the
         current shell.  This includes the PATH, LIBPATH, MANPATH, and several
         other useful environment variables.  This can be useful in many
@@ -208,20 +208,9 @@ holding that Emacs executable file.
         different shells, each ones having different specialized environments,
         and potentially an associated session.
       • Control is returned right away to the terminal shell.
-      • On macOS the graphics version of Emacs is taken from one of the
-        following locations:
-         • If PEL_GE_DIR environment variable is defined, it must identify
-           the path of an emacs executable file that launches in graphics
-           mode by default.  If the environment variable is set and
-           ge/emacs is valid then that is used.
-           Use this, for example,  if you have built Emacs yourself
-           and want to use this version of Emacs without activating it
-           by default in your shells or in the system.
-         • If /Applications/Emacs.app/Contents/MacOS exists and holds
-           an appropriate Emacs executable file, that is used.
-         • Remember that PEL supports the dual-customization mode where
-           customization of Emacs in terminal mode is independent that
-           the customization of Emacs in graphics mode.
+      • Remember that PEL supports the dual-customization mode where
+        customization of Emacs in terminal mode is independent that the
+        customization of Emacs in graphics mode.
 
    DIAGNOSTICS
     The script is silent by default.  To force it to display error messages to
@@ -237,11 +226,23 @@ holding that Emacs executable file.
     • USRHOME : shell environment control with several commands.
                 At https://github.com/pierre-rouleau/usrhome
 
+  OS NOTES
+      • On macOS the graphics version of Emacs is taken from one of the
+        following locations:
+        • If PEL_GE_DIR environment variable is defined, it must identify
+          the path of an emacs executable file that launches in graphics
+          mode by default.  If the environment variable is set and
+          $PEL_GE_DIR/emacs is valid then that is used.
+          Currently this is: ~/my/bin/emacs
+          Use this, for example, if you have built Emacs yourself
+          and want to use this version of Emacs without activating it
+          by default in your shells or in the system.
+        • If /Applications/Emacs.app/Contents/MacOS exists and holds
+          an appropriate Emacs executable file, that is used.
 
    BUGS: On macOS Sonoma, the started Emacs application window is
          buried under the window of the current terminal shell.
          This problem does not occur on macOS Mojave.
-
 
 Start Emacs daemons and their clients with: ec
 ----------------------------------------------

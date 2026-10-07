@@ -4,7 +4,7 @@
 # Purpose   : Start Emacs in terminal mode.  Support multiple environments
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-06 18:40:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-06 22:58:18 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -142,6 +142,7 @@ fi
 
 any_diag=no
 diag_printf() {
+    any_diag=yes
     case "$PEL_DIAG" in
         1)
             # Forward the format string and all arguments safely
@@ -150,7 +151,6 @@ diag_printf() {
             format_str="$1"
             shift
             printf "$format_str" "$@"
-            any_diag=yes
             ;;
     esac
 }
@@ -245,14 +245,12 @@ if [ "$with_s_flag" -eq 1 ]; then
                 # Check if the catalog file exists.  Without it PEL won't be able
                 # to open the session.
                 if [ -f "$EASYSESSION_SESSION_CATALOG" ]; then
-                    PEL_SESSION="$session_name"
-                    export PEL_SESSION
+                    new_pel_session="$session_name"
                 else
                     diag_printf "No PEL session catalog file, %s, exist\n" "$EASYSESSION_SESSION_CATALOG"
                 fi
             elif [ -f "$EASYSESSION_SESSION_DIR/$session_name" ]; then
-                    PEL_SESSION="$session_name"
-                    export PEL_SESSION
+                    new_pel_session="$session_name"
             else
                 diag_printf "No session file %s present in %s\n" "$session_name" "$EASYSESSION_SESSION_DIR"
             fi
@@ -270,12 +268,23 @@ if [ "$with_s_flag" -eq 1 ]; then
         else
             printf "ERROR: Can't proceed with auto loading of session '%s'!\n" "$session_name"
         fi
-        printf "       Fix the issue, use %s without the -s option or disable PEL_DIAG.\n" "$pgm_name"
+        printf "       Fix the issue or use %s without the -s option.\n" "$pgm_name"
+        if [ -z "$PEL_DIAG" ]; then
+            printf "       Set PEL_DIAG environment variable to 1 to get more information on the error.\n"
+        fi
         exit 1
+    else
+        # No error detected.
+        # The session name stored in new_pel_session must be exported
+        if [ -n "$new_pel_session" ]; then
+            PEL_SESSION="$new_pel_session"
+            export PEL_SESSION
+            unset -v new_pel-session
+        fi
     fi
 else
-    # When e is invoked without the -s or --session-name option, ensure that PEL_SESSION
-    # is empty to prevent Emacs from auto-loading an easysession.
+    # When e is invoked without the -s or --session-name option, ensure that
+    # PEL_SESSION is empty to prevent Emacs from auto-loading an easysession.
     if [ -n "$PEL_SESSION" ]; then
         unset -v PEL_SESSION
     fi

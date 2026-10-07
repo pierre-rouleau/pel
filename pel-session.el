@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-06 22:07:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-06 22:45:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -158,7 +158,8 @@ easysession is loaded."
   (let ((elm (car-safe cfg)))
     (when (eq (car elm) 'save-interval)
       (setq elm (cdr elm))
-      (when (integerp  elm)
+      (when (and (integerp  elm)
+                 (> elm 0))
         (setq easysession-save-interval (* 60 elm)))))
   ;; Always activate automatic session save
   (easysession-save-mode 1)
