@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent, detached, GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-06 09:42:17 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-06 18:43:21 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -21,7 +21,7 @@
 #
 
 pgm_name="$(basename "$0")"
-EMACS_DIR=$(emacs -Q --batch --eval="(princ (directory-file-name user-emacs-directory))")
+EMACS_DIR=$(emacs -Q --batch --eval="(princ (expand-file-name (directory-file-name user-emacs-directory)))")
 EASYSESSION_SESSION_DIR="$EMACS_DIR/easysession"
 EASYSESSION_SESSION_CATALOG="$EMACS_DIR/pel-easysession-catalog.txt"
 
@@ -67,11 +67,11 @@ print_usage()
     • If '-s' is specified with no session name but the PEL_SESSION
       environment variable has a non-empty value, the session with that name
       is auto-loaded.  The, special name '.' (without quotes) identifies a
-      directory-specific session name extracted from the PEl easyssesion
+      directory-specific session name extracted from the PEL easyssesion
       catalog.
     • Any word (except '--') directly following '-s', '--session-name=' or the
       'PEL_SESSION=' identifies the session name and overrides the
-      session name that could be previously identified by the current value of
+      session name that could be identified by the current value of
       the PEL_SESSION environment variable.
 
   The -s and --session-name options force the automatic loading of a session
@@ -97,20 +97,9 @@ NOTES
       different shells, each ones having different specialized environments,
       and potentially an associated session.
     • Control is returned right away to the terminal shell.
-    • On macOS the graphics version of Emacs is taken from one of the
-      following locations:
-       • If PEL_GE_DIR environment variable is defined, it must identify
-         the path of an emacs executable file that launches in graphics
-         mode by default.  If the environment variable is set and
-         %s/emacs is valid then that is used.
-         Use this, for example,  if you have built Emacs yourself
-         and want to use this version of Emacs without activating it
-         by default in your shells or in the system.
-       • If /Applications/Emacs.app/Contents/MacOS exists and holds
-         an appropriate Emacs executable file, that is used.
-       • Remember that PEL supports the dual-customization mode where
-         customization of Emacs in terminal mode is independent that
-         the customization of Emacs in graphics mode.
+    • Remember that PEL supports the dual-customization mode where
+      customization of Emacs in terminal mode is independent that the
+      customization of Emacs in graphics mode.
 
  DIAGNOSTICS
   The script is silent by default.  To force it to display error messages to
@@ -129,15 +118,27 @@ NOTES
 " "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" \
            "$EASYSESSION_SESSION_CATALOG" "$EASYSESSION_SESSION_DIR" \
            "$EASYSESSION_SESSION_CATALOG" "$EASYSESSION_SESSION_DIR" \
-           "$PEL_GE_DIR" \
            "$pgm_name"
     if [ "$(uname)" = "Darwin" ]; then
         printf -- "\
+OS NOTES
+    • On macOS the graphics version of Emacs is taken from one of the
+      following locations:
+      • If PEL_GE_DIR environment variable is defined, it must identify
+        the path of an emacs executable file that launches in graphics
+        mode by default.  If the environment variable is set and
+        \$PEL_GE_DIR/emacs is valid then that is used.
+        Currently this is: %s/emacs
+        Use this, for example, if you have built Emacs yourself
+        and want to use this version of Emacs without activating it
+        by default in your shells or in the system.
+      • If /Applications/Emacs.app/Contents/MacOS exists and holds
+        an appropriate Emacs executable file, that is used.
 
  BUGS: On macOS Sonoma, the started Emacs application window is
        buried under the window of the current terminal shell.
        This problem does not occur on macOS Mojave.
-"
+" "$PEL_GE_DIR"
     fi
 
 
@@ -197,7 +198,6 @@ while [ $# -gt 0 ]; do
                 case "$2" in
                     -*)
                         # It's another flag, so -s is alone
-                        shift 1
                         ;;
                     *)
                         # It's the value for -s
@@ -210,6 +210,7 @@ while [ $# -gt 0 ]; do
             ;;
 
         --session=*)
+            with_s_flag=1
             session_name="${1#*=}"
             shift 1
             ;;
@@ -250,14 +251,25 @@ if [ "$with_s_flag" -eq 1 ]; then
                 break
             fi
         done
+        # The easysession directory exists and holds at least one file.
+        # If the requested session is "." then the PEL easysession catalog
+        # file should also exist.
+        # If a named session is requested check that it exists.
         if [ "$dir_has_file" -eq 1 ]; then
-            # Check if the catalog file exists.  Without it PEL won't be able
-            # to open the session.
-            if [ -f "$EASYSESSION_SESSION_CATALOG" ]; then
-                PEL_SESSION="$session_name"
-                export PEL_SESSION_AUTO
+            if [ "$session_name" = "." ]; then
+                # Check if the catalog file exists.  Without it PEL won't be able
+                # to open the session.
+                if [ -f "$EASYSESSION_SESSION_CATALOG" ]; then
+                    PEL_SESSION="$session_name"
+                    export PEL_SESSION
+                else
+                    diag_printf "No PEL session catalog file, %s, exist\n" "$EASYSESSION_SESSION_CATALOG"
+                fi
+            elif [ -f "$EASYSESSION_SESSION_DIR/$session_name" ]; then
+                    PEL_SESSION="$session_name"
+                    export PEL_SESSION
             else
-                diag_printf "No PEL session catalog file, %s, exist\n" "$EASYSESSION_SESSION_CATALOG"
+                diag_printf "No session file %s present in %s\n" "$session_name" "$EASYSESSION_SESSION_DIR"
             fi
         else
             diag_printf "No session file present in %s\n" "$EASYSESSION_SESSION_DIR"
@@ -268,8 +280,12 @@ if [ "$with_s_flag" -eq 1 ]; then
 
     # If there were any error detected, always print error info and exit.
     if [ "$any_diag" = "yes" ]; then
-        printf "ERROR: Can't proceed with auto restoration of dir-specific session!\n"
-        printf "Fix the issue, use %s without the -s option or disable PEL_DIAG.\n" "$pgm_name"
+        if [ "$session_name" = "." ]; then
+            printf "ERROR: Can't proceed with auto loading of dir-specific session!\n"
+        else
+            printf "ERROR: Can't proceed with auto loading of session '%s'!\n" "$session_name"
+        fi
+        printf "       Fix the issue, use %s without the -s option or disable PEL_DIAG.\n" "$pgm_name"
         exit 1
     fi
 else

@@ -11303,16 +11303,7 @@ See `flyspell-auto-correct-previous-word' for more info."
         ;; The first element of the set is the delay time, pass remainder of
         ;; the list.
         (pel-easysession-config pel-use-easysession)
-        (easysession-setup))
-      ;;
-      ;; Now schedule loading of easysession with time specified by
-      ;; the first element of pel-use-easysession list.
-      ;; Handle invalid data in pel-use-easysession; default to 10 seconds.
-      ;; (let ((wait-time (or (car-safe pel-use-easysession) 10)))
-      ;;   (unless (integerp wait-time)
-      ;;     (setq wait-time 10))
-      ;;   (run-at-time wait-time nil #'require 'easysession))
-      )))
+        (easysession-setup)))))
 
 ;; -----------------------------------------------------------------------------
 ;;* Process & Shells Execution - <f11> z

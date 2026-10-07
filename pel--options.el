@@ -14210,11 +14210,15 @@ restored and other mechanisms of easysession
           (const :tag "Not used" nil)
           (list
            :tag "Use with specified extensions"
-           :value (10 (save-current-session-when-switching
-                       exclude-current-session-when-switching))
-           (integer
-            :tag "Automatic session save interval (in minutes)"
-            :value 10)
+           :value ((save-interval . 10)
+                   (save-current-session-when-switching
+                    exclude-current-session-when-switching))
+           (cons
+            :tag "Automatic session save interval"
+            (const :tag "" :format "" save-interval)
+            (integer
+             :tag "-> interval (in minutes)"
+             :value 10))
            (set
             :tag "Extensions"
             (const
@@ -14301,7 +14305,7 @@ prompting before killing everything"
             ;; to prevent the empty line.
             (cons
              :tag "Persist and restore global variables:"
-             :format "%t\n%v"                      ;
+             :format "%t\n%v"                                  ;
              (const :tag "" :format "" saved-global-variables) ;
              (set :tag ""
                   :format "%v"
@@ -14370,20 +14374,7 @@ PEL maintains this file and places the line corresponding to the most recently
 used session at the top of the file and deletes duplicate entries related to
 the directory identified by the first line.."
   :group 'pel-pkg-for-session
-  :type 'directory)
-
-;; Mutual exclusive entry (saved in case I need it later)
-;; (radio-button-choice
-;;  :tag "Action done when loading a new session"
-;;  :format "%t:\n%v"
-;;  (const :tag "None" nil)
-;;  (const
-;;   :tag "Kill buffers/frames/windows before loading a session"
-;;   kill-all-before-loading-session)
-;;  (const
-;;   :tag "Auto-save all buffers when loading a session"
-;;   auto-save-all-buffer-before-loading-session))
-
+  :type 'file)
 
 (defcustom pel-use-desktop nil
   "Control whether desktop feature is used for session management.

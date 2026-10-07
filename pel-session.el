@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-06 17:38:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-06 22:07:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -62,6 +62,7 @@
 (declare-function easysession-switch-to                      "easysession")
 (declare-function easysession-switch-to-and-restore-geometry "easysession")
 (declare-function easysession-save-mode                      "easysession")
+(declare-function easysession-reset                          "easysession")
 
 (defvar easysession-mode-line-misc-info)
 (defvar easysession-new-session-hook)
@@ -151,8 +152,14 @@ easysession is loaded."
         pel--easysession-filter-remote-buffers    nil
         easysession-buffer-list-function          #'buffer-list)
 
-  ;; The very first element is the save interval in minutes
-  (setq easysession-save-interval (* 60 (car-safe cfg)))
+  ;; The very first element is the ('save-interval . value)
+  ;; where the car is a symbol to identify the purpose of the value
+  ;; and the cdr is the interval integer in minutes.
+  (let ((elm (car-safe cfg)))
+    (when (eq (car elm) 'save-interval)
+      (setq elm (cdr elm))
+      (when (integerp  elm)
+        (setq easysession-save-interval (* 60 elm)))))
   ;; Always activate automatic session save
   (easysession-save-mode 1)
   ;; The remainder of the list is a set of options.
@@ -254,16 +261,18 @@ easysession is loaded."
      ;;
      ;; Add global variables
      ((and (listp elm) (eq (car elm) 'saved-global-variables))
-      ;; Iterate in the provided list
+      ;; Iterate in the provided list, adding the symbols to the
+      ;; savehist-additional-variables; the order of storage inside that list
+      ;; is not important.
       (dolist (em (cdr elm))
         (if (symbolp em)
             ;; It's one of the pre-defined variable symbols
-            (push savehist-additional-variables em)
+            (push em savehist-additional-variables)
           ;; Is it a list of user-supplied variable symbols?
           (if (and (listp em) (eq (car em) 'user-defined-globals))
               (dolist (e (cdr em))
                 (if (symbolp e)
-                    (push savehist-additional-variables em)
+                    (push e savehist-additional-variables)
                   (display-warning 'pel-session
                                    (format "\
 Error in pel-use-easysession: Invalid global variable entry: %S" e)
@@ -469,6 +478,12 @@ and geometry does not apply; the function does not prompt."
       (call-interactively #'easysession-switch-to-and-restore-geometry)
     (call-interactively  #'easysession-switch-to)))
 
+(defun pel-easysession-reset ()
+  "Prompt before resetting session and closing all buffers."
+  (interactive)
+  (when (y-or-n-p "Reset the session and close all buffers/window/tab/frames?")
+    (easysession-reset)))
+
 ;; ---------------------------------------------------------------------------
 ;; desktop support
 ;; ===============
@@ -488,7 +503,7 @@ and geometry does not apply; the function does not prompt."
       ;; Using desktop+ commands
       (progn
         (require 'desktop+)
-        (if (yes-or-no-p "Create directory-specific desktop")
+        (if (y-or-n-p "Create directory-specific desktop")
             (desktop+-create-auto)
           (call-interactively #'desktop+-create)))
     ;; Using desktop command
@@ -501,7 +516,7 @@ and geometry does not apply; the function does not prompt."
       ;; Using desktop+ commands
       (progn
         (require 'desktop+)
-        (if (yes-or-no-p "Load directory-specific desktop")
+        (if (y-or-n-p "Load directory-specific desktop")
             (desktop+-load-auto)
           (call-interactively #'desktop+-load)))
     ;; Using desktop command
@@ -524,7 +539,7 @@ Check the `pel-use-desktop' and `pel-use-easysession' user-options.
 Prompt if both are active."
   (cond
    ((and pel-use-easysession pel-use-desktop)
-    (yes-or-no-p "Use easysession"))
+    (y-or-n-p "Use easysession"))
    (pel-use-easysession t)
    (t nil)))
 

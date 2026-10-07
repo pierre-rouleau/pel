@@ -994,11 +994,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-session-load
     pel-session-save
     pel-session-show
-
     pel-desktop-load
     pel-desktop-save
-
     pel-easysession-toggle-save-on-switch
+    pel-easysession-toggle-save-on-exit
     pel-easysession-save
     pel-easysession-load
     pel-easysession-reset)

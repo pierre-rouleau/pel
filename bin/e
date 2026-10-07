@@ -4,7 +4,7 @@
 # Purpose   : Start Emacs in terminal mode.  Support multiple environments
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-06 09:42:24 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-06 18:40:43 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -34,7 +34,7 @@
 #
 
 pgm_name="$(basename "$0")"
-EMACS_DIR=$(emacs -Q --batch --eval="(princ (directory-file-name user-emacs-directory))")
+EMACS_DIR=$(emacs -Q --batch --eval="(princ (expand-file-name (directory-file-name user-emacs-directory)))")
 EASYSESSION_SESSION_DIR="$EMACS_DIR/easysession"
 EASYSESSION_SESSION_CATALOG="$EMACS_DIR/pel-easysession-catalog.txt"
 
@@ -79,11 +79,11 @@ print_usage()
     • If '-s' is specified with no session name but the PEL_SESSION
       environment variable has a non-empty value, the session with that name
       is auto-loaded.  The, special name '.' (without quotes) identifies a
-      directory-specific session name extracted from the PEl easyssesion
+      directory-specific session name extracted from the PEL easyssesion
       catalog.
     • Any word (except '--') directly following '-s', '--session-name=' or the
       'PEL_SESSION=' identifies the session name and overrides the
-      session name that could be previously identified by the current value of
+      session name that could be identified by the current value of
       the PEL_SESSION environment variable.
 
   The -s and --session-name options force the automatic loading of a session
@@ -182,7 +182,6 @@ while [ $# -gt 0 ]; do
                 case "$2" in
                     -*)
                         # It's another flag, so -s is alone
-                        shift 1
                         ;;
                     *)
                         # It's the value for -s
@@ -195,6 +194,7 @@ while [ $# -gt 0 ]; do
             ;;
 
         --session=*)
+            with_s_flag=1
             session_name="${1#*=}"
             shift 1
             ;;
@@ -237,13 +237,24 @@ if [ "$with_s_flag" -eq 1 ]; then
             fi
         done
         if [ "$dir_has_file" -eq 1 ]; then
-            # Check if the catalog file exists.  Without it PEL won't be able
-            # to open the session.
-            if [ -f "$EASYSESSION_SESSION_CATALOG" ]; then
-                PEL_SESSION="$session_name"
-                export PEL_SESSION
+            # The easysession directory exists and holds at least one file.
+            # If the requested session is "." then the PEL easysession catalog
+            # file should also exist.
+            # If a named session is requested check that it exists.
+            if [ "$session_name" = "." ]; then
+                # Check if the catalog file exists.  Without it PEL won't be able
+                # to open the session.
+                if [ -f "$EASYSESSION_SESSION_CATALOG" ]; then
+                    PEL_SESSION="$session_name"
+                    export PEL_SESSION
+                else
+                    diag_printf "No PEL session catalog file, %s, exist\n" "$EASYSESSION_SESSION_CATALOG"
+                fi
+            elif [ -f "$EASYSESSION_SESSION_DIR/$session_name" ]; then
+                    PEL_SESSION="$session_name"
+                    export PEL_SESSION
             else
-                diag_printf "No PEL session catalog file, %s, exist\n" "$EASYSESSION_SESSION_CATALOG"
+                diag_printf "No session file %s present in %s\n" "$session_name" "$EASYSESSION_SESSION_DIR"
             fi
         else
             diag_printf "No session file present in %s\n" "$EASYSESSION_SESSION_DIR"
@@ -254,9 +265,12 @@ if [ "$with_s_flag" -eq 1 ]; then
 
     # If there were any error detected, always print error info and exit.
     if [ "$any_diag" = "yes" ]; then
-        printf "ERROR: Can't proceed with auto restoration of dir-specific session!\n"
-        printf
-        "Fix the issue, use %s without the -s option or disable PEL_DIAG.\n" "$pgm_name"
+        if [ "$session_name" = "." ]; then
+            printf "ERROR: Can't proceed with auto loading of dir-specific session!\n"
+        else
+            printf "ERROR: Can't proceed with auto loading of session '%s'!\n" "$session_name"
+        fi
+        printf "       Fix the issue, use %s without the -s option or disable PEL_DIAG.\n" "$pgm_name"
         exit 1
     fi
 else
