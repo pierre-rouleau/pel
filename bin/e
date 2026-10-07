@@ -4,7 +4,7 @@
 # Purpose   : Start Emacs in terminal mode.  Support multiple environments
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-06 22:58:18 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-06 23:02:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -279,7 +279,7 @@ if [ "$with_s_flag" -eq 1 ]; then
         if [ -n "$new_pel_session" ]; then
             PEL_SESSION="$new_pel_session"
             export PEL_SESSION
-            unset -v new_pel-session
+            unset -v new_pel_session
         fi
     fi
 else
