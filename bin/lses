@@ -1,0 +1,134 @@
+#!/bin/sh
+# SH FILE: lses
+#
+# Purpose   : List Emacs Server/Sockets.
+# Created   : Wednesday, October  7 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-10-07 16:29:42 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# List currently running Emacs daemon server/sockets.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - POSIX compliant shell.
+# - Runs on Linux and macOS
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+pgm_name="$(basename "$0")"
+
+print_usage()
+{
+    printf -- "
+%s -- List currently running Emacs daemon server/sockets
+
+ Usage: %s -h | --help
+
+  • Print this help information.
+
+ Usage: %s
+
+  • Print names and path of currently running Emacs daemon sockets
+    on stdout.
+    exit code of 2 if none found, 0 if some are detected.
+
+
+LIMITATION:  Supports Linux and macOS.
+             No explicit check for Windows or other OS.
+
+" "$pgm_name" "$pgm_name" "$pgm_name"
+}
+
+# --
+# Handle help request
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+
+USER_ID=$(id -u)
+
+# 1. Standardize the Base Temporary Directory (Strip trailing slash)
+BASE_TMP="${TMPDIR:-/tmp}"
+BASE_TMP="${BASE_TMP%/}"
+TMP_DIR="${BASE_TMP}/emacs${USER_ID}"
+
+# 2. Standardize XDG Directory (Strip trailing slash)
+XDG_DIR="${XDG_RUNTIME_DIR%/}"
+if [ -n "$XDG_DIR" ]; then
+    XDG_DIR="${XDG_DIR}/emacs"
+fi
+
+
+# 3. macOS Specific Fallback Lookup (Strip trailing slash)
+DARWIN_DIR=""
+if command -v getconf >/dev/null 2>&1; then
+    DARWIN_TEMP=$(getconf DARWIN_USER_TEMP_DIR 2>/dev/null)
+    if [ -n "$DARWIN_TEMP" ]; then
+        DARWIN_TEMP="${DARWIN_TEMP%/}"
+        DARWIN_DIR="${DARWIN_TEMP}/emacs${USER_ID}"
+    fi
+fi
+
+# echo "Checking for active Emacs daemons..."
+#
+# echo "USER_ID    : $USER_ID"
+# echo "TMPDIR     : $TMPDIR"
+# echo "XDG_DIR    : $XDG_DIR"
+# echo "TMP_DIR    : $TMP_DIR"
+# echo "DARWIN_DIR : $DARWIN_DIR"
+
+found_daemon=0
+processed_dirs=" "  # Initialize with spaces to act as boundary separators
+
+# Loop through potential paths
+for dir in "$XDG_DIR" "$TMP_DIR" "$DARWIN_DIR"; do
+    # Skip empty variables or non-existent directories
+    [ -z "$dir" ] && continue
+    [ ! -d "$dir" ] && continue
+    [ ! -r "$dir" ] && continue
+
+    # Skip already searched directory.
+    # The case pattern matching avoids partial name
+    # matching (e.g., matching /tmp inside /tmp2)
+    case "$processed_dirs" in
+        *" $dir "*)
+            # Directory was already searched, skip it safely
+            continue
+            ;;
+    esac
+    # Remember searched directory
+    processed_dirs="${processed_dirs}${dir} "
+
+    # POSIX-compliant search for sockets exactly 1 level deep
+    sockets=$(find "$dir" -type s ! -path "$dir" -prune 2>/dev/null)
+
+    if [ -n "$sockets" ]; then
+        for socket_path in $sockets; do
+            socket_name=$(basename "$socket_path")
+            printf -- "-> Daemon Running: [Name: %s] [Path: %s]\n" "$socket_name" "$socket_path"
+            found_daemon=1
+        done
+    fi
+done
+
+if [ "$found_daemon" -eq 0 ]; then
+    printf -- "No running Emacs daemons detected.\n"
+    exit 2
+fi
+
+# ----------------------------------------------------------------------------
