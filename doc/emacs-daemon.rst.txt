@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-08-30 15:43:20 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-06 22:21:42 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -21,83 +21,308 @@ Instead of using the long explicit commands listed in the sections below, you
 can use the following short commands.  These support both macOS and Linux.
 
 
-= =========================================== ================================================
-. Shell Command                               Description
-= =========================================== ================================================
-. e_\ ``[OPTIONS..] [FILE..]``                Start Emacs in text mode.
+Start Emacs in terminal mode with: e
+------------------------------------
 
-                                              - A stand-alone process.
-                                              - A command that you execute from a shell.
-                                              - Supports emacs options and file arguments.
-                                                See emacs man page.
-                                              - Emacs has access to the shell environment
-                                                (``PATH``, ``LIBPATH``, ``MANPATH``, etc...) which
-                                                can be useful in many situations.  You can
-                                                even launch different Emacs processes from
-                                                different shells, each ones having different
-                                                specialized environments.
+The e_ command:
 
-. ge_ :                                       Start Emacs in graphics mode.
+- provides help for itself and Emacs,
+- can start Emacs to edit files specified on the command line
+- can also instruct Emacs to load an `easysession.el`_ named session
+  identified by the command line or from the value of the ``PEL_SESSION``
+  environment variable,
+- the Emacs process gets access to the environment of the current shell.
 
-  - ``ge [-h | --help]``                      - A stand-alone process.
-  - ``ge [OPTIONS..] [FILE..]``               - A command that you execute from a shell.
-                                              - Supports emacs options and file arguments.
-                                                See emacs man page.
-                                              - Emacs has access to the shell environment
-                                                (``PATH``, ``LIBPATH``, ``MANPATH``, etc...) which
-                                                can be useful in many situations.  You can
-                                                even launch different Emacs processes from
-                                                different shells, each ones having different
-                                                specialized environments.
-                                              - With  PEL, it can use a different
-                                                customization file than the text mode Emacs.
+**Usage**::
 
-. ec_ :                                       Start an Emacs client for an Emacs daemon.
+  e -- Terminal-based Emacs launcher.
 
-  - ``ec [-h|--help]``                        - Use ``ec`` to start an Emacs client to the
-  - ``ec [-g|gui] [--name=NAME] [FILE...]``     default Emacs daemon, starting the daemon
-  - ``ec --start-daemon [--name=NAME]``         if it is not already running.  The client
-  - ``ec --check-daemon [--name=NAME]``         is a terminal based client by default.
-                                              - To start a graphical (GUI) Emacs client
-                                                instead, use ``ec -g`` or ``ec --gui``.
-                                                This also starts the Emacs daemon if it is not
-                                                already running.
-                                              - By default the ``ec`` command launches and
-                                                connects to the default socket name.
-                                                Use the ``--name`` option to specify another
-                                                name (for both the daemon and its clients).
-                                                For example, use ``ec --name=PEL`` to start
-                                                and connect to a Emacs daemon that uses the
-                                                socket named ``PEL``.
+   Usage: e -h | --help
 
-                                                - With this option it is possible to create
-                                                  several independent *groups* of Emacs
-                                                  daemon/clients.
+    • Print this help information.
 
-                                              - Use ``ec --start-daemon`` (optionally
-                                                specifying the daemon name with ``--name``) to
-                                                start the Emacs daemon *without* starting the
-                                                client. If the Emacs daemon is already running
-                                                the command prints a message and exits with
-                                                the exit code 1.
+   Usage: e -- --help
 
-                                              - To explicitly check if the Emacs daemon for
-                                                the default socket is running use the
-                                                ``ec --check-daemon`` command.
-                                                To check for the Emacs daemon that uses a
-                                                named socket use the same command and specify
-                                                the ``--name=NAME`` option.
-= =========================================== ================================================
+    • Print Emacs help information.
+
+   Usage: e [OPTION-or-FILENAME]...
+
+    • Execute emacs -nw with the specified OPTION-or-FILENAME.
+      This does not auto-load any session.
+
+   Usage: e [-s] [SESSION-NAME] [--] [OPTION-or-FILENAME]...
+          e --session-name=SESSION_NAME [OPTION-or-FILENAME]...
+          PEL_SESSION=SESSION-NAME e -s [OPTION-or-FILENAME]...
+
+    • Execute emacs -nw, passing the OPTION-or-FILENAME
+      options to Emacs but also forcing the automatic
+      loading of an easysession.  The name of the session
+      is either specified on the command line as SESSION-NAME
+      or taken from the PEL_SESSION environment variable according
+      to the following rules:
+      • If -s is specified without any session name after the -s
+        or with the PEL_SESSION=SESSION-NAME before the script name
+        and PEL_SESSION environment variable does not already exist
+        or is currently empty, then the script requires the use of the
+        directory-specific session.
+        • This is the session name associated with the current directory
+          identified inside the PEL easysession catalog file:
+          ~/.emacs.d/pel-easysession-catalog.txt
+        • If you need to specify '-s' without a session name and need to pass
+          other arguments to Emacs use '-s --'.
+      • If '-s' is specified with no session name but the PEL_SESSION
+        environment variable has a non-empty value, the session with that name
+        is auto-loaded.  The, special name '.' (without quotes) identifies a
+        directory-specific session name extracted from the PEL easyssesion
+        catalog.
+      • Any word (except '--') directly following '-s', '--session-name=' or the
+        'PEL_SESSION=' identifies the session name and overrides the
+        session name that could be identified by the current value of
+        the PEL_SESSION environment variable.
+
+    The -s and --session-name options force the automatic loading of a session
+    using the Emacs easysession logic and are active when the following
+    conditions are met:
+      • The PEL pel-use-easysession      user-option is turned on.
+      • The PEL pel-easysession-autoload user-option is turned on.
+      • The easysession.el package is installed (PEL installs it when
+        Emacs starts and pel-use-easysession is on)
+      • The ~/.emacs.d/easysession directory exists.
+      • The ~/.emacs.d/pel-easysession-catalog.txt file exists.
+        • It has a line that identifies a session for the current directory.
+        • That file is present in the ~/.emacs.d/easysession directory.
+
+  NOTES
+      • e starts Emacs within the current shell; Emacs gets access to the
+        complete environment of the current shell. This includes the PATH,
+        LIBPATH, MANPATH, and several other useful environment variables.  This
+        can be useful in many situations.  You can even launch different Emacs
+        processes from different shells, each ones having different specialized
+        environments, and potentially an associated session.
+
+   DIAGNOSTICS
+    The script is silent by default.  To force it to display error messages to
+    describe unmet conditions for the -s option, set the PEL_DIAG environment
+    variable to 1.  If there is a problem, it will be displayed and the script
+    will exit before invoking Emacs.  Use that to troubleshoot environment
+    problems.
+    • With USRHOME installed, type: setenv PEL_DIAG 1
+
+   SEE ALSO
+    • ge : to start a Graphics-based Emacs process.
+    • ec : to start a Emacs daemon server or client.
+    • USRHOME : shell environment control with several commands.
+                At https://github.com/pierre-rouleau/usrhome
+
+
+
+Start an stand-alone graphics-mode Emacs with: ge
+-------------------------------------------------
+
+The ge_ command:
+
+- provides help for itself,
+- can launch a graphics-mode Emacs process to edit files specified on the command line,
+- can also instruct Emacs to load an `easysession.el`_ named session
+  identified by the command line or from the value of the ``PEL_SESSION``
+  environment variable.
+- the Emacs process gets access to the environment of the current shell.
 
 **The PEL_GE_DIR environment variable for macOS and locally built Emacs**
 
 Note that on macOS, if you use a locally built Emacs executable file that has
 not been activated as the system Emacs, and you want to use that Emacs
 executable in graphics mode with the ge_ and ec_ commands, you will also need
-to set the ``PEL_GE_DIR``environment variable to the name of the directory
-holing that Emacs executable file.
+to set the ``PEL_GE_DIR`` environment variable to the name of the directory
+holding that Emacs executable file.
 
-**For Closing and Terminating Emacs**
+
+**Usage**::
+
+  ge : Open an independent, detached, graphical-mode instance of Emacs.
+
+   Usage: ge -h | --help
+
+    • Print this help information.
+
+   Usage: ge [OPTION-or-FILENAME]...
+
+    • Launch the graphical Emacs process with the specified Emacs
+      OPTION-or-FILENAME.
+      The process is launched from within the current directory and inherits the
+      current environment variables.
+      This does not auto-load any session.
+
+   Usage: ge [-s] [SESSION-NAME] [--] [OPTION-or-FILENAME]...
+          ge --session-name=SESSION_NAME [OPTION-or-FILENAME]...
+          PEL_SESSION=SESSION-NAME ge -s [OPTION-or-FILENAME]...
+
+    • Execute the graphical Emacs process, passing it the OPTION-or-FILENAME
+      options.
+      The process is launched from within the current directory and inherits the
+      current environment variables.  This also forces the automatic loading of
+      an easysession.
+      The name of the session is either specified on the command line as
+      SESSION-NAME or taken from the PEL_SESSION environment variable according
+      to the following rules:
+      • If -s is specified without any session name after the -s
+        or with the PEL_SESSION=SESSION-NAME before the script name
+        and PEL_SESSION environment variable does not already exist
+        or is currently empty, then the script requires the use of the
+        directory-specific session.
+        • This is the session name associated with the current directory
+          identified inside the PEL easysession catalog file:
+          ~/.emacs.d/pel-easysession-catalog.txt
+        • If you need to specify '-s' without a session name and need to pass
+          other arguments to Emacs use '-s --'.
+      • If '-s' is specified with no session name but the PEL_SESSION
+        environment variable has a non-empty value, the session with that name
+        is auto-loaded.  The, special name '.' (without quotes) identifies a
+        directory-specific session name extracted from the PEL easyssesion
+        catalog.
+      • Any word (except '--') directly following '-s', '--session-name=' or the
+        'PEL_SESSION=' identifies the session name and overrides the
+        session name that could be identified by the current value of
+        the PEL_SESSION environment variable.
+
+    The -s and --session-name options force the automatic loading of a session
+    using the Emacs easysession logic and are active when the following
+    conditions are met:
+      • The PEL pel-use-easysession user-option is turned on in the graphics mode
+        customization.
+      • The PEL pel-easysession-autoload user-option is turned on in the graphics
+        mode customization.
+      • The easysession.el package is installed (PEL installs it when
+        Emacs starts and pel-use-easysession is on)
+      • The ~/.emacs.d/easysession directory exists.
+      • The ~/.emacs.d/pel-easysession-catalog.txt file exists.
+        • It has a line that identifies a session for the current directory.
+        • That file is present in the ~/.emacs.d/easysession directory.
+
+  NOTES
+      • ge launches Emacs inside an independent OS window, but that process
+        inherits the current directory and the complete environment of the
+        current shell.  This includes the PATH, LIBPATH, MANPATH, and several
+        other useful environment variables.  This can be useful in many
+        situations.  You can even launch different Emacs processes from
+        different shells, each ones having different specialized environments,
+        and potentially an associated session.
+      • Control is returned right away to the terminal shell.
+      • Remember that PEL supports the dual-customization mode where
+        customization of Emacs in terminal mode is independent that the
+        customization of Emacs in graphics mode.
+
+   DIAGNOSTICS
+    The script is silent by default.  To force it to display error messages to
+    describe unmet conditions for the -s option, set the PEL_DIAG environment
+    variable to 1.  If there is a problem, it will be displayed and the script
+    will exit before invoking Emacs.  Use that to troubleshoot environment
+    problems.
+    • With USRHOME installed, type: setenv PEL_DIAG 1
+
+   SEE ALSO
+    • e  : to start a terminal-based Emacs process.
+    • ec : to start a Emacs daemon server or client.
+    • USRHOME : shell environment control with several commands.
+                At https://github.com/pierre-rouleau/usrhome
+
+  OS NOTES
+      • On macOS the graphics version of Emacs is taken from one of the
+        following locations:
+        • If PEL_GE_DIR environment variable is defined, it must identify
+          the path of an emacs executable file that launches in graphics
+          mode by default.  If the environment variable is set and
+          $PEL_GE_DIR/emacs is valid then that is used.
+          Currently this is: ~/my/bin/emacs
+          Use this, for example, if you have built Emacs yourself
+          and want to use this version of Emacs without activating it
+          by default in your shells or in the system.
+        • If /Applications/Emacs.app/Contents/MacOS exists and holds
+          an appropriate Emacs executable file, that is used.
+
+   BUGS: On macOS Sonoma, the started Emacs application window is
+         buried under the window of the current terminal shell.
+         This problem does not occur on macOS Mojave.
+
+Start Emacs daemons and their clients with: ec
+----------------------------------------------
+
+The ec_ command:
+
+- provides help for itself,
+- can start the Emacs daemon server,
+- can start Emacs daemon clients,
+- can check if the Emacs daemon server is running,
+- can launch multiple Emacs daemon server when using
+  the ``--name`` option:
+
+  For example, use ``ec --name=PEL`` to start and connect
+  to a Emacs daemon that uses the socket named ``PEL``.
+
+  - With this option it is possible to create several
+    independent *groups* of Emacs daemon/clients.
+
+- supports daemon and clients in terminal mode and graphics mode.
+
+**Usage**::
+
+  ec : Open specified files in emacsclient. Start Emacs daemon if necessary.
+
+   USAGES:
+    ➨ ec [-h|--help]
+
+          -h, --help: print this help.
+
+    ➨ ec [-g|--gui] [--name=DAEMON-NAME] [OPTION-or-FILENAME]...
+
+          If the Emacs daemon is not already running, start it.
+          -g, --gui:  start a graphical emacsclient, otherwise
+                      start a terminal-based emacsclient (the default).
+
+    ➨ ec --start-daemon [--name=DAEMON-NAME] [OPTION-or-FILENAME]...
+
+          Use --start-daemon to only start the daemon without starting
+          any client.
+          If the daemon is already running the command prints a message
+          and exit with an exit code of 1.  You can use it to check if the
+          daemon is running.
+
+    ➨ ec --check-daemon [--name=DAEMON-NAME] [OPTION-or-FILENAME]...
+
+          The --check-daemon is used to explicitly check if the Emacs
+          daemon for the default socket is running.
+
+        For the last 2 commands, if the --name option is specified,
+        DAEMON-NAME identifies the socket name the daemon and the client
+        must use.  It's possible to create several daemons and client(s)
+        attaching to that daemon by using that option.
+
+        The OPTION-or-FILENAME is the set of emacsclient options and the
+        name of the files to edit.  All emacsclient options are supported
+        when specified last.
+        See emacsclient man page for information about those.
+
+   Note: Under macOS, to be able to launch an Emacs client that is a GUI
+         Emacs the GUI supporting Emacs such as Emacs from
+         https://emacsformacosx.com/ must be installed.
+
+         You can also use a locally built Emacs, built with GUI support,
+         as described in the document How to build Emacs from source in
+         the PEL website on Github, at:
+         https://github.com/pierre-rouleau/pel/blob/master/doc/build-emacs-from-source.rst.txt
+
+   Note: Under Linux, emacs-lucid is used to start the daemon if the --gui
+         option is specified and the emacs-lucid executable file is found
+         on the current PATH.  Otherwise, ec defaults to emacs.
+
+     ENVIRONMENT:
+         To use the locally built Emacs in graphics mode you will also need
+         to set the PEL_GE_DIR environment variable to the name of the
+         directory holding the Emacs executable file.
+
+
+Closing and Terminating Emacs
+=============================
 
 For instructions on how to close/terminate the Emacs daemon and its clients, see
 the `Closing Suspending PEL PDF`_
@@ -105,7 +330,8 @@ the `Closing Suspending PEL PDF`_
 PEL also provides a Emacs launcher that installs the above scripts in your
 environment.  See the `quick installation script`_ page for more information.
 
-**Test environments**:
+Test environments
+=================
 
 The commands were tested in the following environments:
 
@@ -358,6 +584,7 @@ install emacs`` command::
 .. _quick installation script: ./install_e_ge_ec.rst.txt
 .. _exec-path-from-shell: https://github.com/purcell/exec-path-from-shell
 .. _described above: #short-commands-to-start-emacs-from-the-terminal-shell
+.. _easysession.el: https://github.com/jamescherti/easysession.el
 
 .. ---------------------------------------------------------------------------
 

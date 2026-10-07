@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-09-12 07:11:04 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-10-05 11:01:55 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -325,6 +325,7 @@ EL_FILES := pel--base.el \
 		pel-seed7.el \
 		pel-seq.el \
 		pel-server.el \
+		pel-session.el \
 		pel-setup-27.el \
 		pel-setup-base.el \
 		pel-setup.el \
@@ -1001,6 +1002,8 @@ pel-register.elc:         pel--base.elc
 pel-rst.elc:              pel--base.elc pel--options.elc pel-whitespace.elc pel-ccp.elc pel--macros.elc pel-bookmark.elc pel-file.elc
 pel-ruby.elc:             pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
 pel-rust.elc:             pel--base.elc pel--options.elc pel-indent.elc pel-modes.elc
+pel-server.elc:           pel--options.elc
+pel-session.elc:          pel--base.elc pel--options.elc pel-prompt.elc
 pel-scheme.elc:           pel--base.elc pel-comint.elc pel-window.elc
 pel-screen.elc:           pel--options.elc pel-whitespace.elc
 pel-scroll.elc:           pel-window.elc

@@ -989,6 +989,22 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload-function "pel-seq" for: pel-all-fboundp)
 
+  ;; --
+  (pel-autoload "pel-session" for:
+    pel-session-load
+    pel-session-save
+    pel-session-show
+    pel-desktop-load
+    pel-desktop-save
+    pel-easysession-toggle-save-on-switch
+    pel-easysession-toggle-save-on-exit
+    pel-easysession-save
+    pel-easysession-load
+    pel-easysession-reset)
+  (pel-autoload-function "pel-session" for:
+    pel-easysession-config
+    pel-easysession-load-by-env)
+
   (pel-autoload "pel-sh" for:
     pel-sh-double-quote-word
     pel-sh-single-quote-word

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-02 11:00:02 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-02 11:02:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -613,6 +613,7 @@ Return the manual PDF file name."
                                                                     uniline))
     ([f11 ?D ?u]     "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
     ([f11 ?F]        "frames"           pel-pkg-for-frame       frames)
+    ([f11 ?S]        "sessions"         pel-pkg-for-session    (desktop easysession))
     ([f11 ?T]        "time-tracking"    pel-pkg-for-time-tracking (display-time
                                                                    timeclock
                                                                    timelog))
@@ -647,7 +648,8 @@ Return the manual PDF file name."
                                                                  minibuffer
                                                                  hexl
                                                                  nhexl
-                                                                 popup-switcher))
+                                                                 popup-switcher
+                                                                 buffer-terminator))
     ;; ([f11 ?b ?I]
 
     ([f11 32 32 ?C] "gnu-calc"  pel-pkg-for-calc      calc)

@@ -8633,6 +8633,12 @@ See `flyspell-auto-correct-previous-word' for more info."
         (let ((map change-log-mode-map))
           (define-key map (kbd "<f12> <f1>") 'pel-changelog-help))))))
 
+(when pel-use-buffer-terminator
+  (pel-ensure-package-elpa buffer-terminator from: melpa)
+  ;; This is early support that relies on customization of buffer-terminator group.
+  ;; [:todo 2026-09-30, by Pierre Rouleau: Add customization for buffer-terminator]
+  )
+
 ;;** ibuffer-mode support
 ;;   --------------------
 ;;
@@ -11147,108 +11153,157 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;;* Session Operations - <f11> S
 ;; - Function Keys - <f11> - Prefix ``<f11> S`` :
 ;;
-;; desktop can be used alone or used with either desktop-registry or desktop+
+;; Several package provide session management.  They are:
+;; - desktop             - built-in
+;;   - desktop-registry  - external
+;;   - desktop+          - external
+;; - easysession.el      - external
+;;
+;; desktop can be used alone or used with either desktop-registry or desktop+.
+;; The most capable one is easysession.el., an external package.
+;;
 ;; The following code control the auto-loading of the 3 modules and creation of
 ;; key bindings for these 3 packages: the key bindings are set according to what
-;; package is used and loaded.
+;; package is used and loaded.  The key bindings are placed under a key prefix
+;; selected to make it easy to load and save a session with the most capable
+;; installed external package if any.
+;;
+;; The recommendation is to use easysession.el but if the desktop packages are
+;; used, their commands are also bound to keys.
+;;
 
-(when pel-use-desktop
+(when (or pel-use-desktop pel-use-easysession)
   (define-pel-global-prefix pel:session (kbd "<f11> S"))
-  ;;
-  (defun pel-desktop-show ()
-    "Display name of currently used desktop if any."
-    (interactive)
-    (if (bound-and-true-p desktop-dirname)
-        (message "Last loaded desktop: %s" desktop-dirname)
-      (user-error "No desktop currently loaded!")))
 
-  (pel-autoload-file desktop for:
-                     desktop-save
-                     desktop-read
-                     desktop-save-mode
-                     desktop-change-dir
-                     desktop-revert
-                     desktop-clear)
-  (if (eq pel-use-desktop 'with-desktop+)
-      (define-key pel:session "?" 'pel-desktop-show)
-    (define-key pel:session (kbd "M-s") 'desktop-save-mode)
-    (define-key pel:session "S"         'desktop-save)
-    (define-key pel:session "L"         'desktop-read)
-    (define-key pel:session "c"         'desktop-clear)
-    (define-key pel:session "d"         'desktop-change-dir)
-    (define-key pel:session "r"         'desktop-revert))
-  ;;
-  ;; When Emacs runs in Terminal (TTY) mode, desktop does not restore the
-  ;; window layout, because desktop-restoring-frameset-p returns nil in
-  ;; terminal mode.  One way to add the functionality would be to advice that
-  ;; function or to explicitly restore the frameset data via a hook.
-  ;; That's what we do.
-  (defvar desktop-saved-frameset)       ; prevent byte-compiler warning
-  (defvar desktop-restore-reuses-frames)
-  (defvar desktop-restore-in-current-display)
+  (define-key pel:session "?" 'pel-session-show)
+  (define-key pel:session "S" 'pel-session-save)
+  (define-key pel:session "L" 'pel-session-load)
 
-  (when (pel-emacs-is-a-tty-p)
-    (defun pel--activate-frameset-restore ()
+  (when pel-use-desktop
+    (pel-autoload-file desktop for:
+                       desktop-save
+                       desktop-read
+                       desktop-save-mode
+                       desktop-change-dir
+                       desktop-revert
+                       desktop-clear)
+
+    (when (eq pel-use-desktop 'with-desktop+)
+      (define-pel-global-prefix pel:desktop (kbd "<f11> S D"))
+
+      (define-key pel:desktop (kbd "M-s") 'desktop-save-mode)
+      (define-key pel:desktop "S"         'desktop-save)
+      (define-key pel:desktop "L"         'desktop-read)
+      (define-key pel:desktop "C"         'desktop-clear)
+      (define-key pel:desktop "D"         'desktop-change-dir)
+      (define-key pel:desktop "R"         'desktop-revert))
+    ;;
+    ;; When Emacs runs in Terminal (TTY) mode, desktop does not restore the
+    ;; window layout, because desktop-restoring-frameset-p returns nil in
+    ;; terminal mode.  One way to add the functionality would be to advice that
+    ;; function or to explicitly restore the frameset data via a hook.
+    ;; That's what we do.
+    (defvar desktop-saved-frameset)     ; prevent byte-compiler warning
+    (defvar desktop-restore-reuses-frames)
+    (defvar desktop-restore-in-current-display)
+
+    (when (pel-emacs-is-a-tty-p)
+      (defun pel--activate-frameset-restore ()
         "Activate frameset-restore."
-      (frameset-restore
-       desktop-saved-frameset
-       :reuse-frames (eq desktop-restore-reuses-frames t)
-       :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
-       :force-display desktop-restore-in-current-display
-       :force-onscreen nil))
-    (declare-function pel--activate-frameset-restore "pel_keys")
-    (add-hook 'desktop-after-read-hook #'pel--activate-frameset-restore))
+        (frameset-restore
+         desktop-saved-frameset
+         :reuse-frames (eq desktop-restore-reuses-frames t)
+         :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
+         :force-display desktop-restore-in-current-display
+         :force-onscreen nil))
+      (declare-function pel--activate-frameset-restore "pel_keys")
+      (add-hook 'desktop-after-read-hook #'pel--activate-frameset-restore))
 
-  (unless (eq pel-use-desktop 'with-desktop+)
-    ;; desktop+ autoloaded logic advices of the desktop functions.
-    ;; Since that autoloading might already be done if desktop+ is installed
-    ;; these advices are already done even if the user does not want to use
-    ;; desktop+ and they will prevent proper operation of desktop alone.
-    ;; Remove these advices to allow proper access of the desktop.el
-    ;; functions.
-    ;; Compatible with feature+ version 0.1.1, package-version: 20170107.2132
-    (when (fboundp 'desktop+--advice--desktop-save)
-      (advice-remove 'desktop-save
-                     #'desktop+--advice--desktop-save))
-    (when (fboundp 'desktop+--advice--desktop-restore-frameset)
-      (advice-remove 'desktop-restore-frameset
-                     #'desktop+--advice--desktop-restore-frameset)))
-  (cond
-   ;; -- Using with-desktop-auto-save-mode
-   ((eq pel-use-desktop 'with-desktop-automatic)
-    (desktop-save-mode 1))
-   ;; -- Using desktop-registry
-   ((memq pel-use-desktop '(with-desktop-registry
-                            with-desktop-registry-automatic))
-    (when (eq pel-use-desktop 'with-desktop-registry-automatic)
+    (unless (eq pel-use-desktop 'with-desktop+)
+      ;; desktop+ autoloaded logic advices of the desktop functions.
+      ;; Since that autoloading might already be done if desktop+ is installed
+      ;; these advices are already done even if the user does not want to use
+      ;; desktop+ and they will prevent proper operation of desktop alone.
+      ;; Remove these advices to allow proper access of the desktop.el
+      ;; functions.
+      ;; Compatible with feature+ version 0.1.1, package-version: 20170107.2132
+      (when (fboundp 'desktop+--advice--desktop-save)
+        (advice-remove 'desktop-save
+                       #'desktop+--advice--desktop-save))
+      (when (fboundp 'desktop+--advice--desktop-restore-frameset)
+        (advice-remove 'desktop-restore-frameset
+                       #'desktop+--advice--desktop-restore-frameset)))
+    (cond
+     ;; -- Using with-desktop-auto-save-mode
+     ((eq pel-use-desktop 'with-desktop-automatic)
       (desktop-save-mode 1))
-    (define-pel-global-prefix pel:session-registry (kbd "<f11> S R"))
-    (pel-ensure-package-elpa desktop-registry from: melpa)
-    (pel-autoload-file desktop-registry for:
-                       desktop-registry-change-desktop
-                       desktop-registry-remove-desktop
-                       desktop-registry-rename-desktop
-                       desktop-registry-add-directory
-                       desktop-registry-add-current-desktop
-                       desktop-registry-list-desktops)
-    (define-key pel:session-registry "l" 'desktop-registry-list-desktops)
-    (define-key pel:session-registry "o" 'desktop-registry-change-desktop)
-    (define-key pel:session-registry "d" 'desktop-registry-remove-desktop)
-    (define-key pel:session-registry "R" 'desktop-registry-rename-desktop)
-    (define-key pel:session-registry "a" 'desktop-registry-add-directory)
-    (define-key pel:session-registry "A" 'desktop-registry-add-current-desktop))
-   ;; -- Using desktop+
-   ((eq pel-use-desktop 'with-desktop+)
-    (pel-ensure-package-elpa desktop+ from: melpa)
-    (pel-autoload-file desktop+ for:
-                       desktop+-create
-                       desktop+-load
-                       desktop+-create-auto
-                       desktop+-load-auto)
-    (define-key pel:session "s" 'desktop+-create)
-    (define-key pel:session "l" 'desktop+-load)
-    (define-key pel:session "S" 'desktop+-create-auto)
-    (define-key pel:session "L" 'desktop+-load-auto))))
+     ;; -- Using desktop-registry
+     ((memq pel-use-desktop '(with-desktop-registry
+                              with-desktop-registry-automatic))
+      (when (eq pel-use-desktop 'with-desktop-registry-automatic)
+        (desktop-save-mode 1))
+      (define-pel-global-prefix pel:session-registry (kbd "<f11> S R"))
+      (pel-ensure-package-elpa desktop-registry from: melpa)
+      (pel-autoload-file desktop-registry for:
+                         desktop-registry-change-desktop
+                         desktop-registry-remove-desktop
+                         desktop-registry-rename-desktop
+                         desktop-registry-add-directory
+                         desktop-registry-add-current-desktop
+                         desktop-registry-list-desktops)
+      (define-key pel:session-registry "l" 'desktop-registry-list-desktops)
+      (define-key pel:session-registry "o" 'desktop-registry-change-desktop)
+      (define-key pel:session-registry "d" 'desktop-registry-remove-desktop)
+      (define-key pel:session-registry "R" 'desktop-registry-rename-desktop)
+      (define-key pel:session-registry "a" 'desktop-registry-add-directory)
+      (define-key pel:session-registry "A" 'desktop-registry-add-current-desktop))
+     ;; -- Using desktop+
+     ((eq pel-use-desktop 'with-desktop+)
+      (define-pel-global-prefix pel:desktop+ (kbd "<f11> S +"))
+      (pel-ensure-package-elpa desktop+ from: melpa)
+      (pel-autoload-file desktop+ for:
+                         desktop+-create
+                         desktop+-load
+                         desktop+-create-auto
+                         desktop+-load-auto)
+      (define-key pel:desktop+ "s" 'desktop+-create)
+      (define-key pel:desktop+ "l" 'desktop+-load)
+      (define-key pel:desktop+ "S" 'desktop+-create-auto)
+      (define-key pel:desktop+ "L" 'desktop+-load-auto))))
+
+  (when pel-use-easysession
+    (pel-ensure-package-elpa easysession from: melpa)
+    (define-pel-global-prefix pel:easysession (kbd "<f11> S E"))
+    (define-pel-global-prefix pel:easysession-cfg (kbd "<f11> S E <f4>"))
+    ;; (define-key pel:session "L" 'pel-easysession-load)
+                                        ; Load session
+    ;; (define-key pel:session "S" 'pel-easysession-save)
+                                        ; Save session
+    (define-key pel:easysession "R" 'easysession-rename)
+    (define-key pel:easysession "U" 'easysession-unload)
+    (define-key pel:easysession "D" 'easysession-delete)
+    (define-key pel:easysession (kbd "M-s") 'pel-easysession-toggle-save-on-switch)
+    (define-key pel:easysession (kbd "M-S") 'pel-easysession-toggle-save-on-exit)
+    (define-key pel:easysession-cfg (kbd "M-e") 'easysession-edit)
+    (define-key pel:easysession-cfg (kbd "M-r") 'easysession-reset)
+    (when (daemonp)
+      (define-key pel:easysession-cfg (kbd "M-c") 'easysession-save-session-and-close-frames))
+
+    (when pel-easysession-autoload
+      ;; Auto-load session named by PEL_SESSION environment var.
+      ;; Add the function at the very very end of the list (that's what 102 is for)
+      (add-hook 'emacs-startup-hook 'pel-easysession-load-by-env  102))
+
+    (when (listp pel-use-easysession)
+      ;; When the setup requires activation of easysession extensions, configure
+      ;; them when the library loads.
+      (pel-eval-after-load easysession
+        (declare-function pel-easysession-config "pel-session")
+        (declare-function easysession-setup      "easysession")
+        ;; The first element of the set is the delay time, pass remainder of
+        ;; the list.
+        (pel-easysession-config pel-use-easysession)
+        (easysession-setup)))))
 
 ;; -----------------------------------------------------------------------------
 ;;* Process & Shells Execution - <f11> z

@@ -1,6 +1,22 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- Add (preliminary) support for [[https://github.com/jamescherti/buffer-terminator.el][buffer-terminator.el]] package when
+  *pel-use-buffer-terminator* user-option is turned on.
+- Add (preliminary) support for [[https://github.com/jamescherti/easysession.el][easysession.el]] package when *pel-use-easysession* user-option is turned on.
+  - It can be activated with a set of easysession extensions; the
+    customization of *pel-use-easysession*  allows you to activate one or
+    several extensions.
+  - The easysession commands are bound under the ~<f11> S E~ key prefix.
+  - All installation and customization control is done but complete integration and
+    documentation is not done yet.  It will be completed soon.  It is,
+    however, usable now.
+  - Refactored the session support: the ~<f11> S L~ key sequence is now bound to a dispatcher function
+    to load a desktop or easysession session.
+    It prompts for the package to use when several packages are used.
+  - Refactored the session support: the ~<f11> S S~ key sequence is now bound to a dispatcher function
+    to save the current desktop or easysession session.
+    It prompts for the package to use when several packages are used.
 - Improved support for Emacs project.el:
   - Document the project specific commands in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/project-tools.pdf][⅀ Project PDF]] including the
     ones provided by PEL.

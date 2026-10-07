@@ -2,12 +2,12 @@
 
 ;; Created   : Wednesday, December  7 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-12-07 18:20:36 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-06 22:43:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2022  Pierre Rouleau
+;; Copyright (C) 2022, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 ;;; Dependencies:
 ;;
 ;;
-
+(require 'pel--options)   ; use: `pel-use-easysession'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -43,9 +43,12 @@
                (server-running-p))
     (user-error
      "This Emacs session is not using an Emacs Server! Nothing done"))
-  (when
-      (y-or-n-p "Shut Emacs Server down and close all its clients?")
+  (when (y-or-n-p "Shut Emacs Server down and close all its clients?")
     (save-some-buffers)
+    (when (and pel-use-easysession
+               (daemonp)
+               (fboundp 'easysession-save-session-and-close-frames))
+      (easysession-save-session-and-close-frames))
     (kill-emacs)))
 
 ;;; --------------------------------------------------------------------------
