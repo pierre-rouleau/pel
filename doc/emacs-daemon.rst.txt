@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-07 09:18:21 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-07 11:43:04 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -79,7 +79,7 @@ The e_ command:
       • If '-s' is specified with no session name but the PEL_SESSION
         environment variable has a non-empty value, the session with that name
         is auto-loaded.  The, special name '.' (without quotes) identifies a
-        directory-specific session name extracted from the PEL easyssesion
+        directory-specific session name extracted from the PEL easysession
         catalog.
       • Any word (except '--') directly following '-s', '--session-name=' or the
         'PEL_SESSION=' identifies the session name and overrides the
@@ -122,8 +122,8 @@ The e_ command:
 
 
 
-Start an stand-alone graphics-mode Emacs with: ge
--------------------------------------------------
+Start a stand-alone graphics-mode Emacs with: ge
+------------------------------------------------
 
 The ge_ command:
 
@@ -184,7 +184,7 @@ holding that Emacs executable file.
       • If '-s' is specified with no session name but the PEL_SESSION
         environment variable has a non-empty value, the session with that name
         is auto-loaded.  The, special name '.' (without quotes) identifies a
-        directory-specific session name extracted from the PEL easyssesion
+        directory-specific session name extracted from the PEL easysession
         catalog.
       • Any word (except '--') directly following '-s', '--session-name=' or the
         'PEL_SESSION=' identifies the session name and overrides the
@@ -234,7 +234,7 @@ holding that Emacs executable file.
 
   OS NOTES
       • On macOS the graphics version of Emacs is taken from one of the
-        following locations:
+        following locations, checked in the following order:
         • If PEL_GE_DIR environment variable is defined, it must identify
           the path of an emacs executable file that launches in graphics
           mode by default.  If the environment variable is set and
@@ -397,8 +397,8 @@ it.
 Installing Emacs on macOS
 =========================
 
-First install the graphics capable version of macOS. This can be done in two
-different ways:
+First install the graphics-capable version of Emacs for macOS. This can be
+done in two different ways:
 
 - Download and install the Emacs the `Emacs for Mac OS X`_, or
 - Use the `Homebrew package manager`_ and issue the following command from your
@@ -592,7 +592,7 @@ install emacs`` command::
 .. _described above: #short-commands-to-start-emacs-from-the-terminal-shell
 .. _easysession.el: https://github.com/jamescherti/easysession.el
 .. _start Emacs in terminal mode: `Start Emacs in terminal mode with: e`_
-.. _start Emacs in graphics mode: `Start an stand-alone graphics-mode Emacs with: ge`_
+.. _start Emacs in graphics mode: `Start a stand-alone graphics-mode Emacs with: ge`_
 .. _start Emacs daemons and their clients: `Start Emacs daemons and their clients with: ec`_
 
 
