@@ -4,13 +4,12 @@
 # Purpose   : List Emacs Server/Sockets.
 # Created   : Wednesday, October  7 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-07 16:29:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-07 17:08:39 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # List currently running Emacs daemon server/sockets.
-
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -18,7 +17,6 @@
 #
 # - POSIX compliant shell.
 # - Runs on Linux and macOS
-
 
 # ----------------------------------------------------------------------------
 # Code
@@ -41,7 +39,11 @@ print_usage()
 
   • Print names and path of currently running Emacs daemon sockets
     on stdout.
-    exit code of 2 if none found, 0 if some are detected.
+    - Supports the EMACS_SOCKET_NAME environment variable, if defined.
+
+    This script returns the following exit code values:
+    - 0: one or more daemon socket is found.
+    - 2: No Emacs daemon socket found.
 
 
 LIMITATION:  Supports Linux and macOS.
@@ -95,8 +97,23 @@ fi
 found_daemon=0
 processed_dirs=" "  # Initialize with spaces to act as boundary separators
 
+# Check an explicitly selected absolute socket path.
+# Prune first so a directory value cannot trigger a recursive search.
+explicit_socket=""
+case "${EMACS_SOCKET_NAME:-}" in
+    /*)
+        explicit_socket=$(find "$EMACS_SOCKET_NAME" -prune -type s -print 2>/dev/null)
+        if [ -n "$explicit_socket" ]; then
+            socket_name=$(basename "$explicit_socket")
+            printf -- "-> Daemon Running: [Name: %s] [Path: %s]\n" \
+                "$socket_name" "$explicit_socket"
+            found_daemon=1
+        fi
+        ;;
+esac
+
 # Loop through potential paths
-for dir in "$XDG_DIR" "$TMP_DIR" "$DARWIN_DIR"; do
+for dir in "$EMACS_SOCKET_NAME" "$XDG_DIR" "$TMP_DIR" "$DARWIN_DIR"; do
     # Skip empty variables or non-existent directories
     [ -z "$dir" ] && continue
     [ ! -d "$dir" ] && continue
@@ -114,15 +131,22 @@ for dir in "$XDG_DIR" "$TMP_DIR" "$DARWIN_DIR"; do
     # Remember searched directory
     processed_dirs="${processed_dirs}${dir} "
 
-    # POSIX-compliant search for sockets exactly 1 level deep
-    sockets=$(find "$dir" -type s ! -path "$dir" -prune 2>/dev/null)
+    # Search immediate directory entries only.
+    # Pass each socket path as a separate argument, not as text to split.
+    # This allows space inside those paths.
+    socket_output=$(
+        find "$dir" ! -path "$dir" -prune -type s \
+            -exec sh -c '
+                for socket_path do
+                    socket_name=${socket_path##*/}
+                    printf -- "-> Daemon Running: [Name: %s] [Path: %s]\n" "$socket_name" "$socket_path"
+                done
+            ' sh {} + 2>/dev/null
+    )
 
-    if [ -n "$sockets" ]; then
-        for socket_path in $sockets; do
-            socket_name=$(basename "$socket_path")
-            printf -- "-> Daemon Running: [Name: %s] [Path: %s]\n" "$socket_name" "$socket_path"
-            found_daemon=1
-        done
+    if [ -n "$socket_output" ]; then
+        printf '%s\n' "$socket_output"
+        found_daemon=1
     fi
 done
 
