@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-06 22:21:42 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-07 09:18:21 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -17,8 +17,14 @@ Using the Emacs stand-alone processes, daemon and clients
 Short Commands to start Emacs from the terminal shell
 =====================================================
 
-Instead of using the long explicit commands listed in the sections below, you
-can use the following short commands.  These support both macOS and Linux.
+Start single Emacs processes or Emacs daemon and its clients with the
+following simple commands:
+
+- e_  : `start Emacs in terminal mode`_
+- ge_ : `start Emacs in graphics mode`_
+- ec_ : `start Emacs daemons and their clients`_
+
+The commands are POSIX shell scripts and explicitly support Linux and macOS.
 
 
 Start Emacs in terminal mode with: e
@@ -585,6 +591,11 @@ install emacs`` command::
 .. _exec-path-from-shell: https://github.com/purcell/exec-path-from-shell
 .. _described above: #short-commands-to-start-emacs-from-the-terminal-shell
 .. _easysession.el: https://github.com/jamescherti/easysession.el
+.. _start Emacs in terminal mode: `Start Emacs in terminal mode with: e`_
+.. _start Emacs in graphics mode: `Start an stand-alone graphics-mode Emacs with: ge`_
+.. _start Emacs daemons and their clients: `Start Emacs daemons and their clients with: ec`_
+
+
 
 .. ---------------------------------------------------------------------------
 
