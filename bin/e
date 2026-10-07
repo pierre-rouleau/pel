@@ -4,7 +4,7 @@
 # Purpose   : Start Emacs in terminal mode.  Support multiple environments
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-06 23:02:17 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-07 12:11:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -57,7 +57,7 @@ print_usage()
     This does not auto-load any session.
 
  Usage: %s [-s] [SESSION-NAME] [--] [OPTION-or-FILENAME]...
-        %s --session-name=SESSION_NAME [OPTION-or-FILENAME]...
+        %s --session=SESSION_NAME [OPTION-or-FILENAME]...
         PEL_SESSION=SESSION-NAME %s -s [OPTION-or-FILENAME]...
 
   • Execute emacs -nw, passing the OPTION-or-FILENAME
@@ -79,14 +79,14 @@ print_usage()
     • If '-s' is specified with no session name but the PEL_SESSION
       environment variable has a non-empty value, the session with that name
       is auto-loaded.  The, special name '.' (without quotes) identifies a
-      directory-specific session name extracted from the PEL easyssesion
+      directory-specific session name extracted from the PEL easysession
       catalog.
-    • Any word (except '--') directly following '-s', '--session-name=' or the
+    • Any word (except '--') directly following '-s', '--session=' or the
       'PEL_SESSION=' identifies the session name and overrides the
       session name that could be identified by the current value of
       the PEL_SESSION environment variable.
 
-  The -s and --session-name options force the automatic loading of a session
+  The -s and --session options force the automatic loading of a session
   using the Emacs easysession logic and are active when the following
   conditions are met:
     • The PEL pel-use-easysession      user-option is turned on.
@@ -150,6 +150,7 @@ diag_printf() {
             #       arguments use backslash escapes.
             format_str="$1"
             shift
+            # shellcheck disable=SC2059 # The format string *is* the first argument.
             printf "$format_str" "$@"
             ;;
     esac
@@ -165,9 +166,9 @@ session_name=
 
 # Loop through arguments to look for -s at the very beginning.
 # Extract the session name; support the following possibilities:
-#  -s                   -> session_name = "."
-#  -s ABC               -> session_name = "ABC"
-#  --session-name=ABC   -> session_name = "ABC"
+#  -s              -> session_name = "."
+#  -s ABC          -> session_name = "ABC"
+#  --session=ABC   -> session_name = "ABC"
 while [ $# -gt 0 ]; do
     case "$1" in
         -s)
@@ -283,7 +284,7 @@ if [ "$with_s_flag" -eq 1 ]; then
         fi
     fi
 else
-    # When e is invoked without the -s or --session-name option, ensure that
+    # When e is invoked without the -s or --session option, ensure that
     # PEL_SESSION is empty to prevent Emacs from auto-loading an easysession.
     if [ -n "$PEL_SESSION" ]; then
         unset -v PEL_SESSION
@@ -304,7 +305,11 @@ prompt_yn()
     # Arg 1: string prompt
     while true; do
         printf "%s [yn]? " "$1"
-        read -r yn
+        if ! read -r yn; then
+            prompt_yn_return=n
+            printf '\nCannot read a valid response; cancelling Emacs launch.\n' >&2
+            return 1
+        fi
         case $yn in
             [Yy]* )
                 prompt_yn_return=y
@@ -329,7 +334,7 @@ if [ -z "$INSIDE_EMACS" ]; then
     exec emacs -nw "$@"
 else
     printf -- "ALREADY inside Emacs!\n"
-    prompt_yn "Invoke another terminal-based Emacs inside this Emacs shell anyway"
+    prompt_yn "Invoke another terminal-based Emacs inside this Emacs shell anyway" || exit 2
     if [ "$prompt_yn_return" = "y" ]; then
         exec emacs -nw "$@"
     else

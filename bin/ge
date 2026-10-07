@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent, detached, GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-06 23:04:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-07 12:11:31 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -43,7 +43,7 @@ print_usage()
     This does not auto-load any session.
 
  Usage: %s [-s] [SESSION-NAME] [--] [OPTION-or-FILENAME]...
-        %s --session-name=SESSION_NAME [OPTION-or-FILENAME]...
+        %s --session=SESSION_NAME [OPTION-or-FILENAME]...
         PEL_SESSION=SESSION-NAME %s -s [OPTION-or-FILENAME]...
 
   • Execute the graphical Emacs process, passing it the OPTION-or-FILENAME
@@ -67,14 +67,14 @@ print_usage()
     • If '-s' is specified with no session name but the PEL_SESSION
       environment variable has a non-empty value, the session with that name
       is auto-loaded.  The, special name '.' (without quotes) identifies a
-      directory-specific session name extracted from the PEL easyssesion
+      directory-specific session name extracted from the PEL easysession
       catalog.
-    • Any word (except '--') directly following '-s', '--session-name=' or the
+    • Any word (except '--') directly following '-s', '--session=' or the
       'PEL_SESSION=' identifies the session name and overrides the
       session name that could be identified by the current value of
       the PEL_SESSION environment variable.
 
-  The -s and --session-name options force the automatic loading of a session
+  The -s and --session options force the automatic loading of a session
   using the Emacs easysession logic and are active when the following
   conditions are met:
     • The PEL pel-use-easysession user-option is turned on in the graphics mode
@@ -123,7 +123,7 @@ NOTES
         printf -- "\
 OS NOTES
     • On macOS the graphics version of Emacs is taken from one of the
-      following locations:
+      following locations, checked in the following order:
       • If PEL_GE_DIR environment variable is defined, it must identify
         the path of an emacs executable file that launches in graphics
         mode by default.  If the environment variable is set and
@@ -132,7 +132,7 @@ OS NOTES
         Use this, for example, if you have built Emacs yourself
         and want to use this version of Emacs without activating it
         by default in your shells or in the system.
-      • If /Applications/Emacs.app/Contents/MacOS exists and holds
+      • If PEL_GE_DIR /Applications/Emacs.app/Contents/MacOS exists and holds
         an appropriate Emacs executable file, that is used.
 
  BUGS: On macOS Sonoma, the started Emacs application window is
@@ -166,6 +166,7 @@ diag_printf() {
             #       arguments use backslash escapes.
             format_str="$1"
             shift
+            # shellcheck disable=SC2059 # The format string *is* the first argument.
             printf "$format_str" "$@"
             ;;
     esac
@@ -181,9 +182,9 @@ session_name=
 
 # Loop through arguments to look for -s at the very beginning.
 # Extract the session name; support the following possibilities:
-#  -s                   -> session_name = "."
-#  -s ABC               -> session_name = "ABC"
-#  --session-name=ABC   -> session_name = "ABC"
+#  -s              -> session_name = "."
+#  -s ABC          -> session_name = "ABC"
+#  --session=ABC   -> session_name = "ABC"
 while [ $# -gt 0 ]; do
     case "$1" in
         -s)
@@ -298,7 +299,7 @@ if [ "$with_s_flag" -eq 1 ]; then
         fi
     fi
 else
-    # When e is invoked without the -s or --session-name option, ensure that
+    # When e is invoked without the -s or --session option, ensure that
     # PEL_SESSION is empty to prevent Emacs from auto-loading an easysession.
     if [ -n "$PEL_SESSION" ]; then
         unset -v PEL_SESSION
