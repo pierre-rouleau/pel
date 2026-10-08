@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-08 16:50:11 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-08 17:04:15 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -192,6 +192,7 @@ holding that Emacs executable file.
   ge : Launch an independent graphical-mode instance of Emacs.
        Direct launches run in the background with stdout and stderr discarded.
        macOS application launches use open and preserve open's diagnostics.
+       Give focus to the graphical Emacs OS window.
 
    Usage: ge -h | --help
 

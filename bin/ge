@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-08 16:49:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-08 17:03:31 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -28,6 +28,7 @@ print_usage()
 %s : Launch an independent graphical-mode instance of Emacs.
      Direct launches run in the background with stdout and stderr discarded.
      macOS application launches use open and preserve open's diagnostics.
+     Give focus to the graphical Emacs OS window.
 
  Usage: %s -h | --help
 
@@ -490,8 +491,9 @@ case "$ge_process" in
         # ge does not wait for Emacs or return its eventual exit status.
         # Prevent stream outputs from leaking into the parent shell terminal.
         exec "$PEL_GE_DIR/emacs" \
-             --chdir="$(pwd)" "$@" \
-             --eval '(select-frame-set-input-focus (selected-frame))' >/dev/null 2>&1 &
+             --chdir="$(pwd)" \
+             --eval '(select-frame-set-input-focus (selected-frame))' \
+             "$@" >/dev/null 2>&1 &
         ;;
 
     /Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11)
@@ -511,8 +513,9 @@ case "$ge_process" in
         #  The caller receives open's status, not Emacs's eventual exit status.
         exec open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11 \
              --env PEL_EMACS_IN_GRAPHICS=1 \
-             --args --chdir="$(pwd)" "$@" \
-             --eval '(select-frame-set-input-focus (selected-frame))'
+             --args --chdir="$(pwd)" \
+             --eval '(select-frame-set-input-focus (selected-frame))' \
+             "$@"
         ;;
 
     /Applications/Emacs.app/Contents/MacOS/Emacs)
@@ -526,8 +529,9 @@ case "$ge_process" in
         # option, don't use it and export PEL_EMACS_IN_GRAPHICS explicitly.
         export PEL_EMACS_IN_GRAPHICS=1
         exec open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs \
-             --args --chdir="$(pwd)" "$@" \
-             --eval '(select-frame-set-input-focus (selected-frame))'
+             --args --chdir="$(pwd)" \
+             --eval '(select-frame-set-input-focus (selected-frame))' \
+             "$@"
         ;;
 
     emacs-lucid)
@@ -540,8 +544,9 @@ case "$ge_process" in
         # ge does not wait for Emacs or return its eventual exit status.
         # Prevent stream outputs from leaking into the parent shell terminal.
         exec emacs-lucid \
-             --chdir="$(pwd)" "$@" \
-             --eval '(select-frame-set-input-focus (selected-frame))'>/dev/null 2>&1 &
+             --chdir="$(pwd)" \
+             --eval '(select-frame-set-input-focus (selected-frame))' \
+             "$@" >/dev/null 2>&1 &
         ;;
 
     emacs)
@@ -554,8 +559,9 @@ case "$ge_process" in
         # ge does not wait for Emacs or return its eventual exit status.
         # Prevent stream outputs from leaking into the parent shell terminal.
         exec emacs \
-             --chdir="$(pwd)" "$@" \
-             --eval '(select-frame-set-input-focus (selected-frame))' >/dev/null 2>&1 &
+             --chdir="$(pwd)" \
+             --eval '(select-frame-set-input-focus (selected-frame))' \
+             "$@" >/dev/null 2>&1 &
         ;;
 
     *)
