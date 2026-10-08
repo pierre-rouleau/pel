@@ -14372,7 +14372,13 @@ Each line has 3 elements:
 
 PEL maintains this file and places the line corresponding to the most recently
 used session at the top of the file and deletes duplicate entries related to
-the directory identified by the first line.."
+the directory identified by the first line.
+
+IMPORTANT:   If you change the default value, set the PEL_SESSION_CATALOG
+             environment variable to the name of the file you use, otherwise
+             e and ge will not be able to request automatic launching of
+             directory-specific sessions.
+"
   :group 'pel-pkg-for-session
   :type 'file)
 

@@ -4,7 +4,7 @@
 # Purpose   : Start Emacs in terminal mode.  Support multiple environments
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-07 22:42:51 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-07 23:16:54 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -101,6 +101,12 @@ print_usage()
                         directory.
    • PEL easysession catalog file:  'pel-easysession-catalog.txt;' inside the
                                      Emacs user directory.
+
+ ENVIRONMENT
+    • PEL_SESSION_CATALOG : the file name (with absolute path) of the
+                            PEL easysession catalog file, overriding the
+                            default described above.
+
  NOTES
     • %s starts Emacs within the current shell; Emacs gets access to the
       complete environment of the current shell. This includes the PATH,
@@ -117,6 +123,7 @@ print_usage()
   • With USRHOME installed, type: setenv PEL_DIAG 1
 
  EXIT CODE
+  • 3 : emacs invoked inside emacs, prompt read failed.
   • 2 : emacs not found in PATH
   • 1 : command line error
   • 0 : success
@@ -157,7 +164,12 @@ fi
 
 EMACS_DIR=$(emacs -Q --batch --eval="(princ (expand-file-name (directory-file-name user-emacs-directory)))")
 EASYSESSION_SESSION_DIR="$EMACS_DIR/easysession"
-EASYSESSION_SESSION_CATALOG="$EMACS_DIR/pel-easysession-catalog.txt"
+if [ -n "$PEL_SESSION_CATALOG" ]; then
+    EASYSESSION_SESSION_CATALOG="$EMACS_DIR/$PEL_SESSION_CATALOG"
+else
+    # Use the default
+    EASYSESSION_SESSION_CATALOG="$EMACS_DIR/pel-easysession-catalog.txt"
+fi
 
 # ----------------------------------------------------------------------------
 # Diagnostic printf
@@ -357,7 +369,7 @@ if [ -z "$INSIDE_EMACS" ]; then
     exec emacs -nw "$@"
 else
     printf -- "ALREADY inside Emacs!\n"
-    prompt_yn "Invoke another terminal-based Emacs inside this Emacs shell anyway" || exit 2
+    prompt_yn "Invoke another terminal-based Emacs inside this Emacs shell anyway" || exit 3
     if [ "$prompt_yn_return" = "y" ]; then
         exec emacs -nw "$@"
     else
