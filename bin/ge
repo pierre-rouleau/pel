@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-08 16:21:29 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-08 16:49:47 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -107,9 +107,8 @@ print_usage()
       different shells, each one having different specialized environments,
       and potentially an associated session.
     • Control is returned right away to the terminal shell.
-    • Remember that PEL supports the dual-customization mode where
-      customization of Emacs in terminal mode is independent of the
-      customization of Emacs in graphics mode.
+    • If PEL dual-customization mode is enabled, enable pel-use-easysession
+      and pel-easysession-autoload in the graphical-mode customization.
     • For direct graphical Emacs launches, stdout and stderr are discarded.
       Startup errors and external-debugging-output are therefore not visible.
       A successful ge exit status does not confirm successful Emacs startup.
@@ -177,10 +176,6 @@ OS NOTES
         that executable. PEL_GE_DIR identifies its containing directory.
         Otherwise, use the executable inside /Applications/Emacs.app
         appropriate for the CPU architecture.
-
- BUGS: On macOS Sonoma, the started Emacs application window is
-       buried under the window of the current terminal shell.
-       This problem does not occur on macOS Mojave.
 "
     fi
 }
@@ -223,14 +218,12 @@ case $(uname) in
                     if [ -x /Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11 ]; then
                         ge_process="/Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11"
                     elif [ -x /Applications/Emacs.app/Contents/MacOS/Emacs ]; then
-                        # since it's likely an older macOS system where open did not have the --env option, don't use it.
                         ge_process="/Applications/Emacs.app/Contents/MacOS/Emacs"
                     fi
                     ;;
                 *)
                     # Use the general dispatcher for all others
                     # It will check what version of macOS and use the appropriate one.
-                    # since it's likely an older macOS system where open did not have the --env option, don't use it.
                     if [ -x /Applications/Emacs.app/Contents/MacOS/Emacs ]; then
                         ge_process="/Applications/Emacs.app/Contents/MacOS/Emacs"
                     fi
@@ -476,8 +469,8 @@ fi
 #     as what is specified on the command line. If we don't do that the GUI
 #     based Emacs might use a different directory (most often the home directory)
 #     and if you specify files that are not in that directory they
-#     will not be opened, another file open which will most likely be
-#     in an empty buffer (if the file does not exist in the home directory).
+#     will not be opened, Emacs can instead open an empty buffer for a different
+#     path-name.
 #
 # Emacs 27+ support for PEL:
 #    - To allow Emacs early-init.el code to distinguish whether Emacs is
@@ -496,7 +489,9 @@ case "$ge_process" in
         # exec replaces the background subshell, not the main ge script.
         # ge does not wait for Emacs or return its eventual exit status.
         # Prevent stream outputs from leaking into the parent shell terminal.
-        exec "$PEL_GE_DIR/emacs" --chdir="$(pwd)" "$@" >/dev/null 2>&1 &
+        exec "$PEL_GE_DIR/emacs" \
+             --chdir="$(pwd)" "$@" \
+             --eval '(select-frame-set-input-focus (selected-frame))' >/dev/null 2>&1 &
         ;;
 
     /Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11)
@@ -516,37 +511,51 @@ case "$ge_process" in
         #  The caller receives open's status, not Emacs's eventual exit status.
         exec open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11 \
              --env PEL_EMACS_IN_GRAPHICS=1 \
-             --args --chdir="$(pwd)" "$@"
+             --args --chdir="$(pwd)" "$@" \
+             --eval '(select-frame-set-input-focus (selected-frame))'
         ;;
 
     /Applications/Emacs.app/Contents/MacOS/Emacs)
-        # since it's likely an older macOS system where open did not have the --env option, don't use it.
+        # Use open: open returns without waiting for Emacs to exit.
+        # -n : open a new instance on each invocation
+        # -a application: identify the path of the application
+        # The caller receives open's status, not Emacs's eventual exit status.
+        #
+        # Since macOS Intel platforms run older software,
+        # it's likely an older macOS system where open did not have the --env
+        # option, don't use it and export PEL_EMACS_IN_GRAPHICS explicitly.
         export PEL_EMACS_IN_GRAPHICS=1
-        #  Replace ge with open.
-        #  open returns without waiting for Emacs to exit.
-        #  The caller receives open's status, not Emacs's eventual exit status.
-        exec open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs --args --chdir="$(pwd)" "$@"
+        exec open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs \
+             --args --chdir="$(pwd)" "$@" \
+             --eval '(select-frame-set-input-focus (selected-frame))'
         ;;
 
     emacs-lucid)
         # Under Linux, invoke emacs passing the current working directory
         # setting the PEL_EMACS_IN_GRAPHICS environment variable to inform
-        # PEL about the graphics mode and ensure it runs in the background.
+        # PEL about the graphics mode.
         export PEL_EMACS_IN_GRAPHICS=1
         # Run Emacs in the background.
         # exec replaces the background subshell, not the main ge script.
         # ge does not wait for Emacs or return its eventual exit status.
         # Prevent stream outputs from leaking into the parent shell terminal.
-        exec emacs-lucid --chdir="$(pwd)" "$@" >/dev/null 2>&1 &
+        exec emacs-lucid \
+             --chdir="$(pwd)" "$@" \
+             --eval '(select-frame-set-input-focus (selected-frame))'>/dev/null 2>&1 &
         ;;
 
     emacs)
+        # Under Linux, invoke emacs passing the current working directory
+        # setting the PEL_EMACS_IN_GRAPHICS environment variable to inform
+        # PEL about the graphics mode.
         export PEL_EMACS_IN_GRAPHICS=1
         # Run Emacs in the background.
         # exec replaces the background subshell, not the main ge script.
         # ge does not wait for Emacs or return its eventual exit status.
         # Prevent stream outputs from leaking into the parent shell terminal.
-        exec emacs --chdir="$(pwd)" "$@" >/dev/null 2>&1 &
+        exec emacs \
+             --chdir="$(pwd)" "$@" \
+             --eval '(select-frame-set-input-focus (selected-frame))' >/dev/null 2>&1 &
         ;;
 
     *)

@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-08 16:21:50 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-08 16:50:11 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -271,9 +271,8 @@ holding that Emacs executable file.
         different shells, each one having different specialized environments,
         and potentially an associated session.
       • Control is returned right away to the terminal shell.
-      • Remember that PEL supports the dual-customization mode where
-        customization of Emacs in terminal mode is independent of the
-        customization of Emacs in graphics mode.
+      • If PEL dual-customization mode is enabled, enable pel-use-easysession
+        and pel-easysession-autoload in the graphical-mode customization.
       • For direct graphical Emacs launches, stdout and stderr are discarded.
         Startup errors and external-debugging-output are therefore not visible.
         A successful ge exit status does not confirm successful Emacs startup.
@@ -335,10 +334,6 @@ holding that Emacs executable file.
           that executable. PEL_GE_DIR identifies its containing directory.
           Otherwise, use the executable inside /Applications/Emacs.app
           appropriate for the CPU architecture.
-
-   BUGS: On macOS Sonoma, the started Emacs application window is
-         buried under the window of the current terminal shell.
-         This problem does not occur on macOS Mojave.
 
 Start Emacs daemons and their clients with: ec
 ----------------------------------------------
